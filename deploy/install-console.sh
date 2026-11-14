@@ -243,7 +243,9 @@ axf_cron_file axf-builds-reconcile "*/10 * * * * root cd $DIR && node framework/
 axf_cron_file axf-pipeline "* * * * * root P=$DIR/apps/console-web/plugins/build-orchestrator/pipeline.mjs; [ -f \$P ] && cd $DIR && flock -n /run/axf-pipeline.lock timeout 600 node \$P tick >> /var/log/axf-pipeline.log 2>&1"  # axf-plugin:build-orchestrator
 # Auto-land (push banner, Nov 3 2026, Brett: "zero tokens for merging"): every 3 minutes a plain script lands finished
 # builds (worktree cleaned, main merged in, PR opened, CI started); the console's auto-merge merges them. No model calls.
-axf_cron_file axf-auto-land "*/3 * * * * root L=$DIR/apps/console-web/plugins/push-banner/land/land.mjs; [ -f \$L ] && cd $DIR && AXF_LAND_REPO=$DIR flock -n /run/axf-auto-land.lock timeout 900 node \$L run >> /var/log/axf-auto-land.log 2>&1"  # axf-plugin:push-banner
+# every 3 minutes: one auto-land round (worktrees cleaned, branches pushed, PRs), then the serial lander lands the landing
+# line one build at a time (land-one.mjs line: main merged in, regenerated, CI once, merged on green, fix build on red)
+axf_cron_file axf-auto-land "*/3 * * * * root L=$DIR/apps/console-web/plugins/push-banner/land; [ -f \$L/land.mjs ] && cd $DIR && AXF_LAND_REPO=$DIR flock -n /run/axf-auto-land.lock sh -c 'timeout 900 node \$0/land.mjs run; [ -f \$0/land-one.mjs ] && timeout 3300 node \$0/land-one.mjs line' \$L >> /var/log/axf-auto-land.log 2>&1"  # axf-plugin:push-banner
 # Rotated Claude tokens (refresh-token-save, Nov 6 2026): the live login's renewals reach its saved copy within a minute,
 # and pairs AI keys renews reach the host's logins. Builds' own copies save back by themselves (claude-headless.sh).
 axf_cron_file axf-claude-token-save "* * * * * root T=$DIR/deploy/claude-token-save.mjs; [ -f \$T ] && flock -n /run/axf-claude-token-save.lock node \$T sweep >> /var/log/axf-claude-token-save.log 2>&1"

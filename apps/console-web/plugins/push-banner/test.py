@@ -705,9 +705,11 @@ c.put("/p/config", json={"landWaitUi": True})
 _cfgf = Path(os.environ["AXF_PUSH_BANNER_DIR"]) / "config.json"
 _cfg_before = _cfgf.read_text() if _cfgf.exists() else None
 _cfgf.write_text(json.dumps({"$axf": "push-banner-config@1", "autoLand": False}))
-check(mod.PUSHES.config()["autoLand"] is True, "an off written before autoLandRev 2 (the Nov 4 off) reads as on")
+check(mod.PUSHES.config()["autoLand"] is True, "an off written before the current autoLandRev reads as on")
+_cfgf.write_text(json.dumps({"$axf": "push-banner-config@1", "autoLand": False, "autoLandRev": 2, "queueMode": "batch"}))
+check(mod.PUSHES.config()["autoLand"] is True and mod.PUSHES.config()["queueMode"] == "serial", "rev 3 (Nov 14 2026): an off or a batch mode saved at rev 2 reads as on, serial")
 r = c.put("/p/config", json={"autoLand": False})
-check(r.status_code == 200 and r.json()["autoLand"] is False and json.loads(_cfgf.read_text()).get("autoLandRev") == 2, "switching it off now is honoured (autoLandRev 2 written)")
+check(r.status_code == 200 and r.json()["autoLand"] is False and json.loads(_cfgf.read_text()).get("autoLandRev") == 3, "switching it off now is honoured (autoLandRev 3 written)")
 c.put("/p/config", json={"autoLand": True})
 if _cfg_before is not None:
     _cfgf.write_text(_cfg_before)

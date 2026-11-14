@@ -29,8 +29,17 @@
  *   node apps/console-web/plugins/push-banner/land/land-one.mjs <build> [--dry-run] [--json]   one attempt now
  *   … runs [<build>] [--json]                                                                the recorded attempts
  *   … lock                                                                                   who holds the line
+ *   … enqueue <build> [--front]                     put a finished build in the landing line (the finish hook does this)
+ *   … line [--max n] [--dry-run] [--json]           land the line one build at a time until it is empty (cron, hook)
+ *   … show [--json]                                 the landing line (landing-line@1 view)
+ *
+ * The landing line (landing-line@1, landing-line.json in the data folder) holds the order. runLine takes the entry in
+ * flight (an attempt whose CI was still running) or else the first waiting one, runs landOne on it and moves the entry
+ * by what happened: landed → out of the line; red / clash → fix-filed (the line moves on at once); still running →
+ * stays in flight and the next run resumes it; a lander error → paused with the reason, then back to waiting at the
+ * end of the run (tried again next run, never in a loop).
  */
-import { appendFileSync, existsSync, mkdirSync, readFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
@@ -221,13 +230,92 @@ function finish(s, run, dry, now) {
   return r;
 }
 
+// ------------------------------------------------------------------ the landing line
+
+export const lineFile = (s) => join(s.dataDir, 'landing-line.json');
+export function readLine(s) { try { return JSON.parse(readFileSync(lineFile(s), 'utf8')); } catch { return line.emptyLine(); } }
+export function writeLine(s, l) { mkdirSync(s.dataDir, { recursive: true }); const t = `${lineFile(s)}.tmp-${process.pid}`; writeFileSync(t, `${JSON.stringify(l, null, 1)}\n`); renameSync(t, lineFile(s)); }
+
+/** A finished build joins the line (at the back, or the front with `front`); already there = unchanged. */
+export function enqueue(s, b, { front = false, at = new Date().toISOString() } = {}) {
+  let l = readLine(s);
+  const id = line.entryId({ build: b.id, pr: Number(String(b.pr || '').replace(/\D/g, '')) || 0 });
+  l = line.transition(l, { type: 'add', at, entry: { build: b.id, branch: b.branch, title: b.title, pr: b.pr, priority: b.priority, head: b.head || '' } });
+  if (front && line.findEntry(l, id)?.state === 'waiting') { try { l = line.moveEntry(l, id, 0, { by: 'land-on-finish', at }); } catch { /* in flight ahead */ } }
+  writeLine(s, l);
+  return line.findEntry(l, id);
+}
+
+/** Move a line entry by what one land-one attempt found. Pure on the line value. */
+export function applyRun(l, id, run, at = new Date().toISOString()) {
+  const ev = (type, x = {}) => { l = line.transition(l, { type, id, at, ...x }); };
+  const st = () => line.findEntry(l, id)?.state;
+  if (st() === 'waiting') ev('start', { head: run.head });
+  if (run.unresolved?.length) { if (['merging-main', 'regenerating'].includes(st())) ev('conflict', { files: run.unresolved }); return l; }
+  if (run.error || !run.merged) { if (line.LIVE.includes(st()) && st() !== 'paused') ev('pause', { why: `Landing broke: ${run.error || 'merge failed'}`, by: 'lander' }); return l; }
+  if (st() === 'merging-main') ev('merged-main', { sha: run.merged });
+  if (st() === 'regenerating') {
+    if (run.check?.ok === false) { ev('conflict', { why: run.check.note || `checks failed after the merge: ${run.check.failed.join(', ')}`, files: [] }); return l; }
+    ev('regenerated', { head: run.merged });
+  }
+  const ci = lr.ciState(run.ci?.status, run.ci?.conclusion);
+  const runOf = (conclusion, name = 'CI') => ({ name, status: 'completed', conclusion, head_sha: run.merged, app: { slug: 'github-actions' } });
+  if (st() === 'checking') {
+    if (run.check?.ok === false && run.check.failed?.length && ci !== 'success') ev('check', { runs: run.check.failed.map((n) => runOf('failure', n)) });
+    else if (ci === 'failure') ev('check', { runs: [runOf('failure')] });
+    else if (ci === 'success') ev('check', { runs: [runOf('success')] });
+    else ev('check', { runs: [{ name: 'CI', status: 'in_progress', head_sha: run.merged, app: { slug: 'github-actions' } }] });
+  }
+  if (st() === 'landing' && run.outcome === 'landed') ev('landed', { sha: run.merged });
+  return l;
+}
+
+/**
+ * Land the line, one build at a time, until it is empty, `max` attempts ran, or the clock runs out. Each entry is tried
+ * at most once per run. Returns { ran: [{ id, outcome, note }], busy?: owner }.
+ */
+export async function runLine({ s = settings(), max = 20, dry = false, land = landOne, now = () => new Date(), budgetMs = 50 * 60000, log = () => {}, ...opts } = {}) {
+  const ran = []; const tried = new Set(); const t0 = Date.now(); const paused = [];
+  while (ran.length < max && Date.now() - t0 < budgetMs) {
+    let l = readLine(s);
+    if (l.on === false) break;
+    const e = line.inFlight(l) && !tried.has(line.inFlight(l).id) ? line.inFlight(l) : (line.inFlight(l) ? null : (l.entries || []).find((x) => x.state === 'waiting' && !x.hold && !tried.has(x.id)));
+    if (!e) break;
+    tried.add(e.id);
+    const r = await land({ s, build: e.build ? { id: e.build, branch: e.branch, pr: e.pr, title: e.title } : e.branch, dry, now, log, ...opts });
+    if (!r.ran) { ran.push({ id: e.id, busy: r.owner }); break; }
+    l = applyRun(readLine(s), e.id, r.run, now().toISOString());
+    if (line.findEntry(l, e.id)?.state === 'paused') paused.push(e.id);
+    if (!dry) writeLine(s, l);
+    ran.push({ id: e.id, build: e.build, outcome: r.run.outcome, note: r.run.note });
+    log(`line: ${e.id} → ${r.run.outcome || 'still checking'}: ${r.run.note}`);
+    if (line.inFlight(l)) break; // CI still running on it: one at a time, resumed next run
+  }
+  // lander errors go back to waiting for the next run (never retried in a loop here)
+  if (paused.length && !dry) { let l = readLine(s); for (const id of paused) { try { l = line.transition(l, { type: 'resume', id, by: 'lander' }); } catch { /* moved by hand */ } } writeLine(s, l); }
+  return { ran };
+}
+
 export async function main(argv) {
   const s = settings(); const json = argv.includes('--json'); const dry = argv.includes('--dry-run');
   const args = argv.filter((a) => !a.startsWith('--'));
   const out = (v, text) => console.log(json ? JSON.stringify(v, null, 1) : text);
   if (args[0] === 'lock') { const o = lockOwner(); out({ owner: o }, o || 'free'); return 0; }
   if (args[0] === 'runs') { const r = readRuns(s, args[1] || ''); out(r, r.map((x) => `${x.startedAt}  ${x.build}  ${x.outcome || 'going'}  ${x.note}`).join('\n') || 'no attempts yet'); return 0; }
-  if (!args[0]) throw new Error('usage: land-one.mjs <build> [--dry-run] [--json] | runs [<build>] | lock');
+  if (args[0] === 'show') { const v = line.view(readLine(s)); out(v, JSON.stringify(v, null, 1)); return 0; }
+  if (args[0] === 'enqueue') {
+    if (!args[1]) throw new Error('enqueue <build> [--front]');
+    const git = makeGit(s.repo); const b = buildFromMain({ s, git, id: args[1] });
+    if (!b?.branch) throw new Error(`no build ${args[1]} with a branch on main's builds store`);
+    const e = enqueue(s, b, { front: argv.includes('--front') }); out(e, `${e.id}: ${e.state}`); return 0;
+  }
+  if (args[0] === 'line') {
+    const i = argv.indexOf('--max'); const max = i >= 0 ? Number(argv[i + 1]) || 20 : 20;
+    const r = await runLine({ s, max, dry, log: (m) => !json && console.error(m) });
+    out(r, r.ran.map((x) => `${x.id}: ${x.busy ? `line busy (${x.busy})` : `${x.outcome || 'checking'} — ${x.note}`}`).join('\n') || 'the landing line is empty');
+    return 0;
+  }
+  if (!args[0]) throw new Error('usage: land-one.mjs <build> [--dry-run] [--json] | runs [<build>] | lock | enqueue <build> [--front] | line [--max n] | show');
   const r = await landOne({ s, build: args[0], dry, log: (m) => !json && console.error(m) });
   if (!r.ran) { out(r, `the landing line is busy: ${r.owner}`); return 2; }
   out(r.run, `${r.run.build}: ${r.run.note}`);

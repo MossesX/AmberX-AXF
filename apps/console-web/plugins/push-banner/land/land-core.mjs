@@ -25,7 +25,9 @@ export const CONTROL_FRAME = 'auto-land-control@1';
  */
 export const LAND_DEFAULTS = Object.freeze({ autoLand: true, landWaitUi: true });
 /** The config revision from which an explicit `autoLand: false` is honoured. */
-export const AUTO_LAND_REV = 2;
+export const AUTO_LAND_REV = 3;
+// rev 3 (Nov 14 2026, build land-finish-auto-land-live-clear-backlog, Brett: "landing as soon as they're built"): auto-land
+// on again everywhere, in serial mode; a config written before it reads as autoLand on + queueMode serial.
 
 /** Is auto-land on, from the raw config.json object? */
 export function autoLandOn(cfg) {

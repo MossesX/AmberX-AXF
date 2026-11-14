@@ -51,7 +51,8 @@ export const readQueueControl = (s) => readJson(queueControlFile(s), { $axf: q.Q
 export function readQueueConfig(s) {
   const c = readJson(join(s.dataDir, 'config.json'), {}) || {};
   const depth = Number.isInteger(c.queueDepth) ? Math.min(q.QUEUE_DEPTH_MAX, Math.max(1, c.queueDepth)) : q.QUEUE_DEFAULTS.queueDepth;
-  const mode = q.QUEUE_MODES.includes(c.queueMode) ? c.queueMode : q.QUEUE_DEFAULTS.queueMode;
+  // a mode saved before config rev 3 (when batch was the default and every save wrote it) reads as serial
+  const mode = q.QUEUE_MODES.includes(c.queueMode) && c.autoLandRev === core.AUTO_LAND_REV ? c.queueMode : q.QUEUE_DEFAULTS.queueMode;
   const batchSize = Number.isInteger(c.batchSize) ? Math.min(q.BATCH_SIZE_MAX, Math.max(1, c.batchSize)) : q.QUEUE_DEFAULTS.batchSize;
   return { mergeQueue: c.mergeQueue !== false, depth, mode, batchSize, waitUi: c.landWaitUi !== false };
 }

@@ -114,7 +114,7 @@ BATCH_SIZE_MAX = 20  # land/merge-queue-core.mjs BATCH_SIZE_MAX
 AGENT_HEADERS = ("x-axhub-session", "x-axhub-source")
 LAND_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,80}\Z")
 LAND_STUCK_S = 30 * 60  # stuck in the landing line: blocked or waiting this long (land-core.mjs STUCK_MS)
-AUTO_LAND_REV = 2   # config revision from which an explicit autoLand false is honoured; = land-core.mjs AUTO_LAND_REV
+AUTO_LAND_REV = 3   # config revision from which an explicit autoLand false is honoured; = land-core.mjs AUTO_LAND_REV
 UI_REVIEW_CAP = "ui-review@1"  # PRs whose UI is waiting, has changes asked or is rejected in UI Review don't merge
 UI_REVIEW_REPO = os.environ.get("AXF_GITHUB_REPO") or "MossesX/AmberX-AXF"  # the repo UI Review's PR numbers belong to
 NO_ROUTE = "the console can't reach GitHub: neither axHub (AXHUB_TOKEN) nor GITHUB_TOKEN is set on the console server"
@@ -234,7 +234,7 @@ class Pushes:
                 # Batch mode (Nov 10 2026, Brett: "Everything needs to go into the merge queue so we can make one build out of
                 # it before we send it to CI"): the ready PRs are combined into one commit, CI runs once, it lands as one.
                 # "stack" keeps the Nov 4 per-PR stack (one run per PR).
-                "queueMode": raw["queueMode"] if raw.get("queueMode") in QUEUE_MODES else "serial",
+                "queueMode": raw["queueMode"] if raw.get("queueMode") in QUEUE_MODES and raw.get("autoLandRev") == AUTO_LAND_REV else "serial",
                 "batchSize": raw["batchSize"] if isinstance(raw.get("batchSize"), int) and not isinstance(raw.get("batchSize"), bool) and 1 <= raw["batchSize"] <= BATCH_SIZE_MAX else 8}
 
     def save_config(self, body: Any) -> dict[str, Any]:

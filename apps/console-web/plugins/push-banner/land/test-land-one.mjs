@@ -10,7 +10,7 @@ const root = mkdtempSync(join(tmpdir(), 'land-one-'));
 process.env.AXF_LAND_LOCK = join(root, 'lock.d');
 process.env.AXF_CREW_SAY = 'off';
 process.env.AXF_LAND_RESOLVER = '';
-const { landOne, readRuns, checkAndLand } = await import('./land-one.mjs');
+const { landOne, readRuns, checkAndLand, enqueue, runLine, readLine } = await import('./land-one.mjs');
 const { makeGit, takeLandLock, dropLandLock } = await import('./land.mjs');
 const lr = await import('../../../../../framework/core/land-run.mjs');
 
@@ -167,6 +167,33 @@ await t('landed and clash attempts go on the build too; a running one does not',
   const { gh } = fakeGh([run1(null, 'in_progress')]); let tn = 0;
   await landOne({ s, git, ...base, gh, build: { id: 'clean', branch: 'claude/clean', pr: 12 }, now: () => at, ciOpts: { ...fastCi, waitMs: 10, clock: () => (tn += 20) } });
   assert.deepEqual(recorded, [['clash2', 'clash']]);
+});
+
+await t('the line: builds land one at a time in order; red files its fix and the line moves on; a lander error waits for the next run', async () => {
+  const sL = { ...s, dataDir: join(root, 'line') };
+  for (const id of ['one', 'two', 'three', 'four']) enqueue(sL, { id, branch: `claude/${id}` });
+  enqueue(sL, { id: 'urgent', branch: 'claude/urgent' }, { front: true });
+  const H = (c) => c.repeat(40);
+  const outcome = {
+    urgent: { merged: H('a'), ci: { status: 'completed', conclusion: 'success' }, outcome: 'landed' },
+    one: { merged: H('b'), ci: { status: 'completed', conclusion: 'failure' }, outcome: 'red', fixBuild: 'fix-1' },
+    two: { error: 'network down', outcome: 'error' },
+    three: { unresolved: ['src/x.ts'], outcome: 'clash' },
+    four: { merged: H('c'), ci: { status: 'in_progress', conclusion: '' }, outcome: '' },
+  };
+  const order = []; let inside = 0; let overlap = false;
+  const land = async ({ build }) => { inside++; if (inside > 1) overlap = true; order.push(build.id); await new Promise((r) => setTimeout(r, 5)); inside--; return { ran: true, run: { ...lr.emptyLandRun(), build: build.id, head: H('d'), check: { ok: null, failed: [], note: '' }, ...outcome[build.id], note: build.id } }; };
+  const r = await runLine({ s: sL, land });
+  assert.deepEqual(order, ['urgent', 'one', 'two', 'three', 'four'], 'front first, then in order, each once');
+  assert.equal(overlap, false, 'never two at once');
+  const l = readLine(sL); const st = Object.fromEntries(l.entries.map((e) => [e.build, e.state]));
+  assert.deepEqual(st, { one: 'fix-filed', two: 'waiting', three: 'fix-filed', four: 'checking' });
+  assert.equal(l.history.find((e) => e.build === 'urgent')?.state, 'landed');
+  assert.equal(r.ran.length, 5);
+  // next run: the one in flight is resumed first, nothing else starts while it is still checking
+  const order2 = []; outcome.four = { merged: H('c'), ci: { status: 'completed', conclusion: 'success' }, outcome: 'landed' };
+  await runLine({ s: sL, land: async (o) => { order2.push(o.build.id); return land(o); } });
+  assert.deepEqual(order2, ['four', 'two'], 'in-flight first, then the waiting one');
 });
 
 await t('two at once: a second attempt is refused while the line is held, and runs once it is free', async () => {

@@ -9,6 +9,11 @@
  * JSON checked, pushed, PR opened, then into the merge queue, whose CI run on top of main is the test gate). A round
  * that can't start here (no runner checkout, hooks in a test) is not lost: the cron round takes the `now` line first.
  *
+ * Serial mode (the merge queue's default since Nov 14 2026, build land-finish-auto-land-live-clear-backlog): the build
+ * also joins the front of the landing line (landing-line@1, land-one.mjs enqueue) and the background round is followed by
+ * the serial lander (`land-one.mjs line`): main merged in, generated files regenerated, CI once on the merged head,
+ * merged on green, a fix build on red, then the next build in the line.
+ *
  * Idempotent on event id (replays happen): a build already in the `now` line is not asked twice.
  * Env: AXF_LAND_HOOK=off (record nothing, start nothing), AXF_LAND_HOOK_SPAWN=off (record only).
  */
@@ -18,6 +23,8 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
 import { control, readConfig, readControl, settings } from './land.mjs';
+import { enqueue } from './land-one.mjs';
+import { readQueueConfig } from './merge-queue.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SELF_REPO = resolve(HERE, '../../../../..');
@@ -55,15 +62,25 @@ export function onBuildEvents(events, { env = process.env, start = startRound, b
   const ctl = readControl(s);
   const fresh = ids.filter((id) => core.buildOn(ctl, id) && !ctl.holds?.[id] && !(ctl.now || []).includes(id));
   for (const id of fresh) { try { control(s, 'now', id); } catch { /* bad id */ } }
-  const started = env.AXF_LAND_HOOK_SPAWN === 'off' ? [] : fresh.filter((id) => start(id, env));
-  return { landing: fresh, started };
+  const serial = readQueueConfig(s).mode === 'serial';
+  const all = builds || storeBuilds(SELF_REPO);
+  const lined = [];
+  if (serial) for (const id of fresh) { const b = all.find((x) => x.id === id); if (b?.branch) { try { enqueue(s, b, { front: true }); lined.push(id); } catch { /* not a valid entry */ } } }
+  const started = env.AXF_LAND_HOOK_SPAWN === 'off' ? [] : fresh.filter((id) => start(id, env, { serial }));
+  return { landing: fresh, started, lined };
 }
 
 /** One background round for one build, through the serial landing lock (land.mjs takes it). Never waits here. */
-export function startRound(id, env = process.env) {
+export function startRound(id, env = process.env, { serial = false } = {}) {
   const repo = runnerRepo(env); if (!repo) return false;
+  const dir = join(repo, 'apps/console-web/plugins/push-banner/land');
+  // serial: the round (worktree cleaned, branch pushed) and then the serial lander, one after the other in one child
+  const q = (x) => `'${String(x).replace(/'/g, "'\\''")}'`;
+  const cmd = serial
+    ? ['/bin/sh', ['-c', `${q(process.execPath)} ${q(join(dir, 'land.mjs'))} run --only ${q(id)} --wait-lock; ${q(process.execPath)} ${q(join(dir, 'land-one.mjs'))} line`]]
+    : [process.execPath, [join(dir, 'land.mjs'), 'run', '--only', id, '--wait-lock']];
   try {
-    const p = spawn(process.execPath, [join(repo, 'apps/console-web/plugins/push-banner/land/land.mjs'), 'run', '--only', id, '--wait-lock'], {
+    const p = spawn(cmd[0], cmd[1], {
       cwd: repo, detached: true, stdio: 'ignore', env: { ...env, AXF_LAND_REPO: repo },
     });
     p.unref(); return true;
