@@ -6,7 +6,7 @@
  * Inline element editing: click an element in the sandbox (Pick element) and the token list narrows to that element.
  */
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type ReactNode } from 'react';
-import { Button, Chip, ColorField, Container, Icon, IconButton, Note, Segmented, SelectField, Slider, Switch, TabGroup, TextField, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
+import { Button, Chip, ColorField, Container, HubSkinLockArea, Icon, IconButton, Note, Segmented, SelectField, Slider, Switch, TabGroup, TextField, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
 import { ELEMENT_LABELS } from '@console/axf/core/engines/token-registry.mjs';
 import * as api from './api';
 import type { Session, UiListItem, UiPick } from './api';
@@ -174,6 +174,7 @@ export function SkinEditorView() {
   const edits = Object.keys(state).length;
 
   return (
+    <HubSkinLockArea>
     <div className={`${P} fx-stack`}>
       <header className="fx-pagehead"><div><p className="fx-eyebrow">Framework</p><h1>Skin editor</h1></div></header>
       <div className={`${P}__bar`} role="toolbar" aria-label="Skin editor">
@@ -239,5 +240,6 @@ export function SkinEditorView() {
         </aside>
       </div>
     </div>
+    </HubSkinLockArea>
   );
 }
