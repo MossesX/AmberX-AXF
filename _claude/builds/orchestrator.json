@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:39:12.924Z",
+ "updatedAt": "2026-11-14T23:41:31.818Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -144457,7 +144457,7 @@
    "title": "Merge main and land move-amberx-web-app-console-amberx-andr",
    "category": "",
    "detail": "Auto-land could not land `move-amberx-web-app-console-amberx-andr` (move-amberx-web-app-console-amberx-andr): merging main into it clashes in code: apps/console-web/plugins/approvals-banner/plugin.json, apps/console-web/server/main.py.\n\nWork on its own branch `claude/move-amberx-web-app-console-amberx-andr` (PR #596); do not open a new PR.\n1. git fetch origin && git checkout claude/move-amberx-web-app-console-amberx-andr && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/move-amberx-web-app-console-amberx-andr. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
@@ -144465,7 +144465,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T23:10:38.526Z",
-   "updatedAt": "2026-11-14T23:38:26.296Z",
+   "updatedAt": "2026-11-14T23:41:25.519Z",
    "builtAt": "",
    "notes": [
     {
@@ -144505,8 +144505,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:41:25.519Z",
      "note": "",
      "uid": "st-mwh0u0jg011wnb",
      "createdAt": "2026-11-14T23:12:50.235Z"
