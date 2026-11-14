@@ -2131,3 +2131,13 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
 .fx-tc-file__bar[data-state='failed'] .fx-tc-file__fill { background: var(--fx-tc-file-progress-failed, var(--fx-danger)); }
 .fx-tc-file__status { margin: 0; font-size: var(--fx-type-scale-xs); color: var(--fx-muted); }
 .fx-tc-file__status:empty { display: none; }
+
+/* themed tooltip (.fx-tc-tip, role="tooltip"; position set by the host) */
+.fx-tc-tip {
+  position: fixed; inset-block-start: var(--tc-top); inset-inline-start: var(--tc-left); z-index: 95; pointer-events: none;
+  max-inline-size: var(--fx-tc-tooltip-max-width, calc(var(--fx-font-size) * 280 / 14)); padding: var(--fx-dens-gap-2xs) var(--fx-dens-gap-sm);
+  border-radius: var(--fx-tc-tooltip-radius, var(--fx-radius-md)); border: var(--fx-border-w) solid var(--fx-tc-tooltip-rest-border, var(--fx-accent));
+  background: var(--fx-tc-tooltip-rest-bg, var(--fx-surface)); color: var(--fx-tc-tooltip-rest-text, var(--fx-text)); box-shadow: var(--fx-shadow-lg);
+  font-size: var(--fx-type-scale-xs); line-height: 1.35; white-space: pre-line; overflow-wrap: anywhere; animation: fx-fade var(--fx-motion) ease both;
+}
+.fx-tc-tip[hidden] { display: none; }

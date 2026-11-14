@@ -6,6 +6,7 @@ import './time';
 import { colorFamily } from './color';
 import { dialogsFamily } from './dialogs';
 import { fileFamily } from './file';
+import { tooltipFamily } from './tooltip';
 
 export const ELEMENT_FAMILIES: ElementFamily[] = [checkboxFamily, radioFamily, rangeFamily, numberFamily, datetimeFamily, colorFamily, fileFamily];
-export const GLOBAL_FAMILIES: GlobalFamily[] = [dialogsFamily];
+export const GLOBAL_FAMILIES: GlobalFamily[] = [dialogsFamily, tooltipFamily];
