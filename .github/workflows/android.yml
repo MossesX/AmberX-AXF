@@ -99,7 +99,10 @@ jobs:
       - run: node framework/cli/crew-say.mjs check                 # crew-sections@1: every section that posts in the group chat has an owner on the crew (registry, events, literal ids)
       - run: node framework/spec/check-agent-slots.mjs              # agent-slots@1: cap, queue order, priority, auto-start, finished sessions closed, memory guard, hot reload, heavy lock, claude-headless.sh end to end
       - run: node framework/spec/check-build-limit.mjs              # build-limit@1: hard limit counts what really runs, N+1 refused (claude-headless.sh end to end), Brett-only set, docker/slice caps, only Queued builds take slots
+      - run: node framework/spec/check-build-lock.mjs               # build-lock@1: one live session per build: tmux axf-<id>*, claude pids in the worktree, a heartbeat lock that expires; double dispatch refused
       - run: node deploy/claude-token-save.test.mjs                 # rotated Claude tokens: saved back at once to every store of that login, never to another account
+      - run: node deploy/claude-shared-login.test.mjs               # two builds on one Claude account: a forced renewal in one, the other keeps working
+      - run: node deploy/claude-login-notify.test.mjs               # every Claude sign-in verified and every token refresh confirmed saved: one phone alert each, never a token
       - run: node deploy/claude-workers.test.mjs                    # worker accounts: routing, limits, failover, cost per account
       - run: node deploy/worker-routing.test.mjs                    # workers-api-routing: routing rules, per-account limits and queues, API spend caps, who may raise a cap
       - run: node deploy/claude-login.test.mjs                      # build-own-login: every headless build runs on its own Claude login copy (fake accounts + fake claude; logout/switch mid-run, refresh stays in the copy, no token printed)
@@ -160,6 +163,8 @@ jobs:
         run: node apps/console-web/plugins/claude-settings/test.mjs  # axf-plugin:claude-settings
       - name: AmberX listeners plugin (listener@1 on the console — devices from the hub table, policies as hub-settings@1, restart requests, CLI)  # axf-plugin:amberx-listeners
         run: node apps/console-web/plugins/amberx-listeners/test.mjs  # axf-plugin:amberx-listeners
+      - name: Notes & tasks plugin (notes-tasks@1 schema — one item type nested to any depth, 10+ and 1 000 levels; amberx-notes@1 and first-design documents stay valid)  # axf-plugin:notes-tasks
+        run: node apps/console-web/plugins/notes-tasks/test.mjs  # axf-plugin:notes-tasks
       - name: Auto-land (push banner) — zero tokens (no model client in the merge pipeline), landing rules, rounds on fake builds  # axf-plugin:push-banner
         run: node apps/console-web/plugins/push-banner/land/land.test.mjs  # axf-plugin:push-banner
       - name: Merge queue (push banner) — stacking, blame + kick-out, rebuild without it, no retest on merge; real git, fake GitHub  # axf-plugin:push-banner
@@ -264,14 +269,19 @@ jobs:
             npx -y tsx framework/spec/check-customize.mts              # tab-group asset + per-asset appearance tokens, 100 icon sets, apply to all
             npx -y tsx framework/spec/check-tab-group.mts              # tab-group@1: position / display / overflow / sticky / collapsible / closable / badges / rememberLast, starters, fixture replay, stylesheet tokens only
             npx -y tsx framework/spec/check-chrome-settings.mts        # chrome-settings@1: one shared default settings interface per chrome type + a custom copy per app (extends), default selected, dialog fields = asset fields
+            npx -y tsx framework/spec/check-chrome-apply.mts           # chrome-settings@1 applies: every dialog value on every toolbar, nav, menu bar, banner and context menu changes the render, per instance, survives reload
             node framework/cli/chrome-settings.mjs check               # every app (shared-assets apps + Expenses) carries its custom chrome settings interfaces
             node framework/cli/check-chrome-assets.mjs                 # every tab group, toolbar, banner and nav is framework chrome with the right-click settings; ratchet spec/chrome-baseline.json
             npx -y tsx framework/spec/check-skin.mts                   # skin@1 + app-look@1: one look per app, fixture replay, the Windows skin's assets, preview, apply, overrides, Restore + undo
             node framework/spec/check-skin-coverage.mjs                 # skin-coverage@1: every registered asset type has skin coverage (slot / parts / reference / bundle / none); fails on a type a skin cannot reach
             node framework/spec/check-skin-colour-rule.mjs              # skin + colour theme rule: a colour pick switches inside the skin, never a new or forked skin
             node framework/spec/check-skin-sections.mjs                 # every shipped skin's look / layout / behaviour sections and asset slots ship; the professional skins set all four
+            node framework/spec/check-skin-modes.mjs                    # skin-modes@1: every skin ships a light and a dark colour theme (shipped, right scheme, own theme is one of them)
             node framework/spec/check-asset-overrides.mjs               # asset overrides: the Assets with edits list (chrome-settings@1 instance overrides) and the controlled-item colour
             npx -y tsx framework/spec/check-look-migration.mts         # look-migration@1 (skins only): retired theme / style / layout picks and settings fold into the active skin; idempotent, look-preserving, backed up
+            node framework/spec/check-skin-config.mjs                   # skin-config@1: the permission tree from the registry (allow / lock / ask, depth + count limits), fixture replay, merge with the Default skin, Default skin migration, snapshot current
+            node framework/spec/check-skins-config-cli.mjs              # skins.mjs config end to end on a scratch hub: allow / lock / depth / put / reset / Default skin / brief / hold / make with a fake generator
+            npx -y tsx framework/spec/check-skin-switch.mts            # skin-switch@1: use / back-to-skin / restore-default / undo per scope (hub, app, ui, plugin): fixture replay, scope precedence, undo after restore, back clears only the overridden part
             npx -y tsx framework/spec/check-settings-ui.mts            # settings interface asset: fixture replay, starters, enums
             npx -y tsx framework/spec/check-design-package.mts         # design-package@1 + behavior-theme@1 rules, starters, the Amber context menu
             npx -y tsx framework/spec/check-scale.mts                  # typography@1 + density@1 + sizing@1: registry, defaults, tokens, fixture, starters, validators agree, hub slots
@@ -302,6 +312,8 @@ jobs:
             npx -y tsx framework/spec/check-roller.mts                 # interface roller: every rolled asset validates, structure kept, reproducible
             npx -y tsx framework/spec/check-app-menu.mts                # app-menu engine: fixture replay, validators agree, runtime contributions + live lists
             npx -y tsx apps/console-web/scripts/menu-reach.mts          # console app menu reaches every nav entry, toolbar item and page (toolbar + nav hidden by default)
+            npx -y tsx framework/spec/check-context-lead.mts           # context-lead@1: lead entries start every context menu (right-click, toolbar, own-items asset, long-press) above one separator
+            npx -y tsx apps/console-web/scripts/console-settings-menu.mts # Console settings leads every console context menu, Settings folded in, reachable as console.settings.open
             npx -y tsx framework/spec/check-mcp.mts                    # MCP client: fixture replay + client against a fake Streamable HTTP server
             npx -y tsx framework/spec/check-appearance.mts             # appearance@1 document + runtime source + HubAppearanceSource against a fake hub
             npx -y tsx framework/spec/check-appearance-lock.mts        # look lock greys look controls + no opt-out from the axHub look + Sliders clamp

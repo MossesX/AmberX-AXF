@@ -46,7 +46,7 @@
       "_claude/shared/rules/RULES.md",
       "deploy/claude-headless.sh",
       "deploy/install-console.sh",
-      "framework/spec/check-builds-live.mjs"
+      "framework/spec/check-builds-live.mjs", "apps/console-web/scripts/console-control.e2e.mjs", "framework/cli/project-seed.mjs", "framework/spec/check-build-limit.mjs", "framework/spec/check-projects.mjs"
     ]
   },
   "commands": {

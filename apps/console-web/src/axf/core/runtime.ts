@@ -31,6 +31,7 @@ import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded,
 import { SearchIndex } from './engines/search';
 import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
+import { isSkinMode, skinModeColor, skinModePair } from './engines/skin-modes.mjs';
 import { backToSkin, composeLookAt, globalSkinOf, hubOnlyLook, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState, foldLegacyPicks, isFoldedPickType, lookNeedsMigration, migrateLookSettings, parseLegacyLook, settingsNeedMigration, skinSlots, isRetiredLookKey, LEGACY_LOOK_KEY, SKIN_SWAPPABLE_SECTION } from './engines/skin';
 import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
@@ -40,6 +41,7 @@ import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, res
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceChange, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY, buildHelpIndex, helpTarget, introFor, introToShow, markSeen, resolveHelp, type HelpDescriptor, type HelpEntry, type HelpIndex, type HelpIntro } from './engines/help';
 import { Diagnostics } from './diagnostics';
+import { CHROME_INSTANCE_KEY, CHROME_TYPES, chromeInstanceData } from './engines/chrome-settings-rules.mjs';
 import { OutputTerminal } from './terminal';
 import {
   ASSET_TYPES,
@@ -58,6 +60,7 @@ import {
   type MenuItemButton,
   type NavItem,
   type Toast,
+  type AssetDataMap,
 } from './types';
 import { assetTypeSpecs, attachable, type ValidationResult } from './validate';
 
@@ -267,6 +270,9 @@ export interface AppearanceSource {
 /** What `rt.brandPlace(slot)` gives a UI piece to draw. */
 export interface BrandPlace { mode: string; name: string; asset: string; svg: string; animation: MarkAnimation | null }
 
+/** Where this device keeps its light / dark / system choice for skins (skin-modes@1). */
+const SKIN_MODE_KEY = 'axf.skin.mode';
+
 export class AxfRuntime {
   readonly registry = new AssetRegistry();
   readonly actions = new ActionBus();
@@ -357,7 +363,7 @@ export class AxfRuntime {
 
   /** A string that changes whenever a settings value compileStyles reads changes: the control@1 token overrides and the nav's collapsed / width state (a render dependency for the provider). */
   styleSettingsKey(): string {
-    const keys = [...Object.values(CONTROL_TOKEN_SLOTS).map((s) => s.key), NAV_COLLAPSED_KEY, NAV_WIDTH_KEY];
+    const keys = [...Object.values(CONTROL_TOKEN_SLOTS).map((s) => s.key), NAV_COLLAPSED_KEY, NAV_WIDTH_KEY, ...CHROME_TYPES.map((t) => CHROME_INSTANCE_KEY(t, 'app'))];
     return JSON.stringify(keys.map((k) => this.settings.get(k) ?? null));
   }
 
@@ -822,6 +828,35 @@ export class AxfRuntime {
     return true;
   }
 
+  /**
+   * Light / dark inside the skin in force (skin-modes@1, Brett: "every skin needs a light and dark"): every skin names a
+   * light and a dark colour theme (`data.colorThemes`); `light` / `dark` picks one inside the skin (the skin stays),
+   * `system` follows the device's prefers-color-scheme and keeps following it while this page is open.
+   */
+  setSkinMode(mode: string): boolean {
+    if (!isSkinMode(mode)) { this.toast(`"${mode}" is not light, dark or system.`, 'warning', 'Skin'); return false; }
+    const at = this.skinInForce();
+    const skin = at.id ? this.registry.get(SKIN_TYPE as AssetType, at.id) : undefined;
+    if (!skin) { this.toast('Use a skin first: light and dark switch inside a skin.', 'warning', 'Skin'); return false; }
+    const mq = typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+    let pick: { pick: string };
+    try { pick = skinModeColor(skin, mode, !!mq?.matches); } catch (e) { this.toast((e as Error).message, 'warning', 'Skin'); return false; }
+    this.skinModeFollow?.();
+    this.skinModeFollow = null;
+    if (mode === 'system' && mq) {
+      const on = () => { void this.setSkinMode('system'); };
+      mq.addEventListener('change', on);
+      this.skinModeFollow = () => mq.removeEventListener('change', on);
+    }
+    try { globalThis.localStorage?.setItem(SKIN_MODE_KEY, mode); } catch { /* storage off: this page only */ }
+    return this.setSkinColorTheme(pick.pick || null);
+  }
+
+  /** The light / dark choice saved on this device ('' = none: the skin's own colours). */
+  skinMode(): string { try { return globalThis.localStorage?.getItem(SKIN_MODE_KEY) ?? ''; } catch { return ''; } }
+
+  private skinModeFollow: (() => void) | null = null;
+
   /** The 'Use skin' switch. `id` picks the skin too; on with none picked takes the first skin. */
   useSkin(on: boolean, id?: string): boolean {
     if (id === 'next' || id === 'prev') id = this.stepSkin(id === 'next' ? 1 : -1);
@@ -991,8 +1026,20 @@ export class AxfRuntime {
    * The nav-style in force (nav-style@1, normalized, with the control@1 `tokens.nav` overrides written in), or null when
    * the nav doesn't opt in (nav-menu `navStyle` is not true) or the app ships no nav-style asset.
    */
+  /**
+   * chrome-settings@1: the data one chrome instance renders with = the active asset's data with that instance's
+   * settings-dialog overrides (`axf.chrome.<type>.<instance>`) written over it. The app's single toolbar, nav, menu bar,
+   * banner and context menu are instance `app`; a page toolbar is its asset id. Null when the app has no such asset.
+   */
+  chromeData<T extends 'toolbar' | 'nav-menu' | 'app-menu' | 'banner' | 'context-menu'>(type: T, instance = 'app', base?: AssetDataMap[T] | null): AssetDataMap[T] | null {
+    const data = base === undefined ? (this.assetOrNull(type as AssetType)?.data as AssetDataMap[T] | undefined) ?? null : base;
+    if (!data) return null;
+    const o = this.settings.get(CHROME_INSTANCE_KEY(type, instance));
+    return o && typeof o === 'object' ? chromeInstanceData(type, data, o) : data;
+  }
+
   navStyleData(): NavStyleData | null {
-    if (this.assetOrNull('nav-menu')?.data.navStyle !== true) return null;
+    if (this.chromeData('nav-menu')?.navStyle !== true) return null;
     const a = this.assetOrNull('nav-style' as AssetType);
     if (!a) return null;
     return normalizeNavStyle(this.withTokenOverrides('tokens.nav', 'nav-style' as AssetType, a.data));
@@ -1309,7 +1356,7 @@ export class AxfRuntime {
 
   /** The banner to draw: its data (null = no banner or hidden) and where every attachment goes. `all` keeps the widgets the person hid. */
   banner(opts?: { all?: boolean }): { data: Asset<'banner'>['data'] | null; placed: PlacedBanner } {
-    const b = this.slotHidden('banner') ? null : this.assetOrNull('banner')?.data ?? null;
+    const b = this.slotHidden('banner') ? null : this.chromeData('banner');
     const placed = placeAttachments(b, b ? (this.hostExtra.get('banner') as BannerAttachment[] | undefined) ?? [] : [], (t, id) => this.registry.has(t as AssetType, id), this.hostArrangement('banner'));
     if (opts?.all) return { data: b, placed };
     const shown = Object.fromEntries(Object.entries(placed).map(([s, list]) => [s, list.filter((p) => this.bannerWidgetShown(p.key))])) as PlacedBanner;
@@ -1661,7 +1708,7 @@ export class AxfRuntime {
 
   /** Is a collapsible toolbar folded to its handle on this device? (setting `axf.toolbar.collapsed`, same key on Android) */
   toolbarCollapsed(): boolean {
-    return this.asset('toolbar').data.collapsible === true && this.settings.get(TOOLBAR_COLLAPSED_KEY) === true;
+    return this.chromeData('toolbar')?.collapsible === true && this.settings.get(TOOLBAR_COLLAPSED_KEY) === true;
   }
 
   setToolbarCollapsed(on: boolean): void {
@@ -2622,10 +2669,11 @@ export class AxfRuntime {
       containerStyle(this.asset('container').data),
       dialogStyle(this.asset('dialog').data),
       popupStyle(this.asset('popup').data),
-      contextMenuStyle(this.asset('context-menu').data),
-      toolbarStyle(this.asset('toolbar').data),
-      navMenuStyle(this.asset('nav-menu').data),
-      appMenuStyle(this.asset('app-menu').data),
+      // chrome-settings@1: each kind's `app` instance overrides (the settings dialog) compile in over its asset
+      contextMenuStyle(this.chromeData('context-menu')!),
+      toolbarStyle(this.chromeData('toolbar')!),
+      navMenuStyle(this.chromeData('nav-menu')!),
+      appMenuStyle(this.chromeData('app-menu')!),
       // optional control types (older apps without them get the defaults)
       gaugeStyle(this.assetOrNull('gauge')?.data),
       meterStyle(this.assetOrNull('meter')?.data),
@@ -2642,7 +2690,7 @@ export class AxfRuntime {
         sizing: this.withTokenOverrides('tokens.sizing', 'sizing' as AssetType, this.assetOrNull('sizing' as AssetType)?.data ?? (this.settings.get(CONTROL_TOKEN_SLOTS['tokens.sizing'].key) ? {} : undefined)),
       }),
       ...layoutVars(this.inspectorLayout(this.withTokenOverrides('tokens.layout', 'layout', this.asset('layout').data)), this.hiddenSlots()),
-      ...bannerVars(this.assetOrNull('banner')?.data, this.slotHidden('banner')),
+      ...bannerVars(this.chromeData('banner'), this.slotHidden('banner')),
       // branding package (optional): palette slots as --fx-brand-1/2/3, the brand name, the accent when it asks for it
       ...brandingVars(this.assetOrNull('branding' as AssetType)?.data ?? { brand: { name: '' }, marks: {} }),
     };
@@ -3025,6 +3073,9 @@ export class AxfRuntime {
       if ((x === 'ui' || x === 'plugin') && id) this.setSkinColorTheme(pick(theme), `${x}:${id}`);
       else this.setSkinColorTheme(pick(x));
     }, { label: 'Change the colour theme inside the skin', requires: 'assets.swap', params: true });
+    // skin.mode:light|dark|system: the skin's light or dark colour theme, or follow the device (skin-modes@1)
+    a.register('skin.mode', ([m]) => { this.setSkinMode(m || (this.skinColorTheme().id === skinModePair(this.registry.get(SKIN_TYPE as AssetType, this.skinInForce().id)).dark ? 'light' : 'dark')); }, { label: 'Switch the skin to light, dark or follow the system', requires: 'assets.swap', params: true });
+    if (this.skinMode() === 'system') queueMicrotask(() => { if (this.skinInForce().id) this.setSkinMode('system'); });
     a.register('skin.restore', () => this.restoreDefaultAppearance(), { label: 'Restore this app to its default look', requires: 'assets.swap' });
     a.register('skin.undo', () => { this.undoRestoreDefault(); }, { label: 'Undo Restore to default', requires: 'assets.swap' });
     // Scopes (skin-coverage@1): skin.inherit:on|off follows the hub-wide skin; skin.scope:<ui|plugin>:<id>:<on|off|inherit>[:<skin>] sets one level

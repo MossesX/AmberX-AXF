@@ -16,6 +16,10 @@
   "data": {
     "layoutTheme": "portal-top",
     "colorTheme": "porcelain",
+    "colorThemes": {
+      "light": "porcelain",
+      "dark": "deep-ocean"
+    },
     "styleTheme": "humanist",
     "behaviorTheme": "calm",
     "assets": {

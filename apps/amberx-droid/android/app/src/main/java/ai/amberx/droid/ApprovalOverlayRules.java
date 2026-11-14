@@ -8,51 +8,68 @@ import java.util.Set;
 import org.json.JSONObject;
 
 /**
- * The approval overlay's rules, kept free of Android views so they are unit-tested (ApprovalOverlayRulesTest): its
- * settings (approval-overlay settings, set from the app, the console API, MCP, the CLI and voice), what it lists, what
- * the small toolbar says, and when it opens into the full card.
+ * The overlay's rules, kept free of Android views so they are unit-tested (ApprovalOverlayRulesTest): its settings (set
+ * from the app, the console API, MCP, the CLI and voice), the one-time move off the older settings, what it lists, what
+ * the toolbar says, when the approval bar opens and where a dragged toolbar settles.
  *
- * Brett, Nov 13 2026: "A little overlay, like a little toolbar, but it expands when I need an approval."
+ * Brett, Nov 13 2026: "A little overlay, like a little toolbar, but it expands when I need an approval." One overlay
+ * since: the toolbar is always on screen while it is on (that visible window is also what lets AmberX open pages from
+ * the background), spawns the approval bar when something waits, and expands into the full-screen browser.
  */
 final class ApprovalOverlayRules {
     private ApprovalOverlayRules() {}
 
     static final String[] EDGES = { "end", "start" };
     static final String[] SIZES = { "small", "medium", "large" };
-    /** every: any approval or held call opens it; held: only held calls (they run on their own); never: stays small. */
+    /** every: any approval or held call opens the approval bar; held: only held calls (they run on their own); never: stays small. */
     static final String[] EXPANDS = { "every", "held", "never" };
     /** count: "2 waiting"; next: the next held call's countdown (else the count). */
     static final String[] SHOWS = { "next", "count" };
+    /** Settings the separate float and pages builds had, folded into the one overlay by {@link #migrate}. */
+    static final String[] RETIRED = { "idleVisible", "pages" };
 
-    /** The overlay's settings, clamped; unknown values fall back to the defaults. */
+    /** The overlay's settings, clamped; unknown values fall back to the defaults. One on/off switch: {@link #on}. */
     static final class Settings {
         final boolean on;
         final String edge, size, expand, show;
-        /** Distance from the top of the screen, in percent of its height (0–90). */
+        /** Distance from the top of the screen, in percent of its height (0–90). Dragging the toolbar sets it. */
         final int top;
-        /** Toolbar opacity while nothing waits, percent (40–100). The card is always fully opaque. */
+        /** Toolbar opacity while nothing waits, percent (40–100). The approval bar and the browser are always opaque. */
         final int idleOpacity;
-        /** When nothing waits: keep the toolbar on screen (true) or hide it until an approval arrives (false). */
-        final boolean idleVisible;
-        /** Shrink back on its own this many seconds after the last approval went (0 = at once). */
+        /** Fold the approval bar back on its own this many seconds after the last approval went (0 = at once). */
         final int shrinkAfterSec;
-        /** Where pages Amber opens go ({@link OverlayPageRules#PAGES}): the toolbar's own browser window, or Chrome. */
-        final String pages;
 
-        Settings(boolean on, String edge, int top, String size, String expand, String show, int idleOpacity, boolean idleVisible, int shrinkAfterSec, String pages) {
+        Settings(boolean on, String edge, int top, String size, String expand, String show, int idleOpacity, int shrinkAfterSec) {
             this.on = on; this.edge = edge; this.top = top; this.size = size; this.expand = expand; this.show = show;
-            this.idleOpacity = idleOpacity; this.idleVisible = idleVisible; this.shrinkAfterSec = shrinkAfterSec; this.pages = pages;
+            this.idleOpacity = idleOpacity; this.shrinkAfterSec = shrinkAfterSec;
         }
 
         JSONObject toJson() {
             JSONObject o = new JSONObject();
             try {
                 o.put("on", on).put("edge", edge).put("top", top).put("size", size).put("expand", expand).put("show", show)
-                    .put("idleOpacity", idleOpacity).put("idleVisible", idleVisible).put("shrinkAfterSec", shrinkAfterSec)
-                    .put("pages", pages);
+                    .put("idleOpacity", idleOpacity).put("shrinkAfterSec", shrinkAfterSec);
             } catch (Exception ignored) {}
             return o;
         }
+    }
+
+    /**
+     * Moves saved settings off the retired keys so nothing Brett chose is lost: "hide the toolbar when nothing waits"
+     * (idleVisible off) becomes the faintest idle toolbar (the toolbar now always shows; it is what keeps AmberX able to
+     * open pages), and "pages in Chrome" goes (every open goes through the overlay; Chrome stays one tap away on the
+     * docked toolbar, and a call can still ask for where=browser). Returns null when there was nothing to move.
+     */
+    static JSONObject migrate(JSONObject saved) {
+        if (saved == null) return null;
+        boolean any = false;
+        for (String k : RETIRED) any |= saved.has(k);
+        if (!any) return null;
+        JSONObject out = settings(saved).toJson();
+        if (saved.has("idleVisible") && !saved.optBoolean("idleVisible", true)) {
+            try { out.put("idleOpacity", 40); } catch (Exception ignored) {}
+        }
+        return out;
     }
 
     static Settings settings(JSONObject c) {
@@ -65,9 +82,7 @@ final class ApprovalOverlayRules {
             pick(c.optString("expand", ""), EXPANDS),
             pick(c.optString("show", ""), SHOWS),
             clamp(c.optInt("idleOpacity", 85), 40, 100),
-            c.optBoolean("idleVisible", true),
-            clamp(c.optInt("shrinkAfterSec", 0), 0, 60),
-            pick(c.optString("pages", ""), OverlayPageRules.PAGES));
+            clamp(c.optInt("shrinkAfterSec", 0), 0, 60));
     }
 
     /** Merges a partial change (any subset of the keys) onto the current settings, clamped. */
@@ -82,8 +97,19 @@ final class ApprovalOverlayRules {
         return settings(out);
     }
 
-    /** Scale of the toolbar and card text and spacing for a size. */
+    /** Scale of the toolbar and approval bar text and spacing for a size. */
     static float scale(String size) { return "small".equals(size) ? 0.85f : "large".equals(size) ? 1.25f : 1f; }
+
+    /** Where a dragged toolbar settles: the side its middle is on ([left] and [width] of the toolbar, [screen] wide). */
+    static String snapEdge(int left, int width, int screen) {
+        return left + width / 2 < screen / 2 ? "start" : "end";
+    }
+
+    /** The saved height for a toolbar dropped at [y] on a screen [screen] tall: percent from the top, 0–90. */
+    static int topPercent(int y, int screen) {
+        if (screen <= 0) return 0; // no screen size yet: the top
+        return clamp(Math.round(Math.max(0, y) * 100f / screen), 0, 90);
+    }
 
     /* ---------------------------------------------------------------- what waits */
 

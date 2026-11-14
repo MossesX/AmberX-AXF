@@ -60,12 +60,32 @@ try {
   // container (Oct 27 2026, closed by default): open it first.
   const rest = page.locator('[data-axf-anchor="settings-panel:axf.appearance.rest"] :is(.fx-card__toggle, .axf-settings__gtoggle)').first();
   if ((await rest.count()) && (await rest.getAttribute('aria-expanded')) === 'false') { await rest.click(); await page.waitForTimeout(300); }
+  // Each slot's row carries data-axf-anchor="settings-slot:<type>" (the framework's slot cards and the console's
+  // "Choose from every asset" rows alike). Without one, only the two theme pickers have a fallback; a scale asset
+  // must never fall back to another slot's drop-down (it used to land on the style-theme select and pass by accident).
   const slotPicker = async (type) => {
-    const card = page.locator(`[data-axf-anchor="settings-slot:${type}"]`);
-    if (!(await card.count())) return page.locator('select').filter({ has: page.locator(`option[value="${type === 'color-theme' ? 'arctic-daylight' : 'glass-orbit'}"]`) }).first();
+    const card = page.locator(`[data-axf-anchor="settings-slot:${type}"]`).first();
+    if (!(await card.count())) {
+      const probe = { 'color-theme': 'arctic-daylight', 'style-theme': 'glass-orbit' }[type];
+      return probe ? page.locator('select').filter({ has: page.locator(`option[value="${probe}"]`) }).first() : card.locator('select');
+    }
     const toggle = card.locator('.fx-card__toggle').first();
     if ((await toggle.count()) && (await toggle.getAttribute('aria-expanded')) === 'false') { await toggle.click(); await page.waitForTimeout(300); }
     return card.locator('select').first();
+  };
+  // Pick an asset and make it the active one. The console's "Choose from every asset" rows stage a pick until Preview
+  // (then Keep / Undo), so a bare selectOption there never swaps anything: press Keep, then Preview, when the row has them.
+  const choose = async (picker, id) => {
+    await picker.selectOption(id);
+    const row = picker.locator('xpath=ancestor::*[starts-with(@data-axf-anchor, "settings-slot:")][1]');
+    if (!(await row.count())) return;
+    const keep = row.getByRole('button', { name: 'Keep', exact: true });
+    if (await keep.isVisible().catch(() => false)) await keep.click();
+    const preview = row.getByRole('button', { name: 'Preview', exact: true });
+    if (!(await preview.count()) || !(await preview.isEnabled())) return;
+    await preview.click();
+    // Keep it, so every snapshot sees the row in the same shape (elements are named by their position)
+    await keep.click({ timeout: 2000 }).catch(() => {});
   };
   const pickers = [await slotPicker('color-theme'), await slotPicker('style-theme')];
   const valuesOf = (i) => pickers[i].locator('option').evaluateAll((o) => o.map((x) => x.value));
@@ -88,7 +108,7 @@ try {
   const colourThemes = await valuesOf(0);
   const snaps = [];
   for (const t of colourThemes) {
-    await pickers[0].selectOption(t);
+    await choose(pickers[0], t);
     await page.waitForTimeout(400);
     snaps.push(await snapshot());
   }
@@ -111,7 +131,7 @@ try {
   } else {
     const seen = new Set();
     for (const st of await valuesOf(styleSelect)) {
-      await pickers[styleSelect].selectOption(st);
+      await choose(pickers[styleSelect], st);
       await page.waitForTimeout(300);
       const vals = await page.evaluate(() => ['disabled', 'muted', 'hover', 'tint', 'scrim', 'glass'].map((k) => getComputedStyle(document.documentElement).getPropertyValue(`--fx-opacity-${k}`).trim()));
       log(`style theme ${st}: opacity ${vals.join(' / ')}`);
@@ -139,8 +159,8 @@ try {
     const ids = (await picker.count()) ? await picker.locator('option').evaluateAll((o) => o.map((x) => x.value)) : [];
     if (ids.length < 2) { log(`✗ no ${type} picker with two or more assets`); failed = true; continue; }
     const shots = [];
-    for (const id of ids) { await picker.selectOption(id); await page.waitForTimeout(300); shots.push(await sizes(props)); }
-    await picker.selectOption(ids.includes('compact') ? 'compact' : ids[0]);
+    for (const id of ids) { await choose(picker, id); await page.waitForTimeout(300); shots.push(await sizes(props)); }
+    await choose(picker, ids.includes('compact') ? 'compact' : ids[0]);
     const keys = Object.keys(shots[0]).filter((k) => shots.every((s) => k in s));
     const moved = keys.filter((k) => new Set(shots.map((s) => s[k])).size > 1).length;
     log(`${type} ${ids.join(', ')}: ${moved} of ${keys.length} sized elements follow the pick`);

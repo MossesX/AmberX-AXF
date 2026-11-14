@@ -131,12 +131,12 @@ export interface NativeApi {
   vetoAlarmTest(opts: Record<string, unknown>): Promise<void>;
   vetoAlarmStop(): Promise<void>;
   /**
-   * The approval overlay (Java `ApprovalOverlay`): a small floating toolbar that opens into the approval card when an
-   * approval or held command arrives. Settings come from the banner plugin (`approvals-banner.overlay.*`); state and
-   * commands (expand, collapse, approve, deny, shelve, approve-now, decline) for the API and voice. `page` opens one of
-   * Brett's pages (`url`; empty: the last page or the console) in the overlay's full-screen browser window, and
-   * `close-page` closes it so it is just the floating toolbar again; the state's `page` says what is open.
-   * Browser: no overlay.
+   * The overlay (Java `ApprovalOverlay`): an always-on floating toolbar that spawns the approval bar when an approval
+   * or held command waits and expands into a full-screen browser. Settings come from the banner plugin
+   * (`approvals-banner.overlay.*`). Commands: `expand` (full screen on the last page or the console), `open` with `url`
+   * (one of Brett's pages, full screen), `collapse` (just the toolbar again), `bar-open` / `bar-close` (the approval
+   * bar), and approve, deny, shelve, approve-now, decline. State: settings, shown, expanded, approvalBar, items,
+   * browser {url, title, last}. Browser: no overlay.
    */
   approvalOverlaySet(opts: Record<string, unknown>): Promise<Record<string, unknown>>;
   approvalOverlayState(): Promise<Record<string, unknown>>;
@@ -594,7 +594,7 @@ export function installVetoHost(): void {
     stopAlarm: () => { void native.vetoAlarmStop().catch(() => undefined); },
     open: (url) => { void native.hubOpen({ url }).catch(() => undefined); },
     overlay: (cfg) => { void native.approvalOverlaySet(cfg).catch(() => undefined); },
-    overlayCommand: async (command, id) => (await native.approvalOverlayCommand({ command, ...(id ? (command === 'page' ? { url: id } : { id }) : {}) }).catch(() => ({ ok: false }))).ok,
+    overlayCommand: async (command, id) => (await native.approvalOverlayCommand({ command, ...(id ? (command === 'open' || command === 'page' ? { url: id } : { id }) : {}) }).catch(() => ({ ok: false }))).ok,
     overlayState: async () => native.approvalOverlayState().catch(() => null),
     onEvent: (fn) => {
       const h = native.addListener('veto', (e) => {
