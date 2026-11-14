@@ -32,6 +32,21 @@
  *              in the Queue, keeps its place, and the dispatcher skips it until it is released. '' = not held.
  *
  * The orchestrator's tabs (Brett, Nov 10 2026: "Tabs: pending, active, incomplete, complete, errors, queue"): tabOf().
+ *
+ * `land` on a build (Brett, Nov 14 2026: "We need to make sure things are landing as soon as they're built and merged as
+ * soon as they're built. I keep getting too many commits behind"; build land-finish-auto-land-live-clear-backlog): the
+ * landing record the auto-lander keeps from the moment the last step is ticked until the branch is on main. Written only
+ * by the lander (and the behind check); every other writer carries it through untouched. A build the lander never saw
+ * carries none (normLand → null), so older records are byte-stable.
+ *   behindMain      how many commits of main the branch is behind at the last check (null = never checked)
+ *   behindCheckedAt ISO of that check ('' = never)
+ *   finishedAt      ISO: when its last open step was ticked (the moment landing may start; builtAt is when the status
+ *                   turned built, which can be later or set by hand)
+ *   landState       '' (not in the lander's hands) | waiting (built, in line) | landing (an attempt is running) |
+ *                   landed (on main) | red (its merge failed CI: a fix build was filed) | archived (dropped from the
+ *                   line on purpose) | flagged (a source clash or a repeat failure: a person has to look)
+ *   landAttempts    [{ at, run, base, merged, outcome, ci, note }] oldest first, one per land-run@1 attempt
+ *                   (framework/core/land-run.mjs), capped at MAX_LAND_ATTEMPTS (oldest dropped)
  */
 
 export const SCHEMA = 'build-pipeline@1';
@@ -46,7 +61,8 @@ export const SPLIT_PROVIDERS = ['claude', 'rules', 'hand'];
 export const DEFAULT_MAX_RUNS = 3;
 
 const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
-const iso = (v) => { const s = str(v, 40).trim(); return s && Number.isFinite(Date.parse(s)) ? s : ''; };
+const ISO_RE = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2}(\.\d{1,6})?)?(Z|[+-]\d{2}:\d{2})?)?$/;
+const iso = (v) => { const s = str(v, 40).trim(); return ISO_RE.test(s) && Number.isFinite(Date.parse(s)) ? s : ''; };
 const NAME_RE = /^[a-z0-9][a-z0-9-]{0,31}$/;
 /** A saved Claude account name (deploy/claude-login.mjs), or ''. */
 export const accountName = (v) => (NAME_RE.test(str(v, 40)) ? str(v, 40) : '');
@@ -75,6 +91,93 @@ export function normPipeline(p) {
   };
   const empty = emptyPipeline();
   return JSON.stringify(out) === JSON.stringify(empty) ? null : out;
+}
+
+// ------------------------------------------------------------------ land: behind main + landing state (Nov 14 2026)
+
+/** Where a built branch stands with main ('' = the lander has not taken it). */
+export const LAND_STATES = ['', 'waiting', 'landing', 'landed', 'red', 'archived', 'flagged'];
+export const LAND_STATE_LABEL = Object.freeze({ '': '', waiting: 'Waiting', landing: 'Landing', landed: 'Landed', red: 'Red', archived: 'Archived', flagged: 'Flagged' });
+/** One attempt's outcome, as land-run@1 reports it ('' = still running). */
+export const LAND_ATTEMPT_OUTCOMES = ['', 'landed', 'red', 'clash', 'cancelled', 'error'];
+export const MAX_LAND_ATTEMPTS = 20;
+const SHA_RE = /^[0-9a-f]{7,40}$/;
+/** A git sha (7 to 40 hex digits, lower-cased), or ''. */
+export const sha = (v) => { const s = str(v, 40).trim().toLowerCase(); return SHA_RE.test(s) ? s : ''; };
+
+export function emptyLand() {
+  return { behindMain: null, behindCheckedAt: '', finishedAt: '', landState: '', landAttempts: [] };
+}
+
+/** One landAttempts entry in shape (null for junk without a time or a run id). */
+export function normLandAttempt(a) {
+  if (!a || typeof a !== 'object') return null;
+  const out = {
+    at: iso(a.at), run: str(a.run, 80).trim(), base: sha(a.base), merged: sha(a.merged),
+    outcome: LAND_ATTEMPT_OUTCOMES.includes(a.outcome) ? a.outcome : '',
+    ci: str(a.ci, 20).trim(), note: str(a.note, 300),
+  };
+  return out.at || out.run ? out : null;
+}
+
+/** The land record, every field in shape; null for nothing (a build the lander never touched carries none). */
+export function normLand(l) {
+  if (!l || typeof l !== 'object' || Array.isArray(l)) return null;
+  const checkedAt = iso(l.behindCheckedAt);
+  const out = {
+    behindMain: checkedAt && Number.isInteger(l.behindMain) && l.behindMain >= 0 ? l.behindMain : null,
+    behindCheckedAt: checkedAt,
+    finishedAt: iso(l.finishedAt),
+    landState: LAND_STATES.includes(l.landState) ? l.landState : '',
+    landAttempts: (Array.isArray(l.landAttempts) ? l.landAttempts : []).map(normLandAttempt).filter(Boolean).slice(-MAX_LAND_ATTEMPTS),
+  };
+  return JSON.stringify(out) === JSON.stringify(emptyLand()) ? null : out;
+}
+
+/**
+ * The land state a build shows: its record's when the lander set one, else read off the build itself (an older record
+ * that landed before the lander existed shows landed; a built one waiting; anything else '').
+ */
+export function landStateOf(b) {
+  if (!b) return '';
+  const l = normLand(b.land);
+  if (l?.landState) return l.landState;
+  if (b.status === 'complete' || str(b.mergedAt)) return 'landed';
+  if (b.status === 'archived') return 'archived';
+  if (b.status === 'built') return 'waiting';
+  return '';
+}
+/** When the build finished: its land record's finishedAt, else builtAt, else the last step's doneAt. */
+export function finishedAtOf(b) {
+  const l = normLand(b?.land);
+  if (l?.finishedAt) return l.finishedAt;
+  if (iso(b?.builtAt)) return iso(b.builtAt);
+  return (b?.steps ?? []).map((s) => iso(s?.doneAt)).filter(Boolean).sort().pop() ?? '';
+}
+/** A built branch the lander should take: built (every step done), not landed, not dropped. */
+export const needsLanding = (b) => !!b && !b.deleted && b.status === 'built' && !str(b.mergedAt) && ['', 'waiting', 'red'].includes(landStateOf(b));
+/** Behind main by at least `min` commits at the last check (false when never checked). */
+export const isBehind = (b, min = 1) => { const l = normLand(b?.land); return !!l && l.behindMain !== null && l.behindMain >= min; };
+
+/** The land state after an attempt's outcome: running → landing; landed; red; a clash → flagged; cancelled → waiting again; error → waiting. */
+export const LAND_STATE_AFTER = Object.freeze({ '': 'landing', landed: 'landed', red: 'red', clash: 'flagged', cancelled: 'waiting', error: 'waiting' });
+/** A new land record with one more attempt appended (oldest dropped past the cap); the state follows the outcome. */
+export function addLandAttempt(land, attempt, now = new Date().toISOString()) {
+  const a = normLandAttempt({ at: now, ...attempt });
+  if (!a) throw new Error('a land attempt needs a time or a land-run id');
+  const l = normLand(land) ?? emptyLand();
+  const same = l.landAttempts.findIndex((x) => a.run && x.run === a.run);
+  if (same >= 0) l.landAttempts[same] = a; else l.landAttempts.push(a);
+  l.landAttempts = l.landAttempts.slice(-MAX_LAND_ATTEMPTS);
+  l.landState = LAND_STATE_AFTER[a.outcome] ?? l.landState;
+  return normLand(l);
+}
+/** A new land record after a behind-main check. */
+export function withBehind(land, behindMain, now = new Date().toISOString()) {
+  const l = normLand(land) ?? emptyLand();
+  l.behindMain = Number.isInteger(behindMain) && behindMain >= 0 ? behindMain : null;
+  l.behindCheckedAt = l.behindMain === null ? '' : now;
+  return normLand(l);
 }
 
 /** Which table a build sits in ('' for builds the table does not show: built, complete, failed, blocked, archived). */

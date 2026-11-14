@@ -8,7 +8,7 @@
     "tabs": 86,
     "settingsTabs": 70,
     "settings": 87,
-    "functions": 243,
+    "functions": 244,
     "buttons": 62,
     "plugins": 69
   },
@@ -6112,6 +6112,21 @@
       "file": "plugins/push-banner/web/index.tsx"
     },
     {
+      "address": "function:push-banner.land",
+      "kind": "function",
+      "id": "push-banner.land",
+      "label": "Landing line",
+      "detail": "Action · Push banner",
+      "keywords": [
+        "push-banner.land",
+        "push",
+        "banner",
+        "land"
+      ],
+      "plugin": "ai.amberx.axf.console.push-banner",
+      "file": "plugins/push-banner/web/index.tsx"
+    },
+    {
       "address": "function:push-banner.check",
       "kind": "function",
       "id": "push-banner.check",
@@ -9534,7 +9549,7 @@
       "id": "ai.amberx.axf.console.push-banner",
       "label": "Push banner",
       "folder": "push-banner",
-      "version": "0.8.0",
+      "version": "0.9.0",
       "detail": "Plugin · module",
       "keywords": [
         "push-banner",
