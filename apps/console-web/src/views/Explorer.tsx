@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Chip, ChoiceGrid, Container, Icon, LibraryParamField, Markdown, Note, Section, SelectField, Slider, Switch, TextField, useAsset, useAxfState, useRuntime, useWindowManager, useWindowSpec, type TabRenderers } from '../axf/react';
+import { Button, Chip, ChoiceGrid, Container, Icon, LibraryParamField, Markdown, Note, Section, SelectField, Slider, Switch, TextField, useAsset, useAxfState, useRuntime, useWindowManager, useWindowSpec, type TabRenderers, Select } from '../axf/react';
 import type { AssetType, AssetEnvelope } from '../axf/core';
 import { useStore } from '../store';
 import { UI_LIBRARIES } from './Libraries';
@@ -174,7 +174,7 @@ function ParamRow({ p, available }: { p: StyleParam; available: boolean }) {
     <div className="cx-row" title={`${p.tip} — ${p.type}.${p.path.join('.')}`}>
       <span className="fx-grow">{p.label} <span className="fx-muted fx-mono fx-small">{p.type}.{p.path.join('.')}</span></span>
       {!available || cur === undefined ? <span className="fx-muted fx-small">{cur === undefined ? 'n/a' : String(cur)}</span>
-        : p.kind === 'enum' ? <select className="fx-input" value={String(cur)} onChange={(e) => edit(p.type, p.path, e.target.value)}>{p.options?.map((o) => <option key={o} value={o}>{o}</option>)}</select>
+        : p.kind === 'enum' ? <Select label={p.path.join(".")} value={String(cur)} onChange={(v) => edit(p.type, p.path, v)} options={(p.options ?? []).map((o) => ({ value: String(o), label: String(o) }))} />
         : p.kind === 'number' ? <span style={{ width: 160 }}><Slider label="" value={Number(cur)} min={p.min} max={p.max} step={p.step} onChange={(v) => edit(p.type, p.path, v)} /></span>
         : <input className="fx-input" value={String(cur)} onChange={(e) => edit(p.type, p.path, e.target.value)} />}
     </div>

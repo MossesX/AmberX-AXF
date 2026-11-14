@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { BuildOrigin, Button, ControlScope, Icon, PriorityTag, Slot, useRuntime } from '../axf/react';
+import { BuildOrigin, Button, ControlScope, Icon, PriorityTag, Slot, useRuntime, Select } from '../axf/react';
 import * as api from '../api';
 import * as core from '../axf/plan/pending-core.mjs';
 import pricing from '../axf/schemas/model-pricing.json';
@@ -171,7 +171,7 @@ function PendingRow({ it, busy, act }: { it: PendingItem; busy: boolean; act: (c
         <div className="fx-stack">
           <label className="pd-field">Title<input className="fx-input" value={title} onChange={(e) => setTitle(e.target.value)} /></label>
           <label className="pd-field">Details<textarea className="fx-input" rows={4} value={detail} onChange={(e) => setDetail(e.target.value)} /></label>
-          <label className="pd-field">Waiting on model<select className="fx-input" value={model} onChange={(e) => setModel(e.target.value as PendingModel)}>{core.MODELS.map((m) => <option key={m}>{m}</option>)}</select></label>
+          <label className="pd-field">Waiting on model<Select label="Waiting on model" value={model} onChange={(v) => setModel(v as PendingModel)} options={core.MODELS.map((m) => ({ value: String(m), label: String(m) }))} /></label>
           <label className="pd-field">Build time (e.g. 45 min, 2 h, 1.5 d; blank = the steps added up)<input className="fx-input" value={estimate} onChange={(e) => setEstimate(e.target.value)} /></label>
         </div>
       ) : it.detail && <p className="pd-detail">{it.detail}</p>}
@@ -234,9 +234,9 @@ function AddForm({ busy, onAdd }: { busy: boolean; onAdd: (c: { title: string; d
         <label className="pd-field">What Brett said (his exact words, unedited)<textarea className="fx-input" rows={2} value={said} onChange={(e) => setSaid(e.target.value)} placeholder="Paste or type his words as he said them" /></label>
         <label className="pd-field">Details<textarea className="fx-input" rows={3} value={detail} onChange={(e) => setDetail(e.target.value)} placeholder="Scope, files touched, acceptance notes" /></label>
         <div className="pd-two">
-          <label className="pd-field">Waiting on model<select className="fx-input" value={model} onChange={(e) => setModel(e.target.value as PendingModel)}>{core.MODELS.map((m) => <option key={m}>{m}</option>)}</select></label>
+          <label className="pd-field">Waiting on model<Select label="Waiting on model" value={model} onChange={(v) => setModel(v as PendingModel)} options={core.MODELS.map((m) => ({ value: String(m), label: String(m) }))} /></label>
           <label className="pd-field">Build time (e.g. 45 min, 2 h, 1.5 d; blank = the steps added up)<input className="fx-input" value={estimate} onChange={(e) => setEstimate(e.target.value)} /></label>
-          <label className="pd-field">Status<select className="fx-input" value={status} onChange={(e) => setStatus(e.target.value as PendingStatus)}>{core.STATUSES.map((s) => <option key={s} value={s}>{core.STATUS_LABEL[s]}</option>)}</select></label>
+          <label className="pd-field">Status<Select label="Status" value={status} onChange={(v) => setStatus(v as PendingStatus)} options={core.STATUSES.map((s) => ({ value: String(s), label: String(core.STATUS_LABEL[s]) }))} /></label>
         </div>
         <div><Button tone="primary" icon="plus" disabled={busy || !title.trim()} type="submit">Add to list</Button></div>
       </form>

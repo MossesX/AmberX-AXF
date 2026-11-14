@@ -9,7 +9,7 @@
  * choice cards are radio / checkbox buttons in a radiogroup / group, errors are announced through `aria-describedby`,
  * and keyboard focus shows through `:focus-visible` on the visible part.
  */
-import { useEffect, useId, useRef, type ReactNode } from 'react';
+import { useEffect, useId, useRef, type CSSProperties, type ReactNode } from 'react';
 import { Icon } from './Icon';
 import { PickerField } from './PickerField';
 import { swapActive, usePickerSwap } from '../pickerConfig';
@@ -233,21 +233,23 @@ export interface SelectProps {
   disabled?: boolean;
   title?: string;
   className?: string;
+  /** Layout only (width); the look comes from the input / picker tokens. */
+  style?: CSSProperties;
 }
 
 /**
  * A bare drop-down (no Field around it) for toolbars, table cells and inline rows: a native select, or the themed
  * PickerField while the picker swap is on. Options with a `group` sit in <optgroup>s / picker sections.
  */
-export function Select({ label, value, options, onChange, empty, disabled, title, className }: SelectProps) {
+export function Select({ label, value, options, onChange, empty, disabled, title, className, style }: SelectProps) {
   const swap = usePickerSwap();
   if (swapActive(swap) && swap.swapSelectFields) {
-    return <PickerField bare label={label} labelText={label} value={value} options={options} onChange={onChange} empty={empty} disabled={disabled} className={className} searchThreshold={swap.searchThreshold ?? undefined} />;
+    return <span style={style}><PickerField bare label={label} labelText={label} value={value} options={options} onChange={onChange} empty={empty} disabled={disabled} className={className} searchThreshold={swap.searchThreshold ?? undefined} /></span>;
   }
   const groups = [...new Set(options.map((o) => o.group ?? ''))];
   const row = (o: SelectOption) => <option key={o.value} value={o.value} disabled={o.disabled} title={o.title}>{o.label}</option>;
   return (
-    <select className={`fx-input ${className ?? ''}`} aria-label={label} title={title} value={value} disabled={disabled} onChange={(e) => onChange(e.target.value)}>
+    <select className={`fx-input ${className ?? ''}`} style={style} aria-label={label} title={title} value={value} disabled={disabled} onChange={(e) => onChange(e.target.value)}>
       {empty !== undefined && <option value="">{empty}</option>}
       {groups.map((g) => g ? <optgroup key={g} label={g}>{options.filter((o) => o.group === g).map(row)}</optgroup> : options.filter((o) => !o.group).map(row))}
     </select>

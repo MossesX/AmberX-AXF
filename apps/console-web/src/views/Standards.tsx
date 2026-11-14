@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Icon, useRuntime } from '../axf/react';
+import { Button, Icon, useRuntime, Select } from '../axf/react';
 import * as api from '../api';
 import { RULE_OPS, ruleSeverity, validateProjectManifest, validateProjectRules, type ProjectRule, type ProjectRules, type RuleOp, type RuleSeverity } from '../axf/core/project';
 
@@ -240,7 +240,7 @@ function AddRule({ draft, setDraft, busy }: { draft: ProjectRules; setDraft: (r:
         </div>
         <label className="pd-field">Why (shown with the rule)<input className="fx-input" value={description} onChange={(e) => setDescription(e.target.value)} /></label>
         <div className="pd-two">
-          <label className="pd-field">Check<select className="fx-input" value={op} onChange={(e) => setOp(e.target.value as RuleOp)}>{RULE_OPS.map((o) => <option key={o} value={o}>{OP_HELP[o] ?? o}</option>)}</select></label>
+          <label className="pd-field">Check<Select label="Check" value={op} onChange={(v) => setOp(v as RuleOp)} options={RULE_OPS.map((o) => ({ value: String(o), label: String(OP_HELP[o] ?? o) }))} /></label>
           {op !== 'knownKeys' && <label className="pd-field">Field (dot path)<input className="fx-input fx-mono" required value={path} onChange={(e) => setPath(e.target.value)} placeholder="e.g. description or repo.visibility" /></label>}
         </div>
         {needsParam && <label className="pd-field">{hint}<input className="fx-input fx-mono" value={param} onChange={(e) => setParam(e.target.value)} /></label>}

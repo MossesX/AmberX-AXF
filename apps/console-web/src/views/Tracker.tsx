@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Chip, Container, useRuntime } from '../axf/react';
+import { Button, Chip, Container, useRuntime, Select } from '../axf/react';
 import { useStore } from '../store';
 import { STATUSES, statusTone, type Status } from '../api';
 
@@ -23,7 +23,7 @@ export function Tracker() {
         {tabs.map((t) => <button key={t.id} className={`fx-chip ${t.id === tab ? 'is-selected' : ''}`} onClick={() => setTab(t.id)}>{t.label} <span className="fx-badge">{s.coverage(t.id).built}/{Object.values(s.coverage(t.id)).reduce((a, b) => a + b, 0)}</span></button>)}
         <span className="fx-grow" />
         <input className="fx-input" placeholder="filter…" value={q} onChange={(e) => setQ(e.target.value)} style={{ maxWidth: 220 }} />
-        <select className="fx-input" value={only} onChange={(e) => setOnly(e.target.value as Status | 'all')} style={{ maxWidth: 160 }}><option value="all">all statuses</option>{STATUSES.map((x) => <option key={x} value={x}>{x}</option>)}</select>
+        <Select label="Only" value={only} onChange={(v) => setOnly(v as Status | 'all')} style={{ maxWidth: 160 }} options={[{ value: 'all', label: 'all statuses' }, ...STATUSES.map((x) => ({ value: String(x), label: String(x) }))]} />
       </div>
       {cur?.groups.map((g) => {
         const rows = g.items.filter((i) => (!needle || i.title.toLowerCase().includes(needle) || i.id.includes(needle)) && (only === 'all' || s.status(i.id) === only));

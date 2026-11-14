@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { Button, Chip, Container, Icon, Slot, useRuntime, useWindowManager } from '../axf/react';
+import { Button, Chip, Container, Icon, Slot, useRuntime, useWindowManager, Select } from '../axf/react';
 import * as api from '../api';
 import type { PlanFeature, PlanStatus, PortId } from '../api';
 import { PreviewPane } from './Boilerplates';
@@ -184,12 +184,12 @@ export function Plan() {
 
       <div className="pl-tools" role="toolbar" aria-label="Plan filters">
         <div className="fx-search" style={{ flex: '1 1 220px', minWidth: 0 }}><Icon name="search" /><input id="plan-q" placeholder="Search features, capabilities, tags…" value={f.q} onChange={(e) => setF({ ...f, q: e.target.value })} /></div>
-        <select id="plan-kind" className="fx-input" value={f.kind} onChange={(e) => setF({ ...f, kind: e.target.value })}><option value="">All kinds</option><option value="epic">Epics</option><option value="feature">Features</option><option value="task">Tasks</option></select>
-        <select id="plan-area" className="fx-input" value={f.area} onChange={(e) => setF({ ...f, area: e.target.value })}><option value="">All areas</option>{areas.map((x) => <option key={x}>{x}</option>)}</select>
-        <select id="plan-port" className="fx-input" value={f.port} onChange={(e) => setF({ ...f, port: e.target.value as '' | PortId })}><option value="">Any port</option>{api.PORTS.map((p) => <option key={p} value={p}>{p}</option>)}</select>
-        {f.port && <select id="plan-portstatus" className="fx-input" value={f.portStatus} onChange={(e) => setF({ ...f, portStatus: e.target.value })}><option value="">any status</option>{api.PLAN_STATUSES.map((s) => <option key={s}>{s}</option>)}</select>}
-        <select id="plan-prio" className="fx-input" value={f.priority} onChange={(e) => setF({ ...f, priority: e.target.value })}><option value="">Any priority</option>{PRIORITIES.map((p) => <option key={p}>{p}</option>)}</select>
-        <select id="plan-wave" className="fx-input" value={f.wave} onChange={(e) => setF({ ...f, wave: e.target.value })}><option value="">Any wave</option>{[1, 2, 3].map((w) => <option key={w} value={w}>Wave {w}</option>)}</select>
+        <Select label="Kind" value={f.kind} onChange={(v) => setF({ ...f, kind: v })} empty={'All kinds'} options={[{ value: 'epic', label: 'Epics' }, { value: 'feature', label: 'Features' }, { value: 'task', label: 'Tasks' }]} />
+        <Select label="Area" value={f.area} onChange={(v) => setF({ ...f, area: v })} empty={'All areas'} options={areas.map((x) => ({ value: String(x), label: String(x) }))} />
+        <Select label="Port" value={f.port} onChange={(v) => setF({ ...f, port: v as '' | PortId })} empty={'Any port'} options={api.PORTS.map((p) => ({ value: String(p), label: String(p) }))} />
+        {f.port && <Select label="Port Status" value={f.portStatus} onChange={(v) => setF({ ...f, portStatus: v })} empty={'any status'} options={api.PLAN_STATUSES.map((s) => ({ value: String(s), label: String(s) }))} />}
+        <Select label="Priority" value={f.priority} onChange={(v) => setF({ ...f, priority: v })} empty={'Any priority'} options={PRIORITIES.map((p) => ({ value: String(p), label: String(p) }))} />
+        <Select label="Wave" value={f.wave} onChange={(v) => setF({ ...f, wave: v })} empty={'Any wave'} options={[1, 2, 3].map((w) => ({ value: String(w), label: `Wave ${w}` }))} />
         <button className={`fx-chip ${f.warnings ? 'is-selected' : ''}`} onClick={() => setF({ ...f, warnings: !f.warnings })}><Icon name="alert" /> Warnings</button>
         <button className={`fx-chip ${f.blocked ? 'is-selected' : ''}`} onClick={() => setF({ ...f, blocked: !f.blocked })}><Icon name="lock" /> Waiting</button>
         {(f !== EMPTY) && <button className="fx-chip" onClick={() => setF(EMPTY)}>Reset</button>}
@@ -338,12 +338,12 @@ export function FeatureDetail({ feature, a, onSelect }: { feature: PlanFeature; 
         </div>
         <Slot name="plan.feature" props={{ feature: d }} />
         <div className="pl-fields">
-          <label>Status<select className="fx-input" value={d.status} onChange={(e) => patch({ status: e.target.value as PlanStatus })}>{api.PLAN_STATUSES.map((x) => <option key={x}>{x}</option>)}</select></label>
-          <label>Priority<select className="fx-input" value={d.priority} onChange={(e) => patch({ priority: e.target.value })}>{PRIORITIES.map((x) => <option key={x}>{x}</option>)}</select></label>
-          <label>Wave<select className="fx-input" value={d.wave} onChange={(e) => patch({ wave: Number(e.target.value) })}>{[1, 2, 3].map((x) => <option key={x} value={x}>{x}</option>)}</select></label>
-          <label>Effort<select className="fx-input" value={d.effort} onChange={(e) => patch({ effort: e.target.value })}><option value="">—</option>{EFFORTS.map((x) => <option key={x}>{x}</option>)}</select></label>
+          <label>Status<Select label="Status" value={d.status} onChange={(v) => patch({ status: v as PlanStatus })} options={api.PLAN_STATUSES.map((x) => ({ value: String(x), label: String(x) }))} /></label>
+          <label>Priority<Select label="Priority" value={d.priority} onChange={(v) => patch({ priority: v })} options={PRIORITIES.map((x) => ({ value: String(x), label: String(x) }))} /></label>
+          <label>Wave<Select label="Wave" value={String(d.wave)} onChange={(v) => patch({ wave: Number(v) })} options={[1, 2, 3].map((x) => ({ value: String(x), label: String(x) }))} /></label>
+          <label>Effort<Select label="Effort" value={d.effort} onChange={(v) => patch({ effort: v })} empty={'—'} options={EFFORTS.map((x) => ({ value: String(x), label: String(x) }))} /></label>
           <label>Area<input className="fx-input" value={d.area} onChange={(e) => patch({ area: e.target.value })} /></label>
-          <label title={api.MODELS.map((m) => `${m.label}: ${m.when}`).join('\n')}>Build with<select className="fx-input" value={d.model ?? 'opus'} onChange={(e) => patch({ model: e.target.value as api.ModelId, modelReason: 'Picked in the console', modelEdited: true })}>{api.MODELS.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}</select></label>
+          <label title={api.MODELS.map((m) => `${m.label}: ${m.when}`).join('\n')}>Build with<Select label="Build with" value={d.model ?? 'opus'} onChange={(v) => patch({ model: v as api.ModelId, modelReason: 'Picked in the console', modelEdited: true })} options={api.MODELS.map((m) => ({ value: String(m.id), label: String(m.label) }))} /></label>
         </div>
         {d.modelReason && <p className="fx-small fx-muted" style={{ margin: 0 }}><ModelChip model={d.model} long /> {d.modelReason}</p>}
         <div className="fx-row fx-row--wrap">
@@ -360,7 +360,7 @@ export function FeatureDetail({ feature, a, onSelect }: { feature: PlanFeature; 
       <Section title="Warnings" icon="alert" count={d.warnings.length + auto.length}>
         {auto.map((w, i) => <div key={`a${i}`} className={`pl-note is-${w.level}`}><Icon name={w.level === 'info' ? 'info' : 'alert'} size={14} /><span className="fx-grow">{w.text}</span><span className="fx-muted fx-small">auto</span></div>)}
         {d.warnings.map((w, i) => <div key={i} className={`pl-note is-${w.level}`}><Icon name={w.level === 'info' ? 'info' : 'alert'} size={14} /><span className="fx-grow">{w.text}</span>
-          <select className="fx-input pl-mini" value={w.level} onChange={(e) => patch({ warnings: d.warnings.map((x, k) => (k === i ? { ...x, level: e.target.value as 'info' | 'warn' | 'error' } : x)) })}><option>info</option><option>warn</option><option>error</option></select>
+          <Select label="Level" value={w.level} onChange={(v) => patch({ warnings: d.warnings.map((x, k) => (k === i ? { ...x, level: v as 'info' | 'warn' | 'error' } : x)) })} className="pl-mini" options={[{ value: 'info', label: 'info' }, { value: 'warn', label: 'warn' }, { value: 'error', label: 'error' }]} />
           <button className="fx-iconbtn" aria-label="Remove warning" onClick={() => patch({ warnings: d.warnings.filter((_, k) => k !== i) })}><Icon name="x" size={14} /></button></div>)}
         <ListEditor items={[]} onChange={(v) => patch({ warnings: [...d.warnings, ...v.map((text) => ({ level: 'warn' as const, text }))] })} placeholder="Add a warning…" />
       </Section>
@@ -372,7 +372,7 @@ export function FeatureDetail({ feature, a, onSelect }: { feature: PlanFeature; 
       <Section title="Ports" icon="layers">
         <table className="fx-table pl-ports-table"><tbody>{api.PORTS.map((p) => { const v = d.ports[p]; return (
           <tr key={p}><th>{p}</th>
-            <td><select className="fx-input pl-mini" value={v?.status ?? ''} onChange={(e) => { const ports = { ...d.ports }; if (!e.target.value) delete ports[p]; else ports[p] = { status: e.target.value, where: v?.where ?? '' }; patch({ ports }); }}><option value="">n/a</option>{api.PLAN_STATUSES.map((x) => <option key={x}>{x}</option>)}</select></td>
+            <td><Select label="Status" value={v?.status ?? ''} onChange={(next) => { const ports = { ...d.ports }; if (!next) delete ports[p]; else ports[p] = { status: next, where: v?.where ?? '' }; patch({ ports }); }} className="pl-mini" empty={'n/a'} options={api.PLAN_STATUSES.map((x) => ({ value: String(x), label: String(x) }))} /></td>
             <td><input className="fx-input fx-mono" value={v?.where ?? ''} disabled={!v} placeholder="module / path" onChange={(e) => patch({ ports: { ...d.ports, [p]: { status: v?.status ?? 'planned', where: e.target.value } } })} /></td></tr>); })}</tbody></table>
       </Section>
 
@@ -444,7 +444,7 @@ function AddPreview({ onAdd }: { onAdd: (p: PlanFeature['previews'][number]) => 
   const hint = { element: 'Component kind, e.g. BUTTON, SLIDER, CARD', boilerplate: 'Boilerplate id, e.g. notes', route: 'Console view, e.g. libraries', url: 'https://…', image: 'media/… or https://…' }[kind];
   return (
     <form className="pl-list__add" onSubmit={(e) => { e.preventDefault(); if (ref.trim()) { onAdd({ kind, ref: kind === 'element' ? ref.trim().toUpperCase() : ref.trim(), label: '' }); setRef(''); } }}>
-      <select className="fx-input pl-mini" value={kind} onChange={(e) => setKind(e.target.value as typeof kind)}><option value="element">element</option><option value="boilerplate">boilerplate</option><option value="route">route</option><option value="url">url</option><option value="image">image</option></select>
+      <Select label="Kind" value={kind} onChange={(v) => setKind(v as typeof kind)} className="pl-mini" options={[{ value: 'element', label: 'element' }, { value: 'boilerplate', label: 'boilerplate' }, { value: 'route', label: 'route' }, { value: 'url', label: 'url' }, { value: 'image', label: 'image' }]} />
       <input className="fx-input" value={ref} onChange={(e) => setRef(e.target.value)} placeholder={hint} />
       <button className="fx-iconbtn" type="submit" aria-label="Add preview"><Icon name="plus" size={14} /></button>
     </form>

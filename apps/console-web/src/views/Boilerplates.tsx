@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Chip, Container, Icon, Slider, Switch, useRuntime } from '../axf/react';
+import { Button, Chip, Container, Icon, Slider, Switch, useRuntime, Select } from '../axf/react';
 import { BUILD_OPTIONS, buildOptionFlags, resolveBuildOptions, type BuildOptionValues } from '../axf/core';
 import { useStore } from '../store';
 import * as api from '../api';
@@ -91,7 +91,7 @@ function Build() {
           <div className="fx-row fx-row--wrap">{s.boilerplateIndex.categories.map((c) => <button key={c.id} className={`fx-chip ${b.category === c.id ? 'is-selected' : ''}`} onClick={() => patch({ category: c.id })}>{c.label}</button>)}</div>
         </Container>
         <Container title="Screens" icon="layout" actions={<Button icon="plus" onClick={() => patch({ screens: [...b.screens, { id: `screen-${b.screens.length + 1}`, label: `Screen ${b.screens.length + 1}`, kind: 'list-detail' }] })}>Add</Button>}>
-          {b.screens.map((sc, i) => <div key={i} className="fx-row"><input className="fx-input" value={sc.label} onChange={(e) => patch({ screens: b.screens.map((x, k) => (k === i ? { ...x, label: e.target.value, id: e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-') } : x)) })} /><select className="fx-input" value={sc.kind} onChange={(e) => patch({ screens: b.screens.map((x, k) => (k === i ? { ...x, kind: e.target.value } : x)) })}>{SCREEN_KINDS.map((k) => <option key={k}>{k}</option>)}</select><button className="fx-iconbtn" onClick={() => patch({ screens: b.screens.filter((_, k) => k !== i) })}><Icon name="x" /></button></div>)}
+          {b.screens.map((sc, i) => <div key={i} className="fx-row"><input className="fx-input" value={sc.label} onChange={(e) => patch({ screens: b.screens.map((x, k) => (k === i ? { ...x, label: e.target.value, id: e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-') } : x)) })} /><Select label="Kind" value={sc.kind} onChange={(v) => patch({ screens: b.screens.map((x, k) => (k === i ? { ...x, kind: v } : x)) })} options={SCREEN_KINDS.map((k) => ({ value: String(k), label: String(k) }))} /><button className="fx-iconbtn" onClick={() => patch({ screens: b.screens.filter((_, k) => k !== i) })}><Icon name="x" /></button></div>)}
         </Container>
         <Container title="Libraries (installed with their wizard defaults)" icon="download"><div className="fx-row fx-row--wrap">{s.libraries.map((l) => { const slug = l.module.replace(/^lib-/, ''); const on = (b.libraries ?? []).some((x) => (typeof x === 'string' ? x : x.library) === slug); return <button key={l.id} className={`fx-chip ${on ? 'is-selected' : ''}`} title={l.description} onClick={() => toggleL(slug)}>{l.name}</button>; })}{s.libraries.length === 0 && <span className="fx-muted fx-small">No installable libraries found.</span>}</div></Container>
         <Container title={`Required features (${b.features.length})`} icon="layers" actions={<input className="fx-input" placeholder="filter…" value={q} onChange={(e) => setQ(e.target.value)} style={{ maxWidth: 180 }} />}>
