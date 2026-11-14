@@ -326,7 +326,7 @@ export async function main(argv) {
   if (cmd === 'pass-get') { const r = getPass(argv[1]); out(r, r.ok ? `${r.pass.text}\n${r.pass.deep_link}` : `${r.code}: ${r.message}`); return r.ok ? 0 : 1; }
   if (cmd === 'pass-decide') {
     const b = JSON.parse(argv[1] && argv[1].startsWith('{') ? argv[1] : readFileSync(0, 'utf8'));
-    const r = await decidePass(b.id, b.decision, { approver: b.approver ?? null, token: b.token ?? '', by: b.by ?? '' }, runControl);
+    const r = await decidePass(b.id, b.decision, { approver: b.approver ?? null, proof: b.proof ?? null, token: b.token ?? '', by: b.by ?? '' }, runControl);
     console.log(JSON.stringify(r));
     return r.ok ? 0 : 1;
   }

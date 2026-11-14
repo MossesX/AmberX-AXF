@@ -64,11 +64,11 @@ function logCall(entry) { audit({ op: 'pass-approval', target: 'pass.scopes', ..
 
 /**
  * Approve or deny pass `id`. `how` = { approver } (the transport's owner approval, never from a body) or { token }.
- * `runControl` is control.mjs's (passed in so this module does not import the runner). Answers actionResult or
+ * `proof` = axHub's signed approval headers (checked by runPass). `runControl` is control.mjs's (passed in so this module does not import the runner). Answers actionResult or
  * actionProblem (with `status`).
  */
 export async function decidePass(id, decision, how, runControl, now = Date.now()) {
-  const { approver = null, token = '', by = '' } = how ?? {};
+  const { approver = null, proof = null, token = '', by = '' } = how ?? {};
   if (token) {
     const parsed = parseActionToken(token);
     if (parsed && !id) id = parsed.id;
@@ -97,9 +97,9 @@ export async function decidePass(id, decision, how, runControl, now = Date.now()
     decidedBy = { nonce: v.nonce, decision };
     owner = { via: PASS_APPROVED_VIA_PUSH, name: OWNER() };
   } else {
-    if (!owner) return fail('owner_required');
+    if (!owner && !proof) return fail('owner_required');
     if (!passPending(p, now)) {
-      if (wentWay(p, decision)) {
+      if (wentWay(p, decision) && owner) {
         logCall({ by: owner.name, action: decision, pass: p.id, path: p.scope, result: 'already', via: owner.via });
         return actionResult(decision, passView(p, now), true);
       }
@@ -107,13 +107,15 @@ export async function decidePass(id, decision, how, runControl, now = Date.now()
     }
   }
 
-  const r = await runControl({ op: 'act', target: 'pass.scopes', path: p.scope, action: decision, input: { request: p.id }, by: owner.name, reason: token ? 'pass action token' : 'pass approval view' }, { grants: ['*'], approver: owner, decidedBy, now });
+  const who = owner?.name || String(proof?.approver || 'axhub');
+  const r = await runControl({ op: 'act', target: 'pass.scopes', path: p.scope, action: decision, input: { request: p.id }, by: who, reason: token ? 'pass action token' : 'pass approval view' }, { grants: ['*'], approver: owner, proof: owner ? null : proof, decidedBy, now });
   const after = findPass(p.id, now);
   if (!r.ok) {
-    logCall({ by: owner.name, action: decision, pass: p.id, path: p.scope, result: r.code, via: owner.via });
+    if (r.code === 'denied') return fail('owner_required');
+    logCall({ by: who, action: decision, pass: p.id, path: p.scope, result: r.code, via: owner?.via ?? 'axhub' });
     return { ...actionProblem(r.code === 'not_found' ? 'not_pending' : 'decided', after ? passView(after, now) : null), message: r.message };
   }
-  logCall({ by: owner.name, action: decision, pass: p.id, path: p.scope, result: 'ok', via: owner.via, ...(decidedBy ? { nonce: decidedBy.nonce } : {}) });
+  logCall({ by: who, action: decision, pass: p.id, path: p.scope, result: 'ok', via: owner?.via ?? 'axhub', ...(decidedBy ? { nonce: decidedBy.nonce } : {}) });
   const view = passView(after, now);
   return actionResult(decision, view, false, view?.text ? `${decision === 'approve' ? 'Approved' : 'Denied'}. ${view.text}` : '');
 }

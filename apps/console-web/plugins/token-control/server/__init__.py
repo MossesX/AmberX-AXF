@@ -28,6 +28,12 @@ Veto passes (control-pass@1, framework/core/engines/control-pass.mjs; CONTROL.md
   POST   pass/revoke | pass/undo  { scope, by? }
   GET|PUT pass/settings           { maxMinutes, timeZone }
 
+pass-approval@1 (docs/contracts/pass-approval.md), plugin mount + /api/passes/* aliases:
+  GET    pass/pending             every waiting request with deep_link / approve_url / deny_url (never a token)
+  GET    pass/{id}                one pass: state, links, text
+  POST   pass/{id}/approve|deny   Brett's session (or axHub's signed headers): the same proof as pass/approve
+  POST   pass/action { token }    a signed pass action token from a notification (/api/passes/action: no session)
+
 Capability control@1: plugin_services.get("control@1").run(command, grants=[…], by="…") → the answer dict.
 Who may: the console token and hub admins = the admin role (`*`); a role's grants come from the console's uac-policy
 (`control.<domain>.<read|write|delete>`), never more than the caller's own role.
@@ -36,6 +42,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -286,6 +293,99 @@ async def pass_settings_put(request: Request) -> Any:
         return {"ok": False, "error": str(e)[:200]}
 
 
+# ---------------------------------------------------------------------- pass-approval@1 (docs/contracts/pass-approval.md)
+# One pass by id: read it with its links, list the waiting ones, approve or deny it. The owner routes take the same
+# proof as pass/approve | pass/deny (Brett's session, a local console, axHub's signed headers); pass/action takes a
+# signed pass action token instead (a device notification's Approve / Deny, in the background). Both run
+# lib/pass-approval.mjs → the existing pass.scopes approve / deny. Aliases: /api/passes/* (capability pass-approval@1).
+
+PROBLEM_STATUS = {"malformed": 400, "unknown_pass": 404, "wrong_pass": 409, "expired": 410, "not_pending": 409, "decided": 409,
+                  "bad_signature": 401, "no_secret": 503, "owner_required": 403}
+
+
+def _node_json(args: list[str], stdin: str | None = None) -> dict[str, Any]:
+    try:
+        proc = subprocess.run(["node", str(CLI), *args], input=stdin, cwd=ROOT, capture_output=True, text=True, timeout=60)
+        lines = proc.stdout.strip().splitlines()
+        return json.loads("\n".join(lines) if args[-1:] == ["--json"] else lines[-1])
+    except (OSError, subprocess.TimeoutExpired, json.JSONDecodeError, IndexError) as e:
+        return {"ok": False, "code": "unexpected", "message": f"the pass runner could not answer: {str(e)[:200]}"}
+
+
+def _pass_answer(r: dict[str, Any]) -> JSONResponse:
+    if r.get("ok"):
+        return JSONResponse(r)
+    return JSONResponse(r, status_code=int(r.get("status") or PROBLEM_STATUS.get(str(r.get("code")), 500)))
+
+
+def pending_passes() -> dict[str, Any]:
+    return _node_json(["pass-pending", "--json"])
+
+
+def get_pass(pass_id: str) -> dict[str, Any]:
+    return _node_json(["pass-get", pass_id, "--json"])
+
+
+def decide_pass(pass_id: str, decision: str, request: Request | None = None, token: str = "", by: str = "") -> dict[str, Any]:
+    """Approve or deny one pass. With `token`: the signed action token decides (no session needed). Without: the owner
+    approval this request carries (never anything from a body)."""
+    env: dict[str, Any] = {"id": pass_id, "decision": decision, "by": by[:80]}
+    if token:
+        env["token"] = token[:400]
+    elif request is not None:
+        approver, proof = owner_approval(request)
+        if approver:
+            env["approver"] = approver
+        if proof:
+            env["proof"] = proof
+    return _node_json(["pass-decide"], json.dumps(env))
+
+
+def pass_action(token: str) -> dict[str, Any]:
+    """POST pass/action: the token alone names the pass and the decision."""
+    return decide_pass("", "", token=str(token or ""))
+
+
+def push_tokens(pass_id: str) -> dict[str, Any] | None:
+    """Approve / deny tokens for one device delivery of a pending pass (never put into an API answer)."""
+    r = _node_json(["pass-tokens", pass_id])
+    return r if r.get("approve") and r.get("deny") else None
+
+
+@router.get("/pass/pending")
+def pass_pending_route() -> JSONResponse:
+    return _pass_answer(pending_passes())
+
+
+@router.post("/pass/action")
+async def pass_action_route(request: Request) -> JSONResponse:
+    b = await _body(request)
+    return _pass_answer(await run_in_threadpool(pass_action, str(b.get("token") or "")))
+
+
+@router.get("/pass/{pass_id}")
+def pass_get_route(pass_id: str) -> JSONResponse:
+    return _pass_answer(get_pass(pass_id))
+
+
+@router.post("/pass/{pass_id}/{decision}")
+async def pass_decide_route(pass_id: str, decision: str, request: Request) -> JSONResponse:
+    if decision not in ("approve", "deny"):
+        return _pass_answer({"ok": False, "code": "malformed", "message": "approve or deny"})
+    _, name = caller(request)
+    return _pass_answer(await run_in_threadpool(lambda: decide_pass(pass_id, decision, request, by=name)))
+
+
+# /api/passes/* (main.py mounts pass-approval@1's routers): `router` behind the console's auth, `public_router` with
+# no session at all (the signed token is the proof: one pass, one decision, 15 min, single use).
+passes_router = APIRouter()
+passes_public_router = APIRouter()
+passes_router.add_api_route("/pending", pass_pending_route, methods=["GET"])
+passes_router.add_api_route("/{pass_id}", pass_get_route, methods=["GET"])
+passes_router.add_api_route("/{pass_id}/{decision}", pass_decide_route, methods=["POST"])
+passes_public_router.add_api_route("/action", pass_action_route, methods=["POST"])
+
+
 @router.get("/meta/registry")
 def registry() -> Any:
     return meta("registry")
@@ -409,3 +509,46 @@ class Control:
 
 
 plugin_services.provide("control@1", Control(), folder=FOLDER)
+
+
+class PassApproval:
+    """pass-approval@1: one veto pass by id (read, list waiting, approve / deny with an owner request or a signed
+    token), its /api/passes routers, and the device-delivery tokens a push carries."""
+
+    router = passes_router
+    public_router = passes_public_router
+
+    def pending(self) -> dict[str, Any]:
+        return pending_passes()
+
+    def get(self, pass_id: str) -> dict[str, Any]:
+        return get_pass(pass_id)
+
+    def decide(self, pass_id: str, decision: str, request: Request | None = None, token: str = "", by: str = "") -> dict[str, Any]:
+        return decide_pass(pass_id, decision, request, token=token, by=by)
+
+    def action(self, token: str) -> dict[str, Any]:
+        return pass_action(token)
+
+    def push_tokens(self, pass_id: str) -> dict[str, Any] | None:
+        return push_tokens(pass_id)
+
+
+class PassFocus:
+    """console-focus@1/pass: `pass:<id>` (or a bare pass id) on console_show / console_open → the Token control screen,
+    focused on that pass (its pass-approval view opens on it, Approve and Deny ready)."""
+
+    SCREEN = "token-control"
+    ID_RE = re.compile(r"^pass-[0-9a-z]{1,16}-[0-9a-f]{6}$")
+
+    def resolve(self, path: str) -> dict[str, Any] | None:
+        p = str(path or "").strip()
+        explicit = p.lower().startswith("pass:")
+        pid = p[5:].strip() if explicit else p
+        if not self.ID_RE.match(pid):
+            return None
+        return {"screen": self.SCREEN, "focus": f"pass:{pid}", "explicit": True}
+
+
+plugin_services.provide("pass-approval@1", PassApproval(), folder=FOLDER)
+plugin_services.provide("console-focus@1/pass", PassFocus(), folder=FOLDER)
