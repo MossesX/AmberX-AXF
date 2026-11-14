@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5106,
- "updatedAt": "2026-11-14T00:43:58.053Z",
+ "rev": 5124,
+ "updatedAt": "2026-11-14T00:52:53.878Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -209495,10 +209495,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/land-batch-merge-main-each-finished",
-   "pr": "",
+   "pr": "#665",
    "priority": "P0",
    "createdAt": "2026-11-13T23:39:26.785Z",
-   "updatedAt": "2026-11-14T00:43:56.411Z",
+   "updatedAt": "2026-11-14T00:50:49.345Z",
    "builtAt": "",
    "notes": [
     {
@@ -209904,12 +209904,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T00:44:55.716Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T23:43:15.961Z",
-     "updatedAt": "2026-11-13T23:43:15.961Z"
+     "updatedAt": "2026-11-14T00:44:55.962Z"
     },
     {
      "id": "s14",
@@ -209931,12 +209931,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T00:47:26.728Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T23:43:15.961Z",
-     "updatedAt": "2026-11-13T23:43:15.961Z"
+     "updatedAt": "2026-11-14T00:47:27.046Z"
     },
     {
      "id": "s15",
@@ -209958,12 +209958,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T00:48:26.475Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T23:43:15.961Z",
-     "updatedAt": "2026-11-13T23:43:15.961Z"
+     "updatedAt": "2026-11-14T00:48:26.909Z"
     },
     {
      "id": "s16",
@@ -209986,12 +209986,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T00:50:23.522Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T23:43:15.961Z",
-     "updatedAt": "2026-11-13T23:43:15.961Z"
+     "updatedAt": "2026-11-14T00:50:23.862Z"
     },
     {
      "id": "s17",
@@ -210079,7 +210079,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -210095,15 +210095,15 @@
    "title": "Console app: land parts 1-4 and build the APK",
    "category": "",
    "detail": "Brett wants the new console Android app APK ready to download. Merge origin/main into each and land, in order: console-android-app-thin-webview-wrapper (part 1, shell), console-app-part-2-native-floating-2, console-app-part-3-native-bridge-mic (part 2 notes a NativeBridge.java clash with part 3: keep both and make them compile together), console-app-part-4-console-side-safe, then console-app-wake-word-voice-listener. Regenerate generated files on clash, and run the JUnit and web tests. Then trigger the Android CI build for the console app, put the APK download link in the report, and send Brett a phone notification through AmberX with the link.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/console-android-app-thin-webview-wrapper",
+   "pr": "#637",
    "priority": "P0",
    "createdAt": "2026-11-13T23:41:07.780Z",
-   "updatedAt": "2026-11-13T23:51:45.676Z",
+   "updatedAt": "2026-11-14T00:52:42.282Z",
    "builtAt": "",
    "notes": [
     {
@@ -210113,6 +210113,14 @@
     {
      "text": "Split by Claude into 18 steps (0 Fable).",
      "at": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-console-app-land-parts-1-4-build-apk--lenny.",
+     "at": "2026-11-14T00:45:27.464Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-app-land-parts-1-4-build-apk--lenny, own login copy)",
+     "at": "2026-11-14T00:45:30.762Z"
     }
    ],
    "approvals": [],
@@ -210123,8 +210131,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "console-app-land-parts-1-4-build-apk",
+    "brief": "# Build: console-app-land-parts-1-4-build-apk\n\n## Brett said (verbatim)\nAt: 2026-11-13T23:41:07.780Z\n> is that new APK ready for download\n\n## What to build\nContinue build \"Console app: land parts 1-4 and build the APK\" (console-app-land-parts-1-4-build-apk) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 23:41):\n\"is that new APK ready for download\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (18 left, ~2.4 h):\n[ ] s1 (~6 min) Fetch origin and check the five branches (console-android-app-thin-webview-wrapper, console-app-part-2-native-floating-2, console-app-part-3-native-bridge-mic, console-app-part-4-console-side-safe, console-app-wake-word-voice-listener): list commits ahead of and behind main, the files each touches, and the open PRs; write the landing order and expected clashes to _claude/builds/reports/console-app-land-parts-1-4-build-apk.md (draft)\n[ ] s2 (~8 min) Part 1 (console-android-app-thin-webview-wrapper): merge origin/main into it. Resolve clashes, regenerating generated files (tracker.json, schemas json/, fixtures, builds exports) rather than hand-merging them; commit the merge\n[ ] s3 (~7 min) Part 1: run the web checks the branch touches (tracker.mjs --check, axf validate, project.mjs validate --all, check-theme/check-controls) and fix anything red; push the branch\n[ ] s4 (~4 min) Part 1: put its PR in the merge queue (land.mjs queue add) as the first entry of one stack; link it with builds-live.mjs link; never merge it by hand\n[ ] s5 (~8 min) Part 2 (console-app-part-2-native-floating-2): rebase/merge it onto part 1 + origin/main, resolve clashes, regenerate generated files, commit\n[ ] s6 (~10 min) Part 3 (console-app-part-3-native-bridge-mic): merge it on top of part 2. Resolve the NativeBridge.java clash part 2 noted by keeping both sets of bridge methods (floating window + mic) in one class with no duplicate names, imports or fields; commit\n[ ] s7 (~8 min) Parts 2+3: check that the merged NativeBridge.java and the JS bridge callers match (method names, @JavascriptInterface, permissions in AndroidManifest.xml); fix and commit\n[ ] s8 (~10 min) Part 4 (console-app-part-4-console-side-safe): merge on top, resolve console-web clashes, regenerate generated files (control@1 targets appended last, console tools pins, help ratchet), commit\n[ ] s9 (~9 min) Part 4 API check: confirm every console-side UI it adds has a console_show deep link, readable state, and REST + MCP + CLI + voice actions (check-console-control.mjs passes); add any missing data-axf-target or route; commit\n[ ] s10 (~10 min) Wake word (console-app-wake-word-voice-listener): merge on top, resolve clashes with part 3's mic bridge (one owner of the mic: listener and mic capture share one audio path), regenerate generated files, commit\n[ ] s11 (~7 min) Push the stacked branches; check each PR's pull_request CI started (dispatch android.yml once on any branch that got no run); add parts 2, 3, 4 and wake word to the merge queue behind part 1 as one stack (land.mjs queue add/move); link each in the builds store\n[ ] s12 (~10 min) Run the JUnit tests for the console app (gradle :app:testDebugUnitTest through agent-slots heavy, or read CI's kernel-test-reports / 'CI build errors' issue where no SDK) and fix any failure on the right branch; commit\n[ ] s13 (~10 min) Run the web tests on the top of the stack (console-web npm run typecheck + build, theme-swap, check-toolbars, check-chrome-assets, check-builds-store, plugin tests the parts touch) under agent-slots heavy; fix anything red and commit\n[ ] s14 (~10 min) Watch the merge queue land the stack (read queue list once per CI round, no re-runs); if one is kicked out, fix it on its branch and re-add it; record merged PR numbers in the report\n[ ] s15 (~5 min) Trigger the Android CI build for the console app on main (workflow_dispatch android.yml via github-token.mjs); read the run id\n[ ] s16 (~10 min) Wait for the run, read the 'CI build errors' issue on failure and fix it (a new PR through the queue); on success get the console-debug.apk artifact download link (run page + artifact URL) and write it into the report\n[ ] s17 (~4 min) Send Brett a phone notification through AmberX with the APK link (axf.notify@1 / alert hub, declared notify type), and record that it went in the report\n[ ] s18 (~8 min) Finish: finalise the report (_claude/builds/reports/console-app-land-parts-1-4-build-apk.md: merged PRs, clashes and how they were resolved, test results before→after, APK link, how each API reaches the new UI), update the THREADS.md row, tick the build complete in the builds store, record the change-log result, and open the report PR into the merge queue\nRead first: _claude/builds/reports/console-app-land-parts-1-4-build-apk.md, apps/console/, tracker.json, framework/schemas/json/, framework/cli/, _claude/builds/store.json, apps/console/app/src/main/java/**/NativeBridge.java, apps/console/app/src/main/AndroidManifest.xml, apps/console-web/src/, apps/console-web/, framework/spec/, framework/cli/check-console-control.mjs, apps/console-web/plugins/push-banner/land/, apps/console/app/src/test/, framework/android/, .github/workflows/android.yml, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step console-app-land-parts-1-4-build-apk <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link console-app-land-parts-1-4-build-apk --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step console-app-land-parts-1-4-build-apk <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note console-app-land-parts-1-4-build-apk \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -210132,12 +210140,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T23:41:09.848Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-console-app-land-parts-1-4-build-apk--lenny",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-14T00:45:26.790Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T23:51:45.676Z",
@@ -210149,7 +210157,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-14T00:45:26.790Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -210158,7 +210166,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-14T00:45:26.790Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -210181,12 +210189,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T00:48:06.963Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T23:51:45.676Z",
-     "updatedAt": "2026-11-13T23:51:45.676Z"
+     "updatedAt": "2026-11-14T00:48:07.203Z"
     },
     {
      "id": "s2",
@@ -210207,12 +210215,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T00:48:44.656Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T23:51:45.676Z",
-     "updatedAt": "2026-11-13T23:51:45.676Z"
+     "updatedAt": "2026-11-14T00:48:44.889Z"
     },
     {
      "id": "s3",
@@ -210232,12 +210240,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T00:49:13.984Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T23:51:45.676Z",
-     "updatedAt": "2026-11-13T23:51:45.676Z"
+     "updatedAt": "2026-11-14T00:49:14.193Z"
     },
     {
      "id": "s4",
@@ -210256,12 +210264,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T00:49:25.045Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T23:51:45.676Z",
-     "updatedAt": "2026-11-13T23:51:45.676Z"
+     "updatedAt": "2026-11-14T00:49:25.284Z"
     },
     {
      "id": "s5",
@@ -210281,12 +210289,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T00:49:38.814Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T23:51:45.676Z",
-     "updatedAt": "2026-11-13T23:51:45.676Z"
+     "updatedAt": "2026-11-14T00:49:39.049Z"
     },
     {
      "id": "s6",
@@ -210305,12 +210313,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T00:52:42.282Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T23:51:45.676Z",
-     "updatedAt": "2026-11-13T23:51:45.676Z"
+     "updatedAt": "2026-11-14T00:52:42.496Z"
     },
     {
      "id": "s7",
@@ -210619,7 +210627,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -210635,15 +210643,15 @@
    "title": "Voice listener: use Claude when connected (setting)",
    "category": "",
    "detail": "Follow-up to console-app-wake-word-voice-listener (scripted, offline command catalog plus spoken wizard). Add a setting 'Understand with Claude when connected' (default ON). When the Claude badge is green, the transcribed speech goes to Claude with the voice command catalog (from the API registry) as tools, so Brett can talk freely: Claude picks the command, fills fields from what he said, asks only for what's missing, and confirms destructive actions. When Claude isn't connected or times out, it falls back to the scripted matcher and wizard, with a small 'offline mode' indicator. Approvals still need an explicit spoken approve/deny. Show which mode handled each command in the history. Full API and voice ('use Claude for voice'). Tests, help, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/voice-listener-use-claude-when-connected",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T23:42:29.374Z",
-   "updatedAt": "2026-11-13T23:52:35.076Z",
+   "updatedAt": "2026-11-14T00:52:38.642Z",
    "builtAt": "",
    "notes": [
     {
@@ -210657,6 +210665,14 @@
     {
      "text": "Split by Claude into 14 steps (0 Fable).",
      "at": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-voice-listener-use-claude-when-connected--earl.",
+     "at": "2026-11-14T00:46:21.608Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-voice-listener-use-claude-when-connected--earl, own login copy)",
+     "at": "2026-11-14T00:46:25.548Z"
     }
    ],
    "approvals": [],
@@ -210667,8 +210683,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "voice-listener-use-claude-when-connected",
+    "brief": "# Build: voice-listener-use-claude-when-connected\n\n## Brett said (verbatim)\nAt: 2026-11-13T23:42:29.374Z\n> can we have a setting to make it use Claude if Claude's connected\n\n## What to build\nContinue build \"Voice listener: use Claude when connected (setting)\" (voice-listener-use-claude-when-connected) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 23:42):\n\"can we have a setting to make it use Claude if Claude's connected\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (14 left, ~2.1 h):\n[ ] s1 (~8 min) Read the console-app-wake-word-voice-listener plugin: its scripted matcher, spoken wizard, command catalog loader, history store and settings. Read how the Claude badge works out connected or not (claude-session and llm capability axf.llm@1). Write a short design note in the plugin folder: where the Claude path plugs in, which catalog fields become tool schemas, the timeout and the fallback. Commit it.\n[ ] s2 (~8 min) Add the setting 'Understand with Claude when connected' (key axf.voice.useClaude, default ON) and a timeout setting (default 8 s) to the plugin's settings. Put both in its Settings → Plugins sub-tab at the Basic level, and register them as control@1 targets and console-control setting addresses.\n[ ] s3 (~10 min) Server: write the catalog-to-tools converter. It turns each voice command in the API registry catalog into a Claude tool (name, description, input schema from the command's fields, a destructive flag, a personOnly flag). Approve and deny actions are never offered as tools. Add unit tests for the converter.\n[ ] s4 (~10 min) Server: write the Claude intent route (POST /api/plugins/<voice-listener>/understand). It takes the transcript and the session context, calls Claude through axf.llm@1 with the tools and a system prompt (pick one command, fill fields from what Brett said, ask only for what is missing, ask to confirm destructive actions), and returns {mode:'claude', command, args, ask?, confirm?}. Any error, timeout or badge-not-green returns {mode:'offline', reason}.\n[ ] s5 (~10 min) Server: add a multi-turn follow-up to the understand route. A follow-up answer from Brett is sent with the pending tool call so Claude fills only the missing fields. A destructive command returns confirm:true and runs only after a spoken yes. Add tests with a fake LLM covering: picks a command, asks for a missing field, confirm gate, timeout falls back to offline.\n[ ] s6 (~10 min) Web listener: when the setting is on and the Claude badge is green, send the transcript to the understand route first. Speak Claude's question or confirm prompt and loop the answers back to it. On offline, timeout or error, hand the same transcript to the existing scripted matcher and wizard without losing it.\n[ ] s7 (~6 min) Approvals guard: make sure approve and deny never reach the Claude path. A spoken approval still needs the explicit 'approve' / 'deny' words and goes through the existing approvals-banner relay. Add a test that a Claude reply naming an approve tool is refused.\n[ ] s8 (~8 min) UI: add a small 'offline mode' indicator on the listener's chip and panel, shown when Claude mode is on but the fallback handled the last command or the badge is not green. Use framework controls (fx-chip, tokens only) and register it as data-axf-target. API part: its state is readable at GET /api/plugins/<voice-listener>/state (mode, claudeConnected, lastFallbackReason).\n[ ] s9 (~9 min) History: record mode (claude or scripted) and, for scripted, the fallback reason on every history entry (with a migration default of scripted for old entries). Show a mode tag column in the history grid and add a filter by mode. API part: GET history returns mode, and it can be filtered by mode.\n[ ] s10 (~10 min) Full API: add REST get/set for the useClaude setting and timeout, a test-understand action (dry run on a phrase, returns what Claude would pick), and the state and history reads. Expose all of them as MCP plugin commands and console actions (voice.useClaude on|off, voice.understand.test). Add console_show deep links for the setting, the indicator and the history mode filter.\n[ ] s11 (~9 min) CLI and voice: add `axf voice claude on|off|status|test \"<phrase>\"` and the AmberX voice commands 'use Claude for voice' and 'stop using Claude for voice' to the voice command catalog, both mapped to the same actions as REST and MCP. Add a parity test across REST, MCP, CLI and voice.\n[ ] s12 (~8 min) Help, Shipped features and catalogs: write the plugin help page section (Claude mode, fallback, offline indicator, history mode, approvals stay spoken). Give the new commands and settings descriptions so the glossary index and the shipped-features ledger pick them up. Run catalog.mjs --check, check-console-control.mjs and check-control.\n[ ] s13 (~10 min) UI Review: take desktop and phone shots of the setting, the offline indicator and the history mode tag. Make 3 options for the indicator (ui-choices@1 assets in plugins/<voice-listener>/assets/), and submit with review.mjs submit --choices --group 'voice-listener-use-claude-when-connected - <Mon D h:mm AM/PM>'.\n[ ] s14 (~10 min) Tests, report and PR: run the plugin's test.py, check-theme, check-controls, check-toolbars, check-chrome-assets, plugin-lifecycle check and the tracker check. Write _claude/builds/reports/voice-listener-use-claude-when-connected.md, including how each feature is reached through REST, MCP, CLI and voice. Update the THREADS.md row, push the branch, open the PR (saying UI Review is waiting), and link it with builds-live.mjs link.\nRead first: apps/console-web/plugins/<voice-listener plugin>/, apps/console-web/plugins/claude-session/, _claude/builds/reports/voice-listener-use-claude-when-connected.md, apps/console-web/plugins/<voice-listener plugin>/plugin.json, apps/console-web/plugins/<voice-listener plugin>/web/, apps/console-web/plugins/<voice-listener plugin>/server/, apps/console-web/plugins/<voice-listener plugin>/server/claude_tools.py, apps/console-web/plugins/<voice-listener plugin>/test.py, apps/console-web/plugins/<voice-listener plugin>/server/routes.py, apps/console-web/plugins/<voice-listener plugin>/server/claude_intent.py, apps/console-web/plugins/<voice-listener plugin>/web/listener.ts, apps/console-web/plugins/<voice-listener plugin>/web/claudeMode.ts, apps/console-web/plugins/<voice-listener plugin>/server/history.py, apps/console-web/plugins/<voice-listener plugin>/web/History.tsx, apps/console-web/plugins/<voice-listener plugin>/commands.json, framework/cli/axf.mjs, apps/console-web/plugins/<voice-listener plugin>/cli.mjs, apps/console-web/plugins/<voice-listener plugin>/voice-commands.json, apps/console-web/plugins/<voice-listener plugin>/help/, apps/console-web/plugins/<voice-listener plugin>/README.md, apps/console-web/plugins/glossary-index/, apps/console-web/plugins/<voice-listener plugin>/assets/, apps/console-web/plugins/ui-review/, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step voice-listener-use-claude-when-connected <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link voice-listener-use-claude-when-connected --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step voice-listener-use-claude-when-connected <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note voice-listener-use-claude-when-connected \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -210727,12 +210743,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T00:48:45.239Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T23:52:35.076Z",
-     "updatedAt": "2026-11-13T23:52:35.076Z"
+     "updatedAt": "2026-11-14T00:48:45.497Z"
     },
     {
      "id": "s2",
@@ -210753,12 +210769,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T00:51:27.950Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T23:52:35.076Z",
-     "updatedAt": "2026-11-13T23:52:35.076Z"
+     "updatedAt": "2026-11-14T00:51:28.264Z"
     },
     {
      "id": "s3",
@@ -210778,12 +210794,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T00:52:38.642Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T23:52:35.076Z",
-     "updatedAt": "2026-11-13T23:52:35.076Z"
+     "updatedAt": "2026-11-14T00:52:38.903Z"
     },
     {
      "id": "s4",
@@ -211075,7 +211091,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

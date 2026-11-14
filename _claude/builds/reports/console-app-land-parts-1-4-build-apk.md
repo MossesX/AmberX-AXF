@@ -44,3 +44,44 @@ and then the part below it, so every PR in the stack is a strict superset of the
 `android.yml` on part 1 runs `gradle :app:testDebugUnitTest :app:assembleDebug` in `apps/console-droid`, but uploads
 no artifact for it: the existing `console-debug.apk` artifact is the old `apps/console` app. Part 1 needs an
 `upload-artifact` step for the console app APK so there is something to download.
+
+## Merges (s2-s10)
+
+Worked in a detached worktree (`/root/axf-builds/cal-stack`) and pushed each result to its own branch, so the five
+finished builds' worktrees were left alone. Generated files were regenerated with `AXF_DATA_DIR=off` (on this host
+`tracker.mjs` otherwise reads the hub's saved copy of `status.json`, not the branch's).
+
+| Step | Merge | Clashes | Resolution |
+|---|---|---|---|
+| s2 | origin/main → part 1 (#637) | `control/inventory.json` | regenerated (`control-inventory.mjs`) |
+| s3 | part 1 | — | added the `console-app-debug.apk` upload (apps/console-droid) and its build log to the "CI build errors" report; checks green (tracker, `axf validate --framework`, project validate, theme, controls, console-control, toolbars, chrome assets, nativeRules) |
+| s5 | part 1 → part 2 (#639) | `control/inventory.json` | regenerated |
+| s6 | part 2 → part 3 (#633) | `DeviceRules.java` (add/add), help `console.json`, `status.json`, inventory | see below |
+| s7 | bridge check | — | nothing to fix (below) |
+
+**s6, part 3 on parts 1+2.** Part 3 was written against part 1's classes but on plain main, so its Java had never been
+compiled and was never wired in. Part 3's own design keeps its bridge in a separate class (`DeviceBridge`, JS host
+`window.axfBridgeHost`) next to part 1's `NativeBridge` (`window.axfNativeHost`), and `bridgeClient.mjs` merges both into
+one `window.axfNative`. That design was kept instead of folding both into `NativeBridge.java`: the two classes share no
+method, field or JS name, and folding them together would have broken part 3's contract test (tool list =
+`BridgeContract.java`).
+- `DeviceRules.java`: one class with both rule sets. Part 1's hello app name became `APP_ID` (`console-droid`), so `APP`
+  stays the `where` value both sides use. `where()` is part 3's case-insensitive version, and part 1's tests still pass.
+- `WebHost.get`: attaches `DeviceBridge` and registers `DeviceTools` and `MicTools` next to `NativeBridge.install`.
+  `onPageFinished` builds `window.axfNative` on Brett's other pages, and `onPermissionRequest` denies page audio when the
+  phone's mic switch is off (`MicTools.webCaptureAllowed`).
+- One axHub link: part 1's `DeviceLink` stays the device service (started at launch, handles the overlay verbs from
+  part 2's contract). Part 3's `HubLink` is not started, so the phone says hello to the hub once. Gap: `device.*`
+  tools beyond `browser.open` are not reachable from axHub yet. They can be reached from the page, REST, MCP, the CLI
+  and voice through the console.
+- Gap: `SlotHost` (four console slots) is not wired yet. That needs `ConsoleActivity` to host several WebViews, so
+  `slots.*` calls answer `not_implemented`.
+- Help entries and `status.json` (`cx.phonebridge` + main's `cx.contextmenu.consolesettings`) unioned. Inventory
+  and tracker regenerated.
+
+**s7, bridge check.** Every method `axfNative.ts` calls on `window.axfNativeHost` is an `@JavascriptInterface` on
+`NativeBridge` (`recorder` is optional on the TS side and absent in Java, so the page falls back). `bridgeClient.mjs`
+`LEGACY_METHODS` match. `DeviceBridge` exposes only `call(json)` on `axfBridgeHost`, as `bridgeClient.mjs` expects.
+Permission keys `mic` / `notifications` / `overlay` are the same in `Perms`, `BridgeContract` and `MicRules`, and the
+manifest declares `RECORD_AUDIO`, `MODIFY_AUDIO_SETTINGS`, `POST_NOTIFICATIONS` and `SYSTEM_ALERT_WINDOW`. Node tests:
+bridgeClient 10/10, deviceActions 5/5, nativeRules 7/7.
