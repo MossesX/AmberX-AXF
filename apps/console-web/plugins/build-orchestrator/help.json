@@ -237,6 +237,60 @@
         "title": "Land all",
         "text": "Every Done build of the group goes first in the merge queue (tagged Urgent); the merge queue lands it when its PR is ready.",
         "kind": "button"
+      },
+      {
+        "target": "add-to-group",
+        "title": "Add to group",
+        "text": "Puts the selected builds into the group picked next to it. A build can be in more than one group.",
+        "kind": "button"
+      },
+      {
+        "target": "take-out-of-its-group",
+        "title": "Take out of its group",
+        "text": "Takes the selected builds out of the groups they are in. The builds themselves stay where they are.",
+        "kind": "button"
+      },
+      {
+        "target": "tab",
+        "title": "Tab",
+        "text": "Shows this group as its own tab next to the stage you pick (Pending, Queue, Building…), or no tab.",
+        "kind": "field"
+      },
+      {
+        "target": "more-than-n-behind-main",
+        "title": "More than N behind main",
+        "text": "Smart rule: the group also takes every build whose branch is more than this many commits behind main. Empty = not used.",
+        "kind": "field"
+      },
+      {
+        "target": "filed-in-the-last-n-days-today",
+        "title": "Filed in the last N days (0 = today)",
+        "text": "Smart rule: the group also takes every build filed in the last N days; 0 means today only. Empty = not used.",
+        "kind": "field"
+      },
+      {
+        "target": "save-rule",
+        "title": "Save rule",
+        "text": "Saves the smart rule above (title contains, behind main, filed in the last N days); matching builds join the group by themselves.",
+        "kind": "button"
+      },
+      {
+        "target": "clear-rule",
+        "title": "Clear rule",
+        "text": "Removes the group smart rule. Builds added by hand stay in the group.",
+        "kind": "button"
+      },
+      {
+        "target": "archive-all",
+        "title": "Archive all",
+        "text": "Moves every build of the group that has no live session to the Archive.",
+        "kind": "button"
+      },
+      {
+        "target": "set-for-all",
+        "title": "Set for all",
+        "text": "Gives every build of the group the priority picked next to it (Urgent, High, Normal, Low).",
+        "kind": "button"
       }
     ],
     "intros": []
