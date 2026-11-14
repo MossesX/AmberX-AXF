@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:53 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · orchestrator
 - 2026-11-13 20:53 UTC · `auto-land-every-finished-build-lands` s2 done (all) · foreign-write
 - 2026-11-13 20:53 UTC · `hotfix-desktop-console-draws-app-menu` added (0 steps) (all) · console
 - 2026-11-13 20:53 UTC · `hotfix-desktop-console-draws-app-menu` → queued, note (all) · console
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 18:02 UTC · `builds-share-one-claude-login-write` note (all) · orchestrator
 - 2026-11-14 18:13 UTC · `picker-dialog-plugin-replaces-all` added (0 steps) (all) · console
 - 2026-11-14 18:13 UTC · `picker-dialog-plugin-replaces-all` → queued, note (all) · console
+- 2026-11-14 18:14 UTC · `themed-native-controls-plugin` added (0 steps) (all) · console
 
 ## Token passes (log)
 
