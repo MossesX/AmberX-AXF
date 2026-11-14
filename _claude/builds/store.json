@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5102,
- "updatedAt": "2026-11-14T00:40:58.228Z",
+ "rev": 5103,
+ "updatedAt": "2026-11-14T00:41:13.249Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -209494,11 +209494,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/land-batch-merge-main-each-finished",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T23:39:26.785Z",
-   "updatedAt": "2026-11-14T00:40:56.322Z",
+   "updatedAt": "2026-11-14T00:40:59.111Z",
    "builtAt": "",
    "notes": [
     {
@@ -209512,6 +209512,10 @@
     {
      "text": "Dispatch gate: land-batch-merge-main-each-finished still has axf-land-batch-merge-main-each-finished--sully alive: not launched again, tracking that session.",
      "at": "2026-11-13T23:50:13.460Z"
+    },
+    {
+     "text": "Reconciler: branch claude/land-batch-merge-main-each-finished (no PR yet)",
+     "at": "2026-11-14T00:40:59.111Z"
     }
    ],
    "approvals": [],

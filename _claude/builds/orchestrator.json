@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T00:40:58.228Z",
+ "updatedAt": "2026-11-14T00:41:13.249Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -135314,11 +135314,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/land-batch-merge-main-each-finished",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T23:39:26.785Z",
-   "updatedAt": "2026-11-14T00:40:56.322Z",
+   "updatedAt": "2026-11-14T00:40:59.111Z",
    "builtAt": "",
    "notes": [
     {
@@ -135332,6 +135332,10 @@
     {
      "text": "Dispatch gate: land-batch-merge-main-each-finished still has axf-land-batch-merge-main-each-finished--sully alive: not launched again, tracking that session.",
      "at": "2026-11-13T23:50:13.460Z"
+    },
+    {
+     "text": "Reconciler: branch claude/land-batch-merge-main-each-finished (no PR yet)",
+     "at": "2026-11-14T00:40:59.111Z"
     }
    ],
    "approvals": [],
