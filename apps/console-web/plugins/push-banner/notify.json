@@ -39,6 +39,19 @@
         "keyPrefix": "system:land-unlanded"
       },
       "priority": "high"
+    },
+    {
+      "id": "land.summary",
+      "label": "Landing summary",
+      "group": "merge",
+      "app": "console",
+      "source": "Serial lander",
+      "description": "After each landing batch: what landed, what was archived as already on main, what is flagged and what went red.",
+      "match": {
+        "source": "push-banner",
+        "keyPrefix": "landsum:"
+      },
+      "priority": "normal"
     }
   ]
 }

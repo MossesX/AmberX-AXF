@@ -217,8 +217,18 @@ await t('batch boundary: one redeploy + one chrome check when something landed; 
   await afterBatch({ s: sB, ran: [{ build: 'd', outcome: 'red' }], api, redeploy, check: async () => { checks++; return {}; } });
   assert.equal(ups, 1, 'nothing landed: no redeploy'); assert.equal(checks, 1);
   await afterBatch({ s: sB, ran: [{ build: 'e', outcome: 'landed' }], api, redeploy, check: async () => ({ verdict: 'doubled', why: '2 banners' }) });
-  assert.equal(alerts.length, 1); assert.match(alerts[0].body, /2 banners/);
+  const doubled = alerts.filter((x) => x.key === 'land:doubled-chrome');
+  assert.equal(doubled.length, 1); assert.match(doubled[0].body, /2 banners/);
+  const sums = alerts.filter((x) => String(x.key).startsWith('landsum:'));
+  assert.equal(sums.length, 3, 'one summary per batch'); assert.match(sums[0].title, /2 landed, 0 archived, 0 flagged, 1 red/); assert.match(sums[0].body, /landed: a, b/);
   assert.equal(readFileSync(join(sB.dataDir, 'land-batches.jsonl'), 'utf8').trim().split('\n').length, 3);
+});
+
+await t('landing summary: one phone line per batch, nothing to say = no notification', async () => {
+  const { summaryAlert } = await import('./land-one.mjs');
+  assert.equal(summaryAlert({ at: 'x', landed: [], red: [], flagged: [], archived: [] }), null);
+  const a = summaryAlert({ at: '2026-11-14T23:00:00Z', landed: ['a'], red: [], flagged: ['f'], archived: ['z1', 'z2'] });
+  assert.equal(a.key, 'landsum:2026-11-14T23:00:00Z'); assert.match(a.title, /1 landed, 2 archived, 1 flagged, 0 red/); assert.match(a.body, /archived \(already on main\): z1, z2/);
 });
 
 await t('chrome verdicts: one of each ok, two banners or menu bars doubled, a sign-in wall unknown (never a pass)', async () => {

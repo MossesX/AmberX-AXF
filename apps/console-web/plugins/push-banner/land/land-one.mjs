@@ -296,7 +296,21 @@ export const updaterPath = () => process.env.AXF_CONSOLE_UPDATE ?? '/usr/local/b
  * doubled chrome (check-chrome-once.mjs: one banner, one menu bar on desktop and phone). A doubled console is an alert.
  * The batch (what landed / went red / was flagged, the redeploy and the check) is appended to land-batches.jsonl.
  */
-export async function afterBatch({ s, ran, api = null, redeploy = null, check = null, log = () => {} }) {
+/** The phone line for a batch (Brett, AmberX): what landed, was archived, flagged, went red. Pure. */
+export function summaryAlert(rec) {
+  const part = (n, word, ids) => (ids?.length ? `${ids.length} ${word}: ${ids.slice(0, 6).join(', ')}${ids.length > 6 ? ` (+${ids.length - 6})` : ''}` : '');
+  const lines = [part(0, 'landed', rec.landed), part(0, 'archived (already on main)', rec.archived), part(0, 'flagged (unique work or a code clash)', rec.flagged), part(0, 'red (fix build filed)', rec.red)].filter(Boolean);
+  if (!lines.length) return null;
+  const n = (k) => rec[k]?.length || 0;
+  return {
+    source: 'push-banner', key: `landsum:${rec.at}`, severity: 'info',
+    title: `Landing: ${n('landed')} landed, ${n('archived')} archived, ${n('flagged')} flagged, ${n('red')} red`.slice(0, 200),
+    body: `${lines.join('\n')}${rec.chrome?.verdict === 'doubled' ? `\nConsole shows doubled chrome: ${rec.chrome.why}` : ''}`.slice(0, 1500),
+    link: 'console_show:push-banner/land',
+  };
+}
+
+export async function afterBatch({ s, ran, archived = [], api = null, redeploy = null, check = null, log = () => {} }) {
   const landed = ran.filter((x) => x.outcome === 'landed').map((x) => x.build || x.id);
   const rec = { at: new Date().toISOString(), landed, red: ran.filter((x) => x.outcome === 'red').map((x) => x.build || x.id), flagged: ran.filter((x) => x.outcome === 'clash').map((x) => x.build || x.id), redeploy: null, chrome: null };
   if (landed.length) {
@@ -310,6 +324,10 @@ export async function afterBatch({ s, ran, api = null, redeploy = null, check = 
       try { await (api || makeConsole(s))('POST', '/api/alerts', { source: 'push-banner', key: 'land:doubled-chrome', severity: 'warn', title: 'Console shows doubled chrome after landing', body: `After landing ${landed.join(', ')} the redeployed console shows ${rec.chrome.why}.`.slice(0, 600) }); } catch { /* the record says it */ }
     }
   }
+  rec.archived = archived;
+  // one phone notification per batch through AmberX (axf.notify@1 type land.summary)
+  const a = summaryAlert(rec);
+  if (a) { try { await (api || makeConsole(s))('POST', '/api/alerts', a); rec.notified = true; } catch { rec.notified = false; } }
   mkdirSync(s.dataDir, { recursive: true });
   appendFileSync(batchesFile(s), `${JSON.stringify(rec)}\n`);
   return rec;

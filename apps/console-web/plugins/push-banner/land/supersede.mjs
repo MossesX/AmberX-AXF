@@ -125,6 +125,11 @@ export async function main(argv) {
   if (ids.length) rows = ids.map((id) => rows.find((r) => r.id === id) || storeBuilds(s, git).find((b) => b.id === id)).filter((b) => b?.branch);
   if (limit) rows = rows.slice(0, limit);
   const res = await supersede({ s, git, gh: apply ? makeGitHub(s) : null, rows, apply, log: (m) => !json && console.error(m) });
+  if (apply) {
+    // the batch summary on the phone: archived and flagged (no redeploy: nothing landed)
+    const { afterBatch } = await import('./land-one.mjs');
+    await afterBatch({ s, ran: res.rows.filter((r) => r.verdict === 'unique').map((r) => ({ build: r.id, outcome: 'clash' })), archived: res.rows.filter((r) => r.verdict === 'superseded' && r.tag).map((r) => r.id) });
+  }
   if (json) console.log(JSON.stringify(res, null, 1));
   else {
     const n = (v) => res.rows.filter((r) => r.verdict === v).length;
