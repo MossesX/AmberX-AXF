@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:52 UTC · `lander-regenerates-generated-files-clash` branch claude/lander-regenerates-generated-files-clash (all) · pipeline
 - 2026-11-13 20:52 UTC · `icon-map-icon-packs-every-icon-badge-app` s2 done (all) · orchestrator
 - 2026-11-13 20:52 UTC · `auto-land-every-finished-build-lands` s2 done (all) · orchestrator
 - 2026-11-13 20:52 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · orchestrator
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 17:40 UTC · `hotfix-toolbar-settings-still-change` merged, note (all) · reconciler
 - 2026-11-14 17:41 UTC · `hotfix-toolbar-settings-still-change` note (all) · orchestrator
 - 2026-11-14 17:45 UTC · `orchestrator-stale-row-watchdog-vps` added (0 steps) (all) · pending
+- 2026-11-14 17:47 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · orchestrator
 
 ## Token passes (log)
 
