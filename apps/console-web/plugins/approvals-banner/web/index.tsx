@@ -39,7 +39,7 @@ import { onVetoHost, setVetoHost, vetoHost, VETO_ACTIONS, type VetoAction, type 
 import { ALARM_KEYS, START_AT, TONES, VIBRATIONS, ALARM_DEFAULTS, NOTICE_DEFAULTS } from './alarm';
 import { act, actResult, AlarmPanel, syncNativeAlarm, VetoButtons, VetoScreen, watch, type VetoDeps } from './veto';
 import { approvalsHost, ApprovalDetailsPanel, ApprovalRow, setApprovalsHost } from '@console/axf/libs/approvals/react';
-import { bundledPlugins, pluginFetch } from '@console/plugins';
+import { pluginFetch, pluginProviding } from '@console/plugins';
 import { relayHosts, type RelayPost } from './relay';
 import { approvalExpandKey, detailsOfItem, fetchApprovals, heldDecisions, registerApprovalsLookup, type ApprovalDecision, type ApprovalItem, type DecideResult } from '@console/axf/libs/approvals';
 import { decidedState, decisionButtons } from '@console/axf/libs/approvals/menu';
@@ -160,7 +160,7 @@ async function runOverlay(verb: OverlayVerb | OverlayBarVerb, url?: string): Pro
     return { ok, message: ok ? done[verb]! : 'The overlay is off on this phone (or "Display over other apps" is not allowed).' };
   }
   if (verb === 'bar-open' || verb === 'bar-close') return { ok: false, message: 'The approval bar opens on its own on the phone when something waits.' };
-  const relay = bundledPlugins.find((p) => p.manifest.provides?.includes(OVERLAY_RELAY_SERVICE))?.folder;
+  const relay = pluginProviding(OVERLAY_RELAY_SERVICE);
   if (!relay) return { ok: false, message: 'The overlay relay is not installed on this console.' };
   try {
     const r = await pluginFetch(relay, 'overlay', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ verb, ...(url ? { url } : {}) }), signal: AbortSignal.timeout(RELAY_TIMEOUT_MS) });
