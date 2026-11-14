@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:50:06.964Z",
+ "updatedAt": "2026-11-14T05:10:56.751Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -138373,14 +138373,14 @@
    "title": "Demo video series: three-minute browser walkthroughs of AmberX",
    "category": "Launch",
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:45:49.332Z",
+   "updatedAt": "2026-11-14T05:10:54.564Z",
    "builtAt": "",
    "notes": [
     {
@@ -138462,6 +138462,10 @@
     {
      "text": "Found the real session recall feature for s20: 'UI Review phone notifications + truthful wake + auto session recording and transcripts' (ui-review-notify-session-audio, PR #365, complete) and 'Live sessions plugin: every Claude session live, watch, voice, recording + playback' (live-sessions-plugin, PR #331). Use those in the session recall video instead of a mock-up.",
      "at": "2026-11-14T04:45:49.332Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-14T05:10:54.564Z"
     }
    ],
    "approvals": [],
