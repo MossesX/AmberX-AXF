@@ -795,7 +795,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 21:17 UTC · `toolbar-widgets-attach-any-banner-style` → running, note (all) · pipeline
 - 2026-11-13 21:16 UTC · `auto-land-every-finished-build-lands` s10 done, → built (all) · orchestrator
 - 2026-11-13 21:16 UTC · `auto-land-every-finished-build-lands` note (all) · orchestrator
 - 2026-11-13 21:17 UTC · `per-instance-settings-small-live-preview` s1 done, → running (all) · orchestrator
@@ -1195,6 +1194,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 20:21 UTC · `skin-axhub-override-switch-greyed-out` merged, note (all) · reconciler
 - 2026-11-14 20:21 UTC · `skin-config-panel-merge-main-and-land` merged, note (all) · reconciler
 - 2026-11-14 20:21 UTC · `skins-plugin-merge-main-and-land` merged, note (all) · reconciler
+- 2026-11-14 20:22 UTC · `every-skin-ships-light-dark-colour-theme` note (all) · orchestrator
 
 ## Token passes (log)
 
