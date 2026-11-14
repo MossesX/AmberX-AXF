@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 00:56 UTC · `console-app-land-parts-1-4-build-apk` branch claude/console-app-part-4-console-side-safe, PR #640 (all) · builds-live
 - 2026-11-14 00:56 UTC · `console-app-land-parts-1-4-build-apk` branch claude/console-app-wake-word-voice-listener, PR #643 (all) · builds-live
 - 2026-11-14 00:56 UTC · `console-app-land-parts-1-4-build-apk` s11 done (all) · orchestrator
 - 2026-11-14 00:58 UTC · `voice-listener-use-claude-when-connected` s6 done (all) · orchestrator
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:47 UTC · `picker-dialog-plugin-replaces-all` s7 done (all) · orchestrator
 - 2026-11-14 22:48 UTC · `land-finish-auto-land-live-clear-backlog` s7 done (all) · orchestrator
 - 2026-11-14 22:48 UTC · `land-all-skin-builds` s24 done (all) · orchestrator
+- 2026-11-14 22:48 UTC · `picker-dialog-plugin-replaces-all` s8 done (all) · orchestrator
 
 ## Token passes (log)
 
