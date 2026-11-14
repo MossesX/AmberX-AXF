@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T22:17:47.653Z",
+ "updatedAt": "2026-11-14T22:17:55.398Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -142118,12 +142118,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T22:15:48.311Z",
-   "updatedAt": "2026-11-14T22:15:50.980Z",
+   "updatedAt": "2026-11-14T22:17:52.893Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-14T22:15:50.980Z"
+    },
+    {
+     "text": "Split by Claude into 24 steps (3 Fable).",
+     "at": "2026-11-14T22:17:52.893Z"
     }
    ],
    "approvals": [],
@@ -142140,7 +142144,537 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Design the landing-line@1 record and state machine: one ordered list of finished builds/PRs; states waiting → merging-main → regenerating → checking → landing → landed | fix-filed | skipped | paused; per-entry attempt log; CI conclusion mapping where cancelled/superseded = not a result (re-run, never a failure); one entry in flight at a time; no stacking. Write it as framework/core/landing-line.mjs (pure functions: next, transition, classifyCheckRun) plus a JSON Schema",
+     "model": "Fable",
+     "why": "New schema and state contract that replaces merge-queue@ semantics, read by the console, the cron, MCP and voice",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/landing-line.mjs",
+      "framework/schemas/landing-line.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyvcal0164dq",
+     "createdAt": "2026-11-14T22:17:52.893Z"
+    },
+    {
+     "id": "s2",
+     "text": "Migration design: convert the current merge queue (stacks, entries, queue/pr-* refs) into landing-line@1 entries in their old order, keep history, drop stack fields; write the migration as a pure function with a fixture (before/after JSON)",
+     "model": "Fable",
+     "why": "Data migration of a live store",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/landing-line.mjs",
+      "framework/spec/fixtures/landing-line-migrate.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyvcal022ke3",
+     "createdAt": "2026-11-14T22:17:52.893Z"
+    },
+    {
+     "id": "s3",
+     "text": "Engine checks for landing-line@1: transitions, cancelled-run classification (cancelled / superseded / stale head = retry, failure / timed_out = red), red → fix-file + advance, pause / skip / move-up ordering, migration fixture",
+     "model": "Fable",
+     "why": "Conformance checks for the new contract",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/check-landing-line.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyvcal03lvct",
+     "createdAt": "2026-11-14T22:17:52.893Z"
+    },
+    {
+     "id": "s4",
+     "text": "Serial lander, part 1: apps/console-web/plugins/push-banner/land/lander.mjs takes the head entry, checks out its branch, merges origin/main into it, and sets the entry state; reuses the merge drivers already in land.mjs (builds files newer-wins, logs unioned)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/lander.mjs",
+      "apps/console-web/plugins/push-banner/land/land.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyvcal0402lr",
+     "createdAt": "2026-11-14T22:17:52.893Z"
+    },
+    {
+     "id": "s5",
+     "text": "Serial lander, part 2: run generated-files@1 regeneration (tracker, schemas, fixtures, help, exports) after the main merge and push the branch once (head pinned)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/lander.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyvcal052f1k",
+     "createdAt": "2026-11-14T22:17:52.893Z"
+    },
+    {
+     "id": "s6",
+     "text": "Serial lander, part 3: wait on the PR's checks for the pinned head; classify through landing-line.mjs; a cancelled or superseded run triggers one re-dispatch of the workflow and never counts as red; green merges the PR to main (merge commit naming the landing line) and advances",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/lander.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyvcal06f2f8",
+     "createdAt": "2026-11-14T22:17:52.893Z"
+    },
+    {
+     "id": "s7",
+     "text": "Red check handling: on a real failure, file a fix build in the orchestrator (pipeline.mjs intake with the failing check names, log excerpt, PR link and Brett's original words carried over), mark the entry fix-filed, link the fix build, then move on to the next entry",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/lander.mjs",
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyvcal07rep5",
+     "createdAt": "2026-11-14T22:17:52.893Z"
+    },
+    {
+     "id": "s8",
+     "text": "Remove the stacked merge queue: delete merge-queue.mjs stack building, queue/pr-* branch creation and the stack retest logic; land.mjs `run` now calls the serial lander; `queue list|add|remove|move` become aliases onto the landing line; clean up queue/pr-* refs once",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/merge-queue.mjs",
+      "apps/console-web/plugins/push-banner/land/land.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyvcal08xo19",
+     "createdAt": "2026-11-14T22:17:52.893Z"
+    },
+    {
+     "id": "s9",
+     "text": "Run the migration on startup of the lander (old queue file → landing-line store, journalled), keep a read-only export of the old file for one release",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "5 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/lander.mjs",
+      "apps/console-web/plugins/push-banner/land/store.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyvcal09xugp",
+     "createdAt": "2026-11-14T22:17:52.893Z"
+    },
+    {
+     "id": "s10",
+     "text": "Cron: the axf-auto-land cron runs `land.mjs run` as one landing pass (one entry per tick, lock file so ticks never overlap); queue-merging hold replaced by a landing-batch hold",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "5 min",
+     "files": [
+      "deploy/cron/axf-auto-land",
+      "apps/console-web/plugins/push-banner/land/land.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyvcal0ac14i",
+     "createdAt": "2026-11-14T22:17:52.893Z"
+    },
+    {
+     "id": "s11",
+     "text": "Redeploy after each landing batch: when the line goes empty or paused after at least one landing, trigger one console redeploy (existing updater) and log it with axf_deploy_log; release the 5-minute updater hold",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/lander.mjs",
+      "deploy/console-nightly.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyvcam0bli85",
+     "createdAt": "2026-11-14T22:17:52.893Z"
+    },
+    {
+     "id": "s12",
+     "text": "REST API: /api/plugins/push-banner/landing (GET state: line, current build, its stage, last results; POST pause, resume, skip <id>, move-up <id>, add <pr>, remove <id>, run-now); lander settings (enabled, max re-dispatch on cancelled, auto file fix build) as settings keys",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/server/routes.py",
+      "apps/console-web/plugins/push-banner/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyvcam0cbowo",
+     "createdAt": "2026-11-14T22:17:52.893Z"
+    },
+    {
+     "id": "s13",
+     "text": "MCP + CLI + voice: plugin commands push_banner_landing_state|pause|resume|skip|move_up|add|remove (replacing push_banner_mergequeue_*), `axf landing …` CLI, console actions landing.pause / landing.skip / landing.moveUp for AmberX voice; same four reach the same routes",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/commands.json",
+      "framework/cli/axf.mjs",
+      "apps/console-web/plugins/push-banner/actions.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyvcam0dvwzw",
+     "createdAt": "2026-11-14T22:17:52.893Z"
+    },
+    {
+     "id": "s14",
+     "text": "Console UI, part 1: replace the push banner's Merge queue panel with a Landing line panel (framework DataGrid + TabGroup, tokens only): current build highlighted with its stage, ordered list, fix-filed and skipped rows with links",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/web/LandingLine.tsx",
+      "apps/console-web/plugins/push-banner/web/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyvcam0epfqw",
+     "createdAt": "2026-11-14T22:17:52.893Z"
+    },
+    {
+     "id": "s15",
+     "text": "Console UI, part 2: a toolbar (role=toolbar, settings id) with Pause / Resume / Skip / Move up / Run now; row context menu with the same; banner chip shows 'Landing #N (stage)' or 'Paused'",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/web/LandingLine.tsx",
+      "apps/console-web/plugins/push-banner/web/chip.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyvcam0fbuiw",
+     "createdAt": "2026-11-14T22:17:52.893Z"
+    },
+    {
+     "id": "s16",
+     "text": "Console control + deep links: register view:push-banner/landing, row:<pr>, and the toolbar buttons with control@1 (append-only), console_show/console_open targets; check-console-control passes",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "5 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/web/LandingLine.tsx",
+      "framework/spec/control-registry.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyvcam0g27z2",
+     "createdAt": "2026-11-14T22:17:52.893Z"
+    },
+    {
+     "id": "s17",
+     "text": "Settings sub-tab: Settings → Plugins → Push banner → Landing line (enabled, re-dispatch on cancelled, auto file fix build, redeploy after batch) through the settings asset; remove the stack settings",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "5 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/web/settings.tsx",
+      "apps/console-web/plugins/push-banner/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyvcam0h5y62",
+     "createdAt": "2026-11-14T22:17:52.893Z"
+    },
+    {
+     "id": "s18",
+     "text": "Systems check: health@1 item when the line is paused over an hour, a landing is stuck in one stage over 30 min, or a fix build was filed (banner item with Fix / Resume); notify.json entry for landing alerts",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/health.py",
+      "apps/console-web/plugins/push-banner/notify.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyvcam0ilzgx",
+     "createdAt": "2026-11-14T22:17:52.893Z"
+    },
+    {
+     "id": "s19",
+     "text": "Rules and docs: replace 'Only the merge queue merges' in _claude/shared/rules/RULES.md, _claude/rules/RULES.md and CLAUDE.md with the one-at-a-time landing rule (Brett, Nov 14 2026, his words); decision in _claude/memory/decisions.md; update the merge-queue memory doc; claude-sync sync",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/shared/rules/RULES.md",
+      "_claude/rules/RULES.md",
+      "CLAUDE.md",
+      "_claude/memory/decisions.md",
+      "_claude/memory/docs/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyvcam0jp9ki",
+     "createdAt": "2026-11-14T22:17:52.893Z"
+    },
+    {
+     "id": "s20",
+     "text": "Help and glossary: help entries for the Landing line panel, commands and CLI; plugin.json and command descriptions; glossary-index catalog --check passes; Shipped features ledger rows for lander, API and UI",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "5 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/help/",
+      "apps/console-web/plugins/glossary-index/",
+      "apps/console-web/plugins/shipped-features/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyvcam0k9pnd",
+     "createdAt": "2026-11-14T22:17:52.893Z"
+    },
+    {
+     "id": "s21",
+     "text": "Tests for the lander: fake git + fake GitHub checks: green lands, cancelled run re-dispatches and is not red, red files a fix build and advances, pause/skip/move-up, one in flight at a time, redeploy once per batch",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/test/lander.test.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyvcam0lock8",
+     "createdAt": "2026-11-14T22:17:52.893Z"
+    },
+    {
+     "id": "s22",
+     "text": "Route + command tests: REST, MCP, CLI and voice actions hit the same state; plugin-lifecycle check, check-toolbars, check-theme, check-controls, check-console-control",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/server/test_landing.py",
+      "apps/console-web/plugins/push-banner/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyvcam0mheee",
+     "createdAt": "2026-11-14T22:17:52.893Z"
+    },
+    {
+     "id": "s23",
+     "text": "UI Review: 3 options for the Landing line panel as assets (ui-choices@1) with desktop + phone shots, submitted via review.mjs submit --choices",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/assets/",
+      "apps/console-web/plugins/push-banner/web/LandingLine.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyvcam0n33v4",
+     "createdAt": "2026-11-14T22:17:52.893Z"
+    },
+    {
+     "id": "s24",
+     "text": "Finish: run the full check sweep (check-landing-line, lander tests, tracker --check, builds-store verify), write _claude/builds/reports/replace-merge-queue-one-time-landing.md (what was removed, API reach for each feature: deep link, state, actions, settings over REST/MCP/CLI/voice), THREADS row, push the branch and open the PR (this PR lands through the old queue one last time or by a single deliberate merge)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/replace-merge-queue-one-time-landing.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyvcam0o6vpc",
+     "createdAt": "2026-11-14T22:17:52.893Z"
+    }
+   ]
   },
   {
    "id": "land-finish-auto-land-live-clear-backlog",
