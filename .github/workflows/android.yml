@@ -518,6 +518,9 @@ jobs:
         working-directory: apps/console
         run: gradle :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-console.log; exit ${PIPESTATUS[0]}
       - name: AXF Console for Android (WebView shell that replaces AmberX) — native unit tests + APK
+        # standalone app (no framework module dependencies): it still builds when an earlier framework step is red,
+        # so the APK is there to download; the job stays red either way
+        if: ${{ !cancelled() }}
         working-directory: apps/console-droid
         run: gradle :app:testDebugUnitTest :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-console-droid.log; exit ${PIPESTATUS[0]}
       - name: Library unit tests (lib-voice, lib-lock, lib-mcp, lib-hub, lib-notifications, lib-work)
@@ -558,6 +561,7 @@ jobs:
           name: console-debug.apk
           path: apps/console/app/build/outputs/apk/debug/*.apk
       - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
         with:
           name: console-app-debug.apk   # AXF Console for Android (apps/console-droid), the WebView app that replaces AmberX
           path: apps/console-droid/app/build/outputs/apk/debug/*.apk
