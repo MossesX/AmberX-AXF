@@ -183,5 +183,16 @@ ok(['approve', 'deny that one', 'approve all pending', 'set the veto timer to tw
 // the page's flow asks claudeGate before any understand call (web/flow.ts handleCommand)
 { const flow = (await import('node:fs')).readFileSync(new URL('./web/flow.ts', import.meta.url), 'utf8'); const i = flow.indexOf('claudeGate({'); const j = flow.indexOf('await understand(t, '); ok(i > 0 && j > i && /if \(!gate\.claude\) reason = gate\.reason;\s*else \{/.test(flow), 'flow: understand is only called when the gate says Claude'); }
 
+/* the mode indicator (s8) */
+{
+  const mi = core.modeIndicator;
+  ok(mi({ useClaude: false }, {}, { claudeConnected: false }).label === 'Scripted' && !mi({ useClaude: false }, {}, {}).offline, 'indicator: switch off = Scripted, never offline');
+  ok(mi({}, {}, { claudeConnected: true }).mode === 'claude' && !mi({}, {}, { claudeConnected: true }).offline, 'indicator: Claude connected = Claude mode');
+  ok(mi({}, {}, { claudeConnected: false, offlineReason: 'no-llm' }).offline && mi({}, {}, { claudeConnected: false, offlineReason: 'no-llm' }).reason === 'no-llm', 'indicator: Claude away = Offline mode with the reason');
+  ok(mi({}, { lastMode: 'scripted', lastFallbackReason: 'timeout' }, { claudeConnected: true }).offline, 'indicator: the fallback handled the last command = Offline mode');
+  ok(!mi({}, { lastMode: 'scripted', lastFallbackReason: 'approvals' }, { claudeConnected: true }).offline, 'indicator: a spoken approval is by design, not offline');
+  ok(core.initialState({}).lastMode === '' && core.initialState({}).lastFallbackReason === '', 'state carries lastMode / lastFallbackReason');
+}
+
 console.log(`${n - failed}/${n} wake-listener checks passed`);
 process.exit(failed ? 1 : 0);

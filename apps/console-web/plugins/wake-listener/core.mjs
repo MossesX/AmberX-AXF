@@ -120,6 +120,30 @@ export function claudeGate(settings, text) {
   return { claude: true, reason: '' };
 }
 
+export const FALLBACK_LABEL = {
+  off: 'Claude mode is off', approvals: 'approvals stay spoken', 'no-llm': 'no AI assistant', 'not-claude': 'not a Claude model', cooldown: 'Claude failed a moment ago',
+  timeout: 'Claude was too slow', error: 'Claude unreachable', 'no-credit': 'Claude is out of credits', 'no-command': 'Claude picked nothing', refused: 'the pick was refused',
+  'unknown-command': 'Claude picked an unknown command', network: 'the console was unreachable', untested: 'not tried yet',
+};
+/** Fallbacks that are by design, not Claude being away: they never light the offline indicator. */
+const BY_DESIGN = new Set(['', 'off', 'approvals']);
+
+/**
+ * The mode indicator (chip on the panel, suffix on the banner light): Claude mode, Scripted (the switch off), or
+ * Offline mode = Claude mode is on but Claude is not connected or the scripted fallback handled the last command.
+ * `claude` is GET /state's view ({ claudeConnected, offlineReason }).
+ */
+export function modeIndicator(settings, state, claude) {
+  const s = normalizeSettings(settings);
+  if (!s.useClaude) return { mode: 'scripted', offline: false, reason: 'off', label: 'Scripted', detail: 'Claude mode is off: the scripted matcher answers every command.' };
+  const c = claude ?? {};
+  const last = state?.lastMode === 'scripted' && !BY_DESIGN.has(state.lastFallbackReason ?? '') ? state.lastFallbackReason : '';
+  const away = c.claudeConnected === false ? (c.offlineReason && !BY_DESIGN.has(c.offlineReason) ? c.offlineReason : 'error') : '';
+  const reason = last || away;
+  if (reason) return { mode: 'scripted', offline: true, reason, label: 'Offline mode', detail: `The scripted matcher is answering: ${FALLBACK_LABEL[reason] ?? reason}.` };
+  return { mode: 'claude', offline: false, reason: '', label: 'Claude mode', detail: c.claudeConnected ? 'Claude understands your commands.' : 'Claude understands your commands once it answers.' };
+}
+
 /* ------------------------------------------------------------------ the wake phrase */
 
 const LEAD = /^(?:(?:hey|hi|ok|okay|yo|hello)\s+)?/;
@@ -166,7 +190,7 @@ export const ENGINE_LABEL = { native: 'on-device (console app)', webspeech: 'bro
 /** A fresh listener state (listener-state shape, what GET /state and the banner light show). */
 export function initialState(settings, now = Date.now()) {
   const s = normalizeSettings(settings);
-  return { $axf: FRAME, on: s.on, phase: s.on ? 'idle' : 'off', engine: 'none', listening: false, micOpen: false, awakeUntil: 0, lastHeard: '', lastHeardAt: 0, lastWake: '', lastWakeAt: 0, lastCommand: '', lastReply: '', error: '', updatedAt: now };
+  return { $axf: FRAME, on: s.on, phase: s.on ? 'idle' : 'off', engine: 'none', listening: false, micOpen: false, awakeUntil: 0, lastHeard: '', lastHeardAt: 0, lastWake: '', lastWakeAt: 0, lastCommand: '', lastReply: '', lastMode: '', lastFallbackReason: '', error: '', updatedAt: now };
 }
 
 /**

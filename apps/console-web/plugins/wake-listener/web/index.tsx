@@ -21,7 +21,7 @@ import { Button, Chip, Container, Note, SelectField, Switch, TextField, useRunti
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
-import { CLAUDE_TIMEOUT_MAX, CLAUDE_TIMEOUT_MIN, DEFAULTS, ENGINE_LABEL, FOLDER, SETTING_KEYS, hear, initialState, light, normalizeSettings, pickEngine, sleep, stateLine, switched, wizardOff, wizardOn, type ListenerSettings, type ListenerState } from '../core.mjs';
+import { CLAUDE_TIMEOUT_MAX, CLAUDE_TIMEOUT_MIN, DEFAULTS, ENGINE_LABEL, FOLDER, SETTING_KEYS, hear, modeIndicator, type ClaudeView, initialState, light, normalizeSettings, pickEngine, sleep, stateLine, switched, wizardOff, wizardOn, type ListenerSettings, type ListenerState } from '../core.mjs';
 import { available, chime, createEngine, say, type Engine } from './engine';
 import { cancelFloor, floorLabel, handleCommand, hasFloor } from './flow';
 import { appMenu } from './menu';
@@ -38,8 +38,8 @@ const REPORT_MIN_MS = 2_000;
 
 /* ------------------------------------------------------------------ the one listener in this page */
 
-interface Live { rt: AxfRuntime | null; settings: ListenerSettings & { updatedAt?: string }; state: ListenerState; engine: Engine | null; timer: ReturnType<typeof setTimeout> | null; poll: ReturnType<typeof setInterval> | null; reportAt: number; reportTimer: ReturnType<typeof setTimeout> | null; fns: Set<() => void> }
-const L: Live = { rt: null, settings: normalizeSettings({}), state: initialState({}), engine: null, timer: null, poll: null, reportAt: 0, reportTimer: null, fns: new Set() };
+interface Live { rt: AxfRuntime | null; settings: ListenerSettings & { updatedAt?: string }; state: ListenerState; claude: ClaudeView; engine: Engine | null; timer: ReturnType<typeof setTimeout> | null; poll: ReturnType<typeof setInterval> | null; reportAt: number; reportTimer: ReturnType<typeof setTimeout> | null; fns: Set<() => void> }
+const L: Live = { rt: null, settings: normalizeSettings({}), state: initialState({}), claude: {}, engine: null, timer: null, poll: null, reportAt: 0, reportTimer: null, fns: new Set() };
 
 const tell = () => { L.fns.forEach((f) => { try { f(); } catch { /* a panel's problem */ } }); paintBanner(); scheduleReport(); };
 function setState(next: ListenerState) { L.state = next; tell(); }
@@ -51,6 +51,19 @@ async function loadSettings(): Promise<void> {
     if (r.ok && j.ok && j.settings) applySettings(j.settings);
   } catch { /* offline: keep what we have */ }
 }
+/** Claude mode's view from the server (is Claude connected, why not): GET /state, read with the settings poll. */
+async function loadClaude(): Promise<void> {
+  if (!L.settings.useClaude) return;
+  try {
+    const r = await pluginFetch(FOLDER, 'state');
+    const j = (await r.json()) as { ok?: boolean; claude?: ClaudeView & Record<string, unknown> };
+    if (r.ok && j.ok && j.claude) {
+      const next = { claudeConnected: j.claude.claudeConnected as boolean, offlineReason: String(j.claude.offlineReason ?? '') };
+      if (JSON.stringify(next) !== JSON.stringify(L.claude)) { L.claude = next; tell(); }
+    }
+  } catch { /* offline: keep what we have */ }
+}
+
 function applySettings(s: ListenerSettings & { updatedAt?: string }) {
   const before = L.settings;
   L.settings = { ...normalizeSettings(s), updatedAt: s.updatedAt };
@@ -148,6 +161,8 @@ function onHeard(text: string, opts: { direct?: boolean } = {}) {
   if (r.event === 'ignored') return;
   if (L.timer) { clearTimeout(L.timer); L.timer = null; }
   void handleCommand(flowHost(rt), r.command ?? '').then((res) => {
+    if (res.mode) L.state = { ...L.state, lastMode: res.mode, lastFallbackReason: res.mode === 'scripted' ? res.reason ?? '' : '' };
+    if (res.mode === 'claude' && L.claude.claudeConnected !== true) L.claude = { claudeConnected: true, offlineReason: '' };
     if (res.say) speak(res.say);
     setState(res.done ? wizardOff({ ...L.state, lastCommand: r.command ?? '' }) : wizardOn(L.state));
   }).catch((e: Error) => { speak(`That failed: ${e.message}`); setState(wizardOff(L.state)); });
@@ -162,7 +177,10 @@ let painted = '';
 function paintBanner() {
   const rt = L.rt;
   if (!rt) return;
-  const l = light(L.state);
+  const base = light(L.state);
+  const mi = modeIndicator(L.settings, L.state, L.claude);
+  // the offline indicator rides on the mic light: "Mic on … · offline mode" while Claude mode is on but Claude is away
+  const l = mi.offline && base.lit ? { ...base, label: `${base.label} · offline mode` } : base;
   const mode = L.settings.indicator;
   const show = mode === 'always' || (mode === 'listening' && l.lit);
   const key = JSON.stringify([l.label, l.tone, show]);
@@ -198,13 +216,18 @@ export function WakeListenerPanel() {
   const have = available();
   const set = useCallback(async (patch: Record<string, unknown>) => { const e = await saveSettings(patch); setErr(e); if (e) rt.toast(e, 'danger', 'Wake listener'); }, [rt]);
   const l = light(st);
+  const mi = modeIndicator(s, st, live.claude);
   return (
     <div className="axp-wake-listener" data-help="settings:wake-listener">
       <Container title="Listener" icon="mic">
         <div className="axp-wake-listener__row">
           <Switch label="Listen for a wake phrase" checked={s.on} onChange={(v) => void set({ on: v })} hint="Off closes the microphone everywhere this console is open; the light on the banner goes grey." />
           <Chip tone={l.tone === 'danger' ? 'danger' : l.tone === 'success' ? 'success' : l.tone === 'warning' ? 'warning' : l.tone === 'accent' ? 'accent' : undefined}>{l.label}</Chip>
+          <span className="axp-wake-listener__mode" data-axf-target="wake-listener.mode" data-mode={mi.mode} data-offline={mi.offline ? 'true' : 'false'} title={mi.detail} aria-label={`${mi.label}: ${mi.detail}`}>
+            <Chip tone={mi.offline ? 'warning' : mi.mode === 'claude' ? 'accent' : undefined}>{mi.label}</Chip>
+          </span>
         </div>
+        {mi.offline && <p className="fx-muted" data-axf-target="wake-listener.offline">{mi.detail}</p>}
         <p className="fx-muted">{stateLine(st, s)}</p>
         {st.error && <Note tone="warning">{st.error}</Note>}
         {!have.native && !have.webspeech && <Note tone="info">This browser has no speech recognizer. The console Android app brings its own on-device engine (offline) through the native bridge; Chrome and Edge use the browser's.</Note>}
@@ -288,8 +311,8 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('wake-listener.wizard', (args) => { const id = args.join(':').trim(); if (id) onHeard(`start wizard ${id}`, { direct: true }); }, { label: 'Start a spoken wizard for a command', params: true, effect: 'write' });
     rt.actions.register('wake-listener.cancel', () => { const m = cancelFloor(); if (m) speak(m); setState(wizardOff(L.state)); }, { label: 'Cancel the spoken wizard', effect: 'write' });
     rt.actions.register('wake-listener.open', () => rt.actions.dispatch(`settings.open:${FOLDER}`, { runtime: rt }), { label: 'Wake listener settings', effect: 'navigate' });
-    void loadSettings().then(() => syncEngine());
-    L.poll = setInterval(() => { if (typeof document === 'undefined' || document.visibilityState === 'visible' || !L.settings.pauseHidden) void loadSettings(); }, SETTINGS_POLL_MS);
+    void loadSettings().then(() => { void loadClaude(); return syncEngine(); });
+    L.poll = setInterval(() => { if (typeof document === 'undefined' || document.visibilityState === 'visible' || !L.settings.pauseHidden) { void loadSettings(); void loadClaude(); } }, SETTINGS_POLL_MS);
     if (typeof document !== 'undefined') {
       document.addEventListener('visibilitychange', () => { if (!L.settings.pauseHidden || !L.engine) return; if (document.visibilityState === 'hidden') L.engine.pause(); else L.engine.resume(); });
       window.addEventListener('axf-native-ready', () => { void syncEngine(); });

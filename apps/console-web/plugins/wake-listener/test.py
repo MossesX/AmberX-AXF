@@ -229,4 +229,22 @@ r = c.post("/p/understand", json={"text": "create a new project named Gizmo John
 check(r["mode"] == "offline" and r["reason"] == "off" and len(llm.calls) == n, "switch off: offline, no Claude request at all (even while connected)")
 c.post("/p/settings", json={"useClaude": True})
 
+# ---------------------------------------------------------------- GET /state: mode, claudeConnected, lastFallbackReason (s8)
+
+mod.claude_status().data.update(failedAt=0)
+llm.reply = call("listener_help", {})
+c.post("/p/understand", json={"text": "what can you do"})
+st = c.get("/p/state").json()
+check(st["state"]["mode"] == "claude" and st["state"]["claudeConnected"] is True and st["state"]["lastFallbackReason"] == "" and not st["state"]["offline"], "state: Claude mode, connected, no fallback")
+llm.error = "boom"
+c.post("/p/understand", json={"text": "what can you do"})
+st = c.get("/p/state").json()["state"]
+check(st["mode"] == "scripted" and st["claudeConnected"] is False and st["lastFallbackReason"] == "error" and st["offline"] and st["offlineReason"] == "error", "state: after a failure the offline indicator is on, with the reason")
+llm.error = ""
+mod.claude_status().data.update(failedAt=0)
+c.post("/p/settings", json={"useClaude": False})
+st = c.get("/p/state").json()["state"]
+check(st["mode"] == "scripted" and st["useClaude"] is False and not st["offline"], "state: switch off = scripted, not 'offline'")
+c.post("/p/settings", json={"useClaude": True})
+
 print(f"{ok} checks passed")

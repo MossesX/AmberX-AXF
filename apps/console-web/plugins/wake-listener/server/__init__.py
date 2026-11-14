@@ -9,7 +9,9 @@ plugin's data folder through the plugin's Node core (listener.mjs → core.mjs),
   POST settings {patch}      change any of them; addPhrase / removePhrase add or drop one wake phrase
   POST on | POST off         the switch (the open console follows within a few seconds)
   GET  state                 the last state the console reported: phase (off / idle / awake / wizard), engine, mic open,
-                             last heard, last command, last reply; `fresh` = a console is listening right now
+                             last heard, last command, last reply; `fresh` = a console is listening right now; Claude
+                             mode: mode (claude / scripted), useClaude, claudeConnected, lastMode, lastFallbackReason,
+                             offline + offlineReason (the offline indicator)
   POST report {state}        the open console reports its state (left out of the commands: the page's own)
   GET  catalog [?q=]         the voice command catalog (every console action, plugin command, control@1 target and
                              pipeline command with its spoken forms and fields)
@@ -82,8 +84,11 @@ def run_understand(text: str, context: dict[str, Any] | None = None, pending: di
     timeout_s = float((settings or {}).get("claudeTimeoutSec", 8))
     if not use_claude:
         return claude_intent.offline("off")  # nothing is sent to Claude
-    return claude_intent.understand(text, llm=plugin_services.get("axf.llm@1"), entries=catalog_entries(), status=claude_status(),
-                                    use_claude=use_claude, timeout_s=timeout_s, context=context, pending=pending)
+    res = claude_intent.understand(text, llm=plugin_services.get("axf.llm@1"), entries=catalog_entries(), status=claude_status(),
+                                   use_claude=use_claude, timeout_s=timeout_s, context=context, pending=pending)
+    if res.get("ok"):
+        claude_status().handled("claude" if res.get("mode") == "claude" else "scripted", str(res.get("reason") or ""))
+    return res
 
 
 def cli(*args: str, stdin: str | None = None, timeout: int = 30) -> dict[str, Any]:
@@ -158,9 +163,31 @@ async def switch_off(request: Request) -> JSONResponse:
     return answer(await run_in_threadpool(cli, "off", "--by", _who(request)))
 
 
+def read_state() -> dict[str, Any]:
+    """The page's last report plus Claude mode: mode (claude / scripted), useClaude, claudeConnected, lastFallbackReason,
+    offline (Claude mode on but the fallback answered or Claude is away) and why."""
+    r = cli("state")
+    if not r.get("ok"):
+        return r
+    s = cli("settings")
+    use_claude = bool(((s.get("settings") if s.get("ok") else None) or {}).get("useClaude", True))
+    view = claude_status().view(plugin_services.get("axf.llm@1") is not None, use_claude)
+    st = r.get("state") or {}
+    # the page's report knows who answered the last command; the route's record is the fallback when no page reported
+    page_newer = bool(st.get("lastMode")) and int(st.get("updatedAt") or 0) >= view["lastHandledAt"]
+    last_mode = st.get("lastMode") if page_newer else view["lastMode"]
+    last_reason = st.get("lastFallbackReason", "") if page_newer else view["lastFallbackReason"]
+    by_design = ("", "off", "approvals")
+    offline = use_claude and (not view["claudeConnected"] or (last_mode == "scripted" and last_reason not in by_design))
+    claude = {**view, "lastMode": last_mode or "", "lastFallbackReason": last_reason or "", "offline": offline,
+              "offlineReason": (last_reason if last_mode == "scripted" and last_reason not in by_design else view["offlineReason"]) if offline else "",
+              "mode": "claude" if use_claude and not offline else "scripted"}
+    return {**r, "state": {**st, **claude}, "claude": claude}
+
+
 @router.get("/state")
 async def state() -> JSONResponse:
-    return answer(await run_in_threadpool(cli, "state"))
+    return answer(await run_in_threadpool(read_state))
 
 
 @router.post("/report")

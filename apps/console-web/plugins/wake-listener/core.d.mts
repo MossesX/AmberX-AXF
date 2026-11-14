@@ -45,6 +45,10 @@ export interface ListenerState {
   lastWake: string;
   lastWakeAt: number;
   lastCommand: string;
+  /** who understood the last command: claude, scripted, or '' (none yet) */
+  lastMode: '' | 'claude' | 'scripted';
+  /** why the scripted matcher took it while Claude mode was on ('' = it was not a fallback) */
+  lastFallbackReason: string;
   lastReply: string;
   error: string;
   updatedAt: number;
@@ -72,3 +76,8 @@ export function stateLine(state: ListenerState, settings: unknown): string;
 
 export const APPROVAL_WORDS: RegExp;
 export function claudeGate(settings: Partial<ListenerSettings> | null | undefined, text: string): { claude: boolean; reason: '' | 'off' | 'approvals' };
+
+export const FALLBACK_LABEL: Record<string, string>;
+export interface ClaudeView { claudeConnected?: boolean | null; offlineReason?: string }
+export interface ModeIndicator { mode: 'claude' | 'scripted'; offline: boolean; reason: string; label: string; detail: string }
+export function modeIndicator(settings: Partial<ListenerSettings> | null | undefined, state: Partial<ListenerState> | null | undefined, claude?: ClaudeView | null): ModeIndicator;
