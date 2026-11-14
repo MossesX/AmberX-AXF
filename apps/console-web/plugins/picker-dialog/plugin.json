@@ -25,7 +25,9 @@
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/picker-dialog",
     "env": [],
-    "mentions": []
+    "mentions": [
+      "apps/console-web/plugins/README.md"
+    ]
   },
   "commands": {
     "$axf": "plugin-commands@1",
