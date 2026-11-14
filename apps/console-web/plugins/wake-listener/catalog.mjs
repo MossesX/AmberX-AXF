@@ -105,6 +105,9 @@ export const PHRASEBOOK = {
   'build-orchestrator/pipeline-status': { title: 'Pipeline status', group: 'pipelines', say: ['pipeline status', 'how is the pipeline', 'what is the pipeline doing', 'pipeline'], fields: [], speak: 'pipeline' },
   'build-orchestrator/priority-list': { title: 'The build priority list', group: 'pipelines', say: ['what is queued', 'priority list', 'list the queue', 'what builds are queued'], fields: [], speak: 'priority' },
   'wake-listener/off': { title: 'Stop listening', group: 'listener', say: ['stop listening', 'turn off the listener', 'turn the listener off', 'mic off', 'listener off', 'go to sleep'], fields: [] },
+  'wake-listener/claude-on': { title: 'Use Claude for voice (Claude mode on)', group: 'listener', say: ['use claude for voice', 'use claude for voice commands', 'use claude for the voice', 'turn on claude mode', 'turn claude mode on', 'claude mode on', 'switch on claude mode'], fields: [], speak: 'claude-mode' },
+  'wake-listener/claude-off': { title: 'Stop using Claude for voice (Claude mode off)', group: 'listener', say: ['stop using claude for voice', 'stop using claude for voice commands', 'stop using claude', 'turn off claude mode', 'turn claude mode off', 'claude mode off', 'switch off claude mode'], fields: [], speak: 'claude-mode' },
+  'wake-listener/claude': { title: 'Is Claude mode on', group: 'listener', say: ['is claude mode on', 'claude mode status', 'are you using claude', 'is claude connected'], fields: [], speak: 'claude-mode' },
   'wake-listener/settings': { title: 'The listener\'s settings', group: 'listener', say: ['what are my wake phrases', 'listener settings'], fields: [], speak: 'wake-settings' },
   'control:pass.scopes': {
     title: 'Veto pass: run everything without the veto wait for a while', group: 'approvals', confirm: true,
@@ -428,6 +431,7 @@ export function speakResult(entry, result) {
   if (entry.speak === 'items' && Array.isArray(r.data?.items ?? r.items)) { const items = r.data?.items ?? r.items; return items.length ? `${items.length} open: ${items.slice(0, 5).map((i) => i.title).join('; ')}${items.length > 5 ? ', and more' : ''}.` : 'Nothing open.'; }
   if (entry.speak === 'list' && Array.isArray(r.data?.items ?? r.items)) { const items = r.data?.items ?? r.items; return `${items.length} item${items.length === 1 ? '' : 's'}${items.length ? `: ${items.slice(0, 5).map((i) => i.title || i.label || i.id).join('; ')}` : ''}.`; }
   if (entry.speak === 'wake-settings' && r.settings) return `Wake phrases: ${r.settings.phrases.join(', ')}. The listener is ${r.settings.on ? 'on' : 'off'}.`;
+  if (entry.speak === 'claude-mode' && typeof r.useClaude === 'boolean') return r.useClaude ? `Claude mode is on${r.claudeConnected === false ? `, but Claude isn't connected: the scripted matcher answers for now` : ''}.` : 'Claude mode is off. The scripted matcher answers, and nothing you say goes to Claude.';
   if (entry.speak === 'pipeline' && r.status) return `Pipeline: ${typeof r.status === 'string' ? r.status : JSON.stringify(r.status).slice(0, 160)}.`;
   if (entry.speak === 'priority' && Array.isArray(r.items ?? r.builds)) { const items = r.items ?? r.builds; return `${items.length} in the queue${items.length ? `: ${items.slice(0, 5).map((b) => b.title || b.id).join('; ')}` : ''}.`; }
   if (typeof r.message === 'string' && r.message) return r.message;

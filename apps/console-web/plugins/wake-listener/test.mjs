@@ -208,5 +208,32 @@ ok(['approve', 'deny that one', 'approve all pending', 'set the veto timer to tw
   ok(h.count === 3 && hc.count === 1 && hc.entries[0].command === 'project-wizard/run' && cli('history', '--mode', 'scripted').entries[0].reason === 'timeout', 'cli history: mode recorded, filter works');
 }
 
+/* parity: REST, MCP, CLI and voice reach the same routes (s11) */
+{
+  const { requestOf } = await import('./cli.mjs');
+  const { registry } = await import('../../../../framework/cli/plugin-commands.mjs');
+  const reg = registry({ apps: ['console-web'] });
+  const mine = reg.plugins.find((p) => p.folder === 'wake-listener');
+  const mcp = (id) => { const c = mine.commands.find((x) => x.id === id); return c?.run?.route ? `${c.run.route.method} ${c.run.route.path.replace(/^\//, '')}` : ''; };
+  const server = (await import('node:fs')).readFileSync(new URL('./server/__init__.py', import.meta.url), 'utf8');
+  const rest = (m, p) => server.includes(`@router.${m.toLowerCase()}("/${p}")`);
+  const cliReq = (...w) => { const r = requestOf(w); return `${r.method} ${r.path.split('?')[0]}`; };
+  const voice = (phrase) => { const m = matchCommand(catalog, phrase); const r = m && requestFor(m.entry, m.slots); return r?.kind === 'plugin-route' && r.folder === 'wake-listener' ? `${r.method} ${r.path.replace(/^\//, '')}` : `none (${m?.entry.id})`; };
+  for (const [what, id, words, phrase] of [['on', 'claude-on', ['claude', 'on'], 'use Claude for voice'], ['off', 'claude-off', ['claude', 'off'], 'stop using Claude for voice'], ['status', 'claude', ['claude', 'status'], 'is claude mode on']]) {
+    const want = mcp(id);
+    const [m, p] = want.split(' ');
+    ok(want && rest(m, p) && cliReq(...words) === want && voice(phrase) === want, `parity ${what}: REST, MCP (wake-listener_${id}), CLI (axf voice ${words.join(' ')}) and voice ("${phrase}") → ${want}`);
+  }
+  ok(mcp('claude-test') === 'POST claude/test' && cliReq('claude', 'test', 'make', 'a', 'project') === 'POST claude/test' && rest('POST', 'claude/test'), 'parity test: REST, MCP and CLI dry runs share POST claude/test');
+  ok(mcp('history') === 'GET history' && cliReq('history', 'claude') === 'GET history' && rest('GET', 'history'), 'parity history: REST, MCP and CLI share GET history');
+  ok(requestOf(['claude', 'timeout', '12']).body.timeoutSec === 12 && requestOf(['claude', 'nope']).error && requestOf(['history', 'bogus']).error, 'cli: timeout body, errors on unknown words');
+  const local = JSON.parse(execFileSync('node', [new URL('./cli.mjs', import.meta.url).pathname, 'claude', 'off', '--local', '--json'], { env: process.env, encoding: 'utf8' }));
+  ok(local.settings.useClaude === false && cli('settings').settings.useClaude === false, 'axf voice claude off --local writes the shared store');
+  execFileSync('node', [new URL('./cli.mjs', import.meta.url).pathname, 'claude', 'on', '--local', '--json'], { env: process.env });
+  ok(speakResult(matchCommand(catalog, 'use claude for voice').entry, { ok: true, useClaude: true, claudeConnected: true }) === 'Claude mode is on.', 'voice: the reply says the mode');
+  const axfOut = execFileSync('node', [new URL('../../../../framework/cli/axf.mjs', import.meta.url).pathname, 'voice', 'claude', 'status', '--local', '--json'], { env: process.env, encoding: 'utf8' });
+  ok(JSON.parse(axfOut).useClaude === true, 'axf voice routes to the listener by capability');
+}
+
 console.log(`${n - failed}/${n} wake-listener checks passed`);
 process.exit(failed ? 1 : 0);
