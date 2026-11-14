@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:17:57.084Z",
+ "updatedAt": "2026-11-14T04:18:32.016Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137350,7 +137350,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:16:22.549Z",
+   "updatedAt": "2026-11-14T04:18:30.299Z",
    "builtAt": "",
    "notes": [
     {
@@ -137518,6 +137518,25 @@
      "note": "",
      "uid": "st-mwfw6hyo016iwo",
      "createdAt": "2026-11-14T04:14:48.213Z"
+    },
+    {
+     "id": "s11",
+     "text": "Sixth hero video, 'teen driver safety': parents whose teenager just got a licence build a driving safety app by voice in minutes. Features: trip tracking, alerts if the phone is used for texting while the car is moving, alerts when speed goes over a limit the parents set, geofences that notify them when the teen arrives at or leaves certain places, and push notifications to the parents' phones. Show it assembled from pre-built AXF libraries (location, motion, notifications, maps), no code, connecting to the family's other apps on axHub. Show the teen's side too: the app is visible on his phone and he knows it's on (family safety, not secret tracking), plus a 'home safe' check-in. Label staged parts as a preview. Also cut a 60-second version.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfwb9br01fubs",
+     "createdAt": "2026-11-14T04:18:30.300Z"
     },
     {
      "id": "s7",

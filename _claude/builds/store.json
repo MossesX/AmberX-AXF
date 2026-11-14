@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5214,
- "updatedAt": "2026-11-14T04:17:57.084Z",
+ "rev": 5215,
+ "updatedAt": "2026-11-14T04:18:32.016Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212111,7 +212111,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:16:22.549Z",
+   "updatedAt": "2026-11-14T04:18:30.299Z",
    "builtAt": "",
    "notes": [
     {
@@ -212334,6 +212334,28 @@
      "updatedAt": "2026-11-14T04:16:22.756Z"
     },
     {
+     "id": "s11",
+     "uid": "st-mwfwb9br01fubs",
+     "title": "",
+     "text": "Sixth hero video, 'teen driver safety': parents whose teenager just got a licence build a driving safety app by voice in minutes. Features: trip tracking, alerts if the phone is used for texting while the car is moving, alerts when speed goes over a limit the parents set, geofences that notify them when the teen arrives at or leaves certain places, and push notifications to the parents' phones. Show it assembled from pre-built AXF libraries (location, motion, notifications, maps), no code, connecting to the family's other apps on axHub. Show the teen's side too: the app is visible on his phone and he knows it's on (family safety, not secret tracking), plus a 'home safe' check-in. Label staged parts as a preview. Also cut a 60-second version.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T04:18:30.300Z",
+     "updatedAt": "2026-11-14T04:18:30.519Z"
+    },
+    {
      "id": "s7",
      "uid": "st-mwfvsr6p0143q5",
      "title": "",
@@ -212430,7 +212452,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
