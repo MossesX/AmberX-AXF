@@ -414,7 +414,8 @@ export class ControlRegistry {
     scan();
     let pending: ReturnType<typeof setTimeout> | null = null;
     const mo = new MutationObserver(() => { if (pending) return; pending = setTimeout(() => { pending = null; scan(); }, 60); });
-    mo.observe(root instanceof Document ? root.documentElement : (root as Node), { childList: true, subtree: true, attributes: true, attributeFilter: [CONTROL_TARGET_ATTR, CONTROL_SCOPE_ATTR] });
+    // a document by its node type, not `instanceof Document`: that needs a global constructor jsdom hosts don't install
+    mo.observe((root as Node).nodeType === 9 ? (root as Document).documentElement : (root as Node), { childList: true, subtree: true, attributes: true, attributeFilter: [CONTROL_TARGET_ATTR, CONTROL_SCOPE_ATTR] });
     return () => { mo.disconnect(); if (pending) clearTimeout(pending); for (const off of owned.values()) off(); owned.clear(); };
   }
 }

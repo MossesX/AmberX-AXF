@@ -1354,7 +1354,7 @@
             {
               "id": "ui.opacity.surfaces",
               "title": "Surface transparency tokens: every dialog, settings window, panel, menu, toolbar and banner reads its own opacity",
-              "note": "",
+              "note": "Each kind of surface (dialog, settings window, panel, menu, toolbar, banner) has its own opacity token, so a skin or a person can make one see-through with a frosted backdrop without touching the others.",
               "tag": "core",
               "recommended": true,
               "suggests": []
