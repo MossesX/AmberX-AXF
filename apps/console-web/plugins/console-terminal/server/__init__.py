@@ -398,6 +398,10 @@ class HeadlessService:
     def meters(self, names: list[str]) -> dict[str, Any]:
         return sessions.meters(list(names))
 
+    def host(self) -> str:
+        """The VPS host the Terminal is set up for (Settings → Plugins → Terminal → VPS host); empty when none."""
+        return str(store.settings()["vps"].get("host") or "").strip()
+
     def vps_read(self, remote: str, timeout: int = 15) -> dict[str, Any]:
         """One short, non-interactive read on the VPS host over the Terminal's key: {ready, out, why}."""
         st = store.settings()

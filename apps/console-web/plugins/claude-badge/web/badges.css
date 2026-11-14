@@ -4,3 +4,5 @@
 .axp-badges__acct { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); padding-block: var(--fx-dens-gap-sm); border-top: var(--fx-border-w) solid var(--fx-border); }
 .axp-badges__win { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
 .axp-badges__who { min-width: calc(var(--fx-space) * 16); }
+.axp-badges__limits { align-items: flex-end; }
+.axp-badges__limits .fx-field { flex: 1 1 calc(var(--fx-space) * 12); }

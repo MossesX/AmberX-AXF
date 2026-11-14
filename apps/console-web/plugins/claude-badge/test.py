@@ -19,6 +19,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[3]
 os.environ["AXF_CLAUDE_BADGE_DIR"] = tempfile.mkdtemp(prefix="axf-cb-test-")
+os.environ["AXF_CLAUDE_BADGE_WATCH"] = "0"
 sys.path.insert(0, str(HERE.parent.parent / "server"))
 import console_context as cx  # noqa: E402
 import plugin_services  # noqa: E402
@@ -134,38 +135,38 @@ llm.model = "claude-opus-5-5"
 plugin_services.provide("axf.llm@1", llm, "fake-assistant")
 llm.calls.clear()
 before = f.read_text("utf-8")
-r = c.get("/p/vps").json()
+r = c.get("/p/claude-login").json()
 check(r["state"] == "error" and not r["reachable"] and "plugin is off" in r["error"], "no accounts service: grey, says why, not 'logged out'")
 fa, fk = FakeAccounts(), FakeKeys()
 plugin_services.provide("axf.claude-accounts@1", fa, "fake-accounts")
 plugin_services.provide("axf.ai-keys@1", fk, "fake-keys")
-r = c.get("/p/vps").json()
+r = c.get("/p/claude-login").json()
 check(r["ok"] and r["state"] == "ok" and r["email"] == "b@example.com" and r["plan"] == "max" and r["account"] == "account-1", "logged in: green, with who")
 check(fk.asked == "account-1", "the limit mark is asked for the active account")
 fk.at = 12345
-r = c.get("/p/vps").json()
+r = c.get("/p/claude-login").json()
 check(not r["ok"] and r["state"] == "no-credit" and r["reachable"] and r["limitedAt"] == 12345 and r["email"], "limit hit: amber, keeps the account")
 fk.at = 0
 fa.value = {**fa.value, "login": {}}
-r = c.get("/p/vps").json()
+r = c.get("/p/claude-login").json()
 check(r["state"] == "error" and r["reachable"] and "isn't logged in" in r["error"], "read fine, nobody logged in: red")
 fa.value = {**fa.value, "login": {"email": "b@example.com"}, "expiresAt": "2020-01-01T00:00:00.000Z"}
-check("expired" in c.get("/p/vps").json()["error"], "login past its expiry: red")
+check("expired" in c.get("/p/claude-login").json()["error"], "login past its expiry: red")
 fa.value = {**fa.value, "expiresAt": "not a date"}
-check(c.get("/p/vps").json()["state"] == "ok", "an unreadable expiry is not an expired login")
+check(c.get("/p/claude-login").json()["state"] == "ok", "an unreadable expiry is not an expired login")
 fa.value = {**fa.value, "checked": False, "login": {}}
-r = c.get("/p/vps").json()
+r = c.get("/p/claude-login").json()
 check(r["state"] == "error" and not r["reachable"], "`claude auth status` gave nothing: can't read, not logged out")
 fa.value = {**fa.value, "ready": False, "why": "the VPS tab isn't set up"}
-r = c.get("/p/vps").json()
+r = c.get("/p/claude-login").json()
 check(not r["reachable"] and "VPS tab" in r["error"], "host unreachable: grey with the reason")
 fa.fail = True
-r = c.get("/p/vps").json()
+r = c.get("/p/claude-login").json()
 check(r["state"] == "error" and not r["reachable"] and "ssh broke" in r["error"], "a failing read says why")
 fa.fail = False
 fa.value = FakeAccounts().value
 plugin_services.withdraw("fake-keys")
-check(c.get("/p/vps").json()["state"] == "ok", "AI keys off: still reads the login")
+check(c.get("/p/claude-login").json()["state"] == "ok", "AI keys off: still reads the login")
 check(not llm.calls, "VPS checks never called a model")
 check(f.read_text("utf-8") == before, "VPS checks leave the console test's saved result alone")
 
@@ -180,7 +181,7 @@ async def _guest(request, call_next):
 
 
 guest_app.include_router(mod.router, prefix="/p")
-g = TestClient(guest_app).get("/p/vps").json()
+g = TestClient(guest_app).get("/p/claude-login").json()
 check(g["state"] == "ok" and not g["email"] and not g["plan"] and not g["account"], "a non-owner gets the state, not who it is")
 # ---- usage meter: the read on the host
 
@@ -302,4 +303,85 @@ class FakeVinny:
 plugin_services.provide("axf.vinny@1", FakeVinny(), "fake")
 mod._amberx.update(at=0.0, value=None)
 check(c.get("/p/amberx").json()["online"] is True and c.get("/p/amberx").json()["state"] == "ok" and FakeVinny.n == 1, "GET amberx asks the hub once a minute")
+
+# ---- VPS badge: pingable or not, nothing else
+
+V = mod.health
+rt = Path(tempfile.mkdtemp(prefix="axf-route-")) / "route"
+rt.write_text("Iface\tDestination\tGateway\tFlags\neth0\t00000000\t0100A8C0\t0003\n")
+check(V.gateway(str(rt)) == "192.168.0.1", "the Docker gateway is read from the route table")
+os.environ.pop("AXF_VPS_HOST", None)
+plugin_services.withdraw("fake")
+check(V.vps_host(in_docker=False) == ("", ""), "no host known outside Docker with nothing set")
+check(V.vps_host(in_docker=True, route_file=str(rt))[0] == "192.168.0.1", "inside Docker: the gateway is the host")
+
+
+class FakeTerm:
+    def host(self):
+        return "10.0.0.5"
+
+
+plugin_services.provide("axf.headless@1", FakeTerm(), "fake-term")
+check(V.vps_host(in_docker=True, route_file=str(rt)) == ("10.0.0.5", "Terminal VPS host"), "the Terminal's VPS host before the gateway")
+os.environ["AXF_VPS_HOST"] = "vps.example.com"
+check(V.vps_host()[0] == "vps.example.com", "AXF_VPS_HOST wins")
+check(V.ping("h", icmp=lambda h, t: (True, 3.2, ""))["method"] == "icmp", "ICMP when it can be sent")
+check(not V.ping("h", icmp=lambda h, t: (False, 0, "no reply"))["ok"], "no ICMP reply: red, no TCP second try")
+p = V.ping("h", icmp=lambda h, t: (None, 0, "no permission"), tcp=lambda h, t: (True, 5.0, ""))
+check(p["ok"] and p["method"] == "tcp", "ICMP not allowed here: a TCP connect decides")
+import socket as _sock  # noqa: E402
+srv = _sock.socket(); srv.bind(("127.0.0.1", 0)); port = srv.getsockname()[1]; srv.close()
+check(V._tcp("127.0.0.1", 1, port)[0], "a refused connection still means the host answered")
+V._icmp, real_icmp = (lambda h, t: (True, 1.5, "")), V._icmp
+V.ping.__defaults__ = (V.PING_TIMEOUT_S, V._icmp, V._tcp)
+r = c.get("/p/vps", params={"refresh": 1}).json()
+check(r["state"] == "ok" and r["reachable"] and r["host"] == "vps.example.com" and r["source"] == "AXF_VPS_HOST", "GET vps: pingable is green")
+check(set(r) >= {"host", "method", "ms"} and "email" not in r and "plan" not in r, "the VPS badge carries no login, no shell")
+check(c.get("/p/vps").json()["cached"], "a second read within 20 s is cached")
+V.ping.__defaults__ = (V.PING_TIMEOUT_S, lambda h, t: (False, 0.0, "vps.example.com didn't answer the ping"), V._tcp)
+r = c.get("/p/vps", params={"refresh": 1}).json()
+check(r["state"] == "error" and not r["reachable"] and "didn't answer" in r["error"], "not pingable is red")
+os.environ["AXF_VPS_HOST"] = "bad host;rm"
+check(c.get("/p/vps", params={"refresh": 1}).json()["state"] == "error", "a host that isn't a host name never reaches the ping command")
+os.environ.pop("AXF_VPS_HOST")
+plugin_services.withdraw("fake-term")
+V.ping.__defaults__ = (V.PING_TIMEOUT_S, real_icmp, V._tcp)
+V._icmp = real_icmp
+
+# ---- server health: disk, CPU load, memory, swap, thresholds, disk alert
+
+info = V.meminfo("MemTotal:  8000000 kB\nMemFree: 100 kB\nMemAvailable:  2000000 kB\nSwapTotal: 1000000 kB\nSwapFree: 750000 kB\n")
+check(V.memory_of(info)["pct"] == 75.0 and V.swap_of(info)["pct"] == 25.0, "memory and swap percent from /proc/meminfo")
+check(V.swap_of({"SwapTotal": 0})["none"] and V.swap_of({})["pct"] == 0, "no swap says so")
+cpu = V.cpu_of("2.00 1.50 1.00 3/400 1234", 4)
+check(cpu["pct"] == 50.0 and cpu["load5"] == 1.5 and cpu["cores"] == 4, "CPU load as a percent of the cores")
+check(V.cpu_of("8 8 8", 4)["pct"] == 100.0 and V.cpu_of("junk", 0)["cores"] == 1, "load over the cores caps at 100; junk reads 0")
+st = types.SimpleNamespace(f_blocks=1000, f_bfree=100, f_bavail=50, f_frsize=4096)
+check(round(V.disk_of(st)["pct"], 1) == 94.7, "disk percent counts like df")
+t = V.thresholds()
+check(t == V.DEFAULTS, "defaults before anything is set")
+check(V.level(85, t["disk"]) == "warn" and V.level(90, t["disk"]) == "error" and V.level(10, t["disk"]) == "ok", "states from the thresholds")
+r = c.post("/p/thresholds", json={"metric": "disk", "warn": 60, "red": 70})
+check(r.status_code == 200 and r.json()["thresholds"]["disk"] == {"warn": 60.0, "red": 70.0}, "POST thresholds sets them")
+check(c.get("/p/thresholds").json()["thresholds"]["disk"]["red"] == 70, "and they are kept")
+check(c.post("/p/thresholds", json={"metric": "disk", "warn": 95}).status_code == 400, "warn above red is refused")
+check(c.post("/p/thresholds", json={"metric": "gpu", "red": 50}).status_code == 422, "an unknown metric is refused")
+raised, resolved = [], []
+cx.raise_alert, cx.resolve_alerts = raised.append, resolved.append
+proc = Path(tempfile.mkdtemp(prefix="axf-proc-"))
+(proc / "loadavg").write_text("0.40 0.30 0.20 1/100 1\n")
+(proc / "meminfo").write_text("MemTotal: 1000 kB\nMemAvailable: 500 kB\nSwapTotal: 0 kB\nSwapFree: 0 kB\n")
+real_statvfs = os.statvfs
+os.statvfs = lambda p: st  # 94.7% full
+h = V.read_health(refresh=True, proc=str(proc))
+check(h["states"] == {"disk": "error", "cpu": "ok", "memory": "ok", "swap": "off"}, "each metric has its state; no swap is off")
+check(h["alert"] == "raised" and raised[-1]["key"] == V.ALERT_KEY and raised[-1]["severity"] == "error" and raised[-1]["link"] == "view:server-health", "disk past red: one alert that opens server health")
+check(V.read_health(refresh=True, proc=str(proc))["alert"] == "" and len(raised) == 1, "it is raised once, not every read")
+os.statvfs = lambda p: types.SimpleNamespace(f_blocks=1000, f_bfree=900, f_bavail=850, f_frsize=4096)
+check(V.read_health(refresh=True, proc=str(proc))["alert"] == "resolved" and resolved[-1] == [V.ALERT_KEY], "back under red: the alert resolves")
+os.statvfs = real_statvfs
+check(c.post("/p/thresholds", json={"metric": "disk", "reset": True}).json()["thresholds"]["disk"] == V.DEFAULTS["disk"], "reset puts the defaults back")
+g = c.get("/p/health", params={"refresh": 1}).json()
+check(g["ready"] and g["disk"]["pct"] >= 0 and g["cpu"]["cores"] >= 1 and set(g["states"]) == set(V.METRICS), "GET health reads this machine")
+check(not llm.calls, "no health or ping read calls a model")
 print(f"all {ok} checks passed")

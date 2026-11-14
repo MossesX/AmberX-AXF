@@ -27,13 +27,37 @@
       {
         "target": "badges",
         "title": "Badges",
-        "text": "Settings for the Claude, VPS, axHub, AmberX and usage badges on the banner.",
+        "text": "Settings for the Claude, VPS, axHub, AmberX, usage, disk, CPU and memory badges on the banner.",
         "kind": "tab"
       },
       {
         "target": "badge-settings",
         "title": "Badge settings",
         "text": "Opens Settings → Plugins → Badges.",
+        "kind": "button"
+      },
+      {
+        "target": "server-health",
+        "title": "Server health",
+        "text": "Disk, CPU load, memory and swap on the VPS, each with a meter and its warn and red lines. The Disk, CPU and Mem badges open it; so does the VPS badge.",
+        "kind": "screen"
+      },
+      {
+        "target": "warn-at",
+        "title": "Warn at %",
+        "text": "From this percent the badge turns amber. Saved on the server, so it holds for every device.",
+        "kind": "field"
+      },
+      {
+        "target": "red-at",
+        "title": "Red at %",
+        "text": "From this percent the badge turns red. For the disk, passing it also raises a console alert that reaches AmberX.",
+        "kind": "field"
+      },
+      {
+        "target": "ping-now",
+        "title": "Ping now",
+        "text": "Pings the VPS again. Green if it answers, red if it doesn't.",
         "kind": "button"
       }
     ],

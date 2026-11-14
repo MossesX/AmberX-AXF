@@ -4,10 +4,13 @@ POST /test runs one tiny request through the AI assistant's model service (axf.l
 which model did, and which of three states it is in: `ok` (answers), `no-credit` (the account or key works but is out
 of credits / over its usage limit) or `error` (can't connect: bad token, invalid account, no assistant); GET /status returns the last result (kept in the plugin's data folder, no reply text, no keys).
 
-GET /vps reads the Claude Code login on the VPS, the second badge: `ok` (logged in, no recent limit), `no-credit` (it hit a
-limit) or `error` (not logged in, expired, or the VPS can't be read; `reachable` says which). It never calls a model, so it
-costs no tokens: `claude auth status` on the host through axf.claude-accounts@1 (30 s cache there) and the limit mark
-through axf.ai-keys@1. Only the owner gets the email and plan.
+GET /vps is the VPS badge: is the host pingable, green or red, nothing else (server/vps.py). `?refresh=1` pings again.
+GET /claude-login reads the Claude Code login on the VPS, shown on the Claude badge: `ok` (logged in, no recent limit),
+`no-credit` (it hit a limit) or `error` (not logged in, expired, or the VPS can't be read; `reachable` says which). It never
+calls a model, so it costs no tokens: `claude auth status` on the host through axf.claude-accounts@1 (30 s cache there) and
+the limit mark through axf.ai-keys@1. Only the owner gets the email and plan.
+GET /health is the server health widgets: disk, CPU load, memory and swap with a state each; GET /thresholds and
+POST /thresholds {metric, warn?, red?, reset?} read and set the warn and red lines. The disk passing red raises an alert.
 GET /usage is the usage meter: 5-hour and weekly use of every saved Claude login (server/usage_host.py on the host, plain HTTP,
 no model call). Cached 5 minutes in memory and on disk; `?refresh=1` reads again, at most every 30 s. A login whose copy can't
 be read keeps its last numbers with the time they are from, so the list never goes blank.
@@ -28,12 +31,15 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, HTTPException, Request
+from pydantic import BaseModel, Field
 
 import console_context as cx
 import plugin_services
 import axf_framework  # noqa: F401 — framework/python on sys.path
 from axf_server import storage
+
+from . import vps as health
 
 router = APIRouter()
 _lock = threading.Lock()
@@ -125,7 +131,7 @@ def vps_classify(view: dict[str, Any], limited_at: int, now_ms: int) -> tuple[st
     return "ok", True, ""
 
 
-def read_vps() -> dict[str, Any]:
+def read_claude_login() -> dict[str, Any]:
     """The Claude Code login on the VPS, read with plain code: no model call, no tokens, no credential."""
     now = int(time.time() * 1000)
     accounts = plugin_services.get("axf.claude-accounts@1")
@@ -342,9 +348,48 @@ def status() -> dict[str, Any]:
 
 
 @router.get("/vps")
-def vps(request: Request) -> dict[str, Any]:
-    res = read_vps()
+def vps(refresh: int = 0) -> dict[str, Any]:
+    """The VPS badge: green when the host answers a ping, red when it doesn't."""
+    return health.read_vps(refresh == 1)
+
+
+@router.get("/health")
+def server_health(refresh: int = 0) -> dict[str, Any]:
+    """Disk, CPU load, memory and swap on the VPS, each with its state from the thresholds."""
+    return health.read_health(refresh == 1)
+
+
+@router.get("/thresholds")
+def get_thresholds() -> dict[str, Any]:
+    return {"thresholds": health.thresholds(), "defaults": health.DEFAULTS, "metrics": list(health.METRICS)}
+
+
+class ThresholdReq(BaseModel):
+    metric: str = Field(pattern="^(disk|cpu|memory|swap)$")
+    warn: float | None = Field(default=None, ge=1, le=100)
+    red: float | None = Field(default=None, ge=1, le=100)
+    reset: bool = False
+
+
+@router.post("/thresholds")
+def post_thresholds(req: ThresholdReq) -> dict[str, Any]:
+    """Set one metric's warn and red percent, or put it back to the defaults (reset)."""
+    try:
+        t = health.set_thresholds(req.metric, req.warn, req.red, req.reset)
+    except ValueError as e:
+        raise HTTPException(400, str(e)) from None
+    cx.log("system", f"Server health: {req.metric} thresholds now warn {t[req.metric]['warn']:g}% / red {t[req.metric]['red']:g}%", "ok")
+    return {"thresholds": t}
+
+
+@router.get("/claude-login")
+def claude_login(request: Request) -> dict[str, Any]:
+    """The Claude Code login on the VPS (the Claude badge shows it)."""
+    res = read_claude_login()
     user = getattr(request.state, "axf_user", None)
     if user is not None and not getattr(user, "admin", False):  # the state for everyone, who it is only for the owner
         res.update(account="", email="", plan="")
     return res
+
+
+health.start_watch()

@@ -1,8 +1,10 @@
 /**
- * Badges: what each of the five banner badges is, and what its settings mean. Pure (no React, no runtime), so test.mts
+ * Badges: what each of the eight banner badges is, and what its settings mean. Pure (no React, no runtime), so test.mts
  * runs it directly. The keys keep their old names where a setting already existed, so nobody's choices are lost.
  */
-export type BadgeKind = 'console' | 'vps' | 'axhub' | 'amberx' | 'usage';
+export type BadgeKind = 'console' | 'vps' | 'axhub' | 'amberx' | 'usage' | 'disk' | 'cpu' | 'memory';
+/** The server health widgets: one metric each, coloured by the thresholds set on the server health page. */
+export type HealthKind = 'disk' | 'cpu' | 'memory';
 export type BadgeState = 'ok' | 'warn' | 'error' | 'off';
 export type TapKind = 'dropdown' | 'screen' | 'command' | 'toggle' | 'none';
 export type BadgeTone = 'success' | 'warning' | 'danger' | 'muted';
@@ -11,7 +13,7 @@ export const STATE_IDS: BadgeState[] = ['ok', 'warn', 'error', 'off'];
 export const STATE_NAMES: Record<BadgeState, string> = { ok: 'OK', warn: 'Warning', error: 'Error', off: 'Off' };
 export const TONES: Record<BadgeState, BadgeTone> = { ok: 'success', warn: 'warning', error: 'danger', off: 'muted' };
 export const CHIPS: Record<BadgeState, 'success' | 'warning' | 'danger' | 'accent'> = { ok: 'success', warn: 'warning', error: 'danger', off: 'accent' };
-export const ICONS = ['sparkles', 'zap', 'check', 'star', 'cloud', 'key', 'lock', 'shield', 'alert', 'info', 'x', 'minus', 'clock', 'eye', 'bell', 'rocket', 'terminal', 'user', 'smartphone'];
+export const ICONS = ['sparkles', 'zap', 'check', 'star', 'cloud', 'key', 'lock', 'shield', 'alert', 'info', 'x', 'minus', 'clock', 'eye', 'bell', 'rocket', 'terminal', 'user', 'smartphone', 'box', 'chart', 'layers', 'monitor'];
 export const TAPS: { value: TapKind; label: string }[] = [
   { value: 'dropdown', label: 'Drop-down' }, { value: 'screen', label: 'Open a screen' }, { value: 'command', label: 'Run a command' },
   { value: 'toggle', label: 'Toggle a setting' }, { value: 'none', label: 'Nothing' },
@@ -37,13 +39,13 @@ export const BADGES: Record<BadgeKind, BadgeDef> = {
     },
   },
   vps: {
-    id: 'claude-vps', label: 'VPS', title: 'VPS (Claude login)', icon: 'cloud', order: 6, side: 'left', aliases: ['vps', 'vps connection'],
-    tap: 'screen', target: 'settings.open:claude-badge', about: 'The Claude Code login on the VPS.',
+    id: 'claude-vps', label: 'VPS', title: 'VPS (ping)', icon: 'cloud', order: 6, side: 'left', aliases: ['vps', 'vps connection', 'server'],
+    tap: 'screen', target: 'nav:server-health', about: 'Green while the VPS answers a ping, red when it does not. Nothing else.',
     states: {
-      ok: { label: 'logged in', icon: 'cloud', setting: 'Logged in and working' },
-      warn: { label: 'limit hit', icon: 'zap', setting: 'Limit hit or out of credits' },
-      error: { label: 'not logged in', icon: 'alert', setting: 'Not logged in or expired' },
-      off: { label: "can't read", icon: 'minus', setting: "Can't read the VPS" },
+      ok: { label: 'pingable', icon: 'cloud', setting: 'Answers a ping' },
+      warn: { label: 'checking', icon: 'clock', setting: 'Checking' },
+      error: { label: 'not answering', icon: 'alert', setting: "Doesn't answer a ping" },
+      off: { label: 'no host', icon: 'minus', setting: 'No VPS host known' },
     },
   },
   axhub: {
@@ -76,8 +78,39 @@ export const BADGES: Record<BadgeKind, BadgeDef> = {
       off: { label: 'no reading', icon: 'minus', setting: 'Nothing to read' },
     },
   },
+  disk: {
+    id: 'vps-disk', label: 'Disk', title: 'VPS disk', icon: 'box', order: 9, side: 'left', aliases: ['disk', 'disk space', 'storage'],
+    tap: 'screen', target: 'nav:server-health', about: 'How full the VPS disk is. Past the red line the console raises an alert.',
+    states: {
+      ok: { label: 'ok', icon: 'box', setting: 'Under the warn line' },
+      warn: { label: 'filling up', icon: 'alert', setting: 'Past the warn line' },
+      error: { label: 'nearly full', icon: 'alert', setting: 'Past the red line' },
+      off: { label: 'no reading', icon: 'minus', setting: 'Nothing to read' },
+    },
+  },
+  cpu: {
+    id: 'vps-cpu', label: 'CPU', title: 'VPS CPU load', icon: 'chart', order: 10, side: 'left', aliases: ['cpu', 'cpu load', 'load'],
+    tap: 'screen', target: 'nav:server-health', about: 'The VPS load over the last minute, as a share of its cores.',
+    states: {
+      ok: { label: 'ok', icon: 'chart', setting: 'Under the warn line' },
+      warn: { label: 'busy', icon: 'alert', setting: 'Past the warn line' },
+      error: { label: 'overloaded', icon: 'alert', setting: 'Past the red line' },
+      off: { label: 'no reading', icon: 'minus', setting: 'Nothing to read' },
+    },
+  },
+  memory: {
+    id: 'vps-memory', label: 'Mem', title: 'VPS memory and swap', icon: 'layers', order: 11, side: 'left', aliases: ['memory', 'ram', 'swap'],
+    tap: 'screen', target: 'nav:server-health', about: 'VPS memory in use and swap in use; the worse of the two sets the colour.',
+    states: {
+      ok: { label: 'ok', icon: 'layers', setting: 'Under the warn line' },
+      warn: { label: 'tight', icon: 'alert', setting: 'Past the warn line' },
+      error: { label: 'nearly out', icon: 'alert', setting: 'Past the red line' },
+      off: { label: 'no reading', icon: 'minus', setting: 'Nothing to read' },
+    },
+  },
 };
 export const KINDS = Object.keys(BADGES) as BadgeKind[];
+export const HEALTH_KINDS: HealthKind[] = ['disk', 'cpu', 'memory'];
 
 export type BadgeField = 'show' | 'icon-only' | 'label' | 'order' | 'side' | 'tap' | 'tap-target';
 export const keyOf = (kind: BadgeKind, field: BadgeField) => `claude-badge.${kind}.${field}`;
@@ -105,7 +138,7 @@ export function badgeAttachment(read: Read, kind: BadgeKind, origin: string) {
   const d = BADGES[kind];
   return {
     type: 'badge' as const, id: d.id, at: sideOf(read, kind), order: orderOf(read, kind), origin,
-    widget: { label: d.title, priority: 8, aliases: d.aliases, ...(kind === 'usage' ? { size: 'wide' as const } : {}) },
+    widget: { label: d.title, priority: 8, aliases: d.aliases, ...(kind === 'usage' || kind === 'memory' ? { size: 'wide' as const } : {}) },
   };
 }
 
@@ -141,3 +174,59 @@ const STATUS_WORDS: Record<string, string> = { ok: 'Up to date', limit: 'Limit h
 export const statusWord = (s: string) => STATUS_WORDS[s] ?? s;
 const TYPE_WORDS: Record<string, string> = { login: 'Login', token: 'Token', 'api-key': 'API key' };
 export const typeWord = (t: string) => TYPE_WORDS[t] ?? t;
+
+/* ---------------- server health ---------------- */
+
+export type Metric = 'disk' | 'cpu' | 'memory' | 'swap';
+export const METRICS: Metric[] = ['disk', 'cpu', 'memory', 'swap'];
+export const METRIC_NAMES: Record<Metric, string> = { disk: 'Disk', cpu: 'CPU load', memory: 'Memory', swap: 'Swap' };
+export interface Threshold { warn: number; red: number }
+export interface HealthResult {
+  at: number; ready: boolean; why: string; cached?: boolean; alert?: string;
+  thresholds: Record<Metric, Threshold>;
+  states: Record<Metric, BadgeState>;
+  disk: { total: number; used: number; free: number; pct: number; path: string } | null;
+  cpu: { load1: number; load5: number; load15: number; cores: number; pct: number } | null;
+  memory: { total: number; used: number; pct: number } | null;
+  swap: { total: number; used: number; pct: number; none: boolean } | null;
+}
+/** One read of GET /vps: is the host pingable. */
+export interface PingResult { at: number; ok: boolean; state: BadgeState; reachable: boolean; host: string; source: string; method: string; ms: number; error: string }
+
+const RANK: Record<BadgeState, number> = { off: 0, ok: 1, warn: 2, error: 3 };
+/** The worse of two states (off only when both are off). */
+export const worst = (a: BadgeState, b: BadgeState): BadgeState => (RANK[a] >= RANK[b] ? a : b);
+/** One widget's state: the memory widget is the worse of memory and swap. */
+export function healthState(h: HealthResult | null, kind: HealthKind): BadgeState {
+  if (!h) return 'off';
+  return kind === 'memory' ? worst(h.states.memory, h.states.swap) : h.states[kind];
+}
+const pc = (n: number | undefined) => (n === undefined ? '–' : `${Math.round(n)}%`);
+/** The banner words: `Disk 63%`, `CPU 0.42`, `Mem 41% · swap 2%`. The label replaces the leading word when set. */
+export function healthText(h: HealthResult | null, kind: HealthKind, label = ''): string {
+  const word = label || BADGES[kind].label;
+  if (!h || !h.ready) return `${word} –`;
+  if (kind === 'disk') return `${word} ${pc(h.disk?.pct)}`;
+  if (kind === 'cpu') return `${word} ${h.cpu ? h.cpu.load1.toFixed(2) : '–'}`;
+  const swap = h.swap && !h.swap.none ? ` · swap ${pc(h.swap.pct)}` : '';
+  return `${word} ${pc(h.memory?.pct)}${swap}`;
+}
+export const gb = (bytes: number) => `${(bytes / 1024 ** 3).toFixed(1)} GB`;
+/** The tooltip: the numbers behind the words. */
+export function healthTip(h: HealthResult | null, kind: HealthKind): string {
+  if (!h) return 'Reading the server…';
+  if (!h.ready) return h.why || "Can't read this server's numbers";
+  const t = h.thresholds;
+  if (kind === 'disk') return h.disk ? `Disk ${pc(h.disk.pct)} full: ${gb(h.disk.free)} free of ${gb(h.disk.total)} · warn ${t.disk.warn}%, red ${t.disk.red}%` : 'No disk reading';
+  if (kind === 'cpu') return h.cpu ? `Load ${h.cpu.load1.toFixed(2)} / ${h.cpu.load5.toFixed(2)} / ${h.cpu.load15.toFixed(2)} on ${h.cpu.cores} cores (${pc(h.cpu.pct)}) · warn ${t.cpu.warn}%, red ${t.cpu.red}%` : 'No CPU reading';
+  const mem = h.memory ? `Memory ${pc(h.memory.pct)} (${gb(h.memory.used)} of ${gb(h.memory.total)})` : 'No memory reading';
+  const swap = !h.swap ? '' : h.swap.none ? ' · no swap' : ` · swap ${pc(h.swap.pct)} (${gb(h.swap.used)} of ${gb(h.swap.total)})`;
+  return mem + swap;
+}
+/** What the VPS badge says in one line. */
+export function pingText(r: PingResult | null): string {
+  if (!r) return 'Pinging the VPS…';
+  if (r.state === 'ok') return `VPS answers a ping${r.ms ? ` in ${Math.round(r.ms)} ms` : ''}${r.host ? ` · ${r.host}` : ''}`;
+  if (r.state === 'off') return r.error || 'No VPS host known';
+  return r.error || `VPS ${r.host} doesn't answer a ping`;
+}

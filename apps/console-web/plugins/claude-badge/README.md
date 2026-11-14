@@ -2,15 +2,18 @@
 
 `ai.amberx.axf.console.claude-badge` · built on Opus.
 
-Five banner badges in one plugin. The folder keeps its old name so saved settings and data stay where they are.
+Eight banner badges in one plugin. The folder keeps its old name so saved settings and data stay where they are.
 
 | Badge | Asset | What it reads | Tokens |
 | --- | --- | --- | --- |
-| **Claude** | `badge/claude` | one tiny request through `axf.llm@1` when the console loads | a few |
-| **VPS** | `badge/claude-vps` | `claude auth status` on the host through `axf.claude-accounts@1`, the limit mark through `axf.ai-keys@1` | none |
+| **Claude** | `badge/claude` | one tiny request through `axf.llm@1` when the console loads; also the Claude Code login on the VPS (`GET /claude-login`: `claude auth status` through `axf.claude-accounts@1`, the limit mark through `axf.ai-keys@1`) | a few |
+| **VPS** | `badge/claude-vps` | a ping (`GET /vps`): green while the host answers, red when it doesn't, nothing else. ICMP, else a TCP connect to port 22 | none |
 | **axHub** | `badge/axhub` | the framework's `hubLive` check (`framework/libs/hubstatus`): green only while settings come live from axHub, red otherwise | none |
 | **AmberX** | `badge/amberx-phone` | axHub's `amberx.recorder_status` through `axf.vinny@1` (runs at once, no veto) | none |
 | **Usage meter** | `badge/claude-usage` | `server/usage_host.py` on the host: `GET api.anthropic.com/api/oauth/usage` for each saved login | none |
+| **Disk** | `badge/vps-disk` | `GET /health`: statvfs of `AXF_VPS_DISK_PATH` (default `/`) | none |
+| **CPU** | `badge/vps-cpu` | `GET /health`: `/proc/loadavg`, load1 as a share of the cores | none |
+| **Mem** | `badge/vps-memory` | `GET /health`: `/proc/meminfo`, memory and swap in use (the worse sets the colour) | none |
 
 ## What each badge can do
 
@@ -21,7 +24,7 @@ Settings → Plugins → Badges, one group per badge. All hot: the badge repaint
 - **Tap does:** drop-down, open a screen, run a command, toggle a setting, or nothing. **Tap target** says which: a page id or an
   action for a screen, an action for a command, a setting key for a toggle (empty flips Icons only).
 
-Defaults: Claude and VPS open these settings, axHub opens its details, AmberX and the usage meter drop down. Hiding the Claude
+Defaults: Claude opens these settings, VPS, Disk, CPU and Mem open the Server health page, axHub opens its details, AmberX and the usage meter drop down. Hiding the Claude
 badge also stops its load-time test; hiding any other badge stops its reads.
 
 ## Moved in
@@ -51,3 +54,23 @@ CLI commands through plugin-commands. Data: `.axf-console/plugins/claude-badge/`
 tokens). Removing the plugin removes only these badges; the banner, badge and clock types are permanent parts of the framework.
 
 Self-tests: `python3 apps/console-web/plugins/claude-badge/test.py`, `npx -y tsx apps/console-web/plugins/claude-badge/test.mts`.
+
+## VPS ping and server health
+
+Brett, Nov 12 2026: "make it VPS badge as long as my VPS is pingable. Green if it's pingable, red if it's not." The VPS
+badge is that ping and nothing else; the Claude Code login moved to the Claude badge (amber when it hit a limit or isn't
+logged in). The host is `AXF_VPS_HOST`, else the Terminal's VPS host (`axf.headless@1` `host()`), else the Docker gateway.
+Cached 20 s; `?refresh=1` pings again.
+
+The **Server health** page (view `server-health`) shows disk, CPU load, memory and swap with a meter each and their warn and
+red lines. The lines are kept on the server (`thresholds.json` in the data folder) so the disk alert follows them with no
+page open: a background read every 5 minutes raises one console alert (`claude-badge:vps-disk`, reaches AmberX through the
+alert hub) when the disk passes red, and resolves it when it drops back under. `AXF_CLAUDE_BADGE_WATCH=0` turns that read off.
+
+| Reach it | How |
+| --- | --- |
+| Open | `nav:server-health`, action `claude-badge.health.open`, MCP `console_open` / `console_show` with view `server-health` |
+| Read | REST `GET /api/control/claude-badge/health`, `…/vps`, `…/thresholds`, `…/claude-login`; MCP `claude-badge_health` etc.; CLI `axf claude-badge health` |
+| Set a threshold | REST `POST /api/control/claude-badge/set-threshold {metric, warn?, red?, reset?}`; MCP `claude-badge_set-threshold`; CLI `axf claude-badge set-threshold` |
+| Ping / read again | actions `claude-badge.vps.ping`, `claude-badge.health.refresh`; or the reads with `refresh=1` |
+| Voice | AmberX's agent calls the same MCP tools ("how full is the VPS disk", "set the disk red line to 85") |
