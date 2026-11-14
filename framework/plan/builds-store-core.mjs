@@ -47,6 +47,7 @@ import { normApproval, normRequest } from '../core/model-switch.mjs';
 import { mergeOrigin, normOrigin } from '../core/build-origin.mjs';
 import { effectivePriority, normPriority } from '../core/build-priority.mjs';
 import { normRef as normShippedRef } from '../core/shipped-manifest.mjs';
+import { LAND_STATES, normLand } from '../core/build-pipeline.mjs';
 import { normPipeline } from '../core/build-pipeline.mjs';
 import { isBuildId, namesOf, shortBuildId, uniqueBuildId } from '../core/build-id.mjs';
 
@@ -167,6 +168,7 @@ export function normBuild(b, ctx = {}) {
     upgradeRequests: (Array.isArray(o.upgradeRequests) ? o.upgradeRequests : []).map(normRequest).filter((r) => r.id),
     ...(origin ? { origin } : {}),
     ...(normPipeline(o.pipeline) ? { pipeline: normPipeline(o.pipeline) } : {}), // build-pipeline@1: queue / run record (framework/core/build-pipeline.mjs)
+    ...(normLand(o.land) ? { land: normLand(o.land) } : {}), // build-pipeline@1 `land`: behind main + landing state and attempts (Nov 14 2026); absent until the lander writes it
     ...(normShippedRef(o.shipped) ? { shipped: normShippedRef(o.shipped) } : {}), // shipped-manifest@1 ref: the manifest the orchestrator sent when it landed (sidecar _claude/builds/shipped/<id>.json)
     steps,
     profiles,
@@ -306,6 +308,17 @@ export function validateStore(store) {
     for (const k of ['createdAt', 'updatedAt']) if (typeof b[k] !== 'string' || !ISO.test(b[k])) err(`${at}.${k}`, 'is not an ISO timestamp');
     if (b.deleted === true && !ISO.test(b.deletedAt ?? '')) err(`${at}.deletedAt`, 'a deleted build says when');
     if (!Array.isArray(b.notes) || b.notes.some((n) => !n || typeof n.text !== 'string')) err(`${at}.notes`, 'must be a list of { text, at }');
+    if (b.land !== undefined) {
+      const l = b.land;
+      if (!l || typeof l !== 'object' || Array.isArray(l)) err(`${at}.land`, 'must be an object (build-pipeline@1 land record)');
+      else {
+        if (!LAND_STATES.includes(l.landState)) err(`${at}.land.landState`, `"${l.landState}" is not one of ${LAND_STATES.filter(Boolean).join(', ')}`);
+        if (l.behindMain !== null && !(Number.isInteger(l.behindMain) && l.behindMain >= 0)) err(`${at}.land.behindMain`, 'must be a whole number from 0, or null when never checked');
+        if (l.behindMain !== null && !ISO.test(l.behindCheckedAt ?? '')) err(`${at}.land.behindCheckedAt`, 'a behind count says when it was checked');
+        for (const k of ['behindCheckedAt', 'finishedAt']) if (l[k] && !ISO.test(l[k])) err(`${at}.land.${k}`, 'is not an ISO timestamp');
+        if (!Array.isArray(l.landAttempts) || l.landAttempts.some((a) => !a || typeof a !== 'object' || !(a.at || a.run))) err(`${at}.land.landAttempts`, 'must be a list of attempts, each with a time or a land-run id');
+      }
+    }
     if (!Array.isArray(b.steps)) return err(`${at}.steps`, 'must be a list');
     const sids = new Set();
     b.steps.forEach((s, j) => {
@@ -319,6 +332,27 @@ export function validateStore(store) {
     });
   });
   return { ok: !errors.length, errors };
+}
+
+/**
+ * Migration for the `land` record (build-pipeline@1, Nov 14 2026). Nothing is backfilled: a record without `land` is
+ * left byte-for-byte as it was (the lander writes the record when it first takes the build; landStateOf() reads older
+ * builds off their status), and a record with one is put in shape (normLand), dropped when it says nothing. Returns
+ * { store, changed: [ids] }; the input is not mutated. Idempotent.
+ */
+export function migrateLand(store) {
+  const s = normalizeStore(clone(store));
+  const changed = [];
+  s.builds = s.builds.map((b, i) => {
+    const raw = store.builds?.[i];
+    const had = raw && typeof raw === 'object' && 'land' in raw;
+    if (!had) return b;
+    const l = normLand(raw.land);
+    if (JSON.stringify(l) !== JSON.stringify(raw.land)) changed.push(b.id);
+    if (!l) { const { land, ...rest } = b; return rest; }
+    return { ...b, land: l };
+  });
+  return { store: s, changed };
 }
 
 /** The form written to disk: the default breakdown is left out while it equals the steps (not rearranged). */

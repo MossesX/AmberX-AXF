@@ -6,6 +6,8 @@ import { mkdtempSync, readFileSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import * as c from '../plan/builds-store-core.mjs';
+import * as mergeCore from '../plan/builds-merge-core.mjs';
+import * as P_land from '../core/build-pipeline.mjs';
 
 let n = 0; const t = (name, fn) => { try { fn(); n += 1; } catch (e) { console.error(`✗ ${name}`); throw e; } };
 const at = '2026-10-31T10:00:00.000Z';
@@ -210,6 +212,67 @@ t('mergeProfiles keeps ids, statuses and steps, orders by old profile, folds rul
   assert.deepEqual(s.meta.queue.all.history.map((h) => h.text), ['a', 'b']);
   const n = c.normalizeStore(s); assert.deepEqual(c.validateStore(n).errors, []);
   assert.equal(c.mergeProfiles(n, c.RETIRED_PROFILES, c.MERGED_PROFILE, { now: at }).report.moved, 0, 'running it again changes nothing');
+});
+
+// ------------------------------------------------------------------ land: behind main + landing state (build-pipeline@1 `land`, Nov 14 2026)
+const landRec = (extra = {}) => c.normBuild({ id: 'lb', title: 'Land me', profiles: ['all'], order: { all: 0 }, status: 'built', pr: '#500', createdAt: at, updatedAt: at, steps: [step('s1', 'x', { done: true, doneAt: at })], ...extra });
+const LAND = { behindMain: 7, behindCheckedAt: at, finishedAt: at, landState: 'waiting', landAttempts: [{ at, run: 'lr-1', base: 'abc1234', merged: '', outcome: 'cancelled', ci: 'cancelled', note: 'CI run cancelled' }] };
+t('normBuild keeps the land record, every field in shape, and leaves it out when there is none (byte-stable old records)', () => {
+  const b = landRec({ land: LAND });
+  assert.deepEqual(b.land, LAND);
+  assert.ok(!('land' in landRec()), 'no land field on a record the lander never touched');
+  assert.ok(!('land' in landRec({ land: {} })), 'an empty record says nothing');
+  assert.ok(!('land' in landRec({ land: { landState: 'bogus', behindMain: -3, landAttempts: [{}] } })), 'junk alone says nothing');
+  const odd = landRec({ land: { behindMain: 4, finishedAt: 'yesterday', landState: 'red', landAttempts: [{ at, run: 'lr-2', base: 'ZZZ', outcome: 'nope' }, null] } }).land;
+  assert.equal(odd.behindMain, null, 'a count without a check time is unknown'); assert.equal(odd.finishedAt, ''); assert.equal(odd.landState, 'red');
+  assert.deepEqual(odd.landAttempts, [{ at, run: 'lr-2', base: '', merged: '', outcome: '', ci: '', note: '' }]);
+});
+t('landStateOf reads older records off their status; finishedAtOf falls back to builtAt, then the last tick', () => {
+  assert.equal(P_land.landStateOf(landRec()), 'waiting'); assert.equal(P_land.landStateOf(landRec({ status: 'complete', mergedAt: at })), 'landed');
+  assert.equal(P_land.landStateOf(landRec({ status: 'archived' })), 'archived'); assert.equal(P_land.landStateOf(landRec({ status: 'running' })), '');
+  assert.equal(P_land.landStateOf(landRec({ land: { ...LAND, landState: 'flagged' } })), 'flagged', 'the lander\'s state wins');
+  assert.equal(P_land.finishedAtOf(landRec({ land: LAND })), at); assert.equal(P_land.finishedAtOf(landRec({ builtAt: '2026-11-01T00:00:00.000Z' })), '2026-11-01T00:00:00.000Z'); assert.equal(P_land.finishedAtOf(landRec()), at);
+  assert.equal(P_land.needsLanding(landRec()), true); assert.equal(P_land.needsLanding(landRec({ land: { ...LAND, landState: 'landing' } })), false); assert.equal(P_land.needsLanding(landRec({ status: 'complete', mergedAt: at })), false);
+  assert.equal(P_land.isBehind(landRec({ land: LAND })), true); assert.equal(P_land.isBehind(landRec({ land: LAND }), 8), false); assert.equal(P_land.isBehind(landRec()), false);
+});
+t('addLandAttempt appends (same run replaces), caps the list, and the state follows the outcome; withBehind records the check', () => {
+  let l = P_land.addLandAttempt(null, { run: 'lr-3', base: 'abc1234' }, at); assert.equal(l.landState, 'landing'); assert.equal(l.landAttempts.length, 1);
+  l = P_land.addLandAttempt(l, { run: 'lr-3', base: 'abc1234', merged: 'def5678', outcome: 'landed' }, at); assert.equal(l.landAttempts.length, 1); assert.equal(l.landState, 'landed');
+  assert.equal(P_land.addLandAttempt(l, { run: 'lr-4', outcome: 'clash' }, at).landState, 'flagged'); assert.equal(P_land.addLandAttempt(l, { run: 'lr-5', outcome: 'red' }, at).landState, 'red'); assert.equal(P_land.addLandAttempt(l, { run: 'lr-6', outcome: 'cancelled' }, at).landState, 'waiting');
+  let many = null; for (let i = 0; i < P_land.MAX_LAND_ATTEMPTS + 5; i++) many = P_land.addLandAttempt(many, { run: `lr-${i}` }, at);
+  assert.equal(many.landAttempts.length, P_land.MAX_LAND_ATTEMPTS); assert.equal(many.landAttempts[0].run, 'lr-5', 'oldest dropped');
+  assert.throws(() => P_land.addLandAttempt(null, { note: 'no time, no run' }, ''), /needs a time/);
+  const w = P_land.withBehind(LAND, 12, '2026-11-14T22:30:00.000Z'); assert.equal(w.behindMain, 12); assert.equal(w.behindCheckedAt, '2026-11-14T22:30:00.000Z'); assert.equal(w.landState, 'waiting');
+  assert.equal(P_land.withBehind(null, null, at), null, 'an unknown count on no record is still no record');
+});
+t('validateStore accepts a land record and names what is wrong in one', () => {
+  assert.deepEqual(c.validateStore({ ...c.emptyStore(), builds: [landRec({ land: LAND })] }).errors, []);
+  const bad = { ...c.emptyStore(), builds: [landRec({ land: LAND })] };
+  bad.builds[0].land = { ...LAND, landState: 'bogus', behindMain: 3, behindCheckedAt: '', landAttempts: [{ note: 'no id' }] };
+  const paths = c.validateStore(bad).errors.map((e) => e.path).join('\n');
+  for (const re of [/land\.landState$/m, /land\.behindCheckedAt$/m, /land\.landAttempts$/m]) assert.match(paths, re, paths);
+  assert.match(c.validateStore({ ...c.emptyStore(), builds: [{ ...landRec(), land: 'x' }] }).errors.map((e) => e.path).join('\n'), /\.land$/m);
+});
+t('a store copy without the land record (older code) never blanks it on merge; two copies with one → the newer', () => {
+  const withLand = landRec({ land: LAND, updatedAt: '2026-10-31T10:00:00.000Z' });
+  const newerNoLand = { ...landRec({ updatedAt: '2026-10-31T11:00:00.000Z' }), title: 'ticked elsewhere' };
+  const x = mergeCore.mergeBuild(newerNoLand, withLand); assert.equal(x.title, 'ticked elsewhere'); assert.deepEqual(x.land, LAND);
+  const newerLand = landRec({ land: { ...LAND, landState: 'landed' }, updatedAt: '2026-10-31T12:00:00.000Z' });
+  assert.equal(mergeCore.mergeBuild(withLand, newerLand).land.landState, 'landed');
+  const { store } = mergeCore.mergeStores({ ...c.emptyStore(), builds: [newerNoLand] }, { ...c.emptyStore(), builds: [withLand] }); assert.deepEqual(store.builds[0].land, LAND);
+});
+t('migrateLand leaves old records byte-for-byte, puts a stored record in shape, drops an empty one; idempotent', () => {
+  const old = c.normalizeStore({ ...c.emptyStore(at), builds: [landRec(), landRec({ id: 'lb2' })] });
+  const r = c.migrateLand(old); assert.deepEqual(r.changed, []); assert.equal(JSON.stringify(c.compactStore(r.store)), JSON.stringify(c.compactStore(old)));
+  const raw = { ...c.emptyStore(at), builds: [{ ...landRec(), land: { ...LAND, landState: 'bogus', behindMain: '7' } }, { ...landRec({ id: 'lb2' }), land: {} }, landRec({ id: 'lb3', land: LAND })] };
+  const m = c.migrateLand(raw); assert.deepEqual(m.changed, ['lb', 'lb2']);
+  assert.equal(m.store.builds[0].land.landState, ''); assert.equal(m.store.builds[0].land.behindMain, null); assert.ok(!('land' in m.store.builds[1])); assert.deepEqual(m.store.builds[2].land, LAND);
+  assert.deepEqual(c.migrateLand(m.store).changed, []);
+});
+t('the orchestrator projection → absorb round trip carries the land record through (an orchestrator write never drops it)', () => {
+  const s = { ...c.emptyStore(), builds: [landRec({ land: LAND })] };
+  const proj = c.projectOrchestrator(s, 'all'); delete proj.builds[0].land; proj.builds[0].title = 'renamed by the orchestrator';
+  const next = c.absorbOrchestrator(s, 'all', proj); assert.equal(next.builds[0].title, 'renamed by the orchestrator'); assert.deepEqual(next.builds[0].land, LAND);
 });
 
 // ------------------------------------------------------------------ the real writers on a temp store (versioned)

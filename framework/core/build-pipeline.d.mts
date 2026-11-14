@@ -19,6 +19,32 @@ export interface BuildPipeline {
   heldAt: string; heldBy: string; heldWhy: string;
 }
 export interface PipelinePlan { model: string; account: string; kind: '' | 'api' | 'subscription'; at: string; why: string }
+/** `land` on a build (Nov 14 2026): behind main + the lander's state and attempts. */
+export type LandState = '' | 'waiting' | 'landing' | 'landed' | 'red' | 'archived' | 'flagged';
+export type LandAttemptOutcome = '' | 'landed' | 'red' | 'clash' | 'cancelled' | 'error';
+export interface LandAttempt { at: string; run: string; base: string; merged: string; outcome: LandAttemptOutcome; ci: string; note: string }
+export interface BuildLand {
+  /** Commits of main the branch is behind at the last check; null = never checked. */
+  behindMain: number | null; behindCheckedAt: string;
+  /** When its last open step was ticked (landing may start). */
+  finishedAt: string; landState: LandState; landAttempts: LandAttempt[];
+}
+export const LAND_STATES: LandState[];
+export const LAND_STATE_LABEL: Readonly<Record<LandState, string>>;
+export const LAND_ATTEMPT_OUTCOMES: LandAttemptOutcome[];
+export const LAND_STATE_AFTER: Readonly<Record<LandAttemptOutcome, LandState>>;
+export const MAX_LAND_ATTEMPTS: number;
+export function sha(v: unknown): string;
+export function emptyLand(): BuildLand;
+export function normLandAttempt(a: unknown): LandAttempt | null;
+export function normLand(l: unknown): BuildLand | null;
+type LandBuildLike = { status?: string; deleted?: boolean; mergedAt?: string; builtAt?: string; land?: Partial<BuildLand> | null; steps?: { doneAt?: string }[] } | null | undefined;
+export function landStateOf(b: LandBuildLike): LandState;
+export function finishedAtOf(b: LandBuildLike): string;
+export function needsLanding(b: LandBuildLike): boolean;
+export function isBehind(b: LandBuildLike, min?: number): boolean;
+export function addLandAttempt(land: Partial<BuildLand> | null | undefined, attempt: Partial<LandAttempt>, now?: string): BuildLand;
+export function withBehind(land: Partial<BuildLand> | null | undefined, behindMain: number | null, now?: string): BuildLand | null;
 export type PipelineTab = 'pending' | 'queue' | 'active' | 'incomplete' | 'complete' | 'errors' | 'archive' | 'deleted';
 export type BuildAction = 'unqueue' | 'hold' | 'release' | 'archive' | 'unarchive' | 'delete' | 'restore';
 export const BUILD_ACTIONS: BuildAction[];

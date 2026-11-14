@@ -12,6 +12,7 @@
  *   … migrate --apply                                       build the store from every older data set (once)
  *   … verify                                                every build, step, status and note of the old files is in the store
  *   … export                                                regenerate the old files (read-only exports of the store)
+ *   … land-migrate [--apply]                                 put every build's `land` record (behind main, landing state) in shape; old records untouched
  *   … history <id>                                          every journal revision of one build
  *   … restore <id> <rev>                                    put a build back as it was at journal revision <rev>
  *   … progress [profile]                                    progress per build and per profile (the bars)
@@ -437,6 +438,13 @@ async function main(argv) {
     return out({ ok: r.report.verify.failed.length === 0, report: r.report }, `${dry ? 'dry run' : 'migrated'}: ${r.report.counts.builds} builds, ${r.report.counts.steps} steps; ${r.report.merges.length} merges, ${r.report.conflicts.length} conflicts, ${r.report.recovered.length} recovered; verify ${r.report.verify.total - r.report.verify.failed.length}/${r.report.verify.total}`);
   }
   if (cmd === 'export') { exportNow(); return out({ ok: true }, 'exports written'); }
+  if (cmd === 'land-migrate') {
+    // build-pipeline@1 `land` (Nov 14 2026): records without one stay as they are; one out of shape is normalised
+    const apply = rest.includes('--apply');
+    const dry = core.migrateLand(loadStore());
+    const r = apply && dry.changed.length ? withStore((s) => core.migrateLand(s).store, { by: 'cli', action: 'land-migrate', note: `${dry.changed.length} land record(s) put in shape` }) : null;
+    return out({ ok: true, applied: !!r, changed: dry.changed, rev: r?.rev ?? null }, `${dry.changed.length} build(s) with a land record out of shape${dry.changed.length ? `: ${dry.changed.join(', ')}` : ''}${apply ? (r ? ` (written, store rev ${r.rev})` : ' (nothing to write)') : ' (dry run; --apply writes)'}`);
+  }
   if (cmd === 'verify') {
     // 1. the store itself is a valid builds@1 (names what is wrong); 2. nothing from the old files is missing
     const store = loadStore();

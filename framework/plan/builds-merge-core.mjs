@@ -76,6 +76,9 @@ export function mergeBuild(a, b) {
   for (const k of ['branch', 'pr', 'mergedAt', 'category', 'priority', 'alias']) if (!str(out[k]) && str(lose[k])) { out[k] = lose[k]; combined = true; }
   // what Brett said that started it: never blanked or replaced by a copy that has less (build-origin@1)
   if (win.origin || lose.origin) { const og = mergeOrigin(win.origin, lose.origin); if (og) out.origin = og; }
+  // the lander's record (build-pipeline@1 `land`, Nov 14 2026): a copy written by code that never carries it (a build
+  // session's step tick on an older checkout) must not blank it; two copies that both have one → the newer
+  if (!out.land && lose.land) out.land = clone(lose.land);
   const key = (n) => `${n.at}|${n.text}`;
   const seenNotes = new Set(out.notes.map(key));
   for (const n of lose.notes ?? []) if (!seenNotes.has(key(n))) { out.notes.push(clone(n)); seenNotes.add(key(n)); combined = true; }
