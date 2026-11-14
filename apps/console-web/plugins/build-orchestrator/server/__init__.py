@@ -586,6 +586,95 @@ async def pipeline_route(request: Request) -> dict[str, Any]:
     return _pipeline("route", _build_id(body.get("id")), route, "--by", (who or "console")[:80])
 
 
+# ---- custom groups and custom tabs (groups.mjs, build-groups@1; Brett, Nov 13 2026)
+GROUPS_CLI = CLI.parent / "groups.mjs"
+GROUP_OPS = ("create", "update", "move", "delete", "assign")
+GROUP_ACTIONS = ("queue", "land", "archive", "priority")
+
+
+def _behind() -> dict[str, int]:
+    """Commits behind main per build, as far as the merge queue knows (axf.merge-queue@1; empty when it is off)."""
+    svc = plugin_services.get("axf.merge-queue@1")
+    if svc is None:
+        return {}
+    out: dict[str, int] = {}
+    try:
+        q = svc.queue() or {}
+        rows = [*(q.get("items") or []), *(q.get("waiting") or []), *(q.get("kicked") or [])]
+    except Exception:  # noqa: BLE001 - no merge queue data means no "behind" numbers, never an error
+        return {}
+    for r in rows:
+        if isinstance(r, dict) and isinstance(r.get("build"), str) and isinstance(r.get("behind"), int):
+            out[r["build"]] = r["behind"]
+    return out
+
+
+def _groups(*args: str, body: dict[str, Any] | None = None, who: str = "") -> dict[str, Any]:
+    env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}
+    if who:
+        env["AXF_ACTOR"] = who
+    payload = {"behind": _behind(), **(body or {})}
+    proc = subprocess.run(["node", str(GROUPS_CLI), *args, "--sources", "--json"], cwd=ROOT, capture_output=True, text=True,
+                          timeout=120, env=env, input=json.dumps(payload))
+    out = proc.stdout.strip().splitlines()
+    try:
+        res = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        res = {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+    if not res.get("ok"):
+        err = str(res.get("error") or "groups failed")
+        raise HTTPException(404 if err.startswith("no group") else 400 if proc.returncode == 2 else 500, err[:400])
+    return res
+
+
+@router.get("/groups")
+def groups_list() -> dict[str, Any]:
+    """Every custom group of the active project: name, colour, tab, sort, filter, rule, the builds in it sorted by state
+    (partial, pending, queued, running, failed, done, landed) and the count per state."""
+    return _groups("list")
+
+
+@router.get("/groups/tabs")
+def groups_tabs() -> dict[str, Any]:
+    """The groups pinned as tabs next to Pending, Queue, Active … and the builds each tab shows."""
+    return _groups("tabs")
+
+
+@router.get("/groups/{group}")
+def groups_get(group: str) -> dict[str, Any]:
+    """One group by id or name, its builds sorted the group's way."""
+    return _groups("show", group[:80])
+
+
+@router.post("/groups")
+async def groups_change(request: Request) -> dict[str, Any]:
+    """{op: create|update|move|delete|assign, …}: create {name, color?, tab?, sort?, filter?, rule?, builds?}; update
+    {group, name?, color?, tab?, sort?, filter?, rule?}; move {group, to: index|up|down|first|last}; delete {group};
+    assign {groups: [group…], builds: [id…], mode: add|remove|set}. Saved per project."""
+    body = await _json_body(request)
+    if body.get("op") not in GROUP_OPS:
+        raise HTTPException(400, f"op is one of {', '.join(GROUP_OPS)}")
+    return _groups("apply", body={"op": body}, who=(brett_click(request) or "console")[:80])
+
+
+@router.post("/groups/{group}/action")
+async def groups_action(group: str, request: Request) -> dict[str, Any]:
+    """{action: queue|land|archive|priority, priority?, why?}: one action on every build of the group it fits (queue =
+    its Pending builds, land = its Done builds go first in the merge queue, archive = all without a live session,
+    priority = all). {done, refused, skipped}."""
+    body = await _json_body(request)
+    action = str(body.get("action") or "")
+    if action not in GROUP_ACTIONS:
+        raise HTTPException(400, f"action is one of {', '.join(GROUP_ACTIONS)}")
+    args = ["act", group[:80], action]
+    if body.get("priority"):
+        args += ["--priority", str(body["priority"])[:10]]
+    if str(body.get("why") or "").strip():
+        args += ["--why", str(body["why"])[:300]]
+    who = (brett_click(request) or "console")[:80]
+    return _groups(*args, "--by", who, who=who)
+
+
 def request_build(title: str, detail: str = "", *, by: str = "console", source: str = "", said: str = "", priority: str = "",
                   queue: bool = True) -> dict[str, Any]:
     """File a build with the orchestrator (it assigns the id) and, by default, put it in the Queue: the dispatcher starts

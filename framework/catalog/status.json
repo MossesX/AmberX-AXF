@@ -2299,5 +2299,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "context-lead@1: rt.contextExtras keys '^:<name>' lead every context menu above one separator (core/engines/windows.ts withContextLead, react Overlays ContextMenuHost; any target, even contributions:false, right-click and long-press). The console registers Console settings (app.settings, folding the asset's own Settings in) plus console.settings.open for search, voice, MCP and CLI; help entries; checks spec/check-context-lead.mts + apps/console-web/scripts/console-settings-menu.mts. Kotlin twin deferred."
+  },
+  "cx.buildengine.groups": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "build-groups@1 (the build orchestrator plugin: groups-core.mjs rules, groups.mjs CLI): groups per project in <pipeline dir>/groups.json; hand-picked members (drag, select, voice, API) plus smart rules (title contains, more than N behind main, filed in the last N days, states, priorities); state order partial, pending, queued, running, failed, done, landed with counts, sort and filter; a group pinned as a tab sits next to its stage tab (group:<id>); group actions queue, land (Urgent in the merge queue), archive, priority. REST /groups, plugin commands groups-* (MCP, CLI axf build-orchestrator, control@1 plugins.commands), console actions build-orchestrator.groups / group-add / group-remove / group-action. Kotlin twin deferred."
   }
 }
