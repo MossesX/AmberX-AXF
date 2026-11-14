@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:55 UTC · `icon-map-icon-packs-every-icon-badge-app` → queued, note (all) · console
 - 2026-11-13 19:55 UTC · `skin-config-panel-merge-main-and-land` note (all) · orchestrator
 - 2026-11-13 19:56 UTC · `per-instance-settings-picker-merge-main` s3 done, → built (all) · orchestrator
 - 2026-11-13 19:56 UTC · `skins-plugin-merge-main-and-land` → running, note (all) · pipeline
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 01:27 UTC · `land-batch-merge-main-each-finished` note (all) · orchestrator
 - 2026-11-14 01:30 UTC · `console-app-wake-word-voice-listener` → pending, note (all) · reconciler
 - 2026-11-14 01:45 UTC · `console-app-land-parts-1-4-build-apk` s12 done (all) · orchestrator
+- 2026-11-14 01:46 UTC · `console-app-land-parts-1-4-build-apk` note (all) · orchestrator
 
 ## Token passes (log)
 

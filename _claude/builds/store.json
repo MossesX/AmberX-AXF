@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5152,
- "updatedAt": "2026-11-14T01:45:54.184Z",
+ "rev": 5153,
+ "updatedAt": "2026-11-14T01:46:23.583Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -210119,7 +210119,7 @@
    "pr": "#643",
    "priority": "P0",
    "createdAt": "2026-11-13T23:41:07.780Z",
-   "updatedAt": "2026-11-14T01:45:52.578Z",
+   "updatedAt": "2026-11-14T01:46:22.042Z",
    "builtAt": "",
    "notes": [
     {
@@ -210141,6 +210141,10 @@
     {
      "text": "Blocker for landing: main's kernel ConformanceTest (theme variables, --fx-opacity-dialog) is red since the surface opacity tokens landed without the Kotlin twin (PORTING.md). The queue's full run for any Android batch fails on it, so the console app stack (#637 #639 #633 #640 #643) can't land until StyleTheme/ThemeEngine.kt get the 6 opacity fields + 12 vars (Fable step). Console app CI now builds and uploads console-app-debug.apk anyway.",
      "at": "2026-11-14T01:15:34.793Z"
+    },
+    {
+     "text": "Update: the kernel conformance blocker is fixed by #665 (skips the deferred opacity vars), in the same queue batch as #637/#639. Console app on the stack top: compiles, 62/62 JUnit, APK builds (run 43541410908).",
+     "at": "2026-11-14T01:46:22.042Z"
     }
    ],
    "approvals": [],
@@ -210647,7 +210651,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
