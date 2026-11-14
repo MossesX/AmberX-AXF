@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:09 UTC · `per-toolbar-settings-fix-failing-chrome` note (all) · orchestrator
 - 2026-11-13 20:10 UTC · `skin-animations-swatches-skin-switch` s1 done, → running (all) · orchestrator
 - 2026-11-13 20:10 UTC · `skin-animations-swatches-skin-switch` s2 done (all) · orchestrator
 - 2026-11-13 20:11 UTC · `context-menu-plugin-ai-generated-slim` added (0 steps) (all) · console
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 04:15 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · pipeline
 - 2026-11-14 04:15 UTC · `launch-landing-page-waitlist-referral` s2 done (all) · orchestrator
 - 2026-11-14 04:17 UTC · `hotfix-get-main-ci-green-theme-swap` s1 done (all) · orchestrator
+- 2026-11-14 04:19 UTC · `launch-landing-page-waitlist-referral` PR #668 (all) · builds-live
 
 ## Token passes (log)
 

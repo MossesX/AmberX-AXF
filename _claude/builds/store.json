@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5216,
- "updatedAt": "2026-11-14T04:19:22.523Z",
+ "rev": 5217,
+ "updatedAt": "2026-11-14T04:19:37.440Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211956,9 +211956,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/launch-landing-page-waitlist-referral",
-   "pr": "",
+   "pr": "#668",
    "createdAt": "2026-11-14T04:00:27.661Z",
-   "updatedAt": "2026-11-14T04:15:28.351Z",
+   "updatedAt": "2026-11-14T04:19:25.763Z",
    "builtAt": "",
    "notes": [
     {
@@ -212088,7 +212088,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
