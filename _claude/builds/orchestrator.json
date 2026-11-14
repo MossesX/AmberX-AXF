@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T17:50:39.718Z",
+ "updatedAt": "2026-11-14T17:52:23.390Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -139595,7 +139595,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-14T17:50:36.725Z",
+   "updatedAt": "2026-11-14T17:52:20.336Z",
    "builtAt": "",
    "notes": [
     {
@@ -140098,6 +140098,25 @@
      "note": "",
      "uid": "st-mwgpbnm601a6vg",
      "createdAt": "2026-11-14T17:50:36.725Z"
+    },
+    {
+     "id": "s47",
+     "text": "Move Claude account selection out of the orchestrator: a VPS rules service decides which account each build runs on (orchestrator just asks it before starting a session). Move all existing account-routing options from console Settings (Claude accounts routing, subscriptions-first, per-account queued/parallel limits, etc.) into the Rules tab as pre-built rules, remove them from the old settings screen, keep routing-test preview working, and make sure no build ever starts without an account during the switch.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgpdvjk012cot",
+     "createdAt": "2026-11-14T17:52:20.336Z"
     }
    ]
   }
