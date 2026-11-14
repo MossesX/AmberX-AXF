@@ -797,11 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 18:35 UTC · `themed-native-controls-plugin` s3 done (all) · orchestrator
-- 2026-11-14 18:36 UTC · `land-all-skin-builds` s12 done (all) · orchestrator
-- 2026-11-14 18:37 UTC · `land-all-skin-builds` s13 done (all) · orchestrator
-- 2026-11-14 18:37 UTC · `themed-native-controls-plugin` s4 done (all) · orchestrator
-- 2026-11-14 18:39 UTC · `picker-dialog-plugin-replaces-all` s4 done (all) · orchestrator
 - 2026-11-14 18:40 UTC · `land-all-skin-builds` s14 done (all) · orchestrator
 - 2026-11-14 18:41 UTC · `land-all-skin-builds` s15 done (all) · orchestrator
 - 2026-11-14 18:42 UTC · `land-all-skin-builds` s16 done (all) · orchestrator
@@ -1197,6 +1192,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:37 UTC · `skin-config-panel-merge-main-and-land` note (all) · orchestrator
 - 2026-11-14 23:38 UTC · `skin-config-panel-merge-main-and-land` → pending, note (all) · pipeline
 - 2026-11-14 23:38 UTC · `auto-land-merge-main-land-land-mjs-clash` note (all) · pipeline
+- 2026-11-14 23:38 UTC · `merge-main-land-move-amberx-web-app` → running, note (all) · pipeline
+- 2026-11-14 23:38 UTC · `merge-main-land-move-amberx-web-app` branch claude/merge-main-land-move-amberx-web-app (all) · pipeline
+- 2026-11-14 23:38 UTC · `merge-main-land-move-amberx-web-app` note (all) · orchestrator
+- 2026-11-14 23:38 UTC · `skin-config-panel-merge-main-and-land` → pending, note (all) · foreign-write
+- 2026-11-14 23:38 UTC · `auto-land-merge-main-land-land-mjs-clash` note (all) · foreign-write
 
 ## Token passes (log)
 
