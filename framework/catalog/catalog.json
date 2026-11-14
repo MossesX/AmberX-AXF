@@ -1729,29 +1729,34 @@
             {
               "id": "ui.picker",
               "title": "Picker dialog: every drop-down opens a themed picker (dialog on desktop, bottom sheet on phones), --fx-picker-* tokens, skins restyle it (picker@1)",
-              "note": "",
+              "note": "Brett, Nov 14 2026: every drop-down select box becomes a themable dialog that matches the theme; skins touch it; it conforms to the token system.",
               "tag": "core",
               "recommended": true,
               "suggests": [
                 {
                   "id": "ui.picker.engine",
-                  "title": "Picker engine: normalise, filter, group, choose, keyboard, voice matcher (core/engines/picker.ts, fixtures)"
+                  "title": "Picker engine: normalise, filter, group, choose, keyboard, voice matcher (core/engines/picker.ts, fixtures)",
+                  "note": "Pure reference engine shared by every port; spec fixtures replayed by check-picker.mts."
                 },
                 {
                   "id": "ui.picker.react",
-                  "title": "PickerField / PickerDialog / Select: search past a threshold, groups, icons, descriptions, multi with checkboxes, accessible"
+                  "title": "PickerField / PickerDialog / Select: search past a threshold, groups, icons, descriptions, multi with checkboxes, accessible",
+                  "note": "The React picker: trigger field, dialog / bottom sheet, bare Select; accessible (combobox, listbox, options, focus trap)."
                 },
                 {
                   "id": "ui.picker.swap",
-                  "title": "Swap layer: SelectField / Select render the picker and native selects get a trigger while the picker-dialog plugin is on"
+                  "title": "Swap layer: SelectField / Select render the picker and native selects get a trigger while the picker-dialog plugin is on",
+                  "note": "Off by default in the framework; the picker-dialog console plugin turns it on and off restores the original controls untouched."
                 },
                 {
                   "id": "ui.picker.api",
-                  "title": "Picker API: REST, MCP, CLI and voice open / choose / search / close any picker on screen; settings as control@1 targets"
+                  "title": "Picker API: REST, MCP, CLI and voice open / choose / search / close any picker on screen; settings as control@1 targets",
+                  "note": "Every picker on screen is button:picker-<id>; open, search, choose by name or position, close, settings, through REST, MCP, CLI and voice."
                 },
                 {
                   "id": "ui.picker.gate",
-                  "title": "check-pickers CI gate: no hand-made drop-downs, picker styles tokens only (ratchet baseline)"
+                  "title": "check-pickers CI gate: no hand-made drop-downs, picker styles tokens only (ratchet baseline)",
+                  "note": "Raw <select> and hand-made listboxes fail CI outside the baseline; the picker CSS may hold no literal colour or size."
                 }
               ]
             }

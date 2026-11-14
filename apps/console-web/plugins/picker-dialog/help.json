@@ -6,11 +6,67 @@
   "version": "0.1.0",
   "description": "Help mode entries for the picker dialog plugin (help@1).",
   "author": "Brett",
-  "tags": ["help"],
+  "tags": [
+    "help"
+  ],
   "data": {
     "scope": "plugin:picker-dialog",
     "entries": [
-      { "target": "picker-trigger", "title": "Drop-down", "text": "Tap to open the list as a picker: search it, scroll the groups, tap a choice. On a phone it opens as a sheet from the bottom." }
+      {
+        "target": "picker-trigger",
+        "title": "Drop-down",
+        "text": "Shows what is chosen (and how many, for a multiple choice). Tap it, or press Enter, Space or the down arrow, to open the list as a picker."
+      },
+      {
+        "target": "picker-search",
+        "title": "Search the list",
+        "text": "Type to narrow the list; it matches names, descriptions and group names. Appears when the list is long (Settings → Plugins → Picker dialog sets how long)."
+      },
+      {
+        "target": "picker-option",
+        "title": "A choice",
+        "text": "Tap to choose it. In a multiple choice each tap ticks or unticks it; Done closes the picker. Arrow keys move, Enter chooses, Escape closes without a change."
+      },
+      {
+        "target": "picker-done",
+        "title": "Done",
+        "text": "Closes a multiple-choice picker and keeps what is ticked. Clear unticks everything."
+      },
+      {
+        "target": "open-drop-downs-in-the-picker-dialog",
+        "title": "Open drop-downs in the picker dialog",
+        "text": "On: every drop-down opens the themed picker. Off: the browser's own drop-downs come back, untouched."
+      },
+      {
+        "target": "show-the-search-box-from-this-many-options",
+        "title": "Search box threshold",
+        "text": "The search box shows when a list has at least this many options. 0 = always."
+      },
+      {
+        "target": "bottom-sheet-on-phones",
+        "title": "Bottom sheet on phones",
+        "text": "On a phone the picker slides up from the bottom. Off: phones get the centred dialog too."
+      },
+      {
+        "target": "framework-select-fields",
+        "title": "Framework select fields",
+        "text": "Framework select fields draw the picker field instead of a browser drop-down."
+      },
+      {
+        "target": "every-other-drop-down-on-the-page",
+        "title": "Every other drop-down",
+        "text": "Plain select boxes get a picker in front of them; the original stays hidden and is still what the form sends."
+      },
+      {
+        "target": "keep-the-original-drop-downs-in",
+        "title": "Keep the original drop-downs in",
+        "text": "Apps ticked here keep the browser's drop-downs."
+      },
+      {
+        "target": "picker-dialog",
+        "title": "Picker dialog",
+        "text": "Settings for the picker every drop-down opens: switch it on or off, when the search box shows, the sheet on phones, what it replaces and which apps keep their original drop-downs."
+      }
     ]
   }
 }

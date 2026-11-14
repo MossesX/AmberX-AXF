@@ -42,7 +42,7 @@ try {
   await page.goto(`http://127.0.0.1:${PORT}/`);
   await page.waitForTimeout(1500);
   // picker@1: with the picker-dialog plugin on, drop-downs are themed pickers; this check drives the native selects,
-  // so it switches the swap off for its run (the picker's own restyle is checked by plugins/picker-dialog/e2e.mjs).
+  // so it switches the swap off for its run (the picker's own restyle is checked by the picker plugin's e2e).
   await page.evaluate(() => window.__axfPickers?.config({ enabled: false }));
   await page.waitForTimeout(200);
   // Open Settings: the side navigation is hidden by default since Oct 21 2026, so go through the application menu

@@ -58,7 +58,8 @@
           "required": [
             "target"
           ]
-        }
+        },
+        "description": "Opens a picker on the open console screen, as if its drop-down was tapped."
       },
       {
         "route": "POST /choose",
@@ -100,7 +101,8 @@
           "required": [
             "option"
           ]
-        }
+        },
+        "description": "Ticks or unticks one option in a multiple-choice picker, by name or value."
       },
       {
         "route": "POST /search",
@@ -120,7 +122,8 @@
           "required": [
             "text"
           ]
-        }
+        },
+        "description": "Types into a picker's search box (opening it first) and returns the filtered rows."
       },
       {
         "route": "POST /clear",
@@ -138,7 +141,8 @@
           "required": [
             "target"
           ]
-        }
+        },
+        "description": "Empties a picker's value (single: the empty choice; multiple: nothing ticked)."
       },
       {
         "route": "POST /close",
@@ -152,19 +156,22 @@
               "description": "the picker's id (data-fx-picker-id), button:picker-<id> or picker:<id>; omitted = the open picker"
             }
           }
-        }
+        },
+        "description": "Closes the open picker (or the one named) without choosing."
       },
       {
         "route": "POST /list",
         "id": "list",
         "title": "Refresh the list of pickers on the screen",
-        "readOnly": true
+        "readOnly": true,
+        "description": "Asks the open console to report every picker on its screen again."
       },
       {
         "route": "GET /settings",
         "id": "settings",
         "title": "Picker dialog settings",
-        "readOnly": true
+        "readOnly": true,
+        "description": "Reads the picker dialog settings: on/off, search threshold, phone sheet, what it replaces, excluded apps."
       },
       {
         "route": "POST /settings",
@@ -197,7 +204,8 @@
               }
             }
           }
-        }
+        },
+        "description": "Changes any picker dialog setting; the console applies it at once."
       },
       {
         "route": "POST /voice",
