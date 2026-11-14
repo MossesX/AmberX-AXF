@@ -792,12 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:11 UTC · `context-menu-plugin-ai-generated-slim` → queued, note (all) · console
-- 2026-11-13 20:05 UTC · `full-voice-control-merge-main-and-land` PR #645 (all) · builds-live
-- 2026-11-13 20:12 UTC · `demo-pipelines-guided-walkthrough-live` PR #646 (all) · builds-live
-- 2026-11-13 20:12 UTC · `skin-animations-swatches-skin-switch` s3 done (all) · orchestrator
-- 2026-11-13 20:12 UTC · `context-menu-plugin-ai-generated-slim` note (all) · orchestrator
-- 2026-11-13 20:12 UTC · `context-menu-plugin-ai-generated-slim` → archived (all) · claude-voice
 - 2026-11-13 20:13 UTC · `full-voice-control-merge-main-and-land` s1 done (all) · orchestrator
 - 2026-11-13 20:14 UTC · `full-voice-control-merge-main-and-land` s2 done (all) · orchestrator
 - 2026-11-13 20:14 UTC · `context-menus-plugin-one-true-source` added (0 steps) (all) · console
@@ -1192,6 +1186,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 04:19 UTC · `ui-directory-plugin-self-updating-data` s1 done (all) · orchestrator
 - 2026-11-14 04:20 UTC · `launch-landing-page-waitlist-referral` note (all) · orchestrator
 - 2026-11-14 04:20 UTC · `ui-directory-plugin-self-updating-data` s1 done (all) · foreign-write
+- 2026-11-14 04:20 UTC · `ui-directory-plugin-self-updating-data` note (all) · orchestrator
+- 2026-11-14 04:20 UTC · `ui-directory-plugin-self-updating-data` → queued, note (all) · pipeline
+- 2026-11-14 04:20 UTC · `group-chat-audio-hear-agents-talk-while` added (3 steps) (all) · voice
+- 2026-11-14 04:20 UTC · `demo-video-series-three-minute-browser` note (all) · voice
+- 2026-11-14 04:20 UTC · `ui-directory-plugin-self-updating-data` → running, note (all) · pipeline
+- 2026-11-14 04:20 UTC · `demo-video-series-three-minute-browser` → queued, note (all) · pipeline
 
 ## Token passes (log)
 

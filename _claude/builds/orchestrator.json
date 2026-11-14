@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:20:38.575Z",
+ "updatedAt": "2026-11-14T04:21:02.847Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137112,7 +137112,7 @@
    "branch": "claude/ui-directory-plugin-self-updating-data",
    "pr": "",
    "createdAt": "2026-11-14T03:50:42.413Z",
-   "updatedAt": "2026-11-14T04:19:44.151Z",
+   "updatedAt": "2026-11-14T04:20:34.939Z",
    "builtAt": "",
    "notes": [
     {
@@ -137126,6 +137126,18 @@
     {
      "text": "Brett: everything this build makes (the directory window, user-made toolbars and tab groups, drag/dock UI) must follow the token rule so skins restyle it. Reuse the existing toolbar and tab group token families so every skin already covers them; any NEW tokens go in the token registry with defaults pointing at today's tokens, and run the skin upgrader so every shipped skin covers them.",
      "at": "2026-11-14T03:52:54.687Z"
+    },
+    {
+     "text": "Headless run axf-ui-directory-plugin-self-updating-data--paulie: brief only · start 12.6K tokens ($0.06) · cost $12.57 · 119 turns · 6 tools, MCP none",
+     "at": "2026-11-14T04:20:18.067Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 0) with 2 steps left: back in the Queue (run 1).",
+     "at": "2026-11-14T04:20:20.931Z"
+    },
+    {
+     "text": "Dispatch gate: ui-directory-plugin-self-updating-data still has axf-ui-directory-plugin-self-updating-data--paulie alive: not launched again, tracking that session.",
+     "at": "2026-11-14T04:20:34.939Z"
     }
    ],
    "approvals": [],
@@ -137214,7 +137226,7 @@
    "branch": "claude/launch-landing-page-waitlist-referral",
    "pr": "#668",
    "createdAt": "2026-11-14T04:00:27.661Z",
-   "updatedAt": "2026-11-14T04:20:12.848Z",
+   "updatedAt": "2026-11-14T04:20:41.754Z",
    "builtAt": "",
    "notes": [
     {
@@ -137224,6 +137236,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-launch-landing-page-waitlist-referral--sully, own login copy)",
      "at": "2026-11-14T04:02:46.663Z"
+    },
+    {
+     "text": "Headless run axf-launch-landing-page-waitlist-referral--sully: brief only · start 10.8K tokens ($0.02) · cost $5.42 · 117 turns · 6 tools, MCP none",
+     "at": "2026-11-14T04:20:41.754Z"
     },
     {
      "text": "s3 left open: site deployed on the VPS behind the Coolify proxy for join.amberxai.com and verified through the proxy (HTTPS redirect, page, health, admin auth). Public URL + certificate wait on one Hostinger DNS record (A join -> 31.97.13.252): no Hostinger or Coolify API token is available to agents. Apex amberxai.com not taken: the amberx-app web container owns it. Console needs AMBERX_SITE_URL + AMBERX_SITE_ADMIN_TOKEN (value in /opt/amberx-site/.env). Systems check item 'AmberX launch site is public' carries the steps and goes green by itself; Brett notified on his phone. PR #668, UI Review r-20261114-81221dff + r-20261114-1216c892.",
@@ -137309,14 +137325,14 @@
    "title": "Demo video series: three-minute browser walkthroughs of AmberX",
    "category": "Launch",
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:19:20.978Z",
+   "updatedAt": "2026-11-14T04:20:37.431Z",
    "builtAt": "",
    "notes": [
     {
@@ -137354,6 +137370,14 @@
     {
      "text": "Brett: in EVERY app video (time tracker, expense tracker, event gallery, private messaging server) the app is built purely by assembling pre-configured AXF libraries. No code is written and no code is shown on screen: just picking libraries and features, configuring them, plain-English instructions, and the framework snapping them together. Make 'no code, just assembly' a clear message in the narration and on screen.",
      "at": "2026-11-14T04:12:40.734Z"
+    },
+    {
+     "text": "Brett: in the videos, turn on group chat audio so viewers actually hear the cat-named agents talking to each other in their own voices while they build (especially the overnight gallery video). Feature is being built in group-chat-audio build.",
+     "at": "2026-11-14T04:20:30.520Z"
+    },
+    {
+     "text": "Self-check: demo-video-series-three-minute-browser was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-14T04:20:37.431Z"
     }
    ],
    "approvals": [],
@@ -137598,6 +137622,83 @@
      "note": "",
      "uid": "st-mwfvo8cj08cpd0",
      "createdAt": "2026-11-14T04:00:35.413Z"
+    }
+   ]
+  },
+  {
+   "id": "group-chat-audio-hear-agents-talk-while",
+   "title": "Group chat audio: hear the agents talk while they build",
+   "category": "Console",
+   "detail": "Brett: an 'Enable audio' switch on the agents' group chat so you can actually hear the employees building your app. Each cat-named agent gets its own TTS voice (voice, speed, pitch as assets, swappable per agent and per skin). New messages are spoken aloud in order as they arrive; mute, volume, 'only my mentions' and 'summaries only' modes; queue so voices don't overlap. Works in the console and the AmberX Android app (background audio, earbuds). Full API and voice ('turn on group chat audio', 'mute Whiskers'). Token-driven UI. Tests desktop and phone.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-14T04:20:23.886Z",
+   "updatedAt": "2026-11-14T04:20:23.887Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Voice profile per agent (voice@1 asset), TTS playback queue for group chat messages, mute/volume/modes",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfwdp4y04a733",
+     "createdAt": "2026-11-14T04:20:23.888Z"
+    },
+    {
+     "id": "s2",
+     "text": "Enable-audio switch and controls in the group chat on console and AmberX Android (background audio)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfwdp4y056wfy",
+     "createdAt": "2026-11-14T04:20:23.888Z"
+    },
+    {
+     "id": "s3",
+     "text": "Full API + voice commands, tests desktop and phone, help, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfwdp4y066i5r",
+     "createdAt": "2026-11-14T04:20:23.888Z"
     }
    ]
   }
