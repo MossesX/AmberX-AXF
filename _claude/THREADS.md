@@ -796,8 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 23:46 UTC · `voice-listener-use-claude-when-connected` note (all) · pipeline
-- 2026-11-13 23:47 UTC · `voice-listener-use-claude-when-connected` note (all) · pipeline
 - 2026-11-13 23:50 UTC · `land-batch-merge-main-each-finished` → running, note (all) · pipeline
 - 2026-11-13 23:50 UTC · `rebake-console` branch claude/rebake-console, note (all) · reconciler
 - 2026-11-13 23:50 UTC · `banner-one-line` branch claude/banner-one-line, note (all) · reconciler
@@ -1196,6 +1194,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:42 UTC · `console-look-becomes-default-axhub-skin` note (all) · orchestrator
 - 2026-11-14 22:42 UTC · `picker-dialog-plugin-replaces-all` → running, note (all) · pipeline
 - 2026-11-14 22:42 UTC · `picker-dialog-plugin-replaces-all` note (all) · orchestrator
+- 2026-11-14 22:42 UTC · `themed-native-controls-plugin` → running, note (all) · pipeline
+- 2026-11-14 22:42 UTC · `themed-native-controls-plugin` note (all) · orchestrator
 
 ## Token passes (log)
 
