@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5671,
- "updatedAt": "2026-11-14T23:43:43.413Z",
+ "rev": 5672,
+ "updatedAt": "2026-11-14T23:44:01.052Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -226077,11 +226077,11 @@
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
-   "branch": "claude/merge-main-land-change-to-move-amberx",
-   "pr": "",
+   "branch": "claude/change-to-move-amberx-web-app-console",
+   "pr": "#586",
    "priority": "P0",
    "createdAt": "2026-11-14T23:10:56.028Z",
-   "updatedAt": "2026-11-14T23:42:36.347Z",
+   "updatedAt": "2026-11-14T23:43:16.857Z",
    "builtAt": "",
    "notes": [
     {
@@ -226187,12 +226187,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:42:41.210Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:15:00.410Z",
-     "updatedAt": "2026-11-14T23:15:00.410Z"
+     "updatedAt": "2026-11-14T23:42:41.852Z"
     },
     {
      "id": "s3",
@@ -226209,12 +226209,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:42:44.962Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:15:00.410Z",
-     "updatedAt": "2026-11-14T23:15:00.410Z"
+     "updatedAt": "2026-11-14T23:42:45.461Z"
     },
     {
      "id": "s4",
@@ -226231,12 +226231,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:42:49.452Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:15:00.410Z",
-     "updatedAt": "2026-11-14T23:15:00.410Z"
+     "updatedAt": "2026-11-14T23:42:49.923Z"
     },
     {
      "id": "s5",
@@ -226253,12 +226253,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:43:05.691Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:15:00.410Z",
-     "updatedAt": "2026-11-14T23:15:00.410Z"
+     "updatedAt": "2026-11-14T23:43:06.480Z"
     },
     {
      "id": "s6",
@@ -226275,12 +226275,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:43:13.791Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:15:00.410Z",
-     "updatedAt": "2026-11-14T23:15:00.410Z"
+     "updatedAt": "2026-11-14T23:43:14.473Z"
     },
     {
      "id": "s7",
@@ -226360,7 +226360,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

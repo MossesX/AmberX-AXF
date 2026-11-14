@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:43:43.413Z",
+ "updatedAt": "2026-11-14T23:44:01.052Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -144700,11 +144700,11 @@
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
-   "branch": "claude/merge-main-land-change-to-move-amberx",
-   "pr": "",
+   "branch": "claude/change-to-move-amberx-web-app-console",
+   "pr": "#586",
    "priority": "P0",
    "createdAt": "2026-11-14T23:10:56.028Z",
-   "updatedAt": "2026-11-14T23:42:36.347Z",
+   "updatedAt": "2026-11-14T23:43:16.857Z",
    "builtAt": "",
    "notes": [
     {
@@ -144771,8 +144771,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:42:41.210Z",
      "note": "",
      "uid": "st-mwh0wszf02qd98",
      "createdAt": "2026-11-14T23:15:00.410Z"
@@ -144790,8 +144790,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:42:44.962Z",
      "note": "",
      "uid": "st-mwh0wszf0396rw",
      "createdAt": "2026-11-14T23:15:00.410Z"
@@ -144809,8 +144809,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:42:49.452Z",
      "note": "",
      "uid": "st-mwh0wszf040ndf",
      "createdAt": "2026-11-14T23:15:00.410Z"
@@ -144828,8 +144828,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:43:05.691Z",
      "note": "",
      "uid": "st-mwh0wszf05xrjp",
      "createdAt": "2026-11-14T23:15:00.410Z"
@@ -144847,8 +144847,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:43:13.791Z",
      "note": "",
      "uid": "st-mwh0wszf066k0v",
      "createdAt": "2026-11-14T23:15:00.410Z"
