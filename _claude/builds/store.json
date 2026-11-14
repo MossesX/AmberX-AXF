@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5231,
- "updatedAt": "2026-11-14T04:24:19.254Z",
+ "rev": 5232,
+ "updatedAt": "2026-11-14T04:25:46.240Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212179,7 +212179,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:24:17.628Z",
+   "updatedAt": "2026-11-14T04:25:44.422Z",
    "builtAt": "",
    "notes": [
     {
@@ -212505,7 +212505,7 @@
      "id": "s15",
      "uid": "st-mwfwipb501li82",
      "title": "",
-     "text": "Skins video (dedicated, in depth): how skins work and why it's so powerful that every single thing is built on tokens from the ground up, so the whole system is solid inside. Show the token registry, then change behaviour, placement, layout and colours live. Show the skin config panel: pick which areas get randomized or changed (layout, style, colour, behaviour), let the AI make a skin, preview it in the sandbox skin editor, save it as a new skin with snapshot history and revert. Finale: apply the new skin and watch it take over every app connected to the same project on axHub at once, desktop and Android. Use the real skins, skin editor, token registry and config panel; label staged parts as a preview.",
+     "text": "Skins and enterprise branding video (dedicated, in depth). Part 1, skins: how skins work and why it's so powerful that every single thing is built on tokens from the ground up, so the whole system is solid inside. Show the token registry, then change behaviour, placement, layout and colours live. Skin config panel: pick which areas get randomized or changed (layout, style, colour, behaviour), let the AI make a skin, preview it in the sandbox skin editor, save it as a new skin with snapshot history and revert; apply it and watch every app connected to the same project on axHub change at once, desktop and Android. Part 2, enterprise branding: the Enterprise Branding Studio and the global icon map, one map with an entry for every icon, badge, logo and brand slot in the project. Show logo packs, animated logos with transparent backgrounds, and icon packs acting through the map. One click swaps the brand: logos, animated logos, banners and branded marks land everywhere (title bars, headers, banners, nav, splash) and the app looks like an entirely different app from an entirely different company. End on a side-by-side of the same app under two brands. Use the real icon map, branding studio, skins and editors; label staged parts as a preview.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -212519,9 +212519,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:24:17.629Z",
-     "updatedAt": "2026-11-14T04:24:17.825Z"
+     "updatedAt": "2026-11-14T04:25:44.669Z"
     },
     {
      "id": "s7",
@@ -212620,7 +212620,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
