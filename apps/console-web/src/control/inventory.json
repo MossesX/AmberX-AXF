@@ -6,11 +6,11 @@
     "nav": 16,
     "tabGroups": 22,
     "tabs": 76,
-    "settingsTabs": 67,
-    "settings": 85,
-    "functions": 230,
+    "settingsTabs": 68,
+    "settings": 87,
+    "functions": 242,
     "buttons": 62,
-    "plugins": 67
+    "plugins": 68
   },
   "views": [
     {
@@ -2040,6 +2040,13 @@
       "plugin": "ai.amberx.axf.console.voice-notes"
     },
     {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=wake-listener",
+      "id": "wake-listener",
+      "label": "Wake listener",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.wake-listener"
+    },
+    {
       "address": "view:settings/tab:settings.tabs=alerts",
       "id": "alerts",
       "label": "Alerts",
@@ -2382,6 +2389,36 @@
       "runs": "console",
       "plugin": "ai.amberx.axf.console.molly-guide",
       "file": "plugins/molly-guide/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=wake-listener/setting:axf.voice.useClaude",
+      "kind": "setting",
+      "label": "Understand with Claude when connected",
+      "key": "axf.voice.useClaude",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Wake listener",
+      "keywords": [
+        "axf.voice.useClaude",
+        "Wake listener"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=wake-listener/setting:axf.voice.claudeTimeoutSec",
+      "kind": "setting",
+      "label": "Wait for Claude (seconds)",
+      "key": "axf.voice.claudeTimeoutSec",
+      "type": "number",
+      "detail": "Settings › Plugins › Wake listener",
+      "keywords": [
+        "axf.voice.claudeTimeoutSec",
+        "Wake listener"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
     },
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ashes/setting:axf.ashes.on",
@@ -6220,6 +6257,203 @@
       "file": "plugins/ui-review/web/index.tsx"
     },
     {
+      "address": "function:wake-listener.on",
+      "kind": "function",
+      "id": "wake-listener.on",
+      "label": "Wake listener on",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.on",
+        "wake",
+        "listener",
+        "on"
+      ],
+      "effect": "write",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.off",
+      "kind": "function",
+      "id": "wake-listener.off",
+      "label": "Wake listener off",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.off",
+        "wake",
+        "listener",
+        "off"
+      ],
+      "effect": "write",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.toggle",
+      "kind": "function",
+      "id": "wake-listener.toggle",
+      "label": "Wake listener on / off",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.toggle",
+        "wake",
+        "listener",
+        "toggle"
+      ],
+      "effect": "write",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.heard",
+      "kind": "function",
+      "id": "wake-listener.heard",
+      "label": "Say a phrase to the console (as if the mic heard it)",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.heard",
+        "wake",
+        "listener",
+        "heard"
+      ],
+      "effect": "write",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.approvals",
+      "kind": "function",
+      "id": "wake-listener.approvals",
+      "label": "Review approvals by voice",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.approvals",
+        "wake",
+        "listener",
+        "approvals"
+      ],
+      "effect": "write",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.wizard",
+      "kind": "function",
+      "id": "wake-listener.wizard",
+      "label": "Start a spoken wizard for a command",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.wizard",
+        "wake",
+        "listener",
+        "wizard"
+      ],
+      "effect": "write",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.cancel",
+      "kind": "function",
+      "id": "wake-listener.cancel",
+      "label": "Cancel the spoken wizard",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.cancel",
+        "wake",
+        "listener",
+        "cancel"
+      ],
+      "effect": "write",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.history",
+      "kind": "function",
+      "id": "wake-listener.history",
+      "label": "Voice command history (filter: claude or scripted)",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.history",
+        "wake",
+        "listener",
+        "history"
+      ],
+      "effect": "navigate",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:voice.useClaude",
+      "kind": "function",
+      "id": "voice.useClaude",
+      "label": "Claude mode for voice (on, off or toggle)",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "voice.useClaude",
+        "voice",
+        "useClaude"
+      ],
+      "effect": "write",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:voice.understand.test",
+      "kind": "function",
+      "id": "voice.understand.test",
+      "label": "Test Claude mode on a phrase (dry run)",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "voice.understand.test",
+        "voice",
+        "understand",
+        "test"
+      ],
+      "effect": "read",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.show",
+      "kind": "function",
+      "id": "wake-listener.show",
+      "label": "Open the wake listener at: claude, mode or history[:claude|scripted]",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.show",
+        "wake",
+        "listener",
+        "show"
+      ],
+      "effect": "navigate",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.open",
+      "kind": "function",
+      "id": "wake-listener.open",
+      "label": "Wake listener settings",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.open",
+        "wake",
+        "listener",
+        "open"
+      ],
+      "effect": "navigate",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
       "address": "function:whats-shipped.open",
       "kind": "function",
       "id": "whats-shipped.open",
@@ -9458,6 +9692,32 @@
       "provides": [],
       "requires": [],
       "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.wake-listener",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.wake-listener",
+      "label": "Wake listener",
+      "folder": "wake-listener",
+      "version": "0.2.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "wake-listener",
+        "Wake listener",
+        "An always-on wake-word listener for the console and the console Android app"
+      ],
+      "aliases": [
+        "wake-listener",
+        "wake listener"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=wake-listener",
+      "provides": [
+        "service:axf.wake-listener@1"
+      ],
+      "requires": [],
+      "optional": [
+        "service:axf.speech@1"
+      ]
     },
     {
       "address": "plugin:ai.amberx.axf.console.whats-shipped",

@@ -224,3 +224,21 @@ The guide asks agent `gizmo` (Molly is no longer an agent, Nov 3 decision; the `
 `gizmo.ask` / `gizmo.replay` / `gizmo.next` / `gizmo.prev` / `gizmo.close` with the `molly.*` names kept as hidden aliases.
 AmberX on Android runs the web app, so its texts follow already. A native Compose player of walkthrough@1, when the Android side
 resumes, replays the same rule: no auto-open on start, opt-in only, nothing older than the app's start, and the Gizmo names.
+
+## Deferred: the console app's on-device wake listener (Nov 13 2026)
+Build `console-app-wake-word-voice-listener` (Fable). The wake listener is the console plugin `apps/console-web/plugins/wake-listener`
+(wake-listener@1: wake phrases, switch, state machine, command catalog and spoken wizard in `core.mjs` / `catalog.mjs`; the page
+engine in `web/engine.ts`). In a browser it listens with the browser's recognizer. In the console Android app (`apps/console-droid`,
+PRs #637 / #633, not yet on main) it expects an **on-device, offline** recognizer behind the native bridge (native-bridge@1), which is
+the deferred Java twin (no new Android work in this build; the bridge files live on the unlanded branches):
+- tools `listener.start { phrases: string[] }` → `{ listening, micOpen }`, `listener.stop` → `{ listening: false }`, `listener.status`
+  → `{ listening, micOpen, engine, error? }`; add them to `BridgeContract.TOOLS` (page-only: not in `HUB_TOOLS`), capability `listener@1`,
+  needs `mic`;
+- event `listener` `{ text?, final?, listening, micOpen, error? }` for every utterance and every state change;
+- the recognizer runs in a foreground service with the mic notification (Android's own indicator), restarts itself when it stops, uses
+  Android's on-device `SpeechRecognizer` (`EXTRA_PREFER_OFFLINE`, continuous) or Vosk with a bundled small model; nothing leaves the phone;
+  it lets go of the microphone while `mic.status` says the console's own switch is off, and pauses while the page's agent voice speaks;
+- `web/engine.ts` already picks `native` when `window.axfNative.tools` lists the three tools (`available()`), so no page change is needed.
+Until then the console app's WebView has no recognizer (Android WebView ships no Web Speech API) and the listener reports
+"no speech recognizer here"; the API, the settings and the spoken flows work unchanged from a desktop browser and through
+`wake-listener.heard` (REST, MCP, CLI, AmberX hands-free).

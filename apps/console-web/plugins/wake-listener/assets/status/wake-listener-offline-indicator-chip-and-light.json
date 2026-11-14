@@ -1,0 +1,29 @@
+{
+  "$axf": "asset@1",
+  "type": "status",
+  "id": "wake-listener-offline-indicator-chip-and-light",
+  "name": "Wake listener offline indicator: Chip on the panel + 'offline mode' on the mic light",
+  "version": "0.1.0",
+  "author": "Wake listener plugin",
+  "description": "Built now (the default). An amber 'Offline mode' chip next to the listener switch with the reason on hover and a line under it; the banner mic light keeps its colour and adds '· offline mode' to its label.",
+  "tags": [
+    "ui-choice",
+    "choice-set:wake-listener-offline-indicator",
+    "choice-option:chip-and-light",
+    "wake-listener",
+    "claude-mode"
+  ],
+  "data": {
+    "counter": "wake-listener.live",
+    "dot": true,
+    "link": "wake-listener.toggle",
+    "indicator": {
+      "panelChip": true,
+      "panelLine": true,
+      "bannerSuffix": " · offline mode",
+      "bannerTone": "keep",
+      "chipTone": "warning",
+      "claudeChipTone": "accent"
+    }
+  }
+}

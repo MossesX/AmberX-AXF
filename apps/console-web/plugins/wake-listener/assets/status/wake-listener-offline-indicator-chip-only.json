@@ -1,0 +1,29 @@
+{
+  "$axf": "asset@1",
+  "type": "status",
+  "id": "wake-listener-offline-indicator-chip-only",
+  "name": "Wake listener offline indicator: Chip on the panel only",
+  "version": "0.1.0",
+  "author": "Wake listener plugin",
+  "description": "The banner mic light stays exactly as it is; only the settings panel shows the amber 'Offline mode' chip and its reason. Quietest on the banner.",
+  "tags": [
+    "ui-choice",
+    "choice-set:wake-listener-offline-indicator",
+    "choice-option:chip-only",
+    "wake-listener",
+    "claude-mode"
+  ],
+  "data": {
+    "counter": "wake-listener.live",
+    "dot": true,
+    "link": "wake-listener.toggle",
+    "indicator": {
+      "panelChip": true,
+      "panelLine": true,
+      "bannerSuffix": "",
+      "bannerTone": "keep",
+      "chipTone": "warning",
+      "claudeChipTone": "accent"
+    }
+  }
+}
