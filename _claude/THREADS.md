@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 21:20 UTC · `lander-regenerates-generated-files-clash` PR #661 (all) · builds-live
 - 2026-11-13 21:20 UTC · `toolbar-widgets-attach-any-banner-style` note (all) · builds-live
 - 2026-11-13 21:20 UTC · `lander-regenerates-generated-files-clash` → running, note (all) · pipeline
 - 2026-11-13 21:20 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · pipeline
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 21:01 UTC · `skin-animations-swatches-skin-switch` note (all) · orchestrator
 - 2026-11-14 21:41 UTC · `token-registry-skin-editor-live-sandbox` merged, note (all) · reconciler
 - 2026-11-14 21:42 UTC · `token-registry-skin-editor-live-sandbox` note (all) · orchestrator
+- 2026-11-14 22:15 UTC · `replace-merge-queue-one-time-landing` added (0 steps) (all) · console
 
 ## Token passes (log)
 
