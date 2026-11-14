@@ -81,3 +81,9 @@ export const FALLBACK_LABEL: Record<string, string>;
 export interface ClaudeView { claudeConnected?: boolean | null; offlineReason?: string }
 export interface ModeIndicator { mode: 'claude' | 'scripted'; offline: boolean; reason: string; label: string; detail: string }
 export function modeIndicator(settings: Partial<ListenerSettings> | null | undefined, state: Partial<ListenerState> | null | undefined, claude?: ClaudeView | null): ModeIndicator;
+
+export const HISTORY_MODES: readonly ['claude', 'scripted'];
+export const HISTORY_MAX: number;
+export interface HistoryEntry { at: number; heard: string; command: string; reply: string; ok: boolean; mode: 'claude' | 'scripted'; reason: string }
+export function normalizeHistoryEntry(raw: unknown): HistoryEntry;
+export function filterHistory(entries: unknown[] | null | undefined, opts?: { mode?: '' | 'claude' | 'scripted'; limit?: number }): HistoryEntry[];

@@ -194,5 +194,19 @@ ok(['approve', 'deny that one', 'approve all pending', 'set the veto timer to tw
   ok(core.initialState({}).lastMode === '' && core.initialState({}).lastFallbackReason === '', 'state carries lastMode / lastFallbackReason');
 }
 
+/* history (s9) */
+{
+  const old = core.normalizeHistoryEntry({ at: 5, heard: 'approve', command: 'approvals.review', reply: 'x' });
+  ok(old.mode === 'scripted' && old.reason === '', 'history: an entry from before Claude mode reads as scripted');
+  ok(core.normalizeHistoryEntry({ mode: 'claude', reason: 'timeout' }).reason === '', 'history: a Claude entry has no fallback reason');
+  const list = [{ at: 1, mode: 'claude' }, { at: 3, mode: 'scripted', reason: 'timeout' }, { at: 2 }];
+  ok(core.filterHistory(list).map((e) => e.at).join() === '3,2,1' && core.filterHistory(list, { mode: 'scripted' }).length === 2 && core.filterHistory(list, { mode: 'claude' }).length === 1, 'history: newest first, filter by mode');
+  cli('record'); // empty stdin is fine
+  execFileSync('node', [new URL('./listener.mjs', import.meta.url).pathname, 'record', '--json'], { env: process.env, input: JSON.stringify({ heard: 'create a project', command: 'project-wizard/run', mode: 'claude' }) });
+  execFileSync('node', [new URL('./listener.mjs', import.meta.url).pathname, 'record', '--json'], { env: process.env, input: JSON.stringify({ heard: 'help', command: 'listener.help', mode: 'scripted', reason: 'timeout' }) });
+  const h = cli('history'); const hc = cli('history', '--mode', 'claude');
+  ok(h.count === 3 && hc.count === 1 && hc.entries[0].command === 'project-wizard/run' && cli('history', '--mode', 'scripted').entries[0].reason === 'timeout', 'cli history: mode recorded, filter works');
+}
+
 console.log(`${n - failed}/${n} wake-listener checks passed`);
 process.exit(failed ? 1 : 0);

@@ -18,6 +18,7 @@
     "action:wake-listener.wizard",
     "action:wake-listener.cancel",
     "action:wake-listener.open",
+    "action:wake-listener.history",
     "service:axf.wake-listener@1"
   ],
   "optional": ["service:axf.speech@1"],
@@ -43,6 +44,8 @@
       { "route": "POST /report", "skip": "the open console's own state report" },
       { "route": "GET /catalog", "id": "catalog", "title": "The voice command catalog: every console action, plugin command, control@1 target and pipeline command with its spoken forms and fields", "readOnly": true },
       { "route": "POST /match", "id": "match", "title": "Dry run a phrase against the catalog: the entry it lands on, the fields it filled, the ones a wizard would ask", "readOnly": true, "input": { "type": "object", "properties": { "text": { "type": "string" } }, "required": ["text"], "additionalProperties": false } },
+      { "route": "GET /history", "id": "history", "title": "Recent voice commands, newest first: what was heard, the command, the reply, who understood it (mode: claude or scripted) and why the scripted matcher took it; filter with mode", "readOnly": true, "input": { "type": "object", "properties": { "mode": { "type": "string", "enum": ["claude", "scripted"] }, "limit": { "type": "integer", "minimum": 1, "maximum": 500 } }, "additionalProperties": false } },
+      { "route": "POST /history", "skip": "the open console records its own commands" },
       { "route": "POST /understand", "id": "understand", "title": "Claude mode: Claude picks the command for a phrase and fills its fields (never runs it). Answers {mode: claude, command, args, ask?, confirm?, run, pending?} or {mode: offline, reason}; send pending back with the next answer for a follow-up or a yes / no", "readOnly": true, "input": { "type": "object", "properties": { "text": { "type": "string" }, "context": { "type": "object" }, "pending": { "type": "object", "description": "what the last answer returned as pending (a follow-up question or a confirm)" } }, "required": ["text"], "additionalProperties": false } },
       { "action": "wake-listener.heard", "id": "heard", "title": "Say a phrase to the open console as if the mic heard it (the wake phrase is optional): runs the command, answers a wizard or reviews approvals", "input": { "type": "object", "properties": { "args": { "type": "string", "description": "the phrase" }, "to": { "type": "string" } }, "required": ["args"], "additionalProperties": false } },
       { "action": "wake-listener.approvals", "id": "approvals", "title": "Start the spoken approvals review in the open console: each call waiting on axHub, one at a time (approve / deny / skip / approve all pending)" },
@@ -51,6 +54,7 @@
       { "action": "wake-listener.on", "id": "action-on", "title": "Switch the listener on from the open console" },
       { "action": "wake-listener.off", "id": "action-off", "title": "Switch the listener off from the open console" },
       { "action": "wake-listener.toggle", "id": "toggle", "title": "Flip the listener switch" },
+      { "action": "wake-listener.history", "id": "history-open", "title": "Open the voice command history in the open console, filtered by mode (args = claude or scripted, empty = all)", "navigate": true, "input": { "type": "object", "properties": { "args": { "type": "string", "enum": ["", "claude", "scripted"] }, "to": { "type": "string" } }, "additionalProperties": false } },
       { "action": "wake-listener.open", "id": "open", "title": "Open the wake listener's settings tab", "navigate": true }
     ]
   },

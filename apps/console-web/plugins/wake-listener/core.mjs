@@ -144,6 +144,29 @@ export function modeIndicator(settings, state, claude) {
   return { mode: 'claude', offline: false, reason: '', label: 'Claude mode', detail: c.claudeConnected ? 'Claude understands your commands.' : 'Claude understands your commands once it answers.' };
 }
 
+/* ------------------------------------------------------------------ history */
+
+export const HISTORY_MODES = ['claude', 'scripted'];
+export const HISTORY_MAX = 500;
+
+/**
+ * One history entry as stored and returned: when, what was heard, the command it ran, the reply, ok, and who understood
+ * it (mode: claude | scripted) with the fallback reason for a scripted one while Claude mode was on. Entries written
+ * before Claude mode have no mode: they read as scripted (the only path there was).
+ */
+export function normalizeHistoryEntry(raw) {
+  const r = raw && typeof raw === 'object' ? raw : {};
+  const str = (v, n) => String(v ?? '').slice(0, n);
+  const mode = HISTORY_MODES.includes(r.mode) ? r.mode : 'scripted';
+  return { at: typeof r.at === 'number' && Number.isFinite(r.at) ? r.at : Date.parse(r.at) || 0, heard: str(r.heard, 500), command: str(r.command, 160), reply: str(r.reply, 500), ok: r.ok !== false, mode, reason: mode === 'scripted' ? str(r.reason, 40) : '' };
+}
+
+/** Newest first, optionally only one mode. */
+export function filterHistory(entries, { mode = '', limit = 100 } = {}) {
+  const list = (entries ?? []).map(normalizeHistoryEntry).filter((e) => !mode || e.mode === mode).sort((a, b) => b.at - a.at);
+  return list.slice(0, Math.max(1, Math.min(HISTORY_MAX, Number(limit) || 100)));
+}
+
 /* ------------------------------------------------------------------ the wake phrase */
 
 const LEAD = /^(?:(?:hey|hi|ok|okay|yo|hello)\s+)?/;

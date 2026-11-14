@@ -13,18 +13,21 @@
  *   node listener.mjs hear "<text>"                 dry run: what the matcher makes of a phrase against the stored state
  *   node listener.mjs match "<text>"                dry run of the command catalog (catalog.mjs): the entry and its fields
  *   node listener.mjs catalog [words]               the voice command catalog (every entry, or those matching words)
+ *   node listener.mjs history [--mode claude|scripted] [--limit n]   recent commands, newest first, with who understood them
+ *   node listener.mjs record                        add a history entry (JSON on stdin: heard, command, reply, ok, mode, reason)
  *   --json · --by <who>
  */
-import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { DEFAULTS, FOLDER, FRAME, ListenerError, applyPatch, hear, initialState, normalizePhrases, normalizeSettings, stateLine, switched } from './core.mjs';
+import { DEFAULTS, FOLDER, FRAME, HISTORY_MAX, HISTORY_MODES, ListenerError, applyPatch, filterHistory, normalizeHistoryEntry, hear, initialState, normalizePhrases, normalizeSettings, stateLine, switched } from './core.mjs';
 
 export const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(process.env.AXF_ROOT || join(HERE, '../../../..'));
 export const DATA_DIR = process.env.AXF_WAKE_LISTENER_DATA_DIR || join(ROOT, '.axf-console', 'plugins', FOLDER);
 const SETTINGS = () => join(DATA_DIR, 'settings.json');
 const STATE = () => join(DATA_DIR, 'state.json');
+const HISTORY = () => join(DATA_DIR, 'history.jsonl');
 /** A state older than this is stale: no console is listening right now. */
 export const STATE_STALE_MS = 90_000;
 
@@ -72,6 +75,25 @@ export function writeState(report) {
   return st;
 }
 
+/* ------------------------------------------------------------------ history (every command: who understood it) */
+
+export function readHistory(opts = {}) {
+  let lines = [];
+  try { lines = readFileSync(HISTORY(), 'utf8').split('\n'); } catch { /* none yet */ }
+  const raw = [];
+  for (const l of lines) { if (!l.trim()) continue; try { raw.push(JSON.parse(l)); } catch { /* a torn line */ } }
+  return filterHistory(raw, opts);
+}
+export function appendHistory(entry) {
+  const e = normalizeHistoryEntry({ at: Date.now(), ...entry });
+  mkdirSync(DATA_DIR, { recursive: true, mode: 0o700 });
+  appendFileSync(HISTORY(), `${JSON.stringify(e)}\n`, { mode: 0o600 });
+  // keep the newest HISTORY_MAX
+  const all = readFileSync(HISTORY(), 'utf8').split('\n').filter((l) => l.trim());
+  if (all.length > HISTORY_MAX + 100) { const tmp = `${HISTORY()}.${process.pid}.tmp`; writeFileSync(tmp, `${all.slice(-HISTORY_MAX).join('\n')}\n`, { mode: 0o600 }); renameSync(tmp, HISTORY()); }
+  return e;
+}
+
 /* ------------------------------------------------------------------ CLI */
 
 const isMain = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
@@ -80,7 +102,9 @@ if (isMain) {
   const json = argv.includes('--json');
   const byAt = argv.indexOf('--by');
   const by = byAt >= 0 ? argv[byAt + 1] : 'cli';
-  const args = argv.filter((a, i) => a !== '--json' && a !== '--by' && !(byAt >= 0 && i === byAt + 1));
+  const opt = (name) => { const i = argv.indexOf(name); return i >= 0 ? argv[i + 1] ?? '' : ''; };
+  const valued = new Set(['--by', '--mode', '--limit']);
+  const args = argv.filter((a, i) => a !== '--json' && !valued.has(a) && !valued.has(argv[i - 1]));
   const [cmd = 'state', ...rest] = args;
   const out = (o, text) => { if (json) console.log(JSON.stringify({ ok: true, ...o })); else console.log(text ?? JSON.stringify(o, null, 2)); };
   const parseValue = (v) => (v === 'true' ? true : v === 'false' ? false : /^-?\d+(\.\d+)?$/.test(v) ? Number(v) : v);
@@ -107,6 +131,16 @@ if (isMain) {
       const st = writeState(JSON.parse(raw || '{}'));
       out({ state: st }, 'reported');
     }
+    else if (cmd === 'history') {
+      const mode = opt('--mode');
+      if (mode && !HISTORY_MODES.includes(mode)) throw new ListenerError('invalid', `--mode is ${HISTORY_MODES.join(' or ')}`);
+      const entries = readHistory({ mode, limit: Number(opt('--limit')) || 100 });
+      out({ count: entries.length, mode: mode || 'all', entries }, entries.map((e) => `${new Date(e.at).toISOString().slice(0, 19)}  ${e.mode.padEnd(8)} ${(e.reason || '').padEnd(14)} "${e.heard}" → ${e.command || '–'}`).join('\n') || 'no history yet');
+    }
+    else if (cmd === 'record') {
+      const e = appendHistory(JSON.parse(readFileSync(0, 'utf8') || '{}'));
+      out({ entry: e }, 'recorded');
+    }
     else if (cmd === 'hear') {
       const s = readSettings();
       const st = readState();
@@ -128,7 +162,7 @@ if (isMain) {
         else out({ match: m }, `${m.entry.id} (${m.entry.title}) score ${m.score}${Object.keys(m.slots).length ? `  slots ${JSON.stringify(m.slots)}` : ''}${m.missing.length ? `  asks: ${m.missing.join(', ')}` : ''}`);
       }
     }
-    else { console.error('usage: listener.mjs settings | set k=v… | on | off | phrases [add|remove <p>] | state | report | hear "<text>" | match "<text>" | catalog [words]'); process.exit(2); }
+    else { console.error('usage: listener.mjs settings | set k=v… | on | off | phrases [add|remove <p>] | state | report | hear "<text>" | match "<text>" | catalog [words] | history [--mode claude|scripted] [--limit n] | record'); process.exit(2); }
   } catch (e) {
     const code = e instanceof ListenerError ? e.code : 'failed';
     if (json) console.log(JSON.stringify({ ok: false, code, message: e.message })); else console.error(e.message);

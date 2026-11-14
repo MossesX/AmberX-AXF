@@ -8,7 +8,7 @@
     "tabs": 76,
     "settingsTabs": 68,
     "settings": 87,
-    "functions": 238,
+    "functions": 239,
     "buttons": 62,
     "plugins": 68
   },
@@ -6367,6 +6367,23 @@
         "cancel"
       ],
       "effect": "write",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.history",
+      "kind": "function",
+      "id": "wake-listener.history",
+      "label": "Voice command history (filter: claude or scripted)",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.history",
+        "wake",
+        "listener",
+        "history"
+      ],
+      "effect": "navigate",
+      "params": true,
       "plugin": "ai.amberx.axf.console.wake-listener",
       "file": "plugins/wake-listener/web/index.tsx"
     },

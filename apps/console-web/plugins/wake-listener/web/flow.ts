@@ -292,7 +292,7 @@ export async function handleCommand(host: FlowHost, text: string): Promise<FlowR
     }
   }
   const r = await scripted(host, t, cat);
-  return { ...r, mode: 'scripted', ...(host.useClaude ? { reason } : {}) };
+  return { ...r, command: r.command ?? matchCommand(cat, t)?.entry.id ?? '', mode: 'scripted', ...(host.useClaude ? { reason } : {}) };
 }
 
 /** The scripted matcher and wizard (catalog.mjs): the whole path when Claude mode is off, the fallback when it is on. */

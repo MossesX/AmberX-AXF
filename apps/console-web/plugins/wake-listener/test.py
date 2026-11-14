@@ -247,4 +247,17 @@ st = c.get("/p/state").json()["state"]
 check(st["mode"] == "scripted" and st["useClaude"] is False and not st["offline"], "state: switch off = scripted, not 'offline'")
 c.post("/p/settings", json={"useClaude": True})
 
+# ---------------------------------------------------------------- history with mode (s9)
+
+c.post("/p/history", json={"entry": {"heard": "make a project", "command": "project-wizard/run", "mode": "claude", "ok": True}})
+c.post("/p/history", json={"entry": {"heard": "what can i say", "command": "listener.help", "mode": "scripted", "reason": "timeout"}})
+hist = Path(os.environ["AXF_WAKE_LISTENER_DATA_DIR"]) / "history.jsonl"
+with hist.open("a") as fh:
+    fh.write(json.dumps({"at": 1, "heard": "approve", "command": "approvals.review"}) + "\n")  # an entry from before Claude mode
+h = c.get("/p/history").json()
+check(all(e["mode"] in ("claude", "scripted") for e in h["entries"]) and any(e["heard"] == "approve" and e["mode"] == "scripted" for e in h["entries"]), "GET history returns mode on every entry; old entries read as scripted")
+check([e["command"] for e in c.get("/p/history?mode=claude").json()["entries"]] == ["project-wizard/run"], "GET history?mode=claude filters")
+check(c.get("/p/history?mode=scripted").json()["entries"][0]["reason"] == "timeout", "scripted entries carry the fallback reason")
+check(c.get("/p/history?mode=bogus").status_code == 400, "a bad mode is refused")
+
 print(f"{ok} checks passed")

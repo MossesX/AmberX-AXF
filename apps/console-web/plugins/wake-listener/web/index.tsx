@@ -24,6 +24,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { CLAUDE_TIMEOUT_MAX, CLAUDE_TIMEOUT_MIN, DEFAULTS, ENGINE_LABEL, FOLDER, SETTING_KEYS, hear, modeIndicator, type ClaudeView, initialState, light, normalizeSettings, pickEngine, sleep, stateLine, switched, wizardOff, wizardOn, type ListenerSettings, type ListenerState } from '../core.mjs';
 import { available, chime, createEngine, say, type Engine } from './engine';
 import { cancelFloor, floorLabel, handleCommand, hasFloor } from './flow';
+import { HistoryPanel, recordHistory, setHistoryFilter, type ModeFilter } from './History';
 import { appMenu } from './menu';
 import './wake-listener.css';
 
@@ -162,6 +163,7 @@ function onHeard(text: string, opts: { direct?: boolean } = {}) {
   if (L.timer) { clearTimeout(L.timer); L.timer = null; }
   void handleCommand(flowHost(rt), r.command ?? '').then((res) => {
     if (res.mode) L.state = { ...L.state, lastMode: res.mode, lastFallbackReason: res.mode === 'scripted' ? res.reason ?? '' : '' };
+    recordHistory({ heard: r.command ?? '', command: res.command ?? '', reply: res.say, ok: res.ok, mode: res.mode ?? 'scripted', reason: res.mode === 'claude' ? '' : res.reason ?? '' });
     if (res.mode === 'claude' && L.claude.claudeConnected !== true) L.claude = { claudeConnected: true, offlineReason: '' };
     if (res.say) speak(res.say);
     setState(res.done ? wizardOff({ ...L.state, lastCommand: r.command ?? '' }) : wizardOn(L.state));
@@ -298,6 +300,7 @@ export const plugin: AxfWebLibrary = {
   }],
   settingsPanels: [
     { id: 'wake-listener.panel', tab: FOLDER, title: 'Wake listener', icon: 'mic', order: 10, render: () => <WakeListenerPanel /> },
+    { id: 'wake-listener.history', tab: FOLDER, title: 'Command history', icon: 'clock', order: 50, render: () => <HistoryPanel /> },
     { id: 'wake-listener.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
   register(rt) {
@@ -310,6 +313,11 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('wake-listener.approvals', () => onHeard('review approvals', { direct: true }), { label: 'Review approvals by voice', effect: 'write' });
     rt.actions.register('wake-listener.wizard', (args) => { const id = args.join(':').trim(); if (id) onHeard(`start wizard ${id}`, { direct: true }); }, { label: 'Start a spoken wizard for a command', params: true, effect: 'write' });
     rt.actions.register('wake-listener.cancel', () => { const m = cancelFloor(); if (m) speak(m); setState(wizardOff(L.state)); }, { label: 'Cancel the spoken wizard', effect: 'write' });
+    rt.actions.register('wake-listener.history', (args) => {
+      const m = (args[0] ?? '').trim();
+      setHistoryFilter((m === 'claude' || m === 'scripted' ? m : '') as ModeFilter);
+      rt.actions.dispatch(`settings.open:${FOLDER}`, { runtime: rt });
+    }, { label: 'Voice command history (filter: claude or scripted)', params: true, effect: 'navigate' });
     rt.actions.register('wake-listener.open', () => rt.actions.dispatch(`settings.open:${FOLDER}`, { runtime: rt }), { label: 'Wake listener settings', effect: 'navigate' });
     void loadSettings().then(() => { void loadClaude(); return syncEngine(); });
     L.poll = setInterval(() => { if (typeof document === 'undefined' || document.visibilityState === 'visible' || !L.settings.pauseHidden) { void loadSettings(); void loadClaude(); } }, SETTINGS_POLL_MS);

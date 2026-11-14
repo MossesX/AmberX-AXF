@@ -16,6 +16,10 @@ plugin's data folder through the plugin's Node core (listener.mjs → core.mjs),
   GET  catalog [?q=]         the voice command catalog (every console action, plugin command, control@1 target and
                              pipeline command with its spoken forms and fields)
   POST match {text}          dry run: which catalog entry a phrase lands on, the fields it filled and the ones a wizard asks
+  GET  history [?mode=claude|scripted&limit=]
+                             recent commands, newest first: heard, command, reply, ok, mode (claude / scripted) and the
+                             fallback reason of a scripted one; entries from before Claude mode read as scripted
+  POST history {entry}       the open console records one (left out of the commands: the page's own)
   POST understand {text, context?, pending?}
                              Claude mode (claude_intent.py): Claude picks the command through axf.llm@1 and fills its
                              fields → {mode:'claude', command, args, ask?, confirm?, run, pending?}; the setting off,
@@ -220,3 +224,18 @@ async def understand(request: Request) -> JSONResponse:
     ctx = body.get("context") if isinstance(body.get("context"), dict) else None
     pending = body.get("pending") if isinstance(body.get("pending"), dict) else None
     return answer(await run_in_threadpool(run_understand, text[:500], ctx, pending))
+
+
+@router.get("/history")
+async def history(mode: str = "", limit: int = 100) -> JSONResponse:
+    if mode and mode not in ("claude", "scripted"):
+        return answer({"ok": False, "code": "invalid", "message": "mode is claude or scripted"})
+    args = ["history", "--limit", str(max(1, min(500, int(limit))))] + (["--mode", mode] if mode else [])
+    return answer(await run_in_threadpool(cli, *args))
+
+
+@router.post("/history")
+async def record(request: Request) -> JSONResponse:
+    body = await _body(request)
+    entry = body.get("entry") if isinstance(body.get("entry"), dict) else body
+    return answer(await run_in_threadpool(cli, "record", stdin=json.dumps(entry)))
