@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T18:48:19.686Z",
+ "updatedAt": "2026-11-14T18:48:31.351Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -117088,7 +117088,7 @@
    "title": "Skin configuration panel: before AI makes a skin, Brett picks what it may change. The current look is saved as the Default skin. A full tree of options in categories (colors, typography, layout and tab placement, buttons and actions, behaviors, context menus with how deep to build them, nav menu, ap",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -117096,7 +117096,7 @@
    "pr": "#612",
    "priority": "P0",
    "createdAt": "2026-11-13T01:13:53.464Z",
-   "updatedAt": "2026-11-13T17:38:14.716Z",
+   "updatedAt": "2026-11-14T18:48:24.069Z",
    "builtAt": "2026-11-13T06:56:03.335Z",
    "notes": [
     {
@@ -117178,6 +117178,10 @@
     {
      "text": "Renamed from skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:38:14.716Z"
+    },
+    {
+     "text": "Superseded by skin-config-panel-merge-main-and-land (#648), which holds every commit of this branch. Branch archived as tag archive/skin-configuration-panel-before-ai-makes; PR #612 closed.",
+     "at": "2026-11-14T18:48:21.910Z"
     }
    ],
    "approvals": [
@@ -117856,7 +117860,7 @@
    "title": "Skins plugin: its own removable console plugin and screen for changing skins. Gallery of every skin with live preview (desktop and phone), one-tap Use skin, Back and Restore to Default with undo, per-scope switching (whole hub, one app, one screen, one plugin), a quick skin switcher on the banner an",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -117864,7 +117868,7 @@
    "pr": "#613",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-14T18:48:17.716Z",
+   "updatedAt": "2026-11-14T18:48:19.916Z",
    "builtAt": "2026-11-13T07:56:39.561Z",
    "notes": [
     {
