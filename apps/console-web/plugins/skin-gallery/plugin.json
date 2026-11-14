@@ -274,5 +274,21 @@
   },
   "help": "help.json",
   "userGrantable": true,
-  "opens": "main"
+  "opens": "main",
+  "tokens": {
+    "$axf": "token-registry@1",
+    "uses": [
+      "--fx-accent",
+      "--fx-bg",
+      "--fx-border",
+      "--fx-border-w",
+      "--fx-dens-gap-lg",
+      "--fx-dens-gap-md",
+      "--fx-dens-gap-sm",
+      "--fx-radius-lg",
+      "--fx-radius-md",
+      "--fx-space",
+      "--fx-surface"
+    ]
+  }
 }
