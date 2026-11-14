@@ -4,6 +4,31 @@
     "gizmoxLockup": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 116.39999999999999 24\" width=\"116\" height=\"24\" role=\"img\" aria-label=\"GizmoX\"><title>GizmoX</title><path d=\"M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z\" fill=\"var(--fx-brand-1, #4f46e5)\"/><path d=\"M11 2h2v3h-2zM11 19h2v3h-2zM2 11h3v2H2zM19 11h3v2h-3z\" fill=\"var(--fx-brand-2, #312e81)\"/><path d=\"M16.5 12a4.5 4.5 0 1 1-1.3-3.2\" fill=\"none\" stroke=\"var(--fx-bg)\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M12 12h4.5\" fill=\"none\" stroke=\"var(--fx-bg)\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><text x=\"30\" y=\"17.28\" font-family=\"var(--fx-font-display)\" font-size=\"16.32\" font-weight=\"700\" letter-spacing=\"-0.33\" fill=\"var(--fx-text)\">GizmoX</text></svg>"
   },
   "glyph": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" aria-hidden=\"true\"><path d=\"M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
+  "layered": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" aria-hidden=\"false\" role=\"img\" aria-label=\"AmberX\"><path d=\"M12 2 4 9h16Z\" fill=\"#fbbf24\"/><path d=\"M4 9l8 13L9 9Z\" fill=\"#f59e0b\"/><path d=\"M9 9l3 13 3-13Z\" fill=\"#d97706\"/><path d=\"M15 9l-3 13 8-13Z\" fill=\"#b45309\"/></svg>",
+  "logoPack": {
+    "window": {
+      "mode": "mark",
+      "asset": "logo-amber-gem",
+      "type": "icon-pack",
+      "glyph": "logo-mark"
+    },
+    "empty-state": {
+      "mode": "watermark",
+      "asset": "logo-amber-gem",
+      "type": "icon-pack",
+      "glyph": "logo-mark"
+    },
+    "banner": {
+      "mode": "lockup",
+      "asset": "amberx-lockup",
+      "type": "logo-mark"
+    },
+    "splash": {
+      "mode": "animated",
+      "asset": "amberx-pulse",
+      "type": "animated-logo"
+    }
+  },
   "resolved": {
     "name": "AmberX",
     "tagline": "One framework, every port.",

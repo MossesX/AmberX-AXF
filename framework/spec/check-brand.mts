@@ -10,7 +10,7 @@ import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { validateAsset } from '../core/validate';
 import { ASSET_TYPES, OPTIONAL_TYPES } from '../core/types';
 import {
-  BRAND_SLOTS, BRAND_TYPES, animatedLogoErrors, animationFor, brandAssetErrors, brandSlots, brandingErrors, brandingVars, decorationFor, glyphFor, glyphSvg, splitGlyph, iconPackErrors, markBox, markColor, markErrors, markSvg, normalizeBranding, normalizeIconPack, normalizeMark, registerBrandSlot, resolveBranding,
+  BRAND_SLOTS, BRAND_TYPES, animatedLogoErrors, animationFor, brandAssetErrors, brandSlots, brandingErrors, brandingVars, decorationFor, glyphFor, glyphSvg, splitGlyph, iconPackErrors, logoGlyph, markBox, markColor, markErrors, markSvg, normalizeBranding, normalizeGlyphLayers, normalizeIconPack, normalizeMark, registerBrandSlot, resolveBranding, withLogoPack,
 } from '../core/engines/brand';
 import * as engine from '../cli/build-engine.mjs';
 import { AxfRuntime } from '../core/runtime';
@@ -80,6 +80,31 @@ eq(glyphFor(pack, 'nope'), null, 'unknown glyph = framework fallback');
 ok(glyphSvg(pack, 'home', 20)!.includes('stroke-width="2"') && glyphSvg(pack, 'solid')!.includes('fill="currentColor"') && glyphSvg(pack, 'duo')!.includes('opacity="var(--fx-opacity-tint'), 'glyph svg per style');
 eq(glyphSvg(pack, 'nope'), null, 'no svg for unknown');
 
+/* ---- colour layers (s9): fixed-colour packs draw in their own colours ---- */
+const gem = { style: 'filled', grid: 24, themable: false, covers: ['logos'], roles: { 'app-mark': 'logo-mark', 'app-logo': 'logo-mark' }, glyphs: { 'logo-mark': { d: 'M12 2 4 9h16ZM4 9l8 13L9 9Z', fill: true, layers: [{ d: 'M12 2 4 9h16Z', color: '#fbbf24' }, { d: 'M4 9l8 13L9 9Z', color: 'accent', opacity: 0.5 }] } } };
+eq(iconPackErrors(gem), [], 'a layered glyph validates');
+eq(normalizeIconPack(gem).glyphs['logo-mark'].layers, [{ d: 'M12 2 4 9h16Z', color: '#fbbf24', opacity: 1 }, { d: 'M4 9l8 13L9 9Z', color: 'accent', opacity: 0.5 }], 'layers normalize: colour kept, opacity defaults to 1');
+eq(normalizeIconPack(pack).glyphs.home.layers, [], 'a plain glyph has no layers');
+eq(normalizeGlyphLayers([{ d: 'M0 0h1', color: 'url(#x)' }, { d: 'M0 0 <x>' }, { d: 'M1 1h1', opacity: 7 }, 'nope']), [{ d: 'M0 0h1', color: 'currentColor', opacity: 1 }, { d: 'M1 1h1', color: 'currentColor', opacity: 1 }], 'bad colours fall to currentColor, bad paths and shapes drop, opacity clamps');
+ok(iconPackErrors({ ...gem, glyphs: { a: { d: 'M0 0h1', layers: 'x' } } }).some((e) => e.includes('layers must be an array')), 'layers must be an array');
+ok(iconPackErrors({ ...gem, glyphs: { a: { d: 'M0 0h1', layers: [{ d: 'M0 0h1', color: 'url(#x)' }] } } }).some((e) => e.includes('layers[0].color')), 'layer colour must be a token or hex');
+ok(iconPackErrors({ ...gem, glyphs: { a: { d: 'M0 0h1', layers: [{ d: 'M0 0 <s>' }, { color: '#fff' }, { d: 'M0 0h1', opacity: 2 }] } } }).length === 3, 'layer path, missing d and opacity each reported');
+ok(iconPackErrors({ ...gem, glyphs: { a: { d: 'M0 0h1', layers: Array.from({ length: 49 }, () => ({ d: 'M0 0h1' })) } } }).some((e) => e.includes('at most 48 layers')), 'layer count cap');
+ok(normalizeGlyphLayers(Array.from({ length: 49 }, () => ({ d: 'M0 0h1' }))).length === 48, 'normalize keeps the first 48 layers');
+{
+  const s = glyphSvg(gem, 'logo-mark', 24, 'AmberX')!;
+  ok(s.includes('fill="#fbbf24"') && s.includes('fill="var(--fx-accent)"') && s.includes('opacity="0.5"') && !s.includes('currentColor'), 'layers draw filled in their own colours (hex stays, tokens become vars)');
+  ok(s.includes('role="img"') && s.includes('aria-label="AmberX"') && s.includes('width="24"'), 'a titled glyph is an image with a label');
+  ok(!/<script|href=|url\(/.test(s), 'layered svg never carries script, links or urls');
+  const plain = glyphSvg({ ...gem, glyphs: { 'logo-mark': { d: 'M12 2 4 9h16Z', fill: true } } }, 'logo-mark')!;
+  ok(plain.includes('fill="currentColor"'), 'without layers the one-colour fallback draws');
+}
+for (const id of ['twemoji', 'badges-traffic', 'logo-amber-gem']) {
+  const p = read(`framework/assets/icon-pack/${id}.json`).data;
+  const g = Object.keys(p.glyphs)[0];
+  ok(p.themable === false && normalizeIconPack(p).glyphs[g].layers.length > 0 && glyphSvg(p, g)!.includes('fill="#'), `${id}: fixed-colour pack ships layers and draws them`);
+}
+
 /* ---- resolution ---- */
 const reg = { has: (t: string, id: string) => ({ 'logo-mark': ['amberx', 'amberx-lockup'], 'animated-logo': ['amberx-pulse'], 'icon-pack': ['amberx-outline'] } as Record<string, string[]>)[t]?.includes(id) ?? false };
 const r = resolveBranding({ brand: 'AmberX', marks: { mark: 'amberx', wordmark: 'missing', lockup: 'amberx-lockup', animated: 'amberx-pulse' }, iconPack: 'amberx-outline', decorations: { toolbar: 'wordmark', container: 'animated' } }, reg);
@@ -92,6 +117,27 @@ const r2 = resolveBranding({ brand: 'A', marks: { mark: 'amberx', animated: 'gon
 eq(decorationFor(r2, 'splash'), { mode: 'animated', asset: 'amberx', type: 'logo-mark' }, 'missing animation → the still mark');
 eq(brandingVars({ brand: 'A', marks: { mark: 'a' }, palette: { brand1: '#123456' } }), { '--fx-brand-name': '"A"', '--fx-brand-1': '#123456' }, 'brand vars');
 eq(brandingVars({ brand: 'A', marks: { mark: 'a' }, palette: { brand1: '#123456' }, accentFromBrand: true })['--fx-accent'], '#123456', 'brand1 as accent when asked');
+
+/* ---- logo packs drive the brand marks (s9) ---- */
+eq(logoGlyph(gem, 'mark'), 'logo-mark', 'a logo pack maps app-mark to its glyph');
+eq(logoGlyph(gem, 'watermark'), 'logo-mark', 'watermark places take the mark glyph');
+eq([logoGlyph(gem, 'lockup'), logoGlyph(gem, 'wordmark'), logoGlyph(gem, 'animated'), logoGlyph(gem, 'none'), logoGlyph(gem, 'accent-edge')], [null, null, null, null, null], 'text, animated and non-mark modes stay with the logo-marks');
+eq(logoGlyph({ ...gem, covers: ['icons'] }, 'mark'), null, 'a pack that covers no logos never draws a mark');
+eq(logoGlyph({ ...gem, roles: { 'app-logo': 'logo-mark' } }, 'mark'), 'logo-mark', 'app-logo is the second role tried');
+eq(logoGlyph({ ...gem, roles: { 'app-mark': 'missing' } }, 'mark'), null, 'a role naming a glyph the pack lacks is skipped');
+{
+  const over = withLogoPack(r, 'logo-amber-gem', gem);
+  eq(over.places.window, { mode: 'mark', asset: 'logo-amber-gem', type: 'icon-pack', glyph: 'logo-mark' }, 'mark place → the pack glyph');
+  eq(over.places['empty-state'], { mode: 'watermark', asset: 'logo-amber-gem', type: 'icon-pack', glyph: 'logo-mark' }, 'watermark place → the pack glyph');
+  eq(over.places.banner, r.places.banner, 'lockup place unchanged');
+  eq(over.places.container, r.places.container, 'animated place unchanged');
+  eq([over.mark, over.iconPack, over.missing], [r.mark, r.iconPack, r.missing], 'every other field unchanged');
+  eq(decorationFor(over, 'window'), { mode: 'mark', asset: 'logo-amber-gem', type: 'icon-pack', glyph: 'logo-mark' }, 'decorationFor names the glyph');
+  ok(withLogoPack(r, 'amberx-outline', pack) === r, 'an icons-only pack leaves the resolution as is');
+  ok(withLogoPack(r, '', gem) === r && withLogoPack(r, 'x', null) === r, 'no pack = no change');
+  const bare = withLogoPack(resolveBranding({ brand: 'A', marks: { mark: 'gone' } }, reg), 'logo-amber-gem', gem);
+  eq(bare.places.window, { mode: 'mark', asset: 'logo-amber-gem', type: 'icon-pack', glyph: 'logo-mark' }, 'a logo pack fills in a missing mark');
+}
 
 /* ---- build engine = core ---- */
 for (const t of BRAND_TYPES) {
@@ -129,12 +175,26 @@ for (const id of ['amberx', 'gizmox']) { const rb = resolveBranding(read(`framew
   ok(rt.branding()?.name === 'GizmoX' && rt.brandPlace('banner')?.svg.includes('GizmoX'), 'hot swap to GizmoX');
   const splash = rt.brandPlace('splash');
   ok(splash && splash.mode === 'animated' && splash.animation && splash.animation.name.startsWith('fx-brand-'), 'animated place carries its animation');
+  // s9: a logo pack in force draws the mark places; the lockup and animated places keep their logo-marks
+  const before = rt.brandPlace('window', 18)!;
+  ok(before.glyph === '' && before.svg.includes('<title>GizmoX</title>'), 'mark place draws the logo-mark while the pack covers icons only');
+  ok(rt.setIconPack('logo-amber-gem'), 'switch the app to a logo pack');
+  const win = rt.brandPlace('window', 18)!;
+  ok(win.glyph === 'logo-mark' && win.asset === 'logo-amber-gem' && win.svg.includes('fill="#fbbf24"') && win.svg.includes('height="18"') && win.svg.includes('aria-label="GizmoX"'), 'mark place draws the pack glyph in its own colours at the asked height, labelled with the brand');
+  eq(rt.branding()!.places.window.type, 'icon-pack', 'the resolved branding says the place is an icon-pack one');
+  ok(rt.brandPlace('banner')!.glyph === '' && rt.brandPlace('banner')!.svg.includes('<text'), 'lockup place keeps the logo-mark lockup');
+  ok(rt.brandPlace('splash')!.glyph === '' && rt.brandPlace('splash')!.animation, 'animated place keeps its animated logo-mark');
+  ok(rt.setIconPack('amberx-outline') && rt.brandPlace('window', 18)!.glyph === '', 'back to an icons pack = the logo-mark again');
+  ok(rt.setIconPack(null), 'pack cleared');
 }
 
 /* ---- fixture ---- */
 const fixture = {
   svg: { amberx: markSvg(read('framework/assets/logo-mark/amberx.json').data, { height: 24 }), gizmoxLockup: markSvg(read('framework/assets/logo-mark/gizmox-lockup.json').data, { height: 24 }) },
   glyph: glyphSvg(read('framework/assets/icon-pack/amberx-outline.json').data, 'home', 16),
+  // s9: colour layers (a fixed-colour pack) and a logo pack laid over the branding's places
+  layered: glyphSvg(read('framework/assets/icon-pack/logo-amber-gem.json').data, 'logo-mark', 24, 'AmberX'),
+  logoPack: (() => { const over = withLogoPack(resolveBranding(read('framework/assets/branding/amberx.json').data, starters), 'logo-amber-gem', read('framework/assets/icon-pack/logo-amber-gem.json').data); return { window: over.places.window, 'empty-state': over.places['empty-state'], banner: over.places.banner, splash: over.places.splash }; })(),
   resolved: resolveBranding(read('framework/assets/branding/amberx.json').data, starters),
   animation: animationFor(read('framework/assets/animated-logo/gizmox-spin.json').data),
 };

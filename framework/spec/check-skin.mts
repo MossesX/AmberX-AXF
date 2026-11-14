@@ -187,7 +187,8 @@ eq(winButtons.map((x) => x.id), ['win-minimize', 'win-maximize', 'win-close'], '
 ok(winButtons.every((x) => (x.order ?? 0) >= 100000 && x.widget?.overflow === false), 'the window buttons stay last on the bar and never go in the ⋯ menu');
 const bannerSource = readFileSync(join(root, 'react/components/Banner.tsx'), 'utf8');
 ok(/namesApp = data\.logo\?\.text === BANNER_APP_NAME/.test(bannerSource) && /brand\.mode === 'mark'/.test(bannerSource), "a banner that names the app never draws the brand's lockup");
-const iconSource = readFileSync(join(root, 'react/components/Icon.tsx'), 'utf8');
+// the framework glyph set lives in core/engines/glyphs.mjs (icon-map@1); the Icon component draws from it
+const iconSource = readFileSync(join(root, 'core/engines/glyphs.mjs'), 'utf8');
 for (const x of winButtons) { const icon = (assets.find((a) => a.type === 'action-button' && a.id === x.id)!.data as { icon: string }).icon; ok(new RegExp(`^  '?${icon}'?:`, 'm').test(iconSource), `${x.id}: the icon "${icon}" exists`); }
 
 /* ---- the runtime: two apps on one shared document ---- */

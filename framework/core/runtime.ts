@@ -35,7 +35,7 @@ import { backToSkin, composeLookAt, globalSkinOf, isSubScopeKey, lookAfterChange
 import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
 import { navStyleOutput, normalizeNavStyle, type NavStyleData } from './engines/navstyle';
-import { animationFor, brandingVars, glyphFor, markSvg, resolveBranding, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
+import { animationFor, brandingVars, glyphFor, glyphSvg, markSvg, resolveBranding, withLogoPack, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
 import { ICON_PACK_KEY, ICON_SLOT_KEY, resolveIcon, type IconResolution } from './engines/icon-map-rules.mjs';
 import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, resolveInterface, scopeAttrs, scopeSheet, scopeVarsCss, type InterfaceData, type ResolvedInterface } from './engines/interface';
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceChange, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
@@ -256,8 +256,8 @@ export interface AppearanceSource {
   appLook?: AppLookStore;
 }
 
-/** What `rt.brandPlace(slot)` gives a UI piece to draw. */
-export interface BrandPlace { mode: string; name: string; asset: string; svg: string; animation: MarkAnimation | null }
+/** What `rt.brandPlace(slot)` gives a UI piece to draw; `glyph` names the icon pack glyph when a logo pack draws the place ('' = a logo-mark). */
+export interface BrandPlace { mode: string; name: string; asset: string; svg: string; animation: MarkAnimation | null; glyph: string }
 
 export class AxfRuntime {
   readonly registry = new AssetRegistry();
@@ -2794,10 +2794,18 @@ export class AxfRuntime {
 
   /* ---------------- branding (core/engines/brand.ts) ---------------- */
 
-  /** The active branding package resolved against the registry, or null when the app has none. */
+  /**
+   * The active branding package resolved against the registry, or null when the app has none. The icon pack in force
+   * (a skin's, else the branding's own) lays over it: when it covers logos and maps app-mark / app-logo, every place in
+   * mark / watermark mode draws that glyph (`type: 'icon-pack'`), so a logo pack reaches the 82 logo slots of the map.
+   */
   branding(): ResolvedBrand | null {
     const b = this.assetOrNull('branding' as AssetType);
-    return b ? resolveBranding(b.data, this.registry) : null;
+    if (!b) return null;
+    const resolved = resolveBranding(b.data, this.registry);
+    const packId = this.skinIconPack() || resolved.iconPack;
+    const pack = packId ? this.registry.get('icon-pack' as AssetType, packId) : null;
+    return pack ? withLogoPack(resolved, pack.id, pack.data) : resolved;
   }
 
   /**
@@ -2810,8 +2818,14 @@ export class AxfRuntime {
     const b = this.branding();
     const p = b?.places[slot];
     if (!b || !p || p.mode === 'none') return null;
-    if (p.mode === 'accent-edge') return { mode: p.mode, name: b.name, asset: '', svg: '', animation: null };
+    if (p.mode === 'accent-edge') return { mode: p.mode, name: b.name, asset: '', svg: '', animation: null, glyph: '' };
     if (!p.asset || !p.type) return null;
+    if (p.type === 'icon-pack') {
+      // a logo pack draws this place: the glyph at `height` with the brand name as its label
+      const pack = this.registry.get('icon-pack' as AssetType, p.asset);
+      const svg = pack && p.glyph ? glyphSvg(pack.data, p.glyph, height, b.name) : null;
+      return svg ? { mode: p.mode, name: b.name, asset: p.asset, svg, animation: null, glyph: p.glyph ?? '' } : null;
+    }
     let markId = p.asset;
     let animation: MarkAnimation | null = null;
     if (p.type === 'animated-logo') {
@@ -2823,7 +2837,7 @@ export class AxfRuntime {
     }
     const mark = this.registry.get('logo-mark' as AssetType, markId);
     if (!mark) return null;
-    return { mode: p.mode, name: b.name, asset: p.asset, svg: markSvg(mark.data, { height, text: p.mode !== 'mark' && p.mode !== 'watermark', title: b.name }), animation };
+    return { mode: p.mode, name: b.name, asset: p.asset, svg: markSvg(mark.data, { height, text: p.mode !== 'mark' && p.mode !== 'watermark', title: b.name }), animation, glyph: '' };
   }
 
   /** The glyph an icon name resolves to in the active icon pack, or null = the framework's own icon. */
