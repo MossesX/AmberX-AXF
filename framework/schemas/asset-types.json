@@ -95,7 +95,9 @@
       },
       "optional_fields": {
         "scrollbar": "'thin' — thin themed scrollbars (--fx-scrollbar-width, --fx-scrollbar-color); unset = the browser's own",
-        "wrapGroups": "boolean, default false — every section / group (Container) is collapsible with a toggle in its top-right corner (build option --wrap-groups; compiles to --fx-wrap-groups 1|0)"
+        "wrapGroups": "boolean, default false — every section / group (Container) is collapsible with a toggle in its top-right corner (build option --wrap-groups; compiles to --fx-wrap-groups 1|0)",
+        "grid": "object, optional — component-tokens@1 grid family (core/engines/component-tokens.mjs): { headerBg, headerText, hoverBg, selectedBg, lineColor, radius, opacity, … } → --fx-grid-*; a colour-theme token name, a CSS colour / length, or a number. Left out = today's look (the :root defaults in axf.css point at the general tokens)",
+        "tabs": "object, optional — component-tokens@1 tab-group family: { barBg, barBorder, text, hoverText, activeText, indicator, indicatorSize, pillsActiveBg, radiusPills, opacity, … } → --fx-tab-*; same values as grid. Left out = today's look"
       }
     },
     "layout": {

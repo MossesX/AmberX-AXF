@@ -1409,6 +1409,34 @@
       ]
     },
     {
+      "id": "--fx-grid-cell-pad-x",
+      "element": "grid",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: cell padding x.",
+      "default": "var(--fx-size-table-pad-x)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-cell-pad-y",
+      "element": "grid",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: cell padding y.",
+      "default": "var(--fx-size-table-pad-y)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
       "id": "--fx-grid-cols",
       "element": "layout",
       "area": "layout",
@@ -1421,6 +1449,343 @@
       "sources": [
         "engine:framework/core/engines/layout.ts",
         "engine:framework/core/engines/token-registry.mjs"
+      ]
+    },
+    {
+      "id": "--fx-grid-disabled-opacity",
+      "element": "grid",
+      "area": "style",
+      "state": "disabled",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: transparency when disabled.",
+      "default": "1",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-empty-text",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: empty text colour.",
+      "default": "var(--fx-muted)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-expanded-bg",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: expanded background.",
+      "default": "var(--fx-surface2)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-focus-ring",
+      "element": "grid",
+      "area": "colour",
+      "state": "focus",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: focus ring when focus.",
+      "default": "var(--fx-focus)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-group-header-bg",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: group header background.",
+      "default": "var(--fx-surface3)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-group-header-bg-deep",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: group header background deep.",
+      "default": "var(--fx-surface)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-group-header-bg-nested",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: group header background nested.",
+      "default": "var(--fx-surface2)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-group-header-text",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: group header text colour.",
+      "default": "inherit",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-group-summary-text",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: group summary text colour.",
+      "default": "var(--fx-muted)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-header-active-text",
+      "element": "grid",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: header text colour when active.",
+      "default": "var(--fx-accent)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-header-bg",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: header background.",
+      "default": "var(--fx-surface2)",
+      "source": "engine:framework/core/engines/component-tokens.mjs",
+      "sources": [
+        "engine:framework/core/engines/component-tokens.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-header-border",
+      "element": "grid",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: header border.",
+      "default": "var(--fx-border)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-header-text",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: header text colour.",
+      "default": "var(--fx-muted)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-header-weight",
+      "element": "grid",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: header font weight.",
+      "default": "600",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-hover-bg",
+      "element": "grid",
+      "area": "colour",
+      "state": "hover",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: background when hover.",
+      "default": "var(--fx-surface2)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-hover-text",
+      "element": "grid",
+      "area": "colour",
+      "state": "hover",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: text colour when hover.",
+      "default": "inherit",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-line-color",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: line colour.",
+      "default": "var(--fx-border)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-opacity",
+      "element": "grid",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: transparency.",
+      "default": "1",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-outer-border",
+      "element": "grid",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: outer border.",
+      "default": "transparent",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-radius",
+      "element": "grid",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: corner radius.",
+      "default": "0",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-row-alt-bg",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: row alt background.",
+      "default": "transparent",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-row-bg",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: row background.",
+      "default": "transparent",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-row-height",
+      "element": "grid",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: row height.",
+      "default": "auto",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-row-text",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: row text colour.",
+      "default": "inherit",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
       ]
     },
     {
@@ -1451,6 +1816,90 @@
       "sources": [
         "engine:framework/core/engines/layout.ts",
         "engine:framework/core/engines/token-registry.mjs"
+      ]
+    },
+    {
+      "id": "--fx-grid-selected-bg",
+      "element": "grid",
+      "area": "colour",
+      "state": "selected",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: background when selected.",
+      "default": "var(--fx-accent-soft)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-selected-border",
+      "element": "grid",
+      "area": "style",
+      "state": "selected",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: border when selected.",
+      "default": "var(--fx-accent)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-selected-text",
+      "element": "grid",
+      "area": "colour",
+      "state": "selected",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: text colour when selected.",
+      "default": "inherit",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-sort-arrow",
+      "element": "grid",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: sort arrow.",
+      "default": "currentColor",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-sticky-shadow",
+      "element": "grid",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: sticky shadow.",
+      "default": "none",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-table-header-bg",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: table header background.",
+      "default": "transparent",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
       ]
     },
     {
@@ -3717,6 +4166,581 @@
       ]
     },
     {
+      "id": "--fx-tab-active-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: background when active.",
+      "default": "transparent",
+      "source": "engine:framework/core/engines/component-tokens.mjs",
+      "sources": [
+        "engine:framework/core/engines/component-tokens.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-active-border",
+      "element": "tab-group",
+      "area": "style",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: border when active.",
+      "default": "transparent",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-active-text",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: text colour when active.",
+      "default": "var(--fx-text)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-active-weight",
+      "element": "tab-group",
+      "area": "style",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: font weight when active.",
+      "default": "inherit",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-badge-active-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: badge background when active.",
+      "default": "color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-badge-active-text",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: badge text colour when active.",
+      "default": "var(--fx-text)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-badge-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: badge background.",
+      "default": "var(--fx-surface3)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-badge-text",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: badge text colour.",
+      "default": "var(--fx-muted)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-bar-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: bar background.",
+      "default": "transparent",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-bar-border",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: bar border.",
+      "default": "var(--fx-border)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: background.",
+      "default": "transparent",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-border",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: border.",
+      "default": "transparent",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-boxed-active-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: boxed background when active.",
+      "default": "var(--fx-surface)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-boxed-active-border",
+      "element": "tab-group",
+      "area": "style",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: boxed border when active.",
+      "default": "var(--fx-border)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-chips-active-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: chips background when active.",
+      "default": "var(--fx-accent-soft)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-chips-active-border",
+      "element": "tab-group",
+      "area": "style",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: chips border when active.",
+      "default": "var(--fx-accent)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-chips-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: chips background.",
+      "default": "var(--fx-surface)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-chips-border",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: chips border.",
+      "default": "var(--fx-border)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-close-hover-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "hover",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: close background when hover.",
+      "default": "var(--fx-surface3)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-close-hover-text",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "hover",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: close text colour when hover.",
+      "default": "var(--fx-danger)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-close-text",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: close text colour.",
+      "default": "var(--fx-muted)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-disabled-opacity",
+      "element": "tab-group",
+      "area": "style",
+      "state": "disabled",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: transparency when disabled.",
+      "default": "1",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-disabled-text",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "disabled",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: text colour when disabled.",
+      "default": "var(--fx-tab-text)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-focus-ring",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "focus",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: focus ring when focus.",
+      "default": "var(--fx-focus)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-fold-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: fold background.",
+      "default": "var(--fx-surface)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-fold-border",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: fold border.",
+      "default": "var(--fx-border)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-fold-radius",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: fold corner radius.",
+      "default": "var(--fx-radius-sm)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-fold-text",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: fold text colour.",
+      "default": "var(--fx-text)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-gap",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: gap.",
+      "default": "var(--fx-dens-gap-md)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-hover-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "hover",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: background when hover.",
+      "default": "transparent",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-hover-border",
+      "element": "tab-group",
+      "area": "style",
+      "state": "hover",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: border when hover.",
+      "default": "var(--fx-tab-border)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-hover-text",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "hover",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: text colour when hover.",
+      "default": "var(--fx-text)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-indicator",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: active indicator.",
+      "default": "var(--fx-accent)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-indicator-size",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: active indicator size.",
+      "default": "2px",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-opacity",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: transparency.",
+      "default": "1",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-pills-active-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: pills background when active.",
+      "default": "var(--fx-accent)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-pills-active-text",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: pills text colour when active.",
+      "default": "var(--fx-accent-text)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-plain-active-text",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: plain text colour when active.",
+      "default": "var(--fx-accent)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-plain-active-weight",
+      "element": "tab-group",
+      "area": "style",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: plain font weight when active.",
+      "default": "600",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-pressed-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "pressed",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: background when pressed.",
+      "default": "var(--fx-tab-hover-bg)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-pressed-text",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "pressed",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: text colour when pressed.",
+      "default": "var(--fx-tab-hover-text)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
       "id": "--fx-tab-px",
       "element": "tab-group",
       "area": "style",
@@ -3742,6 +4766,244 @@
       "source": "engine:framework/core/engines/components.ts",
       "sources": [
         "engine:framework/core/engines/components.ts"
+      ]
+    },
+    {
+      "id": "--fx-tab-radius-boxed",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: corner radius boxed.",
+      "default": "var(--fx-radius-sm)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-radius-chips",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: corner radius chips.",
+      "default": "999px",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-radius-pills",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: corner radius pills.",
+      "default": "999px",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-radius-plain",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: corner radius plain.",
+      "default": "0",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-radius-segmented",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: corner radius segmented.",
+      "default": "var(--fx-radius-sm)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-radius-underline",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: corner radius underline.",
+      "default": "0",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-radius-window",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: corner radius window.",
+      "default": "var(--fx-radius-sm)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-segmented-active-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: segmented background when active.",
+      "default": "var(--fx-surface)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-segmented-active-shadow",
+      "element": "tab-group",
+      "area": "style",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: segmented shadow when active.",
+      "default": "var(--fx-shadow-sm)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-segmented-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: segmented background.",
+      "default": "var(--fx-surface2)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-segmented-border",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: segmented border.",
+      "default": "var(--fx-border)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-segmented-radius",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: segmented corner radius.",
+      "default": "var(--fx-radius-md)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-sticky-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: sticky background.",
+      "default": "var(--fx-surface)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-text",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: text colour.",
+      "default": "var(--fx-muted)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-window-active-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: window background when active.",
+      "default": "var(--fx-surface)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-window-active-shadow",
+      "element": "tab-group",
+      "area": "style",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: window shadow when active.",
+      "default": "var(--fx-shadow-sm)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-window-bar-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: window bar background.",
+      "default": "var(--fx-surface2)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
       ]
     },
     {

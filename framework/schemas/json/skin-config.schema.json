@@ -206,6 +206,12 @@
                         },
                         "scrollbar": {
                           "$ref": "#/$defs/mode"
+                        },
+                        "grid": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "tabs": {
+                          "$ref": "#/$defs/mode"
                         }
                       }
                     }
