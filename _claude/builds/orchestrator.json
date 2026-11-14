@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T18:20:12.136Z",
+ "updatedAt": "2026-11-14T18:20:48.251Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -141400,7 +141400,7 @@
    "title": "Land all skin builds",
    "category": "",
    "detail": "Land these one at a time, in order. For each: fetch its remote branch (pull --rebase or merge the remote branch first; build_land push was rejected as non-fast-forward), merge origin/main, resolve conflicts keeping both sides' features, regenerate generated files (generated-files@1), run tests, push, merge to main. Order: skins-plugin-merge-main-and-land (Skins plugin; installing it hides the built-in skins panel, removing it brings it back), skin-config-panel-merge-main-and-land, every-skin-ships-light-dark-colour-theme, console-skin-axhub-only, skin-axhub-override-switch-greyed-out, skin-animations-swatches-skin-switch, token-registry-skin-editor-live-sandbox, own-token-sets-for-grids-and-tab-groups. Archive superseded older branches (skins-plugin-own-removable-console, skin-configuration-panel-before-ai-makes, professional-skins-rebuild-whole-app, fix-merge-conflicts-pr-557-professional) after checking their commits are included. Then run /usr/local/bin/axf-console-update to redeploy, verify the console loads with no doubled chrome, and send Brett a phone notification through AmberX listing what landed.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -141408,7 +141408,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T18:15:01.485Z",
-   "updatedAt": "2026-11-14T18:19:29.657Z",
+   "updatedAt": "2026-11-14T18:20:45.231Z",
    "builtAt": "",
    "notes": [
     {
@@ -141459,8 +141459,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T18:20:45.227Z",
      "note": "",
      "uid": "st-mwgqcckn0vqrcq",
      "createdAt": "2026-11-14T18:19:09.863Z"
