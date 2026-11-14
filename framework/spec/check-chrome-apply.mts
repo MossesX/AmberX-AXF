@@ -20,6 +20,7 @@ import { AxfRuntime } from '../core/runtime';
 import { toolbarStyle } from '../core/engines/components';
 import { tapConfigFor } from '../core/engines/tapconfirm';
 import { CHROME_FIELDS, CHROME_INSTANCE_KEY, CHROME_TAP_FIELD, CHROME_TAP_OPTIONS } from '../core/engines/chrome-settings-rules.mjs';
+import { wsToolbarAttrs, wsToolbarLook } from '../libs/workspace/look';
 
 // a localStorage stand-in so settings persist across runtimes the way a reload does in the browser
 const store = new Map<string, string>();
@@ -109,6 +110,31 @@ const valuesOf = (f: { kind: string; options?: string[]; min?: number; max?: num
   rt.settings.clear(CHROME_INSTANCE_KEY('toolbar', page.id));
 }
 
+// a workspace (plugin) toolbar is its own instance (its toolbar id): every value of every toolbar field changes what it
+// draws (its look attributes + the fields the component reads), and never leaks into another toolbar or the app toolbar
+{
+  const rt = make();
+  const get = (k: string) => rt.settings.get(k);
+  const tb = { id: 'check.ws-tools', labels: false }, other = { id: 'check.ws-other', labels: false };
+  const key = CHROME_INSTANCE_KEY('toolbar', tb.id);
+  const draws = () => { const look = wsToolbarLook(get, tb); return JSON.stringify({ attrs: wsToolbarAttrs(look, false), showSearch: look.showSearch, collapsible: look.collapsible }); };
+  const app0 = JSON.stringify(rt.chromeData('toolbar')), other0 = JSON.stringify(wsToolbarLook(get, other));
+  for (const f of CHROME_FIELDS.toolbar) {
+    if (f.key === CHROME_TAP_FIELD) continue;
+    const seen = new Map<string, string | number | boolean>();
+    for (const v of valuesOf(f)) {
+      rt.settings.set(key, { [f.key]: v } as never);
+      ok((wsToolbarLook(get, tb) as unknown as Record<string, unknown>)[f.key] === v, `workspace toolbar ${f.key}=${String(v)}: applied`);
+      const sig = draws(), dup = seen.get(sig);
+      ok(dup === undefined, `workspace toolbar ${f.key}: ${String(v)} draws the same as ${String(dup)} (the setting is ignored)`);
+      seen.set(sig, v);
+    }
+    ok(JSON.stringify(rt.chromeData('toolbar')) === app0 && JSON.stringify(wsToolbarLook(get, other)) === other0, `workspace toolbar ${f.key}: other toolbars untouched`);
+    rt.settings.clear(key);
+  }
+  ok(wsToolbarLook(get, { id: tb.id, labels: true }).variant === 'icons-labels', 'workspace toolbar: its definition\'s labels is the default Buttons choice');
+}
+
 // persist + reload: what one runtime saved, the next renders
 {
   const a = make();
@@ -136,4 +162,4 @@ const valuesOf = (f: { kind: string; options?: string[]; min?: number; max?: num
 }
 
 if (failures.length) { console.error(`check-chrome-apply: ${failures.length} failure(s)\n  ${failures.join('\n  ')}`); process.exit(1); }
-console.log(`check-chrome-apply: ${n} checks passed (every chrome settings value applies on toolbar, nav, menu bar, banner, context menu)`);
+console.log(`check-chrome-apply: ${n} checks passed (every chrome settings value applies on toolbar, nav, menu bar, banner, context menu, workspace toolbars)`);
