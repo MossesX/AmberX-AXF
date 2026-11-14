@@ -35,7 +35,8 @@ let browser;
 const ME = { wall: false, hub: '', appearanceHub: 'off', user: null, admin: true, role: 'admin', themes: true, plugins: [] };
 
 // the orchestrator state of this checkout, cut to one build (its steps are real)
-const full = JSON.parse(execFileSync('node', [join(APP, 'plugins/build-orchestrator/orchestrator.mjs'), 'state', '--json'], { encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 }).trim().split('\n').pop());
+let full = { state: { builds: [] } }; // empty once the build orchestrator plugin is uninstalled
+full = JSON.parse(execFileSync('node', [join(APP, 'plugins/build-orchestrator/orchestrator.mjs'), 'state', '--json'], { encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 }).trim().split('\n').pop()); // axf-plugin:build-orchestrator
 const build = full.state.builds.find((b) => b.id === BUILD) ?? full.state.builds.find((b) => b.steps?.length);
 const state = { ...full, state: { ...full.state, builds: [{ ...build, hidden: false, status: 'running' }] } };
 const step = build.steps[1] ?? build.steps[0];
