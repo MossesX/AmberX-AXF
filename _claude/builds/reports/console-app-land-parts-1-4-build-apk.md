@@ -163,3 +163,11 @@ javac). After (run 43541410908): `:app:testDebugUnitTest :app:assembleDebug` BUI
 classes pass (BridgeContract 10, DeviceRules 5, HubLinkRules 6, InsetsCss 3, MicRules 5, OverlayContract 6,
 OverlayRules 9, ShellRules 6, SlotRules 7, UpdateRules 5).
 Still red in that run, and also red on main: the kernel theme conformance test (see CI round 1, item 3).
+
+## APK
+
+- **Interim, top of the stack (all five parts, before landing):** run 43541410908 on
+  `claude/console-app-wake-word-voice-listener` @ `5da77e5df`: artifact `console-app-debug.apk` (163 KB),
+  https://github.com/MossesX/AmberX-AXF/actions/runs/43541410908/artifacts/14092283770 (run page
+  https://github.com/MossesX/AmberX-AXF/actions/runs/43541410908). It is signed with the stable debug key, so later
+  builds install over it.
