@@ -796,11 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 00:48 UTC · `console-app-land-parts-1-4-build-apk` s1 done (all) · orchestrator
-- 2026-11-14 00:48 UTC · `land-batch-merge-main-each-finished` s15 done (all) · orchestrator
-- 2026-11-14 00:48 UTC · `console-app-land-parts-1-4-build-apk` s2 done (all) · orchestrator
-- 2026-11-14 00:48 UTC · `voice-listener-use-claude-when-connected` s1 done, → running (all) · orchestrator
-- 2026-11-14 00:49 UTC · `console-app-land-parts-1-4-build-apk` s3 done (all) · orchestrator
 - 2026-11-14 00:49 UTC · `console-app-land-parts-1-4-build-apk` branch claude/console-android-app-thin-webview-wrapper, PR #637 (all) · builds-live
 - 2026-11-14 00:49 UTC · `console-app-land-parts-1-4-build-apk` s4 done (all) · orchestrator
 - 2026-11-14 00:49 UTC · `console-app-land-parts-1-4-build-apk` s5 done (all) · orchestrator
@@ -1196,6 +1191,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:45 UTC · `console-app-wake-word-voice-listener` → queued (all) · orchestrator
 - 2026-11-14 22:45 UTC · `land-project-duplicate-boilerplate` → queued (all) · orchestrator
 - 2026-11-14 22:45 UTC · `skin-config-panel-merge-main-and-land` → queued (all) · orchestrator
+- 2026-11-14 22:45 UTC · `skin-animations-swatches-skin-switch` → queued (all) · orchestrator
+- 2026-11-14 22:45 UTC · `pass-approval-hook-deep-link-amberx-notification` → running, note (all) · pipeline
+- 2026-11-14 22:46 UTC · `own-token-sets-for-grids-and-tab-groups` → queued (all) · orchestrator
+- 2026-11-14 22:46 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
+- 2026-11-14 22:46 UTC · `token-registry-skin-editor-live-sandbox` → queued (all) · orchestrator
 
 ## Token passes (log)
 

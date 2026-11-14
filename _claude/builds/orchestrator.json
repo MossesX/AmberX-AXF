@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T22:45:56.074Z",
+ "updatedAt": "2026-11-14T22:46:14.011Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -101014,7 +101014,7 @@
    "title": "Pass approval hook: deep link + AmberX notification Approve button for veto passes",
    "category": "",
    "detail": "Today a pass request can only be approved from the console banner or Token control → Passes. Add: a deep link URL that opens straight to the pending pass with Approve/Deny (console + Molly), returned in pass_grant's result so Claude can hand it over; an AmberX push notification with Approve/Deny actions that work in the background (no navigation); API to approve from Brett's own session. Full API control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -101022,7 +101022,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-14T22:45:50.519Z",
+   "updatedAt": "2026-11-14T22:46:07.943Z",
    "builtAt": "",
    "notes": [
     {
@@ -101072,6 +101072,14 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-10T18:50:38.760Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 2): axf-pass-approval-hook-deep-link-amberx-notification--lenny.",
+     "at": "2026-11-14T22:45:59.743Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-pass-approval-hook-deep-link-amberx-notification--lenny, shared account login)",
+     "at": "2026-11-14T22:46:07.943Z"
     }
    ],
    "approvals": [],
@@ -132070,7 +132078,7 @@
    "title": "Skin animations: swatches, skin-switch sweep, picker",
    "category": "",
    "detail": "Cool animations for skins, all token-driven (duration, easing, intensity tokens) and respecting reduced-motion:\n- Skins gallery (Skins plugin and the built-in skins panel): each skin card shows a row of animated colour swatches that ripple/wave on hover or tap.\n- Switching skins: the new colours sweep or ripple across the screen from where you tapped, instead of snapping.\n- Colour pickers in token editors, UI Manager and Quick settings: swatches pop and fan out into their shades when picked, with a smooth morph to the new colour.\n- Animations are assets, so they're swappable and per-skin, with an Animations section in settings (on/off per animation, speed).\n- Full API: REST/MCP/CLI/voice. Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -132079,7 +132087,7 @@
    "mergedAt": "2026-11-14T20:51:15Z",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:31.102Z",
-   "updatedAt": "2026-11-14T21:01:04Z",
+   "updatedAt": "2026-11-14T22:45:56.240Z",
    "builtAt": "",
    "notes": [
     {
@@ -133046,7 +133054,7 @@
    "title": "Own token sets for grids and tab groups",
    "category": "",
    "detail": "Today grids only have layout tokens (--fx-grid-areas/cols/rows and the -m mobile variants), and tab groups only have --fx-tab-py/--fx-tab-px padding and --fx-tabs-per-row. Both borrow the general colour tokens (--fx-surface, --fx-border, accent), so hover, selected and active states can't be styled on their own. Add dedicated token families in tokens.style, following skins and editable in Token Control, the UI Manager and per instance.\nGRID: header background/text/border/sort arrow/filter chip; row, alternate row, hover, selected, focused, expanded, disabled; grid lines, outer border, cell padding, row height, radius; group header, sticky column shadow, empty state; transparency (default 100%).\nTAB GROUP: bar background and border; tab text, background and border for idle, hover, active/selected, pressed, disabled and focus ring; active indicator (underline/pill) colour and thickness; badge on tab; fold/overflow button; gap; radius per style (underline, pills, boxed, segmented, plain, chips); transparency (default 100%).\nWire every grid/table and tab group to read them, and add a CI check against hard-coded colours. Per-instance overrides with Restore previous edit / Restore from axHub. Full API. Tests, help, Shipped features. Fable for the token schema.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -133055,7 +133063,7 @@
    "mergedAt": "2026-11-14T22:33:15Z",
    "priority": "P1",
    "createdAt": "2026-11-13T19:57:42.157Z",
-   "updatedAt": "2026-11-14T22:40:11Z",
+   "updatedAt": "2026-11-14T22:46:04.458Z",
    "builtAt": "",
    "notes": [
     {
@@ -133258,7 +133266,7 @@
    "title": "Token registry and Skin Editor: live sandbox preview, snapshot history",
    "category": "",
    "detail": "Runs after the token schema step of own-token-sets-for-grids-and-tab-groups (builds on its schema).\n1. TOKEN REGISTRY: one registry listing every token in the system, with element type, area (layout/style/colour/behaviour), state, light/dark, level (basic/pro/advanced), plain-English description, default and source. Every new UI, component or plugin MUST register its tokens through its manifest. A CI check fails any UI whose tokens aren't in the registry, and any registered token that nothing uses. Browsable and searchable, with full API.\n2. SKIN EDITOR (plugin and screen): pick any UI from the list (a screen, plugin, dialog, element), or pick it on screen, and it's loaded into a sandbox live-preview window with real components and sample data. Every edit hot-renders the preview in real time. The token list comes from the registry, with Basic/Pro/Advanced views. Inline element and asset editors work inside it.\n3. DEFAULT SKIN: there is always a built-in default skin that is locked.\n4. SNAPSHOTS: every edit to a skin automatically takes a snapshot (like a disk snapshot). A timeline shows the chain of edits, each with time, who/what made it, and a diff of exactly which tokens changed (old -> new). Click any snapshot to preview it, compare any two, or revert to it (a revert is itself a new snapshot, so nothing is ever lost). No breaking skins into separate style or colour groups: the skin is the only unit.\n5. EXPORT: at any point, 'Export current to new skin' saves the current state as a brand-new skin (name, thumbnail, to the hub library).\n6. Restore previous edit / Restore from axHub work through the snapshots.\n7. Full API: REST/MCP/CLI/voice ('revert the skin to 10 minutes ago', 'export this as a new skin called Midnight'). Tests, help, Shipped features. Fable for the registry and snapshot schema.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -133267,7 +133275,7 @@
    "mergedAt": "2026-11-14T21:33:25Z",
    "priority": "P1",
    "createdAt": "2026-11-13T20:04:16.679Z",
-   "updatedAt": "2026-11-14T21:42:04Z",
+   "updatedAt": "2026-11-14T22:46:11.318Z",
    "builtAt": "",
    "notes": [
     {
