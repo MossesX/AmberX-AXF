@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T12:17:40.457Z",
+ "updatedAt": "2026-11-14T12:18:09.664Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -138408,7 +138408,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T12:17:21.054Z",
+   "updatedAt": "2026-11-14T12:18:08.029Z",
    "builtAt": "",
    "notes": [
     {
@@ -138502,6 +138502,10 @@
     {
      "text": "Started run 2 on mossesx-max- (Opus, Phase 1): axf-demo-video-series-three-minute-browser--paulie.",
      "at": "2026-11-14T12:17:18.057Z"
+    },
+    {
+     "text": "Headless run axf-demo-video-series-three-minute-browser--paulie: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
+     "at": "2026-11-14T12:18:08.029Z"
     }
    ],
    "approvals": [],

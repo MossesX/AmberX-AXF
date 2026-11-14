@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5286,
- "updatedAt": "2026-11-14T12:17:40.457Z",
+ "rev": 5287,
+ "updatedAt": "2026-11-14T12:18:09.664Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -213404,7 +213404,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T12:17:21.054Z",
+   "updatedAt": "2026-11-14T12:18:08.029Z",
    "builtAt": "",
    "notes": [
     {
@@ -213498,6 +213498,10 @@
     {
      "text": "Started run 2 on mossesx-max- (Opus, Phase 1): axf-demo-video-series-three-minute-browser--paulie.",
      "at": "2026-11-14T12:17:18.057Z"
+    },
+    {
+     "text": "Headless run axf-demo-video-series-three-minute-browser--paulie: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
+     "at": "2026-11-14T12:18:08.029Z"
     }
    ],
    "approvals": [],
@@ -214087,7 +214091,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
