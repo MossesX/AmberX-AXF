@@ -1,0 +1,3398 @@
+{
+  "schema": "skin-config@1",
+  "path": "settings/skin-config/<app>.json",
+  "modes": [
+    "allow",
+    "lock",
+    "ask"
+  ],
+  "defaultMode": "allow",
+  "groupKinds": [
+    "pick",
+    "fields",
+    "parts",
+    "chrome",
+    "look"
+  ],
+  "measures": [
+    "depth",
+    "count"
+  ],
+  "extrasCategory": "extras",
+  "global": "global",
+  "summary": {
+    "categories": 48,
+    "groups": 289,
+    "options": 1145,
+    "limits": 4,
+    "sections": [
+      "Themes",
+      "Navigation",
+      "Overlays",
+      "Controls",
+      "Chrome",
+      "Widgets",
+      "System",
+      "Brand",
+      "Demos",
+      "Look"
+    ]
+  },
+  "categories": [
+    {
+      "type": "color-theme",
+      "label": "Color theme",
+      "section": "Themes",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "scheme",
+            "tokens.bg",
+            "tokens.surface",
+            "tokens.surface2",
+            "tokens.surface3",
+            "tokens.text",
+            "tokens.muted",
+            "tokens.border",
+            "tokens.accent",
+            "tokens.danger",
+            "tokens.success",
+            "tokens.warning",
+            "tokens.info",
+            "tokens.focus",
+            "tokens.shadow"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "style-theme",
+      "label": "Style theme",
+      "section": "Themes",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "radius.sm",
+            "radius.md",
+            "radius.lg",
+            "space",
+            "shadow.sm",
+            "shadow.md",
+            "shadow.lg",
+            "density",
+            "motion",
+            "blur",
+            "tracking",
+            "scrollbar"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "layout",
+      "label": "Layout",
+      "section": "Themes",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "nav",
+            "inspector",
+            "slots",
+            "repeat"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "app-menu",
+      "label": "Application menu",
+      "section": "Navigation",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "menus",
+            "density",
+            "surface"
+          ]
+        },
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "location",
+            "width",
+            "padding",
+            "itemPadding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        },
+        {
+          "id": "chrome",
+          "kind": "chrome",
+          "options": [
+            "hidden"
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "id": "depth",
+          "label": "Menu levels the AI may build (1 = flat menus)",
+          "measure": "depth",
+          "field": "",
+          "root": "",
+          "min": 1,
+          "max": 4,
+          "default": 2
+        }
+      ]
+    },
+    {
+      "type": "toolbar",
+      "label": "Toolbar",
+      "section": "Navigation",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "variant",
+            "align",
+            "groups",
+            "window",
+            "density",
+            "surface",
+            "divider",
+            "search",
+            "widgets",
+            "collapsible"
+          ]
+        },
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "location",
+            "width",
+            "padding",
+            "itemPadding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        },
+        {
+          "id": "chrome",
+          "kind": "chrome",
+          "options": [
+            "hidden"
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "id": "groups",
+          "label": "Toolbar groups the AI may build",
+          "measure": "count",
+          "field": "groups",
+          "root": "",
+          "min": 1,
+          "max": 8,
+          "default": 4
+        }
+      ]
+    },
+    {
+      "type": "nav-menu",
+      "label": "Navigation menu",
+      "section": "Navigation",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "style",
+            "sections",
+            "density",
+            "indicator",
+            "items"
+          ]
+        },
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "location",
+            "width",
+            "padding",
+            "itemPadding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        },
+        {
+          "id": "chrome",
+          "kind": "chrome",
+          "options": [
+            "hidden"
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "id": "depth",
+          "label": "Sub-menu levels the AI may build (1 = no sub menus)",
+          "measure": "depth",
+          "field": "",
+          "root": "",
+          "min": 1,
+          "max": 4,
+          "default": 2
+        }
+      ]
+    },
+    {
+      "type": "context-menu",
+      "label": "Context menu",
+      "section": "Navigation",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "variant",
+            "targets.default",
+            "contributions"
+          ]
+        },
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "width",
+            "padding",
+            "itemPadding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        },
+        {
+          "id": "chrome",
+          "kind": "chrome",
+          "options": [
+            "hidden"
+          ]
+        }
+      ],
+      "limits": [
+        {
+          "id": "depth",
+          "label": "Context-menu levels the AI may build (1 = no sub menus)",
+          "measure": "depth",
+          "field": "",
+          "root": "targets",
+          "min": 1,
+          "max": 4,
+          "default": 2
+        }
+      ]
+    },
+    {
+      "type": "tab-group",
+      "label": "Tab group",
+      "section": "Navigation",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "style",
+            "align",
+            "position",
+            "density",
+            "overflow",
+            "display",
+            "divider",
+            "sticky",
+            "collapsible",
+            "closable",
+            "reorderable",
+            "badges"
+          ]
+        },
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "location",
+            "width",
+            "padding",
+            "itemPadding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        },
+        {
+          "id": "chrome",
+          "kind": "chrome",
+          "options": [
+            "hidden"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "dialog",
+      "label": "Dialog",
+      "section": "Overlays",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "variant",
+            "width",
+            "backdrop",
+            "animation",
+            "header"
+          ]
+        },
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "width",
+            "padding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "popup",
+      "label": "Popup / toast",
+      "section": "Overlays",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "position",
+            "variant",
+            "duration"
+          ]
+        },
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "width",
+            "padding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "button",
+      "label": "Button",
+      "section": "Controls",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "shape",
+            "fill",
+            "weight",
+            "uppercase",
+            "size",
+            "elevation"
+          ]
+        },
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "width",
+            "padding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "slider",
+      "label": "Slider",
+      "section": "Controls",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "track",
+            "thumb",
+            "fill",
+            "ticks"
+          ]
+        },
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "width",
+            "padding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "container",
+      "label": "Container",
+      "section": "Controls",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "variant",
+            "header",
+            "padding",
+            "elevation",
+            "collapsible"
+          ]
+        },
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "width",
+            "padding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "gauge",
+      "label": "Gauge",
+      "section": "Controls",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "shape",
+            "thickness",
+            "needle",
+            "ticks",
+            "cap",
+            "readout"
+          ]
+        },
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "width",
+            "padding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "meter",
+      "label": "Progress meter",
+      "section": "Controls",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "shape",
+            "height",
+            "radius",
+            "stripes",
+            "animated",
+            "fill"
+          ]
+        },
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "width",
+            "padding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "banner",
+      "label": "Banner",
+      "section": "Chrome",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "height",
+            "surface",
+            "logo.show",
+            "logo.text",
+            "attach",
+            "divider"
+          ]
+        },
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "location",
+            "width",
+            "padding",
+            "itemPadding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        },
+        {
+          "id": "chrome",
+          "kind": "chrome",
+          "options": [
+            "hidden"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "clock",
+      "label": "Clock",
+      "section": "Widgets",
+      "by": "parts",
+      "groups": [
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "width",
+            "padding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "search-bar",
+      "label": "Search bar",
+      "section": "Widgets",
+      "by": "parts",
+      "groups": [
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "width",
+            "padding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "action-button",
+      "label": "Action button",
+      "section": "Widgets",
+      "by": "parts",
+      "groups": [
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "width",
+            "padding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "logo",
+      "label": "Logo",
+      "section": "Widgets",
+      "by": "parts",
+      "groups": [
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "width",
+            "padding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "label",
+      "label": "Label",
+      "section": "Widgets",
+      "by": "parts",
+      "groups": [
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "width",
+            "padding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "status",
+      "label": "Status",
+      "section": "Widgets",
+      "by": "parts",
+      "groups": [
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "width",
+            "padding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "counter",
+      "label": "Counter",
+      "section": "Widgets",
+      "by": "parts",
+      "groups": [
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "width",
+            "padding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "progress",
+      "label": "Progress",
+      "section": "Widgets",
+      "by": "parts",
+      "groups": [
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "width",
+            "padding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "avatar",
+      "label": "Avatar",
+      "section": "Widgets",
+      "by": "parts",
+      "groups": [
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "width",
+            "padding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "link",
+      "label": "Link",
+      "section": "Widgets",
+      "by": "parts",
+      "groups": [
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "width",
+            "padding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "theme-switch",
+      "label": "Theme switch",
+      "section": "Widgets",
+      "by": "parts",
+      "groups": [
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "width",
+            "padding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "spacer",
+      "label": "Spacer",
+      "section": "Widgets",
+      "by": "parts",
+      "groups": [
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "width",
+            "padding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "divider",
+      "label": "Divider",
+      "section": "Widgets",
+      "by": "parts",
+      "groups": [
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "width",
+            "padding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "badge",
+      "label": "Badge",
+      "section": "Chrome",
+      "by": "parts",
+      "groups": [
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "width",
+            "padding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "settings",
+      "label": "Settings interface",
+      "section": "System",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "layout",
+            "header",
+            "search",
+            "descriptions",
+            "for",
+            "extends",
+            "toolbar",
+            "levels",
+            "visible"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "dock-layout",
+      "label": "Pane layout",
+      "section": "Navigation",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "panes",
+            "tree",
+            "hint",
+            "main"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "xlayout",
+      "label": "xLayout",
+      "section": "System",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "apps",
+            "merge",
+            "ide",
+            "toolbars"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "nav-style",
+      "label": "Navigation style",
+      "section": "Navigation",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "colors",
+            "font",
+            "icons",
+            "layout",
+            "width",
+            "animation",
+            "behavior",
+            "items",
+            "accents"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "behavior-theme",
+      "label": "Behaviour theme",
+      "section": "Themes",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "motion",
+            "interaction",
+            "windows",
+            "feedback"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "logo-mark",
+      "label": "Logo mark",
+      "section": "Brand",
+      "by": "reference",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "branding"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "form",
+            "paths",
+            "text",
+            "palette",
+            "brand"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "animated-logo",
+      "label": "Animated logo",
+      "section": "Brand",
+      "by": "reference",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "branding"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "mark",
+            "preset",
+            "loop",
+            "still",
+            "intensity"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "icon-pack",
+      "label": "Icon pack",
+      "section": "Brand",
+      "by": "reference",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "iconPack"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "style",
+            "grid",
+            "glyphs",
+            "stroke",
+            "linecap",
+            "fallback"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "branding",
+      "label": "Branding package",
+      "section": "Brand",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "brand",
+            "marks",
+            "decorations",
+            "palette"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "typography",
+      "label": "Typography",
+      "section": "Themes",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "scale",
+            "headings",
+            "weights",
+            "line",
+            "eyebrow",
+            "mono"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "density",
+      "label": "Density",
+      "section": "Themes",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "gap",
+            "pad",
+            "row"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "sizing",
+      "label": "Component sizing",
+      "section": "Themes",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "button",
+            "chip",
+            "field",
+            "tab",
+            "segment",
+            "card",
+            "table"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "agent-card",
+      "label": "Agent card",
+      "section": "Widgets",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "front",
+            "back",
+            "labels"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "demonstration",
+      "label": "Demonstration",
+      "section": "Demos",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "steps",
+            "about",
+            "entries",
+            "app",
+            "voice",
+            "chain",
+            "keywords",
+            "generated",
+            "editable"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "book",
+      "label": "Book",
+      "section": "Demos",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "chapters",
+            "about",
+            "docs",
+            "outputs",
+            "keywords"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "clip",
+      "label": "Clip",
+      "section": "Demos",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "source.kind",
+            "media.seconds",
+            "recorded",
+            "transcript",
+            "chain",
+            "entries",
+            "keywords"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "docs",
+      "label": "Documentation",
+      "section": "Demos",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "source.kind",
+            "depth",
+            "format",
+            "files",
+            "interactive",
+            "build",
+            "keywords"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "extras",
+      "label": "Look extras",
+      "section": "Look",
+      "by": "extras",
+      "groups": [
+        {
+          "id": "look",
+          "kind": "look",
+          "options": [
+            "spacing",
+            "settings"
+          ]
+        }
+      ],
+      "limits": []
+    }
+  ]
+}

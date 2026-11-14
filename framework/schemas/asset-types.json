@@ -203,6 +203,17 @@
       "label": "Application menu",
       "group": "Navigation",
       "icon": "menu",
+      "skinConfig": {
+        "limits": {
+          "depth": {
+            "label": "Menu levels the AI may build (1 = flat menus)",
+            "measure": "depth",
+            "min": 1,
+            "max": 4,
+            "default": 2
+          }
+        }
+      },
       "required": [
         "menus"
       ],
@@ -230,6 +241,17 @@
       "label": "Toolbar",
       "group": "Navigation",
       "icon": "sliders",
+      "skinConfig": {
+        "limits": {
+          "groups": {
+            "label": "Toolbar groups the AI may build",
+            "measure": "count:groups",
+            "min": 1,
+            "max": 8,
+            "default": 4
+          }
+        }
+      },
       "required": [
         "variant",
         "align",
@@ -285,6 +307,17 @@
       "label": "Navigation menu",
       "group": "Navigation",
       "icon": "grid",
+      "skinConfig": {
+        "limits": {
+          "depth": {
+            "label": "Sub-menu levels the AI may build (1 = no sub menus)",
+            "measure": "depth",
+            "min": 1,
+            "max": 4,
+            "default": 2
+          }
+        }
+      },
       "required": [
         "style",
         "sections"
@@ -320,6 +353,18 @@
       "label": "Context menu",
       "group": "Navigation",
       "icon": "chevron-right",
+      "skinConfig": {
+        "limits": {
+          "depth": {
+            "label": "Context-menu levels the AI may build (1 = no sub menus)",
+            "measure": "depth",
+            "root": "targets",
+            "min": 1,
+            "max": 4,
+            "default": 2
+          }
+        }
+      },
       "required": [
         "variant",
         "showIcons",
@@ -1898,6 +1943,18 @@
   },
   "attachDefaults": {
     "_doc": "Attachable types (\"attachable\": true) aren't slots you pick in Appearance → Assets: their assets are attached to a host by the host's data or by modules at run time, and they're never rolled. Widgets (\"widget\": true) attach to every host (banners, toolbars); badges to hosts with an `attach` block (banners). A host's `attach` block without `types` takes every attachable type; a `widgets` block takes every widget type."
+  },
+  "skinConfig": {
+    "_doc": "skin-config@1 (core/engines/skin-config-rules.mjs): the permission tree Brett sets before the AI makes a skin (category > group > option, each allow / lock / ask). Categories are every registered type a skin can reach (skin-coverage@1) in the order above, plus this one category for the look's extras. A type declares `skinConfig.limits` on its own entry when the AI must be held to a size (`depth` = the deepest `items` nesting it may build, 1 = flat, with `root` naming the field whose lists are the first level; `count:<field>` = how many entries an array field may hold); nothing else is named by hand.",
+    "extras": {
+      "label": "Look extras",
+      "section": "Look",
+      "groupLabel": "The look as a whole",
+      "options": {
+        "spacing": "Spacing (tight, compact or regular)",
+        "settings": "Look settings and token overrides (axf.tokens.*) the skin carries"
+      }
+    }
   },
   "menuItems": {
     "_doc": "Menu items (app-menu menus[].items, context-menu targets.*, nested `items`) take these optional fields on top of id/label/icon/action/shortcut/requires/items/separator. `provider` names a live-list provider registered at run time (runtime.registerAppMenuProvider): the item becomes a submenu whose entries are asked for on open, capped at providerMax with a More… entry. `badge` names a runtime counter shown as a badge (hidden at 0), like toolbar items. `checked` binds a check mark: setting:<key> (truthy value), counter:<name> (> 0), slot:<type> (chrome slot shown), hidden:<type> (chrome slot hidden). `order` / `before` / `after` place a contributed item among its siblings (engines/appmenu.ts; fixture spec/fixtures/app-menu.json; Android twin deferred, port on hold Oct 21 2026).",

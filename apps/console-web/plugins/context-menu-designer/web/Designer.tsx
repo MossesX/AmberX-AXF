@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
-import { Button, Container, IconButton, ICON_NAMES, MenuList, Note, Segmented, SelectField, Slider, Switch, TextField, useRuntime } from '@console/axf/react';
+import { Button, Container, HubSkinLockArea, IconButton, ICON_NAMES, MenuList, Note, Segmented, SelectField, Slider, Switch, TextField, useRuntime } from '@console/axf/react';
 import type { MenuItem } from '@console/axf/core';
 import {
   ASSET_PREFIX, COLOR_KEYS, COLOR_TOKENS, FONTS, FONT_STYLES, VARIANTS, WEIGHTS, asChunk, compile, countItems, designErrors, designFromMenu, findChunk,
@@ -299,6 +299,7 @@ export function Designer() {
   );
 
   return (
+    <HubSkinLockArea>
     <div className="axp-ctxd">
       <aside className="axp-ctxd-side fx-stack">
         {loadError() && <Note tone="danger">{loadError()}</Note>}
@@ -382,5 +383,6 @@ export function Designer() {
         )}
       </main>
     </div>
+    </HubSkinLockArea>
   );
 }
