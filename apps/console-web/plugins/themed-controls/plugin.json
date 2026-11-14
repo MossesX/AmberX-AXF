@@ -138,6 +138,66 @@
         }
       },
       {
+        "route": "GET /pickers",
+        "id": "pickers",
+        "title": "Open pickers and dialogs",
+        "readOnly": true,
+        "description": "The date, time or colour picker open in the console (control ref, kind, value, the month on show) and any open themed dialog."
+      },
+      {
+        "route": "POST /open",
+        "id": "open",
+        "title": "Open a picker",
+        "description": "Open the date / time / colour picker of one control in the console, like tapping its button.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "ref": {
+              "type": "string",
+              "description": "the control's element id, name or label words"
+            },
+            "family": {
+              "type": "string",
+              "enum": [
+                "datetime",
+                "color"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "route": "POST /close",
+        "id": "close",
+        "title": "Close the picker",
+        "description": "Close the open picker without changing the value.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "ref": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "route": "POST /pick",
+        "id": "pick",
+        "title": "Pick in the open picker",
+        "description": "Set the open picker's control to a value and close it: a date 2026-03-03, a time 14:30, a date and time 2026-03-03T14:30, a colour #3366cc.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "value"
+          ]
+        }
+      },
+      {
         "route": "POST /report",
         "skip": "the open console's own report of its switches and live state, not a command"
       }

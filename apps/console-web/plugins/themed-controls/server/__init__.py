@@ -230,3 +230,40 @@ async def set_control(request: Request) -> dict[str, Any]:
     if isinstance(value, bool):
         value = "on" if value else "off"
     return run_in_console("themed-controls.set", f"{ref}:{'' if value is None else value}", _by(request))
+
+
+@router.get("/pickers")
+def pickers() -> dict[str, Any]:
+    """The open date / time / colour picker and open dialogs in the console, as it last reported them."""
+    live = _live()
+    return {"open": live.get("open") or [], "dialogs": (live.get("globals") or {}).get("dialogs"), "at": live.get("at")}
+
+
+@router.post("/open")
+async def open_picker(request: Request) -> dict[str, Any]:
+    """Open the picker of a date / time / colour control in the console: {ref, family?}. The deep link of a picker."""
+    b = await _body(request)
+    ref = str(b.get("ref") or "").strip()
+    fam = str(b.get("family") or "").strip()
+    if fam:
+        check_family(fam)
+    if not ref and not fam:
+        raise HTTPException(422, "ref (the control's id, name or label) or family is required")
+    return run_in_console("themed-controls.open", ":".join(x for x in (fam, ref) if x), _by(request))
+
+
+@router.post("/close")
+async def close_picker(request: Request) -> dict[str, Any]:
+    """Close the open picker (or the one of {ref})."""
+    b = await _body(request)
+    return run_in_console("themed-controls.close", str(b.get("ref") or "").strip(), _by(request))
+
+
+@router.post("/pick")
+async def pick(request: Request) -> dict[str, Any]:
+    """Set the open picker's control to {value} and close it (a date 2026-03-03, a time 14:30, a colour #3366cc)."""
+    b = await _body(request)
+    v = str(b.get("value") or "").strip()
+    if not v:
+        raise HTTPException(422, "value is required")
+    return run_in_console("themed-controls.pick", v, _by(request))

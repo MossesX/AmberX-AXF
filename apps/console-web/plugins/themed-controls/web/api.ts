@@ -10,12 +10,17 @@
  *   themed-controls.state                        say what is on (toast); the full state is `panel:themed-controls`
  *   themed-controls.set:<ref>:<value>            set one themed control (ref = element id, name or label words)
  *   themed-controls.get:<ref>                    say one themed control's value (toast); `setting:field.<ref>` reads it
+ *   themed-controls.open:[<family>:]<ref>        open the picker of a date / time / colour control (the deep link)
+ *   themed-controls.close[:<ref>]                close the open picker (or that control's)
+ *   themed-controls.pick:<value>                 set the open picker's control and close it
+ * Pop-up families are also targets `panel:themed-controls.<family>`: open (the first such control, or `value` = ref),
+ * state (the open picker: ref, value, view), set (value, or `<ref>=<value>`), press ok | cancel.
  */
 import type { AxfRuntime } from '@console/axf/core';
 import { controlRegistry } from '@console/axf/react';
 import { TC_KEYS, THEMED_FAMILIES, THEMED_FAMILY_LABELS, activeFamilies, isThemedFamily, themedControlsConfig, type ThemedFamily } from '@console/axf/core/engines/themed-controls';
 import { TAB } from './settings';
-import { liveHost } from './host';
+import { liveHost, type SwapRecord } from './host';
 
 const ON = /^(on|true|1|yes|enable|enabled)$/i;
 const OFF = /^(off|false|0|no|disable|disabled)$/i;
@@ -69,6 +74,59 @@ export function registerApi(rt: AxfRuntime): () => void {
     const r = liveHost()?.find(ref ?? '');
     rt.toast(r ? `${ref}: ${JSON.stringify(r.swap.state?.() ?? { value: r.input.value })}` : `No themed control "${ref ?? ''}" on this screen.`, r ? 'info' : 'warning', 'Themed controls');
   }, 'Read a themed control', true);
+  const popups = (): SwapRecord[] => (liveHost()?.swaps() ?? []).filter((r) => r.swap.open && (r.family === 'datetime' || r.family === 'color'));
+  const openOne = (): SwapRecord | null => popups().find((r) => r.swap.state?.().open) ?? null;
+  const resolve = (args: string[]): SwapRecord | null => {
+    const [a, ...rest] = args;
+    const ref = a && isThemedFamily(a) ? rest.join(':') : args.join(':');
+    const fam = a && isThemedFamily(a) ? a : null;
+    if (!ref && fam) return popups().find((r) => r.family === fam) ?? null;
+    return liveHost()?.find(ref) ?? null;
+  };
+  reg('themed-controls.open', (args) => {
+    if (!args.length) { rt.dispatch(`settings.open:${TAB}`); return; }
+    const r = resolve(args);
+    if (!r?.swap.open) { rt.toast(`No date, time or colour control "${args.join(':')}" on this screen.`, 'warning', 'Themed controls'); return; }
+    r.swap.el.scrollIntoView({ block: 'nearest' });
+    r.swap.open();
+  }, 'Open a themed picker (or the Themed controls settings)', true);
+  reg('themed-controls.close', (args) => {
+    const r = args.length ? resolve(args) : openOne();
+    for (const x of r ? [r] : popups()) x.swap.close?.();
+  }, 'Close the open themed picker', true);
+  reg('themed-controls.pick', (args) => {
+    const r = openOne();
+    if (!r?.swap.set) { rt.toast('No themed picker is open.', 'warning', 'Themed controls'); return; }
+    void Promise.resolve(r.swap.set(args.join(':'))).then(() => r.swap.close?.(), (e: Error) => rt.toast(e.message, 'warning', 'Themed controls'));
+  }, 'Pick a value in the open themed picker', true);
+  for (const fam of ['datetime', 'color'] as const) {
+    offs.push(controlRegistry(rt).register({
+      address: `panel:themed-controls.${fam}`, kind: 'panel', label: fam === 'datetime' ? 'Date and time picker' : 'Colour picker', detail: 'Themed controls · pop-up', icon: fam === 'datetime' ? 'calendar' : 'palette',
+      keywords: fam === 'datetime' ? ['date', 'time', 'calendar', 'picker'] : ['colour', 'color', 'picker', 'swatch'],
+      can: ['open', 'state', 'set', 'press'],
+      open: () => { const r = popups().find((x) => x.family === fam); r?.swap.open?.(); },
+      get: () => { const r = popups().find((x) => x.family === fam && x.swap.state?.().open); return r ? { ref: r.ref, ...r.swap.state?.() } : { open: false }; },
+      state: () => {
+        const r = popups().find((x) => x.family === fam && x.swap.state?.().open);
+        return r ? { open: true, ref: r.ref, ...r.swap.state?.() } : { open: false, controls: popups().filter((x) => x.family === fam).map((x) => x.ref) };
+      },
+      set: async (v) => {
+        const s = String(v ?? '');
+        const eq = s.indexOf('=');
+        const r = eq > 0 ? liveHost()?.find(s.slice(0, eq)) : popups().find((x) => x.family === fam && x.swap.state?.().open);
+        if (!r?.swap.set) throw new Error(eq > 0 ? `no ${fam} control ${s.slice(0, eq)}` : `no ${fam} picker is open: open one first or send <ref>=<value>`);
+        await r.swap.set(eq > 0 ? s.slice(eq + 1) : s);
+        if (eq <= 0) r.swap.close?.();
+      },
+      invoke: (v) => {
+        const r = popups().find((x) => x.family === fam && x.swap.state?.().open);
+        if (!r) return false;
+        if (String(v ?? 'ok').toLowerCase() === 'ok') r.swap.el.ownerDocument.querySelector<HTMLButtonElement>('.fx-tc-pop .fx-btn--primary')?.click() ?? r.swap.close?.();
+        else r.swap.close?.();
+        return true;
+      },
+    }));
+  }
   offs.push(controlRegistry(rt).register({
     address: 'panel:themed-controls', kind: 'panel', label: 'Themed controls', detail: 'Plugin · switches and live themed controls', icon: 'sliders',
     keywords: ['themed', 'controls', 'native', 'checkbox', 'slider', 'picker', 'tooltip', 'scrollbar'],
