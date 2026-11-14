@@ -1,0 +1,5737 @@
+{
+  "contract": "skin-switch@1",
+  "actions": [
+    "use",
+    "back-to-skin",
+    "restore-default",
+    "undo"
+  ],
+  "scopes": [
+    "hub",
+    "app",
+    "ui",
+    "plugin"
+  ],
+  "errors": [
+    "bad-action",
+    "bad-scope",
+    "other-app",
+    "no-skin",
+    "unknown-skin",
+    "bad-slot",
+    "no-document",
+    "nothing-to-undo"
+  ],
+  "hub": "hub",
+  "skins": {
+    "windows": {
+      "layoutTheme": "windows-explorer",
+      "colorTheme": "windows-light",
+      "styleTheme": "windows",
+      "assets": {
+        "button": "windows"
+      },
+      "extras": {
+        "spacing": "compact"
+      }
+    },
+    "aurora": {
+      "layoutTheme": "focus-top",
+      "colorTheme": "aurora-night",
+      "styleTheme": "hub",
+      "assets": {}
+    }
+  },
+  "shared": {
+    "$axf": "appearance@1",
+    "slots": {
+      "layout": "focus-top",
+      "color-theme": "arctic-daylight",
+      "style-theme": "hub",
+      "button": "rounded-solid"
+    },
+    "spacing": "tight",
+    "hidden": {
+      "toolbar": true
+    }
+  },
+  "snapshot": {
+    "$axf": "app-look@1",
+    "app": "app",
+    "default": {
+      "slots": {
+        "layout": "focus-top",
+        "color-theme": "arctic-daylight",
+        "style-theme": "hub",
+        "button": "rounded-solid"
+      },
+      "spacing": "tight",
+      "hidden": {
+        "toolbar": true
+      }
+    },
+    "own": {},
+    "skin": {
+      "use": false,
+      "inherit": false,
+      "id": "",
+      "overrides": {}
+    },
+    "scopes": {},
+    "undo": null
+  },
+  "parse": {
+    "hub": {
+      "kind": "hub",
+      "key": "global",
+      "id": "",
+      "scope": "hub"
+    },
+    "global": {
+      "kind": "hub",
+      "key": "global",
+      "id": "",
+      "scope": "hub"
+    },
+    "app": {
+      "kind": "app",
+      "key": "app",
+      "id": "",
+      "scope": "app"
+    },
+    "app:notes": {
+      "kind": "app",
+      "key": "app",
+      "id": "notes",
+      "scope": "app:notes"
+    },
+    "ui:home": {
+      "kind": "ui",
+      "key": "ui:home",
+      "id": "home",
+      "scope": "ui:home"
+    },
+    "plugin:ai.amberx.notes": {
+      "kind": "plugin",
+      "key": "plugin:ai.amberx.notes",
+      "id": "ai.amberx.notes",
+      "scope": "plugin:ai.amberx.notes"
+    },
+    "nope": null,
+    "app:Bad Id": null,
+    "plugin:": null,
+    "": null,
+    "ui:a/b": null
+  },
+  "scopeOf": {
+    "global": "hub",
+    "app": "app:app",
+    "appNoId": "app",
+    "ui": "ui:home",
+    "plugin": "plugin:notes",
+    "junk": ""
+  },
+  "scopesOf": {
+    "bare": [
+      "hub",
+      "app:app"
+    ],
+    "withPlugin": [
+      "hub",
+      "app:app",
+      "plugin:notes"
+    ],
+    "none": [
+      "hub"
+    ]
+  },
+  "normalize": {
+    "good": {
+      "command": {
+        "action": "use",
+        "scope": "app:app",
+        "skin": "windows",
+        "at": "2026-11-13T00:00:00Z"
+      },
+      "errors": []
+    },
+    "back": {
+      "command": {
+        "action": "back-to-skin",
+        "scope": "plugin:notes",
+        "slot": "button"
+      },
+      "errors": []
+    },
+    "noSkin": {
+      "command": {
+        "action": "use",
+        "scope": "hub"
+      },
+      "errors": [
+        {
+          "code": "no-skin",
+          "message": "use needs the skin to use"
+        }
+      ]
+    },
+    "badAll": {
+      "command": {
+        "action": "flip",
+        "scope": "planet"
+      },
+      "errors": [
+        {
+          "code": "bad-action",
+          "message": "action must be one of use, back-to-skin, restore-default, undo"
+        },
+        {
+          "code": "bad-scope",
+          "message": "scope must be hub, app:<id>, ui:<view> or plugin:<id>"
+        },
+        {
+          "code": "unknown-skin",
+          "message": "\"Bad Id\" is not a skin id"
+        },
+        {
+          "code": "bad-slot",
+          "message": "\"Bad Slot\" is not a slot"
+        }
+      ]
+    },
+    "junk": {
+      "command": {
+        "action": "",
+        "scope": ""
+      },
+      "errors": [
+        {
+          "code": "bad-action",
+          "message": "action must be one of use, back-to-skin, restore-default, undo"
+        },
+        {
+          "code": "bad-scope",
+          "message": "scope must be hub, app:<id>, ui:<view> or plugin:<id>"
+        }
+      ]
+    }
+  },
+  "sequence": [
+    {
+      "name": "useApp",
+      "command": {
+        "action": "use",
+        "scope": "app:app",
+        "skin": "windows"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": false,
+            "inherit": false,
+            "id": "",
+            "overrides": {}
+          },
+          "scopes": {},
+          "undo": null
+        },
+        "global": null
+      },
+      "result": {
+        "ok": true,
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {},
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": false,
+              "inherit": false,
+              "id": "",
+              "overrides": {}
+            },
+            "scopes": {},
+            "at": "2026-11-13T00:00:00Z",
+            "action": "use",
+            "scope": "app:app"
+          }
+        },
+        "global": null,
+        "changed": {
+          "look": true,
+          "global": false
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": false,
+            "inherit": false,
+            "id": "",
+            "overrides": {}
+          },
+          "scopes": {},
+          "at": "2026-11-13T00:00:00Z",
+          "action": "use",
+          "scope": "app:app"
+        }
+      },
+      "view": {
+        "contract": "skin-switch@1",
+        "scope": "app:app",
+        "key": "app",
+        "state": {
+          "use": "on",
+          "id": "windows",
+          "overrides": {}
+        },
+        "inForce": {
+          "id": "windows",
+          "overrides": {},
+          "from": "app"
+        },
+        "known": true,
+        "overridden": [],
+        "canUndo": true,
+        "undo": {
+          "action": "use",
+          "scope": "app:app",
+          "at": "2026-11-13T00:00:00Z"
+        }
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": false,
+            "inherit": false,
+            "id": "",
+            "overrides": {}
+          },
+          "scopes": {},
+          "at": "2026-11-13T00:00:00Z",
+          "action": "use",
+          "scope": "app:app"
+        }
+      }
+    },
+    {
+      "name": "usePlugin",
+      "command": {
+        "action": "use",
+        "scope": "plugin:notes",
+        "skin": "aurora"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {},
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": false,
+              "inherit": false,
+              "id": "",
+              "overrides": {}
+            },
+            "scopes": {},
+            "at": "2026-11-13T00:00:00Z",
+            "action": "use",
+            "scope": "app:app"
+          }
+        },
+        "global": null
+      },
+      "result": {
+        "ok": true,
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {}
+            },
+            "scopes": {},
+            "at": "2026-11-13T00:00:00Z",
+            "action": "use",
+            "scope": "plugin:notes"
+          }
+        },
+        "global": null,
+        "changed": {
+          "look": true,
+          "global": false
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {},
+          "at": "2026-11-13T00:00:00Z",
+          "action": "use",
+          "scope": "plugin:notes"
+        }
+      },
+      "view": {
+        "contract": "skin-switch@1",
+        "scope": "plugin:notes",
+        "key": "plugin:notes",
+        "state": {
+          "use": "on",
+          "id": "aurora",
+          "overrides": {}
+        },
+        "inForce": {
+          "id": "aurora",
+          "overrides": {},
+          "from": "plugin:notes"
+        },
+        "known": true,
+        "overridden": [],
+        "canUndo": true,
+        "undo": {
+          "action": "use",
+          "scope": "plugin:notes",
+          "at": "2026-11-13T00:00:00Z"
+        }
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          }
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {},
+          "at": "2026-11-13T00:00:00Z",
+          "action": "use",
+          "scope": "plugin:notes"
+        }
+      }
+    },
+    {
+      "name": "useHub",
+      "command": {
+        "action": "use",
+        "scope": "hub",
+        "skin": "aurora"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {}
+            },
+            "scopes": {},
+            "at": "2026-11-13T00:00:00Z",
+            "action": "use",
+            "scope": "plugin:notes"
+          }
+        },
+        "global": null
+      },
+      "result": {
+        "ok": true,
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {}
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "use",
+            "scope": "hub",
+            "global": null
+          }
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        },
+        "changed": {
+          "look": true,
+          "global": true
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "use",
+          "scope": "hub",
+          "global": null
+        }
+      },
+      "view": {
+        "contract": "skin-switch@1",
+        "scope": "hub",
+        "key": "global",
+        "state": {
+          "use": "on",
+          "id": "aurora",
+          "overrides": {}
+        },
+        "inForce": {
+          "id": "aurora",
+          "overrides": {},
+          "from": "global"
+        },
+        "known": true,
+        "overridden": [],
+        "canUndo": true,
+        "undo": {
+          "action": "use",
+          "scope": "hub",
+          "at": "2026-11-13T00:00:00Z"
+        }
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          }
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "use",
+          "scope": "hub",
+          "global": null
+        }
+      }
+    },
+    {
+      "name": "backSlot",
+      "edit": [
+        {
+          "fn": "setLookSlot",
+          "args": [
+            "button",
+            "terminal"
+          ]
+        },
+        {
+          "fn": "setLookSlot",
+          "args": [
+            "dialog",
+            "app-dialog"
+          ]
+        },
+        {
+          "fn": "setSkinColorTheme",
+          "args": [
+            "plum-noir"
+          ]
+        },
+        {
+          "fn": "setScopeOverride",
+          "args": [
+            "plugin:notes",
+            "dialog",
+            "plugin-dialog"
+          ]
+        },
+        {
+          "fn": "setScopeOverride",
+          "args": [
+            "ui:home",
+            "button",
+            "ui-button"
+          ]
+        }
+      ],
+      "global": {
+        "id": "aurora",
+        "overrides": {
+          "button": "global-button"
+        },
+        "colorTheme": "harbor"
+      },
+      "command": {
+        "action": "back-to-skin",
+        "scope": "app:app",
+        "slot": "button"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {
+              "button": "terminal",
+              "dialog": "app-dialog"
+            },
+            "colorTheme": "plum-noir"
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {
+                "dialog": "plugin-dialog"
+              }
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {}
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "use",
+            "scope": "hub",
+            "global": null
+          }
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {
+            "button": "global-button"
+          },
+          "colorTheme": "harbor"
+        }
+      },
+      "result": {
+        "ok": true,
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {
+              "dialog": "app-dialog"
+            },
+            "colorTheme": "plum-noir"
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {
+                "dialog": "plugin-dialog"
+              }
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {
+                "button": "terminal",
+                "dialog": "app-dialog"
+              },
+              "colorTheme": "plum-noir"
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {
+                  "dialog": "plugin-dialog"
+                }
+              },
+              "ui:home": {
+                "use": "inherit",
+                "id": "",
+                "overrides": {
+                  "button": "ui-button"
+                }
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "back-to-skin",
+            "scope": "app:app"
+          }
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {
+            "button": "global-button"
+          },
+          "colorTheme": "harbor"
+        },
+        "changed": {
+          "look": true,
+          "global": false
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {
+              "button": "terminal",
+              "dialog": "app-dialog"
+            },
+            "colorTheme": "plum-noir"
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {
+                "dialog": "plugin-dialog"
+              }
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "back-to-skin",
+          "scope": "app:app"
+        }
+      },
+      "view": {
+        "contract": "skin-switch@1",
+        "scope": "app:app",
+        "key": "app",
+        "state": {
+          "use": "on",
+          "id": "windows",
+          "overrides": {
+            "dialog": "app-dialog"
+          },
+          "colorTheme": "plum-noir"
+        },
+        "inForce": {
+          "id": "windows",
+          "overrides": {
+            "dialog": "app-dialog"
+          },
+          "from": "app",
+          "colorTheme": "plum-noir"
+        },
+        "known": true,
+        "overridden": [
+          "dialog"
+        ],
+        "canUndo": true,
+        "undo": {
+          "action": "back-to-skin",
+          "scope": "app:app",
+          "at": "2026-11-13T00:00:00Z"
+        }
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {
+            "dialog": "app-dialog"
+          },
+          "colorTheme": "plum-noir"
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {
+              "dialog": "plugin-dialog"
+            }
+          },
+          "ui:home": {
+            "use": "inherit",
+            "id": "",
+            "overrides": {
+              "button": "ui-button"
+            }
+          }
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {
+              "button": "terminal",
+              "dialog": "app-dialog"
+            },
+            "colorTheme": "plum-noir"
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {
+                "dialog": "plugin-dialog"
+              }
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "back-to-skin",
+          "scope": "app:app"
+        }
+      }
+    },
+    {
+      "name": "backColour",
+      "command": {
+        "action": "back-to-skin",
+        "scope": "app:app",
+        "slot": "color-theme"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {
+              "dialog": "app-dialog"
+            },
+            "colorTheme": "plum-noir"
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {
+                "dialog": "plugin-dialog"
+              }
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {
+                "button": "terminal",
+                "dialog": "app-dialog"
+              },
+              "colorTheme": "plum-noir"
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {
+                  "dialog": "plugin-dialog"
+                }
+              },
+              "ui:home": {
+                "use": "inherit",
+                "id": "",
+                "overrides": {
+                  "button": "ui-button"
+                }
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "back-to-skin",
+            "scope": "app:app"
+          }
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {
+            "button": "global-button"
+          },
+          "colorTheme": "harbor"
+        }
+      },
+      "result": {
+        "ok": true,
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {
+              "dialog": "app-dialog"
+            }
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {
+                "dialog": "plugin-dialog"
+              }
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {
+                "dialog": "app-dialog"
+              },
+              "colorTheme": "plum-noir"
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {
+                  "dialog": "plugin-dialog"
+                }
+              },
+              "ui:home": {
+                "use": "inherit",
+                "id": "",
+                "overrides": {
+                  "button": "ui-button"
+                }
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "back-to-skin",
+            "scope": "app:app"
+          }
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {
+            "button": "global-button"
+          },
+          "colorTheme": "harbor"
+        },
+        "changed": {
+          "look": true,
+          "global": false
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {
+              "dialog": "app-dialog"
+            },
+            "colorTheme": "plum-noir"
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {
+                "dialog": "plugin-dialog"
+              }
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "back-to-skin",
+          "scope": "app:app"
+        }
+      },
+      "view": {
+        "contract": "skin-switch@1",
+        "scope": "app:app",
+        "key": "app",
+        "state": {
+          "use": "on",
+          "id": "windows",
+          "overrides": {
+            "dialog": "app-dialog"
+          }
+        },
+        "inForce": {
+          "id": "windows",
+          "overrides": {
+            "dialog": "app-dialog"
+          },
+          "from": "app"
+        },
+        "known": true,
+        "overridden": [
+          "dialog"
+        ],
+        "canUndo": true,
+        "undo": {
+          "action": "back-to-skin",
+          "scope": "app:app",
+          "at": "2026-11-13T00:00:00Z"
+        }
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {
+            "dialog": "app-dialog"
+          }
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {
+              "dialog": "plugin-dialog"
+            }
+          },
+          "ui:home": {
+            "use": "inherit",
+            "id": "",
+            "overrides": {
+              "button": "ui-button"
+            }
+          }
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {
+              "dialog": "app-dialog"
+            },
+            "colorTheme": "plum-noir"
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {
+                "dialog": "plugin-dialog"
+              }
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "back-to-skin",
+          "scope": "app:app"
+        }
+      }
+    },
+    {
+      "name": "backPluginAll",
+      "command": {
+        "action": "back-to-skin",
+        "scope": "plugin:notes"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {
+              "dialog": "app-dialog"
+            }
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {
+                "dialog": "plugin-dialog"
+              }
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {
+                "dialog": "app-dialog"
+              },
+              "colorTheme": "plum-noir"
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {
+                  "dialog": "plugin-dialog"
+                }
+              },
+              "ui:home": {
+                "use": "inherit",
+                "id": "",
+                "overrides": {
+                  "button": "ui-button"
+                }
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "back-to-skin",
+            "scope": "app:app"
+          }
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {
+            "button": "global-button"
+          },
+          "colorTheme": "harbor"
+        }
+      },
+      "result": {
+        "ok": true,
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {
+              "dialog": "app-dialog"
+            }
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {
+                "dialog": "app-dialog"
+              }
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {
+                  "dialog": "plugin-dialog"
+                }
+              },
+              "ui:home": {
+                "use": "inherit",
+                "id": "",
+                "overrides": {
+                  "button": "ui-button"
+                }
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "back-to-skin",
+            "scope": "plugin:notes"
+          }
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {
+            "button": "global-button"
+          },
+          "colorTheme": "harbor"
+        },
+        "changed": {
+          "look": true,
+          "global": false
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {
+              "dialog": "app-dialog"
+            }
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {
+                "dialog": "plugin-dialog"
+              }
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "back-to-skin",
+          "scope": "plugin:notes"
+        }
+      },
+      "view": {
+        "contract": "skin-switch@1",
+        "scope": "plugin:notes",
+        "key": "plugin:notes",
+        "state": {
+          "use": "on",
+          "id": "aurora",
+          "overrides": {}
+        },
+        "inForce": {
+          "id": "aurora",
+          "overrides": {},
+          "from": "plugin:notes"
+        },
+        "known": true,
+        "overridden": [],
+        "canUndo": true,
+        "undo": {
+          "action": "back-to-skin",
+          "scope": "plugin:notes",
+          "at": "2026-11-13T00:00:00Z"
+        }
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {
+            "dialog": "app-dialog"
+          }
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          },
+          "ui:home": {
+            "use": "inherit",
+            "id": "",
+            "overrides": {
+              "button": "ui-button"
+            }
+          }
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {
+              "dialog": "app-dialog"
+            }
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {
+                "dialog": "plugin-dialog"
+              }
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "back-to-skin",
+          "scope": "plugin:notes"
+        }
+      }
+    },
+    {
+      "name": "backHubSlot",
+      "command": {
+        "action": "back-to-skin",
+        "scope": "hub",
+        "slot": "button"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {
+              "dialog": "app-dialog"
+            }
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {
+                "dialog": "app-dialog"
+              }
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {
+                  "dialog": "plugin-dialog"
+                }
+              },
+              "ui:home": {
+                "use": "inherit",
+                "id": "",
+                "overrides": {
+                  "button": "ui-button"
+                }
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "back-to-skin",
+            "scope": "plugin:notes"
+          }
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {
+            "button": "global-button"
+          },
+          "colorTheme": "harbor"
+        }
+      },
+      "result": {
+        "ok": true,
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {
+              "dialog": "app-dialog"
+            }
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {
+                "dialog": "app-dialog"
+              }
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              },
+              "ui:home": {
+                "use": "inherit",
+                "id": "",
+                "overrides": {
+                  "button": "ui-button"
+                }
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "back-to-skin",
+            "scope": "hub",
+            "global": {
+              "id": "aurora",
+              "overrides": {
+                "button": "global-button"
+              },
+              "colorTheme": "harbor"
+            }
+          }
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {},
+          "colorTheme": "harbor"
+        },
+        "changed": {
+          "look": true,
+          "global": true
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {
+              "dialog": "app-dialog"
+            }
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "back-to-skin",
+          "scope": "hub",
+          "global": {
+            "id": "aurora",
+            "overrides": {
+              "button": "global-button"
+            },
+            "colorTheme": "harbor"
+          }
+        }
+      },
+      "view": {
+        "contract": "skin-switch@1",
+        "scope": "hub",
+        "key": "global",
+        "state": {
+          "use": "on",
+          "id": "aurora",
+          "overrides": {},
+          "colorTheme": "harbor"
+        },
+        "inForce": {
+          "id": "aurora",
+          "overrides": {},
+          "from": "global",
+          "colorTheme": "harbor"
+        },
+        "known": true,
+        "overridden": [],
+        "canUndo": true,
+        "undo": {
+          "action": "back-to-skin",
+          "scope": "hub",
+          "at": "2026-11-13T00:00:00Z"
+        }
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {
+            "dialog": "app-dialog"
+          }
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          },
+          "ui:home": {
+            "use": "inherit",
+            "id": "",
+            "overrides": {
+              "button": "ui-button"
+            }
+          }
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {
+              "dialog": "app-dialog"
+            }
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "back-to-skin",
+          "scope": "hub",
+          "global": {
+            "id": "aurora",
+            "overrides": {
+              "button": "global-button"
+            },
+            "colorTheme": "harbor"
+          }
+        }
+      }
+    },
+    {
+      "name": "backHubAll",
+      "command": {
+        "action": "back-to-skin",
+        "scope": "hub"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {
+              "dialog": "app-dialog"
+            }
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {
+                "dialog": "app-dialog"
+              }
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              },
+              "ui:home": {
+                "use": "inherit",
+                "id": "",
+                "overrides": {
+                  "button": "ui-button"
+                }
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "back-to-skin",
+            "scope": "hub",
+            "global": {
+              "id": "aurora",
+              "overrides": {
+                "button": "global-button"
+              },
+              "colorTheme": "harbor"
+            }
+          }
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {},
+          "colorTheme": "harbor"
+        }
+      },
+      "result": {
+        "ok": true,
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {
+              "dialog": "app-dialog"
+            }
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {
+                "dialog": "app-dialog"
+              }
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              },
+              "ui:home": {
+                "use": "inherit",
+                "id": "",
+                "overrides": {
+                  "button": "ui-button"
+                }
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "back-to-skin",
+            "scope": "hub",
+            "global": {
+              "id": "aurora",
+              "overrides": {},
+              "colorTheme": "harbor"
+            }
+          }
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        },
+        "changed": {
+          "look": true,
+          "global": true
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {
+              "dialog": "app-dialog"
+            }
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "back-to-skin",
+          "scope": "hub",
+          "global": {
+            "id": "aurora",
+            "overrides": {},
+            "colorTheme": "harbor"
+          }
+        }
+      },
+      "view": {
+        "contract": "skin-switch@1",
+        "scope": "hub",
+        "key": "global",
+        "state": {
+          "use": "on",
+          "id": "aurora",
+          "overrides": {}
+        },
+        "inForce": {
+          "id": "aurora",
+          "overrides": {},
+          "from": "global"
+        },
+        "known": true,
+        "overridden": [],
+        "canUndo": true,
+        "undo": {
+          "action": "back-to-skin",
+          "scope": "hub",
+          "at": "2026-11-13T00:00:00Z"
+        }
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {
+            "dialog": "app-dialog"
+          }
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          },
+          "ui:home": {
+            "use": "inherit",
+            "id": "",
+            "overrides": {
+              "button": "ui-button"
+            }
+          }
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {
+              "dialog": "app-dialog"
+            }
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "back-to-skin",
+          "scope": "hub",
+          "global": {
+            "id": "aurora",
+            "overrides": {},
+            "colorTheme": "harbor"
+          }
+        }
+      }
+    },
+    {
+      "name": "backAppAll",
+      "command": {
+        "action": "back-to-skin",
+        "scope": "app:app"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {
+              "dialog": "app-dialog"
+            }
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {
+                "dialog": "app-dialog"
+              }
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              },
+              "ui:home": {
+                "use": "inherit",
+                "id": "",
+                "overrides": {
+                  "button": "ui-button"
+                }
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "back-to-skin",
+            "scope": "hub",
+            "global": {
+              "id": "aurora",
+              "overrides": {},
+              "colorTheme": "harbor"
+            }
+          }
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        }
+      },
+      "result": {
+        "ok": true,
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {
+                "dialog": "app-dialog"
+              }
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              },
+              "ui:home": {
+                "use": "inherit",
+                "id": "",
+                "overrides": {
+                  "button": "ui-button"
+                }
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "back-to-skin",
+            "scope": "app:app"
+          }
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        },
+        "changed": {
+          "look": true,
+          "global": false
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {
+              "dialog": "app-dialog"
+            }
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "back-to-skin",
+          "scope": "app:app"
+        }
+      },
+      "view": {
+        "contract": "skin-switch@1",
+        "scope": "app:app",
+        "key": "app",
+        "state": {
+          "use": "on",
+          "id": "windows",
+          "overrides": {}
+        },
+        "inForce": {
+          "id": "windows",
+          "overrides": {},
+          "from": "app"
+        },
+        "known": true,
+        "overridden": [],
+        "canUndo": true,
+        "undo": {
+          "action": "back-to-skin",
+          "scope": "app:app",
+          "at": "2026-11-13T00:00:00Z"
+        }
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          },
+          "ui:home": {
+            "use": "inherit",
+            "id": "",
+            "overrides": {
+              "button": "ui-button"
+            }
+          }
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {
+              "dialog": "app-dialog"
+            }
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "back-to-skin",
+          "scope": "app:app"
+        }
+      }
+    },
+    {
+      "name": "restoreApp",
+      "command": {
+        "action": "restore-default",
+        "scope": "app:app"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {
+                "dialog": "app-dialog"
+              }
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              },
+              "ui:home": {
+                "use": "inherit",
+                "id": "",
+                "overrides": {
+                  "button": "ui-button"
+                }
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "back-to-skin",
+            "scope": "app:app"
+          }
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        }
+      },
+      "result": {
+        "ok": true,
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": false,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {},
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {}
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              },
+              "ui:home": {
+                "use": "inherit",
+                "id": "",
+                "overrides": {
+                  "button": "ui-button"
+                }
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "restore-default",
+            "scope": "app:app"
+          }
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        },
+        "changed": {
+          "look": true,
+          "global": false
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "restore-default",
+          "scope": "app:app"
+        }
+      },
+      "view": {
+        "contract": "skin-switch@1",
+        "scope": "app:app",
+        "key": "app",
+        "state": {
+          "use": "off",
+          "id": "windows",
+          "overrides": {}
+        },
+        "inForce": {
+          "id": "",
+          "overrides": {},
+          "from": "app"
+        },
+        "known": true,
+        "overridden": [],
+        "canUndo": true,
+        "undo": {
+          "action": "restore-default",
+          "scope": "app:app",
+          "at": "2026-11-13T00:00:00Z"
+        }
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "restore-default",
+          "scope": "app:app"
+        }
+      }
+    },
+    {
+      "name": "undoRestoreApp",
+      "command": {
+        "action": "undo",
+        "scope": "app:app"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": false,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {},
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {}
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              },
+              "ui:home": {
+                "use": "inherit",
+                "id": "",
+                "overrides": {
+                  "button": "ui-button"
+                }
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "restore-default",
+            "scope": "app:app"
+          }
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        }
+      },
+      "result": {
+        "ok": true,
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": null
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        },
+        "changed": {
+          "look": true,
+          "global": false
+        },
+        "undo": null
+      },
+      "view": {
+        "contract": "skin-switch@1",
+        "scope": "app:app",
+        "key": "app",
+        "state": {
+          "use": "on",
+          "id": "windows",
+          "overrides": {}
+        },
+        "inForce": {
+          "id": "windows",
+          "overrides": {},
+          "from": "app"
+        },
+        "known": true,
+        "overridden": [],
+        "canUndo": false,
+        "undo": null
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          },
+          "ui:home": {
+            "use": "inherit",
+            "id": "",
+            "overrides": {
+              "button": "ui-button"
+            }
+          }
+        },
+        "undo": null
+      }
+    },
+    {
+      "name": "undoAgain",
+      "command": {
+        "action": "undo",
+        "scope": "app:app"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": null
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        }
+      },
+      "result": {
+        "ok": false,
+        "error": "nothing-to-undo",
+        "message": "nothing to undo",
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": null
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        },
+        "changed": {
+          "look": false,
+          "global": false
+        },
+        "undo": null
+      },
+      "view": {
+        "contract": "skin-switch@1",
+        "scope": "app:app",
+        "key": "app",
+        "state": {
+          "use": "on",
+          "id": "windows",
+          "overrides": {}
+        },
+        "inForce": {
+          "id": "windows",
+          "overrides": {},
+          "from": "app"
+        },
+        "known": true,
+        "overridden": [],
+        "canUndo": false,
+        "undo": null
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          },
+          "ui:home": {
+            "use": "inherit",
+            "id": "",
+            "overrides": {
+              "button": "ui-button"
+            }
+          }
+        },
+        "undo": null
+      }
+    },
+    {
+      "name": "restoreHub",
+      "command": {
+        "action": "restore-default",
+        "scope": "hub"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": null
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        }
+      },
+      "result": {
+        "ok": true,
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {}
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              },
+              "ui:home": {
+                "use": "inherit",
+                "id": "",
+                "overrides": {
+                  "button": "ui-button"
+                }
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "restore-default",
+            "scope": "hub",
+            "global": {
+              "id": "aurora",
+              "overrides": {}
+            }
+          }
+        },
+        "global": null,
+        "changed": {
+          "look": true,
+          "global": true
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "restore-default",
+          "scope": "hub",
+          "global": {
+            "id": "aurora",
+            "overrides": {}
+          }
+        }
+      },
+      "view": {
+        "contract": "skin-switch@1",
+        "scope": "hub",
+        "key": "global",
+        "state": {
+          "use": "off",
+          "id": "",
+          "overrides": {}
+        },
+        "inForce": {
+          "id": "",
+          "overrides": {},
+          "from": "global"
+        },
+        "known": true,
+        "overridden": [],
+        "canUndo": true,
+        "undo": {
+          "action": "restore-default",
+          "scope": "hub",
+          "at": "2026-11-13T00:00:00Z"
+        }
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          },
+          "ui:home": {
+            "use": "inherit",
+            "id": "",
+            "overrides": {
+              "button": "ui-button"
+            }
+          }
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "restore-default",
+          "scope": "hub",
+          "global": {
+            "id": "aurora",
+            "overrides": {}
+          }
+        }
+      }
+    },
+    {
+      "name": "undoRestoreHub",
+      "command": {
+        "action": "undo",
+        "scope": "hub"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {}
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              },
+              "ui:home": {
+                "use": "inherit",
+                "id": "",
+                "overrides": {
+                  "button": "ui-button"
+                }
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "restore-default",
+            "scope": "hub",
+            "global": {
+              "id": "aurora",
+              "overrides": {}
+            }
+          }
+        },
+        "global": null
+      },
+      "result": {
+        "ok": true,
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": null
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        },
+        "changed": {
+          "look": true,
+          "global": true
+        },
+        "undo": null
+      },
+      "view": {
+        "contract": "skin-switch@1",
+        "scope": "hub",
+        "key": "global",
+        "state": {
+          "use": "on",
+          "id": "aurora",
+          "overrides": {}
+        },
+        "inForce": {
+          "id": "aurora",
+          "overrides": {},
+          "from": "global"
+        },
+        "known": true,
+        "overridden": [],
+        "canUndo": false,
+        "undo": null
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          },
+          "ui:home": {
+            "use": "inherit",
+            "id": "",
+            "overrides": {
+              "button": "ui-button"
+            }
+          }
+        },
+        "undo": null
+      }
+    },
+    {
+      "name": "restorePlugin",
+      "command": {
+        "action": "restore-default",
+        "scope": "plugin:notes"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": null
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        }
+      },
+      "result": {
+        "ok": true,
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {}
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              },
+              "ui:home": {
+                "use": "inherit",
+                "id": "",
+                "overrides": {
+                  "button": "ui-button"
+                }
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "restore-default",
+            "scope": "plugin:notes"
+          }
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        },
+        "changed": {
+          "look": true,
+          "global": false
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "restore-default",
+          "scope": "plugin:notes"
+        }
+      },
+      "view": {
+        "contract": "skin-switch@1",
+        "scope": "plugin:notes",
+        "key": "plugin:notes",
+        "state": {
+          "use": "inherit",
+          "id": "",
+          "overrides": {}
+        },
+        "inForce": {
+          "id": "windows",
+          "overrides": {},
+          "from": "app"
+        },
+        "known": true,
+        "overridden": [],
+        "canUndo": true,
+        "undo": {
+          "action": "restore-default",
+          "scope": "plugin:notes",
+          "at": "2026-11-13T00:00:00Z"
+        }
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {
+          "ui:home": {
+            "use": "inherit",
+            "id": "",
+            "overrides": {
+              "button": "ui-button"
+            }
+          }
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "restore-default",
+          "scope": "plugin:notes"
+        }
+      }
+    },
+    {
+      "name": "undoRestorePlugin",
+      "command": {
+        "action": "undo",
+        "scope": "plugin:notes"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {}
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              },
+              "ui:home": {
+                "use": "inherit",
+                "id": "",
+                "overrides": {
+                  "button": "ui-button"
+                }
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "restore-default",
+            "scope": "plugin:notes"
+          }
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        }
+      },
+      "result": {
+        "ok": true,
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": null
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        },
+        "changed": {
+          "look": true,
+          "global": false
+        },
+        "undo": null
+      },
+      "view": {
+        "contract": "skin-switch@1",
+        "scope": "plugin:notes",
+        "key": "plugin:notes",
+        "state": {
+          "use": "on",
+          "id": "aurora",
+          "overrides": {}
+        },
+        "inForce": {
+          "id": "aurora",
+          "overrides": {},
+          "from": "plugin:notes"
+        },
+        "known": true,
+        "overridden": [],
+        "canUndo": false,
+        "undo": null
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          },
+          "ui:home": {
+            "use": "inherit",
+            "id": "",
+            "overrides": {
+              "button": "ui-button"
+            }
+          }
+        },
+        "undo": null
+      }
+    },
+    {
+      "name": "restoreUi",
+      "command": {
+        "action": "restore-default",
+        "scope": "ui:home"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "undo": null
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        }
+      },
+      "result": {
+        "ok": true,
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {}
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              },
+              "ui:home": {
+                "use": "inherit",
+                "id": "",
+                "overrides": {
+                  "button": "ui-button"
+                }
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "restore-default",
+            "scope": "ui:home"
+          }
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        },
+        "changed": {
+          "look": true,
+          "global": false
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "restore-default",
+          "scope": "ui:home"
+        }
+      },
+      "view": {
+        "contract": "skin-switch@1",
+        "scope": "ui:home",
+        "key": "ui:home",
+        "state": {
+          "use": "inherit",
+          "id": "",
+          "overrides": {}
+        },
+        "inForce": {
+          "id": "windows",
+          "overrides": {},
+          "from": "app"
+        },
+        "known": true,
+        "overridden": [],
+        "canUndo": true,
+        "undo": {
+          "action": "restore-default",
+          "scope": "ui:home",
+          "at": "2026-11-13T00:00:00Z"
+        }
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          }
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "restore-default",
+          "scope": "ui:home"
+        }
+      }
+    },
+    {
+      "name": "useSameApp",
+      "command": {
+        "action": "use",
+        "scope": "app:app",
+        "skin": "windows"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {}
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              },
+              "ui:home": {
+                "use": "inherit",
+                "id": "",
+                "overrides": {
+                  "button": "ui-button"
+                }
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "restore-default",
+            "scope": "ui:home"
+          }
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        }
+      },
+      "result": {
+        "ok": true,
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {}
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              },
+              "ui:home": {
+                "use": "inherit",
+                "id": "",
+                "overrides": {
+                  "button": "ui-button"
+                }
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "restore-default",
+            "scope": "ui:home"
+          }
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        },
+        "changed": {
+          "look": false,
+          "global": false
+        },
+        "undo": null
+      },
+      "view": {
+        "contract": "skin-switch@1",
+        "scope": "app:app",
+        "key": "app",
+        "state": {
+          "use": "on",
+          "id": "windows",
+          "overrides": {}
+        },
+        "inForce": {
+          "id": "windows",
+          "overrides": {},
+          "from": "app"
+        },
+        "known": true,
+        "overridden": [],
+        "canUndo": true,
+        "undo": {
+          "action": "restore-default",
+          "scope": "ui:home",
+          "at": "2026-11-13T00:00:00Z"
+        }
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          }
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            },
+            "ui:home": {
+              "use": "inherit",
+              "id": "",
+              "overrides": {
+                "button": "ui-button"
+              }
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "restore-default",
+          "scope": "ui:home"
+        }
+      }
+    },
+    {
+      "name": "useOtherApp",
+      "command": {
+        "action": "use",
+        "scope": "app:app",
+        "skin": "aurora"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {}
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              },
+              "ui:home": {
+                "use": "inherit",
+                "id": "",
+                "overrides": {
+                  "button": "ui-button"
+                }
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "restore-default",
+            "scope": "ui:home"
+          }
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        }
+      },
+      "result": {
+        "ok": true,
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "aurora",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {}
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "use",
+            "scope": "app:app"
+          }
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        },
+        "changed": {
+          "look": true,
+          "global": false
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "use",
+          "scope": "app:app"
+        }
+      },
+      "view": {
+        "contract": "skin-switch@1",
+        "scope": "app:app",
+        "key": "app",
+        "state": {
+          "use": "on",
+          "id": "aurora",
+          "overrides": {}
+        },
+        "inForce": {
+          "id": "aurora",
+          "overrides": {},
+          "from": "app"
+        },
+        "known": true,
+        "overridden": [],
+        "canUndo": true,
+        "undo": {
+          "action": "use",
+          "scope": "app:app",
+          "at": "2026-11-13T00:00:00Z"
+        }
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "aurora",
+          "overrides": {}
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          }
+        },
+        "undo": {
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "at": "2026-11-13T00:00:00Z",
+          "action": "use",
+          "scope": "app:app"
+        }
+      }
+    },
+    {
+      "name": "undoUse",
+      "command": {
+        "action": "undo",
+        "scope": "app:app"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "aurora",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "undo": {
+            "own": {},
+            "skin": {
+              "use": true,
+              "inherit": false,
+              "id": "windows",
+              "overrides": {}
+            },
+            "scopes": {
+              "plugin:notes": {
+                "use": "on",
+                "id": "aurora",
+                "overrides": {}
+              }
+            },
+            "at": "2026-11-13T00:00:00Z",
+            "action": "use",
+            "scope": "app:app"
+          }
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        }
+      },
+      "result": {
+        "ok": true,
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "undo": null
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        },
+        "changed": {
+          "look": true,
+          "global": false
+        },
+        "undo": null
+      },
+      "view": {
+        "contract": "skin-switch@1",
+        "scope": "app:app",
+        "key": "app",
+        "state": {
+          "use": "on",
+          "id": "windows",
+          "overrides": {}
+        },
+        "inForce": {
+          "id": "windows",
+          "overrides": {},
+          "from": "app"
+        },
+        "known": true,
+        "overridden": [],
+        "canUndo": false,
+        "undo": null
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          }
+        },
+        "undo": null
+      }
+    },
+    {
+      "name": "unknownSkin",
+      "command": {
+        "action": "use",
+        "scope": "ui:home",
+        "skin": "nope"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "undo": null
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        }
+      },
+      "result": {
+        "ok": false,
+        "error": "unknown-skin",
+        "message": "no skin \"nope\" here",
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "undo": null
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        },
+        "changed": {
+          "look": false,
+          "global": false
+        },
+        "undo": null
+      },
+      "view": {
+        "contract": "skin-switch@1",
+        "scope": "ui:home",
+        "key": "ui:home",
+        "state": {
+          "use": "inherit",
+          "id": "",
+          "overrides": {}
+        },
+        "inForce": {
+          "id": "windows",
+          "overrides": {},
+          "from": "app"
+        },
+        "known": true,
+        "overridden": [],
+        "canUndo": false,
+        "undo": null
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          }
+        },
+        "undo": null
+      }
+    },
+    {
+      "name": "noSkin",
+      "command": {
+        "action": "use",
+        "scope": "hub"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "undo": null
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        }
+      },
+      "result": {
+        "ok": false,
+        "error": "no-skin",
+        "message": "use needs the skin to use",
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "undo": null
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        },
+        "changed": {
+          "look": false,
+          "global": false
+        },
+        "undo": null
+      },
+      "view": {
+        "contract": "skin-switch@1",
+        "scope": "hub",
+        "key": "global",
+        "state": {
+          "use": "on",
+          "id": "aurora",
+          "overrides": {}
+        },
+        "inForce": {
+          "id": "aurora",
+          "overrides": {},
+          "from": "global"
+        },
+        "known": true,
+        "overridden": [],
+        "canUndo": false,
+        "undo": null
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          }
+        },
+        "undo": null
+      }
+    },
+    {
+      "name": "otherApp",
+      "command": {
+        "action": "use",
+        "scope": "app:other",
+        "skin": "windows"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "undo": null
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        }
+      },
+      "result": {
+        "ok": false,
+        "error": "other-app",
+        "message": "the document is app's, not other's",
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "undo": null
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        },
+        "changed": {
+          "look": false,
+          "global": false
+        },
+        "undo": null
+      },
+      "view": null,
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          }
+        },
+        "undo": null
+      }
+    },
+    {
+      "name": "badScope",
+      "command": {
+        "action": "use",
+        "scope": "planet:mars",
+        "skin": "windows"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "undo": null
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        }
+      },
+      "result": {
+        "ok": false,
+        "error": "bad-scope",
+        "message": "scope must be hub, app:<id>, ui:<view> or plugin:<id>",
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "undo": null
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        },
+        "changed": {
+          "look": false,
+          "global": false
+        },
+        "undo": null
+      },
+      "view": null,
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          }
+        },
+        "undo": null
+      }
+    },
+    {
+      "name": "badAction",
+      "command": {
+        "action": "flip",
+        "scope": "hub"
+      },
+      "before": {
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "undo": null
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        }
+      },
+      "result": {
+        "ok": false,
+        "error": "bad-action",
+        "message": "action must be one of use, back-to-skin, restore-default, undo",
+        "look": {
+          "$axf": "app-look@1",
+          "app": "app",
+          "default": {
+            "slots": {
+              "layout": "focus-top",
+              "color-theme": "arctic-daylight",
+              "style-theme": "hub",
+              "button": "rounded-solid"
+            },
+            "spacing": "tight",
+            "hidden": {
+              "toolbar": true
+            }
+          },
+          "own": {},
+          "skin": {
+            "use": true,
+            "inherit": false,
+            "id": "windows",
+            "overrides": {}
+          },
+          "scopes": {
+            "plugin:notes": {
+              "use": "on",
+              "id": "aurora",
+              "overrides": {}
+            }
+          },
+          "undo": null
+        },
+        "global": {
+          "id": "aurora",
+          "overrides": {}
+        },
+        "changed": {
+          "look": false,
+          "global": false
+        },
+        "undo": null
+      },
+      "view": {
+        "contract": "skin-switch@1",
+        "scope": "hub",
+        "key": "global",
+        "state": {
+          "use": "on",
+          "id": "aurora",
+          "overrides": {}
+        },
+        "inForce": {
+          "id": "aurora",
+          "overrides": {},
+          "from": "global"
+        },
+        "known": true,
+        "overridden": [],
+        "canUndo": false,
+        "undo": null
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {}
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "on",
+            "id": "aurora",
+            "overrides": {}
+          }
+        },
+        "undo": null
+      }
+    }
+  ],
+  "views": {
+    "hub": {
+      "contract": "skin-switch@1",
+      "scope": "hub",
+      "key": "global",
+      "state": {
+        "use": "on",
+        "id": "aurora",
+        "overrides": {}
+      },
+      "inForce": {
+        "id": "aurora",
+        "overrides": {},
+        "from": "global"
+      },
+      "known": true,
+      "overridden": [],
+      "canUndo": true,
+      "undo": {
+        "action": "use",
+        "scope": "hub",
+        "at": "2026-11-13T00:00:00Z"
+      }
+    },
+    "app": {
+      "contract": "skin-switch@1",
+      "scope": "app:app",
+      "key": "app",
+      "state": {
+        "use": "on",
+        "id": "windows",
+        "overrides": {}
+      },
+      "inForce": {
+        "id": "windows",
+        "overrides": {},
+        "from": "app"
+      },
+      "known": true,
+      "overridden": [],
+      "canUndo": true,
+      "undo": {
+        "action": "use",
+        "scope": "hub",
+        "at": "2026-11-13T00:00:00Z"
+      }
+    },
+    "appBare": {
+      "contract": "skin-switch@1",
+      "scope": "app:app",
+      "key": "app",
+      "state": {
+        "use": "on",
+        "id": "windows",
+        "overrides": {}
+      },
+      "inForce": {
+        "id": "windows",
+        "overrides": {},
+        "from": "app"
+      },
+      "known": true,
+      "overridden": [],
+      "canUndo": true,
+      "undo": {
+        "action": "use",
+        "scope": "hub",
+        "at": "2026-11-13T00:00:00Z"
+      }
+    },
+    "ui": {
+      "contract": "skin-switch@1",
+      "scope": "ui:home",
+      "key": "ui:home",
+      "state": {
+        "use": "inherit",
+        "id": "",
+        "overrides": {}
+      },
+      "inForce": {
+        "id": "windows",
+        "overrides": {},
+        "from": "app"
+      },
+      "known": true,
+      "overridden": [],
+      "canUndo": true,
+      "undo": {
+        "action": "use",
+        "scope": "hub",
+        "at": "2026-11-13T00:00:00Z"
+      }
+    },
+    "plugin": {
+      "contract": "skin-switch@1",
+      "scope": "plugin:notes",
+      "key": "plugin:notes",
+      "state": {
+        "use": "on",
+        "id": "aurora",
+        "overrides": {}
+      },
+      "inForce": {
+        "id": "aurora",
+        "overrides": {},
+        "from": "plugin:notes"
+      },
+      "known": true,
+      "overridden": [],
+      "canUndo": true,
+      "undo": {
+        "action": "use",
+        "scope": "hub",
+        "at": "2026-11-13T00:00:00Z"
+      }
+    },
+    "otherApp": null,
+    "badScope": null,
+    "following": {
+      "contract": "skin-switch@1",
+      "scope": "app:app",
+      "key": "app",
+      "state": {
+        "use": "inherit",
+        "id": "",
+        "overrides": {}
+      },
+      "inForce": {
+        "id": "aurora",
+        "overrides": {},
+        "from": "global"
+      },
+      "known": true,
+      "overridden": [],
+      "canUndo": false,
+      "undo": null
+    },
+    "followingPlugin": {
+      "contract": "skin-switch@1",
+      "scope": "plugin:notes",
+      "key": "plugin:notes",
+      "state": {
+        "use": "inherit",
+        "id": "",
+        "overrides": {}
+      },
+      "inForce": {
+        "id": "aurora",
+        "overrides": {},
+        "from": "global"
+      },
+      "known": true,
+      "overridden": [],
+      "canUndo": false,
+      "undo": null
+    },
+    "followingNoHub": {
+      "contract": "skin-switch@1",
+      "scope": "app:app",
+      "key": "app",
+      "state": {
+        "use": "inherit",
+        "id": "",
+        "overrides": {}
+      },
+      "inForce": {
+        "id": "",
+        "overrides": {},
+        "from": "global"
+      },
+      "known": true,
+      "overridden": [],
+      "canUndo": false,
+      "undo": null
+    },
+    "unknownInForce": {
+      "contract": "skin-switch@1",
+      "scope": "app:app",
+      "key": "app",
+      "state": {
+        "use": "on",
+        "id": "gone",
+        "overrides": {}
+      },
+      "inForce": {
+        "id": "gone",
+        "overrides": {},
+        "from": "app"
+      },
+      "known": false,
+      "overridden": [],
+      "canUndo": false,
+      "undo": null
+    },
+    "noDocument": null,
+    "noDocumentHub": {
+      "contract": "skin-switch@1",
+      "scope": "hub",
+      "key": "global",
+      "state": {
+        "use": "on",
+        "id": "aurora",
+        "overrides": {}
+      },
+      "inForce": {
+        "id": "aurora",
+        "overrides": {},
+        "from": "global"
+      },
+      "known": true,
+      "overridden": [],
+      "canUndo": false,
+      "undo": null
+    }
+  },
+  "noDocument": {
+    "ok": false,
+    "error": "no-document",
+    "message": "no look document to switch in",
+    "look": null,
+    "global": null,
+    "changed": {
+      "look": false,
+      "global": false
+    },
+    "undo": null
+  },
+  "legacyUndo": {
+    "ok": true,
+    "look": {
+      "$axf": "app-look@1",
+      "app": "app",
+      "default": {
+        "slots": {
+          "layout": "focus-top",
+          "color-theme": "arctic-daylight",
+          "style-theme": "hub",
+          "button": "rounded-solid"
+        },
+        "spacing": "tight",
+        "hidden": {
+          "toolbar": true
+        }
+      },
+      "own": {},
+      "skin": {
+        "use": true,
+        "inherit": false,
+        "id": "windows",
+        "overrides": {}
+      },
+      "scopes": {},
+      "undo": null
+    },
+    "global": null,
+    "changed": {
+      "look": true,
+      "global": false
+    },
+    "undo": null
+  }
+}

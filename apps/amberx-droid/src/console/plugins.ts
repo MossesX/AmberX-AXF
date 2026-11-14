@@ -14,6 +14,15 @@ function pluginUrl(folder: string, path: string): string { return `/api/console/
 /** Where a 401/403 sends people: the hub sign-in (AmberX admins only). */
 export function tokenHome(): string { return 'sign in at the hub as an admin'; }
 
+/** Capability service → console plugin folder, for the console plugins installed here (vite.config.ts `define`). */
+declare const __AMBERX_CONSOLE_SERVICES__: Record<string, string> | undefined;
+
+/** The console plugin installed here that provides a capability service, or null (same contract as the console's). */
+export function pluginProviding(service: string): string | null {
+  const map = typeof __AMBERX_CONSOLE_SERVICES__ === 'object' && __AMBERX_CONSOLE_SERVICES__ ? __AMBERX_CONSOLE_SERVICES__ : {};
+  return map[service] ?? null;
+}
+
 export async function pluginFetch(folder: string, path: string, init: RequestInit = {}): Promise<Response> {
   return fetch(pluginUrl(folder, path), { ...init, headers: authHeaders(noToken, init), cache: 'no-store', credentials: 'same-origin' });
 }
