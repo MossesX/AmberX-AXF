@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5327,
- "updatedAt": "2026-11-14T16:59:38.814Z",
+ "rev": 5328,
+ "updatedAt": "2026-11-14T16:59:52.702Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -214786,7 +214786,7 @@
    "branch": "claude/hotfix-toolbar-settings-still-change",
    "pr": "#673",
    "createdAt": "2026-11-14T16:51:14.645Z",
-   "updatedAt": "2026-11-14T16:59:22.592Z",
+   "updatedAt": "2026-11-14T16:59:46.101Z",
    "builtAt": "",
    "notes": [
     {
@@ -214800,6 +214800,10 @@
     {
      "text": "Dispatch gate: hotfix-toolbar-settings-still-change still has axf-hotfix-toolbar-settings-still-change--lenny alive: not launched again, tracking that session.",
      "at": "2026-11-14T16:53:07.541Z"
+    },
+    {
+     "text": "Headless run axf-hotfix-toolbar-settings-still-change--lenny: brief only · start 11.0K tokens ($0.03) · cost $2.44 · 78 turns · 6 tools, MCP none",
+     "at": "2026-11-14T16:59:46.101Z"
     },
     {
      "text": "s1-s3 done, PR #673 (supersedes #625). Cause: #625, the fix that makes toolbar settings reach the renderers, never landed (its light checks failed on an unrelated main error and it went stale); workspace toolbars were never wired at all. Both fixed, check-chrome-apply.mts 174 checks. s4 left open: landing goes through the merge queue (agents may not merge), and checking the live console needs a console token this VPS build runner lacks (console.amberxai.com returns 401). After #673 lands and redeploys: right-click the toolbar, Settings, Look, Buttons = Labels, and the toolbar should switch to text at once. Then send the phone alert.",
