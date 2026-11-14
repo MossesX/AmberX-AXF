@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5400,
- "updatedAt": "2026-11-14T18:44:41.999Z",
+ "rev": 5401,
+ "updatedAt": "2026-11-14T18:44:51.509Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -221224,7 +221224,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-14T18:14:25.063Z",
-   "updatedAt": "2026-11-14T18:44:40.157Z",
+   "updatedAt": "2026-11-14T18:44:43.189Z",
    "builtAt": "",
    "notes": [
     {
@@ -221242,6 +221242,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-themed-native-controls-plugin--paulie, shared account login)",
      "at": "2026-11-14T18:20:05.411Z"
+    },
+    {
+     "text": "Phase 1 (Fable) done on claude/themed-native-controls-plugin: themed-controls@1 spec, one optional shared asset type themed-controls (10 families, 247 token fields, light|dark pairs, native starter = today's look), control@1 tokens.controls, style target .fx-tc, generic skin upgrader (registry skinDefault + skins.mjs upgrade + check-skin-sections rule; 6 skins upgraded), engine themed-controls.ts + runtime --fx-tc-* hook, fixture + check-themed-controls.mts (315 checks) wired into CI. Note for later: axf schemas regenerates schemas/json/skin.schema.json without behaviorTheme (the committed file has it); I kept the committed file. Phase 2 (plugin, host, controls, API) next; no PR yet (s30 opens it).",
+     "at": "2026-11-14T18:44:43.189Z"
     }
    ],
    "approvals": [],
@@ -222063,7 +222067,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
