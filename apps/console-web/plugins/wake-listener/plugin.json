@@ -23,7 +23,7 @@
   "optional": ["service:axf.speech@1"],
   "scopes": ["ROUTES"],
   "enabledByDefault": true,
-  "banner": true,
+  "banner": false,
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
@@ -55,5 +55,5 @@
   },
   "builtWith": { "model": "fable", "builtAt": "2026-11-13" },
   "help": "help.json",
-  "opens": "settings"
+  "opens": false
 }
