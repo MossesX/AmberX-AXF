@@ -593,7 +593,9 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
     items.push(it);
   }
   // running builds: main merged in every 30 minutes (never on a one-build round)
-  if (!only) { try { refreshRunning({ s, git, builds, wts, dry, nowMs: now().getTime(), log }); } catch (e) { log(`refresh: ${e.message}`); } }
+  // (the drift keeper, keep-fresh.mjs: in the build's own worktree, session locks respected, generated files
+  // regenerated, behind-main recorded on every running build)
+  if (!only) { try { const { keepFresh } = await import('./keep-fresh.mjs'); keepFresh({ s, git, builds, wts, dry, nowMs: now().getTime(), log }); } catch (e) { log(`keep-fresh: ${e.message}`); } }
   // builds that left the list (merged, or no longer finished): their alert goes
   const gone = [...prevItems.keys()].filter((id) => !items.some((x) => x.id === id) && prevItems.get(id)?.pushed);
   if (gone.length && !dry && !only) await api('POST', '/api/alerts/resolve', { keys: gone.map(core.alertKey) });
