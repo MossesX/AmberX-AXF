@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The framework's engine defaults (framework/ui/axf.css :root), used by the native toolbar only until the page hands
+     over its live fx-* CSS tokens (axfNative.theme). Names follow the tokens: fx_surface is the CSS token fx-surface, and so
+     on (XML comments may not contain a double dash). -->
+<resources>
+    <color name="fx_surface">#1a1a1a</color>
+    <color name="fx_text">#eeeeee</color>
+    <color name="fx_accent">#f5a524</color>
+    <color name="fx_accent_text">#111111</color>
+    <color name="fx_muted">#999999</color>
+    <dimen name="fx_radius_md">8dp</dimen>
+    <dimen name="fx_space">8dp</dimen>
+    <dimen name="fx_font_size">14dp</dimen>
+</resources>

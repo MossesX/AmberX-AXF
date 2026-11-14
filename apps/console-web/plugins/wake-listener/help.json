@@ -1,0 +1,111 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "wake-listener-help",
+  "name": "Wake listener help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the Wake listener plugin (help@1): the settings tab, the banner light and the spoken flows.",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:wake-listener",
+    "entries": [
+      {
+        "target": "settings:wake-listener",
+        "title": "Wake listener",
+        "text": "The console listens for a wake phrase you set here (several allowed), then takes one command: any console action, plugin command, pipeline command or control@1 target, by voice. A command with missing fields becomes a spoken wizard that asks for each one and confirms. 'Approve' reviews everything waiting on axHub one call at a time.",
+        "more": "The switch closes the microphone everywhere this console is open. On the console Android app the recognizer runs on the device (offline); in a browser it is the browser's own. The light on the banner shows what the listener is doing: grey = off, green = waiting for the wake phrase, amber = heard it and waiting for a command, accent = a wizard is waiting for your answer, red = an error with the reason. Replies are spoken through the agent voice when it is installed, else the device voice.",
+        "tryIt": "Say your wake phrase, wait for the chime, then say 'approve'."
+      },
+      {
+        "target": "status:wake-listener",
+        "title": "Mic light",
+        "text": "Lit while the console listens for its wake phrase. Tap it to switch the listener on or off.",
+        "more": "Grey: off. Green: idle, waiting for the wake phrase. Amber: awake, say a command. Accent: a wizard or the approvals review is waiting for an answer. Red: the recognizer stopped; the label says why."
+      },
+      {
+        "target": "action:wake-listener.heard",
+        "title": "Say a phrase without the microphone",
+        "text": "Runs a phrase as if the mic heard it after the wake phrase: from the settings tab's Try it box, or from the API (REST, MCP, CLI, AmberX) as the console action wake-listener.heard:<phrase>."
+      },
+      {
+        "target": "listen-for-a-wake-phrase",
+        "title": "Listen for a wake phrase",
+        "text": "Turns the wake listener on or off. Off closes the microphone everywhere this console is open, and the light on the banner goes grey.",
+        "kind": "toggle"
+      },
+      {
+        "target": "add-a-wake-phrase",
+        "title": "Add a wake phrase",
+        "text": "Type a phrase and press Add: saying it wakes the console for one command. Several phrases are allowed.",
+        "kind": "field"
+      },
+      {
+        "target": "recognizer",
+        "title": "Recognizer",
+        "text": "Which speech engine listens: automatic, on-device in the console app (offline, audio never leaves the device), the browser's own, or none.",
+        "kind": "field"
+      },
+      {
+        "target": "awake-for-a-command-seconds",
+        "title": "Awake for a command (seconds)",
+        "text": "How long the console waits for a command after it hears the wake phrase.",
+        "kind": "field"
+      },
+      {
+        "target": "a-wizard-waits-for-an-answer-seconds",
+        "title": "A wizard waits for an answer (seconds)",
+        "text": "How long a spoken wizard waits for each answer before it gives up.",
+        "kind": "field"
+      },
+      {
+        "target": "chime-on-the-wake-phrase",
+        "title": "Chime on the wake phrase",
+        "text": "Plays a short chime when the wake phrase is heard, so you know to say the command.",
+        "kind": "toggle"
+      },
+      {
+        "target": "mic-light-on-the-banner",
+        "title": "Mic light on the banner",
+        "text": "When the banner shows the mic light: always (grey when off), only while listening, or never.",
+        "kind": "field"
+      },
+      {
+        "target": "pause-while-this-page-is-hidden",
+        "title": "Pause while this page is hidden",
+        "text": "Stops listening while another tab or app is in front. Off keeps listening in the background where the engine allows it.",
+        "kind": "toggle"
+      },
+      {
+        "target": "say-a-phrase",
+        "title": "Say a phrase",
+        "text": "Type what you would say after the wake phrase, to try it without the microphone.",
+        "kind": "field"
+      },
+      {
+        "target": "say-it",
+        "title": "Say it",
+        "text": "Runs the typed phrase as if the microphone heard it after the wake phrase (the same as the API's wake-listener.heard).",
+        "kind": "button"
+      },
+      {
+        "target": "wake-listener",
+        "title": "Wake listener",
+        "text": "Settings for the wake listener: wake phrases, the off switch, the recognizer and spoken replies.",
+        "kind": "tab"
+      },
+      {
+        "target": "action:wake-listener.toggle",
+        "title": "Wake listener on / off",
+        "text": "Switches the wake listener on or off from the Plugins menu, the API or by voice.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:wake-listener.approvals",
+        "title": "Review approvals by voice",
+        "text": "Starts a spoken review of everything waiting on axHub, one call at a time.",
+        "kind": "menu-item"
+      }
+    ]
+  }
+}

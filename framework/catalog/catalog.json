@@ -2584,6 +2584,35 @@
               "tag": "",
               "recommended": true,
               "suggests": []
+            },
+            {
+              "id": "cx.phoneweb",
+              "title": "Console on phones and in the Android console app: safe area, wrapper detection, live updates",
+              "note": "framework/ui/axf.css --fx-safe-* tokens; apps/console-web/src/native (browserFallback.mjs, liveUpdate.mjs); CI framework/cli/check-safe-area.mjs.",
+              "tag": "",
+              "recommended": true,
+              "suggests": [
+                {
+                  "id": "cx.phoneweb.safearea",
+                  "title": "Nothing under the clock, camera cutout or notification shade: top bars, banners, menu bar, toolbars, bottom nav, dialogs, toasts and every edge-fixed layer pad --fx-safe-* (CI check-safe-area)"
+                },
+                {
+                  "id": "cx.phoneweb.wrapper",
+                  "title": "Wrapper detection: <html data-axf-wrapper=app|browser>; native.* actions fall back to the browser's notifications, links, permission prompts and focus"
+                },
+                {
+                  "id": "cx.phoneweb.liveupdate",
+                  "title": "An open console follows the live deploy: index.html never cached, entry-bundle check on return and every 30 min, reload off screen in the app or the reload bar"
+                }
+              ]
+              },
+              {
+              "id": "cx.phonebridge",
+              "title": "Phone native bridge (native-bridge@1): window.axfNative in the Android console app for mic, permissions, notifications, open_url, console wake and the recorder, the axHub amberx device service moved from AmberX, and every tool reachable as device.* console actions (REST, MCP, CLI, voice)",
+              "note": "apps/console-droid DeviceBridge (window.axfBridgeHost) + BridgeContract tool list, DeviceTools, MicTools (mic switch gates page audio); apps/console-web/src/native bridgeClient.mjs merges it with part 1's window.axfNativeHost into one window.axfNative; device.* console actions in deviceApi.ts, state on panel:phone-bridge.",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
             }
           ]
         }
