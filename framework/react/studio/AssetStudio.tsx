@@ -4,6 +4,7 @@ import { useAxfState, useRuntime } from '../AxfProvider';
 import { Button, Chip } from '../components/Controls';
 import { Icon } from '../components/Icon';
 import { TabGroup } from '../components/TabGroup';
+import { HubSkinLockArea } from '../components/HubSkinLock';
 import { AssetPreview } from './AssetPreview';
 
 const GROUPS = [...new Set(ASSET_TYPES.map((t) => assetTypeSpecs[t].group))];
@@ -29,6 +30,7 @@ export function AssetStudio() {
   const types = ASSET_TYPES.filter((t) => filter === 'all' || assetTypeSpecs[t].group === filter);
 
   return (
+    <HubSkinLockArea>
     <div className="fx-stack fx-stack--lg">
       <header className="fx-pagehead">
         <div>
@@ -55,6 +57,7 @@ export function AssetStudio() {
         <Slot key={t} type={t} activeId={state.active[t] ?? ''} />
       ))}
     </div>
+    </HubSkinLockArea>
   );
 }
 
