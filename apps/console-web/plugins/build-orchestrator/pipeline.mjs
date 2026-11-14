@@ -742,6 +742,10 @@ export function selfCheck({ reason = 'on demand', by = 'pipeline', env = process
 
 // ------------------------------------------------------------------ the tick
 
+/** Refill passes per tick: a failed or gated launch hands its slot on, at most this many times over. */
+export const FILL_PASSES = 4;
+const TRIED_WHY = 'tried this tick';
+
 export function tick({ env = process.env } = {}) {
   loadUpgradePolicy();
   const consoleApi = makeConsole(env);
@@ -758,10 +762,21 @@ export function tick({ env = process.env } = {}) {
   const read = accountsRead(store, settings, env); const accounts = read.accounts; const sl = slotsNow();
   // the console (in its container) can't see the logins: it reads what the host saw here
   if (read.source === 'host') { try { writeHostAccounts(read.rows, read.at || nowIso()); } catch (e) { logLine({ event: 'snapshot-failed', error: str(e.message, 300) }); } }
-  const plan = P.plan({ builds: runnable(store), accounts, slots: sl, settings, rules });
+  const hourAgo = Date.now() - 3600e3;
+  // builds whose launch failed too often this hour wait without taking a slot (Nov 14 2026: parked builds at the top of
+  // the Queue used to spend the plan's slots and leave them empty for an hour)
+  const skip = {};
+  for (const [id, ts] of Object.entries(state.launchFails ?? {})) { const n = (ts ?? []).filter((t) => Date.parse(t) > hourAgo).length; if (n >= LAUNCH_FAILS_PER_HOUR) skip[id] = `launch failed ${n} times in the last hour: waiting`; }
+  let plan = P.plan({ builds: runnable(store), accounts, slots: sl, settings, rules, skip });
   planAhead(store, accounts, settings);
   const launched = []; const failed = [];
-  const hourAgo = Date.now() - 3600e3;
+  const allLaunches = []; const tickWaits = [];
+  // fill until the slots or the accounts run out: a launch that fails or is gated hands its slot to the next queued
+  // build in this same tick (re-planned without everything already tried)
+  for (let pass = 0; pass < FILL_PASSES; pass++) {
+  const startedBefore = launched.length;
+  plan.waits = plan.waits.filter((w) => !String(w.why).startsWith(TRIED_WHY));
+  allLaunches.push(...plan.launches);
   for (const first of plan.launches) {
     const fails = (state.launchFails[first.id] ?? []).filter((t) => Date.parse(t) > hourAgo);
     if (fails.length >= LAUNCH_FAILS_PER_HOUR) { plan.waits.push({ id: first.id, why: `launch failed ${fails.length} times in the last hour: waiting` }); continue; }
@@ -810,6 +825,19 @@ export function tick({ env = process.env } = {}) {
         tries: state.launchFails[l.id].filter((t) => Date.parse(t) > hourAgo).length, maxTries: LAUNCH_FAILS_PER_HOUR });
     }
   }
+  const unfilled = plan.launches.length - (launched.length - startedBefore);
+  tickWaits.push(...plan.waits.filter((w) => plan.launches.some((x) => x.id === w.id)));
+  if (unfilled <= 0 || !plan.launches.length) break;
+  for (const x of plan.launches) skip[x.id] ||= `${TRIED_WHY} (no launch)`;
+  const accNow = accounts.map((a) => { const n = launched.filter((l) => l.account === a.name).length; return n ? { ...a, running: a.running + n, free: (a.free ?? 0) - n } : a; });
+  const next = P.plan({ builds: runnable(loadStore()), accounts: accNow, slots: { ...sl, free: unfilled }, settings, rules, skip });
+  logLine({ event: 'refill', pass: pass + 1, unfilled, launches: next.launches.map((x) => x.id) });
+  plan = next;
+  if (!next.launches.length) break;
+  }
+  plan.launches = allLaunches;
+  { const kept = plan.waits.filter((w) => !String(w.why).startsWith(TRIED_WHY));
+    plan.waits = [...tickWaits, ...kept].filter((w, i, arr) => arr.findIndex((x) => x.id === w.id) === i && !launched.some((l) => l.id === w.id)); }
   // idle: nothing running while work waits. Recorded at once; the phone hears about it after idleAfterMin, once per idle spell.
   let idle = null;
   if (plan.idle && !launched.length) {

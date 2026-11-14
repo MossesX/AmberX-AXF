@@ -340,12 +340,13 @@ export function noAccountWhy(accounts, model) {
 
 /**
  * What one tick does. `builds` = live builds@1 records; `accounts` = accountViews(); `slots` = { free, used, cap } from
- * agent-slots; `rules` = the orchestrator rules. Returns { launches, waits, queue, idle }:
+ * agent-slots; `rules` = the orchestrator rules; `skip` = { id: why } builds the tick parks this round (they wait and take
+ * no slot). Returns { launches, waits, queue, idle }:
  *   launches  [{ id, account, model, phase }]  one per free slot, in Queue order
  *   waits     [{ id, why }]                    queued builds that stay put this tick, and why
  *   idle      null, or { reason, since? }      nothing is running while work waits
  */
-export function plan({ builds, accounts, slots, settings = normSettings(), rules, now = Date.now() }) {
+export function plan({ builds, accounts, slots, settings = normSettings(), rules, now = Date.now(), skip = {} }) {
   const live = list(builds).filter((b) => !b.deleted);
   const queue = queueOrder(live, (b) => effectivePriority(b));
   const running = live.filter((b) => b.status === 'running' || b.status === 'waiting');
@@ -357,6 +358,9 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
     // only Queued builds take slots (Brett, Nov 12 2026): never a Pending one, whatever else the record says
     if (b.status !== 'queued') continue;
     if (isHeld(b)) { waits.push({ id: b.id, why: `on hold${b.pipeline.heldBy ? ` (${b.pipeline.heldBy})` : ''}: skipped until released`, held: true }); continue; }
+    // parked by the tick (launch failed too often, tried this tick): waits without spending a slot, so the builds behind
+    // it fill the slot instead (Nov 14 2026: parked builds at the top of the Queue left slots empty for an hour)
+    if (skip[b.id]) { waits.push({ id: b.id, why: skip[b.id] }); continue; }
     if (!openSteps(b).length) { waits.push({ id: b.id, why: b.steps?.length ? 'every step is done: nothing to run' : 'no steps yet: waiting for the split' }); continue; }
     const n = orchNextUp(b, rules);
     if (n.needsApproval) { waits.push({ id: b.id, why: `needs Brett's approval: upgrade ${n.phase.from} → ${n.phase.model}` }); continue; }

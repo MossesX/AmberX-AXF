@@ -97,6 +97,21 @@ t('plan: one launch per free slot in Queue order, Fable to a Fable account, the 
   assert.match(r.waits[0].why, /no steps yet/); assert.match(r.waits[1].why, /no free agent slot/);
   assert.equal(r.idle, null);
 });
+t('regression (Nov 13 2026, slots empty with builds queued): parked builds wait without spending a slot; the builds behind fill it', () => {
+  const v = P.accountViews(rows, {}, { settings });
+  const qa = (id, at) => build(id, 'queued', [step('s1', 'Opus')], { pipeline: { queuedAt: at } });
+  const bs = [qa('parked1', '2026-11-08T00:01:00Z'), qa('parked2', '2026-11-08T00:02:00Z'), qa('ok1', '2026-11-08T00:03:00Z'), qa('ok2', '2026-11-08T00:04:00Z')];
+  const before = P.plan({ builds: bs, accounts: v, slots: { free: 2, used: 0, cap: 8 }, settings });
+  assert.deepEqual(before.launches.map((l) => l.id), ['parked1', 'parked2'], 'without skip the parked builds take both slots (the old empty-slots case)');
+  const why = 'launch failed 3 times in the last hour: waiting';
+  const r = P.plan({ builds: bs, accounts: v, slots: { free: 2, used: 0, cap: 8 }, settings, skip: { parked1: why, parked2: why } });
+  assert.deepEqual(r.launches.map((l) => l.id), ['ok1', 'ok2'], 'both slots go to builds that can run');
+  assert.deepEqual(r.waits.map((w) => [w.id, w.why]), [['parked1', why], ['parked2', why]]);
+  // refill in the same tick: ok1's launch failed → re-plan with what was tried skipped and its slot free → the next one
+  const bs2 = [...bs, qa('ok3', '2026-11-08T00:05:00Z')];
+  const refill = P.plan({ builds: bs2, accounts: v, slots: { free: 1, used: 1, cap: 8 }, settings, skip: { parked1: why, parked2: why, ok1: 'tried this tick (no launch)', ok2: 'tried this tick (no launch)' } });
+  assert.deepEqual(refill.launches.map((l) => l.id), ['ok3'], 'the slot ok1 could not use goes to ok3 in the same tick');
+});
 t('plan: account caps hold a launch even with slots free; Fable work waits when no Fable account is free', () => {
   const v = P.accountViews(rows.filter((x) => x.name === 'w-pro'), {}, { settings: P.normSettings({ parallelPerAccount: 1 }) });
   const r = P.plan({ builds: [q1, q2], accounts: v, slots: { free: 5, used: 0, cap: 5 }, settings });
