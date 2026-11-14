@@ -41,6 +41,7 @@ import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, res
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceChange, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY, buildHelpIndex, helpTarget, introFor, introToShow, markSeen, resolveHelp, type HelpDescriptor, type HelpEntry, type HelpIndex, type HelpIntro } from './engines/help';
 import { Diagnostics } from './diagnostics';
+import { CHROME_INSTANCE_KEY, CHROME_TYPES, chromeInstanceData } from './engines/chrome-settings-rules.mjs';
 import { OutputTerminal } from './terminal';
 import {
   ASSET_TYPES,
@@ -59,6 +60,7 @@ import {
   type MenuItemButton,
   type NavItem,
   type Toast,
+  type AssetDataMap,
 } from './types';
 import { assetTypeSpecs, attachable, type ValidationResult } from './validate';
 
@@ -352,7 +354,7 @@ export class AxfRuntime {
 
   /** A string that changes whenever a settings value compileStyles reads changes: the control@1 token overrides and the nav's collapsed / width state (a render dependency for the provider). */
   styleSettingsKey(): string {
-    const keys = [...Object.values(CONTROL_TOKEN_SLOTS).map((s) => s.key), NAV_COLLAPSED_KEY, NAV_WIDTH_KEY];
+    const keys = [...Object.values(CONTROL_TOKEN_SLOTS).map((s) => s.key), NAV_COLLAPSED_KEY, NAV_WIDTH_KEY, ...CHROME_TYPES.map((t) => CHROME_INSTANCE_KEY(t, 'app'))];
     return JSON.stringify(keys.map((k) => this.settings.get(k) ?? null));
   }
 
@@ -1006,8 +1008,20 @@ export class AxfRuntime {
    * The nav-style in force (nav-style@1, normalized, with the control@1 `tokens.nav` overrides written in), or null when
    * the nav doesn't opt in (nav-menu `navStyle` is not true) or the app ships no nav-style asset.
    */
+  /**
+   * chrome-settings@1: the data one chrome instance renders with = the active asset's data with that instance's
+   * settings-dialog overrides (`axf.chrome.<type>.<instance>`) written over it. The app's single toolbar, nav, menu bar,
+   * banner and context menu are instance `app`; a page toolbar is its asset id. Null when the app has no such asset.
+   */
+  chromeData<T extends 'toolbar' | 'nav-menu' | 'app-menu' | 'banner' | 'context-menu'>(type: T, instance = 'app', base?: AssetDataMap[T] | null): AssetDataMap[T] | null {
+    const data = base === undefined ? (this.assetOrNull(type as AssetType)?.data as AssetDataMap[T] | undefined) ?? null : base;
+    if (!data) return null;
+    const o = this.settings.get(CHROME_INSTANCE_KEY(type, instance));
+    return o && typeof o === 'object' ? chromeInstanceData(type, data, o) : data;
+  }
+
   navStyleData(): NavStyleData | null {
-    if (this.assetOrNull('nav-menu')?.data.navStyle !== true) return null;
+    if (this.chromeData('nav-menu')?.navStyle !== true) return null;
     const a = this.assetOrNull('nav-style' as AssetType);
     if (!a) return null;
     return normalizeNavStyle(this.withTokenOverrides('tokens.nav', 'nav-style' as AssetType, a.data));
@@ -1324,7 +1338,7 @@ export class AxfRuntime {
 
   /** The banner to draw: its data (null = no banner or hidden) and where every attachment goes. `all` keeps the widgets the person hid. */
   banner(opts?: { all?: boolean }): { data: Asset<'banner'>['data'] | null; placed: PlacedBanner } {
-    const b = this.slotHidden('banner') ? null : this.assetOrNull('banner')?.data ?? null;
+    const b = this.slotHidden('banner') ? null : this.chromeData('banner');
     const placed = placeAttachments(b, b ? (this.hostExtra.get('banner') as BannerAttachment[] | undefined) ?? [] : [], (t, id) => this.registry.has(t as AssetType, id), this.hostArrangement('banner'));
     if (opts?.all) return { data: b, placed };
     const shown = Object.fromEntries(Object.entries(placed).map(([s, list]) => [s, list.filter((p) => this.bannerWidgetShown(p.key))])) as PlacedBanner;
@@ -1676,7 +1690,7 @@ export class AxfRuntime {
 
   /** Is a collapsible toolbar folded to its handle on this device? (setting `axf.toolbar.collapsed`, same key on Android) */
   toolbarCollapsed(): boolean {
-    return this.asset('toolbar').data.collapsible === true && this.settings.get(TOOLBAR_COLLAPSED_KEY) === true;
+    return this.chromeData('toolbar')?.collapsible === true && this.settings.get(TOOLBAR_COLLAPSED_KEY) === true;
   }
 
   setToolbarCollapsed(on: boolean): void {
@@ -2609,10 +2623,11 @@ export class AxfRuntime {
       containerStyle(this.asset('container').data),
       dialogStyle(this.asset('dialog').data),
       popupStyle(this.asset('popup').data),
-      contextMenuStyle(this.asset('context-menu').data),
-      toolbarStyle(this.asset('toolbar').data),
-      navMenuStyle(this.asset('nav-menu').data),
-      appMenuStyle(this.asset('app-menu').data),
+      // chrome-settings@1: each kind's `app` instance overrides (the settings dialog) compile in over its asset
+      contextMenuStyle(this.chromeData('context-menu')!),
+      toolbarStyle(this.chromeData('toolbar')!),
+      navMenuStyle(this.chromeData('nav-menu')!),
+      appMenuStyle(this.chromeData('app-menu')!),
       // optional control types (older apps without them get the defaults)
       gaugeStyle(this.assetOrNull('gauge')?.data),
       meterStyle(this.assetOrNull('meter')?.data),
@@ -2629,7 +2644,7 @@ export class AxfRuntime {
         sizing: this.withTokenOverrides('tokens.sizing', 'sizing' as AssetType, this.assetOrNull('sizing' as AssetType)?.data ?? (this.settings.get(CONTROL_TOKEN_SLOTS['tokens.sizing'].key) ? {} : undefined)),
       }),
       ...layoutVars(this.inspectorLayout(this.withTokenOverrides('tokens.layout', 'layout', this.asset('layout').data)), this.hiddenSlots()),
-      ...bannerVars(this.assetOrNull('banner')?.data, this.slotHidden('banner')),
+      ...bannerVars(this.chromeData('banner'), this.slotHidden('banner')),
       // branding package (optional): palette slots as --fx-brand-1/2/3, the brand name, the accent when it asks for it
       ...brandingVars(this.assetOrNull('branding' as AssetType)?.data ?? { brand: { name: '' }, marks: {} }),
     };
@@ -3060,6 +3075,13 @@ export class AxfRuntime {
     a.register('windows.maximize', ([w]) => w && wm.toggleMaximize(w), { label: 'Maximize / restore window', params: true });
     a.register('windows.snap', ([w, zone = 'left']) => w && wm.snapTo(w, zone as import('./engines/windows').SnapZone), { label: 'Snap window to a zone', params: true });
     a.register('windows.focus', ([w]) => w && wm.focus(w), { label: 'Focus window', params: true });
+    // a window's own background transparency (0..1, or `theme` = follow the style theme's opacitySettings token)
+    a.register('windows.background', ([w, v = 'theme']) => {
+      const win = w ? wm.state.windows.find((x) => x.id === w) : undefined;
+      if (!win) return;
+      const n = Number(v);
+      wm.setSettings(win.id, { ...win.settings, surface: v === 'theme' || !Number.isFinite(n) ? null : Math.min(1, Math.max(0, n)) });
+    }, { label: 'Window background opacity', params: true });
     // dock@1 (Nov 3 2026): re-dock a floating window along a side of the main dock; lay the open tabs out on a preset
     a.register('windows.redockInto', ([w, side = 'right']) => w && wm.redockInto(w, { target: 'root', zone: (['left', 'right', 'top', 'bottom'].includes(side) ? side : 'right') as import('./engines/dock').DockSide }), { label: 'Redock window into the dock', params: true });
     a.register('windows.layout', ([preset = '', w = '']) => {

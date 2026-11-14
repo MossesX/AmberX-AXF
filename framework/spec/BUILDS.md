@@ -38,6 +38,7 @@ journalled.
 | `defaultSteps`, `defaultAt`, `rearranged` | the default breakdown (Restore default); follows orchestrator edits until the Steps view rearranges the build |
 | `removedSteps` | steps taken out (removed, divided, harvested away) with why, when, by |
 | `legacy`, `copies` | where the record came from in the migration; other copies kept verbatim |
+| `alias` | optional: the short name of a build whose `id` is not a valid build name (made before build-id@1); `findBuild` and every orchestrator / pipeline command accept it |
 
 **StepRecord** = orchestrator@1 step fields (`id`, `text`, `model`, `why`, `phase`, `group`, `estimate`, `files`, `checks`,
 `session`, `agent`, `skip`, `done`, `doneAt`, `note`) plus `uid` (never changes, also across a harvest), `title` (rename),
@@ -54,6 +55,46 @@ policy `framework/core/model-policy.mjs`; a legacy `[Sonnet]` prefix reads as Op
   unique within a build; every step `Fable` or `Opus` with text.
 - Ids never change: renaming changes `title` only.
 
+## Build ids (build-id@1, `framework/core/build-id.mjs`)
+
+A build's `id` names its worktree folder (`<worktrees>/<id>`), its branch (`claude/<id>`), its tmux session and log, and
+is what axHub's `vps.build_start` / `build_land` / `build_stop` / `build_clean` take. Those accept only
+`^[a-z0-9][a-z0-9-]{0,39}$`, so every new id is at most **40 characters**. The `title` is the display name and has no
+length limit; it is shown everywhere a build is named.
+
+- `shortBuildId(title)`: lowercase slug; when it is over 40 characters, filler words (a, the, and, of, in, …) are
+  dropped, then it is cut at the last dash that fits. `uniqueBuildId(title, taken)` adds `-2`, `-3`, … inside the same
+  40 characters on a collision.
+- Every id maker uses it: `pipeline.mjs request`, the orchestrator's `add` / `import`, a harvest, the Pending list and
+  Plan Studio. Adding the same title (or id) again is still refused by the orchestrator; two titles that only meet once
+  shortened get a suffix.
+- Builds made before this rule keep their ids (their branches and PRs are not renamed) and get an `alias` that is a
+  valid build name: the tick sets it for builds that may still run or land; `pipeline.mjs aliases [--apply] [--all]`
+  lists or sets it for any. `pipeline.mjs land-alias <id|alias|folder>` is the landing path: it links
+  `<worktrees>/<alias>` to the build's folder and points the local branch `claude/<alias>` at the build's branch, so
+  `vps.build_land` (and stop / clean) can be called with the alias. Run it again right before landing to move the
+  branch to the latest commit.
+
+## Landing: generated and additive files never stop a land
+
+Most Nov 13 2026 land failures were clashes only in generated or additive files. One manifest, `generated-files@1`
+(`framework/spec/generated-files.json`), now says which files a merge resolves by itself and how; every lander reads
+it: the auto-land runner and the merge queue (the push banner plugin's `land/land-core.mjs`
+`classifyPath` / `regenPlan` / `mergeJson3`, `land.mjs resolveConflicts`) and the `vps.build_land` resolver
+(`framework/cli/land-resolve.py`, which `/opt/axf-batch/resolve.py` hands over to).
+
+| Merge rule | Files | What happens on a clash |
+| --- | --- | --- |
+| `regen` | `apps/console-web/src/control/inventory.json`, `apps/*/src/assets/help/*.json`, `apps/*/src/axf/**`, `apps/*/axf.lock.json`, `framework/spec/fixtures/*.json`, `tracker.json` | main's copy is taken, then the generator runs once on the merged tree (control inventory, `help-coverage.mjs --sync`, `rebake.mjs apply apps/<app>`, `gen-fixtures.mts`, `tracker.mjs`) and its outputs join the merge commit. `rebake` is optional: an app with edited baked files keeps main's copy. |
+| `union-json` | `framework/assets/help/*.json`, `framework/catalog/{status,libraries}.json` | both sides' keys kept (3-way by key; main wins a scalar clash) |
+| `union-lines` | `framework/spec/PORTING.md` (THREADS, STATUS, decisions and logs were already unioned) | both sides' lines |
+| `main` | `framework/plan/*.json`, `changes/`, `sessions/` copies | main's copy |
+
+After regenerating, each generator's check and the manifest's `tests` (control inventory `--check`, project fixtures)
+run on the merged tree; a red one stops the land with the reason. Only a clash in a real source file (anything the
+manifest doesn't name) stops a land and goes to an agent. `land.mjs merge-main <build>` merges main into one build's
+branch with these rules on demand (a re-land after a lander fix).
+
 ## Projections and absorbs
 
 | Older list | Project | Absorb (after a change) |
@@ -66,6 +107,13 @@ Every writer (`orchestrator.mjs`, `pending.mjs`, `build-queue.mjs`, the console 
 and absorbs it back under one lock (`withStore`). The old files are **read-only exports** regenerated after every write
 (`$export` note inside); a file written by something else since the last export is a *foreign write*, absorbed
 **newer-only** (adds and updates builds whose `updatedAt` is newer, never reverts or removes) before the next export.
+
+The orchestrator export is a **repo file only for a profile the repo's `framework/plan/profiles.json` lists** (`all` →
+`_claude/builds/orchestrator.json`, others → `_claude/builds/profiles/<id>/orchestrator.json`; `persist.mjs hasRepoExport`).
+A profile registered only on the hub (a project's profile, e.g. `test-sandbox` from project-seed) exports into its
+shared-data folder (`framework/plan/profiles/<id>/_claude/builds/orchestrator.json` under the data root) and never onto
+main: `check-profiles.mjs` fails CI for any unregistered folder, and builds-live takes such a folder off main on the next
+publish (Nov 13 2026, main-ci-red-test-sandbox-profile-export).
 
 ## Versioning
 

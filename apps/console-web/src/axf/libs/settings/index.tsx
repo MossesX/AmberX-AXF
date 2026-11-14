@@ -15,12 +15,14 @@
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, SKIN_COLOR_SLOT, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
+import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, ControlScope, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, settingTargetDef, Slider, Switch, useAsset, useAxfState, useControlTarget, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { TabGroup } from '../../react/components/TabGroup';
 import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS, LevelEditor, levelEditorAct } from './levels';
 import { FollowHubSwitch, SKIN_WHERE_CSS, SKIN_WHERE_DIALOG, SkinWhere, SkinWhereDialog } from './skinwhere';
+import { hasSkinConfigProvider, SKIN_CONFIG_CSS, SKIN_CONFIG_TAB, SkinConfigPanel as SkinConfigView } from './SkinConfigPanel';
+export { SkinConfigPanel, hasSkinConfigProvider, SKIN_CONFIG_LAYOUT_KEY, SKIN_CONFIG_SERVICE, SKIN_CONFIG_TAB, skinConfigLayout, skinConfigService, type SkinConfigLayout, type SkinConfigService } from './SkinConfigPanel';
 import { SkinScope } from '../../react/components/SkinScope';
 import { consoleFieldValue } from '../../core/engines/console-commands.mjs';
 
@@ -39,6 +41,8 @@ export const SETTINGS_TABS = {
   // Every banner plugin's settings in one place (Brett, Oct 22 2026); shown only while the app has banners.
   banners: { id: 'banners', label: 'Banners', icon: 'bell', parent: 'plugins', order: 1, description: 'Every banner: its look, its behaviour and its plugin’s own settings, one tab each. Right-click (or long-press) any banner for the same.' },
   about: { id: 'about', label: 'About', icon: 'info', order: 90, description: 'Versions and help.' },
+  // What the AI may change when it makes a skin (skin-config@1); shown only while something provides axf.skin-config@1.
+  'skin-config': { id: 'skin-config', label: 'Skin config', icon: 'sliders', parent: 'appearance', order: 30, description: 'Before AI makes a skin: pick what it may change, lock the rest, set how deep it may build menus. The current look is the Default skin.' },
 } as const;
 
 /* ---------------- hooks ---------------- */
@@ -115,6 +119,8 @@ function SettingRow({ spec }: { spec: SettingSpec }) {
   const rt = useRuntime();
   useAxfState();
   useSettingsRevision(rt);
+  // console-control@1: the rendered row is `setting:<key>` under its tab's scope (state / set / focus; react/controlTargets.ts)
+  useControlTarget(settingTargetDef(rt, spec, `setting:${spec.key}`, 'Settings'));
   // Inside a host app (embed@1), settings about chrome the host owns aren't shown at all (never greyed out).
   if ((spec.slot && rt.slotOwnedByHost(spec.slot as AssetType)) || (spec.kind === 'asset_slot' && spec.target && rt.slotOwnedByHost(spec.target as AssetType))) return null;
   // A setting about a slot the user hid is greyed out (and its control disabled) until the slot is shown again.
@@ -424,9 +430,9 @@ function useWide(): boolean {
 }
 
 /** One line of the settings list: icon, label, a one-line description, chevron. */
-function NavRow({ icon, label, desc, active, onClick }: { icon?: string; label: string; desc?: string; active?: boolean; onClick: () => void }) {
+function NavRow({ id, icon, label, desc, active, onClick }: { id?: string; icon?: string; label: string; desc?: string; active?: boolean; onClick: () => void }) {
   return (
-    <button type="button" data-fx-row className={`axf-settings__nav ${active ? 'is-on' : ''}`} aria-current={active ? 'page' : undefined} onClick={onClick}>
+    <button type="button" data-fx-row {...(id ? { 'data-axf-settings-nav': id } : {})} className={`axf-settings__nav ${active ? 'is-on' : ''}`} aria-current={active ? 'page' : undefined} onClick={onClick}>
       {icon && <Icon name={icon} size={15} />}
       <span className="axf-settings__navtext"><span className="axf-settings__navlabel">{label}</span>{desc && <span className="axf-settings__navdesc">{desc}</span>}</span>
       <Icon name="chevron-right" size={14} className="axf-settings__navchev" />
@@ -473,7 +479,8 @@ export function SettingsView() {
   const choose = (top: string, child = '') => { setSel([top, child]); rt.settings.set(TAB_KEY, child || top); };
   // List layout: no tab picked = the list of tabs (drill-down, with Back); the other layouts always show a tab.
   const current = tabs.find((t) => t.id === tab) ?? (isList && !wide ? undefined : tabs[0]);
-  const subs = current ? childrenOf(current.id).filter((t) => !folded.has(t.id) && (t.id !== 'banners' || banners.length > 0)) : [];
+  const skinConfig = hasSkinConfigProvider(rt);
+  const subs = current ? childrenOf(current.id).filter((t) => !folded.has(t.id) && (t.id !== 'banners' || banners.length > 0) && (t.id !== SKIN_CONFIG_TAB || skinConfig)) : [];
   const noOverview = !!pluginLock && current?.id === 'plugins' && subs.length > 0;
   const shown = (sub && subs.find((t) => t.id === sub)) || (noOverview ? subs[0] : current);
   const subList = isList && subs.length >= SUB_LIST_FROM;
@@ -491,12 +498,12 @@ export function SettingsView() {
   );
   const navList = (
     <nav className="axf-settings__navlist" aria-label="Settings sections" data-axf-not-nav="the settings page's section list (settings-ui@1 layout list), not a navigation menu">
-      {tabs.map((t) => <NavRow key={t.id} icon={t.icon} label={t.label} desc={t.description} active={wide && t.id === current?.id} onClick={() => { setQuery(''); choose(t.id); }} />)}
+      {tabs.map((t) => <NavRow key={t.id} id={t.id} icon={t.icon} label={t.label} desc={t.description} active={wide && t.id === current?.id} onClick={() => { setQuery(''); choose(t.id); }} />)}
     </nav>
   );
   const inSub = !!shown && !!current && shown.id !== current.id;
   const body = searching ? <SearchResults query={query} tabs={all} ui={ui} /> : !current ? navList : (
-    <div className="fx-stack axf-settings__body">
+    <ControlScope address={`tab:settings.tabs=${current.id}`}><div className="fx-stack axf-settings__body">
       {isList && (
         <div className="axf-settings__crumbs">
           {(!wide || inSub) && <IconButton icon="chevron-left" label={inSub && subList ? `Back to ${current.label}` : 'All settings'} onClick={() => (inSub && subList ? choose(current.id) : choose(''))} />}
@@ -510,11 +517,11 @@ export function SettingsView() {
       {shown?.description && <p className="fx-muted axf-settings__desc" style={{ margin: 0 }}>{shown.description}</p>}
       {subList && !inSub && (
         <nav className="axf-settings__navlist axf-settings__navlist--subs" aria-label={`${current.label} sections`} data-axf-not-nav="the settings page's sub-section list, not a navigation menu">
-          {subs.map((t) => <NavRow key={t.id} icon={t.icon} label={t.label} desc={t.description} onClick={() => choose(current.id, t.id)} />)}
+          {subs.map((t) => <NavRow key={t.id} id={t.id} icon={t.icon} label={t.label} desc={t.description} onClick={() => choose(current.id, t.id)} />)}
         </nav>
       )}
-      {shown && <TabContent id={shown.id} />}
-    </div>
+      {shown && (inSub ? <ControlScope address={`subtab:settings.subtabs=${shown.id}`}><TabContent id={shown.id} /></ControlScope> : <TabContent id={shown.id} />)}
+    </div></ControlScope>
   );
 
   return (
@@ -576,6 +583,17 @@ const LOCK_PANEL_ID = 'axf.appearance.lock';
  * without changing the skin"): picking one keeps the same skin, shows no overridden dot and makes no new skin;
  * "Skin's colours" goes back to the skin's own (rt.skinColorTheme / rt.setSkinColorTheme).
  */
+/**
+ * The skin-switch@1 service (a library that provides it, e.g. a Skins plugin), found by capability, never by name.
+ * When one is installed, Use / Back to skin / Restore / Undo here run its actions (skin.use / skin.back / skin.restore /
+ * skin.undo at the app scope), so they make the same change, through the same engine and the same undo record, as its
+ * gallery, its REST routes, MCP, the CLI and voice; skin.open opens its gallery. Without one, the runtime does it.
+ */
+export const SKIN_SWITCH_SERVICE = 'axf.skin-switch@1';
+export function hasSkinSwitch(rt: AxfRuntime): boolean {
+  return (rt.libraries as unknown as { provides?: string[] }[]).some((l) => l.provides?.includes(SKIN_SWITCH_SERVICE));
+}
+
 export function AppearancePanel() {
   const rt = useRuntime();
   const st = useAxfState();
@@ -589,6 +607,11 @@ export function AppearancePanel() {
   const colour = rt.skinColorTheme();
   const inForce = !!colour.own; // a skin with data is in force here (read from the look document, so a pick just made is seen at once)
   const [confirm, setConfirm] = useState(false);
+  const service = hasSkinSwitch(rt);
+  const back = (type: string) => (service ? rt.dispatch(`skin.back:app:${type}`) : rt.backToSkin(type));
+  const restore = () => (service ? rt.dispatch('skin.restore:app') : rt.restoreDefaultAppearance());
+  const undo = () => (service ? rt.dispatch('skin.undo') : rt.undoRestoreDefault());
+  const useSkin = (on: boolean) => (service && on && skinId ? rt.dispatch(`skin.use:${skinId}:app`) : rt.useSkin(on, skinId || undefined));
   const row = (label: string, type: string) => {
     const list = rt.registry.list(type as AssetType);
     const value = st.active[type as AssetType] ?? '';
@@ -607,7 +630,7 @@ export function AppearancePanel() {
             {!value && <option value="">—</option>}
             {list.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
           </select>
-          {isOver && <Button size="sm" tone="quiet" disabled={locked} onClick={() => rt.backToSkin(type)}>Back to skin</Button>}
+          {isOver && <Button size="sm" tone="quiet" disabled={locked} onClick={() => back(type)}>Back to skin</Button>}
           {isColour && colour.picked && <Button size="sm" tone="quiet" disabled={locked} title="Back to the colour theme this skin came with" onClick={() => rt.setSkinColorTheme(null)}>Skin's colours</Button>}
         </div>
       </div>
@@ -621,9 +644,12 @@ export function AppearancePanel() {
           <span>Skin</span>
           <span className="fx-muted axf-settings__hint">{skinOn ? `${skins.find((s) => s.id === skinId)?.name ?? skinId}, in this app only.` : "Off: this app's own look."}</span>
         </div>
-        <div className="axf-settings__control axf-skin__action"><Button size="sm" icon="palette" disabled={locked || !skins.length} onClick={() => rt.openDialog(SKIN_DIALOG, {})}>Choose…</Button></div>
+        <div className="axf-settings__control axf-skin__action">
+          <Button size="sm" icon="palette" disabled={locked || !skins.length} onClick={() => rt.openDialog(SKIN_DIALOG, {})}>Choose…</Button>
+          {service && <Button size="sm" tone="ghost" icon="external" data-axf-skin-gallery-link="" onClick={() => rt.dispatch('skin.open')}>Open Skins gallery</Button>}
+        </div>
       </div>
-      <Switch label="Use skin" hint={skinOn ? 'Off goes back to this app\'s own look and keeps your picks.' : 'On applies the last skin you picked.'} checked={skinOn} disabled={locked || !skins.length} onChange={(on) => { rt.useSkin(on, skinId || undefined); }} />
+      <Switch label="Use skin" hint={skinOn ? 'Off goes back to this app\'s own look and keeps your picks.' : 'On applies the last skin you picked.'} checked={skinOn} disabled={locked || !skins.length} onChange={(on) => { useSkin(on); }} />
       <FollowHubSwitch locked={locked} />
       {row('Colour theme', 'color-theme')}
       <p className="fx-eyebrow">Visible parts</p>
@@ -635,10 +661,18 @@ export function AppearancePanel() {
       <div className="axf-settings__row">
         <div className="axf-settings__label"><span>Restore to default</span><span className="fx-muted axf-settings__hint">Back to the look this app had when skins landed.</span></div>
         <div className="axf-settings__control axf-skin__action">
-          <Button size="sm" tone="quiet" disabled={locked} onClick={() => { if (!confirm) { setConfirm(true); setTimeout(() => setConfirm(false), 4000); return; } setConfirm(false); rt.restoreDefaultAppearance(); }}>{confirm ? 'Tap again to restore' : 'Restore'}</Button>
-          {!!look?.undo && <Button size="sm" tone="quiet" disabled={locked} onClick={() => rt.undoRestoreDefault()}>Undo</Button>}
+          <Button size="sm" tone="quiet" disabled={locked} onClick={() => { if (!confirm) { setConfirm(true); setTimeout(() => setConfirm(false), 4000); return; } setConfirm(false); restore(); }}>{confirm ? 'Tap again to restore' : 'Restore'}</Button>
+          {!!look?.undo && <Button size="sm" tone="quiet" disabled={locked} onClick={() => undo()}>Undo</Button>}
         </div>
       </div>
+      {hasSkinConfigProvider(rt) && (
+        <div className="axf-settings__row" data-axf-skin-section="skin-config">
+          <div className="axf-settings__label"><span>Skin config</span><span className="fx-muted axf-settings__hint">What the AI may change when it makes a skin; the current look is the Default skin.</span></div>
+          <div className="axf-settings__control axf-skin__action">
+            <Button size="sm" tone="quiet" icon="sliders" onClick={() => rt.dispatch(`settings.open:${SKIN_CONFIG_TAB}`)}>Open</Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -733,11 +767,11 @@ function TabDialog({ id }: { id: string }) {
   const bar = useLevelBarOn();
   if (!tab) return <p className="fx-muted">No settings tab "{id}".</p>;
   return (
-    <div className="fx-stack axf-settings axf-settings--dialog" data-axf-settings-tab={id}>
+    <div className="fx-stack axf-settings axf-settings--dialog" data-axf-settings-tab={id}><ControlScope address={`view:settings/tab:settings.tabs=${id}`}>
       <p className="fx-eyebrow"><Icon name={tab.icon} /> {tab.label}</p>
       {ui.levels && bar && <SettingsLevelBar level={level} />}
       <TabContent id={id} />
-    </div>
+    </ControlScope></div>
   );
 }
 
@@ -942,7 +976,7 @@ function injectStyles(): void {
   if (!doc || doc.getElementById('axf-settings-css')) return;
   const el = doc.createElement('style');
   el.id = 'axf-settings-css';
-  el.textContent = CSS + LEVELS_CSS + SKIN_WHERE_CSS;
+  el.textContent = CSS + LEVELS_CSS + SKIN_WHERE_CSS + SKIN_CONFIG_CSS;
   doc.head.appendChild(el);
 }
 
@@ -1050,6 +1084,7 @@ export const library: AxfWebLibrary = {
     { id: 'axf.account.role', tab: 'account', title: 'Role', icon: 'shield', order: 10, render: () => <RolePanel /> },
     { id: 'axf.account.profile', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
     { id: DESIGN_PANEL_ID, tab: 'appearance', title: 'Skin', icon: 'palette', order: 0, render: () => <AppearancePanel /> },
+    { id: 'axf.appearance.skin-config', tab: SKIN_CONFIG_TAB, title: 'Skin config', icon: 'sliders', order: 10, render: () => <SkinConfigView /> },
     { id: 'axf.plugins.libraries', tab: 'plugins', title: 'Installed plugins and libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
     { id: 'axf.banners', tab: 'banners', title: 'Every banner', icon: 'bell', order: 10, render: () => <BannerSettingsPanel /> },
     { id: 'axf.about', tab: 'about', title: 'About', icon: 'info', order: 10, render: () => <AboutPanel /> },

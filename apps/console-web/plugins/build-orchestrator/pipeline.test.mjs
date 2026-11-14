@@ -13,6 +13,7 @@ import * as OC from './web/orchestrator-core.mjs';
 import { verdict as dispatchVerdict } from '../../../../framework/cli/dispatch-gate.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
 import { setUpgradePolicy } from '../../../../framework/core/model-switch.mjs';
+process.env.AXF_LOGIN_NOTIFY ??= 'off'; process.env.AXF_LOGIN_VERIFY ??= 'off'; // login events (claude-login-notify.mjs) never reach the real phone or Anthropic
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, '../../../..');
@@ -202,6 +203,35 @@ t('alertFor: idle keyed once, per-build run keys, every kind has a title', () =>
   assert.equal(P.alertFor('failed', { id: 'b', title: 'B', note: 'n' }).severity, 'error'); assert.equal(P.alertFor('failed', { id: 'b' }).key, 'pipeline:end:b');
   assert.equal(P.alertFor('ended', { id: 'b', outcome: 'finished' }).severity, 'success');
   assert.throws(() => P.alertFor('bogus'), /unknown alert kind/);
+  const oa = P.alertFor('oauth', { id: 'b', title: 'B', account: 'w', error: 'OAuth token has expired', everyMin: 5 });
+  assert.equal(oa.key, 'pipeline:oauth:b'); assert.equal(oa.severity, 'error'); assert.match(oa.title, /login failed: w/); assert.match(oa.body, /OAuth token has expired[\s\S]*back to the Queue by itself/);
+  assert.equal(P.alertFor('oauth-ok', { id: 'b', account: 'w' }).key, 'pipeline:oauth:b', 'the recovery replaces the failure alert');
+});
+t('launch failures and crash reasons: the exact reason reaches the phone', () => {
+  const a = P.alertFor('launch-failed', { id: 'b', title: 'B', reasons: [{ account: 'w1', error: 'launcher exit 4: no Claude login to snapshot for "w1"' }, { account: 'w2', error: 'launcher exit 3: the VPS hard build limit is full' }], tries: 1, maxTries: 3 });
+  assert.match(a.key, /^pipeline:launch:b:\d+$/, 'each failed start is its own push'); assert.equal(a.severity, 'error'); assert.equal(a.title, "Couldn't start: B");
+  assert.match(a.body, /w1: launcher exit 4: no Claude login[\s\S]*w2: launcher exit 3: the VPS hard build limit is full[\s\S]*tried again next tick \(1\/3/);
+  assert.match(P.alertFor('launch-failed', { id: 'b', reasons: [{ account: 'w', error: 'x' }], tries: 3, maxTries: 3 }).body, /waits an hour/);
+  assert.equal(P.lastReasonOf('working\nError: ENOSPC: no space left on device, write\nmore output\n── finished (exit 1) · log: x ──'), 'Error: ENOSPC: no space left on device, write');
+  assert.equal(P.lastReasonOf('Not started: the VPS hard build limit stayed full for a day.\n'), 'Not started: the VPS hard build limit stayed full for a day.');
+  assert.equal(P.lastReasonOf('just stopped here\n# login w (a@b) · shared account login (saved)'), 'just stopped here', 'the launcher\'s own lines are not the reason');
+  assert.equal(P.lastReasonOf(''), '');
+});
+t('authFailureOf: Claude Code\'s sign-in errors at the end of a run log; talk about tokens or a usage limit is not one', () => {
+  assert.equal(P.authFailureOf('working…\nAPI Error: 401 {"type":"error","error":{"type":"authentication_error","message":"OAuth token has expired."}}\n── finished (exit 1) ──'), 'API Error: 401 {"type":"error","error":{"type":"authentication_error","message":"OAuth token has expired."}}');
+  assert.match(P.authFailureOf('Invalid API key · Please run /login'), /Please run \/login/);
+  assert.match(P.authFailureOf('\x1b[31mOAuth token has expired. Please obtain a new token or refresh your existing token.\x1b[0m'), /^OAuth token has expired/);
+  assert.equal(P.authFailureOf('I wrote the refresh-token save-back and the oauth alert.\nAll steps done.'), '', 'a build about tokens is not a login failure');
+  assert.equal(P.authFailureOf("You've hit your weekly limit · resets Mon"), '', 'a usage limit is not a login failure');
+  assert.equal(P.authFailureOf(['OAuth token has expired', ...Array(40).fill('later work')].join('\n')), '', 'only the end of the log counts');
+});
+t('authRecovered: a health answer newer than the failure that signs in; once', () => {
+  const w = { account: 'w', at: '2026-11-14T10:00:00Z', requeued: false };
+  assert.equal(P.authRecovered(w, { signedIn: true, at: '2026-11-14T10:05:00Z' }), true);
+  assert.equal(P.authRecovered(w, { signedIn: true, at: '2026-11-14T09:55:00Z' }), false, 'an answer from before the failure says nothing');
+  assert.equal(P.authRecovered(w, { signedIn: false, at: '2026-11-14T10:05:00Z' }), false);
+  assert.equal(P.authRecovered(w, { signedIn: true, at: '2026-11-14T10:05:00Z', skipped: true }), false, 'a skipped call proves nothing');
+  assert.equal(P.authRecovered({ ...w, requeued: true }, { signedIn: true, at: '2026-11-14T10:05:00Z' }), false, 're-queued once only');
 });
 t('settings normalise and clamp', () => {
   const s = P.normSettings({ parallelPerAccount: 99, maxRuns: 0, fablePlans: ['Max', 'TEAM'], splitProvider: 'nope', autoQueue: 'yes' });
@@ -496,6 +526,47 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     const st2 = JSON.parse(readFileSync(join(pipeDir, 'state.json'), 'utf8'));
     assert.equal(st2.idle, null); assert.ok(!st2.alerts.some((a) => a.key === 'pipeline:idle'), 'idle resolved once alpha runs');
   });
+  t('e2e login failure: the phone hears it, the build is held in Pending, and goes back to the Queue once the login works', () => {
+    const acct = find('alpha').pipeline.account; const runsBefore0 = find('alpha').pipeline.runs; const logFile = join(tmp, 'alpha-run.log');
+    writeFileSync(logFile, 'step 1…\nAPI Error: 401 {"type":"error","error":{"type":"authentication_error","message":"OAuth token has expired."}}\n── finished (exit 1) ──\n');
+    writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('alpha').pipeline.session, name: 'alpha', exit: 1, log: logFile, at: new Date().toISOString() }) + '\n');
+    let r = json(pipe('tick', '--json'));
+    const runsBefore = runsBefore0;
+    assert.deepEqual(r.ended.map((e) => [e.id, !!e.auth]), [['alpha', true]]);
+    assert.equal(find('alpha').pipeline.runs, runsBefore - 1, 'a run the login cut off does not count towards maxRuns');
+    assert.equal(find('alpha').status, 'pending', 'held: a relaunch would hit the same login'); assert.equal(r.launched.length, 0);
+    assert.ok(r.alertsSent.some((a) => a.key === 'pipeline:oauth:alpha'), 'phone alert sent'); assert.ok(!r.alertsSent.some((a) => a.key === 'pipeline:end:alpha'), 'one alert, the login one');
+    assert.match(find('alpha').notes.at(-1).text, /Claude login failure on .*OAuth token has expired/);
+    const waits = json(pipe('status', '--json')).state.authWaits; assert.equal(waits.alpha.account, acct); assert.equal(waits.alpha.requeued, false);
+    assert.ok(existsSync(join(pipeDir, 'health-request.json')), 'a health sweep is asked for at once');
+    r = json(pipe('tick', '--json')); assert.equal(find('alpha').status, 'pending', 'still held while the login is unproven'); assert.deepEqual(r.authRequeued, []);
+    // the health sweep: the account signs in again
+    const accFile = join(pipeDir, 'accounts.json'); const own = existsSync(accFile) ? JSON.parse(readFileSync(accFile, 'utf8')) : {};
+    own[acct] = { ...(own[acct] ?? {}), health: { signedIn: true, credits: true, fable: true, error: '', at: new Date().toISOString() } };
+    writeFileSync(accFile, JSON.stringify(own));
+    r = json(pipe('tick', '--json'));
+    assert.deepEqual(r.authRequeued, ['alpha']); assert.ok(r.alertsSent.some((a) => a.key === 'pipeline:oauth:alpha' && /works again/.test(a.title)), 'the phone hears it is back');
+    assert.ok(['queued', 'running'].includes(find('alpha').status), find('alpha').status);
+    assert.equal(json(pipe('status', '--json')).state.authWaits.alpha.requeued, true);
+    // the fake launcher reuses the session name, so the old end event closes the new run on the same login error:
+    // a second failure waits for a health answer newer than itself (no loop of re-queues on one sweep)
+    assert.deepEqual(json(pipe('tick', '--json')).authRequeued, [], 'one health answer re-queues once');
+  });
+  t('e2e a queued build that fails to start: the phone hears it at once with the exact reason', () => {
+    orch('act', JSON.stringify({ action: 'add', id: 'epsstart', title: 'Epsilon start', steps: [{ text: 'do epsstart', model: 'Opus', estimate: '10 min' }] }));
+    json(pipe('queue', 'epsstart', '--json'));
+    const bad = join(tmp, 'bad-launcher.sh');
+    writeFileSync(bad, '#!/usr/bin/env bash\necho "claude-login: no Claude login to snapshot for the account (log in, or save the account first)" >&2\nexit 4\n'); chmodSync(bad, 0o755);
+    const tk = spawnSync(process.execPath, [join(HERE, 'pipeline.mjs'), 'tick', '--json'], { cwd: ROOT, env: { ...env, AXF_PIPELINE_LAUNCHER: bad }, encoding: 'utf8', timeout: 120000 });
+    const r = json(tk);
+    const f = r.failed.find((x) => x.id === 'epsstart');
+    assert.ok(f, `epsstart was tried: ${JSON.stringify({ waits: r.plan.waits, launched: r.launched })}`);
+    const sentKey = r.alertsSent.find((a) => a.key.startsWith('pipeline:launch:epsstart:'));
+    assert.ok(sentKey, 'a launch-failed alert went out'); assert.equal(sentKey.title, "Couldn't start: Epsilon start");
+    assert.match(f.error, /launcher exit 4: claude-login: no Claude login to snapshot/, 'the exact reason, not a summary');
+    assert.equal(find('epsstart').status, 'queued', 'it stays in the Queue for the next try');
+    json(pipe('unqueue', 'epsstart', '--json'));
+  });
   t('e2e split request from the console is honoured on the next intake', () => {
     orch('act', JSON.stringify({ action: 'add', id: 'gamma', title: 'Gamma', steps: [{ text: 'big step', model: 'Opus', estimate: '3 h' }] }));
     json(pipe('split', 'gamma', '--request', '--json'));
@@ -531,6 +602,45 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.ok(r.fixes.some((f) => /requeued ghost/.test(f)), r.fixes.join('; '));
     assert.equal(find('ghost').status, 'queued'); assert.equal(find('ghost').pipeline.account || '', '');
     json(pipe('unqueue', 'ghost', '--json'));
+  });
+  t('e2e double dispatch (Nov 13 2026): a live session blocks a second launch and the self-check never releases it', () => {
+    const pipeWith = (extra, ...a) => { const r = spawnSync(process.execPath, [join(HERE, 'pipeline.mjs'), ...a], { cwd: ROOT, env: { ...env, ...extra }, encoding: 'utf8', timeout: 120000 }); if (r.status !== 0) throw new Error(`pipeline ${a.join(' ')} failed (${r.status}):\n${r.stdout}\n${r.stderr}`); return r; };
+    const launches = () => readFileSync(join(tmp, 'launches.log'), 'utf8').split('\n').filter((l) => /--name dup /.test(l)).length;
+    orch('act', JSON.stringify({ action: 'add', id: 'dup', title: 'Dup', steps: [{ text: 'one step', model: 'Opus', estimate: '10 min' }] }));
+    json(pipe('queue', 'dup', '--json'));
+    mkdirSync(join(wtRoot, 'dup'), { recursive: true });
+    const old = new Date(Date.now() - 3600e3).toISOString();
+    // (1) the self-check: marked running with no session on record, but tmux axf-dup--fake is alive → kept, session adopted
+    { const st = store(); const d = st.builds.find((b) => b.id === 'dup'); d.status = 'running'; d.pipeline = { ...d.pipeline, account: 'w-pro', session: '', slot: 'hl-gone', launchedAt: old }; writeFileSync(storeFile, JSON.stringify(st)); }
+    let r = json(pipeWith({ AXF_BUILD_LOCK_TMUX: 'axf-dup--fake' }, 'selfcheck', '--json'));
+    assert.ok(!r.fixes.some((f) => /requeued dup/.test(f)), r.fixes.join('; '));
+    assert.equal(find('dup').status, 'running'); assert.equal(find('dup').pipeline.session, 'axf-dup--fake');
+    // (2) released too early (back in the Queue) while a renamed duplicate session is alive → the tick refuses to launch it again
+    { const st = store(); const d = st.builds.find((b) => b.id === 'dup'); d.status = 'queued'; d.pipeline = { ...d.pipeline, account: '', session: '', slot: '' }; writeFileSync(storeFile, JSON.stringify(st)); }
+    const before = launches();
+    r = json(pipeWith({ AXF_BUILD_LOCK_TMUX: 'axf-dup--fake-201500,axf-dupe-other--x' }, 'tick', '--json'));
+    assert.ok(!r.launched.some((l) => l.id === 'dup'), 'no second launch'); assert.equal(launches(), before);
+    assert.ok(r.plan.waits.some((w) => w.id === 'dup' && /already has a live session: tmux axf-dup--fake-201500/.test(w.why)), JSON.stringify(r.plan.waits));
+    assert.ok(!r.failed.some((f) => f.id === 'dup'), 'a gated launch is not a launch failure');
+    assert.equal(find('dup').status, 'running', 'the live session is adopted'); assert.equal(find('dup').pipeline.session, 'axf-dup--fake-201500');
+    // (3) a fresh lock alone (a launch waiting in the agent-slots queue: no tmux yet) also blocks the launch
+    { const st = store(); const d = st.builds.find((b) => b.id === 'dup'); d.status = 'queued'; d.pipeline = { ...d.pipeline, session: '' }; writeFileSync(storeFile, JSON.stringify(st)); }
+    writeFileSync(join(wtRoot, 'dup', '.axf-build.lock'), JSON.stringify({ $axf: 'build-lock@1', build: 'dup', session: '', beat: new Date().toISOString() }));
+    r = json(pipe('tick', '--json'));
+    assert.ok(!r.launched.some((l) => l.id === 'dup')); assert.equal(launches(), before); assert.equal(find('dup').status, 'queued');
+    assert.ok(r.plan.waits.some((w) => w.id === 'dup' && /lock launching/.test(w.why)));
+    // (4) a stale lock expires: the dispatcher launches once and writes a fresh lock with the session name
+    writeFileSync(join(wtRoot, 'dup', '.axf-build.lock'), JSON.stringify({ $axf: 'build-lock@1', build: 'dup', session: 'axf-dup--old', beat: old }));
+    r = json(pipe('tick', '--json'));
+    assert.deepEqual(r.launched.filter((l) => l.id === 'dup').length, 1, JSON.stringify({ waits: r.plan.waits, failed: r.failed })); assert.equal(launches(), before + 1);
+    const lk = JSON.parse(readFileSync(join(wtRoot, 'dup', '.axf-build.lock'), 'utf8'));
+    assert.equal(lk.build, 'dup'); assert.equal(lk.session, 'axf-dup--fake'); assert.equal(lk.expired, old);
+    assert.equal(json(pipe('tick', '--json')).launched.filter((l) => l.id === 'dup').length, 0, 'the next tick never launches it twice');
+    // the session ends: the lock goes with it
+    writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('dup').pipeline.session, name: 'dup', exit: 0, at: new Date().toISOString() }) + '\n');
+    json(pipe('tick', '--json'));
+    assert.ok(!existsSync(join(wtRoot, 'dup', '.axf-build.lock')), 'lock released at session end');
+    if (find('dup').status === 'queued') json(pipe('unqueue', 'dup', '--json'));
   });
   t('e2e hold / release / archive / delete / restore, one and many at once (bulk select)', () => {
     for (const id of ['h1', 'h2', 'h3']) { orch('act', JSON.stringify({ action: 'add', id, title: id.toUpperCase(), steps: [{ text: `do ${id}`, model: 'Opus', estimate: '20 min' }] })); json(pipe('queue', id, '--json')); }
