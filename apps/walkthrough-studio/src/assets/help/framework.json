@@ -1571,6 +1571,106 @@
         "text": "Drops every token this one tab row (or grid) set for itself, history included, so it follows the shared look from axHub again: the skin's own grid / tab tokens and any Token control overrides.",
         "more": "Also: control act tokens.instances tabs.<row id> restore-hub, or chrome.token-hub:tabs:<row id>.",
         "kind": "button"
+      },
+      {
+        "target": "action:animations.set",
+        "title": "Set a skin animation",
+        "text": "Changes one skin animation in this app: the colour swatches (wave, ripple, pop), the skin switch (ripple, sweep, fade), the colour picker (fan, pop), or speed (25 to 400 percent) and intensity (0 to 100). 'skin' puts the skin's own back.",
+        "more": "Every skin's behaviour theme carries its own animations; this only lays this app's picks over them. Reduced motion always wins: nothing moves while it is on.",
+        "tryIt": "animations.set:swatches:ripple",
+        "related": [
+          "action:animations.reset",
+          "action:animations.open"
+        ],
+        "kind": "control"
+      },
+      {
+        "target": "action:animations.off",
+        "title": "Turn skin animations off",
+        "text": "Turns one skin animation off (swatches, skinSwitch or picker), or all three when none is named.",
+        "related": [
+          "action:animations.set"
+        ],
+        "kind": "control"
+      },
+      {
+        "target": "action:animations.reset",
+        "title": "Animations back to the skin's",
+        "text": "Drops every animation pick this app made, so the skin's own animations play again.",
+        "related": [
+          "action:animations.set"
+        ],
+        "kind": "control"
+      },
+      {
+        "target": "action:animations.state",
+        "title": "Which animations are on",
+        "text": "Says which skin animations play here, their style, the speed and the intensity, and whether reduced motion has stopped them.",
+        "kind": "control"
+      },
+      {
+        "target": "action:animations.open",
+        "title": "Animations settings",
+        "text": "Opens Settings → Appearance, at the Animations section.",
+        "related": [
+          "view:settings"
+        ],
+        "kind": "control"
+      },
+      {
+        "target": "animation-speed",
+        "title": "Animation speed",
+        "text": "How fast the skin animations play, as a percent of normal: 25 is slow and dreamy, 400 is a quick flick. The skin sets its own; moving this makes it this app's pick.",
+        "kind": "slider"
+      },
+      {
+        "target": "animation-intensity",
+        "title": "Animation intensity",
+        "text": "How far the skin animations move: 0 keeps everything still, 100 is the full wave, ripple and fan. The skin sets its own; moving this makes it this app's pick.",
+        "kind": "slider"
+      },
+      {
+        "target": "settings-interface-for-this-one",
+        "title": "Settings interface for this one",
+        "text": "Picks which settings interface this one tab group, toolbar, banner, navigation menu or menu bar opens its settings in. Same as every … follows the kind's pick (the shared default unless the app picked its copy); any other choice is only for this one and is kept after a reload. Voice and API: chrome.instance-interface:<type>:<instance>:<id|default|custom|inherit>."
+      },
+      {
+        "target": "this-app",
+        "title": "This app",
+        "text": "Sets what the AI may change when it makes a skin for this app only. Hub-wide is the other tab.",
+        "kind": "tab"
+      },
+      {
+        "target": "hub-wide",
+        "title": "Hub-wide",
+        "text": "Sets what the AI may change when it makes a skin for every app on the hub. This app overrides it for one app.",
+        "kind": "tab"
+      },
+      {
+        "target": "save-current-look-as-default",
+        "title": "Save current look as Default",
+        "text": "Saves the look you have right now as the Default skin: the one every AI skin starts from and the one Restore goes back to. It cannot be deleted.",
+        "tryIt": "Get the app looking the way you like, then press this once.",
+        "kind": "button"
+      },
+      {
+        "target": "what-should-the-ai-make",
+        "title": "What should the AI make?",
+        "text": "A few words on the skin you want: calmer, darker, rounder buttons. The AI reads this with the allow / lock list below and only changes what you let it.",
+        "kind": "field"
+      },
+      {
+        "target": "make-skin-with-ai",
+        "title": "Make skin with AI",
+        "text": "Asks the AI for a new skin that obeys this config: locked options stay as the Default skin has them, allowed ones may change, ask ones wait for you. The result lands as a skin you can preview, apply or throw away.",
+        "more": "The same move is skins.mjs config make on the command line and the skin.config.make action. Dry run first if you only want the brief.",
+        "kind": "button"
+      },
+      {
+        "target": "find-an-option",
+        "title": "Find an option",
+        "text": "Narrows the list to options whose name or group matches what you type.",
+        "kind": "field"
       }
     ],
     "intros": [
@@ -1597,7 +1697,7 @@
         "title": "Assets",
         "steps": [
           {
-            "say": "Everything you see is an asset: themes, layouts, menus, buttons. Pick one on the left to look at it.",
+            "say": "Activate swaps it in live. Nothing reloads, nothing is lost.",
             "target": ""
           },
           {
@@ -1611,7 +1711,7 @@
         "title": "Account",
         "steps": [
           {
-            "say": "Your role decides what you can do. Switch it here to see the app as someone else would.",
+            "say": "The buttons below test each permission for the role you picked.",
             "target": ""
           },
           {

@@ -76,6 +76,12 @@
         "draft": true
       },
       {
+        "target": "gizmo-guide",
+        "title": "Gizmo guide settings",
+        "text": "Settings → Plugins → Gizmo guide: narrated walkthroughs from Gizmo in a floating window, only when you ask.",
+        "kind": "tab"
+      },
+      {
         "target": "action:gizmo.ask",
         "title": "Ask Gizmo to show me",
         "text": "Opens the guide window: ask Gizmo how to do something and he walks you through it, step by step. Part of Gizmo guide.",
@@ -94,6 +100,13 @@
         "title": "Re-record the AmberX walkthrough",
         "text": "Shows “Re-record the AmberX walkthrough”. Part of Gizmo guide.",
         "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "gizmo-guide",
+        "title": "Gizmo guide",
+        "text": "Settings for Gizmo guide: narrated walkthroughs in a floating window, only when you ask. Choose whether each step is read out loud, whether the console moves to each step, and whether walkthroughs asked for from AmberX open by themselves.",
+        "kind": "tab",
         "draft": true
       }
     ],

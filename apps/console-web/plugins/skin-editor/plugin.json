@@ -1,0 +1,322 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.skin-editor",
+  "name": "Skin editor",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Token registry and Skin editor. The registry lists every --fx-* token in the system (element, area, state, light/dark, level, plain-English description, default, source), browsable and searchable. The Skin editor takes any UI you pick (a screen, dialog, plugin or element, from the list or by clicking it on screen) and draws it in a sandbox with real components; every edit hot-renders the preview, takes a snapshot, and the chain of snapshots reads like disk snapshots you can revert to at any point. Export the current state as a new skin at any time. Token list from the registry with Basic / Pro / Advanced views. Full API: REST, MCP, CLI and voice.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:skin-editor",
+    "view:token-registry",
+    "settings-tab:skin-editor",
+    "action:skin-editor.open",
+    "action:skin-editor.pick",
+    "action:token-registry.open"
+  ],
+  "requires": [],
+  "optional": [],
+  "uiEditor": [
+    "theme",
+    "style"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "route": "GET /registry",
+        "id": "registry",
+        "title": "List the token registry",
+        "description": "Every token with element, area, state, scheme, level, description, default and source. Filters: q, area, element, level, state, scheme, source.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "q": {
+              "type": "string"
+            },
+            "area": {
+              "type": "string",
+              "enum": [
+                "layout",
+                "style",
+                "colour",
+                "behaviour"
+              ]
+            },
+            "element": {
+              "type": "string"
+            },
+            "level": {
+              "type": "string",
+              "enum": [
+                "basic",
+                "pro",
+                "advanced"
+              ]
+            },
+            "state": {
+              "type": "string"
+            },
+            "scheme": {
+              "type": "string",
+              "enum": [
+                "light",
+                "dark",
+                "both"
+              ]
+            },
+            "source": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "route": "GET /registry/summary",
+        "id": "registry-summary",
+        "title": "Token registry summary",
+        "description": "Counts by element, area, level and state.",
+        "readOnly": true
+      },
+      {
+        "route": "GET /registry/token/{token}",
+        "id": "registry-token",
+        "title": "One registry token",
+        "description": "The entry for one --fx-* token.",
+        "readOnly": true
+      },
+      {
+        "route": "GET /uis",
+        "id": "uis",
+        "title": "UIs the Skin editor can sandbox",
+        "description": "Screens, dialogs and plugins from the manifests, plus the element gallery.",
+        "readOnly": true
+      },
+      {
+        "route": "GET /state",
+        "id": "state",
+        "title": "Skin editor state",
+        "description": "The picked UI, its head snapshot, the edited tokens and when it last changed.",
+        "readOnly": true
+      },
+      {
+        "route": "GET /sessions",
+        "id": "sessions",
+        "title": "List skin sessions",
+        "description": "One session per picked UI: head, snapshot count, last change.",
+        "readOnly": true
+      },
+      {
+        "route": "GET /sessions/{ui}",
+        "id": "session",
+        "title": "One skin session",
+        "description": "The snapshot chain (rows like disk snapshots), the head and its state.",
+        "readOnly": true
+      },
+      {
+        "route": "POST /sessions/{ui}/edit",
+        "id": "edit",
+        "title": "Edit tokens",
+        "description": "Set one or more tokens on the picked UI; the edit becomes a snapshot.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "edits": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  },
+                  "to": {
+                    "type": [
+                      "string",
+                      "number",
+                      "null"
+                    ]
+                  }
+                },
+                "required": [
+                  "token"
+                ]
+              }
+            },
+            "by": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "edits"
+          ]
+        }
+      },
+      {
+        "route": "POST /sessions/{ui}/revert",
+        "id": "revert",
+        "title": "Revert to a snapshot",
+        "description": "Revert to a snapshot id, to the default, or to how it was some minutes ago; the revert is itself a snapshot.",
+        "destructive": false,
+        "confirm": false,
+        "input": {
+          "type": "object",
+          "properties": {
+            "snapshot": {
+              "type": "string"
+            },
+            "minutesAgo": {
+              "type": "number"
+            },
+            "at": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "route": "POST /sessions/{ui}/undo",
+        "id": "undo",
+        "title": "Undo the last edit",
+        "description": "Back to the head's parent (as a revert snapshot)."
+      },
+      {
+        "route": "POST /sessions/{ui}/export",
+        "id": "export",
+        "title": "Export as a new skin",
+        "description": "The head's state as a skin asset (asset@1 skin) kept in the plugin's data folder.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "snapshot": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      },
+      {
+        "route": "POST /sessions/{ui}/pick",
+        "id": "pick",
+        "title": "Pick a UI",
+        "description": "Make this UI the current one (its session starts at the default skin when new).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "route": "GET /skins",
+        "id": "skins",
+        "title": "Exported skins",
+        "readOnly": true
+      },
+      {
+        "route": "GET /skins/{id}",
+        "id": "skin",
+        "title": "One exported skin",
+        "readOnly": true
+      },
+      {
+        "route": "DELETE /skins/{id}",
+        "id": "delete-skin",
+        "title": "Delete an exported skin",
+        "destructive": true,
+        "confirm": true
+      },
+      {
+        "route": "POST /voice",
+        "id": "voice",
+        "title": "Say it",
+        "description": "A spoken phrase → the Skin editor action it means, run: 'revert the skin to 10 minutes ago', 'export this as a new skin called Midnight', 'set the accent to #ff8800 in the skin', 'search the token registry for hover'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "phrase": {
+              "type": "string"
+            },
+            "ui": {
+              "type": "string"
+            },
+            "dry": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "phrase"
+          ]
+        }
+      }
+    ]
+  },
+  "tokens": {
+    "$axf": "token-registry@1",
+    "uses": [
+      "--fx-accent",
+      "--fx-accent-soft",
+      "--fx-border",
+      "--fx-border-w",
+      "--fx-dens-gap-md",
+      "--fx-dens-gap-sm",
+      "--fx-dens-gap-xs",
+      "--fx-dens-pad-card",
+      "--fx-font-mono",
+      "--fx-muted",
+      "--fx-opacity-muted",
+      "--fx-radius-lg",
+      "--fx-radius-md",
+      "--fx-radius-sm",
+      "--fx-surface",
+      "--fx-surface2",
+      "--fx-type-scale-sm",
+      "--fx-type-scale-xs",
+      "--fx-warning"
+    ],
+    "defines": []
+  },
+  "builtWith": {
+    "model": "fable",
+    "builtAt": "2026-11-13"
+  },
+  "banner": false,
+  "tabable": true,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/skin-editor",
+    "env": [
+      "AXF_SKIN_EDITOR_DIR"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "_claude/memory/STATUS.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "userGrantable": true,
+  "help": "help.json",
+  "opens": "main"
+}

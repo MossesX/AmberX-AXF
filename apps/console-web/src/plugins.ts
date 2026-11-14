@@ -213,4 +213,12 @@ export function pluginApi(folder: string, label: string, opts: { tokenHome?: str
 }
 
 /** Fired on window when a plugin is enabled or disabled, so the shell re-installs plugins. */
+/**
+ * The installed plugin that provides a capability service (its plugin.json `provides`, e.g. `service:<name>@1`), or
+ * null. Plugins reach each other this way, never by folder name. AmberX's bridge (src/console/plugins.ts) answers the same.
+ */
+export function pluginProviding(service: string): string | null {
+  return bundledPlugins.find((p) => p.manifest.provides?.includes(service))?.folder ?? null;
+}
+
 export const PLUGINS_CHANGED = 'axf:plugins-changed';

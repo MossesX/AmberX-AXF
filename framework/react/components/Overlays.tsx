@@ -7,6 +7,7 @@ import { useScopeId } from './InterfaceScope';
 import { MenuList, MenuScroll } from './MenuList';
 import { useMenuFit } from './menuFit';
 import { CONTEXT_LEAD_PREFIX, withContextLead, type MenuEntry } from '../../core/engines/windows';
+import { chromeInstanceSlug } from '../../core/engines/chrome-settings-rules.mjs';
 
 export interface DialogDef {
   title: string;
@@ -129,7 +130,9 @@ export function ToastHost() {
 export function ContextMenuHost() {
   const rt = useRuntime();
   const state = useAxfState();
-  const cm = useAsset('context-menu').data;
+  // chrome-settings@1: the context menu's settings-dialog overrides (instance `app`) over its asset
+  const cmAsset = useAsset('context-menu').data;
+  const cm = rt.chromeData('context-menu', 'app', cmAsset) ?? cmAsset;
   const ref = useRef<HTMLDivElement>(null);
   const scope = useScopeId();
 
@@ -147,7 +150,7 @@ export function ContextMenuHost() {
       if (own) { rt.openContext(x, y, name, el?.getAttribute('data-fx-ctx-payload') ?? undefined); return; }
       // an implicit target's instance id: its settings id, else its accessible name as a slug
       const label = name === 'toolbar' ? el?.getAttribute('data-axf-toolbar') ?? el?.getAttribute('data-axf-toolbar-asset') ?? el?.getAttribute('aria-label') : name === 'tab-group' ? el?.getAttribute('data-axf-tab-group') ?? el?.getAttribute('aria-label') : name === 'nav' ? el?.getAttribute('data-axf-nav') ?? el?.getAttribute('aria-label') : null;
-      const slug = label ? label.toLowerCase().replace(/[^a-z0-9._:/-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 120) : '';
+      const slug = chromeInstanceSlug(label);
       rt.openContext(x, y, name, slug || undefined);
     };
     const onCtx = (e: MouseEvent) => {

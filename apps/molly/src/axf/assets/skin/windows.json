@@ -13,6 +13,10 @@
   "data": {
     "layoutTheme": "windows-explorer",
     "colorTheme": "windows-light",
+    "colorThemes": {
+      "light": "windows-light",
+      "dark": "windows-dark"
+    },
     "styleTheme": "windows",
     "assets": {
       "banner": "windows-titlebar",
