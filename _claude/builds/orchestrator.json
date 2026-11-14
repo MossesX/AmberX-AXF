@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:25:46.240Z",
+ "updatedAt": "2026-11-14T04:26:59.709Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137356,7 +137356,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:25:44.422Z",
+   "updatedAt": "2026-11-14T04:26:57.095Z",
    "builtAt": "",
    "notes": [
     {
@@ -137631,6 +137631,25 @@
      "note": "",
      "uid": "st-mwfwipb501li82",
      "createdAt": "2026-11-14T04:24:17.629Z"
+    },
+    {
+     "id": "s16",
+     "text": "Build orchestrator video: follow one real order end to end. The orchestrator receives an order and assigns it a build ID; it goes to Pending; when slots open up, Pending sends it to Queued; the queue keeps moving with a maximum number allowed at once, so builds flow through steadily (show the slot count and builds moving through live). Show steps, models (Opus/Fable), estimates, notes, approvals, PRs and landing. Security point: the server rejects any build that doesn't come from the orchestrator with a valid ID, so nobody can sneak in a hard-wired build and break things; demo a rejected build. Use the real orchestrator screens and real build data; label staged parts as a preview.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfwm4dh01k3oe",
+     "createdAt": "2026-11-14T04:26:57.096Z"
     },
     {
      "id": "s7",

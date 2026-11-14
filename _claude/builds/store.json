@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5232,
- "updatedAt": "2026-11-14T04:25:46.240Z",
+ "rev": 5233,
+ "updatedAt": "2026-11-14T04:26:59.709Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212179,7 +212179,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:25:44.422Z",
+   "updatedAt": "2026-11-14T04:26:57.095Z",
    "builtAt": "",
    "notes": [
     {
@@ -212524,6 +212524,28 @@
      "updatedAt": "2026-11-14T04:25:44.669Z"
     },
     {
+     "id": "s16",
+     "uid": "st-mwfwm4dh01k3oe",
+     "title": "",
+     "text": "Build orchestrator video: follow one real order end to end. The orchestrator receives an order and assigns it a build ID; it goes to Pending; when slots open up, Pending sends it to Queued; the queue keeps moving with a maximum number allowed at once, so builds flow through steadily (show the slot count and builds moving through live). Show steps, models (Opus/Fable), estimates, notes, approvals, PRs and landing. Security point: the server rejects any build that doesn't come from the orchestrator with a valid ID, so nobody can sneak in a hard-wired build and break things; demo a rejected build. Use the real orchestrator screens and real build data; label staged parts as a preview.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T04:26:57.096Z",
+     "updatedAt": "2026-11-14T04:26:57.321Z"
+    },
+    {
      "id": "s7",
      "uid": "st-mwfvsr6p0143q5",
      "title": "",
@@ -212620,7 +212642,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
