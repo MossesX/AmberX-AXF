@@ -796,14 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 16:51 UTC · `ui-review-filter-and-search-by-pr` note (all) · orchestrator
-- 2026-11-14 16:52 UTC · `hotfix-toolbar-settings-still-change` → running, note (all) · pipeline
-- 2026-11-14 16:52 UTC · `hotfix-toolbar-settings-still-change` branch claude/hotfix-toolbar-settings-still-change (all) · pipeline
-- 2026-11-14 16:52 UTC · `hotfix-toolbar-settings-still-change` note (all) · orchestrator
-- 2026-11-14 16:53 UTC · `hotfix-toolbar-settings-still-change` → running, note (all) · pipeline
-- 2026-11-14 16:54 UTC · `builds-share-one-claude-login-write` s1 done (all) · orchestrator
-- 2026-11-14 16:54 UTC · `hotfix-toolbar-settings-still-change` s1 done, → running (all) · orchestrator
-- 2026-11-14 16:56 UTC · `builds-share-one-claude-login-write` s2 done (all) · orchestrator
 - 2026-11-14 16:57 UTC · `ui-review-filter-and-search-by-pr` s1 done (all) · orchestrator
 - 2026-11-14 16:57 UTC · `hotfix-toolbar-settings-still-change` s2 done (all) · orchestrator
 - 2026-11-14 16:57 UTC · `builds-share-one-claude-login-write` s3 done (all) · orchestrator
@@ -1196,6 +1188,14 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:23 UTC · `land-batch-merge-main-each-finished` note (all) · orchestrator
 - 2026-11-14 23:23 UTC · `fix-build-whose-session-finishes-phase-e` s2 done, note (all) · foreign-write
 - 2026-11-14 23:24 UTC · `auto-land-merge-main-land-land-mjs-clash` note (all) · pipeline
+- 2026-11-14 23:24 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` → pending (all) · builds-live
+- 2026-11-14 23:24 UTC · `orchestrator-table-columns-model-queue-assigned` s2 undone, s3 undone, → pending (all) · builds-live
+- 2026-11-14 23:24 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` → pending (all) · builds-live
+- 2026-11-14 23:24 UTC · `agent-manager-training-wizard-for-employee-agent` → pending (all) · builds-live
+- 2026-11-14 23:24 UTC · `inline-edit-plugin-install-in-console-molly-and` → pending (all) · builds-live
+- 2026-11-14 23:24 UTC · `pass-approval-hook-deep-link-amberx-notification` s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s7 undone, s8 undone, s9 undone, → pending (all) · builds-live
+- 2026-11-14 23:24 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` → pending (all) · builds-live
+- 2026-11-14 23:24 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` s2 undone, → pending (all) · builds-live
 
 ## Token passes (log)
 
