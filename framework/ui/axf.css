@@ -1859,3 +1859,96 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
 .axf-controlled--success { border-inline-start-color: var(--fx-success); }
 .axf-controlled--danger { border-inline-start-color: var(--fx-danger); }
 .axf-controlled__note { align-items: center; gap: var(--fx-dens-gap-xs); }
+
+/* ---------------- picker (picker@1, react/components/PickerField.tsx + PickerDialog.tsx; spec/PICKER.md § 2–3) ----------------
+   Every colour, size, spacing, radius, border and motion is a --fx-picker-* token (core/engines/theme.ts PICKER_TOKENS),
+   each defaulting to an existing theme token, so a theme swap, a skin's parts.picker or a control@1 tokens.picker
+   override restyles it. Dialog on desktop; bottom sheet when the root carries data-fx-narrow (the layout asset's
+   phone cut-off) or the picker asset pins variant=sheet; data-fx-picker-sheet='off' (plugin setting) keeps the dialog. */
+.fx-picker-host { display: inline-flex; min-width: 0; max-width: 100%; }
+.fx-picker-trigger { display: flex; align-items: center; gap: var(--fx-picker-gap); text-align: start; cursor: pointer; }
+.fx-picker-trigger:disabled { cursor: not-allowed; }
+.fx-picker-trigger:focus-visible { border-color: var(--fx-picker-search-focus); }
+.fx-picker-trigger__text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fx-picker-trigger.is-empty .fx-picker-trigger__text { color: var(--fx-picker-option-desc); }
+.fx-picker-trigger__count {
+  flex: none; min-width: var(--fx-picker-desc-font); padding: 0 var(--fx-picker-gap); border-radius: var(--fx-picker-row-h);
+  background: var(--fx-picker-selected-bg); color: var(--fx-picker-selected-text); font-size: var(--fx-picker-desc-font); text-align: center;
+}
+.fx-picker-trigger__chev { flex: none; display: inline-flex; color: var(--fx-picker-option-icon); }
+.fx-picker__native { position: absolute !important; width: var(--fx-border-w) !important; height: var(--fx-border-w) !important; opacity: 0 !important; pointer-events: none !important; overflow: hidden !important; clip-path: inset(50%) !important; }
+
+.fx-picker__scrim {
+  position: fixed; inset: 0; z-index: 90; display: flex; align-items: center; justify-content: center;
+  padding: var(--fx-picker-pad); background: var(--fx-picker-backdrop); animation: fx-fade var(--fx-picker-motion) ease both;
+}
+.fx-picker {
+  position: relative; display: flex; flex-direction: column; gap: var(--fx-picker-gap);
+  width: var(--fx-picker-width); max-height: var(--fx-picker-max-h); padding: var(--fx-picker-pad); box-sizing: border-box;
+  background: var(--fx-picker-surface); color: var(--fx-picker-text);
+  border: var(--fx-picker-border-w) solid var(--fx-picker-border); border-radius: var(--fx-picker-radius);
+  box-shadow: var(--fx-picker-shadow); outline: none; overflow: hidden;
+  animation: fx-picker-in var(--fx-picker-motion) ease both;
+}
+@keyframes fx-picker-in { from { opacity: 0; transform: scale(0.97); } }
+.fx-picker__handle { display: none; }
+.fx-picker__head {
+  display: flex; align-items: center; gap: var(--fx-picker-gap); margin: calc(var(--fx-picker-pad) * -1) calc(var(--fx-picker-pad) * -1) 0;
+  padding: var(--fx-picker-pad) var(--fx-picker-option-pad-x); background: var(--fx-picker-header-bg); color: var(--fx-picker-header-text);
+  border-bottom: var(--fx-picker-border-w) solid var(--fx-picker-border);
+}
+.fx-picker__title { flex: 1; min-width: 0; margin: 0; font-size: var(--fx-picker-font); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fx-picker__count { flex: none; color: var(--fx-picker-option-desc); font-size: var(--fx-picker-desc-font); }
+.fx-input.fx-picker__search { flex: none; background: var(--fx-picker-search-bg); color: var(--fx-picker-search-text); border-color: var(--fx-picker-search-border); }
+.fx-input.fx-picker__search:focus { border-color: var(--fx-picker-search-focus); }
+.fx-picker__list { flex: 1 1 auto; min-height: 0; overflow: auto; overscroll-behavior: contain; outline: none; display: flex; flex-direction: column; gap: var(--fx-picker-gap); }
+.fx-picker__list:focus-visible { box-shadow: inset 0 0 0 var(--fx-picker-border-w) var(--fx-picker-focus-ring); border-radius: var(--fx-picker-option-radius); }
+.fx-picker__group { display: flex; flex-direction: column; gap: var(--fx-picker-gap); }
+.fx-picker__group-label {
+  position: sticky; top: 0; z-index: 1; padding: var(--fx-picker-gap) var(--fx-picker-option-pad-x);
+  background: var(--fx-picker-group-bg); color: var(--fx-picker-group-text); font-size: var(--fx-picker-group-font); font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.fx-picker__option {
+  display: flex; align-items: center; gap: var(--fx-picker-option-gap); min-height: var(--fx-picker-row-h); box-sizing: border-box;
+  padding: var(--fx-picker-option-pad-y) var(--fx-picker-option-pad-x); border-radius: var(--fx-picker-option-radius);
+  background: var(--fx-picker-option-bg); color: var(--fx-picker-option-text); font-size: var(--fx-picker-font); cursor: pointer; user-select: none;
+}
+.fx-picker__option:hover { background: var(--fx-picker-hover-bg); color: var(--fx-picker-hover-text); }
+.fx-picker__option.is-selected { background: var(--fx-picker-selected-bg); color: var(--fx-picker-selected-text); }
+.fx-picker__option.is-active { outline: calc(var(--fx-picker-border-w) * 2) solid var(--fx-picker-focus-ring); outline-offset: calc(var(--fx-picker-border-w) * -2); }
+.fx-picker__option.is-disabled { opacity: var(--fx-picker-disabled-opacity); cursor: not-allowed; }
+.fx-picker__icon { flex: none; display: inline-flex; color: var(--fx-picker-option-icon); }
+.fx-picker__text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.fx-picker__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fx-picker__option.is-selected .fx-picker__label { font-weight: 600; }
+.fx-picker__desc { color: var(--fx-picker-option-desc); font-size: var(--fx-picker-desc-font); }
+.fx-picker__mark { flex: none; display: inline-flex; width: var(--fx-picker-option-gap); color: var(--fx-picker-check); }
+.fx-picker__box { flex: none; accent-color: var(--fx-picker-check); pointer-events: none; }
+.fx-picker__empty { padding: var(--fx-picker-option-pad-y) var(--fx-picker-option-pad-x); color: var(--fx-picker-option-desc); font-size: var(--fx-picker-font); }
+.fx-picker__foot { display: flex; justify-content: flex-end; gap: var(--fx-picker-gap); padding-top: var(--fx-picker-gap); border-top: var(--fx-picker-border-w) solid var(--fx-picker-border); }
+
+/* picker asset choices that are not a colour or a size (root attributes from pickerAttrs) */
+[data-fx-picker-check='start'] .fx-picker__mark { order: -1; }
+[data-fx-picker-check='none'] .fx-picker__mark { display: none; }
+[data-fx-picker-desc='off'] .fx-picker__desc { display: none; }
+[data-fx-picker-done='off'] .fx-picker[data-fx-picker-multiple] .fx-picker__done { display: none; }
+
+/* bottom sheet: phones (layout cut-off) unless the asset pins a dialog or the plugin turns the sheet off; or pinned */
+:where([data-fx-narrow]:not([data-fx-picker-variant='dialog']):not([data-fx-picker-sheet='off'])) .fx-picker__scrim,
+:where([data-fx-picker-variant='sheet']) .fx-picker__scrim { align-items: flex-end; padding: 0; }
+:where([data-fx-narrow]:not([data-fx-picker-variant='dialog']):not([data-fx-picker-sheet='off'])) .fx-picker,
+:where([data-fx-picker-variant='sheet']) .fx-picker {
+  width: 100%; max-height: var(--fx-picker-sheet-max-h); border-bottom: 0;
+  border-radius: var(--fx-picker-radius) var(--fx-picker-radius) 0 0; padding-bottom: max(var(--fx-picker-pad), env(safe-area-inset-bottom));
+  animation-name: fx-picker-up;
+}
+:where([data-fx-narrow]:not([data-fx-picker-variant='dialog']):not([data-fx-picker-sheet='off'])) .fx-picker__handle,
+:where([data-fx-picker-variant='sheet']) .fx-picker__handle {
+  display: block; align-self: center; flex: none; width: calc(var(--fx-picker-row-h) * 1.2); height: calc(var(--fx-picker-border-w) * 4);
+  margin: calc(var(--fx-picker-gap) * -1) 0 0; border-radius: var(--fx-picker-row-h); background: var(--fx-picker-handle); touch-action: none; cursor: grab;
+}
+:where([data-fx-narrow]:not([data-fx-picker-variant='dialog']):not([data-fx-picker-sheet='off'])) .fx-picker__head,
+:where([data-fx-picker-variant='sheet']) .fx-picker__head { margin-top: 0; }
+@keyframes fx-picker-up { from { transform: translateY(100%); } }
+@media (prefers-reduced-motion: reduce) { .fx-picker, .fx-picker__scrim { animation: none; } }
