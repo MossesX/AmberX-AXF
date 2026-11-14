@@ -166,6 +166,12 @@ stays in the Queue, the dispatcher skips it), the `archive` and `deleted` tabs i
 archived builds → archive; soft-deleted → deleted), and the action rules `isHeld`, `canHold`, `isLive`, `canArchive`,
 `canDelete`, `unarchivedStatus`, `actionsFor`, `BUILD_ACTIONS`. Same deferral: no Kotlin twin while Android is on hold.
 
+Nov 14 2026 (build `fix-build-whose-session-finishes-phase-e`): the exit transition `nextStatusOnExit()` with
+`EXIT_REASONS` (all-done, phase-done, crash, crash-limit, upgrade-blocked, needs-brett, stopped), `pipeline.phase`,
+`pipeline.crashes`, `lastRun.reason` / `lastRun.phase`, `STATUS_AFTER.failed = pending`, the Errors tab for a
+crash-limited build in Pending; golden cases in `spec/fixtures/build-pipeline-exit.json` (`check-build-pipeline.mjs`).
+Same deferral: no Kotlin twin while Android is on hold; a port replays the fixture's `transition` block.
+
 ## Deferred: person-only actions, console refresh, UI choices (Nov 7 2026)
 
 Web only (Android on hold), Kotlin twins when the Android side resumes:
