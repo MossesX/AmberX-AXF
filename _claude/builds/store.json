@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5580,
- "updatedAt": "2026-11-14T23:13:53.349Z",
+ "rev": 5581,
+ "updatedAt": "2026-11-14T23:14:05.220Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -204913,7 +204913,7 @@
    "pr": "#633",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:27.359Z",
-   "updatedAt": "2026-11-13T19:43:04.738Z",
+   "updatedAt": "2026-11-14T23:13:03.075Z",
    "builtAt": "2026-11-13T19:41:04.838Z",
    "notes": [
     {
@@ -205052,6 +205052,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "flagged",
+    "landAttempts": [
+     {
+      "at": "2026-11-14T23:12:39.295Z",
+      "run": "lr-console-app-part-3-native-bridge-mic-20261114T231239",
+      "base": "83f718d8507e05b36ecb4169a6bb8f9d0237518b",
+      "merged": "",
+      "outcome": "clash",
+      "ci": "",
+      "note": "Source clash a person has to settle: framework/ui/axf.css. No fix build: the orchestrator did not take it."
+     }
+    ]
    },
    "steps": [
     {
@@ -205220,7 +205237,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
