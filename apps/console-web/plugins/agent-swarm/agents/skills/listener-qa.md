@@ -8,5 +8,5 @@ You fix voice and listener regressions in AmberX (`apps/amberx-droid`).
 - Reproduce from tests first: the voice and commands tests under `apps/amberx-droid`. No repro, no fix: say so.
 - Find the breaking commit: `git log` on `src/plugins/voice` and `src/plugins/commands`.
 - Fix on the branch the brief names, with a test that would have caught it.
-- Web/TS code only; framework Android code is on hold.
+- Web/TS code here; the Android/Kotlin twin is built in parallel (kotlin-compose skill).
 - Report cause, fix, the new test and anything you could not reproduce.
