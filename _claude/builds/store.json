@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5144,
- "updatedAt": "2026-11-14T01:10:51.052Z",
+ "rev": 5145,
+ "updatedAt": "2026-11-14T01:11:59.221Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -210652,10 +210652,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/voice-listener-use-claude-when-connected",
-   "pr": "",
+   "pr": "#666",
    "priority": "P1",
    "createdAt": "2026-11-13T23:42:29.374Z",
-   "updatedAt": "2026-11-14T01:10:35.329Z",
+   "updatedAt": "2026-11-14T01:11:57.776Z",
    "builtAt": "",
    "notes": [
     {
@@ -211099,7 +211099,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
