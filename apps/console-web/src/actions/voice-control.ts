@@ -13,6 +13,7 @@ import type { AxfRuntime } from '../axf/core';
 import { intentCommand, voiceIntent, voiceReply, type VoiceIntent } from '../axf/core/engines/console-control-voice.mjs';
 import { executeControl, type ControlAnswer } from '../control/executor';
 import { consoleSearch, type ConsoleSearchHit } from '../control/search';
+import { controlRegistry } from '../axf/react/controlTargets';
 
 export const VOICE_ACTION = 'console.control.voice';
 
@@ -21,6 +22,7 @@ export interface VoiceRun { heard: string; intent: VoiceIntent | null; hit?: Con
 /** The best hit for an intent's words: inside `within` first (a settings tab), then anywhere. */
 export function resolveIntent(rt: AxfRuntime, intent: VoiceIntent): ConsoleSearchHit | null {
   if (!intent.find) return null;
+  controlRegistry(rt).refreshNow(); // fields and buttons of the dialog in front (fieldControl.ts) are searchable now
   const hits = consoleSearch(rt, { q: intent.find.q, kinds: intent.find.kinds, limit: 10 });
   if (intent.within) return hits.find((h) => h.address.startsWith(`${intent.within}/`)) ?? hits[0] ?? null;
   return hits[0] ?? null;
@@ -40,7 +42,8 @@ export async function runVoice(rt: AxfRuntime, text: string, opts: { speak?: boo
     if (opts.speak !== false) { speak(r.say); rt.toast(r.say, r.ok ? 'info' : 'warning', 'Voice'); }
     return r;
   };
-  if (!intent) return done({ heard, intent, say: "That isn't a console command I know.", ok: false });
+  if (!intent) return done({ heard, intent, say: "That isn't a console command I know. Say: what can I say.", ok: false });
+  if (intent.help) return done({ heard, intent, say: voiceReply(intent, { ok: true }), ok: true });
   let hit: ConsoleSearchHit | null = null;
   if (intent.find) {
     try { hit = resolveIntent(rt, intent); } catch { hit = null; }
@@ -49,7 +52,7 @@ export async function runVoice(rt: AxfRuntime, text: string, opts: { speak?: boo
   const command = intentCommand(intent, hit?.address ?? null);
   // a function hit with an argument (a plan feature, a build) runs with it
   if (hit?.value !== undefined && (command.verb === 'open' || command.verb === 'press')) { command.verb = 'press'; command.value = hit.value; }
-  const answer = await executeControl(rt, { ...command, by: 'voice' });
+  const answer = await executeControl(rt, { ...command, by: 'voice', reason: `said: ${heard.slice(0, 160)}` });
   return done({ heard, intent, ...(hit ? { hit } : {}), command, answer, say: voiceReply(intent, answer as unknown as Record<string, unknown>, hit?.label), ok: answer.ok });
 }
 

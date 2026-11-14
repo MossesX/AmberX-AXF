@@ -11,6 +11,12 @@
  *   axf console scroll up|down|page-up|page-down|top|bottom [--amount 0.5] [--address <pane>] · scroll to <address>
  *   axf console plugin enable|disable <plugin> [--force]
  *   axf console voice "<phrase>"                       what AmberX does with a spoken phrase ("scroll down", "disable plugin skins")
+ *   axf console read [--no-text]                         what is on screen: dialog, fields with values, buttons (and a line to say)
+ *   axf console fields                                   the fields and buttons of the open dialog / screen
+ *   axf console fill "Project name=My app" "Template=Blank" [--submit Create] [--reason "…"]   type into fields, press submit
+ *   axf console press <button label or address>         press a button on the screen in front ("Create", "button:next")
+ *   axf console type <field label or address> <text…>   type into one field
+ *   axf console audit [--limit 30] [--all] [--by name]  who did what and why (newest first)
  *   axf console do <verb> [address] [--value v] [--confirm] [--reason "…"] [--to recent|all|<client>]
  *   --json  the answer as JSON · --remote <url>  another console
  *
@@ -18,10 +24,16 @@
  */
 import { pathToFileURL } from 'node:url';
 
-export const CONTROL_SUBCOMMANDS = new Set(['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice']);
+export const CONTROL_SUBCOMMANDS = new Set(['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice', 'read', 'fields', 'fill', 'press', 'type', 'audit']);
 const VERBS = ['open', 'state', 'press', 'set', 'scroll', 'focus', 'search', 'list', 'plugin.enable', 'plugin.disable'];
 const SCROLL_DIRS = ['up', 'down', 'page-up', 'page-down', 'top', 'bottom', 'to'];
-const FLAGS_WITH_VALUE = new Set(['value', 'reason', 'to', 'kinds', 'limit', 'under', 'source', 'amount', 'address', 'remote', 'by']);
+const FLAGS_WITH_VALUE = new Set(['value', 'reason', 'to', 'kinds', 'limit', 'under', 'source', 'amount', 'address', 'remote', 'by', 'submit']);
+
+/** A label as an address id (= controlSlug in framework/react/controlTargets.ts, slug in server/console_control.py). */
+export const slug = (s) => String(s ?? '').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
+/** A field / button named by label or by address (the same rule as field_address / button_address on the server). */
+export const fieldAddress = (k) => (String(k).includes(':') ? String(k) : `setting:field.${slug(k)}`);
+export const buttonAddress = (k) => (String(k).includes(':') ? String(k) : `button:${slug(k)}`);
 
 /** argv → { words, flags }. */
 export function parseArgs(argv) {
@@ -88,6 +100,31 @@ export function toRequest(argv) {
       if (!text) throw new Error('usage: axf console voice "<phrase>"');
       return { method: 'POST', path: '/voice', body: { text, ...extra } };
     }
+    case 'read': return { method: 'GET', path: `/screen${flags['no-text'] ? '?text=false' : ''}${flags.to ? `${flags['no-text'] ? '&' : '?'}to=${encodeURIComponent(String(flags.to))}` : ''}` };
+    case 'fields': return { method: 'GET', path: `/fields${flags.to ? `?to=${encodeURIComponent(String(flags.to))}` : ''}` };
+    case 'fill': {
+      const values = {};
+      for (const a of args) { const eq = a.indexOf('='); if (eq <= 0) throw new Error('usage: axf console fill "<field>=<value>" … [--submit <button>]'); values[a.slice(0, eq).trim()] = value(a.slice(eq + 1)); }
+      if (!Object.keys(values).length && typeof flags.submit !== 'string') throw new Error('usage: axf console fill "<field>=<value>" … [--submit <button>]');
+      return { method: 'POST', path: '/fill', body: { values, ...(typeof flags.submit === 'string' ? { submit: flags.submit } : {}), ...extra } };
+    }
+    case 'press': {
+      const name = args.join(' ').trim();
+      if (!name) throw new Error('usage: axf console press <button label or address> [--confirm]');
+      return { method: 'POST', path: '/do', body: { verb: 'press', address: buttonAddress(name), ...(flags.value !== undefined ? { value: value(flags.value) } : {}), ...(flags.confirm ? { confirm: true } : {}), ...extra } };
+    }
+    case 'type': {
+      const [field, ...text] = args;
+      if (!field || !text.length) throw new Error('usage: axf console type <field label or address> <text…>');
+      return { method: 'POST', path: '/fill', body: { values: { [field]: text.join(' ') }, ...extra } };
+    }
+    case 'audit': {
+      const q = new URLSearchParams();
+      q.set('limit', String(flags.limit ?? 30));
+      if (!flags.all) q.set('writes', 'true');
+      if (typeof flags.by === 'string') q.set('by', flags.by);
+      return { method: 'GET', path: `/audit?${q}` };
+    }
     case 'do': {
       const [verb, address] = args;
       if (!VERBS.includes(verb)) throw new Error(`usage: axf console do <${VERBS.join('|')}> [address] [--value v] [--confirm]`);
@@ -108,7 +145,11 @@ export async function send(req, { base = process.env.AXF_CONSOLE_URL || 'https:/
   try {
     const res = await f(url, { method: req.method, headers: { ...(req.body ? { 'content-type': 'application/json' } : {}), ...(token ? { authorization: `Bearer ${token}` } : {}) }, ...(req.body ? { body: JSON.stringify(req.body) } : {}) });
     const text = await res.text();
-    try { return JSON.parse(text); } catch { return { ok: false, code: 'unexpected', message: `${res.status} from ${url}: ${text.slice(0, 200)}` }; }
+    try {
+      const j = JSON.parse(text);
+      if (j && typeof j === 'object' && j.ok === undefined && !res.ok) return { ok: false, code: res.status === 401 || res.status === 403 ? 'denied' : 'unexpected', message: `${res.status}: ${j.detail ?? text.slice(0, 200)}${res.status === 401 ? ' (set AXF_TOKEN)' : ''}` };
+      return j;
+    } catch { return { ok: false, code: 'unexpected', message: `${res.status} from ${url}: ${text.slice(0, 200)}` }; }
   } catch (e) {
     return { ok: false, code: 'unexpected', message: `could not reach ${url}: ${String(e?.message ?? e).slice(0, 200)}` };
   }
@@ -116,8 +157,24 @@ export async function send(req, { base = process.env.AXF_CONSOLE_URL || 'https:/
 
 /** A few readable lines for an answer. */
 export function describe(r) {
+  if (!r.ok && Array.isArray(r.filled)) return [...r.filled.map((f) => `${f.ok ? '✓' : '✗'} ${f.field} → ${f.address}${f.ok ? '' : `: ${f.message}`}`), `✗ ${r.code}: ${r.message}`, ...(r.openUrl ? [`  open the console: ${r.openUrl}`] : [])];
   if (!r.ok) return [`✗ ${r.code}: ${r.message}`, ...(r.openUrl ? [`  open the console: ${r.openUrl}`] : []), ...(r.nearest?.length ? [`  nearest: ${r.nearest.join(', ')}`] : [])];
   const out = [];
+  if (r.screen && typeof r.screen === 'object') {
+    const sc = r.screen;
+    out.push(`${sc.title ?? sc.view}${sc.dialog ? ` › ${sc.dialog.title} (dialog)` : ''}`);
+    for (const f of sc.fields ?? []) out.push(`  ${f.address}  ${f.label} [${f.type}${f.required ? ', required' : ''}${f.disabled ? ', disabled' : ''}] = ${JSON.stringify(f.value)}${f.options ? `  options: ${f.options.map((o) => o.label ?? o).join(' | ')}` : ''}`);
+    for (const b of sc.buttons ?? []) out.push(`  ${b.address}  ${b.label}${b.disabled ? ' (disabled)' : ''}`);
+    if (r.say) out.unshift(`🗣 ${r.say}`);
+    return out;
+  }
+  if (Array.isArray(r.filled)) {
+    for (const f of r.filled) out.push(`${f.ok ? '✓' : '✗'} ${f.field} → ${f.address}${f.ok ? ` = ${JSON.stringify(f.value)}` : `: ${f.message}`}`);
+    if (r.pressed) out.push(`${r.pressed.ok ? '✓' : '✗'} pressed ${r.pressed.button}${r.pressed.ok ? '' : `: ${r.pressed.message}`}`);
+    if (r.screen) out.push(`  now: ${r.screen.title ?? r.screen.view}${r.screen.dialog ? ` › ${r.screen.dialog.title}` : ''}`);
+    return out;
+  }
+  if (Array.isArray(r.lines)) { for (const l of r.lines) out.push(`${l.at}  ${l.by}  ${l.verb} ${l.address ?? l.query ?? ''}${l.value !== undefined ? ` = ${l.value}` : ''}  · ${l.reason ?? ''}  [${l.policy}${l.decidedBy ? `, ${l.decidedBy}` : ''}] ${l.ok ? 'ok' : l.code}`); return out; }
   if (Array.isArray(r.hits)) for (const h of r.hits) out.push(`${h.address}  ${h.label}${h.detail ? `  · ${h.detail}` : ''}`);
   else if (Array.isArray(r.targets)) { out.push(`${r.targets.length} targets (${r.source ?? 'console'})`); for (const t of r.targets.slice(0, 200)) out.push(`${t.address}  ${t.label}`); }
   else out.push(`✓ ${r.verb ?? 'ok'}${r.address ? ` ${r.address}` : ''}${r.value !== undefined ? ` = ${JSON.stringify(r.value)}` : ''}${r.enabled !== undefined ? ` (${r.enabled ? 'on' : 'off'})` : ''}`);

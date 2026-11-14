@@ -1068,7 +1068,8 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
 # ---------------------------------------------------------------------- console control (console-control@1, CONSOLE-CONTROL.md)
 
 CONSOLE_CONTROL_TOOLS = ("console_control_targets", "console_control_state", "console_control_do", "console_control_search", "console_control_focus",
-                         "console_control_scroll", "console_control_plugin", "console_control_voice")
+                         "console_control_scroll", "console_control_plugin", "console_control_voice",
+                         "console_control_screen", "console_control_fill", "console_control_audit")
 ADDRESS_RE = re.compile(r"^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):")
 
 
@@ -1083,7 +1084,14 @@ def console_control_runner() -> Callable[[dict[str, Any]], dict[str, Any]]:
         import urllib.request
         base = os.environ.get("AXF_CONSOLE_URL", "https://console.amberxai.com").rstrip("/") + "/api/console-control"
         auth = {"authorization": f"Bearer {os.environ['AXF_TOKEN']}"} if os.environ.get("AXF_TOKEN") else {}
-        if body.get("verb") == "voice":
+        if body.get("verb") == "screen":
+            req = urllib.request.Request(f"{base}/screen?" + urllib.parse.urlencode({"to": body.get("to") or "recent", "text": "true" if body.get("text", True) else "false"}), headers=auth)
+        elif body.get("verb") == "audit":
+            req = urllib.request.Request(f"{base}/audit?" + urllib.parse.urlencode({**{k: body[k] for k in ("limit", "writes") if body.get(k)}, **({"by": body["who"]} if body.get("who") else {})}), headers=auth)
+        elif body.get("verb") == "fill":
+            req = urllib.request.Request(f"{base}/fill", data=json.dumps({k: body.get(k) for k in ("values", "submit", "reason", "by", "to")}).encode(), method="POST",
+                                         headers={"content-type": "application/json", **auth})
+        elif body.get("verb") == "voice":
             req = urllib.request.Request(f"{base}/voice", data=json.dumps({"text": body.get("text"), "by": body.get("by"), "to": body.get("to")}).encode(), method="POST",
                                          headers={"content-type": "application/json", **auth})
         elif body.get("verb") == "targets":
@@ -1113,6 +1121,12 @@ def console_control_runner() -> Callable[[dict[str, Any]], dict[str, Any]]:
             return api.targets(str(body.get("under") or ""), ks or None, str(body.get("source") or "auto"), str(body.get("by") or "mcp"))
         if body.get("verb") == "voice":
             return api.voice(str(body.get("text") or ""), str(body.get("by") or "voice"), to=str(body.get("to") or "recent"))
+        if body.get("verb") == "screen":
+            return api.screen(str(body.get("by") or "mcp"), to=str(body.get("to") or "recent"), text=bool(body.get("text", True)))
+        if body.get("verb") == "audit":
+            return {"$axf": "console-control@1", "ok": True, "lines": api.audit_lines(int(body.get("limit") or 50), bool(body.get("writes")), str(body.get("who") or ""))}
+        if body.get("verb") == "fill":
+            return api.fill(body.get("values") or {}, str(body.get("submit") or ""), str(body.get("by") or "mcp"), to=str(body.get("to") or "recent"), reason=str(body.get("reason") or ""))
         return api.command(body, str(body.get("by") or "mcp"))
 
     return run
@@ -1187,6 +1201,30 @@ def _register_console_control_tools(mcp: MCPServer, run: Callable[[dict[str, Any
         """Turn a console plugin on or off (id, folder or name). Core plugins refuse; a plugin another enabled one needs
         refuses unless force. The answer names the effects: who stops working, what it needs that is off."""
         return await go({"verb": "plugin.enable" if enabled else "plugin.disable", "address": plugin, "reason": reason, **({"options": {"force": True}} if force else {})})
+
+    @mcp.tool(annotations=READ)
+    async def console_control_screen(text: bool = True, to: str = "recent") -> dict[str, Any]:
+        """What is on Brett's screen right now: the screen, the open dialog, every field (address, label, type, value,
+        required, options) and button (address, label, disabled), headings and the visible text, plus `say` (one line to
+        speak). Use it to narrate and to check what you typed before pressing Create / Save. No console: unavailable + openUrl."""
+        return await go({"verb": "screen", "text": text, "to": to})
+
+    @mcp.tool(annotations=WRITE)
+    async def console_control_fill(values: dict[str, Any], submit: str = "", reason: str = "", to: str = "recent") -> dict[str, Any]:
+        """Fill in the open dialog or screen (the New Project wizard, any plugin form): values = {field label or address:
+        value} typed in order (text is typed, a select / choice picks by value or label, a switch takes on / off), then
+        `submit` = the button to press (label or address: "Create", "Next", "button:save"). Stops at the first field that
+        fails and names it. The answer ends with the screen read back. Approve / deny are never pressed this way."""
+        r = await anyio.to_thread.run_sync(lambda: run({"verb": "fill", "values": values, "submit": submit, "reason": reason, "to": to, "by": "mcp"}))
+        if not r.get("ok") and r.get("code") not in ("confirmation_required", "unavailable", "not_found", "validation", "denied", "ambiguous"):
+            raise ToolError(f"{r.get('code', 'unexpected')}: {r.get('message', 'failed')}")
+        return r
+
+    @mcp.tool(annotations=READ)
+    async def console_control_audit(limit: int = 30, writes: bool = True, by: str = "") -> dict[str, Any]:
+        """The console-control audit, newest first: who (by), what (verb, address, value), why (reason), the policy tag,
+        the outcome and, for a decision, decidedBy. writes=false includes reads and navigation."""
+        return await go({"verb": "audit", "limit": limit, "writes": writes, "who": by})
 
     @mcp.tool(annotations=WRITE)
     async def console_control_voice(text: str, to: str = "recent") -> dict[str, Any]:

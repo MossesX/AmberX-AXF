@@ -135,6 +135,56 @@ the scrollable height, `fraction` = `top / max(1, extent − height)` rounded to
 `page-*` move `height − line` (line = one row height, the density token), `top` → 0, `bottom` → `extent − height`; every result is
 clamped to `[0, extent − height]`. Every port reproduces the fixture rows.
 
+## Fields and buttons on any screen
+
+Added Nov 13 2026 (build `full-voice-api-control-type-fields-press`). Brett: "the most important thing is full voice control
+for API so I can build, control absolutely everything, don't even have to touch the phone at all". Registered targets cover the
+framework controls that opt in. Everything else on the **surface in front** (the topmost open dialog, else the main pane, plus any
+open menu or listbox) is discovered from the page by `framework/react/fieldControl.ts` and registered under the same kinds, so no
+transport and no schema changes:
+
+| On the page | Address | `set` | `press` |
+|---|---|---|---|
+| the open dialog | `view:<v>/panel:dialog:<dialog id>` | | |
+| text, number, email, url, date, textarea, contenteditable | `<surface>/setting:field.<id>` | types the value (native setter + `input` / `change`, so React sees it) | |
+| select | `…/setting:field.<id>` | picks by value, then label (exact, starts with, contains) | |
+| switch, checkbox | `…/setting:field.<id>` | `on` / `off` / `toggle` (yes, true, 1, check …) | |
+| radio group, ChoiceGrid | `…/setting:field.<id>` | picks one option by value or label; a multiple group takes a list or `a, b` | |
+| button, icon button, menu item, tab, link button | `<surface>/button:<id>` | | clicks it |
+
+`<surface>` is `view:<v>` or the dialog's address; `<id>` is the control's `data-axf-id`, `name` or non-generated `id`, else the
+slug of its label (a repeat gets `-2`, `-3`). Labels are the accessible name (aria-label, aria-labelledby, `<label for>`, the
+framework Field's label, placeholder). A registered target always wins over a discovered one at the same element or address.
+`state` on a field answers `type`, `value`, `required`, `options`, `placeholder` and the field's error; a password's value is
+never read back (`••••`), a file field can't be set. Elements under `data-axf-control-skip` are never discovered. The registry
+re-discovers the surface before every command, so a wizard's next page is addressable the moment it renders.
+
+### Reading the screen back
+
+`state` with no address answers `state.report` (`ScreenReport`; `state.screen` stays the view id): `view`, `title`, `dialog { id, title, address } | null`,
+`surface`, `headings`, `fields [{ address, id, label, type, value, required, disabled, options?, placeholder?, error? }]`,
+`buttons [{ address, id, label, role, disabled, selected? }]` and `text` (the surface's visible text, 1200 characters at most), so
+a voice assistant can say what is open and check what it typed before it presses Create.
+
+### Decisions hands-free
+
+A deciding press (approve, deny, reject, veto, shelve, decide, sign off: by the button's word or the inventory's `personOnly`) is
+Brett's own decision. It is refused (`denied`, `requires: person`) for every caller **except Brett's own signed-in session**: a
+person signed in to axHub as an admin on his browser or phone (the wall caller), never the shared console token that agents, scripts
+and MCP connectors hold (`owner_of` in `server/console_control_api.py`). From that session the press runs (REST `/do`, `/fill`
+submit, `/voice` "approve", "veto it", "deny"), the answer carries `decidedBy: owner:<name>` and the audit line records it, so
+a veto countdown or a confirm in front of him is approved by voice with no tap. In-console voice runs in his own session too.
+A claude.ai chat reaches the console through the shared token today, so it still can't decide: an owner OAuth identity on the MCP
+connector is the gap (report of the build).
+
+### Voice
+
+`console-control-voice.mjs` (Python twin `console_control.voice_intent`) adds: "type <text> into <field>", "enter <text> in
+<field>", "fill <field> with <text>" (the text keeps its case: matched on the raw words), "what's on screen" / "read the screen" /
+"where am I" / "what can I press" (`{ verb: state, screen: true }`, answered with `screenLine` from `state.report`), "approve [<x>]" / "veto it" /
+"deny" / "reject <x>" / "sign off" (`decision`), one-word presses (submit, next, create, save, continue, finish, done, confirm,
+cancel, back, close, ok, apply, send, start, retry), and "what can I say" (`{ verb: state, help: true }`: `VOICE_HELP`, no command runs). Fixture rows in `spec/fixtures/console-control-voice.json`.
+
 ## Answers
 
 Success: `{ $axf: 'console-control@1', ok: true, verb, address?: <full address>, …data, audit? }` with `data` per verb as in the

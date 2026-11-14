@@ -190,7 +190,127 @@
       "value": true
     },
     "what time is it": null,
-    "": null
+    "": null,
+    "Amber, type My New App into the project name field": {
+      "verb": "set",
+      "find": {
+        "q": "project name",
+        "kinds": [
+          "setting"
+        ]
+      },
+      "value": "My New App"
+    },
+    "enter hello@example.com in email": {
+      "verb": "set",
+      "find": {
+        "q": "email",
+        "kinds": [
+          "setting"
+        ]
+      },
+      "value": "hello@example.com"
+    },
+    "fill description with A \"fast\" app.": {
+      "verb": "set",
+      "find": {
+        "q": "description",
+        "kinds": [
+          "setting"
+        ]
+      },
+      "value": "A \"fast\" app"
+    },
+    "what's on the screen": {
+      "verb": "state",
+      "screen": true
+    },
+    "where am I": {
+      "verb": "state",
+      "screen": true
+    },
+    "read the dialog": {
+      "verb": "state",
+      "screen": true
+    },
+    "what can I say": {
+      "verb": "state",
+      "help": true
+    },
+    "approve": {
+      "verb": "press",
+      "find": {
+        "q": "approve",
+        "kinds": [
+          "button",
+          "function"
+        ]
+      },
+      "decision": "approve"
+    },
+    "approve the deploy": {
+      "verb": "press",
+      "find": {
+        "q": "approve the deploy",
+        "kinds": [
+          "button",
+          "function"
+        ]
+      },
+      "decision": "approve"
+    },
+    "veto it": {
+      "verb": "press",
+      "find": {
+        "q": "veto",
+        "kinds": [
+          "button",
+          "function"
+        ]
+      },
+      "decision": "veto"
+    },
+    "deny": {
+      "verb": "press",
+      "find": {
+        "q": "deny",
+        "kinds": [
+          "button",
+          "function"
+        ]
+      },
+      "decision": "deny"
+    },
+    "next": {
+      "verb": "press",
+      "find": {
+        "q": "next",
+        "kinds": [
+          "button",
+          "function"
+        ]
+      }
+    },
+    "yes confirm": {
+      "verb": "press",
+      "find": {
+        "q": "confirm",
+        "kinds": [
+          "button",
+          "function"
+        ]
+      }
+    },
+    "create": {
+      "verb": "press",
+      "find": {
+        "q": "create",
+        "kinds": [
+          "button",
+          "function"
+        ]
+      }
+    }
   },
   "commands": {
     "scroll down": {
@@ -306,6 +426,61 @@
       "verb": "set",
       "address": "view:build-orchestrator/grid:builds/row:b1",
       "value": true
+    },
+    "Amber, type My New App into the project name field": {
+      "verb": "set",
+      "address": "view:build-orchestrator/grid:builds/row:b1",
+      "value": "My New App"
+    },
+    "enter hello@example.com in email": {
+      "verb": "set",
+      "address": "view:build-orchestrator/grid:builds/row:b1",
+      "value": "hello@example.com"
+    },
+    "fill description with A \"fast\" app.": {
+      "verb": "set",
+      "address": "view:build-orchestrator/grid:builds/row:b1",
+      "value": "A \"fast\" app"
+    },
+    "what's on the screen": {
+      "verb": "state"
+    },
+    "where am I": {
+      "verb": "state"
+    },
+    "read the dialog": {
+      "verb": "state"
+    },
+    "what can I say": {
+      "verb": "state"
+    },
+    "approve": {
+      "verb": "press",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "approve the deploy": {
+      "verb": "press",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "veto it": {
+      "verb": "press",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "deny": {
+      "verb": "press",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "next": {
+      "verb": "press",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "yes confirm": {
+      "verb": "press",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "create": {
+      "verb": "press",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
     }
   },
   "replies": {
@@ -318,6 +493,9 @@
     "disable": "Skins is off. Crew loses a feature.",
     "confirm": "That deletes something. Say it again with confirm, or do it on screen.",
     "noConsole": "No console is open. Open it and ask again.",
-    "failed": "Couldn't: needs Brett"
+    "failed": "Couldn't: needs Brett",
+    "help": "Say: what's on screen. Open plan studio. Type Garden planner into name. Set template to blank. Press create, or just next, save, confirm. Approve or veto it, from your own session. Scroll down. Find a build. Show step 3 of a build. Turn a plugin off.",
+    "decided": "Approve: done, as your decision.",
+    "screen": "You're on New project dialog on Projects. 2 fields: Name (required, empty), Template. Buttons: Create, Cancel."
   }
 }
