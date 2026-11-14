@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5608,
- "updatedAt": "2026-11-14T23:21:42.206Z",
+ "rev": 5609,
+ "updatedAt": "2026-11-14T23:21:57.801Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211763,7 +211763,7 @@
    "title": "Per-toolbar settings: fix failing chrome-settings check and land",
    "category": "",
    "detail": "Branch claude/per-instance-settings-picker-merge-main (worktree /root/axf-builds/per-instance-settings-picker-merge-main) now has origin/main merged (commit 617aa0a7d). The fixture clash in framework/spec/fixtures/chrome-settings.json was resolved by taking main's version and regenerating the fixtures, but framework/spec/check-chrome-settings.mts now fails with a deepStrictEqual. Find which expectation differs (likely the per-instance fields vs main's tab-rows fields), fix the rules or regenerate the fixtures so both features' expectations hold, run the full chrome-settings and theme/control checks, commit, push, then land on main. Feature: every individual toolbar, tab group, menu and dialog instance gets its own settings interface (including transparency) that changes only that instance.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -211773,7 +211773,7 @@
    "priority": "P0",
    "createdAt": "2026-11-13T20:08:02.821Z",
    "updatedAt": "2026-11-14T23:20:31.439Z",
-   "builtAt": "",
+   "builtAt": "2026-11-14T23:20:31.439Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -211957,12 +211957,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:20:10.175Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:09:48.693Z",
-     "updatedAt": "2026-11-13T20:09:48.693Z"
+     "updatedAt": "2026-11-14T23:20:11.483Z"
     }
    ],
    "profiles": [
@@ -211973,7 +211973,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
