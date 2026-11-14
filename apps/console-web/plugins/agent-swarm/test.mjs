@@ -727,4 +727,44 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
   });
 }
 
+// HR (Brett, Nov 10 2026): builds go to builders only; no builder → a hire request Brett approves; website training
+{
+  const hr = await import('./hr-core.mjs'); const jc = await import('./jobs-core.mjs');
+  const roster = JSON.parse(readFileSync(new URL('./agents/roster.json', import.meta.url), 'utf8'));
+  const fb = jc.jobTypes([JSON.parse(readFileSync(new URL('../../../../framework/assets/job-type/feature-build.json', import.meta.url), 'utf8'))])[0];
+  const AT = '2026-11-14T10:00:00.000Z';
+  t('builder category = who can take feature-build; a builder hire has persona, voice, tools and the job category', () => {
+    const r = { ...roster, agents: roster.agents.map(c.normAgent) };
+    const b = hr.buildersOf(fb, r, c.normState({}, r)); assert.ok(b.length > 0); assert.ok(b.every((a) => jc.canTake(fb, a)));
+    const h = hr.hireBuilder(fb, r, AT);
+    assert.equal(h.agent.role, 'Builder'); assert.ok(jc.canTake(fb, h.agent)); assert.ok(!r.agents.some((a) => a.id === h.agent.id));
+    assert.deepEqual(h.agent.tools, fb.data.tools); assert.equal(h.profile.category, 'builder'); assert.ok(h.profile.voice && h.profile.persona.includes(h.agent.name));
+    const again = hr.hireBuilder(fb, { ...r, agents: [...r.agents, h.agent] }, AT); assert.notEqual(again.agent.id, h.agent.id);
+  });
+  t('with no builders, a build is unassigned (strict: no fallback to other crew)', () => {
+    const none = { ...roster, agents: roster.agents.map(c.normAgent).filter((a) => !jc.canTake(fb, a)) };
+    const st = c.normState({}, none);
+    assert.equal(jc.route(fb, none, st, [], {}, AT, { strict: true, force: true }).unassigned, true);
+  });
+  t('hire requests: one open per job, decided once', () => {
+    const a = hr.fileHireRequest([], { build: 'x', why: 'none free', at: AT }); assert.ok(a.created);
+    const b = hr.fileHireRequest(a.list, { build: 'y', at: AT }); assert.equal(b.created, false); assert.equal(b.list.length, 1);
+    const d = hr.decideHireRequest(b.list, a.request.id, 'approved', { by: 'brett', via: 'console', at: AT, hired: 'bea' }); assert.equal(d.request.state, 'approved'); assert.equal(d.request.hired, 'bea');
+    assert.throws(() => hr.decideHireRequest(d.list, a.request.id, 'denied', { by: 'brett', via: 'console', at: AT }), /already approved/);
+    const al = hr.hireAlert(a.request); assert.equal(al.title, 'Hire a new builder?'); assert.match(al.link, /^agent-swarm\.hire-request:/); assert.match(al.key, /^hr:hire:/);
+  });
+  t('website pages: readable text, same-site links, digest capped', () => {
+    const p = hr.pageText('<html><head><title>Docs</title></head><body><nav>x</nav><h1>Hi &amp; bye</h1><script>evil()</script><p>Body</p></body></html>');
+    assert.equal(p.title, 'Docs'); assert.match(p.text, /Hi & bye/); assert.doesNotMatch(p.text, /evil|Docs/);
+    assert.deepEqual(hr.sameSiteLinks('<a href="/a#x">a</a><a href="https://o.com/b">b</a><a href="mailto:z">z</a>', 'https://s.com/'), ['https://s.com/a']);
+    const idx = hr.addPages({ agent: 'k', pages: [] }, Array.from({ length: 60 }, (_, i) => ({ id: `p${i}`, url: `https://s.com/${i}`, title: `T${i}`, chars: 5 })));
+    assert.equal(idx.pages.length, hr.PAGES_MAX);
+    assert.ok(hr.knowledgeDigest(idx, () => 'word '.repeat(500)).length <= hr.DIGEST_MAX);
+  });
+  t('job briefs carry the trained knowledge', () => {
+    const a = c.normAgent(roster.agents.find((x) => x.jobsOnly));
+    assert.match(jc.jobBrief(fb, a, { at: AT, runId: 'r', values: { build: 'b' }, knowledge: 'Your trained website knowledge: X' }).text, /YOUR TRAINING[\s\S]*X/);
+  });
+}
+
 console.log(`agent-swarm: ${n} checks passed`);

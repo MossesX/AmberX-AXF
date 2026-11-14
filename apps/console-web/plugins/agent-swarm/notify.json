@@ -1,0 +1,17 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "hr.hire-request",
+      "label": "Hire a new builder?",
+      "group": "approvals",
+      "app": "console",
+      "source": "Agent swarm HR (a build found no free builder)",
+      "description": "No builder employee is free to take a build (none on the crew, or every one busy). Approve to hire one (name, avatar, persona, voice, builder tools); the waiting build is assigned to them. Deny closes the request. Nobody but you can decide it. One open request at a time.",
+      "match": { "source": "agent-swarm", "keyPrefix": "hr:hire:" },
+      "guarded": true,
+      "push": true,
+      "priority": "high"
+    }
+  ]
+}

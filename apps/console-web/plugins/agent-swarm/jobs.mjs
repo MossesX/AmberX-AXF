@@ -20,6 +20,8 @@
  *   … event <name> [--input k=v]… [--run]        job types triggered by that event (and launch them)
  *   … sweep                                      finished runs: usage, status and report onto the agent (stats, cost, chat)
  *   … hire <job-type>                            one-tap hire for a job type nobody owns
+ *   … hire-requests | hire-request | hire-approve <id> | hire-deny <id>   builder hires on Brett's approval (hr.mjs)
+ *   … train <agent> <url> [--crawl n] | knowledge <agent> | forget <agent> <page|all>   website training (hr.mjs)
  *   --json on any command prints JSON (the console server uses this).
  *
  * Job types: framework/assets/job-type/*.json (asset@1). Runs: the swarm's runs.json (swarm-run@1, kind "job").
@@ -31,6 +33,8 @@ import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import * as jc from './jobs-core.mjs';
+import * as hr from './hr-core.mjs';
+import { digestFor, hrMain, requestHire } from './hr.mjs';
 import * as core from './web/swarm-core.mjs';
 import { ROOT, chatAfterRun, dataDir, loadPersona, loadRoster, loadRuns, loadSkills, loadState, priceTable, readJson, repoRoot, runsFile, say, withState, writeJson } from './swarm.mjs';
 
@@ -84,7 +88,7 @@ export function run(typeId, opts = {}) {
   const values = jc.checkInputs(jt, opts.inputs ?? {});
   const runId = jc.runIdFor(jt, at); const agent = r.agent;
   const skills = loadSkills(); const skill = skills[jt.data.specialty] ?? skills[agent.skill] ?? null; // the job's skill page, whoever takes it
-  const brief = jc.jobBrief(jt, agent, { values, at, runId, skill, notes: loadNotes(agent.id), persona: loadPersona() });
+  const brief = jc.jobBrief(jt, agent, { values, at, runId, skill, notes: loadNotes(agent.id), knowledge: digestFor(agent.id), persona: loadPersona() });
   const args = jc.jobArgs(jt, agent, r.model); const session = jc.sessionName(agent, jt);
   if (opts.dry) return { ok: true, dry: true, jobType: jt.id, agent: agent.id, model: r.model, cap: r.cap, session, runId, brief, args };
   if (jc.lastRunOf(runs, jt.id)?.jobId === runId) throw new Error(`${jt.name} already started this minute (${runId})`);
@@ -173,7 +177,12 @@ export function book(opts = {}) {
   const at = opts.at ?? new Date().toISOString();
   const name = nameSlug(opts.name); if (!name) throw new Error('book needs --name <build or session name>');
   const jt = findType(opts.job || 'feature-build'); const roster = loadRoster(); const st = loadState(); const runs = loadRuns(); const table = priceTable();
-  const r = jc.route(jt, roster, st, runs, table, at, { agent: opts.agent, force: true });
+  // builds go to the builder job category only (Brett, Nov 10 2026); none free → a hire request for Brett to approve
+  const builderOnly = jt.id === hr.BUILDER_JOB;
+  const r = jc.route(jt, roster, st, runs, table, at, { agent: opts.agent, force: true, strict: builderOnly });
+  if (builderOnly && !opts.agent && (!r.ok || r.forced)) {
+    try { requestHire({ build: name, why: r.ok ? `Every builder is busy: ${r.why}` : `No builder on the crew: ${r.why}`, at }); } catch { /* the booking still goes ahead */ }
+  }
   if (!r.ok) throw new Error(r.why);
   const agent = r.agent; const model = core.MODEL_TIERS.includes(opts.model) ? opts.model : r.model;
   const runId = `job-${jt.id}-${name}-${(opts.startedAt || at).replace(/[^0-9]/g, '').slice(0, 12)}`.slice(0, 120);
@@ -222,7 +231,7 @@ export async function main(argv) {
   const json = argv.includes('--json'); const args = argv.filter((a) => a !== '--json');
   const out = (o, text) => console.log(json ? JSON.stringify(o) : text);
   const flag = (f) => args.includes(f);
-  const VALUED = ['--input', '--agent', '--name', '--job', '--cwd', '--log', '--model', '--session'];
+  const VALUED = ['--input', '--agent', '--name', '--job', '--cwd', '--log', '--model', '--session', '--build', '--why', '--crawl'];
   const val = (f) => { const i = args.indexOf(f); return i >= 0 ? args[i + 1] ?? '' : ''; };
   const pos = args.filter((a, i) => !a.startsWith('--') && !VALUED.includes(args[i - 1]));
   const [cmd = 'list', ...rest] = pos;
@@ -230,6 +239,7 @@ export async function main(argv) {
     sweep(); const v = list();
     return out({ ok: true, jobs: v }, v.map((j) => `${j.id.padEnd(20)} ${(j.owners.length ? `${j.owners[0].name}${j.owners.length > 1 ? ` +${j.owners.length - 1}` : ''}` : 'UNASSIGNED').padEnd(20)} ${j.trigger.kind.padEnd(9)} next ${j.next ? j.next.slice(0, 16) : '—'.padEnd(16)} last ${j.lastRun ? `${j.lastRun.at.slice(0, 16)} ${j.lastRun.status}` : '—'} · ${j.cost.runs} runs ${core.fmtUsd(j.cost.usd)}${j.routeWhy ? `\n  ! ${j.routeWhy}` : ''}`).join('\n') || 'No job types.');
   }
+  if (await hrMain(cmd, rest, { out, val, findType, assignBuild: assign })) return;
   if (cmd === 'sweep') { const c = sweep(); return out({ ok: true, closed: c }, c.length ? `closed ${c.join(', ')}` : 'nothing finished'); }
   if (cmd === 'hire') { const r = hire(rest[0]); return out({ ok: true, ...r }, `hired ${r.agent.name} (${r.agent.id}) for ${rest[0]}`); }
   if (cmd === 'due') { const r = due({ run: flag('--run'), inputs: parseInputs(args) }); return out({ ok: true, due: r }, r.map((x) => `${x.id}${x.ok === false ? ` ! ${x.why}` : ''}`).join('\n') || 'nothing due'); }

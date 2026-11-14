@@ -4,6 +4,7 @@ import * as consoleApi from '@console/api';
 import * as core from './swarm-core.mjs';
 import { AgentChat } from './chat';
 import { CardSection } from './idcards';
+import { HireRequests, TrainingSection } from './hr';
 import { ModelChip, fmtTime, statusText, type Act, type Agent, type SwarmState } from './ui-types';
 
 /*
@@ -55,6 +56,7 @@ export function CrewTab({ state, stats, act, jobsBy = {}, allSkills = [], onFeed
   if (a) return <Profile a={a} state={state} st={stats[a.id]!} act={act} jobs={jobsBy[a.id] ?? []} allSkills={allSkills} onBack={() => pick('')} onFeed={onFeed} />;
   return (
     <div className="fx-stack">
+      <HireRequests />
       <WhosFree state={state} onOpen={pick} />
       <div className="sw-cards" role="list">
         {state.roster.agents.map((x) => <Card key={x.id} a={x} state={state} st={stats[x.id]!} act={act} jobs={jobsBy[x.id] ?? []} allSkills={allSkills} onOpen={() => pick(x.id)} />)}
@@ -199,6 +201,7 @@ function Profile({ a, state, st, act, jobs, allSkills, onBack, onFeed }: { a: Ag
         <h3 className="sw-wave">Home skill: {skill?.title ?? a.skill}</h3>
         <pre className="sw-skill">{skill?.body ?? 'No skill file.'}</pre>
       </section>
+      <TrainingSection agentId={a.id} />
       <CardSection state={state} a={a} st={st} act={act} photo={<Avatar a={a} size={120} />} />
       <PaySection a={a} state={state} act={act} />
       <Discipline a={a} state={state} act={act} />

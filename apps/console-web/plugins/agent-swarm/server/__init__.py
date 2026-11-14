@@ -15,6 +15,7 @@ group chat as its owner; GET sections / POST sections/assign = the owners board 
 from __future__ import annotations
 
 import json
+import os
 import re
 import subprocess
 from pathlib import Path
@@ -146,6 +147,108 @@ async def jobs_hire(request: Request) -> dict[str, Any]:
     """One-tap hire for a job type nobody owns."""
     data = await _body(request)
     return _run("hire", data["jobType"], cli=JOBS)
+
+
+# ---------------------------------------------------------------- HR: builder hires (Brett approves) and training
+APPROVER_KEYS = ("AXF_APPROVER", "AXF_APPROVER_VIA")
+AGENT_HEADERS = ("x-axhub-session", "x-axhub-source")
+AGENT_ID = re.compile(r"^[a-z0-9-]{1,40}$")
+
+
+def _hr(*args: str, approver: str = "") -> dict[str, Any]:
+    """jobs.mjs HR commands. The approver is never inherited: only Brett's own console click sets it."""
+    env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}
+    if approver:
+        env.update(AXF_APPROVER=approver, AXF_APPROVER_VIA="console")
+    proc = subprocess.run(["node", str(JOBS), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=120, env=env)
+    out = proc.stdout.strip().splitlines()
+    try:
+        return json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        return {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+
+
+def _brett_click(request: Request) -> str:
+    """The signed-in hub admin's name when this request is Brett's own click in the console, else ''."""
+    c = getattr(request.state, "axf_user", None)
+    if c is None or getattr(c, "via", "token") != "session" or not getattr(c, "admin", False):
+        return ""
+    for h in AGENT_HEADERS:
+        v = (request.headers.get(h) or "").strip()
+        if v and v != "console":
+            return ""
+    return str(getattr(c, "name", "") or "")[:120]
+
+
+async def _json(request: Request) -> dict[str, Any]:
+    body = await request.body()
+    if len(body) > MAX_BODY:
+        raise HTTPException(413, "too large")
+    try:
+        data = json.loads(body or b"{}")
+    except json.JSONDecodeError:
+        raise HTTPException(400, "not JSON")
+    if not isinstance(data, dict):
+        raise HTTPException(400, "a JSON object is needed")
+    return data
+
+
+@router.get("/hr/hire-requests")
+def hr_hire_requests() -> dict[str, Any]:
+    """Builder hire requests (hire-request@1), open first."""
+    return _hr("hire-requests")
+
+
+@router.post("/hr/hire-request")
+async def hr_hire_request(request: Request) -> dict[str, Any]:
+    """File a builder hire request (one open at a time) and notify Brett. Body: {build?, why?}."""
+    data = await _json(request)
+    args = ["hire-request"]
+    if isinstance(data.get("build"), str) and ID.match(data["build"]):
+        args += ["--build", data["build"]]
+    if isinstance(data.get("why"), str):
+        args += ["--why", data["why"][:400]]
+    return _hr(*args)
+
+
+@router.post("/hr/hire-requests/{request_id}/{decision}")
+def hr_decide(request_id: str, decision: str, request: Request) -> dict[str, Any]:
+    """Approve (hire a builder, assign the waiting build) or deny. Only Brett's own signed-in console click decides."""
+    if not ID.match(request_id) or decision not in ("approve", "deny"):
+        raise HTTPException(400, "approve or deny a known request")
+    who = _brett_click(request)
+    if not who:
+        raise HTTPException(403, "only Brett's own signed-in console click (or an axHub approval) can decide a hire")
+    return _hr(f"hire-{decision}", request_id, approver=who)
+
+
+@router.get("/hr/knowledge/{agent}")
+def hr_knowledge(agent: str) -> dict[str, Any]:
+    """The website pages an employee was trained on, and the digest their briefs carry."""
+    if not AGENT_ID.match(agent):
+        raise HTTPException(400, "bad agent id")
+    return _hr("knowledge", agent)
+
+
+@router.post("/hr/knowledge/{agent}")
+async def hr_train(agent: str, request: Request) -> dict[str, Any]:
+    """Train an employee on a website: {url, crawl?} (crawl = up to 20 more same-site pages)."""
+    data = await _json(request)
+    url = data.get("url")
+    if not AGENT_ID.match(agent) or not isinstance(url, str) or not re.match(r"^https?://", url) or len(url) > 1000:
+        raise HTTPException(400, "an employee and an http(s) url are needed")
+    crawl = data.get("crawl", 0)
+    if not isinstance(crawl, int) or not 0 <= crawl <= 20:
+        raise HTTPException(400, "crawl is 0 to 20")
+    return _hr("train", agent, url, "--crawl", str(crawl))
+
+
+@router.delete("/hr/knowledge/{agent}/{page}")
+def hr_forget(agent: str, page: str) -> dict[str, Any]:
+    """Remove one trained page (or `all`)."""
+    if not AGENT_ID.match(agent) or not re.match(r"^(all|p[a-z0-9]{1,12})$", page):
+        raise HTTPException(400, "bad agent or page id")
+    return _hr("forget", agent, page)
 
 
 class RosterService:

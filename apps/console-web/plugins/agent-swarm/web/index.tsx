@@ -6,6 +6,7 @@ import { COLOR_BY_VIBE_ACTION, KEYS } from './chat-settings';
 import { VIBE_COLORS } from './swarm-core.mjs';
 import { appMenu } from './menu';
 import { PROFILE_EVENT } from './cards';
+import { HIRE_EVENT } from './hr';
 import { writeLocal } from '@console/api';
 import { SectionOwnersPanel } from './sections';
 
@@ -26,6 +27,12 @@ export const plugin: AxfWebLibrary = {
       rt.navigate('agent-swarm');
       setTimeout(() => window.dispatchEvent(new CustomEvent(PROFILE_EVENT, { detail: id })), 0);
     }, { label: 'Open an agent\'s employee card', params: true, searchable: false });
+    // a builder hire request (the AmberX / console notification's link): agent-swarm.hire-request:<request id>
+    rt.actions.register('agent-swarm.hire-request', ([id = '']) => {
+      writeLocal('swarm-profile', ''); writeLocal('swarm-tab', 'crew');
+      rt.navigate('agent-swarm');
+      setTimeout(() => window.dispatchEvent(new CustomEvent(HIRE_EVENT, { detail: id })), 0);
+    }, { label: 'Open a builder hire request', params: true, searchable: false });
     // the Breakroom (group chat, Jobs) from other plugins: agent-swarm.open
     rt.actions.register('agent-swarm.open', () => rt.navigate('agent-swarm'), { label: 'Open the Breakroom', searchable: false });
     rt.actions.register(COLOR_BY_VIBE_ACTION, () => rt.settings.set(KEYS.colorByVibe, !rt.settings.get(KEYS.colorByVibe)), { label: 'Color chat messages by vibe' });

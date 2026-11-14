@@ -14,6 +14,8 @@ import { MODEL_IDS, MODEL_TIERS, budgetUsd, canWork, fmtTokens, fmtUsd, normAgen
 
 export const JOB_RUN_KIND = 'job';
 export const NOTES_MAX = 1500;
+/** Most of an employee's trained-knowledge digest a brief carries (hr-core.mjs DIGEST_MAX). */
+export const KNOWLEDGE_MAX = 2500;
 const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : '');
 
 /** Job types from asset@1 envelopes: { id, name, description, data (normalized), errors }. Bad ones keep their errors. */
@@ -72,7 +74,8 @@ export function route(jt, roster, state, runs, table, at, opts = {}) {
     return { ok: true, unassigned: false, forced: false, agent: a, model, cap: runCap(jt, model, table), why: '', tried: [], notify: false };
   }
   const own = owners(jt, roster, state);
-  const crew = roster.agents.filter((a) => a.jobsOnly && !own.includes(a) && state?.agents?.[a.id]?.status !== 'fired');
+  // opts.strict: only agents who hold the job's skills (builds go to builders only, hr-core.mjs); no crew fallback
+  const crew = opts.strict ? [] : roster.agents.filter((a) => a.jobsOnly && !own.includes(a) && state?.agents?.[a.id]?.status !== 'fired');
   if (!own.length && !crew.length) return { ok: false, unassigned: true, why: `nobody can take ${jt.name} (skills ${jt.data.skills.join(', ') || jt.data.specialty}): hire one`, tried: [] };
   const home = new Set(homeOf(jt, roster).map((a) => a.id));
   const tried = []; const free = [];
@@ -112,13 +115,14 @@ export function jobSystem(agent) {
  * The brief a job agent gets: the job type's brief (inputs + built-ins filled, outputs listed), its skill page, its
  * own short notes, Amber's voice and the report format. Returns { text, report, group, tokens }.
  */
-export function jobBrief(jt, agent, { values = {}, at, runId, skill = null, notes = '', persona = '' }) {
+export function jobBrief(jt, agent, { values = {}, at, runId, skill = null, notes = '', persona = '', knowledge = '' }) {
   const b = renderJobBrief(jt.data, values, { at, agent: agent.id, agentName: agent.name, jobType: jt.id, jobName: jt.name, runId });
   const text = [
     `JOB ${runId}: ${jt.name}`,
     b.text,
     skill?.body ? `\nYOUR SKILL (${skill.title || skill.id})\n${skill.body.trim()}` : '',
     notes.trim() ? `\nYOUR NOTES\n${notes.trim().slice(0, NOTES_MAX)}` : '',
+    knowledge.trim() ? `\nYOUR TRAINING (website pages you were trained on; hr.mjs)\n${knowledge.trim().slice(0, KNOWLEDGE_MAX)}` : '',
     persona.trim() ? `\nVOICE\n${persona.trim()}` : '',
     '\nREPORT',
     `- Write the report file above, then end with exactly one fenced json block: {"$axf":"swarm-report@1","status":"done|failed|blocked","summary":"one or two lines","files":["paths you changed"],"checks":[{"name":"…","ok":true}],"notes":"lines for shared files, or empty","handoff":"","question":"the exact question when blocked, or empty"}`,
