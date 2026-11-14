@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:53 UTC · `full-voice-control-merge-main-and-land` → queued, note (all) · console
 - 2026-11-13 19:54 UTC · `demo-pipelines-guided-walkthrough-live` s1 done, → running (all) · orchestrator
 - 2026-11-13 19:54 UTC · `land-drive-live-console-first-resolve` note (all) · builds-live
 - 2026-11-13 19:54 UTC · `full-voice-control-merge-main-and-land` added (0 steps) (all) · builds-live
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 00:58 UTC · `voice-listener-use-claude-when-connected` s6 done (all) · orchestrator
 - 2026-11-14 00:59 UTC · `voice-listener-use-claude-when-connected` s7 done (all) · orchestrator
 - 2026-11-14 01:01 UTC · `console-app-wake-word-voice-listener` s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s10 done, → running, note (all) · reconciler
+- 2026-11-14 01:01 UTC · `console-app-land-parts-1-4-build-apk` s13 done (all) · orchestrator
 
 ## Token passes (log)
 
