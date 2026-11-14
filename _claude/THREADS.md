@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:15 UTC · `full-voice-control-merge-main-and-land` note (all) · orchestrator
 - 2026-11-13 20:14 UTC · `full-voice-control-merge-main-and-land` s3 done, → built (all) · orchestrator
 - 2026-11-13 20:15 UTC · `context-menus-plugin-one-true-source` note (all) · claude-voice
 - 2026-11-13 20:16 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 04:21 UTC · `demo-video-series-three-minute-browser` → running (all) · voice
 - 2026-11-14 04:21 UTC · `group-chat-audio-hear-agents-talk-while` → queued (all) · voice
 - 2026-11-14 04:22 UTC · `ui-directory-plugin-self-updating-data` → queued, note (all) · pipeline
+- 2026-11-14 04:22 UTC · `ui-directory-plugin-self-updating-data` note (all) · pipeline
 
 ## Token passes (log)
 
