@@ -796,8 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 04:21 UTC · `ui-directory-plugin-self-updating-data` → running, note (all) · pipeline
-- 2026-11-14 04:21 UTC · `demo-video-series-three-minute-browser` → queued, note (all) · pipeline
 - 2026-11-14 04:21 UTC · `demo-video-series-three-minute-browser` → running (all) · voice
 - 2026-11-14 04:21 UTC · `group-chat-audio-hear-agents-talk-while` → queued (all) · voice
 - 2026-11-14 04:22 UTC · `ui-directory-plugin-self-updating-data` → queued, note (all) · pipeline
@@ -1196,6 +1194,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:11 UTC · `owner-recognized-everywhere-veto` note (all) · orchestrator
 - 2026-11-14 23:11 UTC · `one-source-truth-console-shows-only-what` s3 done, → built (all) · orchestrator
 - 2026-11-14 23:11 UTC · `one-source-truth-console-shows-only-what` note (all) · orchestrator
+- 2026-11-14 23:12 UTC · `one-source-truth-console-shows-only-what` note (all) · builds-live
+- 2026-11-14 23:12 UTC · `owner-recognized-everywhere-veto` note (all) · builds-live
 
 ## Token passes (log)
 
