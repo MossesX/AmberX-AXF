@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5292,
- "updatedAt": "2026-11-14T12:28:11.872Z",
+ "rev": 5293,
+ "updatedAt": "2026-11-14T12:28:26.177Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211979,7 +211979,7 @@
    "branch": "claude/hotfix-get-main-ci-green-theme-swap",
    "pr": "#669",
    "createdAt": "2026-11-14T03:29:11.368Z",
-   "updatedAt": "2026-11-14T12:28:10.129Z",
+   "updatedAt": "2026-11-14T12:28:14.043Z",
    "builtAt": "",
    "notes": [
     {
@@ -212033,6 +212033,10 @@
     {
      "text": "Started run 3 on mossesx-max- (Opus, Phase 1): axf-hotfix-get-main-ci-green-theme-swap--sully.",
      "at": "2026-11-14T12:28:10.129Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-hotfix-get-main-ci-green-theme-swap--sully, own login copy)",
+     "at": "2026-11-14T12:28:14.043Z"
     }
    ],
    "approvals": [],
@@ -212160,7 +212164,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
