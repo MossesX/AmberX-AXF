@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:49 UTC · `skin-config-panel-merge-main-and-land` note (all) · orchestrator
 - 2026-11-13 19:50 UTC · `skin-animations-swatches-skin-switch` note (all) · orchestrator
 - 2026-11-13 19:51 UTC · `skin-animations-swatches-skin-switch` note (all) · builds-live
 - 2026-11-13 19:51 UTC · `land-drive-live-console-first-resolve` s2 done (all) · orchestrator
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 00:51 UTC · `voice-listener-use-claude-when-connected` s2 done (all) · orchestrator
 - 2026-11-14 00:52 UTC · `voice-listener-use-claude-when-connected` s3 done (all) · orchestrator
 - 2026-11-14 00:52 UTC · `console-app-land-parts-1-4-build-apk` s6 done (all) · orchestrator
+- 2026-11-14 00:53 UTC · `land-batch-merge-main-each-finished` s17 done (all) · orchestrator
 
 ## Token passes (log)
 
