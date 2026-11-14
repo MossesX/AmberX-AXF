@@ -796,10 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 23:50 UTC · `lander-regenerates-generated-files-clash` merged, note (all) · reconciler
-- 2026-11-13 23:50 UTC · `main-ci-red-test-sandbox-profile-export` → complete, merged, note (all) · reconciler
-- 2026-11-13 23:51 UTC · `console-app-land-parts-1-4-build-apk` note (all) · orchestrator
-- 2026-11-13 23:52 UTC · `voice-listener-use-claude-when-connected` note (all) · orchestrator
 - 2026-11-13 23:52 UTC · `lander-regenerates-generated-files-clash` note (all) · orchestrator
 - 2026-11-13 23:52 UTC · `main-ci-red-test-sandbox-profile-export` note (all) · orchestrator
 - 2026-11-13 23:58 UTC · `auto-land-merge-main-land-land-mjs-clash` note (all) · orchestrator
@@ -1196,6 +1192,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:44 UTC · `orchestrator-table-columns-model-queue-assigned` → queued (all) · orchestrator
 - 2026-11-14 22:44 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` → queued (all) · orchestrator
 - 2026-11-14 22:44 UTC · `agent-manager-training-wizard-for-employee-agent` → queued (all) · orchestrator
+- 2026-11-14 22:44 UTC · `inline-edit-plugin-install-in-console-molly-and` → queued (all) · orchestrator
+- 2026-11-14 22:44 UTC · `pass-approval-hook-deep-link-amberx-notification` → queued (all) · orchestrator
+- 2026-11-14 22:44 UTC · `molly-gap-axhub-cors` → queued (all) · orchestrator
+- 2026-11-14 22:44 UTC · `molly-gap-expenses-cors` → queued (all) · orchestrator
 
 ## Token passes (log)
 

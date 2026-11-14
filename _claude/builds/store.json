@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5476,
- "updatedAt": "2026-11-14T22:44:33.027Z",
+ "rev": 5477,
+ "updatedAt": "2026-11-14T22:44:41.441Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -149104,7 +149104,7 @@
    "title": "Inline edit plugin: install in console, Molly and AmberX web (not Android); Molly never renders a plugin twice",
    "category": "",
    "detail": "Amends the inline element editing build. 1) Install the plugin in the console, Molly and AmberX web. Not the AmberX Android app. 2) Molly rule for every plugin: when a console page is open inside Molly, render the console's plugin only if Molly doesn't already have that plugin, so nothing ever renders twice.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -149113,7 +149113,7 @@
    "pr": "#471",
    "priority": "P1",
    "createdAt": "2026-11-10T16:40:38.588Z",
-   "updatedAt": "2026-11-10T20:41:09.179Z",
+   "updatedAt": "2026-11-14T22:44:32.929Z",
    "builtAt": "",
    "notes": [
     {
@@ -149452,7 +149452,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151537,7 +151537,7 @@
    "title": "Pass approval hook: deep link + AmberX notification Approve button for veto passes",
    "category": "",
    "detail": "Today a pass request can only be approved from the console banner or Token control → Passes. Add: a deep link URL that opens straight to the pending pass with Approve/Deny (console + Molly), returned in pass_grant's result so Claude can hand it over; an AmberX push notification with Approve/Deny actions that work in the background (no navigation); API to approve from Brett's own session. Full API control.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -151546,7 +151546,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-10T18:50:38.760Z",
+   "updatedAt": "2026-11-14T22:44:34.891Z",
    "builtAt": "",
    "notes": [
     {
@@ -151878,7 +151878,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -159887,14 +159887,14 @@
    "title": "Molly gap: axHub allows Molly's origin on /auth/api/* (CORS with credentials) so native screens read the hub session",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. From https://molly.amberxai.com, GET https://axhub.amberxai.com/auth/api/session answers 200 with no Access-Control-Allow-Origin, and the preflight OPTIONS /auth/api/logout answers 200 with no CORS headers, so a browser on Molly cannot read the hub session or post a write. The hub should answer an allow-list of amberxai.com app origins (Molly first) on /auth/api/* with Access-Control-Allow-Origin echoing the origin, Access-Control-Allow-Credentials true, Access-Control-Allow-Headers content-type, accept, x-axhub-csrf, Vary Origin; never * with credentials. The session cookie is same-site (SameSite=Lax is enough). Molly side is in place: apps/molly/src/molly/credentials.ts (axhub provider, credentials include, X-AxHub-CSRF on writes).",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
    "branch": "claude/molly-gap-axhub-cors",
    "pr": "",
    "createdAt": "2026-11-10T22:09:27.000Z",
-   "updatedAt": "2026-11-12T03:13:58.304Z",
+   "updatedAt": "2026-11-14T22:44:36.870Z",
    "builtAt": "",
    "notes": [
     {
@@ -160070,7 +160070,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -160100,14 +160100,14 @@
    "title": "Molly gap: Expenses allows Molly's origin on /api/expenses/v1/* (CORS with credentials) so native screens read the ledger",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. From https://molly.amberxai.com, GET https://expenses.amberxai.com/api/expenses/v1/entries?limit=1 answers 401 with no Access-Control-Allow-Origin and the preflight answers 204 with no CORS headers, so a browser on Molly cannot call the ledger API with the axs_session cookie. The route handler (apps/expenses/app/api/expenses/v1/[...path]/route.ts, or proxy.ts) should answer an allow-list of amberxai.com app origins with Access-Control-Allow-Origin echoing the origin, Allow-Credentials true, Allow-Headers content-type, accept, authorization, x-expenses-user, Allow-Methods GET POST PATCH OPTIONS, Vary Origin, and an OPTIONS handler. Molly side is in place: apps/molly/src/molly/credentials.ts (expenses provider: cookie session or bearer token + X-Expenses-User).",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
    "branch": "claude/molly-gap-expenses-cors",
    "pr": "",
    "createdAt": "2026-11-10T22:09:28.380Z",
-   "updatedAt": "2026-11-12T02:11:08.278Z",
+   "updatedAt": "2026-11-14T22:44:38.744Z",
    "builtAt": "",
    "notes": [
     {
@@ -160252,7 +160252,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
