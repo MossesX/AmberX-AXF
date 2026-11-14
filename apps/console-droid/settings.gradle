@@ -1,0 +1,11 @@
+// AXF Console for Android: a thin native shell around the live web console (console.amberxai.com) in a WebView.
+// Plain Gradle + AGP, no Capacitor and no framework modules: the shell rarely changes, the web console does.
+pluginManagement {
+    repositories { google(); mavenCentral(); gradlePluginPortal() }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories { google(); mavenCentral() }
+}
+rootProject.name = "console-droid"
+include ':app'

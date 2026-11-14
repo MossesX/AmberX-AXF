@@ -339,6 +339,16 @@ export interface VetoHost {
   onEvent?(fn: (e: { id: string; action: 'open' | VetoAction | 'failed'; ok?: boolean; error?: string }) => void): () => void;
   /** Opens a hub page in the app's signed-in hub view. */
   open?(url: string): void;
+  /** The overlay's settings changed (AmberX's always-on toolbar, its approval bar and its full-screen browser). */
+  overlay?(cfg: Record<string, unknown>): void;
+  /**
+   * `expand` the overlay into its full-screen browser (last page or the console), `open` one of Brett's pages there
+   * ([id] is the URL), `collapse` it to the toolbar, `bar-open` / `bar-close` the approval bar, or run an approval
+   * action on [id] (the one on the bar when empty).
+   */
+  overlayCommand?(command: string, id?: string): Promise<boolean>;
+  /** The overlay's state: settings, shown, expanded, approvalBar, what waits; null where there is no overlay (browsers). */
+  overlayState?(): Promise<Record<string, unknown> | null>;
 }
 
 let host: VetoHost = {};
