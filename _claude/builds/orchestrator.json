@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T01:48:08.400Z",
+ "updatedAt": "2026-11-14T01:49:38.832Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -136663,7 +136663,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-14T01:47:26.872Z",
-   "updatedAt": "2026-11-14T01:47:26.872Z",
+   "updatedAt": "2026-11-14T01:49:37.316Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -136725,6 +136725,25 @@
      "note": "",
      "uid": "st-mwfqwzw90b1py3",
      "createdAt": "2026-11-14T01:47:26.873Z"
+    },
+    {
+     "id": "s9",
+     "text": "Extended chapters on skins and hot-swappable assets: show a skin swap completely changing the look, menus and behavior so it feels like a different app; show assets hot-swapping live; cover the Enterprise Branding Studio swapping branding templates across the whole app from the map",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfqzsl301jngi",
+     "createdAt": "2026-11-14T01:49:37.317Z"
     },
     {
      "id": "s4",

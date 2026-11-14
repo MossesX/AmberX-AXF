@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5155,
- "updatedAt": "2026-11-14T01:48:08.400Z",
+ "rev": 5156,
+ "updatedAt": "2026-11-14T01:49:38.832Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211146,7 +211146,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-14T01:47:26.872Z",
-   "updatedAt": "2026-11-14T01:47:26.872Z",
+   "updatedAt": "2026-11-14T01:49:37.316Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -211245,6 +211245,28 @@
      "rev": 1,
      "createdAt": "2026-11-14T01:47:26.873Z",
      "updatedAt": "2026-11-14T01:47:26.873Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwfqzsl301jngi",
+     "title": "",
+     "text": "Extended chapters on skins and hot-swappable assets: show a skin swap completely changing the look, menus and behavior so it feels like a different app; show assets hot-swapping live; cover the Enterprise Branding Studio swapping branding templates across the whole app from the map",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T01:49:37.317Z",
+     "updatedAt": "2026-11-14T01:49:37.527Z"
     },
     {
      "id": "s4",
@@ -211365,7 +211387,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
