@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5333,
- "updatedAt": "2026-11-14T17:08:22.223Z",
+ "rev": 5334,
+ "updatedAt": "2026-11-14T17:08:37.728Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -214414,7 +214414,7 @@
    "branch": "claude/builds-share-one-claude-login-write",
    "pr": "#674",
    "createdAt": "2026-11-14T16:44:38.923Z",
-   "updatedAt": "2026-11-14T17:08:20.568Z",
+   "updatedAt": "2026-11-14T17:08:35.665Z",
    "builtAt": "2026-11-14T17:07:43.504Z",
    "notes": [
     {
@@ -214424,6 +214424,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-builds-share-one-claude-login-write--earl, own login copy)",
      "at": "2026-11-14T16:46:28.189Z"
+    },
+    {
+     "text": "Headless run axf-builds-share-one-claude-login-write--earl: brief only · start 11.1K tokens ($0.03) · cost $5.70 · 97 turns · 6 tools, MCP none",
+     "at": "2026-11-14T17:08:35.665Z"
     }
    ],
    "approvals": [],
