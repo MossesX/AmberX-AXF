@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 23:41 UTC · `auto-land-merge-main-land-land-mjs-clash` → running, note (all) · pipeline
 - 2026-11-13 23:41 UTC · `auto-land-merge-main-land-land-mjs-clash` branch claude/auto-land-merge-main-land-land-mjs-clash (all) · pipeline
 - 2026-11-13 23:41 UTC · `auto-land-merge-main-land-land-mjs-clash` note (all) · orchestrator
 - 2026-11-13 23:42 UTC · `auto-land-merge-main-land-land-mjs-clash` s1 done (all) · orchestrator
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:34 UTC · `land-all-skin-builds` s21 done (all) · orchestrator
 - 2026-11-14 22:34 UTC · `land-all-skin-builds` s22 done (all) · orchestrator
 - 2026-11-14 22:34 UTC · `land-finish-auto-land-live-clear-backlog` s2 done (all) · orchestrator
+- 2026-11-14 22:35 UTC · `land-finish-auto-land-live-clear-backlog` PR #678 (all) · builds-live
 
 ## Token passes (log)
 
