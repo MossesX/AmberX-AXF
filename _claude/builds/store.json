@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5417,
- "updatedAt": "2026-11-14T20:23:07.874Z",
+ "rev": 5418,
+ "updatedAt": "2026-11-14T21:00:58.081Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -209216,9 +209216,10 @@
    "pendingId": "",
    "branch": "claude/skin-animations-swatches-skin-switch",
    "pr": "#652",
+   "mergedAt": "2026-11-14T20:51:15Z",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:31.102Z",
-   "updatedAt": "2026-11-14T17:10:54.245Z",
+   "updatedAt": "2026-11-14T21:00:56.113Z",
    "builtAt": "",
    "notes": [
     {
@@ -209256,6 +209257,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-14T17:10:54.245Z"
+    },
+    {
+     "text": "Reconciler: PR #652 merged",
+     "at": "2026-11-14T21:00:56.113Z"
     }
    ],
    "approvals": [],
@@ -209495,7 +209500,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": {

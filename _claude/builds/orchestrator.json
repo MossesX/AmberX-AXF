@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T20:23:07.874Z",
+ "updatedAt": "2026-11-14T21:00:58.081Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -132068,9 +132068,10 @@
    "pendingId": "",
    "branch": "claude/skin-animations-swatches-skin-switch",
    "pr": "#652",
+   "mergedAt": "2026-11-14T20:51:15Z",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:31.102Z",
-   "updatedAt": "2026-11-14T17:10:54.245Z",
+   "updatedAt": "2026-11-14T21:00:56.113Z",
    "builtAt": "",
    "notes": [
     {
@@ -132108,6 +132109,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-14T17:10:54.245Z"
+    },
+    {
+     "text": "Reconciler: PR #652 merged",
+     "at": "2026-11-14T21:00:56.113Z"
     }
    ],
    "approvals": [],
