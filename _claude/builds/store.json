@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5462,
- "updatedAt": "2026-11-14T22:38:18.604Z",
+ "rev": 5463,
+ "updatedAt": "2026-11-14T22:38:28.302Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -223681,7 +223681,7 @@
    "pr": "#678",
    "priority": "P0",
    "createdAt": "2026-11-14T22:17:37.935Z",
-   "updatedAt": "2026-11-14T22:38:13.238Z",
+   "updatedAt": "2026-11-14T22:38:18.570Z",
    "builtAt": "",
    "notes": [
     {
@@ -223729,6 +223729,10 @@
      "at": "2026-11-14T22:38:04.672Z"
     },
     {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-land-finish-auto-land-live-clear-backlog--gina, shared account login)",
+     "at": "2026-11-14T22:38:18.570Z"
+    },
+    {
      "text": "Started run 2 on mossesx-max- (Opus, Phase 2): axf-land-finish-auto-land-live-clear-backlog--gina.",
      "at": "2026-11-14T22:38:13.238Z"
     }
@@ -223751,11 +223755,11 @@
     "queuedAt": "2026-11-14T22:17:39.914Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-land-finish-auto-land-live-clear-backlog--gina",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-14T22:38:12.482Z",
-    "runs": 2,
+    "model": "Fable",
+    "launchedAt": "2026-11-14T22:21:23.430Z",
+    "runs": 1,
     "lastRun": {
      "at": "2026-11-14T22:38:03.794Z",
      "exit": 0,
@@ -223772,9 +223776,9 @@
      "note": "Split by Claude into 28 steps (2 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- ended (exit 0) with 26 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "2026-11-14T22:38:12.482Z",
+    "dispatchedAt": "2026-11-14T22:21:23.430Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -223783,7 +223787,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-14T22:38:12.482Z",
+    "pickedAt": "2026-11-14T22:21:23.430Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
