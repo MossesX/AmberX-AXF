@@ -21,6 +21,8 @@
  *   node framework/cli/skins.mjs undo <app>                undo the last restore
  *   node framework/cli/skins.mjs coverage                  how a skin reaches every registered asset type (CI: spec/check-skin-coverage.mjs)
  *   node framework/cli/skins.mjs covers <skin>             what one skin sets or styles, type by type
+ *   node framework/cli/skins.mjs upgrade [--check]         write each registry type's skinDefault into every shipped skin that names none
+ *                                                           (today's look for a new slot type; --check only reports, exit 1 when one is missing)
  *   add --json for machine output. An app is its id (axf-console) or its folder (console-web), or `console`, `axhub`, `amberx`, `molly`.
  *
  * Files are written where /projects is mounted (the hub's data folder), so open apps follow through the hub's change
@@ -29,7 +31,7 @@
 import { chownSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { backToSkin, newAppLook, normalizeAppLook, normalizeLookPart, overriddenSlots, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setLookSlot, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorTheme, undoRestore, SKIN_COLOR_SLOT, SKIN_NEVER } from '../core/engines/skin-rules.mjs';
+import { backToSkin, newAppLook, normalizeAppLook, normalizeLookPart, overriddenSlots, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setLookSlot, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorTheme, skinDefaults, undoRestore, upgradeSkin, SKIN_COLOR_SLOT, SKIN_NEVER } from '../core/engines/skin-rules.mjs';
 import { coverageSummary, coverageTable, isSubScopeKey, partElements, skinScopeOf } from '../core/engines/skin-coverage.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
@@ -229,6 +231,26 @@ export function covers(skinId) {
   });
 }
 
+/**
+ * The skin upgrader: every shipped skin (framework/assets/skin) gets each registry type's `skinDefault` written into
+ * `assets` when it names no asset of that type, so a new slot type keeps today's look under existing skins.
+ * `write = false` only reports. Returns one row per skin: { id, file, added, missing }.
+ */
+export function upgrade(write = true) {
+  const spec = readJson(join(ROOT, 'framework/schemas/asset-types.json')).types;
+  const dir = join(ROOT, 'framework/assets/skin');
+  const rows = [];
+  for (const f of readdirSync(dir).filter((x) => x.endsWith('.json')).sort()) {
+    const file = join(dir, f);
+    const a = readJson(file);
+    if (!a || a.type !== 'skin') continue;
+    const { data, added } = upgradeSkin(a.data ?? {}, spec);
+    if (added.length && write) writeFileSync(file, `${JSON.stringify({ ...a, data }, null, 2)}\n`);
+    rows.push({ id: a.id, file: `framework/assets/skin/${f}`, added: write ? added : [], missing: write ? [] : added });
+  }
+  return { defaults: skinDefaults(spec), skins: rows };
+}
+
 function main(argv) {
   const json = argv.includes('--json');
   const args = argv.filter((a, i) => !a.startsWith('--') && argv[i - 1] !== '--scope');
@@ -246,6 +268,16 @@ function main(argv) {
   else if (cmd === 'global') { if (!app) out = { global: readGlobal() }; else out = global(app); }
   else if (cmd === 'coverage') out = coverage();
   else if (cmd === 'covers') { if (!app) throw new Error('covers needs a skin id'); out = covers(app); }
+  else if (cmd === 'upgrade') {
+    out = upgrade(!argv.includes('--check'));
+    const missing = out.skins.filter((s) => s.missing.length);
+    if (!json) {
+      console.log(`skin defaults: ${Object.entries(out.defaults).map(([t, id]) => `${t}=${id}`).join(', ') || 'none declared'}`);
+      for (const s of out.skins) console.log(`${s.added.length ? '+' : s.missing.length ? '✗' : '·'} ${s.id.padEnd(16)} ${s.added.length ? `added ${s.added.join(', ')}` : s.missing.length ? `missing ${s.missing.join(', ')} (run skins.mjs upgrade)` : 'complete'}`);
+    } else console.log(JSON.stringify({ ok: !missing.length, result: out }));
+    if (missing.length) process.exitCode = 1;
+    return;
+  }
   else throw new Error(`unknown command ${cmd}`);
   if (json) console.log(JSON.stringify({ ok: true, result: out }));
   else if (cmd === 'coverage') { for (const r of out.rows) console.log(`${r.type.padEnd(16)} ${r.by.padEnd(10)}${r.also.length ? `+${r.also.join('+')}` : ''}${r.elements.length ? `  ${r.elements.join('/')}` : ''}`); const s = out.summary; console.log(`${s.total} types · slot ${s.slot} · parts ${s.parts} · reference ${s.reference} · bundle ${s.bundle} · none ${s.none} · uncovered ${s.uncovered}`); }

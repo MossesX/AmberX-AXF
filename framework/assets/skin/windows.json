@@ -24,7 +24,8 @@
       "container": "windows",
       "typography": "windows",
       "density": "compact",
-      "sizing": "compact"
+      "sizing": "compact",
+      "themed-controls": "native"
     },
     "preview": {
       "caption": "Windows 11 look: title bar, menu bar, Explorer layout."

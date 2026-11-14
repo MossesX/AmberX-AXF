@@ -113,11 +113,13 @@ One optional, shared asset type `themed-controls` (themed-controls@1 data) holds
 the fields are a registry (`THEMED_CONTROL_FIELDS`, `<family>.<state>.<prop>` paths) that drives the normalizer, both
 validators, the compiled tokens, the JSON schema and the control@1 target, like nav-style@1.
 
-- **States**: `rest`, `hover`, `focus`, `active`, `checked`, `disabled`, `invalid` for `checkbox`, `radio`, `range`;
-  the same without `checked` for `number`, `file` (plus `dragover`); `datetime` and `color` have the pop-up surface
-  states `rest`, `hover`, `focus`, `selected`, `today` / `swatch`, `disabled`; `dialogs` has `surface`, `backdrop`,
-  `title`, `message`, `field`; `tooltip` has `rest` only plus `delayMs` / `maxWidth`; `scrollbar` has `track`,
-  `thumb`, `thumbHover`, `width`, `radius`.
+- **States** (`TC_STATES` in the rules file is the source): `rest`, `hover`, `focus`, `active`, `checked`,
+  `disabled`, `invalid` for `checkbox` and `radio`; the same without `checked` for `range` and `number`; `file` adds
+  `dragover` and `progress` (track / fill / done / failed); `datetime` has `rest`, `hover`, `focus`, `selected`,
+  `today`, `disabled`, `invalid`; `color` has `rest`, `hover`, `focus`, `selected`, `disabled`, `invalid`; `dialogs`
+  has `surface`, `backdrop`, `title`, `message`, `field`, `focus`; `tooltip` has `rest` only (plus `delayMs`,
+  `hideMs`, `longPressMs`, `maxWidth`, `placement`, `arrow`); `scrollbar` has `track`, `thumb`, `thumbHover`,
+  `thumbActive` (plus `width`, `radius`, `thin`, `autoHide`, `gutter`).
 - **Colours** are colour-theme token ids (`bg`, `surface`, `surface2`, `surface3`, `text`, `muted`, `border`,
   `accent`, `accentText`, `accentSoft`, `danger`, `success`, `warning`, `info`, `focus`), or `theme` (leave it to the
   stylesheet), **or a light|dark pair** `"<light token>|<dark token>"` picked by the colour theme's `scheme` at

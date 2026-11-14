@@ -65,3 +65,8 @@ export function setScopeSkin(look: AppLookDocument, key: string, use: 'on' | 'of
 export function setScopeOverride(look: AppLookDocument, key: string, slot: string, id: string | null): AppLookDocument;
 export function scopeEntries(look: AppLookDocument | null): ({ key: string } & SkinScopeState)[];
 export function resolveLookSkin(look: AppLookDocument | null, global: GlobalSkin | null | undefined, scope: Partial<SkinScope> | null | undefined): ResolvedSkin;
+/** The registry field naming the asset that draws today's look for a slot type a skin may not name yet. */
+export const SKIN_DEFAULT_FIELD: 'skinDefault';
+export function skinDefaults(spec: Record<string, unknown> | null | undefined): Record<string, string>;
+export function skinMissingDefaults(data: unknown, spec: Record<string, unknown> | null | undefined): string[];
+export function upgradeSkin<T extends Record<string, unknown>>(data: T, spec: Record<string, unknown> | null | undefined): { data: T & { assets?: Record<string, string> }; added: string[] };

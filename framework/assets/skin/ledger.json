@@ -29,7 +29,8 @@
       "container": "enterprise-crisp",
       "typography": "compact",
       "density": "compact",
-      "sizing": "compact"
+      "sizing": "compact",
+      "themed-controls": "native"
     },
     "preview": {
       "caption": "Dense grid, slate colours, precise motion."

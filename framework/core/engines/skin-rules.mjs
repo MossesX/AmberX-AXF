@@ -55,6 +55,49 @@ export function skinSlotMap(skin) {
   return out;
 }
 
+/* ---------------- the skin upgrader: new slot types reach existing skins with today's look ---------------- */
+
+/**
+ * A registry entry (schemas/asset-types.json `types.<type>`) may declare `"skinDefault": "<asset id>"`: the asset of
+ * that type that draws exactly what the screen showed before the type existed (build themed-native-controls-plugin,
+ * Nov 14 2026: the `native` themed-controls asset). The upgrader writes it into every skin that names no asset of the
+ * type, so an existing skin keeps its look when a new slot type lands and `check-skin-sections` still sees every slot
+ * shipping. A type a skin never sets (SKIN_NEVER) is ignored even if it declares one.
+ */
+export const SKIN_DEFAULT_FIELD = 'skinDefault';
+const SLOT_ID = /^[a-z0-9][a-z0-9-]{1,47}$/;
+
+/** `{ <type>: <asset id> }` for every registry type that declares a skin default (registry order). */
+export function skinDefaults(spec) {
+  const out = {};
+  if (!isObj(spec)) return out;
+  for (const [type, t] of Object.entries(spec)) {
+    const id = isObj(t) ? t[SKIN_DEFAULT_FIELD] : undefined;
+    if (typeof id === 'string' && SLOT_ID.test(id) && !SKIN_NEVER.includes(type)) out[type] = id;
+  }
+  return out;
+}
+
+/** The slot types with a skin default this skin's data doesn't name yet (neither in `assets` nor as a section). */
+export function skinMissingDefaults(data, spec) {
+  const have = skinSlotMap(data);
+  return Object.keys(skinDefaults(spec)).filter((type) => !have[type]);
+}
+
+/**
+ * The skin's data with every missing default written into `assets` (a copy; the input is never touched), and the
+ * types that were added. A skin that names them all comes back as it is (`added` empty, `data` the same object).
+ */
+export function upgradeSkin(data, spec) {
+  const d = isObj(data) ? data : {};
+  const missing = skinMissingDefaults(d, spec);
+  if (!missing.length) return { data: d, added: [] };
+  const defaults = skinDefaults(spec);
+  const assets = { ...(isObj(d.assets) ? d.assets : {}) };
+  for (const type of missing) assets[type] = defaults[type];
+  return { data: { ...d, assets }, added: missing };
+}
+
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 const ID = /^[a-z0-9][a-z0-9-]*$/;
 const SPACINGS = ['tight', 'compact', 'regular'];
