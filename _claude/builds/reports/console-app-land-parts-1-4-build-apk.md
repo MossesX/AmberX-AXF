@@ -169,5 +169,5 @@ Still red in that run, and also red on main: the kernel theme conformance test (
 - **Interim, top of the stack (all five parts, before landing):** run 43541410908 on
   `claude/console-app-wake-word-voice-listener` @ `5da77e5df`: artifact `console-app-debug.apk` (163 KB),
   https://github.com/MossesX/AmberX-AXF/actions/runs/43541410908/artifacts/14092283770 (run page
-  https://github.com/MossesX/AmberX-AXF/actions/runs/43541410908). It is signed with the stable debug key, so later
-  builds install over it.
+  https://github.com/MossesX/AmberX-AXF/actions/runs/43541410908). It is signed with the default debug keystore, which
+  CI fills from the `ANDROID_DEBUG_KEYSTORE` secret when that secret is set, so later builds install over it.
