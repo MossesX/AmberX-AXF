@@ -247,6 +247,43 @@ export function healthOf({ status = null, out = '', error = '' } = {}) {
   return { signedIn: null, credits: null, fable: null, error: line };
 }
 
+/**
+ * A run that stopped on an OAuth / sign-in failure: the failing line from the end of its log, '' = none. Only the last
+ * lines are read, and only Claude Code's own error wording counts, so a build that merely talks about tokens never
+ * matches. A usage limit or an empty credit balance is not a sign-in failure.
+ */
+export const RUN_AUTH_RE = /OAuth token (has )?(expired|revoked)|OAuth (authentication|error|refresh)[^\n]{0,40}(fail|invalid|expired|revoked)|authentication_error|Failed to authenticate|Invalid API key|Please run \/login|not logged in|invalid[_ ]grant|refresh token[^\n]{0,30}(invalid|expired|revoked|not found)|API Error: 401|invalid x-api-key/i;
+export function authFailureOf(text, { lines = 25 } = {}) {
+  const tail = str(text, 400000).split('\n').slice(-lines);
+  for (let i = tail.length - 1; i >= 0; i--) {
+    const l = tail[i].replace(/\x1b\[[0-9;]*m/g, '').trim();
+    if (l && RUN_AUTH_RE.test(l)) return str(l, 200);
+  }
+  return '';
+}
+
+/**
+ * The reason a run stopped, from the end of its log: the last line that reads as an error or a refusal ("Error",
+ * "refused", "Not started", "failed", "exit"…), else the last non-empty line before the launcher's own footer. ''
+ * when there is no log.
+ */
+export function lastReasonOf(text, { lines = 40 } = {}) {
+  const tail = str(text, 400000).split('\n').slice(-lines).map((l) => l.replace(/\x1b\[[0-9;]*m/g, '').trim()).filter(Boolean)
+    .filter((l) => !/^── finished \(exit \d+\)/.test(l) && !/^#/.test(l));
+  for (let i = tail.length - 1; i >= 0; i--) if (/\b(error|refused|not started|failed|fatal|panic|cannot|can't|killed|denied|timed? ?out|no such|exception)\b/i.test(tail[i])) return str(tail[i], 300);
+  return str(tail.at(-1) || '', 300);
+}
+
+/**
+ * A build held after a sign-in failure goes back to the Queue once: when a health answer newer than the failure says
+ * its account signs in again. `wait` = { account, at, requeued }, `health` = that account's last health record.
+ */
+export function authRecovered(wait, health) {
+  if (!wait || wait.requeued || !health || health.signedIn !== true || health.skipped) return false;
+  const t = Date.parse(health.at || ''); const f = Date.parse(wait.at || '');
+  return Number.isFinite(t) && Number.isFinite(f) && t > f;
+}
+
 /** One line for the health of every account: "4 accounts: 3 ok, 1 can't sign in". */
 export function healthSummary(rows) {
   const r = list(rows);
@@ -493,6 +530,12 @@ export function alertFor(kind, d = {}) {
     case 'selfcheck': return { ...base, key: 'pipeline:selfcheck', severity: list(d.problems).length ? 'warning' : 'info',
       title: `Dispatcher self-check: ${list(d.fixes).length ? `fixed ${list(d.fixes).length}` : 'nothing fixed'}${list(d.problems).length ? `, ${list(d.problems).length} account${list(d.problems).length === 1 ? '' : 's'} can't work` : ''}`,
       body: str([...list(d.fixes).map((x) => `Fixed: ${x}`), ...list(d.problems).map((x) => `Can't use ${x}`), d.line ? `Now: ${d.line}` : ''].filter(Boolean).join('\n'), 1500) };
+    case 'launch-failed': return { ...base, key: `pipeline:launch:${d.id}:${Date.now()}`, severity: 'error', title: `Couldn't start: ${str(d.title || d.id, 120)}`,
+      body: str([`Build ${d.id} was picked from the Queue and failed to start.`, ...list(d.reasons).map((x) => `${x.account || '?'}: ${str(x.error, 300)}`),
+        d.tries && d.maxTries ? (d.tries >= d.maxTries ? `${d.tries} failed starts this hour: it waits an hour before the next try.` : `It stays in the Queue and is tried again next tick (${d.tries}/${d.maxTries} failed starts this hour).`) : ''].filter(Boolean).join('\n'), 1500) };
+    case 'oauth': return { ...base, key: `pipeline:oauth:${d.id}`, severity: 'error', title: `Claude login failed: ${d.account || '?'} · ${str(d.title, 100)}`,
+      body: str(`${d.error || 'sign-in refused'}\n${d.id} is held in Pending. It goes back to the Queue by itself once ${d.account || 'the account'} signs in again (checked by the account health sweep${d.everyMin ? `, every ${d.everyMin} min` : ''}). To fix it now: Claude accounts → ${d.account || 'the account'} → Sign in.`, 1500) };
+    case 'oauth-ok': return { ...base, key: `pipeline:oauth:${d.id}`, severity: 'success', title: `Claude login works again: ${d.account || '?'}`, body: str(`${d.id} is back in the Queue (re-queued once, automatically).`, 1500) };
     case 'split': return { ...base, key: `pipeline:split:${d.id}`, severity: d.error ? 'warning' : 'info', title: d.error ? `Split needs a look: ${str(d.title, 120)}` : `Split into ${d.steps} steps: ${str(d.title, 120)}`, body: str(d.error || d.note, 1500) };
     default: throw new Error(`unknown alert kind ${kind}`);
   }

@@ -40,7 +40,8 @@ export const SANDBOX = Object.freeze({
   description: 'TEST DATA: a throwaway workspace for trying projects (its own builds, notes, to-dos and plans). Safe to delete.',
 });
 const BY = 'project-seed';
-const ORCH = join(REPO_ROOT, 'apps/console-web/plugins/build-orchestrator/orchestrator.mjs');
+let ORCH = null; // the build orchestrator's CLI; null once that plugin is uninstalled
+ORCH = join(REPO_ROOT, 'apps/console-web/plugins/build-orchestrator/orchestrator.mjs'); // axf-plugin:build-orchestrator
 const STORES_PY = join(REPO_ROOT, 'framework/cli/project_seed_stores.py');
 export const BUILD_IDS = Object.freeze({ shipped: `${SANDBOX.id}-sample-shipped-build`, pending: `${SANDBOX.id}-sample-pending-build` });
 export const PLAN_IDS = Object.freeze([`${SANDBOX.id}-plan-website-relaunch`, `${SANDBOX.id}-plan-garden-season`]);
@@ -49,12 +50,17 @@ export const PLAN_IDS = Object.freeze([`${SANDBOX.id}-plan-website-relaunch`, `$
 
 export const hubProjectsDir = () => process.env.AXHUB_PROJECTS_DIR || '/projects';
 export const hubFolder = () => join(hubProjectsDir(), SANDBOX.id);
-export const todoFile = () => join(process.env.AXF_TODO_DIR || join(REPO_ROOT, '.axf-console/plugins/todo-manager'), 'projects', SANDBOX.id, 'store.json');
+let TODO_DATA = null; // the to-do manager's data folder; null once that plugin is uninstalled
+TODO_DATA = join(REPO_ROOT, '.axf-console/plugins/todo-manager'); // axf-plugin:todo-manager
+export const todoFile = () => join(process.env.AXF_TODO_DIR || TODO_DATA || fail('the to-do manager plugin is not installed (set AXF_TODO_DIR)'), 'projects', SANDBOX.id, 'store.json');
 export const notesFolder = () => `project-notes/${SANDBOX.id}`;
 export const notesDir = () => join(hubProjectsDir(), '_shared', '_claude', ...notesFolder().split('/'));
+let PLANS = null; // Plan Studio: its data folder name and its plans store module; null once that plugin is uninstalled
+PLANS = { folder: 'plan-studio', module: '../../apps/console-web/plugins/plan-studio/plans.mjs' }; // axf-plugin:plan-studio
 export function plansDir() {
+  if (!PLANS) fail('the Plan Studio plugin is not installed');
   const root = persistRoot();
-  return join(root ? join(root, 'plan-studio') : join(REPO_ROOT, '.axf-console/plugins/plan-studio'), 'projects', SANDBOX.id);
+  return join(root ? join(root, PLANS.folder) : join(REPO_ROOT, '.axf-console', 'plugins', PLANS.folder), 'projects', SANDBOX.id);
 }
 
 /* ─── the sample data ────────────────────────────────────────────────────── */
@@ -280,7 +286,8 @@ function ensureBuilds(log) {
 async function ensurePlans(log) {
   process.env.AXF_BUILD_PROFILE = SANDBOX.id; // the plans store follows the active project
   try {
-    const ps = await import('../../apps/console-web/plugins/plan-studio/plans.mjs');
+    if (!PLANS) fail('the Plan Studio plugin is not installed');
+    const ps = await import(PLANS.module);
     for (const p of plans()) {
       if (ps.getPlan(p.id)) { log.push(`plan ${p.id}: already there`); continue; }
       const r = ps.savePlan(p, { by: BY, kind: 'import', note: 'Test data', force: true });

@@ -101,7 +101,7 @@ changes one (`consoleFieldValue` parses on/off/toggle, numbers in range, choices
 a refused value is the ack's message). The catalog is re-sent when a setting changes, so a `get` right after a set reads the new value.
 Find by content (same build): Plan Studio's `plan-studio.focus:<focus>` opens a plan down to one item: `<plan id>`, `<plan id>/<item ref>`
 (step id, `risks:2`, comment id, `body:4`) or words — "the plan about X, the step that mentions Y" — that its `find` resolves to the best
-hit. REST `GET /api/plugins/plan-studio/find?q=|plan=&item=&kind=` (also `plugins.reads plan-studio/find`, MCP `plan-studio_find`,
+hit. REST `GET /api/plugins/plan-studio/find?q=|plan=&item=&kind=` (also `plugins.reads plan-studio/find`, MCP `plan-studio_find`, <!-- axf-plugin:plan-studio -->
 `axf plan-studio find`), CLI `plans.mjs find <words>`; every hit carries its `focus`, and `console_open "plan-studio <focus or words>"` /
 `console_show` open it. <!-- axf-plugin:plan-studio -->
 Focus on a screen: `act open` on `console.screens` takes `input.focus` or a path "<screen id or title> <rest>" ("build-orchestrator

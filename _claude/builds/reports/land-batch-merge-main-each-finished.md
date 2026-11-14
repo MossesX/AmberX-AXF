@@ -1,0 +1,132 @@
+# Land batch: merge main into each finished build and land
+
+Build `land-batch-merge-main-each-finished` (Brett, Nov 13 2026: "what else finished; land it").
+
+## Notes: the resolver and the regenerate commands (s1)
+
+`/opt/axf-batch/resolve.py` (vps.build_land's resolver) already hands over to the repo's copy,
+`framework/cli/land-resolve.py`, read from the tree being merged (else `/opt/axf`). That script is driven by the
+generated-files@1 manifest `framework/spec/generated-files.json`, the same list the merge queue reads
+(`apps/console-web/plugins/push-banner/land/land-core.mjs`). A `regen` clash takes main's copy, reruns the generator
+on the merged tree, stages its outputs, then runs the generator's check and the manifest's tests. Anything outside
+the manifest that is not JSON / text is a real source clash: `UNRESOLVED: <files>`, exit 1, nothing committed.
+
+| Generated file | Rule | Regenerate command | Check |
+| --- | --- | --- | --- |
+| `apps/<app>/axf.lock.json` (and `apps/<app>/src/axf/**`) | regen, generator `rebake` (optional) | `node framework/cli/rebake.mjs apply apps/<app>` | none; if rebake refuses (baked files edited in place) main's copy stands and the refusal is logged |
+| `apps/console-web/src/control/inventory.json` | regen, generator `control-inventory` | `node apps/console-web/scripts/control-inventory.mjs` | `node apps/console-web/scripts/control-inventory.mjs --check` |
+| `apps/<app>/src/assets/help/framework.json` (any baked help pack) | regen, generator `help-sync` | `node framework/cli/help-coverage.mjs --sync` | none |
+| `framework/assets/help/*.json` (help source packs) | union-json | (no generator: both sides' keys, main wins a scalar) | |
+| `framework/spec/fixtures/*.json` | regen, generator `fixtures` | `npx -y tsx framework/spec/gen-fixtures.mts` | `node framework/spec/check-project-fixtures.mjs` |
+| `tracker.json` | regen, generator `tracker` | `node framework/cli/tracker.mjs` | `node framework/cli/tracker.mjs --check` |
+
+Tests after any regen or union: `control-inventory.mjs --check`, `check-project-fixtures.mjs`.
+
+Host repair before the batch (Nov 13, 23:5x): `/opt/axf/.git` had lost the objects behind 15 branch refs (the
+four batch worktrees icon-map, per-instance-settings, token-registry, lander-regenerates among them; `git fetch` and
+auto-gc failed with "bad object"). Every lost tip still matched GitHub, so nothing was lost; the objects were
+fetched back into the store.
+
+## The deployed resolver (s2)
+
+- Repo copy: `deploy/axf-batch/resolve.py`, installed as `/opt/axf-batch/resolve.py` by `bash deploy/axf-batch/install.sh`
+  (installed Nov 14, 00:0x; the previous host file is kept as `resolve.py.bak-2026-11-13-2358`).
+- It holds no merge rules any more: the legacy JSON / text merge copy is gone. It runs
+  `framework/cli/land-resolve.py` from the checkout being landed (cwd), else `$AXF_ROOT` (default `/opt/axf`), and
+  with neither it exits 1 with `UNRESOLVED: no resolver …` instead of guessing.
+- So a generated-file clash is regenerated from the merged sources and staged (rules above); a real source clash still
+  stops with `UNRESOLVED: <files>`.
+
+## Resolver check (s3)
+
+`node framework/spec/check-land-resolve.mjs`: a scratch repo (its own `git init`, nothing shared with `/opt/axf`,
+which was damaged at the time) with the deployed shim, the repo resolver and the real generated-files@1 file rules
+(generators stubbed to write from the merged sources). Clash in `apps/console-web/axf.lock.json`,
+`apps/console-web/src/control/inventory.json` and `apps/console-web/src/assets/help/framework.json`: all three
+regenerated from both sides' sources and staged, exit 0. Source clash in `src/app.mjs`: exit 1,
+`UNRESOLVED: src/app.mjs`, no generator run. Result: 13/13 ok.
+
+## Branches (s4–s16)
+
+Each branch is merged in a scratch worktree (`/tmp/lb-wt/<branch>`, detached at the pushed branch), so the build
+sessions' own worktrees are untouched. Sweep, run with `AXF_DATA_DIR=off` (the repo copies, as CI reads them):
+`axf validate --framework`, `tracker --check`, `check-theme`, `check-controls`, `check-toolbars`,
+`check-project-fixtures`, `control-inventory --check`, plus the branch's extra checks and the tests of every plugin
+it touches. Known on main, not caused by the merges: every baked app (console-web, axhub-web, …) is already
+"edited" by `rebake status`, so the resolver keeps main's `axf.lock.json` instead of re-baking (by design); and the
+host data copy of `framework/catalog/status.json` was missing `ui.opacity.surfaces` (fixed on the host, backup
+`status.json.bak-lb`), which made a local `tracker --check` fail while CI passed.
+
+| Step | Branch | PR | Merge | Sweep | Pushed |
+| --- | --- | --- | --- | --- | --- |
+| s4 | toolbar-widgets-attach-any-banner-style | #656 | 174 behind; clash in console-web `axf.lock.json`, `control/inventory.json`: inventory regenerated, lock = main's (rebake refused, edited app) | all green + check-banner-widgets | `e6255aa433` |
+| s5 | icon-map-icon-packs-every-icon-badge-app | #664 | 235 behind; clash in `control/inventory.json`: regenerated | all green + icon-map, molly-guide tests | `c68e1c5607` |
+| s6 | token-registry-skin-editor-live-sandbox | #657 | 189 behind; clash in `control/inventory.json`: regenerated | all green + check-skin, check-skin-coverage, -sections, -colour-rule, skin-editor and molly-guide tests | `b027e0d1c6` |
+| s7 | per-instance-settings-small-live-preview | #662 | 98 behind; clean merge | all green + check-chrome-settings (364); help-coverage red only for main's Gizmo guide gap (fixed in this build's PR) | `5d8a1c355d` |
+| s8 | skin-axhub-override-switch-greyed-out | #641 | 349 behind; clash in `control/inventory.json`: regenerated | all green + 4 skin checks, context-menu-designer and theme-editor tests | `666f13d5e8` |
+| s9 | skin-animations-swatches-skin-switch | #652 | 261 behind; clash in the framework help pack + 2 copies: help re-synced, but the union kept a duplicate `animations` entry and main's baked console-web copy dropped the branch's `animations.*` entries; fixed by hand (branch's card kind kept, baked copy = merged pack) | all green + help-coverage, 4 skin checks, molly-guide test | `01104c9894` |
+| s10 | skin-config-panel-merge-main-and-land | #648 | 67 behind; clean merge | all green + 4 skin checks, help-coverage, molly-guide test | `9e8ef64144` |
+| s11 | skins-plugin-merge-main-and-land | #647 | 67 behind; clean merge, but `control/inventory.json` was stale on the merged tree: regenerated and committed | all green + plugin-lifecycle (skin-gallery clean), skin-gallery test.py, check-skin, help-coverage | `8edc575fc2` |
+| s12 | full-voice-control-resolve-inventory | #655 | 129 behind; clean merge, inventory current | all green + check-console-control, console-control server tests (11); help-coverage red only for main's Gizmo guide gap | `b12d3702c5` |
+| s13 | orchestrator-custom-groups-custom-tabs | #644 | 364 behind; clean merge, but `control/inventory.json` was stale: regenerated; 9 new group controls had no help under main's 100% ratchet: help added | all green + check-builds-store, check-chrome-assets, 4 build-orchestrator tests; help-coverage red only for main's Gizmo guide gap | `dae8ed20ce` |
+| s14 | demo-pipelines-guided-walkthrough-live | #646 | 324 behind; clash in `control/inventory.json`: regenerated. Branch's help pack was invalid (a `#` target, duplicate `speed`) and 12 controls had no help: fixed | all green + demonstration-designer tests (node + server_test.py), plugin-lifecycle; glossary catalog --check and help-coverage red only for main's gaps (fixed in this build's PR) | `72b4167a96` |
+| s15 | console-app-wake-word-voice-listener | #643 | 372 behind; clash in `control/inventory.json`: regenerated; 13 controls had no help under main's 100% ratchet: help added | all green + wake-listener tests (82), plugin-lifecycle; help-coverage red only for main's Gizmo guide gap | `b62e07071b` |
+| s16 | hotfix-desktop-console-draws-app-menu | #658 | 126 behind; clean merge | all green + chrome-once e2e (PR #658 regression, 29 checks, desktop + phone, built merged tree); the deployed console failed it (older than main) | `e19da88758` |
+
+Extra fixes for checks that were red on main itself, in this build's PR #665 (first in the stack, so every PR
+behind it is tested with them): `help-coverage --check` (the Gizmo guide settings tab had no help, 99.9% vs a 100%
+ratchet), the glossary `catalog.mjs --check` (`ui.opacity.surfaces` had no description, 389 vs 388), and the light
+PR check's console type-check (`VetoHost.overlay*` existed only in console-web's hand-edited baked `veto.ts`, so
+re-baking from `framework/` broke `approvals-banner`, TS2339, on every open PR). Verified on main + the fix:
+`npx tsc --noEmit` clean after CI's re-bake.
+
+## Merge queue (s17)
+
+Stack, in this order (`land.mjs queue add` + `move`, Nov 14 ~01:4x): **#665** (this build) → #662 per-instance-settings
+→ #641 skin-axhub-override → #652 skin-animations → #648 skin-config-panel → #647 skins-plugin → #655
+full-voice-control → #644 orchestrator-custom-groups (was a draft with every step done: marked ready) → #646
+demo-pipelines → #658 hotfix-desktop-console. Nothing merged by hand.
+
+Held back on purpose, merged with main and pushed but **not queued**: their builds still have open feature steps,
+and Brett asked for what finished.
+- #656 toolbar-widgets: s2, the toolbar widgets themselves.
+- #664 icon-map: s9, colour layers and logo packs (Fable).
+- #657 token-registry: s6–s9 (default skin, snapshots, export, restore).
+- #643 console-app-wake-word: s3–s10 (Android voice, approvals by voice, …).
+
+Each one goes in with `land.mjs queue add <pr>` once its build is done.
+
+### Queue result so far
+
+- #665 went in first and was **kicked out**: its full run on top of main
+  (https://github.com/MossesX/AmberX-AXF/actions/runs/43538537626) hit three failures that are main's, not this
+  PR's. Two are fixed on #665 (`c533e2b0b`); a push rejoins it by itself.
+  1. Plugin lifecycle (`build-orchestrator`): four files outside the plugin named its folder with no managed marker
+     (`console-control.e2e.mjs`, `project-seed.mjs`, `check-build-limit.mjs`, `check-projects.mjs`). **Fixed**:
+     marked assignments that uninstall can strip, files listed in `lifecycle.mentions`. Check is clean locally.
+  2. Kotlin `ConformanceTest > theme variables match the reference engine`: the transparency build added twelve
+     `--fx-opacity-<kind>` / `--fx-backdrop-<kind>` variables with the Android twin deferred.
+     **Fixed**: the test skips exactly those (`DEFERRED_THEME_VAR`), and PORTING.md says so. Not run locally (no
+     Gradle on the host); the queue run will show it.
+  3. Web `scripts/theme-swap.mjs`: "transparency tokens did not change between style themes". Every style theme
+     reads the `hub` style's opacities (0.4 / 0.66 / 0.06 / 0.1 / 0.45 / 0.88), so the console is pinned to the
+     axHub look in the test and the style picker changes nothing. **Not fixed**: a look-lock / theme regression on
+     main that needs its own build. Until it's fixed, every full run in the queue fails, so nothing in this stack
+     can merge.
+- The other nine batch PRs sit outside the queue with red light checks. The only error is main's `VetoHost`
+  TS2339, which #665 fixes. Once #665 lands, merge main into each of them once more: fresh light checks go green
+  and they rejoin the stack.
+
+## Not done in this phase
+
+- s18 (redeploy the console after the stack merges): the stack hasn't merged. The merge queue redeploys the console
+  once per landing by itself; then confirm it answers.
+- s19: on main, `check-land-resolve`, `builds-store verify` and `tracker --check` all pass. Not done: marking the
+  landed builds complete and the THREADS.md row, because nothing has landed yet.
+
+## Host repair (for the record)
+
+`/opt/axf/.git` lost the objects behind 15 refs and some of main's blobs around 21:17 (pack files rewritten).
+Fixed by a fresh bare clone of main and copying its pack into the store (additive, no refs moved); the batch
+branches were fetched again and their local refs restored at the remote tips. Another session's own repair (a
+`--refetch` under a 15-minute timeout) was killed mid-index and left a truncated temp pack, which was removed.

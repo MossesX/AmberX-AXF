@@ -14,13 +14,15 @@
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
-import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, SKIN_COLOR_SLOT, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, skinSwatches, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, ControlScope, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, SelectField, settingTargetDef, Slider, Switch, useAsset, useAxfState, useControlTarget, useKnownBanners, useRuntime } from '../../react';
+import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, HUB_SKIN_ONLY_GROUP, skinSwatches, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, SKIN_COLOR_SLOT, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
+import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, ControlScope, HubSkinLockNote, Icon, IconButton, ModelBadge, Note, setBannerOwnSettingsRenderer, SelectField, settingTargetDef, Slider, Switch, useAsset, useAxfState, useControlTarget, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { TabGroup } from '../../react/components/TabGroup';
 import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS, LevelEditor, levelEditorAct } from './levels';
 import { FollowHubSwitch, SKIN_WHERE_CSS, SKIN_WHERE_DIALOG, SkinWhere, SkinWhereDialog } from './skinwhere';
+import { hasSkinConfigProvider, SKIN_CONFIG_CSS, SKIN_CONFIG_TAB, SkinConfigPanel as SkinConfigView } from './SkinConfigPanel';
+export { SkinConfigPanel, hasSkinConfigProvider, SKIN_CONFIG_LAYOUT_KEY, SKIN_CONFIG_SERVICE, SKIN_CONFIG_TAB, skinConfigLayout, skinConfigService, type SkinConfigLayout, type SkinConfigService } from './SkinConfigPanel';
 import { SkinScope } from '../../react/components/SkinScope';
 import { SwatchFan, Swatches } from '../../react/components/Swatches';
 import { consoleFieldValue } from '../../core/engines/console-commands.mjs';
@@ -40,6 +42,8 @@ export const SETTINGS_TABS = {
   // Every banner plugin's settings in one place (Brett, Oct 22 2026); shown only while the app has banners.
   banners: { id: 'banners', label: 'Banners', icon: 'bell', parent: 'plugins', order: 1, description: 'Every banner: its look, its behaviour and its plugin’s own settings, one tab each. Right-click (or long-press) any banner for the same.' },
   about: { id: 'about', label: 'About', icon: 'info', order: 90, description: 'Versions and help.' },
+  // What the AI may change when it makes a skin (skin-config@1); shown only while something provides axf.skin-config@1.
+  'skin-config': { id: 'skin-config', label: 'Skin config', icon: 'sliders', parent: 'appearance', order: 30, description: 'Before AI makes a skin: pick what it may change, lock the rest, set how deep it may build menus. The current look is the Default skin.' },
 } as const;
 
 /* ---------------- hooks ---------------- */
@@ -147,7 +151,7 @@ function SettingControl({ spec, off = false }: { spec: SettingSpec; off?: boolea
     case 'section':
       return <h3 className="axf-settings__section">{spec.label}</h3>;
     case 'toggle':
-      control = <Switch hideLabel className="axf-settings__switch" label={spec.label} text={value === true ? 'On' : 'Off'} checked={value === true} disabled={locked} onChange={(on) => set(on)} />;
+      control = <Switch hideLabel className="axf-settings__switch" label={spec.label} text={value === true ? 'On' : 'Off'} checked={value === true} disabled={locked} onChange={(on) => { if (on && spec.confirm && typeof globalThis.confirm === 'function' && !globalThis.confirm(spec.confirm)) return; set(on); }} />;
       break;
     case 'slider':
       return (
@@ -476,7 +480,8 @@ export function SettingsView() {
   const choose = (top: string, child = '') => { setSel([top, child]); rt.settings.set(TAB_KEY, child || top); };
   // List layout: no tab picked = the list of tabs (drill-down, with Back); the other layouts always show a tab.
   const current = tabs.find((t) => t.id === tab) ?? (isList && !wide ? undefined : tabs[0]);
-  const subs = current ? childrenOf(current.id).filter((t) => !folded.has(t.id) && (t.id !== 'banners' || banners.length > 0)) : [];
+  const skinConfig = hasSkinConfigProvider(rt);
+  const subs = current ? childrenOf(current.id).filter((t) => !folded.has(t.id) && (t.id !== 'banners' || banners.length > 0) && (t.id !== SKIN_CONFIG_TAB || skinConfig)) : [];
   const noOverview = !!pluginLock && current?.id === 'plugins' && subs.length > 0;
   const shown = (sub && subs.find((t) => t.id === sub)) || (noOverview ? subs[0] : current);
   const subList = isList && subs.length >= SUB_LIST_FROM;
@@ -568,6 +573,23 @@ const RESTORE_DIALOG = 'axf.settings.restore-default';
 const SKIN_DIALOG = 'axf.settings.skin';
 const LOCK_PANEL_ID = 'axf.appearance.lock';
 
+/** The note (with its "Click here to override" link) on every look area Skin from axHub only locks. */
+export function FollowingAxHubNote() {
+  return <HubSkinLockNote className="axf-settings__following" />;
+}
+
+/** Override on: what was edited here and no longer refreshes from axHub (rt.hubOverridden). */
+export function HubOverriddenNote() {
+  const rt = useRuntime();
+  const parts = rt.hubOverridden();
+  const label = (p: string) => (p === 'skin' ? 'Skin' : p.startsWith('asset:') ? assetTypeSpecs[p.slice(6) as AssetType]?.label ?? p.slice(6) : rt.settings.spec(p.slice(8))?.label ?? p.slice(8));
+  return (
+    <Note tone="warning" icon="edit" className="axf-settings__following">
+      {parts.length ? `Overriding axHub. Overridden here (no longer refreshed from axHub): ${parts.map(label).join(', ')}.` : 'Overriding axHub: what you edit here is marked as overridden and no longer refreshes from axHub.'}
+    </Note>
+  );
+}
+
 /**
  * Settings → Appearance is the skin panel in every app (Nov 4 2026, Brett; skins only since Nov 10 2026: "remove all
  * the styling and theme and layout stuff … the new thing's going to override it"): one shared panel, top to bottom: Skin
@@ -578,12 +600,27 @@ const LOCK_PANEL_ID = 'axf.appearance.lock';
  * The colour theme is the one section switched inside the skin (Brett, Nov 9 2026: "You can change the color theme
  * without changing the skin"): picking one keeps the same skin, shows no overridden dot and makes no new skin;
  * "Skin's colours" goes back to the skin's own (rt.skinColorTheme / rt.setSkinColorTheme).
+ *
+ * With "Get my skin only from axHub" on (the switch drawn above this panel) every control here is locked and says
+ * "Following axHub": the app draws the hub-wide skin only, and what is picked here is kept for when it is off.
  */
+/**
+ * The skin-switch@1 service (a library that provides it, e.g. a Skins plugin), found by capability, never by name.
+ * When one is installed, Use / Back to skin / Restore / Undo here run its actions (skin.use / skin.back / skin.restore /
+ * skin.undo at the app scope), so they make the same change, through the same engine and the same undo record, as its
+ * gallery, its REST routes, MCP, the CLI and voice; skin.open opens its gallery. Without one, the runtime does it.
+ */
+export const SKIN_SWITCH_SERVICE = 'axf.skin-switch@1';
+export function hasSkinSwitch(rt: AxfRuntime): boolean {
+  return (rt.libraries as unknown as { provides?: string[] }[]).some((l) => l.provides?.includes(SKIN_SWITCH_SERVICE));
+}
+
 export function AppearancePanel() {
   const rt = useRuntime();
   const st = useAxfState();
   useSettingsRevision(rt);
   const locked = !rt.can('assets.swap') || rt.lockedByAppearance('assets.swap');
+  const following = rt.appearanceLockReason() === 'hub';
   const look = rt.appLook();
   const skins = rt.skinList();
   const skinId = look?.skin.id ?? '';
@@ -592,6 +629,11 @@ export function AppearancePanel() {
   const colour = rt.skinColorTheme();
   const inForce = !!colour.own; // a skin with data is in force here (read from the look document, so a pick just made is seen at once)
   const [confirm, setConfirm] = useState(false);
+  const service = hasSkinSwitch(rt);
+  const back = (type: string) => (service ? rt.dispatch(`skin.back:app:${type}`) : rt.backToSkin(type));
+  const restore = () => (service ? rt.dispatch('skin.restore:app') : rt.restoreDefaultAppearance());
+  const undo = () => (service ? rt.dispatch('skin.undo') : rt.undoRestoreDefault());
+  const useSkin = (on: boolean) => (service && on && skinId ? rt.dispatch(`skin.use:${skinId}:app`) : rt.useSkin(on, skinId || undefined));
   const row = (label: string, type: string) => {
     const list = rt.registry.list(type as AssetType);
     const value = st.active[type as AssetType] ?? '';
@@ -610,7 +652,7 @@ export function AppearancePanel() {
             {!value && <option value="">—</option>}
             {list.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
           </select>
-          {isOver && <Button size="sm" tone="quiet" disabled={locked} onClick={() => rt.backToSkin(type)}>Back to skin</Button>}
+          {isOver && <Button size="sm" tone="quiet" disabled={locked} onClick={() => back(type)}>Back to skin</Button>}
           {isColour && colour.picked && <Button size="sm" tone="quiet" disabled={locked} title="Back to the colour theme this skin came with" onClick={() => rt.setSkinColorTheme(null)}>Skin's colours</Button>}
         </div>
       </div>
@@ -618,15 +660,20 @@ export function AppearancePanel() {
   };
   return (
     <div className="axf-settings__rows" data-axf-appearance="">
+      {following && <FollowingAxHubNote />}
+      {rt.hubSkinOverride() && <HubOverriddenNote />}
       <AssetsWithEdits />
       <div className="axf-settings__row">
         <div className="axf-settings__label">
           <span>Skin</span>
-          <span className="fx-muted axf-settings__hint">{skinOn ? `${skins.find((s) => s.id === skinId)?.name ?? skinId}, in this app only.` : "Off: this app's own look."}</span>
+          <span className="fx-muted axf-settings__hint">{following ? 'Following axHub.' : skinOn ? `${skins.find((s) => s.id === skinId)?.name ?? skinId}, in this app only.` : "Off: this app's own look."}</span>
         </div>
-        <div className="axf-settings__control axf-skin__action"><Button size="sm" icon="palette" disabled={locked || !skins.length} onClick={() => rt.openDialog(SKIN_DIALOG, {})}>Choose…</Button></div>
+        <div className="axf-settings__control axf-skin__action">
+          <Button size="sm" icon="palette" disabled={locked || !skins.length} onClick={() => rt.openDialog(SKIN_DIALOG, {})}>Choose…</Button>
+          {service && <Button size="sm" tone="ghost" icon="external" data-axf-skin-gallery-link="" onClick={() => rt.dispatch('skin.open')}>Open Skins gallery</Button>}
+        </div>
       </div>
-      <Switch label="Use skin" hint={skinOn ? 'Off goes back to this app\'s own look and keeps your picks.' : 'On applies the last skin you picked.'} checked={skinOn} disabled={locked || !skins.length} onChange={(on) => { rt.useSkin(on, skinId || undefined); }} />
+      <Switch label="Use skin" hint={skinOn ? 'Off goes back to this app\'s own look and keeps your picks.' : 'On applies the last skin you picked.'} checked={skinOn} disabled={locked || !skins.length} onChange={(on) => { useSkin(on); }} />
       <FollowHubSwitch locked={locked} />
       {row('Colour theme', 'color-theme')}
       <p className="fx-eyebrow">Visible parts</p>
@@ -639,10 +686,18 @@ export function AppearancePanel() {
       <div className="axf-settings__row">
         <div className="axf-settings__label"><span>Restore to default</span><span className="fx-muted axf-settings__hint">Back to the look this app had when skins landed.</span></div>
         <div className="axf-settings__control axf-skin__action">
-          <Button size="sm" tone="quiet" disabled={locked} onClick={() => { if (!confirm) { setConfirm(true); setTimeout(() => setConfirm(false), 4000); return; } setConfirm(false); rt.restoreDefaultAppearance(); }}>{confirm ? 'Tap again to restore' : 'Restore'}</Button>
-          {!!look?.undo && <Button size="sm" tone="quiet" disabled={locked} onClick={() => rt.undoRestoreDefault()}>Undo</Button>}
+          <Button size="sm" tone="quiet" disabled={locked} onClick={() => { if (!confirm) { setConfirm(true); setTimeout(() => setConfirm(false), 4000); return; } setConfirm(false); restore(); }}>{confirm ? 'Tap again to restore' : 'Restore'}</Button>
+          {!!look?.undo && <Button size="sm" tone="quiet" disabled={locked} onClick={() => undo()}>Undo</Button>}
         </div>
       </div>
+      {hasSkinConfigProvider(rt) && (
+        <div className="axf-settings__row" data-axf-skin-section="skin-config">
+          <div className="axf-settings__label"><span>Skin config</span><span className="fx-muted axf-settings__hint">What the AI may change when it makes a skin; the current look is the Default skin.</span></div>
+          <div className="axf-settings__control axf-skin__action">
+            <Button size="sm" tone="quiet" icon="sliders" onClick={() => rt.dispatch(`settings.open:${SKIN_CONFIG_TAB}`)}>Open</Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -712,6 +767,7 @@ function SkinPickerDialog() {
   const colour = rt.skinColorTheme();
   const colourThemes = rt.registry.list(SKIN_COLOR_SLOT as AssetType);
   const locked = !rt.can('assets.swap') || rt.lockedByAppearance('assets.swap');
+  const following = rt.appearanceLockReason() === 'hub';
   const [picked, setPicked] = useState(applied || look?.skin.id || '');
   useEffect(() => () => { rt.previewSkin(null); }, [rt]);
   const tap = (id: string) => { setPicked(id); rt.previewSkin(id === applied ? null : id); };
@@ -723,6 +779,7 @@ function SkinPickerDialog() {
   };
   return (
     <div className="fx-stack" data-axf-skin-picker="">
+      {following && <FollowingAxHubNote />}
       <div className="axf-skin__grid" role="listbox" aria-label="Skin">
         {skins.map((s) => (
           <Button key={s.id} tone="quiet" size="sm" className={`axf-skin__tile${s.id === picked ? ' is-picked' : ''}`} aria-selected={s.id === picked} role="option" title={s.description} data-fx-swatch-host="" onClick={() => tap(s.id)}>
@@ -747,7 +804,7 @@ function SkinPickerDialog() {
         </div>
       )}
       <div className="fx-row">
-        <Button tone="primary" disabled={!picked || picked === applied} onClick={() => { if (rt.useSkin(true, picked)) close(); }}>Apply</Button>
+        <Button tone="primary" disabled={locked || !picked || picked === applied} onClick={() => { if (rt.useSkin(true, picked)) close(); }}>Apply</Button>
         {!!applied && <Button tone="quiet" onClick={() => { if (rt.useSkin(false)) close(); }}>Turn skin off</Button>}
         <Button tone="quiet" confirm="Put this app back to its default look? Skin and picks are cleared. You can undo it once in Settings → Appearance." onClick={() => { rt.previewSkin(null); rt.restoreDefaultAppearance(); close(); }}>Reset</Button>
         <Button tone="quiet" onClick={close}>Cancel</Button>
@@ -817,14 +874,18 @@ function TabBody({ id, all = false }: { id: string; all?: boolean }) {
   // Settings → Appearance: the AmberX Design Package picker on top, everything else in one collapsible container
   const design = id === 'appearance' && !all ? panels.find((p) => p.id === DESIGN_PANEL_ID) : undefined;
   const lock = design ? panels.find((p) => p.id === LOCK_PANEL_ID) : undefined;
-  const items = design ? ordered(panels.filter((p) => p !== design && p !== lock), groups) : ordered(panels, groups);
+  // "Get my skin only from axHub" (a host's group, e.g. the console's) sits at the very top of Appearance
+  const hubSkin = id === 'appearance' ? groups.find((g) => g.id === HUB_SKIN_ONLY_GROUP) : undefined;
+  const others = hubSkin ? groups.filter((g) => g !== hubSkin) : groups;
+  const items = design ? ordered(panels.filter((p) => p !== design && p !== lock), others) : ordered(panels, others);
   const shown = design ? (
     <>
+      {hubSkin && <GroupCard group={hubSkin} />}
       {lock && panelNode(lock, 'lock')}
       {panelNode(design, 'palette')}
       {items.length > 0 && <FlatSection anchor="settings-panel:axf.appearance.rest" title="Everything else" icon="sliders" collapsible defaultOpen={false} className="axf-settings__nest"><div className="axf-settings__nested">{items}</div></FlatSection>}
     </>
-  ) : items;
+  ) : hubSkin ? <><GroupCard group={hubSkin} />{items}</> : items;
   const empty = !panels.length && !groups.length;
   if (!at) return (
     <>
@@ -997,7 +1058,7 @@ function injectStyles(): void {
   if (!doc || doc.getElementById('axf-settings-css')) return;
   const el = doc.createElement('style');
   el.id = 'axf-settings-css';
-  el.textContent = CSS + LEVELS_CSS + SKIN_WHERE_CSS;
+  el.textContent = CSS + LEVELS_CSS + SKIN_WHERE_CSS + SKIN_CONFIG_CSS;
   doc.head.appendChild(el);
 }
 
@@ -1105,6 +1166,7 @@ export const library: AxfWebLibrary = {
     { id: 'axf.account.role', tab: 'account', title: 'Role', icon: 'shield', order: 10, render: () => <RolePanel /> },
     { id: 'axf.account.profile', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
     { id: DESIGN_PANEL_ID, tab: 'appearance', title: 'Skin', icon: 'palette', order: 0, render: () => <AppearancePanel /> },
+    { id: 'axf.appearance.skin-config', tab: SKIN_CONFIG_TAB, title: 'Skin config', icon: 'sliders', order: 10, render: () => <SkinConfigView /> },
     { id: 'axf.plugins.libraries', tab: 'plugins', title: 'Installed plugins and libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
     { id: 'axf.banners', tab: 'banners', title: 'Every banner', icon: 'bell', order: 10, render: () => <BannerSettingsPanel /> },
     { id: 'axf.about', tab: 'about', title: 'About', icon: 'info', order: 10, render: () => <AboutPanel /> },

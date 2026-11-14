@@ -15,7 +15,7 @@ A port is quick to write because almost everything is already shared and languag
 | Page frame order (React `AppShell`): banner asset → `app.frame.head` slot (app tabs above the menu, Oct 22 2026) → application menu bar (moved out of the layout grid above the live banners, Oct 22 2026; its `auto` grid row stays empty) → `app.frame.banners` slot (library banners, above any page-top bar; `FrameBanners`) → `app.frame.top` → layout → `app.frame.cover` | `framework/react/AppShell.tsx`, `framework/react/components/Slots.tsx` (Oct 21 2026). **Android twin deferred**: Compose `AppShell` banner above any page-top slot, plus an `app.frame.banners` slot: Android port on hold, Brett Oct 21 2026. |
 | embed@1 takes + page mode + host/guest messages (a host takes `settings` / `notifications` from the apps it embeds; guests drop those hooks and ask the host; `page=settings` = the page alone) | `framework/core/engines/embed.ts` (second half), runtime `hostTakes` / `takenByHost` / `postToHost`, app-menu env `taken`, React chrome filters + `AppShell` page mode + `keep`; fixture `spec/fixtures/embed-takes.json` (Oct 21 2026). **Kotlin host side built** (`EmbedTakes`, `EmbedTakesConformanceTest`, lib-hub `WebAppHolder(takes)` + `AxfEmbedHost` bridge + `send`) for an Android host. **Guest side deferred**: `AxfRuntime` takes / page mode for a native Android app shown inside another (none exists yet): Android port on hold, Brett Oct 21 2026. |
 | embed@1 plugins a host makes unneeded (`skipWhen`: `embedded` / `take:<fn>` / `hidden:<type>`; page mode never skips) | `framework/core/engines/embed.ts` `embedSkipReason`, `AxfWebLibrary.embed.skipWhen`, `installLibraries` skips + `rt.skippedLibraries` / `noteSkippedLibraries` launch log, Settings → Plugins lists them; checks in `spec/check-embed.mts` (Oct 22 2026). **Android twin deferred** (kernel module loader skipping modules inside a host): no native Android app runs inside another yet; Android port on hold, Brett Oct 21 2026. |
-| Surface transparency tokens (style theme `opacityDialog` / `opacitySettings` / `opacityPanel` / `opacityMenu` / `opacityToolbar` / `opacityBanner`, default 1; `--fx-opacity-<kind>` + `--fx-backdrop-<kind>`; per-window `WindowSettings.surface`) | `framework/core/engines/theme.ts` `SURFACE_KINDS` / `surfaceVars`, `framework/ui/axf.css` surface rules; fixture `spec/fixtures/theme.json` (Nov 13 2026). **Android twin deferred** (`StyleTheme` fields + `ThemeEngine.kt` vars, Compose dialog / window / card surfaces reading them): Android port on hold, Brett Oct 21 2026. The Kotlin theme fixture test will see the twelve new variables until then. |
+| Surface transparency tokens (style theme `opacityDialog` / `opacitySettings` / `opacityPanel` / `opacityMenu` / `opacityToolbar` / `opacityBanner`, default 1; `--fx-opacity-<kind>` + `--fx-backdrop-<kind>`; per-window `WindowSettings.surface`) | `framework/core/engines/theme.ts` `SURFACE_KINDS` / `surfaceVars`, `framework/ui/axf.css` surface rules; fixture `spec/fixtures/theme.json` (Nov 13 2026). **Android twin deferred** (`StyleTheme` fields + `ThemeEngine.kt` vars, Compose dialog / window / card surfaces reading them): Android port on hold, Brett Oct 21 2026. Until then `ConformanceTest` skips exactly those twelve variables (`DEFERRED_THEME_VAR`); drop it with the twin. |
 | Banner widgets (picker choices per app + form factor: hide, size, width, show, priority, ⋯ overflow; optional `widget` hint on a host attachment) | `framework/core/engines/bannerwidgets.ts`, runtime `bannerWidgets` / `setBannerWidget`, React `BannerWidgets.tsx`; checks in `spec/check-widgets.mts` (Nov 5 2026, no fixture yet: Fable review to promote it to one). **Android twin deferred** (`BannerWidgetEngine.kt` + Compose picker): Android port on hold, Brett Oct 21 2026. |
 | ref@1 reference links (mentions of screens, settings, plugins, toolbars, builds, PRs, files in any text → links; explicit `touches:` refs win; peek / open / highlight) | `framework/core/engines/refs.mjs`, React `RefText` (`framework/react/components/RefText.tsx`); fixture `spec/fixtures/refs.json` (checker `spec/check-refs.mjs`, Nov 3 2026). **Android twin deferred** (`RefsEngine.kt` + a Compose `RefText` on `AnnotatedString` links): Android port on hold, Brett Oct 21 2026. |
 | context-lead@1 (entries that lead every context menu above one separator: `runtime.contextExtras` keys `^:<name>`, any target, even an asset with contributions off; a lead entry's id / action is not repeated below it) | `framework/core/engines/windows.ts` `withContextLead`, React `ContextMenuHost` (`framework/react/components/Overlays.tsx`); checks in `spec/check-context-lead.mts` (Nov 13 2026; used by the console's Console settings entry). **Android twin deferred** (Compose context menu with lead entries): Android port on hold, Brett Oct 21 2026. |
@@ -111,6 +111,7 @@ Regenerate fixtures after changing a reference engine: `npx -y tsx framework/spe
 - **Settings levels renamed + visible sets (Oct 28 2026, web only, Brett):** settings-ui@1 levels are Simple / Basic / Developer / Administrator (`SETTINGS_LEVELS`, `settingsLevelOf` migrates the older Pro → Administrator and Advanced → Developer in assets, group levels and saved picks; Administrator shows everything), plus per-level visible sets (`visible: { <level>: { show, hide } }`, additive field; a user's own sets under setting `axf.settings.visible` merge over the asset's with `withSettingsVisible`; `setSettingsVisible` is the level editor's move; `splitSettingsGroup` gives what a level shows and what it leaves out). Fixture `spec/fixtures/settings-ui.json` (cases `visible*`, `level`, `shown`, `split`, `set-visible`). Android twin deferred: Kotlin `SettingsUiEngine` levels + visible sets, lib-settings level toolbar (Available settings / More settings containers) and the level editor dialog replaying the same fixture.
 - **lib-datagrid datasets (Oct 28 2026, web only):** `framework/libs/datagrid/datasets.ts` — every grid registers as a dataset (fields + rows), owners attach filter / compare transforms, the `axf.dataset.toolbar` slot draws above an attached grid (first user: the Basic filter console plugin). Deferred, Android on hold: a Kotlin dataset registry in the Compose datagrid port (placeholder `axf.datagrid.datasets.android`) with the same transform order (filters AND-ed, sorts chained by owner, stable).
 - **lib-datagrid row hooks, grid-hook@1 (Oct 29 2026, web only):** `datasets.ts` → `registerRowHook` / `rowHooks` / `registerRowRefTarget` / `rowRefForContext`; a grid says what each row is (`rowRef → { kind, id }`), plugins add a row button (`RowHookButtons`) and a right-click item (`*:axf.row-hooks`, action `axf.grid.hook`) for that kind, never naming each other. Forward-compatible with share-search's grid-attach@1. Deferred, Android on hold: the same registry beside the Compose dataset registry (placeholder `axf.datagrid.datasets.android`).
+- **Toolbar settings apply (Nov 14 2026, web only, build hotfix-toolbar-settings-still-change):** `rt.chromeData(type, instance)` folds the chrome settings dialog's `axf.chrome.<type>.<instance>` over the asset for the app toolbar, page toolbars, nav, menu bar, banner and context menu (compiled root style + components), and `libs/workspace/look.ts` does the same for each workspace toolbar (its toolbar id). Checked by `framework/spec/check-chrome-apply.mts`. Deferred, Android on hold: the Kotlin `AxfRuntime.chromeData` and Compose toolbar / nav / banner reading it.
 - **A look re-read never blanks the app (Nov 1 2026, web only; axhub-web flicker fix):** runtime `appearanceBlocking()` (the waiting screen only until the source is ready the first time, or while it says `unauthorized`; a failed re-read keeps the app mounted), a source state equal to the current one is not set again, and `applyAppearance` sets no new state when no slot changes; `HubAppearanceSource` emits no state and no document for a re-read that matches the last one; lib-hub `HubWatcher` keeps an `ok` list through one unreachable read (`HUB_MISSES_SHOWN = 2`). Checked by `spec/check-appearance.mts`, `spec/check-hub.mts`, `apps/axhub-web/scripts/refresh-check.mts`. Deferred, Android on hold: the same rule in the Kotlin `AxfRuntime` appearance source handling, the Compose waiting screen and the Kotlin hub watcher.
 - **Submenu placement (Oct 28 2026, web only):** `MenuSub` in `react/components/MenuList.tsx`: a flyout opens right, flips left only when the right has no room, otherwise slides back on screen; tall ones lift. Deferred, Android on hold: the same rule in the Compose menu flyouts (`axf-ui` menus).
 - **Enterprise refactor, phase 3 (Oct 28 2026, web only; enterprise-branding s28–s40):** nav sections with the same eyebrow merge into one and a nav item's `badge` naming a runtime counter (`tasks.today`) shows its count, hidden at 0 (`mergeNavSections` + `NavBadge` in `react/components/Chrome.tsx`); the menu bar shows the active branding package's name and its `app-menu` mark (GizmoX in the console); one shared plugin banner card in `ui/axf.css` (`.fx-banner-frame` first child, tone from `--axf-banner-tone`); `framework/defaults.json` names design package `fresh` for new apps. Deferred, Android on hold: the same nav merge + counter badges in the Compose `AxfNavMenu`, the branding name/mark in the Compose menu bar, the banner card in the Compose banner frame. The Brand library console plugin and the AmberX page windows (`amberx.window`) are web/app code with no kernel contract.
@@ -162,6 +163,35 @@ skin@1 and the `migrated` / `legacy` fields of app-look@1 have no Kotlin twin (A
 fold once per profile against `spec/fixtures/look-migration.json` (`fold`, `settings`, `combined` blocks) and keeps the
 two fields through its document rules. Until then an Android app keeps reading `appearance@1` directly.
 
+**skin-config@1 + the Default skin (build skin-configuration-panel, Fable, Nov 13 2026, web/Node only):**
+`core/engines/skin-config-rules.mjs` is the permission tree Brett sets before the AI makes a skin (category > group >
+option, each allow / lock / ask; categories derived from the registry and skin-coverage@1, the `extras` category and the
+per-type `skinConfig.limits` declared in `asset-types.json`: depth with `root`, `count:<field>`), the document
+`shared/settings/skin-config/<app>.json`, the moves (`setConfigMode`, `setConfigLimit`, `setConfigDefault`,
+`resetSkinConfig`), `effectiveConfig`, `measureAsset`, `skinChangeReport`, `mergeWithDefault`, `skinConfigBrief`,
+`skinConfigSchema`, and the Default skin (`defaultSkinOf`, `isDefaultSkin`, `skinDeleteError`, `defaultSkinMigration`:
+each app's saved look as the protected skin@1 asset `default-<app>` at `shared/settings/skins/<app>.json`, `default-global`
+for the hub-wide look). Fixture `spec/fixtures/skin-config.json` (its own small registry in `in`, so a port replays it
+without the real one), check `spec/check-skin-config.mjs`; snapshot `schemas/skin-config.json`, JSON Schema
+`schemas/json/skin-config.schema.json`. **Kotlin twin deferred** (no new Android or Kotlin work): a `SkinConfigRules`
+object replaying `skin-config.json` (tree, modes, limits, report, merge, Default skin), the `skinConfig` block read by the
+spec-driven `AssetTypeRegistry` (it accepts the field as it is today), and an Android reader of the two hub documents, for
+when an Android app makes or applies AI skins.
+
+## Deferred: skin-switch@1 (Nov 13 2026)
+
+Build skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga (Fable): `framework/core/engines/
+skin-switch.mjs`, the action contract of the Skins screen and every other entry point (gallery, banner switcher, console
+API, MCP, CLI, voice): `skinSwitch(state, command, ctx)` runs `use` / `back-to-skin` / `restore-default` / `undo` for one
+scope (`hub`, `app:<id>`, `ui:<view>`, `plugin:<id>`) over `{ look, global }` (the acting app's app-look@1 document and
+the hub-wide skin), `skinSwitchState` reads a scope (own state, the skin in force with the level that decided, the
+overridden slots, the undo on offer), `parseSwitchScope` / `switchScopeOf` / `switchScopes` / `normalizeSkinSwitch` read
+the command. The one undo record is the look document's `undo`, extended with `action`, `scope` and (hub switches) the
+`global` skin before; `normalizeAppLook` keeps the three fields. No Kotlin twin (Android on hold): a port replays
+`spec/fixtures/skin-switch.json` (`sequence` chains the steps and their edits, `views`, `parse`, `normalize`) through the
+same functions and keeps the extended undo record through its document rules. Until then an Android app keeps reading
+`appearance@1` directly and shows no skin.
+
 ## Deferred: build-pipeline@1 route + dispatch (Nov 9 2026)
 
 `framework/core/build-pipeline.mjs` gained `pipeline.route` ('' | api | subscription: the per-build override that lets
@@ -190,6 +220,22 @@ Build `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides`. Web
 - `chromeOverrideList(saved)`, `CONTROLLED_COLOR_KEY` / `controlledColorOf()` (chrome-settings-rules.mjs), actions `chrome.unset`, `chrome.edits`, `settings.controlled-colour`; spec `check-asset-overrides.mjs`.
 - look-migration@1: a folded colour pick lands as the skin's `colorTheme`, never `overrides['color-theme']` (fixture regenerated).
 
+## Deferred: skin from axHub only (Nov 13 2026)
+
+Build `console-skin-axhub-only`. Web only; the Kotlin twin is deferred (Android on hold):
+- `hubOnlyLook(look)` in `skin-rules.mjs` (the look drawn while an app takes its skin from axHub only: no own picks, no
+  scopes, follow the hub-wide skin, default snapshot kept), pinned by the `scopes.hubOnly` block of `spec/fixtures/skin.json`.
+- Runtime: `HUB_SKIN_ONLY_KEY` (`axf.lock.hubskin`), `hubSkinOnly()` / `setHubSkinOnly()`, `appearanceLockReason()` (the
+  switch drives the appearance lock), action `appearance.hubskin:on|off|toggle`; `customSheet()` keeps the skin's parts while locked.
+- Voice: "lock the console to the axHub skin" / "unlock the console from the axHub skin" (`console-control-voice.mjs`, Python
+  twin in `server/console_control.py`, fixture `console-control-voice.json`).
+- Override (build `skin-axhub-override-switch-greyed-out`): `HUB_SKIN_OVERRIDE_KEY` (`axf.lock.hubskin.override`), mutually
+  exclusive with `axf.lock.hubskin` whichever way either is set; `hubSkinOverride()` / `setHubSkinOverride()`, action
+  `appearance.hubskin.override:on|off|toggle`; edits under Override recorded in `HUB_SKIN_OVERRIDDEN_KEY`
+  (`hubOverridden()` / `isHubOverridden()`), cleared when axHub-only goes back on. React `HubSkinLockNote` /
+  `HubSkinLockArea` (the lock note with "Click here to override", one confirm). Voice "override the axHub skin" / "stop
+  overriding the axHub skin". Checked by `spec/check-appearance-lock.mts`. Compose twin deferred.
+
 ## Deferred: reliable console delivery + screen focus (Nov 11 2026)
 Web only (Android on hold, build `console-commands-reliable`), Kotlin twins when the Android side resumes:
 - `console-command@1` field `focus`, `consoleSplitFocus` ("<screen> <tab or item>"), `consoleMessageLate` + `CONSOLE_LATE_MS`,
@@ -215,6 +261,14 @@ The 286 Kotlin findings stay on the baseline, Android on hold: 285 `.dp` spacing
 `Axf.shapes.*`) and one `Color(0x…)` literal (→ `Axf.colors.*`), in `framework/android` (230) and `apps/console` (56).
 `Axf.space` is a `@Composable` getter, so each call site needs a compiler to confirm it sits in a composable scope:
 do it with the Android build, then run `node framework/cli/check-theme.mjs --update-baseline` to empty the file.
+
+## Deferred: skin-modes@1, every skin's light and dark (Nov 13 2026)
+
+Build `every-skin-ships-a-light-and-a-dark-colour-theme`. Web only; the Kotlin twin is deferred (Android on hold):
+`framework/core/engines/skin-modes.mjs` (`skinModePair`, `effectiveScheme`, `skinModeColor`, `skinSchemeOf`,
+`skinModeProblems`, `skinModeRows`), the required `colorThemes: { light, dark }` on skin@1 and the runtime's
+`setSkinMode` / `skin.mode:light|dark|system` (system follows `prefers-color-scheme`). A port maps `system` to the
+device's night mode (`isSystemInDarkTheme()`) and replays the engine cases in `spec/check-skin-modes.mjs`.
 
 ## Deferred: the guide's no-auto-open rule + Gizmo naming (Nov 13 2026)
 Web only (Android on hold, build `stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n`). The console's
