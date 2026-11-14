@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5429,
- "updatedAt": "2026-11-14T22:19:10.921Z",
+ "rev": 5430,
+ "updatedAt": "2026-11-14T22:19:32.612Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -223746,12 +223746,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T22:19:00.612Z",
-   "updatedAt": "2026-11-14T22:19:06.058Z",
+   "updatedAt": "2026-11-14T22:19:31.290Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-14T22:19:06.058Z"
+    },
+    {
+     "text": "Brett override: NO backups of each app's previous skin. Drop that. From now on every 'restore'/'reset to default' anywhere (skins, tokens, per-app, per-element, 'Restore from axHub') restores to this new 'Console (default)' look. It becomes the locked default skin that all resets point at.",
+     "at": "2026-11-14T22:19:31.290Z"
     }
    ],
    "approvals": [],
@@ -223799,7 +223803,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
