@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:19 UTC · `orchestrator-settings-collapsible-split` → pending, note (all) · reconciler
 - 2026-11-13 20:19 UTC · `console-app-part-4-console-side-safe` s7 done, → built, PR #640, note (all) · reconciler
 - 2026-11-13 20:19 UTC · `console-app-part-2-native-floating-2` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, → built, PR #639, note (all) · reconciler
 - 2026-11-13 20:19 UTC · `console-app-wake-word-voice-listener` s2 done, note (all) · reconciler
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 04:38 UTC · `orchestrator-checks-shipped-features-2` → archived (all) · voice
 - 2026-11-14 04:38 UTC · `amberx-walkthrough-2-hour-indexed` note (all) · hotfix-get-main-ci-green-theme-swap
 - 2026-11-14 04:39 UTC · `ui-directory-plugin-self-updating-data` note (all) · pipeline
+- 2026-11-14 04:39 UTC · `group-chat-audio-hear-agents-talk-while` s2 done (all) · orchestrator
 
 ## Token passes (log)
 

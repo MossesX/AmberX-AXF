@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5256,
- "updatedAt": "2026-11-14T04:39:16.634Z",
+ "rev": 5257,
+ "updatedAt": "2026-11-14T04:39:29.456Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212879,7 +212879,7 @@
    "branch": "claude/group-chat-audio-hear-agents-talk-while",
    "pr": "",
    "createdAt": "2026-11-14T04:20:23.886Z",
-   "updatedAt": "2026-11-14T04:34:11.062Z",
+   "updatedAt": "2026-11-14T04:39:27.392Z",
    "builtAt": "",
    "notes": [
     {
@@ -212971,12 +212971,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T04:39:27.392Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:20:23.888Z",
-     "updatedAt": "2026-11-14T04:20:23.888Z"
+     "updatedAt": "2026-11-14T04:39:27.636Z"
     },
     {
      "id": "s3",
@@ -213009,7 +213009,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
