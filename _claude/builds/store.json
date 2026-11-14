@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5285,
- "updatedAt": "2026-11-14T12:17:20.394Z",
+ "rev": 5286,
+ "updatedAt": "2026-11-14T12:17:40.457Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -213404,7 +213404,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T12:17:18.057Z",
+   "updatedAt": "2026-11-14T12:17:21.054Z",
    "builtAt": "",
    "notes": [
     {
@@ -213492,6 +213492,10 @@
      "at": "2026-11-14T05:10:54.564Z"
     },
     {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-demo-video-series-three-minute-browser--paulie, own login copy)",
+     "at": "2026-11-14T12:17:21.054Z"
+    },
+    {
      "text": "Started run 2 on mossesx-max- (Opus, Phase 1): axf-demo-video-series-three-minute-browser--paulie.",
      "at": "2026-11-14T12:17:18.057Z"
     }
@@ -213513,12 +213517,12 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "mossesx-max-",
-    "session": "axf-demo-video-series-three-minute-browser--paulie",
+    "account": "",
+    "session": "",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-14T12:17:17.460Z",
-    "runs": 2,
+    "launchedAt": "2026-11-14T04:03:16.135Z",
+    "runs": 1,
     "lastRun": {
      "at": "2026-11-14T04:09:08.606Z",
      "exit": 0,
@@ -213529,9 +213533,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
-    "dispatchedAt": "2026-11-14T12:17:17.460Z",
+    "dispatchedAt": "2026-11-14T04:03:16.135Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -213540,7 +213544,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-14T12:17:17.460Z",
+    "pickedAt": "2026-11-14T04:03:16.135Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
