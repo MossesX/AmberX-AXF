@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5316,
- "updatedAt": "2026-11-14T16:52:28.582Z",
+ "rev": 5317,
+ "updatedAt": "2026-11-14T16:52:52.233Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -214779,16 +214779,20 @@
    "title": "Hotfix: toolbar settings still change nothing (live console)",
    "category": "hotfix",
    "detail": "Brett (Nov 14): 'the toolbar settings still don't work. When I click the toolbar and go to its settings, the settings don't change anything.' Earlier builds touched this (fix-toolbar-settings-doing-nothing, chrome-settings-actually-apply-toolbars, per-toolbar-settings PR #650, per-instance picker #642/#622) but it's still broken on the live console. Reproduce on the LIVE console first (open a toolbar's settings, change each setting, confirm whether the stored value changes and whether the toolbar re-renders). Find which of those PRs never landed vs. what's genuinely broken, land or fix, and verify on the live console after redeploy.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/hotfix-toolbar-settings-still-change",
    "pr": "",
    "createdAt": "2026-11-14T16:51:14.645Z",
-   "updatedAt": "2026-11-14T16:52:19.825Z",
+   "updatedAt": "2026-11-14T16:52:28.592Z",
    "builtAt": "",
    "notes": [
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-hotfix-toolbar-settings-still-change--lenny, own login copy)",
+     "at": "2026-11-14T16:52:28.592Z"
+    },
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-hotfix-toolbar-settings-still-change--lenny.",
      "at": "2026-11-14T16:52:19.825Z"
@@ -214811,18 +214815,18 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "mossesx-max-",
-    "session": "axf-hotfix-toolbar-settings-still-change--lenny",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-14T16:52:19.140Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-14T16:52:19.140Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -214831,7 +214835,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-14T16:52:19.140Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
