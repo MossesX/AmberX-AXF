@@ -38,6 +38,42 @@
         "text": "Previews brief. Part of Agent swarm.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "page-or-site-url",
+        "title": "Page or site URL",
+        "text": "The web page this employee learns from. Its text is stored as their knowledge and goes into their job briefs.",
+        "kind": "field"
+      },
+      {
+        "target": "crawl",
+        "title": "Crawl",
+        "text": "How many more pages on the same site to fetch after this one (up to 20).",
+        "kind": "field"
+      },
+      {
+        "target": "train",
+        "title": "Train",
+        "text": "Fetches the page (and the crawl) and adds it to this employee's knowledge.",
+        "kind": "button"
+      },
+      {
+        "target": "remove-all",
+        "title": "Remove all",
+        "text": "Deletes every page this employee was trained on.",
+        "kind": "button"
+      },
+      {
+        "target": "approve",
+        "title": "Approve",
+        "text": "Hires a new builder (name, avatar, persona, voice, builder tools) and gives them the waiting build. Only your own click counts.",
+        "kind": "button"
+      },
+      {
+        "target": "deny",
+        "title": "Deny",
+        "text": "Closes the hire request without hiring anyone.",
+        "kind": "button"
       }
     ],
     "intros": []

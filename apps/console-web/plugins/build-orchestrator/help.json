@@ -189,6 +189,12 @@
         "title": "Deleted builds",
         "text": "Opens the Deleted tab: every deleted build, kept for good and restorable.",
         "kind": "menu"
+      },
+      {
+        "target": "open-the-employee-card",
+        "title": "Open the employee card",
+        "text": "Opens the profile of the employee this build is assigned to.",
+        "kind": "button"
       }
     ],
     "intros": []
