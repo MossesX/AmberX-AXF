@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:18 UTC · `per-toolbar-settings-fix-failing-chrome` → running, note (all) · pipeline
 - 2026-11-13 20:18 UTC · `per-toolbar-settings-fix-failing-chrome` branch claude/per-toolbar-settings-fix-failing-chrome (all) · pipeline
 - 2026-11-13 20:18 UTC · `per-toolbar-settings-fix-failing-chrome` note (all) · orchestrator
 - 2026-11-13 20:19 UTC · `own-token-sets-for-grids-and-tab-groups` → running, note (all) · pipeline
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 04:34 UTC · `group-chat-audio-hear-agents-talk-while` s1 done, → running (all) · orchestrator
 - 2026-11-14 04:34 UTC · `group-chat-audio-hear-agents-talk-while` branch claude/group-chat-audio-hear-agents-talk-while (all) · builds-live
 - 2026-11-14 04:34 UTC · `demo-video-series-three-minute-browser` note (all) · voice
+- 2026-11-14 04:37 UTC · `ui-directory-plugin-self-updating-data` PR #670 (all) · builds-live
 
 ## Token passes (log)
 

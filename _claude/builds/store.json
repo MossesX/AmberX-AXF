@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5247,
- "updatedAt": "2026-11-14T04:36:31.284Z",
+ "rev": 5248,
+ "updatedAt": "2026-11-14T04:37:14.787Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211761,9 +211761,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-directory-plugin-self-updating-data",
-   "pr": "",
+   "pr": "#670",
    "createdAt": "2026-11-14T03:50:42.413Z",
-   "updatedAt": "2026-11-14T04:30:13.988Z",
+   "updatedAt": "2026-11-14T04:37:13.005Z",
    "builtAt": "",
    "notes": [
     {
@@ -211850,22 +211850,22 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "mossesx-max-",
-    "session": "axf-ui-directory-plugin-self-updating-data--gina",
+    "session": "axf-ui-directory-plugin-self-updating-data--paulie",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-14T03:51:29.271Z",
     "runs": 1,
     "lastRun": {
-     "at": "2026-11-14T04:30:07.992Z",
+     "at": "2026-11-14T04:20:16.414Z",
      "exit": 0,
      "outcome": "requeued",
-     "stepsLeft": 1,
+     "stepsLeft": 2,
      "account": "mossesx-max-",
      "session": "axf-ui-directory-plugin-self-updating-data--paulie"
     },
     "split": null,
     "splitRequested": "",
-    "note": "Session on mossesx-max- ended (exit 0) with 1 step left: back in the Queue (run 1).",
+    "note": "Session on mossesx-max- ended (exit 0) with 2 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-14T03:51:29.271Z",
     "planned": {
