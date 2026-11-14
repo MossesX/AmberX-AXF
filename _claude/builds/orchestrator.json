@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T22:15:58.038Z",
+ "updatedAt": "2026-11-14T22:16:29.426Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -141502,7 +141502,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T18:15:01.485Z",
-   "updatedAt": "2026-11-14T22:15:53.636Z",
+   "updatedAt": "2026-11-14T22:16:27.581Z",
    "builtAt": "",
    "notes": [
     {
@@ -141976,7 +141976,7 @@
     },
     {
      "id": "s20",
-     "text": "Watch the merge-queue stack (land.mjs queue list). If an entry goes red, read the failure from the 'CI build errors' issue, fix it on that branch, push and re-add it. Record each merge commit in the report.",
+     "text": "Brett override: do NOT use the stacked merge queue. Remove the 8 skin PRs from the queue (land.mjs queue remove), then land them one at a time directly in order #647, #648, #590, #618, #641, #652, #657, #654: for each, merge origin/main, regenerate generated files, run its checks once, merge to main (gh pr merge), then the next. If one goes red, fix it on that branch and continue. Record each merge commit in the report.",
      "model": "Opus",
      "why": "",
      "phase": "",
