@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5637,
- "updatedAt": "2026-11-14T23:30:39.210Z",
+ "rev": 5638,
+ "updatedAt": "2026-11-14T23:30:56.147Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -189854,7 +189854,7 @@
    "title": "Fix: a build whose session finishes its phase (e.g. the Fable steps) with steps left goes back to Pending instead of the Queue, so the next phase never starts and slots sit empty. Send it back to the Queue and launch the next phase automatically",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -189862,7 +189862,7 @@
    "pr": "#685",
    "priority": "P0",
    "createdAt": "2026-11-13T10:35:03.675Z",
-   "updatedAt": "2026-11-14T23:29:07.587Z",
+   "updatedAt": "2026-11-14T23:30:25.002Z",
    "builtAt": "",
    "notes": [
     {
@@ -189916,6 +189916,10 @@
     {
      "text": "Self-check: fix-build-whose-session-finishes-phase-e had no session on record but axf-fix-build-whose-session-finishes-phase-e--gina is alive: kept running and tracking it.",
      "at": "2026-11-14T23:29:07.587Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 9 steps left: back in Pending for Brett.",
+     "at": "2026-11-14T23:30:25.002Z"
     }
    ],
    "approvals": [
@@ -189947,18 +189951,18 @@
     "queuedAt": "2026-11-13T10:35:20.815Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-fix-build-whose-session-finishes-phase-e--gina",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T10:43:20.478Z",
     "runs": 1,
     "lastRun": {
-     "at": "2026-11-13T10:46:09.181Z",
+     "at": "2026-11-14T23:30:22.246Z",
      "exit": 0,
      "outcome": "returned",
-     "stepsLeft": 12,
+     "stepsLeft": 9,
      "account": "mossesx-max-",
-     "session": "axf-fix-a-build-whose-session-finishes-its-phase-e-g--paulie"
+     "session": "axf-fix-build-whose-session-finishes-phase-e--gina"
     },
     "split": {
      "at": "2026-11-13T10:37:10.223Z",
@@ -189968,7 +189972,7 @@
      "note": "Split by Claude into 12 steps (2 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- stopped on its own with 12 steps left: back in Pending for Brett.",
+    "note": "Session on mossesx-max- stopped on its own with 9 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-13T10:43:20.478Z",
     "planned": {
@@ -190294,7 +190298,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
