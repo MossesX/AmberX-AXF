@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5606,
- "updatedAt": "2026-11-14T23:21:11.296Z",
+ "rev": 5607,
+ "updatedAt": "2026-11-14T23:21:27.221Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -207458,7 +207458,7 @@
    "title": "Land project-duplicate-boilerplate: resolve clash in status.json and PORTING.md",
    "category": "",
    "detail": "Branch claude/project-duplicate-boilerplate clashed with main in framework/catalog/status.json and framework/spec/PORTING.md (merge aborted, main untouched). Merge origin/main into the branch, resolve by keeping both sides' entries (additive), run tests, push, then land on main. No feature changes. If the project-create-mcp clash fix landed first, merge after it.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -207466,8 +207466,8 @@
    "pr": "#621",
    "priority": "P0",
    "createdAt": "2026-11-13T19:03:35.763Z",
-   "updatedAt": "2026-11-14T23:19:54.143Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-14T23:20:46.223Z",
+   "builtAt": "2026-11-14T23:20:46.223Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -207622,12 +207622,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:20:46.223Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T19:07:47.374Z",
-     "updatedAt": "2026-11-13T19:07:47.374Z"
+     "updatedAt": "2026-11-14T23:20:46.942Z"
     }
    ],
    "profiles": [
@@ -207638,7 +207638,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
