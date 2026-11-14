@@ -795,10 +795,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:59 UTC · `full-voice-control-resolve-inventory` s3 done, → built (all) · orchestrator
-- 2026-11-13 21:00 UTC · `full-voice-control-resolve-inventory` note (all) · foreign-write
-- 2026-11-13 21:00 UTC · `auto-land-every-finished-build-lands` s6 done (all) · orchestrator
-- 2026-11-13 21:00 UTC · `full-voice-control-resolve-inventory` note (all) · pipeline
 - 2026-11-13 21:00 UTC · `hotfix-desktop-console-draws-app-menu` → running, note (all) · pipeline
 - 2026-11-13 21:01 UTC · `per-instance-settings-small-live-preview` → running, note (all) · pipeline
 - 2026-11-13 21:01 UTC · `per-instance-settings-small-live-preview` branch claude/per-instance-settings-small-live-preview (all) · pipeline
@@ -1195,6 +1191,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 18:27 UTC · `themed-native-controls-plugin` branch claude/themed-native-controls-plugin (all) · builds-live
 - 2026-11-14 18:28 UTC · `picker-dialog-plugin-replaces-all` s2 done (all) · orchestrator
 - 2026-11-14 18:31 UTC · `land-all-skin-builds` s8 done (all) · orchestrator
+- 2026-11-14 18:32 UTC · `land-all-skin-builds` s9 done (all) · orchestrator
+- 2026-11-14 18:32 UTC · `themed-native-controls-plugin` s2 done (all) · orchestrator
+- 2026-11-14 18:33 UTC · `picker-dialog-plugin-replaces-all` s3 done (all) · orchestrator
+- 2026-11-14 18:34 UTC · `land-all-skin-builds` s10 done (all) · orchestrator
 
 ## Token passes (log)
 
