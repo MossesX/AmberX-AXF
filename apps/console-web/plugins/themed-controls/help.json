@@ -1,0 +1,18 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "themed-controls-help",
+  "name": "Themed controls help",
+  "version": "0.1.0",
+  "description": "Help mode entries of the Themed controls plugin (help@1): the settings sub-tab, its switches and every themed control family.",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:themed-controls",
+    "entries": [
+      { "target": "themed-controls", "title": "Themed controls settings", "text": "Turns the themed controls on or off, one switch per kind of browser element. Off brings back the browser's own control; nothing a form holds is lost.", "kind": "screen" },
+      { "target": "setting:axf.themedControls.on", "title": "Themed controls", "text": "The master switch: on swaps every family that is switched on below for its themed control; off makes every control the browser's own again." },
+      { "target": "setting:axf.themedControls.sheet", "title": "Bottom sheet on a phone", "text": "On a phone-sized screen the date, time and colour pickers and the dialogs slide up from the bottom. Off opens them as a pop-over everywhere." }
+    ]
+  }
+}

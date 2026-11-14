@@ -29,7 +29,8 @@
       "container": "soft-card",
       "typography": "reader",
       "density": "roomy",
-      "sizing": "touch"
+      "sizing": "touch",
+      "themed-controls": "native"
     },
     "preview": {
       "caption": "Calm porcelain, large type, touch-sized."

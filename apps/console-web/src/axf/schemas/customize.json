@@ -585,6 +585,10 @@
     "slider": {
       "root": ".fx-slider"
     },
+    "themed-controls": {
+      "root": ".fx-tc",
+      "item": ".fx-tc__item"
+    },
     "container": {
       "root": ".fx-card"
     },

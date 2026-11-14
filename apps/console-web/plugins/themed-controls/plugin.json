@@ -1,0 +1,33 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.themed-controls",
+  "name": "Themed controls",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Replaces the controls and dialogs the browser draws itself with themed ones drawn from tokens (themed-controls@1, framework/spec/THEMED-CONTROLS.md): checkboxes, radio buttons, range sliders, number fields, date and time pickers, the colour picker, alert / confirm / prompt dialogs, the file drop zone, tooltips and scrollbars. One master switch and one switch per family under Settings → Plugins → Themed controls; pop-ups open as a bottom sheet on a phone. The original element stays in the page, hidden and in sync, so forms keep working; switch the plugin or a family off and the browser's own control comes back. Everything is reachable without the UI: REST /api/plugins/themed-controls, MCP themed-controls_*, the CLI `axf themed-controls` and voice.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "settings-tab:themed-controls"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [],
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/themed-controls",
+    "env": [],
+    "mentions": []
+  },
+  "commands": { "$axf": "plugin-commands@1", "auto": true },
+  "builtWith": { "model": "opus", "builtAt": "2026-11-14" },
+  "help": "help.json",
+  "opens": "main"
+}
