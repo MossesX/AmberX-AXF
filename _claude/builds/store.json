@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5230,
- "updatedAt": "2026-11-14T04:23:35.001Z",
+ "rev": 5231,
+ "updatedAt": "2026-11-14T04:24:19.254Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212179,7 +212179,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:22:59.088Z",
+   "updatedAt": "2026-11-14T04:24:17.628Z",
    "builtAt": "",
    "notes": [
     {
@@ -212502,6 +212502,28 @@
      "updatedAt": "2026-11-14T04:22:59.253Z"
     },
     {
+     "id": "s15",
+     "uid": "st-mwfwipb501li82",
+     "title": "",
+     "text": "Skins video (dedicated, in depth): how skins work and why it's so powerful that every single thing is built on tokens from the ground up, so the whole system is solid inside. Show the token registry, then change behaviour, placement, layout and colours live. Show the skin config panel: pick which areas get randomized or changed (layout, style, colour, behaviour), let the AI make a skin, preview it in the sandbox skin editor, save it as a new skin with snapshot history and revert. Finale: apply the new skin and watch it take over every app connected to the same project on axHub at once, desktop and Android. Use the real skins, skin editor, token registry and config panel; label staged parts as a preview.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T04:24:17.629Z",
+     "updatedAt": "2026-11-14T04:24:17.825Z"
+    },
+    {
      "id": "s7",
      "uid": "st-mwfvsr6p0143q5",
      "title": "",
@@ -212598,7 +212620,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
