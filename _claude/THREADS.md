@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 04:49 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · orchestrator
 - 2026-11-14 04:49 UTC · `group-chat-audio-hear-agents-talk-while` s3 done, → built (all) · orchestrator
 - 2026-11-14 05:10 UTC · `demo-video-series-three-minute-browser` → pending, note (all) · reconciler
 - 2026-11-14 05:48 UTC · `hotfix-get-main-ci-green-theme-swap` note (all) · orchestrator
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:19 UTC · `per-toolbar-settings-fix-failing-chrome` s2 done (all) · orchestrator
 - 2026-11-14 23:18 UTC · `skin-config-panel-merge-main-and-land` s2 done (all) · orchestrator
 - 2026-11-14 23:19 UTC · `skin-config-panel-merge-main-and-land` branch claude/skin-config-panel-land-report, PR #682 (all) · builds-live
+- 2026-11-14 23:19 UTC · `themed-native-controls-plugin` s14 done (all) · orchestrator
 
 ## Token passes (log)
 
