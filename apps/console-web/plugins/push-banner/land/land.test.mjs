@@ -28,7 +28,7 @@ const LLM = [/@anthropic-ai\//, /\banthropic\b/i, /\bopenai\b/i, /claude-agent-s
 const landFiles = readdirSync(HERE).filter((f) => /\.(mjs|js|ts|py|sh)$/.test(f) && !/\.test\.mjs$|^test-/.test(f));
 // the generated-files manifest (generated-files@1) is data, not code: the one import from outside this folder
 // and the pure framework cores the serial lander follows (landing-line@1, land-run@1): each imports nothing at all
-const PURE_CORES = ['../../../../../framework/core/landing-line.mjs', '../../../../../framework/core/land-run.mjs'];
+const PURE_CORES = ['../../../../../framework/core/landing-line.mjs', '../../../../../framework/core/land-run.mjs', '../../../../../framework/core/build-pipeline.mjs'];
 const LOCAL = new Set([...readdirSync(HERE).filter((f) => f.endsWith('.mjs') && !f.endsWith('.test.mjs') && !f.startsWith('test-')).map((f) => `./${f}`), '../../../../../framework/spec/generated-files.json', ...PURE_CORES]);
 for (const c of PURE_CORES) check(!/^\s*import\s/m.test(readFileSync(join(HERE, c), 'utf8')), `${c.split('/').pop()}: a pure core with no imports, safe on the host`);
 for (const f of landFiles) {
@@ -453,5 +453,22 @@ console.log('sweeper + merge queue: every finished build with a green PR goes in
 console.log('group chat: a landing reason is Brett\'s move, a code fix, or something in the way');
 check(['held', 'ui', 'code'].every((k) => reasonEvent(k) === 'waiting'), 'held, UI Review and uncommitted code wait for Brett');
 check(['conflict', 'ci', 'error'].every((k) => reasonEvent(k) === 'failed') && ['push', 'pr', 'dependency'].every((k) => reasonEvent(k) === 'blocked'), 'conflicts and red CI failed; push, PR and dependencies blocked');
+console.log('backlog: every finished build not on main, named ones first, then most wanted, then newest');
+{
+  const { backlog, pinRank } = await import('./backlog.mjs');
+  const B = (id, extra = {}) => ({ id, status: 'built', branch: `claude/${id}`, builtAt: '2026-11-14T10:00:00Z', ...extra });
+  const rows = backlog([
+    B('old-normal', { builtAt: '2026-11-10T00:00:00Z' }), B('new-normal', { builtAt: '2026-11-14T20:00:00Z' }),
+    B('urgent-x', { priority: 'P0', builtAt: '2026-11-12T00:00:00Z' }), B('voice-listener-use-claude-when-connected', { priority: 'P1' }),
+    B('move-amberx-web-app-console-amberx-andr', { priority: 'P3' }), B('console-app-part-3-native-bridge-mic'), B('console-app-part-2-native-floating-2'),
+    B('merged', { mergedAt: '2026-11-14T00:00:00Z' }), B('gone', { deleted: true }), B('running', { status: 'running' }),
+    B('archived', { land: { landState: 'archived' } }), B('red-one', { land: { landState: 'red' } }), B('nobranch', { branch: '' }),
+  ], { now: Date.parse('2026-11-14T22:00:00Z'), behind: (b) => (b.id === 'new-normal' ? 7 : null) });
+  check(JSON.stringify(rows.map((r) => r.id)) === JSON.stringify(['move-amberx-web-app-console-amberx-andr', 'console-app-part-2-native-floating-2', 'console-app-part-3-native-bridge-mic', 'voice-listener-use-claude-when-connected', 'urgent-x', 'new-normal', 'red-one', 'old-normal']), `order: pinned (his order), then P0, then newest (${rows.map((r) => r.id).join(', ')})`);
+  check(!rows.some((r) => ['merged', 'gone', 'running', 'archived', 'nobranch'].includes(r.id)), 'merged, deleted, running, archived and branchless builds are not in it; red ones are');
+  check(rows.find((r) => r.id === 'new-normal').behindMain === 7 && rows.find((r) => r.id === 'new-normal').ageH === 2, 'behind main and age in hours on each row');
+  check(pinRank('console-app-part-1-shell') === 2 && pinRank('console-app-part-12') === -1, 'parts 1-4 pinned by name, nothing else');
+}
+
 console.log(`auto-land: ${ok} checks passed${bad ? `, ${bad} FAILED` : ''}`);
 if (bad) process.exitCode = 1;
