@@ -58,7 +58,11 @@
             "never"
           ]
         },
-        "searchThreshold": {},
+        "searchThreshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 200
+        },
         "checkmarks": {
           "enum": [
             "end",
@@ -66,7 +70,9 @@
             "none"
           ]
         },
-        "descriptions": {},
+        "descriptions": {
+          "type": "boolean"
+        },
         "density": {
           "enum": [
             "compact",
@@ -74,7 +80,9 @@
             "roomy"
           ]
         },
-        "doneButton": {}
+        "doneButton": {
+          "type": "boolean"
+        }
       }
     }
   }

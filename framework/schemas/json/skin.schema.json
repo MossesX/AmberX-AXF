@@ -44,7 +44,11 @@
         "layoutTheme": {},
         "colorTheme": {},
         "styleTheme": {},
-        "assets": {}
+        "assets": {},
+        "behaviorTheme": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        }
       }
     }
   }
