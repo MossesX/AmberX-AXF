@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5419,
- "updatedAt": "2026-11-14T21:01:10.247Z",
+ "rev": 5420,
+ "updatedAt": "2026-11-14T21:41:07.303Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -210945,9 +210945,10 @@
    "pendingId": "",
    "branch": "claude/token-registry-skin-editor-live-sandbox",
    "pr": "#657",
+   "mergedAt": "2026-11-14T21:33:25Z",
    "priority": "P1",
    "createdAt": "2026-11-13T20:04:16.679Z",
-   "updatedAt": "2026-11-13T22:20:38.558Z",
+   "updatedAt": "2026-11-14T21:41:04.508Z",
    "builtAt": "",
    "notes": [
     {
@@ -210981,6 +210982,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T22:20:38.558Z"
+    },
+    {
+     "text": "Reconciler: PR #657 merged",
+     "at": "2026-11-14T21:41:04.508Z"
     }
    ],
    "approvals": [],
@@ -211264,7 +211269,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
