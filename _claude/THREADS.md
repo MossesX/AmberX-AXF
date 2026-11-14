@@ -796,13 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 17:45 UTC · `orchestrator-stale-row-watchdog-vps` added (0 steps) (all) · pending
-- 2026-11-14 17:47 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · orchestrator
-- 2026-11-14 18:01 UTC · `builds-share-one-claude-login-write` → complete, merged, note (all) · reconciler
-- 2026-11-14 18:02 UTC · `builds-share-one-claude-login-write` note (all) · orchestrator
-- 2026-11-14 18:13 UTC · `picker-dialog-plugin-replaces-all` added (0 steps) (all) · console
-- 2026-11-14 18:13 UTC · `picker-dialog-plugin-replaces-all` → queued, note (all) · console
-- 2026-11-14 18:14 UTC · `themed-native-controls-plugin` added (0 steps) (all) · console
 - 2026-11-14 18:14 UTC · `themed-native-controls-plugin` → queued, note (all) · console
 - 2026-11-14 18:15 UTC · `land-all-skin-builds` added (0 steps) (all) · console
 - 2026-11-14 18:15 UTC · `land-all-skin-builds` → queued, note (all) · console
@@ -1196,6 +1189,13 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:30 UTC · `lander-regenerates-generated-files-clash` → pending, note (all) · pipeline
 - 2026-11-14 23:31 UTC · `console-look-becomes-default-axhub-skin` → running, note (all) · pipeline
 - 2026-11-14 23:31 UTC · `console-look-becomes-default-axhub-skin` → running, note (all) · orchestrator
+- 2026-11-14 23:31 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` → pending, note (all) · reconciler
+- 2026-11-14 23:31 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` → pending, note (all) · reconciler
+- 2026-11-14 23:31 UTC · `agent-manager-training-wizard-for-employee-agent` → pending, note (all) · reconciler
+- 2026-11-14 23:31 UTC · `inline-edit-plugin-install-in-console-molly-and` → pending, note (all) · reconciler
+- 2026-11-14 23:31 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` → complete, note (all) · reconciler
+- 2026-11-14 23:31 UTC · `land-batch-merge-main-each-finished` → complete, note (all) · reconciler
+- 2026-11-14 23:31 UTC · `replace-merge-queue-one-time-landing` → pending, merged, note (all) · reconciler
 
 ## Token passes (log)
 
