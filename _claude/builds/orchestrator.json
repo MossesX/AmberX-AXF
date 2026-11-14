@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:39:29.456Z",
+ "updatedAt": "2026-11-14T04:40:50.936Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137394,7 +137394,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:37:32.730Z",
+   "updatedAt": "2026-11-14T04:40:48.503Z",
    "builtAt": "",
    "notes": [
     {
@@ -137460,6 +137460,10 @@
     {
      "text": "Brett, session recall video (s20): the feature is already built (audio recording of every session, transcripts, search and playback). Find it in the repo or console and use the real thing. If you can't find it, shoot a mock-up for now, labelled as a preview.",
      "at": "2026-11-14T04:34:54.597Z"
+    },
+    {
+     "text": "Brett, video content only. Plan Studio video (part of s18): a guy mid-project keeps spotting more things he needs, so he opens about five Plan Studio plans, each for a different kind of work. Explain why that's better: you're not sending prompt after prompt back and forth, and nothing is building or landing yet. He adds steps to each plan, picks the order and the model for each step, and when he's ready, sends a whole plan to the orchestrator in one go, with the steps already set up how he wants them. Boom. He keeps several plans going to stay organized, grouping what gets built and when so builds don't conflict when CI pulls from main. Nested notes video (part of s21): show deep nesting. A root note ('do this') holds a to-do list of what has to be done first. Each to-do item has its own note branching off it explaining what it does, with instructions, and those can nest further. Use real screens where they exist; label staged parts as a preview.",
+     "at": "2026-11-14T04:40:48.503Z"
     }
    ],
    "approvals": [],
