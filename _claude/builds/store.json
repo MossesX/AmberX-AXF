@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5350,
- "updatedAt": "2026-11-14T17:49:34.060Z",
+ "rev": 5351,
+ "updatedAt": "2026-11-14T17:49:44.272Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -67345,7 +67345,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -216967,7 +216967,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-14T17:49:31.228Z",
+   "updatedAt": "2026-11-14T17:49:33.646Z",
    "builtAt": "",
    "notes": [
     {
@@ -217402,7 +217402,7 @@
      "id": "s31",
      "uid": "st-mwgp8wo201ni29",
      "title": "",
-     "text": "Shared watch-rule engine on the VPS: rules = a pre-built thing to watch + one or more conditions (all must match) + a pre-built action, with values chosen from lists. Reusable by any screen; the stale-row cleanup becomes the first built-in rule.",
+     "text": "Shared watch-rule engine on the VPS: rules = a pre-built thing to watch + conditions combined with AND / OR (with grouping) + a pre-built action, with values chosen from lists. Reusable by any screen; the stale-row cleanup becomes the first built-in rule.",
      "model": "Fable",
      "why": "",
      "phase": "",
@@ -217416,9 +217416,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T17:48:28.598Z",
-     "updatedAt": "2026-11-14T17:48:29.666Z"
+     "updatedAt": "2026-11-14T17:49:34.660Z"
     },
     {
      "id": "s33",
@@ -217539,7 +217539,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
