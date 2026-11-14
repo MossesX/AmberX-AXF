@@ -58,6 +58,7 @@ const SNAPSHOT_FIXTURE = /^framework\/spec\/fixtures\/(shipped-manifest|demo)\.j
 const BUILD_EXPORT = /^framework\/plan\/(profiles\/[^/]+\/framework\/plan\/)?(pending|build-queue)\.json$/;
 const HANDOFF_NOTE = /^_claude\/(memory|shared\/notes\/handoffs)\/handoff-[0-9-]+\.md$/; // dated account-switch handoff notes (own or shared): snapshots of a day, history
 const SKIP_DIRS = new Set(['.git', 'node_modules', 'dist', 'dist-single', '.axf-console', '__pycache__', 'build', '.gradle']);
+const CODE_EXT = /\.(mjs|js|cjs|ts|tsx|py|kt|kts|sh)$/i;
 const TEXT_EXT = /\.(md|mjs|js|cjs|ts|tsx|json|py|css|html|ya?ml|kt|kts|sh|txt|toml)$/i;
 
 /* ------------------------------------------------------------------ manifest + footprint */
@@ -154,7 +155,8 @@ export function scanReferences(p) {
     // Another plugin's own tests may name plugins as data (e.g. the rebuild tracker's fixtures); only its runtime
     // code is held to "never by folder name".
     // Generated bundles (*.gen.mjs) copy an app's own code, so its folder names there are data, not plugin references.
-    const inOtherPlugin = file.startsWith(PLUGINS_DIR + '/') && !/^test[._]/.test(file.split('/').pop()) && !/\.gen\.m?js$/.test(file);
+    // Only code counts: a bare quoted name in another plugin's data (a JSON schema enum, a doc) is a value, not a reference.
+    const inOtherPlugin = file.startsWith(PLUGINS_DIR + '/') && !/^test[._]/.test(file.split('/').pop()) && !/\.gen\.m?js$/.test(file) && CODE_EXT.test(file);
     // Another app's own plugin tree (apps/<app>/src/plugins/<folder>, or `./plugins/<folder>/…` imported from inside
     // that app, e.g. Expenses' own plugin-manager) is that app's code, not a reference to a console plugin that happens
     // to share the name: only a path that reaches the console's plugins folder counts there.

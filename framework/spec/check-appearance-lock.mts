@@ -11,7 +11,7 @@ import { join } from 'node:path';
 import { parseAppearance, type AppearanceDocument, type AppearanceSourceState } from '../core/engines/appearance';
 import { isAppearanceSetting } from '../core/engines/designpackage';
 import { lookCss, normalizeLook } from '../core/engines/looktokens';
-import { APPEARANCE_FOLLOW_KEY, APPEARANCE_LOCK_KEY, AxfRuntime, type AppearanceSource } from '../core/runtime';
+import { APPEARANCE_FOLLOW_KEY, APPEARANCE_LOCK_KEY, HUB_SKIN_ONLY_KEY, HUB_SKIN_OVERRIDDEN_KEY, HUB_SKIN_OVERRIDE_KEY, AxfRuntime, type AppearanceSource } from '../core/runtime';
 import type { AxfManifest } from '../core/types';
 
 const root = new URL('../', import.meta.url).pathname;
@@ -115,6 +115,34 @@ class FakeSource implements AppearanceSource {
   ok(/line-height:1(?:\.0+)?[;}]/.test(css) || css.includes('line-height:1;') || css.includes('line-height:1}'), `line height never below 100% (${css})`);
   ok(!/letter-spacing:0\.2em/.test(css), 'letter spacing capped');
   ok(normalizeLook({ letterSpacing: 20 }).letterSpacing !== 20, 'a stored 20 reads as the cap');
+}
+
+/* ---- Skin from axHub only + Override: one or the other (Brett, Nov 13 2026) ---- */
+{
+  const rt = new AxfRuntime({ manifest, assets, storageKey: 'check-lock-hub-override' });
+  rt.setRole('admin');
+  ok(!rt.hubSkinOnly() && !rt.hubSkinOverride(), 'both off by default');
+  rt.dispatch('appearance.hubskin:on');
+  ok(rt.hubSkinOnly() && rt.appearanceLockReason() === 'hub', 'axHub-only on locks the look (reason hub)');
+  ok(rt.gate('assets.swap') === 'disable' && !rt.can('assets.swap'), 'axHub-only: every skin and asset control greys out');
+  const before = rt.getState().active['color-theme'];
+  const other = rt.registry.list('color-theme').find((a) => a.id !== before)!.id;
+  ok(rt.swap('color-theme', other) === false, 'axHub-only: swap refused');
+  rt.dispatch('appearance.hubskin.override:on');
+  ok(rt.hubSkinOverride() && !rt.hubSkinOnly(), 'Override on turns axHub-only off at once');
+  ok(rt.appearanceLockReason() === '' && rt.can('assets.swap'), 'Override: editing unlocked');
+  ok(rt.swap('color-theme', other) && rt.isHubOverridden('color-theme') && rt.hubOverridden().includes('asset:color-theme'), 'an asset edited under Override is marked overridden');
+  rt.settings.set('axf.custom.button', { all: true, shared: { fontSize: 110 }, byId: {} } as never);
+  ok(rt.hubOverridden().includes('setting:axf.custom.button'), 'a token edit under Override is marked overridden');
+  rt.settings.set(HUB_SKIN_ONLY_KEY, true);
+  ok(rt.hubSkinOnly() && !rt.hubSkinOverride(), 'axHub-only back on (as a setting) turns Override off');
+  ok(rt.hubOverridden().length === 0 && rt.settings.get(HUB_SKIN_OVERRIDDEN_KEY) == null, 'following axHub again clears the overridden marks');
+  rt.settings.set(HUB_SKIN_OVERRIDE_KEY, true);
+  ok(!rt.hubSkinOnly(), 'Override on (as a setting: REST / MCP / CLI settings.set) turns axHub-only off too');
+  rt.dispatch('appearance.hubskin.override:off');
+  ok(!rt.hubSkinOverride() && !rt.hubSkinOnly() && rt.hubOverridden().length === 0, 'Override off with nothing edited: the own look, nothing marked');
+  const swapped = rt.swap('color-theme', before);
+  ok(swapped && rt.hubOverridden().length === 0, 'edits without Override are not marked');
 }
 
 console.log(`check-appearance-lock: ${checks} checks passed`);

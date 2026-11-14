@@ -22,6 +22,7 @@
  */
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type DragEvent, type ReactNode } from 'react';
 import { CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, TAB_GROUP_FOLD_KEY, TAB_GROUP_LAST_KEY, TAB_ROWS_FIELD, chromeFieldValue, chromeInstanceData, tabRowsLayout, normalizeTabGroup, tabGroupStyle, type AxfRuntime, type TabGroupData } from '../../core';
+import { INSTANCE_TOKENS_KEY, instanceTokenVars } from '../../core/engines/component-tokens.mjs';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { ControlScope, escapeSelector, useControlScope, useControlTarget, useControlTargets } from '../controlTargets';
 import { Icon } from './Icon';
@@ -100,7 +101,7 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
   const rt = useRuntime();
   const lookId = previewOf ?? id;
   const data = useTabGroupData(lookId, asset);
-  useSettingsKeys(rt, [TAB_GROUP_FOLD_KEY(id)]);
+  useSettingsKeys(rt, [TAB_GROUP_FOLD_KEY(id), INSTANCE_TOKENS_KEY]);
   const hidden = rt.slotHidden('tab-group');
   const out = tabGroupStyle(data, hidden);
   const rowRef = useRef<HTMLDivElement>(null);
@@ -188,7 +189,8 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
   }, [more, visible, tabs, activeIndex]);
 
   const vars = out.vars as Record<string, string>;
-  const style = { ...Object.fromEntries(Object.entries(vars)), ...rowsOut.vars } as CSSProperties;
+  // component-tokens@1: this one row's own token values (axf.tokens.instances → --fx-tab-* on the element) win over the skin's
+  const style = { ...Object.fromEntries(Object.entries(vars)), ...rowsOut.vars, ...instanceTokenVars(rt.settings.get(INSTANCE_TOKENS_KEY), 'tabs', id) } as CSSProperties;
   const attrs = { ...out.attrs, ...rowsOut.attrs };
   const cls = ['fx-tabs', 'fx-tabs--group', size === 'sm' ? 'fx-tabs--sm' : '', folded ? 'is-folded' : '', className ?? ''].filter(Boolean).join(' ');
   const vertical = data.position === 'left' || data.position === 'right';

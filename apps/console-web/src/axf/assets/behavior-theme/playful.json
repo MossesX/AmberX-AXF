@@ -12,7 +12,12 @@
       "speed": "normal",
       "easing": "spring",
       "reduced": "system",
-      "entrance": "scale"
+      "entrance": "scale",
+      "swatches": "pop",
+      "skinSwitch": "ripple",
+      "picker": "fan",
+      "animSpeed": 110,
+      "animIntensity": 95
     },
     "interaction": {
       "hover": "glow",
