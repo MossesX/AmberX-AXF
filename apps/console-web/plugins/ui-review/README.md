@@ -38,6 +38,11 @@ NAME and a TIMESTAMP and conform to ONE schema. No exceptions."
 - **Sections** = kinds, an open registry: the plugin's `kinds.json` (Design packs, Whole apps / programs, Screens &
   pages, Settings interfaces, Dialogs & popups, Menus & toolbars, Banners & cards, Other), plus `kinds.json` in its
   data folder, plus any kind an item names (shown with a label made from its id). No code change for a new kind.
+- **PR filter**: the filter bar's PR picker lists every PR that has items (newest first, waiting / total); `#647` in the
+  search matches that PR exactly (not #6470) and Enter turns it into the filter. The same everywhere: link
+  `?ui-review-pr=647`, console action `ui-review.pr 647`, console-control target `view:ui-review/setting:pr` (state / set /
+  focus; voice: "set the PR filter to 647"), `GET prs` / `GET by-pr?pr=` (plugin commands `prs`, `by-pr`: MCP and
+  `axf ui-review prs`), `review.mjs prs` and `review.mjs open --pr 647 [--console]`.
 - **Item** (working shape of a stored ui-review-item@1, see above): title, kind (= section), app, build, branch, PR, screenshots (`device` phone / desktop, from the
   file name), notes, status (waiting / changes asked / rejected / approved), his comment, history (who, when,
   what, comment). Unknown fields are kept.

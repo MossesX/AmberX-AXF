@@ -301,7 +301,7 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
         <div className="axp-ui-review__bar" role="toolbar" aria-label="Filter and view">
           <input className="fx-input axp-ui-review__search" value={q} onChange={(e) => setQ(e.target.value)}
             onKeyDown={(e) => { const n = core.parsePr(q); if (e.key === 'Enter' && n && /^\s*(#|pr)/i.test(q)) { setPr(n); setQ(''); } }}
-            placeholder="Search: title, app, branch, #PR (Enter on #PR filters to it)…" aria-label="Search" />
+            placeholder="Search: title, app, branch, #PR…" title="Type #PR and press Enter to filter to that PR" aria-label="Search" />
           <div ref={(d) => { prEl.current = d; prTarget(d); }} className="axp-ui-review__prpick">
           <SelectField label="PR" value={pr ? String(pr) : ''} empty={`Every PR (${prs.length})`}
             options={[...(pr && !prs.some((x) => x.pr === pr) ? [{ value: String(pr), label: `#${pr} · no items` }] : []), ...prs.map((x) => ({ value: String(x.pr), label: core.prLabel(x) }))]}

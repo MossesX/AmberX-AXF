@@ -98,6 +98,18 @@
         "title": "Show everything",
         "text": "Clears the group a phone notification opened, so the whole queue shows again.",
         "kind": "button"
+      },
+      {
+        "target": "pr",
+        "title": "PR filter",
+        "text": "Shows one PR's items only. Pick a PR from the list (newest first, with how many wait), or type #647 in the search and press Enter. Every PR shows them all again. Also: the link ?ui-review-pr=647, the action ui-review.pr 647, review.mjs open --pr 647, or say \"set the PR filter to 647\".",
+        "kind": "field"
+      },
+      {
+        "target": "search",
+        "title": "Search",
+        "text": "Every word must appear in the item: title, app, branch, notes, comment or status. A word like #647 matches that PR exactly (not #6470); press Enter on it to turn it into the PR filter.",
+        "kind": "field"
       }
     ],
     "intros": []
