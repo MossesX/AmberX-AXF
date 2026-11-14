@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "skin-config-columns",
+  "name": "Skin config: two-column picker",
+  "version": "1.0.0",
+  "description": "The categories on the left, the picked one on the right with its switch, its limits and every group and option. On a phone the categories wrap above the detail.",
+  "author": "AmberX AXF",
+  "tags": [
+    "skin-config",
+    "ui-choices:skin-config"
+  ],
+  "data": {
+    "layout": "tabs-top",
+    "header": "compact",
+    "search": true,
+    "descriptions": true,
+    "view": "columns"
+  }
+}
