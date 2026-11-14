@@ -534,6 +534,8 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
   backdrop-filter: var(--fx-backdrop-toolbar); -webkit-backdrop-filter: var(--fx-backdrop-toolbar);
 }
 .fx-toolbar > *, .fx-toolbar__widgets > * { scroll-snap-align: start; }
+/* a page toolbar's own instance settings (chrome-settings@1): a layout-free wrapper carrying its style attributes */
+.fx-toolbar-scope { display: contents; }
 /* toolbar surface + divider (component style engine: data-fx-toolbar-*) */
 [data-fx-toolbar-surface='raised'] .fx-toolbar { background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-toolbar) * 100%), transparent); box-shadow: var(--fx-shadow-sm); }
 [data-fx-toolbar-surface='glass'] .fx-toolbar {

@@ -526,6 +526,8 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
   background: var(--fx-surface2); overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity;
 }
 .fx-toolbar > *, .fx-toolbar__widgets > * { scroll-snap-align: start; }
+/* a page toolbar's own instance settings (chrome-settings@1): a layout-free wrapper carrying its style attributes */
+.fx-toolbar-scope { display: contents; }
 /* toolbar surface + divider (component style engine: data-fx-toolbar-*) */
 [data-fx-toolbar-surface='raised'] .fx-toolbar { background: var(--fx-surface); box-shadow: var(--fx-shadow-sm); }
 [data-fx-toolbar-surface='glass'] .fx-toolbar {
