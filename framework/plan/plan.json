@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-11-14T18:45:40.235Z",
+ "generatedAt": "2026-11-14T23:34:03.423Z",
  "statuses": [
   "built",
   "partial",
@@ -18160,6 +18160,47 @@
    "history": [
     {
      "at": "2026-10-18",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "cx.phonebridge",
+   "title": "Phone native bridge (native-bridge@1): window.axfNative in the Android console app for mic, permissions, notifications, open_url, console wake and the recorder, the axHub amberx device service moved from AmberX, and every tool reachable as device.* console actions (REST, MCP, CLI, voice)",
+   "area": "Console app",
+   "group": "Console plumbing",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "apps/console-droid DeviceBridge (window.axfBridgeHost) + BridgeContract tool list, DeviceTools, MicTools (mic switch gates page audio); apps/console-web/src/native bridgeClient.mjs merges it with part 1's window.axfNativeHost into one window.axfNative; device.* console actions in deviceApi.ts, state on panel:phone-bridge.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "cx.phonebridge"
+   ],
+   "modules": [
+    "app-console"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "console"
+   ],
+   "notes": "apps/console-droid (DeviceBridge, BridgeContract, HubLink, DeviceTools, MicTools; JUnit) + apps/console-web/src/native (bridgeClient.mjs window.axfNative, deviceApi.ts device.* actions, panel:phone-bridge state; Node tests in CI). Recorder stays in AmberX until its capture service moves (recorder@1 not advertised). Four console slots at once (SlotRules/SlotHost, slots.* tools, device.slots action, console-slots@1). Kotlin twin deferred.",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-11-14",
      "text": "Imported from the feature catalog"
     }
    ],
