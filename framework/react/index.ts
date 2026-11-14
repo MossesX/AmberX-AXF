@@ -27,7 +27,7 @@ export { SkinScope } from './components/SkinScope';
 export { LookEditor, LookLevelSwitch, LookTokenRow } from './components/LookEditor';
 export { WidgetView, SearchBarWidget, registerWidgetRenderer, widgetRenderer, type WidgetRenderer, type WidgetRenderProps } from './components/Widgets';
 export { LiveSearch, useSearchHost, scanPage, flashWhenReady } from './components/Search';
-export { PickerField, pickerModelOf, type PickerFieldProps } from './components/PickerField';
+export { PickerField, pickerModelOf, labelOfElement, type PickerFieldProps } from './components/PickerField';
 export { PickerDialog, rootSearchThreshold, type PickerDialogProps } from './components/PickerDialog';
 export { pickerApi, listPickers, pickerState, pickerOpen, pickerClose, pickerSearch, pickerChoose, pickerSet, pickerClear, pickerTarget, registerPicker, onPickers, type PickerHandle, type PickerSnapshot, type PickerResult } from './pickerRegistry';
 export { DialogHost, ToastHost, ContextMenuHost, type DialogDef, type DialogMap } from './components/Overlays';

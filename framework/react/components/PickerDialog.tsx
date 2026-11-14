@@ -92,6 +92,7 @@ export function PickerDialog({ model, onChange, onClose, returnFocus, state: out
     if (e.key === 'Tab') {
       // focus trap: Tab and Shift+Tab cycle inside the dialog
       const items = Array.from(panelRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []);
+      e.stopPropagation();
       if (!items.length) return;
       const i = items.indexOf(document.activeElement as HTMLElement);
       const next = e.shiftKey ? (i <= 0 ? items.length - 1 : i - 1) : (i < 0 || i >= items.length - 1 ? 0 : i + 1);
@@ -107,6 +108,7 @@ export function PickerDialog({ model, onChange, onClose, returnFocus, state: out
     const r = pickerKey(model, st, k, searchFocused);
     if (r.effect === 'type') return; // the search field takes the letter
     e.preventDefault();
+    e.stopPropagation(); // an Escape here closes the picker, not the dialog or panel it sits in
     if (r.model !== model && r.model.value !== model.value) onChange(r.model.value);
     if (r.effect === 'close') { setSt(r.state); onClose(); return; }
     setSt(r.state);
@@ -152,6 +154,7 @@ export function PickerDialog({ model, onChange, onClose, returnFocus, state: out
         {withSearch && (
           <input
             ref={searchRef} type="search" className="fx-input fx-field__input fx-picker__search" placeholder="Search"
+            role="combobox" aria-expanded="true" aria-autocomplete="list" aria-haspopup="listbox"
             aria-label={`Search ${title}`} aria-controls={listId} aria-activedescendant={st.active >= 0 ? optId(st.active) : undefined}
             value={st.query} autoComplete="off" spellCheck={false}
             onChange={(e) => setSt(setQuery(model, st, e.target.value))}
@@ -162,7 +165,7 @@ export function PickerDialog({ model, onChange, onClose, returnFocus, state: out
           aria-labelledby={titleId} aria-multiselectable={model.multiple || undefined}
           aria-activedescendant={!withSearch && st.active >= 0 ? optId(st.active) : undefined}
         >
-          {!st.filtered.length && <div className="fx-picker__empty" role="presentation">{st.query ? `Nothing matches “${st.query}”` : 'No options'}</div>}
+          {!st.filtered.length && <div className="fx-picker__empty" role="status" aria-live="polite">{st.query ? `Nothing matches “${st.query}”` : 'No options'}</div>}
           {sections.map((sec) => (
             <div key={sec.group?.id ?? ''} role={sec.group ? 'group' : 'presentation'} aria-labelledby={sec.group ? `${uid}-g-${sec.group.id}` : undefined} className="fx-picker__group">
               {sec.group && <div className="fx-picker__group-label" id={`${uid}-g-${sec.group.id}`} role="presentation">{sec.group.label}</div>}

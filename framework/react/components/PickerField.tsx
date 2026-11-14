@@ -48,6 +48,24 @@ export type PickerFieldProps = PickerFieldBase & (
   | { multiple: true; value: string[]; onChange: (value: string[]) => void; max?: number }
 );
 
+/**
+ * The accessible name of a native control, the way the browser computes it for a form field: aria-labelledby, then
+ * aria-label, then its <label for> / wrapping <label>, then title, then name / id. The swap layer names the picker with it.
+ */
+export function labelOfElement(el: HTMLElement): string {
+  const clean = (s: string | null | undefined) => (s ?? '').replace(/\s+/g, ' ').trim();
+  const by = el.getAttribute('aria-labelledby');
+  if (by) { const t = clean(by.split(/\s+/).map((i) => el.ownerDocument.getElementById(i)?.textContent ?? '').join(' ')); if (t) return t; }
+  const aria = clean(el.getAttribute('aria-label')); if (aria) return aria;
+  const labels = (el as HTMLSelectElement).labels;
+  if (labels?.length) {
+    // a wrapping label holds the select's own option text too: read only its text nodes and non-control children
+    const t = clean(Array.from(labels).map((l) => Array.from(l.childNodes).filter((n) => !(n instanceof HTMLElement && n.matches('select, option, button, input, .fx-picker-host'))).map((n) => n.textContent).join(' ')).join(' '));
+    if (t) return t;
+  }
+  return clean(el.getAttribute('title')) || clean(el.getAttribute('name')) || clean(el.id);
+}
+
 const textOf = (n: ReactNode): string => (typeof n === 'string' || typeof n === 'number' ? String(n) : '');
 
 /** The engine model for a field's props ('' empty choice first in single mode). */
@@ -109,7 +127,7 @@ export function PickerField(props: PickerFieldProps) {
       aria-invalid={error ? true : undefined} aria-required={required || undefined}
       disabled={disabled} data-axf-target={pickerTarget(id)} data-fx-picker="field"
       onClick={() => (st.open ? close() : open())}
-      onKeyDown={(e) => { if (['ArrowDown', 'ArrowUp'].includes(e.key)) { e.preventDefault(); open(); } }}
+      onKeyDown={(e) => { if (['ArrowDown', 'ArrowUp'].includes(e.key) && !e.ctrlKey && !e.metaKey) { e.preventDefault(); open(); } }}
     >
       <span className="fx-picker-trigger__text">{text}</span>
       {count > 0 && <span className="fx-picker-trigger__count" aria-label={`${count} chosen`}>{count}</span>}
