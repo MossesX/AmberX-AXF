@@ -291,6 +291,7 @@ export const datetimeFamily: ElementFamily = {
       if ((k === 'time' || k === 'datetime-local') && timeFactory) {
         const step = Number(p.step) || Number(getComputedStyle(document.documentElement).getPropertyValue('--fx-tc-datetime-minute-step')) || 5;
         time = timeFactory({ value: timeVal, hour12: hour12(p), minuteStep: step });
+        time.el.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); finish(picked ?? todayYmd()); } });
         content.append(time.el);
       }
       const foot = h('div', { class: 'fx-tc-picker__foot' });
