@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 21:12 UTC · `hotfix-desktop-console-draws-app-menu` branch claude/hotfix-desktop-console-draws-app-menu, PR #658 (all) · builds-live
 - 2026-11-13 21:12 UTC · `hotfix-desktop-console-draws-app-menu` note (all) · orchestrator
 - 2026-11-13 21:13 UTC · `main-ci-red-test-sandbox-profile-export` added (0 steps) (all) · auto-land-every-finished-build-lands
 - 2026-11-13 21:13 UTC · `hotfix-desktop-console-draws-app-menu` note (all) · orchestrator
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 18:42 UTC · `land-all-skin-builds` s16 done (all) · orchestrator
 - 2026-11-14 18:44 UTC · `land-all-skin-builds` s17 done (all) · orchestrator
 - 2026-11-14 18:44 UTC · `picker-dialog-plugin-replaces-all` s5 done (all) · orchestrator
+- 2026-11-14 18:44 UTC · `land-all-skin-builds` s18 done (all) · orchestrator
 
 ## Token passes (log)
 
