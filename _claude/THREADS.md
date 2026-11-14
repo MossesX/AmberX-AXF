@@ -792,9 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:42 UTC · `console-app-part-4-console-side-safe` s5 done (all) · orchestrator
-- 2026-11-13 19:44 UTC · `land-overlay-preview-ui-review-resolve` branch claude/land-overlay-preview-ui-review-resolve (all) · builds-live
-- 2026-11-13 19:45 UTC · `console-app-part-4-console-side-safe` s6 done (all) · orchestrator
 - 2026-11-13 19:47 UTC · `skin-config-panel-merge-main-and-land` added (0 steps) (all) · console
 - 2026-11-13 19:47 UTC · `skin-config-panel-merge-main-and-land` → queued, note (all) · console
 - 2026-11-13 19:47 UTC · `skins-plugin-merge-main-and-land` added (0 steps) (all) · console
@@ -1192,6 +1189,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 00:43 UTC · `land-batch-merge-main-each-finished` s11 done (all) · orchestrator
 - 2026-11-14 00:43 UTC · `land-batch-merge-main-each-finished` s12 done (all) · orchestrator
 - 2026-11-14 00:44 UTC · `land-batch-merge-main-each-finished` s13 done (all) · orchestrator
+- 2026-11-14 00:45 UTC · `console-app-land-parts-1-4-build-apk` → running, note (all) · pipeline
+- 2026-11-14 00:45 UTC · `console-app-land-parts-1-4-build-apk` branch claude/console-app-land-parts-1-4-build-apk (all) · pipeline
+- 2026-11-14 00:45 UTC · `console-app-land-parts-1-4-build-apk` note (all) · orchestrator
 
 ## Token passes (log)
 

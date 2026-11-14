@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T00:45:25.136Z",
+ "updatedAt": "2026-11-14T00:45:39.401Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -135812,15 +135812,15 @@
    "title": "Console app: land parts 1-4 and build the APK",
    "category": "",
    "detail": "Brett wants the new console Android app APK ready to download. Merge origin/main into each and land, in order: console-android-app-thin-webview-wrapper (part 1, shell), console-app-part-2-native-floating-2, console-app-part-3-native-bridge-mic (part 2 notes a NativeBridge.java clash with part 3: keep both and make them compile together), console-app-part-4-console-side-safe, then console-app-wake-word-voice-listener. Regenerate generated files on clash, and run the JUnit and web tests. Then trigger the Android CI build for the console app, put the APK download link in the report, and send Brett a phone notification through AmberX with the link.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/console-app-land-parts-1-4-build-apk",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T23:41:07.780Z",
-   "updatedAt": "2026-11-14T00:45:23.140Z",
+   "updatedAt": "2026-11-14T00:45:30.762Z",
    "builtAt": "",
    "notes": [
     {
@@ -135830,6 +135830,14 @@
     {
      "text": "Split by Claude into 18 steps (0 Fable).",
      "at": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-console-app-land-parts-1-4-build-apk--lenny.",
+     "at": "2026-11-14T00:45:27.464Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-app-land-parts-1-4-build-apk--lenny, own login copy)",
+     "at": "2026-11-14T00:45:30.762Z"
     }
    ],
    "approvals": [],
