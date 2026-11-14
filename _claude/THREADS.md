@@ -797,12 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 22:21 UTC · `console-look-becomes-default-axhub-skin` branch claude/console-look-becomes-default-axhub-skin (all) · pipeline
-- 2026-11-14 22:22 UTC · `console-look-becomes-default-axhub-skin` note (all) · orchestrator
-- 2026-11-14 22:23 UTC · `console-look-becomes-default-axhub-skin` note (all) · orchestrator
-- 2026-11-14 22:23 UTC · `console-look-becomes-default-axhub-skin` → pending, note (all) · pipeline
-- 2026-11-14 22:24 UTC · `replace-merge-queue-one-time-landing` s1 done, → running (all) · orchestrator
-- 2026-11-14 22:24 UTC · `replace-merge-queue-one-time-landing` branch claude/replace-merge-queue-one-time-landing (all) · builds-live
 - 2026-11-14 22:28 UTC · `land-finish-auto-land-live-clear-backlog` s1 done (all) · orchestrator
 - 2026-11-14 22:30 UTC · `replace-merge-queue-one-time-landing` s2 done (all) · orchestrator
 - 2026-11-14 22:31 UTC · `land-all-skin-builds` → queued (all) · mcp
@@ -1197,6 +1191,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:49 UTC · `merge-main-land-one-source-truth-console` note (all) · orchestrator
 - 2026-11-14 23:49 UTC · `themed-native-controls-plugin` s25 done (all) · orchestrator
 - 2026-11-14 23:50 UTC · `merge-main-land-console-app-part-4` branch claude/console-app-part-4-console-side-safe, PR #640 (all) · builds-live
+- 2026-11-14 23:50 UTC · `merge-main-land-console-app-part-4` s1 done (all) · orchestrator
+- 2026-11-14 23:50 UTC · `merge-main-land-console-app-part-4` s2 done (all) · orchestrator
+- 2026-11-14 23:50 UTC · `merge-main-land-console-app-part-4` s3 done (all) · orchestrator
+- 2026-11-14 23:50 UTC · `merge-main-land-console-app-part-4` s4 done (all) · orchestrator
+- 2026-11-14 23:51 UTC · `merge-main-land-console-app-part-4` s5 done (all) · orchestrator
+- 2026-11-14 23:51 UTC · `merge-main-land-console-app-part-4` s6 done (all) · orchestrator
 
 ## Token passes (log)
 
