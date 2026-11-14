@@ -221,6 +221,11 @@ export interface StyleThemeData {
   /* ---- behaviour ---- */
   /** every section / group (Container) gets a collapse toggle top-right; build option --wrap-groups (default false) */
   wrapGroups?: boolean;
+  /* ---- component-tokens@1 (engines/component-tokens.mjs): the grid and tab-group token families, optional ---- */
+  /** grid / table tokens by key (headerBg, hoverBg, selectedBg, lineColor, radius, opacity, …) → --fx-grid-*; a colour-theme token name, a CSS value or a number */
+  grid?: Record<string, string | number>;
+  /** tab-group tokens by key (barBg, text, hoverText, activeText, indicator, pillsActiveBg, radiusPills, opacity, …) → --fx-tab-* */
+  tabs?: Record<string, string | number>;
   /** 'thin' = thin themed scrollbars; unset = the browser's own. */
   scrollbar?: 'thin';
 }
@@ -550,7 +555,7 @@ export interface ContainerData {
 /** Settings interface asset: the settings page as data, shared by every app that loads it (engines/settingsui.ts). */
 /** behavior-theme@1 (engines/behavior.ts): how an app behaves. Every field has a default, so any subset is valid. */
 export interface BehaviorThemeData {
-  motion: { speed: string; easing: string; reduced: string; entrance: string };
+  motion: { speed: string; easing: string; reduced: string; entrance: string; swatches: string; skinSwitch: string; picker: string; animSpeed: number; animIntensity: number };
   interaction: { hover: string; press: string; focusRing: string; cursor: string; longPressMs: number; doubleTapMs: number; dragThreshold: number };
   windows: { dialogOpen: string; backdrop: string; popupOpen: string; drawerOpen: string; snap: boolean; snapGrid: number; stack: string; minimize: string; closeOnBackdrop: boolean; closeOnEscape: boolean };
   feedback: { toastPosition: string; toastMs: number; sound: string; vibration: string; confirmDelete: string; busyCursor: boolean };
