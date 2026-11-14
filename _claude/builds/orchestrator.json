@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T17:40:49.222Z",
+ "updatedAt": "2026-11-14T17:41:09.554Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -139454,7 +139454,7 @@
    "pr": "#673",
    "mergedAt": "2026-11-14T17:36:16Z",
    "createdAt": "2026-11-14T16:51:14.645Z",
-   "updatedAt": "2026-11-14T17:40:47.723Z",
+   "updatedAt": "2026-11-14T17:41:05Z",
    "builtAt": "",
    "notes": [
     {
@@ -139484,6 +139484,10 @@
     {
      "text": "Reconciler: PR #673 merged",
      "at": "2026-11-14T17:40:47.723Z"
+    },
+    {
+     "text": "Shipped manifest sm-hotfix-toolbar-settings-still-change rev 1 sent to Shipped features (orchestrator): landed c3e5b59d7, 20 file(s), 0 test line(s), 1 open.",
+     "at": "2026-11-14T17:41:05Z"
     }
    ],
    "approvals": [],

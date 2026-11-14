@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5342,
- "updatedAt": "2026-11-14T17:40:49.222Z",
+ "rev": 5343,
+ "updatedAt": "2026-11-14T17:41:09.554Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -214821,7 +214821,7 @@
    "pr": "#673",
    "mergedAt": "2026-11-14T17:36:16Z",
    "createdAt": "2026-11-14T16:51:14.645Z",
-   "updatedAt": "2026-11-14T17:40:47.723Z",
+   "updatedAt": "2026-11-14T17:41:05Z",
    "builtAt": "",
    "notes": [
     {
@@ -214851,6 +214851,10 @@
     {
      "text": "Reconciler: PR #673 merged",
      "at": "2026-11-14T17:40:47.723Z"
+    },
+    {
+     "text": "Shipped manifest sm-hotfix-toolbar-settings-still-change rev 1 sent to Shipped features (orchestrator): landed c3e5b59d7, 20 file(s), 0 test line(s), 1 open.",
+     "at": "2026-11-14T17:41:05Z"
     }
    ],
    "approvals": [],
@@ -214894,6 +214898,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-hotfix-toolbar-settings-still-change",
+    "rev": 1,
+    "at": "2026-11-14T17:41:05Z",
+    "landedCommit": "c3e5b59d7fe69361d5b6e0b5793d34d46b3bd6e0"
    },
    "steps": [
     {
@@ -214993,7 +215003,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
