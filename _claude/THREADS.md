@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 16:59 UTC · `hotfix-toolbar-settings-still-change` s3 done (all) · orchestrator
 - 2026-11-14 16:59 UTC · `hotfix-toolbar-settings-still-change` note (all) · orchestrator
 - 2026-11-14 17:01 UTC · `builds-share-one-claude-login-write` s4 done (all) · orchestrator
 - 2026-11-14 17:01 UTC · `ui-review-filter-and-search-by-pr` s2 done (all) · orchestrator
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:26 UTC · `fix-build-whose-session-finishes-phase-e` s3 done (all) · orchestrator
 - 2026-11-14 23:27 UTC · `themed-native-controls-plugin` s17 done (all) · orchestrator
 - 2026-11-14 23:27 UTC · `fix-build-whose-session-finishes-phase-e` PR #685 (all) · builds-live
+- 2026-11-14 23:27 UTC · `picker-dialog-plugin-replaces-all` s18 done (all) · orchestrator
 
 ## Token passes (log)
 
