@@ -17,7 +17,7 @@
  */
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import './plugintheme.css';
-import { Button, Checkbox, Chip, ColorField, Container, IconButton, Note, Segmented, SelectField, Slider, Switch, TextField, SkinScope, useEditorSync, useRuntime } from '../../react';
+import { Button, Checkbox, Chip, ColorField, Container, HubSkinLockNote, IconButton, Note, Segmented, SelectField, Slider, Switch, TextField, SkinScope, useEditorSync, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import type { AxfRuntime } from '../../core/runtime';
 import type { ColorThemeData, StyleThemeData } from '../../core';
@@ -197,6 +197,7 @@ export function PluginThemePanel({ id, name }: { id: string; name: string }) {
   return (
     <div className="fx-stack axf-plugintheme" {...{ [EDITOR_ATTR]: id }}>
       <p className="fx-muted" style={{ margin: 0 }}>{name} uses the app’s theme. Switch the override on to give it its own tokens on top of that theme: only what you change here is overridden, the rest follows the app (and a theme swap).</p>
+      <HubSkinLockNote />
       <fieldset className="axf-plugintheme__fieldset" disabled={locked}>
         <Switch label="Theme override" hint={look.on ? `${n} token${n === 1 ? '' : 's'} overridden in ${name}’s pages, dialogs, windows and settings.` : 'Off: the app’s theme.'} checked={look.on} onChange={(on) => save({ ...look, on })} />
         {lookLocked && look.on && <Note tone="warning">{rt.appearanceLockReason() === 'hub'
