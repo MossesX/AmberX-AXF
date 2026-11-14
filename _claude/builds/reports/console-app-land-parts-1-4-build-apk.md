@@ -107,3 +107,11 @@ dictation and voice notes use), so only one of them listens at a time. Part 3 ha
 native `listener.*` recognizer is still a deferred twin (`framework/spec/PORTING.md`), so in the app the listener uses
 the WebView's SpeechRecognition. Checks: wake-listener 82/82, plugin-lifecycle clean, theme, controls, console-control,
 toolbars, chrome assets and help-coverage all pass.
+
+**s13, web tests on the top of the stack (wake head).** Before: `tsc --noEmit` failed with 11 errors in
+`wake-listener/web/engine.ts`. The listener typed its window as `Window & { axfNative?: NativeBridge }`, which
+intersected with the console's global `Window.axfNative` (parts 1/3/4) into `unknown`. Fixed on the wake branch: the
+listener now uses `Omit<Window, 'axfNative'>` and reads only the bridge part it needs. After: typecheck clean and
+`npm run build` green (vite, 12 s). Part 4's head typechecks clean on its own too. Also passing: check-builds-store 40,
+console-commands 10, wake-listener 82/82, plus the checks listed under s8-s10. theme-swap needs Playwright, which this
+host does not have, so CI's run of it on the PRs is the result.
