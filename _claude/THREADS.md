@@ -796,9 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 04:30 UTC · `ui-directory-plugin-self-updating-data` → queued, note (all) · pipeline
-- 2026-11-14 04:30 UTC · `ui-directory-plugin-self-updating-data` → running, note (all) · pipeline
-- 2026-11-14 04:31 UTC · `demo-video-series-three-minute-browser` note (all) · voice
 - 2026-11-14 04:32 UTC · `demo-video-series-three-minute-browser` note (all) · voice
 - 2026-11-14 04:34 UTC · `group-chat-audio-hear-agents-talk-while` s1 done, → running (all) · orchestrator
 - 2026-11-14 04:34 UTC · `group-chat-audio-hear-agents-talk-while` branch claude/group-chat-audio-hear-agents-talk-while (all) · builds-live
@@ -1196,6 +1193,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:15 UTC · `merge-main-land-change-to-move-amberx` note (all) · orchestrator
 - 2026-11-14 23:15 UTC · `themed-native-controls-plugin` s12 done (all) · orchestrator
 - 2026-11-14 23:15 UTC · `console-axhub-retry-failed-calls` → running (all) · builds-live
+- 2026-11-14 23:15 UTC · `land-project-duplicate-boilerplate` → running, note (all) · pipeline
+- 2026-11-14 23:16 UTC · `console-axhub-retry-failed-calls` note (all) · orchestrator
+- 2026-11-14 23:16 UTC · `land-project-duplicate-boilerplate` note (all) · orchestrator
 
 ## Token passes (log)
 
