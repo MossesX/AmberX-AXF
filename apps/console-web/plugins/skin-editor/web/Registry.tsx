@@ -39,7 +39,7 @@ export function RegistryView() {
 
   return (
     <div className={`${P} fx-stack fx-stack--lg`}>
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">Framework</p><h1>Token registry</h1></div></header>
+      <header className="fx-pagehead"><div><p className="fx-eyebrow">Framework</p><h1>Token registry</h1><p className="fx-muted" title="Every --fx-* token the framework, apps and plugins read: where it is defined, who reads it, its default and level. Open one in the Skin editor to change it.">Every design token, where it comes from and who reads it.</p></div></header>
       <div className="axp-skin__bar" role="toolbar" aria-label="Token registry">
         <Segmented label="Level" size="sm" value={level} onChange={setLevel} options={LEVELS.map((l) => ({ value: l.value, label: l.label, title: l.title }))} />
         <input className="fx-input" placeholder="Find a token: words from its name, element, description…" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Find a token" />

@@ -176,7 +176,7 @@ export function SkinEditorView() {
   return (
     <HubSkinLockArea>
     <div className={`${P} fx-stack`}>
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">Framework</p><h1>Skin editor</h1></div></header>
+      <header className="fx-pagehead"><div><p className="fx-eyebrow">Framework</p><h1>Skin editor</h1><p className="fx-muted" title="Edit a skin token by token with a live sandbox preview of any screen, keep a snapshot after each change, revert to any snapshot and export the skin.">Edit a skin token by token with a live preview.</p></div></header>
       <div className={`${P}__bar`} role="toolbar" aria-label="Skin editor">
         <SelectField label="UI" value={ui ? api.uiKey(ui) : ''} onChange={(k) => { const u = allUis.find((x) => api.uiKey(x) === k); if (u) void choose(u); }} options={[{ value: '', label: 'Pick a UI…' }, ...allUis.map((u) => ({ value: api.uiKey(u), label: `${u.kind}: ${u.label}` }))]} />
         <Button size="sm" icon="eye" title="Click a screen anywhere in the console to load it here" onClick={() => rt.dispatch('skin-editor.pick')}>Pick on screen</Button>
