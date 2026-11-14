@@ -45,3 +45,18 @@ which was damaged at the time) with the deployed shim, the repo resolver and the
 `apps/console-web/src/control/inventory.json` and `apps/console-web/src/assets/help/framework.json`: all three
 regenerated from both sides' sources and staged, exit 0. Source clash in `src/app.mjs`: exit 1,
 `UNRESOLVED: src/app.mjs`, no generator run. Result: 13/13 ok.
+
+## Branches (s4–s16)
+
+Each branch is merged in a scratch worktree (`/tmp/lb-wt/<branch>`, detached at the pushed branch), so the build
+sessions' own worktrees are untouched. Sweep, run with `AXF_DATA_DIR=off` (the repo copies, as CI reads them):
+`axf validate --framework`, `tracker --check`, `check-theme`, `check-controls`, `check-toolbars`,
+`check-project-fixtures`, `control-inventory --check`, plus the branch's extra checks and the tests of every plugin
+it touches. Known on main, not caused by the merges: every baked app (console-web, axhub-web, …) is already
+"edited" by `rebake status`, so the resolver keeps main's `axf.lock.json` instead of re-baking (by design); and the
+host data copy of `framework/catalog/status.json` was missing `ui.opacity.surfaces` (fixed on the host, backup
+`status.json.bak-lb`), which made a local `tracker --check` fail while CI passed.
+
+| Step | Branch | PR | Merge | Sweep | Pushed |
+| --- | --- | --- | --- | --- | --- |
+| s4 | toolbar-widgets-attach-any-banner-style | #656 | 174 behind; clash in console-web `axf.lock.json`, `control/inventory.json`: inventory regenerated, lock = main's (rebake refused, edited app) | all green + check-banner-widgets | `e6255aa433` |
