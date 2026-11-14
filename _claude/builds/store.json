@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5489,
- "updatedAt": "2026-11-14T22:46:51.549Z",
+ "rev": 5490,
+ "updatedAt": "2026-11-14T22:46:59.748Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -213534,7 +213534,7 @@
    "title": "HOTFIX: desktop console draws app menu, banners and nav twice",
    "category": "",
    "detail": "Right after per-toolbar-settings-fix-failing-chrome landed on main (merge ec579ee23, 20:44 Nov 13) and the console redeployed, Brett's DESKTOP console shows TWO app menus, TWO banners and TWO navigation menus (the phone looks fine). Keep the per-toolbar/per-instance settings feature: fix forward, don't revert it. Likely cause: the per-instance chrome (ChromeContext.tsx / Overlays.tsx / chrome-settings-rules) now renders a per-instance copy of each chrome element in addition to the default one on wide layouts, or the merge kept both sides of a render block. Find it, render exactly one of each chrome element, add an e2e/visual test that counts app menus, banners and nav menus on desktop and phone (must be 1 each), run all tests, then LAND it on main immediately and redeploy the console. Note: commit 237a293af was an accidental revert that only re-added 24 lines to one file; check it and drop it if it's wrong.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -213542,7 +213542,7 @@
    "pr": "#658",
    "priority": "P0",
    "createdAt": "2026-11-13T20:53:50.393Z",
-   "updatedAt": "2026-11-13T21:16:23.568Z",
+   "updatedAt": "2026-11-14T22:46:27.656Z",
    "builtAt": "",
    "notes": [
     {
@@ -213728,7 +213728,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -213893,7 +213893,7 @@
    "title": "Auto-land: merge main and land (land.mjs clash)",
    "category": "",
    "detail": "Branch claude/auto-land-every-finished-build-lands clashed with main in apps/console-web/plugins/push-banner/land/land.mjs, a real source clash with the just-landed lander-regenerates-generated-files-clash (generated-files@1). Merge origin/main, keep BOTH: main's regenerate-generated-files-on-clash logic and this branch's auto-land queue/sweeper. Run the push-banner and orchestrator tests, push, then land on main right away. After it lands, the sweeper should start landing every finished build by itself.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -213901,7 +213901,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T23:38:56.061Z",
-   "updatedAt": "2026-11-13T23:59:03.281Z",
+   "updatedAt": "2026-11-14T22:46:30.553Z",
    "builtAt": "",
    "notes": [
     {
@@ -214218,7 +214218,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -214254,7 +214254,7 @@
    "title": "Land batch: merge main into each finished build and land",
    "category": "",
    "detail": "vps.build_land still aborts on clashes in GENERATED files only (axf.lock.json, control/inventory.json, help framework.json): the new generated-files@1 logic landed in the repo, but /opt/axf-batch/resolve.py (used by vps.build_land on axHub's side) hasn't picked it up. 1) Wire /opt/axf-batch/resolve.py to call the repo's generated-files@1 resolver. 2) Then, one at a time, merge origin/main into each branch, regenerate generated files, run its tests, push, and land on main: toolbar-widgets-attach-any-banner-style, icon-map-icon-packs-every-icon-badge-app, token-registry-skin-editor-live-sandbox, per-instance-settings-small-live-preview, skin-axhub-override-switch-greyed-out, skin-animations-swatches-skin-switch, skin-config-panel-merge-main-and-land, skins-plugin-merge-main-and-land, full-voice-control-resolve-inventory, orchestrator-custom-groups-custom-tabs, demo-pipelines-guided-walkthrough-live, console-app-wake-word-voice-listener, hotfix-desktop-console-draws-app-menu (PR #658 regression test). Real source clashes: keep both sides and test. Report each result. Redeploy the console after the batch.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -214263,7 +214263,7 @@
    "mergedAt": "2026-11-14T12:57:15Z",
    "priority": "P0",
    "createdAt": "2026-11-13T23:39:26.785Z",
-   "updatedAt": "2026-11-14T13:02:07Z",
+   "updatedAt": "2026-11-14T22:46:33.269Z",
    "builtAt": "",
    "notes": [
     {
@@ -214876,7 +214876,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -214892,7 +214892,7 @@
    "title": "Console app: land parts 1-4 and build the APK",
    "category": "",
    "detail": "Brett wants the new console Android app APK ready to download. Merge origin/main into each and land, in order: console-android-app-thin-webview-wrapper (part 1, shell), console-app-part-2-native-floating-2, console-app-part-3-native-bridge-mic (part 2 notes a NativeBridge.java clash with part 3: keep both and make them compile together), console-app-part-4-console-side-safe, then console-app-wake-word-voice-listener. Regenerate generated files on clash, and run the JUnit and web tests. Then trigger the Android CI build for the console app, put the APK download link in the report, and send Brett a phone notification through AmberX with the link.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -214900,7 +214900,7 @@
    "pr": "#643",
    "priority": "P0",
    "createdAt": "2026-11-13T23:41:07.780Z",
-   "updatedAt": "2026-11-14T02:10:15.313Z",
+   "updatedAt": "2026-11-14T22:46:37.010Z",
    "builtAt": "",
    "notes": [
     {
@@ -215451,7 +215451,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -217050,14 +217050,14 @@
    "title": "Banner widget shapes: more than circle and pill, all token-driven",
    "category": "Appearance",
    "detail": "Brett: banner widgets can only be circles or pills. Add a shape token per banner widget (global, per skin, per instance): circle, pill, rounded square, square, squircle, hexagon, diamond, tag, plus custom radius per corner and custom SVG mask. Shapes are assets (shape@1), swappable by skin, editable in the skin editor, UI Manager and per-instance settings, with Restore previous edit. Full API: REST/MCP/CLI/voice ('make the banner widgets hexagons'). Tests desktop and phone.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-14T04:47:26.735Z",
+   "updatedAt": "2026-11-14T22:46:41.431Z",
    "builtAt": "",
    "notes": [
     {
@@ -217818,7 +217818,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
