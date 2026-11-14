@@ -62,6 +62,21 @@
       "priority": "high"
     },
     {
+      "id": "pipeline.launch-failed",
+      "label": "Queued build failed to start",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "The dispatcher picked a Queue build and it did not start: the build name and the exact reason from every account it tried (a refused login, no slot, the dispatch gate, a launcher error). Sent at once, for every failed start.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:launch:"
+      },
+      "setting": "notify.blocked",
+      "push": true,
+      "priority": "high"
+    },
+    {
       "id": "pipeline.oauth",
       "label": "Build stopped on a Claude login failure",
       "group": "builds",

@@ -263,6 +263,18 @@ export function authFailureOf(text, { lines = 25 } = {}) {
 }
 
 /**
+ * The reason a run stopped, from the end of its log: the last line that reads as an error or a refusal ("Error",
+ * "refused", "Not started", "failed", "exit"…), else the last non-empty line before the launcher's own footer. ''
+ * when there is no log.
+ */
+export function lastReasonOf(text, { lines = 40 } = {}) {
+  const tail = str(text, 400000).split('\n').slice(-lines).map((l) => l.replace(/\x1b\[[0-9;]*m/g, '').trim()).filter(Boolean)
+    .filter((l) => !/^── finished \(exit \d+\)/.test(l) && !/^#/.test(l));
+  for (let i = tail.length - 1; i >= 0; i--) if (/\b(error|refused|not started|failed|fatal|panic|cannot|can't|killed|denied|timed? ?out|no such|exception)\b/i.test(tail[i])) return str(tail[i], 300);
+  return str(tail.at(-1) || '', 300);
+}
+
+/**
  * A build held after a sign-in failure goes back to the Queue once: when a health answer newer than the failure says
  * its account signs in again. `wait` = { account, at, requeued }, `health` = that account's last health record.
  */
@@ -518,6 +530,9 @@ export function alertFor(kind, d = {}) {
     case 'selfcheck': return { ...base, key: 'pipeline:selfcheck', severity: list(d.problems).length ? 'warning' : 'info',
       title: `Dispatcher self-check: ${list(d.fixes).length ? `fixed ${list(d.fixes).length}` : 'nothing fixed'}${list(d.problems).length ? `, ${list(d.problems).length} account${list(d.problems).length === 1 ? '' : 's'} can't work` : ''}`,
       body: str([...list(d.fixes).map((x) => `Fixed: ${x}`), ...list(d.problems).map((x) => `Can't use ${x}`), d.line ? `Now: ${d.line}` : ''].filter(Boolean).join('\n'), 1500) };
+    case 'launch-failed': return { ...base, key: `pipeline:launch:${d.id}:${Date.now()}`, severity: 'error', title: `Couldn't start: ${str(d.title || d.id, 120)}`,
+      body: str([`Build ${d.id} was picked from the Queue and failed to start.`, ...list(d.reasons).map((x) => `${x.account || '?'}: ${str(x.error, 300)}`),
+        d.tries && d.maxTries ? (d.tries >= d.maxTries ? `${d.tries} failed starts this hour: it waits an hour before the next try.` : `It stays in the Queue and is tried again next tick (${d.tries}/${d.maxTries} failed starts this hour).`) : ''].filter(Boolean).join('\n'), 1500) };
     case 'oauth': return { ...base, key: `pipeline:oauth:${d.id}`, severity: 'error', title: `Claude login failed: ${d.account || '?'} · ${str(d.title, 100)}`,
       body: str(`${d.error || 'sign-in refused'}\n${d.id} is held in Pending. It goes back to the Queue by itself once ${d.account || 'the account'} signs in again (checked by the account health sweep${d.everyMin ? `, every ${d.everyMin} min` : ''}). To fix it now: Claude accounts → ${d.account || 'the account'} → Sign in.`, 1500) };
     case 'oauth-ok': return { ...base, key: `pipeline:oauth:${d.id}`, severity: 'success', title: `Claude login works again: ${d.account || '?'}`, body: str(`${d.id} is back in the Queue (re-queued once, automatically).`, 1500) };

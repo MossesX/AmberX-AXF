@@ -207,6 +207,16 @@ t('alertFor: idle keyed once, per-build run keys, every kind has a title', () =>
   assert.equal(oa.key, 'pipeline:oauth:b'); assert.equal(oa.severity, 'error'); assert.match(oa.title, /login failed: w/); assert.match(oa.body, /OAuth token has expired[\s\S]*back to the Queue by itself/);
   assert.equal(P.alertFor('oauth-ok', { id: 'b', account: 'w' }).key, 'pipeline:oauth:b', 'the recovery replaces the failure alert');
 });
+t('launch failures and crash reasons: the exact reason reaches the phone', () => {
+  const a = P.alertFor('launch-failed', { id: 'b', title: 'B', reasons: [{ account: 'w1', error: 'launcher exit 4: no Claude login to snapshot for "w1"' }, { account: 'w2', error: 'launcher exit 3: the VPS hard build limit is full' }], tries: 1, maxTries: 3 });
+  assert.match(a.key, /^pipeline:launch:b:\d+$/, 'each failed start is its own push'); assert.equal(a.severity, 'error'); assert.equal(a.title, "Couldn't start: B");
+  assert.match(a.body, /w1: launcher exit 4: no Claude login[\s\S]*w2: launcher exit 3: the VPS hard build limit is full[\s\S]*tried again next tick \(1\/3/);
+  assert.match(P.alertFor('launch-failed', { id: 'b', reasons: [{ account: 'w', error: 'x' }], tries: 3, maxTries: 3 }).body, /waits an hour/);
+  assert.equal(P.lastReasonOf('working\nError: ENOSPC: no space left on device, write\nmore output\n── finished (exit 1) · log: x ──'), 'Error: ENOSPC: no space left on device, write');
+  assert.equal(P.lastReasonOf('Not started: the VPS hard build limit stayed full for a day.\n'), 'Not started: the VPS hard build limit stayed full for a day.');
+  assert.equal(P.lastReasonOf('just stopped here\n# login w (a@b) · shared account login (saved)'), 'just stopped here', 'the launcher\'s own lines are not the reason');
+  assert.equal(P.lastReasonOf(''), '');
+});
 t('authFailureOf: Claude Code\'s sign-in errors at the end of a run log; talk about tokens or a usage limit is not one', () => {
   assert.equal(P.authFailureOf('working…\nAPI Error: 401 {"type":"error","error":{"type":"authentication_error","message":"OAuth token has expired."}}\n── finished (exit 1) ──'), 'API Error: 401 {"type":"error","error":{"type":"authentication_error","message":"OAuth token has expired."}}');
   assert.match(P.authFailureOf('Invalid API key · Please run /login'), /Please run \/login/);
@@ -541,6 +551,21 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     // the fake launcher reuses the session name, so the old end event closes the new run on the same login error:
     // a second failure waits for a health answer newer than itself (no loop of re-queues on one sweep)
     assert.deepEqual(json(pipe('tick', '--json')).authRequeued, [], 'one health answer re-queues once');
+  });
+  t('e2e a queued build that fails to start: the phone hears it at once with the exact reason', () => {
+    orch('act', JSON.stringify({ action: 'add', id: 'epsstart', title: 'Epsilon start', steps: [{ text: 'do epsstart', model: 'Opus', estimate: '10 min' }] }));
+    json(pipe('queue', 'epsstart', '--json'));
+    const bad = join(tmp, 'bad-launcher.sh');
+    writeFileSync(bad, '#!/usr/bin/env bash\necho "claude-login: no Claude login to snapshot for the account (log in, or save the account first)" >&2\nexit 4\n'); chmodSync(bad, 0o755);
+    const tk = spawnSync(process.execPath, [join(HERE, 'pipeline.mjs'), 'tick', '--json'], { cwd: ROOT, env: { ...env, AXF_PIPELINE_LAUNCHER: bad }, encoding: 'utf8', timeout: 120000 });
+    const r = json(tk);
+    const f = r.failed.find((x) => x.id === 'epsstart');
+    assert.ok(f, `epsstart was tried: ${JSON.stringify({ waits: r.plan.waits, launched: r.launched })}`);
+    const sentKey = r.alertsSent.find((a) => a.key.startsWith('pipeline:launch:epsstart:'));
+    assert.ok(sentKey, 'a launch-failed alert went out'); assert.equal(sentKey.title, "Couldn't start: Epsilon start");
+    assert.match(f.error, /launcher exit 4: claude-login: no Claude login to snapshot/, 'the exact reason, not a summary');
+    assert.equal(find('epsstart').status, 'queued', 'it stays in the Queue for the next try');
+    json(pipe('unqueue', 'epsstart', '--json'));
   });
   t('e2e split request from the console is honoured on the next intake', () => {
     orch('act', JSON.stringify({ action: 'add', id: 'gamma', title: 'Gamma', steps: [{ text: 'big step', model: 'Opus', estimate: '3 h' }] }));

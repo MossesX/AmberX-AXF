@@ -585,7 +585,11 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
     if (auth) {
       authWait(b.id, { account: b.pipeline.account, error: auth, session: b.pipeline.session });
       alert('oauth', { id: b.id, title: b.title, account: b.pipeline.account, error: auth, everyMin: settings.healthEveryMin });
-    } else alert(r.outcome === 'failed' ? 'failed' : 'ended', { id: b.id, title: b.title, outcome: r.outcome, note: r.note, account: b.pipeline.account });
+    } else {
+      // a run that did not finish: the exact reason is the last error the run printed (a crash, a refused gate, a launcher error)
+      const why = r.outcome === 'finished' ? '' : P.lastReasonOf(tailOf(end?.log));
+      alert(r.outcome === 'failed' ? 'failed' : 'ended', { id: b.id, title: b.title, outcome: r.outcome, note: why ? `${r.note}\nWhy: ${why}` : end ? r.note : `${r.note}\nWhy: its session vanished without an end event (killed, or the VPS restarted).`, account: b.pipeline.account });
+    }
     logLine({ event: 'ended', build: b.id, outcome: r.outcome, exit, account: b.pipeline.account, session: b.pipeline.session, ...(auth ? { auth } : {}) });
     if (r.outcome === 'failed') crewSay('dispatcher', 'failed', `${b.id} failed: ${r.note}`, { ref: b.id });
     else if (r.outcome === 'returned') crewSay('dispatcher', 'waiting', `${b.id} stopped with steps left and is back in Pending. Brett, it needs you: ${r.note}`, { ref: b.id });
@@ -765,14 +769,14 @@ export function tick({ env = process.env } = {}) {
     // the final pick: the plan's account first, then every other account that may take it (subscriptions, then API),
     // moving on until one accepts the launch
     const options = [first, ...P.routeOptions(b, accounts, first.model, settings).filter((o) => o.account !== first.account).map((o) => ({ ...first, ...o }))].slice(0, MAX_PICK_TRIES);
-    const tried = [];
+    const tried = []; const reasons = [];
     let l = first; let r = null; let lastErr = null;
     for (const o of options) {
       l = o;
       try { r = launch(b, l, { rules, env }); break; }
       catch (e) {
         if (e.code === 'live') { lastErr = e; break; } // the build itself is busy: no other account may take it either
-        lastErr = e; tried.push(l.account); logLine({ event: 'launch-refused', build: b.id, account: l.account, error: str(e.message, 300) });
+        lastErr = e; tried.push(l.account); reasons.push({ account: l.account, error: str(e.message, 300) }); logLine({ event: 'launch-refused', build: b.id, account: l.account, error: str(e.message, 300) });
       }
     }
     if (!r && lastErr?.code === 'live') {
@@ -801,6 +805,9 @@ export function tick({ env = process.env } = {}) {
       setPipeline(l.id, { note: `launch failed: ${str(e.message, 300)}`, tried }, { note: `Launch failed on ${tried.join(', ') || l.account}: ${str(e.message, 500)}`, action: 'pipeline:launch-failed' });
       logLine({ event: 'launch-failed', build: l.id, account: l.account, tried, error: e.message });
       crewSay('dispatcher', 'failed', `Couldn't start ${l.id} on ${tried.join(', ') || l.account}: ${str(e.message, 160)}`, { ref: l.id });
+      // the phone hears every failed start at once, with the exact reason per account tried
+      alert('launch-failed', { id: l.id, title: b.title, account: l.account, error: e.message, reasons: reasons.length ? reasons : [{ account: l.account, error: str(e.message, 300) }],
+        tries: state.launchFails[l.id].filter((t) => Date.parse(t) > hourAgo).length, maxTries: LAUNCH_FAILS_PER_HOUR });
     }
   }
   // idle: nothing running while work waits. Recorded at once; the phone hears about it after idleAfterMin, once per idle spell.
