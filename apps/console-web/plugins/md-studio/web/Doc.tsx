@@ -7,7 +7,7 @@
  * Framework controls and theme tokens only; layout in md-studio.css.
  */
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent, type MouseEvent } from 'react';
-import { Button, IconButton, Icon, Markdown, Note, Segmented, Switch, TextField, Checkbox, useIsPhone } from '@console/axf/react';
+import { Button, IconButton, Icon, Markdown, Note, Segmented, Switch, TextField, Checkbox, useIsPhone, dialogs } from '@console/axf/react';
 import { TOOLS, findAll, findNext, forPreview, offsetOfLine, outline, replaceAll, type PaneMode, type Sel } from './model';
 import {
   JUMP_EVENT, K, activeDocId, api, history, isDirty, jump, loadDoc, openDoc, restore, runtime, saveDoc, setDraft, setEditable, startMode,
@@ -107,7 +107,7 @@ export function DocPane({ id }: { id: string }) {
     try { setHist(await history(id)); } catch (e) { setMsg(errText(e)); }
   };
   const doRestore = async (v: Version) => {
-    if (dirty && !window.confirm('Restoring replaces your unsaved changes. Go on?')) return;
+    if (dirty && !await dialogs.confirm('Restoring replaces your unsaved changes. Go on?')) return;
     try { await restore(id, v.version); setPeek(null); setHist(await history(id)); setMsg(`Restored the version from ${when(v.savedAt)}.`); } catch (e) { setMsg(errText(e)); }
   };
 
@@ -122,14 +122,14 @@ export function DocPane({ id }: { id: string }) {
           <span className="fx-small fx-muted axp-md-studio__sub" title={doc.id}>{doc.id} · {fmtTokens(doc.tokens)} tokens · {when(doc.updatedAt)}{doc.updatedBy ? ` · ${doc.updatedBy}` : ''}{ds.saving ? ' · saving…' : ds.savedAt && !dirty ? ' · saved' : ''}</span>
         </div>
         <div className="axp-md-studio__acts">
-          <Switch label="Edit" checked={editable} onChange={(v) => { if (!v && dirty && !window.confirm('Stop editing? Unsaved changes stay in the tab until you close it.')) return; setEditable(id, v); if (v && mode === 'preview') setMode('split'); }} />
+          <Switch label="Edit" checked={editable} onChange={async (v) => { if (!v && dirty && !await dialogs.confirm('Stop editing? Unsaved changes stay in the tab until you close it.')) return; setEditable(id, v); if (v && mode === 'preview') setMode('split'); }} />
           <Segmented label="Show" size="sm" value={mode} onChange={(v) => setMode(v as PaneMode)} options={[{ value: 'preview', label: 'Preview', icon: 'eye' }, { value: 'split', label: 'Split', icon: 'layout', disabled: !editable }, { value: 'edit', label: 'Edit', icon: 'edit', disabled: !editable }]} />
           {editable && <Button tone="primary" size="sm" icon="save" disabled={!dirty || ds.saving || ds.conflict} onClick={() => void saveDoc(id)}>Save</Button>}
           {editable && <IconButton icon="search" label="Find and replace" onClick={() => setFind(!find)} />}
           <IconButton icon="layers" label={`References (${doc.refs.length})`} onClick={() => setShowRefs(!showRefs)} />
           <IconButton icon="clock" label="Version history" onClick={() => void openHistory()} />
           <IconButton icon="chart" label="Context view (tokens per part)" onClick={() => openDoc(id, 'split', 'md-chain')} />
-          <IconButton icon="refresh" label="Reload from disk" onClick={() => { if (dirty && !window.confirm('Reload and drop your unsaved changes?')) return; void loadDoc(id, true); }} />
+          <IconButton icon="refresh" label="Reload from disk" onClick={async () => { if (dirty && !await dialogs.confirm('Reload and drop your unsaved changes?')) return; void loadDoc(id, true); }} />
         </div>
       </div>
 

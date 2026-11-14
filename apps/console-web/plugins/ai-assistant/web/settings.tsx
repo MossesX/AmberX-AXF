@@ -3,7 +3,7 @@
  * providers, behaviour, prompts, usage). The plugin never ships its own settings screen — these are settings-tab panels.
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, useRuntime, dialogs } from '@console/axf/react';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import {
   call, catalogStore, configStore, del, fmtNum, fmtTime, post, put, statusStore,
@@ -373,7 +373,7 @@ export function ProvidersPanel() {
               cfg.defaultProfile !== p.id && { label: 'Make default', icon: 'star', onPick: () => void saveConfig({ defaultProfile: p.id }) },
               { label: cfg.fallback.includes(p.id) ? 'Remove fallback' : 'Use as fallback', icon: cfg.fallback.includes(p.id) ? 'minus' : 'plus', onPick: () => void saveConfig({ fallback: cfg.fallback.includes(p.id) ? cfg.fallback.filter((x) => x !== p.id) : [...cfg.fallback, p.id] }) },
               { label: p.enabled ? 'Disable' : 'Enable', icon: p.enabled ? 'pause' : 'play', onPick: () => void post('profiles', { id: p.id, kind: p.kind, enabled: !p.enabled }).then(refreshAll) },
-              { label: 'Remove', icon: 'trash', onPick: () => { if (confirm(`Remove ${p.label}? Its stored key is deleted.`)) void del(`profiles/${p.id}`).then(refreshAll); } },
+              { label: 'Remove', icon: 'trash', onPick: async () => { if (await dialogs.confirm(`Remove ${p.label}? Its stored key is deleted.`)) void del(`profiles/${p.id}`).then(refreshAll); } },
             ]} />
           </div>
         </div>
@@ -524,7 +524,7 @@ export function SessionsPanel() {
   if (!d) return <p className="fx-muted">{err || 'Loading…'}</p>;
   const pick = d.host || cfg?.sessionHost || 'local';
   const closeOne = async (s: LiveSessionInfo) => {
-    if (!window.confirm(`End the live session for “${s.title || s.id}”? ${s.state === 'running' ? 'Its running reply stops. ' : ''}The conversation itself is kept.`)) return;
+    if (!await dialogs.confirm(`End the live session for “${s.title || s.id}”? ${s.state === 'running' ? 'Its running reply stops. ' : ''}The conversation itself is kept.`)) return;
     await post(`sessions/${s.id}/close`, {}).catch((e: Error) => rt.toast(e.message, 'danger'));
     void load();
   };

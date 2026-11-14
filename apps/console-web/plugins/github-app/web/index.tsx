@@ -9,7 +9,7 @@
  * The browser only ever sees ids, names, expiry times and check results; tokens and keys stay on the server.
  */
 import { useEffect, useState } from 'react';
-import { Button, Chip, Note, Section, TextField } from '@console/axf/react';
+import { Button, Chip, Note, Section, TextField, dialogs } from '@console/axf/react';
 import type { AxfRuntime } from '@console/axf/core';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi } from '@console/plugins';
@@ -168,7 +168,7 @@ function GitHubAppPanel() {
             </p>
             <div className="fx-row fx-row--wrap">
               <Button tone={user?.ok ? 'neutral' : 'primary'} icon="user" disabled={busy} onClick={() => void authorize()}>{user?.ok ? 'Authorize again' : 'Authorize as Brett'}</Button>
-              {user?.ok && <Button icon="x" disabled={busy} onClick={() => { if (window.confirm('Sign the GitHub user token out? Repo creation stops until you authorize again.')) void act('forget', { all: false }); }}>Sign out</Button>}
+              {user?.ok && <Button icon="x" disabled={busy} onClick={async () => { if (await dialogs.confirm('Sign the GitHub user token out? Repo creation stops until you authorize again.')) void act('forget', { all: false }); }}>Sign out</Button>}
             </div>
           </div>
         )}
@@ -186,7 +186,7 @@ function GitHubAppPanel() {
           </ul>
           <div className="fx-row fx-row--wrap">
             <Button icon="refresh" disabled={busy} onClick={() => void act('keep')}>Mint a token now</Button>
-            <Button tone="ghost" icon="trash" disabled={busy} onClick={() => { if (window.confirm('Forget the GitHub App on this console? GitHub falls back to the old token. The app stays on GitHub until you delete it there.')) void act('forget', { all: true }); }}>Forget the app here</Button>
+            <Button tone="ghost" icon="trash" disabled={busy} onClick={async () => { if (await dialogs.confirm('Forget the GitHub App on this console? GitHub falls back to the old token. The app stays on GitHub until you delete it there.')) void act('forget', { all: true }); }}>Forget the app here</Button>
           </div>
         </Section>
       )}

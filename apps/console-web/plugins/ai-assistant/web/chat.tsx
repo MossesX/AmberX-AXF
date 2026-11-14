@@ -5,7 +5,7 @@
  * cards. Used full-page (view "ai-assistant") and inside the chat dialog ("ai-assistant.chat").
  */
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ClipboardEvent, type DragEvent, type KeyboardEvent } from 'react';
-import { Button, Chip, Icon, Markdown, Slot, TabGroup, useAxfState, useRuntime, useSlotFilled } from '@console/axf/react';
+import { Button, Chip, Icon, Markdown, Slot, TabGroup, useAxfState, useRuntime, useSlotFilled, dialogs } from '@console/axf/react';
 import { ChangeBatchCard, readEventStream, type Batch } from '@console/changeBatch';
 import { pluginFetch } from '@console/plugins';
 import { ApprovalsBadge } from '@console/axf/libs/approvals/react';
@@ -370,7 +370,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
                     { label: 'Rename', icon: 'edit', onPick: () => setRenaming(c.id) },
                     { label: 'Tags', icon: 'list', onPick: () => setTagging(c.id) },
                     { label: c.archived ? 'Unarchive' : 'Archive', icon: 'box', onPick: () => void client.patchConversation(c.id, { archived: !c.archived }).then(loadList) },
-                    { label: 'Delete', icon: 'trash', onPick: () => { if (confirm(`Delete "${c.title}"?`)) void client.deleteConversation(c.id).then(() => { if (conv?.id === c.id) newChat(); void loadList(); }); } },
+                    { label: 'Delete', icon: 'trash', onPick: async () => { if (await dialogs.confirm(`Delete "${c.title}"?`)) void client.deleteConversation(c.id).then(() => { if (conv?.id === c.id) newChat(); void loadList(); }); } },
                   ]} />
                 </div>
               </div>

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Button, Checkbox, Chip, Icon, IconButton, Markdown, PriorityTag, SelectField, Segmented, TextField, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, IconButton, Markdown, PriorityTag, SelectField, Segmented, TextField, useRuntime, dialogs } from '@console/axf/react';
 import * as pc from './plan-core.mjs';
 import type { History, ListId, Plan, Step, TextItem } from './plan-core.mjs';
 import { call, deletePlan, fmtWhen, getPlan, KEYS, restorePlan, savePlan, statusInfo, turnIntoBuild, useBusy, useStudio, type SaveResult } from './api';
@@ -174,7 +174,7 @@ export function PlanEditor({ initial, isNew, onClose, onOpen }: { initial: Plan;
       {!isNew && (
         <div className="fx-row axp-plan-studio__danger">
           <Button size="sm" tone="quiet" icon="copy" onClick={() => run(async () => { const copy = pc.normalize({ ...plan, id: undefined, title: `${plan.title} (copy)`, build: null, createdAt: undefined, updatedAt: undefined, version: 1 }); const r = await savePlan(copy, { force: true, note: `Copied from ${plan.id}` }); onOpen(r.plan.id); })}>Duplicate</Button>
-          <Button size="sm" tone="quiet" icon="star" onClick={() => run(async () => { const label = window.prompt('Template name', plan.title); if (!label) return; await call('template-save', { template: pc.asTemplate(plan, label) }); rt.toast(`Template “${label}” saved`, 'success'); })}>Save as template</Button>
+          <Button size="sm" tone="quiet" icon="star" onClick={() => run(async () => { const label = await dialogs.prompt('Template name', plan.title); if (!label) return; await call('template-save', { template: pc.asTemplate(plan, label) }); rt.toast(`Template “${label}” saved`, 'success'); })}>Save as template</Button>
           <Button size="sm" tone="danger" icon="trash" confirm={`Delete “${plan.title}”? Its history stays, so it can be restored.`} onClick={() => run(async () => { await deletePlan(plan.id); onClose(); })}>Delete</Button>
         </div>
       )}

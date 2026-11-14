@@ -3,7 +3,7 @@
  * tools (with test), training jobs, workflows (with runs), memory browser, add-ons and run history.
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react';
-import { Button, Chip, Icon, TabGroup, useEditorSync, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, TabGroup, useEditorSync, useRuntime, dialogs } from '@console/axf/react';
 import { MoreMenu } from './more';
 import { AgentForm, Field, LingoForm, OriginChip, PersonaForm, SkillForm, Text, ToolForm, TrainingForm, WorkflowForm } from './forms';
 import { useData, WIZARDS } from './wizards';
@@ -103,7 +103,7 @@ function CollTab({ coll, cache, status, render, extra, wizardKind, blank = {} }:
     try { const r = await save<Rec>(coll, draft); await refresh(); open(r); rt.toast(`${label} saved`, 'success'); } catch (e) { setMsg((e as Error).message); } finally { setBusy(false); }
   };
   const doDelete = async () => {
-    if (!draft?.id || !confirm(`Delete ${draft.name ?? draft.id}?`)) return;
+    if (!draft?.id || !await dialogs.confirm(`Delete ${draft.name ?? draft.id}?`)) return;
     try { await remove(coll, String(draft.id)); setDraft(null); setSel(''); await refresh(); } catch (e) { setMsg((e as Error).message); }
   };
   return (
@@ -342,7 +342,7 @@ function AgentsTab({ cache, status, wizard }: { cache: Cache; status?: Status; w
                     { label: 'Clone', icon: 'copy', onPick: () => void post<{ item: Agent }>(`agents/${draft.id}/clone`).then(async (r) => { await refresh(); open(r.item); }) },
                     { label: 'Export', icon: 'download', onPick: () => void call(`agents/${draft.id}/export`).then((b) => download(`${draft.id}.agent-addon.json`, b)) },
                     { label: dangerous.has(draft.id) ? 'Dangerous tools: allowed…' : 'Dangerous tools: off…', icon: 'shield', title: 'Which agents get dangerous tools (Settings → Plugins → Agent manager → Safety)', onPick: () => rt.dispatch('settings.open:agent-manager') },
-                    { label: 'Delete', icon: 'trash', onPick: () => { if (confirm(`Delete ${draft.name}? Its memory and training jobs go too.`)) void remove('agents', draft.id!).then(async () => { setDraft(null); setSel(''); await refresh(); }); } },
+                    { label: 'Delete', icon: 'trash', onPick: async () => { if (await dialogs.confirm(`Delete ${draft.name}? Its memory and training jobs go too.`)) void remove('agents', draft.id!).then(async () => { setDraft(null); setSel(''); await refresh(); }); } },
                   ]} />}
                 </div>
               </>
@@ -552,8 +552,8 @@ function MemoryTab({ cache }: { cache: Cache }) {
           <div className="axp-agent-manager__row">
             <span className="fx-small fx-muted fx-grow">Clear memory</span>
             <MoreMenu label="Clear memory" icon="trash" items={[
-              ...['episode', 'knowledge', 'fact'].map((k) => ({ label: `Clear ${k}s`, icon: 'trash', onPick: () => { if (confirm(`Forget every ${k}?`)) void post(`memory/${aid}/clear`, { kind: k }).then(load); } })),
-              { label: 'Erase all', icon: 'trash', onPick: () => { if (confirm(`Erase all of ${agent?.name}'s memory?`)) void post(`memory/${aid}/clear`).then(load); } },
+              ...['episode', 'knowledge', 'fact'].map((k) => ({ label: `Clear ${k}s`, icon: 'trash', onPick: async () => { if (await dialogs.confirm(`Forget every ${k}?`)) void post(`memory/${aid}/clear`, { kind: k }).then(load); } })),
+              { label: 'Erase all', icon: 'trash', onPick: async () => { if (await dialogs.confirm(`Erase all of ${agent?.name}'s memory?`)) void post(`memory/${aid}/clear`).then(load); } },
             ]} />
           </div>
         </>
@@ -613,7 +613,7 @@ export function AddonsTab() {
             <div className="fx-row fx-row--wrap">
               {!a.installed && <Button tone="primary" icon="download" disabled={!!busy} onClick={() => void act(a.id, 'install')}>{busy === a.id ? 'Installing…' : 'Install'}</Button>}
               {a.updateAvailable && <Button tone="primary" icon="refresh" disabled={!!busy} onClick={() => void act(a.id, 'install')}>Update (keeps memory)</Button>}
-              {a.installed && <Button icon="trash" disabled={!!busy} onClick={() => { if (confirm(`Uninstall ${a.name}? Its agents, skills, tools and memory are removed.`)) void act(a.id, 'uninstall'); }}>Uninstall</Button>}
+              {a.installed && <Button icon="trash" disabled={!!busy} onClick={async () => { if (await dialogs.confirm(`Uninstall ${a.name}? Its agents, skills, tools and memory are removed.`)) void act(a.id, 'uninstall'); }}>Uninstall</Button>}
               {a.installed && <Button icon="refresh" disabled={!!busy} onClick={() => void act(a.id, 'install')}>Reinstall</Button>}
               {a.source === 'imported' && !a.installed && <Button icon="minus" onClick={() => void del(`addons/${a.id}`).then(load)}>Forget</Button>}
             </div>

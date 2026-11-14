@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type DragEvent } from 'react';
-import { Button, Checkbox, Chip, Icon, IconButton, Markdown, Segmented, TabGroup, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, IconButton, Markdown, Segmented, TabGroup, useRuntime, dialogs } from '@console/axf/react';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as pc from './plan-core.mjs';
 import type { CatNode, Filter, Plan, SavedView } from './plan-core.mjs';
@@ -163,7 +163,7 @@ function PlansTab({ onOpen }: { onOpen: (p: Plan) => void }) {
   const doBulk = (change: Record<string, unknown>) => run(async () => { await call('bulk', { ids: [...sel], change }); await reload(); rt.toast(`${sel.size} plans changed`, 'success'); });
   const views = state?.views.items ?? [];
   const useView = (v: SavedView) => { setLayout(v.layout as Layout); setF(v.filter); setSort(v.sort); if (v.group) setGroup(v.group); };
-  const saveView = () => run(async () => { const label = window.prompt('Name this view'); if (!label) return; const r = await call<{ views: { items: SavedView[] } }>('view-save', { view: { label, layout, filter: f, sort, group } }); setPart({ views: r.views }); });
+  const saveView = () => run(async () => { const label = await dialogs.prompt('Name this view'); if (!label) return; const r = await call<{ views: { items: SavedView[] } }>('view-save', { view: { label, layout, filter: f, sort, group } }); setPart({ views: r.views }); });
   const exportSel = (format: 'md' | 'json') => run(async () => {
     const r = await call<{ text: string }>('export', { ids: sel.size ? [...sel] : [], format });
     const blob = new Blob([r.text], { type: format === 'md' ? 'text/markdown' : 'application/json' });
@@ -203,7 +203,7 @@ function PlansTab({ onOpen }: { onOpen: (p: Plan) => void }) {
           <label className="fx-search axp-plan-studio__sel"><select aria-label="Set status" value="" onChange={(e) => e.target.value && doBulk({ status: e.target.value })}><option value="">Status…</option>{pc.STATUSES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}</select></label>
           <label className="fx-search axp-plan-studio__sel"><select aria-label="Set priority" value="" onChange={(e) => e.target.value && doBulk({ priority: e.target.value })}><option value="">Priority…</option>{pc.PRIORITIES.map((p) => <option key={p}>{p}</option>)}</select></label>
           <label className="fx-search axp-plan-studio__sel"><select aria-label="Move to category" value="" onChange={(e) => e.target.value && doBulk({ category: e.target.value === '-' ? '' : e.target.value })}><option value="">Category…</option><option value="-">Uncategorized</option>{(state?.categories.paths ?? []).map((p) => <option key={p} value={p}>{p}</option>)}</select></label>
-          <Button size="sm" icon="plus" onClick={() => { const t = window.prompt('Tag to add'); if (t) doBulk({ addTag: t }); }}>Tag</Button>
+          <Button size="sm" icon="plus" onClick={async () => { const t = await dialogs.prompt('Tag to add'); if (t) doBulk({ addTag: t }); }}>Tag</Button>
           <Button size="sm" tone="quiet" icon="x" onClick={() => setSel(new Set())}>Clear</Button>
           {busy && <span className="fx-muted">Working…</span>}
         </div>
@@ -410,10 +410,10 @@ function CategoriesTab() {
   return (
     <div className="fx-stack axp-plan-studio__cats">
       <div className="fx-row fx-row--wrap" role="toolbar" aria-label="Categories">
-        <Button size="sm" icon="plus" disabled={busy} onClick={() => { const name = window.prompt(sel ? `New category inside ${sel}` : 'New top-level category'); if (name) op({ op: 'add', parent: sel, name }); }}>Add{sel ? ' inside' : ''}</Button>
-        <Button size="sm" icon="edit" disabled={!sel || busy} onClick={() => { const name = window.prompt('New name', pc.leafName(sel)); if (name) op({ op: 'rename', path: sel, name }); }}>Rename</Button>
-        <Button size="sm" icon="move" disabled={!sel || busy} onClick={() => { const into = window.prompt(`Move ${sel} into (empty = top level)`, pc.parentPath(sel)); if (into !== null) op({ op: 'move', path: sel, into }); }}>Move</Button>
-        <Button size="sm" icon="shuffle" disabled={!sel || busy} onClick={() => { const into = window.prompt(`Merge ${sel} into`, ''); if (into) op({ op: 'merge', path: sel, into }); }}>Merge</Button>
+        <Button size="sm" icon="plus" disabled={busy} onClick={async () => { const name = await dialogs.prompt(sel ? `New category inside ${sel}` : 'New top-level category'); if (name) op({ op: 'add', parent: sel, name }); }}>Add{sel ? ' inside' : ''}</Button>
+        <Button size="sm" icon="edit" disabled={!sel || busy} onClick={async () => { const name = await dialogs.prompt('New name', pc.leafName(sel)); if (name) op({ op: 'rename', path: sel, name }); }}>Rename</Button>
+        <Button size="sm" icon="move" disabled={!sel || busy} onClick={async () => { const into = await dialogs.prompt(`Move ${sel} into (empty = top level)`, pc.parentPath(sel)); if (into !== null) op({ op: 'move', path: sel, into }); }}>Move</Button>
+        <Button size="sm" icon="shuffle" disabled={!sel || busy} onClick={async () => { const into = await dialogs.prompt(`Merge ${sel} into`, ''); if (into) op({ op: 'merge', path: sel, into }); }}>Merge</Button>
         <Button size="sm" tone="danger" icon="trash" disabled={!sel || busy} confirm={`Remove ${sel}? Only an empty category can go.`} onClick={() => op({ op: 'remove', path: sel })}>Remove</Button>
       </div>
       {error && <p className="fx-error" role="alert">{error}</p>}

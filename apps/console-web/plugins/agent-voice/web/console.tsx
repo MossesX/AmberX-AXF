@@ -4,7 +4,7 @@
  * Plus the settings panels (Settings → Plugins → Agent voice): microphone, cloud voices, global pronunciations.
  */
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { Button, Chip, Container, Icon, IconButton, Note, Segmented, SelectField, Slider, Switch, TabGroup, TextField, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Icon, IconButton, Note, Segmented, SelectField, Slider, Switch, TabGroup, TextField, useRuntime, dialogs } from '@console/axf/react';
 import {
   applyPreset, AUTO_SPEAK, CODE_MODES, DEFAULT_MIC, EMOJI_MODES, estimateMs, exportProfiles, INTERRUPT, LIGHT_LABEL, MIC_MODES, narrate, NUMBER_MODES, PRESETS,
   READ_MODES, URL_MODES, type MicSettings, type Narrator, type Pronunciation, type VoiceProfile,
@@ -120,7 +120,7 @@ function AgentActions({ agentId }: { agentId: string }) {
           {others.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
         </select>
       )}
-      <IconButton icon="refresh" label="Reset to defaults" onClick={() => { if (confirm(`Reset ${agentName(agentId)}'s voice to the defaults?`)) void removeProfile(agentId); }} />
+      <IconButton icon="refresh" label="Reset to defaults" onClick={async () => { if (await dialogs.confirm(`Reset ${agentName(agentId)}'s voice to the defaults?`)) void removeProfile(agentId); }} />
     </span>
   );
 }

@@ -90,8 +90,12 @@ function show(): void {
   if (field && flag('--fx-tc-dialogs-select-text', true)) requestAnimationFrame(() => field.select());
 }
 
+/** A confirm that deletes, removes, resets or drops something reads as destructive unless the caller says otherwise. */
+const DESTRUCTIVE = /^\s*(delete|remove|erase|forget|uninstall|reset|clear|purge|wipe|drop|discard|end the|sign .{0,40}out|restoring replaces|reload and drop)\b/i;
+
 function ask<T>(kind: TcDialogKind, message: string, defaultValue: string | undefined, opts: DialogOptions = {}): Promise<T> {
-  return new Promise<T>((resolve) => { queue.push({ kind, message, defaultValue, opts, resolve: resolve as (v: unknown) => void }); show(); });
+  const o = kind === 'confirm' && opts.destructive === undefined && DESTRUCTIVE.test(message) ? { ...opts, destructive: true } : opts;
+  return new Promise<T>((resolve) => { queue.push({ kind, message, defaultValue, opts: o, resolve: resolve as (v: unknown) => void }); show(); });
 }
 
 /** The open dialog and the ones waiting (s19 API). */

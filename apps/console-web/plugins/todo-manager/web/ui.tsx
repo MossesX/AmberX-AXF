@@ -5,7 +5,7 @@
  * Framework controls only (they follow the app's button, style theme and spacing); plugin CSS lays things out.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Container, Field, Icon, IconButton, Note, Section, Segmented, SelectField, Switch, TextField, useAxfState, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Field, Icon, IconButton, Note, Section, Segmented, SelectField, Switch, TextField, useAxfState, useRuntime, dialogs } from '@console/axf/react';
 import {
   CORE_PARTS, DEFAULT_VIEW, FIELD_TYPES, KINDS, TONES, checklistText, childLists, dateInput, fromDateInput, groupEntries, listPaths, progress, readView, sortEntries, visible, words,
   type CorePart, type CoreRule, type Entry, type EntryKind, type FieldDef, type GroupBy, type ListView, type SortBy, type TodoList, type Tone, type TypeDef, type TypeSchema,
@@ -69,7 +69,7 @@ function ListsColumn() {
           <option value="">Pick a list</option>
           {paths.map((p) => <option key={p.id} value={String(p.id)}>{p.path}</option>)}
         </select>
-        <IconButton icon="plus" label="New list" onClick={() => { const t = window.prompt('List name'); if (t?.trim()) void createList(t.trim()); }} />
+        <IconButton icon="plus" label="New list" onClick={async () => { const t = await dialogs.prompt('List name'); if (t?.trim()) void createList(t.trim()); }} />
       </div>
       <ul className="axp-todo__tree" role="tree">
         {childLists(s.lists, null).map((l) => <ListRow key={l.id} l={l} depth={0} />)}
@@ -126,7 +126,7 @@ function OpenList() {
         <Button size="sm" tone="primary" icon={types.task.icon} onClick={() => newEntry('task')}>{types.task.label}</Button>
         <MoreMenu label="Add something else" items={[
           ...KINDS.filter((k) => k !== 'task').map((k) => ({ id: k, label: `New ${types[k].label.toLowerCase()}`, icon: types[k].icon, onSelect: () => newEntry(k) })),
-          { id: 'group', label: 'New group…', icon: 'folder', onSelect: () => { const t = window.prompt('Group name'); if (t?.trim()) void createList(t.trim(), open.list.id); } },
+          { id: 'group', label: 'New group…', icon: 'folder', onSelect: async () => { const t = await dialogs.prompt('Group name'); if (t?.trim()) void createList(t.trim(), open.list.id); } },
         ]} />
         <input className="fx-input axp-todo__search" type="search" aria-label="Search" value={v.q} onChange={(e) => setView({ q: e.target.value })} placeholder="Search title, text or tag" />
         <Segmented size="sm" label="View" value={v.mode} onChange={(mode) => setView({ mode })} options={[{ value: 'tree', label: '', icon: 'list', title: 'Tree' }, { value: 'grid', label: '', icon: 'grid', title: 'Grid' }]} />
@@ -175,7 +175,7 @@ function ListTitle({ l }: { l: TodoList }) {
       <ToneMenu l={l} />
       <MoreMenu label="More for this list" items={[
         { id: 'export', label: 'Export as Markdown', icon: 'download', onSelect: () => void exportList(l.id) },
-        { id: 'delete', label: 'Delete this list…', icon: 'trash', onSelect: () => { if (window.confirm(`Delete “${l.title}” with its groups and every entry in it?`)) void deleteList(l.id); } },
+        { id: 'delete', label: 'Delete this list…', icon: 'trash', onSelect: async () => { if (await dialogs.confirm(`Delete “${l.title}” with its groups and every entry in it?`)) void deleteList(l.id); } },
       ]} />
     </div>
   );
@@ -213,8 +213,8 @@ function GroupActions({ g, onAdd }: { g: TodoList; onAdd: (k: EntryKind, listId:
   return (
     <span className="axp-todo__groupacts">
       <IconButton icon="plus" label={`Add a task to ${g.title}`} onClick={() => onAdd('task', g.id)} />
-      <IconButton icon="edit" label="Rename group" onClick={() => { const t = window.prompt('Group name', g.title); if (t?.trim()) void updateList(g.id, { title: t.trim() }); }} />
-      <IconButton icon="trash" label="Delete group" onClick={() => { if (window.confirm(`Delete the group “${g.title}” and everything in it?`)) void deleteList(g.id); }} />
+      <IconButton icon="edit" label="Rename group" onClick={async () => { const t = await dialogs.prompt('Group name', g.title); if (t?.trim()) void updateList(g.id, { title: t.trim() }); }} />
+      <IconButton icon="trash" label="Delete group" onClick={async () => { if (await dialogs.confirm(`Delete the group “${g.title}” and everything in it?`)) void deleteList(g.id); }} />
     </span>
   );
 }
@@ -321,7 +321,7 @@ function SelectionBar({ ids, clear }: { ids: number[]; clear: () => void }) {
       </select>
       <MoreMenu label="More for the selection" items={[
         { id: 'dup', label: 'Duplicate', icon: 'copy', onSelect: async () => after(await bulk(ids, { action: 'duplicate' }), 'duplicated') },
-        { id: 'delete', label: 'Delete…', icon: 'trash', onSelect: async () => { if (window.confirm(`Delete ${ids.length} entr${ids.length === 1 ? 'y' : 'ies'} (and their subtasks)?`)) after(await bulk(ids, { action: 'delete' }), 'deleted'); } },
+        { id: 'delete', label: 'Delete…', icon: 'trash', onSelect: async () => { if (await dialogs.confirm(`Delete ${ids.length} entr${ids.length === 1 ? 'y' : 'ies'} (and their subtasks)?`)) after(await bulk(ids, { action: 'delete' }), 'deleted'); } },
       ]} />
       <IconButton icon="x" label="Clear the selection" onClick={clear} />
       {note && <span className="fx-muted">{note}</span>}
@@ -377,7 +377,7 @@ export function EntryEditor({ props, close }: { props: Record<string, unknown>; 
       </div>
       {error && <Note tone="danger">{error}</Note>}
       <div className="fx-row fx-row--end axp-todo__editacts">
-        {id != null && <Button tone="danger" icon="trash" onClick={async () => { if (window.confirm('Delete this entry and its subtasks?')) { await deleteEntry(id); close(); } }}>Delete</Button>}
+        {id != null && <Button tone="danger" icon="trash" onClick={async () => { if (await dialogs.confirm('Delete this entry and its subtasks?')) { await deleteEntry(id); close(); } }}>Delete</Button>}
         {id != null && t.core.subtasks !== 'hidden' && <Button icon="plus" onClick={() => { close(); rt.openDialog(ENTRY_DIALOG, { kind: 'task', listId: d.listId, parentId: id }); }}>Subtask</Button>}
         {error && <Button onClick={() => void save(true)} disabled={busy}>Save as draft</Button>}
         <Button onClick={close}>Cancel</Button>

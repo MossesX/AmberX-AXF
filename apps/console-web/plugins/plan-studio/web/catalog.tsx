@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Icon, IconButton, Segmented, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, IconButton, Segmented, useRuntime, dialogs } from '@console/axf/react';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as pc from './plan-core.mjs';
 import type { CatalogEntry, CatalogFeature, FeatureState, Plan } from './plan-core.mjs';
@@ -125,7 +125,7 @@ function EntryRow({ e, tree, onPlanThis, onAddTo, onOpenPlan }: { e: CatalogEntr
             ))}
             {feats.length > 120 && <li className="fx-muted">…{feats.length - 120} more (filter above)</li>}
           </ul>
-          <div className="fx-row"><Button size="sm" icon="plus" onClick={() => onAddTo(e, { id: '', title: window.prompt(`New feature for ${e.name}`) || '', state: 'idea', source: 'plan' })}>Add a planned feature</Button></div>
+          <div className="fx-row"><Button size="sm" icon="plus" onClick={async () => onAddTo(e, { id: '', title: await dialogs.prompt(`New feature for ${e.name}`) || '', state: 'idea', source: 'plan' })}>Add a planned feature</Button></div>
         </div>
       )}
     </li>

@@ -3,7 +3,7 @@
  * Tabable (plugin.json → "tabable"): a host app can show its page as a tab of its own; the console shows
  * that page alone (embed@1 page `view:todo-manager`), so `TodoView` drops its page heading there.
  */
-import { useRuntime } from '@console/axf/react';
+import { useRuntime, dialogs } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
@@ -34,7 +34,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('todo-manager.edit', (_a, ctx) => { const e = entryOf(ctx?.payload); if (e) rt.openDialog(ENTRY_DIALOG, { id: e.id }); }, { label: 'Edit entry', searchable: false });
     rt.actions.register('todo-manager.done', (_a, ctx) => { const e = entryOf(ctx?.payload); if (e) void saveEntry(e.id, { status: e.status === 'done' ? 'open' : 'done' }); }, { label: 'Done / not done', searchable: false });
     rt.actions.register('todo-manager.subtask', (_a, ctx) => { const e = entryOf(ctx?.payload); if (e) rt.openDialog(ENTRY_DIALOG, { kind: 'task', listId: e.listId, parentId: e.id }); }, { label: 'Add a subtask', searchable: false });
-    rt.actions.register('todo-manager.delete', (_a, ctx) => { const e = entryOf(ctx?.payload); if (e && window.confirm(`Delete “${e.title}” and its subtasks?`)) void deleteEntry(e.id); }, { label: 'Delete entry', searchable: false });
+    rt.actions.register('todo-manager.delete', async (_a, ctx) => { const e = entryOf(ctx?.payload); if (e && await dialogs.confirm(`Delete “${e.title}” and its subtasks?`)) void deleteEntry(e.id); }, { label: 'Delete entry', searchable: false });
     rt.actions.register('todo-manager.reload', () => void loadAll(), { label: 'Reload todos' });
   },
   views: { 'todo-manager': { title: 'Todos', icon: 'list', keywords: ['todo', 'tasks', 'notes', 'checklist', 'lists'], render: () => <Page /> } },

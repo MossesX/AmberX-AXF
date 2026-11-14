@@ -5,7 +5,7 @@
  * Small on purpose: no window or dock engine, framework controls only, theme tokens only.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, IconButton, Icon, Markdown, Note, Segmented, SelectField, Switch, TextField } from '@console/axf/react';
+import { Button, IconButton, Icon, Markdown, Note, Segmented, SelectField, Switch, TextField, dialogs } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -49,7 +49,7 @@ function NotesView() {
   useEffect(() => { const t = setTimeout(() => void load(q), q ? 250 : 0); return () => clearTimeout(t); }, [q, load]);
 
   const openNote = async (path: string) => {
-    if (editing && open && draft !== open.content && !window.confirm(`Leave “${open.title}” without saving your changes?`)) return;
+    if (editing && open && draft !== open.content && !await dialogs.confirm(`Leave “${open.title}” without saving your changes?`)) return;
     try { const d = await api.call<NoteDoc>(`note?path=${enc(path)}`); setOpen(d); setDraft(d.content); setEditing(false); setConflict(false); setError(''); } catch (e) { setError(errText(e)); }
   };
 
@@ -87,8 +87,8 @@ function NotesView() {
     await load(); await openNote(d.path);
   });
 
-  const remove = () => {
-    if (!open || !window.confirm(`Delete “${open.title}” (${open.path})? The hub keeps its history, but it leaves the notes.`)) return;
+  const remove = async () => {
+    if (!open || !await dialogs.confirm(`Delete “${open.title}” (${open.path})? The hub keeps its history, but it leaves the notes.`)) return;
     void run(async () => { await api.del(`note?path=${enc(open.path)}&if_version=${enc(open.version)}`); setOpen(null); setEditing(false); await load(); });
   };
 
@@ -161,7 +161,7 @@ function NotesView() {
                   <span className="fx-small fx-muted axp-notes-browser__sub">{open.path} · {when(open.updatedAt)}{open.updatedBy ? ` · ${open.updatedBy}` : ''}</span>
                 </div>
                 <div className="axp-notes-browser__acts">
-                  <Switch label="Edit" checked={editing} onChange={(v) => { if (!v && draft !== open.content && !window.confirm('Drop your changes?')) return; setEditing(v); if (!v) setDraft(open.content); }} />
+                  <Switch label="Edit" checked={editing} onChange={async (v) => { if (!v && draft !== open.content && !await dialogs.confirm('Drop your changes?')) return; setEditing(v); if (!v) setDraft(open.content); }} />
                   {editing && <Button tone="primary" icon="save" disabled={busy || draft === open.content} onClick={() => void save()}>Save</Button>}
                   <IconButton icon="edit" label="Rename" disabled={busy || editing} onClick={() => setAsk({ kind: 'rename', value: open.name, folder: open.folder })} />
                   <SelectField label="Move to" value={open.folder} options={folderOptions} onChange={(v) => void moveTo(v)} />

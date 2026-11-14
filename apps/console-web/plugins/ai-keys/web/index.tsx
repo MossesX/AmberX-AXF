@@ -11,7 +11,7 @@
  * `ai-keys.open`, search or Settings → Plugins → AI keys. All runtime contributions, so uninstalling removes them.
  */
 import { useEffect, useState } from 'react';
-import { Button, IconButton, Note, Section, Segmented, TextField, useRuntime } from '@console/axf/react';
+import { Button, IconButton, Note, Section, Segmented, TextField, useRuntime, dialogs } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -71,7 +71,7 @@ function KeyItem({ k, busy, run }: { k: KeyRow; busy: boolean; run: (fn: () => P
         {name === null
           ? <IconButton icon="edit" label="Rename" disabled={busy} onClick={() => setName(k.label)} />
           : <Button size="sm" icon="save" disabled={busy || !name.trim()} onClick={() => { run(() => api.patch(`keys/${k.id}`, { label: name })); setName(null); }}>Save name</Button>}
-        <IconButton icon="trash" label="Remove" disabled={busy} onClick={() => { if (window.confirm(`Remove ${k.label}?`)) run(() => api.del(`keys/${k.id}`)); }} />
+        <IconButton icon="trash" label="Remove" disabled={busy} onClick={async () => { if (await dialogs.confirm(`Remove ${k.label}?`)) run(() => api.del(`keys/${k.id}`)); }} />
       </div>
     </li>
   );
