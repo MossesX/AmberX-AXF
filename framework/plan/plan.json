@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-11-07T09:24:24.007Z",
+ "generatedAt": "2026-11-14T18:45:40.235Z",
  "statuses": [
   "built",
   "partial",
@@ -4359,6 +4359,90 @@
    "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
+   "id": "f.appearance.hubskinonly",
+   "title": "Skin from axHub only: Settings → Appearance → Get my skin only from axHub (console) draws the hub-wide skin and axHub's tokens alone, drives the appearance lock (controls locked, \"Following axHub\"), keeps the app's own picks for when it is off",
+   "area": "Foundations",
+   "group": "Modules, extension points, placeholders",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P3",
+   "wave": 1,
+   "effort": "",
+   "summary": "skin-rules.mjs hubOnlyLook, runtime HUB_SKIN_ONLY_KEY / appearance.hubskin; reachable by settings.set, console.settings, voice; default off; Kotlin twin deferred",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "f.appearance.hubskinonly"
+   ],
+   "modules": [
+    "app-console"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "foundations",
+    "lib"
+   ],
+   "notes": "Nov 13 2026 (build console-skin-axhub-only): console Settings → Appearance → Get my skin only from axHub (default off). On: the look is composed from the hub-wide skin over the default snapshot only (skin-rules.mjs hubOnlyLook, fixture skin.json scopes.hubOnly); own skin, overrides, colour pick, UI/plugin scopes, device tweaks and plugin overrides are kept, not drawn; the switch drives the appearance lock (reason hub) so every look control is locked with \"Following axHub\"; hub changes apply live. Reachable by the setting (search, console.settings, settings.set:axf.lock.hubskin), the appearance.hubskin action and voice (\"lock the console to the axHub skin\", Python twin). Kotlin twin deferred (PORTING.md).",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-11-14",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
+  },
+  {
+   "id": "f.appearance.hubskinoverride",
+   "title": "Override axHub: the switch under Get my skin only from axHub (one or the other); while axHub-only is on every skin and asset editor is greyed out under a lock note with a \"Click here to override\" link; one confirm unlocks editing and edited parts are marked Overridden",
+   "area": "Foundations",
+   "group": "Modules, extension points, placeholders",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P3",
+   "wave": 1,
+   "effort": "",
+   "summary": "runtime HUB_SKIN_OVERRIDE_KEY / HUB_SKIN_OVERRIDDEN_KEY / appearance.hubskin.override; react HubSkinLockNote / HubSkinLockArea; reachable by settings.set, console.settings, the action, voice; default off; Kotlin twin deferred",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "f.appearance.hubskinoverride"
+   ],
+   "modules": [
+    "app-console"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "foundations",
+    "lib"
+   ],
+   "notes": "Nov 13 2026 (build skin-axhub-override-switch-greyed-out): console Settings → Appearance → Override axHub, under Get my skin only from axHub (default off). One or the other whichever way either is set (runtime onChange: Override on clears axf.lock.hubskin, axHub-only on clears axf.lock.hubskin.override and the overridden marks). While axHub-only is on every skin and asset editor is disabled, not hidden (HubSkinLockArea: Theme manager rows, Theme editor, Asset studio, nav style, context menu designer; the Appearance panel, skin picker, every-asset picker and plugin themes through the lock), each under HubSkinLockNote with Brett's wording and a Click here to override link; the link and the switch ask one confirm. Edits under Override are recorded in axf.lock.hubskin.overridden and shown as Overridden chips. Reachable by the setting (search, console.settings, settings.set:axf.lock.hubskin.override), the appearance.hubskin.override action and voice (\"override the axHub skin\", Python twin). Kotlin twin deferred (PORTING.md).",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-11-14",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
    "id": "f.tokens",
    "title": "Tokens are the only way to style: no literal colors/sizes/fonts in any framework component",
    "area": "Foundations",
@@ -4406,6 +4490,53 @@
    "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
+   "id": "f.tokenregistry",
+   "title": "Token registry and Skin editor: every token registered (element, area, state, scheme, level, description, default, source), new UIs register theirs in the manifest, CI fails unregistered or unread tokens; Skin editor sandboxes any UI with live hot render, snapshot chain with revert, export as a new skin; full API",
+   "area": "Foundations",
+   "group": "Theme, layout and UI contracts",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "token-registry@1 + skin-snapshot@1 (core/engines/token-registry.mjs), console plugin skin-editor",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "axf-kernel"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "f.tokenregistry"
+   ],
+   "modules": [
+    "axf-kernel"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "foundations",
+    "lock"
+   ],
+   "notes": "Build token-registry-skin-editor-live-sandbox (Nov 13 2026): framework/schemas/token-registry.json, spec/check-token-registry.mjs, console plugin skin-editor (web + Python twin), REST / MCP / CLI / voice. Kotlin twin deferred (PORTING.md).",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-11-14",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
+  },
+  {
    "id": "f.tokenset",
    "title": "Complete token vocabulary fixed now (color, type, shape, space, elevation, motion, opacity, z-index, icon, breakpoints)",
    "area": "Foundations",
@@ -4441,7 +4572,7 @@
     "foundations",
     "lock"
    ],
-   "notes": "",
+   "notes": "component-tokens@1 (Nov 13 2026, build own-token-sets-for-grids-and-tab-groups): grids / tables (--fx-grid-*, 32 tokens) and tab groups (--fx-tab-*, 58 tokens) have their own token families (core/engines/component-tokens.mjs: kind, level, description, default = today's general token), set by the style theme (grid.* / tabs.*), control@1 tokens.style, and per instance (axf.tokens.instances, tokens.instances; Restore previous edit / Restore from axHub). CI spec/check-component-tokens.mjs. Kotlin twin deferred.",
    "source": "catalog",
    "history": [
     {
@@ -10126,6 +10257,53 @@
    "modelReason": "Default: Opus 5.5"
   },
   {
+   "id": "ui.opacity.surfaces",
+   "title": "Surface transparency tokens: every dialog, settings window, panel, menu, toolbar and banner reads its own opacity",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "Each kind of surface (dialog, settings window, panel, menu, toolbar, banner) has its own opacity token, so a skin or a person can make one see-through with a frosted backdrop without touching the others.",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "axf-ui"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "ui.opacity.surfaces"
+   ],
+   "modules": [
+    "axf-ui"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "core"
+   ],
+   "notes": "Style theme opacityDialog / opacitySettings / opacityPanel / opacityMenu / opacityToolbar / opacityBanner (default 1 = opaque; below 1 = see-through + frosted backdrop) → --fx-opacity-<kind> + --fx-backdrop-<kind> (engines/theme.ts SURFACE_KINDS); every surface root in axf.css reads its own; Token Control tokens.style + Element Explorer; per window: Window settings → Background (WindowSettings.surface); check-theme rule surface fails on a surface background without an --fx-opacity-* token. Kotlin twin deferred.",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-11-14",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
+  },
+  {
    "id": "ui.icons",
    "title": "Icon registry (Material Symbols + custom packs, swappable as an asset)",
    "area": "Kernel",
@@ -14611,7 +14789,7 @@
     "kernel",
     "lib"
    ],
-   "notes": "",
+   "notes": "AmberX shell (app code, not this framework module) has one always-on draw-over-apps overlay since Nov 13 2026: toolbar, approval bar, full-screen browser (ApprovalOverlay + ApprovalOverlayRules / OverlayPageRules, JUnit). The framework capability stays a placeholder (Android on hold).",
    "source": "catalog",
    "history": [
     {
@@ -17276,7 +17454,11 @@
    "warnings": [],
    "recommendations": [
     "Bundle with: Streaming build logs (cx.buildengine.logs)",
-    "Bundle with: Build queue + history (cx.buildengine.queue)"
+    "Bundle with: Build queue + history (cx.buildengine.queue)",
+    "Bundle with: Shipped manifests: every landed build's prompt, brief, models, steps, commit, files, tests and cost in Shipped features (shipped-manifest@1) (cx.buildengine.shipped)",
+    "Bundle with: VPS hard build limit: the host refuses the N+1st headless build, every build in a CPU/memory-capped systemd slice, docker test runs capped (build-limit@1) (cx.buildengine.hardlimit)",
+    "Bundle with: Build names fit the VPS tools: every new build id is at most 40 characters (build-id@1), the full title stays the display name, older long ids get a short alias that every command and build_land accept (cx.buildengine.buildids)",
+    "Bundle with: Section owners: every section that acts on its own has one employee who posts its key events in the group chat (crew-sections@1, framework/cli/crew-say.mjs, CI owner check) (cx.buildengine.sectionowners)"
    ],
    "previews": [],
    "screenshots": [],
@@ -17376,6 +17558,178 @@
    "history": [
     {
      "at": "2026-10-17",
+     "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
+  },
+  {
+   "id": "cx.buildengine.shipped",
+   "title": "Shipped manifests: every landed build's prompt, brief, models, steps, commit, files, tests and cost in Shipped features (shipped-manifest@1)",
+   "area": "Console app",
+   "group": "Console plumbing",
+   "kind": "task",
+   "parent": "cx.buildengine",
+   "status": "built",
+   "priority": "P3",
+   "wave": 1,
+   "effort": "",
+   "summary": "Suggested together with Build-engine client: run init / validate / new-asset / new-module locally or over HTTP/MCP on the VPS.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "cx.buildengine"
+   ],
+   "catalog": [
+    "cx.buildengine.shipped"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "console",
+    "suggested"
+   ],
+   "notes": "Orchestrator tick ships each landed build's manifest; ledger shows it per entry; API/MCP/CLI/voice/deep link; backfill --since. Kotlin twin deferred.",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-11-14",
+     "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
+  },
+  {
+   "id": "cx.buildengine.hardlimit",
+   "title": "VPS hard build limit: the host refuses the N+1st headless build, every build in a CPU/memory-capped systemd slice, docker test runs capped (build-limit@1)",
+   "area": "Console app",
+   "group": "Console plumbing",
+   "kind": "task",
+   "parent": "cx.buildengine",
+   "status": "built",
+   "priority": "P3",
+   "wave": 1,
+   "effort": "",
+   "summary": "Suggested together with Build-engine client: run init / validate / new-asset / new-module locally or over HTTP/MCP on the VPS.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "cx.buildengine"
+   ],
+   "catalog": [
+    "cx.buildengine.hardlimit"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "console",
+    "suggested"
+   ],
+   "notes": "framework/cli/build-limit.mjs: launch gate (exit 3 at the limit, default 8, one config file) in claude-headless.sh, inner run gate before claude -p, swarm runner; axf-builds.slice + 30 s enforcer timer (adopt strays, docker test-run limits); only Queued builds take slots; console/REST/MCP/CLI/voice read, Brett-only set. Host-only: no Kotlin twin.",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-11-14",
+     "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
+  },
+  {
+   "id": "cx.buildengine.buildids",
+   "title": "Build names fit the VPS tools: every new build id is at most 40 characters (build-id@1), the full title stays the display name, older long ids get a short alias that every command and build_land accept",
+   "area": "Console app",
+   "group": "Console plumbing",
+   "kind": "task",
+   "parent": "cx.buildengine",
+   "status": "built",
+   "priority": "P3",
+   "wave": 1,
+   "effort": "",
+   "summary": "Suggested together with Build-engine client: run init / validate / new-asset / new-module locally or over HTTP/MCP on the VPS.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "cx.buildengine"
+   ],
+   "catalog": [
+    "cx.buildengine.buildids"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "console",
+    "suggested"
+   ],
+   "notes": "framework/core/build-id.mjs: ids ≤ 40 chars (^[a-z0-9][a-z0-9-]{0,39}$), filler words dropped, cut at a dash, -2/-3 on a collision; used by request, orchestrator add/import/harvest, Pending and Plan Studio. Legacy long ids get an alias (pipeline.mjs aliases, the tick for live builds); land-alias links <worktrees>/<alias> and claude/<alias> for build_land. Kotlin twin deferred.",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-11-14",
+     "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
+  },
+  {
+   "id": "cx.buildengine.sectionowners",
+   "title": "Section owners: every section that acts on its own has one employee who posts its key events in the group chat (crew-sections@1, framework/cli/crew-say.mjs, CI owner check)",
+   "area": "Console app",
+   "group": "Console plumbing",
+   "kind": "task",
+   "parent": "cx.buildengine",
+   "status": "built",
+   "priority": "P3",
+   "wave": 1,
+   "effort": "",
+   "summary": "Suggested together with Build-engine client: run init / validate / new-asset / new-module locally or over HTTP/MCP on the VPS.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "cx.buildengine"
+   ],
+   "catalog": [
+    "cx.buildengine.sectionowners"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "console",
+    "suggested"
+   ],
+   "notes": "11 sections (orchestrator, dispatcher, watchdog, shipped, account failover, landing, merge queue, nightly deploy, backups, health monitor, notification rules), one owner each from the crew; registry agents/sections.json, reassign in Settings → Agent swarm → Section owners; posts start/done/failed/blocked/waiting as the owner, respects the chat switch, deduped; crew-say.mjs check in CI. Kotlin twin deferred.",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-11-14",
      "text": "Imported from the feature catalog (suggestion)"
     }
    ],

@@ -27,7 +27,7 @@ what it needs, and what it answers are decided here once, so the docs, the tools
 | Field | Meaning |
 |---|---|
 | `op` | `list` · `get` · `set` · `reset` · `add` · `remove` · `act` |
-| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `tokens.nav` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` · `pass.scopes` · `plugins.commands` · `plugins.reads` · `console.control` |
+| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `tokens.nav` · `tokens.instances` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` · `pass.scopes` · `plugins.commands` · `plugins.reads` · `console.control` |
 | `path` | the token id (`navWidth`, `accent`, `scale.md`, `button.radius@amber`) or the record id; `get`/`set`/`remove`/`act` need it, `reset` without one resets the whole target |
 | `value` | what to set (a token value, or the fields to change on a record) · the new record for `add` |
 | `action` + `input` | the verb for `act` and what it wants (`done`, `move {list}`, `approve {phase}`, `step {step, done}` …) |
@@ -46,6 +46,11 @@ Effects: `list`/`get` read · `set`/`reset`/`add`/`act` write · `remove` destru
 and range. The static targets (theme, style, layout, typography, density, sizing) are listed by the registry itself; `look`,
 `custom` and `slots` are listed by the running app (look@1 ids, asset-customize@1 tokens, the appearance slot types).
 `tokens.slots` set = `runtime.swap(type, id)`, the hot-swap.
+`tokens.style` also carries the component token families (component-tokens@1, `core/engines/component-tokens.mjs`): `grid.<token>` and
+`tabs.<token>` rows with their CSS variable, level and description (`set tokens.style tabs.pillsActiveBg accent2`).
+`tokens.instances` (same build) is one tab row's or one grid's own values on top of them: path `<grid|tabs>.<instance>[.<token>]`;
+`set` a token, `reset` a token / a whole instance / everything, `act <family>.<instance> restore-previous` (the values before the
+last edit) or `restore-hub` (drop the instance's values so it follows the shared look). One setting, `axf.tokens.instances`.
 `tokens.nav` (nav-style@1, `core/engines/navstyle-rules.mjs`) tunes the navigation menu with sub menus: colours, font, icons,
 density, width, the sub-menu animation, behaviour, pinned / hidden / ordered items and `accents.<item id>`; only navs that opt in
 (nav-menu `navStyle: true`) read it.
@@ -101,7 +106,7 @@ changes one (`consoleFieldValue` parses on/off/toggle, numbers in range, choices
 a refused value is the ack's message). The catalog is re-sent when a setting changes, so a `get` right after a set reads the new value.
 Find by content (same build): Plan Studio's `plan-studio.focus:<focus>` opens a plan down to one item: `<plan id>`, `<plan id>/<item ref>`
 (step id, `risks:2`, comment id, `body:4`) or words — "the plan about X, the step that mentions Y" — that its `find` resolves to the best
-hit. REST `GET /api/plugins/plan-studio/find?q=|plan=&item=&kind=` (also `plugins.reads plan-studio/find`, MCP `plan-studio_find`,
+hit. REST `GET /api/plugins/plan-studio/find?q=|plan=&item=&kind=` (also `plugins.reads plan-studio/find`, MCP `plan-studio_find`, <!-- axf-plugin:plan-studio -->
 `axf plan-studio find`), CLI `plans.mjs find <words>`; every hit carries its `focus`, and `console_open "plan-studio <focus or words>"` /
 `console_show` open it. <!-- axf-plugin:plan-studio -->
 Focus on a screen: `act open` on `console.screens` takes `input.focus` or a path "<screen id or title> <rest>" ("build-orchestrator
