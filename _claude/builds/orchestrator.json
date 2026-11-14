@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:34:10.088Z",
+ "updatedAt": "2026-11-14T04:34:28.213Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137373,7 +137373,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:32:35.166Z",
+   "updatedAt": "2026-11-14T04:34:19.031Z",
    "builtAt": "",
    "notes": [
     {
@@ -137736,6 +137736,25 @@
      "note": "",
      "uid": "st-mwfwrjq201b877",
      "createdAt": "2026-11-14T04:31:10.254Z"
+    },
+    {
+     "id": "s20",
+     "text": "Session recall video: AmberX automatically records the real audio of every voice session and transcribes it. Story: someone remembers talking about something but can't remember which session it was. They ask Amber to search, and it searches the transcripts of every recorded session, finds the right moment, shows that bit of the transcript and plays back the original audio from that exact spot. Message: you never lose an idea you said out loud. Show the recording indicator and settings, and only record people who know they're being recorded. Use the real recorder and transcripts where they exist; label staged parts as a preview. Also cut a 60-second version.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfwvlfe01g27f",
+     "createdAt": "2026-11-14T04:34:19.032Z"
     },
     {
      "id": "s7",
