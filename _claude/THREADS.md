@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 01:45 UTC · `console-app-land-parts-1-4-build-apk` s12 done (all) · orchestrator
 - 2026-11-14 01:46 UTC · `console-app-land-parts-1-4-build-apk` note (all) · orchestrator
 - 2026-11-14 01:47 UTC · `amberx-walkthrough-2-hour-indexed` added (8 steps) (all) · voice
 - 2026-11-14 01:50 UTC · `land-batch-merge-main-each-finished` → pending, note (all) · reconciler
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:53 UTC · `land-finish-auto-land-live-clear-backlog` s9 done (all) · orchestrator
 - 2026-11-14 22:54 UTC · `pass-approval-hook-deep-link-amberx-notification` s4 done (all) · orchestrator
 - 2026-11-14 22:54 UTC · `hotfix-desktop-console-draws-app-menu` s1 done (all) · orchestrator
+- 2026-11-14 22:54 UTC · `themed-native-controls-plugin` s7 done (all) · orchestrator
 
 ## Token passes (log)
 
