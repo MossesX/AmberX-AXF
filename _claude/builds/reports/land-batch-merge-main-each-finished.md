@@ -63,3 +63,4 @@ host data copy of `framework/catalog/status.json` was missing `ui.opacity.surfac
 | s5 | icon-map-icon-packs-every-icon-badge-app | #664 | 235 behind; clash in `control/inventory.json`: regenerated | all green + icon-map, molly-guide tests | `c68e1c5607` |
 | s6 | token-registry-skin-editor-live-sandbox | #657 | 189 behind; clash in `control/inventory.json`: regenerated | all green + check-skin, check-skin-coverage, -sections, -colour-rule, skin-editor and molly-guide tests | `b027e0d1c6` |
 | s7 | per-instance-settings-small-live-preview | #662 | 98 behind; clean merge | all green + check-chrome-settings (364); help-coverage red only for main's Gizmo guide gap (fixed in this build's PR) | `5d8a1c355d` |
+| s8 | skin-axhub-override-switch-greyed-out | #641 | 349 behind; clash in `control/inventory.json`: regenerated | all green + 4 skin checks, context-menu-designer and theme-editor tests | `666f13d5e8` |
