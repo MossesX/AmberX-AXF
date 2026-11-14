@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5653,
- "updatedAt": "2026-11-14T23:35:42.991Z",
+ "rev": 5654,
+ "updatedAt": "2026-11-14T23:35:57.861Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -208745,7 +208745,7 @@
    "title": "Skin config panel: merge main and land",
    "category": "",
    "detail": "Branch claude/skin-configuration-panel-before-ai-makes (800 behind) clashed with main in 10 files: .github/workflows/android.yml, settings libs (framework/libs/settings plus the amberx-droid, axhub-web, console-web and molly copies), the theme-manager plugin.json and web/index.tsx, framework/cli/build-engine.mjs and framework/spec/PORTING.md. Merge origin/main and keep main's newer code plus this branch's skin configuration panel (Brett picks what the AI may change before it makes a skin). Edit framework first and re-bake the app copies. Run tests, push, land on main.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -208754,7 +208754,7 @@
    "mergedAt": "2026-11-14T20:15:18Z",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:38.941Z",
-   "updatedAt": "2026-11-14T23:35:21.778Z",
+   "updatedAt": "2026-11-14T23:35:33.886Z",
    "builtAt": "",
    "notes": [
     {
@@ -208824,6 +208824,14 @@
     {
      "text": "Self-check: skin-config-panel-merge-main-and-land was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-14T23:34:12.493Z"
+    },
+    {
+     "text": "Started run 4 on mossesx-max- (Opus, Phase 2): axf-skin-config-panel-merge-main-and-land--sully.",
+     "at": "2026-11-14T23:35:30.355Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skin-config-panel-merge-main-and-land--sully, shared account login)",
+     "at": "2026-11-14T23:35:33.886Z"
     }
    ],
    "approvals": [],
@@ -208843,12 +208851,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T19:47:41.154Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-skin-config-panel-merge-main-and-land--sully",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-14T23:16:24.845Z",
-    "runs": 3,
+    "launchedAt": "2026-11-14T23:35:28.763Z",
+    "runs": 4,
     "lastRun": {
      "at": "2026-11-14T23:22:10.506Z",
      "exit": 0,
@@ -208865,9 +208873,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"6d008a2d-8493-4cf1-91ca-c1f98f086a78\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-14T23:16:24.845Z",
+    "dispatchedAt": "2026-11-14T23:35:28.763Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -208876,7 +208884,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-14T23:16:24.845Z",
+    "pickedAt": "2026-11-14T23:35:28.763Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -208966,7 +208974,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:35:42.991Z",
+ "updatedAt": "2026-11-14T23:35:57.861Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -131832,7 +131832,7 @@
    "title": "Skin config panel: merge main and land",
    "category": "",
    "detail": "Branch claude/skin-configuration-panel-before-ai-makes (800 behind) clashed with main in 10 files: .github/workflows/android.yml, settings libs (framework/libs/settings plus the amberx-droid, axhub-web, console-web and molly copies), the theme-manager plugin.json and web/index.tsx, framework/cli/build-engine.mjs and framework/spec/PORTING.md. Merge origin/main and keep main's newer code plus this branch's skin configuration panel (Brett picks what the AI may change before it makes a skin). Edit framework first and re-bake the app copies. Run tests, push, land on main.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -131841,7 +131841,7 @@
    "mergedAt": "2026-11-14T20:15:18Z",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:38.941Z",
-   "updatedAt": "2026-11-14T23:35:21.778Z",
+   "updatedAt": "2026-11-14T23:35:33.886Z",
    "builtAt": "",
    "notes": [
     {
@@ -131911,6 +131911,14 @@
     {
      "text": "Self-check: skin-config-panel-merge-main-and-land was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-14T23:34:12.493Z"
+    },
+    {
+     "text": "Started run 4 on mossesx-max- (Opus, Phase 2): axf-skin-config-panel-merge-main-and-land--sully.",
+     "at": "2026-11-14T23:35:30.355Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skin-config-panel-merge-main-and-land--sully, shared account login)",
+     "at": "2026-11-14T23:35:33.886Z"
     }
    ],
    "approvals": [],
