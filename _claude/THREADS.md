@@ -796,8 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 18:14 UTC · `themed-native-controls-plugin` → queued, note (all) · console
-- 2026-11-14 18:15 UTC · `land-all-skin-builds` added (0 steps) (all) · console
 - 2026-11-14 18:15 UTC · `land-all-skin-builds` → queued, note (all) · console
 - 2026-11-14 18:15 UTC · `picker-dialog-plugin-replaces-all` note (all) · orchestrator
 - 2026-11-14 18:17 UTC · `themed-native-controls-plugin` note (all) · orchestrator
@@ -1196,6 +1194,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:31 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` → complete, note (all) · reconciler
 - 2026-11-14 23:31 UTC · `land-batch-merge-main-each-finished` → complete, note (all) · reconciler
 - 2026-11-14 23:31 UTC · `replace-merge-queue-one-time-landing` → pending, merged, note (all) · reconciler
+- 2026-11-14 23:32 UTC · `console-look-becomes-default-axhub-skin` note (all) · pipeline
+- 2026-11-14 23:32 UTC · `replace-merge-queue-one-time-landing` note (all) · orchestrator
 
 ## Token passes (log)
 

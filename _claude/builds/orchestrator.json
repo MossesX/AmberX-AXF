@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:32:23.368Z",
+ "updatedAt": "2026-11-14T23:32:34.560Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -142549,7 +142549,7 @@
    "mergedAt": "2026-11-14T23:06:15Z",
    "priority": "P0",
    "createdAt": "2026-11-14T22:15:48.311Z",
-   "updatedAt": "2026-11-14T23:31:51.006Z",
+   "updatedAt": "2026-11-14T23:32:12Z",
    "builtAt": "",
    "notes": [
     {
@@ -142575,6 +142575,10 @@
     {
      "text": "Reconciler: PR #677 merged; paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-14T23:31:51.006Z"
+    },
+    {
+     "text": "Shipped manifest sm-replace-merge-queue-one-time-landing rev 1 sent to Shipped features (orchestrator): landed 7ca342b2f, 7 file(s), 0 test line(s), 21 open.",
+     "at": "2026-11-14T23:32:12Z"
     }
    ],
    "approvals": [],
@@ -143853,7 +143857,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T22:19:00.612Z",
-   "updatedAt": "2026-11-14T23:31:25.555Z",
+   "updatedAt": "2026-11-14T23:32:11.541Z",
    "builtAt": "",
    "notes": [
     {
@@ -143911,6 +143915,10 @@
     {
      "text": "Started run 3 on mossesx-max- (Fable, Phase 2): axf-console-look-becomes-default-axhub-skin--paulie.",
      "at": "2026-11-14T23:31:19.075Z"
+    },
+    {
+     "text": "Self-check: console-look-becomes-default-axhub-skin had no session on record but axf-console-look-becomes-default-axhub-skin--paulie is alive: kept running and tracking it.",
+     "at": "2026-11-14T23:32:11.541Z"
     }
    ],
    "approvals": [],

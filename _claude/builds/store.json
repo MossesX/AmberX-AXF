@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5643,
- "updatedAt": "2026-11-14T23:32:23.368Z",
+ "rev": 5644,
+ "updatedAt": "2026-11-14T23:32:34.560Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -223452,7 +223452,7 @@
    "mergedAt": "2026-11-14T23:06:15Z",
    "priority": "P0",
    "createdAt": "2026-11-14T22:15:48.311Z",
-   "updatedAt": "2026-11-14T23:31:51.006Z",
+   "updatedAt": "2026-11-14T23:32:12Z",
    "builtAt": "",
    "notes": [
     {
@@ -223478,6 +223478,10 @@
     {
      "text": "Reconciler: PR #677 merged; paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-14T23:31:51.006Z"
+    },
+    {
+     "text": "Shipped manifest sm-replace-merge-queue-one-time-landing rev 1 sent to Shipped features (orchestrator): landed 7ca342b2f, 7 file(s), 0 test line(s), 21 open.",
+     "at": "2026-11-14T23:32:12Z"
     }
    ],
    "approvals": [],
@@ -223515,18 +223519,18 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-14T23:32:07.844Z",
-     "why": "subscription account mossesx-max-"
-    },
+    "planned": null,
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-replace-merge-queue-one-time-landing",
+    "rev": 1,
+    "at": "2026-11-14T23:32:12Z",
+    "landedCommit": "7ca342b2f1757ccc0b6fcf95ef788d092c2b9014"
    },
    "steps": [
     {
@@ -225010,7 +225014,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T22:19:00.612Z",
-   "updatedAt": "2026-11-14T23:31:25.555Z",
+   "updatedAt": "2026-11-14T23:32:11.541Z",
    "builtAt": "",
    "notes": [
     {
@@ -225068,6 +225072,10 @@
     {
      "text": "Started run 3 on mossesx-max- (Fable, Phase 2): axf-console-look-becomes-default-axhub-skin--paulie.",
      "at": "2026-11-14T23:31:19.075Z"
+    },
+    {
+     "text": "Self-check: console-look-becomes-default-axhub-skin had no session on record but axf-console-look-becomes-default-axhub-skin--paulie is alive: kept running and tracking it.",
+     "at": "2026-11-14T23:32:11.541Z"
     }
    ],
    "approvals": [],
@@ -225088,7 +225096,7 @@
     "queuedAt": "2026-11-14T22:19:03.857Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "",
+    "session": "axf-console-look-becomes-default-axhub-skin--paulie",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-14T22:42:12.388Z",
@@ -225644,7 +225652,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
