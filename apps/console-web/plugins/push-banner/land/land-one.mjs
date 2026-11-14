@@ -29,7 +29,8 @@
  *   node apps/console-web/plugins/push-banner/land/land-one.mjs <build> [--dry-run] [--json] [--wait-min n] [--wait-lock n]   one attempt now (n minutes)
  *   … runs [<build>] [--json]                                                                the recorded attempts
  *   … lock                                                                                   who holds the line
- *   … enqueue <build> [--front]                     put a finished build in the landing line (the finish hook does this)
+ *   … enqueue <build> [--front] [--from-store]      put a finished build in the landing line (the finish hook does this;
+ *                                                   --from-store reads this checkout's builds store instead of origin/main)
  *   … line [--max n] [--dry-run] [--json]           land the line one build at a time until it is empty (cron, hook)
  *   … show [--json]                                 the landing line (landing-line@1 view)
  *
@@ -348,7 +349,10 @@ export async function main(argv) {
   if (args[0] === 'show') { const v = line.view(readLine(s)); out(v, JSON.stringify(v, null, 1)); return 0; }
   if (args[0] === 'enqueue') {
     if (!args[1]) throw new Error('enqueue <build> [--front]');
-    const git = makeGit(s.repo); const b = buildFromMain({ s, git, id: args[1] });
+    const git = makeGit(s.repo);
+    // --from-store: the checkout's own builds store (the console container, whose checkout follows main through builds-live)
+    const fromStore = () => { try { return (JSON.parse(readFileSync(join(s.repo, '_claude/builds/store.json'), 'utf8')).builds || []).find((x) => !x.deleted && x.id === args[1]) || null; } catch { return null; } };
+    const b = argv.includes('--from-store') ? fromStore() : buildFromMain({ s, git, id: args[1] }) || fromStore();
     if (!b?.branch) throw new Error(`no build ${args[1]} with a branch on main's builds store`);
     const e = enqueue(s, b, { front: argv.includes('--front') }); out(e, `${e.id}: ${e.state}`); return 0;
   }

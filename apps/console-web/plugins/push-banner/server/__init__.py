@@ -70,6 +70,7 @@ errors scrubbed. Nothing here returns the token, and everything GitHub says is d
 """
 from __future__ import annotations
 
+import calendar
 import json
 import os
 import re
@@ -1381,6 +1382,125 @@ def health_probe(p: "Pushes") -> dict[str, Any]:
                                        "(tested by the GitHub token item)."}
 
 
+# ------------------------------------------------------------------ unlanded alert (health@1)
+# Brett, Nov 14 2026: "I keep getting too many commits behind" (build land-finish-auto-land-live-clear-backlog). A finished
+# build that sits unlanded for more than UNLANDED_MIN minutes turns this check red; its auto-fix puts every such build in
+# the landing line (land/land-one.mjs enqueue), and the systems check pushes the red episode once to AmberX
+# (axf.notify@1 type land.unlanded, notify.json).
+UNLANDED_ID = "land-unlanded"
+UNLANDED_MIN = 15
+LAND_ONE = Path(__file__).resolve().parent.parent / "land" / "land-one.mjs"
+REPO_ROOT = Path(__file__).resolve().parents[4]
+
+
+def _iso_ms(v: Any) -> float | None:
+    try:
+        return calendar.timegm(time.strptime(str(v)[:19], "%Y-%m-%dT%H:%M:%S")) * 1000.0
+    except (ValueError, TypeError):
+        return None
+
+
+def land_state(b: dict[str, Any]) -> str:
+    """build-pipeline@1 landStateOf, read-only mirror: the land record's state, else read off the build itself."""
+    land = b.get("land") if isinstance(b.get("land"), dict) else {}
+    if land.get("landState"):
+        return str(land["landState"])
+    if b.get("status") == "complete" or b.get("mergedAt"):
+        return "landed"
+    if b.get("status") == "archived":
+        return "archived"
+    return "waiting" if b.get("status") == "built" else ""
+
+
+def finished_ms(b: dict[str, Any]) -> float | None:
+    land = b.get("land") if isinstance(b.get("land"), dict) else {}
+    for v in (land.get("finishedAt"), b.get("builtAt")):
+        ms = _iso_ms(v)
+        if ms:
+            return ms
+    done = sorted(str(x.get("doneAt")) for x in (b.get("steps") or []) if isinstance(x, dict) and x.get("doneAt"))
+    return _iso_ms(done[-1]) if done else None
+
+
+def unlanded(builds: list[dict[str, Any]], now_ms: float, minutes: int = UNLANDED_MIN) -> dict[str, Any]:
+    """The probe: finished builds (built, not merged, not landed / archived) unlanded for more than `minutes`."""
+    rows = []
+    for b in builds or []:
+        if not isinstance(b, dict) or b.get("deleted") or b.get("hidden") or b.get("status") != "built" or b.get("mergedAt") or not b.get("branch"):
+            continue
+        st = land_state(b)
+        if st in ("landed", "archived"):
+            continue
+        t = finished_ms(b)
+        if t is None or now_ms - t < minutes * 60_000:
+            continue
+        land = b.get("land") if isinstance(b.get("land"), dict) else {}
+        rows.append({"id": b["id"], "state": st or "waiting", "ageMin": int((now_ms - t) // 60_000), "behind": land.get("behindMain")})
+    if not rows:
+        return {"status": "ok", "summary": f"Every finished build landed within {minutes} minutes.", "rows": []}
+    rows.sort(key=lambda r: -r["ageMin"])
+    by = {k: sum(1 for r in rows if r["state"] == k) for k in ("waiting", "landing", "red", "flagged")}
+    parts = [f"{by['waiting'] + by['landing']} waiting for the lander" if by["waiting"] + by["landing"] else "",
+             f"{by['red']} red with a fix build" if by["red"] else "", f"{by['flagged']} flagged for a person" if by["flagged"] else ""]
+    return {"status": "error", "summary": f"{len(rows)} finished build{'s' if len(rows) != 1 else ''} not landed after {minutes} min: " + ", ".join(p for p in parts if p) + ".",
+            "details": "\n".join(_unlanded_line(r) for r in rows[:12]),
+            "rows": rows}
+
+
+def _unlanded_line(r: dict[str, Any]) -> str:
+    behind = "" if r.get("behind") is None else f", {r['behind']} behind main"
+    return f"{r['id']}: {r['state']}, {r['ageMin']} min{behind}"
+
+
+def _store_builds() -> list[dict[str, Any]]:
+    try:
+        return json.loads((REPO_ROOT / "_claude" / "builds" / "store.json").read_text()).get("builds") or []
+    except (OSError, ValueError):
+        return []
+
+
+def unlanded_fix() -> dict[str, Any]:
+    """Auto-fix: every unlanded build still waiting goes into the landing line (the lander takes them one at a time)."""
+    p = unlanded(_store_builds(), time.time() * 1000)
+    todo = [r["id"] for r in p.get("rows", []) if r["state"] in ("waiting", "landing")]
+    put = []
+    for bid in todo[:50]:
+        try:
+            r = subprocess.run(["node", str(LAND_ONE), "enqueue", bid, "--from-store", "--json"], capture_output=True, text=True, timeout=30,
+                               env={**os.environ, "AXF_PUSH_BANNER_DIR": str(data_dir()), "AXF_LAND_REPO": str(REPO_ROOT)})
+            if r.returncode == 0:
+                put.append(bid)
+        except (OSError, subprocess.TimeoutExpired):
+            pass
+    if not todo:
+        return {"state": "done", "message": "Nothing waiting: the unlanded builds are red or flagged and have their fix builds.", "mitigated": True}
+    return {"state": "done" if put else "failed", "message": f"Put {len(put)} of {len(todo)} in the landing line.", "mitigated": bool(put)}
+
+
+_unlanded_done = False
+
+
+def ensure_unlanded_health() -> bool:
+    global _unlanded_done
+    if _unlanded_done:
+        return True
+    reg = claudefix.plugin_services.get(HEALTH_CAP)
+    if reg is None:
+        return False
+    try:
+        reg.register({"id": UNLANDED_ID, "label": "Finished builds landed", "service": "github", "order": 15, "severity": "error", "interval": 5 * 60,
+                      "run": lambda: {k: v for k, v in unlanded(_store_builds(), time.time() * 1000).items() if k != "rows"},
+                      "breaks": "Finished work isn't on main: other builds drift further behind it and you keep getting commits behind.",
+                      "instructions": [f"The serial lander lands finished builds one at a time (cron axf-auto-land every 3 min, and at once when a build finishes).",
+                                       "Auto-fix puts every waiting build in the landing line. Red ones have a P0 fix build; flagged ones clash in code.",
+                                       "See them: node apps/console-web/plugins/push-banner/land/backlog.mjs --count"]}, "push-banner")
+        reg.add_autofix(UNLANDED_ID, {"label": "Put them in the landing line", "mode": "auto", "run": unlanded_fix}, "push-banner")
+    except Exception:  # noqa: BLE001 — the lander works without its health item
+        return False
+    _unlanded_done = True
+    return True
+
+
 _health_done = False
 
 
@@ -1414,6 +1534,7 @@ def _auto_merge_loop() -> None:
         time.sleep(AUTO_MERGE_EVERY_S)
         try:
             ensure_health()
+            ensure_unlanded_health()
             PUSHES.auto_merge()
         except Exception:  # noqa: BLE001 — never take the server down
             pass

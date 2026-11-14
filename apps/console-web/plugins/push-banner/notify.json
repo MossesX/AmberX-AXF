@@ -26,6 +26,19 @@
         "keyPrefix": "queue:"
       },
       "priority": "high"
+    },
+    {
+      "id": "land.unlanded",
+      "label": "Finished build not landed",
+      "group": "merge",
+      "app": "console",
+      "source": "Systems check, landing",
+      "description": "A finished build has sat unlanded for more than 15 minutes; the lander was asked to take it.",
+      "match": {
+        "source": "system",
+        "keyPrefix": "system:land-unlanded"
+      },
+      "priority": "high"
     }
   ]
 }

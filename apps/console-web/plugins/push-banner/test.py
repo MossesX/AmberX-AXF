@@ -789,4 +789,22 @@ STATE["bsha"]["feat/a"] = "feat/a-sha2"
 n3 = cmp_n(); mod.PUSHES._forget(); mod.PUSHES.branches(force=True)
 check(cmp_n() == n3 + 1, "one branch got a commit: only it is compared again")
 del STATE["bsha"]
+# unlanded alert (health@1 land-unlanded, Nov 14 2026): finished builds unlanded over 15 minutes turn it red
+_now = mod._iso_ms("2026-11-14T23:00:00Z")
+_bs = [
+    {"id": "fresh", "status": "built", "branch": "claude/fresh", "builtAt": "2026-11-14T22:50:00Z"},
+    {"id": "old", "status": "built", "branch": "claude/old", "builtAt": "2026-11-14T20:00:00Z", "land": {"behindMain": 40, "behindCheckedAt": "2026-11-14T22:00:00Z"}},
+    {"id": "red", "status": "built", "branch": "claude/red", "builtAt": "2026-11-14T21:00:00Z", "land": {"landState": "red"}},
+    {"id": "flag", "status": "built", "branch": "claude/flag", "builtAt": "2026-11-14T21:00:00Z", "land": {"landState": "flagged"}},
+    {"id": "merged", "status": "built", "branch": "claude/m", "builtAt": "2026-11-14T20:00:00Z", "mergedAt": "2026-11-14T21:00:00Z"},
+    {"id": "arch", "status": "built", "branch": "claude/a", "builtAt": "2026-11-14T20:00:00Z", "land": {"landState": "archived"}},
+    {"id": "run", "status": "running", "branch": "claude/r", "builtAt": "2026-11-14T20:00:00Z"},
+]
+_p = mod.unlanded(_bs, _now)
+check(_p["status"] == "error" and [r["id"] for r in _p["rows"]] == ["old", "red", "flag"], "unlanded: finished over 15 min (oldest first); fresh, merged, archived and running ones are not counted")
+check("1 waiting for the lander" in _p["summary"] and "1 red with a fix build" in _p["summary"] and "1 flagged" in _p["summary"] and "40 behind main" in _p["details"], "unlanded: what each is waiting on, behind main in the details")
+check(mod.unlanded([_bs[0]], _now)["status"] == "ok", "unlanded: nothing over 15 minutes = ok")
+_nt = json.loads((Path(mod.__file__).resolve().parent.parent / "notify.json").read_text())
+check(any(t["id"] == "land.unlanded" and t["match"]["keyPrefix"] == "system:land-unlanded" for t in _nt["types"]), "notify.json declares land.unlanded for the systems check's push (axf.notify@1)")
+
 print(f"push-banner: {ok} checks passed")

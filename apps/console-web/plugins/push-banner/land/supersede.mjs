@@ -28,6 +28,7 @@ import { makeGit, makeGitHub, settings } from './land.mjs';
 export const FRAME = 'land-supersede@1';
 export const resultFile = (s) => join(s.dataDir, 'land-supersede.json');
 const lines = (t) => String(t || '').split('\n').map((x) => x.trim()).filter(Boolean);
+const still0 = (files) => files.size > 0;
 /** Files that never make a build unique: status, logs and generated files (regenerated or merged on landing). */
 export const noise = (p) => ['builds', 'union', 'generated'].includes(core.classifyPath(p)) || /^_claude\/(builds|sessions|logs)\//.test(p) || /(^|\/)THREADS\.md$|(^|\/)STATUS\.md$/.test(p);
 
@@ -52,10 +53,12 @@ export function uniqueWork({ git, ref, main }) {
   }
   // file level: what main already holds the same way is not unique, and neither is a version main once had and has
   // moved on from since (a batch or squash landed it under another commit; main edited the file after)
+  const since = still0(files) ? git(['merge-base', main, ref]).out : '';
   const onMainOnce = (p) => {
     const blob = git(['rev-parse', '-q', '--verify', `${ref}:${p}`]);
     if (blob.code) return git(['cat-file', '-e', `${main}:${p}`]).code !== 0; // deleted on the branch: unique only while main still has it
-    return !!git(['log', '-1', '--format=%H', `--find-object=${blob.out}`, main, '--', p], { timeout: 60000 }).out;
+    // only main's history since the branch left it: the version can't have reached main before the branch made it
+    return !!git(['log', '-1', '--format=%H', `--find-object=${blob.out}`, since ? `${since}..${main}` : main, '--', p], { timeout: 60000 }).out;
   };
   const still = [...files].filter((p) => git(['diff', '--quiet', main, ref, '--', p]).code !== 0 && !onMainOnce(p)).sort();
   const why = !counted.length ? (plus.length ? 'only merges and status files are missing from main' : 'every commit is on main')
