@@ -308,10 +308,19 @@ export function resolveConflicts({ g, wt, dir, left, mainSide = 'theirs', builds
   const still = g(['diff', '--name-only', '--diff-filter=U']).out.split('\n').filter(Boolean);
   if (still.length) return { conflicts: still };
   // the generators, each once, on the merged tree; their outputs join the merge commit
-  const regenerated = [];
+  const r = regenerate({ g, wt, paths: plan.generated, tests: plan.generated.length || plan.unionJson.length, log });
+  return r.error ? r : { resolved, regenerated: r.regenerated, skipped: r.skipped };
+}
+
+/**
+ * Run the generated-files@1 generators for `paths` (each once, manifest order) on the tree in `wt`, stage their outputs,
+ * run each generator's check and, when `tests`, the manifest's tests. Returns { regenerated: [ids], skipped: [ids] } or
+ * { error }. Nothing here commits.
+ */
+export function regenerate({ g, wt, paths, tests = true, log = () => {} }) {
+  const regenerated = []; const skipped = [];
   const run = (cmd, timeout) => { const r = spawnSync(cmd[0], cmd.slice(1), { cwd: wt, encoding: 'utf8', timeout, maxBuffer: 16 << 20, env: { ...process.env, CI: '1' } }); return { code: r.status ?? 1, text: `${r.stderr || ''}${r.stdout || ''}`.trim().slice(-400) }; };
-  const skipped = [];
-  for (const gen of core.regenPlan(plan.generated)) {
+  for (const gen of core.regenPlan(paths)) {
     const r = run(gen.run, gen.timeoutMs);
     if (r.code) {
       // an optional generator that refuses (rebake: the app's baked files were edited in place) leaves main's copy, which main's CI passed
@@ -322,11 +331,24 @@ export function resolveConflicts({ g, wt, dir, left, mainSide = 'theirs', builds
     g(['add', '-A', '--', ...gen.outputs.filter((o) => existsSync(join(wt, o)))]);
     if (gen.check) { const c = run(gen.check, gen.timeoutMs); if (c.code) return { error: `${gen.id} regenerated but its check failed (${gen.check.join(' ')}): ${c.text}` }; }
   }
-  if (plan.generated.length || plan.unionJson.length) {
+  if (tests) {
     for (const t of core.landTests()) { const c = run(t, 180000); if (c.code) return { error: `tests after regenerating failed (${t.join(' ')}): ${c.text}` }; }
   }
   if (regenerated.length) log(`regenerated ${regenerated.join(', ')} after the merge`);
-  return { resolved, regenerated, skipped };
+  return { regenerated, skipped };
+}
+
+/**
+ * The host resolver (/opt/axf-batch/resolve.py → the checkout's framework/cli/land-resolve.py) on a stopped merge in
+ * `wt`, main being `theirs`. It settles what the JS rules call code but its own rules know (other JSON by key, .md /
+ * .css / .yml by lines) and regenerates the generated files it meets. Returns { ok, unresolved: [paths], text }.
+ */
+export function hostResolve({ wt, resolver, timeout = 600000 }) {
+  if (!resolver || !existsSync(resolver)) return { ok: false, unresolved: [], text: 'no resolver' };
+  const r = spawnSync('python3', ['-I', resolver, 'theirs', '--main', 'theirs'], { cwd: wt, encoding: 'utf8', timeout, maxBuffer: 16 << 20, env: { ...process.env, CI: '1' } });
+  const text = `${r.stdout || ''}${r.stderr || ''}`;
+  const unresolved = [...text.matchAll(/UNRESOLVED:\s*(.+)/g)].flatMap((m) => m[1].split(/[,\s]+/)).filter(Boolean);
+  return { ok: (r.status ?? 1) === 0, unresolved, text: text.trim().slice(-400) };
 }
 
 /**
@@ -334,7 +356,7 @@ export function resolveConflicts({ g, wt, dir, left, mainSide = 'theirs', builds
  * land-core's rules (resolveConflicts); any code conflict aborts. Returns { merged, sha, conflicts: [code files],
  * resolved, regenerated, pushError }.
  */
-export function mergeMain({ s, git, b, dry, inPlace = '', log = () => {} }) {
+export function mergeMain({ s, git, b, dry, inPlace = '', regenAfter = false, resolver = '', log = () => {} }) {
   // inPlace: a running build's own clean worktree (refreshRunning); otherwise a temporary worktree that is removed afterwards
   const dir = mkdtempSync(join(tmpdir(), 'axf-land-')); const wt = inPlace || join(dir, 'wt');
   const g = (a, o = {}) => git(a, { ...o, cwd: wt });
@@ -351,7 +373,14 @@ export function mergeMain({ s, git, b, dry, inPlace = '', log = () => {} }) {
       const left = g(['diff', '--name-only', '--diff-filter=U']).out.split('\n').filter(Boolean);
       if (!left.length) { g(['merge', '--abort']); return { merged: false, conflicts: [], pushError: `merge: ${m.err.slice(-200) || m.out.slice(-200)}` }; }
       // main is the side being merged in (theirs); its builds files win too (the newest status is on main)
-      const res = resolveConflicts({ g, wt, dir, left, mainSide: 'theirs', buildsSide: 'theirs', log });
+      let res = resolveConflicts({ g, wt, dir, left, mainSide: 'theirs', buildsSide: 'theirs', log });
+      // what these rules call code goes to the host resolver once (it knows more file kinds); still unsettled = a real clash
+      if (res.conflicts && resolver) {
+        const h = hostResolve({ wt, resolver });
+        const still = g(['diff', '--name-only', '--diff-filter=U']).out.split('\n').filter(Boolean);
+        if (h.ok && !still.length) { log(`host resolver settled ${res.conflicts.join(', ')}`); res = { resolved: res.conflicts, regenerated: [], hostResolved: res.conflicts }; }
+        else log(`host resolver left ${(still.length ? still : h.unresolved).join(', ') || h.text}`);
+      }
       if (res.conflicts) { g(['merge', '--abort']); return { merged: false, conflicts: res.conflicts }; }
       if (res.error) { g(['merge', '--abort']); return { merged: false, conflicts: [], pushError: `merge: ${res.error.slice(-300)}` }; }
       resolved = res.resolved; regenerated = res.regenerated;
@@ -362,6 +391,23 @@ export function mergeMain({ s, git, b, dry, inPlace = '', log = () => {} }) {
       if (still2.length) { g(['merge', '--abort']); return { merged: false, conflicts: still2, badJson: still2 }; }
       const c = g([...drv, 'commit', '-q', '--no-edit']);
       if (c.code) { g(['merge', '--abort']); return { merged: false, conflicts: [], pushError: `commit: ${c.err.slice(-200)}` }; }
+    }
+    // generated-files@1 after the merge: generated files the merge changed on either side are regenerated on the merged
+    // tree (two sides can each be right and still disagree once together), committed on the branch when they move
+    if (regenAfter) {
+      const head = g(['rev-parse', `${s.remote}/${b.branch}`]).out;
+      const changed = g(['diff', '--name-only', head, 'HEAD']).out.split('\n').filter(Boolean);
+      const gen = changed.filter((p) => core.classifyPath(p) === 'generated').concat(g(['diff', '--name-only', `${s.remote}/${s.base}`, 'HEAD']).out.split('\n').filter((p) => p && core.classifyPath(p) === 'generated'));
+      const todo = core.regenPlan(gen).filter((x) => !regenerated.includes(x.id));
+      if (todo.length) {
+        const r = regenerate({ g, wt, paths: gen.filter((p) => todo.some((x) => core.regenPlan([p])[0]?.id === x.id)), tests: true, log });
+        if (r.error) { g(['reset', '-q', '--hard', 'HEAD']); return { merged: false, conflicts: [], resolved, regenerated, checkError: r.error }; }
+        regenerated = [...regenerated, ...r.regenerated];
+        if (g(['diff', '--cached', '--quiet']).code) {
+          const c = g(['-c', 'user.name=AXF auto-land', '-c', 'user.email=auto-land@amberxai.com', 'commit', '-q', '-m', `Regenerate ${r.regenerated.join(', ')} after merging main (generated-files@1)`]);
+          if (c.code) return { merged: false, conflicts: [], pushError: `commit: ${c.err.slice(-200)}` };
+        }
+      }
     }
     const sha = g(['rev-parse', 'HEAD']).out;
     if (dry) return { merged: true, sha, conflicts: [], resolved, regenerated, dry: true };

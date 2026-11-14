@@ -9,6 +9,7 @@ import { join } from 'node:path';
 const root = mkdtempSync(join(tmpdir(), 'land-one-'));
 process.env.AXF_LAND_LOCK = join(root, 'lock.d');
 process.env.AXF_CREW_SAY = 'off';
+process.env.AXF_LAND_RESOLVER = '';
 const { landOne, readRuns } = await import('./land-one.mjs');
 const { makeGit, takeLandLock, dropLandLock } = await import('./land.mjs');
 const lr = await import('../../../../../framework/core/land-run.mjs');
@@ -60,6 +61,26 @@ await t('a code clash: nothing pushed, the attempt ends as clash with the file l
 await t('a missing branch is an error attempt, never a crash', async () => {
   const r = await landOne({ s, git, build: { id: 'gone', branch: 'claude/gone' }, now: () => at });
   assert.equal(r.run.outcome, 'error'); assert.match(r.run.error, /not on origin/);
+});
+
+await t('the host resolver settles a clash the JS rules call code; the merge then lands on the branch', async () => {
+  const fake = join(root, 'resolve.py');
+  writeFileSync(fake, "import subprocess\nsubprocess.run(['git','checkout','--theirs','--','.'])\nsubprocess.run(['git','add','-A'])\n");
+  process.env.AXF_LAND_RESOLVER = fake;
+  try {
+    const r = await landOne({ s, git, build: { id: 'clash', branch: 'claude/clash' }, now: () => at });
+    assert.equal(r.run.outcome, ''); assert.ok(r.run.merged);
+    sh(['fetch', '-q', 'origin'], repo);
+    assert.equal(sh(['show', 'origin/claude/clash:a.txt'], repo), 'main side', "main's side taken by the resolver");
+  } finally { process.env.AXF_LAND_RESOLVER = ''; }
+});
+
+await t('a red check after regenerating: outcome red, the failing generator named', async () => {
+  const merge = () => ({ merged: false, conflicts: [], regenerated: ['tracker'], checkError: 'tracker regenerated but its check failed (node x): boom' });
+  const r = await landOne({ s, git, build: { id: 'clean', branch: 'claude/clean' }, merge, now: () => at });
+  assert.equal(r.run.outcome, 'red'); assert.equal(r.run.check.ok, false); assert.deepEqual(r.run.check.failed, ['tracker']);
+  assert.deepEqual(r.run.regenerated, ['tracker']);
+  assert.ok(lr.validateLandRun(r.run).ok, 'valid: the note says why no fix build yet');
 });
 
 await t('two at once: a second attempt is refused while the line is held, and runs once it is free', async () => {

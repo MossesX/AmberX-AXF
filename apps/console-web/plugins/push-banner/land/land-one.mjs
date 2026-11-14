@@ -8,7 +8,10 @@
  *   1. holds the landing line's lock (land.mjs takeLandLock): a second land-one, a land.mjs round or the merge queue
  *      never runs at the same time; a busy line is refused at once ({ ran: false, owner }), never waited on by default;
  *   2. merges origin/main into the build's branch (land.mjs mergeMain: builds files newer-wins, logs unioned, generated
- *      files from main then regenerated, a code clash aborted and listed as `unresolved`), pushes the branch;
+ *      files from main then regenerated); what those rules call code goes once to the host resolver
+ *      (/opt/axf-batch/resolve.py → framework/cli/land-resolve.py); a clash still left is aborted and listed as
+ *      `unresolved`. Then generated-files@1 regenerate: the generated files the merge changed on either side are
+ *      regenerated on the merged tree, checked and committed on the branch (a red check = outcome red). Pushes the branch;
  *   3. writes the attempt to land-runs.jsonl in the push banner's data folder (append-only, one land-run@1 per line).
  * Later steps of the same attempt (checks, CI on the merged head, the merge to main) extend the same record.
  *
@@ -16,13 +19,15 @@
  *   … runs [<build>] [--json]                                                                the recorded attempts
  *   … lock                                                                                   who holds the line
  */
-import { appendFileSync, mkdirSync, readFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as lr from '../../../../../framework/core/land-run.mjs';
 import { dropLandLock, lockOwner, makeGit, mergeMain, settings, takeLandLock } from './land.mjs';
 
 export const runsFile = (s) => join(s.dataDir, 'land-runs.jsonl');
+/** The host resolver vps.build_land uses too; it hands over to the checkout's framework/cli/land-resolve.py. */
+export const resolverPath = () => process.env.AXF_LAND_RESOLVER ?? (existsSync('/opt/axf-batch/resolve.py') ? '/opt/axf-batch/resolve.py' : '');
 
 /** Every recorded attempt, oldest first; `build` filters to one build. */
 export function readRuns(s, build = '') {
@@ -70,9 +75,10 @@ export async function landOne({ s = settings(), git = makeGit(s.repo), build, dr
     if (h.code) return { ran: true, run: finish(s, { ...run, error: `branch ${b.branch} is not on ${s.remote}` }, dry, now) };
     run.head = h.out;
     log(`land-one ${id}: merging ${s.remote}/${s.base} (${run.base.slice(0, 8)}) into ${b.branch} (${run.head.slice(0, 8)})`);
-    const m = merge({ s, git, b, dry, log });
+    const m = merge({ s, git, b, dry, regenAfter: true, resolver: resolverPath(), log });
     run.regenerated = m.regenerated || [];
     if (m.conflicts?.length) run.unresolved = m.conflicts;
+    else if (m.checkError) run.check = { ok: false, failed: [m.checkError.split(' ')[0]], note: m.checkError.slice(0, 400) };
     else if (!m.merged) run.error = m.pushError || 'merge failed';
     else run.merged = m.sha;
     return { ran: true, run: finish(s, run, dry, now) };
@@ -82,7 +88,7 @@ export async function landOne({ s = settings(), git = makeGit(s.repo), build, dr
 /** A finished attempt (clash / error) is settled and stored; one still going (merged, CI next) is stored as it stands. */
 function finish(s, run, dry, now) {
   const at = now().toISOString();
-  const done = run.error || run.unresolved.length;
+  const done = run.error || run.unresolved.length || run.check?.ok === false;
   if (dry) return done ? lr.settleLandRun(run, at) : lr.normLandRun(run);
   if (done) return recordRun(s, run, at);
   const r = lr.normLandRun(run); r.note = lr.landRunLine(r);
