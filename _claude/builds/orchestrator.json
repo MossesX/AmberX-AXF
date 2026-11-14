@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T17:07:45.867Z",
+ "updatedAt": "2026-11-14T17:08:22.223Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -139173,14 +139173,14 @@
    "title": "Builds share one Claude login and write refreshed tokens back",
    "category": "orchestrator",
    "detail": "Brett: 'they're supposed to, it's supposed to write the new refresh token to the same place in whatever account, whatever build uses the next updates the refresh token.' Right now each build gets its own saved copy of the account login (log shows 'own copy (saved)'), so when one copy refreshes, the rotated refresh token kills every other copy. demo-video-series-three-minute-browser died with 'OAuth session expired and could not be refreshed' on mossesx-max. Fix: every build uses the account's one shared credentials file, and any refreshed token is written back there under a lock. Phone alert on any auth failure; re-queue the failed build once login works.",
-   "status": "complete",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/builds-share-one-claude-login-write",
-   "pr": "",
+   "pr": "#674",
    "createdAt": "2026-11-14T16:44:38.923Z",
-   "updatedAt": "2026-11-14T17:07:43.504Z",
+   "updatedAt": "2026-11-14T17:08:20.568Z",
    "builtAt": "2026-11-14T17:07:43.504Z",
    "notes": [
     {
