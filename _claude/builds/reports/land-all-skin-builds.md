@@ -52,3 +52,8 @@ Survey taken 2026-11-14 after `git fetch origin` (main at `1169074ab`). Ahead/be
 - `claude/skins-plugin-own-removable-console` → tag `archive/skins-plugin-own-removable-console` (265b99ced), remote branch deleted, PR #649 closed as superseded by #647, build record complete with a superseded note.
 - `claude/skin-configuration-panel-before-ai-makes` → tag `archive/skin-configuration-panel-before-ai-makes` (71a2f361d), remote branch deleted, PR #612 closed as superseded by #648, build record complete with a superseded note.
 - Not archived (real work missing, see the flag above): `professional-skins-rebuild-whole-app` (#604), `fix-merge-conflicts-pr-557-professional` (#591).
+
+## Merge queue (s20)
+
+- Round 1: #641 kicked out (run 43628639101). Causes, each fixed on the branch that introduced it and merged up the stack: `plugins.mjs --check` (#647: the Skins plugin's `banner` field now lists `skin-gallery`) and `help-coverage --check` at 99.4% (#641: help for the lock note's 'Click here to override' button).
+- Then ran the CI Node sweep and the Web Dev Console job's checks on the stack tip, compared each failure with main and fixed every difference: glossary ratchet (#590: the merged skins CLI header passed the 4000 chars the glossary reads; #657: descriptions for the Skin editor's three exported-skin commands), check-plugin-pages (#657: one-sentence descriptions on the Skin editor and Token registry page heads), duplicate Gizmo guide help entry (#657/#654: kept the written one), check-toolbars asset-library drift (#652: the six behaviour themes' animations added to the asset-library seeds). Failures that also fail on main here (agent-slots, claude-login tests, shipped-features/session-checkin tests, tests needing `python`) are environment only.
