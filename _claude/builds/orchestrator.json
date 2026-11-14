@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:29:41.308Z",
+ "updatedAt": "2026-11-14T04:30:13.510Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137105,14 +137105,14 @@
    "title": "UI Directory plugin: self-updating data set of every UI page and settings interface",
    "category": "Console",
    "detail": "Brett: a plugin that's just a data set of every single UI page and settings interface, that scales and grows on its own dynamically. Build a console plugin 'UI Directory': one live data set (ui-directory@1) of every screen, page, tab, dialog, settings interface, plugin UI and per-instance settings panel across every app. It populates itself from the framework manifests, the console-control inventory and plugin registrations, so any new UI or plugin appears automatically with no hand edits, and removed ones drop out. Each row: name, kind, app, parent plugin/page, deep link (console_show), its settings interface, token families it uses, status. Searchable, filterable, grouped tree, click to open. CI check fails if a UI isn't registered. Full API: REST/MCP/CLI/voice ('open the UI directory', 'find the toolbar settings'). Tests desktop and phone.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-directory-plugin-self-updating-data",
    "pr": "",
    "createdAt": "2026-11-14T03:50:42.413Z",
-   "updatedAt": "2026-11-14T04:29:08.673Z",
+   "updatedAt": "2026-11-14T04:30:10.516Z",
    "builtAt": "",
    "notes": [
     {
@@ -137162,6 +137162,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-ui-directory-plugin-self-updating-data--gina, own login copy)",
      "at": "2026-11-14T04:23:21.222Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 0) with 1 step left: back in the Queue (run 1).",
+     "at": "2026-11-14T04:30:10.516Z"
     }
    ],
    "approvals": [
