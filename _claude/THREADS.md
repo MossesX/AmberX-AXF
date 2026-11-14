@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 03:51 UTC · `ui-directory-plugin-self-updating-data` branch claude/ui-directory-plugin-self-updating-data (all) · pipeline
 - 2026-11-14 03:51 UTC · `icon-map-icon-packs-every-icon-badge-app` s9 done, → built, note (all) · orchestrator
 - 2026-11-14 03:52 UTC · `ui-directory-plugin-self-updating-data` note (all) · voice
 - 2026-11-14 04:00 UTC · `launch-landing-page-waitlist-referral` added (3 steps) (all) · voice
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:03 UTC · `picker-dialog-plugin-replaces-all` s12 done (all) · orchestrator
 - 2026-11-14 23:03 UTC · `orchestrator-table-columns-model-queue-assigned` PR #680 (all) · builds-live
 - 2026-11-14 23:03 UTC · `orchestrator-table-columns-model-queue-assigned` s3 done, → built (all) · orchestrator
+- 2026-11-14 23:04 UTC · `orchestrator-table-columns-model-queue-assigned` note (all) · orchestrator
 
 ## Token passes (log)
 
