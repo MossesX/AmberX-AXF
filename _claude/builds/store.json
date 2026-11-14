@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5515,
- "updatedAt": "2026-11-14T22:56:34.439Z",
+ "rev": 5516,
+ "updatedAt": "2026-11-14T22:57:07.706Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -213551,7 +213551,7 @@
    "pr": "#658",
    "priority": "P0",
    "createdAt": "2026-11-13T20:53:50.393Z",
-   "updatedAt": "2026-11-14T22:56:26.136Z",
+   "updatedAt": "2026-11-14T22:57:04.842Z",
    "builtAt": "2026-11-14T22:56:26.136Z",
    "notes": [
     {
@@ -213613,6 +213613,10 @@
     {
      "text": "Headless run axf-hotfix-desktop-console-draws-app-menu--joey: brief only · start 11.6K tokens ($0.03) · cost $0.43 · 18 turns · 6 tools, MCP none",
      "at": "2026-11-14T22:56:26.136Z"
+    },
+    {
+     "text": "Session axf-hotfix-desktop-console-draws-app-menu--joey on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-14T22:57:04.842Z"
     }
    ],
    "approvals": [],
@@ -213633,18 +213637,18 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "mossesx-max-",
-    "session": "axf-hotfix-desktop-console-draws-app-menu--joey",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-14T22:52:18.360Z",
     "runs": 1,
     "lastRun": {
-     "at": "2026-11-13T21:16:22.820Z",
+     "at": "2026-11-14T22:57:03.959Z",
      "exit": 0,
-     "outcome": "returned",
-     "stepsLeft": 3,
-     "account": "",
-     "session": "axf-hotfix-desktop-console-draws-app-menu--lenny"
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-hotfix-desktop-console-draws-app-menu--joey"
     },
     "split": {
      "at": "2026-11-13T21:14:45.379Z",
@@ -213749,7 +213753,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": {
