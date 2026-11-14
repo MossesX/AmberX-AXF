@@ -1,0 +1,25 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "picker-dialog-settings",
+  "name": "Picker dialog settings",
+  "version": "1.0.0",
+  "description": "Settings → Plugins → Picker dialog: the level toolbar on, the on/off switch, search threshold and phone sheet at Basic, what it replaces and per-app exclusions at Simple, install and uninstall at Administrator.",
+  "author": "Picker dialog plugin",
+  "tags": ["picker-dialog", "settings"],
+  "data": {
+    "layout": "list",
+    "header": "compact",
+    "search": true,
+    "descriptions": true,
+    "levels": true,
+    "defaultLevel": "basic",
+    "levelOf": {
+      "picker-dialog.main": "basic",
+      "picker-dialog.scope": "simple",
+      "picker-dialog.lifecycle": "administrator"
+    },
+    "order": ["picker-dialog.main", "picker-dialog.scope", "picker-dialog.lifecycle"],
+    "open": ["picker-dialog.main"]
+  }
+}

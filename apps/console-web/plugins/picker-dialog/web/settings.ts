@@ -17,7 +17,16 @@ export const K = {
   excludeApps: 'axf.picker.excludeApps',
 } as const;
 
-export const DEFAULTS = { enabled: true, swapSelectFields: true, swapSelects: true, searchThreshold: 8, sheetOnPhone: true, excludeApps: '' };
+export const DEFAULTS = { enabled: true, swapSelectFields: true, swapSelects: true, searchThreshold: 8, sheetOnPhone: true, excludeApps: [] as string[] };
+
+/** Apps the per-app exclusion offers. */
+export const APPS = [
+  { value: 'console-web', label: 'Console' },
+  { value: 'axhub-web', label: 'axHub web' },
+  { value: 'amberx-droid', label: 'AmberX' },
+  { value: 'demo', label: 'Demo' },
+  { value: 'molly', label: 'Molly' },
+];
 
 type Get = (key: string) => unknown;
 

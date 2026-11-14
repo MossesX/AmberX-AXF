@@ -11,8 +11,9 @@
 import { useEffect } from 'react';
 import { setPickerSwap, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
+import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
-import { K, configFrom } from './settings';
+import { APPS, DEFAULTS, FOLDER, K, TAB, configFrom } from './settings';
 
 export const ID = 'ai.amberx.axf.console.picker-dialog';
 
@@ -35,5 +36,20 @@ export const plugin: AxfWebLibrary = {
   builtWith: { model: 'claude-opus-5-5', builtAt: '2026-11-14' },
   appMenu,
   slots: { 'app.frame.cover': [{ id: 'picker-dialog.swap', order: 1, render: () => <PickerSwapSwitch /> }] },
-  settingsTabs: [{ id: 'picker-dialog', label: 'Picker dialog', icon: 'list', order: 60, parent: 'plugins', description: 'Drop-downs open a themed picker dialog (a bottom sheet on phones) instead of the browser list.' }],
+  // Settings → Plugins → Picker dialog. Every setting is a control@1 target (`setting:axf.picker.*`), so the console API,
+  // MCP, the CLI and voice set the same values this tab shows; the app's settings level toolbar filters the groups.
+  settingsTabs: [{ id: TAB, label: 'Picker dialog', icon: 'list', order: 60, parent: 'plugins', description: 'Drop-downs open a themed picker dialog (a bottom sheet on phones) instead of the browser list.' }],
+  settings: [
+    { id: 'picker-dialog.main', label: 'Picker dialog', icon: 'list', tab: TAB, order: 1, description: 'Turn it off and every drop-down is the original control again.', settings: [
+      { key: K.enabled, label: 'Open drop-downs in the picker dialog', kind: 'toggle', default: DEFAULTS.enabled, description: 'On: every drop-down opens the themed picker. Off: the browser\'s own drop-downs, untouched.' },
+      { key: K.searchThreshold, label: 'Show the search box from this many options', kind: 'number', default: DEFAULTS.searchThreshold, min: 0, max: 200, step: 1, description: '0 = always, 200 = practically never.' },
+      { key: K.sheetOnPhone, label: 'Bottom sheet on phones', kind: 'toggle', default: DEFAULTS.sheetOnPhone, description: 'Off: phones get the same centred dialog as desktop.' },
+    ] },
+    { id: 'picker-dialog.scope', label: 'What it replaces', icon: 'sliders', tab: TAB, order: 2, settings: [
+      { key: K.swapSelectFields, label: 'Framework select fields', kind: 'toggle', default: DEFAULTS.swapSelectFields, description: 'SelectField controls render the picker field.' },
+      { key: K.swapSelects, label: 'Every other drop-down on the page', kind: 'toggle', default: DEFAULTS.swapSelects, description: 'Plain select boxes get a picker trigger; the original stays hidden as the value the form sends.' },
+      { key: K.excludeApps, label: 'Keep the original drop-downs in', kind: 'multi_choice', default: [], options: APPS, description: 'Apps listed here are left alone.' },
+    ] },
+  ],
+  settingsPanels: [{ id: 'picker-dialog.lifecycle', tab: TAB, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };
