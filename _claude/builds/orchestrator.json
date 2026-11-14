@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:15:14.152Z",
+ "updatedAt": "2026-11-14T04:15:32.129Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137252,7 +137252,7 @@
    "branch": "claude/launch-landing-page-waitlist-referral",
    "pr": "",
    "createdAt": "2026-11-14T04:00:27.661Z",
-   "updatedAt": "2026-11-14T04:11:15.057Z",
+   "updatedAt": "2026-11-14T04:15:28.351Z",
    "builtAt": "",
    "notes": [
     {
@@ -137311,8 +137311,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T04:15:28.351Z",
      "note": "",
      "uid": "st-mwfvo26s05aj36",
      "createdAt": "2026-11-14T04:00:27.662Z"

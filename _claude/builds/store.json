@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5211,
- "updatedAt": "2026-11-14T04:15:14.152Z",
+ "rev": 5212,
+ "updatedAt": "2026-11-14T04:15:32.129Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211958,7 +211958,7 @@
    "branch": "claude/launch-landing-page-waitlist-referral",
    "pr": "",
    "createdAt": "2026-11-14T04:00:27.661Z",
-   "updatedAt": "2026-11-14T04:11:15.057Z",
+   "updatedAt": "2026-11-14T04:15:28.351Z",
    "builtAt": "",
    "notes": [
     {
@@ -212050,12 +212050,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T04:15:28.351Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:00:27.662Z",
-     "updatedAt": "2026-11-14T04:00:27.662Z"
+     "updatedAt": "2026-11-14T04:15:28.612Z"
     },
     {
      "id": "s3",
@@ -212088,7 +212088,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
