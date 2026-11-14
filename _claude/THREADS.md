@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 21:26 UTC · `per-instance-settings-small-live-preview` s3 done, → built (all) · orchestrator
 - 2026-11-13 21:27 UTC · `main-ci-red-test-sandbox-profile-export` s1 done, → built (all) · orchestrator
 - 2026-11-13 21:28 UTC · `token-registry-skin-editor-live-sandbox` s4 done (all) · orchestrator
 - 2026-11-13 21:28 UTC · `icon-map-icon-packs-every-icon-badge-app` s5 done (all) · orchestrator
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:19 UTC · `console-look-becomes-default-axhub-skin` → queued, note (all) · console
 - 2026-11-14 22:19 UTC · `console-look-becomes-default-axhub-skin` added (0 steps) (all) · builds-live
 - 2026-11-14 22:19 UTC · `console-look-becomes-default-axhub-skin` note (all) · mcp
+- 2026-11-14 22:20 UTC · `land-finish-auto-land-live-clear-backlog` note (all) · orchestrator
 
 ## Token passes (log)
 
