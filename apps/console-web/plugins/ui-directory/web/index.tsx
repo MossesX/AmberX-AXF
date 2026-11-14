@@ -3,7 +3,8 @@
  *
  * One live data set (ui-directory@1, framework/core/ui-directory.mjs) of every UI surface across every app, built by
  * the plugin's collector (directory.mjs) from the registries and rebuilt on every build event. This step ships the
- * data set, its API and the settings tab (status, rebuild, install & uninstall); the directory page follows.
+ * data set, its API, the directory page (a searchable, filterable grouped tree whose rows open their UI or settings) and
+ * the settings tab (status, rebuild, install & uninstall).
  */
 import { useEffect, useState } from 'react';
 import { Button } from '@console/axf/react';
@@ -11,6 +12,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
+import { UiDirectoryPage, VIEW } from './page';
 
 /** The folder name under plugins/ — this plugin's server routes live at /api/plugins/<FOLDER>/. */
 const FOLDER = 'ui-directory';
@@ -60,10 +62,12 @@ export const plugin: AxfWebLibrary = {
   label: 'UI Directory',
   version: '0.1.0',
   appMenu,
+  views: { [VIEW]: { title: 'UI Directory', icon: 'layers', keywords: ['ui directory', 'every screen', 'every page', 'settings', 'tabs', 'dialogs', 'find a screen', 'where is', 'deep link', 'map of the app'], render: () => <UiDirectoryPage /> } },
+  nav: { label: 'Tools', items: [{ id: 'ui-directory', label: 'UI Directory', icon: 'layers', view: VIEW }] },
   // Plugins never ship their own settings screen: a sub-tab of Settings → Plugins with the shared lifecycle panel.
-  settingsTabs: [{ id: 'ui-directory', label: 'UI Directory', icon: 'map', order: 52, parent: 'plugins', description: 'The live data set of every UI surface in every app: size, rebuild, install & uninstall.' }],
+  settingsTabs: [{ id: 'ui-directory', label: 'UI Directory', icon: 'layers', order: 52, parent: 'plugins', description: 'The live data set of every UI surface in every app: size, rebuild, install & uninstall.' }],
   settingsPanels: [
-    { id: 'ui-directory.status', tab: 'ui-directory', title: 'Directory', icon: 'map', order: 10, render: () => <StatusPanel /> },
+    { id: 'ui-directory.status', tab: 'ui-directory', title: 'Directory', icon: 'layers', order: 10, render: () => <StatusPanel /> },
     { id: 'ui-directory.lifecycle', tab: 'ui-directory', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

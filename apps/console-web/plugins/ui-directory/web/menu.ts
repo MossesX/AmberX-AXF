@@ -2,5 +2,5 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 
 export const appMenu: NonNullable<AxfWebLibrary['appMenu']> = [
-  { id: 'ui-directory.menu', menu: 'plugins', menuLabel: 'Plugins', menuOrder: 40, order: 52, items: [{ id: 'ui-directory.settings', label: 'UI Directory', icon: 'map', action: 'settings.open:ui-directory' }] },
+  { id: 'ui-directory.menu', menu: 'plugins', menuLabel: 'Plugins', menuOrder: 40, order: 52, items: [{ id: 'ui-directory.open', label: 'UI Directory', icon: 'layers', action: 'nav:ui-directory' }, { id: 'ui-directory.settings', label: 'UI Directory settings', icon: 'settings', action: 'settings.open:ui-directory' }] },
 ];

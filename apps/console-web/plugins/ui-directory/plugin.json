@@ -11,6 +11,7 @@
     "axf-console"
   ],
   "provides": [
+    "view:ui-directory",
     "settings-tab:ui-directory",
     "service:ui-directory@1"
   ],
@@ -146,6 +147,6 @@
   },
   "builtWith": { "model": "fable", "builtAt": "2026-11-14", "branch": "claude/ui-directory-plugin-self-updating-data" },
   "help": "help.json",
-  "opens": false,
+  "opens": "main",
   "buildHooks": "build-hooks.mjs"
 }
