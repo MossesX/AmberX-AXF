@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5416,
- "updatedAt": "2026-11-14T20:22:16.121Z",
+ "rev": 5417,
+ "updatedAt": "2026-11-14T20:23:07.874Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -208708,7 +208708,7 @@
    "mergedAt": "2026-11-14T20:15:18Z",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:44.815Z",
-   "updatedAt": "2026-11-14T20:21:03.696Z",
+   "updatedAt": "2026-11-14T20:23:04Z",
    "builtAt": "",
    "notes": [
     {
@@ -208746,6 +208746,10 @@
     {
      "text": "Reconciler: PR #647 merged",
      "at": "2026-11-14T20:21:03.696Z"
+    },
+    {
+     "text": "Shipped manifest sm-skins-plugin-merge-main-and-land rev 1 sent to Shipped features (orchestrator): landed 0c23f110d, 1 file(s), 0 test line(s), 3 open.",
+     "at": "2026-11-14T20:23:04Z"
     }
    ],
    "approvals": [],
@@ -208802,6 +208806,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-skins-plugin-merge-main-and-land",
+    "rev": 1,
+    "at": "2026-11-14T20:23:04Z",
+    "landedCommit": "0c23f110d7285680482301ce746d02c891ee7e24"
    },
    "steps": [
     {
@@ -208882,7 +208892,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
