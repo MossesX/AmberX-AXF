@@ -19,6 +19,8 @@ const spacing = [p('space', 'Spacing unit', 'Base spacing unit; every padding is
 const type = [p('fontSize', 'Font size', 'Base font size (px)', 'style-theme', ['fontSize'], 'number', 10, 20), p('headingWeight', 'Heading weight', 'Font weight of headings', 'style-theme', ['headingWeight'], 'number', 300, 900)];
 /** Transparency tokens (style-theme, 0..1). */
 const alpha = (key: string, label: string, tip: string): StyleParam => ({ ...p(key, label, tip, 'style-theme', [key], 'number', 0, 1), step: 0.01 });
+/** Surface transparency (style-theme opacityDialog … opacityBanner): every framed surface reads its own. */
+const surface = (key: string, label: string, what: string): StyleParam => alpha(key, label, `Opacity of ${what} (1 = opaque, lower to see through and frost what is behind)`);
 const E = (kind: string, label: string, category: string, tooltip: string, tokens: [string, string][], params: StyleParam[] = [], flags: FlagSpec[] = []): ElementSpec => ({ kind, label, category, tooltip, tokens, params, flags });
 
 /** The element catalog: what each kind reads. Mirrors the Android explorer so compare windows show the same tree on every port. */
@@ -41,7 +43,7 @@ export const ELEMENTS: ElementSpec[] = [
   E('PASSWORD_FIELD', 'Password field', 'Inputs', 'Masked input with reveal', [['surface', 'Field background'], ['muted', 'Reveal icon']]),
   E('SEARCH_FIELD', 'Search field', 'Inputs', 'Toolbar search', [['surface2', 'Field background'], ['muted', 'Icon']]),
   E('CARD', 'Card / container', 'Containers', 'Card from the container asset', [['surface', 'Card fill'], ['border', 'Card border'], ['shadow', 'Shadow']],
-    [p('style', 'Style', 'card / panel / glass / outline', 'container', ['style'], 'enum', 0, 0, ['card', 'panel', 'glass', 'outline']), alpha('opacityGlass', 'Glass opacity', 'How much surface colour glass panels keep'), p('padding', 'Padding', 'multiple of the spacing unit', 'container', ['padding'], 'number', 0, 4), ...radius.slice(1, 3), ...spacing],
+    [p('style', 'Style', 'card / panel / glass / outline', 'container', ['style'], 'enum', 0, 0, ['card', 'panel', 'glass', 'outline']), surface('opacityPanel', 'Panel opacity', 'cards, containers and groups'), alpha('opacityGlass', 'Glass opacity', 'How much surface colour glass panels keep'), p('padding', 'Padding', 'multiple of the spacing unit', 'container', ['padding'], 'number', 0, 4), ...radius.slice(1, 3), ...spacing],
     [f('divider', 'Header divider', 'Rule under the header', 'container', ['headerDivider']), f('collapsible', 'Collapsible', 'Header toggles the body', 'container', ['collapsible']), f('wrapGroups', 'Wrap groups', 'Every section / group gets a collapse toggle top-right (style-theme, --wrap-groups)', 'style-theme', ['wrapGroups'])]),
   E('LIST_ITEM', 'List item', 'Containers', 'Row with icon, title, subtitle, trailing', [['text', 'Title'], ['muted', 'Subtitle'], ['accentSoft', 'Selected']], spacing),
   E('SECTION_HEADER', 'Section header', 'Containers', 'Uppercase eyebrow', [['muted', 'Text'], ['accent', 'Accent variant']], type.slice(1)),
@@ -49,13 +51,15 @@ export const ELEMENTS: ElementSpec[] = [
   E('SECTION', 'Section', 'Containers', 'Titled block without card chrome (heading row + aside)', [['text', 'Title'], ['muted', 'Aside']], spacing),
   E('NOTE', 'Note', 'Containers', 'Info / warning / danger / success callout', [['accent', 'Info'], ['warning', 'Warning'], ['danger', 'Danger'], ['success', 'Success']], [alpha('opacityTint', 'Tint opacity', 'Strength of the callout background')]),
   E('DIVIDER', 'Divider', 'Containers', '1px rule', [['divider', 'Color']]),
-  E('MENUBAR', 'Menubar', 'Navigation', 'App menu from the app-menu asset', [['surface', 'Bar'], ['text', 'Items'], ['accentSoft', 'Open menu']]),
-  E('TOOLBAR', 'Toolbar', 'Navigation', 'Toolbar from the toolbar asset', [['toolbarBg', 'Bar'], ['muted', 'Icons']], [p('iconSize', 'Icon size', 'px', 'toolbar', ['iconSize'], 'number', 14, 28)], [f('labels', 'Labels', 'Text under icons', 'toolbar', ['showLabels'])]),
+  E('MENUBAR', 'Menubar', 'Navigation', 'App menu from the app-menu asset', [['surface', 'Bar'], ['text', 'Items'], ['accentSoft', 'Open menu']], [surface('opacityToolbar', 'Bar opacity', 'toolbars and the menubar')]),
+  E('TOOLBAR', 'Toolbar', 'Navigation', 'Toolbar from the toolbar asset', [['toolbarBg', 'Bar'], ['muted', 'Icons']], [p('iconSize', 'Icon size', 'px', 'toolbar', ['iconSize'], 'number', 14, 28), surface('opacityToolbar', 'Bar opacity', 'toolbars and the menubar')], [f('labels', 'Labels', 'Text under icons', 'toolbar', ['showLabels'])]),
   E('NAV_LIST', 'Navigation', 'Navigation', 'Nav from the nav-menu asset', [['navBg', 'Background'], ['navText', 'Items'], ['navActive', 'Active item']]),
+  E('BANNER', 'Banner', 'Navigation', 'Top banner strip', [['bg', 'Background'], ['muted', 'Text']], [surface('opacityBanner', 'Banner opacity', 'the top banner')]),
   E('STATUS_BAR', 'Status bar', 'Navigation', 'Bottom status strip', [['statusBg', 'Background'], ['muted', 'Text']]),
-  E('DIALOG', 'Dialog', 'Overlays', 'Dialog from the dialog asset', [['surface', 'Panel'], ['scrim', 'Backdrop']], [alpha('opacityScrim', 'Scrim opacity', 'How dark the backdrop behind dialogs is'), p('position', 'Position', 'center / top / bottom / side', 'dialog', ['position'], 'enum', 0, 0, ['center', 'top', 'bottom', 'side']), ...radius.slice(2, 3)], [f('blur', 'Backdrop blur', 'Blur behind the dialog', 'dialog', ['backdropBlur'])]),
+  E('DIALOG', 'Dialog', 'Overlays', 'Dialog from the dialog asset', [['surface', 'Panel'], ['scrim', 'Backdrop']], [surface('opacityDialog', 'Dialog opacity', 'dialogs'), alpha('opacityScrim', 'Scrim opacity', 'How dark the backdrop behind dialogs is'), p('position', 'Position', 'center / top / bottom / side', 'dialog', ['position'], 'enum', 0, 0, ['center', 'top', 'bottom', 'side']), ...radius.slice(2, 3)], [f('blur', 'Backdrop blur', 'Blur behind the dialog', 'dialog', ['backdropBlur'])]),
+  E('WINDOW', 'Window', 'Overlays', 'Floating window: settings interfaces and tool windows', [['surface', 'Window'], ['surface2', 'Title bar']], [surface('opacitySettings', 'Window opacity', 'floating windows and settings interfaces'), ...radius.slice(2, 3)]),
   E('TOAST', 'Toast', 'Overlays', 'Toasts from the popup asset', [['inverseSurface', 'Toast'], ['inverseText', 'Text']], [p('corner', 'Corner', 'where toasts stack', 'popup', ['corner'], 'enum', 0, 0, ['top-right', 'bottom-right', 'bottom-left', 'top-left', 'top', 'bottom'])]),
-  E('CONTEXT_MENU', 'Context menu', 'Overlays', 'Right-click / long-press menu from the context-menu asset', [['surface', 'Menu'], ['accentSoft', 'Hover']], [p('density', 'Density', 'compact / comfortable', 'context-menu', ['density'], 'enum', 0, 0, ['compact', 'comfortable'])], [f('icons', 'Show icons', '', 'context-menu', ['showIcons']), f('shortcuts', 'Show shortcuts', '', 'context-menu', ['showShortcuts'])]),
+  E('CONTEXT_MENU', 'Context menu', 'Overlays', 'Right-click / long-press menu from the context-menu asset', [['surface', 'Menu'], ['accentSoft', 'Hover']], [p('density', 'Density', 'compact / comfortable', 'context-menu', ['density'], 'enum', 0, 0, ['compact', 'comfortable']), surface('opacityMenu', 'Menu opacity', 'menus, dropdowns and popovers')], [f('icons', 'Show icons', '', 'context-menu', ['showIcons']), f('shortcuts', 'Show shortcuts', '', 'context-menu', ['showShortcuts'])]),
   E('EMPTY_STATE', 'Empty state', 'States', 'Empty / loading / error blocks', [['muted', 'Text'], ['surface2', 'Icon well']]),
   E('PROGRESS', 'Progress', 'States', 'Indeterminate progress', [['accent', 'Bar'], ['surface3', 'Track']]),
   E('TABLE', 'Table', 'Data & media', 'Data grid (library)', [['border', 'Grid lines'], ['surface2', 'Header']]),
@@ -224,6 +228,8 @@ export function ElementPreview({ kind }: { kind: string }) {
       case 'NOTE': return <div className="fx-stack"><Note>Info note (accent tint).</Note><Note tone="warning">Warning note.</Note><Note tone="danger">Danger note.</Note><Note tone="success">Success note.</Note></div>;
       case 'DIVIDER': return <hr />;
       case 'DIALOG': return <Button icon="external" onClick={() => rt.openDialog('about')}>Open a dialog</Button>;
+      case 'WINDOW': return <Note>Every floating window and settings interface reads Window opacity. Its own window menu → Window settings → Background overrides it for that one window.</Note>;
+      case 'BANNER': return <Note>The top banner reads Banner opacity.</Note>;
       case 'TOAST': return <Button icon="bell" onClick={() => rt.toast('Hello from the preview', 'success', 'Toast')}>Show toast</Button>;
       case 'CONTEXT_MENU': return <div className="fx-empty" data-fx-ctx-target="canvas">Right-click here</div>;
       case 'EMPTY_STATE': return <div className="fx-empty">Nothing here yet</div>;
