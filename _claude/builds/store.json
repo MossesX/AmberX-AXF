@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5291,
- "updatedAt": "2026-11-14T12:27:36.326Z",
+ "rev": 5292,
+ "updatedAt": "2026-11-14T12:28:11.872Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211972,14 +211972,14 @@
    "title": "HOTFIX: get main CI green (theme-swap opacity + plugin lifecycle stale refs)",
    "category": "bug fix",
    "detail": "Main's full CI is red, so the merge queue can't land any batch and builds stop early back to Pending. Fix: (1) scripts/theme-swap.mjs fails because every style theme shows the hub opacities (look pinned to axHub); make style themes use their own opacity values. (2) Plugin lifecycle check: stale refs in 7 plugins; fix them. Land #665 first. Then re-add the console app stack #637 #639 #633 #640 #643 and the land-batch PRs to the merge queue and redeploy the console.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/hotfix-get-main-ci-green-theme-swap",
    "pr": "#669",
    "createdAt": "2026-11-14T03:29:11.368Z",
-   "updatedAt": "2026-11-14T12:27:35.035Z",
+   "updatedAt": "2026-11-14T12:28:10.129Z",
    "builtAt": "",
    "notes": [
     {
@@ -212029,6 +212029,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-14T12:26:06.636Z"
+    },
+    {
+     "text": "Started run 3 on mossesx-max- (Opus, Phase 1): axf-hotfix-get-main-ci-green-theme-swap--sully.",
+     "at": "2026-11-14T12:28:10.129Z"
     }
    ],
    "approvals": [],
@@ -212049,11 +212053,11 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "mossesx-max-",
-    "session": "",
+    "session": "axf-hotfix-get-main-ci-green-theme-swap--sully",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-14T12:17:09.669Z",
-    "runs": 2,
+    "launchedAt": "2026-11-14T12:28:09.521Z",
+    "runs": 3,
     "lastRun": {
      "at": "2026-11-14T12:26:06.137Z",
      "exit": 0,
@@ -212064,9 +212068,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-14T12:17:09.669Z",
+    "dispatchedAt": "2026-11-14T12:28:09.521Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -212075,7 +212079,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-14T12:17:09.669Z",
+    "pickedAt": "2026-11-14T12:28:09.521Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -212156,7 +212160,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
