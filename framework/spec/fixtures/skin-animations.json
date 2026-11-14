@@ -1,0 +1,377 @@
+{
+  "style": {
+    "default": {
+      "vars": {
+        "--fx-ease": "cubic-bezier(0.2, 0, 0, 1)",
+        "--fx-longpress-ms": "550ms",
+        "--fx-doubletap-ms": "300ms",
+        "--fx-snap-grid": "8px",
+        "--fx-anim-dur": "calc(var(--fx-motion) * 2.500)",
+        "--fx-anim-sweep-dur": "calc(var(--fx-motion) * 4.000)",
+        "--fx-anim-stagger": "calc(var(--fx-motion) * 0.400)",
+        "--fx-anim-ease": "cubic-bezier(0.2, 0, 0, 1)",
+        "--fx-anim-pop-ease": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        "--fx-anim-intensity": "0.60"
+      },
+      "attrs": {
+        "data-fx-motion": "theme",
+        "data-fx-entrance": "theme",
+        "data-fx-hover": "theme",
+        "data-fx-press": "theme",
+        "data-fx-focus": "auto",
+        "data-fx-cursor": "pointer",
+        "data-fx-anim-swatches": "wave",
+        "data-fx-anim-skin-switch": "ripple",
+        "data-fx-anim-picker": "fan"
+      }
+    },
+    "fluid": {
+      "vars": {
+        "--fx-ease": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        "--fx-longpress-ms": "550ms",
+        "--fx-doubletap-ms": "300ms",
+        "--fx-snap-grid": "8px",
+        "--fx-motion": "160ms",
+        "--fx-anim-dur": "calc(var(--fx-motion) * 2.500)",
+        "--fx-anim-sweep-dur": "calc(var(--fx-motion) * 4.000)",
+        "--fx-anim-stagger": "calc(var(--fx-motion) * 0.400)",
+        "--fx-anim-ease": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        "--fx-anim-pop-ease": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        "--fx-anim-intensity": "0.60"
+      },
+      "attrs": {
+        "data-fx-motion": "normal",
+        "data-fx-entrance": "scale",
+        "data-fx-hover": "theme",
+        "data-fx-press": "theme",
+        "data-fx-focus": "auto",
+        "data-fx-cursor": "pointer",
+        "data-fx-anim-swatches": "wave",
+        "data-fx-anim-skin-switch": "ripple",
+        "data-fx-anim-picker": "fan"
+      }
+    },
+    "ripple": {
+      "vars": {
+        "--fx-ease": "cubic-bezier(0.2, 0, 0, 1)",
+        "--fx-longpress-ms": "550ms",
+        "--fx-doubletap-ms": "300ms",
+        "--fx-snap-grid": "8px",
+        "--fx-anim-dur": "calc(var(--fx-motion) * 1.250)",
+        "--fx-anim-sweep-dur": "calc(var(--fx-motion) * 2.000)",
+        "--fx-anim-stagger": "calc(var(--fx-motion) * 0.200)",
+        "--fx-anim-ease": "cubic-bezier(0.2, 0, 0, 1)",
+        "--fx-anim-pop-ease": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        "--fx-anim-intensity": "0.30"
+      },
+      "attrs": {
+        "data-fx-motion": "theme",
+        "data-fx-entrance": "theme",
+        "data-fx-hover": "theme",
+        "data-fx-press": "theme",
+        "data-fx-focus": "auto",
+        "data-fx-cursor": "pointer",
+        "data-fx-anim-swatches": "ripple",
+        "data-fx-anim-skin-switch": "sweep",
+        "data-fx-anim-picker": "pop"
+      }
+    },
+    "reduced": {
+      "vars": {
+        "--fx-ease": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        "--fx-longpress-ms": "550ms",
+        "--fx-doubletap-ms": "300ms",
+        "--fx-snap-grid": "8px",
+        "--fx-motion": "0ms",
+        "--fx-anim-dur": "calc(var(--fx-motion) * 2.500)",
+        "--fx-anim-sweep-dur": "calc(var(--fx-motion) * 4.000)",
+        "--fx-anim-stagger": "calc(var(--fx-motion) * 0.400)",
+        "--fx-anim-ease": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        "--fx-anim-pop-ease": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        "--fx-anim-intensity": "0.60"
+      },
+      "attrs": {
+        "data-fx-motion": "reduced",
+        "data-fx-entrance": "none",
+        "data-fx-hover": "theme",
+        "data-fx-press": "theme",
+        "data-fx-focus": "auto",
+        "data-fx-cursor": "pointer",
+        "data-fx-anim-swatches": "off",
+        "data-fx-anim-skin-switch": "off",
+        "data-fx-anim-picker": "off",
+        "data-fx-dialog-anim": "none",
+        "data-fx-popup-open": "none",
+        "data-fx-drawer-open": "none"
+      }
+    },
+    "still": {
+      "vars": {
+        "--fx-ease": "cubic-bezier(0.2, 0, 0, 1)",
+        "--fx-longpress-ms": "550ms",
+        "--fx-doubletap-ms": "300ms",
+        "--fx-snap-grid": "8px",
+        "--fx-anim-dur": "calc(var(--fx-motion) * 2.500)",
+        "--fx-anim-sweep-dur": "calc(var(--fx-motion) * 4.000)",
+        "--fx-anim-stagger": "calc(var(--fx-motion) * 0.400)",
+        "--fx-anim-ease": "cubic-bezier(0.2, 0, 0, 1)",
+        "--fx-anim-pop-ease": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        "--fx-anim-intensity": "0.00"
+      },
+      "attrs": {
+        "data-fx-motion": "theme",
+        "data-fx-entrance": "theme",
+        "data-fx-hover": "theme",
+        "data-fx-press": "theme",
+        "data-fx-focus": "auto",
+        "data-fx-cursor": "pointer",
+        "data-fx-anim-swatches": "off",
+        "data-fx-anim-skin-switch": "off",
+        "data-fx-anim-picker": "off"
+      }
+    }
+  },
+  "errors": {
+    "ok": [],
+    "bad": [
+      "data.motion.swatches must be one of wave, ripple, pop, off",
+      "data.motion.animSpeed must be a number from 25 to 400",
+      "data.motion.animIntensity must be a number from 0 to 100"
+    ]
+  },
+  "prefs": {
+    "set": {
+      "swatches": "pop"
+    },
+    "speed": {
+      "swatches": "pop",
+      "speed": 150
+    },
+    "back": {
+      "speed": 150
+    },
+    "bad": null,
+    "unknown": null,
+    "clamp": {
+      "intensity": 100
+    },
+    "overlay": {
+      "speed": "theme",
+      "easing": "standard",
+      "reduced": "system",
+      "entrance": "theme",
+      "swatches": "wave",
+      "skinSwitch": "sweep",
+      "picker": "pop",
+      "animSpeed": 200,
+      "animIntensity": 80
+    }
+  },
+  "state": {
+    "default": {
+      "reduced": false,
+      "speed": 100,
+      "intensity": 60,
+      "prefs": {},
+      "animations": [
+        {
+          "key": "swatches",
+          "label": "Colour swatches",
+          "help": "Skin cards: the swatch row waves or ripples on hover or tap.",
+          "value": "wave",
+          "skin": "wave",
+          "own": false,
+          "on": true,
+          "options": [
+            "wave",
+            "ripple",
+            "pop",
+            "off"
+          ]
+        },
+        {
+          "key": "skinSwitch",
+          "label": "Skin switch",
+          "help": "Switching skins: the new colours ripple or sweep across the screen from where you tapped.",
+          "value": "ripple",
+          "skin": "ripple",
+          "own": false,
+          "on": true,
+          "options": [
+            "ripple",
+            "sweep",
+            "fade",
+            "off"
+          ]
+        },
+        {
+          "key": "picker",
+          "label": "Colour picker",
+          "help": "Colour pickers: the picked swatch pops and fans out into its shades, the colour morphs.",
+          "value": "fan",
+          "skin": "fan",
+          "own": false,
+          "on": true,
+          "options": [
+            "fan",
+            "pop",
+            "off"
+          ]
+        }
+      ]
+    },
+    "own": {
+      "reduced": false,
+      "speed": 50,
+      "intensity": 30,
+      "prefs": {
+        "picker": "off",
+        "speed": 50
+      },
+      "animations": [
+        {
+          "key": "swatches",
+          "label": "Colour swatches",
+          "help": "Skin cards: the swatch row waves or ripples on hover or tap.",
+          "value": "ripple",
+          "skin": "ripple",
+          "own": false,
+          "on": true,
+          "options": [
+            "wave",
+            "ripple",
+            "pop",
+            "off"
+          ]
+        },
+        {
+          "key": "skinSwitch",
+          "label": "Skin switch",
+          "help": "Switching skins: the new colours ripple or sweep across the screen from where you tapped.",
+          "value": "sweep",
+          "skin": "sweep",
+          "own": false,
+          "on": true,
+          "options": [
+            "ripple",
+            "sweep",
+            "fade",
+            "off"
+          ]
+        },
+        {
+          "key": "picker",
+          "label": "Colour picker",
+          "help": "Colour pickers: the picked swatch pops and fans out into its shades, the colour morphs.",
+          "value": "off",
+          "skin": "pop",
+          "own": true,
+          "on": false,
+          "options": [
+            "fan",
+            "pop",
+            "off"
+          ]
+        }
+      ]
+    },
+    "reduced": {
+      "reduced": true,
+      "speed": 100,
+      "intensity": 60,
+      "prefs": {},
+      "animations": [
+        {
+          "key": "swatches",
+          "label": "Colour swatches",
+          "help": "Skin cards: the swatch row waves or ripples on hover or tap.",
+          "value": "wave",
+          "skin": "wave",
+          "own": false,
+          "on": false,
+          "options": [
+            "wave",
+            "ripple",
+            "pop",
+            "off"
+          ]
+        },
+        {
+          "key": "skinSwitch",
+          "label": "Skin switch",
+          "help": "Switching skins: the new colours ripple or sweep across the screen from where you tapped.",
+          "value": "ripple",
+          "skin": "ripple",
+          "own": false,
+          "on": false,
+          "options": [
+            "ripple",
+            "sweep",
+            "fade",
+            "off"
+          ]
+        },
+        {
+          "key": "picker",
+          "label": "Colour picker",
+          "help": "Colour pickers: the picked swatch pops and fans out into its shades, the colour morphs.",
+          "value": "fan",
+          "skin": "fan",
+          "own": false,
+          "on": false,
+          "options": [
+            "fan",
+            "pop",
+            "off"
+          ]
+        }
+      ]
+    }
+  },
+  "colours": {
+    "mixDark": "#1a3366",
+    "mixLight": "#99b3e6",
+    "notHex": "var(--fx-accent)",
+    "shades5": [
+      "#18305f",
+      "#254b96",
+      "#3366cc",
+      "#698fda",
+      "#a0b8e7"
+    ],
+    "shades4": [
+      "#18305f",
+      "#254b96",
+      "#3366cc",
+      "#698fda",
+      "#a0b8e7"
+    ],
+    "shadesNotHex": [
+      "red",
+      "red",
+      "red"
+    ],
+    "skin": [
+      "#101010",
+      "#202020",
+      "#ff8800",
+      "#eeeeee"
+    ],
+    "none": [],
+    "sweepTap": {
+      "x": "90.0%",
+      "y": "12.5%",
+      "dir": "left"
+    },
+    "sweepNone": {
+      "x": "50%",
+      "y": "50%",
+      "dir": "right"
+    },
+    "sweepOut": {
+      "x": "0.0%",
+      "y": "100.0%",
+      "dir": "right"
+    }
+  }
+}

@@ -21,7 +21,8 @@ delete process.env.AXF_BUILD_ID; delete process.env.AXF_DISPATCH_TOKEN; delete p
 const L = await import('../cli/build-limit.mjs');
 const S = await import('../cli/agent-slots.mjs');
 const G = await import('../cli/dispatch-gate.mjs');
-const P = await import('../../apps/console-web/plugins/build-orchestrator/pipeline-core.mjs');
+let P = null; // the build orchestrator's pipeline core; null once that plugin is uninstalled
+P = await import('../../apps/console-web/plugins/build-orchestrator/pipeline-core.mjs'); // axf-plugin:build-orchestrator
 
 let n = 0; let failed = 0;
 const ok = (cond, what) => { n++; if (!cond) { failed++; console.error(`FAIL ${what}`); } };

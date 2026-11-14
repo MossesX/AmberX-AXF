@@ -318,6 +318,22 @@
               "tag": "lib",
               "recommended": false,
               "suggests": []
+            },
+            {
+              "id": "f.appearance.hubskinonly",
+              "title": "Skin from axHub only: Settings \u2192 Appearance \u2192 Get my skin only from axHub (console) draws the hub-wide skin and axHub's tokens alone, drives the appearance lock (controls locked, \"Following axHub\"), keeps the app's own picks for when it is off",
+              "note": "skin-rules.mjs hubOnlyLook, runtime HUB_SKIN_ONLY_KEY / appearance.hubskin; reachable by settings.set, console.settings, voice; default off; Kotlin twin deferred",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "f.appearance.hubskinoverride",
+              "title": "Override axHub: the switch under Get my skin only from axHub (one or the other); while axHub-only is on every skin and asset editor is greyed out under a lock note with a \"Click here to override\" link; one confirm unlocks editing and edited parts are marked Overridden",
+              "note": "runtime HUB_SKIN_OVERRIDE_KEY / HUB_SKIN_OVERRIDDEN_KEY / appearance.hubskin.override; react HubSkinLockNote / HubSkinLockArea; reachable by settings.set, console.settings, the action, voice; default off; Kotlin twin deferred",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
             }
           ]
         },
@@ -1362,7 +1378,7 @@
             {
               "id": "ui.opacity.surfaces",
               "title": "Surface transparency tokens: every dialog, settings window, panel, menu, toolbar and banner reads its own opacity",
-              "note": "",
+              "note": "Each kind of surface (dialog, settings window, panel, menu, toolbar, banner) has its own opacity token, so a skin or a person can make one see-through with a frosted backdrop without touching the others.",
               "tag": "core",
               "recommended": true,
               "suggests": []

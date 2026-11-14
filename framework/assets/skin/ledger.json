@@ -16,6 +16,10 @@
   "data": {
     "layoutTheme": "data-grid",
     "colorTheme": "slate-steel",
+    "colorThemes": {
+      "light": "linen-slate",
+      "dark": "slate-steel"
+    },
     "styleTheme": "enterprise",
     "behaviorTheme": "precise",
     "assets": {

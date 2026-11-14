@@ -534,6 +534,8 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
   backdrop-filter: var(--fx-backdrop-toolbar); -webkit-backdrop-filter: var(--fx-backdrop-toolbar);
 }
 .fx-toolbar > *, .fx-toolbar__widgets > * { scroll-snap-align: start; }
+/* a page toolbar's own instance settings (chrome-settings@1): a layout-free wrapper carrying its style attributes */
+.fx-toolbar-scope { display: contents; }
 /* toolbar surface + divider (component style engine: data-fx-toolbar-*) */
 [data-fx-toolbar-surface='raised'] .fx-toolbar { background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-toolbar) * 100%), transparent); box-shadow: var(--fx-shadow-sm); }
 [data-fx-toolbar-surface='glass'] .fx-toolbar {
@@ -1124,7 +1126,7 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 /* a plugin UI root (plugin theme override, libs/plugintheme): carries data-axf-plugin, adds no box of its own */
 .fx-plugin-scope { display: contents; }
 .fx-colorfield__row { gap: var(--fx-dens-gap-md); align-items: center; flex-wrap: nowrap; }
-.fx-colorfield__pick { flex: none; width: calc(var(--fx-row-h) * 1.2); height: var(--fx-row-h); padding: var(--fx-dens-gap-xs); cursor: pointer; }
+.fx-colorfield__pick { flex: none; width: calc(var(--fx-row-h) * 1.2); height: var(--fx-row-h); cursor: pointer; }
 .fx-colorfield__row .fx-field__input { flex: 1; min-width: 0; }
 .fx-check:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: 2px; }
 .fx-switchrow__hint { color: var(--fx-muted); font-size: var(--fx-type-root-sm); }
@@ -1150,6 +1152,10 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 /* Note: info / warning / danger / success callout */
 .fx-note { display: flex; gap: var(--fx-dens-gap-md); align-items: flex-start; padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-lg); border-radius: var(--fx-radius-sm); font-size: var(--fx-type-root-md); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
 .fx-note > .fx-icon { margin-top: var(--fx-dens-gap-2xs); }
+/* Skin from axHub only: an editor that would change the skin or an asset, greyed out and disabled under the lock note */
+.axf-hubskin-area { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); }
+.axf-hubskin-area__fields { border: 0; margin: 0; padding: 0; min-width: 0; opacity: var(--fx-opacity-muted); }
+.axf-hubskin-lock .fx-note__body { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); }
 .fx-note.is-warning { background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); }
 /* a part of the page the host app manages (embed@1 lock takes, e.g. plugins): shown, greyed, not usable */
 .fx-locked { opacity: max(var(--fx-opacity-disabled), 0.5); pointer-events: none; user-select: none; }
@@ -1857,3 +1863,73 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
 .axf-controlled--success { border-inline-start-color: var(--fx-success); }
 .axf-controlled--danger { border-inline-start-color: var(--fx-danger); }
 .axf-controlled__note { align-items: center; gap: var(--fx-dens-gap-xs); }
+
+/* Skin animations (behavior-theme motion.swatches / skinSwitch / picker, engines/behavior.ts): every duration, easing
+   and distance comes from the --fx-anim-* tokens the behaviour theme compiles; off when reduced motion is on, when the
+   intensity is 0 or when a skin turns one off (data-fx-anim-* = off). */
+:root {
+  --fx-anim-dur: calc(var(--fx-motion) * 2.5); --fx-anim-sweep-dur: calc(var(--fx-motion) * 4); /* theme-ok */
+  --fx-anim-stagger: calc(var(--fx-motion) * 0.4); --fx-anim-ease: var(--fx-ease); /* theme-ok */
+  --fx-anim-pop-ease: cubic-bezier(0.34, 1.56, 0.64, 1); --fx-anim-intensity: 0.6; /* theme-ok */
+  --fx-anim-sweep-x: 50%; --fx-anim-sweep-y: 50%; --fx-anim-sweep-r: 150vmax; /* theme-ok */
+}
+/* Swatch row (components/Swatches.tsx): waves, ripples or pops on hover, focus or tap */
+.fx-swatches { display: flex; align-items: stretch; gap: var(--fx-dens-gap-2xs); }
+.fx-swatches__chip { flex: 1 1 0; min-width: 0; border-radius: var(--fx-radius-sm); transform-origin: 50% 100%; transition: background-color var(--fx-anim-dur) var(--fx-anim-ease); }
+.fx-swatches--joined { gap: 0; border-radius: var(--fx-radius-sm); overflow: visible; }
+.fx-swatches--joined .fx-swatches__chip { border-radius: 0; }
+.fx-swatches--joined .fx-swatches__chip:first-child { border-start-start-radius: var(--fx-radius-sm); border-end-start-radius: var(--fx-radius-sm); }
+.fx-swatches--joined .fx-swatches__chip:last-child { border-start-end-radius: var(--fx-radius-sm); border-end-end-radius: var(--fx-radius-sm); }
+:is(.fx-swatches, [data-fx-swatch-host]):is(:hover, :focus-visible, :focus-within, [data-fx-playing]) .fx-swatches__chip {
+  animation: fx-swatch-wave var(--fx-anim-dur) var(--fx-anim-ease) both; animation-delay: calc(var(--axf-swatch-i) * var(--fx-anim-stagger));
+}
+[data-fx-anim-swatches='ripple'] :is(.fx-swatches, [data-fx-swatch-host]):is(:hover, :focus-visible, :focus-within, [data-fx-playing]) .fx-swatches__chip { animation-name: fx-swatch-ripple; }
+[data-fx-anim-swatches='pop'] :is(.fx-swatches, [data-fx-swatch-host]):is(:hover, :focus-visible, :focus-within, [data-fx-playing]) .fx-swatches__chip { animation-name: fx-swatch-pop; animation-timing-function: var(--fx-anim-pop-ease); }
+[data-fx-anim-swatches='off'] .fx-swatches__chip { animation: none !important; }
+@keyframes fx-swatch-wave {
+  0%, 100% { transform: translateY(0); }
+  40% { transform: translateY(calc(var(--fx-dens-gap-lg) * var(--fx-anim-intensity) * -1)) scaleY(calc(1 + var(--fx-anim-intensity) * 0.3)); }
+  70% { transform: translateY(calc(var(--fx-dens-gap-xs) * var(--fx-anim-intensity))); }
+}
+@keyframes fx-swatch-ripple {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  45% { transform: scale(calc(1 + var(--fx-anim-intensity) * 0.35)); filter: brightness(calc(1 + var(--fx-anim-intensity) * 0.3)); }
+}
+@keyframes fx-swatch-pop {
+  0%, 100% { transform: scale(1) rotate(0); }
+  50% { transform: scale(calc(1 + var(--fx-anim-intensity) * 0.5)) rotate(calc(var(--fx-anim-intensity) * 12deg)); }
+}
+/* Skin switch (runtime skinSwitchFx): the new look grows out of the tap point (ripple), wipes across (sweep) or fades,
+   through the View Transitions API; without it the switch just snaps as before. */
+::view-transition-old(root), ::view-transition-new(root) { mix-blend-mode: normal; }
+html[data-fx-skin-switching]::view-transition-old(root) { animation: none; }
+html[data-fx-skin-switching='ripple']::view-transition-new(root) { animation: fx-skin-ripple var(--fx-anim-sweep-dur) var(--fx-anim-ease) both; }
+html[data-fx-skin-switching='sweep']::view-transition-new(root) { animation: fx-skin-sweep var(--fx-anim-sweep-dur) var(--fx-anim-ease) both; }
+html[data-fx-skin-switching='sweep'][data-fx-sweep-dir='left']::view-transition-new(root) { animation-name: fx-skin-sweep-left; }
+html[data-fx-skin-switching='fade']::view-transition-new(root) { animation: fx-fade var(--fx-anim-sweep-dur) var(--fx-anim-ease) both; }
+@keyframes fx-skin-ripple {
+  from { clip-path: circle(0 at var(--fx-anim-sweep-x) var(--fx-anim-sweep-y)); }
+  to { clip-path: circle(var(--fx-anim-sweep-r) at var(--fx-anim-sweep-x) var(--fx-anim-sweep-y)); }
+}
+@keyframes fx-skin-sweep { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes fx-skin-sweep-left { from { clip-path: inset(0 0 0 100%); } to { clip-path: inset(0 0 0 0); } }
+/* Colour picker (components/Swatches.tsx SwatchFan): the picked swatch pops and its shades fan out; the colour morphs */
+.fx-swatch-fan { position: relative; display: inline-flex; flex: none; width: calc(var(--fx-row-h) * 1.2); height: var(--fx-row-h); }
+.fx-swatch-fan__main { position: relative; z-index: 1; width: 100%; height: 100%; border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); transition: background-color var(--fx-anim-dur) var(--fx-anim-ease); }
+.fx-swatch-fan__main > input { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; cursor: pointer; opacity: 0; }
+.fx-swatch-fan__shades { position: absolute; inset: 0; pointer-events: none; }
+.fx-swatch-fan__shade { position: absolute; inset: 0; border-radius: var(--fx-radius-sm); opacity: 0; transform-origin: 50% 150%; }
+.fx-swatch-fan[data-fx-playing] .fx-swatch-fan__main { animation: fx-swatch-pop var(--fx-anim-dur) var(--fx-anim-pop-ease) both; }
+.fx-swatch-fan[data-fx-playing] .fx-swatch-fan__shade { animation: fx-swatch-fan var(--fx-anim-sweep-dur) var(--fx-anim-ease) both; animation-delay: calc(var(--axf-swatch-i) * var(--fx-anim-stagger) * 0.5); }
+[data-fx-anim-picker='pop'] .fx-swatch-fan[data-fx-playing] .fx-swatch-fan__shade { animation: none; }
+[data-fx-anim-picker='off'] .fx-swatch-fan .fx-swatch-fan__main, [data-fx-anim-picker='off'] .fx-swatch-fan .fx-swatch-fan__shade { animation: none !important; }
+@keyframes fx-swatch-fan {
+  0% { opacity: 0; transform: rotate(0) translateY(0); }
+  35%, 65% { opacity: 1; transform: rotate(calc(var(--axf-swatch-spread) * var(--fx-anim-intensity) * 28deg)) translateY(calc(var(--fx-row-h) * var(--fx-anim-intensity) * -0.6)); }
+  100% { opacity: 0; transform: rotate(0) translateY(0); }
+}
+[data-fx-motion='reduced'] :is(.fx-swatches__chip, .fx-swatch-fan__main, .fx-swatch-fan__shade) { animation: none !important; transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  :is(.fx-swatches__chip, .fx-swatch-fan__main, .fx-swatch-fan__shade) { animation: none !important; transition: none; }
+  html[data-fx-skin-switching]::view-transition-new(root) { animation: none; }
+}
