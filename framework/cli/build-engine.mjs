@@ -11,6 +11,7 @@ import { helpErrors } from '../core/engines/help-rules.mjs';
 import { navStyleErrors, navStyleSchemaProperties } from '../core/engines/navstyle-rules.mjs';
 import { AGENT_CARD_TYPE, agentCardErrors, agentCardSchemaProperties } from '../core/engines/agent-card-rules.mjs';
 import { JOB_TYPE, jobTypeErrors, jobTypeSchemaProperties } from '../core/engines/job-type-rules.mjs';
+import { voiceErrors } from '../core/engines/chat-audio.mjs';
 import { CARD_TYPE, cardErrors, cardSchemaProperties } from '../core/engines/card-rules.mjs';
 import { partsErrors as skinPartsErrors } from '../core/engines/skin-coverage.mjs';
 import { DEMO_TYPES, demoAssetErrors, demoSchemaProperties } from '../core/engines/demo-rules.mjs';
@@ -186,6 +187,8 @@ export function validateAsset(raw) {
   errors.push(...agentCardErrors(raw.type, raw.data));
   // job-type@1: ONE validator shared with core (core/engines/job-type-rules.mjs)
   errors.push(...jobTypeErrors(raw.type, raw.data));
+  // voice@1 cast: ONE validator shared with core (core/engines/chat-audio.mjs)
+  errors.push(...voiceErrors(raw.type, raw.data));
   // card@1: ONE validator shared with core (core/engines/card-rules.mjs)
   errors.push(...cardErrors(raw.type, raw.data));
   // demonstration@1 / book@1 / clip@1 / docs@1: ONE validator shared with core (core/engines/demo-rules.mjs)
