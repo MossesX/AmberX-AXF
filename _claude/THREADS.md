@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 01:01 UTC · `voice-listener-use-claude-when-connected` s8 done (all) · orchestrator
 - 2026-11-14 01:04 UTC · `voice-listener-use-claude-when-connected` s9 done (all) · orchestrator
 - 2026-11-14 01:06 UTC · `voice-listener-use-claude-when-connected` s10 done (all) · orchestrator
 - 2026-11-14 01:07 UTC · `voice-listener-use-claude-when-connected` s11 done (all) · orchestrator
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:50 UTC · `land-finish-auto-land-live-clear-backlog` s8 done (all) · orchestrator
 - 2026-11-14 22:50 UTC · `picker-dialog-plugin-replaces-all` s9 done (all) · orchestrator
 - 2026-11-14 22:51 UTC · `themed-native-controls-plugin` s6 done, → running (all) · orchestrator
+- 2026-11-14 22:51 UTC · `land-all-skin-builds` note (all) · orchestrator
 
 ## Token passes (log)
 
