@@ -72,3 +72,26 @@ host data copy of `framework/catalog/status.json` was missing `ui.opacity.surfac
 | s14 | demo-pipelines-guided-walkthrough-live | #646 | 324 behind; clash in `control/inventory.json`: regenerated. Branch's help pack was invalid (a `#` target, duplicate `speed`) and 12 controls had no help: fixed | all green + demonstration-designer tests (node + server_test.py), plugin-lifecycle; glossary catalog --check and help-coverage red only for main's gaps (fixed in this build's PR) | `72b4167a96` |
 | s15 | console-app-wake-word-voice-listener | #643 | 372 behind; clash in `control/inventory.json`: regenerated; 13 controls had no help under main's 100% ratchet: help added | all green + wake-listener tests (82), plugin-lifecycle; help-coverage red only for main's Gizmo guide gap | `b62e07071b` |
 | s16 | hotfix-desktop-console-draws-app-menu | #658 | 126 behind; clean merge | all green + chrome-once e2e (PR #658 regression, 29 checks, desktop + phone, built merged tree); the deployed console failed it (older than main) | `e19da88758` |
+
+Extra fixes for checks that were red on main itself, in this build's PR #665 (first in the stack, so every PR
+behind it is tested with them): `help-coverage --check` (the Gizmo guide settings tab had no help, 99.9% vs a 100%
+ratchet), the glossary `catalog.mjs --check` (`ui.opacity.surfaces` had no description, 389 vs 388), and the light
+PR check's console type-check (`VetoHost.overlay*` existed only in console-web's hand-edited baked `veto.ts`, so
+re-baking from `framework/` broke `approvals-banner`, TS2339, on every open PR). Verified on main + the fix:
+`npx tsc --noEmit` clean after CI's re-bake.
+
+## Merge queue (s17)
+
+Stack, in this order (`land.mjs queue add` + `move`, Nov 14 ~01:4x): **#665** (this build) → #662 per-instance-settings
+→ #641 skin-axhub-override → #652 skin-animations → #648 skin-config-panel → #647 skins-plugin → #655
+full-voice-control → #644 orchestrator-custom-groups (was a draft with every step done: marked ready) → #646
+demo-pipelines → #658 hotfix-desktop-console. Nothing merged by hand.
+
+Held back on purpose, merged with main and pushed but **not queued**: their builds still have open feature steps,
+and Brett asked for what finished.
+- #656 toolbar-widgets: s2, the toolbar widgets themselves.
+- #664 icon-map: s9, colour layers and logo packs (Fable).
+- #657 token-registry: s6–s9 (default skin, snapshots, export, restore).
+- #643 console-app-wake-word: s3–s10 (Android voice, approvals by voice, …).
+
+Each one goes in with `land.mjs queue add <pr>` once its build is done.
