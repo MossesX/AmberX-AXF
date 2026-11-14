@@ -1,0 +1,3472 @@
+{
+ "$axf": "plugin-review-lists@1",
+ "generatedAt": "2026-11-12T18:18:38.610Z",
+ "plan": "plugin-review-what-to-disable-8i0h",
+ "count": 68,
+ "core": [
+  "agent-manager",
+  "ai-assistant",
+  "approvals-banner",
+  "build-orchestrator",
+  "codebase-changes",
+  "console-commands",
+  "console-terminal",
+  "container-access",
+  "follow-amber",
+  "hub-sync",
+  "plugin-commands",
+  "plugin-manager",
+  "plugin-switches",
+  "systems-check",
+  "theme-manager",
+  "token-control"
+ ],
+ "unplanned": [],
+ "plugins": [
+  {
+   "folder": "activity",
+   "name": "Activity banner",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "shared",
+   "lists": {
+    "does": [
+     "A banner at the top of the console whenever anything is built, edited, deleted, pushed, pulled, merged or thought about, queued or running: GitHub Actions runs, the console's own update, AI assistant replies, VPS Auto fix jobs, Codebase changes entries, the p…",
+     "A banner strip in the console chrome.",
+     "Settings: tab activity.",
+     "2 console actions (MCP console_action, CLI axf console action): activity.check, activity.open.",
+     "11 API routes under /api/plugins/activity.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Provides 1 service other plugins can look up: axf.activity@1.",
+     "Banner items: activity, activity.lifecycle, activity.settings."
+    ],
+    "breaks": [
+     "Gone from the console: a banner strip, a Settings tab, 2 actions (activity.check, activity.open), 11 API routes.",
+     "Loses a feature: Push banner (push-banner): axf.activity@1 (optional).",
+     "Its banner items disappear from the console chrome and from the phone."
+    ],
+    "dependsOn": [
+     "Codebase changes banner (codebase-changes): axf.changes@1 (optional).",
+     "Systems check banner (systems-check): axf.github@1 (undeclared), axf.health@1 (undeclared).",
+     "AI assistant (ai-assistant): axf.live-sessions@1 (optional).",
+     "Notifications (notify-control): axf.notify@1 (undeclared)."
+    ],
+    "usedBy": [
+     "Push banner (push-banner): axf.activity@1 (optional)."
+    ]
+   },
+   "compact": {
+    "does": [
+     "A banner at the top of the console whenever anything is built, edited, deleted, pushed, pulled, merged or thought about, queued or running: GitHub Ac…",
+     "Ships a banner strip; Settings tab activity; 2 console actions (activity.check, activity.open); 11 API routes.",
+     "Provides axf.activity@1.",
+     "Banner items activity, activity.lifecycle, activity.settings."
+    ],
+    "breaks": [
+     "Gone: a banner strip, a Settings tab, 2 actions (activity.check, activity.open), 11 API routes.",
+     "Degrades: push-banner (axf.activity@1?)."
+    ],
+    "dependsOn": [
+     "codebase-changes: axf.changes@1?",
+     "systems-check: axf.github@1!, axf.health@1!",
+     "ai-assistant: axf.live-sessions@1?",
+     "notify-control: axf.notify@1!"
+    ],
+    "usedBy": [
+     "push-banner: axf.activity@1?"
+    ]
+   }
+  },
+  {
+   "folder": "agent-manager",
+   "name": "Agent manager",
+   "missing": false,
+   "core": true,
+   "coreReasons": [
+    "hard dependents: claude-accounts",
+    "used by 11 plugins"
+   ],
+   "tier": "core",
+   "lists": {
+    "does": [
+     "Create, edit, manage and orchestrate AI agents built from personas, lingo, skills and tools, each with its own persistent memory.",
+     "1 screen: agent-manager.",
+     "Settings: tab agent-manager.",
+     "2 console actions (MCP console_action, CLI axf console action): agent-manager.vinny, agent-manager.wizard.",
+     "50 API routes under /api/plugins/agent-manager.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Provides 3 services other plugins can look up: axf.agents@1, axf.hub-runs@1, axf.vinny@1."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 2 actions (agent-manager.vinny, agent-manager.wizard), 50 API routes.",
+     "Stops working: Claude accounts (claude-accounts): axf.vinny@1 (required).",
+     "Loses a feature: Agent voice (agent-voice): axf.agents@1 (optional).",
+     "Loses a feature: AI assistant (ai-assistant): axf.agents@1 (optional).",
+     "Loses a feature: AI keys (ai-keys): axf.vinny@1 (optional).",
+     "Loses a feature: Badges (claude-badge): axf.vinny@1 (optional).",
+     "Loses a feature: Terminal (console-terminal): axf.hub-runs@1 (undeclared).",
+     "Loses a feature: Feature assistant (feature-assist): axf.agents@1 (optional).",
+     "Loses a feature: Molly guide (molly-guide): axf.agents@1 (undeclared), axf.vinny@1 (undeclared).",
+     "Loses a feature: Push banner (push-banner): axf.agents@1 (undeclared), axf.vinny@1 (undeclared).",
+     "Loses a feature: Reference links (ref-links): axf.agents@1 (optional).",
+     "Loses a feature: Systems check banner (systems-check): axf.agents@1 (optional), axf.vinny@1 (undeclared)."
+    ],
+    "dependsOn": [
+     "Container access (container-access): axf.containers@1 (optional).",
+     "AI assistant (ai-assistant): axf.llm@1 (optional).",
+     "Snapshot Manager (snapshot-manager): axf.snapshots@1 (optional).",
+     "Framework code: axf.assistant_host, axf.contracts."
+    ],
+    "usedBy": [
+     "Agent voice (agent-voice): axf.agents@1 (optional).",
+     "AI assistant (ai-assistant): axf.agents@1 (optional).",
+     "AI keys (ai-keys): axf.vinny@1 (optional).",
+     "Claude accounts (claude-accounts): axf.vinny@1 (required).",
+     "Badges (claude-badge): axf.vinny@1 (optional).",
+     "Terminal (console-terminal): axf.hub-runs@1 (undeclared).",
+     "Feature assistant (feature-assist): axf.agents@1 (optional).",
+     "Molly guide (molly-guide): axf.agents@1 (undeclared), axf.vinny@1 (undeclared).",
+     "Push banner (push-banner): axf.agents@1 (undeclared), axf.vinny@1 (undeclared).",
+     "Reference links (ref-links): axf.agents@1 (optional).",
+     "Systems check banner (systems-check): axf.agents@1 (optional), axf.vinny@1 (undeclared)."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Create, edit, manage and orchestrate AI agents built from personas, lingo, skills and tools, each with its own persistent memory.",
+     "Ships 1 screen (agent-manager); Settings tab agent-manager; 2 console actions (agent-manager.vinny, agent-manager.wizard); 50 API routes.",
+     "Provides axf.agents@1, axf.hub-runs@1, axf.vinny@1."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 2 actions (agent-manager.vinny, agent-manager.wizard), 50 API routes.",
+     "Stops: claude-accounts (axf.vinny@1*).",
+     "Degrades: agent-voice (axf.agents@1?); ai-assistant (axf.agents@1?); ai-keys (axf.vinny@1?); claude-badge (axf.vinny@1?); console-terminal (axf.hub-runs@1!); feature-assist (axf.agents@1?); molly-guide (axf.agents@1!, axf.vinny@1!); push-banner (axf.agents@1!, axf.vinny@1!); ref-links (axf.agents@1?); systems-check (axf.agents@1?, axf.vinny@1!)."
+    ],
+    "dependsOn": [
+     "container-access: axf.containers@1?",
+     "ai-assistant: axf.llm@1?",
+     "snapshot-manager: axf.snapshots@1?"
+    ],
+    "usedBy": [
+     "agent-voice: axf.agents@1?",
+     "ai-assistant: axf.agents@1?",
+     "ai-keys: axf.vinny@1?",
+     "claude-accounts: axf.vinny@1*",
+     "claude-badge: axf.vinny@1?",
+     "console-terminal: axf.hub-runs@1!",
+     "feature-assist: axf.agents@1?",
+     "molly-guide: axf.agents@1!, axf.vinny@1!",
+     "push-banner: axf.agents@1!, axf.vinny@1!",
+     "ref-links: axf.agents@1?",
+     "systems-check: axf.agents@1?, axf.vinny@1!"
+    ]
+   }
+  },
+  {
+   "folder": "agent-slots",
+   "name": "Agent cap",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "shared",
+   "lists": {
+    "does": [
+     "A configurable cap on how many headless Claude sessions and builds run at once on the VPS (agent-slots@1, framework/cli/agent-slots.mjs).",
+     "Settings: tab agent-slots.",
+     "7 API routes under /api/plugins/agent-slots.",
+     "2 plugin commands callable from the CLI, MCP and voice: hard-limit, set-hard-limit.",
+     "Provides 1 service other plugins can look up: axf.agent-slots@1.",
+     "Fills slots: activity.summary, build.queue.top, builds.top, swarm.agent.status and 1 more."
+    ],
+    "breaks": [
+     "Gone from the console: a Settings tab, 7 API routes, 2 commands (CLI, MCP, voice).",
+     "Loses a feature: Build orchestrator (build-orchestrator): axf.agent-slots@1 (optional).",
+     "Loses a feature: Claude sessions (claude-session): axf.agent-slots@1 (optional).",
+     "Its voice and CLI commands stop answering (AmberX, MCP, axf)."
+    ],
+    "dependsOn": [
+     "Systems check banner (systems-check): axf.health@1 (optional)."
+    ],
+    "usedBy": [
+     "Build orchestrator (build-orchestrator): axf.agent-slots@1 (optional).",
+     "Claude sessions (claude-session): axf.agent-slots@1 (optional)."
+    ]
+   },
+   "compact": {
+    "does": [
+     "A configurable cap on how many headless Claude sessions and builds run at once on the VPS (agent-slots@1, framework/cli/agent-slots.mjs).",
+     "Ships Settings tab agent-slots; 7 API routes; 2 plugin commands for CLI, MCP and voice (hard-limit, set-hard-limit).",
+     "Provides axf.agent-slots@1."
+    ],
+    "breaks": [
+     "Gone: a Settings tab, 7 API routes, 2 commands (CLI, MCP, voice).",
+     "Degrades: build-orchestrator (axf.agent-slots@1?); claude-session (axf.agent-slots@1?).",
+     "Its voice/CLI/MCP commands stop."
+    ],
+    "dependsOn": [
+     "systems-check: axf.health@1?"
+    ],
+    "usedBy": [
+     "build-orchestrator: axf.agent-slots@1?",
+     "claude-session: axf.agent-slots@1?"
+    ]
+   }
+  },
+  {
+   "folder": "agent-swarm",
+   "name": "Agent swarm",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "shared",
+   "lists": {
+    "does": [
+     "Headless specialist agents for the Build orchestrator.",
+     "1 screen: agent-swarm.",
+     "Settings: tab agent-swarm.",
+     "2 console actions (MCP console_action, CLI axf console action): agent-swarm.open, agent-swarm.profile.",
+     "10 API routes under /api/plugins/agent-swarm.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Provides 5 services other plugins can look up: agent-jobs@1, axf.crew@1, axf.swarm-roster@1, crew-sections@1, axf.crew-sections@1."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 2 actions (agent-swarm.open, agent-swarm.profile), 10 API routes.",
+     "Loses a feature: Claude sessions (claude-session): axf.crew@1 (optional).",
+     "Loses a feature: Crew (crew-live): axf.swarm-roster@1 (optional).",
+     "Loses a feature: Notifications (notify-control): axf.crew-sections@1 (undeclared).",
+     "Loses a feature: Systems check banner (systems-check): axf.crew-sections@1 (undeclared)."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "Claude sessions (claude-session): axf.crew@1 (optional).",
+     "Crew (crew-live): axf.swarm-roster@1 (optional).",
+     "Notifications (notify-control): axf.crew-sections@1 (undeclared).",
+     "Systems check banner (systems-check): axf.crew-sections@1 (undeclared)."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Headless specialist agents for the Build orchestrator.",
+     "Ships 1 screen (agent-swarm); Settings tab agent-swarm; 2 console actions (agent-swarm.open, agent-swarm.profile); 10 API routes.",
+     "Provides agent-jobs@1, axf.crew@1, axf.swarm-roster@1, crew-sections@1, axf.crew-sections@1."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 2 actions (agent-swarm.open, agent-swarm.profile), 10 API routes.",
+     "Degrades: claude-session (axf.crew@1?); crew-live (axf.swarm-roster@1?); notify-control (axf.crew-sections@1!); systems-check (axf.crew-sections@1!)."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "claude-session: axf.crew@1?",
+     "crew-live: axf.swarm-roster@1?",
+     "notify-control: axf.crew-sections@1!",
+     "systems-check: axf.crew-sections@1!"
+    ]
+   }
+  },
+  {
+   "folder": "agent-voice",
+   "name": "Agent voice",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "shared",
+   "lists": {
+    "does": [
+     "Agents speak: a per-agent voice and narrator console (device voices on the phone or browser, cloud voices from OpenAI or ElevenLabs with keys kept on the server; speed, pitch, volume, presets, read modes, code / link / number / emoji rules, pauses, emphasis,…",
+     "1 screen: agent-voice.",
+     "Settings: tab agent-voice.",
+     "6 console actions (MCP console_action, CLI axf console action): agent-voice.configure, agent-voice.open, agent-voice.pause, agent-voice.resume, agent-voice.settings, agent-voice.stop.",
+     "13 API routes under /api/plugins/agent-voice.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Provides 2 services other plugins can look up: axf.agent-voice@1, axf.speech@1.",
+     "Emits 4 events: axf:agent-voice.configure, axf:agent-voice.listen, axf:agent-voice.say, axf:assistant.focus.",
+     "Fills slots: assistant.head, assistant.mic, assistant.reply."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 6 actions (agent-voice.configure, agent-voice.open, agent-voice.pause and 3 more), 13 API routes.",
+     "Loses a feature: AI assistant (ai-assistant): event axf:assistant.focus.",
+     "Loses a feature: Demonstration Designer (demonstration-designer): axf.speech@1 (optional).",
+     "Loses a feature: Plan Studio (plan-studio): axf.agent-voice@1 (optional).",
+     "Goes unheard: Plan Studio (plan-studio): event axf:agent-voice.say."
+    ],
+    "dependsOn": [
+     "Agent manager (agent-manager): axf.agents@1 (optional).",
+     "AI assistant (ai-assistant): action ai-assistant.open.",
+     "Plan Studio (plan-studio): event axf:agent-voice.say."
+    ],
+    "usedBy": [
+     "AI assistant (ai-assistant): event axf:assistant.focus.",
+     "Demonstration Designer (demonstration-designer): axf.speech@1 (optional).",
+     "Plan Studio (plan-studio): axf.agent-voice@1 (optional)."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Agents speak: a per-agent voice and narrator console (device voices on the phone or browser, cloud voices from OpenAI or ElevenLabs with keys kept on…",
+     "Ships 1 screen (agent-voice); Settings tab agent-voice; 6 console actions (agent-voice.configure, agent-voice.open, agent-voice.pause, agent-voice.resume, agent-voice.settings, agent-voice.stop); 13 API routes.",
+     "Provides axf.agent-voice@1, axf.speech@1.",
+     "Emits axf:agent-voice.configure, axf:agent-voice.listen, axf:agent-voice.say and 1 more."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 6 actions (agent-voice.configure, agent-voice.open, agent-voice.pause and 3 more), 13 API routes.",
+     "Degrades: ai-assistant (event axf:assistant.focus); demonstration-designer (axf.speech@1?); plan-studio (axf.agent-voice@1?).",
+     "Unheard: plan-studio (event axf:agent-voice.say)."
+    ],
+    "dependsOn": [
+     "agent-manager: axf.agents@1?",
+     "ai-assistant: action ai-assistant.open",
+     "plan-studio: event axf:agent-voice.say"
+    ],
+    "usedBy": [
+     "ai-assistant: event axf:assistant.focus",
+     "demonstration-designer: axf.speech@1?",
+     "plan-studio: axf.agent-voice@1?"
+    ]
+   }
+  },
+  {
+   "folder": "ai-assistant",
+   "name": "AI assistant",
+   "missing": false,
+   "core": true,
+   "coreReasons": [
+    "named by the console shell / framework: apps/console-web/src/axf/core/assistant.ts",
+    "hard dependents: agent-voice",
+    "used by 8 plugins"
+   ],
+   "tier": "core",
+   "lists": {
+    "does": [
+     "The framework's assistant (assistant@1) in the Dev Console: every provider in the shared registry (Anthropic, Claude Code subscription, OpenAI, xAI Grok, Gemini, Mistral, Groq, DeepSeek, OpenRouter, Together, Fireworks, Perplexity, Cohere, Cerebras, Azure Ope…",
+     "1 screen: ai-assistant.",
+     "1 dialog: ai-assistant.chat.",
+     "Settings: tab ai-assistant.",
+     "2 console actions (MCP console_action, CLI axf console action): ai-assistant.open, ai.chat.start.",
+     "39 API routes under /api/plugins/ai-assistant.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Provides 2 services other plugins can look up: axf.llm@1, axf.live-sessions@1.",
+     "Emits 2 events: axf:assistant.agent, axf:assistant.reply."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, 1 dialog, a Settings tab, 2 actions (ai-assistant.open, ai.chat.start), 39 API routes.",
+     "Stops working: Agent voice (agent-voice): action ai-assistant.open.",
+     "Loses a feature: Activity banner (activity): axf.live-sessions@1 (optional).",
+     "Loses a feature: Agent manager (agent-manager): axf.llm@1 (optional).",
+     "Loses a feature: Badges (claude-badge): axf.llm@1 (optional).",
+     "Loses a feature: Feature assistant (feature-assist): axf.llm@1 (optional).",
+     "Loses a feature: Maintenance (maintenance): axf.llm@1 (undeclared).",
+     "Loses a feature: Plan Studio (plan-studio): axf.llm@1 (optional).",
+     "Loses a feature: Systems check banner (systems-check): axf.llm@1 (optional).",
+     "Goes unheard: Agent voice (agent-voice): event axf:assistant.focus.",
+     "Named by the console shell or framework: apps/console-web/src/axf/core/assistant.ts."
+    ],
+    "dependsOn": [
+     "Agent manager (agent-manager): axf.agents@1 (optional).",
+     "AI keys (ai-keys): axf.ai-keys@1 (undeclared).",
+     "Container access (container-access): axf.containers@1 (optional).",
+     "Plugin switches (plugin-switches): action plugin-switches.open.",
+     "Agent voice (agent-voice): event axf:assistant.focus.",
+     "Framework code: axf, axf.assistant_host, axf.contracts, axf.contracts.assistant."
+    ],
+    "usedBy": [
+     "Activity banner (activity): axf.live-sessions@1 (optional).",
+     "Agent manager (agent-manager): axf.llm@1 (optional).",
+     "Agent voice (agent-voice): action ai-assistant.open.",
+     "Badges (claude-badge): axf.llm@1 (optional).",
+     "Feature assistant (feature-assist): axf.llm@1 (optional).",
+     "Maintenance (maintenance): axf.llm@1 (undeclared).",
+     "Plan Studio (plan-studio): axf.llm@1 (optional).",
+     "Systems check banner (systems-check): axf.llm@1 (optional)."
+    ]
+   },
+   "compact": {
+    "does": [
+     "The framework's assistant (assistant@1) in the Dev Console: every provider in the shared registry (Anthropic, Claude Code subscription, OpenAI, xAI G…",
+     "Ships 1 screen (ai-assistant); 1 dialog (ai-assistant.chat); Settings tab ai-assistant; 2 console actions (ai-assistant.open, ai.chat.start); 39 API routes.",
+     "Provides axf.llm@1, axf.live-sessions@1.",
+     "Emits axf:assistant.agent, axf:assistant.reply."
+    ],
+    "breaks": [
+     "Gone: 1 screen, 1 dialog, a Settings tab, 2 actions (ai-assistant.open, ai.chat.start), 39 API routes.",
+     "Stops: agent-voice (action ai-assistant.open).",
+     "Degrades: activity (axf.live-sessions@1?); agent-manager (axf.llm@1?); claude-badge (axf.llm@1?); feature-assist (axf.llm@1?); maintenance (axf.llm@1!); plan-studio (axf.llm@1?); systems-check (axf.llm@1?).",
+     "Unheard: agent-voice (event axf:assistant.focus).",
+     "Named by shell/framework: apps/console-web/src/axf/core/assistant.ts."
+    ],
+    "dependsOn": [
+     "agent-manager: axf.agents@1?",
+     "ai-keys: axf.ai-keys@1!",
+     "container-access: axf.containers@1?",
+     "plugin-switches: action plugin-switches.open",
+     "agent-voice: event axf:assistant.focus"
+    ],
+    "usedBy": [
+     "activity: axf.live-sessions@1?",
+     "agent-manager: axf.llm@1?",
+     "agent-voice: action ai-assistant.open",
+     "claude-badge: axf.llm@1?",
+     "feature-assist: axf.llm@1?",
+     "maintenance: axf.llm@1!",
+     "plan-studio: axf.llm@1?",
+     "systems-check: axf.llm@1?"
+    ]
+   }
+  },
+  {
+   "folder": "ai-keys",
+   "name": "AI keys",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "shared",
+   "lists": {
+    "does": [
+     "A dialog that keeps several Anthropic keys (API keys in any Anthropic format, sk-ant-api03… or sk-ant-usr…, checked live, and Claude subscription tokens sk-ant-oat… from `claude setup-token`) and picks the active one of each kind for the AI assistant.",
+     "2 dialogs: ai-keys, ai-keys.accounts.",
+     "Settings: tab ai-keys.",
+     "2 console actions (MCP console_action, CLI axf console action): ai-keys.accounts, ai-keys.open.",
+     "11 API routes under /api/plugins/ai-keys.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Provides 1 service other plugins can look up: axf.ai-keys@1."
+    ],
+    "breaks": [
+     "Gone from the console: 2 dialogs, a Settings tab, 2 actions (ai-keys.accounts, ai-keys.open), 11 API routes.",
+     "Loses a feature: AI assistant (ai-assistant): axf.ai-keys@1 (undeclared).",
+     "Loses a feature: Badges (claude-badge): axf.ai-keys@1 (optional).",
+     "Loses a feature: Systems check banner (systems-check): axf.ai-keys@1 (undeclared)."
+    ],
+    "dependsOn": [
+     "Claude accounts (claude-accounts): axf.claude-accounts@1 (optional).",
+     "Agent manager (agent-manager): axf.vinny@1 (optional).",
+     "Framework code: axf."
+    ],
+    "usedBy": [
+     "AI assistant (ai-assistant): axf.ai-keys@1 (undeclared).",
+     "Badges (claude-badge): axf.ai-keys@1 (optional).",
+     "Systems check banner (systems-check): axf.ai-keys@1 (undeclared)."
+    ]
+   },
+   "compact": {
+    "does": [
+     "A dialog that keeps several Anthropic keys (API keys in any Anthropic format, sk-ant-api03… or sk-ant-usr…, checked live, and Claude subscription tok…",
+     "Ships 2 dialogs (ai-keys, ai-keys.accounts); Settings tab ai-keys; 2 console actions (ai-keys.accounts, ai-keys.open); 11 API routes.",
+     "Provides axf.ai-keys@1."
+    ],
+    "breaks": [
+     "Gone: 2 dialogs, a Settings tab, 2 actions (ai-keys.accounts, ai-keys.open), 11 API routes.",
+     "Degrades: ai-assistant (axf.ai-keys@1!); claude-badge (axf.ai-keys@1?); systems-check (axf.ai-keys@1!)."
+    ],
+    "dependsOn": [
+     "claude-accounts: axf.claude-accounts@1?",
+     "agent-manager: axf.vinny@1?"
+    ],
+    "usedBy": [
+     "ai-assistant: axf.ai-keys@1!",
+     "claude-badge: axf.ai-keys@1?",
+     "systems-check: axf.ai-keys@1!"
+    ]
+   }
+  },
+  {
+   "folder": "alerts-bell",
+   "name": "Alerts bell",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "The developer alerts bell on the banner (it used to sit on the toolbar): a bell button that opens the Alerts view and, next to it, the number of unread alerts (hidden at zero, 99+ past 99).",
+     "Settings: tab alerts-bell.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice)."
+    ],
+    "breaks": [
+     "Gone from the console: a Settings tab.",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "The developer alerts bell on the banner (it used to sit on the toolbar): a bell button that opens the Alerts view and, next to it, the number of unre…",
+     "Ships Settings tab alerts-bell."
+    ],
+    "breaks": [
+     "Gone: a Settings tab.",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "amberx-listeners",
+   "name": "AmberX listeners",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Every AmberX device's background listeners in the Dev Console (listener@1): the hands-free wake word, the command after it, the Speak button, Gizmo's talk mode, the recorder mic, the axHub watch, the veto alarm and the page's own listeners, with their live st…",
+     "1 screen: amberx-listeners.",
+     "Settings: tab amberx-listeners.",
+     "1 console action (MCP console_action, CLI axf console action): amberx-listeners.open.",
+     "6 API routes under /api/plugins/amberx-listeners.",
+     "6 plugin commands callable from the CLI, MCP and voice: devices, policies, registry, state, set-policy, restart."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 1 action (amberx-listeners.open), 6 API routes, 6 commands (CLI, MCP, voice).",
+     "No other plugin, banner or voice command depends on it.",
+     "Its voice and CLI commands stop answering (AmberX, MCP, axf)."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Every AmberX device's background listeners in the Dev Console (listener@1): the hands-free wake word, the command after it, the Speak button, Gizmo's…",
+     "Ships 1 screen (amberx-listeners); Settings tab amberx-listeners; 1 console action (amberx-listeners.open); 6 API routes; 6 plugin commands for CLI, MCP and voice (devices, policies, registry, state, set-policy, restart)."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 1 action (amberx-listeners.open), 6 API routes, 6 commands (CLI, MCP, voice).",
+     "Nothing else depends on it.",
+     "Its voice/CLI/MCP commands stop."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "approvals-banner",
+   "name": "Approvals banner",
+   "missing": false,
+   "core": true,
+   "coreReasons": [
+    "named core by Brett in the build brief"
+   ],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "The veto banner: a banner at the top of the app whenever axHub holds a call on its countdown (veto@1: it runs by itself after 90 s unless you stop it) or has one waiting for approval.",
+     "1 dialog: approvals.veto.",
+     "A banner strip in the console chrome.",
+     "Settings: tab approvals-banner.",
+     "6 console actions (MCP console_action, CLI axf console action): approvals.check, approvals.notice, approvals.open, approvals.review, approvals.veto, approvals.view.",
+     "2 API routes under /api/plugins/approvals-banner.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Banner items: approvals, approvals-banner.alarm."
+    ],
+    "breaks": [
+     "Gone from the console: 1 dialog, a banner strip, a Settings tab, 6 actions (approvals.check, approvals.notice, approvals.open and 3 more), 2 API routes.",
+     "No other plugin, banner or voice command depends on it.",
+     "Its banner items disappear from the console chrome and from the phone."
+    ],
+    "dependsOn": [
+     "Systems check banner (systems-check): axf.health@1 (undeclared)."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "The veto banner: a banner at the top of the app whenever axHub holds a call on its countdown (veto@1: it runs by itself after 90 s unless you stop it…",
+     "Ships 1 dialog (approvals.veto); a banner strip; Settings tab approvals-banner; 6 console actions (approvals.check, approvals.notice, approvals.open, approvals.review, approvals.veto, approvals.view); 2 API routes.",
+     "Banner items approvals, approvals-banner.alarm."
+    ],
+    "breaks": [
+     "Gone: 1 dialog, a banner strip, a Settings tab, 6 actions (approvals.check, approvals.notice, approvals.open and 3 more), 2 API routes.",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "systems-check: axf.health@1!"
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "audio-extract",
+   "name": "Audio Extract",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Pulls the audio out of videos on the phone into audio files (screen recordings first): the original AAC copied out as .m4a with no re-encode, or WAV when picked.",
+     "1 screen: audio-extract.",
+     "Settings: tab audio-extract.",
+     "6 console actions (MCP console_action, CLI axf console action): audio-extract.latest, audio-extract.pause, audio-extract.pick, audio-extract.record, audio-extract.resume, audio-extract.stop.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Off by default."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 6 actions (audio-extract.latest, audio-extract.pause, audio-extract.pick and 3 more).",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Pulls the audio out of videos on the phone into audio files (screen recordings first): the original AAC copied out as .m4a with no re-encode, or WAV…",
+     "Ships 1 screen (audio-extract); Settings tab audio-extract; 6 console actions (audio-extract.latest, audio-extract.pause, audio-extract.pick, audio-extract.record, audio-extract.resume, audio-extract.stop).",
+     "Off by default."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 6 actions (audio-extract.latest, audio-extract.pause, audio-extract.pick and 3 more).",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "basic-filter",
+   "name": "Basic filter",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "A sort & filter dialog (search, rules on any column, match all / any, multi-level sort) you can attach to any dataset — every grid is one.",
+     "1 dialog: basic-filter.",
+     "Settings: tab basic-filter.",
+     "1 console action (MCP console_action, CLI axf console action): basic-filter.open.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Fills slots: plugin-switches.row."
+    ],
+    "breaks": [
+     "Gone from the console: 1 dialog, a Settings tab, 1 action (basic-filter.open).",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "Plugin switches (plugin-switches): action plugin-switches.open."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "A sort & filter dialog (search, rules on any column, match all / any, multi-level sort) you can attach to any dataset — every grid is one.",
+     "Ships 1 dialog (basic-filter); Settings tab basic-filter; 1 console action (basic-filter.open)."
+    ],
+    "breaks": [
+     "Gone: 1 dialog, a Settings tab, 1 action (basic-filter.open).",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "plugin-switches: action plugin-switches.open"
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "brand-library",
+   "name": "Brand library",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Browse the framework's brand library: 250 logos, 250 animated logos, 100 icon packs and 50 branding packages for AmberX and GizmoX, in tabs with search, brand and style filters and a virtualised grid.",
+     "1 screen: brand-library.",
+     "Settings: tab brand-library.",
+     "1 console action (MCP console_action, CLI axf console action): brand-library.open.",
+     "5 API routes under /api/plugins/brand-library.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice)."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 1 action (brand-library.open), 5 API routes.",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Browse the framework's brand library: 250 logos, 250 animated logos, 100 icon packs and 50 branding packages for AmberX and GizmoX, in tabs with sear…",
+     "Ships 1 screen (brand-library); Settings tab brand-library; 1 console action (brand-library.open); 5 API routes."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 1 action (brand-library.open), 5 API routes.",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "build-breaker",
+   "name": "Build Breaker",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Everything Brett ever asked for, in plain English (build-asks@1): one compact row per ask with its date and time, a status badge (built, in progress, pending, planned, held, removed, waiting for push / pull / deploy / approval), build time, cost and model.",
+     "1 screen: build-breaker.",
+     "Settings: tab build-breaker.",
+     "1 console action (MCP console_action, CLI axf console action): build-breaker.open.",
+     "1 API route under /api/plugins/build-breaker.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice)."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 1 action (build-breaker.open), 1 API route.",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Everything Brett ever asked for, in plain English (build-asks@1): one compact row per ask with its date and time, a status badge (built, in progress,…",
+     "Ships 1 screen (build-breaker); Settings tab build-breaker; 1 console action (build-breaker.open); 1 API route."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 1 action (build-breaker.open), 1 API route.",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "build-manager",
+   "name": "build-manager",
+   "missing": true,
+   "core": false,
+   "coreReasons": [],
+   "tier": "unknown",
+   "lists": {
+    "does": [
+     "No folder apps/console-web/plugins/build-manager at the time of the review: already removed, not analysed."
+    ],
+    "breaks": [
+     "Nothing to analyse."
+    ],
+    "dependsOn": [
+     "Nothing to analyse."
+    ],
+    "usedBy": [
+     "Nothing to analyse."
+    ]
+   },
+   "compact": {
+    "does": [
+     "No plugin folder: already removed."
+    ],
+    "breaks": [
+     "Nothing to analyse."
+    ],
+    "dependsOn": [],
+    "usedBy": []
+   }
+  },
+  {
+   "folder": "build-orchestrator",
+   "name": "Build orchestrator",
+   "missing": false,
+   "core": true,
+   "coreReasons": [
+    "hard dependents: systems-check",
+    "named core by Brett in the build brief"
+   ],
+   "tier": "core",
+   "lists": {
+    "does": [
+     "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets an id and a Claude split (Fable only where needed) and sits in Pending; Brett moves it to the Queue; the disp…",
+     "1 screen: build-orchestrator.",
+     "Settings: tab build-orchestrator.",
+     "4 console actions (MCP console_action, CLI axf console action): build-orchestrator.focus, build-orchestrator.open, build-orchestrator.start, build-orchestrator.tab.",
+     "24 API routes under /api/plugins/build-orchestrator.",
+     "20 plugin commands callable from the CLI, MCP and voice: priority-list, priority-get, headless-runs, priority-set, origin, origin-set, origin-addendum, pipeline-status, pipeline-selfcheck, pipeline-tab and 10 more.",
+     "Provides 3 services other plugins can look up: orchestrator@1, axf.build-dispatch@1, console-focus@1."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 4 actions (build-orchestrator.focus, build-orchestrator.open, build-orchestrator.start and 1 more), 24 API routes, 20 commands (CLI, MCP, voice).",
+     "Stops working: Systems check banner (systems-check): action build-orchestrator.open.",
+     "Loses a feature: Console commands (console-commands): console-focus@1 (undeclared).",
+     "Loses a feature: Feature assistant (feature-assist): axf.build-dispatch@1 (undeclared).",
+     "Loses a feature: Push banner (push-banner): axf.build-dispatch@1 (undeclared).",
+     "Loses a feature: Systems check banner (systems-check): axf.build-dispatch@1 (undeclared).",
+     "Its voice and CLI commands stop answering (AmberX, MCP, axf)."
+    ],
+    "dependsOn": [
+     "Agent cap (agent-slots): axf.agent-slots@1 (optional).",
+     "Systems check banner (systems-check): axf.health@1 (undeclared).",
+     "Push banner (push-banner): axf.merge-queue@1 (optional).",
+     "Plan Studio (plan-studio): plans@1 (optional).",
+     "UI Review (ui-review): ui-review@1 (optional)."
+    ],
+    "usedBy": [
+     "Console commands (console-commands): console-focus@1 (undeclared).",
+     "Feature assistant (feature-assist): axf.build-dispatch@1 (undeclared).",
+     "Push banner (push-banner): axf.build-dispatch@1 (undeclared).",
+     "Systems check banner (systems-check): axf.build-dispatch@1 (undeclared), action build-orchestrator.open."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets…",
+     "Ships 1 screen (build-orchestrator); Settings tab build-orchestrator; 4 console actions (build-orchestrator.focus, build-orchestrator.open, build-orchestrator.start, build-orchestrator.tab); 24 API routes; 20 plugin commands for CLI, MCP and voice (priority-list, priority-get, headless-runs, priority-set, origin, origin-set, origin-addendum, pipeline-status and 12 more).",
+     "Provides orchestrator@1, axf.build-dispatch@1, console-focus@1."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 4 actions (build-orchestrator.focus, build-orchestrator.open, build-orchestrator.start and 1 more), 24 API routes, 20 commands (CLI, MCP, voice).",
+     "Stops: systems-check (action build-orchestrator.open).",
+     "Degrades: console-commands (console-focus@1!); feature-assist (axf.build-dispatch@1!); push-banner (axf.build-dispatch@1!); systems-check (axf.build-dispatch@1!).",
+     "Its voice/CLI/MCP commands stop."
+    ],
+    "dependsOn": [
+     "agent-slots: axf.agent-slots@1?",
+     "systems-check: axf.health@1!",
+     "push-banner: axf.merge-queue@1?",
+     "plan-studio: plans@1?",
+     "ui-review: ui-review@1?"
+    ],
+    "usedBy": [
+     "console-commands: console-focus@1!",
+     "feature-assist: axf.build-dispatch@1!",
+     "push-banner: axf.build-dispatch@1!",
+     "systems-check: axf.build-dispatch@1!, action build-orchestrator.open"
+    ]
+   }
+  },
+  {
+   "folder": "build-profiles",
+   "name": "Build profiles",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Pick and save the build profile the console works on.",
+     "1 dialog: build-profiles.",
+     "Settings: tab build-profiles.",
+     "1 console action (MCP console_action, CLI axf console action): build-profiles.open.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice)."
+    ],
+    "breaks": [
+     "Gone from the console: 1 dialog, a Settings tab, 1 action (build-profiles.open).",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Pick and save the build profile the console works on.",
+     "Ships 1 dialog (build-profiles); Settings tab build-profiles; 1 console action (build-profiles.open)."
+    ],
+    "breaks": [
+     "Gone: 1 dialog, a Settings tab, 1 action (build-profiles.open).",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "builds-page",
+   "name": "Builds",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "One Builds page over the one builds store (builds@1, owned by the Build orchestrator): every build of the active build profile, with switchable views.",
+     "1 screen: builds.",
+     "Settings: tab builds-page.",
+     "2 console actions (MCP console_action, CLI axf console action): builds.open, builds.view.",
+     "9 API routes under /api/plugins/builds-page.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice)."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 2 actions (builds.open, builds.view), 9 API routes.",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "One Builds page over the one builds store (builds@1, owned by the Build orchestrator): every build of the active build profile, with switchable views.",
+     "Ships 1 screen (builds); Settings tab builds-page; 2 console actions (builds.open, builds.view); 9 API routes."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 2 actions (builds.open, builds.view), 9 API routes.",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "changes-grid",
+   "name": "Changes & features grid",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "One grid of every change (the Codebase changes log, read through axf.changes@1) and every feature (the plan).",
+     "1 screen: changes-grid.",
+     "Settings: tab changes-grid.",
+     "1 console action (MCP console_action, CLI axf console action): changes-grid.open.",
+     "2 API routes under /api/plugins/changes-grid.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice)."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 1 action (changes-grid.open), 2 API routes.",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "Codebase changes banner (codebase-changes): axf.changes@1 (optional)."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "One grid of every change (the Codebase changes log, read through axf.changes@1) and every feature (the plan).",
+     "Ships 1 screen (changes-grid); Settings tab changes-grid; 1 console action (changes-grid.open); 2 API routes."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 1 action (changes-grid.open), 2 API routes.",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "codebase-changes: axf.changes@1?"
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "chat-viewer",
+   "name": "Chat viewer",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Every session we have, stored as transcripts (session@1) in one searchable store: claude.ai text and voice chats (from the data export Brett uploads, or the hub drop folder claude.ai sessions write to when he says \"sync my chats\"), Claude Code sessions (~/.cl…",
+     "1 screen: chat-viewer.",
+     "Settings: tab chat-viewer.",
+     "22 API routes under /api/plugins/chat-viewer.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice)."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 22 API routes.",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Every session we have, stored as transcripts (session@1) in one searchable store: claude.ai text and voice chats (from the data export Brett uploads,…",
+     "Ships 1 screen (chat-viewer); Settings tab chat-viewer; 22 API routes."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 22 API routes.",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "claude-accounts",
+   "name": "Claude accounts",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "shared",
+   "lists": {
+    "does": [
+     "Claude accounts on the VPS: lists the saved logins and API keys, switches the console's account, and routes headless jobs: every subscription login is a worker (the console's account takes jobs after them), 3 build and 5 wait per account, and API-key accounts…",
+     "1 screen: claude-accounts.",
+     "1 dialog: claude-accounts.switch.",
+     "Settings: tab claude-accounts, panel claude-accounts.routing.",
+     "3 console actions (MCP console_action, CLI axf console action): claude-accounts.open, claude-accounts.routing, claude-accounts.switch.",
+     "14 API routes under /api/plugins/claude-accounts.",
+     "14 plugin commands callable from the CLI, MCP and voice: list, who, use, role, signin, remove, save, routing, routing-test, routing-settings and 4 more.",
+     "Provides 1 service other plugins can look up: axf.claude-accounts@1."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, 1 dialog, a Settings tab, 3 actions (claude-accounts.open, claude-accounts.routing, claude-accounts.switch), 14 API routes, 14 commands (CLI, MCP, voice).",
+     "Loses a feature: AI keys (ai-keys): axf.claude-accounts@1 (optional).",
+     "Loses a feature: Badges (claude-badge): axf.claude-accounts@1 (optional).",
+     "Its voice and CLI commands stop answering (AmberX, MCP, axf)."
+    ],
+    "dependsOn": [
+     "Terminal (console-terminal): axf.headless@1 (required), action terminal.claude.",
+     "Systems check banner (systems-check): axf.health@1 (undeclared).",
+     "Agent manager (agent-manager): axf.vinny@1 (required)."
+    ],
+    "usedBy": [
+     "AI keys (ai-keys): axf.claude-accounts@1 (optional).",
+     "Badges (claude-badge): axf.claude-accounts@1 (optional)."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Claude accounts on the VPS: lists the saved logins and API keys, switches the console's account, and routes headless jobs: every subscription login i…",
+     "Ships 1 screen (claude-accounts); 1 dialog (claude-accounts.switch); Settings tab claude-accounts, panel claude-accounts.routing; 3 console actions (claude-accounts.open, claude-accounts.routing, claude-accounts.switch); 14 API routes; 14 plugin commands for CLI, MCP and voice (list, who, use, role, signin, remove, save, routing and 6 more).",
+     "Provides axf.claude-accounts@1."
+    ],
+    "breaks": [
+     "Gone: 1 screen, 1 dialog, a Settings tab, 3 actions (claude-accounts.open, claude-accounts.routing, claude-accounts.switch), 14 API routes, 14 commands (CLI, MCP, voice).",
+     "Degrades: ai-keys (axf.claude-accounts@1?); claude-badge (axf.claude-accounts@1?).",
+     "Its voice/CLI/MCP commands stop."
+    ],
+    "dependsOn": [
+     "console-terminal: axf.headless@1*, action terminal.claude",
+     "systems-check: axf.health@1!",
+     "agent-manager: axf.vinny@1*"
+    ],
+    "usedBy": [
+     "ai-keys: axf.claude-accounts@1?",
+     "claude-badge: axf.claude-accounts@1?"
+    ]
+   }
+  },
+  {
+   "folder": "claude-badge",
+   "name": "Badges",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Five banner badges in one plugin.",
+     "Settings: tab claude-badge.",
+     "5 API routes under /api/plugins/claude-badge.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Fills slots: app.frame.cover."
+    ],
+    "breaks": [
+     "Gone from the console: a Settings tab, 5 API routes.",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "AI keys (ai-keys): axf.ai-keys@1 (optional).",
+     "Claude accounts (claude-accounts): axf.claude-accounts@1 (optional).",
+     "Terminal (console-terminal): axf.headless@1 (optional).",
+     "AI assistant (ai-assistant): axf.llm@1 (optional).",
+     "Agent manager (agent-manager): axf.vinny@1 (optional)."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Five banner badges in one plugin.",
+     "Ships Settings tab claude-badge; 5 API routes."
+    ],
+    "breaks": [
+     "Gone: a Settings tab, 5 API routes.",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "ai-keys: axf.ai-keys@1?",
+     "claude-accounts: axf.claude-accounts@1?",
+     "console-terminal: axf.headless@1?",
+     "ai-assistant: axf.llm@1?",
+     "agent-manager: axf.vinny@1?"
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "claude-handoff",
+   "name": "Claude handoff banner",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Moves AmberX AXF to a new Claude account.",
+     "2 screens: claude-handoff, claude-handoff-preview.",
+     "A banner strip in the console chrome.",
+     "Settings: tab claude-handoff.",
+     "8 console actions (MCP console_action, CLI axf console action): claude-handoff.assemble, claude-handoff.files, claude-handoff.last, claude-handoff.look, claude-handoff.open, claude-handoff.preview, claude-handoff.publish, claude-handoff.session.",
+     "21 API routes under /api/plugins/claude-handoff.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Banner items: claude-handoff, claude-handoff.lifecycle, claude-handoff.prefs."
+    ],
+    "breaks": [
+     "Gone from the console: 2 screens, a banner strip, a Settings tab, 8 actions (claude-handoff.assemble, claude-handoff.files, claude-handoff.last and 5 more), 21 API routes.",
+     "No other plugin, banner or voice command depends on it.",
+     "Its banner items disappear from the console chrome and from the phone."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Moves AmberX AXF to a new Claude account.",
+     "Ships 2 screens (claude-handoff, claude-handoff-preview); a banner strip; Settings tab claude-handoff; 8 console actions (claude-handoff.assemble, claude-handoff.files, claude-handoff.last, claude-handoff.look, claude-handoff.open, claude-handoff.preview, claude-handoff.publish, claude-handoff.session); 21 API routes.",
+     "Banner items claude-handoff, claude-handoff.lifecycle, claude-handoff.prefs."
+    ],
+    "breaks": [
+     "Gone: 2 screens, a banner strip, a Settings tab, 8 actions (claude-handoff.assemble, claude-handoff.files, claude-handoff.last and 5 more), 21 API routes.",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "claude-session",
+   "name": "Claude sessions",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Every Claude session (voice and chat Amber, Claude Code, headless builds) works as a crew agent Brett assigns (agent-pick@1).",
+     "1 dialog: claude.picker.",
+     "Settings: tab claude-session.",
+     "2 console actions (MCP console_action, CLI axf console action): claude.assign, claude.pick.",
+     "10 API routes under /api/plugins/claude-session.",
+     "3 plugin commands callable from the CLI, MCP and voice: agent, start, answer.",
+     "Fills slots: app.frame.cover, swarm.agent.actions."
+    ],
+    "breaks": [
+     "Gone from the console: 1 dialog, a Settings tab, 2 actions (claude.assign, claude.pick), 10 API routes, 3 commands (CLI, MCP, voice).",
+     "No other plugin, banner or voice command depends on it.",
+     "Its voice and CLI commands stop answering (AmberX, MCP, axf)."
+    ],
+    "dependsOn": [
+     "Agent cap (agent-slots): axf.agent-slots@1 (optional).",
+     "Claude (claude-settings): axf.claude-settings@1 (undeclared).",
+     "Agent swarm (agent-swarm): axf.crew@1 (optional)."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Every Claude session (voice and chat Amber, Claude Code, headless builds) works as a crew agent Brett assigns (agent-pick@1).",
+     "Ships 1 dialog (claude.picker); Settings tab claude-session; 2 console actions (claude.assign, claude.pick); 10 API routes; 3 plugin commands for CLI, MCP and voice (agent, start, answer)."
+    ],
+    "breaks": [
+     "Gone: 1 dialog, a Settings tab, 2 actions (claude.assign, claude.pick), 10 API routes, 3 commands (CLI, MCP, voice).",
+     "Nothing else depends on it.",
+     "Its voice/CLI/MCP commands stop."
+    ],
+    "dependsOn": [
+     "agent-slots: axf.agent-slots@1?",
+     "claude-settings: axf.claude-settings@1!",
+     "agent-swarm: axf.crew@1?"
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "claude-settings",
+   "name": "Claude",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "shared",
+   "lists": {
+    "does": [
+     "Claude settings (claude-settings@1): settings for Claude itself, kept on axHub (/projects/_shared/_data/claude/settings.json) so every Claude session (voice, chat, Claude Code, headless agents) reads the same values at its start and before acting (MCP claude_…",
+     "1 screen: claude-settings.",
+     "A banner strip in the console chrome.",
+     "Settings: tab claude-settings.",
+     "1 console action (MCP console_action, CLI axf console action): claude-settings.open.",
+     "4 API routes under /api/plugins/claude-settings.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Provides 1 service other plugins can look up: axf.claude-settings@1.",
+     "Banner items: claude-no-wait, claude-settings.lifecycle."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a banner strip, a Settings tab, 1 action (claude-settings.open), 4 API routes.",
+     "Loses a feature: Claude sessions (claude-session): axf.claude-settings@1 (undeclared).",
+     "Loses a feature: Notifications (notify-control): axf.claude-settings@1 (optional).",
+     "Loses a feature: Audio Output Recorder (output-recorder): axf.claude-settings@1 (undeclared).",
+     "Loses a feature: UI Review (ui-review): axf.claude-settings@1 (undeclared).",
+     "Its banner items disappear from the console chrome and from the phone."
+    ],
+    "dependsOn": [
+     "Token control (token-control): control@1 (required)."
+    ],
+    "usedBy": [
+     "Claude sessions (claude-session): axf.claude-settings@1 (undeclared).",
+     "Notifications (notify-control): axf.claude-settings@1 (optional).",
+     "Audio Output Recorder (output-recorder): axf.claude-settings@1 (undeclared).",
+     "UI Review (ui-review): axf.claude-settings@1 (undeclared)."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Claude settings (claude-settings@1): settings for Claude itself, kept on axHub (/projects/_shared/_data/claude/settings.json) so every Claude session…",
+     "Ships 1 screen (claude-settings); a banner strip; Settings tab claude-settings; 1 console action (claude-settings.open); 4 API routes.",
+     "Provides axf.claude-settings@1.",
+     "Banner items claude-no-wait, claude-settings.lifecycle."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a banner strip, a Settings tab, 1 action (claude-settings.open), 4 API routes.",
+     "Degrades: claude-session (axf.claude-settings@1!); notify-control (axf.claude-settings@1?); output-recorder (axf.claude-settings@1!); ui-review (axf.claude-settings@1!)."
+    ],
+    "dependsOn": [
+     "token-control: control@1*"
+    ],
+    "usedBy": [
+     "claude-session: axf.claude-settings@1!",
+     "notify-control: axf.claude-settings@1?",
+     "output-recorder: axf.claude-settings@1!",
+     "ui-review: axf.claude-settings@1!"
+    ]
+   }
+  },
+  {
+   "folder": "codebase-changes",
+   "name": "Codebase changes banner",
+   "missing": false,
+   "core": true,
+   "coreReasons": [
+    "used by 5 plugins"
+   ],
+   "tier": "core",
+   "lists": {
+    "does": [
+     "Every time Claude is asked to build, edit, remove or fix something, an entry is opened (by a Claude Code hook) with what was asked, broken into steps that Claude fills in as it works, and the result when it's done (branch, commits, files, tests, links).",
+     "1 screen: codebase-changes.",
+     "A banner strip in the console chrome.",
+     "Settings: tab codebase-changes.",
+     "1 console action (MCP console_action, CLI axf console action): codebase-changes.open.",
+     "10 API routes under /api/plugins/codebase-changes.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Provides 1 service other plugins can look up: axf.changes@1.",
+     "Banner items: codebase-changes, codebase-changes.prefs."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a banner strip, a Settings tab, 1 action (codebase-changes.open), 10 API routes.",
+     "Loses a feature: Activity banner (activity): axf.changes@1 (optional).",
+     "Loses a feature: Changes & features grid (changes-grid): axf.changes@1 (optional).",
+     "Loses a feature: Feature matrix (feature-matrix): axf.changes@1 (optional).",
+     "Loses a feature: Push banner (push-banner): axf.changes@1 (undeclared).",
+     "Loses a feature: Systems check banner (systems-check): axf.changes@1 (undeclared).",
+     "Its banner items disappear from the console chrome and from the phone."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "Activity banner (activity): axf.changes@1 (optional).",
+     "Changes & features grid (changes-grid): axf.changes@1 (optional).",
+     "Feature matrix (feature-matrix): axf.changes@1 (optional).",
+     "Push banner (push-banner): axf.changes@1 (undeclared).",
+     "Systems check banner (systems-check): axf.changes@1 (undeclared)."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Every time Claude is asked to build, edit, remove or fix something, an entry is opened (by a Claude Code hook) with what was asked, broken into steps…",
+     "Ships 1 screen (codebase-changes); a banner strip; Settings tab codebase-changes; 1 console action (codebase-changes.open); 10 API routes.",
+     "Provides axf.changes@1.",
+     "Banner items codebase-changes, codebase-changes.prefs."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a banner strip, a Settings tab, 1 action (codebase-changes.open), 10 API routes.",
+     "Degrades: activity (axf.changes@1?); changes-grid (axf.changes@1?); feature-matrix (axf.changes@1?); push-banner (axf.changes@1!); systems-check (axf.changes@1!)."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "activity: axf.changes@1?",
+     "changes-grid: axf.changes@1?",
+     "feature-matrix: axf.changes@1?",
+     "push-banner: axf.changes@1!",
+     "systems-check: axf.changes@1!"
+    ]
+   }
+  },
+  {
+   "folder": "console-commands",
+   "name": "Console commands",
+   "missing": false,
+   "core": true,
+   "coreReasons": [
+    "provides framework contract console-commands@1"
+   ],
+   "tier": "core",
+   "lists": {
+    "does": [
+     "Tell Amber (any Claude session) to load a screen and your open console goes there: open any screen, dialog or settings tab (sub-tabs too) by id, title or a few words, run any registered action, go back or home, and list what the console has.",
+     "Settings: tab console-commands.",
+     "21 API routes under /api/plugins/console-commands.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Provides 1 service other plugins can look up: console-commands@1."
+    ],
+    "breaks": [
+     "Gone from the console: a Settings tab, 21 API routes.",
+     "Loses a feature: Follow Amber (follow-amber): console-commands@1 (optional).",
+     "Loses a feature: Plugin commands (plugin-commands): console-commands@1 (optional).",
+     "Loses a feature: Reference links (ref-links): console-commands@1 (optional).",
+     "Loses a feature: Token control (token-control): console-commands@1 (undeclared)."
+    ],
+    "dependsOn": [
+     "Build orchestrator (build-orchestrator): console-focus@1 (undeclared)."
+    ],
+    "usedBy": [
+     "Follow Amber (follow-amber): console-commands@1 (optional).",
+     "Plugin commands (plugin-commands): console-commands@1 (optional).",
+     "Reference links (ref-links): console-commands@1 (optional).",
+     "Token control (token-control): console-commands@1 (undeclared)."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Tell Amber (any Claude session) to load a screen and your open console goes there: open any screen, dialog or settings tab (sub-tabs too) by id, titl…",
+     "Ships Settings tab console-commands; 21 API routes.",
+     "Provides console-commands@1."
+    ],
+    "breaks": [
+     "Gone: a Settings tab, 21 API routes.",
+     "Degrades: follow-amber (console-commands@1?); plugin-commands (console-commands@1?); ref-links (console-commands@1?); token-control (console-commands@1!)."
+    ],
+    "dependsOn": [
+     "build-orchestrator: console-focus@1!"
+    ],
+    "usedBy": [
+     "follow-amber: console-commands@1?",
+     "plugin-commands: console-commands@1?",
+     "ref-links: console-commands@1?",
+     "token-control: console-commands@1!"
+    ]
+   }
+  },
+  {
+   "folder": "console-terminal",
+   "name": "Terminal",
+   "missing": false,
+   "core": true,
+   "coreReasons": [
+    "hard dependents: claude-accounts"
+   ],
+   "tier": "core",
+   "lists": {
+    "does": [
+     "Windows-style terminal: a Windows Terminal window with its own tab strip (rename, colour, drag to reorder, duplicate, move to a new window), a command toolbar and Windows keys.",
+     "2 dialogs: terminal.connect, terminal.connection.",
+     "Settings: tab terminal.",
+     "1 context-menu entry: *.",
+     "8 console actions (MCP console_action, CLI axf console action): terminal.attach, terminal.claude, terminal.jump, terminal.mirror, terminal.new, terminal.open, terminal.sessions, terminal.toolbar.",
+     "26 API routes under /api/plugins/console-terminal plus 2 websockets.",
+     "8 plugin commands callable from the CLI, MCP and voice: sessions-list, sessions-feed, sessions-note, sessions-stop, sessions-mirror, sessions-jump, new-session-get, new-session-set.",
+     "Provides 2 services other plugins can look up: axf.headless@1, axf.session-feed@1."
+    ],
+    "breaks": [
+     "Gone from the console: 2 dialogs, a Settings tab, 1 context-menu entry, 8 actions (terminal.attach, terminal.claude, terminal.jump and 5 more), 26 API routes + 2 websockets, 8 commands (CLI, MCP, voice).",
+     "Stops working: Claude accounts (claude-accounts): axf.headless@1 (required), action terminal.claude.",
+     "Loses a feature: Badges (claude-badge): axf.headless@1 (optional).",
+     "Loses a feature: Crew (crew-live): axf.headless@1 (optional).",
+     "Its voice and CLI commands stop answering (AmberX, MCP, axf)."
+    ],
+    "dependsOn": [
+     "Container access (container-access): axf.containers@1 (optional).",
+     "Systems check banner (systems-check): axf.health@1 (undeclared).",
+     "Agent manager (agent-manager): axf.hub-runs@1 (undeclared)."
+    ],
+    "usedBy": [
+     "Claude accounts (claude-accounts): axf.headless@1 (required), action terminal.claude.",
+     "Badges (claude-badge): axf.headless@1 (optional).",
+     "Crew (crew-live): axf.headless@1 (optional)."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Windows-style terminal: a Windows Terminal window with its own tab strip (rename, colour, drag to reorder, duplicate, move to a new window), a comman…",
+     "Ships 2 dialogs (terminal.connect, terminal.connection); Settings tab terminal; 1 context-menu entry (*); 8 console actions (terminal.attach, terminal.claude, terminal.jump, terminal.mirror, terminal.new, terminal.open, terminal.sessions, terminal.toolbar); 26 API routes + 2 websockets; 8 plugin commands for CLI, MCP and voice (sessions-list, sessions-feed, sessions-note, sessions-stop, sessions-mirror, sessions-jump, new-session-get, new-session-set).",
+     "Provides axf.headless@1, axf.session-feed@1."
+    ],
+    "breaks": [
+     "Gone: 2 dialogs, a Settings tab, 1 context-menu entry, 8 actions (terminal.attach, terminal.claude, terminal.jump and 5 more), 26 API routes + 2 websockets, 8 commands (CLI, MCP, voice).",
+     "Stops: claude-accounts (axf.headless@1*, action terminal.claude).",
+     "Degrades: claude-badge (axf.headless@1?); crew-live (axf.headless@1?).",
+     "Its voice/CLI/MCP commands stop."
+    ],
+    "dependsOn": [
+     "container-access: axf.containers@1?",
+     "systems-check: axf.health@1!",
+     "agent-manager: axf.hub-runs@1!"
+    ],
+    "usedBy": [
+     "claude-accounts: axf.headless@1*, action terminal.claude",
+     "claude-badge: axf.headless@1?",
+     "crew-live: axf.headless@1?"
+    ]
+   }
+  },
+  {
+   "folder": "container-access",
+   "name": "Container access",
+   "missing": false,
+   "core": true,
+   "coreReasons": [
+    "hard dependents: snapshot-manager",
+    "used by 6 plugins"
+   ],
+   "tier": "core",
+   "lists": {
+    "does": [
+     "The master switch for reaching other containers on the VPS.",
+     "Settings: tab container-access.",
+     "13 API routes under /api/plugins/container-access.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Provides 1 service other plugins can look up: axf.containers@1."
+    ],
+    "breaks": [
+     "Gone from the console: a Settings tab, 13 API routes.",
+     "Stops working: Snapshot Manager (snapshot-manager): axf.containers@1 (required).",
+     "Loses a feature: Agent manager (agent-manager): axf.containers@1 (optional).",
+     "Loses a feature: AI assistant (ai-assistant): axf.containers@1 (optional).",
+     "Loses a feature: Terminal (console-terminal): axf.containers@1 (optional).",
+     "Loses a feature: Feature assistant (feature-assist): axf.containers@1 (optional).",
+     "Loses a feature: Systems check banner (systems-check): axf.containers@1 (undeclared)."
+    ],
+    "dependsOn": [
+     "Snapshot Manager (snapshot-manager): axf.snapshots@1 (optional)."
+    ],
+    "usedBy": [
+     "Agent manager (agent-manager): axf.containers@1 (optional).",
+     "AI assistant (ai-assistant): axf.containers@1 (optional).",
+     "Terminal (console-terminal): axf.containers@1 (optional).",
+     "Feature assistant (feature-assist): axf.containers@1 (optional).",
+     "Snapshot Manager (snapshot-manager): axf.containers@1 (required).",
+     "Systems check banner (systems-check): axf.containers@1 (undeclared)."
+    ]
+   },
+   "compact": {
+    "does": [
+     "The master switch for reaching other containers on the VPS.",
+     "Ships Settings tab container-access; 13 API routes.",
+     "Provides axf.containers@1."
+    ],
+    "breaks": [
+     "Gone: a Settings tab, 13 API routes.",
+     "Stops: snapshot-manager (axf.containers@1*).",
+     "Degrades: agent-manager (axf.containers@1?); ai-assistant (axf.containers@1?); console-terminal (axf.containers@1?); feature-assist (axf.containers@1?); systems-check (axf.containers@1!)."
+    ],
+    "dependsOn": [
+     "snapshot-manager: axf.snapshots@1?"
+    ],
+    "usedBy": [
+     "agent-manager: axf.containers@1?",
+     "ai-assistant: axf.containers@1?",
+     "console-terminal: axf.containers@1?",
+     "feature-assist: axf.containers@1?",
+     "snapshot-manager: axf.containers@1*",
+     "systems-check: axf.containers@1!"
+    ]
+   }
+  },
+  {
+   "folder": "context-menu-designer",
+   "name": "Context menu designer",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Design context menus: create, edit, name, rename and save them, and make 'chunks' (reusable pieces of a menu, saved from any menu with Save as chunk) that you insert into menus by name; chunks can hold items, separators and other chunks.",
+     "1 screen: context-menu-designer.",
+     "Settings: tab context-menu-designer.",
+     "3 console actions (MCP console_action, CLI axf console action): context-menu-designer.actions, context-menu-designer.filter, context-menu-designer.open.",
+     "3 API routes under /api/plugins/context-menu-designer.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice)."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 3 actions (context-menu-designer.actions, context-menu-designer.filter, context-menu-designer.open), 3 API routes.",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Design context menus: create, edit, name, rename and save them, and make 'chunks' (reusable pieces of a menu, saved from any menu with Save as chunk)…",
+     "Ships 1 screen (context-menu-designer); Settings tab context-menu-designer; 3 console actions (context-menu-designer.actions, context-menu-designer.filter, context-menu-designer.open); 3 API routes."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 3 actions (context-menu-designer.actions, context-menu-designer.filter, context-menu-designer.open), 3 API routes.",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "crew-live",
+   "name": "Crew",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Every agent working right now, live: avatar, status (working / waiting on approval / stuck / idle), build and step in plain English, model, a timer since the job and the step started, live cost and tokens, files touched and the PR.",
+     "1 screen: crew.",
+     "Settings: tab crew-live.",
+     "1 context-menu entry: agent.",
+     "8 console actions (MCP console_action, CLI axf console action): crew.agent, crew.assign, crew.chat, crew.history, crew.open, crew.session, crew.stop, crew.terminal.",
+     "6 API routes under /api/plugins/crew-live.",
+     "5 plugin commands callable from the CLI, MCP and voice: agents, agent, files, diff, stop."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 1 context-menu entry, 8 actions (crew.agent, crew.assign, crew.chat and 5 more), 6 API routes, 5 commands (CLI, MCP, voice).",
+     "No other plugin, banner or voice command depends on it.",
+     "Its voice and CLI commands stop answering (AmberX, MCP, axf)."
+    ],
+    "dependsOn": [
+     "Terminal (console-terminal): axf.headless@1 (optional).",
+     "Agent swarm (agent-swarm): axf.swarm-roster@1 (optional)."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Every agent working right now, live: avatar, status (working / waiting on approval / stuck / idle), build and step in plain English, model, a timer s…",
+     "Ships 1 screen (crew); Settings tab crew-live; 1 context-menu entry (agent); 8 console actions (crew.agent, crew.assign, crew.chat, crew.history, crew.open, crew.session, crew.stop, crew.terminal); 6 API routes; 5 plugin commands for CLI, MCP and voice (agents, agent, files, diff, stop)."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 1 context-menu entry, 8 actions (crew.agent, crew.assign, crew.chat and 5 more), 6 API routes, 5 commands (CLI, MCP, voice).",
+     "Nothing else depends on it.",
+     "Its voice/CLI/MCP commands stop."
+    ],
+    "dependsOn": [
+     "console-terminal: axf.headless@1?",
+     "agent-swarm: axf.swarm-roster@1?"
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "demonstration-designer",
+   "name": "Demonstration Designer",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Pitch the product in three picks and one button.",
+     "1 screen: demonstration-designer.",
+     "Settings: tab demonstration-designer.",
+     "9 console actions (MCP console_action, CLI axf console action): pitch.export, pitch.generate, pitch.next, pitch.open, pitch.pause, pitch.play, pitch.prev, pitch.resume, pitch.stop.",
+     "19 API routes under /api/plugins/demonstration-designer.",
+     "19 plugin commands callable from the CLI, MCP and voice: registry, demos, demo, generate, save, delete, script, script-apply, chain, walkthrough and 9 more.",
+     "Provides 1 service other plugins can look up: demonstrations@1."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 9 actions (pitch.export, pitch.generate, pitch.next and 6 more), 19 API routes, 19 commands (CLI, MCP, voice).",
+     "No other plugin, banner or voice command depends on it.",
+     "Its voice and CLI commands stop answering (AmberX, MCP, axf)."
+    ],
+    "dependsOn": [
+     "Agent voice (agent-voice): axf.speech@1 (optional)."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Pitch the product in three picks and one button.",
+     "Ships 1 screen (demonstration-designer); Settings tab demonstration-designer; 9 console actions (pitch.export, pitch.generate, pitch.next, pitch.open, pitch.pause, pitch.play, pitch.prev, pitch.resume and 1 more); 19 API routes; 19 plugin commands for CLI, MCP and voice (registry, demos, demo, generate, save, delete, script, script-apply and 11 more).",
+     "Provides demonstrations@1."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 9 actions (pitch.export, pitch.generate, pitch.next and 6 more), 19 API routes, 19 commands (CLI, MCP, voice).",
+     "Nothing else depends on it.",
+     "Its voice/CLI/MCP commands stop."
+    ],
+    "dependsOn": [
+     "agent-voice: axf.speech@1?"
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "design-packs",
+   "name": "design-packs",
+   "missing": true,
+   "core": false,
+   "coreReasons": [],
+   "tier": "unknown",
+   "lists": {
+    "does": [
+     "No folder apps/console-web/plugins/design-packs at the time of the review: already removed, not analysed."
+    ],
+    "breaks": [
+     "Nothing to analyse."
+    ],
+    "dependsOn": [
+     "Nothing to analyse."
+    ],
+    "usedBy": [
+     "Nothing to analyse."
+    ]
+   },
+   "compact": {
+    "does": [
+     "No plugin folder: already removed."
+    ],
+    "breaks": [
+     "Nothing to analyse."
+    ],
+    "dependsOn": [],
+    "usedBy": []
+   }
+  },
+  {
+   "folder": "fable-rebuilds",
+   "name": "Fable rebuilds",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Every build parked for Fable in one place: what each replaces (the Opus plugin and its uninstall command), its branch, differences report, Android before/after screenshots and rebuild-log line, plus a ready-to-paste brief for the Fable session.",
+     "1 screen: fable-rebuilds.",
+     "1 dialog: fable-rebuilds.report.",
+     "Settings: tab fable-rebuilds.",
+     "3 console actions (MCP console_action, CLI axf console action): fable-rebuilds.open, fable-rebuilds.park-feature, fable-rebuilds.park-plugin.",
+     "3 API routes under /api/plugins/fable-rebuilds.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Emits 1 event: axf:pending-changed.",
+     "Fills slots: pending.item, plan.feature."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, 1 dialog, a Settings tab, 3 actions (fable-rebuilds.open, fable-rebuilds.park-feature, fable-rebuilds.park-plugin), 3 API routes.",
+     "Goes unheard: Feature assistant (feature-assist): event axf:plan-changed."
+    ],
+    "dependsOn": [
+     "Feature assistant (feature-assist): event axf:plan-changed."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Every build parked for Fable in one place: what each replaces (the Opus plugin and its uninstall command), its branch, differences report, Android be…",
+     "Ships 1 screen (fable-rebuilds); 1 dialog (fable-rebuilds.report); Settings tab fable-rebuilds; 3 console actions (fable-rebuilds.open, fable-rebuilds.park-feature, fable-rebuilds.park-plugin); 3 API routes.",
+     "Emits axf:pending-changed."
+    ],
+    "breaks": [
+     "Gone: 1 screen, 1 dialog, a Settings tab, 3 actions (fable-rebuilds.open, fable-rebuilds.park-feature, fable-rebuilds.park-plugin), 3 API routes.",
+     "Unheard: feature-assist (event axf:plan-changed)."
+    ],
+    "dependsOn": [
+     "feature-assist: event axf:plan-changed"
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "feature-assist",
+   "name": "Feature assistant",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "shared",
+   "lists": {
+    "does": [
+     "Plain-English features for the Feature Planner: describe a feature in your own words, the AXF expert drafts proper plan entries (sub-features, dependencies, ports, model) and flags clashes; you edit and approve; they go to the plan and the pending list.",
+     "1 dialog: feature-assist.build.",
+     "Settings: tab feature-assist.",
+     "1 console action (MCP console_action, CLI axf console action): feature-assist.build.",
+     "7 API routes under /api/plugins/feature-assist.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Emits 1 event: axf:plan-changed.",
+     "Fills slots: plan.feature, plan.top."
+    ],
+    "breaks": [
+     "Gone from the console: 1 dialog, a Settings tab, 1 action (feature-assist.build), 7 API routes.",
+     "Loses a feature: Fable rebuilds (fable-rebuilds): event axf:plan-changed."
+    ],
+    "dependsOn": [
+     "Agent manager (agent-manager): axf.agents@1 (optional).",
+     "Build orchestrator (build-orchestrator): axf.build-dispatch@1 (undeclared).",
+     "Container access (container-access): axf.containers@1 (optional).",
+     "AI assistant (ai-assistant): axf.llm@1 (optional).",
+     "Snapshot Manager (snapshot-manager): axf.snapshots@1 (optional)."
+    ],
+    "usedBy": [
+     "Fable rebuilds (fable-rebuilds): event axf:plan-changed."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Plain-English features for the Feature Planner: describe a feature in your own words, the AXF expert drafts proper plan entries (sub-features, depend…",
+     "Ships 1 dialog (feature-assist.build); Settings tab feature-assist; 1 console action (feature-assist.build); 7 API routes.",
+     "Emits axf:plan-changed."
+    ],
+    "breaks": [
+     "Gone: 1 dialog, a Settings tab, 1 action (feature-assist.build), 7 API routes.",
+     "Degrades: fable-rebuilds (event axf:plan-changed)."
+    ],
+    "dependsOn": [
+     "agent-manager: axf.agents@1?",
+     "build-orchestrator: axf.build-dispatch@1!",
+     "container-access: axf.containers@1?",
+     "ai-assistant: axf.llm@1?",
+     "snapshot-manager: axf.snapshots@1?"
+    ],
+    "usedBy": [
+     "fable-rebuilds: event axf:plan-changed"
+    ]
+   }
+  },
+  {
+   "folder": "feature-matrix",
+   "name": "Feature matrix",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Every build gets a feature matrix (feature-matrix@1): grouped items, each with its minutes, model (Fable / Opus) and why; tick = keep, untick = skip; items can be added any time and are never deleted.",
+     "1 screen: feature-matrix.",
+     "Settings: tab feature-matrix.",
+     "1 console action (MCP console_action, CLI axf console action): feature-matrix.open.",
+     "6 API routes under /api/plugins/feature-matrix.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice)."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 1 action (feature-matrix.open), 6 API routes.",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "Codebase changes banner (codebase-changes): axf.changes@1 (optional)."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Every build gets a feature matrix (feature-matrix@1): grouped items, each with its minutes, model (Fable / Opus) and why; tick = keep, untick = skip;…",
+     "Ships 1 screen (feature-matrix); Settings tab feature-matrix; 1 console action (feature-matrix.open); 6 API routes."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 1 action (feature-matrix.open), 6 API routes.",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "codebase-changes: axf.changes@1?"
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "follow-amber",
+   "name": "Follow Amber",
+   "missing": false,
+   "core": true,
+   "coreReasons": [
+    "named by the console shell / framework: apps/console-web/server/mcp_server.py"
+   ],
+   "tier": "core",
+   "lists": {
+    "does": [
+     "One switch: Follow Amber.",
+     "1 dialog: follow-amber.approval.",
+     "Settings: tab follow-amber.",
+     "2 console actions (MCP console_action, CLI axf console action): follow-amber.approvals, follow-amber.toggle.",
+     "6 API routes under /api/plugins/follow-amber.",
+     "5 plugin commands callable from the CLI, MCP and voice: state, switch, show, approval, recent.",
+     "Provides 1 service other plugins can look up: follow-amber@1.",
+     "Fills slots: app.frame.cover."
+    ],
+    "breaks": [
+     "Gone from the console: 1 dialog, a Settings tab, 2 actions (follow-amber.approvals, follow-amber.toggle), 6 API routes, 5 commands (CLI, MCP, voice).",
+     "Named by the console shell or framework: apps/console-web/server/mcp_server.py.",
+     "Its voice and CLI commands stop answering (AmberX, MCP, axf)."
+    ],
+    "dependsOn": [
+     "Notifications (notify-control): axf.notify@1 (undeclared).",
+     "Console commands (console-commands): console-commands@1 (optional)."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "One switch: Follow Amber.",
+     "Ships 1 dialog (follow-amber.approval); Settings tab follow-amber; 2 console actions (follow-amber.approvals, follow-amber.toggle); 6 API routes; 5 plugin commands for CLI, MCP and voice (state, switch, show, approval, recent).",
+     "Provides follow-amber@1."
+    ],
+    "breaks": [
+     "Gone: 1 dialog, a Settings tab, 2 actions (follow-amber.approvals, follow-amber.toggle), 6 API routes, 5 commands (CLI, MCP, voice).",
+     "Named by shell/framework: apps/console-web/server/mcp_server.py.",
+     "Its voice/CLI/MCP commands stop."
+    ],
+    "dependsOn": [
+     "notify-control: axf.notify@1!",
+     "console-commands: console-commands@1?"
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "github-app",
+   "name": "GitHub",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "One-click GitHub App for the whole stack (github-app@1): Settings → Plugins → GitHub makes a private GitHub App on MossesX through GitHub's manifest flow (Create → Install on All repositories → Authorize as Brett).",
+     "Settings: tab github-app.",
+     "8 API routes under /api/plugins/github-app.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Provides 1 service other plugins can look up: axf.github-app@1."
+    ],
+    "breaks": [
+     "Gone from the console: a Settings tab, 8 API routes.",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "Systems check banner (systems-check): axf.health@1 (optional)."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "One-click GitHub App for the whole stack (github-app@1): Settings → Plugins → GitHub makes a private GitHub App on MossesX through GitHub's manifest…",
+     "Ships Settings tab github-app; 8 API routes.",
+     "Provides axf.github-app@1."
+    ],
+    "breaks": [
+     "Gone: a Settings tab, 8 API routes.",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "systems-check: axf.health@1?"
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "glossary-index",
+   "name": "Glossary, Index & Demos",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "An encyclopedia of AmberX AXF and the demonstrations written from it.",
+     "3 screens: glossary-index, demo-designer, book-builder.",
+     "2 dialogs: glossary-index.book-wizard, glossary-index.add-to-book.",
+     "Settings: tab glossary-index.",
+     "10 console actions (MCP console_action, CLI axf console action): book.add, book.new, book.open, demo.generate, demo.next, demo.play, demo.prev, demo.repeat, demo.replay, demo.stop.",
+     "20 API routes under /api/plugins/glossary-index.",
+     "19 plugin commands callable from the CLI, MCP and voice: stats, search, entry, changes, rebuild, demos, demo, demo-save, demo-delete, demo-generate and 9 more.",
+     "Provides 1 service other plugins can look up: glossary@1."
+    ],
+    "breaks": [
+     "Gone from the console: 3 screens, 2 dialogs, a Settings tab, 10 actions (book.add, book.new, book.open and 7 more), 20 API routes, 19 commands (CLI, MCP, voice).",
+     "No other plugin, banner or voice command depends on it.",
+     "Its voice and CLI commands stop answering (AmberX, MCP, axf)."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "An encyclopedia of AmberX AXF and the demonstrations written from it.",
+     "Ships 3 screens (glossary-index, demo-designer, book-builder); 2 dialogs (glossary-index.book-wizard, glossary-index.add-to-book); Settings tab glossary-index; 10 console actions (book.add, book.new, book.open, demo.generate, demo.next, demo.play, demo.prev, demo.repeat and 2 more); 20 API routes; 19 plugin commands for CLI, MCP and voice (stats, search, entry, changes, rebuild, demos, demo, demo-save and 11 more).",
+     "Provides glossary@1."
+    ],
+    "breaks": [
+     "Gone: 3 screens, 2 dialogs, a Settings tab, 10 actions (book.add, book.new, book.open and 7 more), 20 API routes, 19 commands (CLI, MCP, voice).",
+     "Nothing else depends on it.",
+     "Its voice/CLI/MCP commands stop."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "hub-sync",
+   "name": "axHub sync",
+   "missing": false,
+   "core": true,
+   "coreReasons": [
+    "named core by Brett in the build brief"
+   ],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Keeps the console's look, settings and (if picked) data on axHub, so every app and device matches: same colour theme, layout and settings on web, Android and everywhere else.",
+     "Settings: tab hubsync.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice)."
+    ],
+    "breaks": [
+     "Gone from the console: a Settings tab.",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Keeps the console's look, settings and (if picked) data on axHub, so every app and device matches: same colour theme, layout and settings on web, And…",
+     "Ships Settings tab hubsync."
+    ],
+    "breaks": [
+     "Gone: a Settings tab.",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "main-build-status",
+   "name": "Main build status",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "A dot on the banner, next to the clock, with the last CI result of the main branch of MossesX/AmberX-AXF (workflow “Android framework + console”): green “main ✓ 2m ago”, red “main ✗”, accent while it runs, grey when unknown.",
+     "Settings: tab main-build-status.",
+     "3 console actions (MCP console_action, CLI axf console action): main-build-status.check, main-build-status.github, main-build-status.open.",
+     "3 API routes under /api/plugins/main-build-status.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice)."
+    ],
+    "breaks": [
+     "Gone from the console: a Settings tab, 3 actions (main-build-status.check, main-build-status.github, main-build-status.open), 3 API routes.",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "A dot on the banner, next to the clock, with the last CI result of the main branch of MossesX/AmberX-AXF (workflow “Android framework + console”): gr…",
+     "Ships Settings tab main-build-status; 3 console actions (main-build-status.check, main-build-status.github, main-build-status.open); 3 API routes."
+    ],
+    "breaks": [
+     "Gone: a Settings tab, 3 actions (main-build-status.check, main-build-status.github, main-build-status.open), 3 API routes.",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "maintenance",
+   "name": "Maintenance",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Server health and safe clean-up for the VPS (maintenance@1).",
+     "1 screen: maintenance.",
+     "Settings: tab maintenance.",
+     "1 console action (MCP console_action, CLI axf console action): maintenance.profiles.",
+     "15 API routes under /api/plugins/maintenance.",
+     "15 plugin commands callable from the CLI, MCP and voice: status, summary, snapshot, jobs, preview, run, runs, settings, set-settings, check and 5 more."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 1 action (maintenance.profiles), 15 API routes, 15 commands (CLI, MCP, voice).",
+     "No other plugin, banner or voice command depends on it.",
+     "Its voice and CLI commands stop answering (AmberX, MCP, axf)."
+    ],
+    "dependsOn": [
+     "Systems check banner (systems-check): axf.health@1 (optional).",
+     "AI assistant (ai-assistant): axf.llm@1 (undeclared)."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Server health and safe clean-up for the VPS (maintenance@1).",
+     "Ships 1 screen (maintenance); Settings tab maintenance; 1 console action (maintenance.profiles); 15 API routes; 15 plugin commands for CLI, MCP and voice (status, summary, snapshot, jobs, preview, run, runs, settings and 7 more)."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 1 action (maintenance.profiles), 15 API routes, 15 commands (CLI, MCP, voice).",
+     "Nothing else depends on it.",
+     "Its voice/CLI/MCP commands stop."
+    ],
+    "dependsOn": [
+     "systems-check: axf.health@1?",
+     "ai-assistant: axf.llm@1!"
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "mcp-client",
+   "name": "MCP client",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Connect the console to other MCP servers (Streamable HTTP) through the framework's MCP client library (ai.amberx.axf.mcp): browse their tools, resources and prompts, call tools, and keep a call log.",
+     "1 screen: mcp.",
+     "Settings: tab mcp.",
+     "8 API routes under /api/plugins/mcp-client.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice)."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 8 API routes.",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Connect the console to other MCP servers (Streamable HTTP) through the framework's MCP client library (ai.amberx.axf.mcp): browse their tools, resour…",
+     "Ships 1 screen (mcp); Settings tab mcp; 8 API routes."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 8 API routes.",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "md-studio",
+   "name": "MD Studio",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "A Markdown browser and editor for every .md file Brett works with, on the dock engine.",
+     "1 screen: md-studio.",
+     "Settings: tab md-studio.",
+     "10 console actions (MCP console_action, CLI axf console action): md-studio.context, md-studio.edit, md-studio.notes, md-studio.open, md-studio.open-below, md-studio.open-right, md-studio.save, md-studio.show, md-studio.toggle-edit, md-studio.view.",
+     "8 API routes under /api/plugins/md-studio.",
+     "11 plugin commands callable from the CLI, MCP and voice: list-files, read-file, save-file, file-history, file-version, restore-version, context-chain, file-refs, open-file, edit-file and 1 more."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 10 actions (md-studio.context, md-studio.edit, md-studio.notes and 7 more), 8 API routes, 11 commands (CLI, MCP, voice).",
+     "No other plugin, banner or voice command depends on it.",
+     "Its voice and CLI commands stop answering (AmberX, MCP, axf)."
+    ],
+    "dependsOn": [
+     "Notes (notes-browser): axf.notes@1 (optional)."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "A Markdown browser and editor for every .md file Brett works with, on the dock engine.",
+     "Ships 1 screen (md-studio); Settings tab md-studio; 10 console actions (md-studio.context, md-studio.edit, md-studio.notes, md-studio.open, md-studio.open-below, md-studio.open-right, md-studio.save, md-studio.show and 2 more); 8 API routes; 11 plugin commands for CLI, MCP and voice (list-files, read-file, save-file, file-history, file-version, restore-version, context-chain, file-refs and 3 more)."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 10 actions (md-studio.context, md-studio.edit, md-studio.notes and 7 more), 8 API routes, 11 commands (CLI, MCP, voice).",
+     "Nothing else depends on it.",
+     "Its voice/CLI/MCP commands stop."
+    ],
+    "dependsOn": [
+     "notes-browser: axf.notes@1?"
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "molly-guide",
+   "name": "Molly guide",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Molly's narrated walkthroughs (walkthrough@1) in the console: ask her how to do something, or say it to AmberX, and a small floating window shows each step with Next and Previous while the console moves there, highlights it and reads the step out loud.",
+     "Settings: tab molly-guide.",
+     "4 console actions (MCP console_action, CLI axf console action): molly.ask, molly.next, molly.prev, molly.replay.",
+     "4 API routes under /api/plugins/molly-guide.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice)."
+    ],
+    "breaks": [
+     "Gone from the console: a Settings tab, 4 actions (molly.ask, molly.next, molly.prev and 1 more), 4 API routes.",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "Agent manager (agent-manager): axf.agents@1 (undeclared), axf.vinny@1 (undeclared)."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Molly's narrated walkthroughs (walkthrough@1) in the console: ask her how to do something, or say it to AmberX, and a small floating window shows eac…",
+     "Ships Settings tab molly-guide; 4 console actions (molly.ask, molly.next, molly.prev, molly.replay); 4 API routes."
+    ],
+    "breaks": [
+     "Gone: a Settings tab, 4 actions (molly.ask, molly.next, molly.prev and 1 more), 4 API routes.",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "agent-manager: axf.agents@1!, axf.vinny@1!"
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "notes-browser",
+   "name": "Notes",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "shared",
+   "lists": {
+    "does": [
+     "Brett's saved notes in one place: handoffs, session logs, plans, install notes and saved commands, kept in the hub's shared Claude files (/projects/_shared/_claude/notes).",
+     "1 screen: notes.",
+     "Settings: tab notes-browser.",
+     "8 API routes under /api/plugins/notes-browser.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Provides 1 service other plugins can look up: axf.notes@1."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 8 API routes.",
+     "Loses a feature: MD Studio (md-studio): axf.notes@1 (optional)."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "MD Studio (md-studio): axf.notes@1 (optional)."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Brett's saved notes in one place: handoffs, session logs, plans, install notes and saved commands, kept in the hub's shared Claude files (/projects/_…",
+     "Ships 1 screen (notes); Settings tab notes-browser; 8 API routes.",
+     "Provides axf.notes@1."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 8 API routes.",
+     "Degrades: md-studio (axf.notes@1?)."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "md-studio: axf.notes@1?"
+    ]
+   }
+  },
+  {
+   "folder": "notify-control",
+   "name": "Notifications",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "shared",
+   "lists": {
+    "does": [
+     "The one Notifications control panel: every notification the console, AmberX and axHub can send, in one registry that every sender checks.",
+     "1 screen: notify-control.",
+     "Settings: tab notify-control.",
+     "1 console action (MCP console_action, CLI axf console action): notify-control.open.",
+     "17 API routes under /api/plugins/notify-control.",
+     "17 plugin commands callable from the CLI, MCP and voice: state, types, check, recent, master, app, set, quiet, test, reset and 7 more.",
+     "Provides 1 service other plugins can look up: axf.notify@1."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 1 action (notify-control.open), 17 API routes, 17 commands (CLI, MCP, voice).",
+     "Loses a feature: Activity banner (activity): axf.notify@1 (undeclared).",
+     "Loses a feature: Follow Amber (follow-amber): axf.notify@1 (undeclared).",
+     "Its voice and CLI commands stop answering (AmberX, MCP, axf)."
+    ],
+    "dependsOn": [
+     "Claude (claude-settings): axf.claude-settings@1 (optional).",
+     "Agent swarm (agent-swarm): axf.crew-sections@1 (undeclared).",
+     "Token control (token-control): control@1 (optional)."
+    ],
+    "usedBy": [
+     "Activity banner (activity): axf.notify@1 (undeclared).",
+     "Follow Amber (follow-amber): axf.notify@1 (undeclared)."
+    ]
+   },
+   "compact": {
+    "does": [
+     "The one Notifications control panel: every notification the console, AmberX and axHub can send, in one registry that every sender checks.",
+     "Ships 1 screen (notify-control); Settings tab notify-control; 1 console action (notify-control.open); 17 API routes; 17 plugin commands for CLI, MCP and voice (state, types, check, recent, master, app, set, quiet and 9 more).",
+     "Provides axf.notify@1."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 1 action (notify-control.open), 17 API routes, 17 commands (CLI, MCP, voice).",
+     "Degrades: activity (axf.notify@1!); follow-amber (axf.notify@1!).",
+     "Its voice/CLI/MCP commands stop."
+    ],
+    "dependsOn": [
+     "claude-settings: axf.claude-settings@1?",
+     "agent-swarm: axf.crew-sections@1!",
+     "token-control: control@1?"
+    ],
+    "usedBy": [
+     "activity: axf.notify@1!",
+     "follow-amber: axf.notify@1!"
+    ]
+   }
+  },
+  {
+   "folder": "output-recorder",
+   "name": "Audio Output Recorder",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Records everything the phone plays while it is on (AudioPlaybackCapture; the mic only as an opt-in second track, Record my mic too, off by default), in timestamped 30-minute chunks sent to axHub; each chunk stays on the phone until axHub confirms it, queued a…",
+     "1 screen: output-recorder.",
+     "Settings: tab output-recorder.",
+     "3 console actions (MCP console_action, CLI axf console action): output-recorder.start, output-recorder.stop, output-recorder.toggle.",
+     "2 API routes under /api/plugins/output-recorder.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice)."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 3 actions (output-recorder.start, output-recorder.stop, output-recorder.toggle), 2 API routes.",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "Claude (claude-settings): axf.claude-settings@1 (undeclared).",
+     "Systems check banner (systems-check): axf.health@1 (undeclared)."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Records everything the phone plays while it is on (AudioPlaybackCapture; the mic only as an opt-in second track, Record my mic too, off by default),…",
+     "Ships 1 screen (output-recorder); Settings tab output-recorder; 3 console actions (output-recorder.start, output-recorder.stop, output-recorder.toggle); 2 API routes."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 3 actions (output-recorder.start, output-recorder.stop, output-recorder.toggle), 2 API routes.",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "claude-settings: axf.claude-settings@1!",
+     "systems-check: axf.health@1!"
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "plan-studio",
+   "name": "Plan Studio",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "shared",
+   "lists": {
+    "does": [
+     "Every plan in one place (plan@1: JSON + a Markdown body).",
+     "1 screen: plan-studio.",
+     "Settings: tab plan-studio.",
+     "2 console actions (MCP console_action, CLI axf console action): plan-studio.capture, plan-studio.open.",
+     "5 API routes under /api/plugins/plan-studio.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Provides 1 service other plugins can look up: plans@1.",
+     "Emits 1 event: axf:agent-voice.say."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 2 actions (plan-studio.capture, plan-studio.open), 5 API routes.",
+     "Loses a feature: Agent voice (agent-voice): event axf:agent-voice.say.",
+     "Loses a feature: Build orchestrator (build-orchestrator): plans@1 (optional)."
+    ],
+    "dependsOn": [
+     "AI assistant (ai-assistant): axf.llm@1 (optional).",
+     "Agent voice (agent-voice): axf.agent-voice@1 (optional)."
+    ],
+    "usedBy": [
+     "Agent voice (agent-voice): event axf:agent-voice.say.",
+     "Build orchestrator (build-orchestrator): plans@1 (optional)."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Every plan in one place (plan@1: JSON + a Markdown body).",
+     "Ships 1 screen (plan-studio); Settings tab plan-studio; 2 console actions (plan-studio.capture, plan-studio.open); 5 API routes.",
+     "Provides plans@1.",
+     "Emits axf:agent-voice.say."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 2 actions (plan-studio.capture, plan-studio.open), 5 API routes.",
+     "Degrades: agent-voice (event axf:agent-voice.say); build-orchestrator (plans@1?)."
+    ],
+    "dependsOn": [
+     "ai-assistant: axf.llm@1?",
+     "agent-voice: axf.agent-voice@1?"
+    ],
+    "usedBy": [
+     "agent-voice: event axf:agent-voice.say",
+     "build-orchestrator: plans@1?"
+    ]
+   }
+  },
+  {
+   "folder": "plugin-commands",
+   "name": "Plugin commands",
+   "missing": false,
+   "core": true,
+   "coreReasons": [
+    "provides framework contract plugin-commands@1"
+   ],
+   "tier": "core",
+   "lists": {
+    "does": [
+     "Every plugin, existing and new, exposes all of its commands and reads automatically, so Claude (through axHub), the REST API and the CLI can do anything a plugin can.",
+     "1 screen: plugin-commands.",
+     "Settings: tab plugin-commands.",
+     "1 console action (MCP console_action, CLI axf console action): plugin-commands.open.",
+     "7 API routes under /api/plugins/plugin-commands.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Provides 1 service other plugins can look up: plugin-commands@1."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 1 action (plugin-commands.open), 7 API routes.",
+     "Loses a feature: Token control (token-control): plugin-commands@1 (undeclared)."
+    ],
+    "dependsOn": [
+     "Console commands (console-commands): console-commands@1 (optional).",
+     "Token control (token-control): control@1 (optional)."
+    ],
+    "usedBy": [
+     "Token control (token-control): plugin-commands@1 (undeclared)."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Every plugin, existing and new, exposes all of its commands and reads automatically, so Claude (through axHub), the REST API and the CLI can do anyth…",
+     "Ships 1 screen (plugin-commands); Settings tab plugin-commands; 1 console action (plugin-commands.open); 7 API routes.",
+     "Provides plugin-commands@1."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 1 action (plugin-commands.open), 7 API routes.",
+     "Degrades: token-control (plugin-commands@1!)."
+    ],
+    "dependsOn": [
+     "console-commands: console-commands@1?",
+     "token-control: control@1?"
+    ],
+    "usedBy": [
+     "token-control: plugin-commands@1!"
+    ]
+   }
+  },
+  {
+   "folder": "plugin-manager",
+   "name": "Plugin Manager",
+   "missing": false,
+   "core": true,
+   "coreReasons": [
+    "named by the console shell / framework: apps/console-web/src/pluginLoader.tsx",
+    "named core by Brett in the build brief"
+   ],
+   "tier": "core",
+   "lists": {
+    "does": [
+     "Every console plugin in one place: info, health, enable / disable, logs, settings, its UI, install & uninstall, and its dependencies in detail (what it needs, who provides it, who needs it, what clashes).",
+     "1 screen: plugin-manager.",
+     "1 dialog: plugin-manager.window.",
+     "Settings: tab plugin-manager.",
+     "1 context-menu entry: default/plugin-manager.",
+     "5 console actions (MCP console_action, CLI axf console action): plugin-manager.install, plugin-manager.layout, plugin-manager.open, plugin-manager.view, plugin-manager.window.",
+     "9 API routes under /api/plugins/plugin-manager.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Emits 1 event: axp-plugin-manager:select."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, 1 dialog, a Settings tab, 1 context-menu entry, 5 actions (plugin-manager.install, plugin-manager.layout, plugin-manager.open and 2 more), 9 API routes.",
+     "Named by the console shell or framework: apps/console-web/src/pluginLoader.tsx."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Every console plugin in one place: info, health, enable / disable, logs, settings, its UI, install & uninstall, and its dependencies in detail (what…",
+     "Ships 1 screen (plugin-manager); 1 dialog (plugin-manager.window); Settings tab plugin-manager; 1 context-menu entry (default/plugin-manager); 5 console actions (plugin-manager.install, plugin-manager.layout, plugin-manager.open, plugin-manager.view, plugin-manager.window); 9 API routes.",
+     "Emits axp-plugin-manager:select."
+    ],
+    "breaks": [
+     "Gone: 1 screen, 1 dialog, a Settings tab, 1 context-menu entry, 5 actions (plugin-manager.install, plugin-manager.layout, plugin-manager.open and 2 more), 9 API routes.",
+     "Named by shell/framework: apps/console-web/src/pluginLoader.tsx."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "plugin-switches",
+   "name": "Plugin switches",
+   "missing": false,
+   "core": true,
+   "coreReasons": [
+    "hard dependents: ai-assistant, basic-filter"
+   ],
+   "tier": "core",
+   "lists": {
+    "does": [
+     "A pop-up dialog with a simple list of every plugin and a switch to turn each one on or off.",
+     "1 dialog: plugin-switches.",
+     "Settings: tab plugin-switches.",
+     "1 console action (MCP console_action, CLI axf console action): plugin-switches.open.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice)."
+    ],
+    "breaks": [
+     "Gone from the console: 1 dialog, a Settings tab, 1 action (plugin-switches.open).",
+     "Stops working: AI assistant (ai-assistant): action plugin-switches.open.",
+     "Stops working: Basic filter (basic-filter): action plugin-switches.open.",
+     "Cascade: agent-voice break next."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "AI assistant (ai-assistant): action plugin-switches.open.",
+     "Basic filter (basic-filter): action plugin-switches.open."
+    ]
+   },
+   "compact": {
+    "does": [
+     "A pop-up dialog with a simple list of every plugin and a switch to turn each one on or off.",
+     "Ships 1 dialog (plugin-switches); Settings tab plugin-switches; 1 console action (plugin-switches.open)."
+    ],
+    "breaks": [
+     "Gone: 1 dialog, a Settings tab, 1 action (plugin-switches.open).",
+     "Stops: ai-assistant (action plugin-switches.open); basic-filter (action plugin-switches.open).",
+     "Cascade: agent-voice."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "ai-assistant: action plugin-switches.open",
+     "basic-filter: action plugin-switches.open"
+    ]
+   }
+  },
+  {
+   "folder": "plugin-update",
+   "name": "Plugin Update",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Every installed plugin with the model that built it, when it was built and its version, checked against the plugin catalog on axHub.",
+     "1 screen: plugin-update.",
+     "Settings: tab plugin-update.",
+     "1 console action (MCP console_action, CLI axf console action): plugin-update.open.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice)."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 1 action (plugin-update.open).",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Every installed plugin with the model that built it, when it was built and its version, checked against the plugin catalog on axHub.",
+     "Ships 1 screen (plugin-update); Settings tab plugin-update; 1 console action (plugin-update.open)."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 1 action (plugin-update.open).",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "plugins-menu",
+   "name": "Plugins menu",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Right-click (or long-press) anywhere → Plugins: Install… (a plugin browser over every archive location: axHub, the permanent one, needs its credentials; folders, https servers and other consoles can be added with their credentials, kept on the console server…",
+     "2 dialogs: plugins-menu.settings, plugins-menu.install.",
+     "Settings: tab plugins-menu.",
+     "7 console actions (MCP console_action, CLI axf console action): plugins-menu.disable, plugins-menu.enable, plugins-menu.info, plugins-menu.install, plugins-menu.manage, plugins-menu.settings, plugins-menu.toggle.",
+     "9 API routes under /api/plugins/plugins-menu.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice)."
+    ],
+    "breaks": [
+     "Gone from the console: 2 dialogs, a Settings tab, 7 actions (plugins-menu.disable, plugins-menu.enable, plugins-menu.info and 4 more), 9 API routes.",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Right-click (or long-press) anywhere → Plugins: Install… (a plugin browser over every archive location: axHub, the permanent one, needs its credentia…",
+     "Ships 2 dialogs (plugins-menu.settings, plugins-menu.install); Settings tab plugins-menu; 7 console actions (plugins-menu.disable, plugins-menu.enable, plugins-menu.info, plugins-menu.install, plugins-menu.manage, plugins-menu.settings, plugins-menu.toggle); 9 API routes."
+    ],
+    "breaks": [
+     "Gone: 2 dialogs, a Settings tab, 7 actions (plugins-menu.disable, plugins-menu.enable, plugins-menu.info and 4 more), 9 API routes.",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "project-wizard",
+   "name": "Project wizard",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Turns a GitHub repo, a VPS repo, a folder or a new AXF app into a Claude project: name and description, a home on GitHub, the VPS and/or a local git folder (existing or new), a validated project manifest and _claude/ files, and a Claude.ai project kit (instru…",
+     "1 screen: project-wizard.",
+     "Settings: tab project-wizard.",
+     "8 API routes under /api/plugins/project-wizard.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice)."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 8 API routes.",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Turns a GitHub repo, a VPS repo, a folder or a new AXF app into a Claude project: name and description, a home on GitHub, the VPS and/or a local git…",
+     "Ships 1 screen (project-wizard); Settings tab project-wizard; 8 API routes."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 8 API routes.",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "push-banner",
+   "name": "Push banner",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "shared",
+   "lists": {
+    "does": [
+     "A banner listing every branch that isn't on main yet in AmberX-AXF and axHub (commits ahead/behind, age, last commit, its open PR and that PR's CI), with Open PR and Merge: every change reaches main only through its PR (one is opened for every branch), brough…",
+     "A banner strip in the console chrome.",
+     "Settings: tab push-banner.",
+     "2 console actions (MCP console_action, CLI axf console action): push-banner.check, push-banner.queue.",
+     "27 API routes under /api/plugins/push-banner.",
+     "10 plugin commands callable from the CLI, MCP and voice: land-list, land-blocked, land-now, land-hold, land-release, mergequeue-list, mergequeue-add, mergequeue-remove, mergequeue-move, mergequeue-settings.",
+     "Provides 1 service other plugins can look up: axf.merge-queue@1.",
+     "Banner items: push-banner, push-banner.prefs."
+    ],
+    "breaks": [
+     "Gone from the console: a banner strip, a Settings tab, 2 actions (push-banner.check, push-banner.queue), 27 API routes, 10 commands (CLI, MCP, voice).",
+     "Loses a feature: Build orchestrator (build-orchestrator): axf.merge-queue@1 (optional).",
+     "Its banner items disappear from the console chrome and from the phone.",
+     "Its voice and CLI commands stop answering (AmberX, MCP, axf)."
+    ],
+    "dependsOn": [
+     "Activity banner (activity): axf.activity@1 (optional).",
+     "Agent manager (agent-manager): axf.agents@1 (undeclared), axf.vinny@1 (undeclared).",
+     "Build orchestrator (build-orchestrator): axf.build-dispatch@1 (undeclared).",
+     "Codebase changes banner (codebase-changes): axf.changes@1 (undeclared).",
+     "Systems check banner (systems-check): axf.github@1 (undeclared), axf.health@1 (undeclared).",
+     "UI Review (ui-review): ui-review@1 (undeclared)."
+    ],
+    "usedBy": [
+     "Build orchestrator (build-orchestrator): axf.merge-queue@1 (optional)."
+    ]
+   },
+   "compact": {
+    "does": [
+     "A banner listing every branch that isn't on main yet in AmberX-AXF and axHub (commits ahead/behind, age, last commit, its open PR and that PR's CI),…",
+     "Ships a banner strip; Settings tab push-banner; 2 console actions (push-banner.check, push-banner.queue); 27 API routes; 10 plugin commands for CLI, MCP and voice (land-list, land-blocked, land-now, land-hold, land-release, mergequeue-list, mergequeue-add, mergequeue-remove and 2 more).",
+     "Provides axf.merge-queue@1.",
+     "Banner items push-banner, push-banner.prefs."
+    ],
+    "breaks": [
+     "Gone: a banner strip, a Settings tab, 2 actions (push-banner.check, push-banner.queue), 27 API routes, 10 commands (CLI, MCP, voice).",
+     "Degrades: build-orchestrator (axf.merge-queue@1?).",
+     "Its voice/CLI/MCP commands stop."
+    ],
+    "dependsOn": [
+     "activity: axf.activity@1?",
+     "agent-manager: axf.agents@1!, axf.vinny@1!",
+     "build-orchestrator: axf.build-dispatch@1!",
+     "codebase-changes: axf.changes@1!",
+     "systems-check: axf.github@1!, axf.health@1!",
+     "ui-review: ui-review@1!"
+    ],
+    "usedBy": [
+     "build-orchestrator: axf.merge-queue@1?"
+    ]
+   }
+  },
+  {
+   "folder": "ref-links",
+   "name": "Reference links",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Text in the banners (In progress, Ready to merge, Merged, Live, the build and status banners, Codebase changes) that mentions a real part of the app is a link: a screen, a settings tab, section or single setting, a plugin, dialog, toolbar, menu, component, bu…",
+     "Settings: tab ref-links.",
+     "4 API routes under /api/plugins/ref-links.",
+     "4 plugin commands callable from the CLI, MCP and voice: targets, find, resolve, open.",
+     "Provides 1 service other plugins can look up: ref-links@1."
+    ],
+    "breaks": [
+     "Gone from the console: a Settings tab, 4 API routes, 4 commands (CLI, MCP, voice).",
+     "No other plugin, banner or voice command depends on it.",
+     "Its voice and CLI commands stop answering (AmberX, MCP, axf)."
+    ],
+    "dependsOn": [
+     "Agent manager (agent-manager): axf.agents@1 (optional).",
+     "Console commands (console-commands): console-commands@1 (optional).",
+     "UI Review (ui-review): ui-review@1 (optional)."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Text in the banners (In progress, Ready to merge, Merged, Live, the build and status banners, Codebase changes) that mentions a real part of the app…",
+     "Ships Settings tab ref-links; 4 API routes; 4 plugin commands for CLI, MCP and voice (targets, find, resolve, open).",
+     "Provides ref-links@1."
+    ],
+    "breaks": [
+     "Gone: a Settings tab, 4 API routes, 4 commands (CLI, MCP, voice).",
+     "Nothing else depends on it.",
+     "Its voice/CLI/MCP commands stop."
+    ],
+    "dependsOn": [
+     "agent-manager: axf.agents@1?",
+     "console-commands: console-commands@1?",
+     "ui-review: ui-review@1?"
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "session-checkin",
+   "name": "Session check-in",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Every new Claude Code session opens with a short group of questions (location first, then repo, container, project, memory files read-only, model, effort with a fixed baseline cost) and is logged to a browsable session archive.",
+     "1 screen: sessions.",
+     "Settings: tab session-checkin.",
+     "9 API routes under /api/plugins/session-checkin.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice)."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 9 API routes.",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Every new Claude Code session opens with a short group of questions (location first, then repo, container, project, memory files read-only, model, ef…",
+     "Ships 1 screen (sessions); Settings tab session-checkin; 9 API routes."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 9 API routes.",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "shipped-features",
+   "name": "Shipped features",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Every individual feature of AmberX-AXF and axHub in one sortable list, from the moment a build plans it to when it went live: status (Planned, Queued, Building, In PR, Merged, Live, Cancelled, Removed), the builds, PRs and commits behind it, Brett's verbatim…",
+     "1 screen: shipped-features.",
+     "Settings: tab shipped-features.",
+     "3 console actions (MCP console_action, CLI axf console action): shipped-features.open, shipped-features.show, shipped-features.sync.",
+     "13 API routes under /api/plugins/shipped-features.",
+     "13 plugin commands callable from the CLI, MCP and voice: ledger, summary, feature, sync, import, export, search, manifests, manifest, manifest-put and 3 more."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 3 actions (shipped-features.open, shipped-features.show, shipped-features.sync), 13 API routes, 13 commands (CLI, MCP, voice).",
+     "No other plugin, banner or voice command depends on it.",
+     "Its voice and CLI commands stop answering (AmberX, MCP, axf)."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Every individual feature of AmberX-AXF and axHub in one sortable list, from the moment a build plans it to when it went live: status (Planned, Queued…",
+     "Ships 1 screen (shipped-features); Settings tab shipped-features; 3 console actions (shipped-features.open, shipped-features.show, shipped-features.sync); 13 API routes; 13 plugin commands for CLI, MCP and voice (ledger, summary, feature, sync, import, export, search, manifests and 5 more)."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 3 actions (shipped-features.open, shipped-features.show, shipped-features.sync), 13 API routes, 13 commands (CLI, MCP, voice).",
+     "Nothing else depends on it.",
+     "Its voice/CLI/MCP commands stop."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "snapshot-manager",
+   "name": "Snapshot Manager",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "shared",
+   "lists": {
+    "does": [
+     "Snapshots of container files, taken before every approved change and restorable in one step (restore snapshots the current state first, so an undo can be undone).",
+     "Settings: tab snapshots.",
+     "1 console action (MCP console_action, CLI axf console action): snapshots.show.",
+     "12 API routes under /api/plugins/snapshot-manager.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Provides 1 service other plugins can look up: axf.snapshots@1."
+    ],
+    "breaks": [
+     "Gone from the console: a Settings tab, 1 action (snapshots.show), 12 API routes.",
+     "Loses a feature: Agent manager (agent-manager): axf.snapshots@1 (optional).",
+     "Loses a feature: Container access (container-access): axf.snapshots@1 (optional).",
+     "Loses a feature: Feature assistant (feature-assist): axf.snapshots@1 (optional)."
+    ],
+    "dependsOn": [
+     "Container access (container-access): axf.containers@1 (required)."
+    ],
+    "usedBy": [
+     "Agent manager (agent-manager): axf.snapshots@1 (optional).",
+     "Container access (container-access): axf.snapshots@1 (optional).",
+     "Feature assistant (feature-assist): axf.snapshots@1 (optional)."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Snapshots of container files, taken before every approved change and restorable in one step (restore snapshots the current state first, so an undo ca…",
+     "Ships Settings tab snapshots; 1 console action (snapshots.show); 12 API routes.",
+     "Provides axf.snapshots@1."
+    ],
+    "breaks": [
+     "Gone: a Settings tab, 1 action (snapshots.show), 12 API routes.",
+     "Degrades: agent-manager (axf.snapshots@1?); container-access (axf.snapshots@1?); feature-assist (axf.snapshots@1?)."
+    ],
+    "dependsOn": [
+     "container-access: axf.containers@1*"
+    ],
+    "usedBy": [
+     "agent-manager: axf.snapshots@1?",
+     "container-access: axf.snapshots@1?",
+     "feature-assist: axf.snapshots@1?"
+    ]
+   }
+  },
+  {
+   "folder": "systems-check",
+   "name": "Systems check banner",
+   "missing": false,
+   "core": true,
+   "coreReasons": [
+    "used by 11 plugins"
+   ],
+   "tier": "core",
+   "lists": {
+    "does": [
+     "The systems check, Keys and What's new banners at the top of every view.",
+     "1 dialog: system-check.",
+     "A banner strip in the console chrome.",
+     "Settings: tab systems-check.",
+     "2 console actions (MCP console_action, CLI axf console action): keys-needed.open, system-check.open.",
+     "31 API routes under /api/plugins/systems-check.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Provides 3 services other plugins can look up: axf.syscheck@1, axf.health@1, axf.github@1.",
+     "Banner items: keys-needed, systems-check, whats-new."
+    ],
+    "breaks": [
+     "Gone from the console: 1 dialog, a banner strip, a Settings tab, 2 actions (keys-needed.open, system-check.open), 31 API routes.",
+     "Loses a feature: Activity banner (activity): axf.github@1 (undeclared), axf.health@1 (undeclared).",
+     "Loses a feature: Agent cap (agent-slots): axf.health@1 (optional).",
+     "Loses a feature: Approvals banner (approvals-banner): axf.health@1 (undeclared).",
+     "Loses a feature: Build orchestrator (build-orchestrator): axf.health@1 (undeclared).",
+     "Loses a feature: Claude accounts (claude-accounts): axf.health@1 (undeclared).",
+     "Loses a feature: Terminal (console-terminal): axf.health@1 (undeclared).",
+     "Loses a feature: GitHub (github-app): axf.health@1 (optional).",
+     "Loses a feature: Maintenance (maintenance): axf.health@1 (optional).",
+     "Loses a feature: Audio Output Recorder (output-recorder): axf.health@1 (undeclared).",
+     "Loses a feature: Push banner (push-banner): axf.github@1 (undeclared), axf.health@1 (undeclared).",
+     "Loses a feature: UI Review (ui-review): axf.health@1 (undeclared).",
+     "Its banner items disappear from the console chrome and from the phone."
+    ],
+    "dependsOn": [
+     "Agent manager (agent-manager): axf.agents@1 (optional), axf.vinny@1 (undeclared).",
+     "AI keys (ai-keys): axf.ai-keys@1 (undeclared).",
+     "Build orchestrator (build-orchestrator): axf.build-dispatch@1 (undeclared), action build-orchestrator.open.",
+     "Codebase changes banner (codebase-changes): axf.changes@1 (undeclared).",
+     "Container access (container-access): axf.containers@1 (undeclared).",
+     "Agent swarm (agent-swarm): axf.crew-sections@1 (undeclared).",
+     "AI assistant (ai-assistant): axf.llm@1 (optional)."
+    ],
+    "usedBy": [
+     "Activity banner (activity): axf.github@1 (undeclared), axf.health@1 (undeclared).",
+     "Agent cap (agent-slots): axf.health@1 (optional).",
+     "Approvals banner (approvals-banner): axf.health@1 (undeclared).",
+     "Build orchestrator (build-orchestrator): axf.health@1 (undeclared).",
+     "Claude accounts (claude-accounts): axf.health@1 (undeclared).",
+     "Terminal (console-terminal): axf.health@1 (undeclared).",
+     "GitHub (github-app): axf.health@1 (optional).",
+     "Maintenance (maintenance): axf.health@1 (optional).",
+     "Audio Output Recorder (output-recorder): axf.health@1 (undeclared).",
+     "Push banner (push-banner): axf.github@1 (undeclared), axf.health@1 (undeclared).",
+     "UI Review (ui-review): axf.health@1 (undeclared)."
+    ]
+   },
+   "compact": {
+    "does": [
+     "The systems check, Keys and What's new banners at the top of every view.",
+     "Ships 1 dialog (system-check); a banner strip; Settings tab systems-check; 2 console actions (keys-needed.open, system-check.open); 31 API routes.",
+     "Provides axf.syscheck@1, axf.health@1, axf.github@1.",
+     "Banner items keys-needed, systems-check, whats-new."
+    ],
+    "breaks": [
+     "Gone: 1 dialog, a banner strip, a Settings tab, 2 actions (keys-needed.open, system-check.open), 31 API routes.",
+     "Degrades: activity (axf.github@1!, axf.health@1!); agent-slots (axf.health@1?); approvals-banner (axf.health@1!); build-orchestrator (axf.health@1!); claude-accounts (axf.health@1!); console-terminal (axf.health@1!); github-app (axf.health@1?); maintenance (axf.health@1?); output-recorder (axf.health@1!); push-banner (axf.github@1!, axf.health@1!); ui-review (axf.health@1!)."
+    ],
+    "dependsOn": [
+     "agent-manager: axf.agents@1?, axf.vinny@1!",
+     "ai-keys: axf.ai-keys@1!",
+     "build-orchestrator: axf.build-dispatch@1!, action build-orchestrator.open",
+     "codebase-changes: axf.changes@1!",
+     "container-access: axf.containers@1!",
+     "agent-swarm: axf.crew-sections@1!",
+     "ai-assistant: axf.llm@1?"
+    ],
+    "usedBy": [
+     "activity: axf.github@1!, axf.health@1!",
+     "agent-slots: axf.health@1?",
+     "approvals-banner: axf.health@1!",
+     "build-orchestrator: axf.health@1!",
+     "claude-accounts: axf.health@1!",
+     "console-terminal: axf.health@1!",
+     "github-app: axf.health@1?",
+     "maintenance: axf.health@1?",
+     "output-recorder: axf.health@1!",
+     "push-banner: axf.github@1!, axf.health@1!",
+     "ui-review: axf.health@1!"
+    ]
+   }
+  },
+  {
+   "folder": "theme-editor",
+   "name": "Theme editor",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Edit colour and style themes token by token.",
+     "1 screen: theme-editor.",
+     "Settings: tab theme-editor.",
+     "1 console action (MCP console_action, CLI axf console action): theme-editor.open.",
+     "3 API routes under /api/plugins/theme-editor.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice)."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 1 action (theme-editor.open), 3 API routes.",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "Theme manager (theme-manager): axf.token-tree@1 (required)."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Edit colour and style themes token by token.",
+     "Ships 1 screen (theme-editor); Settings tab theme-editor; 1 console action (theme-editor.open); 3 API routes."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 1 action (theme-editor.open), 3 API routes.",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "theme-manager: axf.token-tree@1*"
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "theme-manager",
+   "name": "Theme manager",
+   "missing": false,
+   "core": true,
+   "coreReasons": [
+    "hard dependents: theme-editor"
+   ],
+   "tier": "core",
+   "lists": {
+    "does": [
+     "Roll colour, style and layout themes, or every themeable part at once.",
+     "1 screen: theme-manager.",
+     "Settings: tab theme-manager.",
+     "1 console action (MCP console_action, CLI axf console action): theme-manager.open.",
+     "22 API routes under /api/plugins/theme-manager.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Provides 1 service other plugins can look up: axf.token-tree@1.",
+     "Emits 1 event: axf:tm-saved."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab, 1 action (theme-manager.open), 22 API routes.",
+     "Stops working: Theme editor (theme-editor): axf.token-tree@1 (required)."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "Theme editor (theme-editor): axf.token-tree@1 (required)."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Roll colour, style and layout themes, or every themeable part at once.",
+     "Ships 1 screen (theme-manager); Settings tab theme-manager; 1 console action (theme-manager.open); 22 API routes.",
+     "Provides axf.token-tree@1.",
+     "Emits axf:tm-saved."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab, 1 action (theme-manager.open), 22 API routes.",
+     "Stops: theme-editor (axf.token-tree@1*)."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "theme-editor: axf.token-tree@1*"
+    ]
+   }
+  },
+  {
+   "folder": "todo-manager",
+   "name": "Todo manager",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Lists with nested groups holding notes, to-dos and tasks (subtasks, checklists, tags, due dates, custom fields per kind), shown as a tree (by lists, kind, status, priority, tag or due date) or a grid, with group actions and Markdown export.",
+     "1 screen: todo-manager.",
+     "1 dialog: todo-manager.entry.",
+     "Settings: tab todo-manager.",
+     "7 console actions (MCP console_action, CLI axf console action): todo-manager.delete, todo-manager.done, todo-manager.edit, todo-manager.new, todo-manager.open, todo-manager.reload, todo-manager.subtask.",
+     "15 API routes under /api/plugins/todo-manager.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice)."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, 1 dialog, a Settings tab, 7 actions (todo-manager.delete, todo-manager.done, todo-manager.edit and 4 more), 15 API routes.",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Lists with nested groups holding notes, to-dos and tasks (subtasks, checklists, tags, due dates, custom fields per kind), shown as a tree (by lists,…",
+     "Ships 1 screen (todo-manager); 1 dialog (todo-manager.entry); Settings tab todo-manager; 7 console actions (todo-manager.delete, todo-manager.done, todo-manager.edit, todo-manager.new, todo-manager.open, todo-manager.reload, todo-manager.subtask); 15 API routes."
+    ],
+    "breaks": [
+     "Gone: 1 screen, 1 dialog, a Settings tab, 7 actions (todo-manager.delete, todo-manager.done, todo-manager.edit and 4 more), 15 API routes.",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "token-control",
+   "name": "Token control",
+   "missing": false,
+   "core": true,
+   "coreReasons": [
+    "hard dependents: claude-settings",
+    "provides framework contract control@1"
+   ],
+   "tier": "core",
+   "lists": {
+    "does": [
+     "One API, MCP server and CLI for everything control@1 covers: every theme, style, layout, typography, density and sizing token (a set is an override that rides the axHub look, so every app follows), the active asset per slot, every AmberX note, to-do, task and…",
+     "1 screen: token-control.",
+     "A banner strip in the console chrome.",
+     "Settings: tab token-control.",
+     "21 API routes under /api/plugins/token-control.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice).",
+     "Provides 1 service other plugins can look up: control@1."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a banner strip, a Settings tab, 21 API routes.",
+     "Stops working: Claude (claude-settings): control@1 (required).",
+     "Loses a feature: Notifications (notify-control): control@1 (optional).",
+     "Loses a feature: Plugin commands (plugin-commands): control@1 (optional).",
+     "Its banner items disappear from the console chrome and from the phone."
+    ],
+    "dependsOn": [
+     "Console commands (console-commands): console-commands@1 (undeclared).",
+     "Plugin commands (plugin-commands): plugin-commands@1 (undeclared)."
+    ],
+    "usedBy": [
+     "Claude (claude-settings): control@1 (required).",
+     "Notifications (notify-control): control@1 (optional).",
+     "Plugin commands (plugin-commands): control@1 (optional)."
+    ]
+   },
+   "compact": {
+    "does": [
+     "One API, MCP server and CLI for everything control@1 covers: every theme, style, layout, typography, density and sizing token (a set is an override t…",
+     "Ships 1 screen (token-control); a banner strip; Settings tab token-control; 21 API routes.",
+     "Provides control@1."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a banner strip, a Settings tab, 21 API routes.",
+     "Stops: claude-settings (control@1*).",
+     "Degrades: notify-control (control@1?); plugin-commands (control@1?)."
+    ],
+    "dependsOn": [
+     "console-commands: console-commands@1!",
+     "plugin-commands: plugin-commands@1!"
+    ],
+    "usedBy": [
+     "claude-settings: control@1*",
+     "notify-control: control@1?",
+     "plugin-commands: control@1?"
+    ]
+   }
+  },
+  {
+   "folder": "ui-review",
+   "name": "UI Review",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "shared",
+   "lists": {
+    "does": [
+     "Every UI a build makes comes here for Brett's approval, one section per kind (open registry: Design packs, Whole apps / programs, Screens & pages, Settings interfaces, Dialogs & popups, Menus & toolbars, Banners & cards, Other).",
+     "2 screens: ui-review, design-packs.",
+     "Settings: tab ui-review.",
+     "3 console actions (MCP console_action, CLI axf console action): ui-review.design-packs, ui-review.open, ui-review.screenshots.",
+     "15 API routes under /api/plugins/ui-review.",
+     "15 plugin commands callable from the CLI, MCP and voice: choices-settings, choices-settings-set, choices-choose, choices-decision, choices-assets, choices-ask, choices-asks, choices-ask-read, choices-answer, predicted and 5 more.",
+     "Provides 2 services other plugins can look up: ui-review@1, ui-screenshots@1."
+    ],
+    "breaks": [
+     "Gone from the console: 2 screens, a Settings tab, 3 actions (ui-review.design-packs, ui-review.open, ui-review.screenshots), 15 API routes, 15 commands (CLI, MCP, voice).",
+     "Loses a feature: Build orchestrator (build-orchestrator): ui-review@1 (optional).",
+     "Loses a feature: Push banner (push-banner): ui-review@1 (undeclared).",
+     "Loses a feature: Reference links (ref-links): ui-review@1 (optional).",
+     "Its voice and CLI commands stop answering (AmberX, MCP, axf)."
+    ],
+    "dependsOn": [
+     "Claude (claude-settings): axf.claude-settings@1 (undeclared).",
+     "Systems check banner (systems-check): axf.health@1 (undeclared)."
+    ],
+    "usedBy": [
+     "Build orchestrator (build-orchestrator): ui-review@1 (optional).",
+     "Push banner (push-banner): ui-review@1 (undeclared).",
+     "Reference links (ref-links): ui-review@1 (optional)."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Every UI a build makes comes here for Brett's approval, one section per kind (open registry: Design packs, Whole apps / programs, Screens & pages, Se…",
+     "Ships 2 screens (ui-review, design-packs); Settings tab ui-review; 3 console actions (ui-review.design-packs, ui-review.open, ui-review.screenshots); 15 API routes; 15 plugin commands for CLI, MCP and voice (choices-settings, choices-settings-set, choices-choose, choices-decision, choices-assets, choices-ask, choices-asks, choices-ask-read and 7 more).",
+     "Provides ui-review@1, ui-screenshots@1."
+    ],
+    "breaks": [
+     "Gone: 2 screens, a Settings tab, 3 actions (ui-review.design-packs, ui-review.open, ui-review.screenshots), 15 API routes, 15 commands (CLI, MCP, voice).",
+     "Degrades: build-orchestrator (ui-review@1?); push-banner (ui-review@1!); ref-links (ui-review@1?).",
+     "Its voice/CLI/MCP commands stop."
+    ],
+    "dependsOn": [
+     "claude-settings: axf.claude-settings@1!",
+     "systems-check: axf.health@1!"
+    ],
+    "usedBy": [
+     "build-orchestrator: ui-review@1?",
+     "push-banner: ui-review@1!",
+     "ref-links: ui-review@1?"
+    ]
+   }
+  },
+  {
+   "folder": "voice-notes",
+   "name": "Voice notes",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "Sets up a voice-activated notes pusher and shows the notes it saved.",
+     "1 screen: voice-notes.",
+     "Settings: tab voice-notes.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice)."
+    ],
+    "breaks": [
+     "Gone from the console: 1 screen, a Settings tab.",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "Sets up a voice-activated notes pusher and shows the notes it saved.",
+     "Ships 1 screen (voice-notes); Settings tab voice-notes."
+    ],
+    "breaks": [
+     "Gone: 1 screen, a Settings tab.",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  },
+  {
+   "folder": "whats-shipped",
+   "name": "What's new",
+   "missing": false,
+   "core": false,
+   "coreReasons": [],
+   "tier": "leaf",
+   "lists": {
+    "does": [
+     "A What's new widget on the banner: a ticker of the newest features merged to main (and deployed), with an unread count.",
+     "1 dialog: whats-shipped.panel.",
+     "Settings: tab whats-shipped.",
+     "4 console actions (MCP console_action, CLI axf console action): whats-new.open, whats-shipped.check, whats-shipped.open, whats-shipped.read-all.",
+     "3 API routes under /api/plugins/whats-shipped.",
+     "Plugin commands are generated from its actions and settings (CLI, MCP, voice)."
+    ],
+    "breaks": [
+     "Gone from the console: 1 dialog, a Settings tab, 4 actions (whats-new.open, whats-shipped.check, whats-shipped.open and 1 more), 3 API routes.",
+     "No other plugin, banner or voice command depends on it."
+    ],
+    "dependsOn": [
+     "No other plugin: it stands alone."
+    ],
+    "usedBy": [
+     "No other plugin uses it."
+    ]
+   },
+   "compact": {
+    "does": [
+     "A What's new widget on the banner: a ticker of the newest features merged to main (and deployed), with an unread count.",
+     "Ships 1 dialog (whats-shipped.panel); Settings tab whats-shipped; 4 console actions (whats-new.open, whats-shipped.check, whats-shipped.open, whats-shipped.read-all); 3 API routes."
+    ],
+    "breaks": [
+     "Gone: 1 dialog, a Settings tab, 4 actions (whats-new.open, whats-shipped.check, whats-shipped.open and 1 more), 3 API routes.",
+     "Nothing else depends on it."
+    ],
+    "dependsOn": [
+     "Nothing: stands alone."
+    ],
+    "usedBy": [
+     "No other plugin."
+    ]
+   }
+  }
+ ]
+}
