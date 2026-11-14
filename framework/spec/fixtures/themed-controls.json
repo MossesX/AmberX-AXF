@@ -1,0 +1,5652 @@
+{
+  "contract": "themed-controls@1",
+  "families": [
+    "checkbox",
+    "radio",
+    "range",
+    "number",
+    "datetime",
+    "color",
+    "dialogs",
+    "file",
+    "tooltip",
+    "scrollbar"
+  ],
+  "states": {
+    "checkbox": [
+      "rest",
+      "hover",
+      "focus",
+      "active",
+      "checked",
+      "disabled",
+      "invalid"
+    ],
+    "radio": [
+      "rest",
+      "hover",
+      "focus",
+      "active",
+      "checked",
+      "disabled",
+      "invalid"
+    ],
+    "range": [
+      "rest",
+      "hover",
+      "focus",
+      "active",
+      "disabled",
+      "invalid"
+    ],
+    "number": [
+      "rest",
+      "hover",
+      "focus",
+      "active",
+      "disabled",
+      "invalid"
+    ],
+    "datetime": [
+      "rest",
+      "hover",
+      "focus",
+      "selected",
+      "today",
+      "disabled",
+      "invalid"
+    ],
+    "color": [
+      "rest",
+      "hover",
+      "focus",
+      "selected",
+      "disabled",
+      "invalid"
+    ],
+    "dialogs": [
+      "surface",
+      "backdrop",
+      "title",
+      "message",
+      "field",
+      "focus"
+    ],
+    "file": [
+      "rest",
+      "hover",
+      "focus",
+      "active",
+      "dragover",
+      "disabled",
+      "invalid",
+      "progress"
+    ],
+    "tooltip": [
+      "rest"
+    ],
+    "scrollbar": [
+      "track",
+      "thumb",
+      "thumbHover",
+      "thumbActive"
+    ]
+  },
+  "fields": {
+    "checkbox.size": {
+      "kind": "number",
+      "min": 12,
+      "max": 32,
+      "default": 16,
+      "unit": "px14"
+    },
+    "checkbox.radius": {
+      "kind": "enum",
+      "options": [
+        "theme",
+        "none",
+        "sm",
+        "md",
+        "lg",
+        "pill"
+      ],
+      "default": "sm"
+    },
+    "checkbox.borderWidth": {
+      "kind": "enum",
+      "options": [
+        "theme",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "default": "theme"
+    },
+    "checkbox.markWeight": {
+      "kind": "number",
+      "min": 1,
+      "max": 4,
+      "default": 2,
+      "unit": "px14"
+    },
+    "checkbox.rest.bg": {
+      "kind": "color",
+      "default": "surface"
+    },
+    "checkbox.rest.border": {
+      "kind": "color",
+      "default": "border"
+    },
+    "checkbox.rest.mark": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "checkbox.hover.bg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "checkbox.hover.border": {
+      "kind": "color",
+      "default": "muted"
+    },
+    "checkbox.hover.mark": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "checkbox.focus.bg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "checkbox.focus.border": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "checkbox.focus.mark": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "checkbox.focus.ring": {
+      "kind": "color",
+      "default": "focus"
+    },
+    "checkbox.active.bg": {
+      "kind": "color",
+      "default": "accentSoft"
+    },
+    "checkbox.active.border": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "checkbox.active.mark": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "checkbox.checked.bg": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "checkbox.checked.border": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "checkbox.checked.mark": {
+      "kind": "color",
+      "default": "accentText"
+    },
+    "checkbox.disabled.bg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "checkbox.disabled.border": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "checkbox.disabled.mark": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "checkbox.invalid.bg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "checkbox.invalid.border": {
+      "kind": "color",
+      "default": "danger"
+    },
+    "checkbox.invalid.mark": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "radio.size": {
+      "kind": "number",
+      "min": 12,
+      "max": 32,
+      "default": 16,
+      "unit": "px14"
+    },
+    "radio.dotScale": {
+      "kind": "number",
+      "min": 30,
+      "max": 80,
+      "default": 50,
+      "unit": "%"
+    },
+    "radio.borderWidth": {
+      "kind": "enum",
+      "options": [
+        "theme",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "default": "theme"
+    },
+    "radio.rest.bg": {
+      "kind": "color",
+      "default": "surface"
+    },
+    "radio.rest.border": {
+      "kind": "color",
+      "default": "border"
+    },
+    "radio.rest.mark": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "radio.hover.bg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "radio.hover.border": {
+      "kind": "color",
+      "default": "muted"
+    },
+    "radio.hover.mark": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "radio.focus.bg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "radio.focus.border": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "radio.focus.mark": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "radio.focus.ring": {
+      "kind": "color",
+      "default": "focus"
+    },
+    "radio.active.bg": {
+      "kind": "color",
+      "default": "accentSoft"
+    },
+    "radio.active.border": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "radio.active.mark": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "radio.checked.bg": {
+      "kind": "color",
+      "default": "surface"
+    },
+    "radio.checked.border": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "radio.checked.mark": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "radio.disabled.bg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "radio.disabled.border": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "radio.disabled.mark": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "radio.invalid.bg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "radio.invalid.border": {
+      "kind": "color",
+      "default": "danger"
+    },
+    "radio.invalid.mark": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "range.trackHeight": {
+      "kind": "number",
+      "min": 2,
+      "max": 16,
+      "default": 4,
+      "unit": "px14"
+    },
+    "range.trackRadius": {
+      "kind": "enum",
+      "options": [
+        "theme",
+        "none",
+        "sm",
+        "md",
+        "lg",
+        "pill"
+      ],
+      "default": "pill"
+    },
+    "range.thumbSize": {
+      "kind": "number",
+      "min": 10,
+      "max": 32,
+      "default": 16,
+      "unit": "px14"
+    },
+    "range.thumbRadius": {
+      "kind": "enum",
+      "options": [
+        "theme",
+        "none",
+        "sm",
+        "md",
+        "lg",
+        "pill"
+      ],
+      "default": "pill"
+    },
+    "range.showValue": {
+      "kind": "enum",
+      "options": [
+        "always",
+        "drag",
+        "never"
+      ],
+      "default": "drag"
+    },
+    "range.ticks": {
+      "kind": "boolean",
+      "default": true
+    },
+    "range.rest.track": {
+      "kind": "color",
+      "default": "surface3"
+    },
+    "range.rest.fill": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "range.rest.thumb": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "range.rest.thumbBorder": {
+      "kind": "color",
+      "default": "surface"
+    },
+    "range.hover.track": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "range.hover.fill": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "range.hover.thumb": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "range.hover.thumbBorder": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "range.focus.track": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "range.focus.fill": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "range.focus.thumb": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "range.focus.thumbBorder": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "range.focus.ring": {
+      "kind": "color",
+      "default": "focus"
+    },
+    "range.active.track": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "range.active.fill": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "range.active.thumb": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "range.active.thumbBorder": {
+      "kind": "color",
+      "default": "accentSoft"
+    },
+    "range.disabled.track": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "range.disabled.fill": {
+      "kind": "color",
+      "default": "muted"
+    },
+    "range.disabled.thumb": {
+      "kind": "color",
+      "default": "muted"
+    },
+    "range.disabled.thumbBorder": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "range.invalid.track": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "range.invalid.fill": {
+      "kind": "color",
+      "default": "danger"
+    },
+    "range.invalid.thumb": {
+      "kind": "color",
+      "default": "danger"
+    },
+    "range.invalid.thumbBorder": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "number.stepper": {
+      "kind": "enum",
+      "options": [
+        "ends",
+        "stacked",
+        "none"
+      ],
+      "default": "ends"
+    },
+    "number.stepperWidth": {
+      "kind": "number",
+      "min": 20,
+      "max": 48,
+      "default": 28,
+      "unit": "px14"
+    },
+    "number.radius": {
+      "kind": "enum",
+      "options": [
+        "theme",
+        "none",
+        "sm",
+        "md",
+        "lg",
+        "pill"
+      ],
+      "default": "theme"
+    },
+    "number.borderWidth": {
+      "kind": "enum",
+      "options": [
+        "theme",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "default": "theme"
+    },
+    "number.repeatDelayMs": {
+      "kind": "number",
+      "min": 200,
+      "max": 1000,
+      "default": 400,
+      "unit": "ms"
+    },
+    "number.repeatMs": {
+      "kind": "number",
+      "min": 40,
+      "max": 400,
+      "default": 80,
+      "unit": "ms"
+    },
+    "number.rest.bg": {
+      "kind": "color",
+      "default": "surface"
+    },
+    "number.rest.border": {
+      "kind": "color",
+      "default": "border"
+    },
+    "number.rest.text": {
+      "kind": "color",
+      "default": "text"
+    },
+    "number.rest.stepperBg": {
+      "kind": "color",
+      "default": "surface2"
+    },
+    "number.rest.stepperIcon": {
+      "kind": "color",
+      "default": "muted"
+    },
+    "number.hover.bg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "number.hover.border": {
+      "kind": "color",
+      "default": "muted"
+    },
+    "number.hover.text": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "number.hover.stepperBg": {
+      "kind": "color",
+      "default": "surface3"
+    },
+    "number.hover.stepperIcon": {
+      "kind": "color",
+      "default": "text"
+    },
+    "number.focus.bg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "number.focus.border": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "number.focus.text": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "number.focus.stepperBg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "number.focus.stepperIcon": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "number.focus.ring": {
+      "kind": "color",
+      "default": "accentSoft"
+    },
+    "number.active.bg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "number.active.border": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "number.active.text": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "number.active.stepperBg": {
+      "kind": "color",
+      "default": "accentSoft"
+    },
+    "number.active.stepperIcon": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "number.disabled.bg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "number.disabled.border": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "number.disabled.text": {
+      "kind": "color",
+      "default": "muted"
+    },
+    "number.disabled.stepperBg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "number.disabled.stepperIcon": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "number.invalid.bg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "number.invalid.border": {
+      "kind": "color",
+      "default": "danger"
+    },
+    "number.invalid.text": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "number.invalid.stepperBg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "number.invalid.stepperIcon": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "datetime.cellSize": {
+      "kind": "number",
+      "min": 28,
+      "max": 48,
+      "default": 36,
+      "unit": "px14"
+    },
+    "datetime.cellRadius": {
+      "kind": "enum",
+      "options": [
+        "theme",
+        "none",
+        "sm",
+        "md",
+        "lg",
+        "pill"
+      ],
+      "default": "md"
+    },
+    "datetime.surfaceRadius": {
+      "kind": "enum",
+      "options": [
+        "theme",
+        "none",
+        "sm",
+        "md",
+        "lg",
+        "pill"
+      ],
+      "default": "md"
+    },
+    "datetime.weekStart": {
+      "kind": "enum",
+      "options": [
+        "locale",
+        "monday",
+        "sunday"
+      ],
+      "default": "locale"
+    },
+    "datetime.weekNumbers": {
+      "kind": "boolean",
+      "default": false
+    },
+    "datetime.hourCycle": {
+      "kind": "enum",
+      "options": [
+        "locale",
+        "12",
+        "24"
+      ],
+      "default": "locale"
+    },
+    "datetime.minuteStep": {
+      "kind": "number",
+      "min": 1,
+      "max": 30,
+      "default": 5,
+      "unit": "min"
+    },
+    "datetime.rest.surface": {
+      "kind": "color",
+      "default": "surface"
+    },
+    "datetime.rest.text": {
+      "kind": "color",
+      "default": "text"
+    },
+    "datetime.rest.border": {
+      "kind": "color",
+      "default": "border"
+    },
+    "datetime.rest.muted": {
+      "kind": "color",
+      "default": "muted"
+    },
+    "datetime.rest.cellBg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "datetime.rest.cellText": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "datetime.rest.cellBorder": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "datetime.hover.cellBg": {
+      "kind": "color",
+      "default": "accentSoft"
+    },
+    "datetime.hover.cellText": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "datetime.hover.cellBorder": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "datetime.focus.cellBg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "datetime.focus.cellText": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "datetime.focus.cellBorder": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "datetime.focus.ring": {
+      "kind": "color",
+      "default": "focus"
+    },
+    "datetime.selected.cellBg": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "datetime.selected.cellText": {
+      "kind": "color",
+      "default": "accentText"
+    },
+    "datetime.selected.cellBorder": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "datetime.today.cellBg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "datetime.today.cellText": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "datetime.today.cellBorder": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "datetime.disabled.cellBg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "datetime.disabled.cellText": {
+      "kind": "color",
+      "default": "muted"
+    },
+    "datetime.disabled.cellBorder": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "datetime.invalid.surface": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "datetime.invalid.text": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "datetime.invalid.border": {
+      "kind": "color",
+      "default": "danger"
+    },
+    "color.swatchSize": {
+      "kind": "number",
+      "min": 16,
+      "max": 40,
+      "default": 24,
+      "unit": "px14"
+    },
+    "color.swatchRadius": {
+      "kind": "enum",
+      "options": [
+        "theme",
+        "none",
+        "sm",
+        "md",
+        "lg",
+        "pill"
+      ],
+      "default": "sm"
+    },
+    "color.surfaceRadius": {
+      "kind": "enum",
+      "options": [
+        "theme",
+        "none",
+        "sm",
+        "md",
+        "lg",
+        "pill"
+      ],
+      "default": "md"
+    },
+    "color.recent": {
+      "kind": "number",
+      "min": 0,
+      "max": 16,
+      "default": 8,
+      "unit": "swatches"
+    },
+    "color.themeSwatches": {
+      "kind": "boolean",
+      "default": true
+    },
+    "color.areaHeight": {
+      "kind": "number",
+      "min": 80,
+      "max": 240,
+      "default": 140,
+      "unit": "px14"
+    },
+    "color.rest.surface": {
+      "kind": "color",
+      "default": "surface"
+    },
+    "color.rest.text": {
+      "kind": "color",
+      "default": "text"
+    },
+    "color.rest.border": {
+      "kind": "color",
+      "default": "border"
+    },
+    "color.rest.swatchBorder": {
+      "kind": "color",
+      "default": "border"
+    },
+    "color.hover.swatchBorder": {
+      "kind": "color",
+      "default": "muted"
+    },
+    "color.focus.swatchBorder": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "color.focus.ring": {
+      "kind": "color",
+      "default": "focus"
+    },
+    "color.selected.swatchBorder": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "color.selected.check": {
+      "kind": "color",
+      "default": "accentText"
+    },
+    "color.disabled.swatchBorder": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "color.invalid.surface": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "color.invalid.text": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "color.invalid.border": {
+      "kind": "color",
+      "default": "danger"
+    },
+    "dialogs.width": {
+      "kind": "number",
+      "min": 280,
+      "max": 720,
+      "default": 420,
+      "unit": "px14"
+    },
+    "dialogs.radius": {
+      "kind": "enum",
+      "options": [
+        "theme",
+        "none",
+        "sm",
+        "md",
+        "lg",
+        "pill"
+      ],
+      "default": "lg"
+    },
+    "dialogs.okTone": {
+      "kind": "enum",
+      "options": [
+        "primary",
+        "neutral",
+        "danger",
+        "ghost",
+        "quiet"
+      ],
+      "default": "primary"
+    },
+    "dialogs.cancelTone": {
+      "kind": "enum",
+      "options": [
+        "primary",
+        "neutral",
+        "danger",
+        "ghost",
+        "quiet"
+      ],
+      "default": "neutral"
+    },
+    "dialogs.icon": {
+      "kind": "boolean",
+      "default": true
+    },
+    "dialogs.selectText": {
+      "kind": "boolean",
+      "default": true
+    },
+    "dialogs.surface.bg": {
+      "kind": "color",
+      "default": "surface"
+    },
+    "dialogs.surface.text": {
+      "kind": "color",
+      "default": "text"
+    },
+    "dialogs.surface.border": {
+      "kind": "color",
+      "default": "border"
+    },
+    "dialogs.backdrop.bg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "dialogs.title.text": {
+      "kind": "color",
+      "default": "text"
+    },
+    "dialogs.title.icon": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "dialogs.message.text": {
+      "kind": "color",
+      "default": "muted"
+    },
+    "dialogs.field.bg": {
+      "kind": "color",
+      "default": "surface"
+    },
+    "dialogs.field.border": {
+      "kind": "color",
+      "default": "border"
+    },
+    "dialogs.field.text": {
+      "kind": "color",
+      "default": "text"
+    },
+    "dialogs.focus.ring": {
+      "kind": "color",
+      "default": "focus"
+    },
+    "dialogs.focus.border": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "file.minHeight": {
+      "kind": "number",
+      "min": 60,
+      "max": 240,
+      "default": 120,
+      "unit": "px14"
+    },
+    "file.radius": {
+      "kind": "enum",
+      "options": [
+        "theme",
+        "none",
+        "sm",
+        "md",
+        "lg",
+        "pill"
+      ],
+      "default": "md"
+    },
+    "file.borderStyle": {
+      "kind": "enum",
+      "options": [
+        "dashed",
+        "solid",
+        "none"
+      ],
+      "default": "dashed"
+    },
+    "file.borderWidth": {
+      "kind": "enum",
+      "options": [
+        "theme",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "default": "2"
+    },
+    "file.progressHeight": {
+      "kind": "number",
+      "min": 2,
+      "max": 12,
+      "default": 6,
+      "unit": "px14"
+    },
+    "file.showList": {
+      "kind": "boolean",
+      "default": true
+    },
+    "file.rest.bg": {
+      "kind": "color",
+      "default": "surface2"
+    },
+    "file.rest.border": {
+      "kind": "color",
+      "default": "border"
+    },
+    "file.rest.text": {
+      "kind": "color",
+      "default": "muted"
+    },
+    "file.rest.icon": {
+      "kind": "color",
+      "default": "muted"
+    },
+    "file.hover.bg": {
+      "kind": "color",
+      "default": "surface3"
+    },
+    "file.hover.border": {
+      "kind": "color",
+      "default": "muted"
+    },
+    "file.hover.text": {
+      "kind": "color",
+      "default": "text"
+    },
+    "file.hover.icon": {
+      "kind": "color",
+      "default": "text"
+    },
+    "file.focus.bg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "file.focus.border": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "file.focus.text": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "file.focus.icon": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "file.focus.ring": {
+      "kind": "color",
+      "default": "focus"
+    },
+    "file.active.bg": {
+      "kind": "color",
+      "default": "accentSoft"
+    },
+    "file.active.border": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "file.active.text": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "file.active.icon": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "file.dragover.bg": {
+      "kind": "color",
+      "default": "accentSoft"
+    },
+    "file.dragover.border": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "file.dragover.text": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "file.dragover.icon": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "file.disabled.bg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "file.disabled.border": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "file.disabled.text": {
+      "kind": "color",
+      "default": "muted"
+    },
+    "file.disabled.icon": {
+      "kind": "color",
+      "default": "muted"
+    },
+    "file.invalid.bg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "file.invalid.border": {
+      "kind": "color",
+      "default": "danger"
+    },
+    "file.invalid.text": {
+      "kind": "color",
+      "default": "danger"
+    },
+    "file.invalid.icon": {
+      "kind": "color",
+      "default": "danger"
+    },
+    "file.progress.track": {
+      "kind": "color",
+      "default": "surface3"
+    },
+    "file.progress.fill": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "file.progress.done": {
+      "kind": "color",
+      "default": "success"
+    },
+    "file.progress.failed": {
+      "kind": "color",
+      "default": "danger"
+    },
+    "tooltip.delayMs": {
+      "kind": "number",
+      "min": 0,
+      "max": 2000,
+      "default": 500,
+      "unit": "ms"
+    },
+    "tooltip.hideMs": {
+      "kind": "number",
+      "min": 0,
+      "max": 1000,
+      "default": 100,
+      "unit": "ms"
+    },
+    "tooltip.longPressMs": {
+      "kind": "number",
+      "min": 200,
+      "max": 1200,
+      "default": 500,
+      "unit": "ms"
+    },
+    "tooltip.maxWidth": {
+      "kind": "number",
+      "min": 120,
+      "max": 480,
+      "default": 280,
+      "unit": "px14"
+    },
+    "tooltip.radius": {
+      "kind": "enum",
+      "options": [
+        "theme",
+        "none",
+        "sm",
+        "md",
+        "lg",
+        "pill"
+      ],
+      "default": "md"
+    },
+    "tooltip.placement": {
+      "kind": "enum",
+      "options": [
+        "top",
+        "bottom",
+        "start",
+        "end",
+        "auto"
+      ],
+      "default": "top"
+    },
+    "tooltip.arrow": {
+      "kind": "boolean",
+      "default": false
+    },
+    "tooltip.rest.bg": {
+      "kind": "color",
+      "default": "surface"
+    },
+    "tooltip.rest.text": {
+      "kind": "color",
+      "default": "text"
+    },
+    "tooltip.rest.border": {
+      "kind": "color",
+      "default": "accent"
+    },
+    "scrollbar.width": {
+      "kind": "number",
+      "min": 4,
+      "max": 20,
+      "default": 10,
+      "unit": "px"
+    },
+    "scrollbar.radius": {
+      "kind": "enum",
+      "options": [
+        "theme",
+        "none",
+        "sm",
+        "md",
+        "lg",
+        "pill"
+      ],
+      "default": "pill"
+    },
+    "scrollbar.thin": {
+      "kind": "boolean",
+      "default": false
+    },
+    "scrollbar.autoHide": {
+      "kind": "boolean",
+      "default": false
+    },
+    "scrollbar.gutter": {
+      "kind": "enum",
+      "options": [
+        "auto",
+        "stable",
+        "both-edges"
+      ],
+      "default": "auto"
+    },
+    "scrollbar.track.bg": {
+      "kind": "color",
+      "default": "theme"
+    },
+    "scrollbar.thumb.bg": {
+      "kind": "color",
+      "default": "muted"
+    },
+    "scrollbar.thumbHover.bg": {
+      "kind": "color",
+      "default": "text"
+    },
+    "scrollbar.thumbActive.bg": {
+      "kind": "color",
+      "default": "accent"
+    }
+  },
+  "keys": {
+    "on": "axf.themedControls.on",
+    "sheet": "axf.themedControls.sheet",
+    "families": {
+      "checkbox": "axf.themedControls.checkbox",
+      "radio": "axf.themedControls.radio",
+      "range": "axf.themedControls.range",
+      "number": "axf.themedControls.number",
+      "datetime": "axf.themedControls.datetime",
+      "color": "axf.themedControls.color",
+      "dialogs": "axf.themedControls.dialogs",
+      "file": "axf.themedControls.file",
+      "tooltip": "axf.themedControls.tooltip",
+      "scrollbar": "axf.themedControls.scrollbar"
+    }
+  },
+  "config": [
+    {
+      "name": "empty",
+      "settings": {},
+      "config": {
+        "on": true,
+        "sheet": true,
+        "families": {
+          "checkbox": true,
+          "radio": true,
+          "range": true,
+          "number": true,
+          "datetime": true,
+          "color": true,
+          "dialogs": true,
+          "file": true,
+          "tooltip": true,
+          "scrollbar": true
+        }
+      },
+      "active": [
+        "checkbox",
+        "radio",
+        "range",
+        "number",
+        "datetime",
+        "color",
+        "dialogs",
+        "file",
+        "tooltip",
+        "scrollbar"
+      ]
+    },
+    {
+      "name": "master off",
+      "settings": {
+        "axf.themedControls.on": false
+      },
+      "config": {
+        "on": false,
+        "sheet": true,
+        "families": {
+          "checkbox": true,
+          "radio": true,
+          "range": true,
+          "number": true,
+          "datetime": true,
+          "color": true,
+          "dialogs": true,
+          "file": true,
+          "tooltip": true,
+          "scrollbar": true
+        }
+      },
+      "active": []
+    },
+    {
+      "name": "master off as string",
+      "settings": {
+        "axf.themedControls.on": "off"
+      },
+      "config": {
+        "on": false,
+        "sheet": true,
+        "families": {
+          "checkbox": true,
+          "radio": true,
+          "range": true,
+          "number": true,
+          "datetime": true,
+          "color": true,
+          "dialogs": true,
+          "file": true,
+          "tooltip": true,
+          "scrollbar": true
+        }
+      },
+      "active": []
+    },
+    {
+      "name": "two families off",
+      "settings": {
+        "axf.themedControls.checkbox": false,
+        "axf.themedControls.scrollbar": "false"
+      },
+      "config": {
+        "on": true,
+        "sheet": true,
+        "families": {
+          "checkbox": false,
+          "radio": true,
+          "range": true,
+          "number": true,
+          "datetime": true,
+          "color": true,
+          "dialogs": true,
+          "file": true,
+          "tooltip": true,
+          "scrollbar": false
+        }
+      },
+      "active": [
+        "radio",
+        "range",
+        "number",
+        "datetime",
+        "color",
+        "dialogs",
+        "file",
+        "tooltip"
+      ]
+    },
+    {
+      "name": "family off while master off",
+      "settings": {
+        "axf.themedControls.on": false,
+        "axf.themedControls.radio": false
+      },
+      "config": {
+        "on": false,
+        "sheet": true,
+        "families": {
+          "checkbox": true,
+          "radio": false,
+          "range": true,
+          "number": true,
+          "datetime": true,
+          "color": true,
+          "dialogs": true,
+          "file": true,
+          "tooltip": true,
+          "scrollbar": true
+        }
+      },
+      "active": []
+    },
+    {
+      "name": "sheet off",
+      "settings": {
+        "axf.themedControls.sheet": false
+      },
+      "config": {
+        "on": true,
+        "sheet": false,
+        "families": {
+          "checkbox": true,
+          "radio": true,
+          "range": true,
+          "number": true,
+          "datetime": true,
+          "color": true,
+          "dialogs": true,
+          "file": true,
+          "tooltip": true,
+          "scrollbar": true
+        }
+      },
+      "active": [
+        "checkbox",
+        "radio",
+        "range",
+        "number",
+        "datetime",
+        "color",
+        "dialogs",
+        "file",
+        "tooltip",
+        "scrollbar"
+      ]
+    },
+    {
+      "name": "junk values",
+      "settings": {
+        "axf.themedControls.on": "yes",
+        "axf.themedControls.range": 1,
+        "axf.themedControls.number": 0,
+        "axf.themedControls.sheet": null
+      },
+      "config": {
+        "on": true,
+        "sheet": true,
+        "families": {
+          "checkbox": true,
+          "radio": true,
+          "range": true,
+          "number": false,
+          "datetime": true,
+          "color": true,
+          "dialogs": true,
+          "file": true,
+          "tooltip": true,
+          "scrollbar": true
+        }
+      },
+      "active": [
+        "checkbox",
+        "radio",
+        "range",
+        "datetime",
+        "color",
+        "dialogs",
+        "file",
+        "tooltip",
+        "scrollbar"
+      ]
+    }
+  ],
+  "changes": [
+    {
+      "what": "on",
+      "on": false,
+      "change": {
+        "key": "axf.themedControls.on",
+        "value": false
+      }
+    },
+    {
+      "what": "sheet",
+      "on": true,
+      "change": {
+        "key": "axf.themedControls.sheet",
+        "value": true
+      }
+    },
+    {
+      "what": "checkbox",
+      "on": false,
+      "change": {
+        "key": "axf.themedControls.checkbox",
+        "value": false
+      }
+    },
+    {
+      "what": "scrollbar",
+      "on": true,
+      "change": {
+        "key": "axf.themedControls.scrollbar",
+        "value": true
+      }
+    }
+  ],
+  "surfaces": [
+    {
+      "name": "desktop",
+      "viewport": {
+        "width": 1280
+      },
+      "sheetOn": {
+        "checkbox": "inline",
+        "radio": "inline",
+        "range": "inline",
+        "number": "inline",
+        "datetime": "popover",
+        "color": "popover",
+        "dialogs": "modal",
+        "file": "inline",
+        "tooltip": "popover",
+        "scrollbar": "none"
+      },
+      "sheetOff": {
+        "checkbox": "inline",
+        "radio": "inline",
+        "range": "inline",
+        "number": "inline",
+        "datetime": "popover",
+        "color": "popover",
+        "dialogs": "modal",
+        "file": "inline",
+        "tooltip": "popover",
+        "scrollbar": "none"
+      },
+      "scrollbars": true
+    },
+    {
+      "name": "phone edge",
+      "viewport": {
+        "width": 760
+      },
+      "sheetOn": {
+        "checkbox": "inline",
+        "radio": "inline",
+        "range": "inline",
+        "number": "inline",
+        "datetime": "sheet",
+        "color": "sheet",
+        "dialogs": "sheet",
+        "file": "inline",
+        "tooltip": "popover",
+        "scrollbar": "none"
+      },
+      "sheetOff": {
+        "checkbox": "inline",
+        "radio": "inline",
+        "range": "inline",
+        "number": "inline",
+        "datetime": "popover",
+        "color": "popover",
+        "dialogs": "modal",
+        "file": "inline",
+        "tooltip": "popover",
+        "scrollbar": "none"
+      },
+      "scrollbars": true
+    },
+    {
+      "name": "phone",
+      "viewport": {
+        "width": 390
+      },
+      "sheetOn": {
+        "checkbox": "inline",
+        "radio": "inline",
+        "range": "inline",
+        "number": "inline",
+        "datetime": "sheet",
+        "color": "sheet",
+        "dialogs": "sheet",
+        "file": "inline",
+        "tooltip": "popover",
+        "scrollbar": "none"
+      },
+      "sheetOff": {
+        "checkbox": "inline",
+        "radio": "inline",
+        "range": "inline",
+        "number": "inline",
+        "datetime": "popover",
+        "color": "popover",
+        "dialogs": "modal",
+        "file": "inline",
+        "tooltip": "popover",
+        "scrollbar": "none"
+      },
+      "scrollbars": true
+    },
+    {
+      "name": "phone touch",
+      "viewport": {
+        "width": 390,
+        "coarse": true
+      },
+      "sheetOn": {
+        "checkbox": "inline",
+        "radio": "inline",
+        "range": "inline",
+        "number": "inline",
+        "datetime": "sheet",
+        "color": "sheet",
+        "dialogs": "sheet",
+        "file": "inline",
+        "tooltip": "popover",
+        "scrollbar": "none"
+      },
+      "sheetOff": {
+        "checkbox": "inline",
+        "radio": "inline",
+        "range": "inline",
+        "number": "inline",
+        "datetime": "popover",
+        "color": "popover",
+        "dialogs": "modal",
+        "file": "inline",
+        "tooltip": "popover",
+        "scrollbar": "none"
+      },
+      "scrollbars": false
+    },
+    {
+      "name": "custom cut-off wide",
+      "viewport": {
+        "width": 900,
+        "phoneMaxWidth": 1000
+      },
+      "sheetOn": {
+        "checkbox": "inline",
+        "radio": "inline",
+        "range": "inline",
+        "number": "inline",
+        "datetime": "sheet",
+        "color": "sheet",
+        "dialogs": "sheet",
+        "file": "inline",
+        "tooltip": "popover",
+        "scrollbar": "none"
+      },
+      "sheetOff": {
+        "checkbox": "inline",
+        "radio": "inline",
+        "range": "inline",
+        "number": "inline",
+        "datetime": "popover",
+        "color": "popover",
+        "dialogs": "modal",
+        "file": "inline",
+        "tooltip": "popover",
+        "scrollbar": "none"
+      },
+      "scrollbars": true
+    },
+    {
+      "name": "custom cut-off narrow",
+      "viewport": {
+        "width": 500,
+        "phoneMaxWidth": 480
+      },
+      "sheetOn": {
+        "checkbox": "inline",
+        "radio": "inline",
+        "range": "inline",
+        "number": "inline",
+        "datetime": "popover",
+        "color": "popover",
+        "dialogs": "modal",
+        "file": "inline",
+        "tooltip": "popover",
+        "scrollbar": "none"
+      },
+      "sheetOff": {
+        "checkbox": "inline",
+        "radio": "inline",
+        "range": "inline",
+        "number": "inline",
+        "datetime": "popover",
+        "color": "popover",
+        "dialogs": "modal",
+        "file": "inline",
+        "tooltip": "popover",
+        "scrollbar": "none"
+      },
+      "scrollbars": true
+    },
+    {
+      "name": "no width",
+      "viewport": {
+        "width": null
+      },
+      "sheetOn": {
+        "checkbox": "inline",
+        "radio": "inline",
+        "range": "inline",
+        "number": "inline",
+        "datetime": "popover",
+        "color": "popover",
+        "dialogs": "modal",
+        "file": "inline",
+        "tooltip": "popover",
+        "scrollbar": "none"
+      },
+      "sheetOff": {
+        "checkbox": "inline",
+        "radio": "inline",
+        "range": "inline",
+        "number": "inline",
+        "datetime": "popover",
+        "color": "popover",
+        "dialogs": "modal",
+        "file": "inline",
+        "tooltip": "popover",
+        "scrollbar": "none"
+      },
+      "scrollbars": true
+    }
+  ],
+  "elements": [
+    {
+      "name": "checkbox",
+      "attrs": {
+        "tag": "input",
+        "type": "checkbox",
+        "id": "agree",
+        "name": "agree",
+        "checked": true,
+        "required": ""
+      },
+      "family": "checkbox",
+      "theme": true,
+      "themeMasterOff": false,
+      "themeInEditable": false,
+      "props": {
+        "id": "agree",
+        "name": "agree",
+        "label": "I agree",
+        "disabled": false,
+        "required": true,
+        "readOnly": false,
+        "invalid": false,
+        "describedBy": "",
+        "checked": true,
+        "indeterminate": false,
+        "value": "on"
+      }
+    },
+    {
+      "name": "checkbox indeterminate aria",
+      "attrs": {
+        "tag": "INPUT",
+        "type": "CheckBox",
+        "aria-label": "All rows",
+        "indeterminate": true,
+        "value": "all"
+      },
+      "family": "checkbox",
+      "theme": true,
+      "themeMasterOff": false,
+      "themeInEditable": false,
+      "props": {
+        "id": "",
+        "name": "",
+        "label": "All rows",
+        "disabled": false,
+        "required": false,
+        "readOnly": false,
+        "invalid": false,
+        "describedBy": "",
+        "checked": false,
+        "indeterminate": true,
+        "value": "all"
+      }
+    },
+    {
+      "name": "radio",
+      "attrs": {
+        "tag": "input",
+        "type": "radio",
+        "name": "size",
+        "value": "lg",
+        "checked": "",
+        "aria-describedby": "size-help"
+      },
+      "family": "radio",
+      "theme": true,
+      "themeMasterOff": false,
+      "themeInEditable": false,
+      "props": {
+        "id": "",
+        "name": "size",
+        "label": "",
+        "disabled": false,
+        "required": false,
+        "readOnly": false,
+        "invalid": false,
+        "describedBy": "size-help",
+        "checked": true,
+        "value": "lg",
+        "group": "size"
+      }
+    },
+    {
+      "name": "range",
+      "attrs": {
+        "tag": "input",
+        "type": "range",
+        "min": "10",
+        "max": "0",
+        "step": "any",
+        "value": "7",
+        "list": "marks"
+      },
+      "family": "range",
+      "theme": true,
+      "themeMasterOff": false,
+      "themeInEditable": false,
+      "props": {
+        "id": "",
+        "name": "",
+        "label": "",
+        "disabled": false,
+        "required": false,
+        "readOnly": false,
+        "invalid": false,
+        "describedBy": "",
+        "value": 7,
+        "min": 0,
+        "max": 10,
+        "step": 0,
+        "list": "marks",
+        "orient": "horizontal"
+      }
+    },
+    {
+      "name": "range defaults",
+      "attrs": {
+        "tag": "input",
+        "type": "range"
+      },
+      "family": "range",
+      "theme": true,
+      "themeMasterOff": false,
+      "themeInEditable": false,
+      "props": {
+        "id": "",
+        "name": "",
+        "label": "",
+        "disabled": false,
+        "required": false,
+        "readOnly": false,
+        "invalid": false,
+        "describedBy": "",
+        "value": 50,
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "list": "",
+        "orient": "horizontal"
+      }
+    },
+    {
+      "name": "range bad numbers",
+      "attrs": {
+        "tag": "input",
+        "type": "range",
+        "min": "x",
+        "max": "50",
+        "step": "-2",
+        "value": "999",
+        "orient": "vertical"
+      },
+      "family": "range",
+      "theme": true,
+      "themeMasterOff": false,
+      "themeInEditable": false,
+      "props": {
+        "id": "",
+        "name": "",
+        "label": "",
+        "disabled": false,
+        "required": false,
+        "readOnly": false,
+        "invalid": false,
+        "describedBy": "",
+        "value": 50,
+        "min": 0,
+        "max": 50,
+        "step": 1,
+        "list": "",
+        "orient": "vertical"
+      }
+    },
+    {
+      "name": "number",
+      "attrs": {
+        "tag": "input",
+        "type": "number",
+        "min": "100",
+        "max": "1",
+        "step": "0.5",
+        "value": "2.5",
+        "placeholder": "Qty",
+        "aria-invalid": "true",
+        "readonly": ""
+      },
+      "family": "number",
+      "theme": true,
+      "themeMasterOff": false,
+      "themeInEditable": false,
+      "props": {
+        "id": "",
+        "name": "",
+        "label": "",
+        "disabled": false,
+        "required": false,
+        "readOnly": true,
+        "invalid": true,
+        "describedBy": "",
+        "value": "2.5",
+        "min": 1,
+        "max": 100,
+        "step": 0.5,
+        "placeholder": "Qty",
+        "inputMode": "decimal"
+      }
+    },
+    {
+      "name": "number integer",
+      "attrs": {
+        "tag": "input",
+        "type": "number",
+        "step": "0",
+        "disabled": ""
+      },
+      "family": "number",
+      "theme": true,
+      "themeMasterOff": false,
+      "themeInEditable": false,
+      "props": {
+        "id": "",
+        "name": "",
+        "label": "",
+        "disabled": true,
+        "required": false,
+        "readOnly": false,
+        "invalid": false,
+        "describedBy": "",
+        "value": "",
+        "min": null,
+        "max": null,
+        "step": 1,
+        "placeholder": "",
+        "inputMode": "numeric"
+      }
+    },
+    {
+      "name": "date",
+      "attrs": {
+        "tag": "input",
+        "type": "date",
+        "value": "2026-11-14",
+        "min": "2026-01-01",
+        "max": "2026-12-31",
+        "step": "60"
+      },
+      "family": "datetime",
+      "theme": true,
+      "themeMasterOff": false,
+      "themeInEditable": false,
+      "props": {
+        "id": "",
+        "name": "",
+        "label": "",
+        "disabled": false,
+        "required": false,
+        "readOnly": false,
+        "invalid": false,
+        "describedBy": "",
+        "kind": "date",
+        "value": "2026-11-14",
+        "min": "2026-01-01",
+        "max": "2026-12-31",
+        "step": null,
+        "hour12": null
+      }
+    },
+    {
+      "name": "time",
+      "attrs": {
+        "tag": "input",
+        "type": "time",
+        "value": "09:30",
+        "step": "900",
+        "data-axf-hour12": "false"
+      },
+      "family": "datetime",
+      "theme": true,
+      "themeMasterOff": false,
+      "themeInEditable": false,
+      "props": {
+        "id": "",
+        "name": "",
+        "label": "",
+        "disabled": false,
+        "required": false,
+        "readOnly": false,
+        "invalid": false,
+        "describedBy": "",
+        "kind": "time",
+        "value": "09:30",
+        "min": "",
+        "max": "",
+        "step": 15,
+        "hour12": false
+      }
+    },
+    {
+      "name": "datetime-local",
+      "attrs": {
+        "tag": "input",
+        "type": "datetime-local",
+        "step": "30"
+      },
+      "family": "datetime",
+      "theme": true,
+      "themeMasterOff": false,
+      "themeInEditable": false,
+      "props": {
+        "id": "",
+        "name": "",
+        "label": "",
+        "disabled": false,
+        "required": false,
+        "readOnly": false,
+        "invalid": false,
+        "describedBy": "",
+        "kind": "datetime-local",
+        "value": "",
+        "min": "",
+        "max": "",
+        "step": 1,
+        "hour12": null
+      }
+    },
+    {
+      "name": "month",
+      "attrs": {
+        "tag": "input",
+        "type": "month",
+        "value": "2026-11"
+      },
+      "family": "datetime",
+      "theme": true,
+      "themeMasterOff": false,
+      "themeInEditable": false,
+      "props": {
+        "id": "",
+        "name": "",
+        "label": "",
+        "disabled": false,
+        "required": false,
+        "readOnly": false,
+        "invalid": false,
+        "describedBy": "",
+        "kind": "month",
+        "value": "2026-11",
+        "min": "",
+        "max": "",
+        "step": null,
+        "hour12": null
+      }
+    },
+    {
+      "name": "week",
+      "attrs": {
+        "tag": "input",
+        "type": "week"
+      },
+      "family": "datetime",
+      "theme": true,
+      "themeMasterOff": false,
+      "themeInEditable": false,
+      "props": {
+        "id": "",
+        "name": "",
+        "label": "",
+        "disabled": false,
+        "required": false,
+        "readOnly": false,
+        "invalid": false,
+        "describedBy": "",
+        "kind": "week",
+        "value": "",
+        "min": "",
+        "max": "",
+        "step": null,
+        "hour12": null
+      }
+    },
+    {
+      "name": "color",
+      "attrs": {
+        "tag": "input",
+        "type": "color",
+        "value": "#FFAA00",
+        "list": "brand"
+      },
+      "family": "color",
+      "theme": true,
+      "themeMasterOff": false,
+      "themeInEditable": false,
+      "props": {
+        "id": "",
+        "name": "",
+        "label": "",
+        "disabled": false,
+        "required": false,
+        "readOnly": false,
+        "invalid": false,
+        "describedBy": "",
+        "value": "#ffaa00",
+        "list": "brand",
+        "alpha": false
+      }
+    },
+    {
+      "name": "color bad value",
+      "attrs": {
+        "tag": "input",
+        "type": "color",
+        "value": "red"
+      },
+      "family": "color",
+      "theme": true,
+      "themeMasterOff": false,
+      "themeInEditable": false,
+      "props": {
+        "id": "",
+        "name": "",
+        "label": "",
+        "disabled": false,
+        "required": false,
+        "readOnly": false,
+        "invalid": false,
+        "describedBy": "",
+        "value": "#000000",
+        "list": "",
+        "alpha": false
+      }
+    },
+    {
+      "name": "file",
+      "attrs": {
+        "tag": "input",
+        "type": "file",
+        "accept": " image/png, .pdf ,",
+        "multiple": "",
+        "capture": "environment",
+        "webkitdirectory": ""
+      },
+      "family": "file",
+      "theme": true,
+      "themeMasterOff": false,
+      "themeInEditable": false,
+      "props": {
+        "id": "",
+        "name": "",
+        "label": "",
+        "disabled": false,
+        "required": false,
+        "readOnly": false,
+        "invalid": false,
+        "describedBy": "",
+        "accept": [
+          "image/png",
+          ".pdf"
+        ],
+        "multiple": true,
+        "capture": "environment",
+        "directory": true
+      }
+    },
+    {
+      "name": "tooltip",
+      "attrs": {
+        "tag": "button",
+        "title": "Run the build",
+        "data-axf-tip-at": "bottom"
+      },
+      "family": "tooltip",
+      "theme": true,
+      "themeMasterOff": false,
+      "themeInEditable": false,
+      "props": {
+        "id": "",
+        "name": "",
+        "label": "Run the build",
+        "disabled": false,
+        "required": false,
+        "readOnly": false,
+        "invalid": false,
+        "describedBy": "",
+        "text": "Run the build",
+        "placement": "bottom"
+      }
+    },
+    {
+      "name": "tooltip moved",
+      "attrs": {
+        "tag": "span",
+        "title": "Old",
+        "data-axf-tip": "Saved 2 min ago"
+      },
+      "family": "tooltip",
+      "theme": true,
+      "themeMasterOff": false,
+      "themeInEditable": false,
+      "props": {
+        "id": "",
+        "name": "",
+        "label": "Old",
+        "disabled": false,
+        "required": false,
+        "readOnly": false,
+        "invalid": false,
+        "describedBy": "",
+        "text": "Saved 2 min ago",
+        "placement": "top"
+      }
+    },
+    {
+      "name": "text input",
+      "attrs": {
+        "tag": "input",
+        "type": "text",
+        "title": "Name"
+      },
+      "family": "tooltip",
+      "theme": true,
+      "themeMasterOff": false,
+      "themeInEditable": false,
+      "props": {
+        "id": "",
+        "name": "",
+        "label": "Name",
+        "disabled": false,
+        "required": false,
+        "readOnly": false,
+        "invalid": false,
+        "describedBy": "",
+        "text": "Name",
+        "placement": "top"
+      }
+    },
+    {
+      "name": "plain div",
+      "attrs": {
+        "tag": "div"
+      },
+      "family": null,
+      "theme": false,
+      "themeMasterOff": false,
+      "themeInEditable": false,
+      "props": null
+    },
+    {
+      "name": "opted out",
+      "attrs": {
+        "tag": "input",
+        "type": "checkbox",
+        "data-axf-native": ""
+      },
+      "family": "checkbox",
+      "theme": false,
+      "themeMasterOff": false,
+      "themeInEditable": false,
+      "props": {
+        "id": "",
+        "name": "",
+        "label": "",
+        "disabled": false,
+        "required": false,
+        "readOnly": false,
+        "invalid": false,
+        "describedBy": "",
+        "checked": false,
+        "indeterminate": false,
+        "value": "on"
+      }
+    },
+    {
+      "name": "already themed",
+      "attrs": {
+        "tag": "input",
+        "type": "range",
+        "data-axf-themed": "range"
+      },
+      "family": "range",
+      "theme": false,
+      "themeMasterOff": false,
+      "themeInEditable": false,
+      "props": {
+        "id": "",
+        "name": "",
+        "label": "",
+        "disabled": false,
+        "required": false,
+        "readOnly": false,
+        "invalid": false,
+        "describedBy": "",
+        "value": 50,
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "list": "",
+        "orient": "horizontal"
+      }
+    }
+  ],
+  "dialogs": [
+    {
+      "kind": "alert",
+      "message": "Saved.",
+      "defaultValue": "",
+      "ok": "OK",
+      "cancel": null
+    },
+    {
+      "kind": "confirm",
+      "message": "Delete 3 files?",
+      "defaultValue": "",
+      "ok": "OK",
+      "cancel": "Cancel"
+    },
+    {
+      "kind": "prompt",
+      "message": "Name",
+      "defaultValue": "draft",
+      "ok": "OK",
+      "cancel": "Cancel"
+    },
+    {
+      "kind": "prompt",
+      "message": "",
+      "defaultValue": "",
+      "ok": "OK",
+      "cancel": "Cancel"
+    },
+    {
+      "kind": "alert",
+      "message": "object",
+      "defaultValue": "",
+      "ok": "OK",
+      "cancel": null
+    }
+  ],
+  "starters": {
+    "native": {
+      "normalized": {
+        "checkbox": {
+          "size": 16,
+          "radius": "sm",
+          "borderWidth": "theme",
+          "markWeight": 2,
+          "rest": {
+            "bg": "surface",
+            "border": "border",
+            "mark": "theme"
+          },
+          "hover": {
+            "bg": "theme",
+            "border": "muted",
+            "mark": "theme"
+          },
+          "focus": {
+            "bg": "theme",
+            "border": "accent",
+            "mark": "theme",
+            "ring": "focus"
+          },
+          "active": {
+            "bg": "accentSoft",
+            "border": "accent",
+            "mark": "theme"
+          },
+          "checked": {
+            "bg": "accent",
+            "border": "accent",
+            "mark": "accentText"
+          },
+          "disabled": {
+            "bg": "theme",
+            "border": "theme",
+            "mark": "theme"
+          },
+          "invalid": {
+            "bg": "theme",
+            "border": "danger",
+            "mark": "theme"
+          }
+        },
+        "radio": {
+          "size": 16,
+          "dotScale": 50,
+          "borderWidth": "theme",
+          "rest": {
+            "bg": "surface",
+            "border": "border",
+            "mark": "theme"
+          },
+          "hover": {
+            "bg": "theme",
+            "border": "muted",
+            "mark": "theme"
+          },
+          "focus": {
+            "bg": "theme",
+            "border": "accent",
+            "mark": "theme",
+            "ring": "focus"
+          },
+          "active": {
+            "bg": "accentSoft",
+            "border": "accent",
+            "mark": "theme"
+          },
+          "checked": {
+            "bg": "surface",
+            "border": "accent",
+            "mark": "accent"
+          },
+          "disabled": {
+            "bg": "theme",
+            "border": "theme",
+            "mark": "theme"
+          },
+          "invalid": {
+            "bg": "theme",
+            "border": "danger",
+            "mark": "theme"
+          }
+        },
+        "range": {
+          "trackHeight": 4,
+          "trackRadius": "pill",
+          "thumbSize": 16,
+          "thumbRadius": "pill",
+          "showValue": "drag",
+          "ticks": true,
+          "rest": {
+            "track": "surface3",
+            "fill": "accent",
+            "thumb": "accent",
+            "thumbBorder": "surface"
+          },
+          "hover": {
+            "track": "theme",
+            "fill": "theme",
+            "thumb": "theme",
+            "thumbBorder": "theme"
+          },
+          "focus": {
+            "track": "theme",
+            "fill": "theme",
+            "thumb": "theme",
+            "thumbBorder": "theme",
+            "ring": "focus"
+          },
+          "active": {
+            "track": "theme",
+            "fill": "theme",
+            "thumb": "accent",
+            "thumbBorder": "accentSoft"
+          },
+          "disabled": {
+            "track": "theme",
+            "fill": "muted",
+            "thumb": "muted",
+            "thumbBorder": "theme"
+          },
+          "invalid": {
+            "track": "theme",
+            "fill": "danger",
+            "thumb": "danger",
+            "thumbBorder": "theme"
+          }
+        },
+        "number": {
+          "stepper": "ends",
+          "stepperWidth": 28,
+          "radius": "theme",
+          "borderWidth": "theme",
+          "repeatDelayMs": 400,
+          "repeatMs": 80,
+          "rest": {
+            "bg": "surface",
+            "border": "border",
+            "text": "text",
+            "stepperBg": "surface2",
+            "stepperIcon": "muted"
+          },
+          "hover": {
+            "bg": "theme",
+            "border": "muted",
+            "text": "theme",
+            "stepperBg": "surface3",
+            "stepperIcon": "text"
+          },
+          "focus": {
+            "bg": "theme",
+            "border": "accent",
+            "text": "theme",
+            "stepperBg": "theme",
+            "stepperIcon": "theme",
+            "ring": "accentSoft"
+          },
+          "active": {
+            "bg": "theme",
+            "border": "theme",
+            "text": "theme",
+            "stepperBg": "accentSoft",
+            "stepperIcon": "accent"
+          },
+          "disabled": {
+            "bg": "theme",
+            "border": "theme",
+            "text": "muted",
+            "stepperBg": "theme",
+            "stepperIcon": "theme"
+          },
+          "invalid": {
+            "bg": "theme",
+            "border": "danger",
+            "text": "theme",
+            "stepperBg": "theme",
+            "stepperIcon": "theme"
+          }
+        },
+        "datetime": {
+          "cellSize": 36,
+          "cellRadius": "md",
+          "surfaceRadius": "md",
+          "weekStart": "locale",
+          "weekNumbers": false,
+          "hourCycle": "locale",
+          "minuteStep": 5,
+          "rest": {
+            "surface": "surface",
+            "text": "text",
+            "border": "border",
+            "muted": "muted",
+            "cellBg": "theme",
+            "cellText": "theme",
+            "cellBorder": "theme"
+          },
+          "hover": {
+            "cellBg": "accentSoft",
+            "cellText": "theme",
+            "cellBorder": "theme"
+          },
+          "focus": {
+            "cellBg": "theme",
+            "cellText": "theme",
+            "cellBorder": "accent",
+            "ring": "focus"
+          },
+          "selected": {
+            "cellBg": "accent",
+            "cellText": "accentText",
+            "cellBorder": "accent"
+          },
+          "today": {
+            "cellBg": "theme",
+            "cellText": "accent",
+            "cellBorder": "accent"
+          },
+          "disabled": {
+            "cellBg": "theme",
+            "cellText": "muted",
+            "cellBorder": "theme"
+          },
+          "invalid": {
+            "surface": "theme",
+            "text": "theme",
+            "border": "danger"
+          }
+        },
+        "color": {
+          "swatchSize": 24,
+          "swatchRadius": "sm",
+          "surfaceRadius": "md",
+          "recent": 8,
+          "themeSwatches": true,
+          "areaHeight": 140,
+          "rest": {
+            "surface": "surface",
+            "text": "text",
+            "border": "border",
+            "swatchBorder": "border"
+          },
+          "hover": {
+            "swatchBorder": "muted"
+          },
+          "focus": {
+            "swatchBorder": "accent",
+            "ring": "focus"
+          },
+          "selected": {
+            "swatchBorder": "accent",
+            "check": "accentText"
+          },
+          "disabled": {
+            "swatchBorder": "theme"
+          },
+          "invalid": {
+            "surface": "theme",
+            "text": "theme",
+            "border": "danger"
+          }
+        },
+        "dialogs": {
+          "width": 420,
+          "radius": "lg",
+          "okTone": "primary",
+          "cancelTone": "neutral",
+          "icon": true,
+          "selectText": true,
+          "surface": {
+            "bg": "surface",
+            "text": "text",
+            "border": "border"
+          },
+          "backdrop": {
+            "bg": "theme"
+          },
+          "title": {
+            "text": "text",
+            "icon": "accent"
+          },
+          "message": {
+            "text": "muted"
+          },
+          "field": {
+            "bg": "surface",
+            "border": "border",
+            "text": "text"
+          },
+          "focus": {
+            "ring": "focus",
+            "border": "accent"
+          }
+        },
+        "file": {
+          "minHeight": 120,
+          "radius": "md",
+          "borderStyle": "dashed",
+          "borderWidth": "2",
+          "progressHeight": 6,
+          "showList": true,
+          "rest": {
+            "bg": "surface2",
+            "border": "border",
+            "text": "muted",
+            "icon": "muted"
+          },
+          "hover": {
+            "bg": "surface3",
+            "border": "muted",
+            "text": "text",
+            "icon": "text"
+          },
+          "focus": {
+            "bg": "theme",
+            "border": "accent",
+            "text": "theme",
+            "icon": "theme",
+            "ring": "focus"
+          },
+          "active": {
+            "bg": "accentSoft",
+            "border": "accent",
+            "text": "theme",
+            "icon": "theme"
+          },
+          "dragover": {
+            "bg": "accentSoft",
+            "border": "accent",
+            "text": "accent",
+            "icon": "accent"
+          },
+          "disabled": {
+            "bg": "theme",
+            "border": "theme",
+            "text": "muted",
+            "icon": "muted"
+          },
+          "invalid": {
+            "bg": "theme",
+            "border": "danger",
+            "text": "danger",
+            "icon": "danger"
+          },
+          "progress": {
+            "track": "surface3",
+            "fill": "accent",
+            "done": "success",
+            "failed": "danger"
+          }
+        },
+        "tooltip": {
+          "delayMs": 500,
+          "hideMs": 100,
+          "longPressMs": 500,
+          "maxWidth": 280,
+          "radius": "md",
+          "placement": "top",
+          "arrow": false,
+          "rest": {
+            "bg": "surface",
+            "text": "text",
+            "border": "accent"
+          }
+        },
+        "scrollbar": {
+          "width": 10,
+          "radius": "pill",
+          "thin": false,
+          "autoHide": false,
+          "gutter": "auto",
+          "track": {
+            "bg": "theme"
+          },
+          "thumb": {
+            "bg": "muted"
+          },
+          "thumbHover": {
+            "bg": "text"
+          },
+          "thumbActive": {
+            "bg": "accent"
+          }
+        }
+      },
+      "errors": [],
+      "valid": {
+        "ok": true,
+        "errors": []
+      },
+      "light": {
+        "vars": {
+          "--fx-tc-checkbox-size": "calc(var(--fx-font-size) * 16 / 14)",
+          "--fx-tc-checkbox-radius": "var(--fx-radius-sm)",
+          "--fx-tc-checkbox-mark-weight": "calc(var(--fx-font-size) * 2 / 14)",
+          "--fx-tc-checkbox-rest-bg": "var(--fx-surface)",
+          "--fx-tc-checkbox-rest-border": "var(--fx-border)",
+          "--fx-tc-checkbox-hover-border": "var(--fx-muted)",
+          "--fx-tc-checkbox-focus-border": "var(--fx-accent)",
+          "--fx-tc-checkbox-focus-ring": "var(--fx-focus)",
+          "--fx-tc-checkbox-active-bg": "var(--fx-accent-soft)",
+          "--fx-tc-checkbox-active-border": "var(--fx-accent)",
+          "--fx-tc-checkbox-checked-bg": "var(--fx-accent)",
+          "--fx-tc-checkbox-checked-border": "var(--fx-accent)",
+          "--fx-tc-checkbox-checked-mark": "var(--fx-accent-text)",
+          "--fx-tc-checkbox-invalid-border": "var(--fx-danger)",
+          "--fx-tc-radio-size": "calc(var(--fx-font-size) * 16 / 14)",
+          "--fx-tc-radio-dot-scale": "50%",
+          "--fx-tc-radio-rest-bg": "var(--fx-surface)",
+          "--fx-tc-radio-rest-border": "var(--fx-border)",
+          "--fx-tc-radio-hover-border": "var(--fx-muted)",
+          "--fx-tc-radio-focus-border": "var(--fx-accent)",
+          "--fx-tc-radio-focus-ring": "var(--fx-focus)",
+          "--fx-tc-radio-active-bg": "var(--fx-accent-soft)",
+          "--fx-tc-radio-active-border": "var(--fx-accent)",
+          "--fx-tc-radio-checked-bg": "var(--fx-surface)",
+          "--fx-tc-radio-checked-border": "var(--fx-accent)",
+          "--fx-tc-radio-checked-mark": "var(--fx-accent)",
+          "--fx-tc-radio-invalid-border": "var(--fx-danger)",
+          "--fx-tc-range-track-height": "calc(var(--fx-font-size) * 4 / 14)",
+          "--fx-tc-range-track-radius": "999px",
+          "--fx-tc-range-thumb-size": "calc(var(--fx-font-size) * 16 / 14)",
+          "--fx-tc-range-thumb-radius": "999px",
+          "--fx-tc-range-show-value": "drag",
+          "--fx-tc-range-ticks": "1",
+          "--fx-tc-range-rest-track": "var(--fx-surface3)",
+          "--fx-tc-range-rest-fill": "var(--fx-accent)",
+          "--fx-tc-range-rest-thumb": "var(--fx-accent)",
+          "--fx-tc-range-rest-thumb-border": "var(--fx-surface)",
+          "--fx-tc-range-focus-ring": "var(--fx-focus)",
+          "--fx-tc-range-active-thumb": "var(--fx-accent)",
+          "--fx-tc-range-active-thumb-border": "var(--fx-accent-soft)",
+          "--fx-tc-range-disabled-fill": "var(--fx-muted)",
+          "--fx-tc-range-disabled-thumb": "var(--fx-muted)",
+          "--fx-tc-range-invalid-fill": "var(--fx-danger)",
+          "--fx-tc-range-invalid-thumb": "var(--fx-danger)",
+          "--fx-tc-number-stepper": "ends",
+          "--fx-tc-number-stepper-width": "calc(var(--fx-font-size) * 28 / 14)",
+          "--fx-tc-number-repeat-delay-ms": "400ms",
+          "--fx-tc-number-repeat-ms": "80ms",
+          "--fx-tc-number-rest-bg": "var(--fx-surface)",
+          "--fx-tc-number-rest-border": "var(--fx-border)",
+          "--fx-tc-number-rest-text": "var(--fx-text)",
+          "--fx-tc-number-rest-stepper-bg": "var(--fx-surface2)",
+          "--fx-tc-number-rest-stepper-icon": "var(--fx-muted)",
+          "--fx-tc-number-hover-border": "var(--fx-muted)",
+          "--fx-tc-number-hover-stepper-bg": "var(--fx-surface3)",
+          "--fx-tc-number-hover-stepper-icon": "var(--fx-text)",
+          "--fx-tc-number-focus-border": "var(--fx-accent)",
+          "--fx-tc-number-focus-ring": "var(--fx-accent-soft)",
+          "--fx-tc-number-active-stepper-bg": "var(--fx-accent-soft)",
+          "--fx-tc-number-active-stepper-icon": "var(--fx-accent)",
+          "--fx-tc-number-disabled-text": "var(--fx-muted)",
+          "--fx-tc-number-invalid-border": "var(--fx-danger)",
+          "--fx-tc-datetime-cell-size": "calc(var(--fx-font-size) * 36 / 14)",
+          "--fx-tc-datetime-cell-radius": "var(--fx-radius-md)",
+          "--fx-tc-datetime-surface-radius": "var(--fx-radius-md)",
+          "--fx-tc-datetime-week-start": "locale",
+          "--fx-tc-datetime-week-numbers": "0",
+          "--fx-tc-datetime-hour-cycle": "locale",
+          "--fx-tc-datetime-minute-step": "5",
+          "--fx-tc-datetime-rest-surface": "var(--fx-surface)",
+          "--fx-tc-datetime-rest-text": "var(--fx-text)",
+          "--fx-tc-datetime-rest-border": "var(--fx-border)",
+          "--fx-tc-datetime-rest-muted": "var(--fx-muted)",
+          "--fx-tc-datetime-hover-cell-bg": "var(--fx-accent-soft)",
+          "--fx-tc-datetime-focus-cell-border": "var(--fx-accent)",
+          "--fx-tc-datetime-focus-ring": "var(--fx-focus)",
+          "--fx-tc-datetime-selected-cell-bg": "var(--fx-accent)",
+          "--fx-tc-datetime-selected-cell-text": "var(--fx-accent-text)",
+          "--fx-tc-datetime-selected-cell-border": "var(--fx-accent)",
+          "--fx-tc-datetime-today-cell-text": "var(--fx-accent)",
+          "--fx-tc-datetime-today-cell-border": "var(--fx-accent)",
+          "--fx-tc-datetime-disabled-cell-text": "var(--fx-muted)",
+          "--fx-tc-datetime-invalid-border": "var(--fx-danger)",
+          "--fx-tc-color-swatch-size": "calc(var(--fx-font-size) * 24 / 14)",
+          "--fx-tc-color-swatch-radius": "var(--fx-radius-sm)",
+          "--fx-tc-color-surface-radius": "var(--fx-radius-md)",
+          "--fx-tc-color-recent": "8",
+          "--fx-tc-color-theme-swatches": "1",
+          "--fx-tc-color-area-height": "calc(var(--fx-font-size) * 140 / 14)",
+          "--fx-tc-color-rest-surface": "var(--fx-surface)",
+          "--fx-tc-color-rest-text": "var(--fx-text)",
+          "--fx-tc-color-rest-border": "var(--fx-border)",
+          "--fx-tc-color-rest-swatch-border": "var(--fx-border)",
+          "--fx-tc-color-hover-swatch-border": "var(--fx-muted)",
+          "--fx-tc-color-focus-swatch-border": "var(--fx-accent)",
+          "--fx-tc-color-focus-ring": "var(--fx-focus)",
+          "--fx-tc-color-selected-swatch-border": "var(--fx-accent)",
+          "--fx-tc-color-selected-check": "var(--fx-accent-text)",
+          "--fx-tc-color-invalid-border": "var(--fx-danger)",
+          "--fx-tc-dialogs-width": "calc(var(--fx-font-size) * 420 / 14)",
+          "--fx-tc-dialogs-radius": "var(--fx-radius-lg)",
+          "--fx-tc-dialogs-ok-tone": "primary",
+          "--fx-tc-dialogs-cancel-tone": "neutral",
+          "--fx-tc-dialogs-icon": "1",
+          "--fx-tc-dialogs-select-text": "1",
+          "--fx-tc-dialogs-surface-bg": "var(--fx-surface)",
+          "--fx-tc-dialogs-surface-text": "var(--fx-text)",
+          "--fx-tc-dialogs-surface-border": "var(--fx-border)",
+          "--fx-tc-dialogs-title-text": "var(--fx-text)",
+          "--fx-tc-dialogs-title-icon": "var(--fx-accent)",
+          "--fx-tc-dialogs-message-text": "var(--fx-muted)",
+          "--fx-tc-dialogs-field-bg": "var(--fx-surface)",
+          "--fx-tc-dialogs-field-border": "var(--fx-border)",
+          "--fx-tc-dialogs-field-text": "var(--fx-text)",
+          "--fx-tc-dialogs-focus-ring": "var(--fx-focus)",
+          "--fx-tc-dialogs-focus-border": "var(--fx-accent)",
+          "--fx-tc-file-min-height": "calc(var(--fx-font-size) * 120 / 14)",
+          "--fx-tc-file-radius": "var(--fx-radius-md)",
+          "--fx-tc-file-border-style": "dashed",
+          "--fx-tc-file-border-width": "2px",
+          "--fx-tc-file-progress-height": "calc(var(--fx-font-size) * 6 / 14)",
+          "--fx-tc-file-show-list": "1",
+          "--fx-tc-file-rest-bg": "var(--fx-surface2)",
+          "--fx-tc-file-rest-border": "var(--fx-border)",
+          "--fx-tc-file-rest-text": "var(--fx-muted)",
+          "--fx-tc-file-rest-icon": "var(--fx-muted)",
+          "--fx-tc-file-hover-bg": "var(--fx-surface3)",
+          "--fx-tc-file-hover-border": "var(--fx-muted)",
+          "--fx-tc-file-hover-text": "var(--fx-text)",
+          "--fx-tc-file-hover-icon": "var(--fx-text)",
+          "--fx-tc-file-focus-border": "var(--fx-accent)",
+          "--fx-tc-file-focus-ring": "var(--fx-focus)",
+          "--fx-tc-file-active-bg": "var(--fx-accent-soft)",
+          "--fx-tc-file-active-border": "var(--fx-accent)",
+          "--fx-tc-file-dragover-bg": "var(--fx-accent-soft)",
+          "--fx-tc-file-dragover-border": "var(--fx-accent)",
+          "--fx-tc-file-dragover-text": "var(--fx-accent)",
+          "--fx-tc-file-dragover-icon": "var(--fx-accent)",
+          "--fx-tc-file-disabled-text": "var(--fx-muted)",
+          "--fx-tc-file-disabled-icon": "var(--fx-muted)",
+          "--fx-tc-file-invalid-border": "var(--fx-danger)",
+          "--fx-tc-file-invalid-text": "var(--fx-danger)",
+          "--fx-tc-file-invalid-icon": "var(--fx-danger)",
+          "--fx-tc-file-progress-track": "var(--fx-surface3)",
+          "--fx-tc-file-progress-fill": "var(--fx-accent)",
+          "--fx-tc-file-progress-done": "var(--fx-success)",
+          "--fx-tc-file-progress-failed": "var(--fx-danger)",
+          "--fx-tc-tooltip-delay-ms": "500ms",
+          "--fx-tc-tooltip-hide-ms": "100ms",
+          "--fx-tc-tooltip-long-press-ms": "500ms",
+          "--fx-tc-tooltip-max-width": "calc(var(--fx-font-size) * 280 / 14)",
+          "--fx-tc-tooltip-radius": "var(--fx-radius-md)",
+          "--fx-tc-tooltip-placement": "top",
+          "--fx-tc-tooltip-arrow": "0",
+          "--fx-tc-tooltip-rest-bg": "var(--fx-surface)",
+          "--fx-tc-tooltip-rest-text": "var(--fx-text)",
+          "--fx-tc-tooltip-rest-border": "var(--fx-accent)",
+          "--fx-tc-scrollbar-width": "10px",
+          "--fx-tc-scrollbar-radius": "999px",
+          "--fx-tc-scrollbar-thin": "0",
+          "--fx-tc-scrollbar-auto-hide": "0",
+          "--fx-tc-scrollbar-gutter": "auto",
+          "--fx-tc-scrollbar-thumb-bg": "var(--fx-muted)",
+          "--fx-tc-scrollbar-thumb-hover-bg": "var(--fx-text)",
+          "--fx-tc-scrollbar-thumb-active-bg": "var(--fx-accent)"
+        },
+        "attrs": {
+          "data-fx-tc-range-show-value": "drag",
+          "data-fx-tc-number-stepper": "ends",
+          "data-fx-tc-datetime-week-start": "locale",
+          "data-fx-tc-datetime-hour-cycle": "locale",
+          "data-fx-tc-dialogs-ok-tone": "primary",
+          "data-fx-tc-dialogs-cancel-tone": "neutral",
+          "data-fx-tc-file-border-style": "dashed",
+          "data-fx-tc-tooltip-placement": "top",
+          "data-fx-tc-scrollbar-gutter": "auto",
+          "data-fx-tc": "on",
+          "data-fx-tc-families": "checkbox radio range number datetime color dialogs file tooltip scrollbar",
+          "data-fx-tc-sheet": "on"
+        }
+      },
+      "dark": {
+        "vars": {
+          "--fx-tc-checkbox-size": "calc(var(--fx-font-size) * 16 / 14)",
+          "--fx-tc-checkbox-radius": "var(--fx-radius-sm)",
+          "--fx-tc-checkbox-mark-weight": "calc(var(--fx-font-size) * 2 / 14)",
+          "--fx-tc-checkbox-rest-bg": "var(--fx-surface)",
+          "--fx-tc-checkbox-rest-border": "var(--fx-border)",
+          "--fx-tc-checkbox-hover-border": "var(--fx-muted)",
+          "--fx-tc-checkbox-focus-border": "var(--fx-accent)",
+          "--fx-tc-checkbox-focus-ring": "var(--fx-focus)",
+          "--fx-tc-checkbox-active-bg": "var(--fx-accent-soft)",
+          "--fx-tc-checkbox-active-border": "var(--fx-accent)",
+          "--fx-tc-checkbox-checked-bg": "var(--fx-accent)",
+          "--fx-tc-checkbox-checked-border": "var(--fx-accent)",
+          "--fx-tc-checkbox-checked-mark": "var(--fx-accent-text)",
+          "--fx-tc-checkbox-invalid-border": "var(--fx-danger)",
+          "--fx-tc-radio-size": "calc(var(--fx-font-size) * 16 / 14)",
+          "--fx-tc-radio-dot-scale": "50%",
+          "--fx-tc-radio-rest-bg": "var(--fx-surface)",
+          "--fx-tc-radio-rest-border": "var(--fx-border)",
+          "--fx-tc-radio-hover-border": "var(--fx-muted)",
+          "--fx-tc-radio-focus-border": "var(--fx-accent)",
+          "--fx-tc-radio-focus-ring": "var(--fx-focus)",
+          "--fx-tc-radio-active-bg": "var(--fx-accent-soft)",
+          "--fx-tc-radio-active-border": "var(--fx-accent)",
+          "--fx-tc-radio-checked-bg": "var(--fx-surface)",
+          "--fx-tc-radio-checked-border": "var(--fx-accent)",
+          "--fx-tc-radio-checked-mark": "var(--fx-accent)",
+          "--fx-tc-radio-invalid-border": "var(--fx-danger)",
+          "--fx-tc-range-track-height": "calc(var(--fx-font-size) * 4 / 14)",
+          "--fx-tc-range-track-radius": "999px",
+          "--fx-tc-range-thumb-size": "calc(var(--fx-font-size) * 16 / 14)",
+          "--fx-tc-range-thumb-radius": "999px",
+          "--fx-tc-range-show-value": "drag",
+          "--fx-tc-range-ticks": "1",
+          "--fx-tc-range-rest-track": "var(--fx-surface3)",
+          "--fx-tc-range-rest-fill": "var(--fx-accent)",
+          "--fx-tc-range-rest-thumb": "var(--fx-accent)",
+          "--fx-tc-range-rest-thumb-border": "var(--fx-surface)",
+          "--fx-tc-range-focus-ring": "var(--fx-focus)",
+          "--fx-tc-range-active-thumb": "var(--fx-accent)",
+          "--fx-tc-range-active-thumb-border": "var(--fx-accent-soft)",
+          "--fx-tc-range-disabled-fill": "var(--fx-muted)",
+          "--fx-tc-range-disabled-thumb": "var(--fx-muted)",
+          "--fx-tc-range-invalid-fill": "var(--fx-danger)",
+          "--fx-tc-range-invalid-thumb": "var(--fx-danger)",
+          "--fx-tc-number-stepper": "ends",
+          "--fx-tc-number-stepper-width": "calc(var(--fx-font-size) * 28 / 14)",
+          "--fx-tc-number-repeat-delay-ms": "400ms",
+          "--fx-tc-number-repeat-ms": "80ms",
+          "--fx-tc-number-rest-bg": "var(--fx-surface)",
+          "--fx-tc-number-rest-border": "var(--fx-border)",
+          "--fx-tc-number-rest-text": "var(--fx-text)",
+          "--fx-tc-number-rest-stepper-bg": "var(--fx-surface2)",
+          "--fx-tc-number-rest-stepper-icon": "var(--fx-muted)",
+          "--fx-tc-number-hover-border": "var(--fx-muted)",
+          "--fx-tc-number-hover-stepper-bg": "var(--fx-surface3)",
+          "--fx-tc-number-hover-stepper-icon": "var(--fx-text)",
+          "--fx-tc-number-focus-border": "var(--fx-accent)",
+          "--fx-tc-number-focus-ring": "var(--fx-accent-soft)",
+          "--fx-tc-number-active-stepper-bg": "var(--fx-accent-soft)",
+          "--fx-tc-number-active-stepper-icon": "var(--fx-accent)",
+          "--fx-tc-number-disabled-text": "var(--fx-muted)",
+          "--fx-tc-number-invalid-border": "var(--fx-danger)",
+          "--fx-tc-datetime-cell-size": "calc(var(--fx-font-size) * 36 / 14)",
+          "--fx-tc-datetime-cell-radius": "var(--fx-radius-md)",
+          "--fx-tc-datetime-surface-radius": "var(--fx-radius-md)",
+          "--fx-tc-datetime-week-start": "locale",
+          "--fx-tc-datetime-week-numbers": "0",
+          "--fx-tc-datetime-hour-cycle": "locale",
+          "--fx-tc-datetime-minute-step": "5",
+          "--fx-tc-datetime-rest-surface": "var(--fx-surface)",
+          "--fx-tc-datetime-rest-text": "var(--fx-text)",
+          "--fx-tc-datetime-rest-border": "var(--fx-border)",
+          "--fx-tc-datetime-rest-muted": "var(--fx-muted)",
+          "--fx-tc-datetime-hover-cell-bg": "var(--fx-accent-soft)",
+          "--fx-tc-datetime-focus-cell-border": "var(--fx-accent)",
+          "--fx-tc-datetime-focus-ring": "var(--fx-focus)",
+          "--fx-tc-datetime-selected-cell-bg": "var(--fx-accent)",
+          "--fx-tc-datetime-selected-cell-text": "var(--fx-accent-text)",
+          "--fx-tc-datetime-selected-cell-border": "var(--fx-accent)",
+          "--fx-tc-datetime-today-cell-text": "var(--fx-accent)",
+          "--fx-tc-datetime-today-cell-border": "var(--fx-accent)",
+          "--fx-tc-datetime-disabled-cell-text": "var(--fx-muted)",
+          "--fx-tc-datetime-invalid-border": "var(--fx-danger)",
+          "--fx-tc-color-swatch-size": "calc(var(--fx-font-size) * 24 / 14)",
+          "--fx-tc-color-swatch-radius": "var(--fx-radius-sm)",
+          "--fx-tc-color-surface-radius": "var(--fx-radius-md)",
+          "--fx-tc-color-recent": "8",
+          "--fx-tc-color-theme-swatches": "1",
+          "--fx-tc-color-area-height": "calc(var(--fx-font-size) * 140 / 14)",
+          "--fx-tc-color-rest-surface": "var(--fx-surface)",
+          "--fx-tc-color-rest-text": "var(--fx-text)",
+          "--fx-tc-color-rest-border": "var(--fx-border)",
+          "--fx-tc-color-rest-swatch-border": "var(--fx-border)",
+          "--fx-tc-color-hover-swatch-border": "var(--fx-muted)",
+          "--fx-tc-color-focus-swatch-border": "var(--fx-accent)",
+          "--fx-tc-color-focus-ring": "var(--fx-focus)",
+          "--fx-tc-color-selected-swatch-border": "var(--fx-accent)",
+          "--fx-tc-color-selected-check": "var(--fx-accent-text)",
+          "--fx-tc-color-invalid-border": "var(--fx-danger)",
+          "--fx-tc-dialogs-width": "calc(var(--fx-font-size) * 420 / 14)",
+          "--fx-tc-dialogs-radius": "var(--fx-radius-lg)",
+          "--fx-tc-dialogs-ok-tone": "primary",
+          "--fx-tc-dialogs-cancel-tone": "neutral",
+          "--fx-tc-dialogs-icon": "1",
+          "--fx-tc-dialogs-select-text": "1",
+          "--fx-tc-dialogs-surface-bg": "var(--fx-surface)",
+          "--fx-tc-dialogs-surface-text": "var(--fx-text)",
+          "--fx-tc-dialogs-surface-border": "var(--fx-border)",
+          "--fx-tc-dialogs-title-text": "var(--fx-text)",
+          "--fx-tc-dialogs-title-icon": "var(--fx-accent)",
+          "--fx-tc-dialogs-message-text": "var(--fx-muted)",
+          "--fx-tc-dialogs-field-bg": "var(--fx-surface)",
+          "--fx-tc-dialogs-field-border": "var(--fx-border)",
+          "--fx-tc-dialogs-field-text": "var(--fx-text)",
+          "--fx-tc-dialogs-focus-ring": "var(--fx-focus)",
+          "--fx-tc-dialogs-focus-border": "var(--fx-accent)",
+          "--fx-tc-file-min-height": "calc(var(--fx-font-size) * 120 / 14)",
+          "--fx-tc-file-radius": "var(--fx-radius-md)",
+          "--fx-tc-file-border-style": "dashed",
+          "--fx-tc-file-border-width": "2px",
+          "--fx-tc-file-progress-height": "calc(var(--fx-font-size) * 6 / 14)",
+          "--fx-tc-file-show-list": "1",
+          "--fx-tc-file-rest-bg": "var(--fx-surface2)",
+          "--fx-tc-file-rest-border": "var(--fx-border)",
+          "--fx-tc-file-rest-text": "var(--fx-muted)",
+          "--fx-tc-file-rest-icon": "var(--fx-muted)",
+          "--fx-tc-file-hover-bg": "var(--fx-surface3)",
+          "--fx-tc-file-hover-border": "var(--fx-muted)",
+          "--fx-tc-file-hover-text": "var(--fx-text)",
+          "--fx-tc-file-hover-icon": "var(--fx-text)",
+          "--fx-tc-file-focus-border": "var(--fx-accent)",
+          "--fx-tc-file-focus-ring": "var(--fx-focus)",
+          "--fx-tc-file-active-bg": "var(--fx-accent-soft)",
+          "--fx-tc-file-active-border": "var(--fx-accent)",
+          "--fx-tc-file-dragover-bg": "var(--fx-accent-soft)",
+          "--fx-tc-file-dragover-border": "var(--fx-accent)",
+          "--fx-tc-file-dragover-text": "var(--fx-accent)",
+          "--fx-tc-file-dragover-icon": "var(--fx-accent)",
+          "--fx-tc-file-disabled-text": "var(--fx-muted)",
+          "--fx-tc-file-disabled-icon": "var(--fx-muted)",
+          "--fx-tc-file-invalid-border": "var(--fx-danger)",
+          "--fx-tc-file-invalid-text": "var(--fx-danger)",
+          "--fx-tc-file-invalid-icon": "var(--fx-danger)",
+          "--fx-tc-file-progress-track": "var(--fx-surface3)",
+          "--fx-tc-file-progress-fill": "var(--fx-accent)",
+          "--fx-tc-file-progress-done": "var(--fx-success)",
+          "--fx-tc-file-progress-failed": "var(--fx-danger)",
+          "--fx-tc-tooltip-delay-ms": "500ms",
+          "--fx-tc-tooltip-hide-ms": "100ms",
+          "--fx-tc-tooltip-long-press-ms": "500ms",
+          "--fx-tc-tooltip-max-width": "calc(var(--fx-font-size) * 280 / 14)",
+          "--fx-tc-tooltip-radius": "var(--fx-radius-md)",
+          "--fx-tc-tooltip-placement": "top",
+          "--fx-tc-tooltip-arrow": "0",
+          "--fx-tc-tooltip-rest-bg": "var(--fx-surface)",
+          "--fx-tc-tooltip-rest-text": "var(--fx-text)",
+          "--fx-tc-tooltip-rest-border": "var(--fx-accent)",
+          "--fx-tc-scrollbar-width": "10px",
+          "--fx-tc-scrollbar-radius": "999px",
+          "--fx-tc-scrollbar-thin": "0",
+          "--fx-tc-scrollbar-auto-hide": "0",
+          "--fx-tc-scrollbar-gutter": "auto",
+          "--fx-tc-scrollbar-thumb-bg": "var(--fx-muted)",
+          "--fx-tc-scrollbar-thumb-hover-bg": "var(--fx-text)",
+          "--fx-tc-scrollbar-thumb-active-bg": "var(--fx-accent)"
+        },
+        "attrs": {
+          "data-fx-tc-range-show-value": "drag",
+          "data-fx-tc-number-stepper": "ends",
+          "data-fx-tc-datetime-week-start": "locale",
+          "data-fx-tc-datetime-hour-cycle": "locale",
+          "data-fx-tc-dialogs-ok-tone": "primary",
+          "data-fx-tc-dialogs-cancel-tone": "neutral",
+          "data-fx-tc-file-border-style": "dashed",
+          "data-fx-tc-tooltip-placement": "top",
+          "data-fx-tc-scrollbar-gutter": "auto",
+          "data-fx-tc": "on",
+          "data-fx-tc-families": "checkbox radio",
+          "data-fx-tc-sheet": "off"
+        }
+      }
+    }
+  },
+  "output": {
+    "empty": {
+      "vars": {
+        "--fx-tc-checkbox-size": "calc(var(--fx-font-size) * 16 / 14)",
+        "--fx-tc-checkbox-radius": "var(--fx-radius-sm)",
+        "--fx-tc-checkbox-mark-weight": "calc(var(--fx-font-size) * 2 / 14)",
+        "--fx-tc-checkbox-rest-bg": "var(--fx-surface)",
+        "--fx-tc-checkbox-rest-border": "var(--fx-border)",
+        "--fx-tc-checkbox-hover-border": "var(--fx-muted)",
+        "--fx-tc-checkbox-focus-border": "var(--fx-accent)",
+        "--fx-tc-checkbox-focus-ring": "var(--fx-focus)",
+        "--fx-tc-checkbox-active-bg": "var(--fx-accent-soft)",
+        "--fx-tc-checkbox-active-border": "var(--fx-accent)",
+        "--fx-tc-checkbox-checked-bg": "var(--fx-accent)",
+        "--fx-tc-checkbox-checked-border": "var(--fx-accent)",
+        "--fx-tc-checkbox-checked-mark": "var(--fx-accent-text)",
+        "--fx-tc-checkbox-invalid-border": "var(--fx-danger)",
+        "--fx-tc-radio-size": "calc(var(--fx-font-size) * 16 / 14)",
+        "--fx-tc-radio-dot-scale": "50%",
+        "--fx-tc-radio-rest-bg": "var(--fx-surface)",
+        "--fx-tc-radio-rest-border": "var(--fx-border)",
+        "--fx-tc-radio-hover-border": "var(--fx-muted)",
+        "--fx-tc-radio-focus-border": "var(--fx-accent)",
+        "--fx-tc-radio-focus-ring": "var(--fx-focus)",
+        "--fx-tc-radio-active-bg": "var(--fx-accent-soft)",
+        "--fx-tc-radio-active-border": "var(--fx-accent)",
+        "--fx-tc-radio-checked-bg": "var(--fx-surface)",
+        "--fx-tc-radio-checked-border": "var(--fx-accent)",
+        "--fx-tc-radio-checked-mark": "var(--fx-accent)",
+        "--fx-tc-radio-invalid-border": "var(--fx-danger)",
+        "--fx-tc-range-track-height": "calc(var(--fx-font-size) * 4 / 14)",
+        "--fx-tc-range-track-radius": "999px",
+        "--fx-tc-range-thumb-size": "calc(var(--fx-font-size) * 16 / 14)",
+        "--fx-tc-range-thumb-radius": "999px",
+        "--fx-tc-range-show-value": "drag",
+        "--fx-tc-range-ticks": "1",
+        "--fx-tc-range-rest-track": "var(--fx-surface3)",
+        "--fx-tc-range-rest-fill": "var(--fx-accent)",
+        "--fx-tc-range-rest-thumb": "var(--fx-accent)",
+        "--fx-tc-range-rest-thumb-border": "var(--fx-surface)",
+        "--fx-tc-range-focus-ring": "var(--fx-focus)",
+        "--fx-tc-range-active-thumb": "var(--fx-accent)",
+        "--fx-tc-range-active-thumb-border": "var(--fx-accent-soft)",
+        "--fx-tc-range-disabled-fill": "var(--fx-muted)",
+        "--fx-tc-range-disabled-thumb": "var(--fx-muted)",
+        "--fx-tc-range-invalid-fill": "var(--fx-danger)",
+        "--fx-tc-range-invalid-thumb": "var(--fx-danger)",
+        "--fx-tc-number-stepper": "ends",
+        "--fx-tc-number-stepper-width": "calc(var(--fx-font-size) * 28 / 14)",
+        "--fx-tc-number-repeat-delay-ms": "400ms",
+        "--fx-tc-number-repeat-ms": "80ms",
+        "--fx-tc-number-rest-bg": "var(--fx-surface)",
+        "--fx-tc-number-rest-border": "var(--fx-border)",
+        "--fx-tc-number-rest-text": "var(--fx-text)",
+        "--fx-tc-number-rest-stepper-bg": "var(--fx-surface2)",
+        "--fx-tc-number-rest-stepper-icon": "var(--fx-muted)",
+        "--fx-tc-number-hover-border": "var(--fx-muted)",
+        "--fx-tc-number-hover-stepper-bg": "var(--fx-surface3)",
+        "--fx-tc-number-hover-stepper-icon": "var(--fx-text)",
+        "--fx-tc-number-focus-border": "var(--fx-accent)",
+        "--fx-tc-number-focus-ring": "var(--fx-accent-soft)",
+        "--fx-tc-number-active-stepper-bg": "var(--fx-accent-soft)",
+        "--fx-tc-number-active-stepper-icon": "var(--fx-accent)",
+        "--fx-tc-number-disabled-text": "var(--fx-muted)",
+        "--fx-tc-number-invalid-border": "var(--fx-danger)",
+        "--fx-tc-datetime-cell-size": "calc(var(--fx-font-size) * 36 / 14)",
+        "--fx-tc-datetime-cell-radius": "var(--fx-radius-md)",
+        "--fx-tc-datetime-surface-radius": "var(--fx-radius-md)",
+        "--fx-tc-datetime-week-start": "locale",
+        "--fx-tc-datetime-week-numbers": "0",
+        "--fx-tc-datetime-hour-cycle": "locale",
+        "--fx-tc-datetime-minute-step": "5",
+        "--fx-tc-datetime-rest-surface": "var(--fx-surface)",
+        "--fx-tc-datetime-rest-text": "var(--fx-text)",
+        "--fx-tc-datetime-rest-border": "var(--fx-border)",
+        "--fx-tc-datetime-rest-muted": "var(--fx-muted)",
+        "--fx-tc-datetime-hover-cell-bg": "var(--fx-accent-soft)",
+        "--fx-tc-datetime-focus-cell-border": "var(--fx-accent)",
+        "--fx-tc-datetime-focus-ring": "var(--fx-focus)",
+        "--fx-tc-datetime-selected-cell-bg": "var(--fx-accent)",
+        "--fx-tc-datetime-selected-cell-text": "var(--fx-accent-text)",
+        "--fx-tc-datetime-selected-cell-border": "var(--fx-accent)",
+        "--fx-tc-datetime-today-cell-text": "var(--fx-accent)",
+        "--fx-tc-datetime-today-cell-border": "var(--fx-accent)",
+        "--fx-tc-datetime-disabled-cell-text": "var(--fx-muted)",
+        "--fx-tc-datetime-invalid-border": "var(--fx-danger)",
+        "--fx-tc-color-swatch-size": "calc(var(--fx-font-size) * 24 / 14)",
+        "--fx-tc-color-swatch-radius": "var(--fx-radius-sm)",
+        "--fx-tc-color-surface-radius": "var(--fx-radius-md)",
+        "--fx-tc-color-recent": "8",
+        "--fx-tc-color-theme-swatches": "1",
+        "--fx-tc-color-area-height": "calc(var(--fx-font-size) * 140 / 14)",
+        "--fx-tc-color-rest-surface": "var(--fx-surface)",
+        "--fx-tc-color-rest-text": "var(--fx-text)",
+        "--fx-tc-color-rest-border": "var(--fx-border)",
+        "--fx-tc-color-rest-swatch-border": "var(--fx-border)",
+        "--fx-tc-color-hover-swatch-border": "var(--fx-muted)",
+        "--fx-tc-color-focus-swatch-border": "var(--fx-accent)",
+        "--fx-tc-color-focus-ring": "var(--fx-focus)",
+        "--fx-tc-color-selected-swatch-border": "var(--fx-accent)",
+        "--fx-tc-color-selected-check": "var(--fx-accent-text)",
+        "--fx-tc-color-invalid-border": "var(--fx-danger)",
+        "--fx-tc-dialogs-width": "calc(var(--fx-font-size) * 420 / 14)",
+        "--fx-tc-dialogs-radius": "var(--fx-radius-lg)",
+        "--fx-tc-dialogs-ok-tone": "primary",
+        "--fx-tc-dialogs-cancel-tone": "neutral",
+        "--fx-tc-dialogs-icon": "1",
+        "--fx-tc-dialogs-select-text": "1",
+        "--fx-tc-dialogs-surface-bg": "var(--fx-surface)",
+        "--fx-tc-dialogs-surface-text": "var(--fx-text)",
+        "--fx-tc-dialogs-surface-border": "var(--fx-border)",
+        "--fx-tc-dialogs-title-text": "var(--fx-text)",
+        "--fx-tc-dialogs-title-icon": "var(--fx-accent)",
+        "--fx-tc-dialogs-message-text": "var(--fx-muted)",
+        "--fx-tc-dialogs-field-bg": "var(--fx-surface)",
+        "--fx-tc-dialogs-field-border": "var(--fx-border)",
+        "--fx-tc-dialogs-field-text": "var(--fx-text)",
+        "--fx-tc-dialogs-focus-ring": "var(--fx-focus)",
+        "--fx-tc-dialogs-focus-border": "var(--fx-accent)",
+        "--fx-tc-file-min-height": "calc(var(--fx-font-size) * 120 / 14)",
+        "--fx-tc-file-radius": "var(--fx-radius-md)",
+        "--fx-tc-file-border-style": "dashed",
+        "--fx-tc-file-border-width": "2px",
+        "--fx-tc-file-progress-height": "calc(var(--fx-font-size) * 6 / 14)",
+        "--fx-tc-file-show-list": "1",
+        "--fx-tc-file-rest-bg": "var(--fx-surface2)",
+        "--fx-tc-file-rest-border": "var(--fx-border)",
+        "--fx-tc-file-rest-text": "var(--fx-muted)",
+        "--fx-tc-file-rest-icon": "var(--fx-muted)",
+        "--fx-tc-file-hover-bg": "var(--fx-surface3)",
+        "--fx-tc-file-hover-border": "var(--fx-muted)",
+        "--fx-tc-file-hover-text": "var(--fx-text)",
+        "--fx-tc-file-hover-icon": "var(--fx-text)",
+        "--fx-tc-file-focus-border": "var(--fx-accent)",
+        "--fx-tc-file-focus-ring": "var(--fx-focus)",
+        "--fx-tc-file-active-bg": "var(--fx-accent-soft)",
+        "--fx-tc-file-active-border": "var(--fx-accent)",
+        "--fx-tc-file-dragover-bg": "var(--fx-accent-soft)",
+        "--fx-tc-file-dragover-border": "var(--fx-accent)",
+        "--fx-tc-file-dragover-text": "var(--fx-accent)",
+        "--fx-tc-file-dragover-icon": "var(--fx-accent)",
+        "--fx-tc-file-disabled-text": "var(--fx-muted)",
+        "--fx-tc-file-disabled-icon": "var(--fx-muted)",
+        "--fx-tc-file-invalid-border": "var(--fx-danger)",
+        "--fx-tc-file-invalid-text": "var(--fx-danger)",
+        "--fx-tc-file-invalid-icon": "var(--fx-danger)",
+        "--fx-tc-file-progress-track": "var(--fx-surface3)",
+        "--fx-tc-file-progress-fill": "var(--fx-accent)",
+        "--fx-tc-file-progress-done": "var(--fx-success)",
+        "--fx-tc-file-progress-failed": "var(--fx-danger)",
+        "--fx-tc-tooltip-delay-ms": "500ms",
+        "--fx-tc-tooltip-hide-ms": "100ms",
+        "--fx-tc-tooltip-long-press-ms": "500ms",
+        "--fx-tc-tooltip-max-width": "calc(var(--fx-font-size) * 280 / 14)",
+        "--fx-tc-tooltip-radius": "var(--fx-radius-md)",
+        "--fx-tc-tooltip-placement": "top",
+        "--fx-tc-tooltip-arrow": "0",
+        "--fx-tc-tooltip-rest-bg": "var(--fx-surface)",
+        "--fx-tc-tooltip-rest-text": "var(--fx-text)",
+        "--fx-tc-tooltip-rest-border": "var(--fx-accent)",
+        "--fx-tc-scrollbar-width": "10px",
+        "--fx-tc-scrollbar-radius": "999px",
+        "--fx-tc-scrollbar-thin": "0",
+        "--fx-tc-scrollbar-auto-hide": "0",
+        "--fx-tc-scrollbar-gutter": "auto",
+        "--fx-tc-scrollbar-thumb-bg": "var(--fx-muted)",
+        "--fx-tc-scrollbar-thumb-hover-bg": "var(--fx-text)",
+        "--fx-tc-scrollbar-thumb-active-bg": "var(--fx-accent)"
+      },
+      "attrs": {
+        "data-fx-tc-range-show-value": "drag",
+        "data-fx-tc-number-stepper": "ends",
+        "data-fx-tc-datetime-week-start": "locale",
+        "data-fx-tc-datetime-hour-cycle": "locale",
+        "data-fx-tc-dialogs-ok-tone": "primary",
+        "data-fx-tc-dialogs-cancel-tone": "neutral",
+        "data-fx-tc-file-border-style": "dashed",
+        "data-fx-tc-tooltip-placement": "top",
+        "data-fx-tc-scrollbar-gutter": "auto",
+        "data-fx-tc": "off",
+        "data-fx-tc-families": "",
+        "data-fx-tc-sheet": "on"
+      }
+    },
+    "pair": {
+      "vars": {
+        "--fx-tc-checkbox-size": "calc(var(--fx-font-size) * 16 / 14)",
+        "--fx-tc-checkbox-radius": "var(--fx-radius-sm)",
+        "--fx-tc-checkbox-mark-weight": "calc(var(--fx-font-size) * 2 / 14)",
+        "--fx-tc-checkbox-rest-bg": "var(--fx-surface2)",
+        "--fx-tc-checkbox-rest-border": "var(--fx-border)",
+        "--fx-tc-checkbox-hover-border": "var(--fx-muted)",
+        "--fx-tc-checkbox-focus-border": "var(--fx-accent)",
+        "--fx-tc-checkbox-focus-ring": "var(--fx-focus)",
+        "--fx-tc-checkbox-active-bg": "var(--fx-accent-soft)",
+        "--fx-tc-checkbox-active-border": "var(--fx-accent)",
+        "--fx-tc-checkbox-checked-bg": "var(--fx-info)",
+        "--fx-tc-checkbox-checked-border": "var(--fx-accent)",
+        "--fx-tc-checkbox-checked-mark": "var(--fx-accent-text)",
+        "--fx-tc-checkbox-invalid-border": "var(--fx-danger)",
+        "--fx-tc-radio-size": "calc(var(--fx-font-size) * 16 / 14)",
+        "--fx-tc-radio-dot-scale": "50%",
+        "--fx-tc-radio-rest-bg": "var(--fx-surface)",
+        "--fx-tc-radio-rest-border": "var(--fx-border)",
+        "--fx-tc-radio-hover-border": "var(--fx-muted)",
+        "--fx-tc-radio-focus-border": "var(--fx-accent)",
+        "--fx-tc-radio-focus-ring": "var(--fx-focus)",
+        "--fx-tc-radio-active-bg": "var(--fx-accent-soft)",
+        "--fx-tc-radio-active-border": "var(--fx-accent)",
+        "--fx-tc-radio-checked-bg": "var(--fx-surface)",
+        "--fx-tc-radio-checked-border": "var(--fx-accent)",
+        "--fx-tc-radio-checked-mark": "var(--fx-accent)",
+        "--fx-tc-radio-invalid-border": "var(--fx-danger)",
+        "--fx-tc-range-track-height": "calc(var(--fx-font-size) * 4 / 14)",
+        "--fx-tc-range-track-radius": "999px",
+        "--fx-tc-range-thumb-size": "calc(var(--fx-font-size) * 16 / 14)",
+        "--fx-tc-range-thumb-radius": "999px",
+        "--fx-tc-range-show-value": "drag",
+        "--fx-tc-range-ticks": "1",
+        "--fx-tc-range-rest-track": "var(--fx-surface3)",
+        "--fx-tc-range-rest-fill": "var(--fx-accent)",
+        "--fx-tc-range-rest-thumb": "var(--fx-accent)",
+        "--fx-tc-range-rest-thumb-border": "var(--fx-surface)",
+        "--fx-tc-range-focus-ring": "var(--fx-focus)",
+        "--fx-tc-range-active-thumb": "var(--fx-accent)",
+        "--fx-tc-range-active-thumb-border": "var(--fx-accent-soft)",
+        "--fx-tc-range-disabled-fill": "var(--fx-muted)",
+        "--fx-tc-range-disabled-thumb": "var(--fx-muted)",
+        "--fx-tc-range-invalid-fill": "var(--fx-danger)",
+        "--fx-tc-range-invalid-thumb": "var(--fx-danger)",
+        "--fx-tc-number-stepper": "ends",
+        "--fx-tc-number-stepper-width": "calc(var(--fx-font-size) * 28 / 14)",
+        "--fx-tc-number-repeat-delay-ms": "400ms",
+        "--fx-tc-number-repeat-ms": "80ms",
+        "--fx-tc-number-rest-bg": "var(--fx-surface)",
+        "--fx-tc-number-rest-border": "var(--fx-border)",
+        "--fx-tc-number-rest-text": "var(--fx-text)",
+        "--fx-tc-number-rest-stepper-bg": "var(--fx-surface2)",
+        "--fx-tc-number-rest-stepper-icon": "var(--fx-muted)",
+        "--fx-tc-number-hover-border": "var(--fx-muted)",
+        "--fx-tc-number-hover-stepper-bg": "var(--fx-surface3)",
+        "--fx-tc-number-hover-stepper-icon": "var(--fx-text)",
+        "--fx-tc-number-focus-border": "var(--fx-accent)",
+        "--fx-tc-number-focus-ring": "var(--fx-accent-soft)",
+        "--fx-tc-number-active-stepper-bg": "var(--fx-accent-soft)",
+        "--fx-tc-number-active-stepper-icon": "var(--fx-accent)",
+        "--fx-tc-number-disabled-text": "var(--fx-muted)",
+        "--fx-tc-number-invalid-border": "var(--fx-danger)",
+        "--fx-tc-datetime-cell-size": "calc(var(--fx-font-size) * 36 / 14)",
+        "--fx-tc-datetime-cell-radius": "var(--fx-radius-md)",
+        "--fx-tc-datetime-surface-radius": "var(--fx-radius-md)",
+        "--fx-tc-datetime-week-start": "locale",
+        "--fx-tc-datetime-week-numbers": "0",
+        "--fx-tc-datetime-hour-cycle": "locale",
+        "--fx-tc-datetime-minute-step": "5",
+        "--fx-tc-datetime-rest-surface": "var(--fx-surface)",
+        "--fx-tc-datetime-rest-text": "var(--fx-text)",
+        "--fx-tc-datetime-rest-border": "var(--fx-border)",
+        "--fx-tc-datetime-rest-muted": "var(--fx-muted)",
+        "--fx-tc-datetime-hover-cell-bg": "var(--fx-accent-soft)",
+        "--fx-tc-datetime-focus-cell-border": "var(--fx-accent)",
+        "--fx-tc-datetime-focus-ring": "var(--fx-focus)",
+        "--fx-tc-datetime-selected-cell-bg": "var(--fx-accent)",
+        "--fx-tc-datetime-selected-cell-text": "var(--fx-accent-text)",
+        "--fx-tc-datetime-selected-cell-border": "var(--fx-accent)",
+        "--fx-tc-datetime-today-cell-text": "var(--fx-accent)",
+        "--fx-tc-datetime-today-cell-border": "var(--fx-accent)",
+        "--fx-tc-datetime-disabled-cell-text": "var(--fx-muted)",
+        "--fx-tc-datetime-invalid-border": "var(--fx-danger)",
+        "--fx-tc-color-swatch-size": "calc(var(--fx-font-size) * 24 / 14)",
+        "--fx-tc-color-swatch-radius": "var(--fx-radius-sm)",
+        "--fx-tc-color-surface-radius": "var(--fx-radius-md)",
+        "--fx-tc-color-recent": "8",
+        "--fx-tc-color-theme-swatches": "1",
+        "--fx-tc-color-area-height": "calc(var(--fx-font-size) * 140 / 14)",
+        "--fx-tc-color-rest-surface": "var(--fx-surface)",
+        "--fx-tc-color-rest-text": "var(--fx-text)",
+        "--fx-tc-color-rest-border": "var(--fx-border)",
+        "--fx-tc-color-rest-swatch-border": "var(--fx-border)",
+        "--fx-tc-color-hover-swatch-border": "var(--fx-muted)",
+        "--fx-tc-color-focus-swatch-border": "var(--fx-accent)",
+        "--fx-tc-color-focus-ring": "var(--fx-focus)",
+        "--fx-tc-color-selected-swatch-border": "var(--fx-accent)",
+        "--fx-tc-color-selected-check": "var(--fx-accent-text)",
+        "--fx-tc-color-invalid-border": "var(--fx-danger)",
+        "--fx-tc-dialogs-width": "calc(var(--fx-font-size) * 420 / 14)",
+        "--fx-tc-dialogs-radius": "var(--fx-radius-lg)",
+        "--fx-tc-dialogs-ok-tone": "primary",
+        "--fx-tc-dialogs-cancel-tone": "neutral",
+        "--fx-tc-dialogs-icon": "1",
+        "--fx-tc-dialogs-select-text": "1",
+        "--fx-tc-dialogs-surface-bg": "var(--fx-surface)",
+        "--fx-tc-dialogs-surface-text": "var(--fx-text)",
+        "--fx-tc-dialogs-surface-border": "var(--fx-border)",
+        "--fx-tc-dialogs-title-text": "var(--fx-text)",
+        "--fx-tc-dialogs-title-icon": "var(--fx-accent)",
+        "--fx-tc-dialogs-message-text": "var(--fx-muted)",
+        "--fx-tc-dialogs-field-bg": "var(--fx-surface)",
+        "--fx-tc-dialogs-field-border": "var(--fx-border)",
+        "--fx-tc-dialogs-field-text": "var(--fx-text)",
+        "--fx-tc-dialogs-focus-ring": "var(--fx-focus)",
+        "--fx-tc-dialogs-focus-border": "var(--fx-accent)",
+        "--fx-tc-file-min-height": "calc(var(--fx-font-size) * 120 / 14)",
+        "--fx-tc-file-radius": "var(--fx-radius-md)",
+        "--fx-tc-file-border-style": "dashed",
+        "--fx-tc-file-border-width": "2px",
+        "--fx-tc-file-progress-height": "calc(var(--fx-font-size) * 6 / 14)",
+        "--fx-tc-file-show-list": "1",
+        "--fx-tc-file-rest-bg": "var(--fx-surface2)",
+        "--fx-tc-file-rest-border": "var(--fx-border)",
+        "--fx-tc-file-rest-text": "var(--fx-muted)",
+        "--fx-tc-file-rest-icon": "var(--fx-muted)",
+        "--fx-tc-file-hover-bg": "var(--fx-surface3)",
+        "--fx-tc-file-hover-border": "var(--fx-muted)",
+        "--fx-tc-file-hover-text": "var(--fx-text)",
+        "--fx-tc-file-hover-icon": "var(--fx-text)",
+        "--fx-tc-file-focus-border": "var(--fx-accent)",
+        "--fx-tc-file-focus-ring": "var(--fx-focus)",
+        "--fx-tc-file-active-bg": "var(--fx-accent-soft)",
+        "--fx-tc-file-active-border": "var(--fx-accent)",
+        "--fx-tc-file-dragover-bg": "var(--fx-accent-soft)",
+        "--fx-tc-file-dragover-border": "var(--fx-accent)",
+        "--fx-tc-file-dragover-text": "var(--fx-accent)",
+        "--fx-tc-file-dragover-icon": "var(--fx-accent)",
+        "--fx-tc-file-disabled-text": "var(--fx-muted)",
+        "--fx-tc-file-disabled-icon": "var(--fx-muted)",
+        "--fx-tc-file-invalid-border": "var(--fx-danger)",
+        "--fx-tc-file-invalid-text": "var(--fx-danger)",
+        "--fx-tc-file-invalid-icon": "var(--fx-danger)",
+        "--fx-tc-file-progress-track": "var(--fx-surface3)",
+        "--fx-tc-file-progress-fill": "var(--fx-accent)",
+        "--fx-tc-file-progress-done": "var(--fx-success)",
+        "--fx-tc-file-progress-failed": "var(--fx-danger)",
+        "--fx-tc-tooltip-delay-ms": "500ms",
+        "--fx-tc-tooltip-hide-ms": "100ms",
+        "--fx-tc-tooltip-long-press-ms": "500ms",
+        "--fx-tc-tooltip-max-width": "calc(var(--fx-font-size) * 280 / 14)",
+        "--fx-tc-tooltip-radius": "var(--fx-radius-md)",
+        "--fx-tc-tooltip-placement": "top",
+        "--fx-tc-tooltip-arrow": "0",
+        "--fx-tc-tooltip-rest-bg": "var(--fx-surface)",
+        "--fx-tc-tooltip-rest-text": "var(--fx-text)",
+        "--fx-tc-tooltip-rest-border": "var(--fx-accent)",
+        "--fx-tc-scrollbar-width": "10px",
+        "--fx-tc-scrollbar-radius": "999px",
+        "--fx-tc-scrollbar-thin": "0",
+        "--fx-tc-scrollbar-auto-hide": "0",
+        "--fx-tc-scrollbar-gutter": "auto",
+        "--fx-tc-scrollbar-thumb-bg": "var(--fx-muted)",
+        "--fx-tc-scrollbar-thumb-hover-bg": "var(--fx-text)",
+        "--fx-tc-scrollbar-thumb-active-bg": "var(--fx-accent)"
+      },
+      "attrs": {
+        "data-fx-tc-range-show-value": "drag",
+        "data-fx-tc-number-stepper": "ends",
+        "data-fx-tc-datetime-week-start": "locale",
+        "data-fx-tc-datetime-hour-cycle": "locale",
+        "data-fx-tc-dialogs-ok-tone": "primary",
+        "data-fx-tc-dialogs-cancel-tone": "neutral",
+        "data-fx-tc-file-border-style": "dashed",
+        "data-fx-tc-tooltip-placement": "top",
+        "data-fx-tc-scrollbar-gutter": "auto",
+        "data-fx-tc": "off",
+        "data-fx-tc-families": "",
+        "data-fx-tc-sheet": "on"
+      }
+    },
+    "pairLight": {
+      "vars": {
+        "--fx-tc-checkbox-size": "calc(var(--fx-font-size) * 16 / 14)",
+        "--fx-tc-checkbox-radius": "var(--fx-radius-sm)",
+        "--fx-tc-checkbox-mark-weight": "calc(var(--fx-font-size) * 2 / 14)",
+        "--fx-tc-checkbox-rest-bg": "var(--fx-surface)",
+        "--fx-tc-checkbox-rest-border": "var(--fx-border)",
+        "--fx-tc-checkbox-hover-border": "var(--fx-muted)",
+        "--fx-tc-checkbox-focus-border": "var(--fx-accent)",
+        "--fx-tc-checkbox-focus-ring": "var(--fx-focus)",
+        "--fx-tc-checkbox-active-bg": "var(--fx-accent-soft)",
+        "--fx-tc-checkbox-active-border": "var(--fx-accent)",
+        "--fx-tc-checkbox-checked-bg": "var(--fx-accent)",
+        "--fx-tc-checkbox-checked-border": "var(--fx-accent)",
+        "--fx-tc-checkbox-checked-mark": "var(--fx-accent-text)",
+        "--fx-tc-checkbox-invalid-border": "var(--fx-danger)",
+        "--fx-tc-radio-size": "calc(var(--fx-font-size) * 16 / 14)",
+        "--fx-tc-radio-dot-scale": "50%",
+        "--fx-tc-radio-rest-bg": "var(--fx-surface)",
+        "--fx-tc-radio-rest-border": "var(--fx-border)",
+        "--fx-tc-radio-hover-border": "var(--fx-muted)",
+        "--fx-tc-radio-focus-border": "var(--fx-accent)",
+        "--fx-tc-radio-focus-ring": "var(--fx-focus)",
+        "--fx-tc-radio-active-bg": "var(--fx-accent-soft)",
+        "--fx-tc-radio-active-border": "var(--fx-accent)",
+        "--fx-tc-radio-checked-bg": "var(--fx-surface)",
+        "--fx-tc-radio-checked-border": "var(--fx-accent)",
+        "--fx-tc-radio-checked-mark": "var(--fx-accent)",
+        "--fx-tc-radio-invalid-border": "var(--fx-danger)",
+        "--fx-tc-range-track-height": "calc(var(--fx-font-size) * 4 / 14)",
+        "--fx-tc-range-track-radius": "999px",
+        "--fx-tc-range-thumb-size": "calc(var(--fx-font-size) * 16 / 14)",
+        "--fx-tc-range-thumb-radius": "999px",
+        "--fx-tc-range-show-value": "drag",
+        "--fx-tc-range-ticks": "1",
+        "--fx-tc-range-rest-track": "var(--fx-surface3)",
+        "--fx-tc-range-rest-fill": "var(--fx-accent)",
+        "--fx-tc-range-rest-thumb": "var(--fx-accent)",
+        "--fx-tc-range-rest-thumb-border": "var(--fx-surface)",
+        "--fx-tc-range-focus-ring": "var(--fx-focus)",
+        "--fx-tc-range-active-thumb": "var(--fx-accent)",
+        "--fx-tc-range-active-thumb-border": "var(--fx-accent-soft)",
+        "--fx-tc-range-disabled-fill": "var(--fx-muted)",
+        "--fx-tc-range-disabled-thumb": "var(--fx-muted)",
+        "--fx-tc-range-invalid-fill": "var(--fx-danger)",
+        "--fx-tc-range-invalid-thumb": "var(--fx-danger)",
+        "--fx-tc-number-stepper": "ends",
+        "--fx-tc-number-stepper-width": "calc(var(--fx-font-size) * 28 / 14)",
+        "--fx-tc-number-repeat-delay-ms": "400ms",
+        "--fx-tc-number-repeat-ms": "80ms",
+        "--fx-tc-number-rest-bg": "var(--fx-surface)",
+        "--fx-tc-number-rest-border": "var(--fx-border)",
+        "--fx-tc-number-rest-text": "var(--fx-text)",
+        "--fx-tc-number-rest-stepper-bg": "var(--fx-surface2)",
+        "--fx-tc-number-rest-stepper-icon": "var(--fx-muted)",
+        "--fx-tc-number-hover-border": "var(--fx-muted)",
+        "--fx-tc-number-hover-stepper-bg": "var(--fx-surface3)",
+        "--fx-tc-number-hover-stepper-icon": "var(--fx-text)",
+        "--fx-tc-number-focus-border": "var(--fx-accent)",
+        "--fx-tc-number-focus-ring": "var(--fx-accent-soft)",
+        "--fx-tc-number-active-stepper-bg": "var(--fx-accent-soft)",
+        "--fx-tc-number-active-stepper-icon": "var(--fx-accent)",
+        "--fx-tc-number-disabled-text": "var(--fx-muted)",
+        "--fx-tc-number-invalid-border": "var(--fx-danger)",
+        "--fx-tc-datetime-cell-size": "calc(var(--fx-font-size) * 36 / 14)",
+        "--fx-tc-datetime-cell-radius": "var(--fx-radius-md)",
+        "--fx-tc-datetime-surface-radius": "var(--fx-radius-md)",
+        "--fx-tc-datetime-week-start": "locale",
+        "--fx-tc-datetime-week-numbers": "0",
+        "--fx-tc-datetime-hour-cycle": "locale",
+        "--fx-tc-datetime-minute-step": "5",
+        "--fx-tc-datetime-rest-surface": "var(--fx-surface)",
+        "--fx-tc-datetime-rest-text": "var(--fx-text)",
+        "--fx-tc-datetime-rest-border": "var(--fx-border)",
+        "--fx-tc-datetime-rest-muted": "var(--fx-muted)",
+        "--fx-tc-datetime-hover-cell-bg": "var(--fx-accent-soft)",
+        "--fx-tc-datetime-focus-cell-border": "var(--fx-accent)",
+        "--fx-tc-datetime-focus-ring": "var(--fx-focus)",
+        "--fx-tc-datetime-selected-cell-bg": "var(--fx-accent)",
+        "--fx-tc-datetime-selected-cell-text": "var(--fx-accent-text)",
+        "--fx-tc-datetime-selected-cell-border": "var(--fx-accent)",
+        "--fx-tc-datetime-today-cell-text": "var(--fx-accent)",
+        "--fx-tc-datetime-today-cell-border": "var(--fx-accent)",
+        "--fx-tc-datetime-disabled-cell-text": "var(--fx-muted)",
+        "--fx-tc-datetime-invalid-border": "var(--fx-danger)",
+        "--fx-tc-color-swatch-size": "calc(var(--fx-font-size) * 24 / 14)",
+        "--fx-tc-color-swatch-radius": "var(--fx-radius-sm)",
+        "--fx-tc-color-surface-radius": "var(--fx-radius-md)",
+        "--fx-tc-color-recent": "8",
+        "--fx-tc-color-theme-swatches": "1",
+        "--fx-tc-color-area-height": "calc(var(--fx-font-size) * 140 / 14)",
+        "--fx-tc-color-rest-surface": "var(--fx-surface)",
+        "--fx-tc-color-rest-text": "var(--fx-text)",
+        "--fx-tc-color-rest-border": "var(--fx-border)",
+        "--fx-tc-color-rest-swatch-border": "var(--fx-border)",
+        "--fx-tc-color-hover-swatch-border": "var(--fx-muted)",
+        "--fx-tc-color-focus-swatch-border": "var(--fx-accent)",
+        "--fx-tc-color-focus-ring": "var(--fx-focus)",
+        "--fx-tc-color-selected-swatch-border": "var(--fx-accent)",
+        "--fx-tc-color-selected-check": "var(--fx-accent-text)",
+        "--fx-tc-color-invalid-border": "var(--fx-danger)",
+        "--fx-tc-dialogs-width": "calc(var(--fx-font-size) * 420 / 14)",
+        "--fx-tc-dialogs-radius": "var(--fx-radius-lg)",
+        "--fx-tc-dialogs-ok-tone": "primary",
+        "--fx-tc-dialogs-cancel-tone": "neutral",
+        "--fx-tc-dialogs-icon": "1",
+        "--fx-tc-dialogs-select-text": "1",
+        "--fx-tc-dialogs-surface-bg": "var(--fx-surface)",
+        "--fx-tc-dialogs-surface-text": "var(--fx-text)",
+        "--fx-tc-dialogs-surface-border": "var(--fx-border)",
+        "--fx-tc-dialogs-title-text": "var(--fx-text)",
+        "--fx-tc-dialogs-title-icon": "var(--fx-accent)",
+        "--fx-tc-dialogs-message-text": "var(--fx-muted)",
+        "--fx-tc-dialogs-field-bg": "var(--fx-surface)",
+        "--fx-tc-dialogs-field-border": "var(--fx-border)",
+        "--fx-tc-dialogs-field-text": "var(--fx-text)",
+        "--fx-tc-dialogs-focus-ring": "var(--fx-focus)",
+        "--fx-tc-dialogs-focus-border": "var(--fx-accent)",
+        "--fx-tc-file-min-height": "calc(var(--fx-font-size) * 120 / 14)",
+        "--fx-tc-file-radius": "var(--fx-radius-md)",
+        "--fx-tc-file-border-style": "dashed",
+        "--fx-tc-file-border-width": "2px",
+        "--fx-tc-file-progress-height": "calc(var(--fx-font-size) * 6 / 14)",
+        "--fx-tc-file-show-list": "1",
+        "--fx-tc-file-rest-bg": "var(--fx-surface2)",
+        "--fx-tc-file-rest-border": "var(--fx-border)",
+        "--fx-tc-file-rest-text": "var(--fx-muted)",
+        "--fx-tc-file-rest-icon": "var(--fx-muted)",
+        "--fx-tc-file-hover-bg": "var(--fx-surface3)",
+        "--fx-tc-file-hover-border": "var(--fx-muted)",
+        "--fx-tc-file-hover-text": "var(--fx-text)",
+        "--fx-tc-file-hover-icon": "var(--fx-text)",
+        "--fx-tc-file-focus-border": "var(--fx-accent)",
+        "--fx-tc-file-focus-ring": "var(--fx-focus)",
+        "--fx-tc-file-active-bg": "var(--fx-accent-soft)",
+        "--fx-tc-file-active-border": "var(--fx-accent)",
+        "--fx-tc-file-dragover-bg": "var(--fx-accent-soft)",
+        "--fx-tc-file-dragover-border": "var(--fx-accent)",
+        "--fx-tc-file-dragover-text": "var(--fx-accent)",
+        "--fx-tc-file-dragover-icon": "var(--fx-accent)",
+        "--fx-tc-file-disabled-text": "var(--fx-muted)",
+        "--fx-tc-file-disabled-icon": "var(--fx-muted)",
+        "--fx-tc-file-invalid-border": "var(--fx-danger)",
+        "--fx-tc-file-invalid-text": "var(--fx-danger)",
+        "--fx-tc-file-invalid-icon": "var(--fx-danger)",
+        "--fx-tc-file-progress-track": "var(--fx-surface3)",
+        "--fx-tc-file-progress-fill": "var(--fx-accent)",
+        "--fx-tc-file-progress-done": "var(--fx-success)",
+        "--fx-tc-file-progress-failed": "var(--fx-danger)",
+        "--fx-tc-tooltip-delay-ms": "500ms",
+        "--fx-tc-tooltip-hide-ms": "100ms",
+        "--fx-tc-tooltip-long-press-ms": "500ms",
+        "--fx-tc-tooltip-max-width": "calc(var(--fx-font-size) * 280 / 14)",
+        "--fx-tc-tooltip-radius": "var(--fx-radius-md)",
+        "--fx-tc-tooltip-placement": "top",
+        "--fx-tc-tooltip-arrow": "0",
+        "--fx-tc-tooltip-rest-bg": "var(--fx-surface)",
+        "--fx-tc-tooltip-rest-text": "var(--fx-text)",
+        "--fx-tc-tooltip-rest-border": "var(--fx-accent)",
+        "--fx-tc-scrollbar-width": "10px",
+        "--fx-tc-scrollbar-radius": "999px",
+        "--fx-tc-scrollbar-thin": "0",
+        "--fx-tc-scrollbar-auto-hide": "0",
+        "--fx-tc-scrollbar-gutter": "auto",
+        "--fx-tc-scrollbar-thumb-bg": "var(--fx-muted)",
+        "--fx-tc-scrollbar-thumb-hover-bg": "var(--fx-text)",
+        "--fx-tc-scrollbar-thumb-active-bg": "var(--fx-accent)"
+      },
+      "attrs": {
+        "data-fx-tc-range-show-value": "drag",
+        "data-fx-tc-number-stepper": "ends",
+        "data-fx-tc-datetime-week-start": "locale",
+        "data-fx-tc-datetime-hour-cycle": "locale",
+        "data-fx-tc-dialogs-ok-tone": "primary",
+        "data-fx-tc-dialogs-cancel-tone": "neutral",
+        "data-fx-tc-file-border-style": "dashed",
+        "data-fx-tc-tooltip-placement": "top",
+        "data-fx-tc-scrollbar-gutter": "auto",
+        "data-fx-tc": "off",
+        "data-fx-tc-families": "",
+        "data-fx-tc-sheet": "on"
+      }
+    },
+    "scalars": {
+      "vars": {
+        "--fx-tc-checkbox-size": "calc(var(--fx-font-size) * 20 / 14)",
+        "--fx-tc-checkbox-radius": "999px",
+        "--fx-tc-checkbox-border-width": "2px",
+        "--fx-tc-checkbox-mark-weight": "calc(var(--fx-font-size) * 2 / 14)",
+        "--fx-tc-checkbox-rest-bg": "var(--fx-surface)",
+        "--fx-tc-checkbox-rest-border": "var(--fx-border)",
+        "--fx-tc-checkbox-hover-border": "var(--fx-muted)",
+        "--fx-tc-checkbox-focus-border": "var(--fx-accent)",
+        "--fx-tc-checkbox-focus-ring": "var(--fx-focus)",
+        "--fx-tc-checkbox-active-bg": "var(--fx-accent-soft)",
+        "--fx-tc-checkbox-active-border": "var(--fx-accent)",
+        "--fx-tc-checkbox-checked-bg": "var(--fx-accent)",
+        "--fx-tc-checkbox-checked-border": "var(--fx-accent)",
+        "--fx-tc-checkbox-checked-mark": "var(--fx-accent-text)",
+        "--fx-tc-checkbox-invalid-border": "var(--fx-danger)",
+        "--fx-tc-radio-size": "calc(var(--fx-font-size) * 16 / 14)",
+        "--fx-tc-radio-dot-scale": "50%",
+        "--fx-tc-radio-rest-bg": "var(--fx-surface)",
+        "--fx-tc-radio-rest-border": "var(--fx-border)",
+        "--fx-tc-radio-hover-border": "var(--fx-muted)",
+        "--fx-tc-radio-focus-border": "var(--fx-accent)",
+        "--fx-tc-radio-focus-ring": "var(--fx-focus)",
+        "--fx-tc-radio-active-bg": "var(--fx-accent-soft)",
+        "--fx-tc-radio-active-border": "var(--fx-accent)",
+        "--fx-tc-radio-checked-bg": "var(--fx-surface)",
+        "--fx-tc-radio-checked-border": "var(--fx-accent)",
+        "--fx-tc-radio-checked-mark": "var(--fx-accent)",
+        "--fx-tc-radio-invalid-border": "var(--fx-danger)",
+        "--fx-tc-range-track-height": "calc(var(--fx-font-size) * 4 / 14)",
+        "--fx-tc-range-track-radius": "999px",
+        "--fx-tc-range-thumb-size": "calc(var(--fx-font-size) * 16 / 14)",
+        "--fx-tc-range-thumb-radius": "999px",
+        "--fx-tc-range-show-value": "always",
+        "--fx-tc-range-ticks": "0",
+        "--fx-tc-range-rest-track": "var(--fx-surface3)",
+        "--fx-tc-range-rest-fill": "var(--fx-accent)",
+        "--fx-tc-range-rest-thumb": "var(--fx-accent)",
+        "--fx-tc-range-rest-thumb-border": "var(--fx-surface)",
+        "--fx-tc-range-focus-ring": "var(--fx-focus)",
+        "--fx-tc-range-active-thumb": "var(--fx-accent)",
+        "--fx-tc-range-active-thumb-border": "var(--fx-accent-soft)",
+        "--fx-tc-range-disabled-fill": "var(--fx-muted)",
+        "--fx-tc-range-disabled-thumb": "var(--fx-muted)",
+        "--fx-tc-range-invalid-fill": "var(--fx-danger)",
+        "--fx-tc-range-invalid-thumb": "var(--fx-danger)",
+        "--fx-tc-number-stepper": "ends",
+        "--fx-tc-number-stepper-width": "calc(var(--fx-font-size) * 28 / 14)",
+        "--fx-tc-number-repeat-delay-ms": "400ms",
+        "--fx-tc-number-repeat-ms": "80ms",
+        "--fx-tc-number-rest-bg": "var(--fx-surface)",
+        "--fx-tc-number-rest-border": "var(--fx-border)",
+        "--fx-tc-number-rest-text": "var(--fx-text)",
+        "--fx-tc-number-rest-stepper-bg": "var(--fx-surface2)",
+        "--fx-tc-number-rest-stepper-icon": "var(--fx-muted)",
+        "--fx-tc-number-hover-border": "var(--fx-muted)",
+        "--fx-tc-number-hover-stepper-bg": "var(--fx-surface3)",
+        "--fx-tc-number-hover-stepper-icon": "var(--fx-text)",
+        "--fx-tc-number-focus-border": "var(--fx-accent)",
+        "--fx-tc-number-focus-ring": "var(--fx-accent-soft)",
+        "--fx-tc-number-active-stepper-bg": "var(--fx-accent-soft)",
+        "--fx-tc-number-active-stepper-icon": "var(--fx-accent)",
+        "--fx-tc-number-disabled-text": "var(--fx-muted)",
+        "--fx-tc-number-invalid-border": "var(--fx-danger)",
+        "--fx-tc-datetime-cell-size": "calc(var(--fx-font-size) * 36 / 14)",
+        "--fx-tc-datetime-cell-radius": "var(--fx-radius-md)",
+        "--fx-tc-datetime-surface-radius": "var(--fx-radius-md)",
+        "--fx-tc-datetime-week-start": "locale",
+        "--fx-tc-datetime-week-numbers": "0",
+        "--fx-tc-datetime-hour-cycle": "locale",
+        "--fx-tc-datetime-minute-step": "5",
+        "--fx-tc-datetime-rest-surface": "var(--fx-surface)",
+        "--fx-tc-datetime-rest-text": "var(--fx-text)",
+        "--fx-tc-datetime-rest-border": "var(--fx-border)",
+        "--fx-tc-datetime-rest-muted": "var(--fx-muted)",
+        "--fx-tc-datetime-hover-cell-bg": "var(--fx-accent-soft)",
+        "--fx-tc-datetime-focus-cell-border": "var(--fx-accent)",
+        "--fx-tc-datetime-focus-ring": "var(--fx-focus)",
+        "--fx-tc-datetime-selected-cell-bg": "var(--fx-accent)",
+        "--fx-tc-datetime-selected-cell-text": "var(--fx-accent-text)",
+        "--fx-tc-datetime-selected-cell-border": "var(--fx-accent)",
+        "--fx-tc-datetime-today-cell-text": "var(--fx-accent)",
+        "--fx-tc-datetime-today-cell-border": "var(--fx-accent)",
+        "--fx-tc-datetime-disabled-cell-text": "var(--fx-muted)",
+        "--fx-tc-datetime-invalid-border": "var(--fx-danger)",
+        "--fx-tc-color-swatch-size": "calc(var(--fx-font-size) * 24 / 14)",
+        "--fx-tc-color-swatch-radius": "var(--fx-radius-sm)",
+        "--fx-tc-color-surface-radius": "var(--fx-radius-md)",
+        "--fx-tc-color-recent": "8",
+        "--fx-tc-color-theme-swatches": "1",
+        "--fx-tc-color-area-height": "calc(var(--fx-font-size) * 140 / 14)",
+        "--fx-tc-color-rest-surface": "var(--fx-surface)",
+        "--fx-tc-color-rest-text": "var(--fx-text)",
+        "--fx-tc-color-rest-border": "var(--fx-border)",
+        "--fx-tc-color-rest-swatch-border": "var(--fx-border)",
+        "--fx-tc-color-hover-swatch-border": "var(--fx-muted)",
+        "--fx-tc-color-focus-swatch-border": "var(--fx-accent)",
+        "--fx-tc-color-focus-ring": "var(--fx-focus)",
+        "--fx-tc-color-selected-swatch-border": "var(--fx-accent)",
+        "--fx-tc-color-selected-check": "var(--fx-accent-text)",
+        "--fx-tc-color-invalid-border": "var(--fx-danger)",
+        "--fx-tc-dialogs-width": "calc(var(--fx-font-size) * 420 / 14)",
+        "--fx-tc-dialogs-radius": "var(--fx-radius-lg)",
+        "--fx-tc-dialogs-ok-tone": "primary",
+        "--fx-tc-dialogs-cancel-tone": "neutral",
+        "--fx-tc-dialogs-icon": "1",
+        "--fx-tc-dialogs-select-text": "1",
+        "--fx-tc-dialogs-surface-bg": "var(--fx-surface)",
+        "--fx-tc-dialogs-surface-text": "var(--fx-text)",
+        "--fx-tc-dialogs-surface-border": "var(--fx-border)",
+        "--fx-tc-dialogs-title-text": "var(--fx-text)",
+        "--fx-tc-dialogs-title-icon": "var(--fx-accent)",
+        "--fx-tc-dialogs-message-text": "var(--fx-muted)",
+        "--fx-tc-dialogs-field-bg": "var(--fx-surface)",
+        "--fx-tc-dialogs-field-border": "var(--fx-border)",
+        "--fx-tc-dialogs-field-text": "var(--fx-text)",
+        "--fx-tc-dialogs-focus-ring": "var(--fx-focus)",
+        "--fx-tc-dialogs-focus-border": "var(--fx-accent)",
+        "--fx-tc-file-min-height": "calc(var(--fx-font-size) * 120 / 14)",
+        "--fx-tc-file-radius": "var(--fx-radius-md)",
+        "--fx-tc-file-border-style": "dashed",
+        "--fx-tc-file-border-width": "2px",
+        "--fx-tc-file-progress-height": "calc(var(--fx-font-size) * 6 / 14)",
+        "--fx-tc-file-show-list": "1",
+        "--fx-tc-file-rest-bg": "var(--fx-surface2)",
+        "--fx-tc-file-rest-border": "var(--fx-border)",
+        "--fx-tc-file-rest-text": "var(--fx-muted)",
+        "--fx-tc-file-rest-icon": "var(--fx-muted)",
+        "--fx-tc-file-hover-bg": "var(--fx-surface3)",
+        "--fx-tc-file-hover-border": "var(--fx-muted)",
+        "--fx-tc-file-hover-text": "var(--fx-text)",
+        "--fx-tc-file-hover-icon": "var(--fx-text)",
+        "--fx-tc-file-focus-border": "var(--fx-accent)",
+        "--fx-tc-file-focus-ring": "var(--fx-focus)",
+        "--fx-tc-file-active-bg": "var(--fx-accent-soft)",
+        "--fx-tc-file-active-border": "var(--fx-accent)",
+        "--fx-tc-file-dragover-bg": "var(--fx-accent-soft)",
+        "--fx-tc-file-dragover-border": "var(--fx-accent)",
+        "--fx-tc-file-dragover-text": "var(--fx-accent)",
+        "--fx-tc-file-dragover-icon": "var(--fx-accent)",
+        "--fx-tc-file-disabled-text": "var(--fx-muted)",
+        "--fx-tc-file-disabled-icon": "var(--fx-muted)",
+        "--fx-tc-file-invalid-border": "var(--fx-danger)",
+        "--fx-tc-file-invalid-text": "var(--fx-danger)",
+        "--fx-tc-file-invalid-icon": "var(--fx-danger)",
+        "--fx-tc-file-progress-track": "var(--fx-surface3)",
+        "--fx-tc-file-progress-fill": "var(--fx-accent)",
+        "--fx-tc-file-progress-done": "var(--fx-success)",
+        "--fx-tc-file-progress-failed": "var(--fx-danger)",
+        "--fx-tc-tooltip-delay-ms": "0ms",
+        "--fx-tc-tooltip-hide-ms": "100ms",
+        "--fx-tc-tooltip-long-press-ms": "500ms",
+        "--fx-tc-tooltip-max-width": "calc(var(--fx-font-size) * 280 / 14)",
+        "--fx-tc-tooltip-radius": "var(--fx-radius-md)",
+        "--fx-tc-tooltip-placement": "top",
+        "--fx-tc-tooltip-arrow": "0",
+        "--fx-tc-tooltip-rest-bg": "var(--fx-surface)",
+        "--fx-tc-tooltip-rest-text": "var(--fx-text)",
+        "--fx-tc-tooltip-rest-border": "var(--fx-accent)",
+        "--fx-tc-scrollbar-width": "6px",
+        "--fx-tc-scrollbar-radius": "999px",
+        "--fx-tc-scrollbar-thin": "1",
+        "--fx-tc-scrollbar-auto-hide": "0",
+        "--fx-tc-scrollbar-gutter": "stable",
+        "--fx-tc-scrollbar-thumb-bg": "var(--fx-muted)",
+        "--fx-tc-scrollbar-thumb-hover-bg": "var(--fx-text)",
+        "--fx-tc-scrollbar-thumb-active-bg": "var(--fx-accent)"
+      },
+      "attrs": {
+        "data-fx-tc-range-show-value": "always",
+        "data-fx-tc-number-stepper": "ends",
+        "data-fx-tc-datetime-week-start": "locale",
+        "data-fx-tc-datetime-hour-cycle": "locale",
+        "data-fx-tc-dialogs-ok-tone": "primary",
+        "data-fx-tc-dialogs-cancel-tone": "neutral",
+        "data-fx-tc-file-border-style": "dashed",
+        "data-fx-tc-tooltip-placement": "top",
+        "data-fx-tc-scrollbar-gutter": "stable",
+        "data-fx-tc": "off",
+        "data-fx-tc-families": "",
+        "data-fx-tc-sheet": "on"
+      }
+    }
+  },
+  "normalize": [
+    {
+      "name": "nothing",
+      "raw": null,
+      "out": {
+        "checkbox": {
+          "size": 16,
+          "radius": "sm",
+          "borderWidth": "theme",
+          "markWeight": 2,
+          "rest": {
+            "bg": "surface",
+            "border": "border",
+            "mark": "theme"
+          },
+          "hover": {
+            "bg": "theme",
+            "border": "muted",
+            "mark": "theme"
+          },
+          "focus": {
+            "bg": "theme",
+            "border": "accent",
+            "mark": "theme",
+            "ring": "focus"
+          },
+          "active": {
+            "bg": "accentSoft",
+            "border": "accent",
+            "mark": "theme"
+          },
+          "checked": {
+            "bg": "accent",
+            "border": "accent",
+            "mark": "accentText"
+          },
+          "disabled": {
+            "bg": "theme",
+            "border": "theme",
+            "mark": "theme"
+          },
+          "invalid": {
+            "bg": "theme",
+            "border": "danger",
+            "mark": "theme"
+          }
+        },
+        "radio": {
+          "size": 16,
+          "dotScale": 50,
+          "borderWidth": "theme",
+          "rest": {
+            "bg": "surface",
+            "border": "border",
+            "mark": "theme"
+          },
+          "hover": {
+            "bg": "theme",
+            "border": "muted",
+            "mark": "theme"
+          },
+          "focus": {
+            "bg": "theme",
+            "border": "accent",
+            "mark": "theme",
+            "ring": "focus"
+          },
+          "active": {
+            "bg": "accentSoft",
+            "border": "accent",
+            "mark": "theme"
+          },
+          "checked": {
+            "bg": "surface",
+            "border": "accent",
+            "mark": "accent"
+          },
+          "disabled": {
+            "bg": "theme",
+            "border": "theme",
+            "mark": "theme"
+          },
+          "invalid": {
+            "bg": "theme",
+            "border": "danger",
+            "mark": "theme"
+          }
+        },
+        "range": {
+          "trackHeight": 4,
+          "trackRadius": "pill",
+          "thumbSize": 16,
+          "thumbRadius": "pill",
+          "showValue": "drag",
+          "ticks": true,
+          "rest": {
+            "track": "surface3",
+            "fill": "accent",
+            "thumb": "accent",
+            "thumbBorder": "surface"
+          },
+          "hover": {
+            "track": "theme",
+            "fill": "theme",
+            "thumb": "theme",
+            "thumbBorder": "theme"
+          },
+          "focus": {
+            "track": "theme",
+            "fill": "theme",
+            "thumb": "theme",
+            "thumbBorder": "theme",
+            "ring": "focus"
+          },
+          "active": {
+            "track": "theme",
+            "fill": "theme",
+            "thumb": "accent",
+            "thumbBorder": "accentSoft"
+          },
+          "disabled": {
+            "track": "theme",
+            "fill": "muted",
+            "thumb": "muted",
+            "thumbBorder": "theme"
+          },
+          "invalid": {
+            "track": "theme",
+            "fill": "danger",
+            "thumb": "danger",
+            "thumbBorder": "theme"
+          }
+        },
+        "number": {
+          "stepper": "ends",
+          "stepperWidth": 28,
+          "radius": "theme",
+          "borderWidth": "theme",
+          "repeatDelayMs": 400,
+          "repeatMs": 80,
+          "rest": {
+            "bg": "surface",
+            "border": "border",
+            "text": "text",
+            "stepperBg": "surface2",
+            "stepperIcon": "muted"
+          },
+          "hover": {
+            "bg": "theme",
+            "border": "muted",
+            "text": "theme",
+            "stepperBg": "surface3",
+            "stepperIcon": "text"
+          },
+          "focus": {
+            "bg": "theme",
+            "border": "accent",
+            "text": "theme",
+            "stepperBg": "theme",
+            "stepperIcon": "theme",
+            "ring": "accentSoft"
+          },
+          "active": {
+            "bg": "theme",
+            "border": "theme",
+            "text": "theme",
+            "stepperBg": "accentSoft",
+            "stepperIcon": "accent"
+          },
+          "disabled": {
+            "bg": "theme",
+            "border": "theme",
+            "text": "muted",
+            "stepperBg": "theme",
+            "stepperIcon": "theme"
+          },
+          "invalid": {
+            "bg": "theme",
+            "border": "danger",
+            "text": "theme",
+            "stepperBg": "theme",
+            "stepperIcon": "theme"
+          }
+        },
+        "datetime": {
+          "cellSize": 36,
+          "cellRadius": "md",
+          "surfaceRadius": "md",
+          "weekStart": "locale",
+          "weekNumbers": false,
+          "hourCycle": "locale",
+          "minuteStep": 5,
+          "rest": {
+            "surface": "surface",
+            "text": "text",
+            "border": "border",
+            "muted": "muted",
+            "cellBg": "theme",
+            "cellText": "theme",
+            "cellBorder": "theme"
+          },
+          "hover": {
+            "cellBg": "accentSoft",
+            "cellText": "theme",
+            "cellBorder": "theme"
+          },
+          "focus": {
+            "cellBg": "theme",
+            "cellText": "theme",
+            "cellBorder": "accent",
+            "ring": "focus"
+          },
+          "selected": {
+            "cellBg": "accent",
+            "cellText": "accentText",
+            "cellBorder": "accent"
+          },
+          "today": {
+            "cellBg": "theme",
+            "cellText": "accent",
+            "cellBorder": "accent"
+          },
+          "disabled": {
+            "cellBg": "theme",
+            "cellText": "muted",
+            "cellBorder": "theme"
+          },
+          "invalid": {
+            "surface": "theme",
+            "text": "theme",
+            "border": "danger"
+          }
+        },
+        "color": {
+          "swatchSize": 24,
+          "swatchRadius": "sm",
+          "surfaceRadius": "md",
+          "recent": 8,
+          "themeSwatches": true,
+          "areaHeight": 140,
+          "rest": {
+            "surface": "surface",
+            "text": "text",
+            "border": "border",
+            "swatchBorder": "border"
+          },
+          "hover": {
+            "swatchBorder": "muted"
+          },
+          "focus": {
+            "swatchBorder": "accent",
+            "ring": "focus"
+          },
+          "selected": {
+            "swatchBorder": "accent",
+            "check": "accentText"
+          },
+          "disabled": {
+            "swatchBorder": "theme"
+          },
+          "invalid": {
+            "surface": "theme",
+            "text": "theme",
+            "border": "danger"
+          }
+        },
+        "dialogs": {
+          "width": 420,
+          "radius": "lg",
+          "okTone": "primary",
+          "cancelTone": "neutral",
+          "icon": true,
+          "selectText": true,
+          "surface": {
+            "bg": "surface",
+            "text": "text",
+            "border": "border"
+          },
+          "backdrop": {
+            "bg": "theme"
+          },
+          "title": {
+            "text": "text",
+            "icon": "accent"
+          },
+          "message": {
+            "text": "muted"
+          },
+          "field": {
+            "bg": "surface",
+            "border": "border",
+            "text": "text"
+          },
+          "focus": {
+            "ring": "focus",
+            "border": "accent"
+          }
+        },
+        "file": {
+          "minHeight": 120,
+          "radius": "md",
+          "borderStyle": "dashed",
+          "borderWidth": "2",
+          "progressHeight": 6,
+          "showList": true,
+          "rest": {
+            "bg": "surface2",
+            "border": "border",
+            "text": "muted",
+            "icon": "muted"
+          },
+          "hover": {
+            "bg": "surface3",
+            "border": "muted",
+            "text": "text",
+            "icon": "text"
+          },
+          "focus": {
+            "bg": "theme",
+            "border": "accent",
+            "text": "theme",
+            "icon": "theme",
+            "ring": "focus"
+          },
+          "active": {
+            "bg": "accentSoft",
+            "border": "accent",
+            "text": "theme",
+            "icon": "theme"
+          },
+          "dragover": {
+            "bg": "accentSoft",
+            "border": "accent",
+            "text": "accent",
+            "icon": "accent"
+          },
+          "disabled": {
+            "bg": "theme",
+            "border": "theme",
+            "text": "muted",
+            "icon": "muted"
+          },
+          "invalid": {
+            "bg": "theme",
+            "border": "danger",
+            "text": "danger",
+            "icon": "danger"
+          },
+          "progress": {
+            "track": "surface3",
+            "fill": "accent",
+            "done": "success",
+            "failed": "danger"
+          }
+        },
+        "tooltip": {
+          "delayMs": 500,
+          "hideMs": 100,
+          "longPressMs": 500,
+          "maxWidth": 280,
+          "radius": "md",
+          "placement": "top",
+          "arrow": false,
+          "rest": {
+            "bg": "surface",
+            "text": "text",
+            "border": "accent"
+          }
+        },
+        "scrollbar": {
+          "width": 10,
+          "radius": "pill",
+          "thin": false,
+          "autoHide": false,
+          "gutter": "auto",
+          "track": {
+            "bg": "theme"
+          },
+          "thumb": {
+            "bg": "muted"
+          },
+          "thumbHover": {
+            "bg": "text"
+          },
+          "thumbActive": {
+            "bg": "accent"
+          }
+        }
+      }
+    },
+    {
+      "name": "string",
+      "raw": "x",
+      "out": {
+        "checkbox": {
+          "size": 16,
+          "radius": "sm",
+          "borderWidth": "theme",
+          "markWeight": 2,
+          "rest": {
+            "bg": "surface",
+            "border": "border",
+            "mark": "theme"
+          },
+          "hover": {
+            "bg": "theme",
+            "border": "muted",
+            "mark": "theme"
+          },
+          "focus": {
+            "bg": "theme",
+            "border": "accent",
+            "mark": "theme",
+            "ring": "focus"
+          },
+          "active": {
+            "bg": "accentSoft",
+            "border": "accent",
+            "mark": "theme"
+          },
+          "checked": {
+            "bg": "accent",
+            "border": "accent",
+            "mark": "accentText"
+          },
+          "disabled": {
+            "bg": "theme",
+            "border": "theme",
+            "mark": "theme"
+          },
+          "invalid": {
+            "bg": "theme",
+            "border": "danger",
+            "mark": "theme"
+          }
+        },
+        "radio": {
+          "size": 16,
+          "dotScale": 50,
+          "borderWidth": "theme",
+          "rest": {
+            "bg": "surface",
+            "border": "border",
+            "mark": "theme"
+          },
+          "hover": {
+            "bg": "theme",
+            "border": "muted",
+            "mark": "theme"
+          },
+          "focus": {
+            "bg": "theme",
+            "border": "accent",
+            "mark": "theme",
+            "ring": "focus"
+          },
+          "active": {
+            "bg": "accentSoft",
+            "border": "accent",
+            "mark": "theme"
+          },
+          "checked": {
+            "bg": "surface",
+            "border": "accent",
+            "mark": "accent"
+          },
+          "disabled": {
+            "bg": "theme",
+            "border": "theme",
+            "mark": "theme"
+          },
+          "invalid": {
+            "bg": "theme",
+            "border": "danger",
+            "mark": "theme"
+          }
+        },
+        "range": {
+          "trackHeight": 4,
+          "trackRadius": "pill",
+          "thumbSize": 16,
+          "thumbRadius": "pill",
+          "showValue": "drag",
+          "ticks": true,
+          "rest": {
+            "track": "surface3",
+            "fill": "accent",
+            "thumb": "accent",
+            "thumbBorder": "surface"
+          },
+          "hover": {
+            "track": "theme",
+            "fill": "theme",
+            "thumb": "theme",
+            "thumbBorder": "theme"
+          },
+          "focus": {
+            "track": "theme",
+            "fill": "theme",
+            "thumb": "theme",
+            "thumbBorder": "theme",
+            "ring": "focus"
+          },
+          "active": {
+            "track": "theme",
+            "fill": "theme",
+            "thumb": "accent",
+            "thumbBorder": "accentSoft"
+          },
+          "disabled": {
+            "track": "theme",
+            "fill": "muted",
+            "thumb": "muted",
+            "thumbBorder": "theme"
+          },
+          "invalid": {
+            "track": "theme",
+            "fill": "danger",
+            "thumb": "danger",
+            "thumbBorder": "theme"
+          }
+        },
+        "number": {
+          "stepper": "ends",
+          "stepperWidth": 28,
+          "radius": "theme",
+          "borderWidth": "theme",
+          "repeatDelayMs": 400,
+          "repeatMs": 80,
+          "rest": {
+            "bg": "surface",
+            "border": "border",
+            "text": "text",
+            "stepperBg": "surface2",
+            "stepperIcon": "muted"
+          },
+          "hover": {
+            "bg": "theme",
+            "border": "muted",
+            "text": "theme",
+            "stepperBg": "surface3",
+            "stepperIcon": "text"
+          },
+          "focus": {
+            "bg": "theme",
+            "border": "accent",
+            "text": "theme",
+            "stepperBg": "theme",
+            "stepperIcon": "theme",
+            "ring": "accentSoft"
+          },
+          "active": {
+            "bg": "theme",
+            "border": "theme",
+            "text": "theme",
+            "stepperBg": "accentSoft",
+            "stepperIcon": "accent"
+          },
+          "disabled": {
+            "bg": "theme",
+            "border": "theme",
+            "text": "muted",
+            "stepperBg": "theme",
+            "stepperIcon": "theme"
+          },
+          "invalid": {
+            "bg": "theme",
+            "border": "danger",
+            "text": "theme",
+            "stepperBg": "theme",
+            "stepperIcon": "theme"
+          }
+        },
+        "datetime": {
+          "cellSize": 36,
+          "cellRadius": "md",
+          "surfaceRadius": "md",
+          "weekStart": "locale",
+          "weekNumbers": false,
+          "hourCycle": "locale",
+          "minuteStep": 5,
+          "rest": {
+            "surface": "surface",
+            "text": "text",
+            "border": "border",
+            "muted": "muted",
+            "cellBg": "theme",
+            "cellText": "theme",
+            "cellBorder": "theme"
+          },
+          "hover": {
+            "cellBg": "accentSoft",
+            "cellText": "theme",
+            "cellBorder": "theme"
+          },
+          "focus": {
+            "cellBg": "theme",
+            "cellText": "theme",
+            "cellBorder": "accent",
+            "ring": "focus"
+          },
+          "selected": {
+            "cellBg": "accent",
+            "cellText": "accentText",
+            "cellBorder": "accent"
+          },
+          "today": {
+            "cellBg": "theme",
+            "cellText": "accent",
+            "cellBorder": "accent"
+          },
+          "disabled": {
+            "cellBg": "theme",
+            "cellText": "muted",
+            "cellBorder": "theme"
+          },
+          "invalid": {
+            "surface": "theme",
+            "text": "theme",
+            "border": "danger"
+          }
+        },
+        "color": {
+          "swatchSize": 24,
+          "swatchRadius": "sm",
+          "surfaceRadius": "md",
+          "recent": 8,
+          "themeSwatches": true,
+          "areaHeight": 140,
+          "rest": {
+            "surface": "surface",
+            "text": "text",
+            "border": "border",
+            "swatchBorder": "border"
+          },
+          "hover": {
+            "swatchBorder": "muted"
+          },
+          "focus": {
+            "swatchBorder": "accent",
+            "ring": "focus"
+          },
+          "selected": {
+            "swatchBorder": "accent",
+            "check": "accentText"
+          },
+          "disabled": {
+            "swatchBorder": "theme"
+          },
+          "invalid": {
+            "surface": "theme",
+            "text": "theme",
+            "border": "danger"
+          }
+        },
+        "dialogs": {
+          "width": 420,
+          "radius": "lg",
+          "okTone": "primary",
+          "cancelTone": "neutral",
+          "icon": true,
+          "selectText": true,
+          "surface": {
+            "bg": "surface",
+            "text": "text",
+            "border": "border"
+          },
+          "backdrop": {
+            "bg": "theme"
+          },
+          "title": {
+            "text": "text",
+            "icon": "accent"
+          },
+          "message": {
+            "text": "muted"
+          },
+          "field": {
+            "bg": "surface",
+            "border": "border",
+            "text": "text"
+          },
+          "focus": {
+            "ring": "focus",
+            "border": "accent"
+          }
+        },
+        "file": {
+          "minHeight": 120,
+          "radius": "md",
+          "borderStyle": "dashed",
+          "borderWidth": "2",
+          "progressHeight": 6,
+          "showList": true,
+          "rest": {
+            "bg": "surface2",
+            "border": "border",
+            "text": "muted",
+            "icon": "muted"
+          },
+          "hover": {
+            "bg": "surface3",
+            "border": "muted",
+            "text": "text",
+            "icon": "text"
+          },
+          "focus": {
+            "bg": "theme",
+            "border": "accent",
+            "text": "theme",
+            "icon": "theme",
+            "ring": "focus"
+          },
+          "active": {
+            "bg": "accentSoft",
+            "border": "accent",
+            "text": "theme",
+            "icon": "theme"
+          },
+          "dragover": {
+            "bg": "accentSoft",
+            "border": "accent",
+            "text": "accent",
+            "icon": "accent"
+          },
+          "disabled": {
+            "bg": "theme",
+            "border": "theme",
+            "text": "muted",
+            "icon": "muted"
+          },
+          "invalid": {
+            "bg": "theme",
+            "border": "danger",
+            "text": "danger",
+            "icon": "danger"
+          },
+          "progress": {
+            "track": "surface3",
+            "fill": "accent",
+            "done": "success",
+            "failed": "danger"
+          }
+        },
+        "tooltip": {
+          "delayMs": 500,
+          "hideMs": 100,
+          "longPressMs": 500,
+          "maxWidth": 280,
+          "radius": "md",
+          "placement": "top",
+          "arrow": false,
+          "rest": {
+            "bg": "surface",
+            "text": "text",
+            "border": "accent"
+          }
+        },
+        "scrollbar": {
+          "width": 10,
+          "radius": "pill",
+          "thin": false,
+          "autoHide": false,
+          "gutter": "auto",
+          "track": {
+            "bg": "theme"
+          },
+          "thumb": {
+            "bg": "muted"
+          },
+          "thumbHover": {
+            "bg": "text"
+          },
+          "thumbActive": {
+            "bg": "accent"
+          }
+        }
+      }
+    },
+    {
+      "name": "bad values",
+      "raw": {
+        "checkbox": {
+          "size": 99,
+          "radius": "round",
+          "rest": {
+            "bg": "#ff0000",
+            "border": "accent2"
+          },
+          "checked": {
+            "mark": "surface|"
+          }
+        },
+        "scrollbar": {
+          "width": "wide",
+          "thumb": {
+            "bg": "rainbow"
+          }
+        },
+        "dialogs": {
+          "okTone": "loud"
+        }
+      },
+      "out": {
+        "checkbox": {
+          "size": 32,
+          "radius": "sm",
+          "borderWidth": "theme",
+          "markWeight": 2,
+          "rest": {
+            "bg": "surface",
+            "border": "border",
+            "mark": "theme"
+          },
+          "hover": {
+            "bg": "theme",
+            "border": "muted",
+            "mark": "theme"
+          },
+          "focus": {
+            "bg": "theme",
+            "border": "accent",
+            "mark": "theme",
+            "ring": "focus"
+          },
+          "active": {
+            "bg": "accentSoft",
+            "border": "accent",
+            "mark": "theme"
+          },
+          "checked": {
+            "bg": "accent",
+            "border": "accent",
+            "mark": "accentText"
+          },
+          "disabled": {
+            "bg": "theme",
+            "border": "theme",
+            "mark": "theme"
+          },
+          "invalid": {
+            "bg": "theme",
+            "border": "danger",
+            "mark": "theme"
+          }
+        },
+        "radio": {
+          "size": 16,
+          "dotScale": 50,
+          "borderWidth": "theme",
+          "rest": {
+            "bg": "surface",
+            "border": "border",
+            "mark": "theme"
+          },
+          "hover": {
+            "bg": "theme",
+            "border": "muted",
+            "mark": "theme"
+          },
+          "focus": {
+            "bg": "theme",
+            "border": "accent",
+            "mark": "theme",
+            "ring": "focus"
+          },
+          "active": {
+            "bg": "accentSoft",
+            "border": "accent",
+            "mark": "theme"
+          },
+          "checked": {
+            "bg": "surface",
+            "border": "accent",
+            "mark": "accent"
+          },
+          "disabled": {
+            "bg": "theme",
+            "border": "theme",
+            "mark": "theme"
+          },
+          "invalid": {
+            "bg": "theme",
+            "border": "danger",
+            "mark": "theme"
+          }
+        },
+        "range": {
+          "trackHeight": 4,
+          "trackRadius": "pill",
+          "thumbSize": 16,
+          "thumbRadius": "pill",
+          "showValue": "drag",
+          "ticks": true,
+          "rest": {
+            "track": "surface3",
+            "fill": "accent",
+            "thumb": "accent",
+            "thumbBorder": "surface"
+          },
+          "hover": {
+            "track": "theme",
+            "fill": "theme",
+            "thumb": "theme",
+            "thumbBorder": "theme"
+          },
+          "focus": {
+            "track": "theme",
+            "fill": "theme",
+            "thumb": "theme",
+            "thumbBorder": "theme",
+            "ring": "focus"
+          },
+          "active": {
+            "track": "theme",
+            "fill": "theme",
+            "thumb": "accent",
+            "thumbBorder": "accentSoft"
+          },
+          "disabled": {
+            "track": "theme",
+            "fill": "muted",
+            "thumb": "muted",
+            "thumbBorder": "theme"
+          },
+          "invalid": {
+            "track": "theme",
+            "fill": "danger",
+            "thumb": "danger",
+            "thumbBorder": "theme"
+          }
+        },
+        "number": {
+          "stepper": "ends",
+          "stepperWidth": 28,
+          "radius": "theme",
+          "borderWidth": "theme",
+          "repeatDelayMs": 400,
+          "repeatMs": 80,
+          "rest": {
+            "bg": "surface",
+            "border": "border",
+            "text": "text",
+            "stepperBg": "surface2",
+            "stepperIcon": "muted"
+          },
+          "hover": {
+            "bg": "theme",
+            "border": "muted",
+            "text": "theme",
+            "stepperBg": "surface3",
+            "stepperIcon": "text"
+          },
+          "focus": {
+            "bg": "theme",
+            "border": "accent",
+            "text": "theme",
+            "stepperBg": "theme",
+            "stepperIcon": "theme",
+            "ring": "accentSoft"
+          },
+          "active": {
+            "bg": "theme",
+            "border": "theme",
+            "text": "theme",
+            "stepperBg": "accentSoft",
+            "stepperIcon": "accent"
+          },
+          "disabled": {
+            "bg": "theme",
+            "border": "theme",
+            "text": "muted",
+            "stepperBg": "theme",
+            "stepperIcon": "theme"
+          },
+          "invalid": {
+            "bg": "theme",
+            "border": "danger",
+            "text": "theme",
+            "stepperBg": "theme",
+            "stepperIcon": "theme"
+          }
+        },
+        "datetime": {
+          "cellSize": 36,
+          "cellRadius": "md",
+          "surfaceRadius": "md",
+          "weekStart": "locale",
+          "weekNumbers": false,
+          "hourCycle": "locale",
+          "minuteStep": 5,
+          "rest": {
+            "surface": "surface",
+            "text": "text",
+            "border": "border",
+            "muted": "muted",
+            "cellBg": "theme",
+            "cellText": "theme",
+            "cellBorder": "theme"
+          },
+          "hover": {
+            "cellBg": "accentSoft",
+            "cellText": "theme",
+            "cellBorder": "theme"
+          },
+          "focus": {
+            "cellBg": "theme",
+            "cellText": "theme",
+            "cellBorder": "accent",
+            "ring": "focus"
+          },
+          "selected": {
+            "cellBg": "accent",
+            "cellText": "accentText",
+            "cellBorder": "accent"
+          },
+          "today": {
+            "cellBg": "theme",
+            "cellText": "accent",
+            "cellBorder": "accent"
+          },
+          "disabled": {
+            "cellBg": "theme",
+            "cellText": "muted",
+            "cellBorder": "theme"
+          },
+          "invalid": {
+            "surface": "theme",
+            "text": "theme",
+            "border": "danger"
+          }
+        },
+        "color": {
+          "swatchSize": 24,
+          "swatchRadius": "sm",
+          "surfaceRadius": "md",
+          "recent": 8,
+          "themeSwatches": true,
+          "areaHeight": 140,
+          "rest": {
+            "surface": "surface",
+            "text": "text",
+            "border": "border",
+            "swatchBorder": "border"
+          },
+          "hover": {
+            "swatchBorder": "muted"
+          },
+          "focus": {
+            "swatchBorder": "accent",
+            "ring": "focus"
+          },
+          "selected": {
+            "swatchBorder": "accent",
+            "check": "accentText"
+          },
+          "disabled": {
+            "swatchBorder": "theme"
+          },
+          "invalid": {
+            "surface": "theme",
+            "text": "theme",
+            "border": "danger"
+          }
+        },
+        "dialogs": {
+          "width": 420,
+          "radius": "lg",
+          "okTone": "primary",
+          "cancelTone": "neutral",
+          "icon": true,
+          "selectText": true,
+          "surface": {
+            "bg": "surface",
+            "text": "text",
+            "border": "border"
+          },
+          "backdrop": {
+            "bg": "theme"
+          },
+          "title": {
+            "text": "text",
+            "icon": "accent"
+          },
+          "message": {
+            "text": "muted"
+          },
+          "field": {
+            "bg": "surface",
+            "border": "border",
+            "text": "text"
+          },
+          "focus": {
+            "ring": "focus",
+            "border": "accent"
+          }
+        },
+        "file": {
+          "minHeight": 120,
+          "radius": "md",
+          "borderStyle": "dashed",
+          "borderWidth": "2",
+          "progressHeight": 6,
+          "showList": true,
+          "rest": {
+            "bg": "surface2",
+            "border": "border",
+            "text": "muted",
+            "icon": "muted"
+          },
+          "hover": {
+            "bg": "surface3",
+            "border": "muted",
+            "text": "text",
+            "icon": "text"
+          },
+          "focus": {
+            "bg": "theme",
+            "border": "accent",
+            "text": "theme",
+            "icon": "theme",
+            "ring": "focus"
+          },
+          "active": {
+            "bg": "accentSoft",
+            "border": "accent",
+            "text": "theme",
+            "icon": "theme"
+          },
+          "dragover": {
+            "bg": "accentSoft",
+            "border": "accent",
+            "text": "accent",
+            "icon": "accent"
+          },
+          "disabled": {
+            "bg": "theme",
+            "border": "theme",
+            "text": "muted",
+            "icon": "muted"
+          },
+          "invalid": {
+            "bg": "theme",
+            "border": "danger",
+            "text": "danger",
+            "icon": "danger"
+          },
+          "progress": {
+            "track": "surface3",
+            "fill": "accent",
+            "done": "success",
+            "failed": "danger"
+          }
+        },
+        "tooltip": {
+          "delayMs": 500,
+          "hideMs": 100,
+          "longPressMs": 500,
+          "maxWidth": 280,
+          "radius": "md",
+          "placement": "top",
+          "arrow": false,
+          "rest": {
+            "bg": "surface",
+            "text": "text",
+            "border": "accent"
+          }
+        },
+        "scrollbar": {
+          "width": 10,
+          "radius": "pill",
+          "thin": false,
+          "autoHide": false,
+          "gutter": "auto",
+          "track": {
+            "bg": "theme"
+          },
+          "thumb": {
+            "bg": "muted"
+          },
+          "thumbHover": {
+            "bg": "text"
+          },
+          "thumbActive": {
+            "bg": "accent"
+          }
+        }
+      }
+    },
+    {
+      "name": "unknown family and fields",
+      "raw": {
+        "picker": {
+          "rest": {
+            "bg": "accent"
+          }
+        },
+        "checkbox": {
+          "glow": "accent",
+          "rest": {
+            "halo": "accent"
+          }
+        }
+      },
+      "out": {
+        "checkbox": {
+          "size": 16,
+          "radius": "sm",
+          "borderWidth": "theme",
+          "markWeight": 2,
+          "rest": {
+            "bg": "surface",
+            "border": "border",
+            "mark": "theme"
+          },
+          "hover": {
+            "bg": "theme",
+            "border": "muted",
+            "mark": "theme"
+          },
+          "focus": {
+            "bg": "theme",
+            "border": "accent",
+            "mark": "theme",
+            "ring": "focus"
+          },
+          "active": {
+            "bg": "accentSoft",
+            "border": "accent",
+            "mark": "theme"
+          },
+          "checked": {
+            "bg": "accent",
+            "border": "accent",
+            "mark": "accentText"
+          },
+          "disabled": {
+            "bg": "theme",
+            "border": "theme",
+            "mark": "theme"
+          },
+          "invalid": {
+            "bg": "theme",
+            "border": "danger",
+            "mark": "theme"
+          }
+        },
+        "radio": {
+          "size": 16,
+          "dotScale": 50,
+          "borderWidth": "theme",
+          "rest": {
+            "bg": "surface",
+            "border": "border",
+            "mark": "theme"
+          },
+          "hover": {
+            "bg": "theme",
+            "border": "muted",
+            "mark": "theme"
+          },
+          "focus": {
+            "bg": "theme",
+            "border": "accent",
+            "mark": "theme",
+            "ring": "focus"
+          },
+          "active": {
+            "bg": "accentSoft",
+            "border": "accent",
+            "mark": "theme"
+          },
+          "checked": {
+            "bg": "surface",
+            "border": "accent",
+            "mark": "accent"
+          },
+          "disabled": {
+            "bg": "theme",
+            "border": "theme",
+            "mark": "theme"
+          },
+          "invalid": {
+            "bg": "theme",
+            "border": "danger",
+            "mark": "theme"
+          }
+        },
+        "range": {
+          "trackHeight": 4,
+          "trackRadius": "pill",
+          "thumbSize": 16,
+          "thumbRadius": "pill",
+          "showValue": "drag",
+          "ticks": true,
+          "rest": {
+            "track": "surface3",
+            "fill": "accent",
+            "thumb": "accent",
+            "thumbBorder": "surface"
+          },
+          "hover": {
+            "track": "theme",
+            "fill": "theme",
+            "thumb": "theme",
+            "thumbBorder": "theme"
+          },
+          "focus": {
+            "track": "theme",
+            "fill": "theme",
+            "thumb": "theme",
+            "thumbBorder": "theme",
+            "ring": "focus"
+          },
+          "active": {
+            "track": "theme",
+            "fill": "theme",
+            "thumb": "accent",
+            "thumbBorder": "accentSoft"
+          },
+          "disabled": {
+            "track": "theme",
+            "fill": "muted",
+            "thumb": "muted",
+            "thumbBorder": "theme"
+          },
+          "invalid": {
+            "track": "theme",
+            "fill": "danger",
+            "thumb": "danger",
+            "thumbBorder": "theme"
+          }
+        },
+        "number": {
+          "stepper": "ends",
+          "stepperWidth": 28,
+          "radius": "theme",
+          "borderWidth": "theme",
+          "repeatDelayMs": 400,
+          "repeatMs": 80,
+          "rest": {
+            "bg": "surface",
+            "border": "border",
+            "text": "text",
+            "stepperBg": "surface2",
+            "stepperIcon": "muted"
+          },
+          "hover": {
+            "bg": "theme",
+            "border": "muted",
+            "text": "theme",
+            "stepperBg": "surface3",
+            "stepperIcon": "text"
+          },
+          "focus": {
+            "bg": "theme",
+            "border": "accent",
+            "text": "theme",
+            "stepperBg": "theme",
+            "stepperIcon": "theme",
+            "ring": "accentSoft"
+          },
+          "active": {
+            "bg": "theme",
+            "border": "theme",
+            "text": "theme",
+            "stepperBg": "accentSoft",
+            "stepperIcon": "accent"
+          },
+          "disabled": {
+            "bg": "theme",
+            "border": "theme",
+            "text": "muted",
+            "stepperBg": "theme",
+            "stepperIcon": "theme"
+          },
+          "invalid": {
+            "bg": "theme",
+            "border": "danger",
+            "text": "theme",
+            "stepperBg": "theme",
+            "stepperIcon": "theme"
+          }
+        },
+        "datetime": {
+          "cellSize": 36,
+          "cellRadius": "md",
+          "surfaceRadius": "md",
+          "weekStart": "locale",
+          "weekNumbers": false,
+          "hourCycle": "locale",
+          "minuteStep": 5,
+          "rest": {
+            "surface": "surface",
+            "text": "text",
+            "border": "border",
+            "muted": "muted",
+            "cellBg": "theme",
+            "cellText": "theme",
+            "cellBorder": "theme"
+          },
+          "hover": {
+            "cellBg": "accentSoft",
+            "cellText": "theme",
+            "cellBorder": "theme"
+          },
+          "focus": {
+            "cellBg": "theme",
+            "cellText": "theme",
+            "cellBorder": "accent",
+            "ring": "focus"
+          },
+          "selected": {
+            "cellBg": "accent",
+            "cellText": "accentText",
+            "cellBorder": "accent"
+          },
+          "today": {
+            "cellBg": "theme",
+            "cellText": "accent",
+            "cellBorder": "accent"
+          },
+          "disabled": {
+            "cellBg": "theme",
+            "cellText": "muted",
+            "cellBorder": "theme"
+          },
+          "invalid": {
+            "surface": "theme",
+            "text": "theme",
+            "border": "danger"
+          }
+        },
+        "color": {
+          "swatchSize": 24,
+          "swatchRadius": "sm",
+          "surfaceRadius": "md",
+          "recent": 8,
+          "themeSwatches": true,
+          "areaHeight": 140,
+          "rest": {
+            "surface": "surface",
+            "text": "text",
+            "border": "border",
+            "swatchBorder": "border"
+          },
+          "hover": {
+            "swatchBorder": "muted"
+          },
+          "focus": {
+            "swatchBorder": "accent",
+            "ring": "focus"
+          },
+          "selected": {
+            "swatchBorder": "accent",
+            "check": "accentText"
+          },
+          "disabled": {
+            "swatchBorder": "theme"
+          },
+          "invalid": {
+            "surface": "theme",
+            "text": "theme",
+            "border": "danger"
+          }
+        },
+        "dialogs": {
+          "width": 420,
+          "radius": "lg",
+          "okTone": "primary",
+          "cancelTone": "neutral",
+          "icon": true,
+          "selectText": true,
+          "surface": {
+            "bg": "surface",
+            "text": "text",
+            "border": "border"
+          },
+          "backdrop": {
+            "bg": "theme"
+          },
+          "title": {
+            "text": "text",
+            "icon": "accent"
+          },
+          "message": {
+            "text": "muted"
+          },
+          "field": {
+            "bg": "surface",
+            "border": "border",
+            "text": "text"
+          },
+          "focus": {
+            "ring": "focus",
+            "border": "accent"
+          }
+        },
+        "file": {
+          "minHeight": 120,
+          "radius": "md",
+          "borderStyle": "dashed",
+          "borderWidth": "2",
+          "progressHeight": 6,
+          "showList": true,
+          "rest": {
+            "bg": "surface2",
+            "border": "border",
+            "text": "muted",
+            "icon": "muted"
+          },
+          "hover": {
+            "bg": "surface3",
+            "border": "muted",
+            "text": "text",
+            "icon": "text"
+          },
+          "focus": {
+            "bg": "theme",
+            "border": "accent",
+            "text": "theme",
+            "icon": "theme",
+            "ring": "focus"
+          },
+          "active": {
+            "bg": "accentSoft",
+            "border": "accent",
+            "text": "theme",
+            "icon": "theme"
+          },
+          "dragover": {
+            "bg": "accentSoft",
+            "border": "accent",
+            "text": "accent",
+            "icon": "accent"
+          },
+          "disabled": {
+            "bg": "theme",
+            "border": "theme",
+            "text": "muted",
+            "icon": "muted"
+          },
+          "invalid": {
+            "bg": "theme",
+            "border": "danger",
+            "text": "danger",
+            "icon": "danger"
+          },
+          "progress": {
+            "track": "surface3",
+            "fill": "accent",
+            "done": "success",
+            "failed": "danger"
+          }
+        },
+        "tooltip": {
+          "delayMs": 500,
+          "hideMs": 100,
+          "longPressMs": 500,
+          "maxWidth": 280,
+          "radius": "md",
+          "placement": "top",
+          "arrow": false,
+          "rest": {
+            "bg": "surface",
+            "text": "text",
+            "border": "accent"
+          }
+        },
+        "scrollbar": {
+          "width": 10,
+          "radius": "pill",
+          "thin": false,
+          "autoHide": false,
+          "gutter": "auto",
+          "track": {
+            "bg": "theme"
+          },
+          "thumb": {
+            "bg": "muted"
+          },
+          "thumbHover": {
+            "bg": "text"
+          },
+          "thumbActive": {
+            "bg": "accent"
+          }
+        }
+      }
+    }
+  ],
+  "errors": [
+    {
+      "name": "nothing",
+      "raw": null,
+      "errors": [
+        "data must be an object"
+      ]
+    },
+    {
+      "name": "string",
+      "raw": "x",
+      "errors": [
+        "data must be an object"
+      ]
+    },
+    {
+      "name": "bad values",
+      "raw": {
+        "checkbox": {
+          "size": 99,
+          "radius": "round",
+          "rest": {
+            "bg": "#ff0000",
+            "border": "accent2"
+          },
+          "checked": {
+            "mark": "surface|"
+          }
+        },
+        "scrollbar": {
+          "width": "wide",
+          "thumb": {
+            "bg": "rainbow"
+          }
+        },
+        "dialogs": {
+          "okTone": "loud"
+        }
+      },
+      "errors": [
+        "checkbox.size: a number 12..32 (px14)",
+        "checkbox.radius: one of theme, none, sm, md, lg, pill",
+        "checkbox.rest.bg: a colour token (bg, surface, surface2, surface3, text, muted, border, accent, accentText, accentSoft, danger, success, warning, info, focus), a light|dark pair of them, or theme",
+        "checkbox.rest.border: a colour token (bg, surface, surface2, surface3, text, muted, border, accent, accentText, accentSoft, danger, success, warning, info, focus), a light|dark pair of them, or theme",
+        "checkbox.checked.mark: a colour token (bg, surface, surface2, surface3, text, muted, border, accent, accentText, accentSoft, danger, success, warning, info, focus), a light|dark pair of them, or theme",
+        "dialogs.okTone: one of primary, neutral, danger, ghost, quiet",
+        "scrollbar.width: a number 4..20 (px)",
+        "scrollbar.thumb.bg: a colour token (bg, surface, surface2, surface3, text, muted, border, accent, accentText, accentSoft, danger, success, warning, info, focus), a light|dark pair of them, or theme"
+      ]
+    },
+    {
+      "name": "unknown family and fields",
+      "raw": {
+        "picker": {
+          "rest": {
+            "bg": "accent"
+          }
+        },
+        "checkbox": {
+          "glow": "accent",
+          "rest": {
+            "halo": "accent"
+          }
+        }
+      },
+      "errors": []
+    }
+  ],
+  "fieldErrors": [
+    {
+      "path": "checkbox.size",
+      "value": 20,
+      "errors": []
+    },
+    {
+      "path": "checkbox.size",
+      "value": 2,
+      "errors": [
+        "value must be a number 12..32 (px14)"
+      ]
+    },
+    {
+      "path": "checkbox.rest.bg",
+      "value": "surface|surface2",
+      "errors": []
+    },
+    {
+      "path": "checkbox.rest.bg",
+      "value": "#fff",
+      "errors": [
+        "value must be a colour token (bg, surface, surface2, surface3, text, muted, border, accent, accentText, accentSoft, danger, success, warning, info, focus), a light|dark pair of them, or theme"
+      ]
+    },
+    {
+      "path": "checkbox.radius",
+      "value": "pill",
+      "errors": []
+    },
+    {
+      "path": "range.showValue",
+      "value": "sometimes",
+      "errors": [
+        "value must be one of always, drag, never"
+      ]
+    },
+    {
+      "path": "scrollbar.thin",
+      "value": "true",
+      "errors": []
+    },
+    {
+      "path": "nope.field",
+      "value": 1,
+      "errors": [
+        "unknown themed-controls field nope.field"
+      ]
+    }
+  ]
+}

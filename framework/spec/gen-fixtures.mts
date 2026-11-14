@@ -46,6 +46,8 @@ import { DEFAULT_DOCK_RULES, DOCK_CONTRACT, DOCK_LAYOUT_MAX_PANES, DOCK_SIDES, D
 import type { Pane, TabGroup } from '../core/engines/windows';
 import { NAV_STYLE_FIELDS, NAV_STYLE_FRAME, navArrange, navFollow, navPathTo, navStyleErrors, navStyleOutput, navToggle, normalizeNavStyle } from '../core/engines/navstyle';
 import { navFieldErrors } from '../core/engines/navstyle-rules.mjs';
+import { THEMED_CONTROL_FIELDS, THEMED_CONTROLS_FRAME, THEMED_FAMILIES, TC_KEYS, TC_STATES, activeFamilies, controlProps, dialogProps, familyOf, normalizeThemedControls, shouldTheme, surfaceFor, scrollbarsThemed, themedControlsChange, themedControlsConfig, themedControlsErrors, themedControlsOutput, type NativeAttrs, type ThemedFamily } from '../core/engines/themed-controls';
+import { tcFieldErrors } from '../core/engines/themed-controls-rules.mjs';
 import { CHROME_KINDS, DEFAULT_MERGE, DEFAULT_PRESETS, MERGE_MODES, OPEN_TARGETS, TOOLBAR_LOCATIONS, TOOLBAR_SLOT_COUNT, XLAYOUT_CONTRACT, XLAYOUT_LIMITS, dockRulesOf, guestHidden, guestTakes, guestUrl, guestUserAgent, idePresets, normalizeXLayout, nsId as xNsId, openTargetFor, parseToolbarItem, splitNs, stripNs, visibleToolbars, xlayoutErrors } from '../core/engines/xlayout';
 import { CHROME_CONTRACT, CHROME_LIMITS, WIDGET_TONES as CHROME_WIDGET_TONES, WIDGET_TYPES as CHROME_WIDGET_TYPES, activeNav, chromePicks, emptyChrome, mergeChrome, parseChromeBundle, routePick, type ChromeBundle } from '../core/engines/chrome';
 import { intentCommand, voiceIntent, voiceReply } from '../core/engines/console-control-voice.mjs';
@@ -1880,6 +1882,76 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
         { name: 'order + hide + pin', out: navArrange(tree, normalizeNavStyle({ items: { order: 'axhub,console', hidden: 'home', pinned: 'console' } })) },
       ],
     },
+  });
+}
+// Themed native controls (themed-controls@1, build themed-native-controls-plugin, Nov 14 2026; core/engines/themed-controls.ts +
+// themed-controls-rules.mjs): settings → active families, surfaces per viewport, native element → family / opt-outs / props,
+// the asset compiled to --fx-tc-* on both schemes, validator errors.
+{
+  const starters = load('themed-controls');
+  const settings = (v: Record<string, unknown>) => (k: string) => v[k] ?? null;
+  const configs: Record<string, Record<string, unknown>> = {
+    empty: {},
+    'master off': { [TC_KEYS.on]: false },
+    'master off as string': { [TC_KEYS.on]: 'off' },
+    'two families off': { [TC_KEYS.family('checkbox')]: false, [TC_KEYS.family('scrollbar')]: 'false' },
+    'family off while master off': { [TC_KEYS.on]: false, [TC_KEYS.family('radio')]: false },
+    'sheet off': { [TC_KEYS.sheet]: false },
+    'junk values': { [TC_KEYS.on]: 'yes', [TC_KEYS.family('range')]: 1, [TC_KEYS.family('number')]: 0, [TC_KEYS.sheet]: null },
+  };
+  const viewports = { desktop: { width: 1280 }, 'phone edge': { width: 760 }, phone: { width: 390 }, 'phone touch': { width: 390, coarse: true }, 'custom cut-off wide': { width: 900, phoneMaxWidth: 1000 }, 'custom cut-off narrow': { width: 500, phoneMaxWidth: 480 }, 'no width': { width: NaN } };
+  const onCfg = themedControlsConfig(settings({}));
+  const noSheet = themedControlsConfig(settings({ [TC_KEYS.sheet]: false }));
+  const elements: Record<string, { attrs: NativeAttrs; label?: string }> = {
+    checkbox: { attrs: { tag: 'input', type: 'checkbox', id: 'agree', name: 'agree', checked: true, required: '' }, label: 'I agree' },
+    'checkbox indeterminate aria': { attrs: { tag: 'INPUT', type: 'CheckBox', 'aria-label': 'All rows', indeterminate: true, value: 'all' } },
+    radio: { attrs: { tag: 'input', type: 'radio', name: 'size', value: 'lg', checked: '', 'aria-describedby': 'size-help' } },
+    range: { attrs: { tag: 'input', type: 'range', min: '10', max: '0', step: 'any', value: '7', list: 'marks' } },
+    'range defaults': { attrs: { tag: 'input', type: 'range' } },
+    'range bad numbers': { attrs: { tag: 'input', type: 'range', min: 'x', max: '50', step: '-2', value: '999', orient: 'vertical' } },
+    number: { attrs: { tag: 'input', type: 'number', min: '100', max: '1', step: '0.5', value: '2.5', placeholder: 'Qty', 'aria-invalid': 'true', readonly: '' } },
+    'number integer': { attrs: { tag: 'input', type: 'number', step: '0', disabled: '' } },
+    date: { attrs: { tag: 'input', type: 'date', value: '2026-11-14', min: '2026-01-01', max: '2026-12-31', step: '60' } },
+    time: { attrs: { tag: 'input', type: 'time', value: '09:30', step: '900', 'data-axf-hour12': 'false' } },
+    'datetime-local': { attrs: { tag: 'input', type: 'datetime-local', step: '30' } },
+    month: { attrs: { tag: 'input', type: 'month', value: '2026-11' } },
+    week: { attrs: { tag: 'input', type: 'week' } },
+    color: { attrs: { tag: 'input', type: 'color', value: '#FFAA00', list: 'brand' } },
+    'color bad value': { attrs: { tag: 'input', type: 'color', value: 'red' } },
+    file: { attrs: { tag: 'input', type: 'file', accept: ' image/png, .pdf ,', multiple: '', capture: 'environment', webkitdirectory: '' } },
+    tooltip: { attrs: { tag: 'button', title: 'Run the build', 'data-axf-tip-at': 'bottom' } },
+    'tooltip moved': { attrs: { tag: 'span', title: 'Old', 'data-axf-tip': 'Saved 2 min ago' } },
+    'text input': { attrs: { tag: 'input', type: 'text', title: 'Name' } },
+    'plain div': { attrs: { tag: 'div' } },
+    'opted out': { attrs: { tag: 'input', type: 'checkbox', 'data-axf-native': '' } },
+    'already themed': { attrs: { tag: 'input', type: 'range', 'data-axf-themed': 'range' } },
+  };
+  const bad: Record<string, unknown> = {
+    nothing: null, string: 'x',
+    'bad values': { checkbox: { size: 99, radius: 'round', rest: { bg: '#ff0000', border: 'accent2' }, checked: { mark: 'surface|' } }, scrollbar: { width: 'wide', thumb: { bg: 'rainbow' } }, dialogs: { okTone: 'loud' } },
+    'unknown family and fields': { picker: { rest: { bg: 'accent' } }, checkbox: { glow: 'accent', rest: { halo: 'accent' } } },
+  };
+  write('themed-controls.json', {
+    contract: THEMED_CONTROLS_FRAME,
+    families: THEMED_FAMILIES,
+    states: TC_STATES,
+    fields: THEMED_CONTROL_FIELDS,
+    keys: { on: TC_KEYS.on, sheet: TC_KEYS.sheet, families: Object.fromEntries(THEMED_FAMILIES.map((f) => [f, TC_KEYS.family(f)])) },
+    config: Object.entries(configs).map(([name, raw]) => { const cfg = themedControlsConfig(settings(raw)); return { name, settings: raw, config: cfg, active: activeFamilies(cfg) }; }),
+    changes: [['on', false], ['sheet', true], ['checkbox', false], ['scrollbar', true]].map(([what, on]) => ({ what, on, change: themedControlsChange(what as 'on', on as boolean) })),
+    surfaces: Object.entries(viewports).map(([name, viewport]) => ({ name, viewport, sheetOn: Object.fromEntries(THEMED_FAMILIES.map((f) => [f, surfaceFor(f, viewport, onCfg)])), sheetOff: Object.fromEntries(THEMED_FAMILIES.map((f) => [f, surfaceFor(f, viewport, noSheet)])), scrollbars: scrollbarsThemed(onCfg, viewport) })),
+    elements: Object.entries(elements).map(([name, { attrs, label }]) => { const family = familyOf(attrs); return { name, attrs, family, theme: shouldTheme(family, attrs, onCfg), themeMasterOff: shouldTheme(family, attrs, themedControlsConfig(settings({ [TC_KEYS.on]: false }))), themeInEditable: shouldTheme(family, attrs, onCfg, { editable: true }), props: family ? controlProps(family, attrs, label) : null }; }),
+    dialogs: [dialogProps('alert', 'Saved.'), dialogProps('confirm', 'Delete 3 files?'), dialogProps('prompt', 'Name', 'draft'), dialogProps('prompt', undefined), dialogProps('alert', { toString: () => 'object' })],
+    starters: Object.fromEntries(starters.map((a) => [a.id, { normalized: normalizeThemedControls(a.data), errors: themedControlsErrors(a.data), valid: validateAsset(a), light: themedControlsOutput(a.data, { scheme: 'light', families: activeFamilies(onCfg) }), dark: themedControlsOutput(a.data, { scheme: 'dark', families: ['checkbox', 'radio'] as ThemedFamily[], sheet: false }) }])),
+    output: {
+      empty: themedControlsOutput({}),
+      pair: themedControlsOutput({ checkbox: { rest: { bg: 'surface|surface2' }, checked: { bg: 'accent|info' } } }, { scheme: 'dark' }),
+      pairLight: themedControlsOutput({ checkbox: { rest: { bg: 'surface|surface2' } } }, { scheme: 'light' }),
+      scalars: themedControlsOutput({ checkbox: { size: 20, radius: 'pill', borderWidth: '2' }, range: { showValue: 'always', ticks: false }, tooltip: { delayMs: 0 }, scrollbar: { width: 6, thin: true, gutter: 'stable' } }),
+    },
+    normalize: Object.entries(bad).map(([name, raw]) => ({ name, raw, out: normalizeThemedControls(raw) })),
+    errors: Object.entries(bad).map(([name, raw]) => ({ name, raw, errors: themedControlsErrors(raw) })),
+    fieldErrors: [['checkbox.size', 20], ['checkbox.size', 2], ['checkbox.rest.bg', 'surface|surface2'], ['checkbox.rest.bg', '#fff'], ['checkbox.radius', 'pill'], ['range.showValue', 'sometimes'], ['scrollbar.thin', 'true'], ['nope.field', 1]].map(([path, value]) => ({ path, value, errors: tcFieldErrors(path as string, value) })),
   });
 }
 // Unified chrome (chrome@1, Big Dog build xlayout s2, Nov 3 2026; core/engines/chrome.ts): guests send their chrome as data,

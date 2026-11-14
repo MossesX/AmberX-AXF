@@ -35,6 +35,7 @@ import { backToSkin, composeLookAt, globalSkinOf, isSubScopeKey, lookAfterChange
 import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
 import { navStyleOutput, normalizeNavStyle, type NavStyleData } from './engines/navstyle';
+import { activeFamilies, normalizeThemedControls, themedControlsConfig, themedControlsOutput, type ThemedControlsData } from './engines/themed-controls';
 import { animationFor, brandingVars, glyphFor, markSvg, resolveBranding, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
 import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, resolveInterface, scopeAttrs, scopeSheet, scopeVarsCss, type InterfaceData, type ResolvedInterface } from './engines/interface';
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceChange, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
@@ -992,6 +993,17 @@ export class AxfRuntime {
     const a = this.assetOrNull('nav-style' as AssetType);
     if (!a) return null;
     return normalizeNavStyle(this.withTokenOverrides('tokens.nav', 'nav-style' as AssetType, a.data));
+  }
+
+  /**
+   * The themed-controls asset in force (themed-controls@1, normalized, with the control@1 `tokens.controls` overrides
+   * written in), or null when the app ships none. Which families are themed is a setting the Themed controls plugin
+   * reads (engines/themed-controls.ts `themedControlsConfig`); the tokens compile whenever the asset is there.
+   */
+  themedControlsData(): ThemedControlsData | null {
+    const a = this.assetOrNull('themed-controls' as AssetType);
+    if (!a) return null;
+    return normalizeThemedControls(this.withTokenOverrides('tokens.controls', 'themed-controls' as AssetType, a.data));
   }
 
   /** Nav sections libraries and plugins added, in the order they were added. */
@@ -2623,6 +2635,13 @@ export class AxfRuntime {
     // the nav width (resized or collapsed to icons), so it wins over the layout's
     const navStyle = this.navStyleData();
     if (navStyle) parts.push(navStyleOutput(navStyle, { reducedMotion, collapsed: this.settings.get(NAV_COLLAPSED_KEY) === true, width: Number(this.settings.get(NAV_WIDTH_KEY)) || null }));
+    // themed-controls@1 (core/engines/themed-controls.ts): the --fx-tc-* tokens the Themed controls plugin's controls read,
+    // light|dark pairs resolved by the colour theme's scheme; the root says which families are active
+    const themed = this.themedControlsData();
+    if (themed) {
+      const cfg = themedControlsConfig((k) => this.settings.get(k));
+      parts.push(themedControlsOutput(themed, { scheme: color.scheme === 'dark' ? 'dark' : 'light', families: activeFamilies(cfg), sheet: cfg.sheet }));
+    }
     // the window manager follows the behaviour theme's `windows` group (stack / snap / minimize) from the same compile
     this.windows.setPlacement(normalizeBehavior(behavior).windows);
     const attrs: Record<string, string> = { 'data-fx-scheme': color.scheme, ...this.viewportAttrs() };
