@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:06 UTC · `token-registry-skin-editor-live-sandbox` note (all) · orchestrator
 - 2026-11-13 20:06 UTC · `icon-map-icon-packs-every-icon-badge-app` → running, note (all) · pipeline
 - 2026-11-13 20:06 UTC · `icon-map-icon-packs-every-icon-badge-app` branch claude/icon-map-icon-packs-every-icon-badge-app (all) · pipeline
 - 2026-11-13 20:06 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · orchestrator
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 04:07 UTC · `demo-video-series-three-minute-browser` note (all) · voice
 - 2026-11-14 04:08 UTC · `demo-video-series-three-minute-browser` note (all) · voice
 - 2026-11-14 04:08 UTC · `demo-video-series-three-minute-browser` branch claude/demo-video-series-three-minute-browser, PR #667 (all) · builds-live
+- 2026-11-14 04:08 UTC · `demo-video-series-three-minute-browser` note (all) · orchestrator
 
 ## Token passes (log)
 
