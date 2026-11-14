@@ -205,6 +205,16 @@ stays in the Queue, the dispatcher skips it), the `archive` and `deleted` tabs i
 archived builds → archive; soft-deleted → deleted), and the action rules `isHeld`, `canHold`, `isLive`, `canArchive`,
 `canDelete`, `unarchivedStatus`, `actionsFor`, `BUILD_ACTIONS`. Same deferral: no Kotlin twin while Android is on hold.
 
+Nov 14 2026 (build `land-finish-auto-land-live-clear-backlog`, Brett: "We need to make sure things are landing as soon as
+they're built and merged as soon as they're built. I keep getting too many commits behind"): the `land` record on a
+build (`behindMain`, `behindCheckedAt`, `finishedAt`, `landState` waiting | landing | landed | red | archived | flagged,
+`landAttempts[]`; `normLand`, `landStateOf`, `finishedAtOf`, `needsLanding`, `isBehind`, `addLandAttempt`, `withBehind`,
+`LAND_STATE_AFTER`) and **land-run@1** (`framework/core/land-run.mjs`: one serial landing attempt: base / head / merged
+sha, regenerated and unresolved files, generator check, CI with `ciState` where cancelled, skipped and neutral are never
+a failure, outcome landed | red | clash | cancelled | error, fix build; `normLandRun`, `validateLandRun`, `outcomeOf`,
+`attemptOf`, `settleLandRun`). Fixture `spec/fixtures/land-run.json` (`spec/check-land-run.mjs`). Same deferral: no
+Kotlin twin while Android is on hold; a port replays the fixture's `in` / `bad` / `ci` and must answer `out`.
+
 ## Deferred: person-only actions, console refresh, UI choices (Nov 7 2026)
 
 Web only (Android on hold), Kotlin twins when the Android side resumes:

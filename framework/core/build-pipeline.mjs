@@ -61,7 +61,8 @@ export const SPLIT_PROVIDERS = ['claude', 'rules', 'hand'];
 export const DEFAULT_MAX_RUNS = 3;
 
 const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
-const iso = (v) => { const s = str(v, 40).trim(); return s && Number.isFinite(Date.parse(s)) ? s : ''; };
+const ISO_RE = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2}(\.\d{1,6})?)?(Z|[+-]\d{2}:\d{2})?)?$/;
+const iso = (v) => { const s = str(v, 40).trim(); return ISO_RE.test(s) && Number.isFinite(Date.parse(s)) ? s : ''; };
 const NAME_RE = /^[a-z0-9][a-z0-9-]{0,31}$/;
 /** A saved Claude account name (deploy/claude-login.mjs), or ''. */
 export const accountName = (v) => (NAME_RE.test(str(v, 40)) ? str(v, 40) : '');
