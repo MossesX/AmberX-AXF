@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AXF Console</string>
+    <string name="overlay_running">Floating toolbar is on</string>
+    <string name="overlay_toolbar">Console toolbar</string>
+    <string name="overlay_console">Console</string>
+    <string name="overlay_collapse">Close</string>
+    <string name="overlay_open_approvals">Open approvals</string>
+    <string name="overlay_dismiss">Hide until a new approval arrives</string>
+    <string name="overlay_dismiss_glyph">×</string>
+</resources>

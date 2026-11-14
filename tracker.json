@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-11-13T18:54:37.201Z",
+  "generatedAt": "2026-11-14T00:53:48.858Z",
   "summary": {
     "foundations": {
       "built": 68,
@@ -20,12 +20,12 @@
       "coverage": 45
     },
     "console": {
-      "built": 14,
+      "built": 16,
       "partial": 1,
       "placeholder": 3,
       "planned": 0,
-      "total": 18,
-      "coverage": 78
+      "total": 20,
+      "coverage": 80
     },
     "modules": {
       "built": 15,
@@ -2932,7 +2932,7 @@
       "status": "placeholder",
       "wave": 2,
       "module": "axf-platform-android",
-      "notes": ""
+      "notes": "AmberX shell (app code, not this framework module) has one always-on draw-over-apps overlay since Nov 13 2026: toolbar, approval bar, full-screen browser (ApprovalOverlay + ApprovalOverlayRules / OverlayPageRules, JUnit). The framework capability stays a placeholder (Android on hold)."
     },
     {
       "id": "dv.pip",
@@ -3812,6 +3812,63 @@
       "wave": 1,
       "module": "app-console",
       "notes": ""
+    },
+    {
+      "id": "cx.phoneweb",
+      "tab": "console",
+      "group": "console-plumbing",
+      "title": "Console on phones and in the Android console app: safe area, wrapper detection, live updates",
+      "tag": "",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "Console app part 4 (console-app-part-4-console-side-safe). Reached by console actions native.* (REST POST /api/console/action, MCP console_action, CLI axf console action, voice) and state on panel:phone-app. Kotlin twin not needed: web console side only."
+    },
+    {
+      "id": "cx.phoneweb.safearea",
+      "tab": "console",
+      "group": "console-plumbing",
+      "parent": "cx.phoneweb",
+      "title": "Nothing under the clock, camera cutout or notification shade: top bars, banners, menu bar, toolbars, bottom nav, dialogs, toasts and every edge-fixed layer pad --fx-safe-* (CI check-safe-area)",
+      "tag": "suggested",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "--fx-safe-* tokens (framework/ui/axf.css) on every edge-fixed layer; framework/cli/check-safe-area.mjs + test in CI."
+    },
+    {
+      "id": "cx.phoneweb.wrapper",
+      "tab": "console",
+      "group": "console-plumbing",
+      "parent": "cx.phoneweb",
+      "title": "Wrapper detection: <html data-axf-wrapper=app|browser>; native.* actions fall back to the browser's notifications, links, permission prompts and focus",
+      "tag": "suggested",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "apps/console-web/src/native/browserFallback.mjs (+ test); wrapperEnv treats axfNativeHost or axfBridgeHost as the app."
+    },
+    {
+      "id": "cx.phoneweb.liveupdate",
+      "tab": "console",
+      "group": "console-plumbing",
+      "parent": "cx.phoneweb",
+      "title": "An open console follows the live deploy: index.html never cached, entry-bundle check on return and every 30 min, reload off screen in the app or the reload bar",
+      "tag": "suggested",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "apps/console-web/src/native/liveUpdate.mjs (+ test); server main.py sends index.html no-cache; runs when the shell has no native update."
+    },
+    {
+      "id": "cx.phonebridge",
+      "tab": "console",
+      "group": "console-plumbing",
+      "title": "Phone native bridge (native-bridge@1): window.axfNative in the Android console app for mic, permissions, notifications, open_url, console wake and the recorder, the axHub amberx device service moved from AmberX, and every tool reachable as device.* console actions (REST, MCP, CLI, voice)",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "apps/console-droid (DeviceBridge, BridgeContract, HubLink, DeviceTools, MicTools; JUnit) + apps/console-web/src/native (bridgeClient.mjs window.axfNative, deviceApi.ts device.* actions, panel:phone-bridge state; Node tests in CI). Recorder stays in AmberX until its capture service moves (recorder@1 not advertised). Four console slots at once (SlotRules/SlotHost, slots.* tools, device.slots action, console-slots@1). Kotlin twin deferred."
     },
     {
       "id": "m.kernel",

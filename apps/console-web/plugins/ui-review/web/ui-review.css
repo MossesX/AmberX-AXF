@@ -130,7 +130,7 @@
 .axp-ui-review__gtool { display: flex; flex-wrap: wrap; align-items: flex-end; gap: calc(var(--fx-space) / 2); padding: calc(var(--fx-space) / 2) var(--fx-dens-gap-lg); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); }
 .axp-ui-review__gtool > .fx-field { flex: 1 1 calc(var(--fx-font-size) * 12); min-width: 0; margin: 0; }
 
-.axp-ui-review__viewer { position: fixed; inset: 0; z-index: 60; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; background: var(--fx-bg); outline: none; }
+.axp-ui-review__viewer { position: fixed; inset: 0; z-index: 60; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; background: var(--fx-bg); outline: none; padding: var(--fx-safe-top) var(--fx-safe-right) var(--fx-safe-bottom) var(--fx-safe-left); }
 .axp-ui-review__vbar { display: flex; align-items: center; gap: calc(var(--fx-space) / 2); padding: calc(var(--fx-space) / 2) var(--fx-dens-gap-2xl); border-bottom: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); min-width: 0; }
 .axp-ui-review__vstage { min-height: 0; overflow: auto; overscroll-behavior: contain; display: flex; justify-content: center; align-items: flex-start; padding: var(--fx-dens-gap-xl); touch-action: pan-y; }
 .axp-ui-review__vstage.is-phone .axp-ui-review__img { width: min(100%, calc(var(--fx-font-size) * 30)); }
