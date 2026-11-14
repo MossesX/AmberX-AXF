@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T16:47:14.217Z",
+ "updatedAt": "2026-11-14T16:50:09.452Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -139320,6 +139320,83 @@
      "note": "",
      "uid": "st-mwgn0cg40106ty",
      "createdAt": "2026-11-14T16:45:50.814Z"
+    }
+   ]
+  },
+  {
+   "id": "ui-review-filter-and-search-by-pr",
+   "title": "UI Review: filter and search by PR",
+   "category": "ui-review",
+   "detail": "Brett: 'I need a filter in UI reviews to search by PR.' Add a PR filter/search to the UI Review screen: type or pick a PR number (e.g. #647) and see only that PR's review items. Also reachable by API/MCP/CLI/voice ('show UI Review for PR 647') and as a focus target so console_open can jump straight to a PR's items.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-14T16:50:06.080Z",
+   "updatedAt": "2026-11-14T16:50:06.080Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Add a PR filter and search box to UI Review (type #647 or pick from a list of PRs that have items)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgn5tmn04x1ya",
+     "createdAt": "2026-11-14T16:50:06.081Z"
+    },
+    {
+     "id": "s2",
+     "text": "Same filter through API, MCP, CLI and voice, and as a focus target so opening UI Review can jump to a PR's items",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgn5tmo05xb3h",
+     "createdAt": "2026-11-14T16:50:06.081Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests, help entry, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgn5tmo06cthv",
+     "createdAt": "2026-11-14T16:50:06.081Z"
     }
    ]
   }
