@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 23:40 UTC · `auto-land-merge-main-land-land-mjs-clash` note (all) · orchestrator
 - 2026-11-13 23:41 UTC · `console-app-land-parts-1-4-build-apk` added (0 steps) (all) · console
 - 2026-11-13 23:41 UTC · `console-app-land-parts-1-4-build-apk` → queued, note (all) · console
 - 2026-11-13 23:41 UTC · `auto-land-merge-main-land-land-mjs-clash` → running, note (all) · pipeline
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:32 UTC · `land-all-skin-builds` note (all) · orchestrator
 - 2026-11-14 22:32 UTC · `replace-merge-queue-one-time-landing` note (all) · orchestrator
 - 2026-11-14 22:33 UTC · `land-all-skin-builds` s20 done, → running (all) · orchestrator
+- 2026-11-14 22:34 UTC · `land-all-skin-builds` s21 done (all) · orchestrator
 
 ## Token passes (log)
 
