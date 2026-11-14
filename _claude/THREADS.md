@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:50 UTC · `full-voice-control-resolve-inventory` note (all) · orchestrator
 - 2026-11-13 20:50 UTC · `full-voice-control-resolve-inventory` → running, note (all) · pipeline
 - 2026-11-13 20:50 UTC · `full-voice-control-resolve-inventory` branch claude/full-voice-control-resolve-inventory (all) · pipeline
 - 2026-11-13 20:50 UTC · `per-toolbar-settings-fix-failing-chrome` note (all) · orchestrator
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 17:08 UTC · `builds-share-one-claude-login-write` note (all) · orchestrator
 - 2026-11-14 17:09 UTC · `builds-share-one-claude-login-write` note (all) · pipeline
 - 2026-11-14 17:09 UTC · `ui-review-filter-and-search-by-pr` PR #675 (all) · builds-live
+- 2026-11-14 17:10 UTC · `ui-review-filter-and-search-by-pr` s3 done, → built (all) · orchestrator
 
 ## Token passes (log)
 

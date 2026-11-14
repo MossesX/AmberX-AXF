@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5336,
- "updatedAt": "2026-11-14T17:09:40.140Z",
+ "rev": 5337,
+ "updatedAt": "2026-11-14T17:10:13.168Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -214641,15 +214641,15 @@
    "title": "UI Review: filter and search by PR",
    "category": "ui-review",
    "detail": "Brett: 'I need a filter in UI reviews to search by PR.' Add a PR filter/search to the UI Review screen: type or pick a PR number (e.g. #647) and see only that PR's review items. Also reachable by API/MCP/CLI/voice ('show UI Review for PR 647') and as a focus target so console_open can jump straight to a PR's items.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-review-filter-and-search-by-pr",
    "pr": "#675",
    "createdAt": "2026-11-14T16:50:06.080Z",
-   "updatedAt": "2026-11-14T17:09:38.749Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-14T17:10:10.967Z",
+   "builtAt": "2026-11-14T17:10:10.967Z",
    "notes": [
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-ui-review-filter-and-search-by-pr--rhonda.",
@@ -214762,12 +214762,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T17:10:10.967Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T16:50:06.081Z",
-     "updatedAt": "2026-11-14T16:50:06.081Z"
+     "updatedAt": "2026-11-14T17:10:11.309Z"
     }
    ],
    "profiles": [
@@ -214778,7 +214778,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
