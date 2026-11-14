@@ -796,34 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 21:12 UTC · `token-registry-skin-editor-live-sandbox` PR #657 (all) · builds-live
-- 2026-11-13 21:12 UTC · `hotfix-desktop-console-draws-app-menu` branch claude/hotfix-desktop-console-draws-app-menu, PR #658 (all) · builds-live
-- 2026-11-13 21:12 UTC · `hotfix-desktop-console-draws-app-menu` note (all) · orchestrator
-- 2026-11-13 21:13 UTC · `main-ci-red-test-sandbox-profile-export` added (0 steps) (all) · auto-land-every-finished-build-lands
-- 2026-11-13 21:13 UTC · `hotfix-desktop-console-draws-app-menu` note (all) · orchestrator
-- 2026-11-13 21:13 UTC · `main-ci-red-test-sandbox-profile-export` → queued, note (all) · auto-land-every-finished-build-lands
-- 2026-11-13 21:14 UTC · `auto-land-every-finished-build-lands` s9 done (all) · orchestrator
-- 2026-11-13 21:14 UTC · `console-app-wake-word-voice-listener` → pending, note (all) · reconciler
-- 2026-11-13 21:14 UTC · `skin-animations-swatches-skin-switch` → pending, note (all) · reconciler
-- 2026-11-13 21:14 UTC · `context-menus-plugin-one-true-source` branch claude/context-menus-plugin-one-true-source, PR #659 (all) · builds-live
-- 2026-11-13 21:14 UTC · `hotfix-desktop-console-draws-app-menu` note (all) · orchestrator
-- 2026-11-13 21:14 UTC · `hotfix-desktop-console-draws-app-menu` → running, note (all) · pipeline
-- 2026-11-13 21:15 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-13 21:15 UTC · `context-menus-plugin-one-true-source` s1 done, → running (all) · orchestrator
-- 2026-11-13 21:16 UTC · `auto-land-every-finished-build-lands` PR #660 (all) · builds-live
-- 2026-11-13 21:16 UTC · `main-ci-red-test-sandbox-profile-export` note (all) · orchestrator
-- 2026-11-13 21:16 UTC · `hotfix-desktop-console-draws-app-menu` → pending, note (all) · pipeline
-- 2026-11-13 21:16 UTC · `main-ci-red-test-sandbox-profile-export` → running, note (all) · pipeline
-- 2026-11-13 21:16 UTC · `main-ci-red-test-sandbox-profile-export` branch claude/main-ci-red-test-sandbox-profile-export (all) · pipeline
-- 2026-11-13 21:16 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
-- 2026-11-13 21:17 UTC · `context-menus-plugin-one-true-source` → pending, note (all) · pipeline
-- 2026-11-13 21:17 UTC · `auto-land-every-finished-build-lands` note (all) · orchestrator
-- 2026-11-13 21:17 UTC · `toolbar-widgets-attach-any-banner-style` → running, note (all) · pipeline
-- 2026-11-13 21:16 UTC · `auto-land-every-finished-build-lands` s10 done, → built (all) · orchestrator
-- 2026-11-13 21:16 UTC · `auto-land-every-finished-build-lands` note (all) · orchestrator
-- 2026-11-13 21:17 UTC · `per-instance-settings-small-live-preview` s1 done, → running (all) · orchestrator
-- 2026-11-13 21:18 UTC · `icon-map-icon-packs-every-icon-badge-app` s4 done (all) · orchestrator
-- 2026-11-13 21:19 UTC · `lander-regenerates-generated-files-clash` branch claude/lander-regenerates-generated-files-clash (all) · builds-live
 - 2026-11-13 21:18 UTC · `toolbar-widgets-attach-any-banner-style` s1 done, → running (all) · orchestrator
 - 2026-11-13 21:19 UTC · `toolbar-widgets-attach-any-banner-style` note (all) · orchestrator
 - 2026-11-13 21:20 UTC · `lander-regenerates-generated-files-clash` PR #661 (all) · builds-live
@@ -1196,6 +1168,34 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 18:41 UTC · `land-all-skin-builds` s15 done (all) · orchestrator
 - 2026-11-14 18:42 UTC · `land-all-skin-builds` s16 done (all) · orchestrator
 - 2026-11-14 18:44 UTC · `land-all-skin-builds` s17 done (all) · orchestrator
+- 2026-11-14 18:44 UTC · `picker-dialog-plugin-replaces-all` s5 done (all) · orchestrator
+- 2026-11-14 18:44 UTC · `land-all-skin-builds` s18 done (all) · orchestrator
+- 2026-11-14 18:44 UTC · `themed-native-controls-plugin` s5 done (all) · orchestrator
+- 2026-11-14 18:44 UTC · `themed-native-controls-plugin` note (all) · orchestrator
+- 2026-11-14 18:45 UTC · `picker-dialog-plugin-replaces-all` PR #676 (all) · builds-live
+- 2026-11-14 18:45 UTC · `themed-native-controls-plugin` note (all) · orchestrator
+- 2026-11-14 18:45 UTC · `picker-dialog-plugin-replaces-all` note (all) · orchestrator
+- 2026-11-14 18:46 UTC · `picker-dialog-plugin-replaces-all` note (all) · orchestrator
+- 2026-11-14 18:47 UTC · `land-all-skin-builds` s19 done (all) · orchestrator
+- 2026-11-14 18:48 UTC · `skins-plugin-own-removable-console` note (all) · orchestrator
+- 2026-11-14 18:48 UTC · `skins-plugin-own-removable-console` → complete (all) · orchestrator
+- 2026-11-14 18:48 UTC · `skin-configuration-panel-before-ai-makes` note (all) · orchestrator
+- 2026-11-14 18:48 UTC · `skin-configuration-panel-before-ai-makes` → complete (all) · orchestrator
+- 2026-11-14 18:49 UTC · `skin-configuration-panel-before-ai-makes` note (all) · orchestrator
+- 2026-11-14 18:49 UTC · `skins-plugin-own-removable-console` note (all) · orchestrator
+- 2026-11-14 19:10 UTC · `picker-dialog-plugin-replaces-all` → pending, note (all) · reconciler
+- 2026-11-14 19:10 UTC · `themed-native-controls-plugin` → pending, note (all) · reconciler
+- 2026-11-14 20:07 UTC · `land-all-skin-builds` note (all) · mcp
+- 2026-11-14 20:21 UTC · `every-skin-ships-light-dark-colour-theme` → complete, merged, note (all) · reconciler
+- 2026-11-14 20:21 UTC · `skin-axhub-override-switch-greyed-out` merged, note (all) · reconciler
+- 2026-11-14 20:21 UTC · `skin-config-panel-merge-main-and-land` merged, note (all) · reconciler
+- 2026-11-14 20:21 UTC · `skins-plugin-merge-main-and-land` merged, note (all) · reconciler
+- 2026-11-14 20:22 UTC · `every-skin-ships-light-dark-colour-theme` note (all) · orchestrator
+- 2026-11-14 20:22 UTC · `skin-axhub-override-switch-greyed-out` note (all) · orchestrator
+- 2026-11-14 20:22 UTC · `skin-config-panel-merge-main-and-land` note (all) · orchestrator
+- 2026-11-14 20:23 UTC · `skins-plugin-merge-main-and-land` note (all) · orchestrator
+- 2026-11-14 21:00 UTC · `skin-animations-swatches-skin-switch` merged, note (all) · reconciler
+- 2026-11-14 21:01 UTC · `skin-animations-swatches-skin-switch` note (all) · orchestrator
 
 ## Token passes (log)
 

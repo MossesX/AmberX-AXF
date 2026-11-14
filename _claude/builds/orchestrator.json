@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T18:44:10.591Z",
+ "updatedAt": "2026-11-14T21:01:10.247Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -117088,7 +117088,7 @@
    "title": "Skin configuration panel: before AI makes a skin, Brett picks what it may change. The current look is saved as the Default skin. A full tree of options in categories (colors, typography, layout and tab placement, buttons and actions, behaviors, context menus with how deep to build them, nav menu, ap",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -117096,7 +117096,7 @@
    "pr": "#612",
    "priority": "P0",
    "createdAt": "2026-11-13T01:13:53.464Z",
-   "updatedAt": "2026-11-13T17:38:14.716Z",
+   "updatedAt": "2026-11-14T18:49:05Z",
    "builtAt": "2026-11-13T06:56:03.335Z",
    "notes": [
     {
@@ -117178,6 +117178,14 @@
     {
      "text": "Renamed from skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:38:14.716Z"
+    },
+    {
+     "text": "Superseded by skin-config-panel-merge-main-and-land (#648), which holds every commit of this branch. Branch archived as tag archive/skin-configuration-panel-before-ai-makes; PR #612 closed.",
+     "at": "2026-11-14T18:48:21.910Z"
+    },
+    {
+     "text": "Shipped manifest sm-skin-configuration-panel-before-ai-makes rev 1 sent to Shipped features (orchestrator): PR #612, 51 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-14T18:49:05Z"
     }
    ],
    "approvals": [
@@ -117856,7 +117864,7 @@
    "title": "Skins plugin: its own removable console plugin and screen for changing skins. Gallery of every skin with live preview (desktop and phone), one-tap Use skin, Back and Restore to Default with undo, per-scope switching (whole hub, one app, one screen, one plugin), a quick skin switcher on the banner an",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -117864,7 +117872,7 @@
    "pr": "#613",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-13T17:38:26.299Z",
+   "updatedAt": "2026-11-14T18:49:06Z",
    "builtAt": "2026-11-13T07:56:39.561Z",
    "notes": [
     {
@@ -117946,6 +117954,14 @@
     {
      "text": "Renamed from skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:38:26.299Z"
+    },
+    {
+     "text": "Superseded by skins-plugin-merge-main-and-land (#647), which holds every commit of this branch. Branch archived as tag archive/skins-plugin-own-removable-console; PR #649 closed.",
+     "at": "2026-11-14T18:48:17.716Z"
+    },
+    {
+     "text": "Shipped manifest sm-skins-plugin-own-removable-console rev 1 sent to Shipped features (orchestrator): PR #613, 476 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-14T18:49:06Z"
     }
    ],
    "approvals": [
@@ -120998,15 +121014,16 @@
    "title": "Every skin ships a light and a dark colour theme (Studio Pro, Executive, Field, Command, Default and any future skin): quick light/dark switch per skin, follow-system option, coverage check fails if a skin lacks either; full API and voice",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/every-skin-ships-light-dark-colour-theme",
    "pr": "#590",
+   "mergedAt": "2026-11-14T20:15:18Z",
    "priority": "P0",
    "createdAt": "2026-11-13T10:39:51.656Z",
-   "updatedAt": "2026-11-13T17:33:12.986Z",
+   "updatedAt": "2026-11-14T20:22:04Z",
    "builtAt": "2026-11-13T10:57:06.217Z",
    "notes": [
     {
@@ -121032,6 +121049,14 @@
     {
      "text": "Renamed from every-skin-ships-a-light-and-a-dark-colour-theme (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:33:12.986Z"
+    },
+    {
+     "text": "Reconciler: PR #590 merged",
+     "at": "2026-11-14T20:21:03.696Z"
+    },
+    {
+     "text": "Shipped manifest sm-every-skin-ships-light-dark-colour-theme rev 1 sent to Shipped features (orchestrator): landed b7ddb2f23, 1 file(s), 0 test line(s), 4 open.",
+     "at": "2026-11-14T20:22:04Z"
     }
    ],
    "approvals": [],
@@ -130267,9 +130292,10 @@
    "pendingId": "",
    "branch": "claude/skin-axhub-override-switch-greyed-out",
    "pr": "#641",
+   "mergedAt": "2026-11-14T20:15:16Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:56:15.400Z",
-   "updatedAt": "2026-11-13T20:19:48.032Z",
+   "updatedAt": "2026-11-14T20:22:05Z",
    "builtAt": "",
    "notes": [
     {
@@ -130319,6 +130345,14 @@
     {
      "text": "Reconciler: PR #641",
      "at": "2026-11-13T20:19:48.032Z"
+    },
+    {
+     "text": "Reconciler: PR #641 merged",
+     "at": "2026-11-14T20:21:03.696Z"
+    },
+    {
+     "text": "Shipped manifest sm-skin-axhub-override-switch-greyed-out rev 1 sent to Shipped features (orchestrator): landed 2bb2c6a7d, 67 file(s), 6 test line(s), 5 open.",
+     "at": "2026-11-14T20:22:05Z"
     }
    ],
    "approvals": [],
@@ -131567,9 +131601,10 @@
    "pendingId": "",
    "branch": "claude/skin-config-panel-merge-main-and-land",
    "pr": "#648",
+   "mergedAt": "2026-11-14T20:15:18Z",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:38.941Z",
-   "updatedAt": "2026-11-13T20:18:07.023Z",
+   "updatedAt": "2026-11-14T20:22:07Z",
    "builtAt": "",
    "notes": [
     {
@@ -131607,6 +131642,14 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 3 steps left: back in Pending for Brett.",
      "at": "2026-11-13T20:18:07.023Z"
+    },
+    {
+     "text": "Reconciler: PR #648 merged",
+     "at": "2026-11-14T20:21:03.696Z"
+    },
+    {
+     "text": "Shipped manifest sm-skin-config-panel-merge-main-and-land rev 1 sent to Shipped features (orchestrator): landed 42d28acfe, 0 file(s), 0 test line(s), 2 open.",
+     "at": "2026-11-14T20:22:07Z"
     }
    ],
    "approvals": [],
@@ -131697,9 +131740,10 @@
    "pendingId": "",
    "branch": "claude/skins-plugin-merge-main-and-land",
    "pr": "#647",
+   "mergedAt": "2026-11-14T20:15:18Z",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:44.815Z",
-   "updatedAt": "2026-11-13T20:19:48.032Z",
+   "updatedAt": "2026-11-14T20:23:04Z",
    "builtAt": "",
    "notes": [
     {
@@ -131733,6 +131777,14 @@
     {
      "text": "Reconciler: PR #647",
      "at": "2026-11-13T20:19:48.032Z"
+    },
+    {
+     "text": "Reconciler: PR #647 merged",
+     "at": "2026-11-14T20:21:03.696Z"
+    },
+    {
+     "text": "Shipped manifest sm-skins-plugin-merge-main-and-land rev 1 sent to Shipped features (orchestrator): landed 0c23f110d, 1 file(s), 0 test line(s), 3 open.",
+     "at": "2026-11-14T20:23:04Z"
     }
    ],
    "approvals": [],
@@ -132016,9 +132068,10 @@
    "pendingId": "",
    "branch": "claude/skin-animations-swatches-skin-switch",
    "pr": "#652",
+   "mergedAt": "2026-11-14T20:51:15Z",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:31.102Z",
-   "updatedAt": "2026-11-14T17:10:54.245Z",
+   "updatedAt": "2026-11-14T21:01:04Z",
    "builtAt": "",
    "notes": [
     {
@@ -132056,6 +132109,14 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-14T17:10:54.245Z"
+    },
+    {
+     "text": "Reconciler: PR #652 merged",
+     "at": "2026-11-14T21:00:56.113Z"
+    },
+    {
+     "text": "Shipped manifest sm-skin-animations-swatches-skin-switch rev 1 sent to Shipped features (orchestrator): landed aee42bbe8, 121 file(s), 10 test line(s), 5 open.",
+     "at": "2026-11-14T21:01:04Z"
     }
    ],
    "approvals": [],
@@ -140134,15 +140195,15 @@
    "title": "Picker dialog plugin replaces all dropdowns",
    "category": "",
    "detail": "New removable plugin: replaces EVERY dropdown/select in the console and framework (native <select>, custom dropdowns, comboboxes) with a tap-to-open picker dialog. The field shows the current value; tapping opens a themed dialog listing the options (search box when many, grouped sections, icons/descriptions if available, multi-select with checkboxes where the select is multiple, keyboard and screen-reader accessible). Fully token-driven: register its own token family (dialog surface, backdrop, option row, selected, hover, focus, search, header, every state, light and dark) in the token registry; no literal colours/sizes (CI gate); every skin can style it and the skin upgrader adds defaults matching today's look. One shared component used everywhere; plugin off = original dropdowns come back. Works on desktop and phone (bottom sheet style on phone). Full API and voice control (open picker, choose option by name). Tests desktop and phone, help entry, Shipped features.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/picker-dialog-plugin-replaces-all",
-   "pr": "",
+   "pr": "#676",
    "priority": "P1",
    "createdAt": "2026-11-14T18:13:15.368Z",
-   "updatedAt": "2026-11-14T18:39:26.160Z",
+   "updatedAt": "2026-11-14T19:10:51.917Z",
    "builtAt": "",
    "notes": [
     {
@@ -140160,6 +140221,18 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-picker-dialog-plugin-replaces-all--gina, shared account login)",
      "at": "2026-11-14T18:19:45.564Z"
+    },
+    {
+     "text": "Phase 1 (Fable) done: s1–s5 landed on claude/picker-dialog-plugin-replaces-all, draft PR #676. picker@1 spec, engine, fixture (662 checks), picker asset type + --fx-picker-* registry (41 tokens, theme-compiled), picker style target + skin-upgrade@1 (all 6 skins touch the picker). Next phase (Opus): the Picker React dialog + the swap plugin (install/uninstall, Plugin Manager, settings sub-tab, console-control target picker:<id>, actions, voice), UI Review shots. Not done on purpose: picker not added to style-package members or the roller control list (would force every shipped style package to name one).",
+     "at": "2026-11-14T18:45:52.235Z"
+    },
+    {
+     "text": "Headless run axf-picker-dialog-plugin-replaces-all--gina: brief only · start 13.6K tokens ($0.11) · cost $12.26 · 121 turns · 6 tools, MCP none",
+     "at": "2026-11-14T18:46:44.968Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-14T19:10:51.917Z"
     }
    ],
    "approvals": [],
@@ -140287,8 +140360,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T18:44:13.161Z",
      "note": "",
      "uid": "st-mwgq79uk05w3y0",
      "createdAt": "2026-11-14T18:15:13.052Z"
@@ -140679,7 +140752,7 @@
    "title": "Themed native controls plugin",
    "category": "",
    "detail": "Companion to picker-dialog-plugin-replaces-all, same rules. A removable plugin that replaces every browser-native control in the console and framework with a themed, token-driven version: date/time/datetime pickers -> themed calendar/time dialog; color inputs -> swatch/picker dialog; window.alert/confirm/prompt -> themed dialogs (async API shim); checkboxes, radios, range sliders -> themed switches/radios/sliders; file inputs -> themed drop zone with progress; number inputs -> themed steppers; native title tooltips -> themed tooltips; scrollbars -> themed scrollbars. Each control gets its own token family (every state, light and dark) registered in the token registry; no literal values (CI gate); skins style them and the skin upgrader adds defaults matching today's look. Accessibility (keyboard, screen reader, focus) kept. Each control type can be toggled on/off in the plugin settings; plugin off restores native controls. Desktop and phone (bottom sheets on phone). Full API and voice control. Split into parallel parts per control family. Tests desktop and phone, help, Shipped features.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -140687,7 +140760,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-14T18:14:25.063Z",
-   "updatedAt": "2026-11-14T18:37:47.753Z",
+   "updatedAt": "2026-11-14T19:10:51.917Z",
    "builtAt": "",
    "notes": [
     {
@@ -140705,6 +140778,18 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-themed-native-controls-plugin--paulie, shared account login)",
      "at": "2026-11-14T18:20:05.411Z"
+    },
+    {
+     "text": "Phase 1 (Fable) done on claude/themed-native-controls-plugin: themed-controls@1 spec, one optional shared asset type themed-controls (10 families, 247 token fields, light|dark pairs, native starter = today's look), control@1 tokens.controls, style target .fx-tc, generic skin upgrader (registry skinDefault + skins.mjs upgrade + check-skin-sections rule; 6 skins upgraded), engine themed-controls.ts + runtime --fx-tc-* hook, fixture + check-themed-controls.mts (315 checks) wired into CI. Note for later: axf schemas regenerates schemas/json/skin.schema.json without behaviorTheme (the committed file has it); I kept the committed file. Phase 2 (plugin, host, controls, API) next; no PR yet (s30 opens it).",
+     "at": "2026-11-14T18:44:43.189Z"
+    },
+    {
+     "text": "Headless run axf-themed-native-controls-plugin--paulie: brief only · start 13.4K tokens ($0.07) · cost $12.09 · 120 turns · 6 tools, MCP none",
+     "at": "2026-11-14T18:45:16.192Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-14T19:10:51.917Z"
     }
    ],
    "approvals": [],
@@ -140831,8 +140916,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T18:44:40.157Z",
      "note": "",
      "uid": "st-mwgqau1u052ilq",
      "createdAt": "2026-11-14T18:17:59.202Z"
@@ -141408,7 +141493,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T18:15:01.485Z",
-   "updatedAt": "2026-11-14T18:44:08.791Z",
+   "updatedAt": "2026-11-14T20:07:36.471Z",
    "builtAt": "",
    "notes": [
     {
@@ -141426,6 +141511,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-land-all-skin-builds--joey.",
      "at": "2026-11-14T18:19:24.683Z"
+    },
+    {
+     "text": "Brett asked for status on the skin landings.",
+     "at": "2026-11-14T20:07:36.471Z"
     }
    ],
    "approvals": [],
@@ -141844,8 +141933,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T18:44:29.553Z",
      "note": "",
      "uid": "st-mwgqcckn1czl8r",
      "createdAt": "2026-11-14T18:19:09.863Z"
@@ -141866,8 +141955,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T18:47:01.904Z",
      "note": "",
      "uid": "st-mwgqcckn1dstzu",
      "createdAt": "2026-11-14T18:19:09.863Z"
