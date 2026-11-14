@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5631,
- "updatedAt": "2026-11-14T23:29:11.615Z",
+ "rev": 5632,
+ "updatedAt": "2026-11-14T23:29:24.471Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -189862,7 +189862,7 @@
    "pr": "#685",
    "priority": "P0",
    "createdAt": "2026-11-13T10:35:03.675Z",
-   "updatedAt": "2026-11-14T23:28:09.644Z",
+   "updatedAt": "2026-11-14T23:29:07.587Z",
    "builtAt": "",
    "notes": [
     {
@@ -189912,6 +189912,10 @@
     {
      "text": "Headless run axf-fix-build-whose-session-finishes-phase-e--gina: brief only · start 13.3K tokens ($0.07) · cost $5.92 · 60 turns · 6 tools, MCP none",
      "at": "2026-11-14T23:28:09.644Z"
+    },
+    {
+     "text": "Self-check: fix-build-whose-session-finishes-phase-e had no session on record but axf-fix-build-whose-session-finishes-phase-e--gina is alive: kept running and tracking it.",
+     "at": "2026-11-14T23:29:07.587Z"
     }
    ],
    "approvals": [
@@ -189943,7 +189947,7 @@
     "queuedAt": "2026-11-13T10:35:20.815Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "",
+    "session": "axf-fix-build-whose-session-finishes-phase-e--gina",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T10:43:20.478Z",
@@ -190290,7 +190294,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:29:11.615Z",
+ "updatedAt": "2026-11-14T23:29:24.471Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -120771,7 +120771,7 @@
    "pr": "#685",
    "priority": "P0",
    "createdAt": "2026-11-13T10:35:03.675Z",
-   "updatedAt": "2026-11-14T23:28:09.644Z",
+   "updatedAt": "2026-11-14T23:29:07.587Z",
    "builtAt": "",
    "notes": [
     {
@@ -120821,6 +120821,10 @@
     {
      "text": "Headless run axf-fix-build-whose-session-finishes-phase-e--gina: brief only · start 13.3K tokens ($0.07) · cost $5.92 · 60 turns · 6 tools, MCP none",
      "at": "2026-11-14T23:28:09.644Z"
+    },
+    {
+     "text": "Self-check: fix-build-whose-session-finishes-phase-e had no session on record but axf-fix-build-whose-session-finishes-phase-e--gina is alive: kept running and tracking it.",
+     "at": "2026-11-14T23:29:07.587Z"
     }
    ],
    "approvals": [
