@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T23:43:42.787Z",
+ "updatedAt": "2026-11-14T00:33:52.626Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -135268,7 +135268,7 @@
    "title": "Land batch: merge main into each finished build and land",
    "category": "",
    "detail": "vps.build_land still aborts on clashes in GENERATED files only (axf.lock.json, control/inventory.json, help framework.json): the new generated-files@1 logic landed in the repo, but /opt/axf-batch/resolve.py (used by vps.build_land on axHub's side) hasn't picked it up. 1) Wire /opt/axf-batch/resolve.py to call the repo's generated-files@1 resolver. 2) Then, one at a time, merge origin/main into each branch, regenerate generated files, run its tests, push, and land on main: toolbar-widgets-attach-any-banner-style, icon-map-icon-packs-every-icon-badge-app, token-registry-skin-editor-live-sandbox, per-instance-settings-small-live-preview, skin-axhub-override-switch-greyed-out, skin-animations-swatches-skin-switch, skin-config-panel-merge-main-and-land, skins-plugin-merge-main-and-land, full-voice-control-resolve-inventory, orchestrator-custom-groups-custom-tabs, demo-pipelines-guided-walkthrough-live, console-app-wake-word-voice-listener, hotfix-desktop-console-draws-app-menu (PR #658 regression test). Real source clashes: keep both sides and test. Report each result. Redeploy the console after the batch.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -135276,7 +135276,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T23:39:26.785Z",
-   "updatedAt": "2026-11-13T23:43:15.961Z",
+   "updatedAt": "2026-11-14T00:33:50.961Z",
    "builtAt": "",
    "notes": [
     {
@@ -135321,8 +135321,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T00:33:50.961Z",
      "note": "",
      "uid": "st-mwfmham201lnoa",
      "createdAt": "2026-11-13T23:43:15.961Z"
