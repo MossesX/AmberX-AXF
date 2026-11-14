@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T16:45:10.591Z",
+ "updatedAt": "2026-11-14T16:45:24.218Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -139176,7 +139176,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-14T16:44:38.923Z",
-   "updatedAt": "2026-11-14T16:44:38.923Z",
+   "updatedAt": "2026-11-14T16:45:19.484Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -139257,6 +139257,25 @@
      "note": "",
      "uid": "st-mwgmyszd086agn",
      "createdAt": "2026-11-14T16:44:38.924Z"
+    },
+    {
+     "id": "s5",
+     "text": "Phone notifications through AmberX for every login event: one each time a build signs in / uses the account token (which account, which build, verified OK or failed), and one each time the token is refreshed confirming the new token was saved to the shared file successfully (or that it failed). Brett: 'I want a verification every time it uses the token... and then a notification to tell me that it was successfully refreshed and changed.'",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgmzoad011ew7",
+     "createdAt": "2026-11-14T16:45:19.485Z"
     }
    ]
   }

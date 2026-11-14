@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5303,
- "updatedAt": "2026-11-14T16:45:10.591Z",
+ "rev": 5304,
+ "updatedAt": "2026-11-14T16:45:24.218Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -214410,39 +214410,11 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-14T16:44:38.923Z",
-   "updatedAt": "2026-11-14T16:44:38.923Z",
+   "updatedAt": "2026-11-14T16:45:19.484Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-14T16:45:07.873Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": "",
-    "heldAt": "",
-    "heldBy": "",
-    "heldWhy": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -214531,6 +214503,28 @@
      "rev": 1,
      "createdAt": "2026-11-14T16:44:38.924Z",
      "updatedAt": "2026-11-14T16:44:38.924Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwgmzoad011ew7",
+     "title": "",
+     "text": "Phone notifications through AmberX for every login event: one each time a build signs in / uses the account token (which account, which build, verified OK or failed), and one each time the token is refreshed confirming the new token was saved to the shared file successfully (or that it failed). Brett: 'I want a verification every time it uses the token... and then a notification to tell me that it was successfully refreshed and changed.'",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T16:45:19.485Z",
+     "updatedAt": "2026-11-14T16:45:19.669Z"
     }
    ],
    "profiles": [
