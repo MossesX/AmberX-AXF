@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 02:09 UTC · `console-app-land-parts-1-4-build-apk` s17 done (all) · orchestrator
 - 2026-11-14 02:09 UTC · `console-app-land-parts-1-4-build-apk` note (all) · orchestrator
 - 2026-11-14 02:10 UTC · `console-app-land-parts-1-4-build-apk` note (all) · foreign-write
 - 2026-11-14 02:10 UTC · `console-app-land-parts-1-4-build-apk` → pending, note (all) · pipeline
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:54 UTC · `hotfix-desktop-console-draws-app-menu` s2 done (all) · orchestrator
 - 2026-11-14 22:55 UTC · `themed-native-controls-plugin` s7 done (all) · foreign-write
 - 2026-11-14 22:56 UTC · `hotfix-desktop-console-draws-app-menu` s3 done, → built (all) · orchestrator
+- 2026-11-14 22:56 UTC · `hotfix-desktop-console-draws-app-menu` note (all) · orchestrator
 
 ## Token passes (log)
 
