@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T17:48:50.770Z",
+ "updatedAt": "2026-11-14T17:49:34.060Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -139595,7 +139595,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-14T17:48:42.228Z",
+   "updatedAt": "2026-11-14T17:49:31.228Z",
    "builtAt": "",
    "notes": [
     {
@@ -140006,7 +140006,7 @@
     },
     {
      "id": "s37",
-     "text": "Multiple conditions per watch: '+ add condition' in the wizard so two or more conditions must all be met before the action runs.",
+     "text": "AND / OR conditions per watch: '+ add condition' in the wizard, each joined by an AND/OR picker, plus condition groups (e.g. (A AND B) OR C) built by clicking, no typing; the plain-English summary shows the logic.",
      "model": "Fable",
      "why": "",
      "phase": "",
