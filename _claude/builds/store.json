@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5117,
- "updatedAt": "2026-11-14T00:49:15.682Z",
+ "rev": 5118,
+ "updatedAt": "2026-11-14T00:49:31.143Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -210099,11 +210099,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/console-app-land-parts-1-4-build-apk",
-   "pr": "",
+   "branch": "claude/console-android-app-thin-webview-wrapper",
+   "pr": "#637",
    "priority": "P0",
    "createdAt": "2026-11-13T23:41:07.780Z",
-   "updatedAt": "2026-11-14T00:49:13.985Z",
+   "updatedAt": "2026-11-14T00:49:25.045Z",
    "builtAt": "",
    "notes": [
     {
@@ -210264,12 +210264,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T00:49:25.045Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T23:51:45.676Z",
-     "updatedAt": "2026-11-13T23:51:45.676Z"
+     "updatedAt": "2026-11-14T00:49:25.284Z"
     },
     {
      "id": "s5",
@@ -210627,7 +210627,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
