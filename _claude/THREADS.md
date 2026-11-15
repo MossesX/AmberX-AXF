@@ -797,12 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 22:44 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` → queued (all) · orchestrator
-- 2026-11-14 22:44 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → queued (all) · orchestrator
-- 2026-11-14 22:45 UTC · `console-look-becomes-default-axhub-skin` s2 done (all) · orchestrator
-- 2026-11-14 22:45 UTC · `always-fill-every-slot-when-slots-are` → queued (all) · orchestrator
-- 2026-11-14 22:45 UTC · `fix-build-whose-session-finishes-phase-e` → queued (all) · orchestrator
-- 2026-11-14 22:45 UTC · `restore-asset-designer-plugin-merged-nov` → queued (all) · orchestrator
 - 2026-11-14 22:45 UTC · `all-settings-interfaces-open-floating` → queued (all) · orchestrator
 - 2026-11-14 22:45 UTC · `quick-settings-pinned-collapsible-pane` → queued (all) · orchestrator
 - 2026-11-14 22:45 UTC · `new-asset-type-animated-expanding-row` → queued (all) · orchestrator
@@ -1197,6 +1191,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 00:08 UTC · `merge-main-land-server-gate-one-session` s2 done (all) · orchestrator
 - 2026-11-15 00:09 UTC · `all-settings-interfaces-open-floating` → running, note (all) · pipeline
 - 2026-11-15 00:09 UTC · `all-settings-interfaces-open-floating` note (all) · orchestrator
+- 2026-11-15 00:06 UTC · `merge-main-land-console-app-part-2` added (0 steps) (all) · land-finish-auto-land-live-clear-backlog
+- 2026-11-15 00:06 UTC · `merge-main-land-console-app-part-2` → queued, note (all) · land-finish-auto-land-live-clear-backlog
+- 2026-11-15 00:06 UTC · `merge-main-land-voice-listener-use` added (0 steps) (all) · land-finish-auto-land-live-clear-backlog
+- 2026-11-15 00:07 UTC · `merge-main-land-voice-listener-use` → queued, note (all) · land-finish-auto-land-live-clear-backlog
+- 2026-11-15 00:07 UTC · `merge-main-land-console-axhub-retry` added (0 steps) (all) · land-finish-auto-land-live-clear-backlog
+- 2026-11-15 00:07 UTC · `merge-main-land-console-axhub-retry` → queued, note (all) · land-finish-auto-land-live-clear-backlog
 
 ## Token passes (log)
 
