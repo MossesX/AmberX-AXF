@@ -2299,5 +2299,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "context-lead@1: rt.contextExtras keys '^:<name>' lead every context menu above one separator (core/engines/windows.ts withContextLead, react Overlays ContextMenuHost; any target, even contributions:false, right-click and long-press). The console registers Console settings (app.settings, folding the asset's own Settings in) plus console.settings.open for search, voice, MCP and CLI; help entries; checks spec/check-context-lead.mts + apps/console-web/scripts/console-settings-menu.mts. Kotlin twin deferred."
+  },
+  "cx.themedcontrols": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Build themed-native-controls-plugin (Nov 14 2026, Brett: \"replace other browser elements like the dropdowns with themed ones\"). Contract framework/spec/THEMED-CONTROLS.md + engine core/engines/themed-controls.ts (Fable phase); plugin apps/console-web/plugins/themed-controls (host swaps native inputs and keeps them hidden and in sync, ten families, framework .fx-tc styles from --fx-tc-* tokens, framework async dialogs API with native fallback, 37 console call sites moved to it). REST /api/plugins/themed-controls, MCP themed-controls_*, CLI axf themed-controls, voice through console-control targets. Playwright suite 50/50 desktop + phone. Kotlin twin deferred."
   }
 }

@@ -2516,6 +2516,10 @@
                 {
                   "id": "cx.buildengine.sectionowners",
                   "title": "Section owners: every section that acts on its own has one employee who posts its key events in the group chat (crew-sections@1, framework/cli/crew-say.mjs, CI owner check)"
+                },
+                {
+                  "id": "cx.themedcontrols",
+                  "title": "Themed native controls: checkboxes, radios, sliders, number steppers, date / time / colour pickers, alert / confirm / prompt, file drop zone, tooltips and scrollbars drawn from tokens instead of by the browser (themed-controls@1 plugin; one switch per family, bottom sheet on a phone, full API)"
                 }
               ]
             },

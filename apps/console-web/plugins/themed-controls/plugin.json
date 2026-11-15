@@ -24,7 +24,9 @@
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/themed-controls",
     "env": [],
-    "mentions": []
+    "mentions": [
+      "_claude/THREADS.md"
+    ]
   },
   "commands": {
     "$axf": "plugin-commands@1",
