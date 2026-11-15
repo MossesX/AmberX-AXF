@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T01:22:06.753Z",
+ "updatedAt": "2026-11-15T01:22:21.049Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -139197,6 +139197,10 @@
     {
      "text": "Headless run axf-launch-landing-page-waitlist-referral--paulie: brief only · start 11.0K tokens ($0.03) · cost $0.50 · 28 turns · 6 tools, MCP none",
      "at": "2026-11-15T01:21:55.370Z"
+    },
+    {
+     "text": "s3 left open: site deployed on the VPS behind the Coolify proxy (container amberx-site healthy, landing + /api/health verified through the proxy). join.amberxai.com has no DNS record and there is no Hostinger API token on the VPS, so the public URL and TLS can't be verified. Brett: Hostinger DNS, add A record join -> 31.97.13.252 (TTL 300), then set AMBERX_SITE_URL and AMBERX_SITE_ADMIN_TOKEN in the console (apps/amberx-site/DEPLOY.md). Phone alert sent (ntfy + web push). Once DNS resolves, the next session verifies https://join.amberxai.com and ticks s3.",
+     "at": "2026-11-15T01:21:37.607Z"
     }
    ],
    "approvals": [],
