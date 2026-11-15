@@ -10,6 +10,8 @@ import type { PropRow, Scalar, UiElement } from '../../../../../framework/core/e
 import { refreshLive } from './apply';
 import { setUi, type UiState } from './state';
 import { fetchJson } from './useElements';
+import { queryProps } from '../lib/query.mjs';
+import { PropFilters } from './Filters';
 
 interface RowsAnswer { element?: UiElement; items?: PropRow[]; overrides?: number; error?: string }
 
@@ -27,11 +29,9 @@ export async function resetProp(element: string, prop = ''): Promise<{ error?: s
   return r;
 }
 
-/** The props of one element, filtered by the property search / group chips (web/Filters.tsx sets them). */
-export function filterRows(rows: PropRow[], ui: Pick<UiState, 'propQ' | 'propGroups'>): PropRow[] {
-  const q = ui.propQ.trim().toLowerCase();
-  return rows.filter((r) => (!ui.propGroups.length || ui.propGroups.includes(r.group)) && (!q || [r.label, r.id, r.group, String(r.value), (r as { token?: string }).token ?? ''].some((x) => x.toLowerCase().includes(q))));
-}
+/** The props of one element, searched / filtered / sorted by the property bar (web/Filters.tsx PropFilters). */
+export const filterRows = (rows: PropRow[], ui: Pick<UiState, 'propQ' | 'propGroups' | 'propChanged'>): PropRow[] =>
+  queryProps(rows, { q: ui.propQ, groups: ui.propGroups, changedOnly: ui.propChanged });
 
 function Editor({ el, row }: { el: string; row: PropRow }) {
   const rt = useRuntime();
@@ -76,6 +76,7 @@ export function Props({ id, ui }: { id: string; ui: UiState }) {
         <span className="fx-small axp-uim__muted">{rows.length} of {ans.items?.length ?? 0} properties · {ans.overrides ?? 0} changed</span>
         {ans.overrides ? <Button size="sm" tone="ghost" icon="undo" onClick={() => void resetProp(id)}>Reset all</Button> : null}
       </div>
+      {(ans.items?.length ?? 0) > 6 ? <PropFilters ui={ui} /> : null}
       <ul className={ui.view === 'grid' ? 'axp-uim__grid' : 'axp-uim__props'}>{rows.map((r) => <Row key={r.id} el={id} row={r} />)}</ul>
     </div>
   );

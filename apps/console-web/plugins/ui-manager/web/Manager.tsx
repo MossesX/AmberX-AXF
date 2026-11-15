@@ -6,9 +6,10 @@
  */
 import { useEffect, useMemo, useSyncExternalStore } from 'react';
 import { Button, Note, Segmented, useRuntime } from '@console/axf/react';
-import { elementTree } from '../../../../../framework/core/engines/ui-manager-rules.mjs';
+import { facets as facetsOf, queryElements, queryTree } from '../lib/query.mjs';
 import { refreshLive } from './apply';
 import { startPicker } from './picker';
+import { ElementFilters } from './Filters';
 import { Props } from './Props';
 import { getUi, setUi, subscribeUi, type ViewMode } from './state';
 import { Tree } from './Tree';
@@ -33,7 +34,12 @@ export function Manager() {
   const ui = useUi();
   const { all, visible, error } = useElements(rt, ui.rev);
   const byId = useMemo(() => new Map<string, ElementRow>(all.map((e) => [e.id, e])), [all]);
-  const tree = useMemo(() => elementTree(all, visible), [all, visible]);
+  // search / sort / multi-filter (lib/query.mjs): the same function the CLI, REST and MCP tools run
+  const query = { q: ui.q, kinds: ui.kinds, categories: ui.categories, plugins: ui.plugins, overriddenOnly: ui.overriddenOnly, onScreenOnly: ui.onScreenOnly, sort: ui.sort, desc: ui.desc };
+  const qKey = JSON.stringify(query);
+  const shown = useMemo(() => queryElements(all, query, visible).length, [all, visible, qKey]);
+  const tree = useMemo(() => queryTree(all, query, visible), [all, visible, qKey]);
+  const facets = useMemo(() => facetsOf(all), [all]);
   const selected = byId.get(ui.selected) ?? null;
   useEffect(() => { void refreshLive(); }, []);
   // picker: the next click on the console selects the element under it
@@ -53,6 +59,7 @@ export function Manager() {
         <span className="axp-uim__grow fx-small fx-muted">{all.length} elements · {visible.length} on screen</span>
         <Button size="sm" icon="refresh" onClick={() => setUi((s) => ({ rev: s.rev + 1 }))}>Refresh</Button>
       </div>
+      <ElementFilters ui={ui} facets={facets} shown={shown} total={all.length} />
       {error ? <Note>{error}</Note> : null}
       <div className={`axp-uim__body${inline ? ' is-stacked' : ''}`}>
         <nav className="axp-uim__tree" aria-label="Element categories">

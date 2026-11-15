@@ -226,5 +226,33 @@ t('CLI: json answers, exit 1 with a code on an error', () => {
   assert.ok(run('catalog').out.tokenSets['tokens.theme'] >= 10);
 });
 
+const Q = await import('./lib/query.mjs');
+t('query: search, sort, multi-filter, facets, pages, over thousands of elements', () => {
+  const many = [];
+  for (let i = 0; i < 5000; i++) many.push({ id: `asset:e${i}`, label: `Element ${String(i).padStart(4, '0')}`, kind: ['button', 'toolbar', 'grid'][i % 3], category: ['controls', 'chrome', 'data'][i % 3], plugin: i % 2 ? 'ai.x.a' : 'ai.x.b', tokens: [], overrides: i % 100 === 0 ? 2 : 0 });
+  const t0 = Date.now();
+  const hits = Q.queryElements(many, { kinds: 'button,grid', plugins: ['ai.x.a'], sort: 'label', desc: true });
+  assert.ok(Date.now() - t0 < 500, 'fast on 5000 elements');
+  assert.ok(hits.every((e) => e.kind !== 'toolbar' && e.plugin === 'ai.x.a'), 'OR inside a filter, AND across filters');
+  assert.ok(hits[0].label > hits[1].label, 'descending');
+  assert.equal(Q.queryElements(many, { overriddenOnly: true }).length, 50);
+  assert.deepEqual(Q.queryElements(many, { onScreenOnly: true }, ['asset:e7', 'asset:e3']).map((e) => e.id), ['asset:e3', 'asset:e7']);
+  assert.equal(Q.queryElements(many, { sort: 'overrides', desc: true })[0].overrides, 2);
+  assert.equal(Q.normalizeQuery({ sort: 'nope' }).sort, 'label');
+  const f = Q.facets(many);
+  assert.equal(f.kinds.find((k) => k.value === 'button').count, 1667); assert.equal(f.overridden, 50);
+  const p = Q.page(hits, { limit: 10, offset: 5 });
+  assert.equal(p.items.length, 10); assert.equal(p.items[0].id, hits[5].id); assert.equal(p.total, hits.length);
+  const tr = Q.queryTree(many, { q: 'Element 000', sort: 'label', desc: true }, ['asset:e1']);
+  assert.equal(tr[0].id, R.ON_SCREEN); assert.equal(tr[0].items[0].ref, 'asset:e1', 'On screen now holds shortcuts');
+  const ctl = tr.find((c) => c.id === 'controls'); assert.ok(ctl.items[0].label > ctl.items.at(-1).label, 'each category in the query order');
+  const rows = core.rows('asset:toolbar').items;
+  assert.ok(Q.queryProps(rows, { groups: 'Tokens' }).every((r) => r.group === 'Tokens'));
+  assert.ok(Q.queryProps(rows, { q: 'transp' }).some((r) => r.id === 'transparency'));
+  assert.equal(core.rows('asset:toolbar', { groups: ['Tokens'] }).total, rows.length, 'total counts every property');
+  const listed = core.listElements({ kinds: 'toolbar', limit: 1 });
+  assert.equal(listed.items.length, 1); assert.equal(listed.items[0].kind, 'toolbar'); assert.ok(listed.facets.kinds.length > 5);
+});
+
 rmSync(TMP, { recursive: true, force: true });
 console.log(`✓ ui-manager: ${n} test groups passed`);

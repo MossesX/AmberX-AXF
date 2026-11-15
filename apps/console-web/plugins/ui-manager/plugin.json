@@ -45,7 +45,7 @@
     "$axf": "plugin-commands@1",
     "auto": true,
     "items": [
-      { "route": "GET /elements", "id": "elements", "title": "List selectable elements", "description": "Every UI element the UI Manager can select, with its category and how many overrides it carries. q = words, category = a category id, visible = ids on screen now.", "readOnly": true },
+      { "route": "GET /elements", "id": "elements", "title": "List selectable elements", "description": "Search, sort and multi-filter every UI element the UI Manager can select, with its category and how many overrides it carries. q = words; kinds, categories, plugins = comma lists (any of them); overridden / onScreen = only changed / only on screen (visible = ids on screen now); sort = label, kind, category, plugin or overrides; desc; limit / offset page it. facets = every filter value with its count.", "readOnly": true },
       { "route": "GET /tree", "id": "tree", "title": "Element tree", "description": "The collapsible categories. 'On screen now' lists shortcuts to the elements whose ids are passed as visible.", "readOnly": true },
       { "route": "GET /props/{element}", "id": "props", "title": "Properties and tokens of an element", "description": "The expanding row: every property and token with its value, base, source (override / skin / asset / default) and choices.", "readOnly": true },
       { "route": "GET /choices/{element}/{prop}", "id": "choices", "title": "Valid values of a property", "description": "The predetermined values of one property: asset ids, enum words, colour tokens (@accent …), a range with a step. Never free text.", "readOnly": true },

@@ -31,6 +31,12 @@
         "kind": "nav"
       },
       {
+        "target": "ui-manager.filters",
+        "title": "Search, sort and filter",
+        "text": "Type words to search every element by name, id, kind or plugin. Sort by name, kind, category, plugin or number of changes, ascending or descending. Filters combine: tick several kinds, categories or plugins (any of them), and narrow to only changed or only on screen now. The same search works in the API: elements?q=&kinds=&categories=&plugins=&overridden=&onScreen=&sort=&desc=.",
+        "kind": "nav"
+      },
+      {
         "target": "ui-manager.row",
         "title": "Properties and tokens",
         "text": "The expanding row of the selected element: every property and every token it reads, its value, where the value comes from (your override, the skin, the asset or the framework default) and the choices you can pick from.",

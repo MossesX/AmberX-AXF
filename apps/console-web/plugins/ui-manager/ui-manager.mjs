@@ -30,14 +30,17 @@ const json = !!flags.json;
 const out = (v) => { console.log(json ? JSON.stringify(v) : JSON.stringify(v, null, 2)); };
 const by = typeof flags.by === 'string' ? flags.by : process.env.AXF_OWNER || 'brett';
 const visible = typeof flags.visible === 'string' ? flags.visible.split(',').filter(Boolean) : [];
+const str = (k) => (typeof flags[k] === 'string' ? flags[k] : '');
+/** search / sort / multi-filter flags (lib/query.mjs): --q --kinds a,b --categories a,b --plugins a,b --overridden --on-screen --sort key --desc */
+const query = { q: str('q'), kinds: str('kinds') || str('kind'), categories: str('categories') || str('category'), plugins: str('plugins') || str('plugin'), overriddenOnly: flags.overridden === true || flags.overridden === 'true', onScreenOnly: flags['on-screen'] === true, sort: str('sort'), desc: flags.desc === true };
 const parseValue = (s) => { if (s === 'true') return true; if (s === 'false') return false; if (/^-?\d+(\.\d+)?$/.test(s)) return Number(s); return s; };
 
 try {
   const [cmd, a, b, c] = words;
   switch (cmd) {
-    case 'elements': out(core.listElements({ q: typeof flags.q === 'string' ? flags.q : '', category: typeof flags.category === 'string' ? flags.category : '', visible })); break;
-    case 'tree': out(core.tree({ visible })); break;
-    case 'props': if (!a) throw new core.UiManagerError('invalid', 'props <element>'); out(core.rows(a)); break;
+    case 'elements': out(core.listElements({ ...query, visible, limit: flags.limit, offset: flags.offset })); break;
+    case 'tree': out(core.tree({ ...query, visible })); break;
+    case 'props': if (!a) throw new core.UiManagerError('invalid', 'props <element>'); out(core.rows(a, { q: str('q'), groups: str('groups'), changedOnly: flags.changed === true || flags.changed === 'true', sort: str('sort'), desc: flags.desc === true })); break;
     case 'choices': if (!a || !b) throw new core.UiManagerError('invalid', 'choices <element> <prop>'); out(core.choices(a, b)); break;
     case 'set': if (!a || !b || c === undefined) throw new core.UiManagerError('invalid', 'set <element> <prop> <value>'); out(core.set(a, b, parseValue(c), { by, reason: typeof flags.reason === 'string' ? flags.reason : '' })); break;
     case 'reset': out(core.reset(a ?? '', b ?? '', { by, reason: typeof flags.reason === 'string' ? flags.reason : '' })); break;

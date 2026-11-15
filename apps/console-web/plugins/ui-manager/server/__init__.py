@@ -3,7 +3,8 @@
 Every route runs the plugin's Node core (ui-manager.mjs --json), the same code the CLI uses, so REST, the MCP tools and
 `axf ui-manager …` made from these routes (plugin-commands@1) and the floating window never differ.
 
-  GET  elements?q=&category=&visible=a,b   every selectable element (+ the category counts; visible ids = On screen now)
+  GET  elements?q=&kinds=&categories=&plugins=&overridden=&onScreen=&sort=&desc=&limit=&offset=&visible=a,b
+                                           search / sort / multi-filter every selectable element (+ facets, category counts)
   GET  tree?visible=a,b                    the collapsible categories; On screen now holds shortcuts to the visible ids
   GET  element?id=                         the same as props/{element}, for ids with slashes (live console targets)
   POST set                                 body { element, prop, value, by?, reason? }  the same as PUT props/…
@@ -59,14 +60,23 @@ def _opt(name: str, value: Any) -> list[str]:
     return [f"--{name}", str(value)] if value not in (None, "", False) else []
 
 
+def _query(q: str, kinds: str, categories: str, plugins: str, overridden: bool, on_screen: bool, sort: str, desc: bool) -> list[str]:
+    """search / sort / multi-filter (lib/query.mjs), the same flags the CLI takes."""
+    flags = [*_opt("q", q), *_opt("kinds", kinds), *_opt("categories", categories), *_opt("plugins", plugins), *_opt("sort", sort)]
+    return flags + (["--overridden"] if overridden else []) + (["--on-screen"] if on_screen else []) + (["--desc"] if desc else [])
+
+
 @router.get("/elements")
-async def elements(q: str = "", category: str = "", visible: str = "") -> JSONResponse:
-    return await run_in_threadpool(_run, "elements", *_opt("q", q), *_opt("category", category), *_opt("visible", visible))
+async def elements(q: str = "", category: str = "", kinds: str = "", categories: str = "", plugins: str = "", overridden: bool = False,
+                   onScreen: bool = False, sort: str = "", desc: bool = False, limit: int = 0, offset: int = 0, visible: str = "") -> JSONResponse:
+    flags = _query(q, kinds, categories or category, plugins, overridden, onScreen, sort, desc)
+    return await run_in_threadpool(_run, "elements", *flags, *_opt("limit", limit), *_opt("offset", offset), *_opt("visible", visible))
 
 
 @router.get("/tree")
-async def tree(visible: str = "") -> JSONResponse:
-    return await run_in_threadpool(_run, "tree", *_opt("visible", visible))
+async def tree(q: str = "", kinds: str = "", categories: str = "", plugins: str = "", overridden: bool = False, onScreen: bool = False,
+               sort: str = "", desc: bool = False, visible: str = "") -> JSONResponse:
+    return await run_in_threadpool(_run, "tree", *_query(q, kinds, categories, plugins, overridden, onScreen, sort, desc), *_opt("visible", visible))
 
 
 @router.get("/props/{element}")
@@ -87,11 +97,13 @@ async def set_prop(element: str, prop: str, request: Request) -> JSONResponse:
 
 
 @router.get("/element")
-async def element_props(id: str = "") -> JSONResponse:
-    """props by query (`?id=`): element ids of live console targets carry slashes (target:view:builds/button:save)."""
+async def element_props(id: str = "", q: str = "", groups: str = "", changed: bool = False, sort: str = "", desc: bool = False) -> JSONResponse:
+    """props by query (`?id=`): element ids of live console targets carry slashes (target:view:builds/button:save).
+    q / groups / changed / sort / desc search, filter and sort the properties."""
     if not id:
         return JSONResponse({"error": "element needs ?id=", "code": "invalid"}, status_code=400)
-    return await run_in_threadpool(_run, "props", id)
+    flags = [*_opt("q", q), *_opt("groups", groups), *_opt("sort", sort)] + (["--changed"] if changed else []) + (["--desc"] if desc else [])
+    return await run_in_threadpool(_run, "props", id, *flags)
 
 
 @router.post("/set")

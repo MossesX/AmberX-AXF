@@ -2,7 +2,7 @@
 .axp-uim { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-lg); height: 100%; min-height: 0; }
 .axp-uim__bar { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); align-items: end; }
 .axp-uim__bar > .axp-uim__grow { flex: 1; min-width: 0; }
-.axp-uim__filters { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) / 2); align-items: center; }
+.axp-uim__filters { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) / 2); align-items: end; }
 .axp-uim__body { display: grid; grid-template-columns: minmax(200px, 34%) 1fr; gap: var(--fx-dens-gap-lg); flex: 1; min-height: 0; }
 :where([data-fx-narrow]) .axp-uim__body, .axp-uim__body.is-stacked { grid-template-columns: 1fr; }
 .axp-uim__tree, .axp-uim__detail { min-width: 0; min-height: 0; overflow: auto; }
@@ -30,3 +30,9 @@
 /* the picker: the console under the cursor is outlined with the accent; the window itself is never picked */
 .axp-uim-picking, .axp-uim-picking * { cursor: crosshair; }
 .axp-uim-hover { outline: var(--fx-border-w) solid var(--fx-accent); outline-offset: calc(var(--fx-border-w) * -1); }
+/* search, sort and multi-filter */
+.axp-uim__filterbox { display: flex; flex-direction: column; gap: calc(var(--fx-space) / 2); }
+.axp-uim__filters > .axp-uim__grow { flex: 1; min-width: 0; }
+.axp-uim__facets { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-lg); max-height: 40vh; overflow: auto; padding: var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); }
+.axp-uim__switches { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); }
+.axp-uim__facet { display: flex; flex-direction: column; gap: calc(var(--fx-space) / 4); margin: 0; padding: 0; border: 0; min-width: 0; }

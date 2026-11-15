@@ -6,6 +6,7 @@
 import { readFileSync } from 'node:fs';
 import * as R from '../../../../../framework/core/engines/ui-manager-rules.mjs';
 import { buildCatalog, pluginManifests } from './catalog.mjs';
+import * as Q from './query.mjs';
 import { readChanges, readOverrides, saveOverrides, undoEntry } from './store.mjs';
 
 export class UiManagerError extends Error { constructor(code, message) { super(message); this.code = code; } }
@@ -44,19 +45,29 @@ export function element(id, w = world()) {
   return e;
 }
 
-export function listElements({ q = '', category = '', visible = [] } = {}, w = world()) {
-  let list = R.filterElements(w.elements, q);
-  if (category) list = list.filter((e) => e.category === category);
+/**
+ * Search, sort and multi-filter (lib/query.mjs): q, kinds, categories, plugins, overriddenOnly, onScreenOnly (with
+ * visible), sort, desc; limit / offset page it. facets = every filter value with its count over the whole list.
+ */
+export function listElements({ visible = [], limit = 0, offset = 0, ...query } = {}, w = world()) {
   const over = readOverrides();
-  return { items: list.map((e) => ({ ...e, overrides: R.overrideCount(over, e.id) })), total: list.length, tree: R.elementTree(list, visible).map((c) => ({ id: c.id, label: c.label, icon: c.icon, live: !!c.live, count: c.items.length })) };
+  const counted = w.elements.map((e) => ({ ...e, overrides: R.overrideCount(over, e.id) }));
+  const list = Q.queryElements(counted, query, visible);
+  const p = Q.page(list, { limit, offset });
+  return { ...p, query: Q.normalizeQuery(query), facets: Q.facets(counted), tree: R.elementTree(list, visible).map((c) => ({ id: c.id, label: c.label, icon: c.icon, live: !!c.live, count: c.items.length })) };
 }
 
-export function tree({ visible = [] } = {}, w = world()) { return { categories: R.elementTree(w.elements, visible) }; }
+export function tree({ visible = [], ...query } = {}, w = world()) {
+  const over = readOverrides();
+  return { categories: Q.queryTree(w.elements.map((e) => ({ ...e, overrides: R.overrideCount(over, e.id) })), query, visible) };
+}
 
-export function rows(id, w = world()) {
+/** The expanding row; propQuery (q, groups, changedOnly, sort, desc) searches / filters / sorts the properties. */
+export function rows(id, propQuery = {}, w = world()) {
   const e = element(id, w);
-  const list = R.propertyRows(e, readOverrides(), w.catalog);
-  return { element: e, items: list, total: list.length, overrides: list.filter((r) => r.overridden).length };
+  const all = R.propertyRows(e, readOverrides(), w.catalog);
+  const list = Q.queryProps(all, propQuery);
+  return { element: e, items: list, total: all.length, overrides: all.filter((r) => r.overridden).length };
 }
 
 export function choices(id, propId, w = world()) {

@@ -5,7 +5,7 @@
  */
 
 export type ViewMode = 'row' | 'panel' | 'grid';
-export type SortKey = 'label' | 'kind' | 'category' | 'overrides';
+export type SortKey = 'label' | 'kind' | 'category' | 'plugin' | 'overrides';
 
 export interface UiState {
   /** the selected element id (a shortcut in On screen now selects the element it points at, never a copy) */
@@ -25,6 +25,9 @@ export interface UiState {
   /** property search / filter inside the opened element */
   propQ: string;
   propGroups: string[];
+  propChanged: boolean;
+  /** the filter panel (kinds, categories, plugins, only changed, only on screen) is open */
+  filtersOpen: boolean;
   /** inspector: the next click on the console picks an element */
   picking: boolean;
   /** bumps when something outside (an action, the API) changed the saved overrides, so open rows reload */
@@ -33,7 +36,7 @@ export interface UiState {
 
 export const DEFAULT_STATE: UiState = {
   selected: '', view: 'row', q: '', sort: 'label', desc: false, kinds: [], categories: [], plugins: [], overriddenOnly: false, onScreenOnly: false,
-  collapsed: [], propQ: '', propGroups: [], picking: false, rev: 0,
+  collapsed: [], propQ: '', propGroups: [], propChanged: false, filtersOpen: false, picking: false, rev: 0,
 };
 
 const KEY = 'ui-manager.window';
