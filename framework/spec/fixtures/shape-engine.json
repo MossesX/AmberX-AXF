@@ -1,0 +1,1168 @@
+{
+  "contract": "shape@1",
+  "levels": [
+    "instance",
+    "app",
+    "skin",
+    "global"
+  ],
+  "historyMax": 100,
+  "slotDefault": "widget",
+  "tokens": {
+    "radius": "--fx-shape-widget-radius",
+    "clip": "--fx-shape-widget-clip",
+    "mask": "--fx-shape-widget-mask",
+    "corner": "--fx-shape-widget-corner",
+    "aspect": "--fx-shape-widget-aspect"
+  },
+  "polygons": {
+    "hexagon": "polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%)",
+    "diamond": "polygon(50% 0, 100% 50%, 50% 100%, 0 50%)",
+    "tag": "polygon(0 0, calc(100% - 0.6em) 0, 100% 50%, calc(100% - 0.6em) 100%, 0 100%)"
+  },
+  "squirclePath": "M 100 50 L 99.95 37.21 L 99.79 31.94 L 99.52 27.92 L 99.14 24.56 L 98.66 21.65 L 98.06 19.07 L 97.35 16.75 L 96.53 14.64 L 95.59 12.73 L 94.54 10.99 L 93.35 9.4 L 92.04 7.96 L 90.6 6.65 L 89.01 5.46 L 87.27 4.41 L 85.36 3.47 L 83.25 2.65 L 80.93 1.94 L 78.35 1.34 L 75.44 0.86 L 72.08 0.48 L 68.06 0.21 L 62.79 0.05 L 50 0 L 37.21 0.05 L 31.94 0.21 L 27.92 0.48 L 24.56 0.86 L 21.65 1.34 L 19.07 1.94 L 16.75 2.65 L 14.64 3.47 L 12.73 4.41 L 10.99 5.46 L 9.4 6.65 L 7.96 7.96 L 6.65 9.4 L 5.46 10.99 L 4.41 12.73 L 3.47 14.64 L 2.65 16.75 L 1.94 19.07 L 1.34 21.65 L 0.86 24.56 L 0.48 27.92 L 0.21 31.94 L 0.05 37.21 L 0 50 L 0.05 62.79 L 0.21 68.06 L 0.48 72.08 L 0.86 75.44 L 1.34 78.35 L 1.94 80.93 L 2.65 83.25 L 3.47 85.36 L 4.41 87.27 L 5.46 89.01 L 6.65 90.6 L 7.96 92.04 L 9.4 93.35 L 10.99 94.54 L 12.73 95.59 L 14.64 96.53 L 16.75 97.35 L 19.07 98.06 L 21.65 98.66 L 24.56 99.14 L 27.92 99.52 L 31.94 99.79 L 37.21 99.95 L 50 100 L 62.79 99.95 L 68.06 99.79 L 72.08 99.52 L 75.44 99.14 L 78.35 98.66 L 80.93 98.06 L 83.25 97.35 L 85.36 96.53 L 87.27 95.59 L 89.01 94.54 L 90.6 93.35 L 92.04 92.04 L 93.35 90.6 L 94.54 89.01 L 95.59 87.27 L 96.53 85.36 L 97.35 83.25 L 98.06 80.93 L 98.66 78.35 L 99.14 75.44 L 99.52 72.08 L 99.79 68.06 L 99.95 62.79 Z",
+  "squirclePolygon": "polygon(100% 50%, 99.79% 31.94%, 99.14% 24.56%, 98.06% 19.07%, 96.53% 14.64%, 94.54% 10.99%, 92.04% 7.96%, 89.01% 5.46%, 85.36% 3.47%, 80.93% 1.94%, 75.44% 0.86%, 68.06% 0.21%, 50% 0%, 31.94% 0.21%, 24.56% 0.86%, 19.07% 1.94%, 14.64% 3.47%, 10.99% 5.46%, 7.96% 7.96%, 5.46% 10.99%, 3.47% 14.64%, 1.94% 19.07%, 0.86% 24.56%, 0.21% 31.94%, 0% 50%, 0.21% 68.06%, 0.86% 75.44%, 1.94% 80.93%, 3.47% 85.36%, 5.46% 89.01%, 7.96% 92.04%, 10.99% 94.54%, 14.64% 96.53%, 19.07% 98.06%, 24.56% 99.14%, 31.94% 99.79%, 50% 100%, 68.06% 99.79%, 75.44% 99.14%, 80.93% 98.06%, 85.36% 96.53%, 89.01% 94.54%, 92.04% 92.04%, 94.54% 89.01%, 96.53% 85.36%, 98.06% 80.93%, 99.14% 75.44%, 99.79% 68.06%)",
+  "compile": [
+    {
+      "name": "nothing",
+      "slot": null,
+      "input": null,
+      "output": {
+        "vars": {
+          "--fx-shape-widget-radius": "999px 999px 999px 999px",
+          "--fx-shape-widget-clip": "none",
+          "--fx-shape-widget-mask": "none",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "auto"
+        },
+        "attrs": {
+          "data-fx-shape-widget": "pill"
+        }
+      }
+    },
+    {
+      "name": "circle",
+      "slot": "widget",
+      "input": {
+        "kind": "circle"
+      },
+      "output": {
+        "vars": {
+          "--fx-shape-widget-radius": "999px 999px 999px 999px",
+          "--fx-shape-widget-clip": "none",
+          "--fx-shape-widget-mask": "none",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "1"
+        },
+        "attrs": {
+          "data-fx-shape-widget": "circle"
+        }
+      }
+    },
+    {
+      "name": "pill",
+      "slot": "widget",
+      "input": {
+        "kind": "pill"
+      },
+      "output": {
+        "vars": {
+          "--fx-shape-widget-radius": "999px 999px 999px 999px",
+          "--fx-shape-widget-clip": "none",
+          "--fx-shape-widget-mask": "none",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "auto"
+        },
+        "attrs": {
+          "data-fx-shape-widget": "pill"
+        }
+      }
+    },
+    {
+      "name": "rounded",
+      "slot": "widget",
+      "input": {
+        "kind": "rounded"
+      },
+      "output": {
+        "vars": {
+          "--fx-shape-widget-radius": "var(--fx-radius-md) var(--fx-radius-md) var(--fx-radius-md) var(--fx-radius-md)",
+          "--fx-shape-widget-clip": "none",
+          "--fx-shape-widget-mask": "none",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "auto"
+        },
+        "attrs": {
+          "data-fx-shape-widget": "rounded"
+        }
+      }
+    },
+    {
+      "name": "square",
+      "slot": "widget",
+      "input": {
+        "kind": "square"
+      },
+      "output": {
+        "vars": {
+          "--fx-shape-widget-radius": "0 0 0 0",
+          "--fx-shape-widget-clip": "none",
+          "--fx-shape-widget-mask": "none",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "auto"
+        },
+        "attrs": {
+          "data-fx-shape-widget": "square"
+        }
+      }
+    },
+    {
+      "name": "squircle",
+      "slot": "widget",
+      "input": {
+        "kind": "squircle"
+      },
+      "output": {
+        "vars": {
+          "--fx-shape-widget-radius": "var(--fx-radius-lg) var(--fx-radius-lg) var(--fx-radius-lg) var(--fx-radius-lg)",
+          "--fx-shape-widget-clip": "none",
+          "--fx-shape-widget-mask": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath d='M 100 50 L 99.95 37.21 L 99.79 31.94 L 99.52 27.92 L 99.14 24.56 L 98.66 21.65 L 98.06 19.07 L 97.35 16.75 L 96.53 14.64 L 95.59 12.73 L 94.54 10.99 L 93.35 9.4 L 92.04 7.96 L 90.6 6.65 L 89.01 5.46 L 87.27 4.41 L 85.36 3.47 L 83.25 2.65 L 80.93 1.94 L 78.35 1.34 L 75.44 0.86 L 72.08 0.48 L 68.06 0.21 L 62.79 0.05 L 50 0 L 37.21 0.05 L 31.94 0.21 L 27.92 0.48 L 24.56 0.86 L 21.65 1.34 L 19.07 1.94 L 16.75 2.65 L 14.64 3.47 L 12.73 4.41 L 10.99 5.46 L 9.4 6.65 L 7.96 7.96 L 6.65 9.4 L 5.46 10.99 L 4.41 12.73 L 3.47 14.64 L 2.65 16.75 L 1.94 19.07 L 1.34 21.65 L 0.86 24.56 L 0.48 27.92 L 0.21 31.94 L 0.05 37.21 L 0 50 L 0.05 62.79 L 0.21 68.06 L 0.48 72.08 L 0.86 75.44 L 1.34 78.35 L 1.94 80.93 L 2.65 83.25 L 3.47 85.36 L 4.41 87.27 L 5.46 89.01 L 6.65 90.6 L 7.96 92.04 L 9.4 93.35 L 10.99 94.54 L 12.73 95.59 L 14.64 96.53 L 16.75 97.35 L 19.07 98.06 L 21.65 98.66 L 24.56 99.14 L 27.92 99.52 L 31.94 99.79 L 37.21 99.95 L 50 100 L 62.79 99.95 L 68.06 99.79 L 72.08 99.52 L 75.44 99.14 L 78.35 98.66 L 80.93 98.06 L 83.25 97.35 L 85.36 96.53 L 87.27 95.59 L 89.01 94.54 L 90.6 93.35 L 92.04 92.04 L 93.35 90.6 L 94.54 89.01 L 95.59 87.27 L 96.53 85.36 L 97.35 83.25 L 98.06 80.93 L 98.66 78.35 L 99.14 75.44 L 99.52 72.08 L 99.79 68.06 L 99.95 62.79 Z'/%3E%3C/svg%3E\")",
+          "--fx-shape-widget-corner": "squircle",
+          "--fx-shape-widget-aspect": "auto"
+        },
+        "attrs": {
+          "data-fx-shape-widget": "squircle"
+        }
+      }
+    },
+    {
+      "name": "hexagon",
+      "slot": "widget",
+      "input": {
+        "kind": "hexagon"
+      },
+      "output": {
+        "vars": {
+          "--fx-shape-widget-radius": "0 0 0 0",
+          "--fx-shape-widget-clip": "polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%)",
+          "--fx-shape-widget-mask": "none",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "1"
+        },
+        "attrs": {
+          "data-fx-shape-widget": "hexagon"
+        }
+      }
+    },
+    {
+      "name": "diamond",
+      "slot": "widget",
+      "input": {
+        "kind": "diamond"
+      },
+      "output": {
+        "vars": {
+          "--fx-shape-widget-radius": "0 0 0 0",
+          "--fx-shape-widget-clip": "polygon(50% 0, 100% 50%, 50% 100%, 0 50%)",
+          "--fx-shape-widget-mask": "none",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "1"
+        },
+        "attrs": {
+          "data-fx-shape-widget": "diamond"
+        }
+      }
+    },
+    {
+      "name": "tag",
+      "slot": "widget",
+      "input": {
+        "kind": "tag"
+      },
+      "output": {
+        "vars": {
+          "--fx-shape-widget-radius": "0 0 0 0",
+          "--fx-shape-widget-clip": "polygon(0 0, calc(100% - 0.6em) 0, 100% 50%, calc(100% - 0.6em) 100%, 0 100%)",
+          "--fx-shape-widget-mask": "none",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "auto"
+        },
+        "attrs": {
+          "data-fx-shape-widget": "tag"
+        }
+      }
+    },
+    {
+      "name": "corners",
+      "slot": "widget",
+      "input": {
+        "kind": "corners",
+        "corners": {
+          "tl": "lg",
+          "tr": "none",
+          "br": "pill",
+          "bl": "sm"
+        }
+      },
+      "output": {
+        "vars": {
+          "--fx-shape-widget-radius": "var(--fx-radius-lg) 0 999px var(--fx-radius-sm)",
+          "--fx-shape-widget-clip": "none",
+          "--fx-shape-widget-mask": "none",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "auto"
+        },
+        "attrs": {
+          "data-fx-shape-widget": "corners"
+        }
+      }
+    },
+    {
+      "name": "mask",
+      "slot": "widget",
+      "input": {
+        "kind": "mask",
+        "mask": "M 50 0 L 61 35 L 98 35 L 68 57 L 79 91 L 50 70 L 21 91 L 32 57 L 2 35 L 39 35 Z"
+      },
+      "output": {
+        "vars": {
+          "--fx-shape-widget-radius": "0 0 0 0",
+          "--fx-shape-widget-clip": "none",
+          "--fx-shape-widget-mask": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath d='M 50 0 L 61 35 L 98 35 L 68 57 L 79 91 L 50 70 L 21 91 L 32 57 L 2 35 L 39 35 Z'/%3E%3C/svg%3E\")",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "auto"
+        },
+        "attrs": {
+          "data-fx-shape-widget": "mask"
+        }
+      }
+    },
+    {
+      "name": "pill with one corner overridden",
+      "slot": "widget",
+      "input": {
+        "kind": "pill",
+        "corners": {
+          "tl": "none"
+        }
+      },
+      "output": {
+        "vars": {
+          "--fx-shape-widget-radius": "0 999px 999px 999px",
+          "--fx-shape-widget-clip": "none",
+          "--fx-shape-widget-mask": "none",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "auto"
+        },
+        "attrs": {
+          "data-fx-shape-widget": "pill"
+        }
+      }
+    },
+    {
+      "name": "rounded, every corner set",
+      "slot": "widget",
+      "input": {
+        "kind": "rounded",
+        "corners": {
+          "tl": "sm",
+          "tr": "md",
+          "br": "lg",
+          "bl": "pill"
+        }
+      },
+      "output": {
+        "vars": {
+          "--fx-shape-widget-radius": "var(--fx-radius-sm) var(--fx-radius-md) var(--fx-radius-lg) 999px",
+          "--fx-shape-widget-clip": "none",
+          "--fx-shape-widget-mask": "none",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "auto"
+        },
+        "attrs": {
+          "data-fx-shape-widget": "rounded"
+        }
+      }
+    },
+    {
+      "name": "circle not square",
+      "slot": "widget",
+      "input": {
+        "kind": "circle",
+        "square": false
+      },
+      "output": {
+        "vars": {
+          "--fx-shape-widget-radius": "999px 999px 999px 999px",
+          "--fx-shape-widget-clip": "none",
+          "--fx-shape-widget-mask": "none",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "auto"
+        },
+        "attrs": {
+          "data-fx-shape-widget": "circle"
+        }
+      }
+    },
+    {
+      "name": "mask in its own viewBox, square",
+      "slot": "widget",
+      "input": {
+        "kind": "mask",
+        "mask": "M 0 24 L 12 0 L 24 24 Z",
+        "viewBox": "0 0 24 24",
+        "square": true
+      },
+      "output": {
+        "vars": {
+          "--fx-shape-widget-radius": "0 0 0 0",
+          "--fx-shape-widget-clip": "none",
+          "--fx-shape-widget-mask": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' preserveAspectRatio='none'%3E%3Cpath d='M 0 24 L 12 0 L 24 24 Z'/%3E%3C/svg%3E\")",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "1"
+        },
+        "attrs": {
+          "data-fx-shape-widget": "mask"
+        }
+      }
+    },
+    {
+      "name": "mask with relative curves",
+      "slot": "widget",
+      "input": {
+        "kind": "mask",
+        "mask": "m 10 50 c 0 -40 80 -40 80 0 s -80 40 -80 0 z"
+      },
+      "output": {
+        "vars": {
+          "--fx-shape-widget-radius": "0 0 0 0",
+          "--fx-shape-widget-clip": "none",
+          "--fx-shape-widget-mask": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath d='m 10 50 c 0 -40 80 -40 80 0 s -80 40 -80 0 z'/%3E%3C/svg%3E\")",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "auto"
+        },
+        "attrs": {
+          "data-fx-shape-widget": "mask"
+        }
+      }
+    },
+    {
+      "name": "another slot",
+      "slot": "badge",
+      "input": {
+        "kind": "hexagon"
+      },
+      "output": {
+        "vars": {
+          "--fx-shape-badge-radius": "0 0 0 0",
+          "--fx-shape-badge-clip": "polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%)",
+          "--fx-shape-badge-mask": "none",
+          "--fx-shape-badge-corner": "round",
+          "--fx-shape-badge-aspect": "1"
+        },
+        "attrs": {
+          "data-fx-shape-badge": "hexagon"
+        }
+      }
+    },
+    {
+      "name": "bad slot name falls back",
+      "slot": "Bad Slot",
+      "input": {
+        "kind": "tag"
+      },
+      "output": {
+        "vars": {
+          "--fx-shape-widget-radius": "0 0 0 0",
+          "--fx-shape-widget-clip": "polygon(0 0, calc(100% - 0.6em) 0, 100% 50%, calc(100% - 0.6em) 100%, 0 100%)",
+          "--fx-shape-widget-mask": "none",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "auto"
+        },
+        "attrs": {
+          "data-fx-shape-widget": "tag"
+        }
+      }
+    },
+    {
+      "name": "junk",
+      "slot": "widget",
+      "input": {
+        "kind": "blob",
+        "corners": "x",
+        "mask": 7
+      },
+      "output": {
+        "vars": {
+          "--fx-shape-widget-radius": "999px 999px 999px 999px",
+          "--fx-shape-widget-clip": "none",
+          "--fx-shape-widget-mask": "none",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "auto"
+        },
+        "attrs": {
+          "data-fx-shape-widget": "pill"
+        }
+      }
+    }
+  ],
+  "chain": {
+    "widget": [
+      "axf.banner.widget.status:a.shape",
+      "app",
+      "skin",
+      "global"
+    ],
+    "none": [
+      "app",
+      "skin",
+      "global"
+    ],
+    "bad": [
+      "app",
+      "skin",
+      "global"
+    ]
+  },
+  "levelsOf": {
+    "global": {
+      "level": "global"
+    },
+    "skin": {
+      "level": "skin"
+    },
+    "app": {
+      "level": "app"
+    },
+    "axf.banner.widget.status:a.shape": {
+      "level": "instance",
+      "widget": "status:a"
+    },
+    "axf.banner.widget..shape": null,
+    "nope": null
+  },
+  "resolve": [
+    {
+      "name": "instance wins",
+      "chain": [
+        {
+          "key": "axf.banner.widget.status:a.shape",
+          "id": "hexagon"
+        },
+        {
+          "key": "app",
+          "id": "square"
+        },
+        {
+          "key": "skin",
+          "id": "rounded"
+        },
+        {
+          "key": "global",
+          "id": "circle"
+        }
+      ],
+      "output": {
+        "id": "hexagon",
+        "from": "axf.banner.widget.status:a.shape",
+        "level": "instance",
+        "chain": [
+          {
+            "key": "axf.banner.widget.status:a.shape",
+            "id": "hexagon"
+          }
+        ]
+      }
+    },
+    {
+      "name": "app wins",
+      "chain": [
+        {
+          "key": "axf.banner.widget.status:a.shape",
+          "id": ""
+        },
+        {
+          "key": "app",
+          "id": "square"
+        },
+        {
+          "key": "skin",
+          "id": "rounded"
+        },
+        {
+          "key": "global",
+          "id": "circle"
+        }
+      ],
+      "output": {
+        "id": "square",
+        "from": "app",
+        "level": "app",
+        "chain": [
+          {
+            "key": "axf.banner.widget.status:a.shape",
+            "id": ""
+          },
+          {
+            "key": "app",
+            "id": "square"
+          }
+        ]
+      }
+    },
+    {
+      "name": "skin wins",
+      "chain": [
+        {
+          "key": "axf.banner.widget.status:a.shape",
+          "id": ""
+        },
+        {
+          "key": "app",
+          "id": ""
+        },
+        {
+          "key": "skin",
+          "id": "rounded"
+        },
+        {
+          "key": "global",
+          "id": "circle"
+        }
+      ],
+      "output": {
+        "id": "rounded",
+        "from": "skin",
+        "level": "skin",
+        "chain": [
+          {
+            "key": "axf.banner.widget.status:a.shape",
+            "id": ""
+          },
+          {
+            "key": "app",
+            "id": ""
+          },
+          {
+            "key": "skin",
+            "id": "rounded"
+          }
+        ]
+      }
+    },
+    {
+      "name": "global wins",
+      "chain": [
+        {
+          "key": "axf.banner.widget.status:a.shape",
+          "id": ""
+        },
+        {
+          "key": "app",
+          "id": ""
+        },
+        {
+          "key": "skin",
+          "id": ""
+        },
+        {
+          "key": "global",
+          "id": "circle"
+        }
+      ],
+      "output": {
+        "id": "circle",
+        "from": "global",
+        "level": "global",
+        "chain": [
+          {
+            "key": "axf.banner.widget.status:a.shape",
+            "id": ""
+          },
+          {
+            "key": "app",
+            "id": ""
+          },
+          {
+            "key": "skin",
+            "id": ""
+          },
+          {
+            "key": "global",
+            "id": "circle"
+          }
+        ]
+      }
+    },
+    {
+      "name": "default",
+      "chain": [
+        {
+          "key": "axf.banner.widget.status:a.shape",
+          "id": ""
+        },
+        {
+          "key": "app",
+          "id": ""
+        },
+        {
+          "key": "skin",
+          "id": ""
+        },
+        {
+          "key": "global",
+          "id": ""
+        }
+      ],
+      "output": {
+        "id": "pill",
+        "from": "",
+        "level": "default",
+        "chain": [
+          {
+            "key": "axf.banner.widget.status:a.shape",
+            "id": ""
+          },
+          {
+            "key": "app",
+            "id": ""
+          },
+          {
+            "key": "skin",
+            "id": ""
+          },
+          {
+            "key": "global",
+            "id": ""
+          }
+        ]
+      }
+    },
+    {
+      "name": "junk inherits",
+      "chain": [
+        {
+          "key": "axf.banner.widget.status:a.shape",
+          "id": "Bad Id"
+        },
+        {
+          "key": "app",
+          "id": "x"
+        },
+        {
+          "key": "skin",
+          "id": ""
+        },
+        {
+          "key": "global",
+          "id": "circle"
+        }
+      ],
+      "output": {
+        "id": "circle",
+        "from": "global",
+        "level": "global",
+        "chain": [
+          {
+            "key": "axf.banner.widget.status:a.shape",
+            "id": ""
+          },
+          {
+            "key": "app",
+            "id": ""
+          },
+          {
+            "key": "skin",
+            "id": ""
+          },
+          {
+            "key": "global",
+            "id": "circle"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unknown keys skipped",
+      "chain": [
+        {
+          "key": "nope",
+          "id": "square"
+        },
+        {
+          "key": "axf.banner.widget..shape",
+          "id": "square"
+        },
+        {
+          "key": "global",
+          "id": "circle"
+        }
+      ],
+      "output": {
+        "id": "circle",
+        "from": "global",
+        "level": "global",
+        "chain": [
+          {
+            "key": "global",
+            "id": "circle"
+          }
+        ]
+      }
+    },
+    {
+      "name": "no widget",
+      "chain": [
+        {
+          "key": "app",
+          "id": ""
+        },
+        {
+          "key": "skin",
+          "id": "tag"
+        },
+        {
+          "key": "global",
+          "id": "circle"
+        }
+      ],
+      "output": {
+        "id": "tag",
+        "from": "skin",
+        "level": "skin",
+        "chain": [
+          {
+            "key": "app",
+            "id": ""
+          },
+          {
+            "key": "skin",
+            "id": "tag"
+          }
+        ]
+      }
+    },
+    {
+      "name": "empty chain",
+      "chain": [],
+      "output": {
+        "id": "pill",
+        "from": "",
+        "level": "default",
+        "chain": []
+      }
+    }
+  ],
+  "resolveAt": {
+    "picks": {
+      "axf.banner.widget.status:a.shape": "tag",
+      "skin": "rounded",
+      "global": "circle"
+    },
+    "widget": {
+      "id": "tag",
+      "from": "axf.banner.widget.status:a.shape",
+      "level": "instance",
+      "chain": [
+        {
+          "key": "axf.banner.widget.status:a.shape",
+          "id": "tag"
+        }
+      ]
+    },
+    "other": {
+      "id": "rounded",
+      "from": "skin",
+      "level": "skin",
+      "chain": [
+        {
+          "key": "axf.banner.widget.counter:b.shape",
+          "id": ""
+        },
+        {
+          "key": "app",
+          "id": ""
+        },
+        {
+          "key": "skin",
+          "id": "rounded"
+        }
+      ]
+    },
+    "app": {
+      "id": "rounded",
+      "from": "skin",
+      "level": "skin",
+      "chain": [
+        {
+          "key": "app",
+          "id": ""
+        },
+        {
+          "key": "skin",
+          "id": "rounded"
+        }
+      ]
+    },
+    "nothing": {
+      "id": "pill",
+      "from": "",
+      "level": "default",
+      "chain": [
+        {
+          "key": "app",
+          "id": ""
+        },
+        {
+          "key": "skin",
+          "id": ""
+        },
+        {
+          "key": "global",
+          "id": ""
+        }
+      ]
+    }
+  },
+  "history": [
+    {
+      "op": "recordShapeEdit",
+      "args": [
+        {},
+        "app",
+        "",
+        "hexagon",
+        "2026-11-15T10:00:00Z"
+      ],
+      "out": {
+        "app": {
+          "previous": "",
+          "current": "hexagon",
+          "at": "2026-11-15T10:00:00Z"
+        }
+      }
+    },
+    {
+      "op": "recordShapeEdit (no change)",
+      "args": [
+        {
+          "app": {
+            "previous": "",
+            "current": "hexagon",
+            "at": "2026-11-15T10:00:00Z"
+          }
+        },
+        "app",
+        "hexagon",
+        "hexagon",
+        "2026-11-15T10:01:00Z"
+      ],
+      "out": {
+        "app": {
+          "previous": "",
+          "current": "hexagon",
+          "at": "2026-11-15T10:00:00Z"
+        }
+      }
+    },
+    {
+      "op": "recordShapeEdit (not a level)",
+      "args": [
+        {
+          "app": {
+            "previous": "",
+            "current": "hexagon",
+            "at": "2026-11-15T10:00:00Z"
+          }
+        },
+        "nope",
+        "",
+        "hexagon",
+        "2026-11-15T10:01:00Z"
+      ],
+      "out": {
+        "app": {
+          "previous": "",
+          "current": "hexagon",
+          "at": "2026-11-15T10:00:00Z"
+        }
+      }
+    },
+    {
+      "op": "recordShapeEdit (second edit replaces)",
+      "args": [
+        {
+          "app": {
+            "previous": "",
+            "current": "hexagon",
+            "at": "2026-11-15T10:00:00Z"
+          }
+        },
+        "app",
+        "hexagon",
+        "square",
+        "2026-11-15T10:02:00Z"
+      ],
+      "out": {
+        "app": {
+          "previous": "hexagon",
+          "current": "square",
+          "at": "2026-11-15T10:02:00Z"
+        }
+      }
+    },
+    {
+      "op": "recordShapeEdit (a widget)",
+      "args": [
+        {
+          "app": {
+            "previous": "hexagon",
+            "current": "square",
+            "at": "2026-11-15T10:02:00Z"
+          }
+        },
+        "axf.banner.widget.status:a.shape",
+        "",
+        "tag",
+        "2026-11-15T10:03:00Z"
+      ],
+      "out": {
+        "app": {
+          "previous": "hexagon",
+          "current": "square",
+          "at": "2026-11-15T10:02:00Z"
+        },
+        "axf.banner.widget.status:a.shape": {
+          "previous": "",
+          "current": "tag",
+          "at": "2026-11-15T10:03:00Z"
+        }
+      }
+    },
+    {
+      "op": "previousShape",
+      "args": [
+        {
+          "app": {
+            "previous": "hexagon",
+            "current": "square",
+            "at": "2026-11-15T10:02:00Z"
+          },
+          "axf.banner.widget.status:a.shape": {
+            "previous": "",
+            "current": "tag",
+            "at": "2026-11-15T10:03:00Z"
+          }
+        },
+        "app"
+      ],
+      "out": "hexagon"
+    },
+    {
+      "op": "previousShape (none)",
+      "args": [
+        {
+          "app": {
+            "previous": "hexagon",
+            "current": "square",
+            "at": "2026-11-15T10:02:00Z"
+          },
+          "axf.banner.widget.status:a.shape": {
+            "previous": "",
+            "current": "tag",
+            "at": "2026-11-15T10:03:00Z"
+          }
+        },
+        "skin"
+      ],
+      "out": null
+    },
+    {
+      "op": "restorePreviousShape",
+      "args": [
+        {
+          "app": {
+            "previous": "hexagon",
+            "current": "square",
+            "at": "2026-11-15T10:02:00Z"
+          },
+          "axf.banner.widget.status:a.shape": {
+            "previous": "",
+            "current": "tag",
+            "at": "2026-11-15T10:03:00Z"
+          }
+        },
+        "app",
+        "2026-11-15T10:04:00Z"
+      ],
+      "out": {
+        "id": "hexagon",
+        "history": {
+          "app": {
+            "previous": "square",
+            "current": "hexagon",
+            "at": "2026-11-15T10:04:00Z"
+          },
+          "axf.banner.widget.status:a.shape": {
+            "previous": "",
+            "current": "tag",
+            "at": "2026-11-15T10:03:00Z"
+          }
+        }
+      }
+    },
+    {
+      "op": "restorePreviousShape (again = redo)",
+      "args": [
+        {
+          "app": {
+            "previous": "square",
+            "current": "hexagon",
+            "at": "2026-11-15T10:04:00Z"
+          },
+          "axf.banner.widget.status:a.shape": {
+            "previous": "",
+            "current": "tag",
+            "at": "2026-11-15T10:03:00Z"
+          }
+        },
+        "app",
+        "2026-11-15T10:05:00Z"
+      ],
+      "out": {
+        "id": "square",
+        "history": {
+          "app": {
+            "previous": "hexagon",
+            "current": "square",
+            "at": "2026-11-15T10:05:00Z"
+          },
+          "axf.banner.widget.status:a.shape": {
+            "previous": "",
+            "current": "tag",
+            "at": "2026-11-15T10:03:00Z"
+          }
+        }
+      }
+    },
+    {
+      "op": "restorePreviousShape (none)",
+      "args": [
+        {
+          "app": {
+            "previous": "hexagon",
+            "current": "square",
+            "at": "2026-11-15T10:02:00Z"
+          },
+          "axf.banner.widget.status:a.shape": {
+            "previous": "",
+            "current": "tag",
+            "at": "2026-11-15T10:03:00Z"
+          }
+        },
+        "global",
+        "2026-11-15T10:04:00Z"
+      ],
+      "out": null
+    },
+    {
+      "op": "restorePreviousShape (widget back to inherit)",
+      "args": [
+        {
+          "app": {
+            "previous": "hexagon",
+            "current": "square",
+            "at": "2026-11-15T10:02:00Z"
+          },
+          "axf.banner.widget.status:a.shape": {
+            "previous": "",
+            "current": "tag",
+            "at": "2026-11-15T10:03:00Z"
+          }
+        },
+        "axf.banner.widget.status:a.shape",
+        "2026-11-15T10:06:00Z"
+      ],
+      "out": {
+        "id": "",
+        "history": {
+          "app": {
+            "previous": "hexagon",
+            "current": "square",
+            "at": "2026-11-15T10:02:00Z"
+          },
+          "axf.banner.widget.status:a.shape": {
+            "previous": "tag",
+            "current": "",
+            "at": "2026-11-15T10:06:00Z"
+          }
+        }
+      }
+    },
+    {
+      "op": "forgetShapeEdit",
+      "args": [
+        {
+          "app": {
+            "previous": "hexagon",
+            "current": "square",
+            "at": "2026-11-15T10:02:00Z"
+          },
+          "axf.banner.widget.status:a.shape": {
+            "previous": "",
+            "current": "tag",
+            "at": "2026-11-15T10:03:00Z"
+          }
+        },
+        "app"
+      ],
+      "out": {
+        "axf.banner.widget.status:a.shape": {
+          "previous": "",
+          "current": "tag",
+          "at": "2026-11-15T10:03:00Z"
+        }
+      }
+    },
+    {
+      "op": "normalizeShapeHistory",
+      "args": [
+        {
+          "app": {
+            "previous": "a-b",
+            "current": "xx",
+            "at": "t"
+          },
+          "nope": {
+            "previous": "",
+            "current": "xx",
+            "at": "t"
+          },
+          "skin": {
+            "previous": "xx",
+            "current": "xx",
+            "at": "t"
+          },
+          "global": "junk",
+          "axf.banner.widget.status:a.shape": {
+            "previous": "x",
+            "current": "tag",
+            "at": 7
+          }
+        }
+      ],
+      "out": {
+        "app": {
+          "previous": "a-b",
+          "current": "xx",
+          "at": "t"
+        },
+        "axf.banner.widget.status:a.shape": {
+          "previous": "",
+          "current": "tag",
+          "at": ""
+        }
+      }
+    }
+  ]
+}

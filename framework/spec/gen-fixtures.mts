@@ -32,6 +32,8 @@ import { LIVE_KINDS, LIVE_STATES, LiveEventLog, reduceLiveState } from '../core/
 import { PROVIDER_KINDS, batchTitle, clampUserParams, emptyLiveReply, applyStreamEvent, contextExtra, frameToEvent, normalizeChatContext, parseSseText, permissionAllows, profileChain, reconnectDelayMs, redactSecrets, settingsAllowedFor, summarizeArgs, titleFromText, wireHistory, ownerKind, type Message, type StreamEvent } from '../core/assistant';
 import { buildPluginInventory, pluginGraph, pluginRecord, PLUGIN_HEALTHS, DEPENDENCY_LABEL, PLUGIN_INVENTORY_FRAME, type InventoryContext } from '../core/engines/plugins';
 import { ASSET_TYPES } from '../core/types';
+import { SHAPE_KINDS } from '../core/engines/shape-rules.mjs';
+import { SHAPE_HISTORY_MAX, SHAPE_LEVELS, SHAPE_POLYGONS, SHAPE_SLOT_DEFAULT, SHAPE_TOKEN_FIELDS, compileShape, forgetShapeEdit, normalizeShapeHistory, previousShape, recordShapeEdit, resolveShape, resolveShapeAt, restorePreviousShape, shapeScopeChain, shapeScopeKey, shapeScopeLevel, shapeToken, squirclePath, squirclePolygon } from '../core/engines/shape';
 import { ASSET_ORIGIN, CHECKED_KINDS, DEFAULT_MENU, MENU_DEFAULT_ORDER, MENU_ITEM_FIELDS, MENU_MAX_DEPTH, PROVIDER_MAX, appMenuSearchEntries, buildAppMenu, chromeToggleItems, chromeToggleTypes, compileAppMenu, compileProviderItems, mergeAppMenu, parseChecked, resolveChecked, titleFromId, truthy, validateMenuItems, type AppMenuContribution, type AppMenuEnv } from '../core/engines/appmenu';
 import { LIBRARY_PARAM_TYPES, PARAM_TRUE_WORDS, paramBool, paramDefaultText, paramDefaults, paramError, paramToJson, type LibraryParam } from '../core/library';
 import { validateAsset } from '../core/validate';
@@ -2315,5 +2317,65 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       noConsole: voiceReply({ verb: 'open' }, { ok: false, code: 'unavailable', message: 'x', openUrl: 'https://c/' }),
       failed: voiceReply({ verb: 'press' }, { ok: false, code: 'denied', message: 'needs Brett' }),
     },
+  });
+}
+
+/* ---- shape@1 engine (core/engines/shape.ts): compile per slot, resolve chain, Restore previous edit ---- */
+{
+  const STAR = 'M 50 0 L 61 35 L 98 35 L 68 57 L 79 91 L 50 70 L 21 91 L 32 57 L 2 35 L 39 35 Z';
+  const shapes: Record<string, unknown> = Object.fromEntries(SHAPE_KINDS.map((k) => [k, { kind: k, ...(k === 'mask' ? { mask: STAR } : {}), ...(k === 'corners' ? { corners: { tl: 'lg', tr: 'none', br: 'pill', bl: 'sm' } } : {}) }]));
+  const compileCases: { name: string; slot: string | null; input: unknown }[] = [
+    { name: 'nothing', slot: null, input: null },
+    ...SHAPE_KINDS.map((k) => ({ name: k, slot: 'widget', input: shapes[k] })),
+    { name: 'pill with one corner overridden', slot: 'widget', input: { kind: 'pill', corners: { tl: 'none' } } },
+    { name: 'rounded, every corner set', slot: 'widget', input: { kind: 'rounded', corners: { tl: 'sm', tr: 'md', br: 'lg', bl: 'pill' } } },
+    { name: 'circle not square', slot: 'widget', input: { kind: 'circle', square: false } },
+    { name: 'mask in its own viewBox, square', slot: 'widget', input: { kind: 'mask', mask: 'M 0 24 L 12 0 L 24 24 Z', viewBox: '0 0 24 24', square: true } },
+    { name: 'mask with relative curves', slot: 'widget', input: { kind: 'mask', mask: 'm 10 50 c 0 -40 80 -40 80 0 s -80 40 -80 0 z' } },
+    { name: 'another slot', slot: 'badge', input: { kind: 'hexagon' } },
+    { name: 'bad slot name falls back', slot: 'Bad Slot', input: { kind: 'tag' } },
+    { name: 'junk', slot: 'widget', input: { kind: 'blob', corners: 'x', mask: 7 } },
+  ];
+  const w = (widget: string, instance: string, app: string, skin: string, global: string) => [{ key: shapeScopeKey('instance', widget), id: instance }, { key: 'app', id: app }, { key: 'skin', id: skin }, { key: 'global', id: global }];
+  const resolveCases: { name: string; chain: { key: string; id: string }[] }[] = [
+    { name: 'instance wins', chain: w('status:a', 'hexagon', 'square', 'rounded', 'circle') },
+    { name: 'app wins', chain: w('status:a', '', 'square', 'rounded', 'circle') },
+    { name: 'skin wins', chain: w('status:a', '', '', 'rounded', 'circle') },
+    { name: 'global wins', chain: w('status:a', '', '', '', 'circle') },
+    { name: 'default', chain: w('status:a', '', '', '', '') },
+    { name: 'junk inherits', chain: w('status:a', 'Bad Id', 'x', '', 'circle') },
+    { name: 'unknown keys skipped', chain: [{ key: 'nope', id: 'square' }, { key: 'axf.banner.widget..shape', id: 'square' }, { key: 'global', id: 'circle' }] },
+    { name: 'no widget', chain: [{ key: 'app', id: '' }, { key: 'skin', id: 'tag' }, { key: 'global', id: 'circle' }] },
+    { name: 'empty chain', chain: [] },
+  ];
+  const picks: Record<string, string> = { 'axf.banner.widget.status:a.shape': 'tag', skin: 'rounded', global: 'circle' };
+  const stateOf = (k: string) => picks[k];
+  let hist = recordShapeEdit({}, 'app', '', 'hexagon', '2026-11-15T10:00:00Z');
+  const steps: { op: string; args: unknown[]; out: unknown }[] = [{ op: 'recordShapeEdit', args: [{}, 'app', '', 'hexagon', '2026-11-15T10:00:00Z'], out: hist }];
+  const step = (op: string, args: unknown[], out: unknown) => { steps.push({ op, args, out }); return out; };
+  step('recordShapeEdit (no change)', [hist, 'app', 'hexagon', 'hexagon', '2026-11-15T10:01:00Z'], recordShapeEdit(hist, 'app', 'hexagon', 'hexagon', '2026-11-15T10:01:00Z'));
+  step('recordShapeEdit (not a level)', [hist, 'nope', '', 'hexagon', '2026-11-15T10:01:00Z'], recordShapeEdit(hist, 'nope', '', 'hexagon', '2026-11-15T10:01:00Z'));
+  hist = step('recordShapeEdit (second edit replaces)', [hist, 'app', 'hexagon', 'square', '2026-11-15T10:02:00Z'], recordShapeEdit(hist, 'app', 'hexagon', 'square', '2026-11-15T10:02:00Z')) as typeof hist;
+  hist = step('recordShapeEdit (a widget)', [hist, 'axf.banner.widget.status:a.shape', '', 'tag', '2026-11-15T10:03:00Z'], recordShapeEdit(hist, 'axf.banner.widget.status:a.shape', '', 'tag', '2026-11-15T10:03:00Z')) as typeof hist;
+  step('previousShape', [hist, 'app'], previousShape(hist, 'app'));
+  step('previousShape (none)', [hist, 'skin'], previousShape(hist, 'skin'));
+  const r1 = restorePreviousShape(hist, 'app', '2026-11-15T10:04:00Z')!;
+  step('restorePreviousShape', [hist, 'app', '2026-11-15T10:04:00Z'], r1);
+  step('restorePreviousShape (again = redo)', [r1.history, 'app', '2026-11-15T10:05:00Z'], restorePreviousShape(r1.history, 'app', '2026-11-15T10:05:00Z'));
+  step('restorePreviousShape (none)', [hist, 'global', '2026-11-15T10:04:00Z'], restorePreviousShape(hist, 'global', '2026-11-15T10:04:00Z'));
+  step('restorePreviousShape (widget back to inherit)', [hist, 'axf.banner.widget.status:a.shape', '2026-11-15T10:06:00Z'], restorePreviousShape(hist, 'axf.banner.widget.status:a.shape', '2026-11-15T10:06:00Z'));
+  step('forgetShapeEdit', [hist, 'app'], forgetShapeEdit(hist, 'app'));
+  step('normalizeShapeHistory', [{ app: { previous: 'a-b', current: 'xx', at: 't' }, nope: { previous: '', current: 'xx', at: 't' }, skin: { previous: 'xx', current: 'xx', at: 't' }, global: 'junk', 'axf.banner.widget.status:a.shape': { previous: 'x', current: 'tag', at: 7 } }], normalizeShapeHistory({ app: { previous: 'a-b', current: 'xx', at: 't' }, nope: { previous: '', current: 'xx', at: 't' }, skin: { previous: 'xx', current: 'xx', at: 't' }, global: 'junk', 'axf.banner.widget.status:a.shape': { previous: 'x', current: 'tag', at: 7 } }));
+  write('shape-engine.json', {
+    contract: 'shape@1',
+    levels: SHAPE_LEVELS, historyMax: SHAPE_HISTORY_MAX, slotDefault: SHAPE_SLOT_DEFAULT,
+    tokens: Object.fromEntries(SHAPE_TOKEN_FIELDS.map((f) => [f, shapeToken(f)])),
+    polygons: SHAPE_POLYGONS, squirclePath: squirclePath(), squirclePolygon: squirclePolygon(),
+    compile: compileCases.map((c) => ({ ...c, output: compileShape(c.input, c.slot) })),
+    chain: { widget: shapeScopeChain({ widget: 'status:a' }), none: shapeScopeChain(null), bad: shapeScopeChain({ widget: 'Bad Key' }) },
+    levelsOf: Object.fromEntries(['global', 'skin', 'app', 'axf.banner.widget.status:a.shape', 'axf.banner.widget..shape', 'nope'].map((k) => [k, shapeScopeLevel(k)])),
+    resolve: resolveCases.map((c) => ({ ...c, output: resolveShape(c.chain) })),
+    resolveAt: { picks, widget: resolveShapeAt({ widget: 'status:a' }, stateOf), other: resolveShapeAt({ widget: 'counter:b' }, stateOf), app: resolveShapeAt(null, stateOf), nothing: resolveShapeAt(null, () => undefined) },
+    history: steps,
   });
 }

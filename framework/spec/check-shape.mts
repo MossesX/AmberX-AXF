@@ -13,7 +13,7 @@ import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SHAPE_DEFAULT_KIND, SHAPE_KINDS, SHAPE_RADII, SHAPE_TYPE, normalizeShape, shapeErrors, shapeRadius, shapeSquare } from '../core/engines/shape-rules.mjs';
-import { SHAPE_HISTORY_MAX, SHAPE_POLYGONS, compileShape, forgetShapeEdit, normalizeShapeHistory, previousShape, recordShapeEdit, resolveShape, resolveShapeAt, restorePreviousShape, shapeClip, shapeMask, shapeScopeChain, shapeScopeKey, shapeScopeLevel, shapeToken, squirclePath, squirclePolygon, superellipsePoints } from '../core/engines/shape';
+import { SHAPE_HISTORY_MAX, SHAPE_LEVELS, SHAPE_POLYGONS, compileShape, forgetShapeEdit, normalizeShapeHistory, previousShape, recordShapeEdit, resolveShape, resolveShapeAt, restorePreviousShape, shapeClip, shapeMask, shapeScopeChain, shapeScopeKey, shapeScopeLevel, shapeToken, squirclePath, squirclePolygon, superellipsePoints } from '../core/engines/shape';
 import { bannerWidgetView, normalizeBannerWidgetPref, patchBannerWidget } from '../core/engines/bannerwidgets';
 import { ASSET_TYPES, OPTIONAL_TYPES } from '../core/types';
 import { validateAsset } from '../core/validate';
@@ -145,6 +145,26 @@ eq(normalizeShapeHistory({ app: { previous: 'a-b', current: 'xx', at: 't' }, nop
 const many = Object.fromEntries(Array.from({ length: SHAPE_HISTORY_MAX + 5 }, (_, i) => [`axf.banner.widget.status:w${i}.shape`, { previous: '', current: 'square', at: `2026-01-01T00:00:${String(i).padStart(2, '0')}` }]));
 const trimmed = normalizeShapeHistory(many);
 check(Object.keys(trimmed).length === SHAPE_HISTORY_MAX && !('axf.banner.widget.status:w0.shape' in trimmed) && 'axf.banner.widget.status:w104.shape' in trimmed, 'the history is capped, the oldest edits go first');
+
+// shape-engine.json (gen-fixtures.mts): the golden outputs every port replays for compile (every kind, per-corner radii,
+// masks, slots), the resolve chain (all four levels, the default, junk) and Restore previous edit
+const efx = JSON.parse(readFileSync(join(here, 'fixtures/shape-engine.json'), 'utf8'));
+eq(efx.contract, 'shape@1', 'engine fixture contract');
+eq(efx.levels, [...SHAPE_LEVELS], 'engine fixture levels');
+eq(efx.historyMax, SHAPE_HISTORY_MAX, 'engine fixture history cap');
+eq(efx.polygons, SHAPE_POLYGONS, 'engine fixture polygons');
+eq(efx.squirclePath, squirclePath(), 'engine fixture squircle path');
+check(SHAPE_KINDS.every((k) => efx.compile.some((c: { name: string }) => c.name === k)), 'engine fixture compiles every kind');
+for (const c of efx.compile) eq(compileShape(c.input, c.slot), c.output, `engine fixture compile ${c.name}`);
+for (const c of efx.resolve) eq(resolveShape(c.chain), c.output, `engine fixture resolve ${c.name}`);
+check(['instance', 'app', 'skin', 'global', 'default'].every((l) => efx.resolve.some((c: { output: { level: string } }) => c.output.level === l)), 'engine fixture resolves at every level and the default');
+const efxStateOf = (k: string) => (efx.resolveAt.picks as Record<string, string>)[k];
+eq(resolveShapeAt({ widget: 'status:a' }, efxStateOf), efx.resolveAt.widget, 'engine fixture resolveAt widget');
+eq(resolveShapeAt({ widget: 'counter:b' }, efxStateOf), efx.resolveAt.other, 'engine fixture resolveAt other widget');
+eq(resolveShapeAt(null, efxStateOf), efx.resolveAt.app, 'engine fixture resolveAt app');
+const efxOps = { recordShapeEdit, previousShape, restorePreviousShape, forgetShapeEdit, normalizeShapeHistory } as Record<string, (...a: never[]) => unknown>;
+for (const s of efx.history) eq(efxOps[s.op.split(' ')[0]!]!(...(s.args as never[])), s.out, `engine fixture history ${s.op}`);
+check(efx.history.some((s: { op: string }) => s.op.startsWith('restorePreviousShape')), 'engine fixture covers Restore previous edit');
 
 // banner widgets carry a per-instance shape (the id of a shape asset); junk is dropped, null goes back to the slot
 eq(normalizeBannerWidgetPref({ shape: 'hexagon' }).shape, 'hexagon', 'a widget pref keeps a shape id');
