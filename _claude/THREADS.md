@@ -806,7 +806,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 00:10 UTC · `quick-settings-pinned-collapsible-pane` note (all) · orchestrator
 - 2026-11-15 00:11 UTC · `merge-main-land-console-app-part-2` added (0 steps) (all) · foreign-write
 - 2026-11-15 00:11 UTC · `merge-main-land-voice-listener-use` added (0 steps) (all) · foreign-write
 - 2026-11-15 00:11 UTC · `merge-main-land-console-axhub-retry` added (0 steps) (all) · foreign-write
@@ -1206,6 +1205,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 12:21 UTC · `axf-molly-container-orchestrator-gate` added (0 steps) (all) · builds-live
 - 2026-11-15 12:21 UTC · `every-grid-1-2-rows-per-item-set-skin` s3 done (all) · orchestrator
 - 2026-11-15 12:21 UTC · `gate-rules-plugin-in-the-console` note (all) · mcp
+- 2026-11-15 12:22 UTC · `gate-rules-plugin-in-the-console` s7 done (all) · orchestrator
 
 ## Token passes (log)
 
