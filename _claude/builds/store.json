@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5748,
- "updatedAt": "2026-11-15T00:18:49.647Z",
+ "rev": 5749,
+ "updatedAt": "2026-11-15T00:19:06.913Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -205395,7 +205395,7 @@
    "pr": "#640",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:32.589Z",
-   "updatedAt": "2026-11-14T23:13:32.453Z",
+   "updatedAt": "2026-11-15T00:18:36.053Z",
    "builtAt": "2026-11-13T20:19:48.032Z",
    "notes": [
     {
@@ -205470,6 +205470,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:18:35.976Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-droid/.gitignore, apps/console-droid/BRIDGE.md, apps/console-droid/OVERLAY.md, apps/console-droid/README.md, apps/console-droid/app/build.gradle, apps/console-droid/app/src/main/AndroidManifest.xml, apps/console-droid/app/src/main/assets/offli"
+     }
+    ]
    },
    "steps": [
     {
@@ -205638,7 +205655,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -216040,7 +216057,7 @@
    "pr": "#666",
    "priority": "P1",
    "createdAt": "2026-11-13T23:42:29.374Z",
-   "updatedAt": "2026-11-15T00:00:38.016Z",
+   "updatedAt": "2026-11-15T00:18:40.062Z",
    "builtAt": "2026-11-14T01:12:18.165Z",
    "notes": [
     {
@@ -216119,6 +216136,32 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-14T23:50:51.455Z",
+      "run": "lr-voice-listener-use-claude-when-connected-20261114T235051",
+      "base": "1a84b7da13a65f04a55725b10211b87b84b0baf6",
+      "merged": "ec07d3ac7c54678352ab30763277515061281f19",
+      "outcome": "red",
+      "ci": "failure",
+      "note": "CI failed on the merged head (Build engine sweep (Node)). No fix build: the orchestrator did not take it."
+     },
+     {
+      "at": "2026-11-15T00:18:39.981Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/README.md, apps/console-web/plugins/wake-listener/README.md, apps/console-web/plugins/wake-listener/assets/status/wake-listener-offline-indicator-amber-light.json, apps/console-web/plugins/wake-listener/assets/status/wake-listener-offline-indicator-chip-and-ligh"
+     }
+    ]
    },
    "steps": [
     {
@@ -216488,7 +216531,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -227495,7 +227538,7 @@
    "pr": "#610",
    "priority": "P0",
    "createdAt": "2026-11-14T23:18:06.781Z",
-   "updatedAt": "2026-11-15T00:10:15.436Z",
+   "updatedAt": "2026-11-15T00:18:46.326Z",
    "builtAt": "2026-11-15T00:10:15.436Z",
    "notes": [
     {
@@ -227566,6 +227609,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:18:46.238Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrator/plugin.json, apps/console-web/plugins/build-orchestrator/server/__init__.py, apps/console-web/plugins/build-orchestrator/w"
+     }
+    ]
    },
    "steps": [
     {
@@ -227778,7 +227838,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
