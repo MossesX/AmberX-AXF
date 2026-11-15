@@ -4,7 +4,7 @@
   "id": "phone-connect-help",
   "name": "Phone Connect help",
   "version": "0.1.0",
-  "description": "Phone Connect's Help mode entries (help@1).",
+  "description": "Phone Connect's Help mode entries (help@1): every screen, setting and button of the console plugin.",
   "author": "Brett",
   "tags": [
     "help"
@@ -15,211 +15,202 @@
       {
         "target": "view:phone-connect",
         "title": "Phone Connect",
-        "text": "Your paired phone: whether it is online, the recorder and the auto-approval rules.",
+        "text": "Your paired phone: whether it is online, what reaches it, the recorder, auto-approval rules and the overlay the phone shows.",
         "kind": "screen"
       },
       {
         "target": "phone-connect",
         "title": "Phone Connect settings",
-        "text": "Pair or revoke the phone, choose which notifications reach it, and set up its floating toolbar and popups."
+        "text": "Pair or revoke the phone, choose which notifications reach it, run the recorder, set auto-approval rules and design the phone overlay."
       },
       {
         "target": "page",
         "title": "Page",
-        "text": "Where you set “Page”. Change it and the app uses the new value. Part of Phone Connect.",
-        "kind": "field",
-        "draft": true
+        "text": "The console page this toolbar button opens on the phone. Only https pages on amberxai.com are allowed.",
+        "kind": "field"
       },
       {
         "target": "add-a-button",
         "title": "Add a button",
-        "text": "Adds a button. Part of Phone Connect.",
-        "kind": "button",
-        "draft": true
+        "text": "Adds a button to the phone toolbar (up to 12). Pick its label, icon and what it does below.",
+        "kind": "button"
       },
       {
         "target": "comes-in",
         "title": "Comes in",
-        "text": "Where you set “Comes in”. Change it and the app uses the new value. Part of Phone Connect.",
-        "kind": "field",
-        "draft": true
+        "text": "How this popup type appears on the phone: slide from top, burst from the middle, circle reveal, fade, scale or bounce.",
+        "kind": "field"
       },
       {
         "target": "goes-out",
         "title": "Goes out",
-        "text": "Where you set “Goes out”. Change it and the app uses the new value. Part of Phone Connect.",
-        "kind": "field",
-        "draft": true
+        "text": "How this popup type leaves the phone screen.",
+        "kind": "field"
       },
       {
         "target": "stays",
         "title": "Stays",
-        "text": "Slide to set “Stays”: left is less, right is more. Part of Phone Connect.",
-        "kind": "slider",
-        "draft": true
+        "text": "How long the popup stays before it leaves by itself. 0 keeps it until you act on it.",
+        "kind": "slider"
       },
       {
         "target": "opacity",
         "title": "Opacity",
-        "text": "Slide to set “Opacity”: left is less, right is more. Part of Phone Connect.",
-        "kind": "slider",
-        "draft": true
+        "text": "How see-through this popup type is on the phone.",
+        "kind": "slider"
       },
       {
         "target": "sound",
         "title": "Sound",
-        "text": "Turns “Sound” on or off. It takes effect straight away and is remembered. Part of Phone Connect.",
-        "kind": "toggle",
-        "draft": true
+        "text": "Plays the phone notification sound when this popup type appears.",
+        "kind": "toggle"
       },
       {
         "target": "vibrate",
         "title": "Vibrate",
-        "text": "Turns “Vibrate” on or off. It takes effect straight away and is remembered. Part of Phone Connect.",
-        "kind": "toggle",
-        "draft": true
+        "text": "Buzzes the phone when this popup type appears.",
+        "kind": "toggle"
       },
       {
         "target": "button-size",
         "title": "Button size",
-        "text": "Slide to set “Button size”: left is less, right is more. Part of Phone Connect.",
-        "kind": "slider",
-        "draft": true
+        "text": "How big the floating button is on the phone when the toolbar is collapsed.",
+        "kind": "slider"
       },
       {
         "target": "circle",
         "title": "Circle",
-        "text": "Shows the “Circle” part of this screen. Part of Phone Connect.",
-        "kind": "tab",
-        "draft": true
+        "text": "A round floating button.",
+        "kind": "tab"
       },
       {
         "target": "rounded",
         "title": "Rounded",
-        "text": "Shows the “Rounded” part of this screen. Part of Phone Connect.",
-        "kind": "tab",
-        "draft": true
+        "text": "A floating button with rounded corners.",
+        "kind": "tab"
       },
       {
         "target": "square",
         "title": "Square",
-        "text": "Shows the “Square” part of this screen. Part of Phone Connect.",
-        "kind": "tab",
-        "draft": true
+        "text": "A square floating button.",
+        "kind": "tab"
       },
       {
         "target": "snap-to-the-edge",
         "title": "Snap to the edge",
-        "text": "Turns “Snap to the edge” on or off. It takes effect straight away and is remembered. Part of Phone Connect.",
-        "kind": "toggle",
-        "draft": true
+        "text": "After you drag the button, it moves to the nearer side of the screen.",
+        "kind": "toggle"
       },
       {
         "target": "collapse-after",
         "title": "Collapse after",
-        "text": "Slide to set “Collapse after”: left is less, right is more. Part of Phone Connect.",
-        "kind": "slider",
-        "draft": true
+        "text": "The open toolbar folds back into the button after this long without a tap. 0 never folds it.",
+        "kind": "slider"
       },
       {
         "target": "toolbar-opacity",
         "title": "Toolbar opacity",
-        "text": "Slide to set “Toolbar opacity”: left is less, right is more. Part of Phone Connect.",
-        "kind": "slider",
-        "draft": true
+        "text": "How see-through the toolbar and the button are on the phone.",
+        "kind": "slider"
       },
       {
         "target": "monitor",
         "title": "Monitor",
-        "text": "Turns “Monitor” on or off. It takes effect straight away and is remembered. Part of Phone Connect.",
-        "kind": "toggle",
-        "draft": true
+        "text": "The phone watches axHub with the screen off: approvals and alerts pop up, and your auto-approval rules run. Off stops the watch.",
+        "kind": "toggle"
       },
       {
         "target": "play-popup",
         "title": "Play popup",
-        "text": "Plays popup. Part of Phone Connect.",
-        "kind": "button",
-        "draft": true
+        "text": "Plays the chosen popup type in the phone preview with its current animation and speed.",
+        "kind": "button"
       },
       {
         "target": "new-code",
         "title": "New code",
-        "text": "Starts a new code. Part of Phone Connect.",
-        "kind": "button",
-        "draft": true
+        "text": "Replaces the waiting pairing code with a new one, good for 10 minutes.",
+        "kind": "button"
       },
       {
         "target": "pair-a-phone",
         "title": "Pair a phone",
-        "text": "Shows “Pair a phone”. Part of Phone Connect.",
-        "kind": "button",
-        "draft": true
+        "text": "Shows a pairing code and QR. Scan it or type the code in Phone Connect on the phone while signed in to your hub account.",
+        "kind": "button"
       },
       {
         "target": "open-pages-in",
         "title": "Open pages in",
-        "text": "Where you set “Open pages in”. Change it and the app uses the new value. Part of Phone Connect.",
-        "kind": "field",
-        "draft": true
+        "text": "Where pages sent to the phone open: Chrome, or the phone default browser.",
+        "kind": "field"
       },
       {
         "target": "session-name",
         "title": "Session name",
-        "text": "Where you set “Session name”. Change it and the app uses the new value. Part of Phone Connect.",
-        "kind": "field",
-        "draft": true
+        "text": "The name the recording carries on axHub; its parts are named after it.",
+        "kind": "field"
       },
       {
         "target": "transcribe-now",
         "title": "Transcribe now",
-        "text": "Transcribes now. Part of Phone Connect.",
-        "kind": "button",
-        "draft": true
+        "text": "Looks for new recorder parts on axHub and transcribes them now instead of at the next round.",
+        "kind": "button"
       },
       {
         "target": "turn-on",
         "title": "Turn on",
-        "text": "Turns on. Part of Phone Connect.",
-        "kind": "button",
-        "draft": true
+        "text": "Turns a proposed auto-approval rule on. Only your own click does this.",
+        "kind": "button"
       },
       {
         "target": "what",
         "title": "What",
-        "text": "Where you set “What”. Change it and the app uses the new value. Part of Phone Connect.",
-        "kind": "field",
-        "draft": true
+        "text": "The tool a rule approves (build.status) or a family (build.*). Destructive tools, starting the recorder and vps.run are never covered.",
+        "kind": "field"
       },
       {
         "target": "view:phone-recorder",
         "title": "Phone recorder",
-        "text": "Opens the Phone recorder screen. Connects Brett's Android phone to the console through the small Phone Connect companion app (phone-connect@1).",
-        "kind": "screen",
-        "draft": true
+        "text": "Start and stop the phone Audio Output Recorder, see the current part and upload queue, and play, search or delete the recordings on axHub.",
+        "kind": "screen"
       },
       {
         "target": "view:phone-rules",
         "title": "Auto-approval rules",
-        "text": "Opens the Auto-approval rules screen. Connects Brett's Android phone to the console through the small Phone Connect companion app (phone-connect@1).",
-        "kind": "screen",
-        "draft": true
+        "text": "The rules the phone Monitor uses to approve waiting calls by itself, with scope and expiry.",
+        "kind": "screen"
       },
       {
         "target": "record-my-mic-too",
         "title": "Record my mic too",
-        "text": "Turns “Record my mic too” on or off. It takes effect straight away and is remembered. Part of Phone Connect.",
-        "kind": "toggle",
-        "draft": true
+        "text": "Adds the phone microphone as a second track. Off by default; only your own click turns it on.",
+        "kind": "toggle"
       },
       {
         "target": "search-what-was-said",
         "title": "Search what was said",
-        "text": "Where you set “Search what was said”. Change it and the app uses the new value. Part of Phone Connect.",
-        "kind": "field",
-        "draft": true
+        "text": "Finds words in the transcripts of the newest recordings and shows the matching parts.",
+        "kind": "field"
       }
     ],
-    "intros": []
+    "intros": [
+      {
+        "screen": "phone-connect",
+        "title": "Phone Connect",
+        "steps": [
+          {
+            "say": "This is your phone. It shows whether the phone is online and when it was last seen.",
+            "target": ""
+          },
+          {
+            "say": "Pair a phone shows a code and QR. The phone claims it with your own hub sign-in.",
+            "target": ""
+          },
+          {
+            "say": "The Overlay tab designs everything the phone shows: the toolbar, the button and each popup.",
+            "target": ""
+          }
+        ]
+      }
+    ]
   }
 }

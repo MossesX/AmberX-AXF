@@ -2620,6 +2620,14 @@
               "tag": "",
               "recommended": true,
               "suggests": []
+            },
+            {
+              "id": "cx.phoneconnect",
+              "title": "Phone Connect: a small Android companion (overlay toolbar and popups, approvals in place, Monitor, open pages, notifications, the Audio Output Recorder) and its console plugin; AmberX retired; REST, MCP, CLI and voice",
+              "note": "apps/console-web/plugins/phone-connect + apps/phone-connect-droid (phone-connect@1, framework/spec/PHONE-CONNECT.md): pairing (personOnly), command queue with acks, recorder (axf.phone-recorder@1), auto-approval rules, Overlay settings synced live (phone-overlay@1); axHub phone.* tools (axHub PR #46)",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
             }
           ]
         }

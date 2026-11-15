@@ -1,0 +1,69 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "phone-connect-droid-help",
+  "name": "Phone Connect (phone) help",
+  "version": "0.1.0",
+  "description": "Help for the Phone Connect Android app (help@1): the one-time setup page and the overlay.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "app:phone-connect-droid",
+    "entries": [
+      {
+        "target": "setup",
+        "title": "Set up once",
+        "text": "Sign in to axHub, pair with the code the console shows, allow notifications and display over other apps. After that there are no app screens.",
+        "kind": "screen"
+      },
+      {
+        "target": "sign-in",
+        "title": "Sign in to axHub",
+        "text": "Your own hub account. Pairing and approving use this session only, never a token."
+      },
+      {
+        "target": "pair",
+        "title": "Pair",
+        "text": "Type the 8-character code from Settings → Plugins → Phone Connect, or scan its QR with the camera."
+      },
+      {
+        "target": "overlay-permission",
+        "title": "Display over other apps",
+        "text": "Lets the floating toolbar and popups show on top of every app."
+      },
+      {
+        "target": "toolbar",
+        "title": "Floating toolbar",
+        "text": "Your buttons and widgets from the console's Overlay settings. It folds into the button after a while."
+      },
+      {
+        "target": "button",
+        "title": "Floating button",
+        "text": "Tap to open the toolbar, drag to move it. The badge counts waiting approvals."
+      },
+      {
+        "target": "approval-popup",
+        "title": "Approval popup",
+        "text": "A held call with its reason. Approve, Deny or Shelve right here, with your own hub session. The lock screen only says Approval waiting."
+      },
+      {
+        "target": "alert-popup",
+        "title": "Alert popup",
+        "text": "Something broke or needs a look. Open takes you to the page; Dismiss closes it."
+      },
+      {
+        "target": "recorder",
+        "title": "Recorder",
+        "text": "Records what the phone plays in 30-minute parts and sends them to axHub. Android asks every start; your mic only when its switch is on."
+      },
+      {
+        "target": "monitor",
+        "title": "Monitor",
+        "text": "Keeps watching for approvals and alerts with the screen off. Its quiet notification shows while it runs."
+      }
+    ],
+    "intros": []
+  }
+}
