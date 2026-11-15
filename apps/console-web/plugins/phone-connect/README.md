@@ -3,10 +3,19 @@
 Build `phone-connect-small-android-companion` (Brett, Nov 15 2026). The contract is `framework/spec/PHONE-CONNECT.md`
 (phone-connect@1); the reference engine is `framework/core/phone-connect.mjs`.
 
-This folder holds the migration first. The plugin itself (manifest, `install.mjs` / `uninstall.mjs`, the Settings →
-Plugins → Phone Connect sub-tab with pairing, devices and the recorder, REST `/api/plugins/phone-connect/*`, MCP
-`phone-connect_*`, CLI `axf phone-connect …`, voice) comes with the plugin phase of the same build; until then the folder
-has no `plugin.json`, so the Plugin Manager and the lifecycle checks leave it alone.
+Phone Connect replaces AmberX: a small Android companion (`apps/phone-connect-droid`, overlay only, no app screens) and
+this console plugin, which holds everything the phone is told and everything set for it.
+
+| Feature | Where it lives |
+| --- | --- |
+| Pairing, devices, online state | `server/devices.py` (code or QR; only Brett's own hub session approves) |
+| Open a page on the phone | `server/commands.py` `open_url` (amberxai.com, https only) |
+| Notifications | `notify.json` types FYI, fix updates, alerts, approvals; sent through axf.notify@1 |
+| Approvals + Monitor | the phone's overlay and WatchService; auto-approval rules in `server/rules.py` |
+| Audio Output Recorder | `server/recorder.py` (moved in from the old output-recorder plugin); capability `axf.phone-recorder@1` |
+
+Install / remove: `node apps/console-web/plugins/phone-connect/install.mjs`, `uninstall.mjs [--all]`. Data:
+`.axf-console/plugins/phone-connect/`. Settings: Settings → Plugins → Phone Connect.
 
 ## migrate.mjs
 

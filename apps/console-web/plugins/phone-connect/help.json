@@ -1,0 +1,29 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "phone-connect-help",
+  "name": "Phone Connect help",
+  "version": "0.1.0",
+  "description": "Phone Connect's Help mode entries (help@1).",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:phone-connect",
+    "entries": [
+      {
+        "target": "view:phone-connect",
+        "title": "Phone Connect",
+        "text": "Your paired phone: whether it is online, the recorder and the auto-approval rules.",
+        "kind": "screen"
+      },
+      {
+        "target": "phone-connect",
+        "title": "Phone Connect settings",
+        "text": "Pair or revoke the phone, choose which notifications reach it, and set up its floating toolbar and popups."
+      }
+    ],
+    "intros": []
+  }
+}

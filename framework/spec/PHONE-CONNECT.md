@@ -10,7 +10,7 @@ need a whole console app?"
 Reference engine: `framework/core/phone-connect.mjs` (pure). Registry snapshot: `framework/schemas/phone-connect.json`.
 JSON Schemas: `schemas/json/phone-device.schema.json`, `phone-pairing.schema.json`, `phone-command.schema.json`,
 `phone-result.schema.json` (`axf schemas` regenerates them). Fixture: `framework/spec/fixtures/phone-connect.json`
-(`spec/check-phone-connect.mjs`). Migration: `apps/console-web/plugins/phone-connect/migrate.mjs` <!-- axf-plugin:phone-connect -->.
+(`spec/check-phone-connect.mjs`). Migration: the Phone Connect console plugin's `migrate.mjs`.
 Kotlin twin deferred (PORTING.md).
 
 ## What the phone is
@@ -145,7 +145,7 @@ Unknown codes read as `unexpected`. Codes never change meaning.
 ## API (everything comes with an API)
 
 The console plugin, when it ships (next phase), exposes every tool above the same four ways: REST
-`/api/plugins/phone-connect/{devices,pair,revoke,command,status}`, MCP `phone-connect_*` (plugin commands), CLI
+`devices`, `pair`, `revoke`, `command`, `status` under the plugin's route prefix, MCP `phone-connect_*` (plugin commands), CLI
 `axf phone-connect …`, voice ("open the console on my phone", "start recording <name>"). The hub keeps the device tools
 (`phone.*`) for agents on axHub's MCP. Deep link: `console_open` target `phone-connect` (Settings → Plugins → Phone
 Connect); its state is `GET /devices` (`phone-device@1` records with `presence`).

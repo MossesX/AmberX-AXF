@@ -1,0 +1,41 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "phone-connect.fyi",
+      "label": "FYI",
+      "group": "phone",
+      "app": "phone-connect",
+      "source": "Phone Connect",
+      "description": "Something worth knowing, nothing to do. Low priority on the phone, no sound.",
+      "match": { "source": "phone-connect", "kind": "fyi" }
+    },
+    {
+      "id": "phone-connect.fix-update",
+      "label": "Fix updates",
+      "group": "phone",
+      "app": "phone-connect",
+      "source": "Phone Connect",
+      "description": "A fix landed or a build moved on. Default priority on the phone.",
+      "match": { "source": "phone-connect", "kind": "fix-update" }
+    },
+    {
+      "id": "phone-connect.alert",
+      "label": "Alerts",
+      "group": "phone",
+      "app": "phone-connect",
+      "source": "Phone Connect",
+      "description": "Something broke or needs a look. High priority on the phone, with sound.",
+      "match": { "source": "phone-connect", "kind": "alert" }
+    },
+    {
+      "id": "phone-connect.approval",
+      "label": "Approvals",
+      "group": "phone",
+      "app": "phone-connect",
+      "source": "Phone Connect",
+      "description": "A held call is waiting for Brett. Pops up on the phone with Approve and Deny; the lock screen shows only 'Approval waiting'.",
+      "match": { "source": "phone-connect", "kind": "approval" }
+    }
+  ]
+}
