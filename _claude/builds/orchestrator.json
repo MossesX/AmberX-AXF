@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T11:58:20.599Z",
+ "updatedAt": "2026-11-15T11:58:28.035Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -150126,15 +150126,15 @@
    "title": "Gate & rules plugin in the console",
    "category": "",
    "detail": "There is no Gate & rules screen anywhere (not on main, not on the auto-lander branch). Build a console plugin 'gate' with tabs: Rules (the checks a build must pass before it lands: CI green, tests, theme/controls checks, UI Review on/off, clash handling, etc., each with on/off and settings), Auto-lander (status, last runs, what's waiting and why, land now / pause), and History. Per the final layout: the screens live in the console only; the rules and lander logic run in the axf-molly container; axHub only routes the gate.* and lander.* tools. Until axf-molly exists, read/write through the current orchestrator/lander code. Coordinate with auto-lander-controls-in-the-gate-plugin and move-build-orchestrator-to-axhub. Rows follow the skin's 1-or-2-row grid setting. Full API parity, tests, help, Shipped features. Land when done.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/gate-rules-plugin-in-the-console",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:25.282Z",
-   "updatedAt": "2026-11-15T11:58:18.800Z",
+   "updatedAt": "2026-11-15T11:58:25.703Z",
    "builtAt": "",
    "notes": [
     {
@@ -150144,6 +150144,14 @@
     {
      "text": "Split by Claude into 23 steps (5 Fable).",
      "at": "2026-11-15T11:57:45.983Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-gate-rules-plugin-in-the-console--earl.",
+     "at": "2026-11-15T11:58:22.958Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-gate-rules-plugin-in-the-console--earl, shared account login)",
+     "at": "2026-11-15T11:58:25.703Z"
     }
    ],
    "approvals": [],

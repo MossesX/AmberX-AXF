@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6055,
- "updatedAt": "2026-11-15T11:58:20.599Z",
+ "rev": 6056,
+ "updatedAt": "2026-11-15T11:58:28.035Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -232834,15 +232834,15 @@
    "title": "Gate & rules plugin in the console",
    "category": "",
    "detail": "There is no Gate & rules screen anywhere (not on main, not on the auto-lander branch). Build a console plugin 'gate' with tabs: Rules (the checks a build must pass before it lands: CI green, tests, theme/controls checks, UI Review on/off, clash handling, etc., each with on/off and settings), Auto-lander (status, last runs, what's waiting and why, land now / pause), and History. Per the final layout: the screens live in the console only; the rules and lander logic run in the axf-molly container; axHub only routes the gate.* and lander.* tools. Until axf-molly exists, read/write through the current orchestrator/lander code. Coordinate with auto-lander-controls-in-the-gate-plugin and move-build-orchestrator-to-axhub. Rows follow the skin's 1-or-2-row grid setting. Full API parity, tests, help, Shipped features. Land when done.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/gate-rules-plugin-in-the-console",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:25.282Z",
-   "updatedAt": "2026-11-15T11:58:18.800Z",
+   "updatedAt": "2026-11-15T11:58:25.703Z",
    "builtAt": "",
    "notes": [
     {
@@ -232852,6 +232852,14 @@
     {
      "text": "Split by Claude into 23 steps (5 Fable).",
      "at": "2026-11-15T11:57:45.983Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-gate-rules-plugin-in-the-console--earl.",
+     "at": "2026-11-15T11:58:22.958Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-gate-rules-plugin-in-the-console--earl, shared account login)",
+     "at": "2026-11-15T11:58:25.703Z"
     }
    ],
    "approvals": [],
@@ -232871,12 +232879,12 @@
    "pipeline": {
     "queuedAt": "2026-11-15T11:53:27.478Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-gate-rules-plugin-in-the-console--earl",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-15T11:58:22.439Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-15T11:57:45.983Z",
@@ -232888,7 +232896,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-15T11:58:22.439Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -232897,7 +232905,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-15T11:58:22.439Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -233485,7 +233493,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
