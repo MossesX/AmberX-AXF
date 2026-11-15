@@ -6,7 +6,7 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "The gate a PR must pass before it lands, and the auto-lander that lands it, in one place (gate-rules@1, framework/spec/GATE.md). Rules tab: every gate rule (CI green, tests, theme, controls, toolbars, UI Review, code clash, merge-queue policy) with its on/off switch, severity and settings, Reset to defaults and Check a PR. Auto-lander tab: one mode switch Merge queue on/off (on = PRs go through the stacked merge queue; off, the default = the auto-lander lands each finished build one at a time), status, waiting PRs with the rule that holds each one and why, last runs, Land now, Pause and Resume. History tab: every rule change and lander action (who, when, before/after). The same calls through REST (/api/plugins/gate), MCP (gate_* and lander_*), the CLI (axf gate \u2026) and voice. Rules and history live in the plugin's data folder; the lander settings are mirrored into the merge-queue provider's config so one switch is the switch the lander obeys. Two adapters (gate-store.mjs, lander.mjs) are the only files a later axf-molly backend replaces.",
+  "description": "The gate a PR must pass before it lands, and the auto-lander that lands it, in one place (gate-rules@1, framework/spec/GATE.md). Rules tab: every gate rule (CI green, tests, theme, controls, toolbars, UI Review, code clash, merge-queue policy) with its on/off switch, severity and settings, Reset to defaults and Check a PR. Auto-lander tab: one mode switch Merge queue on/off (on = PRs go through the stacked merge queue; off, the default = the auto-lander lands each finished build one at a time), status, waiting PRs with the rule that holds each one and why, last runs, Land now, Pause and Resume. History tab: every rule change and lander action (who, when, before/after). The same calls through REST (/api/plugins/gate), MCP (gate_* and lander_*), the CLI (axf gate …) and voice. Rules and history live in the plugin's data folder; the lander settings are mirrored into the merge-queue provider's config so one switch is the switch the lander obeys. Two adapters (gate-store.mjs, lander.mjs) are the only files a later axf-molly backend replaces.",
   "targets": [
     "axf-console"
   ],
@@ -105,7 +105,7 @@
         "title": "Auto-lander: waiting PRs",
         "readOnly": true,
         "tool": "lander_waiting",
-        "description": "PRs waiting to land, in order, each with the gate rule that holds it and why in plain words."
+        "description": "PRs waiting to land, in order, each with the gate rule that holds it and why in plain words. With Shipped features installed, each carries features: its build's features, each with target null and reason 'not landed yet'."
       },
       {
         "id": "lander-runs",
@@ -113,7 +113,7 @@
         "title": "Auto-lander: last runs",
         "readOnly": true,
         "tool": "lander_runs",
-        "description": "The lander's last runs, newest first (auto-lander-run@1): result, PR, mode, reason."
+        "description": "The lander's last runs, newest first (auto-lander-run@1): result, PR, mode, reason. A run that landed a build carries features: each with target (the console-control address it opens at) and label, or the reason it can't open."
       },
       {
         "id": "lander-mode",

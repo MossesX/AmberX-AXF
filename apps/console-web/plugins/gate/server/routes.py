@@ -11,8 +11,9 @@ Every route runs the plugin's one Node implementation (gate.mjs api <op>), so th
   GET  check ?pr= | ?branch=            gate-verdict@1 for one PR (changes nothing)
   GET  history [?kind&since&pr&rule&action&limit]
   GET  lander                           lander-state@1 without the bodies (status, mode, counts, last run)
-  GET  lander/waiting [?rule&state]     waiting PRs with the rule that holds each and why
-  GET  lander/runs [?limit&result]      the last runs, newest first
+  GET  lander/waiting [?rule&state]     waiting PRs with the rule that holds each and why (+ features: open target null,
+                                        "not landed yet", when service axf.shipped-features@1 is installed)
+  GET  lander/runs [?limit&result]      the last runs, newest first (+ features of a landed build with their open targets)
   GET  lander/mode · POST lander/mode {mergeQueue}   the one Merge queue on/off switch (takes effect at once)
   POST lander/land-now {pr, confirm?}   two-step: puts the PR at the head of the line in the current mode
   POST lander/pause {why?} · POST lander/resume
@@ -169,6 +170,55 @@ async def _read(op: str, data: dict[str, Any]) -> JSONResponse:
     return answer(await run_in_threadpool(run, op, {k: v for k, v in data.items() if v not in (None, "")}))
 
 
+# ---------------------------------------------------------------------- a build's features and where they open
+
+NOT_LANDED = "not landed yet"
+
+
+def _feature_service() -> Any:
+    """The plugin providing axf.shipped-features@1 (never its folder name), or None."""
+    try:
+        import plugin_services  # the console's capability registry (absent in a bare test import)
+    except ImportError:
+        return None
+    return plugin_services.get("axf.shipped-features@1")
+
+
+def features_of(build: str, landed: bool, svc: Any = None) -> list[dict[str, Any]] | None:
+    """A build's features, each with its open target (a build that hasn't landed: target null, "not landed yet").
+    None when no plugin provides the feature store (the field is then left out)."""
+    svc = svc if svc is not None else _feature_service()
+    if svc is None or not build:
+        return None
+    try:
+        rows = svc.open_targets_for_build(build)
+    except Exception:  # noqa: BLE001 — a failing provider never breaks the gate's own read
+        return None
+    out = []
+    for t in rows:
+        f = {k: t.get(k) for k in ("feature", "name", "status", "target", "label", "via", "code", "reason") if t.get(k) is not None}
+        if not landed:
+            f.update(target=None, code="not-live", reason=NOT_LANDED)
+            f.pop("label", None)
+            f.pop("via", None)
+        out.append(f)
+    return out
+
+
+def with_features(r: dict[str, Any], landed_of: Any, build_of: Any, svc: Any = None) -> dict[str, Any]:
+    """Adds `features` (each with `target` / `reason`) to every item of a read, when a feature store is installed."""
+    if not r.get("ok", True) or not isinstance(r.get("items"), list):
+        return r
+    svc = svc if svc is not None else _feature_service()
+    if svc is None:
+        return r
+    for it in r["items"]:
+        fs = features_of(str(build_of(it) or ""), bool(landed_of(it)), svc)
+        if fs is not None:
+            it["features"] = fs
+    return r
+
+
 # ---------------------------------------------------------------------- rules
 
 @router.get("/rules")
@@ -224,14 +274,18 @@ async def lander_status() -> JSONResponse:
 
 @router.get("/lander/waiting")
 async def lander_waiting(rule: str = "", state: str = "") -> JSONResponse:
-    """PRs waiting to land, each with the gate rule that holds it and why."""
-    return await _read("lander_waiting", {"rule": rule, "state": state})
+    """PRs waiting to land, each with the gate rule that holds it and why, and its build's features (open target null:
+    not landed yet)."""
+    r = await run_in_threadpool(run, "lander_waiting", {k: v for k, v in {"rule": rule, "state": state}.items() if v})
+    return answer(await run_in_threadpool(with_features, r, lambda it: False, lambda it: it.get("build")))
 
 
 @router.get("/lander/runs")
 async def lander_runs(limit: int = 20, result: str = "") -> JSONResponse:
-    """The lander's last runs, newest first (auto-lander-run@1)."""
-    return await _read("lander_runs", {"limit": limit, "result": result})
+    """The lander's last runs, newest first (auto-lander-run@1); a run that landed a build carries its features, each with
+    where it opens in the console."""
+    r = await run_in_threadpool(run, "lander_runs", {k: v for k, v in {"limit": limit, "result": result}.items() if v not in (None, "")})
+    return answer(await run_in_threadpool(with_features, r, lambda it: it.get("result") == "landed", lambda it: (it.get("landing") or {}).get("build")))
 
 
 @router.get("/lander/mode")
