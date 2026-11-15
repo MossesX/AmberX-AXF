@@ -36,3 +36,15 @@ node apps/console-web/plugins/phone-connect/migrate.mjs --root /opt/axf --device
 
 `<data>` is `.axf-console/plugins/phone-connect` under `--root` (default: the repo root or `AXF_ROOT`). Exit 0 on a
 clean plan, 2 when a verify failed (nothing is written then). Test: `node apps/console-web/plugins/phone-connect/test.mjs`.
+
+## How every feature is reached
+
+| Feature | Deep link (console_show / console_open) | REST (`/api/plugins/phone-connect/…`) | MCP | CLI | Voice / console action |
+| --- | --- | --- | --- | --- | --- |
+| Phone, pairing, revoke | `view:phone-connect/tab:phone-connect.tabs=phone`, Settings sub-tab `view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=phone-connect` | `status`, `devices`, `pair`, `devices/{id}/revoke` | `phone_status`, `phone_devices`, `phone_pair`, `phone_revoke` | `axf phone status|devices|pair|revoke` | `phone.pair`, `phone-connect.open phone` |
+| Open a page on the phone | — | `open` | `phone_open_url` (`amberx_open_url`) | `axf phone open <url>` | `phone.open <url>` |
+| Notifications | `…tabs=notifications` | `notify`, `settings` | `phone_notify`, `phone_settings(_set)` | `axf phone notify`, `axf phone settings --notify-<kind> on|off` | `phone.notify <kind> <title>` |
+| Recorder | `view:phone-recorder`, `…tabs=recorder` | `recorder/start|stop|status` | `phone_recorder_*` (`amberx_recorder_*`) | `axf phone recorder start|stop|status` | `phone.recorder.start|stop|status` |
+| Auto-approval rules | `view:phone-rules`, `…tabs=rules` | `rules`, `rules/{id}/enable`, `rules/{id}` | `phone_rules_list|add|enable|remove|evaluate` | `axf phone rules list|add|remove|enable|check` | `phone-connect.open rules` |
+
+Every button and setting on the screens carries a `data-axf-target` (`phone-connect.*`), so console-control reaches it.

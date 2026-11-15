@@ -5,6 +5,7 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER } from './api';
+import { registerPhoneActions } from './actions';
 import { appMenu } from './menu';
 import { PhoneConnectSettings } from './PhoneConnectSettings';
 import { RecorderPanel } from './RecorderView';
@@ -24,6 +25,7 @@ export const plugin: AxfWebLibrary = {
   label: 'Phone Connect',
   version: '0.1.0',
   appMenu,
+  register(rt) { registerPhoneActions(rt); },
   views: {
     'phone-connect': { title: 'Phone Connect', icon: 'smartphone', render: () => <Page title="Phone"><PhoneConnectSettings /></Page> },
     'phone-recorder': { title: 'Phone recorder', icon: 'mic', render: () => <Page title="Recorder"><RecorderPanel /></Page> },
