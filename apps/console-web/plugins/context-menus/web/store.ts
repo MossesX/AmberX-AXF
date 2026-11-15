@@ -109,6 +109,34 @@ export function uiElements(): UiElements | null {
   return s && typeof s === 'object' ? s : null;
 }
 
+export interface ElementMenus { zone: string; implicit: boolean; info: Zone | null; items: CtxItem[]; active: { id: string; name: string; level: LevelId; fallback: boolean } | null; menus: { id: string; name: string; level: LevelId; app: string; page: string; active: boolean; items: number }[] }
+
+/** The right-click zone an element belongs to: the nearest data-fx-ctx-target, else the implicit kind (toolbar, tab row, nav), else default. */
+export function zoneOf(el: Element | null): { zone: string; implicit: boolean } {
+  if (!el || typeof el.closest !== 'function') return { zone: 'default', implicit: true };
+  const t = el.closest('[data-fx-ctx-target]')?.getAttribute('data-fx-ctx-target');
+  if (t) return { zone: t, implicit: false };
+  if (el.closest('[role="toolbar"]')) return { zone: 'toolbar', implicit: true };
+  if (el.closest('[role="tablist"]')) return { zone: 'tab-group', implicit: true };
+  if (el.closest('nav:not([data-axf-not-nav])')) return { zone: 'nav', implicit: true };
+  return { zone: 'default', implicit: true };
+}
+
+/** Per zone, from the loaded state (no request): the same answer as GET /zones/{zone}/menus. */
+export function menusForZone(zone: string, app = APP, implicit = false): ElementMenus {
+  const st = state;
+  const id = st?.active[app];
+  const act = id ? st?.menus.find((m) => m.id === id) ?? null : null;
+  const t = act?.asset.data.targets;
+  return {
+    zone, implicit,
+    info: st?.zones.find((z) => z.id === zone) ?? null,
+    items: (t?.[zone] ?? t?.default ?? []) as CtxItem[],
+    active: act ? { id: act.id, name: act.name, level: act.level, fallback: !(t && zone in t) } : null,
+    menus: (st?.menus ?? []).filter((m) => zone in m.asset.data.targets).map((m) => ({ id: m.id, name: m.name, level: m.level, app: m.app, page: m.page, active: m.active, items: R.countItems(m.asset.data.targets[zone]) })),
+  };
+}
+
 /** context-menus@1 (web): what other plugins' web parts may call. */
 export interface ContextMenusService {
   version: 1;
@@ -117,6 +145,9 @@ export interface ContextMenusService {
   active(app?: string): MenuDoc | null;
   zones(): Zone[];
   itemsFor(zone: string, app?: string): CtxItem[];
+  /** The UI Manager's per-element view: the zone an element sits in, the items shown there and every menu that maps it. */
+  forElement(el: Element | null, app?: string): ElementMenus | null;
+  forZone(zone: string, app?: string): ElementMenus;
   use(id: string): Promise<void>;
   refresh(): Promise<void>;
   levels(): R.Level[];
@@ -129,6 +160,8 @@ export function publishService(rt: AxfRuntime): () => void {
     active: (app = APP) => { const id = state?.active[app]; return (id && state?.menus.find((m) => m.id === id)) || null; },
     zones: () => state?.zones ?? [],
     itemsFor: (zone, app = APP) => { const id = state?.active[app]; const m = id ? state?.menus.find((x) => x.id === id) : null; return m?.asset.data.targets[zone] ?? m?.asset.data.targets.default ?? []; },
+    forElement: (el, app = APP) => { if (!el) return null; const z = zoneOf(el); return menusForZone(z.zone, app, z.implicit); },
+    forZone: (zone, app = APP) => menusForZone(zone, app),
     use: async (id) => { await useMenu(id); await load(rt); },
     refresh: async () => { await load(rt); },
     levels: () => Object.values(R.LEVELS),

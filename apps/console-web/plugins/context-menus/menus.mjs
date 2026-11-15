@@ -21,6 +21,7 @@
  *   … history <id> · restore <id> <v>
  *   … use <id> · active [--app a]     which menu an app shows
  *   … zones [--scan]                  the zone registry (--scan rescans the code)
+ *   … zone <zone> [--app a]            the menus that map one zone and the items shown there (what the UI Manager shows)
  *   … levels                          the four coder levels
  *   … actions                         the actions a menu item may run (console inventory)
  *   … prompt --level pro [--app a] [--page p]      the prompt Claude gets (zero tokens)
@@ -182,6 +183,17 @@ export function reportZones(items, page = '') {
   return { ok: true, zones: saved.reported.length };
 }
 
+/** Per zone (what the UI Manager shows for an element): every menu that maps it, and the items the app shows there now. */
+export function menusForZone(zone, app = R.DEFAULT_APP) {
+  const z = String(zone ?? '').trim();
+  if (!z) return { ok: false, error: 'name a zone' };
+  const menus = loadMenus().filter((m) => z in (m.asset?.data?.targets ?? {}));
+  const act = activeFor(app);
+  const items = act ? (act.asset.data.targets[z] ?? act.asset.data.targets.default ?? []) : [];
+  const info = zones().items.find((x) => x.id === z) ?? null;
+  return { ok: true, zone: z, app, info, active: act ? { id: act.id, name: act.name, level: act.level, fallback: !(z in act.asset.data.targets) } : null, items, menus: menus.map((m) => ({ id: m.id, name: m.name, level: m.level, app: m.app, page: m.page, active: m.active, items: R.countItems(m.asset.data.targets[z]) })) };
+}
+
 /* ---------------- actions a menu item may run ---------------- */
 
 /** The console's registered actions (control inventory: every `rt.actions.register` + every toolbar button's action). */
@@ -255,6 +267,7 @@ export async function api(req) {
     case 'active': return { ok: true, active: activeMap(), menu: activeFor(req.app || R.DEFAULT_APP) };
     case 'zones': return { ok: true, ...zones({ scan: !!req.scan }) };
     case 'report-zones': return reportZones(req.items, req.page);
+    case 'zone-menus': return menusForZone(req.zone, req.app || R.DEFAULT_APP);
     case 'levels': return { ok: true, levels: Object.values(R.LEVELS) };
     case 'actions': return { ok: true, actions: inventoryActions() };
     case 'prompt': return { ok: true, prompt: promptFor(req) };
@@ -296,6 +309,7 @@ async function main(argv) {
     case 'restore': return out(restore(a1, a2, f.by || 'cli'));
     case 'use': return out(useMenu(a1, f.by || 'cli'));
     case 'active': { const m = activeFor(f.app || R.DEFAULT_APP); return out({ ok: true, active: activeMap(), menu: m }, m ? `${m.app}: ${m.id} (${m.level})` : `${f.app || R.DEFAULT_APP}: the app's own default`); }
+    case 'zone': { const r = menusForZone(a1, f.app || R.DEFAULT_APP); return out(r, r.ok ? `${r.zone}: ${r.active ? `${r.active.name}${r.active.fallback ? ' (default items)' : ''}` : 'app default'} · ${r.items.length} items\n${r.menus.map((m) => `  ${m.active ? '●' : '○'} ${m.id} ${m.level} ${m.items} items`).join('\n')}` : r.error); }
     case 'zones': { const z = zones({ scan: !!f.scan }); return out({ ok: true, ...z }, z.items.map((x) => `${x.weight.padEnd(7)} ${x.id.padEnd(28)} ${x.owner.kind}${x.owner.id ? `:${x.owner.id}` : ''}${x.pages.length ? ` · ${x.pages.join(', ')}` : ''}`).join('\n')); }
     case 'levels': return out({ ok: true, levels: Object.values(R.LEVELS) }, Object.values(R.LEVELS).map((l) => `${l.id.padEnd(9)} ${l.label.padEnd(15)} ≤${l.perTarget} items · depth ${l.depth} · zones ${l.zones}\n          ${l.brief}`).join('\n'));
     case 'actions': { const acts = inventoryActions(); return out({ ok: true, actions: acts }, acts.map((a) => `${a.id}  ${a.label}`).join('\n')); }

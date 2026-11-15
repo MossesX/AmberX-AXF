@@ -57,6 +57,7 @@
       { "route": "GET /menus/{mid}", "id": "get", "title": "One context menu", "description": "The context-menu@1 document (the asset inside) and its history list.", "readOnly": true },
       { "route": "GET /menus/{mid}/history", "id": "history", "title": "Snapshots of a menu", "readOnly": true },
       { "route": "GET /zones", "id": "zones", "title": "Zone registry", "description": "Every right-click zone the code draws (data-fx-ctx-target + the implicit toolbar / tab row / nav / anywhere), with owner, weight, pages and elements. scan=true rescans the code.", "readOnly": true },
+      { "route": "GET /zones/{zone}/menus", "id": "zone-menus", "title": "Menus for one zone", "description": "What the UI Manager shows for an element: the zone's info, the items the app shows there now, and every menu that maps it.", "readOnly": true, "input": { "type": "object", "properties": { "zone": { "type": "string" }, "app": { "type": "string" } }, "required": ["zone"] } },
       { "route": "GET /levels", "id": "levels", "title": "Coder levels", "description": "beginner, amateur, pro, advanced: items per zone, depth, which zones, shortcuts, developer actions.", "readOnly": true },
       { "route": "GET /actions", "id": "actions", "title": "Actions a menu item may run", "readOnly": true },
       { "route": "GET /active", "id": "active", "title": "Which menu an app shows", "readOnly": true },

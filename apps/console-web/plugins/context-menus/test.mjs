@@ -99,6 +99,13 @@ ok(a2.ok && !a2.menu.active, 'saved without switching');
 eq(M.activeMap()['console-web'], 'console-web-beginner', 'beginner still in use');
 eq(M.loadMenus().map((m) => m.id), ['console-web-beginner', 'console-web-pro'], 'listed by level order');
 
+/* ---- per zone (the UI Manager's per-element view) */
+const zm = M.menusForZone('asset-card');
+ok(zm.ok && zm.menus.some((m) => m.id === 'console-web-pro' && m.items === 1), 'zone lists the menus that map it');
+ok(zm.active && zm.active.id === 'console-web-beginner', 'zone names the menu in force');
+eq((await M.api({ op: 'zone-menus', zone: '' })).ok, false, 'zone-menus needs a zone');
+
+
 /* ---- edit → snapshot → restore */
 const m = M.getMenu('console-web-beginner');
 const edited = { ...m, asset: { ...m.asset, data: { ...m.asset.data, targets: { ...m.asset.data.targets, default: [{ id: 'only', label: 'Only', action: 'nav:home' }] } } } };

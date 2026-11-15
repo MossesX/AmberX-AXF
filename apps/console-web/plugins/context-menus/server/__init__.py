@@ -112,6 +112,12 @@ def zones(scan: bool = False) -> dict[str, Any]:
     return run({"op": "zones", "scan": scan})
 
 
+@router.get("/zones/{zone}/menus")
+def zone_menus(zone: str, app: str = "console-web") -> dict[str, Any]:
+    """One zone (what the UI Manager shows for an element): the menus that map it and the items the app shows there now."""
+    return _ok(run({"op": "zone-menus", "zone": zone, "app": app}), missing=400)
+
+
 @router.get("/levels")
 def levels() -> dict[str, Any]:
     return run({"op": "levels"})
@@ -289,6 +295,10 @@ class ContextMenusService:
 
     def zones(self) -> list[dict[str, Any]]:
         return run({"op": "zones"}).get("items") or []
+
+    def for_zone(self, zone: str, app: str = "console-web") -> dict[str, Any]:
+        """The menus that map a zone and the items shown there (the UI Manager's per-element view)."""
+        return run({"op": "zone-menus", "zone": zone, "app": app})
 
     def report_zones(self, items: list[dict[str, Any]], page: str = "") -> dict[str, Any]:
         return run({"op": "report-zones", "items": items, "page": page})

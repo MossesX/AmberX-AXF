@@ -291,6 +291,7 @@ function Zones() {
                 <strong>{z.id}</strong>
                 <span className={`fx-chip ${z.weight === 'core' ? 'is-accent' : ''}`}>{z.weight}</span>
                 {covered.has(z.id) && <span className="fx-chip is-success">mapped</span>}
+                {(() => { const n = S.menusForZone(z.id).menus.length; return n > 0 ? <Button size="sm" icon="menu" onClick={() => rt.dispatch(`context-menus.open:menus::${z.id}`)}>{n} menu{n === 1 ? '' : 's'}</Button> : null; })()}
                 <span className="fx-muted">{z.owner.kind}{z.owner.id && z.owner.kind !== 'framework' ? `: ${z.owner.id}` : ''}</span>
               </div>
               <div className="fx-muted axp-ctxm-fine">{z.label}{z.note ? ` · ${z.note}` : ''}{z.pages.length ? ` · pages: ${z.pages.join(', ')}` : ''}{z.elements.length ? ` · elements: ${z.elements.join(', ')}` : ''}</div>
