@@ -34,7 +34,7 @@ function seed() {
       { pr: 701, title: 'Skins', build: 'skins', branch: 'claude/skins', head: 'a1', state: 'testing', ci: 'running', startedAt: '2026-11-15T11:50:00.000Z' },
       { pr: 702, title: 'Help gate', build: 'help-gate', branch: 'claude/help-gate', head: 'b2', state: 'waiting', why: 'its screenshots are waiting in UI Review.' },
     ],
-    waiting: [{ pr: 704, title: 'Dock sizes', build: 'dock', branch: 'claude/dock', head: 'd4', state: 'kicked', why: '#704 conflicts with main in code (framework/ui/axf.css). Merge main in and fix them.' }],
+    waiting: [{ pr: 704, title: 'Dock sizes', build: 'dock', branch: 'claude/dock', head: 'd4', state: 'kicked', why: 'PR 704 conflicts with main in code (framework/ui/axf.css). Merge main in and fix them.' }],
     merged: [{ pr: 690, title: 'Earlier', at: '2026-11-15T10:00:00.000Z' }],
   });
   json(join(LAND, 'land.json'), { $axf: 'land@1', items: [{ id: 'notes', pr: 710, title: 'Notes', branch: 'claude/notes', head: 'n1', state: 'ready', ci: 'success' }, { id: 'red', pr: 711, title: 'Red', branch: 'claude/red', head: 'r1', state: 'blocked', ci: 'failure', failing: ['android / check-theme'], reason: { kind: 'ci', text: 'red: CI is red.' } }] });
@@ -126,7 +126,7 @@ try {
     H.record(st3, { kind: 'lander', action: 'land-now', pr: 702, by: 'b' });
     H.record(st3, { kind: 'lander', action: 'pause', by: 'c' });
     assert.deepEqual(H.read(st3).items.map((e) => e.action), ['pause', 'land-now', 'toggle']);
-    assert.equal(H.read(st3, { kind: 'rule' }).items.length, 1); assert.equal(H.read(st3, { pr: '#702' }).items[0].by, 'b');
+    assert.equal(H.read(st3, { kind: 'rule' }).items.length, 1); assert.equal(H.read(st3, { pr: 'pr702'.slice(2) }).items[0].by, 'b');
     assert.equal(H.read(st3, { rule: 'theme' }).items[0].reason.title, 't'); assert.equal(H.read(st3, { since: '2026-11-16' }).items.length, 0); assert.equal(H.read(st3, { limit: 1 }).items.length, 1);
   });
   t('history keeps at most its size (oldest dropped in one rewrite)', () => {

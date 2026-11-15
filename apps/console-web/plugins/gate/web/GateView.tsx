@@ -33,7 +33,7 @@ export function GateView() {
   return (
     <SkinScope kind="plugin" id={PLUGIN_ID} className="axp-gate">
       <header className="fx-pagehead"><div><p className="fx-eyebrow">Builds</p><h1>Gate &amp; rules</h1></div></header>
-      <TabGroup<GateTab> id={TABS_ID} label="Gate & rules" value={tab} onChange={setTab}
+      <TabGroup<GateTab> id="gate.tabs" label="Gate & rules" value={tab} onChange={setTab}
         tabs={[{ value: 'rules', label: 'Rules', icon: 'shield' }, { value: 'auto-lander', label: 'Auto-lander', icon: 'branch' }, { value: 'history', label: 'History', icon: 'clock' }]}>
         <div className="axp-gate__panel">
           {tab === 'rules' && <RulesTab refreshSec={settings.refreshSec} />}

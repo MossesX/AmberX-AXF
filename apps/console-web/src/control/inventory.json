@@ -8,7 +8,7 @@
     "tabs": 77,
     "settingsTabs": 71,
     "settings": 89,
-    "functions": 267,
+    "functions": 268,
     "buttons": 62,
     "plugins": 71
   },
@@ -1395,22 +1395,26 @@
       ]
     },
     {
-      "id": "*",
-      "dynamic": true,
+      "address": "view:gate/tab:gate.tabs",
+      "id": "gate.tabs",
+      "dynamic": false,
       "view": "gate",
       "plugin": "ai.amberx.axf.console.gate",
       "file": "plugins/gate/web/GateView.tsx",
       "line": 36,
       "tabs": [
         {
+          "address": "view:gate/tab:gate.tabs=rules",
           "value": "rules",
           "label": "Rules"
         },
         {
+          "address": "view:gate/tab:gate.tabs=auto-lander",
           "value": "auto-lander",
           "label": "Auto-lander"
         },
         {
+          "address": "view:gate/tab:gate.tabs=history",
           "value": "history",
           "label": "History"
         }
@@ -5381,6 +5385,22 @@
       "effect": "write",
       "plugin": "ai.amberx.axf.console.gate",
       "file": "plugins/gate/web/actions.ts"
+    },
+    {
+      "address": "function:gate.setting",
+      "kind": "function",
+      "id": "gate.setting",
+      "label": "Change a Gate & rules setting",
+      "detail": "Action · Gate & rules",
+      "keywords": [
+        "gate.setting",
+        "gate",
+        "setting"
+      ],
+      "effect": "write",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.gate",
+      "file": "plugins/gate/web/settingsStore.ts"
     },
     {
       "address": "function:demo.generate",
