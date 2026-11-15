@@ -19,4 +19,9 @@ class App : AxfApplication() {
         DataModule(this), NetworkModule(), SettingsModule(),
         HubModule(hub = HubOrigin.DEFAULT, credentials = cookieCredentials { HubOrigin.DEFAULT }),
     ) + AndroidPlatformModule.placeholders()
+
+    override fun onCreate() {
+        super.onCreate()
+        Wiring.install()
+    }
 }
