@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6006,
- "updatedAt": "2026-11-15T04:31:13.709Z",
+ "rev": 6007,
+ "updatedAt": "2026-11-15T04:31:33.809Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -230815,15 +230815,15 @@
    "title": "Data container: axf-data holds all console data",
    "category": "",
    "detail": "Brett's final layout: the console is screens ONLY, with no work and no data in it. New private container 'axf-data' (Coolify, auto-restart, no public port or DNS, internal Docker network only) holds ALL the data: notes, builds store/journal/history, settings, planner items, UI reviews, everything the console stores today. Four parts: console = UI only; axf-molly = does the work (orchestrator, gate, lander); axHub = routes plus credentials/keys only (NO app data stored in axHub); axf-data = stores everything. Goal: if the console goes down, all data and notes stay available (through axHub tools) and builds keep running. Stage it safely: an API in front of the store, migrate with count checks and a backup, run in shadow first, then cut over, and no data is ever lost. Add daily backups. Coordinate with the move-build-orchestrator-to-axhub build (axf-molly reads and writes the builds store through axf-data). Tests, help, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/data-container-axf-data-holds-all",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T04:28:05.062Z",
-   "updatedAt": "2026-11-15T04:30:40.911Z",
+   "updatedAt": "2026-11-15T04:31:04.061Z",
    "builtAt": "",
    "notes": [
     {
@@ -230833,6 +230833,14 @@
     {
      "text": "Split by Claude into 27 steps (4 Fable).",
      "at": "2026-11-15T04:30:21.947Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-data-container-axf-data-holds-all--gina.",
+     "at": "2026-11-15T04:30:54.665Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-data-container-axf-data-holds-all--gina, shared account login)",
+     "at": "2026-11-15T04:31:04.061Z"
     }
    ],
    "approvals": [],
@@ -230852,12 +230860,12 @@
    "pipeline": {
     "queuedAt": "2026-11-15T04:28:10.215Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-data-container-axf-data-holds-all--gina",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-15T04:30:52.275Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-15T04:30:21.947Z",
@@ -230869,7 +230877,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-15T04:30:52.275Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -230878,7 +230886,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-15T04:30:52.275Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -231570,7 +231578,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -801,9 +801,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:43 UTC · `merge-main-land-move-amberx-web-app` note (all) · orchestrator
-- 2026-11-14 23:42 UTC · `merge-main-land-change-to-move-amberx` s2 done (all) · orchestrator
-- 2026-11-14 23:42 UTC · `merge-main-land-change-to-move-amberx` s3 done (all) · orchestrator
 - 2026-11-14 23:42 UTC · `merge-main-land-change-to-move-amberx` s4 done (all) · orchestrator
 - 2026-11-14 23:43 UTC · `merge-main-land-change-to-move-amberx` s5 done (all) · orchestrator
 - 2026-11-14 23:43 UTC · `merge-main-land-change-to-move-amberx` s6 done (all) · orchestrator
@@ -1201,6 +1198,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 04:28 UTC · `data-container-axf-data-holds-all` → queued, note (all) · console
 - 2026-11-15 04:30 UTC · `data-container-axf-data-holds-all` note (all) · orchestrator
 - 2026-11-15 04:30 UTC · `auto-lander-controls-in-the-gate-plugin` s1 done, → running (all) · orchestrator
+- 2026-11-15 04:30 UTC · `data-container-axf-data-holds-all` → running, note (all) · pipeline
+- 2026-11-15 04:31 UTC · `data-container-axf-data-holds-all` branch claude/data-container-axf-data-holds-all (all) · pipeline
+- 2026-11-15 04:31 UTC · `data-container-axf-data-holds-all` note (all) · orchestrator
 
 ## Token passes (log)
 
