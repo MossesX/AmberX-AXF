@@ -46,5 +46,17 @@
             android:foregroundServiceType="specialUse">
             <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE" android:value="Always-on-top companion toolbar and approval popups for the owner's Dev Console" />
         </service>
+        <!-- Monitor: approvals watch, alerts, auto-approval rules, the console poll (commands, settings). -->
+        <service
+            android:name=".monitor.WatchService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+
+        <receiver android:name=".monitor.BootReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

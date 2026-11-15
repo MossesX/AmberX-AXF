@@ -27,13 +27,13 @@ object Approvals {
         return ApprovalFeed.parse(r.status, r.body)
     }
 
-    /** New approvals pop up; decided or gone ones leave; the badge is the count. */
-    fun show(context: Context, feed: Feed) {
+    /** New approvals pop up (except [quiet] ones a rule is about to approve); decided or gone ones leave; the badge is the count. */
+    fun show(context: Context, feed: Feed, quiet: Set<String> = emptySet()) {
         if (feed.status != "ok") return
         val store = OverlayStore.of(context)
         val ids = feed.items.map { it.id }.toSet()
         for (gone in shown.keys - ids) { store.dismiss(gone); NotificationManagerCompat.from(context).cancel(gone.hashCode()) }
-        for (a in feed.items) if (a.id !in shown) {
+        for (a in feed.items) if (a.id !in shown && a.id !in quiet) {
             store.show(Popup(a.id, "approval", a.title, a.why + if (a.held && a.secondsLeft > 0) "\nRuns in ${a.secondsLeft}s unless you deny it." else "",
                 actions = a.actions.map { if (it == "approve-now") "approve" else it }))
             notify(context, a)
