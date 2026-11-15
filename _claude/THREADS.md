@@ -807,7 +807,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 01:37 UTC · `demo-video-series-three-minute-browser` s19 done (all) · orchestrator
 - 2026-11-15 01:38 UTC · `demo-video-series-three-minute-browser` s20 done (all) · orchestrator
 - 2026-11-15 01:39 UTC · `projects-own-everything-per-project` s4 done, → built (all) · orchestrator
 - 2026-11-15 01:39 UTC · `demo-video-series-three-minute-browser` s21 done (all) · orchestrator
@@ -1207,6 +1206,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 16:16 UTC · `shipped-features-open-button-views-each` note (all) · orchestrator
 - 2026-11-15 16:17 UTC · `shipped-features-open-button-views-each` note (all) · pipeline
 - 2026-11-15 16:23 UTC · `phone-connect-small-android-companion` s31 done (all) · orchestrator
+- 2026-11-15 16:23 UTC · `phone-connect-small-android-companion` s32 done (all) · orchestrator
 
 ## Token passes (log)
 
