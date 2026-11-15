@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6106,
- "updatedAt": "2026-11-15T12:20:48.178Z",
+ "rev": 6107,
+ "updatedAt": "2026-11-15T12:21:04.045Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -231694,7 +231694,7 @@
    "title": "Pending tab: one collapsed row per build (rebuild)",
    "category": "",
    "detail": "Rebuild from current main (the old branch claude/pending-tab-one-collapsed-row-per-build is 3000+ commits behind and only has rename commits; ignore it). In the Build Orchestrator's Pending tab, every pending build is ONE collapsed row: title, status/why it's pending, priority, steps done/total, age. Tap the row to expand it and see steps, notes and actions (queue, edit, archive); tap again to collapse. Collapsed by default, remembers expanded rows per viewer. Same for desktop and phone. Uses asset tokens and framework controls; full API parity (deep link, expand/collapse and actions via REST/MCP/CLI/voice). Tests, help, Shipped features. Land when done.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -231702,8 +231702,8 @@
    "pr": "#706",
    "priority": "P1",
    "createdAt": "2026-11-15T11:52:18.052Z",
-   "updatedAt": "2026-11-15T12:20:36.739Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-15T12:21:00.568Z",
+   "builtAt": "2026-11-15T12:21:00.568Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -232127,12 +232127,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:21:00.568Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T11:54:07.014Z",
-     "updatedAt": "2026-11-15T11:54:07.014Z"
+     "updatedAt": "2026-11-15T12:21:00.969Z"
     }
    ],
    "profiles": [
@@ -232143,7 +232143,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
