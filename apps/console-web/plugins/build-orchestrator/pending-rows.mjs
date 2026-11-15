@@ -103,6 +103,7 @@ export function summarize(row, { now = Date.now(), notes = [], said = '' } = {})
     stepList: (Array.isArray(r.stepList) ? r.stepList : []).map((s) => ({ id: str(s.id, 20), text: str(s.text, 200), model: str(s.model, 20), estimate: str(s.estimate, 20), done: !!s.done, skip: !!s.skip })),
     notes: (Array.isArray(notes) ? notes : []).slice(-5).map((n) => ({ text: str(n?.text, 600), at: str(n?.at, 40) })),
     actions: Array.isArray(r.actions) ? r.actions.filter((a) => typeof a === 'string') : [],
+    route: str(r.pipeline?.route, 20) || 'auto', splitRequested: !!r.pipeline?.splitRequested,
   };
 }
 

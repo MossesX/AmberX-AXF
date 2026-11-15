@@ -13,7 +13,7 @@ export type PendingStep = { id: string; text: string; model: string; estimate: s
 export type PendingSummary = {
   id: string; title: string; status: string; statusLabel: string; why: string; priority: string;
   steps: { done: number; total: number }; createdAt: string; age: string; said: string; nextModel: string;
-  stepList: PendingStep[]; notes: { text: string; at: string }[]; actions: string[]; expanded: boolean;
+  stepList: PendingStep[]; notes: { text: string; at: string }[]; actions: string[]; route: string; splitRequested: boolean; expanded: boolean;
 };
 
 /** The status chip's tone: something for Brett to do is a warning, work in flight is the accent. */
@@ -32,13 +32,17 @@ export interface PendingRowProps {
   onQueue: (id: string) => void;
   onEdit: (id: string, title: string) => Promise<boolean>;
   onArchive: (id: string) => void;
+  /** Runs on: auto → api → subscription → auto (pipeline/route) */
+  onRoute: (id: string, route: string) => void;
+  /** ask the orchestrator to (re)split it (pipeline/split) */
+  onSplit: (id: string) => void;
   /** the element the row lives in (control targets point focus at it) */
   rowRef?: (el: HTMLElement | null) => void;
 }
 
 const fmtDate = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
 
-export function PendingRow({ row: r, expanded, focused = false, busy = false, onToggle, onQueue, onEdit, onArchive, rowRef }: PendingRowProps) {
+export function PendingRow({ row: r, expanded, focused = false, busy = false, onToggle, onQueue, onEdit, onArchive, onRoute, onSplit, rowRef }: PendingRowProps) {
   const bodyId = useId();
   return (
     <div ref={rowRef} className={`oc-prow${expanded ? ' is-open' : ''}${focused ? ' is-focused' : ''}`} role="listitem" aria-current={focused ? 'true' : undefined}
@@ -55,16 +59,19 @@ export function PendingRow({ row: r, expanded, focused = false, busy = false, on
             {r.age && <span className="oc-prow__meta" title={`Added ${fmtDate(r.createdAt)}`}><Icon name="clock" size={13} />{r.age}</span>}
           </span>
         </button>
-        {expanded && <PendingBody id={bodyId} r={r} busy={busy} onQueue={onQueue} onEdit={onEdit} onArchive={onArchive} />}
+        {expanded && <PendingBody id={bodyId} r={r} busy={busy} onQueue={onQueue} onEdit={onEdit} onArchive={onArchive} onRoute={onRoute} onSplit={onSplit} />}
       </Container>
     </div>
   );
 }
 
-function PendingBody({ id, r, busy, onQueue, onEdit, onArchive }: { id: string; r: PendingSummary; busy: boolean; onQueue: (id: string) => void; onEdit: (id: string, title: string) => Promise<boolean>; onArchive: (id: string) => void }) {
+const ROUTE: Record<string, { label: string; next: string }> = { auto: { label: 'Auto', next: 'api' }, api: { label: 'API', next: 'subscription' }, subscription: { label: 'Subscriptions', next: 'auto' } };
+
+function PendingBody({ id, r, busy, onQueue, onEdit, onArchive, onRoute, onSplit }: { id: string; r: PendingSummary; busy: boolean; onQueue: (id: string) => void; onEdit: (id: string, title: string) => Promise<boolean>; onArchive: (id: string) => void; onRoute: (id: string, route: string) => void; onSplit: (id: string) => void }) {
   const [mode, setMode] = useState<'' | 'edit' | 'archive'>('');
   const [title, setTitle] = useState(r.title);
   const canArchive = r.actions.includes('archive');
+  const route = ROUTE[r.route] ?? ROUTE.auto!;
   return (
     <div className="oc-prow__body" id={id}>
       <p className="fx-small fx-muted fx-mono">{r.id}{r.nextModel ? ` · next on ${r.nextModel}` : ''}</p>
@@ -107,6 +114,8 @@ function PendingBody({ id, r, busy, onQueue, onEdit, onArchive }: { id: string; 
         </> : <>
           <Button size="sm" tone="primary" icon="arrow-right" id={`pending-queue-${r.id}`} disabled={busy} title="Send it to the Queue: the dispatcher starts it when its turn comes" onClick={() => onQueue(r.id)}>Queue</Button>
           <Button size="sm" icon="edit" id={`pending-edit-${r.id}`} disabled={busy} onClick={() => setMode('edit')}>Edit</Button>
+          <Button size="sm" icon="zap" id={`pending-route-${r.id}`} disabled={busy} title="Where it may run: Auto (subscriptions first, then any API), API (API-key accounts only) or Subscriptions (never API). Tap to switch." onClick={() => onRoute(r.id, route.next)}>Runs on: {route.label}</Button>
+          <Button size="sm" icon="edit" id={`pending-split-${r.id}`} disabled={busy || r.splitRequested} title="Ask the orchestrator to (re)split it into short steps on its next tick" onClick={() => onSplit(r.id)}>{r.splitRequested ? 'Splitting…' : 'Split now'}</Button>
           <Button size="sm" icon="package" id={`pending-archive-${r.id}`} disabled={busy || !canArchive} title={canArchive ? 'Move it to the Archive (asks first)' : 'This build cannot be archived now'} onClick={() => setMode('archive')}>Archive</Button>
         </>}
       </div>
