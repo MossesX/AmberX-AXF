@@ -1,0 +1,54 @@
+{
+  "schema": "merge-watch@1",
+  "entry": "merge-watch-entry@1",
+  "version": 1,
+  "kinds": [
+    "pr-merge",
+    "batch",
+    "build-land",
+    "direct"
+  ],
+  "states": [
+    "pending",
+    "sent",
+    "failed",
+    "skipped"
+  ],
+  "skipReasons": [
+    "status-only",
+    "revert",
+    "folded"
+  ],
+  "retryMinutes": [
+    1,
+    5,
+    15,
+    60,
+    240,
+    1440
+  ],
+  "maxAttempts": 8,
+  "holdMinutes": 10,
+  "keepDays": 30,
+  "ref": "origin/main",
+  "repo": "amberx-axf",
+  "stateFile": "_claude/builds/merge-watch/state.json",
+  "idempotencyKey": "sha (the merge commit on main)",
+  "subjects": {
+    "prMerge": "^Merge pull request #(\\d+) from (\\S+)",
+    "squash": "\\(#(\\d+)\\)\\s*$",
+    "batch": "^Merge queue batch: #(\\d+)\\b",
+    "buildLand": "^Merge (?:origin\\/main|main|remote-tracking branch 'origin\\/main') into (\\S+) \\(build_land\\)",
+    "status": "^(?:Builds live:|Merge queue: main'?s status commits)",
+    "skipCi": "\\[skip ci\\]\\s*$",
+    "revert": "^Revert \"",
+    "buildPrefix": "^([a-z0-9][a-z0-9-]{2,60}?)(?: s\\d+)?:\\s"
+  },
+  "dataDir": [
+    "AXF_MERGE_WATCH_DIR",
+    "AXF_BUILDS_STORE sibling (<store>.merge-watch/)",
+    "AXF_DATA_DIR/<stateFile>",
+    "hub /projects/<project>/_data/<stateFile>",
+    "repo/<stateFile>"
+  ]
+}

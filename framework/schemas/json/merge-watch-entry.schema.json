@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/merge-watch-entry.schema.json",
+  "title": "merge-watch-entry@1: one landing on main and whether its shipped manifest went out",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sha"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "merge-watch-entry@1"
+    },
+    "sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{7,40}$"
+    },
+    "base": {
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "pr-merge",
+        "batch",
+        "build-land",
+        "direct"
+      ]
+    },
+    "at": {
+      "type": "string"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "pr": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "branch": {
+      "type": "string"
+    },
+    "build": {
+      "type": "string"
+    },
+    "guess": {
+      "type": "string"
+    },
+    "commits": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{7,40}$"
+      }
+    },
+    "state": {
+      "enum": [
+        "pending",
+        "sent",
+        "failed",
+        "skipped"
+      ]
+    },
+    "reason": {
+      "enum": [
+        "",
+        "status-only",
+        "revert",
+        "folded"
+      ]
+    },
+    "into": {
+      "type": "string"
+    },
+    "attempts": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "lastAttemptAt": {
+      "type": "string"
+    },
+    "nextRetryAt": {
+      "type": "string"
+    },
+    "error": {
+      "type": "string"
+    },
+    "manifest": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "rev": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "sentAt": {
+      "type": "string"
+    },
+    "seenAt": {
+      "type": "string"
+    }
+  }
+}

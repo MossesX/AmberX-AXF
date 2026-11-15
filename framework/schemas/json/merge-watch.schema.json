@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/merge-watch.schema.json",
+  "title": "merge-watch@1: the VPS watches main and sends a shipped manifest for every merge",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "lastSeen",
+    "entries"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "merge-watch@1"
+    },
+    "version": {
+      "const": 1
+    },
+    "repo": {
+      "enum": [
+        "amberx-axf",
+        "axhub"
+      ]
+    },
+    "ref": {
+      "type": "string"
+    },
+    "startedFrom": {
+      "type": "string"
+    },
+    "updatedAt": {
+      "type": "string"
+    },
+    "lastSeen": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sha": {
+          "type": "string"
+        },
+        "at": {
+          "type": "string"
+        },
+        "checkedAt": {
+          "type": "string"
+        }
+      }
+    },
+    "entries": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "https://amberx.ai/axf/schemas/merge-watch-entry.schema.json"
+      }
+    }
+  }
+}

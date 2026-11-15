@@ -34,5 +34,8 @@ _claude/builds/store.json.tmp-*
 _claude/builds/store.json.live-outbox.jsonl*
 _claude/builds/store.json.live.json
 
+# merge-watch@1 runtime state (framework/cli/merge-watch-files.mjs): on the hub on the VPS, here only on laptops / CI
+_claude/builds/merge-watch/
+
 # Auto-land (push banner): a finished worktree claude-sync leaves alone
 .claude-sync-hold
