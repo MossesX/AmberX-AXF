@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5863,
- "updatedAt": "2026-11-15T01:01:15.983Z",
+ "rev": 5864,
+ "updatedAt": "2026-11-15T01:01:38.938Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -206209,11 +206209,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-13T20:19:48.032Z",
-     "note": "PR #643 (claude/console-app-wake-word-voice-listener)",
+     "doneAt": "2026-11-13T20:31:27.770Z",
+     "note": "",
      "rev": 2,
      "createdAt": "2026-11-13T18:48:10.123Z",
-     "updatedAt": "2026-11-13T20:19:48.035Z"
+     "updatedAt": "2026-11-13T20:31:28.306Z"
     },
     {
      "id": "s3",
