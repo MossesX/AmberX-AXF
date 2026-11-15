@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5724,
- "updatedAt": "2026-11-15T00:08:52.945Z",
+ "rev": 5725,
+ "updatedAt": "2026-11-15T00:09:06.564Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -227459,11 +227459,11 @@
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
-   "branch": "claude/merge-main-land-server-gate-one-session",
-   "pr": "",
+   "branch": "claude/server-gate-one-session-per-build-no",
+   "pr": "#610",
    "priority": "P0",
    "createdAt": "2026-11-14T23:18:06.781Z",
-   "updatedAt": "2026-11-14T23:53:29.688Z",
+   "updatedAt": "2026-11-15T00:08:32.290Z",
    "builtAt": "",
    "notes": [
     {
@@ -227500,12 +227500,12 @@
    "pipeline": {
     "queuedAt": "2026-11-14T23:18:10.634Z",
     "queuedBy": "land-finish-auto-land-live-clear-backlog",
-    "account": "mossesx-max-",
-    "session": "axf-merge-main-land-server-gate-one-session--gina",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-14T23:53:24.545Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T23:42:59.971Z",
@@ -227515,9 +227515,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"47d58b65-358a-4cf7-bb37-0b6650b748ca\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-14T23:53:24.545Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -227526,7 +227526,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-14T23:53:24.545Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -227547,12 +227547,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:08:27.891Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:42:59.971Z",
-     "updatedAt": "2026-11-14T23:42:59.971Z"
+     "updatedAt": "2026-11-15T00:08:28.561Z"
     },
     {
      "id": "s2",
@@ -227569,12 +227569,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:08:32.290Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:42:59.971Z",
-     "updatedAt": "2026-11-14T23:42:59.971Z"
+     "updatedAt": "2026-11-15T00:08:32.677Z"
     },
     {
      "id": "s3",

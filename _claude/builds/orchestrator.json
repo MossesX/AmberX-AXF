@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:08:52.945Z",
+ "updatedAt": "2026-11-15T00:09:06.564Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -145746,11 +145746,11 @@
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
-   "branch": "claude/merge-main-land-server-gate-one-session",
-   "pr": "",
+   "branch": "claude/server-gate-one-session-per-build-no",
+   "pr": "#610",
    "priority": "P0",
    "createdAt": "2026-11-14T23:18:06.781Z",
-   "updatedAt": "2026-11-14T23:53:29.688Z",
+   "updatedAt": "2026-11-15T00:08:32.290Z",
    "builtAt": "",
    "notes": [
     {
@@ -145798,8 +145798,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:08:27.891Z",
      "note": "",
      "uid": "st-mwh1wsxv0a6hpk",
      "createdAt": "2026-11-14T23:42:59.971Z"
@@ -145817,8 +145817,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:08:32.290Z",
      "note": "",
      "uid": "st-mwh1wsxv0byr6t",
      "createdAt": "2026-11-14T23:42:59.971Z"
