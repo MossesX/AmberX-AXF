@@ -48,103 +48,120 @@
         "id": "rules-list",
         "route": "GET /rules",
         "title": "Gate rules: list",
-        "readOnly": true
+        "readOnly": true,
+        "description": "The gate rule set (gate-rule-set@1): every rule a PR must pass before it lands, with on/off, severity, who runs it and its settings. Filter by kind, enabled or owner."
       },
       {
         "id": "rules-get",
         "route": "GET /rules/{rule_id}",
         "title": "Gate rules: one rule",
-        "readOnly": true
+        "readOnly": true,
+        "description": "One gate rule and the default it would get back on Reset."
       },
       {
         "id": "rules-set",
         "route": "PUT /rules/{rule_id}",
-        "title": "Gate rules: change a rule"
+        "title": "Gate rules: change a rule",
+        "description": "Change one gate rule: enabled, severity (block, warn, info), owner, settings (merged), title or description. Logged in History with before and after."
       },
       {
         "id": "rules-toggle",
         "route": "POST /rules/{rule_id}/toggle",
-        "title": "Gate rules: switch a rule on or off"
+        "title": "Gate rules: switch a rule on or off",
+        "description": "Switch one gate rule on or off ({enabled}). Logged in History."
       },
       {
         "id": "rules-reset",
         "route": "POST /rules/reset",
-        "title": "Gate rules: reset to defaults (confirm)"
+        "title": "Gate rules: reset to defaults (confirm)",
+        "description": "Reset one rule ({id}) or every rule to the defaults. Two-step: the first call answers confirmation_required with a token; call again with confirm set to it."
       },
       {
         "id": "check-pr",
         "route": "GET /check",
         "title": "Gate: can this PR land?",
-        "readOnly": true
+        "readOnly": true,
+        "description": "Can this PR land? The gate verdict (gate-verdict@1) for one PR (pr or branch) from what the lander knows, rule by rule. Changes nothing."
       },
       {
         "id": "history",
         "route": "GET /history",
         "title": "Gate: history",
-        "readOnly": true
+        "readOnly": true,
+        "description": "Rule changes and lander actions, newest first: who, when, before and after, why. Filter by kind (rule, lander), since, pr, rule, action."
       },
       {
         "id": "lander-status",
         "route": "GET /lander",
         "title": "Auto-lander: status",
         "readOnly": true,
-        "tool": "lander_status"
+        "tool": "lander_status",
+        "description": "The auto-lander: status (running, paused, idle, off, error), the Merge queue switch and mode, the PR landing now, how many wait, the last run."
       },
       {
         "id": "lander-waiting",
         "route": "GET /lander/waiting",
         "title": "Auto-lander: waiting PRs",
         "readOnly": true,
-        "tool": "lander_waiting"
+        "tool": "lander_waiting",
+        "description": "PRs waiting to land, in order, each with the gate rule that holds it and why in plain words."
       },
       {
         "id": "lander-runs",
         "route": "GET /lander/runs",
         "title": "Auto-lander: last runs",
         "readOnly": true,
-        "tool": "lander_runs"
+        "tool": "lander_runs",
+        "description": "The lander's last runs, newest first (auto-lander-run@1): result, PR, mode, reason."
       },
       {
         "id": "lander-mode",
         "route": "GET /lander/mode",
         "title": "Auto-lander: Merge queue switch",
         "readOnly": true,
-        "tool": "lander_mode"
+        "tool": "lander_mode",
+        "description": "The Merge queue switch: on = the stacked merge queue, off (default) = the auto-lander lands one build at a time."
       },
       {
         "id": "lander-mode-set",
         "route": "POST /lander/mode",
         "title": "Auto-lander: flip the Merge queue switch",
-        "tool": "lander_mode_set"
+        "tool": "lander_mode_set",
+        "description": "Flip the Merge queue switch ({mergeQueue: true|false}). Takes effect at once (the lander reads it every round) and is logged in History."
       },
       {
         "id": "lander-land-now",
         "route": "POST /lander/land-now",
         "title": "Auto-lander: land a PR next (confirm)",
-        "tool": "lander_land_now"
+        "tool": "lander_land_now",
+        "description": "Put a PR at the head of the line in the current mode ({pr}). Two-step confirm; it still passes every rule and is never a direct merge."
       },
       {
         "id": "lander-pause",
         "route": "POST /lander/pause",
         "title": "Auto-lander: pause",
-        "tool": "lander_pause"
+        "tool": "lander_pause",
+        "description": "Pause the auto-lander ({why}): what is landing finishes, nothing new starts. Logged in History; raises the lander-paused alert."
       },
       {
         "id": "lander-resume",
         "route": "POST /lander/resume",
         "title": "Auto-lander: resume",
-        "tool": "lander_resume"
+        "tool": "lander_resume",
+        "description": "Resume the auto-lander in its current mode. Logged in History."
       },
       {
         "id": "settings",
         "route": "GET /settings",
         "title": "Gate: plugin settings",
-        "readOnly": true
+        "readOnly": true,
+        "description": "The plugin's settings: refreshSec, historySize, defaultTab."
       },
       {
         "id": "settings-set",
         "route": "PUT /settings",
-        "title": "Gate: change plugin settings"
+        "title": "Gate: change plugin settings",
+        "description": "Change the plugin's settings: refreshSec (5-600), historySize (50-20000), defaultTab (rules, auto-lander, history)."
       }
     ]
   },

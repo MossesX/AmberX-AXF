@@ -22,8 +22,10 @@ Writes take `by` and `reason` ({title, description} or text) from the body; `by`
 """
 from __future__ import annotations
 
+import importlib.util
 import json
 import subprocess
+import threading
 from pathlib import Path
 from typing import Any
 
@@ -35,6 +37,9 @@ router = APIRouter()
 PLUGIN_DIR = Path(__file__).resolve().parents[1]
 CLI = PLUGIN_DIR / "gate.mjs"
 ROOT = Path(__file__).resolve().parents[5]
+_spec = importlib.util.spec_from_file_location("axf_gate_health", PLUGIN_DIR / "health.py")
+health = importlib.util.module_from_spec(_spec)  # the plugin's health.py (pure checks and alert builders)
+_spec.loader.exec_module(health)  # type: ignore[union-attr]
 STATUS = {"invalid": 400, "not_found": 404, "unavailable": 503, "failed": 502}
 MAX_BODY = 64 * 1024
 
@@ -84,7 +89,80 @@ async def _write(op: str, request: Request, extra: dict[str, Any] | None = None)
     data = {**body, **(extra or {})}
     if not data.get("by"):
         data["by"] = _who(request)
-    return answer(await run_in_threadpool(run, op, data))
+    r = await run_in_threadpool(run, op, data)
+    if op in ("lander_pause", "lander_resume", "lander_mode") and r.get("ok"):
+        _paused_alert(r)
+    return answer(r)
+
+
+# ---------------------------------------------------------------------- systems check + alerts
+
+_health_lock = threading.Lock()
+_health_on = {"done": False}
+_alerted: set[str] = set()
+
+
+def _cx() -> Any:
+    try:
+        import console_context as cx  # the console's context (absent in a bare test import)
+        return cx
+    except ImportError:
+        return None
+
+
+def _paused_alert(st: dict[str, Any]) -> None:
+    cx = _cx()
+    if cx is None:
+        return
+    a = health.paused_alert(st)
+    try:
+        if a:
+            cx.raise_alert(a)
+        else:
+            cx.resolve_alerts([health.PAUSED_KEY])
+    except Exception:  # noqa: BLE001 — alerts are a convenience
+        pass
+
+
+def _held_alerts() -> None:
+    """Raise one alert per PR a gate rule holds for a fix; resolve the ones that cleared."""
+    cx = _cx()
+    if cx is None:
+        return
+    w = run("lander_waiting")
+    if not w.get("ok"):
+        return
+    want = {a["key"]: a for a in health.held_alerts(w.get("items") or [])}
+    try:
+        for k, a in want.items():
+            if k not in _alerted:
+                cx.raise_alert(a)
+        gone = [k for k in _alerted if k not in want]
+        if gone:
+            cx.resolve_alerts(gone)
+    except Exception:  # noqa: BLE001
+        return
+    _alerted.clear()
+    _alerted.update(want)
+
+
+def _status_for_health() -> dict[str, Any]:
+    st = run("lander_status")
+    if st.get("ok"):
+        _paused_alert(st)
+    _held_alerts()
+    return st
+
+
+def ensure_health() -> None:
+    with _health_lock:
+        if _health_on["done"]:
+            return
+        try:
+            import plugin_services
+        except ImportError:
+            return
+        _health_on["done"] = health.ensure(plugin_services, _status_for_health)
 
 
 async def _read(op: str, data: dict[str, Any]) -> JSONResponse:
@@ -140,6 +218,7 @@ async def history(kind: str = "", since: str = "", pr: str = "", rule: str = "",
 @router.get("/lander")
 async def lander_status() -> JSONResponse:
     """The auto-lander: status (running, paused, idle, off, error), the Merge queue switch, the PR landing, counts, last run."""
+    ensure_health()  # the systems check may load after this plugin
     return await _read("lander_status", {})
 
 
@@ -197,3 +276,6 @@ async def settings_get() -> JSONResponse:
 async def settings_set(request: Request) -> JSONResponse:
     """Change the plugin's settings (refreshSec 5-600, historySize 50-20000, defaultTab rules|auto-lander|history)."""
     return await _write("settings_set", request)
+
+
+ensure_health()

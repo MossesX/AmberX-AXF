@@ -15,10 +15,159 @@
       {
         "target": "view:gate",
         "title": "Gate & rules",
-        "text": "The rules a PR must pass before it lands, the auto-lander that lands it, and the history of every change.",
+        "text": "The rules a PR must pass before it lands, the auto-lander that lands it, and the history of every change to either. Same calls as `axf gate \u2026`, the gate_* and lander_* MCP tools and voice.",
         "kind": "screen"
+      },
+      {
+        "target": "gate",
+        "title": "Gate settings",
+        "text": "This plugin's settings under Settings \u2192 Plugins: how often the open tab refreshes, how much History keeps, and which tab it opens on."
+      },
+      {
+        "target": "rules",
+        "title": "Rules",
+        "text": "Every gate rule with its on/off switch, severity and settings."
+      },
+      {
+        "target": "auto-lander",
+        "title": "Auto-lander",
+        "text": "The Merge queue switch, the lander's status, the PRs waiting to land and its last runs."
+      },
+      {
+        "target": "history",
+        "title": "History",
+        "text": "Every rule change and lander action: who, when, before and after."
+      },
+      {
+        "target": "rule",
+        "title": "Rule",
+        "text": "The rule's name; with two lines a row, what it checks underneath. Tap the row to open its settings."
+      },
+      {
+        "target": "checks",
+        "title": "Checks",
+        "text": "What the rule looks at: CI, tests, theme, controls, UI Review, a clash with main, or a policy."
+      },
+      {
+        "target": "severity",
+        "title": "Severity",
+        "text": "Block: the PR waits until it passes. Warn: it lands and History notes it. Info: only recorded."
+      },
+      {
+        "target": "run-by",
+        "title": "Run by",
+        "text": "Who evaluates the rule: the console now, axf-molly once that container owns the gate. A rule is never run by both."
+      },
+      {
+        "target": "on",
+        "title": "On",
+        "text": "Switches the rule on or off at once. Off rules are skipped for every PR."
+      },
+      {
+        "target": "pr",
+        "title": "PR",
+        "text": "The pull request number to check, for example 705."
+      },
+      {
+        "target": "check-a-pr",
+        "title": "Check a PR",
+        "text": "Shows whether that PR can land, rule by rule, from what the lander knows. It changes nothing."
+      },
+      {
+        "target": "reset-to-defaults",
+        "title": "Reset to defaults",
+        "text": "Puts every gate rule back to its default. It asks first; History keeps what was there."
+      },
+      {
+        "target": "save",
+        "title": "Save",
+        "text": "Saves the changed fields. The change is written to History."
+      },
+      {
+        "target": "merge-queue",
+        "title": "Merge queue",
+        "text": "On: ready PRs go through the stacked merge queue and the one-at-a-time lander is off. Off (the default): the auto-lander lands each finished build one at a time, main merged in first. Takes effect at once."
+      },
+      {
+        "target": "land-now",
+        "title": "Land now",
+        "text": "Puts the selected PR at the head of the line in the current mode. It asks first and still has to pass every rule; nothing is merged directly."
+      },
+      {
+        "target": "land-next",
+        "title": "Land next",
+        "text": "Puts this PR at the head of the line. It asks first and still has to pass every rule."
+      },
+      {
+        "target": "why-pause",
+        "title": "Why pause",
+        "text": "Optional: why you pause the lander. It shows on the status card, in History and in the alert."
+      },
+      {
+        "target": "pause",
+        "title": "Pause",
+        "text": "Stops the lander from starting anything new; what is landing now finishes. Resume carries on."
+      },
+      {
+        "target": "resume",
+        "title": "Resume",
+        "text": "Starts the lander again in its current mode."
+      },
+      {
+        "target": "show",
+        "title": "Show",
+        "text": "Which History entries to list: all, rule changes, or lander actions."
+      },
+      {
+        "target": "held-by",
+        "title": "Held by",
+        "text": "The gate rule that keeps this PR from landing."
+      },
+      {
+        "target": "why",
+        "title": "Why",
+        "text": "Why the PR waits, in plain words."
+      },
+      {
+        "target": "result",
+        "title": "Result",
+        "text": "How the run ended: landed, landing, idle, skipped or error."
+      },
+      {
+        "target": "refresh-every-seconds",
+        "title": "Refresh every (seconds)",
+        "text": "How often the open Gate & rules tab asks the lander again (5 to 600)."
+      },
+      {
+        "target": "history-size-entries-kept",
+        "title": "History size (entries kept)",
+        "text": "How many History entries are kept; the oldest go first (50 to 20000)."
+      },
+      {
+        "target": "tab-it-opens-on",
+        "title": "Tab it opens on",
+        "text": "The tab Gate & rules opens on, unless you were on another one last time."
       }
     ],
-    "intros": []
+    "intros": [
+      {
+        "screen": "gate",
+        "title": "Gate & rules",
+        "steps": [
+          {
+            "say": "Rules: what every PR must pass before it lands. Switch a rule off or change its severity here.",
+            "target": "rules"
+          },
+          {
+            "say": "Auto-lander: the Merge queue switch, what is landing and what waits, and why.",
+            "target": "auto-lander"
+          },
+          {
+            "say": "History: every change and lander action, with before and after.",
+            "target": "history"
+          }
+        ]
+      }
+    ]
   }
 }
