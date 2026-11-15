@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:38:20.092Z",
+ "updatedAt": "2026-11-15T00:38:33.064Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -92384,7 +92384,7 @@
    "pr": "#680",
    "priority": "P0",
    "createdAt": "2026-11-10T00:17:45.319Z",
-   "updatedAt": "2026-11-15T00:20:38.927Z",
+   "updatedAt": "2026-11-15T00:38:00.135Z",
    "builtAt": "2026-11-14T23:04:07.600Z",
    "notes": [
     {
@@ -101050,7 +101050,7 @@
    "pr": "#681",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-15T00:19:57.130Z",
+   "updatedAt": "2026-11-15T00:37:53.279Z",
    "builtAt": "2026-11-14T23:13:42.882Z",
    "notes": [
     {
@@ -109717,7 +109717,7 @@
    "branch": "claude/owner-recognized-everywhere-veto",
    "pr": "#601",
    "createdAt": "2026-11-12T02:04:11.564Z",
-   "updatedAt": "2026-11-15T00:20:06.779Z",
+   "updatedAt": "2026-11-15T00:37:54.960Z",
    "builtAt": "2026-11-14T23:12:56.322Z",
    "notes": [
     {
@@ -109907,7 +109907,7 @@
    "branch": "claude/console-axhub-retry-failed-calls",
    "pr": "#589",
    "createdAt": "2026-11-12T02:37:24.132Z",
-   "updatedAt": "2026-11-15T00:19:49.681Z",
+   "updatedAt": "2026-11-15T00:37:51.867Z",
    "builtAt": "2026-11-14T23:17:05.230Z",
    "notes": [
     {
@@ -110275,7 +110275,7 @@
    "branch": "claude/one-source-truth-console-shows-only-what",
    "pr": "#598",
    "createdAt": "2026-11-12T02:37:57.927Z",
-   "updatedAt": "2026-11-15T00:20:14.757Z",
+   "updatedAt": "2026-11-15T00:37:56.438Z",
    "builtAt": "2026-11-14T23:11:39.997Z",
    "notes": [
     {
@@ -110425,7 +110425,7 @@
    "branch": "claude/server-gate-one-session-per-build-no",
    "pr": "#610",
    "createdAt": "2026-11-12T02:42:15.357Z",
-   "updatedAt": "2026-11-15T00:20:32.096Z",
+   "updatedAt": "2026-11-15T00:37:58.247Z",
    "builtAt": "2026-11-14T23:06:34.786Z",
    "notes": [
     {
@@ -131197,7 +131197,7 @@
    "pr": "#621",
    "priority": "P0",
    "createdAt": "2026-11-13T19:03:35.763Z",
-   "updatedAt": "2026-11-15T00:19:43.398Z",
+   "updatedAt": "2026-11-15T00:37:50.085Z",
    "builtAt": "2026-11-14T23:21:03.162Z",
    "notes": [
     {
@@ -131340,7 +131340,7 @@
    "pr": "#620",
    "priority": "P0",
    "createdAt": "2026-11-13T19:31:40.346Z",
-   "updatedAt": "2026-11-15T00:21:30.185Z",
+   "updatedAt": "2026-11-15T00:38:15.168Z",
    "builtAt": "2026-11-13T19:53:16.613Z",
    "notes": [
     {
@@ -131495,7 +131495,7 @@
    "pr": "#638",
    "priority": "P0",
    "createdAt": "2026-11-13T19:32:22.232Z",
-   "updatedAt": "2026-11-15T00:21:35.809Z",
+   "updatedAt": "2026-11-15T00:38:17.681Z",
    "builtAt": "2026-11-13T19:40:19.880Z",
    "notes": [
     {
@@ -131617,7 +131617,7 @@
    "pr": "#653",
    "priority": "P0",
    "createdAt": "2026-11-13T19:33:18.264Z",
-   "updatedAt": "2026-11-15T00:21:12.145Z",
+   "updatedAt": "2026-11-15T00:38:12.362Z",
    "builtAt": "2026-11-13T20:45:34.732Z",
    "notes": [
     {
@@ -132712,7 +132712,7 @@
    "pr": "#645",
    "priority": "P0",
    "createdAt": "2026-11-13T19:53:48.014Z",
-   "updatedAt": "2026-11-15T00:21:20.835Z",
+   "updatedAt": "2026-11-15T00:38:13.706Z",
    "builtAt": "2026-11-13T20:14:59.377Z",
    "notes": [
     {
@@ -134678,7 +134678,7 @@
    "pr": "#660",
    "priority": "P0",
    "createdAt": "2026-11-13T20:44:39.782Z",
-   "updatedAt": "2026-11-15T00:20:53.429Z",
+   "updatedAt": "2026-11-15T00:38:08.742Z",
    "builtAt": "2026-11-13T21:17:09.699Z",
    "notes": [
     {
@@ -135047,7 +135047,7 @@
    "pr": "#655",
    "priority": "P0",
    "createdAt": "2026-11-13T20:45:58.911Z",
-   "updatedAt": "2026-11-15T00:21:02.281Z",
+   "updatedAt": "2026-11-15T00:38:10.570Z",
    "builtAt": "2026-11-13T20:59:27.633Z",
    "notes": [
     {
@@ -135687,7 +135687,7 @@
    "pr": "#660",
    "priority": "P0",
    "createdAt": "2026-11-13T23:38:56.061Z",
-   "updatedAt": "2026-11-15T00:19:34.740Z",
+   "updatedAt": "2026-11-15T00:37:48.258Z",
    "builtAt": "2026-11-14T23:24:07.334Z",
    "notes": [
     {
@@ -136983,7 +136983,7 @@
    "pr": "#666",
    "priority": "P1",
    "createdAt": "2026-11-13T23:42:29.374Z",
-   "updatedAt": "2026-11-15T00:18:40.062Z",
+   "updatedAt": "2026-11-15T00:37:35.885Z",
    "builtAt": "2026-11-14T01:12:18.165Z",
    "notes": [
     {
@@ -142124,7 +142124,7 @@
    "pr": "#679",
    "priority": "P0",
    "createdAt": "2026-11-14T18:15:01.485Z",
-   "updatedAt": "2026-11-15T00:20:45.231Z",
+   "updatedAt": "2026-11-15T00:38:06.149Z",
    "builtAt": "2026-11-14T22:50:08.994Z",
    "notes": [
     {
@@ -144882,7 +144882,7 @@
    "pr": "#586",
    "priority": "P0",
    "createdAt": "2026-11-14T23:10:56.028Z",
-   "updatedAt": "2026-11-15T00:19:29.667Z",
+   "updatedAt": "2026-11-15T00:37:46.629Z",
    "builtAt": "2026-11-14T23:44:33.747Z",
    "notes": [
     {
@@ -145110,7 +145110,7 @@
    "pr": "#633",
    "priority": "P0",
    "createdAt": "2026-11-14T23:16:22.160Z",
-   "updatedAt": "2026-11-15T00:18:55.121Z",
+   "updatedAt": "2026-11-15T00:37:38.398Z",
    "builtAt": "2026-11-15T00:02:46.930Z",
    "notes": [
     {
@@ -145361,7 +145361,7 @@
    "pr": "#640",
    "priority": "P0",
    "createdAt": "2026-11-14T23:16:42.547Z",
-   "updatedAt": "2026-11-15T00:19:16.155Z",
+   "updatedAt": "2026-11-15T00:37:45.006Z",
    "builtAt": "2026-11-14T23:53:06.250Z",
    "notes": [
     {
@@ -145612,7 +145612,7 @@
    "pr": "#598",
    "priority": "P0",
    "createdAt": "2026-11-14T23:17:55.197Z",
-   "updatedAt": "2026-11-15T00:19:01.701Z",
+   "updatedAt": "2026-11-15T00:37:42.326Z",
    "builtAt": "2026-11-14T23:53:33.650Z",
    "notes": [
     {
