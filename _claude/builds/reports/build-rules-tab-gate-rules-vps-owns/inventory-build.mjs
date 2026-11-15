@@ -223,6 +223,102 @@ const TITLES = {
   'glossary-catalog': 'The orchestrator updates the glossary, index and catalog on every build', 'notify-registry': 'Every notification is in the one registry', 'build-pipeline': 'The build pipeline: Pending → Queue → Building, started only by the dispatcher',
 };
 
+/**
+ * Pass 2: the rules a build gets from somewhere other than the rules files. Each entry names a file, a line (or a
+ * from..to range, joined with spaces) and the rule id it is a source of; the text is read from the file so it stays
+ * verbatim and --check notices drift. `part` picks one bullet of a JSON string (rules-briefs.json).
+ */
+const CODE_SOURCES = [
+  // the brief template every launch fills in
+  { file: '_claude/builds/BRIEF-TEMPLATE.md', from: 3, to: 11, id: 'build-origin-verbatim' },
+  { file: '_claude/builds/BRIEF-TEMPLATE.md', from: 16, to: 20, id: 'headless-context' },
+  { file: '_claude/builds/BRIEF-TEMPLATE.md', from: 22, to: 28, id: 'rules-brief-only' },
+  { file: '_claude/builds/BRIEF-TEMPLATE.md', from: 30, to: 32, id: 'build-origin-verbatim' },
+  // the orchestrator's phase brief (orchestrator.mjs brief <id>; the dispatcher's briefFor wraps it)
+  { file: 'apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs', line: 52, id: 'checkpoints' },
+  { file: 'apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs', line: 63, id: 'ui-asset-tokens' },
+  { file: 'apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs', line: 69, id: 'api-everything' },
+  { file: 'apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs', line: 260, id: 'model-upgrade-approval' },
+  { file: 'apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs', line: 261, id: 'model-upgrade-approval' },
+  { file: 'apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs', line: 262, id: 'fable-auto-upgrade' },
+  { file: 'apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs', line: 264, id: 'phase-brief-scope' },
+  { file: 'apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs', line: 265, id: 'checkpoints' },
+  { file: 'apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs', line: 266, id: 'ui-asset-tokens' },
+  { file: 'apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs', line: 267, id: 'api-everything' },
+  { file: 'apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs', line: 273, id: 'checkpoints' },
+  { file: 'apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs', line: 274, id: 'watch-live' },
+  { file: 'apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs', line: 275, id: 'shots-not-review' },
+  { file: 'framework/core/model-switch.mjs', line: 133, id: 'model-upgrade-approval' },
+  { file: 'framework/core/model-switch.mjs', line: 135, id: 'fable-auto-upgrade' },
+  // the dispatcher (pipeline.mjs launch → briefFor) and the splitter's own rules
+  { file: 'apps/console-web/plugins/build-orchestrator/pipeline.mjs', line: 497, id: 'checkpoints' },
+  { file: 'apps/console-web/plugins/build-orchestrator/pipeline-core.mjs', line: 406, id: 'small-steps' },
+  // the launcher's notes appended to every headless prompt
+  { file: 'deploy/claude-headless.sh', from: 74, to: 80, id: 'rules-brief-only' },
+  { file: 'deploy/claude-headless.sh', from: 81, to: 85, id: 'hard-build-limit' },
+  { file: 'deploy/claude-headless.sh', line: 135, id: 'watch-live' },
+  { file: 'deploy/claude-headless.sh', line: 138, id: 'agent-cap' },
+  { file: 'deploy/claude-headless.sh', line: 213, id: 'model-upgrade-approval' },
+  // the rules brief seed (Claude settings → Rules briefs), one bullet at a time
+  { file: 'framework/schemas/rules-briefs.json', line: 9, part: 0, id: 'rules-brief-only' },
+  { file: 'framework/schemas/rules-briefs.json', line: 9, part: 1, id: 'one-agent-no-subagents' },
+  { file: 'framework/schemas/rules-briefs.json', line: 9, part: 2, id: 'checkpoints' },
+  { file: 'framework/schemas/rules-briefs.json', line: 9, part: 3, id: 'pr-only' },
+  { file: 'framework/schemas/rules-briefs.json', line: 9, part: 4, id: 'models-opus-fable-only' },
+  { file: 'framework/schemas/rules-briefs.json', line: 9, part: 5, id: 'cross-port-fixtures' },
+  { file: 'framework/schemas/rules-briefs.json', line: 9, part: 6, id: 'veto-send-once' },
+  { file: 'framework/schemas/rules-briefs.json', line: 9, part: 7, id: 'fix-it-yourself' },
+  { file: 'framework/schemas/rules-briefs.json', line: 9, part: 8, id: 'feature-status-tracker' },
+  { file: 'framework/schemas/rules-briefs.json', line: 9, part: 9, id: 'clean-professional-amber' },
+  { file: 'framework/schemas/rules-briefs.json', line: 13, part: 1, id: 'ui-asset-tokens' },
+  { file: 'framework/schemas/rules-briefs.json', line: 13, part: 2, id: 'toolbars' },
+  { file: 'framework/schemas/rules-briefs.json', line: 13, part: 3, id: 'settings-level-toolbar' },
+  { file: 'framework/schemas/rules-briefs.json', line: 13, part: 4, id: 'ui-review-submit' },
+  { file: 'framework/schemas/rules-briefs.json', line: 17, part: 1, id: 'plugin-lifecycle' },
+  { file: 'framework/schemas/rules-briefs.json', line: 17, part: 2, id: 'plugin-lifecycle' },
+  // the console MCP server's instructions to every connected session
+  { file: 'apps/console-web/server/mcp_server.py', from: 44, to: 45, id: 'assigned-agent' },
+  { file: 'apps/console-web/server/mcp_server.py', line: 46, id: 'claude-settings-first' },
+  { file: 'apps/console-web/server/mcp_server.py', line: 48, id: 'check-pending-list' },
+  { file: 'apps/console-web/server/mcp_server.py', from: 49, to: 50, id: 'small-steps' },
+  { file: 'apps/console-web/server/mcp_server.py', from: 51, to: 52, id: 'models-opus-fable-only' },
+  { file: 'apps/console-web/server/mcp_server.py', from: 53, to: 56, id: 'fable-auto-upgrade' },
+  { file: 'apps/console-web/server/mcp_server.py', from: 57, to: 58, id: 'feature-status-tracker' },
+  { file: 'apps/console-web/server/mcp_server.py', from: 60, to: 62, id: 'session-mirror' },
+  { file: 'apps/console-web/server/mcp_server.py', from: 64, to: 65, id: 'follow-amber' },
+  // _claude/memory/docs rule docs (the lines that state a rule, not the how-to around them)
+  { file: '_claude/memory/docs/build-steps.md', from: 3, to: 4, id: 'small-steps' },
+  { file: '_claude/memory/docs/ui-all-assets.md', line: 13, id: 'expansion-care' },
+  { file: '_claude/memory/docs/build-reporting.md', from: 3, to: 5, id: 'change-log' },
+  { file: '_claude/memory/docs/token-log.md', from: 5, to: 7, id: 'rules-brief-only' },
+  { file: '_claude/memory/docs/codebase-changes.md', line: 30, id: 'change-log' },
+  { file: '_claude/memory/docs/session-checkin.md', line: 149, id: 'no-secrets' },
+  { file: '_claude/memory/docs/priority-tags.md', line: 16, id: 'build-priority-tag' },
+  { file: '_claude/memory/docs/patches-banners.md', from: 33, to: 34, id: 'banners-launch-expanded' },
+  { file: '_claude/memory/docs/Building-baseline.md', line: 1, id: 'expansion-care' },
+  { file: '_claude/memory/docs/Frame.md', line: 1, id: 'app-defaults' },
+];
+/** Sources read for pass 2 that hold no builder rule (recorded so the pass is complete). */
+const EMPTY_SOURCES = [{ file: '_claude/instructions/README.md', why: 'a folder description' }, { file: '_claude/instructions/builds-one-page-foldin.md', why: 'a finished fold-in note' }];
+
+/** Ids that first appear in pass 2: [doer, kind, applies]. */
+const A2 = {
+  'checkpoints': ['vps', 'mechanical', 'builds'], 'phase-brief-scope': ['vps', 'mechanical', 'builds'], 'api-everything': ['session', 'judgement', 'builds'],
+  'watch-live': ['vps', 'mechanical', 'builds'], 'headless-context': ['vps', 'mechanical', 'builds'], 'rules-brief-only': ['vps', 'mechanical', 'builds'],
+  'hard-build-limit': ['vps', 'mechanical', 'builds'], 'clean-professional-amber': ['session', 'judgement', 'all'], 'banners-launch-expanded': ['session', 'judgement', 'builds'],
+};
+Object.assign(TITLES, {
+  'checkpoints': 'Steps are checkpoints in one session: commit, push, tick, go on; the next session picks up at the first open step',
+  'phase-brief-scope': 'A phase brief: one session, no sub-agents, steps within the cap, read only the files listed, stop at the end of the phase',
+  'api-everything': 'Everything comes with an API: deep link, readable state, every action callable through REST, MCP, CLI and voice',
+  'watch-live': 'Watch live: say which screen and element you are changing so the live preview follows',
+  'headless-context': 'Headless runs start with no MCP and the built-in tools only; the brief names what it truly needs',
+  'rules-brief-only': 'Headless runs load no CLAUDE.md chain: the task brief plus the rules brief are all the standing rules',
+  'hard-build-limit': 'A hard VPS build limit: no launch past it, whoever asks',
+  'clean-professional-amber': 'Code, comments, commits, PRs and docs stay clean and professional; to Brett you are Amber, short and blunt',
+  'banners-launch-expanded': 'Every banner launches expanded',
+});
+
 const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 48);
 const key = (file, line) => `${file === '_claude/rules/RULES.md' ? 'rules/RULES.md' : file.split('/').pop()}:${line}`;
 
@@ -259,12 +355,46 @@ for (const src of SOURCES) {
     byId.set(id, entry);
   }
 }
+// ------------------------------------------------------------------ pass 2
+
+const fileCache = new Map();
+const linesOf = (file) => { if (!fileCache.has(file)) fileCache.set(file, readFileSync(join(ROOT, file), 'utf8').split('\n')); return fileCache.get(file); };
+/** The verbatim text of one pass-2 source: a line, a joined range, or one bullet of a JSON string on that line. */
+function codeText(s) {
+  const lines = linesOf(s.file);
+  if (s.part !== undefined) {
+    const line = lines[s.line - 1];
+    const m = /"text": "((?:[^"\\]|\\.)*)"/.exec(line);
+    if (!m) throw new Error(`${s.file}:${s.line} has no "text" string`);
+    const parts = JSON.parse(`"${m[1]}"`).split('\n- ');
+    if (parts[s.part] === undefined) throw new Error(`${s.file}:${s.line} has no bullet ${s.part}`);
+    return (s.part === 0 ? parts[0] : `- ${parts[s.part]}`).trim();
+  }
+  const from = s.from ?? s.line; const to = s.to ?? s.line;
+  const text = lines.slice(from - 1, to).map((l) => l.trim()).filter(Boolean).join(' ');
+  if (!text) throw new Error(`${s.file}:${from} is empty`);
+  return text;
+}
+const pass2 = new Map();
+for (const s of CODE_SOURCES) {
+  const where = s.from ? `${s.file}:${s.from}-${s.to}` : s.part !== undefined ? `${s.file}:${s.line}#${s.part}` : `${s.file}:${s.line}`;
+  const text = codeText(s);
+  const a = A2[s.id];
+  const entry = byId.get(s.id) || { id: s.id, title: TITLES[s.id] || s.id, doer: a ? a[0] : 'session', kind: a ? a[1] : 'judgement', applies: a ? a[2] : 'builds', annotated: !!a, sources: [] };
+  if (!byId.has(s.id) && !a) entry.annotated = false;
+  entry.sources.push({ source: where, file: s.file, line: s.from ?? s.line, ...(s.to ? { to: s.to } : {}), ...(s.part !== undefined ? { part: s.part } : {}), text, pass: 2 });
+  byId.set(s.id, entry);
+  pass2.set(s.file, (pass2.get(s.file) || 0) + 1);
+}
+for (const [file, n] of pass2) sources.push({ file, rules: n, pass: 2 });
+for (const e of EMPTY_SOURCES) sources.push({ file: e.file, rules: 0, pass: 2, why: e.why });
+
 const rules = [...byId.values()].map((e) => ({ ...e, source: e.sources[0].source, text: e.sources[0].text }));
 const doc = {
-  $axf: 'build-rules-inventory@1', build: 'build-rules-tab-gate-rules-vps-owns', pass: 1,
-  about: 'Every builder rule in the Claude rules files, one entry per rule id, every source line kept verbatim (only the list marker removed). doer: vps = the VPS does or enforces it by itself, session = the Claude session has to; kind: mechanical = a checker, hook or fixer can do or verify it, judgement = it needs reasoning; applies: builds | interactive | all. Generated by inventory-build.mjs; nothing in the rules files was deleted.',
-  fields: { id: 'stable rule id (the store keeps it)', source: 'first source file:line', text: 'verbatim text of that line', sources: 'every file:line the rule appears at, each verbatim', doer: 'vps | session', kind: 'mechanical | judgement', applies: 'builds | interactive | all', annotated: 'false = doer and kind are the defaults, not a decision' },
-  counts: { rules: rules.length, sourceLines: rules.reduce((n, r) => n + r.sources.length, 0), vps: rules.filter((r) => r.doer === 'vps').length, session: rules.filter((r) => r.doer === 'session').length, mechanical: rules.filter((r) => r.kind === 'mechanical').length, judgement: rules.filter((r) => r.kind === 'judgement').length, unannotated: rules.filter((r) => !r.annotated).length },
+  $axf: 'build-rules-inventory@1', build: 'build-rules-tab-gate-rules-vps-owns', pass: 2,
+  about: 'Every builder rule a Claude session is given today, one entry per rule id, every source kept verbatim. Pass 1: the rule lines of CLAUDE.md, _claude/shared/rules/RULES.md and _claude/rules/RULES.md (only the list marker removed). Pass 2: the brief template, the orchestrator and dispatcher brief blocks (Look / API / Checkpoints / Rules, the tick, watch-live and screenshot lines), the launcher notes, the rules-brief seed, the console MCP instructions and the rule lines of _claude/memory/docs, merged onto the same ids. doer: vps = the VPS does or enforces it by itself, session = the Claude session has to; kind: mechanical = a checker, hook or fixer can do or verify it, judgement = it needs reasoning; applies: builds | interactive | all. Generated by inventory-build.mjs; nothing in the rules files was deleted.',
+  fields: { id: 'stable rule id (the store keeps it)', source: 'first source file:line', text: 'verbatim text of that line', sources: 'every file:line (or :from-to, or :line#bullet) the rule appears at, each verbatim; pass 2 entries say so', doer: 'vps | session', kind: 'mechanical | judgement', applies: 'builds | interactive | all', annotated: 'false = doer and kind are the defaults, not a decision' },
+  counts: { rules: rules.length, sourceLines: rules.reduce((n, r) => n + r.sources.length, 0), pass2Sources: CODE_SOURCES.length, vps: rules.filter((r) => r.doer === 'vps').length, session: rules.filter((r) => r.doer === 'session').length, mechanical: rules.filter((r) => r.kind === 'mechanical').length, judgement: rules.filter((r) => r.kind === 'judgement').length, unannotated: rules.filter((r) => !r.annotated).length },
   sources, rules,
 };
 const text = `${JSON.stringify(doc, null, 2)}\n`;
