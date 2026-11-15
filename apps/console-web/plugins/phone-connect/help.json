@@ -204,6 +204,20 @@
         "text": "Opens the Auto-approval rules screen. Connects Brett's Android phone to the console through the small Phone Connect companion app (phone-connect@1).",
         "kind": "screen",
         "draft": true
+      },
+      {
+        "target": "record-my-mic-too",
+        "title": "Record my mic too",
+        "text": "Turns “Record my mic too” on or off. It takes effect straight away and is remembered. Part of Phone Connect.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "search-what-was-said",
+        "title": "Search what was said",
+        "text": "Where you set “Search what was said”. Change it and the app uses the new value. Part of Phone Connect.",
+        "kind": "field",
+        "draft": true
       }
     ],
     "intros": []

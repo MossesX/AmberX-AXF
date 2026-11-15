@@ -7,6 +7,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { Button, Chip, Container, Note, Switch, TextField } from '@console/axf/react';
 import { api, errText, when, type RecorderStatus } from './api';
 import { useSettings } from './PhoneConnectSettings';
+import { HubList } from './recorder/Recordings';
+import './recorder/recordings.css';
 
 export function RecorderPanel() {
   const [st, setSt] = useState<RecorderStatus | null>(null);
@@ -62,6 +64,7 @@ export function RecorderPanel() {
           )) : <li className="axp-phone-item axp-phone-muted">No parts reported yet.</li>}
         </ul>
       </Container>
+      <HubList />
       <Container title="Transcripts" icon="file">
         <div className="axp-phone-stack" data-axf-target="phone-connect.recorder.transcripts">
           <span className="axp-phone-muted">{st ? (!st.transcripts.on ? 'Switched off (Settings → Plugins → Claude).' : !st.transcripts.engine ? 'The engine is not installed on the console.' : `${st.transcripts.waiting} part(s) waiting.`) : '…'}</span>

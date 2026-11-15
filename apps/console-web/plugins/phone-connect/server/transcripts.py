@@ -42,7 +42,7 @@ class Skip(Exception):
 
 
 def folder(root: Path, project: str = DEFAULT_PROJECT) -> Path:
-    return root / project / "_data" / "output-recorder"
+    return root / project / "_data" / "output-recorder"  # the hub data folder the phone uploads into (data, not a plugin)  axf-not-plugin:output-recorder
 
 
 def available() -> bool:
