@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5790,
- "updatedAt": "2026-11-15T00:31:38.767Z",
+ "rev": 5791,
+ "updatedAt": "2026-11-15T00:31:54.407Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -191347,7 +191347,7 @@
    "pr": "#594",
    "priority": "P1",
    "createdAt": "2026-11-12T20:40:19.258Z",
-   "updatedAt": "2026-11-13T17:34:16.679Z",
+   "updatedAt": "2026-11-15T00:31:45.711Z",
    "builtAt": "2026-11-12T23:08:14.129Z",
    "notes": [
     {
@@ -191464,6 +191464,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:31:45.458Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/README.md, apps/console-web/plugins/github-client/DESIGN.md, apps/console-web/plugins/github-client/README.md, apps/console-web/plugins/github-client/contract.json, apps/console-web/plugins/github-client/help.json, apps/console-web/plugins/github-client/hooks.mj"
+     }
+    ]
    },
    "steps": [
     {
@@ -191673,7 +191690,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -199848,7 +199865,7 @@
    "pr": "#625",
    "priority": "P1",
    "createdAt": "2026-11-13T17:44:36.515Z",
-   "updatedAt": "2026-11-13T18:14:04.050Z",
+   "updatedAt": "2026-11-15T00:31:38.397Z",
    "builtAt": "2026-11-13T18:14:04.050Z",
    "notes": [
     {
@@ -199923,6 +199940,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:31:38.206Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: framework/spec/check-chrome-apply.mts"
+     }
+    ]
    },
    "steps": [
     {
@@ -200003,7 +200037,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -202056,7 +202090,7 @@
    "pr": "#635",
    "priority": "P1",
    "createdAt": "2026-11-13T18:14:45.988Z",
-   "updatedAt": "2026-11-13T19:10:08.607Z",
+   "updatedAt": "2026-11-15T00:31:35.039Z",
    "builtAt": "2026-11-13T19:09:27.501Z",
    "notes": [
     {
@@ -202162,6 +202196,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:31:34.818Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/README.md, apps/console-web/plugins/approvals-banner/help.json, apps/console-web/plugins/approvals-banner/test.mts, apps/console-web/plugins/approvals-banner/web/decisions.ts, apps/console-web/plugins/approvals-banner/web/index.tsx, apps/console-web/plugins/deci"
+     }
+    ]
    },
    "steps": [
     {
@@ -202374,7 +202425,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -204040,7 +204091,7 @@
    "pr": "#637",
    "priority": "P1",
    "createdAt": "2026-11-13T18:38:53.122Z",
-   "updatedAt": "2026-11-13T19:35:13.753Z",
+   "updatedAt": "2026-11-15T00:31:28.379Z",
    "builtAt": "2026-11-13T19:28:57.835Z",
    "notes": [
     {
@@ -204214,6 +204265,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:31:28.269Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-droid/.gitignore, apps/console-droid/README.md, apps/console-droid/app/build.gradle, apps/console-droid/app/src/main/AndroidManifest.xml, apps/console-droid/app/src/main/assets/offline.html, apps/console-droid/app/src/main/java/ai/amberx/conso"
+     }
+    ]
    },
    "steps": [
     {
@@ -204448,7 +204516,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
