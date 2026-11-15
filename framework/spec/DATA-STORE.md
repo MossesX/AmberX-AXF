@@ -182,6 +182,32 @@ on axf-data; a revoked `jti` answers `unauthorized`.
 | tombstones kept | 30 days |
 | watch connections per token | 32 |
 
+## Reference client (`framework/core/data-store.mjs`)
+
+```js
+import { createDataStore, fileBackend, httpBackend, pluginKey } from 'framework/core/data-store.mjs';
+const store = createDataStore({ backend: await fileBackend({ dir: '.axf-console/data-store' }), by: 'svc:console' });
+const rec = await store.get('builds/store.json');                       // null when missing; rec.data, rec.etag, rec.rev
+await store.put('builds/store.json', doc, { ifMatch: rec.etag });       // conflict → DataStoreError('conflict')
+await store.update('builds/store.json', (doc) => ({ ...doc, rev: doc.rev + 1 }));   // re-reads and retries on conflict
+await store.append('builds/journal/2026-11', [entry], { idempotencyKey: id });
+const { entries, next } = await store.read('builds/journal/2026-11', { since: 0 });
+const w = store.watch({ ns: ['builds', 'plugins/ui-review'], since: cursor }, (change) => …); w.close();
+await store.manifest('plugins/ui-review'); await store.snapshot(['builds', 'notes']);
+```
+
+- Backends: `httpBackend({ url, token, actor })` (axf-data), `fileBackend({ dir })` (the contract on local files:
+  `<dir>/data/<ns>/<path>` bodies, `<dir>/meta/<ns>/<path>.json` metadata, `<dir>/_changes.jsonl` the feed, atomic
+  rename writes), `memoryBackend()` (tests). File and memory share one engine and answer alike; the fixture replays the
+  same scenario on both.
+- `put` without `ifMatch` / `create` is `precondition_required`; a blob may pass `force`. `update(key, fn)` is the easy
+  path: read, apply, write with the etag read, re-read and retry up to `RETRY.conflictTries` on `conflict`.
+- Retries follow the error table: `unauthorized` → `onUnauthorized()` once and retry; `rate_limited` / `unavailable`
+  → `retryAfterMs` or `backoffMs(n)`; `internal` → once; everything else throws at once.
+- `pluginKey(folder, rel)` maps a plugin-lifecycle@1 data file onto its `plugins/<folder>/…` key.
+- A `plugins` list or manifest without a folder covers every plugin folder (console / admin use); a plugin's own token
+  is granted `plugins/<folder>` and sees only that.
+
 ## Migration
 
 Design in Phase 1 step s3 (this section is written there): every data source the console writes today, its namespace,
