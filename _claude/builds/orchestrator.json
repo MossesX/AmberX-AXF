@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:44:21.998Z",
+ "updatedAt": "2026-11-15T00:44:35.943Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -79637,7 +79637,7 @@
    "branch": "claude/account-failover-notify",
    "pr": "#392",
    "createdAt": "2026-11-08T16:59:53.289Z",
-   "updatedAt": "2026-11-15T00:36:51.088Z",
+   "updatedAt": "2026-11-15T00:44:32.473Z",
    "builtAt": "2026-11-08T17:26:34.358Z",
    "notes": [
     {
@@ -79777,7 +79777,7 @@
    "branch": "claude/orchestrator-checks-shipped-features",
    "pr": "#599",
    "createdAt": "2026-11-08T17:22:53.861Z",
-   "updatedAt": "2026-11-15T00:35:51.102Z",
+   "updatedAt": "2026-11-15T00:44:08.226Z",
    "builtAt": "2026-11-12T03:37:07.380Z",
    "notes": [
     {
@@ -80015,7 +80015,7 @@
    "branch": "claude/ui-api-parity-rule-r3",
    "pr": "#393",
    "createdAt": "2026-11-08T17:23:21.874Z",
-   "updatedAt": "2026-11-15T00:36:44.569Z",
+   "updatedAt": "2026-11-15T00:44:30.966Z",
    "builtAt": "2026-11-08T17:46:46.647Z",
    "notes": [],
    "approvals": [],
@@ -80180,7 +80180,7 @@
    "branch": "claude/account-health-failover",
    "pr": "#394",
    "createdAt": "2026-11-08T17:24:55.214Z",
-   "updatedAt": "2026-11-15T00:36:34.874Z",
+   "updatedAt": "2026-11-15T00:44:27.044Z",
    "builtAt": "2026-11-08T17:50:32.552Z",
    "notes": [
     {
@@ -83007,7 +83007,7 @@
    "branch": "claude/orchestrator-api-rule-in-every-brief-plan-studio",
    "pr": "#396",
    "createdAt": "2026-11-08T19:13:49.284Z",
-   "updatedAt": "2026-11-15T00:36:29.780Z",
+   "updatedAt": "2026-11-15T00:44:23.171Z",
    "builtAt": "2026-11-08T22:07:03.823Z",
    "notes": [
     {
@@ -84657,7 +84657,7 @@
    "branch": "claude/plan-studio-receives-a-valid-shipped-feature-man",
    "pr": "#404",
    "createdAt": "2026-11-09T00:37:43.238Z",
-   "updatedAt": "2026-11-15T00:36:26.406Z",
+   "updatedAt": "2026-11-15T00:44:21.397Z",
    "builtAt": "2026-11-09T04:13:50.725Z",
    "notes": [
     {
@@ -87857,7 +87857,7 @@
    "pr": "#444",
    "priority": "P2",
    "createdAt": "2026-11-09T16:02:30.370Z",
-   "updatedAt": "2026-11-15T00:36:15.841Z",
+   "updatedAt": "2026-11-15T00:44:17.259Z",
    "builtAt": "2026-11-10T15:17:36.186Z",
    "notes": [
     {
@@ -88039,7 +88039,7 @@
    "pr": "#411",
    "priority": "P2",
    "createdAt": "2026-11-09T16:03:35.870Z",
-   "updatedAt": "2026-11-15T00:36:20.725Z",
+   "updatedAt": "2026-11-15T00:44:18.547Z",
    "builtAt": "2026-11-09T18:17:08.338Z",
    "notes": [
     {
@@ -89673,7 +89673,7 @@
    "pr": "#445",
    "priority": "P2",
    "createdAt": "2026-11-09T18:43:22.318Z",
-   "updatedAt": "2026-11-15T00:36:10.645Z",
+   "updatedAt": "2026-11-15T00:44:15.437Z",
    "builtAt": "2026-11-10T15:31:03.941Z",
    "notes": [
     {
@@ -106837,7 +106837,7 @@
    "branch": "claude/molly-gap-console-token-handoff",
    "pr": "#511",
    "createdAt": "2026-11-10T22:09:29.615Z",
-   "updatedAt": "2026-11-15T00:35:57.570Z",
+   "updatedAt": "2026-11-15T00:44:10.931Z",
    "builtAt": "2026-11-12T03:16:35.159Z",
    "notes": [
     {
@@ -107148,7 +107148,7 @@
    "branch": "claude/molly-gap-remote-actions",
    "pr": "#502",
    "createdAt": "2026-11-10T22:09:30.792Z",
-   "updatedAt": "2026-11-15T00:36:04.542Z",
+   "updatedAt": "2026-11-15T00:44:12.537Z",
    "builtAt": "2026-11-12T02:31:02.862Z",
    "notes": [
     {
@@ -111361,7 +111361,7 @@
    "branch": "claude/remove-console-s-own-notes-manager",
    "pr": "#606",
    "createdAt": "2026-11-12T10:43:54.592Z",
-   "updatedAt": "2026-11-15T00:35:44.007Z",
+   "updatedAt": "2026-11-15T00:44:06.850Z",
    "builtAt": "2026-11-12T11:03:13.773Z",
    "notes": [
     {
