@@ -798,8 +798,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:17 UTC · `console-axhub-retry-failed-calls` → pending, note (all) · pipeline
-- 2026-11-14 23:17 UTC · `per-toolbar-settings-fix-failing-chrome` → running, note (all) · pipeline
 - 2026-11-14 23:17 UTC · `per-toolbar-settings-fix-failing-chrome` note (all) · orchestrator
 - 2026-11-14 23:16 UTC · `merge-main-land-console-app-part-3` added (0 steps) (all) · land-finish-auto-land-live-clear-backlog
 - 2026-11-14 23:16 UTC · `merge-main-land-console-app-part-3` → queued, note (all) · land-finish-auto-land-live-clear-backlog
@@ -1198,6 +1196,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:53 UTC · `skin-axhub-override-switch-greyed-out` PR #641 (all) · builds-live
 - 2026-11-13 19:53 UTC · `skin-axhub-override-switch-greyed-out` s8 done (all) · orchestrator
 - 2026-11-13 19:53 UTC · `skin-axhub-override-switch-greyed-out` note (all) · orchestrator
+- 2026-11-15 01:03 UTC · `skin-axhub-override-switch-greyed-out` → running, note (all) · pipeline
+- 2026-11-15 01:03 UTC · `skin-axhub-override-switch-greyed-out` note (all) · orchestrator
 
 ## Token passes (log)
 
