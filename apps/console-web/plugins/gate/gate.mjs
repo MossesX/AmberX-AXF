@@ -16,7 +16,7 @@
  * lander_waiting, lander_runs, lander_mode, lander_land_now, lander_pause, lander_resume, settings_get, settings_set.
  * Answers: { ok: true, … } or { ok: false, code: invalid | not_found | confirmation_required | unavailable | failed, message }.
  */
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as gate from '../../../../framework/core/gate-rules.mjs';
@@ -167,7 +167,9 @@ export function createGate(opts = {}) {
 const readStdin = () => { try { return readFileSync(0, 'utf8'); } catch { return ''; } };
 
 export async function main(argv, { out = (s) => console.log(s), err = (s) => console.error(s), gateApi = null } = {}) {
-  const g = gateApi || createGate();
+  // the human CLI on the VPS host reads the live console's data (the same default as the lander's own CLI)
+  const host = argv[0] !== 'api' && !process.env.AXF_CONSOLE_ROOT && !process.env.AXF_GATE_DIR && existsSync('/opt/axf/.axf-console') ? { consoleRoot: '/opt/axf' } : {};
+  const g = gateApi || createGate(host);
   if (argv[0] === 'api') {
     const op = argv[1] || '';
     let input = {}; try { input = JSON.parse(readStdin() || '{}'); } catch { out(JSON.stringify(fail('invalid', 'the input is not JSON'))); return 2; }
@@ -178,10 +180,105 @@ export async function main(argv, { out = (s) => console.log(s), err = (s) => con
   return cli(argv, g, { out, err });
 }
 
-/** Filled in by the CLI step: the human commands map onto the same ops. */
+/** The first words `axf gate …` hands to this file (framework/cli/axf.mjs, plugin.json "cli"); the rest go to plugin-commands. */
+export const cliWords = Object.freeze(['rules', 'check', 'history', 'lander', 'settings', 'help']);
+
+const USAGE = [
+  'axf gate rules list [--kind k] [--enabled true|false] [--owner o]',
+  'axf gate rules get <id>',
+  'axf gate rules set <id> <enabled|severity|owner|title|description|settings.<key>> <value>',
+  'axf gate rules on <id> | off <id>',
+  'axf gate rules reset [id] [--confirm <token>]',
+  'axf gate check <pr> | check --branch <branch>',
+  'axf gate history [--kind rule|lander] [--since <date>] [--pr <n>] [--rule <id>] [--action <a>] [--limit <n>]',
+  'axf gate lander status | waiting [--rule r] [--state s] | runs [--limit n] [--result r]',
+  'axf gate lander mode [on|off] | land-now <pr> [--confirm <token>] | pause [--why "…"] | resume',
+  'axf gate settings [get] | settings set <key> <value>',
+  '  --json prints the record; --by and --reason say who and why (History)',
+];
+
+function flagsOf(argv) {
+  const f = { _: [] };
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i];
+    if (a === '--json') f.json = true;
+    else if (a.startsWith('--')) { const k = a.slice(2); const v = argv[i + 1] !== undefined && !argv[i + 1].startsWith('--') ? argv[++i] : 'true'; f[k] = v; }
+    else f._.push(a);
+  }
+  return f;
+}
+const parseValue = (v) => { try { return JSON.parse(v); } catch { return v; } };
+
+/** The human command → { op, input }, or { usage } when it doesn't parse. */
+export function parseCli(argv) {
+  const f = flagsOf(argv); const [a, b, c, d] = f._;
+  const who = { ...(f.by ? { by: f.by } : { by: 'cli' }), ...(f.reason ? { reason: f.reason } : {}) };
+  const pick = (...ks) => Object.fromEntries(ks.filter((k) => f[k] !== undefined).map((k) => [k, f[k]]));
+  if (a === 'rules') {
+    if (!b || b === 'list') return { op: 'rules_list', input: pick('kind', 'enabled', 'owner') };
+    if (b === 'get' && c) return { op: 'rules_get', input: { id: c } };
+    if ((b === 'on' || b === 'off') && c) return { op: 'rules_toggle', input: { id: c, enabled: b === 'on', ...who } };
+    if (b === 'reset') return { op: 'rules_reset', input: { ...(c ? { id: c } : {}), ...pick('confirm'), ...who } };
+    if (b === 'set' && c && d && argv.length) {
+      const value = f._.slice(4).join(' ');
+      if (value === '') return { usage: true };
+      if (d.startsWith('settings.')) return { op: 'rules_set', input: { id: c, settings: { [d.slice(9)]: parseValue(value) }, ...who } };
+      if (!['enabled', 'severity', 'owner', 'title', 'description'].includes(d)) return { usage: true };
+      return { op: 'rules_set', input: { id: c, [d]: d === 'enabled' ? boolOf(value) ?? value : value, ...who } };
+    }
+    return { usage: true };
+  }
+  if (a === 'check') return b ? { op: 'check_pr', input: { pr: b } } : f.branch ? { op: 'check_pr', input: { branch: f.branch } } : { usage: true };
+  if (a === 'history') return { op: 'history', input: pick('kind', 'since', 'pr', 'rule', 'action', 'limit') };
+  if (a === 'lander') {
+    if (!b || b === 'status') return { op: 'lander_status', input: {} };
+    if (b === 'waiting') return { op: 'lander_waiting', input: pick('rule', 'state') };
+    if (b === 'runs') return { op: 'lander_runs', input: pick('limit', 'result') };
+    if (b === 'mode') return c ? { op: 'lander_mode', input: { mergeQueue: c === 'on' ? true : c === 'off' ? false : c, ...who } } : { op: 'lander_mode', input: {} };
+    if (b === 'land-now' && c) return { op: 'lander_land_now', input: { pr: c, ...pick('confirm'), ...who } };
+    if (b === 'pause') return { op: 'lander_pause', input: { ...pick('why'), ...who } };
+    if (b === 'resume') return { op: 'lander_resume', input: { ...who } };
+    return { usage: true };
+  }
+  if (a === 'settings') {
+    if (!b || b === 'get') return { op: 'settings_get', input: {} };
+    if (b === 'set' && c && d !== undefined) return { op: 'settings_set', input: { settings: { [c]: parseValue(d) } } };
+    return { usage: true };
+  }
+  return { usage: true };
+}
+
+const onOff = (b) => (b ? 'on' : 'off');
+/** Plain lines for a person (the record itself with --json). */
+export function textOf(op, r) {
+  if (!r.ok && r.code === 'confirmation_required') return `${r.message || 'confirm first'}\n  again with --confirm ${r.confirm}`;
+  if (!r.ok) return `${r.code}: ${r.message}`;
+  switch (op) {
+    case 'rules_list': return r.rules.map((x) => `${onOff(x.enabled).padEnd(4)} ${x.severity.padEnd(6)} ${x.id.padEnd(18)} ${x.title}`).join('\n') || 'no rules';
+    case 'rules_get': return `${r.rule.id} (${r.rule.kind}) ${onOff(r.rule.enabled)}, ${r.rule.severity}, run by ${r.rule.owner}\n${r.rule.title}: ${r.rule.description}\nsettings ${JSON.stringify(r.rule.settings)}`;
+    case 'rules_set': case 'rules_toggle': return `${r.rule.id}: ${onOff(r.rule.enabled)}, ${r.rule.severity} (rev ${r.rev})`;
+    case 'rules_reset': return `reset to the defaults (rev ${r.rev})`;
+    case 'check_pr': return r.pass ? `#${r.pr} can land: every rule passes.` : `#${r.pr} ${r.held ? 'waits' : 'needs a fix'}: ${r.reasons.join(' · ')}`;
+    case 'history': return r.items.map((e) => `${e.at} ${e.by.padEnd(14)} ${e.kind}/${e.action}${e.id ? ` ${e.id}` : ''}${e.pr ? ` #${e.pr}` : ''}`).join('\n') || 'no history yet';
+    case 'lander_status': case 'lander_mode_set': case 'lander_pause': case 'lander_resume':
+      return `auto-lander ${r.status} · merge queue ${onOff(r.mergeQueue)} (${r.mode})${r.paused ? ` · paused: ${r.pause?.why || 'no reason given'}` : ''}${r.landing ? ` · landing #${r.landing.pr}` : ''} · ${r.counts.waiting} waiting`;
+    case 'lander_mode': return r.status ? `merge queue ${onOff(r.mergeQueue)} (${r.mode}) · auto-lander ${r.status}` : `merge queue ${onOff(r.mergeQueue)}${r.since ? ` since ${r.since}${r.by ? ` (${r.by})` : ''}` : ''}`;
+    case 'lander_waiting': return r.items.map((w) => `${String(w.position).padStart(3)} #${w.pr} ${w.state.padEnd(8)} ${w.rule ? `[${w.rule}] ` : ''}${w.reason}`).join('\n') || 'nothing waits';
+    case 'lander_runs': return r.items.map((x) => `${x.startedAt} ${x.result.padEnd(8)} ${x.landing?.pr ? `#${x.landing.pr} ` : ''}${x.reasonText}`).join('\n') || 'no runs yet';
+    case 'lander_land_now': return `#${r.pr} lands next (${r.via})`;
+    case 'settings_get': case 'settings_set': return Object.entries(r.settings).map(([k, v]) => `${k.padEnd(12)} ${v}`).join('\n');
+    default: return JSON.stringify(r);
+  }
+}
+
+/** The human commands: the same ops as the API, printed for a person (or as the record with --json). Exit 3 = confirm first. */
 export async function cli(argv, g, { out }) {
-  out(JSON.stringify(fail('invalid', 'usage: gate.mjs api <op> < input.json')));
-  return 2;
+  if (!argv.length || argv[0] === 'help' || argv.includes('--help')) { out(USAGE.join('\n')); return argv.length ? 0 : 2; }
+  const p = parseCli(argv);
+  if (p.usage) { out(USAGE.join('\n')); return 2; }
+  const r = g.run(p.op, p.input);
+  out(argv.includes('--json') ? JSON.stringify(r, null, 2) : textOf(p.op === 'lander_mode' && p.input.mergeQueue !== undefined ? 'lander_mode' : p.op, r));
+  return r.ok ? 0 : r.code === 'confirmation_required' ? 3 : 1;
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

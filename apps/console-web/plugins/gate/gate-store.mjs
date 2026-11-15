@@ -4,7 +4,7 @@
  * plugin that provides service:axf.merge-queue@1 (config.json, merge-queue.json, land.json, their control files, the
  * run log). A later axf-molly backend replaces this file (and lander.mjs) and nothing else.
  *
- *   createStore({ root?, dataDir?, landerDir?, landerCli?, now? }) → store
+ *   createStore({ root?, consoleRoot?, dataDir?, landerDir?, landerCli?, now? }) → store
  *
  * Environment: AXF_GATE_DIR (the plugin's data folder), AXF_GATE_LANDER_DIR (the lander's data folder; else
  * AXF_PUSH_BANNER_DIR, else the merge-queue provider's lifecycle.dataDir under AXF_CONSOLE_ROOT or the repo),
@@ -41,7 +41,7 @@ export function landerProvider(root = REPO) {
 
 export function createStore(opts = {}) {
   const root = opts.root || env('AXF_ROOT') || REPO;
-  const consoleRoot = env('AXF_CONSOLE_ROOT') || root;
+  const consoleRoot = opts.consoleRoot || env('AXF_CONSOLE_ROOT') || root;
   const provider = opts.landerDir && opts.landerCli !== undefined ? null : landerProvider(root);
   const dataDir = opts.dataDir || env('AXF_GATE_DIR') || join(consoleRoot, '.axf-console', 'plugins', FOLDER);
   const landerDir = opts.landerDir || env('AXF_GATE_LANDER_DIR') || env('AXF_PUSH_BANNER_DIR') || (provider?.dataDir ? join(consoleRoot, provider.dataDir) : '');
@@ -67,13 +67,11 @@ export function createStore(opts = {}) {
     },
 
     // ---------------------------------------------------------------- the rule set
-    /** The rule set; the first read migrates it from the lander's config (gate-rules migrate) and saves it. */
+    /** The rule set; until the first change it is migrated from the lander's config (gate-rules migrate). Reads never write. */
     readRules() {
       const raw = readJson(f('rules.json'), null);
       if (raw && raw.$axf === gate.SET_FRAME) return gate.normRuleSet(raw, iso());
-      const set = gate.migrate(store.landerConfig(), { at: iso(), by: 'migration' });
-      writeJson(f('rules.json'), set);
-      return set;
+      return gate.migrate(store.landerConfig(), { at: iso(), by: 'migration' });
     },
     /** Save the rule set (rev + 1) and mirror the keys the cron lander reads. Returns the saved set. */
     writeRules(set, { by = 'console' } = {}) {
