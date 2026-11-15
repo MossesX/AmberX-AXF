@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:15:41.152Z",
+ "updatedAt": "2026-11-15T00:16:11.891Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -146002,15 +146002,15 @@
    "title": "Merge main and land console-app-part-2-native-floating-2",
    "category": "",
    "detail": "Auto-land could not land `console-app-part-2-native-floating-2` (console-app-part-2-native-floating-2): its tests fail: Web Dev Console (React/TS) + Python API.\n\nWork on its own branch `claude/console-app-part-2-native-floating-2` (PR #639); do not open a new PR.\n1. git fetch origin && git checkout claude/console-app-part-2-native-floating-2 && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the failing checks pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/console-app-part-2-native-floating-2. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/merge-main-land-console-app-part-2",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T00:06:45.788Z",
-   "updatedAt": "2026-11-15T00:15:36.650Z",
+   "updatedAt": "2026-11-15T00:15:57.565Z",
    "builtAt": "",
    "notes": [
     {
@@ -146020,6 +146020,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"0a77d9de-1408-41c7-847c-dc13c5f0777a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-15T00:12:41.963Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-merge-main-land-console-app-part-2--sully.",
+     "at": "2026-11-15T00:15:49.478Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-merge-main-land-console-app-part-2--sully, shared account login)",
+     "at": "2026-11-15T00:15:57.565Z"
     }
    ],
    "approvals": [],

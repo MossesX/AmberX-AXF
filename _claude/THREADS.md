@@ -797,9 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 22:47 UTC · `picker-dialog-plugin-replaces-all` s7 done (all) · orchestrator
-- 2026-11-14 22:48 UTC · `land-finish-auto-land-live-clear-backlog` s7 done (all) · orchestrator
-- 2026-11-14 22:48 UTC · `land-all-skin-builds` s24 done (all) · orchestrator
 - 2026-11-14 22:48 UTC · `picker-dialog-plugin-replaces-all` s8 done (all) · orchestrator
 - 2026-11-14 22:49 UTC · `pass-approval-hook-deep-link-amberx-notification` s2 done, → running (all) · orchestrator
 - 2026-11-14 22:49 UTC · `land-all-skin-builds` PR #679 (all) · builds-live
@@ -1197,6 +1194,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 00:14 UTC · `merge-main-land-console-axhub-retry` note (all) · orchestrator
 - 2026-11-15 00:14 UTC · `fix-axhub-36-pull-main-in-failed` note (all) · pipeline
 - 2026-11-15 00:15 UTC · `themed-native-controls-plugin` note (all) · orchestrator
+- 2026-11-15 00:15 UTC · `merge-main-land-console-app-part-2` → running, note (all) · pipeline
+- 2026-11-15 00:15 UTC · `merge-main-land-console-app-part-2` branch claude/merge-main-land-console-app-part-2 (all) · pipeline
+- 2026-11-15 00:15 UTC · `merge-main-land-console-app-part-2` note (all) · orchestrator
 
 ## Token passes (log)
 
