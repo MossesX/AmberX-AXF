@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Self-test for the Molly guide's server part (no network): walkthrough@1 cleaning, storage, the ask route.
+"""Self-test for the Gizmo guide's server part (no network): walkthrough@1 cleaning, storage, the ask route.
 
     python3 apps/console-web/plugins/molly-guide/test.py
 """
@@ -51,19 +51,31 @@ check(c.post("/mg/ask", json={"task": "hi"}).status_code == 503, "ask: no agents
 
 
 class FakeAgents:
+    def __init__(self, have=("gizmo", "molly")) -> None:
+        self.have = have
+        self.agent = None
+
     def get_agent(self, aid):
-        return {"id": aid} if aid == "molly" else None
+        return {"id": aid} if aid in self.have else None
 
     def run_task(self, aid, task):
         self.task = task
+        self.agent = aid
         return {"text": 'Sure.\n```walkthrough\n{"title":"Theme","steps":[{"say":"Open themes.","do":"nav:themes"}]}\n```', "tools": [], "ms": 5}
 
 
 fake = FakeAgents()
 plugin_services.provide("axf.agents@1", fake, "agent-manager")
 r = c.post("/mg/ask", json={"task": "show me how to change the theme", "app": "AmberX!", "page": "notes<script>"}).json()
-check(r["text"] == "Sure." and r["walkthrough"]["steps"][0]["do"] == "nav:themes" and r["walkthrough"]["source"] == "amberx", "ask: Molly's answer split into speech + a stored walkthrough")
-check(fake.task.startswith("[from amberx, page notesscript] "), "ask: app and page cleaned before they reach Molly")
+check(r["text"] == "Sure." and r["walkthrough"]["steps"][0]["do"] == "nav:themes" and r["walkthrough"]["source"] == "amberx", "ask: Gizmo's answer split into speech + a stored walkthrough")
+check(fake.agent == "gizmo", "ask: Gizmo answers (Molly is no longer an agent)")
+check(fake.task.startswith("[from amberx, page notesscript] "), "ask: app and page cleaned before they reach Gizmo")
+fake.have = ("molly",)
+c.post("/mg/ask", json={"task": "hi"})
+check(fake.agent == "molly", "ask: the old Molly add-on only as a fallback while Gizmo is off")
+fake.have = ()
+check(c.post("/mg/ask", json={"task": "hi"}).status_code == 503, "ask: neither installed = 503 naming Gizmo")
+fake.have = ("gizmo", "molly")
 
 # Re-record AmberX's walkthrough: one veto call through Vinny, never without him
 import time as _t  # noqa: E402

@@ -392,6 +392,12 @@
         "text": "Where you set “Tap to confirm (touch)”. Change it and the app uses the new value.",
         "kind": "field",
         "draft": true
+      },
+      {
+        "target": "open-skins-gallery",
+        "title": "Open Skins gallery",
+        "text": "Opens the Skins gallery, where you preview skins and switch the one in force for the hub, this app, a screen or a plugin.",
+        "kind": "button"
       }
     ],
     "intros": []

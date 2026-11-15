@@ -11,6 +11,8 @@
  * cost are never typed in: they are summed from the steps (cost = minutes × the model's per-minute price).
  */
 
+import { shortBuildId } from '../../../../../framework/core/build-id.mjs';
+
 export const SCHEMA = 'plan@1';
 export const HISTORY_SCHEMA = 'plan-history@1';
 export const CATEGORIES_SCHEMA = 'plan-categories@1';
@@ -768,7 +770,7 @@ export function fromMarkdown(md, opts = {}) {
 export function toBuild(plan, { profile, id, said = '', by = '' } = {}) {
   const steps = orderSteps(plan.steps.filter((s) => !s.done));
   if (!steps.length) throw new Error('the plan has no steps left to build: add steps first');
-  const buildId = slug(id || plan.id, 60);
+  const buildId = shortBuildId(id || plan.id); // build-id@1: the id names the branch and folder, at most 40 characters
   const detail = [
     plan.summary, plan.goal && `Goal: ${plan.goal}`, plan.why && `Why: ${plan.why}`,
     plan.requirements.length && `Requirements: ${plan.requirements.map((r) => r.text).join('; ')}`,

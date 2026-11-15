@@ -288,7 +288,7 @@ function StepsGrid({ r }: { r: Row }) {
     { id: 'text', label: 'What', width: 'minmax(calc(var(--fx-font-size) * 14), 1fr)', render: (x) => <span className="fx-small">{x.text}</span> },
     { id: 'estimate', label: 'Time', width: 'calc(var(--fx-font-size) * 5)', align: 'end', render: (x) => <span className="fx-small fx-muted">{x.estimate}</span> },
   ];
-  return <DataGrid<StepRow> id="build-orchestrator.steps" label={`${r.id} steps`} groups={[{ id: r.id, title: `${r.steps.done}/${r.steps.total} steps`, rows: r.stepList, groups: [], fixed: true }]} columns={cols} rowId={(x) => x.id} rowLabel={(x) => x.id} hidden={[]} />;
+  return <DataGrid<StepRow> id="build-orchestrator.steps" rowKind="step" label={`${r.id} steps`} groups={[{ id: r.id, title: `${r.steps.done}/${r.steps.total} steps`, rows: r.stepList, groups: [], fixed: true }]} columns={cols} rowId={(x) => x.id} rowLabel={(x) => x.id} hidden={[]} />;
 }
 
 function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, showSteps, embedded, focused = false }: { embedded?: boolean; focused?: boolean; r: Row; busy: boolean; wait: string; launch?: { account: string; model: string; phase: string; kind?: string; rule?: string }; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void>; run: (action: BuildAction, ids: string[]) => Promise<void>; selected: boolean; onSelect: (on: boolean) => void; showSteps: boolean }) {

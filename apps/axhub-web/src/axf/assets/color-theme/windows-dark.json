@@ -1,0 +1,35 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "windows-dark",
+  "name": "Windows Dark",
+  "version": "1.0.0",
+  "description": "Windows 11-style dark colours: Mica charcoal and the system blue accent, lifted for dark backgrounds.",
+  "author": "AmberX AXF",
+  "tags": [
+    "windows",
+    "skin",
+    "dark"
+  ],
+  "data": {
+    "scheme": "dark",
+    "tokens": {
+      "bg": "#202020",
+      "surface": "#2b2b2b",
+      "surface2": "#323232",
+      "surface3": "#3a3a3a",
+      "text": "#ffffff",
+      "muted": "#c5c5c5",
+      "border": "#3d3d3d",
+      "accent": "#4cc2ff",
+      "accentText": "#000000",
+      "accentSoft": "rgba(76,194,255,0.14)",
+      "danger": "#ff99a4",
+      "success": "#6ccb5f",
+      "warning": "#fce100",
+      "info": "#60cdff",
+      "focus": "#4cc2ff",
+      "shadow": "rgba(0,0,0,0.42)"
+    }
+  }
+}
