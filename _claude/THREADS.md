@@ -807,7 +807,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 01:09 UTC · `orchestrator-settings-collapsible-split` s6 done (all) · orchestrator
 - 2026-11-15 01:12 UTC · `own-token-sets-for-grids-and-tab-groups` s3 done (all) · orchestrator
 - 2026-11-15 01:12 UTC · `own-token-sets-for-grids-and-tab-groups` s4 done (all) · orchestrator
 - 2026-11-15 01:13 UTC · `context-menus-plugin-one-true-source` s2 done, → running (all) · orchestrator
@@ -1207,6 +1206,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 15:02 UTC · `phone-connect-small-android-companion` s7 done (all) · orchestrator
 - 2026-11-15 15:04 UTC · `shipped-features-open-button-views-each` s5 done (all) · orchestrator
 - 2026-11-15 15:04 UTC · `phone-connect-small-android-companion` s8 done (all) · orchestrator
+- 2026-11-15 15:04 UTC · `build-rules-tab-gate-rules-vps-owns` s12 done (all) · orchestrator
 
 ## Token passes (log)
 
