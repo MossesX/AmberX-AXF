@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6031,
- "updatedAt": "2026-11-15T05:22:08.994Z",
+ "rev": 6032,
+ "updatedAt": "2026-11-15T05:41:19.932Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -216392,15 +216392,16 @@
    "title": "Voice listener: use Claude when connected (setting)",
    "category": "",
    "detail": "Follow-up to console-app-wake-word-voice-listener (scripted, offline command catalog plus spoken wizard). Add a setting 'Understand with Claude when connected' (default ON). When the Claude badge is green, the transcribed speech goes to Claude with the voice command catalog (from the API registry) as tools, so Brett can talk freely: Claude picks the command, fills fields from what he said, asks only for what's missing, and confirms destructive actions. When Claude isn't connected or times out, it falls back to the scripted matcher and wizard, with a small 'offline mode' indicator. Approvals still need an explicit spoken approve/deny. Show which mode handled each command in the history. Full API and voice ('use Claude for voice'). Tests, help, Shipped features.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/voice-listener-use-claude-when-connected",
    "pr": "#666",
+   "mergedAt": "2026-11-15T05:39:36Z",
    "priority": "P1",
    "createdAt": "2026-11-13T23:42:29.374Z",
-   "updatedAt": "2026-11-15T00:37:35.885Z",
+   "updatedAt": "2026-11-15T05:41:17.346Z",
    "builtAt": "2026-11-14T01:12:18.165Z",
    "notes": [
     {
@@ -216430,6 +216431,10 @@
     {
      "text": "Headless run axf-voice-listener-use-claude-when-connected--earl: brief only · start 15.4K tokens ($0.05) · cost $8.88 · 150 turns · 6 tools, MCP none",
      "at": "2026-11-14T01:12:18.165Z"
+    },
+    {
+     "text": "Reconciler: PR #666 merged",
+     "at": "2026-11-15T05:41:17.346Z"
     }
    ],
    "approvals": [],
@@ -216848,7 +216853,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -228570,15 +228575,16 @@
    "title": "Merge main and land voice-listener-use-claude-when-connected",
    "category": "",
    "detail": "Auto-land could not land `voice-listener-use-claude-when-connected` (voice-listener-use-claude-when-connected): its tests fail: Build engine sweep (Node).\n\nWork on its own branch `claude/voice-listener-use-claude-when-connected` (PR #666); do not open a new PR.\n1. git fetch origin && git checkout claude/voice-listener-use-claude-when-connected && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the failing checks pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/voice-listener-use-claude-when-connected. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
    "branch": "claude/merge-main-land-voice-listener-use",
    "pr": "#694",
+   "mergedAt": "2026-11-15T05:39:34Z",
    "priority": "P0",
    "createdAt": "2026-11-15T00:06:57.847Z",
-   "updatedAt": "2026-11-15T00:44:20.954Z",
+   "updatedAt": "2026-11-15T05:41:17.346Z",
    "builtAt": "2026-11-15T00:44:20.954Z",
    "notes": [
     {
@@ -228600,6 +228606,10 @@
     {
      "text": "Reconciler: PR #694 names s1, s2, s3, s4, s5, s6, s7, s8, s9, s10 done",
      "at": "2026-11-15T00:42:34.863Z"
+    },
+    {
+     "text": "Reconciler: PR #694 merged",
+     "at": "2026-11-15T05:41:17.346Z"
     }
    ],
    "approvals": [],
@@ -228883,7 +228893,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -229210,7 +229220,7 @@
    "title": "Auto-lander controls in the gate plugin",
    "category": "",
    "detail": "Add an 'Auto-lander' tab to the server gate plugin built today (the one with the gate rules, ~3 tabs; from server-gate-one-session-per-build-no / owner-recognized-everywhere-veto policy work; find the right one, it's whichever holds the gate rules). The tab controls the auto-lander (cron /etc/cron.d/axf-auto-land, push-banner land.mjs / serial lander): a big On/Off switch (writes the setting the cron reads; off = cron skips), live status (last run time, result, what it's landing now, why it's not landing: queue empty, CI waiting, conflict, token missing), the landing line (one at a time, in order) with move up / skip / land now per build, mode picker (serial one-at-a-time vs merge queue, default serial), and the log of recent runs. Also diagnose now why the auto-lander lands nothing even though its cron exists (console app PRs #637/#639/#633/#640/#643 green for 2h+), and fix it. Remove the stale 'axf-lander inactive' warning (that systemd service doesn't exist). Full API and voice ('turn on the auto lander', 'what's landing'), tokens only, tests, help, Shipped features.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -229218,7 +229228,7 @@
    "pr": "#705",
    "priority": "P0",
    "createdAt": "2026-11-15T04:17:06.158Z",
-   "updatedAt": "2026-11-15T05:14:46.999Z",
+   "updatedAt": "2026-11-15T05:41:17.346Z",
    "builtAt": "",
    "notes": [
     {
@@ -229260,6 +229270,10 @@
     {
      "text": "Headless run axf-auto-lander-controls-in-the-gate-plugin--lenny: brief only · start 15.9K tokens ($0.06) · cost $17.05 · 258 turns · 6 tools, MCP none",
      "at": "2026-11-15T05:14:46.999Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-15T05:41:17.346Z"
     }
    ],
    "approvals": [],
@@ -229732,7 +229746,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

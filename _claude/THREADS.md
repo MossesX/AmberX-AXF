@@ -802,9 +802,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:47 UTC · `merge-main-land-console-app-part-3` s9 done (all) · orchestrator
-- 2026-11-14 23:48 UTC · `merge-main-land-console-app-part-3` s10 done (all) · orchestrator
-- 2026-11-14 23:48 UTC · `merge-main-land-console-app-part-3` note (all) · orchestrator
 - 2026-11-14 23:48 UTC · `themed-native-controls-plugin` s24 done (all) · orchestrator
 - 2026-11-14 23:49 UTC · `merge-main-land-one-source-truth-console` → running, note (all) · pipeline
 - 2026-11-14 23:49 UTC · `merge-main-land-one-source-truth-console` branch claude/merge-main-land-one-source-truth-console (all) · pipeline
@@ -1202,6 +1199,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 05:14 UTC · `auto-lander-controls-in-the-gate-plugin` PR #705 (all) · builds-live
 - 2026-11-15 05:14 UTC · `auto-lander-controls-in-the-gate-plugin` note (all) · orchestrator
 - 2026-11-15 05:21 UTC · `data-container-axf-data-holds-all` → pending, note (all) · reconciler
+- 2026-11-15 05:41 UTC · `voice-listener-use-claude-when-connected` → complete, merged, note (all) · reconciler
+- 2026-11-15 05:41 UTC · `merge-main-land-voice-listener-use` → complete, merged, note (all) · reconciler
+- 2026-11-15 05:41 UTC · `auto-lander-controls-in-the-gate-plugin` → pending, note (all) · reconciler
 
 ## Token passes (log)
 
