@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5781,
- "updatedAt": "2026-11-15T00:28:40.958Z",
+ "rev": 5782,
+ "updatedAt": "2026-11-15T00:28:57.692Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -143052,6 +143052,23 @@
     "from": "",
     "addenda": []
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:27:18.441Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/agent-swarm/server/__init__.py, apps/console-web/plugins/agent-swarm/web/swarm-core.mjs, apps/console-web/plugins/ui-review/README.md, apps/console-web/plugins/ui-review/help.json, apps/console-web/plugins/ui-review/plugin.json, apps/console-web/plugins/ui-revie"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -143215,6 +143232,23 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:27:13.100Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Superseded: only merges and status files are missing from main. Kept as archive/resolve-merge-conflicts-and-land-running-builds."
+     }
+    ]
    },
    "steps": [
     {
