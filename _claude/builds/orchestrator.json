@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T01:07:50.541Z",
+ "updatedAt": "2026-11-15T01:08:09.509Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -130700,7 +130700,7 @@
    "mergedAt": "2026-11-14T20:15:16Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:56:15.400Z",
-   "updatedAt": "2026-11-15T01:07:10.112Z",
+   "updatedAt": "2026-11-15T01:08:07.330Z",
    "builtAt": "2026-11-15T01:03:24.095Z",
    "notes": [
     {
@@ -130782,6 +130782,10 @@
     {
      "text": "Headless run axf-skin-axhub-override-switch-greyed-out--earl: brief only · start 11.7K tokens ($0.03) · cost $0.14 · 6 turns · 6 tools, MCP none",
      "at": "2026-11-15T01:07:10.112Z"
+    },
+    {
+     "text": "Session axf-skin-axhub-override-switch-greyed-out--earl on mossesx-max- ended (exit 0); the build was already complete.",
+     "at": "2026-11-15T01:08:07.330Z"
     }
    ],
    "approvals": [],

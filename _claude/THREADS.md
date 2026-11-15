@@ -798,7 +798,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:19 UTC · `per-toolbar-settings-fix-failing-chrome` s2 done (all) · orchestrator
 - 2026-11-14 23:18 UTC · `skin-config-panel-merge-main-and-land` s2 done (all) · orchestrator
 - 2026-11-14 23:19 UTC · `skin-config-panel-merge-main-and-land` branch claude/skin-config-panel-land-report, PR #682 (all) · builds-live
 - 2026-11-14 23:19 UTC · `themed-native-controls-plugin` s14 done (all) · orchestrator
@@ -1198,6 +1197,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 01:07 UTC · `skin-axhub-override-switch-greyed-out` note (all) · orchestrator
 - 2026-11-15 01:07 UTC · `own-token-sets-for-grids-and-tab-groups` → complete, note (all) · reconciler
 - 2026-11-15 01:07 UTC · `token-registry-skin-editor-live-sandbox` → complete, note (all) · reconciler
+- 2026-11-15 01:08 UTC · `skin-axhub-override-switch-greyed-out` note (all) · pipeline
 
 ## Token passes (log)
 
