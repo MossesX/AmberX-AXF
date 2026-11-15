@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5851,
- "updatedAt": "2026-11-15T00:52:19.036Z",
+ "rev": 5852,
+ "updatedAt": "2026-11-15T00:52:35.616Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -206066,7 +206066,7 @@
    "pr": "#643",
    "priority": "P1",
    "createdAt": "2026-11-13T18:44:52.063Z",
-   "updatedAt": "2026-11-15T00:52:14.690Z",
+   "updatedAt": "2026-11-15T00:52:20.995Z",
    "builtAt": "",
    "notes": [
     {
@@ -206110,6 +206110,10 @@
      "at": "2026-11-14T01:30:42.077Z"
     },
     {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-app-wake-word-voice-listener--sully, shared account login)",
+     "at": "2026-11-15T00:52:20.995Z"
+    },
+    {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 2): axf-console-app-wake-word-voice-listener--sully.",
      "at": "2026-11-15T00:52:14.690Z"
     }
@@ -206131,12 +206135,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:44:54.704Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-console-app-wake-word-voice-listener--sully",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-15T00:52:13.982Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:48:10.123Z",
@@ -206146,9 +206150,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"fd4e2ca1-06b3-4e4b-9294-67a366c6037c\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-15T00:52:13.982Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -206157,7 +206161,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-15T00:52:13.982Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
