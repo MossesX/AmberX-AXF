@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6151,
- "updatedAt": "2026-11-15T12:40:06.619Z",
+ "rev": 6152,
+ "updatedAt": "2026-11-15T12:41:21.116Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -230915,7 +230915,7 @@
    "pr": "#704",
    "priority": "P0",
    "createdAt": "2026-11-15T04:28:05.062Z",
-   "updatedAt": "2026-11-15T12:37:45.210Z",
+   "updatedAt": "2026-11-15T12:41:19.151Z",
    "builtAt": "",
    "notes": [
     {
@@ -231309,12 +231309,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:41:19.151Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T04:30:21.947Z",
-     "updatedAt": "2026-11-15T04:30:21.947Z"
+     "updatedAt": "2026-11-15T12:41:19.394Z"
     },
     {
      "id": "s13",
@@ -231703,7 +231703,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
