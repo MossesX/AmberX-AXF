@@ -22,10 +22,12 @@ import { TabGroup } from '../../react/components/TabGroup';
 import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS, LevelEditor, levelEditorAct } from './levels';
 import { FollowHubSwitch, SKIN_WHERE_CSS, SKIN_WHERE_DIALOG, SkinWhere, SkinWhereDialog } from './skinwhere';
 import { SkinScope } from '../../react/components/SkinScope';
+import { consoleFieldValue } from '../../core/engines/console-commands.mjs';
+
+// quick-settings@1: the pinned Quick settings pane of every settings interface
 import { QuickSettingsFrame, useQuickAsset } from '../../react/components/QuickSettings';
 import { normalizeQuickAssets, quickAssetsKey, quickHandleOf, quickScopeId, QUICK_HANDLE_KEY, QUICK_HANDLE_LABEL, QUICK_HANDLES } from '../../core/engines/quick-settings.mjs';
 import { SelectField } from '../../react/components/Forms';
-import { consoleFieldValue } from '../../core/engines/console-commands.mjs';
 
 export const SETTINGS_LIBRARY_ID = 'ai.amberx.axf.settings';
 const VIEW = 'settings';
