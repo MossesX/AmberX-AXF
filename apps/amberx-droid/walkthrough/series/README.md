@@ -15,8 +15,8 @@ visible Preview label). They reuse the 2-hour walkthrough pipeline in `../` (rec
 | 6 | axhub | axHub: your server, your approvals, your apps | axhub-web | windows | none |
 | 7 | build-an-app | Building an app, start to finish | console-web + phone | atelier | library matrix, canvas, action API, install (4) |
 
-The hero video (step s5, "talk an Android app into existence on your way to work", plus a 60-second cut) is scripted
-separately in its own step.
+The hero stories and deep dives (steps s5 onward, most with a 60-second cut) live in `more/`, one file per video; see
+`more/README.md` for the extra fields (`kind`, `camera`, `short`, `facts`).
 
 Check the scripts (shape, ids, skins, apps, running time 2:30 to 3:20 at 150 words a minute, and that any video with
 staged scenes says "preview" out loud):
