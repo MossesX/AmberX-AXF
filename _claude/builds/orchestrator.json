@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:44:06.652Z",
+ "updatedAt": "2026-11-15T00:44:21.998Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -111079,7 +111079,7 @@
    "branch": "claude/focus-every-screen-console-open-console",
    "pr": "#593",
    "createdAt": "2026-11-12T10:35:49.272Z",
-   "updatedAt": "2026-11-15T00:35:30.794Z",
+   "updatedAt": "2026-11-15T00:44:00.217Z",
    "builtAt": "2026-11-12T11:10:43.772Z",
    "notes": [
     {
@@ -111474,7 +111474,7 @@
    "branch": "claude/pending-tab-one-collapsed-row-per-build",
    "pr": "#602",
    "createdAt": "2026-11-12T10:48:25.123Z",
-   "updatedAt": "2026-11-15T00:35:35.659Z",
+   "updatedAt": "2026-11-15T00:44:04.716Z",
    "builtAt": "2026-11-12T11:06:49.143Z",
    "notes": [
     {
@@ -112340,7 +112340,7 @@
    "branch": "claude/plugin-review-map-what-each-plugin-does",
    "pr": "#603",
    "createdAt": "2026-11-12T17:47:56.247Z",
-   "updatedAt": "2026-11-15T00:35:19.243Z",
+   "updatedAt": "2026-11-15T00:43:55.379Z",
    "builtAt": "2026-11-12T18:20:35.390Z",
    "notes": [
     {
@@ -113435,7 +113435,7 @@
    "branch": "claude/new-project-wizard-name-linked-repo",
    "pr": "#597",
    "createdAt": "2026-11-12T20:31:23.288Z",
-   "updatedAt": "2026-11-15T00:35:15.602Z",
+   "updatedAt": "2026-11-15T00:43:53.393Z",
    "builtAt": "2026-11-12T22:10:44.782Z",
    "notes": [
     {
