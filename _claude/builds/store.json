@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6328,
- "updatedAt": "2026-11-15T16:11:48.957Z",
+ "rev": 6329,
+ "updatedAt": "2026-11-15T16:12:32.183Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -237453,7 +237453,7 @@
    "pr": "#713",
    "priority": "P0",
    "createdAt": "2026-11-15T15:12:29.907Z",
-   "updatedAt": "2026-11-15T16:11:46.742Z",
+   "updatedAt": "2026-11-15T16:12:30.473Z",
    "builtAt": "",
    "notes": [
     {
@@ -237479,6 +237479,10 @@
     {
      "text": "Split by Claude into 29 steps (7 Fable).",
      "at": "2026-11-15T16:11:39.179Z"
+    },
+    {
+     "text": "Headless run axf-axf-data-postgres-real-tables-own--gina: brief only · start 13.1K tokens ($0.10) · cost $25.81 · 125 turns · 6 tools, MCP none",
+     "at": "2026-11-15T16:12:30.473Z"
     }
    ],
    "approvals": [],
@@ -237596,7 +237600,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

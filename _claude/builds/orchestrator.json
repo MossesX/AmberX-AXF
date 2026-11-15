@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T16:11:48.957Z",
+ "updatedAt": "2026-11-15T16:12:32.183Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -153891,7 +153891,7 @@
    "pr": "#713",
    "priority": "P0",
    "createdAt": "2026-11-15T15:12:29.907Z",
-   "updatedAt": "2026-11-15T16:11:46.742Z",
+   "updatedAt": "2026-11-15T16:12:30.473Z",
    "builtAt": "",
    "notes": [
     {
@@ -153917,6 +153917,10 @@
     {
      "text": "Split by Claude into 29 steps (7 Fable).",
      "at": "2026-11-15T16:11:39.179Z"
+    },
+    {
+     "text": "Headless run axf-axf-data-postgres-real-tables-own--gina: brief only · start 13.1K tokens ($0.10) · cost $25.81 · 125 turns · 6 tools, MCP none",
+     "at": "2026-11-15T16:12:30.473Z"
     }
    ],
    "approvals": [],
