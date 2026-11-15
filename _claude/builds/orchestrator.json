@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:18:10.643Z",
+ "updatedAt": "2026-11-15T00:18:32.508Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -116678,7 +116678,7 @@
    "branch": "claude/change-to-move-amberx-web-app-console",
    "pr": "#586",
    "createdAt": "2026-11-13T00:39:39.304Z",
-   "updatedAt": "2026-11-14T23:09:58.588Z",
+   "updatedAt": "2026-11-15T00:18:10.704Z",
    "builtAt": "2026-11-13T11:25:24.180Z",
    "notes": [
     {
@@ -129375,7 +129375,7 @@
    "pr": "#633",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:27.359Z",
-   "updatedAt": "2026-11-14T23:13:03.075Z",
+   "updatedAt": "2026-11-15T00:18:27.141Z",
    "builtAt": "2026-11-13T19:41:04.838Z",
    "notes": [
     {
@@ -129820,7 +129820,7 @@
    "pr": "#639",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:46.237Z",
-   "updatedAt": "2026-11-14T23:50:45.932Z",
+   "updatedAt": "2026-11-15T00:18:19.220Z",
    "builtAt": "2026-11-13T20:19:48.032Z",
    "notes": [
     {
