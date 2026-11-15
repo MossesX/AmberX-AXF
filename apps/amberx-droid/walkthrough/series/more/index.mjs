@@ -10,5 +10,6 @@ import employees from './employees.mjs';
 import architecture from './architecture.mjs';
 import skinsBranding from './skins-branding.mjs';
 import orchestrator from './orchestrator.mjs';
+import consolePhone from './console-phone.mjs';
 
-export const MORE = [commute, expenses, bossTexts, privateChat, onDemand, teenDriver, builtWithItself, employees, architecture, skinsBranding, orchestrator];
+export const MORE = [commute, expenses, bossTexts, privateChat, onDemand, teenDriver, builtWithItself, employees, architecture, skinsBranding, orchestrator, consolePhone];
