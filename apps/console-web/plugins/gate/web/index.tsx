@@ -6,6 +6,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { registerGateActions } from './actions';
 import { FOLDER } from './api';
+import { CHECK_PR_DIALOG, CheckPrDialog } from './CheckPrDialog';
 import { GateView, PLUGIN_ID } from './GateView';
 import { appMenu } from './menu';
 
@@ -16,6 +17,7 @@ export const plugin: AxfWebLibrary = {
   builtWith: { model: 'opus', builtAt: '2026-11-15' },
   appMenu,
   views: { gate: { title: 'Gate & rules', icon: 'shield', render: () => <GateView /> } },
+  dialogs: { [CHECK_PR_DIALOG]: { title: 'Check a PR', icon: 'search', render: (props) => <CheckPrDialog pr={String(props.pr ?? '')} />, searchable: false } },
   nav: { label: 'Builds', items: [{ id: 'gate', label: 'Gate & rules', icon: 'shield', view: 'gate' }] },
   settingsTabs: [{ id: FOLDER, label: 'Gate', icon: 'shield', order: 60, parent: 'plugins' }],
   settingsPanels: [{ id: 'gate.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
