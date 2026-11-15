@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6288,
- "updatedAt": "2026-11-15T15:12:31.726Z",
+ "rev": 6289,
+ "updatedAt": "2026-11-15T15:12:43.103Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -230915,7 +230915,7 @@
    "title": "Data container: axf-data holds all console data",
    "category": "",
    "detail": "Brett's final layout: the console is screens ONLY, with no work and no data in it. New private container 'axf-data' (Coolify, auto-restart, no public port or DNS, internal Docker network only) holds ALL the data: notes, builds store/journal/history, settings, planner items, UI reviews, everything the console stores today. Four parts: console = UI only; axf-molly = does the work (orchestrator, gate, lander); axHub = routes plus credentials/keys only (NO app data stored in axHub); axf-data = stores everything. Goal: if the console goes down, all data and notes stay available (through axHub tools) and builds keep running. Stage it safely: an API in front of the store, migrate with count checks and a backup, run in shadow first, then cut over, and no data is ever lost. Add daily backups. Coordinate with the move-build-orchestrator-to-axhub build (axf-molly reads and writes the builds store through axf-data). Tests, help, Shipped features.",
-   "status": "built",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -230923,8 +230923,8 @@
    "pr": "#704",
    "priority": "P0",
    "createdAt": "2026-11-15T04:28:05.062Z",
-   "updatedAt": "2026-11-15T14:57:08.846Z",
-   "builtAt": "2026-11-15T13:55:45.702Z",
+   "updatedAt": "2026-11-15T15:12:39.862Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -230973,6 +230973,10 @@
     {
      "text": "TO THE RUNNING SESSION, re-read the build. Brett (10:00): migrate EVERYTHING into a real database in its own container: Postgres (his Nov 6 choice), as its own Coolify container with a persistent volume and daily backups. The current design (data-store@1 copying JSON files key for key and storing SQLite files as blobs) is not enough. Real tables for builds, journal, notes, settings, planner, UI reviews, the feature store, the Shipped features ledger and chats (import the SQLite rows into Postgres tables, not blobs), and the API/control registry (apps/console-web/src/control/inventory.json becomes a table generated from each plugin's registered targets, not a hand-edited file). Keep the data-store@1 API on top so callers don't change. Count checks on migration, shadow then cutover. Add steps as needed.",
      "at": "2026-11-15T14:57:08.846Z"
+    },
+    {
+     "text": "LAND FIX (Brett 10:02): build_land clashed with main in 4 files: .github/workflows/android.yml, apps/console-web/src/control/inventory.json, framework/catalog/catalog.json, framework/catalog/status.json. Merge origin/main into the branch, keep BOTH sides (union of entries; regenerate catalog/status/inventory with their generators rather than hand-merging), run the checks, push, then land with the one-at-a-time lander right away. Do nothing else. The Postgres move is its own follow-up build.",
+     "at": "2026-11-15T15:12:36.573Z"
     }
    ],
    "approvals": [
@@ -231719,7 +231723,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -237411,16 +237415,22 @@
    "title": "axf-data on Postgres: real tables in its own container",
    "category": "",
    "detail": "Follow-up to data-container-axf-data-holds-all (PR #704, SQLite + blobs). Move axf-data onto Postgres (Brett's Nov 6 choice) as its own private Coolify container with a persistent volume and daily backups. Real tables (not JSON copies or SQLite blobs) for: builds store, journal and history, notes, settings, planner items, UI reviews, the one true feature store, the Shipped features ledger, chats, and the API/control registry (apps/console-web/src/control/inventory.json becomes a table generated from each plugin's registered targets, never hand-edited, so builds stop clashing on it). Keep the data-store@1 API on top so callers don't change. Migrate from the SQLite axf-data with backup first, count checks, shadow, then cutover; never lose data. Tests, help, Shipped features. Land with the one-at-a-time lander.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-15T15:12:29.907Z",
-   "updatedAt": "2026-11-15T15:12:29.907Z",
+   "updatedAt": "2026-11-15T15:12:33.875Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-15T15:12:33.875Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -237435,6 +237445,28 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-15T15:12:32.196Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -237444,7 +237476,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
