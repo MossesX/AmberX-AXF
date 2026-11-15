@@ -29,3 +29,13 @@ const stop = startHost(rt as never, { elements: ELEMENT_FAMILIES, globals: GLOBA
 // the framework's async dialogs, for the tests (the console imports them from @console/axf/react)
 import { dialogs } from '@console/axf/react/nativeDialogs';
 (globalThis as Record<string, unknown>).tcDialogs = dialogs;
+// apply a themed-controls asset's data the way the runtime does (the --fx-tc-* variables and root attributes)
+import { activeFamilies, themedControlsConfig, themedControlsErrors, themedControlsOutput } from '@console/axf/core/engines/themed-controls';
+(globalThis as Record<string, unknown>).tcApply = (data: unknown) => {
+  const root = document.documentElement;
+  for (const n of Array.from(root.style)) if (n.startsWith('--fx-tc-')) root.style.removeProperty(n);
+  const out = themedControlsOutput(data, { scheme: 'dark', families: activeFamilies(themedControlsConfig((k) => rt.settings.get(k))), sheet: true });
+  for (const [k, v] of Object.entries(out.vars)) root.style.setProperty(k, v);
+  for (const [k, v] of Object.entries(out.attrs)) root.setAttribute(k, v);
+  return themedControlsErrors(data);
+};

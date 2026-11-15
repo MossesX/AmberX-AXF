@@ -1,0 +1,306 @@
+{
+ "$axf": "asset@1",
+ "type": "themed-controls",
+ "id": "themed-controls-style-pr-mwh2vbei-bold",
+ "name": "themed-controls-style-pr-mwh2vbei: Bold",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Bigger targets and heavier strokes: 20 px boxes, 2 px borders, a thick slider with its value always shown, round calendar days, accent tooltips. Easier to hit on a phone.",
+ "tags": [
+  "ui-choice",
+  "choice-set:themed-controls-style-pr-mwh2vbei",
+  "choice-option:bold"
+ ],
+ "data": {
+  "checkbox": {
+   "size": 20,
+   "radius": "md",
+   "rest": {
+    "bg": "surface",
+    "border": "border"
+   },
+   "hover": {
+    "border": "muted"
+   },
+   "focus": {
+    "border": "accent",
+    "ring": "focus"
+   },
+   "active": {
+    "bg": "accentSoft",
+    "border": "accent"
+   },
+   "checked": {
+    "bg": "accent",
+    "border": "accent",
+    "mark": "accentText"
+   },
+   "invalid": {
+    "border": "danger"
+   },
+   "borderWidth": "2",
+   "markWeight": 3
+  },
+  "radio": {
+   "size": 20,
+   "dotScale": 60,
+   "rest": {
+    "bg": "surface",
+    "border": "border"
+   },
+   "hover": {
+    "border": "muted"
+   },
+   "focus": {
+    "border": "accent",
+    "ring": "focus"
+   },
+   "active": {
+    "bg": "accentSoft",
+    "border": "accent"
+   },
+   "checked": {
+    "bg": "surface",
+    "border": "accent",
+    "mark": "accent"
+   },
+   "invalid": {
+    "border": "danger"
+   },
+   "borderWidth": "2"
+  },
+  "range": {
+   "trackHeight": 8,
+   "thumbSize": 22,
+   "showValue": "always",
+   "ticks": true,
+   "rest": {
+    "track": "surface3",
+    "fill": "accent",
+    "thumb": "accent",
+    "thumbBorder": "surface"
+   },
+   "focus": {
+    "ring": "focus"
+   },
+   "active": {
+    "thumb": "accent",
+    "thumbBorder": "accentSoft"
+   },
+   "disabled": {
+    "fill": "muted",
+    "thumb": "muted"
+   },
+   "invalid": {
+    "fill": "danger",
+    "thumb": "danger"
+   }
+  },
+  "number": {
+   "stepper": "ends",
+   "stepperWidth": 36,
+   "repeatDelayMs": 400,
+   "repeatMs": 80,
+   "rest": {
+    "bg": "surface",
+    "border": "border",
+    "text": "text",
+    "stepperBg": "surface2",
+    "stepperIcon": "muted"
+   },
+   "hover": {
+    "border": "muted",
+    "stepperBg": "surface3",
+    "stepperIcon": "text"
+   },
+   "focus": {
+    "border": "accent",
+    "ring": "accentSoft"
+   },
+   "active": {
+    "stepperBg": "accentSoft",
+    "stepperIcon": "accent"
+   },
+   "disabled": {
+    "text": "muted"
+   },
+   "invalid": {
+    "border": "danger"
+   },
+   "radius": "md",
+   "borderWidth": "2"
+  },
+  "datetime": {
+   "cellSize": 40,
+   "cellRadius": "pill",
+   "surfaceRadius": "lg",
+   "weekStart": "locale",
+   "hourCycle": "locale",
+   "minuteStep": 5,
+   "rest": {
+    "surface": "surface",
+    "text": "text",
+    "border": "border",
+    "muted": "muted"
+   },
+   "hover": {
+    "cellBg": "accentSoft"
+   },
+   "focus": {
+    "cellBorder": "accent",
+    "ring": "focus"
+   },
+   "selected": {
+    "cellBg": "accent",
+    "cellText": "accentText",
+    "cellBorder": "accent"
+   },
+   "today": {
+    "cellText": "accent",
+    "cellBorder": "accent"
+   },
+   "disabled": {
+    "cellText": "muted"
+   },
+   "invalid": {
+    "border": "danger"
+   }
+  },
+  "color": {
+   "swatchSize": 30,
+   "swatchRadius": "pill",
+   "surfaceRadius": "lg",
+   "recent": 8,
+   "themeSwatches": true,
+   "areaHeight": 140,
+   "rest": {
+    "surface": "surface",
+    "text": "text",
+    "border": "border",
+    "swatchBorder": "border"
+   },
+   "hover": {
+    "swatchBorder": "muted"
+   },
+   "focus": {
+    "swatchBorder": "accent",
+    "ring": "focus"
+   },
+   "selected": {
+    "swatchBorder": "accent",
+    "check": "accentText"
+   },
+   "invalid": {
+    "border": "danger"
+   }
+  },
+  "dialogs": {
+   "width": 460,
+   "radius": "lg",
+   "okTone": "primary",
+   "cancelTone": "neutral",
+   "icon": true,
+   "selectText": true,
+   "surface": {
+    "bg": "surface",
+    "text": "text",
+    "border": "border"
+   },
+   "title": {
+    "text": "text",
+    "icon": "accent"
+   },
+   "message": {
+    "text": "muted"
+   },
+   "field": {
+    "bg": "surface",
+    "border": "border",
+    "text": "text"
+   },
+   "focus": {
+    "ring": "focus",
+    "border": "accent"
+   }
+  },
+  "file": {
+   "minHeight": 120,
+   "radius": "lg",
+   "borderStyle": "solid",
+   "borderWidth": "2",
+   "progressHeight": 8,
+   "showList": true,
+   "rest": {
+    "bg": "surface2",
+    "border": "border",
+    "text": "muted",
+    "icon": "muted"
+   },
+   "hover": {
+    "bg": "surface3",
+    "border": "muted",
+    "text": "text",
+    "icon": "text"
+   },
+   "focus": {
+    "border": "accent",
+    "ring": "focus"
+   },
+   "active": {
+    "bg": "accentSoft",
+    "border": "accent"
+   },
+   "dragover": {
+    "bg": "accentSoft",
+    "border": "accent",
+    "text": "accent",
+    "icon": "accent"
+   },
+   "disabled": {
+    "text": "muted",
+    "icon": "muted"
+   },
+   "invalid": {
+    "border": "danger",
+    "text": "danger",
+    "icon": "danger"
+   },
+   "progress": {
+    "track": "surface3",
+    "fill": "accent",
+    "done": "success",
+    "failed": "danger"
+   }
+  },
+  "tooltip": {
+   "delayMs": 500,
+   "hideMs": 100,
+   "longPressMs": 500,
+   "maxWidth": 280,
+   "radius": "pill",
+   "placement": "top",
+   "arrow": false,
+   "rest": {
+    "bg": "accent",
+    "text": "accentText",
+    "border": "accent"
+   }
+  },
+  "scrollbar": {
+   "width": 14,
+   "radius": "pill",
+   "thin": false,
+   "autoHide": false,
+   "gutter": "auto",
+   "thumb": {
+    "bg": "accent"
+   },
+   "thumbHover": {
+    "bg": "text"
+   },
+   "thumbActive": {
+    "bg": "accent"
+   }
+  }
+ }
+}
