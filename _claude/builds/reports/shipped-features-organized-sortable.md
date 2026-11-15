@@ -71,7 +71,7 @@ sample ledger. The full console can't be shot headless here because the browser 
 ## UI Review
 
 Not submitted: this headless session has no console URL or token (`AXF_CONSOLE_URL` / `AXF_TOKEN`). Submit with:
-`node apps/console-web/plugins/ui-review/review.mjs submit --kind screen --name "Shipped features table" --app console-web --screen shipped-features --group "shipped-features-organized-sortable - Nov 15 12:35 PM" --shots <the 8 shots> --branch claude/shipped-features-organized-sortable --pr <n> --console`
+`node apps/console-web/plugins/ui-review/review.mjs submit --kind screen --name "Shipped features table" --app console-web --screen shipped-features --group "shipped-features-organized-sortable - Nov 15 12:35 PM" --shots <the 8 shots> --branch claude/shipped-features-organized-sortable --pr 708 --console`
 
 ## Notes and open items
 
