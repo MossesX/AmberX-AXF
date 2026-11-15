@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5791,
- "updatedAt": "2026-11-15T00:31:54.407Z",
+ "rev": 5792,
+ "updatedAt": "2026-11-15T00:32:12.675Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -188533,7 +188533,7 @@
    "pr": "#588",
    "priority": "P1",
    "createdAt": "2026-11-12T18:40:03.355Z",
-   "updatedAt": "2026-11-13T17:32:45.035Z",
+   "updatedAt": "2026-11-15T00:31:50.881Z",
    "builtAt": "2026-11-12T19:58:20.158Z",
    "notes": [
     {
@@ -188612,6 +188612,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:31:50.745Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: framework/core/engines/chrome-settings-rules.d.mts, framework/core/engines/chrome-settings-rules.mjs, framework/core/engines/components.ts, framework/core/runtime.ts, framework/core/types.ts, framework/react/AxfProvider.tsx, framework/react/components/Chrome.tsx, framework/react/compone"
+     }
+    ]
    },
    "steps": [
     {
@@ -188692,7 +188709,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
