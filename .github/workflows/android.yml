@@ -333,6 +333,7 @@ jobs:
             npx -y tsx framework/spec/check-approvals.mts               # lib-approvals: approvals + held calls in one list, badge words, deciding rules, watcher
             npx -y tsx framework/spec/check-approvals-menu.mts          # app menu Waiting for approval: Deny / Approve on every row, flips in place (jsdom)
             npx -y tsx framework/spec/check-approval-expand.mts         # expandable approval rows: details model, open in place, stays open on refresh, Deny / Approve inside (jsdom)
+            npx -y tsx framework/spec/check-expander-picker-dom.mts     # expander-picker@1 pressed for real: name + value + arrow row, opens in place, one press highlights + previews, the same press again applies and closes, Escape, keyboard (jsdom)
             npx -y tsx framework/spec/check-hubstore.mts               # lib-hubstore: settings + tables on a fake axHub data server, installer parts = runtime config
             npx -y tsx framework/spec/check-hubsync.mts                # lib-hubsync: look/settings/data config, follow source, settings mirror on a fake hub
             npx -y tsx framework/spec/check-web-client.mts             # SSE reader, API client library, typed catalog models (fixture + real files)
