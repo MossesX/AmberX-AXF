@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T04:22:08.037Z",
+ "updatedAt": "2026-11-15T04:22:26.099Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -147152,7 +147152,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T04:17:06.158Z",
-   "updatedAt": "2026-11-15T04:20:29.211Z",
+   "updatedAt": "2026-11-15T04:22:09.425Z",
    "builtAt": "",
    "notes": [
     {
@@ -147178,6 +147178,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-auto-lander-controls-in-the-gate-plugin--lenny.",
      "at": "2026-11-15T04:20:29.211Z"
+    },
+    {
+     "text": "Brett (now) OVERRIDE: the gate rules, merge queue and auto-lander run in their own private container (shared with the orchestrator, see move-build-orchestrator-to-axhub), not inside axHub or the console. No public port or DNS. axHub shows the tabs and talks to the container on the internal Docker network.",
+     "at": "2026-11-15T04:22:09.425Z"
     }
    ],
    "approvals": [],

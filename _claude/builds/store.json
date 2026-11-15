@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5988,
- "updatedAt": "2026-11-15T04:22:08.037Z",
+ "rev": 5989,
+ "updatedAt": "2026-11-15T04:22:26.099Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -229218,7 +229218,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T04:17:06.158Z",
-   "updatedAt": "2026-11-15T04:20:29.211Z",
+   "updatedAt": "2026-11-15T04:22:09.425Z",
    "builtAt": "",
    "notes": [
     {
@@ -229244,6 +229244,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-auto-lander-controls-in-the-gate-plugin--lenny.",
      "at": "2026-11-15T04:20:29.211Z"
+    },
+    {
+     "text": "Brett (now) OVERRIDE: the gate rules, merge queue and auto-lander run in their own private container (shared with the orchestrator, see move-build-orchestrator-to-axhub), not inside axHub or the console. No public port or DNS. axHub shows the tabs and talks to the container on the internal Docker network.",
+     "at": "2026-11-15T04:22:09.425Z"
     }
    ],
    "approvals": [],
@@ -229716,7 +229720,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
