@@ -67,6 +67,11 @@ await t('a deleted branch is read from its PR head (refs/pull/<n>/head)', async 
   sh(['push', '-q', 'origin', `${c}:refs/heads/claude/unique`], work); git(['fetch', '-q', 'origin']);
 });
 
+await t('a fix build ("Merge main and land X") is never archived: it carries X\'s PR', async () => {
+  const r = await supersede({ s, git, rows: [{ id: 'merge-main-land-x', branch: 'claude/picked', pr: '#10', title: 'Merge main and land picked' }], apply: true, mark: () => { throw new Error('must not mark'); } });
+  assert.equal(r.rows[0].verdict, 'fix-build');
+});
+
 await t('dry run: verdicts only, nothing tagged, closed or marked', async () => {
   const marks = [];
   const r = await supersede({ s, git, rows, mark: (...a) => { marks.push(a); return { ok: true }; } });

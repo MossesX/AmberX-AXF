@@ -89,6 +89,33 @@ so the lander couldn't file the fix builds itself. I filed them with `pipeline.m
 lander files them through axf.build-dispatch@1. The VPS also has no GitHub App set up (`github-token.mjs status`:
 app not set up), so the lander uses the broker's old token until it is.
 
+
+## Backlog batch 2: supersede over every finished build (s19)
+
+`supersede.mjs` was run over all 197 finished builds not on main (Nov 15 00:06 dry run, applied 00:18).
+A commit counts as unique when its patch isn't on main (`git cherry`). A file counts only when the branch added a line
+main doesn't have. Branches deleted on GitHub (129 of them) were read from
+`refs/pull/<n>/head`.
+
+- **Archived (already on main), 4**: `merge-main-land-change-to-move-amberx`, `land-all-skin-builds`, `resolve-merge-conflicts-and-land-running-builds`, `plugin-review-map-what-each-plugin-does`. Each head is kept as tag
+  `archive/<build>`, its PR closed with a note, land state `archived`.
+- **Flagged (unique work), 191**: land state `flagged`, with the unique files in the attempt note. The full list,
+  with files, is `land-supersede.json` in the push banner's data folder (or `axf land backlog`).
+- **Missing, 2**: `blueprint-notes-tasks`, `plan-blueprints` (no branch and no PR head left on GitHub).
+
+Most of the backlog really does hold work main lacks. Spot check: `resolve-conflicts-and-land-460-456-457-459-342`
+adds a framework re-bake step to the console Dockerfile that main never took.
+
+Mistakes made and fixed during the run:
+- `markBuild` passed its note between `--state` and the value, so the state was dropped and 157 builds showed
+  "landing". The argument order is fixed and the states were set again in one pass.
+- A "Merge main and land X" fix build carries X's PR: `merge-main-land-change-to-move-amberx` was archived and PR #586
+  closed. #586 can't be reopened because another open PR exists for that branch, so the work is still in an open PR.
+  A note was left on #586. Supersede now skips fix builds.
+- The two superseded PRs the stopped apply never reached (#679, #603) were closed by hand.
+
+Phone summary sent through AmberX: "Landing: 0 landed, 4 archived, 191 flagged, 0 red".
+
 ## What this build adds
 
 - **Serial lander** (`land/land-one.mjs`): one finished build at a time. It merges main in (builds files newer-wins,

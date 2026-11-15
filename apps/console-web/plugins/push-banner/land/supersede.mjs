@@ -74,7 +74,7 @@ export function uniqueWork({ git, ref, main }) {
 /** builds-live land: the build's state (and a note with the files) on its land record, live. */
 export function markBuild(s, id, state, note = '') {
   const args = [join(s.repo, 'framework/cli/builds-live.mjs'), 'land', id, '--state', state, '--json'];
-  if (note) args.splice(4, 0, '--attempt', JSON.stringify({ at: new Date().toISOString(), outcome: '', note: note.slice(0, 300) }));
+  if (note) args.splice(3, 0, '--attempt', JSON.stringify({ at: new Date().toISOString(), outcome: '', note: note.slice(0, 300) }));
   const r = spawnSync('node', args, { cwd: s.repo, encoding: 'utf8', timeout: 120000 });
   return { ok: r.status === 0, text: `${r.stdout || ''}${r.stderr || ''}`.trim().slice(-300) };
 }
@@ -87,6 +87,8 @@ export async function supersede({ s = settings(), git = makeGit(s.repo), gh = nu
   const main = `${s.remote}/${s.base}`;
   const out = [];
   for (const b of rows) {
+    // a "Merge main and land X" fix build carries X's branch and PR: X is checked (and landed) in its own right
+    if (/^Merge main and land /.test(String(b.title || ''))) { out.push({ id: b.id, branch: b.branch, pr: b.pr || '', verdict: 'fix-build', files: [], commits: 0, why: 'a fix build for another build: that build is checked instead' }); continue; }
     let w = uniqueWork({ git, ref: `${s.remote}/${b.branch}`, main });
     // the branch is gone (deleted after its PR closed): GitHub keeps the PR's head at refs/pull/<n>/head
     const prN = Number(String(b.pr || '').replace(/\D/g, '')) || 0;
