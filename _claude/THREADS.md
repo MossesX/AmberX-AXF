@@ -807,7 +807,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 01:26 UTC · `molly-gap-axhub-cors` → running, PR #702 (all) · builds-live
 - 2026-11-15 01:27 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
 - 2026-11-15 01:27 UTC · `molly-gap-axhub-cors` s3 done, → built (all) · orchestrator
 - 2026-11-15 01:27 UTC · `demo-video-series-three-minute-browser` s8 done (all) · orchestrator
@@ -1207,6 +1206,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 15:17 UTC · `build-rules-tab-gate-rules-vps-owns` s18 done (all) · orchestrator
 - 2026-11-15 15:17 UTC · `phone-connect-small-android-companion` s16 done (all) · orchestrator
 - 2026-11-15 15:18 UTC · `build-rules-tab-gate-rules-vps-owns` s19 done (all) · orchestrator
+- 2026-11-15 15:20 UTC · `build-rules-tab-gate-rules-vps-owns` s20 done (all) · orchestrator
 
 ## Token passes (log)
 
