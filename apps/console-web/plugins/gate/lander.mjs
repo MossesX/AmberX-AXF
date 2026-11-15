@@ -14,6 +14,7 @@
  * puts them back. Land now moves a PR to the head of the line in the current mode; it never merges anything itself.
  */
 import * as gate from '../../../../framework/core/gate-rules.mjs';
+import { record as historyRecord } from './history.mjs';
 
 export const MODE_FLAGS = Object.freeze({
   on: { mergeQueue: true, queueMode: 'stack', autoLand: false, autoMerge: false },
@@ -26,7 +27,7 @@ const pr = (v) => { const n = Number(String(v ?? '').replace(/^#/, '')); return 
 /** UI hold word from a land.json reason kind. */
 const uiOf = (kind) => (kind === 'ui' ? 'waiting' : '');
 
-export function createLander(store, { record = (e) => store.appendHistory(e) } = {}) {
+export function createLander(store, { record = (e) => historyRecord(store, e) } = {}) {
   const log = (action, { by = 'console', reason = '', pr: n, before, after } = {}) => record({ $axf: 'gate-history@1', at: store.iso(), by: String(by || 'console').slice(0, 80), kind: 'lander', action, ...(n ? { pr: n } : {}), ...(before !== undefined ? { before } : {}), ...(after !== undefined ? { after } : {}), reason });
 
   const lander = {
