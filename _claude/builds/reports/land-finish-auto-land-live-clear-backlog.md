@@ -188,3 +188,12 @@ Deep links: `view:landing-line` (console_show / console_open opens the banner on
 on every build grid row. `test-api-parity.mjs` checks that all four transports resolve to the same route.
 Archive, flag and fresh need the host's git and token, so the console records them in `land-requests.jsonl` and the
 lander runs them at its next run.
+
+## Left for Brett
+- **GitHub App**: not set up on the VPS, so the lander merges with the old token. A banner item with the steps is in
+  the console (`land:github-app-missing`).
+- **UI Review**: r-20261115-8434dd57, three options for the Landing column (count + chip is built). The PR is held there.
+- **Fix builds queued (P0)**: `merge-main-land-move-amberx-web-app`, `merge-main-land-change-to-move-amberx`,
+  `merge-main-land-console-app-part-2/-3/-4`, `merge-main-land-voice-listener-use`,
+  `merge-main-land-one-source-truth-console`, `merge-main-land-server-gate-one-session`,
+  `merge-main-land-console-axhub-retry`. The lander lands the original build when each fix finishes.

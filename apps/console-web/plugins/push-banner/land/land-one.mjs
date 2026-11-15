@@ -337,7 +337,7 @@ export async function afterBatch({ s, ran, archived = [], api = null, redeploy =
     try { rec.chrome = await chk(); } catch (e) { rec.chrome = { verdict: 'unknown', why: e.message.slice(0, 200) }; }
     log(`batch: chrome ${rec.chrome.verdict} (${rec.chrome.why})`);
     if (rec.chrome.verdict === 'doubled') {
-      try { await (api || makeConsole(s))('POST', '/api/alerts', { source: 'push-banner', key: 'land:doubled-chrome', severity: 'warn', title: 'Console shows doubled chrome after landing', body: `After landing ${landed.join(', ')} the redeployed console shows ${rec.chrome.why}.`.slice(0, 600) }); } catch { /* the record says it */ }
+      try { await (api || makeConsole(s))('POST', '/api/alerts', { source: 'push-banner', key: 'land:doubled-chrome', severity: 'warning', title: 'Console shows doubled chrome after landing', body: `After landing ${landed.join(', ')} the redeployed console shows ${rec.chrome.why}.`.slice(0, 600) }); } catch { /* the record says it */ }
     }
   }
   rec.archived = archived;
