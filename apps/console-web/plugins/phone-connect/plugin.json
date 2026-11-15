@@ -36,7 +36,230 @@
   },
   "commands": {
     "$axf": "plugin-commands@1",
-    "auto": true
+    "auto": true,
+    "items": [
+      {
+        "route": "GET /status",
+        "id": "phone-status",
+        "tool": "phone_status",
+        "title": "Phone status",
+        "description": "The paired phone: online or when last seen, and the pairing code waiting, if any."
+      },
+      {
+        "route": "GET /devices",
+        "id": "phone-devices",
+        "tool": "phone_devices",
+        "title": "Phones",
+        "description": "Every phone paired, revoked or migrated, with online state and last seen."
+      },
+      {
+        "route": "GET /devices/{device_id}",
+        "id": "phone-device",
+        "tool": "phone_device",
+        "title": "One phone",
+        "description": "One phone's record: name, app version, capabilities, online state, last seen."
+      },
+      {
+        "route": "POST /pair",
+        "id": "phone-pair",
+        "tool": "phone_pair",
+        "title": "Pair a phone",
+        "description": "Issues an 8-character pairing code (10 minutes, single use) and a QR link. The phone claims it while signed in with Brett's own hub session; nothing else pairs it."
+      },
+      {
+        "route": "GET /pair",
+        "id": "phone-pair-waiting",
+        "tool": "phone_pair_waiting",
+        "title": "Pairing code waiting",
+        "description": "The pairing code waiting for the phone, or none."
+      },
+      {
+        "route": "DELETE /pair",
+        "id": "phone-pair-cancel",
+        "tool": "phone_pair_cancel",
+        "title": "Cancel pairing",
+        "description": "Drops the waiting pairing code.",
+        "confirm": false
+      },
+      {
+        "route": "POST /devices/{device_id}/revoke",
+        "id": "phone-revoke",
+        "tool": "phone_revoke",
+        "title": "Revoke a phone",
+        "description": "The phone is refused from now on; every command to it answers revoked. Body {why?}.",
+        "destructive": true
+      },
+      {
+        "route": "POST /devices/{device_id}/forget",
+        "id": "phone-forget",
+        "tool": "phone_forget",
+        "title": "Forget a revoked phone",
+        "description": "Drops a revoked phone's record.",
+        "destructive": true
+      },
+      {
+        "route": "POST /open",
+        "id": "phone-open-url",
+        "tool": "phone_open_url",
+        "title": "Open a page on the phone",
+        "description": "Opens an https page on amberxai.com (or a subdomain) on the phone in Chrome or the default browser. Body {url, browser?: chrome|default}. Queued while the phone is offline; acked when it opened."
+      },
+      {
+        "route": "POST /notify",
+        "id": "phone-notify",
+        "tool": "phone_notify",
+        "title": "Notify the phone",
+        "description": "Sends a phone notification. Body {kind: fyi|fix-update|alert|approval, title, body?, url?}. Skipped when that type is switched off."
+      },
+      {
+        "route": "GET /commands",
+        "id": "phone-commands",
+        "tool": "phone_commands",
+        "title": "Commands sent",
+        "description": "The command queue: what was sent to the phone, delivered, acked or failed."
+      },
+      {
+        "route": "GET /commands/{cid}",
+        "id": "phone-command",
+        "tool": "phone_command",
+        "title": "One command",
+        "description": "One command's status and the phone's result."
+      },
+      {
+        "route": "GET /settings",
+        "id": "phone-settings",
+        "tool": "phone_settings",
+        "title": "Phone settings",
+        "description": "browser, notify switches per type, monitor, recorderMic."
+      },
+      {
+        "route": "POST /settings",
+        "id": "phone-settings-set",
+        "tool": "phone_settings_set",
+        "title": "Change phone settings",
+        "description": "Body: any of {browser, notify: {fyi, fix-update, alert, approval}, monitor, recorderMic}. recorderMic only turns on from Brett's own click."
+      },
+      {
+        "route": "POST /recorder/start",
+        "id": "phone-recorder-start",
+        "tool": "phone_recorder_start",
+        "title": "Start the recorder",
+        "description": "Starts the phone's Audio Output Recorder. A straight approval on axHub (no countdown, never automatic); Android asks for capture consent. Body {session_name, group?, note?}."
+      },
+      {
+        "route": "POST /recorder/stop",
+        "id": "phone-recorder-stop",
+        "tool": "phone_recorder_stop",
+        "title": "Stop the recorder",
+        "description": "Stops the phone's Audio Output Recorder; the part so far is uploaded."
+      },
+      {
+        "route": "GET /recorder/status",
+        "id": "phone-recorder-status",
+        "tool": "phone_recorder_status",
+        "title": "Recorder status",
+        "description": "Running or not, session, current part, uploaded parts, upload queue, mic switch, transcripts."
+      },
+      {
+        "route": "GET /recorder/transcripts",
+        "id": "phone-recorder-transcripts",
+        "tool": "phone_recorder_transcripts",
+        "title": "Transcripts",
+        "description": "The transcription worker: on, engine, waiting, last, failed."
+      },
+      {
+        "route": "POST /recorder/transcripts/run",
+        "id": "phone-recorder-transcripts-run",
+        "tool": "phone_recorder_transcripts_run",
+        "title": "Transcribe now",
+        "description": "Looks for recorder parts to transcribe now instead of at the next round."
+      },
+      {
+        "route": "GET /rules",
+        "id": "phone-rules-list",
+        "tool": "phone_rules_list",
+        "title": "Auto-approval rules",
+        "description": "Every auto-approval rule for the Monitor watch, active or proposed."
+      },
+      {
+        "route": "POST /rules",
+        "id": "phone-rules-add",
+        "tool": "phone_rules_add",
+        "title": "Add an auto-approval rule",
+        "description": "Body {what: tool or family.*, scope?: any|project:<id>|agent:<id>|build:<id>, expiresAt?, note?}. From a command it is proposed until Brett turns it on. Never covers destructive tools, personOnly actions, recorder_start or vps.run."
+      },
+      {
+        "route": "POST /rules/{rule_id}/enable",
+        "id": "phone-rules-enable",
+        "tool": "phone_rules_enable",
+        "title": "Turn a rule on or off",
+        "description": "Body {on}. Turning on is Brett's own click only; off works from anywhere."
+      },
+      {
+        "route": "DELETE /rules/{rule_id}",
+        "id": "phone-rules-remove",
+        "tool": "phone_rules_remove",
+        "title": "Remove a rule",
+        "description": "Removes an auto-approval rule.",
+        "confirm": false
+      },
+      {
+        "route": "POST /rules/evaluate",
+        "id": "phone-rules-evaluate",
+        "tool": "phone_rules_evaluate",
+        "title": "Would a rule approve this?",
+        "description": "Body {tool, project?, agent?, build?, destructive?, personOnly?} → {approve, rule?, why}.",
+        "readOnly": true
+      },
+      {
+        "route": "POST /amberx/open_url",
+        "id": "amberx-open-url",
+        "tool": "amberx_open_url",
+        "title": "amberx.open_url (deprecated)",
+        "description": "Alias of phone_open_url, kept for one release."
+      },
+      {
+        "route": "POST /amberx/recorder_start",
+        "id": "amberx-recorder-start",
+        "tool": "amberx_recorder_start",
+        "title": "amberx.recorder_start (deprecated)",
+        "description": "Alias of phone_recorder_start, kept for one release: the same straight approval."
+      },
+      {
+        "route": "POST /amberx/recorder_stop",
+        "id": "amberx-recorder-stop",
+        "tool": "amberx_recorder_stop",
+        "title": "amberx.recorder_stop (deprecated)",
+        "description": "Alias of phone_recorder_stop, kept for one release."
+      },
+      {
+        "route": "GET /amberx/recorder_status",
+        "id": "amberx-recorder-status",
+        "tool": "amberx_recorder_status",
+        "title": "amberx.recorder_status (deprecated)",
+        "description": "Alias of phone_recorder_status, kept for one release."
+      },
+      {
+        "route": "POST /devices/{device_id}/heartbeat",
+        "skip": "the phone's own call (its poll, heartbeat, ack or pairing claim), not a command"
+      },
+      {
+        "route": "POST /devices/{device_id}/next",
+        "skip": "the phone's own call (its poll, heartbeat, ack or pairing claim), not a command"
+      },
+      {
+        "route": "POST /commands/{cid}/ack",
+        "skip": "the phone's own call (its poll, heartbeat, ack or pairing claim), not a command"
+      },
+      {
+        "route": "POST /pair/claim",
+        "skip": "the phone's own call (its poll, heartbeat, ack or pairing claim), not a command"
+      },
+      {
+        "route": "GET /health",
+        "skip": "liveness probe; phone_status answers the same and more"
+      }
+    ]
   },
   "tokens": {
     "$axf": "token-registry@1",

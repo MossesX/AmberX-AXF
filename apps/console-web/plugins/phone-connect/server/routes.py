@@ -228,3 +228,34 @@ def rules_remove(rule_id: str) -> Any:
 @router.post("/rules/evaluate")
 def rules_evaluate(body: dict = Body(default_factory=dict)) -> Any:
     return answer(lambda: RU.evaluate(body))
+
+
+# ------------------------------------------------------------------ AmberX aliases (one release, answered as deprecated)
+
+def _deprecated(old: str, new: str, fn: Callable[[], Any]) -> Any:
+    out = answer(fn)
+    if isinstance(out, dict):
+        return {**out, "deprecated": f"{old} is deprecated: use {new}"}
+    return out
+
+
+@router.post("/amberx/open_url")
+def amberx_open_url(request: Request, body: dict = Body(default_factory=dict)) -> Any:
+    return _deprecated("amberx.open_url", "phone.open_url", lambda: Q.open_url(str(body.get("url") or ""), caller(request)[0], _via(request, body), str(body.get("browser") or "")))
+
+
+@router.post("/amberx/recorder_start")
+def amberx_recorder_start(request: Request, body: dict = Body(default_factory=dict)) -> Any:
+    reason = body.get("reason") if isinstance(body.get("reason"), dict) else None
+    return _deprecated("amberx.recorder_start", "phone.recorder_start", lambda: R.start(str(body.get("session_name") or ""), str(body.get("group") or ""), str(body.get("note") or ""),
+                                                                                         reason, str(body.get("approvalId") or ""), caller(request)[0], _via(request, body)))
+
+
+@router.post("/amberx/recorder_stop")
+def amberx_recorder_stop(request: Request, body: dict = Body(default_factory=dict)) -> Any:
+    return _deprecated("amberx.recorder_stop", "phone.recorder_stop", lambda: R.stop(caller(request)[0], _via(request, body)))
+
+
+@router.get("/amberx/recorder_status")
+def amberx_recorder_status() -> Any:
+    return _deprecated("amberx.recorder_status", "phone.recorder_status", R.status)
