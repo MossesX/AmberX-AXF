@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { QuickSettingsFrame } from '../components/QuickSettings';
-import { quickScopeId } from '../../core/engines/quick-settings.mjs';
 import { useRuntime } from '../AxfProvider';
 import { Icon } from '../components/Icon';
+import { QuickSettingsFrame } from '../components/QuickSettings';
+import { quickScopeId } from '../../core/engines/quick-settings.mjs';
 import { BrandMark, BrandWatermark, brandHostProps, useBrandPlace } from '../components/Brand';
 import { useScopeId } from '../components/InterfaceScope';
 import type { Pane, TabGroup, TabSpec, WindowManager, WindowSettings, WindowSpec, WindowState, Corner, DragPreview, ResizeEdge, WindowFrame } from '../../core/engines/windows';
