@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:38:46.049Z",
+ "updatedAt": "2026-11-15T00:39:06.432Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -106123,7 +106123,7 @@
    "pr": "#503",
    "priority": "P0",
    "createdAt": "2026-11-10T21:45:52.947Z",
-   "updatedAt": "2026-11-15T00:23:24.755Z",
+   "updatedAt": "2026-11-15T00:38:47.362Z",
    "builtAt": "2026-11-12T02:49:21.476Z",
    "notes": [
     {
@@ -109258,7 +109258,7 @@
    "branch": "claude/vps-server-gate-no-build-starts-without-an-orchestrator-issued-id",
    "pr": "#504",
    "createdAt": "2026-11-12T01:59:21.464Z",
-   "updatedAt": "2026-11-15T00:23:31.149Z",
+   "updatedAt": "2026-11-15T00:38:52.085Z",
    "builtAt": "2026-11-12T02:23:04.953Z",
    "notes": [
     {
@@ -109372,7 +109372,7 @@
    "branch": "claude/main-gate-nothing-reaches-main-without-passing",
    "pr": "#508",
    "createdAt": "2026-11-12T02:00:17.612Z",
-   "updatedAt": "2026-11-15T00:23:27.684Z",
+   "updatedAt": "2026-11-15T00:38:50.282Z",
    "builtAt": "2026-11-12T02:36:08.572Z",
    "notes": [
     {
@@ -109498,7 +109498,7 @@
    "branch": "claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides",
    "pr": "#505",
    "createdAt": "2026-11-12T02:02:25.273Z",
-   "updatedAt": "2026-11-15T00:23:21.048Z",
+   "updatedAt": "2026-11-15T00:38:46.161Z",
    "builtAt": "2026-11-12T02:50:48.540Z",
    "notes": [
     {
@@ -110621,7 +110621,7 @@
    "branch": "claude/all-banners-hide-when-empty",
    "pr": "#509",
    "createdAt": "2026-11-12T02:45:08.669Z",
-   "updatedAt": "2026-11-15T00:23:15.142Z",
+   "updatedAt": "2026-11-15T00:38:44.818Z",
    "builtAt": "2026-11-12T03:10:51.460Z",
    "notes": [
     {
@@ -110805,7 +110805,7 @@
    "branch": "claude/merge-all-ready-buttons-server-side",
    "pr": "#580",
    "createdAt": "2026-11-12T02:47:57.796Z",
-   "updatedAt": "2026-11-15T00:23:09.184Z",
+   "updatedAt": "2026-11-15T00:38:41.518Z",
    "builtAt": "2026-11-12T03:34:10.885Z",
    "notes": [
     {
@@ -110965,7 +110965,7 @@
    "branch": "claude/account-order-hulu-moses-x-api-account",
    "pr": "#581",
    "createdAt": "2026-11-12T02:59:45.402Z",
-   "updatedAt": "2026-11-15T00:23:12.505Z",
+   "updatedAt": "2026-11-15T00:38:42.595Z",
    "builtAt": "2026-11-12T03:17:22.994Z",
    "notes": [
     {
@@ -111733,7 +111733,7 @@
    "pr": "#592",
    "priority": "P0",
    "createdAt": "2026-11-12T10:51:23.133Z",
-   "updatedAt": "2026-11-15T00:23:05.003Z",
+   "updatedAt": "2026-11-15T00:38:40.227Z",
    "builtAt": "2026-11-12T21:00:18.244Z",
    "notes": [
     {
@@ -114798,7 +114798,7 @@
    "pr": "#607",
    "priority": "P0",
    "createdAt": "2026-11-12T21:54:49.855Z",
-   "updatedAt": "2026-11-15T00:22:57.527Z",
+   "updatedAt": "2026-11-15T00:38:37.204Z",
    "builtAt": "2026-11-13T02:03:04.281Z",
    "notes": [
     {
@@ -115233,7 +115233,7 @@
    "pr": "#585",
    "priority": "P0",
    "createdAt": "2026-11-12T23:12:31.496Z",
-   "updatedAt": "2026-11-15T00:23:00.575Z",
+   "updatedAt": "2026-11-15T00:38:38.929Z",
    "builtAt": "2026-11-12T23:22:21.160Z",
    "notes": [
     {
@@ -116040,7 +116040,7 @@
    "pr": "#604",
    "priority": "P0",
    "createdAt": "2026-11-12T23:32:23.494Z",
-   "updatedAt": "2026-11-15T00:22:49.042Z",
+   "updatedAt": "2026-11-15T00:38:33.848Z",
    "builtAt": "2026-11-13T08:42:58.405Z",
    "notes": [
     {
@@ -117639,7 +117639,7 @@
    "pr": "#595",
    "priority": "P0",
    "createdAt": "2026-11-13T06:21:11.993Z",
-   "updatedAt": "2026-11-15T00:22:33.304Z",
+   "updatedAt": "2026-11-15T00:38:31.207Z",
    "builtAt": "2026-11-13T12:28:11.498Z",
    "notes": [
     {
@@ -118632,7 +118632,7 @@
    "pr": "#608",
    "priority": "P0",
    "createdAt": "2026-11-13T06:54:48.788Z",
-   "updatedAt": "2026-11-15T00:22:55.141Z",
+   "updatedAt": "2026-11-15T00:38:35.689Z",
    "builtAt": "2026-11-13T07:20:11.774Z",
    "notes": [
     {
@@ -121374,7 +121374,7 @@
    "pr": "#591",
    "priority": "P0",
    "createdAt": "2026-11-13T10:40:45.569Z",
-   "updatedAt": "2026-11-15T00:22:41.725Z",
+   "updatedAt": "2026-11-15T00:38:32.445Z",
    "builtAt": "2026-11-13T11:16:46.914Z",
    "notes": [
     {
@@ -123323,7 +123323,7 @@
    "pr": "#574",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:11.111Z",
-   "updatedAt": "2026-11-15T00:22:19.163Z",
+   "updatedAt": "2026-11-15T00:38:25.860Z",
    "builtAt": "2026-11-13T13:23:41.684Z",
    "notes": [
     {
@@ -124322,7 +124322,7 @@
    "pr": "#575",
    "priority": "P0",
    "createdAt": "2026-11-13T12:14:42.715Z",
-   "updatedAt": "2026-11-15T00:22:10.228Z",
+   "updatedAt": "2026-11-15T00:38:24.148Z",
    "builtAt": "2026-11-13T13:32:49.084Z",
    "notes": [
     {
@@ -124694,7 +124694,7 @@
    "pr": "#572",
    "priority": "P0",
    "createdAt": "2026-11-13T12:23:34.932Z",
-   "updatedAt": "2026-11-15T00:22:27.287Z",
+   "updatedAt": "2026-11-15T00:38:29.893Z",
    "builtAt": "2026-11-13T12:40:41.227Z",
    "notes": [
     {
@@ -124893,7 +124893,7 @@
    "pr": "#583",
    "priority": "P0",
    "createdAt": "2026-11-13T12:31:20.005Z",
-   "updatedAt": "2026-11-15T00:22:23.925Z",
+   "updatedAt": "2026-11-15T00:38:27.924Z",
    "builtAt": "2026-11-13T12:59:49.949Z",
    "notes": [
     {
@@ -125527,7 +125527,7 @@
    "pr": "#627",
    "priority": "P0",
    "createdAt": "2026-11-13T17:39:25.266Z",
-   "updatedAt": "2026-11-15T00:21:52.956Z",
+   "updatedAt": "2026-11-15T00:38:21.755Z",
    "builtAt": "2026-11-13T18:20:33.121Z",
    "notes": [
     {
