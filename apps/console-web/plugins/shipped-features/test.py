@@ -149,4 +149,25 @@ no = c.post(f"{base}/features/{f['id']}/open", json={})
 ok(no.status_code == 409 and no.json()["detail"]["code"] == "not-live" and "not landed yet" in no.json()["detail"]["message"] and len(sent) == 1, "POST open: no target → 409 with the reason, nothing sent")
 mod._control = lambda body: {"ok": False, "code": "unavailable", "message": "no relay", "openUrl": "https://console.example/"}
 ok(c.post(f"{base}/features/{vf['id']}/open").json()["status"] == "pending", "POST open: no console open → pending with the open link")
+
+# fuzzy lookup: by id, title or keywords; alternatives when it's ambiguous
+FS = [{"id": "f-ui-review-choices-tab", "name": "Choices tab", "status": "live", "plugin": "ui-review", "app": "console"},
+      {"id": "f-gate-pending-tab", "name": "Pending features tab", "status": "live", "plugin": "gate", "app": "console"},
+      {"id": "f-gate-history-tab", "name": "History tab", "status": "live", "plugin": "gate", "app": "console"},
+      {"id": "f-shipped-open", "name": "Open button for shipped features", "status": "in-pr", "plugin": "shipped-features", "app": "console", "tags": ["deep-link"]}]
+ok(OT.find(FS, "f-gate-history-tab")["match"]["id"] == "f-gate-history-tab", "find: by id")
+ok(OT.find(FS, "choices tab")["match"]["id"] == "f-ui-review-choices-tab" and not OT.find(FS, "choices tab")["ambiguous"], "find: by exact title, not ambiguous")
+ok(OT.find(FS, "the pending features")["match"]["id"] == "f-gate-pending-tab", "find: by words of the title (filler words dropped)")
+ok(OT.find(FS, "deep link")["match"]["id"] == "f-shipped-open", "find: by keywords (tags, plugin)")
+amb = OT.find(FS, "gate tab")
+ok(amb["ambiguous"] and {amb["match"]["id"], amb["alternatives"][0]["id"]} == {"f-gate-pending-tab", "f-gate-history-tab"}, f"find: ambiguous → best plus close alternatives ({amb})")
+ok(OT.find(FS, "zebra crossing")["match"] is None, "find: nothing fits → no match")
+fr = c.get(f"{base}/features/find", params={"q": "veto alarm"}).json()
+ok(fr["match"]["id"] == vf["id"], "GET features/find: by words")
+ok(c.get(f"{base}/features/find").status_code == 400 and c.get(f"{base}/features/open-target", params={"feature": "zebra crossing"}).status_code == 404, "find needs q; nothing fits → 404")
+bt = c.get(f"{base}/features/open-target", params={"feature": "veto alarm"}).json()
+ok(bt["target"] == "view:banners" and bt["lookup"]["match"]["id"] == vf["id"], "GET features/open-target?feature=<words>")
+mod._control = lambda body: {"ok": True, "verb": "open", "address": body["address"]}
+bo = c.post(f"{base}/features/open", json={"feature": vf["id"]}).json()
+ok(bo["status"] == "delivered" and bo["openTarget"]["target"] == "view:banners", "POST features/open {feature: id}")
 print(f"shipped-features server: {n} checks passed")

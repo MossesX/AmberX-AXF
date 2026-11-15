@@ -21,6 +21,8 @@ only); every write goes through the Node side (ledger/ledger.mjs), so the refere
     POST /link                link a build to its branch / PR / merge time (builds store write, hooks fire)
     POST /backfill            { since, dry }: landed builds with no manifest since the date get one
     GET  /features/{id}/open-target   where the feature opens in the console (console-control@1 address) or why not
+    GET  /features/find?q=    a feature named in words (or its id): best match + close alternatives when ambiguous
+    GET  /features/open-target?feature=<id or words> · POST /features/open { feature, to?, by? }: the same, by name
     POST /features/{id}/open  { to?, by? }: open it in the live console (console-control open); 409 + reason when it can't
 
 Manifest writes run framework/cli/shipped.mjs (Node), so the builds store stays the one writer and every listener
@@ -365,6 +367,51 @@ def open_feature(t: dict[str, Any], body: dict[str, Any]) -> dict[str, Any]:
            "reason": f"Open {t.get('name') or t.get('feature')} from Shipped features"}
     r = _control(cmd)
     return {**r, "ok": bool(r.get("ok")), "openTarget": t, "status": "delivered" if r.get("ok") else ("pending" if r.get("code") == "unavailable" else "failed")}
+
+
+def _all_features() -> list[dict[str, Any]]:
+    c = _connect()
+    if c is None:
+        raise HTTPException(404, "the ledger isn't built yet")
+    try:
+        return _docs(c, "SELECT doc FROM features")
+    finally:
+        c.close()
+
+
+def lookup(ref: str) -> tuple[str, dict[str, Any]]:
+    """A feature named by id or in words → (its id, the find answer). 404 when nothing fits."""
+    ref = ref.strip()[:200]
+    if not ref:
+        raise HTTPException(400, "say which feature: an id or a few words of its name")
+    if ID.match(ref) and _feature_doc(ref) is not None:
+        return ref, {"q": ref, "match": {"id": ref}, "alternatives": [], "ambiguous": False}
+    r = ot.find(_all_features(), ref)
+    if not r["match"]:
+        raise HTTPException(404, f"no feature matches '{ref}'")
+    return r["match"]["id"], r
+
+
+@router.get("/features/find")
+def feature_find(q: str = "", limit: int = 5) -> dict[str, Any]:
+    """A feature named in words (or its id): the best match, and close alternatives when it's ambiguous."""
+    if not q.strip():
+        raise HTTPException(400, "q is the feature's id or a few words of its name")
+    return ot.find(_all_features(), q, max(2, min(limit, 20)))
+
+
+@router.get("/features/open-target")
+def feature_open_target_by(feature: str = "") -> dict[str, Any]:
+    """open-target for a feature named by id or in words; carries the lookup (alternatives when ambiguous)."""
+    fid, found = lookup(feature)
+    return {**resolve(fid), "lookup": found}
+
+
+@router.post("/features/open")
+def feature_open_by(body: dict[str, Any]) -> dict[str, Any]:
+    """Open a feature named by id or in words: { feature, to?, by? }. The best match opens; alternatives come back."""
+    fid, found = lookup(str(body.get("feature") or body.get("id") or body.get("q") or ""))
+    return {**open_feature(resolve(fid), body), "lookup": found}
 
 
 @router.get("/features/{fid}/open-target")

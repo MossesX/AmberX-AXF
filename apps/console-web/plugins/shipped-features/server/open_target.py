@@ -155,3 +155,48 @@ def open_target(f: dict[str, Any] | None, reg: Registry) -> dict[str, Any]:
     if app in OTHER_APPS:
         return no("no-screen", f"it lives in {OTHER_APPS[app]}, not the console")
     return no("no-screen")
+
+
+# ------------------------------------------------------------------ "open feature X": a feature named in words
+
+STOP = {"the", "a", "an", "feature", "features", "open", "show", "me", "in", "on", "of", "for", "to", "app", "please", "that", "this", "my", "with", "and"}
+ALTERNATIVE_GAP = 0.12  # a second match this close to the best one makes the answer ambiguous
+
+
+def _words(s: str) -> list[str]:
+    return [w for w in _key(s).split() if w and w not in STOP]
+
+
+def _score(f: dict[str, Any], q: str, qw: list[str]) -> float:
+    name = _key(str(f.get("name") or ""))
+    if str(f.get("id") or "").lower() in (q, "f-" + q):
+        return 2.0
+    if _key(q) == name:
+        return 1.5
+    if not qw:
+        return 0.0
+    nw = set(name.split())
+    rest = set(_words(" ".join([str(f.get("plugin") or ""), str(f.get("app") or ""), *map(str, f.get("tags") or []),
+                                *(str(b.get("id") or "") for b in f.get("builds") or []), str(f.get("description") or "")[:300]])))
+    hit = sum(1.0 if w in nw else 0.6 if w in rest else 0.0 for w in qw)
+    s = hit / len(qw)
+    if _key(q) and _key(q) in name:
+        s += 0.3
+    s -= 0.02 * max(0, len(nw) - len(qw)) / 10  # a shorter name that matches is the closer one
+    if f.get("status") in OPENABLE:
+        s += 0.05
+    return s
+
+
+def find(features: list[dict[str, Any]], q: str, limit: int = 5) -> dict[str, Any]:
+    """The feature a few words (or an id) name: {match, alternatives, ambiguous}. match is None when nothing fits."""
+    q = q.strip().lower()[:200]
+    qw = _words(q)
+    scored = sorted(((_score(f, q, qw), str(f.get("firstLiveAt") or f.get("mergedAt") or ""), f) for f in features), key=lambda x: (x[0], x[1]), reverse=True)
+    scored = [x for x in scored if x[0] >= 0.5]
+    brief = lambda s, f: {"id": f.get("id"), "name": f.get("name"), "status": f.get("status"), "plugin": f.get("plugin"), "app": f.get("app"), "score": round(s, 3)}  # noqa: E731
+    if not scored:
+        return {"q": q, "match": None, "alternatives": [], "ambiguous": False}
+    best = scored[0][0]
+    alts = [brief(s, f) for s, _, f in scored[1:limit] if best < 1.5 and best - s <= ALTERNATIVE_GAP]
+    return {"q": q, "match": brief(best, scored[0][2]), "alternatives": alts, "ambiguous": bool(alts)}
