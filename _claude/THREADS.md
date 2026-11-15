@@ -797,12 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 22:52 UTC · `hotfix-toolbar-settings-still-change` → running, note (all) · pipeline
-- 2026-11-14 22:52 UTC · `hotfix-toolbar-settings-still-change` note (all) · orchestrator
-- 2026-11-14 22:53 UTC · `pass-approval-hook-deep-link-amberx-notification` s3 done (all) · orchestrator
-- 2026-11-14 22:53 UTC · `land-finish-auto-land-live-clear-backlog` s9 done (all) · orchestrator
-- 2026-11-14 22:54 UTC · `pass-approval-hook-deep-link-amberx-notification` s4 done (all) · orchestrator
-- 2026-11-14 22:54 UTC · `hotfix-desktop-console-draws-app-menu` s1 done (all) · orchestrator
 - 2026-11-14 22:54 UTC · `themed-native-controls-plugin` s7 done (all) · orchestrator
 - 2026-11-14 22:54 UTC · `hotfix-desktop-console-draws-app-menu` s2 done (all) · orchestrator
 - 2026-11-14 22:55 UTC · `themed-native-controls-plugin` s7 done (all) · foreign-write
@@ -1197,6 +1191,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 00:20 UTC · `merge-main-land-console-axhub-retry` branch claude/merge-main-land-console-axhub-retry (all) · pipeline
 - 2026-11-15 00:20 UTC · `merge-main-land-console-axhub-retry` note (all) · orchestrator
 - 2026-11-15 00:23 UTC · `merge-main-land-console-axhub-retry` s1 done, → running (all) · orchestrator
+- 2026-11-15 00:23 UTC · `merge-main-land-console-axhub-retry` s2 done (all) · orchestrator
+- 2026-11-15 00:23 UTC · `merge-main-land-console-axhub-retry` s3 done (all) · orchestrator
+- 2026-11-15 00:24 UTC · `merge-main-land-console-axhub-retry` s4 done (all) · orchestrator
+- 2026-11-15 00:24 UTC · `merge-main-land-console-axhub-retry` s5 done (all) · orchestrator
+- 2026-11-15 00:24 UTC · `merge-main-land-console-axhub-retry` s6 done (all) · orchestrator
+- 2026-11-15 00:24 UTC · `merge-main-land-console-axhub-retry` branch claude/console-axhub-retry-failed-calls, PR #589 (all) · builds-live
 
 ## Token passes (log)
 
