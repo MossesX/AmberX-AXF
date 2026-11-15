@@ -798,7 +798,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:23 UTC · `auto-land-merge-main-land-land-mjs-clash` → running, note (all) · pipeline
 - 2026-11-13 23:44 UTC · `auto-land-merge-main-land-land-mjs-clash` s3 done (all) · orchestrator
 - 2026-11-13 23:50 UTC · `auto-land-merge-main-land-land-mjs-clash` s4 done (all) · orchestrator
 - 2026-11-13 23:52 UTC · `auto-land-merge-main-land-land-mjs-clash` s5 done (all) · orchestrator
@@ -1198,6 +1197,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 01:19 UTC · `context-menus-plugin-one-true-source` s4 done (all) · orchestrator
 - 2026-11-15 01:15 UTC · `token-registry-skin-editor-live-sandbox` PR #700 (all) · builds-live
 - 2026-11-15 01:15 UTC · `token-registry-skin-editor-live-sandbox` s6 done, → running (all) · orchestrator
+- 2026-11-15 01:21 UTC · `token-registry-skin-editor-live-sandbox` s7 done (all) · orchestrator
 
 ## Token passes (log)
 
