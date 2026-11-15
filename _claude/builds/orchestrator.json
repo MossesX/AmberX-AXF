@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T12:35:01.909Z",
+ "updatedAt": "2026-11-15T12:35:14.771Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -150916,7 +150916,7 @@
    "pr": "#709",
    "priority": "P0",
    "createdAt": "2026-11-15T12:14:27.131Z",
-   "updatedAt": "2026-11-15T12:34:52.758Z",
+   "updatedAt": "2026-11-15T12:35:10.404Z",
    "builtAt": "",
    "notes": [
     {
@@ -150942,6 +150942,10 @@
     {
      "text": "Brett (07:17): this sender owns the ONE TRUE feature store on the VPS: one record per build (shipped-manifest@1 plus an in-progress state for active/incomplete builds), created when a build is filed, updated as it moves through the pipeline, and marked shipped on a successful merge to main. Serve it through one API (REST + features.* tools via axHub). Both Shipped features and the Gate & rules 'Pending features' tab read only from it. Migrate the existing _claude/builds/shipped/*.json and the plugin's ledger into it so there's a single source.",
      "at": "2026-11-15T12:17:34.278Z"
+    },
+    {
+     "text": "Dispatch gate: vps-sends-shipped-features-every-merge still has axf-vps-sends-shipped-features-every-merge--joey alive: not launched again, tracking that session.",
+     "at": "2026-11-15T12:35:10.404Z"
     }
    ],
    "approvals": [],
