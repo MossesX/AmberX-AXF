@@ -34,7 +34,7 @@ from typing import Any, Iterable
 SCHEMA_CANDIDATES = [
     os.environ.get('AXF_DATA_SCHEMA', ''),
     str(Path(__file__).with_name('data-store.json')),
-    str(Path(__file__).resolve().parents[2] / 'framework/schemas/data-store.json'),
+    *([str(Path(__file__).resolve().parents[2] / 'framework/schemas/data-store.json')] if len(Path(__file__).resolve().parents) > 2 else []),
 ]
 
 
