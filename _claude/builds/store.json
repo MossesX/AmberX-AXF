@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5728,
- "updatedAt": "2026-11-15T00:09:58.122Z",
+ "rev": 5729,
+ "updatedAt": "2026-11-15T00:10:20.703Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -200758,7 +200758,7 @@
    "title": "All settings interfaces open in a floating dialog by default",
    "category": "",
    "detail": "Every settings interface (console Settings sections, plugin settings, chrome settings for tab groups/toolbars/banners/nav/menu bar, and any future one) opens by default in a floating dialog over the current screen instead of navigating to the Settings page. Make it a framework default so new settings interfaces get it automatically (template + check that fails if a settings interface navigates away by default). Keep a per-user option to open it as a page instead, and a 'pop out to page' button in the dialog. Dialogs use the glass/transparency tokens (opacityGlass, blur). Deep links and voice/MCP/API still work. Tests, help entry, Shipped features.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -200767,7 +200767,7 @@
    "priority": "P1",
    "createdAt": "2026-11-13T18:03:04.047Z",
    "updatedAt": "2026-11-15T00:09:27.527Z",
-   "builtAt": "",
+   "builtAt": "2026-11-15T00:09:27.527Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -200804,6 +200804,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-all-settings-interfaces-open-floating--joey, shared account login)",
      "at": "2026-11-15T00:09:27.527Z"
+    },
+    {
+     "text": "Phase 1 done, PR #628 (draft). UI Review shots exist only in the worktree (r-20261113-8voz001): the session had no AXF_CONSOLE_URL/AXF_TOKEN. Re-submit with --console from a session that has them (shots regenerate via apps/console-web/scripts/settings-open.e2e.mjs).",
+     "at": "2026-11-13T18:33:05.693Z"
     }
    ],
    "approvals": [],
@@ -200917,12 +200921,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T18:33:00.462Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T18:04:33.661Z",
-     "updatedAt": "2026-11-13T18:04:33.661Z"
+     "updatedAt": "2026-11-13T18:33:00.863Z"
     }
    ],
    "profiles": [
