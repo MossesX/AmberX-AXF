@@ -50,6 +50,7 @@
  *   axf <plugin> <command> [--field value]…   run a plugin command or read (also axf plugin <plugin> <command>; needs
  *                               a plugin providing service:plugin-commands@1, the Plugin commands plugin)  <!-- axf-plugin:plugin-commands -->
  *   axf <plugin> <word> …        a plugin's own word commands when its plugin.json names a "cli" script that exports cliWords
+ *   axf <word> …                 a word a plugin claims in its plugin.json "cli" (e.g. axf phone …)
  *   axf console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | refresh [--hard] [--all] | where | list [kind] [words] | clients
  *                               load a screen in Brett's open console (needs a plugin providing service:console-commands@1)
  *   axf console do|state|targets|search|focus|scroll|plugin enable|disable|voice …  [--json]
@@ -112,6 +113,23 @@ if (cmd === 'voice') {
   if (!dir) { console.error('no plugin provides the voice listener (service:axf.wake-listener@1)'); process.exit(1); }
   const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'cli.mjs')).href);
   process.exit(await main(rest));
+}
+// a plugin may claim a word of its own on the command line (plugin.json "cli": { "<word>": "<file>.mjs" } where the word
+// is not a folder, e.g. `axf phone …`); found by the manifest, never by folder name
+{
+  const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
+  const { join: joinPath } = await import('node:path');
+  const plugins = joinPath(import.meta.dirname ?? new URL('.', import.meta.url).pathname, '../../apps/console-web/plugins');
+  if (cmd && /^[a-z][a-z0-9-]*$/.test(cmd) && !exists(joinPath(plugins, cmd, 'plugin.json'))) {
+    for (const d of exists(plugins) ? readdirSync(plugins).sort() : []) {
+      let own = '';
+      try { own = JSON.parse(readText(joinPath(plugins, d, 'plugin.json'), 'utf8')).cli?.[cmd] || ''; } catch { continue; }
+      if (!own || !/^[\w./-]+\.mjs$/.test(own) || own.includes('..')) continue;
+      const { pathToFileURL } = await import('node:url');
+      const words = await import(pathToFileURL(joinPath(plugins, d, own)).href);
+      if (typeof words.main === 'function') process.exit(await words.main(rest));
+    }
+  }
 }
 // plugin commands (control@1 plugins domain): `axf plugins [plugin]`, `axf plugin <plugin> <command> …`, and
 // `axf <plugin> <command> …` for any console plugin whose folder isn't an axf command; they go to the plugin that
