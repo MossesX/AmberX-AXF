@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5991,
- "updatedAt": "2026-11-15T04:23:06.779Z",
+ "rev": 5992,
+ "updatedAt": "2026-11-15T04:23:25.389Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -229736,15 +229736,15 @@
    "title": "Move build orchestrator to axHub",
    "category": "",
    "detail": "Move the entire build orchestrator (queue, pending, splitter, dispatcher/pipeline tick, reconciler, slots, accounts, builds store, notes, steps, landing) out of the console plugin and into axHub (MossesX/axHub), running on the VPS, so builds are managed whether the console is up or not. Staged so nothing breaks mid-flight: (1) Run AFTER auto-lander-controls-in-the-gate-plugin lands (gate + merge queue already in axHub). (2) Stand up the axHub orchestrator service reading the SAME builds store (_claude/builds/*), in shadow mode: it computes what it would launch/land but doesn't act; compare with the console for a while. (3) Cut over: axHub owns the dispatcher, reconciler, splitter and lander; the console's cron/plugin stops acting. (4) Build the full orchestrator UI as axHub screens (all tabs: Pending, Queue, Active, Built, Complete, Errors, Archive, settings, slots, accounts) with every action. (5) axHub tools (orchestrator.*) for Claude, MCP and voice: file a build, note, status, step, approve, land, etc.; today's axf-console.build_orchestrator_pipeline_request and planner.builds callers get equivalent axHub tools. (6) Console keeps only a read-only mirror or a link to the axHub page, then the console plugin is retired. Fix on the way: phase-end builds must never get parked in Pending (reconciler bug), dispatcher alerts link format. No build or data lost; all history migrated. Tests, help, Shipped features.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/move-build-orchestrator-to-axhub",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T04:20:19.690Z",
-   "updatedAt": "2026-11-15T04:23:02.532Z",
+   "updatedAt": "2026-11-15T04:23:06.740Z",
    "builtAt": "",
    "notes": [
     {
@@ -229758,6 +229758,10 @@
     {
      "text": "Split by Claude into 37 steps (5 Fable).",
      "at": "2026-11-15T04:22:44.529Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-move-build-orchestrator-to-axhub--joey, shared account login)",
+     "at": "2026-11-15T04:23:06.740Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-move-build-orchestrator-to-axhub--joey.",
@@ -229781,12 +229785,12 @@
    "pipeline": {
     "queuedAt": "2026-11-15T04:20:27.813Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-move-build-orchestrator-to-axhub--joey",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-15T04:23:00.657Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-15T04:22:44.529Z",
@@ -229798,7 +229802,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-15T04:23:00.657Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -229807,7 +229811,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-15T04:23:00.657Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -230748,7 +230752,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
