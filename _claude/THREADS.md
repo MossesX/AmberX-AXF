@@ -806,7 +806,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 00:37 UTC · `new-asset-type-animated-expanding-row` s6 done (all) · orchestrator
 - 2026-11-15 00:39 UTC · `merge-main-land-console-app-part-2` → pending, note (all) · pipeline
 - 2026-11-15 00:39 UTC · `ui-manager-floating-window-to-select-any` → running, note (all) · pipeline
 - 2026-11-15 00:39 UTC · `ui-manager-floating-window-to-select-any` → running, note (all) · orchestrator
@@ -1206,6 +1205,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 13:22 UTC · `home-cards-follow-plugin-off-home-always` → queued, note (all) · console
 - 2026-11-15 13:22 UTC · `data-container-axf-data-holds-all` s24 done (all) · orchestrator
 - 2026-11-15 13:22 UTC · `home-cards-follow-plugin-off-home-always` note (all) · mcp
+- 2026-11-15 13:23 UTC · `gate-rules-plugin-in-the-console` note (all) · mcp
 
 ## Token passes (log)
 

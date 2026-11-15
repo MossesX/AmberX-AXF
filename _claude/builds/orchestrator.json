@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T13:22:51.565Z",
+ "updatedAt": "2026-11-15T13:23:33.378Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -150199,7 +150199,7 @@
    "pr": "#711",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:25.282Z",
-   "updatedAt": "2026-11-15T13:04:13.597Z",
+   "updatedAt": "2026-11-15T13:23:31.917Z",
    "builtAt": "2026-11-15T13:04:13.597Z",
    "notes": [
     {
@@ -150265,6 +150265,10 @@
     {
      "text": "Headless run axf-gate-rules-plugin-in-the-console--paulie: brief only · start 15.5K tokens ($0.05) · cost $20.09 · 265 turns · 6 tools, MCP none",
      "at": "2026-11-15T13:04:13.597Z"
+    },
+    {
+     "text": "TO THE RUNNING SESSION: re-read the build. Brett (08:25): add a **Build rules** tab to this plugin, with the VPS as the one place that owns and enforces every builder rule. 1) Move ALL builder rules out of Claude's instructions (CLAUDE.md, the build briefs, prompt templates, _claude rule docs) into this plugin's Build rules store, served by the VPS. List every rule before moving it, and delete nothing without listing it first. 2) Any rule the VPS can do mechanically, the VPS DOES itself after or around the build, and Claude no longer does it. That way nothing happens twice. Examples: create the plugin's home card from plugin.json and the template, Shipped features manifest, help stub, API-parity scaffolding, tests check, and landing. 3) Rules that need judgement are handed to the session from this store at build time; they are not copied into CLAUDE.md. 4) The gate checks every rule before landing, blocks on a fail, the VPS auto-fixes what it can, and everything is logged in History. 5) In the tab, each rule shows who does it (VPS or session) and whether it's on or off, with edit, add, history, and voice/API parity. First rule: every plugin gets a home card, made by the VPS.",
+     "at": "2026-11-15T13:23:31.917Z"
     }
    ],
    "approvals": [
