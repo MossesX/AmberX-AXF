@@ -48,6 +48,8 @@ import { BANNER_SETTINGS_DIALOG } from './BannerSettings';
 
 export const CHROME_SETTINGS_DIALOG = 'axf.chrome.settings';
 export const CHROME_PICK_DIALOG = 'axf.chrome.pick';
+/** component-tokens@1: one tab row's or grid's own token values, on their own (a grid has no chrome settings dialog). */
+export const CHROME_TOKENS_DIALOG = 'axf.chrome.tokens';
 /** The instance id of a kind the app shows once (toolbar, banner, nav, menu bar) when the element names none. */
 export const CHROME_APP_INSTANCE = 'app';
 
@@ -184,6 +186,7 @@ export function installChrome(rt: AxfRuntime): void {
     }, { label: 'Set one token of one tab row or grid (chrome.token:<tabs|grid>:<instance>:<token>:<value>; empty value = drop it)', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.token-restore', ([family, instance], ctx) => { const fa = fam(family); if (fa) rt.settings.set(INSTANCE_TOKENS_KEY, restorePreviousInstanceTokens(rt.settings.get(INSTANCE_TOKENS_KEY), fa, (typeof instance === 'string' && instance) || (typeof ctx?.payload === 'string' ? ctx.payload : '') || CHROME_APP_INSTANCE) as never); }, { label: 'Restore previous edit of a tab row\'s / grid\'s tokens (chrome.token-restore:<tabs|grid>:<instance>)', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.token-hub', ([family, instance], ctx) => { const fa = fam(family); if (fa) rt.settings.set(INSTANCE_TOKENS_KEY, restoreInstanceTokensFromHub(rt.settings.get(INSTANCE_TOKENS_KEY), fa, (typeof instance === 'string' && instance) || (typeof ctx?.payload === 'string' ? ctx.payload : '') || CHROME_APP_INSTANCE) as never); }, { label: 'Restore a tab row\'s / grid\'s tokens from axHub (drop its own values; follow the shared look) (chrome.token-hub:<tabs|grid>:<instance>)', params: true, requires: 'assets.swap' });
+    rt.actions.register('chrome.tokens', ([family, instance], ctx) => { const fa = fam(family); if (fa) rt.openDialog(CHROME_TOKENS_DIALOG, { family: fa, instance: (typeof instance === 'string' && instance) || (typeof ctx?.payload === 'string' ? ctx.payload : '') || CHROME_APP_INSTANCE }); }, { label: 'Open one tab row\'s / grid\'s own colours & style (chrome.tokens:<tabs|grid>:<instance>)', params: true });
     rt.actions.register('settings.controlled-colour', ([c]) => { if (c && (CONTROLLED_COLORS as readonly string[]).includes(c)) rt.settings.set(CONTROLLED_COLOR_KEY, c); }, { label: 'Colour of controlled (overridden) settings', params: true });
     rt.actions.register('chrome.interface', ([type, which = 'default']) => {
       const ty = t(type); if (!ty) return;
@@ -447,11 +450,12 @@ const instOf = (p: Record<string, unknown>): string => (typeof p.instance === 's
 /** The dialogs AppShell registers: chrome settings + the asset picker. */
 export const chromeDialogs: DialogMap = {
   [CHROME_SETTINGS_DIALOG]: { title: 'Chrome settings', icon: 'settings', searchable: false, render: (p) => <ChromeSettingsPanel type={typeOf(p)} instance={instOf(p)} /> },
+  [CHROME_TOKENS_DIALOG]: { title: 'Colours & style (this one)', icon: 'palette', searchable: false, render: (p) => <InstanceTokensPanel family={isComponentTokenFamily(p.family) ? p.family : 'grid'} instance={typeof p.instance === 'string' && p.instance ? p.instance : CHROME_APP_INSTANCE} /> },
   [CHROME_PICK_DIALOG]: { title: 'Change asset', icon: 'layers', searchable: false, render: (p) => <div className="fx-stack"><p className="fx-muted"><Icon name={CHROME_ICONS[typeOf(p)]} size={14} /> {chromeLabel(typeOf(p))}{instOf(p) !== CHROME_APP_INSTANCE ? ` · ${instOf(p)}` : ''}</p><ChromeAssetPicker type={typeOf(p)} instance={instOf(p)} /></div> },
 };
 
 /** Every chrome type's settings reachable by voice: the catalog lists these ids (console.actions). */
-export const CHROME_ACTION_IDS = ['chrome.settings', 'chrome.pick', 'chrome.move', 'chrome.set', 'chrome.reset', 'chrome.swap', 'chrome.interface', 'chrome.unset', 'chrome.edits'] as const;
+export const CHROME_ACTION_IDS = ['chrome.settings', 'chrome.pick', 'chrome.move', 'chrome.set', 'chrome.reset', 'chrome.swap', 'chrome.interface', 'chrome.unset', 'chrome.edits', 'chrome.tokens', 'chrome.token', 'chrome.token-restore', 'chrome.token-hub'] as const;
 export { CHROME_TYPES as CHROME_SETTINGS_TYPES, CHROME_LABELS as CHROME_SETTINGS_LABELS };
 
 /**

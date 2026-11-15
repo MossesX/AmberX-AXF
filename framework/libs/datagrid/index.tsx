@@ -139,6 +139,9 @@ export function DataGrid<R>(p: DataGridProps<R>) {
         { id: 'cols', label: 'Columns', icon: 'list', items: p.columns.filter((x) => !x.fixed).map((x) => ({ id: `c-${x.id}`, label: x.label, icon: p.hidden.includes(x.id) ? 'minus' : 'check', action: `axf.grid.do:${p.id}:col:${x.id}` })) },
         { id: 'all', label: 'Show every column', icon: 'eye', action: `axf.grid.do:${p.id}:all` },
         ...(p.onChooseColumns ? [{ id: 'choose', label: 'Choose columns…', icon: 'sliders', action: `axf.grid.do:${p.id}:choose` }] : []),
+        { id: 's1', separator: true },
+        // component-tokens@1: this one grid's own colours (header, rows, hover, selected, lines…); chrome.tokens opens it anywhere
+        { id: 'tokens', label: 'Grid colours & style…', icon: 'palette', action: `chrome.tokens:grid:${p.id}` },
       ];
     });
     grids.set(p.id, { col: (c) => p.onToggleColumn!(c), all: () => p.onShowAll?.(), choose: () => p.onChooseColumns?.(), sort: (c) => p.onSort?.(c) });
