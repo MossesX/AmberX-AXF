@@ -181,8 +181,11 @@ export function applyChange(reg, change, ctx) {
             if (scope === 'claude-accounts') p.accounts = { members: [], active: '' };
           }
         }
-        if (source.repo) p.repo = { ...source.repo };
-        if (source.hub) p.hub = { ...source.hub };
+        // Where the source's work lives (its repo, its axHub folders): the base project's come from the repo manifest
+        // and the hub (ctx.locations), any other's from its record. Pre-fill only: the wizard can change them.
+        const loc = typeof ctx.locations === 'function' ? ctx.locations(source) : { repo: source.repo, hub: source.hub };
+        if (loc?.repo) p.repo = { ...loc.repo };
+        if (loc?.hub) p.hub = { ...loc.hub };
         p.clonedFrom = { id: source.id, at: now };
       }
       for (const k of ['repo', 'hub']) if (c[k] && typeof c[k] === 'object') p[k] = ownedFields({ [k]: c[k] })[k];

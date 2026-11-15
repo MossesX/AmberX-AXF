@@ -26,6 +26,7 @@
  *   node framework/cli/projects.mjs own <id> <scope> [--from shared|<id>]   give it its own copy (copied, never blank)
  *   node framework/cli/projects.mjs share <id> <scope>    share the scope again (its own copy stays on disk)
  *   node framework/cli/projects.mjs accounts <id> [--add a,b] [--remove c] [--active a]   its own Claude account set
+ *   node framework/cli/projects.mjs prefill [--from <id>]  what a new project would carry over: repo, axHub folders, scopes
  *   node framework/cli/projects.mjs act '{"action":"create","name":"…"}'   any change (console server, MCP, voice)
  *   --json on any command prints one JSON line.
  *
@@ -35,7 +36,7 @@ import { chmodSync, copyFileSync, existsSync, mkdirSync, readFileSync, readdirSy
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from '../plan/projects-core.mjs';
-import { BASE_PROFILE, activeProfile, baseDataPath, readProfiles } from './persist.mjs';
+import { BASE_PROFILE, DEFAULT_PROJECTS_DIR, PROJECT_NAME, REPO_ROOT, activeProfile, baseDataPath, readProfiles } from './persist.mjs';
 
 export const { PROJECTS_REL, BASE_PROJECT, SCHEMA, SCOPES } = core;
 const now = () => new Date().toISOString();
@@ -108,12 +109,44 @@ export function savedAccounts() {
   return { members, active: members.includes(active) ? active : '' };
 }
 
+/**
+ * Where project `p`'s work lives: its repo (owner, name, url, local path) and its axHub connection and folders. The base
+ * project's come from the repo manifest and this checkout; any other's from its record (falling back to the base's).
+ */
+export function locationsOf(p, reg = readProjects()) {
+  let manifest = {};
+  try { manifest = JSON.parse(readFileSync(join(REPO_ROOT, 'project.manifest.json'), 'utf8')); } catch { manifest = {}; }
+  const m = manifest.repo ?? {};
+  const baseRepo = { owner: m.owner ?? '', name: m.name ?? '', url: m.url ?? '', path: REPO_ROOT };
+  const baseHub = { url: process.env.AXHUB_URL ?? '', project: PROJECT_NAME };
+  const base = reg.projects.find((x) => x.base);
+  const repo = p.repo ?? (p.base ? baseRepo : base?.repo ?? baseRepo);
+  const hub = p.hub ?? (p.base ? baseHub : base?.hub ?? baseHub);
+  const tree = join(process.env.AXHUB_PROJECTS_DIR || DEFAULT_PROJECTS_DIR, hub.project || PROJECT_NAME);
+  return { repo, hub, folders: { data: join(tree, '_data'), claude: join(tree, '_claude') } };
+}
+
+/** What a new project made now would start with (the wizard's pre-fill): its source, locations and every scope. */
+export function prefill(from) {
+  const reg = readProjects();
+  const src = from && from !== 'none' ? reg.projects.find((x) => x.id === from || x.name.toLowerCase() === String(from).toLowerCase()) : core.projectOfProfile(reg, activeProfile().id);
+  if (!src) throw new Error(`no project "${from}"`);
+  const loc = locationsOf(src, reg);
+  return {
+    from: { id: src.id, name: src.name },
+    ...loc,
+    scopes: core.SCOPES.map((id) => ({ id, label: core.SCOPE_LABELS[id], source: core.ownsScope(src, id) ? 'own' : 'shared' })),
+    accounts: core.accountSet(src),
+    startsEmpty: ['builds', 'notes', 'to-dos', 'tasks', 'lists', 'plans'],
+  };
+}
+
 /** What project `id` (default: the one in force) owns, and where each scope lives. */
 export function ownsOf(id) {
   const reg = readProjects();
   const p = id ? reg.projects.find((x) => x.id === id || x.name.toLowerCase() === String(id).toLowerCase()) : core.projectOfProfile(reg, activeProfile().id);
   if (!p) throw new Error(`no project "${id}"`);
-  return { project: p.id, name: p.name, base: p.base, owns: p.owns, ownedAt: p.ownedAt, accounts: core.accountSet(p), where: whereOf(p) };
+  return { project: p.id, name: p.name, base: p.base, owns: p.owns, ownedAt: p.ownedAt, accounts: core.accountSet(p), where: whereOf(p), locations: locationsOf(p, reg) };
 }
 
 export const registryFile = () => baseDataPath(PROJECTS_REL);
@@ -183,7 +216,7 @@ async function profileChange(pc) {
 /** One change. Returns { project, log, state }. */
 export async function act(change) {
   const reg = readProjects();
-  const ctx = { now: now(), by: process.env.AXF_ACTOR || 'cli', activeProfile: activeProfile().id, profileIds: readProfiles().profiles.map((p) => p.id), accounts: savedAccounts() };
+  const ctx = { now: now(), by: process.env.AXF_ACTOR || 'cli', activeProfile: activeProfile().id, profileIds: readProfiles().profiles.map((p) => p.id), accounts: savedAccounts(), locations: (p) => { const l = locationsOf(p, reg); return { repo: l.repo, hub: l.hub }; } };
   const r = core.applyChange(reg, change, ctx);
   const log = [...r.log];
   // Copies first, registry last: the registry never says "own" while the folder is missing.
@@ -228,6 +261,9 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     } else if (cmd === 'owns') {
       const o = ownsOf(pos[1]);
       out({ ...o, text: [`${o.name} (${o.project})${o.base ? ': the shared set' : ''}`, ...core.SCOPES.map((sc) => `  ${o.owns.includes(sc) ? 'own   ' : 'shared'} ${sc.padEnd(16)} ${o.where[sc].join(', ')}`)].join('\n') });
+    } else if (cmd === 'prefill') {
+      const f = prefill(flag('--from'));
+      out({ ...f, text: [`from ${f.from.name} (${f.from.id})`, `  repo   ${f.repo.owner}/${f.repo.name} · ${f.repo.path}`, `  axHub  ${f.hub.url || '(this hub)'} · ${f.folders.data} · ${f.folders.claude}`, ...f.scopes.map((x) => `  ${x.source.padEnd(6)} ${x.label}`), `  starts empty: ${f.startsEmpty.join(', ')}`].join('\n') });
     } else if (cmd === 'migrate') {
       const r = await migrate(); out({ ...r, text: r.log.join('\n') });
     } else {

@@ -218,6 +218,11 @@ const be = () => import(join(CLI, 'build-engine.mjs'));
 
 /* ─── actions ────────────────────────────────────────────────────────────── */
 
+/** The project you're in and what a new one carries over from it (projects@1 prefill): repo, axHub folders, settings. */
+async function currentProject() {
+  try { return (await import('../../../../framework/cli/projects.mjs')).prefill(); } catch { return null; }
+}
+
 export async function status() {
   const v = vpsInfo();
   let github = { token: !!token(), login: '', error: '' };
@@ -233,6 +238,7 @@ export async function status() {
     templates: b.listTemplates().filter((t) => !String(t.kind ?? '').includes('module')).map((t) => ({ id: t.id, label: t.label ?? t.id, targets: t.targets ?? [] })),
     boilerplates: b.listBoilerplates().map((x) => ({ id: x.id, name: x.name, category: x.category, description: x.description ?? '', status: x.status ?? '' })),
     claudeNewProjectUrl: CLAUDE_NEW_PROJECT_URL,
+    current: await currentProject(),
     projects,
   };
 }

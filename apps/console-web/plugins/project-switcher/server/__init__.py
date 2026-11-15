@@ -14,7 +14,8 @@ and the console core serves it at GET/POST /api/projects too. These routes are n
     POST /delete       {project, confirm}  confirm = the project id; off the list, its data stays on disk
 
 What a project owns (framework/spec/PROJECTS.md): scopes claude-accounts, credentials, plugins, console, hub.
-    GET  /owns?project=   {owns, ownedAt, accounts, where}               POST /own    {project, scope, from?}
+    GET  /prefill?source=  what a new project would carry over: repo, axHub folders, each scope (shared / own)
+    GET  /owns?project=   {owns, ownedAt, accounts, where, locations}               POST /own    {project, scope, from?}
     POST /share        {project, scope}  the own copy stays on disk     POST /accounts {project, add?, remove?, active?}
 """
 from __future__ import annotations
@@ -98,6 +99,9 @@ def new(body: Any = Body(None)) -> dict[str, Any]:
         change["id"] = _text(b.get("id"), 40)
     if "from" in b:   # default: the active project; "none" (or null) = a plain project sharing everything
         change["from"] = "none" if b.get("from") in (None, "none") else _text(b.get("from"), 80)
+    for k in ("repo", "hub"):   # the wizard's repo step: keep the carried-over location or give another
+        if isinstance(b.get(k), dict):
+            change[k] = {f: _text(v, 300) for f, v in b[k].items() if f in ("owner", "name", "url", "path", "project") and isinstance(v, str)}
     if isinstance(b.get("carry"), (list, str)):
         change["carry"] = [_text(x, 40) for x in b["carry"]] if isinstance(b["carry"], list) else _text(b["carry"], 200)
     return _change(change)
@@ -116,6 +120,14 @@ def _scope(b: dict[str, Any]) -> str:
 @router.get("/owns")
 def owns(project: str = "") -> dict[str, Any]:
     res = _cli("owns", *([_text(project, 80)] if _text(project, 80) else []))
+    if not res.get("ok"):
+        raise HTTPException(400, res.get("error", "failed"))
+    return res
+
+
+@router.get("/prefill")
+def prefill(source: str = "") -> dict[str, Any]:
+    res = _cli("prefill", *(["--from", _text(source, 80)] if _text(source, 80) else []))
     if not res.get("ok"):
         raise HTTPException(400, res.get("error", "failed"))
     return res

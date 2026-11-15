@@ -27,6 +27,7 @@ interface Status {
   github: { token: boolean; login: string; error: string }; vps: { mode: 'local' | 'ssh' | 'off'; dir: string; host: string; why: string };
   workspace: string; roots: string[]; templates: { id: string; label: string; targets: string[] }[];
   boilerplates: { id: string; name: string; category: string; description: string; status: string }[]; claudeNewProjectUrl: string; projects: Project[];
+  current?: { from: { id: string; name: string }; repo: { owner: string; name: string; url: string; path: string }; hub: { url: string; project: string }; folders: { data: string; claude: string } } | null;
 }
 interface Inspect { kind: SourceKind; repo?: string; path?: string; state?: string; stack?: string[]; relation?: string; axfNote?: string; git?: boolean; empty?: boolean; hasManifest?: boolean; origin?: string; suggest: { display: string; name: string; description: string; owner?: string; repoName?: string; visibility?: 'private' | 'public' } }
 interface Check { ok: boolean; problems: string[]; warnings: string[]; plan: { name: string; dir: string; homes: { github?: { owner: string; name: string; state: string; isSource: boolean }; vps?: { path: string; state: string }; local: { path: string } } } }
@@ -119,7 +120,7 @@ function Readiness({ st }: { st: Status }) {
 function Wizard({ st, onDone }: { st: Status; onDone: () => void }) {
   const rt = useRuntime();
   const [step, setStep] = useState(0);
-  const [plan, setPlan] = useState<Plan>(() => ({ ...freshPlan(), homes: { github: { ...empty(st.github.token ? 'new' : 'skip'), owner: st.github.login }, vps: empty('skip'), local: empty('keep') } }));
+  const [plan, setPlan] = useState<Plan>(() => ({ ...freshPlan(), homes: { github: { ...empty(st.github.token ? 'new' : 'skip'), owner: st.current?.repo.owner || st.github.login }, vps: empty('skip'), local: empty('keep') } }));
   const [info, setInfo] = useState<Inspect | null>(null);
   const [check, setCheck] = useState<Check | null>(null);
   const [busy, setBusy] = useState('');
@@ -319,7 +320,7 @@ function HomesStep({ st, plan, setHome, set, info }: { st: Status; plan: Plan; s
         <Modes value={g.mode} modes={MODES.github} disabled={!st.github.token} onChange={(m) => setHome('github', { mode: m })} name="home-github" />
         {g.mode !== 'skip' && (
           <div className={`${P}__grid`}>
-            <label className={`${P}__field`}>Owner<input className="fx-input fx-mono" value={g.owner} onChange={(e) => setHome('github', { owner: e.target.value.trim() })} placeholder={st.github.login || 'MossesX'} /></label>
+            <label className={`${P}__field`}>Owner<input className="fx-input fx-mono" value={g.owner} onChange={(e) => setHome('github', { owner: e.target.value.trim() })} placeholder={st.current?.repo.owner || st.github.login || 'MossesX'} /></label>
             {g.mode === 'existing'
               ? <Picker location="github" label="Repository" value={g.owner && g.name ? `${g.owner}/${g.name}` : g.name} onChange={(val) => { const [o, n] = splitRepo(val, g.owner); setHome('github', { owner: o, name: n }); }} placeholder="owner/name" />
               : <label className={`${P}__field`}>Repository name<input className="fx-input fx-mono" value={g.name} onChange={(e) => setHome('github', { name: e.target.value.trim() })} placeholder={id} /></label>}
