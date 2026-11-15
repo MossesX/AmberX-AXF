@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5716,
- "updatedAt": "2026-11-15T00:05:18.843Z",
+ "rev": 5717,
+ "updatedAt": "2026-11-15T00:06:42.325Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -162198,7 +162198,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-12T01:46:10.127Z",
-   "updatedAt": "2026-11-15T00:01:07.015Z",
+   "updatedAt": "2026-11-15T00:06:38.450Z",
    "builtAt": "",
    "notes": [
     {
@@ -162272,11 +162272,11 @@
     "queuedAt": "2026-11-12T01:46:12.403Z",
     "queuedBy": "push-banner",
     "account": "mossesx-max-",
-    "session": "axf-fix-axhub-36-pull-main-in-failed--earl",
+    "session": "",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-15T00:00:54.678Z",
-    "runs": 2,
+    "launchedAt": "2026-11-14T23:56:20.868Z",
+    "runs": 1,
     "lastRun": {
      "at": "2026-11-14T23:57:03.446Z",
      "exit": 3,
@@ -162293,9 +162293,9 @@
      "note": "Split by Claude into 6 steps (0 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- ended (exit 3) with 6 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "2026-11-15T00:00:54.678Z",
+    "dispatchedAt": "2026-11-14T23:56:20.868Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -162304,7 +162304,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-15T00:00:54.678Z",
+    "pickedAt": "2026-11-14T23:56:20.868Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -162684,12 +162684,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:06:38.450Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T11:07:46.715Z",
-     "updatedAt": "2026-11-12T11:07:46.715Z"
+     "updatedAt": "2026-11-15T00:06:38.896Z"
     },
     {
      "id": "s18",
