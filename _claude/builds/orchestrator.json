@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T12:16:18.795Z",
+ "updatedAt": "2026-11-15T12:16:55.381Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -150826,7 +150826,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T12:14:27.131Z",
-   "updatedAt": "2026-11-15T12:14:51.031Z",
+   "updatedAt": "2026-11-15T12:16:53.896Z",
    "builtAt": "",
    "notes": [
     {
@@ -150836,6 +150836,10 @@
     {
      "text": "Brett (07:14): this sender's screen and settings live in the Gate & rules plugin (gate-rules-plugin-in-the-console), as the first 'After merge' rule 'Send Shipped features'. Expose its on/off, status, last sent, failed sends with retry, and backfill through the gate.*/lander.* tools so that plugin can show and control it.",
      "at": "2026-11-15T12:14:51.031Z"
+    },
+    {
+     "text": "Split by Claude into 17 steps (1 Fable).",
+     "at": "2026-11-15T12:16:53.896Z"
     }
    ],
    "approvals": [],
@@ -150852,7 +150856,386 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Design the merge-watch contract: a merge-watch@1 state record (last seen main sha, per-commit send state: pending/sent/failed, attempts, nextRetryAt, the manifest id used as the idempotency key = merge commit sha) and how a merge commit maps to a shipped-manifest@1 (PR, commit, mergedAt, landedAt, files, areas, tests, report link, origin.said). Write the schema and doc, with its data dir behind one path resolver (repo/hub now, axf-data later) so it can move into axf-molly with the orchestrator",
+     "model": "Fable",
+     "why": "New cross-app contract and storage layout that the orchestrator move (move-build-orchestrator-to-axhub) has to keep",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/schemas/merge-watch.json",
+      "framework/core/merge-watch.mjs",
+      "_claude/memory/docs/merge-watch.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubns01a79r",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s2",
+     "text": "Root-cause why sends stopped on Nov 13: read commit 7a6668231 and the orchestrator/landing path that writes shipped-manifest@1, trace the Nov 14-15 merges (merge queue, auto-lander, build_land, manual GitHub merges) to find where each one skipped the send. Write the findings into the report draft",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/vps-sends-shipped-features-every-merge.md",
+      "apps/console-web/plugins/build-orchestrator/",
+      "apps/console-web/plugins/push-banner/land/",
+      "apps/console-web/plugins/shipped-features/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubns023d91",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s3",
+     "text": "Fix the stopped send at its root (the regression from the previous step) so the existing orchestrator path builds and sends the manifest again; add a regression test",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/",
+      "apps/console-web/plugins/shipped-features/test/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubns03iuy5",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s4",
+     "text": "Commit mapper: for a merge commit on main, find its PR (merge or squash message, GitHub API through github-token.mjs with an ETag cache) and its build (store branch/PR link, then build-origin fallback); list the changed files and work out areas",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/merge-watch/map-commit.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubns04rb90",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s5",
+     "text": "Manifest builder: build a shipped-manifest@1 from the mapped commit (mergedAt from the PR, landedAt from the commit, tests from the CI run, a report link when _claude/builds/reports/<id>.md exists, origin.said from build-origin). Commits that map to no build still go out as an unlinked manifest",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/merge-watch/build-manifest.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubns05u79d",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s6",
+     "text": "Idempotent sender: post to Shipped features (ledger API, falling back to capability axf.shipped@1) keyed by merge sha; skip anything already sent or already in _claude/builds/shipped/ or the ledger; record sent/failed in merge-watch state",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/merge-watch/send.mjs",
+      "apps/console-web/plugins/shipped-features/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubns06dk47",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s7",
+     "text": "Retry and alert: back off on failed sends (1, 5, 15, 60 min), raise a systems-check health@1 item after 3 failures (what broke, since when, with an Auto fix that resends) and push one AmberX alert through axf.notify@1, declared in notify.json",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/merge-watch/retry.mjs",
+      "apps/console-web/plugins/shipped-features/notify.json",
+      "apps/console-web/plugins/shipped-features/server/health.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubns071x6s",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s8",
+     "text": "Watcher CLI merge-watch.mjs tick|status|send <sha>|backfill --since <date>|retry: fetch origin/main, walk new first-parent commits since the last sha, map, build, send. Takes a lock so two ticks never overlap",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/merge-watch.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubns08m85w",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s9",
+     "text": "Triggers on the VPS: call tick from the post-merge/land hook in every landing path (merge queue land.mjs, auto-lander, build_land, builds-live) plus a cron poll every minute (axf-merge-watch) as the fallback for manual GitHub merges and direct pushes. Optional push webhook route on the console server",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/merge-queue.mjs",
+      "deploy/cron/axf-merge-watch",
+      "apps/console-web/server/routes/merge_watch.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubns09oa9a",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s10",
+     "text": "Make it ready for the move: keep the runner container-agnostic (env AXF_MERGE_WATCH_DATA, no repo-only paths), add an axf-molly entry stub and a note on the move-build-orchestrator-to-axhub build",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/cli/merge-watch.mjs",
+      "deploy/molly/merge-watch.entry.mjs",
+      "_claude/builds/store.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubnt0a20vd",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s11",
+     "text": "API parity: REST GET /api/plugins/shipped-features/merge-watch (state) and POST send|retry|backfill; MCP plugin commands; axf merge-watch CLI alias; AmberX voice actions; console_show deep link to Shipped features → Merge watch",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/shipped-features/server/routes.py",
+      "apps/console-web/plugins/shipped-features/commands.json",
+      "framework/cli/axf.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubnt0bntgo",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s12",
+     "text": "Small Merge watch status panel in Shipped features (last sha, pending/failed sends, Retry and Backfill buttons, built only from framework controls and tokens, data-axf-target ids) and submit 3 UI Review options",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/shipped-features/web/MergeWatchPanel.tsx",
+      "apps/console-web/plugins/shipped-features/assets/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubnt0cno97",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s13",
+     "text": "Backfill dry run: run merge-watch backfill --since 2026-11-13 --dry-run and check the list covers #687 #694 #691 #693 #696 #689 #702 #324, the console-look-becomes-default-axhub-skin land and #647 #648 #590 #618 #641 #652 #657 #654, with no duplicates of the Nov 13 manifests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/shipped/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubnt0dh61u",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s14",
+     "text": "Run the backfill for real, check that Shipped features shows every merge since Nov 13, and commit the new manifests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/shipped/",
+      "apps/console-web/plugins/shipped-features/data/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubnt0e9j0d",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s15",
+     "text": "Tests: mapper (merge and squash commits, no-PR push), builder, idempotency (send twice gives one row), retry/alert, lock, and the backfill range; add them to CI",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/check-merge-watch.mjs",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubnt0fusg1",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s16",
+     "text": "Help and docs: help entry, plugin README, glossary description, CLAUDE.md line for the CLI, lifecycle markers",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "apps/console-web/plugins/shipped-features/README.md",
+      "apps/console-web/plugins/shipped-features/help.json",
+      "CLAUDE.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubnt0gzhve",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s17",
+     "text": "Final: run every check, write the report (root cause, fix, backfill count, how REST/MCP/CLI/voice reach it), add the THREADS row, open the PR and hand it to the one-at-a-time lander",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/vps-sends-shipped-features-every-merge.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubnt0hpj2j",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    }
+   ]
   }
  ]
 }
