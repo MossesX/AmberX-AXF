@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5789,
- "updatedAt": "2026-11-15T00:31:21.821Z",
+ "rev": 5790,
+ "updatedAt": "2026-11-15T00:31:38.767Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -206489,23 +206489,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:31:07.213Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/build-orchestrator/groups-core.mjs, apps/console-web/plugins/build-orchestrator/groups.mjs, apps/console-web/plugins/build-orchestrator/groups.test.mjs, apps/console-web/plugins/build-orchestrator/help.json, apps/console-web/plugin"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -207390,23 +207373,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:30:55.057Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/demonstration-designer/README.md, apps/console-web/plugins/demonstration-designer/help.json, apps/console-web/plugins/demonstration-designer/pipeline-demos.mjs, apps/console-web/plugins/demonstration-designer/pipeline-library.mjs, apps/console-web/plugins/demons"
-     }
-    ]
    },
    "steps": [
     {
@@ -210386,23 +210352,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:30:40.799Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/README.md, apps/console-web/plugins/_template/plugin.json, apps/console-web/plugins/icon-map/README.md, apps/console-web/plugins/icon-map/help.json, apps/console-web/plugins/icon-map/hooks.mjs, apps/console-web/plugins/icon-map/ins"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -213345,23 +213294,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:30:47.063Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: framework/assets/help/framework.json, framework/catalog/status.json, framework/core/engines/chrome-settings-rules.d.mts, framework/core/engines/chrome-settings-rules.mjs, framework/react/components/ChromeContext.tsx, framework/react/components/ChromePreview.tsx, framework/react/componen"
-     }
-    ]
    },
    "steps": [
     {
@@ -228232,10 +228164,10 @@
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
    "branch": "claude/merge-main-land-voice-listener-use",
-   "pr": "",
+   "pr": "#694",
    "priority": "P0",
    "createdAt": "2026-11-15T00:06:57.847Z",
-   "updatedAt": "2026-11-15T00:30:49.540Z",
+   "updatedAt": "2026-11-15T00:31:28.700Z",
    "builtAt": "",
    "notes": [
     {
@@ -228536,7 +228468,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
