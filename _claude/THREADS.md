@@ -798,7 +798,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:31 UTC · `console-look-becomes-default-axhub-skin` → running, note (all) · pipeline
 - 2026-11-14 23:31 UTC · `console-look-becomes-default-axhub-skin` → running, note (all) · orchestrator
 - 2026-11-14 23:31 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` → pending, note (all) · reconciler
 - 2026-11-14 23:31 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` → pending, note (all) · reconciler
@@ -1198,6 +1197,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 01:31 UTC · `token-registry-skin-editor-live-sandbox` → complete, note (all) · reconciler
 - 2026-11-15 01:31 UTC · `demo-video-series-three-minute-browser` note (all) · reconciler
 - 2026-11-15 01:32 UTC · `demo-video-series-three-minute-browser` s14 done (all) · orchestrator
+- 2026-11-15 01:32 UTC · `projects-own-everything-per-project` s2 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
