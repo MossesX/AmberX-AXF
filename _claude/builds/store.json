@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6112,
- "updatedAt": "2026-11-15T12:22:13.676Z",
+ "rev": 6113,
+ "updatedAt": "2026-11-15T12:22:24.348Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -234311,12 +234311,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T12:20:29.383Z",
-   "updatedAt": "2026-11-15T12:20:32.805Z",
+   "updatedAt": "2026-11-15T12:22:22.822Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-15T12:20:32.805Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"70aadc16-8440-40dd-a13c-f8ab4848ed91\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-15T12:22:22.822Z"
     }
    ],
    "approvals": [],
@@ -234343,9 +234347,15 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-15T12:22:22.822Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"70aadc16-8440-40dd-a13c-f8ab4848ed91\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
@@ -234355,7 +234365,77 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwht1dgm01fd69",
+     "title": "",
+     "text": "Replaces move-build-orchestrator-to-axhub (its 37 steps were planned for the old axHub-screens layout and its s1 gate waits on a precondition that no longer applies). FINAL LAYOUT (Brett): console = screens only; axf-molly = does all the work; axHub = routes + credentials/approvals only, no screens, no data; axf-data = stores all data. BUILD a private container 'axf-molly' on Coolify (no public port/DNS, internal Docker network, auto-restart). Check the name doesn't clash with the old standalone Molly app (it's retired; list any leftover container/cron/domain for retirement, delete nothing without listing it). MOVE INTO IT: orchestrator, dispatcher/pipeline tick, reconciler, splitter, slots/accounts routing, gate rules engine (framework/core/gate-rules.mjs from gate-rules-plugin-in-the-console), auto-lander + merge queue with the 'Merge queue on/off' switch, and the merge watch / Shipped features sender (vps-sends-shipped-features-every-merge). It reads/writes ALL data through axf-data (data-container-axf-data-holds-all, data-store@1 client), never repo files. HOST ACCESS: a narrow host bridge (mounted /root/axf-builds worktrees, git, claude CLI, tmux runner) to launch and watch build sessions; NOT the Docker socket; document exactly what it can touch. axHub registers axf-molly as a downstream and exposes orchestrator.*, gate.*, lander.*, features.* tools (equivalents for axf-console.build_orchestrator_pipeline_request and planner.builds). Console orchestrator, Gate & rules and Shipped features screens talk to it through axHub. STAGING: shadow first (axf-molly computes, console acts, diff log), then cutover with an owner lease and undo; builds keep running during the switch; no build or history lost. FIX ON THE WAY: phase-end builds must never be parked in Pending (reconciler bug); dispatcher alert links use view:build-orchestrator. Console-down drill: stop the console and prove builds still launch, land and get Shipped features. Order: start right after axf-data is",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-15T12:22:22.822Z",
+     "updatedAt": "2026-11-15T12:22:22.822Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwht1dgm028i9o",
+     "title": "",
+     "text": "Yes do those containers and wire them and migrate everything asap. Molly's gonna run the orchestrator from now on, so let's name it AXF Molly.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-15T12:22:22.822Z",
+     "updatedAt": "2026-11-15T12:22:22.822Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwht1dgm03m387",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/axf-molly-container-orchestrator-gate.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/axf-molly-container-orchestrator-gate.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-15T12:22:22.822Z",
+     "updatedAt": "2026-11-15T12:22:22.822Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -234364,12 +234444,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-15T12:22:22.822Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
