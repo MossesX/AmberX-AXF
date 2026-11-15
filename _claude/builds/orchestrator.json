@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T14:55:29.272Z",
+ "updatedAt": "2026-11-15T14:55:38.043Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -153438,6 +153438,43 @@
      "createdAt": "2026-11-15T13:39:21.685Z"
     }
    ]
+  },
+  {
+   "id": "shipped-features-open-button-views-each",
+   "title": "Shipped features: Open button views each feature in the live app",
+   "category": "",
+   "detail": "Every feature row in Shipped features gets an 'Open' button (plus a row context-menu item) that opens that feature in the live console app at the exact screen, tab or setting, using its console_show deep link from the feature store record. Features with no screen show the button disabled with the reason. The same button appears in the Gate plugin's Pending features expanded rows once a build has landed. Full API parity (REST/MCP/CLI/voice: 'open feature X'). Tests, help. Land with the one-at-a-time lander.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-15T14:55:29.131Z",
+   "updatedAt": "2026-11-15T14:55:31.883Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-15T14:55:31.883Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want the shipped features to have a button to open the feature, to view the feature in the live app.",
+    "at": "2026-11-15T14:55:29.131Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
