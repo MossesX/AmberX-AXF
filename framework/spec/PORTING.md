@@ -339,3 +339,15 @@ animIntensity` (core/engines/behavior.ts: `skinAnimationVars`, `withAnimationPre
 `setAnimationPref`) and the colour maths in core/engines/swatches.ts (`shadesOf`, `mixHex`, `skinSwatches`,
 `sweepOrigin`); fixture framework/spec/fixtures/skin-animations.json. Kotlin twin deferred (no new Android work): the
 Compose behaviour reader ignores the new fields (defaults apply), so Android skins stay still until it is ported.
+
+## Deferred: home-cards@1, Home follows plugin on/off (Nov 15 2026)
+
+Build home-cards-follow-plugin-off-home-always (Brett: "When I disable plugins, the home cards need to be disabled as
+well … The home screen always needs to be filled … Pick the most active."). Contract in spec/HOME-CARDS.md; registry
+framework/schemas/home-cards.json; JSON Schemas schemas/json/home-picks.schema.json, home-cards.schema.json,
+plugin-activity.schema.json. Reference engines core/engines/home-cards.mjs (`resolveHomeCards`: pins in Brett's order,
+disabled and uninstalled dropped, free slots filled by rank with a stable id tie-break, capped at the slot count) and
+core/engines/plugin-activity.mjs (`scoreActivity`: weighted opens / actions / jobs / alerts with exponential decay over
+the window); fixture framework/spec/fixtures/home-cards.json (`spec/check-home-cards.mjs`). Kotlin twin deferred (no new
+Android work): the Compose Home keeps its own layout until `HomeCardsEngine` and `PluginActivityEngine` are ported and
+replay the fixture; until then a disabled plugin's card stays on the Android Home.

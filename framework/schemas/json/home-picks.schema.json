@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/home-picks.schema.json",
+  "title": "home-picks@1 (home-cards@1)",
+  "type": "object",
+  "required": [
+    "$axf",
+    "slots",
+    "plugins"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "$axf": {
+      "const": "home-picks@1"
+    },
+    "slots": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 24
+    },
+    "plugins": {
+      "type": "array",
+      "maxItems": 24,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+      }
+    },
+    "at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedBy": {
+      "type": "string",
+      "maxLength": 80
+    }
+  }
+}

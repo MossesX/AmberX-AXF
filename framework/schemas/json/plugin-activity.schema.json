@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/plugin-activity.schema.json",
+  "title": "plugin-activity@1 (home-cards@1)",
+  "type": "object",
+  "required": [
+    "$axf",
+    "plugin",
+    "at",
+    "window",
+    "counts",
+    "score"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$axf": {
+      "const": "plugin-activity@1"
+    },
+    "plugin": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+    },
+    "at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "days",
+        "halfLifeDays"
+      ],
+      "properties": {
+        "days": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 365
+        },
+        "halfLifeDays": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 365
+        }
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "open",
+        "action",
+        "job",
+        "alert"
+      ],
+      "properties": {
+        "open": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "action": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "job": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "alert": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        }
+      }
+    },
+    "score": {
+      "type": "number",
+      "minimum": 0
+    }
+  },
+  "$defs": {
+    "event": {
+      "title": "plugin-activity-event@1 (home-cards@1)",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "plugin",
+        "kind",
+        "at"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "plugin-activity-event@1"
+        },
+        "plugin": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+        },
+        "kind": {
+          "enum": [
+            "open",
+            "action",
+            "job",
+            "alert"
+          ]
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "n": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000
+        }
+      }
+    }
+  }
+}

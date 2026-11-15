@@ -1,0 +1,47 @@
+{
+  "schema": "home-cards@1",
+  "version": 1,
+  "picks": "home-picks@1",
+  "cards": "home-cards@1",
+  "activity": "plugin-activity@1",
+  "event": "plugin-activity-event@1",
+  "modes": [
+    "pinned",
+    "auto"
+  ],
+  "eventKinds": [
+    "open",
+    "action",
+    "job",
+    "alert"
+  ],
+  "dropReasons": [
+    "disabled",
+    "uninstalled",
+    "duplicate",
+    "invalid",
+    "overflow"
+  ],
+  "idPattern": "^[a-z0-9][a-z0-9._-]{0,63}$",
+  "slots": {
+    "default": 6,
+    "min": 1,
+    "max": 24
+  },
+  "picksMax": 24,
+  "eventsMax": 20000,
+  "countMax": 1000000,
+  "window": {
+    "days": 14,
+    "halfLifeDays": 3,
+    "minDays": 1,
+    "maxDays": 365
+  },
+  "weights": {
+    "open": 1,
+    "action": 2,
+    "job": 3,
+    "alert": 2
+  },
+  "scoreDecimals": 4
+}

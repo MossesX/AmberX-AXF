@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/home-cards.schema.json",
+  "title": "home-cards@1 (home-cards@1)",
+  "type": "object",
+  "required": [
+    "$axf",
+    "at",
+    "slots",
+    "cards",
+    "dropped",
+    "short"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "$axf": {
+      "const": "home-cards@1"
+    },
+    "at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "slots": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 24
+    },
+    "cards": {
+      "type": "array",
+      "maxItems": 24,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "plugin",
+          "mode",
+          "rank",
+          "score"
+        ],
+        "properties": {
+          "plugin": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+          },
+          "mode": {
+            "enum": [
+              "pinned",
+              "auto"
+            ]
+          },
+          "rank": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 24
+          },
+          "score": {
+            "type": "number",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "dropped": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "plugin",
+          "why"
+        ],
+        "properties": {
+          "plugin": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "why": {
+            "enum": [
+              "disabled",
+              "uninstalled",
+              "duplicate",
+              "invalid",
+              "overflow"
+            ]
+          }
+        }
+      }
+    },
+    "short": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 24
+    }
+  }
+}
