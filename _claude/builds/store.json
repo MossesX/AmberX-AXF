@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6171,
- "updatedAt": "2026-11-15T13:04:07.859Z",
+ "rev": 6172,
+ "updatedAt": "2026-11-15T13:04:15.481Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -232914,8 +232914,8 @@
    "pr": "#711",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:25.282Z",
-   "updatedAt": "2026-11-15T13:03:58.446Z",
-   "builtAt": "2026-11-15T13:03:58.446Z",
+   "updatedAt": "2026-11-15T13:04:13.597Z",
+   "builtAt": "2026-11-15T13:04:13.597Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -232976,6 +232976,10 @@
     {
      "text": "Self-check: gate-rules-plugin-in-the-console had no session on record but axf-gate-rules-plugin-in-the-console--paulie is alive: kept running and tracking it.",
      "at": "2026-11-15T12:35:14.249Z"
+    },
+    {
+     "text": "Headless run axf-gate-rules-plugin-in-the-console--paulie: brief only · start 15.5K tokens ($0.05) · cost $20.09 · 265 turns · 6 tools, MCP none",
+     "at": "2026-11-15T13:04:13.597Z"
     }
    ],
    "approvals": [
