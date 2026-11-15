@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5881,
- "updatedAt": "2026-11-15T01:06:25.088Z",
+ "rev": 5882,
+ "updatedAt": "2026-11-15T01:06:46.445Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211536,7 +211536,7 @@
    "mergedAt": "2026-11-14T21:33:25Z",
    "priority": "P1",
    "createdAt": "2026-11-13T20:04:16.679Z",
-   "updatedAt": "2026-11-15T01:06:16.840Z",
+   "updatedAt": "2026-11-15T01:06:25.309Z",
    "builtAt": "",
    "notes": [
     {
@@ -211580,6 +211580,10 @@
      "at": "2026-11-14T21:42:04Z"
     },
     {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-token-registry-skin-editor-live-sandbox--rhonda, shared account login)",
+     "at": "2026-11-15T01:06:25.309Z"
+    },
+    {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 2): axf-token-registry-skin-editor-live-sandbox--rhonda.",
      "at": "2026-11-15T01:06:16.840Z"
     }
@@ -211601,12 +211605,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T20:04:18.903Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-token-registry-skin-editor-live-sandbox--rhonda",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-15T01:06:16.224Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:06:18.849Z",
@@ -211616,9 +211620,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"4b7efff5-4c77-4aa5-ab01-49e9bcff0668\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-15T01:06:16.224Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -211627,7 +211631,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-15T01:06:16.224Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
