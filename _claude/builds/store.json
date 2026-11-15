@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6029,
- "updatedAt": "2026-11-15T05:14:49.444Z",
+ "rev": 6030,
+ "updatedAt": "2026-11-15T05:21:07.063Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -230823,7 +230823,7 @@
    "title": "Data container: axf-data holds all console data",
    "category": "",
    "detail": "Brett's final layout: the console is screens ONLY, with no work and no data in it. New private container 'axf-data' (Coolify, auto-restart, no public port or DNS, internal Docker network only) holds ALL the data: notes, builds store/journal/history, settings, planner items, UI reviews, everything the console stores today. Four parts: console = UI only; axf-molly = does the work (orchestrator, gate, lander); axHub = routes plus credentials/keys only (NO app data stored in axHub); axf-data = stores everything. Goal: if the console goes down, all data and notes stay available (through axHub tools) and builds keep running. Stage it safely: an API in front of the store, migrate with count checks and a backup, run in shadow first, then cut over, and no data is ever lost. Add daily backups. Coordinate with the move-build-orchestrator-to-axhub build (axf-molly reads and writes the builds store through axf-data). Tests, help, Shipped features.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -230831,7 +230831,7 @@
    "pr": "#704",
    "priority": "P0",
    "createdAt": "2026-11-15T04:28:05.062Z",
-   "updatedAt": "2026-11-15T04:57:13.458Z",
+   "updatedAt": "2026-11-15T05:21:04.432Z",
    "builtAt": "",
    "notes": [
     {
@@ -230857,6 +230857,10 @@
     {
      "text": "Phase 1 done (s1-s4): data-store@1 spec + schema, reference client (http/file/memory), migration map (44 sources), mode machine. PR #704. No UI this phase; mode/manifest surfaces come with the container phase.",
      "at": "2026-11-15T04:56:51.854Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-15T05:21:04.432Z"
     }
    ],
    "approvals": [],
@@ -231588,7 +231592,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
