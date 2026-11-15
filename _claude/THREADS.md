@@ -807,7 +807,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 00:48 UTC · `land-finish-auto-land-live-clear-backlog` s20 done, → running (all) · orchestrator
 - 2026-11-15 00:48 UTC · `land-finish-auto-land-live-clear-backlog` s21 done (all) · orchestrator
 - 2026-11-15 00:48 UTC · `land-finish-auto-land-live-clear-backlog` s22 done (all) · orchestrator
 - 2026-11-15 00:48 UTC · `land-finish-auto-land-live-clear-backlog` s23 done (all) · orchestrator
@@ -1207,6 +1206,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 13:34 UTC · `home-cards-follow-plugin-off-home-always` → running, note (all) · pipeline
 - 2026-11-15 13:34 UTC · `build-rules-tab-gate-rules-vps-owns` branch claude/build-rules-tab-gate-rules-vps-owns (all) · builds-live
 - 2026-11-15 13:36 UTC · `phone-connect-small-android-companion` added (0 steps) (all) · console
+- 2026-11-15 13:36 UTC · `phone-connect-small-android-companion` → queued, note (all) · console
 
 ## Token passes (log)
 
