@@ -1,0 +1,2249 @@
+{
+  "contract": "grid-rows@1",
+  "classes": {
+    "root": "fx-rows",
+    "item": "fx-rows__item",
+    "line": "fx-rows__line",
+    "cell": "fx-rows__cell",
+    "detail": "fx-rows__detail"
+  },
+  "toggleKeys": [
+    "Enter"
+  ],
+  "var": "--fx-grid-row-lines",
+  "attr": "data-axf-row-lines",
+  "raw": [
+    {
+      "id": "inv-1042",
+      "primary": [
+        "INV-1042",
+        "Acme Ltd"
+      ],
+      "secondary": [
+        {
+          "key": "due",
+          "text": "Due 30 Nov"
+        },
+        {
+          "key": "amount",
+          "text": "$1,250.00",
+          "title": "USD 1,250.00"
+        }
+      ],
+      "detail": {
+        "text": "Net 30, two reminders sent.",
+        "fields": {
+          "Owner": "Priya",
+          "Status": "Overdue"
+        }
+      }
+    },
+    {
+      "key": "inv-1043",
+      "primary": "INV-1043",
+      "secondary": [
+        "Globex",
+        "Due 2 Dec",
+        480
+      ]
+    },
+    {
+      "id": "inv-1044",
+      "primary": [
+        {
+          "text": "INV-1044"
+        },
+        {
+          "label": "Initech",
+          "key": "who"
+        }
+      ],
+      "detail": "Paid in full."
+    },
+    {
+      "id": "inv-1042",
+      "primary": [
+        "a repeated id keeps its first row"
+      ]
+    },
+    {
+      "id": "empty"
+    },
+    "not an object",
+    null,
+    {
+      "primary": [
+        "",
+        "   "
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "inv-1042",
+      "primary": [
+        {
+          "key": "c0",
+          "text": "INV-1042"
+        },
+        {
+          "key": "c1",
+          "text": "Acme Ltd"
+        }
+      ],
+      "secondary": [
+        {
+          "key": "due",
+          "text": "Due 30 Nov"
+        },
+        {
+          "key": "amount",
+          "text": "$1,250.00",
+          "title": "USD 1,250.00"
+        }
+      ],
+      "detail": {
+        "text": "Net 30, two reminders sent.",
+        "fields": [
+          {
+            "label": "Owner",
+            "value": "Priya"
+          },
+          {
+            "label": "Status",
+            "value": "Overdue"
+          }
+        ]
+      }
+    },
+    {
+      "id": "inv-1043",
+      "primary": [
+        {
+          "key": "c0",
+          "text": "INV-1043"
+        }
+      ],
+      "secondary": [
+        {
+          "key": "c0",
+          "text": "Globex"
+        },
+        {
+          "key": "c1",
+          "text": "Due 2 Dec"
+        },
+        {
+          "key": "c2",
+          "text": "480"
+        }
+      ],
+      "detail": null
+    },
+    {
+      "id": "inv-1044",
+      "primary": [
+        {
+          "key": "c0",
+          "text": "INV-1044"
+        },
+        {
+          "key": "who",
+          "text": "Initech"
+        }
+      ],
+      "secondary": [],
+      "detail": {
+        "text": "Paid in full."
+      }
+    }
+  ],
+  "plans": {
+    "1": [
+      {
+        "id": "inv-1042",
+        "lines": 1,
+        "collapsed": [
+          {
+            "role": "inline",
+            "cells": [
+              {
+                "key": "c0",
+                "text": "INV-1042"
+              },
+              {
+                "key": "c1",
+                "text": "Acme Ltd"
+              },
+              {
+                "key": "due",
+                "text": "Due 30 Nov"
+              },
+              {
+                "key": "amount",
+                "text": "$1,250.00",
+                "title": "USD 1,250.00"
+              }
+            ],
+            "truncate": true
+          }
+        ],
+        "toggles": true,
+        "open": false,
+        "detail": null,
+        "attrs": {
+          "role": "row",
+          "data-axf-row-lines": "1",
+          "data-fx-row": "inv-1042",
+          "aria-expanded": "false",
+          "tabindex": "0"
+        },
+        "label": "INV-1042 · Acme Ltd · Due 30 Nov · $1,250.00"
+      },
+      {
+        "id": "inv-1043",
+        "lines": 1,
+        "collapsed": [
+          {
+            "role": "inline",
+            "cells": [
+              {
+                "key": "c0",
+                "text": "INV-1043"
+              },
+              {
+                "key": "c0",
+                "text": "Globex"
+              },
+              {
+                "key": "c1",
+                "text": "Due 2 Dec"
+              },
+              {
+                "key": "c2",
+                "text": "480"
+              }
+            ],
+            "truncate": true
+          }
+        ],
+        "toggles": false,
+        "open": false,
+        "detail": null,
+        "attrs": {
+          "role": "row",
+          "data-axf-row-lines": "1",
+          "data-fx-row": "inv-1043"
+        },
+        "label": "INV-1043 · Globex · Due 2 Dec · 480"
+      },
+      {
+        "id": "inv-1044",
+        "lines": 1,
+        "collapsed": [
+          {
+            "role": "inline",
+            "cells": [
+              {
+                "key": "c0",
+                "text": "INV-1044"
+              },
+              {
+                "key": "who",
+                "text": "Initech"
+              }
+            ],
+            "truncate": true
+          }
+        ],
+        "toggles": true,
+        "open": false,
+        "detail": null,
+        "attrs": {
+          "role": "row",
+          "data-axf-row-lines": "1",
+          "data-fx-row": "inv-1044",
+          "aria-expanded": "false",
+          "tabindex": "0"
+        },
+        "label": "INV-1044 · Initech"
+      }
+    ],
+    "2": [
+      {
+        "id": "inv-1042",
+        "lines": 2,
+        "collapsed": [
+          {
+            "role": "primary",
+            "cells": [
+              {
+                "key": "c0",
+                "text": "INV-1042"
+              },
+              {
+                "key": "c1",
+                "text": "Acme Ltd"
+              }
+            ],
+            "truncate": true
+          },
+          {
+            "role": "secondary",
+            "cells": [
+              {
+                "key": "due",
+                "text": "Due 30 Nov"
+              },
+              {
+                "key": "amount",
+                "text": "$1,250.00",
+                "title": "USD 1,250.00"
+              }
+            ],
+            "truncate": true
+          }
+        ],
+        "toggles": true,
+        "open": false,
+        "detail": null,
+        "attrs": {
+          "role": "row",
+          "data-axf-row-lines": "2",
+          "data-fx-row": "inv-1042",
+          "aria-expanded": "false",
+          "tabindex": "0"
+        },
+        "label": "INV-1042 · Acme Ltd · Due 30 Nov · $1,250.00"
+      },
+      {
+        "id": "inv-1043",
+        "lines": 2,
+        "collapsed": [
+          {
+            "role": "primary",
+            "cells": [
+              {
+                "key": "c0",
+                "text": "INV-1043"
+              }
+            ],
+            "truncate": true
+          },
+          {
+            "role": "secondary",
+            "cells": [
+              {
+                "key": "c0",
+                "text": "Globex"
+              },
+              {
+                "key": "c1",
+                "text": "Due 2 Dec"
+              },
+              {
+                "key": "c2",
+                "text": "480"
+              }
+            ],
+            "truncate": true
+          }
+        ],
+        "toggles": false,
+        "open": false,
+        "detail": null,
+        "attrs": {
+          "role": "row",
+          "data-axf-row-lines": "2",
+          "data-fx-row": "inv-1043"
+        },
+        "label": "INV-1043 · Globex · Due 2 Dec · 480"
+      },
+      {
+        "id": "inv-1044",
+        "lines": 2,
+        "collapsed": [
+          {
+            "role": "primary",
+            "cells": [
+              {
+                "key": "c0",
+                "text": "INV-1044"
+              },
+              {
+                "key": "who",
+                "text": "Initech"
+              }
+            ],
+            "truncate": true
+          }
+        ],
+        "toggles": true,
+        "open": false,
+        "detail": null,
+        "attrs": {
+          "role": "row",
+          "data-axf-row-lines": "2",
+          "data-fx-row": "inv-1044",
+          "aria-expanded": "false",
+          "tabindex": "0"
+        },
+        "label": "INV-1044 · Initech"
+      }
+    ]
+  },
+  "open": {
+    "state": {
+      "expanded": [
+        "inv-1042"
+      ]
+    },
+    "rows": [
+      {
+        "id": "inv-1042",
+        "lines": 2,
+        "collapsed": [
+          {
+            "role": "primary",
+            "cells": [
+              {
+                "key": "c0",
+                "text": "INV-1042"
+              },
+              {
+                "key": "c1",
+                "text": "Acme Ltd"
+              }
+            ],
+            "truncate": true
+          },
+          {
+            "role": "secondary",
+            "cells": [
+              {
+                "key": "due",
+                "text": "Due 30 Nov"
+              },
+              {
+                "key": "amount",
+                "text": "$1,250.00",
+                "title": "USD 1,250.00"
+              }
+            ],
+            "truncate": true
+          }
+        ],
+        "toggles": true,
+        "open": true,
+        "detail": {
+          "text": "Net 30, two reminders sent.",
+          "fields": [
+            {
+              "label": "Owner",
+              "value": "Priya"
+            },
+            {
+              "label": "Status",
+              "value": "Overdue"
+            }
+          ]
+        },
+        "attrs": {
+          "role": "row",
+          "data-axf-row-lines": "2",
+          "data-fx-row": "inv-1042",
+          "aria-expanded": "true",
+          "tabindex": "0"
+        },
+        "label": "INV-1042 · Acme Ltd · Due 30 Nov · $1,250.00"
+      },
+      {
+        "id": "inv-1043",
+        "lines": 2,
+        "collapsed": [
+          {
+            "role": "primary",
+            "cells": [
+              {
+                "key": "c0",
+                "text": "INV-1043"
+              }
+            ],
+            "truncate": true
+          },
+          {
+            "role": "secondary",
+            "cells": [
+              {
+                "key": "c0",
+                "text": "Globex"
+              },
+              {
+                "key": "c1",
+                "text": "Due 2 Dec"
+              },
+              {
+                "key": "c2",
+                "text": "480"
+              }
+            ],
+            "truncate": true
+          }
+        ],
+        "toggles": false,
+        "open": false,
+        "detail": null,
+        "attrs": {
+          "role": "row",
+          "data-axf-row-lines": "2",
+          "data-fx-row": "inv-1043"
+        },
+        "label": "INV-1043 · Globex · Due 2 Dec · 480"
+      },
+      {
+        "id": "inv-1044",
+        "lines": 2,
+        "collapsed": [
+          {
+            "role": "primary",
+            "cells": [
+              {
+                "key": "c0",
+                "text": "INV-1044"
+              },
+              {
+                "key": "who",
+                "text": "Initech"
+              }
+            ],
+            "truncate": true
+          }
+        ],
+        "toggles": true,
+        "open": false,
+        "detail": null,
+        "attrs": {
+          "role": "row",
+          "data-axf-row-lines": "2",
+          "data-fx-row": "inv-1044",
+          "aria-expanded": "false",
+          "tabindex": "0"
+        },
+        "label": "INV-1044 · Initech"
+      }
+    ]
+  },
+  "inputs": {
+    "tap": {
+      "expanded": [
+        "inv-1042"
+      ]
+    },
+    "enter": {
+      "expanded": [
+        "inv-1042"
+      ]
+    },
+    "space": {
+      "expanded": []
+    },
+    "escape": {
+      "expanded": [
+        "inv-1042"
+      ]
+    },
+    "tapAgain": {
+      "expanded": []
+    },
+    "noDetail": {
+      "expanded": []
+    },
+    "collapseAll": {
+      "expanded": []
+    },
+    "state": {
+      "junk": {
+        "expanded": [
+          "a",
+          "b"
+        ]
+      },
+      "list": {
+        "expanded": [
+          "x"
+        ]
+      }
+    }
+  },
+  "look": {
+    "default": {
+      "skin": {
+        "id": "",
+        "overrides": {},
+        "from": "app"
+      },
+      "setting": null,
+      "var": null,
+      "attrs": {
+        "data-axf-row-lines": "2"
+      },
+      "lines": 2,
+      "rows": [
+        {
+          "id": "inv-1042",
+          "lines": 2,
+          "collapsed": [
+            {
+              "role": "primary",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1042"
+                },
+                {
+                  "key": "c1",
+                  "text": "Acme Ltd"
+                }
+              ],
+              "truncate": true
+            },
+            {
+              "role": "secondary",
+              "cells": [
+                {
+                  "key": "due",
+                  "text": "Due 30 Nov"
+                },
+                {
+                  "key": "amount",
+                  "text": "$1,250.00",
+                  "title": "USD 1,250.00"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": true,
+          "open": true,
+          "detail": {
+            "text": "Net 30, two reminders sent.",
+            "fields": [
+              {
+                "label": "Owner",
+                "value": "Priya"
+              },
+              {
+                "label": "Status",
+                "value": "Overdue"
+              }
+            ]
+          },
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "2",
+            "data-fx-row": "inv-1042",
+            "aria-expanded": "true",
+            "tabindex": "0"
+          },
+          "label": "INV-1042 · Acme Ltd · Due 30 Nov · $1,250.00"
+        },
+        {
+          "id": "inv-1043",
+          "lines": 2,
+          "collapsed": [
+            {
+              "role": "primary",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1043"
+                }
+              ],
+              "truncate": true
+            },
+            {
+              "role": "secondary",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "Globex"
+                },
+                {
+                  "key": "c1",
+                  "text": "Due 2 Dec"
+                },
+                {
+                  "key": "c2",
+                  "text": "480"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": false,
+          "open": false,
+          "detail": null,
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "2",
+            "data-fx-row": "inv-1043"
+          },
+          "label": "INV-1043 · Globex · Due 2 Dec · 480"
+        },
+        {
+          "id": "inv-1044",
+          "lines": 2,
+          "collapsed": [
+            {
+              "role": "primary",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1044"
+                },
+                {
+                  "key": "who",
+                  "text": "Initech"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": true,
+          "open": false,
+          "detail": null,
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "2",
+            "data-fx-row": "inv-1044",
+            "aria-expanded": "false",
+            "tabindex": "0"
+          },
+          "label": "INV-1044 · Initech"
+        }
+      ]
+    },
+    "skinOwn1": {
+      "skin": {
+        "id": "dense",
+        "overrides": {},
+        "from": "app"
+      },
+      "setting": {
+        "*": {
+          "grid.rowLines": 1
+        }
+      },
+      "var": "1",
+      "attrs": {
+        "data-axf-row-lines": "1"
+      },
+      "lines": 1,
+      "rows": [
+        {
+          "id": "inv-1042",
+          "lines": 1,
+          "collapsed": [
+            {
+              "role": "inline",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1042"
+                },
+                {
+                  "key": "c1",
+                  "text": "Acme Ltd"
+                },
+                {
+                  "key": "due",
+                  "text": "Due 30 Nov"
+                },
+                {
+                  "key": "amount",
+                  "text": "$1,250.00",
+                  "title": "USD 1,250.00"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": true,
+          "open": true,
+          "detail": {
+            "text": "Net 30, two reminders sent.",
+            "fields": [
+              {
+                "label": "Owner",
+                "value": "Priya"
+              },
+              {
+                "label": "Status",
+                "value": "Overdue"
+              }
+            ]
+          },
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "1",
+            "data-fx-row": "inv-1042",
+            "aria-expanded": "true",
+            "tabindex": "0"
+          },
+          "label": "INV-1042 · Acme Ltd · Due 30 Nov · $1,250.00"
+        },
+        {
+          "id": "inv-1043",
+          "lines": 1,
+          "collapsed": [
+            {
+              "role": "inline",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1043"
+                },
+                {
+                  "key": "c0",
+                  "text": "Globex"
+                },
+                {
+                  "key": "c1",
+                  "text": "Due 2 Dec"
+                },
+                {
+                  "key": "c2",
+                  "text": "480"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": false,
+          "open": false,
+          "detail": null,
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "1",
+            "data-fx-row": "inv-1043"
+          },
+          "label": "INV-1043 · Globex · Due 2 Dec · 480"
+        },
+        {
+          "id": "inv-1044",
+          "lines": 1,
+          "collapsed": [
+            {
+              "role": "inline",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1044"
+                },
+                {
+                  "key": "who",
+                  "text": "Initech"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": true,
+          "open": false,
+          "detail": null,
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "1",
+            "data-fx-row": "inv-1044",
+            "aria-expanded": "false",
+            "tabindex": "0"
+          },
+          "label": "INV-1044 · Initech"
+        }
+      ]
+    },
+    "skinOwn2": {
+      "skin": {
+        "id": "airy",
+        "overrides": {},
+        "from": "app"
+      },
+      "setting": {
+        "*": {
+          "grid.rowLines": 2
+        }
+      },
+      "var": "2",
+      "attrs": {
+        "data-axf-row-lines": "2"
+      },
+      "lines": 2,
+      "rows": [
+        {
+          "id": "inv-1042",
+          "lines": 2,
+          "collapsed": [
+            {
+              "role": "primary",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1042"
+                },
+                {
+                  "key": "c1",
+                  "text": "Acme Ltd"
+                }
+              ],
+              "truncate": true
+            },
+            {
+              "role": "secondary",
+              "cells": [
+                {
+                  "key": "due",
+                  "text": "Due 30 Nov"
+                },
+                {
+                  "key": "amount",
+                  "text": "$1,250.00",
+                  "title": "USD 1,250.00"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": true,
+          "open": true,
+          "detail": {
+            "text": "Net 30, two reminders sent.",
+            "fields": [
+              {
+                "label": "Owner",
+                "value": "Priya"
+              },
+              {
+                "label": "Status",
+                "value": "Overdue"
+              }
+            ]
+          },
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "2",
+            "data-fx-row": "inv-1042",
+            "aria-expanded": "true",
+            "tabindex": "0"
+          },
+          "label": "INV-1042 · Acme Ltd · Due 30 Nov · $1,250.00"
+        },
+        {
+          "id": "inv-1043",
+          "lines": 2,
+          "collapsed": [
+            {
+              "role": "primary",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1043"
+                }
+              ],
+              "truncate": true
+            },
+            {
+              "role": "secondary",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "Globex"
+                },
+                {
+                  "key": "c1",
+                  "text": "Due 2 Dec"
+                },
+                {
+                  "key": "c2",
+                  "text": "480"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": false,
+          "open": false,
+          "detail": null,
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "2",
+            "data-fx-row": "inv-1043"
+          },
+          "label": "INV-1043 · Globex · Due 2 Dec · 480"
+        },
+        {
+          "id": "inv-1044",
+          "lines": 2,
+          "collapsed": [
+            {
+              "role": "primary",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1044"
+                },
+                {
+                  "key": "who",
+                  "text": "Initech"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": true,
+          "open": false,
+          "detail": null,
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "2",
+            "data-fx-row": "inv-1044",
+            "aria-expanded": "false",
+            "tabindex": "0"
+          },
+          "label": "INV-1044 · Initech"
+        }
+      ]
+    },
+    "skinSaysNothing": {
+      "skin": {
+        "id": "plain",
+        "overrides": {},
+        "from": "app"
+      },
+      "setting": null,
+      "var": null,
+      "attrs": {
+        "data-axf-row-lines": "2"
+      },
+      "lines": 2,
+      "rows": [
+        {
+          "id": "inv-1042",
+          "lines": 2,
+          "collapsed": [
+            {
+              "role": "primary",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1042"
+                },
+                {
+                  "key": "c1",
+                  "text": "Acme Ltd"
+                }
+              ],
+              "truncate": true
+            },
+            {
+              "role": "secondary",
+              "cells": [
+                {
+                  "key": "due",
+                  "text": "Due 30 Nov"
+                },
+                {
+                  "key": "amount",
+                  "text": "$1,250.00",
+                  "title": "USD 1,250.00"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": true,
+          "open": true,
+          "detail": {
+            "text": "Net 30, two reminders sent.",
+            "fields": [
+              {
+                "label": "Owner",
+                "value": "Priya"
+              },
+              {
+                "label": "Status",
+                "value": "Overdue"
+              }
+            ]
+          },
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "2",
+            "data-fx-row": "inv-1042",
+            "aria-expanded": "true",
+            "tabindex": "0"
+          },
+          "label": "INV-1042 · Acme Ltd · Due 30 Nov · $1,250.00"
+        },
+        {
+          "id": "inv-1043",
+          "lines": 2,
+          "collapsed": [
+            {
+              "role": "primary",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1043"
+                }
+              ],
+              "truncate": true
+            },
+            {
+              "role": "secondary",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "Globex"
+                },
+                {
+                  "key": "c1",
+                  "text": "Due 2 Dec"
+                },
+                {
+                  "key": "c2",
+                  "text": "480"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": false,
+          "open": false,
+          "detail": null,
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "2",
+            "data-fx-row": "inv-1043"
+          },
+          "label": "INV-1043 · Globex · Due 2 Dec · 480"
+        },
+        {
+          "id": "inv-1044",
+          "lines": 2,
+          "collapsed": [
+            {
+              "role": "primary",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1044"
+                },
+                {
+                  "key": "who",
+                  "text": "Initech"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": true,
+          "open": false,
+          "detail": null,
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "2",
+            "data-fx-row": "inv-1044",
+            "aria-expanded": "false",
+            "tabindex": "0"
+          },
+          "label": "INV-1044 · Initech"
+        }
+      ]
+    },
+    "appPick": {
+      "skin": {
+        "id": "dense",
+        "overrides": {},
+        "from": "app",
+        "rowLines": 2
+      },
+      "setting": {
+        "*": {
+          "grid.rowLines": 2
+        }
+      },
+      "var": "2",
+      "attrs": {
+        "data-axf-row-lines": "2"
+      },
+      "lines": 2,
+      "rows": [
+        {
+          "id": "inv-1042",
+          "lines": 2,
+          "collapsed": [
+            {
+              "role": "primary",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1042"
+                },
+                {
+                  "key": "c1",
+                  "text": "Acme Ltd"
+                }
+              ],
+              "truncate": true
+            },
+            {
+              "role": "secondary",
+              "cells": [
+                {
+                  "key": "due",
+                  "text": "Due 30 Nov"
+                },
+                {
+                  "key": "amount",
+                  "text": "$1,250.00",
+                  "title": "USD 1,250.00"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": true,
+          "open": true,
+          "detail": {
+            "text": "Net 30, two reminders sent.",
+            "fields": [
+              {
+                "label": "Owner",
+                "value": "Priya"
+              },
+              {
+                "label": "Status",
+                "value": "Overdue"
+              }
+            ]
+          },
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "2",
+            "data-fx-row": "inv-1042",
+            "aria-expanded": "true",
+            "tabindex": "0"
+          },
+          "label": "INV-1042 · Acme Ltd · Due 30 Nov · $1,250.00"
+        },
+        {
+          "id": "inv-1043",
+          "lines": 2,
+          "collapsed": [
+            {
+              "role": "primary",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1043"
+                }
+              ],
+              "truncate": true
+            },
+            {
+              "role": "secondary",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "Globex"
+                },
+                {
+                  "key": "c1",
+                  "text": "Due 2 Dec"
+                },
+                {
+                  "key": "c2",
+                  "text": "480"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": false,
+          "open": false,
+          "detail": null,
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "2",
+            "data-fx-row": "inv-1043"
+          },
+          "label": "INV-1043 · Globex · Due 2 Dec · 480"
+        },
+        {
+          "id": "inv-1044",
+          "lines": 2,
+          "collapsed": [
+            {
+              "role": "primary",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1044"
+                },
+                {
+                  "key": "who",
+                  "text": "Initech"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": true,
+          "open": false,
+          "detail": null,
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "2",
+            "data-fx-row": "inv-1044",
+            "aria-expanded": "false",
+            "tabindex": "0"
+          },
+          "label": "INV-1044 · Initech"
+        }
+      ]
+    },
+    "uiPick": {
+      "skin": {
+        "id": "dense",
+        "overrides": {},
+        "from": "app",
+        "rowLines": 1
+      },
+      "setting": {
+        "*": {
+          "grid.rowLines": 1
+        }
+      },
+      "var": "1",
+      "attrs": {
+        "data-axf-row-lines": "1"
+      },
+      "lines": 1,
+      "rows": [
+        {
+          "id": "inv-1042",
+          "lines": 1,
+          "collapsed": [
+            {
+              "role": "inline",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1042"
+                },
+                {
+                  "key": "c1",
+                  "text": "Acme Ltd"
+                },
+                {
+                  "key": "due",
+                  "text": "Due 30 Nov"
+                },
+                {
+                  "key": "amount",
+                  "text": "$1,250.00",
+                  "title": "USD 1,250.00"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": true,
+          "open": true,
+          "detail": {
+            "text": "Net 30, two reminders sent.",
+            "fields": [
+              {
+                "label": "Owner",
+                "value": "Priya"
+              },
+              {
+                "label": "Status",
+                "value": "Overdue"
+              }
+            ]
+          },
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "1",
+            "data-fx-row": "inv-1042",
+            "aria-expanded": "true",
+            "tabindex": "0"
+          },
+          "label": "INV-1042 · Acme Ltd · Due 30 Nov · $1,250.00"
+        },
+        {
+          "id": "inv-1043",
+          "lines": 1,
+          "collapsed": [
+            {
+              "role": "inline",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1043"
+                },
+                {
+                  "key": "c0",
+                  "text": "Globex"
+                },
+                {
+                  "key": "c1",
+                  "text": "Due 2 Dec"
+                },
+                {
+                  "key": "c2",
+                  "text": "480"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": false,
+          "open": false,
+          "detail": null,
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "1",
+            "data-fx-row": "inv-1043"
+          },
+          "label": "INV-1043 · Globex · Due 2 Dec · 480"
+        },
+        {
+          "id": "inv-1044",
+          "lines": 1,
+          "collapsed": [
+            {
+              "role": "inline",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1044"
+                },
+                {
+                  "key": "who",
+                  "text": "Initech"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": true,
+          "open": false,
+          "detail": null,
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "1",
+            "data-fx-row": "inv-1044",
+            "aria-expanded": "false",
+            "tabindex": "0"
+          },
+          "label": "INV-1044 · Initech"
+        }
+      ]
+    },
+    "pluginOverride": {
+      "skin": {
+        "id": "dense",
+        "overrides": {},
+        "from": "app",
+        "rowLines": 2
+      },
+      "setting": {
+        "*": {
+          "grid.rowLines": 2
+        }
+      },
+      "var": "2",
+      "attrs": {
+        "data-axf-row-lines": "2"
+      },
+      "lines": 2,
+      "rows": [
+        {
+          "id": "inv-1042",
+          "lines": 2,
+          "collapsed": [
+            {
+              "role": "primary",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1042"
+                },
+                {
+                  "key": "c1",
+                  "text": "Acme Ltd"
+                }
+              ],
+              "truncate": true
+            },
+            {
+              "role": "secondary",
+              "cells": [
+                {
+                  "key": "due",
+                  "text": "Due 30 Nov"
+                },
+                {
+                  "key": "amount",
+                  "text": "$1,250.00",
+                  "title": "USD 1,250.00"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": true,
+          "open": true,
+          "detail": {
+            "text": "Net 30, two reminders sent.",
+            "fields": [
+              {
+                "label": "Owner",
+                "value": "Priya"
+              },
+              {
+                "label": "Status",
+                "value": "Overdue"
+              }
+            ]
+          },
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "2",
+            "data-fx-row": "inv-1042",
+            "aria-expanded": "true",
+            "tabindex": "0"
+          },
+          "label": "INV-1042 · Acme Ltd · Due 30 Nov · $1,250.00"
+        },
+        {
+          "id": "inv-1043",
+          "lines": 2,
+          "collapsed": [
+            {
+              "role": "primary",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1043"
+                }
+              ],
+              "truncate": true
+            },
+            {
+              "role": "secondary",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "Globex"
+                },
+                {
+                  "key": "c1",
+                  "text": "Due 2 Dec"
+                },
+                {
+                  "key": "c2",
+                  "text": "480"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": false,
+          "open": false,
+          "detail": null,
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "2",
+            "data-fx-row": "inv-1043"
+          },
+          "label": "INV-1043 · Globex · Due 2 Dec · 480"
+        },
+        {
+          "id": "inv-1044",
+          "lines": 2,
+          "collapsed": [
+            {
+              "role": "primary",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1044"
+                },
+                {
+                  "key": "who",
+                  "text": "Initech"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": true,
+          "open": false,
+          "detail": null,
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "2",
+            "data-fx-row": "inv-1044",
+            "aria-expanded": "false",
+            "tabindex": "0"
+          },
+          "label": "INV-1044 · Initech"
+        }
+      ]
+    },
+    "pluginInheritsUi": {
+      "skin": {
+        "id": "dense",
+        "overrides": {},
+        "from": "app",
+        "rowLines": 1
+      },
+      "setting": {
+        "*": {
+          "grid.rowLines": 1
+        }
+      },
+      "var": "1",
+      "attrs": {
+        "data-axf-row-lines": "1"
+      },
+      "lines": 1,
+      "rows": [
+        {
+          "id": "inv-1042",
+          "lines": 1,
+          "collapsed": [
+            {
+              "role": "inline",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1042"
+                },
+                {
+                  "key": "c1",
+                  "text": "Acme Ltd"
+                },
+                {
+                  "key": "due",
+                  "text": "Due 30 Nov"
+                },
+                {
+                  "key": "amount",
+                  "text": "$1,250.00",
+                  "title": "USD 1,250.00"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": true,
+          "open": true,
+          "detail": {
+            "text": "Net 30, two reminders sent.",
+            "fields": [
+              {
+                "label": "Owner",
+                "value": "Priya"
+              },
+              {
+                "label": "Status",
+                "value": "Overdue"
+              }
+            ]
+          },
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "1",
+            "data-fx-row": "inv-1042",
+            "aria-expanded": "true",
+            "tabindex": "0"
+          },
+          "label": "INV-1042 · Acme Ltd · Due 30 Nov · $1,250.00"
+        },
+        {
+          "id": "inv-1043",
+          "lines": 1,
+          "collapsed": [
+            {
+              "role": "inline",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1043"
+                },
+                {
+                  "key": "c0",
+                  "text": "Globex"
+                },
+                {
+                  "key": "c1",
+                  "text": "Due 2 Dec"
+                },
+                {
+                  "key": "c2",
+                  "text": "480"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": false,
+          "open": false,
+          "detail": null,
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "1",
+            "data-fx-row": "inv-1043"
+          },
+          "label": "INV-1043 · Globex · Due 2 Dec · 480"
+        },
+        {
+          "id": "inv-1044",
+          "lines": 1,
+          "collapsed": [
+            {
+              "role": "inline",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1044"
+                },
+                {
+                  "key": "who",
+                  "text": "Initech"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": true,
+          "open": false,
+          "detail": null,
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "1",
+            "data-fx-row": "inv-1044",
+            "aria-expanded": "false",
+            "tabindex": "0"
+          },
+          "label": "INV-1044 · Initech"
+        }
+      ]
+    },
+    "hubWide": {
+      "skin": {
+        "id": "dense",
+        "overrides": {},
+        "from": "global",
+        "rowLines": 2
+      },
+      "setting": {
+        "*": {
+          "grid.rowLines": 2
+        }
+      },
+      "var": "2",
+      "attrs": {
+        "data-axf-row-lines": "2"
+      },
+      "lines": 2,
+      "rows": [
+        {
+          "id": "inv-1042",
+          "lines": 2,
+          "collapsed": [
+            {
+              "role": "primary",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1042"
+                },
+                {
+                  "key": "c1",
+                  "text": "Acme Ltd"
+                }
+              ],
+              "truncate": true
+            },
+            {
+              "role": "secondary",
+              "cells": [
+                {
+                  "key": "due",
+                  "text": "Due 30 Nov"
+                },
+                {
+                  "key": "amount",
+                  "text": "$1,250.00",
+                  "title": "USD 1,250.00"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": true,
+          "open": true,
+          "detail": {
+            "text": "Net 30, two reminders sent.",
+            "fields": [
+              {
+                "label": "Owner",
+                "value": "Priya"
+              },
+              {
+                "label": "Status",
+                "value": "Overdue"
+              }
+            ]
+          },
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "2",
+            "data-fx-row": "inv-1042",
+            "aria-expanded": "true",
+            "tabindex": "0"
+          },
+          "label": "INV-1042 · Acme Ltd · Due 30 Nov · $1,250.00"
+        },
+        {
+          "id": "inv-1043",
+          "lines": 2,
+          "collapsed": [
+            {
+              "role": "primary",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1043"
+                }
+              ],
+              "truncate": true
+            },
+            {
+              "role": "secondary",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "Globex"
+                },
+                {
+                  "key": "c1",
+                  "text": "Due 2 Dec"
+                },
+                {
+                  "key": "c2",
+                  "text": "480"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": false,
+          "open": false,
+          "detail": null,
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "2",
+            "data-fx-row": "inv-1043"
+          },
+          "label": "INV-1043 · Globex · Due 2 Dec · 480"
+        },
+        {
+          "id": "inv-1044",
+          "lines": 2,
+          "collapsed": [
+            {
+              "role": "primary",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1044"
+                },
+                {
+                  "key": "who",
+                  "text": "Initech"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": true,
+          "open": false,
+          "detail": null,
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "2",
+            "data-fx-row": "inv-1044",
+            "aria-expanded": "false",
+            "tabindex": "0"
+          },
+          "label": "INV-1044 · Initech"
+        }
+      ]
+    },
+    "hubDefault": {
+      "skin": {
+        "id": "dense",
+        "overrides": {},
+        "from": "default"
+      },
+      "setting": {
+        "*": {
+          "grid.rowLines": 1
+        }
+      },
+      "var": "1",
+      "attrs": {
+        "data-axf-row-lines": "1"
+      },
+      "lines": 1,
+      "rows": [
+        {
+          "id": "inv-1042",
+          "lines": 1,
+          "collapsed": [
+            {
+              "role": "inline",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1042"
+                },
+                {
+                  "key": "c1",
+                  "text": "Acme Ltd"
+                },
+                {
+                  "key": "due",
+                  "text": "Due 30 Nov"
+                },
+                {
+                  "key": "amount",
+                  "text": "$1,250.00",
+                  "title": "USD 1,250.00"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": true,
+          "open": true,
+          "detail": {
+            "text": "Net 30, two reminders sent.",
+            "fields": [
+              {
+                "label": "Owner",
+                "value": "Priya"
+              },
+              {
+                "label": "Status",
+                "value": "Overdue"
+              }
+            ]
+          },
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "1",
+            "data-fx-row": "inv-1042",
+            "aria-expanded": "true",
+            "tabindex": "0"
+          },
+          "label": "INV-1042 · Acme Ltd · Due 30 Nov · $1,250.00"
+        },
+        {
+          "id": "inv-1043",
+          "lines": 1,
+          "collapsed": [
+            {
+              "role": "inline",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1043"
+                },
+                {
+                  "key": "c0",
+                  "text": "Globex"
+                },
+                {
+                  "key": "c1",
+                  "text": "Due 2 Dec"
+                },
+                {
+                  "key": "c2",
+                  "text": "480"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": false,
+          "open": false,
+          "detail": null,
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "1",
+            "data-fx-row": "inv-1043"
+          },
+          "label": "INV-1043 · Globex · Due 2 Dec · 480"
+        },
+        {
+          "id": "inv-1044",
+          "lines": 1,
+          "collapsed": [
+            {
+              "role": "inline",
+              "cells": [
+                {
+                  "key": "c0",
+                  "text": "INV-1044"
+                },
+                {
+                  "key": "who",
+                  "text": "Initech"
+                }
+              ],
+              "truncate": true
+            }
+          ],
+          "toggles": true,
+          "open": false,
+          "detail": null,
+          "attrs": {
+            "role": "row",
+            "data-axf-row-lines": "1",
+            "data-fx-row": "inv-1044",
+            "aria-expanded": "false",
+            "tabindex": "0"
+          },
+          "label": "INV-1044 · Initech"
+        }
+      ]
+    }
+  },
+  "resolve": [
+    {
+      "in": {},
+      "out": 2
+    },
+    {
+      "in": {
+        "theme": 1
+      },
+      "out": 1
+    },
+    {
+      "in": {
+        "root": "2",
+        "theme": 1
+      },
+      "out": 2
+    },
+    {
+      "in": {
+        "instance": 1,
+        "root": "2",
+        "theme": 2
+      },
+      "out": 1
+    },
+    {
+      "in": {
+        "instance": "x",
+        "root": null,
+        "theme": "1"
+      },
+      "out": 1
+    },
+    {
+      "in": {
+        "instance": 3
+      },
+      "out": 2
+    }
+  ],
+  "normalize": {
+    "lines": {
+      "0:1": 1,
+      "1:2": 2,
+      "2:1": 1,
+      "3:2": 2,
+      "4:3": 2,
+      "5:0": 2,
+      "6:1.5": 2,
+      "7:two": 2,
+      "8:null": 2,
+      "9:undefined": 2
+    },
+    "cells": [
+      {
+        "in": "plain",
+        "out": {
+          "key": "c0",
+          "text": "plain"
+        }
+      },
+      {
+        "in": 42,
+        "out": {
+          "key": "c1",
+          "text": "42"
+        }
+      },
+      {
+        "in": true,
+        "out": {
+          "key": "c2",
+          "text": "true"
+        }
+      },
+      {
+        "in": "",
+        "out": null
+      },
+      {
+        "in": {
+          "text": "x",
+          "key": "k"
+        },
+        "out": {
+          "key": "k",
+          "text": "x"
+        }
+      },
+      {
+        "in": {
+          "value": 7
+        },
+        "out": {
+          "key": "c5",
+          "text": "7"
+        }
+      },
+      {
+        "in": {
+          "label": "L",
+          "title": "Long L"
+        },
+        "out": {
+          "key": "c6",
+          "text": "L",
+          "title": "Long L"
+        }
+      },
+      {
+        "in": {
+          "key": "bad key!",
+          "text": "y"
+        },
+        "out": {
+          "key": "c7",
+          "text": "y"
+        }
+      },
+      {
+        "in": {
+          "title": "only a title"
+        },
+        "out": null
+      },
+      {
+        "in": null,
+        "out": null
+      }
+    ],
+    "details": [
+      {
+        "in": "text",
+        "out": {
+          "text": "text"
+        }
+      },
+      {
+        "in": "",
+        "out": null
+      },
+      {
+        "in": {
+          "text": "t",
+          "fields": [
+            {
+              "label": "a",
+              "value": 1
+            },
+            {
+              "key": "b",
+              "text": "c"
+            },
+            {
+              "label": "",
+              "value": "x"
+            }
+          ]
+        },
+        "out": {
+          "text": "t",
+          "fields": [
+            {
+              "label": "a",
+              "value": "1"
+            },
+            {
+              "label": "b",
+              "value": "c"
+            }
+          ]
+        }
+      },
+      {
+        "in": {
+          "fields": {
+            "A": "x",
+            "B": ""
+          }
+        },
+        "out": {
+          "fields": [
+            {
+              "label": "A",
+              "value": "x"
+            },
+            {
+              "label": "B",
+              "value": ""
+            }
+          ]
+        }
+      },
+      {
+        "in": {},
+        "out": null
+      },
+      {
+        "in": 5,
+        "out": {
+          "text": "5"
+        }
+      },
+      {
+        "in": null,
+        "out": null
+      }
+    ]
+  }
+}

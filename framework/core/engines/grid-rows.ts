@@ -97,10 +97,10 @@ const KEY = /^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$/;
 export function normalizeGridRowCell(raw: unknown, index: number): GridRowCell | null {
   if (!isObj(raw)) {
     const t = text(raw, GRID_ROWS_MAX_TEXT);
-    return t === null ? null : { key: `c${index}`, text: t };
+    return t === null || !t.trim() ? null : { key: `c${index}`, text: t };
   }
   const t = text(raw.text ?? raw.value ?? raw.label, GRID_ROWS_MAX_TEXT);
-  if (t === null) return null;
+  if (t === null || !t.trim()) return null;
   const key = typeof raw.key === 'string' && KEY.test(raw.key) ? raw.key : `c${index}`;
   const title = text(raw.title, GRID_ROWS_MAX_TEXT);
   return title !== null && title !== t ? { key, text: t, title } : { key, text: t };

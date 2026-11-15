@@ -5,7 +5,9 @@
  */
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
+import { colorThemeVars, styleThemeAttrs, styleThemeVars } from '../core/engines/theme';
+import { applyTokenOverrides, effectiveTokenOverrides } from '../core/engines/control-tokens.mjs';
+import { GRID_ROWS_ATTR, GRID_ROWS_CLASSES, GRID_ROWS_CONTRACT, GRID_ROWS_TOGGLE_KEYS, GRID_ROWS_VAR, gridRowsCollapseAll, gridRowInput, gridRowsPlan, normalizeGridRowCell, normalizeGridRowDetail, normalizeGridRowLines, normalizeGridRows, normalizeGridRowsState, resolveGridRowLines } from '../core/engines/grid-rows';
 import { adoptHubDefault, backToSkin, backupLook, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, hubDefaultOf, hubOnlyLook, lookAfterChange, lookBackup, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, overriddenSlots, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, restoreLookBackup, rowLinesCoverage, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setSkinRowLines, setUseSkin, skinRowLines, STYLE_TOKENS_KEY, skinChromeErrors, skinChromeSettings, skinColorOf, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
 import { foldLegacyPicks, legacyPicks, lookNeedsMigration, migrateLook, migrateLookSettings, parseLegacyLook, settingsNeedMigration } from '../core/engines/look-migration.mjs';
 import { SKIN_SWITCH_ACTIONS, SKIN_SWITCH_CONTRACT, SKIN_SWITCH_ERRORS, SKIN_SWITCH_HUB, SKIN_SWITCH_SCOPES, normalizeSkinSwitch, parseSwitchScope, skinSwitch, skinSwitchState, switchScopeOf, switchScopes } from '../core/engines/skin-switch.mjs';
@@ -2028,6 +2030,94 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     frames: ['standard', 'frameless'], frameDefault: 'standard',
     rect: r, hits, resizes, maximize,
     snap: { rules: DEFAULT_SNAP_RULES, zonesList: SNAP_ZONES, viewport: vp, work, others, moving, snaps, zones, zoneRects, overlap, split: { target, cases: splits, odd: oddSplit }, topmost: { stack, probes: topmost }, arm: { steps: armSteps, zeroDwell: armZero } },
+  });
+}
+
+/* ---- grid-rows@1 (build every-grid-1-2-rows-per-item-set-skin): every grid shows 1 or 2 lines per item, set by the skin ---- */
+{
+  const rawItems: unknown[] = [
+    { id: 'inv-1042', primary: ['INV-1042', 'Acme Ltd'], secondary: [{ key: 'due', text: 'Due 30 Nov' }, { key: 'amount', text: '$1,250.00', title: 'USD 1,250.00' }], detail: { text: 'Net 30, two reminders sent.', fields: { Owner: 'Priya', Status: 'Overdue' } } },
+    { key: 'inv-1043', primary: 'INV-1043', secondary: ['Globex', 'Due 2 Dec', 480] },
+    { id: 'inv-1044', primary: [{ text: 'INV-1044' }, { label: 'Initech', key: 'who' }], detail: 'Paid in full.' },
+    { id: 'inv-1042', primary: ['a repeated id keeps its first row'] },
+    { id: 'empty' }, 'not an object', null, { primary: ['', '   '] },
+  ];
+  const items = normalizeGridRows(rawItems);
+  const [first, second] = items as [typeof items[0], typeof items[0]];
+  const state0 = normalizeGridRowsState(null);
+  const open = gridRowInput(state0, first, { kind: 'tap' });
+  // the look: the lines a grid draws come from the composed look's tokens.style override, through the style theme, like every token
+  const shared = { $axf: 'appearance@1', slots: { layout: 'focus-top', 'color-theme': 'arctic-daylight', 'style-theme': 'enterprise' }, hidden: {}, settings: {} };
+  const styleTheme = load('style-theme').find((a) => a.id === 'enterprise')!.data;
+  const base = { layoutTheme: 'data-grid', colorTheme: 'slate-steel', styleTheme: 'enterprise', assets: {} };
+  const skins: Record<string, ReturnType<typeof normalizeSkin>> = { dense: normalizeSkin({ ...base, grid: { rowLines: 1 } }), airy: normalizeSkin({ ...base, grid: { rowLines: 2 } }), plain: normalizeSkin(base) };
+  const skinOf = (id: string) => skins[id] ?? null;
+  const place = { app: 'app', ui: 'home', plugin: 'notes' };
+  const look0 = newAppLook('app', snapshotLook(shared as never));
+  const linesAt = (look: ReturnType<typeof newAppLook>, scope?: Partial<typeof place>, doc = shared) => {
+    const composed = composeLookAt(doc as never, look, skinOf, scope);
+    const setting = composed.doc.settings['axf.tokens.style'] ?? null;
+    const data = applyTokenOverrides('tokens.style', styleTheme, effectiveTokenOverrides(setting, 'enterprise')) as typeof styleTheme & { grid?: { rowLines?: unknown } };
+    const lines = resolveGridRowLines({ theme: data.grid?.rowLines });
+    return { skin: composed.skin, setting, var: styleThemeVars(data)[GRID_ROWS_VAR] ?? null, attrs: styleThemeAttrs(data), lines, rows: gridRowsPlan(items, lines, open) };
+  };
+  const denseOn = setUseSkin(pickSkin(look0, 'dense'), true);
+  const appPick = setSkinRowLines(denseOn, 2);
+  const uiPick = setSkinRowLines(appPick, 1, 'ui:home');
+  const pluginOverride = setSkinRowLines(uiPick, 2, 'plugin:notes');
+  write('grid-rows.json', {
+    contract: GRID_ROWS_CONTRACT,
+    classes: GRID_ROWS_CLASSES,
+    toggleKeys: GRID_ROWS_TOGGLE_KEYS,
+    var: GRID_ROWS_VAR,
+    attr: GRID_ROWS_ATTR,
+    raw: rawItems,
+    items,
+    // golden rows: the same items collapsed at 1 and at 2 lines, nothing open
+    plans: { 1: gridRowsPlan(items, 1, state0), 2: gridRowsPlan(items, 2, state0) },
+    // the first row open (its detail shows), at 2 lines
+    open: { state: open, rows: gridRowsPlan(items, 2, open) },
+    inputs: {
+      tap: open,
+      enter: gridRowInput(state0, first, { kind: 'key', key: 'Enter' }),
+      space: gridRowInput(state0, first, { kind: 'key', key: ' ' }),
+      escape: gridRowInput(open, first, { kind: 'key', key: 'Escape' }),
+      tapAgain: gridRowInput(open, first, { kind: 'tap' }),
+      noDetail: gridRowInput(state0, second, { kind: 'tap' }),
+      collapseAll: gridRowsCollapseAll(open),
+      state: { junk: normalizeGridRowsState({ expanded: ['a', 7, '', 'a', 'b'] }), list: normalizeGridRowsState(['x']) },
+    },
+    // the look decides: default (no skin), the skin's own 1 / 2 / nothing, a pick per level (app → ui → plugin, child over parent), the hub-wide skin
+    look: {
+      default: linesAt(look0),
+      skinOwn1: linesAt(denseOn),
+      skinOwn2: linesAt(setUseSkin(pickSkin(look0, 'airy'), true)),
+      skinSaysNothing: linesAt(setUseSkin(pickSkin(look0, 'plain'), true)),
+      appPick: linesAt(appPick, { app: 'app' }),
+      uiPick: linesAt(uiPick, { app: 'app', ui: 'home' }),
+      pluginOverride: linesAt(pluginOverride, place),
+      pluginInheritsUi: linesAt(uiPick, place),
+      hubWide: linesAt(setInheritSkin(look0, true), place, { ...shared, skin: { id: 'dense', overrides: {}, rowLines: 2 } }),
+      hubDefault: linesAt(look0, place, { ...shared, defaultSkin: { id: 'dense' } }),
+    },
+    // the order one grid applies: its own override, the root it sits under, the theme, 2
+    resolve: [
+      { in: {}, out: resolveGridRowLines({}) },
+      { in: { theme: 1 }, out: resolveGridRowLines({ theme: 1 }) },
+      { in: { root: '2', theme: 1 }, out: resolveGridRowLines({ root: '2', theme: 1 }) },
+      { in: { instance: 1, root: '2', theme: 2 }, out: resolveGridRowLines({ instance: 1, root: '2', theme: 2 }) },
+      { in: { instance: 'x', root: null, theme: '1' }, out: resolveGridRowLines({ instance: 'x', root: null, theme: '1' }) },
+      { in: { instance: 3 }, out: resolveGridRowLines({ instance: 3 }) },
+    ],
+    normalize: {
+      lines: Object.fromEntries(([1, 2, '1', '2', 3, 0, '1.5', 'two', null, undefined] as unknown[]).map((v, i) => [`${i}:${String(v)}`, normalizeGridRowLines(v)])),
+      cells: ([
+        'plain', 42, true, '', { text: 'x', key: 'k' }, { value: 7 }, { label: 'L', title: 'Long L' }, { key: 'bad key!', text: 'y' }, { title: 'only a title' }, null,
+      ] as unknown[]).map((v, i) => ({ in: v, out: normalizeGridRowCell(v, i) })),
+      details: ([
+        'text', '', { text: 't', fields: [{ label: 'a', value: 1 }, { key: 'b', text: 'c' }, { label: '', value: 'x' }] }, { fields: { A: 'x', B: '' } }, {}, 5, null,
+      ] as unknown[]).map((v) => ({ in: v, out: normalizeGridRowDetail(v) })),
+    },
   });
 }
 
