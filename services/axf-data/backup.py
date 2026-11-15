@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
-"""axf-data backups: a daily tar of the SQLite online backup plus the blobs it names, kept 14 days plus weekly copies.
+"""axf-data backups: a daily tar.gz of the store, verified, kept 14 days plus weekly copies.
 
-Runs inside the axf-data container (it reads /data directly; no token needed) with the host's backup folder mounted at
-/backups (host: /root/hub/data/axf-data/backups). deploy/axf-data-backup.cron runs it daily.
+Postgres engine (AXF_DATA_DSN set): `axf-data.pgdump` (pg_dump custom format, compressed) + `backup.json` (at, cursor,
+counts per namespace, journal lines, rows per table, sha256 of the dump). Verify: the dump matches its hash, pg_restore
+can list it and names the core tables, and its counts match the live database (later writes explained by the feed).
+Restore: pg_restore --clean into the DSN (stop axf-data first).
+
+SQLite engine (no DSN): the online SQLite backup plus the blobs it names, as before.
+
+Runs inside the axf-data container (it reads /data or the DSN directly; no token needed) with the host's backup folder
+mounted at /backups (host: /root/hub/data/axf-data/backups). deploy/axf-data-backup.cron runs it daily.
 
   python backup.py run      [--data /data] [--out /backups]   back up, verify, prune; writes <out>/last.json
   python backup.py verify   [FILE]                              re-check a backup (default: the newest) against the live store
@@ -86,7 +93,14 @@ def _blob_names(db: sqlite3.Connection) -> list[str]:
     return sorted({r[0] for r in rows})
 
 
-def run(data: Path, out: Path, now: datetime | None = None) -> dict:
+def run(data: Path, out: Path, now: datetime | None = None, dsn: str | None = None, schema: str = '') -> dict:
+    """Back up whichever engine runs: Postgres (pg_dump) with a DSN (None = AXF_DATA_DSN), else the SQLite store ('' forces it)."""
+    if dsn is None:
+        dsn = os.environ.get('AXF_DATA_DSN', '')
+    return run_pg(dsn, data, out, now, schema or os.environ.get('AXF_DATA_PG_SCHEMA', 'public')) if dsn else run_sqlite(data, out, now)
+
+
+def run_sqlite(data: Path, out: Path, now: datetime | None = None) -> dict:
     now = now or _now()
     out.mkdir(parents=True, exist_ok=True)
     src = data / 'axf-data.sqlite'
@@ -122,8 +136,11 @@ def run(data: Path, out: Path, now: datetime | None = None) -> dict:
     return result
 
 
-def verify(file: Path, data: Path) -> dict:
+def verify(file: Path, data: Path, dsn: str = '') -> dict:
     """Integrity, blob hashes and counts against the live store (writes after the backup's cursor are allowed for)."""
+    with tarfile.open(file, 'r:gz') as tar:
+        if 'axf-data.pgdump' in tar.getnames():
+            return verify_pg(file, dsn or os.environ.get('AXF_DATA_DSN', ''))
     at = _iso(_now())
     problems: list[str] = []
     with tempfile.TemporaryDirectory() as tmp, tarfile.open(file, 'r:gz') as tar:
@@ -200,7 +217,140 @@ def prune(out: Path, now: datetime | None = None) -> list[str]:
     return gone
 
 
-def restore(file: Path, to: Path, force: bool = False) -> dict:
+# ── Postgres (AXF_DATA_DSN): pg_dump custom archive in the same tar.gz shape, verified with pg_restore --list + counts ──
+
+def _pg_cmd(tool: str, *args: str) -> list[str]:
+    """pg_dump / pg_restore argv. AXF_DATA_PG_TOOLS (e.g. `docker exec -i axf-data-db`) runs them elsewhere; the archive then
+    travels over stdin / stdout, and AXF_DATA_PG_TOOLS_DSN is the DSN as seen from there."""
+    import shlex
+    prefix = shlex.split(os.environ.get('AXF_DATA_PG_TOOLS', ''))
+    if not prefix and not shutil.which(tool):
+        raise SystemExit(f'{tool} is not installed here (postgresql-client-16: the Dockerfile installs it) and AXF_DATA_PG_TOOLS is unset')
+    return [*prefix, tool, *args]
+
+
+def _tools_dsn(dsn: str) -> str:
+    return os.environ.get('AXF_DATA_PG_TOOLS_DSN') or dsn
+
+
+def _pg_connect(dsn: str):
+    import psycopg
+    from psycopg.rows import dict_row
+    return psycopg.connect(dsn, row_factory=dict_row)
+
+
+def counts_of_pg(conn) -> dict:
+    ns_reg = _open_ns()
+    counts: dict[str, int] = {}
+    for r in conn.execute('SELECT ns, path FROM keys WHERE NOT deleted'):
+        nsid = f"{r['ns']}/{r['path'].split('/')[0]}" if ns_reg.get(r['ns'], {}).get('open') else r['ns']
+        counts[nsid] = counts.get(nsid, 0) + 1
+    lines = {r['ns']: r['n'] for r in conn.execute('SELECT ns, COUNT(*) AS n FROM journal GROUP BY ns')}
+    cursor = conn.execute('SELECT COALESCE(MAX(cursor), 0) AS c FROM changes').fetchone()['c']
+    names = [r['t'] for r in conn.execute("SELECT tablename AS t FROM pg_tables WHERE schemaname = current_schema() ORDER BY 1")]
+    tables = {t: conn.execute(f'SELECT COUNT(*) AS n FROM "{t}"').fetchone()['n'] for t in names}
+    return {'counts': dict(sorted(counts.items())), 'journalLines': dict(sorted(lines.items())), 'cursor': cursor, 'tables': tables}
+
+
+def run_pg(dsn: str, data: Path, out: Path, now: datetime | None = None, schema: str = 'public') -> dict:
+    import subprocess
+    now = now or _now()
+    out.mkdir(parents=True, exist_ok=True)
+    name = f"{PREFIX}{now.strftime('%Y%m%d-%H%M%S')}.tar.gz"
+    with tempfile.TemporaryDirectory(dir=out) as tmp:
+        dump = Path(tmp) / 'axf-data.pgdump'
+        with _pg_connect(dsn) as conn:
+            info = counts_of_pg(conn)
+        with open(dump, 'wb') as fh:
+            r = subprocess.run(_pg_cmd('pg_dump', '--format=custom', '--no-owner', '--no-acl', '--compress=6', f'--schema={schema}', '--dbname', _tools_dsn(dsn)), stdout=fh, stderr=subprocess.PIPE, text=False)
+        if r.returncode:
+            raise SystemExit(f'pg_dump failed: {r.stderr.decode(errors="replace").strip()[-400:]}')
+        meta = {'$axf': 'data-backup@1', 'engine': 'postgres', 'at': _iso(now), 'file': name, **{k: v for k, v in info.items() if k != 'tables'}, 'tables': info['tables'], 'pgdumpSha256': _sha_file(dump)}
+        part = Path(tmp) / f'{name}.part'
+        with tarfile.open(part, 'w:gz') as tar:
+            tar.add(dump, 'axf-data.pgdump')
+            b = json.dumps(meta, indent=1).encode()
+            ti = tarfile.TarInfo('backup.json')
+            ti.size, ti.mtime = len(b), int(time.time())
+            tar.addfile(ti, io.BytesIO(b))
+        os.replace(part, out / name)
+    result = {**meta, 'bytes': (out / name).stat().st_size}
+    result['verify'] = verify_pg(out / name, dsn)
+    result['pruned'] = prune(out, now)
+    (out / 'last.json').write_text(json.dumps({k: v for k, v in result.items() if k not in ('counts', 'journalLines', 'tables')} | {'counts': result['counts']}, indent=1))
+    return result
+
+
+def verify_pg(file: Path, dsn: str) -> dict:
+    """The archive is readable by pg_restore and matches its hash; its counts match the live database (later writes explained by the feed)."""
+    import subprocess
+    at = _iso(_now())
+    problems: list[str] = []
+    with tempfile.TemporaryDirectory() as tmp, tarfile.open(file, 'r:gz') as tar:
+        meta = json.loads(tar.extractfile('backup.json').read())
+        tar.extract('axf-data.pgdump', tmp, filter='data')
+        dump = Path(tmp) / 'axf-data.pgdump'
+        if _sha_file(dump) != meta.get('pgdumpSha256'):
+            problems.append('the dump does not match its recorded hash')
+        with open(dump, 'rb') as fh:
+            r = subprocess.run(_pg_cmd('pg_restore', '--list'), stdin=fh, capture_output=True, text=True)
+        if r.returncode:
+            problems.append(f'pg_restore --list: {r.stderr.strip()[-200:]}')
+        else:
+            listed = {ln.split('TABLE DATA ')[1].split(' ')[1] for ln in r.stdout.splitlines() if 'TABLE DATA ' in ln}
+            for t in ('keys', 'journal', 'changes', 'history'):
+                if t not in listed:
+                    problems.append(f'table {t} is not in the dump')
+    diffs: list[dict] = []
+    live_cursor = None
+    if not dsn:
+        problems.append('AXF_DATA_DSN unset: no live database to compare with')
+    else:
+        try:
+            with _pg_connect(dsn) as conn:
+                now_counts = counts_of_pg(conn)
+                live_cursor = now_counts['cursor']
+                touched = set()
+                for r in conn.execute('SELECT ns, path FROM changes WHERE cursor > %s', (meta['cursor'],)):
+                    touched.add(f"{r['ns']}/{r['path'].split('/')[0]}" if _open_ns().get(r['ns'], {}).get('open') else r['ns'])
+            for nsid in sorted(set(meta['counts']) | set(now_counts['counts'])):
+                a, b = meta['counts'].get(nsid, 0), now_counts['counts'].get(nsid, 0)
+                if a != b:
+                    explained = nsid in touched
+                    diffs.append({'ns': nsid, 'backup': a, 'live': b, 'explained': explained})
+                    if not explained:
+                        problems.append(f'{nsid}: backup has {a} keys, live has {b} and nothing changed there since the backup')
+        except Exception as e:  # noqa: BLE001
+            problems.append(f'live database: {type(e).__name__}: {e}'[:200])
+    return {'ok': not problems, 'at': at, 'engine': 'postgres', 'problems': problems, 'diffs': diffs, 'backupCursor': meta.get('cursor'), 'liveCursor': live_cursor}
+
+
+def restore_pg(file: Path, dsn: str, force: bool = False) -> dict:
+    import subprocess
+    with _pg_connect(dsn) as conn:
+        have = conn.execute("SELECT COUNT(*) AS n FROM information_schema.tables WHERE table_schema = current_schema() AND table_name = 'keys'").fetchone()['n']
+        if have and not force:
+            raise SystemExit('the database already holds a store: stop axf-data and pass --force (pg_restore --clean replaces every table)')
+    with tempfile.TemporaryDirectory() as tmp, tarfile.open(file, 'r:gz') as tar:
+        meta = json.loads(tar.extractfile('backup.json').read())
+        tar.extract('axf-data.pgdump', tmp, filter='data')
+        with open(Path(tmp) / 'axf-data.pgdump', 'rb') as fh:
+            r = subprocess.run(_pg_cmd('pg_restore', '--clean', '--if-exists', '--no-owner', '--no-acl', '--exit-on-error', '--dbname', _tools_dsn(dsn)), stdin=fh, capture_output=True, text=True)
+        if r.returncode:
+            raise SystemExit(f'pg_restore failed: {r.stderr.strip()[-400:]}')
+    with _pg_connect(dsn) as conn:
+        got = counts_of_pg(conn)
+    return {'$axf': 'data-restore@1', 'engine': 'postgres', 'file': file.name, 'at': meta['at'], 'counts': got['counts'], 'ok': got['counts'] == meta['counts'], 'movedAside': ''}
+
+
+def restore(file: Path, to: Path, force: bool = False, dsn: str = '') -> dict:
+    with tarfile.open(file, 'r:gz') as tar:
+        if 'axf-data.pgdump' in tar.getnames():
+            return restore_pg(file, dsn or os.environ.get('AXF_DATA_DSN', ''), force)
+    return restore_sqlite(file, to, force)
+
+
+def restore_sqlite(file: Path, to: Path, force: bool = False) -> dict:
     db = to / 'axf-data.sqlite'
     if db.exists() and not force:
         raise SystemExit(f'{db} exists: stop the container and pass --force (the current files move to pre-restore-<time>/)')
@@ -229,10 +379,14 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument('--out', default=os.environ.get('AXF_DATA_BACKUPS', '/backups'))
     ap.add_argument('--to', default='')
     ap.add_argument('--force', action='store_true')
+    ap.add_argument('--dsn', default=os.environ.get('AXF_DATA_DSN', ''), help='Postgres DSN (default AXF_DATA_DSN); unset = the SQLite store')
+    ap.add_argument('--schema', default=os.environ.get('AXF_DATA_PG_SCHEMA', 'public'))
     a = ap.parse_args(argv)
     data, out = Path(a.data), Path(a.out)
+    if a.dsn:
+        os.environ['AXF_DATA_DSN'] = a.dsn
     if a.cmd == 'run':
-        r = run(data, out)
+        r = run(data, out, dsn=a.dsn, schema=a.schema)
         print(json.dumps({k: v for k, v in r.items() if k != 'journalLines'}, indent=1))
         return 0 if r['verify']['ok'] else 2
     if a.cmd == 'verify':

@@ -130,6 +130,13 @@ jobs:
         run: |
           python3 -m pip install --quiet -r services/axf-data/requirements.txt httpx
           python3 services/axf-data/test_store.py
+      - name: axf-data on Postgres (real tables, SQLite mirrors, SQLite → Postgres migration with count checks, staged engine move, pg_dump backups, the wire contract replayed)
+        run: |
+          docker run -d --name axf-pg -e POSTGRES_PASSWORD=axf -e POSTGRES_DB=axfdata -p 127.0.0.1:5432:5432 postgres:16-alpine
+          for i in $(seq 1 30); do docker exec axf-pg pg_isready -U postgres -d axfdata && break; sleep 1; done
+          AXF_DATA_TEST_DSN=postgresql://postgres:axf@127.0.0.1:5432/axfdata AXF_DATA_PG_TOOLS="docker exec -i axf-pg" AXF_DATA_PG_TOOLS_DSN=postgresql://postgres:axf@127.0.0.1:5432/axfdata \
+            python3 services/axf-data/test_pg.py
+          docker rm -f axf-pg
       - run: node framework/spec/check-data-migrate.mjs             # data-migrate on a seeded copy of real data: dry run by default, backup first, copy, verify M0 = M1, roll back from the backup, idempotent re-run, forced mismatches fail
       - run: node framework/spec/check-builds-store-data.mjs        # builds store on data-store@1: local, shadow (mirrored store + journal), cutover (axf-data only, lock = rev check, history from the remote journal), rollback refused
       - run: python3 apps/console-web/server/test_data_store.py      # console server data layer (data_store.py): storage-shaped calls in local, shadow, cutover and rollback against an in-process axf-data
