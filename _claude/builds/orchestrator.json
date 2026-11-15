@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T05:14:26.523Z",
+ "updatedAt": "2026-11-15T05:14:49.444Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -147152,7 +147152,7 @@
    "pr": "#705",
    "priority": "P0",
    "createdAt": "2026-11-15T04:17:06.158Z",
-   "updatedAt": "2026-11-15T05:14:24.457Z",
+   "updatedAt": "2026-11-15T05:14:46.999Z",
    "builtAt": "",
    "notes": [
     {
@@ -147190,6 +147190,10 @@
     {
      "text": "s15 is open: the three Auto-lander looks ship as settings assets (assets/settings/auto-lander-*.json) with a choices file and shots plan in _claude/builds/reports/, but the desktop and phone shots could not be captured from a scratch console in this session (the start screen and the build-profile gate differ per run, so the tab never came up). The next session takes the shots (rebuild-shots.mjs with _claude/builds/reports/auto-lander-controls-in-the-gate-plugin.shots.json, AXF_APPEARANCE_HUB=off) and submits them with review.mjs submit --choices.",
      "at": "2026-11-15T05:12:47.031Z"
+    },
+    {
+     "text": "Headless run axf-auto-lander-controls-in-the-gate-plugin--lenny: brief only · start 15.9K tokens ($0.06) · cost $17.05 · 258 turns · 6 tools, MCP none",
+     "at": "2026-11-15T05:14:46.999Z"
     }
    ],
    "approvals": [],
