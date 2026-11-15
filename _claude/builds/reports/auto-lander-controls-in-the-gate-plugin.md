@@ -108,8 +108,20 @@ After (05:12 UTC, live, with #680 out of the queue): the stack holds between rou
 
 `control@1` is unchanged: its targets are tokens, AmberX entities and the planner.
 
+## UI Review (s15)
+
+Submitted as **r-20261115-f66ad007** (kind settings, group `auto-lander-controls-in-the-gate-plugin - Nov 15 8:12 PM`),
+waiting for Brett. Three options, each a settings asset in `build-orchestrator/assets/settings/auto-lander-tab-build-or-mwi9pk6z-*.json`
+(written by `review.mjs submit --choices`, tagged with the choice set; the earlier untagged copies were removed):
+Status first (default), Line first, Compact. Desktop and phone shots in `auto-lander-controls-in-the-gate-plugin/shots/after/`,
+taken with `rebuild-shots.mjs` on an offline scratch console (`AXF_APPEARANCE_HUB=off`, opened with
+`AXF.dispatch('build-orchestrator.auto-lander')`), so the landing line and runs are empty there; live data fills them.
+
+Shipped features: the ledger already holds this build's features (status In PR, written by build-hook@1); they move to
+Merged and Live when the merge queue lands the PR. Deploy log: no line written from this session. s14 needed no cron
+reinstall, and the new lander code reaches `/opt/axf` only when the PR lands, where the console updater's own
+`axf_deploy_log` call (who `update`) records it. A hand-written line now would mark these features live before they are.
+
 ## Open
 
-- s15: UI Review shots. The three looks ship as settings assets (`build-orchestrator/assets/settings/auto-lander-*.json`).
-  The choices file and shots plan are in this folder. Shots could not be captured from a scratch console in this session.
 - #680 stays out of the queue until main is merged into it and its control inventory is regenerated; `merge-queue.mjs add 680` puts it back.

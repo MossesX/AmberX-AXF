@@ -1,0 +1,24 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "auto-lander-tab-build-or-mwi9pk6z-line-first",
+ "name": "auto-lander-tab-build-or-mwi9pk6z: Line first",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "The landing line on top (what lands next is the first thing you see), then switch, mode and status, then recent runs.",
+ "tags": [
+  "ui-choice",
+  "choice-set:auto-lander-tab-build-or-mwi9pk6z",
+  "choice-option:line-first"
+ ],
+ "data": {
+  "view": "line-first",
+  "order": [
+   "line",
+   "controls",
+   "runs"
+  ],
+  "compact": false,
+  "storageKey": "auto-lander-view"
+ }
+}

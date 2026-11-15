@@ -3,16 +3,13 @@
   "name": "opt-status-first--auto-lander",
   "steps": [
    {
-    "wait": 4000
+    "eval": "(async()=>{localStorage.setItem(\"axf-console:auto-lander-view\",JSON.stringify(\"status-first\"));for(let i=0;i<120;i++){if(window.AXF&&AXF.dispatch(\"build-orchestrator.auto-lander\"))return true;await new Promise(r=>setTimeout(r,1000))}return false})()"
    },
    {
-    "eval": "localStorage.setItem('axf-console:auto-lander-view', JSON.stringify('status-first')); true"
+    "wait": 6000
    },
    {
-    "search": "Auto-lander"
-   },
-   {
-    "wait": 4000
+    "eval": "window.scrollTo(0,0)"
    }
   ],
   "viewports": [
@@ -24,16 +21,13 @@
   "name": "opt-line-first--auto-lander",
   "steps": [
    {
-    "wait": 4000
+    "eval": "(async()=>{localStorage.setItem(\"axf-console:auto-lander-view\",JSON.stringify(\"line-first\"));for(let i=0;i<120;i++){if(window.AXF&&AXF.dispatch(\"build-orchestrator.auto-lander\"))return true;await new Promise(r=>setTimeout(r,1000))}return false})()"
    },
    {
-    "eval": "localStorage.setItem('axf-console:auto-lander-view', JSON.stringify('line-first')); true"
+    "wait": 6000
    },
    {
-    "search": "Auto-lander"
-   },
-   {
-    "wait": 4000
+    "eval": "window.scrollTo(0,0)"
    }
   ],
   "viewports": [
@@ -45,16 +39,13 @@
   "name": "opt-compact--auto-lander",
   "steps": [
    {
-    "wait": 4000
+    "eval": "(async()=>{localStorage.setItem(\"axf-console:auto-lander-view\",JSON.stringify(\"compact\"));for(let i=0;i<120;i++){if(window.AXF&&AXF.dispatch(\"build-orchestrator.auto-lander\"))return true;await new Promise(r=>setTimeout(r,1000))}return false})()"
    },
    {
-    "eval": "localStorage.setItem('axf-console:auto-lander-view', JSON.stringify('compact')); true"
+    "wait": 6000
    },
    {
-    "search": "Auto-lander"
-   },
-   {
-    "wait": 4000
+    "eval": "window.scrollTo(0,0)"
    }
   ],
   "viewports": [

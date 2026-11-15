@@ -7,8 +7,8 @@
    "label": "Status first",
    "notes": "Switch and mode next to the status card on top, then the landing line, then recent runs. The default.",
    "shots": [
-    "opt-status-first--auto-lander-desktop.png",
-    "opt-status-first--auto-lander-phone.png"
+    "auto-lander-controls-in-the-gate-plugin/shots/after/opt-status-first--auto-lander-desktop.png",
+    "auto-lander-controls-in-the-gate-plugin/shots/after/opt-status-first--auto-lander-phone.png"
    ],
    "data": {
     "view": "status-first",
@@ -26,8 +26,8 @@
    "label": "Line first",
    "notes": "The landing line on top (what lands next is the first thing you see), then switch, mode and status, then recent runs.",
    "shots": [
-    "opt-line-first--auto-lander-desktop.png",
-    "opt-line-first--auto-lander-phone.png"
+    "auto-lander-controls-in-the-gate-plugin/shots/after/opt-line-first--auto-lander-desktop.png",
+    "auto-lander-controls-in-the-gate-plugin/shots/after/opt-line-first--auto-lander-phone.png"
    ],
    "data": {
     "view": "line-first",
@@ -45,8 +45,8 @@
    "label": "Compact",
    "notes": "Switch and mode in the header toolbar, status as one line, then the landing line; recent runs folded.",
    "shots": [
-    "opt-compact--auto-lander-desktop.png",
-    "opt-compact--auto-lander-phone.png"
+    "auto-lander-controls-in-the-gate-plugin/shots/after/opt-compact--auto-lander-desktop.png",
+    "auto-lander-controls-in-the-gate-plugin/shots/after/opt-compact--auto-lander-phone.png"
    ],
    "data": {
     "view": "compact",

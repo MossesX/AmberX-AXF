@@ -1,0 +1,24 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "auto-lander-tab-build-or-mwi9pk6z-compact",
+ "name": "auto-lander-tab-build-or-mwi9pk6z: Compact",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Switch and mode in the header toolbar, status as one line, then the landing line; recent runs folded.",
+ "tags": [
+  "ui-choice",
+  "choice-set:auto-lander-tab-build-or-mwi9pk6z",
+  "choice-option:compact"
+ ],
+ "data": {
+  "view": "compact",
+  "order": [
+   "controls",
+   "line",
+   "runs"
+  ],
+  "compact": true,
+  "storageKey": "auto-lander-view"
+ }
+}
