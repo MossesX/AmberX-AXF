@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5661,
- "updatedAt": "2026-11-14T23:38:15.705Z",
+ "rev": 5674,
+ "updatedAt": "2026-11-14T23:44:36.880Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -188839,23 +188839,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-14T23:37:46.937Z",
-      "run": "lr-console-axhub-retry-failed-calls-20261114T233746",
-      "base": "178d9a271b983dcfdad263ec46c69fede085340d",
-      "merged": "",
-      "outcome": "clash",
-      "ci": "",
-      "note": "Source clash a person has to settle: .github/workflows/android.yml, apps/console-web/server/mcp_server.py. No fix build: the orchestrator did not take it."
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -208762,7 +208745,7 @@
    "title": "Skin config panel: merge main and land",
    "category": "",
    "detail": "Branch claude/skin-configuration-panel-before-ai-makes (800 behind) clashed with main in 10 files: .github/workflows/android.yml, settings libs (framework/libs/settings plus the amberx-droid, axhub-web, console-web and molly copies), the theme-manager plugin.json and web/index.tsx, framework/cli/build-engine.mjs and framework/spec/PORTING.md. Merge origin/main and keep main's newer code plus this branch's skin configuration panel (Brett picks what the AI may change before it makes a skin). Edit framework first and re-bake the app copies. Run tests, push, land on main.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -208771,7 +208754,7 @@
    "mergedAt": "2026-11-14T20:15:18Z",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:38.941Z",
-   "updatedAt": "2026-11-14T23:35:33.886Z",
+   "updatedAt": "2026-11-14T23:38:11.297Z",
    "builtAt": "",
    "notes": [
     {
@@ -208849,6 +208832,14 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skin-config-panel-merge-main-and-land--sully, shared account login)",
      "at": "2026-11-14T23:35:33.886Z"
+    },
+    {
+     "text": "Headless run axf-skin-config-panel-merge-main-and-land--sully: brief only · start 12.8K tokens ($0.06) · cost $4.12 · 73 turns · 6 tools, MCP none",
+     "at": "2026-11-14T23:37:35.226Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-14T23:38:11.297Z"
     }
    ],
    "approvals": [],
@@ -208869,18 +208860,18 @@
     "queuedAt": "2026-11-13T19:47:41.154Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-skin-config-panel-merge-main-and-land--sully",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-14T23:35:28.763Z",
     "runs": 4,
     "lastRun": {
-     "at": "2026-11-14T23:22:10.506Z",
+     "at": "2026-11-14T23:38:06.748Z",
      "exit": 0,
      "outcome": "returned",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-skin-config-panel-merge-main-and-land--paulie"
+     "session": "axf-skin-config-panel-merge-main-and-land--sully"
     },
     "split": {
      "at": "2026-11-13T19:48:39.672Z",
@@ -208890,7 +208881,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"6d008a2d-8493-4cf1-91ca-c1f98f086a78\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-14T23:35:28.763Z",
     "planned": {
@@ -208991,7 +208982,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -213926,7 +213917,7 @@
    "mergedAt": "2026-11-14T23:37:41.535Z",
    "priority": "P0",
    "createdAt": "2026-11-13T20:53:50.393Z",
-   "updatedAt": "2026-11-14T23:37:45.133Z",
+   "updatedAt": "2026-11-14T23:38:59Z",
    "builtAt": "2026-11-14T23:37:45.133Z",
    "notes": [
     {
@@ -213992,6 +213983,10 @@
     {
      "text": "Session axf-hotfix-desktop-console-draws-app-menu--joey on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-14T22:57:04.842Z"
+    },
+    {
+     "text": "Shipped manifest sm-hotfix-desktop-console-draws-app-menu rev 1 sent to Shipped features (orchestrator): landed 178d9a271, 3 file(s), 0 test line(s), 2 open.",
+     "at": "2026-11-14T23:38:59Z"
     }
    ],
    "approvals": [],
@@ -214049,22 +214044,11 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landed",
-    "landAttempts": [
-     {
-      "at": "2026-11-14T23:16:49.697Z",
-      "run": "lr-hotfix-desktop-console-draws-app-menu-20261114T231649",
-      "base": "eb6a48e9f89eae7ad2182fac154388cc96a1fa5e",
-      "merged": "47226dd098ec7c8f43b66f66391ee667b9137cff",
-      "outcome": "landed",
-      "ci": "success",
-      "note": "Landed on main as 47226dd (PR #658)."
-     }
-    ]
+   "shipped": {
+    "id": "sm-hotfix-desktop-console-draws-app-menu",
+    "rev": 1,
+    "at": "2026-11-14T23:38:59Z",
+    "landedCommit": "178d9a271b983dcfdad263ec46c69fede085340d"
    },
    "steps": [
     {
@@ -214145,7 +214129,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -214318,7 +214302,7 @@
    "pr": "#660",
    "priority": "P0",
    "createdAt": "2026-11-13T23:38:56.061Z",
-   "updatedAt": "2026-11-14T23:37:22.477Z",
+   "updatedAt": "2026-11-14T23:38:13.166Z",
    "builtAt": "2026-11-14T23:24:07.334Z",
    "notes": [
     {
@@ -214362,8 +214346,16 @@
      "at": "2026-11-13T23:58:03.801Z"
     },
     {
+     "text": "Headless run axf-auto-land-merge-main-land-land-mjs-clash--joey: brief only · start 13.7K tokens ($0.04) · cost $1.61 · 64 turns · 6 tools, MCP none",
+     "at": "2026-11-14T23:37:37.592Z"
+    },
+    {
      "text": "Second pass done: main merged into PR #660 again (status.json clash, both kept), all land/orchestrator/store checks green, CI dispatched on 9a453ffd5, #660 added to the merge queue.",
      "at": "2026-11-14T23:37:22.477Z"
+    },
+    {
+     "text": "Session axf-auto-land-merge-main-land-land-mjs-clash--joey on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-14T23:38:13.166Z"
     }
    ],
    "approvals": [],
@@ -214384,18 +214376,18 @@
     "queuedAt": "2026-11-13T23:38:58.045Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-auto-land-merge-main-land-land-mjs-clash--joey",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T23:41:19.408Z",
     "runs": 1,
     "lastRun": {
-     "at": "2026-11-13T23:59:02.721Z",
+     "at": "2026-11-14T23:38:12.478Z",
      "exit": 0,
-     "outcome": "returned",
-     "stepsLeft": 7,
+     "outcome": "finished",
+     "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-auto-land-merge-main-land-land-mjs-clash--paulie"
+     "session": "axf-auto-land-merge-main-land-land-mjs-clash--joey"
     },
     "split": {
      "at": "2026-11-13T23:40:57.282Z",
@@ -214405,7 +214397,7 @@
      "note": "Split by Claude into 9 steps (0 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- stopped on its own with 7 steps left: back in Pending for Brett.",
+    "note": "",
     "route": "",
     "dispatchedAt": "2026-11-13T23:41:19.408Z",
     "planned": {
@@ -214655,7 +214647,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -221890,7 +221882,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-14T18:14:25.063Z",
-   "updatedAt": "2026-11-14T23:37:57.017Z",
+   "updatedAt": "2026-11-14T23:41:23.841Z",
    "builtAt": "",
    "notes": [
     {
@@ -222541,12 +222533,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:41:23.841Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T18:17:59.202Z",
-     "updatedAt": "2026-11-14T18:17:59.202Z"
+     "updatedAt": "2026-11-14T23:41:24.363Z"
     },
     {
      "id": "s23",
@@ -222758,7 +222750,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -224259,7 +224251,7 @@
    "pr": "#678",
    "priority": "P0",
    "createdAt": "2026-11-14T22:17:37.935Z",
-   "updatedAt": "2026-11-14T23:18:33.883Z",
+   "updatedAt": "2026-11-14T23:43:24.191Z",
    "builtAt": "",
    "notes": [
     {
@@ -224324,7 +224316,7 @@
      "phase": 1,
      "from": "Fable",
      "to": "Opus",
-     "at": "2026-11-14T23:18:33.883Z",
+     "at": "2026-11-14T23:43:24.191Z",
      "by": "auto",
      "kind": "downgrade"
     }
@@ -224816,12 +224808,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:43:24.191Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T22:20:10.644Z",
-     "updatedAt": "2026-11-14T22:20:10.644Z"
+     "updatedAt": "2026-11-14T23:43:24.690Z"
     },
     {
      "id": "s19",
@@ -225760,7 +225752,7 @@
    "title": "Merge main and land move-amberx-web-app-console-amberx-andr",
    "category": "",
    "detail": "Auto-land could not land `move-amberx-web-app-console-amberx-andr` (move-amberx-web-app-console-amberx-andr): merging main into it clashes in code: apps/console-web/plugins/approvals-banner/plugin.json, apps/console-web/server/main.py.\n\nWork on its own branch `claude/move-amberx-web-app-console-amberx-andr` (PR #596); do not open a new PR.\n1. git fetch origin && git checkout claude/move-amberx-web-app-console-amberx-andr && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/move-amberx-web-app-console-amberx-andr. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
@@ -225768,7 +225760,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T23:10:38.526Z",
-   "updatedAt": "2026-11-14T23:12:50.235Z",
+   "updatedAt": "2026-11-14T23:43:31.736Z",
    "builtAt": "",
    "notes": [
     {
@@ -225778,6 +225770,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"ab887448-35b7-4f92-8938-ef85459b3044\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-14T23:12:50.235Z"
+    },
+    {
+     "text": "Headless run axf-merge-main-land-move-amberx-web-app--earl: brief only · start 11.8K tokens ($0.03) · cost $0.40 · 18 turns · 6 tools, MCP none",
+     "at": "2026-11-14T23:43:31.736Z"
     }
    ],
    "approvals": [],
@@ -225788,8 +225784,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "merge-main-land-move-amberx-web-app",
+    "brief": "# Build: merge-main-land-move-amberx-web-app\n\n## Brett said (verbatim)\nAt: 2026-11-14T23:10:38.526Z\n> Now what we're gonna end up doing is just moving everything over the console and making AmberX app read the console instead of AmberX.\n> \n> Merging main into claude/move-amberx-web-app-console-amberx-andr clashes in code: apps/console-web/plugins/approvals-banner/plugin.json, apps/console-web/server/main.py\n\n## What to build\nContinue build \"Merge main and land move-amberx-web-app-console-amberx-andr\" (merge-main-land-move-amberx-web-app) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-14 23:10):\n\"Now what we're gonna end up doing is just moving everything over the console and making AmberX app read the console instead of AmberX.\n\nMerging main into claude/move-amberx-web-app-console-amberx-andr clashes in code: apps/console-web/plugins/approvals-banner/plugin.json, apps/console-web/server/main.py\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (10 left, ~1.7 h):\n[ ] s1 (~10 min) Auto-land could not land `move-amberx-web-app-console-amberx-andr` (move-amberx-web-app-console-amberx-andr): merging main into it clashes in code: apps/console-web/plugins/approvals-banner/plugin.json, apps/console-web/server/main.py.\n[ ] s2 (~10 min) Work on its own branch `claude/move-amberx-web-app-console-amberx-andr` (PR #596); do not open a new PR.\n[ ] s3 (~10 min) git fetch origin && git checkout claude/move-amberx-web-app-console-amberx-andr && git merge origin/main\n[ ] s4 (~10 min) Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n[ ] s5 (~10 min) Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n[ ] s6 (~10 min) Commit and push to claude/move-amberx-web-app-console-amberx-andr. Auto-land and the merge queue land it by themselves.\n[ ] s7 (~10 min) Attempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.\n[ ] s8 (~10 min) Now what we're gonna end up doing is just moving everything over the console and making AmberX app read the console instead of AmberX.\n[ ] s9 (~10 min) Merging main into claude/move-amberx-web-app-console-amberx-andr clashes in code: apps/console-web/plugins/approvals-banner/plugin.json, apps/console-web/server/main.py\n[ ] s10 (~10 min) Tests green, report _claude/builds/reports/merge-main-land-move-amberx-web-app.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/merge-main-land-move-amberx-web-app.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step merge-main-land-move-amberx-web-app <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link merge-main-land-move-amberx-web-app --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step merge-main-land-move-amberx-web-app <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note merge-main-land-move-amberx-web-app \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -225844,12 +225840,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:41:25.519Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:12:50.235Z",
-     "updatedAt": "2026-11-14T23:12:50.235Z"
+     "updatedAt": "2026-11-14T23:41:26.571Z"
     },
     {
      "id": "s2",
@@ -225866,12 +225862,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:41:36.327Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:12:50.235Z",
-     "updatedAt": "2026-11-14T23:12:50.235Z"
+     "updatedAt": "2026-11-14T23:41:37.087Z"
     },
     {
      "id": "s3",
@@ -225888,12 +225884,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:41:42.080Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:12:50.235Z",
-     "updatedAt": "2026-11-14T23:12:50.235Z"
+     "updatedAt": "2026-11-14T23:41:42.720Z"
     },
     {
      "id": "s4",
@@ -225954,12 +225950,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:42:08.870Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:12:50.235Z",
-     "updatedAt": "2026-11-14T23:12:50.235Z"
+     "updatedAt": "2026-11-14T23:42:09.580Z"
     },
     {
      "id": "s7",
@@ -226061,7 +226057,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -226077,16 +226073,16 @@
    "title": "Merge main and land change-to-move-amberx-web-app-console",
    "category": "",
    "detail": "Auto-land could not land `change-to-move-amberx-web-app-console` (change-to-move-amberx-web-app-console): merging main into it clashes in code: apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java, apps/console-web/plugins/approvals-banner/plugin.json, apps/console-web/server/main.py.\n\nWork on its own branch `claude/change-to-move-amberx-web-app-console` (PR #586); do not open a new PR.\n1. git fetch origin && git checkout claude/change-to-move-amberx-web-app-console && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/change-to-move-amberx-web-app-console. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "queued",
+   "status": "built",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/merge-main-land-change-to-move-amberx",
+   "pr": "#586",
    "priority": "P0",
    "createdAt": "2026-11-14T23:10:56.028Z",
-   "updatedAt": "2026-11-14T23:15:00.410Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-14T23:44:14.057Z",
+   "builtAt": "2026-11-14T23:44:14.057Z",
    "notes": [
     {
      "text": "Queued by land-finish-auto-land-live-clear-backlog.",
@@ -226095,6 +226091,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"36181a68-836b-4338-b02f-0477c8f4670d\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-14T23:15:00.410Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-merge-main-land-change-to-move-amberx--lenny.",
+     "at": "2026-11-14T23:38:55.792Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-merge-main-land-change-to-move-amberx--lenny, shared account login)",
+     "at": "2026-11-14T23:39:01.366Z"
     }
    ],
    "approvals": [],
@@ -226105,8 +226109,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "merge-main-land-change-to-move-amberx",
+    "brief": "# Build: merge-main-land-change-to-move-amberx\n\n## Brett said (verbatim)\nAt: 2026-11-14T23:10:56.028Z\n> Merging main into claude/change-to-move-amberx-web-app-console clashes in code: apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java, apps/console-web/plugins/approvals-banner/plugin.json, apps/console-web/server/main.py\n\n## What to build\nContinue build \"Merge main and land change-to-move-amberx-web-app-console\" (merge-main-land-change-to-move-amberx) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-14 23:10):\n\"Merging main into claude/change-to-move-amberx-web-app-console clashes in code: apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java, apps/console-web/plugins/approvals-banner/plugin.json, apps/console-web/server/main.py\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (9 left, ~1.5 h):\n[ ] s1 (~10 min) Auto-land could not land `change-to-move-amberx-web-app-console` (change-to-move-amberx-web-app-console): merging main into it clashes in code: apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java, apps/console-web/plugins/approvals-banner/plugin.json, apps/console-web/server/main.py.\n[ ] s2 (~10 min) Work on its own branch `claude/change-to-move-amberx-web-app-console` (PR #586); do not open a new PR.\n[ ] s3 (~10 min) git fetch origin && git checkout claude/change-to-move-amberx-web-app-console && git merge origin/main\n[ ] s4 (~10 min) Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n[ ] s5 (~10 min) Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n[ ] s6 (~10 min) Commit and push to claude/change-to-move-amberx-web-app-console. Auto-land and the merge queue land it by themselves.\n[ ] s7 (~10 min) Attempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.\n[ ] s8 (~10 min) Merging main into claude/change-to-move-amberx-web-app-console clashes in code: apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java, apps/console-web/plugins/approvals-banner/plugin.json, apps/console-web/server/main.py\n[ ] s9 (~10 min) Tests green, report _claude/builds/reports/merge-main-land-change-to-move-amberx.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/merge-main-land-change-to-move-amberx.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step merge-main-land-change-to-move-amberx <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link merge-main-land-change-to-move-amberx --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step merge-main-land-change-to-move-amberx <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note merge-main-land-change-to-move-amberx \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -226161,12 +226165,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:42:36.347Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:15:00.410Z",
-     "updatedAt": "2026-11-14T23:15:00.410Z"
+     "updatedAt": "2026-11-14T23:42:36.915Z"
     },
     {
      "id": "s2",
@@ -226183,12 +226187,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:42:41.210Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:15:00.410Z",
-     "updatedAt": "2026-11-14T23:15:00.410Z"
+     "updatedAt": "2026-11-14T23:42:41.852Z"
     },
     {
      "id": "s3",
@@ -226205,12 +226209,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:42:44.962Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:15:00.410Z",
-     "updatedAt": "2026-11-14T23:15:00.410Z"
+     "updatedAt": "2026-11-14T23:42:45.461Z"
     },
     {
      "id": "s4",
@@ -226227,12 +226231,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:42:49.452Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:15:00.410Z",
-     "updatedAt": "2026-11-14T23:15:00.410Z"
+     "updatedAt": "2026-11-14T23:42:49.923Z"
     },
     {
      "id": "s5",
@@ -226249,12 +226253,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:43:05.691Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:15:00.410Z",
-     "updatedAt": "2026-11-14T23:15:00.410Z"
+     "updatedAt": "2026-11-14T23:43:06.480Z"
     },
     {
      "id": "s6",
@@ -226271,12 +226275,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:43:13.791Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:15:00.410Z",
-     "updatedAt": "2026-11-14T23:15:00.410Z"
+     "updatedAt": "2026-11-14T23:43:14.473Z"
     },
     {
      "id": "s7",
@@ -226293,12 +226297,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:43:34.125Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:15:00.410Z",
-     "updatedAt": "2026-11-14T23:15:00.410Z"
+     "updatedAt": "2026-11-14T23:43:34.541Z"
     },
     {
      "id": "s8",
@@ -226315,12 +226319,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:43:38.316Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:15:00.410Z",
-     "updatedAt": "2026-11-14T23:15:00.410Z"
+     "updatedAt": "2026-11-14T23:43:39.029Z"
     },
     {
      "id": "s9",
@@ -226340,12 +226344,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:44:14.057Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:15:00.410Z",
-     "updatedAt": "2026-11-14T23:15:00.410Z"
+     "updatedAt": "2026-11-14T23:44:14.494Z"
     }
    ],
    "profiles": [
@@ -226356,7 +226360,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -226380,7 +226384,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T23:16:22.160Z",
-   "updatedAt": "2026-11-14T23:20:49.007Z",
+   "updatedAt": "2026-11-14T23:44:20.248Z",
    "builtAt": "",
    "notes": [
     {
@@ -226400,8 +226404,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "merge-main-land-console-app-part-3",
+    "brief": "# Build: merge-main-land-console-app-part-3\n\n## Brett said (verbatim)\nAt: 2026-11-14T23:16:22.160Z\n> split the console wrapper so it runs on four slots at the same time\n> \n> Merging main into claude/console-app-part-3-native-bridge-mic clashes in code: framework/ui/axf.css\n\n## What to build\nContinue build \"Merge main and land console-app-part-3-native-bridge-mic\" (merge-main-land-console-app-part-3) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-14 23:16):\n\"split the console wrapper so it runs on four slots at the same time\n\nMerging main into claude/console-app-part-3-native-bridge-mic clashes in code: framework/ui/axf.css\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (10 left, ~1.7 h):\n[ ] s1 (~10 min) Auto-land could not land `console-app-part-3-native-bridge-mic` (console-app-part-3-native-bridge-mic): merging main into it clashes in code: framework/ui/axf.css.\n[ ] s2 (~10 min) Work on its own branch `claude/console-app-part-3-native-bridge-mic` (PR #633); do not open a new PR.\n[ ] s3 (~10 min) git fetch origin && git checkout claude/console-app-part-3-native-bridge-mic && git merge origin/main\n[ ] s4 (~10 min) Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n[ ] s5 (~10 min) Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n[ ] s6 (~10 min) Commit and push to claude/console-app-part-3-native-bridge-mic. Auto-land and the merge queue land it by themselves.\n[ ] s7 (~10 min) Attempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.\n[ ] s8 (~10 min) split the console wrapper so it runs on four slots at the same time\n[ ] s9 (~10 min) Merging main into claude/console-app-part-3-native-bridge-mic clashes in code: framework/ui/axf.css\n[ ] s10 (~10 min) Tests green, report _claude/builds/reports/merge-main-land-console-app-part-3.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/merge-main-land-console-app-part-3.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step merge-main-land-console-app-part-3 <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link merge-main-land-console-app-part-3 --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step merge-main-land-console-app-part-3 <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note merge-main-land-console-app-part-3 \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -226673,7 +226677,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -227014,12 +227018,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T23:17:55.197Z",
-   "updatedAt": "2026-11-14T23:17:58.947Z",
+   "updatedAt": "2026-11-14T23:41:43.500Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by land-finish-auto-land-live-clear-backlog.",
      "at": "2026-11-14T23:17:58.947Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"4962fe9b-dcb5-4de6-924d-5194f2e6fced\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-14T23:41:43.500Z"
     }
    ],
    "approvals": [],
@@ -227046,19 +227054,233 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-14T23:41:43.500Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 9,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"4962fe9b-dcb5-4de6-924d-5194f2e6fced\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-14T23:43:09.391Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwh1v5xp01ddz1",
+     "title": "",
+     "text": "Auto-land could not land `one-source-truth-console-shows-only-what` (one-source-truth-console-shows-only-what): merging main into it clashes in code: apps/console-web/plugins/build-orchestrator/pipeline.mjs.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T23:41:43.500Z",
+     "updatedAt": "2026-11-14T23:41:43.500Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwh1v5xp02elaw",
+     "title": "",
+     "text": "Work on its own branch `claude/one-source-truth-console-shows-only-what` (PR #598); do not open a new PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T23:41:43.500Z",
+     "updatedAt": "2026-11-14T23:41:43.500Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwh1v5xp03xsbh",
+     "title": "",
+     "text": "git fetch origin && git checkout claude/one-source-truth-console-shows-only-what && git merge origin/main",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T23:41:43.500Z",
+     "updatedAt": "2026-11-14T23:41:43.500Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwh1v5xp04ze93",
+     "title": "",
+     "text": "Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T23:41:43.500Z",
+     "updatedAt": "2026-11-14T23:41:43.500Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwh1v5xp05edza",
+     "title": "",
+     "text": "Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T23:41:43.500Z",
+     "updatedAt": "2026-11-14T23:41:43.500Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwh1v5xp067odz",
+     "title": "",
+     "text": "Commit and push to claude/one-source-truth-console-shows-only-what. Auto-land and the merge queue land it by themselves.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T23:41:43.500Z",
+     "updatedAt": "2026-11-14T23:41:43.500Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwh1v5xp07yqoi",
+     "title": "",
+     "text": "Attempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T23:41:43.500Z",
+     "updatedAt": "2026-11-14T23:41:43.500Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwh1v5xp08cof8",
+     "title": "",
+     "text": "Merging main into claude/one-source-truth-console-shows-only-what clashes in code: apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T23:41:43.500Z",
+     "updatedAt": "2026-11-14T23:41:43.500Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwh1v5xp092kco",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/merge-main-land-one-source-truth-console.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/merge-main-land-one-source-truth-console.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T23:41:43.500Z",
+     "updatedAt": "2026-11-14T23:41:43.500Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -227067,12 +227289,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-14T23:41:43.500Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
@@ -227091,12 +227313,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T23:18:06.781Z",
-   "updatedAt": "2026-11-14T23:18:12.653Z",
+   "updatedAt": "2026-11-14T23:42:59.971Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by land-finish-auto-land-live-clear-backlog.",
      "at": "2026-11-14T23:18:12.653Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"47d58b65-358a-4cf7-bb37-0b6650b748ca\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-14T23:42:59.971Z"
     }
    ],
    "approvals": [],
@@ -227123,19 +227349,233 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-14T23:42:59.971Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 9,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"47d58b65-358a-4cf7-bb37-0b6650b748ca\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-14T23:43:09.391Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwh1wsxv0a6hpk",
+     "title": "",
+     "text": "Auto-land could not land `server-gate-one-session-per-build-no` (server-gate-one-session-per-build-no): merging main into it clashes in code: apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/server/__init__.py, apps/console-web/plugins/build-orchestrator/web/index.tsx, apps/console-web/plugins/push-banner/land/merge-queue.mjs, deploy/claude-headless.sh, framework/plan/builds-merge-core.mjs.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T23:42:59.971Z",
+     "updatedAt": "2026-11-14T23:42:59.971Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwh1wsxv0byr6t",
+     "title": "",
+     "text": "Work on its own branch `claude/server-gate-one-session-per-build-no` (PR #610); do not open a new PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T23:42:59.971Z",
+     "updatedAt": "2026-11-14T23:42:59.971Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwh1wsxw0c80fb",
+     "title": "",
+     "text": "git fetch origin && git checkout claude/server-gate-one-session-per-build-no && git merge origin/main",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T23:42:59.971Z",
+     "updatedAt": "2026-11-14T23:42:59.971Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwh1wsxw0df10f",
+     "title": "",
+     "text": "Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T23:42:59.971Z",
+     "updatedAt": "2026-11-14T23:42:59.971Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwh1wsxw0ejppw",
+     "title": "",
+     "text": "Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T23:42:59.971Z",
+     "updatedAt": "2026-11-14T23:42:59.971Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwh1wsxw0fn0px",
+     "title": "",
+     "text": "Commit and push to claude/server-gate-one-session-per-build-no. Auto-land and the merge queue land it by themselves.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T23:42:59.971Z",
+     "updatedAt": "2026-11-14T23:42:59.971Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwh1wsxw0gc5vb",
+     "title": "",
+     "text": "Attempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T23:42:59.971Z",
+     "updatedAt": "2026-11-14T23:42:59.971Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwh1wsxw0hwsnf",
+     "title": "",
+     "text": "Merging main into claude/server-gate-one-session-per-build-no clashes in code: apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/server/__init__.py, apps/console-web/plugins/build-orchestrator/web/index.tsx, apps/console-web/plugins/push-banner/land/merge-queue.mjs, deploy/claude-headless.sh, framework/plan/builds-merge-core.mjs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T23:42:59.971Z",
+     "updatedAt": "2026-11-14T23:42:59.971Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwh1wsxw0iegq1",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/merge-main-land-server-gate-one-session.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/merge-main-land-server-gate-one-session.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T23:42:59.971Z",
+     "updatedAt": "2026-11-14T23:42:59.971Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -227144,12 +227584,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-14T23:42:59.971Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
