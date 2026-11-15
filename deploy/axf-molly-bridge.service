@@ -1,0 +1,22 @@
+[Unit]
+Description=AXF Molly host bridge (host-bridge@1): tmux, build launcher, read-only git for the axf-molly container
+Documentation=file:///opt/axf/framework/spec/AXF-MOLLY.md
+After=network.target docker.service
+
+[Service]
+Type=simple
+Environment=AXF_REPO_ROOT=/opt/axf
+Environment=AXF_MOLLY_BRIDGE=/run/axf-molly/bridge.sock
+Environment=AXF_PIPELINE_WORKTREES=/root/axf-builds
+EnvironmentFile=-/opt/axf/.axf-console/env
+WorkingDirectory=/opt/axf
+ExecStart=/usr/bin/env node /opt/axf/deploy/molly-bridge.mjs serve
+Restart=always
+RestartSec=3
+RuntimeDirectory=axf-molly
+RuntimeDirectoryMode=0700
+# No Docker socket, no package manager, no shell: the daemon runs a fixed argv list (framework/core/axf-molly.mjs BRIDGE_COMMANDS).
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

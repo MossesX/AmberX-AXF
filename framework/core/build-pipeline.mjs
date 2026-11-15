@@ -24,6 +24,8 @@
  *   route      '' (auto: subscriptions, then API only when the overflow rule is on) | 'api' (run on an API-key account,
  *              billed per token, under its caps) | 'subscription' (never an API account). Brett's per-build override.
  *   dispatchedAt  ISO of the orchestrator dispatch that started the current run (its token is in the dispatcher's files)
+ *   stepsOpen  open steps when the current run started; fewer open at its end = the run progressed (a phase end, never
+ *              parked in Pending). 0 = not recorded (older records: treated as progressed)
  *   planned    { model, account, kind, at, why }  the orchestrator's plan, made as soon as the build is split (Brett,
  *              Nov 10 2026: "He'll plan what model, what account"); refreshed while it waits
  *   tried      accounts the final pick tried and that refused this run (launch failed), in order; '' list on a clean pick
@@ -52,7 +54,7 @@ const NAME_RE = /^[a-z0-9][a-z0-9-]{0,31}$/;
 export const accountName = (v) => (NAME_RE.test(str(v, 40)) ? str(v, 40) : '');
 
 export function emptyPipeline() {
-  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '', planned: null, tried: [], pickedAt: '', heldAt: '', heldBy: '', heldWhy: '' };
+  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, stepsOpen: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '', planned: null, tried: [], pickedAt: '', heldAt: '', heldBy: '', heldWhy: '' };
 }
 
 /** The record, every field in shape; null for nothing (a build the pipeline never touched carries none). */
@@ -64,7 +66,7 @@ export function normPipeline(p) {
   const out = {
     queuedAt: iso(p.queuedAt), queuedBy: str(p.queuedBy, 80),
     account: accountName(p.account), session: str(p.session, 120), slot: str(p.slot, 60), model: str(p.model, 20),
-    launchedAt: iso(p.launchedAt), runs: Number.isInteger(p.runs) && p.runs > 0 ? p.runs : 0,
+    launchedAt: iso(p.launchedAt), runs: Number.isInteger(p.runs) && p.runs > 0 ? p.runs : 0, stepsOpen: Number.isInteger(p.stepsOpen) && p.stepsOpen > 0 ? p.stepsOpen : 0,
     lastRun: lr ? { at: iso(lr.at), exit: Number.isInteger(lr.exit) ? lr.exit : null, outcome: OUTCOMES.includes(lr.outcome) ? lr.outcome : 'finished', stepsLeft: Number.isInteger(lr.stepsLeft) ? lr.stepsLeft : 0, account: accountName(lr.account), session: str(lr.session, 120) } : null,
     split: sp ? { at: iso(sp.at), by: str(sp.by, 80), provider: SPLIT_PROVIDERS.includes(sp.provider) ? sp.provider : 'hand', steps: Number.isInteger(sp.steps) ? sp.steps : 0, note: str(sp.note, 400) } : null,
     splitRequested: iso(p.splitRequested), note: str(p.note, 400),
@@ -157,12 +159,15 @@ export const nextModel = (b) => openSteps(b)[0]?.model ?? '';
 
 /**
  * What a run's end means for the build. A clean exit with nothing left = finished. A failed exit (crash, usage limit,
- * killed) = requeued, until `runs` reaches maxRuns, then failed. A clean exit with steps left = the session stopped on
- * purpose (a question, UI Review, a step marked for a new session): back to Pending for Brett, with the reason.
+ * killed) = requeued, until `runs` reaches maxRuns, then failed. A clean exit with steps left is a phase end when the
+ * next step runs on another model (`phaseSwitch`) or the run ticked at least one step (`progressed`): the build goes
+ * back to the Queue for its next session (axf-molly-container-orchestrator-gate, Nov 15 2026: a phase-end build is
+ * never parked in Pending). Only a clean exit that ticked nothing on the same model = the session stopped on purpose
+ * (a question, UI Review, a step marked for a new session): back to Pending for Brett, with the reason.
  */
-export function outcomeOf({ exit, stepsLeft, runs, phaseSwitch = false }, maxRuns = DEFAULT_MAX_RUNS) {
+export function outcomeOf({ exit, stepsLeft, runs, phaseSwitch = false, progressed = false }, maxRuns = DEFAULT_MAX_RUNS) {
   if (!stepsLeft) return 'finished';
-  if (exit === 0) return phaseSwitch ? 'requeued' : 'returned'; // a phase ended on purpose: the next phase runs on its own model's account
+  if (exit === 0) return phaseSwitch || progressed ? 'requeued' : 'returned'; // a phase ended on purpose: the next phase runs on its own model's account
   return runs >= maxRuns ? 'failed' : 'requeued';
 }
 export const STATUS_AFTER = Object.freeze({ finished: 'built', requeued: 'queued', returned: 'pending', failed: 'failed' });

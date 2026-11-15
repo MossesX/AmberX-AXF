@@ -45,6 +45,7 @@ t('outcomeOf: finished / returned / requeued / failed after maxRuns', () => {
   assert.equal(BP.outcomeOf({ exit: 1, stepsLeft: 2, runs: 3 }), 'failed');
   assert.equal(BP.outcomeOf({ exit: 1, stepsLeft: 2, runs: 2 }, 2), 'failed');
   assert.equal(BP.outcomeOf({ exit: 0, stepsLeft: 2, runs: 1, phaseSwitch: true }), 'requeued', 'a phase ended: the next phase queues for its own account');
+  assert.equal(BP.outcomeOf({ exit: 0, stepsLeft: 2, runs: 1, progressed: true }), 'requeued', 'a run that ticked steps and stopped cleanly is a phase end: never parked in Pending');
 });
 
 // ---------------- accounts
@@ -131,8 +132,14 @@ t('endOutcome: finished → built with a PR, complete without; crash requeues; c
   assert.equal(P.endOutcome({ ...done, pr: '12' }, { exit: 0 }).status, 'built');
   const crashed = P.endOutcome(build('c', 'running', [step('s1', 'Opus')], { pipeline: { runs: 1, account: 'w-pro' } }), { exit: 1 });
   assert.equal(crashed.status, 'queued'); assert.match(crashed.note, /back in the Queue/);
-  const stopped = P.endOutcome(build('s', 'running', [step('s1', 'Opus')], { pipeline: { runs: 1, model: 'Opus' } }), { exit: 0 });
+  const stopped = P.endOutcome(build('s', 'running', [step('s1', 'Opus')], { pipeline: { runs: 1, model: 'Opus', stepsOpen: 1 } }), { exit: 0 });
   assert.equal(stopped.status, 'pending'); assert.match(stopped.note, /back in Pending for Brett/);
+  // phase end on the same model: the run ticked a step (stepsOpen 2 at launch, 1 left) → Queue, never Pending (reconciler bug, Nov 15 2026)
+  const phaseEnd = P.endOutcome(build('pe', 'running', [step('s1', 'Opus', true), step('s2', 'Opus')], { pipeline: { runs: 1, model: 'Opus', stepsOpen: 2 } }), { exit: 0 });
+  assert.equal(phaseEnd.status, 'queued');
+  // an older record without stepsOpen is never parked either
+  const legacy = P.endOutcome(build('lg', 'running', [step('s1', 'Opus')], { pipeline: { runs: 1, model: 'Opus' } }), { exit: 0 });
+  assert.equal(legacy.status, 'queued');
   const phase = P.endOutcome(build('p', 'running', [step('s1', 'Fable', true), step('s2', 'Opus')], { pipeline: { runs: 1, model: 'Fable' } }), { exit: 0 });
   assert.equal(phase.status, 'queued', 'Fable phase done, Opus phase next: back in the Queue for an Opus account');
   const dead = P.endOutcome(build('f', 'running', [step('s1', 'Opus')], { pipeline: { runs: 3 } }), { exit: 137 });

@@ -36,6 +36,7 @@
 import { DEFAULT_MAX_RUNS, STATUS_AFTER, isHeld, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
+import { ALERT_LINK as MOLLY_ALERT_LINK } from '../../../../framework/core/axf-molly.mjs';
 import { API_RULE, estimateMinutes, maxStep, nextUp as orchNextUp, MODEL_GUIDE, STEP_MINUTES, stepLimit } from './web/orchestrator-core.mjs';
 
 export const SCHEMA = 'pipeline-settings@1';
@@ -385,8 +386,11 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
 export function endOutcome(b, { exit, account = '', session = '', now = new Date().toISOString() } = {}, settings = normSettings()) {
   const stepsLeft = openSteps(b).length;
   const runs = (b.pipeline?.runs ?? 0) || 1;
-  const phaseSwitch = stepsLeft > 0 && !!b.pipeline?.model && nextModel(b) !== b.pipeline.model;
-  const outcome = outcomeOf({ exit, stepsLeft, runs, phaseSwitch }, settings.maxRuns);
+  // a phase end: the next step runs on another model, or this run ticked at least one step (stepsOpen is what the
+  // dispatcher saw at launch; a record without it is treated as progressed, so no build is parked in Pending by mistake)
+  const phaseSwitch = stepsLeft > 0 && (!b.pipeline?.model || modelKey(nextModel(b)) !== modelKey(b.pipeline.model));
+  const progressed = stepsLeft > 0 && (!(b.pipeline?.stepsOpen > 0) || stepsLeft < b.pipeline.stepsOpen);
+  const outcome = outcomeOf({ exit, stepsLeft, runs, phaseSwitch, progressed }, settings.maxRuns);
   const run = { at: now, exit: Number.isInteger(exit) ? exit : null, outcome, stepsLeft, account: account || b.pipeline?.account || '', session: session || b.pipeline?.session || '' };
   let status = STATUS_AFTER[outcome];
   if (outcome === 'finished') status = b.pr && !b.mergedAt ? 'built' : 'complete';
@@ -468,7 +472,8 @@ export function needsSplit(b, rules = { maxStepMinutes: STEP_MINUTES }) {
 // ------------------------------------------------------------------ alerts (the console alerts API; types in notify.json)
 
 export const ALERT_SOURCE = 'pipeline';
-export const ALERT_LINK = '#/build-orchestrator';
+/** The alerts bell navigates `view:` links (axf-molly@1 CONSOLE_TARGETS.orchestrator); `#/…` links did not open the screen. */
+export const ALERT_LINK = MOLLY_ALERT_LINK;
 /**
  * The payload POST /api/alerts takes. kind = idle | launched | ended | failed | split. `key` makes repeats bump a count
  * instead of a new alert, and lets the dispatcher resolve one (idle) when a build runs again. Key prefixes are what

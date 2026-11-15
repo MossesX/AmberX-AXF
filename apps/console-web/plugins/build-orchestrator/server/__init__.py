@@ -401,9 +401,80 @@ PIPELINE_CLI = CLI.parent / "pipeline.mjs"
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{0,79}$")
 
 
+MOLLY_CLI = ROOT / "apps" / "axf-molly" / "molly.mjs"
+# pipeline CLI command → axf-molly tool (framework/core/axf-molly.mjs TOOLS): what the console forwards once AXF Molly
+# owns the work. Reads stay local (the store is the same file either way); the dispatcher's own actions go to the owner.
+MOLLY_TOOLS = {"tick": "orchestrator.tick", "selfcheck": "orchestrator.selfcheck", "queue": "orchestrator.queue", "unqueue": "orchestrator.unqueue",
+               "hold": "orchestrator.hold", "release": "orchestrator.release", "split": "orchestrator.split", "route": "orchestrator.route", "request": "orchestrator.request"}
+
+
+def _molly_url() -> str:
+    return (os.environ.get("AXF_MOLLY_URL") or "").rstrip("/")
+
+
+def _molly_lease() -> dict[str, Any]:
+    """The owner lease (molly-lease@1) as the CLI reads it: who acts right now (console side or axf-molly)."""
+    try:
+        proc = subprocess.run(["node", str(MOLLY_CLI), "status", "--json"], cwd=ROOT, capture_output=True, text=True, timeout=30)
+        out = proc.stdout.strip().splitlines()
+        return json.loads(out[-1]) if out else {"ok": False, "error": "no output"}
+    except (OSError, subprocess.TimeoutExpired, ValueError) as e:  # pragma: no cover - the host without the CLI
+        return {"ok": False, "error": str(e)[:200]}
+
+
+def _molly_call(tool: str, params: dict[str, Any], who: str = "") -> dict[str, Any]:
+    """One axf-molly tool over its HTTP API (AXF_MOLLY_URL + AXF_MOLLY_TOKEN); the console never runs the owner's work itself."""
+    import urllib.error
+    import urllib.request
+
+    url = _molly_url()
+    if not url:
+        raise HTTPException(503, "AXF_MOLLY_URL is not set")
+    proc = subprocess.run(["node", str(MOLLY_CLI), "tools", "--json"], cwd=ROOT, capture_output=True, text=True, timeout=30)
+    tools = {t["name"]: t for t in (json.loads(proc.stdout.strip().splitlines()[-1]).get("tools") or [])}
+    spec = tools.get(tool)
+    if not spec:
+        raise HTTPException(400, f"unknown axf-molly tool {tool}")
+    path = spec["path"]
+    body: dict[str, Any] = {}
+    for k, v in params.items():
+        if "{" + k + "}" in path:
+            path = path.replace("{" + k + "}", str(v))
+        else:
+            body[k] = v
+    if who:
+        body.setdefault("reason", {"title": tool, "description": f"from the console by {who}"})
+    data = json.dumps(body).encode() if spec["method"] == "POST" else None
+    req = urllib.request.Request(f"{url}/v1{path}", data=data, method=spec["method"],
+                                 headers={"Authorization": f"Bearer {os.environ.get('AXF_MOLLY_TOKEN', '')}", "Content-Type": "application/json", "X-Axf-Actor": who or "console"})
+    try:
+        with urllib.request.urlopen(req, timeout=120) as resp:
+            res = json.loads(resp.read().decode() or "{}")
+    except urllib.error.HTTPError as e:
+        try:
+            res = json.loads(e.read().decode() or "{}")
+        except ValueError:
+            res = {"ok": False, "error": f"axf-molly answered {e.code}"}
+        raise HTTPException(409 if e.code == 409 else 400 if e.code == 400 else 502, str(res.get("error") or f"axf-molly {e.code}")[:400])
+    except (OSError, ValueError) as e:
+        raise HTTPException(502, f"axf-molly unreachable: {e}"[:400])
+    if not res.get("ok"):
+        raise HTTPException(500, str(res.get("error") or "axf-molly failed")[:400])
+    return res.get("result") or res
+
+
 def _pipeline(*args: str, who: str = "") -> dict[str, Any]:
     """Run the pipeline CLI (reads the store, the slots store, the accounts and the dispatcher's state file; writes go
-    through the builds store under its lock). `who` = Brett's name on a queue / unqueue so the build says who moved it."""
+    through the builds store under its lock). `who` = Brett's name on a queue / unqueue so the build says who moved it.
+    While AXF Molly owns the lease (axf-molly@1 cutover) and AXF_MOLLY_URL is set, the dispatcher's actions are forwarded
+    to the container; reads and store moves stay local (same store either way)."""
+    if args and args[0] in ("tick", "selfcheck") and _molly_url():
+        lease = _molly_lease()
+        if lease.get("owner") == "axf-molly":
+            params: dict[str, Any] = {}
+            if args[0] == "selfcheck" and "--reason" in args:
+                params["reason"] = args[args.index("--reason") + 1]
+            return _molly_call(MOLLY_TOOLS[args[0]], params, who=who)
     env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}
     if who:
         env["AXF_ACTOR"] = who
@@ -464,6 +535,61 @@ def pipeline_tab(name: str) -> dict[str, Any]:
     if name not in PIPELINE_TABS:
         raise HTTPException(400, f"tab is one of {', '.join(PIPELINE_TABS)}")
     return _pipeline("tab", name)
+
+
+@router.get("/pipeline/molly")
+def pipeline_molly() -> dict[str, Any]:
+    """AXF Molly (axf-molly@1): who runs the work right now (the console side or the axf-molly container), the owner
+    lease, the shadow log summary (lines, how many differ, clean for how long, ready for cutover) and the container's jobs.
+    Deep link: view:build-orchestrator. CLI: node apps/axf-molly/molly.mjs status. axHub: axf-molly.molly.status."""
+    lease = _molly_lease()
+    if not lease.get("ok"):
+        raise HTTPException(503, str(lease.get("error") or "axf-molly status unavailable")[:300])
+    lease["url"] = _molly_url()
+    return lease
+
+
+MOLLY_MODES = {"cutover": "molly.cutover", "undo": "molly.undo"}
+
+
+@router.post("/pipeline/molly/{mode}")
+async def pipeline_molly_mode(mode: str, request: Request) -> dict[str, Any]:
+    """{reason: "…", ttlMin?}: cutover = AXF Molly takes the work under a lease (renewed by the container every minute; an
+    expired lease hands the work back by itself); undo = back to shadow at once, the console side acts from the next
+    tick. Brett's move: the body's reason is what History shows. CLI: molly.mjs cutover --reason … | undo."""
+    if mode not in MOLLY_MODES:
+        raise HTTPException(400, "mode is cutover or undo")
+    try:
+        body = await request.json()
+    except (ValueError, UnicodeDecodeError):
+        body = {}
+    reason = str((body or {}).get("reason") or "").strip()[:600] if isinstance(body, dict) else ""
+    if mode == "cutover" and not reason:
+        raise HTTPException(400, "cutover needs a reason")
+    who = (brett_click(request) or "console")[:80]
+    args = ["node", str(MOLLY_CLI), mode, "--by", who, "--json"]
+    if reason:
+        args += ["--reason", reason]
+    if mode == "cutover" and isinstance(body, dict) and body.get("ttlMin"):
+        args += ["--ttl", str(int(body["ttlMin"]))]
+    proc = subprocess.run(args, cwd=ROOT, capture_output=True, text=True, timeout=60)
+    out = proc.stdout.strip().splitlines()
+    res = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-300:] or "no output"}
+    if not res.get("ok"):
+        raise HTTPException(409 if proc.returncode == 2 else 500, str(res.get("error") or "failed")[:400])
+    return res
+
+
+@router.get("/pipeline/molly/shadow")
+def pipeline_molly_shadow(tail: int = 50) -> dict[str, Any]:
+    """The shadow diff log (molly-shadow-diff@1): what axf-molly computed next to what the console side did, newest last.
+    CLI: molly.mjs shadow --tail n. axHub: axf-molly.molly.shadow."""
+    proc = subprocess.run(["node", str(MOLLY_CLI), "shadow", "--tail", str(max(1, min(2000, int(tail)))), "--json"], cwd=ROOT, capture_output=True, text=True, timeout=30)
+    out = proc.stdout.strip().splitlines()
+    res = json.loads(out[-1]) if out else {"ok": False, "error": "no output"}
+    if not res.get("ok"):
+        raise HTTPException(503, str(res.get("error") or "shadow log unavailable")[:300])
+    return res
 
 
 @router.get("/pipeline/health")

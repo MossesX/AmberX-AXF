@@ -338,3 +338,11 @@ animIntensity` (core/engines/behavior.ts: `skinAnimationVars`, `withAnimationPre
 `setAnimationPref`) and the colour maths in core/engines/swatches.ts (`shadesOf`, `mixHex`, `skinSwatches`,
 `sweepOrigin`); fixture framework/spec/fixtures/skin-animations.json. Kotlin twin deferred (no new Android work): the
 Compose behaviour reader ignores the new fields (defaults apply), so Android skins stay still until it is ported.
+
+## Deferred: axf-molly (Nov 15 2026)
+
+Build axf-molly-container-orchestrator-gate adds axf-molly@1 (framework/core/axf-molly.mjs: the owner lease, the shadow
+diff log, the host bridge allow-list and the orchestrator.* / gate.* / lander.* / features.* tool list; fixture
+framework/spec/fixtures/axf-molly.json) and the AXF Molly container (apps/axf-molly). This is VPS infrastructure that no
+Android app renders: no Kotlin twin (no new Android work). An Android client that one day shows who owns the work reads
+molly-status@1 over axHub's axf-molly.molly.status tool.

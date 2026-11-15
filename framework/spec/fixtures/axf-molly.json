@@ -1,0 +1,1018 @@
+{
+  "$axf": "fixture@1",
+  "schema": "axf-molly@1",
+  "at": "2026-11-15T12:00:00.000Z",
+  "expected": {
+    "initial": {
+      "$axf": "molly-lease@1",
+      "rev": 1,
+      "owner": "console",
+      "mode": "shadow",
+      "since": "2026-11-15T12:00:00.000Z",
+      "until": "",
+      "by": "install",
+      "reason": "installed in shadow mode",
+      "prev": null,
+      "history": [
+        {
+          "at": "2026-11-15T12:00:00.000Z",
+          "mode": "shadow",
+          "owner": "console",
+          "by": "install",
+          "reason": "installed in shadow mode"
+        }
+      ]
+    },
+    "cutover": {
+      "$axf": "molly-lease@1",
+      "rev": 2,
+      "owner": "axf-molly",
+      "mode": "cutover",
+      "since": "2026-11-15T12:01:00.000Z",
+      "until": "2026-11-15T12:31:00.000Z",
+      "by": "brett",
+      "reason": "shadow clean for 2 h",
+      "prev": {
+        "owner": "console",
+        "mode": "shadow"
+      },
+      "history": [
+        {
+          "at": "2026-11-15T12:00:00.000Z",
+          "mode": "shadow",
+          "owner": "console",
+          "by": "install",
+          "reason": "installed in shadow mode"
+        },
+        {
+          "at": "2026-11-15T12:01:00.000Z",
+          "mode": "cutover",
+          "owner": "axf-molly",
+          "by": "brett",
+          "reason": "shadow clean for 2 h"
+        }
+      ]
+    },
+    "expiredWhy": "the axf-molly lease expired at 2026-11-15T12:30:00.000Z: the console side acts again until the container renews or Brett cuts over",
+    "undo": {
+      "$axf": "molly-lease@1",
+      "rev": 3,
+      "owner": "console",
+      "mode": "shadow",
+      "since": "2026-11-15T12:05:00.000Z",
+      "until": "",
+      "by": "brett",
+      "reason": "lander landed the wrong PR",
+      "prev": {
+        "owner": "axf-molly",
+        "mode": "cutover"
+      },
+      "history": [
+        {
+          "at": "2026-11-15T12:00:00.000Z",
+          "mode": "shadow",
+          "owner": "console",
+          "by": "install",
+          "reason": "installed in shadow mode"
+        },
+        {
+          "at": "2026-11-15T12:00:00.000Z",
+          "mode": "cutover",
+          "owner": "axf-molly",
+          "by": "brett",
+          "reason": "go"
+        },
+        {
+          "at": "2026-11-15T12:05:00.000Z",
+          "mode": "undo",
+          "owner": "console",
+          "by": "brett",
+          "reason": "lander landed the wrong PR"
+        }
+      ]
+    },
+    "repaired": {
+      "$axf": "molly-lease@1",
+      "rev": 1,
+      "owner": "console",
+      "mode": "shadow",
+      "since": "2026-11-15T12:00:00.000Z",
+      "until": "",
+      "by": "",
+      "reason": "",
+      "prev": null,
+      "history": []
+    },
+    "diff": {
+      "$axf": "molly-shadow-diff@1",
+      "at": "2026-11-15T12:00:00.000Z",
+      "kind": "tick",
+      "same": false,
+      "count": 2,
+      "diffs": [
+        {
+          "what": "launch",
+          "id": "a",
+          "mine": "max/Fable",
+          "theirs": "hulu/Fable"
+        },
+        {
+          "what": "running",
+          "id": "d",
+          "mine": "no",
+          "theirs": "yes"
+        }
+      ]
+    },
+    "shadowSummary": {
+      "lines": 3,
+      "differing": 1,
+      "lastAt": "2026-11-15T12:30:00.000Z",
+      "lastDiffAt": "2026-11-15T12:00:00.000Z",
+      "cleanForMin": 61,
+      "readyForCutover": true
+    },
+    "bridge": {
+      "commands": {
+        "tmux.has": "tmux has-session (read)",
+        "tmux.list": "tmux list-panes (read)",
+        "tmux.capture": "tmux capture-pane of one axf-* session (read)",
+        "tmux.kill": "tmux kill-session of one axf-* session (the stale-session reaper only)",
+        "launch": "deploy/claude-headless.sh in /root/axf-builds/<build> (starts one build session with the dispatcher's one-build token; the claude argv is built on the host, never taken from the request)",
+        "worktree.ensure": "git worktree add under /root/axf-builds from the main checkout",
+        "git": "read-only git (status, log, rev-parse, diff, show, branch, fetch) inside /root/axf-builds/<build>",
+        "claude.probe": "pipeline.mjs probe <account>: one tiny headless call on that login",
+        "pipeline.health": "pipeline.mjs health: the account sweep on the host logins (never a build)",
+        "accounts.list": "~/.claude-accounts names and states (never a token)",
+        "events.tail": "/var/tmp/axf-headless/events.jsonl (read)",
+        "bridge.ping": "nothing"
+      },
+      "never": [
+        "the Docker socket",
+        "docker, systemctl, apt or any package manager",
+        "files outside /root/axf-builds, /opt/axf (read) and /var/tmp/axf-headless (read)",
+        "a Claude token (accounts are listed by name only)",
+        "a shell: every command is an argv list, never a string"
+      ],
+      "git": [
+        "status",
+        "log",
+        "rev-parse",
+        "diff",
+        "show",
+        "branch",
+        "fetch",
+        "worktree",
+        "ls-files"
+      ]
+    },
+    "tools": {
+      "orchestrator.status": {
+        "method": "GET",
+        "path": "/orchestrator/status",
+        "cli": [
+          "pipeline",
+          "status"
+        ],
+        "args": [],
+        "mutates": false,
+        "exclusive": false,
+        "says": "what is pending, queued and building"
+      },
+      "orchestrator.tab": {
+        "method": "GET",
+        "path": "/orchestrator/tab/{tab}",
+        "cli": [
+          "pipeline",
+          "tab"
+        ],
+        "args": [
+          "tab"
+        ],
+        "mutates": false,
+        "exclusive": false,
+        "says": "one orchestrator tab"
+      },
+      "orchestrator.show": {
+        "method": "GET",
+        "path": "/orchestrator/builds/{id}",
+        "cli": [
+          "pipeline",
+          "show"
+        ],
+        "args": [
+          "id"
+        ],
+        "mutates": false,
+        "exclusive": false,
+        "says": "one build"
+      },
+      "orchestrator.accounts": {
+        "method": "GET",
+        "path": "/orchestrator/accounts",
+        "cli": [
+          "pipeline",
+          "accounts"
+        ],
+        "args": [],
+        "mutates": false,
+        "exclusive": false,
+        "says": "the Claude accounts as the dispatcher sees them"
+      },
+      "orchestrator.request": {
+        "method": "POST",
+        "path": "/orchestrator/request",
+        "cli": [
+          "pipeline",
+          "request"
+        ],
+        "args": [
+          "title",
+          "detail?",
+          "said?",
+          "priority?",
+          "route?",
+          "queue?"
+        ],
+        "mutates": true,
+        "exclusive": false,
+        "says": "file a build"
+      },
+      "orchestrator.queue": {
+        "method": "POST",
+        "path": "/orchestrator/builds/{id}/queue",
+        "cli": [
+          "pipeline",
+          "queue"
+        ],
+        "args": [
+          "id"
+        ],
+        "mutates": true,
+        "exclusive": false,
+        "says": "move a build to the Queue"
+      },
+      "orchestrator.unqueue": {
+        "method": "POST",
+        "path": "/orchestrator/builds/{id}/unqueue",
+        "cli": [
+          "pipeline",
+          "unqueue"
+        ],
+        "args": [
+          "id"
+        ],
+        "mutates": true,
+        "exclusive": false,
+        "says": "move a build back to Pending"
+      },
+      "orchestrator.hold": {
+        "method": "POST",
+        "path": "/orchestrator/builds/{id}/hold",
+        "cli": [
+          "pipeline",
+          "hold"
+        ],
+        "args": [
+          "id",
+          "why?"
+        ],
+        "mutates": true,
+        "exclusive": false,
+        "says": "hold a build"
+      },
+      "orchestrator.release": {
+        "method": "POST",
+        "path": "/orchestrator/builds/{id}/release",
+        "cli": [
+          "pipeline",
+          "release"
+        ],
+        "args": [
+          "id"
+        ],
+        "mutates": true,
+        "exclusive": false,
+        "says": "release a held build"
+      },
+      "orchestrator.split": {
+        "method": "POST",
+        "path": "/orchestrator/builds/{id}/split",
+        "cli": [
+          "pipeline",
+          "split"
+        ],
+        "args": [
+          "id",
+          "provider?"
+        ],
+        "mutates": true,
+        "exclusive": false,
+        "says": "split a build into steps"
+      },
+      "orchestrator.route": {
+        "method": "POST",
+        "path": "/orchestrator/builds/{id}/route",
+        "cli": [
+          "pipeline",
+          "route"
+        ],
+        "args": [
+          "id",
+          "route"
+        ],
+        "mutates": true,
+        "exclusive": false,
+        "says": "route a build to API or subscription accounts"
+      },
+      "orchestrator.step": {
+        "method": "POST",
+        "path": "/orchestrator/builds/{id}/steps/{step}",
+        "cli": [
+          "orchestrator",
+          "act",
+          "step"
+        ],
+        "args": [
+          "id",
+          "step",
+          "state"
+        ],
+        "mutates": true,
+        "exclusive": false,
+        "says": "tick a step"
+      },
+      "orchestrator.note": {
+        "method": "POST",
+        "path": "/orchestrator/builds/{id}/note",
+        "cli": [
+          "orchestrator",
+          "act",
+          "note"
+        ],
+        "args": [
+          "id",
+          "text"
+        ],
+        "mutates": true,
+        "exclusive": false,
+        "says": "add a build note"
+      },
+      "orchestrator.tick": {
+        "method": "POST",
+        "path": "/orchestrator/tick",
+        "cli": [
+          "pipeline",
+          "tick"
+        ],
+        "args": [],
+        "mutates": true,
+        "exclusive": true,
+        "says": "run one dispatcher round now"
+      },
+      "orchestrator.selfcheck": {
+        "method": "POST",
+        "path": "/orchestrator/selfcheck",
+        "cli": [
+          "pipeline",
+          "selfcheck",
+          "--request"
+        ],
+        "args": [
+          "reason?"
+        ],
+        "mutates": true,
+        "exclusive": false,
+        "says": "ask for a dispatcher self-check"
+      },
+      "gate.rules": {
+        "method": "GET",
+        "path": "/gate/rules",
+        "cli": [
+          "gate",
+          "rules"
+        ],
+        "args": [],
+        "mutates": false,
+        "exclusive": false,
+        "says": "the gate rules"
+      },
+      "gate.set": {
+        "method": "POST",
+        "path": "/gate/rules/{rule}",
+        "cli": [
+          "gate",
+          "set"
+        ],
+        "args": [
+          "rule",
+          "enabled?",
+          "severity?",
+          "settings?"
+        ],
+        "mutates": true,
+        "exclusive": false,
+        "says": "change a gate rule"
+      },
+      "gate.state": {
+        "method": "GET",
+        "path": "/gate/state",
+        "cli": [
+          "gate",
+          "state"
+        ],
+        "args": [],
+        "mutates": false,
+        "exclusive": false,
+        "says": "the lander state the gate reports"
+      },
+      "lander.status": {
+        "method": "GET",
+        "path": "/lander/status",
+        "cli": [
+          "land",
+          "list"
+        ],
+        "args": [],
+        "mutates": false,
+        "exclusive": false,
+        "says": "what the lander is doing"
+      },
+      "lander.queue": {
+        "method": "GET",
+        "path": "/lander/queue",
+        "cli": [
+          "land",
+          "queue",
+          "list"
+        ],
+        "args": [],
+        "mutates": false,
+        "exclusive": false,
+        "says": "the merge queue"
+      },
+      "lander.on": {
+        "method": "POST",
+        "path": "/lander/on",
+        "cli": [
+          "merge-queue",
+          "settings",
+          "--on"
+        ],
+        "args": [],
+        "mutates": true,
+        "exclusive": false,
+        "says": "switch the merge queue on"
+      },
+      "lander.off": {
+        "method": "POST",
+        "path": "/lander/off",
+        "cli": [
+          "merge-queue",
+          "settings",
+          "--off"
+        ],
+        "args": [],
+        "mutates": true,
+        "exclusive": false,
+        "says": "switch the merge queue off"
+      },
+      "lander.now": {
+        "method": "POST",
+        "path": "/lander/builds/{id}/now",
+        "cli": [
+          "land",
+          "now"
+        ],
+        "args": [
+          "id"
+        ],
+        "mutates": true,
+        "exclusive": false,
+        "says": "land a build next"
+      },
+      "lander.hold": {
+        "method": "POST",
+        "path": "/lander/builds/{id}/hold",
+        "cli": [
+          "land",
+          "hold"
+        ],
+        "args": [
+          "id",
+          "why?"
+        ],
+        "mutates": true,
+        "exclusive": false,
+        "says": "hold a build from landing"
+      },
+      "lander.release": {
+        "method": "POST",
+        "path": "/lander/builds/{id}/release",
+        "cli": [
+          "land",
+          "release"
+        ],
+        "args": [
+          "id"
+        ],
+        "mutates": true,
+        "exclusive": false,
+        "says": "release a held build"
+      },
+      "lander.run": {
+        "method": "POST",
+        "path": "/lander/run",
+        "cli": [
+          "land",
+          "run"
+        ],
+        "args": [],
+        "mutates": true,
+        "exclusive": true,
+        "says": "run one landing round now"
+      },
+      "features.list": {
+        "method": "GET",
+        "path": "/features",
+        "cli": [
+          "shipped",
+          "list"
+        ],
+        "args": [
+          "since?",
+          "q?"
+        ],
+        "mutates": false,
+        "exclusive": false,
+        "says": "shipped features"
+      },
+      "features.show": {
+        "method": "GET",
+        "path": "/features/{id}",
+        "cli": [
+          "shipped",
+          "show"
+        ],
+        "args": [
+          "id"
+        ],
+        "mutates": false,
+        "exclusive": false,
+        "says": "one shipped feature"
+      },
+      "features.landed": {
+        "method": "POST",
+        "path": "/features/landed",
+        "cli": [
+          "shipped",
+          "landed"
+        ],
+        "args": [
+          "since?",
+          "max?"
+        ],
+        "mutates": true,
+        "exclusive": true,
+        "says": "send Shipped features for newly landed builds"
+      },
+      "features.ship": {
+        "method": "POST",
+        "path": "/features/{id}/ship",
+        "cli": [
+          "shipped",
+          "ship"
+        ],
+        "args": [
+          "id",
+          "source?"
+        ],
+        "mutates": true,
+        "exclusive": true,
+        "says": "send one build to Shipped features"
+      },
+      "molly.status": {
+        "method": "GET",
+        "path": "/status",
+        "cli": [
+          "molly",
+          "status"
+        ],
+        "args": [],
+        "mutates": false,
+        "exclusive": false,
+        "says": "who runs the work, the lease, the shadow log"
+      },
+      "molly.shadow": {
+        "method": "GET",
+        "path": "/shadow",
+        "cli": [
+          "molly",
+          "shadow"
+        ],
+        "args": [
+          "tail?"
+        ],
+        "mutates": false,
+        "exclusive": false,
+        "says": "the shadow diff log"
+      },
+      "molly.cutover": {
+        "method": "POST",
+        "path": "/mode/cutover",
+        "cli": [
+          "molly",
+          "cutover"
+        ],
+        "args": [
+          "reason",
+          "ttlMin?"
+        ],
+        "mutates": true,
+        "exclusive": false,
+        "says": "axf-molly takes the work"
+      },
+      "molly.undo": {
+        "method": "POST",
+        "path": "/mode/undo",
+        "cli": [
+          "molly",
+          "undo"
+        ],
+        "args": [
+          "reason?"
+        ],
+        "mutates": true,
+        "exclusive": false,
+        "says": "back to shadow: the console side acts again"
+      },
+      "molly.renew": {
+        "method": "POST",
+        "path": "/mode/renew",
+        "cli": [
+          "molly",
+          "renew"
+        ],
+        "args": [],
+        "mutates": true,
+        "exclusive": false,
+        "says": "renew the cutover lease"
+      }
+    },
+    "axhubService": {
+      "$axf": "axhub-downstream@1",
+      "service": "axf-molly",
+      "url": "http://axf-molly:7510",
+      "tools": [
+        {
+          "name": "orchestrator.status",
+          "method": "GET",
+          "path": "/v1/orchestrator/status",
+          "mutates": false,
+          "approval": "none",
+          "says": "what is pending, queued and building"
+        },
+        {
+          "name": "orchestrator.tab",
+          "method": "GET",
+          "path": "/v1/orchestrator/tab/{tab}",
+          "mutates": false,
+          "approval": "none",
+          "says": "one orchestrator tab"
+        },
+        {
+          "name": "orchestrator.show",
+          "method": "GET",
+          "path": "/v1/orchestrator/builds/{id}",
+          "mutates": false,
+          "approval": "none",
+          "says": "one build"
+        },
+        {
+          "name": "orchestrator.accounts",
+          "method": "GET",
+          "path": "/v1/orchestrator/accounts",
+          "mutates": false,
+          "approval": "none",
+          "says": "the Claude accounts as the dispatcher sees them"
+        },
+        {
+          "name": "orchestrator.request",
+          "method": "POST",
+          "path": "/v1/orchestrator/request",
+          "mutates": true,
+          "approval": "reason",
+          "says": "file a build"
+        },
+        {
+          "name": "orchestrator.queue",
+          "method": "POST",
+          "path": "/v1/orchestrator/builds/{id}/queue",
+          "mutates": true,
+          "approval": "reason",
+          "says": "move a build to the Queue"
+        },
+        {
+          "name": "orchestrator.unqueue",
+          "method": "POST",
+          "path": "/v1/orchestrator/builds/{id}/unqueue",
+          "mutates": true,
+          "approval": "reason",
+          "says": "move a build back to Pending"
+        },
+        {
+          "name": "orchestrator.hold",
+          "method": "POST",
+          "path": "/v1/orchestrator/builds/{id}/hold",
+          "mutates": true,
+          "approval": "reason",
+          "says": "hold a build"
+        },
+        {
+          "name": "orchestrator.release",
+          "method": "POST",
+          "path": "/v1/orchestrator/builds/{id}/release",
+          "mutates": true,
+          "approval": "reason",
+          "says": "release a held build"
+        },
+        {
+          "name": "orchestrator.split",
+          "method": "POST",
+          "path": "/v1/orchestrator/builds/{id}/split",
+          "mutates": true,
+          "approval": "reason",
+          "says": "split a build into steps"
+        },
+        {
+          "name": "orchestrator.route",
+          "method": "POST",
+          "path": "/v1/orchestrator/builds/{id}/route",
+          "mutates": true,
+          "approval": "reason",
+          "says": "route a build to API or subscription accounts"
+        },
+        {
+          "name": "orchestrator.step",
+          "method": "POST",
+          "path": "/v1/orchestrator/builds/{id}/steps/{step}",
+          "mutates": true,
+          "approval": "reason",
+          "says": "tick a step"
+        },
+        {
+          "name": "orchestrator.note",
+          "method": "POST",
+          "path": "/v1/orchestrator/builds/{id}/note",
+          "mutates": true,
+          "approval": "reason",
+          "says": "add a build note"
+        },
+        {
+          "name": "orchestrator.tick",
+          "method": "POST",
+          "path": "/v1/orchestrator/tick",
+          "mutates": true,
+          "approval": "reason",
+          "says": "run one dispatcher round now"
+        },
+        {
+          "name": "orchestrator.selfcheck",
+          "method": "POST",
+          "path": "/v1/orchestrator/selfcheck",
+          "mutates": true,
+          "approval": "reason",
+          "says": "ask for a dispatcher self-check"
+        },
+        {
+          "name": "gate.rules",
+          "method": "GET",
+          "path": "/v1/gate/rules",
+          "mutates": false,
+          "approval": "none",
+          "says": "the gate rules"
+        },
+        {
+          "name": "gate.set",
+          "method": "POST",
+          "path": "/v1/gate/rules/{rule}",
+          "mutates": true,
+          "approval": "reason",
+          "says": "change a gate rule"
+        },
+        {
+          "name": "gate.state",
+          "method": "GET",
+          "path": "/v1/gate/state",
+          "mutates": false,
+          "approval": "none",
+          "says": "the lander state the gate reports"
+        },
+        {
+          "name": "lander.status",
+          "method": "GET",
+          "path": "/v1/lander/status",
+          "mutates": false,
+          "approval": "none",
+          "says": "what the lander is doing"
+        },
+        {
+          "name": "lander.queue",
+          "method": "GET",
+          "path": "/v1/lander/queue",
+          "mutates": false,
+          "approval": "none",
+          "says": "the merge queue"
+        },
+        {
+          "name": "lander.on",
+          "method": "POST",
+          "path": "/v1/lander/on",
+          "mutates": true,
+          "approval": "reason",
+          "says": "switch the merge queue on"
+        },
+        {
+          "name": "lander.off",
+          "method": "POST",
+          "path": "/v1/lander/off",
+          "mutates": true,
+          "approval": "reason",
+          "says": "switch the merge queue off"
+        },
+        {
+          "name": "lander.now",
+          "method": "POST",
+          "path": "/v1/lander/builds/{id}/now",
+          "mutates": true,
+          "approval": "reason",
+          "says": "land a build next"
+        },
+        {
+          "name": "lander.hold",
+          "method": "POST",
+          "path": "/v1/lander/builds/{id}/hold",
+          "mutates": true,
+          "approval": "reason",
+          "says": "hold a build from landing"
+        },
+        {
+          "name": "lander.release",
+          "method": "POST",
+          "path": "/v1/lander/builds/{id}/release",
+          "mutates": true,
+          "approval": "reason",
+          "says": "release a held build"
+        },
+        {
+          "name": "lander.run",
+          "method": "POST",
+          "path": "/v1/lander/run",
+          "mutates": true,
+          "approval": "reason",
+          "says": "run one landing round now"
+        },
+        {
+          "name": "features.list",
+          "method": "GET",
+          "path": "/v1/features",
+          "mutates": false,
+          "approval": "none",
+          "says": "shipped features"
+        },
+        {
+          "name": "features.show",
+          "method": "GET",
+          "path": "/v1/features/{id}",
+          "mutates": false,
+          "approval": "none",
+          "says": "one shipped feature"
+        },
+        {
+          "name": "features.landed",
+          "method": "POST",
+          "path": "/v1/features/landed",
+          "mutates": true,
+          "approval": "reason",
+          "says": "send Shipped features for newly landed builds"
+        },
+        {
+          "name": "features.ship",
+          "method": "POST",
+          "path": "/v1/features/{id}/ship",
+          "mutates": true,
+          "approval": "reason",
+          "says": "send one build to Shipped features"
+        },
+        {
+          "name": "molly.status",
+          "method": "GET",
+          "path": "/v1/status",
+          "mutates": false,
+          "approval": "none",
+          "says": "who runs the work, the lease, the shadow log"
+        },
+        {
+          "name": "molly.shadow",
+          "method": "GET",
+          "path": "/v1/shadow",
+          "mutates": false,
+          "approval": "none",
+          "says": "the shadow diff log"
+        },
+        {
+          "name": "molly.cutover",
+          "method": "POST",
+          "path": "/v1/mode/cutover",
+          "mutates": true,
+          "approval": "reason",
+          "says": "axf-molly takes the work"
+        },
+        {
+          "name": "molly.undo",
+          "method": "POST",
+          "path": "/v1/mode/undo",
+          "mutates": true,
+          "approval": "reason",
+          "says": "back to shadow: the console side acts again"
+        },
+        {
+          "name": "molly.renew",
+          "method": "POST",
+          "path": "/v1/mode/renew",
+          "mutates": true,
+          "approval": "reason",
+          "says": "renew the cutover lease"
+        }
+      ],
+      "equivalents": {
+        "axf-console.build_orchestrator_pipeline_request": "orchestrator.request",
+        "planner.builds": "orchestrator.status",
+        "vps.build_land": "lander.now"
+      },
+      "reason": {
+        "title": "Register axf-molly",
+        "description": "axf-molly runs the orchestrator, gate, lander and Shipped sender"
+      }
+    },
+    "retirement": {
+      "old": {
+        "container": "molly",
+        "image": "molly:latest",
+        "cron": "/etc/cron.d/molly",
+        "script": "/usr/local/bin/molly-update",
+        "dir": "/opt/molly",
+        "domain": "molly.amberxai.com",
+        "app": "apps/molly"
+      },
+      "lines": [
+        "container: molly (molly:latest, coolify network, molly.amberxai.com)",
+        "image: molly:latest",
+        "cron: /etc/cron.d/molly",
+        "file: /usr/local/bin/molly-update",
+        "domain: molly.amberxai.com",
+        "folder: /opt/molly"
+      ]
+    },
+    "status": {
+      "$axf": "molly-status@1",
+      "at": "2026-11-15T12:00:00.000Z",
+      "side": "axf-molly",
+      "owner": "console",
+      "acting": false,
+      "why": "shadow mode: the console side acts, axf-molly computes and logs differences",
+      "lease": {
+        "$axf": "molly-lease@1",
+        "rev": 1,
+        "owner": "console",
+        "mode": "shadow",
+        "since": "2026-11-15T12:00:00.000Z",
+        "until": "",
+        "by": "install",
+        "reason": "installed in shadow mode",
+        "prev": null,
+        "history": [
+          {
+            "at": "2026-11-15T12:00:00.000Z",
+            "mode": "shadow",
+            "owner": "console",
+            "by": "install",
+            "reason": "installed in shadow mode"
+          }
+        ]
+      },
+      "shadow": {
+        "lines": 0,
+        "differing": 0,
+        "lastAt": "",
+        "lastDiffAt": "",
+        "cleanForMin": 0,
+        "readyForCutover": false
+      },
+      "jobs": {},
+      "data": {},
+      "bridge": {},
+      "version": ""
+    }
+  }
+}

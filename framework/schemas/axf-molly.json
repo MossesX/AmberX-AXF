@@ -1,0 +1,139 @@
+{
+  "schema": "axf-molly@1",
+  "version": 1,
+  "service": "axf-molly",
+  "frames": {
+    "lease": "molly-lease@1",
+    "diff": "molly-shadow-diff@1",
+    "bridge": "host-bridge@1",
+    "status": "molly-status@1"
+  },
+  "sides": [
+    "console",
+    "axf-molly"
+  ],
+  "modes": [
+    "shadow",
+    "cutover",
+    "undo"
+  ],
+  "leaseTtlMin": 30,
+  "leaseTtlMaxMin": 1440,
+  "port": 7510,
+  "bridgeSocket": "/run/axf-molly/bridge.sock",
+  "cadence": {
+    "tick": 60,
+    "lander": 180,
+    "reconcile": 600,
+    "lease": 60,
+    "shadowKeep": 2000
+  },
+  "bridgeCommands": [
+    "tmux.has",
+    "tmux.list",
+    "tmux.capture",
+    "tmux.kill",
+    "launch",
+    "worktree.ensure",
+    "git",
+    "claude.probe",
+    "pipeline.health",
+    "accounts.list",
+    "events.tail",
+    "bridge.ping"
+  ],
+  "bridgeTouches": {
+    "tmux.has": "tmux has-session (read)",
+    "tmux.list": "tmux list-panes (read)",
+    "tmux.capture": "tmux capture-pane of one axf-* session (read)",
+    "tmux.kill": "tmux kill-session of one axf-* session (the stale-session reaper only)",
+    "launch": "deploy/claude-headless.sh in /root/axf-builds/<build> (starts one build session with the dispatcher's one-build token; the claude argv is built on the host, never taken from the request)",
+    "worktree.ensure": "git worktree add under /root/axf-builds from the main checkout",
+    "git": "read-only git (status, log, rev-parse, diff, show, branch, fetch) inside /root/axf-builds/<build>",
+    "claude.probe": "pipeline.mjs probe <account>: one tiny headless call on that login",
+    "pipeline.health": "pipeline.mjs health: the account sweep on the host logins (never a build)",
+    "accounts.list": "~/.claude-accounts names and states (never a token)",
+    "events.tail": "/var/tmp/axf-headless/events.jsonl (read)",
+    "bridge.ping": "nothing"
+  },
+  "bridgeNever": [
+    "the Docker socket",
+    "docker, systemctl, apt or any package manager",
+    "files outside /root/axf-builds, /opt/axf (read) and /var/tmp/axf-headless (read)",
+    "a Claude token (accounts are listed by name only)",
+    "a shell: every command is an argv list, never a string"
+  ],
+  "gitSubcommands": [
+    "status",
+    "log",
+    "rev-parse",
+    "diff",
+    "show",
+    "branch",
+    "fetch",
+    "worktree",
+    "ls-files"
+  ],
+  "tools": [
+    "orchestrator.status",
+    "orchestrator.tab",
+    "orchestrator.show",
+    "orchestrator.accounts",
+    "orchestrator.request",
+    "orchestrator.queue",
+    "orchestrator.unqueue",
+    "orchestrator.hold",
+    "orchestrator.release",
+    "orchestrator.split",
+    "orchestrator.route",
+    "orchestrator.step",
+    "orchestrator.note",
+    "orchestrator.tick",
+    "orchestrator.selfcheck",
+    "gate.rules",
+    "gate.set",
+    "gate.state",
+    "lander.status",
+    "lander.queue",
+    "lander.on",
+    "lander.off",
+    "lander.now",
+    "lander.hold",
+    "lander.release",
+    "lander.run",
+    "features.list",
+    "features.show",
+    "features.landed",
+    "features.ship",
+    "molly.status",
+    "molly.shadow",
+    "molly.cutover",
+    "molly.undo",
+    "molly.renew"
+  ],
+  "toolFamilies": [
+    "orchestrator",
+    "gate",
+    "lander",
+    "features",
+    "molly"
+  ],
+  "consoleTargets": {
+    "orchestrator": "view:build-orchestrator",
+    "gate": "view:gate-rules",
+    "lander": "view:gate-rules",
+    "features": "view:shipped-features",
+    "molly": "view:build-orchestrator"
+  },
+  "alertLink": "view:build-orchestrator",
+  "oldMolly": {
+    "container": "molly",
+    "image": "molly:latest",
+    "cron": "/etc/cron.d/molly",
+    "script": "/usr/local/bin/molly-update",
+    "dir": "/opt/molly",
+    "domain": "molly.amberxai.com",
+    "app": "apps/molly"
+  },
+  "note": "Mirror of framework/core/axf-molly.mjs (checked by framework/spec/check-axf-molly.mjs). Spec: framework/spec/AXF-MOLLY.md."
+}

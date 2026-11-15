@@ -165,7 +165,7 @@ async function main() {
       b('all-done', { pr: '#7', steps: [{ id: 's1', done: true }] }), b('epic', { kind: 'epic', planRef: 'x.epic' }), b('ticked'), { ...b('waits'), status: 'pending' }];
     const plan = rc.idlePlan(builds, alive, { now, skip: ['ticked'] });
     const to = Object.fromEntries(plan.map((c) => [c.id, c.set.status]));
-    check(JSON.stringify(to) === JSON.stringify({ stale: 'pending', merged: 'complete', 'all-done': 'built' }), `idlePlan: stale → pending (paused), merged → complete, all done → built; live, fresh, epics, ticked and pending untouched (${JSON.stringify(to)})`);
+    check(JSON.stringify(to) === JSON.stringify({ stale: 'queued', merged: 'complete', 'all-done': 'built' }), `idlePlan: stale → queued (never parked in Pending), merged → complete, all done → built; live, fresh, epics, ticked and pending untouched (${JSON.stringify(to)})`);
     check(rc.idlePlan(builds, null, { now }).length === 0, 'idlePlan: processes unseen (no tmux) = nothing touched');
   }
 

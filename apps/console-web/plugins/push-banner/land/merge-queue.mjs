@@ -525,11 +525,12 @@ export async function main(argv) {
     if (mode) { if (!q.QUEUE_MODES.includes(mode)) throw new Error(`--mode is one of ${q.QUEUE_MODES.join(', ')}`); c.queueMode = mode; }
     if (size) { const n = Number(size); if (!Number.isInteger(n) || n < 1 || n > q.BATCH_SIZE_MAX) throw new Error(`--size is 1 to ${q.BATCH_SIZE_MAX}`); c.batchSize = n; }
     if (args.includes('--on')) c.mergeQueue = true;
-    if (mode || size || args.includes('--on')) writeJson(f, { $axf: 'push-banner-config@1', ...c });
+    if (args.includes('--off')) c.mergeQueue = false; // the 'Merge queue on/off' switch, from the CLI, axf-molly and axHub (lander.off)
+    if (mode || size || args.includes('--on') || args.includes('--off')) writeJson(f, { $axf: 'push-banner-config@1', ...c });
     const cfg = readQueueConfig(s);
     return print(cfg, `merge queue ${cfg.mergeQueue ? 'on' : 'off'} · ${cfg.mode}${cfg.mode === 'batch' ? ` · up to ${cfg.batchSize} PRs a batch` : ` · ${cfg.depth} at a time`}`);
   }
-  throw new Error('usage: merge-queue.mjs run [--dry-run] | list | add <pr> | remove <pr> [--why …] | move <pr> <index> | settings [--mode batch|stack] [--size n] [--on]');
+  throw new Error('usage: merge-queue.mjs run [--dry-run] | list | add <pr> | remove <pr> [--why …] | move <pr> <index> | settings [--mode batch|stack] [--size n] [--on|--off]');
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

@@ -1,0 +1,11 @@
+{
+  "name": "axf-molly",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AXF Molly: the container that runs the orchestrator, gate rules, auto-lander and Shipped features sender (axf-molly@1).",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node test.mjs"
+  }
+}

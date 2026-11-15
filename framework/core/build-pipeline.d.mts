@@ -10,7 +10,7 @@ export const STATUS_AFTER: Readonly<Record<'finished' | 'requeued' | 'returned' 
 export interface PipelineRun { at: string; exit: number | null; outcome: 'finished' | 'requeued' | 'returned' | 'failed'; stepsLeft: number; account: string; session: string }
 export interface PipelineSplit { at: string; by: string; provider: 'claude' | 'rules' | 'hand'; steps: number; note: string }
 export interface BuildPipeline {
-  queuedAt: string; queuedBy: string; account: string; session: string; slot: string; model: string; launchedAt: string; runs: number;
+  queuedAt: string; queuedBy: string; account: string; session: string; slot: string; model: string; launchedAt: string; runs: number; stepsOpen: number;
   lastRun: PipelineRun | null; split: PipelineSplit | null; splitRequested: string; note: string;
   route: '' | 'api' | 'subscription'; dispatchedAt: string;
   /** The orchestrator's plan, made at split time; the final pick (account, pickedAt) can differ. */
@@ -42,5 +42,5 @@ export function canUnqueue(b: unknown): boolean;
 export function queueOrder<T extends { status: string; createdAt?: string; pipeline?: { queuedAt?: string } | null }>(builds: T[], priorityOf?: (b: T) => string): T[];
 export function openSteps<T extends { done?: boolean; skip?: boolean }>(b: { steps?: T[] } | null | undefined): T[];
 export function nextModel(b: { steps?: Array<{ done?: boolean; skip?: boolean; model?: string }> } | null | undefined): string;
-export function outcomeOf(run: { exit: number | null; stepsLeft: number; runs: number }, maxRuns?: number): 'finished' | 'requeued' | 'returned' | 'failed';
+export function outcomeOf(run: { exit: number | null; stepsLeft: number; runs: number; phaseSwitch?: boolean; progressed?: boolean }, maxRuns?: number): 'finished' | 'requeued' | 'returned' | 'failed';
 export function outcomeLine(b: { pipeline?: { runs?: number } | null }, run: PipelineRun): string;

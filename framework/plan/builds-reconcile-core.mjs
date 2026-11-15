@@ -142,8 +142,8 @@ export function plan(builds, prs, branches = [], { now = new Date().toISOString(
  * Running means something is running it (Brett, Nov 4 2026: the banner said 21 going while one build ran). A `running`
  * build whose id no live process names (`alive`: agent-slots holders, axf-<id> tmux sessions, build-log entries with a
  * fresh heartbeat) and that nobody touched in `graceMin` minutes is settled: PR merged -> complete; every step done ->
- * built (PR open) or complete; else -> pending, i.e. paused with its worktree kept (a tick or a relaunch makes it
- * running again). `alive` null = processes can't be seen from here, so nothing is touched. Zero tokens.
+ * built (PR open) or complete; else -> queued, with its worktree kept (the next dispatcher tick starts its next
+ * session; it is never parked in Pending). `alive` null = processes can't be seen from here, so nothing is touched. Zero tokens.
  */
 export function idlePlan(builds, alive, { now = new Date().toISOString(), graceMin = 20, skip = [] } = {}) {
   if (!alive) return [];
@@ -159,7 +159,9 @@ export function idlePlan(builds, alive, { now = new Date().toISOString(), graceM
     if (Number.isFinite(touched) && t - touched < graceMin * 60000) continue;
     const steps = (b.steps ?? []).filter((x) => !x.skip);
     if (steps.length && steps.every((x) => x.done)) change(str(b.pr) ? 'built' : 'complete', 'no live process and every step done');
-    else change('pending', 'paused: no live session or process runs it (worktree kept); was running');
+    // steps left and nobody runs it: back to the Queue, never parked in Pending (a phase end whose session ended between
+    // dispatcher ticks must get its next session; the dispatcher's own maxRuns rule still fails a build that keeps crashing)
+    else change('queued', 'no live session or process runs it (worktree kept): back in the Queue for its next session; was running');
   }
   return out;
 }

@@ -16,6 +16,7 @@
  *   … split <id> [--request] [--provider claude|rules]   split a build now (or ask the next tick to)
  *   … intake [--json]              split every build with no steps (and every split the console asked for); auto-queue when the Claude setting says so
  *   … tick [--json]                one dispatcher round: intake, session ends, launches, idle alert, state file
+ *   … tick --shadow [--json]       the plan this side would run, acting on nothing (axf-molly@1 shadow mode)
  *   … accounts [--json]            every account as the pipeline sees it (Fable yes / no, parallel, running)
  *   … selfcheck [--request] [--reason r] [--json]   check every account one by one, release stale claims / slots / builds,
  *                                  rebuild the account snapshot, alert AmberX on a fix or an unusable account. Off the host
@@ -68,6 +69,7 @@ import { homedir, tmpdir } from 'node:os';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as P from './pipeline-core.mjs';
+import * as M from '../../../../framework/core/axf-molly.mjs';
 import * as orch from './web/orchestrator-core.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
 import { addendumBlock, saidBlock, subtitle } from '../../../../framework/core/build-origin.mjs';
@@ -95,7 +97,7 @@ export const SCHEMA_STATE = 'pipeline-state@1';
 const MAX_SPLITS_PER_TICK = 3;
 const LAUNCH_FAILS_PER_HOUR = 3;
 const GONE_GRACE_MS = 10 * 60e3;
-const CLAUDE_ARGS = ['--permission-mode', 'acceptEdits', '--allowedTools', 'Bash', 'Edit', 'Write', 'MultiEdit', 'Read', 'Grep', 'Glob'];
+export const CLAUDE_ARGS = ['--permission-mode', 'acceptEdits', '--allowedTools', 'Bash', 'Edit', 'Write', 'MultiEdit', 'Read', 'Grep', 'Glob'];
 const nowIso = () => new Date().toISOString();
 const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
 const readJson = (f, d = null) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
@@ -109,6 +111,18 @@ export function pipeDir(env = process.env) {
   return existsSync(hub) ? join(hub, 'pipeline') : join(homedir(), '.axf', 'pipeline');
 }
 const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl'), host: join(d, 'accounts-host.json'), checkRequest: join(d, 'selfcheck-request.json'), health: join(d, 'health.json'), healthLock: join(d, 'health.lock'), healthRequest: join(d, 'health-request.json'), authWaits: join(d, 'auth-waits.json') }; };
+
+// ------------------------------------------------------------------ axf-molly: who acts (axf-molly@1 owner lease)
+// The console side (these host crons + the console container) and the axf-molly container read the same lease file
+// (<pipeline dir>/molly/lease.json, on the hub mount both see). Whoever owns it launches, lands and ships; the other side
+// computes the same plan and logs the differences (shadow). AXF_MOLLY_SIDE names this side; AXF_MOLLY_GATE=off ignores
+// the lease (tests of the tick itself).
+export const mollyDir = (env = process.env) => env.AXF_MOLLY_DIR || join(pipeDir(env), 'molly');
+export const mollySide = (env = process.env) => (M.SIDES.includes(env.AXF_MOLLY_SIDE) ? env.AXF_MOLLY_SIDE : 'console');
+export function readLease(env = process.env) { return M.normLease(readJson(join(mollyDir(env), 'lease.json'))); }
+export function writeLease(lease, env = process.env) { writeJson(join(mollyDir(env), 'lease.json'), lease); return lease; }
+export const mollyOwner = (env = process.env) => M.leaseOwner(readLease(env));
+export const mollyActs = (env = process.env) => env.AXF_MOLLY_GATE === 'off' || M.canAct(readLease(env), mollySide(env));
 
 /** The Claude settings document's values (owner-only ones included), {} when unreadable. */
 export function claudeSettings(env = process.env) { return readJson(claudeSettingsFile(env))?.values ?? {}; }
@@ -553,7 +567,8 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
   for (const b of live(store)) {
     // a build whose last step was ticked is already built / complete when its session ends: close the run record, keep the status
     const settled = b.status === 'built' || b.status === 'complete';
-    if (!b.pipeline?.session || !(b.status === 'running' || b.status === 'waiting' || settled)) continue;
+    // a Queued build still carrying a session (the reconciler put a phase-end build back in the Queue first) closes its run here too
+    if (!b.pipeline?.session || !(b.status === 'running' || b.status === 'waiting' || settled || b.status === 'queued')) continue;
     const since = Date.parse(b.pipeline.launchedAt || 0) - 5000;
     const end = events.filter((e) => e.event === 'session-end' && e.session === b.pipeline.session && Date.parse(e.at || 0) >= since).pop();
     let exit = null;
@@ -654,6 +669,15 @@ export function authWaitsTick({ alert = () => {}, by = 'dispatcher' } = {}) {
 export function makeConsole(env = process.env) {
   const name = env.AXF_PIPELINE_CONSOLE || 'axf-console';
   if (name === 'off') return () => null;
+  // from another container (axf-molly) the console is reached over the Docker network, not through docker exec
+  if (env.AXF_CONSOLE_URL) {
+    const base = env.AXF_CONSOLE_URL.replace(/\/$/, '');
+    return (method, path, body) => {
+      const r = spawnSync('curl', ['-s', '-m', '20', '-X', method, '-H', `Authorization: Bearer ${env.AXF_TOKEN || ''}`, '-H', 'Content-Type: application/json', ...(body ? ['--data-binary', '@-'] : []), `${base}${path}`], { input: body ? JSON.stringify(body) : undefined, encoding: 'utf8', timeout: 30e3 });
+      if (r.error || r.status !== 0) return null;
+      try { return JSON.parse(r.stdout); } catch { return null; }
+    };
+  }
   return (method, path, body) => {
     const cmd = `curl -s -m 20 -X ${method} -H "Authorization: Bearer $AXF_TOKEN" -H "Content-Type: application/json" ${body ? '--data-binary @-' : ''} "http://127.0.0.1:${env.AXF_CONSOLE_PORT || 7090}${path}"`;
     const r = spawnSync('docker', ['exec', '-i', name, 'sh', '-c', cmd], { input: body ? JSON.stringify(body) : undefined, encoding: 'utf8', timeout: 30e3 });
@@ -742,7 +766,27 @@ export function selfCheck({ reason = 'on demand', by = 'pipeline', env = process
 
 // ------------------------------------------------------------------ the tick
 
+/**
+ * A tick that acts on nothing: the plan this side would run, for the shadow log (axf-molly@1). The host side still
+ * writes the account snapshot and starts the health sweep, because the container cannot see the Claude logins.
+ */
+export function shadowTick({ env = process.env, why = '' } = {}) {
+  loadUpgradePolicy();
+  const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
+  const read = accountsRead(store, settings, env); const accounts = read.accounts; const sl = slotsNow();
+  if (read.source === 'host') { try { writeHostAccounts(read.rows, read.at || nowIso()); } catch (e) { logLine({ event: 'snapshot-failed', error: str(e.message, 300) }); } }
+  const plan = P.plan({ builds: runnable(store), accounts, slots: sl, settings, rules });
+  let health = null;
+  if (mollySide(env) === 'console') { try { health = kickHealth({ env, settings }); } catch (e) { logLine({ event: 'health-kick-failed', error: str(e.message, 300) }); } }
+  const lease = readLease(env);
+  return { ok: true, shadow: true, at: nowIso(), side: mollySide(env), owner: M.leaseOwner(lease), why: why || M.actingWhy(lease, mollySide(env)),
+    plan: { launches: plan.launches, waits: plan.waits, queue: plan.queue, running: plan.running, pending: plan.pending }, idle: plan.idle ?? null,
+    intake: { split: [], queued: [], skipped: [] }, ended: [], authRequeued: [], launched: [], failed: [], alertsSent: [], selfCheck: null, health };
+}
+
 export function tick({ env = process.env } = {}) {
+  // the other side owns the work (axf-molly cutover, or the console side while the container only shadows): compute, act on nothing
+  if (!mollyActs(env)) { logLine({ event: 'tick-shadow', side: mollySide(env), owner: mollyOwner(env) }); return shadowTick({ env }); }
   loadUpgradePolicy();
   const consoleApi = makeConsole(env);
   const state = loadState();
@@ -791,7 +835,7 @@ export function tick({ env = process.env } = {}) {
       if (!r) throw lastErr ?? new Error('no account accepted the launch');
       const runs = (b.pipeline?.runs ?? 0) + 1;
       const moved = tried.length ? ` after ${tried.join(', ')} refused` : '';
-      setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, launchedAt: nowIso(), dispatchedAt: nowIso(), pickedAt: nowIso(), tried, runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
+      setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, stepsOpen: BP.openSteps(b).length, launchedAt: nowIso(), dispatchedAt: nowIso(), pickedAt: nowIso(), tried, runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
         { status: 'running', note: `Started run ${runs} on ${l.account}${moved}${l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : 'subscriptions first, then API'})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
       if (!b.branch) withStore((s) => { const rec = storeCore.findBuild(s, b.id); if (rec && !rec.branch) rec.branch = `claude/${b.id}`; return s; }, { by: 'pipeline', action: 'pipeline:branch', note: b.id });
       alert('launched', { id: b.id, title: b.title, account: l.account, model: l.model, phase: l.phase, session: r.session });
@@ -1069,8 +1113,8 @@ async function main(argv) {
   if (cmd === 'route') { const b = setRoute(rest[0], rest[1], { by }); return out({ ok: true, id: b.id, route: b.pipeline?.route || 'auto' }, `${b.id}: route ${b.pipeline?.route || 'auto'}`); }
   if (cmd === 'intake') { const r = intake(); return out({ ok: true, ...r }, [`split: ${r.split.map((x) => `${x.id} (${x.provider}, ${x.steps})`).join(', ') || 'nothing'}`, `queued: ${r.queued.join(', ') || 'nothing'}`, ...r.skipped.map((x) => `skipped ${x.id}: ${x.error}`)].join('\n')); }
   if (cmd === 'tick') {
-    const r = tick();
-    return out(r, [`tick ${r.at}`, `split ${r.intake.split.length} · ended ${r.ended.map((e) => `${e.id} ${e.outcome}`).join(', ') || 'none'} · launched ${r.launched.map((l) => `${l.id} on ${l.account} (${l.model})`).join(', ') || 'none'}${r.failed.length ? ` · launch failed ${r.failed.map((f) => `${f.id}: ${f.error}`).join('; ')}` : ''}`,
+    const r = has('shadow') ? shadowTick() : tick();
+    return out(r, [`tick ${r.at}`, r.shadow ? `shadow (${r.side}): ${r.why}` : '', `split ${r.intake.split.length} · ended ${r.ended.map((e) => `${e.id} ${e.outcome}`).join(', ') || 'none'} · launched ${r.launched.map((l) => `${l.id} on ${l.account} (${l.model})`).join(', ') || 'none'}${r.failed.length ? ` · launch failed ${r.failed.map((f) => `${f.id}: ${f.error}`).join('; ')}` : ''}`,
       ...r.plan.waits.map((w) => `  waits: ${w.id}: ${w.why}`), r.idle ? `IDLE since ${r.idle.since}: ${r.idle.reason}` : '', r.selfCheck ? `self-check: ${r.selfCheck.line}` : ''].filter(Boolean).join('\n'));
   }
   if (cmd === 'selfcheck') {

@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+// tmux shim for the axf-molly container: the pipeline, agent-slots and build-lock code call `tmux has-session`,
+// `list-panes`, `capture-pane` and `kill-session`; here each one goes over the host bridge (host-bridge@1) to the real
+// tmux on the VPS. Anything else tmux can do is refused (exit 2). PATH in the image puts this folder first.
+import { bridge } from '../bridge-client.mjs';
+
+const argv = process.argv.slice(2);
+const [sub] = argv;
+const target = () => { const i = argv.indexOf('-t'); return i >= 0 ? String(argv[i + 1] || '').replace(/^=/, '') : ''; };
+const lines = () => { const i = argv.indexOf('-S'); return i >= 0 ? String(Math.abs(Number(argv[i + 1]) || 40)) : '40'; };
+let call;
+if (sub === 'has-session') call = ['tmux.has', [target()]];
+else if (sub === 'list-panes' || sub === 'list-sessions' || sub === 'ls') call = ['tmux.list', []];
+else if (sub === 'capture-pane') call = ['tmux.capture', [target(), lines()]];
+else if (sub === 'kill-session') call = ['tmux.kill', [target()]];
+else { process.stderr.write(`tmux shim: "${sub}" is not bridged\n`); process.exit(2); }
+bridge(call[0], call[1]).then((r) => {
+  if (r.stdout) process.stdout.write(r.stdout);
+  if (r.stderr) process.stderr.write(r.stderr);
+  if (r.error) process.stderr.write(`${r.error}\n`);
+  process.exit(r.ok ? (r.status || 0) : (r.status || 1));
+});
