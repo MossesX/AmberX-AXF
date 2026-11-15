@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5778,
- "updatedAt": "2026-11-15T00:27:42.827Z",
+ "rev": 5779,
+ "updatedAt": "2026-11-15T00:28:01.829Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -142836,7 +142836,7 @@
    "pr": "#439",
    "priority": "P0",
    "createdAt": "2026-11-10T03:11:27.944Z",
-   "updatedAt": "2026-11-10T04:19:03.074Z",
+   "updatedAt": "2026-11-15T00:27:18.563Z",
    "builtAt": "2026-11-10T04:18:16.681Z",
    "notes": [
     {
@@ -142881,6 +142881,23 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:27:18.441Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/agent-swarm/server/__init__.py, apps/console-web/plugins/agent-swarm/web/swarm-core.mjs, apps/console-web/plugins/ui-review/README.md, apps/console-web/plugins/ui-review/help.json, apps/console-web/plugins/ui-review/plugin.json, apps/console-web/plugins/ui-revie"
+     }
+    ]
    },
    "steps": [
     {
@@ -142961,7 +142978,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -143000,7 +143017,7 @@
    "pr": "#441",
    "priority": "P0",
    "createdAt": "2026-11-10T03:14:09.017Z",
-   "updatedAt": "2026-11-10T04:34:26.173Z",
+   "updatedAt": "2026-11-15T00:27:13.180Z",
    "builtAt": "2026-11-10T04:32:59.321Z",
    "notes": [
     {
@@ -143045,6 +143062,23 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:27:13.100Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Superseded: only merges and status files are missing from main. Kept as archive/resolve-merge-conflicts-and-land-running-builds."
+     }
+    ]
    },
    "steps": [
     {
@@ -143125,7 +143159,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
