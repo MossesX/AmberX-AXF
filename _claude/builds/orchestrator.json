@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T04:20:52.307Z",
+ "updatedAt": "2026-11-15T04:22:08.037Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -147574,12 +147574,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T04:20:19.690Z",
-   "updatedAt": "2026-11-15T04:20:31.388Z",
+   "updatedAt": "2026-11-15T04:22:05.451Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-15T04:20:31.388Z"
+    },
+    {
+     "text": "Brett (now) OVERRIDE: the orchestrator AND the gate/VPS rules/merge queue/auto-lander go into their OWN container (e.g. 'axf-orchestrator'), deployed on Coolify, auto-restart, not inside axHub and not inside the console. Private only: no public port, no DNS entry; reachable only on the internal Docker network. axHub is the UI and the door: its screens and its tools (orchestrator.*, gate.*, vps.*) talk to the container internally, behind axHub's existing login and domain. The container needs controlled host access to launch/watch builds (tmux sessions, /root/axf-builds worktrees, git, claude CLI, the builds store): use a narrow host bridge (mounted paths + a small host-side runner/agent), not a wide-open docker socket; document exactly what it can touch. Same staging as before: shadow mode first, then cutover, console plugin retired after. Applies to auto-lander-controls-in-the-gate-plugin too (its gate + merge queue land in this container, UI in axHub).",
+     "at": "2026-11-15T04:22:05.451Z"
     }
    ],
    "approvals": [],
