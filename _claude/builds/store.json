@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5795,
- "updatedAt": "2026-11-15T00:32:50.477Z",
+ "rev": 5796,
+ "updatedAt": "2026-11-15T00:33:07.136Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -137937,23 +137937,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:32:27.906Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/plugin.json, apps/console-web/plugins/build-orchestrator/server/__init__.py, apps/console-web/plugins/build-orchestrator/t"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -140922,23 +140905,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:32:07.026Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/theme-manager/README.md, apps/console-web/plugins/theme-manager/help.json, apps/console-web/plugins/theme-manager/plugin.json, apps/console-web/plugins/theme-manager/server/__init__.py, apps/console-web/plugins/theme-manager/test.py, apps/console-web/plugins/the"
-     }
-    ]
    },
    "steps": [
     {
@@ -144590,23 +144556,6 @@
     "from": "",
     "addenda": []
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:32:47.028Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/README.md, apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrator/plugin.json, apps/conso"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -145265,23 +145214,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:32:41.519Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/README.md, apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrator/plugin.json, apps/conso"
-     }
-    ]
    },
    "steps": [
     {
@@ -147345,23 +147277,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:32:23.195Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/amberx-droid/registry.json, apps/amberx-droid/registry/moshi.json, apps/axhub-web/providers/coolify/registry.json, apps/axhub-web/providers/hostinger/registry.json, apps/axhub-web/providers/vps/registry.json, apps/axhub-web/registry.json, apps/console"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -148831,23 +148746,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:32:35.656Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/amberx-droid/src/plugins/commands/web/lib-developer.ts, apps/console-web/framework/index.d.mts, apps/console-web/framework/index.mjs, apps/console-web/framework/inline-edit/capture.mjs, apps/console-web/framework/test.mjs, apps/console-web/framework/t"
-     }
-    ]
    },
    "steps": [
     {
@@ -156726,23 +156624,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:32:16.499Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/build-orchestrator/help.json, apps/console-web/plugins/build-orchestrator/notify.json, apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.t"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -156947,23 +156828,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:32:12.448Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/build-orchestrator/notify.json, apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/server/test_alerts.py"
-     }
-    ]
    },
    "steps": [
     {
@@ -188749,23 +188613,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:31:50.745Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: framework/core/engines/chrome-settings-rules.d.mts, framework/core/engines/chrome-settings-rules.mjs, framework/core/engines/components.ts, framework/core/runtime.ts, framework/core/types.ts, framework/react/AxfProvider.tsx, framework/react/components/Chrome.tsx, framework/react/compone"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -191617,23 +191464,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:31:45.458Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/README.md, apps/console-web/plugins/github-client/DESIGN.md, apps/console-web/plugins/github-client/README.md, apps/console-web/plugins/github-client/contract.json, apps/console-web/plugins/github-client/help.json, apps/console-web/plugins/github-client/hooks.mj"
-     }
-    ]
    },
    "steps": [
     {
@@ -200094,23 +199924,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:31:38.206Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: framework/spec/check-chrome-apply.mts"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -201533,7 +201346,7 @@
    "pr": "#630",
    "priority": "P1",
    "createdAt": "2026-11-13T18:13:23.703Z",
-   "updatedAt": "2026-11-15T00:27:27.420Z",
+   "updatedAt": "2026-11-15T00:32:37.281Z",
    "builtAt": "",
    "notes": [
     {
@@ -201569,7 +201382,16 @@
      "at": "2026-11-15T00:27:27.414Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-15T00:32:37.281Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "I don't want drop-down bars anymore. They are gonna be animated. It's gonna be a row with a name and a little arrow; when you press that arrow it expands a subgrid; you got to press it again to apply it and close it.",
@@ -201677,12 +201499,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:32:37.281Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T18:14:50.263Z",
-     "updatedAt": "2026-11-13T18:14:50.263Z"
+     "updatedAt": "2026-11-15T00:32:37.560Z"
     },
     {
      "id": "s4",
@@ -201872,7 +201694,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -202349,23 +202171,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:31:34.818Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/README.md, apps/console-web/plugins/approvals-banner/help.json, apps/console-web/plugins/approvals-banner/test.mts, apps/console-web/plugins/approvals-banner/web/decisions.ts, apps/console-web/plugins/approvals-banner/web/index.tsx, apps/console-web/plugins/deci"
-     }
-    ]
    },
    "steps": [
     {
@@ -204418,23 +204223,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:31:28.269Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-droid/.gitignore, apps/console-droid/README.md, apps/console-droid/app/build.gradle, apps/console-droid/app/src/main/AndroidManifest.xml, apps/console-droid/app/src/main/assets/offline.html, apps/console-droid/app/src/main/java/ai/amberx/conso"
-     }
-    ]
    },
    "steps": [
     {
