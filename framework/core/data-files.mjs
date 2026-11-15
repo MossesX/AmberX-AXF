@@ -25,6 +25,7 @@ import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, statSy
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import { DataStoreError, NAMESPACES, LIMITS, PATTERNS, canonical, createDataStore, etagOf, httpBackend, kindOfFile } from './data-store.mjs';
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -220,6 +221,21 @@ export async function appendJsonl(p, entry) {
   if (mode === 'cutover' && kindOfKey(key) === 'journal') { await needRemote(key).append(key, [entry], { idempotencyKey: randomUUID() }); return; }
   appendJsonlSync(p, entry);
   await flush();
+}
+
+/**
+ * One data-store@1 call, synchronously (a child node process runs framework/cli/data-call.mjs): for sync code that
+ * must work in cutover (builds-store.mjs). Throws DataStoreError with the server's code. AXF_DATA_CALL_SYNC may name
+ * another helper (tests point it at an in-process store).
+ */
+export function callSync(req) {
+  const helper = process.env.AXF_DATA_CALL_SYNC || join(REPO, 'framework/cli/data-call.mjs');
+  let text;
+  try { text = execFileSync(process.execPath, [helper], { input: JSON.stringify(req), encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, timeout: 60000 }); }
+  catch (e) { throw new DataStoreError('unavailable', `data-call failed: ${String(e.message).slice(0, 200)}`); }
+  const r = JSON.parse(text.trim().split('\n').pop());
+  if (!r.ok) throw new DataStoreError(r.code, r.message, { rev: r.rev, etag: r.etag });
+  return r.result;
 }
 
 /** A plugin's lifecycle dataDir through the layer: relative paths, same calls. */
