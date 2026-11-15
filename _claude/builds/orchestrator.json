@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T01:31:16.984Z",
+ "updatedAt": "2026-11-15T01:31:33.536Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -128339,7 +128339,7 @@
    "title": "UI Manager: floating window to select any element in the console and edit all its tokens",
    "category": "",
    "detail": "UI Manager (console plugin), opens in a floating window.\n- Lets Brett select ANY UI element in the whole console (every screen, plugin, dialog, toolbar, tab group, banner, nav, widget, control).\n- Left: collapsible categorized tree of all elements. Top category 'On screen now' lists every element currently visible; these are references (like Windows shortcuts / symlinks) to the same element that also lives in its normal category - both point to one shared source, edit either and both change.\n- Selecting an element (or picking it on screen with an inspector/picker mode) opens it according to the chosen view (several views: expanding row, side panel, grid...). Default: an expanding row listing all its properties and every token it reads.\n- Each property/token is edited by choosing from predetermined, valid values supplied by the console/framework integration (token sets, skins, assets, enums, ranges) - never free text where a valid list exists; schema-validated; live preview; reset to skin/default; shows overrides.\n- Searchable, sortable, multi-filter lists everywhere (thousands of elements).\n- Full API: REST/MCP/CLI/voice/control@1 ('select the main toolbar, set its transparency to 80').\n- Elements register via the framework (manifest) so new plugins appear automatically.\n- Tests, help, Shipped features. Fable for the element registry/schema core, Opus for UI.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -128347,7 +128347,7 @@
    "pr": "#634",
    "priority": "P1",
    "createdAt": "2026-11-13T18:30:38.922Z",
-   "updatedAt": "2026-11-15T01:03:30.524Z",
+   "updatedAt": "2026-11-15T01:31:24.281Z",
    "builtAt": "",
    "notes": [
     {
@@ -128461,6 +128461,10 @@
     {
      "text": "Phase 2 (Opus) s6-s9 done and pushed. Still open: UI Review shots (desktop + phone) of the floating window were not taken; uiElements is not yet in plugin.schema.json (contract change, Fable).",
      "at": "2026-11-15T01:03:08.871Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-15T01:31:24.281Z"
     }
    ],
    "approvals": [
@@ -133845,7 +133849,7 @@
    "title": "Token registry and Skin Editor: live sandbox preview, snapshot history",
    "category": "",
    "detail": "Runs after the token schema step of own-token-sets-for-grids-and-tab-groups (builds on its schema).\n1. TOKEN REGISTRY: one registry listing every token in the system, with element type, area (layout/style/colour/behaviour), state, light/dark, level (basic/pro/advanced), plain-English description, default and source. Every new UI, component or plugin MUST register its tokens through its manifest. A CI check fails any UI whose tokens aren't in the registry, and any registered token that nothing uses. Browsable and searchable, with full API.\n2. SKIN EDITOR (plugin and screen): pick any UI from the list (a screen, plugin, dialog, element), or pick it on screen, and it's loaded into a sandbox live-preview window with real components and sample data. Every edit hot-renders the preview in real time. The token list comes from the registry, with Basic/Pro/Advanced views. Inline element and asset editors work inside it.\n3. DEFAULT SKIN: there is always a built-in default skin that is locked.\n4. SNAPSHOTS: every edit to a skin automatically takes a snapshot (like a disk snapshot). A timeline shows the chain of edits, each with time, who/what made it, and a diff of exactly which tokens changed (old -> new). Click any snapshot to preview it, compare any two, or revert to it (a revert is itself a new snapshot, so nothing is ever lost). No breaking skins into separate style or colour groups: the skin is the only unit.\n5. EXPORT: at any point, 'Export current to new skin' saves the current state as a brand-new skin (name, thumbnail, to the hub library).\n6. Restore previous edit / Restore from axHub work through the snapshots.\n7. Full API: REST/MCP/CLI/voice ('revert the skin to 10 minutes ago', 'export this as a new skin called Midnight'). Tests, help, Shipped features. Fable for the registry and snapshot schema.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -133854,8 +133858,8 @@
    "mergedAt": "2026-11-14T21:33:25Z",
    "priority": "P1",
    "createdAt": "2026-11-13T20:04:16.679Z",
-   "updatedAt": "2026-11-15T01:24:31.347Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-15T01:31:24.281Z",
+   "builtAt": "2026-11-15T01:31:24.281Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -133908,6 +133912,10 @@
     {
      "text": "Reconciler: PR #657 merged: complete",
      "at": "2026-11-15T01:07:48.664Z"
+    },
+    {
+     "text": "Reconciler: PR #700 merged: complete",
+     "at": "2026-11-15T01:31:24.281Z"
     }
    ],
    "approvals": [
@@ -139345,7 +139353,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-15T01:31:14.729Z",
+   "updatedAt": "2026-11-15T01:31:24.281Z",
    "builtAt": "",
    "notes": [
     {
@@ -139455,6 +139463,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-demo-video-series-three-minute-browser--sully, shared account login)",
      "at": "2026-11-15T01:22:19.341Z"
+    },
+    {
+     "text": "Reconciler: PR #667 names s1, s5, s6, s8, s9, s10, s11, s12 done",
+     "at": "2026-11-15T01:31:24.281Z"
     }
    ],
    "approvals": [],
