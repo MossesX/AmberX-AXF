@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T16:16:17.582Z",
+ "updatedAt": "2026-11-15T16:17:06.098Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -153509,7 +153509,7 @@
    "pr": "#714",
    "priority": "P1",
    "createdAt": "2026-11-15T14:55:29.131Z",
-   "updatedAt": "2026-11-15T16:16:14.746Z",
+   "updatedAt": "2026-11-15T16:17:04.005Z",
    "builtAt": "2026-11-15T16:15:56.589Z",
    "notes": [
     {
@@ -153531,6 +153531,10 @@
     {
      "text": "Headless run axf-shipped-features-open-button-views-each--sully: brief only · start 14.5K tokens ($0.04) · cost $11.94 · 211 turns · 6 tools, MCP none",
      "at": "2026-11-15T16:16:14.746Z"
+    },
+    {
+     "text": "Session axf-shipped-features-open-button-views-each--sully on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-15T16:17:04.005Z"
     }
    ],
    "approvals": [],

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6333,
- "updatedAt": "2026-11-15T16:16:17.582Z",
+ "rev": 6334,
+ "updatedAt": "2026-11-15T16:17:06.098Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -236974,7 +236974,7 @@
    "pr": "#714",
    "priority": "P1",
    "createdAt": "2026-11-15T14:55:29.131Z",
-   "updatedAt": "2026-11-15T16:16:14.746Z",
+   "updatedAt": "2026-11-15T16:17:04.005Z",
    "builtAt": "2026-11-15T16:15:56.589Z",
    "notes": [
     {
@@ -236996,6 +236996,10 @@
     {
      "text": "Headless run axf-shipped-features-open-button-views-each--sully: brief only · start 14.5K tokens ($0.04) · cost $11.94 · 211 turns · 6 tools, MCP none",
      "at": "2026-11-15T16:16:14.746Z"
+    },
+    {
+     "text": "Session axf-shipped-features-open-button-views-each--sully on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-15T16:17:04.005Z"
     }
    ],
    "approvals": [],
@@ -237016,12 +237020,19 @@
     "queuedAt": "2026-11-15T14:55:31.373Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-shipped-features-open-button-views-each--sully",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-15T14:57:29.625Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-15T16:17:03.298Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-shipped-features-open-button-views-each--sully"
+    },
     "split": {
      "at": "2026-11-15T14:57:11.931Z",
      "by": "orchestrator",
@@ -237433,7 +237444,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
