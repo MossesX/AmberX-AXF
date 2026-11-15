@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6347,
- "updatedAt": "2026-11-15T17:09:10.191Z",
+ "rev": 6348,
+ "updatedAt": "2026-11-15T19:56:33.376Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -229274,7 +229274,7 @@
    "title": "Auto-lander controls in the gate plugin",
    "category": "",
    "detail": "Add an 'Auto-lander' tab to the server gate plugin built today (the one with the gate rules, ~3 tabs; from server-gate-one-session-per-build-no / owner-recognized-everywhere-veto policy work; find the right one, it's whichever holds the gate rules). The tab controls the auto-lander (cron /etc/cron.d/axf-auto-land, push-banner land.mjs / serial lander): a big On/Off switch (writes the setting the cron reads; off = cron skips), live status (last run time, result, what it's landing now, why it's not landing: queue empty, CI waiting, conflict, token missing), the landing line (one at a time, in order) with move up / skip / land now per build, mode picker (serial one-at-a-time vs merge queue, default serial), and the log of recent runs. Also diagnose now why the auto-lander lands nothing even though its cron exists (console app PRs #637/#639/#633/#640/#643 green for 2h+), and fix it. Remove the stale 'axf-lander inactive' warning (that systemd service doesn't exist). Full API and voice ('turn on the auto lander', 'what's landing'), tokens only, tests, help, Shipped features.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -229282,7 +229282,7 @@
    "pr": "#705",
    "priority": "P0",
    "createdAt": "2026-11-15T04:17:06.158Z",
-   "updatedAt": "2026-11-15T12:30:55.764Z",
+   "updatedAt": "2026-11-15T19:56:31.550Z",
    "builtAt": "",
    "notes": [
     {
@@ -229336,6 +229336,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-15T12:30:55.764Z"
+    },
+    {
+     "text": "Brett (now): TOP PRIORITY, run this before anything else. The auto-lander still lands NOTHING. Fix the auto-lander itself so every finished build lands one at a time, merging main first and fixing clashes (most clashes are generated files like inventory.json, catalog.json, status.json, android.yml: regenerate them instead of failing). Then land the backlog of built builds one at a time. Gate & rules plugin (PR #711) and Build rules tab are already on main; wire into them.",
+     "at": "2026-11-15T19:56:31.550Z"
     }
    ],
    "approvals": [],
@@ -229808,7 +229812,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
