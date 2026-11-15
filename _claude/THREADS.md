@@ -801,9 +801,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:43 UTC · `merge-main-land-change-to-move-amberx` s6 done (all) · orchestrator
-- 2026-11-14 23:43 UTC · `merge-main-land-change-to-move-amberx` branch claude/change-to-move-amberx-web-app-console, PR #586 (all) · builds-live
-- 2026-11-14 23:43 UTC · `merge-main-land-change-to-move-amberx` s7 done (all) · orchestrator
 - 2026-11-14 23:43 UTC · `merge-main-land-change-to-move-amberx` s8 done (all) · orchestrator
 - 2026-11-14 23:44 UTC · `merge-main-land-change-to-move-amberx` s9 done (all) · orchestrator
 - 2026-11-14 23:44 UTC · `merge-main-land-console-app-part-3` → running, note (all) · pipeline
@@ -1201,6 +1198,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 04:31 UTC · `data-container-axf-data-holds-all` note (all) · orchestrator
 - 2026-11-15 04:30 UTC · `auto-lander-controls-in-the-gate-plugin` s2 done (all) · orchestrator
 - 2026-11-15 04:34 UTC · `auto-lander-controls-in-the-gate-plugin` s3 done (all) · orchestrator
+- 2026-11-15 04:34 UTC · `auto-lander-controls-in-the-gate-plugin` s5 done (all) · orchestrator
+- 2026-11-15 04:35 UTC · `auto-lander-controls-in-the-gate-plugin` s6 done (all) · orchestrator
+- 2026-11-15 04:35 UTC · `auto-lander-controls-in-the-gate-plugin` s7 done (all) · orchestrator
 
 ## Token passes (log)
 
