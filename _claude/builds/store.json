@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6341,
- "updatedAt": "2026-11-15T16:30:15.026Z",
+ "rev": 6342,
+ "updatedAt": "2026-11-15T16:40:50.878Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -237479,7 +237479,7 @@
    "title": "axf-data on Postgres: real tables in its own container",
    "category": "",
    "detail": "Follow-up to data-container-axf-data-holds-all (PR #704, SQLite + blobs). Move axf-data onto Postgres (Brett's Nov 6 choice) as its own private Coolify container with a persistent volume and daily backups. Real tables (not JSON copies or SQLite blobs) for: builds store, journal and history, notes, settings, planner items, UI reviews, the one true feature store, the Shipped features ledger, chats, and the API/control registry (apps/console-web/src/control/inventory.json becomes a table generated from each plugin's registered targets, never hand-edited, so builds stop clashing on it). Keep the data-store@1 API on top so callers don't change. Migrate from the SQLite axf-data with backup first, count checks, shadow, then cutover; never lose data. Tests, help, Shipped features. Land with the one-at-a-time lander.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -237487,7 +237487,7 @@
    "pr": "#713",
    "priority": "P0",
    "createdAt": "2026-11-15T15:12:29.907Z",
-   "updatedAt": "2026-11-15T16:12:30.473Z",
+   "updatedAt": "2026-11-15T16:40:48.930Z",
    "builtAt": "",
    "notes": [
     {
@@ -237517,6 +237517,10 @@
     {
      "text": "Headless run axf-axf-data-postgres-real-tables-own--gina: brief only · start 13.1K tokens ($0.10) · cost $25.81 · 125 turns · 6 tools, MCP none",
      "at": "2026-11-15T16:12:30.473Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-15T16:40:48.930Z"
     }
    ],
    "approvals": [],
@@ -237634,7 +237638,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

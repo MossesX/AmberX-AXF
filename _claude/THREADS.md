@@ -807,7 +807,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 01:41 UTC · `demo-video-series-three-minute-browser` note (all) · reconciler
 - 2026-11-15 01:41 UTC · `demo-video-series-three-minute-browser` s23 done (all) · orchestrator
 - 2026-11-15 01:42 UTC · `demo-video-series-three-minute-browser` s24 done (all) · orchestrator
 - 2026-11-15 01:43 UTC · `demo-video-series-three-minute-browser` s7 done (all) · orchestrator
@@ -1207,6 +1206,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 16:28 UTC · `phone-connect-small-android-companion` s34 done, → built (all) · orchestrator
 - 2026-11-15 16:29 UTC · `phone-connect-small-android-companion` note (all) · orchestrator
 - 2026-11-15 16:30 UTC · `phone-connect-small-android-companion` note (all) · pipeline
+- 2026-11-15 16:40 UTC · `axf-data-postgres-real-tables-own` → pending, note (all) · reconciler
 
 ## Token passes (log)
 
