@@ -1,6 +1,7 @@
 import { Button, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import * as R from '@console/axf/core/engines/context-menus-rules.mjs';
 import { isLevel, matchPhrase } from '@console/axf/core/engines/context-menus-rules.mjs';
 import { ContextMenusPage } from './ContextMenus';
 import { appMenu } from './menu';
@@ -13,15 +14,31 @@ import './context-menus.css';
  * parts. Actions (also MCP / CLI / voice through plugin-commands): context-menus.open [tab] | .generate <level> [app]
  * | .preview <level> [app] | .apply [draft id] | .use <menu id> | .zones | .say "<sentence>".
  */
-let focus: { tab?: 'generate' | 'drafts' | 'menus' | 'zones'; level?: 'beginner' | 'amateur' | 'pro' | 'advanced'; menu?: string } = {};
+let focus: { tab?: 'generate' | 'drafts' | 'menus' | 'zones'; level?: 'beginner' | 'amateur' | 'pro' | 'advanced'; menu?: string; zone?: string; page?: string } = {};
 
-async function generate(rt: ReturnType<typeof useRuntime>, level: string, app?: string, apply = false) {
+/** The trailing "Context menus" submenu on EVERY right-click menu (any target): generate this page's menus at a level,
+ *  open this zone's menus. Not ready Claude: the generate entries say so and explain on click (the runtime has no
+ *  disabled item, so the label carries the state and the action toasts the reason). */
+export const TRAIL_KEY = '*:context-menus';
+export function trailEntries(target = 'default', page = ''): import('@console/axf/core').MenuEntry[] {
+  const s = S.getState();
+  const ready = !!s?.claude.ready;
+  const suffix = ready ? '' : ' (Claude not ready)';
+  return [{ id: 'context-menus-trail', label: 'Context menus', icon: 'menu', items: [
+    ...Object.values(R.LEVELS).map((l) => ({ id: `context-menus-gen-${l.id}`, label: `Generate ${l.label.toLowerCase()} menus for this page${suffix}`, icon: 'sparkles', action: `context-menus.generate:${l.id}:${S.APP}:${page}` })),
+    { id: 'context-menus-trail-sep', separator: true },
+    { id: 'context-menus-zone-menus', label: `Menus for “${target}”…`, icon: 'menu', action: `context-menus.open:menus::${target}` },
+    { id: 'context-menus-open', label: 'Open Context menus', icon: 'external-link', action: 'context-menus.open' },
+  ] }];
+}
+
+async function generate(rt: ReturnType<typeof useRuntime>, level: string, app?: string, apply = false, page = '') {
   if (!isLevel(level)) { rt.toast(`Level must be beginner, amateur, pro or advanced (got "${level}")`, 'warning', 'Context menus'); return; }
   const s = S.getState() ?? (await S.load(rt));
   if (s && !s.claude.ready) { rt.toast(s.claude.reason, 'warning', 'Context menus'); focus = { tab: 'generate', level }; rt.navigate(S.VIEW); return; }
-  rt.toast(`Generating ${level} context menus${app ? ` for ${app}` : ''}…`, 'info', 'Context menus');
+  rt.toast(`Generating ${level} context menus${app ? ` for ${app}` : ''}${page ? ` · ${page}` : ''}…`, 'info', 'Context menus');
   try {
-    const r = await S.generate(level, { app, actions: S.liveActions(rt), apply });
+    const r = await S.generate(level, { app, page, actions: S.liveActions(rt), apply });
     await S.load(rt);
     if (!r.ok) { rt.toast(r.error ?? 'Claude did not answer', 'warning', 'Context menus'); return; }
     rt.toast(apply ? `${r.menu?.name ?? 'Menu'} applied and in use.` : `Draft ready: ${r.draft?.summary.items ?? 0} items in ${r.draft?.summary.targets ?? 0} zones. Preview it, then Apply.`, 'success', 'Context menus');
@@ -40,8 +57,9 @@ export const plugin: AxfWebLibrary = {
   register(rt) {
     S.publishService(rt);
     void S.load(rt);
-    rt.actions.register('context-menus.open', ([tab, menu]) => { focus = { tab: (tab as typeof focus.tab) || undefined, menu: menu || undefined }; rt.navigate(S.VIEW); }, { label: 'Open Context menus (tab: generate / drafts / menus / zones)', params: true });
-    rt.actions.register('context-menus.generate', ([level, app]) => { void generate(rt, level || 'pro', app || undefined, false); }, { label: 'Generate context menus with Claude at a level (a draft to preview)', params: true });
+    rt.contextExtras.set(TRAIL_KEY, (target) => trailEntries(target || 'default', String(rt.getState().view ?? '')));
+    rt.actions.register('context-menus.open', ([tab, menu, zone]) => { focus = { tab: (tab as typeof focus.tab) || undefined, menu: menu || undefined, zone: zone || undefined }; rt.navigate(S.VIEW); }, { label: 'Open Context menus (tab: generate / drafts / menus / zones; then menu id, zone)', params: true });
+    rt.actions.register('context-menus.generate', ([level, app, page]) => { void generate(rt, level || 'pro', app || undefined, false, page || ''); }, { label: 'Generate context menus with Claude at a level (app, page: a draft to preview)', params: true });
     rt.actions.register('context-menus.preview', ([level, app]) => { void generate(rt, level || 'pro', app || undefined, false); }, { label: 'Preview Claude-generated context menus at a level', params: true });
     rt.actions.register('context-menus.apply', ([id]) => {
       const d = id ? S.getState()?.drafts.find((x) => x.id === id) : S.getState()?.drafts[0];
@@ -72,7 +90,6 @@ export const plugin: AxfWebLibrary = {
   },
   nav: { label: 'Plugins', items: [{ id: 'context-menus', label: 'Context menus', icon: 'menu', view: 'context-menus' }] },
   contextMenu: [
-    { id: 'context-menus.default', target: 'default', order: 94, items: [{ id: 'context-menus', label: 'Context menus…', icon: 'menu', action: 'context-menus.open' }] },
     { id: 'context-menus.zone', target: 'context-menus-zone', items: [{ id: 'context-menus-zone-open', label: 'Map this zone…', icon: 'target', action: 'context-menus.zones' }] },
   ],
   settingsTabs: [{ id: 'context-menus', label: 'Context menus', icon: 'menu', order: 90, parent: 'plugins' }],

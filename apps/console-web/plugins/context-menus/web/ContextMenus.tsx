@@ -15,7 +15,7 @@ import * as S from './store';
 type Tab = 'generate' | 'drafts' | 'menus' | 'zones';
 const LEVEL_OPTIONS = Object.values(R.LEVELS).map((l) => ({ value: l.id, label: `${l.label} · ≤${l.perTarget} items` }));
 
-export function ContextMenusPage({ focus }: { focus?: { tab?: Tab; level?: LevelId; menu?: string } } = {}) {
+export function ContextMenusPage({ focus }: { focus?: { tab?: Tab; level?: LevelId; menu?: string; zone?: string } } = {}) {
   const rt = useRuntime();
   const [, bump] = useState(0);
   const [tab, setTab] = useState<Tab>(focus?.tab ?? 'generate');
@@ -47,7 +47,7 @@ export function ContextMenusPage({ focus }: { focus?: { tab?: Tab; level?: Level
       ]} />
       {tab === 'generate' && <Generate level={focus?.level} onDraft={() => setTab('drafts')} />}
       {tab === 'drafts' && <Drafts />}
-      {tab === 'menus' && <Menus focusMenu={focus?.menu} />}
+      {tab === 'menus' && <Menus focusMenu={focus?.menu} focusZone={focus?.zone} />}
       {tab === 'zones' && <Zones />}
     </div>
   );
@@ -174,14 +174,15 @@ function MenuPreview({ doc }: { doc: MenuDoc }) {
 
 /* ---------------- Menus: every menu on the hub ---------------- */
 
-function Menus({ focusMenu }: { focusMenu?: string }) {
+function Menus({ focusMenu, focusZone }: { focusMenu?: string; focusZone?: string }) {
   const rt = useRuntime();
   const s = S.getState();
   const [q, setQ] = useState('');
   const [level, setLevel] = useState('');
+  const [zone, setZone] = useState(focusZone ?? '');
   const [expanded, setExpanded] = useState<string[]>(focusMenu ? [focusMenu] : []);
   const [msg, setMsg] = useState('');
-  const menus = useMemo(() => R.filterMenus(s?.menus ?? [], { q, level }), [s, q, level]);
+  const menus = useMemo(() => R.filterMenus(s?.menus ?? [], { q, level, zone }), [s, q, level, zone]);
   const groups = useMemo<GridGroup<MenuDoc>[]>(() => {
     const byApp = new Map<string, MenuDoc[]>();
     for (const m of menus) byApp.set(m.app, [...(byApp.get(m.app) ?? []), m]);
@@ -202,6 +203,7 @@ function Menus({ focusMenu }: { focusMenu?: string }) {
       <div className="axp-ctxm-form">
         <TextField label="Search" type="search" value={q} onChange={setQ} placeholder="name, zone, action, level…" />
         <SelectField label="Level" value={level} options={LEVEL_OPTIONS} onChange={setLevel} empty="Every level" />
+        <SelectField label="Zone" value={zone} options={(s?.zones ?? []).map((z) => ({ value: z.id, label: z.id }))} onChange={setZone} empty="Every zone" />
       </div>
       {msg && <Note tone="info">{msg}</Note>}
       {menus.length === 0 ? <EmptyState icon="menu" compact>{s?.menus.length ? 'No menu matches.' : 'No context menu on the hub yet. Generate one, or save one from the designer.'}</EmptyState> : (
