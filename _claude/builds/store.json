@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6295,
- "updatedAt": "2026-11-15T15:14:15.825Z",
+ "rev": 6296,
+ "updatedAt": "2026-11-15T15:14:28.003Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -237437,7 +237437,7 @@
    "title": "axf-data on Postgres: real tables in its own container",
    "category": "",
    "detail": "Follow-up to data-container-axf-data-holds-all (PR #704, SQLite + blobs). Move axf-data onto Postgres (Brett's Nov 6 choice) as its own private Coolify container with a persistent volume and daily backups. Real tables (not JSON copies or SQLite blobs) for: builds store, journal and history, notes, settings, planner items, UI reviews, the one true feature store, the Shipped features ledger, chats, and the API/control registry (apps/console-web/src/control/inventory.json becomes a table generated from each plugin's registered targets, never hand-edited, so builds stop clashing on it). Keep the data-store@1 API on top so callers don't change. Migrate from the SQLite axf-data with backup first, count checks, shadow, then cutover; never lose data. Tests, help, Shipped features. Land with the one-at-a-time lander.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -237445,7 +237445,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T15:12:29.907Z",
-   "updatedAt": "2026-11-15T15:14:03.897Z",
+   "updatedAt": "2026-11-15T15:14:09.416Z",
    "builtAt": "",
    "notes": [
     {
@@ -237455,6 +237455,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":2597,\"stop_reason\":\"tool_use\",\"session_id\":\"f2026778-f24a-4666-a627-cdc7bf0c3152\",\"total_cost_usd\":0.397677,\"usage\":{\"input_tokens\":2,\"cache_creation_input_tokens\":48): one step per line of the request, review the steps.",
      "at": "2026-11-15T15:13:43.323Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-axf-data-postgres-real-tables-own--gina, shared account login)",
+     "at": "2026-11-15T15:14:09.416Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-axf-data-postgres-real-tables-own--gina.",
@@ -237478,12 +237482,12 @@
    "pipeline": {
     "queuedAt": "2026-11-15T15:12:32.196Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-axf-data-postgres-real-tables-own--gina",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-15T15:14:02.548Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-15T15:13:43.323Z",
@@ -237493,9 +237497,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":2597,\"stop_reason\":\"tool_use\",\"session_id\":\"f2026778-f24a-4666-a627-cdc7bf0c3152\",\"total_cost_usd\":0.397677,\"usage\":{\"input_tokens\":2,\"cache_creation_input_tokens\":48): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-15T15:14:02.548Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -237504,7 +237508,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-15T15:14:02.548Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
