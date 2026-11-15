@@ -98,6 +98,20 @@ if (cmd === 'console') {
   const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'console.mjs')).href);
   process.exit(await main(rest));
 }
+// `axf voice …` goes to the plugin that provides the voice listener (service:axf.wake-listener@1 with a cli.mjs), never
+// by folder name: Claude mode on / off / status / test and the command history.
+if (cmd === 'voice') {
+  const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
+  const { join: joinPath } = await import('node:path');
+  const { pathToFileURL } = await import('node:url');
+  const plugins = joinPath(import.meta.dirname ?? new URL('.', import.meta.url).pathname, '../../apps/console-web/plugins');
+  const dir = (exists(plugins) ? readdirSync(plugins) : []).sort().find((d) => {
+    try { return JSON.parse(readText(joinPath(plugins, d, 'plugin.json'), 'utf8')).provides?.includes('service:axf.wake-listener@1') && exists(joinPath(plugins, d, 'cli.mjs')); } catch { return false; }
+  });
+  if (!dir) { console.error('no plugin provides the voice listener (service:axf.wake-listener@1)'); process.exit(1); }
+  const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'cli.mjs')).href);
+  process.exit(await main(rest));
+}
 // plugin commands (control@1 plugins domain): `axf plugins [plugin]`, `axf plugin <plugin> <command> …`, and
 // `axf <plugin> <command> …` for any console plugin whose folder isn't an axf command; they go to the plugin that
 // provides plugin-commands@1 (never by folder name).
