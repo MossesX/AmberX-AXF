@@ -1,0 +1,6 @@
+# axf-data daily backup (installed to /etc/cron.d/axf-data-backup by deploy/install-data.sh).
+# Tar of the SQLite online backup + blobs to /root/hub/data/axf-data/backups, verified against the live store, then
+# pruned (14 days plus weekly copies for 12 weeks). The result is backups/last.json (read by the systems check).
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+17 3 * * * root docker exec axf-data python backup.py run >> /root/hub/data/axf-data/backups/backup.log 2>&1

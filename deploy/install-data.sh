@@ -15,7 +15,8 @@
 #      axHub and the CLI; nothing secret goes to the repo or the log
 #   4. runs `axf-data` with restart unless-stopped, no -p, no domain, no Traefik labels, on that network only
 #   5. connects each client container that exists ($AXF_DATA_CLIENTS, default axf-console) to the network
-#   6. waits for /v1/health and appends one deploy-log@1 record (target axf-data) with axf_deploy_log
+#   6. installs the daily backup cron (deploy/axf-data-backup.cron → $BACKUPS, see services/axf-data/backup.py)
+#   7. waits for /v1/health and appends one deploy-log@1 record (target axf-data) with axf_deploy_log
 #
 # Env: AXF_DATA_CONF (default /root/hub/data/axf-data/conf), AXF_DATA_CLIENTS ("axf-console" plus axHub's container
 # when it is on this host), AXF_DATA_KEYS_URL (axHub key set for data-token@1), AXF_DEPLOY_LOG.
@@ -29,6 +30,7 @@ NET=axf-data
 VOL=axf-data
 PORT=7700
 CONF="${AXF_DATA_CONF:-/root/hub/data/axf-data/conf}"
+BACKUPS="${AXF_DATA_BACKUPS:-/root/hub/data/axf-data/backups}"
 CLIENTS="${AXF_DATA_CLIENTS:-axf-console}"
 SERVICES=(console orchestrator axhub cli)
 say() { printf '[axf-data] %s\n' "$*"; }
@@ -93,13 +95,16 @@ mv "$CONF/tokens.json.tmp" "$CONF/tokens.json"
 # the container runs as uid 10001: it reads the hash file, never the env files
 chmod 644 "$CONF/tokens.json"
 
+# backups: written by the container's user (uid 10001), read by root and the systems check
+mkdir -p "$BACKUPS" && chown 10001:10001 "$BACKUPS" && chmod 750 "$BACKUPS"
+
 # ── 4. container ──
 FROM_SHA="$(docker inspect -f '{{index .Config.Labels "axf.sha"}}' "$NAME" 2>/dev/null || true)"
 SHA="$(git -C "$DIR" rev-parse HEAD 2>/dev/null || true)"
 axf_stop_container "$NAME"
 RUN=(-d --name "$NAME" --restart unless-stopped --network "$NET" --network-alias "$NAME"
-  -v "$VOL":/data -v "$CONF/tokens.json":/run/axf-data/tokens.json:ro
-  -e AXF_DATA_DIR=/data -e AXF_DATA_TOKENS_FILE=/run/axf-data/tokens.json
+  -v "$VOL":/data -v "$CONF/tokens.json":/run/axf-data/tokens.json:ro -v "$BACKUPS":/backups
+  -e AXF_DATA_DIR=/data -e AXF_DATA_TOKENS_FILE=/run/axf-data/tokens.json -e AXF_DATA_BACKUPS=/backups
   -l traefik.enable=false -l axf.service=axf-data -l "axf.sha=$SHA")
 [ -z "${AXF_DATA_KEYS_URL:-}" ] || RUN+=(-e "AXF_DATA_KEYS_URL=$AXF_DATA_KEYS_URL")
 docker run "${RUN[@]}" "$NAME:latest" >/dev/null
@@ -111,6 +116,11 @@ for c in $CLIENTS; do
     say "client $c is on $NET"
   fi
 done
+
+# ── daily backup (deploy/axf-data-backup.cron) ──
+if [ -d /etc/cron.d ]; then
+  install -m 644 "$DIR/deploy/axf-data-backup.cron" /etc/cron.d/axf-data-backup
+fi
 
 # ── 6. health + deploy log ──
 STATE=failed

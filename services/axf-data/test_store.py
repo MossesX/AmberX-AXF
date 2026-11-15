@@ -283,6 +283,57 @@ def test_read_only_in_rollback():
         assert c.put('/v1/notes/a.md', content=b'x', headers=H(**{'content-type': 'text/markdown', 'if-none-match': '*'})).status_code == 200
 
 
+def test_backup_verify_restore_prune():
+    import backup
+    from datetime import datetime, timezone
+    with Env() as c:
+        st = c.app.state.store
+        c.put('/v1/builds/store.json', content='{"a":1}', headers=J(**{'if-none-match': '*'}))
+        c.post('/v1/builds/journal/2026-11:append', json={'entries': [{'x': 1}, {'x': 2}]}, headers=H())
+        c.put('/v1/ui-review/shots/a.png', content=b'png', headers=H(**{'content-type': 'image/png', 'if-none-match': '*'}))
+        c.put('/v1/plugins/shipped-features/ledger.sqlite', content=b'sqlite', headers=H(**{'content-type': 'application/vnd.sqlite3', 'if-none-match': '*'}))
+        out = st.dir.parent / 'backups'
+        r = backup.run(st.dir, out)
+        assert r['verify']['ok'], r['verify']
+        assert r['counts'] == {'builds': 2, 'plugins/shipped-features': 1, 'ui-review': 1} and r['blobs'] == 2
+        assert json.loads((out / 'last.json').read_text())['verify']['ok'] is True
+        # a write after the backup is explained by the feed
+        c.put('/v1/builds/b.json', content='{}', headers=J(**{'if-none-match': '*'}))
+        v = backup.verify(out / r['file'], st.dir)
+        assert v['ok'] and v['diffs'] == [{'ns': 'builds', 'backup': 2, 'live': 3, 'explained': True}]
+        # a key lost without a change in the feed is not
+        st.db.execute("DELETE FROM keys WHERE ns='ui-review'")
+        v = backup.verify(out / r['file'], st.dir)
+        assert not v['ok'] and 'ui-review' in v['problems'][0]
+        # restore into an empty folder, then over an existing one only with force
+        to = st.dir.parent / 'restored'
+        to.mkdir()
+        rr = backup.restore(out / r['file'], to)
+        assert rr['ok'] and rr['counts'] == r['counts']
+        assert (to / 'blobs').is_dir()
+        try:
+            backup.restore(out / r['file'], to)
+            raise AssertionError('restore over a live store needs --force')
+        except SystemExit:
+            pass
+        assert backup.restore(out / r['file'], to, force=True)['movedAside'].startswith('pre-restore-')
+        restored = main.Store(to)
+        assert json.loads(restored.get('builds', 'store.json')[1]) == {'a': 1}
+        assert restored.get('ui-review', 'shots/a.png')[1] == b'png'
+        # retention: 14 days plus the newest of each week for 12 weeks
+        for p in out.glob('axf-data-*.tar.gz'):
+            p.unlink()
+        now = datetime(2026, 11, 15, 4, 0, tzinfo=timezone.utc)
+        for d in range(0, 120, 1):
+            t = now.timestamp() - d * 86400
+            (out / f"axf-data-{datetime.fromtimestamp(t, timezone.utc).strftime('%Y%m%d-%H%M%S')}.tar.gz").write_bytes(b'x')
+        backup.prune(out, now)
+        kept = sorted(p.name for p in out.glob('axf-data-*.tar.gz'))
+        assert len([k for k in kept if k >= 'axf-data-20261101']) == 15  # Nov 1 … Nov 15
+        older = [k for k in kept if k < 'axf-data-20261101']
+        assert 8 <= len(older) <= 11 and all(k >= 'axf-data-20260816' for k in older)
+
+
 def test_node_contract_live():
     """The reference client's whole scenario, replayed over HTTP against a fresh server (same codes, revs, etags)."""
     import shutil
