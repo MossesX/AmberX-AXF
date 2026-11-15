@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T12:33:31.692Z",
+ "updatedAt": "2026-11-15T12:33:47.009Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -150794,7 +150794,7 @@
    "pr": "#708",
    "priority": "P1",
    "createdAt": "2026-11-15T12:09:29.937Z",
-   "updatedAt": "2026-11-15T12:33:27.819Z",
+   "updatedAt": "2026-11-15T12:33:44.976Z",
    "builtAt": "2026-11-15T12:33:21.985Z",
    "notes": [
     {
@@ -150820,6 +150820,10 @@
     {
      "text": "Phase 1 done, PR #708. UI Review not submitted: no console token in the headless run; shots + submit command in the report.",
      "at": "2026-11-15T12:33:27.819Z"
+    },
+    {
+     "text": "Headless run axf-shipped-features-organized-sortable--lenny: brief only · start 11.5K tokens ($0.03) · cost $6.05 · 110 turns · 6 tools, MCP none",
+     "at": "2026-11-15T12:33:44.976Z"
     }
    ],
    "approvals": [],

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6135,
- "updatedAt": "2026-11-15T12:33:31.692Z",
+ "rev": 6136,
+ "updatedAt": "2026-11-15T12:33:47.009Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -233637,7 +233637,7 @@
    "pr": "#708",
    "priority": "P1",
    "createdAt": "2026-11-15T12:09:29.937Z",
-   "updatedAt": "2026-11-15T12:33:27.819Z",
+   "updatedAt": "2026-11-15T12:33:44.976Z",
    "builtAt": "2026-11-15T12:33:21.985Z",
    "notes": [
     {
@@ -233663,6 +233663,10 @@
     {
      "text": "Phase 1 done, PR #708. UI Review not submitted: no console token in the headless run; shots + submit command in the report.",
      "at": "2026-11-15T12:33:27.819Z"
+    },
+    {
+     "text": "Headless run axf-shipped-features-organized-sortable--lenny: brief only · start 11.5K tokens ($0.03) · cost $6.05 · 110 turns · 6 tools, MCP none",
+     "at": "2026-11-15T12:33:44.976Z"
     }
    ],
    "approvals": [],
@@ -233792,7 +233796,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
