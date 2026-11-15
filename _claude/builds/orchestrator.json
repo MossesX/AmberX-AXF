@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T01:37:27.927Z",
+ "updatedAt": "2026-11-15T01:37:51.089Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -138414,7 +138414,7 @@
    "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "#703",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-15T01:37:25.469Z",
+   "updatedAt": "2026-11-15T01:37:28.404Z",
    "builtAt": "",
    "notes": [
     {
@@ -138448,6 +138448,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-banner-widget-shapes-more-than-circle--joey, shared account login)",
      "at": "2026-11-15T01:09:24.723Z"
+    },
+    {
+     "text": "Fable phase done (s2–s7), PR #703. shape@1 contract: kinds circle|pill|rounded|square|squircle|hexagon|diamond|tag|corners|mask, radii = style-theme tokens, mask = closed SVG path + viewBox, skin by slot. Engine core/engines/shape.ts: compileShape -> --fx-shape-<slot>-* (radius four corners, clip polygon, mask svg url, corner, aspect), resolveShape instance -> app -> skin -> global, edit history for Restore previous edit. Fixtures shape.json / shape-validate.json / shape-engine.json, check-shape 386 checks. Style target shape = .fx-shaped (phase 2 adds the class with the CSS wiring). No UI changed, so nothing in UI Review; pickers, skin editor, per-widget settings, REST/MCP/CLI/voice are the next phases. Console baked copy refreshed for the ten changed files; other apps' baked copies were already behind main and were not touched.",
+     "at": "2026-11-15T01:37:28.404Z"
     }
    ],
    "approvals": [],
