@@ -807,10 +807,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 01:04 UTC · `own-token-sets-for-grids-and-tab-groups` → running, note (all) · pipeline
-- 2026-11-15 01:04 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · orchestrator
-- 2026-11-15 01:04 UTC · `quick-settings-pinned-collapsible-pane` s7 done (all) · orchestrator
-- 2026-11-15 01:05 UTC · `new-asset-type-animated-expanding-row` s11 done, → built (all) · orchestrator
 - 2026-11-15 01:05 UTC · `quick-settings-pinned-collapsible-pane` s8 done (all) · orchestrator
 - 2026-11-15 01:05 UTC · `new-asset-type-animated-expanding-row` note (all) · orchestrator
 - 2026-11-15 01:06 UTC · `quick-settings-pinned-collapsible-pane` s8 done (all) · foreign-write
@@ -1207,6 +1203,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 14:54 UTC · `phone-connect-small-android-companion` → running, note (all) · mcp
 - 2026-11-15 14:54 UTC · `phone-connect-small-android-companion` → queued (all) · mcp
 - 2026-11-15 14:55 UTC · `shipped-features-organized-sortable` note (all) · mcp
+- 2026-11-15 14:55 UTC · `vps-sends-shipped-features-every-merge` → running, note (all) · mcp
+- 2026-11-15 14:55 UTC · `phone-connect-small-android-companion` → running, note (all) · pipeline
+- 2026-11-15 14:55 UTC · `phone-connect-small-android-companion` note (all) · orchestrator
+- 2026-11-15 14:55 UTC · `phone-connect-small-android-companion` note (all) · orchestrator
 
 ## Token passes (log)
 
