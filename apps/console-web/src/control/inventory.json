@@ -4742,7 +4742,7 @@
       "address": "function:context-menus.open",
       "kind": "function",
       "id": "context-menus.open",
-      "label": "Open Context menus (tab: generate / drafts / menus / zones)",
+      "label": "Open Context menus (tab: generate / drafts / menus / zones; then menu id, zone)",
       "detail": "Action · Context menus",
       "keywords": [
         "context-menus.open",
@@ -4758,7 +4758,7 @@
       "address": "function:context-menus.generate",
       "kind": "function",
       "id": "context-menus.generate",
-      "label": "Generate context menus with Claude at a level (a draft to preview)",
+      "label": "Generate context menus with Claude at a level (app, page: a draft to preview)",
       "detail": "Action · Context menus",
       "keywords": [
         "context-menus.generate",
@@ -8703,7 +8703,7 @@
       "id": "ai.amberx.axf.console.context-menus",
       "label": "Context menus",
       "folder": "context-menus",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "detail": "Plugin · module",
       "keywords": [
         "context-menus",

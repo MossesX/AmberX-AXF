@@ -50,7 +50,7 @@ async function generate(rt: ReturnType<typeof useRuntime>, level: string, app?: 
 export const plugin: AxfWebLibrary = {
   id: S.ID,
   label: 'Context menus',
-  version: '0.1.0',
+  version: '0.2.0',
   appMenu,
   uiEditor: ['manager'],
   provides: [S.CAPABILITY],
