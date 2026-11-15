@@ -135,7 +135,7 @@ def create_app(data_dir: Path | str = DATA_DIR, store: Store | None = None) -> F
     @app.post('/v1/_meta/engine')
     async def engine_set(req: Request):
         p = who(req)
-        p.need('admin', '_meta')
+        p.need('put', '_meta', 'engine')  # write on _meta, like a namespace move: the console's token may run it, a reader may not
         body = await _json(req)
         if not hasattr(st, 'set_mode'):
             raise DataError('invalid_body', f"this axf-data runs on {_engine_state(st)['mode']} only: there is no second store to move to (AXF_DATA_DSN + a SQLite file on the volume make the staged move)")
