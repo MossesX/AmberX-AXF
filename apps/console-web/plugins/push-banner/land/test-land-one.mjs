@@ -251,6 +251,15 @@ await t('console requests (archive, flag, fresh) run once at the start of the ne
   assert.equal((await processRequests({ s: sR, acts })).length, 0);
 });
 
+await t('a finished "Merge main and land X" fix build lands X (it has no branch of its own)', async () => {
+  const seen = [];
+  const merge = ({ b }) => { seen.push(b.branch); return { merged: false, conflicts: [], pushError: 'stop here' }; };
+  const fakeStore = { builds: [{ id: 'clean', branch: 'claude/clean', title: 'Clean' }] };
+  const git2 = (a, o) => (a[0] === 'show' ? { code: 0, out: JSON.stringify(fakeStore) } : git(a, o));
+  const r = await landOne({ s, git: git2, ...base, ci: false, build: { id: 'fix-of-clean', branch: 'claude/fix-of-clean', title: 'Merge main and land clean' }, merge, now: () => at, dry: true });
+  assert.deepEqual(seen, ['claude/clean']); assert.equal(r.run.build, 'clean');
+});
+
 await t('two at once: a second attempt is refused while the line is held, and runs once it is free', async () => {
   assert.equal(await takeLandLock({ who: 'other lander' }), true);
   const r = await landOne({ s, git, ...base, ci: false, build: { id: 'clean', branch: 'claude/clean' }, now: () => at });

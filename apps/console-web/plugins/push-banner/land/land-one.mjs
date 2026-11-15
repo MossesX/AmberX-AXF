@@ -195,8 +195,15 @@ export async function landOne({ s = settings(), git = makeGit(s.repo), gh = null
   if (!(await takeLandLock({ wait, who: `land-one ${id}` }))) return { ran: false, owner: lockOwner() };
   try {
     git(['fetch', '-q', '--prune', s.remote], { timeout: 180000 });
-    const b = typeof build === 'object' && build.branch ? build : buildFromMain({ s, git, id });
-    const run = { ...lr.emptyLandRun(), id: lr.newLandRunId(id, at), build: id, startedAt: at, branch: b?.branch || '', pr: b?.pr || 0 };
+    let b = typeof build === 'object' && build.branch ? build : buildFromMain({ s, git, id });
+    // a "Merge main and land <build>" fix build works on that build's branch and has none of its own: land the build it fixed
+    const fixed = /^Merge main and land (\S+)/.exec(String(b?.title || ''))?.[1];
+    if (fixed && fixed !== id && git(['rev-parse', '-q', '--verify', `refs/remotes/${s.remote}/${b?.branch}`]).code) {
+      const orig = buildFromMain({ s, git, id: fixed });
+      if (orig?.branch) { log(`land-one ${id}: a fix build; landing ${fixed} (${orig.branch})`); b = { ...orig, id: fixed }; }
+    }
+    const bid = b?.id || id;
+    const run = { ...lr.emptyLandRun(), id: lr.newLandRunId(bid, at), build: bid, startedAt: at, branch: b?.branch || '', pr: b?.pr || 0 };
     if (!b?.branch) return { ran: true, run: finish(s, { ...run, error: 'no branch on record for this build' }, dry, now) };
     run.base = git(['rev-parse', `${s.remote}/${s.base}`]).out;
     const h = git(['rev-parse', `${s.remote}/${b.branch}`]);
@@ -215,11 +222,11 @@ export async function landOne({ s = settings(), git = makeGit(s.repo), gh = null
     const red = run.check?.ok === false || lr.ciState(run.ci?.status, run.ci?.conclusion) === 'failure';
     const clash = run.unresolved.length > 0;
     if ((red || clash) && !dry) {
-      const prev = readRuns(s, id);
+      const prev = readRuns(s, run.build);
       const filed = prev.find((x) => x.head === run.head && (x.fixBuild || /Fix build \S+ filed/.test(x.note)));
       let fix = '';
       if (filed) fix = filed.fixBuild || /Fix build (\S+) filed/.exec(filed.note)?.[1] || '';
-      else { try { fix = await fileFix({ s, api: api || makeConsole(s), b, run, said: said ?? originSaid(s, id), attempt: prev.filter((x) => ['red', 'clash'].includes(x.outcome)).length + 1 }); } catch (e) { log(`fix build: ${e.message}`); } }
+      else { try { fix = await fileFix({ s, api: api || makeConsole(s), b, run, said: said ?? originSaid(s, run.build), attempt: prev.filter((x) => ['red', 'clash'].includes(x.outcome)).length + 1 }); } catch (e) { log(`fix build: ${e.message}`); } }
       if (red) run.fixBuild = fix;
       const base = run.note || (clash ? `Source clash a person has to settle: ${run.unresolved.slice(0, 8).join(', ')}.` : '');
       run.note = fix ? `${base} Fix build ${fix} filed (P0)${filed ? ' earlier' : ''}.`.trim() : `${base} No fix build: the orchestrator did not take it.`.trim();
