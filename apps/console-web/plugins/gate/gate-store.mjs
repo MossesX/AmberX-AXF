@@ -8,7 +8,8 @@
  *
  * Environment: AXF_GATE_DIR (the plugin's data folder), AXF_GATE_LANDER_DIR (the lander's data folder; else
  * AXF_PUSH_BANNER_DIR, else the merge-queue provider's lifecycle.dataDir under AXF_CONSOLE_ROOT or the repo),
- * AXF_GATE_LANDER_CLI (the lander's CLI; else land/land.mjs in the provider's folder). Plain Node built-ins only.
+ * AXF_GATE_LANDER_CLI (the lander's CLI; else land/land.mjs in the provider's folder), AXF_GATE_NOW (tests: a fixed
+ * clock). Plain Node built-ins only.
  */
 import { spawnSync } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
@@ -46,7 +47,8 @@ export function createStore(opts = {}) {
   const dataDir = opts.dataDir || env('AXF_GATE_DIR') || join(consoleRoot, '.axf-console', 'plugins', FOLDER);
   const landerDir = opts.landerDir || env('AXF_GATE_LANDER_DIR') || env('AXF_PUSH_BANNER_DIR') || (provider?.dataDir ? join(consoleRoot, provider.dataDir) : '');
   const landerCli = opts.landerCli ?? (env('AXF_GATE_LANDER_CLI') || (provider && existsSync(join(provider.dir, 'land/land.mjs')) ? join(provider.dir, 'land/land.mjs') : ''));
-  const now = opts.now || (() => new Date());
+  // AXF_GATE_NOW (an ISO time) pins the clock: the parity tests compare the CLI's and the API's answers byte for byte
+  const now = opts.now || (env('AXF_GATE_NOW') ? () => new Date(env('AXF_GATE_NOW')) : () => new Date());
   const iso = () => now().toISOString();
   const f = (n) => join(dataDir, n);
   const lf = (n) => (landerDir ? join(landerDir, n) : '');
