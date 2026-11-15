@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6144,
- "updatedAt": "2026-11-15T12:35:38.502Z",
+ "rev": 6145,
+ "updatedAt": "2026-11-15T12:36:05.984Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -233816,7 +233816,7 @@
    "title": "VPS sends Shipped features on every merge to main (+ backfill)",
    "category": "",
    "detail": "Bug: Shipped features has nothing for 2 days, but main DID get many merges (Nov 14-15: PRs #687, #694, #691, #693, #696, #689, #702, #324, plus build_land of console-look-becomes-default-axhub-skin, and the hand-merged skin PRs #647 #648 #590 #618 #641 #652 #657 #654). The last shipped manifests in _claude/builds/shipped/ are from Nov 13. The orchestrator is supposed to send shipped-manifest@1 to Shipped features (commit 7a6668231) but stopped. RULE (Brett): the VPS controls the orchestrator, so the VPS sends the shipped manifest AS SOON AS any merge to main succeeds, whatever the path (merge queue, auto-lander, build_land, manual GitHub merge, push to main). Implement it server-side on the VPS: a watcher on origin/main (post-merge hook + a poll/webhook fallback) that, for each new merge commit, maps it to its build/PR, builds the shipped-manifest@1 (PR, commit, mergedAt, landedAt, files, areas, tests, report link, what Brett said) and sends it to Shipped features at once; idempotent (no duplicates); alerts Brett if a send fails, and retries. Find and fix why it stopped on Nov 13. BACKFILL every merge to main since Nov 13 that has no manifest. Design it so it moves into the axf-molly container with the orchestrator (coordinate with move-build-orchestrator-to-axhub); the data goes to axf-data once that exists. Tests, help. Land with the one-at-a-time lander.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -233824,7 +233824,7 @@
    "pr": "#709",
    "priority": "P0",
    "createdAt": "2026-11-15T12:14:27.131Z",
-   "updatedAt": "2026-11-15T12:35:33.726Z",
+   "updatedAt": "2026-11-15T12:36:04.027Z",
    "builtAt": "",
    "notes": [
     {
@@ -233858,6 +233858,10 @@
     {
      "text": "Headless run axf-vps-sends-shipped-features-every-merge--joey: brief only · start 13.1K tokens ($0.07) · cost $7.72 · 71 turns · 6 tools, MCP none",
      "at": "2026-11-15T12:35:33.726Z"
+    },
+    {
+     "text": "Session stopped on its own with 16 steps left: back in Pending for Brett.",
+     "at": "2026-11-15T12:36:04.027Z"
     }
    ],
    "approvals": [],
@@ -233878,12 +233882,19 @@
     "queuedAt": "2026-11-15T12:14:29.137Z",
     "queuedBy": "console",
     "account": "",
-    "session": "axf-vps-sends-shipped-features-every-merge--joey",
+    "session": "",
     "slot": "",
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-15T12:36:03.280Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 16,
+     "account": "",
+     "session": "axf-vps-sends-shipped-features-every-merge--joey"
+    },
     "split": {
      "at": "2026-11-15T12:16:53.896Z",
      "by": "orchestrator",
@@ -233892,7 +233903,7 @@
      "note": "Split by Claude into 17 steps (1 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session stopped on its own with 16 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -234347,7 +234358,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
