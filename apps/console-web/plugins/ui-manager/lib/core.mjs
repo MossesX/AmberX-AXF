@@ -7,7 +7,8 @@ import { readFileSync } from 'node:fs';
 import * as R from '../../../../../framework/core/engines/ui-manager-rules.mjs';
 import { buildCatalog, pluginManifests } from './catalog.mjs';
 import * as Q from './query.mjs';
-import { readChanges, readOverrides, saveOverrides, undoEntry } from './store.mjs';
+import { readChanges, readOverrides, readSelection, saveOverrides, saveSelection, undoEntry, VIEWS } from './store.mjs';
+import * as S from './say.mjs';
 
 export class UiManagerError extends Error { constructor(code, message) { super(message); this.code = code; } }
 
@@ -140,3 +141,72 @@ export const catalogInfo = (w = world()) => ({ types: Object.keys(w.catalog.type
 
 /** The console's live target snapshot (console-control-targets@1) from a file, for "On screen now" without the UI. */
 export function targetsFromFile(file) { try { return JSON.parse(readFileSync(file, 'utf8')); } catch { return null; } }
+
+/* ================================================================== selection, view and what a person says */
+
+/** The window's state that lives outside the browser: the selected element and the view (row / panel / grid). */
+export function state(w = world()) {
+  const sel = readSelection();
+  let element = null;
+  try { element = sel.element ? element_(sel.element, w) : null; } catch { /* the element went away */ }
+  return { ...sel, label: element?.label ?? '', views: VIEWS, overrides: R.overrideCount(readOverrides()) };
+}
+const element_ = (id, w) => element(id, w);
+
+/** Select an element by id, label or words ("main toolbar"); the open window follows (web/bridge.ts). */
+export function select(what, { by = 'brett' } = {}, w = world()) {
+  const e = resolveWords(what, w);
+  saveSelection({ element: e.id }, { by });
+  return { selected: e.id, label: e.label, kind: e.kind, category: e.category };
+}
+
+export function setView(view, { by = 'brett' } = {}) {
+  const v = S.VIEW_WORDS[String(view).toLowerCase()] ?? '';
+  if (!v) throw new UiManagerError('validation', `view ${view}: use ${VIEWS.join(', ')}`);
+  return { view: saveSelection({ view: v }, { by }).view };
+}
+
+function resolveWords(what, w) {
+  try { return element(what, w); } catch { /* not an id or a label: rank by words */ }
+  const hit = S.rankElements(w.elements, what)[0];
+  if (!hit) throw new UiManagerError('not_found', `no element matches "${what}"; try: ${R.filterElements(w.elements, String(what).split(/\s+/).pop()).slice(0, 5).map((x) => x.label).join(', ') || 'ui-manager elements'}`);
+  return hit;
+}
+
+/**
+ * Run what a person says, step by step: select, set (its / of <element>), reset, view. Every set is the same validated
+ * set as the window's (a value outside the property's choices is refused with the valid values). Stops at the first
+ * step that fails and says which; earlier steps stay done.
+ */
+export function say(text, { by = 'brett', reason = '' } = {}, w = world()) {
+  const steps = S.parseSay(text);
+  if (!steps.length) throw new UiManagerError('invalid', 'say what? e.g. "select the main toolbar, set its transparency to 80"');
+  let current = readSelection().element;
+  const done = [];
+  for (const st of steps) {
+    try {
+      if (st.op === 'unknown') throw new UiManagerError('invalid', `"${st.text}": say select <element>, set <property> to <value>, reset <element>, or row / panel / grid view`);
+      if (st.op === 'view') { done.push({ op: 'view', ...setView(st.view, { by }) }); continue; }
+      const target = st.what ? resolveWords(st.what, w) : current ? element(current, w) : null;
+      if (!target) throw new UiManagerError('invalid', 'which element? say "select <element>" first');
+      current = target.id;
+      if (st.op === 'select') { done.push({ op: 'select', ...select(target.id, { by }, w) }); continue; }
+      const props = R.propsOf(target, w.catalog);
+      if (st.op === 'reset') {
+        const p = st.prop ? S.rankProps(props, st.prop)[0] : null;
+        if (st.prop && !p) throw new UiManagerError('not_found', `${target.label} has no property "${st.prop}"; it has: ${props.map((x) => x.label).join(', ')}`);
+        done.push({ op: 'reset', ...reset(target.id, p?.id ?? '', { by, reason: reason || text }, w) });
+        continue;
+      }
+      const p = S.rankProps(props, st.prop)[0];
+      if (!p) throw new UiManagerError('not_found', `${target.label} has no property "${st.prop}"; it has: ${props.map((x) => x.label).join(', ')}`);
+      const r = set(target.id, p.id, S.pickValue(p, st.value), { by, reason: reason || text }, w);
+      saveSelection({ element: target.id }, { by });
+      done.push({ op: 'set', element: r.element, label: target.label, prop: r.prop, propLabel: p.label, value: r.value, changed: r.changed });
+    } catch (e) {
+      if (e instanceof UiManagerError) throw new UiManagerError(e.code, `step ${done.length + 1} of ${steps.length}: ${e.message}${done.length ? ` (done before it: ${done.map((d) => d.op).join(', ')})` : ''}`);
+      throw e;
+    }
+  }
+  return { steps: done, selected: current, said: text };
+}

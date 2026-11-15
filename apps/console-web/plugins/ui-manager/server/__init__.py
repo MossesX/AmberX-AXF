@@ -8,6 +8,8 @@ Every route runs the plugin's Node core (ui-manager.mjs --json), the same code t
   GET  tree?visible=a,b                    the collapsible categories; On screen now holds shortcuts to the visible ids
   GET  element?id=                         the same as props/{element}, for ids with slashes (live console targets)
   POST set                                 body { element, prop, value, by?, reason? }  the same as PUT props/…
+  GET  state                               the window's selection and view
+  POST select | view | say                 body { element } | { view } | { text: "select the main toolbar, set its transparency to 80" }
   GET  props/{element}                     the expanding row: every property and token with value, base, source, choices
   GET  choices/{element}/{prop}            the predetermined values of one property (never free text)
   PUT  props/{element}/{prop}              body { value, by?, reason? }  set one property to one of its choices and save
@@ -114,6 +116,36 @@ async def set_body(request: Request) -> JSONResponse:
         return JSONResponse({"error": "set needs { element, prop, value }", "code": "invalid"}, status_code=400)
     value = b.get("value")
     return await run_in_threadpool(_run, "set", str(b["element"]), str(b["prop"]), json.dumps(value) if isinstance(value, (bool, int, float)) else str(value), *_opt("by", b.get("by")), *_opt("reason", b.get("reason")))
+
+
+@router.get("/state")
+async def state() -> JSONResponse:
+    """The window's selection and view (the open window follows; console_action ui-manager.select shows it at once)."""
+    return await run_in_threadpool(_run, "state")
+
+
+@router.post("/select")
+async def select(request: Request) -> JSONResponse:
+    b = await _body(request)
+    if not b.get("element"):
+        return JSONResponse({"error": "select needs { element } (an id, a label or words: main toolbar)", "code": "invalid"}, status_code=400)
+    return await run_in_threadpool(_run, "select", *str(b["element"]).split(), *_opt("by", b.get("by")))
+
+
+@router.post("/view")
+async def view(request: Request) -> JSONResponse:
+    b = await _body(request)
+    return await run_in_threadpool(_run, "view", str(b.get("view") or ""), *_opt("by", b.get("by")))
+
+
+@router.post("/say")
+async def say(request: Request) -> JSONResponse:
+    """What a person says (voice): "select the main toolbar, set its transparency to 80", run step by step."""
+    b = await _body(request)
+    text = str(b.get("text") or "").strip()
+    if not text:
+        return JSONResponse({"error": "say needs { text }", "code": "invalid"}, status_code=400)
+    return await run_in_threadpool(_run, "say", *text.split(), *_opt("by", b.get("by")), *_opt("reason", b.get("reason")))
 
 
 @router.post("/reset")

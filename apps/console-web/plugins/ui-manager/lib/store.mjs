@@ -17,6 +17,22 @@ export function readOverrides() {
   try { return normalizeOverrides(JSON.parse(readFileSync(OVERRIDES_FILE(), 'utf8'))); } catch { return normalizeOverrides(null); }
 }
 
+/** The window's selection and view, shared by the window and every API caller ("select the main toolbar"). */
+export const SELECTION_FILE = () => join(DATA_DIR, 'selection.json');
+export const VIEWS = ['row', 'panel', 'grid'];
+export function readSelection() {
+  try {
+    const j = JSON.parse(readFileSync(SELECTION_FILE(), 'utf8'));
+    return { element: typeof j.element === 'string' ? j.element.slice(0, 200) : '', view: VIEWS.includes(j.view) ? j.view : 'row', by: String(j.by ?? ''), at: String(j.at ?? '') };
+  } catch { return { element: '', view: 'row', by: '', at: '' }; }
+}
+export function saveSelection(patch, { by = 'brett', at = new Date().toISOString() } = {}) {
+  const next = { ...readSelection(), ...patch, by, at };
+  if (!VIEWS.includes(next.view)) next.view = 'row';
+  writeJson(SELECTION_FILE(), next);
+  return next;
+}
+
 function writeJson(file, value) {
   mkdirSync(DATA_DIR, { recursive: true, mode: 0o700 });
   const tmp = `${file}.tmp-${process.pid}`;

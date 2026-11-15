@@ -254,5 +254,23 @@ t('query: search, sort, multi-filter, facets, pages, over thousands of elements'
   assert.equal(listed.items.length, 1); assert.equal(listed.items[0].kind, 'toolbar'); assert.ok(listed.facets.kinds.length > 5);
 });
 
+const S = await import('./lib/say.mjs');
+t('say: "select the main toolbar, set its transparency to 80", and the window state', () => {
+  assert.deepEqual(S.parseSay('select the main toolbar, set its transparency to 80'), [{ op: 'select', what: 'the main toolbar' }, { op: 'set', prop: 'transparency', value: '80' }]);
+  assert.deepEqual(S.parseSay('set the variant of the toolbar to labels then grid view'), [{ op: 'set', prop: 'variant', what: 'the toolbar', value: 'labels' }, { op: 'view', view: 'grid' }]);
+  assert.equal(S.parseSay('dance')[0].op, 'unknown');
+  assert.equal(S.rankElements(els, 'the main toolbar')[0].id, 'asset:toolbar');
+  const r = core.say('select the main toolbar, set its transparency to 80', { by: 'voice' });
+  assert.equal(r.selected, 'asset:toolbar'); assert.equal(r.steps[1].value, 80); assert.equal(r.steps[1].changed, true);
+  assert.equal(core.state().element, 'asset:toolbar'); assert.equal(core.rows('asset:toolbar').overrides, 1);
+  assert.throws(() => core.say('set its transparency to 500'), (e) => e.code === 'validation' && /step 1 of 1/.test(e.message), 'outside the choices is refused');
+  assert.throws(() => core.say('select the flux capacitor'), (e) => e.code === 'not_found');
+  assert.equal(core.say('reset transparency of the toolbar').steps[0].changed, true);
+  assert.equal(core.rows('asset:toolbar').overrides, 0);
+  assert.equal(core.say('panel view').steps[0].view, 'panel'); assert.equal(core.state().view, 'panel');
+  assert.throws(() => core.setView('carousel'), (e) => e.code === 'validation');
+  assert.equal(core.select('target:view:builds/button:save').selected, 'target:view:builds/button:save', 'a live console target is selectable by id');
+});
+
 rmSync(TMP, { recursive: true, force: true });
 console.log(`✓ ui-manager: ${n} test groups passed`);

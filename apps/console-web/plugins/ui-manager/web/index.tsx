@@ -1,6 +1,7 @@
 import { Button, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { registerActions } from './bridge';
 import { appMenu } from './menu';
 import { FOLDER, Manager } from './Manager';
 import { TAB_KIND, closeUiManager, openUiManager } from './window';
@@ -32,6 +33,7 @@ export const plugin: AxfWebLibrary = {
   register(rt) {
     rt.actions.register('ui-manager.open', () => openUiManager(rt), { label: 'Open the UI Manager (floating window)' });
     rt.actions.register('ui-manager.close', () => closeUiManager(rt), { label: 'Close the UI Manager window' });
+    registerActions(rt);
   },
   tabs: { [TAB_KIND]: () => <Manager /> },
   views: { 'ui-manager': { title: 'UI Manager', icon: 'sliders', keywords: ['ui manager', 'element', 'tokens', 'inspector', 'properties'], render: () => <UiManagerPage /> } },

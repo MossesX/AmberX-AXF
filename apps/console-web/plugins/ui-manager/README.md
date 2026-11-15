@@ -51,3 +51,20 @@ node apps/console-web/plugins/ui-manager/ui-manager.mjs set asset:toolbar transp
 node apps/console-web/plugins/ui-manager/ui-manager.mjs reset asset:toolbar
 node apps/console-web/plugins/ui-manager/test.mjs
 ```
+
+## Every way in (REST, MCP, CLI, voice, console actions)
+
+Everything the window does is reachable without it, through one set of functions (`lib/core.mjs`, `lib/query.mjs`,
+`lib/say.mjs`). The open window follows the server's selection and view (`web/bridge.ts`).
+
+| Do | REST (`/api/plugins/ui-manager/…`) | MCP / control@1 | CLI | Console action / voice |
+|---|---|---|---|---|
+| open the window | | `console_open {screen: "ui manager"}` | `axf console action ui-manager.open` | `ui-manager.open` |
+| say it | `POST say {text}` | `ui-manager_say` | `ui-manager.mjs say select the main toolbar, set its transparency to 80` | `ui-manager.say:<words>` |
+| select an element | `POST select {element}` | `ui-manager_select` | `ui-manager.mjs select main toolbar` | `ui-manager.select:<id or words>` |
+| read the window state | `GET state` | `ui-manager_state` | `ui-manager.mjs state` | |
+| choose the view | `POST view {view}` | `ui-manager_view` | `ui-manager.mjs view grid` | `ui-manager.view:<row\|panel\|grid>` |
+| pick on screen | | `console_action {action: "ui-manager.pick"}` | `axf console action ui-manager.pick` | `ui-manager.pick` |
+| search / sort / filter | `GET elements?q=&kinds=&categories=&plugins=&overridden=&onScreen=&sort=&desc=` | `ui-manager_elements` | `ui-manager.mjs elements --kinds toolbar --sort overrides --desc` | `ui-manager.search:<words>` |
+| properties of an element | `GET element?id=` (`q`, `groups`, `changed`) | `ui-manager_element` | `ui-manager.mjs props asset:toolbar --groups Tokens` | |
+| set / reset | `POST set`, `POST reset` | `ui-manager_set-element`, `ui-manager_reset` | `ui-manager.mjs set asset:toolbar transparency 80` | via `ui-manager.say` |

@@ -2,9 +2,10 @@
 /**
  * UI Manager CLI: the same operations as the floating window, the server routes and the MCP tools (lib/core.mjs).
  *
- *   node apps/console-web/plugins/ui-manager/ui-manager.mjs elements [--q words] [--category id] [--visible a,b]
- *   … tree [--visible a,b]                            the collapsible categories; On screen now = shortcuts to the visible ids
- *   … props <element>                                 the expanding row: every property and token, value, base, source
+ *   node apps/console-web/plugins/ui-manager/ui-manager.mjs elements [--q words] [--kinds a,b] [--categories a,b] [--plugins a,b]
+ *        [--overridden] [--on-screen] [--sort label|kind|category|plugin|overrides] [--desc] [--limit n] [--offset n] [--visible a,b]
+ *   … tree [same filters] [--visible a,b]             the collapsible categories; On screen now = shortcuts to the visible ids
+ *   … props <element> [--q w] [--groups g] [--changed] [--sort group|label|changed] [--desc]   every property and token
  *   … choices <element> <prop>                        the predetermined values (never free text)
  *   … set <element> <prop> <value> [--by who] [--reason why]
  *   … reset [<element> [<prop>]] [--by who]           one property, one element, or everything
@@ -14,6 +15,8 @@
  *   … schemas                                         JSON Schemas of ui-element@1, ui-overrides@1, ui-change@1
  *   … changes [--limit n] | undo <change id>
  *   … catalog                                         what the choices come from
+ *   … state | select <element or words> | view row|panel|grid     the window's selection and view (the open window follows)
+ *   … say "select the main toolbar, set its transparency to 80"  what a person says (voice), run step by step
  *   add --json for one JSON result (the server drives it this way); exit 1 on an error with { error, code }.
  */
 import * as core from './lib/core.mjs';
@@ -49,10 +52,14 @@ try {
     case 'changes': out(core.changes({ limit: Number(flags.limit) || 50 })); break;
     case 'undo': if (!a) throw new core.UiManagerError('invalid', 'undo <change id>'); out(core.undo(a, { by })); break;
     case 'catalog': out(core.catalogInfo()); break;
+    case 'state': out(core.state()); break;
+    case 'select': if (!a) throw new core.UiManagerError('invalid', 'select <element id, label or words>'); out(core.select(words.slice(1).join(' '), { by })); break;
+    case 'view': if (!a) throw new core.UiManagerError('invalid', 'view row|panel|grid'); out(core.setView(a, { by })); break;
+    case 'say': if (!a) throw new core.UiManagerError('invalid', 'say "select the main toolbar, set its transparency to 80"'); out(core.say(words.slice(1).join(' '), { by, reason: str('reason') })); break;
     case 'overrides': out(core.overrides()); break;
     case 'validate': if (typeof flags.pending !== 'string') throw new core.UiManagerError('invalid', 'validate --pending file.json'); out(core.validate(core.targetsFromFile(flags.pending))); break;
     case 'schemas': out(core.schemas()); break;
-    default: throw new core.UiManagerError('invalid', 'commands: elements | tree | props | choices | set | reset | preview | validate | apply | changes | undo | catalog | overrides | schemas');
+    default: throw new core.UiManagerError('invalid', 'commands: elements | tree | props | choices | set | reset | preview | validate | apply | changes | undo | catalog | overrides | schemas | state | select | view | say');
   }
 } catch (e) {
   const code = e instanceof core.UiManagerError ? e.code : 'unexpected';

@@ -8,6 +8,7 @@ import { useEffect, useMemo, useSyncExternalStore } from 'react';
 import { Button, Note, Segmented, useRuntime } from '@console/axf/react';
 import { facets as facetsOf, queryElements, queryTree } from '../lib/query.mjs';
 import { refreshLive } from './apply';
+import { pullState, shareSelection } from './bridge';
 import { startPicker } from './picker';
 import { ElementFilters } from './Filters';
 import { Props } from './Props';
@@ -42,6 +43,9 @@ export function Manager() {
   const facets = useMemo(() => facetsOf(all), [all]);
   const selected = byId.get(ui.selected) ?? null;
   useEffect(() => { void refreshLive(); }, []);
+  // the server's selection and view (set through REST / MCP / CLI / voice) reach the open window; the window's reach the server
+  useEffect(() => { void pullState(); const t = window.setInterval(() => void pullState(), 3000); return () => clearInterval(t); }, []);
+  useEffect(() => { if (ui.selected) shareSelection(ui.selected); }, [ui.selected]);
   // picker: the next click on the console selects the element under it
   useEffect(() => {
     if (!ui.picking) return;
