@@ -148,7 +148,7 @@ export const PICKER_TOKENS: readonly PickerToken[] = [
   { name: '--fx-picker-font', group: 'type', state: 'rest', default: 'var(--fx-type-scale-md)', draws: 'row text size (today\'s menu item)' },
   { name: '--fx-picker-desc-font', group: 'type', state: 'rest', default: 'var(--fx-type-scale-sm)', draws: 'description size' },
   { name: '--fx-picker-group-font', group: 'type', state: 'rest', default: 'var(--fx-type-scale-xs)', draws: 'group label size' },
-  { name: '--fx-picker-width', group: 'size', state: 'rest', default: 'min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))', draws: 'dialog width' },
+  { name: '--fx-picker-width', group: 'size', state: 'rest', default: 'min(calc(var(--fx-space) * 110), calc(100vw - var(--fx-dens-gap-2xl) * 2))', draws: 'dialog width' },
   { name: '--fx-picker-max-h', group: 'size', state: 'rest', default: 'min(70dvh, calc(var(--fx-picker-row-h) * 14))', draws: 'dialog height cap (scrolls past it)' },
   { name: '--fx-picker-sheet-max-h', group: 'size', state: 'rest', default: '85dvh', draws: 'sheet height cap' },
   { name: '--fx-picker-motion', group: 'motion', state: 'rest', default: 'var(--fx-motion)', draws: 'open / close duration' },

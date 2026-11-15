@@ -3889,7 +3889,7 @@
         "name": "--fx-picker-width",
         "group": "size",
         "state": "rest",
-        "default": "min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
+        "default": "min(calc(var(--fx-space) * 110), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
         "draws": "dialog width"
       },
       {
@@ -3969,7 +3969,7 @@
         "--fx-picker-font": "var(--fx-type-scale-md)",
         "--fx-picker-desc-font": "var(--fx-type-scale-sm)",
         "--fx-picker-group-font": "var(--fx-type-scale-xs)",
-        "--fx-picker-width": "min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
+        "--fx-picker-width": "min(calc(var(--fx-space) * 110), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
         "--fx-picker-max-h": "min(70dvh, calc(var(--fx-picker-row-h) * 14))",
         "--fx-picker-sheet-max-h": "85dvh",
         "--fx-picker-motion": "var(--fx-motion)"
@@ -4033,7 +4033,7 @@
             "--fx-picker-font": "var(--fx-type-scale-md)",
             "--fx-picker-desc-font": "var(--fx-type-scale-sm)",
             "--fx-picker-group-font": "var(--fx-type-scale-xs)",
-            "--fx-picker-width": "min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
+            "--fx-picker-width": "min(calc(var(--fx-space) * 110), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
             "--fx-picker-max-h": "min(70dvh, calc(var(--fx-picker-row-h) * 14))",
             "--fx-picker-sheet-max-h": "85dvh",
             "--fx-picker-motion": "var(--fx-motion)"
@@ -4097,7 +4097,7 @@
             "--fx-picker-font": "var(--fx-type-scale-md)",
             "--fx-picker-desc-font": "var(--fx-type-scale-sm)",
             "--fx-picker-group-font": "var(--fx-type-scale-xs)",
-            "--fx-picker-width": "min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
+            "--fx-picker-width": "min(calc(var(--fx-space) * 110), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
             "--fx-picker-max-h": "min(70dvh, calc(var(--fx-picker-row-h) * 14))",
             "--fx-picker-sheet-max-h": "85dvh",
             "--fx-picker-motion": "var(--fx-motion)"
@@ -4161,7 +4161,7 @@
             "--fx-picker-font": "var(--fx-type-scale-md)",
             "--fx-picker-desc-font": "var(--fx-type-scale-sm)",
             "--fx-picker-group-font": "var(--fx-type-scale-xs)",
-            "--fx-picker-width": "min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
+            "--fx-picker-width": "min(calc(var(--fx-space) * 110), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
             "--fx-picker-max-h": "min(70dvh, calc(var(--fx-picker-row-h) * 14))",
             "--fx-picker-sheet-max-h": "85dvh",
             "--fx-picker-motion": "var(--fx-motion)"
@@ -4225,7 +4225,7 @@
             "--fx-picker-font": "var(--fx-type-scale-md)",
             "--fx-picker-desc-font": "var(--fx-type-scale-sm)",
             "--fx-picker-group-font": "var(--fx-type-scale-xs)",
-            "--fx-picker-width": "min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
+            "--fx-picker-width": "min(calc(var(--fx-space) * 110), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
             "--fx-picker-max-h": "min(70dvh, calc(var(--fx-picker-row-h) * 14))",
             "--fx-picker-sheet-max-h": "85dvh",
             "--fx-picker-motion": "var(--fx-motion)"
@@ -4289,7 +4289,7 @@
             "--fx-picker-font": "var(--fx-type-scale-md)",
             "--fx-picker-desc-font": "var(--fx-type-scale-sm)",
             "--fx-picker-group-font": "var(--fx-type-scale-xs)",
-            "--fx-picker-width": "min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
+            "--fx-picker-width": "min(calc(var(--fx-space) * 110), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
             "--fx-picker-max-h": "min(70dvh, calc(var(--fx-picker-row-h) * 14))",
             "--fx-picker-sheet-max-h": "85dvh",
             "--fx-picker-motion": "var(--fx-motion)"
@@ -4353,7 +4353,7 @@
             "--fx-picker-font": "var(--fx-type-scale-md)",
             "--fx-picker-desc-font": "var(--fx-type-scale-sm)",
             "--fx-picker-group-font": "var(--fx-type-scale-xs)",
-            "--fx-picker-width": "min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
+            "--fx-picker-width": "min(calc(var(--fx-space) * 110), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
             "--fx-picker-max-h": "min(70dvh, calc(var(--fx-picker-row-h) * 14))",
             "--fx-picker-sheet-max-h": "85dvh",
             "--fx-picker-motion": "var(--fx-motion)"

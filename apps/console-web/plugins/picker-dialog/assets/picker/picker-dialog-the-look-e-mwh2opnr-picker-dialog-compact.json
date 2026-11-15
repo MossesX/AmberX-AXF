@@ -1,0 +1,23 @@
+{
+ "$axf": "asset@1",
+ "type": "picker",
+ "id": "picker-dialog-the-look-e-mwh2opnr-picker-dialog-compact",
+ "name": "picker-dialog-the-look-e-mwh2opnr: Compact dialog",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "A dialog everywhere (phones too), tighter rows, check mark on the left, no descriptions, search from 12 options. Most rows on screen.",
+ "tags": [
+  "ui-choice",
+  "choice-set:picker-dialog-the-look-e-mwh2opnr",
+  "choice-option:picker-dialog-compact"
+ ],
+ "data": {
+  "variant": "dialog",
+  "search": "auto",
+  "searchThreshold": 12,
+  "checkmarks": "start",
+  "descriptions": false,
+  "density": "compact",
+  "doneButton": true
+ }
+}

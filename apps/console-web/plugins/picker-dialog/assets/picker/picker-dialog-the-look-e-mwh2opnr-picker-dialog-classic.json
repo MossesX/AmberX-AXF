@@ -1,0 +1,23 @@
+{
+ "$axf": "asset@1",
+ "type": "picker",
+ "id": "picker-dialog-the-look-e-mwh2opnr-picker-dialog-classic",
+ "name": "picker-dialog-the-look-e-mwh2opnr: Classic",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Centred dialog on desktop, bottom sheet on phones; search from 8 options; check mark on the right; descriptions shown; regular rows. Matches today's drop-down spacing.",
+ "tags": [
+  "ui-choice",
+  "choice-set:picker-dialog-the-look-e-mwh2opnr",
+  "choice-option:picker-dialog-classic"
+ ],
+ "data": {
+  "variant": "auto",
+  "search": "auto",
+  "searchThreshold": 8,
+  "checkmarks": "end",
+  "descriptions": true,
+  "density": "regular",
+  "doneButton": true
+ }
+}

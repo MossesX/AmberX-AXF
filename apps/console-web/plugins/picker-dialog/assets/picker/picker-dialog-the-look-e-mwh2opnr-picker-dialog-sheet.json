@@ -1,0 +1,23 @@
+{
+ "$axf": "asset@1",
+ "type": "picker",
+ "id": "picker-dialog-the-look-e-mwh2opnr-picker-dialog-sheet",
+ "name": "picker-dialog-the-look-e-mwh2opnr: Sheet everywhere",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "A bottom sheet on every screen size with a search box always on top, roomy finger-sized rows, check mark on the right, descriptions shown.",
+ "tags": [
+  "ui-choice",
+  "choice-set:picker-dialog-the-look-e-mwh2opnr",
+  "choice-option:picker-dialog-sheet"
+ ],
+ "data": {
+  "variant": "sheet",
+  "search": "always",
+  "searchThreshold": 0,
+  "checkmarks": "end",
+  "descriptions": true,
+  "density": "roomy",
+  "doneButton": true
+ }
+}
