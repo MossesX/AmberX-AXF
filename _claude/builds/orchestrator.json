@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T14:11:06.032Z",
+ "updatedAt": "2026-11-15T14:20:52.683Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -151952,7 +151952,7 @@
    "title": "Build rules tab in Gate & rules: VPS owns and enforces all builder rules",
    "category": "",
    "detail": "Add a Build rules tab to the Gate & rules plugin (PR #711), with the VPS as the ONE owner and enforcer of every builder rule. 1) Inventory ALL builder rules in CLAUDE.md, the build briefs, the dispatcher prompt templates (Look/API/Checkpoints/Rules blocks), and the _claude rule docs. List every rule first and delete nothing without listing it. 2) Move them into a build-rules store on the VPS (later axf-data), served by REST and gate.* tools. 3) Each rule is marked doer = VPS or session. Mechanical rules are done by the VPS itself, before or after the build, and are removed from Claude's instructions so nothing happens twice. Examples: create the plugin home card from plugin.json and the template, the Shipped features manifest, the help stub, API-parity scaffolding, running the CI checks, tracker/THREADS rows, PR open and link, and landing one at a time. 4) Judgement rules (look and token rules, API parity design, step size) go into the session brief from the store at dispatch time and are not hardcoded in CLAUDE.md. 5) The gate checks every rule before landing; on a fail it blocks, the VPS auto-fixes what it can, and everything is logged in History. 6) The tab shows each rule with doer, on/off, edit, add, and history, with REST/MCP/CLI/voice parity. First rule: every plugin gets a home card, made by the VPS. Tests, help, Shipped features. Land with the one-at-a-time lander.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -151960,7 +151960,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T13:23:46.016Z",
-   "updatedAt": "2026-11-15T13:54:13.244Z",
+   "updatedAt": "2026-11-15T14:20:50.765Z",
    "builtAt": "",
    "notes": [
     {
@@ -151986,6 +151986,10 @@
     {
      "text": "Phase 1 (Fable) done on branch claude/build-rules-tab-gate-rules-vps-owns, no PR yet: inventory (114 rules, 205 verbatim sources), build-rules@1 contract (framework/spec/BUILD-RULES.md), engine framework/core/build-rules.mjs, seed store _claude/builds/build-rules/seed.json (115 rules, home-card #1 owned by the VPS), check-build-rules in CI. No rule file was changed yet: removing the VPS-owned rules from the briefs, launcher notes, rules-brief seed and Claude rules files is the next phase, together with the Build rules tab in Gate & rules and its REST / MCP / CLI / voice surface (named in BUILD-RULES.md). Open point for the tab: migrated session texts make a full UI brief about 26K chars; the tab or a brief cap should trim them.",
      "at": "2026-11-15T13:53:51.554Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-15T14:20:50.765Z"
     }
    ],
    "approvals": [],
@@ -152565,7 +152569,7 @@
    "title": "Phone Connect: small Android companion + console plugin; retire AmberX",
    "category": "",
    "detail": "Replace the AmberX app with Phone Connect. Two parts: (A) a console plugin 'phone-connect' for screens, settings and pairing, with full API parity; (B) a SMALL native Android companion app, not the whole console, for phone-only work. KEEP and port from apps/amberx-droid: 1) the Approvals page with alerts, including the lock screen showing only 'Approval waiting'; 2) Monitor: background WatchService foreground service, approvals watch, alerts, auto-approval rules; 3) open a page on the phone (bring Chrome to the front; keep the amberx.open_url tool working in axHub, renamed phone.open_url with an alias); 4) phone notifications (FYI and fix updates, alerts); 5) the audio output recorder: move the WHOLE thing out of the console's output-recorder plugin into Phone Connect (recorder_start/stop/status tools move too, with aliases). DROP: voice commands, notes, dictation, web tabs, AI connection, the phone AI assistant and agent manager (everything merges into the console AI Assistant), the walkthrough video and recorder, and the wake word listener. Also REMOVE the console wake-listener plugin and the always-on wake mic, because it grabs Brett's mic. Keep the hub sign-in and session security rules. Before deleting anything, list every AmberX piece and console plugin being removed, then retire apps/amberx-droid, the amberx.amberxai.com deploy, and the axHub amberx device, once Phone Connect is installed and working. CI builds the APK. Tests, help, Shipped features. Land with the one-at-a-time lander.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -152573,7 +152577,7 @@
    "pr": "#712",
    "priority": "P1",
    "createdAt": "2026-11-15T13:36:18.858Z",
-   "updatedAt": "2026-11-15T13:59:10.959Z",
+   "updatedAt": "2026-11-15T14:20:50.765Z",
    "builtAt": "",
    "notes": [
     {
@@ -152623,6 +152627,10 @@
     {
      "text": "Headless run axf-phone-connect-small-android-companion--lenny: brief only · start 13.4K tokens ($0.07) · cost $8.39 · 75 turns · 6 tools, MCP none",
      "at": "2026-11-15T13:59:10.959Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-15T14:20:50.765Z"
     }
    ],
    "approvals": [],
