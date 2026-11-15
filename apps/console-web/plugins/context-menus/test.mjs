@@ -99,6 +99,17 @@ ok(a2.ok && !a2.menu.active, 'saved without switching');
 eq(M.activeMap()['console-web'], 'console-web-beginner', 'beginner still in use');
 eq(M.loadMenus().map((m) => m.id), ['console-web-beginner', 'console-web-pro'], 'listed by level order');
 
+/* ---- registered actions: plugins offer, menus reference */
+eq(M.registerActions('demo-plugin', [{ id: 'demo.hello', label: 'Say hello', zones: ['asset-card'] }, { id: 'bad id!' }]).count, 1, 'a plugin registers its actions (bad ids dropped)');
+ok(M.allActions().some((a) => a.id === 'demo.hello' && a.module === 'demo-plugin'), 'registered actions join the inventory');
+const batch = await M.api({ op: 'register-actions', batch: [{ owner: 'p1', actions: [{ id: 'p1.go' }] }, { owner: 'p2', actions: [{ id: 'p2.go' }] }] });
+ok(batch.ok && batch.owners === 2, 'batch registration');
+eq(M.registerActions('demo-plugin', [{ id: 'demo.bye' }]).count, 1, 're-registering replaces the list');
+ok(!M.allActions().some((a) => a.id === 'demo.hello'), 'the old list is gone');
+M.saveMenu({ ...M.getMenu('console-web-pro'), asset: { ...M.getMenu('console-web-pro').asset, data: { ...M.getMenu('console-web-pro').asset.data, targets: { default: [{ id: 'x', label: 'X', action: 'demo.bye' }, { id: 'y', label: 'Y', action: 'nobody.has' }] } } } }, { by: 'test' });
+eq(M.unknownActions(M.getMenu('console-web-pro')), ['nobody.has'], 'a menu lists the actions nobody registered');
+M.restore('console-web-pro', 1, 'test');
+
 /* ---- per zone (the UI Manager's per-element view) */
 const zm = M.menusForZone('asset-card');
 ok(zm.ok && zm.menus.some((m) => m.id === 'console-web-pro' && m.items === 1), 'zone lists the menus that map it');

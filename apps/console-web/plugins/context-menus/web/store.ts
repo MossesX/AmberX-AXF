@@ -91,6 +91,18 @@ export function zonesOnScreen(): { id: string; label?: string; elements: string[
   return [...seen.entries()].filter(([id]) => id).map(([id, els]) => ({ id, elements: [...els].slice(0, 12) }));
 }
 
+/** Register what each module of this console offers on the hub (one list per plugin / library): menus reference these
+ *  ids from any app. Debounced per session: once after load, and again when a plugin asks (registerActions). */
+export const registerActions = (owner: string, actions: { id: string; label?: string; zones?: string[] }[], app = APP) => api.post<{ ok: boolean; count: number }>('actions/register', { owner, actions, app });
+let registered = false;
+export async function registerLiveActions(rt: AxfRuntime): Promise<void> {
+  if (registered) return;
+  registered = true;
+  const by = new Map<string, { id: string; label: string }[]>();
+  for (const a of liveActions(rt)) { const o = (a.module || 'console').replace(/[^a-z0-9._-]/gi, '_').slice(0, 80) || 'console'; by.set(o, [...(by.get(o) ?? []), { id: a.id, label: a.label }]); }
+  try { await api.post('actions/register', { batch: [...by.entries()].map(([owner, actions]) => ({ owner, actions })), app: APP }); } catch { registered = false; }
+}
+
 export async function reportZones(rt: AxfRuntime): Promise<void> {
   const items = zonesOnScreen();
   if (!items.length) return;
@@ -148,6 +160,8 @@ export interface ContextMenusService {
   /** The UI Manager's per-element view: the zone an element sits in, the items shown there and every menu that maps it. */
   forElement(el: Element | null, app?: string): ElementMenus | null;
   forZone(zone: string, app?: string): ElementMenus;
+  /** Register the actions / hooks a plugin offers on the hub (replaces its list); menus reference them by id. */
+  registerActions(owner: string, actions: { id: string; label?: string; zones?: string[] }[]): Promise<void>;
   use(id: string): Promise<void>;
   refresh(): Promise<void>;
   levels(): R.Level[];
@@ -162,6 +176,7 @@ export function publishService(rt: AxfRuntime): () => void {
     itemsFor: (zone, app = APP) => { const id = state?.active[app]; const m = id ? state?.menus.find((x) => x.id === id) : null; return m?.asset.data.targets[zone] ?? m?.asset.data.targets.default ?? []; },
     forElement: (el, app = APP) => { if (!el) return null; const z = zoneOf(el); return menusForZone(z.zone, app, z.implicit); },
     forZone: (zone, app = APP) => menusForZone(zone, app),
+    registerActions: async (owner, actions) => { await registerActions(owner, actions); },
     use: async (id) => { await useMenu(id); await load(rt); },
     refresh: async () => { await load(rt); },
     levels: () => Object.values(R.LEVELS),

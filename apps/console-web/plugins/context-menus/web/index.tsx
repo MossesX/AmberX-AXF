@@ -56,7 +56,7 @@ export const plugin: AxfWebLibrary = {
   provides: [S.CAPABILITY],
   register(rt) {
     S.publishService(rt);
-    void S.load(rt);
+    void S.load(rt).then(() => S.registerLiveActions(rt));
     rt.contextExtras.set(TRAIL_KEY, (target) => trailEntries(target || 'default', String(rt.getState().view ?? '')));
     rt.actions.register('context-menus.open', ([tab, menu, zone]) => { focus = { tab: (tab as typeof focus.tab) || undefined, menu: menu || undefined, zone: zone || undefined }; rt.navigate(S.VIEW); }, { label: 'Open Context menus (tab: generate / drafts / menus / zones; then menu id, zone)', params: true });
     rt.actions.register('context-menus.generate', ([level, app, page]) => { void generate(rt, level || 'pro', app || undefined, false, page || ''); }, { label: 'Generate context menus with Claude at a level (app, page: a draft to preview)', params: true });

@@ -8,6 +8,7 @@
  *   <store>/zones.json           ctx-zone@1 registry (code scan + what open consoles report)
  *   <store>/drafts/<id>.json     ctx-draft@1 (a generated menu waiting for Preview → Apply)
  *   <store>/active.json          { "<app>": "<menu id>" } — which menu each app shows
+ *   <store>/actions/<owner>.json ctx-actions@1 — the actions / hooks a plugin or app offers; menu items reference them
  *
  * <store> is the hub's shared data where /projects is mounted (the console container): /projects/amberx-axf/_data/
  * context-menus/ = axhub.memory_read / memory_write project "amberx-axf", area "data", path "context-menus/menus/<id>.json".
@@ -23,7 +24,8 @@
  *   … zones [--scan]                  the zone registry (--scan rescans the code)
  *   … zone <zone> [--app a]            the menus that map one zone and the items shown there (what the UI Manager shows)
  *   … levels                          the four coder levels
- *   … actions                         the actions a menu item may run (console inventory)
+ *   … actions                         the actions a menu item may run (console inventory + registered on the hub)
+ *   … register-actions <owner> <file.json|->   a plugin / app registers the actions it offers ([{id, label, zones?}])
  *   … prompt --level pro [--app a] [--page p]      the prompt Claude gets (zero tokens)
  *   … generate --level pro [--app a] [--page p] [--reply-file f] [--apply]   a draft from a model reply (tests: a fixed reply)
  *   … draft [<id>] · apply <draft id> · discard <draft id>
@@ -206,6 +208,48 @@ export function inventoryActions(root = ROOT) {
   return [...out.values()].sort((a, b) => a.id.localeCompare(b.id));
 }
 
+/* ---------------- registered actions: what plugins and apps offer (one true source too) ---------------- */
+
+export const ACTIONS_FORMAT = 'ctx-actions@1';
+const ownerOk = (o) => /^[a-z0-9][a-z0-9._-]{0,79}$/i.test(String(o ?? ''));
+
+/** A plugin or app registers the actions / hooks it offers (replaces its previous list). Menus reference them by id. */
+export function registerActions(owner, actions, { app = R.DEFAULT_APP, by = '' } = {}) {
+  if (!ownerOk(owner)) return { ok: false, error: `bad owner "${owner}"` };
+  const list = [];
+  const seen = new Set();
+  for (const a of Array.isArray(actions) ? actions : []) {
+    const id = String(a?.id ?? '');
+    if (!R.ACTION_RE.test(id) || seen.has(id)) continue;
+    seen.add(id);
+    list.push({ id, label: String(a?.label ?? id).slice(0, 120), ...(Array.isArray(a?.zones) ? { zones: a.zones.map(String).slice(0, 40) } : {}), ...(a?.params ? { params: true } : {}) });
+  }
+  const doc = { $axf: ACTIONS_FORMAT, owner, app, by, at: now(), actions: list.slice(0, 600) };
+  writeJson(P('actions', `${owner.replace(/[^a-z0-9._-]/gi, '_')}.json`), doc);
+  return { ok: true, owner, count: doc.actions.length };
+}
+
+export function registeredActions() {
+  const dir = P('actions');
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => readJson(join(dir, f))).filter((d) => d?.$axf === ACTIONS_FORMAT);
+}
+
+/** Every action a menu item may run: the console inventory plus what plugins and apps registered on the hub. */
+export function allActions(root = ROOT) {
+  const out = new Map(inventoryActions(root).map((a) => [a.id, a]));
+  for (const d of registeredActions()) for (const a of d.actions) if (!out.has(a.id)) out.set(a.id, { id: a.id, label: a.label, module: d.owner, ...(a.zones ? { zones: a.zones } : {}) });
+  return [...out.values()].sort((a, b) => a.id.localeCompare(b.id));
+}
+
+/** The action ids a menu references that nobody registered (shown per row; a stale item does nothing on click). */
+export function unknownActions(doc, known = new Set(allActions().map((a) => a.id))) {
+  const out = new Set();
+  const walkItems = (items) => { for (const it of items ?? []) { if (it.action && !known.has(String(it.action).split(':').slice(0, it.action.startsWith('nav:') ? 2 : 1).join(':'))) out.add(it.action); walkItems(it.items); } };
+  for (const items of Object.values(doc?.asset?.data?.targets ?? {})) walkItems(items);
+  return [...out];
+}
+
 /* ---------------- drafts: preview before applying ---------------- */
 
 export function drafts() { const dir = P('drafts'); return existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => readJson(join(dir, f))).filter(Boolean).sort((a, b) => String(b.at).localeCompare(String(a.at))) : []; }
@@ -214,7 +258,7 @@ export function discardDraft(id) { if (!idOk(id)) return { ok: false, error: 'ba
 
 export function promptFor({ level = 'pro', app = R.DEFAULT_APP, page = '', actions, name = '' } = {}) {
   if (!R.isLevel(level)) throw new Error(`level must be one of ${R.LEVEL_IDS.join(', ')}`);
-  const acts = Array.isArray(actions) && actions.length ? actions : inventoryActions();
+  const acts = Array.isArray(actions) && actions.length ? actions : allActions();
   return R.buildPrompt({ level, app, page, zones: zones().items, actions: acts, name });
 }
 
@@ -223,7 +267,7 @@ export function promptFor({ level = 'pro', app = R.DEFAULT_APP, page = '', actio
  * shows now. Nothing is saved as a menu until `apply`.
  */
 export function draftFromReply(reply, { level = 'pro', app = R.DEFAULT_APP, page = '', actions, name = '', by = '', model = '', id = '' } = {}) {
-  const acts = Array.isArray(actions) && actions.length ? actions : inventoryActions();
+  const acts = Array.isArray(actions) && actions.length ? actions : allActions();
   const t = now();
   const { doc, warnings } = R.fromReply(reply, { level, app, page, zones: zones().items, actions: acts, id, name, by, model, now: t });
   if (!doc) return { ok: false, error: 'Claude did not answer with a menu', warnings };
@@ -269,7 +313,13 @@ export async function api(req) {
     case 'report-zones': return reportZones(req.items, req.page);
     case 'zone-menus': return menusForZone(req.zone, req.app || R.DEFAULT_APP);
     case 'levels': return { ok: true, levels: Object.values(R.LEVELS) };
-    case 'actions': return { ok: true, actions: inventoryActions() };
+    case 'actions': return { ok: true, actions: allActions(), registered: registeredActions().map((d) => ({ owner: d.owner, app: d.app, at: d.at, count: d.actions.length })) };
+    case 'register-actions': {
+      if (!Array.isArray(req.batch)) return registerActions(req.owner, req.actions, { app: req.app || R.DEFAULT_APP, by });
+      const done = req.batch.slice(0, 200).map((b) => registerActions(b?.owner, b?.actions, { app: req.app || R.DEFAULT_APP, by }));
+      return { ok: done.every((d) => d.ok), owners: done.filter((d) => d.ok).length, errors: done.filter((d) => !d.ok).map((d) => d.error) };
+    }
+    case 'unknown-actions': { const m = getMenu(req.id); return m ? { ok: true, id: m.id, unknown: unknownActions(m) } : { ok: false, error: 'no such menu' }; }
     case 'prompt': return { ok: true, prompt: promptFor(req) };
     case 'draft': return draftFromReply(req.reply, { ...req, by });
     case 'drafts': return { ok: true, drafts: drafts() };
@@ -312,7 +362,8 @@ async function main(argv) {
     case 'zone': { const r = menusForZone(a1, f.app || R.DEFAULT_APP); return out(r, r.ok ? `${r.zone}: ${r.active ? `${r.active.name}${r.active.fallback ? ' (default items)' : ''}` : 'app default'} · ${r.items.length} items\n${r.menus.map((m) => `  ${m.active ? '●' : '○'} ${m.id} ${m.level} ${m.items} items`).join('\n')}` : r.error); }
     case 'zones': { const z = zones({ scan: !!f.scan }); return out({ ok: true, ...z }, z.items.map((x) => `${x.weight.padEnd(7)} ${x.id.padEnd(28)} ${x.owner.kind}${x.owner.id ? `:${x.owner.id}` : ''}${x.pages.length ? ` · ${x.pages.join(', ')}` : ''}`).join('\n')); }
     case 'levels': return out({ ok: true, levels: Object.values(R.LEVELS) }, Object.values(R.LEVELS).map((l) => `${l.id.padEnd(9)} ${l.label.padEnd(15)} ≤${l.perTarget} items · depth ${l.depth} · zones ${l.zones}\n          ${l.brief}`).join('\n'));
-    case 'actions': { const acts = inventoryActions(); return out({ ok: true, actions: acts }, acts.map((a) => `${a.id}  ${a.label}`).join('\n')); }
+    case 'register-actions': return out(registerActions(a1, JSON.parse(readInput(a2)), { app: f.app || R.DEFAULT_APP, by: f.by || 'cli' }));
+    case 'actions': { const acts = allActions(); return out({ ok: true, actions: acts }, acts.map((a) => `${a.id}  ${a.label}`).join('\n')); }
     case 'prompt': return out({ ok: true, prompt: promptFor({ level: f.level || 'pro', app: f.app, page: f.page, name: f.name }) });
     case 'generate': {
       if (!f['reply-file']) return out({ ok: false, error: 'the CLI needs --reply-file <model reply>; the console server sends the prompt to Claude (POST /generate)' });

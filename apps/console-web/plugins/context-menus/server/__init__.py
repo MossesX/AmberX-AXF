@@ -129,6 +129,24 @@ def actions() -> dict[str, Any]:
     return run({"op": "actions"})
 
 
+@router.post("/actions/register")
+async def register_actions(request: Request) -> dict[str, Any]:
+    """A plugin or app registers the actions / hooks it offers (owner, actions: [{id, label, zones?}], app?; or batch:
+    [{owner, actions}] for many at once). Replaces
+    its previous list on the hub; menu items reference these ids and Claude may only use registered ones."""
+    body = await request.json() or {}
+    req = {"op": "register-actions", "owner": str(body.get("owner") or ""), "actions": body.get("actions") or [], "app": str(body.get("app") or ""), "by": _by(request)}
+    if isinstance(body.get("batch"), list):
+        req["batch"] = body["batch"]
+    return _ok(run(req), missing=400)
+
+
+@router.get("/menus/{mid}/unknown-actions")
+def unknown_actions(mid: str) -> dict[str, Any]:
+    """The action ids a menu references that no plugin or app registered."""
+    return _ok(run({"op": "unknown-actions", "id": mid}))
+
+
 @router.get("/active")
 def active(app: str = "console-web") -> dict[str, Any]:
     return run({"op": "active", "app": app})
@@ -299,6 +317,13 @@ class ContextMenusService:
     def for_zone(self, zone: str, app: str = "console-web") -> dict[str, Any]:
         """The menus that map a zone and the items shown there (the UI Manager's per-element view)."""
         return run({"op": "zone-menus", "zone": zone, "app": app})
+
+    def register_actions(self, owner: str, actions: list[dict[str, Any]], app: str = "console-web") -> dict[str, Any]:
+        """Register the actions / hooks a plugin offers (menus reference them by id)."""
+        return run({"op": "register-actions", "owner": owner, "actions": actions, "app": app, "by": owner})
+
+    def actions(self) -> list[dict[str, Any]]:
+        return run({"op": "actions"}).get("actions") or []
 
     def report_zones(self, items: list[dict[str, Any]], page: str = "") -> dict[str, Any]:
         return run({"op": "report-zones", "items": items, "page": page})
