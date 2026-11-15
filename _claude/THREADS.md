@@ -806,7 +806,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 00:27 UTC · `new-asset-type-animated-expanding-row` note (all) · orchestrator
 - 2026-11-15 00:27 UTC · `quick-settings-pinned-collapsible-pane` s2 done, → running (all) · orchestrator
 - 2026-11-15 00:30 UTC · `merge-main-land-voice-listener-use` s1 done, → running (all) · orchestrator
 - 2026-11-15 00:31 UTC · `merge-main-land-voice-listener-use` PR #694 (all) · builds-live
@@ -1206,6 +1205,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 12:37 UTC · `gate-rules-plugin-in-the-console` s15 done (all) · orchestrator
 - 2026-11-15 12:37 UTC · `data-container-axf-data-holds-all` s11 done (all) · orchestrator
 - 2026-11-15 12:38 UTC · `gate-rules-plugin-in-the-console` s16 done (all) · orchestrator
+- 2026-11-15 12:40 UTC · `gate-rules-plugin-in-the-console` s17 done (all) · orchestrator
 
 ## Token passes (log)
 
