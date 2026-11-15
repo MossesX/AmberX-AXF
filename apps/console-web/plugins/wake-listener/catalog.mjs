@@ -248,7 +248,24 @@ export function buildCatalog({ registry = null, actions = null, targets = {} } =
   entries.push(...entriesFromControl(targets));
   entries.push(...entriesFromActions(actions));
   const seen = new Set();
-  return { $axf: CATALOG_FRAME, builtAt: new Date().toISOString(), entries: entries.filter((e) => (seen.has(e.id) ? false : (seen.add(e.id), true))), groups: GROUPS };
+  return { $axf: CATALOG_FRAME, builtAt: new Date().toISOString(), entries: entries.filter((e) => (seen.has(e.id) ? false : (seen.add(e.id), true))).map(guarded), groups: GROUPS };
+}
+
+/** A destructive command always asks for a spoken yes first, whatever its source said. */
+const guarded = (e) => (e.effect === 'destructive' && !e.confirm ? { ...e, confirm: true } : e);
+
+/**
+ * Brett's own phrases (settings.custom: [{ say, entry }]) put in front of their entries' spoken forms, so they match
+ * first and show on the Voice commands list. A phrase for an entry this catalog lacks is reported in `unknownCustom`.
+ */
+export function withCustom(catalog, custom) {
+  const list = Array.isArray(custom) ? custom : [];
+  if (!list.length) return catalog;
+  const byId = new Map(list.map((c) => [c.entry, []]));
+  for (const c of list) byId.get(c.entry).push(c.say);
+  const known = new Set(catalog.entries.map((e) => e.id));
+  const entries = catalog.entries.map((e) => (byId.has(e.id) ? { ...e, say: [...byId.get(e.id), ...e.say.filter((x) => !byId.get(e.id).includes(x))], custom: byId.get(e.id) } : e));
+  return { ...catalog, entries, unknownCustom: list.filter((c) => !known.has(c.entry)) };
 }
 
 /* ------------------------------------------------------------------ matching */
@@ -302,7 +319,7 @@ export function matchCommand(catalog, text) {
         if (e.verbs) { const verb = cand.split(' ')[0]; if (e.verbs[verb] && !filled.action) filled.action = e.verbs[verb]; }
         // the most literal words matched, the fewest words swallowed by slots, wins
         const specificity = tpl.replace(/\{\w+\}/g, '').trim().split(/\s+/).filter(Boolean).length;
-        const score = 1 + (specificity - slotWords / 2) / 100 + (slots.length ? 0 : 0.5);
+        const score = 1 + (specificity - slotWords / 2) / 100 + (slots.length ? 0 : 0.5) + (e.custom?.includes(tpl) ? 1 : 0);
         if (!best || score > best.score) best = { entry: e, slots: filled, template: tpl, score: Number(score.toFixed(4)) };
       }
     }

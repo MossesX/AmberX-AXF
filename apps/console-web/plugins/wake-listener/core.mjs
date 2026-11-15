@@ -35,7 +35,10 @@ export const DEFAULTS = Object.freeze({
   indicator: 'always',
   /** pause while the page is hidden (another app in front on the phone) */
   pauseHidden: false,
+  /** Brett's own phrases for catalog entries: [{ say: 'ship it {id}', entry: 'control:planner.builds:land' }] */
+  custom: [],
 });
+export const MAX_CUSTOM = 200;
 
 export class ListenerError extends Error {
   constructor(code, message) { super(message); this.code = code; }
@@ -61,6 +64,27 @@ export function normalizePhrases(raw) {
   return out;
 }
 
+/**
+ * Custom phrases, cleaned: a list of { say, entry } or "phrase => entry id" strings. The phrase keeps {field} slots;
+ * a phrase is unique (the newest one wins).
+ */
+export function normalizeCustom(raw) {
+  const list = Array.isArray(raw) ? raw : raw ? [raw] : [];
+  const out = new Map();
+  for (const c of list) {
+    let say = ''; let entry = '';
+    if (typeof c === 'string') { const i = c.indexOf('=>'); if (i > 0) { say = c.slice(0, i); entry = c.slice(i + 2); } }
+    else if (c && typeof c === 'object') { say = String(c.say ?? ''); entry = String(c.entry ?? ''); }
+    const slots = [];
+    const clean = normalizePhrase(say.replace(/\{(\w+)\}/g, (_m, k) => { slots.push(k); return ` qslotq${slots.length - 1} `; }))
+      .replace(/qslotq(\d+)/g, (_m, i) => `{${slots[Number(i)]}}`);
+    entry = entry.trim();
+    if (!clean || clean.length > 80 || !entry || entry.length > 120 || !/^[\w:./-]+$/.test(entry)) continue;
+    out.delete(clean); out.set(clean, { say: clean, entry });
+  }
+  return [...out.values()].slice(-MAX_CUSTOM);
+}
+
 /** Settings as stored and sent (unknown fields dropped, every value clamped). */
 export function normalizeSettings(raw) {
   const r = raw && typeof raw === 'object' && !Array.isArray(raw) ? raw : {};
@@ -75,6 +99,7 @@ export function normalizeSettings(raw) {
     chime: bool(r.chime, DEFAULTS.chime),
     indicator: r.indicator === 'listening' || r.indicator === 'never' ? r.indicator : DEFAULTS.indicator,
     pauseHidden: bool(r.pauseHidden, DEFAULTS.pauseHidden),
+    custom: normalizeCustom(r.custom),
   };
 }
 
@@ -86,8 +111,10 @@ export function applyPatch(settings, patch) {
   for (const [k, v] of Object.entries(p)) {
     if (k === 'addPhrase') next.phrases = normalizePhrases([...s.phrases, ...normalizePhrases(v)]);
     else if (k === 'removePhrase') { const drop = normalizePhrases(v); next.phrases = s.phrases.filter((x) => !drop.includes(x)); }
+    else if (k === 'addCustom') next.custom = normalizeCustom([...next.custom, ...(Array.isArray(v) ? v : [v])]);
+    else if (k === 'removeCustom') { const drop = (Array.isArray(v) ? v : [v]).map((x) => normalizePhrase(typeof x === 'object' && x ? x.say : x)); next.custom = next.custom.filter((c) => !drop.includes(normalizePhrase(c.say))); }
     else if (k in DEFAULTS) next[k] = v;
-    else throw new ListenerError('invalid', `unknown setting ${k} (${Object.keys(DEFAULTS).join(', ')}, addPhrase, removePhrase)`);
+    else throw new ListenerError('invalid', `unknown setting ${k} (${Object.keys(DEFAULTS).join(', ')}, addPhrase, removePhrase, addCustom, removeCustom)`);
   }
   return normalizeSettings(next);
 }

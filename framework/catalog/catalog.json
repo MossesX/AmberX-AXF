@@ -2637,6 +2637,14 @@
               "tag": "",
               "recommended": true,
               "suggests": []
+            },
+            {
+              "id": "cx.wakelistener",
+              "title": "Wake-word voice listener (wake-listener@1): wake phrases Brett sets, a mic light and off switch, every console command by voice with spoken wizards, approvals one at a time, the veto pass by voice, a searchable Voice commands list with custom phrases",
+              "note": "apps/console-web/plugins/wake-listener: core.mjs (settings, wake matcher, state machine), catalog.mjs (catalog from the plugin-commands registry, control@1 targets and actions; matcher, spoken wizard, custom phrases, destructive commands confirm), web/ (engine, flow, settings tab). REST /api/plugins/wake-listener, MCP wake-listener_*, CLI listener.mjs. Android on-device recognizer deferred (PORTING.md).",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
             }
           ]
         }

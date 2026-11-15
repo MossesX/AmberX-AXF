@@ -20,6 +20,7 @@ export interface ListenerSettings {
   chime: boolean;
   indicator: 'always' | 'listening' | 'never';
   pauseHidden: boolean;
+  custom: CustomPhrase[];
 }
 export const DEFAULTS: Readonly<ListenerSettings>;
 
@@ -48,6 +49,9 @@ export interface Heard { state: ListenerState; event: HearEvent; command?: strin
 
 export function normalizePhrase(text: unknown): string;
 export function normalizePhrases(raw: unknown): string[];
+export interface CustomPhrase { say: string; entry: string }
+export const MAX_CUSTOM: number;
+export function normalizeCustom(raw: unknown): CustomPhrase[];
 export function normalizeSettings(raw: unknown): ListenerSettings;
 export function applyPatch(settings: unknown, patch: Record<string, unknown>): ListenerSettings;
 export function matchWake(text: unknown, phrases: unknown): { wake: string; rest: string } | null;

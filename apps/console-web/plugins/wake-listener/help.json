@@ -6,7 +6,9 @@
   "version": "0.1.0",
   "description": "Help mode entries for the Wake listener plugin (help@1): the settings tab, the banner light and the spoken flows.",
   "author": "Brett",
-  "tags": ["help"],
+  "tags": [
+    "help"
+  ],
   "data": {
     "scope": "plugin:wake-listener",
     "entries": [
@@ -104,6 +106,48 @@
         "target": "action:wake-listener.approvals",
         "title": "Review approvals by voice",
         "text": "Starts a spoken review of everything waiting on axHub, one call at a time.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "settings:wake-listener-commands",
+        "title": "Voice commands",
+        "text": "Every command the wake listener understands and the ways to say it, searchable. Your own phrases show first on their command and match before the built-in ones. Commands marked 'asks yes / no' (and every destructive one) are read back and need a spoken yes.",
+        "tryIt": "Search 'veto', press My phrase, type 'two hour pass' and Add."
+      },
+      {
+        "target": "search-commands",
+        "title": "Search commands",
+        "text": "Filters the voice command list by words in the command's name, id, group or phrasings.",
+        "kind": "field"
+      },
+      {
+        "target": "my-phrase",
+        "title": "My phrase",
+        "text": "Picks this command for a phrase of your own: its id goes into the Command id field below.",
+        "kind": "button"
+      },
+      {
+        "target": "phrase",
+        "title": "Phrase",
+        "text": "The words you want to say. Put a field in braces to fill it from what you say, e.g. 'ship {id}' fills the build id.",
+        "kind": "field"
+      },
+      {
+        "target": "command-id",
+        "title": "Command id",
+        "text": "The catalog id of the command the phrase runs (shown under each command in the list).",
+        "kind": "field"
+      },
+      {
+        "target": "add",
+        "title": "Add",
+        "text": "Saves the phrase for the command. It works on every console signed in to this server, and over REST, MCP and the CLI.",
+        "kind": "button"
+      },
+      {
+        "target": "action:wake-listener.commands",
+        "title": "Voice commands list",
+        "text": "Opens the Voice commands list in Settings → Plugins → Wake listener.",
         "kind": "menu-item"
       }
     ]

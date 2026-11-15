@@ -19,6 +19,8 @@ export type RunSpec =
 export interface CatalogEntry {
   id: string; title: string; group: string; plugin?: string; say: string[]; fields: CatalogField[]; run: RunSpec;
   effect: string; confirm: boolean; summary: string; speak: string; verbs: Record<string, string> | null; source: string;
+  /** Brett's own phrases for this entry (settings.custom), first in `say` */
+  custom?: string[];
 }
 export interface Catalog { $axf: 'wake-listener-catalog@1'; builtAt: string; entries: CatalogEntry[]; groups: string[] }
 export interface Match { entry: CatalogEntry; slots: Record<string, string>; missing: string[]; score: number; template: string }
@@ -44,6 +46,7 @@ export function buildCatalog(opts?: { registry?: unknown; actions?: { id: string
 export function matchCommand(catalog: Catalog, text: unknown): Match | null;
 export function coerceField(field: CatalogField, raw: unknown): string | null;
 export function missingFields(entry: CatalogEntry, slots: Record<string, unknown>): string[];
+export function withCustom(catalog: Catalog, custom: { say: string; entry: string }[] | null | undefined): Catalog & { unknownCustom?: { say: string; entry: string }[] };
 export function searchCatalog(catalog: Catalog, q: unknown): CatalogEntry[];
 export function startWizard(entry: CatalogEntry, slots?: Record<string, string>): Wizard;
 export function answerWizard(w: Wizard, text: unknown): Wizard;

@@ -114,6 +114,22 @@
             },
             "pauseHidden": {
               "type": "boolean"
+            },
+            "addCustom": {
+              "type": "object",
+              "properties": {
+                "say": {
+                  "type": "string"
+                },
+                "entry": {
+                  "type": "string"
+                }
+              },
+              "description": "add one custom phrase"
+            },
+            "removeCustom": {
+              "type": "string",
+              "description": "drop one custom phrase"
             }
           },
           "additionalProperties": false
@@ -148,6 +164,55 @@
         "title": "The voice command catalog: every console action, plugin command, control@1 target and pipeline command with its spoken forms and fields",
         "description": "Lists every voice command the listener understands, built from the console's actions, plugin commands, control@1 targets and pipeline commands, with the spoken forms and the fields each one takes.",
         "readOnly": true
+      },
+      {
+        "route": "GET /custom",
+        "id": "custom",
+        "title": "Brett's own voice phrases for catalog entries",
+        "description": "Lists the custom phrases added on the Voice commands list: each phrase and the catalog entry it runs. They match before the built-in phrasings.",
+        "readOnly": true
+      },
+      {
+        "route": "POST /custom",
+        "id": "custom-add",
+        "title": "Add a custom voice phrase for a catalog entry ({field} slots allowed)",
+        "description": "Adds a phrase of your own for any catalog entry, e.g. 'ship {id}' for marking a build complete. The entry must exist in the catalog; the phrase then matches first.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "say": {
+              "type": "string",
+              "description": "the phrase; {field} marks a slot"
+            },
+            "entry": {
+              "type": "string",
+              "description": "catalog entry id (GET /catalog)"
+            }
+          },
+          "required": [
+            "say",
+            "entry"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /custom/remove",
+        "id": "custom-remove",
+        "title": "Remove a custom voice phrase",
+        "description": "Drops one of your own phrases; the entry keeps its built-in phrasings.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "say": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "say"
+          ],
+          "additionalProperties": false
+        }
       },
       {
         "route": "POST /match",
@@ -248,6 +313,13 @@
         "title": "Open the wake listener's settings tab",
         "description": "Opens the wake listener's settings tab under Settings, Plugins.",
         "navigate": true
+      },
+      {
+        "navigate": true,
+        "action": "wake-listener.commands",
+        "id": "commands",
+        "title": "Open the Voice commands list (every command and its phrasings, your own phrases)",
+        "description": "Opens Settings → Plugins → Wake listener at the Voice commands list in the open console: every voice command, searchable, with the phrases you added."
       }
     ]
   },

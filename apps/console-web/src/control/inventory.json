@@ -8,7 +8,7 @@
     "tabs": 86,
     "settingsTabs": 70,
     "settings": 87,
-    "functions": 264,
+    "functions": 265,
     "buttons": 62,
     "plugins": 70
   },
@@ -6852,6 +6852,22 @@
         "cancel"
       ],
       "effect": "write",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.commands",
+      "kind": "function",
+      "id": "wake-listener.commands",
+      "label": "Voice commands list",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.commands",
+        "wake",
+        "listener",
+        "commands"
+      ],
+      "effect": "navigate",
       "plugin": "ai.amberx.axf.console.wake-listener",
       "file": "plugins/wake-listener/web/index.tsx"
     },

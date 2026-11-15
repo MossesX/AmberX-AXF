@@ -12,6 +12,9 @@ plugin's data folder through the plugin's Node core (listener.mjs → core.mjs),
   POST report {state}        the open console reports its state (left out of the commands: the page's own)
   GET  catalog [?q=]         the voice command catalog (every console action, plugin command, control@1 target and
                              pipeline command with its spoken forms and fields)
+  GET  custom                Brett's own phrases for catalog entries ([{say, entry}])
+  POST custom {say, entry}   add one (the entry must be in the catalog; {field} slots allowed)
+  POST custom/remove {say}   drop one
   POST match {text}          dry run: which catalog entry a phrase lands on, the fields it filled and the ones a wizard asks
 
 Running a phrase in the open console (hear a command, review approvals, answer a wizard, start one) is the plugin's web
@@ -74,6 +77,8 @@ def _pairs(patch: dict[str, Any]) -> list[str]:
     for k, v in patch.items():
         if not isinstance(k, str):
             continue
+        if isinstance(v, dict) and k == "addCustom":
+            v = f"{v.get('say', '')} => {v.get('entry', '')}"
         if isinstance(v, list):
             v = ",".join(str(x) for x in v if isinstance(x, (str, int, float)))
         if isinstance(v, bool):
@@ -94,7 +99,7 @@ async def set_settings(request: Request) -> JSONResponse:
     patch = body.get("patch") if isinstance(body.get("patch"), dict) else body
     pairs = _pairs(patch)
     if not pairs:
-        return answer({"ok": False, "code": "invalid", "message": "send { on?, phrases?, engine?, awakeSec?, answerSec?, speak?, chime?, indicator?, pauseHidden?, addPhrase?, removePhrase? }"})
+        return answer({"ok": False, "code": "invalid", "message": "send { on?, phrases?, engine?, awakeSec?, answerSec?, speak?, chime?, indicator?, pauseHidden?, addPhrase?, removePhrase?, addCustom?: {say, entry}, removeCustom? }"})
     return answer(await run_in_threadpool(cli, "set", *pairs, "--by", _who(request)))
 
 
@@ -132,3 +137,26 @@ async def match(request: Request) -> JSONResponse:
     if not isinstance(text, str) or not text.strip():
         return answer({"ok": False, "code": "invalid", "message": "send { text }"})
     return answer(await run_in_threadpool(cli, "match", text[:500], timeout=60))
+
+
+@router.get("/custom")
+async def custom() -> JSONResponse:
+    return answer(await run_in_threadpool(cli, "custom"))
+
+
+@router.post("/custom")
+async def add_custom(request: Request) -> JSONResponse:
+    body = await _body(request)
+    say, entry = body.get("say"), body.get("entry")
+    if not isinstance(say, str) or not say.strip() or not isinstance(entry, str) or not entry.strip():
+        return answer({"ok": False, "code": "invalid", "message": "send { say, entry }"})
+    return answer(await run_in_threadpool(cli, "custom", "add", say[:80], entry[:120], "--by", _who(request), timeout=60))
+
+
+@router.post("/custom/remove")
+async def remove_custom(request: Request) -> JSONResponse:
+    body = await _body(request)
+    say = body.get("say")
+    if not isinstance(say, str) or not say.strip():
+        return answer({"ok": False, "code": "invalid", "message": "send { say }"})
+    return answer(await run_in_threadpool(cli, "custom", "remove", say[:80], "--by", _who(request)))

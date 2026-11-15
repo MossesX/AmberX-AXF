@@ -16,8 +16,8 @@ off, green waiting, amber awake, accent a wizard is waiting for an answer, red a
 | --- | --- |
 | `core.mjs` | pure: settings (`on`, `phrases`, `engine`, `awakeSec`, `answerSec`, `speak`, `chime`, `indicator`, `pauseHidden`), `matchWake`, the state machine (`hear`: off → idle → awake → command, wizard has the floor), the light |
 | `catalog.mjs` | pure: the voice command catalog built from the plugin-commands registry, control@1 targets and the page's actions; the phrasebook; `matchCommand`; the spoken wizard (`startWizard` / `answerWizard`); `requestFor`; `speakResult` |
-| `listener.mjs` | the store (data folder: `settings.json`, `state.json`) + CLI: `settings · set k=v · on · off · phrases [add|remove] · state · report · hear · match · catalog` |
-| `server/__init__.py` | REST `/api/plugins/wake-listener`: `GET settings · POST settings · POST on · POST off · GET state · POST report · GET catalog · POST match` over the CLI |
+| `listener.mjs` | the store (data folder: `settings.json`, `state.json`) + CLI: `settings · set k=v · on · off · phrases [add|remove] · state · report · hear · match · catalog · custom [add|remove]` |
+| `server/__init__.py` | REST `/api/plugins/wake-listener`: `GET settings · POST settings · POST on · POST off · GET state · POST report · GET catalog · POST match · GET custom · POST custom · POST custom/remove` over the CLI |
 | `web/engine.ts` | the microphone: the console app's on-device recognizer through the native bridge (`listener.start|stop|status`, event `listener`) when the bridge offers it, else the browser's SpeechRecognition; mic-lease@1 so it never fights the Assistant mic, dictation or voice notes; `say` (agent voice when installed, else the device voice) and the chime |
 | `web/flow.ts` | what a command does: the floor (wizard / approvals review), the catalog match, running plugin routes, control@1 commands and actions, the approvals review (lib-approvals' deciding path), the fallback to the console's own voice intents |
 | `web/index.tsx` | the plugin: settings tab (switch, phrases, engine, timings, replies, light, "Try it" box, last heard / command / reply), banner light, actions, state reports |
@@ -41,6 +41,15 @@ off, green waiting, amber awake, accent a wizard is waiting for an answer, red a
 - **Navigation / settings / plugins:** open, go to, back, home, scroll, find, press, "set <setting> to <value>", "disable plugin <x>"
   go to the console's own voice intents (console-control@1, action `console.control.voice`).
 - **The listener:** "stop listening", "what can I say", "cancel", "say that again", "start wizard <command>".
+- **Destructive commands** (delete, wipe, anything whose registry effect is `destructive`) always say back what they will
+  do and wait for a spoken yes, whatever their source says (`buildCatalog` enforces it).
+
+## Voice commands list and custom phrases
+
+Settings → Plugins → Wake listener → **Voice commands** lists every catalog entry with its phrasings, searchable, marked
+"asks yes / no" when it confirms first. **My phrase** on a row picks that command; type a phrase (`{field}` slots allowed,
+e.g. `ship {id}` → mark a build complete) and Add. Custom phrases live in `settings.custom` ([{ say, entry }]), are put in
+front of their entry's spoken forms (`withCustom`) and win over built-in phrasings when both match.
 
 A command without a phrasebook line still has an entry: its spoken form is its title ("queue a build"), its fields come
 from its input schema (required ones asked, optional ones once). New plugins appear in the catalog by themselves.
@@ -49,9 +58,9 @@ from its input schema (required ones asked, optional ones once). New plugins app
 
 | Reach | How |
 | --- | --- |
-| Deep link | `console_show` / `console_open` target: settings tab `wake-listener` (`settings.open:wake-listener`, action `wake-listener.open`) |
-| REST | `/api/plugins/wake-listener/settings` (GET, POST), `/on`, `/off`, `/state`, `/catalog?q=`, `/match {text}`; the open console's flows through plugin-commands: run `wake-listener/heard { args: "approve" }`, `wake-listener/approvals`, `wake-listener/wizard { args: "project-wizard/run" }`, `wake-listener/cancel`, `wake-listener/toggle` |
-| MCP | `wake-listener_settings`, `wake-listener_set`, `wake-listener_on`, `wake-listener_off`, `wake-listener_state`, `wake-listener_catalog`, `wake-listener_match`, `wake-listener_heard`, `wake-listener_approvals`, `wake-listener_wizard`, `wake-listener_cancel`, `wake-listener_toggle`, `wake-listener_open` (plugin-commands@1) |
+| Deep link | `console_show` / `console_open` target: settings tab `wake-listener` (`settings.open:wake-listener`, action `wake-listener.open`); the Voice commands list: action `wake-listener.commands` |
+| REST | `/api/plugins/wake-listener/settings` (GET, POST), `/on`, `/off`, `/state`, `/catalog?q=`, `/match {text}`, `/custom` (GET; POST `{say, entry}`; POST `/custom/remove {say}`), settings `addCustom` / `removeCustom`; the open console's flows through plugin-commands: run `wake-listener/heard { args: "approve" }`, `wake-listener/approvals`, `wake-listener/wizard { args: "project-wizard/run" }`, `wake-listener/cancel`, `wake-listener/toggle` |
+| MCP | `wake-listener_settings`, `wake-listener_set`, `wake-listener_on`, `wake-listener_off`, `wake-listener_state`, `wake-listener_catalog`, `wake-listener_match`, `wake-listener_custom`, `wake-listener_custom-add`, `wake-listener_custom-remove`, `wake-listener_heard`, `wake-listener_approvals`, `wake-listener_wizard`, `wake-listener_cancel`, `wake-listener_toggle`, `wake-listener_open`, `wake-listener_commands` (plugin-commands@1) |
 | CLI | `node apps/console-web/plugins/wake-listener/listener.mjs …` (local store + dry runs) and `axf wake-listener <command>` (through the console) |
 | Voice | the catalog itself; AmberX hands-free can hand a phrase to the console with `wake-listener.heard:<phrase>` |
 

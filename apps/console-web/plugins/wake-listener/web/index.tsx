@@ -23,7 +23,8 @@ import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { ENGINE_LABEL, FOLDER, hear, initialState, light, normalizeSettings, pickEngine, sleep, stateLine, switched, wizardOff, wizardOn, type ListenerSettings, type ListenerState } from '../core.mjs';
 import { available, chime, createEngine, say, type Engine } from './engine';
-import { cancelFloor, floorLabel, handleCommand, hasFloor } from './flow';
+import { cancelFloor, catalog, floorLabel, forgetCatalog, handleCommand, hasFloor } from './flow';
+import { searchCatalog, type CatalogEntry } from '../catalog.mjs';
 import { appMenu } from './menu';
 import './wake-listener.css';
 
@@ -123,7 +124,7 @@ function onHeard(text: string, opts: { direct?: boolean } = {}) {
   }).catch((e: Error) => { speak(`That failed: ${e.message}`); setState(wizardOff(L.state)); });
 }
 
-const flowHost = (rt: AxfRuntime) => ({ rt, say: speak, answerSec: L.settings.answerSec, floor: (busy: boolean) => setState(busy ? wizardOn(L.state) : wizardOff(L.state)) });
+const flowHost = (rt: AxfRuntime) => ({ rt, say: speak, answerSec: L.settings.answerSec, custom: L.settings.custom, floor: (busy: boolean) => setState(busy ? wizardOn(L.state) : wizardOff(L.state)) });
 
 /* ------------------------------------------------------------------ the banner light */
 
@@ -226,6 +227,66 @@ export function WakeListenerPanel() {
   );
 }
 
+/* ------------------------------------------------------------------ the voice commands list */
+
+const LIST_MAX = 60;
+
+export function VoiceCommandsPanel() {
+  const rt = useRuntime();
+  const live = useLive();
+  const [all, setAll] = useState<CatalogEntry[]>([]);
+  const [q, setQ] = useState('');
+  const [say, setSay] = useState('');
+  const [entry, setEntry] = useState('');
+  const [err, setErr] = useState('');
+  const custom = live.settings.custom;
+  const key = JSON.stringify(custom);
+  useEffect(() => { let gone = false; void catalog(rt, custom).then((c) => { if (!gone) setAll(c.entries); }); return () => { gone = true; }; }, [rt, key]); // eslint-disable-line react-hooks/exhaustive-deps
+  const shown = q.trim() ? searchCatalog({ $axf: 'wake-listener-catalog@1', builtAt: '', entries: all, groups: [] }, q) : all;
+  const post = async (path: string, body: Record<string, unknown>) => {
+    const r = await pluginFetch(FOLDER, path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+    const j = (await r.json().catch(() => ({}))) as { ok?: boolean; message?: string };
+    if (!r.ok || !j.ok) { const m = j.message || `HTTP ${r.status}`; setErr(m); rt.toast(m, 'danger', 'Voice commands'); return false; }
+    setErr(''); forgetCatalog(); await loadSettings(); return true;
+  };
+  return (
+    <div className="axp-wake-listener" data-help="settings:wake-listener-commands">
+      <Container title="Voice commands" icon="list">
+        <p className="fx-muted">Every command the listener understands and the ways to say it. Your own phrases come first and match before the built-in ones.</p>
+        <TextField label="Search commands" value={q} onChange={setQ} placeholder="veto, project, approve…" />
+        <p className="fx-muted">{shown.length} of {all.length} commands{shown.length > LIST_MAX ? `, first ${LIST_MAX} shown` : ''}</p>
+        <ul className="axp-wake-listener__catalog">
+          {shown.slice(0, LIST_MAX).map((e) => (
+            <li key={e.id} data-entry={e.id}>
+              <strong>{e.title}</strong>
+              <Chip>{e.group}</Chip>
+              {e.confirm && <Chip tone="warning">asks yes / no</Chip>}
+              {(e.custom ?? []).map((c) => (
+                <span key={c} className="axp-wake-listener__row">
+                  <Chip tone="accent">{c}</Chip>
+                  <Button size="sm" icon="x" onClick={() => void post('custom/remove', { say: c })}>Remove</Button>
+                </span>
+              ))}
+              <span className="fx-muted">{e.say.filter((x) => !(e.custom ?? []).includes(x)).slice(0, 4).map((x) => `"${x}"`).join(' · ')}</span>
+              <code className="fx-muted">{e.id}</code>
+              <Button size="sm" icon="plus" onClick={() => setEntry(e.id)}>My phrase</Button>
+            </li>
+          ))}
+        </ul>
+      </Container>
+      <Container title="Add your own phrase" icon="message-circle">
+        <div className="axp-wake-listener__add">
+          <TextField label="Phrase" value={say} onChange={setSay} placeholder="ship {id}" hint="{field} marks a word the command fills in, e.g. ship {id}." />
+          <TextField label="Command id" value={entry} onChange={setEntry} placeholder="control:planner.builds:land" hint="Press My phrase on a command above, or type its id." />
+          <Button size="sm" icon="plus" disabled={!say.trim() || !entry.trim()} onClick={() => void post('custom', { say, entry }).then((ok) => { if (ok) { setSay(''); setEntry(''); } })}>Add</Button>
+        </div>
+        {custom.length === 0 && <p className="fx-muted">No phrases of your own yet.</p>}
+        {err && <Note tone="danger">{err}</Note>}
+      </Container>
+    </div>
+  );
+}
+
 /* ------------------------------------------------------------------ the plugin */
 
 export const plugin: AxfWebLibrary = {
@@ -237,6 +298,7 @@ export const plugin: AxfWebLibrary = {
   settingsTabs: [{ id: FOLDER, label: 'Wake listener', icon: 'mic', order: 94, parent: 'plugins', description: 'Wake phrases, the off switch, the recognizer, spoken replies' }],
   settingsPanels: [
     { id: 'wake-listener.panel', tab: FOLDER, title: 'Wake listener', icon: 'mic', order: 10, render: () => <WakeListenerPanel /> },
+    { id: 'wake-listener.commands', tab: FOLDER, title: 'Voice commands', icon: 'list', order: 20, render: () => <VoiceCommandsPanel /> },
     { id: 'wake-listener.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
   register(rt) {
@@ -248,6 +310,10 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('wake-listener.approvals', () => onHeard('review approvals', { direct: true }), { label: 'Review approvals by voice', effect: 'write' });
     rt.actions.register('wake-listener.wizard', (args) => { const id = args.join(':').trim(); if (id) onHeard(`start wizard ${id}`, { direct: true }); }, { label: 'Start a spoken wizard for a command', params: true, effect: 'write' });
     rt.actions.register('wake-listener.cancel', () => { const m = cancelFloor(); if (m) speak(m); setState(wizardOff(L.state)); }, { label: 'Cancel the spoken wizard', effect: 'write' });
+    rt.actions.register('wake-listener.commands', () => {
+      rt.actions.dispatch(`settings.open:${FOLDER}`, { runtime: rt });
+      setTimeout(() => document.querySelector('[data-help="settings:wake-listener-commands"]')?.scrollIntoView({ block: 'start' }), 300);
+    }, { label: 'Voice commands list', effect: 'navigate' });
     rt.actions.register('wake-listener.open', () => rt.actions.dispatch(`settings.open:${FOLDER}`, { runtime: rt }), { label: 'Wake listener settings', effect: 'navigate' });
     void loadSettings().then(() => syncEngine());
     L.poll = setInterval(() => { if (typeof document === 'undefined' || document.visibilityState === 'visible' || !L.settings.pauseHidden) void loadSettings(); }, SETTINGS_POLL_MS);

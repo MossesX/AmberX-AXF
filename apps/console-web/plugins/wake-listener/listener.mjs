@@ -13,6 +13,7 @@
  *   node listener.mjs hear "<text>"                 dry run: what the matcher makes of a phrase against the stored state
  *   node listener.mjs match "<text>"                dry run of the command catalog (catalog.mjs): the entry and its fields
  *   node listener.mjs catalog [words]               the voice command catalog (every entry, or those matching words)
+ *   node listener.mjs custom [add "<phrase>" <entry id> | remove "<phrase>"]   Brett's own phrases for catalog entries
  *   --json · --by <who>
  */
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
@@ -72,6 +73,15 @@ export function writeState(report) {
   return st;
 }
 
+/* ------------------------------------------------------------------ the catalog with Brett's own phrases */
+
+export async function loadCatalog() {
+  const cat = await import('./catalog.mjs');
+  const { registry } = await import('../../../../framework/cli/plugin-commands.mjs');
+  const { CONTROL_TARGETS } = await import('../../../../framework/core/engines/control-rules.mjs');
+  return cat.withCustom(cat.buildCatalog({ registry: registry({ apps: ['console-web'] }), targets: CONTROL_TARGETS }), readSettings().custom);
+}
+
 /* ------------------------------------------------------------------ CLI */
 
 const isMain = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
@@ -85,7 +95,7 @@ if (isMain) {
   const out = (o, text) => { if (json) console.log(JSON.stringify({ ok: true, ...o })); else console.log(text ?? JSON.stringify(o, null, 2)); };
   const parseValue = (v) => (v === 'true' ? true : v === 'false' ? false : /^-?\d+(\.\d+)?$/.test(v) ? Number(v) : v);
   try {
-    if (cmd === 'settings') { const s = readSettings(); out({ settings: s, defaults: DEFAULTS }, Object.entries(s).map(([k, v]) => `${k.padEnd(12)} ${Array.isArray(v) ? v.join(', ') : v}`).join('\n')); }
+    if (cmd === 'settings') { const s = readSettings(); out({ settings: s, defaults: DEFAULTS }, Object.entries(s).map(([k, v]) => `${k.padEnd(12)} ${Array.isArray(v) ? v.map((x) => (typeof x === 'object' ? `"${x.say}" → ${x.entry}` : x)).join(', ') : v}`).join('\n')); }
     else if (cmd === 'set') {
       const patch = {};
       for (const kv of rest) { const i = kv.indexOf('='); if (i < 1) throw new ListenerError('invalid', `expected key=value, got ${kv}`); patch[kv.slice(0, i)] = kv.slice(i + 1).includes(',') && kv.slice(0, i) === 'phrases' ? kv.slice(i + 1) : parseValue(kv.slice(i + 1)); }
@@ -113,11 +123,23 @@ if (isMain) {
       const r = hear(st, s, rest.join(' '));
       out({ event: r.event, command: r.command ?? '', phase: r.state.phase, wake: r.state.lastWake }, `${r.event}${r.command ? `: "${r.command}"` : ''} (phase ${r.state.phase})`);
     }
+    else if (cmd === 'custom') {
+      const [verb, ...more] = rest;
+      let s = readSettings();
+      if (verb === 'add') {
+        const entry = more.pop() ?? '';
+        const say = more.join(' ');
+        if (!say || !entry) throw new ListenerError('invalid', 'usage: listener.mjs custom add "<phrase>" <entry id>');
+        const known = (await loadCatalog()).entries.some((e) => e.id === entry);
+        if (!known) throw new ListenerError('not_found', `no catalog entry ${entry} (listener.mjs catalog <words> lists them)`);
+        s = writeSettings({ addCustom: { say, entry } }, by);
+      } else if (verb === 'remove') s = writeSettings({ removeCustom: more.join(' ') }, by);
+      else if (verb) throw new ListenerError('invalid', 'usage: listener.mjs custom [add "<phrase>" <entry id> | remove "<phrase>"]');
+      out({ custom: s.custom }, s.custom.length ? s.custom.map((c) => `"${c.say}" → ${c.entry}`).join('\n') : 'no custom phrases');
+    }
     else if (cmd === 'match' || cmd === 'catalog') {
       const cat = await import('./catalog.mjs');
-      const { registry } = await import('../../../../framework/cli/plugin-commands.mjs');
-      const { CONTROL_TARGETS } = await import('../../../../framework/core/engines/control-rules.mjs');
-      const catalog = cat.buildCatalog({ registry: registry({ apps: ['console-web'] }), targets: CONTROL_TARGETS });
+      const catalog = await loadCatalog();
       if (cmd === 'catalog') {
         const q = rest.join(' ').trim();
         const list = q ? cat.searchCatalog(catalog, q) : catalog.entries;
@@ -128,7 +150,7 @@ if (isMain) {
         else out({ match: m }, `${m.entry.id} (${m.entry.title}) score ${m.score}${Object.keys(m.slots).length ? `  slots ${JSON.stringify(m.slots)}` : ''}${m.missing.length ? `  asks: ${m.missing.join(', ')}` : ''}`);
       }
     }
-    else { console.error('usage: listener.mjs settings | set k=v… | on | off | phrases [add|remove <p>] | state | report | hear "<text>" | match "<text>" | catalog [words]'); process.exit(2); }
+    else { console.error('usage: listener.mjs settings | set k=v… | on | off | phrases [add|remove <p>] | state | report | hear "<text>" | match "<text>" | catalog [words] | custom [add "<phrase>" <entry> | remove "<phrase>"]'); process.exit(2); }
   } catch (e) {
     const code = e instanceof ListenerError ? e.code : 'failed';
     if (json) console.log(JSON.stringify({ ok: false, code, message: e.message })); else console.error(e.message);

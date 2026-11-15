@@ -24,7 +24,7 @@ import { decideApproval } from '@console/axf/libs/approvals/host';
 import { HUB_DEFAULT, normalizeHub } from '@console/axf/libs/hub/hub';
 import { pluginFetch } from '@console/plugins';
 import { FOLDER } from '../core.mjs';
-import { NO, SKIP, YES, answerWizard, buildCatalog, helpLine, matchCommand, requestFor, searchCatalog, speakResult, startWizard, summaryOf, type Catalog, type CatalogEntry, type Wizard } from '../catalog.mjs';
+import { NO, SKIP, YES, answerWizard, buildCatalog, helpLine, matchCommand, requestFor, searchCatalog, speakResult, startWizard, summaryOf, withCustom, type Catalog, type CatalogEntry, type Wizard } from '../catalog.mjs';
 
 // The console token, read from the same browser storage as the console's own store (src/api.ts). Built here from the
 // framework's token store rather than imported from '@console/api', so the plugin also builds inside AmberX, which
@@ -40,6 +40,8 @@ export interface FlowHost {
   answerSec?: number;
   /** the floor changed hands (something is waiting for an answer, or not) */
   floor?: (busy: boolean) => void;
+  /** Brett's own phrases (settings.custom) */
+  custom?: { say: string; entry: string }[];
 }
 
 type Floor =
@@ -76,7 +78,7 @@ const remember = (s: string) => { if (s) lastSaid = s; return s; };
 
 /* ------------------------------------------------------------------ the catalog */
 
-export async function catalog(rt: AxfRuntime): Promise<Catalog> {
+export async function catalog(rt: AxfRuntime, custom?: { say: string; entry: string }[]): Promise<Catalog> {
   if (!catalogCache || Date.now() - catalogCache.at > CATALOG_TTL_MS) {
     let serverEntries: CatalogEntry[] = [];
     try {
@@ -89,7 +91,7 @@ export async function catalog(rt: AxfRuntime): Promise<Catalog> {
   const local = buildCatalog({ actions: rt.actions.list() as unknown as { id: string; meta: Record<string, unknown> }[], targets: CONTROL_TARGETS as Record<string, unknown> });
   const seen = new Set<string>();
   const entries = [...catalogCache.serverEntries, ...local.entries].filter((e) => (seen.has(e.id) ? false : (seen.add(e.id), true)));
-  return { ...local, entries };
+  return withCustom({ ...local, entries }, custom);
 }
 export function forgetCatalog() { catalogCache = null; }
 
@@ -237,7 +239,7 @@ export async function handleCommand(host: FlowHost, text: string): Promise<FlowR
     if (NO.test(t.toLowerCase()) && f.w.step !== 'ask') { setFloor(host, null); return { ok: true, say: remember('Cancelled.'), done: true }; }
     const r = await continueWizard(host, answerWizard(f.w, t)); r.say = remember(r.say); return r;
   }
-  const cat = await catalog(host.rt);
+  const cat = await catalog(host.rt, host.custom);
   const m = matchCommand(cat, t);
   if (!m) return voiceFallback(host, t);
   const { entry } = m;

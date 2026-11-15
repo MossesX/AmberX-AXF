@@ -96,7 +96,7 @@ ok(cli('state').state.phase !== undefined, 'cli state');
 const cat = await import('./catalog.mjs');
 const { registry } = await import('../../../../framework/cli/plugin-commands.mjs');
 const { CONTROL_TARGETS } = await import('../../../../framework/core/engines/control-rules.mjs');
-const { parseDuration, buildCatalog, matchCommand, startWizard, answerWizard, requestFor, summaryOf, entriesFromActions, searchCatalog, speakResult, fillTemplate, slug, titleCase } = cat;
+const { parseDuration, buildCatalog, matchCommand, startWizard, answerWizard, requestFor, summaryOf, entriesFromActions, searchCatalog, speakResult, fillTemplate, slug, titleCase, withCustom } = cat;
 
 ok(parseDuration('two hours') === 120 && parseDuration('90 minutes') === 90 && parseDuration('an hour and a half') === 90 && parseDuration('1h 30m') === 90 && parseDuration('half an hour') === 30 && parseDuration('soon') === null, 'parseDuration');
 ok(slug('Gizmo Johnson') === 'gizmo-johnson' && titleCase('gizmo johnson') === 'Gizmo Johnson', 'slug / titleCase');
@@ -170,6 +170,26 @@ ok(entriesFromActions([{ id: 'a.open', meta: { label: 'Open A', personOnly: true
 ok(searchCatalog(catalog, 'veto').some((e) => e.id === 'control:pass.scopes') && searchCatalog(catalog, 'project').length >= 1, 'searchCatalog');
 ok(speakResult({ speak: '' }, { ok: false, message: 'nope' }) === 'That failed: nope.' && speakResult({ speak: '' }, { ok: true }) === 'Done.' && speakResult({ speak: 'items' }, { items: [] }) === 'Nothing open.', 'speakResult');
 ok(cli('match', 'create a new project named Gizmo Johnson').match.entry.id === 'project-wizard/run' && cli('catalog', 'veto').count >= 1, 'cli match / catalog');
+
+// custom phrases (Voice commands list): stored, matched first, slots kept; destructive commands always confirm
+const { normalizeCustom } = core;
+ok(JSON.stringify(normalizeCustom(['Ship {id}! => control:planner.builds:land', { say: 'ship {id}', entry: 'control:planner.builds:land' }, { say: '', entry: 'x' }, 'bad => has spaces'])) === JSON.stringify([{ say: 'ship {id}', entry: 'control:planner.builds:land' }]), 'normalizeCustom: cleaned, slots kept, deduped, bad dropped');
+let cs = applyPatch({}, { addCustom: { say: 'ship {id}', entry: 'control:planner.builds:land' } });
+ok(cs.custom.length === 1 && applyPatch(cs, { removeCustom: 'Ship {id}' }).custom.length === 0, 'addCustom / removeCustom');
+const withMine = withCustom(catalog, [{ say: 'ship {id}', entry: 'control:planner.builds:land' }, { say: 'gone', entry: 'no.such' }]);
+m = matchCommand(withMine, 'ship gizmo-rebuild');
+ok(m && m.entry.id === 'control:planner.builds:land' && m.slots.id === 'gizmo-rebuild' && m.entry.custom[0] === 'ship {id}', 'custom phrase matches with its slot');
+ok(withMine.unknownCustom.length === 1 && withMine.entries.find((e) => e.id === 'control:planner.builds:land').say[0] === 'ship {id}', 'custom first; unknown entries reported');
+ok(withCustom(catalog, []) === catalog, 'no custom phrases: catalog untouched');
+ok(catalog.entries.filter((e) => e.effect === 'destructive').every((e) => e.confirm), 'every destructive command asks for a spoken yes');
+const destructive = buildCatalog({ actions: [{ id: 'x.wipe', meta: { label: 'Wipe everything', effect: 'destructive' } }] }).entries.find((e) => e.id === 'action:x.wipe');
+ok(destructive && destructive.confirm && startWizard(destructive, {}).step === 'confirm', 'a destructive action starts at the spoken confirm');
+let bad = null; try { execFileSync('node', [new URL('./listener.mjs', import.meta.url).pathname, 'custom', 'add', 'zap', 'no.such.entry', '--json'], { env: process.env, encoding: 'utf8', stdio: 'pipe' }); } catch (e) { bad = JSON.parse(String(e.stdout).trim().split('\n').pop()); }
+ok(bad && bad.ok === false && bad.code === 'not_found', 'cli custom add on an unknown entry fails');
+let cc = cli('custom', 'add', 'ship', '{id}', 'control:planner.builds:land');
+ok(cc.ok && cc.custom[0].say === 'ship {id}', 'cli custom add');
+ok(cli('match', 'ship abc').match.entry.id === 'control:planner.builds:land' && cli('custom').custom.length === 1, 'cli match uses custom phrases');
+ok(cli('custom', 'remove', 'ship', '{id}').custom.length === 0, 'cli custom remove');
 
 console.log(`${n - failed}/${n} wake-listener checks passed`);
 process.exit(failed ? 1 : 0);
