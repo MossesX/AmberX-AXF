@@ -31,7 +31,7 @@
  *   … lock                                                                                   who holds the line
  *   … enqueue <build> [--front] [--from-store]      put a finished build in the landing line (the finish hook does this;
  *                                                   --from-store reads this checkout's builds store instead of origin/main)
- *   … line [--max n] [--dry-run] [--json]           land the line one build at a time until it is empty (cron, hook)
+ *   … line [--max n] [--budget-min m] [--dry-run] [--json]   land the line one build at a time until it is empty (cron, hook)
  *   … show [--json]                                 the landing line (landing-line@1 view)
  *
  * The landing line (landing-line@1, landing-line.json in the data folder) holds the order. runLine takes the entry in
@@ -407,7 +407,7 @@ export async function runLine({ s = settings(), max = 20, dry = false, land = la
 
 export async function main(argv) {
   const s = settings(); const json = argv.includes('--json'); const dry = argv.includes('--dry-run');
-  const args = argv.filter((a, i) => !a.startsWith('--') && !['--wait-min', '--max', '--wait-lock'].includes(argv[i - 1]));
+  const args = argv.filter((a, i) => !a.startsWith('--') && !['--wait-min', '--max', '--wait-lock', '--budget-min'].includes(argv[i - 1]));
   const out = (v, text) => console.log(json ? JSON.stringify(v, null, 1) : text);
   if (args[0] === 'lock') { const o = lockOwner(); out({ owner: o }, o || 'free'); return 0; }
   if (args[0] === 'runs') { const r = readRuns(s, args[1] || ''); out(r, r.map((x) => `${x.startedAt}  ${x.build}  ${x.outcome || 'going'}  ${x.note}`).join('\n') || 'no attempts yet'); return 0; }
@@ -423,7 +423,8 @@ export async function main(argv) {
   }
   if (args[0] === 'line') {
     const i = argv.indexOf('--max'); const max = i >= 0 ? Number(argv[i + 1]) || 20 : 20;
-    const r = await runLine({ s, max, dry, log: (m) => !json && console.error(m) });
+    const bi = argv.indexOf('--budget-min'); const budgetMs = bi >= 0 ? Math.max(1, Number(argv[bi + 1]) || 50) * 60000 : undefined;
+    const r = await runLine({ s, max, dry, ...(budgetMs ? { budgetMs } : {}), log: (m) => !json && console.error(m) });
     out(r, r.ran.map((x) => `${x.id}: ${x.busy ? `line busy (${x.busy})` : `${x.outcome || 'checking'} — ${x.note}`}`).join('\n') || 'the landing line is empty');
     return 0;
   }
