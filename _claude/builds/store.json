@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5973,
- "updatedAt": "2026-11-15T01:51:08.562Z",
+ "rev": 5974,
+ "updatedAt": "2026-11-15T02:01:19.178Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -217934,14 +217934,14 @@
    "title": "Banner widget shapes: more than circle and pill, all token-driven",
    "category": "Appearance",
    "detail": "Brett: banner widgets can only be circles or pills. Add a shape token per banner widget (global, per skin, per instance): circle, pill, rounded square, square, squircle, hexagon, diamond, tag, plus custom radius per corner and custom SVG mask. Shapes are assets (shape@1), swappable by skin, editable in the skin editor, UI Manager and per-instance settings, with Restore previous edit. Full API: REST/MCP/CLI/voice ('make the banner widgets hexagons'). Tests desktop and phone.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "#703",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-15T01:37:51.331Z",
+   "updatedAt": "2026-11-15T02:01:15.922Z",
    "builtAt": "",
    "notes": [
     {
@@ -217983,6 +217983,10 @@
     {
      "text": "Fable phase done (s2–s7), PR #703. shape@1 contract: kinds circle|pill|rounded|square|squircle|hexagon|diamond|tag|corners|mask, radii = style-theme tokens, mask = closed SVG path + viewBox, skin by slot. Engine core/engines/shape.ts: compileShape -> --fx-shape-<slot>-* (radius four corners, clip polygon, mask svg url, corner, aspect), resolveShape instance -> app -> skin -> global, edit history for Restore previous edit. Fixtures shape.json / shape-validate.json / shape-engine.json, check-shape 386 checks. Style target shape = .fx-shaped (phase 2 adds the class with the CSS wiring). No UI changed, so nothing in UI Review; pickers, skin editor, per-widget settings, REST/MCP/CLI/voice are the next phases. Console baked copy refreshed for the ten changed files; other apps' baked copies were already behind main and were not touched.",
      "at": "2026-11-15T01:37:28.404Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-15T02:01:15.922Z"
     }
    ],
    "approvals": [],
@@ -218714,7 +218718,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": {
