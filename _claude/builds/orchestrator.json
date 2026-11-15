@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T11:55:39.244Z",
+ "updatedAt": "2026-11-15T11:55:59.939Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -149193,7 +149193,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T11:52:18.052Z",
-   "updatedAt": "2026-11-15T11:55:36.587Z",
+   "updatedAt": "2026-11-15T11:55:57.484Z",
    "builtAt": "",
    "notes": [
     {
@@ -149304,7 +149304,7 @@
     },
     {
      "id": "s4",
-     "text": "Build a PendingRow component on framework controls only (TabGroup is not used; Container/Button/Chip/PriorityTag) with asset tokens. Collapsed by default, it shows one line: title, status chip with why it is pending, PriorityTag, steps done/total and age. It has a tap target with aria-expanded and a data-axf-target row:<build> address.",
+     "text": "Build a PendingRow component on framework controls only (Container/Button/Chip/PriorityTag) with asset tokens. Collapsed by default; row lines come from the skin (default console skin = 2 rows). Row 1: title, PriorityTag, status badge, buttons (Queue, Land, Edit, Archive, Open PR). Row 2: badges for commits behind main, date+time added, date+time built, PR #, steps done/total, account/model, why pending. Status badges: pending build, queued, building, built/waiting to merge, merging, landed, clashing, failed, held. Any active state (building, merging, splitting, landing) has an animated icon/badge using the skin's animation tokens; idle states stay still; respect reduced motion. Make the status badge a shared framework badge other grids can reuse. Tap target with aria-expanded and data-axf-target row:<build>.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -149560,12 +149560,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:17.286Z",
-   "updatedAt": "2026-11-15T11:53:21.835Z",
+   "updatedAt": "2026-11-15T11:55:49.438Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-15T11:53:21.835Z"
+    },
+    {
+     "text": "Brett (06:55): the console's default skin sets grids to 2 rows. Status badges with animation for active work (building, merging, landing) are a shared framework badge, defined in pending-tab-one-collapsed-row-per-2; reuse it in every grid that shows something in progress.",
+     "at": "2026-11-15T11:55:49.438Z"
     }
    ],
    "approvals": [],
