@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "gate-help",
+  "name": "Gate & rules help",
+  "version": "0.1.0",
+  "description": "The gate plugin's Help mode entries (help@1).",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:gate",
+    "entries": [
+      {
+        "target": "view:gate",
+        "title": "Gate & rules",
+        "text": "The rules a PR must pass before it lands, the auto-lander that lands it, and the history of every change.",
+        "kind": "screen"
+      }
+    ],
+    "intros": []
+  }
+}
