@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6024,
- "updatedAt": "2026-11-15T04:56:39.697Z",
+ "rev": 6025,
+ "updatedAt": "2026-11-15T04:56:54.005Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -230820,10 +230820,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/data-container-axf-data-holds-all",
-   "pr": "",
+   "pr": "#704",
    "priority": "P0",
    "createdAt": "2026-11-15T04:28:05.062Z",
-   "updatedAt": "2026-11-15T04:55:49.743Z",
+   "updatedAt": "2026-11-15T04:56:51.854Z",
    "builtAt": "",
    "notes": [
     {
@@ -230841,6 +230841,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-data-container-axf-data-holds-all--gina, shared account login)",
      "at": "2026-11-15T04:31:04.061Z"
+    },
+    {
+     "text": "Phase 1 done (s1-s4): data-store@1 spec + schema, reference client (http/file/memory), migration map (44 sources), mode machine. PR #704. No UI this phase; mode/manifest surfaces come with the container phase.",
+     "at": "2026-11-15T04:56:51.854Z"
     }
    ],
    "approvals": [],
@@ -231572,7 +231576,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
