@@ -39,6 +39,8 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import PlainTextResponse
 
+from . import open_target as ot
+
 router = APIRouter()
 FOLDER = Path(__file__).resolve().parents[1].name
 ROOT = Path(__file__).resolve().parents[5]  # the repo root (/axf in the console image)

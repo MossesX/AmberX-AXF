@@ -98,4 +98,38 @@ ok(c.post(f"{base}/link", json={"build": "direct-launch"}).status_code == 400, "
 bf = c.post(f"{base}/backfill", json={"since": "2000-01-01", "dry": True})
 ok(bf.status_code == 200 and bf.json()["dry"] is True and bf.json()["found"] == 0, f"backfill dry: nothing landed without a manifest ({bf.text[:200]})")
 ok(c.post(f"{base}/backfill", json={}).status_code == 400, "backfill needs since")
+
+# open target: where a feature lives in the console, checked against the console-control registry
+OT = sys.modules["axf_console_plugins.shipped_features_test.open_target"]
+REG = OT.Registry([
+    {"address": "view:ui-review", "kind": "view", "label": "UI Review"},
+    {"address": "view:gate", "kind": "view", "label": "Gate & rules"},
+    {"address": "plugin:ai.amberx.axf.console.ui-review", "kind": "plugin", "folder": "ui-review", "label": "UI Review", "view": "view:ui-review"},
+    {"address": "plugin:ai.amberx.axf.console.push-banner", "kind": "plugin", "folder": "push-banner", "label": "Push banner",
+     "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=push-banner"},
+    {"address": "plugin:ai.amberx.axf.console.gone", "kind": "plugin", "folder": "gone", "label": "Gone", "view": "view:gone"},
+])
+live = {"id": "f-x", "name": "Choices tab", "status": "live", "plugin": "ui-review", "app": "console", "files": []}
+t = OT.open_target(live, REG)
+ok(t["target"] == "view:ui-review" and t["label"] == "UI Review" and t["via"] == "plugin", f"open target: a plugin's feature opens its view ({t})")
+t = OT.open_target({**live, "plugin": "", "files": ["apps/console-web/plugins/push-banner/web/index.tsx", "CLAUDE.md"]}, REG)
+ok(t["target"].endswith("subtab:settings.subtabs=push-banner") and t["via"] == "files" and "Push banner" in t["label"], "open target: files point at a plugin with no view → its Settings sub-tab")
+t = OT.open_target({**live, "plugin": "", "name": "Gate & rules: Pending tab"}, REG)
+ok(t["target"] == "view:gate" and t["via"] == "name", "open target: the name's 'Area:' prefix matches a view label")
+t = OT.open_target({**live, "status": "merged"}, REG)
+ok(t["target"] == "view:ui-review", "open target: merged opens (the console runs main)")
+for st, code in (("planned", "not-live"), ("in-pr", "not-live"), ("cancelled", "cancelled"), ("removed", "removed")):
+    t = OT.open_target({**live, "status": st}, REG)
+    ok(t["target"] is None and t["code"] == code and t["reason"], f"open target: {st} → {code}")
+ok(OT.open_target({**live, "status": "planned"}, REG)["reason"] == "not landed yet", "open target: not-live reads 'not landed yet'")
+t = OT.open_target({**live, "plugin": "gone"}, REG)
+ok(t["target"] is None and t["code"] == "unknown-address" and "view:gone" in t["reason"], f"open target: an address the registry lacks is refused ({t})")
+t = OT.open_target({**live, "plugin": "never-was"}, REG)
+ok(t["code"] == "unknown-address" and "plugin:never-was" in t["reason"], "open target: a plugin the registry never had is unknown-address")
+t = OT.open_target({**live, "plugin": "", "app": "amberx-droid"}, REG)
+ok(t["code"] == "no-screen" and "AmberX phone app" in t["reason"], "open target: another app's feature names the app")
+t = OT.open_target({**live, "plugin": "", "app": "framework", "files": ["framework/core/x.mjs"]}, REG)
+ok(t["code"] == "no-screen", "open target: framework work has no screen")
+ok(OT.open_target(None, REG)["code"] == "not-found", "open target: no record → not-found")
+ok(len(OT.load_registry().addresses) > 0, "open target: the console's registry loads (inventory)")
 print(f"shipped-features server: {n} checks passed")
