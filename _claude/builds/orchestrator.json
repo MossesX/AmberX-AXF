@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T13:39:43.290Z",
+ "updatedAt": "2026-11-15T13:39:53.100Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -150200,7 +150200,7 @@
    "mergedAt": "2026-11-15T13:23:45Z",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:25.282Z",
-   "updatedAt": "2026-11-15T13:38:22.402Z",
+   "updatedAt": "2026-11-15T13:39:38Z",
    "builtAt": "2026-11-15T13:04:13.597Z",
    "notes": [
     {
@@ -150274,6 +150274,10 @@
     {
      "text": "Reconciler: PR #711 merged",
      "at": "2026-11-15T13:38:22.402Z"
+    },
+    {
+     "text": "Shipped manifest sm-gate-rules-plugin-in-the-console rev 1 sent to Shipped features (orchestrator): landed cf2f5d769, 67 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-15T13:39:38Z"
     }
    ],
    "approvals": [
