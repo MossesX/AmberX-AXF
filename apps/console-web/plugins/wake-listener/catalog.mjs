@@ -104,6 +104,18 @@ export const PHRASEBOOK = {
   'build-orchestrator/pipeline-route': { title: 'Route a build to API or subscriptions', group: 'pipelines', confirm: true, say: ['route {id} to {route}', 'run {id} on {route}', 'route a build'], fields: [{ name: 'id', ask: 'Which build?' }, { name: 'route', ask: 'API, subscription or auto?', enum: ['api', 'subscription', 'auto'] }], body: { id: '{id}', route: '{route}' }, summary: 'route {id} to {route}' },
   'build-orchestrator/pipeline-status': { title: 'Pipeline status', group: 'pipelines', say: ['pipeline status', 'how is the pipeline', 'what is the pipeline doing', 'pipeline'], fields: [], speak: 'pipeline' },
   'build-orchestrator/priority-list': { title: 'The build priority list', group: 'pipelines', say: ['what is queued', 'priority list', 'list the queue', 'what builds are queued'], fields: [], speak: 'priority' },
+  // a shipped feature's screen in the live console (the Shipped features plugin's open / open-target; its feature.open action)
+  'shipped-features/open': {
+    title: 'Open a shipped feature in the app', group: 'navigation',
+    say: ['open feature {feature}', 'open the feature {feature}', 'show me feature {feature}', 'show me the feature {feature}', 'show feature {feature}', 'open shipped feature {feature}', 'take me to feature {feature}', 'open a feature', 'show me a feature'],
+    fields: [{ name: 'feature', ask: 'Which feature? Say its name.' }],
+    body: { feature: '{feature}', by: 'voice' },
+  },
+  'shipped-features/open-target': {
+    title: 'Where a shipped feature opens', group: 'navigation',
+    say: ['where is feature {feature}', 'where is the feature {feature}', 'where does feature {feature} open', 'where does the feature {feature} live'],
+    fields: [{ name: 'feature', ask: 'Which feature? Say its name.' }],
+  },
   'wake-listener/off': { title: 'Stop listening', group: 'listener', say: ['stop listening', 'turn off the listener', 'turn the listener off', 'mic off', 'listener off', 'go to sleep'], fields: [] },
   'wake-listener/claude-on': { title: 'Use Claude for voice (Claude mode on)', group: 'listener', say: ['use claude for voice', 'use claude for voice commands', 'use claude for the voice', 'turn on claude mode', 'turn claude mode on', 'claude mode on', 'switch on claude mode'], fields: [], speak: 'claude-mode' },
   'wake-listener/claude-off': { title: 'Stop using Claude for voice (Claude mode off)', group: 'listener', say: ['stop using claude for voice', 'stop using claude for voice commands', 'stop using claude', 'turn off claude mode', 'turn claude mode off', 'claude mode off', 'switch off claude mode'], fields: [], speak: 'claude-mode' },

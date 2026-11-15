@@ -46,7 +46,7 @@ export async function send(req, { base = process.env.AXF_CONSOLE_URL || 'https:/
     const res = await f(url, { method: req.method, headers: { ...(req.body ? { 'content-type': 'application/json' } : {}), ...(token ? { authorization: `Bearer ${token}` } : {}) }, ...(req.body ? { body: JSON.stringify(req.body) } : {}) });
     const text = await res.text();
     let j; try { j = JSON.parse(text); } catch { return { ok: false, http: res.status, code: 'unexpected', message: `${res.status} from ${url}: ${text.slice(0, 200)}` }; }
-    if (!res.ok) { const d = j.detail; return { ok: false, http: res.status, ...(d && typeof d === 'object' ? d : { message: String(d ?? res.status) }) }; }
+    if (!res.ok) { const d = j.detail; return { ok: false, http: res.status, ...(d && typeof d === 'object' ? d : j.message ? j : { message: String(d ?? res.status) }) }; }
     return { ok: true, http: res.status, ...j };
   } catch (e) {
     return { ok: false, code: 'unexpected', message: `could not reach ${url}: ${String(e?.message ?? e).slice(0, 200)}` };
@@ -55,7 +55,7 @@ export async function send(req, { base = process.env.AXF_CONSOLE_URL || 'https:/
 
 /** A few readable lines for an answer. */
 export function describe(r) {
-  if (!r.ok) return [`✗ ${r.message || r.reason || r.code}`];
+  if (!r.ok) return [`✗ ${r.message || r.reason || r.code}`, ...(r.lookup?.alternatives ?? []).map((a) => `  also close: ${a.name} (${a.id})`)];
   if ('match' in r && !('target' in r) && !r.openTarget) {
     if (!r.match) return [`no feature matches "${r.q}"`];
     return [`${r.match.id}  ${r.match.name}  (${r.match.status})`, ...r.alternatives.map((a) => `  also: ${a.id}  ${a.name}  (${a.status})`)];

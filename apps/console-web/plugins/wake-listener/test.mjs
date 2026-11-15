@@ -107,6 +107,16 @@ const catalog = buildCatalog({ registry: reg, targets: CONTROL_TARGETS, actions:
 ok(catalog.entries.length > 200, `catalog has every plugin command (${catalog.entries.length})`);
 ok(catalog.entries.some((e) => e.id === 'project-wizard/run' && e.source === 'phrasebook' && e.say[0] === 'create a new project named {name}'), 'project wizard entry from the phrasebook');
 ok(catalog.entries.some((e) => e.id === 'build-orchestrator/pipeline-split') && catalog.entries.some((e) => e.id === 'build-orchestrator/priority-set') && catalog.entries.some((e) => e.id === 'build-orchestrator/pipeline-request'), 'pipeline entries');
+{ // "open feature X" / "show me feature X" → Shipped features open (the feature.open route), reply names the screen or the reason
+  const m1 = matchCommand(catalog, 'open feature choices tab'); const m2 = matchCommand(catalog, 'show me the feature veto alarm');
+  ok(m1?.entry.id === 'shipped-features/open' && m1.slots.feature === 'choices tab' && m2?.entry.id === 'shipped-features/open' && m2.slots.feature === 'veto alarm', `voice: open / show me feature X → shipped-features/open (${m1?.entry.id}, ${m2?.entry.id})`);
+  const rq = requestFor(m1.entry, m1.slots);
+  ok(rq.kind === 'plugin-route' && rq.method === 'POST' && rq.path === '/features/open' && rq.body.feature === 'choices tab' && rq.body.by === 'voice', 'voice: open feature → POST /features/open { feature }');
+  ok(speakResult(m1.entry, { ok: true, status: 'delivered', message: 'Opened Choices tab: UI Review.' }) === 'Opened Choices tab: UI Review.', 'voice: the reply names the screen');
+  ok(speakResult(m1.entry, { ok: false, message: "Status chips can't be opened: not landed yet." }).includes('not landed yet'), 'voice: the reply says why it cannot open');
+  const m3 = matchCommand(catalog, 'where is feature choices tab');
+  ok(m3?.entry.id === 'shipped-features/open-target' && requestFor(m3.entry, m3.slots).query.feature === 'choices tab', 'voice: where is feature X → GET /features/open-target?feature=');
+}
 ok(catalog.entries.some((e) => e.id === 'control:pass.scopes') && catalog.entries.some((e) => e.id === 'control:planner.builds:list') && catalog.entries.some((e) => e.id === 'control:amberx.items:note'), 'control@1 entries: phrasebook + list reads');
 ok(catalog.entries.some((e) => e.id === 'action:plan-studio.open' && e.group === 'navigation') && !catalog.entries.some((e) => e.id === 'action:x.params'), 'page actions: argument-free only');
 ok(catalog.entries.some((e) => e.id === 'amberx-listeners/restart' && e.source === 'registry' && e.fields.some((f) => f.name === 'id' && !f.optional)), 'a registry command without a phrasebook line still gets fields from its schema');

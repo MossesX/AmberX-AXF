@@ -41,7 +41,7 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import PlainTextResponse
+from fastapi.responses import JSONResponse, PlainTextResponse
 
 from . import open_target as ot
 
@@ -359,14 +359,35 @@ def resolve(fid: str) -> dict[str, Any]:
     return ot.open_target(f, ot.load_registry())
 
 
+class NoTarget(Exception):
+    """A feature with no screen: answered as 409 with the reason at the top level (voice and the CLI read `message`)."""
+
+    def __init__(self, body: dict[str, Any]):
+        super().__init__(body.get("message", ""))
+        self.body = body
+
+
+def say_target(t: dict[str, Any]) -> str:
+    """One spoken line: where it opens, or why it can't."""
+    name = t.get("name") or t.get("feature") or "That feature"
+    return f"{name} opens at {t.get('label')}." if t.get("target") else f"{name} can't be opened: {t.get('reason')}."
+
+
 def open_feature(t: dict[str, Any], body: dict[str, Any]) -> dict[str, Any]:
-    """Open a resolved target in the console the person used last (or `to`); no target → 409 with the reason."""
+    """Open a resolved target in the console the person used last (or `to`); no target → NoTarget (409) with the reason."""
+    name = t.get("name") or t.get("feature")
     if not t.get("target"):
-        raise HTTPException(409, {"ok": False, "code": t.get("code"), "message": f"{t.get('name') or t.get('feature')} can't be opened: {t.get('reason')}", **t})
+        raise NoTarget({"ok": False, "code": t.get("code"), "message": say_target(t), "openTarget": t})
     cmd = {"verb": "open", "address": t["target"], "by": str(body.get("by") or "shipped-features")[:80], "to": str(body.get("to") or "recent")[:80],
-           "reason": f"Open {t.get('name') or t.get('feature')} from Shipped features"}
+           "reason": f"Open {name} from Shipped features"}
     r = _control(cmd)
-    return {**r, "ok": bool(r.get("ok")), "openTarget": t, "status": "delivered" if r.get("ok") else ("pending" if r.get("code") == "unavailable" else "failed")}
+    status = "delivered" if r.get("ok") else ("pending" if r.get("code") == "unavailable" else "failed")
+    msg = {"delivered": f"Opened {name}: {t.get('label')}.", "pending": f"No console is open. {name} opens at {t.get('label')} when one is."}.get(status, f"Couldn't open {name}: {r.get('message') or 'the console said no'}.")
+    return {**r, "ok": status != "failed", "status": status, "message": msg, "openTarget": t}
+
+
+def _no_target(e: NoTarget) -> JSONResponse:
+    return JSONResponse(e.body, status_code=409)
 
 
 def _all_features() -> list[dict[str, Any]]:
@@ -404,14 +425,21 @@ def feature_find(q: str = "", limit: int = 5) -> dict[str, Any]:
 def feature_open_target_by(feature: str = "") -> dict[str, Any]:
     """open-target for a feature named by id or in words; carries the lookup (alternatives when ambiguous)."""
     fid, found = lookup(feature)
-    return {**resolve(fid), "lookup": found}
+    t = resolve(fid)
+    return {**t, "message": say_target(t), "lookup": found}
 
 
-@router.post("/features/open")
-def feature_open_by(body: dict[str, Any]) -> dict[str, Any]:
+@router.post("/features/open", response_model=None)
+def feature_open_by(body: dict[str, Any]) -> dict[str, Any] | JSONResponse:
     """Open a feature named by id or in words: { feature, to?, by? }. The best match opens; alternatives come back."""
     fid, found = lookup(str(body.get("feature") or body.get("id") or body.get("q") or ""))
-    return {**open_feature(resolve(fid), body), "lookup": found}
+    try:
+        r = open_feature(resolve(fid), body)
+    except NoTarget as e:
+        return _no_target(NoTarget({**e.body, "lookup": found}))
+    if found.get("ambiguous"):
+        r["message"] += " Also close: " + "; ".join(a["name"] for a in found["alternatives"][:3]) + "."
+    return {**r, "lookup": found}
 
 
 @router.get("/features/{fid}/open-target")
@@ -420,10 +448,13 @@ def feature_open_target(fid: str) -> dict[str, Any]:
     return resolve(fid)
 
 
-@router.post("/features/{fid}/open")
-def feature_open(fid: str, body: dict[str, Any] | None = None) -> dict[str, Any]:
+@router.post("/features/{fid}/open", response_model=None)
+def feature_open(fid: str, body: dict[str, Any] | None = None) -> dict[str, Any] | JSONResponse:
     """Open the feature's screen in the live console (console-control open); 409 with the reason when it has none."""
-    return open_feature(resolve(fid), body or {})
+    try:
+        return open_feature(resolve(fid), body or {})
+    except NoTarget as e:
+        return _no_target(e)
 
 
 @router.post("/backfill")
@@ -471,6 +502,8 @@ class ShippedFeaturesService:
         """Open one feature in the live console (as POST features/{id}/open); no target → {ok: false, code, reason}."""
         try:
             return open_feature(resolve(feature_id), {"to": to, "by": by})
+        except NoTarget as e:
+            return e.body
         except HTTPException as e:
             d = e.detail if isinstance(e.detail, dict) else {"message": str(e.detail)}
             return {"ok": False, **d}
