@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5726,
- "updatedAt": "2026-11-15T00:09:28.458Z",
+ "rev": 5727,
+ "updatedAt": "2026-11-15T00:09:44.281Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -200758,7 +200758,7 @@
    "title": "All settings interfaces open in a floating dialog by default",
    "category": "",
    "detail": "Every settings interface (console Settings sections, plugin settings, chrome settings for tab groups/toolbars/banners/nav/menu bar, and any future one) opens by default in a floating dialog over the current screen instead of navigating to the Settings page. Make it a framework default so new settings interfaces get it automatically (template + check that fails if a settings interface navigates away by default). Keep a per-user option to open it as a page instead, and a 'pop out to page' button in the dialog. Dialogs use the glass/transparency tokens (opacityGlass, blur). Deep links and voice/MCP/API still work. Tests, help entry, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -200766,7 +200766,7 @@
    "pr": "#628",
    "priority": "P1",
    "createdAt": "2026-11-13T18:03:04.047Z",
-   "updatedAt": "2026-11-15T00:09:12.918Z",
+   "updatedAt": "2026-11-15T00:09:27.527Z",
    "builtAt": "",
    "notes": [
     {
@@ -200796,6 +200796,14 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T19:41:04.838Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-all-settings-interfaces-open-floating--joey.",
+     "at": "2026-11-15T00:09:21.268Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-all-settings-interfaces-open-floating--joey, shared account login)",
+     "at": "2026-11-15T00:09:27.527Z"
     }
    ],
    "approvals": [],
@@ -200815,12 +200823,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:03:06.496Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-all-settings-interfaces-open-floating--joey",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-15T00:09:20.551Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:04:33.661Z",
@@ -200830,9 +200838,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"c5306804-4e34-4054-b61f-210257efd14f\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-15T00:09:20.551Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -200841,7 +200849,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-15T00:09:20.551Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -200925,7 +200933,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
