@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5936,
- "updatedAt": "2026-11-15T01:30:21.987Z",
+ "rev": 5937,
+ "updatedAt": "2026-11-15T01:30:38.760Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -217909,7 +217909,7 @@
    "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-15T01:27:54.556Z",
+   "updatedAt": "2026-11-15T01:30:34.461Z",
    "builtAt": "",
    "notes": [
     {
@@ -218109,12 +218109,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T01:30:34.461Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:47:26.735Z",
-     "updatedAt": "2026-11-14T04:47:26.735Z"
+     "updatedAt": "2026-11-15T01:30:35.008Z"
     },
     {
      "id": "s6",
@@ -218674,7 +218674,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
