@@ -9,5 +9,6 @@ import builtWithItself from './built-with-itself.mjs';
 import employees from './employees.mjs';
 import architecture from './architecture.mjs';
 import skinsBranding from './skins-branding.mjs';
+import orchestrator from './orchestrator.mjs';
 
-export const MORE = [commute, expenses, bossTexts, privateChat, onDemand, teenDriver, builtWithItself, employees, architecture, skinsBranding];
+export const MORE = [commute, expenses, bossTexts, privateChat, onDemand, teenDriver, builtWithItself, employees, architecture, skinsBranding, orchestrator];
