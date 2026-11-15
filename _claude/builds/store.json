@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5723,
- "updatedAt": "2026-11-15T00:08:34.122Z",
+ "rev": 5724,
+ "updatedAt": "2026-11-15T00:08:52.945Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -221238,8 +221238,8 @@
    "pr": "#676",
    "priority": "P1",
    "createdAt": "2026-11-14T18:13:15.368Z",
-   "updatedAt": "2026-11-15T00:07:59.294Z",
-   "builtAt": "2026-11-15T00:07:51.188Z",
+   "updatedAt": "2026-11-15T00:08:17.045Z",
+   "builtAt": "2026-11-15T00:08:17.045Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -221276,6 +221276,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-picker-dialog-plugin-replaces-all--paulie, shared account login)",
      "at": "2026-11-14T22:42:25.237Z"
+    },
+    {
+     "text": "Headless run axf-picker-dialog-plugin-replaces-all--paulie: brief only · start 15.0K tokens ($0.05) · cost $19.67 · 295 turns · 6 tools, MCP none",
+     "at": "2026-11-15T00:08:17.045Z"
     },
     {
      "text": "Phase 2 done (s6–s22). PR #676 waits on UI Review r-20261115-d87ad27e (3 looks). Open gaps: skin-swap restyle of the picker not verified (server-less preview never put the skin in force); listbox/combobox swap not built; picker: control kind deferred (pickers use button:picker-<id>); 30 hand-made selects held by the check-pickers baseline.",
