@@ -214,6 +214,11 @@ that main had removed (`help-coverage --check` in the build-engine sweep, `check
   way on main on this host, so they are not from the stack: `check-headless-tabs` (meter), `test_wall_users` (page
   200), `console-control-parity` (shared-state race: main 10/14 differ). The fourth, `test_console_commands`, was a
   one-off and passes on re-run (120 checks).
+- **Status at 02:55 (Nov 15):** every PR's checks are green on its new head. The stack is waiting in the queue at
+  positions 7-11 (about 50-65 min out). The queue moved about five places in two hours. The wake-listener build
+  pushed `b84c0edfa` (its s9 and s11) onto #643. Nothing had run on that head, so android.yml was dispatched once
+  (run 43670034951); #643 rejoins when it is green. The queue had put #633 ahead of #637 and #639, so `queue move`
+  put them back to 637, 639, 633, 640, 643. Nothing merged yet. s14-s16 and s18 stay open for the next session.
 
 ## Notification (s17)
 
