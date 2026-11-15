@@ -2353,7 +2353,25 @@
     "status": "built",
     "wave": 1,
     "module": "app-console",
-    "notes": "services/axf-data: test_store.py (CRUD, conflicts, append-only triggers, history/restore, watch, auth, backups, MCP, live Node contract)."
+    "notes": "services/axf-data: test_store.py (CRUD, conflicts, append-only triggers, history/restore, watch, auth, backups, MCP, live Node contract). Store engine: Postgres (cx.datastore.postgres); SQLite stays for an install that has not moved yet."
+  },
+  "cx.datastore.postgres": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Build axf-data-postgres-real-tables-own (Nov 15 2026; Brett: \"migrate everything to a database in its own container … follow it up with Postgres\"). services/axf-data/pg.py + tables.py: keys, records (JSONB), blobs, append-only journal (trigger, entry JSONB, view build_journal), history, feed; domain tables builds + build_steps, ui_review_items, planner_items, settings, notes, control_targets + control_tabs, store_heads; mirrors ledger_* / chats_* from the SQLite files (mirror_runs). Same data-store@1 on the wire (test_pg.py replays the whole contract suite on Postgres; check-data-store.mjs --http against it). Postgres 16 in its own container axf-data-db, volume axf-data-pg (compose.yaml, deploy/install-data.sh). Live builds store: 931 builds → rows and back equal."
+  },
+  "cx.datastore.postgres.move": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "engine.py: sqlite → shadow → postgres inside the service (data-engine@1; GET/POST /v1/_meta/engine, axf data engine, plugin engine / engine-move, voice); migrate_pg.py copies a SQLite axf-data over with backup first and refuses unless counts, journal lines and every manifest match; backup.py pg_dump + pg_restore --list verify + counts, daily cron, mirror_sync.py nightly. The VPS install is fresh (no SQLite store moved yet): it starts on Postgres directly."
+  },
+  "cx.datastore.registry": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "apps/console-web/src/control/inventory.json is generated (scripts/control-inventory.mjs --check writes it), untracked (.gitignore) and published by the console server to axf-data as console/control/inventory.json → the control_targets / control_tabs tables. Builds no longer clash on the file."
   },
   "cx.datastore.deploy": {
     "status": "built",

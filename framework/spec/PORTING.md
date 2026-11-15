@@ -348,3 +348,9 @@ backoff, `manifestOf`), `framework/core/data-store-mode.mjs` (local → shadow �
 `framework/spec/fixtures/data-store*.json`; spec `framework/spec/DATA-STORE.md`. Kotlin twin deferred (no new Android
 work): axf-data's `JsonDocumentStore` / `OfflineFirstRepository` keep their own shapes until a lib-hubstore successor
 speaks data-store@1 (same keys, `If-Match` etags, `data-error@1` codes, the `pure` and `http` blocks of the fixture).
+
+Build axf-data-postgres-real-tables-own (Nov 15 2026) moved axf-data's store onto Postgres (`services/axf-data/pg.py`,
+`tables.py`, `engine.py`; spec `DATA-STORE.md` → Engine). Server-side only: the wire contract, the Node client and the
+fixtures did not change, so there is nothing new to port; the Kotlin gap above is unchanged. The new frames
+(`data-tables@1`, `data-engine@1`, `data-mirror-run@1`) are operator frames read by the console, the CLI and voice; no
+Android app renders them.
