@@ -151,5 +151,53 @@ try {
     let code2 = 0; try { execFileSync(process.execPath, [join(ROOT, 'framework/cli/data-migrate.mjs'), 'apply'], { env, stdio: 'ignore' }); } catch (e) { code2 = e.status; }
     assert.equal(code2, 2, 'apply without namespaces refuses');
   });
+  // ── data-mode: shadow → cutover (guarded) → rollback (replay) → local, on the settings namespace ──
+  const DM = await import('../cli/data-mode.mjs');
+  const F = await import('../core/data-files.mjs');
+  F.setRemote(store);
+  const settingsFile = join(R.projects, '_shared/_data/settings/apps/amberx-droid.json');
+  await t('data-mode: shadow needs equal manifests; status shows it', async () => {
+    const r = await DM.run({ cmd: 'shadow', only: ['settings'], store });
+    assert.equal(r.ok, true, JSON.stringify(r.results));
+    assert.equal(DM.readState().namespaces.settings.mode, 'shadow');
+    assert.equal((await store.get('_meta/mode')).data.namespaces.settings.mode, 'shadow', 'the mode document is on axf-data');
+    const st = await DM.run({ cmd: 'status', only: ['settings'], store });
+    assert.equal(st.namespaces[0].mode, 'shadow'); assert.equal(st.remote.ok, true);
+    const bad = await DM.run({ cmd: 'shadow', only: ['planner'], store });
+    assert.equal(bad.ok, false, 'planner diverged above: shadow refused'); assert.match(bad.results[0].reason, /manifests differ/);
+  });
+  await t('data-mode: cutover refused until shadow has been quiet for the window, and with drift until it is accepted', async () => {
+    const early = await DM.run({ cmd: 'cutover', only: ['settings'], store });
+    assert.equal(early.ok, false); assert.match(early.results[0].reason, /quiet for 0 min, needs 30/);
+    F.logDrift('write', 'settings/apps/amberx-droid.json', 'write-failed', null, null, 'test: axf-data was down');
+    const drift = await DM.run({ cmd: 'cutover', only: ['settings'], store, windowMin: 0 });
+    assert.equal(drift.ok, false); assert.match(drift.results[0].reason, /1 drift entry/);
+    assert.equal((await store.read('_meta/drift/settings')).entries.length, 1, 'the drift log is on axf-data');
+    const ok = await DM.run({ cmd: 'cutover', only: ['settings'], store, windowMin: 0, acceptDrift: true });
+    assert.equal(ok.ok, true, JSON.stringify(ok.results));
+    assert.equal(DM.readState().namespaces.settings.mode, 'cutover');
+    assert.ok(DM.readState().namespaces.settings.cursor > 0);
+  });
+  await t('cutover: writes go to axf-data, the local file stays the backup', async () => {
+    const before = readFileSync(settingsFile, 'utf8');
+    await F.writeJson(settingsFile, { theme: 'cut-over' });
+    assert.equal(readFileSync(settingsFile, 'utf8'), before);
+    assert.deepEqual((await store.get('settings/apps/amberx-droid.json')).data, { theme: 'cut-over' });
+    await F.writeJson(join(R.projects, '_shared/_data/settings/looks/new.json'), { made: 'after the cut' });
+  });
+  await t('rollback: replay the feed since the cut onto local, manifests equal, back to local', async () => {
+    const r = await DM.run({ cmd: 'rollback', only: ['settings'], store });
+    assert.equal(r.ok, true, JSON.stringify(r.results));
+    assert.equal(r.results[0].replay.written, 2);
+    assert.deepEqual(JSON.parse(readFileSync(settingsFile, 'utf8')), { theme: 'cut-over' });
+    assert.deepEqual(JSON.parse(readFileSync(join(R.projects, '_shared/_data/settings/looks/new.json'), 'utf8')), { made: 'after the cut' });
+    assert.equal(DM.readState().namespaces.settings.mode, 'local');
+    const log = (await store.read('_meta/mode-log')).entries.map((e) => `${e.entry.ns}:${e.entry.from}>${e.entry.to}`);
+    assert.deepEqual(log, ['settings:local>shadow', 'settings:shadow>cutover', 'settings:cutover>rollback', 'settings:rollback>local']);
+  });
+  await t('data-mode: local → cutover directly is refused (shadow first)', async () => {
+    const r = await DM.run({ cmd: 'cutover', only: ['changes'], store, windowMin: 0 });
+    assert.equal(r.ok, false); assert.match(r.results[0].reason, /shadow first/);
+  });
 } finally { srv.kill(); rmSync(dir, { recursive: true, force: true }); }
 console.log(`data-migrate: ${n} checks ok`);

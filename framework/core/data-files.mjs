@@ -65,6 +65,35 @@ export function mapRel(root, rel) {
   }
   return null;
 }
+/**
+ * A key → the local file it maps from (the inverse of keyFor), or null when no rule inverts to it (a shortened long
+ * segment, a key only axf-data has under a rule that keeps nothing). Used by the rollback replay.
+ */
+export function pathForKey(key, env = process.env) {
+  const r = roots(env);
+  const lit = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for (const name of PATHS.order) {
+    for (const { re, to } of RULES[name] || []) {
+      if (to === null) continue;
+      const order = []; const tre = new RegExp(`^${to.split(/(\{\d\})/).map((p) => { const m = /^\{(\d)\}$/.exec(p); if (m) { order.push(Number(m[1])); return '(.+?)'; } return lit(p); }).join('')}$`);
+      const m = tre.exec(key);
+      if (!m) continue;
+      const groups = {}; order.forEach((g, i) => { groups[g] = m[i + 1]; });
+      // rebuild the source path: the rule's regex with each capture group replaced by its value
+      let gi = 0; let rel = '';
+      const src = re.source.replace(/^\^/, '').replace(/\$$/, '');
+      for (let i = 0; i < src.length; i += 1) {
+        const c = src[i];
+        if (c === '\\') { rel += src[i + 1]; i += 1; continue; }
+        if (c === '(' && src[i + 1] !== '?') { gi += 1; let depth = 1; let j = i + 1; while (j < src.length && depth) { if (src[j] === '\\') { j += 2; continue; } if (src[j] === '(') depth += 1; if (src[j] === ')') depth -= 1; j += 1; } if (groups[gi] === undefined) { rel = null; break; } rel += groups[gi]; i = j - 1; continue; }
+        if ('^$.*+?[]{}|()'.includes(c)) { rel = null; break; }
+        rel += c;
+      }
+      if (rel && mapRel(name, rel) === key) return join(r[name], rel);
+    }
+  }
+  return null;
+}
 /** An absolute (or repo-relative) path → its key, or null. */
 export function keyFor(p, env = process.env) {
   const abs = isAbsolute(p) ? resolve(p) : resolve(roots(env).repo, p);
