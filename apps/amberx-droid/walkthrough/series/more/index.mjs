@@ -7,5 +7,6 @@ import onDemand from './on-demand.mjs';
 import teenDriver from './teen-driver.mjs';
 import builtWithItself from './built-with-itself.mjs';
 import employees from './employees.mjs';
+import architecture from './architecture.mjs';
 
-export const MORE = [commute, expenses, bossTexts, privateChat, onDemand, teenDriver, builtWithItself, employees];
+export const MORE = [commute, expenses, bossTexts, privateChat, onDemand, teenDriver, builtWithItself, employees, architecture];
