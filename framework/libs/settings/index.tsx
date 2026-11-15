@@ -22,6 +22,9 @@ import { TabGroup } from '../../react/components/TabGroup';
 import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS, LevelEditor, levelEditorAct } from './levels';
 import { FollowHubSwitch, SKIN_WHERE_CSS, SKIN_WHERE_DIALOG, SkinWhere, SkinWhereDialog } from './skinwhere';
 import { SkinScope } from '../../react/components/SkinScope';
+import { QuickSettingsFrame, useQuickAsset } from '../../react/components/QuickSettings';
+import { normalizeQuickAssets, quickAssetsKey, quickHandleOf, quickScopeId, QUICK_HANDLE_KEY, QUICK_HANDLE_LABEL, QUICK_HANDLES } from '../../core/engines/quick-settings.mjs';
+import { SelectField } from '../../react/components/Forms';
 import { consoleFieldValue } from '../../core/engines/console-commands.mjs';
 
 export const SETTINGS_LIBRARY_ID = 'ai.amberx.axf.settings';
@@ -65,10 +68,14 @@ function useSettingsLevel(ui: SettingsUi): SettingsLevel {
 
 /** The active settings interface (the `settings` asset) with the user's own visible sets merged over it (the level
  *  editor saves them under SETTINGS_VISIBLE_KEY); defaults when the app has none. */
-function useSettingsUi(): SettingsUi {
+function useSettingsUi(override?: string): SettingsUi {
   const rt = useRuntime();
   useAxfState();
-  const a = rt.assetOrNull('settings');
+  // Quick settings (quick-settings@1) can override the settings interface for one interface: the caller's pick, else
+  // the frame's (QuickAssetsContext), else the console's active settings asset
+  const quick = useQuickAsset('settings');
+  const pick = override || quick;
+  const a = (pick ? rt.registry.get('settings', pick) : null) ?? rt.assetOrNull('settings');
   const visible = useSettingValue(SETTINGS_VISIBLE_KEY);
   return useMemo(() => withSettingsVisible(normalizeSettingsUi(a?.data), visible), [a, visible]);
 }
@@ -441,7 +448,9 @@ const SUB_LIST_FROM = 5;
 export function SettingsView() {
   const rt = useRuntime();
   useSettingsRevision(rt);
-  const ui = useSettingsUi();
+  // the console Settings page's own Quick settings overrides (settings interface, toolbar) shape the page itself
+  const topQuick = normalizeQuickAssets(rt.settings.get(quickAssetsKey('settings')), 'settings');
+  const ui = useSettingsUi(topQuick.settings);
   const wide = useWide();
   const isList = ui.layout === 'list';
   // Inside a host that manages plugins (embed@1 take `plugins`) the plugin list (Settings → Plugins itself) isn't
@@ -480,7 +489,8 @@ export function SettingsView() {
   const shown = (sub && subs.find((t) => t.id === sub)) || (noOverview ? subs[0] : current);
   const subList = isList && subs.length >= SUB_LIST_FROM;
   // The page's own toolbar (settings asset `toolbar` = a toolbar asset id); its search spot holds the settings search.
-  const toolbarAsset = ui.toolbar ? rt.registry.list('toolbar').find((a) => a.id === ui.toolbar) : undefined;
+  const toolbarId = topQuick.toolbar || ui.toolbar;
+  const toolbarAsset = toolbarId ? rt.registry.list('toolbar').find((a) => a.id === toolbarId) : undefined;
   const toolbarSearch = !!toolbarAsset && (toolbarAsset.data as { showSearch?: boolean }).showSearch === true;
   const searchOn = ui.search || toolbarSearch;
   const searching = searchOn && query.trim().length > 0;
@@ -519,7 +529,11 @@ export function SettingsView() {
     </div></ControlScope>
   );
 
+  // quick-settings@1: the pane is pinned at the top; a plugin's own settings (Settings → Plugins → <plugin>) are an
+  // interface of their own, the rest of Settings is the console Settings interface
+  const quickScope = inSub && current?.id === 'plugins' && shown ? quickScopeId(`plugin.${shown.id}`) || 'settings' : 'settings';
   return (
+    <QuickSettingsFrame scope={quickScope}>
     <div className={cls}>
       {ui.header === 'full' && <header className="fx-pagehead"><div><p className="fx-eyebrow">{rt.manifest.app.name}</p><h1>Settings</h1></div></header>}
       {ui.header === 'compact' && <h2 className="axf-settings__title">Settings</h2>}
@@ -541,6 +555,7 @@ export function SettingsView() {
       {isList && wide && !searching ? <div className="axf-settings__split axf-settings__split--list">{navList}{body}</div>
         : ui.layout === 'tabs-side' && !searching ? <div className="axf-settings__split">{tabBar}{body}</div> : <>{!searching && tabBar}{body}</>}
     </div>
+    </QuickSettingsFrame>
   );
 }
 
@@ -618,6 +633,13 @@ export function AppearancePanel() {
   return (
     <div className="axf-settings__rows" data-axf-appearance="">
       <AssetsWithEdits />
+      <div className="axf-settings__row" data-axf-quick-handle-setting="">
+        <div className="axf-settings__label">
+          <span>Quick settings handle</span>
+          <span className="fx-muted axf-settings__hint">How the fold handle of the Quick settings pane looks, on every settings interface.</span>
+        </div>
+        <div className="axf-settings__control"><SelectField label="Quick settings handle" value={quickHandleOf(rt.settings.get(QUICK_HANDLE_KEY))} options={QUICK_HANDLES.map((h) => ({ value: h, label: QUICK_HANDLE_LABEL[h] }))} onChange={(v) => rt.dispatch(`quick.handle:${v}`)} /></div>
+      </div>
       <div className="axf-settings__row">
         <div className="axf-settings__label">
           <span>Skin</span>
@@ -1013,11 +1035,11 @@ export const library: AxfWebLibrary = {
     [BANNERS_VIEW]: { title: 'Banners', icon: 'bell', render: () => <div className="fx-stack fx-stack--lg axf-settings"><header className="fx-pagehead"><div><p className="fx-eyebrow">Settings</p><h1>Banners</h1></div></header><BannerSettingsPanel /></div> },
   },
   dialogs: {
-    [TAB_DIALOG]: { title: 'Settings', icon: 'settings', searchable: false, render: (p: Record<string, unknown>) => <TabDialog id={String(p.tab ?? '')} /> },
+    [TAB_DIALOG]: { title: 'Settings', icon: 'settings', searchable: false, render: (p: Record<string, unknown>) => <QuickSettingsFrame scope={quickScopeId(`plugin.${String(p.tab ?? '')}`) || 'settings'}><TabDialog id={String(p.tab ?? '')} /></QuickSettingsFrame> },
     [SKIN_DIALOG]: { title: 'Choose a skin', icon: 'palette', searchable: false, render: () => <SkinPickerDialog /> },
     [SKIN_WHERE_DIALOG]: { title: 'Where the skin applies', icon: 'layers', searchable: false, render: () => <SkinWhereDialog /> },
     [RESTORE_DIALOG]: { title: 'Restore to default', icon: 'refresh', searchable: false, render: () => <RestoreDefaultDialog /> },
-    [LEVEL_EDITOR_DIALOG]: { title: 'Settings levels', icon: 'sliders', searchable: true, render: () => <LevelEditor /> },
+    [LEVEL_EDITOR_DIALOG]: { title: 'Settings levels', icon: 'sliders', searchable: true, render: () => <LevelEditor /> }, // quick-settings: exempt (the level editor is a tool, not a settings interface)
   },
   settingsTabs: Object.values(SETTINGS_TABS),
   settings: [

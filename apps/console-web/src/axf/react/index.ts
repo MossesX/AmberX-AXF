@@ -55,3 +55,4 @@ export { ControlRegistry, ControlScope, controlRegistry, composeAddress, control
 export { BannerWidgetsPanel, BannerMore, bannerItemAttrs, bannerWidgetsDialog, useBannerOverflow } from './components/BannerWidgets';
 export { CHROME_SETTINGS_DIALOG, CHROME_PICK_DIALOG, CHROME_APP_INSTANCE, CHROME_ACTION_IDS, AssetsWithEdits, ChromeSettingsPanel, ChromeAssetPicker, chromeDialogs, chromeMenu, chromeSettingsUi, installChrome, moveChrome, setChromeField, swapChrome } from './components/ChromeContext';
 export { installScrollControl, useScrollContainer, runScroll, scrollStateOf, scrollContainerOf, activeScrollContainer, mainScrollElement, scrollAddressOf, domScroller, isScrollable, lineHeightIn, offsetWithin, SCROLL_CONTAINER_ATTR, SCROLL_LINE_TOKEN, MAIN_SCROLL_ID } from './scrollControl';
+export { QuickSettings, QuickSettingsFrame, QuickAssetsContext, useQuickAsset, installQuickSettings, quickState, quickOverridesOf, quickSkinOf } from './components/QuickSettings';

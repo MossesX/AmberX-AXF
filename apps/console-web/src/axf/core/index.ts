@@ -58,3 +58,4 @@ export * from './engines/work';
 export * from './engines/placement';
 export * from './engines/console-control';
 export * from './engines/asset-gate.mjs';
+export * from './engines/quick-settings.mjs';

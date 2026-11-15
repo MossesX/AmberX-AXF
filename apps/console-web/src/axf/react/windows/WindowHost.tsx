@@ -6,6 +6,8 @@ import { useScopeId } from '../components/InterfaceScope';
 import type { Pane, TabGroup, TabSpec, WindowManager, WindowSettings, WindowSpec, WindowState, Corner, DragPreview, ResizeEdge, WindowFrame } from '../../core/engines/windows';
 import { effectiveToolbar, forcesToolbar, isFloating, isMaximized, paneGroups, rectOf, resizeCursor, tabPressIntent, windowFrame, CORNERS, RESIZE_EDGES, TAB_HOLD_MS, type TabPressIntent } from '../../core/engines/windows';
 import { DockDropOverlay, DockHost, DockPaneView, dockLayoutDialog } from './DockHost';
+import { QuickSettingsFrame } from '../components/QuickSettings';
+import { quickScopeId } from '../../core/engines/quick-settings.mjs';
 
 /* ------------------------------------------------------------------ */
 /* registry of tab renderers + locals                                  */
@@ -450,7 +452,7 @@ export function WindowSettingsDialog({ windowId, close }: { windowId: string; cl
 export const windowDialogs = {
   ...dockLayoutDialog,
   'split-grid': { title: 'Custom grid', icon: 'grid', searchable: false, render: (p: Record<string, unknown>, close: () => void) => <SplitGridDialog groupId={String(p.arg ?? '')} close={close} /> },
-  'window-settings': { title: 'Window settings', icon: 'settings', searchable: false, render: (p: Record<string, unknown>, close: () => void) => <WindowSettingsDialog windowId={String(p.arg ?? '')} close={close} /> },
+  'window-settings': { title: 'Window settings', icon: 'settings', searchable: false, render: (p: Record<string, unknown>, close: () => void) => <QuickSettingsFrame scope={quickScopeId(`window.${String(p.arg ?? '')}`) || 'window'}><WindowSettingsDialog windowId={String(p.arg ?? '')} close={close} /></QuickSettingsFrame> },
 };
 
 /** Keep the floating host's pointer/escape handling simple: Escape closes the focused floating window. */

@@ -25,6 +25,7 @@ import { CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, TAB_GROUP_FOLD_KEY, TAB
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { ControlScope, escapeSelector, useControlScope, useControlTarget, useControlTargets } from '../controlTargets';
 import { Icon } from './Icon';
+import { useQuickAsset } from './quickAssets';
 
 export interface TabDef<T extends string = string> {
   value: T;
@@ -84,9 +85,11 @@ export function tabGroupDataFor(rt: AxfRuntime, id: string, hostAsset?: string):
 /** The row's effective tab-group data, live (re-renders on its settings and on any asset swap). */
 export function useTabGroupData(id: string, hostAsset?: string): Required<TabGroupData> {
   const rt = useRuntime();
+  // a settings interface's Quick settings can override the tab-group default for every row drawn in it
+  const quick = useQuickAsset('tab-group');
   useAxfState();
   useSettingsKeys(rt, [CHROME_INSTANCE_KEY('tab-group', id), CHROME_INSTANCE_ASSET_KEY('tab-group', id)]);
-  return tabGroupDataFor(rt, id, hostAsset);
+  return tabGroupDataFor(rt, id, quick ?? hostAsset);
 }
 
 const MORE_ROOM = 44; // px of row kept for the More button while measuring (layout only: the button itself is token-sized)

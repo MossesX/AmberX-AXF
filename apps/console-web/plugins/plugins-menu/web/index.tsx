@@ -13,7 +13,8 @@
  * Server part (archives, credentials, installs) in server/__init__.py; the pure part in web/core.ts.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Checkbox, Chip, IconButton, Icon, ModelBadge, Note, Segmented, SelectField, Switch, TextField, useAxfState, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, IconButton, Icon, ModelBadge, Note, QuickSettingsFrame, Segmented, SelectField, Switch, TextField, useAxfState, useRuntime } from '@console/axf/react';
+import { quickScopeId } from '@console/axf/core';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import type { AxfRuntime } from '@console/axf/core/runtime';
 import { placementKey } from '@console/axf/core/engines/placement';
@@ -568,7 +569,7 @@ export const plugin: AxfWebLibrary = {
     globalThis.addEventListener(PLUGINS_CHANGED, menuListener);
   },
   dialogs: {
-    [SETTINGS_DIALOG]: { title: 'Plugin settings', icon: 'settings', render: (props) => <SettingsBrowser ask={typeof props?.plugin === 'string' ? props.plugin : undefined} /> },
+    [SETTINGS_DIALOG]: { title: 'Plugin settings', icon: 'settings', render: (props) => <QuickSettingsFrame scope={quickScopeId(`plugin.${typeof props?.plugin === 'string' && props.plugin ? props.plugin : 'plugins'}`) || 'settings'}><SettingsBrowser ask={typeof props?.plugin === 'string' ? props.plugin : undefined} /></QuickSettingsFrame> },
     [INSTALL_DIALOG]: { title: 'Install plugins', icon: 'download', render: () => <Installer /> },
     [INFO_DIALOG]: { title: 'About the plugin', icon: 'info', searchable: false, render: (props) => <PluginInfo folder={String(props?.plugin ?? '')} show={props?.show === 'docs' ? 'docs' : 'about'} /> },
   },

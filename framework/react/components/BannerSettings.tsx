@@ -46,6 +46,8 @@ import { TabGroup } from './TabGroup';
 import { LookEditor, LookLevelSwitch } from './LookEditor';
 import { LOOK_LEVELS, lookChanged, lookCss, lookPrefs, normalizeLook, type LookLevel, type LookValues } from '../../core/engines/looktokens';
 import { useAxfState, useRuntime } from '../AxfProvider';
+import { QuickSettingsFrame } from './QuickSettings';
+import { quickScopeId } from '../../core/engines/quick-settings.mjs';
 
 export type BannerTone = 'own' | 'accent' | 'info' | 'success' | 'warning' | 'danger' | 'neutral';
 export type BannerDensity = 'compact' | 'regular' | 'roomy';
@@ -616,5 +618,5 @@ function HideControls({ id, label, list, hide }: { id: string; label: string; li
 export const BANNERS_VIEW = 'banners';
 
 export const bannerSettingsDialog: DialogMap = {
-  [BANNER_SETTINGS_DIALOG]: { title: 'Banner settings', icon: 'bell', searchable: false, render: (props) => <BannerSettingsPanel initial={typeof props.id === 'string' ? props.id : undefined} /> },
+  [BANNER_SETTINGS_DIALOG]: { title: 'Banner settings', icon: 'bell', searchable: false, render: (props) => <QuickSettingsFrame scope={quickScopeId(`banner.${typeof props.id === 'string' && props.id ? props.id : 'app'}`)}><BannerSettingsPanel initial={typeof props.id === 'string' ? props.id : undefined} /></QuickSettingsFrame> },
 };
