@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:46:07.088Z",
+ "updatedAt": "2026-11-15T00:46:22.129Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -5078,7 +5078,7 @@
    "branch": "claude/settings-placement-everywhere",
    "pr": "#329",
    "createdAt": "2026-11-03T20:30:14.217Z",
-   "updatedAt": "2026-11-04T16:55:20.341Z",
+   "updatedAt": "2026-11-15T00:46:05.867Z",
    "builtAt": "2026-11-03T22:08:49.404Z",
    "notes": [
     {
@@ -10784,7 +10784,7 @@
    "branch": "claude/requests-ledger",
    "pr": "#310",
    "createdAt": "2026-11-04T12:44:14.620Z",
-   "updatedAt": "2026-11-04T13:19:38.342Z",
+   "updatedAt": "2026-11-15T00:45:56.376Z",
    "builtAt": "2026-11-04T13:19:14.882Z",
    "notes": [
     {
@@ -10916,7 +10916,7 @@
    "branch": "claude/bugs-board",
    "pr": "#311",
    "createdAt": "2026-11-04T13:07:57.249Z",
-   "updatedAt": "2026-11-04T13:48:41.840Z",
+   "updatedAt": "2026-11-15T00:45:53.870Z",
    "builtAt": "2026-11-04T13:48:40.158Z",
    "notes": [
     {
@@ -11094,7 +11094,7 @@
    "branch": "claude/follow-amber-switch",
    "pr": "#312",
    "createdAt": "2026-11-04T13:33:57.300Z",
-   "updatedAt": "2026-11-04T13:53:13.136Z",
+   "updatedAt": "2026-11-15T00:45:49.060Z",
    "builtAt": "2026-11-04T13:53:13.136Z",
    "notes": [
     {
@@ -38320,7 +38320,7 @@
    "branch": "claude/session-history",
    "pr": "#195",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-15T00:46:11.319Z",
    "builtAt": "2026-11-03T13:57:06.541Z",
    "notes": [
     {
@@ -45778,7 +45778,7 @@
    "branch": "claude/builds-one-page-done",
    "pr": "#269",
    "createdAt": "2026-10-27T19:11:22.011Z",
-   "updatedAt": "2026-11-03T18:22:41.268Z",
+   "updatedAt": "2026-11-15T00:46:09.140Z",
    "builtAt": "2026-11-03T18:22:40.093Z",
    "notes": [
     {
