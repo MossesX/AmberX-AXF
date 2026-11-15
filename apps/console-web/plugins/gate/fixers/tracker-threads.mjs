@@ -19,9 +19,12 @@ const cell = (s) => String(s ?? '').replace(/\|/g, '/').replace(/\s+/g, ' ').tri
 export const threadsRow = (b, day = new Date().toISOString().slice(0, 10)) =>
   `| ${cell(b.title || b.id)} (\`${b.id}\`) | ${cell(b.state || 'in-pr')} | ${b.branch ? `\`${cell(b.branch)}\`` : ''} | ${b.pr ? `#${cell(b.pr)}` : ''} | ${cell(b.next || '')} | ${day} |`;
 
+/** Is there a table row (a line starting with `|`) naming the build in backticks? The Live build log lines don't count. */
+export const hasRow = (text, id) => text.split('\n').some((l) => l.startsWith('|') && l.includes(`\`${id}\``));
+
 /** THREADS.md with the build's row added under the Active header (first row), or the same text when it is there. */
 export function withRow(text, b, day) {
-  if (!b?.id || text.includes(`\`${b.id}\``)) return text;
+  if (!b?.id || hasRow(text, b.id)) return text;
   const i = text.indexOf(ACTIVE_HEAD);
   if (i < 0) return text;
   const end = text.indexOf('\n', i);
@@ -35,7 +38,7 @@ export function check(ctx = {}) {
   const t = tracker(ctx, ['--check']);
   if (t.status !== 0) missing.push(`tracker: ${(t.stdout || t.stderr || '').trim().split('\n').pop()}`);
   const b = ctx.build;
-  if (b?.id && !readText(join(rootOf(ctx), THREADS_REL)).includes(`\`${b.id}\``)) missing.push(`THREADS: no row for ${b.id}`);
+  if (b?.id && !hasRow(readText(join(rootOf(ctx), THREADS_REL)), b.id)) missing.push(`THREADS: no row for ${b.id}`);
   return result(id, { ok: !missing.length, missing, detail: missing.length ? missing.join('; ') : 'tracker and THREADS are current' });
 }
 
