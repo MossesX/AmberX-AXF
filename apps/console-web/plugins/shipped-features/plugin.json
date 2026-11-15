@@ -12,7 +12,8 @@
   ],
   "provides": [
     "view:shipped-features",
-    "settings-tab:shipped-features"
+    "settings-tab:shipped-features",
+    "service:axf.shipped-features@1"
   ],
   "scopes": [
     "ROUTES"
@@ -345,5 +346,8 @@
     "builtAt": "2026-11-04"
   },
   "help": "help.json",
-  "opens": "main"
+  "opens": "main",
+  "cli": {
+    "shipped-features": "cli.mjs"
+  }
 }

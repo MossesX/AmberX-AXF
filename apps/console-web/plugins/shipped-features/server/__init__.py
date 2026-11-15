@@ -438,3 +438,46 @@ def backfill(body: dict[str, Any]) -> dict[str, Any]:
     if not body.get("dry"):
         _after_write()
     return r
+
+
+# ------------------------------------------------------------------ capability service (axf.shipped-features@1)
+
+
+class ShippedFeaturesService:
+    """What other plugins (the Gate's Pending features rows) use instead of this plugin's folder name."""
+
+    def open_target(self, feature_id: str) -> dict[str, Any]:
+        """Where one feature opens, or why it can't (same answer as GET features/{id}/open-target)."""
+        try:
+            return resolve(feature_id)
+        except HTTPException as e:
+            return {"feature": feature_id, "target": None, "code": "not-found", "reason": str(e.detail)}
+
+    def open_targets_for_build(self, build_id: str) -> list[dict[str, Any]]:
+        """Every feature a build added or changed, each with where it opens (a build that hasn't landed: not-live)."""
+        if not BUILD_ID.match(build_id or ""):
+            return []
+        c = _connect()
+        if c is None:
+            return []
+        try:
+            feats = [f for f in _docs(c, "SELECT doc FROM features") if any(b.get("id") == build_id for b in f.get("builds") or [])]
+        finally:
+            c.close()
+        reg = ot.load_registry()
+        return [ot.open_target(f, reg) for f in feats]
+
+    def open(self, feature_id: str, to: str = "recent", by: str = "plugin") -> dict[str, Any]:
+        """Open one feature in the live console (as POST features/{id}/open); no target → {ok: false, code, reason}."""
+        try:
+            return open_feature(resolve(feature_id), {"to": to, "by": by})
+        except HTTPException as e:
+            d = e.detail if isinstance(e.detail, dict) else {"message": str(e.detail)}
+            return {"ok": False, **d}
+
+
+try:
+    import plugin_services  # the console's capability registry (absent when the server part runs outside the console)
+    plugin_services.provide("axf.shipped-features@1", ShippedFeaturesService(), FOLDER)
+except ImportError:
+    pass

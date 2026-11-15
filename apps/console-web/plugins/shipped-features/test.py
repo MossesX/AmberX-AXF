@@ -170,4 +170,34 @@ ok(bt["target"] == "view:banners" and bt["lookup"]["match"]["id"] == vf["id"], "
 mod._control = lambda body: {"ok": True, "verb": "open", "address": body["address"]}
 bo = c.post(f"{base}/features/open", json={"feature": vf["id"]}).json()
 ok(bo["status"] == "delivered" and bo["openTarget"]["target"] == "view:banners", "POST features/open {feature: id}")
+
+# capability service (what the Gate uses) and the CLI smoke test against a real server
+svc = mod.ShippedFeaturesService()
+ok(svc.open_target(vf["id"])["target"] == "view:banners" and svc.open_target("f-nope")["code"] == "not-found", "service: open_target by id, unknown → not-found")
+bt = svc.open_targets_for_build("veto")
+ok(len(bt) == 1 and bt[0]["target"] == "view:banners", f"service: open targets of a build's features ({bt})")
+ok(svc.open(f["id"])["ok"] is False and svc.open(f["id"])["code"] == "not-live", "service: open with no target says why")
+
+import socket, threading as _th, uvicorn  # noqa: E401,E402
+sock = socket.socket(); sock.bind(("127.0.0.1", 0)); port = sock.getsockname()[1]; sock.close()
+srv = uvicorn.Server(uvicorn.Config(app, host="127.0.0.1", port=port, log_level="error"))
+_th.Thread(target=srv.run, daemon=True).start()
+import time as _t  # noqa: E402
+for _ in range(100):
+    if srv.started:
+        break
+    _t.sleep(0.05)
+AXF = str(HERE.parents[3] / "framework" / "cli" / "axf.mjs")
+def cli(*a: str) -> subprocess.CompletedProcess:
+    return subprocess.run(["node", AXF, "feature", *a, "--remote", f"http://127.0.0.1:{port}"], capture_output=True, text=True, timeout=60)
+p1 = cli("target", "veto", "alarm")
+ok(p1.returncode == 0 and "view:banners" in p1.stdout, f"cli: axf feature target <words> ({p1.stdout}{p1.stderr})")
+p2 = cli("open", vf["id"], "--json")
+ok(p2.returncode == 0 and json.loads(p2.stdout)["status"] == "delivered", f"cli: axf feature open <id> ({p2.stdout[:200]}{p2.stderr})")
+p3 = cli("open", "status", "chips")
+ok(p3.returncode == 3 and "not landed yet" in p3.stderr, f"cli: no screen → exit 3 with the reason ({p3.returncode} {p3.stderr})")
+p4 = cli("find", "veto")
+ok(p4.returncode == 0 and vf["id"] in p4.stdout, "cli: axf feature find")
+ok(cli("open").returncode == 2, "cli: usage → exit 2")
+srv.should_exit = True
 print(f"shipped-features server: {n} checks passed")
