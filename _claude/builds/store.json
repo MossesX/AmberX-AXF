@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6357,
- "updatedAt": "2026-11-15T20:12:45.636Z",
+ "rev": 6358,
+ "updatedAt": "2026-11-15T20:13:05.047Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -229282,7 +229282,7 @@
    "pr": "#705",
    "priority": "P0",
    "createdAt": "2026-11-15T04:17:06.158Z",
-   "updatedAt": "2026-11-15T20:12:43.985Z",
+   "updatedAt": "2026-11-15T20:13:03.493Z",
    "builtAt": "2026-11-15T20:10:32.121Z",
    "notes": [
     {
@@ -229352,6 +229352,10 @@
     {
      "text": "Headless run axf-auto-lander-controls-in-the-gate-plugin--earl: brief only · start 15.3K tokens ($0.05) · cost $1.83 · 75 turns · 6 tools, MCP none",
      "at": "2026-11-15T20:12:43.985Z"
+    },
+    {
+     "text": "Session axf-auto-lander-controls-in-the-gate-plugin--earl on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-15T20:13:03.493Z"
     }
    ],
    "approvals": [],
@@ -229372,12 +229376,19 @@
     "queuedAt": "2026-11-15T04:17:08.584Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-auto-lander-controls-in-the-gate-plugin--earl",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-15T19:57:09.845Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-15T20:13:02.977Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-auto-lander-controls-in-the-gate-plugin--earl"
+    },
     "split": {
      "at": "2026-11-15T04:19:53.877Z",
      "by": "orchestrator",
@@ -229824,7 +229835,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

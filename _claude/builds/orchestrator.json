@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T20:12:45.636Z",
+ "updatedAt": "2026-11-15T20:13:05.047Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -147192,7 +147192,7 @@
    "pr": "#705",
    "priority": "P0",
    "createdAt": "2026-11-15T04:17:06.158Z",
-   "updatedAt": "2026-11-15T20:12:43.985Z",
+   "updatedAt": "2026-11-15T20:13:03.493Z",
    "builtAt": "2026-11-15T20:10:32.121Z",
    "notes": [
     {
@@ -147262,6 +147262,10 @@
     {
      "text": "Headless run axf-auto-lander-controls-in-the-gate-plugin--earl: brief only · start 15.3K tokens ($0.05) · cost $1.83 · 75 turns · 6 tools, MCP none",
      "at": "2026-11-15T20:12:43.985Z"
+    },
+    {
+     "text": "Session axf-auto-lander-controls-in-the-gate-plugin--earl on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-15T20:13:03.493Z"
     }
    ],
    "approvals": [],
