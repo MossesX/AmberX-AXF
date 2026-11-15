@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T13:37:27.235Z",
+ "updatedAt": "2026-11-15T13:37:48.668Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -152532,7 +152532,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T13:36:18.858Z",
-   "updatedAt": "2026-11-15T13:37:25.306Z",
+   "updatedAt": "2026-11-15T13:37:47.141Z",
    "builtAt": "",
    "notes": [
     {
@@ -152546,6 +152546,10 @@
     {
      "text": "Brett (08:38): CORRECTION, the phone app DOES show things on screen as an OVERLAY. Fold in the floating always-on-top toolbar overlay from build amberx-floating-toolbar-always-on-top-mic-approvals-build-status (approvals, build status, notifications widget). Approvals and alerts pop up right on the phone screen over other apps, and he can approve from the overlay. Settings still live in the console. List what that old build already did before porting it.",
      "at": "2026-11-15T13:37:25.306Z"
+    },
+    {
+     "text": "Brett (08:39): the overlay toolbar collapses to a small floating button (draggable, remembers its spot and its collapsed/expanded state); tap to expand, tap to collapse. A new approval or alert pops up from the button even while it's collapsed, with a badge count.",
+     "at": "2026-11-15T13:37:47.141Z"
     }
    ],
    "approvals": [],
