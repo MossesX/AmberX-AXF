@@ -193,7 +193,7 @@
       {
         "target": "split-section",
         "title": "Split",
-        "text": "How every build is cut into steps as soon as it is filed, and when a request is cut into parallel builds that run at the same time. Tap the heading to open or close it. The same settings: pipeline.mjs set …, REST and MCP pipeline-settings-set, voice.",
+        "text": "How every build is cut into steps as soon as it is filed (split provider, largest step, model per step, phases, the step format) and when a request is cut into parallel builds that run at the same time. Tap the heading to open or close it. The same settings: pipeline.mjs set …, REST and MCP pipeline-settings-set, voice.",
         "kind": "card"
       },
       {
@@ -237,6 +237,30 @@
         "title": "Split settings",
         "text": "Opens the orchestrator's Rules tab with the Split section open.",
         "kind": "menu"
+      },
+      {
+        "target": "parallel-family",
+        "title": "Parallel split family",
+        "text": "This build is the lead or a part of a parallel split: the parts run at the same time in their own sessions. Shows every part's progress, the combined progress over the lead and all parts, and how they land (together through the lead's integration step, or one PR per part in order). The same on GET /pipeline (family), pipeline.mjs show <id>.",
+        "kind": "card"
+      },
+      {
+        "target": "parallel-builds",
+        "title": "Parallel builds",
+        "text": "This build's own parallel split: split into 2-12 parallel builds, one build, or as the Split settings say. It beats the Split settings; a build not started yet is split again. The same: pipeline.mjs parallel <id> <N|off|default>, REST / MCP pipeline-parallel, voice \"split skins into 3 parallel builds\", or \"split into 3 parallel\" in the request.",
+        "kind": "field"
+      },
+      {
+        "target": "largest-step-minutes",
+        "title": "Largest step (minutes)",
+        "text": "The longest a step may be, 1 to 10 minutes: a longer one is cut in two when a build is split. Every step is a checkpoint (commit, push, tick) inside one session. The same: orchestrator.mjs act rules, POST act {action: rules}.",
+        "kind": "field"
+      },
+      {
+        "target": "apply-step-size",
+        "title": "Apply step size",
+        "text": "Saves the largest step size into the orchestrator rules; the next split uses it.",
+        "kind": "button"
       }
     ],
     "intros": []

@@ -588,8 +588,22 @@ async def pipeline_route(request: Request) -> dict[str, Any]:
     return _pipeline("route", _build_id(body.get("id")), route, "--by", (who or "console")[:80])
 
 
+def _parallel_arg(v: Any) -> str:
+    """The per-build parallel ask as the CLI takes it: 2-12, off (one build) or default; '' when not given."""
+    if v is None or v == "":
+        return ""
+    t = str(v).strip().lower()
+    if t in ("off", "one", "1"):
+        return "off"
+    if t in ("default", "auto", "0"):
+        return "default"
+    if t.isdigit() and 2 <= int(t) <= 12:
+        return t
+    raise HTTPException(400, "parallel is 2-12, off (one build) or default")
+
+
 def request_build(title: str, detail: str = "", *, by: str = "console", source: str = "", said: str = "", priority: str = "",
-                  queue: bool = True) -> dict[str, Any]:
+                  queue: bool = True, parallel: Any = None) -> dict[str, Any]:
     """File a build with the orchestrator (it assigns the id) and, by default, put it in the Queue: the dispatcher starts
     it. The one way in for every other plugin (Build manager, Fix with Claude, feature assist): nothing else launches."""
     import tempfile
@@ -604,6 +618,9 @@ def request_build(title: str, detail: str = "", *, by: str = "console", source: 
             args += ["--said", said[:6000]]
         if priority in ("P0", "P1", "P2", "P3"):
             args += ["--priority", priority]
+        par = _parallel_arg(parallel)
+        if par and par != "default":
+            args += ["--parallel", par]
         if queue:
             args.append("--queue")
         return _pipeline(*args, who=by)
@@ -616,14 +633,28 @@ def request_build(title: str, detail: str = "", *, by: str = "console", source: 
 
 @router.post("/pipeline/request")
 async def pipeline_request(request: Request) -> dict[str, Any]:
-    """{title, detail?, said?, priority?, queue? (default true)}: file a build with the orchestrator and queue it. This is
-    the only way to ask for a build to start; the dispatcher picks the account and model and launches it."""
+    """{title, detail?, said?, priority?, parallel? (2-12 | off), queue? (default true)}: file a build with the orchestrator
+    and queue it. This is the only way to ask for a build to start; the dispatcher picks the account and model and
+    launches it. parallel = split it into that many parallel builds (off = one build), beating the Split settings."""
     body = await _json_body(request)
     title = str(body.get("title") or "").strip()
     if not title:
         raise HTTPException(400, "a build needs a title")
     return request_build(title, str(body.get("detail") or ""), by=(brett_click(request) or "console"), source="console",
-                         said=str(body.get("said") or ""), priority=str(body.get("priority") or ""), queue=body.get("queue") is not False)
+                         said=str(body.get("said") or ""), priority=str(body.get("priority") or ""), queue=body.get("queue") is not False,
+                         parallel=body.get("parallel"))
+
+
+@router.post("/pipeline/parallel")
+async def pipeline_parallel(request: Request) -> dict[str, Any]:
+    """{id, parts: 2-12 | off | default}: a build's own parallel split ask (Nov 13 2026: "split into N parallel"). 2-12 =
+    split into that many parallel builds, off = one build, default = the Split settings decide. A build not started yet
+    is split again on the next tick; a lead or part of a parallel split keeps its parts."""
+    body = await _json_body(request)
+    par = _parallel_arg(body.get("parts"))
+    if not par:
+        raise HTTPException(400, "parts is 2-12, off or default")
+    return _pipeline("parallel", _build_id(body.get("id")), par, "--by", (brett_click(request) or "console")[:80])
 
 
 class DispatchService:

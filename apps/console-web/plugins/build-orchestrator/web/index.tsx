@@ -73,6 +73,14 @@ export const plugin: AxfWebLibrary = {
       rt.navigate('build-orchestrator'); openTab('rules');
       flashWhenReady(() => { const el = document.getElementById(SPLIT_SECTION_ID) as HTMLDetailsElement | null; if (el) el.open = true; return el; }, 5000);
     }, { label: 'Build orchestrator: open the Split settings (split provider, parallel split)', effect: 'navigate' });
+    // a build's own parallel split ask (Nov 13 2026: "split into N parallel"): build-orchestrator.parallel <id> <2-12|off|default>
+    rt.actions.register('build-orchestrator.parallel', ([id, parts]) => {
+      const b = decodeURIComponent(id ?? ''); const n = decodeURIComponent(parts ?? '');
+      if (!b || !n) { void open('pending'); return; }
+      void pipeApi.post<{ ok: boolean; error?: string; note?: string; resplit?: boolean }>('pipeline/parallel', { id: b, parts: n })
+        .then((r) => rt.toast(r.ok ? `${b}: ${r.note}${r.resplit ? ' (split again on the next tick)' : ''}` : r.error ?? 'failed', r.ok ? 'success' : 'danger'))
+        .catch((e: Error) => rt.toast(e.message, 'danger'));
+    }, { label: 'Build orchestrator: split a build into N parallel builds (id, 2-12 | off | default)', params: true, effect: 'write' });
     rt.actions.register('build-orchestrator.start', ([arg]) => {
       const id = decodeURIComponent(arg ?? '');
       if (!id) { void open('pending'); return; }

@@ -418,7 +418,7 @@
         "id": "pipeline-request",
         "route": "POST /pipeline/request",
         "title": "Ask for a build",
-        "description": "File a build with the orchestrator and put it in the Queue: the orchestrator is the only thing that starts builds; it assigns the id, splits it and the dispatcher launches it on the right account and model. Say 'build me …'.",
+        "description": "File a build with the orchestrator and put it in the Queue: the orchestrator is the only thing that starts builds; it assigns the id, splits it and the dispatcher launches it on the right account and model. Say 'build me …'. parallel = split it into that many parallel builds (2-12) or off (one build), beating the Split settings; \"split into 3 parallel\" in the words does the same.",
         "input": {
           "type": "object",
           "properties": {
@@ -447,6 +447,10 @@
             "queue": {
               "type": "boolean",
               "description": "Straight to the Queue (default true); false = Pending"
+            },
+            "parallel": {
+              "type": "string",
+              "description": "Split into this many parallel builds (2-12) or off (one build); default = the Split settings"
             }
           },
           "required": [
@@ -484,6 +488,30 @@
         "output": "{ id, route }"
       },
       {
+        "id": "pipeline-parallel",
+        "route": "POST /pipeline/parallel",
+        "title": "Split a build into N parallel builds",
+        "description": "A build's own parallel split ask (beats the Split settings): parts 2-12 = split into that many sub-builds that run at the same time (a lead with the shared contract and integration steps, plus the parts), off = one build, default = the Split settings decide. A build not started yet is split again on the next tick; a lead or part of a parallel split keeps its parts. The family (lead, parts, combined progress, landing) is on every row of GET /pipeline as `family`. Say 'split skins into 3 parallel builds' or 'make skins one build'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "parts": {
+              "type": "string",
+              "description": "2-12, off (one build) or default (the Split settings)"
+            }
+          },
+          "required": [
+            "id",
+            "parts"
+          ]
+        },
+        "output": "{ id, parts, resplit, note }"
+      },
+      {
         "id": "pipeline-settings",
         "route": "GET /pipeline/settings",
         "title": "Pipeline settings",
@@ -495,7 +523,7 @@
         "id": "pipeline-settings-set",
         "route": "POST /pipeline/settings",
         "title": "Change pipeline settings",
-        "description": "Change dispatcher settings. apiOverflow = when every subscription account is full or out, send builds to an API-key account (off by default; turning it on is Brett's own click, anyone may turn it off). Split section: splitProvider (claude | rules | off), parallelSplit (auto = parts filed and queued by themselves, ask = parts wait in Pending, off = never), parallelMax (most parts, 2-12, default 4), parallelContract (a shared contract step on the lead runs first), parallelIntegrate (an integration step on the lead merges and tests the parts together last).",
+        "description": "Change dispatcher settings. apiOverflow = when every subscription account is full or out, send builds to an API-key account (off by default; turning it on is Brett's own click, anyone may turn it off). Split section: splitProvider (claude | rules | off), parallelSplit (auto = parts filed and queued by themselves, ask = parts wait in Pending, off = never), parallelMax (most parts, 2-12, default 4), parallelContract (a shared contract step on the lead runs first), parallelIntegrate (an integration step on the lead merges and tests the parts together last). Say 'set parallel split to auto' or 'max parallel slots 6'.",
         "input": {
           "type": "object",
           "properties": {
