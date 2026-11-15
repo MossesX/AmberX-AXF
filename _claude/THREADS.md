@@ -801,7 +801,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:46 UTC · `merge-main-land-console-app-part-3` branch claude/console-app-part-3-native-bridge-mic, PR #633 (all) · builds-live
 - 2026-11-14 23:46 UTC · `merge-main-land-console-app-part-4` → running, note (all) · pipeline
 - 2026-11-14 23:46 UTC · `merge-main-land-console-app-part-4` branch claude/merge-main-land-console-app-part-4 (all) · pipeline
 - 2026-11-14 23:46 UTC · `merge-main-land-console-app-part-4` note (all) · orchestrator
@@ -1201,6 +1200,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 04:43 UTC · `auto-lander-controls-in-the-gate-plugin` s10 done (all) · orchestrator
 - 2026-11-15 04:44 UTC · `data-container-axf-data-holds-all` s2 done (all) · orchestrator
 - 2026-11-15 04:44 UTC · `auto-lander-controls-in-the-gate-plugin` s11 done (all) · orchestrator
+- 2026-11-15 04:47 UTC · `auto-lander-controls-in-the-gate-plugin` s12 done (all) · orchestrator
 
 ## Token passes (log)
 
