@@ -797,8 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 22:41 UTC · `land-finish-auto-land-live-clear-backlog` s4 done, → running (all) · orchestrator
-- 2026-11-14 22:42 UTC · `console-look-becomes-default-axhub-skin` → running, note (all) · pipeline
 - 2026-11-14 22:42 UTC · `console-look-becomes-default-axhub-skin` note (all) · orchestrator
 - 2026-11-14 22:42 UTC · `picker-dialog-plugin-replaces-all` → running, note (all) · pipeline
 - 2026-11-14 22:42 UTC · `picker-dialog-plugin-replaces-all` note (all) · orchestrator
@@ -1197,6 +1195,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:59 UTC · `console-look-becomes-default-axhub-skin` note (all) · pipeline
 - 2026-11-14 23:59 UTC · `console-look-becomes-default-axhub-skin` note (all) · orchestrator
 - 2026-11-15 00:00 UTC · `console-look-becomes-default-axhub-skin` → pending, note (all) · pipeline
+- 2026-11-15 00:00 UTC · `fix-axhub-36-pull-main-in-failed` → running, note (all) · pipeline
+- 2026-11-15 00:01 UTC · `fix-axhub-36-pull-main-in-failed` note (all) · orchestrator
 
 ## Token passes (log)
 
