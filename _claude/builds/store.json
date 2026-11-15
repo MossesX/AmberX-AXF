@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5841,
- "updatedAt": "2026-11-15T00:46:40.789Z",
+ "rev": 5842,
+ "updatedAt": "2026-11-15T00:46:59.176Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -204522,7 +204522,7 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-15T00:45:48.291Z",
+   "updatedAt": "2026-11-15T00:45:59.465Z",
    "builtAt": "",
    "notes": [
     {
@@ -204570,6 +204570,10 @@
      "at": "2026-11-13T20:19:48.032Z"
     },
     {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-orchestrator-settings-collapsible-split--paulie, shared account login)",
+     "at": "2026-11-15T00:45:59.465Z"
+    },
+    {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 2): axf-orchestrator-settings-collapsible-split--paulie.",
      "at": "2026-11-15T00:45:48.291Z"
     }
@@ -204591,12 +204595,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:41:15.314Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-orchestrator-settings-collapsible-split--paulie",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-15T00:45:42.951Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:42:36.411Z",
@@ -204606,9 +204610,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"6b468540-0c79-44b3-9ccc-314d979f4e2c\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-15T00:45:42.951Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -204617,7 +204621,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-15T00:45:42.951Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""

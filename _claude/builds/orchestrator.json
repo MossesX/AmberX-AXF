@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:46:40.789Z",
+ "updatedAt": "2026-11-15T00:46:59.176Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -129030,7 +129030,7 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-15T00:45:48.291Z",
+   "updatedAt": "2026-11-15T00:45:59.465Z",
    "builtAt": "",
    "notes": [
     {
@@ -129076,6 +129076,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T20:19:48.032Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-orchestrator-settings-collapsible-split--paulie, shared account login)",
+     "at": "2026-11-15T00:45:59.465Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 2): axf-orchestrator-settings-collapsible-split--paulie.",
