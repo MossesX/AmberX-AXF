@@ -23,7 +23,7 @@ import { createHash } from 'node:crypto';
 
 export const SCHEMA = 'data-store@1';
 export const VERSION = 1;
-export const FRAMES = ['data-record@1', 'data-entry@1', 'data-entries@1', 'data-append@1', 'data-list@1', 'data-change@1', 'data-manifest@1', 'data-error@1', 'data-health@1', 'data-token@1', 'data-store-mode@1'];
+export const FRAMES = ['data-record@1', 'data-entry@1', 'data-entries@1', 'data-append@1', 'data-list@1', 'data-change@1', 'data-manifest@1', 'data-error@1', 'data-health@1', 'data-token@1', 'data-store-mode@1', 'data-drift@1'];
 export const KINDS = ['record', 'blob', 'journal'];
 export const OPS = ['get', 'put', 'delete', 'list', 'append', 'read', 'watch', 'snapshot', 'manifest', 'health'];
 export const CHANGE_OPS = ['put', 'delete', 'append'];

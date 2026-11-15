@@ -70,6 +70,7 @@ data-list@1    = { $axf, ns, prefix, items: [data-record@1 without data…], nex
 data-change@1  = { $axf, cursor, ns, path, kind, op: put | delete | append, rev, etag, seq?, at, by }
 data-manifest@1= { $axf, id, at, by, mode, namespaces: { <ns>: { count, bytes, hash, journals: { <path>: { entries, hash } } } } }
 data-error@1   = { $axf, code, message, ns?, path?, rev?, etag?, retryAfterMs? }
+data-drift@1   = { $axf, at, op: read | write | append, key, kind, local, remote, error? }   shadow mode's diff log (Modes)
 ```
 
 `by` is the caller the token names (`svc:console`, `svc:orchestrator`, `svc:axhub`, `svc:cli`, `svc:plugin:<folder>`),
@@ -211,7 +212,7 @@ await store.manifest('plugins/ui-review'); await store.snapshot(['builds', 'note
 ## Migration
 
 The map of every data source the console writes today is `framework/spec/fixtures/data-store-migration.json`
-(data-store-migration@1, checked by `check-data-store-migration.mjs`): 45 sources, each with its namespace, key
+(data-store-migration@1, checked by `check-data-store-migration.mjs`): 44 sources, each with its namespace, key
 template, kind, policy, writers and count check; plus the excluded paths and why. Sizes measured on Nov 15 2026.
 
 **Where the data is today** (four roots): `<projects>` = axHub's volume mounted at `/projects` (`<project>/_data`,
@@ -256,10 +257,50 @@ and `<data>/migration/<ns>.json`.
   days) restore the cutover snapshot tar plus the latest snapshot and list every key changed since as the gap.
 - **Never** truncate a journal on either side: a rollback appends what the other side has.
 
-## Modes
+## Modes (data-store-mode@1, `framework/core/data-store-mode.mjs`)
 
-Design in Phase 1 step s4 (`framework/core/data-store-mode.mjs`, fixture `framework/spec/fixtures/data-store-mode.json`):
-`local → shadow → cutover`, with `rollback` from any of the later two.
+```
+local ──start-shadow──▶ shadow ──cut-over──▶ cutover ──roll-back──▶ rollback ──finish-rollback──▶ local
+  ▲                       │                     ▲                       │
+  └─────back-to-local─────┘                     └────cancel-rollback────┘
+```
+
+One mode per namespace (`plugins/<folder>` is one namespace here) over a store-wide default. The document is
+`data-store-mode@1` (`{ mode, since, by, cursor, manifest, namespaces: { <ns>: { mode, since, cursor, manifest, drift,
+lastDriftAt } } }`), kept at `_meta/mode` on axf-data and as `<data>/data-store/mode.json` locally; a client reads it
+before every write (`readPlan`, `writePlan`).
+
+| Mode | Reads | Writes | Local copy |
+|---|---|---|---|
+| `local` | local | local | the store |
+| `shadow` | local, then axf-data is read too and any difference is a drift entry | local first (required), then axf-data (a failure is drift, never an error for the caller) | the store |
+| `cutover` | axf-data | axf-data only | read-only backup taken at the cut (`read_only` on write) |
+| `rollback` | axf-data | refused on both sides (`read_only`) while the local copy catches up | being replayed from the change feed since `cursor` |
+
+**Drift log** (`data-drift@1`: `{ at, op: read | write | append, key, kind, local, remote, error? }`, kinds
+`missing-remote`, `missing-local`, `etag`, `entries`, `write-failed`, `append-failed`), appended to the local
+`_meta/drift/<ns>` journal; `applyDrift` counts it on the namespace (`drift`, `lastDriftAt`). A read that finds the
+same etag on both sides logs nothing; `rev` may differ (axf-data's rev restarts at 1 after the copy).
+
+**Guards** (`canTransition`, pure; the host passes `ctx = { manifests: { local, remote }, now, remoteOk, replayed,
+acceptDrift, minDriftFreeMs }`):
+
+- `start-shadow`: axf-data reachable and the two manifests equal (the migration copy checked out).
+- `cut-over`: manifests equal at the cut, every drift entry read and accepted (`acceptDrift` lists them, else zero
+  drift), and no drift for `DRIFT_FREE_MS` (30 min) since the later of the shadow start and the last drift.
+- `back-to-local`, `roll-back`, `cancel-rollback`: always allowed.
+- `finish-rollback`: the feed since the cutover cursor is replayed onto local (`replayed: true`) and the manifests are
+  equal again.
+- Anything else (`local → cutover`, `cutover → local`) is refused: shadow first, roll back first.
+
+`transition(state, { ns | [ns…] | '*', to, at, by, cursor, manifest, ctx })` applies a guarded move and returns the new
+document plus the changes made (one per namespace); a refused guard throws `invalid_body` with the reason. `nextStep`
+says what each namespace can do next (`shadow`, `wait`, `cutover`, `replay`, `local`, `done`), `summary` is one plain
+line per namespace. Fixture: `framework/spec/fixtures/data-store-mode.json` (every transition, every guard, routes,
+drift entries, a whole-store move).
+
+Surfaces (Phase 2, with the container): `axf data mode [<ns>] <shadow|cutover|rollback|local>` on the CLI, the same
+as a console action and MCP tool, the mode and drift counts on the Systems check page, and a voice line for Amber.
 
 ## What this phase does not do
 

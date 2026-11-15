@@ -12,7 +12,8 @@
     "data-error@1",
     "data-health@1",
     "data-token@1",
-    "data-store-mode@1"
+    "data-store-mode@1",
+    "data-drift@1"
   ],
   "kinds": [
     "record",
@@ -806,6 +807,9 @@
               "drift": {
                 "type": "integer",
                 "minimum": 0
+              },
+              "lastDriftAt": {
+                "type": "string"
               }
             },
             "additionalProperties": false
@@ -813,6 +817,94 @@
         }
       },
       "additionalProperties": false
+    },
+    "data-drift@1": {
+      "type": "object",
+      "required": [
+        "$axf",
+        "at",
+        "op",
+        "key",
+        "kind",
+        "local",
+        "remote"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "data-drift@1"
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "op": {
+          "enum": [
+            "read",
+            "write",
+            "append"
+          ]
+        },
+        "key": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "missing-remote",
+            "missing-local",
+            "etag",
+            "entries",
+            "write-failed",
+            "append-failed"
+          ]
+        },
+        "local": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/jsonSchemas/data-drift@1/$defs/side"
+            }
+          ]
+        },
+        "remote": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/jsonSchemas/data-drift@1/$defs/side"
+            }
+          ]
+        },
+        "error": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "$defs": {
+        "side": {
+          "type": "object",
+          "required": [
+            "rev",
+            "etag"
+          ],
+          "properties": {
+            "rev": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "etag": {
+              "type": "string"
+            },
+            "entries": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        }
+      }
     }
   }
 }
