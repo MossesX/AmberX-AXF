@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6155,
- "updatedAt": "2026-11-15T12:44:13.017Z",
+ "rev": 6156,
+ "updatedAt": "2026-11-15T12:45:57.012Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -229828,7 +229828,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T04:20:19.690Z",
-   "updatedAt": "2026-11-15T12:20:47.171Z",
+   "updatedAt": "2026-11-15T12:45:55.244Z",
    "builtAt": "",
    "notes": [
     {
@@ -229898,6 +229898,10 @@
     {
      "text": "SUPERSEDED (Brett 07:19): replaced by axf-molly-container-orchestrator-gate, which uses the final layout (axf-molly does the work, axf-data stores, axHub routes, console screens). Don't launch this one again.",
      "at": "2026-11-15T12:20:40.697Z"
+    },
+    {
+     "text": "Coordination (data-container-axf-data-holds-all, Nov 15 2026): the builds store and its journal now follow the data-store@1 mode of the builds namespace. In cutover they live on axf-data (record builds/store.json, journals builds/journal/<month>), framework/cli/builds-store.mjs reads and writes them through the client (lock = rev check: a conflict re-reads and re-applies), so a headless session or axf-molly with AXF_DATA_URL + an orchestrator token (conf/env/orchestrator.env) writes the same store with the console down. If this build is picked up again, move the orchestrator onto that client rather than a second store in axHub; axHub only routes to axf-data (no data kept in axHub).",
+     "at": "2026-11-15T12:45:55.244Z"
     }
    ],
    "approvals": [],
@@ -230891,7 +230895,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
