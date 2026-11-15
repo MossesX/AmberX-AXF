@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5745,
- "updatedAt": "2026-11-15T00:17:48.277Z",
+ "rev": 5746,
+ "updatedAt": "2026-11-15T00:18:10.643Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -192250,7 +192250,7 @@
    "pr": "#596",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-14T23:09:44.694Z",
+   "updatedAt": "2026-11-15T00:17:59.005Z",
    "builtAt": "2026-11-12T23:17:54.369Z",
    "notes": [
     {
@@ -192459,6 +192459,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:17:58.732Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AxppLink.java, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ConsoleBackend.java, apps/amberx-dro"
+     }
+    ]
    },
    "steps": [
     {
@@ -192855,7 +192872,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 64,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": {
