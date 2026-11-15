@@ -798,8 +798,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:11 UTC · `one-source-truth-console-shows-only-what` s3 done, → built (all) · orchestrator
-- 2026-11-14 23:11 UTC · `one-source-truth-console-shows-only-what` note (all) · orchestrator
 - 2026-11-14 23:12 UTC · `one-source-truth-console-shows-only-what` note (all) · builds-live
 - 2026-11-14 23:12 UTC · `owner-recognized-everywhere-veto` note (all) · builds-live
 - 2026-11-14 23:11 UTC · `owner-recognized-everywhere-veto` s3 done, → built (all) · orchestrator
@@ -1198,6 +1196,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 00:52 UTC · `console-app-wake-word-voice-listener` → running, note (all) · pipeline
 - 2026-11-15 00:52 UTC · `console-app-wake-word-voice-listener` → running, note (all) · orchestrator
 - 2026-11-15 00:53 UTC · `quick-settings-pinned-collapsible-pane` s3 done (all) · orchestrator
+- 2026-11-15 00:53 UTC · `quick-settings-pinned-collapsible-pane` s4 done (all) · orchestrator
+- 2026-11-15 00:53 UTC · `quick-settings-pinned-collapsible-pane` s5 done (all) · orchestrator
 
 ## Token passes (log)
 
