@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:39:58.048Z",
+ "updatedAt": "2026-11-15T00:40:19.107Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -146068,7 +146068,7 @@
    "pr": "#639",
    "priority": "P0",
    "createdAt": "2026-11-15T00:06:45.788Z",
-   "updatedAt": "2026-11-15T00:38:42.095Z",
+   "updatedAt": "2026-11-15T00:39:01.391Z",
    "builtAt": "",
    "notes": [
     {
@@ -146086,6 +146086,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-merge-main-land-console-app-part-2--sully, shared account login)",
      "at": "2026-11-15T00:15:57.565Z"
+    },
+    {
+     "text": "Headless run axf-merge-main-land-console-app-part-2--sully: brief only · start 11.7K tokens ($0.03) · cost $1.08 · 51 turns · 6 tools, MCP none",
+     "at": "2026-11-15T00:39:01.391Z"
     }
    ],
    "approvals": [],
