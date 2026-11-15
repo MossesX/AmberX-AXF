@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6035,
- "updatedAt": "2026-11-15T07:10:56.158Z",
+ "rev": 6036,
+ "updatedAt": "2026-11-15T07:11:15.468Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -162242,7 +162242,7 @@
    "mergedAt": "2026-11-15T07:06:19Z",
    "priority": "P1",
    "createdAt": "2026-11-12T01:46:10.127Z",
-   "updatedAt": "2026-11-15T07:10:54.216Z",
+   "updatedAt": "2026-11-15T07:11:04Z",
    "builtAt": "2026-11-15T00:19:08.976Z",
    "notes": [
     {
@@ -162316,6 +162316,10 @@
     {
      "text": "Reconciler: PR #691 merged",
      "at": "2026-11-15T07:10:54.216Z"
+    },
+    {
+     "text": "Shipped manifest sm-fix-axhub-36-pull-main-in-failed rev 1 sent to Shipped features (orchestrator): landed 5e9f07faf, 2 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-15T07:11:04Z"
     }
    ],
    "approvals": [],
@@ -162372,6 +162376,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-fix-axhub-36-pull-main-in-failed",
+    "rev": 1,
+    "at": "2026-11-15T07:11:04Z",
+    "landedCommit": "5e9f07faf9ab46324eabe7a9dadd557eaf953ceb"
    },
    "steps": [
     {
@@ -162886,7 +162896,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
