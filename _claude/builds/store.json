@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5806,
- "updatedAt": "2026-11-15T00:35:59.546Z",
+ "rev": 5807,
+ "updatedAt": "2026-11-15T00:36:16.438Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -188321,7 +188321,7 @@
    "branch": "claude/claude-badge-can-claude-build-green-when",
    "pr": "#587",
    "createdAt": "2026-11-12T23:30:16.119Z",
-   "updatedAt": "2026-11-13T17:32:32.778Z",
+   "updatedAt": "2026-11-15T00:35:10.630Z",
    "builtAt": "2026-11-13T01:26:44.505Z",
    "notes": [
     {
@@ -188396,6 +188396,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:35:10.538Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrator/server/__init__.py, apps/console-web/plugins/claude-badge/R"
+     }
+    ]
    },
    "steps": [
     {
@@ -188498,7 +188515,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -191160,7 +191177,7 @@
    "branch": "claude/focus-every-screen-console-open-console",
    "pr": "#593",
    "createdAt": "2026-11-12T10:35:49.272Z",
-   "updatedAt": "2026-11-13T17:41:33.190Z",
+   "updatedAt": "2026-11-15T00:35:30.794Z",
    "builtAt": "2026-11-12T11:10:43.772Z",
    "notes": [
     {
@@ -191233,6 +191250,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:35:30.696Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/agent-manager/web/forms.tsx, apps/console-web/plugins/agent-manager/web/more.tsx, apps/console-web/plugins/agent-manager/web/settings.tsx, apps/console-web/plugins/agent-manager/web/views.tsx, apps/console-web/plugins/agent-manager"
+     }
+    ]
    },
    "steps": [
     {
@@ -191313,7 +191347,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -192916,7 +192950,7 @@
    "branch": "claude/new-project-wizard-name-linked-repo",
    "pr": "#597",
    "createdAt": "2026-11-12T20:31:23.288Z",
-   "updatedAt": "2026-11-13T17:34:55.834Z",
+   "updatedAt": "2026-11-15T00:35:15.602Z",
    "builtAt": "2026-11-12T22:10:44.782Z",
    "notes": [
     {
@@ -192985,6 +193019,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:35:15.500Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/project-wizard/help.json, apps/console-web/plugins/project-wizard/install.mjs, apps/console-web/plugins/project-wizard/plugin.json, apps/console-web/plugins/project-wizard/server/__init__.py, apps/console-web/plugins/project-wizard"
+     }
+    ]
    },
    "steps": [
     {
@@ -193216,7 +193267,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -194378,7 +194429,7 @@
    "branch": "claude/plugin-review-map-what-each-plugin-does",
    "pr": "#603",
    "createdAt": "2026-11-12T17:47:56.247Z",
-   "updatedAt": "2026-11-13T17:36:27.819Z",
+   "updatedAt": "2026-11-15T00:35:19.243Z",
    "builtAt": "2026-11-12T18:20:35.390Z",
    "notes": [
     {
@@ -194489,6 +194540,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:35:19.154Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Superseded: only merges and status files are missing from main. Kept as archive/plugin-review-map-what-each-plugin-does."
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -194565,7 +194633,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -196401,7 +196469,7 @@
    "branch": "claude/server-every-failed-merge-alerts-brett",
    "pr": "#609",
    "createdAt": "2026-11-12T21:53:13.014Z",
-   "updatedAt": "2026-11-13T17:37:43.315Z",
+   "updatedAt": "2026-11-15T00:35:06.663Z",
    "builtAt": "2026-11-13T01:54:04.392Z",
    "notes": [
     {
@@ -196502,6 +196570,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:35:06.515Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/push-banner/land/lander.mjs, apps/console-web/plugins/push-banner/merge-pr.sh, apps/console-web/plugins/push-banner/notify.json, apps/console-web/plugins/push-banner/plugin.json, apps/console-web/plugins/push-banner/server/__init__"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -196578,7 +196663,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
