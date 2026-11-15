@@ -806,8 +806,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 00:13 UTC · `merge-main-land-voice-listener-use` note (all) · orchestrator
-- 2026-11-15 00:13 UTC · `themed-native-controls-plugin` PR #690 (all) · builds-live
 - 2026-11-15 00:13 UTC · `merge-main-land-voice-listener-use` note (all) · builds-live
 - 2026-11-15 00:13 UTC · `themed-native-controls-plugin` s30 done (all) · orchestrator
 - 2026-11-15 00:13 UTC · `themed-native-controls-plugin` note (all) · orchestrator
@@ -1206,6 +1204,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 12:22 UTC · `data-container-axf-data-holds-all` → running, note (all) · pipeline
 - 2026-11-15 12:22 UTC · `data-container-axf-data-holds-all` note (all) · orchestrator
 - 2026-11-15 12:22 UTC · `shipped-features-organized-sortable` s1 done, → running (all) · orchestrator
+- 2026-11-15 12:22 UTC · `axf-molly-container-orchestrator-gate` → running, note (all) · pipeline
+- 2026-11-15 12:22 UTC · `axf-molly-container-orchestrator-gate` branch claude/axf-molly-container-orchestrator-gate (all) · pipeline
 
 ## Token passes (log)
 
