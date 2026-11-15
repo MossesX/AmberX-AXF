@@ -206,3 +206,38 @@ export const chromeTypeOfSettings = (a: Draft, chromeTypes: readonly string[]): 
 
 /** Types whose active asset can be swapped for the live preview (not attachable widgets, not the access policy). */
 export const previewable = (spec: Spec, type: string): boolean => Boolean(spec[type]) && !spec[type]!.attachable && !spec[type]!.collection && type !== 'uac-policy';
+
+/* ---- item lists (menu / toolbar / section items): an array of plain objects is edited row by row ---- */
+export type Item = Record<string, unknown>;
+const isItem = (v: unknown): v is Item => typeof v === 'object' && v !== null && !Array.isArray(v);
+/** A list the item editor can take: an array whose entries are all plain objects (an empty list counts when its key names items). */
+export const isItemList = (key: string, v: unknown): v is Item[] => Array.isArray(v) && (v.length ? v.every(isItem) : /^(items|sections|children|buttons|entries)$/.test(key));
+/** Columns shown for a list: id, label always; icon, action, view, divider when any entry (or none yet) uses them. */
+export function itemColumns(list: readonly Item[]): string[] {
+  const used = new Set(list.flatMap((it) => Object.keys(it)));
+  const cols = ['id', 'label'];
+  // icon / action / view / divider only when the list uses them (all of them for an empty list)
+  for (const k of ['icon', 'action', 'view', 'divider']) if (!list.length || used.has(k)) cols.push(k);
+  if (!cols.includes('action') && !cols.includes('view')) cols.splice(3, 0, 'action'); // every row gets a target
+  return cols;
+}
+/** Keys of an item that hold a nested item list (children, a section's items). */
+export const nestedKeys = (it: Item): string[] => Object.keys(it).filter((k) => isItemList(k, it[k]));
+/** A new entry shaped like its siblings: a fresh unique id, a label, and the same nested lists empty. */
+export function newItem(list: readonly Item[]): Item {
+  const ids = list.map((it) => String(it.id ?? ''));
+  let n = list.length + 1;
+  while (ids.includes(`item-${n}`)) n++;
+  const it: Item = { id: `item-${n}`, label: `Item ${n}` };
+  const proto = list[list.length - 1];
+  if (proto) for (const k of nestedKeys(proto)) it[k] = [];
+  return it;
+}
+/** Move an entry from one index to another (out-of-range moves are a no-op). */
+export function moveItem<T>(list: readonly T[], from: number, to: number): T[] {
+  if (from < 0 || to < 0 || from >= list.length || to >= list.length || from === to) return [...list];
+  const out = [...list];
+  const [x] = out.splice(from, 1);
+  out.splice(to, 0, x!);
+  return out;
+}

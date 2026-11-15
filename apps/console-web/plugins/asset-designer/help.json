@@ -14,6 +14,7 @@
     "entries": [
       { "target": "view:asset-designer", "title": "Asset designer", "text": "Design any asset type without code: pick the type, open a saved asset or start a new one, fill in its fields, and save once the validation gate is clean.", "kind": "screen" },
       { "target": "asset-designer", "title": "Asset designer settings", "text": "The designer's own settings under Settings → Plugins: the type it opens on and whether live preview starts on." },
+      { "target": "item-list", "title": "Item list", "text": "Menu, toolbar and section items row by row: id, label, icon and what it opens (an action from the app, or a view). Arrows reorder, the bin removes, Add appends one shaped like the others; nested lists (a section's items, children) open underneath. The JSON button switches the list back to raw JSON for anything else on an item." },
       { "target": "asset-type", "title": "Asset type", "text": "Every asset type the framework registers, grouped. Changing it starts a blank asset of that type." },
       { "target": "open", "title": "Open", "text": "The assets you have saved of this type. Pick one to edit it, or New asset to start again." },
       { "target": "start-from", "title": "Start from", "text": "Copies a built-in asset of this type into a new draft so you can change it. The built-in itself is never touched." },

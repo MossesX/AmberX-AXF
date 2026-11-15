@@ -3,7 +3,8 @@ import { AssetPreview, Button, Chip, ColorField, Container, Note, SelectField, S
 import { CHROME_FIELDS, CHROME_TYPES, assetTypeSpecs, chromeLabel, chromeSettingsDefaultId, isChromeType, validateAsset, type AssetEnvelope, type AssetType } from '@console/axf/core';
 import { ORIGIN, call, del, post, type SavedAsset } from './api';
 import { onIntent, takeIntent, type Intent } from './intent';
-import { PREVIEW_PREFIX, chromeTypeOfSettings, defaultOf, fieldsFor, gate, newAsset, parseJson, previewable, starterFor, stripDesigned, suggestId, typeOptions, type ChromeFields, type Draft, type FieldDef, type Spec } from './model';
+import { ItemList } from './ItemList';
+import { PREVIEW_PREFIX, chromeTypeOfSettings, defaultOf, fieldsFor, gate, isItemList, newAsset, parseJson, previewable, starterFor, stripDesigned, suggestId, typeOptions, type ChromeFields, type Draft, type FieldDef, type Spec } from './model';
 
 /*
  * The designer: one screen for every asset type. Pick a type, open a saved asset or start a new one (blank or from a
@@ -38,6 +39,7 @@ export function Designer() {
   const [jsonDrafts, setJsonDrafts] = useState<Record<string, { text: string; error: string }>>({});
   const [live, setLiveState] = useState(() => rt.settings.get(LIVE_KEY) === true);
   const [busy, setBusy] = useState(false);
+  const [rawFields, setRawFields] = useState<Record<string, boolean>>({});
   const [note, setNote] = useState<{ tone: 'info' | 'success' | 'warning' | 'danger'; text: string } | null>(null);
   const prevActive = useRef<{ type: string; id: string } | null>(null);
 
@@ -79,7 +81,7 @@ export function Designer() {
 
   /* ---- open / new / type ---- */
   const openDraft = useCallback((a: Draft, fresh: boolean) => {
-    setAsset(a); setIsNew(fresh); setJsonText(pretty(a.data)); setJsonError(''); setJsonDrafts({}); setNote(null);
+    setAsset(a); setIsNew(fresh); setJsonText(pretty(a.data)); setJsonError(''); setJsonDrafts({}); setRawFields({}); setNote(null);
     if (a.type !== type) { setTypeState(a.type); rt.settings.set(TYPE_KEY, a.type); }
   }, [type, rt]);
   const startNew = useCallback((t: string, from?: Record<string, unknown>, name = '') => {
@@ -174,6 +176,13 @@ export function Designer() {
       case 'color': return <ColorField key={f.key} label={f.label} value={typeof v === 'string' ? v : ''} onChange={(x) => setData(f.key, x || undefined)} hint={hint} error={err} />;
       case 'json': {
         const d = jsonDrafts[f.key];
+        const listV = v === undefined && !f.object ? [] : v;
+        if (!d && !rawFields[f.key] && isItemList(f.key, listV)) return (
+          <div key={f.key} className="axp-asset-designer__json">
+            <ItemList label={f.label} value={listV} onChange={(x) => setData(f.key, x)} error={err} />
+            <Button size="sm" icon="code" onClick={() => setRawFields((r) => ({ ...r, [f.key]: true }))}>Edit {f.label.toLowerCase()} as JSON</Button>
+          </div>
+        );
         return <div key={f.key} className="axp-asset-designer__json"><TextField label={f.label} mono rows={Math.min(14, Math.max(3, (d?.text ?? pretty(v ?? defaultOf(f))).split('\n').length))} value={d?.text ?? (v === undefined ? '' : pretty(v))} onChange={(x) => setJsonField(f, x)} hint={hint} error={d?.error ? `JSON: ${d.error}` : err} placeholder={f.object ? '{ }' : '[ ]'} /></div>;
       }
       default: return <TextField key={f.key} label={f.label} value={typeof v === 'string' ? v : v === undefined ? '' : String(v)} onChange={(x) => setData(f.key, x === '' && !f.required ? undefined : x)} hint={hint} error={err} />;

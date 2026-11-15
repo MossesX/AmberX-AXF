@@ -16,3 +16,9 @@
 .axp-asset-designer__preview { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0 }
 .axp-asset-designer__previewbox { padding: var(--fx-dens-gap-md); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); overflow: auto; min-width: 0 }
 :where([data-fx-medium]) .axp-asset-designer__actions { margin-left: 0 }
+.axp-asset-designer__items { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0 }
+.axp-asset-designer__items[data-depth]:not([data-depth="0"]) { padding-left: var(--fx-dens-gap-lg); border-left: var(--fx-border-w) solid var(--fx-border) }
+.axp-asset-designer__itemshead { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) }
+.axp-asset-designer__item { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0 }
+.axp-asset-designer__itemrow { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 18), 1fr)) auto; gap: var(--fx-dens-gap-sm); align-items: end; min-width: 0 }
+.axp-asset-designer__itemtools { display: flex; align-items: center; gap: var(--fx-dens-gap-xs) }

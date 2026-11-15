@@ -13,7 +13,7 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
-import { fieldsFor, starterFor, gate, newAsset, stripDesigned, parseJson, typeOptions, suggestId, fieldOfError, labelOf, rootKey, previewable, chromeTypeOfSettings, type Spec, type ChromeFields } from './web/model.ts';
+import { fieldsFor, starterFor, gate, newAsset, stripDesigned, parseJson, typeOptions, suggestId, fieldOfError, labelOf, rootKey, previewable, chromeTypeOfSettings, isItemList, itemColumns, nestedKeys, newItem, moveItem, type Spec, type ChromeFields } from './web/model.ts';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, '..', '..', '..', '..');
@@ -121,6 +121,17 @@ const ch = run('chrome', {});
 check('chrome: tab-group and toolbar fields + defaults', ch.ok && ch.fields['tab-group'].length >= 12 && ch.fields.toolbar.length >= 7 && ch.defaults.toolbar === 'chrome-toolbar');
 const ty = run('types', {});
 check('types: every registry type listed (the build engine may register more)', ty.ok && types.every((t) => ty.items.some((i: { type: string }) => i.type === t)), ty.items?.length);
+
+// item lists: menu / toolbar / section items edited row by row
+const navItems = [{ id: 'home', label: 'Home', icon: 'home', view: 'home' }, { id: 'apps', label: 'Apps', icon: 'download', view: 'apps' }];
+check('item list: array of objects is a list, mixed / scalar arrays are not', isItemList('items', navItems) && !isItemList('tags', ['a']) && !isItemList('items', [1, {}]));
+check('item list: empty list only when the key names items', isItemList('items', []) && isItemList('sections', []) && !isItemList('tags', []));
+check('item columns: view list gets id/label/icon/view, no action column', JSON.stringify(itemColumns(navItems)) === JSON.stringify(['id', 'label', 'icon', 'view']));
+check('item columns: a list with no target gets an action column', itemColumns([{ id: 'a', label: 'A' }]).includes('action'));
+check('nested keys: a section exposes its items', JSON.stringify(nestedKeys({ label: 'Make', items: navItems })) === '["items"]');
+const added = newItem([{ id: 'item-2', label: 'x', children: [{ id: 'c', label: 'c' }] }]);
+check('new item: fresh id, nested lists copied empty', added.id === 'item-3' && Array.isArray(added.children) && (added.children as unknown[]).length === 0, added);
+check('move item: swaps and ignores out-of-range', moveItem([1, 2, 3], 2, 0).join() === '3,1,2' && moveItem([1, 2], 0, 5).join() === '1,2');
 
 console.log(fails ? `\n${fails} check(s) failed` : '\nall checks passed');
 process.exit(fails ? 1 : 0);
