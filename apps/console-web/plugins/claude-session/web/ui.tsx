@@ -213,7 +213,7 @@ const RECORDING: Record<string, string> = { asked: 'recording asked for', joined
 /** A session's recording: its state, and a way to its transcripts (the recorder page searches by the session's group). */
 function RecordingLink({ rec }: { rec: SessionRecording }) {
   const rt = useRuntime();
-  const open = () => { rt.settings.set('axf.output-recorder.find', rec.group); rt.dispatch('nav:output-recorder'); };
+  const open = () => { rt.settings.set('axf.phone-recorder.find', rec.group); rt.dispatch('nav:phone-recorder'); };
   return <> · <span title={rec.message}>{RECORDING[rec.state] ?? rec.state}</span>{(rec.state === 'asked' || rec.state === 'joined') && <Button size="sm" tone="quiet" icon="file" onClick={open}>Transcript</Button>}</>;
 }
 

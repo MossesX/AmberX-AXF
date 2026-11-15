@@ -72,4 +72,4 @@ No model is ever called (test: `python3 apps/console-web/plugins/claude-session/
 `session-start` asks AmberX's recorder to start for voice, chat and code sessions, off the request, so a session never
 waits on the phone (`server/recording.py`). The state lands on the session as `recording` {state: asked | joined |
 phone-offline | failed, name, group}, shown in Recent sessions with a Transcript button. Sessions no longer call
-`amberx.recorder_start` themselves. Setting: `recording.autoStart`.
+`phone.recorder_start` themselves (through the capability `axf.phone-recorder@1`). Setting: `recording.autoStart`.

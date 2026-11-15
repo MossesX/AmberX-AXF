@@ -259,6 +259,20 @@ ok(rec.stop({"id": "a", "recording": {"state": "joined", "group": "g"}}, []) is 
 phone_calls.clear()
 ok(rec.stop({"id": "a", "recording": {"state": "asked", "group": "g"}}, [{"id": "b", "status": "set", "recording": {"state": "joined", "group": "g"}}]) is False and not phone_calls, "someone else is on it: keeps recording")
 ok(rec.stop({"id": "a", "recording": {"state": "asked", "group": "g"}}, []) is True and phone_calls[-1]["tool"] == rec.STOP, "the owner ending stops it")
+# ---- through the capability axf.phone-recorder@1 (Phone Connect), never a folder name
+cap_calls: list = []
+plugin_services.provide("axf.phone-recorder@1", types.SimpleNamespace(
+    status=lambda: {"device": "phone-0123456789abcdef", "online": True, "running": False},
+    start=lambda name, group="", note="", reason=None: cap_calls.append(("start", name, group, reason)) or {"state": "asked"},
+    stop=lambda: cap_calls.append(("stop",)) or {"state": "queued"}), "phone-recorder-test")
+phone_calls.clear()
+rec._last_ask.update(at=0.0, session="")
+c.post(f"{B}/session-start", json={"client": "voice", "summary": "Through the capability", "session": "rec-cap-6"})
+got = recording_of("rec-cap-6")
+ok(got.get("state") == "asked" and cap_calls and cap_calls[0][0] == "start" and cap_calls[0][2] == "rec-cap-6", f"the provider is asked, with the session as its group ({cap_calls})")
+ok(not [a for a in phone_calls if a["tool"] == rec.START], "with a provider the old hub tool is not called")
+ok(rec.stop({"id": "rec-cap-6", "recording": got}, []) is True and cap_calls[-1] == ("stop",), "the provider stops it")
+plugin_services._services.pop("axf.phone-recorder@1", None)
 plugin_services.provide("axf.claude-settings@1", types.SimpleNamespace(get=lambda: {"settings": [{"key": "recording.autoStart", "value": False}]}), "claude-settings")
 phone_calls.clear()
 c.post(f"{B}/session-start", json={"client": "voice", "session": "rec-off-6"})

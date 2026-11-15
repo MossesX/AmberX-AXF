@@ -366,7 +366,7 @@ export function clock(seconds: number): string {
 }
 
 /** The setting another plugin sets before opening this page: a search to run there (a session's group), once. */
-export const FIND_KEY = 'axf.output-recorder.find';
+export const FIND_KEY = 'axf.phone-recorder.find';
 
 /* ---------------------------------------------------------------- the hub client (the page's own hub session) */
 
