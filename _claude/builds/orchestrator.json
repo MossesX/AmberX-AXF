@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T01:28:50.697Z",
+ "updatedAt": "2026-11-15T01:29:04.610Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -139345,7 +139345,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-15T01:27:58.940Z",
+   "updatedAt": "2026-11-15T01:28:34.855Z",
    "builtAt": "",
    "notes": [
     {
@@ -139580,8 +139580,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T01:28:34.855Z",
      "note": "",
      "uid": "st-mwfw6hyo016iwo",
      "createdAt": "2026-11-14T04:14:48.213Z"
