@@ -291,6 +291,42 @@
         "title": "Set for all",
         "text": "Gives every build of the group the priority picked next to it (Urgent, High, Normal, Low).",
         "kind": "button"
+      },
+      {
+        "target": "auto-lander",
+        "title": "Auto-lander",
+        "text": "The one On/Off the auto-lander's cron reads every 3 minutes. Off: the next run stops at once and nothing lands. On: it lands what is ready, in the order of the landing line.",
+        "kind": "toggle"
+      },
+      {
+        "target": "landing-mode",
+        "title": "Landing mode",
+        "text": "Serial lands one PR at a time, tested on the real main it will sit on; a red one only kicks itself. Merge queue uses the configured queue (batches or a stack).",
+        "kind": "control"
+      },
+      {
+        "target": "put-back",
+        "title": "Put back",
+        "text": "Puts a skipped PR back in the landing line.",
+        "kind": "button"
+      },
+      {
+        "target": "skip",
+        "title": "Skip",
+        "text": "Takes this PR out of the landing line until you put it back. Asks first.",
+        "kind": "button"
+      },
+      {
+        "target": "land-now",
+        "title": "Land now",
+        "text": "Moves this PR to the head of the landing line and starts a run at once. Asks first.",
+        "kind": "button"
+      },
+      {
+        "target": "move-up",
+        "title": "Move up",
+        "text": "Moves this PR one place up in the landing line.",
+        "kind": "button"
       }
     ],
     "intros": []

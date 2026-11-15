@@ -9617,7 +9617,8 @@
       ],
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=push-banner",
       "provides": [
-        "service:axf.merge-queue@1"
+        "service:axf.merge-queue@1",
+        "service:auto-lander@1"
       ],
       "requires": [],
       "optional": [
