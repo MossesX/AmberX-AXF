@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5995,
- "updatedAt": "2026-11-15T04:25:04.373Z",
+ "rev": 5996,
+ "updatedAt": "2026-11-15T04:25:23.918Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -229740,7 +229740,7 @@
    "title": "Move build orchestrator to axHub",
    "category": "",
    "detail": "Move the entire build orchestrator (queue, pending, splitter, dispatcher/pipeline tick, reconciler, slots, accounts, builds store, notes, steps, landing) out of the console plugin and into axHub (MossesX/axHub), running on the VPS, so builds are managed whether the console is up or not. Staged so nothing breaks mid-flight: (1) Run AFTER auto-lander-controls-in-the-gate-plugin lands (gate + merge queue already in axHub). (2) Stand up the axHub orchestrator service reading the SAME builds store (_claude/builds/*), in shadow mode: it computes what it would launch/land but doesn't act; compare with the console for a while. (3) Cut over: axHub owns the dispatcher, reconciler, splitter and lander; the console's cron/plugin stops acting. (4) Build the full orchestrator UI as axHub screens (all tabs: Pending, Queue, Active, Built, Complete, Errors, Archive, settings, slots, accounts) with every action. (5) axHub tools (orchestrator.*) for Claude, MCP and voice: file a build, note, status, step, approve, land, etc.; today's axf-console.build_orchestrator_pipeline_request and planner.builds callers get equivalent axHub tools. (6) Console keeps only a read-only mirror or a link to the axHub page, then the console plugin is retired. Fix on the way: phase-end builds must never get parked in Pending (reconciler bug), dispatcher alerts link format. No build or data lost; all history migrated. Tests, help, Shipped features.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -229748,7 +229748,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T04:20:19.690Z",
-   "updatedAt": "2026-11-15T04:24:53.940Z",
+   "updatedAt": "2026-11-15T04:25:13.810Z",
    "builtAt": "",
    "notes": [
     {
@@ -229772,16 +229772,20 @@
      "at": "2026-11-15T04:23:02.532Z"
     },
     {
-     "text": "Waiting: pre-flight gate (s1) not met. Prerequisite build auto-lander-controls-in-the-gate-plugin is still running (no PR, not built), so the gate and merge queue are not yet in the axf-orchestrator container / axHub. s1 left open; re-run once that build has landed.",
-     "at": "2026-11-15T04:24:53.940Z"
-    },
-    {
      "text": "Dispatch gate: move-build-orchestrator-to-axhub still has axf-move-build-orchestrator-to-axhub--joey alive: not launched again, tracking that session.",
      "at": "2026-11-15T04:24:09.856Z"
     },
     {
      "text": "Brett (now) FINAL LAYOUT, overrides earlier notes on where the UI lives: (1) Private container 'axf-orchestrator' does ALL the work: orchestrator, dispatcher, reconciler, splitter, gate rules, merge queue/auto-lander. No public port, no DNS. (2) axHub only ROUTES: holds credentials, MCP tools for Claude (orchestrator.*, gate.*, lander.*), approvals/veto, service connections; it forwards to the container over the internal Docker network. axHub gets NO new screens. (3) The SCREENS live in the console (orchestrator tabs, gate rules tabs, Auto-lander/Merge queue tab), talking to the container through axHub. If the console breaks, building and landing keep running and Claude can still control everything via axHub tools.",
      "at": "2026-11-15T04:24:35.073Z"
+    },
+    {
+     "text": "Session stopped on its own with 37 steps left: back in Pending for Brett.",
+     "at": "2026-11-15T04:25:13.810Z"
+    },
+    {
+     "text": "Waiting: pre-flight gate (s1) not met. Prerequisite build auto-lander-controls-in-the-gate-plugin is still running (no PR, not built), so the gate and merge queue are not yet in the axf-orchestrator container / axHub. s1 left open; re-run once that build has landed.",
+     "at": "2026-11-15T04:24:53.940Z"
     }
    ],
    "approvals": [],
@@ -229807,7 +229811,14 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-15T04:25:11.208Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 37,
+     "account": "",
+     "session": "axf-move-build-orchestrator-to-axhub--joey"
+    },
     "split": {
      "at": "2026-11-15T04:22:44.529Z",
      "by": "orchestrator",
@@ -229816,7 +229827,7 @@
      "note": "Split by Claude into 37 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session stopped on its own with 37 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -230768,7 +230779,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
