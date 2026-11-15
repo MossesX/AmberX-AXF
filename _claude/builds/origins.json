@@ -1243,6 +1243,18 @@
    "from": "",
    "addenda": []
   },
+  "axf-data-postgres-real-tables-own": {
+   "said": "Yeah, I want to migrate everything to a database in its own container. Land it, and then follow it up with Postgres.",
+   "at": "2026-11-15T15:12:29.907Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "axf-molly-container-orchestrator-gate": {
    "said": "Yes do those containers and wire them and migrate everything asap. Molly's gonna run the orchestrator from now on, so let's name it AXF Molly.",
    "at": "2026-11-15T12:20:29.383Z",

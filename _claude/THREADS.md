@@ -807,7 +807,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 01:21 UTC · `launch-landing-page-waitlist-referral` note (all) · orchestrator
 - 2026-11-15 01:22 UTC · `context-menus-plugin-one-true-source` s5 done (all) · orchestrator
 - 2026-11-15 01:21 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
 - 2026-11-15 01:22 UTC · `prompting-engine-control-panel-events` note (all) · orchestrator
@@ -1207,6 +1206,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 15:11 UTC · `shipped-features-open-button-views-each` s10 done (all) · orchestrator
 - 2026-11-15 15:11 UTC · `phone-connect-small-android-companion` note (all) · reconciler
 - 2026-11-15 15:11 UTC · `shipped-features-open-button-views-each` s11 done (all) · orchestrator
+- 2026-11-15 15:12 UTC · `axf-data-postgres-real-tables-own` added (0 steps) (all) · console
 
 ## Token passes (log)
 
