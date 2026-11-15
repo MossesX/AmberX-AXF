@@ -5,12 +5,12 @@
     "views": 64,
     "nav": 16,
     "tabGroups": 25,
-    "tabs": 86,
-    "settingsTabs": 70,
-    "settings": 87,
-    "functions": 246,
+    "tabs": 74,
+    "settingsTabs": 71,
+    "settings": 89,
+    "functions": 262,
     "buttons": 62,
-    "plugins": 69
+    "plugins": 70
   },
   "views": [
     {
@@ -363,13 +363,14 @@
         "hold",
         "on hold",
         "restore",
+        "groups",
+        "custom groups",
+        "custom tabs",
         "accounts",
         "health",
         "fable",
         "opus",
-        "steps",
-        "phases",
-        "approve model"
+        "steps"
       ],
       "source": "plugin",
       "plugin": "ai.amberx.axf.console.build-orchestrator"
@@ -1347,69 +1348,8 @@
       "view": "build-orchestrator",
       "plugin": "ai.amberx.axf.console.build-orchestrator",
       "file": "plugins/build-orchestrator/web/ui.tsx",
-      "line": 97,
-      "tabs": [
-        {
-          "address": "view:build-orchestrator/tab:build-orchestrator.tabs=pending",
-          "value": "pending",
-          "label": "Pending"
-        },
-        {
-          "address": "view:build-orchestrator/tab:build-orchestrator.tabs=queue",
-          "value": "queue",
-          "label": "Queue"
-        },
-        {
-          "address": "view:build-orchestrator/tab:build-orchestrator.tabs=active",
-          "value": "active",
-          "label": "Active"
-        },
-        {
-          "address": "view:build-orchestrator/tab:build-orchestrator.tabs=incomplete",
-          "value": "incomplete",
-          "label": "Incomplete"
-        },
-        {
-          "address": "view:build-orchestrator/tab:build-orchestrator.tabs=complete",
-          "value": "complete",
-          "label": "Complete"
-        },
-        {
-          "address": "view:build-orchestrator/tab:build-orchestrator.tabs=errors",
-          "value": "errors",
-          "label": "Errors"
-        },
-        {
-          "address": "view:build-orchestrator/tab:build-orchestrator.tabs=archive",
-          "value": "archive",
-          "label": "Archive"
-        },
-        {
-          "address": "view:build-orchestrator/tab:build-orchestrator.tabs=deleted",
-          "value": "deleted",
-          "label": "Deleted"
-        },
-        {
-          "address": "view:build-orchestrator/tab:build-orchestrator.tabs=accounts",
-          "value": "accounts",
-          "label": "Accounts"
-        },
-        {
-          "address": "view:build-orchestrator/tab:build-orchestrator.tabs=builds",
-          "value": "builds",
-          "label": "All builds"
-        },
-        {
-          "address": "view:build-orchestrator/tab:build-orchestrator.tabs=approvals",
-          "value": "approvals",
-          "label": "Approvals"
-        },
-        {
-          "address": "view:build-orchestrator/tab:build-orchestrator.tabs=rules",
-          "value": "rules",
-          "label": "Rules"
-        }
-      ]
+      "line": 115,
+      "tabs": []
     },
     {
       "address": "tab:terminal.panes",
@@ -2193,6 +2133,13 @@
       "plugin": "ai.amberx.axf.console.voice-notes"
     },
     {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=wake-listener",
+      "id": "wake-listener",
+      "label": "Wake listener",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.wake-listener"
+    },
+    {
       "address": "view:settings/tab:settings.tabs=alerts",
       "id": "alerts",
       "label": "Alerts",
@@ -2563,6 +2510,36 @@
       "runs": "console",
       "plugin": "ai.amberx.axf.console.molly-guide",
       "file": "plugins/molly-guide/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=wake-listener/setting:axf.voice.useClaude",
+      "kind": "setting",
+      "label": "Understand with Claude when connected",
+      "key": "axf.voice.useClaude",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Wake listener",
+      "keywords": [
+        "axf.voice.useClaude",
+        "Wake listener"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=wake-listener/setting:axf.voice.claudeTimeoutSec",
+      "kind": "setting",
+      "label": "Wait for Claude (seconds)",
+      "key": "axf.voice.claudeTimeoutSec",
+      "type": "number",
+      "detail": "Settings › Plugins › Wake listener",
+      "keywords": [
+        "axf.voice.claudeTimeoutSec",
+        "Wake listener"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
     },
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ashes/setting:axf.ashes.on",
@@ -4388,6 +4365,71 @@
         "tab"
       ],
       "effect": "navigate",
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/index.tsx"
+    },
+    {
+      "address": "function:build-orchestrator.groups",
+      "kind": "function",
+      "id": "build-orchestrator.groups",
+      "label": "Build orchestrator: the Groups board, or one group's tab",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "build-orchestrator.groups",
+        "build",
+        "orchestrator",
+        "groups"
+      ],
+      "effect": "navigate",
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/index.tsx"
+    },
+    {
+      "address": "function:build-orchestrator.group-add",
+      "kind": "function",
+      "id": "build-orchestrator.group-add",
+      "label": "Build orchestrator: put builds in a group (<group>|<build>,<build>)",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "build-orchestrator.group-add",
+        "build",
+        "orchestrator",
+        "group",
+        "add"
+      ],
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/index.tsx"
+    },
+    {
+      "address": "function:build-orchestrator.group-remove",
+      "kind": "function",
+      "id": "build-orchestrator.group-remove",
+      "label": "Build orchestrator: take builds out of a group (<group>|<build>,<build>)",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "build-orchestrator.group-remove",
+        "build",
+        "orchestrator",
+        "group",
+        "remove"
+      ],
+      "destructive": true,
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/index.tsx"
+    },
+    {
+      "address": "function:build-orchestrator.group-action",
+      "kind": "function",
+      "id": "build-orchestrator.group-action",
+      "label": "Build orchestrator: a group action (<group>|queue, land, archive or priority:P0)",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "build-orchestrator.group-action",
+        "build",
+        "orchestrator",
+        "group",
+        "action"
+      ],
       "plugin": "ai.amberx.axf.console.build-orchestrator",
       "file": "plugins/build-orchestrator/web/index.tsx"
     },
@@ -6590,6 +6632,203 @@
       ],
       "plugin": "ai.amberx.axf.console.ui-review",
       "file": "plugins/ui-review/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.on",
+      "kind": "function",
+      "id": "wake-listener.on",
+      "label": "Wake listener on",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.on",
+        "wake",
+        "listener",
+        "on"
+      ],
+      "effect": "write",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.off",
+      "kind": "function",
+      "id": "wake-listener.off",
+      "label": "Wake listener off",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.off",
+        "wake",
+        "listener",
+        "off"
+      ],
+      "effect": "write",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.toggle",
+      "kind": "function",
+      "id": "wake-listener.toggle",
+      "label": "Wake listener on / off",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.toggle",
+        "wake",
+        "listener",
+        "toggle"
+      ],
+      "effect": "write",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.heard",
+      "kind": "function",
+      "id": "wake-listener.heard",
+      "label": "Say a phrase to the console (as if the mic heard it)",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.heard",
+        "wake",
+        "listener",
+        "heard"
+      ],
+      "effect": "write",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.approvals",
+      "kind": "function",
+      "id": "wake-listener.approvals",
+      "label": "Review approvals by voice",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.approvals",
+        "wake",
+        "listener",
+        "approvals"
+      ],
+      "effect": "write",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.wizard",
+      "kind": "function",
+      "id": "wake-listener.wizard",
+      "label": "Start a spoken wizard for a command",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.wizard",
+        "wake",
+        "listener",
+        "wizard"
+      ],
+      "effect": "write",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.cancel",
+      "kind": "function",
+      "id": "wake-listener.cancel",
+      "label": "Cancel the spoken wizard",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.cancel",
+        "wake",
+        "listener",
+        "cancel"
+      ],
+      "effect": "write",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.history",
+      "kind": "function",
+      "id": "wake-listener.history",
+      "label": "Voice command history (filter: claude or scripted)",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.history",
+        "wake",
+        "listener",
+        "history"
+      ],
+      "effect": "navigate",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:voice.useClaude",
+      "kind": "function",
+      "id": "voice.useClaude",
+      "label": "Claude mode for voice (on, off or toggle)",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "voice.useClaude",
+        "voice",
+        "useClaude"
+      ],
+      "effect": "write",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:voice.understand.test",
+      "kind": "function",
+      "id": "voice.understand.test",
+      "label": "Test Claude mode on a phrase (dry run)",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "voice.understand.test",
+        "voice",
+        "understand",
+        "test"
+      ],
+      "effect": "read",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.show",
+      "kind": "function",
+      "id": "wake-listener.show",
+      "label": "Open the wake listener at: claude, mode or history[:claude|scripted]",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.show",
+        "wake",
+        "listener",
+        "show"
+      ],
+      "effect": "navigate",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.open",
+      "kind": "function",
+      "id": "wake-listener.open",
+      "label": "Wake listener settings",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.open",
+        "wake",
+        "listener",
+        "open"
+      ],
+      "effect": "navigate",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
     },
     {
       "address": "function:whats-shipped.open",
@@ -9924,6 +10163,32 @@
       "provides": [],
       "requires": [],
       "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.wake-listener",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.wake-listener",
+      "label": "Wake listener",
+      "folder": "wake-listener",
+      "version": "0.2.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "wake-listener",
+        "Wake listener",
+        "An always-on wake-word listener for the console and the console Android app"
+      ],
+      "aliases": [
+        "wake-listener",
+        "wake listener"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=wake-listener",
+      "provides": [
+        "service:axf.wake-listener@1"
+      ],
+      "requires": [],
+      "optional": [
+        "service:axf.speech@1"
+      ]
     },
     {
       "address": "plugin:ai.amberx.axf.console.whats-shipped",

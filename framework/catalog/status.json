@@ -140,12 +140,6 @@
     "module": "axf-kernel",
     "notes": "component-tokens@1 (Nov 13 2026, build own-token-sets-for-grids-and-tab-groups): grids / tables (--fx-grid-*, 32 tokens) and tab groups (--fx-tab-*, 58 tokens) have their own token families (core/engines/component-tokens.mjs: kind, level, description, default = today's general token), set by the style theme (grid.* / tabs.*), control@1 tokens.style, and per instance (axf.tokens.instances, tokens.instances; Restore previous edit / Restore from axHub). CI spec/check-component-tokens.mjs. Kotlin twin deferred."
   },
-  "f.tokenregistry": {
-    "status": "built",
-    "wave": 1,
-    "module": "axf-kernel",
-    "notes": "Build token-registry-skin-editor-live-sandbox (Nov 13 2026): framework/schemas/token-registry.json, spec/check-token-registry.mjs, console plugin skin-editor (web + Python twin), REST / MCP / CLI / voice. Kotlin twin deferred (PORTING.md)."
-  },
   "f.locals": {
     "status": "built",
     "wave": 1,
@@ -2306,6 +2300,18 @@
     "wave": 1,
     "module": "app-console",
     "notes": "context-lead@1: rt.contextExtras keys '^:<name>' lead every context menu above one separator (core/engines/windows.ts withContextLead, react Overlays ContextMenuHost; any target, even contributions:false, right-click and long-press). The console registers Console settings (app.settings, folding the asset's own Settings in) plus console.settings.open for search, voice, MCP and CLI; help entries; checks spec/check-context-lead.mts + apps/console-web/scripts/console-settings-menu.mts. Kotlin twin deferred."
+  },
+  "cx.buildengine.groups": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "build-groups@1 (the build orchestrator plugin: groups-core.mjs rules, groups.mjs CLI): groups per project in <pipeline dir>/groups.json; hand-picked members (drag, select, voice, API) plus smart rules (title contains, more than N behind main, filed in the last N days, states, priorities); state order partial, pending, queued, running, failed, done, landed with counts, sort and filter; a group pinned as a tab sits next to its stage tab (group:<id>); group actions queue, land (Urgent in the merge queue), archive, priority. REST /groups, plugin commands groups-* (MCP, CLI axf build-orchestrator, control@1 plugins.commands), console actions build-orchestrator.groups / group-add / group-remove / group-action. Kotlin twin deferred."
+  },
+  "f.tokenregistry": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel",
+    "notes": "Build token-registry-skin-editor-live-sandbox (Nov 13 2026): framework/schemas/token-registry.json, spec/check-token-registry.mjs, console plugin skin-editor (web + Python twin), REST / MCP / CLI / voice. Kotlin twin deferred (PORTING.md)."
   },
   "cx.skin.animations": {
     "status": "built",
