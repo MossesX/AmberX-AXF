@@ -35,6 +35,90 @@
     },
     {
       "$axf": "build-rule@1",
+      "id": "plugin-help-stub",
+      "title": "Every plugin has its help screen entry, written by the VPS",
+      "text": "Every plugin ships help.json with its screen entry (view:<plugin>). The VPS writes a missing one from plugin.json's name and description after the build (fixer help-stub).",
+      "doer": "vps",
+      "kind": "mechanical",
+      "phase": "after",
+      "enabled": true,
+      "check": "fixer:help-stub",
+      "autofix": "help-stub",
+      "briefBlock": "rules",
+      "applies": "builds",
+      "when": {},
+      "sources": [
+        {
+          "source": "brett:2026-11-15T13:23:46Z",
+          "file": "",
+          "line": 0,
+          "text": "Remove everything for all the builders from Claude so it don't happen twice and put them all in that plugin.",
+          "pass": 2
+        }
+      ],
+      "rev": 1,
+      "createdAt": "2026-11-15T14:30:00Z",
+      "updatedAt": "2026-11-15T14:30:00Z",
+      "updatedBy": "migration"
+    },
+    {
+      "$axf": "build-rule@1",
+      "id": "api-parity-scaffold",
+      "title": "Every plugin action is on REST, MCP, CLI and voice",
+      "text": "Every command a plugin declares has its REST handler, so MCP and the CLI reach it through plugin-commands, and a plugin with a page registers console actions for voice. The VPS checks it at the gate and scaffolds the missing parts (fixer api-parity).",
+      "doer": "vps",
+      "kind": "mechanical",
+      "phase": "gate",
+      "enabled": true,
+      "check": "fixer:api-parity",
+      "autofix": "api-parity",
+      "briefBlock": "rules",
+      "applies": "builds",
+      "when": {},
+      "sources": [
+        {
+          "source": "brett:2026-11-15T13:23:46Z",
+          "file": "",
+          "line": 0,
+          "text": "Remove everything for all the builders from Claude so it don't happen twice and put them all in that plugin.",
+          "pass": 2
+        }
+      ],
+      "rev": 1,
+      "createdAt": "2026-11-15T14:30:00Z",
+      "updatedAt": "2026-11-15T14:30:00Z",
+      "updatedBy": "migration"
+    },
+    {
+      "$axf": "build-rule@1",
+      "id": "ci-checks",
+      "title": "The rule check commands pass before landing",
+      "text": "Every enabled rule's check command (check-theme, check-controls, check-toolbars, …) runs on the VPS under the heavy lock before the PR lands (fixer run-ci-checks).",
+      "doer": "vps",
+      "kind": "mechanical",
+      "phase": "gate",
+      "enabled": true,
+      "check": "fixer:run-ci-checks",
+      "autofix": "",
+      "briefBlock": "rules",
+      "applies": "builds",
+      "when": {},
+      "sources": [
+        {
+          "source": "brett:2026-11-15T13:23:46Z",
+          "file": "",
+          "line": 0,
+          "text": "Remove everything for all the builders from Claude so it don't happen twice and put them all in that plugin.",
+          "pass": 2
+        }
+      ],
+      "rev": 1,
+      "createdAt": "2026-11-15T14:30:00Z",
+      "updatedAt": "2026-11-15T14:30:00Z",
+      "updatedBy": "migration"
+    },
+    {
+      "$axf": "build-rule@1",
       "id": "claude-settings-first",
       "title": "Read Claude settings first and follow them",
       "text": "Claude settings (Brett, Nov 3 2026): at session start and before acting, read Claude settings (`claude_settings_get`, or `node apps/console-web/plugins/claude-settings/claude-settings.mjs get`) and follow them. Owner-only ones (No wait, Include irreversible, launch without asking, default model, UI Review gate, raising caps) change only with Brett's own click in the console.",
@@ -127,8 +211,8 @@
       "kind": "mechanical",
       "phase": "after",
       "enabled": true,
-      "check": "",
-      "autofix": "",
+      "check": "fixer:tracker-threads",
+      "autofix": "tracker-threads",
       "briefBlock": "rules",
       "applies": "all",
       "when": {},
@@ -836,7 +920,7 @@
       "phase": "after",
       "enabled": true,
       "check": "store:builds-live",
-      "autofix": "builds-live-link",
+      "autofix": "pr-open-link",
       "briefBlock": "rules",
       "applies": "builds",
       "when": {},
@@ -914,8 +998,8 @@
       "kind": "mechanical",
       "phase": "after",
       "enabled": true,
-      "check": "",
-      "autofix": "",
+      "check": "fixer:shipped-features",
+      "autofix": "shipped-features",
       "briefBlock": "rules",
       "applies": "builds",
       "when": {},
@@ -3970,6 +4054,6 @@
     "file": "_claude/builds/reports/build-rules-tab-gate-rules-vps-owns/inventory.json",
     "at": "2026-11-15T14:30:00Z",
     "pass": 2,
-    "count": 115
+    "count": 118
   }
 }

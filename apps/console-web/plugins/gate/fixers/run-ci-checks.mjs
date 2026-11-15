@@ -5,7 +5,7 @@
  * Nothing is changed, so a check and a fix are the same run; a dry run lists the commands without running them.
  *
  * ctx.rules = build-rule@1 list (default: the live store's enabled rules with a command check, any doer);
- * ctx.phase limits them to one phase. AXF_RUN_CI_DIRECT=1 runs without the heavy lock (tests).
+ * ctx.phase limits them to one phase; ctx.skipPhase leaves out the rules of a phase the runner already checks one by one. AXF_RUN_CI_DIRECT=1 runs without the heavy lock (tests).
  *
  * CLI: node apps/console-web/plugins/gate/fixers/run-ci-checks.mjs [check|fix] [--dry-run] [--json]
  */
@@ -26,7 +26,7 @@ async function rulesOf(ctx) {
 /** The rules this run covers: enabled, a command check, the phase when given. */
 export async function commandRules(ctx = {}) {
   const BR = await import(pathToFileURL(join(rootOf(ctx), 'framework/core/build-rules.mjs')).href);
-  return (await rulesOf(ctx)).filter((r) => r.enabled !== false && BR.checkKind(r) === 'command' && (!ctx.phase || r.phase === ctx.phase));
+  return (await rulesOf(ctx)).filter((r) => r.enabled !== false && BR.checkKind(r) === 'command' && (!ctx.phase || r.phase === ctx.phase) && (!ctx.skipPhase || r.phase !== ctx.skipPhase));
 }
 
 /** Run one command line; → { id, cmd, ok, code, ms, tail }. */

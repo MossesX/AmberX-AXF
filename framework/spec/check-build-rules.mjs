@@ -130,11 +130,12 @@ for (const k of Object.keys(fx.out)) t(`fixture replay: ${k}`, () => assert.deep
 // ------------------------------------------------------------------ migration
 
 const ids = (s) => s.rules.map((r) => r.id);
-t('migration: home-card first, every inventory rule present, nothing dropped, valid, one migrate history line', () => {
+t('migration: home-card first, then the VPS-native rules, every inventory rule present, nothing dropped, valid, one migrate history line', () => {
   const m = actual.migrate;
-  assert.deepEqual(ids(m.store), ['home-card', ...INVENTORY.rules.map((r) => r.id)]);
-  assert.deepEqual(m.missing, []); assert.deepEqual(B.storeErrors(m.store), []); assert.equal(m.store.rev, 1); assert.equal(m.store.seededFrom.count, 9); assert.equal(m.store.seededFrom.pass, 2);
-  assert.equal(m.entry.action, 'migrate'); assert.equal(m.entry.count, 9); assert.deepEqual(B.historyErrors(m.entry), []);
+  const n = 1 + M.VPS_RULES.length + INVENTORY.rules.length;
+  assert.deepEqual(ids(m.store), ['home-card', ...M.VPS_RULES.map((r) => r.id), ...INVENTORY.rules.map((r) => r.id)]);
+  assert.deepEqual(m.missing, []); assert.deepEqual(B.storeErrors(m.store), []); assert.equal(m.store.rev, 1); assert.equal(m.store.seededFrom.count, n); assert.equal(m.store.seededFrom.pass, 2);
+  assert.equal(m.entry.action, 'migrate'); assert.equal(m.entry.count, n); assert.deepEqual(B.historyErrors(m.entry), []);
   assert.ok(m.store.rules.every((r) => r.rev === 1 && r.createdAt === AT && r.updatedBy === 'migration'));
 });
 t('migration: rule #1 is home-card, doer vps, phase after, autofix home-card, kind mechanical, never in a brief', () => {
@@ -168,7 +169,7 @@ t('migration: the text is the rule as the builder reads it: the orchestrator con
 t('the real inventory → the committed seed: every rule present, valid, and the seed is what the migration gives at its own time', () => {
   const inv = JSON.parse(rd(M.INVENTORY_REL)); const seed = JSON.parse(rd(B.SEED_REL));
   assert.deepEqual(M.missingFrom(inv, seed), []); assert.deepEqual(B.storeErrors(B.normStore(seed)), []);
-  assert.equal(seed.rules.length, inv.rules.length + 1); assert.equal(seed.rules[0].id, 'home-card');
+  assert.equal(seed.rules.length, inv.rules.length + 1 + M.VPS_RULES.length); assert.equal(seed.rules[0].id, 'home-card');
   const again = M.migrate(inv, { at: seed.at }).store;
   assert.ok(same(again, seed), 'seed.json is stale: run node framework/cli/build-rules-migrate.mjs');
   const vps = seed.rules.filter((r) => r.doer === 'vps');
@@ -182,7 +183,7 @@ t('briefBlocks: a plugin UI build gets Look, API and the Rules bullets; VPS and 
   const b = actual.briefBlocks.pluginUi;
   assert.equal(b.$axf, B.BLOCKS_FRAME); assert.equal(b.build, 'notes-settings-tab'); assert.equal(b.ui, true);
   assert.deepEqual(b.picked, ['ui-asset-tokens', 'api-everything', 'toolbars', 'plugin-lifecycle', 'phone-readable']);
-  assert.deepEqual(b.skipped, [{ id: 'home-card', why: 'the VPS does it' }, { id: 'hard-build-limit', why: 'the VPS does it' }, { id: 'ask-with-cards', why: 'interactive only' }, { id: 'merge-queue-only', why: 'the VPS does it' }]);
+  assert.deepEqual(b.skipped, [{ id: 'home-card', why: 'the VPS does it' }, ...M.VPS_RULES.map((r) => ({ id: r.id, why: 'the VPS does it' })), { id: 'hard-build-limit', why: 'the VPS does it' }, { id: 'ask-with-cards', why: 'interactive only' }, { id: 'merge-queue-only', why: 'the VPS does it' }]);
   assert.match(b.blocks.look, /^Look: UI code/); assert.match(b.blocks.api, /^API: Everything comes with an API/); assert.equal(b.blocks.checkpoints, '');
   assert.equal(b.blocks.rules.split('\n')[0], '## Rules for this job'); assert.equal(b.blocks.rules.split('\n').length, 4);
   assert.equal(b.text, [b.blocks.look, b.blocks.api, b.blocks.rules].join('\n')); assert.equal(b.chars, b.text.length); assert.equal(b.tokens, Math.ceil(b.chars / 4));
@@ -212,7 +213,7 @@ t('history: every change appends one line with before / after, the store rev and
   const ed = c.history[2]; assert.equal(ed.after.rev, 2); assert.equal(ed.after.updatedBy, 'brett'); assert.equal(ed.after.updatedAt, AT2); assert.equal(ed.after.createdAt, AT); assert.equal(ed.after.sources.length, 2);
   const rm = c.history[4]; assert.ok(rm.before && !rm.after); const rs = c.history[5]; assert.ok(!rs.before && rs.after.rev === 2);
   assert.equal(c.store.rev, 6); assert.equal(c.store.updatedBy, 'brett'); assert.equal(c.store.at, '2026-11-15T14:05:00Z');
-  assert.deepEqual(ids(c.store), ['home-card', 'ui-asset-tokens', 'api-everything', 'toolbars', 'plugin-lifecycle', 'hard-build-limit', 'merge-queue-only', 'phone-readable', 'screenshots-after', 'ask-with-cards']);
+  assert.deepEqual(ids(c.store), ['home-card', ...M.VPS_RULES.map((r) => r.id), 'ui-asset-tokens', 'api-everything', 'toolbars', 'plugin-lifecycle', 'hard-build-limit', 'merge-queue-only', 'phone-readable', 'screenshots-after', 'ask-with-cards']);
 });
 t('changes the engine refuses say why', () => {
   const r = actual.changes.refused;
@@ -246,7 +247,7 @@ t('store round trip: seed → save → commit toggle + edit → history newest f
     const r1 = B.commit({ action: 'toggle', id: 'toolbars', enabled: false, reason: 'off' }, { dir, at: AT1, by: 'brett' });
     const r2 = B.commit({ action: 'edit', id: 'home-card', patch: { note: 'first' }, reason: 'note' }, { dir, at: AT2, by: 'brett' });
     assert.equal(r1.store.rev, 2); assert.equal(r2.store.rev, 3); assert.equal(r2.store.rules[0].rev, 2);
-    assert.deepEqual(B.history({ dir }).map((h) => `${h.action}:${h.id || h.count}@${h.rev}`), ['edit:home-card@3', 'toggle:toolbars@2', 'migrate:9@1']);
+    assert.deepEqual(B.history({ dir }).map((h) => `${h.action}:${h.id || h.count}@${h.rev}`), ['edit:home-card@3', 'toggle:toolbars@2', `migrate:${1 + M.VPS_RULES.length + INVENTORY.rules.length}@1`]);
     assert.deepEqual(B.history({ dir, id: 'toolbars' }).map((h) => h.action), ['toggle']); assert.deepEqual(B.history({ dir, action: 'edit' }).length, 1);
     const l1 = B.load({ dir, at: AT }); assert.equal(l1.store.rev, 3); assert.deepEqual(B.storeErrors(l1.store), []);
     assert.throws(() => B.commit({ action: 'edit', id: 'home-card', patch: { id: 'x' }, reason: 'r' }, { dir }), /cannot change id/);
@@ -254,7 +255,7 @@ t('store round trip: seed → save → commit toggle + edit → history newest f
     assert.ok(!existsSync(join(dir, B.FILES.lock)));
     // a folder with no store reads the seed and says so; a first commit on it writes the seed line first
     const dir2 = join(dir, 'fresh'); const seedFile = join(dir, 'seed.json'); writeFileSync(seedFile, JSON.stringify(seeded.store));
-    const l2 = B.load({ dir: dir2, seed: seedFile, at: AT }); assert.equal(l2.seeded, true); assert.equal(l2.store.rules.length, 9);
+    const l2 = B.load({ dir: dir2, seed: seedFile, at: AT }); assert.equal(l2.seeded, true); assert.equal(l2.store.rules.length, 1 + M.VPS_RULES.length + INVENTORY.rules.length);
     B.commit({ action: 'toggle', id: 'toolbars', enabled: false, reason: 'off' }, { dir: dir2, seed: seedFile, at: AT1, by: 'brett' });
     assert.deepEqual(B.history({ dir: dir2 }).map((h) => h.action), ['toggle', 'seed']);
     const l3 = B.load({ dir: join(dir, 'none'), seed: join(dir, 'no-seed.json'), at: AT }); assert.equal(l3.empty, true); assert.equal(l3.store.rules.length, 0);

@@ -31,9 +31,13 @@ export const jsonText = (v) => `${JSON.stringify(v, null, 2)}\n`;
 export const rootOf = (ctx = {}) => ctx.root || REPO_ROOT;
 export const pluginsRoot = (ctx = {}) => join(rootOf(ctx), PLUGINS_REL);
 
-/** Plugin folders in scope: ctx.plugins (or ctx.build.plugins), else every folder with a plugin.json (no _template). */
+/**
+ * Plugin folders in scope: ctx.plugins, else ctx.build.plugins when the build says which it touched (an empty list =
+ * none), else every folder with a plugin.json (no _template).
+ */
 export function pluginFolders(ctx = {}) {
   const want = [...(ctx.plugins || []), ...(ctx.build?.plugins || [])].filter(Boolean);
+  if (!want.length && Array.isArray(ctx.build?.plugins)) return [];
   const base = pluginsRoot(ctx);
   let all = [];
   try { all = readdirSync(base, { withFileTypes: true }).filter((d) => d.isDirectory() && !d.name.startsWith('_') && existsSync(join(base, d.name, 'plugin.json'))).map((d) => d.name).sort(); } catch { /* no plugins */ }

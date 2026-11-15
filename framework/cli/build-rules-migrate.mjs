@@ -29,6 +29,14 @@ export const HOME_CARD_RULE = Object.freeze({
   note: 'Brett, Nov 15 2026. The first rule the VPS owns outright.',
 });
 
+/** Rules the VPS owns from the start that no instruction file carried (each has a fixer in the Gate plugin). */
+const BRETT = { source: 'brett:2026-11-15T13:23:46Z', file: '', line: 0, text: "Remove everything for all the builders from Claude so it don't happen twice and put them all in that plugin.", pass: 2 };
+export const VPS_RULES = Object.freeze([
+  { id: 'plugin-help-stub', title: 'Every plugin has its help screen entry, written by the VPS', text: "Every plugin ships help.json with its screen entry (view:<plugin>). The VPS writes a missing one from plugin.json's name and description after the build (fixer help-stub).", doer: 'vps', kind: 'mechanical', phase: 'after', enabled: true, check: 'fixer:help-stub', autofix: 'help-stub', briefBlock: 'rules', applies: 'builds', when: {}, sources: [BRETT] },
+  { id: 'api-parity-scaffold', title: 'Every plugin action is on REST, MCP, CLI and voice', text: 'Every command a plugin declares has its REST handler, so MCP and the CLI reach it through plugin-commands, and a plugin with a page registers console actions for voice. The VPS checks it at the gate and scaffolds the missing parts (fixer api-parity).', doer: 'vps', kind: 'mechanical', phase: 'gate', enabled: true, check: 'fixer:api-parity', autofix: 'api-parity', briefBlock: 'rules', applies: 'builds', when: {}, sources: [BRETT] },
+  { id: 'ci-checks', title: 'The rule check commands pass before landing', text: "Every enabled rule's check command (check-theme, check-controls, check-toolbars, …) runs on the VPS under the heavy lock before the PR lands (fixer run-ci-checks).", doer: 'vps', kind: 'mechanical', phase: 'gate', enabled: true, check: 'fixer:run-ci-checks', autofix: '', briefBlock: 'rules', applies: 'builds', when: {}, sources: [BRETT] },
+]);
+
 const UI = { when: { ui: true } };
 const PLUGIN = { when: { keywords: ['plugin', 'apps/console-web/plugins'] } };
 /**
@@ -83,9 +91,9 @@ export const SEED_DEFAULTS = Object.freeze({
   'approve-deny-in-console': { phase: 'gate' }, 'deny-first-screen': { phase: 'gate' },
   // vps rules: after the session / PR
   'ui-review-submit': { phase: 'after', check: 'gate:ui-review', autofix: 'ui-review-submit', ...UI }, 'ui-review-item-schema': { phase: 'after' }, 'shots-group-name': { phase: 'after' },
-  'glossary-catalog': { phase: 'after', check: 'store:glossary-catalog', autofix: 'glossary-catalog' }, 'shipped-features': { phase: 'after' },
-  'builds-live': { phase: 'after', check: 'store:builds-live', autofix: 'builds-live-link' }, 'orchestrator-tracks': { phase: 'after', check: 'store:steps-ticked' },
-  'threads-log': { phase: 'after' }, 'change-log': { phase: 'after' }, 'rebuild-shots': { phase: 'after' }, 'recurring-agents': { phase: 'after' },
+  'glossary-catalog': { phase: 'after', check: 'store:glossary-catalog', autofix: 'glossary-catalog' }, 'shipped-features': { phase: 'after', check: 'fixer:shipped-features', autofix: 'shipped-features' },
+  'builds-live': { phase: 'after', check: 'store:builds-live', autofix: 'pr-open-link' }, 'orchestrator-tracks': { phase: 'after', check: 'store:steps-ticked' },
+  'threads-log': { phase: 'after', check: 'fixer:tracker-threads', autofix: 'tracker-threads' }, 'change-log': { phase: 'after' }, 'rebuild-shots': { phase: 'after' }, 'recurring-agents': { phase: 'after' },
   'plugin-built-with': { phase: 'after', ...PLUGIN }, 'app-defaults': { phase: 'after' }, 'carry-on-block': { phase: 'after' }, 'push-via-amberx': { phase: 'after' },
 });
 
@@ -136,7 +144,8 @@ export function ruleFromInventory(e, defaults = SEED_DEFAULTS) {
 export function migrate(inventory, { at = new Date().toISOString(), by = 'migration', defaults = SEED_DEFAULTS } = {}) {
   const inv = inventory && typeof inventory === 'object' ? inventory : {};
   const entries = Array.isArray(inv.rules) ? inv.rules : [];
-  const rules = [HOME_CARD_RULE, ...entries.filter((e) => e && e.id && e.id !== HOME_CARD_RULE.id).map((e) => ruleFromInventory(e, defaults))];
+  const own = new Set([HOME_CARD_RULE.id, ...VPS_RULES.map((r) => r.id)]);
+  const rules = [HOME_CARD_RULE, ...VPS_RULES, ...entries.filter((e) => e && e.id && !own.has(e.id)).map((e) => ruleFromInventory(e, defaults))];
   const { store, entry } = B.seedStore(rules, { at, by, from: INVENTORY_REL, pass: Number(inv.pass) || 0, action: 'migrate' });
   const ids = new Set(store.rules.map((r) => r.id));
   return { store, entry, ids: [...ids], missing: entries.map((e) => e.id).filter((id) => !ids.has(id)) };
@@ -145,7 +154,7 @@ export function migrate(inventory, { at = new Date().toISOString(), by = 'migrat
 /** Inventory ids a store lacks. */
 export function missingFrom(inventory, store) {
   const ids = new Set((store?.rules || []).map((r) => r.id));
-  return [...new Set([HOME_CARD_RULE.id, ...((inventory?.rules || []).map((e) => e.id))])].filter((id) => !ids.has(id));
+  return [...new Set([HOME_CARD_RULE.id, ...VPS_RULES.map((r) => r.id), ...((inventory?.rules || []).map((e) => e.id))])].filter((id) => !ids.has(id));
 }
 
 // ------------------------------------------------------------------ CLI

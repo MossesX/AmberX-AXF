@@ -43,7 +43,13 @@
     "tracker",
     "chrome-settings-backfill",
     "shared-assets-bake",
-    "builds-live-link"
+    "builds-live-link",
+    "help-stub",
+    "shipped-features",
+    "api-parity",
+    "tracker-threads",
+    "run-ci-checks",
+    "pr-open-link"
   ],
   "historyActions": [
     "seed",
