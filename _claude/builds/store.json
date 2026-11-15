@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6321,
- "updatedAt": "2026-11-15T15:39:53.458Z",
+ "rev": 6322,
+ "updatedAt": "2026-11-15T15:40:58.731Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -230915,7 +230915,7 @@
    "title": "Data container: axf-data holds all console data",
    "category": "",
    "detail": "Brett's final layout: the console is screens ONLY, with no work and no data in it. New private container 'axf-data' (Coolify, auto-restart, no public port or DNS, internal Docker network only) holds ALL the data: notes, builds store/journal/history, settings, planner items, UI reviews, everything the console stores today. Four parts: console = UI only; axf-molly = does the work (orchestrator, gate, lander); axHub = routes plus credentials/keys only (NO app data stored in axHub); axf-data = stores everything. Goal: if the console goes down, all data and notes stay available (through axHub tools) and builds keep running. Stage it safely: an API in front of the store, migrate with count checks and a backup, run in shadow first, then cut over, and no data is ever lost. Add daily backups. Coordinate with the move-build-orchestrator-to-axhub build (axf-molly reads and writes the builds store through axf-data). Tests, help, Shipped features.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -230923,7 +230923,7 @@
    "pr": "#704",
    "priority": "P0",
    "createdAt": "2026-11-15T04:28:05.062Z",
-   "updatedAt": "2026-11-15T15:13:00.787Z",
+   "updatedAt": "2026-11-15T15:40:56.586Z",
    "builtAt": "",
    "notes": [
     {
@@ -230977,6 +230977,10 @@
     {
      "text": "LAND FIX (Brett 10:02): build_land clashed with main in 4 files: .github/workflows/android.yml, apps/console-web/src/control/inventory.json, framework/catalog/catalog.json, framework/catalog/status.json. Merge origin/main into the branch, keep BOTH sides (union of entries; regenerate catalog/status/inventory with their generators rather than hand-merging), run the checks, push, then land with the one-at-a-time lander right away. Do nothing else. The Postgres move is its own follow-up build.",
      "at": "2026-11-15T15:12:36.573Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-15T15:40:56.586Z"
     }
    ],
    "approvals": [
@@ -231745,7 +231749,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
