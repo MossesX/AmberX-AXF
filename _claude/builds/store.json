@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6065,
- "updatedAt": "2026-11-15T12:02:39.321Z",
+ "rev": 6066,
+ "updatedAt": "2026-11-15T12:02:48.125Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -229824,7 +229824,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T04:20:19.690Z",
-   "updatedAt": "2026-11-15T04:28:07.582Z",
+   "updatedAt": "2026-11-15T12:02:39.552Z",
    "builtAt": "",
    "notes": [
     {
@@ -229882,6 +229882,10 @@
     {
      "text": "Session stopped on its own with 37 steps left: back in Pending for Brett.",
      "at": "2026-11-15T04:28:07.582Z"
+    },
+    {
+     "text": "gate-rules-plugin-in-the-console (s1 design note, _claude/builds/reports/gate-rules-plugin-in-the-console.md): the molly hand-over seam for the gate is two console adapter files (plugins/gate/gate-store.mjs, plugins/gate/lander.mjs) plus an owner field (console | axf-molly) on every gate-rule@1. Schema, fixtures, GATE.md tool contract (gate.*, lander.*), REST, CLI, MCP names and voice stay the same when axf-molly takes the rules; axHub only routes them.",
+     "at": "2026-11-15T12:02:39.552Z"
     }
    ],
    "approvals": [],
@@ -230875,7 +230879,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
