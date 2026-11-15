@@ -798,10 +798,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:05 UTC · `hotfix-toolbar-settings-still-change` note (all) · orchestrator
-- 2026-11-14 23:05 UTC · `land-finish-auto-land-live-clear-backlog` s14 done (all) · orchestrator
-- 2026-11-14 23:06 UTC · `owner-recognized-everywhere-veto` → running, note (all) · pipeline
-- 2026-11-14 23:06 UTC · `land-finish-auto-land-live-clear-backlog` s14 done (all) · foreign-write
 - 2026-11-14 23:06 UTC · `owner-recognized-everywhere-veto` note (all) · orchestrator
 - 2026-11-14 23:06 UTC · `server-gate-one-session-per-build-no` s3 done, → built (all) · orchestrator
 - 2026-11-13 10:44 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` branch claude/owner-recognized-everywhere-veto-countdown-only-on-shell-commands, PR #559 (all) · builds-live
@@ -1198,6 +1194,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 00:38 UTC · `merge-main-land-console-app-part-2` s10 done (all) · orchestrator
 - 2026-11-15 00:39 UTC · `merge-main-land-console-app-part-2` note (all) · orchestrator
 - 2026-11-15 00:37 UTC · `new-asset-type-animated-expanding-row` s6 done (all) · orchestrator
+- 2026-11-15 00:39 UTC · `merge-main-land-console-app-part-2` → pending, note (all) · pipeline
+- 2026-11-15 00:39 UTC · `ui-manager-floating-window-to-select-any` → running, note (all) · pipeline
+- 2026-11-15 00:39 UTC · `ui-manager-floating-window-to-select-any` → running, note (all) · orchestrator
+- 2026-11-15 00:40 UTC · `merge-main-land-console-app-part-2` → pending, note (all) · pipeline
 
 ## Token passes (log)
 

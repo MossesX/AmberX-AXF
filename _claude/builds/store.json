@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5824,
- "updatedAt": "2026-11-15T00:41:31.876Z",
+ "rev": 5825,
+ "updatedAt": "2026-11-15T00:41:54.149Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -97350,23 +97350,6 @@
     "from": "",
     "addenda": []
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:27:54.807Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/amberx-droid/android/app/src/main/AndroidManifest.xml, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/BootReceiver.java, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/Hub"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -123106,23 +123089,6 @@
     "from": "",
     "addenda": []
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:25:00.977Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, _claude/memory/docs/patches-banners.md, _claude/shared/rules/RULES.md, apps/amberx-droid/package.json, apps/amberx-droid/server/main.py, apps/amberx-droid/src/App.tsx, apps/amberx-droid/src/main.tsx, apps/amberx-droid/src/runtime.ts, apps/amberx-droid/src/"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -123894,23 +123860,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:24:49.294Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/molly/README.md, apps/molly/src/App.tsx, apps/molly/src/actions.ts, apps/molly/src/assets/app-menu/molly.json, apps/molly/src/assets/nav-menu/molly.json, apps/molly/src/main.tsx, apps/molly/src/molly/Connections.tsx, apps/molly/src/molly/apps.ts, apps"
-     }
-    ]
    },
    "steps": [
     {
@@ -134504,23 +134453,6 @@
     "from": "",
     "addenda": []
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:26:37.175Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/amberx-droid/axf.manifest.json, apps/amberx-droid/src/assets/app-menu/amberx-droid.json, apps/amberx-droid/src/assets/design-package/amberx-app-day.json, apps/amberx-droid/src/assets/design-package/amberx-app-night.json, apps/amberx-droid/src/assets/s"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s4",
@@ -135574,23 +135506,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:28:18.704Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrator/plugin.json, apps/console-web/plugins/build-orchestrator/se"
-     }
-    ]
    },
    "steps": [
     {
@@ -137336,23 +137251,6 @@
     "from": "",
     "addenda": []
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:28:08.106Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/console-terminal/web/RunOutputTab.tsx, apps/console-web/plugins/console-terminal/web/headless-core.ts, apps/console-web/plugins/console-terminal/web/headless.ts, apps/console-web/plugins/console-terminal/web/index.tsx, framework/sp"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -137560,23 +137458,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:28:13.837Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/build-manager/web/build-manager.css, apps/console-web/plugins/build-manager/web/history.mjs, apps/console-web/plugins/build-manager/web/index.tsx, apps/console-web/plugins/build-manager/web/ui.tsx, apps/console-web/plugins/build-manager/web/view-state.ts, apps/c"
-     }
-    ]
    },
    "steps": [
     {
@@ -138311,23 +138192,6 @@
     "from": "",
     "addenda": []
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:27:59.320Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrator/plugin.json, apps/console-web/plugins/build-orchestrator/se"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -138734,23 +138598,6 @@
       "source": "voice",
       "by": "",
       "verbatim": true
-     }
-    ]
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:27:44.946Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/claude-accounts/README.md, apps/console-web/plugins/claude-accounts/help.json, apps/console-web/plugins/claude-accounts/plugin.json, apps/console-web/plugins/claude-accounts/server/__init__.py, apps/console-web/plugins/claude-accou"
      }
     ]
    },
@@ -140445,23 +140292,6 @@
     "from": "",
     "addenda": []
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:28:34.818Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/build-orchestrator/orchestrator.mjs, apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrat"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -140840,23 +140670,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:28:25.941Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/build-orchestrator/notify.json, apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrator/pl"
-     }
-    ]
    },
    "steps": [
     {
@@ -142245,23 +142058,6 @@
     "from": "",
     "addenda": []
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:27:37.965Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/push-banner/land/land-core.mjs, apps/console-web/plugins/push-banner/land/land.mjs, apps/console-web/plugins/p"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -142421,23 +142217,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:27:32.292Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/build-orchestrator/help.json, apps/console-web/plugins/build-orchestrator/notify.json, apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.t"
-     }
-    ]
    },
    "steps": [
     {
@@ -142766,23 +142545,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:27:24.098Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, _claude/plans/build-vps.md, apps/console-web/plugins/maintenance/deploy/host.sh, apps/console-web/plugins/maintenance/engine/maint.py, apps/console-web/plugins/maintenance/plugin.json, apps/console-web/plugins/maintenance/server/__init__.py, apps/console-w"
-     }
-    ]
    },
    "steps": [
     {
@@ -143124,23 +142886,6 @@
     "from": "",
     "addenda": []
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:27:18.441Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/agent-swarm/server/__init__.py, apps/console-web/plugins/agent-swarm/web/swarm-core.mjs, apps/console-web/plugins/ui-review/README.md, apps/console-web/plugins/ui-review/help.json, apps/console-web/plugins/ui-review/plugin.json, apps/console-web/plugins/ui-revie"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -143304,23 +143049,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "archived",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:27:13.100Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Superseded: only merges and status files are missing from main. Kept as archive/resolve-merge-conflicts-and-land-running-builds."
-     }
-    ]
    },
    "steps": [
     {
@@ -143514,23 +143242,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:25:47.909Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/console-commands/web/index.tsx, apps/molly/README.md, apps/molly/plugins/control/README.md, apps/molly/plugins/control/help.json, apps/molly/plugins/control/install.mjs, apps/molly/plugins/control/plugin.json, apps/molly/plugins/co"
-     }
-    ]
    },
    "steps": [
     {
@@ -144692,23 +144403,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:27:07.337Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/build-orchestrator/orchestrator.mjs, apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrat"
-     }
-    ]
    },
    "steps": [
     {
@@ -148592,23 +148286,6 @@
     "from": "",
     "addenda": []
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:25:40.234Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/amberx-droid/src/plugins/commands/web/lib-developer.ts, apps/console-web/plugins/README.md, apps/console-web/plugins/molly-menus/help.json, apps/console-web/plugins/molly-menus/hooks.mjs, apps/console-web/plugins/molly-menus/install.mjs, apps/console-"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -149906,23 +149583,6 @@
     "from": "",
     "addenda": []
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:27:00.986Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/amberx-droid/android/app/src/main/AndroidManifest.xml, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AxppLink.java, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/HubRules.java, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/MainActivity.java"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -150874,23 +150534,6 @@
     "from": "",
     "addenda": []
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:26:57.297Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/agent-swarm/test.mjs, apps/console-web/plugins/push-banner/help.json, apps/console-web/plugins/push-banner/land/merge-queue-core.mjs, apps/console-web/plugins/push-banner/land/merge-queue.mjs, apps/console-web/plugins/push-banner/l"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -151047,23 +150690,6 @@
     "from": "",
     "addenda": []
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:26:49.978Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/agent-swarm/test.mjs, apps/console-web/plugins/push-banner/help.json, apps/console-web/plugins/push-banner/land/merge-queue-core.mjs, apps/console-web/plugins/push-banner/land/merge-queue.mjs, apps/console-web/plugins/push-banner/l"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -151219,23 +150845,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:26:53.743Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: CLAUDE.md, _claude/shared/rules/RULES.md, apps/console-web/plugins/agent-swarm/test.mjs, apps/console-web/plugins/agent-swarm/web/swarm-core.mjs, framework/schemas/rules-briefs.json, framework/spec/check-headless-context.mjs"
-     }
-    ]
    },
    "steps": [
     {
@@ -151397,23 +151006,6 @@
     "from": "",
     "addenda": []
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:26:39.757Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, framework/cli/builds-live.mjs, framework/cli/shipped.mjs"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -151574,23 +151166,6 @@
     "from": "",
     "addenda": []
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:26:46.171Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/conversation-rag/README.md, apps/console-web/plugins/conversation-rag/help.json, apps/console-web/plugins/conversation-rag/hooks.mjs, apps/console-web/plugins/conversation-rag/install.mjs, apps/console-web/plugins/conversation-rag/"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -151746,23 +151321,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:26:43.021Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/conversation-rag/README.md, apps/console-web/plugins/conversation-rag/help.json, apps/console-web/plugins/conversation-rag/hooks.mjs, apps/console-web/plugins/conversation-rag/install.mjs, apps/console-web/plugins/conversation-rag/"
-     }
-    ]
    },
    "steps": [
     {
@@ -152503,23 +152061,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:25:59.187Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/skins.yml, apps/amberx-droid/src/plugins/commands/web/lib-developer.ts, apps/console-web/plugins/README.md, apps/console-web/plugins/skin-editor/help.json, apps/console-web/plugins/skin-editor/hooks.mjs, apps/console-web/plugins/skin-editor/install.mjs, apps/console-we"
-     }
-    ]
    },
    "steps": [
     {
@@ -153937,23 +153478,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:24:21.685Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/README.md, apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrator/plugin.json, apps/conso"
-     }
-    ]
    },
    "steps": [
     {
@@ -155970,23 +155494,6 @@
     "from": "",
     "addenda": []
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:26:05.915Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/build-orchestrator/main-check-core.mjs, apps/console-web/plugins/build-orchestrator/main-check.mjs, apps/console-web/plugins/build-orchestrator/main-check.test.mjs, apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, app"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -156178,23 +155685,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:25:24.996Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/server/Dockerfile"
-     }
-    ]
    },
    "steps": [
     {
@@ -156567,23 +156057,6 @@
     "from": "",
     "addenda": []
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:25:15.870Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/README.md, apps/console-web/plugins/git-status/README.md, apps/console-web/plugins/git-status/help.json, apps/console-web/plugins/git-status/hooks.mjs, apps/console-web/plugins/git-status/install.mjs, apps/console-web/plugins/git-status/plugin.json, apps/console"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -156743,23 +156216,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:25:09.066Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/amberx-droid/android/app/src/main/AndroidManifest.xml, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AxppLink.java, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/HubRules.java, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/MainActivity.java"
-     }
-    ]
    },
    "steps": [
     {
@@ -157804,23 +157260,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:24:52.794Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -158041,23 +157480,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:24:41.469Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrator/plugin.json, apps/console-web/plugins/build-orchestrator/se"
-     }
-    ]
    },
    "steps": [
     {
@@ -158284,23 +157706,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:24:44.756Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/build-orchestrator/notify.json, apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrator/pl"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -158526,23 +157931,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:24:15.349Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, _claude/memory/docs/patches-banners.md, _claude/shared/rules/RULES.md, apps/amberx-droid/package.json, apps/amberx-droid/server/main.py, apps/amberx-droid/src/App.tsx, apps/amberx-droid/src/main.tsx, apps/amberx-droid/src/runtime.ts, apps/amberx-droid/src/"
-     }
-    ]
    },
    "steps": [
     {
@@ -158772,23 +158160,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:24:33.784Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/amberx-droid/android/app/src/main/AndroidManifest.xml, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AxppLink.java, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/MainAct"
-     }
-    ]
    },
    "steps": [
     {
@@ -159902,23 +159273,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:24:29.248Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/agent-manager/web/index.tsx, apps/console-web/plugins/ai-assistant/plugin.json, apps/console-web/plugins/ai-assistant/server/__init__.py, apps/console-web/plugins/ai-assistant/server/store.py, apps/console-web/plugins/ai-assistant/server/tools.py, apps/console-w"
-     }
-    ]
    },
    "steps": [
     {
@@ -161538,23 +160892,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:24:37.703Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/build-orchestrator/notify.json, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/plugin.json, apps/console-web/plugins/build-orchestrator/server/__init__.py, apps/console-web/plu"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -161753,23 +161090,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:24:26.233Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrator/plugin.json, apps/console-web/plugins/build-orchestrator/se"
-     }
-    ]
    },
    "steps": [
     {
@@ -162214,23 +161534,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:24:01.323Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/agent-manager/README.md, apps/console-web/plugins/agent-manager/plugin.json, apps/console-web/plugins/agent-manager/server/__init__.py, apps/console-web/plugins/agent-manager/server/apiaccess.py, apps/console-web/plugins/agent-manager/test.py, apps/console-web/p"
-     }
-    ]
    },
    "steps": [
     {
@@ -204216,7 +203519,7 @@
    "title": "UI Manager: floating window to select any element in the console and edit all its tokens",
    "category": "",
    "detail": "UI Manager (console plugin), opens in a floating window.\n- Lets Brett select ANY UI element in the whole console (every screen, plugin, dialog, toolbar, tab group, banner, nav, widget, control).\n- Left: collapsible categorized tree of all elements. Top category 'On screen now' lists every element currently visible; these are references (like Windows shortcuts / symlinks) to the same element that also lives in its normal category - both point to one shared source, edit either and both change.\n- Selecting an element (or picking it on screen with an inspector/picker mode) opens it according to the chosen view (several views: expanding row, side panel, grid...). Default: an expanding row listing all its properties and every token it reads.\n- Each property/token is edited by choosing from predetermined, valid values supplied by the console/framework integration (token sets, skins, assets, enums, ranges) - never free text where a valid list exists; schema-validated; live preview; reset to skin/default; shows overrides.\n- Searchable, sortable, multi-filter lists everywhere (thousands of elements).\n- Full API: REST/MCP/CLI/voice/control@1 ('select the main toolbar, set its transparency to 80').\n- Elements register via the framework (manifest) so new plugins appear automatically.\n- Tests, help, Shipped features. Fable for the element registry/schema core, Opus for UI.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -204224,7 +203527,7 @@
    "pr": "#634",
    "priority": "P1",
    "createdAt": "2026-11-13T18:30:38.922Z",
-   "updatedAt": "2026-11-14T22:45:33.294Z",
+   "updatedAt": "2026-11-15T00:39:39.412Z",
    "builtAt": "",
    "notes": [
     {
@@ -204326,6 +203629,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T20:31:16.091Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-ui-manager-floating-window-to-select-any--joey, shared account login)",
+     "at": "2026-11-15T00:39:39.412Z"
     }
    ],
    "approvals": [
@@ -204346,7 +203653,7 @@
     "session": "",
     "link": "",
     "by": "ui-manager-floating-window-to-select-any",
-    "brief": "# Build: ui-manager-floating-window-to-select-any\n\n## Brett said (verbatim)\nAt: 2026-11-13T18:30:38.922Z\n> a UI manager, opens a floating window which contains the ability to select any UI element in the whole console; collapsible categories; one category is all the ones visible on screen, like a Windows shortcut, two things point to the shared source; select one and it opens an expanding row with all the properties and tokens; you change them by selecting from predetermined things from the integration with the console and the framework\n\n## What to build\nContinue build \"UI Manager: floating window to select any element in the console and edit all its tokens\" (ui-manager-floating-window-to-select-any) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 18:30):\n\"a UI manager, opens a floating window which contains the ability to select any UI element in the whole console; collapsible categories; one category is all the ones visible on screen, like a Windows shortcut, two things point to the shared source; select one and it opens an expanding row with all the properties and tokens; you change them by selecting from predetermined things from the integration with the console and the framework\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/ui-manager-floating-window-to-select-any\nSteps in this phase (2 left, ~20 min):\n[ ] s1 (~10 min) Each property/token is edited by choosing from predetermined, valid values supplied by the console/framework integration (token sets, skins, assets, enums, ranges) - never free text where a valid list exists; schema-validated; live preview; reset to skin/default; shows overrides.\n[ ] s2 (~10 min) Tests, help, Shipped features. Fable for the element registry/schema core, Opus for UI.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ui-manager-floating-window-to-select-any <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link ui-manager-floating-window-to-select-any --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step ui-manager-floating-window-to-select-any <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note ui-manager-floating-window-to-select-any \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: ui-manager-floating-window-to-select-any\n\n## Brett said (verbatim)\nAt: 2026-11-13T18:30:38.922Z\n> a UI manager, opens a floating window which contains the ability to select any UI element in the whole console; collapsible categories; one category is all the ones visible on screen, like a Windows shortcut, two things point to the shared source; select one and it opens an expanding row with all the properties and tokens; you change them by selecting from predetermined things from the integration with the console and the framework\n\n## What to build\nContinue build \"UI Manager: floating window to select any element in the console and edit all its tokens\" (ui-manager-floating-window-to-select-any) — Phase 2, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 18:30):\n\"a UI manager, opens a floating window which contains the ability to select any UI element in the whole console; collapsible categories; one category is all the ones visible on screen, like a Windows shortcut, two things point to the shared source; select one and it opens an expanding row with all the properties and tokens; you change them by selecting from predetermined things from the integration with the console and the framework\"\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/ui-manager-floating-window-to-select-any · PR #634\nSteps in this phase (4 left, ~40 min):\n[x] s3 (~10 min) UI Manager (console plugin), opens in a floating window.\n[x] s4 (~10 min) Lets Brett select ANY UI element in the whole console (every screen, plugin, dialog, toolbar, tab group, banner, nav, widget, control).\n[x] s5 (~10 min) Left: collapsible categorized tree of all elements. Top category 'On screen now' lists every element currently visible; these are references (like Windows shortcuts / symlinks) to the same element that also lives in its normal category - both point to one shared source, edit either and both change.\n[ ] s6 (~10 min) Selecting an element (or picking it on screen with an inspector/picker mode) opens it according to the chosen view (several views: expanding row, side panel, grid...). Default: an expanding row listing all its properties and every token it reads.\n[ ] s7 (~10 min) Searchable, sortable, multi-filter lists everywhere (thousands of elements).\n[ ] s8 (~10 min) Full API: REST/MCP/CLI/voice/control@1 ('select the main toolbar, set its transparency to 80').\n[ ] s9 (~10 min) Elements register via the framework (manifest) so new plugins appear automatically.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ui-manager-floating-window-to-select-any <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link ui-manager-floating-window-to-select-any --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step ui-manager-floating-window-to-select-any <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note ui-manager-floating-window-to-select-any \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -204713,7 +204020,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -228556,7 +227863,7 @@
    "title": "Merge main and land console-app-part-2-native-floating-2",
    "category": "",
    "detail": "Auto-land could not land `console-app-part-2-native-floating-2` (console-app-part-2-native-floating-2): its tests fail: Web Dev Console (React/TS) + Python API.\n\nWork on its own branch `claude/console-app-part-2-native-floating-2` (PR #639); do not open a new PR.\n1. git fetch origin && git checkout claude/console-app-part-2-native-floating-2 && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the failing checks pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/console-app-part-2-native-floating-2. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
@@ -228564,7 +227871,7 @@
    "pr": "#639",
    "priority": "P0",
    "createdAt": "2026-11-15T00:06:45.788Z",
-   "updatedAt": "2026-11-15T00:39:01.391Z",
+   "updatedAt": "2026-11-15T00:40:27.477Z",
    "builtAt": "",
    "notes": [
     {
@@ -228582,6 +227889,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-merge-main-land-console-app-part-2--sully, shared account login)",
      "at": "2026-11-15T00:15:57.565Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-15T00:40:27.477Z"
     },
     {
      "text": "Headless run axf-merge-main-land-console-app-part-2--sully: brief only · start 11.7K tokens ($0.03) · cost $1.08 · 51 turns · 6 tools, MCP none",
@@ -228606,12 +227917,19 @@
     "queuedAt": "2026-11-15T00:06:50.319Z",
     "queuedBy": "land-finish-auto-land-live-clear-backlog",
     "account": "mossesx-max-",
-    "session": "axf-merge-main-land-console-app-part-2--sully",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-15T00:15:47.364Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-15T00:40:19.965Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 1,
+     "account": "mossesx-max-",
+     "session": "axf-merge-main-land-console-app-part-2--sully"
+    },
     "split": {
      "at": "2026-11-15T00:12:41.963Z",
      "by": "orchestrator",
@@ -228620,7 +227938,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"0a77d9de-1408-41c7-847c-dc13c5f0777a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-15T00:15:47.364Z",
     "planned": {
@@ -228869,7 +228187,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
