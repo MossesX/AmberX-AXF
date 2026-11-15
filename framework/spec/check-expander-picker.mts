@@ -127,6 +127,11 @@ ok(!/<select\b/.test(forms), 'Forms.tsx has no native <select> left');
 ok(/export function SelectField\b/.test(forms) && forms.includes('<ExpanderPicker'), 'SelectField draws an ExpanderPicker (every caller changed look at once)');
 const picker = readFileSync(join(root, 'react/components/ExpanderPicker.tsx'), 'utf8');
 for (const need of ['aria-expanded', 'aria-controls', 'role="listbox"', 'role="option"', 'aria-selected', "e.key === 'Escape'", "'ArrowDown'", "'Home'", "'End'", 'useControlTarget', "kind: 'setting'", "can: ['open', 'state', 'set', 'focus', 'press']", 'expanderPickerStyle(', 'onPreview']) ok(picker.includes(need), `ExpanderPicker.tsx: ${need}`);
+/* s3 collapsed: one row carries the setting's name, the current value and the little arrow; a reader hears name + value */
+ok(/className="fx-pick__row"[\s\S]*?className="fx-pick__name"[\s\S]*?className=\{`fx-pick__value[\s\S]*?fx-pick__arrow/.test(picker), 'collapsed row: name, value, arrow in that order inside the row button');
+ok(picker.includes('aria-labelledby={`${nameId} ${valueId}`}'), 'the row is named by the setting name and its current value');
+ok(!picker.includes('<Field '), 'the name is in the row, not a label above it');
+ok(css.includes('.fx-pick__name {') && /\.fx-pick__value \{[^}]*text-align: right/.test(css), 'name on the left, value on the right');
 ok(/firstPress \|\| armed === o\.value/.test(picker), 'one press highlights, the same press again applies (unless the asset says first-press)');
 ok(/if \(open\) close\(armed\)/.test(picker), 'pressing the arrow / row again applies the highlighted option and closes');
 const index = readFileSync(join(root, 'react/index.ts'), 'utf8');

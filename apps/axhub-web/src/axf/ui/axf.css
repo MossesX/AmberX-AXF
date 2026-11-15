@@ -1141,8 +1141,10 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-pick__row { display: flex; align-items: center; gap: var(--fx-dens-gap-md); width: 100%; min-height: var(--fx-size-field-height); padding: var(--fx-pick-row-py) var(--fx-size-field-pad-x); border: 0; border-radius: inherit; background: transparent; color: inherit; font: inherit; font-size: var(--fx-size-field-font); text-align: left; cursor: pointer; }
 .fx-pick__row:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w); }
 .fx-pick__row:disabled { opacity: var(--fx-opacity-disabled); cursor: not-allowed; }
-.fx-pick__value { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.fx-pick__value.is-empty { color: var(--fx-muted); }
+/* collapsed: one row, the setting's name on the left, its current value on the right, then the little arrow */
+.fx-pick__name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.fx-pick__value { flex: 0 1 auto; max-width: 60%; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fx-muted); text-align: right; }
+.fx-pick__value.is-empty { color: var(--fx-muted); font-style: italic; }
 .fx-pick[data-fx-pick-value='off'] .fx-pick__value { opacity: 0; }
 .fx-pick__pending { color: var(--fx-accent); font-size: var(--fx-type-scale-sm); white-space: nowrap; }
 .fx-pick__arrow { display: inline-flex; align-items: center; justify-content: center; color: var(--fx-muted); transition: transform var(--fx-pick-dur) var(--fx-ease); }

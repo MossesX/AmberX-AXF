@@ -3,7 +3,7 @@
  * "I don't want drop-down bars anymore. They are gonna be animated. It's gonna be a row with a name and a little arrow;
  * when you press that arrow it expands a subgrid; you got to press it again to apply it and close it").
  *
- *   collapsed   a row: the field's name above it (Field), the current value and a little arrow on the row
+ *   collapsed   one row: the setting's name, its current value and a little arrow (the name is in the row, not above it)
  *   pressed     the row unfolds in place into a grid of every option, pushing what is below it down (nothing floats)
  *   one press   on an option highlights it (and previews it through `onPreview` where the host can)
  *   again       on the same option, or on the arrow / row, applies it (`onChange`) and the grid closes
@@ -27,7 +27,6 @@ import { expanderPickerStyle } from '../../core/engines/components';
 import type { ExpanderPickerData } from '../../core/types';
 import { useOptionalRuntime } from '../AxfProvider';
 import { controlSlug, useControlTarget } from '../controlTargets';
-import { Field } from './Forms';
 import { Icon } from './Icon';
 
 export interface ExpanderOption {
@@ -77,7 +76,9 @@ export function ExpanderPicker({ label, value, options, onChange, onPreview, hin
   const previewOn = attrs['data-fx-pick-preview'] === 'on';
   const [open, setOpen] = useState(false);
   const [armed, setArmed] = useState<string | null>(null);
-  const gridId = useId();
+  const baseId = useId();
+  const gridId = `${baseId}-grid`, id = `${baseId}-row`, nameId = `${baseId}-name`, valueId = `${baseId}-value`, noteId = `${baseId}-note`;
+  const describedBy = error || hint ? noteId : undefined;
   const rowRef = useRef<HTMLButtonElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const all: ExpanderOption[] = empty !== undefined ? [{ value: '', label: empty }, ...options] : options;
@@ -134,18 +135,18 @@ export function ExpanderPicker({ label, value, options, onChange, onPreview, hin
   const arrowIcon = arrow === 'plus' ? (open ? 'minus' : 'plus') : ARROW_ICON[arrow];
   const pending = armed !== null && armed !== value ? all.find((o) => o.value === armed) : undefined;
   return (
-    <Field label={label} hint={hint} error={error} required={required} className={`fx-pick-field ${className ?? ''}`}>
-      {(id, describedBy) => (
+    <div className={`fx-field fx-pick-field ${error ? 'is-error' : ''} ${className ?? ''}`}>
         <div ref={targetRef} className="fx-pick" style={vars as Record<string, string>} data-fx-pick-open={open ? 'on' : 'off'} {...attrs}>
-          <button ref={rowRef} type="button" id={id} className="fx-pick__row" aria-expanded={open} aria-controls={gridId} aria-describedby={describedBy} aria-invalid={error ? true : undefined} disabled={disabled} onClick={onRow}
+          <button ref={rowRef} type="button" id={id} className="fx-pick__row" aria-expanded={open} aria-controls={gridId} aria-labelledby={`${nameId} ${valueId}`} aria-describedby={describedBy} aria-invalid={error ? true : undefined} aria-required={required || undefined} disabled={disabled} onClick={onRow}
             title={open ? (pending ? `Apply ${pending.label} and close` : 'Close') : 'Show the options'}>
-            <span className={`fx-pick__value ${current ? '' : 'is-empty'}`}>{current?.label ?? empty ?? 'Pick one'}</span>
+            <span className="fx-pick__name" id={nameId}>{label}{required && <span className="fx-field__required" aria-hidden="true"> *</span>}</span>
+            <span className={`fx-pick__value ${current ? '' : 'is-empty'}`} id={valueId}>{current?.label ?? empty ?? 'Pick one'}</span>
             {pending && <span className="fx-pick__pending">→ {pending.label}</span>}
             {arrowIcon && <span className="fx-pick__arrow" aria-hidden="true"><Icon name={arrowIcon} size={16} /></span>}
           </button>
           <div className="fx-pick__sub" id={gridId} aria-hidden={!open}>
             <div className="fx-pick__sub-inner">
-              <div ref={gridRef} className="fx-pick__grid" role="listbox" aria-label={labelText || undefined} aria-labelledby={labelText ? undefined : id}>
+              <div ref={gridRef} className="fx-pick__grid" role="listbox" aria-label={labelText || undefined} aria-labelledby={labelText ? undefined : nameId}>
                 {all.map((o, i) => {
                   const on = o.value === value;
                   const isArmed = armed === o.value;
@@ -167,7 +168,7 @@ export function ExpanderPicker({ label, value, options, onChange, onPreview, hin
             </div>
           </div>
         </div>
-      )}
-    </Field>
+        {error ? <p className="fx-field__error" id={noteId} role="alert">{error}</p> : hint ? <p className="fx-field__hint" id={noteId}>{hint}</p> : null}
+    </div>
   );
 }
