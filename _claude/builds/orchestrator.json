@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T13:43:01.332Z",
+ "updatedAt": "2026-11-15T13:43:11.091Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -151523,7 +151523,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T13:22:11.842Z",
-   "updatedAt": "2026-11-15T13:42:33.865Z",
+   "updatedAt": "2026-11-15T13:43:02.395Z",
    "builtAt": "",
    "notes": [
     {
@@ -151561,6 +151561,10 @@
     {
      "text": "Phase 1 (Fable) done on branch claude/home-cards-follow-plugin-off-home-always, 4 commits, no PR yet. Contract spec/HOME-CARDS.md (frames home-picks@1, plugin-activity-event@1, plugin-activity@1, home-cards@1; home.* tool table for the console phase); registry framework/schemas/home-cards.json + schemas/json/home-picks|home-cards|plugin-activity.schema.json; engines core/engines/home-cards.mjs (resolveHomeCards) and plugin-activity.mjs (scoreActivity, rankedIds, pruneEvents); fixture spec/fixtures/home-cards.json + spec/check-home-cards.mjs (29 checks, in android.yml). Kotlin twin deferred in PORTING.md. Note for the console phase: core/engines is mirrored into apps/console-web/src/axf/core/engines (rebake/vite), so the new engines need that mirror before HomeCards.tsx can import them.",
      "at": "2026-11-15T13:42:33.865Z"
+    },
+    {
+     "text": "Headless run axf-home-cards-follow-plugin-off-home-always--rhonda: brief only · start 13.4K tokens ($0.07) · cost $5.38 · 39 turns · 6 tools, MCP none",
+     "at": "2026-11-15T13:43:02.395Z"
     }
    ],
    "approvals": [],
