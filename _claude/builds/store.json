@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5813,
- "updatedAt": "2026-11-15T00:37:52.486Z",
+ "rev": 5814,
+ "updatedAt": "2026-11-15T00:38:20.092Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -124004,23 +124004,6 @@
     "from": "",
     "addenda": []
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:36:50.498Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/claude-accounts/assets/settings/claude-accounts-failover-compact.json, apps/console-web/plugins/claude-accounts/assets/settings/claude-accounts-failover-mw83rt1h-claude-accounts-failover-compact.json, apps/console-web/plugins/claud"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -124476,23 +124459,6 @@
     "from": "",
     "addenda": []
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:36:44.488Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, CLAUDE.md, PROGRESS.md, _claude/rules/RULES.md, apps/console-web/api-coverage.json, apps/console-web/plugins/README.md, apps/console-web/plugins/api-browser/README.md, apps/console-web/plugins/api-browser/assets/tab-group/api-browser-chips.json, apps/conso"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -124719,23 +124685,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:36:34.780Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/claude-accounts/assets/settings/claude-accounts-account-mw84lhxo-claude-accounts-checks-cards.json, apps/console-web/plugins/claude-accounts/assets/settings/claude-accounts-account-mw84lhxo-claude-accounts-checks-compact.json, apps"
-     }
-    ]
    },
    "steps": [
     {
@@ -188210,23 +188159,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:18:10.585Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ConsoleBackend.java, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/MainActivity.java, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java, apps/amberx-droid/android/app/src/main/res/value"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -192539,23 +192471,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:17:58.732Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AxppLink.java, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ConsoleBackend.java, apps/amberx-dro"
-     }
-    ]
    },
    "steps": [
     {
@@ -205336,23 +205251,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:18:27.012Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-droid/.gitignore, apps/console-droid/BRIDGE.md, apps/console-droid/OVERLAY.md, apps/console-droid/README.md, apps/console-droid/app/build.gradle, apps/console-droid/app/src/main/AndroidManifest.xml, apps/console-droid/app/src/main/assets/offli"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -205637,23 +205535,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:18:35.976Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-droid/.gitignore, apps/console-droid/BRIDGE.md, apps/console-droid/OVERLAY.md, apps/console-droid/README.md, apps/console-droid/app/build.gradle, apps/console-droid/app/src/main/AndroidManifest.xml, apps/console-droid/app/src/main/assets/offli"
-     }
-    ]
    },
    "steps": [
     {
@@ -205954,32 +205835,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-14T23:38:09.250Z",
-      "run": "lr-console-app-part-2-native-floating-2-20261114T233809",
-      "base": "06cb21c5308768885b08e4eb633cd7ac472a4075",
-      "merged": "ec1d7c4d92405a8036cafed15647cdd813614547",
-      "outcome": "red",
-      "ci": "failure",
-      "note": "CI failed on the merged head (Web Dev Console (React/TS) + Python API). No fix build: the orchestrator did not take it."
-     },
-     {
-      "at": "2026-11-15T00:18:19.094Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-droid/.gitignore, apps/console-droid/OVERLAY.md, apps/console-droid/README.md, apps/console-droid/app/build.gradle, apps/console-droid/app/src/main/AndroidManifest.xml, apps/console-droid/app/src/main/assets/offline.html, apps/console-droid/ap"
-     }
-    ]
    },
    "steps": [
     {
@@ -228012,7 +227867,7 @@
    "pr": "#639",
    "priority": "P0",
    "createdAt": "2026-11-15T00:06:45.788Z",
-   "updatedAt": "2026-11-15T00:36:47.476Z",
+   "updatedAt": "2026-11-15T00:38:03.744Z",
    "builtAt": "",
    "notes": [
     {
@@ -228096,12 +227951,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:36:51.185Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T00:12:41.963Z",
-     "updatedAt": "2026-11-15T00:12:41.963Z"
+     "updatedAt": "2026-11-15T00:36:51.843Z"
     },
     {
      "id": "s2",
@@ -228118,12 +227973,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:36:55.987Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T00:12:41.963Z",
-     "updatedAt": "2026-11-15T00:12:41.963Z"
+     "updatedAt": "2026-11-15T00:36:56.557Z"
     },
     {
      "id": "s3",
@@ -228140,12 +227995,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:37:03.358Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T00:12:41.963Z",
-     "updatedAt": "2026-11-15T00:12:41.963Z"
+     "updatedAt": "2026-11-15T00:37:03.882Z"
     },
     {
      "id": "s4",
@@ -228162,12 +228017,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:37:08.832Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T00:12:41.963Z",
-     "updatedAt": "2026-11-15T00:12:41.963Z"
+     "updatedAt": "2026-11-15T00:37:09.213Z"
     },
     {
      "id": "s5",
@@ -228184,12 +228039,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:37:13.194Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T00:12:41.963Z",
-     "updatedAt": "2026-11-15T00:12:41.963Z"
+     "updatedAt": "2026-11-15T00:37:13.567Z"
     },
     {
      "id": "s6",
@@ -228206,12 +228061,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:37:17.606Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T00:12:41.963Z",
-     "updatedAt": "2026-11-15T00:12:41.963Z"
+     "updatedAt": "2026-11-15T00:37:18.230Z"
     },
     {
      "id": "s7",
@@ -228228,12 +228083,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:37:22.718Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T00:12:41.963Z",
-     "updatedAt": "2026-11-15T00:12:41.963Z"
+     "updatedAt": "2026-11-15T00:37:23.355Z"
     },
     {
      "id": "s8",
@@ -228272,12 +228127,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:38:03.744Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T00:12:41.963Z",
-     "updatedAt": "2026-11-15T00:12:41.963Z"
+     "updatedAt": "2026-11-15T00:38:04.185Z"
     },
     {
      "id": "s10",
@@ -228313,7 +228168,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
