@@ -2329,5 +2329,41 @@
     "wave": 1,
     "module": "app-console",
     "notes": "Nov 13 2026 (auto-land-every-finished-build-lands): push-banner land/ autoLand on by default (autoLandRev 2; per-build off/on), build-hook@1 listener land/hook.mjs, serial landing lock (land.mjs serial / lock), P0 fix builds through axf.build-dispatch@1 (POST /land/fix) with FYI alerts, refreshRunning every 30 min, sweep every 10 min, GET /land/line + banner Landing chip. REST, MCP (plugin-commands@1), CLI land.mjs, voice through the same commands."
+  },
+  "cx.buildengine.seriallander": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Nov 14 2026 (build land-finish-auto-land-live-clear-backlog): push-banner land/land-one.mjs (landOne, checkAndLand, runLine, enqueue, applyRun over framework/core/landing-line.mjs; attempts as framework/core/land-run.mjs land-run@1 in land-runs.jsonl and on the build's builds@1 land record via builds-live land); the finish hook enqueues at once (land/hook.mjs); cron axf-auto-land runs land.mjs run then land-one line; merge queue mode serial by default (config rev 3); failsOnMain keeps a check main fails too from turning a build red; owner-only lock with heartbeat; one redeploy + doubled-chrome check (check-chrome-once.mjs) and a phone summary per batch. API: GET /land/lander, POST /land/one, MCP, axf land status|one, voice. Tests land/test-land-one.mjs."
+  },
+  "cx.buildengine.driftkeeper": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Nov 14 2026: push-banner land/keep-fresh.mjs (keepFresh, sessionHold: index.lock / MERGE_HEAD / rebase / .axf-fresh-hold), called by every auto-land round; behindMain via builds-live land --behind. API: POST /land/fresh, axf land fresh, MCP, voice. Test land/test-keep-fresh.mjs."
+  },
+  "cx.buildengine.landbacklog": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Nov 14 2026: push-banner land/backlog.mjs, land/supersede.mjs (deleted branches read from refs/pull/<n>/head; a version main once had is not unique). API: GET /land/backlog, POST /land/archive|flag, axf land backlog|archive|flag, MCP, voice. Tests land.test.mjs, land/test-supersede.mjs."
+  },
+  "cx.buildengine.landcolumn": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Nov 14 2026: framework/react/components/LandCell.tsx (landView, landSortValue), on the Build manager, Pipeline tabs and the orchestrator grid; rows carry build-pipeline@1 land. Kotlin twin deferred."
+  },
+  "cx.buildengine.unlandedalert": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Nov 14 2026: push-banner server unlanded() + ensure_unlanded_health (axf.health@1 land-unlanded), notify.json land.unlanded and land.summary. Tests push-banner test.py."
+  },
+  "cx.buildengine.dispatchfill": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Nov 14 2026: build-orchestrator pipeline-core plan({ skip }), pipeline.mjs tick refill passes (FILL_PASSES); regression test pipeline.test.mjs. Dispatcher state via axf.build-dispatch@1 status(), GET /land/dispatcher, axf land dispatcher."
   }
 }

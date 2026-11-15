@@ -2544,6 +2544,30 @@
                 {
                   "id": "cx.buildengine.autoland",
                   "title": "Auto-land by default: every finished build lands itself the moment it finishes, through one serial landing line; a clash or red tests gets a P0 merge-main-and-land fix build until it lands; running builds get main every 30 min; a 10-min sweeper; Landing chip with what is stuck"
+                },
+                {
+                  "id": "cx.buildengine.seriallander",
+                  "title": "Serial lander: finished builds land one at a time the moment they are built (landing-line@1 + land-run@1): main merged in, generated files regenerated, CI once on the merged head (cancelled = re-run), merged on green with the App token, P0 fix build on red or a clash; the merge queue's stacks and batches only as settings behind it"
+                },
+                {
+                  "id": "cx.buildengine.driftkeeper",
+                  "title": "Drift keeper: every 30 min each running build gets main merged into its own worktree (skips a dirty or session-held one), generated files regenerated, pushed; commits behind main recorded on every running build"
+                },
+                {
+                  "id": "cx.buildengine.landbacklog",
+                  "title": "Landing backlog and supersede check: every finished build not on main with behind main, priority and age (Brett's named builds first); git cherry + file level finds what is already on main (archive tag, PR closed) and what is unique (flagged)"
+                },
+                {
+                  "id": "cx.buildengine.landcolumn",
+                  "title": "Commits-behind column: one framework LandCell (behind main + landing state) on every build grid, a control@1 target land:<build> per row"
+                },
+                {
+                  "id": "cx.buildengine.unlandedalert",
+                  "title": "Unlanded alert: a systems check item goes red when a finished build sits unlanded over 15 minutes; its auto-fix puts them in the landing line; pushed once to AmberX (axf.notify@1 land.unlanded)"
+                },
+                {
+                  "id": "cx.buildengine.dispatchfill",
+                  "title": "Dispatcher fills every slot it can in one tick: parked builds (launch failed 3 times this hour) take no slot, a failed or gated launch hands its slot to the next queued build"
                 }
               ]
             },

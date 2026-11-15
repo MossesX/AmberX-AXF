@@ -219,8 +219,41 @@
         "title": "Sweep now",
         "text": "Runs the sweeper at the next round (within 3 minutes): every finished build not on main is landed or gets its P0 fix build. It also runs by itself every 10 minutes.",
         "kind": "button"
+      },
+      {
+        "target": "one-at-a-time-the-landing-line",
+        "title": "One at a time: the landing line",
+        "text": "The serial lander (on by default). Every finished build joins the landing line the moment it is built and lands on its own: main merged into its branch, generated files regenerated, CI run once on that head (a cancelled run is started again, never counted as a failure), merged on green. Red: a P0 fix build with your words and the failing check, and the line moves on. Off: the older batch or per-PR stack. Also: axf land status, GET /land/lander, voice \"what's landing\".",
+        "kind": "toggle"
       }
     ],
-    "intros": []
+    "intros": [
+      {
+        "screen": "landing-line",
+        "title": "Landing: the serial lander",
+        "steps": [
+          {
+            "say": "Every finished build lands by itself, one at a time: main is merged into its branch, generated files are regenerated, CI runs once on that head and it merges on green. A cancelled CI run is started again, never counted as a failure.",
+            "target": "one-at-a-time-the-landing-line"
+          },
+          {
+            "say": "Red after the merge: a P0 fix build is filed with your words and the failing check, and the line moves straight on to the next build. A code clash is flagged the same way.",
+            "target": "landing"
+          },
+          {
+            "say": "The drift keeper merges main into every running build every 30 minutes (never into a worktree mid-edit or held by its session), so nothing gets hundreds of commits behind.",
+            "target": ""
+          },
+          {
+            "say": "Every build grid has a Landing column: how many commits the build is behind main and where its landing stands. A finished build left unlanded for over 15 minutes turns the systems check red and is put in the line by itself.",
+            "target": ""
+          },
+          {
+            "say": "Everything here is also axf land status, backlog, one, archive, flag, fresh and dispatcher, the /land REST routes, MCP and voice.",
+            "target": ""
+          }
+        ]
+      }
+    ]
   }
 }
