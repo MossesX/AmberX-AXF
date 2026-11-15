@@ -338,3 +338,24 @@ animIntensity` (core/engines/behavior.ts: `skinAnimationVars`, `withAnimationPre
 `setAnimationPref`) and the colour maths in core/engines/swatches.ts (`shadesOf`, `mixHex`, `skinSwatches`,
 `sweepOrigin`); fixture framework/spec/fixtures/skin-animations.json. Kotlin twin deferred (no new Android work): the
 Compose behaviour reader ignores the new fields (defaults apply), so Android skins stay still until it is ported.
+
+## Deferred: grid-rows@1, 1 or 2 lines per grid row set by the skin (Nov 15 2026)
+
+Build every-grid-1-2-rows-per-item-set-skin (Fable). Brett: "every grid supposed to be 1 or 2 rows depending on the skin".
+Web only, no new Android work:
+- `core/engines/component-tokens.mjs`: the grid family's `rowLines` token (kind `lines`, 1 | 2, default 2) →
+  `--fx-grid-row-lines`, mirrored on the root as `data-axf-row-lines` (`styleThemeAttrs`, engines/theme.ts), and
+  `secondaryText` for the second line; the customize token `rowLines` on tab groups and containers sets the variable on
+  that root.
+- skin@1 `grid.rowLines` (design packages `extras.grid.rowLines`); a pick per level beside `colorTheme` (`rowLines` on the
+  app level, a `ui:` / `plugin:` scope, the hub-wide skin, the `defaultSkin` pointer), folded by `resolveSkinChain`
+  child over parent and written into the composed look as the tokens.style override `grid.rowLines`
+  (`core/engines/skin.ts`, `skin-rules.mjs`, `skin-coverage.mjs` `rowLinesCoverage`).
+- `core/engines/grid-rows.ts`: the row-slot contract (items with primary / secondary cells and a detail; `gridRowPlan`
+  lays a row out as one inline line or primary + secondary; `gridRowInput` toggles the detail on tap / Enter;
+  `resolveGridRowLines` applies instance → root → theme → 2). The web classes `fx-rows*` in framework/ui/axf.css.
+  Fixture `spec/fixtures/grid-rows.json`, spec `spec/GRID-ROWS.md`.
+The Kotlin twin, when Android resumes: `GridRowsEngine.kt` replaying the fixture (normalize, plan per lines, input →
+state), `StyleTheme.grid.rowLines` read into `Axf.grid.rowLines` with the same precedence, the skin reader folding
+`rowLines` per level exactly as `resolveSkinChain`, and a Compose row that draws the plan (one `Text` line with
+ellipsis, or two) and toggles the detail on tap / Enter.

@@ -643,6 +643,7 @@
       "grid.rowHeight",
       "grid.radius",
       "grid.rowLines",
+      "grid.secondaryText",
       "grid.groupHeaderBg",
       "grid.groupHeaderBgNested",
       "grid.groupHeaderBgDeep",

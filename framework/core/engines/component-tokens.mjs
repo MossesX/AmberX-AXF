@@ -95,6 +95,7 @@ export const COMPONENT_TOKEN_FAMILIES = {
       t('rowHeight', 'length', 'auto', 'pro', 'Minimum row height; auto = as tall as the content.'),
       t('radius', 'length', '0', 'basic', 'Corner radius of the whole grid.'),
       t('rowLines', 'lines', '2', 'basic', 'Lines per collapsed item: 1 = primary and secondary cells on one line (truncated), 2 = primary, then secondary on a second line. The skin sets it; the root carries it as data-axf-row-lines.'),
+      t('secondaryText', 'colour', 'var(--fx-muted)', 'basic', 'Text colour of a row\'s secondary cells (the second line of a 2-line row, the tail of a 1-line row; grid-rows@1).'),
       // groups, sticky, empty
       t('groupHeaderBg', 'colour', 'var(--fx-surface3)', 'pro', 'Background of a top-level group header row.'),
       t('groupHeaderBgNested', 'colour', 'var(--fx-surface2)', 'advanced', 'Background of a second-level group header row.'),

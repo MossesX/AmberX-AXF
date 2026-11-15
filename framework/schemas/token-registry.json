@@ -1786,6 +1786,7 @@
       "source": "engine:framework/core/engines/component-tokens.mjs",
       "sources": [
         "engine:framework/core/engines/component-tokens.mjs",
+        "engine:framework/core/engines/grid-rows.ts",
         "framework/ui/axf.css"
       ]
     },
@@ -1831,6 +1832,20 @@
       "sources": [
         "engine:framework/core/engines/layout.ts",
         "engine:framework/core/engines/token-registry.mjs"
+      ]
+    },
+    {
+      "id": "--fx-grid-secondary-text",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Grid: text colour of a row's secondary cells (the second line of a 2-line row, the tail of a 1-line row; grid-rows@1).",
+      "default": "var(--fx-muted)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
       ]
     },
     {

@@ -4,7 +4,7 @@
     "grid": {
       "label": "Grid",
       "prefix": "--fx-grid-",
-      "tokens": 33
+      "tokens": 34
     },
     "tabs": {
       "label": "Tab group",
@@ -262,6 +262,16 @@
       "description": "Lines per collapsed item: 1 = primary and secondary cells on one line (truncated), 2 = primary, then secondary on a second line. The skin sets it; the root carries it as data-axf-row-lines.",
       "path": "grid.rowLines",
       "var": "--fx-grid-row-lines"
+    },
+    {
+      "family": "grid",
+      "key": "secondaryText",
+      "kind": "colour",
+      "default": "var(--fx-muted)",
+      "level": "basic",
+      "description": "Text colour of a row's secondary cells (the second line of a 2-line row, the tail of a 1-line row; grid-rows@1).",
+      "path": "grid.secondaryText",
+      "var": "--fx-grid-secondary-text"
     },
     {
       "family": "grid",
@@ -950,6 +960,7 @@
     "--fx-grid-row-height": "auto",
     "--fx-grid-radius": "0",
     "--fx-grid-row-lines": "2",
+    "--fx-grid-secondary-text": "var(--fx-muted)",
     "--fx-grid-group-header-bg": "var(--fx-surface3)",
     "--fx-grid-group-header-bg-nested": "var(--fx-surface2)",
     "--fx-grid-group-header-bg-deep": "var(--fx-surface)",
@@ -1241,6 +1252,15 @@
       "default": "2",
       "level": "basic",
       "description": "Lines per collapsed item: 1 = primary and secondary cells on one line (truncated), 2 = primary, then secondary on a second line. The skin sets it; the root carries it as data-axf-row-lines.",
+      "family": "grid"
+    },
+    {
+      "id": "grid.secondaryText",
+      "token": "--fx-grid-secondary-text",
+      "kind": "color",
+      "default": "var(--fx-muted)",
+      "level": "basic",
+      "description": "Text colour of a row's secondary cells (the second line of a 2-line row, the tail of a 1-line row; grid-rows@1).",
       "family": "grid"
     },
     {
@@ -1864,6 +1884,7 @@
     "grid.rowHeight": "string",
     "grid.radius": "string",
     "grid.rowLines": "number",
+    "grid.secondaryText": "string",
     "grid.groupHeaderBg": "string",
     "grid.groupHeaderBgNested": "string",
     "grid.groupHeaderBgDeep": "string",

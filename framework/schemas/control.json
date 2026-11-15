@@ -554,6 +554,15 @@
           "family": "grid"
         },
         {
+          "id": "grid.secondaryText",
+          "token": "--fx-grid-secondary-text",
+          "kind": "color",
+          "default": "var(--fx-muted)",
+          "level": "basic",
+          "description": "Text colour of a row's secondary cells (the second line of a 2-line row, the tail of a 1-line row; grid-rows@1).",
+          "family": "grid"
+        },
+        {
           "id": "grid.groupHeaderBg",
           "token": "--fx-grid-group-header-bg",
           "kind": "color",
@@ -3923,6 +3932,7 @@
           "grid.rowHeight",
           "grid.radius",
           "grid.rowLines",
+          "grid.secondaryText",
           "grid.groupHeaderBg",
           "grid.groupHeaderBgNested",
           "grid.groupHeaderBgDeep",

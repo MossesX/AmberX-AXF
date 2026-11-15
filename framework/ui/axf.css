@@ -50,6 +50,7 @@
   --fx-grid-row-height: auto;
   --fx-grid-radius: 0;
   --fx-grid-row-lines: 2;
+  --fx-grid-secondary-text: var(--fx-muted);
   --fx-grid-group-header-bg: var(--fx-surface3);
   --fx-grid-group-header-bg-nested: var(--fx-surface2);
   --fx-grid-group-header-bg-deep: var(--fx-surface);
@@ -1174,6 +1175,27 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-table--matrix th.is-current { color: var(--fx-grid-header-active-text); }
 .fx-ok { color: var(--fx-success); }
 .fx-no { color: var(--fx-muted); opacity: var(--fx-opacity-muted); }
+
+/* grid-rows@1 (core/engines/grid-rows.ts): a grid's rows as slots. Collapsed = 1 line (primary + secondary inline,
+   truncated) or 2 lines (primary, then secondary), set by the skin through --fx-grid-row-lines / data-axf-row-lines
+   (the engine's plan says which lines a row has; the stylesheet only draws them). Tap or Enter opens the detail. */
+.fx-rows { display: flex; flex-direction: column; min-width: 0; color: var(--fx-grid-row-text); border-radius: var(--fx-grid-radius); border: var(--fx-border-w) solid var(--fx-grid-outer-border); }
+.fx-rows__item { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); min-width: 0; min-height: var(--fx-grid-row-height); padding: var(--fx-grid-cell-pad-y) var(--fx-grid-cell-pad-x); background: color-mix(in srgb, var(--fx-grid-row-bg) calc(var(--fx-grid-opacity) * 100%), transparent); border-bottom: var(--fx-border-w) solid var(--fx-grid-line-color); }
+.fx-rows__item:nth-child(even) { background: color-mix(in srgb, var(--fx-grid-row-alt-bg) calc(var(--fx-grid-opacity) * 100%), transparent); }
+.fx-rows__item:last-child { border-bottom: 0; }
+.fx-rows__item[aria-expanded] { cursor: pointer; }
+.fx-rows__item[aria-expanded]:hover { background: var(--fx-grid-hover-bg); color: var(--fx-grid-hover-text); }
+.fx-rows__item[aria-expanded='true'] { background: var(--fx-grid-expanded-bg); }
+.fx-rows__item:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-grid-focus-ring); outline-offset: calc(var(--fx-border-w) * -2); }
+.fx-rows__line { display: flex; align-items: baseline; gap: var(--fx-dens-gap-lg); min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fx-rows__line--secondary { font-size: var(--fx-type-scale-sm); color: var(--fx-grid-secondary-text); }
+.fx-rows__cell { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fx-rows__cell:first-child { flex: 1 1 auto; }
+.fx-rows__line--inline .fx-rows__cell--secondary { font-size: var(--fx-type-scale-sm); color: var(--fx-grid-secondary-text); }
+.fx-rows__detail { padding: var(--fx-dens-gap-xl) var(--fx-grid-cell-pad-x); background: var(--fx-grid-expanded-bg); border-bottom: var(--fx-border-w) solid var(--fx-grid-line-color); white-space: normal; cursor: auto; }
+.fx-rows__detail dl { display: grid; grid-template-columns: max-content 1fr; gap: var(--fx-dens-gap-xs) var(--fx-dens-gap-xl); margin: 0; }
+.fx-rows__detail dt { color: var(--fx-grid-secondary-text); }
+.fx-rows__detail dd { margin: 0; }
 
 /* ---------------- misc ---------------- */
 
