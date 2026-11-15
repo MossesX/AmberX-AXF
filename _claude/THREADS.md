@@ -798,8 +798,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:34 UTC · `land-batch-merge-main-each-finished` note (all) · pipeline
-- 2026-11-14 23:34 UTC · `skin-axhub-override-switch-greyed-out` → queued, note (all) · pipeline
 - 2026-11-14 23:34 UTC · `skin-config-panel-merge-main-and-land` → queued, note (all) · pipeline
 - 2026-11-14 23:31 UTC · `themed-native-controls-plugin` s19 done (all) · orchestrator
 - 2026-11-14 23:34 UTC · `themed-native-controls-plugin` s20 done (all) · orchestrator
@@ -1198,6 +1196,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 01:43 UTC · `demo-video-series-three-minute-browser` s7 done (all) · orchestrator
 - 2026-11-15 01:43 UTC · `demo-video-series-three-minute-browser` note (all) · orchestrator
 - 2026-11-15 01:27 UTC · `token-registry-skin-editor-live-sandbox` s9 done (all) · orchestrator
+- 2026-11-15 01:45 UTC · `token-registry-skin-editor-live-sandbox` s10 done, → complete (all) · orchestrator
+- 2026-11-15 01:45 UTC · `token-registry-skin-editor-live-sandbox` note (all) · orchestrator
 
 ## Token passes (log)
 
