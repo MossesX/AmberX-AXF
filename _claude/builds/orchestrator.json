@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T01:21:47.817Z",
+ "updatedAt": "2026-11-15T01:22:06.753Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -139167,7 +139167,7 @@
    "branch": "claude/launch-landing-page-waitlist-referral",
    "pr": "#668",
    "createdAt": "2026-11-14T04:00:27.661Z",
-   "updatedAt": "2026-11-15T01:16:11.495Z",
+   "updatedAt": "2026-11-15T01:21:55.370Z",
    "builtAt": "",
    "notes": [
     {
@@ -139193,6 +139193,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-launch-landing-page-waitlist-referral--paulie, shared account login)",
      "at": "2026-11-15T01:16:11.495Z"
+    },
+    {
+     "text": "Headless run axf-launch-landing-page-waitlist-referral--paulie: brief only · start 11.0K tokens ($0.03) · cost $0.50 · 28 turns · 6 tools, MCP none",
+     "at": "2026-11-15T01:21:55.370Z"
     }
    ],
    "approvals": [],
