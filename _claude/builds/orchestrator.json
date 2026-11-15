@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T04:25:23.918Z",
+ "updatedAt": "2026-11-15T04:25:46.406Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -147582,7 +147582,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T04:20:19.690Z",
-   "updatedAt": "2026-11-15T04:25:13.810Z",
+   "updatedAt": "2026-11-15T04:25:16.455Z",
    "builtAt": "",
    "notes": [
     {
@@ -147616,6 +147616,10 @@
     {
      "text": "Session stopped on its own with 37 steps left: back in Pending for Brett.",
      "at": "2026-11-15T04:25:13.810Z"
+    },
+    {
+     "text": "Headless run axf-move-build-orchestrator-to-axhub--joey: brief only · start 11.1K tokens ($0.03) · cost $0.11 · 4 turns · 6 tools, MCP none",
+     "at": "2026-11-15T04:25:16.455Z"
     },
     {
      "text": "Waiting: pre-flight gate (s1) not met. Prerequisite build auto-lander-controls-in-the-gate-plugin is still running (no PR, not built), so the gate and merge queue are not yet in the axf-orchestrator container / axHub. s1 left open; re-run once that build has landed.",
