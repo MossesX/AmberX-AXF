@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:34:18.951Z",
+ "updatedAt": "2026-11-15T00:34:33.188Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -126148,7 +126148,7 @@
    "pr": "#631",
    "priority": "P1",
    "createdAt": "2026-11-13T17:59:17.167Z",
-   "updatedAt": "2026-11-15T00:32:50.982Z",
+   "updatedAt": "2026-11-15T00:34:30.986Z",
    "builtAt": "",
    "notes": [
     {
@@ -126182,6 +126182,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 2): axf-restore-asset-designer-plugin-merged-nov--lenny.",
      "at": "2026-11-15T00:01:42.554Z"
+    },
+    {
+     "text": "Headless run axf-restore-asset-designer-plugin-merged-nov--lenny: brief only · start 11.6K tokens ($0.03) · cost $2.29 · 77 turns · 6 tools, MCP none",
+     "at": "2026-11-15T00:34:30.986Z"
     }
    ],
    "approvals": [

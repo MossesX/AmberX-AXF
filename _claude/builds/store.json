@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5800,
- "updatedAt": "2026-11-15T00:34:18.951Z",
+ "rev": 5801,
+ "updatedAt": "2026-11-15T00:34:33.188Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -135775,23 +135775,6 @@
     "from": "",
     "addenda": []
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:33:58.003Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/build-manager/plugin.json, apps/console-web/plugins/build-manager/server/__init__.py, apps/console-web/plugins/build-manager/test.py, apps/console-web/plugins/build-manager/web/flow.tsx, apps/console-web/plugins/build-manager/web/index.tsx, apps/console-web/plug"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -136398,23 +136381,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:33:53.821Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/build-manager/plugin.json, apps/console-web/plugins/build-manager/server/__init__.py, apps/console-web/plugins/build-manager/test.py, apps/console-web/plugins/build-manager/web/build-manager.css, apps/console-web/plugins/build-manager/web/flow.tsx, apps/console-"
-     }
-    ]
    },
    "steps": [
     {
@@ -137716,23 +137682,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:34:03.260Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/README.md, apps/console-web/plugins/vps-settings/help.json, apps/console-web/plugins/vps-settings/hooks.mjs, apps/console-web/plugins/vps-settings/install.mjs, apps/console-web/plugins/vps-settings/plugin.json, apps/console-web/plu"
-     }
-    ]
    },
    "steps": [
     {
@@ -200531,7 +200480,7 @@
    "pr": "#631",
    "priority": "P1",
    "createdAt": "2026-11-13T17:59:17.167Z",
-   "updatedAt": "2026-11-15T00:32:50.982Z",
+   "updatedAt": "2026-11-15T00:34:30.986Z",
    "builtAt": "",
    "notes": [
     {
@@ -200565,6 +200514,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 2): axf-restore-asset-designer-plugin-merged-nov--lenny.",
      "at": "2026-11-15T00:01:42.554Z"
+    },
+    {
+     "text": "Headless run axf-restore-asset-designer-plugin-merged-nov--lenny: brief only · start 11.6K tokens ($0.03) · cost $2.29 · 77 turns · 6 tools, MCP none",
+     "at": "2026-11-15T00:34:30.986Z"
     }
    ],
    "approvals": [
@@ -200791,7 +200744,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
