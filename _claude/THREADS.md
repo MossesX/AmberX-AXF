@@ -807,7 +807,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 01:23 UTC · `banner-widget-shapes-more-than-circle` s2 done, → running (all) · orchestrator
 - 2026-11-15 01:24 UTC · `molly-gap-axhub-cors` → running, note (all) · pipeline
 - 2026-11-15 01:24 UTC · `molly-gap-axhub-cors` note (all) · orchestrator
 - 2026-11-15 01:24 UTC · `token-registry-skin-editor-live-sandbox` s8 done (all) · orchestrator
@@ -1207,6 +1206,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 15:13 UTC · `shipped-features-open-button-views-each` s12 done (all) · orchestrator
 - 2026-11-15 15:13 UTC · `data-container-axf-data-holds-all` → running (all) · builds-live
 - 2026-11-15 15:13 UTC · `axf-data-postgres-real-tables-own` note (all) · orchestrator
+- 2026-11-15 15:13 UTC · `phone-connect-small-android-companion` s14 done (all) · orchestrator
 
 ## Token passes (log)
 
