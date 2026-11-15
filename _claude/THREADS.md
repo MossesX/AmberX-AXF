@@ -798,7 +798,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:35 UTC · `skin-config-panel-merge-main-and-land` note (all) · orchestrator
 - 2026-11-14 23:35 UTC · `auto-land-merge-main-land-land-mjs-clash` branch claude/auto-land-every-finished-build-lands (all) · builds-live
 - 2026-11-14 23:37 UTC · `auto-land-merge-main-land-land-mjs-clash` note (all) · orchestrator
 - 2026-11-14 23:17 UTC · `merge-main-land-one-source-truth-console` added (0 steps) (all) · land-finish-auto-land-live-clear-backlog
@@ -1198,6 +1197,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 01:50 UTC · `prompting-engine-control-panel-events` → pending, note (all) · reconciler
 - 2026-11-15 01:50 UTC · `launch-landing-page-waitlist-referral` → pending, note (all) · reconciler
 - 2026-11-15 02:01 UTC · `banner-widget-shapes-more-than-circle` → pending, note (all) · reconciler
+- 2026-11-15 02:11 UTC · `demo-video-series-three-minute-browser` → pending, note (all) · reconciler
 
 ## Token passes (log)
 
