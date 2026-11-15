@@ -13,6 +13,8 @@
  *   … now <build> | hold <build> [--why "…"] | release <build> | after <build> <other>
  *   … merge-main <build|branch> [--dry-run] [--json]   merge main into one build's branch now (same rules as a round)
  *   … queue list | add <pr> | remove <pr> | move <pr> <index>   the merge queue (merge-queue.mjs; it runs in every round)
+ *   … lander status | line | runs | on | off | mode <serial|merge-queue> | move-up|move-down|skip|land-now <pr>
+ *       the auto-lander's switch, mode, landing line and run log (auto-lander.mjs; Nov 15 2026)
  *
  * One round, per finished build (land-core.mjs isCandidate), in dependency order:
  *   1. its worktree: synced files committed on its own branch, scratch files skipped, untracked copies of hub files
@@ -45,6 +47,8 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
 import { queueRound, readQueue, readQueueConfig, main as queueMain } from './merge-queue.mjs';
+import * as A from './auto-lander-core.mjs';
+import { recordRun, main as landerMain } from './auto-lander.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SELF_REPO = resolve(HERE, '../../../../..');
@@ -468,6 +472,43 @@ function defaultAgentJob(s) {
   };
 }
 
+// ------------------------------------------------------------------ one cron run
+
+/**
+ * One cron run (Nov 15 2026, auto-lander controls): the auto-lander's switch is read first; off ends the run at once
+ * with reason `switched-off`. On: the builds round (only while autoLand is on), then the landing path the mode picks
+ * (serial = the queue one deep, merge-queue = the configured queue). Every run, dry or not, ends with a run record
+ * (auto-lander-run@1); a dry run only prints it.
+ * Before this, the run printed "auto-land is off" whenever autoLand was off (it has been since Nov 4), even though the
+ * merge queue ran in the same run: the log said the lander was dead while it was landing.
+ */
+export async function runOnce({ s = settings(), dry = false, json = false, only = '', print = (o, t) => console.log(json ? JSON.stringify(o) : t), gh = null, queue = queueRound, landRound = round, record = recordRun, now = () => new Date() } = {}) {
+  const startedAt = now().toISOString();
+  const lander = A.readLander(readJson(join(s.dataDir, 'config.json'), {}) || {});
+  if (!lander.enabled) {
+    const rec = A.runRecord({ startedAt, finishedAt: now().toISOString(), mode: lander.mode, enabled: false });
+    if (!dry) record(s, rec);
+    return print({ on: false, lander, run: rec }, 'auto-lander switched off (Settings → Plugins → Build orchestrator → Auto-lander, or: axf lander on)');
+  }
+  gh ??= makeGitHub(s); // one client per run: one ETag cache, one count
+  const log = (m) => !json && console.error(m);
+  let st = { items: [] }; let mq = null; let error = '';
+  try { st = await landRound({ s, gh, dry, only, log }); } catch (e) { error = e.message; log(`auto-land: ${e.message}`); }
+  // the landing path (same cron, same lock): it merges what the builds round made ready
+  if (!only) {
+    try { mq = await queue({ s, git: makeGit(s.repo), gh, api: makeConsole(s), dry, fetched: st.on !== false, log }); st.queue = { on: mq.on, items: (mq.items || []).length, kicked: (mq.kicked || []).length }; if (mq.error) error ||= mq.error; }
+    catch (e) { error ||= e.message; log(`merge queue: ${e.message}`); }
+  }
+  gh.save?.(); st.github = { calls: gh.calls, cached: gh.cached, left: Number.isFinite(gh.left?.()) ? gh.left() : null };
+  if (!json) console.error(`github: ${gh.calls} billed call(s), ${gh.cached} answered from cache (304)`);
+  const tokenOk = !/no GitHub token/i.test(error);
+  const rec = A.runRecord({ startedAt, finishedAt: now().toISOString(), mode: lander.mode, enabled: true, tokenOk, error: tokenOk ? error : '', queue: mq || {}, at: mq?.at || '' });
+  if (!dry && !only) record(s, rec);
+  st.run = rec; st.lander = lander;
+  const head = `auto-lander on · ${lander.mode} · ${rec.result}${rec.landing ? ` · landing #${rec.landing.pr}` : ''}${rec.merged.length ? ` · landed ${rec.merged.map((n) => `#${n}`).join(', ')}` : ''}${rec.reason ? ` · ${rec.reason}` : ''}`;
+  return print(st, [head, ...(st.on === false ? [] : (st.items || []).map(line))].join('\n'));
+}
+
 // ------------------------------------------------------------------ CLI
 
 const line = (x) => `${x.state.padEnd(8)} ${x.id}${x.pr ? ` #${x.pr}` : ''}${x.reason ? ` · ${x.reason.text.replace(`${x.id}: `, '')}` : ' · ready: merges at the next push banner round'}`;
@@ -480,18 +521,8 @@ export async function main(argv) {
   const s = settings();
   const print = (o, text) => console.log(json ? JSON.stringify(o) : text);
   const known = core.LAND_COMMANDS.find((c) => c.cli === cmd);
-  if (cmd === 'run') {
-    const gh = makeGitHub(s); // one client per run: one ETag cache, one count
-    const st = await round({ s, gh, dry, only: opt('only'), log: (m) => !json && console.error(m) });
-    // the merge queue takes its turn in the same round (same cron, same lock): it merges what auto-land made ready
-    if (!opt('only')) {
-      try { const git = makeGit(s.repo); const mq = await queueRound({ s, git, gh, api: makeConsole(s), dry, fetched: true, log: (m) => !json && console.error(m) }); st.queue = { on: mq.on, items: (mq.items || []).length, kicked: (mq.kicked || []).length }; }
-      catch (e) { if (!json) console.error(`merge queue: ${e.message}`); }
-    }
-    gh.save(); st.github = { calls: gh.calls, cached: gh.cached, left: Number.isFinite(gh.left()) ? gh.left() : null };
-    if (!json) console.error(`github: ${gh.calls} billed call(s), ${gh.cached} answered from cache (304)`);
-    return print(st, st.on === false ? 'auto-land is off (Settings → Plugins → Push banner → Auto-land)' : st.items.map(line).join('\n') || 'no finished builds to land');
-  }
+  if (cmd === 'run') return runOnce({ s, dry, json, only: opt('only'), print });
+  if (cmd === 'lander') return landerMain(argv.slice(argv.indexOf('lander') + 1), { s });
   if (cmd === 'queue') return queueMain(argv.slice(argv.indexOf('queue') + 1));
   if (cmd === 'merge-main') {
     // one build (or branch) gets main merged in right now, by the round's rules: what a re-land after a lander fix needs
@@ -517,7 +548,7 @@ export async function main(argv) {
     const d = control(s, cmd, id, { why: opt('why'), after: rest[1] });
     return print({ ok: true, control: d }, `${cmd}: ${id}${cmd === 'after' ? ` after ${rest[1]}` : ''}`);
   }
-  throw new Error('usage: land.mjs run [--dry-run] [--only <build>] | list | blocked | now <build> | hold <build> [--why …] | release <build> | after <build> <other> | merge-main <build> [--dry-run]');
+  throw new Error('usage: land.mjs run [--dry-run] [--only <build>] | lander <status|line|runs|on|off|mode|move-up|skip|land-now> | list | blocked | now <build> | hold <build> [--why …] | release <build> | after <build> <other> | merge-main <build> [--dry-run]');
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

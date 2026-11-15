@@ -33,6 +33,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as q from './merge-queue-core.mjs';
 import * as core from './land-core.mjs';
+import * as A from './auto-lander-core.mjs';
 import { ciOf, crewSay, mergeMain, resolveConflicts, settings, makeGit, makeGitHub, makeConsole } from './land.mjs';
 
 const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
@@ -48,7 +49,8 @@ export function readQueueConfig(s) {
   const depth = Number.isInteger(c.queueDepth) ? Math.min(q.QUEUE_DEPTH_MAX, Math.max(1, c.queueDepth)) : q.QUEUE_DEFAULTS.queueDepth;
   const mode = q.QUEUE_MODES.includes(c.queueMode) ? c.queueMode : q.QUEUE_DEFAULTS.queueMode;
   const batchSize = Number.isInteger(c.batchSize) ? Math.min(q.BATCH_SIZE_MAX, Math.max(1, c.batchSize)) : q.QUEUE_DEFAULTS.batchSize;
-  return { mergeQueue: c.mergeQueue !== false, depth, mode, batchSize, waitUi: c.landWaitUi !== false };
+  // the auto-lander's one switch and mode (auto-lander-core.mjs): serial = the stack one deep, off = no queue round
+  return A.queuePlan(A.readLander(c), { mergeQueue: c.mergeQueue !== false, depth, mode, batchSize, waitUi: c.landWaitUi !== false });
 }
 export function queueControl(s, cmd, pr, opts = {}) {
   const cur = (readQueue(s).items || []).map((x) => x.pr);

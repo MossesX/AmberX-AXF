@@ -225,7 +225,7 @@ class Pushes:
                 "landWaitUi": raw.get("landWaitUi") is not False,
                 # Merge queue (Nov 4 2026, Brett: "We're paying to do these CI checks twice."): each ready PR is tested
                 # once on top of main + the PRs ahead of it and merges with no retest. On unless switched off.
-                "mergeQueue": raw.get("mergeQueue") is not False,
+                "mergeQueue": (raw["autoLander"]["enabled"] is not False) if isinstance(raw.get("autoLander"), dict) and isinstance(raw["autoLander"].get("enabled"), bool) else raw.get("mergeQueue") is not False,
                 "queueDepth": raw["queueDepth"] if isinstance(raw.get("queueDepth"), int) and not isinstance(raw.get("queueDepth"), bool) and 1 <= raw["queueDepth"] <= QUEUE_DEPTH_MAX else 3,
                 # Batch mode (Nov 10 2026, Brett: "Everything needs to go into the merge queue so we can make one build out of
                 # it before we send it to CI"): the ready PRs are combined into one commit, CI runs once, it lands as one.
@@ -264,7 +264,12 @@ class Pushes:
         if "batchSize" in body and (not isinstance(body["batchSize"], int) or isinstance(body["batchSize"], bool) or not 1 <= body["batchSize"] <= BATCH_SIZE_MAX):
             raise HTTPException(400, f"batchSize is 1 to {BATCH_SIZE_MAX}")
         flags["batchSize"] = body.get("batchSize", cur["batchSize"])
-        storage.write_json(data_dir() / "config.json", {"$axf": "push-banner-config@1", "repos": repos, "hidden": hidden, **flags})
+        # the auto-lander's own settings (land/auto-lander-core.mjs) are kept; its switch follows the merge queue's on/off
+        raw = storage.read_json(data_dir() / "config.json", {}) or {}
+        lander = dict(raw["autoLander"]) if isinstance(raw.get("autoLander"), dict) else None
+        if "mergeQueue" in body and lander is not None:
+            lander["enabled"] = body["mergeQueue"]
+        storage.write_json(data_dir() / "config.json", {"$axf": "push-banner-config@1", "repos": repos, "hidden": hidden, **flags, **({"autoLander": lander} if lander is not None else {})})
         with self._lock:
             self._cache = None
         return self.config()

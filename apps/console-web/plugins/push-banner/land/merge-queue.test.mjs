@@ -93,7 +93,7 @@ const heads = { 1: branch('b1', 'one.txt', '1\n'), 2: branch('b2', 'two.txt', '2
 sh(repo, 'fetch', '-q', 'origin');
 
 const s = { repo, slug: 'o/r', dataDir: data, remote: 'origin', base: 'main', archive: join(root, 'archive') };
-writeFileSync(join(data, 'config.json'), JSON.stringify({ queueMode: 'stack' })); // the Nov 4 per-PR stack; batch mode is tested below
+writeFileSync(join(data, 'config.json'), JSON.stringify({ queueMode: 'stack', autoLander: { enabled: true, mode: 'merge-queue' } })); // the Nov 4 per-PR stack; batch mode is tested below
 const git = makeGit(repo);
 const ciBySha = {}; const merges = []; const comments = []; const vars = [];
 const open = () => [1, 2, 3].filter((x) => !merges.includes(x)).map((x) => ({ number: x, title: `PR ${x}`, html_url: `u/${x}`, created_at: `2026-11-0${x}`, base: { ref: 'main' }, head: { ref: `b${x}`, sha: heads[x], repo: { full_name: 'o/r' } }, user: { login: 'bot' } }));
@@ -206,7 +206,7 @@ await t('batch rules: members, holds, decide (land all / split in half / kick th
 {
   const root2 = mkdtempSync(join(tmpdir(), 'mq-batch-'));
   const origin2 = join(root2, 'origin.git'); const repo2 = join(root2, 'repo'); const data2 = join(root2, 'data');
-  mkdirSync(data2);
+  mkdirSync(data2); writeFileSync(join(data2, 'config.json'), JSON.stringify({ autoLander: { enabled: true, mode: 'merge-queue' } })); // the configured queue (batch by default), not serial
   sh(root2, 'init', '-q', '--bare', '-b', 'main', origin2);
   sh(root2, 'clone', '-q', origin2, repo2);
   const commit2 = (file, text, msg) => { mkdirSync(join(repo2, file, '..'), { recursive: true }); writeFileSync(join(repo2, file), text); sh(repo2, 'add', file); sh(repo2, ...cfg, 'commit', '-q', '-m', msg); };
