@@ -807,7 +807,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 01:26 UTC · `demo-video-series-three-minute-browser` s6 done (all) · orchestrator
 - 2026-11-15 01:25 UTC · `banner-widget-shapes-more-than-circle` s3 done (all) · orchestrator
 - 2026-11-15 01:25 UTC · `molly-gap-expenses-cors` note (all) · orchestrator
 - 2026-11-15 01:26 UTC · `context-menus-plugin-one-true-source` s8 done, → built (all) · orchestrator
@@ -1207,6 +1206,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 15:14 UTC · `build-rules-tab-gate-rules-vps-owns` s17 done (all) · orchestrator
 - 2026-11-15 15:15 UTC · `axf-data-postgres-real-tables-own` → running, note (all) · pipeline
 - 2026-11-15 15:15 UTC · `phone-connect-small-android-companion` s15 done (all) · orchestrator
+- 2026-11-15 15:15 UTC · `shipped-features-open-button-views-each` s13 done (all) · orchestrator
 
 ## Token passes (log)
 
