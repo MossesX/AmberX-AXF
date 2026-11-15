@@ -124,6 +124,10 @@ jobs:
       - run: node framework/spec/check-refs.mjs                      # ref@1: mentions in banner text → links (fixtures/refs.json: names, kind words, explicit touches, PRs, files, peek)
       - run: node framework/spec/check-build-hook.mjs               # build-hook@1: one event per builds store change (created with steps + his words, steps-added, step-done, status, PR, merge, addendum, cancelled), stable ids, journal replay
       - run: node framework/spec/check-data-store.mjs               # data-store@1: registry mirror, the client on memory + file backends (same answers), rev/etag conflicts, append-only journals, watch, count manifests, http error mapping + retries, migration map, mode transitions
+      - name: axf-data service tests (CRUD, rev conflicts, append-only journals, history + restore, watch, auth refusal) and the wire contract replayed from Node
+        run: |
+          python3 -m pip install --quiet -r services/axf-data/requirements.txt httpx
+          python3 services/axf-data/test_store.py
       - run: node framework/spec/check-landing-line.mjs             # landing-line@1: one entry in flight, cancelled / superseded / stale runs re-run and never fail, red files a fix and the line moves on, pause / skip / move, merge-queue migration fixture
       - run: node framework/spec/check-feature-ledger.mjs            # feature-ledger@1 + deploy-log@1: one status lifecycle for features and edits, merge never loses a date / build / PR / prompt, live from the deploy log, grouping / sort / filter / export projections, schema snapshots
       - run: node framework/cli/help-coverage.mjs --check            # Help mode: every control in the framework chrome, the console + plugins and axHub web has help; fails if coverage drops below framework/spec/help-coverage.json
