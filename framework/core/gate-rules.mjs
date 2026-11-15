@@ -261,3 +261,221 @@ export function jsonSchemas() {
     },
   };
 }
+
+// ------------------------------------------------------------------ the default rule set
+
+/** The tests the lander runs after generated files were resolved (framework/spec/generated-files.json → tests). */
+export const DEFAULT_TESTS = Object.freeze([['node', 'apps/console-web/scripts/control-inventory.mjs', '--check'], ['node', 'framework/spec/check-project-fixtures.mjs']]);
+
+/**
+ * The default rules, in the order the gate reads them. `source` names what each one replaced: a push banner config.json
+ * key, a CI job, or the shared rule "Only the merge queue merges" (Nov 4 2026).
+ */
+export const DEFAULT_RULES = Object.freeze([
+  { id: 'merge-queue-only', kind: 'custom', enabled: true, severity: 'block', owner: 'console', title: 'Only the merge queue merges', description: 'A PR lands only through the lander (merge queue or landing line): no direct merge, no auto-merge, no update from main outside the queue; drafts and forks never land.', settings: { mode: 'batch', autoLand: false, directMerge: false, depth: 3, batchSize: 8 }, source: 'shared rule Nov 4 2026; config.json autoLand, mergeQueue, queueMode, queueDepth, batchSize' },
+  { id: 'ci-green', kind: 'ci', enabled: true, severity: 'block', owner: 'console', title: 'CI green', description: 'Every check is green on the commit that lands (the PR head, or the queue commit built on main). Red = needs a code fix; running or not started = waits.', settings: { on: 'queue-commit', redJoins: true, noRunMin: 10 }, source: 'land-core.blockReason ci; merge-queue-core.notReady' },
+  { id: 'tests', kind: 'tests', enabled: true, severity: 'block', owner: 'console', title: 'Tests after regeneration', description: 'The quick tests the generated-files manifest asks for pass after the lander resolved generated and additive files.', settings: { commands: DEFAULT_TESTS.map((t) => [...t]) }, source: 'land-core.landTests (framework/spec/generated-files.json)' },
+  { id: 'theme', kind: 'theme', enabled: true, severity: 'block', owner: 'console', title: 'Theme tokens', description: 'Every colour, size, spacing, font, radius and border comes from asset tokens (check-theme).', settings: { check: 'framework/cli/check-theme.mjs' }, source: 'CI job check-theme' },
+  { id: 'controls', kind: 'controls', enabled: true, severity: 'block', owner: 'console', title: 'Framework controls', description: 'UI uses framework controls, never raw ones (check-controls).', settings: { check: 'framework/cli/check-controls.mjs' }, source: 'CI job check-controls' },
+  { id: 'toolbars', kind: 'controls', enabled: true, severity: 'block', owner: 'console', title: 'Toolbars', description: 'Every toolbar has role="toolbar" and an aria-label; tab rows are the framework TabGroup (check-toolbars).', settings: { check: 'framework/cli/check-toolbars.mjs' }, source: 'CI job check-toolbars' },
+  { id: 'ui-review', kind: 'ui-review', enabled: true, severity: 'block', owner: 'console', title: 'UI Review', description: "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.", settings: { holdOn: ['waiting', 'changes', 'rejected', 'unknown'] }, source: 'config.json landWaitUi; push-banner ui-hold (ui-review@1)' },
+  { id: 'clash', kind: 'clash', enabled: true, severity: 'block', owner: 'console', title: 'No code clash with main', description: 'Builds, union and generated files are resolved by the lander; a code conflict files a fix and the PR waits for it.', settings: { autoResolve: ['builds', 'union', 'union-json', 'generated'], fileFix: true }, source: 'land-core.planConflicts / classifyPath' },
+]);
+
+/** The default rule set document. */
+export function defaultRuleSet({ at = new Date().toISOString(), owner = 'console' } = {}) {
+  return normRuleSet({ $axf: SET_FRAME, rev: 1, at, rules: DEFAULT_RULES.map((r) => ({ ...r, owner, settings: JSON.parse(JSON.stringify(r.settings)) })) }, at);
+}
+
+// ------------------------------------------------------------------ migration from today's lander settings
+
+/** The lander settings today's push banner config.json carries, read the way land.mjs reads them. */
+export function landerSettingsFrom(config = {}) {
+  const c = obj(config); const a = obj(c.autoLander);
+  const queueMode = ['batch', 'stack'].includes(c.queueMode) ? c.queueMode : 'batch';
+  const mode = a.mode === 'serial' ? 'serial' : a.mode === 'merge-queue' ? queueMode : queueMode;
+  return {
+    enabled: typeof a.enabled === 'boolean' ? a.enabled : c.mergeQueue !== false, mode, autoLand: c.autoLand === true, waitUi: c.landWaitUi !== false,
+    depth: Number.isInteger(c.queueDepth) ? Math.min(6, Math.max(1, c.queueDepth)) : 3, batchSize: Number.isInteger(c.batchSize) ? Math.min(20, Math.max(1, c.batchSize)) : 8,
+  };
+}
+
+/** The config.json keys the migration reads. */
+export const MIGRATED_KEYS = Object.freeze(['autoLand', 'landWaitUi', 'mergeQueue', 'queueMode', 'queueDepth', 'batchSize', 'autoLander.enabled', 'autoLander.mode']);
+
+/**
+ * Today's push banner config.json → a gate-rule-set@1: the default set with `enabled` and `settings` taken from the keys
+ * the lander reads now. Nothing is dropped: the lander's On/Off and mode live on in lander-state@1 (landerSettingsFrom),
+ * and the keys stay in config.json until the gate plugin's store is the one writer.
+ */
+export function migrate(config = {}, { at = new Date().toISOString(), by = 'migration' } = {}) {
+  const c = obj(config); const a = obj(c.autoLander);
+  const l = landerSettingsFrom(c);
+  const present = MIGRATED_KEYS.filter((k) => (k.startsWith('autoLander.') ? a[k.slice(11)] !== undefined : c[k] !== undefined));
+  const set = defaultRuleSet({ at });
+  for (const r of set.rules) {
+    if (r.id === 'merge-queue-only') r.settings = { ...r.settings, mode: l.mode, autoLand: l.autoLand, depth: l.depth, batchSize: l.batchSize };
+    if (r.id === 'ci-green') r.settings = { ...r.settings, on: l.mode === 'serial' ? 'head' : 'queue-commit', redJoins: l.mode === 'batch' };
+    if (r.id === 'ui-review') r.enabled = l.waitUi;
+    if (present.length) { r.updatedAt = at; r.updatedBy = by; }
+  }
+  return { ...set, updatedBy: by, migratedFrom: { frame: 'push-banner-config@1', at, keys: present } };
+}
+
+// ------------------------------------------------------------------ evaluate one PR
+
+export const VERDICT_FRAME = 'gate-verdict@1';
+/** pass = fine; fail = needs a fix (code, review changes); hold = waits for something that resolves by itself; skip = off or another side runs it. */
+export const VERDICTS = Object.freeze(['pass', 'fail', 'hold', 'skip']);
+export const CI_STATES = Object.freeze(['success', 'failure', 'running', 'none']);
+export const UI_STATES = Object.freeze(['', 'waiting', 'changes', 'rejected', 'unknown']);
+export const CHECK_RESULTS = Object.freeze(['pass', 'fail', 'none']);
+
+/**
+ * What the lander knows about one PR (pr-snapshot@1), normalised:
+ *   { number, title, build, branch, head, draft, fork, ci, failing: [check names], checks: { theme, controls, toolbars,
+ *     tests: pass|fail|none }, ui, conflicts: [code files], dataConflicts: [files resolved by itself], tests, landHeld,
+ *     removed, kicked, mergeVia: queue|direct|'' }
+ */
+export function normSnapshot(s) {
+  const x = obj(s); const ch = obj(x.checks);
+  const chk = (k) => oneOf(CHECK_RESULTS, ch[k], 'none');
+  return {
+    number: pr(x.number), title: str(x.title, 200), build: str(x.build, 120), branch: str(x.branch, 200), head: str(x.head, 64), draft: bool(x.draft), fork: bool(x.fork),
+    ci: oneOf(CI_STATES, x.ci, 'none'), failing: (Array.isArray(x.failing) ? x.failing : []).map((f) => str(f, 120)).filter(Boolean).slice(0, 20),
+    checks: { theme: chk('theme'), controls: chk('controls'), toolbars: chk('toolbars'), tests: chk('tests') },
+    ui: oneOf(UI_STATES, x.ui, ''), conflicts: (Array.isArray(x.conflicts) ? x.conflicts : []).map((f) => str(f, 200)).filter(Boolean).slice(0, 40),
+    dataConflicts: (Array.isArray(x.dataConflicts) ? x.dataConflicts : []).map((f) => str(f, 200)).filter(Boolean).slice(0, 40),
+    landHeld: str(x.landHeld, 200), removed: str(x.removed, 200), kicked: str(x.kicked, TEXT_MAX), mergeVia: oneOf(['queue', 'direct', ''], x.mergeVia, ''),
+  };
+}
+
+const names = (list) => (list.length ? ` (${list.slice(0, 3).join(', ')}${list.length > 3 ? ', …' : ''})` : '');
+/** A named CI check's result: the snapshot's own answer, else the failing list, else what the whole run says. */
+function namedCheck(s, key, re) {
+  if (s.checks[key] !== 'none') return s.checks[key];
+  if (s.failing.some((f) => re.test(f))) return 'fail';
+  if (s.ci === 'success') return 'pass';
+  if (s.ci === 'failure') return 'none'; // red for another reason: this check has no verdict of its own
+  return 'none';
+}
+const V = (verdict, reason, extra = {}) => ({ verdict, reason, ...extra });
+
+/** One rule against one snapshot: { verdict, reason, agent? }. */
+export function evaluateRule(rule, snapshot) {
+  const r = normRule(rule); const s = normSnapshot(snapshot); const st = r.settings;
+  switch (r.kind) {
+    case 'ci': {
+      if (s.ci === 'success') return V('pass', 'CI is green on its head.');
+      if (s.ci === 'failure') return st.redJoins === true ? V('hold', `its PR checks are red${names(s.failing)}; it joins behind the green ones and the queue run decides.`) : V('fail', `CI is red${names(s.failing)}. Needs a code fix.`, { agent: true });
+      if (s.ci === 'running') return V('hold', 'CI is running on its head.');
+      return V('hold', 'CI has not run on its head yet.');
+    }
+    case 'tests': {
+      const t = namedCheck(s, 'tests', /test|fixture|conformance/i);
+      return t === 'pass' ? V('pass', 'The tests pass.') : t === 'fail' ? V('fail', 'The tests fail after regeneration. Needs a code fix.', { agent: true }) : V('hold', 'The tests have not run on its head yet.');
+    }
+    case 'theme': {
+      const t = namedCheck(s, 'theme', /theme/i);
+      return t === 'pass' ? V('pass', 'check-theme passes.') : t === 'fail' ? V('fail', 'check-theme fails: a colour, size, spacing, font, radius or border is a literal, not a token.', { agent: true }) : V('hold', 'check-theme has not run on its head yet.');
+    }
+    case 'controls': {
+      const toolbars = /toolbars/.test(str(st.check, 200));
+      const t = namedCheck(s, toolbars ? 'toolbars' : 'controls', toolbars ? /toolbar/i : /control/i);
+      const name = toolbars ? 'check-toolbars' : 'check-controls';
+      return t === 'pass' ? V('pass', `${name} passes.`) : t === 'fail' ? V('fail', toolbars ? 'check-toolbars fails: a toolbar lacks role="toolbar" or an aria-label, or a tab row is not the TabGroup.' : 'check-controls fails: a raw control is used where a framework control exists.', { agent: true }) : V('hold', `${name} has not run on its head yet.`);
+    }
+    case 'ui-review': {
+      const holdOn = Array.isArray(st.holdOn) ? st.holdOn : ['waiting', 'changes', 'rejected', 'unknown'];
+      if (!s.ui || !holdOn.includes(s.ui)) return V('pass', 'UI Review does not hold it.');
+      if (s.ui === 'waiting') return V('hold', 'its screenshots are waiting in UI Review. Approve them and it lands by itself.');
+      if (s.ui === 'unknown') return V('hold', "UI Review couldn't be read, so it waits.");
+      return V('fail', s.ui === 'changes' ? 'UI Review asked for changes.' : 'UI Review rejected it.');
+    }
+    case 'clash': {
+      if (s.conflicts.length) return V('fail', `it conflicts with main in code${names(s.conflicts)}. Needs a code fix${st.fileFix === false ? '' : '; a fix is filed'}.`, { agent: st.fileFix !== false, files: s.conflicts.slice(0, 20) });
+      if (s.dataConflicts.length) return V('pass', `its data conflicts resolve by themselves${names(s.dataConflicts)}.`);
+      return V('pass', 'It merges cleanly with main.');
+    }
+    default: {
+      if (r.id === 'merge-queue-only' || st.directMerge === false) {
+        if (s.draft) return V('fail', 'it is a draft.');
+        if (s.fork) return V('fail', 'it comes from a fork.');
+        if (s.mergeVia === 'direct') return V('fail', 'only the merge queue merges: a direct merge is refused.');
+        return V('pass', 'It lands through the merge queue.');
+      }
+      return V('pass', `${r.title || r.id}: nothing to check here.`);
+    }
+  }
+}
+
+/**
+ * Every rule against one PR snapshot → gate-verdict@1:
+ *   { pr, head, pass, held, blockedBy, agent, holds: [by hand], results: [{ id, kind, severity, enabled, verdict, reason }], reasons }
+ * `pass` = every enabled block rule passes and nothing holds it by hand; `held` = a block rule says hold (not fail);
+ * `blockedBy` = the first block rule that is not pass; `agent` = a code fix is wanted (red CI, failing check, code clash).
+ * `owner` limits the run to one side's rules: the other side's come back as skip.
+ */
+export function evaluate(rules, snapshot, { owner = null, at = new Date().toISOString() } = {}) {
+  const list = Array.isArray(rules) ? rules : Array.isArray(rules?.rules) ? rules.rules : [];
+  const s = normSnapshot(snapshot);
+  const results = list.map((raw) => {
+    const r = normRule(raw);
+    const base = { id: r.id, kind: r.kind, severity: r.severity, owner: r.owner, enabled: r.enabled };
+    if (!r.enabled) return { ...base, verdict: 'skip', reason: 'switched off.' };
+    if (owner && r.owner !== owner) return { ...base, verdict: 'skip', reason: `evaluated by ${r.owner}.` };
+    return { ...base, ...evaluateRule(r, s) };
+  });
+  const holds = [];
+  if (s.landHeld) holds.push({ kind: 'held', reason: `held by hand (${s.landHeld}). Release it to land it.` });
+  if (s.removed) holds.push({ kind: 'removed', reason: `taken out of the queue by hand (${s.removed}).` });
+  if (s.kicked) holds.push({ kind: 'kicked', reason: `kicked out: ${s.kicked} Push a fix and it rejoins by itself.` });
+  const blocking = results.filter((x) => x.severity === 'block' && x.verdict !== 'pass' && x.verdict !== 'skip');
+  // the headline: a rule that needs a fix comes before one that only waits (a conflicting PR gets no CI run, so the clash is the reason, not the missing run)
+  const first = blocking.find((x) => x.verdict === 'fail') || blocking[0] || null;
+  const pass = !first && !holds.length;
+  return {
+    $axf: VERDICT_FRAME, at, pr: s.number, head: s.head, pass, held: !pass && (!first || first.verdict === 'hold') && !blocking.some((x) => x.verdict === 'fail'),
+    blockedBy: first ? first.id : holds.length ? `hand:${holds[0].kind}` : '', agent: results.some((x) => x.agent === true && x.severity === 'block'),
+    holds, results, reasons: [...holds.map((h) => h.reason), ...results.filter((x) => x.verdict === 'fail' || x.verdict === 'hold').map((x) => `${x.id}: ${x.reason}`)],
+    warnings: results.filter((x) => x.severity === 'warn' && x.verdict === 'fail').map((x) => `${x.id}: ${x.reason}`),
+  };
+}
+
+// ------------------------------------------------------------------ lander-state@1 from today's lander files
+
+/** The rule id a merge queue `why` line maps onto ('' = a hold by hand or a queue state). */
+export function ruleForWhy(why) {
+  const w = str(why, TEXT_MAX);
+  if (!w) return '';
+  if (/ui review/i.test(w)) return 'ui-review';
+  if (/conflicts? (with|in) (main|code)/i.test(w)) return 'clash';
+  if (/checks? (are|is) red|CI is red|broke CI|its batch went red/i.test(w)) return 'ci-green';
+  if (/checks? (have not run|are still running|has not run)|CI is running/i.test(w)) return 'ci-green';
+  if (/draft|fork/i.test(w)) return 'merge-queue-only';
+  if (/couldn't build its queue commit/i.test(w)) return 'clash';
+  return '';
+}
+
+/**
+ * lander-state@1 from what the lander writes today: the push banner config.json, merge-queue@1 (`queue`), its control
+ * document, the run records (auto-lander-run@1, oldest first) and an optional pause { why, by, at }.
+ */
+export function landerStateFrom({ config = {}, queue = {}, control = {}, runs = [], pause = null, at = new Date().toISOString() } = {}) {
+  const l = landerSettingsFrom(config);
+  const q = obj(queue); const items = Array.isArray(q.items) ? q.items : []; const held = Array.isArray(q.waiting) ? q.waiting : [];
+  const removed = obj(obj(control).removed);
+  const live = items.find((x) => ['testing', 'passed', 'merging'].includes(x.state)) || null;
+  const last = runs.length ? normRun(runs[runs.length - 1]) : null;
+  const paused = !!(pause && typeof pause === 'object');
+  const status = !l.enabled ? 'off' : paused ? 'paused' : last?.result === 'error' ? 'error' : live ? 'running' : 'idle';
+  const waiting = [
+    ...items.filter((x) => pr(x.pr) && x !== live).map((x) => ({ pr: x.pr, title: x.title, build: x.build, branch: x.branch, head: x.head, url: x.url, state: removed[x.pr] ? 'skipped' : 'waiting', rule: ruleForWhy(x.why), reason: str(x.why, TEXT_MAX) || 'waits its turn in the line.', since: x.since })),
+    ...held.filter((x) => pr(x.pr)).map((x) => ({ pr: x.pr, title: x.title, build: x.build, branch: x.branch, head: x.head, url: x.url, state: x.state === 'kicked' ? 'kicked' : 'held', rule: ruleForWhy(x.why), reason: str(x.why, TEXT_MAX) || 'held.', since: x.since })),
+  ].map((w, i) => normWaiting({ ...w, position: i + 1 }, i));
+  return normLanderState({
+    at, status, enabled: l.enabled, paused, pause: paused ? pause : null, mode: l.mode, source: 'merge-queue@1',
+    landing: live ? { pr: live.pr, title: live.title, build: live.build, branch: live.branch, ci: live.ci, since: live.startedAt || q.at, runUrl: live.runUrl } : null,
+    lastRuns: runs, waiting, landedRecently: (Array.isArray(q.merged) ? q.merged : []).map((m) => m?.pr).filter(pr).slice(-20), ...(last?.error ? { error: last.error } : {}),
+  }, at);
+}
