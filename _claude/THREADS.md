@@ -807,7 +807,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 01:08 UTC · `context-menus-plugin-one-true-source` → running, note (all) · pipeline
 - 2026-11-15 01:08 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
 - 2026-11-15 01:07 UTC · `quick-settings-pinned-collapsible-pane` PR #698 (all) · builds-live
 - 2026-11-15 01:08 UTC · `quick-settings-pinned-collapsible-pane` s9 done, → built (all) · orchestrator
@@ -1207,6 +1206,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 14:58 UTC · `build-rules-tab-gate-rules-vps-owns` s9 done (all) · orchestrator
 - 2026-11-15 14:58 UTC · `build-rules-tab-gate-rules-vps-owns` s10 done (all) · orchestrator
 - 2026-11-15 14:59 UTC · `phone-connect-small-android-companion` s5 done (all) · orchestrator
+- 2026-11-15 14:59 UTC · `shipped-features-open-button-views-each` s1 done (all) · orchestrator
 
 ## Token passes (log)
 
