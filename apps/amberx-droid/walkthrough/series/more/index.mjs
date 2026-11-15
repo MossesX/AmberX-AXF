@@ -3,5 +3,6 @@ import commute from './commute.mjs';
 import expenses from './expenses.mjs';
 import bossTexts from './boss-texts.mjs';
 import privateChat from './private-chat.mjs';
+import onDemand from './on-demand.mjs';
 
-export const MORE = [commute, expenses, bossTexts, privateChat];
+export const MORE = [commute, expenses, bossTexts, privateChat, onDemand];
