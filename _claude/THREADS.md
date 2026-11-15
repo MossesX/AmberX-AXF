@@ -806,7 +806,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:02 UTC · `prompting-engine-control-panel-events` note (all) · orchestrator
 - 2026-11-13 19:02 UTC · `prompting-engine-control-panel-events` s3 done (all) · orchestrator
 - 2026-11-15 00:35 UTC · `prompting-engine-control-panel-events` → running, note (all) · pipeline
 - 2026-11-15 00:35 UTC · `prompting-engine-control-panel-events` note (all) · orchestrator
@@ -1206,6 +1205,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 12:48 UTC · `data-container-axf-data-holds-all` s15 done (all) · orchestrator
 - 2026-11-15 12:50 UTC · `every-grid-1-2-rows-per-item-set-skin` → pending, note (all) · reconciler
 - 2026-11-15 12:52 UTC · `data-container-axf-data-holds-all` s16 done (all) · orchestrator
+- 2026-11-15 12:59 UTC · `data-container-axf-data-holds-all` s17 done (all) · orchestrator
 
 ## Token passes (log)
 
