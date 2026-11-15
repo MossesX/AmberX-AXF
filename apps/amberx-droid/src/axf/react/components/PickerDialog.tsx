@@ -211,8 +211,8 @@ export function PickerDialog({ model, onChange, onClose, returnFocus, state: out
         {model.multiple && (
           <div className="fx-picker__foot">
             {/* the framework button markup (Button needs the app runtime; the swap layer's pickers render outside it) */}
-            {model.value.length > 0 && <button type="button" className="fx-btn fx-btn--neutral" onClick={() => onChange([])}><span>Clear</span></button>}
-            <button type="button" className="fx-btn fx-btn--primary fx-picker__done" onClick={close}><span>Done ({model.value.length})</span></button>
+            {model.value.length > 0 && <button type="button" className="fx-btn fx-btn--neutral" data-axf-target="button:picker-clear" onClick={() => onChange([])}><span>Clear</span></button>}
+            <button type="button" className="fx-btn fx-btn--primary fx-picker__done" data-axf-target="button:picker-done" onClick={close}><span>Done ({model.value.length})</span></button>
           </div>
         )}
       </div>
