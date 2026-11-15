@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T12:20:15.993Z",
+ "updatedAt": "2026-11-15T12:20:28.446Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -148539,7 +148539,7 @@
    "title": "Data container: axf-data holds all console data",
    "category": "",
    "detail": "Brett's final layout: the console is screens ONLY, with no work and no data in it. New private container 'axf-data' (Coolify, auto-restart, no public port or DNS, internal Docker network only) holds ALL the data: notes, builds store/journal/history, settings, planner items, UI reviews, everything the console stores today. Four parts: console = UI only; axf-molly = does the work (orchestrator, gate, lander); axHub = routes plus credentials/keys only (NO app data stored in axHub); axf-data = stores everything. Goal: if the console goes down, all data and notes stay available (through axHub tools) and builds keep running. Stage it safely: an API in front of the store, migrate with count checks and a backup, run in shadow first, then cut over, and no data is ever lost. Add daily backups. Coordinate with the move-build-orchestrator-to-axhub build (axf-molly reads and writes the builds store through axf-data). Tests, help, Shipped features.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -148547,7 +148547,7 @@
    "pr": "#704",
    "priority": "P0",
    "createdAt": "2026-11-15T04:28:05.062Z",
-   "updatedAt": "2026-11-15T12:19:59.008Z",
+   "updatedAt": "2026-11-15T12:20:25.702Z",
    "builtAt": "",
    "notes": [
     {
