@@ -13,7 +13,7 @@ import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SHAPE_DEFAULT_KIND, SHAPE_KINDS, SHAPE_RADII, SHAPE_TYPE, normalizeShape, shapeErrors, shapeRadius, shapeSquare } from '../core/engines/shape-rules.mjs';
-import { SHAPE_POLYGONS, compileShape, shapeClip, shapeMask, shapeToken, squirclePath, squirclePolygon, superellipsePoints } from '../core/engines/shape';
+import { SHAPE_HISTORY_MAX, SHAPE_POLYGONS, compileShape, forgetShapeEdit, normalizeShapeHistory, previousShape, recordShapeEdit, resolveShape, resolveShapeAt, restorePreviousShape, shapeClip, shapeMask, shapeScopeChain, shapeScopeKey, shapeScopeLevel, shapeToken, squirclePath, squirclePolygon, superellipsePoints } from '../core/engines/shape';
 import { bannerWidgetView, normalizeBannerWidgetPref, patchBannerWidget } from '../core/engines/bannerwidgets';
 import { ASSET_TYPES, OPTIONAL_TYPES } from '../core/types';
 import { validateAsset } from '../core/validate';
@@ -109,6 +109,42 @@ for (const c of vfx.cases) {
   for (const frag of c.expect ?? []) check(c.result.errors.some((e: string) => e.includes(frag)), `validate ${c.name} names "${frag}"`);
 }
 check(vfx.cases.filter((c: { good?: boolean }) => c.good).length >= 6 && vfx.cases.filter((c: { good?: boolean }) => !c.good).length >= 10, 'the validation fixture has good and bad cases');
+
+// resolve: instance → app → skin → global, the child overrides the parent; nothing anywhere = the default kind
+eq(shapeScopeChain({ widget: 'status:a' }), ['axf.banner.widget.status:a.shape', 'app', 'skin', 'global'], 'the chain runs from the widget to the hub');
+eq(shapeScopeChain(null), ['app', 'skin', 'global'], 'no widget = three levels');
+eq(shapeScopeLevel('axf.banner.widget.status:a.shape'), { level: 'instance', widget: 'status:a' }, 'an instance key names its widget');
+eq(shapeScopeLevel('axf.banner.widget..shape'), null, 'a bad instance key is no level');
+assert.throws(() => shapeScopeKey('instance', 'Bad Key'), 'an instance level needs a widget key');
+const at = (widget: string, instance: string, app: string, skin: string, global: string) => resolveShape([{ key: shapeScopeKey('instance', widget), id: instance }, { key: 'app', id: app }, { key: 'skin', id: skin }, { key: 'global', id: global }]);
+eq(at('status:a', 'hexagon', 'square', 'rounded', 'circle').id, 'hexagon', 'the widget beats everything');
+eq(at('status:a', '', 'square', 'rounded', 'circle'), { id: 'square', from: 'app', level: 'app', chain: [{ key: 'axf.banner.widget.status:a.shape', id: '' }, { key: 'app', id: 'square' }] }, 'the app beats the skin and the hub');
+eq(at('status:a', '', '', 'rounded', 'circle').from, 'skin', 'the skin beats the hub');
+eq(at('status:a', '', '', '', 'circle').level, 'global', 'the hub decides when nothing nearer does');
+eq(at('status:a', '', '', '', '').id, SHAPE_DEFAULT_KIND, 'nothing anywhere = the default kind');
+eq(at('status:a', 'Bad Id', '', '', 'circle').id, 'circle', 'junk at a level inherits');
+eq(resolveShape([{ key: 'nope', id: 'square' }, { key: 'global', id: 'circle' }]).chain.length, 1, 'unknown keys are skipped');
+eq(resolveShapeAt({ widget: 'status:a' }, (k) => ({ 'axf.banner.widget.status:a.shape': 'tag', global: 'circle' } as Record<string, string>)[k]).id, 'tag', 'resolveShapeAt reads per-key picks');
+eq(resolveShapeAt(null, () => undefined).level, 'default', 'resolveShapeAt with nothing picked = the default');
+
+// history: the previous value per key, Restore previous edit swaps it back (and is itself restorable)
+let hist = recordShapeEdit({}, 'app', '', 'hexagon', 't1');
+eq(hist, { app: { previous: '', current: 'hexagon', at: 't1' } }, 'an edit records what the level held before');
+eq(recordShapeEdit(hist, 'app', 'hexagon', 'hexagon', 't2'), hist, 'an edit that changes nothing is not recorded');
+eq(recordShapeEdit(hist, 'nope', '', 'hexagon', 't2'), hist, 'a key that is not a level is not recorded');
+hist = recordShapeEdit(hist, 'app', 'hexagon', 'square', 't3');
+eq(previousShape(hist, 'app'), 'hexagon', 'only the last edit is kept');
+eq(previousShape(hist, 'skin'), null, 'no edit, nothing to restore');
+const restored = restorePreviousShape(hist, 'app', 't4')!;
+eq(restored.id, 'hexagon', 'restore puts the previous value back');
+eq(restored.history.app, { previous: 'square', current: 'hexagon', at: 't4' }, 'restore is itself an edit (a second restore redoes)');
+eq(restorePreviousShape(restored.history, 'app', 't5')!.id, 'square', 'restore twice = back where it was');
+eq(restorePreviousShape(hist, 'global', 't4'), null, 'restore on a key with no history = null');
+eq(forgetShapeEdit(hist, 'app'), {}, 'forget drops the key');
+eq(normalizeShapeHistory({ app: { previous: 'a-b', current: 'xx', at: 't' }, nope: { previous: '', current: 'xx', at: 't' }, skin: { previous: 'xx', current: 'xx', at: 't' }, global: 'junk', instance: { previous: 'x', current: 'xx', at: 't' } }), { app: { previous: 'a-b', current: 'xx', at: 't' } }, 'normalize drops unknown keys, no-op edits, one-letter ids and junk');
+const many = Object.fromEntries(Array.from({ length: SHAPE_HISTORY_MAX + 5 }, (_, i) => [`axf.banner.widget.status:w${i}.shape`, { previous: '', current: 'square', at: `2026-01-01T00:00:${String(i).padStart(2, '0')}` }]));
+const trimmed = normalizeShapeHistory(many);
+check(Object.keys(trimmed).length === SHAPE_HISTORY_MAX && !('axf.banner.widget.status:w0.shape' in trimmed) && 'axf.banner.widget.status:w104.shape' in trimmed, 'the history is capped, the oldest edits go first');
 
 // banner widgets carry a per-instance shape (the id of a shape asset); junk is dropped, null goes back to the slot
 eq(normalizeBannerWidgetPref({ shape: 'hexagon' }).shape, 'hexagon', 'a widget pref keeps a shape id');
