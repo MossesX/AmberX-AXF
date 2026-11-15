@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5780,
- "updatedAt": "2026-11-15T00:28:19.155Z",
+ "rev": 5781,
+ "updatedAt": "2026-11-15T00:28:40.958Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -97312,7 +97312,7 @@
    "pr": "#353",
    "priority": "P0",
    "createdAt": "2026-11-05T02:14:31.670Z",
-   "updatedAt": "2026-11-10T02:32:16.216Z",
+   "updatedAt": "2026-11-15T00:27:54.971Z",
    "builtAt": "2026-11-10T02:32:16.216Z",
    "notes": [
     {
@@ -97345,6 +97345,23 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:27:54.807Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/amberx-droid/android/app/src/main/AndroidManifest.xml, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/BootReceiver.java, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/Hub"
+     }
+    ]
    },
    "steps": [
     {
@@ -97488,7 +97505,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135389,7 +135406,7 @@
    "pr": "#516",
    "priority": "P0",
    "createdAt": "2026-11-09T17:44:47.652Z",
-   "updatedAt": "2026-11-12T05:24:27.959Z",
+   "updatedAt": "2026-11-15T00:28:18.887Z",
    "builtAt": "2026-11-10T01:03:25.374Z",
    "notes": [
     {
@@ -135503,6 +135520,23 @@
     "from": "",
     "addenda": []
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:28:18.704Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrator/plugin.json, apps/console-web/plugins/build-orchestrator/se"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -135582,7 +135616,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137157,7 +137191,7 @@
    "pr": "#427",
    "priority": "P0",
    "createdAt": "2026-11-09T18:51:17.675Z",
-   "updatedAt": "2026-11-10T01:33:11.667Z",
+   "updatedAt": "2026-11-15T00:28:08.252Z",
    "builtAt": "2026-11-10T01:33:11.667Z",
    "notes": [
     {
@@ -137247,6 +137281,23 @@
     "from": "",
     "addenda": []
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:28:08.106Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/console-terminal/web/RunOutputTab.tsx, apps/console-web/plugins/console-terminal/web/headless-core.ts, apps/console-web/plugins/console-terminal/web/headless.ts, apps/console-web/plugins/console-terminal/web/index.tsx, framework/sp"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -137326,7 +137377,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137365,7 +137416,7 @@
    "pr": "#426",
    "priority": "P0",
    "createdAt": "2026-11-09T18:51:58.882Z",
-   "updatedAt": "2026-11-10T01:18:12.654Z",
+   "updatedAt": "2026-11-15T00:28:13.975Z",
    "builtAt": "2026-11-10T01:17:41.373Z",
    "notes": [
     {
@@ -137455,6 +137506,23 @@
     "from": "",
     "addenda": []
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:28:13.837Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/build-manager/web/build-manager.css, apps/console-web/plugins/build-manager/web/history.mjs, apps/console-web/plugins/build-manager/web/index.tsx, apps/console-web/plugins/build-manager/web/ui.tsx, apps/console-web/plugins/build-manager/web/view-state.ts, apps/c"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -137534,7 +137602,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138094,7 +138162,7 @@
    "pr": "#428",
    "priority": "P0",
    "createdAt": "2026-11-09T19:23:46.981Z",
-   "updatedAt": "2026-11-10T01:47:31.746Z",
+   "updatedAt": "2026-11-15T00:27:59.438Z",
    "builtAt": "2026-11-10T01:47:31.746Z",
    "notes": [
     {
@@ -138188,6 +138256,23 @@
     "from": "",
     "addenda": []
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:27:59.320Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrator/plugin.json, apps/console-web/plugins/build-orchestrator/se"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -138267,7 +138352,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138477,7 +138562,7 @@
    "pr": "#434",
    "priority": "P0",
    "createdAt": "2026-11-09T20:16:02.957Z",
-   "updatedAt": "2026-11-10T03:04:33.660Z",
+   "updatedAt": "2026-11-15T00:27:45.117Z",
    "builtAt": "2026-11-10T03:00:53.547Z",
    "notes": [
     {
@@ -138597,6 +138682,23 @@
      }
     ]
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:27:44.946Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/claude-accounts/README.md, apps/console-web/plugins/claude-accounts/help.json, apps/console-web/plugins/claude-accounts/plugin.json, apps/console-web/plugins/claude-accounts/server/__init__.py, apps/console-web/plugins/claude-accou"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -138676,7 +138778,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140621,7 +140723,7 @@
    "pr": "#424",
    "priority": "P0",
    "createdAt": "2026-11-10T00:19:09.682Z",
-   "updatedAt": "2026-11-10T00:58:03.893Z",
+   "updatedAt": "2026-11-15T00:28:26.165Z",
    "builtAt": "2026-11-10T00:57:53.130Z",
    "notes": [
     {
@@ -140666,6 +140768,23 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:28:25.941Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/build-orchestrator/notify.json, apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrator/pl"
+     }
+    ]
    },
    "steps": [
     {
@@ -140746,7 +140865,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -141968,7 +142087,7 @@
    "pr": "#435",
    "priority": "P0",
    "createdAt": "2026-11-10T02:22:06.131Z",
-   "updatedAt": "2026-11-10T03:36:46.019Z",
+   "updatedAt": "2026-11-15T00:27:38.155Z",
    "builtAt": "2026-11-10T03:36:46.019Z",
    "notes": [
     {
@@ -142054,6 +142173,23 @@
     "from": "",
     "addenda": []
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:27:37.965Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/push-banner/land/land-core.mjs, apps/console-web/plugins/push-banner/land/land.mjs, apps/console-web/plugins/p"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -142133,7 +142269,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -142172,7 +142308,7 @@
    "pr": "#436",
    "priority": "P0",
    "createdAt": "2026-11-10T02:24:15.337Z",
-   "updatedAt": "2026-11-10T03:43:20.593Z",
+   "updatedAt": "2026-11-15T00:27:32.441Z",
    "builtAt": "2026-11-10T03:43:20.593Z",
    "notes": [
     {
@@ -142213,6 +142349,23 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:27:32.292Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/build-orchestrator/help.json, apps/console-web/plugins/build-orchestrator/notify.json, apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.t"
+     }
+    ]
    },
    "steps": [
     {
@@ -142293,7 +142446,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -142496,7 +142649,7 @@
    "pr": "#437",
    "priority": "P0",
    "createdAt": "2026-11-10T02:49:14.121Z",
-   "updatedAt": "2026-11-10T03:55:08.921Z",
+   "updatedAt": "2026-11-15T00:27:24.332Z",
    "builtAt": "2026-11-10T03:53:49.891Z",
    "notes": [
     {
@@ -142541,6 +142694,23 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:27:24.098Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, _claude/plans/build-vps.md, apps/console-web/plugins/maintenance/deploy/host.sh, apps/console-web/plugins/maintenance/engine/maint.py, apps/console-web/plugins/maintenance/plugin.json, apps/console-web/plugins/maintenance/server/__init__.py, apps/console-w"
+     }
+    ]
    },
    "steps": [
     {
@@ -142621,7 +142791,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {

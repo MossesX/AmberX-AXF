@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:28:19.155Z",
+ "updatedAt": "2026-11-15T00:28:40.958Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -36784,7 +36784,7 @@
    "pr": "#353",
    "priority": "P0",
    "createdAt": "2026-11-05T02:14:31.670Z",
-   "updatedAt": "2026-11-10T02:32:16.216Z",
+   "updatedAt": "2026-11-15T00:27:54.971Z",
    "builtAt": "2026-11-10T02:32:16.216Z",
    "notes": [
     {
@@ -88385,7 +88385,7 @@
    "pr": "#516",
    "priority": "P0",
    "createdAt": "2026-11-09T17:44:47.652Z",
-   "updatedAt": "2026-11-12T05:24:27.959Z",
+   "updatedAt": "2026-11-15T00:28:18.887Z",
    "builtAt": "2026-11-10T01:03:25.374Z",
    "notes": [
     {
@@ -89847,7 +89847,7 @@
    "pr": "#427",
    "priority": "P0",
    "createdAt": "2026-11-09T18:51:17.675Z",
-   "updatedAt": "2026-11-10T01:33:11.667Z",
+   "updatedAt": "2026-11-15T00:28:08.252Z",
    "builtAt": "2026-11-10T01:33:11.667Z",
    "notes": [
     {
@@ -90013,7 +90013,7 @@
    "pr": "#426",
    "priority": "P0",
    "createdAt": "2026-11-09T18:51:58.882Z",
-   "updatedAt": "2026-11-10T01:18:12.654Z",
+   "updatedAt": "2026-11-15T00:28:13.975Z",
    "builtAt": "2026-11-10T01:17:41.373Z",
    "notes": [
     {
@@ -90590,7 +90590,7 @@
    "pr": "#428",
    "priority": "P0",
    "createdAt": "2026-11-09T19:23:46.981Z",
-   "updatedAt": "2026-11-10T01:47:31.746Z",
+   "updatedAt": "2026-11-15T00:27:59.438Z",
    "builtAt": "2026-11-10T01:47:31.746Z",
    "notes": [
     {
@@ -90889,7 +90889,7 @@
    "pr": "#434",
    "priority": "P0",
    "createdAt": "2026-11-09T20:16:02.957Z",
-   "updatedAt": "2026-11-10T03:04:33.660Z",
+   "updatedAt": "2026-11-15T00:27:45.117Z",
    "builtAt": "2026-11-10T03:00:53.547Z",
    "notes": [
     {
@@ -92518,7 +92518,7 @@
    "pr": "#424",
    "priority": "P0",
    "createdAt": "2026-11-10T00:19:09.682Z",
-   "updatedAt": "2026-11-10T00:58:03.893Z",
+   "updatedAt": "2026-11-15T00:28:26.165Z",
    "builtAt": "2026-11-10T00:57:53.130Z",
    "notes": [
     {
@@ -93543,7 +93543,7 @@
    "pr": "#435",
    "priority": "P0",
    "createdAt": "2026-11-10T02:22:06.131Z",
-   "updatedAt": "2026-11-10T03:36:46.019Z",
+   "updatedAt": "2026-11-15T00:27:38.155Z",
    "builtAt": "2026-11-10T03:36:46.019Z",
    "notes": [
     {
@@ -93705,7 +93705,7 @@
    "pr": "#436",
    "priority": "P0",
    "createdAt": "2026-11-10T02:24:15.337Z",
-   "updatedAt": "2026-11-10T03:43:20.593Z",
+   "updatedAt": "2026-11-15T00:27:32.441Z",
    "builtAt": "2026-11-10T03:43:20.593Z",
    "notes": [
     {
@@ -93945,7 +93945,7 @@
    "pr": "#437",
    "priority": "P0",
    "createdAt": "2026-11-10T02:49:14.121Z",
-   "updatedAt": "2026-11-10T03:55:08.921Z",
+   "updatedAt": "2026-11-15T00:27:24.332Z",
    "builtAt": "2026-11-10T03:53:49.891Z",
    "notes": [
     {
