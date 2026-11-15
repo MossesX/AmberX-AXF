@@ -114,6 +114,18 @@ try {
   const logs = []; const orig = console.log; console.log = (x) => logs.push(x);
   try { await landerMain(['status', '--json'], { s }); await landerMain(['line', '--json'], { s }); } finally { console.log = orig; }
   check(JSON.parse(logs[0]).mode === status(s).mode && JSON.parse(logs[1]).line.length === lineOf(s).length, 'the CLI prints the same status and line as the core');
+  // ---------------------------------------------------------------- the stack stays while an unbuildable PR is ahead
+  console.log('merge queue: an unbuildable PR no longer rebuilds the stack every round');
+  const Q = await import('./merge-queue-core.mjs');
+  const prevItems = [{ pr: 680, head: 'h680', why: "couldn't build its queue commit (control inventory stale)" }, { pr: 686, head: 'h686', state: 'testing' }];
+  const prs = [{ number: 680, head: 'h680' }, { number: 686, head: 'h686' }];
+  check(Q.stuckUnbuilt(prevItems, prs).get(680)?.includes('tried again when its head or main changes'), 'same head, main unchanged: it waits with the reason');
+  check(!Q.stuckUnbuilt(prevItems, [{ number: 680, head: 'new' }]).size, 'a new head: tried again');
+  check(!Q.stuckUnbuilt(prevItems, prs, { mainMoved: true }).size, 'main moved in code: tried again');
+  const stack = [{ pr: 686, head: 'h686', ahead: [], sha: 's1' }];
+  check(Q.keepStack(stack, [{ number: 680, head: 'h680' }, { number: 686, head: 'h686' }]).length === 0, 'before: with #680 in the ready list the stack was dropped');
+  check(Q.keepStack(stack, [{ number: 686, head: 'h686' }]).length === 1, 'after: #680 waits outside the ready list and the stack (and its CI run) is kept');
+
   // ---------------------------------------------------------------- 5. the cron (replaces the axf-lander unit watch)
   console.log('cron health and heal');
   const cron = join(dir, 'cron.d'); mkdirSync(cron);

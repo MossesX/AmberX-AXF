@@ -184,11 +184,12 @@ async function roundOnce({ s, git, gh, api, dry = false, now = () => new Date(),
   }
   ctl = q.pruneControl(ctl, prs.map((p) => p.number));
   if (cfg.mode === 'batch') return batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, prs, rank, mainSha, base, enlisted, pulls, log });
-  const ready = q.queueOrder(prs.filter((p) => !p.why), ctl, rank, prev.stack || []);
-
   // 2. what of last round's stack still holds: main must have the code the stack was built on
   const expect = prev.expect || '';
   const mainMoved = !expect || git(['cat-file', '-e', `${expect}^{commit}`]).code !== 0 || !q.sameCodeFiles(lines(git(['diff', '--name-only', expect, mainSha]).out));
+  // a PR that couldn't be built last round at this head waits (else it breaks the kept stack every round)
+  for (const [n, why] of q.stuckUnbuilt(prev.items, prs, { mainMoved })) { const p = prs.find((x) => x.number === n); if (p && !p.why) p.why = why; }
+  const ready = q.queueOrder(prs.filter((p) => !p.why), ctl, rank, prev.stack || []);
   let stack = q.keepStack(prev.stack || [], ready, { mainMoved });
   for (const e of stack) { delete e.state; delete e.why; }
   if (mainMoved && (prev.stack || []).length) log(`queue: main moved in code outside the queue; the stack is rebuilt on ${mainSha.slice(0, 8)}`);

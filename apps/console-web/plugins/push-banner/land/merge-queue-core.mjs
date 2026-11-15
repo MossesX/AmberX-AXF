@@ -114,6 +114,25 @@ export function queueOrder(prs, ctl = {}, rank = {}, stack = []) {
  *   stack: [{ pr, head, ahead: [pr numbers in its queue commit before it], sha, base, … }]
  *   queue: ordered ready PRs [{ number, head }]; merged: Set of PR numbers merged by the queue
  */
+/**
+ * PRs whose queue commit could not be built last round at this same head, while main did not move in code (Nov 15 2026):
+ * trying them again gives the same failure, and while one sits at the front of the order the kept stack never matches the
+ * ready list, so the whole stack was rebuilt every round, force-pushed, and its CI cancelled before it finished (nothing
+ * landed from 04:00 to 04:50 that day). They wait, with the reason, until their head or main changes.
+ * Returns Map(pr → why).
+ */
+export const UNBUILT = "couldn't build its queue commit";
+export function stuckUnbuilt(prevItems, prs, { mainMoved = false } = {}) {
+  const out = new Map();
+  if (mainMoved) return out;
+  const prev = new Map((prevItems || []).filter((x) => x && String(x.why || '').startsWith(UNBUILT)).map((x) => [x.pr, x]));
+  for (const p of prs || []) {
+    const old = prev.get(p.number);
+    if (old && old.head && old.head === p.head) out.set(p.number, `${old.why.replace(/; tried again when.*$/, '')}; tried again when its head or main changes`);
+  }
+  return out;
+}
+
 export function keepStack(stack, queue, { merged = new Set(), mainMoved = false } = {}) {
   if (mainMoved) return [];
   const live = (stack || []).filter((e) => !merged.has(e.pr));
