@@ -128,6 +128,7 @@ jobs:
         run: |
           python3 -m pip install --quiet -r services/axf-data/requirements.txt httpx
           python3 services/axf-data/test_store.py
+      - run: node framework/spec/check-data-migrate.mjs             # data-migrate on a seeded copy of real data: dry run by default, backup first, copy, verify M0 = M1, roll back from the backup, idempotent re-run, forced mismatches fail
       - run: node framework/spec/check-builds-store-data.mjs        # builds store on data-store@1: local, shadow (mirrored store + journal), cutover (axf-data only, lock = rev check, history from the remote journal), rollback refused
       - run: python3 apps/console-web/server/test_data_store.py      # console server data layer (data_store.py): storage-shaped calls in local, shadow, cutover and rollback against an in-process axf-data
       - run: node framework/spec/check-landing-line.mjs             # landing-line@1: one entry in flight, cancelled / superseded / stale runs re-run and never fail, red files a fix and the line moves on, pause / skip / move, merge-queue migration fixture
