@@ -2,6 +2,8 @@
 /**
  * data-store@1 conformance: the registry mirror, the reference client on the memory and the file backend (same answers),
  * the HTTP backend's error mapping and retries, the migration map and the mode machine.
+ * Contract invariants (rev conflicts, append-only journals, count manifests, mode shortcuts refused) are asserted on
+ * the fixture; `--http <url>` (token in AXF_DATA_TOKEN) replays the scenario against a live, empty axf-data.
  *   node framework/spec/check-data-store.mjs           check
  *   node framework/spec/check-data-store.mjs --write   regenerate fixtures/data-store.json (+ the registry part of
  *                                                      schemas/data-store.json; its jsonSchemas are authored by hand)
@@ -222,6 +224,64 @@ const MODE = join(ROOT, 'framework/core/data-store-mode.mjs');
 if (existsSync(MODE)) {
   const { checkMode } = await import('./check-data-store-mode.mjs');
   await t('mode machine', async () => { n += await checkMode({ WRITE }); });
+}
+
+// ── 7. contract invariants, read off the fixture (what every port and the axf-data server must keep) ───────────────
+const stepOf = (name) => { const s = mem.steps.find((x) => x.name === name); assert.ok(s, `scenario step ${name}`); return s.v; };
+await t('contract: rev conflicts', () => {
+  assert.equal(stepOf('putNoPrecondition'), 'precondition_required', 'a record put with no precondition is refused');
+  assert.equal(stepOf('createAgain'), 'exists');
+  assert.equal(stepOf('putStaleRev'), 'conflict');
+  assert.equal(stepOf('putStaleEtag'), 'conflict');
+  assert.equal(stepOf('putOnTombstoneStale'), 'conflict');
+  assert.equal(stepOf('deleteStale'), 'conflict');
+  assert.deepEqual(stepOf('afterUpdate'), ['a', 'b', 'racer', 'mine'], 'update() re-reads after a conflict and keeps the other writer');
+  const revs = ['create', 'putByRev', 'putByEtag'].map((k) => stepOf(k).rev);
+  assert.deepEqual(revs, [1, 2, 3], 'rev is 1 on create and +1 per accepted write');
+  for (const k of ['create', 'putByRev', 'putByEtag']) assert.match(stepOf(k).etag, new RegExp(D.PATTERNS.etag));
+});
+await t('contract: journals are append-only', () => {
+  assert.equal(stepOf('putOnJournal'), 'invalid_key');
+  assert.equal(stepOf('deleteJournal'), 'read_only');
+  assert.equal(stepOf('getJournal'), 'invalid_key');
+  assert.equal(stepOf('appendOnRecord'), 'invalid_key');
+  assert.equal(stepOf('appendEmpty'), 'invalid_body');
+  assert.deepEqual(stepOf('appendIdemAgain'), stepOf('appendIdem'), 'a retried idempotent append answers the same range');
+  const seqs = stepOf('read').entries.map((e) => e.seq);
+  assert.deepEqual(seqs, seqs.map((_, i) => i + 1), 'seq starts at 1 and has no gaps');
+});
+await t('contract: count manifests', () => {
+  const m = stepOf('manifestBuilds');
+  const live = stepOf('list');
+  assert.ok(m.count >= live.items.length, 'manifest counts every live key');
+  assert.equal(stepOf('manifestEmpty').count, 0);
+  const lost = D.sameManifest({ namespaces: { builds: m } }, { namespaces: { builds: { ...m, count: m.count - 1 } } });
+  assert.equal(lost.equal, false, 'a lost key is a mismatch');
+  assert.equal(stepOf('snapshotStored'), true, 'a snapshot stores its manifest under _meta/manifests');
+});
+await t('contract: mode transitions refuse shortcuts', async () => {
+  const M = await import('../core/data-store-mode.mjs');
+  assert.deepEqual(M.MODES, D.MODES);
+  for (const [ev, [from, to]] of Object.entries(M.TRANSITIONS)) assert.ok(D.MODES.includes(from) && D.MODES.includes(to), ev);
+  const pairs = new Set(Object.values(M.TRANSITIONS).map(([a, b]) => `${a}>${b}`));
+  assert.ok(!pairs.has('local>cutover') && !pairs.has('cutover>local'), 'no local ↔ cutover shortcut: shadow first, roll back first');
+  assert.equal(M.ROUTES.cutover.localWritable, false);
+  assert.deepEqual(M.ROUTES.rollback.write, []);
+});
+
+// ── 8. optional: the same scenario against a live axf-data (`--http <url>`, token in AXF_DATA_TOKEN; empty store) ────
+const httpAt = process.argv.indexOf('--http');
+if (httpAt > 0) {
+  const url = process.argv[httpAt + 1];
+  await t(`live axf-data at ${url} answers the contract`, async () => {
+    const live = await scenario(D.httpBackend({ url, token: process.env.AXF_DATA_TOKEN || '' }));
+    // Clocks, actors and the store's own counters differ; codes and revs must not.
+    for (const s of mem.steps) {
+      const got = live.steps.find((x) => x.name === s.name)?.v;
+      if (typeof s.v === 'string') assert.equal(got, s.v, `${s.name}: ${got} ≠ ${s.v}`);
+      else if (s.v && typeof s.v === 'object' && 'rev' in s.v && s.v.$axf === 'data-record@1') assert.equal(got?.rev, s.v.rev, `${s.name}: rev`);
+    }
+  });
 }
 
 console.log(`data-store@1: ${n} checks ok${WRITE ? ' (fixtures written)' : ''}`);
