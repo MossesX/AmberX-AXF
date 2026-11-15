@@ -798,7 +798,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:24 UTC · `auto-land-merge-main-land-land-mjs-clash` note (all) · pipeline
 - 2026-11-14 23:24 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` → pending (all) · builds-live
 - 2026-11-14 23:24 UTC · `orchestrator-table-columns-model-queue-assigned` s2 undone, s3 undone, → pending (all) · builds-live
 - 2026-11-14 23:24 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` → pending (all) · builds-live
@@ -1198,6 +1197,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 01:24 UTC · `molly-gap-axhub-cors` → running, note (all) · pipeline
 - 2026-11-15 01:24 UTC · `molly-gap-axhub-cors` note (all) · orchestrator
 - 2026-11-15 01:24 UTC · `token-registry-skin-editor-live-sandbox` s8 done (all) · orchestrator
+- 2026-11-15 01:24 UTC · `context-menus-plugin-one-true-source` s6 done (all) · orchestrator
 
 ## Token passes (log)
 
