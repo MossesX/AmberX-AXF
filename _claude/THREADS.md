@@ -807,7 +807,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 01:03 UTC · `skin-axhub-override-switch-greyed-out` → running, note (all) · pipeline
 - 2026-11-15 01:03 UTC · `skin-axhub-override-switch-greyed-out` note (all) · orchestrator
 - 2026-11-15 01:04 UTC · `orchestrator-settings-collapsible-split` s5 done (all) · orchestrator
 - 2026-11-15 01:04 UTC · `own-token-sets-for-grids-and-tab-groups` → running, note (all) · pipeline
@@ -1207,6 +1206,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 14:52 UTC · `build-rules-tab-gate-rules-vps-owns` → queued (all) · mcp
 - 2026-11-15 14:53 UTC · `build-rules-tab-gate-rules-vps-owns` → running, note (all) · pipeline
 - 2026-11-15 14:53 UTC · `build-rules-tab-gate-rules-vps-owns` note (all) · orchestrator
+- 2026-11-15 14:54 UTC · `phone-connect-small-android-companion` → running, note (all) · mcp
 
 ## Token passes (log)
 
