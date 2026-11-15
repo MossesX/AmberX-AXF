@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T11:59:51.620Z",
+ "updatedAt": "2026-11-15T12:00:06.237Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -150134,7 +150134,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:25.282Z",
-   "updatedAt": "2026-11-15T11:59:50.021Z",
+   "updatedAt": "2026-11-15T11:59:59.544Z",
    "builtAt": "",
    "notes": [
     {
@@ -150330,7 +150330,7 @@
     },
     {
      "id": "s8",
-     "text": "Write the lander adapter apps/console-web/plugins/gate/lander.mjs: status (running/paused/idle), last N runs, waiting PRs with the gate-rules evaluate reasons, land now (adds to the merge queue through land.mjs queue add, never a direct merge), pause and resume.",
+     "text": "Write the lander adapter apps/console-web/plugins/gate/lander.mjs with ONE mode switch 'Merge queue on/off' (Brett 06:59): ON = PRs go through the stacked merge queue (land.mjs queue add) and the one-at-a-time auto-lander is off; OFF (the default) = merge queue off and the auto-lander lands each finished build one at a time (merge main first, fix clashes, then land). Flipping it takes effect at once and is logged in History. Also: status (running/paused/idle, current mode), last N runs, waiting PRs with the gate-rules evaluate reasons, land now (follows the current mode), pause and resume. The default rule set in s3 must not force 'merge-queue only'.",
      "model": "Opus",
      "why": "",
      "phase": "",
