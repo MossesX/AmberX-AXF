@@ -88,3 +88,52 @@ Found while landing: the deployed console has no `POST /land/fix` yet (it ships 
 so the lander couldn't file the fix builds itself. I filed them with `pipeline.mjs request`. Once this PR deploys, the
 lander files them through axf.build-dispatch@1. The VPS also has no GitHub App set up (`github-token.mjs status`:
 app not set up), so the lander uses the broker's old token until it is.
+
+## What this build adds
+
+- **Serial lander** (`land/land-one.mjs`): one finished build at a time. It merges main in (builds files newer-wins,
+  logs unioned, generated files regenerated through generated-files@1, the host resolver
+  `/opt/axf-batch/resolve.py` for anything the rules call code), runs CI once on the merged head (a cancelled,
+  superseded or stale run is started again, never red) and merges the PR at exactly that head on green. On red or a
+  clash it files a P0 fix build whose `said` is Brett's words + the failing check, then moves on. Each attempt is a
+  `land-run@1` (`land-runs.jsonl`, and on the build's `land` record through builds-live). The landing line
+  (`landing-line@1`, `landing-line.json`) holds the order. The merge queue's default mode is `serial`, and its stacks and
+  batches stay only as settings. Config rev 3 reads an older off / batch setting as on + serial.
+- **Land on finish**: the build-hook@1 listener puts a build that reaches `built` at the front of the line and starts
+  the lander. Cron `axf-auto-land` (every 3 min) runs the auto-land round and then `land-one.mjs line`.
+- **Drift keeper** (`land/keep-fresh.mjs`): every 30 min each running build gets main merged into its own worktree,
+  except a dirty one or one held by its session (git lock files, `.axf-fresh-hold`). Generated files are regenerated
+  and the result is pushed. Every running build's commits behind main go on its land record.
+- **Dispatcher fix**: parked builds take no slot, and a failed launch hands its slot on in the same tick (see the
+  cause above).
+- **Backlog + supersede** (`land/backlog.mjs`, `land/supersede.mjs`): the backlog is ordered with the named builds
+  first. The supersede check uses `git cherry` + file level + "main once had this version", and reads deleted branches
+  from `refs/pull/<n>/head`. Superseded builds get an `archive/<build>` tag, their PR closed and land state archived;
+  unique ones are flagged.
+- **Per batch**: one `axf-console-update`, a doubled-chrome check (`check-chrome-once.mjs`, desktop + phone; a
+  sign-in wall is `unknown`, never a pass) and one phone summary (axf.notify@1 `land.summary`).
+- **Commits-behind column**: the framework `LandCell` on the Build manager, every Pipeline tab and the orchestrator
+  grid. Each cell is a control@1 target `land:<build>`.
+- **Unlanded alert**: health@1 `land-unlanded` goes red after 15 min. Its auto-fix puts the builds in the line, and
+  the alert is pushed once to AmberX (axf.notify@1 `land.unlanded`).
+- **Fixes found while landing**: the hub data copy of status.json was missing 9 entries, so the tracker check failed
+  on main itself on this VPS. A check that fails on main too no longer turns a build red. A lander now drops only its
+  own lock and keeps it fresh while CI runs. A red check right after the merge goes to fix-filed (it was being paused).
+
+## API reach (Brett, Nov 8 2026: "Everything comes with an API")
+
+| What | REST `/api/plugins/push-banner` | MCP (plugin-commands@1) | CLI | Voice (AmberX, control@1 plugins.commands) |
+|---|---|---|---|---|
+| Lander status (line, attempts, last batch, requests) | `GET /land/lander` | `push_banner_land_lander` | `axf land status` · `land-one.mjs show/runs` | "what's landing" → land-lander |
+| Backlog | `GET /land/backlog` | `push_banner_land_backlog` | `axf land backlog` · `backlog.mjs` | land-backlog |
+| Land one now | `POST /land/one {build}` | `push_banner_land_one` | `axf land one <build>` · `land-one.mjs <build>` | land-one |
+| Archive | `POST /land/archive {build, why?}` | `push_banner_land_archive` | `axf land archive <build>` · `supersede.mjs <build> --apply` | land-archive |
+| Flag | `POST /land/flag {build, why?}` | `push_banner_land_flag` | `axf land flag <build>` | land-flag |
+| Keep-fresh run | `POST /land/fresh` | `push_banner_land_fresh` | `axf land fresh` · `keep-fresh.mjs run --force` | land-fresh |
+| Dispatcher state | `GET /land/dispatcher` (axf.build-dispatch@1 `status()`) | `push_banner_land_dispatcher` | `axf land dispatcher` · `pipeline.mjs status` | land-dispatcher |
+| The landing line | `GET /land/line` | `push_banner_land_line` | `axf land line` | land-line |
+
+Deep links: `view:landing-line` (console_show / console_open opens the banner on the landing line) and `land:<build>`
+on every build grid row. `test-api-parity.mjs` checks that all four transports resolve to the same route.
+Archive, flag and fresh need the host's git and token, so the console records them in `land-requests.jsonl` and the
+lander runs them at its next run.
