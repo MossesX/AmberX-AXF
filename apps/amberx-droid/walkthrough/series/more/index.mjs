@@ -17,5 +17,8 @@ import vetoApprovals from './veto-approvals.mjs';
 import uiDirectory from './ui-directory.mjs';
 import povDay from './pov-day.mjs';
 import sessionRecall from './session-recall.mjs';
+import liveBanners from './live-banners.mjs';
+import nestedNotes from './nested-notes.mjs';
+import menusToolbars from './menus-toolbars.mjs';
 
-export const MORE = [commute, expenses, bossTexts, privateChat, onDemand, teenDriver, builtWithItself, employees, architecture, skinsBranding, orchestrator, consolePhone, planSpoken, voiceConsole, vetoApprovals, uiDirectory, povDay, sessionRecall];
+export const MORE = [commute, expenses, bossTexts, privateChat, onDemand, teenDriver, builtWithItself, employees, architecture, skinsBranding, orchestrator, consolePhone, planSpoken, voiceConsole, vetoApprovals, uiDirectory, povDay, sessionRecall, liveBanners, nestedNotes, menusToolbars];
