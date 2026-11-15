@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T19:57:15.579Z",
+ "updatedAt": "2026-11-15T19:57:26.350Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -147192,7 +147192,7 @@
    "pr": "#705",
    "priority": "P0",
    "createdAt": "2026-11-15T04:17:06.158Z",
-   "updatedAt": "2026-11-15T19:57:06.584Z",
+   "updatedAt": "2026-11-15T19:57:12.374Z",
    "builtAt": "",
    "notes": [
     {
@@ -147250,6 +147250,14 @@
     {
      "text": "Brett (now): TOP PRIORITY, run this before anything else. The auto-lander still lands NOTHING. Fix the auto-lander itself so every finished build lands one at a time, merging main first and fixing clashes (most clashes are generated files like inventory.json, catalog.json, status.json, android.yml: regenerate them instead of failing). Then land the backlog of built builds one at a time. Gate & rules plugin (PR #711) and Build rules tab are already on main; wire into them.",
      "at": "2026-11-15T19:56:31.550Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-auto-lander-controls-in-the-gate-plugin--earl.",
+     "at": "2026-11-15T19:57:10.417Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-auto-lander-controls-in-the-gate-plugin--earl, shared account login)",
+     "at": "2026-11-15T19:57:12.374Z"
     }
    ],
    "approvals": [],

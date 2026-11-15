@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6351,
- "updatedAt": "2026-11-15T19:57:15.579Z",
+ "rev": 6352,
+ "updatedAt": "2026-11-15T19:57:26.350Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -229282,7 +229282,7 @@
    "pr": "#705",
    "priority": "P0",
    "createdAt": "2026-11-15T04:17:06.158Z",
-   "updatedAt": "2026-11-15T19:57:06.584Z",
+   "updatedAt": "2026-11-15T19:57:12.374Z",
    "builtAt": "",
    "notes": [
     {
@@ -229340,6 +229340,14 @@
     {
      "text": "Brett (now): TOP PRIORITY, run this before anything else. The auto-lander still lands NOTHING. Fix the auto-lander itself so every finished build lands one at a time, merging main first and fixing clashes (most clashes are generated files like inventory.json, catalog.json, status.json, android.yml: regenerate them instead of failing). Then land the backlog of built builds one at a time. Gate & rules plugin (PR #711) and Build rules tab are already on main; wire into them.",
      "at": "2026-11-15T19:56:31.550Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-auto-lander-controls-in-the-gate-plugin--earl.",
+     "at": "2026-11-15T19:57:10.417Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-auto-lander-controls-in-the-gate-plugin--earl, shared account login)",
+     "at": "2026-11-15T19:57:12.374Z"
     }
    ],
    "approvals": [],
@@ -229359,12 +229367,12 @@
    "pipeline": {
     "queuedAt": "2026-11-15T04:17:08.584Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-auto-lander-controls-in-the-gate-plugin--earl",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-15T19:57:09.845Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-15T04:19:53.877Z",
@@ -229376,7 +229384,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-15T19:57:09.845Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -229385,7 +229393,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-15T19:57:09.845Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -229812,7 +229820,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
