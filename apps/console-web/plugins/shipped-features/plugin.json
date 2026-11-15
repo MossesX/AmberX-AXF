@@ -339,6 +339,20 @@
         "navigate": true,
         "title": "Open a shipped feature (in the open console)",
         "description": "Runs feature.open:<id or words> in the open console: opens that feature's screen there."
+      },
+      {
+        "route": "GET /features/open-targets",
+        "id": "open-targets",
+        "readOnly": true,
+        "title": "Where every feature opens",
+        "description": "Every feature's open target in one answer: {targets: {id: {target, label, via} | {target: null, code, reason}}, count, openable}."
+      },
+      {
+        "route": "GET /builds/{build}/open-targets",
+        "id": "build-open-targets",
+        "readOnly": true,
+        "title": "Where a build's features open",
+        "description": "The open target of every feature one build added or changed (a build that hasn't landed: not-live)."
       }
     ]
   },

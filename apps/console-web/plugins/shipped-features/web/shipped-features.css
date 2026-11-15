@@ -35,3 +35,5 @@
 .axp-shipped__pre { margin: 0; max-height: calc(var(--fx-space) * 60); overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--fx-font-mono); font-size: var(--fx-size-chip-font); background: var(--fx-surface2); padding: var(--fx-dens-gap-xl); border-radius: var(--fx-radius-sm); }
 .axp-shipped__steps, .axp-shipped__list { margin: 0; padding-inline-start: var(--fx-dens-gap-2xl); display: grid; gap: calc(var(--fx-space) / 2); }
 .axp-shipped__steps li, .axp-shipped__list li { overflow-wrap: anywhere; }
+/* The Open button's row toolbar (FeatureOpenButton): layout only, the button asset styles the control. */
+.axp-shipped__rowbar { display: inline-flex; align-items: center; gap: calc(var(--fx-space) / 2); }

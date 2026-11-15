@@ -16,19 +16,37 @@ export interface OpenTarget { feature?: string; name?: string; status?: string; 
 export interface FindAnswer { q: string; match: { id: string; name: string; status: string } | null; alternatives: { id: string; name: string; status: string }[]; ambiguous: boolean }
 
 const cache = new Map<string, Promise<OpenTarget>>();
+let all: Promise<Record<string, OpenTarget>> | null = null;
+let allAt = 0;
+const ALL_TTL_MS = 120_000;
 
-/** Where a feature opens (cached for the page's life; `fresh` asks again). */
+/** Every feature's target in one call (the grid's Open buttons), kept for two minutes. */
+export function allOpenTargets(fresh = false): Promise<Record<string, OpenTarget>> {
+  if (fresh || !all || Date.now() - allAt > ALL_TTL_MS) {
+    allAt = Date.now();
+    all = api.call<{ targets: Record<string, OpenTarget> }>('features/open-targets').then((r) => r.targets, () => { all = null; return {}; });
+  }
+  return all;
+}
+
+/** Where a feature opens (from the grid's batch when it has it, else asked alone; `fresh` asks again). */
 export function openTarget(id: string, fresh = false): Promise<OpenTarget> {
-  if (fresh || !cache.has(id)) cache.set(id, api.call<OpenTarget>(`features/${encodeURIComponent(id)}/open-target`).catch((e: Error) => { cache.delete(id); return { target: null, code: 'error', reason: e.message }; }));
+  if (fresh || !cache.has(id)) {
+    cache.set(id, (fresh ? Promise.resolve<Record<string, OpenTarget>>({}) : allOpenTargets()).then((m) => m[id] ?? api.call<OpenTarget>(`features/${encodeURIComponent(id)}/open-target`))
+      .catch((e: Error) => { cache.delete(id); return { target: null, code: 'error', reason: e.message }; }));
+  }
   return cache.get(id)!;
 }
+
+/** The targets of one build's features (the Gate's Pending features rows, through the feature.open slot). */
+export const buildOpenTargets = (build: string) => api.call<{ build: string; features: OpenTarget[] }>(`builds/${encodeURIComponent(build)}/open-targets`).then((r) => r.features);
 
 /** A feature named by id or in words. */
 export const findFeature = (q: string) => api.call<FindAnswer>(`features/find?q=${encodeURIComponent(q)}`);
 
 /** Open one feature by id: the console-control open through the server, else this console. Says what happened. */
 export async function openFeature(rt: AxfRuntime, id: string): Promise<boolean> {
-  const t = await openTarget(id);
+  const t = { name: id, ...(await openTarget(id)) };
   if (!t.target) { rt.toast(`${t.name || id} can't be opened: ${t.reason}`, 'warning', 'Shipped features'); return false; }
   let delivered = false;
   try {

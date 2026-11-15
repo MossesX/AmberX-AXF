@@ -21,6 +21,8 @@ only); every write goes through the Node side (ledger/ledger.mjs), so the refere
     POST /link                link a build to its branch / PR / merge time (builds store write, hooks fire)
     POST /backfill            { since, dry }: landed builds with no manifest since the date get one
     GET  /features/{id}/open-target   where the feature opens in the console (console-control@1 address) or why not
+    GET  /features/open-targets           every feature's open target (the grid's Open buttons)
+    GET  /builds/{build}/open-targets     the open targets of a build's features (Gate's Pending features rows)
     GET  /features/find?q=    a feature named in words (or its id): best match + close alternatives when ambiguous
     GET  /features/open-target?feature=<id or words> · POST /features/open { feature, to?, by? }: the same, by name
     POST /features/{id}/open  { to?, by? }: open it in the live console (console-control open); 409 + reason when it can't
@@ -440,6 +442,25 @@ def feature_open_by(body: dict[str, Any]) -> dict[str, Any] | JSONResponse:
     if found.get("ambiguous"):
         r["message"] += " Also close: " + "; ".join(a["name"] for a in found["alternatives"][:3]) + "."
     return {**r, "lookup": found}
+
+
+@router.get("/features/open-targets")
+def feature_open_targets() -> dict[str, Any]:
+    """Every feature's open target in one answer (the grid draws its Open buttons from it): {targets: {id: target}}."""
+    reg = ot.load_registry()
+    out = {}
+    for f in _all_features():
+        t = ot.open_target(f, reg)
+        out[f["id"]] = {k: t[k] for k in ("target", "label", "via", "code", "reason") if t.get(k) is not None}
+    return {"targets": out, "count": len(out), "openable": sum(1 for t in out.values() if t.get("target"))}
+
+
+@router.get("/builds/{build}/open-targets")
+def build_open_targets(build: str) -> dict[str, Any]:
+    """The open targets of every feature a build added or changed (the Gate's Pending features rows use this)."""
+    if not BUILD_ID.match(build):
+        raise HTTPException(400, "bad build id")
+    return {"build": build, "features": ShippedFeaturesService().open_targets_for_build(build)}
 
 
 @router.get("/features/{fid}/open-target")

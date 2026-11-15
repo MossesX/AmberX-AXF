@@ -171,6 +171,11 @@ mod._control = lambda body: {"ok": True, "verb": "open", "address": body["addres
 bo = c.post(f"{base}/features/open", json={"feature": vf["id"]}).json()
 ok(bo["status"] == "delivered" and bo["openTarget"]["target"] == "view:banners", "POST features/open {feature: id}")
 
+al = c.get(f"{base}/features/open-targets").json()
+ok(al["count"] == 2 and al["targets"][vf["id"]]["target"] == "view:banners" and al["targets"][f["id"]]["code"] == "not-live" and al["openable"] == 1, "GET features/open-targets: every row's target in one answer")
+bo2 = c.get(f"{base}/builds/veto/open-targets").json()
+ok(bo2["features"][0]["target"] == "view:banners" and c.get(f"{base}/builds/BAD!/open-targets").status_code == 400, "GET builds/{build}/open-targets")
+
 # capability service (what the Gate uses) and the CLI smoke test against a real server
 svc = mod.ShippedFeaturesService()
 ok(svc.open_target(vf["id"])["target"] == "view:banners" and svc.open_target("f-nope")["code"] == "not-found", "service: open_target by id, unknown → not-found")
