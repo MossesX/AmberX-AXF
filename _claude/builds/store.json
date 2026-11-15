@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5732,
- "updatedAt": "2026-11-15T00:11:25.593Z",
+ "rev": 5733,
+ "updatedAt": "2026-11-15T00:11:44.852Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -162198,7 +162198,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-12T01:46:10.127Z",
-   "updatedAt": "2026-11-15T00:07:12.039Z",
+   "updatedAt": "2026-11-15T00:11:12.308Z",
    "builtAt": "",
    "notes": [
     {
@@ -162276,7 +162276,7 @@
     "queuedAt": "2026-11-12T01:46:12.403Z",
     "queuedBy": "push-banner",
     "account": "mossesx-max-",
-    "session": "axf-fix-axhub-36-pull-main-in-failed--earl",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-14T23:56:20.868Z",
@@ -162760,12 +162760,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:11:12.308Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T11:07:46.715Z",
-     "updatedAt": "2026-11-12T11:07:46.715Z"
+     "updatedAt": "2026-11-15T00:11:13.048Z"
     },
     {
      "id": "s21",
@@ -162826,7 +162826,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
