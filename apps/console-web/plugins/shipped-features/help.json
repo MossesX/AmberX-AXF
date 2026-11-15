@@ -114,6 +114,21 @@
         "text": "The “Last edited” column. Tap its header to sort the list by it.",
         "kind": "column",
         "draft": true
+      },
+      {
+        "target": "shipped-features-open",
+        "title": "Open",
+        "text": "Opens this feature in the app: the screen, tab or Settings page it lives on, in the console you used last. Greyed out when it can't open, and the tooltip says why: not landed yet, cancelled, removed, no screen of its own (framework, tooling or docs), or its screen is gone. Same as `axf feature open <name>`, the shipped_features_open tool, the action feature.open:<name> and saying \"open feature <name>\"."
+      },
+      {
+        "target": "action:feature.open",
+        "title": "Open in app (right-click a row)",
+        "text": "Right-click or long-press a feature row: Open in app opens its screen. When it can't open, the item says why instead."
+      },
+      {
+        "target": "shipped-features-open-api",
+        "title": "Open a feature without the page",
+        "text": "REST: GET features/{id}/open-target (where it opens, or why not), POST features/{id}/open, GET features/find?q=, GET/POST features/open-target|open with a name. MCP: shipped_features_open, shipped_features_open_target. CLI: axf feature open|target|find <id or words>. Voice: \"open feature X\", \"show me feature X\", \"where is feature X\". Deep link: ?shipped=<feature id>&open=1, or console-control view:shipped-features/grid:shipped-features/row:<id>/button:open."
       }
     ],
     "intros": [

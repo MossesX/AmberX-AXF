@@ -12,7 +12,7 @@ export function BuildFeatures({ build, landed }: { build: string; landed: boolea
   const filled = useSlotFilled(FEATURE_OPEN_SLOT);
   if (!build || !filled) return null;
   return (
-    <div className="axp-gate__stat">
+    <div className="axp-gate__stat" data-help="gate-build-features">
       <span className="axp-gate__label">Features</span>
       <Slot name={FEATURE_OPEN_SLOT} props={{ build, landed }} />
     </div>

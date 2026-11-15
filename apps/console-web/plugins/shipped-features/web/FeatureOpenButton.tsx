@@ -60,7 +60,7 @@ export function FeatureOpenButton({ featureId, name, target, blockedBy, look: fo
   const tip = !t ? 'Finding where it opens…' : reason ? `Can't open: ${reason}` : `Open ${t.label ?? 'it'} in the app`;
   const press = async () => { setBusy(true); try { await openFeature(rt, featureId); } finally { setBusy(false); } };
   return (
-    <span className="axp-shipped__rowbar" role="toolbar" aria-label={`${name}: actions`} title={tip} onClick={(e) => e.stopPropagation()}>
+    <span className="axp-shipped__rowbar" data-help="shipped-features-open" role="toolbar" aria-label={`${name}: actions`} title={tip} onClick={(e) => e.stopPropagation()}>
       {look === 'icon'
         ? <IconButton icon="external" label="Open" title={tip} disabled={disabled || busy} aria-description={reason || undefined} onClick={() => void press()} />
         : <Button size="sm" icon={look === 'button-icon' ? 'external' : undefined} title={tip} disabled={disabled} busy={busy} aria-description={reason || undefined} onClick={() => void press()}>Open</Button>}

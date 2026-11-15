@@ -44,3 +44,13 @@ node apps/console-web/plugins/gate/uninstall.mjs            # data only (backed 
 node apps/console-web/plugins/gate/uninstall.mjs --all      # + code + doc lines; --publish pushes the removal
 node apps/console-web/plugins/gate/test.mjs                 # self-test
 ```
+
+## A build's features and their Open buttons
+
+Waiting PRs and lander runs expand to the features their build added (`web/BuildFeatures.tsx`), each with the Shipped
+features Open button through the `feature.open` slot: never that plugin's folder name, and nothing is drawn when no
+plugin fills the slot. Before a build lands its buttons are disabled with "not landed yet"; a landed run's open the
+feature in the app. The same state is on the reads: with a plugin providing `service:axf.shipped-features@1`, every
+item of `GET lander/waiting` and `GET lander/runs` (MCP `lander_waiting`, `lander_runs`) carries `features: [{feature,
+name, status, target, label} | {feature, name, target: null, code, reason}]`. The Pending features tab uses the same
+component when it lands.

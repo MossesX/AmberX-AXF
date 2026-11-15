@@ -74,8 +74,30 @@ node framework/cli/shipped.mjs backfill --since 2026-11-08 [--dry]   # landed bu
 node apps/console-web/plugins/shipped-features/ledger/ledger.mjs search <text> | manifests | manifest <build>
 ```
 
+## Open a feature in the app
+
+Every row has an **Open** button (`web/FeatureOpenButton.tsx`, one shared component) and an **Open in app** row context
+item: it opens the feature's screen, tab or Settings page in the live console. Where it opens is worked out on the
+server (`server/open_target.py`) from the record's plugin, files, the name's "Area:" prefix and app, and checked against
+the console-control registry (the console's inventory). A feature that can't open says why, and the button is disabled
+with that reason as its tooltip: `not-live` ("not landed yet"), `cancelled`, `removed`, `no-screen` (framework, tooling,
+docs, or another app) or `unknown-address` (its screen is gone). Merged features open (the console runs main).
+
+| Surface | How |
+|---|---|
+| REST | `GET features/{id}/open-target` · `POST features/{id}/open` (409 + reason when it can't) · `GET features/find?q=` · `GET features/open-target?feature=<id or words>` · `POST features/open {feature, to?}` · `GET features/open-targets` (every row) · `GET builds/{build}/open-targets` |
+| MCP | `shipped_features_open`, `shipped_features_open_target`, `shipped_features_find` (plugin-commands@1) |
+| Console action | `feature.open:<id or words>` |
+| CLI | `axf feature open|target|find <id or words>` (`cli.mjs`; exit 3 = no screen, with the reason) |
+| Voice | "open feature X", "show me feature X", "where is feature X" (wake-listener phrasebook); the reply names the screen or the reason |
+| Deep link | `?shipped=<feature id>&open=1` · console-control `view:shipped-features/grid:shipped-features/row:<id>/button:open` (press / state) |
+| Other plugins | slot `feature.open` (props `{build, landed}`) draws a build's features with their Open buttons; service `axf.shipped-features@1` (`open_target`, `open_targets_for_build`, `open`) on the server |
+
+The button's look is the setting `shipped-features.openButton` (`button`, `button-icon` default, `icon`), a UI Review
+choice shipped as settings assets in `assets/settings/`.
+
 ## Tests
 
 `node apps/console-web/plugins/shipped-features/test.mjs` (store, hook, importers, live) ·
-`python3 apps/console-web/plugins/shipped-features/test.py` (server) · `node framework/spec/check-feature-ledger.mjs` ·
+`python3 apps/console-web/plugins/shipped-features/test.py` (server, open targets, find, the CLI against a live server) · `node framework/spec/check-feature-ledger.mjs` ·
 `node framework/spec/check-build-hook.mjs` · `node framework/spec/check-shipped-manifest.mjs` · `bash framework/deploy/test.sh`.

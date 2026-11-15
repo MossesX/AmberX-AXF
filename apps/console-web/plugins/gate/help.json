@@ -152,6 +152,11 @@
         "target": "gate.view",
         "title": "Show the lists as",
         "text": "How the gate's lists are drawn: a grid with two lines a row, cards (best on a phone), or a compact one-line grid. Unset, it follows the skin."
+      },
+      {
+        "target": "gate-build-features",
+        "title": "Features",
+        "text": "The features this build added, each with its Open button from Shipped features. Before the build lands the button is greyed out: not landed yet. Once it lands, Open shows the feature in the app. Shows only when Shipped features is installed."
       }
     ],
     "intros": [
