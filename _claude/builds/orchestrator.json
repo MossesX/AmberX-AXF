@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T11:53:15.732Z",
+ "updatedAt": "2026-11-15T11:53:34.938Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -149210,6 +149210,80 @@
    "origin": {
     "said": "Why are pending builds not 1 expandable row. Wanna just rebuild it",
     "at": "2026-11-15T11:52:18.052Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "every-grid-1-2-rows-per-item-set-skin",
+   "title": "Every grid: 1 or 2 rows per item, set by the skin",
+   "category": "",
+   "detail": "Every grid/table/list in the console shows each item as 1 or 2 rows when collapsed, set by the active skin (a skin token, e.g. grid row-lines = 1 or 2), and expands on tap for details. Audit every grid in every plugin and move it onto the shared framework grid/row control so the skin decides; no plugin hard-codes its own row layout. Use the existing grid/tab-group token sets (#654). Skin editor gets the 1-row/2-row setting with live preview. API parity (read/set the setting via REST/MCP/CLI/voice). Tests, check-theme and check-controls green, help, Shipped features. Land when done.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-15T11:53:17.286Z",
+   "updatedAt": "2026-11-15T11:53:21.835Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-15T11:53:21.835Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "every grid supposed to be 1 or 2 rows depending on the skin",
+    "at": "2026-11-15T11:53:17.286Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "gate-rules-plugin-in-the-console",
+   "title": "Gate & rules plugin in the console",
+   "category": "",
+   "detail": "There is no Gate & rules screen anywhere (not on main, not on the auto-lander branch). Build a console plugin 'gate' with tabs: Rules (the checks a build must pass before it lands: CI green, tests, theme/controls checks, UI Review on/off, clash handling, etc., each with on/off and settings), Auto-lander (status, last runs, what's waiting and why, land now / pause), and History. Per the final layout: the screens live in the console only; the rules and lander logic run in the axf-molly container; axHub only routes the gate.* and lander.* tools. Until axf-molly exists, read/write through the current orchestrator/lander code. Coordinate with auto-lander-controls-in-the-gate-plugin and move-build-orchestrator-to-axhub. Rows follow the skin's 1-or-2-row grid setting. Full API parity, tests, help, Shipped features. Land when done.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-15T11:53:25.282Z",
+   "updatedAt": "2026-11-15T11:53:27.959Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-15T11:53:27.959Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Where is the gate and rules plugin, open it on my screen. Yeah.",
+    "at": "2026-11-15T11:53:25.282Z",
     "source": "",
     "session": "",
     "link": "",

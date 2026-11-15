@@ -806,10 +806,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:50 UTC · `merge-main-land-console-app-part-4` s4 done (all) · orchestrator
-- 2026-11-14 23:51 UTC · `merge-main-land-console-app-part-4` s5 done (all) · orchestrator
-- 2026-11-14 23:51 UTC · `merge-main-land-console-app-part-4` s6 done (all) · orchestrator
-- 2026-11-14 23:50 UTC · `console-look-becomes-default-axhub-skin` s5 done (all) · orchestrator
 - 2026-11-14 23:51 UTC · `merge-main-land-one-source-truth-console` s1 done, → running (all) · orchestrator
 - 2026-11-14 23:51 UTC · `merge-main-land-console-app-part-4` s7 done (all) · orchestrator
 - 2026-11-14 23:51 UTC · `merge-main-land-console-app-part-4` s8 done (all) · orchestrator
@@ -1206,6 +1202,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 11:52 UTC · `pending-tab-one-collapsed-row-per-2` added (0 steps) (all) · console
 - 2026-11-15 11:52 UTC · `pending-tab-one-collapsed-row-per-2` → queued, note (all) · console
 - 2026-11-15 11:53 UTC · `pending-tab-one-collapsed-row-per-2` note (all) · mcp
+- 2026-11-15 11:53 UTC · `every-grid-1-2-rows-per-item-set-skin` added (0 steps) (all) · console
+- 2026-11-15 11:53 UTC · `every-grid-1-2-rows-per-item-set-skin` → queued, note (all) · console
+- 2026-11-15 11:53 UTC · `gate-rules-plugin-in-the-console` added (0 steps) (all) · console
+- 2026-11-15 11:53 UTC · `gate-rules-plugin-in-the-console` → queued, note (all) · console
 
 ## Token passes (log)
 
