@@ -25,6 +25,10 @@
  * axHub-approved MCP tool set AXF_APPROVER + AXF_APPROVER_VIA, and nothing in the environment says the caller is a
  * Claude session, a headless build or an agent. An `approver` inside a --json change is never trusted.
  *   … where                           the tracker file in use
+ *   … pending [rows|expand|collapse|toggle|collapse-all] [id] [--viewer <id>]
+ *                                     the Pending tab as one collapsed row per build and which rows the viewer has
+ *                                     open (pending-rows-view@1; the same answer as GET pending/rows and the MCP
+ *                                     commands pending-*); viewer default AXF_VIEWER, else "console"
  * Any <id> may be a build's alias (build-id@1): a build whose id is over 40 characters answers to a short one too.
  *   --json on any command prints JSON (the console server uses this).
  */

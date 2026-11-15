@@ -535,6 +535,108 @@
         "output": "{ settings }"
       },
       {
+        "id": "pending-rows",
+        "route": "GET /pending/rows",
+        "title": "Pending rows",
+        "description": "The Pending tab as one collapsed row per build: title, status and why it is pending, priority, steps done/total, age, and which rows this viewer has expanded. Say 'what's pending'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "viewer": {
+              "type": "string",
+              "description": "Whose expanded rows (a hub user, session or console id); default: the caller"
+            }
+          }
+        },
+        "output": "{ viewer, expanded: [id…], count, rows: [{ id, title, statusLabel, why, priority, steps: { done, total }, age, said, stepList, notes, actions, expanded }] }"
+      },
+      {
+        "id": "pending-expand",
+        "route": "POST /pending/rows/{build}/expand",
+        "title": "Expand a pending row",
+        "description": "Open one pending build's row (steps, notes, what Brett said, actions) for this viewer; remembered per viewer. Say 'open skins in pending'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id (it must be in Pending)"
+            },
+            "viewer": {
+              "type": "string",
+              "description": "Whose expanded rows (a hub user, session or console id); default: the caller"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ viewer, expanded: [id…], count, rows: [{ id, title, statusLabel, why, priority, steps: { done, total }, age, said, stepList, notes, actions, expanded }] }"
+      },
+      {
+        "id": "pending-collapse",
+        "route": "POST /pending/rows/{build}/collapse",
+        "title": "Collapse a pending row",
+        "description": "Close one pending build's row back to its one line for this viewer.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id (it must be in Pending)"
+            },
+            "viewer": {
+              "type": "string",
+              "description": "Whose expanded rows (a hub user, session or console id); default: the caller"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ viewer, expanded: [id…], count, rows: [{ id, title, statusLabel, why, priority, steps: { done, total }, age, said, stepList, notes, actions, expanded }] }"
+      },
+      {
+        "id": "pending-toggle",
+        "route": "POST /pending/rows/{build}/toggle",
+        "title": "Toggle a pending row",
+        "description": "Open a pending build's row when it is closed, close it when it is open (the same as tapping it).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id (it must be in Pending)"
+            },
+            "viewer": {
+              "type": "string",
+              "description": "Whose expanded rows (a hub user, session or console id); default: the caller"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ viewer, expanded: [id…], count, rows: [{ id, title, statusLabel, why, priority, steps: { done, total }, age, said, stepList, notes, actions, expanded }] }"
+      },
+      {
+        "id": "pending-collapse-all",
+        "route": "POST /pending/rows/collapse-all",
+        "title": "Collapse all pending rows",
+        "description": "Close every pending row for this viewer (the Collapse all button).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "viewer": {
+              "type": "string",
+              "description": "Whose expanded rows (a hub user, session or console id); default: the caller"
+            }
+          }
+        },
+        "output": "{ viewer, expanded: [id…], count, rows: [{ id, title, statusLabel, why, priority, steps: { done, total }, age, said, stepList, notes, actions, expanded }] }"
+      },
+      {
         "id": "groups-list",
         "route": "GET /groups",
         "title": "Build groups",

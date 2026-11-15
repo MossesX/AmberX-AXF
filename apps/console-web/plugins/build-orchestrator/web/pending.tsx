@@ -16,6 +16,10 @@ type Api = { call: <T>(path: string) => Promise<T>; post: <T>(path: string, body
 type RowsAnswer = { ok: boolean; error?: string; viewer: string; expanded: string[]; count: number; rows: PendingSummary[] };
 const ROW_EVENT = 'axf:orchestrator-pending-row';
 
+const RELOAD_EVENT = 'axf:orchestrator-pending-reload';
+/** The server's pending rows changed outside the tab (a voice or console action): an open tab reloads them. */
+export function pendingReload(): void { window.dispatchEvent(new Event(RELOAD_EVENT)); }
+
 /** Expand, collapse or toggle a pending row from outside the tab (control targets, deep links). */
 export function pendingRowCommand(id: string, op: 'expand' | 'collapse' | 'toggle'): void {
   window.dispatchEvent(new CustomEvent(ROW_EVENT, { detail: { id, op } }));
@@ -64,6 +68,7 @@ export function PendingTab({ api, log, tick, onChanged }: { api: Api; log: (t: s
     window.addEventListener(ROW_EVENT, on);
     return () => window.removeEventListener(ROW_EVENT, on);
   }, []);
+  useEffect(() => { const on = () => void load(); window.addEventListener(RELOAD_EVENT, on); return () => window.removeEventListener(RELOAD_EVENT, on); }, []);
   // a build asked for (console_show row:<build>, search, menu): its row opens, scrolls into view and stays highlighted
   const focusId = useFocusedBuild();
   const listed = !!focusId && !!ans?.rows.some((r) => r.id === focusId);

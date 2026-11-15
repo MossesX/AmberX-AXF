@@ -590,7 +590,6 @@ async def pipeline_route(request: Request) -> dict[str, Any]:
 # One collapsed row per pending build; which rows are expanded is remembered per viewer in the plugin data dir
 # (.axf-console/plugins/build-orchestrator/pending-rows.json). The rules live in pending-rows.mjs and the CLI
 # (`orchestrator.mjs pending …`), so REST, the MCP commands, the CLI and voice give the same answer.
-PENDING_OPS = ("expand", "collapse", "toggle")
 VIEWER_RE = re.compile(r"[^A-Za-z0-9._@-]+")
 
 
@@ -627,13 +626,27 @@ async def pending_collapse_all(request: Request) -> dict[str, Any]:
     return _pending("collapse-all", "--viewer", _viewer(request, body))
 
 
-@router.post("/pending/rows/{build}/{op}")
-async def pending_row_op(build: str, op: str, request: Request) -> dict[str, Any]:
-    """{viewer?}: expand, collapse or toggle one pending build's row for this viewer. Answers like GET pending/rows."""
-    if op not in PENDING_OPS:
-        raise HTTPException(400, f"op is one of {', '.join(PENDING_OPS)}")
+async def _pending_op(build: str, op: str, request: Request) -> dict[str, Any]:
     body = await _json_body(request)
     return _pending(op, _build_id(build), "--viewer", _viewer(request, body))
+
+
+@router.post("/pending/rows/{build}/expand")
+async def pending_expand(build: str, request: Request) -> dict[str, Any]:
+    """{viewer?}: open one pending build's row for this viewer. Answers like GET pending/rows."""
+    return await _pending_op(build, "expand", request)
+
+
+@router.post("/pending/rows/{build}/collapse")
+async def pending_collapse(build: str, request: Request) -> dict[str, Any]:
+    """{viewer?}: close one pending build's row for this viewer. Answers like GET pending/rows."""
+    return await _pending_op(build, "collapse", request)
+
+
+@router.post("/pending/rows/{build}/toggle")
+async def pending_toggle(build: str, request: Request) -> dict[str, Any]:
+    """{viewer?}: open the row when closed, close it when open, for this viewer. Answers like GET pending/rows."""
+    return await _pending_op(build, "toggle", request)
 
 
 # ---- custom groups and custom tabs (groups.mjs, build-groups@1; Brett, Nov 13 2026)
