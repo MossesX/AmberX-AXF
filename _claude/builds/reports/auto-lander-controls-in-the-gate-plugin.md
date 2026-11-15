@@ -122,6 +122,14 @@ Merged and Live when the merge queue lands the PR. Deploy log: no line written f
 reinstall, and the new lander code reaches `/opt/axf` only when the PR lands, where the console updater's own
 `axf_deploy_log` call (who `update`) records it. A hand-written line now would mark these features live before they are.
 
+## Tests (s16, final head)
+
+`auto-lander.test.mjs` 49 · `land.test.mjs` 112 · `merge-queue.test.mjs` 18 · push-banner `test.py` 200 (CLI = REST/MCP
+parity) · build-orchestrator `test.py` 48 (routes in `server/test_lander.py`, 19) · control@1 spec 396 checks ·
+console-control@1 spec 290 and `check-console-control` · check-theme · check-controls · check-toolbars ·
+check-chrome-assets · glossary `catalog.mjs --check` · `tracker.mjs --check`: all pass. `plugin-lifecycle check`:
+push-banner clean; build-orchestrator's only finding is the dispatcher's untracked `.axf-brief.md` (not in the PR).
+
 ## Open
 
 - #680 stays out of the queue until main is merged into it and its control inventory is regenerated; `merge-queue.mjs add 680` puts it back.
