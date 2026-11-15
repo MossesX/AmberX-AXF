@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T13:24:53.309Z",
+ "updatedAt": "2026-11-15T13:25:51.540Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -151506,7 +151506,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T13:22:11.842Z",
-   "updatedAt": "2026-11-15T13:24:51.863Z",
+   "updatedAt": "2026-11-15T13:25:48.335Z",
    "builtAt": "",
    "notes": [
     {
@@ -151701,7 +151701,7 @@
     },
     {
      "id": "s8",
-     "text": "Server home-cards service: resolve cards from picks, the Plugin Manager inventory (enabled/installed) and the ranking. Subscribe to plugin enable/disable/uninstall events so the resolved list refreshes at once.",
+     "text": "Server home-cards service: resolve cards from picks, the Plugin Manager inventory (enabled/installed) and the ranking. Subscribe to plugin enable/disable/uninstall events so the resolved list refreshes at once. PLUS the VPS card generator (plain code, no Claude): after any plugin build or install, read plugin.json and write a DATA-ONLY home-card@1 record (id, title, icon, description, deep link, stats source), never markup or styling. Register it as the first rule 'Every plugin gets a home card (doer: VPS)' in the Gate & rules Build rules store, so the gate blocks a landing until the card record exists. Then run it once over every existing plugin and create the records that are missing. If this is too big for one step, split it.",
      "model": "Opus",
      "why": "",
      "phase": "",

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6187,
- "updatedAt": "2026-11-15T13:24:53.309Z",
+ "rev": 6188,
+ "updatedAt": "2026-11-15T13:25:51.540Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -234581,7 +234581,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T13:22:11.842Z",
-   "updatedAt": "2026-11-15T13:24:51.863Z",
+   "updatedAt": "2026-11-15T13:25:48.335Z",
    "builtAt": "",
    "notes": [
     {
@@ -234827,7 +234827,7 @@
      "id": "s8",
      "uid": "st-mwhv8mq0081qhq",
      "title": "",
-     "text": "Server home-cards service: resolve cards from picks, the Plugin Manager inventory (enabled/installed) and the ranking. Subscribe to plugin enable/disable/uninstall events so the resolved list refreshes at once.",
+     "text": "Server home-cards service: resolve cards from picks, the Plugin Manager inventory (enabled/installed) and the ranking. Subscribe to plugin enable/disable/uninstall events so the resolved list refreshes at once. PLUS the VPS card generator (plain code, no Claude): after any plugin build or install, read plugin.json and write a DATA-ONLY home-card@1 record (id, title, icon, description, deep link, stats source), never markup or styling. Register it as the first rule 'Every plugin gets a home card (doer: VPS)' in the Gate & rules Build rules store, so the gate blocks a landing until the card record exists. Then run it once over every existing plugin and create the records that are missing. If this is too big for one step, split it.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -234844,9 +234844,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T13:24:00.647Z",
-     "updatedAt": "2026-11-15T13:24:00.647Z"
+     "updatedAt": "2026-11-15T13:25:48.762Z"
     },
     {
      "id": "s9",
@@ -235060,7 +235060,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
