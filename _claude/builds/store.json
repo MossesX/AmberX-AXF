@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6039,
- "updatedAt": "2026-11-15T11:52:19.617Z",
+ "rev": 6040,
+ "updatedAt": "2026-11-15T11:52:34.791Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -231678,16 +231678,22 @@
    "title": "Pending tab: one collapsed row per build (rebuild)",
    "category": "",
    "detail": "Rebuild from current main (the old branch claude/pending-tab-one-collapsed-row-per-build is 3000+ commits behind and only has rename commits; ignore it). In the Build Orchestrator's Pending tab, every pending build is ONE collapsed row: title, status/why it's pending, priority, steps done/total, age. Tap the row to expand it and see steps, notes and actions (queue, edit, archive); tap again to collapse. Collapsed by default, remembers expanded rows per viewer. Same for desktop and phone. Uses asset tokens and framework controls; full API parity (deep link, expand/collapse and actions via REST/MCP/CLI/voice). Tests, help, Shipped features. Land when done.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-15T11:52:18.052Z",
-   "updatedAt": "2026-11-15T11:52:18.052Z",
+   "updatedAt": "2026-11-15T11:52:20.428Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-15T11:52:20.428Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -231702,6 +231708,28 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-15T11:52:19.991Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -231711,7 +231739,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
