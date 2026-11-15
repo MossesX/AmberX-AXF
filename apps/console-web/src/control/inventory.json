@@ -8,7 +8,7 @@
     "tabs": 74,
     "settingsTabs": 71,
     "settings": 89,
-    "functions": 262,
+    "functions": 264,
     "buttons": 62,
     "plugins": 70
   },
@@ -4444,6 +4444,40 @@
         "build",
         "orchestrator",
         "start"
+      ],
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/index.tsx"
+    },
+    {
+      "address": "function:build-orchestrator.pending-rows",
+      "kind": "function",
+      "id": "build-orchestrator.pending-rows",
+      "label": "Build orchestrator: the Pending rows (one row per build)",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "build-orchestrator.pending-rows",
+        "build",
+        "orchestrator",
+        "pending",
+        "rows"
+      ],
+      "effect": "navigate",
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/index.tsx"
+    },
+    {
+      "address": "function:build-orchestrator.pending-collapse-all",
+      "kind": "function",
+      "id": "build-orchestrator.pending-collapse-all",
+      "label": "Build orchestrator: collapse every pending row",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "build-orchestrator.pending-collapse-all",
+        "build",
+        "orchestrator",
+        "pending",
+        "collapse",
+        "all"
       ],
       "plugin": "ai.amberx.axf.console.build-orchestrator",
       "file": "plugins/build-orchestrator/web/index.tsx"
