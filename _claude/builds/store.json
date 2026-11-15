@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6184,
- "updatedAt": "2026-11-15T13:23:46.615Z",
+ "rev": 6185,
+ "updatedAt": "2026-11-15T13:23:54.125Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -234643,6 +234643,83 @@
    "kind": "build",
    "planRef": "",
    "rev": 5,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "build-rules-tab-gate-rules-vps-owns",
+   "title": "Build rules tab in Gate & rules: VPS owns and enforces all builder rules",
+   "category": "",
+   "detail": "Add a Build rules tab to the Gate & rules plugin (PR #711), with the VPS as the ONE owner and enforcer of every builder rule. 1) Inventory ALL builder rules in CLAUDE.md, the build briefs, the dispatcher prompt templates (Look/API/Checkpoints/Rules blocks), and the _claude rule docs. List every rule first and delete nothing without listing it. 2) Move them into a build-rules store on the VPS (later axf-data), served by REST and gate.* tools. 3) Each rule is marked doer = VPS or session. Mechanical rules are done by the VPS itself, before or after the build, and are removed from Claude's instructions so nothing happens twice. Examples: create the plugin home card from plugin.json and the template, the Shipped features manifest, the help stub, API-parity scaffolding, running the CI checks, tracker/THREADS rows, PR open and link, and landing one at a time. 4) Judgement rules (look and token rules, API parity design, step size) go into the session brief from the store at dispatch time and are not hardcoded in CLAUDE.md. 5) The gate checks every rule before landing; on a fail it blocks, the VPS auto-fixes what it can, and everything is logged in History. 6) The tab shows each rule with doer, on/off, edit, add, and history, with REST/MCP/CLI/voice parity. First rule: every plugin gets a home card, made by the VPS. Tests, help, Shipped features. Land with the one-at-a-time lander.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-15T13:23:46.016Z",
+   "updatedAt": "2026-11-15T13:23:48.341Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-15T13:23:48.341Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Can we put these in a build rules tab on the VPS in that rules plugin? Will it enforce it? Will the VPS make sure it builds the home card instead of Claude? Remove it from Claude so it doesn't build it twice. Remove everything for all the builders from Claude so it don't happen twice and put them all in that plugin.",
+    "at": "2026-11-15T13:23:46.016Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-15T13:23:47.913Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 884
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
