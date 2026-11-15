@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6291,
- "updatedAt": "2026-11-15T15:13:14.600Z",
+ "rev": 6292,
+ "updatedAt": "2026-11-15T15:13:44.971Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -237445,12 +237445,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T15:12:29.907Z",
-   "updatedAt": "2026-11-15T15:12:33.875Z",
+   "updatedAt": "2026-11-15T15:13:43.323Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-15T15:12:33.875Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":2597,\"stop_reason\":\"tool_use\",\"session_id\":\"f2026778-f24a-4666-a627-cdc7bf0c3152\",\"total_cost_usd\":0.397677,\"usage\":{\"input_tokens\":2,\"cache_creation_input_tokens\":48): one step per line of the request, review the steps.",
+     "at": "2026-11-15T15:13:43.323Z"
     }
    ],
    "approvals": [],
@@ -237477,9 +237481,15 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-15T15:13:43.323Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":2597,\"stop_reason\":\"tool_use\",\"session_id\":\"f2026778-f24a-4666-a627-cdc7bf0c3152\",\"total_cost_usd\":0.397677,\"usage\":{\"input_tokens\":2,\"cache_creation_input_tokens\":48): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
@@ -237489,7 +237499,77 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwhz5py401kdum",
+     "title": "",
+     "text": "Follow-up to data-container-axf-data-holds-all (PR #704, SQLite + blobs). Move axf-data onto Postgres (Brett's Nov 6 choice) as its own private Coolify container with a persistent volume and daily backups. Real tables (not JSON copies or SQLite blobs) for: builds store, journal and history, notes, settings, planner items, UI reviews, the one true feature store, the Shipped features ledger, chats, and the API/control registry (apps/console-web/src/control/inventory.json becomes a table generated from each plugin's registered targets, never hand-edited, so builds stop clashing on it). Keep the data-store@1 API on top so callers don't change. Migrate from the SQLite axf-data with backup first, count checks, shadow, then cutover; never lose data. Tests, help, Shipped features. Land with the one-at-a-time lander.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-15T15:13:43.323Z",
+     "updatedAt": "2026-11-15T15:13:43.323Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwhz5py40225gk",
+     "title": "",
+     "text": "Yeah, I want to migrate everything to a database in its own container. Land it, and then follow it up with Postgres.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-15T15:13:43.323Z",
+     "updatedAt": "2026-11-15T15:13:43.323Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwhz5py40324l7",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/axf-data-postgres-real-tables-own.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/axf-data-postgres-real-tables-own.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-15T15:13:43.323Z",
+     "updatedAt": "2026-11-15T15:13:43.323Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -237498,12 +237578,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-15T15:13:43.323Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
