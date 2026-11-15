@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T12:59:05.951Z",
+ "updatedAt": "2026-11-15T13:01:06.758Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -151368,15 +151368,15 @@
    "title": "axf-molly container: orchestrator, gate, lander, Shipped sender",
    "category": "",
    "detail": "Replaces move-build-orchestrator-to-axhub (its 37 steps were planned for the old axHub-screens layout and its s1 gate waits on a precondition that no longer applies). FINAL LAYOUT (Brett): console = screens only; axf-molly = does all the work; axHub = routes + credentials/approvals only, no screens, no data; axf-data = stores all data. BUILD a private container 'axf-molly' on Coolify (no public port/DNS, internal Docker network, auto-restart). Check the name doesn't clash with the old standalone Molly app (it's retired; list any leftover container/cron/domain for retirement, delete nothing without listing it). MOVE INTO IT: orchestrator, dispatcher/pipeline tick, reconciler, splitter, slots/accounts routing, gate rules engine (framework/core/gate-rules.mjs from gate-rules-plugin-in-the-console), auto-lander + merge queue with the 'Merge queue on/off' switch, and the merge watch / Shipped features sender (vps-sends-shipped-features-every-merge). It reads/writes ALL data through axf-data (data-container-axf-data-holds-all, data-store@1 client), never repo files. HOST ACCESS: a narrow host bridge (mounted /root/axf-builds worktrees, git, claude CLI, tmux runner) to launch and watch build sessions; NOT the Docker socket; document exactly what it can touch. axHub registers axf-molly as a downstream and exposes orchestrator.*, gate.*, lander.*, features.* tools (equivalents for axf-console.build_orchestrator_pipeline_request and planner.builds). Console orchestrator, Gate & rules and Shipped features screens talk to it through axHub. STAGING: shadow first (axf-molly computes, console acts, diff log), then cutover with an owner lease and undo; builds keep running during the switch; no build or history lost. FIX ON THE WAY: phase-end builds must never be parked in Pending (reconciler bug); dispatcher alert links use view:build-orchestrator. Console-down drill: stop the console and prove builds still launch, land and get Shipped features. Order: start right after axf-data is up (its API and client exist on PR #704). Tests, help, Shipped features. Land each part with the one-at-a-time lander.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/axf-molly-container-orchestrator-gate",
-   "pr": "",
+   "pr": "#710",
    "priority": "P0",
    "createdAt": "2026-11-15T12:20:29.383Z",
-   "updatedAt": "2026-11-15T12:22:48.103Z",
+   "updatedAt": "2026-11-15T13:01:04.773Z",
    "builtAt": "",
    "notes": [
     {
