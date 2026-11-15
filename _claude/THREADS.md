@@ -807,7 +807,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 00:42 UTC · `merge-main-land-console-app-part-2` → pending, note (all) · pipeline
 - 2026-11-15 00:42 UTC · `orchestrator-custom-groups-custom-tabs` → complete, merged, note (all) · reconciler
 - 2026-11-15 00:42 UTC · `themed-native-controls-plugin` s27 done, → built, note (all) · reconciler
 - 2026-11-15 00:42 UTC · `merge-main-land-move-amberx-web-app` → pending, note (all) · reconciler
@@ -1207,6 +1206,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 13:23 UTC · `build-rules-tab-gate-rules-vps-owns` → queued, note (all) · console
 - 2026-11-15 13:24 UTC · `home-cards-follow-plugin-off-home-always` note (all) · orchestrator
 - 2026-11-15 13:24 UTC · `home-cards-follow-plugin-off-home-always` note (all) · mcp
+- 2026-11-15 13:27 UTC · `build-rules-tab-gate-rules-vps-owns` note (all) · orchestrator
 
 ## Token passes (log)
 
