@@ -4,7 +4,8 @@
  * Every control carries a data-axf-target so console_show / console-control reach it; every action is a REST route.
  */
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Container, Chip, Note, SelectField, Switch, TabGroup } from '@console/axf/react';
+import { Button, Container, Chip, Note, SelectField, Switch, TabGroup, useRuntime } from '@console/axf/react';
+import { TAB_GROUP_LAST_KEY } from '@console/axf/core';
 import { api, errText, NOTIFY_KINDS, qrObjectUrl, when, type NotifyKind, type Settings, type Status } from './api';
 import { RecorderPanel } from './RecorderView';
 import { RulesPanel } from './RulesView';
@@ -124,8 +125,11 @@ export function NotificationsPanel() {
   );
 }
 
-export function PhoneConnectSettings({ tab: initial = 'phone' }: { tab?: PhoneTab }) {
-  const [tab, setTab] = useState<PhoneTab>(initial);
+export function PhoneConnectSettings({ tab: initial }: { tab?: PhoneTab }) {
+  const rt = useRuntime();
+  // a deep link (phone-connect.open <tab>, console_show …tabs=<tab>) leaves the tab in the row's remembered key
+  const saved = rt.settings.get(TAB_GROUP_LAST_KEY('phone-connect.tabs'));
+  const [tab, setTab] = useState<PhoneTab>(initial ?? (PHONE_TABS.some((t) => t.value === saved) ? (saved as PhoneTab) : 'phone'));
   return (
     <div className="axp-phone-stack" data-axf-target="phone-connect.settings">
       <TabGroup id="phone-connect.tabs" label="Phone Connect" value={tab} onChange={setTab} tabs={PHONE_TABS} />

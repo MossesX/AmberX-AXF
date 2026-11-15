@@ -63,3 +63,10 @@
 .axp-phone-bubble--s8 { width: calc(var(--fx-space) * 8); height: calc(var(--fx-space) * 8); }
 .axp-phone-bubble--s9 { width: calc(var(--fx-space) * 9); height: calc(var(--fx-space) * 9); }
 .axp-phone-bubble--s10 { width: calc(var(--fx-space) * 10); height: calc(var(--fx-space) * 10); }
+
+/* Layout options (UI Review): beside = preview at the side; stacked = preview first, form below; pinned = a small
+   preview pinned to the corner of the page while the form takes the full width. */
+.axp-phone-overlay--stacked { grid-template-columns: minmax(0, 1fr); }
+.axp-phone-overlay--stacked .axp-phone-aside { order: -1; position: static; }
+.axp-phone-overlay--pinned { grid-template-columns: minmax(0, 1fr); }
+.axp-phone-overlay--pinned .axp-phone-aside { position: fixed; right: var(--fx-dens-gap-md); bottom: var(--fx-dens-gap-md); z-index: 2; padding: var(--fx-dens-gap-sm); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-lg); background: var(--fx-surface); scale: 0.7; transform-origin: bottom right; }

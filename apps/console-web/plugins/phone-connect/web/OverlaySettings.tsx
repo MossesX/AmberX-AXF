@@ -5,7 +5,7 @@
  * Every field is also reachable as REST `overlay` / `overlay/presets`, MCP phone_overlay(_set|_presets|_preset), CLI and voice.
  */
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Container, Note, Segmented, SelectField, Slider, Switch, TabGroup, TextField } from '@console/axf/react';
+import { Button, Container, Note, Segmented, SelectField, Slider, Switch, TabGroup, TextField, useRuntime } from '@console/axf/react';
 import { api, errText } from './api';
 import { DevicePanel, useSettings } from './PhoneConnectSettings';
 
@@ -70,7 +70,14 @@ export function PhonePreview({ o, kind, expanded, play }: { o: Overlay; kind: Po
   );
 }
 
+/** Where the live preview sits (UI Review choice set phone-connect-overlay-layout; setting phone-connect.overlayLayout). */
+export const OVERLAY_LAYOUT_KEY = 'phone-connect.overlayLayout';
+export type OverlayLayout = 'beside' | 'stacked' | 'pinned';
+
 export function OverlaySettings() {
+  const rt = useRuntime();
+  const layoutRaw = rt.settings.get(OVERLAY_LAYOUT_KEY);
+  const layout: OverlayLayout = layoutRaw === 'stacked' || layoutRaw === 'pinned' ? layoutRaw : 'beside';
   const { settings, save, error: setErr } = useSettings();
   const [o, setO] = useState<Overlay | null>(null);
   const [presets, setPresets] = useState<Preset[]>([]);
@@ -90,7 +97,7 @@ export function OverlaySettings() {
   if (!o) return <Container title="Overlay" icon="layers">{error ? <Note tone="danger">{error}</Note> : <p className="axp-phone-muted">…</p>}</Container>;
   const p = o.popups[kind];
   return (
-    <div className="axp-phone-overlay" data-axf-target="phone-connect.overlay">
+    <div className={`axp-phone-overlay axp-phone-overlay--${layout}`} data-axf-target="phone-connect.overlay">
       <div className="axp-phone-stack">
         {error && <Note tone="danger">{error}</Note>}
         <Container title="Presets" icon="sparkles">
