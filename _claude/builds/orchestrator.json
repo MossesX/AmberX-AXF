@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T04:57:16.101Z",
+ "updatedAt": "2026-11-15T05:12:49.060Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -147152,7 +147152,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T04:17:06.158Z",
-   "updatedAt": "2026-11-15T04:56:37.771Z",
+   "updatedAt": "2026-11-15T05:12:47.031Z",
    "builtAt": "",
    "notes": [
     {
@@ -147186,6 +147186,10 @@
     {
      "text": "Brett (now) FINAL LAYOUT, overrides earlier 'move plugin to axHub' note: the gate rules, merge queue and auto-lander logic run in the private container (see move-build-orchestrator-to-axhub). axHub only routes (credentials, MCP tools, approvals), with no new axHub screens. The gate plugin and its Auto-lander tab STAY in the console as screens. For THIS build: do s1-s4 now (find and fix why the lander lands nothing, replace the stale warning) so landing works today; the tab, settings and API follow the container layout.",
      "at": "2026-11-15T04:24:39.275Z"
+    },
+    {
+     "text": "s15 is open: the three Auto-lander looks ship as settings assets (assets/settings/auto-lander-*.json) with a choices file and shots plan in _claude/builds/reports/, but the desktop and phone shots could not be captured from a scratch console in this session (the start screen and the build-profile gate differ per run, so the tab never came up). The next session takes the shots (rebuild-shots.mjs with _claude/builds/reports/auto-lander-controls-in-the-gate-plugin.shots.json, AXF_APPEARANCE_HUB=off) and submits them with review.mjs submit --choices.",
+     "at": "2026-11-15T05:12:47.031Z"
     }
    ],
    "approvals": [],
