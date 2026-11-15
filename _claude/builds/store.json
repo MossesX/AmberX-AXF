@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6168,
- "updatedAt": "2026-11-15T13:02:00.788Z",
+ "rev": 6169,
+ "updatedAt": "2026-11-15T13:02:26.112Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -27456,7 +27456,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -94020,7 +94019,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-10T23:44:06.945Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-10T23:48:05.012Z",
      "exit": 0,
@@ -101166,7 +101164,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -110379,7 +110376,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -123575,7 +123571,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-12T01:44:38.113Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-12T01:55:06.415Z",
      "exit": 1,
@@ -123846,7 +123841,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-10T23:13:17.993Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-10T23:20:03.196Z",
      "exit": 0,
@@ -124240,7 +124234,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-12T03:13:32.895Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-12T03:38:02.383Z",
      "exit": 0,
@@ -137935,7 +137928,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -140489,7 +140481,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-14T22:45:32.880Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-14T23:04:05.472Z",
      "exit": 0,
@@ -140906,7 +140897,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -146845,7 +146835,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -147272,7 +147261,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-11T23:25:08.702Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-12T00:15:03.308Z",
      "exit": 0,
@@ -147852,7 +147840,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -149224,7 +149211,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -151537,7 +151523,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T10:38:25.274Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T10:43:01.956Z",
      "exit": 0,
@@ -151704,7 +151689,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -153482,7 +153466,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -155684,7 +155667,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T20:41:31.157Z",
@@ -155906,7 +155888,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -156441,7 +156422,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-12T01:47:27.720Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-12T01:58:02.337Z",
      "exit": 1,
@@ -156635,7 +156615,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -156834,7 +156813,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-12T02:22:11.770Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-12T02:33:03.375Z",
      "exit": 1,
@@ -157044,7 +157022,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-12T01:44:52.810Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-12T01:55:07.791Z",
      "exit": 1,
@@ -157270,7 +157247,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -157485,7 +157461,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-10T23:23:12.403Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-10T23:26:04.326Z",
      "exit": 0,
@@ -157711,7 +157686,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-10T23:21:13.313Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-10T23:24:04.730Z",
      "exit": 0,
@@ -157945,7 +157919,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -158168,7 +158141,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-10T23:26:11.877Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-10T23:43:03.638Z",
      "exit": 0,
@@ -158398,7 +158370,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-12T02:18:11.326Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-12T02:20:07.523Z",
      "exit": 0,
@@ -158629,7 +158600,6 @@
     "model": "Fable",
     "launchedAt": "2026-11-12T01:55:14.610Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-12T02:40:12.374Z",
      "exit": 0,
@@ -159284,7 +159254,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-10T23:37:53.361Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-10T23:41:03.521Z",
      "exit": 0,
@@ -160089,7 +160058,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-15T01:24:21.442Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-15T01:28:06.664Z",
      "exit": 0,
@@ -160301,7 +160269,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-15T01:22:31.081Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-15T01:26:07.130Z",
      "exit": 0,
@@ -160535,7 +160502,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-12T03:13:21.437Z",
     "runs": 3,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-12T03:17:06.355Z",
      "exit": 0,
@@ -160776,7 +160742,6 @@
     "model": "Fable",
     "launchedAt": "2026-11-12T01:54:08.639Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-12T02:15:08.982Z",
      "exit": 0,
@@ -160962,7 +160927,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T23:09:40.929Z",
@@ -161155,7 +161119,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-10T23:38:03.674Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-10T23:45:05.447Z",
      "exit": 0,
@@ -161412,7 +161375,6 @@
     "model": "Fable",
     "launchedAt": "2026-11-11T00:16:07.794Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-11T00:36:03.217Z",
      "exit": 0,
@@ -161608,7 +161570,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T23:47:34.514Z",
@@ -161797,7 +161758,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-11T00:08:16.721Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-11T00:24:02.559Z",
      "exit": 0,
@@ -161989,7 +161949,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-11T01:12:19.794Z",
@@ -162401,7 +162360,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-14T23:56:20.868Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-14T23:57:03.446Z",
      "exit": 3,
@@ -163195,7 +163153,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-12T02:00:37.729Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-12T02:23:03.796Z",
      "exit": 0,
@@ -163393,7 +163350,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -163601,7 +163557,6 @@
     "model": "Fable",
     "launchedAt": "2026-11-12T02:50:14.085Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-12T03:13:03.345Z",
      "exit": 1,
@@ -163938,7 +163893,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T10:37:52.173Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T10:45:20.510Z",
      "exit": 0,
@@ -164118,7 +164072,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T10:43:09.520Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T10:48:02.765Z",
      "exit": 0,
@@ -164268,7 +164221,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -164360,7 +164312,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -164496,7 +164447,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -164681,7 +164631,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T10:37:41.673Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T10:46:04.955Z",
      "exit": 0,
@@ -164807,7 +164756,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-12T02:52:13.861Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T10:39:06.698Z",
      "exit": 0,
@@ -164967,7 +164915,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -165136,7 +165083,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-12T03:05:28.144Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-12T03:35:04.520Z",
      "exit": 0,
@@ -165256,7 +165202,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -172044,7 +171989,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T10:36:46.032Z",
@@ -172205,7 +172149,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T11:25:40.599Z",
     "runs": 3,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T11:31:03.702Z",
      "exit": 0,
@@ -172331,7 +172274,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T10:44:42.157Z",
@@ -172448,7 +172390,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T10:49:48.779Z",
@@ -172585,7 +172526,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T11:25:46.013Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T11:36:03.318Z",
      "exit": 0,
@@ -172740,7 +172680,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-12T20:42:37.390Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-12T21:00:11.424Z",
      "exit": 0,
@@ -172830,7 +172769,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -173020,7 +172958,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T00:46:14.486Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T00:51:04.694Z",
      "exit": 0,
@@ -173203,7 +173140,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -173485,7 +173421,6 @@
     "model": "Fable",
     "launchedAt": "2026-11-12T18:07:11.653Z",
     "runs": 3,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-12T18:21:03.006Z",
      "exit": 0,
@@ -173558,7 +173493,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T18:20:11.920Z",
@@ -173849,7 +173783,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T18:34:28.186Z",
@@ -174033,7 +173966,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T18:42:14.237Z",
@@ -174270,7 +174202,6 @@
     "model": "Fable",
     "launchedAt": "2026-11-12T22:15:14.526Z",
     "runs": 3,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-12T22:33:04.407Z",
      "exit": 0,
@@ -174386,7 +174317,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -174525,7 +174455,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -174672,7 +174601,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-12T22:46:08.743Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-12T23:16:43.152Z",
      "exit": 0,
@@ -174842,7 +174770,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -175013,7 +174940,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T01:52:11.782Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T02:06:03.430Z",
      "exit": 0,
@@ -175209,7 +175135,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -175453,7 +175378,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T01:46:09.134Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T01:54:03.558Z",
      "exit": 0,
@@ -175612,7 +175536,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T01:58:11.445Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T02:03:03.526Z",
      "exit": 0,
@@ -175796,7 +175719,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T06:14:29.774Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T06:23:31.791Z",
      "exit": 0,
@@ -175965,7 +175887,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -176071,7 +175992,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -176198,7 +176118,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T23:16:08.502Z",
@@ -176312,7 +176231,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T23:16:42.326Z",
@@ -176488,7 +176406,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T23:23:43.766Z",
@@ -176650,7 +176567,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T23:26:22.319Z",
@@ -176835,7 +176751,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T23:26:43.501Z",
@@ -177028,7 +176943,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T23:31:24.959Z",
@@ -177198,7 +177112,6 @@
     "model": "Fable",
     "launchedAt": "2026-11-13T06:14:47.983Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T08:44:01.956Z",
      "exit": 0,
@@ -177356,7 +177269,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T23:41:19.671Z",
@@ -177562,7 +177474,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T11:25:18.500Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T11:28:43.716Z",
      "exit": 0,
@@ -177683,7 +177594,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T00:41:48.903Z",
@@ -177902,7 +177812,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T00:43:27.498Z",
@@ -178095,7 +178004,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T01:11:10.433Z",
@@ -178387,7 +178295,6 @@
     "model": "Fable",
     "launchedAt": "2026-11-13T03:28:15.605Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T03:39:03.355Z",
      "exit": 1,
@@ -178581,7 +178488,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T06:25:16.456Z",
@@ -178756,7 +178662,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T07:08:11.318Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T07:57:02.406Z",
      "exit": 0,
@@ -178901,7 +178806,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T06:56:46.988Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T07:20:09.682Z",
      "exit": 0,
@@ -179107,7 +179011,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T07:42:03.981Z",
@@ -179206,7 +179109,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T07:12:11.360Z",
@@ -179685,7 +179587,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T07:14:57.750Z",
@@ -180581,7 +180482,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T10:43:20.478Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T10:46:09.181Z",
      "exit": 0,
@@ -180670,7 +180570,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T10:41:23.599Z",
@@ -180841,7 +180740,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T10:43:00.026Z",
@@ -180959,7 +180857,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T10:48:26.846Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T11:17:23.245Z",
      "exit": 0,
@@ -181085,7 +180982,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T10:45:18.367Z",
@@ -181252,7 +181148,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T11:17:21.962Z",
@@ -181964,7 +181859,6 @@
     "model": "Fable",
     "launchedAt": "2026-11-13T11:17:35.907Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T11:20:08.054Z",
      "exit": 0,
@@ -182106,7 +182000,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T11:37:09.309Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T11:44:02.685Z",
      "exit": 0,
@@ -182317,7 +182210,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T11:47:31.261Z",
@@ -183015,7 +182907,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T11:48:17.662Z",
@@ -183548,7 +183439,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T11:57:37.071Z",
@@ -184261,7 +184151,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T12:17:15.710Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T13:34:02.785Z",
      "exit": 0,
@@ -184784,7 +184673,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T12:26:26.762Z",
@@ -185063,7 +184951,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T12:32:26.587Z",
@@ -185153,7 +185040,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T12:34:25.303Z",
@@ -185373,7 +185259,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T12:34:43.631Z",
@@ -185589,7 +185474,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T12:35:38.612Z",
@@ -185723,7 +185607,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -185994,7 +185877,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -186268,7 +186150,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-12T03:05:28.144Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-12T03:35:04.520Z",
      "exit": 0,
@@ -186499,7 +186380,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -186783,7 +186663,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-14T23:00:36.515Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-14T23:09:11.352Z",
      "exit": 0,
@@ -187602,7 +187481,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T12:32:26.587Z",
@@ -187911,7 +187789,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T23:16:08.502Z",
@@ -188128,7 +188005,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -188317,7 +188193,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T11:25:18.500Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T11:28:43.716Z",
      "exit": 0,
@@ -188563,7 +188438,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T23:31:24.959Z",
@@ -188784,7 +188658,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T18:42:14.237Z",
@@ -189053,7 +188926,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-14T23:10:32.487Z",
     "runs": 3,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-14T23:17:04.041Z",
      "exit": 0,
@@ -189331,7 +189203,6 @@
     "model": "Fable",
     "launchedAt": "2026-11-13T11:17:35.907Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T11:20:08.054Z",
      "exit": 0,
@@ -189999,7 +189870,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T10:43:00.026Z",
@@ -190219,7 +190089,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T10:43:20.478Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-14T23:30:22.246Z",
      "exit": 0,
@@ -190668,7 +190537,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T10:48:26.846Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T11:17:23.245Z",
      "exit": 0,
@@ -190870,7 +190738,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-12T20:42:37.390Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-12T21:00:11.424Z",
      "exit": 0,
@@ -191144,7 +191011,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T17:35:54.396Z",
@@ -191415,7 +191281,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T10:36:46.032Z",
@@ -191644,7 +191509,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-12T22:46:08.743Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-12T23:16:43.152Z",
      "exit": 0,
@@ -192051,7 +191915,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T06:25:16.456Z",
@@ -192643,7 +192506,6 @@
     "model": "Fable",
     "launchedAt": "2026-11-12T22:15:14.526Z",
     "runs": 3,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-12T22:33:04.407Z",
      "exit": 0,
@@ -193171,7 +193033,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -193552,7 +193413,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-14T23:08:13.680Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-14T23:12:53.768Z",
      "exit": 0,
@@ -193763,7 +193623,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-12T03:13:32.895Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-12T03:38:02.383Z",
      "exit": 0,
@@ -193985,7 +193844,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T10:38:25.274Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T10:43:01.956Z",
      "exit": 0,
@@ -194261,7 +194119,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-14T23:06:12.490Z",
     "runs": 3,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-14T23:12:55.619Z",
      "exit": 0,
@@ -194452,7 +194309,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T10:49:48.779Z",
@@ -194679,7 +194535,6 @@
     "model": "Fable",
     "launchedAt": "2026-11-12T18:07:11.653Z",
     "runs": 3,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-12T18:21:03.006Z",
      "exit": 0,
@@ -194925,7 +194780,6 @@
     "model": "Fable",
     "launchedAt": "2026-11-13T06:14:47.983Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T08:44:01.956Z",
      "exit": 0,
@@ -195571,7 +195425,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -195799,7 +195652,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T10:44:42.157Z",
@@ -196035,7 +195887,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T01:58:11.445Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T02:03:03.526Z",
      "exit": 0,
@@ -196232,7 +196083,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T06:56:46.988Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T07:20:09.682Z",
      "exit": 0,
@@ -196713,7 +196563,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T01:46:09.134Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T01:54:03.558Z",
      "exit": 0,
@@ -196948,7 +196797,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-14T23:04:23.303Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-14T23:08:05.717Z",
      "exit": 0,
@@ -197229,7 +197077,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T11:25:40.599Z",
     "runs": 3,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T11:31:03.702Z",
      "exit": 0,
@@ -197513,7 +197360,6 @@
     "model": "Fable",
     "launchedAt": "2026-11-13T03:28:15.605Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T03:39:03.355Z",
      "exit": 1,
@@ -197966,7 +197812,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T07:08:11.318Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T07:57:02.406Z",
      "exit": 0,
@@ -199239,7 +199084,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -199449,7 +199293,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T11:25:46.013Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T11:36:03.318Z",
      "exit": 0,
@@ -199657,7 +199500,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -199840,7 +199682,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T17:41:01.294Z",
@@ -200149,7 +199990,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T17:46:32.016Z",
@@ -200392,7 +200232,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T17:49:19.495Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T17:50:09.770Z",
      "exit": 3,
@@ -200594,7 +200433,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T17:53:12.928Z",
@@ -200805,7 +200643,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:02:00.272Z",
@@ -201115,7 +200952,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-15T00:09:20.551Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-15T00:20:17.653Z",
      "exit": 0,
@@ -201337,7 +201173,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:08:41.600Z",
@@ -201702,7 +201537,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-15T00:27:21.094Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-15T01:06:06.426Z",
      "exit": 0,
@@ -202087,7 +201921,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:16:38.686Z",
@@ -202437,7 +202270,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T18:19:54.760Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T19:10:07.155Z",
      "exit": 0,
@@ -202756,7 +202588,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:19:10.056Z",
@@ -203089,7 +202920,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:19:43.693Z",
@@ -203425,7 +203255,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:21:42.427Z",
@@ -203669,7 +203498,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T18:36:14.104Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T18:57:47.090Z",
      "exit": 0,
@@ -203985,7 +203813,6 @@
     "model": "Fable",
     "launchedAt": "2026-11-13T18:53:11.620Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T19:07:48.655Z",
      "exit": 0,
@@ -204531,7 +204358,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T19:19:07.577Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T19:35:10.929Z",
      "exit": 1,
@@ -204938,7 +204764,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:42:36.411Z",
@@ -205227,7 +205052,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:44:41.589Z",
@@ -205570,7 +205394,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T19:29:11.351Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T19:43:04.021Z",
      "exit": 0,
@@ -205863,7 +205686,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:43:37.409Z",
@@ -206157,7 +205979,6 @@
     "model": "Fable",
     "launchedAt": "2026-11-13T19:30:50.870Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T19:44:03.918Z",
      "exit": 0,
@@ -206486,7 +206307,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:48:10.123Z",
@@ -206873,7 +206693,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:51:47.804Z",
@@ -207295,7 +207114,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-15T01:03:18.277Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-15T01:08:06.570Z",
      "exit": 0,
@@ -207597,7 +207415,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T19:03:24.115Z",
@@ -207787,7 +207604,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T19:05:57.629Z",
@@ -208144,7 +207960,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-14T23:15:54.090Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-14T23:22:08.088Z",
      "exit": 0,
@@ -208382,7 +208197,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T19:53:15.999Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T19:55:08.737Z",
      "exit": 3,
@@ -208587,7 +208401,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T19:35:33.966Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T19:40:17.010Z",
      "exit": 0,
@@ -208784,7 +208597,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T19:35:01.361Z",
@@ -208957,7 +208769,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T19:37:31.490Z",
@@ -209164,7 +208975,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T19:43:15.087Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T19:58:43.500Z",
      "exit": 0,
@@ -209418,7 +209228,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-14T23:35:28.763Z",
     "runs": 4,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-14T23:38:06.748Z",
      "exit": 0,
@@ -209646,7 +209455,6 @@
     "model": "Fable",
     "launchedAt": "2026-11-13T19:56:14.274Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T20:17:04.505Z",
      "exit": 0,
@@ -209833,7 +209641,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T19:51:51.749Z",
@@ -210171,7 +209978,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T19:50:55.023Z",
@@ -210486,7 +210292,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T19:59:07.053Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T20:16:06.858Z",
      "exit": 0,
@@ -210770,7 +210575,6 @@
     "model": "Fable",
     "launchedAt": "2026-11-14T03:35:14.704Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-14T04:15:03.598Z",
      "exit": 0,
@@ -211088,7 +210892,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:01:33.332Z",
@@ -211400,7 +211203,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:02:34.017Z",
@@ -211656,7 +211458,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:03:11.292Z",
@@ -211975,7 +211776,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:06:18.849Z",
@@ -212361,7 +212161,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T20:18:14.562Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T20:31:05.476Z",
      "exit": 0,
@@ -212596,7 +212395,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-14T23:17:21.049Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-14T23:23:07.968Z",
      "exit": 0,
@@ -212773,7 +212571,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:12:53.564Z",
@@ -213142,7 +212939,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T21:17:04.659Z",
      "exit": 0,
@@ -213458,7 +213254,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:46:35.586Z",
@@ -213813,7 +213608,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:48:36.828Z",
@@ -214011,7 +213805,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T20:50:31.267Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T21:00:24.464Z",
      "exit": 0,
@@ -214185,7 +213978,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:49:51.654Z",
@@ -214433,7 +214225,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-14T23:23:17.794Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-14T23:30:30.541Z",
      "exit": 0,
@@ -214671,7 +214462,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-13T21:16:22.820Z",
      "exit": 0,
@@ -214887,7 +214677,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -215042,7 +214831,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-13T23:41:19.408Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-14T23:38:12.478Z",
      "exit": 0,
@@ -215437,7 +215225,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-14T23:23:43.044Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-14T23:34:06.938Z",
      "exit": 0,
@@ -216102,7 +215889,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-14T23:28:18.128Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-15T02:57:06.180Z",
      "exit": 0,
@@ -216708,7 +216494,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T23:52:35.076Z",
@@ -217183,7 +216968,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T04:43:31.383Z",
@@ -218069,7 +217853,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-14T12:28:09.521Z",
     "runs": 3,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-14T13:11:02.901Z",
      "exit": 0,
@@ -218286,7 +218069,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T04:47:26.735Z",
@@ -219162,7 +218944,6 @@
     "model": "Fable",
     "launchedAt": "2026-11-14T03:51:29.271Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-14T04:39:08.123Z",
      "exit": 0,
@@ -219420,7 +219201,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -219704,7 +219484,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-14T04:03:16.135Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-14T04:09:08.606Z",
      "exit": 0,
@@ -220398,7 +220177,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -220630,7 +220408,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-14T16:46:23.975Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-14T17:09:03.708Z",
      "exit": 0,
@@ -220888,7 +220665,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-14T16:51:21.042Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-14T17:11:03.683Z",
      "exit": 0,
@@ -221104,7 +220880,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -221282,7 +221057,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T17:47:32.020Z",
@@ -222029,7 +221803,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T18:15:13.052Z",
@@ -222734,7 +222507,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T18:17:59.202Z",
@@ -223618,7 +223390,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T18:19:09.863Z",
@@ -224367,7 +224138,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T22:17:52.893Z",
@@ -225130,7 +224900,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T22:20:10.644Z",
@@ -226008,7 +225777,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-14T22:42:12.388Z",
     "runs": 2,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-15T00:00:15.489Z",
      "exit": 0,
@@ -226631,7 +226399,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T23:12:50.235Z",
@@ -226961,7 +226728,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T23:15:00.410Z",
@@ -227273,7 +227039,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T23:20:49.007Z",
@@ -227607,7 +227372,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-14T23:46:40.547Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-14T23:53:05.271Z",
      "exit": 0,
@@ -227944,7 +227708,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T23:41:43.500Z",
@@ -228252,7 +228015,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T23:42:59.971Z",
@@ -228572,7 +228334,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-15T00:15:47.364Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-15T00:40:19.965Z",
      "exit": 0,
@@ -228918,7 +228679,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-15T00:13:25.615Z",
@@ -229258,7 +229018,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-15T00:14:18.287Z",
@@ -229598,7 +229357,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-15T04:19:53.877Z",
@@ -230169,7 +229927,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-15T04:28:04.730Z",
      "exit": 0,
@@ -231238,7 +230995,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-15T04:30:21.947Z",
@@ -232038,7 +231794,6 @@
     "model": "Opus",
     "launchedAt": "2026-11-15T11:54:29.199Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-15T12:22:23.949Z",
      "exit": 0,
@@ -232515,7 +232270,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-15T11:56:35.624Z",
@@ -233256,7 +233010,6 @@
     "model": "Fable",
     "launchedAt": "2026-11-15T11:58:22.439Z",
     "runs": 1,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-15T12:16:55.098Z",
      "exit": 0,
@@ -233951,7 +233704,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-15T12:11:05.553Z",
@@ -234143,7 +233895,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": {
      "at": "2026-11-15T12:36:03.280Z",
      "exit": 0,
@@ -234639,7 +234390,7 @@
    "pr": "#710",
    "priority": "P0",
    "createdAt": "2026-11-15T12:20:29.383Z",
-   "updatedAt": "2026-11-15T13:01:58.820Z",
+   "updatedAt": "2026-11-15T13:02:24.386Z",
    "builtAt": "",
    "notes": [
     {
@@ -234665,6 +234416,10 @@
     {
      "text": "Do not cut over before PR #710 lands: the host's pipeline.mjs on main does not read the lease yet, so both sides would launch. After landing and 'bash deploy/install-molly.sh' from /opt/axf the gate is in place.",
      "at": "2026-11-15T13:01:58.820Z"
+    },
+    {
+     "text": "Headless run axf-axf-molly-container-orchestrator-gate--sully: brief only · start 13.5K tokens ($0.07) · cost $16.10 · 86 turns · 6 tools, MCP none",
+     "at": "2026-11-15T13:02:24.386Z"
     }
    ],
    "approvals": [],
@@ -234690,7 +234445,6 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "stepsOpen": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-15T12:22:22.822Z",
@@ -234795,7 +234549,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
