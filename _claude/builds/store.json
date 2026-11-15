@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6025,
- "updatedAt": "2026-11-15T04:56:54.005Z",
+ "rev": 6026,
+ "updatedAt": "2026-11-15T04:57:16.101Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -230823,7 +230823,7 @@
    "pr": "#704",
    "priority": "P0",
    "createdAt": "2026-11-15T04:28:05.062Z",
-   "updatedAt": "2026-11-15T04:56:51.854Z",
+   "updatedAt": "2026-11-15T04:57:13.458Z",
    "builtAt": "",
    "notes": [
     {
@@ -230841,6 +230841,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-data-container-axf-data-holds-all--gina, shared account login)",
      "at": "2026-11-15T04:31:04.061Z"
+    },
+    {
+     "text": "Headless run axf-data-container-axf-data-holds-all--gina: brief only · start 13.4K tokens ($0.10) · cost $10.58 · 85 turns · 6 tools, MCP none",
+     "at": "2026-11-15T04:57:13.458Z"
     },
     {
      "text": "Phase 1 done (s1-s4): data-store@1 spec + schema, reference client (http/file/memory), migration map (44 sources), mode machine. PR #704. No UI this phase; mode/manifest surfaces come with the container phase.",
