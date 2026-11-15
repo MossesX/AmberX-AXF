@@ -798,10 +798,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:27 UTC · `fix-build-whose-session-finishes-phase-e` PR #685 (all) · builds-live
-- 2026-11-14 23:27 UTC · `picker-dialog-plugin-replaces-all` s18 done (all) · orchestrator
-- 2026-11-14 23:28 UTC · `fix-build-whose-session-finishes-phase-e` note (all) · orchestrator
-- 2026-11-14 23:28 UTC · `console-app-land-parts-1-4-build-apk` → running, note (all) · pipeline
 - 2026-11-14 23:28 UTC · `console-app-land-parts-1-4-build-apk` note (all) · orchestrator
 - 2026-11-14 23:28 UTC · `lander-regenerates-generated-files-clash` s2 done (all) · orchestrator
 - 2026-11-14 23:28 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` s2 undone, → pending (all) · builds-live
@@ -1198,6 +1194,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 01:27 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
 - 2026-11-15 01:27 UTC · `molly-gap-axhub-cors` s3 done, → built (all) · orchestrator
 - 2026-11-15 01:27 UTC · `demo-video-series-three-minute-browser` s8 done (all) · orchestrator
+- 2026-11-15 01:26 UTC · `molly-gap-expenses-cors` → pending, note (all) · pipeline
+- 2026-11-15 01:26 UTC · `projects-own-everything-per-project` → running, note (all) · pipeline
+- 2026-11-15 01:26 UTC · `projects-own-everything-per-project` note (all) · orchestrator
+- 2026-11-15 01:27 UTC · `molly-gap-axhub-cors` note (all) · orchestrator
 
 ## Token passes (log)
 
