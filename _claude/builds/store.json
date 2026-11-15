@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6193,
- "updatedAt": "2026-11-15T13:28:09.953Z",
+ "rev": 6194,
+ "updatedAt": "2026-11-15T13:28:26.618Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -234577,11 +234577,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/home-cards-follow-plugin-off-home-always",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T13:22:11.842Z",
-   "updatedAt": "2026-11-15T13:28:07.150Z",
+   "updatedAt": "2026-11-15T13:28:10.932Z",
    "builtAt": "",
    "notes": [
     {
@@ -234607,6 +234607,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-home-cards-follow-plugin-off-home-always--rhonda.",
      "at": "2026-11-15T13:28:07.150Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-home-cards-follow-plugin-off-home-always--rhonda, shared account login)",
+     "at": "2026-11-15T13:28:10.932Z"
     }
    ],
    "approvals": [],
@@ -235070,7 +235074,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
