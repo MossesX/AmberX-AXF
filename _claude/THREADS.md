@@ -807,7 +807,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 01:32 UTC · `projects-own-everything-per-project` s2 done, → running (all) · orchestrator
 - 2026-11-15 01:32 UTC · `banner-widget-shapes-more-than-circle` s6 done (all) · orchestrator
 - 2026-11-15 01:32 UTC · `demo-video-series-three-minute-browser` s15 done (all) · orchestrator
 - 2026-11-15 01:33 UTC · `demo-video-series-three-minute-browser` s16 done (all) · orchestrator
@@ -1207,6 +1206,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 15:40 UTC · `data-container-axf-data-holds-all` → pending, note (all) · reconciler
 - 2026-11-15 15:42 UTC · `phone-connect-small-android-companion` s29 done (all) · orchestrator
 - 2026-11-15 15:43 UTC · `phone-connect-small-android-companion` s30 done (all) · orchestrator
+- 2026-11-15 16:08 UTC · `axf-data-postgres-real-tables-own` branch claude/axf-data-postgres-real-tables-own, PR #713 (all) · builds-live
 
 ## Token passes (log)
 
