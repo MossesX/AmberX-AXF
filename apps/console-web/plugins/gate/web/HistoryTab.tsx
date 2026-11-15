@@ -5,7 +5,8 @@
  */
 import { useMemo, useState } from 'react';
 import { Chip, Segmented, useControlTargets, type ControlTargetDef } from '@console/axf/react';
-import { DataGrid, type GridColumn } from '@console/axf/libs/datagrid';
+import type { GridColumn } from '@console/axf/libs/datagrid';
+import { GateList } from './GateList';
 import type { HistoryEntry } from './api';
 import { useGridRows } from './rows';
 import { usePoll } from './usePoll';
@@ -31,10 +32,10 @@ export function HistoryTab({ refreshSec }: { refreshSec: number }) {
   useControlTargets(targets, kind);
 
   const columns: GridColumn<HistoryEntry>[] = [
-    { id: 'at', label: 'When', width: 'minmax(0, 1.5fr)', fixed: true, sortable: true, sortValue: (e) => e.at, render: (e) => <span>{when(e.at)}</span> },
-    { id: 'kind', label: 'Kind', width: 'minmax(0, 1fr)', render: (e) => <Chip tone={e.kind === 'lander' ? 'accent' : undefined}>{e.kind}</Chip> },
-    { id: 'what', label: 'What', width: 'minmax(0, 3fr)', render: (e) => <span className="axp-gate__cell"><strong>{what(e)}</strong>{rows === 2 && reasonText(e.reason) && <span className="axp-gate__sub">{reasonText(e.reason)}</span>}</span> },
-    { id: 'by', label: 'Who', width: 'minmax(0, 1.5fr)', sortable: true, sortValue: (e) => e.by, render: (e) => <span className="axp-gate__sub">{e.by}</span> },
+    { id: 'at', label: 'When', width: 'calc(var(--fx-space) * 36)', fixed: true, sortable: true, sortValue: (e) => e.at, render: (e) => <span>{when(e.at)}</span> },
+    { id: 'kind', label: 'Kind', width: 'calc(var(--fx-space) * 20)', render: (e) => <Chip tone={e.kind === 'lander' ? 'accent' : undefined}>{e.kind}</Chip> },
+    { id: 'what', label: 'What', width: 'calc(var(--fx-space) * 112)', render: (e) => <span className="axp-gate__cell"><strong>{what(e)}</strong>{rows === 2 && reasonText(e.reason) && <span className="axp-gate__sub">{reasonText(e.reason)}</span>}</span> },
+    { id: 'by', label: 'Who', width: 'calc(var(--fx-space) * 40)', sortable: true, sortValue: (e) => e.by, render: (e) => <span className="axp-gate__sub">{e.by}</span> },
   ];
 
   return (
@@ -43,9 +44,9 @@ export function HistoryTab({ refreshSec }: { refreshSec: number }) {
         <Segmented<Kind> label="Show" value={kind} options={KINDS} onChange={setKind} />
       </div>
       {error && <p className="axp-gate__err" role="alert">{error}</p>}
-      <DataGrid<HistoryEntry>
-        id="gate.history" label="Gate history" groups={[{ id: 'history', title: `History (${items.length})`, rows: items, groups: [] }]} columns={columns}
-        rowId={keyOf} rowLabel={what} hidden={[]} compact={rows === 1}
+      <GateList<HistoryEntry>
+        id="gate.history" label="Gate history" title={`History (${items.length})`} rows={items} columns={columns}
+        rowId={keyOf} rowLabel={what}
         expanded={open} onToggleExpand={(id) => setOpen((o) => (o.includes(id) ? o.filter((x) => x !== id) : [...o, id]))}
         onRowClick={(e) => { const id = keyOf(e); setOpen((o) => (o.includes(id) ? o.filter((x) => x !== id) : [...o, id])); }}
         rowTone={(e) => (e.kind === 'lander' ? 'accent' : 'info')}

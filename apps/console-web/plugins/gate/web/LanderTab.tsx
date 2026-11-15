@@ -7,7 +7,8 @@
  */
 import { useMemo, useState } from 'react';
 import { Button, Chip, Container, Switch, TextField, useControlTargets, useRuntime, type ControlTargetDef } from '@console/axf/react';
-import { DataGrid, type GridColumn } from '@console/axf/libs/datagrid';
+import type { GridColumn } from '@console/axf/libs/datagrid';
+import { GateList } from './GateList';
 import { confirmed, gateCall, type LanderStatus, type Run, type Waiting } from './api';
 import { useGridRows } from './rows';
 import { usePoll } from './usePoll';
@@ -47,20 +48,20 @@ export function LanderTab({ refreshSec }: { refreshSec: number }) {
   useControlTargets(targets, String(s?.mergeQueue));
 
   const waitCols: GridColumn<Waiting>[] = [
-    { id: 'position', label: '#', width: 'minmax(0, 0.5fr)', sortable: true, sortValue: (w) => w.position, render: (w) => <span>{w.position}</span> },
-    { id: 'pr', label: 'PR', width: 'minmax(0, 3fr)', fixed: true, sortable: true, sortValue: (w) => w.pr, render: (w) => (
+    { id: 'position', label: '#', width: 'calc(var(--fx-space) * 10)', sortable: true, sortValue: (w) => w.position, render: (w) => <span>{w.position}</span> },
+    { id: 'pr', label: 'PR', width: 'calc(var(--fx-space) * 88)', fixed: true, sortable: true, sortValue: (w) => w.pr, render: (w) => (
       <span className="axp-gate__cell"><strong>#{w.pr} {w.title}</strong>{rows === 2 && <span className="axp-gate__sub">{w.build || w.branch}</span>}</span>
     ) },
-    { id: 'build', label: 'Build', width: 'minmax(0, 2fr)', render: (w) => <span className="axp-gate__sub">{w.build}</span> },
-    { id: 'rule', label: 'Held by', width: 'minmax(0, 1fr)', sortable: true, sortValue: (w) => w.rule, render: (w) => (w.rule ? <Chip tone="warning">{w.rule}</Chip> : <span className="axp-gate__sub">{w.state}</span>) },
-    { id: 'reason', label: 'Why', width: 'minmax(0, 4fr)', render: (w) => <span className="axp-gate__cell">{w.reason}{rows === 2 && w.gate && !w.gate.pass && w.gate.reasons[0] && w.gate.reasons[0] !== w.reason && <span className="axp-gate__sub">{w.gate.reasons[0]}</span>}</span> },
-    { id: 'act', label: '', width: 'minmax(0, 1fr)', render: (w) => <Button size="sm" id={`gate-land-now-${w.pr}`} busy={busy === `land-${w.pr}`} confirm={`Land #${w.pr} next? It still has to pass every rule.`} onClick={(e) => { e.stopPropagation(); void landNow(w.pr); }}>Land next</Button> },
+    { id: 'build', label: 'Build', width: 'calc(var(--fx-space) * 48)', render: (w) => <span className="axp-gate__sub">{w.build}</span> },
+    { id: 'rule', label: 'Held by', width: 'calc(var(--fx-space) * 28)', sortable: true, sortValue: (w) => w.rule, render: (w) => (w.rule ? <Chip tone="warning">{w.rule}</Chip> : <span className="axp-gate__sub">{w.state}</span>) },
+    { id: 'reason', label: 'Why', width: 'calc(var(--fx-space) * 100)', render: (w) => <span className="axp-gate__cell">{w.reason}{rows === 2 && w.gate && !w.gate.pass && w.gate.reasons[0] && w.gate.reasons[0] !== w.reason && <span className="axp-gate__sub">{w.gate.reasons[0]}</span>}</span> },
+    { id: 'act', label: '', width: 'calc(var(--fx-space) * 28)', render: (w) => <Button size="sm" id={`gate-land-now-${w.pr}`} busy={busy === `land-${w.pr}`} confirm={`Land #${w.pr} next? It still has to pass every rule.`} onClick={(e) => { e.stopPropagation(); void landNow(w.pr); }}>Land next</Button> },
   ];
   const runCols: GridColumn<Run>[] = [
-    { id: 'startedAt', label: 'When', width: 'minmax(0, 1.5fr)', fixed: true, sortable: true, sortValue: (r) => r.startedAt, render: (r) => <span>{when(r.startedAt)}</span> },
-    { id: 'result', label: 'Result', width: 'minmax(0, 1fr)', render: (r) => <Chip tone={r.result === 'landed' ? 'success' : r.result === 'error' ? 'danger' : undefined}>{r.result}</Chip> },
-    { id: 'pr', label: 'PR', width: 'minmax(0, 3fr)', render: (r) => <span className="axp-gate__cell">{r.landing ? <strong>#{r.landing.pr} {r.landing.title || r.landing.build}</strong> : <span className="axp-gate__sub">nothing landed</span>}{rows === 2 && r.reasonText && <span className="axp-gate__sub">{r.reasonText}</span>}</span> },
-    { id: 'mode', label: 'Mode', width: 'minmax(0, 1fr)', render: (r) => <span className="axp-gate__sub">{r.mode === 'serial' ? 'one at a time' : 'merge queue'}</span> },
+    { id: 'startedAt', label: 'When', width: 'calc(var(--fx-space) * 36)', fixed: true, sortable: true, sortValue: (r) => r.startedAt, render: (r) => <span>{when(r.startedAt)}</span> },
+    { id: 'result', label: 'Result', width: 'calc(var(--fx-space) * 24)', render: (r) => <Chip tone={r.result === 'landed' ? 'success' : r.result === 'error' ? 'danger' : undefined}>{r.result}</Chip> },
+    { id: 'pr', label: 'PR', width: 'calc(var(--fx-space) * 112)', render: (r) => <span className="axp-gate__cell">{r.landing ? <strong>#{r.landing.pr} {r.landing.title || r.landing.build}</strong> : <span className="axp-gate__sub">nothing landed</span>}{rows === 2 && r.reasonText && <span className="axp-gate__sub">{r.reasonText}</span>}</span> },
+    { id: 'mode', label: 'Mode', width: 'calc(var(--fx-space) * 32)', render: (r) => <span className="axp-gate__sub">{r.mode === 'serial' ? 'one at a time' : 'merge queue'}</span> },
   ];
 
   return (
@@ -86,15 +87,15 @@ export function LanderTab({ refreshSec }: { refreshSec: number }) {
           </div>
         )}
       </Container>
-      <DataGrid<Waiting>
-        id="gate.waiting" label="Waiting to land" groups={[{ id: 'waiting', title: `Waiting (${waiting.length})`, rows: waiting, groups: [] }]} columns={waitCols}
-        rowId={(w) => String(w.pr)} rowLabel={(w) => `#${w.pr} ${w.title}`} hidden={rows === 1 ? ['build'] : []} compact={rows === 1}
+      <GateList<Waiting>
+        id="gate.waiting" label="Waiting to land" title={`Waiting (${waiting.length})`} rows={waiting} columns={waitCols}
+        rowId={(w) => String(w.pr)} rowLabel={(w) => `#${w.pr} ${w.title}`} hidden={rows === 1 ? ['build'] : []}
         selected={selected ? String(selected) : null} onRowClick={(w) => setSelected((cur) => (cur === w.pr ? null : w.pr))} rowTone={(w) => stateTone(w.state)}
         empty={<p className="axp-gate__sub">{wt.data ? 'Nothing waits to land.' : 'Loading…'}</p>}
       />
-      <DataGrid<Run>
-        id="gate.runs" label="Last runs" groups={[{ id: 'runs', title: `Last runs (${runs.length})`, rows: runs, groups: [] }]} columns={runCols}
-        rowId={(r) => `${r.startedAt}-${r.landing?.pr ?? ''}-${r.result}`} rowLabel={(r) => `${r.result} ${r.landing ? `#${r.landing.pr}` : ''}`} hidden={[]} compact={rows === 1}
+      <GateList<Run>
+        id="gate.runs" label="Last runs" title={`Last runs (${runs.length})`} rows={runs} columns={runCols}
+        rowId={(r) => `${r.startedAt}-${r.landing?.pr ?? ''}-${r.result}`} rowLabel={(r) => `${r.result} ${r.landing ? `#${r.landing.pr}` : ''}`}
         rowTone={(r) => resultTone(r.result)}
         empty={<p className="axp-gate__sub">{rn.data ? 'No runs yet.' : 'Loading…'}</p>}
       />

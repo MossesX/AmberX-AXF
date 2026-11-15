@@ -7,7 +7,8 @@
  */
 import { useMemo, useState } from 'react';
 import { Button, Chip, ControlScope, IconButton, SelectField, Switch, TextField, useControlTargets, useRuntime, type ControlTargetDef } from '@console/axf/react';
-import { DataGrid, type GridColumn } from '@console/axf/libs/datagrid';
+import type { GridColumn } from '@console/axf/libs/datagrid';
+import { GateList } from './GateList';
 import { gateCall, type GateRule, type RuleSet } from './api';
 import { RulesToolbar } from './RulesToolbar';
 import { useGridRows } from './rows';
@@ -55,13 +56,13 @@ export function RulesTab({ refreshSec }: { refreshSec: number }) {
   useControlTargets(targets, rules.map((r) => `${r.id}:${r.enabled}:${r.severity}:${r.owner}:${JSON.stringify(r.settings)}`).join('|'));
 
   const columns: GridColumn<GateRule>[] = [
-    { id: 'title', label: 'Rule', width: 'minmax(0, 3fr)', fixed: true, sortable: true, sortValue: (r) => r.title, render: (r) => (
+    { id: 'title', label: 'Rule', width: 'calc(var(--fx-space) * 80)', fixed: true, sortable: true, sortValue: (r) => r.title, render: (r) => (
       <span className="axp-gate__cell"><strong>{r.title || r.id}</strong>{rows === 2 && <span className="axp-gate__sub">{r.description}</span>}</span>
     ) },
-    { id: 'kind', label: 'Checks', width: 'minmax(0, 1fr)', sortable: true, sortValue: (r) => r.kind, render: (r) => <span>{KIND_LABEL[r.kind] ?? r.kind}</span> },
-    { id: 'severity', label: 'Severity', width: 'minmax(0, 1fr)', sortable: true, sortValue: (r) => SEVERITIES.indexOf(r.severity), render: (r) => <Chip tone={sevTone(r.severity)}>{r.severity}</Chip> },
-    { id: 'owner', label: 'Run by', width: 'minmax(0, 1fr)', render: (r) => <span className="axp-gate__sub">{r.owner}</span> },
-    { id: 'enabled', label: 'On', width: 'minmax(0, 1fr)', render: (r) => (
+    { id: 'kind', label: 'Checks', width: 'calc(var(--fx-space) * 24)', sortable: true, sortValue: (r) => r.kind, render: (r) => <span>{KIND_LABEL[r.kind] ?? r.kind}</span> },
+    { id: 'severity', label: 'Severity', width: 'calc(var(--fx-space) * 22)', sortable: true, sortValue: (r) => SEVERITIES.indexOf(r.severity), render: (r) => <Chip tone={sevTone(r.severity)}>{r.severity}</Chip> },
+    { id: 'owner', label: 'Run by', width: 'calc(var(--fx-space) * 24)', render: (r) => <span className="axp-gate__sub">{r.owner}</span> },
+    { id: 'enabled', label: 'On', width: 'calc(var(--fx-space) * 24)', render: (r) => (
       <span className="axp-gate__cell axp-gate__cell--row">
         <Switch label={`${r.title}: on / off`} hideLabel checked={r.enabled} disabled={busy === r.id} onChange={(v) => void save(r.id, { enabled: v }, true)} />
         <IconButton icon="sliders" label={`${r.title} settings`} onClick={(e) => { e.stopPropagation(); toggleOpen(r.id); }} />
@@ -73,9 +74,9 @@ export function RulesTab({ refreshSec }: { refreshSec: number }) {
     <>
       <RulesToolbar onChanged={reload} />
       {error && <p className="axp-gate__err" role="alert">{error}</p>}
-      <DataGrid<GateRule>
-        id="gate.rules" label="Gate rules" groups={[{ id: 'rules', title: `Rules (${rules.length})`, rows: rules, groups: [] }]} columns={columns}
-        rowId={(r) => r.id} rowLabel={(r) => r.title || r.id} hidden={[]} compact={rows === 1}
+      <GateList<GateRule>
+        id="gate.rules" label="Gate rules" title={`Rules (${rules.length})`} rows={rules} columns={columns}
+        rowId={(r) => r.id} rowLabel={(r) => r.title || r.id}
         expanded={open} onToggleExpand={toggleOpen} onRowClick={(r) => toggleOpen(r.id)}
         rowTone={(r) => (!r.enabled ? 'muted' : r.severity === 'block' ? 'accent' : r.severity === 'warn' ? 'warning' : 'info')}
         renderDetail={(r) => <ControlScope address={`panel:${r.id}`}><RuleSettings rule={r} busy={busy === r.id} onSave={(patch) => save(r.id, patch)} /></ControlScope>}

@@ -147,6 +147,11 @@
         "target": "tab-it-opens-on",
         "title": "Tab it opens on",
         "text": "The tab Gate & rules opens on, unless you were on another one last time."
+      },
+      {
+        "target": "gate.view",
+        "title": "Show the lists as",
+        "text": "How the gate's lists are drawn: a grid with two lines a row, cards (best on a phone), or a compact one-line grid. Unset, it follows the skin."
       }
     ],
     "intros": [
