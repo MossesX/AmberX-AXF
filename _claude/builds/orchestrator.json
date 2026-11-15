@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T12:26:19.507Z",
+ "updatedAt": "2026-11-15T12:26:35.267Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -149609,7 +149609,7 @@
    "pr": "#707",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:17.286Z",
-   "updatedAt": "2026-11-15T12:26:10.797Z",
+   "updatedAt": "2026-11-15T12:26:33.464Z",
    "builtAt": "",
    "notes": [
     {
@@ -149635,6 +149635,10 @@
     {
      "text": "Phase 1 (Fable) done: s1-s4 committed on the branch, PR #707 (draft). Contract, skin fold, grid-rows@1 engine, fixtures and checks all green. No screen changed yet: the fx-rows renderer and the console action for the per-level pick are the next phase.",
      "at": "2026-11-15T12:26:10.797Z"
+    },
+    {
+     "text": "Headless run axf-every-grid-1-2-rows-per-item-set-skin--sully: brief only · start 13.5K tokens ($0.11) · cost $11.80 · 68 turns · 6 tools, MCP none",
+     "at": "2026-11-15T12:26:33.464Z"
     }
    ],
    "approvals": [],
