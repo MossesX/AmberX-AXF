@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6219,
- "updatedAt": "2026-11-15T13:42:25.434Z",
+ "rev": 6220,
+ "updatedAt": "2026-11-15T13:42:36.631Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -234600,7 +234600,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T13:22:11.842Z",
-   "updatedAt": "2026-11-15T13:42:17.350Z",
+   "updatedAt": "2026-11-15T13:42:33.865Z",
    "builtAt": "",
    "notes": [
     {
@@ -234634,6 +234634,10 @@
     {
      "text": "Dispatch gate: home-cards-follow-plugin-off-home-always still has axf-home-cards-follow-plugin-off-home-always--rhonda alive: not launched again, tracking that session.",
      "at": "2026-11-15T13:34:10.070Z"
+    },
+    {
+     "text": "Phase 1 (Fable) done on branch claude/home-cards-follow-plugin-off-home-always, 4 commits, no PR yet. Contract spec/HOME-CARDS.md (frames home-picks@1, plugin-activity-event@1, plugin-activity@1, home-cards@1; home.* tool table for the console phase); registry framework/schemas/home-cards.json + schemas/json/home-picks|home-cards|plugin-activity.schema.json; engines core/engines/home-cards.mjs (resolveHomeCards) and plugin-activity.mjs (scoreActivity, rankedIds, pruneEvents); fixture spec/fixtures/home-cards.json + spec/check-home-cards.mjs (29 checks, in android.yml). Kotlin twin deferred in PORTING.md. Note for the console phase: core/engines is mirrored into apps/console-web/src/axf/core/engines (rebake/vite), so the new engines need that mirror before HomeCards.tsx can import them.",
+     "at": "2026-11-15T13:42:33.865Z"
     }
    ],
    "approvals": [],
@@ -235097,7 +235101,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
