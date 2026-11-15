@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T04:17:48.445Z",
+ "updatedAt": "2026-11-15T04:19:53.441Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -147152,7 +147152,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T04:17:06.158Z",
-   "updatedAt": "2026-11-15T04:17:46.795Z",
+   "updatedAt": "2026-11-15T04:19:51.810Z",
    "builtAt": "",
    "notes": [
     {
@@ -147162,6 +147162,10 @@
     {
      "text": "Brett (now): move the merge queue / auto-lander OFF the console and onto the VPS. It must run as its own server-side service on the VPS (systemd service + its own state file), with no dependency on the console being up, open, deployed or healthy. The console is not trusted. All control lives on the VPS side: add a 'Merge queue' tab to the server gate plugin (alongside the rules tabs) that talks straight to the VPS service. The console can at most show a read-only mirror. Expose it through axHub vps.* tools too (status, on/off, land now, skip, move up) so Claude and voice control it without the console. Migrate whatever the console's push-banner land.mjs does today into the VPS service, then retire the console path.",
      "at": "2026-11-15T04:17:46.795Z"
+    },
+    {
+     "text": "Brett (now) OVERRIDE: move the WHOLE server gate plugin to axHub (not the console). Everything: the gate rules tabs (all ~3), policy/veto rules, server gate log, plus the new Merge queue / Auto-lander tab. It lives in the axHub repo (MossesX/axHub) as an axHub screen, served by axHub on the VPS, so it keeps working when the console is down or broken. The merge queue / auto-lander runs as a VPS service that axHub controls directly. Remove the plugin from the console after the axHub version is live (console may keep a read-only link that opens the axHub page). Expose everything through axHub tools (vps.* / gate.*) for Claude and voice. Keep all existing rules and data, migrated, nothing lost.",
+     "at": "2026-11-15T04:19:51.810Z"
     }
    ],
    "approvals": [],
