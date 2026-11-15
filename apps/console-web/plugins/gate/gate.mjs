@@ -23,6 +23,20 @@ import * as gate from '../../../../framework/core/gate-rules.mjs';
 import { createStore } from './gate-store.mjs';
 import { createLander } from './lander.mjs';
 import * as history from './history.mjs';
+import { readRuns } from './build-rules-runner.mjs';
+
+/**
+ * The build rules' part of a verdict: the latest gate-phase run of each rule for the build (build-rules@1). A rule whose
+ * last run failed blocks; no run yet = nothing known (the lander runs them when CI is green).
+ */
+export function buildRulesVerdict(build, { dir } = {}) {
+  if (!build) return null;
+  const latest = new Map();
+  for (const r of readRuns({ build, limit: 2000, ...(dir ? { dir } : {}) })) if (r.phase === 'gate' && !latest.has(r.id)) latest.set(r.id, r);
+  if (!latest.size) return { build, ran: false, failing: [], results: [] };
+  const results = [...latest.values()].map((r) => ({ id: r.id, result: r.result, at: r.at, detail: String(r.detail || '').split('\n')[0].slice(0, 200) }));
+  return { build, ran: true, failing: results.filter((r) => r.result === 'fail').map((r) => r.id), results };
+}
 
 export const OPS = Object.freeze(['rules_list', 'rules_get', 'rules_set', 'rules_toggle', 'rules_reset', 'check_pr', 'history', 'lander_status', 'lander_waiting', 'lander_runs', 'lander_mode', 'lander_land_now', 'lander_pause', 'lander_resume', 'settings_get', 'settings_set']);
 
@@ -122,7 +136,15 @@ export function createGate(opts = {}) {
         snap = lander.snapshot(n) || { number: n };
       }
       const known = !!(snap && (snap.title || snap.head || snap.ci && snap.ci !== 'none'));
-      return { ok: true, ...gate.evaluate(store.readRules(), snap, { at: store.iso() }), known };
+      const v = gate.evaluate(store.readRules(), snap, { at: store.iso() });
+      // build rules (phase gate): a failing one blocks like a block rule
+      const build = String(i.build || (i.branch || snap?.head || '').replace(/^claude\//, '') || '').slice(0, 120);
+      const br = i.build || i.branch ? buildRulesVerdict(build, { dir: i.rulesDir }) : null;
+      if (br?.failing.length) {
+        const reason = `build-rules: ${br.failing.join(', ')} failed at the gate (Builds → Gate & rules → Build rules).`;
+        return { ok: true, ...v, pass: false, held: false, blockedBy: v.blockedBy || 'build-rules', reasons: [...(v.reasons || []), reason], buildRules: br, known };
+      }
+      return { ok: true, ...v, ...(br ? { buildRules: br } : {}), known };
     },
     history(i = {}) { return { ok: true, ...history.read(store, i) }; },
     lander_status() { return { ok: true, ...lander.status() }; },

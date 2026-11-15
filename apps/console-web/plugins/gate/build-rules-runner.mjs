@@ -13,7 +13,9 @@
  * A rule with no runnable check is `skipped` with the reason (its checker runs elsewhere, e.g. gate:ui-review).
  *
  *   node apps/console-web/plugins/gate/build-rules-runner.mjs run --build <id> --phase before|after|gate
- *        [--rule id[,id]] [--dry-run] [--no-history] [--json]
+ *        [--rule id[,id]] [--root <worktree>] [--commit] [--dry-run] [--no-history] [--json]
+ * --root runs the checks and fixers in the build's worktree; --commit commits what the fixers wrote there on the build's
+ * branch ("Build rules: VPS fixes …") and pushes it, so a fix reaches the PR (never on main).
  *   node apps/console-web/plugins/gate/build-rules-runner.mjs runs [--rule id] [--build id] [--limit n] [--json]
  * Exit: 0 every rule passed, was fixed or skipped · 1 a rule failed · 2 usage.
  */
@@ -160,6 +162,22 @@ export async function runPhase(buildId, phase, { rules = [], dryRun = false, his
   return { $axf: 'build-rules-run@1', build: buildId, phase, dryRun, ok: counts.fail === 0, counts, runs };
 }
 
+/** Commit and push what fixers wrote in a worktree (its own branch only, never main) → { sha, files } or { skipped }. */
+export function commitFixes(root, runs, { by = 'vps' } = {}) {
+  const files = [...new Set(runs.flatMap((r) => (r.fix?.changed || []).map((c) => String(c).split(' (')[0])).filter((f) => f && !/^(PR|linked) /.test(f)))];
+  if (!files.length) return { skipped: 'nothing changed' };
+  const git = (args) => spawnSync('git', args, { cwd: root, encoding: 'utf8', timeout: 60000 });
+  const branch = (git(['rev-parse', '--abbrev-ref', 'HEAD']).stdout || '').trim();
+  if (!branch || branch === 'HEAD' || branch === 'main') return { skipped: `not on a build branch (${branch || 'none'})` };
+  const add = git(['add', '--', ...files]);
+  if (add.status !== 0) return { skipped: `git add failed: ${add.stderr.trim().slice(-200)}` };
+  const ids = [...new Set(runs.filter((r) => r.fix?.changed?.length).map((r) => r.id))];
+  const c = git(['commit', '-q', '-m', `Build rules: VPS fixes (${ids.join(', ')})\n\nWritten by the gate's build rules runner (${by}), not by the build session.`]);
+  if (c.status !== 0) return { skipped: `git commit: ${(c.stderr || c.stdout).trim().slice(-200)}` };
+  const push = git(['push', '-q', 'origin', 'HEAD']);
+  return { sha: (git(['rev-parse', 'HEAD']).stdout || '').trim(), files, branch, pushed: push.status === 0, ...(push.status !== 0 ? { pushError: push.stderr.trim().slice(-200) } : {}) };
+}
+
 async function main(argv) {
   const flag = (n) => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] || '' : ''; };
   const json = argv.includes('--json');
@@ -169,7 +187,10 @@ async function main(argv) {
     return 0;
   }
   if (argv[0] !== 'run' || !RUN_PHASES.includes(flag('--phase'))) { console.error('usage: build-rules-runner.mjs run --build <id> --phase before|after|gate [--rule a,b] [--dry-run] [--no-history] [--json] | runs [--rule id]'); return 2; }
-  const out = await runPhase(flag('--build'), flag('--phase'), { rules: flag('--rule').split(',').filter(Boolean), dryRun: argv.includes('--dry-run'), history: !argv.includes('--no-history'), by: flag('--by') || 'vps' });
+  const root = flag('--root');
+  const ctx = root ? { root, cwd: root } : {};
+  const out = await runPhase(flag('--build'), flag('--phase'), { rules: flag('--rule').split(',').filter(Boolean), dryRun: argv.includes('--dry-run'), history: !argv.includes('--no-history'), by: flag('--by') || 'vps', ctx });
+  if (root && argv.includes('--commit') && !out.dryRun) out.commit = commitFixes(root, out.runs, { by: flag('--by') || 'vps' });
   if (json) console.log(JSON.stringify(out, null, 2));
   else { console.log(`${out.ok ? 'ok' : 'FAIL'} ${out.phase} ${out.build}: ${Object.entries(out.counts).map(([k, v]) => `${v} ${k}`).join(', ')}`); for (const r of out.runs) console.log(`  ${r.result.padEnd(7)} ${r.id}: ${String(r.detail).split('\n')[0].slice(0, 160)}`); }
   return out.ok ? 0 : 1;

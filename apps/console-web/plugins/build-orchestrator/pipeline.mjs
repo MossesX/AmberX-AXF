@@ -514,7 +514,10 @@ export function runBuildRules(id, phase, { env = process.env, by = 'dispatcher' 
   const p = buildRulesProvider();
   if (!p) return { skipped: 'no build-rules provider' };
   try {
-    const child = spawn(process.execPath, [p.runner, 'run', '--build', id, '--phase', phase, '--by', by], { cwd: REPO_ROOT, detached: true, stdio: 'ignore', env });
+    // in the build's worktree, so a fixer's files (home card, help stub, THREADS row) are committed on its branch
+    const wt = worktreeOf(id, env);
+    const at = existsSync(wt) ? ['--root', wt, '--commit'] : [];
+    const child = spawn(process.execPath, [p.runner, 'run', '--build', id, '--phase', phase, '--by', by, ...at], { cwd: REPO_ROOT, detached: true, stdio: 'ignore', env });
     child.unref();
     logLine({ event: 'build-rules', build: id, phase, pid: child.pid });
     return { started: true, pid: child.pid };
