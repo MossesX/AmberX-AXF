@@ -9,7 +9,7 @@
  *                                                      schemas/data-store.json; its jsonSchemas are authored by hand)
  */
 import assert from 'node:assert/strict';
-import { mkdtempSync, readFileSync, rmSync, writeFileSync, existsSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, utimesSync, writeFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -267,6 +267,41 @@ await t('contract: mode transitions refuse shortcuts', async () => {
   assert.ok(!pairs.has('local>cutover') && !pairs.has('cutover>local'), 'no local ↔ cutover shortcut: shadow first, roll back first');
   assert.equal(M.ROUTES.cutover.localWritable, false);
   assert.deepEqual(M.ROUTES.rollback.write, []);
+});
+
+// ── 7b. data-files: the map (same examples the Python layer checks) and the modes over a memory axf-data ──────────────
+await t('data-files: path map, local unchanged, shadow mirrors, cutover remote-only', async () => {
+  const F = await import('../core/data-files.mjs');
+  const ex = JSON.parse(readFileSync(join(ROOT, 'framework/schemas/data-store-paths.json'), 'utf8')).examples;
+  for (const [k, want] of Object.entries(ex)) { const i = k.indexOf(':'); assert.equal(F.mapRel(k.slice(0, i), k.slice(i + 1)), want, k); }
+  const dir = mkdtempSync(join(tmpdir(), 'axf-data-files-'));
+  const env0 = { AXF_STATE: process.env.AXF_STATE, AXHUB_PROJECTS_DIR: process.env.AXHUB_PROJECTS_DIR };
+  try {
+    process.env.AXF_STATE = join(dir, 'console/state.json'); process.env.AXHUB_PROJECTS_DIR = join(dir, 'projects');
+    const mem = D.createDataStore({ backend: D.memoryBackend() });
+    F.setRemote(mem);
+    const plan = join(dir, 'projects/amberx-axf/_data/plan-studio/plans/p1.json');
+    const setMode = (ns, mode) => { const f = join(dir, 'console/data-store/mode.json'); const doc = existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')) : { mode: 'local', namespaces: {} }; doc.namespaces[ns] = { mode }; mkdirSync(join(dir, 'console/data-store'), { recursive: true }); writeFileSync(f, JSON.stringify(doc)); const t2 = new Date(Date.now() + Math.random() * 1000); utimesSync(f, t2, t2); };
+    assert.equal(F.keyFor(plan), 'planner/plans/p1.json');
+    await F.writeJson(plan, { title: 'one' });
+    assert.deepEqual(JSON.parse(readFileSync(plan, 'utf8')), { title: 'one' }, 'local: the file');
+    assert.equal(await mem.get('planner/plans/p1.json'), null, 'local: axf-data untouched');
+    setMode('planner', 'shadow');
+    await F.writeJson(plan, { title: 'two' });
+    assert.deepEqual((await mem.get('planner/plans/p1.json')).data, { title: 'two' }, 'shadow: mirrored');
+    const pd = F.pluginData('shipped-features');
+    setMode('plugins/shipped-features', 'shadow');
+    await pd.appendJsonl('log.jsonl', { a: 1 });
+    assert.equal(pd.key('log.jsonl'), 'plugins/shipped-features/log.jsonl');
+    setMode('planner', 'cutover');
+    assert.throws(() => F.readJsonSync(plan, null), (e) => e.code === 'unavailable', 'cutover: sync reads refuse instead of reading a stale copy');
+    await F.updateJson(plan, (d) => ({ ...d, n: 3 }));
+    assert.deepEqual(JSON.parse(readFileSync(plan, 'utf8')), { title: 'two' }, 'cutover: the local copy stays as it was');
+    assert.deepEqual(await F.readJson(plan, null), { title: 'two', n: 3 }, 'cutover: reads come from axf-data');
+    setMode('planner', 'rollback');
+    await assert.rejects(F.writeJson(plan, {}), (e) => e.code === 'read_only');
+    F.setRemote(null);
+  } finally { Object.assign(process.env, env0); for (const [k, v] of Object.entries(env0)) if (v === undefined) delete process.env[k]; rmSync(dir, { recursive: true, force: true }); }
 });
 
 // ── 8. optional: the same scenario against a live axf-data (`--http <url>`, token in AXF_DATA_TOKEN; empty store) ────
