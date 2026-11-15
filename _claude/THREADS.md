@@ -797,8 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:00 UTC · `always-fill-every-slot-when-slots-are` → running, note (all) · pipeline
-- 2026-11-14 23:00 UTC · `always-fill-every-slot-when-slots-are` note (all) · orchestrator
 - 2026-11-14 23:01 UTC · `pass-approval-hook-deep-link-amberx-notification` s6 done (all) · orchestrator
 - 2026-11-14 23:02 UTC · `hotfix-toolbar-settings-still-change` s4 done, → complete (all) · orchestrator
 - 2026-11-14 23:02 UTC · `hotfix-toolbar-settings-still-change` note (all) · orchestrator
@@ -1197,6 +1195,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:02 UTC · `prompting-engine-control-panel-events` s2 done (all) · orchestrator
 - 2026-11-13 19:02 UTC · `prompting-engine-control-panel-events` note (all) · orchestrator
 - 2026-11-13 19:02 UTC · `prompting-engine-control-panel-events` s3 done (all) · orchestrator
+- 2026-11-15 00:35 UTC · `prompting-engine-control-panel-events` → running, note (all) · pipeline
+- 2026-11-15 00:35 UTC · `prompting-engine-control-panel-events` note (all) · orchestrator
 
 ## Token passes (log)
 

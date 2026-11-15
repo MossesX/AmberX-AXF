@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5807,
- "updatedAt": "2026-11-15T00:36:16.438Z",
+ "rev": 5808,
+ "updatedAt": "2026-11-15T00:36:32.745Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -188397,23 +188397,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:35:10.538Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrator/server/__init__.py, apps/console-web/plugins/claude-badge/R"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -191251,23 +191234,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:35:30.696Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/agent-manager/web/forms.tsx, apps/console-web/plugins/agent-manager/web/more.tsx, apps/console-web/plugins/agent-manager/web/settings.tsx, apps/console-web/plugins/agent-manager/web/views.tsx, apps/console-web/plugins/agent-manager"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -193020,23 +192986,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:35:15.500Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/project-wizard/help.json, apps/console-web/plugins/project-wizard/install.mjs, apps/console-web/plugins/project-wizard/plugin.json, apps/console-web/plugins/project-wizard/server/__init__.py, apps/console-web/plugins/project-wizard"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -194539,23 +194488,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:35:19.154Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Superseded: only merges and status files are missing from main. Kept as archive/plugin-review-map-what-each-plugin-does."
-     }
-    ]
    },
    "steps": [
     {
@@ -196569,23 +196501,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:35:06.515Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/push-banner/land/lander.mjs, apps/console-web/plugins/push-banner/merge-pr.sh, apps/console-web/plugins/push-banner/notify.json, apps/console-web/plugins/push-banner/plugin.json, apps/console-web/plugins/push-banner/server/__init__"
-     }
-    ]
    },
    "steps": [
     {
@@ -202808,7 +202723,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:16:04.183Z",
-   "updatedAt": "2026-11-15T00:35:20.159Z",
+   "updatedAt": "2026-11-15T00:35:42.823Z",
    "builtAt": "",
    "notes": [
     {
@@ -202838,6 +202753,14 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T20:19:48.032Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-prompting-engine-control-panel-events--lenny.",
+     "at": "2026-11-15T00:35:34.808Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-prompting-engine-control-panel-events--lenny, shared account login)",
+     "at": "2026-11-15T00:35:42.823Z"
     }
    ],
    "approvals": [],
@@ -202857,12 +202780,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:16:07.784Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-prompting-engine-control-panel-events--lenny",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-15T00:35:32.713Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:19:43.693Z",
@@ -202872,9 +202795,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"91523ea0-0e04-4d79-bb01-27161bb8b423\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-15T00:35:32.713Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -202883,7 +202806,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-15T00:35:32.713Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -203099,7 +203022,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
