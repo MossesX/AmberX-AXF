@@ -4,5 +4,6 @@ import expenses from './expenses.mjs';
 import bossTexts from './boss-texts.mjs';
 import privateChat from './private-chat.mjs';
 import onDemand from './on-demand.mjs';
+import teenDriver from './teen-driver.mjs';
 
-export const MORE = [commute, expenses, bossTexts, privateChat, onDemand];
+export const MORE = [commute, expenses, bossTexts, privateChat, onDemand, teenDriver];
