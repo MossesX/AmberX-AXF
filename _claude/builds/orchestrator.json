@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T13:39:53.100Z",
+ "updatedAt": "2026-11-15T13:40:12.546Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -152545,7 +152545,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T13:36:18.858Z",
-   "updatedAt": "2026-11-15T13:39:38.992Z",
+   "updatedAt": "2026-11-15T13:39:59.581Z",
    "builtAt": "",
    "notes": [
     {
@@ -152583,6 +152583,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-phone-connect-small-android-companion--lenny, shared account login)",
      "at": "2026-11-15T13:39:38.992Z"
+    },
+    {
+     "text": "Brett (08:43): the phone overlay toolbar is fully editable from the console. Use a toolbar editor (reuse the framework toolbar/widget editor) to add, remove and reorder buttons and widgets, pick icons from the icon library, set labels, and choose what each button does (open a console page, approve, start/stop recorder, show notifications, build status), with a live preview of the phone toolbar. Changes push to the phone instantly, with API parity.",
+     "at": "2026-11-15T13:39:55.067Z"
     }
    ],
    "approvals": [],
@@ -152958,7 +152962,7 @@
     },
     {
      "id": "s17",
-     "text": "Create the Android companion app: apps/phone-connect-droid with project.manifest.json, a Gradle app module (ai.amberx.axf.phoneconnect, API 35) and an Axf-themed Compose shell with three tabs (Approvals, Monitor, Settings). This is native and small, not the console.",
+     "text": "Create the Android companion app: apps/phone-connect-droid with project.manifest.json, a Gradle app module (ai.amberx.axf.phoneconnect, API 35). NO app screens or tabs (Brett 08:37): only a one-time sign-in/permissions page (incl. 'display over other apps'). Everything visible is the OVERLAY: a floating always-on-top toolbar (from build amberx-floating-toolbar-always-on-top-mic-approvals-build-status) that collapses to a small draggable button (remembers spot and state, badge count), and popups for approvals, alerts and notifications that you can act on in place (approve or deny right from the popup). Themed live by the console's skin and theme tokens (Axf.colors/type/space/shapes) with no new APK. Split into more steps if needed.",
      "model": "Opus",
      "why": "",
      "phase": "",
