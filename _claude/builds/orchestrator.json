@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:21:15.950Z",
+ "updatedAt": "2026-11-15T00:21:33.274Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -92380,7 +92380,7 @@
    "pr": "#680",
    "priority": "P0",
    "createdAt": "2026-11-10T00:17:45.319Z",
-   "updatedAt": "2026-11-14T23:17:47.735Z",
+   "updatedAt": "2026-11-15T00:20:38.927Z",
    "builtAt": "2026-11-14T23:04:07.600Z",
    "notes": [
     {
@@ -110271,7 +110271,7 @@
    "branch": "claude/one-source-truth-console-shows-only-what",
    "pr": "#598",
    "createdAt": "2026-11-12T02:37:57.927Z",
-   "updatedAt": "2026-11-14T23:14:52.068Z",
+   "updatedAt": "2026-11-15T00:20:14.757Z",
    "builtAt": "2026-11-14T23:11:39.997Z",
    "notes": [
     {
@@ -110421,7 +110421,7 @@
    "branch": "claude/server-gate-one-session-per-build-no",
    "pr": "#610",
    "createdAt": "2026-11-12T02:42:15.357Z",
-   "updatedAt": "2026-11-14T23:15:19.178Z",
+   "updatedAt": "2026-11-15T00:20:32.096Z",
    "builtAt": "2026-11-14T23:06:34.786Z",
    "notes": [
     {
@@ -131575,7 +131575,7 @@
    "pr": "#653",
    "priority": "P0",
    "createdAt": "2026-11-13T19:33:18.264Z",
-   "updatedAt": "2026-11-13T20:50:31.450Z",
+   "updatedAt": "2026-11-15T00:21:12.145Z",
    "builtAt": "2026-11-13T20:45:34.732Z",
    "notes": [
     {
@@ -134636,7 +134636,7 @@
    "pr": "#660",
    "priority": "P0",
    "createdAt": "2026-11-13T20:44:39.782Z",
-   "updatedAt": "2026-11-13T21:17:09.699Z",
+   "updatedAt": "2026-11-15T00:20:53.429Z",
    "builtAt": "2026-11-13T21:17:09.699Z",
    "notes": [
     {
@@ -135005,7 +135005,7 @@
    "pr": "#655",
    "priority": "P0",
    "createdAt": "2026-11-13T20:45:58.911Z",
-   "updatedAt": "2026-11-13T21:00:29.189Z",
+   "updatedAt": "2026-11-15T00:21:02.281Z",
    "builtAt": "2026-11-13T20:59:27.633Z",
    "notes": [
     {
@@ -142082,7 +142082,7 @@
    "pr": "#679",
    "priority": "P0",
    "createdAt": "2026-11-14T18:15:01.485Z",
-   "updatedAt": "2026-11-14T22:51:21.447Z",
+   "updatedAt": "2026-11-15T00:20:45.231Z",
    "builtAt": "2026-11-14T22:50:08.994Z",
    "notes": [
     {

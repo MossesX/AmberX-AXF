@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5755,
- "updatedAt": "2026-11-15T00:21:15.950Z",
+ "rev": 5756,
+ "updatedAt": "2026-11-15T00:21:33.274Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -140406,7 +140406,7 @@
    "pr": "#680",
    "priority": "P0",
    "createdAt": "2026-11-10T00:17:45.319Z",
-   "updatedAt": "2026-11-14T23:17:47.735Z",
+   "updatedAt": "2026-11-15T00:20:38.927Z",
    "builtAt": "2026-11-14T23:04:07.600Z",
    "notes": [
     {
@@ -140503,6 +140503,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:20:38.727Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/agent-swarm/help.json, apps/console-web/plugins/agent-swarm/hr-core.mjs, apps/console-web/plugins/agent-swarm/hr.mjs, apps/console-web/plugins/agent-swarm/jobs-core.mjs, apps/console-web/plugins/agent-swarm/jobs.mjs, apps/console-web/plugins/agent-swarm/notify.j"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -140582,7 +140599,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -193256,7 +193273,7 @@
    "branch": "claude/one-source-truth-console-shows-only-what",
    "pr": "#598",
    "createdAt": "2026-11-12T02:37:57.927Z",
-   "updatedAt": "2026-11-14T23:14:52.068Z",
+   "updatedAt": "2026-11-15T00:20:14.757Z",
    "builtAt": "2026-11-14T23:11:39.997Z",
    "notes": [
     {
@@ -193369,6 +193386,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:20:14.536Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/agent-slots/server/__init__.py, apps/console-web/plugins/agent-slots/web/index.tsx, apps/console-web/plugins/build-orchestrator/orchestrator.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/bu"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -193445,7 +193479,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -196611,7 +196645,7 @@
    "branch": "claude/server-gate-one-session-per-build-no",
    "pr": "#610",
    "createdAt": "2026-11-12T02:42:15.357Z",
-   "updatedAt": "2026-11-14T23:15:19.178Z",
+   "updatedAt": "2026-11-15T00:20:32.096Z",
    "builtAt": "2026-11-14T23:06:34.786Z",
    "notes": [
     {
@@ -196731,6 +196765,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:20:31.880Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrator/plugin.json, apps/console-web/plugins/build-orchestrator/server/__init__.py, apps/console-web/plugins/build-orchestrator/w"
+     }
+    ]
    },
    "steps": [
     {
@@ -196852,7 +196903,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -208278,7 +208329,7 @@
    "pr": "#653",
    "priority": "P0",
    "createdAt": "2026-11-13T19:33:18.264Z",
-   "updatedAt": "2026-11-13T20:50:31.450Z",
+   "updatedAt": "2026-11-15T00:21:12.145Z",
    "builtAt": "2026-11-13T20:45:34.732Z",
    "notes": [
     {
@@ -208349,6 +208400,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:21:11.857Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/approvals-banner/assets/overlay-toolbar/overlay-toolbar-shape-bubble.json, apps/console-web/plugins/approvals-banner/assets/overlay-toolbar/overlay-toolbar-shape-pill.json, apps/console-web/plugins/approvals-banner/assets/overlay-toolbar/overlay-toolbar-shape-ra"
+     }
+    ]
    },
    "steps": [
     {
@@ -208429,7 +208497,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -212848,7 +212916,7 @@
    "pr": "#660",
    "priority": "P0",
    "createdAt": "2026-11-13T20:44:39.782Z",
-   "updatedAt": "2026-11-13T21:17:09.699Z",
+   "updatedAt": "2026-11-15T00:20:53.429Z",
    "builtAt": "2026-11-13T21:17:09.699Z",
    "notes": [
     {
@@ -212923,6 +212991,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:20:53.220Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/molly-guide/help.json, apps/console-web/plugins/push-banner/help.json, apps/console-web/plugins/push-banner/land/hook.mjs, apps/console-web/plugins/push-banner/land/land-core.mjs, apps/console-web/plugins/push-banner/land/land.mjs, apps/console-web/plugins/push-"
+     }
+    ]
    },
    "steps": [
     {
@@ -213157,7 +213242,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -213395,7 +213480,7 @@
    "pr": "#655",
    "priority": "P0",
    "createdAt": "2026-11-13T20:45:58.911Z",
-   "updatedAt": "2026-11-13T21:00:29.189Z",
+   "updatedAt": "2026-11-15T00:21:02.281Z",
    "builtAt": "2026-11-13T20:59:27.633Z",
    "notes": [
     {
@@ -213476,6 +213561,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:21:01.574Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/scripts/console-control.e2e.mjs, apps/console-web/server/console_control.py, apps/console-web/server/console_control_api.py, apps/console-web/server/mcp_server.py, apps/console-web/server/tests/test_console_control.py, apps/console-web/src/actions/voice-control.ts, apps"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -213555,7 +213657,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -222885,7 +222987,7 @@
    "pr": "#679",
    "priority": "P0",
    "createdAt": "2026-11-14T18:15:01.485Z",
-   "updatedAt": "2026-11-14T22:51:21.447Z",
+   "updatedAt": "2026-11-15T00:20:45.231Z",
    "builtAt": "2026-11-14T22:50:08.994Z",
    "notes": [
     {
@@ -222972,6 +223074,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:20:45.123Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Superseded: only merges and status files are missing from main. Kept as archive/land-all-skin-builds."
+     }
+    ]
    },
    "steps": [
     {
@@ -223616,7 +223735,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
