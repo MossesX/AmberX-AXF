@@ -49,3 +49,11 @@ clean plan, 2 when a verify failed (nothing is written then). Test: `node apps/c
 | Auto-approval rules | `view:phone-rules`, `…tabs=rules` | `rules`, `rules/{id}/enable`, `rules/{id}` | `phone_rules_list|add|enable|remove|evaluate` | `axf phone rules list|add|remove|enable|check` | `phone-connect.open rules` |
 
 Every button and setting on the screens carries a `data-axf-target` (`phone-connect.*`), so console-control reaches it.
+
+## Retiring AmberX (the gate)
+
+`node apps/console-web/plugins/phone-connect/retire-check.mjs [--wait 120] [--json]` asks the running console
+(AXF_CONSOLE_URL, AXF_TOKEN): a phone is paired, its heartbeat is online, a test notification and an open_url come back
+acked, and the recorder status answers. Exit 0 = retire AmberX; 3 = waiting on Brett's phone (each failed check says
+what to do); 2 = the console can't be asked. The systems check shows **Phone Connect paired (AmberX retirement gate)**
+with the same steps until a phone is paired and online.
