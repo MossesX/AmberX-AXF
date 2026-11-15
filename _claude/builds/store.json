@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5760,
- "updatedAt": "2026-11-15T00:23:23.027Z",
+ "rev": 5761,
+ "updatedAt": "2026-11-15T00:23:37.792Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -158521,7 +158521,7 @@
    "pr": "#503",
    "priority": "P0",
    "createdAt": "2026-11-10T21:45:52.947Z",
-   "updatedAt": "2026-11-12T02:49:36.810Z",
+   "updatedAt": "2026-11-15T00:23:24.755Z",
    "builtAt": "2026-11-12T02:49:21.476Z",
    "notes": [
     {
@@ -158633,6 +158633,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:23:24.665Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, framework/core/engines/chrome-settings-rules.d.mts, framework/core/engines/chrome-settings-rules.mjs, framework/core/runtime.ts, framework/core/settings.ts, framework/libs/settings/index.tsx, framework/react/AxfProvider.tsx, framework/react/components/Chro"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -158712,7 +158729,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -163421,7 +163438,7 @@
    "branch": "claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides",
    "pr": "#505",
    "createdAt": "2026-11-12T02:02:25.273Z",
-   "updatedAt": "2026-11-12T03:13:04.132Z",
+   "updatedAt": "2026-11-15T00:23:21.048Z",
    "builtAt": "2026-11-12T02:50:48.540Z",
    "notes": [
     {
@@ -163520,6 +163537,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:23:20.942Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/build-orchestrator/web/pipeline.tsx, apps/console-web/plugins/theme-manager/plugin.json, framework/core/engines/chrome-settings-rules.mjs, framework/core/engines/skin.ts, framework/core/runtime.ts, framework/libs/settings/index.tsx, framework/react/components/Ch"
+     }
+    ]
    },
    "steps": [
     {
@@ -163685,7 +163719,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
