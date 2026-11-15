@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T13:42:19.327Z",
+ "updatedAt": "2026-11-15T13:42:25.434Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -151940,7 +151940,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T13:23:46.016Z",
-   "updatedAt": "2026-11-15T13:38:28.879Z",
+   "updatedAt": "2026-11-15T13:42:23.026Z",
    "builtAt": "",
    "notes": [
     {
@@ -152040,8 +152040,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T13:42:23.026Z",
      "note": "",
      "uid": "st-mwhvd33l03jvrd",
      "createdAt": "2026-11-15T13:27:28.497Z"
