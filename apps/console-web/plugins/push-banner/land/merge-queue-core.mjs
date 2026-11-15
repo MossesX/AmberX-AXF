@@ -273,6 +273,25 @@ export function pruneControl(doc, open) {
   return { ...doc, order: (doc.order || []).filter((n) => ok.has(n)), added: (doc.added || []).filter((n) => ok.has(n)), removed: keepObj(doc.removed), kicked: keepObj(doc.kicked) };
 }
 
+/**
+ * The control document a round writes back (Nov 15 2026): `start` is what the round read, `mine` what it made of it
+ * (kicks added, closed PRs pruned), `fresh` what is on disk now. A command written while the round ran (Brett's Skip,
+ * Move, Land now, a CLI remove) used to be overwritten by `mine`; now the round's own changes are applied on top of
+ * `fresh` instead.
+ */
+export function mergeControl(start, mine, fresh) {
+  const s = start || {}; const m = mine || {}; const f = fresh || {};
+  if ((f.updatedAt || '') === (s.updatedAt || '') && JSON.stringify(f.order || []) === JSON.stringify(s.order || [])) return m;
+  const out = { ...f, order: [...(f.order || [])], added: [...(f.added || [])], removed: { ...(f.removed || {}) }, kicked: { ...(f.kicked || {}) } };
+  for (const [n, k] of Object.entries(m.kicked || {})) if (!(s.kicked || {})[n]) out.kicked[n] = k; // kicked this round
+  const gone = (key) => new Set(Object.keys(s[key] || {}).filter((n) => !(n in (m[key] || {}))));
+  for (const key of ['removed', 'kicked']) for (const n of gone(key)) delete out[key][n];   // pruned: the PR closed
+  const pruned = new Set((s.order || []).filter((n) => !(m.order || []).includes(n)));
+  out.order = out.order.filter((n) => !pruned.has(n));
+  out.added = out.added.filter((n) => (m.added || []).includes(n) || !(s.added || []).includes(n));
+  return out;
+}
+
 /** The banner chip: "Merge queue: N" (N = PRs in the line), with the worst state for its colour. */
 export function chip(state) {
   const items = Array.isArray(state?.items) ? state.items : [];

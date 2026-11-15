@@ -126,6 +126,17 @@ try {
   check(Q.keepStack(stack, [{ number: 680, head: 'h680' }, { number: 686, head: 'h686' }]).length === 0, 'before: with #680 in the ready list the stack was dropped');
   check(Q.keepStack(stack, [{ number: 686, head: 'h686' }]).length === 1, 'after: #680 waits outside the ready list and the stack (and its CI run) is kept');
 
+  // ---------------------------------------------------------------- a command written during a round survives it
+  console.log('merge queue: a Skip / Move written while a round runs is kept');
+  const start = { order: [681, 680, 686], removed: {}, kicked: {}, added: [], updatedAt: 't0' };
+  const mine = { ...start, kicked: { 690: { why: 'red', head: 'h' } } };
+  const fresh = { ...start, removed: { 680: { why: 'unbuildable' } }, updatedAt: 't1' };
+  const merged = Q.mergeControl(start, mine, fresh);
+  check(merged.removed[680] && merged.kicked[690], "before: the round's write dropped the removal; after: both the removal and the round's kick are kept");
+  check(Q.mergeControl(start, mine, start) === mine, 'nothing written meanwhile: the round writes its own document');
+  const pruned = Q.mergeControl({ ...start, kicked: { 5: {} } }, { ...start, kicked: {}, order: [680, 686] }, { ...start, kicked: { 5: {} }, removed: { 9: {} }, updatedAt: 't2' });
+  check(!pruned.kicked[5] && pruned.removed[9] && !pruned.order.includes(681), 'closed PRs the round pruned stay pruned');
+
   // ---------------------------------------------------------------- 5. the cron (replaces the axf-lander unit watch)
   console.log('cron health and heal');
   const cron = join(dir, 'cron.d'); mkdirSync(cron);

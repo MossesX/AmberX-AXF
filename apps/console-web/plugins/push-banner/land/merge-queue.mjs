@@ -140,7 +140,7 @@ export function chatLines(prev, st) {
 }
 
 async function roundOnce({ s, git, gh, api, dry = false, now = () => new Date(), log = () => {}, fetched = false } = {}) {
-  const cfg = readQueueConfig(s); const prev = readQueue(s); let ctl = readQueueControl(s);
+  const cfg = readQueueConfig(s); const prev = readQueue(s); let ctl = readQueueControl(s); const ctlStart = ctl;
   const at = now().toISOString();
   const base = { $axf: q.QUEUE_FRAME, at, on: cfg.mergeQueue, depth: cfg.depth, mode: cfg.mode, batchSize: cfg.batchSize };
   if (!cfg.mergeQueue) {
@@ -183,7 +183,7 @@ async function roundOnce({ s, git, gh, api, dry = false, now = () => new Date(),
     prs.push(fact);
   }
   ctl = q.pruneControl(ctl, prs.map((p) => p.number));
-  if (cfg.mode === 'batch') return batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, prs, rank, mainSha, base, enlisted, pulls, log });
+  if (cfg.mode === 'batch') return batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, ctlStart, prs, rank, mainSha, base, enlisted, pulls, log });
   // 2. what of last round's stack still holds: main must have the code the stack was built on
   const expect = prev.expect || '';
   const mainMoved = !expect || git(['cat-file', '-e', `${expect}^{commit}`]).code !== 0 || !q.sameCodeFiles(lines(git(['diff', '--name-only', expect, mainSha]).out));
@@ -298,7 +298,7 @@ async function roundOnce({ s, git, gh, api, dry = false, now = () => new Date(),
   const waiting = prs.filter((p) => p.why && !mergedNow.has(p.number)).map((p) => ({ pr: p.number, title: p.title, url: p.url, branch: p.branch, head: p.head, build: p.build, agent: p.agent, state: p.why.startsWith('kicked out') ? 'kicked' : 'held', why: p.why, prCi: p.ci }));
   for (const it of items) { const p = prs.find((x) => x.number === it.pr); if (p) it.prCi = p.ci; }
   const st = { ...base, mainSha, expect: newExpect || mainSha, avgMin: avg, history: history.slice(-20), stack, items, waiting, kicked: kicked.filter((k) => prs.some((p) => p.number === k.pr)).slice(-20), merged, ...v };
-  if (!dry) { writeJson(queueFile(s), st); writeJson(queueControlFile(s), ctl); }
+  if (!dry) { writeJson(queueFile(s), st); writeJson(queueControlFile(s), q.mergeControl(ctlStart, ctl, readQueueControl(s))); }
   return st;
 }
 
@@ -349,7 +349,7 @@ export function landBatch({ s, git, batch }) {
  * queue/batch, CI runs once on it, and a green batch lands on main as that one commit (GitHub marks every member PR
  * merged). A red batch is split in half until the one PR to blame is found and kicked out; the halves that pass land.
  */
-async function batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, prs, rank, mainSha, base, enlisted, pulls, log }) {
+async function batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, ctlStart, prs, rank, mainSha, base, enlisted, pulls, log }) {
   const history = [...(prev.history || [])];
   const merged = [...(prev.merged || [])].slice(-40);
   const kicked = [...(prev.kicked || [])].slice(-20);
@@ -464,7 +464,7 @@ async function batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, prs, rank,
   for (const [j, p] of rest.entries()) items.push({ pr: p.number, title: p.title, url: p.url, branch: p.branch, head: p.head, build: p.build, agent: p.agent, priority: p.priority, state: 'waiting', ci: '', why: skipped.get(p.number) || (split.includes(p.number) ? 'its batch went red: tested again in a smaller batch' : ''), etaMin: Math.round(avg * (2 + Math.floor(j / cfg.batchSize))), prCi: p.ci });
   const waiting = prs.filter((p) => p.why && !landedNow.has(p.number)).map((p) => ({ pr: p.number, title: p.title, url: p.url, branch: p.branch, head: p.head, build: p.build, agent: p.agent, state: p.why.startsWith('kicked out') ? 'kicked' : 'held', why: p.why, prCi: p.ci }));
   const st = { ...base, mainSha, expect: batch?.base || mainSha, avgMin: avg, history: history.slice(-20), batch, split, stack: [], items, waiting, kicked: kicked.filter((k) => prs.some((p) => p.number === k.pr)).slice(-20), merged, lastLanded, enlisted, ...v };
-  if (!dry) { writeJson(queueFile(s), st); writeJson(queueControlFile(s), ctl); }
+  if (!dry) { writeJson(queueFile(s), st); writeJson(queueControlFile(s), q.mergeControl(ctlStart, ctl, readQueueControl(s))); }
   return st;
 }
 
