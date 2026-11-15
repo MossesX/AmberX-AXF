@@ -84,7 +84,10 @@ try {
   r = await route.GET(req("GET", "me", undefined, { ...H, origin: "https://evil.example" }), ctx("me"));
   ok(!r.headers.get("access-control-allow-origin"), "other origin → no CORS headers");
   r = route.OPTIONS(new Request("http://x/api/expenses/v1/entries", { method: "OPTIONS", headers: { origin: MOLLY, "access-control-request-method": "POST" } }));
-  ok(r.status === 204 && r.headers.get("access-control-allow-methods")?.includes("PATCH"), "preflight from Molly → 204");
+  ok(r.status === 204 && r.headers.get("access-control-allow-methods")?.includes("PATCH")
+    && r.headers.get("access-control-allow-headers") === "content-type, accept, authorization, x-expenses-user"
+    && r.headers.get("access-control-allow-credentials") === "true" && r.headers.get("vary") === "Origin", "preflight from Molly → 204 with the full header set");
+  ok(route.OPTIONS(new Request("http://x/api/expenses/v1/entries", { method: "OPTIONS", headers: { origin: "https://evil.example" } })).status === 403, "preflight from another origin → 403");
   ok(route.OPTIONS(new Request("http://x/api/expenses/v1/entries", { method: "OPTIONS", headers: { origin: "https://evil.example" } })).status === 403, "preflight from elsewhere → 403");
 
   // paydays: no schedule → not ready, fill refused; with a schedule → missing dates, fill adds them once

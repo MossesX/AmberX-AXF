@@ -32,7 +32,7 @@ function corsHeaders(origin: string): Record<string, string> {
     "access-control-allow-origin": origin,
     "access-control-allow-credentials": "true",
     "access-control-allow-methods": "GET, POST, PATCH, OPTIONS",
-    "access-control-allow-headers": "content-type, authorization, x-expenses-user",
+    "access-control-allow-headers": "content-type, accept, authorization, x-expenses-user",
     "access-control-max-age": "600",
     vary: "Origin",
   };
