@@ -222,8 +222,8 @@ function ColumnPicker({ view, set, close }: { view: T.TableView; set: (p: Partia
         {view.order.map((id, i) => (
           <li key={id}>
             <Checkbox label={COL_LABEL[id] ?? id} checked={id === 'name' || !view.hidden.includes(id)} disabled={id === 'name'} onChange={(on) => set({ hidden: on ? view.hidden.filter((x) => x !== id) : [...view.hidden, id] })} />
-            <IconButton icon="chevron-up" label={`Move ${COL_LABEL[id]} left`} disabled={i <= 1} onClick={() => move(id, -1)} />
-            <IconButton icon="chevron-down" label={`Move ${COL_LABEL[id]} right`} disabled={i === 0 || i === view.order.length - 1} onClick={() => move(id, 1)} />
+            <IconButton icon="chevron-left" label={`Move ${COL_LABEL[id]} left`} disabled={i <= 1} onClick={() => move(id, -1)} />
+            <IconButton icon="chevron-right" label={`Move ${COL_LABEL[id]} right`} disabled={i === 0 || i === view.order.length - 1} onClick={() => move(id, 1)} />
           </li>
         ))}
       </ol>
@@ -244,8 +244,8 @@ function TableFilters({ view, set, plugins }: { view: T.TableView; set: (p: Part
       <ChipToggle on={view.notDeployed} onClick={() => set({ notDeployed: !view.notDeployed })} title="Only features not live anywhere yet">Not deployed</ChipToggle>
       <SelectField label="Plugin" value="" onChange={(v) => v && tog('plugins', v)} options={[{ value: '', label: view.plugins.length ? `${view.plugins.length} picked` : 'Any plugin' }, ...plugins.map((p) => ({ value: p, label: `${view.plugins.includes(p) ? '✓ ' : ''}${p}` }))]} />
       {view.plugins.map((p) => <ChipToggle key={p} on onClick={() => tog('plugins', p)} title={`Stop filtering on ${p}`}>{p} ×</ChipToggle>)}
-      <TextField label="From" type="date" value={view.from} onChange={(from) => set({ from })} />
-      <TextField label="To" type="date" value={view.to} onChange={(to) => set({ to })} />
+      <TextField label="From" type="date" className="axp-shipped__date" value={view.from} onChange={(from) => set({ from })} />
+      <TextField label="To" type="date" className="axp-shipped__date" value={view.to} onChange={(to) => set({ to })} />
       {any ? <Button icon="x" size="sm" onClick={() => set({ statuses: [], plugins: [], from: '', to: '', hasApi: false, notDeployed: false, search: '' })}>Clear filters</Button> : null}
     </div>
   );
@@ -256,7 +256,7 @@ function RowDetail({ r, ledger }: { r: T.Row; ledger: Ledger }) {
   return (
     <div className="axp-shipped__detail">
       <dl className="axp-shipped__facts">
-        <dt>Status</dt><dd><ShipBadge status={r.status} /> <StatusChip rec={f ?? { status: r.ledgerStatus }} /></dd>
+        <dt>Status</dt><dd><ShipBadge status={r.status} />{f && L.statusChip(f).label !== T.SHIP_STATUS_LABEL[r.status] ? <span className="fx-muted">ledger: {L.statusChip(f).label}</span> : null}</dd>
         <dt>How to reach it</dt><dd>{r.reach.length ? r.reach.map((x) => <span key={x} className="axp-shipped__ref"><Icon name={REACH_ICON[x]} /> {T.REACH_LABEL[x]}</span>) : '—'}<code>{r.deepLink}</code></dd>
         <dt>Settings key</dt><dd>{r.settings ? <code>{r.settings}</code> : '—'}</dd>
         <dt>Help</dt><dd>{r.help ? <a href={r.help} target="_blank" rel="noreferrer">{r.help}</a> : '—'}</dd>
@@ -317,22 +317,22 @@ export function ShippedFeaturesPage() {
   const sv = (id: string) => (r: T.Row) => T.sortValue(r, id);
   const col = (id: string, width: string, render: (r: T.Row) => ReactNode, extra: Partial<GridColumn<T.Row>> = {}): GridColumn<T.Row> => ({ id, label: COL_LABEL[id] ?? id, width, sortable: true, sortValue: sv(id), render, cellCtx: cell(id), ...extra });
   const columns: GridColumn<T.Row>[] = [
-    col('name', `minmax(${W(28)}, 3fr)`, (r) => <span className="axp-shipped__name">{r.name}</span>, { fixed: true, sub: (r) => r.description || r.asked || null }),
-    col('area', W(20), (r) => r.area, { sub: (r) => L.TYPE_LABEL[r.type as L.FeatureType] ?? null }),
-    col('description', `minmax(${W(24)}, 2fr)`, (r) => <span className="axp-shipped__clip" title={r.description}>{r.description || '—'}</span>),
-    col('status', W(16), (r) => <ShipBadge status={r.status} />),
-    col('build', W(22), (r) => (r.build ? <a href={`?shipped=${encodeURIComponent(r.build)}`} onClick={(e) => { e.preventDefault(); focusShipped(r.build); }}>{r.build}</a> : '—'), { sub: (r) => (r.builds.length > 1 ? `+${r.builds.length - 1} more` : null), cellCtx: (r) => (r.build ? { target: 'axf-build-item', payload: r.build } : cell('build')(r)) }),
-    col('pr', W(10), (r) => (r.pr ? <a href={r.prUrl} target="_blank" rel="noreferrer">#{r.pr}</a> : '—'), { sub: (r) => (r.prs.length > 1 ? `+${r.prs.length - 1}` : null) }),
-    col('commit', W(12), (r) => (r.commit ? <code>{r.commit.slice(0, 9)}</code> : '—')),
-    col('shipped', W(14), (r) => fmtDay(r.shipped, r.shippedGuessed), { sub: (r) => (r.shipped ? fmtHm(r.shipped) : null) }),
-    col('onMain', W(10), (r) => <YesNo v={r.onMain} yes="Yes" no="No" />),
-    col('deployed', W(11), (r) => <YesNo v={r.deployed} yes="Yes" no="No" />, { sub: (r) => (r.deployed ? Object.keys(r.liveAt).join(', ') : null) }),
-    col('reach', W(16), (r) => (r.reach.length ? <span className="axp-shipped__reach">{r.reach.map((x) => <span key={x} title={T.REACH_LABEL[x]} aria-label={T.REACH_LABEL[x]}><Icon name={REACH_ICON[x]} /></span>)}</span> : <span className="fx-muted">UI only</span>)),
-    col('settings', W(20), (r) => (r.settings ? <code>{r.settings}</code> : '—')),
-    col('help', W(10), (r) => (r.help ? <a href={r.help} target="_blank" rel="noreferrer">Help</a> : '—')),
-    col('version', W(8), (r) => r.version),
-    col('asked', `minmax(${W(24)}, 2fr)`, (r) => (r.asked ? <span className="axp-shipped__clip" title={r.asked}>“{r.asked}”</span> : '—')),
-    col('tests', W(10), (r) => (r.tests.total ? <Chip tone={r.tests.pass === r.tests.total ? 'success' : 'warning'}>{r.tests.pass}/{r.tests.total}</Chip> : '—')),
+    col('name', W(64), (r) => <span className="axp-shipped__name" title={r.name}>{r.name}</span>, { fixed: true, sub: (r) => r.description || r.asked || null }),
+    col('area', W(30), (r) => <span className="axp-shipped__clip" title={r.area}>{r.area}</span>, { sub: (r) => L.TYPE_LABEL[r.type as L.FeatureType] ?? null }),
+    col('description', W(56), (r) => <span className="axp-shipped__clip" title={r.description}>{r.description || '—'}</span>),
+    col('status', W(24), (r) => <ShipBadge status={r.status} />),
+    col('build', W(36), (r) => (r.build ? <a className="axp-shipped__clip" title={r.build} href={`?shipped=${encodeURIComponent(r.build)}`} onClick={(e) => { e.preventDefault(); focusShipped(r.build); }}>{r.build}</a> : '—'), { sub: (r) => (r.builds.length > 1 ? `+${r.builds.length - 1} more` : null), cellCtx: (r) => (r.build ? { target: 'axf-build-item', payload: r.build } : cell('build')(r)) }),
+    col('pr', W(16), (r) => (r.pr ? <a href={r.prUrl} target="_blank" rel="noreferrer">#{r.pr}</a> : '—'), { sub: (r) => (r.prs.length > 1 ? `+${r.prs.length - 1}` : null) }),
+    col('commit', W(20), (r) => (r.commit ? <code>{r.commit.slice(0, 9)}</code> : '—')),
+    col('shipped', W(28), (r) => fmtDay(r.shipped, r.shippedGuessed), { sub: (r) => (r.shipped ? fmtHm(r.shipped) : null) }),
+    col('onMain', W(18), (r) => <YesNo v={r.onMain} yes="Yes" no="No" />),
+    col('deployed', W(20), (r) => <YesNo v={r.deployed} yes="Yes" no="No" />, { sub: (r) => (r.deployed ? Object.keys(r.liveAt).join(', ') : null) }),
+    col('reach', W(26), (r) => (r.reach.length ? <span className="axp-shipped__reach">{r.reach.map((x) => <span key={x} title={T.REACH_LABEL[x]} aria-label={T.REACH_LABEL[x]}><Icon name={REACH_ICON[x]} /></span>)}</span> : <span className="fx-muted">UI only</span>)),
+    col('settings', W(40), (r) => (r.settings ? <code className="axp-shipped__clip">{r.settings}</code> : '—')),
+    col('help', W(14), (r) => (r.help ? <a href={r.help} target="_blank" rel="noreferrer">Help</a> : '—')),
+    col('version', W(14), (r) => r.version),
+    col('asked', W(56), (r) => (r.asked ? <span className="axp-shipped__clip" title={r.asked}>“{r.asked}”</span> : '—')),
+    col('tests', W(16), (r) => (r.tests.total ? <Chip tone={r.tests.pass === r.tests.total ? 'success' : 'warning'}>{r.tests.pass}/{r.tests.total}</Chip> : '—')),
   ];
   const single = groups.length < 2 || view.by === 'none';
   const gridGroups: GridGroup<T.Row>[] = groups.map((g) => ({
