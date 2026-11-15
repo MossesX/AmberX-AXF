@@ -11,8 +11,8 @@
  *   axf data get <key> | list <ns> [--prefix p]   read one key / list a namespace
  *   --json on every command
  *
- * The same actions: REST /api/plugins/data-store/{state,backup,verify,mode,drift}, the Data store plugin commands (MCP),
- * Settings → Plugins → Data store, and voice (POST /api/plugins/data-store/voice).
+ * The console's Data store settings screen, its REST routes, plugin commands (MCP) and voice actions run the same
+ * calls (they are listed in that plugin's README / help).
  */
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';

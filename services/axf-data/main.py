@@ -96,7 +96,7 @@ def create_app(data_dir: Path | str = DATA_DIR, store: Store | None = None) -> F
     @app.post('/v1/_meta/backup')
     async def backup_now(req: Request):
         p = who(req)
-        p.need('write', '_meta', 'backup')
+        p.need('put', '_meta', 'backup')
         body = await _json(req)
         return _backup_start('verify' if body.get('verify') else 'run', p.sub, st.dir)
 
