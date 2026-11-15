@@ -43,6 +43,7 @@ export function sameManifest(a: unknown, b: unknown): { equal: boolean; diffs: A
 export function backoffMs(attempt: number, rnd?: () => number, retry?: typeof RETRY): number;
 export function registry(): Record<string, unknown>;
 export function pluginKey(folder: string, rel: string): string;
+export function kindOfFile(rel: string): Kind;
 
 export interface Backend {
   name: string;

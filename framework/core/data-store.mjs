@@ -36,15 +36,15 @@ export const NAMESPACES = Object.freeze({
   builds: { label: 'Builds store, journal and history', kinds: ['record', 'journal', 'blob'], today: '_claude/builds' },
   settings: { label: 'Settings documents', kinds: ['record'], today: '/projects/_shared/_data/settings' },
   planner: { label: 'Planner items', kinds: ['record', 'journal'], today: '/projects/amberx-axf/_data/plan-studio' },
-  'ui-review': { label: 'UI reviews', kinds: ['record', 'blob'], today: '.axf-console/plugins/ui-review' },
+  'ui-review': { label: 'UI reviews', kinds: ['record', 'blob'], pluginFolder: 'ui-review', today: '.axf-console/plugins/ui-review' },
   plugins: { label: 'Plugin data folders', kinds: ['record', 'blob', 'journal'], open: true, today: '.axf-console/plugins/<folder>' },
   changes: { label: 'Codebase changes log', kinds: ['record'], today: '/projects/amberx-axf/_data/changes' },
-  sessions: { label: 'Session archives', kinds: ['record', 'blob'], today: '/projects/amberx-axf/_data/sessions' },
-  console: { label: 'Console hub data', kinds: ['record', 'journal'], today: '/projects/amberx-axf/_data/<folder>' },
+  sessions: { label: 'Session archives', kinds: ['record', 'blob', 'journal'], today: '/projects/amberx-axf/_data/sessions' },
+  console: { label: 'Console hub data', kinds: ['record', 'journal', 'blob'], today: '/projects/amberx-axf/_data/<folder>' },
   _meta: { label: 'Store state', kinds: ['record', 'journal'], internal: true, today: '' },
 });
 export const LIMITS = Object.freeze({
-  recordBytes: 1048576, blobBytes: 268435456, entryBytes: 262144, appendBytes: 4194304, keyChars: 512, segmentChars: 80,
+  recordBytes: 33554432, blobBytes: 268435456, entryBytes: 262144, appendBytes: 4194304, keyChars: 512, segmentChars: 80,
   listPage: 1000, journalPage: 5000, feedDays: 30, tombstoneDays: 30, watchPerToken: 32, tokenTtlSeconds: 86400,
 });
 /** code → HTTP status and what a client does about it. */
@@ -58,7 +58,7 @@ export const ERRORS = Object.freeze({
 export const RETRY = Object.freeze({ baseMs: 250, factor: 2, tries: 5, maxMs: 8000, conflictTries: 5 });
 export const TOKEN = Object.freeze({ alg: 'EdDSA', typ: 'axf-data+jwt', iss: 'axhub', aud: 'axf-data', keys: '/.well-known/axf-keys.json', subPrefix: 'svc:' });
 export const PATTERNS = Object.freeze({
-  segment: '^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$',
+  segment: '^[A-Za-z0-9_][A-Za-z0-9._-]{0,79}$',
   pluginFolder: '^[a-z0-9][a-z0-9-]*$',
   etag: '^[0-9]+-[0-9a-f]{16}$',
   by: '^svc:(console|orchestrator|axhub|cli|plugin:[a-z0-9][a-z0-9-]*)(/.+)?$',
@@ -517,9 +517,19 @@ export function createDataStore(o = {}) {
   return api;
 }
 
-/** The key a plugin's data file maps to: plugin-lifecycle@1 dataDir `.axf-console/plugins/<folder>/<rel>` → `plugins/<folder>/<rel>`. */
+/**
+ * The key a plugin's data file maps to: plugin-lifecycle@1 dataDir `.axf-console/plugins/<folder>/<rel>` →
+ * `plugins/<folder>/<rel>`, unless a registry namespace names that folder as its own (`ui-review`).
+ */
 export function pluginKey(folder, rel) {
   if (!FOLDER.test(String(folder || ''))) fail('invalid_key', `bad plugin folder "${folder}"`);
   const p = String(rel || '').replace(/\\/g, '/').replace(/^\/+/, '');
-  return parseKey(`plugins/${folder}/${p}`) && `plugins/${folder}/${p}`;
+  const own = Object.keys(NAMESPACES).find((ns) => NAMESPACES[ns].pluginFolder === folder);
+  const key = own ? `${own}/${p}` : `plugins/${folder}/${p}`;
+  return parseKey(key) && key;
+}
+/** The kind a migrated file becomes: `.json` → record, `.jsonl` / `.ndjson` → journal, anything else → blob. */
+export function kindOfFile(rel) {
+  const s = String(rel || '').toLowerCase();
+  return /\.json$/.test(s) ? 'record' : /\.(jsonl|ndjson)$/.test(s) ? 'journal' : 'blob';
 }

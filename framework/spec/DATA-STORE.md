@@ -29,7 +29,7 @@ data.
 |---|---|
 | **namespace** | one area of data with its own grants, limits and migration manifest (`notes`, `builds`, …) |
 | **key** | `<namespace>/<path>`; `path` is `/`-separated segments of `[A-Za-z0-9._-]{1,80}`, no `.`/`..` segments, ≤ 512 chars |
-| **record** | one JSON document (object or array) ≤ 1 MiB. The unit of optimistic writes |
+| **record** | one JSON document (object or array) ≤ 32 MiB (the live builds store is 9 MB and must stay one record). The unit of optimistic writes |
 | **blob** | bytes with a content type (screenshots, SQLite files, tar archives) ≤ 256 MiB. Same rev/etag rules as a record |
 | **journal** | an append-only stream of JSON entries. Entries get a sequence number; nothing is rewritten or removed |
 | **rev** | whole number, 1 on create, +1 on every accepted write of that key; a delete bumps it and leaves a tombstone |
@@ -50,8 +50,8 @@ plugin namespaces are open under one prefix so a new plugin needs no registry ch
 | `ui-review` | ui-review-item@1 `items.json`, `kinds.json`, screenshots → `ui-review/items.json`, `ui-review/kinds.json`, `ui-review/shots/<file>` | record, blob |
 | `plugins/<folder>` | plugin-lifecycle@1 `lifecycle.dataDir` (`.axf-console/plugins/<folder>/**`) → `plugins/<folder>/<same path>`; a SQLite file is one blob | record, blob, journal |
 | `changes` | the codebase changes log `/projects/amberx-axf/_data/changes/<yyyy>/<mm>/<id>.json` → `changes/<yyyy>/<mm>/<id>.json` | record |
-| `sessions` | session@1 archives `/projects/amberx-axf/_data/sessions/**` and the claude.ai drop folder → `sessions/<same path>` | record, blob |
-| `console` | the rest of the console's own hub data: `home-cards`, `agents`, `agent-slots`, `agent-swarm`, `listeners`, `token-log`, `tracker.json`, `companion`, `walkthrough`, `amberx-notes` tables → `console/<folder>/<same path>` | record, journal |
+| `sessions` | session@1 archives `/projects/amberx-axf/_data/sessions/**` and the claude.ai drop folder → `sessions/<same path>` | record, blob, journal |
+| `console` | the rest of the console's own hub data: `home-cards`, `agents`, `agent-slots`, `agent-swarm`, `listeners`, `token-log`, `tracker.json`, `companion`, `walkthrough`, `amberx-notes` tables → `console/<folder>/<same path>`; `_shared/_data/{handoff,notifications,dns}` → `console/shared/…`; `state.json` and the deploy log from the console's own volume | record, journal, blob |
 | `_meta` | the store's own state: `_meta/mode` (data-store-mode@1 per namespace), `_meta/manifests/<id>`, `_meta/tokens` (issued token ids, never the tokens) | record |
 
 A namespace's `kinds` says which kinds a key may be; a journal key cannot later become a record. `plugins/<folder>`
@@ -172,7 +172,7 @@ on axf-data; a revoked `jti` answers `unauthorized`.
 
 | What | Limit |
 |---|---|
-| record body | 1 MiB |
+| record body | 32 MiB (over 1 MiB is flagged `large` in the migration report; the builds store and orchestrator.json are the known ones) |
 | blob body | 256 MiB |
 | journal entry | 256 KiB; one append ≤ 4 MiB |
 | key | 512 chars, segment 80 chars |
@@ -210,8 +210,51 @@ await store.manifest('plugins/ui-review'); await store.snapshot(['builds', 'note
 
 ## Migration
 
-Design in Phase 1 step s3 (this section is written there): every data source the console writes today, its namespace,
-the per-namespace count + hash manifest check, and the rollback rule. Fixture: `framework/spec/fixtures/data-store-migration.json`.
+The map of every data source the console writes today is `framework/spec/fixtures/data-store-migration.json`
+(data-store-migration@1, checked by `check-data-store-migration.mjs`): 45 sources, each with its namespace, key
+template, kind, policy, writers and count check; plus the excluded paths and why. Sizes measured on Nov 15 2026.
+
+**Where the data is today** (four roots): `<projects>` = axHub's volume mounted at `/projects` (`<project>/_data`,
+`_shared/_data`, `_shared/_claude`), `<repo>` = the console's checkout (`_claude/builds`), `<plugins>` =
+`.axf-console/plugins/<folder>` (plugin-lifecycle@1 dataDir), `<data>` = the console's own volume (`state.json`,
+`deploys/log.jsonl`). The SQLite ledgers (`shipped-features/ledger.sqlite`, `chat-viewer/chats.db`) live in plugin data
+folders.
+
+**Policies**: `copy` (key for key), `journal` (line for line), `blob-sqlite` (the file as one blob, plus per-table row
+counts), `rebuild` (not copied: the app catalog's 630 MB of CI bundles and the plugin catalog come back from GitHub after
+the cutover), `skip` (git-tracked projections, secrets, locks). A `.json` file becomes a record, `.jsonl` / `.ndjson` a
+journal, anything else a blob (`kindOfFile`). The `ui-review` plugin folder is its own namespace; every other plugin folder
+is `plugins/<folder>/…` (`pluginKey`).
+
+**Order**: `settings, changes, notes, planner, ui-review, sessions, console, plugins, builds`: small and rarely written
+first, builds last because the orchestrator writes it every minute and its journal is the biggest source (654 MB).
+
+### Count + hash manifest
+
+One namespace moves at a time. Before the copy the migration computes **M0** over the source with the same mapping the
+copy uses; after the copy it asks the target for **M1** (`GET /v1/<ns>:manifest`). Both are `data-manifest@1` namespace
+blocks: `count` live keys, `bytes`, `hash` = SHA-256 over sorted `"<path>\t<etag>\n"` lines, and `journals` with
+`entries` per journal. A fresh target has `rev` 1 on every key, so M0 is computed with rev 1: a record's etag is
+`etagOf(1, canonical(parsed JSON))` (whitespace and key order in the source file never matter), a blob's
+`etagOf(1, bytes)`, a journal's `journalEtag(parsed lines)`. `sameManifest(M0, M1).equal` gates the namespace; the
+fixture's `example` block shows a faithful copy (reformatted JSON still equal), a lost file (count and hash differ) and an
+extra journal entry (same count, hash differs). `blob-sqlite` sources add a row count per listed table, read on both sides.
+
+A `.json` that does not parse stops the namespace (listed `unparseable`) unless the namespace holds blobs, in which case it
+moves as a blob and is listed `asBlob`. Records over 1 MiB are listed `large` (the builds store and `orchestrator.json`
+today) and move as one record under the 32 MiB limit. Both manifests and the report are written to `_meta/manifests`
+and `<data>/migration/<ns>.json`.
+
+### Rollback rule
+
+- **During the copy** the namespace is in `local` mode and nothing reads the target: a mismatch purges the target prefix,
+  keeps the report and leaves the mode at `local`.
+- **In shadow** local is still the read side: stop mirroring (mode back to `local`), purge the target prefix, keep the
+  drift log for the report.
+- **After cutover** local is the read-only backup: replay axf-data's change feed since the cutover cursor onto it, check
+  the manifests are equal, then flip the mode to `local`. If the feed no longer reaches back (`cursor_expired`, > 30
+  days) restore the cutover snapshot tar plus the latest snapshot and list every key changed since as the gap.
+- **Never** truncate a journal on either side: a rollback appends what the other side has.
 
 ## Modes
 

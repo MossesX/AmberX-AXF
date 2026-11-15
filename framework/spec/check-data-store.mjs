@@ -54,7 +54,8 @@ await t('keys, etags, manifests, backoff', () => {
   };
   pure.backoff = { fixedRnd: [0, 1, 2, 3, 4, 5, 9].map((i) => D.backoffMs(i, () => 0.5)), low: D.backoffMs(0, () => 0), high: D.backoffMs(0, () => 1) };
   pure.error = D.errorFrame('conflict', 'builds/store.json is at rev 4', { ns: 'builds', path: 'store.json', rev: 4, etag: '4-0123456789abcdef', retryAfterMs: undefined });
-  pure.pluginKey = { ok: D.pluginKey('ui-review', '/items.json'), nested: D.pluginKey('agent-swarm', 'chats\\2026\\a.json'), bad: (() => { try { return D.pluginKey('Bad', 'x'); } catch (e) { return { error: e.code }; } })() };
+  pure.pluginKey = { own: D.pluginKey('ui-review', '/items.json'), ok: D.pluginKey('shipped-features', '/ledger.sqlite'), nested: D.pluginKey('agent-swarm', 'chats\\2026\\a.json'), bad: (() => { try { return D.pluginKey('Bad', 'x'); } catch (e) { return { error: e.code }; } })() };
+  pure.kindOfFile = Object.fromEntries(['store.json', 'journal/2026-11.jsonl', 'log.ndjson', 'shot.png', 'ledger.sqlite', 'note.md', 'README'].map((f) => [f, D.kindOfFile(f)]));
 });
 
 // ── 3. the client on the memory and the file backend ─────────────────────────────────────────────────────────────────
@@ -92,6 +93,7 @@ async function scenario(backend) {
   step('getBlob', { ...blob, data: new TextDecoder().decode(blob.data) });
   step('blobOverRecord', await codeOf(s.put('builds/store.json', new Uint8Array([1]), { force: true })));
   step('tooLarge', await codeOf(s.put('settings/big.json', { s: 'x'.repeat(D.LIMITS.recordBytes) }, { create: true })));
+  step('tooLargeEntry', await codeOf(s.append('builds/journal/big', [{ s: 'x'.repeat(D.LIMITS.entryBytes) }])));
   // journals
   step('append', await s.append('builds/journal/2026-11', [{ rev: 1, action: 'add' }, { rev: 2, action: 'step' }]));
   step('appendIdem', await s.append('builds/journal/2026-11', [{ rev: 3 }], { idempotencyKey: 'k1' }));

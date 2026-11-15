@@ -160,11 +160,21 @@
    "etag": "4-0123456789abcdef"
   },
   "pluginKey": {
-   "ok": "plugins/ui-review/items.json",
+   "own": "ui-review/items.json",
+   "ok": "plugins/shipped-features/ledger.sqlite",
    "nested": "plugins/agent-swarm/chats/2026/a.json",
    "bad": {
     "error": "invalid_key"
    }
+  },
+  "kindOfFile": {
+   "store.json": "record",
+   "journal/2026-11.jsonl": "journal",
+   "log.ndjson": "journal",
+   "shot.png": "blob",
+   "ledger.sqlite": "blob",
+   "note.md": "blob",
+   "README": "blob"
   }
  },
  "client": {
@@ -387,6 +397,10 @@
    },
    {
     "name": "tooLarge",
+    "v": "too_large"
+   },
+   {
+    "name": "tooLargeEntry",
     "v": "too_large"
    },
    {
@@ -753,8 +767,8 @@
     "name": "pluginPut",
     "v": {
      "$axf": "data-record@1",
-     "ns": "plugins",
-     "path": "ui-review/items.json",
+     "ns": "ui-review",
+     "path": "items.json",
      "kind": "record",
      "rev": 1,
      "etag": "1-eef46741adfc3a9f",
@@ -771,30 +785,14 @@
      "$axf": "data-list@1",
      "ns": "plugins",
      "prefix": "ui-review/",
-     "items": [
-      {
-       "$axf": "data-record@1",
-       "ns": "plugins",
-       "path": "ui-review/items.json",
-       "kind": "record",
-       "rev": 1,
-       "etag": "1-eef46741adfc3a9f",
-       "at": "2026-11-15T05:00:14.000Z",
-       "by": "svc:orchestrator",
-       "size": 12,
-       "contentType": "application/json",
-       "deleted": false
-      }
-     ],
+     "items": [],
      "next": "",
-     "total": 1
+     "total": 0
     }
    },
    {
     "name": "pluginListAll",
-    "v": [
-     "ui-review/items.json"
-    ]
+    "v": []
    },
    {
     "name": "changes",
@@ -973,8 +971,8 @@
       {
        "$axf": "data-change@1",
        "cursor": 15,
-       "ns": "plugins",
-       "path": "ui-review/items.json",
+       "ns": "ui-review",
+       "path": "items.json",
        "kind": "record",
        "op": "put",
        "rev": 1,
@@ -990,8 +988,7 @@
     "name": "changesNs",
     "v": [
      "7:put:notes/handoffs/a.md",
-     "8:put:notes/handoffs/a.md",
-     "15:put:plugins/ui-review/items.json"
+     "8:put:notes/handoffs/a.md"
     ]
    },
    {
@@ -1031,9 +1028,9 @@
    {
     "name": "manifestPlugin",
     "v": {
-     "count": 1,
-     "bytes": 12,
-     "hash": "eecf5f7664d773209f7d7d8f8976f3b0456eb72c0d97afc7a1b981dd93cdcbf7"
+     "count": 0,
+     "bytes": 0,
+     "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
    },
    {
@@ -1048,7 +1045,7 @@
     "name": "snapshot",
     "v": {
      "$axf": "data-manifest@1",
-     "id": "m-20261115050016-c624f504",
+     "id": "m-20261115050016-df55b4b5",
      "at": "2026-11-15T05:00:16.000Z",
      "by": "svc:orchestrator",
      "mode": "local",
@@ -1070,9 +1067,9 @@
        "hash": "2eee47bdf5e791e5a7650f58a8fe5186d6c3fa2bc517fb6f75fda0267927e6fd"
       },
       "plugins/ui-review": {
-       "count": 1,
-       "bytes": 12,
-       "hash": "eecf5f7664d773209f7d7d8f8976f3b0456eb72c0d97afc7a1b981dd93cdcbf7"
+       "count": 0,
+       "bytes": 0,
+       "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       }
      }
     }
