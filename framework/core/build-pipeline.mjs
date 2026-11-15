@@ -63,7 +63,17 @@ const NAME_RE = /^[a-z0-9][a-z0-9-]{0,31}$/;
 export const accountName = (v) => (NAME_RE.test(str(v, 40)) ? str(v, 40) : '');
 
 export function emptyPipeline() {
-  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '', planned: null, tried: [], pickedAt: '', heldAt: '', heldBy: '', heldWhy: '', parallel: null };
+  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '', planned: null, tried: [], pickedAt: '', heldAt: '', heldBy: '', heldWhy: '', parallel: null, parallelParts: 0 };
+}
+
+/**
+ * A build's own parallel split ask, set when it is filed (Nov 13 2026: "split into N parallel"): 0 = the Split
+ * settings decide, 1 = one build (never split in parallel), 2-12 = split into that many parallel builds.
+ */
+export const PARALLEL_PARTS_MAX = 12;
+export function normParallelParts(v) {
+  const n = typeof v === 'string' && v.trim() !== '' ? Number(v) : v;
+  return Number.isInteger(n) && n >= 1 ? Math.min(n, PARALLEL_PARTS_MAX) : 0;
 }
 
 const buildRef = (v) => str(v, 80).trim();
@@ -92,7 +102,7 @@ export function normPipeline(p) {
     planned: pl ? { model: str(pl.model, 20), account: accountName(pl.account), kind: pl.kind === 'api' ? 'api' : pl.kind === 'subscription' ? 'subscription' : '', at: iso(pl.at), why: str(pl.why, 300) } : null,
     tried: (Array.isArray(p.tried) ? p.tried : []).map(accountName).filter(Boolean).slice(0, 12), pickedAt: iso(p.pickedAt),
     heldAt: iso(p.heldAt), heldBy: iso(p.heldAt) ? str(p.heldBy, 80) : '', heldWhy: iso(p.heldAt) ? str(p.heldWhy, 300) : '',
-    parallel: normParallel(p.parallel),
+    parallel: normParallel(p.parallel), parallelParts: normParallelParts(p.parallelParts),
   };
   const empty = emptyPipeline();
   return JSON.stringify(out) === JSON.stringify(empty) ? null : out;

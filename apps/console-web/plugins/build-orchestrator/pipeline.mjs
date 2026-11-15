@@ -34,10 +34,12 @@
  *   … settings [--json] | set k=v…  pipeline settings (pipeline-settings@1; apiOverflow=true|false is the overflow rule;
  *                                    splitProvider=claude|rules|off, parallelSplit=auto|ask|off, parallelMax=2..12,
  *                                    parallelContract / parallelIntegrate=true|false are the Split section)
- *   … request --title T [--detail D | --detail-file F] [--said S] [--priority P0-P3] [--route api|subscription] [--queue] [--by who]
+ *   … request --title T [--detail D | --detail-file F] [--said S] [--priority P0-P3] [--route api|subscription] [--parallel N|off] [--queue] [--by who]
  *                                  file a build with the orchestrator (the id is assigned here) and, with --queue, put it in the
  *                                  Queue. Every former launch path (Build manager Start, Fix with Claude, feature assist) calls this.
- *   … show <id>                    one build as the table shows it (status, steps, pipeline record)
+ *   … show <id>                    one build as the table shows it (status, steps, pipeline record, parallel family)
+ *   … parallel <id> <2-12|off|default> [--no-resplit]   the build's own parallel split: split into N parallel builds, one
+ *                                  build (off), or the Split settings (default); a build not started is split again
  *   … aliases [--apply] [--all]    builds whose id is not a valid build name (made before build-id@1) and the short alias each
  *                                  gets; --apply saves them (the tick does this for builds that may still run or land; --all
  *                                  takes in finished, archived and deleted ones). Every command takes the alias for the id.
@@ -356,12 +358,14 @@ export function askSplitter(prompt, settings, env = process.env) {
 
 /** Split one build: Claude first, rules when Claude can't answer; writes the steps and the split record. */
 export function splitBuild(id, { provider = '', by = 'orchestrator' } = {}) {
-  const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
+  const store = loadStore(); const rules = rulesOf(store);
   const b = storeCore.findBuild(store, id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  // the build's own parallel ask (filed with "split into N parallel") beats the Split settings
+  const eff = P.splitSettingsFor(b, loadSettings()); const settings = eff.settings;
   if (['built', 'complete', 'archived'].includes(b.status)) throw Object.assign(new Error(`${b.id} is ${b.status}: nothing to split`), { code: 2 });
   let steps = []; let used = 'rules'; let note = ''; let error = ''; let parsedParallel = null;
   if (provider !== 'rules') {
-    const a = askSplitter(P.splitPrompt(b, rules, settings), settings);
+    const a = askSplitter(P.splitPrompt(b, rules, settings, eff.exact), settings);
     if (!a.error) {
       const p = P.parseSplit(a.text, rules, settings);
       if (!p.error && p.steps.length) { steps = p.steps; used = 'claude'; parsedParallel = p.parallel; if (p.parallelError) logLine({ event: 'split-parallel-dropped', build: b.id, error: str(p.parallelError, 300) }); }
@@ -379,7 +383,7 @@ export function splitBuild(id, { provider = '', by = 'orchestrator' } = {}) {
     const ids = parsedParallel.parts.map((_, i) => { const id = uniqueBuildId(`${b.id.slice(0, 36)}-p${i + 1}`, taken); taken.add(id); return id; });
     const ps = P.parallelSteps(b, parsedParallel, settings, rules, ids);
     steps = ps.lead; parallel = ps.parallel; children = ps.children;
-    note = `Parallel split by Claude: ${children.length} parts (${ids.join(', ')}) run at the same time${settings.parallelContract ? ' once the shared contract step (s1) is done' : ''}${settings.parallelIntegrate ? '; the integration step then merges and tests them together' : ''}. ${settings.parallelSplit === 'auto' ? 'Parts queued by themselves (Parallel split: auto).' : 'Parts wait in Pending: queue them (Parallel split: ask).'}`;
+    note = `Parallel split by Claude${eff.exact ? ` (${eff.exact} asked for${eff.source === 'words' ? ' in the request' : ' when filed'})` : ''}: ${children.length} parts (${ids.join(', ')}) run at the same time${settings.parallelContract ? ' once the shared contract step (s1) is done' : ''}${settings.parallelIntegrate ? '; the integration step then merges and tests them together' : ''}. ${settings.parallelSplit === 'auto' ? 'Parts queued by themselves (Parallel split: auto).' : 'Parts wait in Pending: queue them (Parallel split: ask).'}`;
   }
   const done = new Map(b.steps.filter((s) => s.done).map((s) => [s.text.trim().toLowerCase(), s]));
   let out = null;
@@ -810,17 +814,34 @@ afterTick(({ env }) => {
  * `queue` it goes straight to the Queue. Returns the build. This replaces every direct launch (Build manager Start,
  * Fix with Claude, feature assist): they all end here and the dispatcher starts the build.
  */
-export function request({ title, detail = '', said = '', priority = '', route = '', queue: toQueue = false, by = process.env.AXF_ACTOR || 'console', source = '' } = {}) {
+export function request({ title, detail = '', said = '', priority = '', route = '', parallel = 0, queue: toQueue = false, by = process.env.AXF_ACTOR || 'console', source = '' } = {}) {
   const t = str(title, 300).trim(); if (!t) throw Object.assign(new Error('a build needs a title'), { code: 2 });
   if (route && !BP.ROUTES.includes(route)) throw Object.assign(new Error(`route is api, subscription or auto, not ${route}`), { code: 2 });
   // build-id@1: the id names the folder, the branch claude/<id> and the tmux session, so it stays within 40 characters;
   // the title is the display name, kept whole
   const id = uniqueBuildId(t, new Set(loadStore().builds.flatMap(namesOf)));
   orchAct({ action: 'add', id, title: t, detail: str(detail, 8000), ...(said ? { said: str(said, 6000) } : {}), source: str(source || by, 60) }, by);
-  const p = normPriority(priority);
-  if (p || route) withStore((s) => { const rec = storeCore.findBuild(s, id); if (rec) { if (p) rec.priority = p; if (route) rec.pipeline = BP.normPipeline({ ...(rec.pipeline ?? {}), route }) ?? undefined; rec.updatedAt = nowIso(); } return s; }, { by, action: 'pipeline:request', note: id });
+  const p = normPriority(priority); const parts = BP.normParallelParts(parallel);
+  if (p || route || parts) withStore((s) => { const rec = storeCore.findBuild(s, id); if (rec) { if (p) rec.priority = p; if (route || parts) rec.pipeline = BP.normPipeline({ ...(rec.pipeline ?? {}), ...(route ? { route } : {}), ...(parts ? { parallelParts: parts } : {}) }) ?? undefined; rec.updatedAt = nowIso(); } return s; }, { by, action: 'pipeline:request', note: id });
   logLine({ event: 'requested', build: id, by, queue: !!toQueue, route });
   return toQueue ? queue(id, { by }) : storeCore.findBuild(loadStore(), id);
+}
+
+/**
+ * The per-build parallel split ask (Nov 13 2026: "split into N parallel"): 2-12 = split into that many parallel builds,
+ * 1 or 'off' = one build, 0 or 'default' = the Split settings decide. A build with no step done yet that is not running
+ * is split again on the next tick; a lead or part of a parallel split keeps its parts.
+ */
+export function setParallel(id, parts, { by = process.env.AXF_ACTOR || 'console', resplit = true } = {}) {
+  const v = parts === 'off' || parts === 'one' ? 1 : parts === 'default' || parts === 'auto' || parts === '' ? 0 : Number(parts);
+  if (!Number.isInteger(v) || v < 0 || v > BP.PARALLEL_PARTS_MAX) throw Object.assign(new Error(`parallel is 2-${BP.PARALLEL_PARTS_MAX}, off (one build) or default, not ${parts}`), { code: 2 });
+  const b0 = storeCore.findBuild(loadStore(), id); if (!b0) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  if (b0.pipeline?.parallel) throw Object.assign(new Error(`${b0.id} is already ${b0.pipeline.parallel.role === 'lead' ? 'split into parallel parts' : 'a part of a parallel split'}`), { code: 2 });
+  const fresh = resplit && !['running', 'waiting', 'built', 'complete', 'archived'].includes(b0.status) && !(b0.steps ?? []).some((x) => x.done);
+  const what = v === 0 ? 'the Split settings decide' : v === 1 ? 'one build, no parallel split' : `split into ${v} parallel builds`;
+  const b = setPipeline(b0.id, { parallelParts: v, ...(fresh ? { splitRequested: nowIso() } : {}) }, { note: `Parallel: ${what} (by ${by})${fresh ? '; split again on the next tick' : ''}.`, by, action: 'pipeline:parallel' });
+  logLine({ event: 'parallel-set', build: b.id, parts: v, by, resplit: fresh });
+  return { id: b.id, parts: v, resplit: fresh, note: what };
 }
 
 /** The per-build override: api (API-key accounts only), subscription (never API), auto ('' = the default rules). */
@@ -965,13 +986,14 @@ async function main(argv) {
     const one = r.done.length === 1 ? { id: r.done[0].id, status: r.done[0].status } : {};
     return out({ ok: true, ...one, ...r }, [...r.done.map((d) => `${d.id} → ${BP.TAB_LABEL[d.tab] || d.status}${cmd === 'hold' ? ' (on hold)' : ''}`), ...r.refused.map((x) => `refused ${x.id}: ${x.error}`)].join('\n'));
   }
+  if (cmd === 'parallel') { const r = setParallel(rest[0], rest[1] ?? '', { by, resplit: !has('no-resplit') }); return out({ ok: true, ...r }, `${r.id}: ${r.note}${r.resplit ? ' (split again on the next tick)' : ''}`); }
   if (cmd === 'split') {
     if (has('request')) { const b = setPipeline(rest[0], { splitRequested: nowIso() }, { note: `Split asked for by ${by}.`, by, action: 'pipeline:split-request' }); return out({ ok: true, id: b.id, requested: b.pipeline.splitRequested }, `${b.id}: split on the next tick`); }
     const r = splitBuild(rest[0], { provider: flag('provider'), by }); return out({ ok: true, ...r }, `${r.id}: ${r.note}`);
   }
   if (cmd === 'request') {
     const df = flag('detail-file'); const detail = df ? readFileSync(df, 'utf8') : flag('detail');
-    const b = request({ title: flag('title'), detail, said: flag('said'), priority: flag('priority'), route: flag('route') === 'auto' ? '' : flag('route'), queue: has('queue'), by, source: flag('source') });
+    const b = request({ title: flag('title'), detail, said: flag('said'), priority: flag('priority'), route: flag('route') === 'auto' ? '' : flag('route'), parallel: flag('parallel') === 'off' ? 1 : flag('parallel'), queue: has('queue'), by, source: flag('source') });
     return out({ ok: true, id: b.id, status: b.status, build: { id: b.id, title: b.title, status: b.status } }, `${b.id} filed${b.status === 'queued' ? ' and queued: the dispatcher starts it' : ' in Pending'}`);
   }
   if (cmd === 'aliases') { const r = assignAliases({ apply: has('apply'), all: has('all'), by }); return out({ ok: true, applied: has('apply'), aliases: r }, r.map((x) => `${x.id} → ${x.alias}`).join('\n') || 'every build id is a valid build name'); }

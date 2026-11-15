@@ -199,6 +199,21 @@ t('parallelFamily: lead and parts linked both ways, combined progress over every
   // the lead missing from the list: the part still names it, the figures count what is there
   const orphan = OC.parallelFamily(p2, [p1, p2]); assert.equal(orphan.lead, 'app'); assert.equal(orphan.of, 2);
 });
+t('per-build parallel ask: own parts beat the words beat the settings; N parts even when the setting is off; 1 = one build; exact prompt', () => {
+  assert.equal(BP.normParallelParts(3), 3); assert.equal(BP.normParallelParts('4'), 4); assert.equal(BP.normParallelParts(40), 12); assert.equal(BP.normParallelParts(-1), 0); assert.equal(BP.normParallelParts('x'), 0);
+  assert.equal(BP.normPipeline({ parallelParts: 3 }).parallelParts, 3); assert.equal(BP.normPipeline({ parallelParts: 0 }), null);
+  assert.equal(P.parallelAsk({ title: 'Console app, split into 3 parallel builds' }), 3); assert.equal(P.parallelAsk({ origin: { said: 'do it as two parallel parts' } }), 2); assert.equal(P.parallelAsk({ detail: 'parallel x4' }), 4); assert.equal(P.parallelAsk({ title: 'parallel rendering' }), 0);
+  const off = P.normSettings({ parallelSplit: 'off', parallelMax: 4 });
+  const own = P.splitSettingsFor({ title: 'x, 2 parallel', pipeline: { parallelParts: 5 } }, off);
+  assert.equal(own.exact, 5); assert.equal(own.source, 'build'); assert.equal(own.settings.parallelSplit, 'ask'); assert.equal(own.settings.parallelMax, 5);
+  const words = P.splitSettingsFor({ title: 'x, split into 3 parallel' }, P.normSettings({ parallelSplit: 'auto' }));
+  assert.equal(words.exact, 3); assert.equal(words.source, 'words'); assert.equal(words.settings.parallelSplit, 'auto');
+  const one = P.splitSettingsFor({ title: 'x, 3 parallel', pipeline: { parallelParts: 1 } }, P.normSettings({ parallelSplit: 'auto' }));
+  assert.equal(one.settings.parallelSplit, 'off'); assert.equal(one.exact, 0);
+  assert.equal(P.splitSettingsFor({ title: 'plain' }, off).source, 'settings');
+  assert.match(P.splitPrompt({ id: 'x', title: 'x' }, undefined, own.settings, 5), /exactly 5 independent parts/);
+  assert.doesNotMatch(P.splitPrompt({ id: 'x', title: 'x' }, undefined, off, 0), /parallel/i);
+});
 t('parallelWait + plan: a part waits for the lead\'s contract step; the lead\'s integration step waits for every part; endOutcome requeues the lead at the barrier', () => {
   const lead = build('app', 'queued', [{ ...step('s1', 'Fable'), estimate: '10 min', phase: 'Contract' }, { ...step('s2', 'Opus'), estimate: '10 min', phase: 'Integration' }], { pipeline: BP.normPipeline({ queuedAt: now, parallel: { role: 'lead', parts: ['app-p1', 'app-p2'], contractStep: 's1', integrationStep: 's2' } }) });
   const p1 = build('app-p1', 'queued', [{ ...step('s1', 'Opus'), estimate: '10 min' }], { pipeline: BP.normPipeline({ queuedAt: now, parallel: { role: 'part', lead: 'app', part: 1, of: 2 } }) });
@@ -671,6 +686,14 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.match(pipe('show', 'omega-p2').stdout, /part 2 of omega · Parallel: 2 parts · 0\/2 finished/);
     assert.match(pipe('status').stdout, /Split: claude · parallel ask \(up to 2 parts, contract first, integration last\)/);
     json(pipe('set', 'parallelMax=4', '--json'));
+    // the per-build ask: filed with --parallel 3, changed with `parallel`, refused on a lead
+    const filed = json(pipe('request', '--title', 'Sigma app', '--parallel', '3', '--json'));
+    assert.equal(json(pipe('show', filed.id, '--json')).build.pipeline.parallelParts, 3);
+    const ch = json(pipe('parallel', filed.id, 'off', '--json')); assert.equal(ch.parts, 1); assert.equal(ch.resplit, true);
+    assert.equal(json(pipe('show', filed.id, '--json')).build.pipeline.parallelParts, 1);
+    assert.equal(json(pipe('parallel', filed.id, 'default', '--json')).parts, 0);
+    assert.notEqual(pipe('parallel', 'omega', '3', '--expect-fail').status, 0, 'a lead keeps its parts');
+    assert.notEqual(pipe('parallel', filed.id, '40', '--expect-fail').status, 0, 'out of range');
   });
 }
 

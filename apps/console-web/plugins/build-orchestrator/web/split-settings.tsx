@@ -101,6 +101,7 @@ export function SplitSettings({ api, open, rules, saveRules }: { api: Api; open?
           </div>
           <Switch label="Shared contract step first" text="The lead writes and pushes the names, schemas, routes and interfaces first; the dispatcher starts the parts once that step is done" checked={s.parallelContract} disabled={busy || off} onChange={(on) => save({ parallelContract: on }, `Contract step ${on ? 'on' : 'off'}`)} />
           <Switch label="Integration step last" text="The lead's last step merges every part's branch, runs the tests together and fixes what clashes; the dispatcher holds it until every part is finished" checked={s.parallelIntegrate} disabled={busy || off} onChange={(on) => save({ parallelIntegrate: on }, `Integration step ${on ? 'on' : 'off'}`)} />
+          <p className="fx-small fx-muted">Per build: “Parallel builds” when you add one, <span className="fx-mono">pipeline.mjs parallel &lt;id&gt; 3</span> (or <span className="fx-mono">off</span>, <span className="fx-mono">default</span>), or “split into 3 parallel” in the request itself. A build's own ask beats these settings: asked for N parts, it is cut into N even when Parallel split is off (the parts then wait in Pending).</p>
           <p className="fx-small fx-muted">Same settings anywhere: <span className="fx-mono">pipeline.mjs set parallelSplit=auto parallelMax=4</span>, REST / MCP <span className="fx-mono">pipeline-settings-set</span>, voice "set parallel split to auto".</p>
         </div>
       )}

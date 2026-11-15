@@ -33,6 +33,7 @@
  *              healthOf() reads one tiny call's answer; a fresh health record (own.health) decides usable / Fable,
  *              so the dispatcher never tests an account at launch time. healthDue() says when the next sweep runs.
  */
+import { normParallelParts as BP_normParallelParts } from '../../../../framework/core/build-pipeline.mjs';
 import { DEFAULT_MAX_RUNS, STATUS_AFTER, isHeld, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
@@ -381,12 +382,41 @@ export function endOutcome(b, { exit, account = '', session = '', now = new Date
 
 // ------------------------------------------------------------------ split
 
+/**
+ * "split into N parallel" in a build's own words (title, detail, what Brett said): N (2-12) or 0. Catches "split into 3
+ * parallel builds", "3 parallel parts", "in 4 parallel sessions", "parallel x3".
+ */
+export function parallelAsk(b) {
+  const text = [b?.title, b?.detail, b?.origin?.said].map((x) => str(x, 8000)).join('\n').toLowerCase();
+  const m = /\b(\d{1,2}|two|three|four|five|six|seven|eight)\s+parallel\b|\bparallel\s*(?:x|×)\s*(\d{1,2})\b/.exec(text);
+  if (!m) return 0;
+  const words = { two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8 };
+  const n = Number(m[2] ?? (words[m[1]] ?? m[1]));
+  return Number.isInteger(n) && n >= 2 ? Math.min(n, 12) : 0;
+}
+
+/**
+ * The Split settings one build is split with: its own ask (pipeline.parallelParts, set when filed) first, then
+ * "split into N parallel" in its words, then the settings. N parts asked for = a parallel split of exactly N even when
+ * the setting is off (off → ask: the parts wait in Pending); 1 = one build. `exact` = N parts asked for.
+ */
+export function splitSettingsFor(b, settings = normSettings()) {
+  const own = BP_normParallelParts(b?.pipeline?.parallelParts);
+  const said = own ? 0 : parallelAsk(b);
+  const n = own || said;
+  if (n === 1) return { settings: { ...settings, parallelSplit: 'off' }, exact: 0, source: 'build' };
+  if (n >= 2) return { settings: { ...settings, parallelSplit: settings.parallelSplit === 'off' ? 'ask' : settings.parallelSplit, parallelMax: n }, exact: n, source: own ? 'build' : 'words' };
+  return { settings, exact: 0, source: 'settings' };
+}
+
 /** The one-shot prompt the orchestrator sends to Claude to split a build. The answer must be JSON only. */
-export function splitPrompt(b, rules = { maxStepMinutes: STEP_MINUTES }, settings = normSettings()) {
+export function splitPrompt(b, rules = { maxStepMinutes: STEP_MINUTES }, settings = normSettings(), exact = 0) {
   const max = maxStep(rules);
   const said = str(b.origin?.said, 6000).trim();
   const addenda = list(b.origin?.addenda).map((a, i) => `Addendum ${i + 1}: ${str(a.said, 2000)}`).join('\n');
-  const parallel = settings.parallelSplit !== 'off' ? [
+  const parallel = exact >= 2 ? [
+    `Parallel split ASKED FOR on this build: cut it into exactly ${exact} independent parts that touch different files and are built at the same time in separate sessions, and answer a "parallel" object next to "steps": {"parallel":{"contract":"<one step: the shared contract or interface (names, schemas, routes, bridge names) written first and pushed, so the parts don't clash>","parts":[{"title":"<part>","steps":[<same step shape>]}],"integration":"<one step: merge every part's branch into the lead, test them together, fix clashes, report, PR>"}}, with ${exact} entries in "parts". Every part's steps follow the same rules; "steps" stays the whole plan as one build, in case the parts are not used.`,
+  ] : settings.parallelSplit !== 'off' ? [
     `Parallel split (on, up to ${settings.parallelMax} parts): when the work falls into 2 to ${settings.parallelMax} independent parts that touch different files and can be built at the same time in separate sessions, ALSO answer a "parallel" object next to "steps": {"parallel":{"contract":"<one step: the shared contract or interface (names, schemas, routes, bridge names) written first and pushed, so the parts don't clash>","parts":[{"title":"<part>","steps":[<same step shape>]}],"integration":"<one step: merge every part's branch into the lead, test them together, fix clashes, report, PR>"}}. Every part's steps follow the same rules. Leave "parallel" out when the work is one thread or the parts would edit the same files.`,
   ] : [];
   return [

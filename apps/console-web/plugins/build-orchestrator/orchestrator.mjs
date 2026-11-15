@@ -42,6 +42,7 @@ loadUpgradePolicy(); // Fable upgrades need my approval (owner-only Claude setti
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
 import { storeFile, withStore, loadStore } from '../../../../framework/cli/builds-store.mjs';
 import { absorbOrchestrator, projectOrchestrator } from '../../../../framework/plan/builds-store-core.mjs';
+import { normParallelParts, normPipeline } from '../../../../framework/core/build-pipeline.mjs';
 
 const legacy = () => process.env.AXF_ORCH_FILE || '';
 const profile = () => activeProfile().id;
@@ -83,6 +84,12 @@ export function act(change, by = process.env.AXF_ACTOR || 'orchestrator') {
   if (legacy()) { const r = core.apply(load(), change); save(r.state); return r; }
   let r;
   withStore((s) => { const p = change?.action === 'add' ? profile() : profileFor(s, change?.id); r = core.apply(projectOrchestrator(s, p), change); return absorbOrchestrator(s, p, r.state, { by }); }, { by, action: `orchestrator:${change?.action}`, note: change?.id ?? '' });
+  // filed with "split into N parallel" (Nov 13 2026): the build's own parallel ask, read when it is split
+  const parts = change?.action === 'add' && change.parallel !== undefined ? normParallelParts(change.parallel === 'off' ? 1 : change.parallel) : 0;
+  if (parts && r.build?.id) {
+    withStore((s) => { const rec = s.builds.find((x) => x.id === r.build.id); if (rec) rec.pipeline = normPipeline({ ...(rec.pipeline ?? {}), parallelParts: parts }) ?? undefined; return s; }, { by, action: 'orchestrator:parallel', note: r.build.id });
+    r.log.push(`${r.build.id}: ${parts === 1 ? 'one build, no parallel split' : `split into ${parts} parallel builds`}`);
+  }
   return r;
 }
 

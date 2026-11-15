@@ -171,7 +171,7 @@ archived builds → archive; soft-deleted → deleted), and the action rules `is
 `canDelete`, `unarchivedStatus`, `actionsFor`, `BUILD_ACTIONS`. Same deferral: no Kotlin twin while Android is on hold.
 
 Nov 13 2026 (build `orchestrator-settings-collapsible-split`): `pipeline.parallel` (`normParallel`, `PARALLEL_ROLES`): the
-parallel split record ({ role lead | part, lead, parts, part, of, contractStep, integrationStep, landing together | own }) that lets the
+parallel split record ({ role lead | part, lead, parts, part, of, contractStep, integrationStep, landing together | own }) and `pipeline.parallelParts` (`normParallelParts`: a build's own ask, 0 = settings, 1 = one build, 2-12 parts) that lets the
 orchestrator cut one request into sub-builds that run at the same time; the dispatcher's wait rules (`parallelWait`) and
 the `parallelSplit / parallelMax / parallelContract / parallelIntegrate` settings live in the orchestrator plugin's
 pipeline-core. Same deferral: no Kotlin twin while Android is on hold.

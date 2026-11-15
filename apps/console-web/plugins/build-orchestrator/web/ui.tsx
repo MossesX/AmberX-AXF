@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { AgentAvatar, BuildOrigin, Button, ControlScope, Icon, PriorityTag, Segmented, Slot, TabGroup, flashWhenReady, originSubtitle, useControlTarget, useRuntime } from '@console/axf/react';
+import { AgentAvatar, BuildOrigin, Button, ControlScope, Icon, PriorityTag, Segmented, SelectField, Slot, TabGroup, flashWhenReady, originSubtitle, useControlTarget, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
 import { WatchLiveFor } from '@console/watchLive';
@@ -377,11 +377,16 @@ function RulesTab({ rules, busy, act }: { rules: Rules; busy: boolean; act: Act 
   );
 }
 
+/** The per-build parallel split ask when filing (Nov 13 2026: "split into N parallel"); '' = the Split settings decide. */
+const PARALLEL_CHOICES = [{ value: '', label: 'As the Split settings say' }, { value: '1', label: 'One build (no parallel split)' },
+  ...Array.from({ length: 11 }, (_, i) => ({ value: String(i + 2), label: `Split into ${i + 2} parallel builds` }))];
+
 function AddForm({ busy, act }: { busy: boolean; act: Act }) {
   const [title, setTitle] = useState('');
   const [detail, setDetail] = useState('');
   const [steps, setSteps] = useState('');
   const [category, setCategory] = useState('');
+  const [parallel, setParallel] = useState('');
   return (
     <details className="pd-add">
       <summary>Add a build</summary>
@@ -394,12 +399,13 @@ function AddForm({ busy, act }: { busy: boolean; act: Act }) {
           const m = /^(fable|opus)\s*[:|-]\s*(.*?)(?:\s*\((\d+\s*(?:min|h))\))?$/i.exec(l);
           return [{ ...(m ? { model: (m[1] ?? "").toLowerCase() === "fable" ? "Fable" : "Opus", text: m[2] ?? l, estimate: m[3] ?? '' } : { model: 'Opus', text: l, estimate: '' }), phase, group }];
         });
-        if (title.trim() && (await act({ action: 'add', title, detail, category, steps: list, source: 'console' }))) { setTitle(''); setDetail(''); setSteps(''); }
+        if (title.trim() && (await act({ action: 'add', title, detail, category, steps: list, source: 'console', ...(parallel ? { parallel: Number(parallel) } : {}) }))) { setTitle(''); setDetail(''); setSteps(''); setParallel(''); }
       }}>
         <label className="pd-field">Title<input className="fx-input" required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="What to build" /></label>
         <label className="pd-field">Details<textarea className="fx-input" rows={3} value={detail} onChange={(e) => setDetail(e.target.value)} placeholder="Scope, files touched, acceptance notes" /></label>
         <label className="pd-field">Category<input className="fx-input" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="e.g. Console UI" /></label>
         <label className="pd-field">Steps, one per line ("# Phase name" and "## Group name" lines label the steps below them): “Fable: design the contract (10 min)” or “Opus: wire the route (10 min)” (Rules → Split has every split option)<textarea className="fx-input fx-mono" rows={5} value={steps} onChange={(e) => setSteps(e.target.value)} /></label>
+        <SelectField label="Parallel builds" value={parallel} onChange={setParallel} options={PARALLEL_CHOICES} hint="Split into N parallel builds that run at the same time (a lead with the shared contract and the integration step, plus N parts). Writing “split into 3 parallel” in the details does the same." />
         <div><Button tone="primary" icon="plus" disabled={busy || !title.trim()} type="submit">Add to orchestrator</Button></div>
       </form>
     </details>
