@@ -806,7 +806,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 00:13 UTC · `merge-main-land-console-app-part-2` note (all) · builds-live
 - 2026-11-15 00:13 UTC · `merge-main-land-voice-listener-use` note (all) · orchestrator
 - 2026-11-15 00:13 UTC · `themed-native-controls-plugin` PR #690 (all) · builds-live
 - 2026-11-15 00:13 UTC · `merge-main-land-voice-listener-use` note (all) · builds-live
@@ -1206,6 +1205,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 12:22 UTC · `pending-tab-one-collapsed-row-per-2` note (all) · pipeline
 - 2026-11-15 12:22 UTC · `data-container-axf-data-holds-all` → running, note (all) · pipeline
 - 2026-11-15 12:22 UTC · `data-container-axf-data-holds-all` note (all) · orchestrator
+- 2026-11-15 12:22 UTC · `shipped-features-organized-sortable` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
