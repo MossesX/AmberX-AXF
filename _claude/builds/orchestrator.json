@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T12:35:14.771Z",
+ "updatedAt": "2026-11-15T12:35:24.174Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -150191,7 +150191,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:25.282Z",
-   "updatedAt": "2026-11-15T12:34:09.706Z",
+   "updatedAt": "2026-11-15T12:35:14.249Z",
    "builtAt": "",
    "notes": [
     {
@@ -150249,6 +150249,10 @@
     {
      "text": "Brett (07:21): top priority, get this landed as soon as possible. Keep going without stopping between steps; when the last step is done, open the PR and land it straight away with the one-at-a-time lander (merge main first, fix any clash). Don't wait on UI Review to land: submit the shots, but landing doesn't depend on them. If the auto-lander still lands nothing, say so in a note so it can be landed with build_land right away.",
      "at": "2026-11-15T12:21:46.570Z"
+    },
+    {
+     "text": "Self-check: gate-rules-plugin-in-the-console had no session on record but axf-gate-rules-plugin-in-the-console--paulie is alive: kept running and tracking it.",
+     "at": "2026-11-15T12:35:14.249Z"
     }
    ],
    "approvals": [
