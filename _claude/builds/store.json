@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5747,
- "updatedAt": "2026-11-15T00:18:32.508Z",
+ "rev": 5748,
+ "updatedAt": "2026-11-15T00:18:49.647Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -162195,10 +162195,10 @@
    "source": "push-banner",
    "pendingId": "",
    "branch": "claude/fix-axhub-36-pull-main-in-failed",
-   "pr": "",
+   "pr": "#691",
    "priority": "P1",
    "createdAt": "2026-11-12T01:46:10.127Z",
-   "updatedAt": "2026-11-15T00:17:44.768Z",
+   "updatedAt": "2026-11-15T00:18:41.549Z",
    "builtAt": "",
    "notes": [
     {
@@ -162830,7 +162830,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -188147,23 +188147,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:18:10.585Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ConsoleBackend.java, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/MainActivity.java, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java, apps/amberx-droid/android/app/src/main/res/value"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -192476,23 +192459,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:17:58.732Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AxppLink.java, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ConsoleBackend.java, apps/amberx-dro"
-     }
-    ]
    },
    "steps": [
     {
@@ -205220,23 +205186,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:18:27.012Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-droid/.gitignore, apps/console-droid/BRIDGE.md, apps/console-droid/OVERLAY.md, apps/console-droid/README.md, apps/console-droid/app/build.gradle, apps/console-droid/app/src/main/AndroidManifest.xml, apps/console-droid/app/src/main/assets/offli"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -205821,32 +205770,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-14T23:38:09.250Z",
-      "run": "lr-console-app-part-2-native-floating-2-20261114T233809",
-      "base": "06cb21c5308768885b08e4eb633cd7ac472a4075",
-      "merged": "ec1d7c4d92405a8036cafed15647cdd813614547",
-      "outcome": "red",
-      "ci": "failure",
-      "note": "CI failed on the merged head (Web Dev Console (React/TS) + Python API). No fix build: the orchestrator did not take it."
-     },
-     {
-      "at": "2026-11-15T00:18:19.094Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-droid/.gitignore, apps/console-droid/OVERLAY.md, apps/console-droid/README.md, apps/console-droid/app/build.gradle, apps/console-droid/app/src/main/AndroidManifest.xml, apps/console-droid/app/src/main/assets/offline.html, apps/console-droid/ap"
-     }
-    ]
    },
    "steps": [
     {
