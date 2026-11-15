@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5812,
- "updatedAt": "2026-11-15T00:37:35.629Z",
+ "rev": 5813,
+ "updatedAt": "2026-11-15T00:37:52.486Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -123974,7 +123974,7 @@
    "branch": "claude/account-failover-notify",
    "pr": "#392",
    "createdAt": "2026-11-08T16:59:53.289Z",
-   "updatedAt": "2026-11-10T03:34:03.927Z",
+   "updatedAt": "2026-11-15T00:36:51.088Z",
    "builtAt": "2026-11-08T17:26:34.358Z",
    "notes": [
     {
@@ -124003,6 +124003,23 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:36:50.498Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/claude-accounts/assets/settings/claude-accounts-failover-compact.json, apps/console-web/plugins/claude-accounts/assets/settings/claude-accounts-failover-mw83rt1h-claude-accounts-failover-compact.json, apps/console-web/plugins/claud"
+     }
+    ]
    },
    "steps": [
     {
@@ -124124,7 +124141,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124442,7 +124459,7 @@
    "branch": "claude/ui-api-parity-rule-r3",
    "pr": "#393",
    "createdAt": "2026-11-08T17:23:21.874Z",
-   "updatedAt": "2026-11-08T17:46:46.647Z",
+   "updatedAt": "2026-11-15T00:36:44.569Z",
    "builtAt": "2026-11-08T17:46:46.647Z",
    "notes": [],
    "approvals": [],
@@ -124458,6 +124475,23 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:36:44.488Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, CLAUDE.md, PROGRESS.md, _claude/rules/RULES.md, apps/console-web/api-coverage.json, apps/console-web/plugins/README.md, apps/console-web/plugins/api-browser/README.md, apps/console-web/plugins/api-browser/assets/tab-group/api-browser-chips.json, apps/conso"
+     }
+    ]
    },
    "steps": [
     {
@@ -124623,7 +124657,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124664,7 +124698,7 @@
    "branch": "claude/account-health-failover",
    "pr": "#394",
    "createdAt": "2026-11-08T17:24:55.214Z",
-   "updatedAt": "2026-11-08T17:52:31.717Z",
+   "updatedAt": "2026-11-15T00:36:34.874Z",
    "builtAt": "2026-11-08T17:50:32.552Z",
    "notes": [
     {
@@ -124685,6 +124719,23 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:36:34.780Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/claude-accounts/assets/settings/claude-accounts-account-mw84lhxo-claude-accounts-checks-cards.json, apps/console-web/plugins/claude-accounts/assets/settings/claude-accounts-account-mw84lhxo-claude-accounts-checks-compact.json, apps"
+     }
+    ]
    },
    "steps": [
     {
@@ -124806,7 +124857,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -188048,7 +188099,7 @@
    "branch": "claude/change-to-move-amberx-web-app-console",
    "pr": "#586",
    "createdAt": "2026-11-13T00:39:39.304Z",
-   "updatedAt": "2026-11-15T00:18:10.704Z",
+   "updatedAt": "2026-11-15T00:37:27.734Z",
    "builtAt": "2026-11-13T11:25:24.180Z",
    "notes": [
     {
@@ -188158,6 +188209,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "flagged",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:18:10.585Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ConsoleBackend.java, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/MainActivity.java, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java, apps/amberx-droid/android/app/src/main/res/value"
+     }
+    ]
    },
    "steps": [
     {
@@ -188282,7 +188350,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -192262,7 +192330,7 @@
    "pr": "#596",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-15T00:17:59.005Z",
+   "updatedAt": "2026-11-15T00:37:21.648Z",
    "builtAt": "2026-11-12T23:17:54.369Z",
    "notes": [
     {
@@ -192471,6 +192539,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "flagged",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:17:58.732Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AxppLink.java, apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ConsoleBackend.java, apps/amberx-dro"
+     }
+    ]
    },
    "steps": [
     {
@@ -192867,7 +192952,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -205111,7 +205196,7 @@
    "pr": "#633",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:27.359Z",
-   "updatedAt": "2026-11-15T00:18:27.141Z",
+   "updatedAt": "2026-11-15T00:37:31.308Z",
    "builtAt": "2026-11-13T19:41:04.838Z",
    "notes": [
     {
@@ -205250,6 +205335,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "flagged",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:18:27.012Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-droid/.gitignore, apps/console-droid/BRIDGE.md, apps/console-droid/OVERLAY.md, apps/console-droid/README.md, apps/console-droid/app/build.gradle, apps/console-droid/app/src/main/AndroidManifest.xml, apps/console-droid/app/src/main/assets/offli"
+     }
+    ]
    },
    "steps": [
     {
@@ -205418,7 +205520,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -205460,7 +205562,7 @@
    "pr": "#640",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:32.589Z",
-   "updatedAt": "2026-11-15T00:18:36.053Z",
+   "updatedAt": "2026-11-15T00:37:33.873Z",
    "builtAt": "2026-11-13T20:19:48.032Z",
    "notes": [
     {
@@ -205535,6 +205637,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "flagged",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:18:35.976Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-droid/.gitignore, apps/console-droid/BRIDGE.md, apps/console-droid/OVERLAY.md, apps/console-droid/README.md, apps/console-droid/app/build.gradle, apps/console-droid/app/src/main/AndroidManifest.xml, apps/console-droid/app/src/main/assets/offli"
+     }
+    ]
    },
    "steps": [
     {
@@ -205703,7 +205822,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -205745,7 +205864,7 @@
    "pr": "#639",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:46.237Z",
-   "updatedAt": "2026-11-15T00:18:19.220Z",
+   "updatedAt": "2026-11-15T00:37:29.584Z",
    "builtAt": "2026-11-13T20:19:48.032Z",
    "notes": [
     {
@@ -205835,6 +205954,32 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "flagged",
+    "landAttempts": [
+     {
+      "at": "2026-11-14T23:38:09.250Z",
+      "run": "lr-console-app-part-2-native-floating-2-20261114T233809",
+      "base": "06cb21c5308768885b08e4eb633cd7ac472a4075",
+      "merged": "ec1d7c4d92405a8036cafed15647cdd813614547",
+      "outcome": "red",
+      "ci": "failure",
+      "note": "CI failed on the merged head (Web Dev Console (React/TS) + Python API). No fix build: the orchestrator did not take it."
+     },
+     {
+      "at": "2026-11-15T00:18:19.094Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-droid/.gitignore, apps/console-droid/OVERLAY.md, apps/console-droid/README.md, apps/console-droid/app/build.gradle, apps/console-droid/app/src/main/AndroidManifest.xml, apps/console-droid/app/src/main/assets/offline.html, apps/console-droid/ap"
+     }
+    ]
    },
    "steps": [
     {
@@ -206003,7 +206148,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
