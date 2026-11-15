@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T04:26:26.100Z",
+ "updatedAt": "2026-11-15T04:26:49.749Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -147582,7 +147582,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T04:20:19.690Z",
-   "updatedAt": "2026-11-15T04:26:08.578Z",
+   "updatedAt": "2026-11-15T04:26:48.086Z",
    "builtAt": "",
    "notes": [
     {
@@ -147628,6 +147628,10 @@
     {
      "text": "Brett (now): the private container is named 'axf-molly'. Molly runs the orchestrator from now on (Molly is the orchestrator's agent/brain). Don't clash with the existing Molly app container/cron: check names first. RE-PLAN REQUIRED: the current 37 steps were split before the final layout and still put screens in axHub (s9-s14 'axHub:server/services/orchestrator', s26-s31 'axHub:web'). Redo the remaining steps to: service code in the axf-molly container; axHub only routes (tools + credentials + approvals, no screens); screens in the console. Skip s1's wait gate on the old axHub precondition.",
      "at": "2026-11-15T04:25:56.268Z"
+    },
+    {
+     "text": "Brett (now): the old standalone Molly app isn't used anymore (everything is merging into the console). The name 'axf-molly' goes to the new orchestrator container. If an old Molly container, cron (/etc/cron.d/molly) or domain still exists, don't let it block the name: note it in the report and flag it for retirement; don't delete anything without listing it first.",
+     "at": "2026-11-15T04:26:48.086Z"
     }
    ],
    "approvals": [],
