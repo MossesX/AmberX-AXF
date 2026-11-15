@@ -1,0 +1,967 @@
+{
+  "$axf": "shape@1",
+  "_doc": "shape@1 validation fixture: whole shape assets, good and bad, with the reference validator result (core/validate.ts). The build-engine twin (cli/build-engine.mjs) and every port must return the same ok and the same messages. `expect` lists fragments a message must carry. Regenerate results with `npx -y tsx framework/spec/check-shape.mts --write`.",
+  "cases": [
+    {
+      "name": "pill",
+      "good": true,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "pill",
+        "name": "pill",
+        "version": "1.0.0",
+        "data": {
+          "kind": "pill"
+        }
+      },
+      "result": {
+        "ok": true,
+        "errors": []
+      }
+    },
+    {
+      "name": "circle-square-box",
+      "good": true,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "circle-square-box",
+        "name": "circle square box",
+        "version": "1.0.0",
+        "data": {
+          "kind": "circle",
+          "square": true
+        }
+      },
+      "result": {
+        "ok": true,
+        "errors": []
+      }
+    },
+    {
+      "name": "rounded-with-one-corner-override",
+      "good": true,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "rounded-with-one-corner-override",
+        "name": "rounded with one corner override",
+        "version": "1.0.0",
+        "data": {
+          "kind": "rounded",
+          "corners": {
+            "tr": "none"
+          }
+        }
+      },
+      "result": {
+        "ok": true,
+        "errors": []
+      }
+    },
+    {
+      "name": "squircle",
+      "good": true,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "squircle",
+        "name": "squircle",
+        "version": "1.0.0",
+        "data": {
+          "kind": "squircle"
+        }
+      },
+      "result": {
+        "ok": true,
+        "errors": []
+      }
+    },
+    {
+      "name": "hexagon",
+      "good": true,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "hexagon",
+        "name": "hexagon",
+        "version": "1.0.0",
+        "data": {
+          "kind": "hexagon"
+        }
+      },
+      "result": {
+        "ok": true,
+        "errors": []
+      }
+    },
+    {
+      "name": "tag-not-square",
+      "good": true,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "tag-not-square",
+        "name": "tag not square",
+        "version": "1.0.0",
+        "data": {
+          "kind": "tag",
+          "square": false
+        }
+      },
+      "result": {
+        "ok": true,
+        "errors": []
+      }
+    },
+    {
+      "name": "corners-two-tokens",
+      "good": true,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "corners-two-tokens",
+        "name": "corners two tokens",
+        "version": "1.0.0",
+        "data": {
+          "kind": "corners",
+          "corners": {
+            "tl": "pill",
+            "br": "pill"
+          }
+        }
+      },
+      "result": {
+        "ok": true,
+        "errors": []
+      }
+    },
+    {
+      "name": "corners-all-four",
+      "good": true,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "corners-all-four",
+        "name": "corners all four",
+        "version": "1.0.0",
+        "data": {
+          "kind": "corners",
+          "corners": {
+            "tl": "none",
+            "tr": "sm",
+            "br": "md",
+            "bl": "lg"
+          }
+        }
+      },
+      "result": {
+        "ok": true,
+        "errors": []
+      }
+    },
+    {
+      "name": "mask-star",
+      "good": true,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "mask-star",
+        "name": "mask star",
+        "version": "1.0.0",
+        "data": {
+          "kind": "mask",
+          "mask": "M 50 0 L 61 35 L 98 35 L 68 57 L 79 91 L 50 70 L 21 91 L 32 57 L 2 35 L 39 35 Z"
+        }
+      },
+      "result": {
+        "ok": true,
+        "errors": []
+      }
+    },
+    {
+      "name": "mask-triangle-own-viewbox",
+      "good": true,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "mask-triangle-own-viewbox",
+        "name": "mask triangle own viewbox",
+        "version": "1.0.0",
+        "data": {
+          "kind": "mask",
+          "mask": "M 0 24 L 12 0 L 24 24 Z",
+          "viewBox": "0 0 24 24"
+        }
+      },
+      "result": {
+        "ok": true,
+        "errors": []
+      }
+    },
+    {
+      "name": "mask-curves-relative",
+      "good": true,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "mask-curves-relative",
+        "name": "mask curves relative",
+        "version": "1.0.0",
+        "data": {
+          "kind": "mask",
+          "mask": "m 10 50 c 0 -40 80 -40 80 0 s -80 40 -80 0 z"
+        }
+      },
+      "result": {
+        "ok": true,
+        "errors": []
+      }
+    },
+    {
+      "name": "mask-two-subpaths",
+      "good": true,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "mask-two-subpaths",
+        "name": "mask two subpaths",
+        "version": "1.0.0",
+        "data": {
+          "kind": "mask",
+          "mask": "M 0 0 H 100 V 100 H 0 Z M 25 25 H 75 V 75 H 25 Z",
+          "square": true
+        }
+      },
+      "result": {
+        "ok": true,
+        "errors": []
+      }
+    },
+    {
+      "name": "unknown-kind",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "unknown-kind",
+        "name": "unknown kind",
+        "version": "1.0.0",
+        "data": {
+          "kind": "blob"
+        }
+      },
+      "expect": [
+        "data.kind must be one of"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.kind must be one of: circle, pill, rounded, square, squircle, hexagon, diamond, tag, corners, mask"
+        ]
+      }
+    },
+    {
+      "name": "kind-missing",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "kind-missing",
+        "name": "kind missing",
+        "version": "1.0.0",
+        "data": {
+          "corners": {
+            "tl": "sm"
+          }
+        }
+      },
+      "expect": [
+        "data.kind is required"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.kind is required for shape"
+        ]
+      }
+    },
+    {
+      "name": "kind-not-text",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "kind-not-text",
+        "name": "kind not text",
+        "version": "1.0.0",
+        "data": {
+          "kind": 7
+        }
+      },
+      "expect": [
+        "data.kind must be one of"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.kind must be one of: circle, pill, rounded, square, squircle, hexagon, diamond, tag, corners, mask"
+        ]
+      }
+    },
+    {
+      "name": "corners-length-px",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "corners-length-px",
+        "name": "corners length px",
+        "version": "1.0.0",
+        "data": {
+          "kind": "corners",
+          "corners": {
+            "tl": "8px"
+          }
+        }
+      },
+      "expect": [
+        "data.corners.tl must be one of"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.corners.tl must be one of: none, sm, md, lg, pill",
+          "data.kind corners needs corners (at least one of tl, tr, br, bl)"
+        ]
+      }
+    },
+    {
+      "name": "corners-number",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "corners-number",
+        "name": "corners number",
+        "version": "1.0.0",
+        "data": {
+          "kind": "corners",
+          "corners": {
+            "tl": 8
+          }
+        }
+      },
+      "expect": [
+        "not a length"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.corners.tl must be a radius token (one of: none, sm, md, lg, pill), not a length",
+          "data.kind corners needs corners (at least one of tl, tr, br, bl)"
+        ]
+      }
+    },
+    {
+      "name": "corners-negative",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "corners-negative",
+        "name": "corners negative",
+        "version": "1.0.0",
+        "data": {
+          "kind": "corners",
+          "corners": {
+            "tl": -4
+          }
+        }
+      },
+      "expect": [
+        "never negative"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.corners.tl must be a radius token (one of: none, sm, md, lg, pill), not a length (and never negative)",
+          "data.kind corners needs corners (at least one of tl, tr, br, bl)"
+        ]
+      }
+    },
+    {
+      "name": "corners-unknown-corner",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "corners-unknown-corner",
+        "name": "corners unknown corner",
+        "version": "1.0.0",
+        "data": {
+          "kind": "corners",
+          "corners": {
+            "top": "sm"
+          }
+        }
+      },
+      "expect": [
+        "is not a corner",
+        "needs corners"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.corners.top is not a corner (one of: tl, tr, br, bl)",
+          "data.kind corners needs corners (at least one of tl, tr, br, bl)"
+        ]
+      }
+    },
+    {
+      "name": "corners-kind-without-corners",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "corners-kind-without-corners",
+        "name": "corners kind without corners",
+        "version": "1.0.0",
+        "data": {
+          "kind": "corners"
+        }
+      },
+      "expect": [
+        "data.kind corners needs corners"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.kind corners needs corners (at least one of tl, tr, br, bl)"
+        ]
+      }
+    },
+    {
+      "name": "corners-not-object",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "corners-not-object",
+        "name": "corners not object",
+        "version": "1.0.0",
+        "data": {
+          "kind": "rounded",
+          "corners": [
+            "sm"
+          ]
+        }
+      },
+      "expect": [
+        "data.corners must be an object"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.corners must be an object of tl, tr, br, bl"
+        ]
+      }
+    },
+    {
+      "name": "mask-kind-without-mask",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "mask-kind-without-mask",
+        "name": "mask kind without mask",
+        "version": "1.0.0",
+        "data": {
+          "kind": "mask"
+        }
+      },
+      "expect": [
+        "data.kind mask needs a mask"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.kind mask needs a mask (SVG path data, M … Z)"
+        ]
+      }
+    },
+    {
+      "name": "mask-script-tag",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "mask-script-tag",
+        "name": "mask script tag",
+        "version": "1.0.0",
+        "data": {
+          "kind": "mask",
+          "mask": "M 0 0 L 100 0 <script>alert(1)</script> Z"
+        }
+      },
+      "expect": [
+        "must not contain script"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.mask must not contain script"
+        ]
+      }
+    },
+    {
+      "name": "mask-javascript-url",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "mask-javascript-url",
+        "name": "mask javascript url",
+        "version": "1.0.0",
+        "data": {
+          "kind": "mask",
+          "mask": "M 0 0 javascript:alert(1) Z"
+        }
+      },
+      "expect": [
+        "must not contain script"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.mask must not contain script"
+        ]
+      }
+    },
+    {
+      "name": "mask-event-handler",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "mask-event-handler",
+        "name": "mask event handler",
+        "version": "1.0.0",
+        "data": {
+          "kind": "mask",
+          "mask": "M 0 0 onload=alert(1) Z"
+        }
+      },
+      "expect": [
+        "must not contain script"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.mask must not contain script"
+        ]
+      }
+    },
+    {
+      "name": "mask-external-url",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "mask-external-url",
+        "name": "mask external url",
+        "version": "1.0.0",
+        "data": {
+          "kind": "mask",
+          "mask": "M 0 0 url(https://evil.example/x.svg) Z"
+        }
+      },
+      "expect": [
+        "must not reference anything outside the path"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.mask must not reference anything outside the path (no url(), links or images)"
+        ]
+      }
+    },
+    {
+      "name": "mask-external-href",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "mask-external-href",
+        "name": "mask external href",
+        "version": "1.0.0",
+        "data": {
+          "kind": "mask",
+          "mask": "M 0 0 href=x Z"
+        }
+      },
+      "expect": [
+        "must not reference anything outside the path"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.mask must not reference anything outside the path (no url(), links or images)"
+        ]
+      }
+    },
+    {
+      "name": "mask-external-image",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "mask-external-image",
+        "name": "mask external image",
+        "version": "1.0.0",
+        "data": {
+          "kind": "mask",
+          "mask": "M 0 0 <image> Z"
+        }
+      },
+      "expect": [
+        "must not reference anything outside the path"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.mask must not reference anything outside the path (no url(), links or images)"
+        ]
+      }
+    },
+    {
+      "name": "mask-css-basic-shape",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "mask-css-basic-shape",
+        "name": "mask css basic shape",
+        "version": "1.0.0",
+        "data": {
+          "kind": "mask",
+          "mask": "polygon(0 0, 100% 0, 100% 100%)"
+        }
+      },
+      "expect": [
+        "must be SVG path data"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.mask must be SVG path data (M … Z): commands and numbers only"
+        ]
+      }
+    },
+    {
+      "name": "mask-not-closed",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "mask-not-closed",
+        "name": "mask not closed",
+        "version": "1.0.0",
+        "data": {
+          "kind": "mask",
+          "mask": "M 0 0 L 100 0 L 100 100"
+        }
+      },
+      "expect": [
+        "must be a closed path"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.mask must be a closed path (end with Z)"
+        ]
+      }
+    },
+    {
+      "name": "mask-empty",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "mask-empty",
+        "name": "mask empty",
+        "version": "1.0.0",
+        "data": {
+          "kind": "mask",
+          "mask": "   "
+        }
+      },
+      "expect": [
+        "must not be empty"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.mask must not be empty"
+        ]
+      }
+    },
+    {
+      "name": "mask-not-text",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "mask-not-text",
+        "name": "mask not text",
+        "version": "1.0.0",
+        "data": {
+          "kind": "mask",
+          "mask": [
+            "M 0 0 Z"
+          ]
+        }
+      },
+      "expect": [
+        "must be SVG path data"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.mask must be SVG path data (M … Z)"
+        ]
+      }
+    },
+    {
+      "name": "mask-too-long",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "mask-too-long",
+        "name": "mask too long",
+        "version": "1.0.0",
+        "data": {
+          "kind": "mask",
+          "mask": "M 0 0 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 Z"
+        }
+      },
+      "expect": [
+        "at most 2000 characters"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.mask must be at most 2000 characters"
+        ]
+      }
+    },
+    {
+      "name": "mask-on-pill",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "mask-on-pill",
+        "name": "mask on pill",
+        "version": "1.0.0",
+        "data": {
+          "kind": "pill",
+          "mask": "M 50 0 L 61 35 L 98 35 L 68 57 L 79 91 L 50 70 L 21 91 L 32 57 L 2 35 L 39 35 Z"
+        }
+      },
+      "expect": [
+        "only applies to kind mask"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.mask only applies to kind mask"
+        ]
+      }
+    },
+    {
+      "name": "viewbox-zero-width",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "viewbox-zero-width",
+        "name": "viewbox zero width",
+        "version": "1.0.0",
+        "data": {
+          "kind": "mask",
+          "mask": "M 50 0 L 61 35 L 98 35 L 68 57 L 79 91 L 50 70 L 21 91 L 32 57 L 2 35 L 39 35 Z",
+          "viewBox": "0 0 0 100"
+        }
+      },
+      "expect": [
+        "data.viewBox must be"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.viewBox must be \"minX minY width height\" with width and height above zero"
+        ]
+      }
+    },
+    {
+      "name": "viewbox-three-numbers",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "viewbox-three-numbers",
+        "name": "viewbox three numbers",
+        "version": "1.0.0",
+        "data": {
+          "kind": "mask",
+          "mask": "M 50 0 L 61 35 L 98 35 L 68 57 L 79 91 L 50 70 L 21 91 L 32 57 L 2 35 L 39 35 Z",
+          "viewBox": "0 0 100"
+        }
+      },
+      "expect": [
+        "data.viewBox must be"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.viewBox must be \"minX minY width height\" with width and height above zero"
+        ]
+      }
+    },
+    {
+      "name": "viewbox-on-square",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "viewbox-on-square",
+        "name": "viewbox on square",
+        "version": "1.0.0",
+        "data": {
+          "kind": "square",
+          "viewBox": "0 0 10 10"
+        }
+      },
+      "expect": [
+        "data.viewBox only applies to kind mask"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.viewBox only applies to kind mask"
+        ]
+      }
+    },
+    {
+      "name": "square-not-boolean",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "square-not-boolean",
+        "name": "square not boolean",
+        "version": "1.0.0",
+        "data": {
+          "kind": "circle",
+          "square": "yes"
+        }
+      },
+      "expect": [
+        "data.square must be true or false"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.square must be true or false"
+        ]
+      }
+    },
+    {
+      "name": "data-not-object",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "data-not-object",
+        "name": "data not object",
+        "version": "1.0.0",
+        "data": []
+      },
+      "expect": [
+        "\"data\" must be an object"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "\"data\" must be an object"
+        ]
+      }
+    },
+    {
+      "name": "bad-envelope-id",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "Bad Id",
+        "name": "bad envelope id",
+        "version": "1.0.0",
+        "data": {
+          "kind": "pill"
+        }
+      },
+      "expect": [
+        "\"id\" must match"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "\"id\" must match ^[a-z0-9][a-z0-9-]{1,47}$"
+        ]
+      }
+    },
+    {
+      "name": "everything-wrong",
+      "good": false,
+      "asset": {
+        "$axf": "asset@1",
+        "type": "shape",
+        "id": "everything-wrong",
+        "name": "everything wrong",
+        "version": "1.0.0",
+        "data": {
+          "kind": "blob",
+          "corners": {
+            "tl": "huge",
+            "zz": "sm"
+          },
+          "mask": "url(javascript:1)",
+          "viewBox": "x",
+          "square": "yes"
+        }
+      },
+      "expect": [
+        "data.kind must be one of",
+        "data.corners.tl",
+        "data.corners.zz",
+        "data.mask",
+        "data.viewBox",
+        "data.square"
+      ],
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.kind must be one of: circle, pill, rounded, square, squircle, hexagon, diamond, tag, corners, mask",
+          "data.corners.tl must be one of: none, sm, md, lg, pill",
+          "data.corners.zz is not a corner (one of: tl, tr, br, bl)",
+          "data.mask must not contain script",
+          "data.viewBox must be \"minX minY width height\" with width and height above zero",
+          "data.square must be true or false"
+        ]
+      }
+    }
+  ]
+}

@@ -177,8 +177,8 @@ export function validateAsset(raw) {
   if (raw.type === 'behavior-theme') errors.push(...behaviorErrors(raw.data));
   // typography@1 / density@1 / sizing@1: ONE validator shared with core (core/engines/scale-rules.mjs)
   errors.push(...scaleErrors(raw.type, raw.data));
-  // shape@1: ONE validator shared with core (core/engines/shape-rules.mjs)
-  errors.push(...shapeErrors(raw.type, raw.data));
+  // shape@1: ONE validator shared with core (core/engines/shape-rules.mjs); the kind message is not repeated (spec/fixtures/shape-validate.json)
+  errors.push(...shapeErrors(raw.type, raw.data).filter((e) => !errors.includes(e)));
   // layout tokens (every layout parameter is a token): ONE validator shared with core (core/engines/layout-rules.mjs)
   errors.push(...layoutErrors(raw.type, raw.data));
   // help@1: ONE validator shared with core (core/engines/help-rules.mjs)

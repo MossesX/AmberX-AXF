@@ -80,6 +80,24 @@ check(!/<|>|"/.test(shapeMask({ kind: 'mask', mask: 'M 0 0 L 100 0 L 100 100 Z' 
 const bad = { $axf: 'asset@1', type: SHAPE_TYPE, id: 'x', name: 'X', version: '1', data: { kind: 'blob', corners: { tl: 'huge', zz: 'sm' }, mask: 'url(javascript:1)', square: 'yes' } };
 eq(validateAsset(bad).errors, cliValidate(bad).errors, 'core and build engine agree on a bad shape');
 check(validateAsset(bad).errors.length >= 5, 'every bad field is named');
+check(new Set(validateAsset(bad).errors).size === validateAsset(bad).errors.length, 'no message is repeated (the kind is named once)');
+
+// shape-validate.json: whole assets, good and bad, through the reference validator (core/validate.ts) and its build-engine
+// twin (cli/build-engine.mjs); `ok` and the exact messages must agree, and every port's validator replays the same file
+const VFIX = join(here, 'fixtures/shape-validate.json');
+const vfx = JSON.parse(readFileSync(VFIX, 'utf8'));
+if (process.argv.includes('--write')) {
+  for (const c of vfx.cases) c.result = validateAsset(c.asset);
+  writeFileSync(VFIX, `${JSON.stringify(vfx, null, 2)}\n`);
+  console.log(`wrote ${vfx.cases.length} validation results`);
+}
+for (const c of vfx.cases) {
+  eq(validateAsset(c.asset), c.result, `validate ${c.name} (core)`);
+  eq(cliValidate(c.asset).errors, c.result.errors, `validate ${c.name} (build engine twin)`);
+  eq(c.result.ok, c.good === true, `validate ${c.name}: ${c.good ? 'good' : 'bad'} as labelled`);
+  for (const frag of c.expect ?? []) check(c.result.errors.some((e: string) => e.includes(frag)), `validate ${c.name} names "${frag}"`);
+}
+check(vfx.cases.filter((c: { good?: boolean }) => c.good).length >= 6 && vfx.cases.filter((c: { good?: boolean }) => !c.good).length >= 10, 'the validation fixture has good and bad cases');
 
 // banner widgets carry a per-instance shape (the id of a shape asset); junk is dropped, null goes back to the slot
 eq(normalizeBannerWidgetPref({ shape: 'hexagon' }).shape, 'hexagon', 'a widget pref keeps a shape id');
