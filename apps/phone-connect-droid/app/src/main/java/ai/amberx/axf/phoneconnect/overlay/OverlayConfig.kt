@@ -49,6 +49,7 @@ data class OverlayConfig(
             ToolbarItem("recorder", "button", "mic", "Recorder", "recorder"),
             ToolbarItem("notifications", "button", "bell", "Notifications", "notifications"),
             ToolbarItem("build", "widget", "hammer", "Build", "build-status"),
+            ToolbarItem("assistant", "button", "sparkles", "Assistant", "open:https://console.amberxai.com/api/plugins/ai-assistant/app"),
             ToolbarItem("console", "button", "monitor", "Console", "open:https://console.amberxai.com/"),
         )
 

@@ -28,6 +28,7 @@ DEFAULT: dict[str, Any] = {
         {"id": "recorder", "kind": "button", "icon": "mic", "label": "Recorder", "action": "recorder"},
         {"id": "notifications", "kind": "button", "icon": "bell", "label": "Notifications", "action": "notifications"},
         {"id": "build", "kind": "widget", "icon": "hammer", "label": "Build", "action": "build-status"},
+        {"id": "assistant", "kind": "button", "icon": "sparkles", "label": "Assistant", "action": "open:https://console.amberxai.com/api/plugins/ai-assistant/app"},
         {"id": "console", "kind": "button", "icon": "monitor", "label": "Console", "action": "open:https://console.amberxai.com/"},
     ],
     "popups": {

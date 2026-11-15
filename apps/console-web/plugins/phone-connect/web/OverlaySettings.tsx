@@ -24,7 +24,7 @@ const ACTIONS: { value: string; label: string }[] = [
   { value: 'approvals', label: 'Approvals' }, { value: 'recorder', label: 'Recorder on / off' }, { value: 'notifications', label: 'Notifications' },
   { value: 'build-status', label: 'Build status' }, { value: 'open', label: 'Open a console page' },
 ];
-const ICONS = ['check', 'mic', 'bell', 'hammer', 'monitor', 'rocket', 'terminal', 'chart', 'list', 'star', 'zap', 'clock'];
+const ICONS = ['check', 'mic', 'bell', 'hammer', 'monitor', 'sparkles', 'rocket', 'terminal', 'chart', 'list', 'star', 'zap', 'clock'];
 const label = (s: string) => s.replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase());
 
 function ItemRow({ item, index, count, onChange, onMove, onRemove }: { item: Item; index: number; count: number; onChange: (i: Item) => void; onMove: (d: -1 | 1) => void; onRemove: () => void }) {

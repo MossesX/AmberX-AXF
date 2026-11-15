@@ -69,3 +69,23 @@ Verdicts:
 
 Approvals, Monitor, open page on the phone, notifications, Audio Output Recorder. Everything else on the AmberX list
 is dropped or merged into the console AI Assistant.
+
+## AmberX assistant and agent manager → console AI Assistant (s26)
+
+Gizmo's brains already were the console AI Assistant (agent Gizmo, reached through AmberX's server), so nothing of
+its intelligence moves; what AmberX drew on the phone is checked against the console assistant:
+
+| AmberX (companion, ai) | Console AI Assistant | Verdict |
+| --- | --- | --- |
+| Full-screen chat, streaming replies, markdown and code with copy | chat.tsx (stream, Markdown, copy) | covered |
+| Photos, images and files | attachments in chat.tsx / chatmode.py | covered |
+| Stop, regenerate, edit and resend, continue | chat.tsx (stop, regenerate, resend, continue an interrupted reply) | covered |
+| Chats: search, pin, rename, delete, export | store.py + chat.tsx list menu | covered |
+| Agent picker / agent manager on the phone | chats as an agent through axf.agents@1 (console Agent manager plugin), `ai.chat.start` with agentId | covered |
+| Talk mode: push-to-talk, hands-free, spoken replies, talk over to stop | the Agent voice plugin (assistant microphone, agents speak); hands-free wake word dropped with voice | covered / dropped (voice) |
+| Reached from the phone | `/api/plugins/ai-assistant/app` (hub users behind the wall) | **carried over:** an **Assistant** button on the Phone Connect toolbar opens it in Chrome |
+| Text copy of each chat on axHub | chats kept in the console's own store | covered (store moved) |
+| AI keys and provider switching on AmberX's server | ai-keys + the shared provider registry | covered |
+| Ask my notes | notes are dropped on the phone; the console assistant reads notes through its tools | covered |
+
+Nothing else is carried over; AmberX's companion and ai plugins go with AmberX at retirement.
