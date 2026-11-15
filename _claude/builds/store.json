@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5763,
- "updatedAt": "2026-11-15T00:24:04.963Z",
+ "rev": 5764,
+ "updatedAt": "2026-11-15T00:24:18.433Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -156947,7 +156947,7 @@
    "pr": "#498",
    "priority": "P0",
    "createdAt": "2026-11-10T20:59:27.366Z",
-   "updatedAt": "2026-11-12T01:59:24.174Z",
+   "updatedAt": "2026-11-15T00:23:40.510Z",
    "builtAt": "2026-11-12T01:59:24.174Z",
    "notes": [
     {
@@ -157038,6 +157038,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:23:40.393Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/build-orchestrator/help.json, apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrator/plug"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -157117,7 +157134,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161205,7 +161222,7 @@
    "pr": "#488",
    "priority": "P0",
    "createdAt": "2026-11-10T23:46:07.460Z",
-   "updatedAt": "2026-11-11T00:41:29.090Z",
+   "updatedAt": "2026-11-15T00:23:50.322Z",
    "builtAt": "2026-11-11T00:38:01.223Z",
    "notes": [
     {
@@ -161343,6 +161360,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:23:50.215Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/ai-assistant/help.json, apps/console-web/plugins/ai-assistant/plugin.json, apps/console-web/plugins/ai-assistant/server/__init__.py, apps/console-web/plugins/ai-assistant/server/store.py, apps/console-web/plugins/ai-assistant/server/tools.py, apps/console-web/pl"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -161422,7 +161456,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161461,7 +161495,7 @@
    "pr": "#487",
    "priority": "P0",
    "createdAt": "2026-11-10T23:46:39.715Z",
-   "updatedAt": "2026-11-11T00:02:27.408Z",
+   "updatedAt": "2026-11-15T00:24:01.509Z",
    "builtAt": "2026-11-11T00:02:27.408Z",
    "notes": [
     {
@@ -161530,6 +161564,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:24:01.323Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/agent-manager/README.md, apps/console-web/plugins/agent-manager/plugin.json, apps/console-web/plugins/agent-manager/server/__init__.py, apps/console-web/plugins/agent-manager/server/apiaccess.py, apps/console-web/plugins/agent-manager/test.py, apps/console-web/p"
+     }
+    ]
    },
    "steps": [
     {
@@ -161610,7 +161661,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161649,7 +161700,7 @@
    "pr": "#492",
    "priority": "P0",
    "createdAt": "2026-11-11T00:06:50.193Z",
-   "updatedAt": "2026-11-11T00:24:04.044Z",
+   "updatedAt": "2026-11-15T00:23:54.883Z",
    "builtAt": "2026-11-11T00:23:18.379Z",
    "notes": [
     {
@@ -161725,6 +161776,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:23:54.721Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/build-orchestrator/merge-review-core.mjs, apps/console-web/plugins/build-orchestrator/merge-review.mjs, apps/console-web/plugins/build-orchestrator/merge-review.test.mjs, apps/console-web/plugins/build-orchestrator/notify.json, apps/console-web/plugins/build-orc"
+     }
+    ]
    },
    "steps": [
     {
@@ -161805,7 +161873,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161844,7 +161912,7 @@
    "pr": "#493",
    "priority": "P0",
    "createdAt": "2026-11-11T01:11:27.164Z",
-   "updatedAt": "2026-11-11T01:49:23.538Z",
+   "updatedAt": "2026-11-15T00:23:45.028Z",
    "builtAt": "2026-11-11T01:49:05.611Z",
    "notes": [
     {
@@ -161909,6 +161977,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:23:44.829Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/theme-manager/README.md, apps/console-web/plugins/theme-manager/plugin.json, apps/console-web/plugins/theme-manager/server/__init__.py, apps/console-web/plugins/theme-manager/test.py, apps/console-web/plugins/theme-manager/web/inde"
+     }
+    ]
    },
    "steps": [
     {
@@ -161989,7 +162074,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
