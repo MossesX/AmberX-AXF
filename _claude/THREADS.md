@@ -806,8 +806,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 00:07 UTC · `themed-native-controls-plugin` s28 done (all) · orchestrator
-- 2026-11-15 00:07 UTC · `picker-dialog-plugin-replaces-all` note (all) · orchestrator
 - 2026-11-15 00:08 UTC · `picker-dialog-plugin-replaces-all` note (all) · orchestrator
 - 2026-11-15 00:08 UTC · `merge-main-land-server-gate-one-session` branch claude/server-gate-one-session-per-build-no, PR #610 (all) · builds-live
 - 2026-11-15 00:08 UTC · `merge-main-land-server-gate-one-session` s1 done, → running (all) · orchestrator
@@ -1206,6 +1204,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 12:14 UTC · `gate-rules-plugin-in-the-console` s5 done (all) · orchestrator
 - 2026-11-15 12:14 UTC · `vps-sends-shipped-features-every-merge` → queued, note (all) · console
 - 2026-11-15 12:14 UTC · `gate-rules-plugin-in-the-console` note (all) · orchestrator
+- 2026-11-15 12:14 UTC · `gate-rules-plugin-in-the-console` s5 done (all) · foreign-write
+- 2026-11-15 12:14 UTC · `gate-rules-plugin-in-the-console` note (all) · mcp
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6088,
- "updatedAt": "2026-11-15T12:14:46.827Z",
+ "rev": 6089,
+ "updatedAt": "2026-11-15T12:14:53.326Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -232850,7 +232850,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:25.282Z",
-   "updatedAt": "2026-11-15T12:14:31.743Z",
+   "updatedAt": "2026-11-15T12:14:44.575Z",
    "builtAt": "",
    "notes": [
     {
@@ -232876,6 +232876,10 @@
     {
      "text": "TO THE RUNNING SESSION: Brett changed s3 and s8 after you started. There's a landing-mode switch 'Merge queue on/off' (one switch: on = stacked merge queue, lander off; off = default, one-at-a-time auto-lander on). The default rule set must NOT be 'merge-queue only'. Put the mode in the s2 schema. Re-read the build (orchestrator.mjs show gate-rules-plugin-in-the-console) before s2.",
      "at": "2026-11-15T12:00:26.671Z"
+    },
+    {
+     "text": "Brett (07:14): the Shipped features sender belongs in the Gate & rules plugin. Add an 'After merge' section (rules that run when a merge to main succeeds), first rule: 'Send Shipped features' (on by default) showing status, last sent, failed sends with retry, and a Backfill button. It is logged in History and shown on the Auto-lander tab per landing. The sending logic itself is built by vps-sends-shipped-features-every-merge (runs on the VPS, later in axf-molly); this plugin is its screen and settings, through the gate.*/lander.* tools. Leave room for more after-merge rules (redeploy, notify Brett, APK build).",
+     "at": "2026-11-15T12:14:44.575Z"
     },
     {
      "text": "Phase 1 (Fable) done on branch claude/gate-rules-plugin-in-the-console, 5 commits, no PR yet (s23 opens it): design note in _claude/builds/reports/gate-rules-plugin-in-the-console.md; gate-rules@1 schema (gate-rule@1, gate-rule-set@1, lander-state@1) in framework/schemas + schemas/json; reference core framework/core/gate-rules.mjs (default set, evaluate, migrate, landerStateFrom); fixture spec/fixtures/gate-rules.json + spec/check-gate-rules.mjs (33 checks, wired into CI); GATE.md tool contract. Android twin deferred in PORTING.md. Next phase: s6 plugin scaffold.",
@@ -233054,7 +233058,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-15T11:57:45.983Z",
-     "updatedAt": "2026-11-15T12:14:28.114Z"
+     "updatedAt": "2026-11-15T12:14:43.761Z"
     },
     {
      "id": "s6",
