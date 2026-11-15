@@ -806,7 +806,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:53 UTC · `merge-main-land-server-gate-one-session` branch claude/merge-main-land-server-gate-one-session (all) · pipeline
 - 2026-11-14 23:53 UTC · `merge-main-land-server-gate-one-session` note (all) · orchestrator
 - 2026-11-14 23:53 UTC · `merge-main-land-one-source-truth-console` note (all) · orchestrator
 - 2026-11-14 23:54 UTC · `console-look-becomes-default-axhub-skin` note (all) · pipeline
@@ -1206,6 +1205,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 11:58 UTC · `gate-rules-plugin-in-the-console` note (all) · orchestrator
 - 2026-11-15 11:58 UTC · `pending-tab-one-collapsed-row-per-2` s2 done (all) · orchestrator
 - 2026-11-15 11:59 UTC · `pending-tab-one-collapsed-row-per-2` s3 done (all) · orchestrator
+- 2026-11-15 11:59 UTC · `gate-rules-plugin-in-the-console` note (all) · mcp
 
 ## Token passes (log)
 

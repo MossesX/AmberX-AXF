@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T11:59:46.689Z",
+ "updatedAt": "2026-11-15T11:59:51.620Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -150134,7 +150134,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:25.282Z",
-   "updatedAt": "2026-11-15T11:58:25.703Z",
+   "updatedAt": "2026-11-15T11:59:50.021Z",
    "builtAt": "",
    "notes": [
     {
@@ -150152,6 +150152,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-gate-rules-plugin-in-the-console--earl, shared account login)",
      "at": "2026-11-15T11:58:25.703Z"
+    },
+    {
+     "text": "Brett (06:59): in the Merge queue settings, add a switch 'Merge queue: on/off'. It is one switch for both: ON = PRs go through the stacked merge queue and the one-at-a-time auto-lander is off; OFF = merge queue off and the auto-lander is on (lands each finished build one at a time). Default OFF (Brett's standing rule is to land one at a time). Show the current mode clearly (badge on the Auto-lander tab and on the switch). Flipping it takes effect right away, is logged in History, and is reachable via REST/MCP/CLI/voice (e.g. 'turn the merge queue on').",
+     "at": "2026-11-15T11:59:50.021Z"
     }
    ],
    "approvals": [],
