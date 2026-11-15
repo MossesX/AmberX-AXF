@@ -195,10 +195,10 @@ class PhoneRecorder:
     """axf.phone-recorder@1: what claude-session (and anyone else) uses, never this folder's name."""
 
     def start(self, session_name: str, group: str = "", note: str = "", reason: dict[str, str] | None = None) -> dict[str, Any]:
-        return start(session_name, group, note, reason, who="claude-session", via="console")
+        return start(session_name, group, note, reason, who="phone-recorder@1", via="console")
 
     def stop(self) -> dict[str, Any]:
-        return stop(who="claude-session")
+        return stop(who="phone-recorder@1")
 
     def status(self) -> dict[str, Any]:
         return status()

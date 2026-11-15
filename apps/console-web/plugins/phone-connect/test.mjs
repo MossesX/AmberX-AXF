@@ -12,8 +12,8 @@ const root = mkdtempSync(join(tmpdir(), 'phone-connect-migrate-'));
 const old = join(root, M.OLD_DATA_DIR); mkdirSync(join(old, 'sessions'), { recursive: true });
 writeFileSync(join(old, 'transcribe.json'), '{"model":"small","on":true}\n');
 writeFileSync(join(old, 'sessions', 'index.json'), '{"items":[]}\n');
-mkdirSync(join(root, 'apps/console-web/plugins/console-commands/server'), { recursive: true });
-writeFileSync(join(root, 'apps/console-web/plugins/console-commands/server/wake.py'), 'TOOL = "amberx.open_url"\n');
+mkdirSync(join(root, 'apps/console-web/plugins/console-commands/server'), { recursive: true }); // a scratch tree (axf-not-plugin:console-commands)
+writeFileSync(join(root, 'apps/console-web/plugins/console-commands/server/wake.py'), 'TOOL = "amberx.open_url"\n'); // axf-not-plugin:console-commands
 const record = { deviceId: 'amberx-3f9a1c2b4d5e6f70', name: 'Google Pixel 8', app: 'amberx-droid', capabilities: ['recorder@1', 'open-url@1'], state: { 'recorder@1': { running: false, parts: 3 } }, lastSeenAt: '2026-11-15T14:58:40Z' };
 
 t('with no device record the plan copies the data, writes the aliases and says where to put the record; nothing is written', () => {
@@ -28,7 +28,7 @@ t('apply: aliases.json, recorder/ with every byte, the pointer, devices.json wit
   const p = M.apply(M.plan({ root, owner: 'brett', now: NOW }));
   assert.equal(p.error, undefined); assert.equal(p.applied.length, 3);
   const aliases = JSON.parse(readFileSync(join(root, M.DATA_DIR, 'aliases.json'), 'utf8'));
-  assert.equal(aliases.$axf, M.ALIASES_FRAME); assert.deepEqual(aliases.aliases.map((a) => a.from), ['amberx.open_url', 'amberx.recorder_start', 'amberx.recorder_stop', 'amberx.recorder_status']); assert.deepEqual(aliases.callers, [{ file: 'apps/console-web/plugins/console-commands/server/wake.py', uses: ['amberx.open_url'], to: ['phone.open_url'] }]);
+  assert.equal(aliases.$axf, M.ALIASES_FRAME); assert.deepEqual(aliases.aliases.map((a) => a.from), ['amberx.open_url', 'amberx.recorder_start', 'amberx.recorder_stop', 'amberx.recorder_status']); assert.deepEqual(aliases.callers, [{ file: 'apps/console-web/plugins/console-commands/server/wake.py', uses: ['amberx.open_url'], to: ['phone.open_url'] }]); // axf-not-plugin:console-commands
   assert.equal(readFileSync(join(root, M.DATA_DIR, 'recorder/transcribe.json'), 'utf8'), '{"model":"small","on":true}\n'); assert.ok(existsSync(join(root, M.DATA_DIR, 'recorder/sessions/index.json')));
   assert.ok(existsSync(join(old, M.POINTER))); assert.ok(existsSync(join(old, 'transcribe.json')), 'the old folder is left for the output-recorder uninstall');
   const devices = JSON.parse(readFileSync(join(root, M.DATA_DIR, 'devices.json'), 'utf8'));

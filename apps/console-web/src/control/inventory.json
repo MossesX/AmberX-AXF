@@ -1482,7 +1482,7 @@
       "view": "phone-connect",
       "plugin": "ai.amberx.axf.console.phone-connect",
       "file": "plugins/phone-connect/web/OverlaySettings.tsx",
-      "line": 113,
+      "line": 120,
       "tabs": [
         {
           "address": "view:phone-connect/tab:phone-connect.overlay.popups=approval",
@@ -1508,7 +1508,7 @@
       "view": "phone-connect",
       "plugin": "ai.amberx.axf.console.phone-connect",
       "file": "plugins/phone-connect/web/PhoneConnectSettings.tsx",
-      "line": 131,
+      "line": 135,
       "tabs": [
         {
           "address": "view:phone-connect/tab:phone-connect.tabs=phone",

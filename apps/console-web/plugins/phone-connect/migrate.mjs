@@ -27,10 +27,10 @@ export const DEVICES_FRAME = 'phone-devices@1';
 export const POINTER = 'MOVED-TO';
 /** Console files that call the old hub tool names today; the plugin phase switches them to phone.* (the table only reports). */
 const CALLERS = [
-  'apps/console-web/plugins/console-commands/server/wake.py', 'apps/console-web/plugins/console-commands/server/__init__.py',
+  'apps/console-web/plugins/console-commands/server/wake.py', 'apps/console-web/plugins/console-commands/server/__init__.py', // file paths as data (axf-not-plugin:console-commands)
   'apps/console-web/plugins/output-recorder/web/core.ts', // scanned only while it exists (axf-not-plugin:output-recorder)
-  'apps/console-web/plugins/approvals-banner/web/index.tsx', 'apps/console-web/plugins/approvals-banner/web/overlay.ts',
-  'apps/console-web/plugins/claude-badge/server/__init__.py', 'apps/console-web/plugins/claude-session/server/recording.py',
+  'apps/console-web/plugins/approvals-banner/web/index.tsx', 'apps/console-web/plugins/approvals-banner/web/overlay.ts', // data (axf-not-plugin:approvals-banner)
+  'apps/console-web/plugins/claude-badge/server/__init__.py', 'apps/console-web/plugins/claude-session/server/recording.py', // data (axf-not-plugin:claude-badge axf-not-plugin:claude-session)
 ];
 const OLD_NAME = /amberx\.(open_url|recorder_start|recorder_stop|recorder_status)/g;
 
