@@ -3780,6 +3780,18 @@
    "from": "detail",
    "addenda": []
   },
+  "home-cards-follow-plugin-off-home-always": {
+   "said": "When I disable plugins, the home cards need to be disabled as well. They need to be removed, and other ones need to replace them. The home screen always needs to be filled with some plugins, even if I don't have some selected. Yes, I can select which ones I want, but if I don't, you need to pick some. Pick the most active.",
+   "at": "2026-11-15T13:22:11.842Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "home-cards-live": {
    "said": "I shouldn't need to build cards. I should draw dynamic data.",
    "at": "2026-11-03",

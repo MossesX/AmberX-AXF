@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T13:20:51.904Z",
+ "updatedAt": "2026-11-15T13:22:13.573Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -151488,6 +151488,37 @@
      "createdAt": "2026-11-15T12:22:22.822Z"
     }
    ]
+  },
+  {
+   "id": "home-cards-follow-plugin-off-home-always",
+   "title": "Home cards follow plugin on/off; home always filled with most-active plugins",
+   "category": "",
+   "detail": "1) When a plugin is disabled or uninstalled, its home screen card is removed at once (no dead or blank cards), and comes back if the plugin is re-enabled. 2) The home screen is never empty or gappy: empty slots are filled automatically. 3) Brett's own picks always win and keep their order. Any slot he hasn't picked is filled with the MOST ACTIVE enabled plugins, ranked by recent use and activity (opens, actions, live jobs, alerts over a recent window). The ranking updates over time and auto-filled cards are marked as auto (pin to keep, remove to swap). 4) Setting for number of home slots; cards use the shared skin row/card styling. Full API parity (list home cards, pin/unpin, reorder, refill, ranking) via REST/MCP/CLI/voice. Tests (disable plugin removes its card and a replacement fills in; empty selection still fills the home screen), help, Shipped features. Land with the one-at-a-time lander.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-15T13:22:11.842Z",
+   "updatedAt": "2026-11-15T13:22:11.842Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "When I disable plugins, the home cards need to be disabled as well. They need to be removed, and other ones need to replace them. The home screen always needs to be filled with some plugins, even if I don't have some selected. Yes, I can select which ones I want, but if I don't, you need to pick some. Pick the most active.",
+    "at": "2026-11-15T13:22:11.842Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
