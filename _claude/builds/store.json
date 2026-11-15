@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5977,
- "updatedAt": "2026-11-15T02:12:07.822Z",
+ "rev": 5978,
+ "updatedAt": "2026-11-15T02:56:29.298Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -215776,7 +215776,7 @@
    "pr": "#643",
    "priority": "P0",
    "createdAt": "2026-11-13T23:41:07.780Z",
-   "updatedAt": "2026-11-14T23:28:21.791Z",
+   "updatedAt": "2026-11-15T02:56:27.066Z",
    "builtAt": "",
    "notes": [
     {
@@ -215822,6 +215822,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-app-land-parts-1-4-build-apk--rhonda, shared account login)",
      "at": "2026-11-14T23:28:21.791Z"
+    },
+    {
+     "text": "Stopped at s14: stack (#637 #639 #633 #640 #643) re-merged on green main, two main-side faults fixed (draft Gizmo help entry, --fx-safe-* token registry), all PR checks green, queued in order at positions 7-11. Queue moved ~5 places in 2 h, so the watch hit its time limit before anything merged. #643 got new commits from the wake-listener build; android.yml dispatched once (43670034951). Next session: s14 watch, s15-s16 APK from main, s18 finish. Interim APK (all five parts) stays at https://github.com/MossesX/AmberX-AXF/actions/runs/43541410908/artifacts/14092283770 until Feb 12 2027.",
+     "at": "2026-11-15T02:56:27.066Z"
     }
    ],
    "approvals": [],
@@ -216335,7 +216339,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
