@@ -797,7 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:02 UTC · `hotfix-toolbar-settings-still-change` s4 done, → complete (all) · orchestrator
 - 2026-11-14 23:02 UTC · `hotfix-toolbar-settings-still-change` note (all) · orchestrator
 - 2026-11-14 23:02 UTC · `orchestrator-table-columns-model-queue-assigned` s2 done (all) · orchestrator
 - 2026-11-14 23:02 UTC · `land-finish-auto-land-live-clear-backlog` s12 done (all) · orchestrator
@@ -1197,6 +1196,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 00:35 UTC · `prompting-engine-control-panel-events` → running, note (all) · pipeline
 - 2026-11-15 00:35 UTC · `prompting-engine-control-panel-events` note (all) · orchestrator
 - 2026-11-15 00:36 UTC · `new-asset-type-animated-expanding-row` s4 done (all) · foreign-write
+- 2026-11-15 00:36 UTC · `new-asset-type-animated-expanding-row` s5 done (all) · orchestrator
 
 ## Token passes (log)
 

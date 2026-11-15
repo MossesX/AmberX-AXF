@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5810,
- "updatedAt": "2026-11-15T00:37:03.736Z",
+ "rev": 5811,
+ "updatedAt": "2026-11-15T00:37:19.614Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -128326,23 +128326,6 @@
     "from": "",
     "addenda": []
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:36:29.662Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: _claude/rules/RULES.md, apps/console-web/plugins/build-manager/test.mjs, apps/console-web/plugins/build-manager/web/orchestrate.mjs, apps/console-web/plugins/plan-studio/build-sync.mjs, apps/console-web/plugins/plan-studio/plans.mjs, apps/console-web/plugins/plan-studio/plugin.json, app"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -130634,23 +130617,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:36:26.292Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/plan-studio/build-hooks.mjs, apps/console-web/plugins/plan-studio/help.json, apps/console-web/plugins/plan-studio/plans.mjs, apps/console-web/plugins/plan-studio/plugin.json, apps/console-web/plugins/plan-studio/schema/plan.schema.json, apps/console-web/plugins/"
-     }
-    ]
    },
    "steps": [
     {
@@ -134833,23 +134799,6 @@
     "from": "",
     "addenda": []
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:36:15.734Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/build-orchestrator/api-jobs-core.mjs, apps/console-web/plugins/build-orchestrator/api-jobs.mjs, apps/console-web/plugins/build-orchestrator/api-jobs.test.mjs, apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/cons"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -135005,23 +134954,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:36:20.602Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/build-orchestrator/help.json, apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrator/plug"
-     }
-    ]
    },
    "steps": [
     {
@@ -137110,23 +137042,6 @@
     "verbatim": true,
     "from": "",
     "addenda": []
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:36:10.468Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/README.md, apps/console-web/plugins/file-watchdog/help.json, apps/console-web/plugins/file-watchdog/hooks.mjs, apps/console-web/plugins/file-watchdog/install.mjs, apps/console-web/plugins/file-watchdog/notify.json, apps/console-web/plugins/file-watchdog/plugin.j"
-     }
-    ]
    },
    "steps": [
     {
@@ -160553,23 +160468,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:35:57.389Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-web/server/cors.py, apps/console-web/server/main.py, apps/console-web/server/test_cors.py, apps/console-web/src/main.tsx, apps/molly/README.md, apps/molly/plugins/xlayout/web/host.ts, apps/molly/src/App.tsx, apps/molly/src/actions.ts, apps/mol"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -160809,23 +160707,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:36:04.396Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/console-commands/console.mjs, apps/console-web/plugins/console-commands/test.mjs, apps/console-web/plugins/plugin-commands/commands.mjs, apps/console-web/server/mcp_server.py, apps/molly/README.md, apps/molly/plugins/remote-commands/README.md, apps/molly/plugins"
-     }
-    ]
    },
    "steps": [
     {
@@ -193696,23 +193577,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:35:50.952Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/build-orchestrator/notify.json, apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrator/pl"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -194397,23 +194261,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:35:35.519Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrator/web/focus.ts, apps/console-web/plugins/build-orchestrator/web/index.tsx, apps/console-web/plugins/build-orchestrator/web/o"
-     }
-    ]
    },
    "steps": [
     {
@@ -195736,23 +195583,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:35:43.929Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/amberx-droid/server/main.py, apps/amberx-droid/src/plugins/notes/web/index.tsx, apps/amberx-droid/src/plugins/notes/web/ui.ts, apps/console-web/plugins/README.md, apps/console-web/plugins/amberx-notes/help.json, apps/console-web/plugins/amberx-notes/hooks.mjs, apps/console-web/plug"
-     }
-    ]
    },
    "steps": [
     {
@@ -201524,7 +201354,7 @@
    "pr": "#630",
    "priority": "P1",
    "createdAt": "2026-11-13T18:13:23.703Z",
-   "updatedAt": "2026-11-15T00:35:31.242Z",
+   "updatedAt": "2026-11-15T00:36:45.015Z",
    "builtAt": "",
    "notes": [
     {
@@ -201721,12 +201551,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:36:45.015Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T18:14:50.263Z",
-     "updatedAt": "2026-11-13T18:14:50.263Z"
+     "updatedAt": "2026-11-15T00:36:45.337Z"
     },
     {
      "id": "s6",
@@ -201872,7 +201702,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": {
