@@ -807,7 +807,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 00:44 UTC · `merge-main-land-voice-listener-use` s2 done (all) · orchestrator
 - 2026-11-15 00:45 UTC · `orchestrator-settings-collapsible-split` → running, note (all) · pipeline
 - 2026-11-15 00:46 UTC · `orchestrator-settings-collapsible-split` → running, note (all) · orchestrator
 - 2026-11-15 00:47 UTC · `land-finish-auto-land-live-clear-backlog` s19 done, → running (all) · orchestrator
@@ -1207,6 +1206,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 13:28 UTC · `home-cards-follow-plugin-off-home-always` branch claude/home-cards-follow-plugin-off-home-always (all) · pipeline
 - 2026-11-15 13:28 UTC · `home-cards-follow-plugin-off-home-always` note (all) · orchestrator
 - 2026-11-15 13:33 UTC · `home-cards-follow-plugin-off-home-always` branch claude/home-cards-follow-plugin-off-home-always (all) · builds-live
+- 2026-11-15 13:33 UTC · `home-cards-follow-plugin-off-home-always` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
