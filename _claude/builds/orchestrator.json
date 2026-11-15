@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T13:38:07.672Z",
+ "updatedAt": "2026-11-15T13:38:24.021Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -150191,15 +150191,16 @@
    "title": "Gate & rules plugin in the console",
    "category": "",
    "detail": "There is no Gate & rules screen anywhere (not on main, not on the auto-lander branch). Build a console plugin 'gate' with tabs: Rules (the checks a build must pass before it lands: CI green, tests, theme/controls checks, UI Review on/off, clash handling, etc., each with on/off and settings), Auto-lander (status, last runs, what's waiting and why, land now / pause), and History. Per the final layout: the screens live in the console only; the rules and lander logic run in the axf-molly container; axHub only routes the gate.* and lander.* tools. Until axf-molly exists, read/write through the current orchestrator/lander code. Coordinate with auto-lander-controls-in-the-gate-plugin and move-build-orchestrator-to-axhub. Rows follow the skin's 1-or-2-row grid setting. Full API parity, tests, help, Shipped features. Land when done.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/gate-rules-plugin-in-the-console",
    "pr": "#711",
+   "mergedAt": "2026-11-15T13:23:45Z",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:25.282Z",
-   "updatedAt": "2026-11-15T13:23:31.917Z",
+   "updatedAt": "2026-11-15T13:38:22.402Z",
    "builtAt": "2026-11-15T13:04:13.597Z",
    "notes": [
     {
@@ -150269,6 +150270,10 @@
     {
      "text": "TO THE RUNNING SESSION: re-read the build. Brett (08:25): add a **Build rules** tab to this plugin, with the VPS as the one place that owns and enforces every builder rule. 1) Move ALL builder rules out of Claude's instructions (CLAUDE.md, the build briefs, prompt templates, _claude rule docs) into this plugin's Build rules store, served by the VPS. List every rule before moving it, and delete nothing without listing it first. 2) Any rule the VPS can do mechanically, the VPS DOES itself after or around the build, and Claude no longer does it. That way nothing happens twice. Examples: create the plugin's home card from plugin.json and the template, Shipped features manifest, help stub, API-parity scaffolding, tests check, and landing. 3) Rules that need judgement are handed to the session from this store at build time; they are not copied into CLAUDE.md. 4) The gate checks every rule before landing, blocks on a fail, the VPS auto-fixes what it can, and everything is logged in History. 5) In the tab, each rule shows who does it (VPS or session) and whether it's on or off, with edit, add, history, and voice/API parity. First rule: every plugin gets a home card, made by the VPS.",
      "at": "2026-11-15T13:23:31.917Z"
+    },
+    {
+     "text": "Reconciler: PR #711 merged",
+     "at": "2026-11-15T13:38:22.402Z"
     }
    ],
    "approvals": [
@@ -151376,7 +151381,7 @@
    "title": "axf-molly container: orchestrator, gate, lander, Shipped sender",
    "category": "",
    "detail": "Replaces move-build-orchestrator-to-axhub (its 37 steps were planned for the old axHub-screens layout and its s1 gate waits on a precondition that no longer applies). FINAL LAYOUT (Brett): console = screens only; axf-molly = does all the work; axHub = routes + credentials/approvals only, no screens, no data; axf-data = stores all data. BUILD a private container 'axf-molly' on Coolify (no public port/DNS, internal Docker network, auto-restart). Check the name doesn't clash with the old standalone Molly app (it's retired; list any leftover container/cron/domain for retirement, delete nothing without listing it). MOVE INTO IT: orchestrator, dispatcher/pipeline tick, reconciler, splitter, slots/accounts routing, gate rules engine (framework/core/gate-rules.mjs from gate-rules-plugin-in-the-console), auto-lander + merge queue with the 'Merge queue on/off' switch, and the merge watch / Shipped features sender (vps-sends-shipped-features-every-merge). It reads/writes ALL data through axf-data (data-container-axf-data-holds-all, data-store@1 client), never repo files. HOST ACCESS: a narrow host bridge (mounted /root/axf-builds worktrees, git, claude CLI, tmux runner) to launch and watch build sessions; NOT the Docker socket; document exactly what it can touch. axHub registers axf-molly as a downstream and exposes orchestrator.*, gate.*, lander.*, features.* tools (equivalents for axf-console.build_orchestrator_pipeline_request and planner.builds). Console orchestrator, Gate & rules and Shipped features screens talk to it through axHub. STAGING: shadow first (axf-molly computes, console acts, diff log), then cutover with an owner lease and undo; builds keep running during the switch; no build or history lost. FIX ON THE WAY: phase-end builds must never be parked in Pending (reconciler bug); dispatcher alert links use view:build-orchestrator. Console-down drill: stop the console and prove builds still launch, land and get Shipped features. Order: start right after axf-data is up (its API and client exist on PR #704). Tests, help, Shipped features. Land each part with the one-at-a-time lander.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -151384,7 +151389,7 @@
    "pr": "#710",
    "priority": "P0",
    "createdAt": "2026-11-15T12:20:29.383Z",
-   "updatedAt": "2026-11-15T13:02:24.386Z",
+   "updatedAt": "2026-11-15T13:38:22.402Z",
    "builtAt": "",
    "notes": [
     {
@@ -151414,6 +151419,10 @@
     {
      "text": "Headless run axf-axf-molly-container-orchestrator-gate--sully: brief only · start 13.5K tokens ($0.07) · cost $16.10 · 86 turns · 6 tools, MCP none",
      "at": "2026-11-15T13:02:24.386Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-15T13:38:22.402Z"
     }
    ],
    "approvals": [],
