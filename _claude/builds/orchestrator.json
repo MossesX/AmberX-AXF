@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T12:17:38.857Z",
+ "updatedAt": "2026-11-15T12:17:50.547Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -150142,7 +150142,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:25.282Z",
-   "updatedAt": "2026-11-15T12:17:27.996Z",
+   "updatedAt": "2026-11-15T12:17:48.392Z",
    "builtAt": "",
    "notes": [
     {
@@ -150478,7 +150478,7 @@
     },
     {
      "id": "s13",
-     "text": "Build the plugin view shell GateView.tsx: a framework TabGroup (tab-group asset, settings id gate.tabs) with Rules, Auto-lander and History tabs, SkinScope root, remember last tab. Register console-control targets view:gate and tab:gate.tabs=<tab> plus console_show deep links.",
+     "text": "Build the plugin view shell GateView.tsx: a framework TabGroup (tab-group asset, settings id gate.tabs) with tabs Rules (including an 'After merge' section whose first rule is 'Send Shipped features'), Pending features, Auto-lander and History; SkinScope root; remember last tab. PENDING FEATURES tab (Brett 07:17): every active or incomplete build in one grid on the shared 2-row status row with animated badges; each row expands to show that build's feature record EXACTLY as Shipped features shows it, reusing the Shipped features expanded-row component (not a copy). Data comes ONLY from the one true feature store on the VPS (built by vps-sends-shipped-features-every-merge, through its REST/features.* API), never a local copy; when a build lands, its row leaves this tab and appears in Shipped features because it's the same record. Register console-control targets view:gate and tab:gate.tabs=<tab> plus console_show deep links. If this is too big for one step, split it into more steps rather than cutting it.",
      "model": "Opus",
      "why": "",
      "phase": "",
