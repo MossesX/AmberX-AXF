@@ -11,6 +11,8 @@
  *   other ways  the row pressed while an option is highlighted applies it; Escape closes without applying and takes the
  *               preview back; first-press assets apply at once; disabled options do nothing
  *   keyboard    arrows / Home / End move the highlight and focus, Enter on the highlighted option applies
+ *   API         console-control@1 `setting:<label>`: state reads value / options / open / highlight, set applies and closes
+ *               without the UI, press opens and (with a highlight) applies, an unknown value is refused
  */
 import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
@@ -172,6 +174,55 @@ function mount(asset?: Record<string, unknown>) {
   p.click(p.tile('Sepia'));
   eq(p.previews, [], 'preview off: onPreview is not called');
   act(() => p.root.unmount());
+}
+
+/* ---- s6 the same through the API (console-control@1: REST, MCP console actions, axf control, voice all run this) ---- */
+{
+  const { readdirSync, readFileSync } = await import('node:fs');
+  const { join } = await import('node:path');
+  const { AxfRuntime } = await import('../core/runtime.ts');
+  const { AxfProvider } = await import('../react/AxfProvider.tsx');
+  const { controlRegistry } = await import('../react/controlTargets.ts');
+  const assetsDir = new URL('../assets/', import.meta.url).pathname;
+  const assets = readdirSync(assetsDir).flatMap((t) => readdirSync(join(assetsDir, t)).filter((x) => x.endsWith('.json')).map((x) => JSON.parse(readFileSync(join(assetsDir, t, x), 'utf8'))));
+  const defaults = JSON.parse(readFileSync(new URL('../defaults.json', import.meta.url), 'utf8'));
+  const rt = new AxfRuntime({ manifest: { app: { id: 'pick-test', name: 'Test' }, defaults } as never, assets, storageKey: 'test:pick' });
+  const reg = controlRegistry(rt);
+  const changes: string[] = [];
+  function Host() {
+    const [v, setV] = useState('dark');
+    return h(ExpanderPicker, { label: 'Theme', value: v, options: OPTIONS, onChange: (x: string) => { changes.push(x); setV(x); } });
+  }
+  const el = document.createElement('div');
+  document.body.appendChild(el);
+  const root = createRoot(el);
+  act(() => root.render(h(AxfProvider, { runtime: rt }, h(Host))));
+  const run = async (cmd: Record<string, unknown>) => { let r: unknown; await act(async () => { r = await reg.run(cmd); }); return r as { ok: boolean; state?: Record<string, unknown>; error?: unknown }; };
+  const isOpen = () => el.querySelector('.fx-pick')!.getAttribute('data-fx-pick-open') === 'on';
+
+  ok(reg.entry('setting:theme'), 'every picker is the target setting:<label slug>');
+  const st = await run({ verb: 'state', address: 'setting:theme' });
+  ok(st.ok, 'state answers');
+  const s0 = JSON.stringify(st);
+  ok(s0.includes('"dark"') && s0.includes('"sepia"') && s0.includes('"expanded":false'), 'state reads the value, the options and that it is closed');
+  const set = await run({ verb: 'set', address: 'setting:theme', value: 'sepia' });
+  ok(set.ok, 'set applies without the UI');
+  eq(changes, ['sepia'], 'set calls onChange once');
+  eq(el.querySelector('.fx-pick__value')!.textContent, 'Sepia', 'the row shows it');
+  const byLabel = await run({ verb: 'set', address: 'setting:theme', value: 'Light' });
+  ok(byLabel.ok && changes.at(-1) === 'light', 'set takes the option label too (voice says names)');
+  const bad = await run({ verb: 'set', address: 'setting:theme', value: 'neon' });
+  ok(!bad.ok && changes.length === 2, 'an unknown value is refused, nothing applied');
+  const off = await run({ verb: 'set', address: 'setting:theme', value: 'off' });
+  ok(!off.ok && changes.length === 2, 'a disabled option is refused');
+  await run({ verb: 'press', address: 'setting:theme' });
+  ok(isOpen(), 'press opens the grid');
+  ok(JSON.stringify(await run({ verb: 'state', address: 'setting:theme' })).includes('"expanded":true'), 'state says it is open');
+  act(() => { (el.querySelector('.fx-pick__tile:nth-child(3)') as HTMLElement).click(); });
+  ok(JSON.stringify(await run({ verb: 'state', address: 'setting:theme' })).includes('"highlighted":"sepia"'), 'state reads the highlight');
+  await run({ verb: 'press', address: 'setting:theme' });
+  ok(!isOpen() && changes.at(-1) === 'sepia', 'press again applies the highlighted option and closes (the arrow, without the UI)');
+  act(() => root.unmount());
 }
 
 console.log(`✓ expander-picker@1 DOM: ${checks} checks`);
