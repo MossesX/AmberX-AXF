@@ -24,7 +24,7 @@
 import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { DataStoreError, NAMESPACES, LIMITS, PATTERNS, canonical, createDataStore, etagOf, httpBackend, kindOfFile } from './data-store.mjs';
 
@@ -48,13 +48,19 @@ export function validKey(key) {
   if (!segs.every((s) => SEGMENT.test(s) && s !== '.' && s !== '..')) return false;
   return !NAMESPACES[ns].open || (segs.length >= 2 && FOLDER.test(segs[0]));
 }
+/** A segment over 80 characters → its start + '--' + 16 hex of its SHA-256 + its extension, 80 in all (data-store-paths.json longSegments). */
+export function shortSegment(seg) {
+  if (seg.length <= 80) return seg;
+  const ext = (/(\.[A-Za-z0-9]{1,8})$/.exec(seg) || ['', ''])[1];
+  return `${seg.slice(0, 62 - ext.length)}--${createHash('sha256').update(seg).digest('hex').slice(0, 16)}${ext}`;
+}
 /** A path relative to a root → its key, or null (stays local). */
 export function mapRel(root, rel) {
   for (const { re, to } of RULES[root] || []) {
     const m = re.exec(rel);
     if (!m) continue;
     if (to === null) return null;
-    const key = to.replace(/\{(\d)\}/g, (_, n) => m[Number(n)]);
+    const key = to.replace(/\{(\d)\}/g, (_, n) => m[Number(n)]).split('/').map(shortSegment).join('/');
     return validKey(key) ? key : null;
   }
   return null;

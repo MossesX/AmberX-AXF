@@ -84,6 +84,15 @@ def valid_key(key: str) -> bool:
     return not NAMESPACES[ns].get("open") or (len(segs) >= 2 and bool(_FOLDER.match(segs[0])))
 
 
+def short_segment(seg: str) -> str:
+    """A segment over 80 characters → its start + '--' + 16 hex of its SHA-256 + its extension, 80 in all (longSegments)."""
+    if len(seg) <= 80:
+        return seg
+    m = re.search(r"(\.[A-Za-z0-9]{1,8})$", seg)
+    ext = m.group(1) if m else ""
+    return f"{seg[:62 - len(ext)]}--{hashlib.sha256(seg.encode('utf-8')).hexdigest()[:16]}{ext}"
+
+
 def map_rel(root: str, rel: str) -> str | None:
     """`root` + a path relative to it → its key, or None (stays local). Same rules as data-store-paths.mjs."""
     for rx, to in _RULES.get(root, []):
@@ -91,7 +100,7 @@ def map_rel(root: str, rel: str) -> str | None:
         if m:
             if to is None:
                 return None
-            key = re.sub(r"\{(\d)\}", lambda g: m.group(int(g.group(1))), to)
+            key = "/".join(short_segment(x) for x in re.sub(r"\{(\d)\}", lambda g: m.group(int(g.group(1))), to).split("/"))
             return key if valid_key(key) else None
     return None
 
