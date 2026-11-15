@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:57:25.110Z",
+ "updatedAt": "2026-11-15T00:57:38.619Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -126750,7 +126750,7 @@
    "pr": "#630",
    "priority": "P1",
    "createdAt": "2026-11-13T18:13:23.703Z",
-   "updatedAt": "2026-11-15T00:40:47.763Z",
+   "updatedAt": "2026-11-15T00:57:14.199Z",
    "builtAt": "",
    "notes": [
     {
@@ -126784,6 +126784,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-new-asset-type-animated-expanding-row--earl, shared account login)",
      "at": "2026-11-15T00:27:27.414Z"
+    },
+    {
+     "text": "s8: 3 design options (unfold-cards default, list-rows, chips-quick; desktop + phone) are in _claude/builds/reports/new-asset-type-animated-expanding-row/shots on the branch. Not yet in UI Review: this headless session has no AXF_CONSOLE_URL / AXF_TOKEN. To post: AXF_CONSOLE_URL=… AXF_TOKEN=… node apps/console-web/plugins/ui-review/review.mjs submit --kind controls --name 'Expander picker: 3 looks' --app console-web --screen /settings --group 'new-asset-type-animated-expanding-row - Nov 15' --shots-dir _claude/builds/reports/new-asset-type-animated-expanding-row/shots --branch claude/new-asset-type-animated-expanding-row --pr 630 --console",
+     "at": "2026-11-15T00:57:11.288Z"
     }
    ],
    "approvals": [
@@ -126956,8 +126960,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:57:14.199Z",
      "note": "",
      "uid": "st-mwfaqxlj08xsb4",
      "createdAt": "2026-11-13T18:14:50.263Z"

@@ -798,8 +798,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:12 UTC · `merge-main-land-move-amberx-web-app` note (all) · orchestrator
-- 2026-11-14 23:11 UTC · `land-finish-auto-land-live-clear-backlog` s16 done, → running (all) · orchestrator
 - 2026-11-14 23:12 UTC · `one-source-truth-console-shows-only-what` note (all) · pipeline
 - 2026-11-14 23:12 UTC · `owner-recognized-everywhere-veto` → pending, note (all) · pipeline
 - 2026-11-14 23:12 UTC · `picker-dialog-plugin-replaces-all` s14 done (all) · orchestrator
@@ -1198,6 +1196,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 00:54 UTC · `ui-manager-floating-window-to-select-any` s7 done (all) · orchestrator
 - 2026-11-15 00:40 UTC · `new-asset-type-animated-expanding-row` s7 done (all) · orchestrator
 - 2026-11-15 00:57 UTC · `quick-settings-pinned-collapsible-pane` s6 done (all) · orchestrator
+- 2026-11-15 00:57 UTC · `new-asset-type-animated-expanding-row` note (all) · orchestrator
+- 2026-11-15 00:57 UTC · `new-asset-type-animated-expanding-row` s8 done (all) · orchestrator
 
 ## Token passes (log)
 
