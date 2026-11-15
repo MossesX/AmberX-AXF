@@ -798,7 +798,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:31 UTC · `replace-merge-queue-one-time-landing` → pending, merged, note (all) · reconciler
 - 2026-11-14 23:32 UTC · `console-look-becomes-default-axhub-skin` note (all) · pipeline
 - 2026-11-14 23:32 UTC · `replace-merge-queue-one-time-landing` note (all) · orchestrator
 - 2026-11-14 23:31 UTC · `land-batch-merge-main-each-finished` branch claude/land-batch-merge-main-each-finished-report, PR #687 (all) · builds-live
@@ -1198,6 +1197,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 01:34 UTC · `demo-video-series-three-minute-browser` s17 done (all) · orchestrator
 - 2026-11-15 01:35 UTC · `projects-own-everything-per-project` s5 done (all) · orchestrator
 - 2026-11-15 01:36 UTC · `banner-widget-shapes-more-than-circle` s7 done (all) · orchestrator
+- 2026-11-15 01:36 UTC · `demo-video-series-three-minute-browser` s18 done (all) · orchestrator
 
 ## Token passes (log)
 
