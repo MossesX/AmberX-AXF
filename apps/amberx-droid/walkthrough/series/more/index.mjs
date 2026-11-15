@@ -25,5 +25,6 @@ import firstFive from './first-five.mjs';
 import oldWay from './old-way.mjs';
 import libraryTour from './library-tour.mjs';
 import publishing from './publishing.mjs';
+import harvesting from './harvesting.mjs';
 
-export const MORE = [commute, expenses, bossTexts, privateChat, onDemand, teenDriver, builtWithItself, employees, architecture, skinsBranding, orchestrator, consolePhone, planSpoken, voiceConsole, vetoApprovals, uiDirectory, povDay, sessionRecall, liveBanners, nestedNotes, menusToolbars, shippedFeatures, firstFive, oldWay, libraryTour, publishing];
+export const MORE = [commute, expenses, bossTexts, privateChat, onDemand, teenDriver, builtWithItself, employees, architecture, skinsBranding, orchestrator, consolePhone, planSpoken, voiceConsole, vetoApprovals, uiDirectory, povDay, sessionRecall, liveBanners, nestedNotes, menusToolbars, shippedFeatures, firstFive, oldWay, libraryTour, publishing, harvesting];
