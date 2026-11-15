@@ -771,3 +771,6 @@ class ConsoleFocus:
 
 
 plugin_services.provide("console-focus@1", ConsoleFocus(), Path(__file__).resolve().parents[1].name)
+
+# Auto-lander routes (Nov 15 2026): their own module, through auto-lander@1 only
+from . import lander as _lander  # noqa: E402,F401

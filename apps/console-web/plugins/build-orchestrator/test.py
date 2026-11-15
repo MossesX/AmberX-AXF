@@ -192,4 +192,7 @@ finally:
         else:
             os.environ[k] = v
 
+import subprocess as _sp  # noqa: E402
+_r = _sp.run([sys.executable, str(HERE / "server" / "test_lander.py")], capture_output=True, text=True, timeout=120)
+check(_r.returncode == 0, "auto-lander routes (server/test_lander.py)" + ("" if _r.returncode == 0 else f": {_r.stdout[-400:]}{_r.stderr[-400:]}"))
 print(f"build-orchestrator: {n} checks passed")
