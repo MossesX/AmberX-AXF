@@ -246,6 +246,97 @@
           "additionalProperties": false
         },
         "output": "{ ok, since, dry, found, shipped: [{ id, why, ok, created, manifest }] }"
+      },
+      {
+        "route": "POST /features/open",
+        "id": "open",
+        "navigate": true,
+        "title": "Open a feature in the app",
+        "description": "Open a shipped feature's screen, tab or setting in Brett's live console (console-control open, the same as console_open on its address). Named by id or in words; the best match opens and close ones come back as alternatives. A feature with no screen (not landed yet, framework only, removed) answers 409 with the reason. Say 'open feature choices tab'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "feature": {
+              "type": "string",
+              "description": "the feature's id (f-…) or a few words of its name: 'choices tab', 'veto alarm'"
+            },
+            "to": {
+              "type": "string",
+              "description": "recent (default), all, or a console client id"
+            }
+          },
+          "required": [
+            "feature"
+          ],
+          "additionalProperties": false
+        },
+        "output": "{ ok, status: delivered | pending | failed, openTarget: { target, label, via }, lookup: { match, alternatives, ambiguous } }"
+      },
+      {
+        "route": "GET /features/open-target",
+        "id": "open-target",
+        "readOnly": true,
+        "title": "Where a feature opens",
+        "description": "The console-control address a shipped feature opens at (checked against the console's registry) and its label, or target null with the reason (not-live, cancelled, removed, no-screen, unknown-address). Named by id or in words.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "feature": {
+              "type": "string",
+              "description": "the feature's id (f-…) or a few words of its name: 'choices tab', 'veto alarm'"
+            }
+          },
+          "required": [
+            "feature"
+          ],
+          "additionalProperties": false
+        },
+        "output": "{ feature, name, status, target, label, via } | { target: null, code, reason }, lookup"
+      },
+      {
+        "route": "GET /features/find",
+        "id": "find",
+        "readOnly": true,
+        "title": "Find a feature by name",
+        "description": "A feature named in words (or its id): the best match and, when the words fit several, the close alternatives.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "q": {
+              "type": "string",
+              "description": "id or words"
+            },
+            "limit": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "q"
+          ],
+          "additionalProperties": false
+        },
+        "output": "{ q, match, alternatives, ambiguous }"
+      },
+      {
+        "route": "GET /features/{fid}/open-target",
+        "id": "open-target-by-id",
+        "readOnly": true,
+        "title": "Where a feature opens (by id)",
+        "description": "open-target for one feature id."
+      },
+      {
+        "route": "POST /features/{fid}/open",
+        "id": "open-by-id",
+        "navigate": true,
+        "title": "Open a feature in the app (by id)",
+        "description": "open for one feature id; 409 with the reason when it has no screen."
+      },
+      {
+        "action": "feature.open",
+        "id": "action-feature-open",
+        "navigate": true,
+        "title": "Open a shipped feature (in the open console)",
+        "description": "Runs feature.open:<id or words> in the open console: opens that feature's screen there."
       }
     ]
   },
