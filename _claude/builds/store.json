@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6005,
- "updatedAt": "2026-11-15T04:30:51.582Z",
+ "rev": 6006,
+ "updatedAt": "2026-11-15T04:31:13.709Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -230823,7 +230823,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T04:28:05.062Z",
-   "updatedAt": "2026-11-15T04:30:21.947Z",
+   "updatedAt": "2026-11-15T04:30:40.911Z",
    "builtAt": "",
    "notes": [
     {
@@ -230843,8 +230843,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "data-container-axf-data-holds-all",
+    "brief": "# Build: data-container-axf-data-holds-all\n\n## Brett said (verbatim)\nAt: 2026-11-15T04:28:05.062Z\n> the console goes down, all the data is still available, all the notes are available, and the builds keep running. That's what I need.\n\n## What to build\nContinue build \"Data container: axf-data holds all console data\" (data-container-axf-data-holds-all) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-15 04:28):\n\"the console goes down, all the data is still available, all the notes are available, and the builds keep running. That's what I need.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (4 left, ~40 min):\n[ ] s1 (~10 min) Write the data-store@1 contract: the namespaces axf-data serves (notes, builds store/journal/history, settings, planner items, UI reviews, plugin data dirs, changes log), the record/blob shapes, rev/etag optimistic writes, append-only journals, the error codes, and the auth (internal network + per-service token issued from axHub's keys). Write the spec in framework/spec/DATA-STORE.md and the schema in framework/schemas/data-store.json\n[ ] s2 (~10 min) Write the reference client framework/core/data-store.mjs (get/put/list/append/watch/snapshot, rev conflicts, retry). Add a local-file backend so code can use the same API before cutover. Add the PORTING.md deferred Android gap line\n[ ] s3 (~10 min) Design the migration and its count checks: list every data source the console writes today (/projects/*/_data, _claude/builds, plugin lifecycle.dataDir, SQLite ledgers, settings), map each to a namespace, and define the per-namespace count+hash manifest and the rollback rule. Write framework/spec/fixtures/data-store-migration.json and the DATA-STORE.md migration section\n[ ] s4 (~10 min) Design the modes switch (local → shadow → cutover → rollback): in shadow, writes go to local and to axf-data, reads come from local, and a diff log records any drift. After cutover axf-data is the only store and local becomes the read-only backup. Write the mode state machine in framework/core/data-store-mode.mjs with a fixture\nRead first: framework/spec/DATA-STORE.md, framework/schemas/data-store.json, framework/core/data-store.mjs, framework/spec/PORTING.md, framework/spec/fixtures/data-store-migration.json, framework/core/data-store-mode.mjs, framework/spec/fixtures/data-store-mode.json\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step data-container-axf-data-holds-all <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link data-container-axf-data-holds-all --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step data-container-axf-data-holds-all <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note data-container-axf-data-holds-all \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -230870,7 +230870,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-15T04:30:25.316Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -231564,7 +231570,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
