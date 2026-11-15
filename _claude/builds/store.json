@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5786,
- "updatedAt": "2026-11-15T00:29:58.278Z",
+ "rev": 5787,
+ "updatedAt": "2026-11-15T00:30:32.331Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -221727,7 +221727,7 @@
    "pr": "#676",
    "priority": "P1",
    "createdAt": "2026-11-14T18:13:15.368Z",
-   "updatedAt": "2026-11-15T00:08:17.045Z",
+   "updatedAt": "2026-11-15T00:30:24.925Z",
    "builtAt": "2026-11-15T00:08:17.045Z",
    "notes": [
     {
@@ -221831,6 +221831,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:30:24.692Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/amberx-droid/axf.manifest.json, apps/axhub-web/axf.manifest.json, apps/console-web/axf.manifest.json, apps/console-web/plugins/README.md, apps/console-web/plugins/agent-manager/web/forms.tsx, apps/console-web/plugins/agent-manager/web/settings.tsx, ap"
+     }
+    ]
    },
    "steps": [
     {
@@ -222403,7 +222420,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
