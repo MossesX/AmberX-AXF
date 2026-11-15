@@ -14,10 +14,11 @@
  * The No wait switch itself does nothing here: the console server turns it into a standing all-scope veto pass
  * (control-pass@1, token-control) with the same owner approval, and revokes it when the switch goes off.
  */
-import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync, appendFileSync } from 'node:fs';
+import { existsSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { nonHumanSource } from '../../../../framework/core/model-switch.mjs';
+import * as files from '../../../../framework/core/data-files.mjs';
 
 export const FRAME = 'claude-settings@1';
 export const FOLDER = 'claude-settings';
@@ -40,7 +41,8 @@ export class SettingsError extends Error {
 }
 
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
-const readJson = (f) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return null; } };
+// data-store@1: the settings document and the audit log follow their namespaces onto axf-data (framework/core/data-files.mjs)
+const readJson = (f) => files.readJsonSync(f, null);
 
 /* ------------------------------------------------------------------ where things are */
 
@@ -119,13 +121,10 @@ export function readDoc() {
 }
 function writeDoc(d) {
   const { file } = storeFile();
-  mkdirSync(dirname(file), { recursive: true });
-  const tmp = `${file}.tmp-${process.pid}`;
-  writeFileSync(tmp, `${JSON.stringify(d, null, 1)}\n`);
-  renameSync(tmp, file);
+  files.writeJsonSync(file, d, 1);
 }
 function audit(entry) {
-  try { mkdirSync(DATA_DIR, { recursive: true }); appendFileSync(join(DATA_DIR, 'audit.jsonl'), `${JSON.stringify({ at: new Date().toISOString(), ...entry })}\n`); } catch { /* audit is best effort */ }
+  try { files.appendJsonlSync(join(DATA_DIR, 'audit.jsonl'), { at: new Date().toISOString(), ...entry }); } catch { /* audit is best effort */ }
 }
 
 /** The value in force: the stored one when it is still valid (and the setting isn't locked), else the default. */

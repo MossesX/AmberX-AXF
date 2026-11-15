@@ -15,13 +15,13 @@
  *   local     plain files, exactly what the callers did before (the default: no behaviour change)
  *   shadow    the file first (the caller's answer), then the same write on axf-data; a failed mirror is a data-drift@1
  *             line in <data>/data-store/drift/<ns>.jsonl, never an error
- *   cutover   axf-data only (async calls). The sync calls refuse with `unavailable` instead of reading a stale copy:
- *             a caller that must keep working after the cutover uses the async calls
+ *   cutover   axf-data only. Async calls use the client in-process; sync calls (…Sync) go through callSync (a child
+ *             process per call). axf-data unreachable: reads fall back to the local read-only copy (logged), writes throw
  *   rollback  async reads from axf-data; writes refuse with `read_only`
  *
  * axf-data: AXF_DATA_URL + AXF_DATA_TOKEN (the env files deploy/install-data.sh writes). Tests pass `remote`.
  */
-import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, statSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
@@ -133,11 +133,35 @@ const mirror = (fn) => { const p = Promise.resolve().then(fn).catch(() => {}); p
 export async function flush() { await Promise.all([...pending]); }
 
 function route(p) { const key = keyFor(p); return { key, mode: key ? modeOf(key) : 'local' }; }
-const refuseSync = (key, mode) => { throw new DataStoreError(mode === 'rollback' ? 'read_only' : 'unavailable', `${nsIdOf(key)} is in ${mode}: use the async call (readJson / writeJson)`); };
+// Sync calls reach axf-data through callSync (a child process per call, ~50 ms): shadow mirrors are written before the
+// call returns (a CLI that exits at once loses nothing), cutover reads and writes go there only.
+const b64 = (text) => Buffer.from(typeof text === 'string' ? text : Buffer.from(text)).toString('base64');
+function putLatestSync(key, text) {
+  const { data, contentType } = bodyFor(key, text);
+  if (contentType) return callSync({ op: 'put', key, data: { $bytes: b64(text) }, contentType, force: true });
+  for (let i = 0; ; i += 1) {
+    const cur = callSync({ op: 'get', key });
+    try { return callSync({ op: 'put', key, data, ...(cur ? { ifMatch: cur.etag } : { create: true }) }); }
+    catch (e) { if (!['conflict', 'exists'].includes(e.code) || i >= 4) throw e; }
+  }
+}
+function remoteTextSync(key) {
+  if (kindOfKey(key) === 'journal') {
+    const lines = []; let since = 0;
+    for (;;) { let r; try { r = callSync({ op: 'read', key, since }); } catch (e) { if (e.code === 'not_found') return lines.length ? lines.join('') : null; throw e; } for (const x of r.entries) lines.push(`${JSON.stringify(x.entry)}\n`); if (!r.next) break; since = r.next; }
+    return lines.join('');
+  }
+  const rec = callSync({ op: 'get', key });
+  if (!rec) return null;
+  return rec.data && rec.data.$bytes !== undefined ? Buffer.from(rec.data.$bytes, 'base64').toString('utf8') : JSON.stringify(rec.data, null, 2);
+}
 
 export function readTextSync(p, fallback = null) {
   const { key, mode } = route(p);
-  if (mode === 'cutover' || mode === 'rollback') refuseSync(key, mode);
+  if (mode === 'cutover' || mode === 'rollback') {
+    try { const t = remoteTextSync(key); return t === null ? fallback : t; }
+    catch (e) { if (e.code !== 'unavailable') throw e; logDrift('read', key, 'write-failed', null, null, `axf-data unreachable in ${mode}: served the local read-only copy`); }
+  }
   try { return readFileSync(p, 'utf8'); } catch { return fallback; }
 }
 export function readJsonSync(p, fallback = null) {
@@ -147,17 +171,51 @@ export function readJsonSync(p, fallback = null) {
 }
 export function writeTextSync(p, text) {
   const { key, mode } = route(p);
-  if (mode === 'cutover' || mode === 'rollback') refuseSync(key, mode);
+  if (mode === 'rollback') throw new DataStoreError('read_only', `${nsIdOf(key)} is rolling back: writes wait until it is local again`);
+  if (mode === 'cutover') { putLatestSync(key, text); return; }
   writeAtomic(p, text);
-  if (mode === 'shadow') mirror(async () => { try { await remotePut(needRemote(key), key, text); } catch (e) { logDrift('write', key, 'write-failed', null, null, `${e.code || 'error'}: ${e.message}`); } });
+  if (mode === 'shadow') { try { putLatestSync(key, text); } catch (e) { logDrift('write', key, 'write-failed', null, null, `${e.code || 'error'}: ${e.message}`); } }
 }
 export function writeJsonSync(p, doc, indent = 2) { writeTextSync(p, `${JSON.stringify(doc, null, indent)}\n`); }
 export function appendJsonlSync(p, entry) {
   const { key, mode } = route(p);
-  if (mode === 'cutover' || mode === 'rollback') refuseSync(key, mode);
+  const journal = key && kindOfKey(key) === 'journal';
+  if (journal && mode === 'rollback') throw new DataStoreError('read_only', `${nsIdOf(key)} is rolling back`);
+  if (journal && mode === 'cutover') { callSync({ op: 'append', key, entries: [entry], idem: randomUUID() }); return; }
   mkdirSync(dirname(p), { recursive: true });
   appendFileSync(p, `${JSON.stringify(entry)}\n`);
-  if (mode === 'shadow' && kindOfKey(key) === 'journal') mirror(async () => { try { await needRemote(key).append(key, [entry], { idempotencyKey: randomUUID() }); } catch (e) { logDrift('append', key, 'append-failed', null, null, `${e.code || 'error'}: ${e.message}`); } });
+  if (journal && mode === 'shadow') { try { callSync({ op: 'append', key, entries: [entry], idem: randomUUID() }); } catch (e) { logDrift('append', key, 'append-failed', null, null, `${e.code || 'error'}: ${e.message}`); } }
+}
+
+/** Does the file exist (on axf-data in cutover / rollback)? */
+export function existsAnySync(p) {
+  const { key, mode } = route(p);
+  if (mode === 'cutover' || mode === 'rollback') { try { return remoteTextSync(key) !== null; } catch (e) { if (e.code !== 'unavailable') throw e; } }
+  return existsSync(p);
+}
+/** File names directly inside `dir` (the keys under its prefix on axf-data in cutover / rollback). */
+export function listSync(dir) {
+  const probe = keyFor(join(dir, '__probe__.json'));
+  const mode = probe ? modeOf(probe) : 'local';
+  if (mode === 'cutover' || mode === 'rollback') {
+    const [ns, ...rest] = probe.split('/');
+    const prefix = rest.slice(0, -1).join('/') + (rest.length > 1 ? '/' : '');
+    const names = new Set(); let after = '';
+    try {
+      for (;;) { const l = callSync({ op: 'list', ns, prefix, after }); for (const i of l.items) { const tail = i.path.slice(prefix.length); if (tail && !tail.includes('/')) names.add(tail); } if (!l.next) break; after = l.next; }
+      return [...names].sort();
+    } catch (e) { if (e.code !== 'unavailable') throw e; }
+  }
+  try { return readdirSync(dir).sort(); } catch { return []; }
+}
+/** Remove a file (a tombstone on axf-data; never a journal). */
+export function removeSync(p) {
+  const { key, mode } = route(p);
+  if (mode === 'rollback') throw new DataStoreError('read_only', `${nsIdOf(key)} is rolling back`);
+  const remoteDel = () => { try { callSync({ op: 'delete', key, force: true }); } catch (e) { if (e.code !== 'not_found') throw e; } };
+  if (mode === 'cutover') { remoteDel(); return; }
+  rmSync(p, { force: true });
+  if (mode === 'shadow') { try { remoteDel(); } catch (e) { logDrift('write', key, 'write-failed', null, null, `delete: ${e.code || 'error'}: ${e.message}`); } }
 }
 
 // ── files (async: every mode) ──
@@ -200,8 +258,8 @@ export async function writeText(p, text) {
   const { key, mode } = route(p);
   if (mode === 'rollback') throw new DataStoreError('read_only', `${nsIdOf(key)} is rolling back: writes wait until it is local again`);
   if (mode === 'cutover') { await remotePut(needRemote(key), key, text); return; }
-  writeTextSync(p, text);
-  await flush();
+  writeAtomic(p, text);
+  if (mode === 'shadow') { try { await remotePut(needRemote(key), key, text); } catch (e) { logDrift('write', key, 'write-failed', null, null, `${e.code || 'error'}: ${e.message}`); } }
 }
 export async function writeJson(p, doc, indent = 2) { await writeText(p, `${JSON.stringify(doc, null, indent)}\n`); }
 /** Read → fn(doc) → write, with the rev check on axf-data in cutover (a conflict re-reads and re-applies). */
@@ -218,9 +276,11 @@ export async function updateJson(p, fn, fallback = null) {
 export async function appendJsonl(p, entry) {
   const { key, mode } = route(p);
   if (mode === 'rollback') throw new DataStoreError('read_only', `${nsIdOf(key)} is rolling back`);
-  if (mode === 'cutover' && kindOfKey(key) === 'journal') { await needRemote(key).append(key, [entry], { idempotencyKey: randomUUID() }); return; }
-  appendJsonlSync(p, entry);
-  await flush();
+  const journal = key && kindOfKey(key) === 'journal';
+  if (journal && mode === 'cutover') { await needRemote(key).append(key, [entry], { idempotencyKey: randomUUID() }); return; }
+  mkdirSync(dirname(p), { recursive: true });
+  appendFileSync(p, `${JSON.stringify(entry)}\n`);
+  if (journal && mode === 'shadow') { try { await needRemote(key).append(key, [entry], { idempotencyKey: randomUUID() }); } catch (e) { logDrift('append', key, 'append-failed', null, null, `${e.code || 'error'}: ${e.message}`); } }
 }
 
 /**

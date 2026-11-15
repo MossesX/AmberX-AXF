@@ -23,7 +23,7 @@ try {
   let result;
   switch (req.op) {
     case 'get': { const r = await s.get(req.key); result = r ? { ...r, data: r.data instanceof Uint8Array ? { $bytes: Buffer.from(r.data).toString('base64') } : r.data } : null; break; }
-    case 'put': result = await s.put(req.key, req.data, { ifMatch: req.ifMatch, create: !!req.create, force: !!req.force, contentType: req.contentType }); break;
+    case 'put': result = await s.put(req.key, req.data && req.data.$bytes !== undefined ? new Uint8Array(Buffer.from(req.data.$bytes, 'base64')) : req.data, { ifMatch: req.ifMatch, create: !!req.create, force: !!req.force, contentType: req.contentType }); break;
     case 'delete': result = await s.delete(req.key, { ifMatch: req.ifMatch, force: !!req.force }); break;
     case 'append': result = await s.append(req.key, req.entries, { idempotencyKey: req.idem }); break;
     case 'read': result = await s.read(req.key, { since: req.since, limit: req.limit }); break;

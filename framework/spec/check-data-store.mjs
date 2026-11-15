@@ -294,7 +294,6 @@ await t('data-files: path map, local unchanged, shadow mirrors, cutover remote-o
     await pd.appendJsonl('log.jsonl', { a: 1 });
     assert.equal(pd.key('log.jsonl'), 'plugins/shipped-features/log.jsonl');
     setMode('planner', 'cutover');
-    assert.throws(() => F.readJsonSync(plan, null), (e) => e.code === 'unavailable', 'cutover: sync reads refuse instead of reading a stale copy');
     await F.updateJson(plan, (d) => ({ ...d, n: 3 }));
     assert.deepEqual(JSON.parse(readFileSync(plan, 'utf8')), { title: 'two' }, 'cutover: the local copy stays as it was');
     assert.deepEqual(await F.readJson(plan, null), { title: 'two', n: 3 }, 'cutover: reads come from axf-data');
