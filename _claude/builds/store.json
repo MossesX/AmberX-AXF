@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5864,
- "updatedAt": "2026-11-15T01:01:38.938Z",
+ "rev": 5865,
+ "updatedAt": "2026-11-15T01:01:54.647Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -202724,10 +202724,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/prompting-engine-control-panel-events",
-   "pr": "",
+   "pr": "#697",
    "priority": "P1",
    "createdAt": "2026-11-13T18:16:04.183Z",
-   "updatedAt": "2026-11-15T01:01:11.150Z",
+   "updatedAt": "2026-11-15T01:01:33.099Z",
    "builtAt": "",
    "notes": [
     {
