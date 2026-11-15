@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T16:41:07.340Z",
+ "updatedAt": "2026-11-15T17:06:19.045Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -152000,10 +152000,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/build-rules-tab-gate-rules-vps-owns",
-   "pr": "",
+   "pr": "#715",
    "priority": "P0",
    "createdAt": "2026-11-15T13:23:46.016Z",
-   "updatedAt": "2026-11-15T15:26:40.578Z",
+   "updatedAt": "2026-11-15T17:06:17.316Z",
    "builtAt": "",
    "notes": [
     {

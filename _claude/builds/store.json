@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6343,
- "updatedAt": "2026-11-15T16:41:07.340Z",
+ "rev": 6344,
+ "updatedAt": "2026-11-15T17:06:19.045Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -235184,10 +235184,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/build-rules-tab-gate-rules-vps-owns",
-   "pr": "",
+   "pr": "#715",
    "priority": "P0",
    "createdAt": "2026-11-15T13:23:46.016Z",
-   "updatedAt": "2026-11-15T15:26:40.578Z",
+   "updatedAt": "2026-11-15T17:06:17.316Z",
    "builtAt": "",
    "notes": [
     {
@@ -235928,7 +235928,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
