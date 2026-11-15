@@ -2570,6 +2570,18 @@
    "from": "detail",
    "addenda": []
   },
+  "data-container-axf-data-holds-all": {
+   "said": "the console goes down, all the data is still available, all the notes are available, and the builds keep running. That's what I need.",
+   "at": "2026-11-15T04:28:05.062Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "dataset-bar": {
    "said": "Data set bar plugin (Brett)\nA plugin that attaches to ANY data set (grid, list, tree, table) and is hidden by default.\n- Search, Filter and Sort are each their own registry asset (search-bar, filter-button, sort-control), reusable on their own, plus a combined 'data set bar' asset.\n- Attach: right-click any data set -> 'Attach data set bar' (or attach pieces individually), with placement top/bottom/inline/floating. Detach the same way. Also attachable from the Registry Browser, by voice, and via API/MCP/CLI.\n- Filter: per-column/field rules, saved filters. Sort: multi-key, saved. Search: field-scoped, fuzzy.\n- Per-attachment config stored locally (local-first), with Reset to default.\n- Existing top-bar search widget becomes an instance of the search-bar asset.\n- Submit at least 3 UI options to UI Review first.",
    "at": "2026-11-07T03:28:42.687Z",
