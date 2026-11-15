@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T13:23:33.378Z",
+ "updatedAt": "2026-11-15T13:23:46.615Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -151506,7 +151506,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T13:22:11.842Z",
-   "updatedAt": "2026-11-15T13:22:50.077Z",
+   "updatedAt": "2026-11-15T13:23:34.290Z",
    "builtAt": "",
    "notes": [
     {
@@ -151516,6 +151516,10 @@
     {
      "text": "Brett (08:23): EVERY plugin gets its own home card, built at the same time as the plugin. Make a home card part of the plugin lifecycle: the plugin _template and plugin scaffold create a card (declared in plugin.json), install adds it, uninstall removes it, and the plugin-lifecycle check fails CI if a plugin has no card. Then audit all ~75 existing plugins and add a card to every one that's missing one.",
      "at": "2026-11-15T13:22:50.077Z"
+    },
+    {
+     "text": "Brett (08:25): the VPS makes the home card, not the Claude session. The card generator runs on the VPS from plugin.json and the template, and it's registered as a rule in the Gate & rules plugin's Build rules tab. Don't put the rule in CLAUDE.md or the build briefs.",
+     "at": "2026-11-15T13:23:34.290Z"
     }
    ],
    "approvals": [],

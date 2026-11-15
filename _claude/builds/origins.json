@@ -1805,6 +1805,18 @@
    "from": "",
    "addenda": []
   },
+  "build-rules-tab-gate-rules-vps-owns": {
+   "said": "Can we put these in a build rules tab on the VPS in that rules plugin? Will it enforce it? Will the VPS make sure it builds the home card instead of Claude? Remove it from Claude so it doesn't build it twice. Remove everything for all the builders from Claude so it don't happen twice and put them all in that plugin.",
+   "at": "2026-11-15T13:23:46.016Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "build-statuses-tell-the-truth-orchestrator-list": {
    "said": "You gotta fix the status of these. They can't say running, and you gotta show if they need something. Show what they need. And I can't sort by day either. I don't want to be forced to view everything by category. I don't want a flat list by default, it's got to at least have an expanding row, depending on the root.",
    "at": "2026-11-10T00:16:50.544Z",
