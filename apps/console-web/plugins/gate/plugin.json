@@ -87,45 +87,53 @@
         "id": "lander-status",
         "route": "GET /lander",
         "title": "Auto-lander: status",
-        "readOnly": true
+        "readOnly": true,
+        "tool": "lander_status"
       },
       {
         "id": "lander-waiting",
         "route": "GET /lander/waiting",
         "title": "Auto-lander: waiting PRs",
-        "readOnly": true
+        "readOnly": true,
+        "tool": "lander_waiting"
       },
       {
         "id": "lander-runs",
         "route": "GET /lander/runs",
         "title": "Auto-lander: last runs",
-        "readOnly": true
+        "readOnly": true,
+        "tool": "lander_runs"
       },
       {
         "id": "lander-mode",
         "route": "GET /lander/mode",
         "title": "Auto-lander: Merge queue switch",
-        "readOnly": true
+        "readOnly": true,
+        "tool": "lander_mode"
       },
       {
         "id": "lander-mode-set",
         "route": "POST /lander/mode",
-        "title": "Auto-lander: flip the Merge queue switch"
+        "title": "Auto-lander: flip the Merge queue switch",
+        "tool": "lander_mode_set"
       },
       {
         "id": "lander-land-now",
         "route": "POST /lander/land-now",
-        "title": "Auto-lander: land a PR next (confirm)"
+        "title": "Auto-lander: land a PR next (confirm)",
+        "tool": "lander_land_now"
       },
       {
         "id": "lander-pause",
         "route": "POST /lander/pause",
-        "title": "Auto-lander: pause"
+        "title": "Auto-lander: pause",
+        "tool": "lander_pause"
       },
       {
         "id": "lander-resume",
         "route": "POST /lander/resume",
-        "title": "Auto-lander: resume"
+        "title": "Auto-lander: resume",
+        "tool": "lander_resume"
       },
       {
         "id": "settings",

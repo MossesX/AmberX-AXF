@@ -24,6 +24,17 @@ Contract: `framework/spec/GATE.md`. Engine: `framework/core/gate-rules.mjs` (pur
 | `server/routes.py` | REST `/api/plugins/gate/…` (MCP `gate_*` / `lander_*` through plugin-commands) |
 | `web/` | GateView and its tabs |
 
+## API (every surface the same calls)
+- REST `/api/plugins/gate/…` (server/routes.py docstring lists every route).
+- MCP on the console's `/mcp` through plugin-commands: `gate_rules_list|get|set|toggle|reset`, `gate_check_pr`,
+  `gate_history`, `gate_settings(_set)`, `lander_status|waiting|runs|mode|mode_set|land_now|pause|resume` (names fixed
+  by GATE.md through `commands.items[].tool`). axHub reaches them through the console's `/mcp`; its policy follows the
+  annotations (reads run at once, writes are veto calls, Reset and Land now also ask for the gate's confirm token).
+- CLI `axf gate rules|check|history|lander|settings …` (gate.mjs, plugin.json `cli`), and every command id through
+  plugin-commands (`axf gate rules-list --json`).
+- Voice / console actions: `gate.open[:tab]`, `gate.rule:<id>[:on|off]`, `lander.land-now:<pr>` (confirms first),
+  `lander.pause[:why]`, `lander.resume`.
+
 ## Lifecycle (plugin-lifecycle@1)
 Data: `.axf-console/plugins/gate/` (`rules.json`, `history.jsonl`, `lander.json`, `confirms.json`, `settings.json`).
 The lander keys mirrored into the merge-queue provider's `config.json` belong to that plugin and stay on uninstall.
