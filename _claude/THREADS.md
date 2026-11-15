@@ -801,7 +801,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:41 UTC · `merge-main-land-move-amberx-web-app` s4 done (all) · orchestrator
 - 2026-11-14 23:41 UTC · `merge-main-land-move-amberx-web-app` s5 done (all) · orchestrator
 - 2026-11-14 23:42 UTC · `merge-main-land-move-amberx-web-app` s6 done (all) · orchestrator
 - 2026-11-14 23:42 UTC · `merge-main-land-one-source-truth-console` note (all) · builds-live
@@ -1201,6 +1200,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 04:25 UTC · `move-build-orchestrator-to-axhub` → pending, note (all) · pipeline
 - 2026-11-15 04:25 UTC · `move-build-orchestrator-to-axhub` note (all) · orchestrator
 - 2026-11-15 04:25 UTC · `move-build-orchestrator-to-axhub` note (all) · mcp
+- 2026-11-15 04:26 UTC · `move-build-orchestrator-to-axhub` → queued (all) · mcp
 
 ## Token passes (log)
 
