@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T14:57:38.731Z",
+ "updatedAt": "2026-11-15T14:58:06.791Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -152610,7 +152610,7 @@
    "pr": "#712",
    "priority": "P1",
    "createdAt": "2026-11-15T13:36:18.858Z",
-   "updatedAt": "2026-11-15T14:55:26.861Z",
+   "updatedAt": "2026-11-15T14:58:03.652Z",
    "builtAt": "",
    "notes": [
     {
@@ -152682,7 +152682,16 @@
      "at": "2026-11-15T14:55:26.861Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-15T14:58:03.652Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "We're gonna build phone connect. Plug in, and it's gonna contain these features. Approval page, add it. Monitor yes. Voice commands get rid of it, it's buggy. Notes, dictation, web tabs, AI connection gone. AI assistant and agent manager kill it, merge everything into the assistant in the console. Walkthrough video kill it. Open pages on phone keep it. Notifications keep it. Audio recorder, remove it out of console and put the whole thing in the phone app. Wake word listener kill it. Do we need a whole console app?",
@@ -152779,8 +152788,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T14:58:03.652Z",
      "note": "",
      "uid": "st-mwhvsdee04xaz0",
      "createdAt": "2026-11-15T13:39:21.685Z"
