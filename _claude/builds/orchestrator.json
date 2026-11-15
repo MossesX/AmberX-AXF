@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T12:02:29.393Z",
+ "updatedAt": "2026-11-15T12:02:39.321Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -147180,7 +147180,7 @@
    "title": "Auto-lander controls in the gate plugin",
    "category": "",
    "detail": "Add an 'Auto-lander' tab to the server gate plugin built today (the one with the gate rules, ~3 tabs; from server-gate-one-session-per-build-no / owner-recognized-everywhere-veto policy work; find the right one, it's whichever holds the gate rules). The tab controls the auto-lander (cron /etc/cron.d/axf-auto-land, push-banner land.mjs / serial lander): a big On/Off switch (writes the setting the cron reads; off = cron skips), live status (last run time, result, what it's landing now, why it's not landing: queue empty, CI waiting, conflict, token missing), the landing line (one at a time, in order) with move up / skip / land now per build, mode picker (serial one-at-a-time vs merge queue, default serial), and the log of recent runs. Also diagnose now why the auto-lander lands nothing even though its cron exists (console app PRs #637/#639/#633/#640/#643 green for 2h+), and fix it. Remove the stale 'axf-lander inactive' warning (that systemd service doesn't exist). Full API and voice ('turn on the auto lander', 'what's landing'), tokens only, tests, help, Shipped features.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -147188,7 +147188,7 @@
    "pr": "#705",
    "priority": "P0",
    "createdAt": "2026-11-15T04:17:06.158Z",
-   "updatedAt": "2026-11-15T05:41:17.346Z",
+   "updatedAt": "2026-11-15T12:02:37.475Z",
    "builtAt": "",
    "notes": [
     {
@@ -147234,6 +147234,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-15T05:41:17.346Z"
+    },
+    {
+     "text": "gate-rules-plugin-in-the-console (s1 design note, _claude/builds/reports/gate-rules-plugin-in-the-console.md): gate-rules@1 takes autoLander.enabled/mode and auto-lander-run@1 from this build as its lander input. The gate plugin's Auto-lander tab calls the same push-banner /lander/* routes through a capability service; the orchestrator's Auto-lander tab becomes a link to it once both are on main. No duplicate settings key.",
+     "at": "2026-11-15T12:02:37.475Z"
     }
    ],
    "approvals": [],
