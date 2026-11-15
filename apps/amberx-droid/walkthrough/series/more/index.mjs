@@ -15,5 +15,7 @@ import planSpoken from './plan-spoken.mjs';
 import voiceConsole from './voice-console.mjs';
 import vetoApprovals from './veto-approvals.mjs';
 import uiDirectory from './ui-directory.mjs';
+import povDay from './pov-day.mjs';
+import sessionRecall from './session-recall.mjs';
 
-export const MORE = [commute, expenses, bossTexts, privateChat, onDemand, teenDriver, builtWithItself, employees, architecture, skinsBranding, orchestrator, consolePhone, planSpoken, voiceConsole, vetoApprovals, uiDirectory];
+export const MORE = [commute, expenses, bossTexts, privateChat, onDemand, teenDriver, builtWithItself, employees, architecture, skinsBranding, orchestrator, consolePhone, planSpoken, voiceConsole, vetoApprovals, uiDirectory, povDay, sessionRecall];
