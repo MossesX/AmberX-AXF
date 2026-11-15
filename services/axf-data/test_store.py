@@ -334,6 +334,39 @@ def test_backup_verify_restore_prune():
         assert 8 <= len(older) <= 11 and all(k >= 'axf-data-20260816' for k in older)
 
 
+def test_backup_routes():
+    with Env() as c:
+        os.environ['AXF_DATA_BACKUPS'] = str(Path(c.app.state.store.dir).parent / 'bk')
+        try:
+            c.put('/v1/builds/a.json', content='{}', headers=J(**{'if-none-match': '*'}))
+            assert c.get('/v1/_meta/backup', headers=H()).json()['last'] is None
+            assert code(c.post('/v1/_meta/backup', json={}, headers=H('reader'))) == 'forbidden'
+            job = c.post('/v1/_meta/backup', json={}, headers=H()).json()
+            assert job['state'] in ('running', 'done')
+            for _ in range(100):
+                st = c.get('/v1/_meta/backup', headers=H()).json()
+                if st['job']['state'] != 'running':
+                    break
+                time.sleep(0.05)
+            assert st['job']['state'] == 'done' and st['job']['ok'] is True, st
+            assert st['last']['verify']['ok'] is True and len(st['kept']) == 1
+        finally:
+            os.environ.pop('AXF_DATA_BACKUPS', None)
+
+
+def test_health_check_judge():
+    sys.path.insert(0, str(HERE.parents[1] / 'apps/console-web/plugins/systems-check/server'))
+    import axf_data as chk  # the systems-check probe's pure part
+    now = 1_763_200_000.0  # 2025-11-15T09:46:40Z
+    h = {'ok': True, 'cursor': 5, 'volume': {'freeBytes': 1 << 30}}
+    fresh = {'file': 'axf-data-x.tar.gz', 'at': '2025-11-15T03:17:00Z', 'bytes': 1 << 20, 'verify': {'ok': True}}
+    assert chk.judge(h, fresh, now)['status'] == 'ok'
+    assert chk.judge(h, {**fresh, 'at': '2025-11-13T03:17:00Z'}, now)['status'] == 'error'
+    assert 'failed its check' in chk.judge(h, {**fresh, 'verify': {'ok': False, 'problems': ['x short']}}, now)['summary']
+    assert chk.judge(h, None, now)['summary'] == 'axf-data has no backup yet.'
+    assert chk.judge(None, None, now, 'refused')['unreachable'] is True
+
+
 def test_node_contract_live():
     """The reference client's whole scenario, replayed over HTTP against a fresh server (same codes, revs, etags)."""
     import shutil

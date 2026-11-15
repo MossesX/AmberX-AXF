@@ -18,6 +18,8 @@ Routes (base /v1, spec framework/spec/DATA-STORE.md → Operations):
   GET    /v1/<key>:history · POST /v1/<key>:restore   per-key history (journal.py)
   DELETE /v1/_meta/tokens/<jti>             revoke a token (admin)
   GET    /v1/_meta/counts                   live keys per namespace (backup verify; read on `_meta`)
+  GET    /v1/_meta/backup                   last backup + verify result, kept files, the running job
+  POST   /v1/_meta/backup  { verify? }      back up now (or re-verify the newest) in the background (write on `_meta/backup`)
 
 Run: uvicorn main:app --host 0.0.0.0 --port 7700 (one worker: writes serialise in-process).
 """
@@ -85,6 +87,18 @@ def create_app(data_dir: Path | str = DATA_DIR, store: Store | None = None) -> F
     def counts(req: Request):
         who(req).need('read', '_meta')
         return {'$axf': 'data-counts@1', 'counts': st.counts(), 'cursor': st.health()['cursor']}
+
+    @app.get('/v1/_meta/backup')
+    def backup_state(req: Request):
+        who(req).need('read', '_meta')
+        return _backup_state()
+
+    @app.post('/v1/_meta/backup')
+    async def backup_now(req: Request):
+        p = who(req)
+        p.need('write', '_meta', 'backup')
+        body = await _json(req)
+        return _backup_start('verify' if body.get('verify') else 'run', p.sub, st.dir)
 
     @app.delete('/v1/_meta/tokens/{jti}')
     def revoke(jti: str, req: Request):
@@ -177,6 +191,57 @@ async def _json(req: Request):
         return json.loads(raw)
     except ValueError as e:
         raise DataError('invalid_body', f'not JSON ({e})') from e
+
+
+def _backups() -> Path:
+    return Path(os.environ.get('AXF_DATA_BACKUPS', '/backups'))
+
+
+_backup_job: dict = {'state': 'idle'}
+
+
+def _backup_state() -> dict:
+    import backup
+    out = _backups()
+    last = out / 'last.json'
+    return {'$axf': 'data-backups@1', 'dir': str(out), 'last': json.loads(last.read_text('utf-8')) if last.is_file() else None,
+            'kept': [{'file': p.name, 'bytes': p.stat().st_size} for p in backup.backups(out)] if out.is_dir() else [],
+            'job': dict(_backup_job)}
+
+
+def _backup_start(kind: str, by: str, data: Path) -> dict:
+    """Backup now / Verify (Settings → Plugins → Data store, `axf data backup`): one job at a time, in a thread."""
+    import threading
+    import backup
+    from store import now_iso
+    out = _backups()
+    if _backup_job.get('state') == 'running':
+        return {'$axf': 'data-backup-job@1', **_backup_job}
+
+    def work():
+        try:
+            if kind == 'run':
+                r = backup.run(data, out)
+                _backup_job.update(state='done', ok=bool(r['verify']['ok']), file=r['file'], finishedAt=now_iso())
+            else:
+                f = (backup.backups(out) or [None])[0]
+                if not f:
+                    raise RuntimeError('no backups yet')
+                r = backup.verify(f, data)
+                last = out / 'last.json'
+                if last.is_file():
+                    doc = json.loads(last.read_text('utf-8'))
+                    if doc.get('file') == f.name:
+                        doc['verify'] = r
+                        last.write_text(json.dumps(doc, indent=1), 'utf-8')
+                _backup_job.update(state='done', ok=bool(r['ok']), file=f.name, finishedAt=now_iso())
+        except Exception as e:  # noqa: BLE001 — reported on the job, never raised into the server
+            _backup_job.update(state='failed', ok=False, error=f'{type(e).__name__}: {e}'[:300], finishedAt=now_iso())
+
+    _backup_job.clear()
+    _backup_job.update(state='running', kind=kind, by=by, startedAt=now_iso())
+    threading.Thread(target=work, name=f'axf-data-{kind}', daemon=True).start()
+    return {'$axf': 'data-backup-job@1', **_backup_job}
 
 
 def _revoked(st: Store, jti: str) -> bool:
