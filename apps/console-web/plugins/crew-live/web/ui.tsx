@@ -4,7 +4,7 @@
  * its steps, the files it changed with their live diff, its recent tool calls with their cost, links and Stop.
  */
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { AgentAvatar, Button, Icon, IconButton, ModelBadge, Segmented, TextField, setAgentDirectory, useRuntime } from '@console/axf/react';
+import { AgentAvatar, Button, Icon, IconButton, ModelBadge, PriorityTag, Segmented, TextField, setAgentDirectory, useRuntime } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import { followSse, sseJson } from '@console/axf/core/sse';
 import { layoutViewports } from '@console/axf/core/engines/layout';
@@ -285,6 +285,7 @@ export function CrewView() {
     { id: 'status', label: 'Doing', width: 'minmax(calc(var(--fx-space) * 24), 4fr)', sortable: true, render: (r) => (
       <span className="axp-crew__doing"><span className="axp-crew__step1">{stepLine(r.build)}</span><span className="fx-small fx-muted axp-crew__now1">{r.now}</span></span>
     ) },
+    { id: 'priority', label: 'Priority', width: 'calc(var(--fx-space) * 14)', render: (r) => <PriorityTag build={r.build?.id} /> },
     { id: 'model', label: 'Model', width: 'calc(var(--fx-space) * 11)', render: (r) => <ModelBadge model={r.modelKey || r.model} compact /> },
     { id: 'started', label: 'Time', width: 'calc(var(--fx-space) * 18)', sortable: true, sortValue: (r) => r.startedAt ?? '', render: (r) => <Timer r={r} now={now} /> },
     { id: 'cost', label: 'Cost', width: 'calc(var(--fx-space) * 13)', align: 'end', sortable: true, sortValue: (r) => r.costUsd, render: (r) => <span className="fx-mono axp-crew__num" title={r.costExact ? 'Exact (from the run\'s result)' : 'Live, from the usage streamed so far'}>{usd(r.costUsd)}</span> },

@@ -1,0 +1,24 @@
+{
+  "$axf": "chrome-baseline@1",
+  "note": "Hard-coded chrome left over when check-chrome-assets.mjs landed (Nov 4 2026): per file, how many findings it may still have. Counts only go down; a file not listed must be clean. Regenerate only after a real migration: node framework/cli/check-chrome-assets.mjs --write-baseline",
+  "files": {
+    "apps/amberx-droid/src/plugins/walkthrough/web/index.tsx": 1,
+    "apps/amberx-droid/src/plugins/walkthrough/web/voice.tsx": 1,
+    "apps/console-web/plugins/approvals-banner/web/index.tsx": 3,
+    "apps/console-web/plugins/claude-handoff/web/ui.tsx": 1,
+    "apps/console-web/plugins/claude-settings/web/index.tsx": 1,
+    "apps/console-web/plugins/console-terminal/web/nav.tsx": 1,
+    "apps/console-web/plugins/console-terminal/web/TerminalHost.tsx": 1,
+    "apps/console-web/plugins/md-studio/web/Column.tsx": 1,
+    "apps/console-web/plugins/md-studio/web/Doc.tsx": 2,
+    "apps/console-web/plugins/notes-browser/web/index.tsx": 1,
+    "apps/console-web/plugins/plan-studio/web/editor.tsx": 2,
+    "apps/console-web/plugins/plugin-manager/web/PluginManager.tsx": 1,
+    "apps/console-web/plugins/plugin-manager/web/views.tsx": 1,
+    "apps/console-web/plugins/plugins-menu/web/index.tsx": 1,
+    "apps/console-web/plugins/systems-check/web/KeysBanner.tsx": 2,
+    "apps/console-web/plugins/systems-check/web/SystemCheck.tsx": 3,
+    "apps/console-web/plugins/systems-check/web/WhatsNew.tsx": 1,
+    "apps/console-web/src/views/BuildManager.tsx": 1
+  }
+}

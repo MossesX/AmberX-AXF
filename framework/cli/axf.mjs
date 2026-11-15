@@ -49,8 +49,11 @@
  *   axf plugins [plugin]        every plugin's commands and reads (or one plugin's help)
  *   axf <plugin> <command> [--field value]…   run a plugin command or read (also axf plugin <plugin> <command>; needs
  *                               a plugin providing service:plugin-commands@1, the Plugin commands plugin)  <!-- axf-plugin:plugin-commands -->
- *   axf console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | where | list [kind] [words] | clients
+ *   axf console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | refresh [--hard] [--all] | where | list [kind] [words] | clients
  *                               load a screen in Brett's open console (needs a plugin providing service:console-commands@1)
+ *   axf console do|state|targets|search|focus|scroll|plugin enable|disable|voice …  [--json]
+ *                               console-control@1: drive any tab, setting, button, plugin, grid row or build step by address
+ *                               (framework/cli/console-control.mjs → the console's /api/console-control routes)
  */
 import { join, relative } from 'node:path';
 import { importUiLibrary, listPortedKits } from './ui-port.mjs';
@@ -79,6 +82,10 @@ if (CONTROL_WORDS.has(cmd) || (cmd === 'list' && CONTROL_LIST_WORDS.has(rest[0])
   process.exit(await main([cmd, ...rest]));
 }
 // console commands (control@1 console domain) go to the plugin that provides console-commands@1 (never by folder name).
+if (cmd === 'console' && ['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice'].includes(rest[0] ?? '')) {
+  const { main } = await import('./console-control.mjs');
+  process.exit(await main(rest));
+}
 if (cmd === 'console') {
   const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
   const { join: joinPath } = await import('node:path');
@@ -89,6 +96,20 @@ if (cmd === 'console') {
   });
   if (!dir) { console.error('no plugin provides console-commands@1 (install the Console commands plugin)'); process.exit(1); }
   const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'console.mjs')).href);
+  process.exit(await main(rest));
+}
+// `axf voice …` goes to the plugin that provides the voice listener (service:axf.wake-listener@1 with a cli.mjs), never
+// by folder name: Claude mode on / off / status / test and the command history.
+if (cmd === 'voice') {
+  const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
+  const { join: joinPath } = await import('node:path');
+  const { pathToFileURL } = await import('node:url');
+  const plugins = joinPath(import.meta.dirname ?? new URL('.', import.meta.url).pathname, '../../apps/console-web/plugins');
+  const dir = (exists(plugins) ? readdirSync(plugins) : []).sort().find((d) => {
+    try { return JSON.parse(readText(joinPath(plugins, d, 'plugin.json'), 'utf8')).provides?.includes('service:axf.wake-listener@1') && exists(joinPath(plugins, d, 'cli.mjs')); } catch { return false; }
+  });
+  if (!dir) { console.error('no plugin provides the voice listener (service:axf.wake-listener@1)'); process.exit(1); }
+  const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'cli.mjs')).href);
   process.exit(await main(rest));
 }
 // plugin commands (control@1 plugins domain): `axf plugins [plugin]`, `axf plugin <plugin> <command> …`, and

@@ -52,7 +52,7 @@ function paint(rt: AxfRuntime) {
   painted = key;
   rt.registry.register(badgeAsset(s.known, s.provider), 'app', ID);
   rt.setBadge(COUNTER, s.ok ? 1 : 0);
-  if (show) rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'right', order: 23, origin: ID });
+  if (show) rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'right', order: 23, origin: ID, widget: { label: 'AI status', size: 'compact', priority: 6, aliases: ['ai'] } });
   else rt.detachFromBanner(`status:${ASSET_ID}`);
 }
 
@@ -458,7 +458,7 @@ export const library: AxfWebLibrary = {
   settingsTabs: [{ id: 'ai', label: 'AI connection', icon: 'sparkles', order: 15, parent: 'plugins', description: 'The AI on the AmberX server: Claude plan or API, other providers as fallbacks.' }],
   settings: [
     { id: 'amberx.ai.use', label: 'Use the AI', icon: 'sparkles', tab: 'ai', order: 1, settings: [
-      { key: K.enabled, label: 'Use the AI in this app (notes parsing, AI snippets, Molly)', kind: 'toggle', default: true },
+      { key: K.enabled, label: 'Use the AI in this app (notes parsing, AI snippets, Gizmo)', kind: 'toggle', default: true },
     ] },
     { id: 'amberx.ai', label: 'On this device', icon: 'eye', tab: 'ai', order: 30, settings: [
       { key: K.badge, label: 'Show the AI badge on the banner', kind: 'toggle', default: true, scope: 'device', slot: 'banner' },

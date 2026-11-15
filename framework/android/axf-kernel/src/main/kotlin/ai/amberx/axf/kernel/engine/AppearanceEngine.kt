@@ -57,7 +57,8 @@ public object AppearanceEngine {
     public const val PROJECT: String = "shared"
     public const val PATH: String = "settings/appearance.json"
     public const val MAX_BYTES: Int = 16 * 1024
-    public val NEVER: List<String> = listOf(AssetTypes.UAC_POLICY)
+    /** Never a slot: same list as the reference engine (framework/core/engines/appearance.ts APPEARANCE_NEVER). */
+    public val NEVER: List<String> = listOf(AssetTypes.UAC_POLICY, "help", "appearance-package", "skin")
     public val PALETTE_KEYS: List<String> = listOf("bg", "fg", "muted", "card", "line", "accent", "danger", "ok")
     private val ID = Regex("^[a-z0-9][a-z0-9-]{0,63}$")
     private val COLOR = Regex("^(#[0-9a-fA-F]{3,8}|rgba?\\(\\s*[\\d.]+\\s*,\\s*[\\d.]+\\s*,\\s*[\\d.]+\\s*(,\\s*[\\d.]+\\s*)?\\))$")

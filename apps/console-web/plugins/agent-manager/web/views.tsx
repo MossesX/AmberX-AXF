@@ -3,7 +3,7 @@
  * tools (with test), training jobs, workflows (with runs), memory browser, add-ons and run history.
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react';
-import { Button, Chip, Icon, useEditorSync, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, TabGroup, useEditorSync, useRuntime } from '@console/axf/react';
 import { MoreMenu } from './more';
 import { AgentForm, Field, LingoForm, OriginChip, PersonaForm, SkillForm, Text, ToolForm, TrainingForm, WorkflowForm } from './forms';
 import { useData, WIZARDS } from './wizards';
@@ -56,9 +56,7 @@ export function AgentManagerView() {
         </div>
       )}
       <select className="fx-input axp-agent-manager__tabpick" value={tab} onChange={(e) => setTab(e.target.value as Tab)} aria-label="Section">{TABS.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}</select>
-      <div className="fx-tabs axp-agent-manager__tabs" role="tablist">
-        {TABS.map((t) => <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} className={`fx-tab axp-agent-manager__tab${tab === t.id ? ' is-active' : ''}`} onClick={() => setTab(t.id)}><Icon name={t.icon} size={13} /> {t.label}</button>)}
-      </div>
+      <TabGroup id="agent-manager.tabs" label="Agent manager sections" className="axp-agent-manager__tabs" value={tab} onChange={setTab} tabs={TABS.map((t) => ({ value: t.id, label: t.label, icon: t.icon }))} />
       {!cache ? <LoadingSkeleton /> : (
         <>
           {tab === 'agents' && <AgentsTab cache={cache} status={status} wizard={wizard} />}
@@ -330,9 +328,7 @@ function AgentsTab({ cache, status, wizard }: { cache: Cache; status?: Status; w
             <div className="fx-row fx-row--wrap">
               <h3 className="fx-grow axp-agent-manager__h"><Icon name={draft.icon || 'user'} size={16} /> {draft.name}</h3>
               <OriginChip origin={draft.origin} />
-              <div className="fx-seg fx-seg--sm axp-agent-manager__seg" role="tablist">
-                {(['edit', 'chat', 'prompt'] as const).map((v) => <button key={v} type="button" role="tab" aria-selected={view === v} className={`fx-seg__opt${view === v ? ' is-on' : ''}`} onClick={() => setView(v)}>{v === 'edit' ? 'Edit' : v === 'chat' ? 'Playground' : 'Prompt & tools'}</button>)}
-              </div>
+              <TabGroup id="agent-manager.detail-view" label="Agent view" size="sm" className="axp-agent-manager__seg" value={view} onChange={setView} tabs={[{ value: 'edit', label: 'Edit' }, { value: 'chat', label: 'Playground' }, { value: 'prompt', label: 'Prompt & tools' }]} />
             </div>
             {view === 'edit' && (
               <>

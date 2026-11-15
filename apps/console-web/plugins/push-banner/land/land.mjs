@@ -11,6 +11,8 @@
  *   node apps/console-web/plugins/push-banner/land/land.mjs run [--dry-run] [--only <build>] [--json]   one round
  *   … list | blocked [--json]            what the last round found (landing order, PR, state, reason)
  *   … now <build> | hold <build> [--why "…"] | release <build> | after <build> <other>
+ *   … merge-main <build|branch> [--dry-run] [--json]   merge main into one build's branch now (same rules as a round)
+ *   … queue list | add <pr> | remove <pr> | move <pr> <index>   the merge queue (merge-queue.mjs; it runs in every round)
  *
  * One round, per finished build (land-core.mjs isCandidate), in dependency order:
  *   1. its worktree: synced files committed on its own branch, scratch files skipped, untracked copies of hub files
@@ -18,13 +20,19 @@
  *      code changes never committed stop it (reason `code`); the branch is pushed when it is ahead of GitHub;
  *   2. main merged in (a temporary worktree, never the build's): only when main moved in code (status-only `[skip ci]`
  *      commits under _claude/ don't count) or GitHub says the PR conflicts. Builds files newer-wins (builds-live.mjs
- *      merge driver), THREADS / STATUS / decisions / logs unioned, generated files from main then regenerated, code
+ *      merge driver), THREADS / STATUS / decisions / logs / PORTING.md unioned, help packs and catalog status unioned by
+ *      key, generated files (framework/spec/generated-files.json) from main then regenerated and tested, only code
  *      conflicts abort (reason `conflict`, an agent job);
  *   3. its PR opened when it has none; CI started (workflow_dispatch) when nothing ran on the head;
  *   4. the reason it waits (land-core.mjs blockReason) written to land.json; a new reason is pushed to Brett once
  *      (console alert, key land:<build>), and resolved when it lands.
  *
- * Settings (push banner config.json, Settings → Plugins → Push banner → Auto-land): autoLand (on), landWaitUi (on).
+ * Group chat (crew-sections@1): each landing event is posted as the section's owner through framework/cli/crew-say.mjs (a
+ * child process: this folder imports only node built-ins). Sections `landing` (this round) and `merge-queue`
+ * (merge-queue.mjs). Dropped while the chat is off; AXF_CREW_SAY=off for tests; never on a dry run.
+ *
+ * Settings (push banner config.json, Settings → Plugins → Push banner → Auto-land): autoLand (off since Nov 4 2026:
+ * only the merge queue merges; Brett: "Stop merging these things one at a time"), landWaitUi (on).
  * Environment: AXF_LAND_REPO (checkout to run git in; default this file's repo), AXF_PUSH_BANNER_DIR (data folder;
  * default <AXF_CONSOLE_ROOT or /opt/axf>/.axf-console/plugins/push-banner), AXF_LAND_REPO_SLUG (MossesX/AmberX-AXF),
  * AXF_LAND_CONSOLE (docker container of the console, axf-console; "off" = no console calls), AXF_LAND_ARCHIVE
@@ -36,6 +44,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
+import { queueRound, readQueue, readQueueConfig, main as queueMain } from './merge-queue.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SELF_REPO = resolve(HERE, '../../../../..');
@@ -68,18 +77,42 @@ export function makeGit(cwd) {
   };
 }
 
-/** GitHub REST with the token broker's token (never printed, never logged). */
+/** GitHub REST with the token broker's token (never printed, never logged).
+ *  Save compute (Brett, Nov 4 2026: "Save the compute"): every GET is cached with its ETag in the push banner's data
+ *  folder (gh-cache.json) and sent again as a conditional request; GitHub answers an unchanged resource with 304, which
+ *  doesn't count against the shared 5000/h limit. Reads stop when fewer than GH_RESERVE calls are left, so the console
+ *  and the reconciler keep theirs. `gh.calls` / `gh.cached` count this run's billed and free requests. */
+const GH_RESERVE = 300, GH_CACHE_MAX = 2000;
 export function makeGitHub(s, token = () => brokerToken(s)) {
-  let tok = null;
-  return async (method, path, body) => {
+  let tok = null, cache = null, dirty = false, remaining = Infinity;
+  const file = join(s.dataDir, 'gh-cache.json');
+  const save = () => {
+    if (!dirty) return;
+    const keys = Object.keys(cache);
+    if (keys.length > GH_CACHE_MAX) for (const k of keys.sort((a, b) => cache[a].at - cache[b].at).slice(0, keys.length - GH_CACHE_MAX)) delete cache[k];
+    try { writeJson(file, cache); dirty = false; } catch { /* cache is an optimisation only */ }
+  };
+  const gh = async (method, path, body) => {
     tok ??= token() || '';
     if (!tok) throw new Error('no GitHub token (framework/cli/github-token.mjs token)');
-    const r = await fetch(`${s.api}${path}`, { method, redirect: 'error', headers: { Authorization: `Bearer ${tok}`, Accept: 'application/vnd.github+json', 'User-Agent': 'axf-auto-land', ...(body ? { 'Content-Type': 'application/json' } : {}) }, body: body ? JSON.stringify(body) : undefined, signal: AbortSignal.timeout(20000) });
+    const get = method === 'GET';
+    cache ??= readJson(file, {}) || {};
+    const hit = get ? cache[path] : null;
+    if (get && remaining < GH_RESERVE) { if (hit) { gh.cached++; return hit.data; } const e = new Error(`GitHub calls held back (${remaining} left, reserve ${GH_RESERVE})`); e.status = 429; throw e; }
+    const r = await fetch(`${s.api}${path}`, { method, redirect: 'error', headers: { Authorization: `Bearer ${tok}`, Accept: 'application/vnd.github+json', 'User-Agent': 'axf-auto-land', ...(hit?.etag ? { 'If-None-Match': hit.etag } : {}), ...(body ? { 'Content-Type': 'application/json' } : {}) }, body: body ? JSON.stringify(body) : undefined, signal: AbortSignal.timeout(20000) });
+    const left = Number(r.headers.get('x-ratelimit-remaining'));
+    if (Number.isFinite(left) && r.headers.has('x-ratelimit-remaining')) remaining = left;
+    if (r.status === 304 && hit) { gh.cached++; hit.at = Date.now(); dirty = true; return hit.data; }
+    gh.calls++;
     const text = await r.text();
     const data = text ? (() => { try { return JSON.parse(text); } catch { return text; } })() : null;
     if (!r.ok) { const e = new Error(`GitHub ${r.status}: ${String(data?.message || text).slice(0, 200)}`); e.status = r.status; throw e; }
+    const etag = r.headers.get('etag');
+    if (get && etag) { cache[path] = { etag, data, at: Date.now() }; dirty = true; }
     return data;
   };
+  gh.calls = 0; gh.cached = 0; gh.save = save; gh.left = () => remaining;
+  return gh;
 }
 
 function brokerToken(s) {
@@ -100,13 +133,24 @@ export function makeConsole(s) {
 
 // ------------------------------------------------------------------ state files (the push banner's data folder)
 
+/** A section event in the crew's group chat, as its owner (framework/cli/crew-say.mjs). Never fails the round. */
+export function crewSay(section, event, text, { ref = '', repo = SELF_REPO, dedupeMin } = {}) {
+  if (process.env.AXF_CREW_SAY === 'off') return false;
+  const cli = join(repo, 'framework/cli/crew-say.mjs');
+  if (!existsSync(cli)) return false;
+  const args = [cli, section, event, String(text || '').slice(0, 600), ...(ref ? ['--ref', String(ref)] : []), ...(dedupeMin !== undefined ? ['--dedupe-min', String(dedupeMin)] : [])];
+  return spawnSync(process.execPath, args, { cwd: repo, encoding: 'utf8', timeout: 30000 }).status === 0;
+}
+/** Which chat event a landing reason is: Brett's move, a code fix, or something in the way. */
+export const reasonEvent = (kind) => (['held', 'ui', 'code'].includes(kind) ? 'waiting' : ['conflict', 'ci', 'error'].includes(kind) ? 'failed' : 'blocked');
+
 export const stateFile = (s) => join(s.dataDir, 'land.json');
 export const controlFile = (s) => join(s.dataDir, 'land-control.json');
 export const readState = (s) => readJson(stateFile(s), { $axf: core.LAND_FRAME, items: [] });
 export const readControl = (s) => readJson(controlFile(s), { $axf: core.CONTROL_FRAME, holds: {}, now: [], after: {} });
 export function readConfig(s) {
   const c = readJson(join(s.dataDir, 'config.json'), {}) || {};
-  return { autoLand: c.autoLand !== false, landWaitUi: c.landWaitUi !== false };
+  return { autoLand: c.autoLand === true, landWaitUi: c.landWaitUi !== false };
 }
 export function control(s, cmd, build, opts = {}) {
   const d = core.applyControl(readControl(s), cmd, build, opts);
@@ -189,10 +233,67 @@ export function codeBehind({ s, git, br }) {
 }
 
 /**
- * Merge main into the branch in a temporary worktree and push the merge commit. Data conflicts are resolved by
- * land-core's rules; any code conflict aborts. Returns { merged, sha, conflicts: [code files], resolved, pushError }.
+ * Resolve a stopped merge's conflicted files in worktree `wt` by land-core's rules (generated-files@1 manifest):
+ *   builds       the side `buildsSide` names (the builds-live merge driver did the rest)
+ *   union        both sides' lines (git merge-file --union): THREADS, STATUS, logs, PORTING.md
+ *   union-json   both sides' keys (land-core mergeJson3, main wins a scalar clash): help packs, catalog status
+ *   generated    main's side (`mainSide`), then every generator those files need runs once on the merged tree
+ *                (control inventory, help bake, framework re-bake + lock, fixtures, tracker) and its outputs are staged
+ *   code         a person's: nothing is touched and { conflicts } comes back
+ * After regenerating, the generators' checks and the manifest's tests run; a red one comes back as { error } (the
+ * merge is not committed). Returns { resolved: [paths], regenerated: [generator ids] } when every file is resolved.
+ * `dir` is a scratch folder for the merge-file inputs. Nothing here commits or aborts: the caller does.
  */
-export function mergeMain({ s, git, b, dry }) {
+export function resolveConflicts({ g, wt, dir, left, mainSide = 'theirs', buildsSide = 'theirs', log = () => {} }) {
+  const plan = core.planConflicts(left);
+  if (plan.code.length) return { conflicts: plan.code };
+  const resolved = [];
+  const stage = (p, n) => { const x = g(['show', `:${n}:${p}`]); return x.code ? '' : `${x.out}\n`; };
+  for (const p of plan.builds) { if (g(['checkout', `--${buildsSide}`, '--', p]).code === 0) { g(['add', '--', p]); resolved.push(p); } }
+  for (const p of plan.union) {
+    const f = (n, t) => { const q = join(dir, `${n}.txt`); writeFileSync(q, t); return q; };
+    const ours = f('ours', stage(p, 2)); const base = f('base', stage(p, 1)); const theirs = f('theirs', stage(p, 3));
+    g(['merge-file', '--union', ours, base, theirs]);
+    writeFileSync(join(wt, p), readFileSync(ours)); g(['add', '--', p]); resolved.push(p);
+  }
+  for (const p of plan.unionJson) {
+    const parse = (t) => { try { return t.trim() ? JSON.parse(t) : undefined; } catch { return undefined; } };
+    const o = parse(stage(p, 2)); const t = parse(stage(p, 3)); const b = parse(stage(p, 1));
+    if (o === undefined || t === undefined) { g(['checkout', `--${mainSide}`, '--', p]); log(`${p}: one side is not JSON; main's copy taken`); }
+    else writeFileSync(join(wt, p), `${JSON.stringify(core.mergeJson3(b, o, t, mainSide), null, 2)}\n`);
+    g(['add', '--', p]); resolved.push(p);
+  }
+  for (const p of plan.generated) { g(['checkout', `--${mainSide}`, '--', p]); g(['add', '--', p]); resolved.push(p); }
+  const still = g(['diff', '--name-only', '--diff-filter=U']).out.split('\n').filter(Boolean);
+  if (still.length) return { conflicts: still };
+  // the generators, each once, on the merged tree; their outputs join the merge commit
+  const regenerated = [];
+  const run = (cmd, timeout) => { const r = spawnSync(cmd[0], cmd.slice(1), { cwd: wt, encoding: 'utf8', timeout, maxBuffer: 16 << 20, env: { ...process.env, CI: '1' } }); return { code: r.status ?? 1, text: `${r.stderr || ''}${r.stdout || ''}`.trim().slice(-400) }; };
+  const skipped = [];
+  for (const gen of core.regenPlan(plan.generated)) {
+    const r = run(gen.run, gen.timeoutMs);
+    if (r.code) {
+      // an optional generator that refuses (rebake: the app's baked files were edited in place) leaves main's copy, which main's CI passed
+      if (gen.optional) { skipped.push(gen.id); log(`${gen.id} did not run (${r.text.split('\n').pop()}); main's copy stands`); continue; }
+      return { error: `${gen.id} failed to regenerate after the merge (${gen.run.join(' ')}): ${r.text}` };
+    }
+    regenerated.push(gen.id);
+    g(['add', '-A', '--', ...gen.outputs.filter((o) => existsSync(join(wt, o)))]);
+    if (gen.check) { const c = run(gen.check, gen.timeoutMs); if (c.code) return { error: `${gen.id} regenerated but its check failed (${gen.check.join(' ')}): ${c.text}` }; }
+  }
+  if (plan.generated.length || plan.unionJson.length) {
+    for (const t of core.landTests()) { const c = run(t, 180000); if (c.code) return { error: `tests after regenerating failed (${t.join(' ')}): ${c.text}` }; }
+  }
+  if (regenerated.length) log(`regenerated ${regenerated.join(', ')} after the merge`);
+  return { resolved, regenerated, skipped };
+}
+
+/**
+ * Merge main into the branch in a temporary worktree and push the merge commit. Data conflicts are resolved by
+ * land-core's rules (resolveConflicts); any code conflict aborts. Returns { merged, sha, conflicts: [code files],
+ * resolved, regenerated, pushError }.
+ */
+export function mergeMain({ s, git, b, dry, log = () => {} }) {
   const dir = mkdtempSync(join(tmpdir(), 'axf-land-')); const wt = join(dir, 'wt');
   const g = (a, o = {}) => git(a, { ...o, cwd: wt });
   const live = join(s.repo, 'framework/cli/builds-live.mjs');
@@ -200,31 +301,23 @@ export function mergeMain({ s, git, b, dry }) {
   try {
     let r = git(['worktree', 'add', '-q', '--detach', wt, `${s.remote}/${b.branch}`]);
     if (r.code) return { merged: false, conflicts: [], pushError: `worktree: ${r.err.slice(-200)}` };
-    const m = g([...drv, 'merge', '--no-edit', '-m', `Merge main into ${b.branch} (auto-land: builds files newer-wins, logs unioned)`, `${s.remote}/${s.base}`], { timeout: 180000 });
-    const resolved = [];
+    const m = g([...drv, 'merge', '--no-edit', '-m', `Merge main into ${b.branch} (auto-land: builds files newer-wins, logs unioned, generated files regenerated)`, `${s.remote}/${s.base}`], { timeout: 180000 });
+    let resolved = []; let regenerated = [];
     if (m.code) {
       const left = g(['diff', '--name-only', '--diff-filter=U']).out.split('\n').filter(Boolean);
       if (!left.length) { g(['merge', '--abort']); return { merged: false, conflicts: [], pushError: `merge: ${m.err.slice(-200) || m.out.slice(-200)}` }; }
-      const plan = core.planConflicts(left);
-      if (plan.code.length) { g(['merge', '--abort']); return { merged: false, conflicts: plan.code }; }
-      for (const p of plan.builds) { if (g(['checkout', '--theirs', '--', p]).code === 0) { g(['add', '--', p]); resolved.push(p); } }
-      for (const p of plan.union) {
-        const stage = (n) => { const x = g(['show', `:${n}:${p}`]); return x.code ? '' : `${x.out}\n`; };
-        const f = (n, t) => { const q = join(dir, `${n}.txt`); writeFileSync(q, t); return q; };
-        const ours = f('ours', stage(2)); const base = f('base', stage(1)); const theirs = f('theirs', stage(3));
-        g(['merge-file', '--union', ours, base, theirs]);
-        writeFileSync(join(wt, p), readFileSync(ours)); g(['add', '--', p]); resolved.push(p);
-      }
-      for (const p of plan.generated) { g(['checkout', '--theirs', '--', p]); const cmd = core.regenFor(p); if (cmd) spawnSync(cmd[0], cmd.slice(1), { cwd: wt, timeout: 120000 }); g(['add', '--', p]); resolved.push(p); }
-      const still = g(['diff', '--name-only', '--diff-filter=U']).out.split('\n').filter(Boolean);
-      if (still.length) { g(['merge', '--abort']); return { merged: false, conflicts: still }; }
+      // main is the side being merged in (theirs); its builds files win too (the newest status is on main)
+      const res = resolveConflicts({ g, wt, dir, left, mainSide: 'theirs', buildsSide: 'theirs', log });
+      if (res.conflicts) { g(['merge', '--abort']); return { merged: false, conflicts: res.conflicts }; }
+      if (res.error) { g(['merge', '--abort']); return { merged: false, conflicts: [], pushError: `merge: ${res.error.slice(-300)}` }; }
+      resolved = res.resolved; regenerated = res.regenerated;
       const c = g([...drv, 'commit', '-q', '--no-edit']);
       if (c.code) { g(['merge', '--abort']); return { merged: false, conflicts: [], pushError: `commit: ${c.err.slice(-200)}` }; }
     }
     const sha = g(['rev-parse', 'HEAD']).out;
-    if (dry) return { merged: true, sha, conflicts: [], resolved, dry: true };
+    if (dry) return { merged: true, sha, conflicts: [], resolved, regenerated, dry: true };
     const p = g(['push', '-q', s.remote, `HEAD:refs/heads/${b.branch}`], { timeout: 90000 });
-    return p.code ? { merged: false, conflicts: [], resolved, pushError: p.err.slice(-200) || 'push failed' } : { merged: true, sha, conflicts: [], resolved };
+    return p.code ? { merged: false, conflicts: [], resolved, regenerated, pushError: p.err.slice(-200) || 'push failed' } : { merged: true, sha, conflicts: [], resolved, regenerated };
   } finally { git(['worktree', 'remove', '--force', wt]); rmSync(dir, { recursive: true, force: true }); }
 }
 
@@ -269,6 +362,7 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
   let pulls = [];
   try { pulls = await gh('GET', `/repos/${s.slug}/pulls?state=open&per_page=100`); } catch (e) { log(`pulls: ${e.message}`); }
   const prOf = (br) => (Array.isArray(pulls) ? pulls : []).find((p) => p?.head?.ref === br && p?.base?.ref === s.base && (p?.head?.repo?.full_name || '').toLowerCase() === s.slug.toLowerCase());
+  const queueOn = readQueueConfig(s).mergeQueue; const queued = queueOn ? readQueue(s) : {};
   const items = [];
   const candById = new Map(cands.map((c) => [c.id, c]));
   for (const o of order) {
@@ -294,17 +388,21 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
           let mergeable = old.head === headNow && prev.mainSha === mainSha ? old.mergeable : undefined;
           if (pr && mergeable === undefined) { try { mergeable = (await gh('GET', `/repos/${s.slug}/pulls/${pr.number}`))?.mergeable; } catch { /* next round */ } }
           it.mergeable = typeof mergeable === 'boolean' ? mergeable : null;
-          const wants = codeBehind({ s, git, br: b.branch }) || mergeable === false || nowFirst.includes(b.id);
+          // with the merge queue on, main is combined in on the queue branch instead: pulling it into the branch would
+          // change the head and make the queue test it twice. Only a real conflict (GitHub won't even run the PR checks)
+          // gets main merged in, and never for a PR the queue is testing right now.
+          const inStack = queueOn && pr && (queued.stack || []).some((e) => e.pr === pr.number);
+          const wants = queueOn ? mergeable === false && !inStack : codeBehind({ s, git, br: b.branch }) || mergeable === false || nowFirst.includes(b.id);
           if (wants && merges >= core.MAX_MAIN_MERGES && !nowFirst.includes(b.id)) { it.state = 'queued'; it.reason = { kind: 'running', text: `${b.id}: waits its turn to have main merged in (${core.MAX_MAIN_MERGES} a round).`, quiet: true }; it.since = old.since || at; items.push(it); continue; }
           if (wants) {
             merges++;
             const m = mergeMain({ s, git, b, dry });
             if (m.conflicts?.length) facts.conflicts = m.conflicts;
             else if (m.pushError) facts.pushError = m.pushError;
-            else if (m.merged) { it.mergedMain = { sha: m.sha, resolved: m.resolved || [] }; git(['fetch', '-q', s.remote, `+refs/heads/${b.branch}:refs/remotes/${s.remote}/${b.branch}`]); }
+            else if (m.merged) { it.mergedMain = { sha: m.sha, resolved: m.resolved || [], regenerated: m.regenerated || [] }; git(['fetch', '-q', s.remote, `+refs/heads/${b.branch}:refs/remotes/${s.remote}/${b.branch}`]); }
           }
           if (!pr && !facts.conflicts && !dry) {
-            try { pr = await gh('POST', `/repos/${s.slug}/pulls`, { title: it.title.slice(0, 120), head: b.branch, base: s.base, body: `Build \`${b.id}\` is finished (every step done). Opened by auto-land: it merges by itself once CI is green on its head and UI Review doesn't hold it.\n\n${String(b.detail || '').slice(0, 1500)}` }); }
+            try { pr = await gh('POST', `/repos/${s.slug}/pulls`, { title: it.title.slice(0, 120), head: b.branch, base: s.base, body: `Build \`${b.id}\` is finished (every step done). Opened by auto-land: it merges by itself once CI is green on its head and UI Review doesn't hold it.\n\n${String(b.detail || '').slice(0, 1500)}` }); if (pr?.number) crewSay('landing', 'start', `${b.id} is finished. Opened PR #${pr.number} and CI is on it.`, { ref: b.id, repo: s.repo }); }
             catch (e) { facts.prError = e.message; }
           }
         }
@@ -333,13 +431,23 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
     it.pushed = old.pushed || null; it.agent = old.agent || null;
     if (it.reason && !it.reason.quiet && core.shouldPush(old.pushed, it.reason, it.head)) {
       if (!dry) await api('POST', '/api/alerts', core.alertFor(it.reason, { pr: it.pr ? `#${it.pr}` : '', since: it.since }));
+      if (!dry) {
+        const text = it.reason.text.replace(`${b.id}: `, `${b.id}${it.pr ? ` (#${it.pr})` : ''}: `);
+        if (reasonEvent(it.reason.kind) === 'waiting') crewSay('landing', 'waiting', `Brett, ${text}`, { ref: b.id, repo: s.repo });
+        else if (reasonEvent(it.reason.kind) === 'failed') crewSay('landing', 'failed', text, { ref: b.id, repo: s.repo });
+        else crewSay('landing', 'blocked', text, { ref: b.id, repo: s.repo });
+      }
       it.pushed = { kind: it.reason.kind, head: it.head, at };
     }
     if (it.reason?.agent && !(old.agent && old.agent.kind === it.reason.kind && old.agent.head === it.head)) {
       const job = core.agentJobFor(b, it.reason);
-      if (job && !dry) it.agent = { kind: it.reason.kind, head: it.head, at, ...agentJob(job) };
+      if (job && !dry) {
+        it.agent = { kind: it.reason.kind, head: it.head, at, ...agentJob(job) };
+        if (it.agent.exit === 0) crewSay('landing', 'start', `Handed ${b.id} to ${it.agent.session || 'an agent'} for the ${it.reason.kind === 'ci' ? 'red CI' : 'code conflict'}.`, { ref: b.id, repo: s.repo });
+      }
     }
     if (!it.reason && old.pushed && !dry) await api('POST', '/api/alerts/resolve', { keys: [core.alertKey(b.id)] });
+    if (!it.reason && old.state !== 'ready' && !dry) crewSay('landing', 'done', `${b.id}${it.pr ? ` (#${it.pr})` : ''} is ready: CI green, nothing holds it. It joins the merge queue.`, { ref: b.id, repo: s.repo });
     items.push(it);
   }
   // builds that left the list (merged, or no longer finished): their alert goes
@@ -373,8 +481,32 @@ export async function main(argv) {
   const print = (o, text) => console.log(json ? JSON.stringify(o) : text);
   const known = core.LAND_COMMANDS.find((c) => c.cli === cmd);
   if (cmd === 'run') {
-    const st = await round({ s, dry, only: opt('only'), log: (m) => !json && console.error(m) });
+    const gh = makeGitHub(s); // one client per run: one ETag cache, one count
+    const st = await round({ s, gh, dry, only: opt('only'), log: (m) => !json && console.error(m) });
+    // the merge queue takes its turn in the same round (same cron, same lock): it merges what auto-land made ready
+    if (!opt('only')) {
+      try { const git = makeGit(s.repo); const mq = await queueRound({ s, git, gh, api: makeConsole(s), dry, fetched: true, log: (m) => !json && console.error(m) }); st.queue = { on: mq.on, items: (mq.items || []).length, kicked: (mq.kicked || []).length }; }
+      catch (e) { if (!json) console.error(`merge queue: ${e.message}`); }
+    }
+    gh.save(); st.github = { calls: gh.calls, cached: gh.cached, left: Number.isFinite(gh.left()) ? gh.left() : null };
+    if (!json) console.error(`github: ${gh.calls} billed call(s), ${gh.cached} answered from cache (304)`);
     return print(st, st.on === false ? 'auto-land is off (Settings → Plugins → Push banner → Auto-land)' : st.items.map(line).join('\n') || 'no finished builds to land');
+  }
+  if (cmd === 'queue') return queueMain(argv.slice(argv.indexOf('queue') + 1));
+  if (cmd === 'merge-main') {
+    // one build (or branch) gets main merged in right now, by the round's rules: what a re-land after a lander fix needs
+    const id = rest[0]; if (!id || id.startsWith('--')) throw new Error('merge-main <build|branch> [--dry-run]');
+    const git = makeGit(s.repo);
+    const f = git(['fetch', '-q', '--prune', s.remote], { timeout: 180000 }); if (f.code) throw new Error(`fetch: ${f.err.slice(-200)}`);
+    const storeText = git(['show', `${s.remote}/${s.base}:_claude/builds/store.json`]);
+    const builds = storeText.code ? [] : (JSON.parse(storeText.out).builds || []);
+    const b = builds.find((x) => x.id === id && x.branch) || { id, branch: id.startsWith('claude/') || id.startsWith('refs/') ? id : `claude/${id}` };
+    if (git(['rev-parse', '-q', '--verify', `refs/remotes/${s.remote}/${b.branch}`]).code) throw new Error(`${b.branch} is not on ${s.remote}`);
+    const m = mergeMain({ s, git, b, dry, log: (t) => !json && console.error(t) });
+    const text = m.merged ? `${b.id}: main merged in${dry ? ' (dry run, not pushed)' : ''} at ${m.sha.slice(0, 8)}${m.resolved?.length ? `; resolved ${m.resolved.join(', ')}` : ''}${m.regenerated?.length ? `; regenerated ${m.regenerated.join(', ')}` : ''}`
+      : m.conflicts?.length ? `${b.id}: code conflicts with main in ${m.conflicts.join(', ')}` : `${b.id}: ${m.pushError || 'not merged'}`;
+    if (!m.merged) process.exitCode = 1;
+    return print({ build: b.id, branch: b.branch, ...m }, text);
   }
   if (cmd === 'list' || cmd === 'blocked') {
     const st = readState(s); const items = (st.items || []).filter((x) => cmd === 'list' || x.state === 'blocked');
@@ -385,7 +517,7 @@ export async function main(argv) {
     const d = control(s, cmd, id, { why: opt('why'), after: rest[1] });
     return print({ ok: true, control: d }, `${cmd}: ${id}${cmd === 'after' ? ` after ${rest[1]}` : ''}`);
   }
-  throw new Error('usage: land.mjs run [--dry-run] [--only <build>] | list | blocked | now <build> | hold <build> [--why …] | release <build> | after <build> <other>');
+  throw new Error('usage: land.mjs run [--dry-run] [--only <build>] | list | blocked | now <build> | hold <build> [--why …] | release <build> | after <build> <other> | merge-main <build> [--dry-run]');
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

@@ -1,0 +1,80 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-14d02d2a-ca0a-453b-8671-c0747370d1e2",
+ "source": "claude-code",
+ "sessionId": "14d02d2a-ca0a-453b-8671-c0747370d1e2",
+ "project": "other",
+ "title": "Previous summary: Brett greeted the agent, which answered as Gizmo, in the assistant-chat-mode-r3 worktree (branch clau…",
+ "startedAt": "2026-11-05T18:47:46.197Z",
+ "endedAt": "2026-11-05T18:47:50.705Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.318",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/assistant-chat-mode-r3",
+  "repo": "",
+  "branch": "claude/assistant-chat-mode-r3"
+ },
+ "user": "Brett (root)",
+ "models": [],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-05T18:47:49.944Z",
+   "kind": "prompt",
+   "text": "Previous summary: Brett greeted the agent, which answered as Gizmo, in the assistant-chat-mode-r3 worktree (branch claude/assistant-chat-mode-r3). No task has been given yet. The agent told Brett that the startup sync is holding 115 files that differ between local and the hub, including RULES.md and THREADS.md, and is waiting for him to say which copy to keep. Brett made small talk, asking what the agent thinks about pizza; the agent said it favours thin crust with some char, admitted it has never tasted any, and asked for his go-to order. When Brett asked how it's going, the agent said it wa…",
+   "model": "",
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "thinking": 0
+   },
+   "costUsd": 0,
+   "costEstimated": false,
+   "seconds": 1,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [],
+   "features": [
+    "pending:assistant-chat-mode",
+    "queue:assistant-chat-mode"
+   ],
+   "output": "You've hit your 5-hour limit · resets 11:20pm (UTC)"
+  }
+ ],
+ "files": [],
+ "changeIds": [],
+ "features": [
+  "pending:assistant-chat-mode",
+  "queue:assistant-chat-mode"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 0,
+  "output": 0,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thinking": 0,
+  "costUsd": 0,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0
+ },
+ "ingestedAt": "2026-11-05T18:47:50.985Z"
+}

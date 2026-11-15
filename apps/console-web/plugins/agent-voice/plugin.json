@@ -16,7 +16,8 @@
     "view:agent-voice",
     "settings-tab:agent-voice",
     "action:agent-voice.open",
-    "service:axf.agent-voice@1"
+    "service:axf.agent-voice@1",
+    "service:axf.speech@1"
   ],
   "optional": [
     "service:axf.agents@1"

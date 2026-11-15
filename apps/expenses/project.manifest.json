@@ -1,0 +1,38 @@
+{
+  "$manifest": "project-manifest@1",
+  "name": "expenses",
+  "displayName": "Expenses",
+  "description": "Expense Tracker: Brett's ledger, pay schedule, reports and AI assistant (Next.js), ported from MossesX/Expense",
+  "kind": "app",
+  "status": "active",
+  "version": "0.1.0",
+  "platforms": [
+    "web",
+    "server"
+  ],
+  "framework": {
+    "relation": "for"
+  },
+  "repo": {
+    "host": "github",
+    "owner": "MossesX",
+    "name": "Expense",
+    "exists": true,
+    "visibility": "public"
+  },
+  "location": {
+    "repo": "MossesX/AmberX-AXF",
+    "path": "apps/expenses"
+  },
+  "data": {
+    "shared": []
+  },
+  "owners": [
+    "MossesX"
+  ],
+  "created": "2026-11-04",
+  "links": {
+    "live": "https://expenses.amberxai.com"
+  },
+  "notes": "Imported Nov 4 2026 with its history (git subtree, build expenses-port). Runs on its own vendored @axf/core 0.0.25 copy (the earlier studio line), not the AXF engines yet, so framework.relation is 'for' and its UI is held to a shrink-only conformance baseline (framework/spec/conform-baseline.json). Data lives on the Docker volume amberx-studio-data (shared with studio.amberxai.com), never in the repo. MossesX/Expense is left as is."
+}

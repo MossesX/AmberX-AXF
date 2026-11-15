@@ -1,0 +1,49 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261103-c49022337e",
+  "createdAt": "2026-11-03T22:49:42.857Z",
+  "updatedAt": "2026-11-07T08:34:32.564Z",
+  "kind": "build",
+  "title": "# Build: plugin-lazy-load (Current profile) - console speed ## What Brett said (verbatim, Nov 3 202\u2026",
+  "asked": "# Build: plugin-lazy-load (Current profile) - console speed ## What Brett said (verbatim, Nov 3 2026, voice) \"The console gets slower as more plugins are installed.\" \"Anytime I hot render or something gets hot rendered, it reloads all the plugins.\" \"Put in the plugin manager plugin all the ways to configure the lazy loader, like how many get loaded at the beginning that you use a lot, how many get cached, which ones to load, which ones to load at all.\" Book to a free named agent (Polo if his card exists, else Janitor Joey). Register id `plugin-lazy-load` in the `current` profile + banner entry + What Brett said block. ## Root cause (verified) apps/console-web/src/plugins.ts:57 loads every plugin's web code with `import.meta.glob('../plugins/*/web/index.tsx', { eager: true })` - all 57 plugins are bundled into the startup bundle, so startup is slow, any plugin change reloads everything in dev, and every deploy re-downloads all of it. ## Do - s1 **Lazy loading + code splitting**: keep plugin.json manifests and help eager (menus, icons, routes, commands still register at startup), load each plugin's web part with a non-eager glob / dynamic import on first open, one chunk per plugin. Loading placeholder + error/retry state. Plugin commands exposed via REST/MCP/CLI and console_action must still work (load on demand). HMR: changing one plugin only re-renders that plugin. Measure before/after: startup bundle size, time to interactive on phone, number of chunks - put numbers in the report. - s2 **Lazy loader settings in the Plugins manager plugin** (Settings -> Plugins), per standing rules also exposed via REST + MCP + CLI: - Preload on start: how many of the most-used plugins load at startup (number, default 5), based on usage frecency; plus 'always preload' pins. - Idle preload: load more in the background when the app is quiet (on/off, how many). - Cache: how many loaded plugins stay in memory (number, default 15; least-recently-used unloads) and whether chunks are cached offline (service worker cache size). - Per plugin: Load on start / Load when opened / Disabled (don't load at all - hidden from menus, commands report disabled). Core plugins (Settings, Plugins manager, Terminal host checks) can't be disabled. - A live table: each plugin, state (loaded/cached/not loaded/disabled), size, load time, last used, uses. - Reset to defaults. - s3 Tests/type-check, phone + desktop screenshots, UI Review item, report `_claude/builds/reports/plugin-lazy-load.md`, THREADS, PR, steps through the store. Commits clean and professional. Don't touch the gizmo-companion or terminal-* builds' files beyond what's needed. ## ADDENDUM 1 (Brett, voice) Brett said: \"For default, right off the bat, banners need to be the very first thing to load.\" - Default load order: **banners first**, before any other plugin and before the preload-on-start set (all banner plugins: push banner, What's New, banner region / banner-pack pieces - whatever renders a banner). They're 'always preload' pins by default, shown at the top of the lazy loader settings, and stay in the startup bundle or load first in parallel so banners appear at first paint. - Load order itself is configurable in the lazy loader settings (drag to reorder the startup list); banners default to position 1. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches (Brett, Nov 3 2026): a downgrade (e.g. Fable \u2192 Opus) is fine. An UPGRADE (e.g. Opus \u2192 Fable) needs Brett's approval:\u2026",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "8d5d708b-030",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "failed",
+    "summary": "Stalled: taken off the banners (no word from its session, or stuck 30+ minutes).",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-11-07T08:34:32.564Z",
+    "by": "systems-check"
+  },
+  "state": "failed",
+  "status": "failed",
+  "surface": "headless",
+  "startedAt": "2026-11-03T22:49:42.857Z",
+  "finishedAt": "2026-11-07T08:34:32.560Z",
+  "lastSeenAt": "2026-11-04T02:49:11.336Z",
+  "doing": "Running: Wait for build + diag",
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/plugin-lazy-load",
+    "branch": "claude/plugin-lazy-load",
+    "base": "71b784695bf693b393512603a52212da5814658b",
+    "head": "71b784695bf693b393512603a52212da5814658b",
+    "pushed": true,
+    "dirty": 0,
+    "files": [],
+    "at": "2026-11-03T22:49:49.147Z"
+  }
+}

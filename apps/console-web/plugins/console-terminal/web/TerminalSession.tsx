@@ -30,6 +30,7 @@ async function tmuxAlive(name: string, where: string | null | undefined): Promis
 function ring(el: HTMLElement, how: string) {
   if (how === 'visual') { el.classList.remove('is-bell'); void el.offsetWidth; el.classList.add('is-bell'); return; }
   if (how !== 'sound') return;
+  if ((globalThis as { AXF_NOTIFY?: { allowed(t: string, c: string): boolean } }).AXF_NOTIFY?.allowed('terminal.bell', 'sound') === false) return;
   try {
     const A = (globalThis as unknown as { AudioContext?: new () => AudioContext }).AudioContext; if (!A) return;
     const ctx = new A(); const o = ctx.createOscillator(); const g = ctx.createGain();

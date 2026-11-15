@@ -1,0 +1,85 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261104-3b83b87f98",
+  "createdAt": "2026-11-04T15:06:57.507Z",
+  "updatedAt": "2026-11-04T15:17:59.739Z",
+  "kind": "build",
+  "title": "# Build: axhub-pass-dropdowns - small, axHub repo ## What Brett said (verbatim, Nov 4 2026, voice) …",
+  "asked": "# Build: axhub-pass-dropdowns - small, axHub repo ## What Brett said (verbatim, Nov 4 2026, voice) On the axHub Passes page: \"It's service, I just see service. I accept console and then I see scope. You need to make these dropdowns instead of text fields because I don't know what's acceptable. And then tools, it's just a text field. There's no dropdown.\" He couldn't find an 'Everything' option; the only pass he had was theme-only. Book to a free named agent (Snap Sully, else Janitor Joey). ## Do - Passes page (new pass form): **Service** = dropdown of every registered service + **All services** at the top; **Scope** = dropdown of valid scopes for that service (incl. All/Everything) with plain-English descriptions; **Tools** = multi-select of that service's tools with search, 'All tools' default; **Minutes** = dropdown (15, 30, 60, 120, 240) + **Include irreversible** checkbox. Validation messages in plain English. A big one-tap **'Everything for 2 hours'** preset at the top. - Active passes list: show what each one actually covers (services/tools) so it's obvious when a pass is theme-only. - Make sure an all-services pass really covers vps.*, github.*, axf-console.* held calls (test). - Docs + decision log. Tests, PR, merge when green, redeploy axHub web. Report in the axHub repo. Commits clean and professional. ## ADDENDUM 1 (Brett, voice) - DO FIRST The axHub Passes page says passes only work for **theme changes with Claude**. The all-scope pass was built Nov 3 (axHub branch claude/axhub-pass-all / claude/axhub-veto-pass, PR #33, decision #113) but never merged. **Land PR #33 first** (update from main, fix conflicts, CI green, merge, redeploy axHub), then build the dropdowns on top. Verify an 'Everything' pass makes vps.run / github / axf-console held calls run with no 90 s countdown. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches (Brett, Nov 3 2026): a downgrade (e.g. Fable → Opus) is fine. An UPGRADE (e.g. Opus → Fable) needs Brett's approval: when you reach one, run `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs request-upgrade <id> <phase>`, ask once, and stop. Never approve a model switch upgrade yourself (no `act approve` on an upgrade), never relaunch on a higher model.",
+  "repos": [
+    "MossesX/axHub"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "668e1532-a63",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "axHub #37: GET /auth/api/passes/options + covers on every pass + Everything test (vps/github/console), decision #114, 567 tests. AXF #321: Passes dropdowns, one-tap Everything for 2 hours, coverage lines, 269 checks.",
+    "branch": "claude/axhub-pass-dropdowns",
+    "commits": [
+      {
+        "sha": "50f5c03"
+      }
+    ],
+    "tests": {},
+    "links": {
+      "report": "https://github.com/MossesX/axHub/pull/37"
+    }
+  },
+  "closed": null,
+  "state": "done",
+  "status": "done",
+  "surface": "headless",
+  "startedAt": "2026-11-04T15:06:57.507Z",
+  "finishedAt": "2026-11-04T15:17:49.179Z",
+  "lastSeenAt": "2026-11-04T15:17:49.067Z",
+  "actual": {
+    "minutes": 11,
+    "costUsd": 2.6507,
+    "inputTokens": 118,
+    "outputTokens": 35766,
+    "cacheReadTokens": 6315096,
+    "cacheWriteTokens": 134382,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "progress": 1,
+  "resume": {
+    "repo": "MossesX/axHub",
+    "folder": "/root/axf-builds/axhub-pass-dropdowns",
+    "branch": "claude/axhub-pass-dropdowns",
+    "base": "440184cbdcc4da5e1aed1e8554ad45bcd29b7135",
+    "head": "50f5c031e928c29a44d2178e8543afecb019209a",
+    "pushed": true,
+    "dirty": 7,
+    "pr": "https://github.com/MossesX/axHub/pull/37",
+    "plan": "Hub serves pass-form choices; web app dropdowns",
+    "next": "PRs auto-merge on green CI; Coolify + axhub-web cron redeploy",
+    "files": [
+      "CLAUDE.md",
+      "docs/roadmap.md",
+      "docs/veto-pass.md",
+      "packages/core/test/passes.test.ts",
+      "packages/server/src/app.ts",
+      "packages/server/src/pass-options.ts",
+      "packages/server/src/passes-web.ts",
+      "packages/server/src/web.ts",
+      "packages/server/test/passes.test.ts",
+      "project/initialization/axhub-context.md",
+      "project/initialization/axhub-planning.md",
+      ".axf-queue.log",
+      ".axf-watch-live.log",
+      "_claude/shared/memory/amber-persona.md",
+      "_claude/shared/memory/naming.md",
+      "_claude/shared/memory/vision.md",
+      "_claude/shared/memory/write-ups.md",
+      "_claude/shared/notes/"
+    ],
+    "at": "2026-11-04T15:17:59.885Z"
+  }
+}

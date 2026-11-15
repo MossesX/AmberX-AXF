@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/book.schema.json",
+  "title": "AmberX AXF Book asset",
+  "type": "object",
+  "required": [
+    "$axf",
+    "type",
+    "id",
+    "name",
+    "version",
+    "data"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "asset@1"
+    },
+    "type": {
+      "const": "book"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "plan",
+        "chapters"
+      ],
+      "properties": {
+        "plan": {
+          "type": "object",
+          "properties": {
+            "totalMinutes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 600
+            },
+            "chapterMinutes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 120
+            },
+            "style": {
+              "enum": [
+                "quickstart",
+                "tutorial",
+                "tour",
+                "reference",
+                "deep-dive"
+              ]
+            },
+            "theme": {
+              "type": "string"
+            },
+            "narrator": {
+              "type": "string"
+            },
+            "speed": {
+              "type": "number"
+            }
+          }
+        },
+        "chapters": {
+          "type": "array",
+          "maxItems": 200,
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "title"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "minutes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "intro": {
+                "type": "string"
+              },
+              "collapsed": {
+                "type": "boolean"
+              },
+              "items": {
+                "type": "array",
+                "maxItems": 500,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "ref"
+                  ],
+                  "properties": {
+                    "ref": {
+                      "type": "string"
+                    },
+                    "minutes": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "note": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "about": {
+          "type": "string"
+        },
+        "docs": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "depth": {
+              "enum": [
+                "light",
+                "standard",
+                "deep",
+                "extreme"
+              ]
+            },
+            "format": {
+              "enum": [
+                "markdown",
+                "html",
+                "interactive-html-ts"
+              ]
+            },
+            "interactive": {
+              "enum": [
+                "none",
+                "examples",
+                "live"
+              ]
+            },
+            "includeApi": {
+              "type": "boolean"
+            },
+            "includeScreens": {
+              "type": "boolean"
+            }
+          }
+        },
+        "outputs": {
+          "type": "object",
+          "properties": {
+            "video": {
+              "type": "boolean"
+            },
+            "chapterClips": {
+              "type": "boolean"
+            }
+          }
+        },
+        "keywords": {
+          "type": "array",
+          "maxItems": 200,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

@@ -4,7 +4,7 @@
  * Plus the settings panels (Settings → Plugins → Agent voice): microphone, cloud voices, global pronunciations.
  */
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { Button, Chip, Container, Icon, IconButton, Note, Segmented, SelectField, Slider, Switch, TextField, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Icon, IconButton, Note, Segmented, SelectField, Slider, Switch, TabGroup, TextField, useRuntime } from '@console/axf/react';
 import {
   applyPreset, AUTO_SPEAK, CODE_MODES, DEFAULT_MIC, EMOJI_MODES, estimateMs, exportProfiles, INTERRUPT, LIGHT_LABEL, MIC_MODES, narrate, NUMBER_MODES, PRESETS,
   READ_MODES, URL_MODES, type MicSettings, type Narrator, type Pronunciation, type VoiceProfile,
@@ -86,7 +86,7 @@ export function AgentVoiceConsole({ initialAgent }: { initialAgent?: string }) {
               actions={<AgentActions agentId={sel} />}>
               <Switch label={`${name} is a voice agent`} checked={p.enabled} onChange={(v) => patchProfile(sel, (x) => ({ ...x, enabled: v }), true)}
                 hint="Voice agents speak their replies and light the live status light when they're the selected agent." />
-              <Segmented<Tab> label="Section" value={tab} onChange={setTab} options={[
+              <TabGroup<Tab> id="agent-voice.section" label="Section" value={tab} onChange={setTab} tabs={[
                 { value: 'voice', label: 'Voice', icon: 'sliders' }, { value: 'narrator', label: 'Narrator', icon: 'list' },
                 { value: 'permissions', label: 'Permissions', icon: 'shield' }, { value: 'pronunciation', label: 'Pronunciation', icon: 'edit' },
                 { value: 'try', label: 'Try it', icon: 'play' },

@@ -7,6 +7,7 @@ import { VIBE_COLORS } from './swarm-core.mjs';
 import { appMenu } from './menu';
 import { PROFILE_EVENT } from './cards';
 import { writeLocal } from '@console/api';
+import { SectionOwnersPanel } from './sections';
 
 function Desks() {
   const filled = useSlotFilled('swarm.settings.desks');
@@ -16,7 +17,7 @@ function Desks() {
 export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.agent-swarm',
   label: 'Agent swarm',
-  version: '0.2.0',
+  version: '0.3.0',
   register(rt) {
     // an agent's employee card (profile: info, stats, pay, history) from anywhere: agent-swarm.profile:<agent id>
     rt.actions.register('agent-swarm.profile', ([id = '']) => {
@@ -47,6 +48,8 @@ export const plugin: AxfWebLibrary = {
   settingsPanels: [
     // Desks: how many agents may work at once. Filled by whichever plugin provides the VPS-wide agent cap (slot swarm.settings.desks).
     { id: 'agent-swarm.desks', tab: 'agent-swarm', title: 'Desks', icon: 'layers', order: 15, render: () => <Desks /> },
+    // Section owners (crew-sections@1): who speaks for each section that acts on its own, in the group chat
+    { id: 'agent-swarm.sections', tab: 'agent-swarm', title: 'Section owners', icon: 'user', order: 20, render: () => <SectionOwnersPanel /> },
     { id: 'agent-swarm.lifecycle', tab: 'agent-swarm', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

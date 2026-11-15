@@ -7,7 +7,7 @@
  * - Inner tabs: Commands (single actions) · Chains & wizards. Each is a sortable, filterable, searchable grid in a
  *   scrolling pane; a row opens to its details, its own settings, its phrases (record one: say it twice, the two must
  *   match, or pick a predefined phrase) and, for chains and wizards, its steps (edit them, or by voice).
- * - Developer and AI snippets need the AI (and Molly for Developer). When it's off or not answering, the tab says why
+ * - Developer and AI snippets need the AI (and Gizmo for Developer). When it's off or not answering, the tab says why
  *   and offers the fix: switch it on, open the connection, run the setup wizard, check again.
  *
  * Library: lib-*.ts (code). Everything a person changes is an override or their own command (settings, per device
@@ -16,7 +16,7 @@
  */
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { AxfRuntime } from '../../../axf/core';
-import { Button, Chip, Container, Icon, IconButton, Note, SelectField, Switch, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
+import { Button, Chip, Container, Icon, IconButton, Note, SelectField, Switch, TabGroup, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
 import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '../../../axf/libs/datagrid';
 import { native } from '../../../native';
 import { withMic } from '../../../miclease';
@@ -55,7 +55,7 @@ const saveOverrides = (rt: AxfRuntime, o: ReturnType<typeof parseOverrides>) => 
 const saveCustom = (rt: AxfRuntime, list: Command[]) => rt.settings.set(K.custom, JSON.stringify(list));
 const patchCommand = (rt: AxfRuntime, id: string, patch: CommandOverride) => saveOverrides(rt, setOverride(overridesOf(rt), id, { ...overridesOf(rt)[id], ...patch }));
 
-/* ---------------------------------------------------------------- Molly status (developer tab) */
+/* ---------------------------------------------------------------- Gizmo status (developer tab) */
 
 interface MollyState { known: boolean; ok: boolean; reason: string; fix: string; checking: boolean }
 let mollyState: MollyState = { known: false, ok: false, reason: 'Not checked yet.', fix: '', checking: false };
@@ -67,7 +67,7 @@ export async function checkMolly(): Promise<MollyState> {
   try {
     const r = await fetch('/api/ai/molly/status', { credentials: 'same-origin', redirect: 'error', cache: 'no-store' });
     if (r.status === 403) setMolly({ known: true, ok: false, reason: 'Developer commands are for hub admins.', fix: 'admin' });
-    else if (!r.ok) setMolly({ known: true, ok: false, reason: r.status === 404 ? 'This AmberX has no server for Molly.' : `The AmberX server answered ${r.status}.`, fix: 'server' });
+    else if (!r.ok) setMolly({ known: true, ok: false, reason: r.status === 404 ? 'This AmberX has no server for Gizmo.' : `The AmberX server answered ${r.status}.`, fix: 'server' });
     else { const j = (await r.json()) as { ok?: boolean; reason?: string; fix?: string }; setMolly({ known: true, ok: !!j.ok, reason: j.reason ?? '', fix: j.fix ?? '' }); }
   } catch (e) { setMolly({ known: true, ok: false, reason: `The AmberX server can't be reached (${(e as Error).message}).`, fix: 'server' }); }
   setMolly({ checking: false });
@@ -197,7 +197,7 @@ function RecordPhrase({ cmd, all, onSave, onClose }: { cmd: Effective; all: Effe
 const STEP_KINDS: { value: Step['do']; label: string }[] = [
   { value: 'say', label: 'Say something' }, { value: 'ask', label: 'Ask a question' }, { value: 'confirm', label: 'Ask yes / no (no stops)' },
   { value: 'run', label: 'Run another command' }, { value: 'op', label: 'Notes / tasks operation' }, { value: 'action', label: 'App action' },
-  { value: 'ai', label: 'Ask the AI' }, { value: 'molly', label: 'Task for Molly' }, { value: 'wait', label: 'Wait' },
+  { value: 'ai', label: 'Ask the AI' }, { value: 'molly', label: 'Task for Gizmo' }, { value: 'wait', label: 'Wait' },
 ];
 
 function newStep(kind: Step['do'], a: string, b: string): Step | null {
@@ -395,7 +395,7 @@ function Unavailable({ cat }: { cat: CategoryId }) {
   } else {
     why = m.fix === 'token' ? `${m.reason} The AmberX installer copies it from the console; re-running it (or the 5-minute update) connects her.`
       : m.fix === 'admin' ? 'Developer commands drive the console and the VPS, so only hub admins can use them.'
-        : `Molly can't be reached: ${m.reason}`;
+        : `Gizmo can't be reached: ${m.reason}`;
     what = <>
       <Button tone="primary" icon="refresh" disabled={m.checking} onClick={() => void checkMolly()}>{m.checking ? 'Checking…' : 'Check again'}</Button>
       <Button tone="quiet" icon="settings" onClick={() => rt.dispatch('ai.status.open')}>AI settings</Button>
@@ -404,7 +404,7 @@ function Unavailable({ cat }: { cat: CategoryId }) {
   return (
     <div className="fx-empty axp-cmd-unavailable">
       <Icon name={cat === 'developer' ? 'code' : 'sparkles'} size={28} />
-      <h2>{cat === 'developer' ? 'Developer commands need Molly' : 'AI snippets need the AI'}</h2>
+      <h2>{cat === 'developer' ? 'Developer commands need Gizmo' : 'AI snippets need the AI'}</h2>
       <p className="fx-muted">{why}</p>
       <p className="fx-muted">{allCommands(rt).filter((c) => c.category === cat).length} commands are waiting here; they show up as soon as it's fixed.</p>
       <div className="fx-row fx-row--wrap axp-cmd-unavailable__actions">{what}</div>
@@ -450,23 +450,12 @@ export function CommandCenter({ start }: { start?: string }) {
         </div>
         <Button icon="mic" onClick={() => rt.dispatch('voice.listen')}>Speak</Button>
       </header>
-      <div className="fx-tabs" role="tablist" aria-label="Command tabs">
-        {CATEGORIES.map((c) => (
-          <button key={c.id} type="button" role="tab" className={`fx-tab${cat === c.id ? ' is-active' : ''}`} aria-selected={cat === c.id} onClick={() => setCat(c.id)}>
-            <Icon name={c.icon} size={14} /> {c.label} <span className="fx-muted">{all.filter((x) => x.category === c.id).length}</span>
-          </button>
-        ))}
-      </div>
+      <TabGroup id="commands.categories" label="Command tabs" value={cat} onChange={setCat} tabs={CATEGORIES.map((c) => ({ value: c.id, label: c.label, icon: c.icon, badge: all.filter((x) => x.category === c.id).length || undefined }))} />
       <p className="fx-muted axp-cmd-trigger">{info.description} Trigger: <b>“{info.triggers.slice(0, 3).join('”, “')}”</b>.</p>
       {!available ? <Unavailable cat={cat} /> : (
         <>
-          <div className="fx-tabs fx-tabs--sub" role="tablist" aria-label={`${info.label} lists`}>
-            {(['commands', 'chains'] as Inner[]).map((t) => (
-              <button key={t} type="button" role="tab" className={`fx-tab${inner === t ? ' is-active' : ''}`} aria-selected={inner === t} onClick={() => { setInner(t); setF({ ...f, kind: '', group: '' }); }}>
-                {t === 'commands' ? 'Commands' : 'Chains & wizards'} <span className="fx-muted">{inCat.filter((c) => (t === 'commands' ? c.kind === 'action' : c.kind !== 'action')).length}</span>
-              </button>
-            ))}
-          </div>
+          <TabGroup<Inner> id="commands.lists" label={`${info.label} lists`} className="fx-tabs--sub" size="sm" value={inner} onChange={(t) => { setInner(t); setF({ ...f, kind: '', group: '' }); }}
+            tabs={(['commands', 'chains'] as Inner[]).map((t) => ({ value: t, label: t === 'commands' ? 'Commands' : 'Chains & wizards', badge: inCat.filter((c) => (t === 'commands' ? c.kind === 'action' : c.kind !== 'action')).length || undefined }))} />
           <div className="axp-cmd-tools" role="toolbar" aria-label="Command filters">
             <TextField label="Search" value={f.q ?? ''} onChange={(q) => setF({ ...f, q })} placeholder="what you'd say, or what it does" />
             <SelectField label="Group" value={f.group ?? ''} onChange={(group) => setF({ ...f, group })} options={[{ value: '', label: 'All groups' }, ...groupsOf(inTab).map((g) => ({ value: g, label: g }))]} />

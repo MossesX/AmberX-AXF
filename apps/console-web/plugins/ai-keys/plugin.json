@@ -2,11 +2,11 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.ai-keys",
   "name": "AI keys",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "A dialog that keeps several Anthropic keys (API keys sk-ant-api\u2026 and Claude subscription tokens sk-ant-oat\u2026 from `claude setup-token`) and picks the active one of each kind for the AI assistant. Every key is tested before it is saved (an invalid one is refused) and can be re-tested; keys are stored 0600 on the console server and never sent back to a browser (only the last 4 characters). The active key replaces the assistant profile's own key for that kind (Anthropic / Claude Code subscription). Open it from the right-click menu, the application menu (Plugins \u203a AI keys), action ai-keys.open, search or Settings \u2192 Plugins \u2192 AI keys; reachable through axHub's sign-in wall like the rest of the console. Several Claude accounts (Nov 2 2026): each subscription shows the email of its Claude account, and when a headless build hits a weekly or usage limit the next saved account that still answers becomes active (POST /switch, deploy/claude-headless.sh) and the build runs again on it. Manage Claude accounts (action ai-keys.accounts): a dialog listing the accounts in priority order with expandable rows (access and refresh token each tested on its own, email, plan, renewal), drag and drop to set the order the automatic switch follows, and an Add account wizard that shows every command and checks each key the moment it is entered before it goes on.",
+  "description": "A dialog that keeps several Anthropic keys (API keys in any Anthropic format, sk-ant-api03\u2026 or sk-ant-usr\u2026, checked live, and Claude subscription tokens sk-ant-oat\u2026 from `claude setup-token`) and picks the active one of each kind for the AI assistant. Every key is tested before it is saved (an invalid one is refused) and can be re-tested; keys are stored 0600 on the console server and never sent back to a browser (only the last 4 characters). The active key replaces the assistant profile's own key for that kind (Anthropic / Claude Code subscription). Open it from the right-click menu, the application menu (Plugins \u203a AI keys), action ai-keys.open, search or Settings \u2192 Plugins \u2192 AI keys; reachable through axHub's sign-in wall like the rest of the console. Several Claude accounts (Nov 2 2026): each subscription shows the email of its Claude account, and when a headless build hits a weekly or usage limit the next saved account that still answers becomes active (POST /switch, deploy/claude-headless.sh) and the build runs again on it. Manage Claude accounts (action ai-keys.accounts): a dialog listing the accounts in priority order with expandable rows (access and refresh token each tested on its own, email, plan, renewal), drag and drop to set the order the automatic switch follows, and an Add account wizard that shows every command and checks each key the moment it is entered before it goes on. One store for the whole console: every console admin and the console token see the same keys, active choice, order and VPS state, and nobody else gets in. The accounts saved on the VPS (Claude accounts plugin) are listed beside them as vpsAccounts and can be switched by API; their tokens stay on the VPS.",
   "targets": [
     "axf-console"
   ],
@@ -18,7 +18,8 @@
   ],
   "optional": [
     "service:axf.llm@1",
-    "service:axf.vinny@1"
+    "service:axf.vinny@1",
+    "service:axf.claude-accounts@1"
   ],
   "scopes": [
     "ROUTES"
@@ -45,7 +46,7 @@
     "mentions": [
       "CLAUDE.md", "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md",
-      "install_instructions.md", "deploy/claude-headless.sh"
+      "install_instructions.md", "deploy/claude-headless.sh", "deploy/claude-token-save.mjs"
     ]
   },
   "opens": "main"

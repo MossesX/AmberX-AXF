@@ -1,7 +1,7 @@
 /**
  * AI keys console plugin (ai.amberx.axf.console.ai-keys).
  *
- * A dialog that keeps several Anthropic keys — API keys (sk-ant-api…) and Claude subscription tokens (sk-ant-oat…,
+ * A dialog that keeps several Anthropic keys — API keys (sk-ant-api03…, sk-ant-usr… or any newer sk-ant- format) and Claude subscription tokens (sk-ant-oat…,
  * from `claude setup-token`) — and picks the active one of each kind for the AI assistant. Every key is tested on the
  * server before it is saved; the browser only ever sees a name, the kind, the last 4 characters and the last test.
  * Subscription tokens are access + refresh pairs (both required, or Claude Code's .credentials.json pasted whole),
@@ -24,7 +24,7 @@ const DIALOG = 'ai-keys';
 const ACCOUNTS = 'ai-keys.accounts';
 const api = pluginApi(FOLDER, 'AI keys');
 
-interface Test { ok: boolean; at: number; ms: number; detail?: string; error?: string; steps?: { step: string; ok: boolean; note?: string }[] }
+interface Test { ok: boolean; at: number; ms: number; status?: 'ok' | 'invalid' | 'no-credit' | 'error'; detail?: string; error?: string; steps?: { step: string; ok: boolean; note?: string }[] }
 interface KeyRow {
   id: string; label: string; kind: 'anthropic' | 'claude-code'; kindLabel: string; hint: string; active: boolean; createdAt: number; lastTest: Test | null;
   pair?: boolean; needsRefresh?: boolean; refreshHint?: string; expiresAt?: number | null; refreshedAt?: number | null;
@@ -53,7 +53,7 @@ function KeyItem({ k, busy, run }: { k: KeyRow; busy: boolean; run: (fn: () => P
         {k.limitedAt && !k.active && <span className="fx-chip" title="Hit a usage or weekly limit; re-test it once the limit resets">limit hit</span>}
       </div>
       <p className="fx-muted" style={{ margin: 0 }}>
-        {t ? (t.ok ? `Works · tested ${when(t.at)}${t.detail ? ` · ${t.detail}` : ''}` : `Failed ${when(t.at)}: ${t.error}`) : 'Not tested yet'}
+        {t ? (t.ok ? `Works · tested ${when(t.at)}${t.detail ? ` · ${t.detail}` : ''}` : t.status === 'no-credit' ? `No credit · tested ${when(t.at)}: the key is real but the account needs credit; top up, then re-test` : `${t.status === 'invalid' ? 'Invalid' : 'Failed'} ${when(t.at)}: ${t.error}`) : 'Not tested yet'}
       </p>
       {k.pair && <p className="fx-muted" style={{ margin: 0 }}>Access token renews {k.expiresAt ? when(k.expiresAt) : 'when needed'}{k.refreshedAt ? ` · last renewed ${when(k.refreshedAt)}` : ''}</p>}
       {k.refreshError && <Note tone="warning">Couldn't renew it {when(k.refreshError.at)}: {k.refreshError.error}</Note>}
@@ -141,7 +141,7 @@ function KeysDialog() {
             { value: 'api', label: 'API key', icon: 'key' },
           ]} />
           <TextField label="Name" value={label} onChange={setLabel} placeholder="e.g. Brett's Max plan" />
-          {mode === 'api' && <TextField label="API key" type="password" mono value={key} onChange={setKey} placeholder="sk-ant-api…" hint="Tested before it's saved; a key that doesn't work is refused." />}
+          {mode === 'api' && <TextField label="API key" type="password" mono value={key} onChange={setKey} placeholder="sk-ant-…" hint="Any Anthropic API key (sk-ant-api03…, sk-ant-usr…, newer formats too). Checked live before it's saved: OK, invalid (refused) or no credit (kept, re-test after a top-up)." />}
           {mode === 'pair' && <>
             <TextField label="Access token" type="password" mono value={key} onChange={setKey} placeholder="sk-ant-oat…" />
             <TextField label="Refresh token" type="password" mono value={refresh} onChange={setRefresh} placeholder="sk-ant-ort…" hint="Both are required. The pair is authorised only when both work together: the access token answers, the refresh token gets a new one, and that one answers too." />

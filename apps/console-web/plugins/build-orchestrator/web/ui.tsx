@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { AgentAvatar, BuildOrigin, Button, Icon, Segmented, Slot, originSubtitle, useRuntime } from '@console/axf/react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { AgentAvatar, BuildOrigin, Button, ControlScope, Icon, PriorityTag, Segmented, Slot, TabGroup, flashWhenReady, originSubtitle, useControlTarget, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
 import { WatchLiveFor } from '@console/watchLive';
@@ -7,10 +7,16 @@ import * as core from './orchestrator-core.mjs';
 import * as pendingCore from '@console/axf/plan/pending-core.mjs';
 import pricing from '@console/axf/schemas/model-pricing.json';
 import { DataGrid, RowHookButtons, registerRowRefTarget, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
+import { PipelineTab, type PipelineView } from './pipeline';
+import { GroupTab, GroupsBoard } from './groups';
+import { buildRowSelector, settleFocus, useFocusedBuild } from './focus';
 import './orchestrator.css';
 
 /*
- * Build orchestrator page: a tab group (Builds · Approvals · Rules). The Builds tab looks and behaves exactly like
+ * Build orchestrator page, the only place that browses and manages builds (Brett, Nov 10 2026: the Build manager is
+ * retired). Tabs: Pending · Queue · Active · Incomplete · Complete · Errors (pipeline.tsx, one view of GET /pipeline
+ * each), Accounts (health every 5 minutes, self-check, per-account controls), All builds · Approvals · Rules.
+ * Deep link: nav:build-orchestrator, or action build-orchestrator.tab:<tab>. The All builds tab looks and behaves exactly like
  * the console's Pending builds list (same pd-* cards, status strip, sort bar, step ticks, add form), with more
  * options: per-step model (Fable / Opus), phases and model-switch approvals, next-phase brief, hide / archive,
  * import from the pending list, step move / edit / remove. All rules are in orchestrator-core.mjs.
@@ -24,13 +30,43 @@ type Step = { id: string; text: string; model: 'Fable' | 'Opus'; why: string; ph
 type Build = { id: string; title: string; category: string; detail: string; status: string; hidden: boolean; source: string; pendingId: string; branch: string; pr: string; createdAt: string; updatedAt: string; builtAt: string; notes: { text: string; at: string }[]; approvals: { phase: number; from: string; to: string; at: string; by?: string; via?: string; kind?: string; selfApproved?: boolean }[]; upgradeRequests?: { id: string; phase: number; from: string; to: string; at: string; by: string; state: string }[]; origin?: unknown; steps: Step[] };
 type Rules = { sameSession: boolean; subAgents: boolean; approveModelSwitch: boolean; maxStepMinutes: number };
 type State = { updatedAt: string; rules: Rules; builds: Build[] };
-type Res = { ok: boolean; error?: string; state?: State; log?: string[]; brief?: string };
+type Res = { ok: boolean; error?: string; state?: State; log?: string[]; brief?: string; upgradePolicy?: { approvalRequired: boolean; source: string } };
 type Act = (c: Record<string, unknown>) => Promise<boolean>;
 
+/** A build's headless runs, from the launcher's end-of-run notes (headless-context@1; same line format as
+ * parseRunNote in framework/cli/headless-context.mjs): start tokens, cost, brief only or full chain. */
+const RUN_NOTE = /^Headless run (\S+): (brief only|full chain) · (start [\d.]+K? tokens(?: \(\$[\d.]+\))?|no start recorded) · cost (\$[\d.]+(?: \(estimate\))?)/;
+function headlessRuns(b: Build): { at: string; start: string; cost: string; mode: string }[] {
+  return b.notes.map((n) => { const m = RUN_NOTE.exec(n.text); return m ? { at: n.at, start: m[3]!.replace(/^start /, ''), cost: m[4]!, mode: m[2]! } : null; })
+    .filter((x): x is { at: string; start: string; cost: string; mode: string } => !!x).reverse();
+}
 const fmtDate = (v: string) => { if (!v) return '—'; const d = new Date(v); return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }); };
 const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
-const TABS = [{ id: 'builds', label: 'Builds', icon: 'list' }, { id: 'approvals', label: 'Approvals', icon: 'check-circle' }, { id: 'rules', label: 'Rules', icon: 'settings' }] as const;
-type Tab = (typeof TABS)[number]['id'];
+export const TABS = [
+  { id: 'pending', label: 'Pending', icon: 'clock' }, { id: 'queue', label: 'Queue', icon: 'list' }, { id: 'active', label: 'Active', icon: 'play' },
+  { id: 'incomplete', label: 'Incomplete', icon: 'pause' }, { id: 'complete', label: 'Complete', icon: 'check-circle' }, { id: 'errors', label: 'Errors', icon: 'alert' },
+  { id: 'archive', label: 'Archive', icon: 'package' }, { id: 'deleted', label: 'Deleted', icon: 'trash' }, { id: 'groups', label: 'Groups', icon: 'folder' },
+  { id: 'accounts', label: 'Accounts', icon: 'user' }, { id: 'builds', label: 'All builds', icon: 'grid' }, { id: 'approvals', label: 'Approvals', icon: 'check' }, { id: 'rules', label: 'Rules', icon: 'settings' },
+] as const;
+/** A custom tab is a group pinned next to a stage tab (groups.tsx): `group:<group id>`. */
+export type Tab = (typeof TABS)[number]['id'] | `group:${string}`;
+const GROUP_TAB = /^group:[a-z0-9-]{1,48}$/;
+const isTab = (t: string) => TABS.some((x) => x.id === t) || GROUP_TAB.test(t);
+type CustomTab = { id: string; label: string; stage: string; count: number };
+/** The tab row: each custom tab sits right after the stage tab it belongs to; 'all' ones after Groups. */
+function tabRow(custom: CustomTab[]) {
+  const out: { id: string; label: string; icon: string; count?: number }[] = [];
+  for (const t of TABS) {
+    out.push(t);
+    const stage = t.id === 'groups' ? 'all' : t.id;
+    for (const c of custom.filter((x) => x.stage === stage)) out.push({ id: c.id, label: c.label, icon: 'folder', count: c.count });
+  }
+  return out;
+}
+const PIPELINE_VIEWS = new Set<string>(['pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'archive', 'deleted', 'accounts']);
+/** Another part of the console (an action, a deep link) asks for a tab: the page switches to it. */
+const TAB_EVENT = 'axf:orchestrator-tab';
+export function openTab(t: string) { if (isTab(t)) { consoleApi.writeLocal('orch-tab', t); window.dispatchEvent(new CustomEvent(TAB_EVENT, { detail: t })); } }
 
 export function OrchestratorPage() {
   const rt = useRuntime();
@@ -38,11 +74,15 @@ export function OrchestratorPage() {
   const [state, setState] = useState<State | null>(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
-  const [tab, setTab] = useState<Tab>(() => consoleApi.readLocal<Tab>('orch-tab', 'builds'));
+  const [tab, setTab] = useState<Tab>(() => { const t = consoleApi.readLocal<string>('orch-tab', 'queue'); return (isTab(t) ? t : 'queue') as Tab; });
+  const [custom, setCustom] = useState<CustomTab[]>([]);
+  const loadTabs = () => api.call<{ ok: boolean; tabs?: CustomTab[] }>('groups/tabs').then((r) => setCustom(r.tabs ?? [])).catch(() => undefined);
+  useEffect(() => { void loadTabs(); }, [tab]);
   useEffect(() => { consoleApi.writeLocal('orch-tab', tab); }, [tab]);
+  useEffect(() => { const on = (e: Event) => setTab((e as CustomEvent<Tab>).detail); window.addEventListener(TAB_EVENT, on); return () => window.removeEventListener(TAB_EVENT, on); }, []);
 
   const load = async () => {
-    try { const r = await api.call<Res>('state'); if (!r.ok) throw new Error(r.error); setState(r.state!); setError(''); }
+    try { const r = await api.call<Res>('state'); if (!r.ok) throw new Error(r.error); if (r.upgradePolicy) core.setUpgradePolicy(r.upgradePolicy); setState(r.state!); setError(''); }
     catch (e) { setError((e as Error).message); setState((s) => s ?? (core.emptyState() as State)); }
   };
   useEffect(() => { void load(); }, []);
@@ -67,18 +107,15 @@ export function OrchestratorPage() {
         <div>
           <p className="fx-eyebrow">Build orchestrator · {state.builds.length} builds{state.updatedAt ? ` · updated ${fmtTime(state.updatedAt)}` : ''}</p>
           <h1>Build orchestrator</h1>
-          <p className="fx-muted" title="One session, no sub-agents unless a step says so. Tracker: _claude/builds/orchestrator.json">Every build in small Fable / Opus steps; a model upgrade waits for your approval, a downgrade goes on by itself.</p>
+          <p className="fx-muted" title="One session, no sub-agents unless a step says so. Tracker: _claude/builds/store.json">Every build, split into small Fable / Opus steps as soon as it is filed, with its model and account planned; Pending → Queue (your move) → Active (the dispatcher picks the account when its turn comes: subscriptions first, then any API).</p>
         </div>
         <div className="fx-row fx-row--wrap"><Button icon="refresh" disabled={busy} onClick={() => load().then(() => log('reloaded', 'ok'))}>Reload</Button><Slot name="builds.toolbar" props={{ page: 'build-orchestrator' }} /></div>
       </header>
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
-      <div className="fx-tabs" role="tablist" aria-label="Build orchestrator">
-        {TABS.map((t) => (
-          <button key={t.id} role="tab" className="fx-tab" aria-selected={tab === t.id} onClick={() => setTab(t.id)}>
-            <Icon name={t.icon} size={14} />{t.label}{t.id === 'approvals' && waiting > 0 && <span className="oc-count">{waiting}</span>}
-          </button>
-        ))}
-      </div>
+      <TabGroup id="build-orchestrator.tabs" label="Build orchestrator" value={tab} onChange={setTab} tabs={tabRow(custom).map((t) => ({ value: t.id as Tab, label: t.label, icon: t.icon, badge: t.id === 'approvals' && waiting > 0 ? waiting : t.count || undefined }))} />
+      {PIPELINE_VIEWS.has(tab) && <PipelineTab key={tab} api={api} log={log} view={tab as PipelineView} />}
+      {tab === 'groups' && <GroupsBoard api={api} log={log} />}
+      {tab.startsWith('group:') && <GroupTab key={tab} api={api} log={log} group={tab.slice(6)} />}
       {tab === 'builds' && <BuildsTab state={state} busy={busy} act={act} />}
       {tab === 'approvals' && <ApprovalsTab state={state} busy={busy} act={act} />}
       {tab === 'rules' && <RulesTab rules={state.rules} busy={busy} act={act} />}
@@ -209,7 +246,7 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
         </div>
       ) : b.detail && <p className="pd-detail">{b.detail}</p>}
       {!embedded && ps.map((ph) => (
-        <div key={ph.index} className="pd-thread">
+        <ControlScope key={ph.index} address={`panel:${b.id}`}><div className="pd-thread">
           <h3>{ph.name} · <span className={`oc-model is-${ph.model.toLowerCase()}`}>{ph.model}</span>{ph.gate && <span className="fx-muted fx-small"> · {switchNote(ph)}</span>}{ph.minutesLeft ? <span className="pd-est"> · {core.formatMinutes(ph.minutesLeft)} left</span> : null}</h3>
           {ph.groups.map((g, gi) => (
             <div key={gi} className="oc-group">
@@ -217,14 +254,19 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
               {g.steps.map((s) => <StepRow key={s.id} b={b} s={s as Step & { index: number }} locked={!ph.approved} busy={busy} act={act} last={b.steps.length - 1} />)}
             </div>
           ))}
-        </div>
+        </div></ControlScope>
       ))}
+      {headlessRuns(b).length > 0 && (
+        <div className="pd-thread"><h3>Headless runs</h3>{headlessRuns(b).map((r, i) => (
+          <div key={i} className="pd-entry"><time dateTime={r.at}>{fmtDate(r.at)}</time>
+            <p><span className="fx-mono">{r.start}</span> start · {r.cost} · {r.mode}</p></div>))}</div>
+      )}
       {b.notes.length > 0 && (
         <div className="pd-thread"><h3>Notes</h3>{b.notes.map((e, i) => <div key={i} className="pd-entry"><time dateTime={e.at}>{fmtDate(e.at)}</time><p>{e.text}</p></div>)}</div>
       )}
       {(mode === 'note' || mode === 'step') && (
         <div className="fx-stack">
-          <textarea className="fx-input" rows={3} autoFocus value={text} onChange={(e) => setText(e.target.value)} placeholder={mode === 'note' ? 'Add a note' : 'Add a step (30 min or less)'} />
+          <textarea className="fx-input" rows={3} autoFocus value={text} onChange={(e) => setText(e.target.value)} placeholder={mode === 'note' ? 'Add a note' : `Add a step (${core.STEP_MINUTES} min or less)`} />
           {mode === 'step' && (
             <div className="pd-two">
               <label className="pd-field">Model<select className="fx-input" value={stepModel} onChange={(e) => setStepModel(e.target.value as 'Fable' | 'Opus')}>{core.MODELS.map((m) => <option key={m}>{m}</option>)}</select></label>
@@ -263,8 +305,17 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
 
 function StepRow({ b, s, locked, busy, act, last }: { b: Build; s: Step & { index: number }; locked: boolean; busy: boolean; act: Act; last: number }) {
   const other = s.model === 'Fable' ? 'Opus' : 'Fable';
+  // console-control@1: `step:<id>` under the build's panel (focus scrolls to it and highlights it; set marks it done / not done)
+  const el = useRef<HTMLDivElement | null>(null);
+  const finished = core.isFinished(b.status);
+  const setTarget = useControlTarget({
+    address: `step:${s.id}`, kind: 'step', label: `${s.id} ${s.text}`.slice(0, 160), detail: b.title, keywords: [s.model, s.done ? 'done' : 'to do', b.id], element: () => el.current,
+    can: ['open', 'state', 'focus', 'set'], get: () => (s.done ? 'done' : 'to do'),
+    set: (v) => { const t = String(v ?? '').trim().toLowerCase(); const done = ['done', 'true', 'on', 'yes', '1'].includes(t) ? true : ['to do', 'todo', 'false', 'off', 'no', '0', 'undone'].includes(t) ? false : null; if (done === null) return `"${String(v)}" is not done or to do`; if (busy || finished || (locked && !s.done)) return locked ? 'approve the model switch first' : 'this build is finished'; void act({ action: 'step', id: b.id, step: s.id, done }); return undefined; },
+    isDisabled: () => busy || finished, state: () => ({ done: s.done, model: s.model, estimate: s.estimate ?? '', text: s.text, doneAt: s.doneAt ?? null, index: s.index }),
+  }, [s.done, s.model, busy, locked, finished]);
   return (
-    <div className={`pd-entry is-mono ${s.done ? 'is-done' : ''}`}>
+    <div ref={(d) => { el.current = d; setTarget(d); }} className={`pd-entry is-mono ${s.done ? 'is-done' : ''}`}>
       <input type="checkbox" className="pd-tick" checked={s.done} disabled={busy || core.isFinished(b.status) || (locked && !s.done)} onChange={(ev) => void act({ action: 'step', id: b.id, step: s.id, done: ev.target.checked })} aria-label={`Step ${s.id} done`} title={locked ? 'Approve the model switch first' : s.done && s.doneAt ? `Done ${fmtTime(s.doneAt)}` : 'Mark this step done'} />
       <time>{s.id}{s.estimate && <span className="pd-est"> · ~{s.estimate}</span>}</time>
       <p>{s.text}{s.why && <span className="fx-muted"> — {s.why}</span>}{s.session === 'new' && <span className="oc-flag"> new session</span>}{s.agent && <span className="oc-flag"> sub-agent ok</span>}</p>
@@ -291,6 +342,7 @@ function approvalBy(b: Build, p: core.Phase): string {
   if (!a) return '';
   if (a.selfApproved) return `Self-approved by ${a.by || 'a session'}, not you: doesn't count`;
   if (a.kind === 'downgrade') return 'Recorded by itself';
+  if (a.via === 'policy') return `Upgraded by itself (Fable upgrades need my approval was off) · ${a.at.slice(0, 16).replace('T', ' ')}`;
   return a.via ? `Approved by ${a.by} (${a.via === 'axhub' ? 'axHub' : 'console'})` : 'Approved before Nov 3 2026 (approver not recorded)';
 }
 
@@ -299,7 +351,9 @@ function ApprovalsTab({ state, busy, act }: { state: State; busy: boolean; act: 
   if (!gates.length) return <div className="fx-empty">No model switches in any build.</div>;
   return (
     <div className="pd-list" role="list">
-      <p className="fx-small fx-muted">Upgrades (Opus → Fable) wait for you: your click here, or the axHub approval a session asks for. A downgrade (Fable → Opus) goes on by itself.</p>
+      <p className="fx-small fx-muted">{core.upgradePolicy().approvalRequired
+        ? 'Upgrades (Opus → Fable) wait for you: your click here, or the axHub approval a session asks for. A downgrade (Fable → Opus) goes on by itself.'
+        : 'Fable upgrades need my approval is off (Settings → Plugins → Claude): a phase that needs Fable runs on Fable by itself and is logged here. A downgrade goes on by itself too.'}</p>
       {gates.map(({ b, p }) => {
         const down = p.kind === 'downgrade';
         const req = (b.upgradeRequests ?? []).find((x) => x.phase === p.index && x.state === 'open');
@@ -308,7 +362,7 @@ function ApprovalsTab({ state, busy, act }: { state: State; busy: boolean; act: 
           <article key={`${b.id}-${p.index}`} className={`pd-card ${p.approved ? 'is-complete' : 'is-pending'}`} role="listitem">
             <div className="pd-card__top">
               <h2 className="pd-card__title">{b.title}<span className="fx-muted fx-small"> · phase {p.index + 1}</span></h2>
-              <span className={`pd-badge oc-badge is-${p.approved ? 'complete' : 'waiting'}`}>{down ? 'Downgrade' : p.approved ? 'Upgrade approved' : 'Upgrade: needs you'}</span>
+              <span className={`pd-badge oc-badge is-${p.approved ? 'complete' : 'waiting'}`}>{down ? 'Downgrade' : p.approved ? (b.approvals.some((a) => a.phase === p.index && a.via !== 'policy') || core.upgradePolicy().approvalRequired ? 'Upgrade approved' : 'Upgrade: automatic') : 'Upgrade: needs you'}</span>
             </div>
             <div className="pd-meta"><span className={`oc-model is-${p.from.toLowerCase()}`}>{p.from}</span><Icon name="chevron-right" size={13} /><span className={`oc-model is-${p.model.toLowerCase()}`}>{p.model}</span><span>{p.steps.length} steps · {core.formatMinutes(p.minutesLeft) || 'done'}</span></div>
             {by && <p className="fx-small fx-muted">{by}</p>}
@@ -332,7 +386,8 @@ function RulesTab({ rules, busy, act }: { rules: Rules; busy: boolean; act: Act 
         <label className="fx-row"><input type="checkbox" checked={r.sameSession} onChange={() => flip('sameSession')} />Stay in one session (a step can still ask for a new one)</label>
         <label className="fx-row"><input type="checkbox" checked={r.subAgents} onChange={() => flip('subAgents')} />Allow sub-agents (off = only steps marked “sub-agent ok”)</label>
         <p className="fx-small fx-muted">Model switches: an upgrade always waits for your approval; a downgrade goes on by itself (Nov 3 2026, not a setting).</p>
-        <label className="pd-field">Largest step (minutes)<input className="fx-input" type="number" min={5} max={240} value={r.maxStepMinutes} onChange={(e) => setR((x) => ({ ...x, maxStepMinutes: Number(e.target.value) }))} /></label>
+        <label className="pd-field">Largest step (minutes, {core.STEP_MINUTES} at most)<input className="fx-input" type="number" min={1} max={core.STEP_MINUTES} value={core.maxStep(r)} onChange={(e) => setR((x) => ({ ...x, maxStepMinutes: Number(e.target.value) }))} /></label>
+        <p className="fx-small fx-muted">Steps are checkpoints inside one session: it commits and ticks each one as it goes, with no new prompt or launch per step.</p>
         <div><Button tone="primary" icon="save" disabled={busy} onClick={() => act({ action: 'rules', rules: r })}>Save rules</Button></div>
       </article>
       <article className="pd-card">
@@ -415,6 +470,16 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
   const [stepHidden, setStepHidden] = useState<string[]>(() => consoleApi.readLocal<string[]>('orch-step-hidden', ['doneAt']));
   const [open, setOpen] = useState<string[]>([]);
   const [collapsed, setCollapsed] = useState<string[]>([]);
+  // a build asked for: its row expands, stays selected (highlighted), scrolls into view and flashes once it is drawn
+  const focusId = useFocusedBuild();
+  const listed = !!focusId && builds.some((b) => b.id === focusId);
+  useEffect(() => {
+    if (!listed) return;
+    setOpen((o) => (o.includes(focusId) ? o : [...o, focusId]));
+    setCollapsed((c) => c.filter((g) => g !== `cat:${builds.find((b) => b.id === focusId)?.category || core.UNCATEGORISED}`));
+    flashWhenReady(() => document.querySelector(`.axf-grid-row${buildRowSelector(focusId)}`), 5000);
+    settleFocus(focusId);
+  }, [listed, focusId]);
   useEffect(() => { consoleApi.writeLocal('orch-grid-sort', sort); consoleApi.writeLocal('orch-grid-hidden', hidden); consoleApi.writeLocal('orch-step-hidden', stepHidden); }, [sort, hidden, stepHidden]);
   const fig = useMemo(() => new Map(builds.map((b) => [b.id, figures(b)])), [builds]);
   const groups: GridGroup<Build>[] = useMemo(() => {
@@ -429,6 +494,7 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
   const cols: GridColumn<Build>[] = [
     { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-font-size) * 16), calc(var(--fx-font-size) * 25))', fixed: true, sortable: true, sortValue: (b) => b.title.toLowerCase(),
       render: (b) => <span className="oc-cell-title" title={b.detail || b.title}><strong><AgentAvatar inText={`${b.id}\n${b.detail}`} size="small" /> {b.title}{b.hidden && <span className="fx-muted fx-small"> · hidden</span>}</strong>{summary(b) && <span className="fx-small fx-muted">{summary(b)}</span>}</span> },
+    { id: 'priority', label: 'Priority', width: 'calc(var(--fx-font-size) * 9)', render: (b) => <PriorityTag build={b.id} /> },
     { id: 'status', label: 'Status', width: 'calc(var(--fx-font-size) * 7.5)', sortable: true, sortValue: (b) => core.STATUSES.indexOf(b.status),
       render: (b) => <span className={`pd-badge oc-badge is-${b.status}`}>{(core.STATUS_LABEL as Record<string, string>)[b.status]}</span> },
     { id: 'next', label: 'Next', width: 'calc(var(--fx-font-size) * 6)', sortable: true, sortValue: (b) => core.nextUp(b, rules).step?.model ?? 'zz',
@@ -452,7 +518,7 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
       </div>
       <div className="oc-grid">
         <DataGrid<Build> id="orch-builds" label="Builds" groups={groups} columns={cols} rowId={(b) => b.id} rowLabel={(b) => b.title}
-          rowTone={(b) => STATUS_TONE[b.status] ?? 'muted'}
+          rowTone={(b) => STATUS_TONE[b.status] ?? 'muted'} selected={listed ? focusId : undefined}
           hidden={hidden} onToggleColumn={(c, show) => setHidden((h) => toggleIn(h, c, show))} onShowAll={() => setHidden([])}
           sort={sort} onSort={(c) => setSort((s) => nextSort(s, c))}
           expanded={open} onToggleExpand={(id) => setOpen((o) => toggleIn(o, id))} onRowClick={(b) => setOpen((o) => toggleIn(o, b.id))}
@@ -506,10 +572,10 @@ function StepGrid({ b, rules, busy, act, hidden, setHidden }: { b: Build; rules:
         </span>
       ) },
   ];
-  if (!b.steps.length) return <p className="fx-small fx-muted">No steps yet. Add steps of {rules.maxStepMinutes} minutes or less below.</p>;
+  if (!b.steps.length) return <p className="fx-small fx-muted">No steps yet. Add steps of {core.maxStep(rules)} minutes or less below.</p>;
   return (
     <div className="oc-subgrid">
-      <DataGrid<GStep> id={`orch-steps-${b.id.replace(/[^a-z0-9-]/gi, '-')}`} label={`Steps of ${b.title}`} compact groups={groups} columns={cols}
+      <DataGrid<GStep> id={`orch-steps-${b.id.replace(/[^a-z0-9-]/gi, '-')}`} rowKind="step" label={`Steps of ${b.title}`} compact groups={groups} columns={cols}
         rowId={(s) => s.id} rowLabel={(s) => s.text}
         rowTone={(s) => (s.done ? 'success' : s.locked ? 'warning' : s.next ? 'accent' : 'muted')}
         hidden={hidden} onToggleColumn={(c, show) => setHidden((h) => toggleIn(h, c, show))} onShowAll={() => setHidden(() => [])}

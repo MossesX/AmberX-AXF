@@ -2,7 +2,7 @@
 
 Create, edit, manage and orchestrate AI agents built from reusable parts — personas, lingo packs, skills, tools — each
 with its own persistent memory (type and settings per agent), trained from Firecrawl, web pages, the repo, pasted text
-and MCP servers. Add-on agents install as bundles (five ship with the plugin: coder = Mosses, vinny = Vinny (VPS root through axHub), molly = Molly (AmberX developer agent, walkthroughs), axf-expert, ai-expert).
+and MCP servers. Add-on agents install as bundles (six ship with the plugin: coder = Mosses, vinny = Vinny (VPS root through axHub), molly = Molly (AmberX developer agent, walkthroughs), gizmo = Gizmo (Brett's AmberX companion, replaces Molly there), axf-expert, ai-expert).
 
 The definition format is the framework contract agent-definition@1 (framework/core/agents.ts = Python
 `axf.contracts.agents` in framework/python = Kotlin ai.amberx.axf.kernel.agents), so other AXF apps
@@ -70,7 +70,7 @@ class AgentsService:
         if c["agent"].get("enabled", True) is False:
             return None
         out = {"id": agent_id, "name": c["agent"].get("name"), "icon": c["agent"].get("icon", "user"), "description": c["agent"].get("description", ""),
-               "system_prompt": c["system"], "model": c["model"], "tools": [toolkit.spec(t) for t in c["tools"]], "memory": {"type": c["memory"]["type"]},
+               "system_prompt": c["system"], "chatPrompt": c["chatPrompt"], "toolGroups": c["toolGroups"], "model": c["model"], "tools": [toolkit.spec(t) for t in c["tools"]], "memory": {"type": c["memory"]["type"]},
                "voice": _voice(c["agent"]), "writeMode": None, "buildMode": c.get("buildMode")}
         if c.get("writeMode"):
             cs = containers.service()
@@ -184,6 +184,27 @@ def _offer_molly() -> None:
 
 
 _offer_molly()
+
+
+def _offer_gizmo() -> None:
+    """Gizmo (Nov 3 2026, build gizmo-companion): Brett's companion in AmberX, who replaces agent Molly there. Installed
+    once on start like Molly, with the same dangerous tools behind the same axHub approvals; an uninstall or a Safety
+    change afterwards is respected: this never runs twice."""
+    try:
+        s = store.load_settings()
+        if s.get("gizmoOffered") or "gizmo" not in addons.bundles():
+            return
+        if "gizmo" not in store.addon_records():
+            addons.install("gizmo", run_training=False)
+        s = store.load_settings()
+        s["safety"] = {**s["safety"], "dangerousAgents": sorted(set(s["safety"].get("dangerousAgents") or []) | {"gizmo"})}
+        s["gizmoOffered"] = True
+        store.save_settings(s)
+    except Exception:  # noqa: BLE001 — never block the console start
+        pass
+
+
+_offer_gizmo()
 training.start_scheduler(lambda: plugin_services.get("axf.agents@1") is not None)
 
 

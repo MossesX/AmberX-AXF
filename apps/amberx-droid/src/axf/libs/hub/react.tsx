@@ -93,7 +93,7 @@ export function useHubBannerCount(hub: string, opts: HubBannerCountOptions = {})
   const origin = opts.origin ?? 'ai.amberx.axf.hub';
   useEffect(() => {
     if (!b || !rt.registry.has('counter', b.id)) return undefined;
-    return rt.attachToBanner({ type: 'counter', id: b.id, at: b.at ?? 'right', order: b.order, origin });
+    return rt.attachToBanner({ type: 'counter', id: b.id, at: b.at ?? 'right', order: b.order, origin, widget: { label: 'Approvals', priority: 8, aliases: ['approvals', 'hub approvals'] } });
   }, [rt, b?.id, b?.at, b?.order, origin]);
 }
 

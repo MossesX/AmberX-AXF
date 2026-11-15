@@ -352,7 +352,8 @@ check(c.post("/p/tmux/kill", json={"name": "axt-x", "where": "mars"}).status_cod
 sc = S.tmux_script("axt-a", "exec bash -l", "/srv", 90, 30, env_keys=["CLAUDE_CODE_OAUTH_TOKEN"])
 check("capture-pane -p -e -J -S -3000" in sc and "exec tmux attach -t =axt-a" in sc and "-c /srv" in sc, "tmux script: replay, create in the folder, attach")
 check("env -u CLAUDE_CODE_OAUTH_TOKEN" in sc and '-e CLAUDE_CODE_OAUTH_TOKEN="$CLAUDE_CODE_OAUTH_TOKEN"' in sc and "sk-ant" not in sc, "the token reaches the session from the environment, never the command line or tmux's global env")
-check(S.parse_ls("axt-a\t5\t0\ttab\t\t\t\nnope\t1\n") == [{"name": "axt-a", "createdAt": 5000, "attached": 0, "kind": "tab", "agent": "", "model": "", "cwd": ""}], "parse_ls keeps only terminal sessions")
+check(S.parse_ls("axt-a\t5\t0\ttab\t\t\t\nnope\t1\n") == [{"name": "axt-a", "createdAt": 5000, "attached": 0, "kind": "tab", "agent": "", "model": "", "cwd": "", "login": ""}], "parse_ls keeps only terminal sessions")
+check(S.parse_ls("axf-b\t5\t0\theadless\tPaulie\topus\t/w\taccount-2 (a@b.c)\n")[0]["login"] == "account-2 (a@b.c)", "parse_ls: the run's own Claude login (@axf_login)")
 # live meters + context chain over one ssh call (fake runner)
 c.put("/p/settings", json={"vps": {"host": "vps.example", "port": 22, "user": "root"}})
 calls = []

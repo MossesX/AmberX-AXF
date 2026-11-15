@@ -1,0 +1,275 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-shipped-manifest-api",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:25Z",
+ "build": {
+  "id": "shipped-manifest-api",
+  "title": "Shipped Features: orchestrator manifest + API",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Isn't it part of the pipeline? ... You put an API on it? ... The orchestrator should send a manifest with the information on the shipped feature. Including the prompt that created it and everything.",
+  "verbatim": true,
+  "at": "",
+  "source": "report",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Shipped Features: orchestrator manifest + API (urgent)\n\nBrett's words: \"Isn't it part of the pipeline?\" ... \"You put an API on it?\" ... \"The orchestrator should send a manifest with the information on the shipped feature. Including the prompt that created it and everything.\"\n\n## Context\n- Shipped Features (feature-ledger@1) only updates through the build-hook@1 events fired by builds-store writes (framework/cli/builds-store.mjs). Builds launched straight through vps.build_start tonight had no builds-store record, so nothing reached the ledger.\n- `orchestrator-only-launcher` just landed on main (e15e5287681b): the orchestrator is now the only launcher (pipeline.mjs, afterTick hook). Build on that.\n\n## Do\n1. Manifest: when a build lands (or a step completes and ships), the orchestrator writes a shipped-feature manifest and sends it to the Shipped Features ledger. It holds: build id and title, Brett's verbatim prompt (the `said` field / brief origin) plus the full brief, model(s) and account(s) used, steps with estimates and actual times, branch, PR, landed commit, files/areas changed, tests run and results, UI Review item, cost and tokens, report path, and what's still open. Schema versioned (shipped-manifest@1), validated.\n2. The ledger shows the manifest on each entry (prompt highlighted, collapsible sections).\n3. API: Shipped Features gets full API control: list/read/search entries, add/update an entry from a manifest, link to build/PR; via MCP (axf-console tools), axHub, CLI, deep link and voice. Writes go through the builds-store so hooks stay consistent.\n4. Backfill: create entries now for builds landed tonight that missed the ledger: `orchestrator-only-launcher` (e15e5287681b) and `urgent-amberx-veto-notice-alarm-too-loud-approve` (commits 864ab0549, 44862718a), using their briefs and reports in _claude/builds/reports/. Add a CLI `shipped backfill --since <date>` that finds landed builds with no ledger entry.\n5. Tests for manifest schema, ledger write, API and backfill; console typecheck green. Short report, commit, stop so it can be landed with build_land.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "account-3"
+ ],
+ "runs": [
+  {
+   "session": "axf-shipped-manifest-api--lenny",
+   "account": "account-3",
+   "model": "Opus",
+   "startedAt": "2026-11-09T00:36:11.714Z",
+   "endedAt": "2026-11-09T01:15:24.448Z",
+   "exit": 0,
+   "costUsd": 15.3549
+  }
+ ],
+ "steps": [],
+ "branch": "claude/shipped-manifest-api",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "79ed472c0f1fb954a9a80b21b2963054c6733447",
+ "commits": [
+  "7a6668231bc42d6657eb6e827b8f7c17adc254dc"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-11-09T01:20:30Z",
+ "files": [
+  "_claude/builds/reports/shipped-manifest-api.md",
+  "_claude/builds/shipped/one-way-to-start-builds-the-orchestrator-dispatc.json",
+  "_claude/builds/shipped/urgent-amberx-veto-notice-alarm-too-loud-approve.json",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+  "apps/console-web/plugins/build-orchestrator/pipeline.test.mjs",
+  "apps/console-web/plugins/shipped-features/README.md",
+  "apps/console-web/plugins/shipped-features/ledger/apply.mjs",
+  "apps/console-web/plugins/shipped-features/ledger/db.mjs",
+  "apps/console-web/plugins/shipped-features/ledger/ledger.mjs",
+  "apps/console-web/plugins/shipped-features/ledger/manifest.mjs",
+  "apps/console-web/plugins/shipped-features/ledger/migrations/003_manifests.sql",
+  "apps/console-web/plugins/shipped-features/plugin.json",
+  "apps/console-web/plugins/shipped-features/server/__init__.py",
+  "apps/console-web/plugins/shipped-features/test.mjs",
+  "apps/console-web/plugins/shipped-features/test.py",
+  "apps/console-web/plugins/shipped-features/web/index.tsx",
+  "apps/console-web/plugins/shipped-features/web/shipped-features.css",
+  "apps/console-web/plugins/shipped-features/web/ui.tsx",
+  "apps/console-web/src/axf/core/shipped-manifest.d.mts",
+  "apps/console-web/src/axf/core/shipped-manifest.mjs",
+  "framework/catalog/catalog.json",
+  "framework/catalog/status.json",
+  "framework/cli/build-engine.mjs",
+  "framework/cli/build-hooks.mjs",
+  "framework/cli/builds-live.mjs",
+  "framework/cli/builds-store.mjs",
+  "framework/cli/shipped-files.mjs",
+  "framework/cli/shipped.mjs",
+  "framework/core/build-hook.mjs",
+  "framework/core/shipped-manifest.d.mts",
+  "framework/core/shipped-manifest.mjs",
+  "framework/plan/builds-store-core.mjs",
+  "framework/schemas/build-hook.json",
+  "framework/schemas/json/build-event.schema.json",
+  "framework/schemas/json/shipped-manifest.schema.json",
+  "framework/schemas/shipped-manifest.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-build-hook.mjs",
+  "framework/spec/check-shipped-manifest.mjs",
+  "framework/spec/fixtures/build-hook.json",
+  "framework/spec/fixtures/shipped-manifest.json"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "shipped-features",
+   "files": [
+    "apps/console-web/plugins/shipped-features/README.md",
+    "apps/console-web/plugins/shipped-features/ledger/apply.mjs",
+    "apps/console-web/plugins/shipped-features/ledger/db.mjs",
+    "apps/console-web/plugins/shipped-features/ledger/ledger.mjs",
+    "apps/console-web/plugins/shipped-features/ledger/manifest.mjs",
+    "apps/console-web/plugins/shipped-features/ledger/migrations/003_manifests.sql",
+    "apps/console-web/plugins/shipped-features/plugin.json",
+    "apps/console-web/plugins/shipped-features/server/__init__.py",
+    "apps/console-web/plugins/shipped-features/test.mjs",
+    "apps/console-web/plugins/shipped-features/test.py",
+    "apps/console-web/plugins/shipped-features/web/index.tsx",
+    "apps/console-web/plugins/shipped-features/web/shipped-features.css",
+    "apps/console-web/plugins/shipped-features/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/build-engine.mjs",
+    "framework/cli/build-hooks.mjs",
+    "framework/cli/builds-live.mjs",
+    "framework/cli/builds-store.mjs",
+    "framework/cli/shipped-files.mjs",
+    "framework/cli/shipped.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-build-hook.mjs",
+    "framework/spec/check-shipped-manifest.mjs",
+    "framework/spec/fixtures/build-hook.json",
+    "framework/spec/fixtures/shipped-manifest.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/build-hook.json",
+    "framework/schemas/json/build-event.schema.json",
+    "framework/schemas/json/shipped-manifest.schema.json",
+    "framework/schemas/shipped-manifest.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/axf/core/shipped-manifest.d.mts",
+    "apps/console-web/src/axf/core/shipped-manifest.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/build-hook.mjs",
+    "framework/core/shipped-manifest.d.mts",
+    "framework/core/shipped-manifest.mjs"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/shipped-manifest-api.md",
+    "_claude/builds/shipped/one-way-to-start-builds-the-orchestrator-dispatc.json",
+    "_claude/builds/shipped/urgent-amberx-veto-notice-alarm-too-loud-approve.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+    "apps/console-web/plugins/build-orchestrator/pipeline.test.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/catalog.json",
+    "framework/catalog/status.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/builds-store-core.mjs"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "node framework/spec/check-shipped-manifest.mjs: 35 checks pass (fixture, validation, landing in a scratch git repo, ship, backfill, tick, adoptStore hooks).",
+   "command": "node framework/spec/check-shipped-manifest.mjs",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "node framework/spec/check-build-hook.mjs: 26 checks pass (new shipped cases; fixture regenerated, older outputs unchanged).",
+   "command": "node framework/spec/check-build-hook.mjs",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "apps/console-web/plugins/shipped-features/test.mjs (Node 22): 10 checks pass.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "apps/console-web/plugins/shipped-features/test.py (console container): 26 checks pass.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "check-feature-ledger 66, builds-store 40, builds-live 62, build-origin 21, builds-store lock 5, plugin commands 57 pass.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "build-orchestrator pipeline.test.mjs 35, test.mjs 33, test.py 31 pass.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "Console tsc --noEmit passes; check-theme, check-controls, check-toolbars, check-chrome-assets, check-plugin-pages, plugin-lifecycle pass.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  }
+ ],
+ "uiReview": [
+  {
+   "id": "r-20261109-9c8090b1",
+   "name": "Shipped features: the shipped manifest on each entry",
+   "status": "approved",
+   "group": "g-20261109-0e2abf22",
+   "url": "/review/r-20261109-9c8090b1"
+  }
+ ],
+ "cost": {
+  "usd": 15.3549,
+  "estimated": false,
+  "tokens": {
+   "input": 368,
+   "output": 1995,
+   "cacheRead": 45844486,
+   "cacheWrite": 356472
+  }
+ },
+ "report": "_claude/builds/reports/shipped-manifest-api.md",
+ "open": [
+  "UI Review: the manifest panel (desktop + phone) is waiting there for Brett.",
+  "`help-coverage --check` is red on main as well (98.2%, claude-accounts help entry 17); this build adds no uncovered control.",
+  "Contract written on Opus: shipped-manifest@1 is a schema, so it should get a Fable review like feature-ledger@1 did.",
+  "Kotlin twin of shipped-manifest@1 deferred (PORTING.md).",
+  "The check-build-hook stale-lock test was flaky (same-millisecond compare); `takeLock` now treats an age equal to the limit as stale."
+ ]
+}

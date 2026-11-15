@@ -1,0 +1,109 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-b0fefeca-52e0-4c35-b953-6652e818de4a",
+ "source": "claude-code",
+ "sessionId": "b0fefeca-52e0-4c35-b953-6652e818de4a",
+ "project": "other",
+ "title": "# Build: three-layouts-per-screen (FABLE, high thinking: plugin contract + scaffold = foundation) **Name:** Three layou…",
+ "startedAt": "2026-11-04T21:18:31.280Z",
+ "endedAt": "2026-11-04T21:55:08.635Z",
+ "minutes": 37,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/three-layouts-per-screen",
+  "repo": "",
+  "branch": "claude/three-layouts-per-screen"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-fable-5-1"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-04T21:18:46.280Z",
+   "kind": "prompt",
+   "text": "# Build: three-layouts-per-screen (FABLE, high thinking: plugin contract + scaffold = foundation) **Name:** Three layouts per screen · **Category:** Framework ## What Brett said (verbatim, Nov 4 2026, voice) \"From now on, all plugin screens get three layouts, and come with a toolbar to select which one, with the toolbar hidden by default.\" Then: \"Not old ones, only new ones.\" Book to a free named agent. **NEW plugins only. Do NOT retrofit existing plugins.** ## Do 1. **Contract**: extend `plugin@1` so each screen a plugin declares can list **3 layout variants** (layout assets or screen-level …",
+   "model": "claude-fable-5-1",
+   "tokens": {
+    "input": 5442,
+    "output": 142984,
+    "cacheRead": 36137310,
+    "cacheWrite": 327167,
+    "thinking": 57129
+   },
+   "costUsd": 20.3284,
+   "costEstimated": false,
+   "seconds": 2182,
+   "tools": {
+    "Bash": 161,
+    "Read": 1,
+    "Write": 8,
+    "Edit": 1
+   },
+   "commands": 161,
+   "files": [
+    "/root/axf-builds/three-layouts-per-screen/framework/core/engines/screen-layouts.mjs",
+    "/root/axf-builds/three-layouts-per-screen/framework/core/engines/screen-layouts.d.mts",
+    "/root/axf-builds/three-layouts-per-screen/framework/core/engines/appmenu.ts",
+    "/root/axf-builds/three-layouts-per-screen/framework/react/components/ScreenLayouts.tsx",
+    "/root/axf-builds/three-layouts-per-screen/framework/cli/check-screen-layouts.mjs",
+    "/root/axf-builds/three-layouts-per-screen/apps/console-web/plugins/_template/web/index.tsx",
+    "/root/axf-builds/three-layouts-per-screen/framework/cli/new-plugin.mjs",
+    "/root/axf-builds/three-layouts-per-screen/framework/spec/check-screen-layouts.mts",
+    "/root/axf-builds/three-layouts-per-screen/apps/console-web/src/screenLayouts.ts"
+   ],
+   "changeIds": [
+    "chg-20261104-d10163d7aa"
+   ],
+   "features": [
+    "orchestrator:three-layouts-per-screen"
+   ],
+   "output": "You're out of usage credits. Switch to another model, or manage usage credits at https://claude.ai/settings/usage?from=cc_cli_limit_message, to continue."
+  }
+ ],
+ "files": [
+  "/root/axf-builds/three-layouts-per-screen/framework/core/engines/screen-layouts.mjs",
+  "/root/axf-builds/three-layouts-per-screen/framework/core/engines/screen-layouts.d.mts",
+  "/root/axf-builds/three-layouts-per-screen/framework/core/engines/appmenu.ts",
+  "/root/axf-builds/three-layouts-per-screen/framework/react/components/ScreenLayouts.tsx",
+  "/root/axf-builds/three-layouts-per-screen/framework/cli/check-screen-layouts.mjs",
+  "/root/axf-builds/three-layouts-per-screen/apps/console-web/plugins/_template/web/index.tsx",
+  "/root/axf-builds/three-layouts-per-screen/framework/cli/new-plugin.mjs",
+  "/root/axf-builds/three-layouts-per-screen/framework/spec/check-screen-layouts.mts",
+  "/root/axf-builds/three-layouts-per-screen/apps/console-web/src/screenLayouts.ts"
+ ],
+ "changeIds": [
+  "chg-20261104-d10163d7aa"
+ ],
+ "features": [
+  "orchestrator:three-layouts-per-screen"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 5442,
+  "output": 142984,
+  "cacheRead": 36137310,
+  "cacheWrite": 327167,
+  "thinking": 57129,
+  "costUsd": 20.3284,
+  "costEstimated": false,
+  "toolCalls": 171,
+  "commands": 161,
+  "filesTouched": 9,
+  "reportedUsd": 22.7813
+ },
+ "ingestedAt": "2026-11-04T21:55:09.363Z"
+}

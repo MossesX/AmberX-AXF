@@ -40,6 +40,12 @@
             "icon": "terminal",
             "label": "Console",
             "action": "nav:console"
+          },
+          {
+            "id": "expenses",
+            "icon": "chart",
+            "label": "Expenses",
+            "action": "nav:expenses"
           }
         ]
       },

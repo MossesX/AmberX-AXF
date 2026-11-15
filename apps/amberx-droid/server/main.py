@@ -13,8 +13,8 @@ The page never holds an AI key: keys, provider profiles and the provider switchi
     GET  /api/walkthrough/{file}          the recorded app walkthrough (walkthrough.mp4 with Range, .vtt, chapters.json,
                                           poster.jpg) from `$AMBERX_DATA_DIR/walkthrough/` (walkthrough/rebuild.sh writes it)
   hub admins only:
-    GET  /api/ai/molly/status                     {ok, reason}   is Molly (the console's agent) reachable
-    POST /api/ai/molly      {task, page?, app?}   → {answer, walkthrough?}   Molly through the console's walkthrough guide
+    GET  /api/ai/molly/status                     {ok, reason}   is Gizmo (the console's agent; route name kept) reachable
+    POST /api/ai/molly      {task, page?, app?}   → {answer, walkthrough?}   Gizmo through the console's walkthrough guide
                                                    (every VPS command she runs is approved by Brett on axHub)
     GET  /api/ai/config                   profiles without keys (+ hasKey), order, active, Claude switch, kinds
     PUT  /api/ai/config     {profiles?, order?, active?, claude?: plan|api, keepAliveMin?}
@@ -22,6 +22,9 @@ The page never holds an AI key: keys, provider profiles and the provider switchi
     POST /api/ai/profiles   {kind, label?, key, refresh?, primary?}   add a provider with its key (nothing kept if refused)
     POST /api/ai/primary/{id}                                          active + first in the fallback order
     POST /api/ai/test/{id}
+    GET  /api/approvals/relay             {ok, relay, reason}: can this page decide with its own hub session
+    POST /api/approvals/decide  {id, action, rev?}   approve | decline | deny | approve-now | shelve, with the
+                                          browser's axhub_session cookie (axf_server.approvals_relay)
 
 Who may call: the wall's signed headers count only with a valid signature (axf_server.wall, env AMBERX_TRUST_WALL=1 +
 AMBERX_WALL_SECRET, set by deploy/install.sh); a machine may use `Authorization: Bearer $AMBERX_TOKEN` (optional);
@@ -29,8 +32,8 @@ AMBERX_WALL_SECRET, set by deploy/install.sh); a machine may use `Authorization:
 users may read the status and parse / summarize / ask; only admins change the config. Browser writes must come from
 this site's own origin.
 
-Molly: AMBERX_CONSOLE_URL (default http://axf-console:7090) + the console token (AMBERX_CONSOLE_TOKEN, else the
-AXF_TOKEN line in AMBERX_CONSOLE_TOKEN_FILE). Without them Molly is reported as not connected, with how to fix it.
+Gizmo: AMBERX_CONSOLE_URL (default http://axf-console:7090) + the console token (AMBERX_CONSOLE_TOKEN, else the
+AXF_TOKEN line in AMBERX_CONSOLE_TOKEN_FILE). Without them Gizmo is reported as not connected, with how to fix it.
 
 Env: AMBERX_DATA_DIR (default ./data), AMBERX_DIST (default ../dist), AMBERX_WALL_HUB, AMBERX_AI_KEEPALIVE=off,
 AMBERX_AI_TIMEOUT, AMBERX_AI_RETRIES, AMBERX_AI_MAX_BYTES, AMBERX_AI_HTTP_HOSTS, key variables (router.py), PORT.
@@ -48,6 +51,7 @@ from pathlib import Path
 from typing import Any
 
 import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf_server import approvals_relay as approvals_relay_mod
 from axf_server import wall as wallmod
 from axf_server.console_client import ConsoleClient, ConsoleError, TokenFile
 import httpx
@@ -120,8 +124,8 @@ def walkthrough_edits(raw: Any) -> dict[str, Any]:
 CONSOLE_URL = (os.environ.get("AMBERX_CONSOLE_URL") or "http://axf-console:7090").rstrip("/")
 _CONSOLE_TOKEN = TokenFile(os.environ.get("AMBERX_CONSOLE_TOKEN_FILE") or None, fallback=lambda: os.environ.get("AMBERX_CONSOLE_TOKEN", ""))
 MOLLY_TIMEOUT = 300.0
-# Where the console serves Molly's guide (its walkthrough plugin's folder). If that plugin is removed the console answers
-# 404 and AmberX says Molly can't be reached; nothing here breaks.
+# Where the console serves the Gizmo guide (its walkthrough plugin's folder). If that plugin is removed the console answers
+# 404 and AmberX says Gizmo can't be reached; nothing here breaks.
 MOLLY_PLUGIN = re.sub(r"[^a-z0-9-]", "", os.environ.get("AMBERX_MOLLY_PLUGIN") or "molly-guide") or "molly-guide"
 MOLLY_ASK = f"/api/plugins/{MOLLY_PLUGIN}/ask"
 WALKTHROUGH_RENDER = f"/api/plugins/{MOLLY_PLUGIN}/amberx-walkthrough/rerecord"  # re-voice / re-record a walkthrough
@@ -129,12 +133,12 @@ MOLLY_WALKS = f"/api/plugins/{MOLLY_PLUGIN}/walkthroughs"
 
 
 def console_client() -> ConsoleClient | None:
-    """The console, for Molly; None when no token is configured."""
+    """The console, for Gizmo; None when no token is configured."""
     return ConsoleClient(CONSOLE_URL, token=_CONSOLE_TOKEN, timeout=MOLLY_TIMEOUT, token_hint="AMBERX_CONSOLE_TOKEN") if _CONSOLE_TOKEN() else None
 DEV = wallmod.Caller("dev", "admin", frozenset({"*"}), "dev")
 
 
-def make_app(router: Router | None = None) -> FastAPI:
+def make_app(router: Router | None = None, approvals_transport: httpx.BaseTransport | None = None) -> FastAPI:
     rt = router or Router(DATA)
 
     @asynccontextmanager
@@ -436,7 +440,7 @@ def make_app(router: Router | None = None) -> FastAPI:
     async def molly_status() -> dict[str, Any]:
         c = console_client()
         if c is None:
-            return {"ok": False, "reason": "Molly isn't connected: this AmberX server has no console token (AMBERX_CONSOLE_TOKEN).", "fix": "token"}
+            return {"ok": False, "reason": "Gizmo isn't connected: this AmberX server has no console token (AMBERX_CONSOLE_TOKEN).", "fix": "token"}
         try:
             await run_in_threadpool(c.call, "GET", f"{MOLLY_WALKS}?after=999999999", None, 10)
             return {"ok": True, "reason": ""}
@@ -445,7 +449,7 @@ def make_app(router: Router | None = None) -> FastAPI:
 
     @app.post("/api/ai/molly")
     async def molly(request: Request) -> dict[str, Any]:
-        """A developer task or app question for Molly. Runs on the console (its walkthrough guide → axf.agents@1); anything she
+        """A developer task or app question for Gizmo. Runs on the console (its walkthrough guide → axf.agents@1); anything he
         does on the VPS waits for Brett's approval on axHub, so this can take minutes."""
         b = await body_of(request)
         task = b.get("task")
@@ -455,18 +459,49 @@ def make_app(router: Router | None = None) -> FastAPI:
             raise HTTPException(413, "task is at most 4000 characters")
         c = console_client()
         if c is None:
-            raise HTTPException(503, "Molly isn't connected: this AmberX server has no console token (AMBERX_CONSOLE_TOKEN).")
+            raise HTTPException(503, "Gizmo isn't connected: this AmberX server has no console token (AMBERX_CONSOLE_TOKEN).")
         body = {"task": task.strip(), "app": "amberx", "page": re.sub(r"[^\w.:-]", "", str(b.get("page") or ""))[:80]}
         try:
             r = await run_in_threadpool(c.call, "POST", MOLLY_ASK, body, MOLLY_TIMEOUT)
         except ConsoleError as e:
-            raise HTTPException(502, f"Molly couldn't answer: {str(e)[:300]}") from None
+            raise HTTPException(502, f"Gizmo couldn't answer: {str(e)[:300]}") from None
         r = r if isinstance(r, dict) else {}
         out: dict[str, Any] = {"answer": str(r.get("text") or "")[:6000] or "Done."}
         wt = r.get("walkthrough")
         if isinstance(wt, dict) and isinstance(wt.get("title"), str):
             out["walkthrough"] = wt["title"][:120]
         return out
+
+    # ---- Approve / Deny in place (Brett, Nov 8 2026: "The approve and deny dialogue is still saying open"): the phone's
+    # web view carries his hub session cookie (the hub sets it for the whole domain), so the tap goes to the hub from here,
+    # signed as him. A phone without the native approve (an older APK) or AmberX in a browser uses it. Only his signed-in
+    # browser: the gate already asks for a hub admin and the app's own origin; a token (AMBERX_TOKEN) is refused here.
+
+    @app.get("/api/approvals/relay")
+    def approvals_relay(request: Request) -> dict[str, Any]:
+        c = request.state.caller
+        hub = approvals_relay_mod.hub_base(HUB)
+        ok = bool(c.via == "session" and c.admin and hub and request.cookies.get(approvals_relay_mod.COOKIE))
+        return {"ok": True, "relay": ok, "reason": "" if ok else "This page has no axHub session to decide with: sign in to axHub, then tap it again."}
+
+    @app.post("/api/approvals/decide")
+    async def approvals_decide(request: Request) -> dict[str, Any]:
+        c = request.state.caller
+        if c.via != "session" or not c.admin:
+            raise HTTPException(403, "Only your own signed-in browser can decide")
+        if "application/json" not in (request.headers.get("content-type") or ""):
+            raise HTTPException(415, "Send JSON")
+        req = approvals_relay_mod.check_request(await body_of(request))
+        if isinstance(req, str):
+            raise HTTPException(400, req)
+        hub = approvals_relay_mod.hub_base(HUB)
+        if not hub:
+            raise HTTPException(503, "AmberX has no https hub address (AMBERX_WALL_HUB)")
+        cookie = request.cookies.get(approvals_relay_mod.COOKIE) or ""
+        if not cookie:
+            return {"ok": False, "code": "no_session", "message": "This page has no axHub session to decide with: sign in to axHub, then tap it again."}
+        aid, action, rev = req
+        return await run_in_threadpool(approvals_relay_mod.send, hub, cookie, aid, action, rev, approvals_transport)
 
     # ---- console plugins (AI assistant, Agent manager): same chats, agents and live sessions as the console
 

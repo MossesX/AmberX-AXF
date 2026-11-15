@@ -51,7 +51,7 @@ export function statusAsset(it: BuildItem | null, error: string, now = Date.now(
 export interface BannerHost {
   registry: { register(raw: unknown, source: 'app', origin: string): unknown };
   setBadge(name: string, n: number): void;
-  attachToBanner(a: { type: string; id: string; at: 'left' | 'center' | 'right'; order?: number; origin: string }): unknown;
+  attachToBanner(a: { type: string; id: string; at: 'left' | 'center' | 'right'; order?: number; origin: string; widget?: Record<string, unknown> }): unknown;
   detachFromBanner(keyOrOrigin: string): void;
 }
 
@@ -61,6 +61,6 @@ export function paintBuild(rt: BannerHost, it: BuildItem | null, error: string, 
   rt.setBadge(COUNTERS.known, it ? 1 : 0);
   rt.setBadge(COUNTERS.running, it?.state === 'running' ? 1 : 0);
   rt.setBadge(COUNTERS.failing, it?.state === 'failure' ? 1 : 0);
-  if (show) rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'right', order: 25, origin: ID });
+  if (show) rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'right', order: 25, origin: ID, widget: { label: 'Main build status', size: 'compact', priority: 4, aliases: ['main build', 'ci'] } });
   else rt.detachFromBanner(`status:${ASSET_ID}`);
 }

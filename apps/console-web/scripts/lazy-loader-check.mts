@@ -8,7 +8,7 @@ import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { CORE_PLUGINS, evictions, KNOWN_BANNERS, idlePicks, LAZY_DEFAULTS, modeOf, normalizeLazyConfig, startupList, touch, decayed, HALF_LIFE_MS, type UsageStat } from '../src/lazyEngine.ts';
+import { CORE_PLUGINS, evictions, KNOWN_BANNERS, idlePicks, LAZY_DEFAULTS, modeOf, normalizeLazyConfig, startupList, touch, decayed, HALF_LIFE_MS, importOnce, isChunkLoadError, type UsageStat } from '../src/lazyEngine.ts';
 
 let n = 0;
 const t = (name: string, f: () => void) => { f(); n++; console.log(`ok ${n} ${name}`); };
@@ -99,6 +99,23 @@ t('dev: each plugin entry is its own HMR boundary; hashes cover every plugin wit
   assert.equal(p.transform('x', '/r/plugins/push-banner/web/core.ts'), undefined, 'other files untouched');
   const h = pluginHashes(fileURLToPath(new URL('../plugins', import.meta.url)));
   assert.ok(h['plugin-manager'] && !Object.keys(h).some((f) => f.startsWith('_')), 'hashes for real plugins, never templates');
+}
+
+// A redeploy renames the chunks under an open page (urgent-approval-popup-crash, Nov 4 2026): retry once, then fail so
+// the loader shows "New version, reload".
+{
+  for (const m of ['Failed to fetch dynamically imported module: https://console.amberxai.com/assets/index-abc.js', 'Importing a module script failed.', "error loading dynamically imported module"]) assert.ok(isChunkLoadError(new TypeError(m)), m);
+  assert.ok(!isChunkLoadError(new Error("Cannot read properties of undefined (reading 'title')")), 'a code bug is not a chunk error');
+  let calls = 0;
+  assert.equal(await importOnce(async () => { calls++; if (calls === 1) throw new TypeError('Failed to fetch dynamically imported module: x'); return 'ok'; }, 1), 'ok');
+  assert.equal(calls, 2, 'one retry after a chunk-load error');
+  calls = 0;
+  await assert.rejects(importOnce(async () => { calls++; throw new TypeError('Failed to fetch dynamically imported module: x'); }, 1));
+  assert.equal(calls, 2, 'only one retry, then it gives up');
+  calls = 0;
+  await assert.rejects(importOnce(async () => { calls++; throw new Error('boom'); }, 1));
+  assert.equal(calls, 1, 'other errors are not retried');
+  n++; console.log(`ok ${n} chunk-load errors: one retry, then "New version, reload"`);
 }
 
 console.log(`${n} checks passed`);

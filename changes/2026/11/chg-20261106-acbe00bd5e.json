@@ -1,0 +1,64 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261106-acbe00bd5e",
+  "createdAt": "2026-11-06T01:48:29.502Z",
+  "updatedAt": "2026-11-06T01:48:30.202Z",
+  "kind": "edit",
+  "title": "# approvals-shell-only: only VPS shell commands need Brett's approval Brett, Nov 5 2026 (voice): \"I…",
+  "asked": "# approvals-shell-only: only VPS shell commands need Brett's approval Brett, Nov 5 2026 (voice): \"I don't need an approval for you to show me screens. The only thing that needs approval is a VPS or a shell command.\" (He also confirmed notes and to-dos must not need approval.) ## Change - Default policy for every service tool becomes `allow` (runs at once, no veto countdown, no confirm), EXCEPT: - `vps.run` and `vps.logs` (shell and log reads on the VPS): keep needing approval. - Any other tool that runs a shell command on a machine (search every connector/device for shell/exec/terminal tools) keeps approval. - Irreversible ones the hub already guards (delete a repository, wipe a database or volume, delete the vault): keep their guard. - Owner-only settings that must stay owner-gated by design (vault reads/writes, pass grants, owner approval of the claude-md-chain confirm-policy edits, account-failover's API-key approval): leave those exactly as their builds define them; don't loosen them. - Make it one config switch/policy file, documented, with per-tool overrides still working, so Brett can flip a tool back in the console. - axf-console tools (amberx_add, control_add/act, console_show, plan/pending changes, claude_accounts_*) -> allow. - Record every allowed call in the existing approvals/audit log as 'ran without approval' so nothing is invisible. - Tests for the policy table. Docs + decision entry. Done: PR to main in axHub, report, readme/docs, hand to the merge flow (don't merge it yourself). No sub-agents, Opus only, never print secrets. Short plain report at the end. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.",
+  "repos": [
+    "MossesX/axHub"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "e8430d74-346",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "partial",
+    "summary": "The session ended before a result was recorded.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "surface": "headless",
+  "startedAt": "2026-11-06T01:48:29.502Z",
+  "finishedAt": "2026-11-06T01:48:30.202Z",
+  "lastSeenAt": "2026-11-06T01:48:29.502Z",
+  "actual": {
+    "minutes": 0,
+    "costUsd": 0,
+    "inputTokens": 0,
+    "outputTokens": 0,
+    "cacheReadTokens": 0,
+    "cacheWriteTokens": 0,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "doing": "Starting",
+  "resume": {
+    "repo": "MossesX/axHub",
+    "folder": "/root/axf-builds/approvals-shell-only",
+    "branch": "claude/approvals-shell-only",
+    "base": "440184cbdcc4da5e1aed1e8554ad45bcd29b7135",
+    "head": "440184cbdcc4da5e1aed1e8554ad45bcd29b7135",
+    "pushed": true,
+    "dirty": 7,
+    "files": [
+      ".axf-claude/",
+      ".axf-watch-live.log",
+      "_claude/shared/memory/amber-persona.md",
+      "_claude/shared/memory/naming.md",
+      "_claude/shared/memory/vision.md",
+      "_claude/shared/memory/write-ups.md",
+      "_claude/shared/notes/"
+    ],
+    "at": "2026-11-06T01:48:30.257Z"
+  }
+}

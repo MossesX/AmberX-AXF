@@ -66,3 +66,10 @@ No model is ever called (test: `python3 apps/console-web/plugins/claude-session/
   draws faces with the framework card rules and falls back to the Breakroom for the links until it merges.
 - Pay shows `$/h` when the crew data carries an hourly rate, else the weekly salary. Rating = the agent's `rating`
   when set, else its success rate on five stars.
+
+## Every session recorded (Nov 6 2026)
+
+`session-start` asks AmberX's recorder to start for voice, chat and code sessions, off the request, so a session never
+waits on the phone (`server/recording.py`). The state lands on the session as `recording` {state: asked | joined |
+phone-offline | failed, name, group}, shown in Recent sessions with a Transcript button. Sessions no longer call
+`amberx.recorder_start` themselves. Setting: `recording.autoStart`.

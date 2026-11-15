@@ -11,6 +11,13 @@
  * if it arrives twice (reconnects), and the tab only says goodbye when the page really goes away (not when React
  * re-renders it, which used to make the server drop the console for a moment and lose a command).
  *
+ * Staying reachable (console-commands-reliable, Nov 11 2026): the tab beats every 15 s and on every wake (visible,
+ * focus, back online, shown again from the back/forward cache); a wake also reopens the stream when it has been quiet
+ * (a laptop that slept, a phone that changed networks), and a stream silent for 45 s is dropped and reopened. A beat the
+ * server answers with `hello: true` (it restarted) sends the catalog again at once. A command that reaches a tab long
+ * after it was sent (the tab was asleep and the server moved on) is skipped, not run twice. A screen command can carry
+ * `focus` (a tab or an item); the screen's own `<screen>.focus:<focus>` action brings it forward.
+ *
  * Settings → Plugins → Console commands: on / off for this console, a toast per command, waking through AmberX, how long
  * a command waits, the browser AmberX opens, the open consoles, waiting and last commands.
  */
@@ -20,14 +27,19 @@ import type { AxfRuntime } from '@console/axf/core';
 import { followSse, sseJson } from '@console/axf/core/sse';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { executeControl, describeAnswer } from '@console/control/executor';
 import { appMenu } from './menu';
 import './console-commands.css';
-import { consoleCatalogFrom, consoleMessageErrors, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
+import { CONSOLE_FIELD_TYPES, CONSOLE_HEARTBEAT_MS, consoleCatalogFrom, consoleFieldValue, consoleMessageErrors, consoleMessageLate, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
 
 const FOLDER = 'console-commands';
 const ID = 'ai.amberx.axf.console.console-commands';
 const KEYS = { on: 'console-commands.enabled', toast: 'console-commands.toast' } as const;
-const HEARTBEAT_MS = 30_000;
+const HEARTBEAT_MS = CONSOLE_HEARTBEAT_MS;
+/** The server sends a keep-alive every 15 s: nothing for this long = the stream is dead without saying so. */
+const STREAM_IDLE_MS = 45_000;
+/** On a wake, a stream quiet for longer than this is reopened at once rather than trusted. */
+const WAKE_REOPEN_MS = 20_000;
 
 /** This tab's id (one per browser tab, kept across reloads of the tab). */
 function clientId(): string {
@@ -61,7 +73,7 @@ function pickedCommand(): string {
   try {
     const u = new URL(window.location.href);
     const id = u.searchParams.get('axf-cmd') ?? '';
-    if (!id) return '';
+    if (!id || id === 'search') return ''; // ?axf-cmd=search&q= is the console's search palette deep link, not a queued command
     u.searchParams.delete('axf-cmd');
     window.history.replaceState(window.history.state, '', u.toString());
     return /^[A-Za-z0-9_-]{1,40}$/.test(id) ? id : '';
@@ -87,11 +99,56 @@ function hereOf(rt: AxfRuntime): ConsoleHere {
   return here;
 }
 
-/** What this console has: its search index's screens and dialogs, every settings tab (with its parent), every action. */
+/**
+ * Every single setting with a value, as a catalog `field` (key, tab, kind, current value, choices, range); secrets say
+ * they are secret and never send their value.
+ */
+function fieldsOf(rt: AxfRuntime) {
+  const out: { kind: 'field'; label: string; detail: string; icon?: string; keywords: string[]; requires?: string; focus: { tab: string; key: string }; field: Record<string, unknown> }[] = [];
+  for (const tab of rt.settings.listTabs()) {
+    for (const g of rt.settings.groupsIn(tab.id)) {
+      for (const spec of g.settings) {
+        if (!CONSOLE_FIELD_TYPES.includes(spec.kind)) continue;
+        const secret = spec.kind === 'secret';
+        out.push({
+          kind: 'field', label: spec.label, detail: `Settings › ${tab.label} › ${g.label}`, icon: spec.icon, keywords: [spec.description ?? '', spec.key],
+          ...(spec.requires ? { requires: spec.requires } : {}), focus: { tab: tab.id, key: spec.key },
+          field: { type: spec.kind, ...(secret ? { secret: true } : { value: rt.settings.get(spec.key) }), ...(spec.options ? { options: spec.options } : {}), ...(spec.min !== undefined ? { min: spec.min } : {}), ...(spec.max !== undefined ? { max: spec.max } : {}) },
+        });
+      }
+    }
+  }
+  return out;
+}
+
+/** What this console has: its search index's screens and dialogs, every settings tab (with its parent) and single setting, every action. */
 function catalogOf(rt: AxfRuntime) {
   const tabs = rt.settings.listTabs().map((t) => ({ kind: 'settings-tab', label: t.label, icon: t.icon, keywords: [t.description ?? '', t.parent ? `${t.parent} sub-tab` : ''], parent: t.parent, focus: { kind: 'setting', tab: t.id } }));
-  const entries = [...rt.search.entries().filter((e) => e.kind === 'view' || e.kind === 'dialog'), ...tabs];
+  const entries = [...rt.search.entries().filter((e) => e.kind === 'view' || e.kind === 'dialog'), ...tabs, ...fieldsOf(rt)];
   return consoleCatalogFrom(entries, rt.actions.list(), { app: 'console-web', here: hereOf(rt) });
+}
+
+/** A short hash of a text (FNV-1a), to tell when field values changed. */
+function hashText(t: string): string {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < t.length; i++) { h ^= t.charCodeAt(i); h = Math.imul(h, 0x01000193); }
+  return (h >>> 0).toString(36);
+}
+
+/**
+ * Reloads this page: soft is a plain reload; hard clears the page's caches and service workers first, then reloads
+ * past the HTTP cache with a one-time query value.
+ */
+async function reloadPage(hard: boolean): Promise<void> {
+  if (hard) {
+    try { await Promise.all((await caches.keys()).map((k) => caches.delete(k))); } catch { /* no Cache API here */ }
+    try { await Promise.all((await navigator.serviceWorker.getRegistrations()).map((r) => r.unregister())); } catch { /* none */ }
+    const u = new URL(location.href);
+    u.searchParams.set('axf-refresh', Date.now().toString(36));
+    location.replace(u.href);
+    return;
+  }
+  location.reload();
 }
 
 /** Run one message; → [ok, what happened]. */
@@ -100,11 +157,35 @@ function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [bool
   if (errors.length) return [false, errors.join('; ')];
   switch (m.op) {
     case 'open':
-      if (m.kind === 'screen') { rt.search.focus({ id: `view:${m.target}`, kind: 'view', label: m.label ?? m.target!, focus: { kind: 'view', view: m.target! } }); return [rt.getState().view === m.target || !!rt.getState().dialog, `opened ${m.label ?? m.target}`]; }
+      if (m.kind === 'screen') {
+        rt.search.focus({ id: `view:${m.target}`, kind: 'view', label: m.label ?? m.target!, focus: { kind: 'view', view: m.target! } });
+        const opened = rt.getState().view === m.target || !!rt.getState().dialog;
+        const label = m.label ?? m.target!;
+        if (!m.focus) return [opened, `opened ${label}`];
+        // the screen brings the tab or item forward itself (opens the tab, scrolls the row into view, expands, highlights)
+        const act = `${m.target}.focus`;
+        if (!rt.actions.list().some((a) => a.id === act)) return [opened, `opened ${label}; it has no way to focus "${m.focus}"`];
+        const ran = rt.dispatch(`${act}:${encodeURIComponent(m.focus)}`);
+        return [opened && ran, ran ? `opened ${label} on ${m.focus}` : `opened ${label}; focusing "${m.focus}" didn't run here`];
+      }
       if (m.kind === 'dialog') { rt.openDialog(m.target!, m.arg ? { arg: m.arg } : undefined); return [true, `opened ${m.label ?? m.target}`]; }
       rt.search.focus({ id: `settings-tab:${m.target}`, kind: 'setting', label: m.label ?? m.target!, focus: { kind: 'setting', tab: m.target!, ...(m.anchor ? { anchor: m.anchor } : {}) } });
       return [true, `opened ${m.label ?? m.target} settings`];
-    case 'run': return rt.dispatch(m.spec!) ? [true, `ran ${m.label ?? m.spec}`] : [false, `${m.label ?? m.spec} didn't run here (no handler, or this role can't)`];
+    case 'run':
+      // the catalog already leaves these out; a stale catalog or a crafted message stops here
+      if (rt.actions.list().some((a) => a.meta.personOnly === true && a.id === m.spec!.split(':')[0])) return [false, `${m.label ?? m.spec} needs Brett's own tap`];
+      if (m.spec!.startsWith('settings.set:')) {
+        // say why a value is refused in the answer, not only in a toast on Brett's screen
+        const [, key = '', ...rest] = m.spec!.split(':');
+        const spec = rt.settings.spec(key);
+        if (!spec) return [false, `there is no setting "${key}"`];
+        if (spec.requires && !rt.can(spec.requires)) return [false, `changing ${spec.label} needs ${spec.requires}`];
+        const v = consoleFieldValue(spec, rest.join(':'), rt.settings.get(key));
+        if (v.error !== undefined) return [false, v.error];
+        rt.settings.set(key, v.value as never);
+        return [true, `set ${spec.label} to ${spec.kind === 'secret' ? '(hidden)' : JSON.stringify(v.value)}`];
+      }
+      return rt.dispatch(m.spec!) ? [true, `ran ${m.label ?? m.spec}`] : [false, `${m.label ?? m.spec} didn't run here (no handler, or this role can't)`];
     case 'close': {
       const open = rt.getState().dialog;
       if (!open) return [true, 'no dialog was open'];
@@ -114,6 +195,7 @@ function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [bool
       return [true, `closed ${m.label ?? open.id}`];
     }
     case 'home': rt.navigate(rt.manifest.startView ?? 'home'); return [true, `went home (${rt.getState().view})`];
+    case 'refresh': return [true, m.hard ? 'hard reloading (caches cleared)' : 'reloading']; // after the ack: see reloadPage
     case 'back': {
       if (rt.getState().dialog) { rt.closeDialog(); return [true, 'closed the dialog']; }
       history.pop(); // the screen we're on
@@ -142,10 +224,16 @@ function ConsoleCommandsClient() {
     const history: string[] = [rt.getState().view];
     let catalogKey = '';
     let pick = pickedCommand();
-    const announce = (used = false) => {
+    /** A beat; the server answers `hello: true` when it holds no catalog for this tab (it restarted): say hello now. */
+    const seen = (body: Record<string, unknown>): Promise<unknown> => post('seen', { client: id, ...body }).then(async (r) => {
+      const j = (await r.json().catch(() => ({}))) as { hello?: boolean };
+      if (j.hello) { catalogKey = ''; await announce(document.visibilityState === 'visible' && rt.inFront()); }
+    }).catch(() => undefined);
+    const announce = (used = false): Promise<unknown> => {
       const catalog = catalogOf(rt);
-      const key = `${catalog.items.length}:${catalog.items.map((i) => i.id).join(',').length}`;
-      if (key === catalogKey && !used) return post('seen', { client: id, here: catalog.here, ...where() }).catch(() => undefined);
+      // values count: a changed setting re-sends the catalog so `get` reads what the screen shows
+      const key = `${catalog.items.length}:${catalog.items.map((i) => i.id).join(',').length}:${hashText(JSON.stringify(catalog.items.filter((i) => i.kind === 'field').map((i) => i.value)))}`;
+      if (key === catalogKey && !used) return seen({ here: catalog.here, ...where() });
       catalogKey = key;
       const body = { client: id, app, title: document.title, device: device(), catalog, here: catalog.here, ...where(), used: used || !!pick, ...(pick ? { pick } : {}) };
       pick = '';
@@ -155,20 +243,33 @@ function ConsoleCommandsClient() {
     let lastView = rt.getState().view;
     const offState = rt.subscribe(() => {
       const v = rt.getState().view;
-      if (v !== lastView) { lastView = v; if (history[history.length - 1] !== v) history.push(v); if (history.length > 50) history.shift(); void post('seen', { client: id, here: hereOf(rt) }).catch(() => undefined); }
+      if (v !== lastView) { lastView = v; if (history[history.length - 1] !== v) history.push(v); if (history.length > 50) history.shift(); void seen({ here: hereOf(rt) }); }
     });
-    const used = () => { void post('seen', { client: id, here: hereOf(rt), ...where(), used: true }).catch(() => undefined); };
-    const onVisible = () => { if (rt.inFront()) used(); else void post('seen', { client: id, ...where() }).catch(() => undefined); };
+    // Waking up (visible again, focused, back online, restored from the back/forward cache): beat now, and reopen a
+    // stream that has been quiet, so the server can reach this tab before the next command.
+    let stream: ReturnType<typeof followSse> | null = null;
+    const wake = () => { if (stream && (!stream.open() || stream.idleMs() > WAKE_REOPEN_MS)) stream.reconnect(); };
+    const used = () => { wake(); void seen({ here: hereOf(rt), ...where(), used: true }); };
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') wake();
+      if (rt.inFront()) used(); else void seen(where());
+    };
     // the host showed or hid this console's frame (Molly switched apps): showing it means Brett is using it now
     const offFront = rt.onFront(onVisible);
+    const onShow = (e: PageTransitionEvent) => { if (e.persisted) { catalogKey = ''; wake(); void announce(rt.inFront()); } };
     window.addEventListener('focus', used);
+    window.addEventListener('online', onVisible);
+    window.addEventListener('pageshow', onShow);
     document.addEventListener('visibilitychange', onVisible);
     const beat = setInterval(() => void announce(false), HEARTBEAT_MS);
+    // a setting changed (here or by a remote settings.set): send the catalog again soon, so a remote get reads the new value
+    let soon: ReturnType<typeof setTimeout> | undefined;
+    const offSettings = rt.settings.onAnyChange(() => { clearTimeout(soon); soon = setTimeout(() => void announce(false), 800); });
     // Only when the page really goes away (not into the back/forward cache, not a React re-render): a bye makes the
     // server stop sending here at once.
     const bye = (e: PageTransitionEvent) => { if (!e.persisted) void post('bye', { client: id }, true).catch(() => undefined); };
     window.addEventListener('pagehide', bye);
-    const stop = followSse(
+    stream = followSse(
       (signal) => pluginFetch(FOLDER, `stream?client=${encodeURIComponent(id)}`, { signal }),
       (f) => {
         const m = sseJson<ConsoleMessage | { $axf: 'console-hello@1' }>(f);
@@ -176,17 +277,33 @@ function ConsoleCommandsClient() {
         if (m?.$axf === 'console-hello@1') { catalogKey = ''; void announce(document.visibilityState === 'visible'); return; }
         if (!m || !('id' in m) || !m.id) return;
         const again = doneOf(m.id);
-        if (again) { void post('ack', { client: id, id: m.id, ok: again[0], message: again[1], here: hereOf(rt) }).catch(() => undefined); return; }
+        if (again) { void post('ack', { client: id, id: m.id, ok: again[0], message: again[1], here: hereOf(rt), ...(m.op === 'control' ? { repeated: true } : {}) }).catch(() => undefined); return; }
+        // this tab was asleep when it was sent: the server has moved on (another console or a wake), so don't run it twice
+        if (consoleMessageLate(m)) { markDone(m.id, [false, 'skipped: arrived too late']); void post('ack', { client: id, id: m.id, ok: false, skipped: true, message: 'arrived too late (the tab was asleep)', here: hereOf(rt) }).catch(() => undefined); return; }
         // inside a host, bring this console's frame to the front first, so Brett sees the command happen
         if (host && !rt.inFront()) rt.bringToFront(`${who(m.by)}: ${m.label ?? m.target ?? m.op}`);
+        // a console-control@1 command: the executor answers with its result and the live state (screen, tabs, scroll, focus)
+        if (m.op === 'control') {
+          void executeControl(rt, m.command).then((answer) => {
+            const line = describeAnswer(answer);
+            markDone(m.id, [answer.ok, line]);
+            if (answer.ok && answer.verb !== 'state' && answer.verb !== 'search' && answer.verb !== 'list' && rt.settings.get(KEYS.toast) !== false) rt.toast(`${who(m.by)}: ${line}`, 'info', 'Console control');
+            void post('ack', { client: id, id: m.id, ok: answer.ok, message: line, result: answer, here: hereOf(rt), ...where() }).catch(() => undefined);
+          });
+          return;
+        }
         let res: [boolean, string];
         try { res = runMessage(rt, m, history); } catch (e) { res = [false, String((e as Error)?.message ?? e)]; }
         markDone(m.id, res);
         if (res[0] && rt.settings.get(KEYS.toast) !== false) rt.toast(`${who(m.by)}: ${m.delivery ? ongoing(res[1]) : res[1]}`, 'info', 'Console command');
-        void post('ack', { client: id, id: m.id, ok: res[0], message: res[1], here: hereOf(rt), ...where() }).catch(() => undefined);
+        const acked = post('ack', { client: id, id: m.id, ok: res[0], message: res[1], here: hereOf(rt), ...where() }).catch(() => undefined);
+        if (m.op === 'refresh' && res[0]) void acked.then(() => reloadPage(m.hard === true)); // the caller hears first, then the page goes
       },
+      // a deploy restarts the server: come back within seconds, not after a minute of back-off
+      { maxDelayMs: 10_000, idleTimeoutMs: STREAM_IDLE_MS },
     );
-    return () => { stop(); offState(); offFront(); clearInterval(beat); window.removeEventListener('focus', used); document.removeEventListener('visibilitychange', onVisible); window.removeEventListener('pagehide', bye); };
+    const stop = stream;
+    return () => { stop(); offState(); offFront(); offSettings(); clearTimeout(soon); clearInterval(beat); window.removeEventListener('focus', used); window.removeEventListener('online', onVisible); window.removeEventListener('pageshow', onShow); document.removeEventListener('visibilitychange', onVisible); window.removeEventListener('pagehide', bye); };
   }, [rt, on]);
   return null;
 }

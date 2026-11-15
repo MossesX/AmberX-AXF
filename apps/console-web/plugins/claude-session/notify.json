@@ -1,0 +1,19 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "claude.agent-pick",
+      "label": "Pick Claude's agent",
+      "group": "sessions",
+      "app": "console",
+      "source": "Claude sessions",
+      "description": "A new session asks which agent it should work as. It also shows as a console pop-up of its own.",
+      "match": {
+        "source": "claude-sessions"
+      },
+      "channels": {
+        "amberx": false
+      }
+    }
+  ]
+}

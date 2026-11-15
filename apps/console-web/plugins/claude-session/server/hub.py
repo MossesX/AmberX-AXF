@@ -54,6 +54,24 @@ def _http(method: str, params: dict[str, Any], sid: str | None) -> tuple[dict[st
 transport: Callable[[str, dict[str, Any], str | None], tuple[dict[str, Any], str | None]] = _http
 
 
+def tool(name: str, arguments: dict[str, Any], reason: dict[str, str] | None = None) -> dict[str, Any]:
+    """One hub tool → its answer as a dict; {"held": True} / {"confirm": id} when Brett has to approve it. HubError otherwise."""
+    _, sid = transport("initialize", {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "axf-console-recorder", "version": "1"}}, None)
+    res, _ = transport("tools/call", {"name": "call", "arguments": {"tool": name, "arguments": arguments, **({"reason": reason} if reason else {})}}, sid)
+    text = "\n".join(c.get("text", "") for c in res.get("content", []) if isinstance(c, dict))
+    try:
+        body = json.loads(text) if text else {}
+    except json.JSONDecodeError:
+        body = {}
+    body = body if isinstance(body, dict) else {}
+    err = body.get("error")
+    if res.get("isError") and isinstance(err, dict) and err.get("code") == "confirmation_required":
+        return {"confirm": str((err.get("details") or {}).get("confirmationId", ""))[:80]}
+    if res.get("isError"):
+        raise HubError(str((err or {}).get("message") if isinstance(err, dict) else text or "axHub refused")[:300])
+    return body.get("data") if isinstance(body.get("data"), dict) else body
+
+
 def ask(session: dict[str, Any], agent_name: str) -> dict[str, Any]:
     """Send the held approval once. {"held": True, "job": id} | {"ok": text} | {"confirm": id}; HubError otherwise."""
     _, sid = transport("initialize", {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "axf-console-claude", "version": "1"}}, None)

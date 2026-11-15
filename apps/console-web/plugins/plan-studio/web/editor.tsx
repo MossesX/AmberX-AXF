@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Button, Checkbox, Chip, Icon, IconButton, Markdown, SelectField, Segmented, TextField, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, IconButton, Markdown, PriorityTag, SelectField, Segmented, TextField, useRuntime } from '@console/axf/react';
 import * as pc from './plan-core.mjs';
 import type { History, ListId, Plan, Step, TextItem } from './plan-core.mjs';
 import { call, deletePlan, fmtWhen, getPlan, KEYS, restorePlan, savePlan, statusInfo, turnIntoBuild, useBusy, useStudio, type SaveResult } from './api';
@@ -221,7 +221,7 @@ function StepsEditor({ steps, onChange }: { steps: Step[]; onChange: (s: Step[])
       {big.length > 0 && <p className="fx-muted axp-plan-studio__hint"><Icon name="alert" size={11} /> {big.map((s) => s.id).join(', ')} {big.length === 1 ? 'is' : 'are'} over 30 minutes: split {big.length === 1 ? 'it' : 'them'} (small-steps rule).</p>}
       <ol>
         {steps.map((s, i) => (
-          <li key={s.id} className={s.done ? 'is-done' : ''}>
+          <li key={s.id} className={s.done ? 'is-done' : ''} data-plan-item={s.id}>
             <input type="checkbox" className="fx-check" checked={s.done} onChange={(e) => upd(i, { done: e.target.checked, doneAt: e.target.checked ? new Date().toISOString() : '' })} aria-label={`${s.id} done`} />
             <span className="axp-plan-studio__sid">{s.id}</span>
             <input className="fx-input axp-plan-studio__stext" value={s.text} onChange={(e) => upd(i, { text: e.target.value })} aria-label={`${s.id} text`} />
@@ -255,7 +255,7 @@ function ListEditor({ id, items, onChange }: { id: ListId; items: TextItem[]; on
       <h3>{meta.label} <span className="axp-plan-studio__n">{items.length}</span></h3>
       <ul>
         {items.map((x, i) => (
-          <li key={i}>
+          <li key={i} data-plan-item={`${id}:${i}`}>
             {meta.item === 'check' && <input type="checkbox" className="fx-check" checked={!!x.done} onChange={(e) => onChange(items.map((y, j) => (j === i ? { ...y, done: e.target.checked } : y)))} aria-label="Done" />}
             <input className="fx-input" value={x.text} onChange={(e) => onChange(items.map((y, j) => (j === i ? { ...y, text: e.target.value } : y)))} aria-label={meta.label} />
             {extra && <input className="fx-input" value={String(x[extra] ?? '')} placeholder={extra === 'answer' ? 'Answer' : 'Mitigation'} onChange={(e) => onChange(items.map((y, j) => (j === i ? { ...y, [extra]: e.target.value } : y)))} aria-label={extra} />}
@@ -359,7 +359,7 @@ function BuildPanel({ plan, dirty }: { plan: Plan; dirty: boolean }) {
   if (plan.build) {
     return (
       <div className="axp-plan-studio__build">
-        <p><b>Orchestrator build</b> <span className="fx-mono">{plan.build.profile}:{plan.build.id}</span> · {plan.build.status} · {plan.build.progress ?? 0}%</p>
+        <p><b>Orchestrator build</b> <span className="fx-mono">{plan.build.profile}:{plan.build.id}</span> · {plan.build.status} · {plan.build.progress ?? 0}% <PriorityTag build={plan.build.id} /></p>
         <div className="axp-plan-studio__bar" role="progressbar" aria-valuenow={plan.build.progress ?? 0} aria-valuemin={0} aria-valuemax={100}><span style={{ width: `${plan.build.progress ?? 0}%` }} /></div>
         <div className="fx-row"><Button size="sm" icon="layers" onClick={() => rt.dispatch('nav:build-orchestrator')}>Open the orchestrator</Button><Button size="sm" tone="quiet" icon="refresh" busy={busy} onClick={() => run(async () => { await call('sync-builds'); })}>Check progress</Button></div>
         <p className="fx-muted axp-plan-studio__hint">The plan ticks its steps as the build does, and turns done (its planned features to have) when the build completes.</p>

@@ -93,7 +93,7 @@ log. When a step says "copy it", paste it straight into its destination or into 
 | Claude access token `sk-ant-oat…` | Signs Claude Code in to your subscription (about 8 h) | `~/.claude/.credentials.json` after `/login` | console AI keys (paired) | assistant, VPS Claude Code |
 | Claude refresh token `sk-ant-ort…` | Gets new access tokens without signing in again | same file | console AI keys (paired) | console renews the pair |
 | Claude long-lived token `sk-ant-oat01…` | One-year Claude Code token | `claude setup-token` | console Terminal settings; cloud env `CLAUDE_CODE_OAUTH_TOKEN` | headless / terminal Claude Code |
-| `ANTHROPIC_API_KEY` `sk-ant-api…` | Pay-per-use API key | console.anthropic.com → API keys | console AI keys or credentials; `~/.anthropic-key` | API-key features, claude-pick API mode |
+| `ANTHROPIC_API_KEY` `sk-ant-api03…` or `sk-ant-usr…` (any newer `sk-ant-` API format too) | Pay-per-use API key | console.anthropic.com → API keys | console AI keys or credentials; `~/.anthropic-key` | API-key features, claude-pick API mode |
 | `AXHUB_PUSH_NTFY_TOPIC` | Long random ntfy topic for axHub's approval pushes (works like a password) | `openssl rand -hex 16` | Coolify → axHub env; the ntfy app on your phone | axHub approval push |
 | `AXHUB_PUSH_NTFY_TOKEN` | ntfy access token (only for a protected ntfy server) | `ntfy token add <user>` on that server | Coolify → axHub env | axHub approval push |
 | ntfy access token `tk_…` | Same token for the `ntfy` service (optional) | as above | axHub vault `ntfy-token`; console Settings → Alerts → ntfy | `ntfy.publish` / `poll`, console alerts |
@@ -359,7 +359,7 @@ Because the check renews the pair, the copy you pasted from stops working on the
 
 ## 7. Anthropic API keys
 
-- **What:** pay-per-use access to the Claude API (`sk-ant-api…`). It's billed separately from any subscription.
+- **What:** pay-per-use access to the Claude API (`sk-ant-api03…`, or `sk-ant-usr…` for keys made since Nov 2026; the console accepts any `sk-ant-` API format and checks it live: OK, invalid or no credit). It's billed separately from any subscription.
 - **Get one:** sign in at `console.anthropic.com` (an organization with billing set up) → **API keys** →
   **Create key**. Copy it once.
 - **Where it goes:**
@@ -379,6 +379,17 @@ Because the check renews the pair, the copy you pasted from stops working on the
 
 Each Claude account (yours, a second Max plan, Conrad's) is one saved pair in **AI keys**, with a label. One account
 is active at a time, and it drives **both** the console and the VPS.
+
+Keys are stored once for the whole console, not per user: every console admin and the console's own token (`AXF_TOKEN`) see the same keys, active choice, priority order and VPS state, and nobody else gets in. Everything is switchable by API, so Amber and the VPS don't need a button. <!-- axf-plugin:ai-keys -->
+
+There are two keyrings, and they don't share tokens: <!-- axf-plugin:ai-keys -->
+
+| Keyring | Where the tokens are | Added with | Renewed by | <!-- axf-plugin:ai-keys -->
+|---|---|---|---| <!-- axf-plugin:ai-keys -->
+| **AI keys** | `.axf-console/plugins/ai-keys/keys.json` | the AI keys dialog | the console | <!-- axf-plugin:ai-keys -->
+| **Accounts on the VPS** | `~/.claude-accounts/<name>/` | `claude-account save <name>` / `savekey <name>` | Claude Code | <!-- axf-plugin:ai-keys -->
+
+`GET /api/plugins/ai-keys/keys` (Bearer `AXF_TOKEN`) answers both: `keys` for AI keys, `vpsAccounts` for the VPS (kind, name, email, plan; never a token). `POST /api/plugins/ai-keys/active {"id": "vps:account-3"}` switches to a VPS account through one held axHub call (it runs after the countdown unless you deny it). `POST /api/plugins/ai-keys/switch`, which builds call on a usage limit, uses the AI keys subscriptions when there are any, otherwise the next VPS subscription account; it never picks an API-key account by itself. Don't paste a VPS login into AI keys: AI keys renews every pair it holds, renewing rotates the refresh token, and the saved copy and every build running on it are logged out. <!-- axf-plugin:ai-keys -->
 
 - **Switch accounts:** console → long-press → **AI keys** → the account's row → **Use this one**. The console's
   assistant switches at once, and the console logs the VPS's Claude Code into the same account by writing that pair

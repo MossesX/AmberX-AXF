@@ -1,0 +1,113 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-dfda15db-af92-4e32-8dfa-1d7ab02e5aac",
+ "source": "claude-code",
+ "sessionId": "dfda15db-af92-4e32-8dfa-1d7ab02e5aac",
+ "project": "other",
+ "title": "# Plan Studio: Blueprints (Brett, Nov 7) FIRST: the queued build `plan-archive` (queue id hl-mw6dmjiy-7w) is SUPERSEDED…",
+ "startedAt": "2026-11-07T13:03:35.057Z",
+ "endedAt": "2026-11-07T13:44:46.853Z",
+ "minutes": 41,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.319",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/plan-blueprints",
+  "repo": "",
+  "branch": "claude/plan-blueprints"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-fable-5-1"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-07T13:03:37.114Z",
+   "kind": "prompt",
+   "text": "# Plan Studio: Blueprints (Brett, Nov 7) FIRST: the queued build `plan-archive` (queue id hl-mw6dmjiy-7w) is SUPERSEDED by this one. Remove it from the headless launch queue before it starts (or, if it already started, stop it with tmux kill axf-plan-archive-* and discard its branch). Note it in PROGRESS.md. ## What a Blueprint is A named package of plans in Plan Studio, like build profiles but for plans. Only one blueprint is active at a time; Plan Studio shows only the active blueprint's plans. Plans keep their exact structure (steps, sub-items, status, build links) inside a blueprint. ## D…",
+   "model": "claude-fable-5-1",
+   "tokens": {
+    "input": 2216,
+    "output": 159123,
+    "cacheRead": 25453688,
+    "cacheWrite": 490739,
+    "thinking": 37941
+   },
+   "costUsd": 20.4758,
+   "costEstimated": false,
+   "seconds": 2469,
+   "tools": {
+    "Bash": 144,
+    "Read": 29,
+    "Edit": 20,
+    "Write": 5
+   },
+   "commands": 144,
+   "files": [
+    "/root/axf-builds/plan-blueprints/apps/console-web/plugins/plan-studio/web/plan-core.mjs",
+    "/root/axf-builds/plan-blueprints/apps/console-web/plugins/plan-studio/schema/plan.schema.json",
+    "/root/axf-builds/plan-blueprints/apps/console-web/plugins/plan-studio/web/plan-core.d.mts",
+    "/root/axf-builds/plan-blueprints/framework/core/engines/control-rules.mjs",
+    "/root/axf-builds/plan-blueprints/framework/spec/check-control.mts",
+    "/root/axf-builds/plan-blueprints/apps/console-web/plugins/plan-studio/web/blueprints.tsx",
+    "/tmp/pb-shots.mjs",
+    "/root/axf-builds/plan-blueprints/_claude/builds/reports/plan-blueprints.md",
+    "/tmp/pb-choices.json",
+    "/root/axf-builds/plan-blueprints/.axf-claude/axf-plan-blueprints--gina/projects/-opt-axf/memory/plan-blueprints-build-traps.md"
+   ],
+   "changeIds": [
+    "chg-20261107-8651574807"
+   ],
+   "features": [
+    "queue:plan-blueprints",
+    "orchestrator:plan-archive"
+   ],
+   "output": "Blueprints are built, committed on `claude/plan-blueprints` (two commits, not pushed), and sitting in UI Review as item `r-20261107-9e6acb75` with three options. **The superseded build first.** `plan-archive` wasn't waiting in the queue. It had already run (12:26 to 12:47) and committed locally on …"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/plan-blueprints/apps/console-web/plugins/plan-studio/web/plan-core.mjs",
+  "/root/axf-builds/plan-blueprints/apps/console-web/plugins/plan-studio/schema/plan.schema.json",
+  "/root/axf-builds/plan-blueprints/apps/console-web/plugins/plan-studio/web/plan-core.d.mts",
+  "/root/axf-builds/plan-blueprints/framework/core/engines/control-rules.mjs",
+  "/root/axf-builds/plan-blueprints/framework/spec/check-control.mts",
+  "/root/axf-builds/plan-blueprints/apps/console-web/plugins/plan-studio/web/blueprints.tsx",
+  "/tmp/pb-shots.mjs",
+  "/root/axf-builds/plan-blueprints/_claude/builds/reports/plan-blueprints.md",
+  "/tmp/pb-choices.json",
+  "/root/axf-builds/plan-blueprints/.axf-claude/axf-plan-blueprints--gina/projects/-opt-axf/memory/plan-blueprints-build-traps.md"
+ ],
+ "changeIds": [
+  "chg-20261107-8651574807"
+ ],
+ "features": [
+  "queue:plan-blueprints",
+  "orchestrator:plan-archive"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 2216,
+  "output": 159123,
+  "cacheRead": 25453688,
+  "cacheWrite": 490739,
+  "thinking": 37941,
+  "costUsd": 20.4758,
+  "costEstimated": false,
+  "toolCalls": 198,
+  "commands": 144,
+  "filesTouched": 10,
+  "reportedUsd": 24.1565
+ },
+ "ingestedAt": "2026-11-07T13:44:47.464Z"
+}

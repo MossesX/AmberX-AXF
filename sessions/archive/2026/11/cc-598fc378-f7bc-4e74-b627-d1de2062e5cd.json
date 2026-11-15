@@ -1,0 +1,90 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-598fc378-f7bc-4e74-b627-d1de2062e5cd",
+ "source": "claude-code",
+ "sessionId": "598fc378-f7bc-4e74-b627-d1de2062e5cd",
+ "project": "other",
+ "title": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each …",
+ "startedAt": "2026-11-05T11:23:46.042Z",
+ "endedAt": "2026-11-05T11:23:54.394Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.318",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/tmp/axf-slots-TlWw4s/one",
+  "repo": "",
+  "branch": ""
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-05T11:23:46.901Z",
+   "kind": "prompt",
+   "text": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /root/axf-builds/handoff-2-addenda-r2/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 4,
+    "output": 660,
+    "cacheRead": 39484,
+    "cacheWrite": 21896,
+    "thinking": 272
+   },
+   "costUsd": 0.1306,
+   "costEstimated": false,
+   "seconds": 7,
+   "tools": {
+    "Bash": 2
+   },
+   "commands": 2,
+   "files": [],
+   "changeIds": [
+    "chg-20261105-e54814281a"
+   ],
+   "features": [
+    "pending:handoff-2",
+    "pending:handoff-2-addenda-r2",
+    "orchestrator:handoff-2"
+   ],
+   "output": "Hi Brett, what would you like to work on? Both of my startup commands were blocked for approval, so two things are still undone: - **Claude settings:** I couldn't read them from axHub, so I'm not yet following them. I'll need to read them before I do any real work. - **Build manager entry:** `chg-2…"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261105-e54814281a"
+ ],
+ "features": [
+  "pending:handoff-2",
+  "pending:handoff-2-addenda-r2",
+  "orchestrator:handoff-2"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 4,
+  "output": 660,
+  "cacheRead": 39484,
+  "cacheWrite": 21896,
+  "thinking": 272,
+  "costUsd": 0.1306,
+  "costEstimated": false,
+  "toolCalls": 2,
+  "commands": 2,
+  "filesTouched": 0,
+  "reportedUsd": 0.1963
+ },
+ "ingestedAt": "2026-11-05T11:23:54.564Z"
+}

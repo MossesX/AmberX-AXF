@@ -1,0 +1,6 @@
+/* Badges plugin: layout only. Controls and colours come from the framework. */
+.axp-badges__drop { width: min(calc(var(--fx-space) * 40), calc(100vw - var(--fx-dens-gap-xl) * 2)); max-height: 70vh; overflow-y: auto; padding: var(--fx-dens-gap-lg); }
+:where([data-fx-narrow]) .axp-badges__drop { width: auto; }
+.axp-badges__acct { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); padding-block: var(--fx-dens-gap-sm); border-top: var(--fx-border-w) solid var(--fx-border); }
+.axp-badges__win { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
+.axp-badges__who { min-width: calc(var(--fx-space) * 16); }

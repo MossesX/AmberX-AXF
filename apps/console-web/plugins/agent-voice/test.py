@@ -123,6 +123,16 @@ c.put("/p/profiles/molly", json={"enabled": True, "permissions": {"cloud": True}
 r = c.post("/p/tts", json={"agentId": "molly", "text": "eleven"})
 check(r.status_code == 200 and "text-to-speech/abc123" in calls[-1]["url"] and calls[-1]["body"]["voice_settings"]["stability"] == 0.3, "ElevenLabs speech with the voice settings")
 
+speech = plugin_services.get("axf.speech@1")
+check(speech is not None, "axf.speech@1 is provided")
+check([n["agentId"] for n in speech.narrators()] == ["molly"] and speech.narrators()[0]["provider"] == "elevenlabs", "narrators: agents allowed cloud voices whose provider has a key")
+check(speech.say("molly", "eleven") == b"ID3fakeaudio", "the service speaks with the same profile and cache as /tts")
+try:
+    speech.say("nobody", "hi")
+    check(False, "an agent without cloud permission is refused through the service too")
+except mod.HTTPException as e:
+    check(e.status_code == 403, "an agent without cloud permission is refused through the service too")
+
 r = c.put("/p/import", json={"$axf": "agent-voice@1", "profiles": {"mosses": {"enabled": True}, "../bad": {}}, "pronunciations": [{"from": "K8S", "to": "x"}, {"from": "AXF", "to": "A X F"}]}).json()
 check(r["count"] == 1, "import takes valid profiles only")
 check([p["from"] for p in c.get("/p/store").json()["store"]["pronunciations"]] == ["k8s", "AXF"], "import merges pronunciations without duplicates")

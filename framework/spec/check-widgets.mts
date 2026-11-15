@@ -8,6 +8,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
+import { BANNER_WIDGET_WIDTH, bannerWidgetCapCss, bannerWidgetEmpty, bannerWidgetNumber, bannerWidgetView, findBannerWidget, normalizeBannerWidgetPrefs, overflowWidgets, patchBannerWidget } from '../core/engines/bannerwidgets';
 import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, moveOnHost, normalizeArrangement, placeOnHost, placeToolbarWidgets, snapIndex, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
 import { validateAsset } from '../core/validate';
 import { AxfRuntime } from '../core/runtime';
@@ -17,6 +18,45 @@ const read = (f: string) => JSON.parse(readFileSync(join(root, 'spec/fixtures', 
 let checks = 0;
 const ok = (c: unknown, msg: string) => { assert.ok(c, msg); checks++; };
 const eq = (a: unknown, b: unknown, msg: string) => { assert.deepEqual(a, b, msg); checks++; };
+
+// banner widgets (core/engines/bannerwidgets.ts)
+{
+  // compact by default, the widget's own shape for clocks and search bars, a pick always wins
+  eq(bannerWidgetView('status', null, null).size, 'compact', 'a chip is compact by default');
+  eq(bannerWidgetView('status', null, null).cap, { n: BANNER_WIDGET_WIDTH.compact, unit: 'space' }, 'compact caps the width');
+  eq(bannerWidgetView('clock', null, null).cap, null, 'a clock keeps its own shape');
+  eq(bannerWidgetView('clock', null, { size: 'wide' }).cap, { n: BANNER_WIDGET_WIDTH.wide, unit: 'space' }, 'until a size is picked');
+  eq(bannerWidgetView('status', { size: 'wide' }, { size: 'icon' }).size, 'icon', 'the pick beats the hint');
+  eq(bannerWidgetView('status', null, { size: 'icon' }).show, 'icon', 'icon size shows only the icon');
+  eq(bannerWidgetView('status', null, { maxWidth: 90 }).cap, { n: 90, unit: 'px' }, 'max width beats the size');
+  eq(bannerWidgetView('status', null, { maxWidth: 20, maxUnit: 'ch' }).cap, { n: 20, unit: 'ch' }, 'max width in characters');
+  eq(bannerWidgetCapCss({ n: 14, unit: 'space' }), 'calc(var(--fx-space) * 14)', 'cap css in space tokens');
+  eq(bannerWidgetCapCss({ n: 20, unit: 'ch' }), '20ch', 'cap css in characters');
+  eq(bannerWidgetView('status', { hidden: true }, { hidden: false }).hidden, false, 'a hint can default hidden, the person decides');
+  // damaged settings are cleaned, never trusted
+  eq(normalizeBannerWidgetPrefs({ 'status:a': { size: 'huge', priority: 40, maxWidth: 3 }, 'bad key': { hidden: true }, 'status:b': 7 }), { 'status:a': { maxWidth: 24, maxUnit: 'px', priority: 9 } }, 'normalize prefs');
+  eq(normalizeBannerWidgetPrefs([1]), {}, 'normalize junk');
+  eq(patchBannerWidget({ 'status:a': { hidden: true, size: 'wide' } }, 'status:a', { hidden: null }), { 'status:a': { size: 'wide' } }, 'null goes back to the default');
+  eq(patchBannerWidget({ 'status:a': { hidden: true } }, 'status:a', { hidden: null }), {}, 'nothing left: the entry goes');
+  // empty only means something for a counter-bound widget
+  eq(bannerWidgetEmpty('counter', { counter: 'c' }, () => 0), true, 'zero counter is empty');
+  eq(bannerWidgetEmpty('status', { counter: 'c' }, () => 2), false, 'lit status is not empty');
+  eq(bannerWidgetEmpty('clock', {}, () => 0), false, 'a clock is never empty');
+  eq(bannerWidgetNumber('130 new · Retire Patches', 1), '130', 'number from the text');
+  eq(bannerWidgetNumber("What's new", 4), '4', 'number from the counter');
+  // overflow: nothing while it fits; lowest priority first, last on the bar first; pinned widgets stay
+  const it = (key: string, priority: number, overflow = true) => ({ key, width: 100, priority, overflow });
+  eq(overflowWidgets([it('a', 5), it('b', 5)], 210, 30, 10), [], 'everything fits');
+  eq(overflowWidgets([it('a', 5), it('b', 1), it('c', 5)], 300, 30, 10), ['b'], 'lowest priority leaves first');
+  eq(overflowWidgets([it('a', 5), it('b', 5), it('c', 5)], 300, 30, 10), ['c'], 'then the last on the bar');
+  eq(overflowWidgets([it('a', 1, false), it('b', 5), it('c', 5)], 100, 30, 10), ['c', 'b'], 'pinned stays');
+  eq(overflowWidgets([it('a', 1, false)], 10, 30, 10), [], 'nothing may leave: nothing leaves');
+  const list = [{ key: 'clock:x', id: 'x', label: 'Clock' }, { key: 'status:y', id: 'y', label: "What's new ticker", aliases: ['ticker'] }];
+  eq(findBannerWidget(list, 'the clock')?.key, 'clock:x', 'find by name');
+  eq(findBannerWidget(list, 'ticker')?.key, 'status:y', 'find by alias');
+  eq(findBannerWidget(list, 'status:y')?.key, 'status:y', 'find by key');
+  eq(findBannerWidget(list, 'nope'), null, 'nothing found');
+}
 
 // banner.json
 {

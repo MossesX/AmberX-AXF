@@ -11,7 +11,8 @@
     "apps": [
       { "id": "amberx", "label": "AmberX", "url": "https://amberx.amberxai.com", "icon": "sparkles" },
       { "id": "axhub", "label": "axHub", "url": "https://axhub.amberxai.com", "icon": "shield" },
-      { "id": "console", "label": "Console", "url": "https://console.amberxai.com", "icon": "terminal" }
+      { "id": "console", "label": "Console", "url": "https://console.amberxai.com", "icon": "terminal" },
+      { "id": "expenses", "label": "Expenses", "url": "https://expenses.amberxai.com", "icon": "chart" }
     ],
     "merge": { "banner": "host", "app-menu": "merged", "nav-menu": "merged", "context-menu": "merged", "toolbar": "merged", "widgets": "merged" },
     "ide": { "on": false, "paneLimit": 6, "preset": "ide", "presets": ["single", "two-columns", "two-rows", "main-side", "side-main", "main-bottom", "three-columns", "top-two-below", "grid-2x2", "ide"] },

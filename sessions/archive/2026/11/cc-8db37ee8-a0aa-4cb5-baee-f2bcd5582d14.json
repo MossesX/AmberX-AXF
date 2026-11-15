@@ -1,0 +1,90 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-8db37ee8-a0aa-4cb5-baee-f2bcd5582d14",
+ "source": "claude-code",
+ "sessionId": "8db37ee8-a0aa-4cb5-baee-f2bcd5582d14",
+ "project": "other",
+ "title": "# Build: md-chain-control (pending item headless-session-efficiency-shared-chain-control) Brett: finish the optimizatio…",
+ "startedAt": "2026-11-06T18:40:35.134Z",
+ "endedAt": "2026-11-06T19:09:03.337Z",
+ "minutes": 28,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.319",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/md-chain-control",
+  "repo": "",
+  "branch": "claude/md-chain-control"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-06T18:40:38.042Z",
+   "kind": "prompt",
+   "text": "# Build: md-chain-control (pending item headless-session-efficiency-shared-chain-control) Brett: finish the optimization in Claude MD Studio. The token log, rules briefs and headless-skips-CLAUDE.md work is on branch claude/token-optimize (PR open, not merged): merge origin/claude/token-optimize into this branch first and build on it; don't redo any of it. That item lists every step twice; do each once: 1. Fresh session per step with a short handoff note from the progress file. 2. Per-step model choice suggested by the orchestrator. 3. Steps list the exact files they need; sessions read only …",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 120,
+    "output": 133629,
+    "cacheRead": 15222690,
+    "cacheWrite": 333455,
+    "thinking": 37473
+   },
+   "costUsd": 7.3851,
+   "costEstimated": false,
+   "seconds": 1704,
+   "tools": {
+    "Bash": 61,
+    "Grep": 1,
+    "Read": 13
+   },
+   "commands": 61,
+   "files": [],
+   "changeIds": [
+    "chg-20261106-55d5892e7b",
+    "chg-20261106-ab61a91e95"
+   ],
+   "features": [
+    "pending:headless-session-efficiency-shared-chain-control"
+   ],
+   "output": "**PR #362 is open and not landed, boss, but the savings test came back mixed: fresh session per step cost MORE than one session on small steps.** All 8 items are built and ticked, and the duplicate step list is ticked too. CI is still running, so don't count it green yet. **What the test showed** (…"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261106-55d5892e7b",
+  "chg-20261106-ab61a91e95"
+ ],
+ "features": [
+  "pending:headless-session-efficiency-shared-chain-control"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 120,
+  "output": 133629,
+  "cacheRead": 15222690,
+  "cacheWrite": 333455,
+  "thinking": 37473,
+  "costUsd": 7.3851,
+  "costEstimated": false,
+  "toolCalls": 75,
+  "commands": 61,
+  "filesTouched": 0,
+  "reportedUsd": 8.3852
+ },
+ "ingestedAt": "2026-11-06T19:09:04.300Z"
+}

@@ -29,6 +29,7 @@ from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import JSONResponse
 
 import plugin_services
+import readcache  # server/readcache.py
 
 router = APIRouter()
 FOLDER = "ref-links"
@@ -156,7 +157,10 @@ async def _body(request: Request) -> dict[str, Any]:
 
 @router.get("/targets")
 async def get_targets() -> JSONResponse:
-    return _answer(await run_in_threadpool(targets))
+    # every open console asks on load; one shared answer (refs.mjs + the console catalog) per 15 s, fresh after a
+    # builds store write (server/readcache.py)
+    store = ROOT / "_claude" / "builds" / "store.json"
+    return _answer(await run_in_threadpool(readcache.cached, "ref-links:targets", targets, 15, (store,)))
 
 
 @router.post("/find")

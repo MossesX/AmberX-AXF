@@ -1,0 +1,296 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-agent-pick",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:32Z",
+ "build": {
+  "id": "agent-pick",
+  "title": "Agent pick: every Claude session runs as the agent Brett assigns",
+  "profile": "all",
+  "category": "Claude",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Brett, Nov 3 2026 (voice). Every Claude session (voice/chat Amber, Claude Code, headless) runs AS an agent Brett assigns. Agent manager 'Assign to Claude' + context menu; Claude settings 'Claude agent' default + 'Ask me every session' (default on); agent picker dialog (avatars, status, job, cost, hours, pay, rating; expand for all stats + hooks); MCP claude_session_start pops the picker as a console approval (+ axHub fallback + push), default agent until answered; work/cost/commits booked on the agent (AXF_AGENT), persona/voice field; claude_agent_get. Rule in RULES.md + CLAUDE.md. Zero tokens. Agent: Snap Sully.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Build: agent-pick (Urgent profile)\n\nBrett, Nov 3 2026 (voice). Assigned agent: **Snap Sully** (book on his card when this starts; if he is still busy and the all-rounder router from crew-retrain #265 is on main, the router may give it to whoever is free - record who in the report). Register in Urgent (id `agent-pick`) + banner entry.\n\n## What Brett wants\nEvery Claude session (voice/chat Amber, Claude Code, headless) runs AS an agent Brett assigns. Claude becomes whichever agent he picks.\n\n## Build on what exists (don't duplicate)\n- Console **Agent manager** plugin + **Agent swarm** page (agent cards: names, stats, pay $7.50/h, history, write-ups), AmberArt ID card art, crew-live (avatars, AgentAvatar component, agent context menu), follow-amber (console pop-up dialogs + axHub approval stream), claude-settings (Claude plugin, settings on axHub, `claude_settings_get`). Coordinate through their APIs; if one isn't on main yet, build against its contract and note it.\n\n## Steps\n- s1 **Assign hook:** in Agent manager, every agent row/card has 'Assign to Claude' (and the agent context menu gets it everywhere). Claude settings gets 'Claude agent' = default agent + 'Ask me every session' switch (default ON).\n- s2 **Agent picker dialog**, opened from the context menu anywhere ('Choose Claude's agent...') and automatically at session start: list of every agent with avatar, name, status (working/idle), current job, today's cost, hours, pay, rating; tap a row to expand ALL details and stats (jobs done, success/fail, average cost and time, recent runs, write-ups, raises) with hooks to their full card, history, Session browser runs, Terminal tabs, group chat. One tap picks.\n- s3 **Session-start approval:** when a Claude session starts it calls a new MCP tool `claude_session_start` {client: voice|chat|code|headless, summary}. With 'Ask me every session' ON, that pops the picker as a console approval dialog (via follow-amber's pop-up; also an axHub approval item as fallback, and a push to his phone). Until Brett answers, the session uses the default agent. The answer returns {agent id, name, persona/voice notes, avatar}. Headless builds keep their brief's named agent (no prompt) unless Brett turns on 'Ask for headless too'.\n- s4 **Claude acts as that agent:** the session's work, costs and commits are booked on that agent's card (AXF_AGENT), its avatar shows on everything it does, and it introduces itself by that agent's name. Agent cards get an optional persona/voice field (how they talk) that the session follows. `claude_agent_get` (allow) tells a session who it is.\n- s5 Rule in shared RULES.md + CLAUDE.md: 'Every Claude session calls claude_session_start first and works as the agent Brett assigns.' Commands declared once -> REST + MCP + CLI.\n- s6 Zero tokens for the picker/manager code (no LLM imports, test). Tests (ask on/off, default fallback, booking to the right card, picker approval round trip with a fake axHub), phone + desktop screenshots, UI Review item, report `_claude/builds/reports/agent-pick.md`, THREADS, PR, steps through the store. Commits clean and professional.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-agent-pick",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-03T19:02:33.283Z",
+   "endedAt": "2026-11-03T19:55:57.175Z",
+   "exit": 0,
+   "costUsd": 10.9709
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Agent pick core (agent-pick@1): settings (default agent, ask every session, ask for headless), current assignment per session, pick resolution + default fallback; persona/voice field on agent cards",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T19:02:33.283Z",
+   "doneAt": "2026-11-03T19:15:33.046Z",
+   "actualMin": 13,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Assign hook: 'Assign to Claude' on every Agent manager row/card and in the agent context menu; Claude agent + Ask me every session in Claude settings",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T19:15:33.046Z",
+   "doneAt": "2026-11-03T19:15:35.804Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Agent picker dialog: every agent with avatar, name, status, current job, today's cost, hours, pay, rating; one tap picks",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T19:15:35.804Z",
+   "doneAt": "2026-11-03T19:15:37.300Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Picker row expand: all stats (jobs, success/fail, avg cost/time, recent runs, write-ups, raises) + hooks to card, history, Session browser, Terminal tabs, group chat; 'Choose Claude's agent...' in the context menu",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T19:15:37.300Z",
+   "doneAt": "2026-11-03T19:15:39.335Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "claude_session_start {client, summary}: ask on = console approval pop-up + axHub approval fallback + push; default agent until answered; returns {agent id, name, persona, avatar}; headless keeps brief agent unless 'Ask for headless too'",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T19:15:39.335Z",
+   "doneAt": "2026-11-03T19:15:41.101Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Claude acts as the agent: AXF_AGENT booking of session work/cost/commits on the card, avatar on its activity, claude_agent_get (allow)",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T19:15:41.101Z",
+   "doneAt": "2026-11-03T19:21:31.611Z",
+   "actualMin": 6,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Commands declared once -> REST + MCP + CLI; rule in shared RULES.md + CLAUDE.md",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T19:21:31.611Z",
+   "doneAt": "2026-11-03T19:21:33.797Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Tests: zero tokens (no LLM imports), ask on/off, default fallback, booking to the right card, picker approval round trip with a fake axHub",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T19:21:33.797Z",
+   "doneAt": "2026-11-03T19:21:36.643Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Phone + desktop screenshots, UI Review item, report _claude/builds/reports/agent-pick.md, THREADS, PR",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T19:21:36.643Z",
+   "doneAt": "2026-11-03T19:55:39.343Z",
+   "actualMin": 34,
+   "done": true
+  }
+ ],
+ "branch": "claude/agent-pick",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 276,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/276"
+ },
+ "landedCommit": "363485d7deb35db4b5b669a636b64bfef1cb5cca",
+ "commits": [
+  "b0d45a8ec6546d386d115bfcbff7e7fdb2483919",
+  "a79be9e97603c73da5a1ac22d10c0707cb5b73ac",
+  "90b0cf05d4ca2ffac62e8e2e7c1f3156eedec895",
+  "038701f1f6bb281b84dc384f6a18d6f85a0da151"
+ ],
+ "mergedAt": "2026-11-04T04:11:51Z",
+ "landedAt": "2026-11-04T04:11:50Z",
+ "files": [
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "_claude/builds/reports/agent-pick.md",
+  "_claude/builds/reports/agent-pick/shots/after/breakroom-assign-to-claude-desktop.png",
+  "_claude/builds/reports/agent-pick/shots/after/breakroom-assign-to-claude-phone.png",
+  "_claude/builds/reports/agent-pick/shots/after/claude-agent-picker-desktop.png",
+  "_claude/builds/reports/agent-pick/shots/after/claude-agent-picker-expanded-desktop.png",
+  "_claude/builds/reports/agent-pick/shots/after/claude-agent-picker-expanded-phone.png",
+  "_claude/builds/reports/agent-pick/shots/after/claude-agent-picker-phone.png",
+  "_claude/builds/reports/agent-pick/shots/after/claude-sessions-settings-desktop.png",
+  "_claude/builds/reports/agent-pick/shots/after/claude-sessions-settings-phone.png",
+  "_claude/builds/reports/agent-pick/shots/shots.json",
+  "_claude/shared/rules/RULES.md",
+  "apps/console-web/plugins/agent-swarm/plugin.json",
+  "apps/console-web/plugins/agent-swarm/server/__init__.py",
+  "apps/console-web/plugins/agent-swarm/swarm.mjs",
+  "apps/console-web/plugins/agent-swarm/test.mjs",
+  "apps/console-web/plugins/agent-swarm/web/cards.tsx",
+  "apps/console-web/plugins/claude-session/README.md",
+  "apps/console-web/plugins/claude-session/help.json",
+  "apps/console-web/plugins/claude-session/hooks.mjs",
+  "apps/console-web/plugins/claude-session/install.mjs",
+  "apps/console-web/plugins/claude-session/plugin.json",
+  "apps/console-web/plugins/claude-session/server/__init__.py",
+  "apps/console-web/plugins/claude-session/server/hub.py",
+  "apps/console-web/plugins/claude-session/test.py",
+  "apps/console-web/plugins/claude-session/uninstall.mjs",
+  "apps/console-web/plugins/claude-session/web/claude-session.css",
+  "apps/console-web/plugins/claude-session/web/index.tsx",
+  "apps/console-web/plugins/claude-session/web/menu.ts",
+  "apps/console-web/plugins/claude-session/web/ui.tsx",
+  "apps/console-web/server/mcp_server.py"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "claude-session",
+   "files": [
+    "apps/console-web/plugins/claude-session/README.md",
+    "apps/console-web/plugins/claude-session/help.json",
+    "apps/console-web/plugins/claude-session/hooks.mjs",
+    "apps/console-web/plugins/claude-session/install.mjs",
+    "apps/console-web/plugins/claude-session/plugin.json",
+    "apps/console-web/plugins/claude-session/server/__init__.py",
+    "apps/console-web/plugins/claude-session/server/hub.py",
+    "apps/console-web/plugins/claude-session/test.py",
+    "apps/console-web/plugins/claude-session/uninstall.mjs",
+    "apps/console-web/plugins/claude-session/web/claude-session.css",
+    "apps/console-web/plugins/claude-session/web/index.tsx",
+    "apps/console-web/plugins/claude-session/web/menu.ts",
+    "apps/console-web/plugins/claude-session/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/agent-pick.md",
+    "_claude/builds/reports/agent-pick/shots/after/breakroom-assign-to-claude-desktop.png",
+    "_claude/builds/reports/agent-pick/shots/after/breakroom-assign-to-claude-phone.png",
+    "_claude/builds/reports/agent-pick/shots/after/claude-agent-picker-desktop.png",
+    "_claude/builds/reports/agent-pick/shots/after/claude-agent-picker-expanded-desktop.png",
+    "_claude/builds/reports/agent-pick/shots/after/claude-agent-picker-expanded-phone.png",
+    "_claude/builds/reports/agent-pick/shots/after/claude-agent-picker-phone.png",
+    "_claude/builds/reports/agent-pick/shots/after/claude-sessions-settings-desktop.png",
+    "_claude/builds/reports/agent-pick/shots/after/claude-sessions-settings-phone.png",
+    "_claude/builds/reports/agent-pick/shots/shots.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-swarm",
+   "files": [
+    "apps/console-web/plugins/agent-swarm/plugin.json",
+    "apps/console-web/plugins/agent-swarm/server/__init__.py",
+    "apps/console-web/plugins/agent-swarm/swarm.mjs",
+    "apps/console-web/plugins/agent-swarm/test.mjs",
+    "apps/console-web/plugins/agent-swarm/web/cards.tsx"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md",
+    "_claude/shared/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/server/mcp_server.py"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261103-14fadefe",
+   "name": "Choose Claude's agent (picker, settings, Assign to Claude)",
+   "status": "approved",
+   "group": "g-20261103-e210ab5f",
+   "url": "/review/r-20261103-14fadefe"
+  },
+  {
+   "id": "r-20261103-85c209cf",
+   "name": "Predicted look: Agent pick: every Claude session runs as the agent Brett assigns",
+   "status": "approved",
+   "group": "g-20261103-d8c5e30e",
+   "url": "/review/r-20261103-85c209cf"
+  },
+  {
+   "id": "r-20261103-6f81b96c",
+   "name": "Predicted look: Agent pick: every Claude session runs as the agent Brett assigns",
+   "status": "approved",
+   "group": "g-20261103-d8c5e30e",
+   "url": "/review/r-20261103-6f81b96c"
+  }
+ ],
+ "cost": {
+  "usd": 10.9709,
+  "estimated": false,
+  "tokens": {
+   "input": 310,
+   "output": 1814,
+   "cacheRead": 31725264,
+   "cacheWrite": 300835
+  }
+ },
+ "report": "_claude/builds/reports/agent-pick.md",
+ "open": [
+  "Sessions call `claude_session_start` / `claude_session_book` because the rule says so; no hook does it for them yet (the codebase-changes Stop hook could book the final cost automatically; worth a small build).",
+  "`deploy/claude-headless.sh` already passes `AXF_AGENT`; it doesn't call `session-start` itself.",
+  "No Android twin (Android on hold); nothing in the kernel changed.",
+  "`_claude/shared/rules/RULES.md` was held by claude-sync at session start (changed on both sides); the rule line is committed here, and the hold still needs Brett's keep-local/keep-hub call."
+ ]
+}

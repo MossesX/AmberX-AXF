@@ -1,7 +1,7 @@
 {
   "schema": "conform-baseline@1",
   "note": "Asset-conformance findings in frozen code (Android on hold). check-theme.mjs fails if a file goes above its count; fix and run --update-baseline to shrink it. New files never get an entry.",
-  "total": 300,
+  "total": 286,
   "files": {
     "apps/console/app/src/main/kotlin/app/views/BoilerplatesView.kt": 21,
     "apps/console/app/src/main/kotlin/app/views/CatalogView.kt": 8,

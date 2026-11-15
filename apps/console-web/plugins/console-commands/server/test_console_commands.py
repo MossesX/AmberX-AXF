@@ -264,7 +264,7 @@ eq(client.post("/api/console/settings", json={"wake": True}, headers={"x-user": 
 client.post("/api/console/bye", json={"client": "woke-0001"})
 r = cc.run({"op": "act", "target": "console.screens", "path": "plan studio", "action": "open"}, ["*"], "Amber", cc.OWNER, wait=cc.WAKE_AFTER_S + 0.5)
 ok(r["ok"] and r["queued"] and r["delivery"]["how"] == "queued", f"still nobody after the wait: answered queued ({r})")
-ok("queued, waiting for the console" in r["message"], "the answer says it is waiting")
+ok("queued, not open yet" in r["message"], "the answer says it is waiting, not opened")
 time.sleep(0.4)
 eq(len(WOKEN), 1, "wake off: AmberX not asked")
 ok("off" in r["delivery"]["wake"]["message"] and "off" in r["message"], f"the answer says waking is off ({r['delivery']})")
@@ -321,6 +321,181 @@ ok(molly and molly[-1]["target"] == "plan-studio", "Molly's console ran it")
 eq(client.get("/api/console/clients").json()["items"][0]["id"], "molly-0001", "the console in front is listed first")
 client.post("/api/console/hello", json={"client": "molly-0001", "host": "Bad Host!", "catalog": CATALOG})
 eq(next(c for c in client.get("/api/console/clients").json()["items"] if c["id"] == "molly-0001").get("host", ""), "", "a malformed host name is dropped")
+
+# ======================================================================== the wake never takes the phone's word for it
+import types  # noqa: E402
+sys.modules.setdefault("axf_server", types.SimpleNamespace(http=None, hub_session=None))
+wk_spec = importlib.util.spec_from_file_location("console_commands_wake", HERE / "wake.py")
+wk = importlib.util.module_from_spec(wk_spec)
+wk_spec.loader.exec_module(wk)  # type: ignore[union-attr]
+said = lambda doc, **kw: wk.outcome({"content": [{"type": "text", "text": json.dumps(doc)}], **kw})  # noqa: E731
+o = said({"url": "u", "opened": False, "notified": True, "overlay": True})
+ok(o["ok"] and not o["opened"] and o["notified"] and "tap" in o["message"].lower(), f"Android held it back: says tap the notification ({o})")
+o = said({"opened": False, "notified": True, "overlay": False})
+ok("Display over other apps" in o["message"], f"names the missing permission ({o})")
+o = said({"data": {"opened": True, "notified": True}})
+ok(o["opened"] and "started" in o["message"], f"a nested answer is read; it says started, never opened on screen ({o})")
+o = said({"opened": False, "notified": False})
+ok(not o["opened"] and not o["notified"] and "off" in o["message"], f"no notification either ({o})")
+o = said({"held": True, "job_id": "j"})
+ok(not o["ok"], "a held call is not a wake")
+o = said({"error": {"message": "device offline"}}, isError=True)
+ok(not o["ok"] and "device offline" in o["message"], "a phone error is passed on")
+# one overlay (Nov 13 2026): the always-on toolbar takes opens directly, and carries the collapse verb
+o = said({"url": "u", "verb": "open", "where": "overlay", "opened": True, "notified": False, "overlay": True})
+ok(o["ok"] and o["opened"] and not o["notified"] and "overlay" in o["message"], f"opened in the overlay, no tap ({o})")
+o = said({"url": "u", "verb": "collapse", "where": "overlay", "collapsed": True, "opened": False})
+ok(o["ok"] and "collapsed" in o["message"], f"collapse verb answered ({o})")
+o = said({"url": "u", "verb": "collapse", "where": "overlay", "collapsed": False, "opened": False, "overlay": False})
+ok(not o["ok"], f"collapse with no toolbar on screen is not ok ({o})")
+
+# ======================================================================== the phone's overlay verbs (overlay.expand / collapse / open)
+WOKEN.clear()
+j = client.post("/api/console/overlay", json={"verb": "expand"}).json()
+ok(j["ok"] and WOKEN[-1][0] == f"{cc.CONSOLE_URL}/?axf-overlay=expand", f"expand rides amberx.open_url with the verb ({WOKEN[-1:]})")
+j = client.post("/api/console/overlay", json={"verb": "collapse"}).json()
+eq(WOKEN[-1][0], f"{cc.CONSOLE_URL}/?axf-overlay=collapse", "collapse too")
+j = client.post("/api/console/overlay", json={"verb": "open", "url": "https://console.amberxai.com/?axf-view=ui-review"}).json()
+ok(j["ok"] and WOKEN[-1][0] == "https://console.amberxai.com/?axf-view=ui-review", "open sends the page itself")
+n = len(WOKEN)
+r = client.post("/api/console/overlay", json={"verb": "open", "url": "https://evil.example/"})
+eq((r.status_code, len(WOKEN)), (400, n), "open refuses a page off Brett's domain, nothing sent")
+r = client.post("/api/console/overlay", json={"verb": "open", "url": "http://console.amberxai.com/"})
+eq(r.status_code, 400, "https only")
+r = client.post("/api/console/overlay", json={"verb": "dance"})
+eq(r.status_code, 400, "unknown verb")
+r = client.post("/api/console/overlay", json={"verb": "expand"}, headers={"x-user": "guest"})
+eq((r.status_code, len(WOKEN)), (403, n), "another user never reaches Brett's phone")
+saved_waker = cc.WAKER
+cc.WAKER = lambda url, browser: (_ for _ in ()).throw(RuntimeError("hub down"))
+j = client.post("/api/console/overlay", json={"verb": "expand"}).json()
+ok(not j["ok"] and "hub down" in j["message"], "a hub failure is an answer, not a crash")
+cc.WAKER = saved_waker
+
+# a wake that reached nobody leaves a tappable console alert (AmberX's watch reads it), cleared on delivery
+alerts: list[dict] = []
+resolved: list[list[str]] = []
+fake_cx = types.ModuleType("console_context")
+fake_cx.raise_alert = lambda a: alerts.append(a) or {}
+fake_cx.resolve_alerts = lambda k: resolved.append(k)
+sys.modules["console_context"] = fake_cx
+cc._fallback_alert("cq-1", "couldn't reach axHub")
+ok(alerts[-1]["severity"] == "warning" and alerts[-1]["link"].endswith("/?axf-cmd=cq-1"), "the fallback alert is loud and opens the waiting command")
+cc._fallback_clear()
+eq(resolved[-1], [cc.FALLBACK_KEY], "and goes away once a console took it")
+eq(cc._how({"picked": False, "wake": {"sent": True}}), "after reconnect", "the phone's yes alone is not a wake")
+eq(cc._how({"picked": True, "wake": None}), "woke via AmberX", "the console that opened from the link is")
+
+# ======================================================================== reliable delivery (console-commands-reliable, Nov 11 2026)
+client.post("/api/console/settings", json={"wake": True, "ttlS": 120})
+for gone in ("late-0001", "molly-0001", "woke-0001"):
+    client.post("/api/console/bye", json={"client": gone})
+cc.LIVE_TRY_S = 0.6
+
+
+def sleepy_console(cid: str, got: list[dict]) -> threading.Thread:
+    """A frozen phone tab: its stream stays open and receives, but it never runs or acks anything."""
+    def loop() -> None:
+        with client.stream("GET", f"/api/console/stream?client={cid}") as st:
+            for line in st.iter_lines():
+                if line.startswith("data: "):
+                    got.append(json.loads(line[6:]))
+    t = threading.Thread(target=loop, daemon=True)
+    t.start()
+    return t
+
+
+def listed() -> list[str]:
+    return [c["id"] for c in svc.run({"op": "list", "target": "console.clients"}, ["*"], "t")["items"]]
+
+
+# a heartbeat from a console the server holds no catalog for (it restarted) asks it to say hello again
+eq(client.post("/api/console/seen", json={"client": "fresh-0001"}).json().get("hello"), True, "seen without a catalog → hello: true")
+client.post("/api/console/hello", json={"client": "fresh-0001", "catalog": CATALOG})
+ok("hello" not in client.post("/api/console/seen", json={"client": "fresh-0001"}).json(), "after hello the beat is just a beat")
+client.post("/api/console/bye", json={"client": "fresh-0001"})
+
+# failover: the console used last is asleep (stream open, never answers) → the next live console gets it
+awake_got: list[dict] = []
+client.post("/api/console/hello", json={"client": "awake-0001", "catalog": CATALOG, "used": True})
+fake_console("awake-0001", answers=awake_got)
+wait_for(lambda: stream_open("awake-0001"))
+time.sleep(0.02)
+sleepy_got: list[dict] = []
+client.post("/api/console/hello", json={"client": "sleep-0001", "device": "phone", "catalog": CATALOG, "used": True})
+sleepy_console("sleep-0001", sleepy_got)
+wait_for(lambda: stream_open("sleep-0001"))
+j = client.post("/api/console/open", json={"screen": "plan studio"}).json()
+eq(j["delivery"]["tried"], ["sleep-0001", "awake-0001"], f"the sleeping console first, then the next live one ({j.get('delivery')})")
+eq((j["status"], j["delivery"]["how"], j["delivery"]["client"]), ("delivered", "after retry", "awake-0001"), "delivered after a retry, and says by whom")
+ok(awake_got and awake_got[-1]["target"] == "plan-studio", "the awake console ran it")
+ok(sleepy_got and sleepy_got[-1]["target"] == "plan-studio", "the sleeping console was sent it first")
+ok("sleep-0001" not in listed(), "a console that didn't answer drops out of console.clients at once")
+j = client.post("/api/console/open", json={"screen": "home"}).json()
+eq((j["status"], j["delivery"]["how"], j["delivery"]["tried"]), ("delivered", "live", ["awake-0001"]), "the next command goes straight to the live console")
+client.post("/api/console/seen", json={"client": "sleep-0001", "used": True})
+ok("sleep-0001" in listed(), "a beat brings it back")
+
+# the server's own keep-alive never counts as the console being alive
+cc.KEEPALIVE_S = 0.1
+with cc._lock:
+    cc._clients["sleep-0001"]["lastSeen"] = cc._now() - cc.STALE_S - 5
+    stale_at = cc._clients["sleep-0001"]["lastSeen"]
+time.sleep(0.5)
+with cc._lock:
+    eq(cc._clients["sleep-0001"]["lastSeen"], stale_at, "keep-alives down a frozen tab's open stream don't make it live")
+ok("sleep-0001" not in listed(), "so it stays out of console.clients")
+cc.KEEPALIVE_S = 15.0
+
+# nobody answers: a navigate-only command is queued and AmberX opens the console now; the answer says pending
+client.post("/api/console/bye", json={"client": "awake-0001"})
+client.post("/api/console/seen", json={"client": "sleep-0001", "used": True})
+woken_before = len(WOKEN)
+r = cc.run({"op": "act", "target": "console.screens", "path": "plan studio", "action": "open"}, ["*"], "Amber", cc.OWNER, wait=1.0)
+eq((r["ok"], r["status"], r["queued"], r["delivery"]["tried"]), (True, "pending", True, ["sleep-0001"]), f"truthful: pending, queued, who was tried ({r.get('delivery')})")
+ok("not shown yet" in r["message"], f"the answer never says opened ({r['message']})")
+ok(wait_for(lambda: len(WOKEN) > woken_before, 5), "AmberX asked to open the console straight after the tries")
+ok(WOKEN[-1][0].endswith(f"?axf-cmd={r['delivery']['id']}"), "the wake link carries the queued command")
+# the sleeping tab wakes in time and does it after all: its late ack settles the queued copy (it never runs twice)
+mid = sleepy_got[-1]["id"]
+eq(client.post("/api/console/ack", json={"client": "sleep-0001", "id": mid, "ok": True, "message": "opened Plan Studio"}).json().get("late"), True, "a late ack is recorded")
+q = next(x for x in client.get("/api/console/queue").json()["items"] if x["id"] == r["delivery"]["id"])
+eq(q["state"], "delivered", "the queued copy is settled by the late ack")
+# a tab that skipped a command because it got it too late: not an answer
+eq(client.post("/api/console/ack", json={"client": "sleep-0001", "id": "nope", "ok": False, "skipped": True}).json().get("skipped"), True, "a skipped ack is not counted")
+
+# a command that changes data is never queued or re-sent when nobody answers
+client.post("/api/console/seen", json={"client": "sleep-0001", "used": True})
+before_q = len(client.get("/api/console/queue").json()["items"])
+r = cc.run({"op": "act", "target": "console.actions", "path": "assets.random", "action": "run"}, ["*"], "Amber", cc.OWNER, wait=1.0)
+eq((r["ok"], r["status"], r.get("queued")), (False, "failed", None), f"a data action nobody answered fails honestly ({r.get('message')})")
+ok("not re-sent" in r["message"], "and says it was not re-sent")
+eq(len(client.get("/api/console/queue").json()["items"]), before_q, "nothing queued for it")
+
+# focus: a build id or a screen + tab opens the Build orchestrator on that build or tab
+class FakeFocus:  # what the Build orchestrator provides as console-focus@1
+    def resolve(self, path: str):  # type: ignore[no-untyped-def]
+        if path.startswith("build:"):
+            return {"screen": "build-orchestrator", "focus": path[6:], "explicit": True}
+        if path in ("console-commands-reliable", "home"):
+            return {"screen": "build-orchestrator", "focus": path, "explicit": False}
+        return None
+
+
+plugin_services.provide("console-focus@1", FakeFocus(), folder="build-orchestrator")
+client.post("/api/console/bye", json={"client": "sleep-0001"})
+client.post("/api/console/hello", json={"client": "awake-0001", "catalog": CATALOG, "used": True})
+wait_for(lambda: stream_open("awake-0001"))
+j = client.post("/api/console/open", json={"screen": "build:console-commands-reliable"}).json()
+eq((j["status"], awake_got[-1]["target"], awake_got[-1].get("focus")), ("delivered", "build-orchestrator", "console-commands-reliable"), f"build:<id> → the orchestrator focused on it ({j.get('delivery')})")
+j = client.post("/api/console/open", json={"screen": "console-commands-reliable"}).json()
+eq((awake_got[-1]["target"], awake_got[-1].get("focus")), ("build-orchestrator", "console-commands-reliable"), "a bare build id too")
+j = client.post("/api/console/open", json={"screen": "home"}).json()
+eq((awake_got[-1]["target"], awake_got[-1].get("focus")), ("home", None), "an exact screen id wins over a build of the same name")
+j = client.post("/api/console/open", json={"screen": "build-orchestrator pending"}).json()
+eq((awake_got[-1]["target"], awake_got[-1].get("focus"), j.get("focus")), ("build-orchestrator", "pending", "pending"), "screen + tab")
+j = svc.run({"op": "act", "target": "console.screens", "path": "build-orchestrator", "action": "open", "input": {"focus": "queue"}}, ["*"], "mcp")
+eq(awake_got[-1].get("focus"), "queue", "input.focus")
 
 print(f"✓ console commands server — {checks} checks", flush=True)
 os._exit(0)  # the fake consoles' streams are still open

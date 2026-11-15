@@ -1,0 +1,261 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-follow-amber",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:30Z",
+ "build": {
+  "id": "follow-amber",
+  "title": "Follow Amber: the console opens what Amber talks about, and axHub approvals pop up in the console",
+  "profile": "all",
+  "category": "Console",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "whenever Amber mentions a console screen, dialog, build, setting or plugin she calls console_show and the console opens it, focused and highlighted; every axHub held/confirm call for Brett pops up as an approval dialog in the console (title, description, collapsible call, countdown, one-tap Approve / Deny, queue). Off: nothing auto-opens. Navigation tools never wait on a veto. Agent: Reel Rhonda.",
+  "verbatim": false,
+  "at": "2026-11-03T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-follow-amber",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-03T18:55:56.043Z",
+   "endedAt": "2026-11-03T20:27:36.316Z",
+   "exit": 0,
+   "costUsd": 12.9678
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Server: follow-amber plugin: Follow Amber switch state (owner-wide), client stream, show (no-op when off; opens through console-commands@1), approval nudge, capability follow-amber@1",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T18:55:56.043Z",
+   "doneAt": "2026-11-03T19:05:04.788Z",
+   "actualMin": 9,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "MCP: console_show + console_follow tools; navigation-only console tools annotated read-only so axHub runs them at once (no veto)",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T19:05:04.788Z",
+   "doneAt": "2026-11-03T19:06:19.219Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Web: Follow Amber switch (Settings > Plugins > Follow Amber), right-click item on every target, banner chip, client that opens + highlights what Amber names",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T19:06:19.219Z",
+   "doneAt": "2026-11-03T19:11:06.483Z",
+   "actualMin": 5,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Web: approval pop-up dialog: queue, title + description, collapsible call, veto countdown, one-tap Approve / Deny through the signed-in hub path",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T19:11:06.483Z",
+   "doneAt": "2026-11-03T19:11:07.806Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Tests: show -> open + highlight, switch off = nothing opens, nav tools allow, approval event -> dialog, approve/deny round trip with a fake axHub",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T19:11:07.806Z",
+   "doneAt": "2026-11-03T19:13:36.861Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Rules + docs: shared RULES.md, CLAUDE.md, CONTROL.md, help.json, lifecycle files",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-11-03T19:13:36.861Z",
+   "doneAt": "2026-11-03T19:14:25.261Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Phone + desktop screenshots, UI Review item, report _claude/builds/reports/follow-amber.md, THREADS, PR",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T19:14:25.261Z",
+   "doneAt": "2026-11-03T20:26:39.090Z",
+   "actualMin": 72,
+   "done": true
+  }
+ ],
+ "branch": "claude/follow-amber",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 280,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/280"
+ },
+ "landedCommit": "ab4ffe2005b592d45e485ea1a932386b8cc08270",
+ "commits": [
+  "2fd62b4556baa7cbe89fb142f9255159f45b8970",
+  "2ed7e636a5f63519c481b7afbb1d32d6d15d5580",
+  "2ae4a5aa46abf68e2e4d1d905602630b0f9fe50b"
+ ],
+ "mergedAt": "2026-11-04T03:44:30Z",
+ "landedAt": "2026-11-04T03:44:30Z",
+ "files": [
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "_claude/builds/reports/follow-amber.md",
+  "_claude/builds/reports/follow-amber/shots.json",
+  "_claude/builds/reports/follow-amber/shots/after/follow-amber-approval-desktop.png",
+  "_claude/builds/reports/follow-amber/shots/after/follow-amber-approval-frame-desktop.png",
+  "_claude/builds/reports/follow-amber/shots/after/follow-amber-approval-frame-phone.png",
+  "_claude/builds/reports/follow-amber/shots/after/follow-amber-approval-phone.png",
+  "_claude/builds/reports/follow-amber/shots/after/follow-amber-settings-desktop.png",
+  "_claude/builds/reports/follow-amber/shots/after/follow-amber-settings-phone.png",
+  "_claude/builds/reports/follow-amber/shots/after/follow-amber-show-desktop.png",
+  "_claude/builds/reports/follow-amber/shots/after/follow-amber-show-phone.png",
+  "_claude/shared/rules/RULES.md",
+  "apps/console-web/plugins/follow-amber/help.json",
+  "apps/console-web/plugins/follow-amber/hooks.mjs",
+  "apps/console-web/plugins/follow-amber/install.mjs",
+  "apps/console-web/plugins/follow-amber/plugin.json",
+  "apps/console-web/plugins/follow-amber/server/__init__.py",
+  "apps/console-web/plugins/follow-amber/test.mts",
+  "apps/console-web/plugins/follow-amber/test.py",
+  "apps/console-web/plugins/follow-amber/uninstall.mjs",
+  "apps/console-web/plugins/follow-amber/web/check.mts",
+  "apps/console-web/plugins/follow-amber/web/core.ts",
+  "apps/console-web/plugins/follow-amber/web/follow-amber.css",
+  "apps/console-web/plugins/follow-amber/web/index.tsx",
+  "apps/console-web/plugins/follow-amber/web/menu.ts",
+  "apps/console-web/server/mcp_server.py",
+  "apps/console-web/server/test_mcp_tools.py",
+  "framework/spec/CONTROL.md"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "follow-amber",
+   "files": [
+    "apps/console-web/plugins/follow-amber/help.json",
+    "apps/console-web/plugins/follow-amber/hooks.mjs",
+    "apps/console-web/plugins/follow-amber/install.mjs",
+    "apps/console-web/plugins/follow-amber/plugin.json",
+    "apps/console-web/plugins/follow-amber/server/__init__.py",
+    "apps/console-web/plugins/follow-amber/test.mts",
+    "apps/console-web/plugins/follow-amber/test.py",
+    "apps/console-web/plugins/follow-amber/uninstall.mjs",
+    "apps/console-web/plugins/follow-amber/web/check.mts",
+    "apps/console-web/plugins/follow-amber/web/core.ts",
+    "apps/console-web/plugins/follow-amber/web/follow-amber.css",
+    "apps/console-web/plugins/follow-amber/web/index.tsx",
+    "apps/console-web/plugins/follow-amber/web/menu.ts"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/follow-amber.md",
+    "_claude/builds/reports/follow-amber/shots.json",
+    "_claude/builds/reports/follow-amber/shots/after/follow-amber-approval-desktop.png",
+    "_claude/builds/reports/follow-amber/shots/after/follow-amber-approval-frame-desktop.png",
+    "_claude/builds/reports/follow-amber/shots/after/follow-amber-approval-frame-phone.png",
+    "_claude/builds/reports/follow-amber/shots/after/follow-amber-approval-phone.png",
+    "_claude/builds/reports/follow-amber/shots/after/follow-amber-settings-desktop.png",
+    "_claude/builds/reports/follow-amber/shots/after/follow-amber-settings-phone.png",
+    "_claude/builds/reports/follow-amber/shots/after/follow-amber-show-desktop.png",
+    "_claude/builds/reports/follow-amber/shots/after/follow-amber-show-phone.png"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md",
+    "_claude/shared/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/server/mcp_server.py",
+    "apps/console-web/server/test_mcp_tools.py"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/CONTROL.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261103-758c9fad",
+   "name": "Follow Amber: switch, approval pop-up, console_show",
+   "status": "approved",
+   "group": "g-20261103-6e4cd2d5",
+   "url": "/review/r-20261103-758c9fad"
+  },
+  {
+   "id": "r-20261103-e113f7eb",
+   "name": "Predicted look: Follow Amber: the console opens what Amber talks about, and axHub approvals pop up in the console",
+   "status": "approved",
+   "group": "g-20261103-d8c5e30e",
+   "url": "/review/r-20261103-e113f7eb"
+  }
+ ],
+ "cost": {
+  "usd": 12.9678,
+  "estimated": false,
+  "tokens": {
+   "input": 366,
+   "output": 2088,
+   "cacheRead": 39675603,
+   "cacheWrite": 330135
+  }
+ },
+ "report": "_claude/builds/reports/follow-amber.md",
+ "open": [
+  "Desktop one-tap needs the axHub change above; frame-ancestors on the hub also needs the console origin.",
+  "The right-click item sits at the end of the console's long default menu (it is on every target).",
+  "Approve / Deny are dialog buttons, not toolbar buttons, so the toolbars build's tap-to-confirm doesn't touch them; they carry `data-axf-one-tap` in case that build wants an explicit opt-out marker.",
+  "Shared `RULES.md` is held in a claude-sync conflict from before this build (new on both sides); the repo copy has the rule, the hub copy takes it once Brett picks which copy to keep.",
+  "Android twin: not built (Android on hold); the console is web only."
+ ]
+}

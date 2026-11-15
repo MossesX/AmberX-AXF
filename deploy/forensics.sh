@@ -11,7 +11,7 @@ OUT=/root/forensics.txt
 SINCE="${SINCE:-2026-10-16}"   # the console's file-read bug shipped Oct 16 2026 (fixed Oct 18 19:53 ET)
 FLAGS=()
 flag() { FLAGS+=("$*"); }
-mask() { sed -E 's/(ghp_|gho_|ghs_|github_pat_)[A-Za-z0-9_]+/\1***/g; s/(sk-ant-[a-z0-9]+-)[A-Za-z0-9_-]+/\1***/g; s/((TOKEN|SECRET|KEY|PASS(WORD)?|PASSWD)[A-Z_]*[=:][[:space:]]*)[^[:space:]"'"'"']+/\1***/Ig; s/(Bearer )[A-Za-z0-9._~+\/=-]+/\1***/g'; }
+mask() { sed -E 's/(ghp_|gho_|ghs_|github_pat_)[A-Za-z0-9_]+/\1***/g; s/(sk-ant-)[A-Za-z0-9_-]+/\1***/g; s/((TOKEN|SECRET|KEY|PASS(WORD)?|PASSWD)[A-Z_]*[=:][[:space:]]*)[^[:space:]"'"'"']+/\1***/Ig; s/(Bearer )[A-Za-z0-9._~+\/=-]+/\1***/g'; }
 sec() { printf '\n===== %s =====\n' "$*"; }
 
 [ -f "$R/etc/os-release" ] || { echo "No server disk at $R (expected $R/etc/os-release). Run: lsblk; mount | grep /mnt"; exit 1; }

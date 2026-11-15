@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Container, Icon, Slot, useRuntime } from '../axf/react';
+import { Button, Chip, Container, Icon, PriorityTag, Slot, useRuntime } from '../axf/react';
 import * as api from '../api';
 import { TokenDialog as ApiTokenDialog } from '../axf/libs/apiclient';
 import * as core from '../axf/plan/build-queue-core.mjs';
@@ -143,7 +143,8 @@ export function BuildManager() {
   const [busy, setBusy] = useState(false);
   useEffect(() => { loadQueue(); }, []);
   const view = useMemo(() => (loaded && state !== undefined ? core.computeQueue(features as unknown as QFeature[], state) : null), [features, loaded, state]);
-  if (!view) return <div className="fx-empty">Loading the build queue…</div>;
+  // the server's real queue (agent-slots: what runs now and what waits for a slot) sits on top; the plan's order is below
+  if (!view) return <div className="fx-stack fx-stack--lg"><Slot name="build.queue.top" /><div className="fx-empty">Loading the build queue…</div></div>;
 
   const run = async (a: Act) => { setBusy(true); try { return await act(a, log); } finally { setBusy(false); } };
   const done = view.steps.filter((s) => s.state === 'done' || s.state === 'rework');
@@ -173,6 +174,7 @@ export function BuildManager() {
 
   return (
     <div className="fx-stack fx-stack--lg">
+      <Slot name="build.queue.top" />
       <header className="fx-pagehead">
         <div>
           <p className="fx-eyebrow">Build queue · {view.steps.length} steps · {done.length} built · {remaining.length} to go{view.updatedAt ? ` · updated ${view.updatedAt.slice(0, 16).replace('T', ' ')}` : ''}</p>
@@ -270,6 +272,7 @@ function StepRow({ s, open, onToggle, busy, run, copy, draggable, onDragStart, o
         <button data-fx-row className="bm-step__title" onClick={onToggle} aria-expanded={open}>
           <Icon name={open ? 'chevron-down' : 'chevron-right'} size={14} />
           <span className="fx-grow"><span>{s.title}</span><span className="fx-muted fx-small fx-mono"> {s.id}</span></span>
+          <PriorityTag build={s.id} />
         </button>
         <span className={`bm-state is-${s.state}`}>{STATE_LABEL[s.state]}</span>
         <ModelChip model={s.model} reason={s.modelReason} />
@@ -350,7 +353,7 @@ export function BuildSummaryCard() {
       {!view ? <p className="fx-muted">Loading…</p> : (
         <table className="fx-table"><tbody>
           <tr><th>Built</th><td>{(view.counts.done ?? 0) + (view.counts.rework ?? 0)}/{view.steps.length} steps</td></tr>
-          <tr><th>Next</th><td>{next ? <>{next.position}. {next.title} <ModelChip model={next.model} reason={next.modelReason} /></> : '—'}</td></tr>
+          <tr><th>Next</th><td>{next ? <>{next.position}. {next.title} <PriorityTag build={next.id} /> <ModelChip model={next.model} reason={next.modelReason} /></> : '—'}</td></tr>
           <tr><th>Needs attention</th><td>{view.rework ? <Chip tone="danger">{view.rework} rework</Chip> : null} {view.violations || view.dirty ? <Chip tone="warning">reprocess</Chip> : null}{!view.rework && !view.violations && !view.dirty ? 'nothing' : null}</td></tr>
         </tbody></table>
       )}

@@ -135,7 +135,7 @@ function AreaView({ ws, area, ids, zone, renderPane, emptyHint }: { ws: Workspac
   if (!cur) return <section className={`axf-ws-area axf-ws-area--${area} is-empty`} data-axf-drop={`${zone}:area`} data-axf-drop-id={area}><div className="axf-ws-empty">{emptyHint ?? <><Icon name="layout" size={20} /><span>Drop a pane tab here.</span></>}</div></section>;
   return (
     <section className={`axf-ws-area axf-ws-area--${area}`} data-axf-drop={`${zone}:area`} data-axf-drop-id={area}>
-      <div className="axf-ws-tabs" role="tablist">
+      <div className="axf-ws-tabs" role="tablist" aria-label="Workspace panes" data-axf-tab-group={`workspace.${ws.id}`} data-fx-ctx-target="tab-group" data-fx-ctx-payload={`workspace.${ws.id}`}>
         {ids.map((id) => {
           const pd = ws.pane(id)!;
           return (

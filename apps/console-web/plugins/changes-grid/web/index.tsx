@@ -6,7 +6,7 @@
  * expands to its details (a change's whole entry is fetched on first expand). Filter, search, sort. Stores nothing.
  */
 import { Fragment, useEffect, useMemo, useState } from 'react';
-import { Button, Chip, IconButton, ModelBadge, Segmented } from '@console/axf/react';
+import { Button, Chip, IconButton, ModelBadge, PriorityTag, Segmented } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import * as api from '@console/api';
 import { pluginFetch } from '@console/plugins';
@@ -136,7 +136,7 @@ function GridView() {
                     <td className="axp-changes-grid__name"><strong>{r.title}</strong><span className="fx-small fx-muted axp-changes-grid__meta">{formatWhen(r.at)} · {type}{r.model ? ` · ${r.model}` : ''}</span></td>
                     <td className="fx-small axp-changes-grid__wide" style={{ whiteSpace: 'nowrap' }}>{formatWhen(r.at)}</td>
                     <td className="axp-changes-grid__wide"><Chip>{type}</Chip></td>
-                    <td><Chip tone={statusTone(r.status)}>{r.status}</Chip></td>
+                    <td><Chip tone={statusTone(r.status)}>{r.status}</Chip> <PriorityTag build={r.build} /></td>
                     <td className="axp-changes-grid__wide">{r.model ? <ModelBadge model={r.model} /> : <span className="fx-muted fx-small">—</span>}</td>
                     <td className="axp-changes-grid__wide"><RowHookButtons rowRef={{ kind: r.source === 'change' ? 'change' : 'plan', id: r.refId }} /></td>
                   </tr>

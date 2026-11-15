@@ -53,7 +53,7 @@ export function micLease(): MicLease {
 }
 
 /** Who holds the mic, for people: "Dictation is using the microphone". */
-export const HOLDER_LABEL: Record<string, string> = { dictation: 'Dictation', 'voice-command': 'Speak a command', 'agent-voice': 'The Assistant microphone', notes: 'Voice notes' };
+export const HOLDER_LABEL: Record<string, string> = { dictation: 'Dictation', 'voice-command': 'Speak a command', 'agent-voice': 'The Assistant microphone', notes: 'Voice notes', companion: 'Gizmo talk mode' };
 
 /** Runs `fn` while `owner` holds the microphone lease; throws a plain message when someone else has it. */
 export async function withMic<T>(owner: string, fn: () => Promise<T>, ttlMs = DEFAULT_TTL): Promise<T> {

@@ -24,7 +24,7 @@ import type { AxfWebLibrary } from './axf/react/library';
 import { Button, Note } from './axf/react';
 import { authHeaders } from './axf/libs/apiclient';
 import { consoleTokens } from './api';
-import { CORE_PLUGINS, evictions, KNOWN_BANNERS, idlePicks, LAZY_DEFAULTS, modeOf, normalizeLazyConfig, startupList, touch, type LazyConfig, type LazyMode, type StartReason, type UsageStat } from './lazyEngine';
+import { CORE_PLUGINS, evictions, importOnce, isChunkLoadError, KNOWN_BANNERS, idlePicks, LAZY_DEFAULTS, modeOf, normalizeLazyConfig, startupList, touch, type LazyConfig, type LazyMode, type StartReason, type UsageStat } from './lazyEngine';
 
 type WebModule = { plugin?: AxfWebLibrary };
 
@@ -153,6 +153,10 @@ class PluginLoader {
 
   readonly folders = [...importers.keys()];
 
+  /** A plugin chunk failed to load twice: the console was redeployed under this page (its chunk names changed). */
+  stale = false;
+  markStale() { if (!this.stale) { this.stale = true; this.bump(); } }
+
   /* --- store for React --- */
   subscribe = (f: () => void) => { this.listeners.add(f); return () => { this.listeners.delete(f); }; };
   version = () => this.ver;
@@ -271,12 +275,13 @@ class PluginLoader {
     if (!imp) return Promise.reject(new Error(`no web part for ${folder}`));
     const t0 = performance.now();
     this.errors.delete(folder);
-    const p = imp().then((m) => {
+    const p = importOnce(imp).then((m) => {
       this.loadMs.set(folder, Math.round(performance.now() - t0));
       this.accept(folder, m);
       if (!this.errors.has(folder)) { this.install(folder); void this.keepOffline(folder); }
     }, (e: unknown) => {
       this.errors.set(folder, `couldn't load: ${(e as Error)?.message ?? e}`);
+      if (isChunkLoadError(e)) this.markStale();
     }).finally(() => { this.pending.delete(folder); this.bump(); });
     this.pending.set(folder, p);
     this.bump();
@@ -507,6 +512,9 @@ function idle(f: () => void) {
 
 export const loader = new PluginLoader();
 
+// Vite's own preload helper fails the same way when a redeploy removed a chunk's CSS / deps.
+if (typeof window !== 'undefined') window.addEventListener('vite:preloadError', () => loader.markStale());
+
 if (import.meta.hot) {
   globalThis.addEventListener(HOT_EVENT, (e) => {
     const d = (e as CustomEvent<{ folder: string; exports: WebModule }>).detail;
@@ -532,12 +540,25 @@ function LazyCall({ folder, path, args }: { folder: string; path: string[]; args
       <div className="axf-lazy">
         <Note tone="danger">{folder}: {err}</Note>
         <Button icon="refresh" onClick={() => void loader.request(folder)}>Retry</Button>
+        {loader.stale && <Button tone="primary" icon="refresh" onClick={() => globalThis.location.reload()}>Reload for the new version</Button>}
       </div>
     );
   }
   const real = loader.isInstalled(folder) ? at(loader.library(folder), path) : undefined;
   if (typeof real === 'function') return (real as (...a: unknown[]) => ReactNode)(...args);
   return <div className="axf-lazy" role="status" aria-busy="true"><span className="fx-muted">Loading {folder}…</span></div>;
+}
+
+/** The "New version, reload" banner: shown once a plugin chunk couldn't load twice (the console was redeployed). */
+export function NewVersionNotice(): ReactNode {
+  useLoaderVersion();
+  if (!loader.stale) return null;
+  return (
+    <div className="axf-new-version" role="alert">
+      <Note tone="warning">New version of the console: part of it couldn't load until you reload.</Note>
+      <Button tone="primary" icon="refresh" onClick={() => globalThis.location.reload()}>Reload</Button>
+    </div>
+  );
 }
 
 /** Counts a use while a plugin's page, dialog, tab or settings panel is on screen (frecency + never evicted while shown). */

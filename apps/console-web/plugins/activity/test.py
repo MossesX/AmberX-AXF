@@ -376,8 +376,8 @@ hdir = Path(tempfile.mkdtemp(prefix="axf-activity-holds-"))
 hfile = hdir / "holds.json"
 hfile.write_text(json.dumps({"holds": [
     {"id": "hold:x", "title": "Update the Android framework", "pending": "android-x", "since": T,
-     "actions": [{"label": "Continue", "icon": "play", "action": "build-manager.start:pending%3Aandroid-x"},
-                 {"label": "Bad", "action": "javascript:alert(1) x"}, {"label": "Details", "action": "build-manager.open:pending%3Aandroid-x"}]},
+     "actions": [{"label": "Continue", "icon": "play", "action": "build-orchestrator.start:android-x"},
+                 {"label": "Bad", "action": "javascript:alert(1) x"}, {"label": "Details", "action": "build-orchestrator.open:android-x"}]},
     {"id": "not-a-hold", "title": "ignored"}]}))
 status = {"android-x": "pending"}
 hf = feed_mod.Feed(hdir / "data", ROOT, holds_file=hfile, pending_status=lambda pid: status.get(pid, "missing"), now=lambda: NOW[0])
@@ -390,7 +390,7 @@ check(any(i["id"] == "hold:x" and i["state"] == "held" for i in hf.snapshot()["i
 status["android-x"] = "unsafe"
 check(any(i["id"] == "hold:x" for i in hf.snapshot()["items"]), "still held while its pending build is unsafe")
 r = hf.continue_item("hold:x", "console")
-check(r["action"] == "build-manager.start:pending%3Aandroid-x", "Continue hands back the first button's action")
+check(r["action"] == "build-orchestrator.start:android-x", "Continue hands back the first button's action")
 c2 = [i for i in hf.snapshot()["items"] if i["id"] == "hold:x"]
 check(c2 and c2[0]["state"] == "done" and "actions" not in c2[0], "after Continue it reads Done (no buttons), on every device")
 check(oct(os.stat(hdir / "data" / "continued.json").st_mode)[-3:] == "600", "continued list is 0600")

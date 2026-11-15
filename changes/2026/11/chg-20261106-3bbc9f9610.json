@@ -1,0 +1,76 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261106-3bbc9f9610",
+  "createdAt": "2026-11-06T19:01:58.042Z",
+  "updatedAt": "2026-11-06T19:07:22.556Z",
+  "kind": "build",
+  "title": "# Build savings-lean: step s1 of 3 (fresh session) Handoff: 0/3 steps done · branch main.",
+  "asked": "# Build savings-lean: step s1 of 3 (fresh session) Handoff: 0/3 steps done · branch main. ## Do this now - s1 [opus] Write notes/a.md with the sum of the numbers in src/a.txt ## Files for this step Read these; do not explore the repo beyond them unless one of them sends you there. - src/a.txt - notes/a.md Do only that, commit, mark it done with `node framework/cli/build-progress.mjs step <stepId> done --note \"<one line for the next session>\"`, then finish. The next step gets its own fresh session. ## The build's brief (for context) # Build savings-lean Do these three small steps in order: s1 write notes/a.md with the sum of the numbers in src/a.txt; s2 write notes/b.md with the largest number in src/b.txt; s3 write notes/c.md with the line count of src/c.txt. Mark each done with build-progress as you finish. No branch, no PR. Model switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first. Progress: this build's progress file is the console's view of where you are. After each step run `node framework/cli/build-progress.mjs step <stepId> done --note \"<one line>\"` (and `step <next> running` when you start one; `note \"…\"`, `link --branch <b> --pr <n>`, `status blocked --note \"why\"` when stuck). It is a local file write: carry straight on. Never stop to update the console, the orchestrator, THREADS.md or the build log between steps; the reconciler folds the file into the builds store by itself. AXF_BUILD_ID=savings-lean is set for you.",
+  "repos": [],
+  "model": "opus",
+  "who": {
+    "session": "b91d107a-18d",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "cancelled",
+    "summary": "no change: chain-control savings test in a scratch folder",
+    "branch": "main",
+    "commits": [
+      {
+        "sha": "9d89731"
+      }
+    ],
+    "filesChanged": 1,
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "cancelled",
+  "status": "failed",
+  "buildRef": {
+    "kind": "plan",
+    "id": "savings-lean"
+  },
+  "surface": "headless",
+  "startedAt": "2026-11-06T19:01:58.042Z",
+  "finishedAt": "2026-11-06T19:02:06.611Z",
+  "lastSeenAt": "2026-11-06T19:02:06.408Z",
+  "estimate": {
+    "minutes": 2,
+    "costUsd": 0.28
+  },
+  "actual": {
+    "minutes": 5,
+    "costUsd": 0.1544,
+    "inputTokens": 6,
+    "outputTokens": 969,
+    "cacheReadTokens": 79243,
+    "cacheWriteTokens": 23838,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "branch": "main",
+  "areas": [
+    "notes/a.md"
+  ],
+  "progress": 1,
+  "resume": {
+    "folder": "/tmp/cc-sav/savings-lean",
+    "branch": "main",
+    "head": "9d897311c7e15c9a4d8929a952efbb7060bee3b2",
+    "pushed": false,
+    "dirty": 5,
+    "files": [
+      "_claude/builds/",
+      "brief.md",
+      "o.jsonl",
+      "o.log",
+      "src/"
+    ],
+    "at": "2026-11-06T19:02:08.464Z"
+  }
+}

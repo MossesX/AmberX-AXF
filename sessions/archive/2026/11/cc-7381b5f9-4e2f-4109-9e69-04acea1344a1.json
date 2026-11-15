@@ -1,0 +1,76 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-7381b5f9-4e2f-4109-9e69-04acea1344a1",
+ "source": "claude-code",
+ "sessionId": "7381b5f9-4e2f-4109-9e69-04acea1344a1",
+ "project": "other",
+ "title": "hi",
+ "startedAt": "2026-11-06T18:48:09.465Z",
+ "endedAt": "2026-11-06T18:48:17.713Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.319",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/assistant-chat-mode-r4",
+  "repo": "",
+  "branch": "claude/assistant-chat-mode-r4"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-06T18:48:09.932Z",
+   "kind": "prompt",
+   "text": "hi",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 2,
+    "output": 686,
+    "cacheRead": 49817,
+    "cacheWrite": 5850,
+    "thinking": 381
+   },
+   "costUsd": 0.0529,
+   "costEstimated": false,
+   "seconds": 8,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": "Yo Brett, Amber here. What's good, kid? Two things came up at startup that you should know about: - **Builds live is jammed:** 6 status changes ain't on main yet. Build `token-usage-log-accounts-plan-studio-control-small-steps` has duplicate step uids (steps 55-57), so the merged store fails valida…"
+  }
+ ],
+ "files": [],
+ "changeIds": [],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 2,
+  "output": 686,
+  "cacheRead": 49817,
+  "cacheWrite": 5850,
+  "thinking": 381,
+  "costUsd": 0.0529,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0.0705
+ },
+ "ingestedAt": "2026-11-06T18:48:17.926Z"
+}

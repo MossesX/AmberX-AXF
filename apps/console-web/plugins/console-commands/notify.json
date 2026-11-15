@@ -1,0 +1,17 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "console.wake-fallback",
+      "label": "Tap to open the Dev Console",
+      "group": "console",
+      "app": "console",
+      "source": "Console commands",
+      "description": "Amber wanted to show something but the phone couldn't be woken. The alert's tap opens the console; it clears once the console is open.",
+      "match": {
+        "source": "console",
+        "keyPrefix": "console:wake-fallback"
+      }
+    }
+  ]
+}

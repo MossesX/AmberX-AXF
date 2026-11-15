@@ -1,0 +1,6 @@
+[
+  { "name": "builds-all-profiles", "steps": [ {"search": "Builds"}, {"wait": 3500} ], "viewports": ["phone", "desktop"] },
+  { "name": "switcher-menu", "steps": [ {"search": "Builds"}, {"wait": 3500}, {"click": "text=/^All profiles · \\d+/"}, {"wait": 1200} ], "viewports": ["phone", "desktop"] },
+  { "name": "builds-filtered-current", "steps": [ {"search": "Builds"}, {"wait": 3500}, {"click": "text=/^All profiles · \\d+/"}, {"wait": 900}, {"click": "text=Show together"}, {"wait": 500}, {"click": ".fx-ctx >> text=/^Current$/"}, {"wait": 2500} ], "viewports": ["phone", "desktop"] },
+  { "name": "switcher-settings", "steps": [ {"search": "Profile switcher"}, {"wait": 2500} ], "viewports": ["phone", "desktop"] }
+]

@@ -5,7 +5,7 @@
  *
  * Everything that starts `claude -p` (deploy/claude-headless.sh, the agent swarm runner, orchestrator launches through
  * that script, axHub vps.build_start) asks here first. A start that fits takes a slot at once; one that doesn't joins
- * the queue (FIFO within its priority: boss, urgent, normal, low) and starts by itself when a slot frees and memory
+ * the queue (FIFO within its priority: boss, urgent, high, normal, low) and starts by itself when a slot frees and memory
  * allows. Sessions that finished and only wait to close don't count, and are closed after `closeFinishedAfterSec`
  * (their logs stay). Heavy steps (pnpm/vite builds, docker node:22 test runs, Playwright) take a second, smaller lock
  * (`heavy -- <cmd>`).
@@ -16,22 +16,32 @@
  * only judged on the host that started an entry, so the console never drops the VPS's sessions.
  *
  *   node framework/cli/agent-slots.mjs status [--json]           slots used / cap, the queue, heavy lock, memory
- *   … enqueue --name n [--kind headless|swarm] [--priority boss|urgent|normal|low] [--pid N] [--cwd d] [--agent id] [--json|--sh]
+ *   … enqueue --name n [--kind headless|swarm] [--priority boss|urgent|high|normal|low] [--build id] [--pid N] [--cwd d] [--agent id] [--json|--sh]
  *   … wait <id> [--pid N]          block until the entry starts (exit 0) or is cancelled (exit 4)
  *   … claim <id>                   one try: exit 0 started, 3 still waiting, 4 gone
  *   … bind <id> --pid N [--session s] · finish <id> [--exit N] · release <id>
  *   … cancel <id> · up <id>        queue actions (the console's Builds page)
+ *   … reprioritise <build> <level> a build's priority changed: its waiting entries follow it (Move up still wins)
  *   … settings [--json] · set key=value… | set --json '{…}' · get <key>
  *   … heavy [--label l] -- <cmd…>  run a heavy step under the test/build lock
  *   … sweep                        close finished tmux sessions, count unregistered axf-* ones
+ *
+ * Hard limit (build-limit@1, Nov 12 2026): framework/cli/build-limit.mjs counts what really runs on the host and refuses
+ * the N+1st build whatever this queue thinks. Here maxAgents is capped at that limit (settings keep the value asked for
+ * as maxAgentsSet), status carries `hard` { max, live, free } and `free` is the smaller of the two. Heavy steps run in
+ * axf-builds.slice (systemd-run --scope) with the docker shim first on PATH (--cpus / --memory on test containers).
+ * Only Queued builds take slots (Brett, Nov 12 2026): a waiting entry whose build is no longer Queued / Running (moved
+ * back to Pending, built, failed…) is dropped instead of started (framework/cli/dispatch-gate.mjs buildMayTakeSlot).
  */
 import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { homedir, hostname } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { loadLimit, scopePrefix, usage as hardUsage } from './build-limit.mjs';
+import { buildMayTakeSlot } from './dispatch-gate.mjs';
 
-export const LEVELS = ['boss', 'urgent', 'normal', 'low'];
+export const LEVELS = ['boss', 'urgent', 'high', 'normal', 'low'];
 export const DEFAULTS = {
   maxAgents: 6,
   maxHeavy: 3,
@@ -118,9 +128,20 @@ export function moveUp(state, id) {
   if (i === 0) return false;
   const e = line[i]; const ahead = line[i - 1];
   e.priority = ahead.priority;
+  e.moved = true; // Brett's move outranks the build's priority: reprioritise() leaves this entry where he put it
   line.splice(i, 1); line.splice(i - 1, 0, e);
   line.forEach((q, n) => { q.seq = n + 1; });
   return true;
+}
+
+/** A build's priority changed: its entries take the new level, except a waiting entry Brett moved by hand. Returns how many moved. */
+export function applyPriority(state, build, level) {
+  if (!LEVELS.includes(level)) throw new Error(`unknown level ${level}`);
+  const mine = (e) => e.build === build || e.name === build;
+  let n = 0;
+  for (const q of state.queue) if (mine(q) && !q.moved && q.priority !== level) { q.priority = level; n++; }
+  for (const r of state.running) if (mine(r)) r.priority = level;
+  return n;
 }
 
 export function summary(state, settings, mem = {}, now = Date.now()) {
@@ -154,7 +175,23 @@ const readJson = (f, dflt) => { try { return JSON.parse(readFileSync(f, 'utf8'))
 function writeJson(f, v) { const tmp = `${f}.${process.pid}.tmp`; writeFileSync(tmp, `${JSON.stringify(v, null, 2)}\n`); renameSync(tmp, f); }
 
 /** Read fresh on every call: a change in the console applies to the next check, nothing to restart. */
-export const loadSettings = () => normSettings(readJson(files().settings, {}));
+export function loadSettings() {
+  const s = normSettings(readJson(files().settings, {}));
+  let hard = null; try { hard = loadLimit().maxBuilds; } catch { /* no limit file: defaults */ }
+  if (hard != null) { s.hardMax = hard; if (s.maxAgents > hard) { s.maxAgentsSet = s.maxAgents; s.maxAgents = hard; } }
+  return s;
+}
+
+/** Adds the hard limit's live count to a status: `hard` { max, live, free, source, at }; `free` = the smaller. */
+export function withHard(sum, facts = {}) {
+  if (facts.hard === false || process.env.AXF_BUILD_LIMIT === 'off') return sum;
+  try {
+    const h = facts.hard ?? hardUsage();
+    sum.hard = { max: h.max, live: h.live, free: h.free, source: h.source, at: h.at, items: h.items ?? [] };
+    if (h.free != null) sum.free = Math.min(sum.free, h.free);
+  } catch (e) { sum.hard = { error: String(e.message).slice(0, 200) }; }
+  return sum;
+}
 export function saveSettings(patch) {
   const f = files(); mkdirSync(f.dir, { recursive: true });
   const next = normSettings({ ...readJson(f.settings, {}), ...patch });
@@ -275,7 +312,7 @@ export function enqueue(opts = {}, facts = {}) {
     const mem = prune(st, settings, facts);
     const id = newId(st, opts.kind);
     const nowIso = new Date(facts.now ?? Date.now()).toISOString();
-    st.queue.push({ id, name: clip(opts.name || 'run', 60), kind: opts.kind === 'swarm' ? 'swarm' : 'headless', priority: levelFor(opts.name, opts.priority, settings),
+    st.queue.push({ id, name: clip(opts.name || 'run', 60), kind: opts.kind === 'swarm' ? 'swarm' : 'headless', priority: levelFor(opts.name, opts.priority, settings), ...(opts.build ? { build: clip(opts.build, 80) } : {}),
       seq: st.seq, state: 'waiting', enqueuedAt: nowIso, pid: Number(opts.pid) || process.ppid, host: HOST(), cwd: clip(opts.cwd ?? process.cwd(), 300), agent: clip(opts.agent, 60), by: clip(opts.by || process.env.AXF_SURFACE || '', 40) });
     return { id, ...tryStart(st, settings, id, mem.avail, facts) };
   });
@@ -283,12 +320,20 @@ export function enqueue(opts = {}, facts = {}) {
 
 function tryStart(st, settings, id, avail, facts = {}) {
   const now = facts.now ?? Date.now();
+  // only Queued builds take slots: an entry whose build went back to Pending (or ended) leaves the queue, never starts
+  const q0 = st.queue.find((x) => x.id === id);
+  const mayTake = facts.mayTake ?? ((b) => (process.env.AXF_SLOTS_BUILD_CHECK === 'off' ? true : buildMayTakeSlot(b)));
+  if (q0?.build && !mayTake(q0.build)) {
+    st.queue = st.queue.filter((x) => x.id !== id);
+    st.done = [...st.done, { ...q0, state: 'cancelled', cancelledBy: 'not-queued', closedAt: new Date(now).toISOString() }].slice(-KEEP_DONE);
+    return { started: false, gone: true, position: 0, reason: 'notqueued', used: holding(st).length, cap: settings.maxAgents };
+  }
   const d = decide(st, settings, id, avail);
   if (d.reason === 'memory' && now - (st.guard.trips.at(-1) ?? 0) > 60_000) st.guard.trips.push(now);
   if (!d.go) return { started: false, position: d.position, reason: d.reason, used: holding(st).length, cap: settings.maxAgents };
   const q = st.queue.find((x) => x.id === id);
   st.queue = st.queue.filter((x) => x.id !== id);
-  st.running.push({ id, name: q.name, kind: q.kind, priority: q.priority, state: 'starting', host: q.host, pid: q.pid, session: '', cwd: q.cwd, agent: q.agent, by: q.by,
+  st.running.push({ id, name: q.name, kind: q.kind, priority: q.priority, ...(q.build ? { build: q.build } : {}), state: 'starting', host: q.host, pid: q.pid, session: '', cwd: q.cwd, agent: q.agent, by: q.by,
     enqueuedAt: q.enqueuedAt, startedAt: new Date(now).toISOString(), waitedMs: now - Date.parse(q.enqueuedAt) });
   return { started: true, position: 0, reason: '', used: holding(st).length, cap: settings.maxAgents };
 }
@@ -338,6 +383,7 @@ export const cancel = (id, by = '') => withState((st) => {
 });
 
 export const up = (id) => withState((st) => moveUp(st, id));
+export const reprioritise = (build, level) => withState((st) => applyPriority(st, build, level));
 
 /** Blocks until the entry starts (true) or leaves the queue (false). onWait(info) is told the position on each poll. */
 export async function waitFor(id, opts = {}) {
@@ -418,7 +464,7 @@ export function status(facts = {}) {
   const settings = loadSettings();
   let mem = {};
   const st = withState((s) => { mem = prune(s, settings, facts); return s; });
-  return summary(st, settings, mem, facts.now);
+  return withHard(summary(st, settings, mem, facts.now), facts);
 }
 
 /* ---------------- CLI ---------------- */
@@ -445,13 +491,13 @@ async function cli(argv) {
       if (!f['no-sweep']) sweep();
       const s = status();
       if (f.json) return json(s);
-      console.log(`slots ${s.used}/${s.cap} · ${s.queued} queued · heavy ${s.heavy.used}/${s.heavy.cap} · memory ${s.memory.availGb ?? '?'} GB free (floor ${s.memory.floorGb})${s.memory.swapMb ? ` · swap ${s.memory.swapMb} MB` : ''}`);
+      console.log(`slots ${s.used}/${s.cap}${s.hard?.max ? ` · hard limit ${s.hard.live ?? '?'}/${s.hard.max} running on the VPS` : ''} · ${s.queued} queued · heavy ${s.heavy.used}/${s.heavy.cap} · memory ${s.memory.availGb ?? '?'} GB free (floor ${s.memory.floorGb})${s.memory.swapMb ? ` · swap ${s.memory.swapMb} MB` : ''}`);
       for (const r of s.running) console.log(`  ${r.state.padEnd(9)} ${r.name} (${r.kind}, ${r.priority}) ${r.session || `pid ${r.pid}`} · ${ago(r.startedAt)}`);
       for (const q of s.queue) console.log(`  #${q.position} waiting ${q.name} (${q.priority}) since ${ago(q.enqueuedAt)} · ${q.id}`);
       return;
     }
     case 'enqueue': {
-      const r = enqueue({ name: f.name, kind: f.kind, priority: f.priority, pid: f.pid, cwd: f.cwd, agent: f.agent, by: f.by });
+      const r = enqueue({ name: f.name, kind: f.kind, priority: f.priority, build: f.build, pid: f.pid, cwd: f.cwd, agent: f.agent, by: f.by });
       if (f.sh) return console.log(`slot_id=${r.id} slot_started=${r.started ? 1 : 0} slot_pos=${r.position} slot_reason=${r.reason || 'none'}`);
       return f.json ? json(r) : console.log(r.started ? `started ${r.id}` : `queued at position ${r.position} (${r.id}${r.reason === 'memory' ? ', waiting for memory' : ''})`);
     }
@@ -470,6 +516,7 @@ async function cli(argv) {
     case 'release': return void (release(f._[0], f.exit) || (process.exitCode = 4));
     case 'cancel': cancel(f._[0], f.by); return console.log(`cancelled ${f._[0]}`);
     case 'up': return console.log(up(f._[0]) ? `moved ${f._[0]} up` : `${f._[0]} is already first`);
+    case 'reprioritise': return console.log(`${reprioritise(f._[0], f._[1])} waiting entr(ies) of ${f._[0]} now ${f._[1]}`);
     case 'settings': return f.json ? json(loadSettings()) : console.log(JSON.stringify(loadSettings(), null, 2));
     case 'get': return console.log(String(loadSettings()[f._[0]] ?? ''));
     case 'set': {
@@ -479,15 +526,19 @@ async function cli(argv) {
     case 'heavy': {
       const cmdv = f['--'] ?? [];
       if (!cmdv.length) throw new Error('heavy -- <command…>');
+      // in axf-builds.slice (CPU / memory caps for every build), docker test runs through the limits shim
+      const shim = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'deploy', 'build-limit');
+      const env = existsSync(join(shim, 'docker')) && process.env.AXF_BUILD_SLICE !== 'off' ? { ...process.env, PATH: `${shim}:${process.env.PATH ?? ''}` } : process.env;
+      const full = [...scopePrefix('axf-heavy'), ...cmdv];
       const code = await withHeavy(f.label || cmdv.join(' '), () => new Promise((res) => {
-        const c = spawn(cmdv[0], cmdv.slice(1), { stdio: 'inherit' });
+        const c = spawn(full[0], full.slice(1), { stdio: 'inherit', env });
         c.on('error', (e) => { console.error(e.message); res(127); });
         c.on('close', (n) => res(n ?? 1));
       }), { onWait: () => console.error(`agent-slots: waiting for a test/build slot (max ${loadSettings().maxHeavy} at once)…`) });
       process.exitCode = code; return;
     }
     case 'sweep': return json(sweep());
-    default: throw new Error(`unknown command ${cmd} (status, enqueue, wait, claim, bind, finish, release, cancel, up, settings, set, get, heavy, sweep)`);
+    default: throw new Error(`unknown command ${cmd} (status, enqueue, wait, claim, bind, finish, release, cancel, up, reprioritise, settings, set, get, heavy, sweep)`);
   }
 }
 

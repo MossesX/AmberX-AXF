@@ -1,0 +1,40 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "claude-accounts-routing-rule-cards",
+  "name": "Job routing: rule cards",
+  "version": "1.0.0",
+  "description": "Two columns on a wide screen; every rule is a card that reads as a sentence (\"When model is opus and at most 3 steps left: send it to hulu-api\"). Rules and API caps open.",
+  "author": "Claude accounts plugin",
+  "tags": [
+    "claude-accounts",
+    "job-routing",
+    "ui-choices:claude-accounts-routing"
+  ],
+  "data": {
+    "layout": "list",
+    "header": "compact",
+    "search": true,
+    "descriptions": true,
+    "levels": true,
+    "defaultLevel": "basic",
+    "levelOf": {
+      "claude-accounts.routing": "basic",
+      "claude-accounts.list": "simple",
+      "claude-accounts.runs": "developer",
+      "claude-accounts.add": "administrator"
+    },
+    "view": "rule-cards",
+    "order": [
+      "rules",
+      "api",
+      "status",
+      "test",
+      "workers"
+    ],
+    "open": [
+      "rules",
+      "api"
+    ]
+  }
+}

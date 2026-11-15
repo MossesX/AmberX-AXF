@@ -1,0 +1,431 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-priority-tags",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:23Z",
+ "build": {
+  "id": "priority-tags",
+  "title": "Priority tags",
+  "profile": "all",
+  "category": "Feature",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Put a priority tag on everything in your building. And when you click on it, it shows everything waiting for it. ... Do it. Yes.",
+  "verbatim": true,
+  "at": "2026-11-05T04:53:51.522Z",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-priority-tags--sully",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-05T04:51:30.669Z",
+   "endedAt": "2026-11-05T06:01:33.175Z",
+   "exit": 0,
+   "costUsd": 19.9197
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Core: priority levels, backfill, waiting-on engine, store field",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T04:51:30.669Z",
+   "doneAt": "2026-11-05T05:10:41.010Z",
+   "actualMin": 19,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "CLI + server routes + voice/MCP commands",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T05:10:41.010Z",
+   "doneAt": "2026-11-05T05:10:41.665Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Queue order: agent-slots and merge queue follow priority, manual moves win",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T05:10:41.665Z",
+   "doneAt": "2026-11-05T05:10:42.440Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "PriorityTag component + popover, on every build view, bulk change",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T05:10:42.440Z",
+   "doneAt": "2026-11-05T05:10:43.274Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Build queue screen reads the real agent-slots queue",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T05:10:43.274Z",
+   "doneAt": "2026-11-05T05:10:44.063Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Tests, docs, report, shots, PR through the merge queue",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T05:10:44.063Z",
+   "doneAt": "2026-11-05T05:11:35.297Z",
+   "actualMin": 1,
+   "done": true
+  }
+ ],
+ "branch": "claude/priority-tags",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 354,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/354"
+ },
+ "landedCommit": "9502ca059b3a44a650d10566313faef5aa94e32a",
+ "commits": [
+  "751700e97d23ab8bae6c00a6069cbd4c8676a9b9",
+  "1a534e174e072a2672ec461d49947aa9da00e96d",
+  "9a7f1b0bf9acd38dd93d4f1d55a91113bc6b8650"
+ ],
+ "mergedAt": "2026-11-05T06:00:31Z",
+ "landedAt": "2026-11-05T06:00:31Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "_claude/builds/reports/priority-tags.md",
+  "_claude/builds/reports/priority-tags/shots/build-queue-desktop.png",
+  "_claude/builds/reports/priority-tags/shots/build-queue-phone.png",
+  "_claude/builds/reports/priority-tags/shots/orchestrator-desktop.png",
+  "_claude/builds/reports/priority-tags/shots/orchestrator-phone.png",
+  "_claude/builds/reports/priority-tags/shots/waiting-dialog-desktop.png",
+  "_claude/builds/reports/priority-tags/shots/waiting-dialog-phone.png",
+  "_claude/memory/STATUS.md",
+  "_claude/memory/docs/priority-tags.md",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/core/build-priority.d.mts",
+  "apps/amberx-droid/src/axf/core/build-priority.mjs",
+  "apps/amberx-droid/src/axf/react/AppShell.tsx",
+  "apps/amberx-droid/src/axf/react/components/PriorityTag.tsx",
+  "apps/amberx-droid/src/axf/react/index.ts",
+  "apps/amberx-droid/src/axf/ui/axf.css",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/core/build-priority.d.mts",
+  "apps/axhub-web/src/axf/core/build-priority.mjs",
+  "apps/axhub-web/src/axf/react/AppShell.tsx",
+  "apps/axhub-web/src/axf/react/components/PriorityTag.tsx",
+  "apps/axhub-web/src/axf/react/index.ts",
+  "apps/axhub-web/src/axf/ui/axf.css",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/agent-slots/web/index.tsx",
+  "apps/console-web/plugins/build-manager/web/ui.tsx",
+  "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+  "apps/console-web/plugins/build-orchestrator/plugin.json",
+  "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+  "apps/console-web/plugins/build-orchestrator/test.py",
+  "apps/console-web/plugins/build-orchestrator/web/index.tsx",
+  "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+  "apps/console-web/plugins/build-orchestrator/web/ui.tsx",
+  "apps/console-web/plugins/builds-page/web/ui.tsx",
+  "apps/console-web/plugins/changes-grid/web/core.ts",
+  "apps/console-web/plugins/changes-grid/web/index.tsx",
+  "apps/console-web/plugins/codebase-changes/server/store.py",
+  "apps/console-web/plugins/crew-live/web/ui.tsx",
+  "apps/console-web/plugins/plan-studio/web/editor.tsx",
+  "apps/console-web/plugins/push-banner/land/merge-queue-core.mjs",
+  "apps/console-web/plugins/push-banner/land/merge-queue.mjs",
+  "apps/console-web/plugins/push-banner/land/merge-queue.test.mjs",
+  "apps/console-web/plugins/push-banner/plugin.json",
+  "apps/console-web/plugins/push-banner/server/__init__.py",
+  "apps/console-web/plugins/push-banner/web/queue.tsx",
+  "apps/console-web/src/axf/core/build-priority.d.mts",
+  "apps/console-web/src/axf/core/build-priority.mjs",
+  "apps/console-web/src/axf/react/AppShell.tsx",
+  "apps/console-web/src/axf/react/components/PriorityTag.tsx",
+  "apps/console-web/src/axf/react/index.ts",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/console-web/src/views/BuildManager.tsx",
+  "apps/console-web/src/views/Pending.tsx",
+  "apps/molly/axf.lock.json",
+  "apps/molly/src/axf/core/build-priority.d.mts",
+  "apps/molly/src/axf/core/build-priority.mjs",
+  "apps/molly/src/axf/react/AppShell.tsx",
+  "apps/molly/src/axf/react/components/PriorityTag.tsx",
+  "apps/molly/src/axf/react/index.ts",
+  "apps/molly/src/axf/ui/axf.css",
+  "deploy/claude-headless.sh",
+  "framework/cli/agent-slots.mjs",
+  "framework/cli/build-priority.mjs",
+  "framework/core/build-priority.d.mts",
+  "framework/core/build-priority.mjs",
+  "framework/plan/builds-merge-core.mjs",
+  "framework/plan/builds-store-core.mjs",
+  "framework/react/AppShell.tsx",
+  "framework/react/components/PriorityTag.tsx",
+  "framework/react/index.ts",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-build-priority.mjs",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/axf/core/build-priority.d.mts",
+    "apps/console-web/src/axf/core/build-priority.mjs",
+    "apps/console-web/src/axf/react/AppShell.tsx",
+    "apps/console-web/src/axf/react/components/PriorityTag.tsx",
+    "apps/console-web/src/axf/react/index.ts",
+    "apps/console-web/src/axf/ui/axf.css",
+    "apps/console-web/src/views/BuildManager.tsx",
+    "apps/console-web/src/views/Pending.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+    "apps/console-web/plugins/build-orchestrator/plugin.json",
+    "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+    "apps/console-web/plugins/build-orchestrator/test.py",
+    "apps/console-web/plugins/build-orchestrator/web/index.tsx",
+    "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+    "apps/console-web/plugins/build-orchestrator/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/core/build-priority.d.mts",
+    "apps/amberx-droid/src/axf/core/build-priority.mjs",
+    "apps/amberx-droid/src/axf/react/AppShell.tsx",
+    "apps/amberx-droid/src/axf/react/components/PriorityTag.tsx",
+    "apps/amberx-droid/src/axf/react/index.ts",
+    "apps/amberx-droid/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/core/build-priority.d.mts",
+    "apps/axhub-web/src/axf/core/build-priority.mjs",
+    "apps/axhub-web/src/axf/react/AppShell.tsx",
+    "apps/axhub-web/src/axf/react/components/PriorityTag.tsx",
+    "apps/axhub-web/src/axf/react/index.ts",
+    "apps/axhub-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/axf.lock.json",
+    "apps/molly/src/axf/core/build-priority.d.mts",
+    "apps/molly/src/axf/core/build-priority.mjs",
+    "apps/molly/src/axf/react/AppShell.tsx",
+    "apps/molly/src/axf/react/components/PriorityTag.tsx",
+    "apps/molly/src/axf/react/index.ts",
+    "apps/molly/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/priority-tags.md",
+    "_claude/builds/reports/priority-tags/shots/build-queue-desktop.png",
+    "_claude/builds/reports/priority-tags/shots/build-queue-phone.png",
+    "_claude/builds/reports/priority-tags/shots/orchestrator-desktop.png",
+    "_claude/builds/reports/priority-tags/shots/orchestrator-phone.png",
+    "_claude/builds/reports/priority-tags/shots/waiting-dialog-desktop.png",
+    "_claude/builds/reports/priority-tags/shots/waiting-dialog-phone.png"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/land/merge-queue-core.mjs",
+    "apps/console-web/plugins/push-banner/land/merge-queue.mjs",
+    "apps/console-web/plugins/push-banner/land/merge-queue.test.mjs",
+    "apps/console-web/plugins/push-banner/plugin.json",
+    "apps/console-web/plugins/push-banner/server/__init__.py",
+    "apps/console-web/plugins/push-banner/web/queue.tsx"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md",
+    "_claude/memory/docs/priority-tags.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/AppShell.tsx",
+    "framework/react/components/PriorityTag.tsx",
+    "framework/react/index.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "changes-grid",
+   "files": [
+    "apps/console-web/plugins/changes-grid/web/core.ts",
+    "apps/console-web/plugins/changes-grid/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/agent-slots.mjs",
+    "framework/cli/build-priority.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/build-priority.d.mts",
+    "framework/core/build-priority.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/builds-merge-core.mjs",
+    "framework/plan/builds-store-core.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-build-priority.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-slots",
+   "files": [
+    "apps/console-web/plugins/agent-slots/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-manager",
+   "files": [
+    "apps/console-web/plugins/build-manager/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "builds-page",
+   "files": [
+    "apps/console-web/plugins/builds-page/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "codebase-changes",
+   "files": [
+    "apps/console-web/plugins/codebase-changes/server/store.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "crew-live",
+   "files": [
+    "apps/console-web/plugins/crew-live/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plan-studio",
+   "files": [
+    "apps/console-web/plugins/plan-studio/web/editor.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/claude-headless.sh"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 19.9197,
+  "estimated": false,
+  "tokens": {
+   "input": 114,
+   "output": 1206,
+   "cacheRead": 12701315,
+   "cacheWrite": 310887
+  }
+ },
+ "report": "_claude/builds/reports/priority-tags.md",
+ "open": []
+}

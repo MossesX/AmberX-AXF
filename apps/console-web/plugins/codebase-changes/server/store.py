@@ -638,6 +638,7 @@ def summary(e: dict[str, Any]) -> dict[str, Any]:
                   "running": next((s.get("text") for s in steps if s.get("state") == "running"), "")},
         "result": {"state": r.get("state"), "summary": (r.get("summary") or "")[:300]} if r else None,
         "closed": (e.get("closed") or {}).get("at") if e.get("closed") else None,
+        "buildRef": e.get("buildRef"),
         **build_summary(e),
     }
 

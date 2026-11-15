@@ -1,0 +1,82 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-1f6dcd",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:33:06Z",
+ "build": {
+  "id": "project-thread-1f6dcd",
+  "title": "project-thread-1f6dcd",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-1f6dcd",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-1f6dcd",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "e34741a2f0d2813edc4e0b4341e05901d53c1f4d",
+ "commits": [
+  "48c348b126fc0f8b8a20627cea551c31bae7db4d"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-24T18:04:14Z",
+ "files": [
+  "CLAUDE.md",
+  "apps/console-web/plugins/claude-badge/plugin.json",
+  "apps/console-web/plugins/claude-badge/server/__init__.py",
+  "apps/console-web/plugins/claude-badge/test.py",
+  "apps/console-web/plugins/claude-badge/web/index.tsx"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "claude-badge",
+   "files": [
+    "apps/console-web/plugins/claude-badge/plugin.json",
+    "apps/console-web/plugins/claude-badge/server/__init__.py",
+    "apps/console-web/plugins/claude-badge/test.py",
+    "apps/console-web/plugins/claude-badge/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

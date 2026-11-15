@@ -80,3 +80,13 @@ a.axp-push-banner__name:hover { text-decoration: underline }
 .axp-push-banner__acts { flex-wrap: nowrap; flex: none }
 .axp-push-banner__top > * { flex-shrink: 0 }
 .axp-push-banner__top > strong { flex-shrink: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+/* merge queue (Nov 4 2026): the line, each PR's state, the banner chip */
+.axp-mq__row { cursor: grab }
+.axp-mq__pos { flex: none; min-width: calc(var(--fx-space) * 3); text-align: center; font-weight: 700; color: var(--fx-muted); font-variant-numeric: tabular-nums }
+.axp-mq__state { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs) }
+.axp-mq__state.is-testing { color: var(--fx-accent) }
+.axp-mq__state.is-passed, .axp-mq__state.is-merging { color: var(--fx-success) }
+.axp-mq__state.is-kicked { color: var(--fx-danger) }
+.axp-mq__row.is-passed { border-color: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-muted) * 100%), transparent) }
+.axp-mq__chip { flex: none; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); cursor: pointer }
+.axp-mq__why { display: block; white-space: normal; overflow-wrap: anywhere }

@@ -9,7 +9,7 @@
  * Both read GET connections (server: every place a tab can go, with ready / why).
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { Button, Icon, useRuntime } from '@console/axf/react';
+import { Button, Icon, TabGroup, useRuntime } from '@console/axf/react';
 import { call, tabSessions, type Connection, type Open } from './api';
 import { addSession, ctl, host, hostIds, hostOf, patchSession, sessionId, snapshot, subscribe, titleFor, type HostSession } from './hosts';
 import { applyProfile, profilesFor, useProfiles } from './profiles';
@@ -93,10 +93,7 @@ export function ConnectDialog({ props, close }: { props: Record<string, unknown>
   };
   return (
     <div className="axp-wt-conn">
-      <div className="fx-tabs" role="tablist" aria-label="What runs in the tab">
-        <button type="button" role="tab" aria-selected={mode === 'claude'} className={`fx-tab ${mode === 'claude' ? 'is-active' : ''}`} onClick={() => setMode('claude')}><Icon name="sparkles" size={14} /> Claude Code</button>
-        <button type="button" role="tab" aria-selected={mode === 'shell'} className={`fx-tab ${mode === 'shell' ? 'is-active' : ''}`} onClick={() => setMode('shell')}><Icon name="terminal" size={14} /> Shell</button>
-      </div>
+      <TabGroup id="terminal.connection-mode" label="What runs in the tab" value={mode} onChange={setMode} tabs={[{ value: 'claude', label: 'Claude Code', icon: 'sparkles' }, { value: 'shell', label: 'Shell', icon: 'terminal' }]} />
       {mode === 'claude' && profiles.items.length > 0 && (
         <label className="axp-terminal__field"><span>Profile</span>
           <select className="fx-input" value={profile} onChange={(e) => setProfile(e.target.value)}>

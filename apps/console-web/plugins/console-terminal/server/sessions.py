@@ -551,7 +551,7 @@ HEADLESS_TTL = 8.0
 METER_TTL = 2.0
 RUNNER: Any = subprocess.run  # replaced by the self-test
 HEADLESS_DIR = "${AXF_HEADLESS_DIR:-/var/tmp/axf-headless}"  # on the VPS host (deploy/claude-headless.sh)
-LS_FORMAT = "#{session_name}\t#{session_created}\t#{session_attached}\t#{@axf_kind}\t#{@axf_agent}\t#{@axf_model}\t#{@axf_cwd}"
+LS_FORMAT = "#{session_name}\t#{session_created}\t#{session_attached}\t#{@axf_kind}\t#{@axf_agent}\t#{@axf_model}\t#{@axf_cwd}\t#{@axf_login}"
 
 
 def parse_ls(text: str, mine: bool = False) -> list[dict[str, Any]]:
@@ -562,11 +562,13 @@ def parse_ls(text: str, mine: bool = False) -> list[dict[str, Any]]:
         p = ln.split("\t")
         if not p or not (TMUX_RE.match(p[0]) or (mine and ATTACH_RE.match(p[0]))):
             continue
-        p += [""] * (7 - len(p))
+        p += [""] * (8 - len(p))
         created = int(p[1]) * 1000 if p[1].isdigit() else 0
         kind = p[3] or ("headless" if p[0].startswith("axf-") else "tab" if p[0].startswith("axt-") else "mine")
         items.append({"name": p[0], "createdAt": created, "attached": int(p[2]) if p[2].isdigit() else 0, "kind": kind,
-                      "agent": p[4] or (p[0][4:] if kind == "headless" else ""), "model": p[5], "cwd": p[6]})
+                      "agent": p[4] or (p[0][4:] if kind == "headless" else ""), "model": p[5], "cwd": p[6],
+                      # the Claude account the run keeps its own login copy of (deploy/claude-login.mjs), "" = shared
+                      "login": p[7]})
     return sorted(items, key=lambda x: x["createdAt"])
 
 

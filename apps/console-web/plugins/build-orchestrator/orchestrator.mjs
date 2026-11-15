@@ -9,7 +9,10 @@
  *
  *   node apps/console-web/plugins/build-orchestrator/orchestrator.mjs            list (one line per build)
  *   … next [id]                       what to do next (default: the first build with work left)
- *   … brief <id>                      the current phase's brief, ready to paste as a first message
+ *   … brief <id> [--no-rules]         the current phase's brief, ready to paste as a first message; self-contained
+ *                                     (headless-context@1): the rules block for this job is written in (rules brief +
+ *                                     rule snippets by tag), and a brief over Claude settings headless.briefBudgetChars
+ *                                     says so on stderr (`budget` in --json). --no-rules = the bare phase brief.
  *   … act <action> <id> [args…]       step <id> <stepId> [done|undo] · approve <id> <phase> · status <id> <status>
  *                                     note <id> <text> · rename <id> <title> · rename-step <id> <stepId> <title>
  *                                     archive|hide|unhide|remove <id>
@@ -22,26 +25,43 @@
  * axHub-approved MCP tool set AXF_APPROVER + AXF_APPROVER_VIA, and nothing in the environment says the caller is a
  * Claude session, a headless build or an agent. An `approver` inside a --json change is never trusted.
  *   … where                           the tracker file in use
+ * Any <id> may be a build's alias (build-id@1): a build whose id is over 40 characters answers to a short one too.
  *   --json on any command prints JSON (the console server uses this).
  */
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './web/orchestrator-core.mjs';
-import { approverFrom, upgradeLine } from '../../../../framework/core/model-switch.mjs';
+import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
+import { approverFrom, upgradeLine, upgradePolicy } from '../../../../framework/core/model-switch.mjs';
+import { loadUpgradePolicy } from '../../../../framework/cli/upgrade-policy.mjs';
+import { readPolicy as readContextPolicy, rulesFor } from '../../../../framework/cli/headless-context.mjs';
+import { briefBudget } from '../../../../framework/core/headless-context.mjs';
+
+loadUpgradePolicy(); // Fable upgrades need my approval (owner-only Claude setting, default off; Brett, Nov 4 2026)
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
 import { storeFile, withStore, loadStore } from '../../../../framework/cli/builds-store.mjs';
 import { absorbOrchestrator, projectOrchestrator } from '../../../../framework/plan/builds-store-core.mjs';
 
 const legacy = () => process.env.AXF_ORCH_FILE || '';
 const profile = () => activeProfile().id;
+/**
+ * The profile a change works in (projects@1): the active project's, unless the build it names lives only in another
+ * project (a session still running that project's build after Brett switched), which then gets its own.
+ */
+export function profileFor(store, id, active = profile()) {
+  if (!id) return active;
+  const b = store.builds.find((x) => x.id === id && !x.deleted) ?? store.builds.find((x) => x.id === id);
+  return !b || (b.profiles ?? []).includes(active) || !b.profiles?.length ? active : b.profiles[0];
+}
 /** Where the builds are: the store (normally) or AXF_ORCH_FILE. */
 export const trackerFile = () => legacy() || storeFile();
 
-export function load() {
+export function load(id = '') {
   const f = legacy();
   if (f) return core.normalizeState(existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')) : core.emptyState());
-  return core.normalizeState(projectOrchestrator(loadStore(), profile()));
+  const store = loadStore();
+  return core.normalizeState(projectOrchestrator(store, profileFor(store, id)));
 }
 export function save(state, by = 'orchestrator') {
   const f = legacy();
@@ -50,13 +70,19 @@ export function save(state, by = 'orchestrator') {
   withStore((s) => absorbOrchestrator(s, p, state, { by }), { by, action: 'orchestrator' });
 }
 /** One change: applied to the profile's view of the store and taken back into it, under the store lock (versioned). */
+/** A build's id from its id or alias (build-id@1: a build made before ids were capped answers to a short alias too). */
+export function resolveId(store, id) {
+  if (!id || store.builds.some((x) => x.id === id)) return id;
+  return store.builds.find((x) => x.alias === id)?.id ?? id;
+}
+
 export function act(change, by = process.env.AXF_ACTOR || 'orchestrator') {
   change = withApprover(change);
+  if (!legacy() && change?.id && change.action !== 'add') change = { ...change, id: resolveId(loadStore(), change.id) };
   if (change.approver) by = `${change.approver.by} (${change.approver.via})`;
   if (legacy()) { const r = core.apply(load(), change); save(r.state); return r; }
-  const p = profile();
   let r;
-  withStore((s) => { r = core.apply(projectOrchestrator(s, p), change); return absorbOrchestrator(s, p, r.state, { by }); }, { by, action: `orchestrator:${change?.action}`, note: change?.id ?? '' });
+  withStore((s) => { const p = change?.action === 'add' ? profile() : profileFor(s, change?.id); r = core.apply(projectOrchestrator(s, p), change); return absorbOrchestrator(s, p, r.state, { by }); }, { by, action: `orchestrator:${change?.action}`, note: change?.id ?? '' });
   return r;
 }
 
@@ -81,26 +107,31 @@ export function upgradeAsk(b, p, req) {
 function line(b, rules) {
   const p = core.progress(b); const n = core.nextUp(b, rules);
   const next = n.done ? 'done' : n.needsApproval ? `Brett: upgrade ${n.phase.from}→${n.phase.model}` : `${n.step?.model} ${n.step?.id}`;
-  return `${b.id.padEnd(34)} ${core.STATUS_LABEL[b.status].padEnd(15)} ${String(p.done).padStart(2)}/${p.total} steps · ${core.formatMinutes(p.minutesLeft) || '0 min'} left · next: ${next}`;
+  return `${b.id.padEnd(34)} ${priorityLabel(effectivePriority(b)).padEnd(7)} ${core.STATUS_LABEL[b.status].padEnd(15)} ${String(p.done).padStart(2)}/${p.total} steps · ${core.formatMinutes(p.minutesLeft) || '0 min'} left · next: ${next}`;
 }
 
 async function main(argv) {
   const json = argv.includes('--json'); const args = argv.filter((a) => a !== '--json');
   const out = (o, text) => console.log(json ? JSON.stringify(o) : text);
-  const [cmd = 'list', ...rest] = args;
-  const s = load();
+  const [cmd = 'list', ...given] = args;
+  const rest = !legacy() && ['next', 'brief', 'request-upgrade'].includes(cmd) && given[0] ? [resolveId(loadStore(), given[0]), ...given.slice(1)] : given;
+  const s = load(['next', 'brief'].includes(cmd) ? rest[0] : '');
   if (cmd === 'where') return out({ ok: true, file: trackerFile() }, trackerFile());
-  if (cmd === 'list' || cmd === 'state') return out({ ok: true, state: s }, s.builds.filter((b) => !b.hidden && b.status !== 'archived').map((b) => line(b, s.rules)).join('\n') || 'No builds.');
+  if (cmd === 'list' || cmd === 'state') return out({ ok: true, state: s, upgradePolicy: upgradePolicy() }, s.builds.filter((b) => !b.hidden && b.status !== 'archived').map((b) => line(b, s.rules)).join('\n') || 'No builds.');
   if (cmd === 'next') {
     const b = rest[0] ? s.builds.find((x) => x.id === rest[0]) : s.builds.find((x) => !x.hidden && !['built', 'complete', 'archived'].includes(x.status));
     if (!b) return out({ ok: true, next: null }, 'Nothing left to build.');
     const n = core.nextUp(b, s.rules);
     return out({ ok: true, id: b.id, ...n }, `${b.title} (${b.id})\n${n.done ? 'complete' : n.needsApproval ? `Needs Brett's approval: model UPGRADE ${n.phase.from} → ${n.phase.model} (phase ${n.phase.index + 1}). Stop here: request-upgrade ${b.id} ${n.phase.index}` : `Next: ${n.step.id} on ${n.step.model} — ${n.step.text}`}`);
   }
-  if (cmd === 'brief') { const b = s.builds.find((x) => x.id === rest[0]); if (!b) throw new Error(`no build "${rest[0]}"`); const t = core.brief(b, s.rules); return out({ ok: true, brief: t }, t); }
+  if (cmd === 'brief') { const b = s.builds.find((x) => x.id === rest[0]); if (!b) throw new Error(`no build "${rest[0]}"`); let t = core.brief(b, s.rules);
+    if (!rest.includes('--no-rules')) { const r = rulesFor(t, { model: (core.nextUp(b, s.rules).phase?.model || '').toLowerCase(), name: b.id }); if (r.text) t = `${t}\n\n${r.text}`; }
+    const budget = briefBudget(t, readContextPolicy()); if (!budget.ok) process.stderr.write(`orchestrator: ${budget.warning}\n`);
+    return out({ ok: true, brief: t, budget }, t); }
   if (cmd === 'request-upgrade') {
     const [id, ph] = rest; const r = act({ action: 'request-upgrade', id, phase: Number(ph), by: process.env.AXF_SESSION || process.env.AXF_ACTOR || 'session' });
     const b = r.build; const p = core.phases(b)[Number(ph)]; const req = b.upgradeRequests.find((x) => x.phase === p.index && x.state !== 'denied');
+    if (!upgradePolicy().approvalRequired) return out({ ok: true, auto: true, log: r.log }, [...r.log, 'Fable upgrades need no approval right now: carry on with this phase on the higher model.'].join('\n'));
     const ask = upgradeAsk(b, p, req);
     return out({ ok: true, request: req, ask, log: r.log }, [...r.log,
       'Only Brett can approve a model upgrade. Ask him once, then stop this session (do no work on that phase):',

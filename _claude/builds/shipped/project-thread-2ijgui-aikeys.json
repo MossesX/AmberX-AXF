@@ -1,0 +1,98 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-2ijgui-aikeys",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:32:54Z",
+ "build": {
+  "id": "project-thread-2ijgui-aikeys",
+  "title": "project-thread-2ijgui-aikeys",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-2ijgui-aikeys",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-2ijgui-aikeys",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "61d785f931061c226746c499fe8027a1c8b7d081",
+ "commits": [
+  "01723c4b4d8aa585c8e56ec1ff6a51db7a9c8e76"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-25T10:26:08Z",
+ "files": [
+  "CLAUDE.md",
+  "apps/console-web/plugins/README.md",
+  "apps/console-web/plugins/ai-keys/hooks.mjs",
+  "apps/console-web/plugins/ai-keys/install.mjs",
+  "apps/console-web/plugins/ai-keys/plugin.json",
+  "apps/console-web/plugins/ai-keys/server/__init__.py",
+  "apps/console-web/plugins/ai-keys/test.py",
+  "apps/console-web/plugins/ai-keys/uninstall.mjs",
+  "apps/console-web/plugins/ai-keys/web/index.tsx",
+  "apps/console-web/plugins/ai-keys/web/menu.ts"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "ai-keys",
+   "files": [
+    "apps/console-web/plugins/ai-keys/hooks.mjs",
+    "apps/console-web/plugins/ai-keys/install.mjs",
+    "apps/console-web/plugins/ai-keys/plugin.json",
+    "apps/console-web/plugins/ai-keys/server/__init__.py",
+    "apps/console-web/plugins/ai-keys/test.py",
+    "apps/console-web/plugins/ai-keys/uninstall.mjs",
+    "apps/console-web/plugins/ai-keys/web/index.tsx",
+    "apps/console-web/plugins/ai-keys/web/menu.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/plugins/README.md"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

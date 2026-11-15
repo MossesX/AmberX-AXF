@@ -1,0 +1,129 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-merge-approvals",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:56Z",
+ "build": {
+  "id": "merge-approvals",
+  "title": "merge-approvals",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "merge-approvals",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/merge-approvals",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "6d9545459c95273bd363db7378db0542f7ea7a23",
+ "commits": [
+  "59fa69034bab0366302ee8033830a625badf9e6c",
+  "3d427a0470f589d9e171819006834025683d9a79",
+  "a32d638ec2a46e63ddb636a9b193ec82bfe2723e",
+  "c8fa57da7ef794c993a2aab16fb16b588ead4b9a"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-27T22:27:56Z",
+ "files": [
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "_claude/shared/rules/RULES.md",
+  "apps/axhub-web/src/views/ApprovalDetail.tsx",
+  "apps/axhub-web/test.mjs",
+  "apps/console-web/plugins/push-banner/merge-pr.sh",
+  "apps/console-web/plugins/push-banner/plugin.json",
+  "deploy/merge-pr.sh",
+  "framework/catalog/libraries.json",
+  "framework/plan/pending.json",
+  "framework/plan/plan.json",
+  "tracker.json"
+ ],
+ "areas": [
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md",
+    "_claude/shared/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/merge-pr.sh",
+    "apps/console-web/plugins/push-banner/plugin.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/src/views/ApprovalDetail.tsx",
+    "apps/axhub-web/test.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json",
+    "framework/plan/plan.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/libraries.json"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/merge-pr.sh"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": "tracker.json",
+   "files": [
+    "tracker.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

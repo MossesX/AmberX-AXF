@@ -1,0 +1,415 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-crew-live",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:26Z",
+ "build": {
+  "id": "crew-live",
+  "title": "Crew: live grid of every working agent (what each is doing, cost, files, diff) + agent avatars everywhere",
+  "profile": "all",
+  "category": "Console > Agents",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Ping Paulie. Console plugin 'Crew' listing every agent currently working with exactly what each is doing, live: avatar, status, build + step, model, live timer, live cost, tokens, files touched, PR. Expanded: what I'm doing now (from stream events, no LLM), step list, files with live worktree diff, recent tool calls with cost, Terminal/Session browser links, stop. Off the clock section + totals. Shared AgentAvatar framework component + agent-avatar asset used across the console, agent context menu items. Zero tokens; commands as REST+MCP+CLI. Reuses headless meters (headless-tabs), headless events/stream logs, agent-swarm roster, builds store.",
+  "verbatim": false,
+  "at": "2026-11-03T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-crew-live",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-03T18:10:08.074Z",
+   "endedAt": "2026-11-03T19:02:27.128Z",
+   "exit": 0,
+   "costUsd": 13.8119
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Recon + register: reuse map (headless meters/events, stream logs, swarm roster, builds store, session-history PR #195 open); branch claude/crew-live",
+   "model": "Opus",
+   "estimate": "15",
+   "estimateMin": 15,
+   "startedAt": "2026-11-03T18:10:08.074Z",
+   "doneAt": "2026-11-03T18:15:30.014Z",
+   "actualMin": 5,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Crew server core (pure Python): working runs from headless events + tmux + meters + stream logs, agent resolution against the roster, build/step from the store, files + git diff of the worktree; self-test",
+   "model": "Opus",
+   "estimate": "30",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T18:15:30.014Z",
+   "doneAt": "2026-11-03T18:29:02.394Z",
+   "actualMin": 14,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Crew routes (agents, agent, files, diff, stop with confirm) as plugin-commands (REST + MCP + CLI), live SSE feed; agent-swarm exposes axf.swarm-roster@1",
+   "model": "Opus",
+   "estimate": "25",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T18:29:03.782Z",
+   "doneAt": "2026-11-03T18:32:15.869Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "AgentAvatar framework component + agent-avatar asset (avatar@1, tokens only) + agent context items (runtime contributions)",
+   "model": "Opus",
+   "estimate": "25",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T18:29:02.394Z",
+   "doneAt": "2026-11-03T18:29:03.782Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Crew web view: dense collapsible grid (sort/search/filter), live timers/cost, expanded detail (now, steps, files with diff hunks, tool calls, links, stop), Off the clock, totals bar",
+   "model": "Opus",
+   "estimate": "30",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T18:36:49.380Z",
+   "doneAt": "2026-11-03T18:58:47.946Z",
+   "actualMin": 22,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Avatars across the console: builds grids, orchestrator steps, Terminal headless tabs, UI Review items, group chat, What's New where an agent is known",
+   "model": "Opus",
+   "estimate": "30",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T18:32:15.869Z",
+   "doneAt": "2026-11-03T18:36:49.380Z",
+   "actualMin": 5,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Tests (zero-token import check, lifecycle), screenshots 412/1280, UI Review item, report _claude/builds/reports/crew-live.md, THREADS, PR",
+   "model": "Opus",
+   "estimate": "30",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T18:58:47.946Z",
+   "doneAt": "2026-11-03T19:01:09.967Z",
+   "actualMin": 2,
+   "done": true
+  }
+ ],
+ "branch": "claude/crew-live",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 273,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/273"
+ },
+ "landedCommit": "e0363c32bbe80272bde25921e1fd9f5c6d700bd1",
+ "commits": [
+  "b7fa537a7ec03dcc57ebda77d50685caf225e496",
+  "51571523236cad0434031523c0e40c855ab6dce8",
+  "6d8754601d861f716d6dc514fe2c9fa0b989c2d5",
+  "e5a3576d2915f4188c986d7f5e75107f258eab39",
+  "cba60f2b4ea16ab86546e78fc88049250fced72a",
+  "a80570137ed40100ea166bc2dc64e2c722648394"
+ ],
+ "mergedAt": "2026-11-04T03:23:06Z",
+ "landedAt": "2026-11-04T03:23:06Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/big-dog/orchestrator.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/reports/crew-live.md",
+  "_claude/builds/reports/crew-live/shots.json",
+  "_claude/builds/reports/crew-live/shots/after/crew-expanded-laptop.png",
+  "_claude/builds/reports/crew-live/shots/after/crew-expanded-phone.png",
+  "_claude/builds/reports/crew-live/shots/after/crew-laptop.png",
+  "_claude/builds/reports/crew-live/shots/after/crew-phone.png",
+  "_claude/builds/reports/crew-live/shots/after/orchestrator-laptop.png",
+  "_claude/builds/reports/crew-live/shots/after/orchestrator-phone.png",
+  "_claude/builds/reports/crew-live/shots/before/orchestrator-laptop.png",
+  "_claude/builds/reports/crew-live/shots/before/orchestrator-phone.png",
+  "_claude/builds/store.json",
+  "_claude/memory/STATUS.md",
+  "apps/amberx-droid/src/axf/assets/avatar/agent-avatar.json",
+  "apps/axhub-web/src/axf/assets/avatar/agent-avatar.json",
+  "apps/console-web/plugins/README.md",
+  "apps/console-web/plugins/agent-swarm/plugin.json",
+  "apps/console-web/plugins/agent-swarm/server/__init__.py",
+  "apps/console-web/plugins/agent-swarm/test.mjs",
+  "apps/console-web/plugins/agent-swarm/web/cards.tsx",
+  "apps/console-web/plugins/agent-swarm/web/chat.tsx",
+  "apps/console-web/plugins/agent-swarm/web/index.tsx",
+  "apps/console-web/plugins/agent-swarm/web/ui.tsx",
+  "apps/console-web/plugins/build-orchestrator/web/ui.tsx",
+  "apps/console-web/plugins/builds-page/web/ui.tsx",
+  "apps/console-web/plugins/console-terminal/plugin.json",
+  "apps/console-web/plugins/console-terminal/server/__init__.py",
+  "apps/console-web/plugins/console-terminal/web/TerminalHost.tsx",
+  "apps/console-web/plugins/console-terminal/web/index.tsx",
+  "apps/console-web/plugins/crew-live/README.md",
+  "apps/console-web/plugins/crew-live/help.json",
+  "apps/console-web/plugins/crew-live/hooks.mjs",
+  "apps/console-web/plugins/crew-live/install.mjs",
+  "apps/console-web/plugins/crew-live/plugin.json",
+  "apps/console-web/plugins/crew-live/server/__init__.py",
+  "apps/console-web/plugins/crew-live/server/crew.py",
+  "apps/console-web/plugins/crew-live/test.py",
+  "apps/console-web/plugins/crew-live/uninstall.mjs",
+  "apps/console-web/plugins/crew-live/web/core-check.mts",
+  "apps/console-web/plugins/crew-live/web/core.ts",
+  "apps/console-web/plugins/crew-live/web/crew.css",
+  "apps/console-web/plugins/crew-live/web/index.tsx",
+  "apps/console-web/plugins/crew-live/web/menu.ts",
+  "apps/console-web/plugins/crew-live/web/ui.tsx",
+  "apps/console-web/plugins/ui-review/web/ui.tsx",
+  "apps/console-web/plugins/whats-shipped/web/index.tsx",
+  "apps/console-web/src/axf/assets/avatar/agent-avatar.json",
+  "apps/console-web/src/axf/core/agent-directory.ts",
+  "apps/console-web/src/axf/react/components/AgentAvatar.tsx",
+  "apps/console-web/src/axf/react/index.ts",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/molly/src/axf/assets/avatar/agent-avatar.json",
+  "framework/assets/avatar/agent-avatar.json",
+  "framework/cli/rebuild-shots.mjs",
+  "framework/core/agent-directory.ts",
+  "framework/react/components/AgentAvatar.tsx",
+  "framework/react/index.ts",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/big-dog/orchestrator.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/reports/crew-live.md",
+    "_claude/builds/reports/crew-live/shots.json",
+    "_claude/builds/reports/crew-live/shots/after/crew-expanded-laptop.png",
+    "_claude/builds/reports/crew-live/shots/after/crew-expanded-phone.png",
+    "_claude/builds/reports/crew-live/shots/after/crew-laptop.png",
+    "_claude/builds/reports/crew-live/shots/after/crew-phone.png",
+    "_claude/builds/reports/crew-live/shots/after/orchestrator-laptop.png",
+    "_claude/builds/reports/crew-live/shots/after/orchestrator-phone.png",
+    "_claude/builds/reports/crew-live/shots/before/orchestrator-laptop.png",
+    "_claude/builds/reports/crew-live/shots/before/orchestrator-phone.png",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "crew-live",
+   "files": [
+    "apps/console-web/plugins/crew-live/README.md",
+    "apps/console-web/plugins/crew-live/help.json",
+    "apps/console-web/plugins/crew-live/hooks.mjs",
+    "apps/console-web/plugins/crew-live/install.mjs",
+    "apps/console-web/plugins/crew-live/plugin.json",
+    "apps/console-web/plugins/crew-live/server/__init__.py",
+    "apps/console-web/plugins/crew-live/server/crew.py",
+    "apps/console-web/plugins/crew-live/test.py",
+    "apps/console-web/plugins/crew-live/uninstall.mjs",
+    "apps/console-web/plugins/crew-live/web/core-check.mts",
+    "apps/console-web/plugins/crew-live/web/core.ts",
+    "apps/console-web/plugins/crew-live/web/crew.css",
+    "apps/console-web/plugins/crew-live/web/index.tsx",
+    "apps/console-web/plugins/crew-live/web/menu.ts",
+    "apps/console-web/plugins/crew-live/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-swarm",
+   "files": [
+    "apps/console-web/plugins/agent-swarm/plugin.json",
+    "apps/console-web/plugins/agent-swarm/server/__init__.py",
+    "apps/console-web/plugins/agent-swarm/test.mjs",
+    "apps/console-web/plugins/agent-swarm/web/cards.tsx",
+    "apps/console-web/plugins/agent-swarm/web/chat.tsx",
+    "apps/console-web/plugins/agent-swarm/web/index.tsx",
+    "apps/console-web/plugins/agent-swarm/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/plugins/README.md",
+    "apps/console-web/src/axf/assets/avatar/agent-avatar.json",
+    "apps/console-web/src/axf/core/agent-directory.ts",
+    "apps/console-web/src/axf/react/components/AgentAvatar.tsx",
+    "apps/console-web/src/axf/react/index.ts",
+    "apps/console-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "console-terminal",
+   "files": [
+    "apps/console-web/plugins/console-terminal/plugin.json",
+    "apps/console-web/plugins/console-terminal/server/__init__.py",
+    "apps/console-web/plugins/console-terminal/web/TerminalHost.tsx",
+    "apps/console-web/plugins/console-terminal/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/AgentAvatar.tsx",
+    "framework/react/index.ts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "builds-page",
+   "files": [
+    "apps/console-web/plugins/builds-page/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ui-review",
+   "files": [
+    "apps/console-web/plugins/ui-review/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "whats-shipped",
+   "files": [
+    "apps/console-web/plugins/whats-shipped/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/src/axf/assets/avatar/agent-avatar.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/src/axf/assets/avatar/agent-avatar.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/src/axf/assets/avatar/agent-avatar.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/avatar/agent-avatar.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/rebuild-shots.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/agent-directory.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261103-b35b9201",
+   "name": "Crew: every working agent, live + agent avatars",
+   "status": "approved",
+   "group": "g-20261103-e0f20df4",
+   "url": "/review/r-20261103-b35b9201"
+  },
+  {
+   "id": "r-20261103-29701776",
+   "name": "Predicted look: Crew: live grid of every working agent (what each is doing, cost, files, diff) + agent avatars everywhere",
+   "status": "approved",
+   "group": "g-20261103-d8c5e30e",
+   "url": "/review/r-20261103-29701776"
+  }
+ ],
+ "cost": {
+  "usd": 13.8119,
+  "estimated": false,
+  "tokens": {
+   "input": 396,
+   "output": 2455,
+   "cacheRead": 41187412,
+   "cacheWrite": 333952
+  }
+ },
+ "report": "_claude/builds/reports/crew-live.md",
+ "open": [
+  "Session browser rows don't show avatars: that plugin (PR #195) isn't on main yet; once it lands, one `<AgentAvatar agent={run.agent} />` in its row does it.",
+  "PR rows (push banner) and orchestrator step rows show no avatar of their own (the build row above them does).",
+  "Agent identity for a plain build launch comes from the build's `Agent: <name>` line: the launcher tags runs with the build name, not the agent id (`AXF_AGENT`), so a build whose detail names nobody shows initials.",
+  "The `avatar@1` asset type has no `source: \"agent\"` yet (the `agent-avatar` asset uses `text`); adding it is an asset-type contract change (Fable), not done here.",
+  "Cost between meter updates is the last streamed figure (no interpolation); exact once the run's result arrives.",
+  "Kotlin twin of the agent directory / AgentAvatar deferred (Android on hold)."
+ ]
+}

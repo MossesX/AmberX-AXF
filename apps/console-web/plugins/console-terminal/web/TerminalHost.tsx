@@ -28,6 +28,7 @@ import { activate, addSession, ctl, dropHost, host, hostIds, hostOf, move, patch
 import { newWindow } from './open';
 import { TerminalSession } from './TerminalSession';
 import { follow, meterOf, modelName, money, statusOf, useMeters } from './meters';
+import { startLine, type MeterStart } from './headless-core';
 import { SplitView, type Split } from './SplitView';
 import { ChainPane } from './ChainPane';
 import { markClosed } from './headless';
@@ -220,7 +221,7 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
           return (
             <div key={s.id} role="tab" aria-selected={on} tabIndex={on ? 0 : -1}
               className={`fx-tab ${P}__tab ${on ? 'is-active' : ''} ${hl ? 'is-headless' : ''} ${armed === s.id ? 'is-armed' : ''} ${reorder?.from === i ? 'is-dragging' : ''} ${reorder && reorder.from !== i && reorder.to === i ? (reorder.to < reorder.from ? 'is-drop-before' : 'is-drop-after') : ''}`} style={s.color ? { ['--axp-wt-tint' as string]: `var(--fx-${s.color})` } : undefined} data-tint={s.color ? '' : undefined}
-              title={`${label}${m ? ` · ${modelName(m.model)} · ${money(m.costUsd)}${m.costEstimated ? ' (estimate)' : ''} · ${st}` : ''}${s.open ? ` · ${describe(s.open)}` : ''}`}
+              title={`${label}${m ? ` · ${modelName(m.model)} · ${money(m.costUsd)}${m.costEstimated ? ' (estimate)' : ''} · ${st}` : ''}${startLine(m as MeterStart | null) ? ` · ${startLine(m as MeterStart | null)}` : ''}${s.open ? ` · ${describe(s.open)}` : ''}`}
               onClick={() => activate(tab.id, s.id)}
               onDoubleClick={() => setRenaming({ id: s.id, text: s.title })}
               onAuxClick={(e) => { if (e.button === 1) { e.preventDefault(); close(s.id); } }}

@@ -44,6 +44,12 @@
             "action": "nav:console"
           },
           {
+            "id": "go-expenses",
+            "label": "Expenses",
+            "icon": "chart",
+            "action": "nav:expenses"
+          },
+          {
             "id": "s2",
             "separator": true
           },

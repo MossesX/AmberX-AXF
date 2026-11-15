@@ -595,7 +595,8 @@
         "systemPrompt",
         "agentId",
         "tools",
-        "thinking"
+        "thinking",
+        "toolMode"
       ]
     },
     {
@@ -605,7 +606,8 @@
         "temperature",
         "top_p",
         "systemPrompt",
-        "tools"
+        "tools",
+        "toolMode"
       ]
     },
     {
@@ -618,6 +620,7 @@
         "top_p",
         "systemPrompt",
         "tools",
+        "toolMode",
         "agentId"
       ]
     },
@@ -631,6 +634,7 @@
         "top_p",
         "systemPrompt",
         "tools",
+        "toolMode",
         "profileId",
         "model",
         "max_tokens",
@@ -647,6 +651,7 @@
         "top_p",
         "systemPrompt",
         "tools",
+        "toolMode",
         "agentId",
         "profileId",
         "model",

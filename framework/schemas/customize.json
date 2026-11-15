@@ -599,6 +599,42 @@
     },
     "badge": {
       "root": ".fx-badge"
+    },
+    "clock": {
+      "root": ".fx-banner__clock"
+    },
+    "action-button": {
+      "root": ".fx-widget-button"
+    },
+    "logo": {
+      "root": ".fx-widget-logo"
+    },
+    "label": {
+      "root": ".fx-widget-label"
+    },
+    "status": {
+      "root": ".fx-widget-status"
+    },
+    "counter": {
+      "root": ".fx-widget-counter"
+    },
+    "progress": {
+      "root": ".fx-widget-progress"
+    },
+    "avatar": {
+      "root": ".fx-widget-avatar"
+    },
+    "link": {
+      "root": ".fx-widget-link"
+    },
+    "theme-switch": {
+      "root": ".fx-widget-theme"
+    },
+    "spacer": {
+      "root": ".fx-widget-spacer"
+    },
+    "divider": {
+      "root": ".fx-widget-divider"
     }
   }
 }

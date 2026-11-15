@@ -1,0 +1,40 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "claude-accounts-routing-status-first",
+  "name": "Job routing: status first",
+  "version": "1.0.0",
+  "description": "A live account status board and the test-a-job preview on top, both open; workers, API caps and rules folded below for when you change them.",
+  "author": "Claude accounts plugin",
+  "tags": [
+    "claude-accounts",
+    "job-routing",
+    "ui-choices:claude-accounts-routing"
+  ],
+  "data": {
+    "layout": "list",
+    "header": "compact",
+    "search": true,
+    "descriptions": true,
+    "levels": true,
+    "defaultLevel": "basic",
+    "levelOf": {
+      "claude-accounts.routing": "basic",
+      "claude-accounts.list": "simple",
+      "claude-accounts.runs": "developer",
+      "claude-accounts.add": "administrator"
+    },
+    "view": "status-first",
+    "order": [
+      "status",
+      "test",
+      "rules",
+      "api",
+      "workers"
+    ],
+    "open": [
+      "status",
+      "test"
+    ]
+  }
+}

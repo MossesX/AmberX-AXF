@@ -111,6 +111,8 @@ function submitForReview(dir, files) {
   const name = typeof args.name === 'string' ? args.name : typeof args.title === 'string' ? args.title : '';
   const screen = typeof args.screen === 'string' ? args.screen : [...new Set(shots.map((s) => s.name))].join(', ');
   const argv = [join(owner, 'review.mjs'), 'submit', '--kind', kind, '--name', name, '--screen', screen, '--shots', files.join(',')];
+  // a build ships its options (ui-choices@1), or says why there is one
+  for (const k of ['choices', 'single-option']) if (typeof args[k] === 'string') argv.push(`--${k}`, args[k]);
   for (const k of ['app', 'group', 'source', 'by', 'build', 'step', 'branch', 'pr', 'notes']) if (typeof args[k] === 'string') argv.push(`--${k}`, args[k]);
   if (args.console) argv.push('--console');
   const r = spawnSync(process.execPath, argv, { stdio: 'inherit' });

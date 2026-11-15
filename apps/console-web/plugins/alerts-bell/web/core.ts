@@ -32,7 +32,7 @@ export const showOf = (v: unknown) => v !== false;
 /** What the runtime needs to offer (structural, so this file imports nothing). */
 export interface BannerHost {
   registry: { register(raw: unknown, source: 'app', origin: string): unknown };
-  attachToBanner(a: { type: string; id: string; at: 'left' | 'center' | 'right'; order?: number; origin: string }): unknown;
+  attachToBanner(a: { type: string; id: string; at: 'left' | 'center' | 'right'; order?: number; origin: string; widget?: Record<string, unknown> }): unknown;
   detachFromBanner(keyOrOrigin: string): void;
 }
 
@@ -41,6 +41,6 @@ export function placeBell(rt: BannerHost, show: boolean, side: Side): void {
   for (const a of ASSETS) rt.registry.register(a, 'app', ID);
   rt.detachFromBanner(ID);
   if (!show) return;
-  rt.attachToBanner({ type: 'action-button', id: ASSET_ID, at: side, order: 30, origin: ID });
-  rt.attachToBanner({ type: 'counter', id: ASSET_ID, at: side, order: 31, origin: ID });
+  rt.attachToBanner({ type: 'action-button', id: ASSET_ID, at: side, order: 30, origin: ID, widget: { label: 'Alerts bell', icon: 'bell', priority: 9, overflow: false, aliases: ['bell', 'alerts'] } });
+  rt.attachToBanner({ type: 'counter', id: ASSET_ID, at: side, order: 31, origin: ID, widget: { label: 'Alerts count', icon: 'bell', priority: 9, aliases: ['alert count'] } });
 }

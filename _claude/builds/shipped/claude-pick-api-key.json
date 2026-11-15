@@ -1,0 +1,56 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-claude-pick-api-key",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:26:17Z",
+ "build": {
+  "id": "claude-pick-api-key",
+  "title": "claude-pick.sh: choose plan or API key at launch",
+  "profile": "all",
+  "category": "Feature",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "On the VPS, deploy/claude-pick.sh asks at launch whether Claude Code uses the Claude plan login or an Anthropic API key (billed per use). Key read from ~/.anthropic-key (0600), never the repo; export ANTHROPIC_API_KEY only for that launch; option to save/replace/remove the key; show which is active. Plan is the default. Note: claude.ai connectors and /schedule are unavailable while the API key is active.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-18T06:07:53.368Z",
+ "landedAt": "2026-10-18T06:07:53.368Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

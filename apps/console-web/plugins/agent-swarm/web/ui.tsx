@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Icon, useRuntime } from '@console/axf/react';
+import { Button, Icon, TabGroup, useRuntime } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridSort } from '@console/axf/libs/datagrid';
 import * as consoleApi from '@console/api';
 import * as core from './swarm-core.mjs';
@@ -49,9 +49,7 @@ export function SwarmPage() {
       </header>
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
       {state.problems.length > 0 && <div className="pl-note is-warn"><Icon name="alert" size={14} />{state.problems.join(' · ')}</div>}
-      <div className="fx-tabs" role="tablist" aria-label="Agent swarm">
-        {TABS.map((t) => <button key={t.id} role="tab" className="fx-tab" aria-selected={tab === t.id} onClick={() => setTab(t.id)}><Icon name={t.icon} size={14} />{t.label}</button>)}
-      </div>
+      <TabGroup id="agent-swarm.tabs" label="Agent swarm" value={tab} onChange={setTab} tabs={TABS.map((t) => ({ value: t.id, label: t.label, icon: t.icon }))} />
       {tab === 'crew' && <CrewTab state={state} stats={stats} act={doAct} jobsBy={jobsBy} allSkills={allSkills} onFeed={() => setTab('cost')} />}
       {tab === 'job-types' && <JobTypesTab jobs={jobs.jobs} error={jobs.error} reload={async () => { await Promise.all([jobs.load(), load()]); }} onAgent={openAgent} />}
       {tab === 'cards' && <CardsTab state={state} stats={stats} act={doAct} photo={(a) => <Avatar a={a} size={120} />} />}

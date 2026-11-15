@@ -5,6 +5,13 @@
  *   node apps/console-web/plugins/ui-review/review.mjs submit --name "…" --app A --screen S --shots a.png,b.png
  *        [--group "<name>"] [--kind <section>] [--shots-dir <dir>] [--build B] [--step S] [--branch B] [--pr N]
  *        [--notes "…"] [--source <source>] [--by <type:id>] [--console] [--json]
+ *        [--choices <file.json>] [--single-option "<why only one>"]
+ *        choices file: { assetType, owner, options: [{ id, label, notes?, shots: [files], data: {asset data} }] }. A build
+ *        ships at least 3 options (setting); each option's asset is written to plugins/<owner>/assets/<type>/ here, so
+ *        it ships in the PR, picked or not (ui-choices@1, framework/core/ui-choices.mjs).
+ *   node apps/console-web/plugins/ui-review/review.mjs ask-options --build B [--title T] [--wait] --console
+ *        how many options does Brett want? (asks him when the setting is on; no answer in time = the default)
+ *   node apps/console-web/plugins/ui-review/review.mjs decision <id> --console     his pick, in priority order
  *   node apps/console-web/plugins/ui-review/review.mjs list [--kind K] [--status waiting|changes|rejected|approved|open]
  *        [--branch B] [--pr N] [--q text] [--console] [--json]
  *   node apps/console-web/plugins/ui-review/review.mjs state [--branch B] [--pr N] [--exit-code] [--console] [--json]
@@ -30,6 +37,7 @@ import { fileURLToPath } from 'node:url';
 import * as core from './web/review-core.mjs';
 import * as cf from './web/conform.mjs';
 import * as gc from './web/groups-core.mjs';
+import * as ch from '../../../../framework/core/ui-choices.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(HERE, '../../../..');
@@ -103,7 +111,7 @@ export function submitLocal(fields, files) {
   const g = ensureReviewGroup(doc, item, now);
   item.group = g.id; delete item.groupSession;
   const used = new Set();
-  const names = files.map((f, i) => { let n = safeName(f, i); while (used.has(n)) n = `${i + 1}-${n}`; used.add(n); return n; });
+  const names = files.map((f, i) => { let n = safeName(optionFile.get(f) ?? f, i); while (used.has(n)) n = `${i + 1}-${n}`; used.add(n); return n; });
   const out = { ...item, shots: names.map((n) => ({ src: `items/${item.id}/${n}`, device: core.deviceOf(n), name: core.shotName(n) })) };
   doc.items.push(out);
   const check = cf.reviewToStored(out, doc.groups); cf.refuse(check.errors); // nothing is copied for a refused item
@@ -124,6 +132,30 @@ export function decideLocal(ids, decision, { comment = '', by = 'brett' } = {}) 
 
 /** A linked git worktree has a .git file (not a folder) at its root. */
 const isWorktree = () => { try { return statSync(join(ROOT, '.git')).isFile(); } catch { return false; } };
+
+/* -------------------------------------------------------------- choices (ui-choices@1) */
+
+const optionFile = new Map();
+const uploadName = (f) => optionFile.get(f) ?? basename(f);
+/** A --choices file: the clean set, the option pictures (named opt-<id>--…) and each option's asset data. */
+function loadChoices(file, fields) {
+  const raw = JSON.parse(readFileSync(file, 'utf8'));
+  const set = ch.slug(raw.set) || `${ch.slug(fields.title ?? fields.name).slice(0, 24)}-${Date.now().toString(36)}`;
+  const choices = ch.normChoices({ ...raw, set }, { set });
+  const files = [];
+  const data = {};
+  (raw.options ?? []).forEach((o, i) => {
+    const opt = choices.options[i];
+    if (!opt) return;
+    data[opt.id] = o.data;
+    for (const s of o.shots ?? []) { const f = resolve(dirname(file), s); files.push(f); optionFile.set(f, `opt-${opt.id}--${basename(f)}`); }
+  });
+  return { choices, files, data };
+}
+/** Every option a real asset in the owner plugin's assets folder, so it ships in this PR, picked or not. */
+function writeOptionAssets({ choices, data }) {
+  for (const o of choices.options) writeJson(join(ROOT, 'apps/console-web/plugins', ch.optionAssetPath(choices, o)), ch.optionAsset(choices, o, data[o.id]));
+}
 
 /* -------------------------------------------------------------- console API (--console) */
 async function consoleCall(path, body) {
@@ -161,17 +193,37 @@ export async function main(argv = process.argv.slice(2)) {
   const json = !!flags.json; const remote = !!flags.console;
   const out = (v, text) => console.log(json ? JSON.stringify(v) : text);
   if (cmd === 'submit') {
-    const files = shotFiles(flags); const fields = fieldsOf(flags);
+    let files = shotFiles(flags); const fields = fieldsOf(flags);
     if (!core.isKind(fields.kind)) throw new Error(`--kind must be lowercase letters, digits and dashes (sections: ${kinds().map((k) => k.id).join(', ')})`);
+    if (val(flags['single-option'])) fields.singleOption = val(flags['single-option']);
+    const set = val(flags.choices) ? loadChoices(val(flags.choices), fields) : null;
+    if (set) { fields.choices = set.choices; files = [...files, ...set.files]; }
+    const gap = ch.submissionGap(fields, remote ? ch.MIN_OPTIONS : ch.minOptions(readJson(join(dataDir(), 'choices-settings.json'), {}).minOptions));
+    if (gap && fields.title && fields.app && fields.screen && fields.source) throw new Error(gap); // a missing field is named first
     if (!remote && !process.env.AXF_UI_REVIEW_DIR && isWorktree()) {
       console.error('warning: this checkout is a git worktree, so the item and its pictures stay in it (gone when the worktree is deleted) '
         + 'and Brett never sees them. Use --console (AXF_CONSOLE_URL + AXF_TOKEN): the pictures are uploaded to the console at submit time.');
     }
+    if (set) writeOptionAssets(set);
     const item = remote
-      ? (await consoleCall('submit', { ...fields, files: files.map((f) => ({ name: basename(f), device: core.deviceOf(basename(f)), data: readFileSync(f).toString('base64') })) })).item
+      ? (await consoleCall('submit', { ...fields, files: files.map((f) => ({ name: uploadName(f), device: core.deviceOf(basename(f)), data: readFileSync(f).toString('base64') })) })).item
       : submitLocal(fields, files);
     const n = (item.files?.after?.length ?? 0) + (item.files?.before?.length ?? 0);
     return out({ ok: true, item }, `submitted ${item.id}: ${item.name} (${item.section}, ${n} screenshots, group "${item.group?.name}") — waiting for Brett in UI Review`);
+  }
+  if (cmd === 'ask-options') {
+    if (!remote) throw new Error('ask-options needs --console');
+    const a = await consoleCall('choices/ask', { build: val(flags.build), title: val(flags.title) });
+    if (!a.asked || !flags.wait) return out(a, String(a.count ?? a.default));
+    for (;;) {
+      await new Promise((f) => setTimeout(f, 10_000));
+      const r = await consoleCall(`choices/ask?id=${a.id}`);
+      if (r.answered) return out(r, String(r.count));
+    }
+  }
+  if (cmd === 'decision') {
+    if (!remote) throw new Error('decision needs --console');
+    return out(await consoleCall(`choices/decision?id=${encodeURIComponent(pos[1] ?? '')}`), '');
   }
   if (cmd === 'list') {
     const items = remote ? (await consoleCall('items')).items.map(cf.storedToReview) : submitted(loadDoc());

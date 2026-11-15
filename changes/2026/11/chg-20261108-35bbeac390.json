@@ -1,0 +1,72 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261108-35bbeac390",
+  "createdAt": "2026-11-08T00:24:23.837Z",
+  "updatedAt": "2026-11-08T01:00:46.983Z",
+  "kind": "build",
+  "title": "# Build: pipeline-rebuild (orchestrator build ID: urgent-rebuild-pipeline-orchestrator-ids-splits-)…",
+  "asked": "# Build: pipeline-rebuild (orchestrator build ID: urgent-rebuild-pipeline-orchestrator-ids-splits-) ## Brett said (verbatim) You need to start the pipeline over from scratch. From now on, what I say, send a build to the orchestrator. The orchestrator is going to assign an ID. A build ID. He's going to use you to break it up into steps select a model Babel or Opus Babel when it's needed and then he's going to see how many subscriptions are connected to the VPS how many accounts are available How many, what's the max parallel for each one? And uh, if it's a account that has Fable, he'll send the Fable to that. He'll send everything else to Opus. He will, no, he will check the BPS to see what accounts have what slots. Available parallel. Dish out the steps, okay? The steps are marked. We already have the rules for how the steps are marked down into a, in a progress pile and blah blah blah. Updated in real time because you have a monitor watching the progress files. And um, the orchestrator starts starts the head, headless. The orchestrator then sends it to the queue, or he sends it to pending. Yeah, he sends everything to the pending. And I have to send them from pending to queue. ## Addendum (Brett, voice) The orchestrator doesn't start a headless session right away. If he has slots open, he grabs the next build in the queue and starts the headless session. ## Context found tonight - The orchestrator (apps/console-web/plugins/build-orchestrator) has NO launch code: nothing in it starts headless sessions. Only deploy/claude-headless.sh enqueues into agent-slots (framework/cli/agent-slots.mjs). - Pending items are never auto-imported into the orchestrator; 'import' (orchestrator-core.mjs) only copies existing subPrompts, nothing splits. - HARD RULE in force: no build starts without an orchestrator build ID (launcher enforces it). - 'Launch builds without asking' (claude-settings) defaults off. - Profiles were merged into 'all' on Nov 7; queue flagged needsReprocess. ## Do 1. Intake: every new pending item is auto-imported into the orchestrator with a build ID. 2. Split: the orchestrator calls Claude to split into <=30 min steps and pick Fable only where needed, Opus otherwise; write steps to the build. 3. Flow: builds sit in Pending until Brett moves them to Queue (no auto-queue). 4. Dispatcher: a loop in the orchestrator reads VPS accounts (deploy/claude-workers.mjs status, claude-login.mjs accounts): which have Fable, max parallel, free slots. When a slot is free it takes the next Queue build and starts a headless session through the existing launcher (claude-headless.sh / agent-slots), Fable steps to a Fable account, rest to Opus. 5. Progress: steps tick in the progress files per existing rules; the live monitor updates the console in real time. 6. Idle alert: AmberX phone notification when nothing is running while the Queue has work. 7. Tests, report _claude/builds/reports/pipeline-rebuild.md, THREADS, PR, steps through the store. Commits clean and professional. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step fir…",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "session": "bb1814c0-222",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [
+    {
+      "text": "s1 contract: queued status + pipeline record",
+      "state": "done",
+      "startedAt": "2026-11-08T00:37:27.372Z",
+      "finishedAt": "2026-11-08T00:37:27.372Z"
+    },
+    {
+      "text": "s2-s5: pipeline core, CLI dispatcher, launches, alerts",
+      "state": "done",
+      "startedAt": "2026-11-08T00:54:15.553Z",
+      "finishedAt": "2026-11-08T00:54:15.553Z"
+    }
+  ],
+  "result": null,
+  "closed": null,
+  "state": "running",
+  "status": "running",
+  "buildRef": {
+    "kind": "pending",
+    "id": "urgent-rebuild-pipeline-orchestrator-ids-splits-"
+  },
+  "surface": "headless",
+  "startedAt": "2026-11-08T00:24:23.837Z",
+  "lastSeenAt": "2026-11-08T01:00:46.983Z",
+  "estimate": {
+    "minutes": 300,
+    "costUsd": 82.5
+  },
+  "costEstimated": true,
+  "branch": "claude/pipeline-rebuild",
+  "areas": [
+    "apps/console-web/plugins/build-orchestrator",
+    "framework/plan/builds-store-core.mjs",
+    "framework/core",
+    "framework/cli",
+    "deploy",
+    "framework/spec",
+    "_claude"
+  ],
+  "doing": "Running: Write the README section, decision, rule, THREADS row and STATUS line; fold the",
+  "progress": 1,
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/pipeline-rebuild",
+    "branch": "claude/pipeline-rebuild",
+    "base": "c609f58f2f784ca263ae94faaf6cb9ef9b758dd6",
+    "head": "c609f58f2f784ca263ae94faaf6cb9ef9b758dd6",
+    "pushed": true,
+    "dirty": 0,
+    "files": [],
+    "at": "2026-11-08T00:24:25.918Z"
+  }
+}

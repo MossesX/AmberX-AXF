@@ -1,6 +1,6 @@
 /** One plugin, everything about it: overview, dependencies in detail, its UI and settings, logs, files, install. */
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Button, Chip, Icon, ModelBadge, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, ModelBadge, TabGroup, useRuntime } from '@console/axf/react';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { hasSettings, hasUi, openSettings, openUi, setEnabled } from './actions';
 import { LoadingSkeleton } from '@console/emptyState';
@@ -65,15 +65,8 @@ export function DetailPane({ row, inv, onChanged, onSelect, initialTab }: { row:
         </div>
         <QuickActions row={row} onChanged={onChanged} />
       </header>
-      <div className="axp-plugin-manager-tabs" role="tablist">
-        {TABS.map((t) => (
-          <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} className={`fx-tab ${tab === t.id ? 'is-active' : ''}`} onClick={() => setTab(t.id)}>
-            <Icon name={t.icon} size={14} /> {t.label}
-            {t.id === 'deps' && row.dependencies.some((d) => d.required && (d.status === 'missing' || d.status === 'disabled')) && <span className="axp-plugin-manager-dot is-error" />}
-            {t.id === 'logs' && row.logCount > 0 && <span className="axp-plugin-manager-count">{row.logCount}</span>}
-          </button>
-        ))}
-      </div>
+      <TabGroup id="plugin-manager.detail" label="Plugin sections" className="axp-plugin-manager-tabs" value={tab} onChange={setTab}
+        tabs={TABS.map((t) => ({ value: t.id, label: t.label, icon: t.icon, badge: t.id === 'logs' && row.logCount > 0 ? row.logCount : t.id === 'deps' && row.dependencies.some((d) => d.required && (d.status === 'missing' || d.status === 'disabled')) ? '!' : undefined }))} />
       <div className="axp-plugin-manager-detail__body">
         {tab === 'overview' && <Overview row={row} conflicts={conflicts} />}
         {tab === 'deps' && <Dependencies row={row} conflicts={conflicts} onSelect={onSelect} />}

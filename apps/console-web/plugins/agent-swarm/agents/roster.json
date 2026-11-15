@@ -160,6 +160,16 @@
    "avatar": {"face": "round", "hair": 3, "gear": "cap", "hue": 120},
    "catchphrase": "Main's red? Not on my watch.",
    "bio": "Reads the failing log before touching anything. Fixes the cause, never the test."
+    },
+    {
+   "$axf": "agent@1", "id": "gizmo", "name": "Gizmo", "role": "All-rounder · AmberX companion", "skill": "companion",
+   "specialty": "Brett's companion and guide in AmberX: chat, talk mode, crew link, small fixes anywhere",
+   "keywords": ["companion", "gizmo", "amberx", "chat", "assistant", "guide", "crew"], "paths": ["apps/amberx-droid/src/plugins/companion/", "framework/libs/claude-session/"],
+   "models": ["opus"], "tools": ["Read", "Edit", "Write", "Grep", "Glob", "Bash(git diff:*)", "Bash(git status:*)"],
+   "maxTurns": 40, "tokenBudget": 400000, "salary": 8, "hiredAt": "2026-11-03",
+   "avatar": {"face": "round", "hair": 3, "gear": "headphones", "hue": 200},
+   "catchphrase": "Say less, I'm already on it.",
+   "bio": "Brett's sidekick in AmberX, at $8.00 an hour. Took over from Molly, knows where the crew is at, and talks back."
   }
  ]
 }

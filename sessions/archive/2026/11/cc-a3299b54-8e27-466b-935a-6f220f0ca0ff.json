@@ -1,0 +1,109 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-a3299b54-8e27-466b-935a-6f220f0ca0ff",
+ "source": "claude-code",
+ "sessionId": "a3299b54-8e27-466b-935a-6f220f0ca0ff",
+ "project": "other",
+ "title": "# Build pipeline v2 — brief The full brief is /root/axf-builds/build-pipeline-v2/.brief.md — read it first and follow i…",
+ "startedAt": "2026-11-07T10:44:07.051Z",
+ "endedAt": "2026-11-07T11:45:04.021Z",
+ "minutes": 61,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.319",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/pipeline-v2",
+  "repo": "",
+  "branch": "claude/pipeline-v2"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-fable-5-1"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-07T10:44:08.421Z",
+   "kind": "prompt",
+   "text": "# Build pipeline v2 — brief The full brief is /root/axf-builds/build-pipeline-v2/.brief.md — read it first and follow it exactly. That copy was queued on Opus by mistake; THIS session (Fable) is the real run. Write PROGRESS.md in THIS folder (/root/axf-builds/pipeline-v2). First action: make sure the queued Opus copy `build-pipeline-v2` (queue id hl-mw69nff2-7p) never starts: remove it from the headless launch queue (deploy/claude-headless queue file) and note it in PROGRESS.md. Commit, don't push. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you…",
+   "model": "claude-fable-5-1",
+   "tokens": {
+    "input": 3010,
+    "output": 230299,
+    "cacheRead": 31792166,
+    "cacheWrite": 535039,
+    "thinking": 75614
+   },
+   "costUsd": 26.1815,
+   "costEstimated": false,
+   "seconds": 3654,
+   "tools": {
+    "Read": 5,
+    "Bash": 217,
+    "Write": 8,
+    "Edit": 1
+   },
+   "commands": 217,
+   "files": [
+    "/root/axf-builds/pipeline-v2/PROGRESS.md",
+    "/root/axf-builds/pipeline-v2/framework/core/pipeline.mjs",
+    "/root/axf-builds/pipeline-v2/framework/spec/check-pipeline.mjs",
+    "/root/axf-builds/pipeline-v2/framework/cli/pipeline.mjs",
+    "/root/axf-builds/pipeline-v2/_claude/memory/docs/build-pipeline.md",
+    "/root/axf-builds/pipeline-v2/framework/spec/check-pipeline-e2e.mjs",
+    "/root/axf-builds/pipeline-v2/_claude/builds/reports/build-pipeline-v2.md",
+    "/root/axf-builds/pipeline-v2/.axf-claude/axf-pipeline-v2--rhonda/projects/-opt-axf/memory/pipeline-v2-build-traps.md"
+   ],
+   "changeIds": [
+    "chg-20261107-a88d814a34"
+   ],
+   "features": [
+    "orchestrator:build-pipeline-v2",
+    "pending:build-pipeline-v2"
+   ],
+   "output": "Done, boss. Build pipeline v2 is built and committed on `claude/pipeline-v2` (not pushed, like you said). The Opus copy never ran: queue id hl-mw69nff2-7p is cancelled in the slots store and its waiter exited. **What you've got now (pipeline@1)** - One intake. `node framework/cli/pipeline.mjs reque…"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/pipeline-v2/PROGRESS.md",
+  "/root/axf-builds/pipeline-v2/framework/core/pipeline.mjs",
+  "/root/axf-builds/pipeline-v2/framework/spec/check-pipeline.mjs",
+  "/root/axf-builds/pipeline-v2/framework/cli/pipeline.mjs",
+  "/root/axf-builds/pipeline-v2/_claude/memory/docs/build-pipeline.md",
+  "/root/axf-builds/pipeline-v2/framework/spec/check-pipeline-e2e.mjs",
+  "/root/axf-builds/pipeline-v2/_claude/builds/reports/build-pipeline-v2.md",
+  "/root/axf-builds/pipeline-v2/.axf-claude/axf-pipeline-v2--rhonda/projects/-opt-axf/memory/pipeline-v2-build-traps.md"
+ ],
+ "changeIds": [
+  "chg-20261107-a88d814a34"
+ ],
+ "features": [
+  "orchestrator:build-pipeline-v2",
+  "pending:build-pipeline-v2"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 3010,
+  "output": 230299,
+  "cacheRead": 31792166,
+  "cacheWrite": 535039,
+  "thinking": 75614,
+  "costUsd": 26.1815,
+  "costEstimated": false,
+  "toolCalls": 231,
+  "commands": 217,
+  "filesTouched": 8,
+  "reportedUsd": 30.1939
+ },
+ "ingestedAt": "2026-11-07T11:45:04.789Z"
+}

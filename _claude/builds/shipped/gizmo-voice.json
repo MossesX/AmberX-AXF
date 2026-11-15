@@ -1,0 +1,135 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-gizmo-voice",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-09T01:26:04Z",
+ "build": {
+  "id": "gizmo-voice",
+  "title": "Gizmo voice: talk mode that works with the screen off",
+  "profile": "all",
+  "category": "AmberX",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Voice is step 2 and goes first in line.",
+  "verbatim": true,
+  "at": "2026-11-04T14:21:14.916Z",
+  "source": "voice",
+  "by": "brett",
+  "addenda": []
+ },
+ "brief": "# Gizmo voice in AmberX: make it work (URGENT)\n\nBrett: Gizmo inside AmberX won't turn on / isn't listening.\n\n1. Read /root/axf-builds/gizmo-voice (branch claude/gizmo-voice, stopped at s2 of 3, 11h ago) and its log; bring its committed/uncommitted work over. Orchestrator ids: `gizmo-voice` (s3 pending) and `amberx-voice-echo-fix` (0/3) — get their briefs: `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief <id>`.\n2. Find why Gizmo doesn't start/listen in AmberX (apps/amberx-droid: companion plugin, WatchService, MicGuard, speech, permissions). Fix it end to end: tap/wake → mic on → transcript → Gizmo replies (voice). Fix the echo (Gizmo hearing itself).\n3. Tests for the path; build the APK if the repo's CI/scripts do; note how Brett installs it.\n4. Mark both orchestrator builds' steps done; add to Shipped features.\n\nProgress: append `<time> START|DONE <step>` to PROGRESS.md here at each step; don't stop between steps. Commit, don't push. Shipped quality, no hard-coded styling.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "account-1"
+ ],
+ "runs": [
+  {
+   "session": "axf-gizmo-voice--joey",
+   "account": "account-1",
+   "model": "Opus",
+   "startedAt": "2026-11-06T22:23:20.801Z",
+   "endedAt": "",
+   "exit": null,
+   "costUsd": 0.4445
+  },
+  {
+   "session": "axf-gizmo-voice-fix--sully",
+   "account": "account-1",
+   "model": "Opus",
+   "startedAt": "2026-11-07T11:08:39.277Z",
+   "endedAt": "2026-11-07T11:18:18.744Z",
+   "exit": 0,
+   "costUsd": 4.9784
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Foreground service keeps talk mode + speech running with the screen off / app backgrounded (AmberX native)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-06T22:23:20.801Z",
+   "doneAt": "2026-11-06T23:15:15.743Z",
+   "actualMin": 52,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Wire companion talk.ts to the service; transcript shown in the chat; stop from the notification",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-06T23:15:15.743Z",
+   "doneAt": "2026-11-06T23:15:16.465Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "APK build via CI, phone test of hands-free + interrupt, report",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-06T23:15:16.465Z",
+   "doneAt": "2026-11-07T11:17:33.433Z",
+   "actualMin": 722,
+   "done": true
+  }
+ ],
+ "branch": "claude/gizmo-voice-fix",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "aeccdb0a848b520cd60fa4bb412e90f5037042ad",
+ "commits": [],
+ "mergedAt": "",
+ "landedAt": "2026-11-07T16:33:00Z",
+ "files": [],
+ "areas": [],
+ "tests": [
+  {
+   "name": "npx -y tsx apps/amberx-droid/test.mjs: 2259 → **2316** checks, all green. New: own replies never parse (11) and real commands still do (6); a replay of \"Note saved to Inbox.\" into the listener 12 times, in and past the echo window, still leaves one note; the conversation echo bar; the judge (8 cases",
+   "command": "npx -y tsx apps/amberx-droid/test.mjs",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "FocusRulesTest (JUnit, 4) run in a JDK 17 container; ListenerRulesTest etc. unchanged. tsc --noEmit clean.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "Not run here: Gradle :app:testDebugUnitTest :app:assembleDebug (no Android SDK on the VPS; CI's AmberX job builds and tests it).",
+   "command": "",
+   "result": "skip",
+   "detail": ""
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 5.4229,
+  "estimated": true,
+  "tokens": {
+   "input": 140,
+   "output": 773,
+   "cacheRead": 11262976,
+   "cacheWrite": 291475
+  }
+ },
+ "report": "_claude/builds/reports/gizmo-voice.md",
+ "open": [
+  "The focus fix can't be proven on a phone from here: the evidence is the code path (Google's recognizer requesting transient focus) and the tests of the rule. If talk mode still pauses, Settings → Plugins → Listeners shows the reason on the `talk` row.",
+  "An echo mis-heard badly enough to score under 0.75 and arriving more than 1.5 s after Gizmo stops still reaches him as a message (rare: his TTS voice is clear)."
+ ]
+}

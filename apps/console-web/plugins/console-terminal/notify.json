@@ -1,0 +1,17 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "terminal.bell",
+      "label": "Terminal bell",
+      "group": "console",
+      "app": "console",
+      "source": "Terminal",
+      "description": "The tone a terminal session rings. The Terminal's own bell setting still picks sound, flash or off.",
+      "enforced": "browser",
+      "only": [
+        "sound"
+      ]
+    }
+  ]
+}

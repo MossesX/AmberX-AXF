@@ -8,8 +8,8 @@
     "template": "react-ts"
   },
   "scripts": {
-    "dev": "node scripts/sync-data.mjs && vite",
-    "build": "node scripts/sync-data.mjs && tsc --noEmit && vite build",
+    "dev": "node scripts/sync-data.mjs && node scripts/control-inventory.mjs && vite",
+    "build": "node scripts/sync-data.mjs && node scripts/control-inventory.mjs && tsc --noEmit && vite build",
     "build:single": "tsc --noEmit && vite build --mode single",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",

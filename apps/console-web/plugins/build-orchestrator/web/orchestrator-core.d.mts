@@ -9,6 +9,15 @@ export function isFinished(status: string): boolean;
 export const SORTS: string[];
 export const SORT_LABEL: Record<string, string>;
 export const DEFAULT_RULES: { sameSession: boolean; subAgents: boolean; approveModelSwitch: boolean; maxStepMinutes: number };
+/** Largest step in minutes (Nov 13 2026; was 30): a ceiling the rule can lower, never raise. */
+export const STEP_MINUTES: number;
+/** The limit a step written before the change is held to. */
+export const LEGACY_STEP_MINUTES: number;
+export const TEN_MINUTE_STEPS_AT: string;
+export function maxStep(rules?: { maxStepMinutes?: number } | null): number;
+export function stepLimit(step: { createdAt?: string } | null | undefined, rules?: { maxStepMinutes?: number } | null): number;
+/** Steps are checkpoints inside one session: commit, push and tick each one; no relaunch per step. */
+export const CHECKPOINT_RULE: string;
 export const MODEL_GUIDE: Record<string, string>;
 export const UNCATEGORISED: string;
 export interface Group { label: string; steps: any[]; done: number; skipped: number; minutesLeft: number }
@@ -27,4 +36,7 @@ export function counts(builds: any[]): Record<string, number>;
 export function sortBuilds(list: any[], sort?: string, dir?: 'asc' | 'desc', rules?: any): any[];
 export const ASSET_RULE: string;
 export function brief(build: any, rules?: any): string;
+export interface UpgradePolicy { approvalRequired: boolean; source: string }
+export function setUpgradePolicy(p: Partial<UpgradePolicy> | null | undefined): UpgradePolicy;
+export function upgradePolicy(): UpgradePolicy;
 export function apply(state: any, change: any): { state: any; build?: any; log: string[] };

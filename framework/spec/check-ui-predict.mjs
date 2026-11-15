@@ -4,6 +4,7 @@
  * (framework/cli/ui-predict.mjs, offline: no browser, no console).
  *   node framework/spec/check-ui-predict.mjs
  */
+process.env.AXF_BUILD_LIMIT ??= 'off'; // the hard build limit counts the VPS's real builds: keep these tests off it (check-build-limit.mjs covers it)
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
@@ -111,7 +112,7 @@ t('ui-review-item@1 accepts a prediction on review items only', () => {
 // the CLI, offline: a scratch store holding BUILD
 const dir = mkdtempSync(join(tmpdir(), 'axf-predict-check-'));
 const store = join(dir, 'store.json');
-writeFileSync(store, JSON.stringify({ $axf: 'builds@1', rev: 1, builds: [{ ...BUILD, status: 'running', profiles: ['urgent'], branch: '', pr: '', notes: [], approvals: [], upgradeRequests: [], steps: BUILD.steps.map((s) => ({ ...s, model: 'Opus', done: false, skip: false })) }] }));
+writeFileSync(store, JSON.stringify({ $axf: 'builds@1', rev: 1, builds: [{ ...BUILD, status: 'running', profiles: ['all'], branch: '', pr: '', notes: [], approvals: [], upgradeRequests: [], steps: BUILD.steps.map((s) => ({ ...s, model: 'Opus', done: false, skip: false })) }] }));
 const env = { ...process.env, AXF_BUILDS_STORE: store, AXF_UI_PREDICT_CONSOLE: 'off', AXF_BUILDS_LIVE: '0' };
 const cli = (...a) => spawnSync(process.execPath, [join(ROOT, 'framework/cli/ui-predict.mjs'), ...a], { env, encoding: 'utf8' });
 

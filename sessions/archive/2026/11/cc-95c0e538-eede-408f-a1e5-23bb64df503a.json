@@ -1,0 +1,78 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-95c0e538-eede-408f-a1e5-23bb64df503a",
+ "source": "claude-code",
+ "sessionId": "95c0e538-eede-408f-a1e5-23bb64df503a",
+ "project": "other",
+ "title": "# Build: usage-meter (Opus, medium thinking; NO Fable on this account; keep it small) **Name:** Usage meter · **Categor…",
+ "startedAt": "2026-11-05T03:08:56.826Z",
+ "endedAt": "2026-11-05T03:09:11.868Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.318",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/usage-meter",
+  "repo": "",
+  "branch": "claude/usage-meter"
+ },
+ "user": "Brett (root)",
+ "models": [],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-05T03:09:10.571Z",
+   "kind": "prompt",
+   "text": "# Build: usage-meter (Opus, medium thinking; NO Fable on this account; keep it small) **Name:** Usage meter · **Category:** Plugin ## What Brett said (verbatim, Nov 4 2026, voice) \"I need my usage, my subscription usage, remaining usage shown on the screen somewhere in console. I need a plugin for that.\" Context: Brett burned his main account's weekly Claude credits in two days; builds died mid-step with 'You're out of usage credits'. The server now runs on a second account (`account-2`, no Fable) via `/usr/local/bin/claude-account` (saved logins in /root/.claude-accounts/, active name in .ac…",
+   "model": "",
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "thinking": 0
+   },
+   "costUsd": 0,
+   "costEstimated": false,
+   "seconds": 1,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [
+    "chg-20261105-af98dacba1"
+   ],
+   "features": [],
+   "output": "You've hit your 5-hour limit · resets 4:50am (UTC)"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261105-af98dacba1"
+ ],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 0,
+  "output": 0,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thinking": 0,
+  "costUsd": 0,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0
+ },
+ "ingestedAt": "2026-11-05T03:09:12.333Z"
+}

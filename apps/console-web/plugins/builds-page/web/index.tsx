@@ -22,7 +22,7 @@ function paint(rt: AxfRuntime, pct: number | null, active: boolean, name: string
     description: 'The active build profile\'s progress in percent (steps done of all steps), animated while a build runs.', tags: ['builds', 'progress'],
     data: { counter: COUNTER, tone: active ? 'accent' : 'neutral', hideAtZero: false, max: 100, label: active ? '% building' : '%', link: `nav:${VIEW}`, icon: 'chart' },
   }, 'app', ID);
-  if (rt.settings.get(KEYS.banner) !== false && pct != null) rt.attachToBanner({ type: 'counter', id: BANNER_ASSET, at: 'right', order: 24, origin: ID });
+  if (rt.settings.get(KEYS.banner) !== false && pct != null) rt.attachToBanner({ type: 'counter', id: BANNER_ASSET, at: 'right', order: 24, origin: ID, widget: { label: '% building', icon: 'hammer', size: 'compact', priority: 3, aliases: ['building', 'builds'] } });
   else rt.detachFromBanner(`counter:${BANNER_ASSET}`);
   void name;
 }

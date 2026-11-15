@@ -1,0 +1,369 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-merge-profiles-one",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-09T02:14:07Z",
+ "build": {
+  "id": "merge-profiles-one",
+  "title": "Merge every build profile into one (all)",
+  "profile": "all",
+  "category": "Builds",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "combine every build profile into ONE new profile on main and delete the others.",
+  "verbatim": false,
+  "at": "2026-11-07T00:00:00Z",
+  "source": "console",
+  "by": "merge-profiles-one",
+  "addenda": []
+ },
+ "brief": "# Merge all build profiles into one\n\nOwner (Brett) request: combine every build profile into ONE new profile on main and delete the others.\n\n## Current profiles (in /opt/axf/_claude/builds/profiles/)\nangel, big-dog, breakroom, current, refactor, urgent — each has orchestrator.json (and possibly pending/plan files).\n\n## Do\n1. Create a new profile `all` (folder _claude/builds/profiles/all/) whose orchestrator.json contains every build from all six profiles, keeping each build's id, status, steps and step states exactly. Merge any other per-profile files (pending JSON, plans, queue, settings) the same way.\n2. On a build id clash between profiles, keep both: suffix the later one with `-<oldprofile>` and note it in STATUS.md.\n3. Keep each build's origin: add a field `fromProfile` with the old profile name.\n4. Make `all` the default/active profile everywhere code, config or UI refers to a profile (profile switcher, planner.plans build target, orchestrator, headless scripts, docs). Any reference to the old names (incl. the `urgent` profile used by planner) must point to `all`. Priority/urgency must stay as a per-build field, not a profile.\n5. Delete the six old profile folders and any registry entries for them.\n6. This supersedes the unfinished `profile-manager` build (5/6): if its branch claude/profile-manager has useful merge code, reuse it; mark profile-manager complete/superseded in the merged file.\n7. Validate: every JSON parses, build count in `all` equals the sum of the old profiles (angel 27, big-dog 3, breakroom 5, current 109, refactor 53, urgent 32 = 229, minus nothing), orchestrator still lists builds correctly, tests/CI pass.\n8. Commit with a clear message. Do not push; it will be landed with build_land.\n\nShipped-product quality. No hard-coded styling. Keep changes minimal outside the profile merge.",
+ "models": [
+  "Fable",
+  "Opus"
+ ],
+ "accounts": [
+  "account-1"
+ ],
+ "runs": [
+  {
+   "session": "axf-merge-profiles-one--joey",
+   "account": "account-1",
+   "model": "Opus",
+   "startedAt": "2026-11-07T09:13:03.543Z",
+   "endedAt": "2026-11-07T09:36:33.574Z",
+   "exit": 0,
+   "costUsd": 19.3097
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Store core: retired-profile alias (resolveProfile), fromProfile, urgent → priority P0, mergeProfiles",
+   "model": "Fable",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-07T09:13:03.543Z",
+   "doneAt": "2026-11-07T09:19:46.590Z",
+   "actualMin": 7,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Registry + persist: readProfiles folds retired profiles into all; AXF_BUILD_PROFILE / saved pick / plan links resolve",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-07T09:13:03.543Z",
+   "doneAt": "2026-11-07T09:19:46.590Z",
+   "actualMin": 7,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Run the merge: 229 builds into all, matrices merged, old profile folders and registry entries removed",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-07T09:13:03.543Z",
+   "doneAt": "2026-11-07T09:19:46.590Z",
+   "actualMin": 7,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Priority stays a per-build field: build-priority + merge-queue no longer read the urgent profile",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-07T09:13:03.543Z",
+   "doneAt": "2026-11-07T09:19:46.590Z",
+   "actualMin": 7,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Docs, tests, THREADS + STATUS",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-07T09:13:03.543Z",
+   "doneAt": "2026-11-07T09:19:46.590Z",
+   "actualMin": 7,
+   "done": true
+  }
+ ],
+ "branch": "claude/merge-profiles-one",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "7babeb6313cdc799a7792142c3fda37178239e98",
+ "commits": [
+  "29436cf43688dbe3f0ed1bb1bf557949e07dc510"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-11-07T10:32:38Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/README.md",
+  "_claude/builds/journal/2026-11-p2.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/origins.json",
+  "_claude/builds/profiles/all/matrices.json",
+  "_claude/builds/profiles/all/orchestrator.json",
+  "_claude/builds/profiles/angel/matrices.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/big-dog/orchestrator.json",
+  "_claude/builds/profiles/breakroom/matrices.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/current/orchestrator.json",
+  "_claude/builds/profiles/refactor/matrices.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/store.json",
+  "_claude/memory/STATUS.md",
+  "_claude/memory/decisions.md",
+  "_claude/rules/RULES.md",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/core/build-priority.mjs",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/feature-matrix/test.mjs",
+  "apps/console-web/plugins/plan-studio/catalog.mjs",
+  "apps/console-web/plugins/plan-studio/test.mjs",
+  "apps/console-web/plugins/push-banner/land/merge-queue-core.mjs",
+  "apps/console-web/plugins/push-banner/land/merge-queue.test.mjs",
+  "apps/console-web/plugins/token-control/control.mjs",
+  "apps/console-web/plugins/token-control/web/docs.ts",
+  "apps/console-web/plugins/token-control/web/index.tsx",
+  "apps/console-web/plugins/whats-shipped/test.py",
+  "apps/console-web/server/build_profiles.py",
+  "apps/console-web/server/test_build_profiles.py",
+  "apps/console-web/src/axf/core/build-priority.mjs",
+  "framework/catalog/libraries.json",
+  "framework/cli/builds-store.mjs",
+  "framework/cli/persist.mjs",
+  "framework/cli/plan.mjs",
+  "framework/cli/profiles.mjs",
+  "framework/core/build-priority.mjs",
+  "framework/plan/builds-store-core.mjs",
+  "framework/plan/pending.json",
+  "framework/plan/plan.json",
+  "framework/plan/profiles.json",
+  "framework/plan/profiles/all/framework/catalog/status.json",
+  "framework/plan/profiles/all/framework/plan/build-queue.json",
+  "framework/plan/profiles/all/framework/plan/pending.json",
+  "framework/plan/profiles/all/framework/plan/plan.json",
+  "framework/plan/profiles/angel/framework/plan/build-queue.json",
+  "framework/plan/profiles/angel/framework/plan/pending.json",
+  "framework/plan/profiles/angel/tracker.json",
+  "framework/plan/profiles/big-dog/framework/catalog/status.json",
+  "framework/plan/profiles/big-dog/framework/plan/build-queue.json",
+  "framework/plan/profiles/big-dog/framework/plan/pending.json",
+  "framework/plan/profiles/big-dog/framework/plan/plan.json",
+  "framework/plan/profiles/big-dog/tracker.json",
+  "framework/plan/profiles/breakroom/framework/plan/pending.json",
+  "framework/plan/profiles/current/framework/catalog/status.json",
+  "framework/plan/profiles/current/framework/plan/build-queue.json",
+  "framework/plan/profiles/current/framework/plan/pending.json",
+  "framework/plan/profiles/current/framework/plan/plan.json",
+  "framework/plan/profiles/current/tracker.json",
+  "framework/plan/profiles/refactor/framework/catalog/status.json",
+  "framework/plan/profiles/refactor/framework/plan/pending.json",
+  "framework/plan/profiles/refactor/framework/plan/plan.json",
+  "framework/plan/profiles/refactor/tracker.json",
+  "framework/plan/profiles/urgent/framework/catalog/status.json",
+  "framework/plan/profiles/urgent/framework/plan/pending.json",
+  "framework/plan/profiles/urgent/framework/plan/plan.json",
+  "framework/plan/profiles/urgent/tracker.json",
+  "framework/spec/check-build-origin.mjs",
+  "framework/spec/check-build-priority.mjs",
+  "framework/spec/check-builds-store-lock.mjs",
+  "framework/spec/check-builds-store.mjs",
+  "framework/spec/check-card.mjs",
+  "framework/spec/check-ui-predict.mjs"
+ ],
+ "areas": [
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/builds-store-core.mjs",
+    "framework/plan/pending.json",
+    "framework/plan/plan.json",
+    "framework/plan/profiles.json",
+    "framework/plan/profiles/all/framework/catalog/status.json",
+    "framework/plan/profiles/all/framework/plan/build-queue.json",
+    "framework/plan/profiles/all/framework/plan/pending.json",
+    "framework/plan/profiles/all/framework/plan/plan.json",
+    "framework/plan/profiles/angel/framework/plan/build-queue.json",
+    "framework/plan/profiles/angel/framework/plan/pending.json",
+    "framework/plan/profiles/angel/tracker.json",
+    "framework/plan/profiles/big-dog/framework/catalog/status.json",
+    "framework/plan/profiles/big-dog/framework/plan/build-queue.json",
+    "framework/plan/profiles/big-dog/framework/plan/pending.json",
+    "framework/plan/profiles/big-dog/framework/plan/plan.json",
+    "framework/plan/profiles/big-dog/tracker.json",
+    "framework/plan/profiles/breakroom/framework/plan/pending.json",
+    "framework/plan/profiles/current/framework/catalog/status.json",
+    "framework/plan/profiles/current/framework/plan/build-queue.json",
+    "framework/plan/profiles/current/framework/plan/pending.json",
+    "framework/plan/profiles/current/framework/plan/plan.json",
+    "framework/plan/profiles/current/tracker.json",
+    "framework/plan/profiles/refactor/framework/catalog/status.json",
+    "framework/plan/profiles/refactor/framework/plan/pending.json",
+    "framework/plan/profiles/refactor/framework/plan/plan.json",
+    "framework/plan/profiles/refactor/tracker.json",
+    "framework/plan/profiles/urgent/framework/catalog/status.json",
+    "framework/plan/profiles/urgent/framework/plan/pending.json",
+    "framework/plan/profiles/urgent/framework/plan/plan.json",
+    "framework/plan/profiles/urgent/tracker.json"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/README.md",
+    "_claude/builds/journal/2026-11-p2.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/origins.json",
+    "_claude/builds/profiles/all/matrices.json",
+    "_claude/builds/profiles/all/orchestrator.json",
+    "_claude/builds/profiles/angel/matrices.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/big-dog/orchestrator.json",
+    "_claude/builds/profiles/breakroom/matrices.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/current/orchestrator.json",
+    "_claude/builds/profiles/refactor/matrices.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/check-build-origin.mjs",
+    "framework/spec/check-build-priority.mjs",
+    "framework/spec/check-builds-store-lock.mjs",
+    "framework/spec/check-builds-store.mjs",
+    "framework/spec/check-card.mjs",
+    "framework/spec/check-ui-predict.mjs"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/server/build_profiles.py",
+    "apps/console-web/server/test_build_profiles.py",
+    "apps/console-web/src/axf/core/build-priority.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/builds-store.mjs",
+    "framework/cli/persist.mjs",
+    "framework/cli/plan.mjs",
+    "framework/cli/profiles.mjs"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md",
+    "_claude/memory/decisions.md",
+    "_claude/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "token-control",
+   "files": [
+    "apps/console-web/plugins/token-control/control.mjs",
+    "apps/console-web/plugins/token-control/web/docs.ts",
+    "apps/console-web/plugins/token-control/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plan-studio",
+   "files": [
+    "apps/console-web/plugins/plan-studio/catalog.mjs",
+    "apps/console-web/plugins/plan-studio/test.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/land/merge-queue-core.mjs",
+    "apps/console-web/plugins/push-banner/land/merge-queue.test.mjs"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/core/build-priority.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "feature-matrix",
+   "files": [
+    "apps/console-web/plugins/feature-matrix/test.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "whats-shipped",
+   "files": [
+    "apps/console-web/plugins/whats-shipped/test.py"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/libraries.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/build-priority.mjs"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 19.3097,
+  "estimated": false,
+  "tokens": {
+   "input": 218,
+   "output": 1508,
+   "cacheRead": 18927554,
+   "cacheWrite": 224842
+  }
+ },
+ "report": "",
+ "open": []
+}

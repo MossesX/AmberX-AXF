@@ -1,0 +1,115 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261107-70cbfa789a",
+  "createdAt": "2026-11-07T12:15:57.774Z",
+  "updatedAt": "2026-11-07T12:26:46.788Z",
+  "kind": "build",
+  "title": "# VPS: reads run free, destructive stays on veto (Brett, Nov 7) Brett is drowning in 90 s veto hold…",
+  "asked": "# VPS: reads run free, destructive stays on veto (Brett, Nov 7) Brett is drowning in 90 s veto holds for read-only vps.run commands. Rule: anything read-only runs at once (no hold); anything that changes state keeps the veto countdown. 1. Add to the vps service's `check` (fixed, read-only, no approval) the reads sessions keep needing via vps.run: `grep` (pattern + path under /opt/axf or /root/axf-builds, read-only, capped output), `file` (cat/head a file under those roots, capped, secrets hidden), `ls` (dir listing), `claude_accounts` (deploy/claude-workers.mjs status + claude-login.mjs accounts), `queue` (headless launch queue entries), `git_status` (one build folder), `config` (a plugin's plugin.json/settings). Strict path allowlist; no shell metacharacters; no writes. 2. Add `build_queue_remove` (remove a not-yet-started entry from the headless launch queue by build name/queue id) as an allow tool like build_stop. 3. Add `build_clean` (discard uncommitted _claude/builds/** sync files in a build folder) and make `build_land` do it by itself before landing, so finished builds never block on sync noise. 4. Keep `run` and `logs` on veto. Update tool descriptions so sessions prefer `check` for reads. 5. Tests for every new check (path escape, metacharacters, caps, secret masking). Docs + decision entry. Progress: append `<time> START|DONE <step>` to PROGRESS.md here at each step; don't stop between steps. Commit, don't push. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.",
+  "repos": [
+    "MossesX/axHub"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "440fdc33-648",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [
+    {
+      "text": "checks + build_clean + build_queue_remove code",
+      "state": "done",
+      "startedAt": "2026-11-07T12:21:35.361Z",
+      "finishedAt": "2026-11-07T12:21:35.361Z"
+    },
+    {
+      "text": "tests",
+      "state": "done",
+      "startedAt": "2026-11-07T12:21:35.434Z",
+      "finishedAt": "2026-11-07T12:26:35.485Z"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "vps.check: grep/file/ls/config/queue/claude_accounts/git_status; build_clean + build_queue_remove; build_land auto-cleans _claude/builds; decision #117; 582 tests",
+    "branch": "claude/vps-safe-reads",
+    "commits": [
+      {
+        "sha": "71518678ae636c688140a4c672bda7335bbff766"
+      }
+    ],
+    "tests": {
+      "pnpm test": {
+        "before": "558",
+        "after": "582"
+      }
+    },
+    "links": {}
+  },
+  "closed": null,
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plan",
+    "id": "vps-safe-reads"
+  },
+  "surface": "headless",
+  "startedAt": "2026-11-07T12:15:57.774Z",
+  "finishedAt": "2026-11-07T12:26:35.564Z",
+  "lastSeenAt": "2026-11-07T12:26:35.485Z",
+  "estimate": {
+    "minutes": 60,
+    "costUsd": 8.4
+  },
+  "actual": {
+    "minutes": 11,
+    "costUsd": 3.5144,
+    "inputTokens": 86,
+    "outputTokens": 63671,
+    "cacheReadTokens": 6332816,
+    "cacheWriteTokens": 194809,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "branch": "claude/vps-safe-reads",
+  "areas": [
+    "packages/connectors/ssh",
+    "docs",
+    "project/initialization"
+  ],
+  "progress": 1,
+  "resume": {
+    "repo": "MossesX/axHub",
+    "folder": "/root/axf-builds/vps-safe-reads",
+    "branch": "claude/vps-safe-reads",
+    "base": "440184cbdcc4da5e1aed1e8554ad45bcd29b7135",
+    "head": "71518678ae636c688140a4c672bda7335bbff766",
+    "pushed": false,
+    "dirty": 8,
+    "files": [
+      "CLAUDE.md",
+      "deploy/ssh-shell.sh",
+      "docs/roadmap.md",
+      "docs/security.md",
+      "packages/connectors/ssh/src/build-tools.ts",
+      "packages/connectors/ssh/src/index.ts",
+      "packages/connectors/ssh/src/safe-reads.ts",
+      "packages/connectors/ssh/test/build-checks.test.ts",
+      "packages/connectors/ssh/test/build-tools.test.ts",
+      "packages/connectors/ssh/test/safe-reads.test.ts",
+      "packages/connectors/ssh/test/ssh.test.ts",
+      "project/initialization/axhub-context.md",
+      "project/initialization/axhub-planning.md",
+      ".axf-claude/",
+      ".axf-watch-live.log",
+      "PROGRESS.md",
+      "_claude/shared/memory/amber-persona.md",
+      "_claude/shared/memory/naming.md",
+      "_claude/shared/memory/vision.md",
+      "_claude/shared/memory/write-ups.md",
+      "_claude/shared/notes/"
+    ],
+    "at": "2026-11-07T12:26:46.841Z"
+  }
+}

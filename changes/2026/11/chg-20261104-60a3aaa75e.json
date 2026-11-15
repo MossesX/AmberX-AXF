@@ -1,0 +1,25 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261104-60a3aaa75e",
+  "createdAt": "2026-11-04T22:59:21.263Z",
+  "updatedAt": "2026-11-04T22:59:21.263Z",
+  "kind": "fix",
+  "title": "Auto fix: Disk space",
+  "asked": "Systems check auto-fix (Clear old Docker build cache and images) for disk, by health.",
+  "repos": [],
+  "model": "",
+  "who": {
+    "user": "systems-check"
+  },
+  "steps": [],
+  "result": {
+    "state": "failed",
+    "summary": "the fix itself failed: Auto fix goes through Mosses: install him (Agent manager \u2192 Add-on agents \u2192 coder).",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "failed",
+  "status": "failed"
+}

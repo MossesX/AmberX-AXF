@@ -22,7 +22,7 @@ const t = (name, fn) => { n++; try { fn(); } catch (e) { fails.push(`${name}: ${
 
 /* ------------------------------------------------------------------ cases (inputs; outputs go in the fixture) */
 
-const progress = { ok: true, profile: 'current', progress: { builds: 2, complete: 1, total: 8, done: 5, pct: 63, active: false }, active: [{ id: 'a' }, { id: 'b' }] };
+const progress = { ok: true, profile: 'all', progress: { builds: 2, complete: 1, total: 8, done: 5, pct: 63, active: false }, active: [{ id: 'a' }, { id: 'b' }] };
 const items = { items: [{ name: 'Home', app: 'console-web', status: 'waiting', createdAt: '2026-11-03T10:00:00Z' }, { name: 'Menu', app: 'axhub-web', status: 'approved', createdAt: '2026-11-02T10:00:00Z' }, { name: 'Bell', app: 'console-web', status: 'waiting', createdAt: '2026-11-03T12:00:00Z' }] };
 const spend = { state: { spend: { kat: { today: { usd: 1.25 } }, rio: { today: { usd: 0.5 } }, max: { today: { usd: 2 } } } } };
 const series = [{ at: '2026-11-01', runs: 3 }, { at: '2026-11-02', runs: 5 }, { at: '2026-11-03', runs: 4 }];

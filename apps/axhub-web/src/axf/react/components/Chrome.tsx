@@ -47,7 +47,7 @@ export function MenuBar() {
   };
 
   return (
-    <div className="fx-menubar" ref={ref} role="menubar" onKeyDown={onKey}>
+    <div className="fx-menubar" ref={ref} role="menubar" onKeyDown={onKey} data-fx-ctx-target="app-menu" data-fx-ctx-payload="app">
       <div className="fx-brand">
         {/* the app's own name (manifest): the branding package is one look shared by every app through axHub, so it gives the
             mark, not the name (Nov 1 2026: the console is GizmoX AI Studio, axHub web is AXHub, AmberX is AmberX) */}
@@ -131,7 +131,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
   };
 
   return (
-    <div className={`fx-toolbar fx-toolbar--${tb.data.variant}${arrange.on ? ' is-arranging' : ''} ${brandHost.className}`.trim()} data-align={tb.data.align} role="toolbar" aria-label="Toolbar" data-axf-toolbar="app" data-fx-ctx-target="toolbar" data-axf-arrange-host="toolbar" data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
+    <div className={`fx-toolbar fx-toolbar--${tb.data.variant}${arrange.on ? ' is-arranging' : ''} ${brandHost.className}`.trim()} data-align={tb.data.align} role="toolbar" aria-label="Toolbar" data-axf-toolbar="app" data-fx-ctx-target="toolbar" data-fx-ctx-payload="app" data-axf-arrange-host="toolbar" data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
       <ArrangeBar host="toolbar" label="toolbar" />
       {brand?.svg && <span className="fx-toolbar__brand"><BrandMark slot="toolbar" height={20} /></span>}
       {(arrange.on || widgets.start.length > 0) && <span className="fx-toolbar__widgets is-start" {...arrange.sideProps('start')}>{arrangedSide(arrange, 'start', widgets.start, drawWidget)}</span>}
@@ -289,7 +289,7 @@ export function NavMenu({ views }: { views: ViewMap }) {
   if (navStyle) return <NavTree sections={mergeNavSections([...nav.data.sections, ...rt.navExtras])} views={views} style={navStyle} orient={orient} header={nav.data.header} />;
 
   return (
-    <nav className={`fx-nav fx-nav--${nav.data.style}`} data-orient={orient} aria-label="Main">
+    <nav className={`fx-nav fx-nav--${nav.data.style}`} data-orient={orient} aria-label="Main" data-axf-nav="app" data-fx-ctx-target="nav" data-fx-ctx-payload="app">
       {nav.data.header && orient === 'vertical' && <div className="fx-nav__header">{nav.data.header}</div>}
       {mergeNavSections([...nav.data.sections, ...rt.navExtras]).map((sec, i) => {
         const items = sec.items.filter((it) => views[it.view] && rt.gate(it.requires) !== 'hide' && !rt.takenByHost({ view: it.view }));
@@ -331,15 +331,16 @@ export function NavMenu({ views }: { views: ViewMap }) {
 export function StatusBar() {
   const rt = useRuntime();
   const state = useAxfState();
-  const name = (t: 'color-theme' | 'style-theme' | 'layout') => rt.asset(t).name;
+  // skins only (Nov 10 2026): the look is the skin in force and its colour theme; style and layout are the skin's
+  const skinId = rt.skinInForce().id;
+  const skin = skinId ? rt.skinList().find((s) => s.id === skinId)?.name ?? skinId : "This app's own look";
   return (
     <footer className="fx-status">
       <span className="fx-status__dot" aria-hidden="true" />
       <span>AmberX AXF {FRAMEWORK_VERSION}</span>
       <span className="fx-status__sep" />
-      <span title="Color theme">{name('color-theme')}</span>
-      <span title="Style theme">{name('style-theme')}</span>
-      <span title="Layout">{name('layout')}</span>
+      <span title="Skin">{skin}</span>
+      <span title="Colour theme">{rt.asset('color-theme').name}</span>
       <span className="fx-status__grow" />
       <span>{rt.registry.count()} assets</span>
       <span>{state.swaps} swaps</span>

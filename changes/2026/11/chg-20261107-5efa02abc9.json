@@ -1,0 +1,144 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261107-5efa02abc9",
+  "createdAt": "2026-11-07T00:45:57.496Z",
+  "updatedAt": "2026-11-07T01:04:22.353Z",
+  "kind": "build",
+  "title": "# Build: axhub-google ## Brett said (verbatim) \"It's gonna be linked to our Gmail through axHub's M…",
+  "asked": "# Build: axhub-google ## Brett said (verbatim) \"It's gonna be linked to our Gmail through axHub's MCP server, not Claude's. axHub is gonna connect to my Gmail, my Google Calendar, my Google Sheets. axHub needs to connect to my whole Google ecosystem.\" 1. Google service(s) in axHub: one OAuth sign-in (Brett clicks Connect in axHub web; tokens in the vault, refresh saved on every use). Scopes: Gmail, Calendar, Sheets, Drive, Contacts, Tasks (enable per service). 2. MCP tools per service (gmail.search/read/send/draft/label, calendar.list/create/update/delete/freebusy, sheets.read/write/append, drive.search/read/upload, contacts, tasks). Policies: reads allow; send email, delete, and calendar invites to others = confirm; other writes veto. 3. Events/webhooks (Gmail push, Calendar watch) published on axHub so the console can sync. 4. Docs (decisions), tests with a fake Google, PR to the merge queue. Do NOT land directly. Brett signs in after deploy. One session, lean chain. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.",
+  "repos": [
+    "MossesX/axHub"
+  ],
+  "model": "claude-opus-5-5",
+  "who": {
+    "session": "a2808ec9-ff4",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [
+    {
+      "text": "Core per-call approval hook + google connector package",
+      "state": "done",
+      "startedAt": "2026-11-07T00:48:54.872Z",
+      "finishedAt": "2026-11-07T00:56:03.364Z"
+    },
+    {
+      "text": "Fake Google + tests",
+      "state": "done",
+      "startedAt": "2026-11-07T00:56:03.472Z",
+      "finishedAt": "2026-11-07T01:00:43.987Z"
+    },
+    {
+      "text": "Full test suite, docs, decision #114, PR",
+      "state": "done",
+      "startedAt": "2026-11-07T01:00:44.067Z",
+      "finishedAt": "2026-11-07T01:03:55.722Z"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "Google connector: six services over one vault-held sign-in, per-call approvals, push events as data documents. PR #40 open, not landed. Not yet tried against real Google: needs an OAuth client.",
+    "branch": "claude/axhub-google",
+    "commits": [
+      {
+        "sha": "207873f"
+      }
+    ],
+    "filesChanged": 28,
+    "tests": {
+      "pnpm test": {
+        "after": "680 passed"
+      }
+    },
+    "links": {
+      "report": "https://github.com/MossesX/axHub/pull/40"
+    }
+  },
+  "closed": null,
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plan",
+    "id": "axhub-google"
+  },
+  "surface": "headless",
+  "startedAt": "2026-11-07T00:45:57.496Z",
+  "finishedAt": "2026-11-07T01:04:04.953Z",
+  "lastSeenAt": "2026-11-07T01:03:55.722Z",
+  "estimate": {
+    "minutes": 90,
+    "costUsd": 12.6
+  },
+  "actual": {
+    "minutes": 18,
+    "costUsd": 4.2487,
+    "inputTokens": 52,
+    "outputTokens": 111176,
+    "cacheReadTokens": 4340201,
+    "cacheWriteTokens": 231388,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "branch": "claude/axhub-google",
+  "areas": [
+    "packages/connectors/google",
+    "packages/server",
+    "packages/core",
+    "docs",
+    "project/initialization"
+  ],
+  "progress": 1,
+  "resume": {
+    "repo": "MossesX/axHub",
+    "folder": "/root/axf-builds/axhub-google",
+    "branch": "claude/axhub-google",
+    "base": "440184cbdcc4da5e1aed1e8554ad45bcd29b7135",
+    "head": "207873f4c6ed9da1629a46e58a0c7b9beecdf335",
+    "pushed": true,
+    "dirty": 9,
+    "pr": "https://github.com/MossesX/axHub/pull/40",
+    "plan": "packages/connectors/google: six plugin-type services (gmail, calendar, sheets, drive, contacts, tasks), one OAuth sign-in in the vault; server routes /auth/google + /auth/api/google; events published to shared/google/events/*.json",
+    "next": "Merge, set up the Google OAuth client and Coolify env, Connect at /auth/google; then the AXHub web Google screen in AXF",
+    "files": [
+      ".env.example",
+      "CLAUDE.md",
+      "docs/google.md",
+      "docs/roadmap.md",
+      "packages/connectors/google/package.json",
+      "packages/connectors/google/src/api.ts",
+      "packages/connectors/google/src/auth.ts",
+      "packages/connectors/google/src/events.ts",
+      "packages/connectors/google/src/index.ts",
+      "packages/connectors/google/src/mail.ts",
+      "packages/connectors/google/src/tools.ts",
+      "packages/connectors/google/test/fake-google.ts",
+      "packages/connectors/google/test/google.test.ts",
+      "packages/connectors/google/tsconfig.json",
+      "packages/core/src/connector.ts",
+      "packages/core/src/hub.ts",
+      "packages/server/package.json",
+      "packages/server/src/app.ts",
+      "packages/server/src/config.ts",
+      "packages/server/src/google.ts",
+      "packages/server/src/main.ts",
+      "packages/server/src/web.ts",
+      "packages/server/test/google.test.ts",
+      "packages/server/tsconfig.json",
+      "pnpm-lock.yaml",
+      "project/initialization/axhub-context.md",
+      "project/initialization/axhub-planning.md",
+      "tsconfig.json",
+      ".axf-claude/",
+      ".axf-queue.log",
+      ".axf-watch-live.log",
+      ".pnpm-store/",
+      "_claude/shared/memory/amber-persona.md",
+      "_claude/shared/memory/naming.md",
+      "_claude/shared/memory/vision.md",
+      "_claude/shared/memory/write-ups.md",
+      "_claude/shared/notes/"
+    ],
+    "at": "2026-11-07T01:04:22.423Z"
+  }
+}

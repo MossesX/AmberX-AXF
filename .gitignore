@@ -28,6 +28,9 @@ _claude/builds/store.json.tmp-*
 .axf-focus.json
 .axf-preview*
 .axf-watch-live.log
+
+# Per-build Claude login copies (deploy/claude-login.mjs): private, deleted when the build ends, never committed
+.axf-claude/
 _claude/builds/store.json.live-outbox.jsonl*
 _claude/builds/store.json.live.json
 

@@ -44,6 +44,12 @@
             "label": "Console",
             "icon": "terminal",
             "view": "console"
+          },
+          {
+            "id": "expenses",
+            "label": "Expenses",
+            "icon": "chart",
+            "view": "expenses"
           }
         ]
       },

@@ -1,0 +1,18 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "ui-review.ready",
+      "label": "Ready for UI Review",
+      "group": "review",
+      "app": "console",
+      "source": "UI Review",
+      "description": "A group has items waiting for your review. One alert per group; a tap opens that group; deciding them clears it.",
+      "match": {
+        "source": "ui-review"
+      },
+      "setting": "notify.uiReview",
+      "priority": "high"
+    }
+  ]
+}

@@ -3,7 +3,8 @@
 One interface for **AmberX**, **axHub** and the **Dev Console**, at https://molly.amberxai.com (build `molly-opus`,
 Big Dog profile, Opus; a Fable version comes later as its own build).
 
-- Each app stays its own app at its own address (`amberx.amberxai.com`, `axhub.amberxai.com`, `console.amberxai.com`)
+- Each app stays its own app at its own address (`amberx.amberxai.com`, `axhub.amberxai.com`, `console.amberxai.com`,
+  `expenses.amberxai.com`)
   and runs exactly the same on its own. Without plugins Molly only frames that address (plain URL, nothing hidden or
   merged); with xLayout the frames carry the embed@1 marker and Molly merges their chrome (below).
 - Frames are kept alive (`src/molly/FrameDeck.tsx`): switching apps never reloads them. Reload or open the one on screen
@@ -28,6 +29,11 @@ Big Dog profile, Opus; a Fable version comes later as its own build).
   in a strip (its banner-strip page, `framework/react/bannerStrip.ts`) in Molly's `app.frame.banners` slot; a dialog or
   menu it opens covers Molly's window, a view it opens opens in the console's frame. Settings → Plugins → Banners
   (show the strip, show / hide each banner). <!-- axf-plugin:banners -->
+
+- **Expenses** (`plugins/expenses`): the Expense Tracker's Ledger, Paydays, Reports and Assistant drawn natively (no
+  frame) on its own APIs, same ledger, conversations and settings as expenses.amberxai.com; views
+  `expenses/ledger|paydays|reports|assistant`, `expenses.*` actions, entries in the Molly menu. Settings → Plugins →
+  Expenses (the app's own settings sections). <!-- axf-plugin:expenses -->
 
 ```bash
 npm install && npm run dev      # :5173

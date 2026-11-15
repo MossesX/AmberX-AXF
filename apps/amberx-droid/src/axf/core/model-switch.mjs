@@ -11,12 +11,35 @@
  *     an axHub approval he approves (confirm policy, never a veto countdown; via 'axhub'). A session, agent, headless
  *     build or the orchestrator never approves one; a session that reaches an upgrade stops and asks.
  *
+ * Fable upgrades need my approval (Brett, Nov 4 2026: "I don't want the approvals. Just put everything that needs to be
+ * on Fable on Fable. No more approvals. If it needs Fable, set it to be Fable."): the owner-only Claude setting
+ * `builds.fableUpgradeApproval` (default off) decides whether an upgrade waits for Brett. Off = an upgrade phase runs by
+ * itself and is recorded (kind 'upgrade', by 'auto', via 'policy'); on = the approval rule above. This module only
+ * holds the answer (setUpgradePolicy); the Node entry points read the setting (framework/cli/upgrade-policy.mjs) and
+ * the console page takes it from the orchestrator's state. Until someone sets it the module is strict (approval
+ * required), so a caller that never reads the setting can never let an upgrade through by accident.
+ *
  * Pure, no I/O: shared by the orchestrator core (console page, CLI, server), the builds store, the agent swarm planner
  * and the launch gate (framework/cli/model-gate.mjs). The callers pass the environment and headers in.
  */
 import { MODEL_LABELS, modelKey, switchKind } from './model-policy.mjs';
 
 export { switchKind, isUpgrade, modelRank } from './model-policy.mjs';
+
+/** The owner-only Claude setting that turns the upgrade approval back on (claude-settings registry). */
+export const UPGRADE_SETTING = 'builds.fableUpgradeApproval';
+let policy = { approvalRequired: true, source: 'default' };
+/** Set the upgrade policy: { approvalRequired, source }. Called once by an entry point after reading the setting. */
+export function setUpgradePolicy(p) {
+  const o = p && typeof p === 'object' ? p : {};
+  policy = { approvalRequired: o.approvalRequired !== false, source: str(o.source, 120) || 'set' };
+  return { ...policy };
+}
+export const upgradePolicy = () => ({ ...policy });
+/** Does an upgrade wait for Brett's approval right now? */
+export const upgradeNeedsApproval = () => policy.approvalRequired;
+/** The note an automatic upgrade carries (build notes, approvals[], journal). */
+export const AUTO_UPGRADE_NOTE = "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself";
 
 const str = (v, n = 200) => (typeof v === 'string' ? v.slice(0, n) : '');
 
@@ -58,16 +81,16 @@ export function stepPhases(steps) {
   return out;
 }
 
-/** Is this phase clear to run? No gate, a downgrade, or an upgrade Brett approved. */
-export function phaseApproved(approvals, p) {
-  if (!p?.gate || p.kind !== 'upgrade') return true;
+/** Is this phase clear to run? No gate, a downgrade, an upgrade while approvals are off, or one Brett approved. */
+export function phaseApproved(approvals, p, needsApproval = policy.approvalRequired) {
+  if (!p?.gate || p.kind !== 'upgrade' || !needsApproval) return true;
   return (Array.isArray(approvals) ? approvals : []).some((a) => a.phase === p.index && modelKey(a.to) === modelKey(p.model) && approvalCounts(a));
 }
 
 /** Step ids of a build that sit in an upgrade phase Brett hasn't approved (nobody may run them yet). */
-export function heldSteps(build) {
+export function heldSteps(build, needsApproval = policy.approvalRequired) {
   const held = new Set();
-  for (const p of stepPhases(build?.steps)) if (!phaseApproved(build?.approvals, p)) p.stepIds.forEach((id) => held.add(id));
+  for (const p of stepPhases(build?.steps)) if (!phaseApproved(build?.approvals, p, needsApproval)) p.stepIds.forEach((id) => held.add(id));
   return held;
 }
 
@@ -106,5 +129,9 @@ const label = (m) => MODEL_LABELS[modelKey(m)] ?? m;
 /** The plain line a session, a brief or an approval card uses. */
 export const upgradeLine = (buildId, p) => `${buildId}: phase ${p.index + 1}${p.label ? ` (${p.label})` : ''} upgrades ${label(p.from)} → ${label(p.model)}`;
 
-/** What every brief says (no wording may let a session approve an upgrade). */
+/** What every brief says while approvals are on (no wording may let a session approve an upgrade). */
 export const SWITCH_RULE = 'Model switches: a downgrade (e.g. Fable → Opus) is fine and passes by itself. An upgrade (e.g. Opus → Fable) needs Brett\'s approval: stop at it and ask (orchestrator.mjs request-upgrade <id> <phase> files the axHub approval); never approve it yourself, never relaunch on a higher model.';
+/** What every brief says while approvals are off. */
+export const SWITCH_RULE_AUTO = 'Model switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: "If it needs Fable, set it to be Fable"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.';
+/** The rule line for the policy in force. */
+export const switchRule = (needsApproval = policy.approvalRequired) => (needsApproval ? SWITCH_RULE : SWITCH_RULE_AUTO);

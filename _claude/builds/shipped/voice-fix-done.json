@@ -1,0 +1,77 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-voice-fix-done",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:50Z",
+ "build": {
+  "id": "voice-fix-done",
+  "title": "voice-fix-done",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "voice-fix-done",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/voice-fix-done",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "9e20366611cc5c2741fcc6c1b9d4b6cc801f7f21",
+ "commits": [
+  "44d3aa38633221cd6e5d8153d2841fc8fcd6c826",
+  "089da5e94c7e8ffb2a70d2bd73caa59c24754ffc"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-28T10:20:19Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/profiles/refactor/orchestrator.json"
+ ],
+ "areas": [
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/profiles/refactor/orchestrator.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

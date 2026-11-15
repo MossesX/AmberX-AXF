@@ -2,11 +2,11 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.output-recorder",
   "name": "Audio Output Recorder",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Records everything the phone plays while it is on (AudioPlaybackCapture; the mic only as an opt-in second track, Record my mic too, off by default), in timestamped 30-minute chunks sent to axHub; each chunk stays on the phone until axHub confirms it, queued and retried while offline, within a small local cap. One switch in AmberX plus a quick-settings tile; Android asks for consent every start and shows a notification while recording. Calls and apps that block capture can't be recorded. The recordings list (play, share, delete, send to Audio Extract) shows in AmberX and on the console.",
+  "description": "Records everything the phone plays while it is on (AudioPlaybackCapture; the mic only as an opt-in second track, Record my mic too, off by default), in timestamped 30-minute chunks sent to axHub; each chunk stays on the phone until axHub confirms it, queued and retried while offline, within a small local cap. One switch in AmberX plus a quick-settings tile; Android asks for consent every start and shows a notification while recording. Calls and apps that block capture can't be recorded. The recordings list (play, share, delete, send to Audio Extract) shows in AmberX and on the console. Every part is transcribed on the VPS, with no model tokens, and saved with its session; transcripts are searchable.",
   "targets": [
     "amberx-droid",
     "axf-console"
@@ -16,7 +16,7 @@
     "settings-tab:output-recorder"
   ],
   "scopes": [],
-  "enabledByDefault": false,
+  "enabledByDefault": true,
   "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "opus", "builtAt": "2026-11-01" },
   "banner": false,
@@ -26,6 +26,7 @@
     "dataDir": ".axf-console/plugins/output-recorder",
     "env": [],
     "mentions": [
+      ".github/workflows/android.yml",
       "_claude/THREADS.md",
       "_claude/memory/STATUS.md"
     ]

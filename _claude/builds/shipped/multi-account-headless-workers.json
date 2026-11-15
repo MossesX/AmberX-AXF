@@ -1,0 +1,158 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-multi-account-headless-workers",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-09T02:14:06Z",
+ "build": {
+  "id": "multi-account-headless-workers",
+  "title": "multi-account-headless-workers",
+  "profile": "all",
+  "category": "accounts",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Console signs into MORE THAN ONE Claude subscription at once. The console itself uses one account (interactive). Additional accounts exist only as headless worker sessions; the orchestrator sends build jobs to them. Account manager to add/sign in/remove worker accounts, see each one's usage/limits, and route jobs (orchestrator picks which worker account runs a job, fails over when one hits its limit). Check existing account-failover / account-switch-handoff / claude-accounts work and reuse it. Orchestrator assigns models.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# multi-account-headless-workers\nThis build is ALREADY registered in the Build orchestrator as `multi-account-headless-workers` (profile current, 5 steps). Use that record: follow its steps and the model the orchestrator set for each step, tick steps there as you finish them, and record session and cost on it.\n\nGoal (Brett): the console signs into more than one Claude subscription at once. The console itself uses one account. The other accounts exist only as headless worker sessions, and the orchestrator sends build jobs to them.\n1. Audit existing account-failover, account-switch-handoff and claude-accounts code and reuse it.\n2. Console holds multiple signed-in subscriptions: one interactive, others headless-only.\n3. Account manager UI: add, sign in and remove worker accounts; usage and limits per account.\n4. Orchestrator routes jobs to worker accounts and fails over when one hits its limit.\n5. Recording, cost and session booking per worker account.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "account-1"
+ ],
+ "runs": [
+  {
+   "session": "axf-multi-account-headless-workers--rhonda",
+   "account": "account-1",
+   "model": "Opus",
+   "startedAt": "2026-11-07T04:49:04.404Z",
+   "endedAt": "2026-11-07T05:16:39.170Z",
+   "exit": 0,
+   "costUsd": 6.5384
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Audit existing account/failover/handoff code and reuse it",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T04:49:04.404Z",
+   "doneAt": "2026-11-07T05:02:05.484Z",
+   "actualMin": 13,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Console holds multiple signed-in subscriptions: one interactive, others headless-only",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T05:02:05.484Z",
+   "doneAt": "2026-11-07T05:07:38.479Z",
+   "actualMin": 6,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Account manager UI: add/sign in/remove worker accounts, usage and limits per account",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T05:07:39.495Z",
+   "doneAt": "2026-11-07T05:15:14.408Z",
+   "actualMin": 8,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Orchestrator routes jobs to worker accounts, with failover on limits",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T05:07:38.479Z",
+   "doneAt": "2026-11-07T05:07:39.495Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Recording, cost and session booking per worker account",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T05:15:14.408Z",
+   "doneAt": "2026-11-07T05:15:15.700Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/multi-account-headless-workers",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 382,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/382"
+ },
+ "landedCommit": "aeccdb0a848b520cd60fa4bb412e90f5037042ad",
+ "commits": [],
+ "mergedAt": "2026-11-07T10:52:53Z",
+ "landedAt": "2026-11-07T16:33:00Z",
+ "files": [],
+ "areas": [],
+ "tests": [
+  {
+   "name": "node deploy/claude-workers.test.mjs: 37 checks, in CI. Includes claude-headless.sh end to end in tmux with a fake claude: worker one hits a limit, the run moves to worker two, the console's account and the live login stay unchanged, and no credential reaches the events.",
+   "command": "node deploy/claude-workers.test.mjs",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "claude-accounts/test.py: 74 (was 47). ai-keys/test.py: 133. claude-login.test.mjs: 51. claude-badge/test.py: 40.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "Passing locally: tsc, vite build, check-theme, check-controls, check-toolbars, check-chrome-assets, help coverage, plugin-commands (both), check-control, menu-reach, plugin-lifecycle.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  }
+ ],
+ "uiReview": [
+  {
+   "id": "r-20261107-8a7e47bc",
+   "name": "Claude accounts with worker accounts",
+   "status": "approved",
+   "group": "g-20261107-3cccca52",
+   "url": "/review/r-20261107-8a7e47bc"
+  }
+ ],
+ "cost": {
+  "usd": 6.5384,
+  "estimated": false,
+  "tokens": {
+   "input": 102,
+   "output": 469,
+   "cacheRead": 10542217,
+   "cacheWrite": 300735
+  }
+ },
+ "report": "_claude/builds/reports/multi-account-headless-workers.md",
+ "open": [
+  "Usage is what headless runs cost, not the subscription's remaining quota. No reader for used vs total exists on main. Steps s36-s39 of `token-usage-log-accounts-plan-studio-control-small-steps` own that, and it should plug into the same row.",
+  "Two jobs on one worker share a refresh token. The first renewal spends it, so the second may lose its login and move on. Routing prefers idle workers, so this needs more jobs than workers.",
+  "A move restarts the same brief with a note to carry on. It keeps the worktree but not the conversation.",
+  "Plan is shown only for accounts the console has seen active."
+ ]
+}

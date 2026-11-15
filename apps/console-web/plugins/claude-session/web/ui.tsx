@@ -31,7 +31,8 @@ export interface Row {
 }
 export interface Settings { defaultAgent: string; askEverySession: boolean; askHeadless: boolean }
 interface AgentCard { id: string; name: string; persona: string; voice: string; intro: string }
-export interface SessionView { session: string; client: string; summary: string; status: string; source: string; startedAt: string; answeredBy: string; asking: boolean; agent: AgentCard; ticket?: string; hub?: string }
+export interface SessionRecording { state: string; name: string; group: string; message?: string }
+export interface SessionView { session: string; client: string; summary: string; status: string; source: string; startedAt: string; answeredBy: string; asking: boolean; agent: AgentCard; ticket?: string; hub?: string; recording?: SessionRecording }
 interface Picker { settings: Settings; default: string; crew: boolean; rows: Row[]; sessions: SessionView[] }
 
 const usd = (v: number | null | undefined) => `$${(Number(v) || 0) < 10 ? (Number(v) || 0).toFixed(2) : Math.round(Number(v) || 0)}`;
@@ -207,6 +208,15 @@ export function AskWatcher() {
 
 /* ---------------- settings ---------------- */
 
+const RECORDING: Record<string, string> = { asked: 'recording asked for', joined: 'recorded', 'phone-offline': 'not recorded: phone offline', failed: 'not recorded' };
+
+/** A session's recording: its state, and a way to its transcripts (the recorder page searches by the session's group). */
+function RecordingLink({ rec }: { rec: SessionRecording }) {
+  const rt = useRuntime();
+  const open = () => { rt.settings.set('axf.output-recorder.find', rec.group); rt.dispatch('nav:output-recorder'); };
+  return <> · <span title={rec.message}>{RECORDING[rec.state] ?? rec.state}</span>{(rec.state === 'asked' || rec.state === 'joined') && <Button size="sm" tone="quiet" icon="file" onClick={open}>Transcript</Button>}</>;
+}
+
 export function SettingsPanel() {
   const rt = useRuntime();
   const { data, error } = usePicker();
@@ -222,7 +232,7 @@ export function SettingsPanel() {
       <div className="axp-claude-session__bar"><Button icon="user" onClick={() => rt.openDialog(PICKER, {})}>Choose Claude's agent…</Button></div>
       {data.sessions.length > 0 && (
         <details><summary className="fx-small">Recent sessions ({data.sessions.length})</summary>
-          <ul className="axp-claude-session__feed">{data.sessions.map((x) => <li key={x.session}><span className="fx-muted">{when(x.startedAt)}</span> {CLIENT[x.client] ?? x.client} as <b>{x.agent.name}</b> · {x.status}{x.answeredBy ? ` (${x.answeredBy})` : ''}{x.summary ? ` · ${x.summary}` : ''}</li>)}</ul>
+          <ul className="axp-claude-session__feed">{data.sessions.map((x) => <li key={x.session}><span className="fx-muted">{when(x.startedAt)}</span> {CLIENT[x.client] ?? x.client} as <b>{x.agent.name}</b> · {x.status}{x.answeredBy ? ` (${x.answeredBy})` : ''}{x.summary ? ` · ${x.summary}` : ''}{x.recording && <RecordingLink rec={x.recording} />}</li>)}</ul>
         </details>
       )}
     </div>

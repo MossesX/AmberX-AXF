@@ -52,13 +52,18 @@ try {
   ok(after.status === 0, `scale-adopt makes them conform${after.status ? `\n${after.stdout}` : ''}`);
   ok(adoptLine('font-family: var(--fx-font-mono);') === 'font-family: var(--fx-font-mono);' && adoptLine("fontFamily: 'basic'") === "fontFamily: 'basic'", 'adopt leaves tokens and non-font values alone');
   ok(adoptLine('push(`font-family: ${f}`)') === 'push(`font-family: ${f}`)', 'adopt leaves template-literal CSS builders alone');
+  // a theme-ok-begin … theme-ok-end block is skipped; lines after it are checked again
+  writeFileSync(join(tmp, 'src/a.css'), ['/* theme-ok-begin: standalone export */', '.p { color: #fff; padding: 6px }', '/* theme-ok-end */', '.q { color: #000 }'].join('\n'));
+  const block = theme(tmp);
+  ok(block.status === 1 && !block.stdout.includes('src/a.css:2') && block.stdout.includes('src/a.css:4'), 'a theme-ok block is allowed and ends at theme-ok-end');
 } finally {
   rmSync(tmp, { recursive: true, force: true });
 }
 
 const base = JSON.parse(readFileSync(join(ROOT, 'framework/spec/conform-baseline.json'), 'utf8'));
-const stray = Object.keys(base.files ?? {}).filter((f) => !(f.endsWith('.kt') && !/^framework\/(templates|library-templates|boilerplates)\//.test(f)));
-ok(!stray.length, `baseline only holds frozen code (Android Kotlin)${stray.length ? `: ${stray.join(', ')}` : ''}`);
+// frozen code = Android Kotlin (on hold) and the imported Expense app (apps/expenses, build expenses-port)
+const stray = Object.keys(base.files ?? {}).filter((f) => !(f.endsWith('.kt') && !/^framework\/(templates|library-templates|boilerplates)\//.test(f)) && !f.startsWith('apps/expenses/'));
+ok(!stray.length, `baseline only holds frozen code (Android Kotlin, apps/expenses)${stray.length ? `: ${stray.join(', ')}` : ''}`);
 
 console.log(bad ? `✗ ${bad} of ${n} conformance self-checks failed` : `✓ conformance self-test — ${n} checks`);
 process.exit(bad ? 1 : 0);

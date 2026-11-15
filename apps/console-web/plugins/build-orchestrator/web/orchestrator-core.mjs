@@ -2,7 +2,7 @@
  * Build orchestrator core (orchestrator@1). Pure: no fs, no DOM. Shared by the console page, the CLI
  * (../orchestrator.mjs), the server part and the tests.
  *
- * A build is a list of small steps (≤ 30 min), each pinned to Fable or Opus. Consecutive steps on the same model
+ * A build is a list of small steps (≤ 10 min, Brett, Nov 13 2026; was 30), each pinned to Fable or Opus. Consecutive steps on the same model
  * form a phase. A phase whose model differs from the phase before it is a model switch (framework/core/model-switch.mjs,
  * Brett, Nov 3 2026): a downgrade (Fable → Opus) passes by itself and is recorded; an UPGRADE (Opus → Fable) opens
  * behind Brett's approval (his signed-in console click or an axHub approval), which no session, agent, headless build
@@ -11,19 +11,45 @@
  */
 
 import { normOrigin, originText } from '../../../../../framework/core/build-origin.mjs';
-import { SWITCH_RULE, normApproval, normRequest, phaseApproved, switchKind, upgradeLine, modelRank } from '../../../../../framework/core/model-switch.mjs';
+import { isBuildId, namesOf, shortBuildId, slugWords, uniqueBuildId } from '../../../../../framework/core/build-id.mjs';
+import { AUTO_UPGRADE_NOTE, normApproval, normRequest, phaseApproved, setUpgradePolicy, switchKind, switchRule, upgradeLine, upgradeNeedsApproval, upgradePolicy, modelRank } from '../../../../../framework/core/model-switch.mjs';
 
 export const SCHEMA = 'orchestrator@1';
 export const MODELS = ['Fable', 'Opus'];
-/** `built` = every step done but the build's PR is not merged yet; `complete` once it merged (or it has no PR). */
-export const STATUSES = ['pending', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived'];
-export const STATUS_LABEL = { pending: 'Pending', running: 'Running', waiting: 'Needs approval', blocked: 'Blocked', failed: 'Failed', built: 'Built · awaiting merge', complete: 'Complete', archived: 'Archived' };
+/**
+ * `built` = every step done but the build's PR is not merged yet; `complete` once it merged (or it has no PR).
+ * `queued` (Nov 8 2026) = in the Queue: Brett moved it from Pending, the dispatcher starts it when a slot is free.
+ */
+export const STATUSES = ['pending', 'queued', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived'];
+export const STATUS_LABEL = { pending: 'Pending', queued: 'Queued', running: 'Running', waiting: 'Needs approval', blocked: 'Blocked', failed: 'Failed', built: 'Built · awaiting merge', complete: 'Complete', archived: 'Archived' };
 /** Finished work: no steps left (built waits only on its PR). */
 export const isFinished = (status) => status === 'built' || status === 'complete';
 export const SORTS = ['status', 'added', 'built', 'left', 'next', 'category', 'title'];
 export const SORT_LABEL = { status: 'Status', added: 'Date added', built: 'Date built', left: 'Time left', next: 'Next model', category: 'Category', title: 'Title' };
 export const UNCATEGORISED = 'Uncategorised';
-export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: 30 };
+export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: 10 };
+/**
+ * Step size (Brett, Nov 13 2026: "the splitter cuts every build into steps of 10 minutes or less (was 30)"). 10 minutes
+ * is a ceiling: the Largest step rule can lower it, never raise it (a stored 30 reads as 10). Steps are checkpoints
+ * inside ONE session (CHECKPOINT_RULE), so a smaller step costs no extra prompt or launch.
+ * Steps written before the change (createdAt before TEN_MINUTE_STEPS_AT) keep the old 30-minute limit, so the queue
+ * is not flagged "needs split" all at once; a re-split makes them 10-minute steps.
+ */
+export const STEP_MINUTES = 10;
+export const LEGACY_STEP_MINUTES = 30;
+export const TEN_MINUTE_STEPS_AT = '2026-11-14T00:00:00.000Z';
+/** The largest step the rules allow: the rule, capped at STEP_MINUTES. */
+export const maxStep = (rules) => Math.max(1, Math.min(STEP_MINUTES, Number(rules?.maxStepMinutes) || STEP_MINUTES));
+/** The limit one step is held to: maxStep, or the old 30 for a step written before the change. */
+export const stepLimit = (step, rules) => {
+  const c = typeof step?.createdAt === 'string' ? step.createdAt : '';
+  return c && c < TEN_MINUTE_STEPS_AT ? Math.max(maxStep(rules), LEGACY_STEP_MINUTES) : maxStep(rules);
+};
+/**
+ * Steps are checkpoints, not launches (Brett, Nov 13 2026): one session works through every step of its phase, ticks
+ * each one done and commits + pushes as it goes, so nothing is lost if it dies, and no step gets its own prompt or relaunch.
+ */
+export const CHECKPOINT_RULE = 'Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.';
 /** When Fable is worth its price (shown on the page; the session picks a step's model from it). */
 export const MODEL_GUIDE = {
   Fable: 'Cross-port contracts, kernel/engine internals, schema + migration design, heavy refactors, anything that changes how GUIs work across apps.',
@@ -36,11 +62,18 @@ export const MODEL_GUIDE = {
  */
 export const ASSET_RULE = 'UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.';
 
+/**
+ * Every brief carries the API rule (Brett, Nov 8 2026: "the orchestrator is going to include in the briefs, everything
+ * comes with an API"; build orchestrator-api-rule-in-every-brief-plan-studio).
+ */
+export const API_RULE = 'Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.';
+
 const now = () => new Date().toISOString();
 const str = (v, max = 4000) => (typeof v === 'string' ? v.slice(0, max) : '');
 /** A step still to do: not done and not skipped by the build's feature matrix. */
 const open = (s) => !s.done && !s.skip;
-const slug = (t) => str(t, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'build';
+/** A new build's id (build-id@1: at most 40 characters); the title is kept whole as the display name. */
+const slug = (t) => shortBuildId(str(t, 300));
 
 /** "45 min", "2 h", "1.5 d", "90" → minutes (a day = 8 working hours), null when unreadable. */
 export function estimateMinutes(e) {
@@ -76,6 +109,7 @@ function normStep(s, i) {
     done: o.done === true,
     doneAt: o.done === true ? str(o.doneAt, 40) : '',
     note: str(o.note, 1000),
+    ...(str(o.createdAt, 40) ? { createdAt: str(o.createdAt, 40) } : {}), // which step-size limit the step is held to (stepLimit)
   };
 }
 
@@ -96,6 +130,7 @@ function normBuild(b) {
     branch: str(o.branch, 200),
     pr: str(o.pr, 200),
     ...(str(o.mergedAt) ? { mergedAt: str(o.mergedAt, 40) } : {}),
+    ...(/^P[0-3]$/.test(str(o.priority)) ? { priority: o.priority } : {}),
     createdAt: str(o.createdAt, 40) || now(),
     updatedAt: str(o.updatedAt, 40) || now(),
     builtAt: isFinished(o.status) ? str(o.builtAt, 40) : '',
@@ -130,7 +165,7 @@ export function phases(build) {
     p.name = p.label || `Phase ${p.index + 1}`;
     p.done = p.steps.every((s) => !open(s));
     p.upgrade = p.gate && p.kind === 'upgrade';
-    p.approved = phaseApproved(build.approvals, p); // downgrades pass; upgrades only with Brett's approval
+    p.approved = phaseApproved(build.approvals, p); // downgrades pass; upgrades with Brett's approval, or by themselves while that setting is off
     p.minutesLeft = p.steps.filter(open).reduce((t, s) => t + (estimateMinutes(s.estimate) ?? 0), 0);
     p.groups = [];
     for (const s of p.steps) {
@@ -176,7 +211,7 @@ export function splitCheck(build, rules = DEFAULT_RULES) {
   build.steps.forEach((s, i) => {
     const m = estimateMinutes(s.estimate);
     if (m == null) reasons.push(`step ${i + 1} has no estimate`);
-    else if (m > (rules.maxStepMinutes || 30)) reasons.push(`step ${i + 1} is ${formatMinutes(m)}`);
+    else if (m > stepLimit(s, rules)) reasons.push(`step ${i + 1} is ${formatMinutes(m)} (limit ${formatMinutes(stepLimit(s, rules))})`);
   });
   if (!build.steps.length) reasons.push('no steps yet');
   // skipped steps (feature matrix) still have to be small: they may come back
@@ -191,6 +226,7 @@ export function derivedStatus(build, rules) {
   const n = nextUp(build, rules);
   if (n.done) return build.pr && !build.mergedAt ? 'built' : 'complete';
   if (n.needsApproval) return 'waiting';
+  if (build.status === 'queued') return build.steps.some((s) => s.done) ? 'running' : 'queued'; // the Queue holds until a session ticks a step
   return build.steps.some((s) => s.done) || build.status === 'running' ? 'running' : 'pending';
 }
 
@@ -223,15 +259,18 @@ export function brief(build, rules = DEFAULT_RULES) {
     build.origin?.said || build.origin?.addenda?.length ? `What Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\n${originText(build.origin)}` : '',
     n.needsApproval ? `STOP: ${upgradeLine(build.id, p)}. That is a model UPGRADE: only Brett can approve it. Do no work on this phase: run \`orchestrator.mjs request-upgrade ${build.id} ${p.index}\` (files the axHub approval), tell Brett, and end the session. Never approve it yourself.` : '',
     p.gate && p.kind === 'downgrade' ? `This phase downgrades ${p.from} → ${p.model}: fine, no approval needed (it is recorded when you tick its first step).` : '',
-    SWITCH_RULE,
-    `Rules: ${rules.sameSession ? 'stay in this one session' : 'new session allowed'}; ${rules.subAgents ? 'sub-agents allowed' : 'no sub-agents'}; steps ≤ ${rules.maxStepMinutes} min; read only the files listed; stop at the end of this phase.`,
+    p.upgrade && !n.needsApproval && !build.approvals.some((a) => a.phase === p.index && a.to === p.model) ? `This phase upgrades ${p.from} → ${p.model}: no approval needed (Fable upgrades need my approval is off); it is recorded when you tick its first step.` : '',
+    switchRule(),
+    `Rules: ${rules.sameSession ? 'stay in this one session' : 'new session allowed'}; ${rules.subAgents ? 'sub-agents allowed' : 'no sub-agents'}; steps ≤ ${maxStep(rules)} min; read only the files listed; stop at the end of this phase.`,
+    `Checkpoints: ${CHECKPOINT_RULE}`,
     `Look: ${ASSET_RULE}`,
+    `API: ${API_RULE}`,
     build.branch ? `Branch: ${build.branch}${build.pr ? ` · PR ${build.pr}` : ''}` : '',
     `Steps in this phase (${p.steps.filter(open).length} left, ~${formatMinutes(p.minutesLeft) || '?'}):`,
     ...p.steps.map((s, i) => `${s.group && s.group !== p.steps[i - 1]?.group ? `— ${s.group} —\n` : ''}${s.done ? '[x]' : s.skip ? '[skip]' : '[ ]'} ${s.id} ${s.estimate ? `(~${s.estimate}) ` : ''}${s.text}${s.session === 'new' ? ' [needs a new session]' : ''}${s.agent ? ' [sub-agent allowed]' : ''}`),
     files.length ? `Read first: ${files.join(', ')}` : '',
     checks.length ? `Checks: ${checks.join(' · ')}` : '',
-    `Tick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ${build.id} <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link ${build.id} --branch <b> --pr <n>.`,
+    `Tick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ${build.id} <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link ${build.id} --branch <b> --pr <n>.`,
     'Watch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note "…"` so the live preview follows you.',
     'Screenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name "…" --app … --screen … --group "<build name>" (UI Review → Screenshots; ui-review-item@1), never the review queue.',
   ];
@@ -243,31 +282,49 @@ export function brief(build, rules = DEFAULT_RULES) {
  * server from the signed-in hub admin, the console's axHub-approved MCP tool) puts { by, via } on the change as
  * `approver` only after its own check (framework/core/model-switch.mjs approverFrom). Without it an upgrade is refused.
  */
-function needApprover(c, what) {
+function needApprover(c, what, allowAuto = true) {
   const a = c.approver && typeof c.approver === 'object' ? c.approver : null;
   const by = str(a?.by, 120).trim(); const via = str(a?.via, 20);
-  if (!by || !['console', 'axhub'].includes(via)) throw new Error(`${what}: a model upgrade needs Brett's approval (his console click or an axHub approval); a session, agent or the orchestrator can't give it. Ask: orchestrator.mjs request-upgrade <id> <phase>`);
-  return { by, via };
+  if (by && ['console', 'axhub'].includes(via)) return { by, via };
+  if (allowAuto && !upgradeNeedsApproval()) return { by: 'auto', via: 'policy' }; // Fable upgrades need my approval: off
+  throw new Error(`${what}: a model upgrade needs Brett's approval (his console click or an axHub approval); a session, agent or the orchestrator can't give it. Ask: orchestrator.mjs request-upgrade <id> <phase>`);
 }
+/** An upgrade while approvals are off: record it (approvals[], a build note), close open requests, say so. */
+function autoUpgrade(b, p, log) {
+  b.approvals.push(normApproval({ phase: p.index, from: p.from, to: p.model, at: now(), by: 'auto', via: 'policy', kind: 'upgrade', note: AUTO_UPGRADE_NOTE }));
+  for (const r of b.upgradeRequests) if (r.phase === p.index && r.state === 'open') r.state = 'approved';
+  b.notes.push({ text: `Model switch: phase ${p.index + 1}${p.label ? ` (${p.label})` : ''} ${p.from} → ${p.model}. ${AUTO_UPGRADE_NOTE}.`, at: now() });
+  log.push(`${upgradeLine(b.id, p)}: upgraded by itself (Fable upgrades need my approval is off), recorded on the build`);
+}
+export { setUpgradePolicy, upgradePolicy };
+
 /** Apply one change. Returns { state, build?, log: string[] } or throws Error with a plain message. */
 export function apply(state, change) {
   const s = normalizeState(state);
   const c = change && typeof change === 'object' ? change : {};
   const log = [];
-  const find = () => { const b = s.builds.find((x) => x.id === c.id); if (!b) throw new Error(`no build "${c.id}"`); return b; };
+  const find = () => { const b = s.builds.find((x) => x.id === c.id) ?? s.builds.find((x) => namesOf(x).includes(c.id)); if (!b) throw new Error(`no build "${c.id}"`); return b; };
   const stepOf = (b) => { const st = b.steps.find((x) => x.id === c.step) ?? b.steps[Number(c.index)]; if (!st) throw new Error(`no step "${c.step ?? c.index}" in ${b.id}`); return st; };
   let b = null;
   switch (c.action) {
     case 'add': {
-      const id = slug(c.id || c.title); if (!str(c.title).trim()) throw new Error('a title is needed');
-      if (s.builds.some((x) => x.id === id)) throw new Error(`"${id}" is already on the list`);
+      if (!str(c.title).trim()) throw new Error('a title is needed');
+      const taken = new Set(s.builds.flatMap(namesOf));
+      // the same id or title again is refused; two titles that only meet once shortened get a suffix
+      const asked = slugWords(c.id || str(c.title, 300));
+      if (taken.has(asked)) throw new Error(`"${asked}" is already on the list`);
+      const id = c.id && isBuildId(asked) ? asked : uniqueBuildId(asked, taken);
       // origin = what Brett said that started it (build-origin@1); `said` is the shortcut for his verbatim words
       const origin = c.said !== undefined ? { ...(c.origin ?? {}), said: c.said, at: c.origin?.at || now() } : c.origin;
       b = normBuild({ ...c, id, origin, status: 'pending', createdAt: now() }); s.builds.push(b); log.push(`added ${id} (${b.steps.length} steps)${b.origin?.said ? ', with what Brett said' : ''}`); break;
     }
     case 'import': { // from a pending@1 item: its sub prompts become steps on the item's model
-      const it = c.item ?? {}; const id = slug(c.id || it.id || it.title);
-      if (s.builds.some((x) => x.id === id)) throw new Error(`"${id}" is already on the list`);
+      const it = c.item ?? {};
+      // already imported: the same pending item, or a build made before ids were capped (its full-length slug)
+      const was = s.builds.find((x) => (it.id && x.pendingId === it.id) || x.id === slugWords(c.id || it.id || it.title));
+      if (was) throw new Error(`"${was.id}" is already on the list`);
+      const taken = new Set(s.builds.flatMap(namesOf));
+      const id = c.id && isBuildId(c.id) && !taken.has(c.id) ? c.id : uniqueBuildId(c.id || it.id || it.title, taken);
       const model = MODELS.includes(it.model) ? it.model : 'Opus';
       b = normBuild({ id, title: it.title, detail: it.detail, source: 'pending', pendingId: it.id, steps: (it.subPrompts ?? []).map((p) => ({ text: p.text, estimate: p.estimate, model, done: p.done, doneAt: p.doneAt })) });
       s.builds.push(b); log.push(`imported pending ${it.id} as ${id}`); break;
@@ -283,6 +340,7 @@ export function apply(state, change) {
     case 'step': { b = find(); const st = stepOf(b); const ps = phases(b); const ph = ps.find((p) => p.steps.some((x) => x.id === st.id));
       if (c.done !== false && ph && !ph.approved) throw new Error(`${upgradeLine(b.id, ph)}: a model upgrade needs Brett's approval first (orchestrator.mjs request-upgrade ${b.id} ${ph.index})`);
       if (c.done !== false && ph && ph.gate && ph.kind === 'downgrade' && !b.approvals.some((a) => a.phase === ph.index && a.to === ph.model)) { b.approvals.push(normApproval({ phase: ph.index, from: ph.from, to: ph.model, at: now(), by: 'auto', kind: 'downgrade' })); log.push(`${b.id}: downgrade ${ph.from} → ${ph.model} recorded (phase ${ph.index + 1})`); }
+      if (c.done !== false && ph && ph.upgrade && !upgradeNeedsApproval() && !b.approvals.some((a) => a.phase === ph.index && a.to === ph.model)) autoUpgrade(b, ph, log);
       st.done = c.done !== false; st.doneAt = st.done ? now() : ''; if (typeof c.note === 'string') st.note = str(c.note, 1000); log.push(`${b.id} ${st.id} ${st.done ? 'done' : 'not done'}`); break; }
     case 'add-step': { b = find(); const st = normStep({ ...c.stepData, id: `s${b.steps.length + 1}` }, b.steps.length); if (!st.text) throw new Error('step text needed'); const at = Number.isInteger(c.at) ? c.at : b.steps.length; b.steps.splice(at, 0, st); log.push(`${b.id} + ${st.id}`); break; }
     case 'edit-step': { b = find(); const st = stepOf(b); if (!st.done && c.stepData?.model && modelRank(c.stepData.model) > modelRank(st.model)) needApprover(c, `raising ${b.id} ${st.id} from ${st.model} to ${c.stepData.model}`); Object.assign(st, normStep({ ...st, ...c.stepData, id: st.id, done: st.done, doneAt: st.doneAt }, 0)); log.push(`${b.id} ${st.id} edited`); break; }
@@ -295,19 +353,20 @@ export function apply(state, change) {
         log.push(`${b.id}: downgrade ${p.from} → ${p.model} needs no approval; recorded (phase ${p.index + 1})`); break; }
       const who = needApprover(c, upgradeLine(b.id, p));
       const req = b.upgradeRequests.find((r) => r.phase === p.index && r.to === p.model && r.state === 'open');
-      if (!p.approved) b.approvals.push(normApproval({ phase: p.index, from: p.from, to: p.model, at: now(), by: who.by, via: who.via, kind: 'upgrade', request: req?.id ?? '' }));
+      if (!b.approvals.some((a) => a.phase === p.index && a.to === p.model)) b.approvals.push(normApproval({ phase: p.index, from: p.from, to: p.model, at: now(), by: who.by, via: who.via, kind: 'upgrade', request: req?.id ?? '', ...(who.via === 'policy' ? { note: AUTO_UPGRADE_NOTE } : {}) }));
       if (req) req.state = 'approved';
       log.push(`${upgradeLine(b.id, p)}: approved by ${who.by} (${who.via})`); break; }
     case 'request-upgrade': { b = find(); const p = phases(b)[Number(c.phase)]; if (!p || !p.upgrade) throw new Error('that phase is not a model upgrade (a downgrade needs no approval)');
+      if (!upgradeNeedsApproval()) { if (!b.approvals.some((a) => a.phase === p.index && a.to === p.model)) autoUpgrade(b, p, log); else log.push(`${upgradeLine(b.id, p)}: no approval needed (Fable upgrades need my approval is off)`); break; }
       if (p.approved) { log.push(`${upgradeLine(b.id, p)}: already approved`); break; }
       let req = b.upgradeRequests.find((r) => r.phase === p.index && r.to === p.model && r.state === 'open');
       if (!req) { req = normRequest({ id: `${b.id}.p${p.index + 1}.${Date.now().toString(36)}`, phase: p.index, from: p.from, to: p.model, at: now(), by: str(c.by, 120) || 'session' }); b.upgradeRequests.push(req); }
       if (str(c.job)) req.job = str(c.job, 120);
       log.push(`${upgradeLine(b.id, p)}: asked Brett (request ${req.id})`); break; }
-    case 'deny-upgrade': { b = find(); const who = needApprover(c, 'answering an upgrade request');
+    case 'deny-upgrade': { b = find(); const who = needApprover(c, 'answering an upgrade request', false);
       const req = b.upgradeRequests.find((r) => r.phase === Number(c.phase) && r.state === 'open'); if (!req) throw new Error('no open upgrade request on that phase');
       req.state = 'denied'; log.push(`${b.id}: upgrade request ${req.id} denied by ${who.by}`); break; }
-    case 'rules': { for (const k of Object.keys(DEFAULT_RULES)) if (k in (c.rules ?? {})) s.rules[k] = typeof DEFAULT_RULES[k] === 'number' ? Math.max(5, Math.min(240, Number(c.rules[k]) || 30)) : c.rules[k] === true; log.push('rules saved'); break; }
+    case 'rules': { for (const k of Object.keys(DEFAULT_RULES)) if (k in (c.rules ?? {})) s.rules[k] = typeof DEFAULT_RULES[k] === 'number' ? (k === 'maxStepMinutes' ? Math.max(1, Math.min(STEP_MINUTES, Math.round(Number(c.rules[k])) || STEP_MINUTES)) : Math.max(1, Number(c.rules[k]) || DEFAULT_RULES[k])) : c.rules[k] === true; log.push('rules saved'); break; }
     default: throw new Error(`unknown action ${c.action}`);
   }
   if (b && s.builds.includes(b)) { b.updatedAt = now(); const st = derivedStatus(b, s.rules); if (st !== b.status && !(c.action === 'status')) { if (isFinished(st) && !b.builtAt) b.builtAt = now(); b.status = st; } }

@@ -1,0 +1,332 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-move-status-out-of-claude-md",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:55Z",
+ "build": {
+  "id": "move-status-out-of-claude-md",
+  "title": "move-status-out-of-claude-md",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "move-status-out-of-claude-md",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/move-status-out-of-claude-md",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "c0b777926f81bf9b61f1de9e3f0ec45be65454d8",
+ "commits": [
+  "5f3f0dd57c6c47b4d9caf2f7bc1e2f00fbb343c6"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-27T23:02:31Z",
+ "files": [
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "_claude/memory/STATUS.md",
+  "_claude/shared/rules/RULES.md",
+  "apps/console-web/plugins/_template/plugin.json",
+  "apps/console-web/plugins/activity/plugin.json",
+  "apps/console-web/plugins/agent-manager/plugin.json",
+  "apps/console-web/plugins/ai-assistant/plugin.json",
+  "apps/console-web/plugins/ai-keys/plugin.json",
+  "apps/console-web/plugins/alerts-bell/plugin.json",
+  "apps/console-web/plugins/approvals-banner/plugin.json",
+  "apps/console-web/plugins/build-manager/plugin.json",
+  "apps/console-web/plugins/build-orchestrator/plugin.json",
+  "apps/console-web/plugins/build-profiles/plugin.json",
+  "apps/console-web/plugins/changes-grid/plugin.json",
+  "apps/console-web/plugins/claude-badge/plugin.json",
+  "apps/console-web/plugins/claude-handoff/plugin.json",
+  "apps/console-web/plugins/codebase-changes/plugin.json",
+  "apps/console-web/plugins/console-terminal/plugin.json",
+  "apps/console-web/plugins/container-access/plugin.json",
+  "apps/console-web/plugins/context-menu-designer/plugin.json",
+  "apps/console-web/plugins/fable-rebuilds/plugin.json",
+  "apps/console-web/plugins/feature-assist/plugin.json",
+  "apps/console-web/plugins/hub-sync/plugin.json",
+  "apps/console-web/plugins/main-build-status/plugin.json",
+  "apps/console-web/plugins/mcp-client/plugin.json",
+  "apps/console-web/plugins/plugin-manager/plugin.json",
+  "apps/console-web/plugins/plugin-switches/plugin.json",
+  "apps/console-web/plugins/plugin-update/plugin.json",
+  "apps/console-web/plugins/plugins-menu/plugin.json",
+  "apps/console-web/plugins/push-banner/plugin.json",
+  "apps/console-web/plugins/snapshot-manager/plugin.json",
+  "apps/console-web/plugins/systems-check/plugin.json",
+  "apps/console-web/plugins/systems-check/server/routine.py",
+  "apps/console-web/plugins/theme-manager/plugin.json",
+  "apps/console-web/plugins/todo-manager/plugin.json",
+  "apps/console-web/plugins/voice-notes/plugin.json"
+ ],
+ "areas": [
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md",
+    "_claude/shared/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "systems-check",
+   "files": [
+    "apps/console-web/plugins/systems-check/plugin.json",
+    "apps/console-web/plugins/systems-check/server/routine.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "_template",
+   "files": [
+    "apps/console-web/plugins/_template/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "activity",
+   "files": [
+    "apps/console-web/plugins/activity/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-manager",
+   "files": [
+    "apps/console-web/plugins/agent-manager/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai-assistant",
+   "files": [
+    "apps/console-web/plugins/ai-assistant/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai-keys",
+   "files": [
+    "apps/console-web/plugins/ai-keys/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "alerts-bell",
+   "files": [
+    "apps/console-web/plugins/alerts-bell/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "approvals-banner",
+   "files": [
+    "apps/console-web/plugins/approvals-banner/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-manager",
+   "files": [
+    "apps/console-web/plugins/build-manager/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-profiles",
+   "files": [
+    "apps/console-web/plugins/build-profiles/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "changes-grid",
+   "files": [
+    "apps/console-web/plugins/changes-grid/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-badge",
+   "files": [
+    "apps/console-web/plugins/claude-badge/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-handoff",
+   "files": [
+    "apps/console-web/plugins/claude-handoff/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "codebase-changes",
+   "files": [
+    "apps/console-web/plugins/codebase-changes/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "console-terminal",
+   "files": [
+    "apps/console-web/plugins/console-terminal/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "container-access",
+   "files": [
+    "apps/console-web/plugins/container-access/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "context-menu-designer",
+   "files": [
+    "apps/console-web/plugins/context-menu-designer/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "fable-rebuilds",
+   "files": [
+    "apps/console-web/plugins/fable-rebuilds/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "feature-assist",
+   "files": [
+    "apps/console-web/plugins/feature-assist/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "hub-sync",
+   "files": [
+    "apps/console-web/plugins/hub-sync/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "main-build-status",
+   "files": [
+    "apps/console-web/plugins/main-build-status/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "mcp-client",
+   "files": [
+    "apps/console-web/plugins/mcp-client/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plugin-manager",
+   "files": [
+    "apps/console-web/plugins/plugin-manager/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plugin-switches",
+   "files": [
+    "apps/console-web/plugins/plugin-switches/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plugin-update",
+   "files": [
+    "apps/console-web/plugins/plugin-update/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plugins-menu",
+   "files": [
+    "apps/console-web/plugins/plugins-menu/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "snapshot-manager",
+   "files": [
+    "apps/console-web/plugins/snapshot-manager/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "theme-manager",
+   "files": [
+    "apps/console-web/plugins/theme-manager/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "todo-manager",
+   "files": [
+    "apps/console-web/plugins/todo-manager/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "voice-notes",
+   "files": [
+    "apps/console-web/plugins/voice-notes/plugin.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

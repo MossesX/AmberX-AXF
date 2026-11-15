@@ -15,7 +15,8 @@ to-dos, tasks) with subtasks, checklists, tags, due dates, custom fields per kin
     POST /entries/bulk          {ids, action: delete|move|duplicate|patch, listId?, parentId?, patch?}
     POST /entries/reorder       {ids}
 
-Data: one file, todo-store@1, in the plugin's data folder (`AXF_TODO_DIR` overrides), 0600, written atomically.
+Data: one file, todo-store@1, in the plugin's data folder (`AXF_TODO_DIR` overrides), 0600, written atomically; one per
+project (projects@1): AmberX AXF keeps `store.json`, any other project `projects/<id>/store.json`.
 """
 from __future__ import annotations
 
@@ -39,7 +40,26 @@ def data_dir() -> Path:
     return Path(os.environ.get("AXF_TODO_DIR") or (cx.ROOT / ".axf-console" / "plugins" / "todo-manager"))
 
 
-STORE = Store(data_dir() / "store.json")
+class _ProjectStores:
+    """Projects (projects@1): each project has its own lists, notes, to-dos and tasks. The active project's store
+    (AmberX AXF: <data dir>/store.json, as before; any other: <data dir>/projects/<id>/store.json, empty at first).
+    STORE.<anything> goes to the store of the project in force at that moment."""
+
+    def __init__(self) -> None:
+        self._by_path: dict[Path, Store] = {}
+
+    def current(self) -> Store:
+        f = Path(cx.project_dir(data_dir())) / "store.json"
+        st = self._by_path.get(f)
+        if st is None:
+            st = self._by_path[f] = Store(f)
+        return st
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self.current(), name)
+
+
+STORE = _ProjectStores()
 
 
 def _call(fn, *a):

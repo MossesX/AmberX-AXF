@@ -1,0 +1,29 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "veto.notice",
+      "label": "Veto browser notices",
+      "group": "approvals",
+      "app": "console",
+      "source": "Veto banner",
+      "description": "Timer started, 30 s left and running, as browser notifications while the console is open. The veto banner itself stays.",
+      "enforced": "browser",
+      "only": [
+        "popup"
+      ]
+    },
+    {
+      "id": "veto.alarm",
+      "label": "Veto alarm in the console",
+      "group": "approvals",
+      "app": "console",
+      "source": "Veto banner",
+      "description": "The alarm that rings in an open console while a call counts down. Its tone and timing stay in Settings → Plugins → Approvals banner.",
+      "enforced": "browser",
+      "only": [
+        "sound"
+      ]
+    }
+  ]
+}

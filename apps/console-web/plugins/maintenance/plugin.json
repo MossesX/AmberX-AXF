@@ -1,0 +1,213 @@
+{
+ "$axf": "plugin@1",
+ "id": "ai.amberx.axf.console.maintenance",
+ "name": "Maintenance",
+ "version": "0.2.0",
+ "kind": "module",
+ "apiLevel": 1,
+ "author": "Brett",
+ "description": "Server health and safe clean-up for the VPS (maintenance@1). A dashboard of disk, memory, swap, load, Docker images, volumes and build cache, build worktrees, logs and /tmp, with the biggest space users. Clean-up jobs (finished build worktrees, dangling Docker images and build cache, old logs, /tmp leftovers, containers stuck in Created) always preview first, then go to axHub as one held call: nothing is removed until Brett approves it, and the VPS re-checks every item before removing it. Never running containers, volumes in use or app data. Nightly auto-clean of the safe jobs (off by default), alerts at 80/85/90% disk and when swap stays nearly full (console and phone), the systems check row Server health with Auto fix, and a Server disk card for Home (server health is plain code, no AI). Clean up build profiles: audits every build profile (open builds, steps, copied tracker checklists and plans) against merged PRs, git history, reports, the catalog and the other profiles; each item gets keep / done already / not needed / duplicate / merge with a reason and proof. Preview first, untick anything, then apply: done → complete, the rest archived (never deleted), one undo per run, running builds never touched. Deep (AI) mode when a model is set up, Basic (exact matches) otherwise.",
+ "targets": [
+  "axf-console"
+ ],
+ "provides": [
+  "view:maintenance",
+  "settings-tab:maintenance"
+ ],
+ "scopes": [
+  "ROUTES"
+ ],
+ "enabledByDefault": true,
+ "optional": [
+  "service:axf.health@1"
+ ],
+ "banner": false,
+ "tabable": true,
+ "forFramework": true,
+ "lifecycle": {
+  "$axf": "plugin-lifecycle@1",
+  "dataDir": ".axf-console/plugins/maintenance",
+  "env": [
+   "AXHUB_URL",
+   "AXHUB_TOKEN",
+   "AXF_MAINT_HOST_ROOT",
+   "AXF_MAINT_DATA_DIR",
+   "AXF_MAINT_NO_MONITOR",
+   "AXF_MAINT_BUILD_ROOTS",
+   "AXF_MAINT_TMP_ROOTS",
+   "AXF_MAINT_LOG_ROOTS",
+   "AXF_MAINT_AREAS"
+  ],
+  "mentions": [
+   "apps/console-web/plugins/README.md",
+   "deploy/install-console.sh",
+   "framework/core/engines/card-rules.mjs"
+  ]
+ },
+ "commands": {
+  "$axf": "plugin-commands@1",
+  "auto": true,
+  "items": [
+   {
+    "route": "GET /status",
+    "id": "status",
+    "title": "Server health: disk, memory, swap, load, alert levels, last clean-up run"
+   },
+   {
+    "route": "GET /summary",
+    "id": "summary",
+    "title": "Server health in short (disk, memory, swap percentages, load, space a clean-up frees)"
+   },
+   {
+    "route": "GET /snapshot",
+    "id": "snapshot",
+    "title": "The full measurement: biggest space users, Docker, build worktrees, logs, /tmp"
+   },
+   {
+    "route": "GET /jobs",
+    "id": "jobs",
+    "title": "The clean-up jobs, which are safe, and what each would free now"
+   },
+   {
+    "route": "POST /preview",
+    "id": "preview",
+    "title": "Preview a clean-up: what would be removed and how much space",
+    "readOnly": true,
+    "input": {
+     "type": "object",
+     "properties": {
+      "jobs": {
+       "type": "array",
+       "items": {
+        "type": "string",
+        "enum": [
+         "worktrees",
+         "docker",
+         "logs",
+         "tmp",
+         "created"
+        ]
+       }
+      }
+     },
+     "required": [
+      "jobs"
+     ]
+    }
+   },
+   {
+    "route": "POST /run",
+    "id": "run",
+    "title": "Send a clean-up to axHub for approval (nothing is removed until it is approved there)",
+    "input": {
+     "type": "object",
+     "properties": {
+      "jobs": {
+       "type": "array",
+       "items": {
+        "type": "string",
+        "enum": [
+         "worktrees",
+         "docker",
+         "logs",
+         "tmp",
+         "created"
+        ]
+       }
+      },
+      "items": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       },
+       "description": "only these item ids from the preview"
+      }
+     },
+     "required": [
+      "jobs"
+     ]
+    }
+   },
+   {
+    "route": "GET /runs",
+    "id": "runs",
+    "title": "Clean-up runs: waiting for approval, done, skipped, freed space"
+   },
+   {
+    "route": "GET /settings",
+    "id": "settings",
+    "title": "Maintenance settings (nightly auto-clean, alert levels, what counts as old)"
+   },
+   {
+    "route": "PUT /settings",
+    "id": "set-settings",
+    "title": "Change maintenance settings",
+    "input": {
+     "type": "object",
+     "properties": {
+      "nightly": {
+       "type": "boolean"
+      },
+      "nightlyHour": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 23
+      },
+      "diskWarnPct": {
+       "type": "integer"
+      },
+      "diskHighPct": {
+       "type": "integer"
+      },
+      "diskCriticalPct": {
+       "type": "integer"
+      },
+      "swapFullPct": {
+       "type": "integer"
+      },
+      "swapMinutes": {
+       "type": "integer"
+      }
+     }
+    }
+   },
+   {
+    "route": "POST /check",
+    "id": "check",
+    "title": "Check server health now (alerts and the nightly run)"
+   },
+   {
+    "route": "POST /profiles/preview",
+    "id": "profiles-preview",
+    "title": "Clean up build profiles, step 1: audit every profile and save a preview (verdict, reason and proof per item; mode auto | basic | deep). Nothing changes"
+   },
+   {
+    "route": "GET /profiles/preview/{run}",
+    "id": "profiles-preview-read",
+    "title": "Read a saved build profile clean-up preview",
+    "readOnly": true
+   },
+   {
+    "route": "POST /profiles/apply",
+    "id": "profiles-apply",
+    "title": "Clean up build profiles, step 2: apply a preview (run id; skip = item keys to leave alone). Done → complete, not needed / duplicates → archived, merges folded in; running builds untouched"
+   },
+   {
+    "route": "POST /profiles/undo",
+    "id": "profiles-undo",
+    "title": "Undo one build profile clean-up run (once per run)"
+   },
+   {
+    "route": "GET /profiles/runs",
+    "id": "profiles-runs",
+    "title": "Build profile clean-up previews and runs, newest first, and whether Deep (AI) mode is available"
+   }
+  ]
+ },
+ "builtWith": {
+  "model": "opus",
+  "builtAt": "2026-11-04"
+ },
+ "help": "help.json",
+ "opens": "main"
+}

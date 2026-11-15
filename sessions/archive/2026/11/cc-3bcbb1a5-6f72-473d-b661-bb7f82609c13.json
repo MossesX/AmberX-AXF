@@ -1,0 +1,76 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-3bcbb1a5-6f72-473d-b661-bb7f82609c13",
+ "source": "claude-code",
+ "sessionId": "3bcbb1a5-6f72-473d-b661-bb7f82609c13",
+ "project": "other",
+ "title": "hi",
+ "startedAt": "2026-11-06T18:46:43.951Z",
+ "endedAt": "2026-11-06T18:46:50.572Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.319",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/assistant-chat-mode-r4",
+  "repo": "",
+  "branch": "claude/assistant-chat-mode-r4"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-06T18:46:44.367Z",
+   "kind": "prompt",
+   "text": "hi",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 2,
+    "output": 479,
+    "cacheRead": 49817,
+    "cacheWrite": 5851,
+    "thinking": 270
+   },
+   "costUsd": 0.0488,
+   "costEstimated": false,
+   "seconds": 6,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": "Yo Brett, Amber here. What's good, kid? Two things blew up at startup: - **Builds live is stuck:** 6 changes didn't reach main. The merged store fails builds@1 because `token-usage-log-accounts-plan-studio-control-small-steps` has duplicate step uids at steps 55–57. - **Claude-sync is holding 116 f…"
+  }
+ ],
+ "files": [],
+ "changeIds": [],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 2,
+  "output": 479,
+  "cacheRead": 49817,
+  "cacheWrite": 5851,
+  "thinking": 270,
+  "costUsd": 0.0488,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0.0664
+ },
+ "ingestedAt": "2026-11-06T18:46:50.817Z"
+}

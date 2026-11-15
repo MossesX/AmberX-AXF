@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "dropdown-compact",
+  "name": "Dropdown (compact)",
+  "version": "1.0.0",
+  "description": "One small button that shows the current tab and opens the list: the phone-friendly row that takes no width.",
+  "author": "AmberX AXF",
+  "tags": ["dropdown", "phone", "compact"],
+  "data": {
+    "style": "segmented",
+    "align": "start",
+    "position": "top",
+    "density": "compact",
+    "overflow": "dropdown",
+    "display": "both",
+    "divider": false,
+    "badges": true,
+    "rememberLast": true
+  }
+}

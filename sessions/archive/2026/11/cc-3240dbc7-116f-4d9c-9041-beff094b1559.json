@@ -1,0 +1,99 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-3240dbc7-116f-4d9c-9041-beff094b1559",
+ "source": "claude-code",
+ "sessionId": "3240dbc7-116f-4d9c-9041-beff094b1559",
+ "project": "other",
+ "title": "# Build: shipped-features-r2 (Fable for the foundation steps, then downgrade to Opus for the plugin/UI steps) **Name:**…",
+ "startedAt": "2026-11-04T21:38:36.577Z",
+ "endedAt": "2026-11-04T21:54:56.322Z",
+ "minutes": 16,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/shipped-features-r2",
+  "repo": "",
+  "branch": "claude/shipped-features-r2"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-fable-5-1"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-04T21:38:52.652Z",
+   "kind": "prompt",
+   "text": "# Build: shipped-features-r2 (Fable for the foundation steps, then downgrade to Opus for the plugin/UI steps) **Name:** Shipped features · **Category:** Plugin (+ Framework contracts) ## Takeover (Brett, voice, Nov 4 2026) \"I want you to work on the Fable part right now.\" ... \"Take the whole task from him. I'm gonna shut him down. Then you take the whole task. Start it right now.\" The helper account was building this on branch `claude/shipped-features-acct2` (Opus only, no Fable) and is being stopped. **FIRST:** `git fetch origin claude/shipped-features-acct2`. If it exists and has real work,…",
+   "model": "claude-fable-5-1",
+   "tokens": {
+    "input": 514,
+    "output": 75084,
+    "cacheRead": 1963888,
+    "cacheWrite": 165027,
+    "thinking": 15127
+   },
+   "costUsd": 6.3133,
+   "costEstimated": false,
+   "seconds": 964,
+   "tools": {
+    "Bash": 50,
+    "Write": 5
+   },
+   "commands": 50,
+   "files": [
+    "/root/axf-builds/shipped-features-r2/framework/core/deploy-log.mjs",
+    "/root/axf-builds/shipped-features-r2/framework/core/feature-ledger.mjs",
+    "/root/axf-builds/shipped-features-r2/framework/spec/check-feature-ledger.mjs",
+    "/root/axf-builds/shipped-features-r2/framework/core/feature-ledger.d.mts",
+    "/root/axf-builds/shipped-features-r2/framework/core/deploy-log.d.mts"
+   ],
+   "changeIds": [
+    "chg-20261104-c59e74d902"
+   ],
+   "features": [
+    "pending:shipped-features"
+   ],
+   "output": "You're out of usage credits. Switch to another model, or manage usage credits at https://claude.ai/settings/usage?from=cc_cli_limit_message, to continue."
+  }
+ ],
+ "files": [
+  "/root/axf-builds/shipped-features-r2/framework/core/deploy-log.mjs",
+  "/root/axf-builds/shipped-features-r2/framework/core/feature-ledger.mjs",
+  "/root/axf-builds/shipped-features-r2/framework/spec/check-feature-ledger.mjs",
+  "/root/axf-builds/shipped-features-r2/framework/core/feature-ledger.d.mts",
+  "/root/axf-builds/shipped-features-r2/framework/core/deploy-log.d.mts"
+ ],
+ "changeIds": [
+  "chg-20261104-c59e74d902"
+ ],
+ "features": [
+  "pending:shipped-features"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 514,
+  "output": 75084,
+  "cacheRead": 1963888,
+  "cacheWrite": 165027,
+  "thinking": 15127,
+  "costUsd": 6.3133,
+  "costEstimated": false,
+  "toolCalls": 55,
+  "commands": 50,
+  "filesTouched": 5,
+  "reportedUsd": 7.5509
+ },
+ "ingestedAt": "2026-11-04T21:54:56.808Z"
+}

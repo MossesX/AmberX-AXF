@@ -5,7 +5,7 @@ import * as core from './review-core.mjs';
 import type { Item } from './review-core.mjs';
 import type { GroupBy } from './keys';
 import { Shot, ShotBrowser } from './shots';
-import { Detail, GroupPick, Meta, Pick, StatusChip, useReview } from './ui';
+import { Detail, GroupPick, Meta, Pick, StatusChip, useReview, when } from './ui';
 
 /** Waiting / total for a list (group heads, tree nodes). */
 const tally = (xs: Item[]) => core.counts(xs)[''] ?? { waiting: 0, total: 0 };
@@ -17,7 +17,7 @@ function Row({ it, kind = true }: { it: Item; kind?: boolean }) {
   const r = useReview(); const isOpen = r.open.includes(it.id);
   const first = (r.device ? it.shots.find((s) => s.device === r.device) : null) ?? it.shots[0];
   return (
-    <div role="listitem" className={`axp-ui-review__item ${isOpen ? 'is-open' : ''} ${r.sel.includes(it.id) ? 'is-sel' : ''}`}>
+    <div role="listitem" data-axf-target={`row:${it.id}`} className={`axp-ui-review__item ${isOpen ? 'is-open' : ''} ${r.sel.includes(it.id) ? 'is-sel' : ''}`}>
       <div className="axp-ui-review__row">
         <Pick id={it.id} label={it.title} />
         <button type="button" data-fx-row className="axp-ui-review__hit" aria-expanded={isOpen} onClick={() => r.toggleOpen(it.id)}>
@@ -27,6 +27,7 @@ function Row({ it, kind = true }: { it: Item; kind?: boolean }) {
             <b>{it.title}</b>
             <Meta it={it} kind={kind} />
           </span>
+          <span className="axp-ui-review__date fx-small fx-muted">{when(it.submittedAt)}</span>
           <StatusChip status={it.status} />
         </button>
       </div>
@@ -36,8 +37,25 @@ function Row({ it, kind = true }: { it: Item; kind?: boolean }) {
 }
 
 /** Collapsible grid with expandable panes. */
-export function GridView({ items }: { items: Item[] }) {
-  return <div className="axp-ui-review__grid" role="list">{items.map((it) => <Row key={it.id} it={it} />)}</div>;
+/** Sortable columns: a tap sorts by it, a second tap the other way round. */
+const COLUMNS = [{ label: 'Title', up: 'title', down: 'title-desc' }, { label: 'App', up: 'app', down: 'app-desc' }, { label: 'Date', up: 'newest', down: 'oldest' }, { label: 'Status', up: 'waiting', down: 'waiting-desc' }];
+
+export function GridView({ items, sort, onSort }: { items: Item[]; sort: string; onSort: (s: string) => void }) {
+  return (
+    <>
+      <div className="axp-ui-review__heads" role="group" aria-label="Sort by">
+        {COLUMNS.map((c) => {
+          const on = sort === c.up || sort === c.down;
+          return (
+            <button key={c.label} type="button" data-fx-row className={`axp-ui-review__head fx-small${on ? ' is-on' : ' fx-muted'}`} aria-pressed={on} onClick={() => onSort(sort === c.up ? c.down : c.up)}>
+              {c.label}{on && <Icon name={sort === c.up ? 'chevron-down' : 'chevron-up'} size={12} />}
+            </button>
+          );
+        })}
+      </div>
+      <div className="axp-ui-review__grid" role="list">{items.map((it) => <Row key={it.id} it={it} />)}</div>
+    </>
+  );
 }
 
 /** Grid with sub-grids: rows grouped by kind / app / status / build, each group its own collapsible grid. */
@@ -115,7 +133,7 @@ export function GalleryView({ items }: { items: Item[] }) {
         const isOpen = r.open.includes(it.id);
         const first = (r.device ? it.shots.find((s) => s.device === r.device) : null) ?? it.shots.find((s) => s.device === 'phone') ?? it.shots[0];
         return (
-          <div key={it.id} role="listitem" className={`axp-ui-review__card ${isOpen ? 'is-open' : ''} ${r.sel.includes(it.id) ? 'is-sel' : ''}`}>
+          <div key={it.id} role="listitem" data-axf-target={`row:${it.id}`} className={`axp-ui-review__card ${isOpen ? 'is-open' : ''} ${r.sel.includes(it.id) ? 'is-sel' : ''}`}>
             {isOpen ? (
               <>
                 <div className="axp-ui-review__row">
@@ -164,7 +182,7 @@ export function CompareView({ items }: { items: Item[] }) {
       </div>
       <div className="axp-ui-review__cols" style={{ ['--cols' as string]: String(cols.length) }}>
         {cols.map((it) => (
-          <div key={it.id} className="axp-ui-review__col">
+          <div key={it.id} data-axf-target={`row:${it.id}`} className="axp-ui-review__col">
             <div className="axp-ui-review__row">
               <Pick id={it.id} label={it.title} />
               <span className="axp-ui-review__title"><b>{it.title}</b><Meta it={it} /></span>

@@ -33,9 +33,13 @@ import org.json.JSONObject;
  *  - `recorder.stop` stops it the same way the notification's Stop does.
  *  - `recorder.status` answers on/off, since, session, current file, uploaded parts and the queue.
  *  - `browser.open` (capability `open-url@1`, console wake, Nov 3 2026) opens one of Brett's own pages
- *    ({@link OpenUrlRules#allowed}: https on amberxai.com only) in Chrome or the default browser, e.g. the Dev Console
- *    with a queued console command. Android 10+ blocks most starts from the background, so a high-priority
- *    notification with a full-screen intent opens it too (one tap when the screen is on).
+ *    ({@link OpenUrlRules#allowed}: https on amberxai.com only), e.g. the Dev Console with a queued console command.
+ *    It goes through the overlay: the always-on toolbar expands into its full-screen browser and the page opens
+ *    there directly. A URL carrying {@code axf-overlay=expand|collapse} is an overlay verb instead
+ *    ({@link OverlayPageRules#verb}). Only with the overlay off, or a call asking for {@code where: "browser"}, does it
+ *    go to Chrome: Android 10+ silently drops most starts from the background, so {@link #startInForeground} only counts
+ *    one that had a window to start from, and a high-priority notification with a full-screen intent stays as the
+ *    one-tap way in. The answer's `opened` and `where` say which.
  */
 final class AxppLink {
     private AxppLink() {}
@@ -149,8 +153,27 @@ final class AxppLink {
     static JSONObject run(String tool, JSONObject args) throws Exception {
         Context c = app;
         switch (tool) {
-            case OpenUrlRules.OPEN:
-                return openUrl(c, OpenUrlRules.allowed(args.optString("url", "")), OpenUrlRules.browserOf(args));
+            case OpenUrlRules.OPEN: {
+                String url = OpenUrlRules.allowed(args.optString("url", ""));
+                String verb = OverlayPageRules.verb(url);
+                boolean ready = WatchService.overlayPagesReady(c);
+                // overlay.collapse / overlay.expand from the console, MCP, the CLI or voice, through the same hub tool.
+                if (OverlayPageRules.COLLAPSE.equals(verb)) {
+                    boolean ok = ready && WatchService.approvalOverlayCommand(c, "collapse", null);
+                    return new JSONObject().put("url", url).put("verb", verb).put("opened", false).put("collapsed", ok)
+                        .put("notified", false).put("overlay", ready).put("where", "overlay");
+                }
+                if (OverlayPageRules.EXPAND.equals(verb) && ready && WatchService.approvalOverlayCommand(c, "expand", null)) {
+                    return new JSONObject().put("url", url).put("verb", verb).put("browser", "overlay").put("opened", true)
+                        .put("notified", false).put("overlay", true).put("where", "overlay");
+                }
+                // Every open goes through the overlay: the toolbar expands into its full-screen browser on the page.
+                if (OverlayPageRules.inOverlay(args, ready) && WatchService.openOverlayPage(c, url)) {
+                    return new JSONObject().put("url", url).put("verb", OverlayPageRules.OPEN).put("browser", "overlay").put("opened", true)
+                        .put("notified", false).put("overlay", true).put("where", "overlay");
+                }
+                return openUrl(c, url, OpenUrlRules.browserOf(args)).put("where", "browser");
+            }
             case RecorderControl.START: {
                 RecorderControl.Session s = RecorderControl.sessionOf(args);
                 if (OutputRecordService.running) {
@@ -211,7 +234,7 @@ final class AxppLink {
      */
     private static void askToStart(Context c, RecorderControl.Session s) {
         main.post(() -> {
-            try { c.startActivity(OutputRecordStartActivity.intent(c)); } catch (RuntimeException ignored) { /* background start refused: the notification does it */ }
+            startInForeground(c, OutputRecordStartActivity.intent(c)); // refused or dropped: the notification does it
             NotificationManager nm = (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && nm.getNotificationChannel(CHANNEL) == null) {
                 NotificationChannel ch = new NotificationChannel(CHANNEL, "Recording asked from axHub", NotificationManager.IMPORTANCE_HIGH);
@@ -248,16 +271,30 @@ final class AxppLink {
     }
 
     /**
-     * Opens the page now where Android lets it (AmberX on screen, or allowed to draw over other apps), and always posts
-     * an "Amber is opening the console" notification with a full-screen intent, so a locked or busy phone still gets
-     * there with one tap. The answer says which happened.
+     * Starts an activity from the background the way Android allows it: with AmberX on screen, or while the overlay
+     * toolbar is visible (since Android 15 holding "Display over other apps" isn't enough on its own: the app needs a
+     * visible overlay window at that moment, and the always-on toolbar is that window). Otherwise Android drops the
+     * start silently, so this doesn't try. → true when the start has a window behind it; only the page opening proves
+     * it landed.
+     */
+    private static boolean startInForeground(Context c, Intent i) {
+        if (!WatchService.inApp && !WatchService.overlayShown()) return false;
+        try { c.startActivity(i); return true; } catch (RuntimeException e) { return false; }
+    }
+
+    /**
+     * Opens the page now where Android lets it (AmberX on screen, or a brief overlay window), and always posts a
+     * "Tap to open" notification with a full-screen intent, so a locked or busy phone still gets there with one tap.
+     * The answer says what really happened: `opened` only for a start Android can't have dropped, `notified` only when
+     * notifications are on, `overlay` whether "Display over other apps" is granted.
      */
     private static JSONObject openUrl(Context c, String url, String browser) throws Exception {
         Intent open = browserIntent(c, url, browser);
         boolean[] started = { false };
+        boolean[] notified = { false };
         java.util.concurrent.CountDownLatch done = new java.util.concurrent.CountDownLatch(1);
         main.post(() -> {
-            try { c.startActivity(open); started[0] = true; } catch (RuntimeException ignored) { /* background start refused: the notification does it */ }
+            started[0] = startInForeground(c, open);
             try {
                 NotificationManager nm = (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && nm.getNotificationChannel(CHANNEL_OPEN) == null) {
@@ -268,21 +305,23 @@ final class AxppLink {
                 PendingIntent pi = PendingIntent.getActivity(c, 4, open, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
                 Notification.Builder b = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? new Notification.Builder(c, CHANNEL_OPEN) : new Notification.Builder(c);
                 b.setSmallIcon(android.R.drawable.ic_menu_view)
-                    .setContentTitle("Amber is opening the console")
-                    .setContentText("A command is waiting for the Dev Console. Tap to open it.")
+                    .setContentTitle("Tap to open the Dev Console")
+                    .setContentText("Amber has something to show you.")
                     .setContentIntent(pi)
                     .setFullScreenIntent(pi, true)
                     .setCategory(Notification.CATEGORY_REMINDER)
                     .setPriority(Notification.PRIORITY_HIGH)
                     .setAutoCancel(true);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) b.setTimeoutAfter(2 * 60_000L);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) b.setTimeoutAfter(10 * 60_000L);
                 nm.notify(NOTE_OPEN, b.build());
+                notified[0] = Build.VERSION.SDK_INT < Build.VERSION_CODES.N || nm.areNotificationsEnabled();
             } catch (RuntimeException ignored) { /* notifications off: the start above is all there is */ }
             done.countDown();
         });
         done.await(5, java.util.concurrent.TimeUnit.SECONDS);
         return new JSONObject().put("url", url).put("browser", open.getPackage() == null ? "default" : "chrome")
-            .put("opened", started[0]).put("notified", true);
+            .put("opened", started[0]).put("notified", notified[0])
+            .put("overlay", Build.VERSION.SDK_INT < Build.VERSION_CODES.M || android.provider.Settings.canDrawOverlays(c));
     }
 
     static void cancelPrompt(Context c) {

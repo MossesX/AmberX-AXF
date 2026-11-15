@@ -4,6 +4,7 @@
 // stdin: one JSON event per line; anything that isn't JSON is passed through unchanged. Never exits on a bad line.
 // --meter <file> --chain <file> [--session s] [--name n] [--agent a] [--model m]: also keep the live cost meter and the
 // context chain for the console (deploy/claude-meter.mjs), rewritten at most once a second and when the stream ends.
+// [--build id]: the orchestrator build the run belongs to (per-build start tokens and cost, headless-context.mjs runs).
 import { createInterface } from 'node:readline';
 import { createMeter, readJson, writeJson } from './claude-meter.mjs';
 
@@ -64,7 +65,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   let meter = null;
   if (o.meter) {
     try {
-      meter = createMeter({ session: o.session ?? '', name: o.name ?? '', agent: o.agent ?? '', model: o.model ?? '', cwd: process.cwd(), prev: readJson(o.meter), prevChain: o.chain ? readJson(o.chain) : null });
+      let policy; try { policy = (await import('../framework/cli/headless-context.mjs')).readPolicy(); } catch { policy = undefined; }
+      meter = createMeter({ session: o.session ?? '', name: o.name ?? '', agent: o.agent ?? '', model: o.model ?? '', build: o.build ?? '', cwd: process.cwd(), prev: readJson(o.meter), prevChain: o.chain ? readJson(o.chain) : null, ...(policy ? { policy } : {}) });
     } catch { meter = null; }
   }
   let dirty = false; let chainAt = -1;

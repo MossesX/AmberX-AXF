@@ -14,7 +14,21 @@ command must reach a console: even if the browser is closed, open it"): a comman
 for that user (default 2 minutes, Settings → Plugins → Console commands) and delivered, once, the moment a console says
 hello; the call waits up to a minute for it. When nothing connects within a few seconds, the owner's AmberX phone is
 asked through axHub (`amberx.open_url`) to open the console with `?axf-cmd=<id>`. The answer's `delivery.how` says
-how it got there: `live`, `after reconnect`, `woke via AmberX`, or `queued` (still waiting when the call returned).
+how it got there: `live`, `after retry`, `after reconnect`, `woke via AmberX`, or `queued` (still waiting when the
+call returned).
+
+Reliable delivery (console-commands-reliable, Nov 11 2026: commands sat with a sleeping phone tab while the console in
+front of Brett had dropped off the list):
+  - Only the console proves it is alive: hello, seen (every 15 s and on every wake), ack, opening its stream. The
+    server's keep-alive on the stream never counts, since a frozen tab keeps its socket open. Quiet for STALE_S = gone.
+  - A beat from a console the server doesn't know with its catalog (a restart) answers `hello: true`, and the console
+    says hello again at once, so it never drops off console.clients.
+  - A command for the recent console goes to the live console used last; no ack within LIVE_TRY_S → the next live one
+    (up to MAX_TRIES), and a console that didn't answer counts as asleep until it beats again. Nobody answered: a
+    navigate-only command is queued and AmberX opens the console on the phone straight away; a command that changes
+    data is never re-sent (the sleeping tab skips it once it is CONSOLE_LATE_MS old, see consoleMessageLate).
+  - The answer is truthful: `status` = delivered (a console acked it), pending (sent or queued, nobody acked yet) or
+    failed (a console acked it as not done, or it expired), with `delivery.tried` = the consoles asked in turn.
 
 Mounted twice: /api/plugins/console-commands/… (the plugin mount; the console client uses it) and /api/console/…
 (the contract path, main.py's CAPABILITY_MOUNTS; console token or a hub admin).
@@ -27,7 +41,7 @@ Mounted twice: /api/plugins/console-commands/… (the plugin mount; the console 
   GET  clients · GET recent · GET queue                           the caller's open consoles · the last commands · what waits
   GET  settings · POST settings {wake, ttlS, browser}              queue + wake settings (the owner changes them)
   POST ""                                                          a whole control@1 command of the console domain
-  POST open {screen} · dialog {id, arg?} (close: {"action": "close", id?}) · settings {tab, anchor?} · action {id, args?, confirm?} · back · home · close   (each takes `to`)
+  POST open {screen} · dialog {id, arg?} (close: {"action": "close", id?}) · settings {tab, anchor?} · action {id, args?, confirm?} · back · home · close · refresh {hard?}   (each takes `to`)
   GET  where · GET list?kind=screens|dialogs|settings|actions&q=…&limit=…
 
 Capability console-commands@1: plugin_services.get("console-commands@1").run(command, grants=[…], by="…", audience="owner").
@@ -44,6 +58,7 @@ import time
 from collections import deque
 from pathlib import Path
 from typing import Any, Callable
+from urllib.parse import urlsplit
 
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.concurrency import run_in_threadpool
@@ -58,13 +73,20 @@ ROOT = RUNNER.parents[4]
 POLICY = ROOT / "apps" / "console-web" / "src" / "assets" / "uac-policy" / "console-access.json"
 STATUS = {"invalid": 400, "validation": 422, "denied": 403, "not_found": 404, "confirmation_required": 409, "not_implemented": 501, "unexpected": 500}
 CLIENT_RE = re.compile(r"^[A-Za-z0-9_-]{6,64}$")
-STALE_S = 90.0          # = CONSOLE_CLIENT_STALE_MS in core/engines/console-commands.mjs
+STALE_S = 45.0          # = CONSOLE_CLIENT_STALE_MS in core/engines/console-commands.mjs
+ACK_RESULT_MAX = 256_000  # bytes of a console-control answer kept from an ack (search hits, a long target list)
+KEEPALIVE_S = 15.0      # a comment down every stream this often (the client drops a stream silent for 45 s)
+LIVE_TRY_S = 3.5        # how long one live console gets to ack before the next live one is tried
+MAX_TRIES = 3           # live consoles tried in turn for one command
+LATE_ACK_S = 120.0      # how long an unanswered command still records a late ack
 ACK_WAIT_S = 10.0       # how long an answer waits for the consoles to say what they did (4 s was too short on a
                         # busy VPS: the ack itself queued behind other requests, Nov 3 2026)
 CATALOG_MAX_BYTES = 1_500_000
 OWNER = "owner"
 DELIVERY_WAIT_S = 60.0  # how long a call waits for a queued (or reconnecting) command to reach a console
 WAKE_AFTER_S = 3.0      # no console connected this long after queuing → ask AmberX to open one
+RETRY_WAIT_S = 15.0     # after every live console was tried and the command was queued, how long the call waits
+FALLBACK_KEY = "console:wake-fallback"
 WAKE_AGAIN_S = 45.0     # one wake per this long per user (Chrome takes a moment to open)
 CONSOLE_URL = (os.environ.get("AXF_CONSOLE_PUBLIC_URL") or "https://console.amberxai.com").rstrip("/")
 DATA_DIR = Path(os.environ.get("AXF_CONSOLE_COMMANDS_DATA_DIR") or ROOT / ".axf-console" / "plugins" / FOLDER)
@@ -79,6 +101,7 @@ _queue: list[dict[str, Any]] = []            # commands that found no console: {
 _catalogs: dict[str, dict[str, Any]] = {}    # the last catalog each audience's console sent (checks a queued command early)
 _draining: set[str] = set()
 _woke_at: dict[str, float] = {}
+_late: dict[str, dict[str, Any]] = {}      # message id → {entry, at}: commands nobody answered in time (a late ack lands here)
 
 
 # ---------------------------------------------------------------------- who is asking
@@ -201,6 +224,62 @@ def deliver(to: list[str], message: dict[str, Any], audience: str, wait: float =
     return out
 
 
+def _live(c: dict[str, Any], now: float | None = None) -> bool:
+    """Proved alive lately (by the console itself) and its stream is open."""
+    return c.get("queue") is not None and (now or _now()) - c["lastSeen"] <= STALE_S
+
+
+def _turn_order(audience: str, first: str, app: str) -> list[str]:
+    """The consoles to try for a `recent` command: the runner's pick, then every other live, ready console of the same
+    app, in front first, used last first. Only consoles with an open stream (a push can reach them now)."""
+    now = _now()
+    with _lock:
+        cs = [c for c in _clients.values() if c["audience"] == audience and _ready(c) and _live(c, now) and c.get("app", "console-web") == app]
+        f = _clients.get(first)
+        head = [first] if f is not None and f["audience"] == audience and f.get("queue") is not None else []
+    cs.sort(key=lambda c: (c.get("front", True) is False, -float(c.get("lastUsed") or 0)))
+    return (head + [c["id"] for c in cs if c["id"] != first])[:MAX_TRIES]
+
+
+def try_in_turn(ids: list[str], message: dict[str, Any], audience: str, each: float = LIVE_TRY_S) -> tuple[list[str], dict[str, dict[str, Any]]]:
+    """Send to one console at a time until one acks. A console that doesn't answer within `each` seconds counts as
+    asleep (out of `recent`) until it beats again. → (the consoles asked, their acks by client id)."""
+    mid = str(message.get("id") or "")
+    ev = threading.Event()
+    with _lock:
+        _acks[mid] = {"event": ev, "want": set(), "results": {}, "any": True}
+    tried: list[str] = []
+    for cid in ids:
+        with _lock:
+            c = _clients.get(cid)
+            if c is None or c["audience"] != audience or c.get("queue") is None:
+                continue
+            _acks[mid]["want"].add(cid)
+            _push(c, message)
+        tried.append(cid)
+        if ev.wait(each):
+            break
+        with _lock:
+            c["lastSeen"] = min(c["lastSeen"], _now() - STALE_S - 1)
+            c["missed"] = _now()
+    with _lock:
+        a = _acks.get(mid) or {"results": {}}
+        results = dict(a["results"])
+        if results or not tried:
+            _acks.pop(mid, None)
+        else:  # nobody answered: keep listening, a late ack is recorded (and stops a queued copy)
+            _late[mid] = {"entry": None, "at": _now(), "audience": audience}
+    return tried, results
+
+
+def _late_prune() -> None:
+    cut = _now() - LATE_ACK_S
+    with _lock:
+        for mid in [k for k, v in _late.items() if v["at"] < cut]:
+            _late.pop(mid, None)
+            _acks.pop(mid, None)
+
+
 # ---------------------------------------------------------------------- settings (Settings → Plugins → Console commands)
 
 def _settings_file() -> Path:
@@ -281,8 +360,27 @@ def _hub_wake(url: str, browser: str) -> dict[str, Any]:
 WAKER: Callable[[str, str], dict[str, Any]] = _hub_wake  # tests swap in a fake phone
 
 
-def _wake_later(entry: dict[str, Any]) -> None:
-    """WAKE_AFTER_S after queuing: still no console → open one on the owner's phone (once per WAKE_AGAIN_S)."""
+def _fallback_alert(cid: str, why: str) -> None:
+    """The phone can't be reached right now: a console alert AmberX's watch reads, whose tap opens the console."""
+    try:
+        import console_context as cx
+        cx.raise_alert({"source": "console", "severity": "warning", "key": FALLBACK_KEY, "title": "Tap to open the Dev Console", "body": f"Amber has something to show you. {why}"[:300],
+                        "link": f"{CONSOLE_URL}/?axf-cmd={cid}", "meta": {"label": "Dev Console"}})
+    except Exception:  # noqa: BLE001 — the command stays queued either way
+        pass
+
+
+def _fallback_clear() -> None:
+    try:
+        import console_context as cx
+        cx.resolve_alerts([FALLBACK_KEY])
+    except Exception:  # noqa: BLE001
+        pass
+
+
+def _wake_later(entry: dict[str, Any], after: float | None = None) -> None:
+    """WAKE_AFTER_S after queuing (`after`: 0 when every live console was already tried): still no console → open one
+    on the owner's phone (once per WAKE_AGAIN_S)."""
     def go() -> None:
         with _lock:
             if entry["state"] != "queued":
@@ -302,12 +400,15 @@ def _wake_later(entry: dict[str, Any]) -> None:
             r = WAKER(f"{CONSOLE_URL}/?axf-cmd={entry['id']}", st["browser"])
         except Exception as e:  # noqa: BLE001 — a failed wake leaves the command queued; the answer says why
             r = {"ok": False, "message": str(e)[:300]}
-        entry["wake"] = {"sent": bool(r.get("ok")), "message": str(r.get("message") or "")[:300], "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+        entry["wake"] = {"sent": bool(r.get("ok")), "opened": r.get("opened") is True, "notified": r.get("notified") is True, "message": str(r.get("message") or "")[:300],
+                         "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
         if not r.get("ok"):
             with _lock:
                 _woke_at.pop(audience, None)
+        if not r.get("ok") or not (r.get("opened") or r.get("notified")):
+            _fallback_alert(entry["id"], str(r.get("message") or ""))
 
-    t = threading.Timer(WAKE_AFTER_S, go)
+    t = threading.Timer(WAKE_AFTER_S if after is None else after, go)
     t.daemon = True
     t.start()
 
@@ -328,14 +429,20 @@ def _expire() -> None:
         _queue[:] = [e for e in _queue if e["state"] in ("queued", "delivering") or now - e["at"] < 600][-200:]
 
 
-def _enqueue(command: dict[str, Any], grants: list[str], by: str, audience: str) -> dict[str, Any]:
+def _enqueue(command: dict[str, Any], grants: list[str], by: str, audience: str, wake_after: float | None = None, tried: list[str] | None = None) -> dict[str, Any]:
     ttl = float(settings()["ttlS"])
     e = {"id": f"cq-{int(_now() * 1000):x}-{os.urandom(3).hex()}", "audience": audience, "command": command, "grants": grants, "by": by,
-         "at": _now(), "expires": _now() + ttl, "state": "queued", "event": threading.Event(), "result": None, "wake": None, "picked": False}
+         "at": _now(), "expires": _now() + ttl, "state": "queued", "event": threading.Event(), "result": None, "wake": None, "picked": False, "tried": list(tried or [])}
     with _lock:
         _queue.append(e)
-    _wake_later(e)
+    _wake_later(e, wake_after)
     return e
+
+
+def queue_for_owner(command: dict[str, Any], grants: list[str], by: str) -> dict[str, Any]:
+    """Queue a navigate-only command for the next console that opens, and wake one: for a console that is connected but
+    never answered (a frozen phone tab). Never for anything that changes data: the frozen tab may still run its copy."""
+    return _enqueue({k: v for k, v in command.items() if v not in (None, "")}, grants, by, OWNER)
 
 
 def queued_for(audience: str) -> list[dict[str, Any]]:
@@ -347,7 +454,8 @@ def queued_for(audience: str) -> list[dict[str, Any]]:
 
 
 def _how(e: dict[str, Any]) -> str:
-    return "woke via AmberX" if e["picked"] or (e["wake"] or {}).get("sent") else "after reconnect"
+    # only the console that opened from the wake link proves the wake; the phone's own yes never does
+    return "woke via AmberX" if e["picked"] else "after reconnect"
 
 
 def drain(audience: str, pick: str = "") -> None:
@@ -367,6 +475,8 @@ def drain(audience: str, pick: str = "") -> None:
                 e = next((x for x in _queue if x["audience"] == audience and x["state"] == "queued"), None)
                 if e is None:
                     return
+                if not any(_ready(c) and c["audience"] == audience for c in _clients.values()):
+                    return
                 e["state"] = "delivering"  # nobody else takes it: delivered once, even if two consoles say hello
             r = _runner(e["command"], e["grants"], e["by"], ready_clients(audience))
             d = r.pop("deliver", None)
@@ -380,14 +490,21 @@ def drain(audience: str, pick: str = "") -> None:
                 message = {**(d.get("message") or {}), "delivery": "woke" if _how(e) == "woke via AmberX" else "queued"}
                 r["sent"] = message
                 r["delivered"] = deliver([str(x) for x in d.get("to") or []], message, audience, wait=10.0)
-            r["delivery"] = {"how": _how(e), "id": e["id"], "queuedFor": round(_now() - e["at"], 1), **({"wake": e["wake"]} if e["wake"] else {})}
+            r["delivery"] = {"how": _how(e), "id": e["id"], "queuedFor": round(_now() - e["at"], 1), **({"tried": e["tried"]} if e.get("tried") else {}), **({"wake": e["wake"]} if e["wake"] else {})}
+            r["status"] = _status_of(r)
             with _lock:
                 e["result"], e["state"] = r, "delivered" if r.get("ok") else "failed"
             e["event"].set()
             _log(e["command"], r, e["by"], audience)
+            _fallback_clear()
     finally:
         with _lock:
             _draining.discard(audience)
+
+
+def _has_queued(audience: str) -> bool:
+    with _lock:
+        return any(e["audience"] == audience and e["state"] == "queued" for e in _queue)
 
 
 def _drain_soon(audience: str, pick: str = "") -> None:
@@ -424,22 +541,131 @@ def _queueable(command: dict[str, Any], r: dict[str, Any]) -> bool:
     return not r.get("ok") and bool(r.get("noConsole")) and command.get("op") == "act" and to in ("recent", "all")
 
 
+def _status_of(r: dict[str, Any]) -> str:
+    """delivered = a console acked it as done; failed = refused, acked as not done, or expired; pending = nobody acked yet."""
+    if not r.get("ok") and not r.get("queued"):
+        return "failed"
+    acks = [x for x in r.get("delivered") or [] if isinstance(x, dict)]
+    if any(x.get("ok") for x in acks):
+        return "delivered"
+    if any(not x.get("ok") and not x.get("pending") for x in acks):
+        return "failed"
+    return "pending"
+
+
+def _navigates(command: dict[str, Any], r: dict[str, Any]) -> bool:
+    """Only moves the console (safe to queue and carry out on another console later)."""
+    t = command.get("target")
+    if t in ("console.screens", "console.settings", "console.dialogs", "console.nav"):
+        return True
+    return t == "console.actions" and (r.get("data") or {}).get("effect") == "navigate"
+
+
+# Items another plugin knows by name (a build id) open on that plugin's screen, focused on the item: the capability
+# console-focus@1 (provided by the plugin that owns the screen) turns a path into {screen, focus}. `<kind>:<name>` is
+# always that plugin's; a bare name only when it is no screen's exact id.
+def _focus_provider() -> Any | None:
+    return plugin_services.get("console-focus@1")
+
+
+def focus_rewrite(command: dict[str, Any], audience: str) -> dict[str, Any]:
+    """`build:<id>` (or a bare build id that is no screen's id) on console.screens → the screen that lists it, focused on
+    it: the console opens its tab, scrolls the row into view, expands and highlights it."""
+    if command.get("target") != "console.screens" or command.get("op") not in ("act", "get"):
+        return command
+    svc = _focus_provider()
+    path = str(command.get("path") or "").strip()
+    if svc is None or not path:
+        return command
+    try:
+        hit = svc.resolve(path)
+    except Exception:  # noqa: BLE001 — a broken provider never stops a plain screen command
+        hit = None
+    if not isinstance(hit, dict) or not hit.get("screen") or not hit.get("focus"):
+        return command
+    if not hit.get("explicit"):
+        screens = {str(i.get("id") or "").lower() for c in ready_clients(audience)[:1] for i in (c.get("catalog") or {}).get("items") or [] if i.get("kind") == "screen"}
+        if path.lower() in screens:
+            return command
+    inp = dict(command.get("input") or {}) if isinstance(command.get("input"), dict) else {}
+    inp.setdefault("focus", str(hit["focus"]))
+    return {**command, "path": str(hit["screen"]), "input": inp}
+
+
 def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", audience: str = OWNER, wait: float | None = None) -> dict[str, Any]:
-    """One console command for a caller → the control@1 answer, with `delivered` (the consoles' acks) and `delivery`
-    (how it got there) on a sent command. No console connected: queued, and the call waits up to `wait` seconds."""
+    """One console command for a caller → the control@1 answer, with `delivered` (the consoles' acks), `delivery` (how it
+    got there, which consoles were tried) and `status` (delivered / pending / failed) on a sent command. No console
+    connected: queued, and the call waits up to `wait` seconds."""
     command = {k: v for k, v in (command or {}).items() if v not in (None, "")}
     grants = grants if grants is not None else ["*"]
     by = by or str(command.get("by") or "")
+    if command.get("target") == "console.control":
+        return control_target(command, grants, by, audience)
+    command = focus_rewrite(command, audience)
+    _late_prune()
     r = _runner(command, grants, by, ready_clients(audience))
     if _queueable(command, r):
-        return _run_queued(command, grants, by, audience, DELIVERY_WAIT_S if wait is None else wait)
+        out = _run_queued(command, grants, by, audience, DELIVERY_WAIT_S if wait is None else wait)
+        out["status"] = _status_of(out)
+        return out
     d = r.pop("deliver", None)
     if r.get("ok") and isinstance(d, dict):
-        r["sent"] = d.get("message")
-        r["delivered"] = deliver([str(x) for x in d.get("to") or []], d.get("message") or {}, audience)
-        r["delivery"] = {"how": "after reconnect" if r["delivered"] and all(x.get("afterReconnect") for x in r["delivered"] if x.get("ok")) and any(x.get("ok") for x in r["delivered"]) else "live"}
+        message = d.get("message") or {}
+        to = [str(x) for x in d.get("to") or []]
+        r["sent"] = message
+        recent = _to_of(command) == "recent" and len(to) == 1
+        if recent:
+            first = _clients.get(to[0]) or {}
+            order = _turn_order(audience, to[0], str(first.get("app") or "console-web"))
+        if recent and order:
+            tried, acks = try_in_turn(order, message, audience)
+            r["delivered"] = [acks[c] if c in acks else {"client": c, "ok": False, "pending": True, "message": "didn't answer (asleep?)"} for c in tried]
+            who = next((c for c in tried if c in acks), "")
+            r["delivery"] = {"how": "live" if who and who == tried[0] else "after retry" if who else "pending", "tried": tried, **({"client": who} if who else {})}
+            if not who:
+                r = _nobody_answered(command, grants, by, audience, r, tried, message, RETRY_WAIT_S if wait is None else min(wait, RETRY_WAIT_S))
+        else:
+            r["delivered"] = deliver(to, message, audience)
+            r["delivery"] = {"how": "after reconnect" if r["delivered"] and all(x.get("afterReconnect") for x in r["delivered"] if x.get("ok")) and any(x.get("ok") for x in r["delivered"]) else "live"}
+        r["status"] = _status_of(r)
+        if r["status"] == "pending" and not r.get("queued"):
+            r["message"] = r.get("message") or "sent, but no console answered yet"
     _log(command, r, by, audience)
     return r
+
+
+def _to_of(command: dict[str, Any]) -> str:
+    inp = command.get("input")
+    return str((inp or {}).get("to") or "recent") if isinstance(inp, dict) else "recent"
+
+
+def _nobody_answered(command: dict[str, Any], grants: list[str], by: str, audience: str, r: dict[str, Any], tried: list[str], message: dict[str, Any], wait: float) -> dict[str, Any]:
+    """Every live console was asked and none answered. A navigate-only command waits for the next console and AmberX
+    opens one now; anything else is not re-sent (it may still run if the sleeping tab wakes within CONSOLE_LATE_MS)."""
+    mid = str(message.get("id") or "")
+    if not _navigates(command, r):
+        return {**r, "ok": False, "code": "not_found", "status": "failed",
+                "message": f"no console answered (tried {', '.join(tried)}); it was not re-sent because it changes data. Open the console and send it again"}
+    e = _enqueue(command, grants, by, audience, wake_after=0.0, tried=tried)
+    with _lock:
+        if mid in _late:
+            _late[mid]["entry"] = e
+    if any(_ready(c) and _live(c) and c["id"] not in tried for c in _clients.values() if c["audience"] == audience):
+        _drain_soon(audience)
+    e["event"].wait(max(0.0, min(wait, e["expires"] - _now())))
+    with _lock:
+        state, result = e["state"], e["result"]
+    if state in ("delivered", "failed") and result is not None:
+        return result
+    waiting = state in ("queued", "delivering")
+    out = {**r, "ok": waiting, "queued": waiting,
+           "delivery": {"how": "queued" if waiting else state, "id": e["id"], "tried": tried, "expiresAt": _iso(e["expires"]), **({"wake": e["wake"]} if e["wake"] else {})}}
+    if waiting:
+        out["message"] = (f"not shown yet: no open console answered (tried {', '.join(tried)}); it runs the moment a console opens (until {_iso(e['expires'])})"
+                          + (f"; {e['wake']['message']}" if e["wake"] else "; AmberX is asked to open the console"))
+    else:
+        out.update({"code": "not_found", "message": "no console opened before the command expired"})
+    return out
 
 
 def _run_queued(command: dict[str, Any], grants: list[str], by: str, audience: str, wait: float) -> dict[str, Any]:
@@ -465,9 +691,7 @@ def _run_queued(command: dict[str, Any], grants: list[str], by: str, audience: s
     out = {**base, "ok": waiting, "queued": waiting,
            "delivery": {"how": "queued" if waiting else state, "id": e["id"], "expiresAt": _iso(e["expires"]), **({"wake": e["wake"]} if e["wake"] else {})}}
     if waiting:
-        woke = (e["wake"] or {}).get("sent")
-        out["message"] = f"queued, waiting for the console: it runs the moment one opens (until {_iso(e['expires'])})" + (
-            "; AmberX was asked to open it on Brett's phone" if woke else (f"; {e['wake']['message']}" if e["wake"] else ""))
+        out["message"] = f"queued, not open yet: it runs the moment a console opens (until {_iso(e['expires'])})" + (f"; {e['wake']['message']}" if e["wake"] else "; AmberX is asked to open it if none does")
     else:
         out.update({"code": "not_found", "message": "no console opened before the command expired (Settings → Plugins → Console commands: how long a command waits)"})
     _log(command, out, by, audience)
@@ -484,6 +708,80 @@ async def _body(request: Request) -> dict[str, Any]:
         return b if isinstance(b, dict) else {}
     except Exception:  # noqa: BLE001 — an empty or non-JSON body = no fields
         return {}
+
+
+def control(command: dict[str, Any], by: str = "", audience: str = OWNER, to: str = "recent") -> dict[str, Any]:
+    """A console-control@1 command (spec/CONSOLE-CONTROL.md) for the open console: sent as console-command@1 op
+    `control`, answered with the console's own envelope (result + live state) and `client` / `delivery`. Nothing is
+    queued: no console open answers `unavailable` with `openUrl` (open the console, then send it again)."""
+    mid = "ctl-" + os.urandom(8).hex()
+    message = {"$axf": "console-command@1", "id": mid, "op": "control", "command": command, "by": by or "api", "at": _iso(_now())}
+    now = _now()
+    with _lock:
+        live = [c for c in _clients.values() if c["audience"] == audience and _ready(c) and _live(c, now)]
+    live.sort(key=lambda c: (c.get("front", True) is False, -float(c.get("lastUsed") or 0)))
+    no_console = {"$axf": "console-control@1", "ok": False, "code": "unavailable", "because": "no console open",
+                  "message": "no console open: open the console (openUrl), then send the command again", "openUrl": CONSOLE_URL + "/"}
+    if to == "all":
+        if not live:
+            return no_console
+        acks = deliver([c["id"] for c in live], message, audience)
+        results = [a.get("result") or {"ok": False, "code": "unavailable", "message": a.get("message") or "no answer", "client": a.get("client")} for a in acks]
+        return {"$axf": "console-control@1", "ok": any(r.get("ok") for r in results), "verb": command.get("verb"), "results": results, "delivery": {"how": "all", "clients": [c["id"] for c in live]}}
+    if to != "recent":
+        with _lock:
+            c = _clients.get(to)
+            ok = c is not None and c["audience"] == audience and c.get("queue") is not None
+        if not ok:
+            return {**no_console, "code": "not_found", "message": f"no open console {to} (GET /api/console/clients lists them)"}
+        order = [to]
+    else:
+        if not live:
+            return no_console
+        order = _turn_order(audience, live[0]["id"], str(live[0].get("app") or "console-web"))
+    tried, acks = try_in_turn(order, message, audience)
+    with _lock:
+        _late.pop(mid, None)  # a control command is never queued: a late ack has nothing to stop
+    who = next((c for c in tried if c in acks), "")
+    if not who:
+        return {**no_console, "message": f"no console answered (tried {', '.join(tried)}): open the console (openUrl), then send the command again", "tried": tried}
+    a = acks[who]
+    res = a.get("result") if isinstance(a.get("result"), dict) else {"$axf": "console-control@1", "ok": bool(a.get("ok")), **({} if a.get("ok") else {"code": "unexpected"}), "message": a.get("message") or ""}
+    out = {**res, "client": who, "delivery": {"how": "live" if who == tried[0] else "after retry", "tried": tried}}
+    _recent.appendleft({"at": _iso(_now()), "by": by or "api", "target": "console.control", "path": command.get("address") or "", "action": command.get("verb"), "ok": bool(out.get("ok")),
+                        "code": out.get("code", ""), "message": out.get("message", ""), "audience": audience, "how": out["delivery"]["how"], "delivered": [{"client": who, "ok": bool(out.get("ok")), "message": a.get("message", "")}]})
+    return out
+
+
+CONTROL_VERBS = ("open", "state", "press", "set", "scroll", "focus", "search", "list", "plugin.enable", "plugin.disable")
+
+
+def control_target(command: dict[str, Any], grants: list[str], by: str, audience: str) -> dict[str, Any]:
+    """control@1 `console.control` (core/engines/control-rules.mjs): list / get / act <verb> on a console-control@1 address,
+    through the console server's console-control guards (permission, policy tag, rate limit, audit)."""
+    import console_control_api as api  # the console server's /api/console-control half
+    op, path = str(command.get("op") or ""), str(command.get("path") or "")
+    inp = command.get("input") if isinstance(command.get("input"), dict) else {}
+    if op == "list":
+        sel = command.get("select") if isinstance(command.get("select"), dict) else {}
+        kinds = [k for k in str(sel.get("kinds") or "").split(",") if k] or None
+        r = api.targets(path, kinds, str(sel.get("source") or "auto"), by or "control", audience, set(grants))
+    elif op in ("get", "act"):
+        verb = "state" if op == "get" else str(command.get("action") or "")
+        if verb not in CONTROL_VERBS:
+            return {"$axf": "control@1", "ok": False, "code": "invalid", "message": f"console.control act takes one of {', '.join(CONTROL_VERBS)}"}
+        body = {"verb": verb, **({"address": path} if path else {}), **{k: inp[k] for k in ("value", "options", "scroll", "query", "reason") if k in inp}}
+        if inp.get("confirm") or command.get("confirm"):
+            body["confirm"] = True
+        r = api.command({**body, "to": str(inp.get("to") or "recent")}, by or "control", audience, set(grants))
+    else:
+        return {"$axf": "control@1", "ok": False, "code": "invalid", "message": "console.control takes list, get or act"}
+    out = {"$axf": "control@1", "ok": bool(r.get("ok")), "target": "console.control", "op": op, **({"path": path} if path else {}), "data": r}
+    if not r.get("ok"):
+        out.update({k: r[k] for k in ("code", "message", "openUrl") if k in r})
+    _recent.appendleft({"at": _iso(_now()), "by": by, "target": "console.control", "path": path, "action": command.get("action") or op, "ok": out["ok"],
+                        "code": out.get("code", ""), "message": out.get("message", ""), "audience": audience, "how": "control@1", "delivered": []})
+    return out
 
 
 def run_for(request: Request, command: dict[str, Any]) -> dict[str, Any]:
@@ -542,7 +840,11 @@ async def seen(request: Request) -> dict[str, Any]:
         _front_of(c, b)
         if b.get("used"):
             c["lastUsed"] = _now()
-    return {"ok": True}
+        hello_again = not _ready(c)
+    if not hello_again and c.get("queue") is not None and _has_queued(audience):
+        _drain_soon(audience)
+    # a console the server holds no catalog for (it restarted): the console says hello again at once
+    return {"ok": True, **({"hello": True} if hello_again else {})}
 
 
 @router.post("/bye")
@@ -565,13 +867,20 @@ async def stream(request: Request, client: str = "") -> StreamingResponse:
     loop = asyncio.get_running_loop()
     ttl = float(settings()["ttlS"])
     with _lock:
+        old = c.get("queue")
         c["queue"], c["loop"], c["lastSeen"] = q, loop, _now()
         if not _ready(c):  # the server restarted (or the tab never said hello): ask for the catalog again
             q.put_nowait({"$axf": "console-hello@1"})
+        if old is not None:  # a reconnect replaced a stream: what it hadn't sent yet goes down the new one
+            while not old.empty():
+                q.put_nowait(old.get_nowait())
         for at, m in c["pending"]:
-            if at > _now() - ttl:
-                q.put_nowait(m)
+            if at > _now() - ttl:  # held while the stream was down: the console runs it even though it is late
+                q.put_nowait({**m, "delivery": m.get("delivery") or "queued"})
         c["pending"] = []
+        ready = _ready(c)
+    if ready and _has_queued(audience):
+        _drain_soon(audience)  # anything queued while this console's stream was down goes now
 
     async def gen():
         try:
@@ -580,11 +889,11 @@ async def stream(request: Request, client: str = "") -> StreamingResponse:
                 if await request.is_disconnected():
                     break
                 try:
-                    m = await asyncio.wait_for(q.get(), timeout=20)
+                    m = await asyncio.wait_for(q.get(), timeout=KEEPALIVE_S)
                     yield f"data: {json.dumps(m)}\n\n"
                 except asyncio.TimeoutError:
-                    with _lock:
-                        c["lastSeen"] = _now()
+                    # keeps proxies from closing the stream; never proof the console is alive (a frozen tab keeps
+                    # its socket open), so lastSeen is left alone
                     yield ": keepalive\n\n"
         finally:
             with _lock:
@@ -607,12 +916,29 @@ async def ack(request: Request) -> dict[str, Any]:
         if isinstance(b.get("here"), dict):
             c["here"] = b["here"]
         _front_of(c, b)
+        if b.get("skipped") is True:  # a tab that woke up and skipped a command it got too late: not an answer
+            return {"ok": True, "skipped": True}
         a = _acks.get(mid)
+        res = {"client": cid, "ok": bool(b.get("ok")), "message": str(b.get("message") or "")[:300], "here": b.get("here") if isinstance(b.get("here"), dict) else {}}
+        # op control: the console-control@1 answer (result + live state), kept whole up to a size cap
+        if isinstance(b.get("result"), dict):
+            res["result"] = b["result"] if len(json.dumps(b["result"], default=str)) <= ACK_RESULT_MAX else {"ok": bool(b.get("ok")), "truncated": True, "message": res["message"]}
         if a is not None and cid in a["want"]:
-            a["results"][cid] = {"client": cid, "ok": bool(b.get("ok")), "message": str(b.get("message") or "")[:300], "here": b.get("here") if isinstance(b.get("here"), dict) else {}}
-            if set(a["results"]) >= a["want"]:
+            a["results"][cid] = res
+            if a.get("any") or set(a["results"]) >= a["want"]:
                 a["event"].set()
-    return {"ok": True}
+        late = _late.pop(mid, None)
+        if late is not None:
+            _acks.pop(mid, None)
+        e = (late or {}).get("entry")
+        if e is not None and e["state"] == "queued":
+            # the sleeping console woke in time and did it after all: the queued copy never runs, nobody is woken
+            e["result"] = {"$axf": "control@1", "ok": bool(res["ok"]), "op": e["command"].get("op"), "target": e["command"].get("target"), "delivered": [res],
+                           "delivery": {"how": "late ack", "id": e["id"], "tried": e.get("tried") or [], "client": cid}, "data": {"changed": []}}
+            e["result"]["status"] = "delivered" if res["ok"] else "failed"
+            e["state"] = "delivered" if res["ok"] else "failed"
+            e["event"].set()
+    return {"ok": True, **({"late": True} if late else {})}
 
 
 @router.get("/clients")
@@ -695,6 +1021,62 @@ async def nav(request: Request) -> JSONResponse:
     return await go(request, {"op": "act", "target": "console.nav", "path": "here", "action": request.url.path.rstrip("/").rsplit("/", 1)[-1], **_to(b), **_audit(b)})
 
 
+@router.post("/refresh")
+async def refresh(request: Request) -> JSONResponse:
+    """Reload the open console: soft, or hard {"hard": true} (clears its caches first). `to` as every command."""
+    b = await _body(request)
+    cmd = {"op": "act", "target": "console.nav", "path": "here", "action": "refresh", **_to(b), **_audit(b)}
+    if b.get("hard") is True:
+        cmd["input"] = {**(cmd.get("input") or {}), "hard": True}
+    return await go(request, cmd)
+
+
+# ---------------------------------------------------------------------- routes: the phone's overlay
+
+OVERLAY_VERBS = ("expand", "collapse", "open")
+
+
+def overlay_url(verb: str, url: str = "") -> str:
+    """The URL that carries an overlay verb to the phone through axHub's `amberx.open_url` (AXPP `browser.open`): expand
+    and collapse are the console with `axf-overlay=<verb>` (AmberX's OverlayPageRules.verb), open is the page itself."""
+    return url if verb == "open" else f"{CONSOLE_URL}/?axf-overlay={verb}"
+
+
+def overlay_page_ok(url: str) -> bool:
+    """https on Brett's own domain, no credentials: the same rule as the phone (OpenUrlRules) and the hub."""
+    try:
+        u = urlsplit(url)
+    except ValueError:
+        return False
+    host = (u.hostname or "").lower()
+    return u.scheme == "https" and not u.username and not u.password and (host == "amberxai.com" or host.endswith(".amberxai.com"))
+
+
+def overlay(verb: str, url: str = "") -> dict[str, Any]:
+    """overlay.expand / overlay.collapse / overlay.open {url} on Brett's phone. → {ok, verb, opened, message} (never raises)."""
+    if verb not in OVERLAY_VERBS:
+        return {"ok": False, "verb": verb, "code": "bad_request", "message": f"overlay verbs are {', '.join(OVERLAY_VERBS)}"}
+    if verb == "open" and not overlay_page_ok(url):
+        return {"ok": False, "verb": verb, "code": "bad_request", "message": "overlay.open takes one of your own pages (https://…amberxai.com)"}
+    try:
+        r = WAKER(overlay_url(verb, url), settings()["browser"])
+    except Exception as e:  # noqa: BLE001 — the phone or the hub failing is an answer, not a crash
+        r = {"ok": False, "message": str(e)[:300]}
+    return {"ok": bool(r.get("ok")), "verb": verb, "opened": r.get("opened") is True, "message": str(r.get("message") or "")[:300]}
+
+
+@router.post("/overlay")
+async def overlay_route(request: Request) -> JSONResponse:
+    """Expand the phone's overlay into its full-screen browser, collapse it to the toolbar, or open one of Brett's pages
+    in it: {"verb": "expand" | "collapse" | "open", "url"?}. The owner only (it reaches his phone)."""
+    _, _, audience = caller(request)
+    if audience != OWNER:
+        raise HTTPException(403, "only the console's owner drives the phone's overlay")
+    b = await _body(request)
+    out = await run_in_threadpool(overlay, str(b.get("verb") or ""), str(b.get("url") or ""))
+    return JSONResponse(out, status_code=400 if out.get("code") == "bad_request" else 200)
+
+
 @router.get("/where")
 async def where(request: Request) -> JSONResponse:
     return await go(request, {"op": "get", "target": "console.nav", "path": "here"})
@@ -720,6 +1102,14 @@ class ConsoleCommands:
 
     def run_for(self, request: Request, command: dict[str, Any]) -> dict[str, Any]:
         return run_for(request, command)
+
+    def control(self, command: dict[str, Any], by: str = "", audience: str = OWNER, to: str = "recent") -> dict[str, Any]:
+        """A console-control@1 command for the open console → its answer (result + live state), or unavailable + openUrl."""
+        return control(command, by, audience, to)
+
+    def queue_for_owner(self, command: dict[str, Any], grants: list[str], by: str = "") -> dict[str, Any]:
+        e = queue_for_owner(command, grants, by)
+        return {"id": e["id"], "expiresAt": _iso(e["expires"])}
 
     def queue(self, audience: str = OWNER) -> list[dict[str, Any]]:
         return queued_for(audience)

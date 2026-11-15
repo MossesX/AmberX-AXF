@@ -1,0 +1,60 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261106-3f88f72e44",
+  "createdAt": "2026-11-06T19:06:39.630Z",
+  "updatedAt": "2026-11-06T19:07:22.628Z",
+  "kind": "build",
+  "title": "# Build savings-mid Do these three small steps in order: s1 write notes/a.md with the sum of the nu…",
+  "asked": "# Build savings-mid Do these three small steps in order: s1 write notes/a.md with the sum of the numbers in src/a.txt; s2 write notes/b.md with the largest number in src/b.txt; s3 write notes/c.md with the line count of src/c.txt. Mark each done with build-progress as you finish. No branch, no PR. Model switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first. Progress: this build's progress file is the console's view of where you are. After each step run `node framework/cli/build-progress.mjs step <stepId> done --note \"<one line>\"` (and `step <next> running` when you start one; `note \"…\"`, `link --branch <b> --pr <n>`, `status blocked --note \"why\"` when stuck). It is a local file write: carry straight on. Never stop to update the console, the orchestrator, THREADS.md or the build log between steps; the reconciler folds the file into the builds store by itself. AXF_BUILD_ID=savings-mid is set for you.",
+  "repos": [],
+  "model": "claude-opus-5-5",
+  "who": {
+    "session": "8f0d3909-41f",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "cancelled",
+    "summary": "no change: chain-control savings test in a scratch folder",
+    "commits": [],
+    "filesChanged": 3,
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "cancelled",
+  "status": "failed",
+  "surface": "headless",
+  "startedAt": "2026-11-06T19:06:39.630Z",
+  "finishedAt": "2026-11-06T19:06:48.123Z",
+  "lastSeenAt": "2026-11-06T19:06:41.727Z",
+  "actual": {
+    "minutes": 1,
+    "costUsd": 0.1691,
+    "inputTokens": 8,
+    "outputTokens": 1013,
+    "cacheReadTokens": 115389,
+    "cacheWriteTokens": 25156,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "progress": 1,
+  "resume": {
+    "folder": "/tmp/cc-sav3/savings-mid",
+    "branch": "main",
+    "head": "9643016386dd55e72f06f4a720c2f557759893c9",
+    "pushed": false,
+    "dirty": 6,
+    "files": [
+      "_claude/builds/",
+      "brief.md",
+      "notes/",
+      "o.jsonl",
+      "o.log",
+      "src/"
+    ],
+    "at": "2026-11-06T19:06:50.180Z"
+  }
+}

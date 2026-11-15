@@ -1,0 +1,535 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-t9zktq",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:33:27Z",
+ "build": {
+  "id": "project-thread-t9zktq",
+  "title": "project-thread-t9zktq",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-t9zktq",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-t9zktq",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "d428cac3dea75d069f3ade2b092eba7b90f8be31",
+ "commits": [
+  "541f5dc0a6fad620f8d4077d98c75f525f32bf9e",
+  "fe63db32c485608db8a4b5448abfb04d220e1fa8",
+  "f6085ce8e1277f35815c96b524f62221c3d813d6",
+  "61e60e3c21071758098015a73e3daf4b2cba1bf5"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-23T16:42:15Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "CLAUDE.md",
+  "_claude/memory/decisions.md",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/core/engines/bannerhide.ts",
+  "apps/axhub-web/src/axf/core/engines/embed.ts",
+  "apps/axhub-web/src/axf/core/index.ts",
+  "apps/axhub-web/src/axf/core/runtime.ts",
+  "apps/axhub-web/src/axf/core/settings.ts",
+  "apps/axhub-web/src/axf/libs/settings/index.tsx",
+  "apps/axhub-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/axhub-web/src/axf/react/components/Forms.tsx",
+  "apps/axhub-web/src/axf/react/index.ts",
+  "apps/axhub-web/src/axf/schemas/plugin.schema.json",
+  "apps/axhub-web/src/axf/ui/axf.css",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/README.md",
+  "apps/console-web/plugins/_template/plugin.json",
+  "apps/console-web/plugins/activity/plugin.json",
+  "apps/console-web/plugins/agent-manager/plugin.json",
+  "apps/console-web/plugins/agent-manager/test.py",
+  "apps/console-web/plugins/ai-assistant/plugin.json",
+  "apps/console-web/plugins/ai-keys/plugin.json",
+  "apps/console-web/plugins/alerts-bell/plugin.json",
+  "apps/console-web/plugins/app-tabs/plugin.json",
+  "apps/console-web/plugins/approvals-banner/plugin.json",
+  "apps/console-web/plugins/build-manager/plugin.json",
+  "apps/console-web/plugins/claude-badge/plugin.json",
+  "apps/console-web/plugins/claude-handoff/plugin.json",
+  "apps/console-web/plugins/codebase-changes/plugin.json",
+  "apps/console-web/plugins/console-terminal/plugin.json",
+  "apps/console-web/plugins/container-access/plugin.json",
+  "apps/console-web/plugins/fable-rebuilds/plugin.json",
+  "apps/console-web/plugins/feature-assist/plugin.json",
+  "apps/console-web/plugins/main-build-status/plugin.json",
+  "apps/console-web/plugins/mcp-client/plugin.json",
+  "apps/console-web/plugins/plugin-manager/plugin.json",
+  "apps/console-web/plugins/plugin-switches/plugin.json",
+  "apps/console-web/plugins/project-wizard/plugin.json",
+  "apps/console-web/plugins/push-banner/plugin.json",
+  "apps/console-web/plugins/session-checkin/plugin.json",
+  "apps/console-web/plugins/snapshot-manager/plugin.json",
+  "apps/console-web/plugins/systems-check/plugin.json",
+  "apps/console-web/plugins/theme-manager/plugin.json",
+  "apps/console-web/plugins/todo-manager/plugin.json",
+  "apps/console-web/server/main.py",
+  "apps/console-web/src/axf/core/catalog.ts",
+  "apps/console-web/src/axf/core/engines/bannerhide.ts",
+  "apps/console-web/src/axf/core/engines/embed.ts",
+  "apps/console-web/src/axf/core/index.ts",
+  "apps/console-web/src/axf/core/library.ts",
+  "apps/console-web/src/axf/core/runtime.ts",
+  "apps/console-web/src/axf/core/settings.ts",
+  "apps/console-web/src/axf/libs/settings/index.tsx",
+  "apps/console-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/console-web/src/axf/react/components/Forms.tsx",
+  "apps/console-web/src/axf/react/index.ts",
+  "apps/console-web/src/axf/schemas/plugin.schema.json",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/console-web/src/plugins.ts",
+  "apps/patches-web/axf.lock.json",
+  "apps/patches-web/src/axf/core/catalog.ts",
+  "apps/patches-web/src/axf/core/engines/bannerhide.ts",
+  "apps/patches-web/src/axf/core/engines/embed.ts",
+  "apps/patches-web/src/axf/core/index.ts",
+  "apps/patches-web/src/axf/core/library.ts",
+  "apps/patches-web/src/axf/core/runtime.ts",
+  "apps/patches-web/src/axf/core/settings.ts",
+  "apps/patches-web/src/axf/libs/settings/index.tsx",
+  "apps/patches-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/patches-web/src/axf/react/components/Forms.tsx",
+  "apps/patches-web/src/axf/react/index.ts",
+  "apps/patches-web/src/axf/schemas/plugin.schema.json",
+  "apps/patches-web/src/axf/ui/axf.css",
+  "apps/patches-web/src/patches.ts",
+  "apps/patches-web/src/patchesLibrary.tsx",
+  "apps/walkthrough-studio/axf.lock.json",
+  "apps/walkthrough-studio/src/axf/core/engines/bannerhide.ts",
+  "apps/walkthrough-studio/src/axf/core/engines/embed.ts",
+  "apps/walkthrough-studio/src/axf/core/index.ts",
+  "apps/walkthrough-studio/src/axf/core/runtime.ts",
+  "apps/walkthrough-studio/src/axf/core/settings.ts",
+  "apps/walkthrough-studio/src/axf/libs/settings/index.tsx",
+  "apps/walkthrough-studio/src/axf/react/AppShell.tsx",
+  "apps/walkthrough-studio/src/axf/react/components/BannerSettings.tsx",
+  "apps/walkthrough-studio/src/axf/react/components/Forms.tsx",
+  "apps/walkthrough-studio/src/axf/react/index.ts",
+  "apps/walkthrough-studio/src/axf/schemas/plugin.schema.json",
+  "apps/walkthrough-studio/src/axf/ui/axf.css",
+  "framework/catalog/libraries.json",
+  "framework/cli/plugins.mjs",
+  "framework/core/engines/bannerhide.ts",
+  "framework/core/engines/embed.ts",
+  "framework/core/index.ts",
+  "framework/core/runtime.ts",
+  "framework/core/settings.ts",
+  "framework/libs/settings/index.tsx",
+  "framework/plan/pending.json",
+  "framework/plan/plan.json",
+  "framework/react/components/BannerSettings.tsx",
+  "framework/react/components/Forms.tsx",
+  "framework/react/index.ts",
+  "framework/schemas/plugin.schema.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-banner-hide.mts",
+  "framework/ui/axf.css",
+  "tracker.json"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/plugins/README.md",
+    "apps/console-web/server/main.py",
+    "apps/console-web/src/axf/core/catalog.ts",
+    "apps/console-web/src/axf/core/engines/bannerhide.ts",
+    "apps/console-web/src/axf/core/engines/embed.ts",
+    "apps/console-web/src/axf/core/index.ts",
+    "apps/console-web/src/axf/core/library.ts",
+    "apps/console-web/src/axf/core/runtime.ts",
+    "apps/console-web/src/axf/core/settings.ts",
+    "apps/console-web/src/axf/libs/settings/index.tsx",
+    "apps/console-web/src/axf/react/components/BannerSettings.tsx",
+    "apps/console-web/src/axf/react/components/Forms.tsx",
+    "apps/console-web/src/axf/react/index.ts",
+    "apps/console-web/src/axf/schemas/plugin.schema.json",
+    "apps/console-web/src/axf/ui/axf.css",
+    "apps/console-web/src/plugins.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "patches-web",
+   "files": [
+    "apps/patches-web/axf.lock.json",
+    "apps/patches-web/src/axf/core/catalog.ts",
+    "apps/patches-web/src/axf/core/engines/bannerhide.ts",
+    "apps/patches-web/src/axf/core/engines/embed.ts",
+    "apps/patches-web/src/axf/core/index.ts",
+    "apps/patches-web/src/axf/core/library.ts",
+    "apps/patches-web/src/axf/core/runtime.ts",
+    "apps/patches-web/src/axf/core/settings.ts",
+    "apps/patches-web/src/axf/libs/settings/index.tsx",
+    "apps/patches-web/src/axf/react/components/BannerSettings.tsx",
+    "apps/patches-web/src/axf/react/components/Forms.tsx",
+    "apps/patches-web/src/axf/react/index.ts",
+    "apps/patches-web/src/axf/schemas/plugin.schema.json",
+    "apps/patches-web/src/axf/ui/axf.css",
+    "apps/patches-web/src/patches.ts",
+    "apps/patches-web/src/patchesLibrary.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/axf.lock.json",
+    "apps/walkthrough-studio/src/axf/core/engines/bannerhide.ts",
+    "apps/walkthrough-studio/src/axf/core/engines/embed.ts",
+    "apps/walkthrough-studio/src/axf/core/index.ts",
+    "apps/walkthrough-studio/src/axf/core/runtime.ts",
+    "apps/walkthrough-studio/src/axf/core/settings.ts",
+    "apps/walkthrough-studio/src/axf/libs/settings/index.tsx",
+    "apps/walkthrough-studio/src/axf/react/AppShell.tsx",
+    "apps/walkthrough-studio/src/axf/react/components/BannerSettings.tsx",
+    "apps/walkthrough-studio/src/axf/react/components/Forms.tsx",
+    "apps/walkthrough-studio/src/axf/react/index.ts",
+    "apps/walkthrough-studio/src/axf/schemas/plugin.schema.json",
+    "apps/walkthrough-studio/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/core/engines/bannerhide.ts",
+    "apps/axhub-web/src/axf/core/engines/embed.ts",
+    "apps/axhub-web/src/axf/core/index.ts",
+    "apps/axhub-web/src/axf/core/runtime.ts",
+    "apps/axhub-web/src/axf/core/settings.ts",
+    "apps/axhub-web/src/axf/libs/settings/index.tsx",
+    "apps/axhub-web/src/axf/react/components/BannerSettings.tsx",
+    "apps/axhub-web/src/axf/react/components/Forms.tsx",
+    "apps/axhub-web/src/axf/react/index.ts",
+    "apps/axhub-web/src/axf/schemas/plugin.schema.json",
+    "apps/axhub-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/bannerhide.ts",
+    "framework/core/engines/embed.ts",
+    "framework/core/index.ts",
+    "framework/core/runtime.ts",
+    "framework/core/settings.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/BannerSettings.tsx",
+    "framework/react/components/Forms.tsx",
+    "framework/react/index.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-manager",
+   "files": [
+    "apps/console-web/plugins/agent-manager/plugin.json",
+    "apps/console-web/plugins/agent-manager/test.py"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json",
+    "framework/plan/plan.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-banner-hide.mts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/memory/decisions.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "_template",
+   "files": [
+    "apps/console-web/plugins/_template/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "activity",
+   "files": [
+    "apps/console-web/plugins/activity/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai-assistant",
+   "files": [
+    "apps/console-web/plugins/ai-assistant/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai-keys",
+   "files": [
+    "apps/console-web/plugins/ai-keys/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "alerts-bell",
+   "files": [
+    "apps/console-web/plugins/alerts-bell/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "app-tabs",
+   "files": [
+    "apps/console-web/plugins/app-tabs/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "approvals-banner",
+   "files": [
+    "apps/console-web/plugins/approvals-banner/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-manager",
+   "files": [
+    "apps/console-web/plugins/build-manager/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-badge",
+   "files": [
+    "apps/console-web/plugins/claude-badge/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-handoff",
+   "files": [
+    "apps/console-web/plugins/claude-handoff/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "codebase-changes",
+   "files": [
+    "apps/console-web/plugins/codebase-changes/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "console-terminal",
+   "files": [
+    "apps/console-web/plugins/console-terminal/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "container-access",
+   "files": [
+    "apps/console-web/plugins/container-access/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "fable-rebuilds",
+   "files": [
+    "apps/console-web/plugins/fable-rebuilds/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "feature-assist",
+   "files": [
+    "apps/console-web/plugins/feature-assist/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "main-build-status",
+   "files": [
+    "apps/console-web/plugins/main-build-status/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "mcp-client",
+   "files": [
+    "apps/console-web/plugins/mcp-client/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plugin-manager",
+   "files": [
+    "apps/console-web/plugins/plugin-manager/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plugin-switches",
+   "files": [
+    "apps/console-web/plugins/plugin-switches/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "project-wizard",
+   "files": [
+    "apps/console-web/plugins/project-wizard/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "session-checkin",
+   "files": [
+    "apps/console-web/plugins/session-checkin/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "snapshot-manager",
+   "files": [
+    "apps/console-web/plugins/snapshot-manager/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "systems-check",
+   "files": [
+    "apps/console-web/plugins/systems-check/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "theme-manager",
+   "files": [
+    "apps/console-web/plugins/theme-manager/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "todo-manager",
+   "files": [
+    "apps/console-web/plugins/todo-manager/plugin.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/libraries.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/plugins.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/settings/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/plugin.schema.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": "tracker.json",
+   "files": [
+    "tracker.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

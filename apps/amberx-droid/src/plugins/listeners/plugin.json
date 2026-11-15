@@ -1,0 +1,9 @@
+{
+  "$axf": "amberx-plugin@1",
+  "id": "ai.amberx.amberx.listeners",
+  "name": "Listeners",
+  "version": "0.1.0",
+  "description": "The control panel for every background listener in AmberX (listener@1): hands-free wake word, the command after it, the Speak button, Gizmo's talk mode, the recorder's mic, the axHub watch, the veto alarm and the page's own listeners. Each one shows its state (listening, paused for a call or another app, stopped on errors with the reason, who holds the microphone) and has its own controls: allowed on/off, pause for calls, pause for other apps, start sound, how many restarts before it gives up. Restarts back off and go silent instead of replaying the start tone; one listener owns the microphone at a time. The policies are app settings that ride axHub to every device, and the phone publishes its listener state to the hub (amberx-axf/_data/listeners/devices) so the Dev Console's AmberX listeners plugin shows and controls them too (REST, MCP, CLI). Built Nov 6 2026 (Fable, build gizmo-rebuild-fable).",
+  "commands": { "$axf": "plugin-commands@1", "auto": true },
+  "builtWith": { "model": "fable", "builtAt": "2026-11-06" }
+}

@@ -1,0 +1,258 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.shipped-features",
+  "name": "Shipped features",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Every individual feature of AmberX-AXF and axHub in one sortable list, from the moment a build plans it to when it went live: status (Planned, Queued, Building, In PR, Merged, Live, Cancelled, Removed), the builds, PRs and commits behind it, Brett's verbatim prompt, the model and agent, and every later edit as its own timeline. A three-level grid (group, feature, details) with View by PR, build, day, app, plugin, type or repo, quick filters (hide completed, hide pending, status, has edits, being edited) remembered per device, and CSV / Markdown export. Fed live by build-hook@1 (every builds store write) and the deploy log (deploy-log@1), backfilled from git history, PRs and the builds journal. Every landed build carries the orchestrator's shipped manifest (shipped-manifest@1: Brett's prompt and the full brief, models, accounts, steps with estimates and actual times, branch, PR, landed commit, files, tests, UI Review, cost, report, what is open), shown on each entry and readable, searchable and writable through the API, MCP, axHub, CLI, deep link (?shipped=<build or feature id>) and voice. Data in SQLite (feature-ledger@1).",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:shipped-features",
+    "settings-tab:shipped-features"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [],
+  "banner": false,
+  "tabable": {
+    "view": "shipped-features",
+    "label": "Shipped",
+    "icon": "check-circle"
+  },
+  "buildHooks": "ledger/hook.mjs",
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/shipped-features",
+    "env": [
+      "AXF_SHIPPED_FEATURES_DIR"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "_claude/memory/STATUS.md",
+      "apps/console-web/plugins/README.md",
+      "framework/spec/PORTING.md",
+      ".github/workflows/android.yml"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "route": "GET /ledger",
+        "id": "ledger",
+        "title": "Read the feature ledger",
+        "description": "Every feature, edit, PR, build, prompt and deploy (feature-ledger@1), plus counts and the last sync.",
+        "readOnly": true
+      },
+      {
+        "route": "GET /summary",
+        "id": "summary",
+        "title": "Shipped features summary",
+        "description": "How many features are in each status, being edited, and went live in the last day.",
+        "readOnly": true
+      },
+      {
+        "route": "GET /feature/{fid}",
+        "id": "feature",
+        "title": "One feature",
+        "description": "A feature with its edits (newest first), Brett's words and earlier versions.",
+        "readOnly": true
+      },
+      {
+        "route": "POST /sync",
+        "id": "sync",
+        "title": "Sync Shipped features",
+        "description": "Pick up new build events, merged PRs and deploys now."
+      },
+      {
+        "route": "POST /import",
+        "id": "import",
+        "title": "Rebuild history",
+        "description": "Re-run the backfill: builds journal, merged PRs, early commits and the seed file. Only adds or merges."
+      },
+      {
+        "route": "GET /export",
+        "id": "export",
+        "title": "Export features",
+        "description": "The filtered rows as CSV or Markdown (kind=csv|md, view=<feature-ledger@1 view JSON>).",
+        "readOnly": true
+      },
+      {
+        "route": "GET /search",
+        "id": "search",
+        "title": "Search shipped features",
+        "description": "Features and shipped manifests whose name, Brett's words, edits, PR number, build id or files match. Say 'what shipped about the veto alarm' or 'find the feature from PR 397'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "q": {
+              "type": "string",
+              "description": "text, a PR number (#397) or a build id"
+            }
+          },
+          "required": [
+            "q"
+          ],
+          "additionalProperties": false
+        },
+        "output": "{ q, features, manifests }"
+      },
+      {
+        "route": "GET /manifests",
+        "id": "manifests",
+        "title": "List shipped manifests",
+        "description": "Every build's shipped manifest (shipped-manifest@1), newest landing first: build, Brett's words, PR, landed commit, models, accounts, tests, cost, what is open. Say 'what shipped tonight'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "q": {
+              "type": "string",
+              "description": "filter on the full manifest text"
+            },
+            "since": {
+              "type": "string",
+              "description": "only landings since this ISO date"
+            }
+          },
+          "additionalProperties": false
+        },
+        "output": "{ manifests: [{ id, build, title, said, pr, landedCommit, landedAt, models, accounts, tests, steps, costUsd, open, report }], count }"
+      },
+      {
+        "route": "GET /manifest/{build}",
+        "id": "manifest",
+        "title": "Read a shipped manifest",
+        "description": "One build's full shipped manifest: Brett's verbatim prompt and the full brief, models and accounts, steps with estimates and actual times, branch, PR, landed commit, files and areas, tests, UI Review items, cost and tokens, report, what is still open.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id (builds@1), e.g. orchestrator-only-launcher"
+            }
+          },
+          "required": [
+            "build"
+          ],
+          "additionalProperties": false
+        },
+        "output": "{ manifest, from: ledger | sidecar }"
+      },
+      {
+        "route": "POST /manifest",
+        "id": "manifest-put",
+        "title": "Add or update a shipped entry from a manifest",
+        "description": "Send a shipped manifest (shipped-manifest@1) for a build; given fields win over what the orchestrator gathers (git, sessions, report). A build the builds store never had is created from it. Written through the builds store, so build-hook@1 fires and the ledger takes it.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build_id": {
+              "type": "string",
+              "description": "Build id (builds@1), e.g. orchestrator-only-launcher"
+            },
+            "manifest": {
+              "type": "object",
+              "description": "shipped-manifest@1 fields: build { id, title }, said { text, verbatim }, brief, branch, pr, landedCommit, commits, files, tests, uiReview, cost, report, open"
+            },
+            "by": {
+              "type": "string",
+              "description": "who sends it"
+            }
+          },
+          "additionalProperties": true
+        },
+        "output": "{ ok, manifest, file, created, summary }"
+      },
+      {
+        "route": "POST /ship/{build}",
+        "id": "ship",
+        "title": "Send a build's shipped manifest now",
+        "description": "Gather and send one landed build's manifest now (the orchestrator does this by itself when a build lands). Say 'ship the manifest for the veto build'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id (builds@1), e.g. orchestrator-only-launcher"
+            }
+          },
+          "required": [
+            "build"
+          ],
+          "additionalProperties": false
+        },
+        "output": "{ ok, manifest, file, created, summary }"
+      },
+      {
+        "route": "POST /link",
+        "id": "link",
+        "title": "Link a build to its branch or PR",
+        "description": "Record a build's branch, PR number and merge time in the builds store; its shipped features follow (In PR, Merged).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id (builds@1), e.g. orchestrator-only-launcher"
+            },
+            "branch": {
+              "type": "string"
+            },
+            "pr": {
+              "type": "string",
+              "description": "PR number, #n or URL"
+            },
+            "mergedAt": {
+              "type": "string",
+              "description": "ISO time the PR merged"
+            }
+          },
+          "required": [
+            "build"
+          ],
+          "additionalProperties": false
+        },
+        "output": "{ ok, build: { id, status, branch, pr, mergedAt } }"
+      },
+      {
+        "route": "POST /backfill",
+        "id": "backfill",
+        "title": "Backfill shipped manifests",
+        "description": "Find builds that landed since a date with no shipped manifest (store builds and build_land merges on main whose branch the store never had) and send one for each. dry: list them only. Say 'backfill shipped features since yesterday'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "since": {
+              "type": "string",
+              "description": "YYYY-MM-DD"
+            },
+            "dry": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "since"
+          ],
+          "additionalProperties": false
+        },
+        "output": "{ ok, since, dry, found, shipped: [{ id, why, ok, created, manifest }] }"
+      }
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-04"
+  },
+  "help": "help.json",
+  "opens": "main"
+}

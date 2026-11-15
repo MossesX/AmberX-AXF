@@ -4,7 +4,7 @@
  * Build orchestrator. Every builds list (orchestrator, Pending builds, build queue) reads and writes it here.
  *
  *   _claude/builds/store.json            the store (repo file, synced with the hub by claude-sync, committed)
- *   _claude/builds/journal/<YYYY-MM>.jsonl  every write, append-only: rev, when, who, what, and each changed build
+ *   _claude/builds/journal/<YYYY-MM>[-pN].jsonl  every write, append-only: rev, when, who, what, and each changed build
  *                                        before and after. Nothing can vanish: any build can be put back from here.
  *
  *   node framework/cli/builds-store.mjs                    status: builds per profile, rev, draft, journal size
@@ -29,9 +29,11 @@ import { execFileSync } from 'node:child_process';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from '../plan/builds-store-core.mjs';
+import * as merge from '../plan/builds-merge-core.mjs';
 import { mergeOrigin } from '../core/build-origin.mjs';
 import { enqueueLive, flushLiveSoon } from './builds-live.mjs';
-import { BASE_PROFILE, REPO_ROOT, activeProfile, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
+import { emitChanges } from './build-hooks.mjs';
+import { BASE_PROFILE, REPO_ROOT, activeProfile, hasRepoExport, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
 
 export const STORE_REL = '_claude/builds/store.json';
 /** A scratch data folder (AXF_DATA_DIR set to a folder, as tests do): the store lives there too, seeded from the repo's. */
@@ -39,14 +41,15 @@ const scratchDir = () => { const d = process.env.AXF_DATA_DIR; return d && d !==
 export const storeFile = () => process.env.AXF_BUILDS_STORE || (scratchDir() ? join(scratchDir(), STORE_REL) : join(REPO_ROOT, STORE_REL));
 export const journalDir = () => join(dirname(storeFile()), process.env.AXF_BUILDS_STORE ? `${storeFile().replace(/^.*\//, '').replace(/\.json$/, '')}.journal` : 'journal');
 
-function lock(f) {
+export class StoreLocked extends Error {}
+function lock(f, waitMs = 20000) {
   const l = `${f}.lock`; const t0 = Date.now();
   for (;;) {
     try { mkdirSync(dirname(l), { recursive: true }); closeSync(openSync(l, 'wx')); return () => rmSync(l, { force: true }); }
     catch (e) {
       if (e.code !== 'EEXIST') throw e;
       try { if (Date.now() - statSync(l).mtimeMs > 30000) rmSync(l, { force: true }); } catch { /* gone */ }
-      if (Date.now() - t0 > 20000) throw new Error(`builds store is locked (${l})`);
+      if (Date.now() - t0 > waitMs) throw new StoreLocked(`builds store is locked (${l})`);
       Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 50);
     }
   }
@@ -89,7 +92,12 @@ function readStore() {
 }
 /** The store. If an old file was written directly since the last export, that write is taken into the store first. */
 export function loadStore() {
-  if (exportsOn() && foreignWrites().length) return withStore((s) => s, { by: 'foreign-write', action: 'absorb' }).store;
+  // A read never fails on the lock (urgent-console-perf, Nov 4 2026): when another process holds it, that writer
+  // absorbs the foreign write itself, so the read takes the store as it is instead of waiting 20 s and erroring.
+  if (exportsOn() && foreignWrites().length) {
+    try { return withStore((s) => s, { by: 'foreign-write', action: 'absorb', lockWaitMs: 2000 }).store; }
+    catch (e) { if (!(e instanceof StoreLocked)) throw e; }
+  }
   return readStore();
 }
 
@@ -107,8 +115,10 @@ export const EXPORT_NOTE = 'builds@1 export (read-only): generated from _claude/
 function exportTargets() {
   const hub = persistRoot();
   const data = (id, r) => join(hub ?? REPO_ROOT, profileRel(id, r));
+  // the orchestrator export is a repo file only for a repo-registered profile (persist.mjs hasRepoExport); a hub-only
+  // profile's orchestratorPath is already inside the data root, so it is never moved under the scratch folder twice
   return readProfiles().profiles.flatMap((p) => [
-    { kind: 'orchestrator', profile: p.id, file: scratchDir() ? join(scratchDir(), rel(orchestratorPath(p.id))) : orchestratorPath(p.id) },
+    { kind: 'orchestrator', profile: p.id, file: scratchDir() && hasRepoExport(p.id) ? join(scratchDir(), rel(orchestratorPath(p.id))) : orchestratorPath(p.id) },
     { kind: 'pending', profile: p.id, file: data(p.id, 'framework/plan/pending.json') },
     { kind: 'queue', profile: p.id, file: data(p.id, 'framework/plan/build-queue.json') },
   ]);
@@ -148,9 +158,33 @@ export function exportText(store, kind, profile) {
   const doc = kind === 'orchestrator' ? core.projectOrchestrator(store, profile) : kind === 'pending' ? core.projectPending(store, profile) : core.projectQueue(store, profile);
   return doc ? { doc, text: `${JSON.stringify({ $export: EXPORT_NOTE, ...doc }, null, 1)}\n` } : null;
 }
-/** The orchestrator exports as repo-relative paths (the files main carries): [{ rel, text, builds }]. */
+/**
+ * The orchestrator exports as repo-relative paths (the files main carries): [{ rel, text, builds }]. Only profiles the
+ * repo registry lists (hasRepoExport): a hub-only profile's export is shared data, never a file on main.
+ */
 export function orchestratorExports(store) {
-  return readProfiles().profiles.map((p) => { const e = exportText(store, 'orchestrator', p.id); return { rel: rel(orchestratorPath(p.id)), text: e.text, builds: e.doc.builds.length }; });
+  return readProfiles().profiles.filter((p) => hasRepoExport(p.id)).map((p) => { const e = exportText(store, 'orchestrator', p.id); return { rel: rel(orchestratorPath(p.id)), text: e.text, builds: e.doc.builds.length }; });
+}
+/**
+ * Repo exports (_claude/builds/profiles/<id>/orchestrator.json) of profiles that are not repo-registered: our own
+ * projections an older version wrote (test-sandbox, Nov 13 2026) or a merge brought back. Removed, so the checkout
+ * stays clean and check-profiles.mjs passes; only files carrying the $export note are touched, never a hand-made one.
+ */
+function sweepStaleRepoExports(ex) {
+  const root = scratchDir() || REPO_ROOT;
+  const dir = join(root, '_claude/builds/profiles');
+  if (!existsSync(dir)) return [];
+  const removed = [];
+  for (const id of readdirSync(dir)) {
+    const f = join(dir, id, 'orchestrator.json');
+    if (hasRepoExport(id) || !existsSync(f)) continue;
+    if (!readJson(f)?.$export) continue;
+    rmSync(f, { force: true });
+    delete ex[f];
+    try { if (!readdirSync(join(dir, id)).length) rmSync(join(dir, id), { recursive: true }); } catch { /* not empty */ }
+    removed.push(rel(f));
+  }
+  return removed;
 }
 /** The store file's text (compact form), as saveStore writes it. */
 export const storeText = (store) => `${JSON.stringify(core.compactStore(store), null, 1)}\n`;
@@ -158,13 +192,16 @@ function exportAll(store) {
   const ex = readExports();
   for (const t of exportTargets()) {
     const e = exportText(store, t.kind, t.profile);
-    if (!e) continue;
+    // Nothing to export (e.g. a profile without a queue) but the file exists: it was absorbed just before this, so
+    // record it as seen. Unrecorded, it read as a foreign write forever and every read took the lock to absorb it.
+    if (!e) { const s = sig(t.file); if (s) ex[t.file] = { sig: s, kind: t.kind, profile: t.profile, rev: store.rev }; continue; }
     const { doc, text } = e;
     if (t.kind === 'orchestrator' && !doc.builds.length && !existsSync(t.file)) continue;
     let old = ''; try { old = readFileSync(t.file, 'utf8'); } catch { /* new */ }
     if (old !== text) writeKeepingOwner(t.file, text);
     ex[t.file] = { sig: sig(t.file), kind: t.kind, profile: t.profile, rev: store.rev };
   }
+  sweepStaleRepoExports(ex);
   writeFileSync(exportsFile(), `${JSON.stringify(ex, null, 1)}\n`);
 }
 /**
@@ -179,12 +216,39 @@ function writeKeepingOwner(f, text) {
   writeFileSync(f, text);
   if (process.getuid?.() === 0) { try { const st = statSync(d); for (const x of [...made, ...(fresh ? [f] : [])]) chownSync(x, st.uid, st.gid); if (fresh) chmodSync(f, 0o664); } catch { /* best effort */ } }
 }
+/**
+ * Fold the retired profiles into `all` in the store file itself (Brett, Nov 7 2026: one profile for everything).
+ * Reads are already healed in memory (normBuild); this writes the merge for good, in each old profile's order, with
+ * `fromProfile`, a note and `priority: 'P0'` on Urgent's builds. Works on the raw file because a normalized read has
+ * already folded the profiles. Idempotent: a store with no retired profile left is not touched.
+ */
+export function mergeRetiredNow({ by = 'profiles-merge' } = {}) {
+  const f = storeFile(); const unlock = lock(f);
+  try {
+    if (!existsSync(f)) return { changed: 0, report: null };
+    const raw = JSON.parse(readFileSync(f, 'utf8'));
+    const retired = core.RETIRED_PROFILES.filter((p) => (raw.builds ?? []).some((b) => (b.profiles ?? []).includes(p)) || [raw.rules, raw.meta?.queue, raw.meta?.pending, raw.drafts].some((m) => m?.[p] !== undefined));
+    if (!retired.length) return { changed: 0, report: null };
+    const { store: merged, report } = core.mergeProfiles({ ...raw, builds: (raw.builds ?? []).map((b) => ({ ...b, order: { ...(b.order ?? {}) }, profiles: [...(b.profiles ?? [])], notes: [...(b.notes ?? [])] })) }, core.RETIRED_PROFILES, core.MERGED_PROFILE);
+    const before = readStore();
+    const after = healOrigins(core.normalizeStore(merged));
+    const saved = saveStore(before, after, { by, action: 'merge-profiles', note: `${report.from.map((p) => `${p.id} (${p.builds})`).join(', ')} → ${report.into}: ${report.moved} build(s)` });
+    if (exportsOn()) exportAll(saved.store);
+    return { changed: saved.changes.length, report, store: saved.store };
+  } finally { unlock(); flushLiveSoon(); }
+}
+
 /** Write every export now (after the migration, or by hand: `builds-store.mjs export`). */
 export function exportNow() { const f = storeFile(); const unlock = lock(f); try { exportAll(readStore()); } finally { unlock(); } }
 
+/** Bytes a journal file may reach (AXF_BUILDS_JOURNAL_BYTES moves it for tests). */
+export const journalMax = () => Number(process.env.AXF_BUILDS_JOURNAL_BYTES) || merge.JOURNAL_PART_BYTES;
+
 function journal(entry) {
   const d = journalDir(); mkdirSync(d, { recursive: true });
-  appendFileSync(join(d, `${entry.at.slice(0, 7)}.jsonl`), `${JSON.stringify(entry)}\n`);
+  const line = `${JSON.stringify(entry)}\n`;
+  const sizes = Object.fromEntries(readdirSync(d).filter((f) => f.endsWith('.jsonl')).map((f) => [f.slice(0, -6), statSync(join(d, f)).size]));
+  appendFileSync(join(d, `${merge.journalPart(entry.at.slice(0, 7), sizes, Buffer.byteLength(line), journalMax())}.jsonl`), line);
   // every change to a build goes live to main (builds-live.mjs); draft-only writes stay local
   if (entry.builds?.length) enqueueLive(entry);
 }
@@ -196,6 +260,11 @@ function journal(entry) {
 export function adoptStore(next, { journals = {} } = {}) {
   const f = storeFile(); const unlock = lock(f);
   try {
+    // build-hook@1: builds changed in another checkout (a build session's worktree) arrive here, not through saveStore;
+    // their events fire now, so the ledger hears about ticks, PRs and shipped manifests made elsewhere (ids are the
+    // writer's revs, so an event a listener already took is skipped)
+    let before = null; try { before = existsSync(f) ? core.normalizeStore(JSON.parse(readFileSync(f, 'utf8'))) : null; } catch { /* unreadable: nothing to compare */ }
+    if (before) { const changes = adoptedChanges(before, next); if (changes.length) emitChanges(changes, { at: new Date().toISOString(), by: 'builds-live' }); }
     healOrigins(next);
     const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, storeText(next)); renameSync(tmp, f);
     foldOrigins(next);
@@ -203,6 +272,17 @@ export function adoptStore(next, { journals = {} } = {}) {
     for (const [m, text] of Object.entries(journals)) writeFileSync(join(d, `${m}.jsonl`), text);
     if (exportsOn()) exportAll(next);
   } finally { unlock(); }
+}
+/** The builds that differ between the store on disk and one taken from elsewhere, as diffStores changes (nothing mutated). */
+export function adoptedChanges(before, next) {
+  const old = new Map((before?.builds ?? []).map((b) => [b.id, b]));
+  const out = [];
+  for (const b of next?.builds ?? []) {
+    const o = old.get(b.id);
+    if (o && JSON.stringify(core.compactBuild(o)) === JSON.stringify(core.compactBuild(b))) continue;
+    out.push({ id: b.id, op: !o ? 'add' : b.deleted && !o.deleted ? 'delete' : !b.deleted && o.deleted ? 'restore' : 'change', before: o ?? null, after: b });
+  }
+  return out;
 }
 /** The store as it is on disk now (no foreign-write absorb). */
 export const readStoreNow = () => readStore();
@@ -219,13 +299,15 @@ export function saveStore(before, after, { by = 'cli', action = 'write', note = 
   const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, storeText(after)); renameSync(tmp, f);
   foldOrigins(after);
   journal({ rev: after.rev, at: now, by, action, note, builds: changes.map((c) => ({ id: c.id, op: c.op, rev: c.after?.rev, before: core.compactBuild(c.before), after: core.compactBuild(c.after) })), ...(draftChanged ? { drafts: after.drafts } : {}), ...(metaChanged ? { meta: after.meta, rules: after.rules } : {}) });
+  // build-hook@1: every creator's write fires the same events (Shipped features ledger and other listeners)
+  if (changes.length) emitChanges(changes, { at: now, by });
   return { store: after, changes, rev: after.rev };
 }
 
 /** Read, change, save under a lock. fn(store) returns the new store (or { store, ...extra }). */
 export function withStore(fn, meta = {}) {
   const f = storeFile();
-  const unlock = lock(f);
+  const unlock = lock(f, meta.lockWaitMs);
   try {
     const before = readStore();
     const foreign = [];
@@ -264,7 +346,9 @@ function gitHistoryItems(file, max = 400) {
 export function gatherSources({ history = true } = {}) {
   const reg = readProfiles();
   const ids = new Set(reg.profiles.map((p) => p.id));
-  for (const d of [join(REPO_ROOT, '_claude/builds/profiles'), join(REPO_ROOT, 'framework/plan/profiles')]) if (existsSync(d)) for (const x of readdirSync(d)) if (core.slug(x) === x) ids.add(x);
+  for (const d of [join(REPO_ROOT, '_claude/builds/profiles'), join(REPO_ROOT, 'framework/plan/profiles')]) if (existsSync(d)) for (const x of readdirSync(d)) if (core.slug(x) === x && !core.RETIRED_PROFILES.includes(x)) ids.add(x);
+  // a retired profile's folder that a merge brought back (Nov 10 2026: breakroom, re-added by a leftover-work commit) is
+  // not a source: its builds were folded into the base profile, and checking it again failed every PR's light checks
   const hub = persistRoot();
   const profiles = [];
   for (const id of [BASE_PROFILE, ...[...ids].filter((x) => x !== BASE_PROFILE)]) {

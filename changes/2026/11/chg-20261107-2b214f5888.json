@@ -1,0 +1,25 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261107-2b214f5888",
+  "createdAt": "2026-11-07T12:17:49.413Z",
+  "updatedAt": "2026-11-07T12:17:49.413Z",
+  "kind": "fix",
+  "title": "Auto fix: CI on main",
+  "asked": "Systems check auto-fix (Queue a CI fix for a free agent) for ci-main, by health.",
+  "repos": [],
+  "model": "",
+  "who": {
+    "user": "systems-check"
+  },
+  "steps": [],
+  "result": {
+    "state": "failed",
+    "summary": "couldn't queue the CI fix: gina: broke till payday (2026-11-09) \u00b7 joey: broke till payday (2026-11-09) \u00b7 5 more can't either",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "failed",
+  "status": "failed"
+}

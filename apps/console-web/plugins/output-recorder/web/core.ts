@@ -163,11 +163,18 @@ export function cleanSession(raw: unknown): string {
 
 export const partPath = (id: string, n: number) => `${HUB_FOLDER}/parts/${id}/${String(n).padStart(4, '0')}.json`;
 export const indexPath = (id: string) => `${HUB_FOLDER}/recordings/${id}.json`;
+export const transcriptPath = (id: string) => `${HUB_FOLDER}/transcripts/${id}.json`;
 export const partCount = (bytes: number) => Math.ceil(Math.max(0, bytes) / PART_BYTES);
 
 /** The id an index path belongs to, or null. */
 export function idOfIndex(path: string): string | null {
   const m = /^output-recorder\/recordings\/([^/]+)\.json$/.exec(path);
+  return m && isChunkId(m[1]) ? m[1] : null;
+}
+
+/** The id a transcript path belongs to, or null. */
+export function idOfTranscript(path: string): string | null {
+  const m = /^output-recorder\/transcripts\/([^/]+)\.json$/.exec(path);
   return m && isChunkId(m[1]) ? m[1] : null;
 }
 
@@ -305,6 +312,61 @@ export function byGroup(list: Recording[]): { key: string; label: string; group:
   return [...out.values()].map((g) => (g.group ? { ...g, items: [...g.items].reverse() } : g));
 }
 
+/* ---------------------------------------------------------------- transcripts (audio-transcript@1, written by the console) */
+
+export const TRANSCRIPT_FORMAT = 'audio-transcript@1';
+/** The newest transcripts a page loads to search through. */
+export const TRANSCRIPT_MAX = 200;
+const SNIPPET = 90;
+
+export interface Transcript {
+  id: string; name: string; session: string; group: string; startedAt: string; text: string;
+  /** [seconds from the start, text]; empty when a long chunk's timed lines didn't fit */
+  segments: [number, string][];
+  model: string; silent: boolean; truncated: boolean;
+}
+
+/** A transcript doc as stored, or null when it isn't one. */
+export function normalizeTranscript(raw: unknown, id: string): Transcript | null {
+  const r = (raw ?? {}) as Record<string, unknown>;
+  if (r.$axf !== TRANSCRIPT_FORMAT) return null;
+  const s = (v: unknown) => (typeof v === 'string' ? v : '');
+  const segments = (Array.isArray(r.segments) ? r.segments : []).filter((x): x is [number, string] => Array.isArray(x) && typeof x[0] === 'number' && typeof x[1] === 'string');
+  return { id, name: s(r.name) || id, session: s(r.session), group: s(r.group), startedAt: s(r.startedAt), text: s(r.text), segments, model: s(r.model), silent: r.silent === true, truncated: r.truncated === true };
+}
+
+export interface TranscriptHit { transcript: Transcript; snippet: string }
+
+/** Every word of `q` in a transcript's text or names (any case), or its exact session group; newest first, with the words in context. */
+export function searchTranscripts(list: Transcript[], q: string): TranscriptHit[] {
+  const query = q.trim();
+  if (!query) return [];
+  const words = query.toLowerCase().split(/\s+/);
+  const hits: TranscriptHit[] = [];
+  for (const t of list) {
+    const text = t.text.toLowerCase();
+    const all = `${text} ${t.name.toLowerCase()} ${t.session.toLowerCase()}`;
+    if (t.group !== query && !words.every((w) => all.includes(w))) continue;
+    const at = text.indexOf(words[0] ?? '');
+    const start = at < 0 ? 0 : Math.max(0, at - SNIPPET);
+    const from = start === 0 ? 0 : t.text.indexOf(' ', start) + 1; // whole words only
+    const end = (at < 0 ? 0 : at) + SNIPPET * 2;
+    const to = end >= t.text.length ? t.text.length : t.text.lastIndexOf(' ', end);
+    hits.push({ transcript: t, snippet: `${from > 0 ? '… ' : ''}${t.text.slice(from, to).trim()}${to < t.text.length ? ' …' : ''}` });
+  }
+  return hits.sort((a, b) => b.transcript.startedAt.localeCompare(a.transcript.startedAt));
+}
+
+/** "12:05" for a timed line. */
+export function clock(seconds: number): string {
+  const n = Math.max(0, Math.floor(seconds));
+  const m = Math.floor(n / 60);
+  return `${m}:${String(n % 60).padStart(2, '0')}`;
+}
+
+/** The setting another plugin sets before opening this page: a search to run there (a session's group), once. */
+export const FIND_KEY = 'axf.output-recorder.find';
+
 /* ---------------------------------------------------------------- the hub client (the page's own hub session) */
 
 export interface HubClientOptions { hub: string; project: string; fetchImpl?: typeof fetch }
@@ -327,13 +389,29 @@ export class HubRecordings {
     return r;
   }
 
-  /** Every recording's index (newest first, deleted ones out). A project that doesn't exist yet = none. */
-  async list(): Promise<Recording[]> {
+  private async files(): Promise<string[]> {
     const r = await this.req('');
     if (r.status === 404) return [];
     if (!r.ok) throw new Error(`axHub answered ${r.status}.`);
     const body = (await r.json()) as { files?: { path?: string }[] };
-    const ids = (body.files ?? []).map((f) => idOfIndex(String(f.path ?? ''))).filter((x): x is string => !!x);
+    return (body.files ?? []).map((f) => String(f.path ?? ''));
+  }
+
+  /** The newest transcripts (an id starts with its date), a damaged one left out. */
+  async transcripts(): Promise<Transcript[]> {
+    const ids = (await this.files()).map(idOfTranscript).filter((x): x is string => !!x).sort().reverse().slice(0, TRANSCRIPT_MAX);
+    const got = await Promise.all(ids.map(async (id) => {
+      try {
+        const x = await this.req(transcriptPath(id), { headers: { accept: 'application/json' } });
+        return x.ok ? normalizeTranscript(await x.json(), id) : null;
+      } catch { return null; }
+    }));
+    return got.filter((x): x is Transcript => !!x);
+  }
+
+  /** Every recording's index (newest first, deleted ones out). A project that doesn't exist yet = none. */
+  async list(): Promise<Recording[]> {
+    const ids = (await this.files()).map(idOfIndex).filter((x): x is string => !!x);
     const got = await Promise.all(ids.map(async (id) => {
       try {
         const x = await this.req(indexPath(id), { headers: { accept: 'application/json' } });

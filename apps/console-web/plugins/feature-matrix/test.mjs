@@ -25,8 +25,8 @@ t('plugin@1 manifest: id, data folder, model, no other plugin named', () => {
 t('server part has no delete route', () => { const py = readFileSync(join(repo, 'apps/console-web/plugins/feature-matrix/server/__init__.py'), 'utf8'); assert.doesNotMatch(py, /@router\.delete/); assert.match(py, /never deleted/); });
 
 // ---- the draft (feature-matrix@0) → feature-matrix@1 (s66: the first matrix of the dataset)
-const draftRel = '_claude/builds/profiles/refactor/matrices.json';
-const orchRel = '_claude/builds/profiles/refactor/orchestrator.json';
+const draftRel = '_claude/builds/matrices.json'; // the Refactor draft was converted when every profile merged into all, the base profile (Nov 7 2026)
+const orchRel = '_claude/builds/orchestrator.json';
 const draft = existsSync(join(repo, draftRel)) ? read(draftRel) : null;
 const orch = read(orchRel);
 if (draft && draft.$axf !== fm.SCHEMA) {
@@ -71,33 +71,33 @@ t('targets: the build, its pending item, queue record, plan feature, change entr
 
 // ---- CLI on scratch files (AXF_FM_DIR, AXF_ORCH_FILE, AXF_DATA_DIR)
 const dir = mkdtempSync(join(tmpdir(), 'fm-'));
-process.env.AXF_FM_DIR = dir; process.env.AXF_ORCH_FILE = join(dir, 'orch.json'); process.env.AXF_DATA_DIR = join(dir, 'data'); process.env.AXF_BUILD_PROFILE = 'refactor';
+process.env.AXF_FM_DIR = dir; process.env.AXF_ORCH_FILE = join(dir, 'orch.json'); process.env.AXF_DATA_DIR = join(dir, 'data'); process.env.AXF_BUILD_PROFILE = 'all';
 copyFileSync(join(repo, orchRel), process.env.AXF_ORCH_FILE);
-if (draft) copyFileSync(join(repo, draftRel), join(dir, 'refactor.json'));
+if (draft) copyFileSync(join(repo, draftRel), join(dir, 'all.json'));
 const cli = await import('./matrix.mjs');
 const repoMatrices = existsSync(join(repo, draftRel)) ? readFileSync(join(repo, draftRel), 'utf8') : null;
 const repoTracker = readFileSync(join(repo, orchRel), 'utf8');
-const first = cli.importAll('refactor');
-const id = 'refactor:orchestrator:refactor-all';
+const first = cli.importAll('all');
+const id = 'all:orchestrator:refactor-all';
 t('import: the draft becomes feature-matrix@1 on disk, one matrix per open build', () => {
-  const f = JSON.parse(readFileSync(join(dir, 'refactor.json'), 'utf8')); assert.equal(f.$axf, fm.SCHEMA); assert.ok(fm.findMatrix(fm.normalizeState(f), id));
-  assert.ok(first.log.length >= 1); assert.ok(existsSync(join(dir, 'mirror', 'refactor.json')), 'mirrored to the plugin data folder');
+  const f = JSON.parse(readFileSync(join(dir, 'all.json'), 'utf8')); assert.equal(f.$axf, fm.SCHEMA); assert.ok(fm.findMatrix(fm.normalizeState(f), id));
+  assert.ok(first.log.length >= 1); assert.ok(existsSync(join(dir, 'mirror', 'all.json')), 'mirrored to the plugin data folder');
 });
-t('import is idempotent', () => { const before = readFileSync(join(dir, 'refactor.json'), 'utf8'); const v = fm.findMatrix(fm.normalizeState(JSON.parse(before)), id).version; cli.importAll('refactor'); assert.equal(fm.findMatrix(cli.loadProfile('refactor'), id).version, v); });
-const v0 = fm.findMatrix(cli.loadProfile('refactor'), id).version;
+t('import is idempotent', () => { const before = readFileSync(join(dir, 'all.json'), 'utf8'); const v = fm.findMatrix(fm.normalizeState(JSON.parse(before)), id).version; cli.importAll('all'); assert.equal(fm.findMatrix(cli.loadProfile('all'), id).version, v); });
+const v0 = fm.findMatrix(cli.loadProfile('all'), id).version;
 cli.act({ action: 'add-item', matrix: id, item: { name: 'Feature matrix self-test item', group: 'feature-matrix', minutes: 5, model: 'Opus' } });
-t('add-item bumps the version and lights Apply', () => { const m = fm.findMatrix(cli.loadProfile('refactor'), id); assert.equal(m.version, v0 + 1); assert.equal(fm.isDirty(m), true); });
+t('add-item bumps the version and lights Apply', () => { const m = fm.findMatrix(cli.loadProfile('all'), id); assert.equal(m.version, v0 + 1); assert.equal(fm.isDirty(m), true); });
 t('remove-item and remove are refused', () => { assert.throws(() => cli.act({ action: 'remove-item', matrix: id, item: 'feature-matrix-self-test-item' }), /never deleted/); assert.throws(() => cli.act({ action: 'remove', matrix: id }), /never deleted/); });
 cli.act({ action: 'skip', matrix: id, item: 'feature-matrix-self-test-item' });
 const r1 = cli.applyMatrix({ matrix: id }, NOW);
 t('apply writes the tracker, records the version, saves a report', () => {
-  const m = fm.findMatrix(cli.loadProfile('refactor'), id); assert.equal(m.appliedVersion, m.version); assert.equal(fm.isDirty(m), false);
+  const m = fm.findMatrix(cli.loadProfile('all'), id); assert.equal(m.appliedVersion, m.version); assert.equal(fm.isDirty(m), false);
   assert.ok(r1.report.targets.includes('build')); assert.ok(cli.reports().length >= 1);
   const tr = JSON.parse(readFileSync(process.env.AXF_ORCH_FILE, 'utf8')).builds.find((b) => b.id === 'refactor-all');
   assert.ok(!tr.steps.some((s) => s.id === 'fm-feature-matrix-self-test-item'), 'a skipped item that never had a step gets none');
 });
 t('a second apply changes nothing', () => { const r2 = cli.applyMatrix({ matrix: id }, NOW); assert.equal(r2.report.changes.length, 0); });
-t('seed a pending-item matrix (only adds)', () => { const r = cli.seed({ ref: { kind: 'pending', id: 'refactor-all' }, profile: 'refactor' }); assert.equal(r.matrix.id, 'refactor:pending:refactor-all'); const again = cli.seed({ ref: { kind: 'pending', id: 'refactor-all' }, profile: 'refactor' }); assert.equal(again.matrix.version, r.matrix.version); });
+t('seed a pending-item matrix (only adds)', () => { const r = cli.seed({ ref: { kind: 'pending', id: 'refactor-all' }, profile: 'all' }); assert.equal(r.matrix.id, 'all:pending:refactor-all'); const again = cli.seed({ ref: { kind: 'pending', id: 'refactor-all' }, profile: 'all' }); assert.equal(again.matrix.version, r.matrix.version); });
 t('one dataset over every profile', () => { const { state } = cli.loadAll(); assert.ok(state.matrices.some((m) => m.id === id)); assert.deepEqual(fm.validate(state), []); assert.ok(fm.grid(state).length >= 2); });
 t('the repo files were never written', () => { if (repoMatrices != null) assert.equal(readFileSync(join(repo, draftRel), 'utf8'), repoMatrices); assert.equal(readFileSync(join(repo, orchRel), 'utf8'), repoTracker); });
 writeFileSync(join(dir, 'done'), 'ok');

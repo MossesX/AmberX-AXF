@@ -70,3 +70,9 @@ export function syncBuild(plan: Plan, build: unknown): { plan: Plan; changed: bo
 export function overlayCatalog(entries: unknown[], plans: Plan[]): CatalogEntry[];
 export function filterCatalog(entries: CatalogEntry[], f?: CatalogFilter): CatalogEntry[];
 export function planFromFeature(entry: CatalogEntry, feature: CatalogFeature, opts?: Record<string, unknown>): Plan;
+export interface FindHit { plan: { id: string; title: string; status: string }; item?: { kind: string; ref: string; label: string; text: string }; score: number; focus: string }
+export const FIND_KINDS: Record<string, string[]>;
+export function parseFind(text: string): { plan: string; item: string; kind: string };
+export function planUnits(p: Plan): { kind: string; ref: string; label: string; text: string }[];
+export function findInPlans(plans: Plan[], f?: { q?: string; plan?: string; item?: string; kind?: string }, o?: { limit?: number }): { hits: FindHit[]; plan: string; item: string; kind: string };
+export function parseFocus(focus: string, plans?: Plan[]): { id: string; ref: string; find?: undefined } | { find: string; id?: undefined; ref?: undefined };

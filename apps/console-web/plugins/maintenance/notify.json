@@ -1,0 +1,41 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "maintenance.disk",
+      "label": "Disk filling up",
+      "group": "health",
+      "app": "console",
+      "source": "Maintenance",
+      "description": "The VPS disk is running out.",
+      "match": {
+        "source": "maintenance",
+        "keyPrefix": "maintenance:disk"
+      },
+      "priority": "high"
+    },
+    {
+      "id": "maintenance.swap",
+      "label": "Memory pressure",
+      "group": "health",
+      "app": "console",
+      "source": "Maintenance",
+      "description": "The VPS is leaning on swap.",
+      "match": {
+        "source": "maintenance",
+        "keyPrefix": "maintenance:swap"
+      }
+    },
+    {
+      "id": "maintenance.jobs",
+      "label": "Maintenance jobs",
+      "group": "health",
+      "app": "console",
+      "source": "Maintenance",
+      "description": "A maintenance job or profile run needs a look.",
+      "match": {
+        "source": "maintenance"
+      }
+    }
+  ]
+}

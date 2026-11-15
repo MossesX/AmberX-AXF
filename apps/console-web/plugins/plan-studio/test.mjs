@@ -165,13 +165,13 @@ await t('duplicates, search every field, filters, sort, group, bulk, roadmap', (
 // ---------------------------------------------------------------- turn into a build
 await t('turn into a build: orchestrator add change, links both ways, live progress, done ticks features', () => {
   const p = pc.normalize({ id: 'ship', title: 'Ship it', category: 'Product > Installer', steps: [{ id: 's1', text: 'B', model: 'Opus', minutes: 20, dependsOn: ['s2'] }, { id: 's2', text: 'A', model: 'Fable', minutes: 25 }, { id: 's3', text: 'Done already', done: true }], features: [{ entry: 'app:amberx-droid', feature: 'x', title: 'X', state: 'planned' }], requirements: ['R1'] }, { now: NOW });
-  const ch = pc.toBuild(p, { profile: 'angel' });
+  const ch = pc.toBuild(p, { profile: 'all' });
   assert.equal(ch.action, 'add'); assert.equal(ch.id, 'ship'); assert.equal(ch.category, 'Product');
   assert.deepEqual(ch.steps.map((s) => [s.text, s.model, s.estimate]), [['A', 'Fable', '25 min'], ['B', 'Opus', '20 min']]);
   assert.match(ch.detail, /From Plan Studio plan ship/); assert.match(ch.detail, /Requirements: R1/);
   assert.throws(() => pc.toBuild(pc.normalize({ title: 'x' })), /no steps/);
-  const linked = pc.linkBuild(p, { profile: 'angel', id: 'ship' }, NOW);
-  assert.equal(linked.status, 'building'); assert.ok(linked.links.some((l) => l.kind === 'build' && l.ref === 'angel:ship'));
+  const linked = pc.linkBuild(p, { profile: 'all', id: 'ship' }, NOW);
+  assert.equal(linked.status, 'building'); assert.ok(linked.links.some((l) => l.kind === 'build' && l.ref === 'all:ship'));
   const half = pc.syncBuild(linked, { status: 'in-progress', steps: [{ text: 'A', done: true, doneAt: NOW }, { text: 'B', done: false }], branch: 'claude/x' });
   assert.ok(half.changed); assert.equal(half.plan.build.progress, 50); assert.equal(half.plan.steps.find((s) => s.id === 's2').done, true); assert.equal(half.plan.status, 'building');
   assert.ok(half.plan.links.some((l) => l.kind === 'branch'));
@@ -340,11 +340,11 @@ await t('API: versions, restore, delete (history kept), bulk, categories, templa
 });
 await t('API: turn into a build (preview, add to the orchestrator file, link both ways, live progress)', () => {
   const id = apiCall({ op: 'save', plan: { title: 'Buildable', steps: [{ text: 'Do A', model: 'Opus', minutes: 20 }, { text: 'Do B', model: 'Fable', minutes: 30 }] }, force: true }).plan.id;
-  const pre = apiCall({ op: 'build', id, profile: 'angel', preview: true }); assert.equal(pre.minutes, 50); assert.equal(existsSync(env.AXF_ORCH_FILE), false, 'preview writes nothing');
-  const r = apiCall({ op: 'build', id, profile: 'angel' }); assert.ok(r.ok); assert.equal(r.plan.status, 'building');
+  const pre = apiCall({ op: 'build', id, profile: 'all', preview: true }); assert.equal(pre.minutes, 50); assert.equal(existsSync(env.AXF_ORCH_FILE), false, 'preview writes nothing');
+  const r = apiCall({ op: 'build', id, profile: 'all' }); assert.ok(r.ok); assert.equal(r.plan.status, 'building');
   const orch = JSON.parse(readFileSync(env.AXF_ORCH_FILE, 'utf8')); const b = orch.builds.find((x) => x.id === r.build.id);
   assert.equal(b.source, 'plan-studio'); assert.equal(b.steps.length, 2); assert.match(b.notes[0].text, new RegExp(`Plan Studio plan: ${id}`));
-  assert.equal(apiCall({ op: 'build', id, profile: 'angel' }).ok, false, 'the same build twice is refused');
+  assert.equal(apiCall({ op: 'build', id, profile: 'all' }).ok, false, 'the same build twice is refused');
   b.steps[0].done = true; writeFileSync(env.AXF_ORCH_FILE, JSON.stringify(orch));
   assert.deepEqual(apiCall({ op: 'sync-builds' }).changed, [id]); assert.equal(apiCall({ op: 'get', id }).plan.build.progress, 50);
   b.steps[1].done = true; b.status = 'complete'; writeFileSync(env.AXF_ORCH_FILE, JSON.stringify(orch));
@@ -382,6 +382,27 @@ await t('catalog: every plugin, app, library, module and axHub found by discover
   const f = bb.features.find((x) => x.title === 'Per-app cost chart'); assert.equal(f.state, 'planned'); assert.equal(f.plan, id); assert.ok(bb.plans.includes(id));
   const pf = apiCall({ op: 'plan-feature', entry: 'plugin:build-breaker', feature: f.id, title: f.title }); assert.equal(pf.plan.features[0].entry, 'plugin:build-breaker'); assert.match(pf.plan.category, /^Console > Plugins > /);
   assert.equal(pc.filterCatalog(pc.overlayCatalog([{ key: 'x', kind: 'plugin', name: 'X', description: '', features: [{ id: 'a', title: 'A', state: 'have' }] }], []), { gaps: true }).length, 0);
+});
+const eq = (a, b, m) => assert.deepEqual(a, b, m);
+await t('find by content: the plan about X, the step that mentions Y (deep link down to the item)', () => {
+  eq(pc.parseFind('jump to the plan about voice control, the step that mentions MCP tools'), { plan: 'voice control', item: 'MCP tools', kind: 'step' });
+  eq(pc.parseFind('the plan about skins and the risk that mentions android'), { plan: 'skins', item: 'android', kind: 'risk' });
+  eq(pc.parseFind('voice control'), { plan: 'voice control', item: '', kind: '' });
+  const plans = [
+    pc.normalize({ id: 'voice-x', title: 'Voice control everywhere', steps: [{ text: 'Add MCP tools for settings' }, { text: 'Write docs' }], risks: ['Android lag'], comments: [{ text: 'check the MCP names', at: '1' }], body: 'Intro\n\nThe MCP server grows.' }),
+    pc.normalize({ id: 'skins', title: 'Skins', steps: ['MCP docs'] }),
+  ];
+  const a = pc.findInPlans(plans, { q: 'jump to the plan about voice, the step that mentions MCP' });
+  eq(a.hits.map((h) => h.focus), ['voice-x/s1'], 'only steps of the voice plan');
+  eq(pc.findInPlans(plans, { q: 'the plan about voice and the risk that mentions android' }).hits[0].focus, 'voice-x/risks:0');
+  eq(pc.findInPlans(plans, { plan: 'voice', item: 'mcp' }).hits.map((h) => h.item.kind).sort(), ['body', 'comment', 'step']);
+  eq(pc.findInPlans(plans, { item: 'mcp', kind: 'steps' }).hits.map((h) => h.focus).sort(), ['skins/s1', 'voice-x/s1'], 'no plan words = every plan');
+  eq(pc.findInPlans(plans, { q: 'skins' }).hits.map((h) => h.focus), ['skins'], 'plan only');
+  eq(pc.findInPlans(plans, { q: 'the plan about nothing like this' }).hits, []);
+  eq(pc.parseFocus('voice-x/s1', plans), { id: 'voice-x', ref: 's1' });
+  eq(pc.parseFocus('voice mcp', plans), { find: 'voice mcp' });
+  const r = apiCall({ op: 'find', q: 'the plan about docs website' });
+  assert.ok(r.ok && Array.isArray(r.hits));
 });
 await t('the repo and the hub were not written by any of this', () => {
   assert.equal(existsSync(join(repo, '.axf-console/plugins/plan-studio/plans/docs-website.json')), false);

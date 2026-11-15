@@ -1,0 +1,76 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-a9c2e497-a6ef-4797-b658-2b4c85bc403b",
+ "source": "claude-code",
+ "sessionId": "a9c2e497-a6ef-4797-b658-2b4c85bc403b",
+ "project": "other",
+ "title": "hi",
+ "startedAt": "2026-11-05T18:45:27.272Z",
+ "endedAt": "2026-11-05T18:45:44.200Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.318",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/assistant-chat-mode-r3",
+  "repo": "",
+  "branch": "claude/assistant-chat-mode-r3"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-05T18:45:40.305Z",
+   "kind": "prompt",
+   "text": "hi",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 2,
+    "output": 278,
+    "cacheRead": 7311,
+    "cacheWrite": 55777,
+    "thinking": 190
+   },
+   "costUsd": 0.2859,
+   "costEstimated": false,
+   "seconds": 4,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": "Hey Brett, Gizmo here. What are we getting into? One heads-up: the startup sync is holding 115 files that differ between here and the hub, including `RULES.md` and `THREADS.md`. Tell me which copy to keep whenever you're ready."
+  }
+ ],
+ "files": [],
+ "changeIds": [],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 2,
+  "output": 278,
+  "cacheRead": 7311,
+  "cacheWrite": 55777,
+  "thinking": 190,
+  "costUsd": 0.2859,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0.4532
+ },
+ "ingestedAt": "2026-11-05T18:45:44.424Z"
+}

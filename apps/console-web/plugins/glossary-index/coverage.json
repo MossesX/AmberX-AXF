@@ -1,0 +1,5 @@
+{
+  "$axf": "glossary-coverage@1",
+  "description": "How many glossary entries may still fall back to a generated summary (their source has no description). Only goes down: node catalog.mjs --update-ratchet.",
+  "generic": 388
+}

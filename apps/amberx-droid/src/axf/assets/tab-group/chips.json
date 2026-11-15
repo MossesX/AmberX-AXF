@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "chips",
+  "name": "Chips",
+  "version": "1.0.0",
+  "description": "Rounded chips in a row that wraps: the section switcher look (UI Review's categories), with count badges.",
+  "author": "AmberX AXF",
+  "tags": ["chips", "wrap", "badges"],
+  "data": {
+    "style": "chips",
+    "align": "start",
+    "position": "top",
+    "density": "compact",
+    "overflow": "wrap",
+    "display": "both",
+    "divider": false,
+    "badges": true,
+    "rememberLast": true
+  }
+}

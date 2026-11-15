@@ -24,7 +24,7 @@
  * So uninstall --all leaves nothing behind: no code, no data, no state, no doc lines. `check --after-uninstall` proves it.
  */
 import { chmodSync, cpSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
-import { dirname, join, relative, resolve } from 'node:path';
+import { basename, dirname, join, relative, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -49,9 +49,16 @@ const CHANGES_DIR = join(ROOT, 'changes');
 const HANDOFF_DIR = join(ROOT, '_claude/handoff'); // the Claude handoff kit: a generated snapshot of the docs, like the rebuild reports
 const SESSIONS_DIR = join(ROOT, 'sessions'); // the session check-in archive (session-log@1): records of past sessions, history like the changes log
 // The builds store's read-only exports (pending list + build queue, per profile) carry build notes: plans, like _claude/builds.
+// CI ratchet baselines (check-chrome-assets.mjs → framework/spec/chrome-baseline.json): per-file counts of findings that
+// may only shrink. A removed plugin's line only lowers a count nobody can exceed, so it is not a stale reference.
+const RATCHET_BASELINE = /^framework\/spec\/chrome-baseline\.json$/;
+// Generated fixtures that snapshot real data: the shipped-features manifest (files a build shipped, history) and the
+// demonstration fixture generated from a glossary entry. A plugin removed later only leaves a stale snapshot behind.
+const SNAPSHOT_FIXTURE = /^framework\/spec\/fixtures\/(shipped-manifest|demo)\.json$/;
 const BUILD_EXPORT = /^framework\/plan\/(profiles\/[^/]+\/framework\/plan\/)?(pending|build-queue)\.json$/;
 const HANDOFF_NOTE = /^_claude\/(memory|shared\/notes\/handoffs)\/handoff-[0-9-]+\.md$/; // dated account-switch handoff notes (own or shared): snapshots of a day, history
 const SKIP_DIRS = new Set(['.git', 'node_modules', 'dist', 'dist-single', '.axf-console', '__pycache__', 'build', '.gradle']);
+const CODE_EXT = /\.(mjs|js|cjs|ts|tsx|py|kt|kts|sh)$/i;
 const TEXT_EXT = /\.(md|mjs|js|cjs|ts|tsx|json|py|css|html|ya?ml|kt|kts|sh|txt|toml)$/i;
 
 /* ------------------------------------------------------------------ manifest + footprint */
@@ -114,6 +121,18 @@ function* walk(dir) {
   }
 }
 
+const APPS_DIR = join(ROOT, 'apps');
+const CONSOLE_APP_DIR = dirname(PLUGINS_DIR);
+
+/**
+ * Inside another app's tree (apps/<app>/, not the host app's) a bare `plugins/<folder>` is that app's own plugin
+ * system: Expenses, AmberX, axHub web and Molly each have one, and their folder names may repeat the console's. Only
+ * the host app's own path (`console-web/plugins/<folder>`), the plugin id or the marker names this plugin from there.
+ */
+export function namesHostPlugin(line, folder, id = '') {
+  return line.includes(`${basename(CONSOLE_APP_DIR)}/plugins/${folder}`) || line.includes(`axf-plugin:${folder}`) || (!!id && line.includes(id));
+}
+
 /** Every line outside the plugin's folder that names it. Marker lines in listed mention files are "managed", the rest "stale". */
 export function scanReferences(p) {
   const id = p.manifest?.id;
@@ -125,14 +144,27 @@ export function scanReferences(p) {
   for (const file of walk(ROOT)) {
     if (file.startsWith(p.dir + '/') || file === STATE) continue;
     // Rebuild and harvest reports (and their screenshots) and the changes log are history: they describe a plugin version and must outlive it.
-    if (file.startsWith(REBUILDS_DIR + '/') || file.startsWith(HARVEST_DIR + '/') || file.startsWith(CHANGES_DIR + '/') || file.startsWith(HANDOFF_DIR + '/') || file.startsWith(BUILDS_DIR + '/') || file.startsWith(SESSIONS_DIR + '/') || HANDOFF_NOTE.test(relative(ROOT, file)) || BUILD_EXPORT.test(relative(ROOT, file))) continue;
+    if (file.startsWith(REBUILDS_DIR + '/') || file.startsWith(HARVEST_DIR + '/') || file.startsWith(CHANGES_DIR + '/') || file.startsWith(HANDOFF_DIR + '/') || file.startsWith(BUILDS_DIR + '/') || file.startsWith(SESSIONS_DIR + '/') || HANDOFF_NOTE.test(relative(ROOT, file)) || BUILD_EXPORT.test(relative(ROOT, file)) || RATCHET_BASELINE.test(relative(ROOT, file)) || SNAPSHOT_FIXTURE.test(relative(ROOT, file))) continue;
+    // The console's public/data is generated from the builds store and is git-ignored: build notes there are history too.
+    if (file.startsWith(join(CONSOLE_APP_DIR, 'public/data') + '/')) continue;
+    // The console-control inventory is generated from the installed plugins (scripts/control-inventory.mjs, run by every
+    // dev and build), so a removed plugin drops out of it on the next build: data, not a reference.
+    if (file === join(CONSOLE_APP_DIR, 'src/control/inventory.json')) continue;
+    // An app's baked framework (apps/<app>/src/axf) is a copy: `framework/` is the file checked, and a re-bake refreshes the copy.
+    if (file.startsWith(APPS_DIR + '/') && file.slice(APPS_DIR.length).split('/').slice(2, 4).join('/') === 'src/axf') continue;
     // Another plugin's own tests may name plugins as data (e.g. the rebuild tracker's fixtures); only its runtime
     // code is held to "never by folder name".
     // Generated bundles (*.gen.mjs) copy an app's own code, so its folder names there are data, not plugin references.
-    const inOtherPlugin = file.startsWith(PLUGINS_DIR + '/') && !/^test[._]/.test(file.split('/').pop()) && !/\.gen\.m?js$/.test(file);
+    // Only code counts: a bare quoted name in another plugin's data (a JSON schema enum, a doc) is a value, not a reference.
+    const inOtherPlugin = file.startsWith(PLUGINS_DIR + '/') && !/^test[._]/.test(file.split('/').pop()) && !/\.gen\.m?js$/.test(file) && CODE_EXT.test(file);
+    // Another app's own plugin tree (apps/<app>/src/plugins/<folder>, or `./plugins/<folder>/…` imported from inside
+    // that app, e.g. Expenses' own plugin-manager) is that app's code, not a reference to a console plugin that happens
+    // to share the name: only a path that reaches the console's plugins folder counts there.
+    const inOtherApp = file.startsWith(APPS_DIR + '/') && !file.startsWith(CONSOLE_APP_DIR + '/');
     const lines = readFileSync(file, 'utf8').split('\n');
     lines.forEach((line, i) => {
-      const hit = needles.some((n) => line.includes(n)) || (inOtherPlugin && quoted.some((q) => line.includes(q)));
+      let hit = needles.some((n) => line.includes(n)) || (inOtherPlugin && quoted.some((q) => line.includes(q)));
+      if (hit && inOtherApp && !namesHostPlugin(line, p.folder, id)) hit = false;
       if (!hit) return;
       const managed = line.includes(`axf-plugin:${p.folder}`) && mentions.has(file);
       hits.push({ file: relative(ROOT, file), line: i + 1, text: line.trim().slice(0, 200), managed });

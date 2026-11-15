@@ -5,11 +5,13 @@
  * end (a fake `claude` in real tmux sessions named axf-slotstest-*, so nothing real is touched).
  *   node framework/spec/check-agent-slots.mjs
  */
+process.env.AXF_BUILD_LIMIT ??= 'off'; // the hard build limit counts the VPS's real builds: keep these tests off it (check-build-limit.mjs covers it)
 import { mkdtempSync, mkdirSync, writeFileSync, chmodSync, readFileSync, existsSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+process.env.AXF_CREW_SAY ??= 'off'; // group-chat posts (crew-say.mjs) stay out of the real Breakroom
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const tmp = mkdtempSync(join(tmpdir(), 'axf-slots-'));
@@ -164,7 +166,10 @@ if (hasTmux) {
   writeFileSync(join(bin, 'claude'), '#!/bin/sh\nwhile [ ! -f "$PWD/go" ]; do sleep 0.2; done\necho \'{"type":"result","result":"done"}\'\n');
   chmodSync(join(bin, 'claude'), 0o755);
   const runIn = (name) => { const d = join(tmp, name); mkdirSync(d); writeFileSync(join(d, 'brief.md'), 'hi'); return d; };
-  const env = { ...process.env, PATH: `${bin}:${process.env.PATH}`, AXF_WATCH_LIVE: 'off', AXF_SWARM_DIR: join(tmp, 'swarm'), HOME: process.env.HOME }; // every run is booked on an agent: keep it off the live crew
+  // every run is booked on an agent: keep it off the live crew. HOME: the launcher puts ~/.local/bin first on PATH, so the
+  // real HOME ran the real claude (and waited for a free real worker account); a scratch HOME keeps the fake one in use.
+  mkdirSync(join(tmp, 'home'), { recursive: true });
+  const env = { ...process.env, PATH: `${bin}:${process.env.PATH}`, AXF_WATCH_LIVE: 'off', AXF_SWARM_DIR: join(tmp, 'swarm'), HOME: join(tmp, 'home'), AXF_WORKERS: 'off', AXF_OWN_LOGIN: 'off', AXF_LOGIN_NOTE: 'off' };
   const sh = (cwd, name) => spawnSync('bash', [join(ROOT, 'deploy/claude-headless.sh'), '--name', name, '--brief', 'brief.md', '--log', 'run.log', '--'], { cwd, env, encoding: 'utf8', timeout: 30_000 });
   const d1 = runIn('one'); const d2 = runIn('two');
   const tag = `slotstest-${process.pid}`;

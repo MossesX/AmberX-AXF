@@ -3,6 +3,7 @@ import { Button, useRuntime } from './axf/react';
 import type { AxfWebLibrary } from './axf/react/library';
 import { getToken, health, isBackendUp, post, setToken } from './api';
 import { PluginsPanel } from './views/Plugins';
+import { CONSOLE_SETTINGS_HELP, installConsoleSettingsMenu } from './consoleSettingsMenu';
 
 /** Console token (AXF_TOKEN) kept in this browser, plus a server-side reset underneath. */
 function TokenPanel() {
@@ -92,6 +93,9 @@ export const consoleSettings: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.settings',
   label: 'Console settings',
   version: '0.1.0',
+  // Console settings leads every right-click / long-press menu (consoleSettingsMenu.ts)
+  register: (rt) => { installConsoleSettingsMenu(rt); },
+  help: CONSOLE_SETTINGS_HELP,
   settingsPanels: [
     { id: 'console.token', tab: 'account', title: 'Console token', icon: 'lock', order: 30, render: () => <TokenPanel /> },
     { id: 'console.backend', tab: 'connections', title: 'Console backend', icon: 'terminal', order: 10, render: () => <BackendPanel /> },

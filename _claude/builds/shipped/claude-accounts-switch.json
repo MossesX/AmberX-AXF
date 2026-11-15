@@ -1,0 +1,137 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-claude-accounts-switch",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:34Z",
+ "build": {
+  "id": "claude-accounts-switch",
+  "title": "claude-accounts-switch",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "claude-accounts-switch",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/claude-accounts-switch",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "88f412791fcee8072081fcaeec610696ff459cf4",
+ "commits": [
+  "1c007600b274608e30c698592d052453079d20a1",
+  "9ed6999803ae9eb9332be03f9157f73e1b35dcd1",
+  "d458da586c5386acc9b5b1077d53ffc73c8b775d",
+  "c1babf5225bbb408b2f0ff22d06eabf51f8c3e01"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-11-02T16:16:23Z",
+ "files": [
+  "apps/console-web/plugins/ai-assistant/server/__init__.py",
+  "apps/console-web/plugins/ai-keys/help.json",
+  "apps/console-web/plugins/ai-keys/plugin.json",
+  "apps/console-web/plugins/ai-keys/server/__init__.py",
+  "apps/console-web/plugins/ai-keys/switch.mjs",
+  "apps/console-web/plugins/ai-keys/test.py",
+  "apps/console-web/plugins/ai-keys/web/accounts.tsx",
+  "apps/console-web/plugins/ai-keys/web/index.tsx",
+  "apps/console-web/plugins/ai-keys/web/menu.ts",
+  "apps/console-web/plugins/claude-badge/plugin.json",
+  "apps/console-web/plugins/claude-badge/server/__init__.py",
+  "apps/console-web/plugins/claude-badge/web/index.tsx",
+  "apps/console-web/plugins/systems-check/server/__init__.py",
+  "deploy/claude-headless.sh",
+  "framework/cli/claude-switch.mjs",
+  "install_instructions.md"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "ai-keys",
+   "files": [
+    "apps/console-web/plugins/ai-keys/help.json",
+    "apps/console-web/plugins/ai-keys/plugin.json",
+    "apps/console-web/plugins/ai-keys/server/__init__.py",
+    "apps/console-web/plugins/ai-keys/switch.mjs",
+    "apps/console-web/plugins/ai-keys/test.py",
+    "apps/console-web/plugins/ai-keys/web/accounts.tsx",
+    "apps/console-web/plugins/ai-keys/web/index.tsx",
+    "apps/console-web/plugins/ai-keys/web/menu.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-badge",
+   "files": [
+    "apps/console-web/plugins/claude-badge/plugin.json",
+    "apps/console-web/plugins/claude-badge/server/__init__.py",
+    "apps/console-web/plugins/claude-badge/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai-assistant",
+   "files": [
+    "apps/console-web/plugins/ai-assistant/server/__init__.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "systems-check",
+   "files": [
+    "apps/console-web/plugins/systems-check/server/__init__.py"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/claude-switch.mjs"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/claude-headless.sh"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "install_instructions.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

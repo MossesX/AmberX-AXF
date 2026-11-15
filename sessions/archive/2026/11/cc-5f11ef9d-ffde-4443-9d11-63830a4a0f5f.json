@@ -1,0 +1,89 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-5f11ef9d-ffde-4443-9d11-63830a4a0f5f",
+ "source": "claude-code",
+ "sessionId": "5f11ef9d-ffde-4443-9d11-63830a4a0f5f",
+ "project": "other",
+ "title": "# Lander F — UI-Review-approved builds (Brett approved everything in UI Review) For each build, in its folder /root/axf…",
+ "startedAt": "2026-11-07T10:33:07.647Z",
+ "endedAt": "2026-11-07T10:43:45.464Z",
+ "minutes": 11,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.319",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/lander-f",
+  "repo": "",
+  "branch": "claude/lander-f"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-07T10:33:08.411Z",
+   "kind": "prompt",
+   "text": "# Lander F — UI-Review-approved builds (Brett approved everything in UI Review) For each build, in its folder /root/axf-builds/<name>: 1. `git checkout -- _claude/builds/` and `git clean -fd _claude/builds/` (sync noise). Commit other leftovers as `<name>: commit leftover work`. 2. `git fetch origin && git merge origin/main`; resolve keeping both sides' intent; for _claude/builds/** take main's. Main now has ONE build profile `all` (old profile folders gone): drop any re-added old profile files. 3. Run related tests/checks; fix what this branch broke. 4. Commit. Do NOT push. 5. Can't get gree…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 86,
+    "output": 15049,
+    "cacheRead": 4144566,
+    "cacheWrite": 107304,
+    "thinking": 3549
+   },
+   "costUsd": 1.6668,
+   "costEstimated": false,
+   "seconds": 636,
+   "tools": {
+    "Bash": 42,
+    "TaskStop": 1
+   },
+   "commands": 42,
+   "files": [],
+   "changeIds": [
+    "chg-20261107-c00d363744"
+   ],
+   "features": [
+    "pending:ui-review",
+    "orchestrator:leftovers"
+   ],
+   "output": "Both builds are merged with main and committed locally, kid. Nothing pushed. Everything's logged in `lander-f/PROGRESS.md`. **1. multi-account-headless-workers (#382): READY** - Main merged clean, android.yml included. The only change to it is the new `claude-workers.test.mjs` step, and main's line…"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261107-c00d363744"
+ ],
+ "features": [
+  "pending:ui-review",
+  "orchestrator:leftovers"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 86,
+  "output": 15049,
+  "cacheRead": 4144566,
+  "cacheWrite": 107304,
+  "thinking": 3549,
+  "costUsd": 1.6668,
+  "costEstimated": false,
+  "toolCalls": 43,
+  "commands": 42,
+  "filesTouched": 0,
+  "reportedUsd": 1.9887
+ },
+ "ingestedAt": "2026-11-07T10:43:46.200Z"
+}

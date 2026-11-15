@@ -1,0 +1,91 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-u82s3d",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:32:38Z",
+ "build": {
+  "id": "project-thread-u82s3d",
+  "title": "project-thread-u82s3d",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-u82s3d",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-u82s3d",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "7951ef4ce163b8d5e97950ec847819e55c87a247",
+ "commits": [
+  "3720adaab9faaae4869d3e8abe3385eb1f5a33f2",
+  "4fec071e3fb6229d8e8a91df682040a851430c0d"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-25T20:29:54Z",
+ "files": [
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/src/axf/react/components/Slots.tsx",
+  "apps/console-web/src/axf/react/library.ts",
+  "framework/plan/pending.json",
+  "framework/react/components/Slots.tsx",
+  "framework/react/library.ts"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/axf/react/components/Slots.tsx",
+    "apps/console-web/src/axf/react/library.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/Slots.tsx",
+    "framework/react/library.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

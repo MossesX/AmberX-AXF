@@ -15,7 +15,7 @@
  */
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { MCP_PERMISSIONS, argumentSkeleton, callGate, contentText, mcpHasPermission, toolEffect, type McpPermissionSet, type McpToolEffect } from '../../core/engines/mcp';
-import { Button, Chip, Container, Icon, useAxfState, useRuntime } from '../../react';
+import { Button, Chip, Container, Icon, TabGroup, useAxfState, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import type { McpConnected, McpPrompt, McpResource, McpTool } from './client';
 import { describe } from './client';
@@ -147,14 +147,8 @@ function McpView({ host, store, perms }: { host: McpHost; store: ServerStore; pe
                 <span className="fx-small fx-muted">protocol {conn.protocolVersion}{conn.sessionId ? ' · session' : ' · stateless'}</span>
               </div>
               {conn.instructions && <details className={`${P}__instructions`}><summary>Server instructions</summary><p>{conn.instructions}</p></details>}
-              <div className={`${P}__tabs`} role="tablist">
-                {(['tools', 'resources', 'prompts', 'log'] as const).map((t) => (
-                  <button key={t} type="button" role="tab" aria-selected={tab === t} className={`fx-tab ${P}__tab`} onClick={() => setTab(t)}>
-                    {({ tools: 'Tools', resources: 'Resources', prompts: 'Prompts', log: 'Call log' } as const)[t]}
-                    {t !== 'log' && <span className="fx-muted"> {(conn[t] as unknown[]).length}</span>}
-                  </button>
-                ))}
-              </div>
+              <TabGroup id="mcp.connection" label="MCP connection" className={`${P}__tabs`} value={tab} onChange={setTab}
+                tabs={(['tools', 'resources', 'prompts', 'log'] as const).map((t) => ({ value: t, label: ({ tools: 'Tools', resources: 'Resources', prompts: 'Prompts', log: 'Call log' } as const)[t], badge: t !== 'log' ? (conn[t] as unknown[]).length || undefined : undefined }))} />
 
               {tab === 'tools' && (
                 <div className={`${P}__split`}>

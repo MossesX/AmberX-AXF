@@ -44,31 +44,45 @@ final class VetoAlerts {
     static final String[] PHASES = { "held", "warning", "running" };
     private static final String TAG = "veto:";
     /** Card channels (fixed: the loud part is the alarm, configured in the banner plugin). */
-    private static final String CH_PREFIX = "veto2_";
+    private static final String CH_PREFIX = "veto3_";
 
     static SharedPreferences prefs(Context c) { return c.getSharedPreferences(PREFS, Context.MODE_PRIVATE); }
 
     /* ---------------------------------------------------------------- channels */
 
-    static String channelId(String phase) { return CH_PREFIX + phase; }
+    /**
+     * One normal notice per hold (Brett, Nov 8 2026: the veto notice was an alarm, and it went off again at 30 s left).
+     * The channel follows the banner plugin's notice switches (sound, vibration); every channel is default importance,
+     * never the alarm category. Channels can't change after they're made, so each combination is its own channel.
+     */
+    static String channelId(JSONObject cfg) {
+        boolean sound = cfg == null || cfg.optBoolean("noticeSound", true);
+        boolean vib = cfg != null && cfg.optBoolean("noticeVibrate", false);
+        return CH_PREFIX + "notice_s" + (sound ? 1 : 0) + "v" + (vib ? 1 : 0);
+    }
+
+    /** The 30 s left and running updates alert again only when the Repeat switch is on. */
+    static boolean repeats(JSONObject cfg) { return cfg != null && cfg.optBoolean("noticeRepeat", false); }
 
     static void channels(Context c) {
         if (Build.VERSION.SDK_INT < 26) return;
         NotificationManager nm = c.getSystemService(NotificationManager.class);
         Set<String> keep = new HashSet<>();
-        for (String phase : new String[] { "held", "warning", "running", "shelved" }) {
-            String id = channelId(phase);
+        for (int s = 0; s <= 1; s++) for (int v = 0; v <= 1; v++) {
+            String id = CH_PREFIX + "notice_s" + s + "v" + v;
             keep.add(id);
             if (nm.getNotificationChannel(id) != null) continue;
-            String name = "held".equals(phase) ? "Held command: timer started" : "warning".equals(phase) ? "Held command: time running out"
-                : "shelved".equals(phase) ? "Held command: shelved" : "Held command: running";
-            NotificationChannel ch = new NotificationChannel(id, name, "shelved".equals(phase) ? NotificationManager.IMPORTANCE_DEFAULT : NotificationManager.IMPORTANCE_HIGH);
-            ch.enableVibration(!"shelved".equals(phase));
+            String name = "Held command" + (s == 1 ? (v == 1 ? " (sound + vibration)" : " (sound)") : (v == 1 ? " (vibration)" : " (silent)"));
+            NotificationChannel ch = new NotificationChannel(id, name, s == 1 || v == 1 ? NotificationManager.IMPORTANCE_DEFAULT : NotificationManager.IMPORTANCE_LOW);
+            if (s == 0) ch.setSound(null, null);
+            ch.enableVibration(v == 1);
+            if (v == 0) ch.setVibrationPattern(new long[] { 0 });
             nm.createNotificationChannel(ch);
         }
-        // The old per-sound channels (veto_<phase>_<hash>) went with the old settings.
+        // Older channels (veto_<phase>_<hash>, the high-importance veto2_<phase>) go.
         for (NotificationChannel ch : nm.getNotificationChannels()) {
-            if ((ch.getId().startsWith("veto_") || ch.getId().startsWith(CH_PREFIX)) && !keep.contains(ch.getId())) nm.deleteNotificationChannel(ch.getId());
+            String id = ch.getId();
+            if ((id.startsWith("veto_") || id.startsWith("veto2_") || id.startsWith(CH_PREFIX)) && !keep.contains(id)) nm.deleteNotificationChannel(id);
         }
     }
 
@@ -190,15 +204,19 @@ final class VetoAlerts {
             : "warning".equals(phase) ? left + " s left: " + v.title
             : "Runs in " + (left / 60) + ":" + String.format(java.util.Locale.ROOT, "%02d", left % 60) + ": " + v.title;
         String hint = running ? "" : shelved ? "\nApprove to run it, Deny to stop it." : "\nDeny stops it, Approve runs it now, Shelve pauses the countdown.";
-        NotificationCompat.Builder b = new NotificationCompat.Builder(c, channelId(phase))
+        JSONObject cfg = VetoAlarm.config(c);
+        String channel = channelId(cfg);
+        NotificationCompat.Builder b = new NotificationCompat.Builder(c, channel)
             .setSmallIcon(R.mipmap.ic_launcher).setContentTitle(title).setContentText(what)
             .setStyle(new NotificationCompat.BigTextStyle().bigText(what + hint))
-            .setPriority(shelved ? NotificationCompat.PRIORITY_DEFAULT : NotificationCompat.PRIORITY_HIGH)
-            .setCategory(shelved ? NotificationCompat.CATEGORY_REMINDER : NotificationCompat.CATEGORY_ALARM)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setCategory(NotificationCompat.CATEGORY_REMINDER)
+            .setOnlyAlertOnce(!repeats(cfg))
             .setContentIntent(tap).setAutoCancel(running)
             .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
-            .setPublicVersion(new NotificationCompat.Builder(c, channelId(phase)).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("Held command").build());
+            .setPublicVersion(new NotificationCompat.Builder(c, channel).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("Held command").build());
         if (Quiet.on(c)) b.setSilent(true); // Quiet: shown, never heard
+        else if (!"held".equals(phase) && !repeats(cfg)) b.setSilent(true); // one alert per hold: later phases only update it
         if (!running) {
             b.setOngoing(true);
             if (!shelved) {

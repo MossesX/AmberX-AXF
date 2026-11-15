@@ -1,0 +1,103 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-shared-look-fix",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:16Z",
+ "build": {
+  "id": "shared-look-fix",
+  "title": "Fix: design packages do nothing + developer apps look different",
+  "profile": "all",
+  "category": "Appearance",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Fix: design packages do nothing + developer apps look different",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Console: applying a design package or interface switches the GizmoX interface tab back to Main so the change shows",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "2026-10-29T18:10:52.266Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Runtime: a scoped view pushes the app palette to axHub, not the interface tab colours",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-10-29T18:10:52.266Z",
+   "doneAt": "2026-10-29T18:10:52.322Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Developer apps (console, AmberX, axHub web, Walkthrough Studio) ship the same design packages + their themes and style packages so the axHub look resolves the same everywhere",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-10-29T18:10:52.322Z",
+   "doneAt": "2026-10-29T18:10:52.379Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Tests + typecheck, PR",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-10-29T18:10:52.379Z",
+   "doneAt": "2026-10-29T18:46:29.664Z",
+   "actualMin": 36,
+   "done": true
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-29T18:57:38.704Z",
+ "landedAt": "2026-10-29T18:57:38.704Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

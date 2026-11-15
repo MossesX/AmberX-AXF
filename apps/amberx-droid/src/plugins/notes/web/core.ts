@@ -577,13 +577,35 @@ export const INTENT_SCHEMA = {
 } as const;
 
 /**
+ * AmberX's own notes replies (Nov 7 2026, build amberx-voice-echo-fix; Brett: "Echo fix"): "Note saved to Inbox.",
+ * "Task saved to Work.", "3 items saved to Shopping.", "Saved to Inbox.", "Moved “milk” to Shopping.", "Removed …",
+ * "Renamed … to …", "Made …". Heard back through the mic they read like a new note ("note saved to inbox" = a note
+ * whose text is "saved to inbox"), which is how one save turned into 125 on Nov 1. The parser never takes one as an
+ * intent and the voice plugin drops it before the AI parser, whatever the speech gate's clock says.
+ */
+const OWN_REPLY = [
+  /^(?:note|task|todo|to do|item|\d+ items|[a-z]+ items) (?:saved|added) (?:to|in|into) \w/,
+  /^(?:saved|added)(?: \d+ items)? (?:to|in|into) \w/,
+  /^(?:moved|renamed) .+ to \w/,
+  /^removed \w/,
+  /^renamed to \w/,
+  /^made \w+( \w+)?$/,
+  /^.+ is already there$/,
+];
+/** Is this sentence one of AmberX's own notes replies (heard back through the mic)? Pure. */
+export function isOwnReply(heard: string): boolean {
+  const p = norm(heard);
+  return !!p && OWN_REPLY.some((r) => r.test(p));
+}
+
+/**
  * The local parser: understands the common sentences with no AI. Returns null when it isn't sure (the AI, when
  * connected, gets those). Order matters: the most specific patterns first.
  */
 export function parseIntent(heard: string, now = new Date()): Intent | null {
   const raw = heard.trim();
   const p = norm(raw);
-  if (!p) return null;
+  if (!p || isOwnReply(raw)) return null;
   let m: RegExpExecArray | null;
   const rest = (re: RegExp) => { const x = new RegExp(re.source, 'i').exec(raw); return x ? x : null; };
 

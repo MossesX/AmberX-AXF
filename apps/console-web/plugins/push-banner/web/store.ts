@@ -157,7 +157,8 @@ export const openPr = (r: Row) => act(r.key, async () => {
 
 export const mergePr = (r: { key: string; repo: string; number: number; base: string }) => act(r.key, async () => {
   const n = r.number;
-  const m = await api.post<{ merged: boolean }>('merge', { repo: r.repo, number: n, confirm: `${r.repo}#${n}` });
+  const m = await api.post<{ merged: boolean; queued?: boolean; text?: string }>('merge', { repo: r.repo, number: n, confirm: `${r.repo}#${n}` });
+  if (m.queued) return m.text || `PR #${n} is in the merge queue.`;
   return m.merged ? `Merged PR #${n} into ${r.base}.` : `GitHub didn't merge PR #${n}.`;
 });
 

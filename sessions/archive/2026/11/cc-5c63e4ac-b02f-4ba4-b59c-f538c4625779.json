@@ -1,0 +1,82 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-5c63e4ac-b02f-4ba4-b59c-f538c4625779",
+ "source": "claude-code",
+ "sessionId": "5c63e4ac-b02f-4ba4-b59c-f538c4625779",
+ "project": "other",
+ "title": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each …",
+ "startedAt": "2026-11-06T19:18:11.082Z",
+ "endedAt": "2026-11-06T19:18:15.796Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.319",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/tmp/axf-slots-FB2Ts9/one",
+  "repo": "",
+  "branch": ""
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-06T19:18:12.263Z",
+   "kind": "prompt",
+   "text": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /root/axf-builds/md-chain-default/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a ste…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 4,
+    "output": 258,
+    "cacheRead": 39854,
+    "cacheWrite": 17273,
+    "thinking": 43
+   },
+   "costUsd": 0.0996,
+   "costEstimated": false,
+   "seconds": 3,
+   "tools": {
+    "Bash": 1
+   },
+   "commands": 1,
+   "files": [],
+   "changeIds": [
+    "chg-20261106-31a1538bf6"
+   ],
+   "features": [],
+   "output": "Hi. Amber here. What do you need? The open Build manager entry (chg-20261106-31a1538bf6) couldn't be closed: my close command needs approval. It'll stay open unless this turns into real work."
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261106-31a1538bf6"
+ ],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 4,
+  "output": 258,
+  "cacheRead": 39854,
+  "cacheWrite": 17273,
+  "thinking": 43,
+  "costUsd": 0.0996,
+  "costEstimated": false,
+  "toolCalls": 1,
+  "commands": 1,
+  "filesTouched": 0,
+  "reportedUsd": 0.1513
+ },
+ "ingestedAt": "2026-11-06T19:18:16.024Z"
+}
