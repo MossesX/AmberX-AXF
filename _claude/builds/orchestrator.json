@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T13:54:11.005Z",
+ "updatedAt": "2026-11-15T13:54:18.324Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -151952,7 +151952,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T13:23:46.016Z",
-   "updatedAt": "2026-11-15T13:53:51.554Z",
+   "updatedAt": "2026-11-15T13:54:13.244Z",
    "builtAt": "",
    "notes": [
     {
@@ -151970,6 +151970,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-build-rules-tab-gate-rules-vps-owns--earl, shared account login)",
      "at": "2026-11-15T13:27:50.652Z"
+    },
+    {
+     "text": "Headless run axf-build-rules-tab-gate-rules-vps-owns--earl: brief only · start 14.1K tokens ($0.08) · cost $12.43 · 83 turns · 6 tools, MCP none",
+     "at": "2026-11-15T13:54:13.244Z"
     },
     {
      "text": "Phase 1 (Fable) done on branch claude/build-rules-tab-gate-rules-vps-owns, no PR yet: inventory (114 rules, 205 verbatim sources), build-rules@1 contract (framework/spec/BUILD-RULES.md), engine framework/core/build-rules.mjs, seed store _claude/builds/build-rules/seed.json (115 rules, home-card #1 owned by the VPS), check-build-rules in CI. No rule file was changed yet: removing the VPS-owned rules from the briefs, launcher notes, rules-brief seed and Claude rules files is the next phase, together with the Build rules tab in Gate & rules and its REST / MCP / CLI / voice surface (named in BUILD-RULES.md). Open point for the tab: migrated session texts make a full UI brief about 26K chars; the tab or a brief cap should trim them.",
