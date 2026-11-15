@@ -2,7 +2,7 @@
  "$axf": "shipped-manifest@1",
  "version": 1,
  "id": "sm-asset-designer",
- "rev": 1,
+ "rev": 2,
  "source": "backfill",
  "by": "backfill",
  "shippedAt": "2026-11-12T03:26:13Z",
@@ -245,6 +245,7 @@
   "s13: Installed by default: plugin `enabled: true` in the console's plugin defaults, `framework/catalog/plugins.json` entry (planned → built resolves by itself), `node framework/cli/plugins.mjs --check`, st",
   "s14: Android face (first slice): `axf-devtools` gets an `AssetDesignerModule` placeholder route `asset-designer` listing designed assets received from the console (read-only), so the plugin-inventory shows",
   "s15: Tests: plugin `test.py` (validate route, storage, built-in id refused, lifecycle), web unit cases for the drawer slot + layout compile, CI line; `uninstall.mjs --all` leaves nothing (`check --after-un",
-  "s16: Close: differences report `_claude/memory/docs/rebuilds/asset-designer.md` (new plugin, so a build report), LOG.md line, web screenshots via `rebuild-shots.mjs`, CLAUDE.md Status, plan epic `x.assets."
+  "s16: Close: differences report `_claude/memory/docs/rebuilds/asset-designer.md` (new plugin, so a build report), LOG.md line, web screenshots via `rebuild-shots.mjs`, CLAUDE.md Status, plan epic `x.assets.",
+  "Not shipped: no code landed under this build. The record came from a Nov 10 audit note (superseded) and the Nov 12 backfill; git log --all has no apps/console-web/plugins/asset-designer before PR #631. The plugin ships with build restore-asset-designer-plugin-merged-nov (PR #631)."
  ]
 }
