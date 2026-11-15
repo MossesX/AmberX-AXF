@@ -29,12 +29,15 @@ branch('unique', { 'src/u.ts': 'u\n', '_claude/builds/store.json': '{"x":1}\n' }
 branch('status-only', { '_claude/builds/store.json': '{"y":1}\n' }, 'status');
 branch('redone', { 'src/r.ts': 'r\n', 'src/a.ts': 'a2\n' }, 'r');
 branch('batched', { 'src/b.ts': 'b1\n' }, 'b');
+branch('shared', { 'README.md': 'line one of the shared doc\nthe shared line this branch adds\n' }, 'shared');
 // main takes the picked commit as is, and redone's content in a different commit (a squash by hand)
 sh(['cherry-pick', picked], work);
 commit({ 'src/r.ts': 'r\n', 'src/a.ts': 'a2\n', 'src/other.ts': 'o\n' }, 'redone squashed with more');
 // batched: main took b.ts in a batch commit, then edited it again (the branch's version is in main's history only)
 commit({ 'src/b.ts': 'b1\n', 'src/z.ts': 'z\n' }, 'batch');
 commit({ 'src/b.ts': 'b2\n' }, 'b moved on');
+// shared: main carries the branch's one added line among others of its own
+commit({ 'README.md': 'line one of the shared doc\nanother line from a second build\nthe shared line this branch adds\n' }, 'readme rows');
 sh(['push', '-q', 'origin', 'HEAD:main'], work);
 sh(['clone', '-q', origin, repo], root);
 const s = { repo, slug: 'o/r', dataDir: data, remote: 'origin', base: 'main' };
@@ -51,7 +54,8 @@ await t('git cherry + file level: picked, status-only and re-done branches are s
   assert.equal(w('status-only').unique, false); assert.match(w('status-only').why, /status files/);
   assert.equal(w('redone').unique, false); assert.match(w('redone').why, /same content/);
   assert.deepEqual(w('unique').files, ['src/u.ts']);
-  assert.equal(w('batched').unique, false, 'a version main once had (batch landed, edited since) is not unique'); assert.match(w('batched').why, /or had/);
+  assert.equal(w('batched').unique, false, 'a version main took and edited since is not unique');
+  assert.equal(w('shared').unique, false, "a line added to a shared file that main already carries is not unique");
 });
 
 await t('a deleted branch is read from its PR head (refs/pull/<n>/head)', async () => {

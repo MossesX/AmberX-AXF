@@ -28,7 +28,6 @@ import { makeGit, makeGitHub, settings } from './land.mjs';
 export const FRAME = 'land-supersede@1';
 export const resultFile = (s) => join(s.dataDir, 'land-supersede.json');
 const lines = (t) => String(t || '').split('\n').map((x) => x.trim()).filter(Boolean);
-const still0 = (files) => files.size > 0;
 /** Files that never make a build unique: status, logs and generated files (regenerated or merged on landing). */
 export const noise = (p) => ['builds', 'union', 'generated'].includes(core.classifyPath(p)) || /^_claude\/(builds|sessions|logs)\//.test(p) || /(^|\/)THREADS\.md$|(^|\/)STATUS\.md$/.test(p);
 
@@ -53,12 +52,18 @@ export function uniqueWork({ git, ref, main }) {
   }
   // file level: what main already holds the same way is not unique, and neither is a version main once had and has
   // moved on from since (a batch or squash landed it under another commit; main edited the file after)
-  const since = still0(files) ? git(['merge-base', main, ref]).out : '';
+  // file level: a file is unique only when the branch added a line main doesn't have. A version main took in another
+  // form (a batch, a squash, a re-do) or a one-line addition to a shared file that main already carries is not unique.
+  const since = files.size ? git(['merge-base', main, ref]).out : '';
   const onMainOnce = (p) => {
-    const blob = git(['rev-parse', '-q', '--verify', `${ref}:${p}`]);
-    if (blob.code) return git(['cat-file', '-e', `${main}:${p}`]).code !== 0; // deleted on the branch: unique only while main still has it
-    // only main's history since the branch left it: the version can't have reached main before the branch made it
-    return !!git(['log', '-1', '--format=%H', `--find-object=${blob.out}`, since ? `${since}..${main}` : main, '--', p], { timeout: 60000 }).out;
+    const onBranch = git(['cat-file', '-e', `${ref}:${p}`]).code === 0;
+    const mainText = git(['show', `${main}:${p}`]);
+    if (!onBranch) return mainText.code !== 0; // deleted on the branch: unique only while main still has it
+    if (mainText.code) return false; // main has no such file: the branch's file is new work
+    const have = new Set(mainText.out.split('\n').map((l) => l.trim()));
+    const added = git(['diff', '-U0', '--no-color', since || main, ref, '--', p]).out.split('\n')
+      .filter((l) => l.startsWith('+') && !l.startsWith('+++')).map((l) => l.slice(1).trim()).filter((l) => l.length > 2);
+    return added.every((l) => have.has(l));
   };
   const still = [...files].filter((p) => git(['diff', '--quiet', main, ref, '--', p]).code !== 0 && !onMainOnce(p)).sort();
   const why = !counted.length ? (plus.length ? 'only merges and status files are missing from main' : 'every commit is on main')
