@@ -9,6 +9,7 @@ builds keep running. That's what I need."
   POST backup                   Backup now on axf-data (a background job; GET state shows it)
   POST verify                   re-check the newest backup against the live store
   POST mode {ns, to, window?, acceptDrift?}   to = shadow | cutover | rollback | local (data-mode.mjs: same guards)
+  POST voice {phrase, confirm?}  AmberX: a spoken phrase → one of the above (a move needs confirm: true)
 
 The same calls are plugin commands (MCP), `axf data …` on the CLI and voice actions; Settings → Plugins → Data store
 shows them. Nothing here holds data: the plugin reads axf-data and the mode document, and runs the data-mode CLI.
@@ -17,6 +18,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import time
 from pathlib import Path
@@ -127,3 +129,64 @@ def mode(body: ModeBody) -> dict[str, Any]:
         res = (r.get("results") or [{}])[0]
         raise HTTPException(409, res.get("reason") or "refused")
     return r
+
+
+# ── voice (AmberX): a phrase → one of the routes above ───────────────────────────────────────────────────────────────
+_NS_WORDS = {"settings": "settings", "setting": "settings", "changes": "changes", "change log": "changes", "notes": "notes", "note": "notes",
+             "planner": "planner", "plans": "planner", "plan studio": "planner", "ui review": "ui-review", "reviews": "ui-review",
+             "sessions": "sessions", "chats": "sessions", "console": "console", "builds": "builds", "build store": "builds"}
+_MOVES = (("roll back", "rollback"), ("rollback", "rollback"), ("cut over", "cutover"), ("cutover", "cutover"), ("cut", "cutover"),
+          ("shadow", "shadow"), ("back to local", "local"), ("stop shadow", "local"))
+
+
+def parse_phrase(phrase: str) -> dict[str, Any]:
+    """Pure: what a phrase asks for ({action, ns?, to?}); tests call it directly."""
+    p = " ".join(phrase.lower().replace("-", " ").split())
+    if any(w in p for w in ("verify", "check the backup", "is the backup good")):
+        return {"action": "verify"}
+    if "back up" in p or "backup" in p.replace("backups", "") and "roll" not in p:
+        return {"action": "backup"}
+    for words, to in _MOVES:
+        if words in p:
+            ns = next((v for k, v in sorted(_NS_WORDS.items(), key=lambda kv: -len(kv[0])) if k in p), "")
+            m = re.search(r"plugins? ([a-z0-9][a-z0-9-]*)", " ".join(phrase.lower().split()))
+            if m:
+                ns = f"plugins/{m.group(1)}"
+            return {"action": "mode", "to": to, "ns": ns}
+    if "drift" in p:
+        ns = next((v for k, v in sorted(_NS_WORDS.items(), key=lambda kv: -len(kv[0])) if k in p), "")
+        return {"action": "drift", "ns": ns}
+    return {"action": "state"}
+
+
+class VoiceBody(BaseModel):
+    phrase: str
+    confirm: bool = False
+
+
+@router.post("/voice")
+def voice(body: VoiceBody) -> dict[str, Any]:
+    a = parse_phrase(body.phrase)
+    if a["action"] == "backup":
+        backup()
+        return {"did": "backup", "say": "Backup started on axf-data. I'll have the result in the data store state."}
+    if a["action"] == "verify":
+        verify()
+        return {"did": "verify", "say": "Checking the newest backup against the live store."}
+    if a["action"] == "drift":
+        if not a["ns"]:
+            return {"did": "nothing", "say": "Which namespace's drift log? Settings, planner, notes, builds…"}
+        d = drift(a["ns"], 5)
+        return {"did": "drift", "entries": d["entries"], "say": f"{len(d['entries'])} recent drift entries for {a['ns']}." if d["entries"] else f"No drift logged for {a['ns']}."}
+    if a["action"] == "mode":
+        if not a["ns"]:
+            return {"did": "nothing", "say": "Which namespace? Settings, planner, notes, builds, or a plugin."}
+        if not body.confirm:
+            return {"did": "ask", "would": a, "say": f"That moves {a['ns']} to {a['to']}. Say yes to go ahead."}
+        r = mode(ModeBody(ns=a["ns"], to=a["to"]))
+        return {"did": "mode", "result": r, "say": f"Done: {a['ns']} is {a['to'] if a['to'] != 'rollback' else 'back on the local files'}."}
+    s = state()
+    moved = [n for n in s["namespaces"] if n["mode"] != "local"]
+    head = "axf-data is up" if s["reachable"] else ("axf-data isn't connected yet" if not s["configured"] else "axf-data isn't answering")
+    last = (s.get("backup") or {}).get("last") or {}
+    return {"did": "state", "state": s, "say": f"{head}. {len(moved)} of {len(s['namespaces'])} namespaces moved{': ' + ', '.join(n['ns'] + ' ' + n['mode'] for n in moved) if moved else ''}. " + (f"Last backup {last.get('at', '?')}, {'verified' if (last.get('verify') or {}).get('ok') else 'not verified'}." if last else "No backup yet.")}
