@@ -11,5 +11,9 @@ import architecture from './architecture.mjs';
 import skinsBranding from './skins-branding.mjs';
 import orchestrator from './orchestrator.mjs';
 import consolePhone from './console-phone.mjs';
+import planSpoken from './plan-spoken.mjs';
+import voiceConsole from './voice-console.mjs';
+import vetoApprovals from './veto-approvals.mjs';
+import uiDirectory from './ui-directory.mjs';
 
-export const MORE = [commute, expenses, bossTexts, privateChat, onDemand, teenDriver, builtWithItself, employees, architecture, skinsBranding, orchestrator, consolePhone];
+export const MORE = [commute, expenses, bossTexts, privateChat, onDemand, teenDriver, builtWithItself, employees, architecture, skinsBranding, orchestrator, consolePhone, planSpoken, voiceConsole, vetoApprovals, uiDirectory];
