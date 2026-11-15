@@ -1,0 +1,310 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/phone-command.schema.json",
+  "title": "phone-command@1 (phone-connect@1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$axf",
+    "id",
+    "at",
+    "deviceId",
+    "tool",
+    "arguments",
+    "policy",
+    "from"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "phone-command@1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "deviceId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{8,64}$"
+    },
+    "tool": {
+      "enum": [
+        "phone.open_url",
+        "phone.notify",
+        "phone.approvals_watch",
+        "phone.recorder_start",
+        "phone.recorder_stop",
+        "phone.recorder_status"
+      ]
+    },
+    "alias": {
+      "enum": [
+        "amberx.open_url",
+        "amberx.recorder_start",
+        "amberx.recorder_stop",
+        "amberx.recorder_status"
+      ],
+      "description": "the deprecated amberx.* name the caller used"
+    },
+    "arguments": {
+      "type": "object",
+      "description": "per tool; see the argument schemas"
+    },
+    "policy": {
+      "enum": [
+        "allow",
+        "confirm"
+      ]
+    },
+    "from": {
+      "type": "object",
+      "required": [
+        "who",
+        "via"
+      ],
+      "properties": {
+        "who": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "via": {
+          "enum": [
+            "console",
+            "mcp",
+            "cli",
+            "voice",
+            "hub"
+          ]
+        }
+      }
+    },
+    "correlationId": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "approvalId": {
+      "type": "string",
+      "maxLength": 64,
+      "description": "the axHub approval that let a confirm command run"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "tool": {
+            "const": "phone.open_url"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "arguments": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "url"
+            ],
+            "properties": {
+              "url": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000,
+                "description": "http(s) page; what is allowed follows the owner's url policy (own / allowlist / any)"
+              },
+              "where": {
+                "enum": [
+                  "overlay",
+                  "browser"
+                ],
+                "description": "overlay (default: the always-on toolbar expands into its browser) or the phone's browser"
+              },
+              "browser": {
+                "enum": [
+                  "chrome",
+                  "default"
+                ]
+              }
+            }
+          },
+          "policy": {
+            "const": "allow"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "tool": {
+            "const": "phone.notify"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "arguments": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "title"
+            ],
+            "properties": {
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "body": {
+                "type": "string",
+                "maxLength": 600
+              },
+              "url": {
+                "type": "string",
+                "maxLength": 2000,
+                "description": "opened on tap when the url policy allows it"
+              },
+              "channel": {
+                "enum": [
+                  "alerts",
+                  "approvals",
+                  "console",
+                  "recorder"
+                ]
+              },
+              "priority": {
+                "enum": [
+                  "normal",
+                  "high"
+                ]
+              }
+            }
+          },
+          "policy": {
+            "const": "allow"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "tool": {
+            "const": "phone.approvals_watch"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "arguments": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "on"
+            ],
+            "properties": {
+              "on": {
+                "type": "boolean",
+                "description": "the phone watches the hub approvals feed and rings once per new approval"
+              },
+              "ring": {
+                "type": "boolean"
+              }
+            }
+          },
+          "policy": {
+            "const": "allow"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "tool": {
+            "const": "phone.recorder_start"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "arguments": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "session_name"
+            ],
+            "properties": {
+              "session_name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "group": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "note": {
+                "type": "string",
+                "maxLength": 600
+              },
+              "mic": {
+                "type": "boolean",
+                "description": "record the mic as a second track too (the approval then reads Playback + MIC)"
+              }
+            }
+          },
+          "policy": {
+            "const": "confirm"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "tool": {
+            "const": "phone.recorder_stop"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "arguments": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {}
+          },
+          "policy": {
+            "const": "allow"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "tool": {
+            "const": "phone.recorder_status"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "arguments": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {}
+          },
+          "policy": {
+            "const": "allow"
+          }
+        }
+      }
+    }
+  ]
+}

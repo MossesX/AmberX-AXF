@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/phone-device.schema.json",
+  "title": "phone-device@1 (phone-connect@1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$axf",
+    "deviceId",
+    "name",
+    "app",
+    "platform",
+    "capabilities",
+    "state"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "phone-device@1"
+    },
+    "deviceId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{8,64}$",
+      "description": "kept by the app in its prefs; phone-<16 hex> for new phones, amberx-<16 hex> for a migrated one"
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "app": {
+      "enum": [
+        "phone-connect-droid",
+        "amberx-droid"
+      ]
+    },
+    "appVersion": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "platform": {
+      "enum": [
+        "android"
+      ]
+    },
+    "capabilities": {
+      "type": "array",
+      "maxItems": 16,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "open-url@1",
+          "notify@1",
+          "approvals@1",
+          "recorder@1"
+        ]
+      }
+    },
+    "state": {
+      "enum": [
+        "unpaired",
+        "pending",
+        "paired",
+        "revoked"
+      ],
+      "description": "unpaired → pending → paired → revoked"
+    },
+    "owner": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "pairedAt": {
+      "type": "string",
+      "description": "ISO date-time or empty"
+    },
+    "lastSeenAt": {
+      "type": "string",
+      "description": "ISO date-time or empty"
+    },
+    "revokedAt": {
+      "type": "string",
+      "description": "ISO date-time or empty"
+    },
+    "updatedAt": {
+      "type": "string",
+      "description": "ISO date-time or empty"
+    },
+    "capabilityState": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object"
+      },
+      "description": "what each capability last reported (recorder@1: running, since, session, parts, queue, mic)"
+    },
+    "migratedFrom": {
+      "type": "object",
+      "required": [
+        "deviceId",
+        "app",
+        "at"
+      ],
+      "properties": {
+        "deviceId": {
+          "type": "string"
+        },
+        "app": {
+          "const": "amberx-droid"
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 600
+    }
+  }
+}

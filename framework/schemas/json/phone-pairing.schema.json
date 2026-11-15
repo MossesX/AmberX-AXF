@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/phone-pairing.schema.json",
+  "title": "phone-pairing@1 (phone-connect@1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$axf",
+    "code",
+    "state",
+    "issuedAt",
+    "expiresAt",
+    "by"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "phone-pairing@1"
+    },
+    "code": {
+      "type": "string",
+      "pattern": "^[A-HJ-NP-Z2-9]{8}$"
+    },
+    "state": {
+      "enum": [
+        "pending",
+        "paired",
+        "unpaired"
+      ]
+    },
+    "issuedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "issuedAt + 10 min"
+    },
+    "by": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "deviceId": {
+      "type": "string",
+      "pattern": "(^[A-Za-z0-9_-]{8,64}$)|^$"
+    },
+    "endedAt": {
+      "type": "string",
+      "description": "ISO date-time or empty"
+    },
+    "ended": {
+      "enum": [
+        "",
+        "confirm",
+        "expire",
+        "cancel"
+      ]
+    }
+  }
+}

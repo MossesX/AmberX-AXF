@@ -1,0 +1,192 @@
+{
+  "schema": "phone-connect@1",
+  "version": 1,
+  "device": "phone-device@1",
+  "pairing": "phone-pairing@1",
+  "command": "phone-command@1",
+  "result": "phone-result@1",
+  "app": "phone-connect-droid",
+  "legacyApp": "amberx-droid",
+  "platforms": [
+    "android"
+  ],
+  "capabilities": [
+    "open-url@1",
+    "notify@1",
+    "approvals@1",
+    "recorder@1"
+  ],
+  "pairingStates": [
+    "unpaired",
+    "pending",
+    "paired",
+    "revoked"
+  ],
+  "pairingEvents": [
+    "issue",
+    "confirm",
+    "expire",
+    "cancel",
+    "revoke",
+    "forget"
+  ],
+  "transitions": {
+    "unpaired": {
+      "issue": "pending"
+    },
+    "pending": {
+      "confirm": "paired",
+      "expire": "unpaired",
+      "cancel": "unpaired"
+    },
+    "paired": {
+      "revoke": "revoked"
+    },
+    "revoked": {
+      "issue": "pending",
+      "forget": "unpaired"
+    }
+  },
+  "tools": [
+    "phone.open_url",
+    "phone.notify",
+    "phone.approvals_watch",
+    "phone.recorder_start",
+    "phone.recorder_stop",
+    "phone.recorder_status"
+  ],
+  "wireTools": {
+    "phone.open_url": "browser.open",
+    "phone.notify": "notify.show",
+    "phone.approvals_watch": "approvals.watch",
+    "phone.recorder_start": "recorder.start",
+    "phone.recorder_stop": "recorder.stop",
+    "phone.recorder_status": "recorder.status"
+  },
+  "toolCapability": {
+    "phone.open_url": "open-url@1",
+    "phone.notify": "notify@1",
+    "phone.approvals_watch": "approvals@1",
+    "phone.recorder_start": "recorder@1",
+    "phone.recorder_stop": "recorder@1",
+    "phone.recorder_status": "recorder@1"
+  },
+  "policies": [
+    "allow",
+    "confirm"
+  ],
+  "toolPolicy": {
+    "phone.open_url": "allow",
+    "phone.notify": "allow",
+    "phone.approvals_watch": "allow",
+    "phone.recorder_start": "confirm",
+    "phone.recorder_stop": "allow",
+    "phone.recorder_status": "allow"
+  },
+  "neverAuto": [
+    "phone.recorder_start"
+  ],
+  "notInAll": [
+    "vps.run"
+  ],
+  "readOnly": [
+    "phone.recorder_status"
+  ],
+  "aliases": {
+    "amberx.open_url": "phone.open_url",
+    "amberx.recorder_start": "phone.recorder_start",
+    "amberx.recorder_stop": "phone.recorder_stop",
+    "amberx.recorder_status": "phone.recorder_status"
+  },
+  "vias": [
+    "console",
+    "mcp",
+    "cli",
+    "voice",
+    "hub"
+  ],
+  "urlPolicies": [
+    "own",
+    "allowlist",
+    "any"
+  ],
+  "ownDomains": [
+    "amberxai.com"
+  ],
+  "urlSchemes": [
+    "https",
+    "http"
+  ],
+  "openWhere": [
+    "overlay",
+    "browser"
+  ],
+  "browsers": [
+    "chrome",
+    "default"
+  ],
+  "notifyChannels": [
+    "alerts",
+    "approvals",
+    "console",
+    "recorder"
+  ],
+  "notifyPriorities": [
+    "normal",
+    "high"
+  ],
+  "errorCodes": [
+    "invalid",
+    "denied",
+    "not_found",
+    "unavailable",
+    "validation",
+    "unexpected",
+    "timeout",
+    "confirmation_required",
+    "offline",
+    "unpaired",
+    "revoked",
+    "consent_required"
+  ],
+  "retryable": [
+    "unavailable",
+    "timeout",
+    "offline",
+    "consent_required"
+  ],
+  "hub": {
+    "origin": "https://axhub.amberxai.com",
+    "protocol": "axpp@1",
+    "header": "X-AXPP",
+    "paths": {
+      "hello": "/axpp/v1/hello",
+      "next": "/axpp/v1/next",
+      "answer": "/axpp/v1/answer",
+      "session": "/auth/api/session"
+    },
+    "pollSeconds": 25,
+    "onlineSeconds": 45,
+    "answerSeconds": 20,
+    "backoffMs": [
+      5000,
+      15000,
+      30000,
+      60000
+    ],
+    "authRetryMs": 60000,
+    "replyMaxBytes": 262144,
+    "followRedirects": false,
+    "pairingTtlMinutes": 10
+  },
+  "deviceIdPattern": "^[A-Za-z0-9_-]{8,64}$",
+  "deviceIdPrefix": "phone-",
+  "pairingCodePattern": "^[A-HJ-NP-Z2-9]{8}$",
+  "uuidPattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+  "nameMax": 80,
+  "textMax": 600,
+  "titleMax": 120,
+  "urlMax": 2000,
+  "sessionNameMax": 120,
+  "capabilitiesMax": 16
+}

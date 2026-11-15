@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/phone-result.schema.json",
+  "title": "phone-result@1 (phone-connect@1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$axf",
+    "id",
+    "tool",
+    "deviceId",
+    "at",
+    "ok"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "phone-result@1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "tool": {
+      "enum": [
+        "phone.open_url",
+        "phone.notify",
+        "phone.approvals_watch",
+        "phone.recorder_start",
+        "phone.recorder_stop",
+        "phone.recorder_status",
+        ""
+      ]
+    },
+    "deviceId": {
+      "type": "string"
+    },
+    "at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ok": {
+      "type": "boolean"
+    },
+    "data": {
+      "type": "object"
+    },
+    "state": {
+      "type": "object"
+    },
+    "error": {
+      "type": "object",
+      "required": [
+        "code",
+        "message",
+        "retryable"
+      ],
+      "properties": {
+        "code": {
+          "enum": [
+            "invalid",
+            "denied",
+            "not_found",
+            "unavailable",
+            "validation",
+            "unexpected",
+            "timeout",
+            "confirmation_required",
+            "offline",
+            "unpaired",
+            "revoked",
+            "consent_required"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 600
+        },
+        "retryable": {
+          "type": "boolean"
+        }
+      }
+    },
+    "deprecated": {
+      "type": "string"
+    }
+  }
+}
