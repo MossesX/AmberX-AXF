@@ -22,6 +22,188 @@
         "target": "phone-connect",
         "title": "Phone Connect settings",
         "text": "Pair or revoke the phone, choose which notifications reach it, and set up its floating toolbar and popups."
+      },
+      {
+        "target": "page",
+        "title": "Page",
+        "text": "Where you set “Page”. Change it and the app uses the new value. Part of Phone Connect.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "add-a-button",
+        "title": "Add a button",
+        "text": "Adds a button. Part of Phone Connect.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "comes-in",
+        "title": "Comes in",
+        "text": "Where you set “Comes in”. Change it and the app uses the new value. Part of Phone Connect.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "goes-out",
+        "title": "Goes out",
+        "text": "Where you set “Goes out”. Change it and the app uses the new value. Part of Phone Connect.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "stays",
+        "title": "Stays",
+        "text": "Slide to set “Stays”: left is less, right is more. Part of Phone Connect.",
+        "kind": "slider",
+        "draft": true
+      },
+      {
+        "target": "opacity",
+        "title": "Opacity",
+        "text": "Slide to set “Opacity”: left is less, right is more. Part of Phone Connect.",
+        "kind": "slider",
+        "draft": true
+      },
+      {
+        "target": "sound",
+        "title": "Sound",
+        "text": "Turns “Sound” on or off. It takes effect straight away and is remembered. Part of Phone Connect.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "vibrate",
+        "title": "Vibrate",
+        "text": "Turns “Vibrate” on or off. It takes effect straight away and is remembered. Part of Phone Connect.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "button-size",
+        "title": "Button size",
+        "text": "Slide to set “Button size”: left is less, right is more. Part of Phone Connect.",
+        "kind": "slider",
+        "draft": true
+      },
+      {
+        "target": "circle",
+        "title": "Circle",
+        "text": "Shows the “Circle” part of this screen. Part of Phone Connect.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "rounded",
+        "title": "Rounded",
+        "text": "Shows the “Rounded” part of this screen. Part of Phone Connect.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "square",
+        "title": "Square",
+        "text": "Shows the “Square” part of this screen. Part of Phone Connect.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "snap-to-the-edge",
+        "title": "Snap to the edge",
+        "text": "Turns “Snap to the edge” on or off. It takes effect straight away and is remembered. Part of Phone Connect.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "collapse-after",
+        "title": "Collapse after",
+        "text": "Slide to set “Collapse after”: left is less, right is more. Part of Phone Connect.",
+        "kind": "slider",
+        "draft": true
+      },
+      {
+        "target": "toolbar-opacity",
+        "title": "Toolbar opacity",
+        "text": "Slide to set “Toolbar opacity”: left is less, right is more. Part of Phone Connect.",
+        "kind": "slider",
+        "draft": true
+      },
+      {
+        "target": "monitor",
+        "title": "Monitor",
+        "text": "Turns “Monitor” on or off. It takes effect straight away and is remembered. Part of Phone Connect.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "play-popup",
+        "title": "Play popup",
+        "text": "Plays popup. Part of Phone Connect.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "new-code",
+        "title": "New code",
+        "text": "Starts a new code. Part of Phone Connect.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "pair-a-phone",
+        "title": "Pair a phone",
+        "text": "Shows “Pair a phone”. Part of Phone Connect.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "open-pages-in",
+        "title": "Open pages in",
+        "text": "Where you set “Open pages in”. Change it and the app uses the new value. Part of Phone Connect.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "session-name",
+        "title": "Session name",
+        "text": "Where you set “Session name”. Change it and the app uses the new value. Part of Phone Connect.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "transcribe-now",
+        "title": "Transcribe now",
+        "text": "Transcribes now. Part of Phone Connect.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "turn-on",
+        "title": "Turn on",
+        "text": "Turns on. Part of Phone Connect.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "what",
+        "title": "What",
+        "text": "Where you set “What”. Change it and the app uses the new value. Part of Phone Connect.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "view:phone-recorder",
+        "title": "Phone recorder",
+        "text": "Opens the Phone recorder screen. Connects Brett's Android phone to the console through the small Phone Connect companion app (phone-connect@1).",
+        "kind": "screen",
+        "draft": true
+      },
+      {
+        "target": "view:phone-rules",
+        "title": "Auto-approval rules",
+        "text": "Opens the Auto-approval rules screen. Connects Brett's Android phone to the console through the small Phone Connect companion app (phone-connect@1).",
+        "kind": "screen",
+        "draft": true
       }
     ],
     "intros": []

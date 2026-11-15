@@ -305,7 +305,10 @@ The guide asks agent `gizmo` (Molly is no longer an agent, Nov 3 decision; the `
 AmberX on Android runs the web app, so its texts follow already. A native Compose player of walkthrough@1, when the Android side
 resumes, replays the same rule: no auto-open on start, opt-in only, nothing older than the app's start, and the Gizmo names.
 
-## Deferred: the console app's on-device wake listener (Nov 13 2026)
+## Retired: the console app's on-device wake listener (Nov 13 2026; removed Nov 15 2026)
+Brett (Nov 15 2026): "Wake word listener kill it." The plugin was uninstalled with build `phone-connect-small-android-companion`;
+there is nothing left to port. The record below is kept as history.
+
 Build `console-app-wake-word-voice-listener` (Fable). The wake listener is the console plugin `apps/console-web/plugins/wake-listener`
 (wake-listener@1: wake phrases, switch, state machine, command catalog and spoken wizard in `core.mjs` / `catalog.mjs`; the page
 engine in `web/engine.ts`). In a browser it listens with the browser's recognizer. In the console Android app (`apps/console-droid`,
