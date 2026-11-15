@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5871,
- "updatedAt": "2026-11-15T01:03:32.202Z",
+ "rev": 5872,
+ "updatedAt": "2026-11-15T01:03:46.176Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -203543,7 +203543,7 @@
    "pr": "#634",
    "priority": "P1",
    "createdAt": "2026-11-13T18:30:38.922Z",
-   "updatedAt": "2026-11-15T01:02:38.750Z",
+   "updatedAt": "2026-11-15T01:03:08.871Z",
    "builtAt": "",
    "notes": [
     {
@@ -203649,6 +203649,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-ui-manager-floating-window-to-select-any--joey, shared account login)",
      "at": "2026-11-15T00:39:39.412Z"
+    },
+    {
+     "text": "Phase 2 (Opus) s6-s9 done and pushed. Still open: UI Review shots (desktop + phone) of the floating window were not taken; uiElements is not yet in plugin.schema.json (contract change, Fable).",
+     "at": "2026-11-15T01:03:08.871Z"
     }
    ],
    "approvals": [
@@ -204036,7 +204040,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
