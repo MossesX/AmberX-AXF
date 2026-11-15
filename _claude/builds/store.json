@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6208,
- "updatedAt": "2026-11-15T13:38:30.988Z",
+ "rev": 6209,
+ "updatedAt": "2026-11-15T13:38:38.065Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -235843,7 +235843,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T13:36:18.858Z",
-   "updatedAt": "2026-11-15T13:37:47.141Z",
+   "updatedAt": "2026-11-15T13:38:25.365Z",
    "builtAt": "",
    "notes": [
     {
@@ -235861,6 +235861,10 @@
     {
      "text": "Brett (08:39): the overlay toolbar collapses to a small floating button (draggable, remembers its spot and its collapsed/expanded state); tap to expand, tap to collapse. A new approval or alert pops up from the button even while it's collapsed, with a badge count.",
      "at": "2026-11-15T13:37:47.141Z"
+    },
+    {
+     "text": "Brett (08:40): lots of overlay settings, all in the console plugin and synced to the phone. Settings for each popup type (approvals, alerts, notifications): where it appears (top, bottom, center, corners, from the button), entry/exit animation (slide down from top, burst out from the middle, circle/radial reveal, fade, scale, bounce), speed, size, how long it stays, sound/vibrate, and opacity. Settings for the toolbar and button: size, shape, edge snapping, and auto-collapse delay. Live preview in the console, presets, and full API parity.",
+     "at": "2026-11-15T13:38:25.365Z"
     }
    ],
    "approvals": [],
@@ -235908,7 +235912,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

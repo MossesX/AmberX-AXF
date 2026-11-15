@@ -807,7 +807,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 00:50 UTC · `ui-manager-floating-window-to-select-any` s6 done, → running (all) · orchestrator
 - 2026-11-15 00:51 UTC · `land-finish-auto-land-live-clear-backlog` s28 done, → running (all) · orchestrator
 - 2026-11-15 00:51 UTC · `orchestrator-settings-collapsible-split` s3 done (all) · orchestrator
 - 2026-11-15 00:51 UTC · `land-finish-auto-land-live-clear-backlog` note (all) · orchestrator
@@ -1207,6 +1206,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 13:38 UTC · `gate-rules-plugin-in-the-console` → complete, merged, note (all) · reconciler
 - 2026-11-15 13:38 UTC · `axf-molly-container-orchestrator-gate` → pending, note (all) · reconciler
 - 2026-11-15 13:38 UTC · `build-rules-tab-gate-rules-vps-owns` s2 done (all) · orchestrator
+- 2026-11-15 13:38 UTC · `phone-connect-small-android-companion` note (all) · mcp
 
 ## Token passes (log)
 
