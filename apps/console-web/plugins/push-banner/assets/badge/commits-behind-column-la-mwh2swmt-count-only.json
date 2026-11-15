@@ -1,0 +1,21 @@
+{
+ "$axf": "asset@1",
+ "type": "badge",
+ "id": "commits-behind-column-la-mwh2swmt-count-only",
+ "name": "commits-behind-column-la-mwh2swmt: Count only, toned by state",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "\"612 behind\" in a chip coloured by the landing state; the state word is in the tooltip.",
+ "tags": [
+  "ui-choice",
+  "choice-set:commits-behind-column-la-mwh2swmt",
+  "choice-option:count-only"
+ ],
+ "data": {
+  "label": "{behind} behind",
+  "chip": "count",
+  "tone": "state",
+  "layout": "count-chip",
+  "tooltip": "{state}"
+ }
+}

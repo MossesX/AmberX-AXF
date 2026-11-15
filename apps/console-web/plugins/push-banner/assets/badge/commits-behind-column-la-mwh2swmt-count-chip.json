@@ -1,0 +1,20 @@
+{
+ "$axf": "asset@1",
+ "type": "badge",
+ "id": "commits-behind-column-la-mwh2swmt-count-chip",
+ "name": "commits-behind-column-la-mwh2swmt: Count + state chip (built)",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "\"612 behind · Red\": the number in mono, then the landing state as a toned chip. What the build ships now (LandCell).",
+ "tags": [
+  "ui-choice",
+  "choice-set:commits-behind-column-la-mwh2swmt",
+  "choice-option:count-chip"
+ ],
+ "data": {
+  "label": "{behind} behind",
+  "chip": "state",
+  "tone": "state",
+  "layout": "count-then-chip"
+ }
+}

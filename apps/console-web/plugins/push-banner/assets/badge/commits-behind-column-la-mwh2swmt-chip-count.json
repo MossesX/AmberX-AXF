@@ -1,0 +1,20 @@
+{
+ "$axf": "asset@1",
+ "type": "badge",
+ "id": "commits-behind-column-la-mwh2swmt-chip-count",
+ "name": "commits-behind-column-la-mwh2swmt: One chip: state · count",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "\"Red · 612\" in one toned chip: narrowest column, wraps on a phone.",
+ "tags": [
+  "ui-choice",
+  "choice-set:commits-behind-column-la-mwh2swmt",
+  "choice-option:chip-count"
+ ],
+ "data": {
+  "label": "{state} · {behind}",
+  "chip": "both",
+  "tone": "state",
+  "layout": "one-chip"
+ }
+}
