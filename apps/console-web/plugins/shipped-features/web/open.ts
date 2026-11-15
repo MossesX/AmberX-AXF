@@ -17,6 +17,8 @@ export interface FindAnswer { q: string; match: { id: string; name: string; stat
 
 const cache = new Map<string, Promise<OpenTarget>>();
 let all: Promise<Record<string, OpenTarget>> | null = null;
+/** The last batch, readable synchronously (the row context menu is built synchronously). */
+export const knownTargets = new Map<string, OpenTarget>();
 let allAt = 0;
 const ALL_TTL_MS = 120_000;
 
@@ -24,7 +26,8 @@ const ALL_TTL_MS = 120_000;
 export function allOpenTargets(fresh = false): Promise<Record<string, OpenTarget>> {
   if (fresh || !all || Date.now() - allAt > ALL_TTL_MS) {
     allAt = Date.now();
-    all = api.call<{ targets: Record<string, OpenTarget> }>('features/open-targets').then((r) => r.targets, () => { all = null; return {}; });
+    all = api.call<{ targets: Record<string, OpenTarget> }>('features/open-targets').then((r) => { for (const [k, v] of Object.entries(r.targets)) knownTargets.set(k, v); return r.targets; }, () => { all = null; return {}; });
+    if (fresh) cache.clear();
   }
   return all;
 }
@@ -58,6 +61,17 @@ export async function openFeature(rt: AxfRuntime, id: string): Promise<boolean> 
     if (!a.ok) { rt.toast(`Couldn't open ${t.label || t.target}: ${(a as { message?: string }).message ?? a.code}`, 'danger', 'Shipped features'); return false; }
   }
   return true;
+}
+
+/** Row context menu items (target `axf-grid-row`, payload `feature:<id>`): Open in app, or the reason it can't. */
+export function contextItems(target?: string, payload?: string): { id: string; label: string; icon: string; action: string }[] {
+  if (target !== 'axf-grid-row' || !payload?.startsWith('feature:')) return [];
+  const id = payload.slice('feature:'.length);
+  const t = knownTargets.get(id);
+  if (!t) return [{ id: 'shipped-features.ctx.open', label: 'Open in app', icon: 'external', action: `feature.open:${id}` }];
+  // the menu has no disabled entry: with no target the item names the reason and pressing it only says so again
+  return t.target ? [{ id: 'shipped-features.ctx.open', label: `Open in app: ${t.label}`, icon: 'external', action: `feature.open:${id}` }]
+    : [{ id: 'shipped-features.ctx.open', label: `Can't open in app: ${t.reason}`, icon: 'lock', action: `feature.open:${id}` }];
 }
 
 /** feature.open:<id or words>: the best match opens; when the words fit several, the others are named. */

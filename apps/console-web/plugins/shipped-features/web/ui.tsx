@@ -5,6 +5,8 @@ import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import * as L from '@console/axf/core/feature-ledger.mjs';
 import type { Manifest } from '@console/axf/core/shipped-manifest.mjs';
+import { FeatureOpenButton } from './FeatureOpenButton';
+import { allOpenTargets, openFeature } from './open';
 import './shipped-features.css';
 
 /*
@@ -15,7 +17,9 @@ import './shipped-features.css';
  *      opens to its prompt, summary, files and links) and earlier versions (the original is kept), and the shipped
  *      manifest the orchestrator sent when the build landed (shipped-manifest@1: his prompt first, then collapsible
  *      sections: brief, steps, models and accounts, branch / PR / commit, files, tests, UI Review, cost, report, open)
- * Deep link: ?shipped=<build or feature id> (or #…?shipped=…) opens the grid on that build with its rows expanded.
+ * Deep link: ?shipped=<build or feature id> (or #…?shipped=…) opens the grid on that build with its rows expanded;
+ * &open=1 then opens that feature in the app (as its Open button). console-control@1: every row's Open button is
+ * view:shipped-features/grid:shipped-features/row:<feature id>/button:open (press it, or read its state).
  * Every rule (filter, sort, group, chips, export) is the framework's: framework/core/feature-ledger.mjs.
  * The view (grouping, sort, quick filters, open rows) is remembered per device.
  */
@@ -30,8 +34,10 @@ type Detail = { feature: L.Feature; edits: L.Edit[]; prompts: L.Prompt[]; histor
 /** Deep link + the shipped-features.show action: the build or feature to open the grid on. */
 const FOCUS_EVENT = 'axp-shipped-focus';
 let pendingFocus = '';
-export function focusShipped(id: string) { pendingFocus = id.trim(); window.dispatchEvent(new CustomEvent(FOCUS_EVENT)); }
-const focusFromUrl = () => { const read = (k: string) => new URLSearchParams(location.search).get(k) ?? new URLSearchParams(location.hash.split('?')[1] ?? '').get(k); return (read('shipped') ?? '').trim(); };
+let pendingOpen = false;
+export function focusShipped(id: string, open = false) { pendingFocus = id.trim(); pendingOpen = open; window.dispatchEvent(new CustomEvent(FOCUS_EVENT)); }
+const readUrl = (k: string) => new URLSearchParams(location.search).get(k) ?? new URLSearchParams(location.hash.split('?')[1] ?? '').get(k);
+const focusFromUrl = () => { const id = (readUrl('shipped') ?? '').trim(); if (id && /^(1|true|yes)$/i.test(readUrl('open') ?? '')) pendingOpen = true; return id; };
 
 const loadView = (): L.View => { try { return L.normView(JSON.parse(localStorage.getItem(VIEW_KEY) || '{}')); } catch { return L.normView({}); } };
 const saveView = (v: L.View) => { try { localStorage.setItem(VIEW_KEY, JSON.stringify(v)); } catch { /* private window: the view just isn't remembered */ } };
@@ -213,7 +219,7 @@ export function ShippedFeaturesPage() {
   const [busy, setBusy] = useState(false);
   const set = (p: Partial<L.View>) => setViewState((v) => { const n = L.normView({ ...v, ...p }); saveView(n); return n; });
 
-  const load = async () => { try { setLedger(await api.call<Ledger>('ledger')); setError(''); } catch (e) { setError((e as Error).message); } };
+  const load = async () => { try { setLedger(await api.call<Ledger>('ledger')); setError(''); void allOpenTargets(); } catch (e) { setError((e as Error).message); } };
   // deep link (?shipped=<build or feature id>) and the shipped-features.show action: group by build, search it, open its rows
   const [focus, setFocus] = useState(() => { const u = focusFromUrl(); if (u) pendingFocus = u; return pendingFocus; });
   useEffect(() => { const on = () => setFocus(pendingFocus); window.addEventListener(FOCUS_EVENT, on); return () => window.removeEventListener(FOCUS_EVENT, on); }, []);
@@ -223,7 +229,9 @@ export function ShippedFeaturesPage() {
     const hits = ledger.features.filter((f) => f.id === id || f.builds.some((b) => b.id === id));
     const groups = hits.flatMap((f) => (f.builds.length ? f.builds.map((b) => `g:${b.profile || 'main-framework'}:${b.id}`) : []));
     set({ by: 'build', search: hits.length && !hits.some((f) => f.id === id) ? id : hits[0]?.name ?? id, hideCancelled: false, hideCompleted: false, hidePending: false, statuses: [], expanded: [...new Set([...hits.map((f) => f.id), ...groups])] });
-    pendingFocus = ''; setFocus('');
+    // &open=1 (or shipped-features.show with open): the feature itself opens in the app, as its Open button would
+    if (pendingOpen && hits.some((f) => f.id === id)) void openFeature(rt, id);
+    pendingFocus = ''; pendingOpen = false; setFocus('');
   }, [ledger, focus]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { void load(); const t = window.setInterval(() => { void load(); }, 60_000); return () => window.clearInterval(t); }, []);
   useEffect(() => { if (ledger?.meta?.importing || ledger?.meta?.syncing) { const t = window.setTimeout(() => { void load(); }, 5_000); return () => window.clearTimeout(t); } return undefined; }, [ledger]);
@@ -247,6 +255,7 @@ export function ShippedFeaturesPage() {
   const W = (n: number) => `calc(var(--fx-space) * ${n})`;
   const columns: GridColumn<L.Feature>[] = [
     { id: 'name', label: 'Feature', width: `minmax(${W(30)}, 3fr)`, fixed: true, sortable: true, render: (f) => <span className="axp-shipped__name">{f.name}</span> },
+    { id: 'open', label: 'Open', width: W(12), render: (f) => <FeatureOpenButton featureId={f.id} name={f.name} /> },
     { id: 'status', label: 'Status', width: W(14), sortable: true, render: (f) => <StatusChip rec={f} /> },
     { id: 'edits', label: 'Edited', width: W(18), sortable: true, sortValue: (f) => f.editCount, render: (f) => <EditedChip f={f} /> },
     { id: 'app', label: 'App / plugin', width: W(18), sortable: true, render: (f) => <span className="fx-muted">{[f.app, f.plugin].filter(Boolean).join(' · ') || '—'}</span> },
