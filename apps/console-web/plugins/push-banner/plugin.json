@@ -381,7 +381,19 @@
         "route": "GET /land/dispatcher",
         "readOnly": true
       }
-    ]
+    ],
+    "cliGroups": {
+      "land": {
+        "status": "land-lander",
+        "backlog": "land-backlog",
+        "one": "land-one",
+        "archive": "land-archive",
+        "flag": "land-flag",
+        "fresh": "land-fresh",
+        "dispatcher": "land-dispatcher",
+        "line": "land-line"
+      }
+    }
   },
   "builtWith": {
     "model": "opus",

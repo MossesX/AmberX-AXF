@@ -177,6 +177,8 @@ jobs:
         run: node apps/console-web/plugins/push-banner/land/test-keep-fresh.mjs  # axf-plugin:push-banner
       - name: Supersede check (push banner) — git cherry + file level, superseded kept as archive tags and closed, unique flagged; real git  # axf-plugin:push-banner
         run: node apps/console-web/plugins/push-banner/land/test-supersede.mjs  # axf-plugin:push-banner
+      - name: Lander API parity (push banner) — REST, MCP, axf land and voice resolve to the same routes  # axf-plugin:push-banner
+        run: node apps/console-web/plugins/push-banner/test-api-parity.mjs  # axf-plugin:push-banner
       - name: CI scope — path filters per job, light PR checks while the merge queue is on, main skips what the queue already ran
         run: node framework/spec/check-ci-scope.mjs
       - name: Deploy helpers (framework/deploy) — bash -n, shellcheck, self-test; installers that source them

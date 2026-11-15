@@ -47,6 +47,8 @@
  *   axf pass grant [minutes] [--scope theme|style|layout|tokens]   timed veto pass, everything by default (Brett approves once)
  *                               (needs a plugin providing service:control@1, the Token control plugin; axf control help)  <!-- axf-plugin:token-control -->
  *   axf plugins [plugin]        every plugin's commands and reads (or one plugin's help)
+ *   axf <group> <sub> [<build>] a command group a plugin declares (plugin.json commands.cliGroups), e.g.
+ *                               axf land status|backlog|one|archive|flag|fresh|dispatcher|line (the serial lander)
  *   axf <plugin> <command> [--field value]…   run a plugin command or read (also axf plugin <plugin> <command>; needs
  *                               a plugin providing service:plugin-commands@1, the Plugin commands plugin)  <!-- axf-plugin:plugin-commands -->
  *   axf console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | refresh [--hard] [--all] | where | list [kind] [words] | clients
@@ -107,14 +109,28 @@ const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'v
   const { join: joinPath } = await import('node:path');
   const plugins = joinPath(import.meta.dirname ?? new URL('.', import.meta.url).pathname, '../../apps/console-web/plugins');
   const isPlugin = cmd && !AXF_COMMANDS.has(cmd) && /^[a-z0-9][a-z0-9-]+$/.test(cmd) && exists(joinPath(plugins, cmd, 'plugin.json'));
-  if (cmd === 'plugins' || cmd === 'plugin' || isPlugin) {
+  // a command group a plugin declares (plugin.json commands.cliGroups: { "<group>": { "<sub>": "<command id>" } }), e.g.
+  // `axf land status`: the same plugin command REST, MCP and voice run; a bare second word is the `build` field
+  let group = null;
+  if (cmd && !isPlugin && !AXF_COMMANDS.has(cmd) && /^[a-z0-9][a-z0-9-]+$/.test(cmd) && exists(plugins)) {
+    for (const d of readdirSync(plugins).sort()) {
+      try { const g = JSON.parse(readText(joinPath(plugins, d, 'plugin.json'), 'utf8')).commands?.cliGroups?.[cmd]; if (g) { group = { folder: d, map: g }; break; } } catch { /* not a plugin */ }
+    }
+  }
+  if (group) {
+    const sub = rest[0];
+    if (!sub || !group.map[sub]) { console.error(`usage: axf ${cmd} ${Object.keys(group.map).join('|')} [<build>] [--field value]…`); process.exit(2); }
+    const tail = rest.slice(1); const extra = tail[0] && !tail[0].startsWith('--') ? ['--build', tail.shift()] : [];
+    rest.splice(0, rest.length, group.folder, group.map[sub], ...extra, ...tail);
+  }
+  if (cmd === 'plugins' || cmd === 'plugin' || isPlugin || group) {
     const { pathToFileURL } = await import('node:url');
     const dir = (exists(plugins) ? readdirSync(plugins) : []).sort().find((d) => {
       try { return JSON.parse(readText(joinPath(plugins, d, 'plugin.json'), 'utf8')).provides?.includes('service:plugin-commands@1') && exists(joinPath(plugins, d, 'commands.mjs')); } catch { return false; }
     });
     if (!dir) { console.error('no plugin provides plugin-commands@1 (install the Plugin commands plugin)'); process.exit(1); }
     const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'commands.mjs')).href);
-    process.exit(await main([cmd, ...rest]));
+    process.exit(await main(group ? rest : [cmd, ...rest]));
   }
 }
 const flags = {};
