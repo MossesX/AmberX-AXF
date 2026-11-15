@@ -6,6 +6,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { registerGateActions } from './actions';
 import { FOLDER } from './api';
+import { BUILD_RULE_DIALOG, BuildRuleDialog } from './BuildRuleDialog';
 import { CHECK_PR_DIALOG, CheckPrDialog } from './CheckPrDialog';
 import { GateSettings } from './GateSettings';
 import { GateView, PLUGIN_ID } from './GateView';
@@ -20,7 +21,10 @@ export const plugin: AxfWebLibrary = {
   builtWith: { model: 'opus', builtAt: '2026-11-15' },
   appMenu,
   views: { gate: { title: 'Gate & rules', icon: 'shield', render: () => <GateView /> } },
-  dialogs: { [CHECK_PR_DIALOG]: { title: 'Check a PR', icon: 'search', render: (props) => <CheckPrDialog pr={String(props.pr ?? '')} />, searchable: false } },
+  dialogs: {
+    [CHECK_PR_DIALOG]: { title: 'Check a PR', icon: 'search', render: (props) => <CheckPrDialog pr={String(props.pr ?? '')} />, searchable: false },
+    [BUILD_RULE_DIALOG]: { title: 'Build rule', icon: 'list', render: (props) => <BuildRuleDialog id={String(props.id ?? props.arg ?? '')} onSaved={typeof props.onSaved === 'function' ? (props.onSaved as () => void) : undefined} />, searchable: false },
+  },
   nav: { label: 'Builds', items: [{ id: 'gate', label: 'Gate & rules', icon: 'shield', view: 'gate' }] },
   settingsTabs: [{ id: FOLDER, label: 'Gate', icon: 'shield', order: 60, parent: 'plugins' }],
   settings: [{
