@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T12:17:31.700Z",
+ "updatedAt": "2026-11-15T12:17:38.857Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -150732,7 +150732,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T12:09:29.937Z",
-   "updatedAt": "2026-11-15T12:11:28.283Z",
+   "updatedAt": "2026-11-15T12:17:31.788Z",
    "builtAt": "",
    "notes": [
     {
@@ -150750,6 +150750,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-shipped-features-organized-sortable--lenny, shared account login)",
      "at": "2026-11-15T12:11:28.283Z"
+    },
+    {
+     "text": "Brett (07:17): Shipped features and the Gate & rules plugin's new 'Pending features' tab must read from ONE TRUE SOURCE on the VPS: the feature/manifest store the VPS sender writes (vps-sends-shipped-features-every-merge), with one record per build that changes state from pending to shipped. No separate ledger copy in the plugin. Make the expanded row a reusable component so the Pending features tab shows it exactly the same way.",
+     "at": "2026-11-15T12:17:31.788Z"
     }
    ],
    "approvals": [],
@@ -150842,7 +150846,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T12:14:27.131Z",
-   "updatedAt": "2026-11-15T12:17:14.839Z",
+   "updatedAt": "2026-11-15T12:17:34.278Z",
    "builtAt": "",
    "notes": [
     {
@@ -150864,6 +150868,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-vps-sends-shipped-features-every-merge--joey, shared account login)",
      "at": "2026-11-15T12:17:14.839Z"
+    },
+    {
+     "text": "Brett (07:17): this sender owns the ONE TRUE feature store on the VPS: one record per build (shipped-manifest@1 plus an in-progress state for active/incomplete builds), created when a build is filed, updated as it moves through the pipeline, and marked shipped on a successful merge to main. Serve it through one API (REST + features.* tools via axHub). Both Shipped features and the Gate & rules 'Pending features' tab read only from it. Migrate the existing _claude/builds/shipped/*.json and the plugin's ledger into it so there's a single source.",
+     "at": "2026-11-15T12:17:34.278Z"
     }
    ],
    "approvals": [],

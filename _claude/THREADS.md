@@ -806,8 +806,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 00:07 UTC · `merge-main-land-console-axhub-retry` added (0 steps) (all) · land-finish-auto-land-live-clear-backlog
-- 2026-11-15 00:07 UTC · `merge-main-land-console-axhub-retry` → queued, note (all) · land-finish-auto-land-live-clear-backlog
 - 2026-11-13 18:33 UTC · `all-settings-interfaces-open-floating` s3 done, → built (all) · orchestrator
 - 2026-11-13 18:33 UTC · `all-settings-interfaces-open-floating` note (all) · orchestrator
 - 2026-11-15 00:08 UTC · `merge-main-land-server-gate-one-session` s3 done (all) · orchestrator
@@ -1206,6 +1204,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 12:17 UTC · `gate-rules-plugin-in-the-console` → running, note (all) · pipeline
 - 2026-11-15 12:17 UTC · `gate-rules-plugin-in-the-console` note (all) · orchestrator
 - 2026-11-15 12:17 UTC · `gate-rules-plugin-in-the-console` note (all) · mcp
+- 2026-11-15 12:17 UTC · `shipped-features-organized-sortable` note (all) · mcp
+- 2026-11-15 12:17 UTC · `vps-sends-shipped-features-every-merge` note (all) · mcp
 
 ## Token passes (log)
 
