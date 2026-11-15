@@ -737,6 +737,188 @@
           ]
         },
         "output": "{ group, action, done: [id], refused: [{ id, error }], skipped: [{ id, state }] }"
+      },
+      {
+        "id": "lander-status",
+        "route": "GET /auto-lander/status",
+        "title": "Auto-lander status",
+        "description": "The auto-lander's switch (on/off), its mode (serial or merge queue), the last run (when, result), the PR it is landing now and why it is not landing (switched-off, queue-empty, ci-waiting, conflict, token-missing, locked, error). Opens in the console with build-orchestrator.auto-lander. Say 'what's landing' or 'why isn't it landing'.",
+        "readOnly": true,
+        "output": "{ enabled, mode, lastRun, lastRunAt, result, reason, reasonText, landing: { pr, title } | null, inLine, landedRecently }"
+      },
+      {
+        "id": "lander-line",
+        "route": "GET /auto-lander/line",
+        "title": "Auto-lander landing line",
+        "description": "Every PR the auto-lander will land, in order, one at a time: position, PR, build, CI, state, conflict, and the skipped ones with their reason. Say 'show the landing line'.",
+        "readOnly": true,
+        "output": "{ line: [{ position, pr, title, build, url, ci, state, conflict, why, skipped }] }"
+      },
+      {
+        "id": "lander-runs",
+        "route": "GET /auto-lander/runs",
+        "title": "Auto-lander recent runs",
+        "description": "The newest auto-lander runs (one every 3 minutes from the cron): when, result (landed, landing, idle, skipped, error), mode, the PR it was landing, what it landed and the blocking reason.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "description": "How many runs (default 50, up to 200)"
+            }
+          }
+        },
+        "output": "{ runs: [{ startedAt, finishedAt, result, mode, landing, merged, reason, reasonText }] }"
+      },
+      {
+        "id": "lander-cron",
+        "route": "GET /auto-lander/cron",
+        "title": "Auto-lander cron health",
+        "description": "The cron's live health: the newest run record (age, result) and whether a reinstall of /etc/cron.d/axf-auto-land was asked for. Same as the Systems check item Auto-lander cron.",
+        "readOnly": true,
+        "output": "{ last, enabled, healRequested }"
+      },
+      {
+        "id": "lander-enabled",
+        "route": "POST /auto-lander/enabled",
+        "title": "Switch the auto-lander on or off",
+        "description": "The one On/Off the cron reads at the start of every run; off = the next run ends at once (reason switched-off) and the merge queue stops too. Say 'turn on the auto lander' or 'turn off the auto lander'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "true = on, false = off"
+            }
+          },
+          "required": [
+            "enabled"
+          ]
+        },
+        "output": "{ enabled, mode, … }"
+      },
+      {
+        "id": "lander-mode",
+        "route": "POST /auto-lander/mode",
+        "title": "Set the auto-lander mode",
+        "description": "serial: one PR at a time, tested on the real main it will sit on, then landed (a red one kicks only itself). merge-queue: the configured merge queue (batch or stack). Say 'land them one at a time' or 'use the merge queue'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "serial",
+                "merge-queue"
+              ],
+              "description": "serial | merge-queue"
+            }
+          },
+          "required": [
+            "mode"
+          ]
+        },
+        "output": "{ enabled, mode, … }"
+      },
+      {
+        "id": "lander-move",
+        "route": "POST /auto-lander/line/move",
+        "title": "Move a PR in the landing line",
+        "description": "Move a PR one place up or down in the auto-lander's landing line. Say 'move 633 up'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "pr": {
+              "type": "integer",
+              "description": "PR number"
+            },
+            "direction": {
+              "type": "string",
+              "enum": [
+                "up",
+                "down"
+              ],
+              "description": "up | down"
+            }
+          },
+          "required": [
+            "pr"
+          ]
+        },
+        "output": "{ ok, action, pr, line, status }"
+      },
+      {
+        "id": "lander-skip",
+        "route": "POST /auto-lander/line/skip",
+        "title": "Skip a PR in the landing line",
+        "description": "Take a PR out of the landing line with a reason; it stays out until it is put back (lander-unskip). Needs confirm: true. Say 'skip 640, it waits for 637'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "pr": {
+              "type": "integer",
+              "description": "PR number"
+            },
+            "why": {
+              "type": "string",
+              "description": "Why it is skipped"
+            },
+            "confirm": {
+              "type": "boolean",
+              "description": "Must be true"
+            }
+          },
+          "required": [
+            "pr",
+            "why",
+            "confirm"
+          ]
+        },
+        "output": "{ ok, action, pr, line, status }"
+      },
+      {
+        "id": "lander-unskip",
+        "route": "POST /auto-lander/line/unskip",
+        "title": "Put a skipped PR back in the landing line",
+        "description": "Undo a skip: the PR goes back in the landing line.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "pr": {
+              "type": "integer",
+              "description": "PR number"
+            }
+          },
+          "required": [
+            "pr"
+          ]
+        },
+        "output": "{ ok, action, pr, line, status }"
+      },
+      {
+        "id": "lander-land-now",
+        "route": "POST /auto-lander/line/land-now",
+        "title": "Land a PR now",
+        "description": "Put a PR at the head of the landing line and start a run at once (under the cron's lock; a running round is reported as locked and picks the new order up). Brett's own click: needs confirm: true and his signed-in console. Say 'land 633 now'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "pr": {
+              "type": "integer",
+              "description": "PR number"
+            },
+            "confirm": {
+              "type": "boolean",
+              "description": "Must be true"
+            }
+          },
+          "required": [
+            "pr",
+            "confirm"
+          ]
+        },
+        "output": "{ ok, action, pr, run: { started, reason? }, line, status }"
       }
     ]
   },

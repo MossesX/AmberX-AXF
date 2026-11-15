@@ -8,7 +8,7 @@
     "tabs": 74,
     "settingsTabs": 70,
     "settings": 87,
-    "functions": 250,
+    "functions": 251,
     "buttons": 62,
     "plugins": 69
   },
@@ -1348,7 +1348,7 @@
       "view": "build-orchestrator",
       "plugin": "ai.amberx.axf.console.build-orchestrator",
       "file": "plugins/build-orchestrator/web/ui.tsx",
-      "line": 115,
+      "line": 116,
       "tabs": []
     },
     {
@@ -4311,6 +4311,24 @@
         "focus"
       ],
       "effect": "navigate",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/index.tsx"
+    },
+    {
+      "address": "function:build-orchestrator.auto-lander",
+      "kind": "function",
+      "id": "build-orchestrator.auto-lander",
+      "label": "Auto-lander: open it, switch it on or off, set the mode, or land / skip / move up a PR",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "build-orchestrator.auto-lander",
+        "build",
+        "orchestrator",
+        "auto",
+        "lander"
+      ],
+      "effect": "write",
       "params": true,
       "plugin": "ai.amberx.axf.console.build-orchestrator",
       "file": "plugins/build-orchestrator/web/index.tsx"
