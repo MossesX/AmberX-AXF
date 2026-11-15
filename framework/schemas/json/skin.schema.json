@@ -417,6 +417,19 @@
             }
           },
           "additionalProperties": false
+        },
+        "grid": {
+          "type": "object",
+          "description": "Every grid under this skin: rowLines = lines per collapsed item, 1 (primary + secondary inline, truncated) or 2 (primary, then secondary); default 2. Compiles to --fx-grid-row-lines and the root hook data-axf-row-lines (component-tokens@1 grid.rowLines, grid-rows@1).",
+          "properties": {
+            "rowLines": {
+              "enum": [
+                1,
+                2
+              ]
+            }
+          },
+          "additionalProperties": false
         }
       }
     }

@@ -47,6 +47,24 @@ Sections stay separate: the colour theme is one switchable part of the skin, the
 chrome assets, parts, icon pack) are the skin's until a pick overrides that one part. Pinned by `spec/fixtures/skin.json`
 (`colour`) and `spec/check-skin.mts` (engine, runtime, every entry point, legacy documents).
 
+### Grid rows are set by the skin: `grid.rowLines` (build every-grid-1-2-rows-per-item-set-skin, Nov 15 2026)
+
+Brett: "every grid supposed to be 1 or 2 rows depending on the skin". skin@1 carries `grid: { rowLines: 1 | 2 }` (a
+design package: `extras.grid.rowLines`): every grid under the skin shows 1 line per collapsed item (primary + secondary
+inline, truncated) or 2 (primary, then secondary); default 2. It is the component-tokens@1 grid token `rowLines`
+(`--fx-grid-row-lines`), mirrored on the root as `data-axf-row-lines` (`styleThemeAttrs`), the hook grid-rows@1 draws by.
+
+- A level of the chain may pick 1 or 2 inside the skin, like the colour theme: `skin.rowLines` at the app level,
+  `scopes[key].rowLines` for a screen / plugin, `rowLines` on the hub-wide skin and on the `defaultSkin` pointer
+  (`setSkinRowLines`, `skinRowLines`). `resolveSkinChain` folds hub → app → ui:<view> → plugin:<id>, the child
+  overriding the parent; the result carries `rowLines` only when a level picked. Another skin starts with its own rows.
+- It lands in the composed look as the control@1 tokens.style override `grid.rowLines` (`axf.tokens.style`, asset `*`,
+  other overrides kept), so the runtime compiles it with every other token and the same value is readable and settable
+  through REST, MCP, the CLI and voice (`tokens.style` path `grid.rowLines`). No skin and no pick = nothing written.
+- skin-coverage@1 maps it to the grid rows (`rowLinesCoverage`): the roots whose customize token `rowLines` names them
+  (tab-group, container today, derived from customize.json) and the root hook; `check-skin-coverage` fails when it
+  reaches no type. Pinned by `spec/fixtures/skin.json` (`scopes.rowLines`) and `spec/check-skin.mts`.
+
 ### The Default skin and what the AI may change: skin-config@1 (build skin-configuration-panel, Nov 13 2026)
 
 > Brett: "before AI makes a skin, Brett picks what it may change. The current look is saved as the Default skin."

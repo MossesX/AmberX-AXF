@@ -11,6 +11,7 @@
  * Pure and port-neutral: Kotlin mirrors it as `AppearanceEngine` (fixtures: spec/fixtures/appearance.json).
  */
 import { hideable } from './hide';
+import { normalizeRowLines } from './skin-coverage.mjs';
 import { spacingOf, type Spacing } from './spacing';
 import { ASSET_TYPES } from '../types';
 
@@ -58,7 +59,7 @@ export interface AppearanceDocument {
    * while its own look says so (`skin.inherit`, Brett: "a switch to do it, but by default they're all their own").
    * `colorTheme` = the colour theme picked inside that skin (absent = the skin's own): switching it never changes `id`.
    */
-  skin?: { id: string; overrides?: Record<string, string>; colorTheme?: string };
+  skin?: { id: string; overrides?: Record<string, string>; colorTheme?: string; rowLines?: 1 | 2 };
   /**
    * The hub default skin (build console-look-becomes-default-axhub-skin, Nov 14 2026, Brett: "make it the default axHub
    * look, and then make all the apps inherit it right now"): the `default` level at the root of the skin chain
@@ -67,7 +68,7 @@ export interface AppearanceDocument {
    * opt in. `overrides` are hub-level picks over that skin, `colorTheme` the colour theme picked inside it. Absent =
    * no floor: an app without a skin draws its own saved look, as before.
    */
-  defaultSkin?: { id: string; overrides?: Record<string, string>; colorTheme?: string };
+  defaultSkin?: { id: string; overrides?: Record<string, string>; colorTheme?: string; rowLines?: 1 | 2 };
   /** who saved it last (app id), when; informational */
   updatedBy?: string;
   updatedAt?: string;
@@ -117,7 +118,8 @@ export function normalizeHubSkin(raw: unknown): HubSkinPointer | null {
   }
   const colorTheme = typeof s.colorTheme === 'string' && ID.test(s.colorTheme) ? s.colorTheme : overrides['color-theme'] ?? '';
   delete overrides['color-theme'];
-  return { id: s.id, ...(Object.keys(overrides).length ? { overrides } : {}), ...(colorTheme ? { colorTheme } : {}) };
+  const rowLines = normalizeRowLines(s.rowLines);
+  return { id: s.id, ...(Object.keys(overrides).length ? { overrides } : {}), ...(colorTheme ? { colorTheme } : {}), ...(rowLines ? { rowLines } : {}) };
 }
 
 /** Same as parseAppearance, from an already-parsed value. */

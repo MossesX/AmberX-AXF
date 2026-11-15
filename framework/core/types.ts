@@ -571,6 +571,8 @@ export interface DesignPackageExtras {
   hidden?: Record<string, boolean>;
   /** every other appearance setting by key (customize tokens, roll switches, banner looks, toolbar fold …) */
   settings?: Record<string, unknown>;
+  /** the grids under this package: rowLines 1 | 2 (skin@1 grid.rowLines when the package is read as a skin) */
+  grid?: { rowLines?: 1 | 2 };
 }
 
 /** design-package@1 (engines/designpackage.ts): an AmberX Design Package = style + colour + layout + behaviour. */

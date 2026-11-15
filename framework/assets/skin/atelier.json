@@ -46,6 +46,9 @@
         "app-menu": false
       }
     },
-    "iconPack": "amberx-outline"
+    "iconPack": "amberx-outline",
+    "grid": {
+      "rowLines": 2
+    }
   }
 }

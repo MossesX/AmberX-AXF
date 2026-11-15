@@ -18,6 +18,7 @@
  */
 import type { AppearancePackageData, DesignPackageData, DesignPackageExtras } from '../types';
 import { spacingOf } from './spacing';
+import { normalizeRowLines } from './skin-coverage.mjs';
 
 export const DESIGN_PACKAGE_TYPE = 'design-package';
 /** @deprecated the retired type's name; `fromAppearancePackage` converts its data. */
@@ -89,6 +90,7 @@ function normalizeExtras(d: Record<string, unknown>): DesignPackageExtras {
     for (const [t, v] of Object.entries(d.hidden)) if (typeof v === 'boolean') hidden[t] = v;
     out.hidden = hidden;
   }
+  if (isObj(d.grid) && normalizeRowLines(d.grid.rowLines)) out.grid = { rowLines: normalizeRowLines(d.grid.rowLines) as 1 | 2 };
   if (isObj(d.settings)) {
     const settings: Record<string, unknown> = {};
     for (const [k, v] of Object.entries(d.settings)) if (isAppearanceSetting(k) && v !== undefined) settings[k] = v;
@@ -185,6 +187,7 @@ export function designPackageErrors(raw: unknown): string[] {
   }
   if ('spacing' in x && (typeof x.spacing !== 'string' || spacingOf(x.spacing) !== x.spacing)) errors.push('data.extras.spacing must be tight, compact or regular');
   if ('hidden' in x && (!isObj(x.hidden) || Object.values(x.hidden).some((v) => typeof v !== 'boolean'))) errors.push('data.extras.hidden must map asset types to true / false');
+  if ('grid' in x && (!isObj(x.grid) || ('rowLines' in x.grid && !normalizeRowLines(x.grid.rowLines)))) errors.push('data.extras.grid.rowLines must be 1 or 2 (lines per collapsed grid row)');
   if ('settings' in x) {
     if (!isObj(x.settings)) errors.push('data.extras.settings must be an object');
     else for (const k of Object.keys(x.settings)) if (!isAppearanceSetting(k)) errors.push(`data.extras.settings.${k} is not an appearance setting`);

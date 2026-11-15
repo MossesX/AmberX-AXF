@@ -35,12 +35,14 @@ import { DESIGN_OVERRIDES_KEY, normalizeDesignPackage } from './designpackage';
 import type { DesignPackageData } from '../types';
 import { spacingOf } from './spacing';
 import { CUSTOM_TARGETS, customizable, normalizeCustomValues, type CustomValues } from './customize';
+import { CONTROL_TOKEN_SLOTS, withTokenOverride } from './control-tokens.mjs';
+import { GRID_ROW_LINES_FIELD, normalizeRowLines, type GridRowLines } from './skin-coverage.mjs';
 import spec from '../../schemas/asset-types.json';
 import { SKIN_COLOR_SLOT, SKIN_NEVER, normalizeLookPart, normalizeSkinChrome, resolveLookSkin, setSkinColorTheme, skinChromeErrors, skinChromeSettings, type AppLookDocument, type GlobalSkin, type LookPart, type SkinChrome, skinSlotMap } from './skin-rules.mjs';
 import { SKIN_SCOPE_DEFAULT, coverageSummary, coverageTable, isSubScopeKey, partsErrors, partsTypes, skinScopeChain, skinScopeKey, uncoveredTypes, type CoverageRow, type CoverageSummary, type ResolvedSkin, type SkinScope, type TypeSpecs } from './skin-coverage.mjs';
 import { normalizeHubSkin } from './appearance';
 
-export { APP_LOOK_FRAME, APP_LOOK_MAX_BYTES, APP_LOOK_PROJECT, LOOK_BACKUPS_MAX, SKIN_COLOR_SLOT, SKIN_NEVER, SKIN_USES, adoptHubDefault, appLookPath, backToSkin, backupLook, hubOnlyLook, lookBackup, newAppLook, normalizeAppLook, normalizeLookBackup, normalizeScopeState, normalizeSkinChrome, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, restoreLookBackup, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinChromeErrors, skinChromeSettings, skinColorTheme, undoRestore, RETIRED_PACKAGE_TYPES, SKIN_SCALE_TYPES, SKIN_SECTIONS, SKIN_SECTION_FIELDS, SKIN_SWAPPABLE_SECTION, isSkinSectionType, sectionOfType, skinSlotMap } from './skin-rules.mjs';
+export { APP_LOOK_FRAME, APP_LOOK_MAX_BYTES, APP_LOOK_PROJECT, LOOK_BACKUPS_MAX, SKIN_COLOR_SLOT, SKIN_NEVER, SKIN_USES, adoptHubDefault, appLookPath, backToSkin, backupLook, hubOnlyLook, lookBackup, newAppLook, normalizeAppLook, normalizeLookBackup, normalizeScopeState, normalizeSkinChrome, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, restoreLookBackup, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setSkinRowLines, setUseSkin, skinChromeErrors, skinChromeSettings, skinColorTheme, skinRowLines, undoRestore, RETIRED_PACKAGE_TYPES, SKIN_SCALE_TYPES, SKIN_SECTIONS, SKIN_SECTION_FIELDS, SKIN_SWAPPABLE_SECTION, isSkinSectionType, sectionOfType, skinSlotMap } from './skin-rules.mjs';
 export type { AppLookDocument, AppSkinState, GlobalSkin, LookBackup, LookPart, LegacyLook, LookMigrated, LookUndo, SkinChrome, SkinChromeKind, SkinSection } from './skin-rules.mjs';
 // skin-switch@1 (Nov 13 2026): use / back-to-skin / restore-default / undo per scope (hub, app:<id>, ui:<view>, plugin:<id>), one undo record in the look document
 export { SKIN_SWITCH_ACTIONS, SKIN_SWITCH_CONTRACT, SKIN_SWITCH_ERRORS, SKIN_SWITCH_HUB, SKIN_SWITCH_SCOPES, normalizeSkinSwitch, parseSwitchScope, skinSwitch, skinSwitchState, switchScopeOf, switchScopeState, switchScopes } from './skin-switch.mjs';
@@ -49,8 +51,8 @@ export type { SkinSwitchAction, SkinSwitchCommand, SkinSwitchContext, SkinSwitch
 export { DESIGN_OVERRIDES_SETTING, FOLDED_PICK_TYPES, LEGACY_LOOK_KEY, LOOK_MIGRATED_KEY, LOOK_MIGRATION_FRAME, LOOK_MIGRATION_VERSION, RETIRED_LOOK_KEYS, RETIRED_LOOK_PREFIXES, foldLegacyPicks, isFoldedPickType, isRetiredLookKey, legacyLookSettings, legacyPicks, legacyThemesInForce, lookMigrated, lookNeedsMigration, migrateLook, migrateLookSettings, parseLegacyLook, resolveLegacyLook, settingsNeedMigration } from './look-migration.mjs';
 export type { FoldContext, FoldReason, FoldReport, FoldSkin, LegacyLookBackup } from './look-migration.mjs';
 // named, not `export *`: tsx links a star re-export of a .mjs module as empty when the importer is a .mts file
-export { COVERAGE_KINDS, PART_ELEMENTS, SKIN_COVERAGE_CONTRACT, SKIN_SCOPE_APP, SKIN_SCOPE_DEFAULT, SKIN_SCOPE_GLOBAL, SKIN_SCOPE_KINDS, coverageOf, coverageSummary, coverageTable, declarationErrors, declaredCoverage, isSubScopeKey, normalizeSkinScope, partElements, partsErrors, partsTypes, resolveSkinChain, skinScopeChain, skinScopeDomId, skinScopeKey, skinScopeKind, skinScopeOf, skinScopeSelector, uncoveredTypes } from './skin-coverage.mjs';
-export type { CoverageKind, CoverageRow, CoverageSummary, PartElement, ResolvedSkin, SkinScope, SkinScopeKind, SkinScopeState, StyleTargets, TypeSpecs } from './skin-coverage.mjs';
+export { COVERAGE_KINDS, GRID_ROW_LINES_FIELD, PART_ELEMENTS, SKIN_COVERAGE_CONTRACT, SKIN_SCOPE_APP, SKIN_SCOPE_DEFAULT, SKIN_SCOPE_GLOBAL, SKIN_SCOPE_KINDS, normalizeRowLines, rowLinesCoverage, coverageOf, coverageSummary, coverageTable, declarationErrors, declaredCoverage, isSubScopeKey, normalizeSkinScope, partElements, partsErrors, partsTypes, resolveSkinChain, skinScopeChain, skinScopeDomId, skinScopeKey, skinScopeKind, skinScopeOf, skinScopeSelector, uncoveredTypes } from './skin-coverage.mjs';
+export type { CoverageKind, CoverageRow, CoverageSummary, GridRowLines, PartElement, ResolvedSkin, RowLinesCoverage, SkinScope, SkinScopeKind, SkinScopeState, StyleTargets, TypeSpecs } from './skin-coverage.mjs';
 
 export const SKIN_TYPE = 'skin';
 export const SKIN_FRAME = 'skin@1';
@@ -60,6 +62,10 @@ export const SHARED_SETTING_PREFIXES: readonly string[] = ['axf.tokens.'];
 export const SKIN_ICON_PACK_KEY = (scopeKey: string): string => `axf.icons.pack.${scopeKey}`;
 
 export interface SkinExtras { spacing?: string; hidden?: Record<string, boolean>; settings?: Record<string, unknown> }
+/** The grid block of a skin (skin@1 `grid`): `rowLines` = lines per collapsed grid row, 1 | 2 (absent = the style theme's, else 2). */
+export interface SkinGrid { rowLines?: GridRowLines }
+/** The control@1 tokens.style setting the composed look carries the skin's grid.rowLines in (the runtime reads it like every token override). */
+export const STYLE_TOKENS_KEY: string = CONTROL_TOKEN_SLOTS['tokens.style'].key;
 export interface SkinData {
   layoutTheme: string;
   colorTheme: string;
@@ -76,6 +82,13 @@ export interface SkinData {
   preview?: { caption?: string; image?: string };
   /** Spacing and chrome the skin needs shown or hidden. */
   extras?: SkinExtras;
+  /**
+   * Every grid under this skin (build every-grid-1-2-rows-per-item-set-skin; Brett: "every grid supposed to be 1 or 2
+   * rows depending on the skin"): `rowLines` 1 | 2. Lands in the composed look as the tokens.style override
+   * `grid.rowLines` → --fx-grid-row-lines + data-axf-row-lines (component-tokens@1, grid-rows@1). A level of the chain
+   * may pick 1 or 2 inside the skin (`rowLines` beside `colorTheme`), the child overriding the parent.
+   */
+  grid?: SkinGrid;
   /**
    * Chrome settings per chrome kind (chrome-settings@1: tab-group, toolbar, banner, nav-menu, app-menu, context-menu):
    * the settings interface its dialog renders through and field overrides per instance (skin-rules.mjs `SkinChrome`).
@@ -153,7 +166,21 @@ export function normalizeSkin(raw: unknown): SkinData {
   }
   const chrome = normalizeSkinChrome(d.chrome);
   if (Object.keys(chrome).length) out.chrome = chrome;
+  const grid = normalizeSkinGrid(d.grid);
+  if (grid) out.grid = grid;
   return out;
+}
+
+/** skin@1 `grid`: `{ rowLines: 1 | 2 }` or null when it names nothing valid. */
+export function normalizeSkinGrid(raw: unknown): SkinGrid | null {
+  if (!isObj(raw)) return null;
+  const rowLines = normalizeRowLines(raw.rowLines);
+  return rowLines ? { rowLines } : null;
+}
+
+/** The lines per grid row a skin asks for on its own (0 = it leaves it to the style theme). */
+export function skinGridRowLines(skin: Pick<SkinData, 'grid'> | null | undefined): GridRowLines | 0 {
+  return normalizeRowLines(skin?.grid?.rowLines);
 }
 
 /** Validation messages for a skin's data (validators call it for type `skin`). */
@@ -180,6 +207,10 @@ export function skinErrors(raw: unknown): string[] {
     }
   }
   errors.push(...skinChromeErrors(raw.chrome));
+  if ('grid' in raw) {
+    if (!isObj(raw.grid)) errors.push('data.grid must be an object ({ rowLines: 1 | 2 })');
+    else if ('rowLines' in raw.grid && !normalizeRowLines(raw.grid.rowLines)) errors.push('data.grid.rowLines must be 1 or 2 (lines per collapsed grid row)');
+  }
   return errors;
 }
 
@@ -196,6 +227,8 @@ export function skinFromDesignPackage(raw: unknown): SkinData {
   const skin: SkinData = { layoutTheme: p.layout, colorTheme: p['color-theme'], styleTheme: p['style-theme'], assets };
   const x = p.extras;
   if (x && (x.spacing || x.hidden || x.settings)) skin.extras = { ...(x.spacing ? { spacing: x.spacing } : {}), ...(x.hidden ? { hidden: x.hidden } : {}), ...(x.settings ? { settings: x.settings } : {}) };
+  const grid = normalizeSkinGrid(x?.grid);
+  if (grid) skin.grid = grid;
   return skin;
 }
 
@@ -242,7 +275,8 @@ export function globalSkinOf(shared: AppearanceDocument | null | undefined): Glo
   // a document saved before the colour theme had its own field kept the pick among the overrides
   const pick = typeof s.colorTheme === 'string' && ID.test(s.colorTheme) ? s.colorTheme : overrides[SKIN_COLOR_SLOT] ?? '';
   delete overrides[SKIN_COLOR_SLOT];
-  return pick ? { id: s.id, overrides, colorTheme: pick } : { id: s.id, overrides };
+  const rowLines = normalizeRowLines(s.rowLines);
+  return { id: s.id, overrides, ...(pick ? { colorTheme: pick } : {}), ...(rowLines ? { rowLines } : {}) };
 }
 
 /**
@@ -259,8 +293,8 @@ export function skinColorOf(skin: SkinData | null, resolved: { colorTheme?: stri
 export function hubDefaultOf(shared: AppearanceDocument | null | undefined): GlobalSkin | null {
   const p = normalizeHubSkin((shared as { defaultSkin?: unknown } | null | undefined)?.defaultSkin);
   if (!p) return null;
-  // the same shape as globalSkinOf: overrides always present, colorTheme only when picked
-  return p.colorTheme ? { id: p.id, overrides: p.overrides ?? {}, colorTheme: p.colorTheme } : { id: p.id, overrides: p.overrides ?? {} };
+  // the same shape as globalSkinOf: overrides always present, colorTheme / rowLines only when picked
+  return { id: p.id, overrides: p.overrides ?? {}, ...(p.colorTheme ? { colorTheme: p.colorTheme } : {}), ...(p.rowLines ? { rowLines: p.rowLines } : {}) };
 }
 
 /**
@@ -268,17 +302,20 @@ export function hubDefaultOf(shared: AppearanceDocument | null | undefined): Glo
  * overrides merged, and the colour theme the nearest of them picked ('' = none). Used when the floor decides, where the
  * app's own picks must sit between the hub default and these.
  */
-function subScopeAdds(look: AppLookDocument, scope: Partial<SkinScope> | null | undefined): { overrides: Record<string, string>; colorTheme: string } {
+function subScopeAdds(look: AppLookDocument, scope: Partial<SkinScope> | null | undefined): FloorAdds {
   const overrides: Record<string, string> = {};
   let colorTheme = '';
+  let rowLines: GridRowLines | 0 = 0;
   for (const key of skinScopeChain({ ...scope, app: look.app }).filter(isSubScopeKey).reverse()) {
     const st = look.scopes?.[key];
     if (!st || st.use === 'off') continue;
     Object.assign(overrides, st.overrides);
     if (st.colorTheme) colorTheme = st.colorTheme;
+    if (normalizeRowLines(st.rowLines)) rowLines = normalizeRowLines(st.rowLines);
   }
-  return { overrides, colorTheme };
+  return { overrides, colorTheme, rowLines };
 }
+interface FloorAdds { overrides: Record<string, string>; colorTheme: string; rowLines: GridRowLines | 0 }
 
 /**
  * The document for a look with `skin` on (or none) and `overrides` over it; `scopeKey` names where the icon pack lands;
@@ -290,7 +327,7 @@ function subScopeAdds(look: AppLookDocument, scope: Partial<SkinScope> | null | 
  * overrides and colour theme (`floor.overrides`, `floor.colorTheme`). Without `floor` the order is the one every skin
  * has had: snapshot + own picks → the skin → the chain's overrides → the colour theme picked inside the skin.
  */
-function composeWith(shared: AppearanceDocument | null, look: AppLookDocument, skin: SkinData | null, overrides: Record<string, string>, scopeKey: string, colorTheme = '', floor: { overrides: Record<string, string>; colorTheme: string } | null = null): AppearanceDocument {
+function composeWith(shared: AppearanceDocument | null, look: AppLookDocument, skin: SkinData | null, overrides: Record<string, string>, scopeKey: string, colorTheme = '', floor: FloorAdds | null = null, rowLines: GridRowLines | 0 = 0): AppearanceDocument {
   const slots = { ...look.default.slots, ...(floor ? {} : look.own.slots) };
   const hidden = { ...look.default.hidden, ...(floor ? {} : look.own.hidden) };
   let spacing = (floor ? undefined : look.own.spacing) ?? look.default.spacing;
@@ -311,6 +348,9 @@ function composeWith(shared: AppearanceDocument | null, look: AppLookDocument, s
       if (look.own.spacing) spacing = look.own.spacing;
       Object.assign(settings, look.own.settings);
     }
+    // grid rows: the chain's pick (nearest level) over the skin's own grid.rowLines, as the tokens.style override the runtime reads
+    const lines = (floor?.rowLines || rowLines || skinGridRowLines(skin)) as GridRowLines | 0;
+    if (lines) settings[STYLE_TOKENS_KEY] = withTokenOverride(settings[STYLE_TOKENS_KEY], GRID_ROW_LINES_FIELD, lines);
     // the design package's precedence rule must not take the skin's themes back
     settings[DESIGN_OVERRIDES_KEY] = { 'style-theme': slots['style-theme'], 'color-theme': slots['color-theme'] };
   }
@@ -328,7 +368,7 @@ function composeWith(shared: AppearanceDocument | null, look: AppLookDocument, s
  */
 export function composeLook(shared: AppearanceDocument | null, look: AppLookDocument, skin: SkinData | null): AppearanceDocument {
   const on = look.skin.use && !!skin;
-  return composeWith(shared, look, on ? skin : null, on ? look.skin.overrides : {}, 'app', on ? look.skin.colorTheme : '');
+  return composeWith(shared, look, on ? skin : null, on ? look.skin.overrides : {}, 'app', on ? look.skin.colorTheme : '', null, on ? normalizeRowLines(look.skin.rowLines) : 0);
 }
 
 /**
@@ -343,10 +383,10 @@ export function composeLookAt(shared: AppearanceDocument | null, look: AppLookDo
   const skin = resolved.id ? skinOf(resolved.id) : null;
   const scopeKey = skinScopeKey(scope ?? null);
   if (skin && resolved.from === SKIN_SCOPE_DEFAULT && hubDefault) {
-    const doc = composeWith(shared, look, skin, hubDefault.overrides ?? {}, scopeKey, hubDefault.colorTheme ?? '', subScopeAdds(look, scope));
+    const doc = composeWith(shared, look, skin, hubDefault.overrides ?? {}, scopeKey, hubDefault.colorTheme ?? '', subScopeAdds(look, scope), normalizeRowLines(hubDefault.rowLines));
     return { doc, parts: skin.parts ?? {}, skin: resolved, scopeKey };
   }
-  return { doc: composeWith(shared, look, skin, skin ? resolved.overrides : {}, scopeKey, skin ? resolved.colorTheme : ''), parts: skin?.parts ?? {}, skin: skin ? resolved : { id: '', overrides: resolved.overrides, from: resolved.from }, scopeKey };
+  return { doc: composeWith(shared, look, skin, skin ? resolved.overrides : {}, scopeKey, skin ? resolved.colorTheme : '', null, skin ? normalizeRowLines(resolved.rowLines) : 0), parts: skin?.parts ?? {}, skin: skin ? resolved : { id: '', overrides: resolved.overrides, from: resolved.from }, scopeKey };
 }
 
 /**

@@ -18,7 +18,7 @@
 import { readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { COVERAGE_KINDS, SKIN_SCOPE_DEFAULT, SKIN_SCOPE_KINDS, coverageSummary, coverageTable, declarationErrors, partsTypes, skinScopeChain } from '../core/engines/skin-coverage.mjs';
+import { COVERAGE_KINDS, SKIN_SCOPE_DEFAULT, SKIN_SCOPE_KINDS, coverageSummary, coverageTable, declarationErrors, partsTypes, rowLinesCoverage, skinScopeChain } from '../core/engines/skin-coverage.mjs';
 import { SKIN_NEVER, normalizeSkinChrome, skinChromeErrors } from '../core/engines/skin-rules.mjs';
 import { CHROME_TYPES } from '../core/engines/chrome-settings-rules.mjs';
 
@@ -55,14 +55,20 @@ const chromeOk = Object.keys(normalizeSkinChrome({ toolbar: { interface: 'chrome
 if (JSON.stringify(chromeOk) !== JSON.stringify(['toolbar'])) problems.push('normalizeSkinChrome must keep chrome-settings@1 kinds only');
 if (!skinChromeErrors({ nope: {} }).length) problems.push('skinChromeErrors must refuse a kind outside chrome-settings@1');
 
+// grid.rowLines (build every-grid-1-2-rows-per-item-set-skin): the grids are not a type; the skin's rows setting rides the
+// roots whose customize token `rowLines` names them and the root hook. It must reach at least one slot type.
+const rowLines = rowLinesCoverage(customize);
+if (!rowLines.types.length) problems.push('customize token rowLines names no type: skin.grid.rowLines would reach no grid (schemas/customize.json)');
+for (const t of rowLines.types) { const row = rows.find((r) => r.type === t); if (!row || row.by === 'uncovered') problems.push(`rowLines root "${t}" is not a covered asset type`); }
 const summary = coverageSummary(rows);
 if (json) {
-  console.log(JSON.stringify({ ok: problems.length === 0, summary, problems, rows, partsTypes: partsTypes(spec, targets) }));
+  console.log(JSON.stringify({ ok: problems.length === 0, summary, problems, rows, partsTypes: partsTypes(spec, targets), rowLines }));
 } else {
   if (!quiet) {
     const w = Math.max(...rows.map((r) => r.type.length));
     for (const r of rows) console.log(`  ${r.type.padEnd(w)}  ${r.by.padEnd(10)}${r.also.length ? `+${r.also.join('+')}` : '          '}  ${r.elements.length ? r.elements.join('/') : '-'}${r.declared ? '  (declared)' : ''}${r.via ? `  via ${r.via}` : ''}`);
   }
+  if (!quiet) console.log(`  grid rows (${rowLines.field} → ${rowLines.var}, ${rowLines.attr}): ${rowLines.values.join(' | ')} lines, through ${rowLines.types.join(', ')} → ${rowLines.elements.join('/')}`);
   console.log(`check-skin-coverage: ${summary.total} types · slot ${summary.slot} · parts ${summary.parts} · reference ${summary.reference} · bundle ${summary.bundle} · none ${summary.none} · uncovered ${summary.uncovered}`);
   for (const p of problems) console.error(`  ✗ ${p}`);
 }

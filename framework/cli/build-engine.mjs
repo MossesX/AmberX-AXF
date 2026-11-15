@@ -137,6 +137,7 @@ export function validateAsset(raw) {
         else if (typeof id !== 'string' || !ID.test(id)) errors.push(`data.extras.slots.${t} must be an asset id`);
       }
       if ('spacing' in x && !['tight', 'compact', 'regular'].includes(x.spacing)) errors.push('data.extras.spacing must be tight, compact or regular');
+      if ('grid' in x && (!isObj(x.grid) || ('rowLines' in x.grid && ![1, 2].includes(x.grid.rowLines)))) errors.push('data.extras.grid.rowLines must be 1 or 2 (lines per collapsed grid row)');
     }
   }
   // style-package@1 — mirrors stylePackageErrors in core/engines/stylepackage.ts (check-style-packages.mts keeps them equal)
@@ -850,6 +851,7 @@ function skinSchemaProperties() {
     colorThemes: { type: 'object', description: "The skin's light and dark colour themes (skin-modes@1); colorTheme is one of the two.", required: ['light', 'dark'], properties: { light: id, dark: id } },
     behaviorTheme: id,
     chrome: { type: 'object', description: 'Chrome settings the skin puts in force per chrome-settings@1 kind; lands in the composed look\'s settings after extras.settings.', properties: fields, additionalProperties: false },
+    grid: { type: 'object', description: 'Every grid under this skin: rowLines = lines per collapsed item, 1 (primary + secondary inline, truncated) or 2 (primary, then secondary); default 2. Compiles to --fx-grid-row-lines and the root hook data-axf-row-lines (component-tokens@1 grid.rowLines, grid-rows@1).', properties: { rowLines: { enum: [1, 2] } }, additionalProperties: false },
   };
 }
 

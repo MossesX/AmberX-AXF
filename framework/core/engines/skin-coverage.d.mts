@@ -17,9 +17,11 @@ export type SkinScopeKind = 'default' | 'global' | 'app' | 'ui' | 'plugin';
 export interface SkinScope { app: string; ui: string; plugin: string }
 /** One level's skin state: on with a skin, off, or inherit from the parent level. */
 /** `colorTheme` = the colour theme picked inside the skin at this level (absent = the skin's own). */
-export interface SkinScopeState { use: 'on' | 'off' | 'inherit'; id: string; overrides: Record<string, string>; colorTheme?: string }
+export type GridRowLines = 1 | 2;
+export interface SkinScopeState { use: 'on' | 'off' | 'inherit'; id: string; overrides: Record<string, string>; colorTheme?: string; rowLines?: GridRowLines }
 /** `colorTheme` = the colour theme picked inside the skin by the nearest level that has one (absent = the skin's own). */
-export interface ResolvedSkin { id: string; overrides: Record<string, string>; from: string; colorTheme?: string }
+export interface ResolvedSkin { id: string; overrides: Record<string, string>; from: string; colorTheme?: string; rowLines?: GridRowLines }
+export interface RowLinesCoverage { field: 'grid.rowLines'; token: 'rowLines'; var: string; attr: string; values: GridRowLines[]; types: string[]; elements: ['items'] }
 
 export interface CoverageRow {
   type: string;
@@ -48,6 +50,9 @@ export function skinScopeOf(key: string, app?: string): SkinScope;
 export function skinScopeDomId(key: string): string;
 export function skinScopeSelector(key: string): string;
 export function resolveSkinChain(chain: readonly string[], stateOf: (key: string) => Partial<SkinScopeState> | null | undefined): ResolvedSkin;
+export const GRID_ROW_LINES_FIELD: 'grid.rowLines';
+export function normalizeRowLines(raw: unknown): GridRowLines | 0;
+export function rowLinesCoverage(customize: unknown): RowLinesCoverage;
 
 export function declaredCoverage(typeSpec: unknown): { by: CoverageKind | ''; via: string; why: string } | null;
 export function declarationErrors(type: string, typeSpec: unknown): string[];

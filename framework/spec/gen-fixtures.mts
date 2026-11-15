@@ -6,7 +6,7 @@
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
-import { adoptHubDefault, backToSkin, backupLook, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, hubDefaultOf, hubOnlyLook, lookAfterChange, lookBackup, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, overriddenSlots, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, restoreLookBackup, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinChromeErrors, skinChromeSettings, skinColorOf, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
+import { adoptHubDefault, backToSkin, backupLook, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, hubDefaultOf, hubOnlyLook, lookAfterChange, lookBackup, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, overriddenSlots, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, restoreLookBackup, rowLinesCoverage, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setSkinRowLines, setUseSkin, skinRowLines, STYLE_TOKENS_KEY, skinChromeErrors, skinChromeSettings, skinColorOf, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
 import { foldLegacyPicks, legacyPicks, lookNeedsMigration, migrateLook, migrateLookSettings, parseLegacyLook, settingsNeedMigration } from '../core/engines/look-migration.mjs';
 import { SKIN_SWITCH_ACTIONS, SKIN_SWITCH_CONTRACT, SKIN_SWITCH_ERRORS, SKIN_SWITCH_HUB, SKIN_SWITCH_SCOPES, normalizeSkinSwitch, parseSwitchScope, skinSwitch, skinSwitchState, switchScopeOf, switchScopes } from '../core/engines/skin-switch.mjs';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
@@ -2099,6 +2099,46 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
           unknown: composeLookAt(shared as never, setUseSkin(pickSkin(look0, 'nope'), true), skinOf),
         },
         doc: { pluginOn, dropped: setScopeSkin(pluginOn, 'plugin:notes', 'inherit', ''), entries: scopeEntries(chainOver), state: scopeState(chainOver, 'plugin:notes'), appState: scopeState(inherit, 'app'), roundTrip: parseAppLook(JSON.stringify(chainOver)), restored: restoreAppDefault(chainOver, '2026-11-07T00:00:00Z').scopes, undone: undoRestore(restoreAppDefault(chainOver, '2026-11-07T00:00:00Z')).scopes },
+        // grid.rowLines (build every-grid-1-2-rows-per-item-set-skin): the skin's own, then hub → app → ui → plugin picks, child over parent
+        rowLines: (() => {
+          const dense = normalizeSkin({ ...skin, grid: { rowLines: 1 } });
+          const skinOf2 = (id: string) => (id === 'dense' ? dense : skins[id] ?? null);
+          const appOn = setUseSkin(pickSkin(look0, 'dense'), true);
+          const appPick = setSkinRowLines(appOn, 2);
+          const uiPick = setSkinRowLines(appPick, 1, 'ui:home');
+          const pluginPick = setSkinRowLines(uiPick, 2, 'plugin:notes');
+          const hubPointer = { ...shared, skin: { id: 'aurora', overrides: {}, rowLines: 1 } };
+          const floorPointer = { ...shared, defaultSkin: { id: 'dense', rowLines: 2 } };
+          const styleKey = STYLE_TOKENS_KEY;
+          return {
+            normalize: { dense: dense.grid, junk: normalizeSkin({ ...skin, grid: { rowLines: 3 } }).grid ?? null, text: normalizeSkin({ ...skin, grid: { rowLines: '1' } }).grid },
+            errors: { good: skinErrors({ ...skin, grid: { rowLines: 2 } }), bad: skinErrors({ ...skin, grid: { rowLines: 7 } }), notObject: skinErrors({ ...skin, grid: 1 }) },
+            fromPackage: skinFromDesignPackage({ 'style-theme': 's', 'color-theme': 'c', layout: 'l', 'behavior-theme': 'b', extras: { grid: { rowLines: 1 } } }).grid,
+            picks: { app: skinRowLines(appPick), ui: skinRowLines(uiPick, 'ui:home'), plugin: skinRowLines(pluginPick, 'plugin:notes'), none: skinRowLines(appOn), cleared: skinRowLines(setSkinRowLines(appPick, 0)), otherSkinDrops: skinRowLines(pickSkin(appPick, 'windows')) },
+            resolve: {
+              skinOwn: resolveLookSkin(appOn, null, place),
+              appPick: resolveLookSkin(appPick, null, { app: 'app' }),
+              uiPick: resolveLookSkin(uiPick, null, { app: 'app', ui: 'home' }),
+              pluginPick: resolveLookSkin(pluginPick, null, place),
+              pluginInheritsUi: resolveLookSkin(uiPick, null, place),
+              hubPointer: resolveLookSkin(setInheritSkin(look0, true), globalSkinOf(hubPointer as never), place),
+              appOverHub: resolveLookSkin(setSkinRowLines(setInheritSkin(look0, true), 2), globalSkinOf(hubPointer as never), place),
+              floor: resolveLookSkin(look0, null, place, hubDefaultOf(floorPointer as never)),
+              floorPluginWins: resolveLookSkin(setSkinRowLines(look0, 1, 'plugin:notes'), null, place, hubDefaultOf(floorPointer as never)),
+            },
+            composed: {
+              skinOwn: composeLookAt(shared as never, appOn, skinOf2).doc.settings[styleKey],
+              appPick: composeLookAt(shared as never, appPick, skinOf2).doc.settings[styleKey],
+              pluginPick: composeLookAt(shared as never, pluginPick, skinOf2, place).doc.settings[styleKey],
+              noSkin: composeLookAt(shared as never, look0, skinOf2).doc.settings[styleKey] ?? null,
+              windowsSaysNothing: composeLookAt(shared as never, setUseSkin(pickSkin(look0, 'windows'), true), skinOf2).doc.settings[styleKey] ?? null,
+              floor: composeLookAt(floorPointer as never, look0, skinOf2).doc.settings[styleKey],
+              floorPluginWins: composeLookAt(floorPointer as never, setSkinRowLines(look0, 1, 'plugin:notes'), skinOf2, place).doc.settings[styleKey],
+              keepsOtherOverrides: composeLookAt({ ...shared, settings: { [styleKey]: { '*': { fontSize: 15 } } } } as never, appOn, skinOf2).doc.settings[styleKey],
+            },
+            coverage: rowLinesCoverage(JSON.parse(readFileSync(join(root, 'schemas/customize.json'), 'utf8'))),
+          };
+        })(),
         covers: skinCovers(skinned).filter((c) => ['button', 'label', 'icon-pack', 'uac-policy', 'skin', 'logo-mark', 'branding', 'toolbar'].includes(c.type)),
         globalSkin: { good: globalSkinOf(withGlobal as never), none: globalSkinOf(shared as never), junk: globalSkinOf({ $axf: 'appearance@1', skin: { id: 'Bad Id' } } as never) },
         // Skin from axHub only (build console-skin-axhub-only): an app with its own skin, an override, a colour pick and a

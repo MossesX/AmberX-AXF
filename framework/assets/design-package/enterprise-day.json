@@ -23,6 +23,9 @@
         "typography": "compact",
         "density": "compact",
         "sizing": "compact"
+      },
+      "grid": {
+        "rowLines": 1
       }
     }
   }

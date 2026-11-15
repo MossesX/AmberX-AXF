@@ -981,6 +981,144 @@
         }
       }
     },
+    "rowLines": {
+      "normalize": {
+        "dense": {
+          "rowLines": 1
+        },
+        "junk": null,
+        "text": {
+          "rowLines": 1
+        }
+      },
+      "errors": {
+        "good": [],
+        "bad": [
+          "data.grid.rowLines must be 1 or 2 (lines per collapsed grid row)"
+        ],
+        "notObject": [
+          "data.grid must be an object ({ rowLines: 1 | 2 })"
+        ]
+      },
+      "fromPackage": {
+        "rowLines": 1
+      },
+      "picks": {
+        "app": 2,
+        "ui": 1,
+        "plugin": 2,
+        "none": 0,
+        "cleared": 0,
+        "otherSkinDrops": 0
+      },
+      "resolve": {
+        "skinOwn": {
+          "id": "dense",
+          "overrides": {},
+          "from": "app"
+        },
+        "appPick": {
+          "id": "dense",
+          "overrides": {},
+          "from": "app",
+          "rowLines": 2
+        },
+        "uiPick": {
+          "id": "dense",
+          "overrides": {},
+          "from": "app",
+          "rowLines": 1
+        },
+        "pluginPick": {
+          "id": "dense",
+          "overrides": {},
+          "from": "app",
+          "rowLines": 2
+        },
+        "pluginInheritsUi": {
+          "id": "dense",
+          "overrides": {},
+          "from": "app",
+          "rowLines": 1
+        },
+        "hubPointer": {
+          "id": "aurora",
+          "overrides": {},
+          "from": "global",
+          "rowLines": 1
+        },
+        "appOverHub": {
+          "id": "aurora",
+          "overrides": {},
+          "from": "global",
+          "rowLines": 2
+        },
+        "floor": {
+          "id": "dense",
+          "overrides": {},
+          "from": "default",
+          "rowLines": 2
+        },
+        "floorPluginWins": {
+          "id": "dense",
+          "overrides": {},
+          "from": "default",
+          "rowLines": 1
+        }
+      },
+      "composed": {
+        "skinOwn": {
+          "*": {
+            "grid.rowLines": 1
+          }
+        },
+        "appPick": {
+          "*": {
+            "grid.rowLines": 2
+          }
+        },
+        "pluginPick": {
+          "*": {
+            "grid.rowLines": 2
+          }
+        },
+        "noSkin": null,
+        "windowsSaysNothing": null,
+        "floor": {
+          "*": {
+            "grid.rowLines": 2
+          }
+        },
+        "floorPluginWins": {
+          "*": {
+            "grid.rowLines": 1
+          }
+        },
+        "keepsOtherOverrides": {
+          "*": {
+            "fontSize": 15,
+            "grid.rowLines": 1
+          }
+        }
+      },
+      "coverage": {
+        "field": "grid.rowLines",
+        "token": "rowLines",
+        "var": "--fx-grid-row-lines",
+        "attr": "data-axf-row-lines",
+        "values": [
+          1,
+          2
+        ],
+        "types": [
+          "tab-group",
+          "container"
+        ],
+        "elements": [
+          "items"
+        ]
+      }
+    },
     "covers": [
       {
         "type": "toolbar",

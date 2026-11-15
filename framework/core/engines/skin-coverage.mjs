@@ -31,7 +31,33 @@
  * Plain JS shared by the TS engine (skin.ts), the build engine, the CLI and the console server. Pure.
  */
 
+import { GRID_ROW_LINES_ATTR, GRID_ROW_LINES_VALUES, GRID_ROW_LINES_VAR } from './component-tokens.mjs';
+
 export const SKIN_COVERAGE_CONTRACT = 'skin-coverage@1';
+/**
+ * grid.rowLines (build every-grid-1-2-rows-per-item-set-skin, Nov 15 2026; Brett: "every grid supposed to be 1 or 2 rows
+ * depending on the skin"): the one grid setting a skin carries (`skin.grid.rowLines`, 1 | 2) and every level of the chain
+ * may pick inside the skin (`rowLines` beside `colorTheme` on the app level, a `ui:` / `plugin:` scope, the hub-wide skin
+ * and the hub default pointer). The nearest level that picked wins (child over parent); none = the skin's own; no skin =
+ * the style theme's grid.rowLines, else 2. It lands in the composed look as the control@1 tokens.style override
+ * `grid.rowLines`, so the runtime compiles --fx-grid-row-lines and the root hook data-axf-row-lines from one place.
+ */
+export const GRID_ROW_LINES_FIELD = 'grid.rowLines';
+/** 1 | 2 for a valid pick (a number or its digit as text), 0 for none / junk. */
+export function normalizeRowLines(raw) {
+  const n = typeof raw === 'number' ? raw : typeof raw === 'string' && /^\d$/.test(raw.trim()) ? Number(raw) : NaN;
+  return GRID_ROW_LINES_VALUES.includes(n) ? n : 0;
+}
+/**
+ * How skin.grid.rowLines reaches the grid parts: the grids are not an asset type, so the setting rides the roots whose
+ * customize token `rowLines` names them (schemas/customize.json: the types carrying the token, derived, never listed
+ * here) and the root attribute hook; the elements it styles are the rows (`items`) of every grid under them.
+ */
+export function rowLinesCoverage(customize) {
+  const tokens = isObj(customize) && Array.isArray(customize.tokens) ? customize.tokens : [];
+  const tok = tokens.find((t) => isObj(t) && t.key === 'rowLines');
+  return { field: GRID_ROW_LINES_FIELD, token: 'rowLines', var: GRID_ROW_LINES_VAR, attr: GRID_ROW_LINES_ATTR, values: [...GRID_ROW_LINES_VALUES], types: tok && Array.isArray(tok.types) ? [...tok.types] : [], elements: ['items'] };
+}
 /** The ways a skin reaches a type, in the order a table lists them. */
 export const COVERAGE_KINDS = ['slot', 'parts', 'reference', 'bundle', 'none'];
 /** The elements a style target can reach (composite assets). */
@@ -119,8 +145,9 @@ export function skinScopeSelector(key) {
  * Walk a chain of per-level skin states and say which skin is in force at the leaf. Each state is
  * `{ use: 'on' | 'off' | 'inherit', id, overrides }` (a missing level reads as inherit); the first level from the leaf
  * that isn't `inherit` decides. Overrides of the deciding level and of every level nearer the leaf apply, the child's
- * over the parent's; so does the colour theme picked inside the skin (`colorTheme`, the nearest level that has one).
- * Result: `{ id, overrides, from }` (`from` = the deciding key), plus `colorTheme` when a level picked one, or
+ * over the parent's; so does the colour theme picked inside the skin (`colorTheme`, the nearest level that has one)
+ * and the grid rows pick (`rowLines`, 1 | 2, the nearest level that has one: hub → app → ui → plugin, child over parent).
+ * Result: `{ id, overrides, from }` (`from` = the deciding key), plus `colorTheme` / `rowLines` when a level picked one, or
  * `{ id: '', overrides: {}, from }` when that level says off, or `from: ''` when every level inherits.
  */
 export function resolveSkinChain(chain, stateOf) {
@@ -132,11 +159,13 @@ export function resolveSkinChain(chain, stateOf) {
     if (st.use !== 'on' || !st.id) return { id: '', overrides: {}, from: key };
     const overrides = {};
     let colorTheme = '';
+    let rowLines = 0;
     for (let i = seen.length - 1; i >= 0; i--) {
       Object.assign(overrides, seen[i].st.overrides ?? {});
       if (seen[i].st.colorTheme) colorTheme = seen[i].st.colorTheme;
+      if (normalizeRowLines(seen[i].st.rowLines)) rowLines = normalizeRowLines(seen[i].st.rowLines);
     }
-    return colorTheme ? { id: st.id, overrides, from: key, colorTheme } : { id: st.id, overrides, from: key };
+    return { id: st.id, overrides, from: key, ...(colorTheme ? { colorTheme } : {}), ...(rowLines ? { rowLines } : {}) };
   }
   return { id: '', overrides: {}, from: '' };
 }

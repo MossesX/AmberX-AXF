@@ -26,9 +26,9 @@ export interface LookMigrated { version: number; at: string; by: string; /** pic
 /** A look: what a snapshot holds and what picks add. */
 export interface LookPart { slots?: Record<string, string>; spacing?: string; hidden?: Record<string, boolean>; settings?: Record<string, unknown> }
 /** The app level: Use skin, follow the hub-wide skin while off, the skin, its overrides, and the colour theme picked inside it (absent = the skin's own; never an override, never a new skin). */
-export interface AppSkinState { use: boolean; inherit: boolean; id: string; overrides: Record<string, string>; colorTheme?: string }
+export interface AppSkinState { use: boolean; inherit: boolean; id: string; overrides: Record<string, string>; colorTheme?: string; rowLines?: 1 | 2 }
 /** The hub-wide skin (kept on the shared appearance document). */
-export interface GlobalSkin { id: string; overrides?: Record<string, string>; colorTheme?: string }
+export interface GlobalSkin { id: string; overrides?: Record<string, string>; colorTheme?: string; rowLines?: 1 | 2 }
 /** The one undo record: the look before the last Restore or skin switch (skin-switch@1: `action`, `scope`, and `global` for a hub switch). */
 export interface LookUndo { own: LookPart; skin: AppSkinState; scopes: Record<string, SkinScopeState>; at: string; action?: string; scope?: string; global?: GlobalSkin | null }
 /** One backup taken before the app was moved onto the hub default skin: what it drew, named for Restore from backup. */
@@ -88,6 +88,8 @@ export function adoptHubDefault(look: AppLookDocument, meta: { at: string; by?: 
 /** Put a backup's own picks, skin state and scopes back (the newest when `id` is empty); backups kept, one undo. */
 export function restoreLookBackup(look: AppLookDocument, id: string | null | undefined, at: string): AppLookDocument;
 export function scopeState(look: AppLookDocument, key: string): SkinScopeState | null;
+export function setSkinRowLines(look: AppLookDocument, lines: number | null | undefined, key?: string): AppLookDocument;
+export function skinRowLines(look: AppLookDocument | null | undefined, key?: string): 1 | 2 | 0;
 export function setScopeSkin(look: AppLookDocument, key: string, use: 'on' | 'off' | 'inherit', id?: string): AppLookDocument;
 export function setScopeOverride(look: AppLookDocument, key: string, slot: string, id: string | null): AppLookDocument;
 export function scopeEntries(look: AppLookDocument | null): ({ key: string } & SkinScopeState)[];
