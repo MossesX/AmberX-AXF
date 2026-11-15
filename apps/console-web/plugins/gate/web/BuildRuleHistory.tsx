@@ -1,7 +1,8 @@
 /**
  * One build rule's History panel, under its row in the Build rules tab: the rule's full text, its last check / fix runs
  * (build-rule-run@1, GET build-rules/runs?id=) and every change to it (build-rule-history@1, GET build-rules/history?id=).
- * Deep link: console_show view:gate/tab:gate.tabs=build-rules + action gate.build-rules.open:<id>.
+ * Deep links: console_show view:gate/tab:gate.tabs=build-rules/panel:<id>.history (opens it), action
+ * gate.build-rules.open:<id>; its Edit button is `…/panel:<id>/button:edit` (data-axf-target).
  */
 import { useEffect, useState } from 'react';
 import { Button, Chip } from '@console/axf/react';
@@ -24,7 +25,7 @@ export function BuildRuleHistory({ rule, onEdit }: { rule: BuildRule; onEdit: ()
       <div className="axp-gate__fields">
         <p>{rule.text}</p>
         <p className="axp-gate__sub">{rule.doer === 'vps' ? 'The VPS does it' : `The session reads it in its brief (${rule.briefBlock})`}{rule.check ? ` · check ${rule.check}` : ''}{rule.autofix ? ` · fixer ${rule.autofix}` : ''}{rule.note ? ` · ${rule.note}` : ''}</p>
-        <div className="axp-gate__bar" role="toolbar" aria-label={`${rule.title}: actions`}><Button icon="edit" onClick={onEdit}>Edit</Button></div>
+        <div className="axp-gate__bar" role="toolbar" aria-label={`${rule.title}: actions`}><span data-axf-target="button:edit"><Button icon="edit" onClick={onEdit}>Edit</Button></span></div>
       </div>
       <div className="axp-gate__fields">
         <p className="axp-gate__label">Runs</p>

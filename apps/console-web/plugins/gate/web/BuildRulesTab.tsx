@@ -2,8 +2,12 @@
  * Build rules tab (build-rules@1, framework/spec/BUILD-RULES.md): every rule a build follows, who does it (the VPS or the
  * session), its kind, phase, on/off and last run, in a DataGrid (`grid:gate.build-rules`, a row per rule:
  * `grid:gate.build-rules/row:<rule>`, drawn by the DataGrid). A row opens its History panel; Edit opens the rule dialog.
- * console-control@1: `view:gate/tab:build-rules`, `…/setting:<rule>.enabled` (state = on/off, set = switch),
- * `setting:build-rules.doer | phase | q` (the filters). Every change goes through the REST routes the CLI, MCP and voice use.
+ * console-control@1 (all under `view:gate/tab:gate.tabs=build-rules`, the TabGroup's own tab address, so a deep link opens
+ * the tab first): `setting:<rule>.enabled` (state = on/off, set = switch, open = its History), `panel:<rule>.history`
+ * (open = the History panel, state = the rule and its last run), `setting:build-rules.doer | phase | q` (the filters),
+ * `grid:gate.build-rules/row:<rule>` (the DataGrid's rows). Deep links: console_show view:gate/tab:gate.tabs=build-rules,
+ * …/setting:home-card.enabled, …/panel:home-card.history; console_open gate; action gate.build-rules.open:<rule>.
+ * Every change goes through the REST routes the CLI, MCP and voice use.
  */
 import { useEffect, useMemo, useState } from 'react';
 import { Chip, ControlScope, IconButton, Switch, useControlTargets, useRuntime, type ControlTargetDef } from '@console/axf/react';
@@ -56,7 +60,14 @@ export function BuildRulesTab({ refreshSec }: { refreshSec: number }) {
     { address: 'setting:build-rules.doer', kind: 'setting', label: 'Build rules: who does it filter', keywords: ['build rules', 'doer', 'vps', 'session'], get: () => filter.doer, set: (v: unknown) => setFilter((f) => ({ ...f, doer: String(v ?? '') })) },
     { address: 'setting:build-rules.phase', kind: 'setting', label: 'Build rules: phase filter', keywords: ['build rules', 'phase'], get: () => filter.phase, set: (v: unknown) => setFilter((f) => ({ ...f, phase: String(v ?? '') })) },
     { address: 'setting:build-rules.q', kind: 'setting', label: 'Build rules: search', keywords: ['build rules', 'search'], get: () => filter.q, set: (v: unknown) => setFilter((f) => ({ ...f, q: String(v ?? '') })) },
-    ...rules.map((r): ControlTargetDef => ({ address: `setting:${r.id}.enabled`, kind: 'setting', label: `${r.title}: on / off`, detail: `${r.doer === 'vps' ? 'VPS' : 'session'}, ${r.phase}, last ${r.last?.result ?? 'not run'}`, keywords: ['build rule', r.id, r.doer], get: () => r.enabled, set: (v: unknown) => toggle(r, v === true || v === 'on' || v === 'true'), open: () => toggleOpen(r.id) })),
+    ...rules.flatMap((r): ControlTargetDef[] => {
+      const el = () => document.querySelector(`[data-axf-build-rule="${r.id}"]`);
+      const show = () => setOpen((o) => (o.includes(r.id) ? o : [...o, r.id]));
+      return [
+        { address: `setting:${r.id}.enabled`, kind: 'setting', label: `${r.title}: on / off`, detail: `${r.doer === 'vps' ? 'VPS' : 'session'}, ${r.phase}, last ${r.last?.result ?? 'not run'}`, keywords: ['build rule', r.id, r.doer], element: el, get: () => r.enabled, set: (v: unknown) => toggle(r, v === true || v === 'on' || v === 'true'), open: show },
+        { address: `panel:${r.id}.history`, kind: 'panel', label: `${r.title}: History`, keywords: ['build rule', 'history', r.id], element: el, open: show, get: () => ({ id: r.id, title: r.title, doer: r.doer, kind: r.kind, phase: r.phase, enabled: r.enabled, check: r.check, autofix: r.autofix, last: r.last ?? null }) },
+      ];
+    }),
   ], [rules, filter]); // eslint-disable-line react-hooks/exhaustive-deps
   useControlTargets(targets, `${JSON.stringify(filter)}|${rules.map((r) => `${r.id}:${r.enabled}:${r.last?.result ?? ''}`).join('|')}`);
 
@@ -69,7 +80,7 @@ export function BuildRulesTab({ refreshSec }: { refreshSec: number }) {
     { id: 'phase', label: 'When', width: 'calc(var(--fx-space) * 26)', sortable: true, sortValue: (r) => r.phase, render: (r) => <span>{PHASE_LABEL[r.phase] ?? r.phase}</span> },
     { id: 'last', label: 'Last result', width: 'calc(var(--fx-space) * 24)', sortable: true, sortValue: (r) => r.last?.at ?? '', render: (r) => (r.last ? <Chip tone={resultTone(r.last.result)}>{r.last.result}</Chip> : <span className="axp-gate__sub">not run</span>) },
     { id: 'enabled', label: 'On', width: 'calc(var(--fx-space) * 24)', render: (r) => (
-      <span className="axp-gate__cell axp-gate__cell--row">
+      <span className="axp-gate__cell axp-gate__cell--row" data-axf-build-rule={r.id}>
         <Switch label={`${r.title}: on / off`} hideLabel checked={r.enabled} disabled={busy === r.id} onChange={(v) => void toggle(r, v)} />
         <IconButton icon="edit" label={`Edit ${r.title}`} onClick={(e) => { e.stopPropagation(); edit(r.id); }} />
       </span>
@@ -77,7 +88,7 @@ export function BuildRulesTab({ refreshSec }: { refreshSec: number }) {
   ];
 
   return (
-    <ControlScope address="tab:build-rules">
+    <ControlScope address="tab:gate.tabs=build-rules">
       <BuildRulesToolbar filter={filter} onFilter={setFilter} counts={data?.counts} source={data?.source} onChanged={reload} />
       {error && <p className="axp-gate__err" role="alert">{error}</p>}
       <GateList<BuildRule>
