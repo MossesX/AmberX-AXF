@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6107,
- "updatedAt": "2026-11-15T12:21:04.045Z",
+ "rev": 6108,
+ "updatedAt": "2026-11-15T12:21:10.513Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -229816,7 +229816,7 @@
    "title": "Move build orchestrator to axHub",
    "category": "",
    "detail": "Move the entire build orchestrator (queue, pending, splitter, dispatcher/pipeline tick, reconciler, slots, accounts, builds store, notes, steps, landing) out of the console plugin and into axHub (MossesX/axHub), running on the VPS, so builds are managed whether the console is up or not. Staged so nothing breaks mid-flight: (1) Run AFTER auto-lander-controls-in-the-gate-plugin lands (gate + merge queue already in axHub). (2) Stand up the axHub orchestrator service reading the SAME builds store (_claude/builds/*), in shadow mode: it computes what it would launch/land but doesn't act; compare with the console for a while. (3) Cut over: axHub owns the dispatcher, reconciler, splitter and lander; the console's cron/plugin stops acting. (4) Build the full orchestrator UI as axHub screens (all tabs: Pending, Queue, Active, Built, Complete, Errors, Archive, settings, slots, accounts) with every action. (5) axHub tools (orchestrator.*) for Claude, MCP and voice: file a build, note, status, step, approve, land, etc.; today's axf-console.build_orchestrator_pipeline_request and planner.builds callers get equivalent axHub tools. (6) Console keeps only a read-only mirror or a link to the axHub page, then the console plugin is retired. Fix on the way: phase-end builds must never get parked in Pending (reconciler bug), dispatcher alerts link format. No build or data lost; all history migrated. Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -229824,7 +229824,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T04:20:19.690Z",
-   "updatedAt": "2026-11-15T12:20:04.652Z",
+   "updatedAt": "2026-11-15T12:20:47.171Z",
    "builtAt": "",
    "notes": [
     {
@@ -229890,6 +229890,10 @@
     {
      "text": "Brett (07:19): do this NOW, top priority, right after axf-data is up: build the axf-molly container, wire it, and move the orchestrator, dispatcher, reconciler, splitter, gate rules, lander, merge watch / Shipped features sender and merge queue into it, as soon as possible. It reads/writes all data through axf-data (data-container-axf-data-holds-all), not repo files. axHub only routes (orchestrator.*, gate.*, lander.*, features.* tools); console is screens only. Cut over with a shadow run, no lost builds, builds keep running during the switch. RE-PLAN the steps first (they still say axHub screens). Land each part with the one-at-a-time lander.",
      "at": "2026-11-15T12:20:04.652Z"
+    },
+    {
+     "text": "SUPERSEDED (Brett 07:19): replaced by axf-molly-container-orchestrator-gate, which uses the final layout (axf-molly does the work, axf-data stores, axHub routes, console screens). Don't launch this one again.",
+     "at": "2026-11-15T12:20:40.697Z"
     }
    ],
    "approvals": [],
@@ -230883,7 +230887,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -234281,6 +234285,83 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-15T12:16:53.896Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "axf-molly-container-orchestrator-gate",
+   "title": "axf-molly container: orchestrator, gate, lander, Shipped sender",
+   "category": "",
+   "detail": "Replaces move-build-orchestrator-to-axhub (its 37 steps were planned for the old axHub-screens layout and its s1 gate waits on a precondition that no longer applies). FINAL LAYOUT (Brett): console = screens only; axf-molly = does all the work; axHub = routes + credentials/approvals only, no screens, no data; axf-data = stores all data. BUILD a private container 'axf-molly' on Coolify (no public port/DNS, internal Docker network, auto-restart). Check the name doesn't clash with the old standalone Molly app (it's retired; list any leftover container/cron/domain for retirement, delete nothing without listing it). MOVE INTO IT: orchestrator, dispatcher/pipeline tick, reconciler, splitter, slots/accounts routing, gate rules engine (framework/core/gate-rules.mjs from gate-rules-plugin-in-the-console), auto-lander + merge queue with the 'Merge queue on/off' switch, and the merge watch / Shipped features sender (vps-sends-shipped-features-every-merge). It reads/writes ALL data through axf-data (data-container-axf-data-holds-all, data-store@1 client), never repo files. HOST ACCESS: a narrow host bridge (mounted /root/axf-builds worktrees, git, claude CLI, tmux runner) to launch and watch build sessions; NOT the Docker socket; document exactly what it can touch. axHub registers axf-molly as a downstream and exposes orchestrator.*, gate.*, lander.*, features.* tools (equivalents for axf-console.build_orchestrator_pipeline_request and planner.builds). Console orchestrator, Gate & rules and Shipped features screens talk to it through axHub. STAGING: shadow first (axf-molly computes, console acts, diff log), then cutover with an owner lease and undo; builds keep running during the switch; no build or history lost. FIX ON THE WAY: phase-end builds must never be parked in Pending (reconciler bug); dispatcher alert links use view:build-orchestrator. Console-down drill: stop the console and prove builds still launch, land and get Shipped features. Order: start right after axf-data is up (its API and client exist on PR #704). Tests, help, Shipped features. Land each part with the one-at-a-time lander.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-15T12:20:29.383Z",
+   "updatedAt": "2026-11-15T12:20:32.805Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-15T12:20:32.805Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Yes do those containers and wire them and migrate everything asap. Molly's gonna run the orchestrator from now on, so let's name it AXF Molly.",
+    "at": "2026-11-15T12:20:29.383Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-15T12:20:32.225Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 882
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
