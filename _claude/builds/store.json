@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6121,
- "updatedAt": "2026-11-15T12:25:55.778Z",
+ "rev": 6122,
+ "updatedAt": "2026-11-15T12:26:10.625Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -232200,10 +232200,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/every-grid-1-2-rows-per-item-set-skin",
-   "pr": "",
+   "pr": "#707",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:17.286Z",
-   "updatedAt": "2026-11-15T12:25:54.036Z",
+   "updatedAt": "2026-11-15T12:26:08.803Z",
    "builtAt": "",
    "notes": [
     {
@@ -232870,7 +232870,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
