@@ -15,6 +15,8 @@ import { fileURLToPath } from 'node:url';
 import { SHAPE_DEFAULT_KIND, SHAPE_KINDS, SHAPE_RADII, SHAPE_TYPE, normalizeShape, shapeErrors, shapeRadius, shapeSquare } from '../core/engines/shape-rules.mjs';
 import { SHAPE_HISTORY_MAX, SHAPE_LEVELS, SHAPE_POLYGONS, compileShape, forgetShapeEdit, normalizeShapeHistory, previousShape, recordShapeEdit, resolveShape, resolveShapeAt, restorePreviousShape, shapeClip, shapeMask, shapeScopeChain, shapeScopeKey, shapeScopeLevel, shapeToken, squirclePath, squirclePolygon, superellipsePoints } from '../core/engines/shape';
 import { bannerWidgetView, normalizeBannerWidgetPref, patchBannerWidget } from '../core/engines/bannerwidgets';
+import { normalizeSkin, skinCoverage, skinCovers, skinErrors, skinSlots } from '../core/engines/skin';
+import { CUSTOM_TARGETS, customizableTypes } from '../core/engines/customize';
 import { ASSET_TYPES, OPTIONAL_TYPES } from '../core/types';
 import { validateAsset } from '../core/validate';
 import { validateAsset as cliValidate } from '../cli/build-engine.mjs';
@@ -165,6 +167,19 @@ eq(resolveShapeAt(null, efxStateOf), efx.resolveAt.app, 'engine fixture resolveA
 const efxOps = { recordShapeEdit, previousShape, restorePreviousShape, forgetShapeEdit, normalizeShapeHistory } as Record<string, (...a: never[]) => unknown>;
 for (const s of efx.history) eq(efxOps[s.op.split(' ')[0]!]!(...(s.args as never[])), s.out, `engine fixture history ${s.op}`);
 check(efx.history.some((s: { op: string }) => s.op.startsWith('restorePreviousShape')), 'engine fixture covers Restore previous edit');
+
+// skin@1 carries the shape slot (assets.shape) and the style target reaches the chips the shape cuts (.fx-shaped)
+const skinned = normalizeSkin({ layoutTheme: 'a-b', colorTheme: 'a-b', styleTheme: 'a-b', assets: { shape: 'hexagon', button: 'a-b' } });
+eq(skinned.assets.shape, 'hexagon', 'a skin keeps its shape pick');
+eq(skinSlots(skinned).shape, 'hexagon', 'the shape is one of the slots a skin sets');
+eq(skinErrors({ layoutTheme: 'a-b', colorTheme: 'a-b', styleTheme: 'a-b', assets: { shape: 'hexagon' } }), [], 'assets.shape validates');
+eq(skinErrors({ layoutTheme: 'a-b', colorTheme: 'a-b', styleTheme: 'a-b', assets: { shape: 'Bad Id' } }), ['data.assets.shape must be an asset id'], 'a bad shape id in a skin is named');
+eq(skinCovers(skinned).find((c) => c.type === SHAPE_TYPE)?.covered, true, 'skinCovers: the skin reaches the shape');
+eq(CUSTOM_TARGETS[SHAPE_TYPE]?.root, '.fx-shaped', 'the shape style target is the shaped chips');
+check(customizableTypes().includes(SHAPE_TYPE), 'the shape slot is customizable');
+const coverage = skinCoverage().find((r) => r.type === SHAPE_TYPE)!;
+eq({ by: coverage.by, also: coverage.also, declared: coverage.declared }, { by: 'slot', also: ['parts'], declared: true }, 'skin coverage: shape = slot + parts, declared');
+eq(skinErrors({ layoutTheme: 'a-b', colorTheme: 'a-b', styleTheme: 'a-b', assets: {}, parts: { shape: { textColor: 'accent' } } }), [], 'a skin may style the shaped chips through parts.shape');
 
 // banner widgets carry a per-instance shape (the id of a shape asset); junk is dropped, null goes back to the slot
 eq(normalizeBannerWidgetPref({ shape: 'hexagon' }).shape, 'hexagon', 'a widget pref keeps a shape id');

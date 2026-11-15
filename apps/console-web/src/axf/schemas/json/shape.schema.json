@@ -48,12 +48,14 @@
             "hexagon",
             "diamond",
             "tag",
-            "custom"
+            "corners",
+            "mask"
           ]
         },
         "corners": {
           "type": "object",
           "additionalProperties": false,
+          "description": "A radius step per corner: style-theme tokens, never lengths (required for kind corners)",
           "properties": {
             "tl": {
               "enum": [
@@ -95,8 +97,15 @@
         },
         "mask": {
           "type": "string",
+          "minLength": 2,
           "maxLength": 2000,
-          "description": "A CSS basic shape (polygon(…), path('…'), inset(…)) or an SVG path (M … Z) in a 0–100 box"
+          "pattern": "^[Mm][MmZzLlHhVvCcSsQqTtAa0-9\\s,.+\\-eE]*[Zz]\\s*$",
+          "description": "SVG path data (M … Z), closed, commands and numbers only (kind mask)"
+        },
+        "viewBox": {
+          "type": "string",
+          "pattern": "^-?\\d+(\\.\\d+)?\\s+-?\\d+(\\.\\d+)?\\s+\\d+(\\.\\d+)?\\s+\\d+(\\.\\d+)?$",
+          "description": "The box the mask path is drawn in, \"minX minY width height\" (default 0 0 100 100; kind mask)"
         },
         "square": {
           "type": "boolean",

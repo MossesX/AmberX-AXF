@@ -39,11 +39,21 @@ same five tokens inline (`shapeInlineVars(shape, 'widget')`).
 **Default = today's look.** The `pill` starter (`framework/defaults.json`) and "no shape asset at all" both compile to
 `999px 999px 999px 999px`, no clip and no mask: the circle every square widget drew and the pill every wide one drew before.
 
-Three levels, like every other look pick: the app's **slot** (Appearance → Assets → Widget shape, `swap:shape:<id>`),
-the **skin** (`assets.shape` in a skin@1), and the **widget** (`BannerWidgetPref.shape`, a shape asset id, folded into
-`BannerWidgetView.shape`; `''` = the slot). The hint may set a default (`widget: { shape: 'tag' }`).
+Four levels, resolved by `resolveShape` / `resolveShapeAt` (`core/engines/shape.ts`, the model of `resolveLookSkin`: the
+chain runs from the leaf and the first level that names a shape decides, the child overriding the parent): the
+**widget** (setting `axf.banner.widget.<type:id>.shape` = `BannerWidgetPref.shape`, a shape asset id, folded into
+`BannerWidgetView.shape`; `''` = inherit; the hint may set a default, `widget: { shape: 'tag' }`), the app's **slot**
+(Appearance → Assets → Widget shape, `swap:shape:<id>`), the **skin** (`assets.shape` in a skin@1; the registry declares
+`skin: { by: slot }`), and the **hub** (setting `axf.shape`). Nothing anywhere = `pill`. Every edit at a level is
+recorded per key (`recordShapeEdit`: the previous and the current id) so **Restore previous edit** (`restorePreviousShape`)
+puts the last value back and is itself restorable; the history is plain data saved with the settings (`normalizeShapeHistory`,
+100 keys at most). Golden outputs: `spec/fixtures/shape-engine.json`.
 
-Where the shape was hard-coded before (phase 2 wires each of these to the tokens; `framework/ui/axf.css` unless noted):
+Every chip the shape cuts carries the class **`fx-shaped`** (phase 2 adds it alongside the rules below), which is the
+`shape` style target in `schemas/customize.json`: a skin's `parts.shape` and the slot's Customize panel style those chips'
+box, text and icon in one go, and `check-skin-coverage` reads the type as slot + parts.
+
+Where the shape was hard-coded before (phase 2 wires each of these to the tokens and adds `fx-shaped`; `framework/ui/axf.css` unless noted):
 
 | Widget | Rule | Was |
 | --- | --- | --- |

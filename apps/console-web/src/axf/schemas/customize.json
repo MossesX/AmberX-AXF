@@ -635,6 +635,9 @@
     },
     "divider": {
       "root": ".fx-widget-divider"
+    },
+    "shape": {
+      "root": ".fx-shaped"
     }
   }
 }
