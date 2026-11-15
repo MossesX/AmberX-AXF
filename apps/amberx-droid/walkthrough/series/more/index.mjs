@@ -20,5 +20,6 @@ import sessionRecall from './session-recall.mjs';
 import liveBanners from './live-banners.mjs';
 import nestedNotes from './nested-notes.mjs';
 import menusToolbars from './menus-toolbars.mjs';
+import shippedFeatures from './shipped-features.mjs';
 
-export const MORE = [commute, expenses, bossTexts, privateChat, onDemand, teenDriver, builtWithItself, employees, architecture, skinsBranding, orchestrator, consolePhone, planSpoken, voiceConsole, vetoApprovals, uiDirectory, povDay, sessionRecall, liveBanners, nestedNotes, menusToolbars];
+export const MORE = [commute, expenses, bossTexts, privateChat, onDemand, teenDriver, builtWithItself, employees, architecture, skinsBranding, orchestrator, consolePhone, planSpoken, voiceConsole, vetoApprovals, uiDirectory, povDay, sessionRecall, liveBanners, nestedNotes, menusToolbars, shippedFeatures];
