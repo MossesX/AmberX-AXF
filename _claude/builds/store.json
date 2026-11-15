@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6033,
- "updatedAt": "2026-11-15T05:42:09.330Z",
+ "rev": 6034,
+ "updatedAt": "2026-11-15T05:42:26.315Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -228594,7 +228594,7 @@
    "mergedAt": "2026-11-15T05:39:34Z",
    "priority": "P0",
    "createdAt": "2026-11-15T00:06:57.847Z",
-   "updatedAt": "2026-11-15T05:41:17.346Z",
+   "updatedAt": "2026-11-15T05:42:07Z",
    "builtAt": "2026-11-15T00:44:20.954Z",
    "notes": [
     {
@@ -228620,6 +228620,10 @@
     {
      "text": "Reconciler: PR #694 merged",
      "at": "2026-11-15T05:41:17.346Z"
+    },
+    {
+     "text": "Shipped manifest sm-merge-main-land-voice-listener-use rev 1 sent to Shipped features (orchestrator): landed 9fcb2c538, 3 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-15T05:42:07Z"
     }
    ],
    "approvals": [],
@@ -228669,6 +228673,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-merge-main-land-voice-listener-use",
+    "rev": 1,
+    "at": "2026-11-15T05:42:07Z",
+    "landedCommit": "9fcb2c538e4cb175bb41d82140c2014db7181165"
    },
    "steps": [
     {
@@ -228903,7 +228913,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
