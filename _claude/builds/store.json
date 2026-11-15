@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5758,
- "updatedAt": "2026-11-15T00:22:35.085Z",
+ "rev": 5759,
+ "updatedAt": "2026-11-15T00:22:57.581Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -190493,7 +190493,7 @@
    "pr": "#591",
    "priority": "P0",
    "createdAt": "2026-11-13T10:40:45.569Z",
-   "updatedAt": "2026-11-13T17:33:32.250Z",
+   "updatedAt": "2026-11-15T00:22:41.725Z",
    "builtAt": "2026-11-13T11:16:46.914Z",
    "notes": [
     {
@@ -190584,6 +190584,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:22:41.648Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/amberx-droid/axf.manifest.json, apps/axhub-web/axf.manifest.json, apps/console-web/axf.manifest.json, apps/console-web/plugins/follow-amber/server/__init__.py, apps/console-web/plugins/glossary-index/terms.json, apps/console-web/plugins/theme-manager/assets/skin/professional-skins-"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -190641,7 +190658,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -191802,7 +191819,7 @@
    "pr": "#595",
    "priority": "P0",
    "createdAt": "2026-11-13T06:21:11.993Z",
-   "updatedAt": "2026-11-13T17:34:29.407Z",
+   "updatedAt": "2026-11-15T00:22:33.304Z",
    "builtAt": "2026-11-13T12:28:11.498Z",
    "notes": [
     {
@@ -191954,6 +191971,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:22:33.191Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/README.md, apps/console-web/plugins/console-commands/web/index.tsx, apps/console-web/plugins/github-app/README.md, apps/console-web/plugins/push-banner/assets/status/merge-confirm-pending-chip-accent-turning.json, apps/console-web/"
+     }
+    ]
    },
    "steps": [
     {
@@ -192295,7 +192329,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -194701,7 +194735,7 @@
    "pr": "#604",
    "priority": "P0",
    "createdAt": "2026-11-12T23:32:23.494Z",
-   "updatedAt": "2026-11-13T17:36:43.520Z",
+   "updatedAt": "2026-11-15T00:22:49.042Z",
    "builtAt": "2026-11-13T08:42:58.405Z",
    "notes": [
     {
@@ -194843,6 +194877,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:22:48.959Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/amberx-droid/axf.manifest.json, apps/axhub-web/axf.manifest.json, apps/console-web/axf.manifest.json, apps/console-web/plugins/follow-amber/server/__init__.py, apps/console-web/plugins/glossary-index/terms.json, apps/console-web/plugins/theme-manager/assets/skin/professional-skins-"
+     }
+    ]
    },
    "steps": [
     {
@@ -195298,7 +195349,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -196015,7 +196066,7 @@
    "pr": "#608",
    "priority": "P0",
    "createdAt": "2026-11-13T06:54:48.788Z",
-   "updatedAt": "2026-11-13T17:37:33.259Z",
+   "updatedAt": "2026-11-15T00:22:55.141Z",
    "builtAt": "2026-11-13T07:20:11.774Z",
    "notes": [
     {
@@ -196125,6 +196176,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:22:54.906Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: CLAUDE.md, _claude/shared/rules/RULES.md, apps/console-web/plugins/build-orchestrator/migrate-ui-review-steps.mjs, apps/console-web/plugins/build-orchestrator/pipeline-core.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/claude-settings/claud"
+     }
+    ]
    },
    "steps": [
     {
@@ -196453,7 +196521,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:22:35.085Z",
+ "updatedAt": "2026-11-15T00:22:57.581Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -116036,7 +116036,7 @@
    "pr": "#604",
    "priority": "P0",
    "createdAt": "2026-11-12T23:32:23.494Z",
-   "updatedAt": "2026-11-13T17:36:43.520Z",
+   "updatedAt": "2026-11-15T00:22:49.042Z",
    "builtAt": "2026-11-13T08:42:58.405Z",
    "notes": [
     {
@@ -117635,7 +117635,7 @@
    "pr": "#595",
    "priority": "P0",
    "createdAt": "2026-11-13T06:21:11.993Z",
-   "updatedAt": "2026-11-13T17:34:29.407Z",
+   "updatedAt": "2026-11-15T00:22:33.304Z",
    "builtAt": "2026-11-13T12:28:11.498Z",
    "notes": [
     {
@@ -118628,7 +118628,7 @@
    "pr": "#608",
    "priority": "P0",
    "createdAt": "2026-11-13T06:54:48.788Z",
-   "updatedAt": "2026-11-13T17:37:33.259Z",
+   "updatedAt": "2026-11-15T00:22:55.141Z",
    "builtAt": "2026-11-13T07:20:11.774Z",
    "notes": [
     {
@@ -121370,7 +121370,7 @@
    "pr": "#591",
    "priority": "P0",
    "createdAt": "2026-11-13T10:40:45.569Z",
-   "updatedAt": "2026-11-13T17:33:32.250Z",
+   "updatedAt": "2026-11-15T00:22:41.725Z",
    "builtAt": "2026-11-13T11:16:46.914Z",
    "notes": [
     {
