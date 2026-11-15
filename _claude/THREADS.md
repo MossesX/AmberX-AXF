@@ -806,7 +806,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 00:36 UTC · `new-asset-type-animated-expanding-row` s4 done (all) · foreign-write
 - 2026-11-15 00:36 UTC · `new-asset-type-animated-expanding-row` s5 done (all) · orchestrator
 - 2026-11-15 00:36 UTC · `merge-main-land-console-app-part-2` branch claude/console-app-part-2-native-floating-2, PR #639 (all) · builds-live
 - 2026-11-15 00:38 UTC · `merge-main-land-console-app-part-2` branch claude/console-app-part-2-native-floating-2, PR #639 (all) · foreign-write
@@ -1206,6 +1205,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 13:01 UTC · `axf-molly-container-orchestrator-gate` branch claude/axf-molly-container-orchestrator-gate, PR #710 (all) · builds-live
 - 2026-11-15 13:01 UTC · `axf-molly-container-orchestrator-gate` s1 done, → running (all) · orchestrator
 - 2026-11-15 13:01 UTC · `axf-molly-container-orchestrator-gate` note (all) · orchestrator
+- 2026-11-15 13:01 UTC · `gate-rules-plugin-in-the-console` s22 done (all) · orchestrator
 
 ## Token passes (log)
 
