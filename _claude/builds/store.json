@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6108,
- "updatedAt": "2026-11-15T12:21:10.513Z",
+ "rev": 6109,
+ "updatedAt": "2026-11-15T12:21:22.723Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -231706,7 +231706,7 @@
    "pr": "#706",
    "priority": "P1",
    "createdAt": "2026-11-15T11:52:18.052Z",
-   "updatedAt": "2026-11-15T12:21:00.568Z",
+   "updatedAt": "2026-11-15T12:21:20.833Z",
    "builtAt": "2026-11-15T12:21:00.568Z",
    "notes": [
     {
@@ -231736,6 +231736,10 @@
     {
      "text": "TO THE RUNNING SESSION: Brett changed steps s4 and s5 after you started (2-row skin layout, badges, animated active states, beautiful styling in every skin, extensive mapped context menus on the row and each data field, and live hooks). Your brief has the old text. Before s4, re-read the build (orchestrator.mjs show pending-tab-one-collapsed-row-per-2) and follow the new s4/s5. If s5 is too big for one step, split it into extra steps rather than cutting scope. Also, in s14, land directly with the one-at-a-time lander, not the stacked merge queue.",
      "at": "2026-11-15T11:57:43.719Z"
+    },
+    {
+     "text": "Headless run axf-pending-tab-one-collapsed-row-per-2--paulie: brief only · start 13.6K tokens ($0.04) · cost $9.96 · 167 turns · 6 tools, MCP none",
+     "at": "2026-11-15T12:21:20.833Z"
     }
    ],
    "approvals": [],
@@ -232147,7 +232151,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
