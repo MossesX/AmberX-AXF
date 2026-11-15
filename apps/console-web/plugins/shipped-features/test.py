@@ -132,4 +132,21 @@ t = OT.open_target({**live, "plugin": "", "app": "framework", "files": ["framewo
 ok(t["code"] == "no-screen", "open target: framework work has no screen")
 ok(OT.open_target(None, REG)["code"] == "not-found", "open target: no record → not-found")
 ok(len(OT.load_registry().addresses) > 0, "open target: the console's registry loads (inventory)")
+
+# REST: open-target (state) and open (console-control open through the console's runner)
+OT.load_registry = lambda: OT.Registry([*REG.addresses.values(), {"address": "view:banners", "kind": "view", "label": "Banners"},
+                                        {"address": "plugin:ai.amberx.axf.console.example-banner", "kind": "plugin", "folder": "example-banner", "label": "Example banner", "view": "view:banners"}])
+sent: list = []
+mod._control = lambda body: sent.append(body) or {"ok": True, "verb": "open", "address": body["address"]}
+vt = c.get(f"{base}/features/{vf['id']}/open-target").json()
+ok(vt["target"] == "view:banners" and vt["label"] == "Banners", f"GET open-target: a merged feature opens its plugin screen ({vt})")
+st = c.get(f"{base}/features/{f['id']}/open-target").json()
+ok(st["target"] is None and st["code"] == "not-live" and st["reason"] == "not landed yet", "GET open-target: a planned feature says why")
+ok(c.get(f"{base}/features/f-nope/open-target").status_code == 404 and c.get(f"{base}/features/BAD!/open-target").status_code == 400, "GET open-target: unknown 404, bad id 400")
+op = c.post(f"{base}/features/{vf['id']}/open", json={"by": "test"})
+ok(op.status_code == 200 and op.json()["status"] == "delivered" and sent[-1]["verb"] == "open" and sent[-1]["address"] == "view:banners" and sent[-1]["by"] == "test", f"POST open: console-control open on the target ({op.text[:200]})")
+no = c.post(f"{base}/features/{f['id']}/open", json={})
+ok(no.status_code == 409 and no.json()["detail"]["code"] == "not-live" and "not landed yet" in no.json()["detail"]["message"] and len(sent) == 1, "POST open: no target → 409 with the reason, nothing sent")
+mod._control = lambda body: {"ok": False, "code": "unavailable", "message": "no relay", "openUrl": "https://console.example/"}
+ok(c.post(f"{base}/features/{vf['id']}/open").json()["status"] == "pending", "POST open: no console open → pending with the open link")
 print(f"shipped-features server: {n} checks passed")

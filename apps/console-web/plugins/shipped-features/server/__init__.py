@@ -20,6 +20,8 @@ only); every write goes through the Node side (ledger/ledger.mjs), so the refere
     POST /ship/{build}        gather and send one build's manifest now
     POST /link                link a build to its branch / PR / merge time (builds store write, hooks fire)
     POST /backfill            { since, dry }: landed builds with no manifest since the date get one
+    GET  /features/{id}/open-target   where the feature opens in the console (console-control@1 address) or why not
+    POST /features/{id}/open  { to?, by? }: open it in the live console (console-control open); 409 + reason when it can't
 
 Manifest writes run framework/cli/shipped.mjs (Node), so the builds store stays the one writer and every listener
 hears the change; the ledger takes the manifest on the next sync (started right after each write).
@@ -320,6 +322,61 @@ def link(body: dict[str, Any]) -> dict[str, Any]:
     r = _json_out(code, out, err, "link")
     _after_write()
     return r
+
+
+# ------------------------------------------------------------------ open a feature in the live console (console-control@1)
+
+
+def _feature_doc(fid: str) -> dict[str, Any] | None:
+    c = _connect()
+    if c is None:
+        raise HTTPException(404, "the ledger isn't built yet")
+    try:
+        rows = _docs(c, "SELECT doc FROM features WHERE id = ?", fid)
+        return rows[0] if rows else None
+    finally:
+        c.close()
+
+
+def _control(body: dict[str, Any]) -> dict[str, Any]:
+    """One console-control@1 command through the console's own runner (same guards, policy and audit as /do)."""
+    try:
+        import console_control_api  # the console server's module (absent outside the console)
+    except ImportError:
+        return {"ok": False, "code": "unavailable", "message": "no console server here to send it through"}
+    return console_control_api.command(body, str(body.get("by") or "api"))
+
+
+def resolve(fid: str) -> dict[str, Any]:
+    """The open target of one feature by id (404 when there is no such feature)."""
+    if not ID.match(fid):
+        raise HTTPException(400, "bad feature id")
+    f = _feature_doc(fid)
+    if f is None:
+        raise HTTPException(404, "no such feature")
+    return ot.open_target(f, ot.load_registry())
+
+
+def open_feature(t: dict[str, Any], body: dict[str, Any]) -> dict[str, Any]:
+    """Open a resolved target in the console the person used last (or `to`); no target → 409 with the reason."""
+    if not t.get("target"):
+        raise HTTPException(409, {"ok": False, "code": t.get("code"), "message": f"{t.get('name') or t.get('feature')} can't be opened: {t.get('reason')}", **t})
+    cmd = {"verb": "open", "address": t["target"], "by": str(body.get("by") or "shipped-features")[:80], "to": str(body.get("to") or "recent")[:80],
+           "reason": f"Open {t.get('name') or t.get('feature')} from Shipped features"}
+    r = _control(cmd)
+    return {**r, "ok": bool(r.get("ok")), "openTarget": t, "status": "delivered" if r.get("ok") else ("pending" if r.get("code") == "unavailable" else "failed")}
+
+
+@router.get("/features/{fid}/open-target")
+def feature_open_target(fid: str) -> dict[str, Any]:
+    """Where this feature opens in the console: {target, label, via} or {target: null, code, reason}."""
+    return resolve(fid)
+
+
+@router.post("/features/{fid}/open")
+def feature_open(fid: str, body: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Open the feature's screen in the live console (console-control open); 409 with the reason when it has none."""
+    return open_feature(resolve(fid), body or {})
 
 
 @router.post("/backfill")
