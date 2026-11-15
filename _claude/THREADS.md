@@ -797,8 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 22:46 UTC · `console-app-land-parts-1-4-build-apk` → queued (all) · orchestrator
-- 2026-11-14 22:46 UTC · `banner-widget-shapes-more-than-circle` → queued (all) · orchestrator
 - 2026-11-14 22:46 UTC · `launch-landing-page-waitlist-referral` → queued (all) · orchestrator
 - 2026-11-14 22:46 UTC · `demo-video-series-three-minute-browser` → queued (all) · orchestrator
 - 2026-11-14 22:46 UTC · `hotfix-toolbar-settings-still-change` → queued (all) · orchestrator
@@ -1197,6 +1195,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 00:13 UTC · `merge-main-land-voice-listener-use` note (all) · orchestrator
 - 2026-11-15 00:13 UTC · `themed-native-controls-plugin` PR #690 (all) · builds-live
 - 2026-11-15 00:13 UTC · `merge-main-land-voice-listener-use` note (all) · builds-live
+- 2026-11-15 00:13 UTC · `themed-native-controls-plugin` s30 done (all) · orchestrator
+- 2026-11-15 00:13 UTC · `themed-native-controls-plugin` note (all) · orchestrator
 
 ## Token passes (log)
 
