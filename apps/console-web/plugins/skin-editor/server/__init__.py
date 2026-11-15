@@ -13,6 +13,7 @@ import json
 import os
 import re
 import threading
+import urllib.parse
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -302,6 +303,43 @@ def snapshot_detail(chain: list[dict[str, Any]], sid: str) -> dict[str, Any]:
     return {**_snap_head(s), "parent": s["parent"], "ui": s["ui"], "edits": s["edits"], "state": s["state"], "tokens": len(s["state"])}
 
 
+THUMBNAIL_TOKENS = ["--fx-bg", "--fx-surface", "--fx-border", "--fx-text", "--fx-muted", "--fx-accent", "--fx-accent-text", "--fx-surface2", "--fx-radius-md"]
+SVG_SAFE = re.compile(r"^[#a-zA-Z0-9(),.%\s-]{1,60}$")
+
+
+def _js_num(x: float) -> str:
+    return str(int(x)) if x == int(x) else repr(x)
+
+
+def skin_thumbnail(state: dict[str, Any], defaults: dict[str, Any] | None = None) -> str:
+    """The Python twin of skinThumbnail: a small SVG card in the skin's own values, as a data URL."""
+    defaults = defaults or {}
+
+    def v(t: str) -> str:
+        for x in (state.get(t), defaults.get(t)):
+            if x is not None and not isinstance(x, bool) and SVG_SAFE.match(str(x)):
+                return str(x)
+        return "currentColor"
+
+    m = re.match(r"^\s*[-+]?(\d+\.?\d*|\.\d+)", v("--fx-radius-md"))
+    r = _js_num(max(0.0, min(20.0, float(m.group(0)) if m else 0.0)))
+    svg = ('<svg xmlns="http://www.w3.org/2000/svg" width="160" height="100" viewBox="0 0 160 100">'
+           f'<rect width="160" height="100" fill="{v("--fx-bg")}"/>'
+           f'<rect x="12" y="12" width="136" height="76" rx="{r}" fill="{v("--fx-surface")}" stroke="{v("--fx-border")}"/>'
+           f'<rect x="24" y="24" width="72" height="8" rx="2" fill="{v("--fx-text")}"/>'
+           f'<rect x="24" y="40" width="112" height="5" rx="2" fill="{v("--fx-muted")}"/>'
+           f'<rect x="24" y="50" width="88" height="5" rx="2" fill="{v("--fx-muted")}"/>'
+           f'<rect x="24" y="64" width="44" height="14" rx="{r}" fill="{v("--fx-accent")}"/>'
+           f'<rect x="34" y="69" width="24" height="4" rx="2" fill="{v("--fx-accent-text")}"/>'
+           f'<rect x="74" y="64" width="44" height="14" rx="{r}" fill="{v("--fx-surface2")}" stroke="{v("--fx-border")}"/>'
+           "</svg>")
+    return "data:image/svg+xml;utf8," + urllib.parse.quote(svg, safe="-_.!~*'()")
+
+
+def token_defaults() -> dict[str, Any]:
+    return {t["id"]: t["default"] for t in registry() if t.get("default") not in (None, "")}
+
+
 LOCKED_SKINS = (DEFAULT_SKIN_ID,)
 
 
@@ -313,13 +351,13 @@ def is_locked_skin(sid: Any) -> bool:
     return str(sid or "").lower() in LOCKED_SKINS
 
 
-def export_skin(state: dict[str, Any], sid: str, name: str, base: dict[str, Any], sets: dict[str, Any], description: str = "", author: str = "Skin editor") -> dict[str, Any]:
+def export_skin(state: dict[str, Any], sid: str, name: str, base: dict[str, Any], sets: dict[str, Any], description: str = "", author: str = "Skin editor", thumbnail: str = "") -> dict[str, Any]:
     sid = skin_id_of(sid)
     if not SKIN_ID.match(sid):
         raise HTTPException(400, "a skin id is 1–60 lowercase letters, digits and dashes")
     if is_locked_skin(sid):
         raise HTTPException(409, f'"{sid}" is the built-in default skin and is locked: export under another name')
-    return build_skin(state, sid, name, base, sets, description, author)
+    return build_skin(state, sid, name, base, sets, description, author, None, thumbnail)
 
 
 def default_skin_asset(base: dict[str, Any]) -> dict[str, Any]:
@@ -329,7 +367,7 @@ def default_skin_asset(base: dict[str, Any]) -> dict[str, Any]:
     return asset
 
 
-def build_skin(state: dict[str, Any], sid: str, name: str, base: dict[str, Any], sets: dict[str, Any], description: str = "", author: str = "Skin editor", extra_tags: list[str] | None = None) -> dict[str, Any]:
+def build_skin(state: dict[str, Any], sid: str, name: str, base: dict[str, Any], sets: dict[str, Any], description: str = "", author: str = "Skin editor", extra_tags: list[str] | None = None, thumbnail: str = "") -> dict[str, Any]:
     if not isinstance(base, dict) or not all(isinstance(base.get(k), str) and base.get(k) for k in ("layoutTheme", "colorTheme", "styleTheme")) or not isinstance(base.get("assets"), dict):
         raise HTTPException(400, "a base skin with layoutTheme, colorTheme, styleTheme and assets is required")
     extras = base.get("extras") if isinstance(base.get("extras"), dict) else {}
@@ -354,6 +392,8 @@ def build_skin(state: dict[str, Any], sid: str, name: str, base: dict[str, Any],
         data["behaviorTheme"] = base["behaviorTheme"]
     data["assets"] = dict(base["assets"])
     data["preview"] = {"caption": (description or f"{name or sid}: exported from the Skin editor.")[:160]}
+    if isinstance(thumbnail, str) and thumbnail.startswith("data:image/svg+xml;") and len(thumbnail) <= 8000:
+        data["preview"]["image"] = thumbnail
     data["extras"] = {**extras, "settings": settings}
     if isinstance(base.get("iconPack"), str) and base["iconPack"]:
         data["iconPack"] = base["iconPack"]
@@ -595,12 +635,72 @@ def export_session(ui: str, body: dict = Body(...)) -> dict[str, Any]:
         if body.get("snapshot"):
             snap = next((s for s in doc["chain"] if s["id"] == body["snapshot"]), None) or _not_found(body["snapshot"])
         base = body.get("base") if isinstance(body.get("base"), dict) else default_base()
-        r = export_skin(snap["state"], sid, name, base, token_sets(), str(body.get("description") or ""), str(body.get("by") or "Skin editor"))
+        r = export_skin(snap["state"], sid, name, base, token_sets(), str(body.get("description") or ""), str(body.get("by") or "Skin editor"), skin_thumbnail(snap["state"], token_defaults()))
         path = _skin_path(r["asset"]["id"])
         _write(path, r["asset"])
         r["file"] = str(path.relative_to(data_dir()))
         r["snapshot"] = snap["id"]
+        r["hub"] = queue_hub(r["asset"]["id"]) if body.get("hub", True) is not False else {"queued": False}
         return r
+
+
+# ---------------------------------------------------------------- the axHub skin library
+# axHub's data server takes a browser's hub session, not the console token, so the server queues each export here and
+# the console page (any open tab) sends it to the hub library (project `shared`, table `skins`) and marks it sent.
+# REST, MCP, CLI and voice exports reach the hub the same way; the queue is the plugin's own data.
+HUB_PROJECT = "shared"
+HUB_FOLDER = "skin-library"
+HUB_TABLE = "skins"
+
+
+def _outbox_path() -> Path:
+    return data_dir() / "hub-outbox.json"
+
+
+def _outbox() -> dict[str, Any]:
+    try:
+        doc = json.loads(_outbox_path().read_text("utf-8"))
+        return doc if isinstance(doc, dict) and isinstance(doc.get("items"), dict) else {"items": {}}
+    except (OSError, ValueError):
+        return {"items": {}}
+
+
+def queue_hub(sid: str) -> dict[str, Any]:
+    doc = _outbox()
+    doc["items"][sid] = {"id": sid, "status": "queued", "queuedAt": now_iso(), "sentAt": "", "error": ""}
+    _write(_outbox_path(), doc)
+    return {"queued": True, "project": HUB_PROJECT, "folder": HUB_FOLDER, "table": HUB_TABLE}
+
+
+@router.get("/hub")
+def get_hub() -> dict[str, Any]:
+    """Where exported skins go on axHub and each one's state (queued → sent, or the error the page got)."""
+    items = sorted(_outbox()["items"].values(), key=lambda i: i.get("queuedAt", ""), reverse=True)
+    return {"project": HUB_PROJECT, "folder": HUB_FOLDER, "table": HUB_TABLE, "items": items, "queued": sum(1 for i in items if i["status"] == "queued")}
+
+
+@router.post("/skins/{id}/hub")
+def send_to_hub(id: str) -> dict[str, Any]:
+    """Queue an exported skin (again) for the axHub library."""
+    if not _skin_path(id).is_file():
+        raise HTTPException(404, "no such skin")
+    with _lock:
+        return queue_hub(id)
+
+
+@router.post("/hub/{id}/result")
+def hub_result(id: str, body: dict = Body(default={})) -> dict[str, Any]:
+    """The page reports how sending a skin to axHub went: {ok: true} or {ok: false, error}."""
+    body = _dict(body)
+    with _lock:
+        doc = _outbox()
+        item = doc["items"].get(id)
+        if not item:
+            raise HTTPException(404, f"{id} is not queued for axHub")
+        ok = bool(body.get("ok"))
+        item.update(status="sent" if ok else "failed", sentAt=now_iso() if ok else item.get("sentAt", ""), error="" if ok else str(body.get("error") or "unknown")[:300])
+        _write(_outbox_path(), doc)
+        return item
 
 
 def _not_found(sid: Any) -> dict[str, Any]:
@@ -762,8 +862,9 @@ def voice(body: dict = Body(...)) -> dict[str, Any]:
             _snapshot_result(doc, snap)
             out.update(ran=True, result={"token": token, "snapshot": snap}, say=f"{token} set to {intent['value']}." if snap else f"{token} already is {intent['value']}.")
         elif verb == "export":
-            r = export_skin(head_of(doc)["state"], intent["name"], intent["name"], default_base(), token_sets(), "", "voice")
+            r = export_skin(head_of(doc)["state"], intent["name"], intent["name"], default_base(), token_sets(), "", "voice", skin_thumbnail(head_of(doc)["state"], token_defaults()))
             path = _skin_path(r["asset"]["id"])
             _write(path, r["asset"])
+            queue_hub(r["asset"]["id"])
             out.update(ran=True, result={"id": r["asset"]["id"], "mapped": r["mapped"], "unmapped": r["unmapped"]}, say=f"Exported the skin {intent['name']} ({r['asset']['id']}) with {len(r['mapped']) + len(r['unmapped'])} token(s).")
     return out

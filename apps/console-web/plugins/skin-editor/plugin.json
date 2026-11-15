@@ -221,7 +221,7 @@
         "route": "POST /sessions/{ui}/export",
         "id": "export",
         "title": "Export as a new skin",
-        "description": "The head's state as a skin asset (asset@1 skin) kept in the plugin's data folder.",
+        "description": "Export a snapshot (default the head) as a brand-new skin: name (id from it unless given), description, a thumbnail drawn in the skin's own values, saved to the plugin's skin library and queued for the axHub skin library (hub: false skips it). The default skin's id is locked.",
         "input": {
           "type": "object",
           "properties": {
@@ -278,6 +278,39 @@
         "description": "Delete one exported skin. Asks for a confirm first. The default skin is locked (409).",
         "destructive": true,
         "confirm": true
+      },
+      {
+        "route": "GET /hub",
+        "id": "hub",
+        "title": "axHub skin library queue",
+        "description": "Where exported skins go on axHub (project, folder, table) and each one's state: queued, sent, or failed with the error. An open console page sends the queue with its hub session.",
+        "readOnly": true
+      },
+      {
+        "route": "POST /skins/{id}/hub",
+        "id": "send-to-hub",
+        "title": "Send a skin to the axHub library",
+        "description": "Queue an exported skin (again) for the axHub skin library."
+      },
+      {
+        "route": "POST /hub/{id}/result",
+        "id": "hub-result",
+        "title": "Report an axHub send",
+        "description": "Used by the console page after it sent a queued skin: {ok} or {ok: false, error}.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "type": "boolean"
+            },
+            "error": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "ok"
+          ]
+        }
       },
       {
         "route": "POST /voice",

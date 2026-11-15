@@ -58,3 +58,4 @@
 .axp-skin__snap[aria-selected="true"] { background: var(--fx-surface2); }
 .axp-skin__diff { list-style: none; margin: var(--fx-dens-gap-xs) 0 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); font-size: var(--fx-type-scale-xs); }
 .axp-skin__diff code { font-family: var(--fx-font-mono); color: var(--fx-accent); }
+.axp-skin__thumb { display: block; width: 10em; max-width: 100%; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); }

@@ -77,8 +77,10 @@ export function compareSnapshots(chain: SkinSnapshot[], aId: string, bId: string
 export function snapshotDetail(chain: SkinSnapshot[], id: string): SnapshotHead & { parent: string | null; ui: SnapshotUi; edits: SnapshotEdit[]; state: SkinState; tokens: number };
 
 export interface SkinBase { layoutTheme: string; colorTheme: string; styleTheme: string; behaviorTheme?: string; assets: Record<string, string>; extras?: Record<string, unknown>; iconPack?: string; parts?: Record<string, unknown> }
-export interface ExportedSkin { asset: { $axf: 'asset@1'; type: 'skin'; id: string; name: string; version: string; description: string; author: string; tags: string[]; data: SkinBase & { preview: { caption: string } } }; mapped: string[]; unmapped: string[] }
-export function exportSkin(state: SkinState, opts: { id: string; name?: string; base: SkinBase; description?: string; author?: string; tags?: string[]; sets?: Record<string, TokenSetRef | null> }): ExportedSkin;
+export interface ExportedSkin { asset: { $axf: 'asset@1'; type: 'skin'; id: string; name: string; version: string; description: string; author: string; tags: string[]; data: SkinBase & { preview: { caption: string; image?: string } } }; mapped: string[]; unmapped: string[] }
+export function exportSkin(state: SkinState, opts: { id: string; name?: string; base: SkinBase; description?: string; author?: string; tags?: string[]; sets?: Record<string, TokenSetRef | null>; thumbnail?: string }): ExportedSkin;
+export const THUMBNAIL_TOKENS: string[];
+export function skinThumbnail(state: SkinState, defaults?: Record<string, TokenValue | undefined>): string;
 export const skinIdOf: (raw: unknown) => string;
 export const LOCKED_SKINS: string[];
 export const isLockedSkin: (id: unknown) => boolean;

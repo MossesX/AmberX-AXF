@@ -167,6 +167,7 @@ export function SkinEditorView() {
     try {
       const r = await api.exportSkin(ui, { id: skinIdOf(exportName), name: exportName.trim(), description: exportDesc, base: baseFromActive(ax.active as unknown as Record<string, string>) });
       setExported(r);
+      if (r.hub.queued) rt.dispatch('skin-editor.hub-send');
       const reg = rt.registry.register(r.asset, 'imported', 'skin-editor');
       rt.toast(reg.ok ? `Skin ${r.asset.name} exported and registered` : `Skin ${r.asset.name} exported (not registered: ${reg.errors?.join('; ') ?? 'invalid'})`, reg.ok ? 'success' : 'warning', 'Skin editor');
       api.skins().then((s) => setSkins(s.skins), () => {});
@@ -277,9 +278,11 @@ export function SkinEditorView() {
             <Container title="Export as a new skin" icon="download">
               <div className="fx-stack">
                 <TextField label="Name" value={exportName} onChange={setExportName} placeholder="Midnight" hint={exportName ? (skinIdOf(exportName) === 'default' ? 'The default skin is built in and locked: pick another name.' : `Skin id: ${skinIdOf(exportName) || '…'}`) : 'The exported skin starts from the console\'s look as it stands and carries every edit of the head snapshot.'} />
+                <p className="fx-muted">Saves the current state as a brand-new skin with a thumbnail, registers it here and sends it to the axHub skin library.</p>
                 <TextField label="Description" value={exportDesc} onChange={setExportDesc} placeholder="What this skin is for" />
                 <Button tone="primary" icon="download" disabled={!exportName.trim() || skinIdOf(exportName) === 'default' || busy || !ui} onClick={() => void doExport()}>Export {edits} edit{edits === 1 ? '' : 's'} as a skin</Button>
-                {exported && <Note tone={exported.unmapped.length ? 'warning' : 'success'}>Exported <b>{exported.asset.name}</b> ({exported.asset.id}): {exported.mapped.length} token{exported.mapped.length === 1 ? '' : 's'} as control overrides{exported.unmapped.length ? `, ${exported.unmapped.length} stylesheet variable(s) kept under the skin's own key (${exported.unmapped.join(', ')})` : ''}.</Note>}
+                {exported?.asset.data.preview?.image && <img className={`${P}__thumb`} src={exported.asset.data.preview.image} alt={`${exported.asset.name} thumbnail`} />}
+                {exported && <Note tone={exported.unmapped.length ? 'warning' : 'success'}>{exported.hub.queued ? 'Sent to the axHub skin library. ' : ''}Exported <b>{exported.asset.name}</b> ({exported.asset.id}): {exported.mapped.length} token{exported.mapped.length === 1 ? '' : 's'} as control overrides{exported.unmapped.length ? `, ${exported.unmapped.length} stylesheet variable(s) kept under the skin's own key (${exported.unmapped.join(', ')})` : ''}.</Note>}
                 {skins.length > 0 && <div><p className="fx-eyebrow">Skins</p>{skins.map((s) => <span key={s.id} title={s.locked ? 'Built in and locked: it cannot be edited, overwritten or deleted. Every chain starts here.' : s.description}><Chip tone={s.locked ? 'accent' : undefined}>{s.locked && <Icon name="lock" size={12} />} {s.name}{s.locked ? '' : ` · ${s.tokens}`}</Chip> </span>)}</div>}
               </div>
             </Container>

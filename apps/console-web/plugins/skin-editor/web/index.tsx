@@ -10,6 +10,7 @@ import { useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER, ID } from './api';
+import { sendQueuedToHub } from './hub';
 import { appMenu } from './menu';
 import { RegistryView } from './Registry';
 import { SkinEditorView } from './SkinEditor';
@@ -57,6 +58,10 @@ export const plugin: AxfWebLibrary = {
       document.addEventListener('click', onClick, true);
       document.addEventListener('keydown', onKey, true);
     }, { label: 'Skin editor: pick a UI on screen' });
+    // exports made anywhere (REST, MCP, CLI, voice) reach the axHub skin library through this page's hub session
+    rt.actions.register('skin-editor.hub-send', () => { void sendQueuedToHub().then((r) => { if (r.sent || r.failed) rt.toast(r.failed ? `axHub skin library: ${r.sent} sent, ${r.failed} failed (${r.error})` : `axHub skin library: ${r.sent} skin(s) sent`, r.failed ? 'warning' : 'success', 'Skin editor'); }); }, { label: 'Skin editor: send queued skins to the axHub library' });
+    window.setTimeout(() => rt.dispatch('skin-editor.hub-send'), 5000);
+    window.setInterval(() => rt.dispatch('skin-editor.hub-send'), 120000);
   },
   views: {
     'skin-editor': { title: 'Skin editor', icon: 'palette', keywords: ['skin', 'tokens', 'theme', 'sandbox', 'snapshot', 'revert', 'export'], render: () => <SkinEditorView /> },

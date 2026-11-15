@@ -8,7 +8,7 @@ export const ID = 'ai.amberx.axf.console.skin-editor';
 export interface UiPick { kind: 'view' | 'dialog' | 'plugin' | 'element' | 'screen'; id: string; label: string }
 export interface Session { ui: UiPick; head: string; chain: SkinSnapshot[]; rows: SnapshotRow[]; state: SkinState; updatedAt: string }
 export interface SessionSummary { key: string; ui: UiPick; head: string; snapshots: number; tokens: number; updatedAt: string }
-export interface ExportResult { asset: { id: string; name: string; data: Record<string, unknown> }; mapped: string[]; unmapped: string[]; file: string }
+export interface ExportResult { asset: { id: string; name: string; data: Record<string, unknown> & { preview?: { caption?: string; image?: string } } }; mapped: string[]; unmapped: string[]; file: string; hub: HubQueued }
 export interface VoiceResult { intent: SkinVoiceIntent | null; ran: boolean; result?: unknown; say: string }
 export interface UiListItem extends UiPick { source: string }
 
@@ -37,5 +37,11 @@ export const undo = (ui: UiPick) => post<Session & { snapshot: SkinSnapshot | nu
 export const exportSkin = (ui: UiPick, body: { id?: string; name: string; description?: string; snapshot?: string; base?: Record<string, unknown> }) => post<ExportResult>(`sessions/${encodeURIComponent(uiKey(ui))}/export`, body);
 export interface SkinListItem { id: string; name: string; description: string; tokens: number; file: string; locked: boolean; builtIn: boolean }
 export const skins = () => call<{ skins: SkinListItem[] }>('skins');
+export interface HubItem { id: string; status: 'queued' | 'sent' | 'failed'; queuedAt: string; sentAt: string; error: string }
+export interface HubQueued { queued: boolean; project?: string; folder?: string; table?: string }
+export const skin = (id: string) => call<Record<string, unknown>>(`skins/${encodeURIComponent(id)}`);
+export const hub = () => call<{ project: string; folder: string; table: string; items: HubItem[]; queued: number }>('hub');
+export const sendToHub = (id: string) => post<HubQueued>(`skins/${encodeURIComponent(id)}/hub`);
+export const hubResult = (id: string, body: { ok: boolean; error?: string }) => post<HubItem>(`hub/${encodeURIComponent(id)}/result`, body);
 export const deleteSkin = (id: string) => call<{ ok: true }>(`skins/${encodeURIComponent(id)}`, { method: 'DELETE' });
 export const voice = (phrase: string, ui?: UiPick, dry = false) => post<VoiceResult>('voice', { phrase, ui: ui ? uiKey(ui) : undefined, dry });

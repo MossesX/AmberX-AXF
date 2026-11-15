@@ -439,11 +439,37 @@ export function chainErrors(chain) {
  * a starter): its themes and asset slots are kept; the mapped tokens become control@1 overrides under
  * `extras.settings['axf.tokens.<set>']['*']`, the rest ride `extras.settings[SKIN_VARS_KEY]` so nothing is lost.
  */
-export function exportSkin(state, { id, name, base, description = '', author = 'Skin editor', tags = [], sets = {} } = {}) {
+export function exportSkin(state, { id, name, base, description = '', author = 'Skin editor', tags = [], sets = {}, thumbnail = '' } = {}) {
   const sid = skinIdOf(id);
   if (!SKIN_ID.test(sid)) throw new Error('a skin id is 1–60 lowercase letters, digits and dashes');
   if (isLockedSkin(sid)) throw new Error(`"${sid}" is the built-in default skin and is locked: export under another name`);
-  return buildSkin(state, { sid, name, base, description, author, tags, sets });
+  return buildSkin(state, { sid, name, base, description, author, tags, sets, thumbnail });
+}
+
+/** The tokens a skin thumbnail draws, in paint order. */
+export const THUMBNAIL_TOKENS = ['--fx-bg', '--fx-surface', '--fx-border', '--fx-text', '--fx-muted', '--fx-accent', '--fx-accent-text', '--fx-surface2', '--fx-radius-md'];
+
+const SVG_SAFE = /^[#a-zA-Z0-9(),.%\s-]{1,60}$/;
+
+/**
+ * A skin's thumbnail: a small SVG of a card (background, surface, border, title, muted lines, an accent button) drawn in
+ * the skin's own values (`state`), falling back to the registry's defaults (`defaults`: token → value). Values that are
+ * not plain colours or lengths fall back too, so nothing from a token reaches the markup unescaped. Returns a data URL.
+ */
+export function skinThumbnail(state, defaults = {}) {
+  const v = (t) => { for (const x of [state?.[t], defaults?.[t]]) if (x !== undefined && x !== null && SVG_SAFE.test(String(x))) return String(x); return 'currentColor'; };
+  const rpx = Math.max(0, Math.min(20, parseFloat(v('--fx-radius-md')) || 0));
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="100" viewBox="0 0 160 100">`
+    + `<rect width="160" height="100" fill="${v('--fx-bg')}"/>`
+    + `<rect x="12" y="12" width="136" height="76" rx="${rpx}" fill="${v('--fx-surface')}" stroke="${v('--fx-border')}"/>`
+    + `<rect x="24" y="24" width="72" height="8" rx="2" fill="${v('--fx-text')}"/>`
+    + `<rect x="24" y="40" width="112" height="5" rx="2" fill="${v('--fx-muted')}"/>`
+    + `<rect x="24" y="50" width="88" height="5" rx="2" fill="${v('--fx-muted')}"/>`
+    + `<rect x="24" y="64" width="44" height="14" rx="${rpx}" fill="${v('--fx-accent')}"/>`
+    + `<rect x="34" y="69" width="24" height="4" rx="2" fill="${v('--fx-accent-text')}"/>`
+    + `<rect x="74" y="64" width="44" height="14" rx="${rpx}" fill="${v('--fx-surface2')}" stroke="${v('--fx-border')}"/>`
+    + '</svg>';
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
 
 /** A skin id from a name or id: lowercase, dashes, at most 60 characters. */
@@ -463,7 +489,7 @@ export function defaultSkinAsset(base) {
   return r.asset;
 }
 
-function buildSkin(state, { sid, name, base, description = '', author = 'Skin editor', tags = [], sets = {} }) {
+function buildSkin(state, { sid, name, base, description = '', author = 'Skin editor', tags = [], sets = {}, thumbnail = '' }) {
   if (!isObj(base) || !str(base.layoutTheme) || !str(base.colorTheme) || !str(base.styleTheme) || !isObj(base.assets)) throw new Error('a base skin with layoutTheme, colorTheme, styleTheme and assets is required');
   const settings = { ...(isObj(base.extras?.settings) ? base.extras.settings : {}) };
   const mapped = []; const unmapped = {};
@@ -480,7 +506,7 @@ function buildSkin(state, { sid, name, base, description = '', author = 'Skin ed
     layoutTheme: base.layoutTheme, colorTheme: base.colorTheme, styleTheme: base.styleTheme,
     ...(str(base.behaviorTheme) ? { behaviorTheme: base.behaviorTheme } : {}),
     assets: { ...base.assets },
-    preview: { caption: str(description, 160) || `${str(name, 120) || sid}: exported from the Skin editor.` },
+    preview: { caption: str(description, 160) || `${str(name, 120) || sid}: exported from the Skin editor.`, ...(typeof thumbnail === 'string' && thumbnail.startsWith('data:image/svg+xml;') && thumbnail.length <= 8000 ? { image: thumbnail } : {}) },
     extras: { ...(isObj(base.extras) ? base.extras : {}), settings },
     ...(str(base.iconPack) ? { iconPack: base.iconPack } : {}),
     ...(isObj(base.parts) ? { parts: base.parts } : {}),

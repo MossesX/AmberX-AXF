@@ -26,7 +26,7 @@ import { LAYOUT_FIELDS, layoutToken, layoutTokenVars } from '../core/engines/lay
 import {
   DEFAULT_SKIN_ID, SKIN_VOICE_FRAME, TOKEN_ID, TOKEN_REGISTRY_FRAME, applyEdits, chainErrors, chainTo, classifyToken, diffStates, editSnapshot, exportSkin,
   manifestTokenErrors, manifestTokens, manifestUsesDiff, normalizeRegistry, normalizeToken, registryCoverage, registryErrors, registrySummary, revertSnapshot,
-  compareSnapshots, defaultSkinAsset, isLockedSkin, snapshotDetail, rootSnapshot, searchTokens, skinState, skinVoiceIntent, snapshotBefore, snapshotRows, tokenSet, tokensAtLevel,
+  compareSnapshots, defaultSkinAsset, skinThumbnail, isLockedSkin, snapshotDetail, rootSnapshot, searchTokens, skinState, skinVoiceIntent, snapshotBefore, snapshotRows, tokenSet, tokensAtLevel,
 } from '../core/engines/token-registry.mjs';
 
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
@@ -299,6 +299,8 @@ export function fixture() {
     diff: diffStates(s2.state, s1.state), apply: applyEdits({ '--fx-a': 1 }, [{ token: '--fx-a', to: null }, { token: '--fx-b', to: 'x' }]),
     exported, roundTrip: skinState(exported.asset.data, sets), defaultSkin: DEFAULT_SKIN_ID, voice,
     compare: { s1ToRev: compareSnapshots(chain, s1.id, rev.id), revToRoot: compareSnapshots(chain, rev.id, root.id), same: compareSnapshots(chain, s2.id, s2.id) }, detail: snapshotDetail(chain, s2.id),
+    thumbnail: { plain: skinThumbnail({}, { '--fx-bg': '#111', '--fx-accent': '#f5a524', '--fx-radius-md': '8px' }), edited: skinThumbnail({ '--fx-accent': '#ff8800', '--fx-radius-md': '12px', '--fx-bg': 'url(javascript:x)<' }, { '--fx-bg': '#111' }) },
+    exportedWithThumb: exportSkin({ '--fx-accent': '#ff8800' }, { id: 'thumb', name: 'Thumb', base, sets, thumbnail: skinThumbnail({ '--fx-accent': '#ff8800' }) }).asset.data.preview,
     defaultSkinAsset: defaultSkinAsset(base), locked: { default: isLockedSkin('default'), Default: isLockedSkin('Default'), midnight: isLockedSkin('midnight') },
   };
 }
