@@ -165,10 +165,9 @@ export function QuickSettings({ scope }: { scope: string }) {
       {!collapsed && (
         <div className="fx-qs__body">
           <div className="fx-qs__row" data-axf-quick-part="skin">
-            <span className="fx-qs__label"><Icon name="palette" size={13} /> Skin</span>
-            <span className="fx-qs__current">{skinName(ownSkin || consoleSkin)}{ownSkin ? '' : ' (console)'}</span>
+            <span className="fx-qs__label"><Icon name="palette" size={13} /> Skin <span className="fx-qs__current">{ownSkin ? `${skinName(ownSkin)}, this interface only` : `${skinName(consoleSkin)} (console)`}</span></span>
             <Checkbox label="Override console skin" checked={!!ownSkin} onChange={(on) => rt.dispatch(on ? `quick.skin:${scope}:${consoleSkin || skins[0]?.id || 'off'}` : `quick.skin:${scope}:off`)} />
-            <SelectField label="Skin for this interface" value={ownSkin || consoleSkin} disabled={!ownSkin} options={skins.map((s) => ({ value: s.id, label: s.name }))} onChange={(v) => rt.dispatch(`quick.skin:${scope}:${v}`)} />
+            <SelectField className="fx-qs__pick" label="Skin for this interface" value={ownSkin || consoleSkin} disabled={!ownSkin} options={skins.map((s) => ({ value: s.id, label: s.name }))} onChange={(v) => rt.dispatch(`quick.skin:${scope}:${v}`)} />
           </div>
           {quickAssetTypes(scope).map((type) => {
             const cur = rt.getState().active[type as AssetType] ?? '';
@@ -177,10 +176,9 @@ export function QuickSettings({ scope }: { scope: string }) {
             const name = (id: string) => list.find((a) => a.id === id)?.name ?? (id || 'none');
             return (
               <div key={type} className="fx-qs__row" data-axf-quick-part={`asset:${type}`}>
-                <span className="fx-qs__label">{QUICK_ASSET_LABEL[type] ?? type}</span>
-                <span className="fx-qs__current">{name(own || cur)}{own ? '' : ' (console)'}</span>
+                <span className="fx-qs__label">{QUICK_ASSET_LABEL[type] ?? type} <span className="fx-qs__current">{own ? `${name(own)}, this interface only` : `${name(cur)} (console)`}</span></span>
                 <Checkbox label="Override console default" checked={!!own} disabled={!list.length} onChange={(on) => rt.dispatch(`quick.asset:${scope}:${type}:${on ? cur || list[0]?.id || 'off' : 'off'}`)} />
-                <SelectField label={`${QUICK_ASSET_LABEL[type] ?? type} for this interface`} value={own || cur} disabled={!own} empty={cur ? undefined : 'None'} options={list.map((a) => ({ value: a.id, label: a.name }))} onChange={(v) => rt.dispatch(`quick.asset:${scope}:${type}:${v}`)} />
+                <SelectField className="fx-qs__pick" label={`${QUICK_ASSET_LABEL[type] ?? type} for this interface`} value={own || cur} disabled={!own} empty={cur ? undefined : 'None'} options={list.map((a) => ({ value: a.id, label: a.name }))} onChange={(v) => rt.dispatch(`quick.asset:${scope}:${type}:${v}`)} />
               </div>
             );
           })}
@@ -190,7 +188,7 @@ export function QuickSettings({ scope }: { scope: string }) {
               <ul className="fx-qs__list" aria-label="Overrides here">
                 {overrides.map((o) => {
                   const key = o.kind === 'skin' ? 'skin' : `asset:${o.type}`;
-                  const what = o.kind === 'skin' ? `Skin: ${skinName(o.id)}` : `${QUICK_ASSET_LABEL[o.type] ?? o.type}: ${o.id}`;
+                  const what = o.kind === 'skin' ? `Skin: ${skinName(o.id)}` : `${QUICK_ASSET_LABEL[o.type] ?? o.type}: ${rt.registry.get(o.type as AssetType, o.id)?.name ?? o.id}`;
                   return (
                     <li key={key} className="fx-qs__item" data-axf-quick-override={key}>
                       <span>{what}</span>
@@ -202,7 +200,7 @@ export function QuickSettings({ scope }: { scope: string }) {
               {overrides.length > 1 && <Button size="sm" tone="neutral" icon="undo" onClick={() => rt.dispatch(`quick.reset:${scope}`)}>Reset all here</Button>}
             </div>
           )}
-          <AssetsWithEdits />
+          <AssetsWithEdits hideWhenEmpty />
         </div>
       )}
       {style === 'bar' && handle}

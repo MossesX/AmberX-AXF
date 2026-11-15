@@ -389,7 +389,7 @@ export { CHROME_TYPES as CHROME_SETTINGS_TYPES, CHROME_LABELS as CHROME_SETTINGS
  * expands to every setting of that asset, row by row, the changed ones marked in the controlled colour; every row is
  * editable and writes to that asset's own settings (a new override), never the app's (Brett, Nov 10 2026).
  */
-export function AssetsWithEdits() {
+export function AssetsWithEdits({ hideWhenEmpty = false }: { hideWhenEmpty?: boolean } = {}) {
   const rt = useRuntime();
   useSettingsTick(rt, [CONTROLLED_COLOR_KEY]);
   const [, force] = useState(0);
@@ -399,6 +399,7 @@ export function AssetsWithEdits() {
   const list = chromeOverrideList(rt.settings.savedValues());
   const colour = controlledColorOf(rt.settings.get(CONTROLLED_COLOR_KEY));
   const colourPick = <SelectField label="Controlled item colour" hint="Marks every setting an asset overrides." value={colour} options={CONTROLLED_COLORS.map((c) => ({ value: c, label: c.replace(/^./, (x) => x.toUpperCase()) }))} onChange={(v) => rt.dispatch(`settings.controlled-colour:${v}`)} />;
+  if (!list.length && hideWhenEmpty) return null;
   if (!list.length) return <div className="fx-stack fx-stack--xs" data-axf-asset-edits="0"><span className="fx-small fx-muted">No asset overrides its app settings.</span>{colourPick}</div>;
   return (
     <div className="fx-stack fx-stack--xs" data-axf-asset-edits={list.length}>
