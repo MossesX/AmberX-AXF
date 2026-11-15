@@ -3866,7 +3866,7 @@
       "$axf": "build-rule@1",
       "id": "checkpoints",
       "title": "Steps are checkpoints in one session: commit, push, tick, go on; the next session picks up at the first open step",
-      "text": "Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step <build> <stepId> done; link the branch and PR with node framework/cli/builds-live.mjs link <build> --branch <b> --pr <n>). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.",
+      "text": "Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.",
       "doer": "session",
       "kind": "mechanical",
       "phase": "dispatch",

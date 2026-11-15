@@ -35,8 +35,8 @@ const INVENTORY = {
       { source: 'framework/schemas/rules-briefs.json:13#1', file: 'framework/schemas/rules-briefs.json', line: 13, part: 1, text: '- Everything visible is an asset: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-*), never literals.', pass: 2 },
     ] },
     { id: 'api-everything', title: 'Everything comes with an API', doer: 'session', kind: 'judgement', applies: 'builds', annotated: true, sources: [
-      { source: 'apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs:69', file: 'apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs', line: 69, text: "export const API_RULE = 'Everything comes with an API (Brett, Nov 8 2026): a deep link, readable state, every action callable through REST, MCP, the CLI and voice.';", pass: 2 },
-      { source: 'apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs:267', file: 'apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs', line: 267, text: '`API: ${API_RULE}`,', pass: 2 },
+      { source: 'framework/samples/brief-core.mjs:69', file: 'framework/samples/brief-core.mjs', line: 69, text: "export const API_RULE = 'Everything comes with an API (Brett, Nov 8 2026): a deep link, readable state, every action callable through REST, MCP, the CLI and voice.';", pass: 2 },
+      { source: 'framework/samples/brief-core.mjs:267', file: 'framework/samples/brief-core.mjs', line: 267, text: '`API: ${API_RULE}`,', pass: 2 },
     ] },
     { id: 'toolbars', title: 'Every toolbar is a Toolbars plugin toolbar', doer: 'session', kind: 'mechanical', applies: 'builds', annotated: true, sources: [
       { source: '_claude/shared/rules/RULES.md:36', file: '_claude/shared/rules/RULES.md', line: 36, text: '**Every toolbar is a Toolbars plugin toolbar (Nov 3 2026, Brett):** every toolbar carries `role="toolbar"` and an `aria-label`. <!-- axf-plugin:toolbars -->' },

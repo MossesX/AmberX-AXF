@@ -195,6 +195,7 @@ export function createGate(opts = {}) {
 const readStdin = () => { try { return readFileSync(0, 'utf8'); } catch { return ''; } };
 
 export async function main(argv, { out = (s) => console.log(s), err = (s) => console.error(s), gateApi = null } = {}) {
+  process.umask(0o002); // shared data folders (the build rules store) are group-written by the console, dispatcher and lander
   // the human CLI on the VPS host reads the live console's data (the same default as the lander's own CLI)
   const host = argv[0] !== 'api' && !process.env.AXF_CONSOLE_ROOT && !process.env.AXF_GATE_DIR && existsSync('/opt/axf/.axf-console') ? { consoleRoot: '/opt/axf' } : {};
   const g = gateApi || createGate(host);

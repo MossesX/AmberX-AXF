@@ -12,7 +12,7 @@
  * Records: build-rule@1, build-rules-store@1, build-rule-history@1 (append-only JSONL), brief-blocks@1.
  * Pure parts take their clock as an argument; the store functions (storeDir, load, save, commit) are the only IO.
  */
-import { appendFileSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { appendFileSync, chmodSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -398,7 +398,14 @@ function lock(f, waitMs = 20000) {
   }
 }
 const readJson = (f) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return null; } };
-function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const tmp = `${f}.${process.pid}.tmp`; writeFileSync(tmp, `${JSON.stringify(v, null, 2)}\n`); renameSync(tmp, f); }
+/** Write through a temp file; a rewrite keeps the file's mode (the shared store folder is group-written). */
+function writeJson(f, v) {
+  mkdirSync(dirname(f), { recursive: true });
+  const tmp = `${f}.${process.pid}.tmp`;
+  writeFileSync(tmp, `${JSON.stringify(v, null, 2)}\n`);
+  try { chmodSync(tmp, statSync(f).mode & 0o777); } catch { /* a new file: the umask decides */ }
+  renameSync(tmp, f);
+}
 
 /**
  * The store: store.json when it exists, else the seed (`seeded: true`), else empty (`empty: true`).

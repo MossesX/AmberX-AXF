@@ -483,9 +483,10 @@ export function buildRulesProvider(repo) {
 function defaultBuildRules(s) {
   return ({ id, root }) => {
     if (process.env.AXF_LAND_BUILD_RULES === 'off') return null;
+    // the phase is named 'gate' in build-rules@1 (axf-not-plugin:gate)
     const runner = buildRulesProvider(s.repo);
     if (!runner) return null;
-    const r = spawnSync(process.execPath, [runner, 'run', '--build', id, '--phase', 'gate', '--by', 'lander', '--json', ...(root ? ['--root', root, '--commit'] : [])], { cwd: s.repo, encoding: 'utf8', timeout: 20 * 60 * 1000 });
+    const r = spawnSync(process.execPath, [runner, 'run', '--build', id, '--phase', 'gate', /* axf-not-plugin:gate */ '--by', 'lander', '--json', ...(root ? ['--root', root, '--commit'] : [])], { cwd: s.repo, encoding: 'utf8', timeout: 20 * 60 * 1000 });
     let out = null; try { out = JSON.parse(r.stdout); } catch { return null; }
     const runs = Array.isArray(out?.runs) ? out.runs : [];
     return { ok: !!out.ok, failing: runs.filter((x) => x.result === 'fail').map((x) => x.id), fixed: runs.filter((x) => x.result === 'fixed').map((x) => x.id), ...(out.commit?.sha ? { commit: out.commit.sha } : {}) };

@@ -11,7 +11,7 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { cli, result, rootOf } from './lib.mjs';
 
-export const id = 'shipped-features';
+export const id = 'shipped-features'; // the fixer id of build rule shipped-features (axf-not-plugin:shipped-features)
 const buildOf = (ctx) => String(ctx?.build?.id || '').trim();
 /** Only a landed build is shipped (ctx.build.landed, or a merged status / mergedAt on the record). */
 export const landed = (b = {}) => Boolean(b.landed || b.mergedAt || ['merged', 'live', 'done', 'landed'].includes(String(b.status || '').toLowerCase()));

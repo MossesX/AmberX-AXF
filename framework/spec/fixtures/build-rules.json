@@ -40,15 +40,15 @@
      "annotated": true,
      "sources": [
       {
-       "source": "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs:69",
-       "file": "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+       "source": "framework/samples/brief-core.mjs:69",
+       "file": "framework/samples/brief-core.mjs",
        "line": 69,
        "text": "export const API_RULE = 'Everything comes with an API (Brett, Nov 8 2026): a deep link, readable state, every action callable through REST, MCP, the CLI and voice.';",
        "pass": 2
       },
       {
-       "source": "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs:267",
-       "file": "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+       "source": "framework/samples/brief-core.mjs:267",
+       "file": "framework/samples/brief-core.mjs",
        "line": 267,
        "text": "`API: ${API_RULE}`,",
        "pass": 2
@@ -518,15 +518,15 @@
       "when": {},
       "sources": [
        {
-        "source": "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs:69",
-        "file": "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+        "source": "framework/samples/brief-core.mjs:69",
+        "file": "framework/samples/brief-core.mjs",
         "line": 69,
         "text": "export const API_RULE = 'Everything comes with an API (Brett, Nov 8 2026): a deep link, readable state, every action callable through REST, MCP, the CLI and voice.';",
         "pass": 2
        },
        {
-        "source": "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs:267",
-        "file": "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+        "source": "framework/samples/brief-core.mjs:267",
+        "file": "framework/samples/brief-core.mjs",
         "line": 267,
         "text": "`API: ${API_RULE}`,",
         "pass": 2
@@ -1247,15 +1247,15 @@
       "when": {},
       "sources": [
        {
-        "source": "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs:69",
-        "file": "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+        "source": "framework/samples/brief-core.mjs:69",
+        "file": "framework/samples/brief-core.mjs",
         "line": 69,
         "text": "export const API_RULE = 'Everything comes with an API (Brett, Nov 8 2026): a deep link, readable state, every action callable through REST, MCP, the CLI and voice.';",
         "pass": 2
        },
        {
-        "source": "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs:267",
-        "file": "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+        "source": "framework/samples/brief-core.mjs:267",
+        "file": "framework/samples/brief-core.mjs",
         "line": 267,
         "text": "`API: ${API_RULE}`,",
         "pass": 2

@@ -38,7 +38,10 @@
     ],
     "mentions": [
       "apps/console-web/plugins/README.md",
-      "framework/spec/GATE.md"
+      "framework/spec/GATE.md",
+      "CLAUDE.md",
+      "_claude/rules/RULES.md",
+      "framework/spec/BUILD-RULES.md"
     ]
   },
   "commands": {
