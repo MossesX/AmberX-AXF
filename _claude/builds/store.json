@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5759,
- "updatedAt": "2026-11-15T00:22:57.581Z",
+ "rev": 5760,
+ "updatedAt": "2026-11-15T00:23:23.027Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -164649,7 +164649,7 @@
    "branch": "claude/all-banners-hide-when-empty",
    "pr": "#509",
    "createdAt": "2026-11-12T02:45:08.669Z",
-   "updatedAt": "2026-11-13T10:39:07.159Z",
+   "updatedAt": "2026-11-15T00:23:15.142Z",
    "builtAt": "2026-11-12T03:10:51.460Z",
    "notes": [
     {
@@ -164719,6 +164719,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:23:15.007Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, framework/react/bannerEmpty.ts, framework/react/components/BannerBase.tsx, framework/react/components/BannerGroup.tsx, framework/react/components/BannerSettings.tsx, framework/react/components/Slots.tsx, framework/react/index.ts, framework/spec/check-banne"
+     }
+    ]
    },
    "steps": [
     {
@@ -164796,7 +164813,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -186089,7 +186106,7 @@
    "branch": "claude/merge-all-ready-buttons-server-side",
    "pr": "#580",
    "createdAt": "2026-11-12T02:47:57.796Z",
-   "updatedAt": "2026-11-13T17:30:20.420Z",
+   "updatedAt": "2026-11-15T00:23:09.184Z",
    "builtAt": "2026-11-12T03:34:10.885Z",
    "notes": [
     {
@@ -186167,6 +186184,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:23:09.100Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/push-banner/hooks.mjs, apps/console-web/plugins/push-banner/land/land.mjs, apps/console-web/plugins/push-banne"
+     }
+    ]
    },
    "steps": [
     {
@@ -186288,7 +186322,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -186327,7 +186361,7 @@
    "branch": "claude/account-order-hulu-moses-x-api-account",
    "pr": "#581",
    "createdAt": "2026-11-12T02:59:45.402Z",
-   "updatedAt": "2026-11-13T17:30:57.626Z",
+   "updatedAt": "2026-11-15T00:23:12.505Z",
    "builtAt": "2026-11-12T03:17:22.994Z",
    "notes": [
     {
@@ -186390,6 +186424,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:23:12.390Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: deploy/claude-workers.mjs, deploy/claude-workers.test.mjs"
+     }
+    ]
    },
    "steps": [
     {
@@ -186467,7 +186518,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -187969,7 +188020,7 @@
    "pr": "#585",
    "priority": "P0",
    "createdAt": "2026-11-12T23:12:31.496Z",
-   "updatedAt": "2026-11-13T17:31:51.582Z",
+   "updatedAt": "2026-11-15T00:23:00.575Z",
    "builtAt": "2026-11-12T23:22:21.160Z",
    "notes": [
     {
@@ -188039,6 +188090,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:23:00.330Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-web/server/mcp_server.py, framework/core/engines/bannerfocus.ts, framework/core/index.ts, framework/react/components/BannerSettings.tsx, framework/react/components/BannerWidgets.tsx, framework/react/index.ts, framework/spec/check-banner-focus."
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -188093,7 +188161,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -190695,7 +190763,7 @@
    "pr": "#592",
    "priority": "P0",
    "createdAt": "2026-11-12T10:51:23.133Z",
-   "updatedAt": "2026-11-13T17:41:33.190Z",
+   "updatedAt": "2026-11-15T00:23:05.003Z",
    "builtAt": "2026-11-12T21:00:18.244Z",
    "notes": [
     {
@@ -190801,6 +190869,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:23:04.852Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs"
+     }
+    ]
    },
    "steps": [
     {
@@ -190991,7 +191076,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -195850,7 +195935,7 @@
    "pr": "#607",
    "priority": "P0",
    "createdAt": "2026-11-12T21:54:49.855Z",
-   "updatedAt": "2026-11-13T17:37:21.526Z",
+   "updatedAt": "2026-11-15T00:22:57.527Z",
    "builtAt": "2026-11-13T02:03:04.281Z",
    "notes": [
     {
@@ -195975,6 +196060,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:22:57.410Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, _claude/rules/RULES.md, _claude/shared/rules/RULES.md, apps/console-web/plugins/agent-swarm/agents/notes/earl.md, apps/console-web/plugins/agent-swarm/agents/skills/ci-fix.md, apps/console-web/plugins/agent-swarm/agents/skills/kotlin-compose.md, apps/conso"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -196029,7 +196131,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
