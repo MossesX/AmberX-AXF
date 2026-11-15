@@ -49,6 +49,7 @@
   --fx-grid-cell-pad-x: var(--fx-size-table-pad-x);
   --fx-grid-row-height: auto;
   --fx-grid-radius: 0;
+  --fx-grid-row-lines: 2;
   --fx-grid-group-header-bg: var(--fx-surface3);
   --fx-grid-group-header-bg-nested: var(--fx-surface2);
   --fx-grid-group-header-bg-deep: var(--fx-surface);

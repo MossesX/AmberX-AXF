@@ -1,6 +1,6 @@
 {
   "$schema": "asset-customize@1",
-  "_doc": "Extra editable tokens every customizable asset type gets in Settings → Appearance → Assets, on top of the fields its own asset carries. Values are saved per slot in setting axf.custom.<type> = {all, shared, byId} (all = one set of values for every asset of the type, the default; otherwise one per asset id) and apply to the active asset of the slot. Every value maps to theme tokens (colours = colour-theme tokens, sizes = multiples of the style theme), so themes still restyle everything. A token with `types` applies to those types only. `targets` = the elements each type styles (root, and its items for hover/click). Engine: core/engines/customize.ts; icon sets in icon-sets.json. New token = one entry here + one case in customizeCss.",
+  "_doc": "Extra editable tokens every customizable asset type gets in Settings → Appearance → Assets, on top of the fields its own asset carries. Values are saved per slot in setting axf.custom.<type> = {all, shared, byId} (all = one set of values for every asset of the type, the default; otherwise one per asset id) and apply to the active asset of the slot. Every value maps to theme tokens (colours = colour-theme tokens, sizes = multiples of the style theme), so themes still restyle everything. A token with `types` applies to those types only. `targets` = the elements each type styles (root, and its items for hover/click). Engine: core/engines/customize.ts; icon sets in icon-sets.json. New token = one entry here + one case in customizeCss. rowLines (1 | 2, theme = the skin's grid.rowLines): the grids inside a tab group's panels or a container show 1 or 2 lines per collapsed item; it sets --fx-grid-row-lines on the target (component-tokens@1 grid.rowLines, grid-rows@1).",
   "tokens": [
     {
       "key": "fontSize",
@@ -297,6 +297,22 @@
         "md",
         "lg",
         "xl"
+      ]
+    },
+    {
+      "key": "rowLines",
+      "label": "Lines per row",
+      "group": "Layout",
+      "kind": "choice",
+      "default": "theme",
+      "options": [
+        "theme",
+        "1",
+        "2"
+      ],
+      "types": [
+        "tab-group",
+        "container"
       ]
     },
     {

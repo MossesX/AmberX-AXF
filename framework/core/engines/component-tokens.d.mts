@@ -1,6 +1,6 @@
 // Types for component-tokens.mjs (component-tokens@1: the grid and tab-group token families).
 export type ComponentTokenFamily = 'grid' | 'tabs';
-export type ComponentTokenKind = 'colour' | 'length' | 'shadow' | 'opacity' | 'number';
+export type ComponentTokenKind = 'colour' | 'length' | 'shadow' | 'opacity' | 'number' | 'lines';
 export type ComponentTokenLevel = 'basic' | 'pro' | 'advanced';
 export interface ComponentToken { key: string; kind: ComponentTokenKind; default: string; level: ComponentTokenLevel; description: string }
 export interface ComponentTokenRow extends ComponentToken { family: ComponentTokenFamily; path: string; var: string }
@@ -26,6 +26,15 @@ export declare function componentTokenError(family: string, key: string, raw: un
 export declare function componentTokenVars(style: unknown): VarMap;
 export declare function componentTokenFields(): Record<string, 'string' | 'number'>;
 export declare function componentTokenPaths(): Array<{ id: string; token: string; kind: 'color' | 'number' | 'string'; default: string; level: ComponentTokenLevel; description: string; family: ComponentTokenFamily }>;
+
+/** grid.rowLines (every-grid-1-2-rows-per-item-set-skin): 1 or 2 lines per collapsed item, default 2; the variable and the root attribute hook. */
+export type GridRowLines = 1 | 2;
+export declare const GRID_ROW_LINES_VALUES: readonly GridRowLines[];
+export declare const GRID_ROW_LINES_DEFAULT: 2;
+export declare const GRID_ROW_LINES_VAR: '--fx-grid-row-lines';
+export declare const GRID_ROW_LINES_ATTR: 'data-axf-row-lines';
+export declare function gridRowLines(style: unknown): GridRowLines;
+export declare function gridRowLinesAttrs(style: unknown): Record<string, string>;
 
 export declare const INSTANCE_TOKENS_KEY: 'axf.tokens.instances';
 export declare const INSTANCE_TOKENS_MAX_BYTES: number;

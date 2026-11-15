@@ -266,6 +266,8 @@ export function customizeCss(type: string, values: CustomValues): string {
       case 'padding': root.push(`padding:${space(s)}`); break;
       case 'itemPadding': item.push(`padding:calc(${space(s)} * 0.5) ${space(s)}`); break;
       case 'gap': root.push(`gap:${space(s)}`); break;
+      // component-tokens@1 grid.rowLines: the grids inside this root follow it (grid-rows@1 reads --fx-grid-row-lines, then the root's data-axf-row-lines)
+      case 'rowLines': root.push(`--fx-grid-row-lines:${s}`); break;
       case 'radius': root.push(`border-radius:${RADIUS[s]}`); if (items.length) item.push(`border-radius:${RADIUS[s]}`); break;
       case 'borderWidth': root.push(`border-width:calc(var(--fx-border-w) * ${s})`, s === '0' ? 'border-style:none' : 'border-style:solid'); break;
       case 'shadow': root.push(`box-shadow:${SHADOW[s]}`); break;

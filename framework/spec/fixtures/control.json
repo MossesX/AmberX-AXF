@@ -642,6 +642,7 @@
       "grid.cellPadX",
       "grid.rowHeight",
       "grid.radius",
+      "grid.rowLines",
       "grid.groupHeaderBg",
       "grid.groupHeaderBgNested",
       "grid.groupHeaderBgDeep",

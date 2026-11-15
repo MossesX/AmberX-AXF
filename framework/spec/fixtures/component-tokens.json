@@ -4,7 +4,7 @@
     "grid": {
       "label": "Grid",
       "prefix": "--fx-grid-",
-      "tokens": 32
+      "tokens": 33
     },
     "tabs": {
       "label": "Tab group",
@@ -252,6 +252,16 @@
       "description": "Corner radius of the whole grid.",
       "path": "grid.radius",
       "var": "--fx-grid-radius"
+    },
+    {
+      "family": "grid",
+      "key": "rowLines",
+      "kind": "lines",
+      "default": "2",
+      "level": "basic",
+      "description": "Lines per collapsed item: 1 = primary and secondary cells on one line (truncated), 2 = primary, then secondary on a second line. The skin sets it; the root carries it as data-axf-row-lines.",
+      "path": "grid.rowLines",
+      "var": "--fx-grid-row-lines"
     },
     {
       "family": "grid",
@@ -939,6 +949,7 @@
     "--fx-grid-cell-pad-x": "var(--fx-size-table-pad-x)",
     "--fx-grid-row-height": "auto",
     "--fx-grid-radius": "0",
+    "--fx-grid-row-lines": "2",
     "--fx-grid-group-header-bg": "var(--fx-surface3)",
     "--fx-grid-group-header-bg-nested": "var(--fx-surface2)",
     "--fx-grid-group-header-bg-deep": "var(--fx-surface)",
@@ -1221,6 +1232,15 @@
       "default": "0",
       "level": "basic",
       "description": "Corner radius of the whole grid.",
+      "family": "grid"
+    },
+    {
+      "id": "grid.rowLines",
+      "token": "--fx-grid-row-lines",
+      "kind": "number",
+      "default": "2",
+      "level": "basic",
+      "description": "Lines per collapsed item: 1 = primary and secondary cells on one line (truncated), 2 = primary, then secondary on a second line. The skin sets it; the root carries it as data-axf-row-lines.",
       "family": "grid"
     },
     {
@@ -1843,6 +1863,7 @@
     "grid.cellPadX": "string",
     "grid.rowHeight": "string",
     "grid.radius": "string",
+    "grid.rowLines": "number",
     "grid.groupHeaderBg": "string",
     "grid.groupHeaderBgNested": "string",
     "grid.groupHeaderBgDeep": "string",
@@ -1998,91 +2019,104 @@
       "length": null,
       "shadow": null,
       "opacity": null,
-      "number": null
+      "number": null,
+      "lines": null
     },
     "accent-soft": {
       "colour": "var(--fx-accent-soft)",
       "length": null,
       "shadow": null,
       "opacity": null,
-      "number": null
+      "number": null,
+      "lines": null
     },
     "#ff8800": {
       "colour": "#ff8800",
       "length": null,
       "shadow": "#ff8800",
       "opacity": null,
-      "number": null
+      "number": null,
+      "lines": null
     },
     "rgb(1 2 3 / 50%)": {
       "colour": "rgb(1 2 3 / 50%)",
       "length": null,
       "shadow": "rgb(1 2 3 / 50%)",
       "opacity": null,
-      "number": null
+      "number": null,
+      "lines": null
     },
     "transparent": {
       "colour": "transparent",
       "length": null,
       "shadow": null,
       "opacity": null,
-      "number": null
+      "number": null,
+      "lines": null
     },
     "red;}body{display:none": {
       "colour": null,
       "length": null,
       "shadow": null,
       "opacity": null,
-      "number": null
+      "number": null,
+      "lines": null
     },
     "radius.sm": {
       "colour": "var(--fx-radius-sm)",
       "length": "var(--fx-radius-sm)",
       "shadow": null,
       "opacity": null,
-      "number": null
+      "number": null,
+      "lines": null
     },
     "dens-gap-md": {
       "colour": "var(--fx-dens-gap-md)",
       "length": "var(--fx-dens-gap-md)",
       "shadow": null,
       "opacity": null,
-      "number": null
+      "number": null,
+      "lines": null
     },
     "0.5em": {
       "colour": null,
       "length": "0.5em",
       "shadow": "0.5em",
       "opacity": null,
-      "number": null
+      "number": null,
+      "lines": null
     },
     "auto": {
       "colour": "var(--fx-auto)",
       "length": "auto",
       "shadow": null,
       "opacity": null,
-      "number": null
+      "number": null,
+      "lines": null
     },
     "shadow.md": {
       "colour": "var(--fx-shadow-md)",
       "length": null,
       "shadow": "var(--fx-shadow-md)",
       "opacity": null,
-      "number": null
+      "number": null,
+      "lines": null
     },
     "none": {
       "colour": "var(--fx-none)",
       "length": "none",
       "shadow": "none",
       "opacity": null,
-      "number": null
+      "number": null,
+      "lines": null
     },
     "big": {
       "colour": "var(--fx-big)",
       "length": null,
       "shadow": null,
       "opacity": null,
-      "number": null
+      "number": null,
+      "lines": null
     }
   },
   "instanceCases": {

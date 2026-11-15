@@ -545,6 +545,15 @@
           "family": "grid"
         },
         {
+          "id": "grid.rowLines",
+          "token": "--fx-grid-row-lines",
+          "kind": "number",
+          "default": "2",
+          "level": "basic",
+          "description": "Lines per collapsed item: 1 = primary and secondary cells on one line (truncated), 2 = primary, then secondary on a second line. The skin sets it; the root carries it as data-axf-row-lines.",
+          "family": "grid"
+        },
+        {
           "id": "grid.groupHeaderBg",
           "token": "--fx-grid-group-header-bg",
           "kind": "color",
@@ -3913,6 +3922,7 @@
           "grid.cellPadX",
           "grid.rowHeight",
           "grid.radius",
+          "grid.rowLines",
           "grid.groupHeaderBg",
           "grid.groupHeaderBgNested",
           "grid.groupHeaderBgDeep",

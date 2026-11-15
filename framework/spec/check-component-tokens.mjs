@@ -23,7 +23,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  COMPONENT_TOKEN_FAMILIES, COMPONENT_TOKEN_KINDS, COMPONENT_TOKEN_LEVELS, INSTANCE_TOKENS_KEY, componentToken, componentTokenDefaults, componentTokenError, componentTokenFields, componentTokenList,
+  COMPONENT_TOKEN_FAMILIES, COMPONENT_TOKEN_KINDS, COMPONENT_TOKEN_LEVELS, GRID_ROW_LINES_ATTR, GRID_ROW_LINES_DEFAULT, GRID_ROW_LINES_VAR, INSTANCE_TOKENS_KEY, componentToken, gridRowLines, gridRowLinesAttrs, componentTokenDefaults, componentTokenError, componentTokenFields, componentTokenList,
   componentTokenPaths, componentTokenValue, componentTokenVar, componentTokenVars, instanceHasPrevious, instanceTokenList, instanceTokenVars, normalizeInstanceTokens, parseInstanceTokenPath,
   restoreInstanceTokensFromHub, restorePreviousInstanceTokens, setInstanceToken,
 } from '../core/engines/component-tokens.mjs';
@@ -40,7 +40,7 @@ const list = componentTokenList();
 ok(list.length >= 80, `at least 80 tokens across the families (${list.length})`);
 const vars = list.map((x) => x.var);
 eq(vars.length, new Set(vars).size, 'every token has its own variable');
-const DEFAULT_OK = /^(var\(--fx-[a-z0-9-]+\)|transparent|currentColor|inherit|auto|none|0|1|600|2px|999px|color-mix\(in srgb, var\(--fx-[a-z0-9-]+\) calc\(var\(--fx-opacity-[a-z]+\) \* 100%\), transparent\))$/;
+const DEFAULT_OK = /^(var\(--fx-[a-z0-9-]+\)|transparent|currentColor|inherit|auto|none|0|1|2|600|2px|999px|color-mix\(in srgb, var\(--fx-[a-z0-9-]+\) calc\(var\(--fx-opacity-[a-z]+\) \* 100%\), transparent\))$/;
 for (const x of list) {
   ok(COMPONENT_TOKEN_KINDS.includes(x.kind), `${x.path}: known kind (${x.kind})`);
   ok(COMPONENT_TOKEN_LEVELS.includes(x.level), `${x.path}: known level (${x.level})`);
@@ -54,6 +54,16 @@ ok(!vars.includes('--fx-tab-py') && !vars.includes('--fx-tab-px') && !vars.inclu
 for (const k of ['headerBg', 'headerText', 'headerBorder', 'sortArrow', 'rowBg', 'rowAltBg', 'hoverBg', 'selectedBg', 'focusRing', 'expandedBg', 'disabledOpacity', 'lineColor', 'outerBorder', 'cellPadY', 'cellPadX', 'rowHeight', 'radius', 'groupHeaderBg', 'stickyShadow', 'emptyText', 'opacity']) ok(componentToken('grid', k), `grid token ${k}`);
 for (const k of ['barBg', 'barBorder', 'text', 'bg', 'border', 'hoverText', 'hoverBg', 'activeText', 'activeBg', 'pressedText', 'pressedBg', 'disabledText', 'focusRing', 'indicator', 'indicatorSize', 'badgeBg', 'badgeText', 'foldBg', 'gap', 'radiusUnderline', 'radiusPills', 'radiusBoxed', 'radiusSegmented', 'radiusPlain', 'radiusChips', 'opacity']) ok(componentToken('tabs', k), `tabs token ${k}`);
 eq(componentToken('grid', 'opacity').default, '1', 'grid transparency defaults to 100%');
+// grid.rowLines (every-grid-1-2-rows-per-item-set-skin): 1 | 2, default 2, variable + root attribute hook
+eq(componentToken('grid', 'rowLines')?.kind, 'lines', 'grid.rowLines is a lines token');
+eq(componentToken('grid', 'rowLines')?.default, String(GRID_ROW_LINES_DEFAULT), 'grid.rowLines defaults to 2');
+eq(componentTokenVar('grid', 'rowLines'), GRID_ROW_LINES_VAR, 'grid.rowLines → --fx-grid-row-lines');
+eq(componentTokenValue('lines', 1), '1', 'lines: 1'); eq(componentTokenValue('lines', '2'), '2', 'lines: "2"'); eq(componentTokenValue('lines', 3), null, 'lines: not 3'); eq(componentTokenValue('lines', '1.5'), null, 'lines: not a fraction');
+eq(gridRowLines(null), 2, 'no theme → 2 lines'); eq(gridRowLines({ grid: { rowLines: 1 } }), 1, 'a 1-line theme'); eq(gridRowLines({ grid: { rowLines: '7' } }), 2, 'a bad value → the default');
+eq(gridRowLinesAttrs({ grid: { rowLines: '1' } }), { [GRID_ROW_LINES_ATTR]: '1' }, 'the root attribute hook'); eq(GRID_ROW_LINES_ATTR, 'data-axf-row-lines', 'the hook name');
+eq(componentTokenVars({ grid: { rowLines: 1 } }), { '--fx-grid-row-lines': '1' }, 'rowLines compiles to its variable');
+eq(componentTokenFields()['grid.rowLines'], 'number', 'control@1 tokens.style grid.rowLines is a number');
+ok(componentTokenError('grid', 'rowLines', 3)?.includes('1 or 2'), 'a bad rowLines names the two values');
 eq(componentToken('tabs', 'opacity').default, '1', 'tab transparency defaults to 100%');
 
 /* ---- :root block ---- */

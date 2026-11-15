@@ -8,7 +8,7 @@ import { SettingsRegistry, type SettingValue } from './settings';
 import { AssetRegistry, serializeAsset, type RegisteredAsset } from './registry';
 import { announceWatchLiveRuntime } from './watch-live';
 import { ActionBus, FRAMEWORK_MODULE, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
-import { colorThemeVars, scrollbarVars, styleThemeVars, type VarMap } from './engines/theme';
+import { colorThemeVars, scrollbarVars, styleThemeAttrs, styleThemeVars, type VarMap } from './engines/theme';
 import { scaleThemeVars } from './engines/scale';
 import { LAYOUT_VIEWPORTS, layoutViewports, layoutVars } from './engines/layout';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from './engines/components';
@@ -2835,9 +2835,10 @@ export class AxfRuntime {
       meterStyle(this.assetOrNull('meter')?.data),
       tabGroupStyle(this.assetOrNull('tab-group')?.data, this.slotHidden('tab-group')),
     ];
+    const styleData = this.withTokenOverrides('tokens.style', 'style-theme', this.asset('style-theme').data);
     const vars: VarMap = {
       ...colorThemeVars(color),
-      ...styleThemeVars(this.withTokenOverrides('tokens.style', 'style-theme', this.asset('style-theme').data), this.spacing()),
+      ...styleThemeVars(styleData, this.spacing()),
       ...scrollbarVars(this.asset('style-theme').data),
       // the scale assets (typography, density, sizing): every size the stylesheet and components read; defaults when an app has none
       ...scaleThemeVars({
@@ -2861,7 +2862,8 @@ export class AxfRuntime {
     if (navStyle) parts.push(navStyleOutput(navStyle, { reducedMotion, collapsed: this.settings.get(NAV_COLLAPSED_KEY) === true, width: Number(this.settings.get(NAV_WIDTH_KEY)) || null }));
     // the window manager follows the behaviour theme's `windows` group (stack / snap / minimize) from the same compile
     this.windows.setPlacement(normalizeBehavior(behavior).windows);
-    const attrs: Record<string, string> = { 'data-fx-scheme': color.scheme, ...this.viewportAttrs() };
+    // grid.rowLines (component-tokens@1): the root carries data-axf-row-lines="1|2" beside --fx-grid-row-lines
+    const attrs: Record<string, string> = { 'data-fx-scheme': color.scheme, ...this.viewportAttrs(), ...styleThemeAttrs(styleData) };
     const brandId = this.state.active['branding' as AssetType];
     if (brandId) attrs['data-fx-brand'] = brandId;
     if (this.busyCount > 0 && normalizeBehavior(behavior).feedback.busyCursor) attrs['data-fx-busy'] = '1';

@@ -4,7 +4,7 @@
  * a theme asset restyles the whole app without a re-render.
  */
 import type { ColorThemeData, StyleThemeData } from '../types';
-import { componentTokenVars } from './component-tokens.mjs';
+import { componentTokenVars, gridRowLinesAttrs } from './component-tokens.mjs';
 import { ROW_MIN, SPACING_K, spacedRadius, type Spacing } from './spacing';
 
 export type VarMap = Record<string, string>;
@@ -86,6 +86,14 @@ export function styleThemeVars(s: StyleThemeData, spacing: Spacing = 'regular'):
     // component-tokens@1: the grid and tab-group families a theme names (optional; the :root defaults stand otherwise)
     ...componentTokenVars(s),
   };
+}
+
+/**
+ * The root attributes a style theme sets beside its variables (grid.rowLines → data-axf-row-lines="1|2", default 2):
+ * the hook every grid's stylesheet and the row-slot engine (grid-rows@1) select on. Spread into the runtime's attrs.
+ */
+export function styleThemeAttrs(s: Pick<StyleThemeData, 'grid'> | undefined | null): Record<string, string> {
+  return gridRowLinesAttrs(s);
 }
 
 /** Build option --wrap-groups as a style token: true only when the theme says exactly `true` (default off). */

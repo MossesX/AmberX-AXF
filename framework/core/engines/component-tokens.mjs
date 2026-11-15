@@ -32,6 +32,7 @@
  *   shadow   a CSS shadow, `none`, or `shadow.sm` / `shadow.md` / `shadow.lg`
  *   opacity  a number 0..1 (1 = opaque; the component's background is mixed with transparent by it)
  *   number   a plain finite number (a weight)
+ *   lines    1 or 2 (rows per collapsed item; grid.rowLines)
  *
  * Pure: no IO, no DOM. Shared by the theme engine (styleThemeVars), the runtime, control-rules (paths + validation),
  * the TabGroup and DataGrid controls (per-instance vars), the CI check and gen-fixtures. Kotlin twin deferred
@@ -40,7 +41,20 @@
 
 export const COMPONENT_TOKENS_CONTRACT = 'component-tokens@1';
 export const COMPONENT_TOKEN_LEVELS = ['basic', 'pro', 'advanced'];
-export const COMPONENT_TOKEN_KINDS = ['colour', 'length', 'shadow', 'opacity', 'number'];
+export const COMPONENT_TOKEN_KINDS = ['colour', 'length', 'shadow', 'opacity', 'number', 'lines'];
+
+/**
+ * grid.rowLines (build every-grid-1-2-rows-per-item-set-skin, Nov 15 2026). Brett: "every grid supposed to be 1 or 2
+ * rows depending on the skin". One token of kind `lines`: 1 or 2, default 2. It compiles to --fx-grid-row-lines like
+ * every grid token AND the runtime mirrors it on the root as data-axf-row-lines="1|2" (GRID_ROW_LINES_ATTR), the hook
+ * the stylesheets and the row-slot engine (grid-rows@1, core/engines/grid-rows.ts) select on. A skin sets it under
+ * skin.grid.rowLines (skin@1, resolveLookSkin folds hub → app → ui:<view> → plugin:<id>); a style theme under
+ * data.grid.rowLines; one grid alone through tokens.instances `grid.<instance>.rowLines`.
+ */
+export const GRID_ROW_LINES_VALUES = [1, 2];
+export const GRID_ROW_LINES_DEFAULT = 2;
+export const GRID_ROW_LINES_VAR = '--fx-grid-row-lines';
+export const GRID_ROW_LINES_ATTR = 'data-axf-row-lines';
 
 const kebab = (s) => s.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`);
 const t = (key, kind, def, level, description) => ({ key, kind, default: def, level, description });
@@ -80,6 +94,7 @@ export const COMPONENT_TOKEN_FAMILIES = {
       t('cellPadX', 'length', 'var(--fx-size-table-pad-x)', 'pro', 'Horizontal cell padding (table cells).'),
       t('rowHeight', 'length', 'auto', 'pro', 'Minimum row height; auto = as tall as the content.'),
       t('radius', 'length', '0', 'basic', 'Corner radius of the whole grid.'),
+      t('rowLines', 'lines', '2', 'basic', 'Lines per collapsed item: 1 = primary and secondary cells on one line (truncated), 2 = primary, then secondary on a second line. The skin sets it; the root carries it as data-axf-row-lines.'),
       // groups, sticky, empty
       t('groupHeaderBg', 'colour', 'var(--fx-surface3)', 'pro', 'Background of a top-level group header row.'),
       t('groupHeaderBgNested', 'colour', 'var(--fx-surface2)', 'advanced', 'Background of a second-level group header row.'),
@@ -215,6 +230,7 @@ const tokenVar = (name) => `var(--fx-${name.split('.').map(kebab).join('-')})`;
  */
 export function componentTokenValue(kind, raw) {
   if (raw === undefined || raw === null) return null;
+  if (kind === 'lines') { const n = typeof raw === 'number' ? raw : typeof raw === 'string' && /^\d$/.test(raw.trim()) ? Number(raw) : NaN; return GRID_ROW_LINES_VALUES.includes(n) ? String(n) : null; }
   if (kind === 'opacity') { const n = typeof raw === 'number' ? raw : typeof raw === 'string' && /^\d*\.?\d+$/.test(raw.trim()) ? Number(raw) : NaN; return Number.isFinite(n) ? String(Math.min(1, Math.max(0, n))) : null; }
   if (kind === 'number') { const n = typeof raw === 'number' ? raw : typeof raw === 'string' && /^-?\d*\.?\d+$/.test(raw.trim()) ? Number(raw) : NaN; return Number.isFinite(n) ? String(n) : typeof raw === 'string' && raw.trim() === 'inherit' ? 'inherit' : null; }
   if (kind === 'length' && typeof raw === 'number') return Number.isFinite(raw) ? `${raw}px` : null;
@@ -240,6 +256,7 @@ export function componentTokenError(family, key, raw) {
     shadow: 'a CSS shadow, none, or shadow.sm / shadow.md / shadow.lg',
     opacity: 'a number from 0 to 1',
     number: 'a number',
+    lines: '1 or 2 (lines per collapsed row)',
   }[tok.kind];
   return `${family}.${key} wants ${want}`;
 }
@@ -266,12 +283,27 @@ export function componentTokenVars(style) {
 
 /** The style-theme fields of every component token, for control@1 tokens.style: { 'grid.headerBg': 'string', … }. */
 export function componentTokenFields() {
-  return Object.fromEntries(componentTokenList().map((x) => [x.path, x.kind === 'opacity' || x.kind === 'number' ? 'number' : 'string']));
+  return Object.fromEntries(componentTokenList().map((x) => [x.path, NUMERIC_KINDS.includes(x.kind) ? 'number' : 'string']));
 }
+const NUMERIC_KINDS = ['opacity', 'number', 'lines'];
 
 /** control@1 tokens.style path rows for the component tokens (id, token, kind, default, level, description, family). */
 export function componentTokenPaths() {
-  return componentTokenList().map((x) => ({ id: x.path, token: x.var, kind: x.kind === 'colour' ? 'color' : x.kind === 'opacity' || x.kind === 'number' ? 'number' : 'string', default: x.default, level: x.level, description: x.description, family: x.family }));
+  return componentTokenList().map((x) => ({ id: x.path, token: x.var, kind: x.kind === 'colour' ? 'color' : NUMERIC_KINDS.includes(x.kind) ? 'number' : 'string', default: x.default, level: x.level, description: x.description, family: x.family }));
+}
+
+/* ------------------------------------------------------------------ grid.rowLines */
+
+/** The lines per collapsed grid row a style theme (or a skin's grid block) asks for: 1 or 2; anything else = the default 2. */
+export function gridRowLines(style) {
+  const raw = style && typeof style === 'object' ? style.grid?.rowLines : undefined;
+  const v = componentTokenValue('lines', raw);
+  return v === null ? GRID_ROW_LINES_DEFAULT : Number(v);
+}
+
+/** The root attribute hook the runtime sets beside the variable: { 'data-axf-row-lines': '1' | '2' }. */
+export function gridRowLinesAttrs(style) {
+  return { [GRID_ROW_LINES_ATTR]: String(gridRowLines(style)) };
 }
 
 /* ------------------------------------------------------------------ per-instance overrides */

@@ -1740,6 +1740,9 @@
                         },
                         "gap": {
                           "$ref": "#/$defs/mode"
+                        },
+                        "rowLines": {
+                          "$ref": "#/$defs/mode"
                         }
                       }
                     }
@@ -3166,6 +3169,9 @@
                           "$ref": "#/$defs/mode"
                         },
                         "gap": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "rowLines": {
                           "$ref": "#/$defs/mode"
                         }
                       }

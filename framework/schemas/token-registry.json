@@ -1,7 +1,7 @@
 {
   "$axf": "token-registry@1",
   "version": 1,
-  "updatedAt": "2026-11-14",
+  "updatedAt": "2026-11-15",
   "tokens": [
     {
       "id": "--fx-accent",
@@ -1771,6 +1771,21 @@
       "default": "auto",
       "source": "framework/ui/axf.css",
       "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-row-lines",
+      "element": "grid",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Grid: lines per collapsed item, 1 (primary and secondary inline, truncated) or 2 (primary, then secondary); set by the skin (grid.rowLines), mirrored on the root as data-axf-row-lines.",
+      "default": "2",
+      "source": "engine:framework/core/engines/component-tokens.mjs",
+      "sources": [
+        "engine:framework/core/engines/component-tokens.mjs",
         "framework/ui/axf.css"
       ]
     },
