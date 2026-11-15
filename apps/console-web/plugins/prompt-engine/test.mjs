@@ -180,6 +180,76 @@ await test('build-hook listener: build events become prompt events, failed and b
   assert.equal(res.seen, 2); assert.ok(res.fired >= 1, 'the failed-build rule fired for a new build id');
 });
 
+await test('tool sets: outside the set a tool is blocked and stops the run; inside it runs; no set = open; the tools list says which', async () => {
+  calls.length = 0;
+  assert.equal(R.runTool('activity', 'items', {}, { exec: fakeExec }).ok, true, 'no tool set yet: every tool may run');
+  const bad = R.toolsets.add({ id: 'bad', tools: ['console.zap', 'Nope!'] });
+  assert.equal(bad.ok, false); assert.deepEqual(bad.errors.map((e) => e.field), ['tools.0', 'tools.1']);
+  const t = R.toolsets.add({ id: 'review', title: 'Review tools', tools: ['ui-review.*', 'console.open'] });
+  assert.equal(t.ok, true); assert.deepEqual(t.toolset.tools, ['ui-review.*', 'console.open']);
+  const denied = R.runTool('activity', 'items', {}, { exec: fakeExec });
+  assert.equal(denied.ok, false); assert.equal(denied.code, 'denied'); assert.equal(denied.tool, 'activity.items');
+  const okRun = R.runTool('ui-review', 'list', { group: 'x' }, { exec: fakeExec, by: 'test' });
+  assert.equal(okRun.ok, true); assert.equal(okRun.toolset, 'review'); assert.equal(okRun.record.kind, 'tool'); assert.equal(okRun.record.status, 'done'); assert.deepEqual(calls.at(-1), ['tool', { plugin: 'ui-review', command: 'list', input: { group: 'x' } }]);
+  const con = R.runTool('console', 'open', { address: 'builds' }, { exec: fakeExec });
+  assert.equal(con.ok, true); assert.equal(con.tool, 'console.open'); assert.deepEqual(calls.at(-1), ['console', { verb: 'open', address: 'builds' }]);
+  assert.equal(R.runTool('console', 'press', {}, { exec: fakeExec }).code, 'denied');
+  // the cleanup macro's tool.run step (ui-review list) is in the set; a macro naming an outside tool stops there
+  calls.length = 0;
+  R.macros.add({ id: 'outside', title: 'Outside', steps: [{ action: 'tool.run', input: { plugin: 'activity', command: 'items' } }, { action: 'log.note', input: { text: 'never' } }] });
+  const m = R.runMacro('outside', {}, { exec: fakeExec });
+  assert.equal(m.ok, false); assert.deepEqual(m.toolsBlocked, ['activity.items']); assert.equal(m.failed[0].code, 'denied'); assert.equal(m.ran.length, 0, 'stopped at the blocked tool'); assert.equal(m.record.status, 'failed');
+  assert.deepEqual(calls, []);
+  assert.ok(R.readAudit().some((l) => l.kind === 'blocked' && l.detail?.tool === 'activity.items'), 'a blocked line in history');
+  const list = R.tools();
+  assert.equal(list.ok, true); assert.equal(list.open, false); assert.ok(list.counts.tools > 0);
+  const uiReview = list.items.find((i) => i.key === 'ui-review.list'); const act = list.items.find((i) => i.key === 'activity.items');
+  if (uiReview) { assert.equal(uiReview.allowed, true); assert.equal(uiReview.set, 'review'); }
+  if (act) assert.equal(act.allowed, false);
+  assert.deepEqual(R.tools({ set: 'review' }).items.filter((i) => i.kind === 'console').map((i) => i.key), ['console.open']);
+  assert.equal(R.tools({ set: 'nope' }).code, 'not_found');
+  assert.equal(R.setToolsetEnabled('review', false).toolset.enabled, false);
+  assert.equal(R.tools().open, true, 'a disabled set does not count');
+  assert.equal(R.runTool('activity', 'items', {}, { exec: fakeExec }).ok, true);
+  assert.equal(R.setToolsetEnabled('review', true).toolset.enabled, true);
+  assert.equal(R.toolsets.update('review', { tools: ['ui-review.*', 'console.*', 'activity.items'] }).ok, true);
+  assert.equal(R.runTool('activity', 'items', {}, { exec: fakeExec }).ok, true, 'added to the set');
+  assert.equal(R.toolsets.remove('review', 'x').code, 'confirmation_required');
+});
+
+await test('direct runs: a macro with params, a pipeline that waits at its gate and resumes into the same run record, deny stops it', async () => {
+  calls.length = 0;
+  const m = R.runMacro('cleanup', { build: 'b42' }, { exec: fakeExec, by: 'brett' });
+  assert.equal(m.ok, true); assert.equal(m.macro, 'cleanup'); assert.deepEqual(m.ran.map((x) => x.action), ['build.note', 'tool.run']); assert.equal(calls[0][1].build, 'b42');
+  assert.equal(m.record.kind, 'macro'); assert.equal(m.record.target, 'cleanup'); assert.equal(m.record.status, 'done');
+  assert.equal(R.runMacro('nope').code, 'not_found');
+  const dry = R.runMacro('cleanup', { build: 'b43' }, { exec: fakeExec, dry: true });
+  assert.equal(dry.dry, true); assert.equal(dry.steps.length, 3); assert.equal(dry.record, undefined, 'a dry run leaves no record');
+  calls.length = 0;
+  const p = R.runPipeline('ship', { build: 'b44' }, { exec: fakeExec, by: 'brett' });
+  assert.equal(p.ok, true); assert.equal(p.stages, 2); assert.equal(p.record.status, 'waiting'); assert.equal(p.waitingAt.stage, 1); assert.equal(p.waitingAt.title, 'Go live with b44?');
+  assert.equal(p.dispatch[0].kind, 'ask'); assert.equal(p.asked[0].run, p.record.id, 'the gate prompt knows its run');
+  const rec = R.runRecordOf(p.record.id).run;
+  assert.equal(rec.status, 'waiting'); assert.deepEqual(rec.resume, { pipeline: 'ship', stage: 1, params: { build: 'b44' } }); assert.deepEqual(rec.asked, [p.asked[0].id]);
+  assert.equal(R.runs({ status: 'waiting' }).items[0].id, p.record.id);
+  const a = R.answer(p.asked[0].id, 'approve', { exec: fakeExec, by: 'brett' });
+  assert.equal(a.ok, true); assert.equal(a.run.record.id, p.record.id, 'the same record carries on'); assert.equal(a.run.record.status, 'done');
+  const after = R.runRecordOf(p.record.id).run;
+  assert.equal(after.status, 'done'); assert.deepEqual(after.ran.map((x) => x.action), ['build.note', 'build.note', 'tool.run']); assert.equal(after.resume, undefined); assert.ok(after.finishedAt);
+  const p2 = R.runPipeline('ship', { build: 'b45' }, { exec: fakeExec });
+  const d = R.answer(p2.asked[0].id, 'deny', { exec: fakeExec });
+  assert.equal(d.ok, true); assert.equal(d.run.record.status, 'stopped');
+  assert.equal(R.runRecordOf(p2.record.id).run.status, 'stopped'); assert.match(R.runRecordOf(p2.record.id).run.errors[0].message, /denied at stage 2/);
+  assert.equal(R.runPipeline('nope').code, 'not_found'); assert.equal(R.runRecordOf('nope').code, 'not_found');
+  const all = R.runs();
+  assert.ok(all.counts.total >= 4); assert.deepEqual(R.runs({ kind: 'pipeline', target: 'ship' }).items.map((r) => r.status), ['stopped', 'done']);
+  assert.ok(R.runs({ rule: 'build-failed-retry' }).items.length >= 1, 'rule-fired runs are recorded too');
+  for (const r of R.loadRuns()) { assert.equal(r.$axf, 'prompt-run@1'); assert.ok(E.RUN_STATUSES.includes(r.status)); }
+  // two runs of one target within a second get distinct ids
+  const x = R.runMacro('cleanup', { build: 'x1' }, { exec: fakeExec }); const y = R.runMacro('cleanup', { build: 'x2' }, { exec: fakeExec });
+  assert.notEqual(x.record.id, y.record.id);
+});
+
 await test('CLI: exit codes 0 / 1 / 2 / 3 and --json', async () => {
   const cli = (...a) => spawnSync(process.execPath, [join(HERE, 'engine.mjs'), ...a], { encoding: 'utf8', env: { ...process.env, AXF_PROMPT_ENGINE_DIR: T } });
   assert.equal(cli('state', '--json').status, 0);
@@ -192,10 +262,20 @@ await test('CLI: exit codes 0 / 1 / 2 / 3 and --json', async () => {
   assert.match(cli('rules').stdout, /build-failed-retry/);
   const h = JSON.parse(cli('history', '--kind', 'rule', '--limit', '3', '--json').stdout);
   assert.equal(h.items.length, 3); assert.ok(h.items.every((l) => l.kind === 'rule'));
+  assert.equal(cli('toolsets').status, 0); assert.match(cli('toolsets').stdout, /review/);
+  assert.equal(cli('run-tool', 'console', 'press', '--json').status, 1, 'denied tool exits 1');
+  const rm = JSON.parse(cli('run-macro', 'cleanup', '{"build":"cli"}', '--dry', '--json').stdout);
+  assert.equal(rm.ok, true); assert.equal(rm.dry, true);
+  assert.equal(cli('run-pipeline').status, 2);
+  const rs = JSON.parse(cli('runs', '--kind', 'macro', '--limit', '2', '--json').stdout);
+  assert.equal(rs.items.length, 2); assert.ok(rs.items.every((r) => r.kind === 'macro'));
+  assert.equal(cli('run-record', 'nope').status, 1);
+  const tl = JSON.parse(cli('tools', '--set', 'review', '--json').stdout);
+  assert.equal(tl.ok, true); assert.ok(tl.items.every((i) => i.set === 'review'));
 });
 
 await test('data stays in the data folder; audit lines are prompt-audit@1', async () => {
-  for (const f of ['rules.json', 'macros.json', 'pipelines.json', 'instances.json', 'state.json', 'audit.jsonl', 'manifests.json']) assert.ok(readFileSync(join(T, f), 'utf8').length > 0, f);
+  for (const f of ['rules.json', 'macros.json', 'pipelines.json', 'toolsets.json', 'runs.json', 'instances.json', 'state.json', 'audit.jsonl', 'manifests.json']) assert.ok(readFileSync(join(T, f), 'utf8').length > 0, f);
   for (const l of R.readAudit()) { assert.equal(l.$axf, 'prompt-audit@1'); assert.ok(E.AUDIT_KINDS.includes(l.kind), l.kind); }
 });
 

@@ -113,6 +113,9 @@
     "resume": {
       "type": "object"
     },
+    "run": {
+      "type": "string"
+    },
     "keysNeeded": {
       "type": "array",
       "items": {

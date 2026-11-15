@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/prompt-run.schema.json",
+  "title": "prompt-run@1: one run of a tool, macro, pipeline or action list by the prompting engine",
+  "type": "object",
+  "required": [
+    "id",
+    "kind",
+    "status",
+    "startedAt"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$axf": {
+      "const": "prompt-run@1"
+    },
+    "id": {
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "tool",
+        "macro",
+        "pipeline",
+        "actions"
+      ]
+    },
+    "target": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "params": {
+      "type": "object"
+    },
+    "status": {
+      "enum": [
+        "done",
+        "failed",
+        "waiting",
+        "stopped",
+        "dry"
+      ]
+    },
+    "rule": {
+      "type": "string"
+    },
+    "instance": {
+      "type": "string"
+    },
+    "by": {
+      "type": "string"
+    },
+    "startedAt": {
+      "type": "string"
+    },
+    "finishedAt": {
+      "type": "string"
+    },
+    "planned": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "ran": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "at": {
+            "type": "string"
+          },
+          "result": {}
+        }
+      }
+    },
+    "failed": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "action",
+          "error"
+        ],
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "at": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "asked": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "at": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "toolsBlocked": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "keysNeeded": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "resume": {
+      "type": "object"
+    }
+  }
+}

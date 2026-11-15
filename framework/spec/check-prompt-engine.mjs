@@ -4,8 +4,9 @@
  * builder options, rule / macro / pipeline / manifest validation with the field named, templates and paths, every
  * condition operator and AND / OR / NOT groups, trigger filters, cooldown / dedupe / rate limits, prompt instances,
  * answers (approve, deny, pick by id / number / label, text, later, veto timeout, pick default), planning (macro
- * expansion with params, cycles, depth, pipelines with gates and resume, missing connectors = keys needed), audit
- * lines, the templates, the registry snapshot and the JSON Schemas (`axf schemas`).
+ * expansion with params, cycles, depth, pipelines with gates and resume, missing connectors = keys needed), tool sets
+ * (the set tools the engine may run: matching, blocking in plans, the tools list), run records (waiting at a gate,
+ * continued, stopped), audit lines, the templates, the registry snapshot and the JSON Schemas (`axf schemas`).
  *
  *   node framework/spec/check-prompt-engine.mjs           check against fixtures/prompt-engine.json
  *   node framework/spec/check-prompt-engine.mjs --write   regenerate the fixture's expected outputs
@@ -111,7 +112,7 @@ function run() {
     expire: E.expireInstances([veto, inst, { ...veto, id: 'v2', status: 'answered' }], { [vetoRule.id]: vetoRule, [failedRule.id]: failedRule }, later(100)).map((r) => [r.instance.id, r.branch, r.actions.length]),
     notYet: E.expireInstances([veto], { [vetoRule.id]: vetoRule }, later(10)).length };
   // planning
-  const plan = (actions, extra = {}) => { const p = E.plan(actions, { registry: reg, macros: [macro, loopA, loopB], pipelines: [pipeline], ctx: { params: {}, build: { id: 'b1' } }, ...extra }); return { steps: p.steps.map((s) => ({ action: s.action, input: s.input, ...(s.marker ? { marker: s.marker } : {}), ...(s.blocked ? { blocked: s.blocked } : {}), ...(s.confirm ? { confirm: true } : {}), ...(s.brettOnly ? { brettOnly: true } : {}) })), errors: p.errors, keysNeeded: p.keysNeeded, gate: p.gate ? { pipeline: p.gate.pipeline, stage: p.gate.stage } : null, runnable: p.runnable, ok: p.ok }; };
+  const plan = (actions, extra = {}) => { const p = E.plan(actions, { registry: reg, macros: [macro, loopA, loopB], pipelines: [pipeline], ctx: { params: {}, build: { id: 'b1' } }, ...extra }); return { steps: p.steps.map((s) => ({ action: s.action, input: s.input, ...(s.marker ? { marker: s.marker } : {}), ...(s.blocked ? { blocked: s.blocked } : {}), ...(s.confirm ? { confirm: true } : {}), ...(s.brettOnly ? { brettOnly: true } : {}), ...(s.tool ? { tool: s.tool } : {}), ...(s.toolset ? { toolset: s.toolset } : {}) })), errors: p.errors, keysNeeded: p.keysNeeded, toolsBlocked: p.toolsBlocked, gate: p.gate ? { pipeline: p.gate.pipeline, stage: p.gate.stage } : null, runnable: p.runnable, ok: p.ok }; };
   out.plan = {
     direct: plan([{ action: 'build.archive', input: { build: '{{build.id}}' } }, { action: 'build.delete', input: { build: 'x' } }, { action: 'build.approve-upgrade', input: { build: 'x', phase: 1 } }]),
     macro: plan([{ action: 'macro.run', input: { macro: 'cleanup', params: { build: 'b7' } } }]),
@@ -130,6 +131,41 @@ function run() {
   out.audit = { entry: E.auditEntry('answered', { rule: 'r', instance: 'i', event: 'e', reason: 'why', extra: 1 }, AT, 'brett'), unknownKind: E.auditEntry('zz', 'text', AT).kind, history: E.historyOf([{ kind: 'fired', rule: 'a', at: '1' }, { kind: 'ran', rule: 'b', at: '2' }, { kind: 'fired', rule: 'a', at: '3' }], { rule: 'a' }, 5), limited: E.historyOf([{ kind: 'x' }, { kind: 'y' }, { kind: 'z' }], {}, 2) };
   out.templates = E.TEMPLATES.map((x) => ({ id: x.id, group: x.group, event: E.fromTemplate(x.id).trigger.event, ask: E.fromTemplate(x.id).ask.kind }));
   out.fromTemplate = { override: (() => { const r = E.fromTemplate('watchdog-danger', { id: 'my-watch', title: 'Mine', enabled: false }, { now: AT }); return { id: r.id, title: r.title, enabled: r.enabled, template: r.template, createdAt: r.createdAt }; })(), unknown: E.fromTemplate('nope') };
+  // tool sets: the set tools the engine may run
+  const sets = [{ id: 'review', title: 'Review tools', tools: ['ui-review.*', 'console.open', 'Build-Orchestrator.Act'] }, { id: 'off', tools: ['*'], enabled: false }];
+  const toolStep = (plugin, command) => ({ action: 'tool.run', input: { plugin, command } });
+  out.toolsets = {
+    norm: E.normToolset(sets[0], { now: AT }),
+    validate: { ok: E.validateToolset(sets[0]).ok, empty: E.validateToolset({ id: 'x', tools: [] }).errors.map((e) => e.field), bad: E.validateToolset({ id: 'x', tools: ['ui-review.decide', 'console.zap', 'Bad Tool!', 5] }).errors.map((e) => e.field), noId: E.validateToolset({ tools: ['a.b'] }).errors.map((e) => e.field) },
+    keys: [E.toolKey(toolStep('ui-review', 'decide')), E.toolKey({ action: 'console.command', input: { verb: 'Open' } }), E.toolKey({ action: 'build.note', input: {} }), E.toolKey(toolStep('', 'x')), E.toolKey(null)],
+    matches: [['ui-review.*', 'ui-review.decide'], ['ui-review.*', 'ui-review'], ['ui-review.*', 'ui-reviewer.x'], ['*', 'anything.at.all'], ['console.open', 'console.open'], ['console.open', 'console.press'], ['', 'x']].map(([p, k]) => E.toolMatches(p, k)),
+    allowed: { inSet: E.toolAllowed(sets, toolStep('ui-review', 'decide')), outside: E.toolAllowed(sets, toolStep('activity', 'items')), console: E.toolAllowed(sets, { action: 'console.command', input: { verb: 'open' } }), consoleOut: E.toolAllowed(sets, { action: 'console.command', input: { verb: 'press' } }), notGoverned: E.toolAllowed(sets, { action: 'build.note', input: { build: 'b' } }), noSets: E.toolAllowed([], toolStep('activity', 'items')), onlyOff: E.toolAllowed([sets[1]], toolStep('activity', 'items')), noKey: E.toolAllowed(sets, { action: 'tool.run', input: {} }) },
+    plan: plan([toolStep('activity', 'items'), toolStep('ui-review', 'list'), { action: 'console.command', input: { verb: 'open', address: 'a' } }, { action: 'log.note', input: { text: 'after' } }], { toolsets: sets }),
+    planOpen: plan([toolStep('activity', 'items')], { toolsets: [] }).steps.map((s) => [s.action, s.blocked ?? null]),
+    list: (() => { const l = E.toolList(sets, [{ id: 'ui-review', title: 'UI Review', commands: [{ id: 'list', title: 'List', readOnly: true }, { id: 'decide', title: 'Decide' }] }, { id: 'activity', commands: [{ id: 'items' }] }]); return { open: l.open, counts: l.counts, items: l.items.map((i) => [i.key, i.allowed, i.set, i.effect]), sets: l.sets }; })(),
+    listOne: E.toolList(sets, [{ id: 'ui-review', commands: [{ id: 'list' }] }, { id: 'activity', commands: [{ id: 'items' }] }], { set: 'review' }).items.map((i) => i.key),
+    listOpen: E.toolList([], [{ id: 'activity', commands: [{ id: 'items' }] }]).items.slice(0, 1).map((i) => [i.key, i.allowed]),
+  };
+  // run records
+  const runRes = { planned: 3, ran: [{ action: 'log.note', at: 'direct:pipeline:ship > pipeline:ship > prep > log.note', result: { note: 'x' } }], failed: [], asked: [{ id: 'i1', title: 'Go live?', resume: { pipeline: 'ship', stage: 1, params: { build: 'b7' } } }], errors: [], toolsBlocked: [], keysNeeded: [] };
+  const waitingRun = E.runRecord({ kind: 'pipeline', target: 'ship', title: 'Ship it', params: { build: 'b7' }, by: 'brett', startedAt: AT, ...runRes }, { now: AT });
+  out.runs = {
+    id: [E.runId('pipeline', 'ship', AT), E.runId('', '', AT), E.runId('tool', 'ui-review.decide', AT)],
+    waiting: waitingRun,
+    done: E.runRecord({ kind: 'macro', target: 'cleanup', ran: [{ action: 'build.note', at: 'x' }], planned: 1 }, { now: AT }),
+    failed: E.runRecord({ kind: 'tool', target: 'activity.items', failed: [{ action: 'tool.run', at: 'x', error: 'tool activity.items is not in a tool set', code: 'denied' }], toolsBlocked: ['activity.items'] }, { now: AT }),
+    errors: E.runRecord({ kind: 'actions', rule: 'r', errors: [{ at: 'run', message: 'no macro nope' }] }, { now: AT }).status,
+    dry: E.runRecord({ kind: 'macro', target: 'm', dry: true }, { now: AT }).status,
+    badKind: E.runRecord({ kind: 'zz', status: 'zz' }, { now: AT }),
+    notObject: E.runRecord('x'),
+    continued: E.continueRun(waitingRun, { planned: 2, ran: [{ action: 'notify.push', at: 'y' }, { action: 'log.note', at: 'z' }], failed: [], asked: [] }, later(60)),
+    continuedWaiting: E.continueRun(waitingRun, { planned: 1, ran: [], failed: [], asked: [{ id: 'i2', resume: { pipeline: 'ship', stage: 2, params: {} } }] }, later(60)),
+    continuedFailed: E.continueRun(waitingRun, { planned: 1, ran: [], failed: [{ action: 'build.note', at: 'y', error: 'no such build' }], asked: [] }, later(60)).status,
+    of: E.runsOf([{ id: 'a', kind: 'tool', target: 'x', status: 'done' }, { id: 'b', kind: 'macro', target: 'm', status: 'failed', rule: 'r' }, { id: 'c', kind: 'macro', target: 'm', status: 'done' }], { kind: 'macro' }, 5).map((r) => r.id),
+    ofStatus: E.runsOf([{ id: 'a', status: 'done' }, { id: 'b', status: 'failed' }], { status: 'failed' }).map((r) => r.id),
+    ofRule: E.runsOf([{ id: 'a' }, { id: 'b', rule: 'r' }], { rule: 'r' }).map((r) => r.id),
+    limited: E.runsOf([{ id: 'a' }, { id: 'b' }, { id: 'c' }], {}, 2).map((r) => r.id),
+  };
   out.registrySnapshot = E.REGISTRY;
   out.schemas = Object.keys(E.jsonSchemas());
   return out;
@@ -158,6 +194,30 @@ t('destructive and Brett-only steps are marked', () => { assert.equal(got.plan.d
 t('a nested ask is a gate: nothing after it is planned', () => { assert.equal(got.plan.ask.steps.length, 1); assert.equal(got.plan.ask.steps[0].marker, 'gate'); });
 t('the builder only offers what fits: deploy events for the deploy source, number ops for a number, commands of the picked plugin', () => { assert.deepEqual(got.options.source.events, ['deploy.done']); assert.ok(!got.options.number.includes('contains')); assert.deepEqual(got.options.bool, ['truthy', 'falsy']); assert.deepEqual(got.options.action[1].choices.map((c) => c.id), ['list', 'decide']); assert.equal(got.options.outputs.find((o) => o.id === 'email').available, true); assert.equal(got.options.outputs.find((o) => o.id === 'sms').available, false); });
 t('validation names the field', () => { assert.deepEqual(got.validate.noEvent, ['trigger.event', 'on.fire']); assert.deepEqual(got.validate.wrongSource, ['trigger.source']); assert.ok(got.validate.badCond.includes('when.all.0.field')); assert.ok(got.validate.badCond.includes('when.all.2.value')); assert.deepEqual(got.validate.pickNeedsTwo, ['ask.options']); assert.deepEqual(got.validate.unknownOption, ['on.pick.c']); assert.ok(got.validate.unknownAction.includes('on.approve.2.input.status')); assert.deepEqual(got.validate.noneNeedsFire, ['on.fire']); });
+t('tool sets: a tool outside every enabled set is blocked, console verbs and plugin wildcards match, no set = open', () => {
+  assert.equal(got.toolsets.allowed.inSet.ok, true); assert.equal(got.toolsets.allowed.inSet.set, 'review');
+  assert.equal(got.toolsets.allowed.outside.ok, false); assert.equal(got.toolsets.allowed.console.ok, true); assert.equal(got.toolsets.allowed.consoleOut.ok, false);
+  assert.equal(got.toolsets.allowed.notGoverned.governed, false); assert.equal(got.toolsets.allowed.noSets.open, true); assert.equal(got.toolsets.allowed.onlyOff.open, true, 'a disabled set does not count'); assert.equal(got.toolsets.allowed.noKey.ok, false);
+  assert.deepEqual(got.toolsets.norm.tools, ['ui-review.*', 'console.open', 'build-orchestrator.act'], 'patterns are lower-cased ids');
+  assert.deepEqual(got.toolsets.validate.bad, ['tools.1', 'tools.2', 'tools.3']); assert.deepEqual(got.toolsets.validate.empty, ['tools']);
+  assert.deepEqual(got.toolsets.matches, [true, true, false, true, true, false, false]);
+});
+t('plan: a blocked tool is named, the allowed ones carry their set, other actions are untouched', () => {
+  const s = got.toolsets.plan.steps;
+  assert.equal(s[0].blocked, 'tool activity.items is not in a tool set'); assert.equal(s[1].blocked, undefined); assert.equal(s[2].blocked, undefined); assert.equal(s[3].blocked, undefined);
+  assert.deepEqual(got.toolsets.plan.toolsBlocked, ['activity.items']); assert.equal(got.toolsets.plan.runnable, 3);
+  assert.deepEqual(got.toolsets.planOpen, [['tool.run', null]]);
+  assert.deepEqual(got.toolsets.list.items.map((i) => i[1]), [true, true, false, true, false, false, false, false, false, false, false, false]);
+  assert.deepEqual(got.toolsets.listOne, ['ui-review.list', 'console.open']); assert.deepEqual(got.toolsets.listOpen, [['activity.items', true]]);
+});
+t('run records: waiting at a gate (with resume), done, failed, stopped; continuing settles the status', () => {
+  assert.equal(got.runs.waiting.status, 'waiting'); assert.deepEqual(got.runs.waiting.resume, { pipeline: 'ship', stage: 1, params: { build: 'b7' } }); assert.equal(got.runs.waiting.finishedAt, '');
+  assert.equal(got.runs.done.status, 'done'); assert.equal(got.runs.failed.status, 'failed'); assert.equal(got.runs.errors, 'failed'); assert.equal(got.runs.dry, 'dry');
+  assert.equal(got.runs.continued.status, 'done'); assert.equal(got.runs.continued.ran.length, 3); assert.equal(got.runs.continued.planned, 5); assert.equal(got.runs.continued.resume, undefined); assert.ok(got.runs.continued.finishedAt);
+  assert.equal(got.runs.continuedWaiting.status, 'waiting'); assert.equal(got.runs.continuedWaiting.resume.stage, 2); assert.equal(got.runs.continuedFailed, 'failed');
+  assert.equal(got.runs.badKind.kind, 'actions'); assert.equal(got.runs.badKind.status, 'done'); assert.equal(got.runs.notObject, null);
+  assert.deepEqual(got.runs.of, ['c', 'b']); assert.deepEqual(got.runs.limited, ['c', 'b']);
+});
 t('the registry snapshot (schemas/prompt-engine.json) is current (run axf schemas)', () => assert.ok(same(JSON.parse(rd('framework/schemas/prompt-engine.json')), E.REGISTRY)));
 for (const [name, schema] of Object.entries(E.jsonSchemas())) t(`schemas/json/${name} is current (run axf schemas)`, () => assert.ok(same(JSON.parse(rd(`framework/schemas/json/${name}`)), schema)));
 t('every plugin.json promptManifest in the repo validates', () => {

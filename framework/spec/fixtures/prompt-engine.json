@@ -863,6 +863,7 @@
         ],
         "errors": [],
         "keysNeeded": [],
+        "toolsBlocked": [],
         "gate": null,
         "runnable": 3,
         "ok": true
@@ -897,6 +898,7 @@
         ],
         "errors": [],
         "keysNeeded": [],
+        "toolsBlocked": [],
         "gate": null,
         "runnable": 2,
         "ok": true
@@ -910,6 +912,7 @@
           }
         ],
         "keysNeeded": [],
+        "toolsBlocked": [],
         "gate": null,
         "runnable": 0,
         "ok": false
@@ -923,6 +926,7 @@
           }
         ],
         "keysNeeded": [],
+        "toolsBlocked": [],
         "gate": null,
         "runnable": 0,
         "ok": false
@@ -953,6 +957,7 @@
           }
         ],
         "keysNeeded": [],
+        "toolsBlocked": [],
         "gate": null,
         "runnable": 0,
         "ok": false
@@ -1000,6 +1005,7 @@
         ],
         "errors": [],
         "keysNeeded": [],
+        "toolsBlocked": [],
         "gate": {
           "pipeline": "ship",
           "stage": 1
@@ -1065,6 +1071,7 @@
         ],
         "errors": [],
         "keysNeeded": [],
+        "toolsBlocked": [],
         "gate": null,
         "runnable": 3,
         "ok": true
@@ -1090,6 +1097,7 @@
         "keysNeeded": [
           "ssh"
         ],
+        "toolsBlocked": [],
         "gate": null,
         "runnable": 1,
         "ok": true
@@ -1114,6 +1122,7 @@
         "keysNeeded": [
           "sms"
         ],
+        "toolsBlocked": [],
         "gate": null,
         "runnable": 1,
         "ok": true
@@ -1135,6 +1144,7 @@
           }
         ],
         "keysNeeded": [],
+        "toolsBlocked": [],
         "gate": null,
         "runnable": 0,
         "ok": false
@@ -1152,6 +1162,7 @@
         ],
         "errors": [],
         "keysNeeded": [],
+        "toolsBlocked": [],
         "gate": {},
         "runnable": 0,
         "ok": true
@@ -1298,6 +1309,472 @@
       },
       "unknown": null
     },
+    "toolsets": {
+      "norm": {
+        "$axf": "prompt-toolset@1",
+        "id": "review",
+        "title": "Review tools",
+        "description": "",
+        "enabled": true,
+        "tools": [
+          "ui-review.*",
+          "console.open",
+          "build-orchestrator.act"
+        ],
+        "createdAt": "2026-11-13T18:00:00.000Z",
+        "updatedAt": "2026-11-13T18:00:00.000Z",
+        "by": ""
+      },
+      "validate": {
+        "ok": true,
+        "empty": [
+          "tools"
+        ],
+        "bad": [
+          "tools.1",
+          "tools.2",
+          "tools.3"
+        ],
+        "noId": [
+          "id"
+        ]
+      },
+      "keys": [
+        "ui-review.decide",
+        "console.open",
+        "build.note",
+        "",
+        ""
+      ],
+      "matches": [
+        true,
+        true,
+        false,
+        true,
+        true,
+        false,
+        false
+      ],
+      "allowed": {
+        "inSet": {
+          "ok": true,
+          "set": "review",
+          "key": "ui-review.decide",
+          "governed": true
+        },
+        "outside": {
+          "ok": false,
+          "set": null,
+          "key": "activity.items",
+          "governed": true
+        },
+        "console": {
+          "ok": true,
+          "set": "review",
+          "key": "console.open",
+          "governed": true
+        },
+        "consoleOut": {
+          "ok": false,
+          "set": null,
+          "key": "console.press",
+          "governed": true
+        },
+        "notGoverned": {
+          "ok": true,
+          "set": null,
+          "key": "build.note",
+          "governed": false
+        },
+        "noSets": {
+          "ok": true,
+          "set": null,
+          "key": "activity.items",
+          "governed": true,
+          "open": true
+        },
+        "onlyOff": {
+          "ok": true,
+          "set": null,
+          "key": "activity.items",
+          "governed": true,
+          "open": true
+        },
+        "noKey": {
+          "ok": false,
+          "set": null,
+          "key": "",
+          "governed": true
+        }
+      },
+      "plan": {
+        "steps": [
+          {
+            "action": "tool.run",
+            "input": {
+              "plugin": "activity",
+              "command": "items"
+            },
+            "blocked": "tool activity.items is not in a tool set",
+            "tool": "activity.items"
+          },
+          {
+            "action": "tool.run",
+            "input": {
+              "plugin": "ui-review",
+              "command": "list"
+            },
+            "tool": "ui-review.list",
+            "toolset": "review"
+          },
+          {
+            "action": "console.command",
+            "input": {
+              "verb": "open",
+              "address": "a"
+            },
+            "tool": "console.open",
+            "toolset": "review"
+          },
+          {
+            "action": "log.note",
+            "input": {
+              "text": "after"
+            }
+          }
+        ],
+        "errors": [],
+        "keysNeeded": [],
+        "toolsBlocked": [
+          "activity.items"
+        ],
+        "gate": null,
+        "runnable": 3,
+        "ok": true
+      },
+      "planOpen": [
+        [
+          "tool.run",
+          null
+        ]
+      ],
+      "list": {
+        "open": false,
+        "counts": {
+          "tools": 12,
+          "allowed": 3,
+          "plugins": 2
+        },
+        "items": [
+          [
+            "ui-review.list",
+            true,
+            "review",
+            "read"
+          ],
+          [
+            "ui-review.decide",
+            true,
+            "review",
+            "write"
+          ],
+          [
+            "activity.items",
+            false,
+            null,
+            "write"
+          ],
+          [
+            "console.open",
+            true,
+            "review",
+            "navigate"
+          ],
+          [
+            "console.press",
+            false,
+            null,
+            "navigate"
+          ],
+          [
+            "console.set",
+            false,
+            null,
+            "navigate"
+          ],
+          [
+            "console.focus",
+            false,
+            null,
+            "navigate"
+          ],
+          [
+            "console.scroll",
+            false,
+            null,
+            "navigate"
+          ],
+          [
+            "console.state",
+            false,
+            null,
+            "read"
+          ],
+          [
+            "console.search",
+            false,
+            null,
+            "read"
+          ],
+          [
+            "console.plugin.enable",
+            false,
+            null,
+            "navigate"
+          ],
+          [
+            "console.plugin.disable",
+            false,
+            null,
+            "navigate"
+          ]
+        ],
+        "sets": [
+          {
+            "id": "review",
+            "title": "Review tools",
+            "enabled": true,
+            "tools": 3
+          },
+          {
+            "id": "off",
+            "title": "off",
+            "enabled": false,
+            "tools": 1
+          }
+        ]
+      },
+      "listOne": [
+        "ui-review.list",
+        "console.open"
+      ],
+      "listOpen": [
+        [
+          "activity.items",
+          true
+        ]
+      ]
+    },
+    "runs": {
+      "id": [
+        "run-pipeline-ship-20261113180000",
+        "run-actions-list-20261113180000",
+        "run-tool-ui-review.decide-20261113180000"
+      ],
+      "waiting": {
+        "$axf": "prompt-run@1",
+        "id": "run-pipeline-ship-20261113180000",
+        "kind": "pipeline",
+        "target": "ship",
+        "title": "Ship it",
+        "params": {
+          "build": "b7"
+        },
+        "status": "waiting",
+        "by": "brett",
+        "startedAt": "2026-11-13T18:00:00.000Z",
+        "finishedAt": "",
+        "planned": 3,
+        "ran": [
+          {
+            "action": "log.note",
+            "at": "direct:pipeline:ship > pipeline:ship > prep > log.note",
+            "result": {
+              "note": "x"
+            }
+          }
+        ],
+        "failed": [],
+        "asked": [
+          "i1"
+        ],
+        "errors": [],
+        "toolsBlocked": [],
+        "keysNeeded": [],
+        "resume": {
+          "pipeline": "ship",
+          "stage": 1,
+          "params": {
+            "build": "b7"
+          }
+        }
+      },
+      "done": {
+        "$axf": "prompt-run@1",
+        "id": "run-macro-cleanup-20261113180000",
+        "kind": "macro",
+        "target": "cleanup",
+        "title": "macro cleanup",
+        "params": {},
+        "status": "done",
+        "by": "",
+        "startedAt": "2026-11-13T18:00:00.000Z",
+        "finishedAt": "2026-11-13T18:00:00.000Z",
+        "planned": 1,
+        "ran": [
+          {
+            "action": "build.note",
+            "at": "x"
+          }
+        ],
+        "failed": [],
+        "asked": [],
+        "errors": [],
+        "toolsBlocked": [],
+        "keysNeeded": []
+      },
+      "failed": {
+        "$axf": "prompt-run@1",
+        "id": "run-tool-activity.items-20261113180000",
+        "kind": "tool",
+        "target": "activity.items",
+        "title": "tool activity.items",
+        "params": {},
+        "status": "failed",
+        "by": "",
+        "startedAt": "2026-11-13T18:00:00.000Z",
+        "finishedAt": "2026-11-13T18:00:00.000Z",
+        "planned": 1,
+        "ran": [],
+        "failed": [
+          {
+            "action": "tool.run",
+            "at": "x",
+            "error": "tool activity.items is not in a tool set",
+            "code": "denied"
+          }
+        ],
+        "asked": [],
+        "errors": [],
+        "toolsBlocked": [
+          "activity.items"
+        ],
+        "keysNeeded": []
+      },
+      "errors": "failed",
+      "dry": "dry",
+      "badKind": {
+        "$axf": "prompt-run@1",
+        "id": "run-actions-list-20261113180000",
+        "kind": "actions",
+        "target": "",
+        "title": "actions",
+        "params": {},
+        "status": "done",
+        "by": "",
+        "startedAt": "2026-11-13T18:00:00.000Z",
+        "finishedAt": "2026-11-13T18:00:00.000Z",
+        "planned": 0,
+        "ran": [],
+        "failed": [],
+        "asked": [],
+        "errors": [],
+        "toolsBlocked": [],
+        "keysNeeded": []
+      },
+      "notObject": null,
+      "continued": {
+        "$axf": "prompt-run@1",
+        "id": "run-pipeline-ship-20261113180000",
+        "kind": "pipeline",
+        "target": "ship",
+        "title": "Ship it",
+        "params": {
+          "build": "b7"
+        },
+        "status": "done",
+        "by": "brett",
+        "startedAt": "2026-11-13T18:00:00.000Z",
+        "finishedAt": "2026-11-13T18:01:00.000Z",
+        "planned": 5,
+        "ran": [
+          {
+            "action": "log.note",
+            "at": "direct:pipeline:ship > pipeline:ship > prep > log.note",
+            "result": {
+              "note": "x"
+            }
+          },
+          {
+            "action": "notify.push",
+            "at": "y"
+          },
+          {
+            "action": "log.note",
+            "at": "z"
+          }
+        ],
+        "failed": [],
+        "asked": [
+          "i1"
+        ],
+        "errors": [],
+        "toolsBlocked": [],
+        "keysNeeded": []
+      },
+      "continuedWaiting": {
+        "$axf": "prompt-run@1",
+        "id": "run-pipeline-ship-20261113180000",
+        "kind": "pipeline",
+        "target": "ship",
+        "title": "Ship it",
+        "params": {
+          "build": "b7"
+        },
+        "status": "waiting",
+        "by": "brett",
+        "startedAt": "2026-11-13T18:00:00.000Z",
+        "finishedAt": "",
+        "planned": 4,
+        "ran": [
+          {
+            "action": "log.note",
+            "at": "direct:pipeline:ship > pipeline:ship > prep > log.note",
+            "result": {
+              "note": "x"
+            }
+          }
+        ],
+        "failed": [],
+        "asked": [
+          "i1",
+          "i2"
+        ],
+        "errors": [],
+        "toolsBlocked": [],
+        "keysNeeded": [],
+        "resume": {
+          "pipeline": "ship",
+          "stage": 2,
+          "params": {}
+        }
+      },
+      "continuedFailed": "failed",
+      "of": [
+        "c",
+        "b"
+      ],
+      "ofStatus": [
+        "b"
+      ],
+      "ofRule": [
+        "b"
+      ],
+      "limited": [
+        "c",
+        "b"
+      ]
+    },
     "registrySnapshot": {
       "schema": "prompt-engine@1",
       "version": 1,
@@ -1307,7 +1784,9 @@
         "prompt-pipeline@1",
         "prompt-manifest@1",
         "prompt-instance@1",
-        "prompt-audit@1"
+        "prompt-audit@1",
+        "prompt-toolset@1",
+        "prompt-run@1"
       ],
       "askKinds": [
         "none",
@@ -1358,7 +1837,10 @@
         "rule",
         "macro",
         "pipeline",
-        "keys-needed"
+        "keys-needed",
+        "toolset",
+        "run",
+        "blocked"
       ],
       "skipReasons": [
         "disabled",
@@ -1419,6 +1901,35 @@
         "cron",
         "text"
       ],
+      "runKinds": [
+        "tool",
+        "macro",
+        "pipeline",
+        "actions"
+      ],
+      "runStatuses": [
+        "done",
+        "failed",
+        "waiting",
+        "stopped",
+        "dry"
+      ],
+      "toolActions": [
+        "tool.run",
+        "console.command"
+      ],
+      "consoleVerbs": [
+        "open",
+        "press",
+        "set",
+        "focus",
+        "scroll",
+        "state",
+        "search",
+        "plugin.enable",
+        "plugin.disable"
+      ],
+      "toolPattern": "^[a-z0-9][a-z0-9._-]{0,79}(\\.\\*)?$|^\\*$",
       "defaultVetoSec": 90,
       "maxDepth": 8,
       "maxSteps": 200,
@@ -1512,7 +2023,9 @@
       "prompt-pipeline.schema.json",
       "prompt-manifest.schema.json",
       "prompt-instance.schema.json",
-      "prompt-audit.schema.json"
+      "prompt-audit.schema.json",
+      "prompt-toolset.schema.json",
+      "prompt-run.schema.json"
     ]
   }
 }

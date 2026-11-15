@@ -30,7 +30,10 @@
         "rule",
         "macro",
         "pipeline",
-        "keys-needed"
+        "keys-needed",
+        "toolset",
+        "run",
+        "blocked"
       ]
     },
     "rule": {

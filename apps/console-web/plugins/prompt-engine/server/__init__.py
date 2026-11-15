@@ -63,7 +63,7 @@ def _run(*args: str, stdin: str | None = None, by: str = "console", brett: str =
         proc = subprocess.run(["node", str(CLI), *args, "--json"], cwd=str(cx.ROOT), input=stdin, capture_output=True, text=True, timeout=timeout, env=env)
     except subprocess.TimeoutExpired:
         return {"ok": False, "error": f"the prompt engine took longer than {timeout}s", "code": "unavailable"}
-    out = proc.stdout.strip().splitlines()
+    out = proc.stdout.strip().split("\n")  # not splitlines(): a plugin description may hold a Unicode line separator inside one JSON line
     res: Any = None
     for line in reversed(out):
         try:
@@ -417,6 +417,100 @@ def update_pipeline(pipeline: str, request: Request, body: Any = Body(None)) -> 
 @router.post("/pipelines/{pipeline}/delete")
 def delete_pipeline(pipeline: str, request: Request, body: Any = Body(None)) -> dict[str, Any]:
     return _raise(_run("remove-pipeline", pipeline, "--confirm", _text(_body(body).get("confirm"), 80), by=_who(request)))
+
+
+# ---------------------------------------------------------------------- direct runs (a macro, a pipeline, a tool, now) + run records
+
+def _params(b: dict[str, Any]) -> str:
+    p = b.get("params")
+    return json.dumps(p if isinstance(p, dict) else {})
+
+
+@router.post("/macros/{macro}/run")
+def run_macro(macro: str, request: Request, body: Any = Body(None)) -> dict[str, Any]:
+    b = _body(body)
+    res = _run("run-macro", macro, _params(b), *(["--dry"] if b.get("dry") is True else []), by=_who(request), brett=brett_click(request))
+    return _with_delivery(res, _who(request)) if b.get("dry") is not True else _raise(res)
+
+
+@router.post("/pipelines/{pipeline}/run")
+def run_pipeline(pipeline: str, request: Request, body: Any = Body(None)) -> dict[str, Any]:
+    b = _body(body)
+    res = _run("run-pipeline", pipeline, _params(b), *(["--dry"] if b.get("dry") is True else []), by=_who(request), brett=brett_click(request))
+    return _with_delivery(res, _who(request)) if b.get("dry") is not True else _raise(res)
+
+
+@router.get("/toolsets")
+def toolsets() -> dict[str, Any]:
+    return _raise(_run("toolsets"))
+
+
+@router.get("/toolsets/{toolset}")
+def toolset(toolset: str) -> dict[str, Any]:
+    return _raise(_run("toolset", toolset))
+
+
+@router.post("/toolsets")
+def add_toolset(request: Request, body: Any = Body(None)) -> dict[str, Any]:
+    return _raise(_run("add-toolset", json.dumps(_body(body)), by=_who(request)))
+
+
+@router.post("/toolsets/{toolset}/update")
+def update_toolset(toolset: str, request: Request, body: Any = Body(None)) -> dict[str, Any]:
+    return _raise(_run("update-toolset", toolset, json.dumps(_body(body)), by=_who(request)))
+
+
+@router.post("/toolsets/{toolset}/enable")
+def enable_toolset(toolset: str, request: Request) -> dict[str, Any]:
+    return _raise(_run("enable-toolset", toolset, by=_who(request)))
+
+
+@router.post("/toolsets/{toolset}/disable")
+def disable_toolset(toolset: str, request: Request) -> dict[str, Any]:
+    return _raise(_run("disable-toolset", toolset, by=_who(request)))
+
+
+@router.post("/toolsets/{toolset}/delete")
+def delete_toolset(toolset: str, request: Request, body: Any = Body(None)) -> dict[str, Any]:
+    return _raise(_run("remove-toolset", toolset, "--confirm", _text(_body(body).get("confirm"), 80), by=_who(request)))
+
+
+@router.get("/tools")
+def tools(set: str = "", allowed: bool = False) -> dict[str, Any]:
+    args = ["tools"]
+    if set:
+        args += ["--set", set]
+    if allowed:
+        args.append("--allowed")
+    return _raise(_run(*args))
+
+
+@router.post("/tools/run")
+def run_tool(request: Request, body: Any = Body(None)) -> dict[str, Any]:
+    b = _body(body)
+    plugin = _text(b.get("plugin"), 80)
+    command = _text(b.get("command"), 80)
+    if not plugin or not command:
+        raise HTTPException(400, "run-tool needs plugin and command (plugin 'console' + a verb for a console command)")
+    args = ["run-tool", plugin, command, "--input", json.dumps(b.get("input") if isinstance(b.get("input"), dict) else {})]
+    if b.get("dry") is True:
+        args.append("--dry")
+    res = _run(*args, by=_who(request), brett=brett_click(request))
+    return _with_delivery(res, _who(request)) if b.get("dry") is not True else _raise(res)
+
+
+@router.get("/runs")
+def runs(kind: str = "", target: str = "", status: str = "", rule: str = "", limit: int = 50) -> dict[str, Any]:
+    args = ["runs", "--limit", str(max(1, min(300, limit)))]
+    for k, v in (("kind", kind), ("target", target), ("status", status), ("rule", rule)):
+        if v:
+            args += [f"--{k}", v]
+    return _raise(_run(*args))
+
+
+@router.get("/runs/{run}")
+def run_record(run: str) -> dict[str, Any]:
+    return _raise(_run("run-record", run))
 
 
 @router.get("/manifest")

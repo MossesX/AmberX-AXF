@@ -7,7 +7,9 @@
     "prompt-pipeline@1",
     "prompt-manifest@1",
     "prompt-instance@1",
-    "prompt-audit@1"
+    "prompt-audit@1",
+    "prompt-toolset@1",
+    "prompt-run@1"
   ],
   "askKinds": [
     "none",
@@ -58,7 +60,10 @@
     "rule",
     "macro",
     "pipeline",
-    "keys-needed"
+    "keys-needed",
+    "toolset",
+    "run",
+    "blocked"
   ],
   "skipReasons": [
     "disabled",
@@ -119,6 +124,35 @@
     "cron",
     "text"
   ],
+  "runKinds": [
+    "tool",
+    "macro",
+    "pipeline",
+    "actions"
+  ],
+  "runStatuses": [
+    "done",
+    "failed",
+    "waiting",
+    "stopped",
+    "dry"
+  ],
+  "toolActions": [
+    "tool.run",
+    "console.command"
+  ],
+  "consoleVerbs": [
+    "open",
+    "press",
+    "set",
+    "focus",
+    "scroll",
+    "state",
+    "search",
+    "plugin.enable",
+    "plugin.disable"
+  ],
+  "toolPattern": "^[a-z0-9][a-z0-9._-]{0,79}(\\.\\*)?$|^\\*$",
   "defaultVetoSec": 90,
   "maxDepth": 8,
   "maxSteps": 200,

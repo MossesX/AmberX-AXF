@@ -11,6 +11,8 @@ export const appMenu: NonNullable<AxfWebLibrary['appMenu']> = [
       { id: 'prompt-engine', label: 'Prompt engine', icon: 'zap', action: 'nav:prompt-engine' },
       { id: 'prompt-engine.waiting', label: 'Prompts waiting…', icon: 'bell', action: 'prompt-engine.waiting' },
       { id: 'prompt-engine.new', label: 'New prompt rule…', icon: 'plus', action: 'prompt-engine.new' },
+      { id: 'prompt-engine.tools', label: 'Tool sets…', icon: 'hammer', action: 'prompt-engine.tools' },
+      { id: 'prompt-engine.runs', label: 'Runs…', icon: 'play', action: 'prompt-engine.runs' },
     ],
   },
 ];

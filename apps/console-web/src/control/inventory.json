@@ -5,10 +5,10 @@
     "views": 66,
     "nav": 16,
     "tabGroups": 28,
-    "tabs": 85,
+    "tabs": 87,
     "settingsTabs": 72,
     "settings": 89,
-    "functions": 278,
+    "functions": 280,
     "buttons": 62,
     "plugins": 72
   },
@@ -1593,7 +1593,7 @@
       "view": "prompt-engine",
       "plugin": "ai.amberx.axf.console.prompt-engine",
       "file": "plugins/prompt-engine/web/index.tsx",
-      "line": 419,
+      "line": 554,
       "tabs": [
         {
           "address": "view:prompt-engine/tab:prompt-engine.tabs=events",
@@ -1614,6 +1614,16 @@
           "address": "view:prompt-engine/tab:prompt-engine.tabs=pipelines",
           "value": "pipelines",
           "label": "Pipelines"
+        },
+        {
+          "address": "view:prompt-engine/tab:prompt-engine.tabs=tools",
+          "value": "tools",
+          "label": "Tools"
+        },
+        {
+          "address": "view:prompt-engine/tab:prompt-engine.tabs=runs",
+          "value": "runs",
+          "label": "Runs"
         },
         {
           "address": "view:prompt-engine/tab:prompt-engine.tabs=waiting",
@@ -6517,6 +6527,36 @@
         "prompt",
         "engine",
         "new"
+      ],
+      "plugin": "ai.amberx.axf.console.prompt-engine",
+      "file": "plugins/prompt-engine/web/index.tsx"
+    },
+    {
+      "address": "function:prompt-engine.tools",
+      "kind": "function",
+      "id": "prompt-engine.tools",
+      "label": "Prompt engine tool sets",
+      "detail": "Action · Prompt engine",
+      "keywords": [
+        "prompt-engine.tools",
+        "prompt",
+        "engine",
+        "tools"
+      ],
+      "plugin": "ai.amberx.axf.console.prompt-engine",
+      "file": "plugins/prompt-engine/web/index.tsx"
+    },
+    {
+      "address": "function:prompt-engine.runs",
+      "kind": "function",
+      "id": "prompt-engine.runs",
+      "label": "Prompt engine runs",
+      "detail": "Action · Prompt engine",
+      "keywords": [
+        "prompt-engine.runs",
+        "prompt",
+        "engine",
+        "runs"
       ],
       "plugin": "ai.amberx.axf.console.prompt-engine",
       "file": "plugins/prompt-engine/web/index.tsx"

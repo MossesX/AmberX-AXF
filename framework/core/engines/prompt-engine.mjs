@@ -16,11 +16,17 @@
  *   prompt-pipeline@1   ordered stages of actions; a stage may carry a gate (a prompt Brett answers before it goes on).
  *   prompt-instance@1   one prompt waiting for (or holding) Brett's answer; resumes a pipeline when it was a gate.
  *   prompt-audit@1      one line of history: fired, skipped (and why), asked, answered, expired, planned, ran, failed, dry-run.
+ *   prompt-toolset@1    the set tools the engine may run: patterns over plugin commands (`ui-review.decide`, `ui-review.*`)
+ *                       and console verbs (`console.open`, `console.*`). While at least one enabled set exists, a
+ *                       `tool.run` / `console.command` step outside every set is blocked (and says so); with no set,
+ *                       every registered tool may run.
+ *   prompt-run@1        one run of a tool, macro, pipeline or action list (by a rule, an answer, a timeout, or started
+ *                       directly): what was planned, what ran, what failed, which prompts it asked, and its status.
  *
  * Actions are ids from the registry (`tool.run`, `console.command`, `macro.run`, `pipeline.run`, `event.fire`,
  * `build.create` … `notify.call`, `prompt.ask`) with a templated input (`{{build.id}}` reads the event). `plan` expands
- * macros and pipelines into flat steps the runner executes, stops at a gate, and lists the connectors that are missing
- * (a `keys needed` item), so nothing runs that cannot.
+ * macros and pipelines into flat steps the runner executes, stops at a gate, checks every tool against the tool sets,
+ * and lists the connectors that are missing (a `keys needed` item), so nothing runs that cannot.
  */
 
 export const SCHEMA = 'prompt-engine@1';
@@ -31,6 +37,15 @@ export const PIPELINE = 'prompt-pipeline@1';
 export const MANIFEST = 'prompt-manifest@1';
 export const INSTANCE = 'prompt-instance@1';
 export const AUDIT = 'prompt-audit@1';
+export const TOOLSET = 'prompt-toolset@1';
+export const RUN = 'prompt-run@1';
+export const RUN_KINDS = ['tool', 'macro', 'pipeline', 'actions'];
+export const RUN_STATUSES = ['done', 'failed', 'waiting', 'stopped', 'dry'];
+/** Actions a tool set governs: a plugin command (`<plugin>.<command>`) and a console verb (`console.<verb>`). */
+export const TOOL_ACTIONS = ['tool.run', 'console.command'];
+export const CONSOLE_VERBS = ['open', 'press', 'set', 'focus', 'scroll', 'state', 'search', 'plugin.enable', 'plugin.disable'];
+export const TOOL_PATTERN = '^[a-z0-9][a-z0-9._-]{0,79}(\\.\\*)?$|^\\*$';
+const TOOL_RE = new RegExp(TOOL_PATTERN);
 
 export const ASK_KINDS = ['none', 'approve', 'veto', 'pick', 'text'];
 export const OUTPUTS = ['dialog', 'push', 'email', 'sms', 'call'];
@@ -38,7 +53,7 @@ export const OUTPUTS = ['dialog', 'push', 'email', 'sms', 'call'];
 export const CONNECTOR_OUTPUTS = ['email', 'sms', 'call'];
 export const ANSWERS = ['approve', 'deny', 'pick', 'text', 'timeout', 'later'];
 export const INSTANCE_STATUSES = ['waiting', 'answered', 'expired', 'shelved', 'ran', 'failed'];
-export const AUDIT_KINDS = ['fired', 'skipped', 'asked', 'answered', 'expired', 'shelved', 'planned', 'ran', 'failed', 'dry-run', 'rule', 'macro', 'pipeline', 'keys-needed'];
+export const AUDIT_KINDS = ['fired', 'skipped', 'asked', 'answered', 'expired', 'shelved', 'planned', 'ran', 'failed', 'dry-run', 'rule', 'macro', 'pipeline', 'keys-needed', 'toolset', 'run', 'blocked'];
 export const SKIP_REASONS = ['disabled', 'no-match', 'filter', 'conditions', 'cooldown', 'dedupe', 'rate'];
 export const OPS = ['eq', 'ne', 'in', 'nin', 'contains', 'startsWith', 'endsWith', 'matches', 'gt', 'gte', 'lt', 'lte', 'exists', 'missing', 'truthy', 'falsy'];
 export const EFFECTS = ['read', 'write', 'destructive', 'navigate', 'ask'];
@@ -296,7 +311,7 @@ export const BUILTIN_MANIFESTS = Object.freeze([
     ],
     actions: [
       A('tool.run', 'Run a tool (a plugin command: REST / MCP / CLI)', 'write', [F('plugin', 'plugin', 'Plugin', { required: true }), F('command', 'command', 'Command', { required: true, dependsOn: 'plugin' }), F('input', 'object', 'Input')]),
-      A('console.command', 'Console command (console-control@1 verb on an address)', 'navigate', [F('verb', 'enum', 'Verb', { required: true, enum: ['open', 'press', 'set', 'focus', 'scroll', 'state', 'search', 'plugin.enable', 'plugin.disable'] }), F('address', 'address', 'Address'), F('value', 'string', 'Value')]),
+      A('console.command', 'Console command (console-control@1 verb on an address)', 'navigate', [F('verb', 'enum', 'Verb', { required: true, enum: CONSOLE_VERBS }), F('address', 'address', 'Address'), F('value', 'string', 'Value')]),
       A('macro.run', 'Run a macro', 'write', [F('macro', 'macro', 'Macro', { required: true }), F('params', 'object', 'Parameters')]),
       A('pipeline.run', 'Run a pipeline', 'write', [F('pipeline', 'pipeline', 'Pipeline', { required: true }), F('params', 'object', 'Parameters')]),
       A('event.fire', 'Fire another event (chain rules)', 'write', [F('source', 'string', 'Source', { required: true }), F('event', 'string', 'Event', { required: true }), F('payload', 'object', 'Payload')]),
@@ -512,6 +527,86 @@ export function validatePipeline(v, registry = null) {
     if (s.gate) askErrors(s.gate, `stages.${i}.gate`, errors);
   });
   return { ok: errors.length === 0, errors };
+}
+
+/* ------------------------------------------------------------------ tool sets (the set tools the engine may run) */
+
+/** The key a step is matched by: `<plugin>.<command>` for tool.run, `console.<verb>` for console.command, else the action id. */
+export function toolKey(step) {
+  if (!isObj(step)) return '';
+  const input = isObj(step.input) ? step.input : {};
+  if (step.action === 'tool.run') return slug(input.plugin) && slug(input.command) ? `${slug(input.plugin)}.${slug(input.command)}` : '';
+  if (step.action === 'console.command') return str(input.verb) ? `console.${str(input.verb, 40).toLowerCase()}` : '';
+  return slug(step.action);
+}
+/** `a.b` matches `a.b`; `a.*` matches `a.b`, `a.b.c`; `*` matches everything. */
+export function toolMatches(pattern, key) {
+  const p = str(pattern, 90).toLowerCase(); const k = str(key, 90).toLowerCase();
+  if (!p || !k) return false;
+  if (p === '*') return true;
+  if (p.endsWith('.*')) return k === p.slice(0, -2) || k.startsWith(p.slice(0, -1));
+  return p === k;
+}
+export function normToolset(v, opts = {}) {
+  if (!isObj(v)) return null;
+  const id = slug(v.id) || slug(v.title);
+  if (!id) return null;
+  return {
+    $axf: TOOLSET, id, title: str(v.title) || id, description: str(v.description, 600), enabled: v.enabled !== false,
+    tools: uniq(arr(v.tools).map((t) => (typeof t === 'string' ? str(t, 90).toLowerCase() : isObj(t) ? toolKey({ action: t.action || 'tool.run', input: t }) || (slug(t.plugin) ? `${slug(t.plugin)}.${slug(t.command) || '*'}` : '') : '')).filter((t) => TOOL_RE.test(t))),
+    createdAt: iso(v.createdAt) || iso(opts.now) || '', updatedAt: iso(opts.now) || iso(v.updatedAt) || '', by: str(v.by, 120),
+  };
+}
+export function validateToolset(v) {
+  const errors = [];
+  if (!isObj(v)) return { ok: false, errors: [{ field: '', message: 'a tool set is an object' }] };
+  if (v.$axf !== undefined && v.$axf !== TOOLSET) errors.push({ field: '$axf', message: `must be ${TOOLSET}` });
+  if (!slug(v.id) && !slug(v.title)) errors.push({ field: 'id', message: 'a tool set has an id or a title' });
+  const tools = arr(v.tools);
+  if (!tools.length) errors.push({ field: 'tools', message: 'a tool set names at least one tool (plugin.command, plugin.*, console.verb, console.*)' });
+  tools.forEach((t, i) => {
+    const key = typeof t === 'string' ? str(t, 90).toLowerCase() : isObj(t) && slug(t.plugin) ? `${slug(t.plugin)}.${slug(t.command) || '*'}` : '';
+    if (!TOOL_RE.test(key)) errors.push({ field: `tools.${i}`, message: `a tool is plugin.command, plugin.*, console.verb or console.*, not ${JSON.stringify(t).slice(0, 60)}` });
+    else if (key.startsWith('console.') && key !== 'console.*' && !CONSOLE_VERBS.includes(key.slice('console.'.length))) errors.push({ field: `tools.${i}`, message: `console verbs: ${CONSOLE_VERBS.join(', ')}` });
+  });
+  return { ok: errors.length === 0, errors };
+}
+/**
+ * Whether a step may run under the tool sets. Only tool actions (tool.run, console.command) are governed; with no
+ * enabled set every tool may run. Returns { ok, set (the one that allows it), key, governed }.
+ */
+export function toolAllowed(toolsets, step) {
+  const key = toolKey(step);
+  const governed = TOOL_ACTIONS.includes(isObj(step) ? step.action : '');
+  const sets = arr(toolsets).map((t) => normToolset(t)).filter((t) => t && t.enabled);
+  if (!governed) return { ok: true, set: null, key, governed: false };
+  if (!sets.length) return { ok: true, set: null, key, governed: true, open: true };
+  if (!key) return { ok: false, set: null, key, governed: true };
+  const set = sets.find((t) => t.tools.some((p) => toolMatches(p, key))) ?? null;
+  return { ok: Boolean(set), set: set ? set.id : null, key, governed: true };
+}
+/** Every tool the engine knows (plugin commands + console verbs) with whether a set allows it: the Tools list. */
+export function toolList(toolsets, plugins = [], opts = {}) {
+  const sets = arr(toolsets).map((t) => normToolset(t)).filter(Boolean);
+  const open = !sets.some((t) => t.enabled);
+  const items = [];
+  for (const p of arr(plugins)) {
+    if (!isObj(p) || !slug(p.id)) continue;
+    for (const c of arr(p.commands)) {
+      if (!isObj(c) || !slug(c.id)) continue;
+      const key = `${slug(p.id)}.${slug(c.id)}`;
+      const set = sets.find((t) => t.enabled && t.tools.some((x) => toolMatches(x, key))) ?? null;
+      items.push({ key, kind: 'plugin', plugin: slug(p.id), command: slug(c.id), title: str(c.title) || slug(c.id), pluginTitle: str(p.title) || slug(p.id), effect: str(c.effect) || (c.readOnly ? 'read' : 'write'), allowed: open || Boolean(set), set: set ? set.id : null, action: { action: 'tool.run', input: { plugin: slug(p.id), command: slug(c.id) } } });
+    }
+  }
+  for (const v of CONSOLE_VERBS) {
+    const key = `console.${v}`;
+    const set = sets.find((t) => t.enabled && t.tools.some((x) => toolMatches(x, key))) ?? null;
+    items.push({ key, kind: 'console', verb: v, title: `Console: ${v}`, pluginTitle: 'Console', effect: v === 'state' || v === 'search' ? 'read' : 'navigate', allowed: open || Boolean(set), set: set ? set.id : null, action: { action: 'console.command', input: { verb: v } } });
+  }
+  const want = slug(opts.set);
+  const out = want ? items.filter((i) => i.set === want) : opts.allowed ? items.filter((i) => i.allowed) : items;
+  return { open, sets: sets.map((t) => ({ id: t.id, title: t.title, enabled: t.enabled, tools: t.tools.length })), items: out, counts: { tools: items.length, allowed: items.filter((i) => i.allowed).length, plugins: uniq(items.filter((i) => i.kind === 'plugin').map((i) => i.plugin)).length } };
 }
 
 /* ------------------------------------------------------------------ rules */
@@ -801,7 +896,8 @@ export function plan(actions, opts = {}) {
   const macros = Object.fromEntries(arr(opts.macros).map((m) => normMacro(m)).filter(Boolean).map((m) => [m.id, m]));
   const pipelines = Object.fromEntries(arr(opts.pipelines).map((p) => normPipeline(p)).filter(Boolean).map((p) => [p.id, p]));
   const ctx = isObj(opts.ctx) ? opts.ctx : {};
-  const steps = []; const errors = []; const keysNeeded = new Set(); let gate = null;
+  const toolsets = arr(opts.toolsets);
+  const steps = []; const errors = []; const keysNeeded = new Set(); const toolsBlocked = []; let gate = null;
   const visit = (acts, c, trail, depth) => {
     if (gate) return;
     if (depth > MAX_DEPTH) { errors.push({ at: trail.join(' > '), message: `nested deeper than ${MAX_DEPTH}` }); return; }
@@ -852,12 +948,58 @@ export function plan(actions, opts = {}) {
       if (a.continueOnError) step.continueOnError = true;
       const miss = missingConnectors(registry, def);
       if (miss.length) step.blocked = `needs ${miss.map((k) => `connector ${k}`).join(', ')}`;
+      const tool = toolAllowed(toolsets, step);
+      if (tool.governed) { step.tool = tool.key; if (tool.set) step.toolset = tool.set; }
+      if (!tool.ok) { step.blocked = tool.key ? `tool ${tool.key} is not in a tool set` : `${def.title} names no tool`; toolsBlocked.push(tool.key || a.action); }
       if (a.action === 'prompt.ask') { gate = { ask: normAsk(input), trail: step.at }; step.marker = 'gate'; }
       steps.push(step);
     }
   };
   visit(actions, ctx, arr(opts.trail).length ? arr(opts.trail) : ['run'], 0);
-  return { steps, errors, keysNeeded: [...keysNeeded], gate, runnable: steps.filter((s) => !s.blocked && !s.marker).length, ok: errors.length === 0 };
+  return { steps, errors, keysNeeded: [...keysNeeded], toolsBlocked: uniq(toolsBlocked), gate, runnable: steps.filter((s) => !s.blocked && !s.marker).length, ok: errors.length === 0 };
+}
+
+/* ------------------------------------------------------------------ runs (prompt-run@1) */
+
+export function runId(kind, target, now) {
+  const t = iso(now) || '';
+  return `run-${slug(kind) || 'actions'}-${slug(target) || 'list'}-${t.replace(/[-:.TZ]/g, '').slice(0, 14)}`;
+}
+/** One run record from what the runner did: status done / failed / waiting (a gate asked) / dry. */
+export function runRecord(v, opts = {}) {
+  if (!isObj(v)) return null;
+  const kind = RUN_KINDS.includes(v.kind) ? v.kind : 'actions';
+  const target = str(v.target, 120);
+  const startedAt = iso(v.startedAt) || iso(opts.now) || '';
+  const id = str(v.id, 160) || runId(kind, target, startedAt);
+  const ran = arr(v.ran).filter(isObj).map((s) => ({ action: slug(s.action), at: str(s.at, 400), ...(s.result !== undefined ? { result: s.result } : {}) }));
+  const failed = arr(v.failed).filter(isObj).map((s) => ({ action: slug(s.action), at: str(s.at, 400), error: str(s.error, 600), ...(str(s.code) ? { code: str(s.code) } : {}) }));
+  const asked = arr(v.asked).map((i) => (isObj(i) ? str(i.id, 160) : str(i, 160))).filter(Boolean);
+  const errors = arr(v.errors).filter(isObj).map((e) => ({ at: str(e.at, 400), message: str(e.message, 400) }));
+  const status = RUN_STATUSES.includes(v.status) ? v.status : v.dry ? 'dry' : asked.length && !failed.length && !errors.length ? 'waiting' : failed.length || errors.length ? 'failed' : 'done';
+  const resume = isObj(v.resume) ? v.resume : arr(v.asked).map((i) => (isObj(i) && isObj(i.resume) ? i.resume : null)).filter(Boolean).at(-1);
+  return {
+    $axf: RUN, id, kind, target, title: str(v.title) || (target ? `${kind} ${target}` : 'actions'), params: isObj(v.params) ? v.params : {}, status,
+    ...(str(v.rule) ? { rule: str(v.rule) } : {}), ...(str(v.instance) ? { instance: str(v.instance) } : {}), by: str(v.by, 120),
+    startedAt, finishedAt: status === 'waiting' ? '' : iso(v.finishedAt) || iso(opts.now) || startedAt,
+    planned: Math.max(0, Math.round(num(v.planned, ran.length + failed.length))), ran, failed, asked, errors, toolsBlocked: arr(v.toolsBlocked).map((t) => str(t, 90)).filter(Boolean), keysNeeded: arr(v.keysNeeded).map((t) => str(t, 60)).filter(Boolean),
+    ...(status === 'waiting' && isObj(resume) ? { resume } : {}),
+  };
+}
+/** A waiting run carried on after its gate was answered: the new results are added, the status settles. */
+export function continueRun(record, result, now) {
+  const r = runRecord(record);
+  if (!r || !isObj(result)) return r;
+  const merged = { ...r, ran: [...r.ran, ...arr(result.ran)], failed: [...r.failed, ...arr(result.failed)], asked: [...r.asked, ...arr(result.asked)], errors: [...r.errors, ...arr(result.errors)], toolsBlocked: uniq([...r.toolsBlocked, ...arr(result.toolsBlocked)]), keysNeeded: uniq([...r.keysNeeded, ...arr(result.keysNeeded)]), planned: r.planned + num(result.planned, 0), finishedAt: '', status: undefined };
+  const stillWaiting = arr(result.asked).length > 0;
+  merged.status = stillWaiting && !arr(result.failed).length ? 'waiting' : merged.failed.length || merged.errors.length ? 'failed' : 'done';
+  if (merged.status === 'waiting') merged.resume = result.asked.at(-1)?.resume ?? r.resume; else delete merged.resume;
+  return runRecord(merged, { now });
+}
+/** Runs newest first, filtered by kind / target / status, capped. */
+export function runsOf(records, filter = {}, limit = 50) {
+  const f = isObj(filter) ? filter : {};
+  return arr(records).filter((r) => isObj(r) && (!f.kind || r.kind === f.kind) && (!f.target || r.target === slug(f.target)) && (!f.status || r.status === f.status) && (!f.rule || r.rule === f.rule)).slice(-Math.max(1, limit)).reverse();
 }
 
 /* ------------------------------------------------------------------ audit */
@@ -931,8 +1073,9 @@ export function fromTemplate(id, overrides = {}, opts = {}) {
 /* ------------------------------------------------------------------ registry snapshot + JSON Schemas */
 
 export const REGISTRY = Object.freeze({
-  schema: SCHEMA, version: VERSION, records: [RULE, MACRO, PIPELINE, MANIFEST, INSTANCE, AUDIT], askKinds: ASK_KINDS, outputs: OUTPUTS, connectorOutputs: CONNECTOR_OUTPUTS, answers: ANSWERS,
+  schema: SCHEMA, version: VERSION, records: [RULE, MACRO, PIPELINE, MANIFEST, INSTANCE, AUDIT, TOOLSET, RUN], askKinds: ASK_KINDS, outputs: OUTPUTS, connectorOutputs: CONNECTOR_OUTPUTS, answers: ANSWERS,
   instanceStatuses: INSTANCE_STATUSES, auditKinds: AUDIT_KINDS, skipReasons: SKIP_REASONS, ops: OPS, effects: EFFECTS, sourceKinds: SOURCE_KINDS, fieldTypes: FIELD_TYPES,
+  runKinds: RUN_KINDS, runStatuses: RUN_STATUSES, toolActions: TOOL_ACTIONS, consoleVerbs: CONSOLE_VERBS, toolPattern: TOOL_PATTERN,
   defaultVetoSec: DEFAULT_VETO_SEC, maxDepth: MAX_DEPTH, maxSteps: MAX_STEPS, maxOptions: MAX_OPTIONS, idPattern: ID_PATTERN,
   builtinSources: BUILTIN_MANIFESTS.map((m) => m.source), builtinEvents: BUILTIN_MANIFESTS.flatMap((m) => m.events.map((e) => e.id)), builtinActions: BUILTIN_MANIFESTS.flatMap((m) => m.actions.map((a) => a.id)), templates: TEMPLATES.map((t) => t.id),
 });
@@ -965,7 +1108,13 @@ export function jsonSchemas() {
         actions: { type: 'array', items: { type: 'object', required: ['id'], additionalProperties: false, properties: { id, title: s, description: s, effect: { enum: EFFECTS }, input: { type: 'array', items: field }, confirm: { type: 'boolean' }, brettOnly: { type: 'boolean' }, needs: strArr } } },
         connectors: { type: 'array', items: { type: 'object', required: ['id'], properties: { id: s, available: { type: 'boolean' }, detail: s } } } } },
     'prompt-instance.schema.json': { ...base('prompt-instance', 'prompt-instance@1: one prompt waiting for (or holding) Brett\'s answer'), type: 'object', required: ['id', 'rule', 'kind', 'status'], additionalProperties: true,
-      properties: { $axf: { const: INSTANCE }, id: s, rule: id, ruleTitle: s, event: { type: 'object' }, kind: { enum: ASK_KINDS }, title: s, text: s, options: { type: 'array', items: { type: 'object', properties: { id: s, label: s } } }, countdownSec: int0, askedAt: s, expiresAt: s, status: { enum: INSTANCE_STATUSES }, outputs: { type: 'array', items: { enum: OUTPUTS } }, answers: { type: 'array', items: { enum: ANSWERS } }, answer: { type: 'object' }, answeredAt: s, branch: s, resume: { type: 'object' }, keysNeeded: strArr } },
+      properties: { $axf: { const: INSTANCE }, id: s, rule: id, ruleTitle: s, event: { type: 'object' }, kind: { enum: ASK_KINDS }, title: s, text: s, options: { type: 'array', items: { type: 'object', properties: { id: s, label: s } } }, countdownSec: int0, askedAt: s, expiresAt: s, status: { enum: INSTANCE_STATUSES }, outputs: { type: 'array', items: { enum: OUTPUTS } }, answers: { type: 'array', items: { enum: ANSWERS } }, answer: { type: 'object' }, answeredAt: s, branch: s, resume: { type: 'object' }, run: s, keysNeeded: strArr } },
     'prompt-audit.schema.json': { ...base('prompt-audit', 'prompt-audit@1: one line of the prompting engine\'s history'), type: 'object', required: ['at', 'kind'], additionalProperties: false, properties: { $axf: { const: AUDIT }, at: s, kind: { enum: AUDIT_KINDS }, rule: s, instance: s, event: s, reason: s, by: s, detail: { type: 'object' } } },
+    'prompt-toolset.schema.json': { ...base('prompt-toolset', 'prompt-toolset@1: the set tools the prompting engine may run (plugin.command, plugin.*, console.verb, console.*)'), type: 'object', required: ['id', 'tools'], additionalProperties: false,
+      properties: { $axf: { const: TOOLSET }, id, title: s, description: s, enabled: { type: 'boolean' }, tools: { type: 'array', minItems: 1, items: { type: 'string', pattern: TOOL_PATTERN } }, createdAt: s, updatedAt: s, by: s } },
+    'prompt-run.schema.json': { ...base('prompt-run', 'prompt-run@1: one run of a tool, macro, pipeline or action list by the prompting engine'), type: 'object', required: ['id', 'kind', 'status', 'startedAt'], additionalProperties: false,
+      properties: { $axf: { const: RUN }, id: s, kind: { enum: RUN_KINDS }, target: s, title: s, params: { type: 'object' }, status: { enum: RUN_STATUSES }, rule: s, instance: s, by: s, startedAt: s, finishedAt: s, planned: int0,
+        ran: { type: 'array', items: { type: 'object', required: ['action'], properties: { action: s, at: s, result: {} } } }, failed: { type: 'array', items: { type: 'object', required: ['action', 'error'], properties: { action: s, at: s, error: s, code: s } } },
+        asked: strArr, errors: { type: 'array', items: { type: 'object', properties: { at: s, message: s } } }, toolsBlocked: strArr, keysNeeded: strArr, resume: { type: 'object' } } },
   };
 }

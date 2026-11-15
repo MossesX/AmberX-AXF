@@ -1,6 +1,8 @@
 """Prompt engine plugin — server routes over a temp data folder: state, templates, fire → waiting → answer, validation
-status codes, delete needs confirm, options, history, the webhook, the capability, and delivery of what the engine hands
-back (waiting prompts and keys-needed items reach the alert hub; the decision dialog is used when a plugin provides it).
+status codes, delete needs confirm, tool sets (a tool outside the set is 403), direct runs of tools / macros / pipelines
+(a gate waits and the answer resumes the same run record), run records, options, history, the webhook, the capability,
+and delivery of what the engine hands back (waiting prompts and keys-needed items reach the alert hub; the decision
+dialog is used when a plugin provides it).
 
     python apps/console-web/plugins/prompt-engine/test.py
 """
@@ -122,6 +124,42 @@ ok(r.status_code == 200 and r.json()["pipeline"]["stages"][0]["id"] == "stage-1"
 ok(c.get(f"{API}/macros").json()["items"][0]["id"] == "m1" and c.get(f"{API}/pipelines").json()["items"][0]["id"] == "p1", "lists")
 ok(c.post(f"{API}/macros/m1/delete", json={"confirm": "m1"}).status_code == 200, "macro deleted with confirm")
 ok(c.post(f"{API}/pipelines/p1/delete", json={"confirm": "x"}).status_code == 409, "pipeline delete needs confirm")
+
+# tool sets + direct runs + run records
+r = c.post(f"{API}/toolsets", json={"id": "review", "title": "Review tools", "tools": ["ui-review.*", "console.open"]})
+ok(r.status_code == 200 and r.json()["toolset"]["tools"] == ["ui-review.*", "console.open"], "a tool set added")
+r = c.post(f"{API}/toolsets", json={"id": "bad", "tools": ["Nope!"]})
+ok(r.status_code == 400 and r.json()["detail"]["errors"][0]["field"] == "tools.0", "a bad pattern is 400 with the entry named")
+ok(c.get(f"{API}/toolsets").json()["items"][0]["id"] == "review" and c.get(f"{API}/toolsets/review").json()["toolset"]["enabled"] is True, "tool sets listed and read")
+r = c.get(f"{API}/tools?set=review")
+ok(r.status_code == 200 and r.json()["open"] is False and all(i["set"] == "review" for i in r.json()["items"]), "tools of one set")
+ok(c.get(f"{API}/tools?set=nope").status_code == 404, "unknown set is 404")
+r = c.post(f"{API}/tools/run", json={"plugin": "console", "command": "press"})
+ok(r.status_code == 403 and "not in a tool set" in r.json()["detail"], "a tool outside the set is 403")
+r = c.post(f"{API}/tools/run", json={"plugin": "console", "command": "open", "input": {"address": "builds"}, "dry": True})
+ok(r.status_code == 200 and r.json()["dry"] is True and r.json()["tool"] == "console.open" and r.json()["toolset"] == "review", "a tool in the set plans (dry)")
+ok(c.post(f"{API}/tools/run", json={"plugin": "x"}).status_code == 400, "run-tool needs plugin and command")
+c.post(f"{API}/macros", json={"id": "m2", "title": "M2", "params": ["x"], "steps": [{"action": "log.note", "input": {"text": "hi {{params.x}}"}}]})
+r = c.post(f"{API}/macros/m2/run", json={"params": {"x": "there"}})
+ok(r.status_code == 200 and r.json()["ran"][0]["result"]["note"] == "hi there" and r.json()["record"]["status"] == "done", "a macro runs now with params")
+ok(c.post(f"{API}/macros/nope/run", json={}).status_code == 404, "unknown macro is 404")
+c.post(f"{API}/pipelines", json={"id": "p2", "title": "P2", "stages": [{"title": "A", "actions": [{"action": "log.note", "input": {"text": "a"}}]}, {"title": "B", "gate": {"kind": "approve", "title": "Go on?"}, "actions": [{"action": "log.note", "input": {"text": "b"}}]}]})
+alerts.clear()
+r = c.post(f"{API}/pipelines/p2/run", json={})
+ok(r.status_code == 200 and r.json()["record"]["status"] == "waiting" and r.json()["waitingAt"]["stage"] == 1, "a pipeline runs to its gate and waits")
+ok(r.json()["delivered"][0]["kind"] == "ask" and alerts and alerts[0]["title"] == "Go on?", "the gate reached the alert hub")
+run_id = r.json()["record"]["id"]
+gate = r.json()["waitingAt"]["instance"]
+r = c.get(f"{API}/runs?status=waiting")
+ok(r.status_code == 200 and r.json()["items"][0]["id"] == run_id, "runs filtered by status")
+r = c.post(f"{API}/answer", json={"instance": gate, "answer": "approve"})
+ok(r.status_code == 200 and r.json()["run"]["record"]["id"] == run_id and r.json()["run"]["record"]["status"] == "done", "the answer resumes the same run")
+r = c.get(f"{API}/runs/{run_id}")
+ok(r.status_code == 200 and r.json()["run"]["status"] == "done" and [s["action"] for s in r.json()["run"]["ran"]] == ["log.note", "log.note"], "the run record is complete")
+ok(c.get(f"{API}/runs/nope").status_code == 404, "unknown run is 404")
+ok(c.post(f"{API}/toolsets/review/disable").json()["toolset"]["enabled"] is False and c.get(f"{API}/tools").json()["open"] is True, "disabled set = open tools")
+ok(c.post(f"{API}/toolsets/review/delete", json={"confirm": "x"}).status_code == 409, "tool set delete needs confirm")
+ok(c.post(f"{API}/toolsets/review/delete", json={"confirm": "review"}).status_code == 200, "tool set deleted")
 
 # options, manifest, history, webhook
 r = c.post(f"{API}/options", json={"source": "builds", "event": "build.status", "field": "build.status"})
