@@ -1172,6 +1172,7 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-pick__title { flex: 1; min-width: 0; font-weight: 600; }
 .fx-pick__text { color: var(--fx-muted); font-size: var(--fx-type-scale-sm); }
 .fx-pick__hint { color: var(--fx-accent); font-size: var(--fx-type-root-xs); }
+.fx-pick__preview { display: block; min-width: 0; overflow: hidden; border-radius: var(--fx-radius-sm); pointer-events: none; }
 .fx-pick__swatch { display: block; width: 100%; aspect-ratio: 3 / 1; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); }
 /* tiles: chips (one line, pills), list (full-width rows), swatches (preview first, centred name) */
 .fx-pick[data-fx-pick='chips'] .fx-pick__tile { flex-direction: row; align-items: center; border-radius: 999px; padding-block: var(--fx-dens-gap-xs); }

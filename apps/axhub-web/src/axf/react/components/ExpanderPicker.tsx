@@ -37,6 +37,8 @@ export interface ExpanderOption {
   icon?: string;
   /** a colour (or any CSS background) drawn as the tile's preview on swatch tiles and cards */
   swatch?: string;
+  /** any preview drawn at the top of the tile (a mini screen, a sample, an image); takes the swatch's place */
+  preview?: ReactNode;
   disabled?: boolean;
 }
 
@@ -101,6 +103,16 @@ export function ExpanderPicker({ label, value, options, onChange, onPreview, hin
     preview(o.value);
   };
   useEffect(() => { if (disabled && open) close(); }, [disabled]); // eslint-disable-line react-hooks/exhaustive-deps
+  // the grid unfolds in place and pushes what is below down; once it has opened, bring it into view if it ran off the bottom
+  const subRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const el = subRef.current;
+    const done = () => el?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
+    el?.addEventListener('transitionend', done, { once: true });
+    const t = setTimeout(done, 400); // reduced motion / no animation: no transitionend fires
+    return () => { el?.removeEventListener('transitionend', done); clearTimeout(t); };
+  }, [open]);
 
   const move = (e: KeyboardEvent<HTMLElement>, from: number) => {
     const enabled = all.map((o, i) => (o.disabled ? -1 : i)).filter((i) => i >= 0);
@@ -144,7 +156,7 @@ export function ExpanderPicker({ label, value, options, onChange, onPreview, hin
             {pending && <span className="fx-pick__pending">→ {pending.label}</span>}
             {arrowIcon && <span className="fx-pick__arrow" aria-hidden="true"><Icon name={arrowIcon} size={16} /></span>}
           </button>
-          <div className="fx-pick__sub" id={gridId} aria-hidden={!open}>
+          <div ref={subRef} className="fx-pick__sub" id={gridId} aria-hidden={!open}>
             <div className="fx-pick__sub-inner">
               <div ref={gridRef} className="fx-pick__grid" role="listbox" aria-label={labelText || undefined} aria-labelledby={labelText ? undefined : nameId}>
                 {all.map((o, i) => {
@@ -153,7 +165,7 @@ export function ExpanderPicker({ label, value, options, onChange, onPreview, hin
                   return (
                     <button key={o.value || '\u0000'} type="button" role="option" aria-selected={on} data-armed={isArmed ? 'on' : 'off'} disabled={o.disabled || disabled} tabIndex={open ? (isArmed || (armed === null && on) || (armed === null && !current && i === 0) ? 0 : -1) : -1}
                       className="fx-pick__tile" onClick={() => press(o)} onKeyDown={(e) => move(e, i)} title={!firstPress && isArmed && !on ? 'Press again to apply' : undefined}>
-                      {o.swatch && <span className="fx-pick__swatch" style={{ background: o.swatch }} aria-hidden="true" />} {/* theme-ok: the option's own colour is data, not style */}
+                      {o.preview ? <span className="fx-pick__preview" aria-hidden="true">{o.preview}</span> : o.swatch && <span className="fx-pick__swatch" style={{ background: o.swatch }} aria-hidden="true" />} {/* theme-ok: the option's own colour is data, not style */}
                       <span className="fx-pick__tile-top">
                         {o.icon && <Icon name={o.icon} size={16} />}
                         <span className="fx-pick__title">{o.label}</span>

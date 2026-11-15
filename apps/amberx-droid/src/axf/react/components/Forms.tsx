@@ -185,7 +185,7 @@ export function ColorField({ label, value, onChange, swatch, hint, error, disabl
   );
 }
 
-export interface SelectOption { value: string; label: string; disabled?: boolean; /** a second line on cards and list rows */ text?: string; icon?: string; /** a colour drawn as the tile's preview */ swatch?: string }
+export interface SelectOption { value: string; label: string; disabled?: boolean; /** a second line on cards and list rows */ text?: string; icon?: string; /** a colour drawn as the tile's preview */ swatch?: string; /** any preview drawn on the tile (takes the swatch's place) */ preview?: ReactNode }
 
 export interface SelectFieldProps {
   label: ReactNode;

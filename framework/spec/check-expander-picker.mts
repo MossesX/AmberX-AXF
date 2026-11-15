@@ -132,6 +132,10 @@ ok(/className="fx-pick__row"[\s\S]*?className="fx-pick__name"[\s\S]*?className=\
 ok(picker.includes('aria-labelledby={`${nameId} ${valueId}`}'), 'the row is named by the setting name and its current value');
 ok(!picker.includes('<Field '), 'the name is in the row, not a label above it');
 ok(css.includes('.fx-pick__name {') && /\.fx-pick__value \{[^}]*text-align: right/.test(css), 'name on the left, value on the right');
+/* s4 expand: the arrow or the row opens it in place, tiles can carry a preview, the opened grid is brought into view */
+ok(/onClick=\{onRow\}/.test(picker) && /const onRow = \(\) => \{ if \(open\) close\(armed\); else expand\(\); \}/.test(picker), 'the whole row (arrow included) opens the grid');
+ok(picker.includes('preview?: ReactNode') && picker.includes('fx-pick__preview') && css.includes('.fx-pick__preview {'), 'tiles can show a preview');
+ok(picker.includes("scrollIntoView?.({ block: 'nearest'"), 'the opened grid scrolls into view (nearest, nothing jumps)');
 ok(/firstPress \|\| armed === o\.value/.test(picker), 'one press highlights, the same press again applies (unless the asset says first-press)');
 ok(/if \(open\) close\(armed\)/.test(picker), 'pressing the arrow / row again applies the highlighted option and closes');
 const index = readFileSync(join(root, 'react/index.ts'), 'utf8');
