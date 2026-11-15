@@ -7509,6 +7509,18 @@
    "from": "",
    "addenda": []
   },
+  "shipped-features-organized-sortable": {
+   "said": "The shipped features table is straight up trash, you better organize that, make it sortable with more columns",
+   "at": "2026-11-15T12:09:29.937Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "shipped-features-r2": {
    "said": "Where's the list of features that can be sorted, and when they went live? ... I need a list of individual features, and you can view the features or you can view the builds that made the features. The builds will have an expanding row to show all its information along with the features. Tap in the expanded row. And there will also be another table that uses the features themselves as the root.",
    "at": "2026-11-04T12:00:00Z",
