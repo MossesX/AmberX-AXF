@@ -4899,6 +4899,18 @@
    "from": "",
    "addenda": []
   },
+  "move-build-orchestrator-to-axhub": {
+   "said": "If we move the whole orchestrator over to axHub, then it will manage all the builds, whether the console's up or not",
+   "at": "2026-11-15T04:20:19.690Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "move-status-out-of-claude-md": {
    "said": "move-status-out-of-claude-md",
    "at": "",
