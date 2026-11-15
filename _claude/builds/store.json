@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6101,
- "updatedAt": "2026-11-15T12:19:38.169Z",
+ "rev": 6102,
+ "updatedAt": "2026-11-15T12:20:01.349Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -230895,7 +230895,7 @@
    "title": "Data container: axf-data holds all console data",
    "category": "",
    "detail": "Brett's final layout: the console is screens ONLY, with no work and no data in it. New private container 'axf-data' (Coolify, auto-restart, no public port or DNS, internal Docker network only) holds ALL the data: notes, builds store/journal/history, settings, planner items, UI reviews, everything the console stores today. Four parts: console = UI only; axf-molly = does the work (orchestrator, gate, lander); axHub = routes plus credentials/keys only (NO app data stored in axHub); axf-data = stores everything. Goal: if the console goes down, all data and notes stay available (through axHub tools) and builds keep running. Stage it safely: an API in front of the store, migrate with count checks and a backup, run in shadow first, then cut over, and no data is ever lost. Add daily backups. Coordinate with the move-build-orchestrator-to-axhub build (axf-molly reads and writes the builds store through axf-data). Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -230903,7 +230903,7 @@
    "pr": "#704",
    "priority": "P0",
    "createdAt": "2026-11-15T04:28:05.062Z",
-   "updatedAt": "2026-11-15T05:21:04.432Z",
+   "updatedAt": "2026-11-15T12:19:59.008Z",
    "builtAt": "",
    "notes": [
     {
@@ -230933,6 +230933,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-15T05:21:04.432Z"
+    },
+    {
+     "text": "Brett (07:19): do this NOW, top priority: build the axf-data container, wire it, and migrate everything into it as soon as possible. Order: (1) bring axf-data up on Coolify (private, auto-restart, internal network only) with its API; (2) migrate ALL data with a backup first and count checks (builds store, journal, history, notes, settings, planner items, UI reviews, shipped manifests/feature store); (3) shadow-run, then cut the console, orchestrator and lander over to read/write through axf-data; (4) daily backups. Never lose data; if a step could, stop and note it. Coordinate with move-build-orchestrator-to-axhub (axf-molly), which goes right after and reads/writes through axf-data. Land each part with the one-at-a-time lander as it finishes.",
+     "at": "2026-11-15T12:19:59.008Z"
     }
    ],
    "approvals": [],
@@ -231670,7 +231674,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
