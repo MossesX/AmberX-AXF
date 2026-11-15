@@ -797,11 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 22:45 UTC · `orchestrator-table-columns-model-queue-assigned` note (all) · orchestrator
-- 2026-11-14 22:45 UTC · `orchestrator-settings-collapsible-split` → queued (all) · orchestrator
-- 2026-11-14 22:45 UTC · `console-app-wake-word-voice-listener` → queued (all) · orchestrator
-- 2026-11-14 22:45 UTC · `land-project-duplicate-boilerplate` → queued (all) · orchestrator
-- 2026-11-14 22:45 UTC · `skin-config-panel-merge-main-and-land` → queued (all) · orchestrator
 - 2026-11-14 22:45 UTC · `skin-animations-swatches-skin-switch` → queued (all) · orchestrator
 - 2026-11-14 22:45 UTC · `pass-approval-hook-deep-link-amberx-notification` → running, note (all) · pipeline
 - 2026-11-14 22:46 UTC · `own-token-sets-for-grids-and-tab-groups` → queued (all) · orchestrator
@@ -1197,6 +1192,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 00:08 UTC · `merge-main-land-server-gate-one-session` s4 done (all) · orchestrator
 - 2026-11-15 00:08 UTC · `merge-main-land-server-gate-one-session` s5 done (all) · orchestrator
 - 2026-11-15 00:08 UTC · `merge-main-land-server-gate-one-session` s6 done (all) · orchestrator
+- 2026-11-15 00:10 UTC · `merge-main-land-server-gate-one-session` note (all) · orchestrator
+- 2026-11-15 00:10 UTC · `quick-settings-pinned-collapsible-pane` → running, note (all) · pipeline
+- 2026-11-15 00:10 UTC · `merge-main-land-console-app-part-2` added (0 steps) (all) · foreign-write
+- 2026-11-15 00:10 UTC · `merge-main-land-voice-listener-use` added (0 steps) (all) · foreign-write
+- 2026-11-15 00:10 UTC · `merge-main-land-console-axhub-retry` added (0 steps) (all) · foreign-write
 
 ## Token passes (log)
 
