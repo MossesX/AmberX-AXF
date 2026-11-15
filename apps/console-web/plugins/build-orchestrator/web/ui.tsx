@@ -366,17 +366,11 @@ function RulesTab({ rules, busy, act }: { rules: Rules; busy: boolean; act: Act 
         <h2 className="pd-card__title">Token rules</h2>
         <label className="fx-row"><input type="checkbox" checked={r.sameSession} onChange={() => flip('sameSession')} />Stay in one session (a step can still ask for a new one)</label>
         <label className="fx-row"><input type="checkbox" checked={r.subAgents} onChange={() => flip('subAgents')} />Allow sub-agents (off = only steps marked “sub-agent ok”)</label>
-        <p className="fx-small fx-muted">Model switches: an upgrade always waits for your approval; a downgrade goes on by itself (Nov 3 2026, not a setting).</p>
-        <label className="pd-field">Largest step (minutes, {core.STEP_MINUTES} at most)<input className="fx-input" type="number" min={1} max={core.STEP_MINUTES} value={core.maxStep(r)} onChange={(e) => setR((x) => ({ ...x, maxStepMinutes: Number(e.target.value) }))} /></label>
-        <p className="fx-small fx-muted">Steps are checkpoints inside one session: it commits and ticks each one as it goes, with no new prompt or launch per step.</p>
-        <div><Button tone="primary" icon="save" disabled={busy} onClick={() => act({ action: 'rules', rules: r })}>Save rules</Button></div>
-      </article>
-      <SplitSettings api={api} />
-      <article className="pd-card">
-        <h2 className="pd-card__title">Which model a step gets</h2>
-        {core.MODELS.map((m) => <p key={m}><span className={`oc-model is-${m.toLowerCase()}`}>{m}</span> {(core.MODEL_GUIDE as Record<string, string>)[m]}</p>)}
+        <p className="fx-small fx-muted">Model switches: an upgrade always waits for your approval; a downgrade goes on by itself (Nov 3 2026, not a setting). Step size, model per step and phases are in Split below.</p>
+        <div><Button tone="primary" icon="save" disabled={busy} onClick={() => act({ action: 'rules', rules: { ...r, maxStepMinutes: rules.maxStepMinutes } })}>Save rules</Button></div>
         <p className="fx-small fx-muted">Any session: <span className="fx-mono">node apps/console-web/plugins/build-orchestrator/orchestrator.mjs next</span> then <span className="fx-mono">brief &lt;id&gt;</span>.</p>
       </article>
+      <SplitSettings api={api} rules={rules} saveRules={(next) => act({ action: 'rules', rules: next })} />
     </div>
   );
 }
@@ -403,7 +397,7 @@ function AddForm({ busy, act }: { busy: boolean; act: Act }) {
         <label className="pd-field">Title<input className="fx-input" required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="What to build" /></label>
         <label className="pd-field">Details<textarea className="fx-input" rows={3} value={detail} onChange={(e) => setDetail(e.target.value)} placeholder="Scope, files touched, acceptance notes" /></label>
         <label className="pd-field">Category<input className="fx-input" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="e.g. Console UI" /></label>
-        <label className="pd-field">Steps, one per line ("# Phase name" and "## Group name" lines label the steps below them): “Fable: design the contract (25 min)” or “Opus: wire the route (20 min)”<textarea className="fx-input fx-mono" rows={5} value={steps} onChange={(e) => setSteps(e.target.value)} /></label>
+        <label className="pd-field">Steps, one per line ("# Phase name" and "## Group name" lines label the steps below them): “Fable: design the contract (10 min)” or “Opus: wire the route (10 min)” (Rules → Split has every split option)<textarea className="fx-input fx-mono" rows={5} value={steps} onChange={(e) => setSteps(e.target.value)} /></label>
         <div><Button tone="primary" icon="plus" disabled={busy || !title.trim()} type="submit">Add to orchestrator</Button></div>
       </form>
     </details>

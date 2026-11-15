@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button, Note, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
+import * as core from './orchestrator-core.mjs';
 
 /*
  * Split section (Brett, Nov 13 2026: "orchestrator settings needs a collapsible section for split, with all the
@@ -13,9 +14,13 @@ import { Button, Note, SelectField, Switch, TextField, useRuntime } from '@conso
  *   parallelMax         most parts (slots) one request is split into, 2-12, default 4
  *   parallelContract    the lead runs a shared contract / interface step first so the parts don't clash
  *   parallelIntegrate   the lead runs an integration step last: merges the parts and tests them together
+ * Every other split option sits here too (s3): the largest step (orchestrator rules, maxStepMinutes: POST act
+ * {action:'rules'}; `orchestrator.mjs act rules`), which model a step gets, phases, and the one-step-per-line format
+ * a build's steps are written in by hand.
  */
 export type SplitSettingsValues = { splitProvider: string; parallelSplit: string; parallelMax: number; parallelContract: boolean; parallelIntegrate: boolean };
 type Res = { ok: boolean; error?: string; settings: SplitSettingsValues };
+type StepRules = { sameSession: boolean; subAgents: boolean; approveModelSwitch: boolean; maxStepMinutes: number };
 type Api = { call: <T>(path: string) => Promise<T>; post: <T>(path: string, body: unknown) => Promise<T> };
 /** The element id the deep link (build-orchestrator.split-settings) scrolls to and opens. */
 export const SPLIT_SECTION_ID = 'orch-split-settings';
@@ -32,8 +37,27 @@ const MODES = [
   { value: 'off', label: 'Off: one build, one session' },
 ];
 
-export function SplitSettings({ api, open }: { api: Api; open?: boolean }) {
+/**
+ * `rules` + `saveRules` come from the orchestrator page (its Rules tab keeps one copy of the rules); without them, as
+ * in Settings → Plugins, the section reads the rules from GET state and saves them through POST act.
+ */
+export function SplitSettings({ api, open, rules, saveRules }: { api: Api; open?: boolean; rules?: StepRules; saveRules?: (r: StepRules) => Promise<boolean> }) {
   const rt = useRuntime();
+  const [ownRules, setOwnRules] = useState<StepRules | null>(null);
+  const r = rules ?? ownRules;
+  const [step, setStep] = useState('');
+  useEffect(() => { if (r) setStep(String(core.maxStep(r))); }, [r?.maxStepMinutes]);
+  useEffect(() => {
+    if (rules) return;
+    void api.call<{ ok: boolean; state?: { rules: StepRules } }>('state').then((x) => { if (x.ok && x.state) setOwnRules(x.state.rules); }).catch(() => {});
+  }, [!!rules]);
+  const putRules = async (next: StepRules, what: string) => {
+    if (saveRules) { if (await saveRules(next)) rt.toast(what, 'success'); return; }
+    try { const x = await api.post<{ ok: boolean; error?: string; state?: { rules: StepRules } }>('act', { action: 'rules', rules: next }); if (!x.ok) throw new Error(x.error); if (x.state) setOwnRules(x.state.rules); rt.toast(what, 'success'); }
+    catch (e) { rt.toast((e as Error).message, 'danger'); }
+  };
+  const stepN = Number(step);
+  const stepOk = Number.isInteger(stepN) && stepN >= 1 && stepN <= core.STEP_MINUTES;
   const [s, setS] = useState<SplitSettingsValues | null>(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -58,7 +82,16 @@ export function SplitSettings({ api, open }: { api: Api; open?: boolean }) {
       {error && <Note tone="warning">{error}</Note>}
       {!s ? <p className="fx-small fx-muted">Loading the split settings…</p> : (
         <div className="fx-stack">
-          <SelectField label="How a build is split" value={s.splitProvider} options={PROVIDERS} disabled={busy} hint="Every build is split as soon as it is filed. The largest step size is a token rule (Save rules above)." onChange={(v) => save({ splitProvider: v }, `Split: ${v}`)} />
+          <SelectField label="How a build is split" value={s.splitProvider} options={PROVIDERS} disabled={busy} hint="Every build is split as soon as it is filed." onChange={(v) => save({ splitProvider: v }, `Split: ${v}`)} />
+          <div className="oc-split__row">
+            <TextField label="Largest step (minutes)" type="number" value={step} disabled={!r} hint={`1 to ${core.STEP_MINUTES}: a longer step is cut in two; every step is a checkpoint (commit, push, tick) inside one session`} error={step && !stepOk ? `1 to ${core.STEP_MINUTES}` : undefined} onChange={setStep} />
+            <Button size="sm" tone="primary" icon="save" disabled={!r || !stepOk || stepN === core.maxStep(r)} onClick={() => r && putRules({ ...r, maxStepMinutes: stepN }, `Largest step: ${stepN} min`)}>Apply step size</Button>
+          </div>
+          <h3 className="pd-card__title">Model per step and phases</h3>
+          {core.MODELS.map((m) => <p key={m} className="fx-small"><span className={`oc-model is-${m.toLowerCase()}`}>{m}</span> {(core.MODEL_GUIDE as Record<string, string>)[m]}</p>)}
+          <p className="fx-small fx-muted">Steps in a row on the same model form a phase: one session runs one phase and stops. A switch to Fable is an upgrade, a switch to Opus a downgrade (it goes on by itself).</p>
+          <h3 className="pd-card__title">Writing steps by hand</h3>
+          <p className="fx-small fx-muted">One step per line: <span className="fx-mono">Fable: design the contract (10 min)</span> or <span className="fx-mono">Opus: wire the route (10 min)</span> (no prefix = Opus). A <span className="fx-mono"># Phase name</span> line starts a phase, a <span className="fx-mono">## Group name</span> line groups the steps below it. Same format in Add a build, <span className="fx-mono">orchestrator.mjs act add</span> and the API.</p>
           <h3 className="pd-card__title">Parallel split</h3>
           <p className="fx-small fx-muted">A request that falls into independent parts is cut into sub-builds that run at the same time in separate slots, to speed it up. The lead build keeps the shared contract step first, so the parts don't clash, and the integration step last, which merges and tests them together.</p>
           <SelectField label="Parallel split" value={s.parallelSplit} options={MODES} disabled={busy} onChange={(v) => save({ parallelSplit: v }, `Parallel split: ${v}`)} />
