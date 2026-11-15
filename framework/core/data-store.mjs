@@ -418,7 +418,7 @@ export function httpBackend(opts = {}) {
       const meta = { ns, path, kind: r.headers.get('x-axf-kind') || 'record', rev: Number(r.headers.get('x-axf-rev')) || 0, etag: (r.headers.get('etag') || '').replace(/"/g, ''), at: r.headers.get('x-axf-at') || '', by: r.headers.get('x-axf-by') || '', contentType: r.headers.get('content-type') || '', deleted: r.headers.get('x-axf-deleted') === '1' };
       const bytes = new Uint8Array(await r.arrayBuffer());
       meta.size = bytes.length;
-      return { meta, bytes };
+      return { meta, bytes: meta.deleted ? null : bytes };
     },
     async put(ns, path, data, o = {}) {
       const { kind, bytes, contentType } = bodyOf(data, o.contentType);
@@ -429,7 +429,7 @@ export function httpBackend(opts = {}) {
     async delete(ns, path, o = {}) { const ifMatch = normIfMatch(o.ifMatch); return (await send(url(ns, path, { force: o.force ? 1 : '' }), { method: 'DELETE', headers: ifMatch ? { 'if-match': ifMatch } : {} })).json(); },
     async list(ns, o = {}) { return (await send(url(ns, '', { prefix: o.prefix, after: o.after, limit: o.limit, deleted: o.deleted ? 1 : '' }))).json(); },
     async append(ns, path, entries, o = {}) { return (await send(`${url(ns, path)}:append`, { method: 'POST', headers: { 'content-type': 'application/json', ...(o.idempotencyKey ? { 'idempotency-key': o.idempotencyKey } : {}) }, body: JSON.stringify({ entries }) })).json(); },
-    async read(ns, path, o = {}) { return (await send(url(ns, path, { since: o.since, limit: o.limit, tail: o.tail }))).json(); },
+    async read(ns, path, o = {}) { return (await send(url(ns, path, { since: o.tail ? undefined : Math.max(0, Number(o.since) || 0), limit: o.limit, tail: o.tail }))).json(); }, // `since` always rides along: a GET without it is a get, refused on a journal
     async changes(o = {}) { const r = await (await send(url('watch', '', { ns: Array.isArray(o.ns) ? o.ns.join(',') : o.ns, prefix: o.prefix, since: o.since, limit: o.limit, poll: 1 }))).json(); return { changes: r.changes || [], cursor: r.cursor || 0 }; },
     async manifest(ns) { return (await send(`${url(ns, '')}:manifest`)).json(); },
     async snapshot(namespaces, o = {}) { return (await send(`${base}/v1/snapshot`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ namespaces: namespaces || [], mode: o.mode }) })).json(); },
