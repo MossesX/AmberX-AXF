@@ -806,7 +806,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:49 UTC · `themed-native-controls-plugin` s25 done (all) · orchestrator
 - 2026-11-14 23:50 UTC · `merge-main-land-console-app-part-4` branch claude/console-app-part-4-console-side-safe, PR #640 (all) · builds-live
 - 2026-11-14 23:50 UTC · `merge-main-land-console-app-part-4` s1 done (all) · orchestrator
 - 2026-11-14 23:50 UTC · `merge-main-land-console-app-part-4` s2 done (all) · orchestrator
@@ -1206,6 +1205,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 05:42 UTC · `merge-main-land-voice-listener-use` note (all) · orchestrator
 - 2026-11-15 07:10 UTC · `fix-axhub-36-pull-main-in-failed` → complete, merged, note (all) · reconciler
 - 2026-11-15 07:11 UTC · `fix-axhub-36-pull-main-in-failed` note (all) · orchestrator
+- 2026-11-15 09:10 UTC · `molly-gap-axhub-cors` → complete, merged, note (all) · reconciler
 
 ## Token passes (log)
 
