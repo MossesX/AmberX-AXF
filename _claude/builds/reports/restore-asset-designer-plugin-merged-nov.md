@@ -37,8 +37,32 @@ So the "missing plugin" was a status record without code behind it. Rule for the
 `check-designer.mjs` 476 ok · `axf validate --framework` 557 assets · `shared-assets.mjs check --all` ok · `plugin-lifecycle.mjs check asset-designer` clean · `plugin-commands.mjs check` 9 reads · 8 commands · `check-plugin-commands.mjs` 57 ok · `check-theme`, `check-controls`, `check-toolbars`, `check-chrome-assets` ok · `menu-reach.mts` no finding for this plugin · console `tsc --noEmit` ok · `test.mts` + `test.py` all pass.
 Help coverage: the plugin is fully covered; the console-wide ratchet (99.6%) misses are pre-existing (approvals-banner fields, molly-guide tab).
 
+## Phase 2 (Opus, Nov 15): archive search, item lists, the ledger
+
+**Where Brett said to look: archives and branches.** Searched every place a branch or worktree could survive:
+- Remote: `git ls-remote origin` has no `claude/asset-designer*` or `claude/ui-asset-designer*` head; the only survivor is `refs/pull/376/head` (`e338c769f`), already restored in Phase 1.
+- Local: `git branch -a`, `git log --all -- apps/console-web/plugins/asset-designer` (only this build's commit).
+- VPS archives: `/root/axf-builds-archive/*` (retired worktrees) and `/root/archive/*` (auto-land, builds-live, retired-2026-11-03, untracked-2026-11-03, self-heal). No `asset-designer` or `ui-asset-designer` worktree and no `plugins/asset-designer` folder anywhere; the plugin id only appears in old copies of the build store.
+- The Nov 10 note also named `context-menu-designer` as a successor. That plugin is in main (`27cdad90f`) and in the archived worktrees, so nothing is missing there.
+
+So the rebuild stands: there was never an asset-designer branch to recover, only PR #376's contracts.
+
+**Gaps against the original spec (`_claude/builds/shipped/asset-designer.json`), now closed:**
+- Menu and toolbar editors (spec s5/s6). New `web/ItemList.tsx`: any list of objects (`items`, `sections`, `groups`, `children`…) is edited row by row (id, label, icon, then an action picked from `rt.actions.list()` or a view, plus a divider switch). Rows can be reordered, removed and added; nested lists open underneath (nav-menu sections → items, toolbar groups → items); "Edit … as JSON" switches a list back to raw JSON. Help entry `item-list`; 7 new model checks in `test.mts`.
+
+**Still open, deliberately:**
+- `drawer` asset type and drawer rendering (spec s7/s8): a new asset type is Fable work (asset-types.json, schemas, fixtures) and its Compose renderer is Kotlin work, which is frozen. Needs its own Fable build; the Kotlin twin is a PORTING.md gap when it lands.
+- Dedicated layout / colour-theme / style-theme editors (spec s9–s11): the generic editor already covers every field of those types (choices, numbers, colour pickers, JSON). Region-grid and contrast views would be a follow-up.
+- Android face (spec s14): Kotlin is frozen.
+
+**Shipped features.** `sm-asset-designer` (rev 2) now says in `open` that nothing shipped under that build and points to this PR. The orchestrator's `shipped.mjs landed` tick writes the real record for `restore-asset-designer-plugin-merged-nov` when PR #631 lands. It is not shipped by hand before the merge.
+
+**UI Review: not submitted.** `rebuild-shots.mjs` boots this branch's console here: it needs `--env AXF_APPEARANCE_HUB=off` (the hub refuses the scratch origin over CORS) and Playwright borrowed from another checkout's `node_modules` (the console has none). But no scripted path reached the plugin view in time: the search palette loses keystrokes while the console is still loading, and "Plugins → Open a plugin" lists only a subset of plugins. Next session: add a stable open step (e.g. `{"eval": …}` through `axf:console-control.search`), then `--submit settings --name "Asset designer: item list editor + every asset type" --app console-web --screen asset-designer --group "restore-asset-designer-plugin-merged-nov - <date>" --branch claude/restore-asset-designer-plugin-merged-nov --pr 631` (it also asks for `--choices` or a singleOption reason).
+
+**So it does not happen again.** No code removed the plugin. A status note marked a build complete with no PR behind it, and the shipped-features backfill took that as a merge. The fix belongs in the reconciler and backfill (`framework/cli/shipped.mjs backfill`): count a build as merged only when a merged PR or a landed commit touches its files; a "complete" with neither should be shipped as `superseded`, not as a feature. That change is filed as a follow-up and not made here (it is outside this build's files).
+
 ## Left for the next phase
 
-- UI Review: desktop and phone shots need a built console (none runs on this VPS); the review item is to be submitted from the Opus phase with `review.mjs submit --kind settings …`.
-- Shipped features: `sm-asset-designer` should be re-issued from this build's PR so the ledger shows the real merge.
+- UI Review shots and submission (see Phase 2 above).
+- The real shipped record comes from the orchestrator tick when PR #631 lands.
 - The Kotlin twin of designer@1 stays deferred (PORTING.md).
