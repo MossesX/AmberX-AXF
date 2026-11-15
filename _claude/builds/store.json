@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5811,
- "updatedAt": "2026-11-15T00:37:19.614Z",
+ "rev": 5812,
+ "updatedAt": "2026-11-15T00:37:35.629Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -227863,11 +227863,11 @@
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
-   "branch": "claude/merge-main-land-console-app-part-2",
-   "pr": "",
+   "branch": "claude/console-app-part-2-native-floating-2",
+   "pr": "#639",
    "priority": "P0",
    "createdAt": "2026-11-15T00:06:45.788Z",
-   "updatedAt": "2026-11-15T00:15:57.565Z",
+   "updatedAt": "2026-11-15T00:36:47.476Z",
    "builtAt": "",
    "notes": [
     {
@@ -228168,7 +228168,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
