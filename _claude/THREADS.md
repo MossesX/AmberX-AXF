@@ -801,7 +801,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:44 UTC · `merge-main-land-console-app-part-3` branch claude/merge-main-land-console-app-part-3 (all) · pipeline
 - 2026-11-14 23:44 UTC · `merge-main-land-console-app-part-3` note (all) · orchestrator
 - 2026-11-14 23:44 UTC · `merge-main-land-change-to-move-amberx` note (all) · orchestrator
 - 2026-11-14 23:45 UTC · `console-look-becomes-default-axhub-skin` s4 done, → running, note (all) · orchestrator
@@ -1201,6 +1200,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 04:37 UTC · `data-container-axf-data-holds-all` s1 done, → running (all) · orchestrator
 - 2026-11-15 04:37 UTC · `data-container-axf-data-holds-all` branch claude/data-container-axf-data-holds-all (all) · builds-live
 - 2026-11-15 04:38 UTC · `auto-lander-controls-in-the-gate-plugin` s4 done (all) · orchestrator
+- 2026-11-15 04:39 UTC · `auto-lander-controls-in-the-gate-plugin` s8 done (all) · orchestrator
 
 ## Token passes (log)
 
