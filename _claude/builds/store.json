@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5737,
- "updatedAt": "2026-11-15T00:13:27.376Z",
+ "rev": 5738,
+ "updatedAt": "2026-11-15T00:13:43.631Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -221955,10 +221955,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/themed-native-controls-plugin",
-   "pr": "",
+   "pr": "#690",
    "priority": "P1",
    "createdAt": "2026-11-14T18:14:25.063Z",
-   "updatedAt": "2026-11-15T00:10:38.570Z",
+   "updatedAt": "2026-11-15T00:13:35.678Z",
    "builtAt": "",
    "notes": [
     {
@@ -222826,7 +222826,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
