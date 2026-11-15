@@ -798,7 +798,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:07 UTC · `land-finish-auto-land-live-clear-backlog` s15 done (all) · foreign-write
 - 2026-11-14 23:07 UTC · `themed-native-controls-plugin` s10 done (all) · orchestrator
 - 2026-11-14 23:08 UTC · `server-gate-one-session-per-build-no` note (all) · pipeline
 - 2026-11-13 10:50 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` s3 done, → built (all) · orchestrator
@@ -1198,6 +1197,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 00:42 UTC · `merge-main-land-voice-listener-use` s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, → built, note (all) · reconciler
 - 2026-11-15 00:42 UTC · `orchestrator-custom-groups-custom-tabs` note (all) · orchestrator
 - 2026-11-15 00:44 UTC · `merge-main-land-voice-listener-use` s2 done (all) · orchestrator
+- 2026-11-15 00:45 UTC · `orchestrator-settings-collapsible-split` → running, note (all) · pipeline
 
 ## Token passes (log)
 
