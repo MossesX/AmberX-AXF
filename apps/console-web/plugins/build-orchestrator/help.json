@@ -291,6 +291,67 @@
         "title": "Set for all",
         "text": "Gives every build of the group the priority picked next to it (Urgent, High, Normal, Low).",
         "kind": "button"
+      },
+      {
+        "target": "pending",
+        "title": "Pending",
+        "text": "Every build waiting for you, one row each: its title, a chip that says why it is pending (waiting for Queue, needs a split, needs your upgrade approval…), its priority, steps done out of total and how long ago it was added. Tap a row to open it: its steps with Fable / Opus badges, its notes, what Brett said and the Queue, Edit and Archive buttons. Which rows you opened is remembered for you, on any device.",
+        "kind": "tab",
+        "more": "API: GET pending/rows and POST pending/rows/<build>/expand|collapse|toggle (REST), the MCP commands pending-rows, pending-expand, pending-collapse, pending-toggle and pending-collapse-all, `orchestrator.mjs pending …` on the CLI, and by voice ('open skins in pending'). Deep link: ?axf-target=row:<build>."
+      },
+      {
+        "target": "collapse-all",
+        "title": "Collapse all",
+        "text": "Closes every open row on this tab. On Pending it is remembered for you, like each row you open.",
+        "kind": "button"
+      },
+      {
+        "target": "edit",
+        "title": "Edit",
+        "text": "Renames this build. Save keeps the new title; Cancel leaves it as it was.",
+        "kind": "button"
+      },
+      {
+        "target": "save",
+        "title": "Save",
+        "text": "Keeps the change you just made.",
+        "kind": "button"
+      },
+      {
+        "target": "cancel",
+        "title": "Cancel",
+        "text": "Leaves everything as it was.",
+        "kind": "button"
+      },
+      {
+        "target": "action:build-orchestrator.pending-rows",
+        "title": "Pending rows",
+        "text": "Opens the Build orchestrator on Pending and says how many builds wait and how many rows you have open.",
+        "kind": "menu"
+      },
+      {
+        "target": "action:build-orchestrator.pending-expand",
+        "title": "Open a pending row",
+        "text": "Opens one pending build's row (build-orchestrator.pending-expand:<build>): its steps, notes, what Brett said and actions. Remembered for you.",
+        "kind": "menu"
+      },
+      {
+        "target": "action:build-orchestrator.pending-collapse",
+        "title": "Close a pending row",
+        "text": "Closes one pending build's row back to its one line (build-orchestrator.pending-collapse:<build>).",
+        "kind": "menu"
+      },
+      {
+        "target": "action:build-orchestrator.pending-toggle",
+        "title": "Toggle a pending row",
+        "text": "Opens a pending build's row when it is closed and closes it when it is open, the same as tapping it.",
+        "kind": "menu"
+      },
+      {
+        "target": "action:build-orchestrator.pending-collapse-all",
+        "title": "Collapse all pending rows",
+        "text": "Closes every pending row for you.",
+        "kind": "menu"
       }
     ],
     "intros": []
