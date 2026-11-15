@@ -47,12 +47,16 @@ apps/
   console-web/  web Dev Console (React/TS) + server/ (FastAPI, mcp_server.py)
   console/      Android showcase of the console (ai.amberx.axf.console)
   expenses/     Expense Tracker (Next.js, imported from MossesX/Expense with history) -> expenses.amberxai.com
-deploy/         install.sh (demo), install-console.sh (sources framework/deploy/axf-deploy.sh), dryrun/ (before/after harness), panel/ (/panel UI)
+services/
+  axf-data/     the data container: holds all console data (data-store@1; FastAPI + SQLite + blobs, backups, MCP tools for axHub)
+deploy/         install.sh (demo), install-console.sh, install-data.sh (axf-data) (both source framework/deploy/axf-deploy.sh), dryrun/ (before/after harness, console-down drill), axhub/ (downstream docs), panel/ (/panel UI)
 _claude/        Claude files (rules/, instructions/, memory/, shared/), synced with /projects/amberx-axf/_claude
 project.manifest.json   this repo's project manifest (apps/* have their own)
 tracker.json    generated from catalog + status
 .mcp.json       registers the axf MCP server (local stdio + console.amberxai.com)
 ```
+
+Four parts: `framework/` (engines, contracts, CLI), `apps/` (what users run), `services/` (long-lived back ends no app owns: `axf-data`), `deploy/` (how each part reaches the VPS).
 
 ## Build, run, test
 
@@ -109,6 +113,7 @@ Deploy: pushing to `main` runs `deploy.yml`, which builds `apps/demo` and force-
 - **Console sizes are tokens (Oct 17 2026):** `console.css` and the console views use `--fx-space`, `--fx-font-size`, `--fx-radius-*` and `--fx-border-w` (exact at the default soft-studio theme, so it looks pixel-identical there); the console is held to every theme rule. Shapes stay fixed: pill radii (999px), bar/chart heights, icon sizes.
 - **Build options are `--switches` on every build driver** (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.
 - **Every project has a validated manifest** (`project.manifest.json`); nothing is loaded or compiled without one. Rules live in `framework/schemas/project-rules.json` (Dev Console → Standards).
+- **Console data lives in axf-data (Nov 15 2026, Brett: "the console goes down, all the data is still available, all the notes are available, and the builds keep running."):** every writer reads and writes through data-store@1 (`framework/spec/DATA-STORE.md`): Node through `framework/core/data-files.mjs` (or `persist.mjs` readData/writeData), the console server through `server/data_store.py`, the builds store through `builds-store.mjs`; never a new direct file write for console data. A namespace moves local → shadow → cutover with `data-mode.mjs` (cutover only after a drift-free shadow window), after `data-migrate.mjs` copied and verified it. New data goes in a registry namespace (`plugins/<folder>` for a plugin's dataDir); the path map is `framework/schemas/data-store-paths.json`.
 - `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.
 - **Engine compatibility across ports is a hard constraint.** Kotlin kernel and TS `framework/core` are the same design, file for file. Fixtures in `framework/spec/fixtures` are the conformance contract. Change a reference engine, then regenerate fixtures.
 - Android kernel is **pure Kotlin (no Android imports)**. Platform specifics go behind kernel seams. Packages are `ai.amberx.axf.*`, Maven coordinates are `ai.amberx.axf:<module>:<version>`.

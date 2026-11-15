@@ -2330,5 +2330,65 @@
     "wave": 1,
     "module": "app-console",
     "notes": "Nov 13 2026 (build skin-axhub-override-switch-greyed-out): console Settings → Appearance → Override axHub, under Get my skin only from axHub (default off). One or the other whichever way either is set (runtime onChange: Override on clears axf.lock.hubskin, axHub-only on clears axf.lock.hubskin.override and the overridden marks). While axHub-only is on every skin and asset editor is disabled, not hidden (HubSkinLockArea: Theme manager rows, Theme editor, Asset studio, nav style, context menu designer; the Appearance panel, skin picker, every-asset picker and plugin themes through the lock), each under HubSkinLockNote with Brett's wording and a Click here to override link; the link and the switch ask one confirm. Edits under Override are recorded in axf.lock.hubskin.overridden and shown as Overridden chips. Reachable by the setting (search, console.settings, settings.set:axf.lock.hubskin.override), the appearance.hubskin.override action and voice (\"override the axHub skin\", Python twin). Kotlin twin deferred (PORTING.md)."
+  },
+  "cx.datastore": {
+    "status": "partial",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Built on branch claude/data-container-axf-data-holds-all (PR #704): contract, service, deploy, backups, clients, migration, modes, UI + API parity, axHub route, drill. Every namespace starts local; moving one is staged (shadow, then cutover once drift is zero). Console infrastructure: no Kotlin twin (PORTING.md)."
+  },
+  "cx.datastore.contract": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "framework/core/data-store.mjs + data-store-mode.mjs, spec DATA-STORE.md, check-data-store.mjs (incl. --http live replay)."
+  },
+  "cx.datastore.service": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "services/axf-data: test_store.py (CRUD, conflicts, append-only triggers, history/restore, watch, auth, backups, MCP, live Node contract)."
+  },
+  "cx.datastore.deploy": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "deploy/install-data.sh + services/axf-data/compose.yaml; image built and health-checked here; the VPS install runs after the merge."
+  },
+  "cx.datastore.backups": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "backup.py run/verify/restore/prune, deploy/axf-data-backup.cron, systems-check item axf-data with Auto fix (veto calls)."
+  },
+  "cx.datastore.clients": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "data_store.py (test_data_store.py), data-files.mjs, builds-store (check-builds-store-data.mjs: lock = rev check in cutover), claude-settings, plan-studio, ui-review, notes-browser, changes log, shipped-features + chat-viewer SQLite as blobs."
+  },
+  "cx.datastore.migrate": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "data-migrate.mjs, check-data-migrate.mjs on a seeded copy of real data (migrate, verify, roll back, idempotent, forced mismatch fails)."
+  },
+  "cx.datastore.modes": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "data-mode.mjs status|shadow|cutover|rollback|local; mode + drift log on axf-data (_meta/mode, _meta/drift/<ns>)."
+  },
+  "cx.datastore.ui": {
+    "status": "partial",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Data store plugin: three layout options waiting in UI Review; REST state/drift/backup/verify/mode/voice, plugin commands, axf data, deep link view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=data-store."
+  },
+  "cx.datastore.hub": {
+    "status": "partial",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "services/axf-data/mcp.py + deploy/axhub/axf-data.downstream.json (axHub repo registers the downstream); deploy/dryrun/console-down-drill.sh passed (results/console-down-drill.json)."
   }
 }
