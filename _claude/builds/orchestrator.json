@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T13:27:47.096Z",
+ "updatedAt": "2026-11-15T13:27:55.644Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -151907,15 +151907,15 @@
    "title": "Build rules tab in Gate & rules: VPS owns and enforces all builder rules",
    "category": "",
    "detail": "Add a Build rules tab to the Gate & rules plugin (PR #711), with the VPS as the ONE owner and enforcer of every builder rule. 1) Inventory ALL builder rules in CLAUDE.md, the build briefs, the dispatcher prompt templates (Look/API/Checkpoints/Rules blocks), and the _claude rule docs. List every rule first and delete nothing without listing it. 2) Move them into a build-rules store on the VPS (later axf-data), served by REST and gate.* tools. 3) Each rule is marked doer = VPS or session. Mechanical rules are done by the VPS itself, before or after the build, and are removed from Claude's instructions so nothing happens twice. Examples: create the plugin home card from plugin.json and the template, the Shipped features manifest, the help stub, API-parity scaffolding, running the CI checks, tracker/THREADS rows, PR open and link, and landing one at a time. 4) Judgement rules (look and token rules, API parity design, step size) go into the session brief from the store at dispatch time and are not hardcoded in CLAUDE.md. 5) The gate checks every rule before landing; on a fail it blocks, the VPS auto-fixes what it can, and everything is logged in History. 6) The tab shows each rule with doer, on/off, edit, add, and history, with REST/MCP/CLI/voice parity. First rule: every plugin gets a home card, made by the VPS. Tests, help, Shipped features. Land with the one-at-a-time lander.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/build-rules-tab-gate-rules-vps-owns",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T13:23:46.016Z",
-   "updatedAt": "2026-11-15T13:27:41.958Z",
+   "updatedAt": "2026-11-15T13:27:50.652Z",
    "builtAt": "",
    "notes": [
     {
@@ -151925,6 +151925,14 @@
     {
      "text": "Split by Claude into 25 steps (6 Fable).",
      "at": "2026-11-15T13:27:28.497Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-build-rules-tab-gate-rules-vps-owns--earl.",
+     "at": "2026-11-15T13:27:47.173Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-build-rules-tab-gate-rules-vps-owns--earl, shared account login)",
+     "at": "2026-11-15T13:27:50.652Z"
     }
    ],
    "approvals": [],
