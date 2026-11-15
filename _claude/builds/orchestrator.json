@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T05:12:49.060Z",
+ "updatedAt": "2026-11-15T05:14:26.523Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -147149,10 +147149,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/auto-lander-controls-in-the-gate-plugin",
-   "pr": "",
+   "pr": "#705",
    "priority": "P0",
    "createdAt": "2026-11-15T04:17:06.158Z",
-   "updatedAt": "2026-11-15T05:12:47.031Z",
+   "updatedAt": "2026-11-15T05:14:24.457Z",
    "builtAt": "",
    "notes": [
     {
