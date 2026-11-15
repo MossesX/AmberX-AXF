@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5749,
- "updatedAt": "2026-11-15T00:19:06.913Z",
+ "rev": 5750,
+ "updatedAt": "2026-11-15T00:19:28.987Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -162190,7 +162190,7 @@
    "title": "Fix axHub #36: pull main in failed",
    "category": "",
    "detail": "## Setup (run first, then work only in that folder)\n```\nmkdir -p '/root/axf-fixes/repos'\n[ -d '/root/axf-fixes/repos/MossesX-axHub' ] || git clone -q 'https://github.com/MossesX/axHub.git' '/root/axf-fixes/repos/MossesX-axHub'\ngit -C '/root/axf-fixes/repos/MossesX-axHub' fetch -q origin && git -C '/root/axf-fixes/repos/MossesX-axHub' worktree prune\nif [ -d '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold' ]; then git -C '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold' checkout -q -B 'claude/claude-sync-hold' 'origin/claude/claude-sync-hold'; else git -C '/root/axf-fixes/repos/MossesX-axHub' worktree add -q -B 'claude/claude-sync-hold' '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold' 'origin/claude/claude-sync-hold'; fi\ncd '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold'\n```\nDo no work in the orchestrator's own build folder: it only hosts this session. Tick the build's steps there when done.\n\n# Fix pull request #36 (claude-sync: leave a checkout with .claude-sync-hold alone) in MossesX/axHub so it can reach main\n\nThe Dev Console's push banner tried to pull main in and it failed: the banner's Pull all stopped at a failed pull and handed this repo's pulls to this session.\n\n- Repository: MossesX/axHub (the setup above makes a worktree of it, on branch `claude/claude-sync-hold`)\n- Base branch: `main`\n- Pull request: #36 https://github.com/MossesX/axHub/pull/36\n\nWhat to do:\n1. `git fetch origin`, then `git merge origin/main` into `claude/claude-sync-hold`.\n2. Resolve every conflict keeping both sides' intent; when unsure which side wins, keep both and say so in the commit.\n3. Run the repo's own fast checks for what you touched (its CLAUDE.md lists them).\n4. Commit, then `git push origin HEAD:claude/claude-sync-hold`. CI runs again on the PR by itself.\n\nThen finish the banner's Pull all: pull `main` into each of these branches too, one at a time:\n- `claude/amberx-open-url`\n- `go-pass`\nFor each: `git checkout -B <branch> origin/<branch>`, `git merge origin/main`, resolve, run the checks, `git push origin HEAD:<branch>`. If one can't be fixed, skip it, keep going, and list it at the end.\n\nRules:\n- Push only to `claude/claude-sync-hold`. Never push to `main` or any other branch, never force-push, never merge the PR.\n- Never print, copy or commit secrets (tokens, keys, .env files, .axf-console/).\n- If a conflict needs a decision only Brett can make, stop and say exactly what and why in your final message.\n- Record steps and the result on your change-log entry (the hooks do most of it).\n- Pushes may also go to those branches (each only to itself); the base-branch and force rules hold for all of them.\n- You can edit files and run git only; list any other command Brett should run at the end.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "push-banner",
    "pendingId": "",
@@ -162198,8 +162198,8 @@
    "pr": "#691",
    "priority": "P1",
    "createdAt": "2026-11-12T01:46:10.127Z",
-   "updatedAt": "2026-11-15T00:18:41.549Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-15T00:18:47.413Z",
+   "builtAt": "2026-11-15T00:18:47.413Z",
    "notes": [
     {
      "text": "Queued by push-banner.",
@@ -162260,6 +162260,10 @@
     {
      "text": "Self-check: fix-axhub-36-pull-main-in-failed had no session on record but axf-fix-axhub-36-pull-main-in-failed--earl is alive: kept running and tracking it.",
      "at": "2026-11-15T00:14:22.542Z"
+    },
+    {
+     "text": "Result: origin/main merged clean into axHub claude/claude-sync-hold (PR #36, CI green), claude/amberx-open-url and go-pass; 593 tests green; no conflicts, nothing for Brett. Report PR #691.",
+     "at": "2026-11-15T00:18:44.107Z"
     }
    ],
    "approvals": [],
@@ -162814,12 +162818,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:18:47.413Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T11:07:46.715Z",
-     "updatedAt": "2026-11-12T11:07:46.715Z"
+     "updatedAt": "2026-11-15T00:18:47.889Z"
     }
    ],
    "profiles": [
@@ -162830,7 +162834,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -205471,23 +205475,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:18:35.976Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: .github/workflows/android.yml, apps/console-droid/.gitignore, apps/console-droid/BRIDGE.md, apps/console-droid/OVERLAY.md, apps/console-droid/README.md, apps/console-droid/app/build.gradle, apps/console-droid/app/src/main/AndroidManifest.xml, apps/console-droid/app/src/main/assets/offli"
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -216136,32 +216123,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-14T23:50:51.455Z",
-      "run": "lr-voice-listener-use-claude-when-connected-20261114T235051",
-      "base": "1a84b7da13a65f04a55725b10211b87b84b0baf6",
-      "merged": "ec07d3ac7c54678352ab30763277515061281f19",
-      "outcome": "red",
-      "ci": "failure",
-      "note": "CI failed on the merged head (Build engine sweep (Node)). No fix build: the orchestrator did not take it."
-     },
-     {
-      "at": "2026-11-15T00:18:39.981Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/README.md, apps/console-web/plugins/wake-listener/README.md, apps/console-web/plugins/wake-listener/assets/status/wake-listener-offline-indicator-amber-light.json, apps/console-web/plugins/wake-listener/assets/status/wake-listener-offline-indicator-chip-and-ligh"
-     }
-    ]
    },
    "steps": [
     {
@@ -227609,23 +227570,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "landing",
-    "landAttempts": [
-     {
-      "at": "2026-11-15T00:18:46.238Z",
-      "run": "",
-      "base": "",
-      "merged": "",
-      "outcome": "",
-      "ci": "",
-      "note": "Unique work: apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrator/plugin.json, apps/console-web/plugins/build-orchestrator/server/__init__.py, apps/console-web/plugins/build-orchestrator/w"
-     }
-    ]
    },
    "steps": [
     {
