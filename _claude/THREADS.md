@@ -808,168 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 00:42 UTC · `merge-main-land-console-app-part-2` → pending, note (all) · pipeline
-- 2026-11-15 00:42 UTC · `orchestrator-custom-groups-custom-tabs` → complete, merged, note (all) · reconciler
-- 2026-11-15 00:42 UTC · `themed-native-controls-plugin` s27 done, → built, note (all) · reconciler
-- 2026-11-15 00:42 UTC · `merge-main-land-move-amberx-web-app` → pending, note (all) · reconciler
-- 2026-11-15 00:42 UTC · `merge-main-land-console-app-part-2` s8 done, → built, note (all) · reconciler
-- 2026-11-15 00:42 UTC · `merge-main-land-voice-listener-use` s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, → built, note (all) · reconciler
-- 2026-11-15 00:42 UTC · `orchestrator-custom-groups-custom-tabs` note (all) · orchestrator
-- 2026-11-15 00:44 UTC · `merge-main-land-voice-listener-use` s2 done (all) · orchestrator
-- 2026-11-15 00:45 UTC · `orchestrator-settings-collapsible-split` → running, note (all) · pipeline
-- 2026-11-15 00:46 UTC · `orchestrator-settings-collapsible-split` → running, note (all) · orchestrator
-- 2026-11-15 00:47 UTC · `land-finish-auto-land-live-clear-backlog` s19 done, → running (all) · orchestrator
-- 2026-11-15 00:48 UTC · `orchestrator-settings-collapsible-split` s2 done, → running (all) · orchestrator
-- 2026-11-15 00:48 UTC · `land-finish-auto-land-live-clear-backlog` s20 done, → running (all) · orchestrator
-- 2026-11-15 00:48 UTC · `land-finish-auto-land-live-clear-backlog` s21 done (all) · orchestrator
-- 2026-11-15 00:48 UTC · `land-finish-auto-land-live-clear-backlog` s22 done (all) · orchestrator
-- 2026-11-15 00:48 UTC · `land-finish-auto-land-live-clear-backlog` s23 done (all) · orchestrator
-- 2026-11-15 00:48 UTC · `land-finish-auto-land-live-clear-backlog` s24 done (all) · orchestrator
-- 2026-11-15 00:48 UTC · `land-finish-auto-land-live-clear-backlog` s25 done (all) · orchestrator
-- 2026-11-15 00:49 UTC · `land-finish-auto-land-live-clear-backlog` s26 done (all) · orchestrator
-- 2026-11-15 00:49 UTC · `land-finish-auto-land-live-clear-backlog` s27 done (all) · orchestrator
-- 2026-11-15 00:50 UTC · `ui-manager-floating-window-to-select-any` s6 done, → running (all) · orchestrator
-- 2026-11-15 00:51 UTC · `land-finish-auto-land-live-clear-backlog` s28 done, → running (all) · orchestrator
-- 2026-11-15 00:51 UTC · `orchestrator-settings-collapsible-split` s3 done (all) · orchestrator
-- 2026-11-15 00:51 UTC · `land-finish-auto-land-live-clear-backlog` note (all) · orchestrator
-- 2026-11-15 00:52 UTC · `console-app-wake-word-voice-listener` → running, note (all) · pipeline
-- 2026-11-15 00:52 UTC · `console-app-wake-word-voice-listener` → running, note (all) · orchestrator
-- 2026-11-15 00:53 UTC · `quick-settings-pinned-collapsible-pane` s3 done (all) · orchestrator
-- 2026-11-15 00:53 UTC · `quick-settings-pinned-collapsible-pane` s4 done (all) · orchestrator
-- 2026-11-15 00:53 UTC · `quick-settings-pinned-collapsible-pane` s5 done (all) · orchestrator
-- 2026-11-15 00:54 UTC · `ui-manager-floating-window-to-select-any` s7 done (all) · orchestrator
-- 2026-11-15 00:40 UTC · `new-asset-type-animated-expanding-row` s7 done (all) · orchestrator
-- 2026-11-15 00:57 UTC · `quick-settings-pinned-collapsible-pane` s6 done (all) · orchestrator
-- 2026-11-15 00:57 UTC · `new-asset-type-animated-expanding-row` note (all) · orchestrator
-- 2026-11-15 00:57 UTC · `new-asset-type-animated-expanding-row` s8 done (all) · orchestrator
-- 2026-11-15 00:58 UTC · `new-asset-type-animated-expanding-row` s9 done (all) · orchestrator
-- 2026-11-15 00:58 UTC · `orchestrator-settings-collapsible-split` s4 done (all) · orchestrator
-- 2026-11-15 00:59 UTC · `ui-manager-floating-window-to-select-any` s8 done (all) · orchestrator
-- 2026-11-15 01:00 UTC · `new-asset-type-animated-expanding-row` s10 done (all) · orchestrator
-- 2026-11-15 01:01 UTC · `prompting-engine-control-panel-events` s4 done (all) · orchestrator
-- 2026-11-13 20:31 UTC · `console-app-wake-word-voice-listener` s2 done (all) · orchestrator
-- 2026-11-15 01:01 UTC · `prompting-engine-control-panel-events` PR #697 (all) · builds-live
-- 2026-11-15 01:01 UTC · `console-app-wake-word-voice-listener` s9 done (all) · orchestrator
-- 2026-11-15 01:01 UTC · `restore-asset-designer-plugin-merged-nov` → pending, note (all) · reconciler
-- 2026-11-15 01:01 UTC · `new-asset-type-animated-expanding-row` note (all) · reconciler
-- 2026-11-15 01:01 UTC · `prompting-engine-control-panel-events` PR #697, note (all) · reconciler
-- 2026-11-15 01:01 UTC · `console-app-wake-word-voice-listener` s9 done, note (all) · reconciler
-- 2026-11-15 01:01 UTC · `merge-main-land-console-axhub-retry` → pending, note (all) · reconciler
-- 2026-11-15 01:02 UTC · `ui-manager-floating-window-to-select-any` s9 done (all) · orchestrator
-- 2026-11-15 01:02 UTC · `console-app-wake-word-voice-listener` note (all) · orchestrator
-- 2026-11-15 01:02 UTC · `console-app-wake-word-voice-listener` s11 done, → built (all) · orchestrator
-- 2026-11-15 01:03 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
-- 2026-11-13 19:53 UTC · `skin-axhub-override-switch-greyed-out` PR #641 (all) · builds-live
-- 2026-11-13 19:53 UTC · `skin-axhub-override-switch-greyed-out` s8 done (all) · orchestrator
-- 2026-11-13 19:53 UTC · `skin-axhub-override-switch-greyed-out` note (all) · orchestrator
-- 2026-11-15 01:03 UTC · `skin-axhub-override-switch-greyed-out` → running, note (all) · pipeline
-- 2026-11-15 01:03 UTC · `skin-axhub-override-switch-greyed-out` note (all) · orchestrator
-- 2026-11-15 01:04 UTC · `orchestrator-settings-collapsible-split` s5 done (all) · orchestrator
-- 2026-11-15 01:04 UTC · `own-token-sets-for-grids-and-tab-groups` → running, note (all) · pipeline
-- 2026-11-15 01:04 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · orchestrator
-- 2026-11-15 01:04 UTC · `quick-settings-pinned-collapsible-pane` s7 done (all) · orchestrator
-- 2026-11-15 01:05 UTC · `new-asset-type-animated-expanding-row` s11 done, → built (all) · orchestrator
-- 2026-11-15 01:05 UTC · `quick-settings-pinned-collapsible-pane` s8 done (all) · orchestrator
-- 2026-11-15 01:05 UTC · `new-asset-type-animated-expanding-row` note (all) · orchestrator
-- 2026-11-15 01:06 UTC · `quick-settings-pinned-collapsible-pane` s8 done (all) · foreign-write
-- 2026-11-15 01:06 UTC · `new-asset-type-animated-expanding-row` note (all) · pipeline
-- 2026-11-15 01:06 UTC · `token-registry-skin-editor-live-sandbox` → running, note (all) · pipeline
-- 2026-11-15 01:06 UTC · `token-registry-skin-editor-live-sandbox` → running, note (all) · orchestrator
-- 2026-11-15 01:07 UTC · `skin-axhub-override-switch-greyed-out` note (all) · orchestrator
-- 2026-11-15 01:07 UTC · `own-token-sets-for-grids-and-tab-groups` → complete, note (all) · reconciler
-- 2026-11-15 01:07 UTC · `token-registry-skin-editor-live-sandbox` → complete, note (all) · reconciler
-- 2026-11-15 01:08 UTC · `skin-axhub-override-switch-greyed-out` note (all) · pipeline
-- 2026-11-15 01:08 UTC · `own-token-sets-for-grids-and-tab-groups` → complete, note (all) · foreign-write
-- 2026-11-15 01:08 UTC · `token-registry-skin-editor-live-sandbox` → complete, note (all) · foreign-write
-- 2026-11-15 01:08 UTC · `context-menus-plugin-one-true-source` → running, note (all) · pipeline
-- 2026-11-15 01:08 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-15 01:07 UTC · `quick-settings-pinned-collapsible-pane` PR #698 (all) · builds-live
-- 2026-11-15 01:08 UTC · `quick-settings-pinned-collapsible-pane` s9 done, → built (all) · orchestrator
-- 2026-11-15 01:08 UTC · `quick-settings-pinned-collapsible-pane` note (all) · orchestrator
-- 2026-11-15 01:09 UTC · `quick-settings-pinned-collapsible-pane` note (all) · orchestrator
-- 2026-11-15 01:09 UTC · `own-token-sets-for-grids-and-tab-groups` s2 done, → running (all) · orchestrator
-- 2026-11-15 01:09 UTC · `banner-widget-shapes-more-than-circle` → running, note (all) · pipeline
-- 2026-11-15 01:09 UTC · `banner-widget-shapes-more-than-circle` → running, note (all) · orchestrator
-- 2026-11-15 01:09 UTC · `orchestrator-settings-collapsible-split` s6 done (all) · orchestrator
-- 2026-11-15 01:12 UTC · `own-token-sets-for-grids-and-tab-groups` s3 done (all) · orchestrator
-- 2026-11-15 01:12 UTC · `own-token-sets-for-grids-and-tab-groups` s4 done (all) · orchestrator
-- 2026-11-15 01:13 UTC · `context-menus-plugin-one-true-source` s2 done, → running (all) · orchestrator
-- 2026-11-15 01:13 UTC · `own-token-sets-for-grids-and-tab-groups` s5 done (all) · orchestrator
-- 2026-11-15 01:13 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
-- 2026-11-15 01:14 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · orchestrator
-- 2026-11-15 01:14 UTC · `orchestrator-settings-collapsible-split` s7 done (all) · orchestrator
-- 2026-11-15 01:13 UTC · `own-token-sets-for-grids-and-tab-groups` PR #699 (all) · builds-live
-- 2026-11-15 01:13 UTC · `own-token-sets-for-grids-and-tab-groups` s6 done (all) · orchestrator
-- 2026-11-15 01:15 UTC · `launch-landing-page-waitlist-referral` → running, note (all) · pipeline
-- 2026-11-15 01:16 UTC · `launch-landing-page-waitlist-referral` → running, note (all) · orchestrator
-- 2026-11-15 01:17 UTC · `context-menus-plugin-one-true-source` s3 done (all) · orchestrator
-- 2026-11-15 01:19 UTC · `context-menus-plugin-one-true-source` s4 done (all) · orchestrator
-- 2026-11-15 01:15 UTC · `token-registry-skin-editor-live-sandbox` PR #700 (all) · builds-live
-- 2026-11-15 01:15 UTC · `token-registry-skin-editor-live-sandbox` s6 done, → running (all) · orchestrator
-- 2026-11-15 01:21 UTC · `token-registry-skin-editor-live-sandbox` s7 done (all) · orchestrator
-- 2026-11-15 01:21 UTC · `orchestrator-settings-collapsible-split` s8 done, → built (all) · orchestrator
-- 2026-11-15 01:21 UTC · `launch-landing-page-waitlist-referral` note (all) · orchestrator
-- 2026-11-15 01:22 UTC · `context-menus-plugin-one-true-source` s5 done (all) · orchestrator
-- 2026-11-15 01:21 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
-- 2026-11-15 01:22 UTC · `prompting-engine-control-panel-events` note (all) · orchestrator
-- 2026-11-15 01:22 UTC · `demo-video-series-three-minute-browser` → running, note (all) · pipeline
-- 2026-11-15 01:22 UTC · `demo-video-series-three-minute-browser` note (all) · orchestrator
-- 2026-11-15 01:22 UTC · `molly-gap-expenses-cors` → running, note (all) · pipeline
-- 2026-11-15 01:22 UTC · `molly-gap-expenses-cors` note (all) · orchestrator
-- 2026-11-15 01:23 UTC · `banner-widget-shapes-more-than-circle` s2 done, → running (all) · orchestrator
-- 2026-11-15 01:24 UTC · `molly-gap-axhub-cors` → running, note (all) · pipeline
-- 2026-11-15 01:24 UTC · `molly-gap-axhub-cors` note (all) · orchestrator
-- 2026-11-15 01:24 UTC · `token-registry-skin-editor-live-sandbox` s8 done (all) · orchestrator
-- 2026-11-15 01:24 UTC · `context-menus-plugin-one-true-source` s6 done (all) · orchestrator
-- 2026-11-15 01:25 UTC · `demo-video-series-three-minute-browser` s5 done, → running (all) · orchestrator
-- 2026-11-15 01:25 UTC · `molly-gap-expenses-cors` → running, PR #701 (all) · builds-live
-- 2026-11-15 01:25 UTC · `context-menus-plugin-one-true-source` s7 done (all) · orchestrator
-- 2026-11-15 01:26 UTC · `demo-video-series-three-minute-browser` s6 done (all) · orchestrator
-- 2026-11-15 01:25 UTC · `banner-widget-shapes-more-than-circle` s3 done (all) · orchestrator
-- 2026-11-15 01:25 UTC · `molly-gap-expenses-cors` note (all) · orchestrator
-- 2026-11-15 01:26 UTC · `context-menus-plugin-one-true-source` s8 done, → built (all) · orchestrator
-- 2026-11-15 01:26 UTC · `molly-gap-axhub-cors` → running, PR #702 (all) · builds-live
-- 2026-11-15 01:27 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-15 01:27 UTC · `molly-gap-axhub-cors` s3 done, → built (all) · orchestrator
-- 2026-11-15 01:27 UTC · `demo-video-series-three-minute-browser` s8 done (all) · orchestrator
-- 2026-11-15 01:26 UTC · `molly-gap-expenses-cors` → pending, note (all) · pipeline
-- 2026-11-15 01:26 UTC · `projects-own-everything-per-project` → running, note (all) · pipeline
-- 2026-11-15 01:26 UTC · `projects-own-everything-per-project` note (all) · orchestrator
-- 2026-11-15 01:27 UTC · `molly-gap-axhub-cors` note (all) · orchestrator
-- 2026-11-15 01:27 UTC · `demo-video-series-three-minute-browser` s9 done (all) · orchestrator
-- 2026-11-15 01:27 UTC · `banner-widget-shapes-more-than-circle` s4 done (all) · orchestrator
-- 2026-11-15 01:28 UTC · `molly-gap-axhub-cors` → pending, note (all) · pipeline
-- 2026-11-15 01:28 UTC · `demo-video-series-three-minute-browser` s10 done (all) · orchestrator
-- 2026-11-15 01:29 UTC · `demo-video-series-three-minute-browser` s11 done (all) · orchestrator
-- 2026-11-15 01:30 UTC · `demo-video-series-three-minute-browser` s12 done (all) · orchestrator
-- 2026-11-15 01:30 UTC · `banner-widget-shapes-more-than-circle` s5 done (all) · orchestrator
-- 2026-11-15 01:31 UTC · `demo-video-series-three-minute-browser` s13 done (all) · orchestrator
-- 2026-11-15 01:31 UTC · `ui-manager-floating-window-to-select-any` → pending, note (all) · reconciler
-- 2026-11-15 01:31 UTC · `token-registry-skin-editor-live-sandbox` → complete, note (all) · reconciler
-- 2026-11-15 01:31 UTC · `demo-video-series-three-minute-browser` note (all) · reconciler
-- 2026-11-15 01:32 UTC · `demo-video-series-three-minute-browser` s14 done (all) · orchestrator
-- 2026-11-15 01:32 UTC · `projects-own-everything-per-project` s2 done, → running (all) · orchestrator
-- 2026-11-15 01:32 UTC · `banner-widget-shapes-more-than-circle` s6 done (all) · orchestrator
-- 2026-11-15 01:32 UTC · `demo-video-series-three-minute-browser` s15 done (all) · orchestrator
-- 2026-11-15 01:33 UTC · `demo-video-series-three-minute-browser` s16 done (all) · orchestrator
-- 2026-11-15 01:34 UTC · `projects-own-everything-per-project` s3 done (all) · orchestrator
-- 2026-11-15 01:34 UTC · `demo-video-series-three-minute-browser` s17 done (all) · orchestrator
-- 2026-11-15 01:35 UTC · `projects-own-everything-per-project` s5 done (all) · orchestrator
-- 2026-11-15 01:36 UTC · `banner-widget-shapes-more-than-circle` s7 done (all) · orchestrator
-- 2026-11-15 01:36 UTC · `demo-video-series-three-minute-browser` s18 done (all) · orchestrator
-- 2026-11-15 01:37 UTC · `banner-widget-shapes-more-than-circle` PR #703 (all) · builds-live
-- 2026-11-15 01:37 UTC · `banner-widget-shapes-more-than-circle` note (all) · orchestrator
-- 2026-11-15 01:37 UTC · `demo-video-series-three-minute-browser` s19 done (all) · orchestrator
-- 2026-11-15 01:38 UTC · `demo-video-series-three-minute-browser` s20 done (all) · orchestrator
-- 2026-11-15 01:39 UTC · `projects-own-everything-per-project` s4 done, → built (all) · orchestrator
-- 2026-11-15 01:39 UTC · `demo-video-series-three-minute-browser` s21 done (all) · orchestrator
-- 2026-11-15 01:39 UTC · `projects-own-everything-per-project` note (all) · orchestrator
-- 2026-11-15 01:39 UTC · `demo-video-series-three-minute-browser` s22 done (all) · orchestrator
-- 2026-11-15 01:41 UTC · `demo-video-series-three-minute-browser` note (all) · reconciler
-- 2026-11-15 01:41 UTC · `demo-video-series-three-minute-browser` s23 done (all) · orchestrator
-- 2026-11-15 01:42 UTC · `demo-video-series-three-minute-browser` s24 done (all) · orchestrator
-- 2026-11-15 01:43 UTC · `demo-video-series-three-minute-browser` s7 done (all) · orchestrator
-- 2026-11-15 01:43 UTC · `demo-video-series-three-minute-browser` note (all) · orchestrator
 - 2026-11-15 01:27 UTC · `token-registry-skin-editor-live-sandbox` s9 done (all) · orchestrator
 - 2026-11-15 01:45 UTC · `token-registry-skin-editor-live-sandbox` s10 done, → complete (all) · orchestrator
 - 2026-11-15 01:45 UTC · `token-registry-skin-editor-live-sandbox` note (all) · orchestrator
@@ -1208,6 +1046,168 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 13:23 UTC · `build-rules-tab-gate-rules-vps-owns` → queued, note (all) · console
 - 2026-11-15 13:24 UTC · `home-cards-follow-plugin-off-home-always` note (all) · orchestrator
 - 2026-11-15 13:24 UTC · `home-cards-follow-plugin-off-home-always` note (all) · mcp
+- 2026-11-15 13:27 UTC · `build-rules-tab-gate-rules-vps-owns` note (all) · orchestrator
+- 2026-11-15 13:27 UTC · `build-rules-tab-gate-rules-vps-owns` → running, note (all) · pipeline
+- 2026-11-15 13:27 UTC · `build-rules-tab-gate-rules-vps-owns` branch claude/build-rules-tab-gate-rules-vps-owns (all) · pipeline
+- 2026-11-15 13:28 UTC · `home-cards-follow-plugin-off-home-always` → running, note (all) · pipeline
+- 2026-11-15 13:28 UTC · `home-cards-follow-plugin-off-home-always` branch claude/home-cards-follow-plugin-off-home-always (all) · pipeline
+- 2026-11-15 13:28 UTC · `home-cards-follow-plugin-off-home-always` note (all) · orchestrator
+- 2026-11-15 13:33 UTC · `home-cards-follow-plugin-off-home-always` branch claude/home-cards-follow-plugin-off-home-always (all) · builds-live
+- 2026-11-15 13:33 UTC · `home-cards-follow-plugin-off-home-always` s1 done, → running (all) · orchestrator
+- 2026-11-15 13:34 UTC · `build-rules-tab-gate-rules-vps-owns` s1 done, → running (all) · orchestrator
+- 2026-11-15 13:34 UTC · `home-cards-follow-plugin-off-home-always` → running, note (all) · pipeline
+- 2026-11-15 13:34 UTC · `build-rules-tab-gate-rules-vps-owns` branch claude/build-rules-tab-gate-rules-vps-owns (all) · builds-live
+- 2026-11-15 13:36 UTC · `phone-connect-small-android-companion` added (0 steps) (all) · console
+- 2026-11-15 13:36 UTC · `phone-connect-small-android-companion` → queued, note (all) · console
+- 2026-11-15 13:36 UTC · `home-cards-follow-plugin-off-home-always` s2 done (all) · orchestrator
+- 2026-11-15 13:36 UTC · `phone-connect-small-android-companion` note (all) · mcp
+- 2026-11-15 13:37 UTC · `phone-connect-small-android-companion` note (all) · mcp
+- 2026-11-15 13:38 UTC · `home-cards-follow-plugin-off-home-always` s3 done (all) · orchestrator
+- 2026-11-15 13:38 UTC · `gate-rules-plugin-in-the-console` → complete, merged, note (all) · reconciler
+- 2026-11-15 13:38 UTC · `axf-molly-container-orchestrator-gate` → pending, note (all) · reconciler
+- 2026-11-15 13:38 UTC · `build-rules-tab-gate-rules-vps-owns` s2 done (all) · orchestrator
+- 2026-11-15 13:38 UTC · `phone-connect-small-android-companion` note (all) · mcp
+- 2026-11-15 13:39 UTC · `phone-connect-small-android-companion` note (all) · orchestrator
+- 2026-11-15 13:39 UTC · `phone-connect-small-android-companion` → running, note (all) · pipeline
+- 2026-11-15 13:39 UTC · `phone-connect-small-android-companion` branch claude/phone-connect-small-android-companion (all) · pipeline
+- 2026-11-15 13:39 UTC · `gate-rules-plugin-in-the-console` note (all) · orchestrator
+- 2026-11-15 13:39 UTC · `phone-connect-small-android-companion` note (all) · mcp
+- 2026-11-15 13:40 UTC · `phone-connect-small-android-companion` note (all) · mcp
+- 2026-11-15 13:42 UTC · `home-cards-follow-plugin-off-home-always` s4 done (all) · orchestrator
+- 2026-11-15 13:42 UTC · `build-rules-tab-gate-rules-vps-owns` s3 done (all) · orchestrator
+- 2026-11-15 13:42 UTC · `home-cards-follow-plugin-off-home-always` note (all) · orchestrator
+- 2026-11-15 13:42 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · mcp
+- 2026-11-15 13:43 UTC · `home-cards-follow-plugin-off-home-always` note (all) · orchestrator
+- 2026-11-15 13:46 UTC · `build-rules-tab-gate-rules-vps-owns` s4 done (all) · orchestrator
+- 2026-11-15 13:49 UTC · `phone-connect-small-android-companion` s1 done, → running (all) · orchestrator
+- 2026-11-15 13:49 UTC · `phone-connect-small-android-companion` branch claude/phone-connect-small-android-companion (all) · builds-live
+- 2026-11-15 13:50 UTC · `build-rules-tab-gate-rules-vps-owns` s5 done (all) · orchestrator
+- 2026-11-15 13:52 UTC · `data-container-axf-data-holds-all` s25 done (all) · orchestrator
+- 2026-11-15 13:53 UTC · `phone-connect-small-android-companion` s2 done (all) · orchestrator
+- 2026-11-15 13:53 UTC · `build-rules-tab-gate-rules-vps-owns` s6 done (all) · orchestrator
+- 2026-11-15 13:53 UTC · `data-container-axf-data-holds-all` s26 done (all) · orchestrator
+- 2026-11-15 13:53 UTC · `build-rules-tab-gate-rules-vps-owns` note (all) · orchestrator
+- 2026-11-15 13:54 UTC · `build-rules-tab-gate-rules-vps-owns` note (all) · orchestrator
+- 2026-11-15 13:55 UTC · `data-container-axf-data-holds-all` s27 done, → built (all) · orchestrator
+- 2026-11-15 13:56 UTC · `data-container-axf-data-holds-all` note (all) · orchestrator
+- 2026-11-15 13:58 UTC · `phone-connect-small-android-companion` s3 done (all) · orchestrator
+- 2026-11-15 13:58 UTC · `phone-connect-small-android-companion` PR #712 (all) · builds-live
+- 2026-11-15 13:59 UTC · `phone-connect-small-android-companion` note (all) · orchestrator
+- 2026-11-15 14:10 UTC · `home-cards-follow-plugin-off-home-always` → pending, note (all) · reconciler
+- 2026-11-15 14:20 UTC · `build-rules-tab-gate-rules-vps-owns` → pending, note (all) · reconciler
+- 2026-11-15 14:20 UTC · `phone-connect-small-android-companion` → pending, note (all) · reconciler
+- 2026-11-15 14:52 UTC · `build-rules-tab-gate-rules-vps-owns` → running, note (all) · mcp
+- 2026-11-15 14:52 UTC · `build-rules-tab-gate-rules-vps-owns` → queued (all) · mcp
+- 2026-11-15 14:53 UTC · `build-rules-tab-gate-rules-vps-owns` → running, note (all) · pipeline
+- 2026-11-15 14:53 UTC · `build-rules-tab-gate-rules-vps-owns` note (all) · orchestrator
+- 2026-11-15 14:54 UTC · `phone-connect-small-android-companion` → running, note (all) · mcp
+- 2026-11-15 14:54 UTC · `phone-connect-small-android-companion` → queued (all) · mcp
+- 2026-11-15 14:55 UTC · `shipped-features-organized-sortable` note (all) · mcp
+- 2026-11-15 14:55 UTC · `vps-sends-shipped-features-every-merge` → running, note (all) · mcp
+- 2026-11-15 14:55 UTC · `phone-connect-small-android-companion` → running, note (all) · pipeline
+- 2026-11-15 14:55 UTC · `phone-connect-small-android-companion` note (all) · orchestrator
+- 2026-11-15 14:55 UTC · `phone-connect-small-android-companion` note (all) · orchestrator
+- 2026-11-15 14:55 UTC · `shipped-features-open-button-views-each` added (0 steps) (all) · console
+- 2026-11-15 14:55 UTC · `shipped-features-open-button-views-each` → queued, note (all) · console
+- 2026-11-15 14:55 UTC · `build-rules-tab-gate-rules-vps-owns` s7 done, → running (all) · orchestrator
+- 2026-11-15 14:56 UTC · `build-rules-tab-gate-rules-vps-owns` s8 done (all) · orchestrator
+- 2026-11-15 14:57 UTC · `data-container-axf-data-holds-all` note (all) · mcp
+- 2026-11-15 14:57 UTC · `shipped-features-open-button-views-each` note (all) · orchestrator
+- 2026-11-15 14:57 UTC · `shipped-features-open-button-views-each` → running, note (all) · pipeline
+- 2026-11-15 14:57 UTC · `shipped-features-open-button-views-each` branch claude/shipped-features-open-button-views-each (all) · pipeline
+- 2026-11-15 14:58 UTC · `phone-connect-small-android-companion` s4 done (all) · orchestrator
+- 2026-11-15 14:58 UTC · `build-rules-tab-gate-rules-vps-owns` s9 done (all) · orchestrator
+- 2026-11-15 14:58 UTC · `build-rules-tab-gate-rules-vps-owns` s10 done (all) · orchestrator
+- 2026-11-15 14:59 UTC · `phone-connect-small-android-companion` s5 done (all) · orchestrator
+- 2026-11-15 14:59 UTC · `shipped-features-open-button-views-each` s1 done (all) · orchestrator
+- 2026-11-15 15:01 UTC · `shipped-features-open-button-views-each` s2 done (all) · orchestrator
+- 2026-11-15 15:01 UTC · `phone-connect-small-android-companion` s6 done (all) · orchestrator
+- 2026-11-15 15:01 UTC · `shipped-features-open-button-views-each` s3 done (all) · orchestrator
+- 2026-11-15 15:02 UTC · `build-rules-tab-gate-rules-vps-owns` s11 done (all) · orchestrator
+- 2026-11-15 15:02 UTC · `shipped-features-open-button-views-each` s4 done (all) · orchestrator
+- 2026-11-15 15:02 UTC · `phone-connect-small-android-companion` s7 done (all) · orchestrator
+- 2026-11-15 15:04 UTC · `shipped-features-open-button-views-each` s5 done (all) · orchestrator
+- 2026-11-15 15:04 UTC · `phone-connect-small-android-companion` s8 done (all) · orchestrator
+- 2026-11-15 15:04 UTC · `build-rules-tab-gate-rules-vps-owns` s12 done (all) · orchestrator
+- 2026-11-15 15:05 UTC · `shipped-features-open-button-views-each` s6 done (all) · orchestrator
+- 2026-11-15 15:05 UTC · `phone-connect-small-android-companion` s9 done (all) · orchestrator
+- 2026-11-15 15:05 UTC · `shipped-features-open-button-views-each` s6 done (all) · foreign-write
+- 2026-11-15 15:06 UTC · `phone-connect-small-android-companion` s10 done (all) · orchestrator
+- 2026-11-15 15:07 UTC · `shipped-features-open-button-views-each` s7 done (all) · orchestrator
+- 2026-11-15 15:07 UTC · `build-rules-tab-gate-rules-vps-owns` s13 done (all) · orchestrator
+- 2026-11-15 15:07 UTC · `phone-connect-small-android-companion` s11 done (all) · orchestrator
+- 2026-11-15 15:08 UTC · `shipped-features-open-button-views-each` s8 done (all) · orchestrator
+- 2026-11-15 15:08 UTC · `build-rules-tab-gate-rules-vps-owns` s14 done (all) · orchestrator
+- 2026-11-15 15:09 UTC · `phone-connect-small-android-companion` s12 done (all) · orchestrator
+- 2026-11-15 15:10 UTC · `shipped-features-open-button-views-each` s9 done (all) · orchestrator
+- 2026-11-15 15:10 UTC · `shipped-features-open-button-views-each` s9 done (all) · foreign-write
+- 2026-11-15 15:10 UTC · `build-rules-tab-gate-rules-vps-owns` s15 done (all) · orchestrator
+- 2026-11-15 15:10 UTC · `phone-connect-small-android-companion` s13 done (all) · orchestrator
+- 2026-11-15 15:11 UTC · `shipped-features-open-button-views-each` s10 done (all) · orchestrator
+- 2026-11-15 15:11 UTC · `phone-connect-small-android-companion` note (all) · reconciler
+- 2026-11-15 15:11 UTC · `shipped-features-open-button-views-each` s11 done (all) · orchestrator
+- 2026-11-15 15:12 UTC · `axf-data-postgres-real-tables-own` added (0 steps) (all) · console
+- 2026-11-15 15:12 UTC · `axf-data-postgres-real-tables-own` → queued, note (all) · console
+- 2026-11-15 15:12 UTC · `data-container-axf-data-holds-all` note (all) · mcp
+- 2026-11-15 15:12 UTC · `data-container-axf-data-holds-all` → queued (all) · mcp
+- 2026-11-15 15:13 UTC · `data-container-axf-data-holds-all` → running (all) · mcp
+- 2026-11-15 15:13 UTC · `shipped-features-open-button-views-each` s12 done (all) · orchestrator
+- 2026-11-15 15:13 UTC · `data-container-axf-data-holds-all` → running (all) · builds-live
+- 2026-11-15 15:13 UTC · `axf-data-postgres-real-tables-own` note (all) · orchestrator
+- 2026-11-15 15:13 UTC · `phone-connect-small-android-companion` s14 done (all) · orchestrator
+- 2026-11-15 15:14 UTC · `axf-data-postgres-real-tables-own` → running, note (all) · pipeline
+- 2026-11-15 15:14 UTC · `axf-data-postgres-real-tables-own` branch claude/axf-data-postgres-real-tables-own (all) · pipeline
+- 2026-11-15 15:14 UTC · `axf-data-postgres-real-tables-own` note (all) · orchestrator
+- 2026-11-15 15:14 UTC · `build-rules-tab-gate-rules-vps-owns` s16 done (all) · orchestrator
+- 2026-11-15 15:14 UTC · `build-rules-tab-gate-rules-vps-owns` s17 done (all) · orchestrator
+- 2026-11-15 15:15 UTC · `axf-data-postgres-real-tables-own` → running, note (all) · pipeline
+- 2026-11-15 15:15 UTC · `phone-connect-small-android-companion` s15 done (all) · orchestrator
+- 2026-11-15 15:15 UTC · `shipped-features-open-button-views-each` s13 done (all) · orchestrator
+- 2026-11-15 15:17 UTC · `build-rules-tab-gate-rules-vps-owns` s18 done (all) · orchestrator
+- 2026-11-15 15:17 UTC · `phone-connect-small-android-companion` s16 done (all) · orchestrator
+- 2026-11-15 15:18 UTC · `build-rules-tab-gate-rules-vps-owns` s19 done (all) · orchestrator
+- 2026-11-15 15:20 UTC · `build-rules-tab-gate-rules-vps-owns` s20 done (all) · orchestrator
+- 2026-11-15 15:20 UTC · `vps-sends-shipped-features-every-merge` → pending, note (all) · reconciler
+- 2026-11-15 15:21 UTC · `phone-connect-small-android-companion` s17 done (all) · orchestrator
+- 2026-11-15 15:22 UTC · `phone-connect-small-android-companion` s18 done (all) · orchestrator
+- 2026-11-15 15:23 UTC · `build-rules-tab-gate-rules-vps-owns` s21 done (all) · orchestrator
+- 2026-11-15 15:23 UTC · `phone-connect-small-android-companion` s19 done (all) · orchestrator
+- 2026-11-15 15:24 UTC · `phone-connect-small-android-companion` s20 done (all) · orchestrator
+- 2026-11-15 15:24 UTC · `build-rules-tab-gate-rules-vps-owns` s22 done (all) · orchestrator
+- 2026-11-15 15:25 UTC · `phone-connect-small-android-companion` s21 done (all) · orchestrator
+- 2026-11-15 15:25 UTC · `phone-connect-small-android-companion` s22 done (all) · orchestrator
+- 2026-11-15 15:26 UTC · `build-rules-tab-gate-rules-vps-owns` s23 done (all) · orchestrator
+- 2026-11-15 15:27 UTC · `phone-connect-small-android-companion` s23 done (all) · orchestrator
+- 2026-11-15 15:32 UTC · `phone-connect-small-android-companion` s24 done (all) · orchestrator
+- 2026-11-15 15:34 UTC · `phone-connect-small-android-companion` s25 done (all) · orchestrator
+- 2026-11-15 15:34 UTC · `phone-connect-small-android-companion` s26 done (all) · orchestrator
+- 2026-11-15 15:37 UTC · `phone-connect-small-android-companion` s27 done (all) · orchestrator
+- 2026-11-15 15:39 UTC · `phone-connect-small-android-companion` s28 done (all) · orchestrator
+- 2026-11-15 15:40 UTC · `data-container-axf-data-holds-all` → pending, note (all) · reconciler
+- 2026-11-15 15:42 UTC · `phone-connect-small-android-companion` s29 done (all) · orchestrator
+- 2026-11-15 15:43 UTC · `phone-connect-small-android-companion` s30 done (all) · orchestrator
+- 2026-11-15 16:08 UTC · `axf-data-postgres-real-tables-own` branch claude/axf-data-postgres-real-tables-own, PR #713 (all) · builds-live
+- 2026-11-15 16:11 UTC · `axf-data-postgres-real-tables-own` → running (all) · session
+- 2026-11-15 16:11 UTC · `axf-data-postgres-real-tables-own` note (all) · orchestrator
+- 2026-11-15 16:11 UTC · `axf-data-postgres-real-tables-own` s1 done (all) · orchestrator
+- 2026-11-15 16:12 UTC · `axf-data-postgres-real-tables-own` note (all) · orchestrator
+- 2026-11-15 16:14 UTC · `shipped-features-open-button-views-each` s14 done (all) · orchestrator
+- 2026-11-15 16:15 UTC · `shipped-features-open-button-views-each` PR #714 (all) · builds-live
+- 2026-11-15 16:15 UTC · `shipped-features-open-button-views-each` s15 done, → built (all) · orchestrator
+- 2026-11-15 16:16 UTC · `shipped-features-open-button-views-each` note (all) · orchestrator
+- 2026-11-15 16:17 UTC · `shipped-features-open-button-views-each` note (all) · pipeline
+- 2026-11-15 16:23 UTC · `phone-connect-small-android-companion` s31 done (all) · orchestrator
+- 2026-11-15 16:23 UTC · `phone-connect-small-android-companion` s32 done (all) · orchestrator
+- 2026-11-15 16:24 UTC · `phone-connect-small-android-companion` note (all) · orchestrator
+- 2026-11-15 16:24 UTC · `phone-connect-small-android-companion` s33 done (all) · orchestrator
+- 2026-11-15 16:28 UTC · `phone-connect-small-android-companion` s34 done, → built (all) · orchestrator
+- 2026-11-15 16:29 UTC · `phone-connect-small-android-companion` note (all) · orchestrator
+- 2026-11-15 16:30 UTC · `phone-connect-small-android-companion` note (all) · pipeline
+- 2026-11-15 16:40 UTC · `axf-data-postgres-real-tables-own` → pending, note (all) · reconciler
+- 2026-11-15 17:06 UTC · `build-rules-tab-gate-rules-vps-owns` PR #715 (all) · builds-live
+- 2026-11-15 17:07 UTC · `build-rules-tab-gate-rules-vps-owns` s24 done (all) · orchestrator
+- 2026-11-15 17:08 UTC · `build-rules-tab-gate-rules-vps-owns` s25 done, → built (all) · orchestrator
+- 2026-11-15 17:09 UTC · `build-rules-tab-gate-rules-vps-owns` note (all) · orchestrator
 
 ## Token passes (log)
 
