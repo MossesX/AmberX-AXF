@@ -229,3 +229,11 @@ document naming the same type and id) that passes the type spec: `framework/core
 `pickSkin`, `scopeSkin`, by `swapChrome` (ChromeContext) and read through the `assets.check:<type>:<id>` action, engine-rpc
 `asset-gate` and `axf asset-check`. The Compose runtime's `swap` and skin picks need the same gate (a Kotlin `AssetGate` over
 `AssetRegistry.get` + `validateAsset`) when the Android side resumes; the fixture to replay is `framework/spec/fixtures/asset-gate.json`.
+
+## Deferred: quick-settings@1 (Nov 15 2026)
+Web only (Android on hold, build `quick-settings-pinned-collapsible-pane`). Every settings interface draws a pinned,
+collapsible Quick settings pane first: `framework/core/engines/quick-settings.mjs` (scopes, keys, asset overrides, notice,
+`quick.*` grammar) and `framework/react/components/QuickSettings.tsx` (`QuickSettingsFrame`, `panel:quick-settings`),
+enforced by `framework/cli/check-quick-settings.mjs`. The Compose settings screens need the same pane (a Kotlin
+`QuickSettingsPane` over the same keys, the skin level `ui:qs.<scope>` and the asset gate) when the Android side resumes;
+the engine checks to replay are `framework/spec/check-quick-settings.mjs`.

@@ -1531,6 +1531,31 @@
         "target": "apply-layout",
         "title": "Apply layout",
         "text": "Lays the open tabs out on the layout you picked, spread evenly over its panes. The pane limit holds: a layout with more panes uses only its first ones."
+      },
+      {
+        "target": "quick-settings",
+        "title": "Quick settings",
+        "text": "Pinned at the top of every settings interface: it stays put while the rest scrolls under it. Shows the skin and default assets this interface uses, lets you override them for this interface only, and says when something here overrides the console. Fold it with the handle; it stays folded next time."
+      },
+      {
+        "target": "quick-settings-handle",
+        "title": "Fold Quick settings",
+        "text": "Folds or unfolds the Quick settings pane. Its look (arrow, chevron button, grab bar or text) is Settings → Appearance → Quick settings handle."
+      },
+      {
+        "target": "quick-settings-skin",
+        "title": "Override console skin",
+        "text": "Tick to draw just this settings interface in another skin, then pick it. Untick to follow the console's skin again."
+      },
+      {
+        "target": "quick-settings-asset",
+        "title": "Override console default",
+        "text": "The asset this interface uses for that part (navigation menu, toolbar, tab group, settings interface). The picker stays greyed out until you tick Override console default; untick to follow the console again."
+      },
+      {
+        "target": "quick-settings-notice",
+        "title": "This is overriding the current skin/defaults",
+        "text": "Lists everything this interface overrides, each with Reset. Assets that carry their own settings show in the line below it."
       }
     ],
     "intros": [

@@ -954,6 +954,14 @@
               "suggests": []
             },
             {
+              "id": "s.quicksettings",
+              "title": "Quick settings (quick-settings@1): a pinned, collapsible pane at the top of every settings interface: the skin in force with Override console skin, the interface's default assets (navigation menu, toolbar, tab group, settings interface) each with Override console default, and the override notice; quick.* actions + panel:quick-settings for API, MCP, CLI and voice; CI check-quick-settings",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
               "id": "s.prefs",
               "title": "Preference store (DataStore) with typed keys, defaults, migrations, export/import",
               "note": "",

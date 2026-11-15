@@ -24,6 +24,7 @@ import {
   type AssetType, type AxfRuntime, type QuickOverride,
 } from '../../core';
 import { useAxfState, useRuntime } from '../AxfProvider';
+import { useControlTarget } from '../controlTargets';
 import { Button, IconButton } from './Controls';
 import { Checkbox, SelectField } from './Forms';
 import { Icon } from './Icon';
@@ -130,7 +131,7 @@ function Handle({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => v
   const rt = useRuntime();
   const style = quickHandleOf(rt.settings.get(QUICK_HANDLE_KEY));
   const label = collapsed ? 'Show Quick settings' : 'Hide Quick settings';
-  const attrs = { 'aria-expanded': !collapsed, 'data-axf-quick-handle': style };
+  const attrs = { 'aria-expanded': !collapsed, 'data-axf-quick-handle': style, 'data-help': 'quick-settings-handle' };
   switch (style) {
     case 'chevron': return <Button size="sm" tone="neutral" icon={collapsed ? 'chevron-down' : 'chevron-up'} aria-label={label} title={label} onClick={onToggle} {...attrs} />;
     case 'text': return <Button size="sm" tone="neutral" onClick={onToggle} {...attrs}>{collapsed ? 'Show' : 'Hide'}</Button>;
@@ -155,8 +156,14 @@ export function QuickSettings({ scope }: { scope: string }) {
   const notice = quickNotice(overrides);
   const style = quickHandleOf(rt.settings.get(QUICK_HANDLE_KEY));
   const handle = <Handle collapsed={collapsed} onToggle={toggle} />;
+  // control@1 / console-control@1: `panel:quick-settings` reads the pane's whole state (state verb), set folds it
+  // (true / false), press toggles it; every change is also a quick.* action (console API, MCP, CLI, voice)
+  const setTarget = useControlTarget({
+    address: 'panel:quick-settings', kind: 'panel', label: 'Quick settings', detail: notice || 'Follows the console skin and defaults', icon: 'sliders', keywords: ['quick', 'skin', 'override', scope],
+    can: ['state', 'set', 'press', 'focus'], get: () => quickState(rt, scope), set: (v) => rt.dispatch(`quick.collapse:${scope}:${v === true || v === 'on' || v === 'collapsed' ? 'on' : 'off'}`), invoke: toggle,
+  }, [scope, notice, collapsed]);
   return (
-    <section className={`fx-qs ${collapsed ? 'is-collapsed' : ''}`} aria-label="Quick settings" data-axf-quick={scope} data-axf-quick-overrides={overrides.length}>
+    <section ref={setTarget} className={`fx-qs ${collapsed ? 'is-collapsed' : ''}`} aria-label="Quick settings" data-help="quick-settings" data-axf-quick={scope} data-axf-quick-overrides={overrides.length}>
       <div className="fx-qs__head">
         {style !== 'bar' && handle}
         <h3 className="fx-qs__title"><Icon name="sliders" size={14} /> Quick settings</h3>
@@ -164,7 +171,7 @@ export function QuickSettings({ scope }: { scope: string }) {
       </div>
       {!collapsed && (
         <div className="fx-qs__body">
-          <div className="fx-qs__row" data-axf-quick-part="skin">
+          <div className="fx-qs__row" data-axf-quick-part="skin" data-help="quick-settings-skin">
             <span className="fx-qs__label"><Icon name="palette" size={13} /> Skin <span className="fx-qs__current">{ownSkin ? `${skinName(ownSkin)}, this interface only` : `${skinName(consoleSkin)} (console)`}</span></span>
             <Checkbox label="Override console skin" checked={!!ownSkin} onChange={(on) => rt.dispatch(on ? `quick.skin:${scope}:${consoleSkin || skins[0]?.id || 'off'}` : `quick.skin:${scope}:off`)} />
             <SelectField className="fx-qs__pick" label="Skin for this interface" value={ownSkin || consoleSkin} disabled={!ownSkin} options={skins.map((s) => ({ value: s.id, label: s.name }))} onChange={(v) => rt.dispatch(`quick.skin:${scope}:${v}`)} />
@@ -175,7 +182,7 @@ export function QuickSettings({ scope }: { scope: string }) {
             const list = rt.registry.list(type as AssetType);
             const name = (id: string) => list.find((a) => a.id === id)?.name ?? (id || 'none');
             return (
-              <div key={type} className="fx-qs__row" data-axf-quick-part={`asset:${type}`}>
+              <div key={type} className="fx-qs__row" data-axf-quick-part={`asset:${type}`} data-help="quick-settings-asset">
                 <span className="fx-qs__label">{QUICK_ASSET_LABEL[type] ?? type} <span className="fx-qs__current">{own ? `${name(own)}, this interface only` : `${name(cur)} (console)`}</span></span>
                 <Checkbox label="Override console default" checked={!!own} disabled={!list.length} onChange={(on) => rt.dispatch(`quick.asset:${scope}:${type}:${on ? cur || list[0]?.id || 'off' : 'off'}`)} />
                 <SelectField className="fx-qs__pick" label={`${QUICK_ASSET_LABEL[type] ?? type} for this interface`} value={own || cur} disabled={!own} empty={cur ? undefined : 'None'} options={list.map((a) => ({ value: a.id, label: a.name }))} onChange={(v) => rt.dispatch(`quick.asset:${scope}:${type}:${v}`)} />
@@ -183,7 +190,7 @@ export function QuickSettings({ scope }: { scope: string }) {
             );
           })}
           {notice && (
-            <div className="fx-qs__notice" role="status" data-axf-quick-part="notice">
+            <div className="fx-qs__notice" role="status" data-axf-quick-part="notice" data-help="quick-settings-notice">
               <span className="fx-qs__noticeline"><Icon name="alert" size={13} /> {notice}</span>
               <ul className="fx-qs__list" aria-label="Overrides here">
                 {overrides.map((o) => {
