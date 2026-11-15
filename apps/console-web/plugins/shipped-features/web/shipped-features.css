@@ -39,3 +39,6 @@
 .axp-shipped__rowbar { display: inline-flex; align-items: center; gap: calc(var(--fx-space) / 2); }
 .axp-shipped__buildfeatures { list-style: none; margin: 0; padding: 0; display: grid; gap: calc(var(--fx-space) / 2); }
 .axp-shipped__buildfeatures li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--fx-dens-gap-xl); min-width: 0; }
+.axp-shipped__namecell { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); min-width: 0; }
+.axp-shipped__namecell > .axp-shipped__name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axp-shipped__namecell > .axp-shipped__rowbar { flex: none; }

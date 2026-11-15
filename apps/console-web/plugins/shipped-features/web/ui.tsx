@@ -254,8 +254,8 @@ export function ShippedFeaturesPage() {
   const onSort = (col: string | null) => { const by = col ? sortCol[col] : undefined; if (!by) return set({ sort: L.DEFAULT_VIEW.sort }); set({ sort: { by, dir: view.sort.by === by && view.sort.dir === 'desc' ? 'asc' : 'desc' } }); };
   const W = (n: number) => `calc(var(--fx-space) * ${n})`;
   const columns: GridColumn<L.Feature>[] = [
-    { id: 'name', label: 'Feature', width: `minmax(${W(30)}, 3fr)`, fixed: true, sortable: true, render: (f) => <span className="axp-shipped__name">{f.name}</span> },
-    { id: 'open', label: 'Open', width: W(12), render: (f) => <FeatureOpenButton featureId={f.id} name={f.name} /> },
+    // the Open button sits in the name cell (its own row toolbar), so it is on screen on a phone too
+    { id: 'name', label: 'Feature', width: `minmax(${W(30)}, 3fr)`, fixed: true, sortable: true, render: (f) => <span className="axp-shipped__namecell"><FeatureOpenButton featureId={f.id} name={f.name} /><span className="axp-shipped__name">{f.name}</span></span> },
     { id: 'status', label: 'Status', width: W(14), sortable: true, render: (f) => <StatusChip rec={f} /> },
     { id: 'edits', label: 'Edited', width: W(18), sortable: true, sortValue: (f) => f.editCount, render: (f) => <EditedChip f={f} /> },
     { id: 'app', label: 'App / plugin', width: W(18), sortable: true, render: (f) => <span className="fx-muted">{[f.app, f.plugin].filter(Boolean).join(' · ') || '—'}</span> },
