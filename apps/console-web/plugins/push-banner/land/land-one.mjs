@@ -134,7 +134,16 @@ export async function checkAndLand({ s, git, gh, b, run, dry = false, mark = mar
       const open = await gh('GET', `/repos/${s.slug}/pulls?state=open&head=${encodeURIComponent(`${s.slug.split('/')[0]}:${b.branch}`)}`);
       pr = (Array.isArray(open) && open[0]?.number) || (await gh('POST', `/repos/${s.slug}/pulls`, { title: String(b.title || b.id).slice(0, 120), head: b.branch, base: s.base, body: `Build \`${b.id}\` is finished. Opened by the serial lander: main merged in, CI green on ${head.slice(0, 7)}, landing now.` }))?.number || 0;
     }
-    await gh('PUT', `/repos/${s.slug}/pulls/${pr}/merge`, { sha: head, merge_method: 'merge', commit_title: `Land ${b.id} (#${pr}) — serial lander` });
+    const mergeIt = () => gh('PUT', `/repos/${s.slug}/pulls/${pr}/merge`, { sha: head, merge_method: 'merge', commit_title: `Land ${b.id} (#${pr}) — serial lander` });
+    try { await mergeIt(); } catch (e) {
+      // a finished build's PR left as a draft: mark it ready for review, then merge once more
+      if (!/draft/i.test(e.message)) throw e;
+      const node = (await gh('GET', `/repos/${s.slug}/pulls/${pr}`))?.node_id;
+      if (!node) throw e;
+      await gh('POST', '/graphql', { query: 'mutation($id: ID!) { markPullRequestReadyForReview(input: { pullRequestId: $id }) { pullRequest { isDraft } } }', variables: { id: node } });
+      log(`land-one ${b.id}: PR #${pr} was a draft: marked ready for review`);
+      await mergeIt();
+    }
   } catch (e) {
     // GitHub refused (head moved, main moved, not mergeable): not red; the next attempt merges main in again
     run.ci = { run: '', status: 'in_progress', conclusion: '' }; run.pr = pr;

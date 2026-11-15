@@ -116,6 +116,30 @@ Mistakes made and fixed during the run:
 
 Phone summary sent through AmberX: "Landing: 0 landed, 4 archived, 191 flagged, 0 red".
 
+
+## Backlog batch 3: the serial lander over the unique builds (s20)
+
+Nov 15 00:50: the 25 most wanted unique builds, in backlog order, joined the landing line. A detached line runner
+started from this branch (`land-one.mjs line --max 60 --budget-min 300`, log `/var/log/axf-land-one.log`) lands them one
+at a time. After this PR deploys, cron `axf-auto-land` runs the line every 3 minutes and the finish hook adds each new
+build at once. I didn't enqueue all 191: each clash or red files a P0 fix build, and 191 P0s at once would swamp the
+Queue. The rest join as the line drains (`axf land one <build>`, or `POST /land/one`).
+
+So far (every attempt, last outcome per build):
+- **Landed, 1**: `hotfix-desktop-console-draws-app-menu` (#658, 47226dd).
+- **Red (CI failed on the merged head), 2 real**: `console-app-part-2-native-floating-2` (Web Dev Console + Python API) and
+  `voice-listener-use-claude-when-connected` (Build engine sweep). P0 fix builds `merge-main-land-console-app-part-2` and
+  `merge-main-land-voice-listener-use` are queued. Three earlier reds were the false tracker red and are back in the line:
+  `owner-recognized-everywhere-veto`, `orchestrator-table-columns-model-queue-assigned`,
+  `pass-approval-hook-deep-link-amberx-notification`.
+- **Clash in code, 7**, each with a P0 fix build queued: both AmberX web app builds, console app parts 3 and 4,
+  `one-source-truth-console-shows-only-what`, `server-gate-one-session-per-build-no`, `console-axhub-retry-failed-calls`.
+- **In flight**: `merge-main-land-change-to-move-amberx` (the fix for change-to-move-amberx-web-app-console). It was green,
+  but its PR was a draft, so GitHub refused the merge. The lander now marks a finished build's draft PR ready for
+  review and merges once more.
+
+Enqueued for batch 3: `move-amberx-web-app-console-amberx-andr`, `change-to-move-amberx-web-app-console`, `console-app-part-2-native-floating-2`, `console-app-part-3-native-bridge-mic`, `console-app-part-4-console-side-safe`, `voice-listener-use-claude-when-connected`, `auto-land-merge-main-land-land-mjs-clash`, `land-project-duplicate-boilerplate`, `console-axhub-retry-failed-calls`, `pass-approval-hook-deep-link-amberx-notification`, `owner-recognized-everywhere-veto`, `one-source-truth-console-shows-only-what`, `server-gate-one-session-per-build-no`, `orchestrator-table-columns-model-queue-assigned`, `land-all-skin-builds`, `auto-land-every-finished-build-lands`, `full-voice-control-resolve-inventory`, `land-overlay-preview-ui-review-resolve`, `full-voice-control-merge-main-and-land`, `land-drive-live-console-first-resolve`, `land-rename-long-builds-resolve-clash`, `vps-builds-get-console-token-ui-review`, `full-voice-api-control-type-fields-press`, `ui-review-gate-switch-default-off`, `auto-recover-stuck-builds`.
+
 ## What this build adds
 
 - **Serial lander** (`land/land-one.mjs`): one finished build at a time. It merges main in (builds files newer-wins,

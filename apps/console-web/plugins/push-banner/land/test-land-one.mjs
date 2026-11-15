@@ -260,6 +260,20 @@ await t('a finished "Merge main and land X" fix build lands X (it has no branch 
   assert.deepEqual(seen, ['claude/clean']); assert.equal(r.run.build, 'clean');
 });
 
+await t('a draft PR on a finished build is marked ready for review, then merged', async () => {
+  let merges = 0; const calls = [];
+  const gh = async (method, path, body) => {
+    calls.push(`${method} ${path}`);
+    if (path.includes('/check-runs')) return { check_runs: run1('success') };
+    if (method === 'PUT' && path.endsWith('/merge')) { merges++; if (merges === 1) throw new Error('GitHub 405: Pull Request is still a draft'); return { merged: true }; }
+    if (method === 'GET' && /\/pulls\/12$/.test(path)) return { node_id: 'PR_x' };
+    if (path === '/graphql') { assert.equal(body.variables.id, 'PR_x'); return { data: {} }; }
+    throw new Error(`unexpected ${method} ${path}`);
+  };
+  const r = await landOne({ s, git, ...base, gh, build: { id: 'clean', branch: 'claude/clean', pr: 12 }, now: () => at, ciOpts: { ...fastCi, mark: () => ({ ok: true }) } });
+  assert.equal(r.run.outcome, 'landed'); assert.equal(merges, 2); assert.ok(calls.includes('POST /graphql'));
+});
+
 await t('two at once: a second attempt is refused while the line is held, and runs once it is free', async () => {
   assert.equal(await takeLandLock({ who: 'other lander' }), true);
   const r = await landOne({ s, git, ...base, ci: false, build: { id: 'clean', branch: 'claude/clean' }, now: () => at });
