@@ -1,9 +1,11 @@
 /**
  * Prompt engine console plugin (ai.amberx.axf.console.prompt-engine) — the control panel of prompt-engine@1.
  *
- *   - page `prompt-engine` (Builds → Prompt engine): Events (rules), Builder, Macros, Pipelines, Waiting, History, Registry
+ *   - page `prompt-engine` (Builds → Prompt engine): Events (rules), Builder, Macros, Pipelines, Tools, Runs, Waiting, History, Registry
  *   - builder: left = every source and its events (the registry), middle = trigger, conditions, limits and what to ask,
  *     right = actions per answer; every list only offers what is valid for what is already picked (POST /options)
+ *   - tools: the tool sets (the set tools the engine may run) and every tool with whether a set allows it; run one now
+ *   - runs: every run record (tools, macros, pipelines, rule action lists): done / failed / waiting at a gate / stopped
  *   - actions: prompt-engine.open, prompt-engine.waiting, prompt-engine.new (console_action, menus, search, voice)
  *   - everything here is a server route = plugin command: REST /api/plugins/prompt-engine/…, MCP prompt-engine_<command>,
  *     CLI `axf prompt-engine <command>`, voice through AmberX; deep link console_show view:prompt-engine
@@ -23,9 +25,10 @@ const FOLDER = 'prompt-engine';
 const VIEW = 'prompt-engine';
 const TAB_KEY = 'prompt-engine.tab';
 const COUNTER = 'prompt-engine.waiting';
-type Tab = 'events' | 'builder' | 'macros' | 'pipelines' | 'waiting' | 'history' | 'registry';
+type Tab = 'events' | 'builder' | 'macros' | 'pipelines' | 'tools' | 'runs' | 'waiting' | 'history' | 'registry';
 const TABS: { value: Tab; label: string; icon: string }[] = [
   { value: 'events', label: 'Events', icon: 'zap' }, { value: 'builder', label: 'Builder', icon: 'edit' }, { value: 'macros', label: 'Macros', icon: 'list' }, { value: 'pipelines', label: 'Pipelines', icon: 'layers' },
+  { value: 'tools', label: 'Tools', icon: 'hammer' }, { value: 'runs', label: 'Runs', icon: 'play' },
   { value: 'waiting', label: 'Waiting', icon: 'bell' }, { value: 'history', label: 'History', icon: 'clock' }, { value: 'registry', label: 'Registry', icon: 'box' },
 ];
 
@@ -40,7 +43,12 @@ interface Stage { id: string; title: string; actions: Action[]; gate?: Ask }
 interface Pipeline { id: string; title: string; description: string; stages: Stage[] }
 interface Instance { n?: number; id: string; rule: string; ruleTitle: string; kind: string; title: string; text: string; options: { id: string; label: string }[]; countdownSec: number; askedAt: string; expiresAt: string; status: string; answers: string[]; keysNeeded?: string[] }
 interface Options { sources: { id: string; title: string; group: string; events: number; actions: number }[]; events: { id: string; title: string; source: string }[]; fields: Field[]; ops: string[]; values?: string[]; askKinds: string[]; outputs: { id: string; available: boolean }[]; answers: string[]; actions: { id: string; title: string; source: string; group: string; effect: string; missing: string[] }[]; inputs: Field[]; groups: string[] }
-interface State { rules: Rule[]; macros: Macro[]; pipelines: Pipeline[]; waiting: Instance[]; counts: { rules: number; enabled: number; macros: number; pipelines: number; waiting: number; shelved: number }; registry: { sources: number; events: number; actions: number; connectors: string[] }; templates: { id: string; title: string; group: string; description: string }[] }
+interface Toolset { id: string; title: string; description: string; enabled: boolean; tools: string[] }
+interface ToolItem { key: string; kind: 'plugin' | 'console'; plugin?: string; command?: string; verb?: string; title: string; pluginTitle: string; effect: string; allowed: boolean; set: string | null }
+interface ToolsList { open: boolean; sets: { id: string; title: string; enabled: boolean; tools: number }[]; items: ToolItem[]; counts: { tools: number; allowed: number; plugins: number }; note: string }
+interface RunRecord { id: string; kind: string; target: string; title: string; status: string; rule?: string; instance?: string; by: string; startedAt: string; finishedAt: string; planned: number; ran: { action: string }[]; failed: { action: string; error: string }[]; asked: string[]; errors: { message: string }[]; toolsBlocked: string[]; keysNeeded: string[] }
+interface RunResult { run: string; planned: number; ran: unknown[]; failed: { action: string; error: string }[]; asked: { id: string; title: string }[]; toolsBlocked: string[]; record?: { id: string; status: string }; dry: boolean; steps?: unknown[] }
+interface State { rules: Rule[]; macros: Macro[]; pipelines: Pipeline[]; toolsets: Toolset[]; waiting: Instance[]; runs: RunRecord[]; toolsOpen: boolean; counts: { rules: number; enabled: number; macros: number; pipelines: number; toolsets: number; toolsetsOn: number; waiting: number; shelved: number; runs: number; runsWaiting: number }; registry: { sources: number; events: number; actions: number; connectors: string[] }; templates: { id: string; title: string; group: string; description: string }[] }
 interface Audit { at: string; kind: string; rule?: string; instance?: string; event?: string; reason?: string; by?: string; detail?: Record<string, unknown> }
 
 /* ---------------- api ---------------- */
@@ -340,6 +348,121 @@ function PipelineEditor({ initial, actions, onDone }: { initial: Pipeline | null
   );
 }
 
+/* ---------------- tool sets + tools ---------------- */
+const parseJsonObject = (v: string): Record<string, unknown> | null => { if (!v.trim()) return {}; try { const j = JSON.parse(v) as unknown; return j && typeof j === 'object' && !Array.isArray(j) ? (j as Record<string, unknown>) : null; } catch { return null; } };
+const runSummary = (r: RunResult): string => `${r.dry ? 'Dry run: ' : ''}${r.dry ? `${r.steps?.length ?? r.planned} step(s) planned` : `ran ${r.ran.length} of ${r.planned} step(s)`}${r.failed.length ? `, ${r.failed.length} failed: ${r.failed[0]?.error ?? ''}` : ''}${r.asked.length ? `, waiting on “${r.asked[0]?.title ?? ''}”` : ''}${r.toolsBlocked.length ? `, blocked: ${r.toolsBlocked.join(', ')}` : ''}${r.record ? ` (${r.record.status})` : ''}.`;
+
+function ToolsetEditor({ initial, onDone }: { initial: Toolset | null; onDone: () => void }) {
+  const rt = useRuntime();
+  const [t, setT] = useState<Toolset>(initial ?? { id: '', title: '', description: '', enabled: true, tools: [] });
+  const [patterns, setPatterns] = useState(initial?.tools.join('\n') ?? '');
+  const [error, setError] = useState('');
+  const save = async () => {
+    const body = { ...t, id: t.id || undefined, tools: patterns.split(/[\n,]/).map((s) => s.trim()).filter(Boolean) };
+    const r = initial ? await api(`toolsets/${encodeURIComponent(initial.id)}/update`, body) : await api('toolsets', body);
+    if (!r.ok) { setError(r.error ?? 'Could not save.'); return; }
+    rt.toast('Tool set saved.', 'success', 'Prompt engine'); onDone();
+  };
+  return (
+    <Container title={initial ? `Tool set: ${initial.title}` : 'New tool set'} icon="hammer">
+      <div className="fx-stack">
+        <TextField label="Title" value={t.title} onChange={(v) => setT({ ...t, title: v })} required placeholder="e.g. Review tools" />
+        <TextField label="Tool patterns" value={patterns} onChange={setPatterns} rows={5} mono placeholder={'ui-review.*\nbuild-orchestrator.act\nconsole.open'} hint="One per line: plugin.command, plugin.* (every command of a plugin), console.<verb>, console.*" />
+        <Switch label="On" checked={t.enabled} onChange={(on) => setT({ ...t, enabled: on })} />
+        {error && <Note tone="danger">{error}</Note>}
+        <div className="fx-row fx-row--wrap"><Button tone="primary" icon="check" disabled={!t.title.trim() || !patterns.trim()} onClick={() => void save()}>Save tool set</Button><Button tone="ghost" onClick={onDone}>Cancel</Button></div>
+      </div>
+    </Container>
+  );
+}
+
+function ToolsTab({ st, reload }: { st: State; reload: () => Promise<void> }) {
+  const rt = useRuntime();
+  const [list, setList] = useState<ToolsList | null>(null);
+  const [edit, setEdit] = useState<Toolset | null | 'new'>(null);
+  const [q, setQ] = useState('');
+  const [onlyAllowed, setOnlyAllowed] = useState(false);
+  const [input, setInput] = useState('');
+  const [busy, setBusy] = useState('');
+  const load = useCallback(async () => { const r = await api<ToolsList>('tools'); if (r.ok) setList(r); }, []);
+  useEffect(() => { void load(); }, [load, st.toolsets]);
+  const act = async (path: string, body: unknown, done: string) => { const r = await api(path, body); if (!r.ok) rt.toast(r.error ?? 'Failed.', 'danger', 'Prompt engine'); else rt.toast(done, 'success', 'Prompt engine'); await reload(); await load(); };
+  const runTool = async (t: ToolItem, dry: boolean) => {
+    const inp = parseJsonObject(input);
+    if (inp === null) { rt.toast('The input is not a JSON object.', 'danger', 'Run a tool'); return; }
+    setBusy(t.key);
+    const r = await api<RunResult>('tools/run', { plugin: t.kind === 'console' ? 'console' : t.plugin, command: t.kind === 'console' ? t.verb : t.command, input: inp, dry });
+    setBusy('');
+    if (!r.ok) { rt.toast(r.error ?? 'The tool did not run.', 'danger', t.title); return; }
+    rt.toast(runSummary(r), r.failed.length ? 'warning' : 'success', t.title);
+    await reload();
+  };
+  const needle = q.trim().toLowerCase();
+  const items = (list?.items ?? []).filter((t) => (!onlyAllowed || t.allowed) && (!needle || t.key.includes(needle) || t.title.toLowerCase().includes(needle) || t.pluginTitle.toLowerCase().includes(needle))).slice(0, 300);
+  return (
+    <div className="fx-stack">
+      <Note tone={st.toolsOpen ? 'warning' : 'info'}>{list?.note ?? (st.toolsOpen ? 'No tool set is on: every registered tool may run.' : 'Only tools in an enabled tool set may run.')}</Note>
+      {edit ? <ToolsetEditor initial={edit === 'new' ? null : edit} onDone={() => { setEdit(null); void reload(); void load(); }} /> : <div><Button tone="primary" icon="plus" onClick={() => setEdit('new')}>New tool set</Button></div>}
+      <ul className="axp-pe__list">
+        {st.toolsets.map((t) => (
+          <li key={t.id} className={`axp-pe__row ${t.enabled ? '' : 'is-off'}`}>
+            <div className="axp-pe__head"><span className="axp-pe__title">{t.title}</span><Chip>{t.tools.length} pattern(s)</Chip>{!t.enabled && <Chip tone="warning">off</Chip>}<span className="fx-mono fx-small axp-pe__count">{t.id}</span></div>
+            <p className="fx-small fx-muted fx-mono axp-pe__sum">{t.tools.join('  ')}</p>
+            <div className="axp-pe__actions">
+              <Switch label="On" hideLabel text={t.enabled ? 'On' : 'Off'} checked={t.enabled} onChange={(on) => void act(`toolsets/${encodeURIComponent(t.id)}/${on ? 'enable' : 'disable'}`, {}, on ? `${t.title} is on.` : `${t.title} is off.`)} />
+              <Button tone="neutral" size="sm" icon="edit" onClick={() => setEdit(t)}>Edit</Button>
+              <Button tone="danger" size="sm" icon="trash" confirm={`Delete the tool set “${t.title}”?`} onClick={() => void act(`toolsets/${encodeURIComponent(t.id)}/delete`, { confirm: t.id }, 'Tool set deleted.')}>Delete</Button>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <Container title={`Tools${list ? ` · ${list.counts.allowed} of ${list.counts.tools} may run` : ''}`} icon="hammer">
+        <div className="fx-stack">
+          <div className="axp-pe__inputs">
+            <TextField label="Find a tool" value={q} onChange={setQ} placeholder="ui-review, decide, console…" />
+            <TextField label="Input for runs (JSON)" value={input} onChange={setInput} mono placeholder='{ "ids": "…" }' hint="Sent as the command's input; a console verb reads address and value" />
+          </div>
+          <Checkbox label="Only tools that may run" checked={onlyAllowed} onChange={setOnlyAllowed} />
+          {!list ? <LoadingSkeleton /> : !items.length ? <Note tone="info">No tool matches.</Note> : (
+            <ul className="axp-pe__list">
+              {items.map((t) => (
+                <li key={t.key} className={`axp-pe__row ${t.allowed ? '' : 'is-off'}`}>
+                  <div className="axp-pe__head">
+                    <span className="axp-pe__title">{t.pluginTitle} · {t.title}</span>
+                    <Chip tone={EFFECT_TONE[t.effect]}>{t.effect}</Chip>
+                    {t.allowed ? <Chip tone="success">{t.set ? `in ${t.set}` : 'may run'}</Chip> : <Chip tone="warning">not in a tool set</Chip>}
+                    <span className="fx-mono fx-small axp-pe__count">{t.key}</span>
+                  </div>
+                  <div className="axp-pe__actions">
+                    <Button tone="primary" size="sm" icon="play" disabled={!t.allowed || busy === t.key} onClick={() => void runTool(t, false)}>Run</Button>
+                    <Button tone="neutral" size="sm" icon="eye" disabled={!t.allowed || busy === t.key} onClick={() => void runTool(t, true)}>Dry run</Button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </Container>
+    </div>
+  );
+}
+
+/* ---------------- runs ---------------- */
+const RUN_TONE: Record<string, 'accent' | 'success' | 'warning' | 'danger' | undefined> = { done: 'success', failed: 'danger', waiting: 'warning', stopped: undefined, dry: 'accent' };
+function RunsTab({ runs, status, setStatus }: { runs: RunRecord[] | null; status: string; setStatus: (s: string) => void }) {
+  return (
+    <div className="fx-stack">
+      <SelectField label="Show" value={status} empty="Every run" onChange={setStatus} options={['done', 'failed', 'waiting', 'stopped'].map((k) => ({ value: k, label: label(k) }))} />
+      {runs === null ? <LoadingSkeleton /> : !runs.length ? <Note tone="info">No runs yet. Run a tool, a macro or a pipeline, or let a rule fire.</Note> : (
+        <table className="axp-pe__hist fx-small">
+          <thead><tr><th>When</th><th>What</th><th>Status</th><th>Steps</th><th>Detail</th></tr></thead>
+          <tbody>{runs.map((r) => <tr key={r.id}><td>{new Date(r.startedAt).toLocaleString()}</td><td>{r.title}<br /><span className="fx-mono fx-muted">{r.kind}{r.rule ? ` · rule ${r.rule}` : ''}{r.by ? ` · by ${r.by}` : ''}</span></td><td><Chip tone={RUN_TONE[r.status]}>{r.status}</Chip></td><td>{r.ran.length} ran{r.failed.length ? `, ${r.failed.length} failed` : ''}{r.asked.length ? `, ${r.asked.length} asked` : ''} of {r.planned}</td><td className="axp-pe__detail">{[...r.failed.map((f) => `${f.action}: ${f.error}`), ...r.errors.map((e) => e.message), ...(r.toolsBlocked.length ? [`blocked: ${r.toolsBlocked.join(', ')}`] : []), ...(r.keysNeeded.length ? [`keys needed: ${r.keysNeeded.join(', ')}`] : [])].join(' · ') || r.ran.map((s) => s.action).join(', ')}<br /><span className="fx-mono">{r.id}</span></td></tr>)}</tbody>
+        </table>
+      )}
+    </div>
+  );
+}
+
 /* ---------------- waiting ---------------- */
 function WaitingRow({ i, onDone }: { i: Instance; onDone: () => void }) {
   const rt = useRuntime();
@@ -389,6 +512,9 @@ function PromptEngineView() {
   const [opts, setOpts] = useState<Options | null>(null);
   const [hist, setHist] = useState<Audit[] | null>(null);
   const [histKind, setHistKind] = useState('');
+  const [runList, setRunList] = useState<RunRecord[] | null>(null);
+  const [runStatus, setRunStatus] = useState('');
+  const [params, setParams] = useState('');
   const [reg, setReg] = useState<{ sources: { source: string; title: string; group: string; events: { id: string; title: string; fields: Field[] }[]; actions: { id: string; title: string; effect: string; needs: string[] }[] }[]; connectors: Record<string, { available: boolean }> } | null>(null);
   const [tpl, setTpl] = useState('');
   const load = useCallback(async () => {
@@ -399,6 +525,15 @@ function PromptEngineView() {
   useEffect(() => { void load(); const t = setInterval(() => void load(), 30000); return () => clearInterval(t); }, [load]);
   useEffect(() => { void api<Options>('options', {}).then((o) => o.ok && setOpts(o)); }, []);
   useEffect(() => { if (tab === 'history') void api<{ items: Audit[] }>(`history?limit=200${histKind ? `&kind=${histKind}` : ''}`).then((r) => setHist(r.ok ? r.items : [])); if (tab === 'registry') void api<typeof reg & { ok: boolean }>('manifest').then((r) => r.ok && setReg(r)); }, [tab, histKind]);
+  useEffect(() => { if (tab === 'runs') void api<{ items: RunRecord[] }>(`runs?limit=200${runStatus ? `&status=${runStatus}` : ''}`).then((r) => setRunList(r.ok ? r.items : [])); }, [tab, runStatus, st?.counts.runs]);
+  const runNow = async (kind: 'macros' | 'pipelines', id: string, title: string, dry = false) => {
+    const p = parseJsonObject(params);
+    if (p === null) { rt.toast('The parameters are not a JSON object.', 'danger', title); return; }
+    const r = await api<RunResult>(`${kind}/${encodeURIComponent(id)}/run`, { params: p, dry });
+    if (!r.ok) { rt.toast(r.error ?? 'It did not run.', 'danger', title); return; }
+    rt.toast(runSummary(r), r.failed.length ? 'warning' : r.asked.length ? 'info' : 'success', title);
+    await load();
+  };
   useEffect(() => { if (editRuleId !== null && st) { const r = editRuleId === '' ? emptyRule() : st.rules.find((x) => x.id === editRuleId) ?? null; if (r) { setEditing(r); setTab('builder'); } editRuleId = null; } }, [st]);
   const pick = (t: Tab) => { setTab(t); rt.settings.set(TAB_KEY, t); openTab = null; };
   const act = async (path: string, body: unknown, done: string) => { const r = await api(path, body); if (!r.ok) rt.toast(r.error ?? 'Failed.', 'danger', 'Prompt engine'); else rt.toast(done, 'success', 'Prompt engine'); await load(); return r.ok; };
@@ -406,7 +541,7 @@ function PromptEngineView() {
   const counts = st?.counts;
   return (
     <div className="axp-pe">
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">Plugin · prompt-engine@1</p><h1>Prompt engine</h1><p className="fx-muted">Rules that watch every event, ask Brett what to do, and run tools, macros and pipelines on the answer.</p></div></header>
+      <header className="fx-pagehead"><div><p className="fx-eyebrow">Plugin · prompt-engine@1</p><h1>Prompt engine</h1><p className="fx-muted">Rules that watch every event, ask Brett what to do, and run set tools, macros and pipelines on the answer, or right now.</p></div></header>
       {error && <Note tone="warning">{error}</Note>}
       <div className="axp-pe__tools" role="toolbar" aria-label="Prompt engine tools" data-axf-toolbar="prompt-engine">
         <Button tone="primary" icon="plus" onClick={() => { setEditing(emptyRule()); pick('builder'); }}>New rule</Button>
@@ -416,7 +551,7 @@ function PromptEngineView() {
         <Button tone="ghost" icon="clock" onClick={() => void act('tick', {}, 'Tick ran: expiries and schedules checked.')}>Run tick</Button>
         <Button tone="ghost" icon="refresh" onClick={() => void load()}>Refresh</Button>
       </div>
-      <TabGroup id="prompt-engine.tabs" label="Prompt engine sections" value={tab} onChange={pick} tabs={TABS.map((t) => ({ ...t, badge: t.value === 'waiting' ? counts?.waiting : t.value === 'events' ? counts?.rules : undefined }))} />
+      <TabGroup id="prompt-engine.tabs" label="Prompt engine sections" value={tab} onChange={pick} tabs={TABS.map((t) => ({ ...t, badge: t.value === 'waiting' ? counts?.waiting : t.value === 'events' ? counts?.rules : t.value === 'runs' ? counts?.runsWaiting || undefined : undefined }))} />
       {tab === 'events' && (
         <ul className="axp-pe__list">
           {!st?.rules.length && <Note tone="info">No rules yet. Add one from a template above, or build your own.</Note>}
@@ -443,12 +578,14 @@ function PromptEngineView() {
       {tab === 'builder' && (editing ? <Builder key={editing.id || 'new'} initial={editing} onSaved={() => { setEditing(null); void load(); pick('events'); }} onCancel={() => { setEditing(null); pick('events'); }} /> : <Note tone="info">Pick a rule under Events and tap Edit, or tap New rule.</Note>)}
       {tab === 'macros' && (
         <div className="fx-stack">
-          {macro ? <MacroEditor initial={macro === 'new' ? null : macro} actions={opts?.actions ?? []} onDone={() => { setMacro(null); void load(); }} /> : <div><Button tone="primary" icon="plus" onClick={() => setMacro('new')}>New macro</Button></div>}
+          {macro ? <MacroEditor initial={macro === 'new' ? null : macro} actions={opts?.actions ?? []} onDone={() => { setMacro(null); void load(); }} /> : <div className="axp-pe__tools" role="toolbar" aria-label="Macro tools"><Button tone="primary" icon="plus" onClick={() => setMacro('new')}>New macro</Button><TextField label="Parameters for runs (JSON)" value={params} onChange={setParams} mono placeholder='{ "build": "…" }' /></div>}
           <ul className="axp-pe__list">
             {st?.macros.map((m) => (
               <li key={m.id} className="axp-pe__row">
                 <div className="axp-pe__head"><span className="axp-pe__title">{m.title}</span><Chip>{m.steps.length} step(s)</Chip>{m.params.length > 0 && <Chip>params: {m.params.map((p) => p.name).join(', ')}</Chip>}<span className="fx-mono fx-small axp-pe__count">{m.id}</span></div>
                 <div className="axp-pe__actions">
+                  <Button tone="primary" size="sm" icon="play" onClick={() => void runNow('macros', m.id, m.title)}>Run</Button>
+                  <Button tone="neutral" size="sm" icon="eye" onClick={() => void runNow('macros', m.id, m.title, true)}>Dry run</Button>
                   <Button tone="neutral" size="sm" icon="edit" onClick={() => setMacro(m)}>Edit</Button>
                   <Button tone="danger" size="sm" icon="trash" confirm={`Delete the macro “${m.title}”?`} onClick={() => void act(`macros/${encodeURIComponent(m.id)}/delete`, { confirm: m.id }, 'Macro deleted.')}>Delete</Button>
                 </div>
@@ -459,15 +596,16 @@ function PromptEngineView() {
       )}
       {tab === 'pipelines' && (
         <div className="fx-stack">
-          {pipe ? <PipelineEditor initial={pipe === 'new' ? null : pipe} actions={opts?.actions ?? []} onDone={() => { setPipe(null); void load(); }} /> : <div><Button tone="primary" icon="plus" onClick={() => setPipe('new')}>New pipeline</Button></div>}
+          {pipe ? <PipelineEditor initial={pipe === 'new' ? null : pipe} actions={opts?.actions ?? []} onDone={() => { setPipe(null); void load(); }} /> : <div className="axp-pe__tools" role="toolbar" aria-label="Pipeline tools"><Button tone="primary" icon="plus" onClick={() => setPipe('new')}>New pipeline</Button><TextField label="Parameters for runs (JSON)" value={params} onChange={setParams} mono placeholder='{ "build": "…" }' /></div>}
           <ul className="axp-pe__list">
             {st?.pipelines.map((p) => (
               <li key={p.id} className="axp-pe__row">
                 <div className="axp-pe__head"><span className="axp-pe__title">{p.title}</span><Chip>{p.stages.length} stage(s)</Chip>{p.stages.some((s) => s.gate) && <Chip tone="warning">{p.stages.filter((s) => s.gate).length} gate(s)</Chip>}<span className="fx-mono fx-small axp-pe__count">{p.id}</span></div>
                 <p className="fx-small fx-muted axp-pe__sum">{p.stages.map((s) => `${s.gate ? '⏸ ' : ''}${s.title} (${s.actions.length})`).join(' → ')}</p>
                 <div className="axp-pe__actions">
+                  <Button tone="primary" size="sm" icon="play" onClick={() => void runNow('pipelines', p.id, p.title)}>Run</Button>
+                  <Button tone="neutral" size="sm" icon="eye" onClick={() => void runNow('pipelines', p.id, p.title, true)}>Dry run</Button>
                   <Button tone="neutral" size="sm" icon="edit" onClick={() => setPipe(p)}>Edit</Button>
-                  <Button tone="neutral" size="sm" icon="play" onClick={() => void api('fire', { source: 'custom', event: 'custom.event', payload: { name: `run ${p.id}` }, dry: true }).then(() => rt.toast(`To run it from a rule, add the action “Run a pipeline” → ${p.title}.`, 'info', 'Pipelines'))}>How to run</Button>
                   <Button tone="danger" size="sm" icon="trash" confirm={`Delete the pipeline “${p.title}”?`} onClick={() => void act(`pipelines/${encodeURIComponent(p.id)}/delete`, { confirm: p.id }, 'Pipeline deleted.')}>Delete</Button>
                 </div>
               </li>
@@ -475,6 +613,8 @@ function PromptEngineView() {
           </ul>
         </div>
       )}
+      {tab === 'tools' && st && <ToolsTab st={st} reload={load} />}
+      {tab === 'runs' && <RunsTab runs={runList} status={runStatus} setStatus={setRunStatus} />}
       {tab === 'waiting' && (
         <ul className="axp-pe__list">
           {!st?.waiting.length && <Note tone="success">Nothing is waiting for you.</Note>}
@@ -514,10 +654,12 @@ function SettingsPanel() {
   useEffect(() => { void api<State>('').then((r) => r.ok && setSt(r)); }, []);
   return (
     <div className="fx-stack">
-      <p className="axp-pe__p">{st ? `${st.counts.enabled} of ${st.counts.rules} rules on · ${st.counts.macros} macros · ${st.counts.pipelines} pipelines · ${st.counts.waiting} waiting` : '…'}</p>
+      <p className="axp-pe__p">{st ? `${st.counts.enabled} of ${st.counts.rules} rules on · ${st.counts.macros} macros · ${st.counts.pipelines} pipelines · ${st.counts.toolsetsOn} of ${st.counts.toolsets} tool sets on${st.toolsOpen ? ' (every tool may run)' : ''} · ${st.counts.runs} runs · ${st.counts.waiting} waiting` : '…'}</p>
       <div className="fx-row fx-row--wrap">
         <Button tone="primary" icon="zap" onClick={() => rt.navigate(VIEW)}>Open the control panel</Button>
         <Button tone="neutral" icon="bell" onClick={() => rt.dispatch('prompt-engine.waiting')}>Prompts waiting</Button>
+        <Button tone="neutral" icon="hammer" onClick={() => rt.dispatch('prompt-engine.tools')}>Tool sets</Button>
+        <Button tone="neutral" icon="play" onClick={() => rt.dispatch('prompt-engine.runs')}>Runs</Button>
       </div>
       <p className="fx-small fx-muted axp-pe__p">
         Every control here is also a command: REST <span className="fx-mono">/api/plugins/prompt-engine/…</span> and <span className="fx-mono">/api/control/prompt-engine/&lt;command&gt;</span>, MCP <span className="fx-mono">prompt-engine_&lt;command&gt;</span>, CLI <span className="fx-mono">axf prompt-engine &lt;command&gt;</span> or <span className="fx-mono">node apps/console-web/plugins/prompt-engine/engine.mjs …</span>, voice through AmberX ("what is waiting for me", "approve it", "pick option 2"). Deep link: <span className="fx-mono">console_show view:prompt-engine</span>.
@@ -537,6 +679,8 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('prompt-engine.open', () => rt.navigate(VIEW), { label: 'Open the prompt engine' });
     rt.actions.register('prompt-engine.waiting', () => { openTab = 'waiting'; rt.navigate(VIEW); }, { label: 'Prompts waiting for Brett' });
     rt.actions.register('prompt-engine.new', () => { editRuleId = ''; openTab = 'builder'; rt.navigate(VIEW); }, { label: 'New prompt rule' });
+    rt.actions.register('prompt-engine.tools', () => { openTab = 'tools'; rt.navigate(VIEW); }, { label: 'Prompt engine tool sets' });
+    rt.actions.register('prompt-engine.runs', () => { openTab = 'runs'; rt.navigate(VIEW); }, { label: 'Prompt engine runs' });
     const p = new URLSearchParams(globalThis.location?.search ?? '').get('prompt');
     if (p) { openTab = 'waiting'; setTimeout(() => rt.navigate(VIEW), 0); }
     void api<State>('').then((r) => { if (r.ok && runtime) runtime.setBadge(COUNTER, r.counts.waiting); });

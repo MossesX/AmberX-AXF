@@ -2,12 +2,19 @@
 /**
  * Prompt engine runner + CLI (prompt-engine@1; the decisions live in framework/core/engines/prompt-engine.mjs, this
  * file stores and runs). Data in the plugin's data folder (AXF_PROMPT_ENGINE_DIR, default
- * .axf-console/plugins/prompt-engine): rules.json, macros.json, pipelines.json, manifests.json, instances.json,
- * state.json, audit.jsonl. The console server's routes call these commands (plugin-commands@1 then puts them on REST,
- * MCP, the CLI and voice); the build-hook listener (build-hooks.mjs) fires build events; the server's tick runs
- * schedules and expiries.
+ * .axf-console/plugins/prompt-engine): rules.json, macros.json, pipelines.json, toolsets.json, manifests.json,
+ * instances.json, runs.json, state.json, audit.jsonl. The console server's routes call these commands
+ * (plugin-commands@1 then puts them on REST, MCP, the CLI and voice); the build-hook listener (build-hooks.mjs) fires
+ * build events; the server's tick runs schedules and expiries.
  *
- *   node engine.mjs state                                   rules, macros, pipelines, waiting prompts, counts
+ *   node engine.mjs state                                   rules, macros, pipelines, tool sets, waiting prompts, recent runs, counts
+ *   node engine.mjs toolsets | toolset <id> | add-toolset <json|-> | update-toolset <id> <json|-> | enable-toolset <id> | disable-toolset <id>
+ *                   remove-toolset <id> --confirm <id>      the set tools the engine may run (prompt-toolset@1)
+ *   node engine.mjs tools [--set <id>] [--allowed]          every tool (plugin commands + console verbs) and whether a set allows it
+ *   node engine.mjs run-tool <plugin> <command> [--input <json>] [--dry]     run one tool now (through the tool sets)
+ *   node engine.mjs run-macro <id> [<params json>] [--dry]                   run a macro now
+ *   node engine.mjs run-pipeline <id> [<params json>] [--dry]                run a pipeline now (a gate asks; the answer resumes it)
+ *   node engine.mjs runs [--kind k] [--target t] [--status s] [--limit n] | run-record <id>     run records (prompt-run@1)
  *   node engine.mjs rules | rule <id> | add-rule <json|-> | update-rule <id> <json|-> | enable <id> | disable <id>
  *                   remove-rule <id> --confirm <id>
  *   node engine.mjs macros | add-macro <json|-> | update-macro <id> <json|-> | remove-macro <id> --confirm <id>
@@ -66,12 +73,17 @@ export const loadRules = () => (readJson('rules.json', []) || []).map((r) => E.n
 export const loadMacros = () => (readJson('macros.json', []) || []).map((m) => E.normMacro(m)).filter(Boolean);
 export const loadPipelines = () => (readJson('pipelines.json', []) || []).map((p) => E.normPipeline(p)).filter(Boolean);
 export const loadInstances = () => (readJson('instances.json', []) || []).map((i) => E.normInstance(i)).filter(Boolean);
+export const loadToolsets = () => (readJson('toolsets.json', []) || []).map((t) => E.normToolset(t)).filter(Boolean);
+export const loadRuns = () => (readJson('runs.json', []) || []).map((r) => E.runRecord(r)).filter(Boolean);
 export const loadState = () => E.normState(readJson('state.json', {}));
 const saveRules = (xs) => writeJson('rules.json', xs);
 const saveMacros = (xs) => writeJson('macros.json', xs);
 const savePipelines = (xs) => writeJson('pipelines.json', xs);
+const saveToolsets = (xs) => writeJson('toolsets.json', xs);
 const saveInstances = (xs) => writeJson('instances.json', xs.slice(-500));
+const saveRuns = (xs) => writeJson('runs.json', xs.slice(-RUNS_KEEP));
 const saveState = (s) => writeJson('state.json', s);
+export const RUNS_KEEP = 300;
 
 export function audit(kind, detail = {}, by = '', now = new Date().toISOString()) {
   const line = E.auditEntry(kind, detail, now, by);
@@ -161,7 +173,7 @@ export function options(picked, opts = {}) {
 
 const now = () => new Date().toISOString();
 function crud(kind) {
-  const [load, save, norm, validate, rec] = kind === 'rule' ? [loadRules, saveRules, E.normRule, E.validateRule, 'rule'] : kind === 'macro' ? [loadMacros, saveMacros, E.normMacro, E.validateMacro, 'macro'] : [loadPipelines, savePipelines, E.normPipeline, E.validatePipeline, 'pipeline'];
+  const [load, save, norm, validate, rec] = kind === 'rule' ? [loadRules, saveRules, E.normRule, E.validateRule, 'rule'] : kind === 'macro' ? [loadMacros, saveMacros, E.normMacro, E.validateMacro, 'macro'] : kind === 'toolset' ? [loadToolsets, saveToolsets, E.normToolset, (v) => E.validateToolset(v), 'toolset'] : [loadPipelines, savePipelines, E.normPipeline, E.validatePipeline, 'pipeline'];
   return {
     list: () => load(),
     get: (id) => load().find((x) => x.id === E.slug(id)) ?? null,
@@ -200,12 +212,26 @@ function crud(kind) {
 export const rules = crud('rule');
 export const macros = crud('macro');
 export const pipelines = crud('pipeline');
+export const toolsets = crud('toolset');
 export function setEnabled(id, on, by = '') {
   const all = loadRules(); const r = all.find((x) => x.id === E.slug(id));
   if (!r) return { ok: false, error: `no rule ${id}`, code: 'not_found' };
   r.enabled = Boolean(on); r.updatedAt = now(); saveRules(all);
   audit('rule', { rule: r.id, reason: on ? 'enabled' : 'disabled' }, by);
   return { ok: true, rule: r };
+}
+export function setToolsetEnabled(id, on, by = '') {
+  const all = loadToolsets(); const t = all.find((x) => x.id === E.slug(id));
+  if (!t) return { ok: false, error: `no tool set ${id}`, code: 'not_found' };
+  t.enabled = Boolean(on); t.updatedAt = now(); saveToolsets(all);
+  audit('toolset', { toolset: t.id, reason: on ? 'enabled' : 'disabled' }, by);
+  return { ok: true, toolset: t };
+}
+/** Every tool the engine knows (plugin commands from the Plugin commands registry + console verbs) with whether a tool set allows it. */
+export function tools(opts = {}) {
+  const list = E.toolList(loadToolsets(), pluginCommandList(), { set: opts.set, allowed: opts.allowed });
+  if (opts.set && !list.sets.some((s) => s.id === E.slug(opts.set))) return { ok: false, error: `no tool set ${opts.set}`, code: 'not_found' };
+  return { ok: true, ...list, note: list.open ? 'No tool set is on: every registered tool may run. Add a tool set to limit the engine to set tools.' : `${list.counts.allowed} of ${list.counts.tools} tools are in an enabled tool set; the rest are blocked when a rule, macro or pipeline names them.` };
 }
 export function useTemplate(id, overrides = {}, by = '') {
   const r = E.fromTemplate(id, overrides, { now: now() });
@@ -280,31 +306,49 @@ function orch(args, env = {}) {
   return { ok: false, error: r.json?.error || r.stderr || r.stdout.trim().slice(-400) || `exit ${r.status}` };
 }
 
+/** A run id no stored record has yet (two runs of one target within a second get -2, -3 …). */
+function uniqueRunId(kind, target, at) {
+  const base = E.runId(kind, target, at); const taken = new Set(loadRuns().map((r) => r.id));
+  let id = base; for (let n = 2; taken.has(id); n++) id = `${base}-${n}`;
+  return id;
+}
+
 /**
- * Run a list of actions: plan (macros, pipelines, connectors), then each runnable step in order. A gate (prompt.ask or
- * a pipeline stage gate) becomes a waiting prompt; what follows it waits for the answer. `dry` plans and runs nothing.
+ * Run a list of actions: plan (macros, pipelines, connectors, tool sets), then each runnable step in order. A gate
+ * (prompt.ask or a pipeline stage gate) becomes a waiting prompt; what follows it waits for the answer. A tool outside
+ * every enabled tool set is blocked and stops the run (unless continueOnError). `dry` plans and runs nothing. Every
+ * live run leaves a prompt-run@1 record (`record`).
  */
 export function run(actions, ctx = {}, opts = {}) {
   const reg = opts.registry || registry();
   const exec = { ...EXEC, ...(opts.exec || {}) };
-  const planned = E.plan(actions, { registry: reg, macros: loadMacros(), pipelines: loadPipelines(), ctx: ctx.ctx || {}, trail: opts.trail });
+  const planned = E.plan(actions, { registry: reg, macros: loadMacros(), pipelines: loadPipelines(), toolsets: loadToolsets(), ctx: ctx.ctx || {}, trail: opts.trail });
   const at = now();
-  const result = { ok: planned.ok, planned: planned.steps.length, errors: planned.errors, keysNeeded: planned.keysNeeded, ran: [], failed: [], dispatch: [], asked: [], dry: Boolean(opts.dry) };
+  const kind = E.RUN_KINDS.includes(ctx.kind) ? ctx.kind : 'actions';
+  const runRef = ctx.run || uniqueRunId(kind, ctx.target || ctx.rule || '', at);
+  const result = { ok: planned.ok, run: runRef, planned: planned.steps.length, errors: planned.errors, keysNeeded: planned.keysNeeded, toolsBlocked: planned.toolsBlocked, ran: [], failed: [], dispatch: [], asked: [], dry: Boolean(opts.dry) };
   for (const k of planned.keysNeeded) {
     result.dispatch.push({ kind: 'keys-needed', connector: k, for: ctx.rule || 'prompt engine', message: `The ${k} connector is not set up on axHub; ${ctx.rule ? `rule ${ctx.rule}` : 'this run'} needs it.` });
     audit('keys-needed', { rule: ctx.rule, instance: ctx.instance, connector: k }, ctx.by, at);
   }
+  for (const t of planned.toolsBlocked) audit('blocked', { rule: ctx.rule, instance: ctx.instance, run: runRef, tool: t, reason: `tool ${t} is not in a tool set` }, ctx.by, at);
   if (opts.dry) { audit('dry-run', { rule: ctx.rule, instance: ctx.instance, steps: planned.steps.map((s) => `${s.action}${s.blocked ? ' (blocked)' : ''}`), errors: planned.errors }, ctx.by, at); result.steps = planned.steps; return result; }
-  audit('planned', { rule: ctx.rule, instance: ctx.instance, steps: planned.steps.length, errors: planned.errors.length }, ctx.by, at);
+  audit('planned', { rule: ctx.rule, instance: ctx.instance, run: runRef, steps: planned.steps.length, errors: planned.errors.length }, ctx.by, at);
   for (const step of planned.steps) {
     if (step.marker === 'macro-start' || step.marker === 'stage') continue;
-    if (step.blocked) { result.failed.push({ action: step.action, error: step.blocked, at: step.at }); continue; }
+    if (step.blocked) {
+      const toolBlock = planned.toolsBlocked.includes(step.tool);
+      result.failed.push({ action: step.action, error: step.blocked, at: step.at, ...(step.tool ? { tool: step.tool } : {}), ...(toolBlock ? { code: 'denied' } : {}) });
+      if (toolBlock) { audit('failed', { rule: ctx.rule, instance: ctx.instance, run: runRef, action: step.action, tool: step.tool, reason: step.blocked }, ctx.by); if (!step.continueOnError) break; }
+      continue;
+    }
     if (step.action === 'prompt.ask' || step.marker === 'gate') {
       const ask = E.normRule({ id: ctx.rule || 'ask', trigger: { event: 'engine.prompt' }, ask: step.input }).ask;
       const inst = E.instanceFor({ id: ctx.rule || 'ask', title: step.title, trigger: { event: 'engine.prompt' }, ask }, { source: 'engine', event: 'prompt.gate', payload: ctx.ctx || {}, by: ctx.by }, at, { registry: reg, resume: step.input.resume });
       inst.title = step.title || inst.title;
+      inst.run = runRef;
       const all = loadInstances(); all.push(inst); saveInstances(all);
-      audit('asked', { rule: ctx.rule, instance: inst.id, event: 'gate', kind: inst.kind, title: inst.title }, ctx.by, at);
+      audit('asked', { rule: ctx.rule, instance: inst.id, run: runRef, event: 'gate', kind: inst.kind, title: inst.title }, ctx.by, at);
       result.asked.push(inst); result.dispatch.push({ kind: 'ask', instance: inst });
       break;
     }
@@ -317,9 +361,57 @@ export function run(actions, ctx = {}, opts = {}) {
     else { result.failed.push({ action: step.action, at: step.at, error: String(r.error || 'failed'), ...(r.code ? { code: r.code } : {}) }); audit('failed', { rule: ctx.rule, instance: ctx.instance, action: step.action, reason: String(r.error || 'failed') }, ctx.by); if (!step.continueOnError) break; }
   }
   result.ok = result.errors.length === 0 && result.failed.length === 0;
+  result.record = recordRun(ctx, result, at);
   return result;
 }
 const trim = (v) => { const s = JSON.stringify(v); return s && s.length > 2000 ? { truncated: true, head: s.slice(0, 2000) } : v; };
+/** The prompt-run@1 record of a run: a new one, or the waiting one (`ctx.run`) carried on after its gate. */
+function recordRun(ctx, result, at) {
+  const all = loadRuns();
+  const i = ctx.run ? all.findIndex((r) => r.id === ctx.run) : -1;
+  const rec = i >= 0
+    ? E.continueRun(all[i], result, now())
+    : E.runRecord({ id: result.run, kind: ctx.kind, target: ctx.target || '', title: ctx.title, params: ctx.params, rule: ctx.rule, instance: ctx.instance, by: ctx.by, startedAt: at, planned: result.planned, ran: result.ran, failed: result.failed, asked: result.asked, errors: result.errors, toolsBlocked: result.toolsBlocked, keysNeeded: result.keysNeeded }, { now: now() });
+  if (i >= 0) all[i] = rec; else all.push(rec);
+  saveRuns(all);
+  audit('run', { rule: ctx.rule, instance: ctx.instance, run: rec.id, kind: rec.kind, target: rec.target, status: rec.status, ran: rec.ran.length, failed: rec.failed.length, reason: rec.status }, ctx.by);
+  return { id: rec.id, kind: rec.kind, target: rec.target, status: rec.status };
+}
+
+/* ------------------------------------------------------------------ direct runs: a tool, a macro, a pipeline, now */
+
+/** Run one tool now (a plugin command through control@1, or a console verb): the tool sets decide whether it may. */
+export function runTool(plugin, command, input = {}, opts = {}) {
+  const p = E.slug(plugin); const c = E.slug(command);
+  if (!p || !c) return { ok: false, error: 'run-tool needs a plugin and a command (or `console` and a verb)', code: 'usage' };
+  const step = p === 'console' ? { action: 'console.command', input: { verb: c, ...(isObj(input) ? input : {}) } } : { action: 'tool.run', input: { plugin: p, command: c, input: isObj(input) ? input : {} } };
+  const allowed = E.toolAllowed(loadToolsets(), step);
+  if (!allowed.ok) return { ok: false, error: `tool ${allowed.key} is not in a tool set; \`tools\` lists what may run`, code: 'denied', tool: allowed.key };
+  const res = run([step], { kind: 'tool', target: allowed.key, title: `Tool ${allowed.key}`, params: isObj(input) ? input : {}, by: opts.by, brett: opts.brett }, { dry: opts.dry, exec: opts.exec, trail: [`direct:tool:${allowed.key}`] });
+  return { ...res, tool: allowed.key, toolset: allowed.set };
+}
+/** Run a macro now with parameters. */
+export function runMacro(id, params = {}, opts = {}) {
+  const m = macros.get(id);
+  if (!m) return { ok: false, error: `no macro ${id}; \`macros\` lists them`, code: 'not_found' };
+  const res = run([{ action: 'macro.run', input: { macro: m.id, params: isObj(params) ? params : {} } }], { kind: 'macro', target: m.id, title: m.title, params: isObj(params) ? params : {}, by: opts.by, brett: opts.brett, ctx: isObj(opts.ctx) ? opts.ctx : {} }, { dry: opts.dry, exec: opts.exec, trail: [`direct:macro:${m.id}`] });
+  return { ...res, macro: m.id };
+}
+/** Run a pipeline now with parameters: it runs until its first gate, which asks; the answer resumes it (the run record waits). */
+export function runPipeline(id, params = {}, opts = {}) {
+  const p = pipelines.get(id);
+  if (!p) return { ok: false, error: `no pipeline ${id}; \`pipelines\` lists them`, code: 'not_found' };
+  const res = run([{ action: 'pipeline.run', input: { pipeline: p.id, params: isObj(params) ? params : {} } }], { kind: 'pipeline', target: p.id, title: p.title, params: isObj(params) ? params : {}, by: opts.by, brett: opts.brett, ctx: isObj(opts.ctx) ? opts.ctx : {} }, { dry: opts.dry, exec: opts.exec, trail: [`direct:pipeline:${p.id}`] });
+  return { ...res, pipeline: p.id, stages: p.stages.length, waitingAt: res.asked[0] ? { instance: res.asked[0].id, stage: res.asked[0].resume?.stage ?? null, title: res.asked[0].title } : null };
+}
+export function runs(filter = {}, limit = 50) {
+  const all = loadRuns();
+  return { ok: true, items: E.runsOf(all, filter, Math.min(300, Math.max(1, Number(limit) || 50))), counts: { total: all.length, waiting: all.filter((r) => r.status === 'waiting').length, failed: all.filter((r) => r.status === 'failed').length } };
+}
+export function runRecordOf(id) {
+  const r = loadRuns().find((x) => x.id === String(id || '').trim());
+  return r ? { ok: true, run: r } : { ok: false, error: `no run ${id}; \`runs\` lists them`, code: 'not_found' };
+}
 
 /** An event in: every rule evaluated; prompts stored (and handed back to show), run-now rules run. */
 export function fire(event, opts = {}) {
@@ -367,8 +459,13 @@ export function answer(instanceId, rawAnswer, opts = {}) {
     actions = [{ action: 'pipeline.run', input: { pipeline: inst.resume.pipeline, stage: inst.resume.stage, params: inst.resume.params, gatePassed: true } }];
     ctx = { ...ctx, ...(inst.event?.payload || {}) };
   }
-  if (!actions.length) { out.run = { ok: true, planned: 0, ran: [], failed: [], dispatch: [], note: `nothing to run on ${res.branch}` }; return out; }
-  out.run = run(actions, { rule: inst.rule, instance: inst.id, by: opts.by, brett: opts.brett, ctx }, { registry: reg, exec: opts.exec, dry: opts.dry, trail: [`rule:${inst.rule}`, `answer:${res.branch}`] });
+  if (!actions.length) {
+    out.run = { ok: true, planned: 0, ran: [], failed: [], dispatch: [], note: `nothing to run on ${res.branch}` };
+    if (inst.run && inst.resume && !opts.dry) out.run.record = settleRun(inst.run, 'stopped', `gate ${res.branch === 'timeout' ? 'timed out' : 'denied'} at stage ${inst.resume.stage + 1}`, opts.by);
+    return out;
+  }
+  const resumed = inst.run && inst.resume && actions[0]?.action === 'pipeline.run' ? { run: inst.run, kind: 'pipeline', target: inst.resume.pipeline } : {};
+  out.run = run(actions, { rule: inst.rule, instance: inst.id, by: opts.by, brett: opts.brett, ctx, ...resumed }, { registry: reg, exec: opts.exec, dry: opts.dry, trail: [`rule:${inst.rule}`, `answer:${res.branch}`] });
   if (!opts.dry) { const xs = loadInstances(); const i = xs.findIndex((x) => x.id === inst.id); if (i >= 0) { xs[i].status = out.run.ok ? 'ran' : 'failed'; xs[i].ranAt = now(); saveInstances(xs); } }
   return out;
 }
@@ -382,16 +479,31 @@ export function expire(opts = {}) {
   const changed = E.expireInstances(all, rulesById, now());
   const out = { ok: true, expired: [], dispatch: [] };
   for (const res of changed) {
-    const i = all.findIndex((x) => x.id === res.instance.id); all[i] = res.instance;
-    audit('expired', { rule: res.instance.rule, instance: res.instance.id, branch: res.branch }, 'tick');
+    const inst = res.instance;
+    const i = all.findIndex((x) => x.id === inst.id); all[i] = inst;
+    audit('expired', { rule: inst.rule, instance: inst.id, branch: res.branch }, 'tick');
     saveInstances(all);
-    if (res.actions.length) {
-      const ctx = { ...E.eventContext(res.instance.event ?? {}, rulesById[res.instance.rule]), answer: res.instance.answer };
-      const r = run(res.actions, { rule: res.instance.rule, instance: res.instance.id, by: 'timeout', ctx }, { exec: opts.exec, trail: [`rule:${res.instance.rule}`, 'timeout'] });
-      out.dispatch.push(...r.dispatch); out.expired.push({ instance: res.instance.id, branch: res.branch, ran: r.ran.length, failed: r.failed.length });
-    } else out.expired.push({ instance: res.instance.id, branch: res.branch, ran: 0, failed: 0 });
+    let actions = res.actions; let resumed = {};
+    if (inst.resume && !actions.length && res.branch === 'approve') { actions = [{ action: 'pipeline.run', input: { pipeline: inst.resume.pipeline, stage: inst.resume.stage, params: inst.resume.params, gatePassed: true } }]; resumed = inst.run ? { run: inst.run, kind: 'pipeline', target: inst.resume.pipeline } : {}; }
+    if (actions.length) {
+      const ctx = { ...E.eventContext(inst.event ?? {}, rulesById[inst.rule]), ...(inst.resume ? inst.event?.payload || {} : {}), answer: inst.answer };
+      const r = run(actions, { rule: inst.rule, instance: inst.id, by: 'timeout', ctx, ...resumed }, { exec: opts.exec, trail: [`rule:${inst.rule}`, 'timeout'] });
+      out.dispatch.push(...r.dispatch); out.expired.push({ instance: inst.id, branch: res.branch, ran: r.ran.length, failed: r.failed.length, ...(r.record ? { run: r.record } : {}) });
+    } else {
+      if (inst.run && inst.resume) settleRun(inst.run, 'stopped', `gate timed out at stage ${inst.resume.stage + 1}`, 'timeout');
+      out.expired.push({ instance: inst.id, branch: res.branch, ran: 0, failed: 0 });
+    }
   }
   return out;
+}
+/** A waiting run that will not go on (its gate was denied or timed out): the record settles. */
+function settleRun(id, status, reason, by = '') {
+  const all = loadRuns(); const i = all.findIndex((r) => r.id === id);
+  if (i < 0) return null;
+  all[i] = E.runRecord({ ...all[i], status, errors: [...all[i].errors, { at: all[i].resume ? `pipeline:${all[i].resume.pipeline}` : 'gate', message: reason }], finishedAt: now() }, { now: now() });
+  saveRuns(all);
+  audit('run', { rule: all[i].rule, run: all[i].id, kind: all[i].kind, target: all[i].target, status, reason }, by);
+  return { id: all[i].id, kind: all[i].kind, target: all[i].target, status };
 }
 
 /* ------------------------------------------------------------------ schedules (the server's tick, once a minute) */
@@ -431,9 +543,11 @@ export function tick(opts = {}) {
 /* ------------------------------------------------------------------ state + test */
 
 export function state() {
-  const reg = registry(); const rs = loadRules(); const w = waiting();
+  const reg = registry(); const rs = loadRules(); const w = waiting(); const ts = loadToolsets(); const allRuns = loadRuns();
   return {
-    ok: true, $axf: E.SCHEMA, rules: rs.map((r) => ({ ...r, summary: E.summarize(r, reg) })), macros: loadMacros(), pipelines: loadPipelines(), waiting: w.items, counts: { rules: rs.length, enabled: rs.filter((r) => r.enabled).length, macros: loadMacros().length, pipelines: loadPipelines().length, waiting: w.count, shelved: w.shelved },
+    ok: true, $axf: E.SCHEMA, rules: rs.map((r) => ({ ...r, summary: E.summarize(r, reg) })), macros: loadMacros(), pipelines: loadPipelines(), toolsets: ts, waiting: w.items, runs: E.runsOf(allRuns, {}, 20),
+    counts: { rules: rs.length, enabled: rs.filter((r) => r.enabled).length, macros: loadMacros().length, pipelines: loadPipelines().length, toolsets: ts.length, toolsetsOn: ts.filter((t) => t.enabled).length, waiting: w.count, shelved: w.shelved, runs: allRuns.length, runsWaiting: allRuns.filter((r) => r.status === 'waiting').length },
+    toolsOpen: !ts.some((t) => t.enabled),
     registry: summaryOfRegistry(reg), templates: E.TEMPLATES.map((t) => ({ id: t.id, title: t.title, group: t.group, description: t.description })), dataDir: dataDir(),
   };
 }
@@ -479,7 +593,7 @@ function parse(argv) {
     if (!a.startsWith('--')) { words.push(a); continue; }
     const [k, inline] = a.slice(2).split(/=(.*)/s, 2);
     if (inline !== undefined) flags[k] = inline;
-    else if (['confirm', 'by', 'option', 'text', 'event', 'id', 'title', 'rule', 'instance', 'kind', 'limit'].includes(k) && i + 1 < argv.length) flags[k] = argv[++i];
+    else if (['confirm', 'by', 'option', 'text', 'event', 'id', 'title', 'rule', 'instance', 'kind', 'limit', 'set', 'input', 'target', 'status'].includes(k) && i + 1 < argv.length) flags[k] = argv[++i];
     else flags[k] = true;
   }
   return { words, flags };
@@ -511,6 +625,19 @@ export function main(argv = process.argv.slice(2)) {
     case 'add-pipeline': { const j = jsonArg(a); return j ? pipelines.add(j, by) : need('add-pipeline <json|->'); }
     case 'update-pipeline': { const j = jsonArg(b); return a && j ? pipelines.update(a, j, by) : need('update-pipeline <id> <json|->'); }
     case 'remove-pipeline': return a ? pipelines.remove(a, flags.confirm, by) : need('remove-pipeline <id> --confirm <id>');
+    case 'toolsets': return { ok: true, items: loadToolsets().map((t) => ({ ...t, summary: `${t.tools.length} tool(s): ${t.tools.slice(0, 6).join(', ')}${t.tools.length > 6 ? ', …' : ''}` })), open: !loadToolsets().some((t) => t.enabled) };
+    case 'toolset': { const t = toolsets.get(a); return t ? { ok: true, toolset: t } : { ok: false, error: `no tool set ${a}`, code: 'not_found' }; }
+    case 'add-toolset': { const j = jsonArg(a); return j ? toolsets.add(j, by) : need('add-toolset <json|->  ({ id?, title, tools: ["plugin.command", "plugin.*", "console.open"] })'); }
+    case 'update-toolset': { const j = jsonArg(b); return a && j ? toolsets.update(a, j, by) : need('update-toolset <id> <json|->'); }
+    case 'enable-toolset': return a ? setToolsetEnabled(a, true, by) : need('enable-toolset <id>');
+    case 'disable-toolset': return a ? setToolsetEnabled(a, false, by) : need('disable-toolset <id>');
+    case 'remove-toolset': return a ? toolsets.remove(a, flags.confirm, by) : need('remove-toolset <id> --confirm <id>');
+    case 'tools': return tools({ set: flags.set, allowed: Boolean(flags.allowed) });
+    case 'run-tool': return a && b ? runTool(a, b, flags.input ? jsonArg(flags.input) || {} : {}, { by, brett, dry: Boolean(flags.dry) }) : need('run-tool <plugin> <command> [--input <json>] [--dry]');
+    case 'run-macro': return a ? runMacro(a, b ? jsonArg(b) || {} : {}, { by, brett, dry: Boolean(flags.dry) }) : need('run-macro <id> [<params json>] [--dry]');
+    case 'run-pipeline': return a ? runPipeline(a, b ? jsonArg(b) || {} : {}, { by, brett, dry: Boolean(flags.dry) }) : need('run-pipeline <id> [<params json>] [--dry]');
+    case 'runs': return runs({ kind: flags.kind, target: flags.target, status: flags.status, rule: flags.rule }, flags.limit);
+    case 'run-record': return a ? runRecordOf(a) : need('run-record <id>');
     case 'manifest': { const reg = registry(); if (a) { const s = reg.sources.find((x) => x.source === E.slug(a)); return s ? { ok: true, source: s } : { ok: false, error: `no source ${a}`, code: 'not_found' }; } return { ok: true, ...reg }; }
     case 'register-manifest': { const j = jsonArg(a); return j ? registerManifest(j, by) : need('register-manifest <json|->'); }
     case 'options': return options(jsonArg(a) || {}, { live: Boolean(flags.live) });
@@ -524,7 +651,7 @@ export function main(argv = process.argv.slice(2)) {
     case 'tick': return tick();
     case 'history': return history({ rule: flags.rule, instance: flags.instance, kind: flags.kind }, flags.limit);
     case 'run': { const j = jsonArg(a); return j ? run(j.actions ?? j, { by, ctx: j.ctx ?? {}, brett }, { dry: Boolean(flags.dry) }) : need('run <json|-> [--dry]'); }
-    default: return { ok: false, error: 'commands: state rules rule add-rule update-rule enable disable remove-rule macros add-macro update-macro remove-macro pipelines add-pipeline update-pipeline remove-pipeline manifest register-manifest options templates use-template fire test waiting answer expire tick history run', code: 'usage' };
+    default: return { ok: false, error: 'commands: state rules rule add-rule update-rule enable disable remove-rule macros add-macro update-macro remove-macro pipelines add-pipeline update-pipeline remove-pipeline toolsets toolset add-toolset update-toolset enable-toolset disable-toolset remove-toolset tools run-tool run-macro run-pipeline runs run-record manifest register-manifest options templates use-template fire test waiting answer expire tick history run', code: 'usage' };
   }
 }
 
@@ -534,5 +661,6 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   if (json || !res.ok) console.log(JSON.stringify(res, null, json ? 0 : 2));
   else if (res.items) for (const i of res.items) console.log(i.id ? `${i.id}${i.enabled === false ? ' (off)' : ''}  ${i.summary || i.title || i.kind || ''}` : JSON.stringify(i));
   else console.log(JSON.stringify(res, null, 2));
-  process.exit(res.ok ? 0 : res.code === 'usage' ? 2 : res.code === 'confirmation_required' ? 3 : 1);
+  // an exit code, not process.exit(): a large answer (the tools list) must drain through a pipe before the process ends
+  process.exitCode = res.ok ? 0 : res.code === 'usage' ? 2 : res.code === 'confirmation_required' ? 3 : 1;
 }

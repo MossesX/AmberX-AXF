@@ -15,8 +15,68 @@
       {
         "target": "view:prompt-engine",
         "title": "Prompt engine",
-        "text": "Rules that watch every event (builds, UI Review, held calls, merge clashes, the watchdog, schedules, voice, webhooks), ask you what to do, and run tools, macros and pipelines on your answer. Tabs: Events, Builder, Macros, Pipelines, Waiting, History, Registry.",
+        "text": "Rules that watch every event (builds, UI Review, held calls, merge clashes, the watchdog, schedules, voice, webhooks), ask you what to do, and run set tools, macros and pipelines on your answer, or right now. Tabs: Events, Builder, Macros, Pipelines, Tools, Runs, Waiting, History, Registry.",
         "kind": "screen"
+      },
+      {
+        "target": "tools",
+        "title": "Tools",
+        "text": "The set tools the engine may run. A tool set is a list of patterns over plugin commands (ui-review.decide, ui-review.*) and console verbs (console.open, console.*). While at least one set is on, a tool outside every set is blocked when a rule, macro or pipeline names it, and the run says so. With no set on, every registered tool may run. Below the sets: every tool the console knows, whether a set allows it, and Run / Dry run."
+      },
+      {
+        "target": "runs",
+        "title": "Runs",
+        "text": "Every run the engine made: tools, macros, pipelines and rule action lists, newest first, with its status (done, failed, waiting at a gate, stopped when a gate was denied or timed out), what ran, what failed, which tools were blocked. The badge counts runs waiting on an answer."
+      },
+      {
+        "target": "new-tool-set",
+        "title": "New tool set",
+        "text": "Opens the tool set editor: a title and one pattern per line (plugin.command, plugin.*, console.<verb>, console.*)."
+      },
+      {
+        "target": "tool-patterns",
+        "title": "Tool patterns",
+        "text": "One per line. ui-review.decide is one command; ui-review.* is every command of that plugin; console.open is one console verb; console.* every verb. Anything that is not a tool is refused with the line named."
+      },
+      {
+        "target": "save-tool-set",
+        "title": "Save tool set",
+        "text": "Stores the set (prompt-toolset@1). It applies to the next run at once."
+      },
+      {
+        "target": "find-a-tool",
+        "title": "Find a tool",
+        "text": "Filters the tools list by key, title or plugin."
+      },
+      {
+        "target": "input-for-runs-json",
+        "title": "Input for runs (JSON)",
+        "text": "The input sent when you tap Run on a tool: the command's input object, or { address, value } for a console verb."
+      },
+      {
+        "target": "only-tools-that-may-run",
+        "title": "Only tools that may run",
+        "text": "Hides the tools no enabled tool set allows."
+      },
+      {
+        "target": "run",
+        "title": "Run",
+        "text": "Runs this tool, macro or pipeline right now with the parameters / input given above. A pipeline runs up to its first gate, which asks you; your answer resumes it. The result lands under Runs."
+      },
+      {
+        "target": "dry-run",
+        "title": "Dry run",
+        "text": "Plans the run without running anything: shows how many steps there would be, which tools the tool sets would block and which connectors are missing."
+      },
+      {
+        "target": "parameters-for-runs-json",
+        "title": "Parameters for runs (JSON)",
+        "text": "The parameters a macro or pipeline reads as {{params.name}} when you tap Run."
+      },
+      {
+        "target": "tool-sets",
+        "title": "Tool sets",
+        "text": "Opens the control panel on the Tools tab."
       },
       {
         "target": "new-rule",
