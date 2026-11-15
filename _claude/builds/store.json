@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6067,
- "updatedAt": "2026-11-15T12:02:57.130Z",
+ "rev": 6068,
+ "updatedAt": "2026-11-15T12:04:16.813Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -232159,7 +232159,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:17.286Z",
-   "updatedAt": "2026-11-15T11:58:11.261Z",
+   "updatedAt": "2026-11-15T12:04:14.992Z",
    "builtAt": "",
    "notes": [
     {
@@ -232200,12 +232200,12 @@
    "pipeline": {
     "queuedAt": "2026-11-15T11:53:21.117Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-every-grid-1-2-rows-per-item-set-skin--sully",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-15T11:58:07.672Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-15T11:56:35.624Z",
@@ -232217,7 +232217,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-15T11:58:07.672Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -232226,7 +232226,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-15T11:58:07.672Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -232251,12 +232251,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:04:14.992Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T11:56:35.624Z",
-     "updatedAt": "2026-11-15T11:56:35.624Z"
+     "updatedAt": "2026-11-15T12:04:15.260Z"
     },
     {
      "id": "s2",

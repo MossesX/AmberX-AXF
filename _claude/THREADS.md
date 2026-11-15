@@ -806,7 +806,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:58 UTC · `picker-dialog-plugin-replaces-all` s20 done (all) · orchestrator
 - 2026-11-14 23:58 UTC · `console-look-becomes-default-axhub-skin` s6 done (all) · orchestrator
 - 2026-11-14 23:59 UTC · `console-look-becomes-default-axhub-skin` note (all) · pipeline
 - 2026-11-14 23:59 UTC · `console-look-becomes-default-axhub-skin` note (all) · orchestrator
@@ -1206,6 +1205,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 12:02 UTC · `move-build-orchestrator-to-axhub` note (all) · orchestrator
 - 2026-11-15 12:02 UTC · `auto-lander-controls-in-the-gate-plugin` → running, note (all) · foreign-write
 - 2026-11-15 12:02 UTC · `gate-rules-plugin-in-the-console` s1 done (all) · orchestrator
+- 2026-11-15 12:04 UTC · `every-grid-1-2-rows-per-item-set-skin` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
