@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5964,
- "updatedAt": "2026-11-15T01:41:13.678Z",
+ "rev": 5965,
+ "updatedAt": "2026-11-15T01:41:55.642Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -219256,7 +219256,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-15T01:41:11.495Z",
+   "updatedAt": "2026-11-15T01:41:53.122Z",
    "builtAt": "",
    "notes": [
     {
@@ -219837,12 +219837,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T01:41:53.122Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:42:40.864Z",
-     "updatedAt": "2026-11-14T04:42:41.048Z"
+     "updatedAt": "2026-11-15T01:41:53.476Z"
     },
     {
      "id": "s24",
