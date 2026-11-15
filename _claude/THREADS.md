@@ -807,8 +807,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 00:51 UTC · `orchestrator-settings-collapsible-split` s3 done (all) · orchestrator
-- 2026-11-15 00:51 UTC · `land-finish-auto-land-live-clear-backlog` note (all) · orchestrator
 - 2026-11-15 00:52 UTC · `console-app-wake-word-voice-listener` → running, note (all) · pipeline
 - 2026-11-15 00:52 UTC · `console-app-wake-word-voice-listener` → running, note (all) · orchestrator
 - 2026-11-15 00:53 UTC · `quick-settings-pinned-collapsible-pane` s3 done (all) · orchestrator
@@ -1207,6 +1205,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 13:38 UTC · `build-rules-tab-gate-rules-vps-owns` s2 done (all) · orchestrator
 - 2026-11-15 13:38 UTC · `phone-connect-small-android-companion` note (all) · mcp
 - 2026-11-15 13:39 UTC · `phone-connect-small-android-companion` note (all) · orchestrator
+- 2026-11-15 13:39 UTC · `phone-connect-small-android-companion` → running, note (all) · pipeline
+- 2026-11-15 13:39 UTC · `phone-connect-small-android-companion` branch claude/phone-connect-small-android-companion (all) · pipeline
 
 ## Token passes (log)
 
