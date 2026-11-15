@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5785,
- "updatedAt": "2026-11-15T00:29:41.826Z",
+ "rev": 5786,
+ "updatedAt": "2026-11-15T00:29:58.278Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -58379,7 +58379,7 @@
    "pr": "#269",
    "priority": "P0",
    "createdAt": "2026-11-03T17:53:08.980Z",
-   "updatedAt": "2026-11-03T18:22:44.636Z",
+   "updatedAt": "2026-11-15T00:29:45.080Z",
    "builtAt": "2026-11-03T18:22:43.443Z",
    "notes": [
     {
@@ -58404,6 +58404,23 @@
     "verbatim": false,
     "from": "brief",
     "addenda": []
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:29:44.846Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: _claude/memory/docs/rebuilds/LOG.md, apps/console-web/plugins/build-orchestrator/help.json, apps/console-web/plugins/build-orchestrator/plugin.json, apps/console-web/plugins/build-orchestrator/web/index.tsx, apps/console-web/plugins/build-orchestrator/web/menu.ts, apps/console-web/plugi"
+     }
+    ]
    },
    "steps": [
     {
@@ -58525,7 +58542,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -61560,7 +61577,7 @@
    "pr": "#281",
    "priority": "P0",
    "createdAt": "2026-11-03T19:45:20.635Z",
-   "updatedAt": "2026-11-03T21:55:42.769Z",
+   "updatedAt": "2026-11-15T00:29:36.177Z",
    "builtAt": "2026-11-03T20:43:38.552Z",
    "notes": [
     {
@@ -61613,6 +61630,23 @@
       "source": "",
       "by": "",
       "verbatim": true
+     }
+    ]
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:29:35.989Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: CLAUDE.md, _claude/shared/rules/RULES.md, apps/console-web/plugins/smart-menus/help.json, apps/console-web/plugins/smart-menus/hooks.mjs, apps/console-web/plugins/smart-menus/install.mjs, apps/console-web/plugins/smart-menus/plugin.json, apps/console-web/plugins/smart-menus/server/__ini"
      }
     ]
    },
@@ -61780,7 +61814,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -201152,7 +201186,7 @@
    "pr": "#628",
    "priority": "P1",
    "createdAt": "2026-11-13T18:03:04.047Z",
-   "updatedAt": "2026-11-15T00:20:20.557Z",
+   "updatedAt": "2026-11-15T00:29:51.481Z",
    "builtAt": "2026-11-15T00:09:27.527Z",
    "notes": [
     {
@@ -201259,6 +201293,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:29:51.350Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-web/scripts/console-control.e2e.mjs, apps/console-web/scripts/settings-open.e2e.mjs, apps/console-web/scripts/window-handles-check.mts, framework/assets/help/framework.json, framework/catalog/status.json, framework/core/engines/settingsopen.ts"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -201338,7 +201389,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
