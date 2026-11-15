@@ -279,7 +279,7 @@ if (httpAt > 0) {
     for (const s of mem.steps) {
       const got = live.steps.find((x) => x.name === s.name)?.v;
       if (typeof s.v === 'string') assert.equal(got, s.v, `${s.name}: ${got} ≠ ${s.v}`);
-      else if (s.v && typeof s.v === 'object' && 'rev' in s.v && s.v.$axf === 'data-record@1') assert.equal(got?.rev, s.v.rev, `${s.name}: rev`);
+      else if (s.v && typeof s.v === 'object' && 'rev' in s.v && s.v.$axf === 'data-record@1') { assert.equal(got?.rev, s.v.rev, `${s.name}: rev`); if (s.v.kind !== 'journal') assert.equal(got?.etag, s.v.etag, `${s.name}: etag (canonical JSON / bytes hash alike)`); }
     }
   });
 }

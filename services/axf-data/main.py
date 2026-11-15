@@ -60,6 +60,8 @@ def create_app(data_dir: Path | str = DATA_DIR, store: Store | None = None) -> F
     def health():
         return st.health(auth.health())
 
+    st.journal.mount(app, who)
+
     @app.post('/v1/snapshot')
     async def snapshot(req: Request):
         p = who(req)
