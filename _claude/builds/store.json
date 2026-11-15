@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5741,
- "updatedAt": "2026-11-15T00:14:42.767Z",
+ "rev": 5742,
+ "updatedAt": "2026-11-15T00:15:11.532Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -221962,7 +221962,7 @@
    "pr": "#690",
    "priority": "P1",
    "createdAt": "2026-11-14T18:14:25.063Z",
-   "updatedAt": "2026-11-15T00:13:48.550Z",
+   "updatedAt": "2026-11-15T00:15:07.491Z",
    "builtAt": "",
    "notes": [
     {
@@ -222004,6 +222004,10 @@
     {
      "text": "Phase 2 done, PR #690. UI Review item r-20261115-wckr101 (Native / Bold / Soft presets, 24 shots) is only in the worktree: this headless session had no console token. To show it: AXF_CONSOLE_URL=… AXF_TOKEN=… node apps/console-web/plugins/ui-review/review.mjs submit --kind controls --name 'Themed controls: style presets (Native, Bold, Soft)' --app console-web --screen settings/plugins/themed-controls --shots _claude/builds/reports/themed-controls-plugin/shots/*.png --branch claude/themed-native-controls-plugin --pr 690 --console",
      "at": "2026-11-15T00:13:48.550Z"
+    },
+    {
+     "text": "Headless run axf-themed-native-controls-plugin--sully: brief only · start 14.3K tokens ($0.04) · cost $41.10 · 282 turns · 6 tools, MCP none",
+     "at": "2026-11-15T00:15:07.491Z"
     }
    ],
    "approvals": [
@@ -222834,7 +222838,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
