@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5740,
- "updatedAt": "2026-11-15T00:14:25.484Z",
+ "rev": 5741,
+ "updatedAt": "2026-11-15T00:14:42.767Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -162198,7 +162198,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-12T01:46:10.127Z",
-   "updatedAt": "2026-11-15T00:11:12.308Z",
+   "updatedAt": "2026-11-15T00:14:22.542Z",
    "builtAt": "",
    "notes": [
     {
@@ -162256,6 +162256,10 @@
     {
      "text": "Self-check: fix-axhub-36-pull-main-in-failed had no session on record but axf-fix-axhub-36-pull-main-in-failed--earl is alive: kept running and tracking it.",
      "at": "2026-11-15T00:07:12.039Z"
+    },
+    {
+     "text": "Self-check: fix-axhub-36-pull-main-in-failed had no session on record but axf-fix-axhub-36-pull-main-in-failed--earl is alive: kept running and tracking it.",
+     "at": "2026-11-15T00:14:22.542Z"
     }
    ],
    "approvals": [],
@@ -162276,7 +162280,7 @@
     "queuedAt": "2026-11-12T01:46:12.403Z",
     "queuedBy": "push-banner",
     "account": "mossesx-max-",
-    "session": "",
+    "session": "axf-fix-axhub-36-pull-main-in-failed--earl",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-14T23:56:20.868Z",
@@ -162826,7 +162830,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -227841,7 +227845,13 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-15T00:14:20.357Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -228081,7 +228091,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -228152,7 +228162,13 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-15T00:14:20.357Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -228392,7 +228408,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -228463,7 +228479,13 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-15T00:14:20.357Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -228681,7 +228703,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

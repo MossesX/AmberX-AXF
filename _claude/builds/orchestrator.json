@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:14:25.484Z",
+ "updatedAt": "2026-11-15T00:14:42.767Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -108623,7 +108623,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-12T01:46:10.127Z",
-   "updatedAt": "2026-11-15T00:11:12.308Z",
+   "updatedAt": "2026-11-15T00:14:22.542Z",
    "builtAt": "",
    "notes": [
     {
@@ -108681,6 +108681,10 @@
     {
      "text": "Self-check: fix-axhub-36-pull-main-in-failed had no session on record but axf-fix-axhub-36-pull-main-in-failed--earl is alive: kept running and tracking it.",
      "at": "2026-11-15T00:07:12.039Z"
+    },
+    {
+     "text": "Self-check: fix-axhub-36-pull-main-in-failed had no session on record but axf-fix-axhub-36-pull-main-in-failed--earl is alive: kept running and tracking it.",
+     "at": "2026-11-15T00:14:22.542Z"
     }
    ],
    "approvals": [],
