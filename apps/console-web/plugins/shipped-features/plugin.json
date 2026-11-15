@@ -38,7 +38,8 @@
       "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md",
       "framework/spec/PORTING.md",
-      ".github/workflows/android.yml"
+      ".github/workflows/android.yml",
+      "framework/cli/axf.mjs"
     ]
   },
   "commands": {

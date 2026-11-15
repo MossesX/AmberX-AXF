@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T14:59:13.363Z",
+ "updatedAt": "2026-11-15T15:05:25.928Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -151972,7 +151972,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T13:23:46.016Z",
-   "updatedAt": "2026-11-15T14:58:58.235Z",
+   "updatedAt": "2026-11-15T15:02:24.748Z",
    "builtAt": "",
    "notes": [
     {
@@ -152278,8 +152278,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:02:24.748Z",
      "note": "",
      "uid": "st-mwhvd33l0bw14d",
      "createdAt": "2026-11-15T13:27:28.497Z"
@@ -152610,7 +152610,7 @@
    "pr": "#712",
    "priority": "P1",
    "createdAt": "2026-11-15T13:36:18.858Z",
-   "updatedAt": "2026-11-15T14:59:10.718Z",
+   "updatedAt": "2026-11-15T15:02:43.304Z",
    "builtAt": "",
    "notes": [
     {
@@ -152835,8 +152835,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:01:37.662Z",
      "note": "",
      "uid": "st-mwhvsdee06b547",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -152857,8 +152857,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:02:43.304Z",
      "note": "",
      "uid": "st-mwhvsdee07kjz4",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -153474,7 +153474,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T14:55:29.131Z",
-   "updatedAt": "2026-11-15T14:57:33.136Z",
+   "updatedAt": "2026-11-15T15:05:25.640Z",
    "builtAt": "",
    "notes": [
     {
@@ -153526,8 +153526,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T14:59:52.730Z",
      "note": "",
      "uid": "st-mwhykgzj01rg9m",
      "createdAt": "2026-11-15T14:57:11.931Z"
@@ -153548,8 +153548,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:01:06.061Z",
      "note": "",
      "uid": "st-mwhykgzj02xn86",
      "createdAt": "2026-11-15T14:57:11.931Z"
@@ -153570,8 +153570,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:01:49.059Z",
      "note": "",
      "uid": "st-mwhykgzj03sk1j",
      "createdAt": "2026-11-15T14:57:11.931Z"
@@ -153592,8 +153592,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:02:38.087Z",
      "note": "",
      "uid": "st-mwhykgzj04wb8j",
      "createdAt": "2026-11-15T14:57:11.931Z"
@@ -153614,8 +153614,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:04:08.551Z",
      "note": "",
      "uid": "st-mwhykgzj05bj7o",
      "createdAt": "2026-11-15T14:57:11.931Z"
@@ -153636,8 +153636,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:05:25.640Z",
      "note": "",
      "uid": "st-mwhykgzj069pid",
      "createdAt": "2026-11-15T14:57:11.931Z"
