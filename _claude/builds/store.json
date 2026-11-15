@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5869,
- "updatedAt": "2026-11-15T01:02:57.383Z",
+ "rev": 5870,
+ "updatedAt": "2026-11-15T01:03:14.879Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -206074,7 +206074,7 @@
    "title": "Console app: wake-word voice listener, voice approvals, every console command by voice",
    "category": "",
    "detail": "Voice control for the console Android app (wrapper, parts 1-4), working offline where possible.\n- Always-on wake-word listener, with a wake phrase Brett sets in Settings (several allowed). Runs on-device (offline engine, e.g. Vosk/whisper.cpp + a local intent matcher), with a mic-on indicator and an off switch.\n- After the wake phrase the app answers out loud ('What's up?') and listens for a command.\n- Voice approvals: 'approve' reads pending approvals one at a time (who asked, what it does); Brett says approve, deny, skip or details. 'Approve all pending' and 'deny all' ask for one spoken confirm. Works from the floating overlay and the lock screen.\n- Settings by voice, e.g. 'change the veto timer to two hours' (the axHub veto countdown, so he has that long to veto something before it runs/builds), with the value read back.\n- Command catalog: every console action, plugin command, control@1 target and pipeline gets a voice entry, built from the API registry so new plugins appear automatically. Multi-field actions run as a spoken wizard that asks for each missing field ('create a new project' -> 'name?' -> 'Gizmo Johnson' -> confirm). Covers projects, builds/pipelines (file, split, prioritise, land, stop), approvals, settings, tokens/skins, notes/tasks, navigation.\n- A Voice commands screen lists every command and its phrasings, searchable, with custom phrases Brett adds.\n- Destructive commands always need a spoken confirm.\n- Full API parity. Tests, help, Shipped features.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -206083,7 +206083,7 @@
    "priority": "P1",
    "createdAt": "2026-11-13T18:44:52.063Z",
    "updatedAt": "2026-11-15T01:02:48.480Z",
-   "builtAt": "",
+   "builtAt": "2026-11-15T01:02:48.480Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -206140,6 +206140,10 @@
     {
      "text": "Headless run axf-console-app-wake-word-voice-listener--sully: brief only · start 11.8K tokens ($0.03) · cost $2.20 · 62 turns · 6 tools, MCP none",
      "at": "2026-11-15T01:02:48.480Z"
+    },
+    {
+     "text": "Phase 2 done (s3-s11). s9 added the Voice commands list with custom phrases, destructive commands always confirm, REST/MCP/CLI for custom phrases. UI Review: no shots from this headless session (no console token). Needed after deploy: Settings → Plugins → Wake listener (desktop + phone), including the Voice commands panel.",
+     "at": "2026-11-15T01:02:27.499Z"
     }
    ],
    "approvals": [],
@@ -206429,12 +206433,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T01:02:15.250Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T18:48:10.123Z",
-     "updatedAt": "2026-11-13T18:48:10.123Z"
+     "updatedAt": "2026-11-15T01:02:15.547Z"
     }
    ],
    "profiles": [
