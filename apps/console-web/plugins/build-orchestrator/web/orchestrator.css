@@ -60,3 +60,26 @@ button.oc-model { cursor: pointer }
 .og-dot.is-success::before { background: var(--fx-success) }
 .og-dot.is-warning::before { background: var(--fx-warning) }
 .og-dot.is-danger::before { background: var(--fx-danger) }
+
+/* Pending tab: one collapsed row per build (Nov 15 2026, pending-tab-one-collapsed-row-per-2): layout only */
+.oc-prows { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
+.oc-prows__bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+.oc-prow { min-width: 0 }
+.oc-prow.is-focused .oc-prow__card { border-color: var(--fx-accent); box-shadow: 0 0 0 var(--fx-border-w) var(--fx-accent) }
+.oc-prow__head { inline-size: 100%; min-block-size: var(--fx-size-field-height); flex-wrap: wrap; row-gap: var(--fx-dens-gap-sm) }
+.oc-prow__chev { flex: none }
+.oc-prow__title { flex: 1 1 calc(var(--fx-font-size) * 14); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600 }
+.oc-prow__chips { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); flex: 0 1 auto; min-width: 0 }
+.oc-prow__meta { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); font-size: var(--fx-type-root-sm); color: var(--fx-muted); white-space: nowrap }
+.oc-prow__body { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); padding-block-start: var(--fx-dens-gap-lg); margin-block-start: var(--fx-dens-gap-md); border-block-start: var(--fx-border-w) solid var(--fx-border) }
+.oc-prow__body p { margin: 0; overflow-wrap: anywhere }
+.oc-prow__label { margin: 0 0 var(--fx-dens-gap-sm); font-size: var(--fx-type-root-sm); font-weight: 600; color: var(--fx-muted) }
+.oc-prow__quote { margin: 0; padding-inline-start: var(--fx-dens-gap-lg); border-inline-start: calc(var(--fx-border-w) * 2) solid var(--fx-accent); white-space: pre-wrap; overflow-wrap: anywhere }
+.oc-prow__steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
+.oc-prow__steps > li { display: flex; align-items: baseline; gap: var(--fx-dens-gap-md); min-width: 0; overflow-wrap: anywhere }
+.oc-prow__steps > li.is-done { color: var(--fx-muted) }
+.oc-prow__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+/* phone: the title takes its own line, the chips wrap under it; the actions keep a full tap target */
+:where([data-fx-small]) .oc-prow__title { flex-basis: 100%; white-space: normal; overflow-wrap: anywhere }
+:where([data-fx-small]) .oc-prow__chips { flex-basis: 100% }
+:where([data-fx-small]) .oc-prow__actions > .fx-btn { min-block-size: var(--fx-size-field-height); flex: 1 1 auto }
