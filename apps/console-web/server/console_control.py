@@ -502,6 +502,12 @@ def voice_intent(text: Any) -> dict[str, Any] | None:
         return {"verb": "set", "find": {"q": _strip(m.group(1)), "kinds": ["setting"]}, "value": m.group(2).strip()}
     if m := re.match(r"^(?:turn|switch) (?:the )?(.+?) (on|off)$", p):
         return {"verb": "set", "find": {"q": _strip(m.group(1)), "kinds": ["setting"]}, "value": m.group(2) == "on"}
+    if m := re.match(r"^(?:turn|switch) (on|off) (?:the )?(.+)$", p):
+        return {"verb": "set", "find": {"q": _strip(m.group(2)), "kinds": ["setting"]}, "value": m.group(1) == "on"}
+    if re.match(r"^(?:what s|whats|what is) (?:landing|being landed)$", p) or re.match(r"^why (?:isn t|isnt|is not|is nothing|aren t|arent) (?:it |anything |things )?(?:landing|being landed)$", p):
+        return {"verb": "open", "find": {"q": "auto lander", "kinds": ["tab", "subtab", "view"]}}
+    if m := re.match(r"^land (?:pr |pull request |number )?#?(\d+)$", p):
+        return {"verb": "press", "address": f"row:{m.group(1)}/action:land-now"}
     if m := re.match(r"^(?:press|click|tap|hit|push)(?: on)?(?: the)? (.+?)(?: button)?$", p):
         return {"verb": "press", "find": {"q": _strip(m.group(1)), "kinds": ["button", "function"]}}
     if m := re.match(rf"^{_GO}(?: the)? (.+?) settings?$", p):

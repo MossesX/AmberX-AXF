@@ -11,7 +11,8 @@
  *   "show step 3 of <build>" · "step three of <build>"
  *   "disable plugin <y>" · "turn off the <y> plugin" · "turn the <y> plugin off" · "enable <y> plugin"
  *   "press <button>" · "click <button>" · "tap <button>"
- *   "set <setting> to <value>" · "turn <setting> on|off"
+ *   "set <setting> to <value>" · "turn <setting> on|off" · "turn on|off the <setting>"
+ *   "what's landing" · "why isn't it landing" (open the auto-lander) · "land <pr> now" (its Land now; confirms first)
  *   "lock the console to the axHub skin" · "unlock the console from the axHub skin" (Settings → Appearance →
  *   Get my skin only from axHub)
  *   "override the axHub skin" · "stop overriding the axHub skin" (the Override switch under it)
@@ -89,6 +90,15 @@ export function voiceIntent(text) {
   // settings
   if ((m = /^set (?:the )?(.+?) (?:to|at) (.+)$/.exec(p))) return { verb: 'set', find: { q: strip(m[1]), kinds: ['setting'] }, value: m[2].trim() };
   if ((m = /^(?:turn|switch) (?:the )?(.+?) (on|off)$/.exec(p))) return { verb: 'set', find: { q: strip(m[1]), kinds: ['setting'] }, value: m[2] === 'on' };
+
+  if ((m = /^(?:turn|switch) (on|off) (?:the )?(.+)$/.exec(p))) return { verb: 'set', find: { q: strip(m[2]), kinds: ['setting'] }, value: m[1] === 'on' };
+
+  // landing (auto-lander, Nov 15 2026): "what's landing" / "why isn't it landing" open the auto-lander's tab (status, what
+  // it lands, why not); "land 633 now" presses that PR's Land now (row:<pr>/action:land-now, which confirms first)
+  if (/^(?:what s|whats|what is) (?:landing|being landed)$/.test(p) || /^why (?:isn t|isnt|is not|is nothing|aren t|arent) (?:it |anything |things )?(?:landing|being landed)$/.test(p)) {
+    return { verb: 'open', find: { q: 'auto lander', kinds: ['tab', 'subtab', 'view'] } };
+  }
+  if ((m = /^land (?:pr |pull request |number )?#?(\d+)$/.exec(p))) return { verb: 'press', address: `row:${m[1]}/action:land-now` };
 
   // buttons and actions
   if ((m = /^(?:press|click|tap|hit|push)(?: on)?(?: the)? (.+?)(?: button)?$/.exec(p))) return { verb: 'press', find: { q: strip(m[1]), kinds: ['button', 'function'] } };

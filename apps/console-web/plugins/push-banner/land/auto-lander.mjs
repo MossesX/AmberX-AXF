@@ -142,11 +142,12 @@ export async function main(argv, { s } = {}) {
   if (cmd === 'enabled') { const v = rest[0]; if (!['true', 'false', 'on', 'off'].includes(v)) throw new Error('enabled true|false'); const st = setSetting(s, 'enabled', v === 'true' || v === 'on'); return print(st, say.status(st)); }
   if (cmd === 'cron-heal') { const r = cronHeal(s); return print(r, r.healed ? `reinstalled /etc/cron.d/${A.CRON_NAME}` : `/etc/cron.d/${A.CRON_NAME} is in place`); }
   if (cmd === 'mode') { const st = setSetting(s, 'mode', rest[0]); return print(st, say.status(st)); }
+  if (cmd === 'move') { const d = (rest[1] || 'up').toLowerCase(); if (!['up', 'down'].includes(d)) throw new Error('move <pr> up|down'); return main([`move-${d}`, rest[0], ...(json ? ['--json'] : [])], { s }); }
   if (A.LINE_ACTIONS[cmd]) {
     const r = await act(s, cmd, rest[0], { why: opt('why'), confirm: confirm || !A.LINE_ACTIONS[cmd].confirm });
     return print(r, `${cmd} #${r.pr}${r.run ? (r.run.started ? ' · run started' : ` · run not started (${r.run.reason})`) : ''}`);
   }
-  throw new Error('usage: auto-lander.mjs status | line | runs [--limit n] | on | off | mode <serial|merge-queue> | move-up|move-down|unskip <pr> | skip <pr> --why "…" --confirm | land-now <pr> --confirm [--json]');
+  throw new Error('usage: axf lander status | line | runs [--limit n] | on | off | mode <serial|merge-queue> | move <pr> up|down | move-up|move-down|unskip <pr> | skip <pr> --why "…" --confirm | land-now <pr> --confirm [--json]');
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

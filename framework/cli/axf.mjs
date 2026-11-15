@@ -98,6 +98,25 @@ if (cmd === 'console') {
   const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'console.mjs')).href);
   process.exit(await main(rest));
 }
+// A plugin's own CLI words (plugin.json `cli: { "<word>": "<file in the plugin>" }`, e.g. `axf lander status`): the word
+// goes to whichever plugin declares it (never by folder name); its file exports main(argv).
+{
+  const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
+  const { join: joinPath, resolve: resolvePath, sep } = await import('node:path');
+  const plugins = joinPath(import.meta.dirname ?? new URL('.', import.meta.url).pathname, '../../apps/console-web/plugins');
+  if (cmd && /^[a-z][a-z0-9-]*$/.test(cmd)) {
+    for (const d of (exists(plugins) ? readdirSync(plugins) : []).sort()) {
+      let rel = '';
+      try { rel = JSON.parse(readText(joinPath(plugins, d, 'plugin.json'), 'utf8')).cli?.[cmd] || ''; } catch { continue; }
+      const file = rel ? resolvePath(plugins, d, rel) : '';
+      if (!file || !file.startsWith(resolvePath(plugins, d) + sep) || !exists(file)) continue;
+      const { pathToFileURL } = await import('node:url');
+      const { main } = await import(pathToFileURL(file).href);
+      try { await main(rest); } catch (e) { console.error(e.message); process.exit(1); }
+      process.exit(process.exitCode || 0);
+    }
+  }
+}
 // plugin commands (control@1 plugins domain): `axf plugins [plugin]`, `axf plugin <plugin> <command> …`, and
 // `axf <plugin> <command> …` for any console plugin whose folder isn't an axf command; they go to the plugin that
 // provides plugin-commands@1 (never by folder name).

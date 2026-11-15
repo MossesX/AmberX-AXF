@@ -229,6 +229,56 @@
       },
       "value": false
     },
+    "turn off the auto lander": {
+      "verb": "set",
+      "find": {
+        "q": "auto lander",
+        "kinds": [
+          "setting"
+        ]
+      },
+      "value": false
+    },
+    "switch on the auto lander": {
+      "verb": "set",
+      "find": {
+        "q": "auto lander",
+        "kinds": [
+          "setting"
+        ]
+      },
+      "value": true
+    },
+    "what's landing": {
+      "verb": "open",
+      "find": {
+        "q": "auto lander",
+        "kinds": [
+          "tab",
+          "subtab",
+          "view"
+        ]
+      }
+    },
+    "why isn't it landing": {
+      "verb": "open",
+      "find": {
+        "q": "auto lander",
+        "kinds": [
+          "tab",
+          "subtab",
+          "view"
+        ]
+      }
+    },
+    "land 633 now": {
+      "verb": "press",
+      "address": "row:633/action:land-now"
+    },
+    "land PR #640": {
+      "verb": "press",
+      "address": "row:640/action:land-now"
+    },
     "what time is it": null,
     "": null
   },
@@ -366,6 +416,32 @@
       "verb": "set",
       "address": "view:build-orchestrator/grid:builds/row:b1",
       "value": false
+    },
+    "turn off the auto lander": {
+      "verb": "set",
+      "address": "view:build-orchestrator/grid:builds/row:b1",
+      "value": false
+    },
+    "switch on the auto lander": {
+      "verb": "set",
+      "address": "view:build-orchestrator/grid:builds/row:b1",
+      "value": true
+    },
+    "what's landing": {
+      "verb": "open",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "why isn't it landing": {
+      "verb": "open",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "land 633 now": {
+      "verb": "press",
+      "address": "row:633/action:land-now"
+    },
+    "land PR #640": {
+      "verb": "press",
+      "address": "row:640/action:land-now"
     }
   },
   "replies": {

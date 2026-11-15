@@ -13,7 +13,8 @@
   "provides": [
     "banner:push-banner",
     "service:axf.merge-queue@1",
-    "settings-tab:push-banner"
+    "settings-tab:push-banner",
+    "service:auto-lander@1"
   ],
   "optional": [
     "service:axf.activity@1"
@@ -224,5 +225,8 @@
       ".github/workflows/android.yml"
     ]
   },
-  "opens": false
+  "opens": false,
+  "cli": {
+    "lander": "land/auto-lander.mjs"
+  }
 }

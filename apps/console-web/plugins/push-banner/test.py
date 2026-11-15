@@ -769,4 +769,16 @@ check(items and items[0]["id"] == "auto-lander-cron", "the systems check lists A
 msg = mod.AutoLanderChecks().fix("auto-lander-cron")
 check((mod.data_dir() / "auto-lander-cron-heal.json").exists() and "doctor" in msg, "Auto fix asks the host doctor to reinstall the cron line")
 check(mod._cron_health({"last": None, "healRequested": True}, now)["status"] == "info", "after Auto fix the item says the reinstall is on its way")
+# one implementation: `axf lander …` (the CLI), auto-lander@1 (what the REST routes and the MCP plugin commands call) and
+# the land script itself give the same answer on the same data
+import subprocess as _sp  # noqa: E402
+_env = {**os.environ, "AXF_PUSH_BANNER_DIR": str(mod.data_dir())}
+_axf = str(HERE.parents[3] / "framework" / "cli" / "axf.mjs")
+for _cmd in ("status", "line", "runs"):
+    _cli = json.loads(_sp.run(["node", _axf, "lander", _cmd, "--json"], capture_output=True, text=True, env=_env, timeout=60).stdout.strip().splitlines()[-1])
+    _svc = getattr(svc, _cmd)()
+    check(_cli == _svc, f"axf lander {_cmd} = auto-lander@1 {_cmd} (REST / MCP)")
+_sp.run(["node", _axf, "lander", "mode", "queue"], capture_output=True, text=True, env=_env, timeout=60)
+check(svc.status()["mode"] == "merge-queue", "a mode set from the CLI is what the REST / MCP side reads")
+svc.set_mode("serial")
 print(f"push-banner: {ok} checks passed")
