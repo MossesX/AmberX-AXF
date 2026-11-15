@@ -154,7 +154,7 @@ Connect); its state is `GET /devices` (`phone-device@1` records with `presence`)
 
 | Was | Is | How |
 | --- | --- | --- |
-| `amberx.open_url`, `amberx.recorder_start` / `_stop` / `_status` | `phone.open_url`, `phone.recorder_*` | `ALIASES`: the old name resolves for one release; a command sent with it is answered normally plus `deprecated: "amberx.recorder_start is deprecated: use phone.recorder_start"`. After that release the old name answers `not_found`. |
+| `amberx.open_url`, `amberx.recorder_start`, `amberx.recorder_stop`, `amberx.recorder_status` | `phone.open_url`, `phone.recorder_start`, `phone.recorder_stop`, `phone.recorder_status` | `ALIASES`: the old name resolves for one release; a command sent with it is answered normally plus `deprecated: "amberx.recorder_start is deprecated: use phone.recorder_start"`. After that release the old name answers `not_found`. |
 | output-recorder plugin's data dir `.axf-console/plugins/output-recorder` | `.axf-console/plugins/phone-connect` | `migrate.mjs` (dry run by default, `--apply` to do it): copies, verifies, then leaves a pointer file in the old place. |
 | axHub's `amberx` device record (the hello: deviceId, name, app, capabilities, state) | a `phone-device@1`, same id, `migratedFrom` set, still paired | `deviceFromAmberx()`; the script writes `devices.json` in the new data dir. |
 
