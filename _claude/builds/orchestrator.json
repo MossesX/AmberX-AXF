@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T17:08:49.316Z",
+ "updatedAt": "2026-11-15T17:09:10.191Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -152003,7 +152003,7 @@
    "pr": "#715",
    "priority": "P0",
    "createdAt": "2026-11-15T13:23:46.016Z",
-   "updatedAt": "2026-11-15T17:08:47.542Z",
+   "updatedAt": "2026-11-15T17:09:07.489Z",
    "builtAt": "2026-11-15T17:08:47.543Z",
    "notes": [
     {
@@ -152045,6 +152045,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-build-rules-tab-gate-rules-vps-owns--joey, shared account login)",
      "at": "2026-11-15T14:53:12.877Z"
+    },
+    {
+     "text": "Headless run axf-build-rules-tab-gate-rules-vps-owns--joey: brief only · start 16.2K tokens ($0.05) · cost $24.51 · 322 turns · 6 tools, MCP none",
+     "at": "2026-11-15T17:09:07.489Z"
     }
    ],
    "approvals": [
