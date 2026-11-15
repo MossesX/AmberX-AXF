@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T11:58:06.175Z",
+ "updatedAt": "2026-11-15T13:23:33.378Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -147188,7 +147188,7 @@
    "pr": "#705",
    "priority": "P0",
    "createdAt": "2026-11-15T04:17:06.158Z",
-   "updatedAt": "2026-11-15T05:41:17.346Z",
+   "updatedAt": "2026-11-15T12:30:55.764Z",
    "builtAt": "",
    "notes": [
     {
@@ -147234,6 +147234,14 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-15T05:41:17.346Z"
+    },
+    {
+     "text": "gate-rules-plugin-in-the-console (s1 design note, _claude/builds/reports/gate-rules-plugin-in-the-console.md): gate-rules@1 takes autoLander.enabled/mode and auto-lander-run@1 from this build as its lander input. The gate plugin's Auto-lander tab calls the same push-banner /lander/* routes through a capability service; the orchestrator's Auto-lander tab becomes a link to it once both are on main. No duplicate settings key.",
+     "at": "2026-11-15T12:02:37.475Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-15T12:30:55.764Z"
     }
    ],
    "approvals": [],
@@ -147622,7 +147630,7 @@
    "title": "Move build orchestrator to axHub",
    "category": "",
    "detail": "Move the entire build orchestrator (queue, pending, splitter, dispatcher/pipeline tick, reconciler, slots, accounts, builds store, notes, steps, landing) out of the console plugin and into axHub (MossesX/axHub), running on the VPS, so builds are managed whether the console is up or not. Staged so nothing breaks mid-flight: (1) Run AFTER auto-lander-controls-in-the-gate-plugin lands (gate + merge queue already in axHub). (2) Stand up the axHub orchestrator service reading the SAME builds store (_claude/builds/*), in shadow mode: it computes what it would launch/land but doesn't act; compare with the console for a while. (3) Cut over: axHub owns the dispatcher, reconciler, splitter and lander; the console's cron/plugin stops acting. (4) Build the full orchestrator UI as axHub screens (all tabs: Pending, Queue, Active, Built, Complete, Errors, Archive, settings, slots, accounts) with every action. (5) axHub tools (orchestrator.*) for Claude, MCP and voice: file a build, note, status, step, approve, land, etc.; today's axf-console.build_orchestrator_pipeline_request and planner.builds callers get equivalent axHub tools. (6) Console keeps only a read-only mirror or a link to the axHub page, then the console plugin is retired. Fix on the way: phase-end builds must never get parked in Pending (reconciler bug), dispatcher alerts link format. No build or data lost; all history migrated. Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -147630,7 +147638,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T04:20:19.690Z",
-   "updatedAt": "2026-11-15T04:28:07.582Z",
+   "updatedAt": "2026-11-15T12:45:55.244Z",
    "builtAt": "",
    "notes": [
     {
@@ -147688,6 +147696,22 @@
     {
      "text": "Session stopped on its own with 37 steps left: back in Pending for Brett.",
      "at": "2026-11-15T04:28:07.582Z"
+    },
+    {
+     "text": "gate-rules-plugin-in-the-console (s1 design note, _claude/builds/reports/gate-rules-plugin-in-the-console.md): the molly hand-over seam for the gate is two console adapter files (plugins/gate/gate-store.mjs, plugins/gate/lander.mjs) plus an owner field (console | axf-molly) on every gate-rule@1. Schema, fixtures, GATE.md tool contract (gate.*, lander.*), REST, CLI, MCP names and voice stay the same when axf-molly takes the rules; axHub only routes them.",
+     "at": "2026-11-15T12:02:39.552Z"
+    },
+    {
+     "text": "Brett (07:19): do this NOW, top priority, right after axf-data is up: build the axf-molly container, wire it, and move the orchestrator, dispatcher, reconciler, splitter, gate rules, lander, merge watch / Shipped features sender and merge queue into it, as soon as possible. It reads/writes all data through axf-data (data-container-axf-data-holds-all), not repo files. axHub only routes (orchestrator.*, gate.*, lander.*, features.* tools); console is screens only. Cut over with a shadow run, no lost builds, builds keep running during the switch. RE-PLAN the steps first (they still say axHub screens). Land each part with the one-at-a-time lander.",
+     "at": "2026-11-15T12:20:04.652Z"
+    },
+    {
+     "text": "SUPERSEDED (Brett 07:19): replaced by axf-molly-container-orchestrator-gate, which uses the final layout (axf-molly does the work, axf-data stores, axHub routes, console screens). Don't launch this one again.",
+     "at": "2026-11-15T12:20:40.697Z"
+    },
+    {
+     "text": "Coordination (data-container-axf-data-holds-all, Nov 15 2026): the builds store and its journal now follow the data-store@1 mode of the builds namespace. In cutover they live on axf-data (record builds/store.json, journals builds/journal/<month>), framework/cli/builds-store.mjs reads and writes them through the client (lock = rev check: a conflict re-reads and re-applies), so a headless session or axf-molly with AXF_DATA_URL + an orchestrator token (conf/env/orchestrator.env) writes the same store with the console down. If this build is picked up again, move the orchestrator onto that client rather than a second store in axHub; axHub only routes to axf-data (no data kept in axHub).",
+     "at": "2026-11-15T12:45:55.244Z"
     }
    ],
    "approvals": [],
@@ -148527,7 +148551,7 @@
    "title": "Data container: axf-data holds all console data",
    "category": "",
    "detail": "Brett's final layout: the console is screens ONLY, with no work and no data in it. New private container 'axf-data' (Coolify, auto-restart, no public port or DNS, internal Docker network only) holds ALL the data: notes, builds store/journal/history, settings, planner items, UI reviews, everything the console stores today. Four parts: console = UI only; axf-molly = does the work (orchestrator, gate, lander); axHub = routes plus credentials/keys only (NO app data stored in axHub); axf-data = stores everything. Goal: if the console goes down, all data and notes stay available (through axHub tools) and builds keep running. Stage it safely: an API in front of the store, migrate with count checks and a backup, run in shadow first, then cut over, and no data is ever lost. Add daily backups. Coordinate with the move-build-orchestrator-to-axhub build (axf-molly reads and writes the builds store through axf-data). Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -148535,7 +148559,7 @@
    "pr": "#704",
    "priority": "P0",
    "createdAt": "2026-11-15T04:28:05.062Z",
-   "updatedAt": "2026-11-15T05:21:04.432Z",
+   "updatedAt": "2026-11-15T13:22:35.711Z",
    "builtAt": "",
    "notes": [
     {
@@ -148565,9 +148589,30 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-15T05:21:04.432Z"
+    },
+    {
+     "text": "Brett (07:19): do this NOW, top priority: build the axf-data container, wire it, and migrate everything into it as soon as possible. Order: (1) bring axf-data up on Coolify (private, auto-restart, internal network only) with its API; (2) migrate ALL data with a backup first and count checks (builds store, journal, history, notes, settings, planner items, UI reviews, shipped manifests/feature store); (3) shadow-run, then cut the console, orchestrator and lander over to read/write through axf-data; (4) daily backups. Never lose data; if a step could, stop and note it. Coordinate with move-build-orchestrator-to-axhub (axf-molly), which goes right after and reads/writes through axf-data. Land each part with the one-at-a-time lander as it finishes.",
+     "at": "2026-11-15T12:19:59.008Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 2): axf-data-container-axf-data-holds-all--gina.",
+     "at": "2026-11-15T12:22:31.895Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-data-container-axf-data-holds-all--gina, shared account login)",
+     "at": "2026-11-15T12:22:33.656Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-15T12:23:59.842Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "the console goes down, all the data is still available, all the notes are available, and the builds keep running. That's what I need.",
@@ -148576,7 +148621,7 @@
     "session": "",
     "link": "",
     "by": "data-container-axf-data-holds-all",
-    "brief": "# Build: data-container-axf-data-holds-all\n\n## Brett said (verbatim)\nAt: 2026-11-15T04:28:05.062Z\n> the console goes down, all the data is still available, all the notes are available, and the builds keep running. That's what I need.\n\n## What to build\nContinue build \"Data container: axf-data holds all console data\" (data-container-axf-data-holds-all) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-15 04:28):\n\"the console goes down, all the data is still available, all the notes are available, and the builds keep running. That's what I need.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (4 left, ~40 min):\n[ ] s1 (~10 min) Write the data-store@1 contract: the namespaces axf-data serves (notes, builds store/journal/history, settings, planner items, UI reviews, plugin data dirs, changes log), the record/blob shapes, rev/etag optimistic writes, append-only journals, the error codes, and the auth (internal network + per-service token issued from axHub's keys). Write the spec in framework/spec/DATA-STORE.md and the schema in framework/schemas/data-store.json\n[ ] s2 (~10 min) Write the reference client framework/core/data-store.mjs (get/put/list/append/watch/snapshot, rev conflicts, retry). Add a local-file backend so code can use the same API before cutover. Add the PORTING.md deferred Android gap line\n[ ] s3 (~10 min) Design the migration and its count checks: list every data source the console writes today (/projects/*/_data, _claude/builds, plugin lifecycle.dataDir, SQLite ledgers, settings), map each to a namespace, and define the per-namespace count+hash manifest and the rollback rule. Write framework/spec/fixtures/data-store-migration.json and the DATA-STORE.md migration section\n[ ] s4 (~10 min) Design the modes switch (local → shadow → cutover → rollback): in shadow, writes go to local and to axf-data, reads come from local, and a diff log records any drift. After cutover axf-data is the only store and local becomes the read-only backup. Write the mode state machine in framework/core/data-store-mode.mjs with a fixture\nRead first: framework/spec/DATA-STORE.md, framework/schemas/data-store.json, framework/core/data-store.mjs, framework/spec/PORTING.md, framework/spec/fixtures/data-store-migration.json, framework/core/data-store-mode.mjs, framework/spec/fixtures/data-store-mode.json\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step data-container-axf-data-holds-all <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link data-container-axf-data-holds-all --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step data-container-axf-data-holds-all <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note data-container-axf-data-holds-all \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: data-container-axf-data-holds-all\n\n## Brett said (verbatim)\nAt: 2026-11-15T04:28:05.062Z\n> the console goes down, all the data is still available, all the notes are available, and the builds keep running. That's what I need.\n\n## What to build\nContinue build \"Data container: axf-data holds all console data\" (data-container-axf-data-holds-all) — Phase 2, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-15 04:28):\n\"the console goes down, all the data is still available, all the notes are available, and the builds keep running. That's what I need.\"\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/data-container-axf-data-holds-all · PR #704\nSteps in this phase (23 left, ~3.7 h):\n[ ] s5 (~8 min) Contract checks: framework/spec/check-data-store.mjs runs the client against the fixtures for rev conflicts, journal append-only, mode transitions and count manifests. Wire it into CI\n[ ] s6 (~10 min) Scaffold the axf-data service: services/axf-data/ (FastAPI, SQLite + blob dir on a Docker volume, /health), data-store@1 routes get/put/list/append/snapshot with rev checks, and token auth\n[ ] s7 (~10 min) axf-data journal and history: append-only journal tables, per-record history with restore(rev), and a watch endpoint (SSE) for change feeds\n[ ] s8 (~8 min) axf-data tests: pytest for CRUD, rev conflicts, journal append-only, restore and auth refusal\n[ ] s9 (~10 min) Dockerfile and Coolify deploy for axf-data: private app, no public port or domain, internal network only, restart unless-stopped, named volume. Add a deploy/install-data.sh helper using framework/deploy/axf-deploy.sh, and log the deploy with axf_deploy_log\n[ ] s10 (~10 min) Daily backups: an axf-data snapshot job (tar of the SQLite online backup + blobs, keep 14 days plus weekly copies) to /root/hub/data/axf-data/backups, with a restore command and a verify step that checks counts against the live store\n[ ] s11 (~8 min) Backup health check: register an axf.health@1 check in systems-check (last backup age, verify result, axf-data reachable) with Auto fix to run a backup or restart the container\n[ ] s12 (~10 min) Console server data layer: a Python data-store client (apps/console-web/server/data_store.py) that honours the mode (local/shadow/cutover) and exposes the same functions the server uses today for _data and plugin dataDirs\n[ ] s13 (~10 min) Route persist.mjs and the plugin data helpers through framework/core/data-store.mjs (local backend by default, axf-data when the mode says so). No behaviour change in local mode\n[ ] s14 (~10 min) Builds store on data-store: framework/cli/builds-store.mjs reads and writes store, journal and history through the client (lock = rev check), so axf-molly can use it too. Coordinate with move-build-orchestrator-to-axhub and add a note on that build\n[ ] s15 (~10 min) Settings, planner items and UI Review on data-store: switch the claude-settings, plan-studio and ui-review storage calls to the client\n[ ] s16 (~10 min) Notes, changes log and SQLite ledgers (shipped-features, others) on data-store: blob or table namespaces through the client\n[ ] s17 (~10 min) Migration tool framework/cli/data-migrate.mjs: plan (counts per namespace), backup first (required), copy, then verify counts and hashes against the manifest. Refuse to finish on any mismatch. Dry-run by default\n[ ] s18 (~10 min) Migration tests on a seeded copy of real data: migrate, verify, roll back, re-run idempotently, and a forced mismatch must fail\n[ ] s19 (~10 min) Shadow mode wiring: framework/cli/data-mode.mjs status|shadow|cutover|rollback (cutover refused unless shadow has run with zero drift for the set window), with the diff log written to axf-data\n[ ] s20 (~10 min) Console UI: Settings → Plugins → Data store sub-tab (mode, namespaces with counts, last backup, drift log, Backup now / Verify / Shadow / Cut over / Roll back with confirm) built from framework controls and tokens only, with data-axf-target addresses\n[ ] s21 (~10 min) Data store API parity: REST routes /api/plugins/data-store/{state,backup,verify,mode}, plugin commands (MCP), axf CLI (axf data …), voice actions, console_show deep link view:settings/tab:settings.tabs=plugins/data-store, and console-control targets\n[ ] s22 (~8 min) Plugin lifecycle for data-store: install.mjs and uninstall.mjs (data stays in axf-data), help entry, glossary descriptions, notify.json for backup and drift alerts\n[ ] s23 (~10 min) axHub route only: register axf-data as an axHub downstream (routes plus the service token kept in axHub; no data stored in axHub) so notes, builds and settings tools work when the console is down. Document the tools in the README\n[ ] s24 (~10 min) Console-down drill: a script that stops the console container in a test compose, then checks that axf-data answers through the axHub route and that a builds-store write from the axf-molly side lands. Record the result\n[ ] s25 (~10 min) UI Review: submit 3 options for the Data store tab (choices as settings assets in plugins/data-store/assets/settings/), with desktop and phone shots\n[ ] s26 (~8 min) Shipped features and docs: add a feature-ledger row for each piece, update CLAUDE.md layout/conventions (four-part layout), _claude/memory/decisions.md and STATUS.md, then catalog/status.json and tracker.mjs\n[ ] s27 (~10 min) Tests, report and PR: run check-data-store, check-data-migrate, the axf-data pytest, check-theme/controls/console-control/toolbars, plugin-lifecycle check and the glossary check. Write _claude/builds/reports/data-container-axf-data-holds-all.md (cutover is staged: shadow first, then cutover once drift is zero), add the THREADS row, open the PR describing how each part is reached by REST, MCP, CLI and voice, and link it with builds-live\nRead first: framework/spec/check-data-store.mjs, .github/workflows/android.yml, services/axf-data/main.py, services/axf-data/store.py, services/axf-data/requirements.txt, services/axf-data/journal.py, services/axf-data/test_store.py, services/axf-data/Dockerfile, deploy/install-data.sh, framework/deploy/axf-deploy.sh, services/axf-data/backup.py, deploy/axf-data-backup.cron, apps/console-web/plugins/systems-check/checks/axf_data.py, apps/console-web/server/data_store.py, framework/cli/persist.mjs, apps/console-web/server/plugin_data.py, framework/cli/builds-store.mjs, framework/core/data-store.mjs, apps/console-web/plugins/claude-settings/, apps/console-web/plugins/plan-studio/, apps/console-web/plugins/ui-review/, apps/console-web/plugins/codebase-changes/changes.mjs, apps/console-web/plugins/shipped-features/, framework/cli/data-migrate.mjs, framework/spec/check-data-migrate.mjs, framework/cli/data-mode.mjs, framework/core/data-store-mode.mjs, apps/console-web/plugins/data-store/plugin.json, apps/console-web/plugins/data-store/web/DataStoreTab.tsx, apps/console-web/plugins/data-store/server/routes.py, apps/console-web/plugins/data-store/commands.json, framework/cli/axf.mjs, apps/console-web/plugins/data-store/install.mjs, apps/console-web/plugins/data-store/uninstall.mjs, apps/console-web/plugins/data-store/notify.json, apps/console-web/plugins/data-store/help.md, services/axf-data/mcp.py, services/axf-data/README.md, deploy/dryrun/console-down-drill.sh, apps/console-web/plugins/data-store/assets/settings/, CLAUDE.md, _claude/memory/decisions.md, _claude/memory/STATUS.md, framework/catalog/status.json, tracker.json, _claude/builds/reports/data-container-axf-data-holds-all.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step data-container-axf-data-holds-all <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link data-container-axf-data-holds-all --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step data-container-axf-data-holds-all <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note data-container-axf-data-holds-all \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -148686,8 +148731,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:23:59.842Z",
      "note": "",
      "uid": "st-mwhc6cxn05ztig",
      "createdAt": "2026-11-15T04:30:21.947Z"
@@ -148709,8 +148754,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:28:20.557Z",
      "note": "",
      "uid": "st-mwhc6cxn06ds1n",
      "createdAt": "2026-11-15T04:30:21.947Z"
@@ -148731,8 +148776,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:29:35.959Z",
      "note": "",
      "uid": "st-mwhc6cxn07n5br",
      "createdAt": "2026-11-15T04:30:21.947Z"
@@ -148752,8 +148797,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:31:20.997Z",
      "note": "",
      "uid": "st-mwhc6cxn081kgd",
      "createdAt": "2026-11-15T04:30:21.947Z"
@@ -148775,8 +148820,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:33:48.436Z",
      "note": "",
      "uid": "st-mwhc6cxn09vfka",
      "createdAt": "2026-11-15T04:30:21.947Z"
@@ -148797,8 +148842,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:35:24.371Z",
      "note": "",
      "uid": "st-mwhc6cxn0aey4e",
      "createdAt": "2026-11-15T04:30:21.947Z"
@@ -148818,8 +148863,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:37:45.210Z",
      "note": "",
      "uid": "st-mwhc6cxn0bhsbt",
      "createdAt": "2026-11-15T04:30:21.947Z"
@@ -148839,8 +148884,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:41:19.151Z",
      "note": "",
      "uid": "st-mwhc6cxn0csy0i",
      "createdAt": "2026-11-15T04:30:21.947Z"
@@ -148861,8 +148906,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:43:10.631Z",
      "note": "",
      "uid": "st-mwhc6cxn0d5byu",
      "createdAt": "2026-11-15T04:30:21.947Z"
@@ -148883,8 +148928,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:46:07.062Z",
      "note": "",
      "uid": "st-mwhc6cxn0el4jy",
      "createdAt": "2026-11-15T04:30:21.947Z"
@@ -148906,8 +148951,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:48:50.308Z",
      "note": "",
      "uid": "st-mwhc6cxn0f7pdn",
      "createdAt": "2026-11-15T04:30:21.947Z"
@@ -148928,8 +148973,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:52:34.046Z",
      "note": "",
      "uid": "st-mwhc6cxn0g5uwr",
      "createdAt": "2026-11-15T04:30:21.947Z"
@@ -148949,8 +148994,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:59:03.831Z",
      "note": "",
      "uid": "st-mwhc6cxn0hy3u3",
      "createdAt": "2026-11-15T04:30:21.947Z"
@@ -148970,8 +149015,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T13:07:59.865Z",
      "note": "",
      "uid": "st-mwhc6cxn0ilugk",
      "createdAt": "2026-11-15T04:30:21.947Z"
@@ -148992,8 +149037,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T13:10:23.174Z",
      "note": "",
      "uid": "st-mwhc6cxn0jpb45",
      "createdAt": "2026-11-15T04:30:21.947Z"
@@ -149014,8 +149059,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T13:14:34.305Z",
      "note": "",
      "uid": "st-mwhc6cxo0kpu3i",
      "createdAt": "2026-11-15T04:30:21.947Z"
@@ -149037,8 +149082,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T13:16:32.377Z",
      "note": "",
      "uid": "st-mwhc6cxo0lsybh",
      "createdAt": "2026-11-15T04:30:21.947Z"
@@ -149061,8 +149106,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T13:18:24.548Z",
      "note": "",
      "uid": "st-mwhc6cxo0miqwf",
      "createdAt": "2026-11-15T04:30:21.947Z"
@@ -149083,8 +149128,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T13:20:50.017Z",
      "note": "",
      "uid": "st-mwhc6cxo0no1g4",
      "createdAt": "2026-11-15T04:30:21.947Z"
@@ -149104,8 +149149,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T13:22:35.711Z",
      "note": "",
      "uid": "st-mwhc6cxo0oe224",
      "createdAt": "2026-11-15T04:30:21.947Z"
@@ -149185,16 +149230,16 @@
    "title": "Pending tab: one collapsed row per build (rebuild)",
    "category": "",
    "detail": "Rebuild from current main (the old branch claude/pending-tab-one-collapsed-row-per-build is 3000+ commits behind and only has rename commits; ignore it). In the Build Orchestrator's Pending tab, every pending build is ONE collapsed row: title, status/why it's pending, priority, steps done/total, age. Tap the row to expand it and see steps, notes and actions (queue, edit, archive); tap again to collapse. Collapsed by default, remembers expanded rows per viewer. Same for desktop and phone. Uses asset tokens and framework controls; full API parity (deep link, expand/collapse and actions via REST/MCP/CLI/voice). Tests, help, Shipped features. Land when done.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/pending-tab-one-collapsed-row-per-2",
-   "pr": "",
+   "pr": "#706",
    "priority": "P1",
    "createdAt": "2026-11-15T11:52:18.052Z",
-   "updatedAt": "2026-11-15T11:57:43.719Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-15T12:22:24.475Z",
+   "builtAt": "2026-11-15T12:21:00.568Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -149223,6 +149268,14 @@
     {
      "text": "TO THE RUNNING SESSION: Brett changed steps s4 and s5 after you started (2-row skin layout, badges, animated active states, beautiful styling in every skin, extensive mapped context menus on the row and each data field, and live hooks). Your brief has the old text. Before s4, re-read the build (orchestrator.mjs show pending-tab-one-collapsed-row-per-2) and follow the new s4/s5. If s5 is too big for one step, split it into extra steps rather than cutting scope. Also, in s14, land directly with the one-at-a-time lander, not the stacked merge queue.",
      "at": "2026-11-15T11:57:43.719Z"
+    },
+    {
+     "text": "Headless run axf-pending-tab-one-collapsed-row-per-2--paulie: brief only · start 13.6K tokens ($0.04) · cost $9.96 · 167 turns · 6 tools, MCP none",
+     "at": "2026-11-15T12:21:20.833Z"
+    },
+    {
+     "text": "Session axf-pending-tab-one-collapsed-row-per-2--paulie on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-15T12:22:24.475Z"
     }
    ],
    "approvals": [],
@@ -149278,8 +149331,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T11:58:26.995Z",
      "note": "",
      "uid": "st-mwhs10yv022h4u",
      "createdAt": "2026-11-15T11:54:07.014Z"
@@ -149300,8 +149353,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T11:59:44.985Z",
      "note": "",
      "uid": "st-mwhs10yv03lkbn",
      "createdAt": "2026-11-15T11:54:07.014Z"
@@ -149322,8 +149375,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:02:19.282Z",
      "note": "",
      "uid": "st-mwhs10yv04g3lf",
      "createdAt": "2026-11-15T11:54:07.014Z"
@@ -149343,8 +149396,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:02:21.200Z",
      "note": "",
      "uid": "st-mwhs10yv050a1q",
      "createdAt": "2026-11-15T11:54:07.014Z"
@@ -149365,8 +149418,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:04:26.506Z",
      "note": "",
      "uid": "st-mwhs10yv067alp",
      "createdAt": "2026-11-15T11:54:07.014Z"
@@ -149387,8 +149440,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:04:39.738Z",
      "note": "",
      "uid": "st-mwhs10yv07rlam",
      "createdAt": "2026-11-15T11:54:07.014Z"
@@ -149410,8 +149463,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:06:44.813Z",
      "note": "",
      "uid": "st-mwhs10yv082lhy",
      "createdAt": "2026-11-15T11:54:07.014Z"
@@ -149433,8 +149486,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:08:26.137Z",
      "note": "",
      "uid": "st-mwhs10yv09tl6o",
      "createdAt": "2026-11-15T11:54:07.014Z"
@@ -149454,8 +149507,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:11:43.503Z",
      "note": "",
      "uid": "st-mwhs10yv0ap98k",
      "createdAt": "2026-11-15T11:54:07.014Z"
@@ -149477,8 +149530,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:12:30.782Z",
      "note": "",
      "uid": "st-mwhs10yv0bakw1",
      "createdAt": "2026-11-15T11:54:07.014Z"
@@ -149499,8 +149552,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:17:56.868Z",
      "note": "",
      "uid": "st-mwhs10yv0c3lwy",
      "createdAt": "2026-11-15T11:54:07.014Z"
@@ -149521,8 +149574,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:19:36.274Z",
      "note": "",
      "uid": "st-mwhs10yv0deeom",
      "createdAt": "2026-11-15T11:54:07.014Z"
@@ -149543,8 +149596,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:21:00.568Z",
      "note": "",
      "uid": "st-mwhs10yv0e5v4i",
      "createdAt": "2026-11-15T11:54:07.014Z"
@@ -149556,15 +149609,15 @@
    "title": "Every grid: 1 or 2 rows per item, set by the skin",
    "category": "",
    "detail": "Every grid/table/list in the console shows each item as 1 or 2 rows when collapsed, set by the active skin (a skin token, e.g. grid row-lines = 1 or 2), and expands on tap for details. Audit every grid in every plugin and move it onto the shared framework grid/row control so the skin decides; no plugin hard-codes its own row layout. Use the existing grid/tab-group token sets (#654). Skin editor gets the 1-row/2-row setting with live preview. API parity (read/set the setting via REST/MCP/CLI/voice). Tests, check-theme and check-controls green, help, Shipped features. Land when done.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/every-grid-1-2-rows-per-item-set-skin",
+   "pr": "#707",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:17.286Z",
-   "updatedAt": "2026-11-15T11:58:04.037Z",
+   "updatedAt": "2026-11-15T12:50:54.308Z",
    "builtAt": "",
    "notes": [
     {
@@ -149578,6 +149631,26 @@
     {
      "text": "Split by Claude into 23 steps (4 Fable).",
      "at": "2026-11-15T11:56:35.624Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-every-grid-1-2-rows-per-item-set-skin--sully.",
+     "at": "2026-11-15T11:58:08.332Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-every-grid-1-2-rows-per-item-set-skin--sully, shared account login)",
+     "at": "2026-11-15T11:58:11.261Z"
+    },
+    {
+     "text": "Phase 1 (Fable) done: s1-s4 committed on the branch, PR #707 (draft). Contract, skin fold, grid-rows@1 engine, fixtures and checks all green. No screen changed yet: the fx-rows renderer and the console action for the per-level pick are the next phase.",
+     "at": "2026-11-15T12:26:10.797Z"
+    },
+    {
+     "text": "Headless run axf-every-grid-1-2-rows-per-item-set-skin--sully: brief only · start 13.5K tokens ($0.11) · cost $11.80 · 68 turns · 6 tools, MCP none",
+     "at": "2026-11-15T12:26:33.464Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-15T12:50:54.308Z"
     }
    ],
    "approvals": [],
@@ -149612,8 +149685,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:04:14.992Z",
      "note": "",
      "uid": "st-mwhs47mw01se98",
      "createdAt": "2026-11-15T11:56:35.624Z"
@@ -149635,8 +149708,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:16:16.997Z",
      "note": "",
      "uid": "st-mwhs47mw021yf7",
      "createdAt": "2026-11-15T11:56:35.624Z"
@@ -149658,8 +149731,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:21:35.772Z",
      "note": "",
      "uid": "st-mwhs47mw03ptgk",
      "createdAt": "2026-11-15T11:56:35.624Z"
@@ -149680,8 +149753,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:25:54.036Z",
      "note": "",
      "uid": "st-mwhs47mw04o6xq",
      "createdAt": "2026-11-15T11:56:35.624Z"
@@ -150118,16 +150191,16 @@
    "title": "Gate & rules plugin in the console",
    "category": "",
    "detail": "There is no Gate & rules screen anywhere (not on main, not on the auto-lander branch). Build a console plugin 'gate' with tabs: Rules (the checks a build must pass before it lands: CI green, tests, theme/controls checks, UI Review on/off, clash handling, etc., each with on/off and settings), Auto-lander (status, last runs, what's waiting and why, land now / pause), and History. Per the final layout: the screens live in the console only; the rules and lander logic run in the axf-molly container; axHub only routes the gate.* and lander.* tools. Until axf-molly exists, read/write through the current orchestrator/lander code. Coordinate with auto-lander-controls-in-the-gate-plugin and move-build-orchestrator-to-axhub. Rows follow the skin's 1-or-2-row grid setting. Full API parity, tests, help, Shipped features. Land when done.",
-   "status": "queued",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/gate-rules-plugin-in-the-console",
+   "pr": "#711",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:25.282Z",
-   "updatedAt": "2026-11-15T11:57:45.983Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-15T13:23:31.917Z",
+   "builtAt": "2026-11-15T13:04:13.597Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -150136,9 +150209,78 @@
     {
      "text": "Split by Claude into 23 steps (5 Fable).",
      "at": "2026-11-15T11:57:45.983Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-gate-rules-plugin-in-the-console--earl.",
+     "at": "2026-11-15T11:58:22.958Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-gate-rules-plugin-in-the-console--earl, shared account login)",
+     "at": "2026-11-15T11:58:25.703Z"
+    },
+    {
+     "text": "Brett (06:59): in the Merge queue settings, add a switch 'Merge queue: on/off'. It is one switch for both: ON = PRs go through the stacked merge queue and the one-at-a-time auto-lander is off; OFF = merge queue off and the auto-lander is on (lands each finished build one at a time). Default OFF (Brett's standing rule is to land one at a time). Show the current mode clearly (badge on the Auto-lander tab and on the switch). Flipping it takes effect right away, is logged in History, and is reachable via REST/MCP/CLI/voice (e.g. 'turn the merge queue on').",
+     "at": "2026-11-15T11:59:50.021Z"
+    },
+    {
+     "text": "TO THE RUNNING SESSION: Brett changed s3 and s8 after you started. There's a landing-mode switch 'Merge queue on/off' (one switch: on = stacked merge queue, lander off; off = default, one-at-a-time auto-lander on). The default rule set must NOT be 'merge-queue only'. Put the mode in the s2 schema. Re-read the build (orchestrator.mjs show gate-rules-plugin-in-the-console) before s2.",
+     "at": "2026-11-15T12:00:26.671Z"
+    },
+    {
+     "text": "Headless run axf-gate-rules-plugin-in-the-console--earl: brief only · start 15.6K tokens ($0.10) · cost $6.56 · 39 turns · 6 tools, MCP none",
+     "at": "2026-11-15T12:14:53.291Z"
+    },
+    {
+     "text": "Brett (07:14): the Shipped features sender belongs in the Gate & rules plugin. Add an 'After merge' section (rules that run when a merge to main succeeds), first rule: 'Send Shipped features' (on by default) showing status, last sent, failed sends with retry, and a Backfill button. It is logged in History and shown on the Auto-lander tab per landing. The sending logic itself is built by vps-sends-shipped-features-every-merge (runs on the VPS, later in axf-molly); this plugin is its screen and settings, through the gate.*/lander.* tools. Leave room for more after-merge rules (redeploy, notify Brett, APK build).",
+     "at": "2026-11-15T12:14:44.575Z"
+    },
+    {
+     "text": "Phase 1 (Fable) done on branch claude/gate-rules-plugin-in-the-console, 5 commits, no PR yet (s23 opens it): design note in _claude/builds/reports/gate-rules-plugin-in-the-console.md; gate-rules@1 schema (gate-rule@1, gate-rule-set@1, lander-state@1) in framework/schemas + schemas/json; reference core framework/core/gate-rules.mjs (default set, evaluate, migrate, landerStateFrom); fixture spec/fixtures/gate-rules.json + spec/check-gate-rules.mjs (33 checks, wired into CI); GATE.md tool contract. Android twin deferred in PORTING.md. Next phase: s6 plugin scaffold.",
+     "at": "2026-11-15T12:14:31.743Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 0) with 18 steps left: back in the Queue (run 1).",
+     "at": "2026-11-15T12:16:55.616Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Opus, Phase 2): axf-gate-rules-plugin-in-the-console--paulie.",
+     "at": "2026-11-15T12:17:19.901Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-gate-rules-plugin-in-the-console--paulie, shared account login)",
+     "at": "2026-11-15T12:17:25.943Z"
+    },
+    {
+     "text": "Brett (07:17): add a 'Pending features' tab to this plugin. It lists every active or incomplete build (queued, splitting, building, built/waiting to merge, merging, clashing, failed, held, pending). Each row uses the shared 2-row status row and badges, and expands to show that build's feature data EXACTLY as Shipped features presents it (same fields, same layout, same component, reused rather than copied), filled in as far as the build has got. ONE TRUE SOURCE: this plugin and the Shipped features plugin both read from a single feature/manifest store on the VPS (the shipped-manifest@1 records the VPS sender writes, plus in-progress records for unfinished builds), served through one API (gate.*/features.* tools and REST). No plugin keeps its own copy. When a build lands, its row moves from Pending features to Shipped features automatically because it's the same record changing state. Later this store moves into axf-data.",
+     "at": "2026-11-15T12:17:27.996Z"
+    },
+    {
+     "text": "Brett (07:21): top priority, get this landed as soon as possible. Keep going without stopping between steps; when the last step is done, open the PR and land it straight away with the one-at-a-time lander (merge main first, fix any clash). Don't wait on UI Review to land: submit the shots, but landing doesn't depend on them. If the auto-lander still lands nothing, say so in a note so it can be landed with build_land right away.",
+     "at": "2026-11-15T12:21:46.570Z"
+    },
+    {
+     "text": "Self-check: gate-rules-plugin-in-the-console had no session on record but axf-gate-rules-plugin-in-the-console--paulie is alive: kept running and tracking it.",
+     "at": "2026-11-15T12:35:14.249Z"
+    },
+    {
+     "text": "Headless run axf-gate-rules-plugin-in-the-console--paulie: brief only · start 15.5K tokens ($0.05) · cost $20.09 · 265 turns · 6 tools, MCP none",
+     "at": "2026-11-15T13:04:13.597Z"
+    },
+    {
+     "text": "TO THE RUNNING SESSION: re-read the build. Brett (08:25): add a **Build rules** tab to this plugin, with the VPS as the one place that owns and enforces every builder rule. 1) Move ALL builder rules out of Claude's instructions (CLAUDE.md, the build briefs, prompt templates, _claude rule docs) into this plugin's Build rules store, served by the VPS. List every rule before moving it, and delete nothing without listing it first. 2) Any rule the VPS can do mechanically, the VPS DOES itself after or around the build, and Claude no longer does it. That way nothing happens twice. Examples: create the plugin's home card from plugin.json and the template, Shipped features manifest, help stub, API-parity scaffolding, tests check, and landing. 3) Rules that need judgement are handed to the session from this store at build time; they are not copied into CLAUDE.md. 4) The gate checks every rule before landing, blocks on a fail, the VPS auto-fixes what it can, and everything is logged in History. 5) In the tab, each rule shows who does it (VPS or session) and whether it's on or off, with edit, add, history, and voice/API parity. First rule: every plugin gets a home card, made by the VPS.",
+     "at": "2026-11-15T13:23:31.917Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-15T12:20:45.711Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Where is the gate and rules plugin, open it on my screen. Yeah.",
@@ -150146,8 +150288,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "gate-rules-plugin-in-the-console",
+    "brief": "# Build: gate-rules-plugin-in-the-console\n\n## Brett said (verbatim)\nAt: 2026-11-15T11:53:25.282Z\n> Where is the gate and rules plugin, open it on my screen. Yeah.\n\n## What to build\nContinue build \"Gate & rules plugin in the console\" (gate-rules-plugin-in-the-console) — Phase 2, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-15 11:53):\n\"Where is the gate and rules plugin, open it on my screen. Yeah.\"\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/gate-rules-plugin-in-the-console\nSteps in this phase (18 left, ~2.7 h):\n[ ] s6 (~7 min) Scaffold the plugin apps/console-web/plugins/gate/: plugin.json (builtWith, description, lifecycle.dataDir, uiEditor none), install.mjs, uninstall.mjs, README.md with the lifecycle marker, and register it in the plugin catalog.\n[ ] s7 (~10 min) Write the gate store adapter apps/console-web/plugins/gate/gate-store.mjs: read and write the rule set and history through the current orchestrator and lander code (push-banner land settings, merge-queue state) behind one interface, so a later molly backend replaces only this file.\n[ ] s8 (~10 min) Write the lander adapter apps/console-web/plugins/gate/lander.mjs with ONE mode switch 'Merge queue on/off' (Brett 06:59): ON = PRs go through the stacked merge queue (land.mjs queue add) and the one-at-a-time auto-lander is off; OFF (the default) = merge queue off and the auto-lander lands each finished build one at a time (merge main first, fix clashes, then land). Flipping it takes effect at once and is logged in History. Also: status (running/paused/idle, current mode), last N runs, waiting PRs with the gate-rules evaluate reasons, land now (follows the current mode), pause and resume. The default rule set in s3 must not force 'merge-queue only'.\n[ ] s9 (~7 min) Write the History log: append-only JSONL in the plugin dataDir for rule changes (who, when, before/after) and lander actions, plus read with filters (kind, since, pr).\n[ ] s10 (~10 min) Add the FastAPI routes in apps/console-web/plugins/gate/server/: GET rules, PUT rules/<id>, POST rules/<id>/toggle, POST rules/reset, GET lander, GET lander/waiting, GET lander/runs, POST lander/land-now, pause, resume, GET history. Destructive presses need confirm.\n[ ] s11 (~8 min) Add the CLI apps/console-web/plugins/gate/gate.mjs (rules list|get|set|on|off|reset, lander status|waiting|runs|land-now|pause|resume, history) and wire `axf gate …` in framework/cli/axf.mjs through the plugin-commands path.\n[ ] s12 (~10 min) Expose the gate.* and lander.* MCP tools from the console MCP server (through plugin-commands, matching GATE.md names) and register them for axHub routing. Add the voice/AmberX console actions gate.open, gate.rule, lander.land-now, lander.pause, lander.resume.\n[ ] s13 (~9 min) Build the plugin view shell GateView.tsx: a framework TabGroup (tab-group asset, settings id gate.tabs) with Rules, Auto-lander and History tabs, SkinScope root, remember last tab. Register console-control targets view:gate and tab:gate.tabs=<tab> plus console_show deep links.\n[ ] s14 (~10 min) Build the Rules tab: a DataGrid of rules that follows the skin's 1-or-2-row grid setting, each row with a Switch (on/off), severity chip and a settings popover using framework fields; register row:<rule>/setting targets. Tokens only.\n[ ] s15 (~8 min) Add the Rules tab toolbar (role=toolbar, aria-label gate.rules): Reset to defaults (confirm), Check a PR (opens gate.check_pr result dialog). Wire every control to the same REST routes the CLI and MCP use.\n[ ] s16 (~10 min) Build the Auto-lander tab: status card (running/paused, since, current stack), waiting grid (PR, build, which rule holds it and why) on the 1-or-2-row grid setting, last runs grid, toolbar with Land now and Pause/Resume; register control targets for every button and row.\n[ ] s17 (~8 min) Build the History tab: grid of rule changes and lander actions (1-or-2-row setting), filter chips by kind, a row detail showing before/after; register targets.\n[ ] s18 (~8 min) Add the plugin's settings sub-tab under Settings → Plugins → Gate (refresh interval, history size, default tab) with the level toolbar, and settings keys readable/writable through REST, MCP, CLI and voice.\n[ ] s19 (~8 min) Add the console nav entry (Builds → Gate & rules), the help page, glossary descriptions, notify.json for 'lander paused' and 'PR held by gate' alerts, and a systems-check health item when the lander is stuck.\n[ ] s20 (~10 min) Write unit tests: gate-rules core against fixtures, gate-store and lander adapters against a temp land/queue dir, history append/filter, REST route tests, CLI vs MCP parity test (same inputs → same outputs).\n[ ] s21 (~10 min) Run the CI checks (check-theme, check-controls, check-toolbars, check-chrome-assets, check-console-control, glossary catalog --check, plugin-lifecycle check gate --after-uninstall, tracker --check) and fix findings.\n[ ] s22 (~10 min) Re-bake the console, run vite preview, take desktop and phone shots of the three tabs, and submit to UI Review with 3 options (grid density / card layout / compact) as assets in plugins/gate/assets/.\n[ ] s23 (~10 min) Log the plugin in Shipped features, update catalog status and tracker, then write the report _claude/builds/reports/gate-rules-plugin-in-the-console.md (what was built, API parity table: deep link, state, actions, settings across REST/MCP/CLI/voice; molly handover), add the THREADS row, push the branch, link it with builds-live.mjs and open the PR for the merge queue.\nRead first: apps/console-web/plugins/gate/plugin.json, apps/console-web/plugins/gate/install.mjs, apps/console-web/plugins/gate/uninstall.mjs, apps/console-web/plugins/gate/README.md, apps/console-web/plugins/gate/gate-store.mjs, apps/console-web/plugins/gate/lander.mjs, apps/console-web/plugins/push-banner/land/, apps/console-web/plugins/gate/history.mjs, apps/console-web/plugins/gate/server/routes.py, apps/console-web/plugins/gate/gate.mjs, framework/cli/axf.mjs, apps/console-web/server/mcp_server.py, apps/console-web/plugins/gate/commands.json, apps/console-web/plugins/gate/web/GateView.tsx, apps/console-web/plugins/gate/web/index.ts, apps/console-web/plugins/gate/web/RulesTab.tsx, apps/console-web/plugins/gate/web/CheckPrDialog.tsx, apps/console-web/plugins/gate/web/LanderTab.tsx, apps/console-web/plugins/gate/web/HistoryTab.tsx, apps/console-web/plugins/gate/web/GateSettings.tsx, apps/console-web/plugins/gate/settings.json, apps/console-web/plugins/gate/help.md, apps/console-web/plugins/gate/notify.json, apps/console-web/plugins/gate/health.py, apps/console-web/plugins/gate/test.mjs, apps/console-web/plugins/gate/server/test_routes.py, apps/console-web/plugins/gate/, apps/console-web/plugins/gate/assets/, apps/console-web/src/axf/, _claude/builds/reports/gate-rules-plugin-in-the-console.md, _claude/THREADS.md, framework/catalog/status.json, tracker.json\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step gate-rules-plugin-in-the-console <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link gate-rules-plugin-in-the-console --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step gate-rules-plugin-in-the-console <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note gate-rules-plugin-in-the-console \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -150170,8 +150312,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:02:49.525Z",
      "note": "",
      "uid": "st-mwhs5pxb0o7qy0",
      "createdAt": "2026-11-15T11:57:45.983Z"
@@ -150192,15 +150334,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:06:12.088Z",
      "note": "",
      "uid": "st-mwhs5pxb0pj9p6",
      "createdAt": "2026-11-15T11:57:45.983Z"
     },
     {
      "id": "s3",
-     "text": "Write the reference core framework/core/gate-rules.mjs: validate, default rule set (CI green, tests, check-theme, check-controls, check-toolbars, UI Review gate, clash handling, merge-queue only), evaluate(rules, prSnapshot) → pass/fail per rule with reasons, and migrate from today's push-banner/lander settings keys.",
+     "text": "Write the reference core framework/core/gate-rules.mjs: validate, default rule set (CI green, tests, check-theme, check-controls, check-toolbars, UI Review gate, clash handling) plus a landing-mode setting mergeQueue: on|off (default off = one-at-a-time auto-lander; on = stacked merge queue, lander off), evaluate(rules, prSnapshot) → pass/fail per rule with reasons, and migrate from today's push-banner/lander settings keys. Put the landing mode in the gate-rules@1 / lander-state@1 schema (s2) too.",
      "model": "Fable",
      "why": "Engine internals and the migration from the old lander settings",
      "phase": "",
@@ -150213,8 +150355,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:09:34.397Z",
      "note": "",
      "uid": "st-mwhs5pxb0qqv4h",
      "createdAt": "2026-11-15T11:57:45.983Z"
@@ -150236,8 +150378,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:12:44.690Z",
      "note": "",
      "uid": "st-mwhs5pxb0rnos9",
      "createdAt": "2026-11-15T11:57:45.983Z"
@@ -150257,8 +150399,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:14:27.855Z",
      "note": "",
      "uid": "st-mwhs5pxb0s6xse",
      "createdAt": "2026-11-15T11:57:45.983Z"
@@ -150281,8 +150423,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:20:45.711Z",
      "note": "",
      "uid": "st-mwhs5pxb0tl6bi",
      "createdAt": "2026-11-15T11:57:45.983Z"
@@ -150302,15 +150444,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:22:11.576Z",
      "note": "",
      "uid": "st-mwhs5pxb0uo3yh",
      "createdAt": "2026-11-15T11:57:45.983Z"
     },
     {
      "id": "s8",
-     "text": "Write the lander adapter apps/console-web/plugins/gate/lander.mjs: status (running/paused/idle), last N runs, waiting PRs with the gate-rules evaluate reasons, land now (adds to the merge queue through land.mjs queue add, never a direct merge), pause and resume.",
+     "text": "Write the lander adapter apps/console-web/plugins/gate/lander.mjs with ONE mode switch 'Merge queue on/off' (Brett 06:59): ON = PRs go through the stacked merge queue (land.mjs queue add) and the one-at-a-time auto-lander is off; OFF (the default) = merge queue off and the auto-lander lands each finished build one at a time (merge main first, fix clashes, then land). Flipping it takes effect at once and is logged in History. Also: status (running/paused/idle, current mode), last N runs, waiting PRs with the gate-rules evaluate reasons, land now (follows the current mode), pause and resume. The default rule set in s3 must not force 'merge-queue only'.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -150324,8 +150466,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:24:15.938Z",
      "note": "",
      "uid": "st-mwhs5pxb0vl36r",
      "createdAt": "2026-11-15T11:57:45.983Z"
@@ -150345,8 +150487,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:24:37.906Z",
      "note": "",
      "uid": "st-mwhs5pxb0whyx9",
      "createdAt": "2026-11-15T11:57:45.983Z"
@@ -150366,8 +150508,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:26:56.348Z",
      "note": "",
      "uid": "st-mwhs5pxb0xe80e",
      "createdAt": "2026-11-15T11:57:45.983Z"
@@ -150388,8 +150530,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:28:08.927Z",
      "note": "",
      "uid": "st-mwhs5pxb0ytnkn",
      "createdAt": "2026-11-15T11:57:45.983Z"
@@ -150410,15 +150552,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:30:37.875Z",
      "note": "",
      "uid": "st-mwhs5pxb0z3ezw",
      "createdAt": "2026-11-15T11:57:45.983Z"
     },
     {
      "id": "s13",
-     "text": "Build the plugin view shell GateView.tsx: a framework TabGroup (tab-group asset, settings id gate.tabs) with Rules, Auto-lander and History tabs, SkinScope root, remember last tab. Register console-control targets view:gate and tab:gate.tabs=<tab> plus console_show deep links.",
+     "text": "Build the plugin view shell GateView.tsx: a framework TabGroup (tab-group asset, settings id gate.tabs) with tabs Rules (including an 'After merge' section whose first rule is 'Send Shipped features'), Pending features, Auto-lander and History; SkinScope root; remember last tab. PENDING FEATURES tab (Brett 07:17): every active or incomplete build in one grid on the shared 2-row status row with animated badges; each row expands to show that build's feature record EXACTLY as Shipped features shows it, reusing the Shipped features expanded-row component (not a copy). Data comes ONLY from the one true feature store on the VPS (built by vps-sends-shipped-features-every-merge, through its REST/features.* API), never a local copy; when a build lands, its row leaves this tab and appears in Shipped features because it's the same record. Register console-control targets view:gate and tab:gate.tabs=<tab> plus console_show deep links. If this is too big for one step, split it into more steps rather than cutting it.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -150432,8 +150574,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:34:09.706Z",
      "note": "",
      "uid": "st-mwhs5pxb102syv",
      "createdAt": "2026-11-15T11:57:45.983Z"
@@ -150453,8 +150595,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:36:08.328Z",
      "note": "",
      "uid": "st-mwhs5pxb117az5",
      "createdAt": "2026-11-15T11:57:45.983Z"
@@ -150475,8 +150617,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:37:27.732Z",
      "note": "",
      "uid": "st-mwhs5pxb12bf81",
      "createdAt": "2026-11-15T11:57:45.983Z"
@@ -150496,8 +150638,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:38:56.475Z",
      "note": "",
      "uid": "st-mwhs5pxb13l5kr",
      "createdAt": "2026-11-15T11:57:45.983Z"
@@ -150517,8 +150659,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:40:02.576Z",
      "note": "",
      "uid": "st-mwhs5pxb14rm2n",
      "createdAt": "2026-11-15T11:57:45.983Z"
@@ -150539,8 +150681,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:41:41.023Z",
      "note": "",
      "uid": "st-mwhs5pxb15a5o5",
      "createdAt": "2026-11-15T11:57:45.983Z"
@@ -150562,8 +150704,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:44:11.315Z",
      "note": "",
      "uid": "st-mwhs5pxb16jm6w",
      "createdAt": "2026-11-15T11:57:45.983Z"
@@ -150584,8 +150726,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:46:00.819Z",
      "note": "",
      "uid": "st-mwhs5pxb17es4l",
      "createdAt": "2026-11-15T11:57:45.983Z"
@@ -150605,8 +150747,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T12:47:15.378Z",
      "note": "",
      "uid": "st-mwhs5pxb18shfe",
      "createdAt": "2026-11-15T11:57:45.983Z"
@@ -150627,8 +150769,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T13:01:17.573Z",
      "note": "",
      "uid": "st-mwhs5pxb19cdam",
      "createdAt": "2026-11-15T11:57:45.983Z"
@@ -150651,13 +150793,746 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T13:03:58.446Z",
      "note": "",
      "uid": "st-mwhs5pxb1axp52",
      "createdAt": "2026-11-15T11:57:45.983Z"
     }
    ]
+  },
+  {
+   "id": "shipped-features-organized-sortable",
+   "title": "Shipped features: organized, sortable table with more columns",
+   "category": "",
+   "detail": "Brett: the Shipped features table is a mess. Rebuild it properly on the shared framework grid (follows the skin's 1-or-2-row setting; default console skin = 2 rows, styled to look great in every skin, light/dark, desktop/phone). ORGANIZE: group by plugin/area with collapsible group headers and counts; option to group by date, build, PR or status instead; de-duplicate repeated rows. SORTABLE: tap any column header to sort asc/desc, multi-sort with shift/long-press, remembered per viewer. MORE COLUMNS (show/hide and reorder via a column picker, remembered): feature name, plugin/area, description, status (live, behind a switch, partial, removed), build id (link), PR # (link), commit, date+time shipped, landed on main (yes/no), deployed live (yes/no), how to reach it (deep link, REST, MCP, CLI, voice: icons for each), settings key, help link, version, who asked (Brett's words), tests (pass/count). Plus search box, filter chips (plugin, status, date range, has API, not deployed), row count, export CSV. Each row expands for full details; context menu per row and cell (open feature, open build, open PR, copy link, mark removed). Uses the shared status badges from the pending-tab build. Full API parity (list/sort/filter/columns via REST/MCP/CLI/voice). Tests, help. Land when done with the one-at-a-time lander.",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/shipped-features-organized-sortable",
+   "pr": "#708",
+   "priority": "P1",
+   "createdAt": "2026-11-15T12:09:29.937Z",
+   "updatedAt": "2026-11-15T12:33:44.976Z",
+   "builtAt": "2026-11-15T12:33:21.985Z",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-15T12:09:32.291Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":2416,\"stop_reason\":\"tool_use\",\"session_id\":\"215d960b-3be1-49e2-8511-7aec6af2a05c\",\"total_cost_usd\":0.39652899999999996,\"usage\":{\"input_tokens\":2,\"cache_creation_input): one step per line of the request, review the steps.",
+     "at": "2026-11-15T12:11:05.553Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-shipped-features-organized-sortable--lenny.",
+     "at": "2026-11-15T12:11:25.231Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-shipped-features-organized-sortable--lenny, shared account login)",
+     "at": "2026-11-15T12:11:28.283Z"
+    },
+    {
+     "text": "Brett (07:17): Shipped features and the Gate & rules plugin's new 'Pending features' tab must read from ONE TRUE SOURCE on the VPS: the feature/manifest store the VPS sender writes (vps-sends-shipped-features-every-merge), with one record per build that changes state from pending to shipped. No separate ledger copy in the plugin. Make the expanded row a reusable component so the Pending features tab shows it exactly the same way.",
+     "at": "2026-11-15T12:17:31.788Z"
+    },
+    {
+     "text": "Phase 1 done, PR #708. UI Review not submitted: no console token in the headless run; shots + submit command in the report.",
+     "at": "2026-11-15T12:33:27.819Z"
+    },
+    {
+     "text": "Headless run axf-shipped-features-organized-sortable--lenny: brief only · start 11.5K tokens ($0.03) · cost $6.05 · 110 turns · 6 tools, MCP none",
+     "at": "2026-11-15T12:33:44.976Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "The shipped features table is straight up trash, you better organize that, make it sortable with more columns",
+    "at": "2026-11-15T12:09:29.937Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "shipped-features-organized-sortable",
+    "brief": "# Build: shipped-features-organized-sortable\n\n## Brett said (verbatim)\nAt: 2026-11-15T12:09:29.937Z\n> The shipped features table is straight up trash, you better organize that, make it sortable with more columns\n\n## What to build\nContinue build \"Shipped features: organized, sortable table with more columns\" (shipped-features-organized-sortable) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-15 12:09):\n\"The shipped features table is straight up trash, you better organize that, make it sortable with more columns\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~30 min):\n[ ] s1 (~10 min) Brett: the Shipped features table is a mess. Rebuild it properly on the shared framework grid (follows the skin's 1-or-2-row setting; default console skin = 2 rows, styled to look great in every skin, light/dark, desktop/phone). ORGANIZE: group by plugin/area with collapsible group headers and counts; option to group by date, build, PR or status instead; de-duplicate repeated rows. SORTABLE: tap any column header to sort asc/desc, multi-sort with shift/long-press, remembered per viewer. MORE COLUMNS (show/hide and reorder via a column picker, remembered): feature name, plugin/area, description, status (live, behind a switch, partial, removed), build id (link), PR # (link), commit, date+time shipped, landed on main (yes/no), deployed live (yes/no), how to reach it (deep link, REST, MCP, CLI, voice: icons for each), settings key, help link, version, who asked (Brett's words), tests (pass/count). Plus search box, filter chips (plugin, status, date range, has API, not deployed), row count, export CSV. Each row expands for full details; context menu per row and cell (open feature, open build, open PR, copy link, mark removed). Uses the shared status badges from the pending-tab build. Full API parity (list/sort/filter/columns via REST/MCP/CLI/voice). Tests, help. Land when done with the one-at-a-time lander.\n[ ] s2 (~10 min) The shipped features table is straight up trash, you better organize that, make it sortable with more columns\n[ ] s3 (~10 min) Tests green, report _claude/builds/reports/shipped-features-organized-sortable.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/shipped-features-organized-sortable.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step shipped-features-organized-sortable <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link shipped-features-organized-sortable --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step shipped-features-organized-sortable <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note shipped-features-organized-sortable \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Brett: the Shipped features table is a mess. Rebuild it properly on the shared framework grid (follows the skin's 1-or-2-row setting; default console skin = 2 rows, styled to look great in every skin, light/dark, desktop/phone). ORGANIZE: group by plugin/area with collapsible group headers and counts; option to group by date, build, PR or status instead; de-duplicate repeated rows. SORTABLE: tap any column header to sort asc/desc, multi-sort with shift/long-press, remembered per viewer. MORE COLUMNS (show/hide and reorder via a column picker, remembered): feature name, plugin/area, description, status (live, behind a switch, partial, removed), build id (link), PR # (link), commit, date+time shipped, landed on main (yes/no), deployed live (yes/no), how to reach it (deep link, REST, MCP, CLI, voice: icons for each), settings key, help link, version, who asked (Brett's words), tests (pass/count). Plus search box, filter chips (plugin, status, date range, has API, not deployed), row count, export CSV. Each row expands for full details; context menu per row and cell (open feature, open build, open PR, copy link, mark removed). Uses the shared status badges from the pending-tab build. Full API parity (list/sort/filter/columns via REST/MCP/CLI/voice). Tests, help. Land when done with the one-at-a-time lander.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-15T12:22:47.189Z",
+     "note": "",
+     "uid": "st-mwhsmuvw01f93g",
+     "createdAt": "2026-11-15T12:11:05.553Z"
+    },
+    {
+     "id": "s2",
+     "text": "The shipped features table is straight up trash, you better organize that, make it sortable with more columns",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-15T12:31:11.761Z",
+     "note": "",
+     "uid": "st-mwhsmuvw02ew7x",
+     "createdAt": "2026-11-15T12:11:05.553Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/shipped-features-organized-sortable.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/shipped-features-organized-sortable.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-15T12:33:21.985Z",
+     "note": "",
+     "uid": "st-mwhsmuvw03ud8u",
+     "createdAt": "2026-11-15T12:11:05.553Z"
+    }
+   ]
+  },
+  {
+   "id": "vps-sends-shipped-features-every-merge",
+   "title": "VPS sends Shipped features on every merge to main (+ backfill)",
+   "category": "",
+   "detail": "Bug: Shipped features has nothing for 2 days, but main DID get many merges (Nov 14-15: PRs #687, #694, #691, #693, #696, #689, #702, #324, plus build_land of console-look-becomes-default-axhub-skin, and the hand-merged skin PRs #647 #648 #590 #618 #641 #652 #657 #654). The last shipped manifests in _claude/builds/shipped/ are from Nov 13. The orchestrator is supposed to send shipped-manifest@1 to Shipped features (commit 7a6668231) but stopped. RULE (Brett): the VPS controls the orchestrator, so the VPS sends the shipped manifest AS SOON AS any merge to main succeeds, whatever the path (merge queue, auto-lander, build_land, manual GitHub merge, push to main). Implement it server-side on the VPS: a watcher on origin/main (post-merge hook + a poll/webhook fallback) that, for each new merge commit, maps it to its build/PR, builds the shipped-manifest@1 (PR, commit, mergedAt, landedAt, files, areas, tests, report link, what Brett said) and sends it to Shipped features at once; idempotent (no duplicates); alerts Brett if a send fails, and retries. Find and fix why it stopped on Nov 13. BACKFILL every merge to main since Nov 13 that has no manifest. Design it so it moves into the axf-molly container with the orchestrator (coordinate with move-build-orchestrator-to-axhub); the data goes to axf-data once that exists. Tests, help. Land with the one-at-a-time lander.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/vps-sends-shipped-features-every-merge",
+   "pr": "#709",
+   "priority": "P0",
+   "createdAt": "2026-11-15T12:14:27.131Z",
+   "updatedAt": "2026-11-15T12:36:04.027Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-15T12:14:29.597Z"
+    },
+    {
+     "text": "Brett (07:14): this sender's screen and settings live in the Gate & rules plugin (gate-rules-plugin-in-the-console), as the first 'After merge' rule 'Send Shipped features'. Expose its on/off, status, last sent, failed sends with retry, and backfill through the gate.*/lander.* tools so that plugin can show and control it.",
+     "at": "2026-11-15T12:14:51.031Z"
+    },
+    {
+     "text": "Split by Claude into 17 steps (1 Fable).",
+     "at": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-vps-sends-shipped-features-every-merge--joey.",
+     "at": "2026-11-15T12:17:12.437Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-vps-sends-shipped-features-every-merge--joey, shared account login)",
+     "at": "2026-11-15T12:17:14.839Z"
+    },
+    {
+     "text": "Brett (07:17): this sender owns the ONE TRUE feature store on the VPS: one record per build (shipped-manifest@1 plus an in-progress state for active/incomplete builds), created when a build is filed, updated as it moves through the pipeline, and marked shipped on a successful merge to main. Serve it through one API (REST + features.* tools via axHub). Both Shipped features and the Gate & rules 'Pending features' tab read only from it. Migrate the existing _claude/builds/shipped/*.json and the plugin's ledger into it so there's a single source.",
+     "at": "2026-11-15T12:17:34.278Z"
+    },
+    {
+     "text": "Dispatch gate: vps-sends-shipped-features-every-merge still has axf-vps-sends-shipped-features-every-merge--joey alive: not launched again, tracking that session.",
+     "at": "2026-11-15T12:35:10.404Z"
+    },
+    {
+     "text": "Headless run axf-vps-sends-shipped-features-every-merge--joey: brief only · start 13.1K tokens ($0.07) · cost $7.72 · 71 turns · 6 tools, MCP none",
+     "at": "2026-11-15T12:35:33.726Z"
+    },
+    {
+     "text": "Session stopped on its own with 16 steps left: back in Pending for Brett.",
+     "at": "2026-11-15T12:36:04.027Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Why are there no shipped features for the past 2 days. No, the VPS has to send shipped features as soon as a merge to main succeeds since it now controls the orchestrator",
+    "at": "2026-11-15T12:14:27.131Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "vps-sends-shipped-features-every-merge",
+    "brief": "# Build: vps-sends-shipped-features-every-merge\n\n## Brett said (verbatim)\nAt: 2026-11-15T12:14:27.131Z\n> Why are there no shipped features for the past 2 days. No, the VPS has to send shipped features as soon as a merge to main succeeds since it now controls the orchestrator\n\n## What to build\nContinue build \"VPS sends Shipped features on every merge to main (+ backfill)\" (vps-sends-shipped-features-every-merge) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-15 12:14):\n\"Why are there no shipped features for the past 2 days. No, the VPS has to send shipped features as soon as a merge to main succeeds since it now controls the orchestrator\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~10 min):\n[ ] s1 (~10 min) Design the merge-watch contract: a merge-watch@1 state record (last seen main sha, per-commit send state: pending/sent/failed, attempts, nextRetryAt, the manifest id used as the idempotency key = merge commit sha) and how a merge commit maps to a shipped-manifest@1 (PR, commit, mergedAt, landedAt, files, areas, tests, report link, origin.said). Write the schema and doc, with its data dir behind one path resolver (repo/hub now, axf-data later) so it can move into axf-molly with the orchestrator\nRead first: framework/schemas/merge-watch.json, framework/core/merge-watch.mjs, _claude/memory/docs/merge-watch.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step vps-sends-shipped-features-every-merge <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link vps-sends-shipped-features-every-merge --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step vps-sends-shipped-features-every-merge <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note vps-sends-shipped-features-every-merge \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Design the merge-watch contract: a merge-watch@1 state record (last seen main sha, per-commit send state: pending/sent/failed, attempts, nextRetryAt, the manifest id used as the idempotency key = merge commit sha) and how a merge commit maps to a shipped-manifest@1 (PR, commit, mergedAt, landedAt, files, areas, tests, report link, origin.said). Write the schema and doc, with its data dir behind one path resolver (repo/hub now, axf-data later) so it can move into axf-molly with the orchestrator",
+     "model": "Fable",
+     "why": "New cross-app contract and storage layout that the orchestrator move (move-build-orchestrator-to-axhub) has to keep",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/schemas/merge-watch.json",
+      "framework/core/merge-watch.mjs",
+      "_claude/memory/docs/merge-watch.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-15T12:34:52.758Z",
+     "note": "",
+     "uid": "st-mwhsubns01a79r",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s2",
+     "text": "Root-cause why sends stopped on Nov 13: read commit 7a6668231 and the orchestrator/landing path that writes shipped-manifest@1, trace the Nov 14-15 merges (merge queue, auto-lander, build_land, manual GitHub merges) to find where each one skipped the send. Write the findings into the report draft",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/vps-sends-shipped-features-every-merge.md",
+      "apps/console-web/plugins/build-orchestrator/",
+      "apps/console-web/plugins/push-banner/land/",
+      "apps/console-web/plugins/shipped-features/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubns023d91",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s3",
+     "text": "Fix the stopped send at its root (the regression from the previous step) so the existing orchestrator path builds and sends the manifest again; add a regression test",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/",
+      "apps/console-web/plugins/shipped-features/test/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubns03iuy5",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s4",
+     "text": "Commit mapper: for a merge commit on main, find its PR (merge or squash message, GitHub API through github-token.mjs with an ETag cache) and its build (store branch/PR link, then build-origin fallback); list the changed files and work out areas",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/merge-watch/map-commit.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubns04rb90",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s5",
+     "text": "Manifest builder: build a shipped-manifest@1 from the mapped commit (mergedAt from the PR, landedAt from the commit, tests from the CI run, a report link when _claude/builds/reports/<id>.md exists, origin.said from build-origin). Commits that map to no build still go out as an unlinked manifest",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/merge-watch/build-manifest.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubns05u79d",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s6",
+     "text": "Idempotent sender: post to Shipped features (ledger API, falling back to capability axf.shipped@1) keyed by merge sha; skip anything already sent or already in _claude/builds/shipped/ or the ledger; record sent/failed in merge-watch state",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/merge-watch/send.mjs",
+      "apps/console-web/plugins/shipped-features/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubns06dk47",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s7",
+     "text": "Retry and alert: back off on failed sends (1, 5, 15, 60 min), raise a systems-check health@1 item after 3 failures (what broke, since when, with an Auto fix that resends) and push one AmberX alert through axf.notify@1, declared in notify.json",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/merge-watch/retry.mjs",
+      "apps/console-web/plugins/shipped-features/notify.json",
+      "apps/console-web/plugins/shipped-features/server/health.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubns071x6s",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s8",
+     "text": "Watcher CLI merge-watch.mjs tick|status|send <sha>|backfill --since <date>|retry: fetch origin/main, walk new first-parent commits since the last sha, map, build, send. Takes a lock so two ticks never overlap",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/merge-watch.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubns08m85w",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s9",
+     "text": "Triggers on the VPS: call tick from the post-merge/land hook in every landing path (merge queue land.mjs, auto-lander, build_land, builds-live) plus a cron poll every minute (axf-merge-watch) as the fallback for manual GitHub merges and direct pushes. Optional push webhook route on the console server",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/merge-queue.mjs",
+      "deploy/cron/axf-merge-watch",
+      "apps/console-web/server/routes/merge_watch.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubns09oa9a",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s10",
+     "text": "Make it ready for the move: keep the runner container-agnostic (env AXF_MERGE_WATCH_DATA, no repo-only paths), add an axf-molly entry stub and a note on the move-build-orchestrator-to-axhub build",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/cli/merge-watch.mjs",
+      "deploy/molly/merge-watch.entry.mjs",
+      "_claude/builds/store.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubnt0a20vd",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s11",
+     "text": "API parity: REST GET /api/plugins/shipped-features/merge-watch (state) and POST send|retry|backfill; MCP plugin commands; axf merge-watch CLI alias; AmberX voice actions; console_show deep link to Shipped features → Merge watch",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/shipped-features/server/routes.py",
+      "apps/console-web/plugins/shipped-features/commands.json",
+      "framework/cli/axf.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubnt0bntgo",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s12",
+     "text": "No panel inside Shipped features (Brett 07:14): the Merge watch status and controls (on/off, last sha, pending/failed sends, Retry, Backfill) are shown by the Gate & rules plugin's 'After merge' rule 'Send Shipped features'. Here, make sure the REST routes and features.*/gate.* MCP tools expose everything that plugin needs. Also serve the ONE TRUE feature store (one record per build, in-progress through shipped) through a single list/get API with filters (state, build, PR, since) that both Shipped features and the Gate & rules Pending features tab read.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/shipped-features/web/MergeWatchPanel.tsx",
+      "apps/console-web/plugins/shipped-features/assets/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubnt0cno97",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s13",
+     "text": "Backfill dry run: run merge-watch backfill --since 2026-11-13 --dry-run and check the list covers #687 #694 #691 #693 #696 #689 #702 #324, the console-look-becomes-default-axhub-skin land and #647 #648 #590 #618 #641 #652 #657 #654, with no duplicates of the Nov 13 manifests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/shipped/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubnt0dh61u",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s14",
+     "text": "Run the backfill for real, check that Shipped features shows every merge since Nov 13, and commit the new manifests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/shipped/",
+      "apps/console-web/plugins/shipped-features/data/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubnt0e9j0d",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s15",
+     "text": "Tests: mapper (merge and squash commits, no-PR push), builder, idempotency (send twice gives one row), retry/alert, lock, and the backfill range; add them to CI",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/check-merge-watch.mjs",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubnt0fusg1",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s16",
+     "text": "Help and docs: help entry, plugin README, glossary description, CLAUDE.md line for the CLI, lifecycle markers",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "apps/console-web/plugins/shipped-features/README.md",
+      "apps/console-web/plugins/shipped-features/help.json",
+      "CLAUDE.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubnt0gzhve",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    },
+    {
+     "id": "s17",
+     "text": "Final: run every check, write the report (root cause, fix, backfill count, how REST/MCP/CLI/voice reach it), add the THREADS row, open the PR and hand it to the one-at-a-time lander",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/vps-sends-shipped-features-every-merge.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhsubnt0hpj2j",
+     "createdAt": "2026-11-15T12:16:53.896Z"
+    }
+   ]
+  },
+  {
+   "id": "axf-molly-container-orchestrator-gate",
+   "title": "axf-molly container: orchestrator, gate, lander, Shipped sender",
+   "category": "",
+   "detail": "Replaces move-build-orchestrator-to-axhub (its 37 steps were planned for the old axHub-screens layout and its s1 gate waits on a precondition that no longer applies). FINAL LAYOUT (Brett): console = screens only; axf-molly = does all the work; axHub = routes + credentials/approvals only, no screens, no data; axf-data = stores all data. BUILD a private container 'axf-molly' on Coolify (no public port/DNS, internal Docker network, auto-restart). Check the name doesn't clash with the old standalone Molly app (it's retired; list any leftover container/cron/domain for retirement, delete nothing without listing it). MOVE INTO IT: orchestrator, dispatcher/pipeline tick, reconciler, splitter, slots/accounts routing, gate rules engine (framework/core/gate-rules.mjs from gate-rules-plugin-in-the-console), auto-lander + merge queue with the 'Merge queue on/off' switch, and the merge watch / Shipped features sender (vps-sends-shipped-features-every-merge). It reads/writes ALL data through axf-data (data-container-axf-data-holds-all, data-store@1 client), never repo files. HOST ACCESS: a narrow host bridge (mounted /root/axf-builds worktrees, git, claude CLI, tmux runner) to launch and watch build sessions; NOT the Docker socket; document exactly what it can touch. axHub registers axf-molly as a downstream and exposes orchestrator.*, gate.*, lander.*, features.* tools (equivalents for axf-console.build_orchestrator_pipeline_request and planner.builds). Console orchestrator, Gate & rules and Shipped features screens talk to it through axHub. STAGING: shadow first (axf-molly computes, console acts, diff log), then cutover with an owner lease and undo; builds keep running during the switch; no build or history lost. FIX ON THE WAY: phase-end builds must never be parked in Pending (reconciler bug); dispatcher alert links use view:build-orchestrator. Console-down drill: stop the console and prove builds still launch, land and get Shipped features. Order: start right after axf-data is up (its API and client exist on PR #704). Tests, help, Shipped features. Land each part with the one-at-a-time lander.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/axf-molly-container-orchestrator-gate",
+   "pr": "#710",
+   "priority": "P0",
+   "createdAt": "2026-11-15T12:20:29.383Z",
+   "updatedAt": "2026-11-15T13:02:24.386Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-15T12:20:32.805Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"70aadc16-8440-40dd-a13c-f8ab4848ed91\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-15T12:22:22.822Z"
+    },
+    {
+     "text": "s1 done (PR #710). axf-molly is up on the VPS in shadow mode (private, Coolify network, host bridge active). Needs Brett: (1) register the downstream on axHub from 'node apps/axf-molly/molly.mjs axhub-service'; (2) retire the old standalone Molly: container molly (molly.amberxai.com), image molly:latest, /etc/cron.d/molly, /usr/local/bin/molly-update, /opt/molly, apps/molly: nothing deleted; (3) cutover when 'molly.mjs status' says ready, then the console-down drill (docker stop axf-console; molly.mjs drill; docker start axf-console). After landing run 'bash deploy/install-molly.sh' from /opt/axf.",
+     "at": "2026-11-15T13:01:09.651Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-axf-molly-container-orchestrator-gate--sully.",
+     "at": "2026-11-15T12:22:44.473Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-axf-molly-container-orchestrator-gate--sully, shared account login)",
+     "at": "2026-11-15T12:22:48.103Z"
+    },
+    {
+     "text": "Do not cut over before PR #710 lands: the host's pipeline.mjs on main does not read the lease yet, so both sides would launch. After landing and 'bash deploy/install-molly.sh' from /opt/axf the gate is in place.",
+     "at": "2026-11-15T13:01:58.820Z"
+    },
+    {
+     "text": "Headless run axf-axf-molly-container-orchestrator-gate--sully: brief only · start 13.5K tokens ($0.07) · cost $16.10 · 86 turns · 6 tools, MCP none",
+     "at": "2026-11-15T13:02:24.386Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Yes do those containers and wire them and migrate everything asap. Molly's gonna run the orchestrator from now on, so let's name it AXF Molly.",
+    "at": "2026-11-15T12:20:29.383Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "axf-molly-container-orchestrator-gate",
+    "brief": "# Build: axf-molly-container-orchestrator-gate\n\n## Brett said (verbatim)\nAt: 2026-11-15T12:20:29.383Z\n> Yes do those containers and wire them and migrate everything asap. Molly's gonna run the orchestrator from now on, so let's name it AXF Molly.\n\n## What to build\nContinue build \"axf-molly container: orchestrator, gate, lander, Shipped sender\" (axf-molly-container-orchestrator-gate) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-15 12:20):\n\"Yes do those containers and wire them and migrate everything asap. Molly's gonna run the orchestrator from now on, so let's name it AXF Molly.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~10 min):\n[ ] s1 (~10 min) Replaces move-build-orchestrator-to-axhub (its 37 steps were planned for the old axHub-screens layout and its s1 gate waits on a precondition that no longer applies). FINAL LAYOUT (Brett): console = screens only; axf-molly = does all the work; axHub = routes + credentials/approvals only, no screens, no data; axf-data = stores all data. BUILD a private container 'axf-molly' on Coolify (no public port/DNS, internal Docker network, auto-restart). Check the name doesn't clash with the old standalone Molly app (it's retired; list any leftover container/cron/domain for retirement, delete nothing without listing it). MOVE INTO IT: orchestrator, dispatcher/pipeline tick, reconciler, splitter, slots/accounts routing, gate rules engine (framework/core/gate-rules.mjs from gate-rules-plugin-in-the-console), auto-lander + merge queue with the 'Merge queue on/off' switch, and the merge watch / Shipped features sender (vps-sends-shipped-features-every-merge). It reads/writes ALL data through axf-data (data-container-axf-data-holds-all, data-store@1 client), never repo files. HOST ACCESS: a narrow host bridge (mounted /root/axf-builds worktrees, git, claude CLI, tmux runner) to launch and watch build sessions; NOT the Docker socket; document exactly what it can touch. axHub registers axf-molly as a downstream and exposes orchestrator.*, gate.*, lander.*, features.* tools (equivalents for axf-console.build_orchestrator_pipeline_request and planner.builds). Console orchestrator, Gate & rules and Shipped features screens talk to it through axHub. STAGING: shadow first (axf-molly computes, console acts, diff log), then cutover with an owner lease and undo; builds keep running during the switch; no build or history lost. FIX ON THE WAY: phase-end builds must never be parked in Pending (reconciler bug); dispatcher alert links use view:build-orchestrator. Console-down drill: stop the console and prove builds still launch, land and get Shipped features. Order: start right after axf-data is\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step axf-molly-container-orchestrator-gate <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link axf-molly-container-orchestrator-gate --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step axf-molly-container-orchestrator-gate <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note axf-molly-container-orchestrator-gate \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Replaces move-build-orchestrator-to-axhub (its 37 steps were planned for the old axHub-screens layout and its s1 gate waits on a precondition that no longer applies). FINAL LAYOUT (Brett): console = screens only; axf-molly = does all the work; axHub = routes + credentials/approvals only, no screens, no data; axf-data = stores all data. BUILD a private container 'axf-molly' on Coolify (no public port/DNS, internal Docker network, auto-restart). Check the name doesn't clash with the old standalone Molly app (it's retired; list any leftover container/cron/domain for retirement, delete nothing without listing it). MOVE INTO IT: orchestrator, dispatcher/pipeline tick, reconciler, splitter, slots/accounts routing, gate rules engine (framework/core/gate-rules.mjs from gate-rules-plugin-in-the-console), auto-lander + merge queue with the 'Merge queue on/off' switch, and the merge watch / Shipped features sender (vps-sends-shipped-features-every-merge). It reads/writes ALL data through axf-data (data-container-axf-data-holds-all, data-store@1 client), never repo files. HOST ACCESS: a narrow host bridge (mounted /root/axf-builds worktrees, git, claude CLI, tmux runner) to launch and watch build sessions; NOT the Docker socket; document exactly what it can touch. axHub registers axf-molly as a downstream and exposes orchestrator.*, gate.*, lander.*, features.* tools (equivalents for axf-console.build_orchestrator_pipeline_request and planner.builds). Console orchestrator, Gate & rules and Shipped features screens talk to it through axHub. STAGING: shadow first (axf-molly computes, console acts, diff log), then cutover with an owner lease and undo; builds keep running during the switch; no build or history lost. FIX ON THE WAY: phase-end builds must never be parked in Pending (reconciler bug); dispatcher alert links use view:build-orchestrator. Console-down drill: stop the console and prove builds still launch, land and get Shipped features. Order: start right after axf-data is",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-15T13:01:07.079Z",
+     "note": "",
+     "uid": "st-mwht1dgm01fd69",
+     "createdAt": "2026-11-15T12:22:22.822Z"
+    },
+    {
+     "id": "s2",
+     "text": "Yes do those containers and wire them and migrate everything asap. Molly's gonna run the orchestrator from now on, so let's name it AXF Molly.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwht1dgm028i9o",
+     "createdAt": "2026-11-15T12:22:22.822Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/axf-molly-container-orchestrator-gate.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/axf-molly-container-orchestrator-gate.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwht1dgm03m387",
+     "createdAt": "2026-11-15T12:22:22.822Z"
+    }
+   ]
+  },
+  {
+   "id": "home-cards-follow-plugin-off-home-always",
+   "title": "Home cards follow plugin on/off; home always filled with most-active plugins",
+   "category": "",
+   "detail": "1) When a plugin is disabled or uninstalled, its home screen card is removed at once (no dead or blank cards), and comes back if the plugin is re-enabled. 2) The home screen is never empty or gappy: empty slots are filled automatically. 3) Brett's own picks always win and keep their order. Any slot he hasn't picked is filled with the MOST ACTIVE enabled plugins, ranked by recent use and activity (opens, actions, live jobs, alerts over a recent window). The ranking updates over time and auto-filled cards are marked as auto (pin to keep, remove to swap). 4) Setting for number of home slots; cards use the shared skin row/card styling. Full API parity (list home cards, pin/unpin, reorder, refill, ranking) via REST/MCP/CLI/voice. Tests (disable plugin removes its card and a replacement fills in; empty selection still fills the home screen), help, Shipped features. Land with the one-at-a-time lander.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-15T13:22:11.842Z",
+   "updatedAt": "2026-11-15T13:22:50.077Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-15T13:22:14.493Z"
+    },
+    {
+     "text": "Brett (08:23): EVERY plugin gets its own home card, built at the same time as the plugin. Make a home card part of the plugin lifecycle: the plugin _template and plugin scaffold create a card (declared in plugin.json), install adds it, uninstall removes it, and the plugin-lifecycle check fails CI if a plugin has no card. Then audit all ~75 existing plugins and add a card to every one that's missing one.",
+     "at": "2026-11-15T13:22:50.077Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "When I disable plugins, the home cards need to be disabled as well. They need to be removed, and other ones need to replace them. The home screen always needs to be filled with some plugins, even if I don't have some selected. Yes, I can select which ones I want, but if I don't, you need to pick some. Pick the most active.",
+    "at": "2026-11-15T13:22:11.842Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

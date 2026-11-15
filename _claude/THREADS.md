@@ -807,143 +807,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:52 UTC · `merge-main-land-one-source-truth-console` s7 done (all) · orchestrator
-- 2026-11-14 23:52 UTC · `merge-main-land-console-app-part-4` s10 done, → built (all) · orchestrator
-- 2026-11-14 23:52 UTC · `merge-main-land-one-source-truth-console` s8 done (all) · orchestrator
-- 2026-11-14 23:53 UTC · `merge-main-land-one-source-truth-console` s9 done, → built (all) · orchestrator
-- 2026-11-14 23:53 UTC · `themed-native-controls-plugin` s26 done (all) · orchestrator
-- 2026-11-14 23:52 UTC · `merge-main-land-console-app-part-4` note (all) · orchestrator
-- 2026-11-14 23:53 UTC · `merge-main-land-console-app-part-4` → pending, note (all) · pipeline
-- 2026-11-14 23:53 UTC · `merge-main-land-server-gate-one-session` → running, note (all) · pipeline
-- 2026-11-14 23:53 UTC · `merge-main-land-server-gate-one-session` branch claude/merge-main-land-server-gate-one-session (all) · pipeline
-- 2026-11-14 23:53 UTC · `merge-main-land-server-gate-one-session` note (all) · orchestrator
-- 2026-11-14 23:53 UTC · `merge-main-land-one-source-truth-console` note (all) · orchestrator
-- 2026-11-14 23:54 UTC · `console-look-becomes-default-axhub-skin` note (all) · pipeline
-- 2026-11-14 23:55 UTC · `picker-dialog-plugin-replaces-all` s19 done (all) · orchestrator
-- 2026-11-14 23:56 UTC · `fix-axhub-36-pull-main-in-failed` → running, note (all) · pipeline
-- 2026-11-14 23:56 UTC · `fix-axhub-36-pull-main-in-failed` note (all) · orchestrator
-- 2026-11-14 23:57 UTC · `fix-axhub-36-pull-main-in-failed` → queued, note (all) · pipeline
-- 2026-11-14 23:58 UTC · `picker-dialog-plugin-replaces-all` s20 done (all) · orchestrator
-- 2026-11-14 23:58 UTC · `console-look-becomes-default-axhub-skin` s6 done (all) · orchestrator
-- 2026-11-14 23:59 UTC · `console-look-becomes-default-axhub-skin` note (all) · pipeline
-- 2026-11-14 23:59 UTC · `console-look-becomes-default-axhub-skin` note (all) · orchestrator
-- 2026-11-15 00:00 UTC · `console-look-becomes-default-axhub-skin` → pending, note (all) · pipeline
-- 2026-11-15 00:00 UTC · `fix-axhub-36-pull-main-in-failed` → running, note (all) · pipeline
-- 2026-11-15 00:01 UTC · `fix-axhub-36-pull-main-in-failed` note (all) · orchestrator
-- 2026-11-15 00:01 UTC · `restore-asset-designer-plugin-merged-nov` → running, note (all) · pipeline
-- 2026-11-15 00:02 UTC · `skin-animations-swatches-skin-switch` → complete, note (all) · reconciler
-- 2026-11-15 00:02 UTC · `merge-main-land-move-amberx-web-app` branch claude/merge-main-land-move-amberx-web-app, PR #688, note (all) · reconciler
-- 2026-11-15 00:02 UTC · `merge-main-land-console-app-part-3` s4 done, → built, note (all) · reconciler
-- 2026-11-15 00:03 UTC · `restore-asset-designer-plugin-merged-nov` s2 done, → running (all) · orchestrator
-- 2026-11-15 00:03 UTC · `restore-asset-designer-plugin-merged-nov` s3 done (all) · orchestrator
-- 2026-11-15 00:05 UTC · `picker-dialog-plugin-replaces-all` s21 done (all) · orchestrator
-- 2026-11-15 00:06 UTC · `fix-axhub-36-pull-main-in-failed` s17 done, → running (all) · orchestrator
-- 2026-11-15 00:06 UTC · `fix-axhub-36-pull-main-in-failed` s18 done (all) · orchestrator
-- 2026-11-15 00:06 UTC · `fix-axhub-36-pull-main-in-failed` s19 done (all) · orchestrator
-- 2026-11-15 00:07 UTC · `restore-asset-designer-plugin-merged-nov` s4 done (all) · orchestrator
-- 2026-11-15 00:07 UTC · `fix-axhub-36-pull-main-in-failed` note (all) · pipeline
-- 2026-11-15 00:07 UTC · `picker-dialog-plugin-replaces-all` s22 done, → built (all) · orchestrator
-- 2026-11-15 00:07 UTC · `themed-native-controls-plugin` s28 done (all) · orchestrator
-- 2026-11-15 00:07 UTC · `picker-dialog-plugin-replaces-all` note (all) · orchestrator
-- 2026-11-15 00:08 UTC · `picker-dialog-plugin-replaces-all` note (all) · orchestrator
-- 2026-11-15 00:08 UTC · `merge-main-land-server-gate-one-session` branch claude/server-gate-one-session-per-build-no, PR #610 (all) · builds-live
-- 2026-11-15 00:08 UTC · `merge-main-land-server-gate-one-session` s1 done, → running (all) · orchestrator
-- 2026-11-15 00:08 UTC · `merge-main-land-server-gate-one-session` s2 done (all) · orchestrator
-- 2026-11-15 00:09 UTC · `all-settings-interfaces-open-floating` → running, note (all) · pipeline
-- 2026-11-15 00:09 UTC · `all-settings-interfaces-open-floating` note (all) · orchestrator
-- 2026-11-15 00:06 UTC · `merge-main-land-console-app-part-2` added (0 steps) (all) · land-finish-auto-land-live-clear-backlog
-- 2026-11-15 00:06 UTC · `merge-main-land-console-app-part-2` → queued, note (all) · land-finish-auto-land-live-clear-backlog
-- 2026-11-15 00:06 UTC · `merge-main-land-voice-listener-use` added (0 steps) (all) · land-finish-auto-land-live-clear-backlog
-- 2026-11-15 00:07 UTC · `merge-main-land-voice-listener-use` → queued, note (all) · land-finish-auto-land-live-clear-backlog
-- 2026-11-15 00:07 UTC · `merge-main-land-console-axhub-retry` added (0 steps) (all) · land-finish-auto-land-live-clear-backlog
-- 2026-11-15 00:07 UTC · `merge-main-land-console-axhub-retry` → queued, note (all) · land-finish-auto-land-live-clear-backlog
-- 2026-11-13 18:33 UTC · `all-settings-interfaces-open-floating` s3 done, → built (all) · orchestrator
-- 2026-11-13 18:33 UTC · `all-settings-interfaces-open-floating` note (all) · orchestrator
-- 2026-11-15 00:08 UTC · `merge-main-land-server-gate-one-session` s3 done (all) · orchestrator
-- 2026-11-15 00:08 UTC · `merge-main-land-server-gate-one-session` s4 done (all) · orchestrator
-- 2026-11-15 00:08 UTC · `merge-main-land-server-gate-one-session` s5 done (all) · orchestrator
-- 2026-11-15 00:08 UTC · `merge-main-land-server-gate-one-session` s6 done (all) · orchestrator
-- 2026-11-15 00:10 UTC · `merge-main-land-server-gate-one-session` note (all) · orchestrator
-- 2026-11-15 00:10 UTC · `quick-settings-pinned-collapsible-pane` → running, note (all) · pipeline
-- 2026-11-15 00:10 UTC · `merge-main-land-console-app-part-2` added (0 steps) (all) · foreign-write
-- 2026-11-15 00:10 UTC · `merge-main-land-voice-listener-use` added (0 steps) (all) · foreign-write
-- 2026-11-15 00:10 UTC · `merge-main-land-console-axhub-retry` added (0 steps) (all) · foreign-write
-- 2026-11-15 00:10 UTC · `themed-native-controls-plugin` s29 done (all) · orchestrator
-- 2026-11-15 00:11 UTC · `fix-axhub-36-pull-main-in-failed` s20 done (all) · orchestrator
-- 2026-11-15 00:09 UTC · `merge-main-land-server-gate-one-session` s7 done (all) · orchestrator
-- 2026-11-15 00:09 UTC · `merge-main-land-server-gate-one-session` s8 done (all) · orchestrator
-- 2026-11-15 00:09 UTC · `merge-main-land-server-gate-one-session` s9 done, → built (all) · orchestrator
-- 2026-11-15 00:10 UTC · `quick-settings-pinned-collapsible-pane` note (all) · orchestrator
-- 2026-11-15 00:11 UTC · `merge-main-land-console-app-part-2` added (0 steps) (all) · foreign-write
-- 2026-11-15 00:11 UTC · `merge-main-land-voice-listener-use` added (0 steps) (all) · foreign-write
-- 2026-11-15 00:11 UTC · `merge-main-land-console-axhub-retry` added (0 steps) (all) · foreign-write
-- 2026-11-15 00:12 UTC · `merge-main-land-console-app-part-2` note (all) · orchestrator
-- 2026-11-15 00:13 UTC · `merge-main-land-console-app-part-2` note (all) · builds-live
-- 2026-11-15 00:13 UTC · `merge-main-land-voice-listener-use` note (all) · orchestrator
-- 2026-11-15 00:13 UTC · `themed-native-controls-plugin` PR #690 (all) · builds-live
-- 2026-11-15 00:13 UTC · `merge-main-land-voice-listener-use` note (all) · builds-live
-- 2026-11-15 00:13 UTC · `themed-native-controls-plugin` s30 done (all) · orchestrator
-- 2026-11-15 00:13 UTC · `themed-native-controls-plugin` note (all) · orchestrator
-- 2026-11-15 00:14 UTC · `merge-main-land-console-axhub-retry` note (all) · orchestrator
-- 2026-11-15 00:14 UTC · `fix-axhub-36-pull-main-in-failed` note (all) · pipeline
-- 2026-11-15 00:15 UTC · `themed-native-controls-plugin` note (all) · orchestrator
-- 2026-11-15 00:15 UTC · `merge-main-land-console-app-part-2` → running, note (all) · pipeline
-- 2026-11-15 00:15 UTC · `merge-main-land-console-app-part-2` branch claude/merge-main-land-console-app-part-2 (all) · pipeline
-- 2026-11-15 00:15 UTC · `merge-main-land-console-app-part-2` note (all) · orchestrator
-- 2026-11-15 00:17 UTC · `fix-axhub-36-pull-main-in-failed` s21 done (all) · orchestrator
-- 2026-11-15 00:18 UTC · `fix-axhub-36-pull-main-in-failed` PR #691 (all) · builds-live
-- 2026-11-15 00:18 UTC · `fix-axhub-36-pull-main-in-failed` note (all) · orchestrator
-- 2026-11-15 00:18 UTC · `fix-axhub-36-pull-main-in-failed` s22 done, → built (all) · orchestrator
-- 2026-11-15 00:19 UTC · `fix-axhub-36-pull-main-in-failed` note (all) · orchestrator
-- 2026-11-15 00:19 UTC · `all-settings-interfaces-open-floating` note (all) · orchestrator
-- 2026-11-15 00:19 UTC · `merge-main-land-voice-listener-use` → running, note (all) · pipeline
-- 2026-11-15 00:19 UTC · `merge-main-land-voice-listener-use` branch claude/merge-main-land-voice-listener-use (all) · pipeline
-- 2026-11-15 00:19 UTC · `merge-main-land-voice-listener-use` note (all) · orchestrator
-- 2026-11-15 00:20 UTC · `all-settings-interfaces-open-floating` note (all) · pipeline
-- 2026-11-15 00:20 UTC · `merge-main-land-console-axhub-retry` → running, note (all) · pipeline
-- 2026-11-15 00:20 UTC · `merge-main-land-console-axhub-retry` branch claude/merge-main-land-console-axhub-retry (all) · pipeline
-- 2026-11-15 00:20 UTC · `merge-main-land-console-axhub-retry` note (all) · orchestrator
-- 2026-11-15 00:23 UTC · `merge-main-land-console-axhub-retry` s1 done, → running (all) · orchestrator
-- 2026-11-15 00:23 UTC · `merge-main-land-console-axhub-retry` s2 done (all) · orchestrator
-- 2026-11-15 00:23 UTC · `merge-main-land-console-axhub-retry` s3 done (all) · orchestrator
-- 2026-11-15 00:24 UTC · `merge-main-land-console-axhub-retry` s4 done (all) · orchestrator
-- 2026-11-15 00:24 UTC · `merge-main-land-console-axhub-retry` s5 done (all) · orchestrator
-- 2026-11-15 00:24 UTC · `merge-main-land-console-axhub-retry` s6 done (all) · orchestrator
-- 2026-11-15 00:24 UTC · `merge-main-land-console-axhub-retry` branch claude/console-axhub-retry-failed-calls, PR #589 (all) · builds-live
-- 2026-11-15 00:25 UTC · `merge-main-land-console-axhub-retry` note (all) · orchestrator
-- 2026-11-15 00:27 UTC · `new-asset-type-animated-expanding-row` → running, note (all) · pipeline
-- 2026-11-15 00:27 UTC · `new-asset-type-animated-expanding-row` note (all) · orchestrator
-- 2026-11-15 00:27 UTC · `quick-settings-pinned-collapsible-pane` s2 done, → running (all) · orchestrator
-- 2026-11-15 00:30 UTC · `merge-main-land-voice-listener-use` s1 done, → running (all) · orchestrator
-- 2026-11-15 00:31 UTC · `merge-main-land-voice-listener-use` PR #694 (all) · builds-live
-- 2026-11-15 00:32 UTC · `new-asset-type-animated-expanding-row` s3 done (all) · orchestrator
-- 2026-11-15 00:31 UTC · `restore-asset-designer-plugin-merged-nov` s5 done (all) · orchestrator
-- 2026-11-15 00:32 UTC · `restore-asset-designer-plugin-merged-nov` s6 done (all) · orchestrator
-- 2026-11-15 00:33 UTC · `asset-designer` note (all) · orchestrator
-- 2026-11-15 00:34 UTC · `restore-asset-designer-plugin-merged-nov` note (all) · orchestrator
-- 2026-11-15 00:35 UTC · `new-asset-type-animated-expanding-row` s4 done (all) · orchestrator
-- 2026-11-13 19:02 UTC · `prompting-engine-control-panel-events` branch claude/prompting-engine-control-panel-events (all) · builds-live
-- 2026-11-13 19:02 UTC · `prompting-engine-control-panel-events` s2 done (all) · orchestrator
-- 2026-11-13 19:02 UTC · `prompting-engine-control-panel-events` note (all) · orchestrator
-- 2026-11-13 19:02 UTC · `prompting-engine-control-panel-events` s3 done (all) · orchestrator
-- 2026-11-15 00:35 UTC · `prompting-engine-control-panel-events` → running, note (all) · pipeline
-- 2026-11-15 00:35 UTC · `prompting-engine-control-panel-events` note (all) · orchestrator
-- 2026-11-15 00:36 UTC · `new-asset-type-animated-expanding-row` s4 done (all) · foreign-write
-- 2026-11-15 00:36 UTC · `new-asset-type-animated-expanding-row` s5 done (all) · orchestrator
-- 2026-11-15 00:36 UTC · `merge-main-land-console-app-part-2` branch claude/console-app-part-2-native-floating-2, PR #639 (all) · builds-live
-- 2026-11-15 00:38 UTC · `merge-main-land-console-app-part-2` branch claude/console-app-part-2-native-floating-2, PR #639 (all) · foreign-write
-- 2026-11-15 00:36 UTC · `merge-main-land-console-app-part-2` s1 done (all) · orchestrator
-- 2026-11-15 00:36 UTC · `merge-main-land-console-app-part-2` s2 done (all) · orchestrator
-- 2026-11-15 00:37 UTC · `merge-main-land-console-app-part-2` s3 done (all) · orchestrator
-- 2026-11-15 00:37 UTC · `merge-main-land-console-app-part-2` s4 done (all) · orchestrator
-- 2026-11-15 00:37 UTC · `merge-main-land-console-app-part-2` s5 done (all) · orchestrator
-- 2026-11-15 00:37 UTC · `merge-main-land-console-app-part-2` s6 done (all) · orchestrator
-- 2026-11-15 00:37 UTC · `merge-main-land-console-app-part-2` s7 done (all) · orchestrator
-- 2026-11-15 00:37 UTC · `merge-main-land-console-app-part-2` s8 done (all) · orchestrator
-- 2026-11-15 00:38 UTC · `merge-main-land-console-app-part-2` s9 done (all) · orchestrator
-- 2026-11-15 00:38 UTC · `merge-main-land-console-app-part-2` s10 done (all) · orchestrator
-- 2026-11-15 00:39 UTC · `merge-main-land-console-app-part-2` note (all) · orchestrator
-- 2026-11-15 00:37 UTC · `new-asset-type-animated-expanding-row` s6 done (all) · orchestrator
 - 2026-11-15 00:39 UTC · `merge-main-land-console-app-part-2` → pending, note (all) · pipeline
 - 2026-11-15 00:39 UTC · `ui-manager-floating-window-to-select-any` → running, note (all) · pipeline
 - 2026-11-15 00:39 UTC · `ui-manager-floating-window-to-select-any` → running, note (all) · orchestrator
@@ -1207,6 +1070,143 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 11:57 UTC · `pending-tab-one-collapsed-row-per-2` s1 done (all) · orchestrator
 - 2026-11-15 11:57 UTC · `pending-tab-one-collapsed-row-per-2` note (all) · mcp
 - 2026-11-15 11:57 UTC · `gate-rules-plugin-in-the-console` note (all) · orchestrator
+- 2026-11-15 11:58 UTC · `every-grid-1-2-rows-per-item-set-skin` → running, note (all) · pipeline
+- 2026-11-15 11:58 UTC · `every-grid-1-2-rows-per-item-set-skin` branch claude/every-grid-1-2-rows-per-item-set-skin (all) · pipeline
+- 2026-11-15 11:58 UTC · `every-grid-1-2-rows-per-item-set-skin` note (all) · orchestrator
+- 2026-11-15 11:58 UTC · `gate-rules-plugin-in-the-console` → running, note (all) · pipeline
+- 2026-11-15 11:58 UTC · `gate-rules-plugin-in-the-console` branch claude/gate-rules-plugin-in-the-console (all) · pipeline
+- 2026-11-15 11:58 UTC · `gate-rules-plugin-in-the-console` note (all) · orchestrator
+- 2026-11-15 11:58 UTC · `pending-tab-one-collapsed-row-per-2` s2 done (all) · orchestrator
+- 2026-11-15 11:59 UTC · `pending-tab-one-collapsed-row-per-2` s3 done (all) · orchestrator
+- 2026-11-15 11:59 UTC · `gate-rules-plugin-in-the-console` note (all) · mcp
+- 2026-11-15 12:00 UTC · `gate-rules-plugin-in-the-console` note (all) · mcp
+- 2026-11-15 12:02 UTC · `pending-tab-one-collapsed-row-per-2` s4 done (all) · orchestrator
+- 2026-11-15 12:02 UTC · `pending-tab-one-collapsed-row-per-2` s5 done (all) · orchestrator
+- 2026-11-15 12:02 UTC · `auto-lander-controls-in-the-gate-plugin` → running, note (all) · orchestrator
+- 2026-11-15 12:02 UTC · `move-build-orchestrator-to-axhub` note (all) · orchestrator
+- 2026-11-15 12:02 UTC · `auto-lander-controls-in-the-gate-plugin` → running, note (all) · foreign-write
+- 2026-11-15 12:02 UTC · `gate-rules-plugin-in-the-console` s1 done (all) · orchestrator
+- 2026-11-15 12:04 UTC · `every-grid-1-2-rows-per-item-set-skin` s1 done, → running (all) · orchestrator
+- 2026-11-15 12:04 UTC · `every-grid-1-2-rows-per-item-set-skin` branch claude/every-grid-1-2-rows-per-item-set-skin (all) · builds-live
+- 2026-11-15 12:04 UTC · `pending-tab-one-collapsed-row-per-2` s6 done (all) · orchestrator
+- 2026-11-15 12:04 UTC · `pending-tab-one-collapsed-row-per-2` s7 done (all) · orchestrator
+- 2026-11-15 12:06 UTC · `gate-rules-plugin-in-the-console` s2 done (all) · orchestrator
+- 2026-11-15 12:06 UTC · `pending-tab-one-collapsed-row-per-2` s8 done (all) · orchestrator
+- 2026-11-15 12:08 UTC · `pending-tab-one-collapsed-row-per-2` s9 done (all) · orchestrator
+- 2026-11-15 12:09 UTC · `shipped-features-organized-sortable` added (0 steps) (all) · console
+- 2026-11-15 12:09 UTC · `shipped-features-organized-sortable` → queued, note (all) · console
+- 2026-11-15 12:11 UTC · `shipped-features-organized-sortable` note (all) · orchestrator
+- 2026-11-15 12:11 UTC · `shipped-features-organized-sortable` → running, note (all) · pipeline
+- 2026-11-15 12:11 UTC · `shipped-features-organized-sortable` branch claude/shipped-features-organized-sortable (all) · pipeline
+- 2026-11-15 12:11 UTC · `pending-tab-one-collapsed-row-per-2` s10 done (all) · orchestrator
+- 2026-11-15 12:12 UTC · `pending-tab-one-collapsed-row-per-2` s11 done (all) · orchestrator
+- 2026-11-15 12:09 UTC · `gate-rules-plugin-in-the-console` s3 done (all) · orchestrator
+- 2026-11-15 12:12 UTC · `gate-rules-plugin-in-the-console` s4 done (all) · orchestrator
+- 2026-11-15 12:14 UTC · `vps-sends-shipped-features-every-merge` added (0 steps) (all) · console
+- 2026-11-15 12:14 UTC · `gate-rules-plugin-in-the-console` s5 done (all) · orchestrator
+- 2026-11-15 12:14 UTC · `vps-sends-shipped-features-every-merge` → queued, note (all) · console
+- 2026-11-15 12:14 UTC · `gate-rules-plugin-in-the-console` note (all) · orchestrator
+- 2026-11-15 12:14 UTC · `gate-rules-plugin-in-the-console` s5 done (all) · foreign-write
+- 2026-11-15 12:14 UTC · `gate-rules-plugin-in-the-console` note (all) · mcp
+- 2026-11-15 12:14 UTC · `vps-sends-shipped-features-every-merge` note (all) · mcp
+- 2026-11-15 12:16 UTC · `every-grid-1-2-rows-per-item-set-skin` s2 done (all) · orchestrator
+- 2026-11-15 12:16 UTC · `vps-sends-shipped-features-every-merge` note (all) · orchestrator
+- 2026-11-15 12:16 UTC · `gate-rules-plugin-in-the-console` → queued, note (all) · pipeline
+- 2026-11-15 12:17 UTC · `vps-sends-shipped-features-every-merge` → running, note (all) · pipeline
+- 2026-11-15 12:17 UTC · `vps-sends-shipped-features-every-merge` branch claude/vps-sends-shipped-features-every-merge (all) · pipeline
+- 2026-11-15 12:17 UTC · `vps-sends-shipped-features-every-merge` note (all) · orchestrator
+- 2026-11-15 12:17 UTC · `gate-rules-plugin-in-the-console` → running, note (all) · pipeline
+- 2026-11-15 12:17 UTC · `gate-rules-plugin-in-the-console` note (all) · orchestrator
+- 2026-11-15 12:17 UTC · `gate-rules-plugin-in-the-console` note (all) · mcp
+- 2026-11-15 12:17 UTC · `shipped-features-organized-sortable` note (all) · mcp
+- 2026-11-15 12:17 UTC · `vps-sends-shipped-features-every-merge` note (all) · mcp
+- 2026-11-15 12:17 UTC · `pending-tab-one-collapsed-row-per-2` s12 done (all) · orchestrator
+- 2026-11-15 12:19 UTC · `pending-tab-one-collapsed-row-per-2` s13 done (all) · orchestrator
+- 2026-11-15 12:19 UTC · `data-container-axf-data-holds-all` → running, note (all) · mcp
+- 2026-11-15 12:20 UTC · `move-build-orchestrator-to-axhub` note (all) · mcp
+- 2026-11-15 12:20 UTC · `data-container-axf-data-holds-all` → queued (all) · mcp
+- 2026-11-15 12:20 UTC · `pending-tab-one-collapsed-row-per-2` PR #706 (all) · builds-live
+- 2026-11-15 12:20 UTC · `gate-rules-plugin-in-the-console` s6 done, → running (all) · orchestrator
+- 2026-11-15 12:21 UTC · `pending-tab-one-collapsed-row-per-2` s14 done, → built (all) · orchestrator
+- 2026-11-15 12:20 UTC · `axf-molly-container-orchestrator-gate` added (0 steps) (all) · console
+- 2026-11-15 12:20 UTC · `axf-molly-container-orchestrator-gate` → queued, note (all) · console
+- 2026-11-15 12:20 UTC · `move-build-orchestrator-to-axhub` → archived (all) · mcp
+- 2026-11-15 12:21 UTC · `pending-tab-one-collapsed-row-per-2` note (all) · orchestrator
+- 2026-11-15 12:21 UTC · `move-build-orchestrator-to-axhub` note (all) · builds-live
+- 2026-11-15 12:21 UTC · `axf-molly-container-orchestrator-gate` added (0 steps) (all) · builds-live
+- 2026-11-15 12:21 UTC · `every-grid-1-2-rows-per-item-set-skin` s3 done (all) · orchestrator
+- 2026-11-15 12:21 UTC · `gate-rules-plugin-in-the-console` note (all) · mcp
+- 2026-11-15 12:22 UTC · `gate-rules-plugin-in-the-console` s7 done (all) · orchestrator
+- 2026-11-15 12:22 UTC · `axf-molly-container-orchestrator-gate` note (all) · orchestrator
+- 2026-11-15 12:22 UTC · `pending-tab-one-collapsed-row-per-2` note (all) · pipeline
+- 2026-11-15 12:22 UTC · `data-container-axf-data-holds-all` → running, note (all) · pipeline
+- 2026-11-15 12:22 UTC · `data-container-axf-data-holds-all` note (all) · orchestrator
+- 2026-11-15 12:22 UTC · `shipped-features-organized-sortable` s1 done, → running (all) · orchestrator
+- 2026-11-15 12:22 UTC · `axf-molly-container-orchestrator-gate` → running, note (all) · pipeline
+- 2026-11-15 12:22 UTC · `axf-molly-container-orchestrator-gate` branch claude/axf-molly-container-orchestrator-gate (all) · pipeline
+- 2026-11-15 12:24 UTC · `data-container-axf-data-holds-all` s5 done, → running (all) · orchestrator
+- 2026-11-15 12:24 UTC · `gate-rules-plugin-in-the-console` s8 done (all) · orchestrator
+- 2026-11-15 12:24 UTC · `gate-rules-plugin-in-the-console` s9 done (all) · orchestrator
+- 2026-11-15 12:25 UTC · `every-grid-1-2-rows-per-item-set-skin` s4 done (all) · orchestrator
+- 2026-11-15 12:26 UTC · `every-grid-1-2-rows-per-item-set-skin` PR #707 (all) · builds-live
+- 2026-11-15 12:26 UTC · `every-grid-1-2-rows-per-item-set-skin` note (all) · orchestrator
+- 2026-11-15 12:26 UTC · `gate-rules-plugin-in-the-console` s10 done (all) · orchestrator
+- 2026-11-15 12:28 UTC · `gate-rules-plugin-in-the-console` s11 done (all) · orchestrator
+- 2026-11-15 12:28 UTC · `gate-rules-plugin-in-the-console` s11 done (all) · foreign-write
+- 2026-11-15 12:28 UTC · `data-container-axf-data-holds-all` s6 done (all) · orchestrator
+- 2026-11-15 12:29 UTC · `data-container-axf-data-holds-all` s7 done (all) · orchestrator
+- 2026-11-15 12:30 UTC · `gate-rules-plugin-in-the-console` s12 done (all) · orchestrator
+- 2026-11-15 12:30 UTC · `auto-lander-controls-in-the-gate-plugin` → pending, note (all) · reconciler
+- 2026-11-15 12:31 UTC · `shipped-features-organized-sortable` s2 done (all) · orchestrator
+- 2026-11-15 12:31 UTC · `data-container-axf-data-holds-all` s8 done (all) · orchestrator
+- 2026-11-15 12:33 UTC · `shipped-features-organized-sortable` PR #708 (all) · builds-live
+- 2026-11-15 12:33 UTC · `shipped-features-organized-sortable` s3 done, → built (all) · orchestrator
+- 2026-11-15 12:33 UTC · `shipped-features-organized-sortable` note (all) · orchestrator
+- 2026-11-15 12:33 UTC · `data-container-axf-data-holds-all` s9 done (all) · orchestrator
+- 2026-11-15 12:34 UTC · `gate-rules-plugin-in-the-console` s13 done (all) · orchestrator
+- 2026-11-15 12:34 UTC · `vps-sends-shipped-features-every-merge` branch claude/vps-sends-shipped-features-every-merge, PR #709 (all) · builds-live
+- 2026-11-15 12:34 UTC · `vps-sends-shipped-features-every-merge` s1 done, → running (all) · orchestrator
+- 2026-11-15 12:35 UTC · `vps-sends-shipped-features-every-merge` → running, note (all) · pipeline
+- 2026-11-15 12:35 UTC · `gate-rules-plugin-in-the-console` note (all) · pipeline
+- 2026-11-15 12:35 UTC · `data-container-axf-data-holds-all` s10 done (all) · orchestrator
+- 2026-11-15 12:35 UTC · `vps-sends-shipped-features-every-merge` note (all) · orchestrator
+- 2026-11-15 12:36 UTC · `vps-sends-shipped-features-every-merge` → pending, note (all) · pipeline
+- 2026-11-15 12:36 UTC · `gate-rules-plugin-in-the-console` s14 done (all) · orchestrator
+- 2026-11-15 12:37 UTC · `gate-rules-plugin-in-the-console` s15 done (all) · orchestrator
+- 2026-11-15 12:37 UTC · `data-container-axf-data-holds-all` s11 done (all) · orchestrator
+- 2026-11-15 12:38 UTC · `gate-rules-plugin-in-the-console` s16 done (all) · orchestrator
+- 2026-11-15 12:40 UTC · `gate-rules-plugin-in-the-console` s17 done (all) · orchestrator
+- 2026-11-15 12:41 UTC · `data-container-axf-data-holds-all` s12 done (all) · orchestrator
+- 2026-11-15 12:41 UTC · `gate-rules-plugin-in-the-console` s18 done (all) · orchestrator
+- 2026-11-15 12:43 UTC · `data-container-axf-data-holds-all` s13 done (all) · orchestrator
+- 2026-11-15 12:44 UTC · `gate-rules-plugin-in-the-console` s19 done (all) · orchestrator
+- 2026-11-15 12:45 UTC · `move-build-orchestrator-to-axhub` note (all) · orchestrator
+- 2026-11-15 12:46 UTC · `gate-rules-plugin-in-the-console` s20 done (all) · orchestrator
+- 2026-11-15 12:47 UTC · `gate-rules-plugin-in-the-console` s21 done (all) · orchestrator
+- 2026-11-15 12:46 UTC · `data-container-axf-data-holds-all` s14 done (all) · orchestrator
+- 2026-11-15 12:48 UTC · `data-container-axf-data-holds-all` s15 done (all) · orchestrator
+- 2026-11-15 12:50 UTC · `every-grid-1-2-rows-per-item-set-skin` → pending, note (all) · reconciler
+- 2026-11-15 12:52 UTC · `data-container-axf-data-holds-all` s16 done (all) · orchestrator
+- 2026-11-15 12:59 UTC · `data-container-axf-data-holds-all` s17 done (all) · orchestrator
+- 2026-11-15 13:01 UTC · `axf-molly-container-orchestrator-gate` branch claude/axf-molly-container-orchestrator-gate, PR #710 (all) · builds-live
+- 2026-11-15 13:01 UTC · `axf-molly-container-orchestrator-gate` s1 done, → running (all) · orchestrator
+- 2026-11-15 13:01 UTC · `axf-molly-container-orchestrator-gate` note (all) · orchestrator
+- 2026-11-15 13:01 UTC · `gate-rules-plugin-in-the-console` s22 done (all) · orchestrator
+- 2026-11-15 13:02 UTC · `axf-molly-container-orchestrator-gate` note (all) · orchestrator
+- 2026-11-15 13:03 UTC · `gate-rules-plugin-in-the-console` PR #711 (all) · builds-live
+- 2026-11-15 13:03 UTC · `gate-rules-plugin-in-the-console` s23 done, → built (all) · orchestrator
+- 2026-11-15 13:04 UTC · `gate-rules-plugin-in-the-console` note (all) · orchestrator
+- 2026-11-15 13:08 UTC · `data-container-axf-data-holds-all` s18 done (all) · orchestrator
+- 2026-11-15 13:10 UTC · `data-container-axf-data-holds-all` s19 done (all) · orchestrator
+- 2026-11-15 13:14 UTC · `data-container-axf-data-holds-all` s20 done (all) · orchestrator
+- 2026-11-15 13:16 UTC · `data-container-axf-data-holds-all` s21 done (all) · orchestrator
+- 2026-11-15 13:18 UTC · `data-container-axf-data-holds-all` s22 done (all) · orchestrator
+- 2026-11-15 13:20 UTC · `data-container-axf-data-holds-all` s23 done (all) · orchestrator
+- 2026-11-15 13:22 UTC · `home-cards-follow-plugin-off-home-always` added (0 steps) (all) · console
+- 2026-11-15 13:22 UTC · `home-cards-follow-plugin-off-home-always` → queued, note (all) · console
+- 2026-11-15 13:22 UTC · `data-container-axf-data-holds-all` s24 done (all) · orchestrator
+- 2026-11-15 13:22 UTC · `home-cards-follow-plugin-off-home-always` note (all) · mcp
+- 2026-11-15 13:23 UTC · `gate-rules-plugin-in-the-console` note (all) · mcp
 
 ## Token passes (log)
 
