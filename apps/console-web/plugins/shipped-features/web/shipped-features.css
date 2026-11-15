@@ -37,3 +37,5 @@
 .axp-shipped__steps li, .axp-shipped__list li { overflow-wrap: anywhere; }
 /* The Open button's row toolbar (FeatureOpenButton): layout only, the button asset styles the control. */
 .axp-shipped__rowbar { display: inline-flex; align-items: center; gap: calc(var(--fx-space) / 2); }
+.axp-shipped__buildfeatures { list-style: none; margin: 0; padding: 0; display: grid; gap: calc(var(--fx-space) / 2); }
+.axp-shipped__buildfeatures li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--fx-dens-gap-xl); min-width: 0; }

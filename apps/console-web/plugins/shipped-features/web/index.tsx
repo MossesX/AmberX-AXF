@@ -3,6 +3,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi } from '@console/plugins';
 import { ACTIVE_BADGE, appMenu } from './menu';
 import { FOLDER, ShippedFeaturesPage, VIEW, focusShipped } from './ui';
+import { BuildOpenButtons } from './BuildOpenButtons';
 import { contextItems, openByName } from './open';
 
 const api = pluginApi(FOLDER, 'Shipped features');
@@ -16,6 +17,8 @@ export const plugin: AxfWebLibrary = {
   appMenu,
   views: { [VIEW]: { title: 'Shipped features', icon: 'check-circle', render: () => <ShippedFeaturesPage /> } },
   nav: { label: 'Builds', items: [{ id: VIEW, label: 'Shipped features', icon: 'check-circle', view: VIEW }] },
+  // the Open buttons of a build's features, for any plugin that offers the feature.open slot (the Gate's rows)
+  slots: { 'feature.open': [{ id: 'shipped-features.open', render: (p) => <BuildOpenButtons build={String(p.build ?? '')} landed={p.landed === true} /> }] },
   settingsTabs: [{ id: FOLDER, label: 'Shipped features', icon: 'check-circle', order: 90, parent: 'plugins' }],
   register(rt) {
     const tick = () => { api.call<{ active?: number }>('summary').then((r) => rt.setBadge(ACTIVE_BADGE, Number(r.active) || 0), () => rt.setBadge(ACTIVE_BADGE, 0)); };

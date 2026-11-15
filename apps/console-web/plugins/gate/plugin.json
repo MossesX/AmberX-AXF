@@ -18,7 +18,8 @@
   "optional": [
     "service:axf.merge-queue@1",
     "service:axf.health@1",
-    "service:axf.alerts@1"
+    "service:axf.alerts@1",
+    "service:axf.shipped-features@1"
   ],
   "scopes": [
     "ROUTES"
