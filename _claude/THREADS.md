@@ -807,7 +807,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 01:17 UTC · `context-menus-plugin-one-true-source` s3 done (all) · orchestrator
 - 2026-11-15 01:19 UTC · `context-menus-plugin-one-true-source` s4 done (all) · orchestrator
 - 2026-11-15 01:15 UTC · `token-registry-skin-editor-live-sandbox` PR #700 (all) · builds-live
 - 2026-11-15 01:15 UTC · `token-registry-skin-editor-live-sandbox` s6 done, → running (all) · orchestrator
@@ -1207,6 +1206,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 15:08 UTC · `build-rules-tab-gate-rules-vps-owns` s14 done (all) · orchestrator
 - 2026-11-15 15:09 UTC · `phone-connect-small-android-companion` s12 done (all) · orchestrator
 - 2026-11-15 15:10 UTC · `shipped-features-open-button-views-each` s9 done (all) · orchestrator
+- 2026-11-15 15:10 UTC · `shipped-features-open-button-views-each` s9 done (all) · foreign-write
 
 ## Token passes (log)
 
