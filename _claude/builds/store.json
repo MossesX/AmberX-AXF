@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5993,
- "updatedAt": "2026-11-15T04:24:16.188Z",
+ "rev": 5994,
+ "updatedAt": "2026-11-15T04:24:46.666Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -229218,7 +229218,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T04:17:06.158Z",
-   "updatedAt": "2026-11-15T04:22:09.425Z",
+   "updatedAt": "2026-11-15T04:24:39.275Z",
    "builtAt": "",
    "notes": [
     {
@@ -229248,6 +229248,10 @@
     {
      "text": "Brett (now) OVERRIDE: the gate rules, merge queue and auto-lander run in their own private container (shared with the orchestrator, see move-build-orchestrator-to-axhub), not inside axHub or the console. No public port or DNS. axHub shows the tabs and talks to the container on the internal Docker network.",
      "at": "2026-11-15T04:22:09.425Z"
+    },
+    {
+     "text": "Brett (now) FINAL LAYOUT, overrides earlier 'move plugin to axHub' note: the gate rules, merge queue and auto-lander logic run in the private container (see move-build-orchestrator-to-axhub). axHub only routes (credentials, MCP tools, approvals), with no new axHub screens. The gate plugin and its Auto-lander tab STAY in the console as screens. For THIS build: do s1-s4 now (find and fix why the lander lands nothing, replace the stale warning) so landing works today; the tab, settings and API follow the container layout.",
+     "at": "2026-11-15T04:24:39.275Z"
     }
    ],
    "approvals": [],
@@ -229720,7 +229724,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -229744,7 +229748,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T04:20:19.690Z",
-   "updatedAt": "2026-11-15T04:24:09.856Z",
+   "updatedAt": "2026-11-15T04:24:35.073Z",
    "builtAt": "",
    "notes": [
     {
@@ -229770,6 +229774,10 @@
     {
      "text": "Dispatch gate: move-build-orchestrator-to-axhub still has axf-move-build-orchestrator-to-axhub--joey alive: not launched again, tracking that session.",
      "at": "2026-11-15T04:24:09.856Z"
+    },
+    {
+     "text": "Brett (now) FINAL LAYOUT, overrides earlier notes on where the UI lives: (1) Private container 'axf-orchestrator' does ALL the work: orchestrator, dispatcher, reconciler, splitter, gate rules, merge queue/auto-lander. No public port, no DNS. (2) axHub only ROUTES: holds credentials, MCP tools for Claude (orchestrator.*, gate.*, lander.*), approvals/veto, service connections; it forwards to the container over the internal Docker network. axHub gets NO new screens. (3) The SCREENS live in the console (orchestrator tabs, gate rules tabs, Auto-lander/Merge queue tab), talking to the container through axHub. If the console breaks, building and landing keep running and Claude can still control everything via axHub tools.",
+     "at": "2026-11-15T04:24:35.073Z"
     }
    ],
    "approvals": [],
@@ -230756,7 +230764,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -801,8 +801,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:39 UTC · `merge-main-land-change-to-move-amberx` note (all) · orchestrator
-- 2026-11-14 23:39 UTC · `hotfix-desktop-console-draws-app-menu` note (all) · orchestrator
 - 2026-11-14 23:41 UTC · `merge-main-land-move-amberx-web-app` s1 done, → running (all) · orchestrator
 - 2026-11-14 23:41 UTC · `themed-native-controls-plugin` s22 done (all) · orchestrator
 - 2026-11-14 23:41 UTC · `merge-main-land-move-amberx-web-app` s2 done (all) · orchestrator
@@ -1201,6 +1199,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 04:23 UTC · `move-build-orchestrator-to-axhub` note (all) · orchestrator
 - 2026-11-15 04:23 UTC · `move-build-orchestrator-to-axhub` branch claude/move-build-orchestrator-to-axhub (all) · pipeline
 - 2026-11-15 04:24 UTC · `move-build-orchestrator-to-axhub` → running, note (all) · pipeline
+- 2026-11-15 04:24 UTC · `move-build-orchestrator-to-axhub` note (all) · mcp
+- 2026-11-15 04:24 UTC · `auto-lander-controls-in-the-gate-plugin` note (all) · mcp
 
 ## Token passes (log)
 
