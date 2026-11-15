@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6305,
- "updatedAt": "2026-11-15T15:20:57.431Z",
+ "rev": 6306,
+ "updatedAt": "2026-11-15T15:21:07.736Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -233889,7 +233889,7 @@
    "title": "VPS sends Shipped features on every merge to main (+ backfill)",
    "category": "",
    "detail": "Bug: Shipped features has nothing for 2 days, but main DID get many merges (Nov 14-15: PRs #687, #694, #691, #693, #696, #689, #702, #324, plus build_land of console-look-becomes-default-axhub-skin, and the hand-merged skin PRs #647 #648 #590 #618 #641 #652 #657 #654). The last shipped manifests in _claude/builds/shipped/ are from Nov 13. The orchestrator is supposed to send shipped-manifest@1 to Shipped features (commit 7a6668231) but stopped. RULE (Brett): the VPS controls the orchestrator, so the VPS sends the shipped manifest AS SOON AS any merge to main succeeds, whatever the path (merge queue, auto-lander, build_land, manual GitHub merge, push to main). Implement it server-side on the VPS: a watcher on origin/main (post-merge hook + a poll/webhook fallback) that, for each new merge commit, maps it to its build/PR, builds the shipped-manifest@1 (PR, commit, mergedAt, landedAt, files, areas, tests, report link, what Brett said) and sends it to Shipped features at once; idempotent (no duplicates); alerts Brett if a send fails, and retries. Find and fix why it stopped on Nov 13. BACKFILL every merge to main since Nov 13 that has no manifest. Design it so it moves into the axf-molly container with the orchestrator (coordinate with move-build-orchestrator-to-axhub); the data goes to axf-data once that exists. Tests, help. Land with the one-at-a-time lander.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -233897,7 +233897,7 @@
    "pr": "#709",
    "priority": "P0",
    "createdAt": "2026-11-15T12:14:27.131Z",
-   "updatedAt": "2026-11-15T14:55:15.377Z",
+   "updatedAt": "2026-11-15T15:20:56.277Z",
    "builtAt": "",
    "notes": [
     {
@@ -233939,6 +233939,10 @@
     {
      "text": "Brett (09:56): each feature record in the one true feature store must carry its deep link (console_show target / view path) so Shipped features can open it in the live app. Pull it from the PR's API-parity table or the plugin's registered console-control targets; backfill links for existing records where they can be found.",
      "at": "2026-11-15T14:55:15.377Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-15T15:20:56.277Z"
     }
    ],
    "approvals": [],
@@ -234435,7 +234439,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
