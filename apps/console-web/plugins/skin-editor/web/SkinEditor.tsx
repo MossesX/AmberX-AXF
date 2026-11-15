@@ -5,7 +5,7 @@
  * shown like disk snapshots; any point reverts (a new snapshot, nothing lost); any state exports as a new skin.
  * Inline element editing: click an element in the sandbox (Pick element) and the token list narrows to that element.
  */
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type ReactNode } from 'react';
 import { Button, Chip, ColorField, Container, HubSkinLockArea, Icon, IconButton, Note, Segmented, SelectField, Slider, Switch, TabGroup, TextField, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
 import { ELEMENT_LABELS } from '@console/axf/core/engines/token-registry.mjs';
 import * as api from './api';
@@ -86,7 +86,7 @@ export function SkinEditorView() {
   const [exportName, setExportName] = useState('');
   const [exportDesc, setExportDesc] = useState('');
   const [exported, setExported] = useState<api.ExportResult | null>(null);
-  const [skins, setSkins] = useState<{ id: string; name: string; description: string; tokens: number }[]>([]);
+  const [skins, setSkins] = useState<api.SkinListItem[]>([]);
   const [live, setLive] = useState<Record<string, string | number | boolean>>({});
   const sandboxRef = useRef<HTMLDivElement>(null);
 
@@ -229,11 +229,11 @@ export function SkinEditorView() {
           {panel === 'export' && (
             <Container title="Export as a new skin" icon="download">
               <div className="fx-stack">
-                <TextField label="Name" value={exportName} onChange={setExportName} placeholder="Midnight" hint={exportName ? `Skin id: ${skinIdOf(exportName) || '…'}` : 'The exported skin starts from the console\'s look as it stands and carries every edit of the head snapshot.'} />
+                <TextField label="Name" value={exportName} onChange={setExportName} placeholder="Midnight" hint={exportName ? (skinIdOf(exportName) === 'default' ? 'The default skin is built in and locked: pick another name.' : `Skin id: ${skinIdOf(exportName) || '…'}`) : 'The exported skin starts from the console\'s look as it stands and carries every edit of the head snapshot.'} />
                 <TextField label="Description" value={exportDesc} onChange={setExportDesc} placeholder="What this skin is for" />
-                <Button tone="primary" icon="download" disabled={!exportName.trim() || busy || !ui} onClick={() => void doExport()}>Export {edits} edit{edits === 1 ? '' : 's'} as a skin</Button>
+                <Button tone="primary" icon="download" disabled={!exportName.trim() || skinIdOf(exportName) === 'default' || busy || !ui} onClick={() => void doExport()}>Export {edits} edit{edits === 1 ? '' : 's'} as a skin</Button>
                 {exported && <Note tone={exported.unmapped.length ? 'warning' : 'success'}>Exported <b>{exported.asset.name}</b> ({exported.asset.id}): {exported.mapped.length} token{exported.mapped.length === 1 ? '' : 's'} as control overrides{exported.unmapped.length ? `, ${exported.unmapped.length} stylesheet variable(s) kept under the skin's own key (${exported.unmapped.join(', ')})` : ''}.</Note>}
-                {skins.length > 0 && <div><p className="fx-eyebrow">Exported skins</p>{skins.map((s) => <Fragment key={s.id}><Chip>{s.name} · {s.tokens}</Chip> </Fragment>)}</div>}
+                {skins.length > 0 && <div><p className="fx-eyebrow">Skins</p>{skins.map((s) => <span key={s.id} title={s.locked ? 'Built in and locked: it cannot be edited, overwritten or deleted. Every chain starts here.' : s.description}><Chip tone={s.locked ? 'accent' : undefined}>{s.locked && <Icon name="lock" size={12} />} {s.name}{s.locked ? '' : ` · ${s.tokens}`}</Chip> </span>)}</div>}
               </div>
             </Container>
           )}

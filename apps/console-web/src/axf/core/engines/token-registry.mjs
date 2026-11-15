@@ -419,8 +419,30 @@ export function chainErrors(chain) {
  * `extras.settings['axf.tokens.<set>']['*']`, the rest ride `extras.settings[SKIN_VARS_KEY]` so nothing is lost.
  */
 export function exportSkin(state, { id, name, base, description = '', author = 'Skin editor', tags = [], sets = {} } = {}) {
-  const sid = str(id, 60).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '');
+  const sid = skinIdOf(id);
   if (!SKIN_ID.test(sid)) throw new Error('a skin id is 1–60 lowercase letters, digits and dashes');
+  if (isLockedSkin(sid)) throw new Error(`"${sid}" is the built-in default skin and is locked: export under another name`);
+  return buildSkin(state, { sid, name, base, description, author, tags, sets });
+}
+
+/** A skin id from a name or id: lowercase, dashes, at most 60 characters. */
+export const skinIdOf = (raw) => str(raw, 60).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '');
+
+/** Skins nobody can overwrite, delete or export over: the built-in default skin. */
+export const LOCKED_SKINS = [DEFAULT_SKIN_ID];
+export const isLockedSkin = (id) => LOCKED_SKINS.includes(String(id ?? '').toLowerCase());
+
+/**
+ * The built-in default skin: always there, locked. It is the root of every snapshot chain (no edits) drawn as a skin
+ * asset over `base` (the app's own look), so it can be listed, previewed and restored like any exported skin.
+ */
+export function defaultSkinAsset(base) {
+  const r = buildSkin({}, { sid: DEFAULT_SKIN_ID, name: DEFAULT_SKIN_LABEL, base, description: 'The built-in default skin: the app\'s own look with no token edits. Locked: it cannot be edited, overwritten or deleted.', author: 'AXF', tags: ['default', 'locked'], sets: {} });
+  r.asset.data.extras = { ...r.asset.data.extras, locked: true };
+  return r.asset;
+}
+
+function buildSkin(state, { sid, name, base, description = '', author = 'Skin editor', tags = [], sets = {} }) {
   if (!isObj(base) || !str(base.layoutTheme) || !str(base.colorTheme) || !str(base.styleTheme) || !isObj(base.assets)) throw new Error('a base skin with layoutTheme, colorTheme, styleTheme and assets is required');
   const settings = { ...(isObj(base.extras?.settings) ? base.extras.settings : {}) };
   const mapped = []; const unmapped = {};
@@ -442,7 +464,7 @@ export function exportSkin(state, { id, name, base, description = '', author = '
     ...(str(base.iconPack) ? { iconPack: base.iconPack } : {}),
     ...(isObj(base.parts) ? { parts: base.parts } : {}),
   };
-  const asset = { $axf: 'asset@1', type: 'skin', id: sid, name: str(name, 120) || sid, version: '1.0.0', description: str(description, 500) || `Exported from the Skin editor with ${Object.keys(state).length} token edit(s).`, author: str(author, 80) || 'Skin editor', tags: [...new Set(['skin', 'exported', ...tags.map((t) => str(t, 40)).filter(Boolean)])], data };
+  const asset = { $axf: 'asset@1', type: 'skin', id: sid, name: str(name, 120) || sid, version: '1.0.0', description: str(description, 500) || `Exported from the Skin editor with ${Object.keys(state).length} token edit(s).`, author: str(author, 80) || 'Skin editor', tags: [...new Set(['skin', ...(isLockedSkin(sid) ? [] : ['exported']), ...tags.map((t) => str(t, 40)).filter(Boolean)])], data };
   return { asset, mapped: mapped.sort(), unmapped: Object.keys(unmapped).sort() };
 }
 

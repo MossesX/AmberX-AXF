@@ -30,6 +30,7 @@ export const edit = (ui: UiPick, edits: { token: string; to: string | number | n
 export const revert = (ui: UiPick, body: { snapshot?: string; minutesAgo?: number; at?: string }) => post<Session & { snapshot: SkinSnapshot | null }>(`sessions/${encodeURIComponent(uiKey(ui))}/revert`, body);
 export const undo = (ui: UiPick) => post<Session & { snapshot: SkinSnapshot | null }>(`sessions/${encodeURIComponent(uiKey(ui))}/undo`);
 export const exportSkin = (ui: UiPick, body: { id?: string; name: string; description?: string; snapshot?: string; base?: Record<string, unknown> }) => post<ExportResult>(`sessions/${encodeURIComponent(uiKey(ui))}/export`, body);
-export const skins = () => call<{ skins: { id: string; name: string; description: string; tokens: number; file: string }[] }>('skins');
+export interface SkinListItem { id: string; name: string; description: string; tokens: number; file: string; locked: boolean; builtIn: boolean }
+export const skins = () => call<{ skins: SkinListItem[] }>('skins');
 export const deleteSkin = (id: string) => call<{ ok: true }>(`skins/${encodeURIComponent(id)}`, { method: 'DELETE' });
 export const voice = (phrase: string, ui?: UiPick, dry = false) => post<VoiceResult>('voice', { phrase, ui: ui ? uiKey(ui) : undefined, dry });

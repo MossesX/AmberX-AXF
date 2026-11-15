@@ -283,10 +283,34 @@ def snapshot_before(chain: list[dict[str, Any]], head_id: str, iso: str) -> dict
     return pick
 
 
+LOCKED_SKINS = (DEFAULT_SKIN_ID,)
+
+
+def skin_id_of(raw: str) -> str:
+    return re.sub(r"^-+|-+$", "", re.sub(r"[^a-z0-9-]+", "-", (raw or "")[:60].lower()))
+
+
+def is_locked_skin(sid: Any) -> bool:
+    return str(sid or "").lower() in LOCKED_SKINS
+
+
 def export_skin(state: dict[str, Any], sid: str, name: str, base: dict[str, Any], sets: dict[str, Any], description: str = "", author: str = "Skin editor") -> dict[str, Any]:
-    sid = re.sub(r"^-+|-+$", "", re.sub(r"[^a-z0-9-]+", "-", (sid or "").lower()))[:60]
+    sid = skin_id_of(sid)
     if not SKIN_ID.match(sid):
         raise HTTPException(400, "a skin id is 1–60 lowercase letters, digits and dashes")
+    if is_locked_skin(sid):
+        raise HTTPException(409, f'"{sid}" is the built-in default skin and is locked: export under another name')
+    return build_skin(state, sid, name, base, sets, description, author)
+
+
+def default_skin_asset(base: dict[str, Any]) -> dict[str, Any]:
+    """The built-in default skin (locked): the root of every chain, drawn as a skin asset over the app's own look."""
+    asset = build_skin({}, DEFAULT_SKIN_ID, DEFAULT_SKIN_LABEL, base, {}, "The built-in default skin: the app's own look with no token edits. Locked: it cannot be edited, overwritten or deleted.", "AXF", ["default", "locked"])["asset"]
+    asset["data"]["extras"] = {**asset["data"]["extras"], "locked": True}
+    return asset
+
+
+def build_skin(state: dict[str, Any], sid: str, name: str, base: dict[str, Any], sets: dict[str, Any], description: str = "", author: str = "Skin editor", extra_tags: list[str] | None = None) -> dict[str, Any]:
     if not isinstance(base, dict) or not all(isinstance(base.get(k), str) and base.get(k) for k in ("layoutTheme", "colorTheme", "styleTheme")) or not isinstance(base.get("assets"), dict):
         raise HTTPException(400, "a base skin with layoutTheme, colorTheme, styleTheme and assets is required")
     extras = base.get("extras") if isinstance(base.get("extras"), dict) else {}
@@ -316,7 +340,7 @@ def export_skin(state: dict[str, Any], sid: str, name: str, base: dict[str, Any]
         data["iconPack"] = base["iconPack"]
     if isinstance(base.get("parts"), dict):
         data["parts"] = base["parts"]
-    tags = ["skin", "exported"]
+    tags = list(dict.fromkeys(["skin", *([] if is_locked_skin(sid) else ["exported"]), *[str(t)[:40] for t in (extra_tags or []) if t]]))
     asset = {"$axf": "asset@1", "type": "skin", "id": sid, "name": (name or sid)[:120], "version": "1.0.0", "description": (description or f"Exported from the Skin editor with {len(state)} token edit(s).")[:500], "author": author[:80] or "Skin editor", "tags": tags, "data": data}
     return {"asset": asset, "mapped": sorted(mapped), "unmapped": sorted(unmapped)}
 
@@ -508,6 +532,8 @@ def undo_session(ui: str, body: dict = Body(default={})) -> dict[str, Any]:
 def _skin_path(sid: str) -> Path:
     if not SKIN_ID.match(sid or ""):
         raise HTTPException(404, "no such skin")
+    if is_locked_skin(sid):
+        raise HTTPException(409, f'"{sid}" is the built-in default skin and is locked')
     return data_dir() / "skins" / f"{sid}.json"
 
 
@@ -537,7 +563,7 @@ def _not_found(sid: Any) -> dict[str, Any]:
 
 @router.get("/skins")
 def get_skins() -> dict[str, Any]:
-    out = []
+    out: list[dict[str, Any]] = [{"id": DEFAULT_SKIN_ID, "name": DEFAULT_SKIN_LABEL, "description": "The app's own look with no token edits.", "tokens": 0, "file": "", "locked": True, "builtIn": True}]
     folder = data_dir() / "skins"
     for f in sorted(folder.glob("*.json")) if folder.is_dir() else []:
         try:
@@ -546,12 +572,16 @@ def get_skins() -> dict[str, Any]:
             continue
         settings = ((a.get("data") or {}).get("extras") or {}).get("settings") or {}
         n = sum(len(v.get("*", {})) for k, v in settings.items() if k.startswith("axf.tokens.") and isinstance(v, dict)) + len(settings.get(SKIN_VARS_KEY) or {})
-        out.append({"id": a.get("id"), "name": a.get("name"), "description": a.get("description", ""), "tokens": n, "file": f.name})
+        if is_locked_skin(a.get("id")):
+            continue
+        out.append({"id": a.get("id"), "name": a.get("name"), "description": a.get("description", ""), "tokens": n, "file": f.name, "locked": False, "builtIn": False})
     return {"skins": out}
 
 
 @router.get("/skins/{id}")
 def get_skin(id: str) -> dict[str, Any]:
+    if is_locked_skin(id):
+        return default_skin_asset(default_base())
     p = _skin_path(id)
     if not p.is_file():
         raise HTTPException(404, "no such skin")

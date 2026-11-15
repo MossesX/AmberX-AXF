@@ -26,7 +26,7 @@ import { LAYOUT_FIELDS, layoutToken, layoutTokenVars } from '../core/engines/lay
 import {
   DEFAULT_SKIN_ID, SKIN_VOICE_FRAME, TOKEN_ID, TOKEN_REGISTRY_FRAME, applyEdits, chainErrors, chainTo, classifyToken, diffStates, editSnapshot, exportSkin,
   manifestTokenErrors, manifestTokens, manifestUsesDiff, normalizeRegistry, normalizeToken, registryCoverage, registryErrors, registrySummary, revertSnapshot,
-  rootSnapshot, searchTokens, skinState, skinVoiceIntent, snapshotBefore, snapshotRows, tokenSet, tokensAtLevel,
+  defaultSkinAsset, isLockedSkin, rootSnapshot, searchTokens, skinState, skinVoiceIntent, snapshotBefore, snapshotRows, tokenSet, tokensAtLevel,
 } from '../core/engines/token-registry.mjs';
 
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
@@ -298,6 +298,7 @@ export function fixture() {
     chainErrors: { ok: chainErrors(chain), bad: chainErrors([{ ...root, kind: 'edit' }, { ...s1, parent: 'ghost' }, s1]) },
     diff: diffStates(s2.state, s1.state), apply: applyEdits({ '--fx-a': 1 }, [{ token: '--fx-a', to: null }, { token: '--fx-b', to: 'x' }]),
     exported, roundTrip: skinState(exported.asset.data, sets), defaultSkin: DEFAULT_SKIN_ID, voice,
+    defaultSkinAsset: defaultSkinAsset(base), locked: { default: isLockedSkin('default'), Default: isLockedSkin('Default'), midnight: isLockedSkin('midnight') },
   };
 }
 

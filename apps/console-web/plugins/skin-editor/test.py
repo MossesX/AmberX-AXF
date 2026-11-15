@@ -76,6 +76,8 @@ sets = {"--fx-accent": {"target": "tokens.theme", "path": "accent"}, "--fx-radiu
 base = {"layoutTheme": "focus-top", "colorTheme": "hub-night", "styleTheme": "hub", "behaviorTheme": "standard", "assets": {"button": "rounded-solid"}}
 exp = mod.export_skin({**s2["state"], "--fx-btn-bg-hover": "#333"}, "Midnight Sky", "Midnight", base, sets)
 check("export skin", same(exp, FIX["exported"]), json.dumps(exp)[:400])
+check("default skin asset", same(mod.default_skin_asset(base), FIX["defaultSkinAsset"]), json.dumps(mod.default_skin_asset(base))[:400])
+check("locked skins", {k: mod.is_locked_skin(k) for k in FIX["locked"]} == FIX["locked"])
 for case in FIX["voice"]:
     check(f"voice: {case['phrase']}", same(mod.voice_intent(case["phrase"]), case["intent"]), json.dumps(mod.voice_intent(case["phrase"])))
 
@@ -131,9 +133,17 @@ ex = mod.export_session("view:home", {"name": "Midnight", "description": "Dark a
 check("export writes a skin", ex["asset"]["id"] == "midnight" and ex["asset"]["type"] == "skin" and (Path(TMP) / "skins" / "midnight.json").is_file())
 check("export maps control tokens", "--fx-accent" in ex["mapped"] and "--fx-radius-md" in ex["mapped"] and ex["unmapped"] == [])
 check("exported skin carries overrides", ex["asset"]["data"]["extras"]["settings"]["axf.tokens.theme"]["*"]["accent"] == "#ff8800")
-check("skins list", mod.get_skins()["skins"][0]["id"] == "midnight" and mod.get_skins()["skins"][0]["tokens"] == 2)
+check("skins list: the default first, locked", [(s["id"], s["locked"]) for s in mod.get_skins()["skins"]] == [("default", True), ("midnight", False)] and mod.get_skins()["skins"][1]["tokens"] == 2)
 check("skin get", mod.get_skin("midnight")["name"] == "Midnight")
-check("skin delete", mod.delete_skin("midnight") == {"ok": True} and mod.get_skins()["skins"] == [])
+dflt = mod.get_skin("default")
+check("default skin is built in and locked", dflt["id"] == "default" and dflt["data"]["extras"]["locked"] is True and "locked" in dflt["tags"] and "exported" not in dflt["tags"])
+for what, call in (("export over the default", lambda: mod.export_session("view:home", {"name": "Default"})), ("delete the default", lambda: mod.delete_skin("default"))):
+    try:
+        call()
+        check(f"{what} refused", False)
+    except HTTPException as e:
+        check(f"{what} refused", e.status_code == 409, str(e.detail))
+check("skin delete", mod.delete_skin("midnight") == {"ok": True} and [s["id"] for s in mod.get_skins()["skins"]] == ["default"])
 check("sessions list", mod.get_sessions()["sessions"][0]["key"] == "view:home")
 
 print("voice end to end")

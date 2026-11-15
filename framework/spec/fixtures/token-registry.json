@@ -548,5 +548,40 @@
       "phrase": "turn the lights off",
       "intent": null
     }
-  ]
+  ],
+  "defaultSkinAsset": {
+    "$axf": "asset@1",
+    "type": "skin",
+    "id": "default",
+    "name": "Default skin",
+    "version": "1.0.0",
+    "description": "The built-in default skin: the app's own look with no token edits. Locked: it cannot be edited, overwritten or deleted.",
+    "author": "AXF",
+    "tags": [
+      "skin",
+      "default",
+      "locked"
+    ],
+    "data": {
+      "layoutTheme": "focus-top",
+      "colorTheme": "hub-night",
+      "styleTheme": "hub",
+      "behaviorTheme": "standard",
+      "assets": {
+        "button": "rounded-solid"
+      },
+      "preview": {
+        "caption": "The built-in default skin: the app's own look with no token edits. Locked: it cannot be edited, overwritten or deleted."
+      },
+      "extras": {
+        "settings": {},
+        "locked": true
+      }
+    }
+  },
+  "locked": {
+    "default": true,
+    "Default": true,
+    "midnight": false
+  }
 }

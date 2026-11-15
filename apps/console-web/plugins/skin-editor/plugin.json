@@ -233,21 +233,21 @@
         "route": "GET /skins",
         "id": "skins",
         "title": "Exported skins",
-        "description": "List every skin exported from the Skin editor.",
+        "description": "The built-in default skin (locked: never edited, overwritten or deleted; every chain starts there) first, then every skin exported from the Skin editor.",
         "readOnly": true
       },
       {
         "route": "GET /skins/{id}",
         "id": "skin",
         "title": "One exported skin",
-        "description": "Read one exported skin by its id.",
+        "description": "Read one exported skin by its id. \"default\" returns the built-in default skin over the console's own look.",
         "readOnly": true
       },
       {
         "route": "DELETE /skins/{id}",
         "id": "delete-skin",
         "title": "Delete an exported skin",
-        "description": "Delete one exported skin. Asks for a confirm first.",
+        "description": "Delete one exported skin. Asks for a confirm first. The default skin is locked (409).",
         "destructive": true,
         "confirm": true
       },
