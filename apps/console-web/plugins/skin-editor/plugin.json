@@ -215,7 +215,31 @@
         "route": "POST /sessions/{ui}/undo",
         "id": "undo",
         "title": "Undo the last edit",
-        "description": "Back to the head's parent (as a revert snapshot)."
+        "description": "Restore previous edit (same as restore with to: previous)."
+      },
+      {
+        "route": "POST /sessions/{ui}/restore",
+        "id": "restore",
+        "title": "Restore previous edit / Restore from axHub",
+        "description": "to: previous = the state before the last change (a second one redoes); to: hub = the default skin, no token edits (the look axHub shares). Either is a new snapshot, so nothing is lost.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "to": {
+              "type": "string",
+              "enum": [
+                "previous",
+                "hub"
+              ]
+            },
+            "by": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "to"
+          ]
+        }
       },
       {
         "route": "POST /sessions/{ui}/export",

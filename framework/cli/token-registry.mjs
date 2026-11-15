@@ -26,7 +26,7 @@ import { LAYOUT_FIELDS, layoutToken, layoutTokenVars } from '../core/engines/lay
 import {
   DEFAULT_SKIN_ID, SKIN_VOICE_FRAME, TOKEN_ID, TOKEN_REGISTRY_FRAME, applyEdits, chainErrors, chainTo, classifyToken, diffStates, editSnapshot, exportSkin,
   manifestTokenErrors, manifestTokens, manifestUsesDiff, normalizeRegistry, normalizeToken, registryCoverage, registryErrors, registrySummary, revertSnapshot,
-  compareSnapshots, defaultSkinAsset, skinThumbnail, isLockedSkin, snapshotDetail, rootSnapshot, searchTokens, skinState, skinVoiceIntent, snapshotBefore, snapshotRows, tokenSet, tokensAtLevel,
+  compareSnapshots, defaultSkinAsset, restoreSnapshot, skinThumbnail, isLockedSkin, snapshotDetail, rootSnapshot, searchTokens, skinState, skinVoiceIntent, snapshotBefore, snapshotRows, tokenSet, tokensAtLevel,
 } from '../core/engines/token-registry.mjs';
 
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
@@ -280,7 +280,7 @@ export function fixture() {
   const exported = exportSkin({ ...s2.state, '--fx-btn-bg-hover': '#333' }, { id: 'Midnight Sky', name: 'Midnight', base, sets });
   const voice = [
     'revert the skin to 10 minutes ago', 'Amber, roll the skin back to two hours ago', 'revert the skin to the default', 'revert the skin to snapshot s12',
-    'export this as a new skin called Midnight', 'save this skin as Deep Ocean', 'undo the last skin edit', 'open the skin editor', 'open plan studio in the skin editor',
+    'export this as a new skin called Midnight', 'save this skin as Deep Ocean', 'undo the last skin edit', 'restore the previous edit', 'Amber, restore previous edit', 'restore the skin from axHub', 'restore from the hub', 'open the skin editor', 'open plan studio in the skin editor',
     'set the accent to #ff8800 in the skin', 'skin: set --fx-radius-md to 12px', 'search the token registry for hover', 'show the token registry', 'turn the lights off',
   ].map((phrase) => ({ phrase, intent: skinVoiceIntent(phrase) }));
   return {
@@ -301,6 +301,15 @@ export function fixture() {
     compare: { s1ToRev: compareSnapshots(chain, s1.id, rev.id), revToRoot: compareSnapshots(chain, rev.id, root.id), same: compareSnapshots(chain, s2.id, s2.id) }, detail: snapshotDetail(chain, s2.id),
     thumbnail: { plain: skinThumbnail({}, { '--fx-bg': '#111', '--fx-accent': '#f5a524', '--fx-radius-md': '8px' }), edited: skinThumbnail({ '--fx-accent': '#ff8800', '--fx-radius-md': '12px', '--fx-bg': 'url(javascript:x)<' }, { '--fx-bg': '#111' }) },
     exportedWithThumb: exportSkin({ '--fx-accent': '#ff8800' }, { id: 'thumb', name: 'Thumb', base, sets, thumbnail: skinThumbnail({ '--fx-accent': '#ff8800' }) }).asset.data.preview,
+    restore: (() => {
+      const c = [...chain];
+      const prev = restoreSnapshot(c, rev, 'previous', { by: 'test', at: at(40) }); c.push(prev);
+      const redo = restoreSnapshot(c, prev, 'previous', { by: 'test', at: at(41) }); c.push(redo);
+      const hub = restoreSnapshot(c, redo, 'hub', { by: 'test', at: at(42) }); c.push(hub);
+      const again = restoreSnapshot(c, hub, 'hub', { by: 'test', at: at(43) });
+      let atRoot = ''; try { restoreSnapshot(c, root, 'previous'); } catch (e) { atRoot = e.message; }
+      return { prev, redo, hub, again, atRoot };
+    })(),
     defaultSkinAsset: defaultSkinAsset(base), locked: { default: isLockedSkin('default'), Default: isLockedSkin('Default'), midnight: isLockedSkin('midnight') },
   };
 }

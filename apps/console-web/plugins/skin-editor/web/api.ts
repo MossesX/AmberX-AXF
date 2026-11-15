@@ -33,6 +33,7 @@ export interface Comparison { a: SnapshotHead; b: SnapshotHead; changes: Snapsho
 export const snapshot = (ui: UiPick, id: string) => call<SnapshotDetail>(`sessions/${encodeURIComponent(uiKey(ui))}/snapshots/${encodeURIComponent(id)}`);
 export const compare = (ui: UiPick, a: string, b = 'head') => call<Comparison>(`sessions/${encodeURIComponent(uiKey(ui))}/compare${qs({ a, b })}`);
 export const revert = (ui: UiPick, body: { snapshot?: string; minutesAgo?: number; at?: string }) => post<Session & { snapshot: SkinSnapshot | null }>(`sessions/${encodeURIComponent(uiKey(ui))}/revert`, body);
+export const restore = (ui: UiPick, to: 'previous' | 'hub') => post<Session & { snapshot: SkinSnapshot | null }>(`sessions/${encodeURIComponent(uiKey(ui))}/restore`, { to });
 export const undo = (ui: UiPick) => post<Session & { snapshot: SkinSnapshot | null }>(`sessions/${encodeURIComponent(uiKey(ui))}/undo`);
 export const exportSkin = (ui: UiPick, body: { id?: string; name: string; description?: string; snapshot?: string; base?: Record<string, unknown> }) => post<ExportResult>(`sessions/${encodeURIComponent(uiKey(ui))}/export`, body);
 export interface SkinListItem { id: string; name: string; description: string; tokens: number; file: string; locked: boolean; builtIn: boolean }

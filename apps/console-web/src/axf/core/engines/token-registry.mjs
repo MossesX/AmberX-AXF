@@ -415,6 +415,25 @@ export function snapshotDetail(chain, id) {
   return { ...snapHead(s), parent: s.parent, ui: s.ui, edits: s.edits, state: s.state, tokens: Object.keys(s.state).length };
 }
 
+export const RESTORE_TARGETS = ['previous', 'hub'];
+export const RESTORE_LABELS = { previous: 'Restored previous edit', hub: 'Restored from axHub' };
+const RESTORE_PREVIOUS = /^restore(?: the)?(?: skin)?(?: to)?(?: the)? (?:previous|last)(?: skin)?(?: edit| change)?$/;
+const RESTORE_HUB = /^restore(?: the)?(?: skin| look)? from (?:ax ?hub|the hub)$/;
+
+/**
+ * Restore previous edit / Restore from axHub, through the chain: a new snapshot (kind `revert`) whose state is the
+ * head's parent's (`previous`: the state before the last change, so a second press redoes) or the default skin's
+ * (`hub`: no token edits, the look axHub shares). Null when that is the head's state already; throws when there is no
+ * previous edit.
+ */
+export function restoreSnapshot(chain, head, to, { by = 'skin-editor', at = new Date().toISOString() } = {}) {
+  if (!RESTORE_TARGETS.includes(to)) throw new Error(`restore to ${RESTORE_TARGETS.join(' | ')}`);
+  const targetId = to === 'hub' ? (chain.find((s) => s.parent === null)?.id ?? DEFAULT_SKIN_ID) : head.parent;
+  if (!targetId) throw new Error('already at the default skin: no previous edit');
+  const snap = revertSnapshot(chain, head, targetId, { by, at });
+  return snap && { ...snap, label: RESTORE_LABELS[to] };
+}
+
 /** What is wrong with a stored chain (empty = valid): one root, no dangling parent, no duplicate id, bounded. */
 export function chainErrors(chain) {
   const errors = [];
@@ -547,6 +566,7 @@ export function cleanSkinPhrase(text) {
  *   "revert the skin to snapshot s12" → { verb: 'revert', snapshot: 's12' }
  *   "export this as a new skin called Midnight" / "save this skin as Midnight" → { verb: 'export', name: 'Midnight' }
  *   "undo the last skin edit" → { verb: 'undo' }
+ *   "restore the previous edit" → { verb: 'restore', to: 'previous' }; "restore the skin from axHub" → { verb: 'restore', to: 'hub' }
  *   "open the skin editor" / "open plan studio in the skin editor" → { verb: 'open', ui? }
  *   "set the accent to #ff8800 in the skin" / "skin: set --fx-accent to red" → { verb: 'set', token, value }
  *   "show the token registry" / "search the token registry for hover" → { verb: 'registry', q? }
@@ -565,6 +585,8 @@ export function skinVoiceIntent(text) {
   if ((m = p.match(/^(?:export|save)(?: this| the current| the| current)?(?: skin| look)?(?: as(?: a)?(?: new)?(?: skin)?)?(?: called| named| as)? ([a-z0-9][a-z0-9 -]{0,59})$/)) && !/^(skin|look)$/.test(m[1].trim())) {
     return { verb: 'export', name: m[1].trim().split(/\s+/).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') };
   }
+  if (RESTORE_PREVIOUS.test(p)) return { verb: 'restore', to: 'previous' };
+  if (RESTORE_HUB.test(p)) return { verb: 'restore', to: 'hub' };
   if (/^undo(?: the)?(?: last)?(?: skin)?(?: edit| change)?$/.test(p) || /^undo the last skin (edit|change)$/.test(p)) return { verb: 'undo' };
   if ((m = p.match(/^(?:open|show|load|put) (?:the )?(.+?) in the skin editor$/))) return { verb: 'open', ui: m[1].replace(/^(the|a|an) /, '').trim() };
   if (/^(?:open|show|go to|launch)(?: the)? skin editor$/.test(p)) return { verb: 'open' };

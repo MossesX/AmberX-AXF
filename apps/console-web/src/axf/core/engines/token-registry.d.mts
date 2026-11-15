@@ -72,6 +72,10 @@ export function snapshotRows(chain: SkinSnapshot[], headId: string): SnapshotRow
 export function revertSnapshot(chain: SkinSnapshot[], head: SkinSnapshot, targetId: string, opts?: SnapshotOpts): SkinSnapshot | null;
 export function snapshotBefore(chain: SkinSnapshot[], headId: string, iso: string): SkinSnapshot | null;
 export function chainErrors(chain: unknown): string[];
+export type RestoreTarget = 'previous' | 'hub';
+export const RESTORE_TARGETS: RestoreTarget[];
+export const RESTORE_LABELS: Record<RestoreTarget, string>;
+export function restoreSnapshot(chain: SkinSnapshot[], head: SkinSnapshot, to: RestoreTarget, opts?: SnapshotOpts): SkinSnapshot | null;
 export interface SnapshotHead { id: string; label: string; at: string; by: string; kind: SnapshotKind }
 export function compareSnapshots(chain: SkinSnapshot[], aId: string, bId: string): { a: SnapshotHead; b: SnapshotHead; changes: SnapshotEdit[] };
 export function snapshotDetail(chain: SkinSnapshot[], id: string): SnapshotHead & { parent: string | null; ui: SnapshotUi; edits: SnapshotEdit[]; state: SkinState; tokens: number };
@@ -88,7 +92,7 @@ export function defaultSkinAsset(base: SkinBase): ExportedSkin['asset'];
 export function skinState(skinData: unknown, sets?: Record<string, TokenSetRef | null>): SkinState;
 
 export type SkinVoiceIntent =
-  | { verb: 'revert'; minutes: number } | { verb: 'revert'; snapshot: string } | { verb: 'export'; name: string } | { verb: 'undo' }
+  | { verb: 'revert'; minutes: number } | { verb: 'revert'; snapshot: string } | { verb: 'export'; name: string } | { verb: 'undo' } | { verb: 'restore'; to: RestoreTarget }
   | { verb: 'open'; ui?: string } | { verb: 'set'; token: string; value: string } | { verb: 'registry'; q?: string };
 export function cleanSkinPhrase(text: string): string;
 export function skinVoiceIntent(text: string): SkinVoiceIntent | null;

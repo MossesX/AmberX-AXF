@@ -92,6 +92,7 @@ export function SkinEditorView() {
   const [cmpA, setCmpA] = useState('default');
   const [cmpB, setCmpB] = useState('');
   const sandboxRef = useRef<HTMLDivElement>(null);
+  const restoreRef = useRef<(to: 'previous' | 'hub') => void>(() => undefined);
 
   const loadRegistry = useCallback(() => api.registry({ level: 'advanced' }).then((r) => setTokens(r.tokens), (e: Error) => setMsg(e.message)), []);
   useEffect(() => { void loadRegistry(); api.uis().then((r) => setUis(r.uis), () => setUis([])); api.skins().then((r) => setSkins(r.skins), () => setSkins([])); }, [loadRegistry]);
@@ -116,13 +117,14 @@ export function SkinEditorView() {
   }, [rt]);
   useEffect(() => { if (ui && !session) void choose(ui); }, [ui, session, choose]);
 
-  // deep links: skin-editor.open:view:<id> | dialog:<id> | element:<id> | plugin:<id> | token:<token id> | pick | snapshot:<id> (preview) | compare:<a>:<b>
+  // deep links: skin-editor.open:view:<id> | dialog:<id> | element:<id> | plugin:<id> | token:<token id> | pick | snapshot:<id> (preview) | compare:<a>:<b> | restore:previous | restore:hub
   useEffect(() => {
     const off = rt.actions.register('skin-editor.load', (args) => {
       const [kind, ...rest] = args;
       const id = rest.join(':');
       if (kind === 'token') { setPanel('tokens'); setQ(id.replace(/^--fx-/, '')); setLevel('advanced'); return; }
       if (kind === 'pick') { setPicking(true); return; }
+      if (kind === 'restore' && (id === 'previous' || id === 'hub')) { restoreRef.current(id); return; }
       if (kind === 'snapshot') { setPanel('history'); setPreview(id && id !== 'head' ? id : null); return; }
       if (kind === 'compare') { const [a, b = ''] = rest; setPanel('history'); setCmpA(a || 'default'); setCmpB(b === 'head' ? '' : b); return; }
       if (kind && id) { const found = allUis.find((u) => u.kind === kind && u.id === id); void choose(found ?? { kind: kind as UiPick['kind'], id, label: id }); }
@@ -160,7 +162,9 @@ export function SkinEditorView() {
   useEffect(() => () => { if (commitTimer.current) window.clearTimeout(commitTimer.current); }, []);
 
   const revertTo = async (id: string) => { if (!ui) return; setBusy(true); try { setSession(await api.revert(ui, { snapshot: id })); setLive({}); setPreview(null); setMsg(''); } catch (e) { setMsg((e as Error).message); } finally { setBusy(false); } };
-  const undo = async () => { if (!ui) return; setBusy(true); try { setSession(await api.undo(ui)); setLive({}); } catch (e) { setMsg((e as Error).message); } finally { setBusy(false); } };
+  // Restore previous edit / Restore from axHub: each one a new snapshot on the chain (a second Restore previous edit redoes)
+  const restore = async (to: 'previous' | 'hub') => { if (!ui) return; setBusy(true); try { const r = await api.restore(ui, to); setSession(r); setLive({}); setPreview(null); setMsg(''); if (!r.snapshot) rt.toast('Already the default skin: nothing to restore', 'info', 'Skin editor'); } catch (e) { setMsg((e as Error).message); } finally { setBusy(false); } };
+  restoreRef.current = (to) => void restore(to);
   const doExport = async () => {
     if (!ui || !exportName.trim()) return;
     setBusy(true);
@@ -197,7 +201,8 @@ export function SkinEditorView() {
         <Button size="sm" icon="layers" title="Click a control inside the sandbox to edit its tokens" onClick={() => setPicking((p) => !p)} aria-pressed={picking}>{picking ? 'Click a control…' : 'Pick element'}</Button>
         {element && <><Chip tone="accent">{ELEMENT_LABELS[element] ?? element}</Chip><IconButton icon="x" label="Every element" onClick={() => { setElement(''); rt.settings.set(ELEMENT_KEY, ''); }} /></>}
         <span className={`${P}__grow`} />
-        <Button size="sm" icon="undo" disabled={!head?.parent || busy} onClick={() => void undo()}>Undo</Button>
+        <Button size="sm" icon="undo" title="Back to the state before the last change, as a new snapshot (press again to redo)" disabled={!head?.parent || busy} onClick={() => void restore('previous')}>Restore previous edit</Button>
+        <Button size="sm" icon="refresh" title="Drop every token edit and follow the look axHub shares (the default skin), as a new snapshot" disabled={!ui || !Object.keys(session?.state ?? {}).length || busy} onClick={() => void restore('hub')}>Restore from axHub</Button>
         <Button size="sm" icon="list" title="Browse every token in the system" onClick={() => rt.navigate('token-registry')}>Token registry</Button>
         <Chip>{edits} edit{edits === 1 ? '' : 's'} · {session?.chain.length ?? 0} snapshot{session?.chain.length === 1 ? '' : 's'}</Chip>
       </div>

@@ -274,6 +274,22 @@ def revert_snapshot(chain: list[dict[str, Any]], head: dict[str, Any], target_id
     return {"$axf": FRAME, "id": snapshot_id(at, len(chain)), "parent": head["id"], "at": at, "by": by, "label": f"Reverted to {target['label'] or target['id']}", "kind": "revert", "ui": head["ui"], "edits": edits, "state": dict(target["state"])}
 
 
+RESTORE_LABELS = {"previous": "Restored previous edit", "hub": "Restored from axHub"}
+RESTORE_PREVIOUS = re.compile(r"^restore(?: the)?(?: skin)?(?: to)?(?: the)? (?:previous|last)(?: skin)?(?: edit| change)?$")
+RESTORE_HUB = re.compile(r"^restore(?: the)?(?: skin| look)? from (?:ax ?hub|the hub)$")
+
+
+def restore_snapshot(chain: list[dict[str, Any]], head: dict[str, Any], to: str, by: str, at: str) -> dict[str, Any] | None:
+    """Restore previous edit (the head's parent) / Restore from axHub (the default skin), as a new revert snapshot."""
+    if to not in RESTORE_LABELS:
+        raise HTTPException(400, "restore to previous | hub")
+    target = next((s["id"] for s in chain if s["parent"] is None), DEFAULT_SKIN_ID) if to == "hub" else head.get("parent")
+    if not target:
+        raise HTTPException(409, "already at the default skin: no previous edit")
+    snap = revert_snapshot(chain, head, target, by, at)
+    return {**snap, "label": RESTORE_LABELS[to]} if snap else None
+
+
 def snapshot_before(chain: list[dict[str, Any]], head_id: str, iso: str) -> dict[str, Any] | None:
     path = chain_to(chain, head_id)
     t = _ms(iso)
@@ -603,13 +619,18 @@ def revert_session(ui: str, body: dict = Body(default={})) -> dict[str, Any]:
 
 @router.post("/sessions/{ui}/undo")
 def undo_session(ui: str, body: dict = Body(default={})) -> dict[str, Any]:
+    """Restore previous edit (kept as `undo` for the callers that already use it)."""
+    return restore_session(ui, {**_dict(body), "to": "previous"})
+
+
+@router.post("/sessions/{ui}/restore")
+def restore_session(ui: str, body: dict = Body(default={})) -> dict[str, Any]:
+    """Restore previous edit (to: previous; a second one redoes) or Restore from axHub (to: hub: back to the default
+    skin, no token edits). Either is a new snapshot, so the chain keeps everything."""
     body = _dict(body)
     with _lock:
         doc = load_session(ui)
-        head = head_of(doc)
-        if not head.get("parent"):
-            raise HTTPException(409, "already at the default skin: nothing to undo")
-        snap = revert_snapshot(doc["chain"], head, head["parent"], str(body.get("by") or "skin-editor")[:80], now_iso())
+        snap = restore_snapshot(doc["chain"], head_of(doc), str(body.get("to") or ""), str(body.get("by") or "skin-editor")[:80], now_iso())
         return _snapshot_result(doc, snap)
 
 
@@ -776,7 +797,11 @@ def voice_intent(text: str) -> dict[str, Any] | None:
     m = re.match(r"^(?:export|save)(?: this| the current| the| current)?(?: skin| look)?(?: as(?: a)?(?: new)?(?: skin)?)?(?: called| named| as)? ([a-z0-9][a-z0-9 -]{0,59})$", p)
     if m and m.group(1).strip() not in ("skin", "look"):
         return {"verb": "export", "name": " ".join(w[:1].upper() + w[1:] for w in m.group(1).strip().split())}
-    if re.match(r"^undo(?: the)?(?: last)?(?: skin)?(?: edit| change)?$", p):
+    if RESTORE_PREVIOUS.match(p):
+        return {"verb": "restore", "to": "previous"}
+    if RESTORE_HUB.match(p):
+        return {"verb": "restore", "to": "hub"}
+    if re.match(r"^undo(?: the)?(?: last)?(?: skin)?(?: edit| change)?$", p) or re.match(r"^undo the last skin (edit|change)$", p):
         return {"verb": "undo"}
     m = re.match(r"^(?:open|show|load|put) (?:the )?(.+?) in the skin editor$", p)
     if m:
@@ -845,14 +870,15 @@ def voice(body: dict = Body(...)) -> dict[str, Any]:
             snap = revert_snapshot(doc["chain"], head_of(doc), target, "voice", at)
             r = _snapshot_result(doc, snap)
             out.update(ran=True, result={"target": target, "snapshot": snap}, say=f"Reverted {doc['ui'].get('label') or key} to {next(s['label'] for s in doc['chain'] if s['id'] == target)}." if snap else "Already there: nothing to revert.")
-        elif verb == "undo":
+        elif verb in ("undo", "restore"):
+            to = intent.get("to", "previous")
             head = head_of(doc)
-            if not head.get("parent"):
+            if to == "previous" and not head.get("parent"):
                 out["say"] = "Already at the default skin."
                 return out
-            snap = revert_snapshot(doc["chain"], head, head["parent"], "voice", at)
+            snap = restore_snapshot(doc["chain"], head, to, "voice", at)
             _snapshot_result(doc, snap)
-            out.update(ran=True, result={"snapshot": snap}, say="Undone.")
+            out.update(ran=True, result={"snapshot": snap}, say=("Undone." if verb == "undo" else f"{RESTORE_LABELS[to]}.") if snap else "Nothing to restore: already there.")
         elif verb == "set":
             token = resolve_token(intent["token"])
             if not token:
