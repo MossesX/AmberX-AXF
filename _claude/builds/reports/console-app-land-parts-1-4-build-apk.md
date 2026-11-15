@@ -206,6 +206,14 @@ that main had removed (`help-coverage --check` in the build-engine sweep, `check
   with Node 22 for the strip-types tests) passes. `help-coverage --check`, `check-help.mts` (270), tracker, plugins,
   `axf validate --framework`, theme, controls, console-control and safe-area also pass.
 - All five PRs re-added in order (`land.mjs queue add` 637, 639, 633, 640, 643). Their PR CI started on the new heads.
+- **Full run on #639 (lander-dispatched, run 43654245234):** the web job was red on main's new token-registry@1
+  check. Part 1's `--fx-safe-top/right/bottom/left` were not registered. Fixed on part 1: registered in
+  `framework/schemas/token-registry.json` (level advanced, a description per edge). The wake-listener plugin got its
+  `tokens.uses` block (`token-registry.mjs manifest wake-listener --write`, 8 tokens). Merged up the stack.
+- **All 111 commands of the web job, run here:** part 1, 2 failing; wake head, 4 failing. All of these fail the same
+  way on main on this host, so they are not from the stack: `check-headless-tabs` (meter), `test_wall_users` (page
+  200), `console-control-parity` (shared-state race: main 10/14 differ). The fourth, `test_console_commands`, was a
+  one-off and passes on re-run (120 checks).
 
 ## Notification (s17)
 
