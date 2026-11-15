@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6345,
- "updatedAt": "2026-11-15T17:07:25.284Z",
+ "rev": 6346,
+ "updatedAt": "2026-11-15T17:08:49.316Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -235179,7 +235179,7 @@
    "title": "Build rules tab in Gate & rules: VPS owns and enforces all builder rules",
    "category": "",
    "detail": "Add a Build rules tab to the Gate & rules plugin (PR #711), with the VPS as the ONE owner and enforcer of every builder rule. 1) Inventory ALL builder rules in CLAUDE.md, the build briefs, the dispatcher prompt templates (Look/API/Checkpoints/Rules blocks), and the _claude rule docs. List every rule first and delete nothing without listing it. 2) Move them into a build-rules store on the VPS (later axf-data), served by REST and gate.* tools. 3) Each rule is marked doer = VPS or session. Mechanical rules are done by the VPS itself, before or after the build, and are removed from Claude's instructions so nothing happens twice. Examples: create the plugin home card from plugin.json and the template, the Shipped features manifest, the help stub, API-parity scaffolding, running the CI checks, tracker/THREADS rows, PR open and link, and landing one at a time. 4) Judgement rules (look and token rules, API parity design, step size) go into the session brief from the store at dispatch time and are not hardcoded in CLAUDE.md. 5) The gate checks every rule before landing; on a fail it blocks, the VPS auto-fixes what it can, and everything is logged in History. 6) The tab shows each rule with doer, on/off, edit, add, and history, with REST/MCP/CLI/voice parity. First rule: every plugin gets a home card, made by the VPS. Tests, help, Shipped features. Land with the one-at-a-time lander.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -235187,8 +235187,8 @@
    "pr": "#715",
    "priority": "P0",
    "createdAt": "2026-11-15T13:23:46.016Z",
-   "updatedAt": "2026-11-15T17:07:23.435Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-15T17:08:47.542Z",
+   "builtAt": "2026-11-15T17:08:47.543Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -235912,12 +235912,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T17:08:47.542Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T13:27:28.497Z",
-     "updatedAt": "2026-11-15T13:27:28.497Z"
+     "updatedAt": "2026-11-15T17:08:47.781Z"
     }
    ],
    "profiles": [
@@ -235928,7 +235928,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
