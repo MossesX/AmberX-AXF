@@ -99,6 +99,12 @@ ok(a2.ok && !a2.menu.active, 'saved without switching');
 eq(M.activeMap()['console-web'], 'console-web-beginner', 'beginner still in use');
 eq(M.loadMenus().map((m) => m.id), ['console-web-beginner', 'console-web-pro'], 'listed by level order');
 
+/* ---- index per zone (owner, pages) and per page */
+const ix = M.menuIndex();
+ok(ix.zones.find((z) => z.zone === 'asset-card')?.menus.some((m) => m.id === 'console-web-pro'), 'index lists menus per zone');
+ok(ix.zones.find((z) => z.zone === 'asset-card')?.pages.includes('theme-manager'), 'index carries the zone pages');
+ok(Array.isArray(ix.pages['console-web/*']) && ix.pages['console-web/*'].length === 2, 'index per page');
+
 /* ---- registered actions: plugins offer, menus reference */
 eq(M.registerActions('demo-plugin', [{ id: 'demo.hello', label: 'Say hello', zones: ['asset-card'] }, { id: 'bad id!' }]).count, 1, 'a plugin registers its actions (bad ids dropped)');
 ok(M.allActions().some((a) => a.id === 'demo.hello' && a.module === 'demo-plugin'), 'registered actions join the inventory');

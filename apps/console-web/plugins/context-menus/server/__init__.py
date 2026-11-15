@@ -96,6 +96,12 @@ def menus(q: str = "", app: str = "", level: str = "", zone: str = "", source: s
     return run({"op": "list", "q": q, "app": app, "level": level, "zone": zone, "source": source})
 
 
+@router.get("/index")
+def index(app: str = "") -> dict[str, Any]:
+    """Every context menu per zone (with the plugin / app that owns the zone, its pages and elements) and per page."""
+    return run({"op": "index", "app": app})
+
+
 @router.get("/menus/{mid}")
 def menu(mid: str) -> dict[str, Any]:
     return _ok(run({"op": "get", "id": mid}))

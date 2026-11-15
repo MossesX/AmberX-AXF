@@ -174,22 +174,41 @@ function MenuPreview({ doc }: { doc: MenuDoc }) {
 
 /* ---------------- Menus: every menu on the hub ---------------- */
 
+type GroupBy = 'app' | 'zone' | 'page';
+type Row = MenuDoc & { rowKey: string };
+const GROUP_OPTIONS = [{ value: 'app', label: 'App' }, { value: 'zone', label: 'Zone (with its owner)' }, { value: 'page', label: 'Page' }];
+
+/** The Menus grid's groups: per app, per zone (title names the plugin / app that owns it and its pages) or per page.
+ *  A menu shows in every zone it maps, so rows carry a key unique to the group. */
+function groupMenus(menus: MenuDoc[], by: GroupBy, zones: R.Zone[], onlyZone = ''): GridGroup<Row>[] {
+  const out = new Map<string, { title: string; icon: string; rows: Row[] }>();
+  const add = (key: string, title: string, icon: string, m: MenuDoc) => { const g = out.get(key) ?? { title, icon, rows: [] }; g.rows.push({ ...m, rowKey: by === 'app' ? m.id : `${key}::${m.id}` }); out.set(key, g); };
+  for (const m of menus) {
+    if (by === 'app') add(m.app, m.app, 'box', m);
+    else if (by === 'page') add(m.page || '(whole app)', `${m.app} · ${m.page || 'whole app'}`, 'file', m);
+    else for (const t of Object.keys(m.asset.data.targets)) {
+      if (onlyZone && t !== onlyZone) continue;
+      const z = zones.find((x) => x.id === t);
+      const owner = z ? `${z.owner.kind}${z.owner.id && z.owner.kind !== 'framework' ? `: ${z.owner.id}` : ''}` : 'unknown owner';
+      add(t, `${t} · ${owner}${z?.pages.length ? ` · ${z.pages.slice(0, 3).join(', ')}` : ''}`, 'target', m);
+    }
+  }
+  return [...out.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([id, g]) => ({ id, title: g.title, icon: g.icon, rows: g.rows, groups: [], counts: `${g.rows.length}` }));
+}
+
 function Menus({ focusMenu, focusZone }: { focusMenu?: string; focusZone?: string }) {
   const rt = useRuntime();
   const s = S.getState();
   const [q, setQ] = useState('');
   const [level, setLevel] = useState('');
   const [zone, setZone] = useState(focusZone ?? '');
+  const [groupBy, setGroupBy] = useState<GroupBy>(focusZone ? 'zone' : 'app');
   const [expanded, setExpanded] = useState<string[]>(focusMenu ? [focusMenu] : []);
   const [msg, setMsg] = useState('');
   const menus = useMemo(() => R.filterMenus(s?.menus ?? [], { q, level, zone }), [s, q, level, zone]);
-  const groups = useMemo<GridGroup<MenuDoc>[]>(() => {
-    const byApp = new Map<string, MenuDoc[]>();
-    for (const m of menus) byApp.set(m.app, [...(byApp.get(m.app) ?? []), m]);
-    return [...byApp.entries()].map(([app, rows]) => ({ id: app, title: app, icon: 'box', rows, groups: [], counts: `${rows.length}` }));
-  }, [menus]);
+  const groups = useMemo<GridGroup<Row>[]>(() => groupMenus(menus, groupBy, s?.zones ?? [], zone), [menus, groupBy, s, zone]);
   const act = async (fn: () => Promise<unknown>, done: string) => { setMsg(''); try { await fn(); await S.load(rt); setMsg(done); } catch (e) { setMsg(e instanceof Error ? e.message : String(e)); } };
-  const columns: GridColumn<MenuDoc>[] = [
+  const columns: GridColumn<Row>[] = [
     { id: 'name', label: 'Menu', width: 'minmax(0, 3fr)', fixed: true, sortable: true, sortValue: (m) => m.name, render: (m) => <span className="axp-ctxm-name">{m.active && <span className="fx-chip is-success">in use</span>}{m.name}<span className="fx-muted axp-ctxm-id">{m.id}</span></span> },
     { id: 'level', label: 'Level', width: 'minmax(0, 1fr)', sortable: true, sortValue: (m) => R.LEVELS[m.level].order, render: (m) => R.LEVELS[m.level].label },
     { id: 'zones', label: 'Zones', width: 'minmax(0, 1fr)', align: 'end', sortable: true, sortValue: (m) => R.summarize(m).targets, render: (m) => R.summarize(m).targets },
@@ -204,12 +223,13 @@ function Menus({ focusMenu, focusZone }: { focusMenu?: string; focusZone?: strin
         <TextField label="Search" type="search" value={q} onChange={setQ} placeholder="name, zone, action, level…" />
         <SelectField label="Level" value={level} options={LEVEL_OPTIONS} onChange={setLevel} empty="Every level" />
         <SelectField label="Zone" value={zone} options={(s?.zones ?? []).map((z) => ({ value: z.id, label: z.id }))} onChange={setZone} empty="Every zone" />
+        <SelectField label="Group by" value={groupBy} options={GROUP_OPTIONS} onChange={(v) => setGroupBy(v as GroupBy)} hint="Per app, per zone (with the plugin or app that owns it) or per page." />
       </div>
       {msg && <Note tone="info">{msg}</Note>}
       {menus.length === 0 ? <EmptyState icon="menu" compact>{s?.menus.length ? 'No menu matches.' : 'No context menu on the hub yet. Generate one, or save one from the designer.'}</EmptyState> : (
-        <DataGrid<MenuDoc> id="context-menus" label="Context menus" groups={groups} columns={columns} rowId={(m) => m.id} rowLabel={(m) => m.name} hidden={[]}
+        <DataGrid<Row> id="context-menus" label="Context menus" groups={groups} columns={columns} rowId={(m) => m.rowKey} rowLabel={(m) => m.name} hidden={[]}
           expanded={expanded} onToggleExpand={(id) => setExpanded((x) => (x.includes(id) ? x.filter((y) => y !== id) : [...x, id]))}
-          onRowClick={(m) => setExpanded((x) => (x.includes(m.id) ? x.filter((y) => y !== m.id) : [...x, m.id]))}
+          onRowClick={(m) => setExpanded((x) => (x.includes(m.rowKey) ? x.filter((y) => y !== m.rowKey) : [...x, m.rowKey]))}
           rowTone={(m) => (m.active ? 'success' : 'muted')}
           renderDetail={(m) => <MenuDetail doc={m} onDone={(t) => void act(async () => undefined, t)} />} />
       )}
