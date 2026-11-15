@@ -249,9 +249,12 @@ export function sortBuilds(list, sort = 'status', dir = 'asc', rules) {
  * to report. Paste it as the first message, or `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief <id>`.
  */
 export function brief(build, rules = DEFAULT_RULES, { blocks = null } = {}) {
-  // blocks = brief-blocks@1 from the build rules store (the dispatcher passes it): its Checkpoints / Look / API lines
-  // replace the built-in ones, so the Build rules tab decides what a session is told. Without it: the built-in lines.
-  const bl = blocks && blocks.blocks ? blocks.blocks : null;
+  // blocks = brief-blocks@1 from the build rules store (the dispatcher and `orchestrator.mjs brief` pass it): its
+  // Checkpoints / Look / API lines are the only ones, so the Build rules tab decides what a session is told. The brief
+  // carries no rule text of its own; without blocks it has none of those lines.
+  const bl = blocks && blocks.blocks ? blocks.blocks : { checkpoints: '', look: '', api: '' };
+  // the store's phase-brief-scope rule says the default scope line; the line here stays only when the settings differ
+  const scopeInStore = Array.isArray(blocks?.picked) && blocks.picked.includes('phase-brief-scope') && rules.sameSession && !rules.subAgents;
   const n = nextUp(build, rules);
   if (n.done) return `Build "${build.title}" (${build.id}) is complete.`;
   const p = n.phase;
@@ -264,10 +267,10 @@ export function brief(build, rules = DEFAULT_RULES, { blocks = null } = {}) {
     p.gate && p.kind === 'downgrade' ? `This phase downgrades ${p.from} → ${p.model}: fine, no approval needed (it is recorded when you tick its first step).` : '',
     p.upgrade && !n.needsApproval && !build.approvals.some((a) => a.phase === p.index && a.to === p.model) ? `This phase upgrades ${p.from} → ${p.model}: no approval needed (Fable upgrades need my approval is off); it is recorded when you tick its first step.` : '',
     switchRule(),
-    `Rules: ${rules.sameSession ? 'stay in this one session' : 'new session allowed'}; ${rules.subAgents ? 'sub-agents allowed' : 'no sub-agents'}; steps ≤ ${maxStep(rules)} min; read only the files listed; stop at the end of this phase.`,
-    bl ? bl.checkpoints : `Checkpoints: ${CHECKPOINT_RULE}`,
-    bl ? bl.look : `Look: ${ASSET_RULE}`,
-    bl ? bl.api : `API: ${API_RULE}`,
+    scopeInStore ? `Steps ≤ ${maxStep(rules)} min.` : `Rules: ${rules.sameSession ? 'stay in this one session' : 'new session allowed'}; ${rules.subAgents ? 'sub-agents allowed' : 'no sub-agents'}; steps ≤ ${maxStep(rules)} min; read only the files listed; stop at the end of this phase.`,
+    bl.checkpoints,
+    bl.look,
+    bl.api,
     build.branch ? `Branch: ${build.branch}${build.pr ? ` · PR ${build.pr}` : ''}` : '',
     `Steps in this phase (${p.steps.filter(open).length} left, ~${formatMinutes(p.minutesLeft) || '?'}):`,
     ...p.steps.map((s, i) => `${s.group && s.group !== p.steps[i - 1]?.group ? `— ${s.group} —\n` : ''}${s.done ? '[x]' : s.skip ? '[skip]' : '[ ]'} ${s.id} ${s.estimate ? `(~${s.estimate}) ` : ''}${s.text}${s.session === 'new' ? ' [needs a new session]' : ''}${s.agent ? ' [sub-agent allowed]' : ''}`),
