@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5761,
- "updatedAt": "2026-11-15T00:23:37.792Z",
+ "rev": 5762,
+ "updatedAt": "2026-11-15T00:23:52.406Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -156348,7 +156348,7 @@
    "pr": "#500",
    "priority": "P0",
    "createdAt": "2026-11-10T20:46:28.820Z",
-   "updatedAt": "2026-11-12T02:17:28.257Z",
+   "updatedAt": "2026-11-15T00:23:37.709Z",
    "builtAt": "2026-11-12T02:15:18.702Z",
    "notes": [
     {
@@ -156455,6 +156455,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:23:37.602Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/amberx-droid/src/plugins/voice/web/index.tsx, apps/amberx-droid/src/plugins/web/web/core.ts, apps/amberx-droid/src/plugins/web/web/index.tsx, apps/amberx-droid/test.mjs, apps/console-web/plugins/web-browser/help.json, apps/console-web/plugins/web-brow"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -156534,7 +156551,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 55,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -158292,7 +158309,7 @@
    "pr": "#501",
    "priority": "P0",
    "createdAt": "2026-11-10T21:38:57.321Z",
-   "updatedAt": "2026-11-12T02:20:09.297Z",
+   "updatedAt": "2026-11-15T00:23:34.340Z",
    "builtAt": "2026-11-12T02:19:38.931Z",
    "notes": [
     {
@@ -158403,6 +158420,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:23:34.242Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/amberx-droid/src/plugins/companion/web/Chat.tsx, apps/amberx-droid/src/plugins/companion/web/api.ts, apps/amberx-droid/src/plugins/companion/web/companion.css, apps/amberx-droid/src/plugins/companion/web/core.ts, apps/amberx-droid/src/plugins/companion/web/index.tsx, apps/amberx-dr"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -158482,7 +158516,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 60,
+   "rev": 61,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -163063,7 +163097,7 @@
    "branch": "claude/vps-server-gate-no-build-starts-without-an-orchestrator-issued-id",
    "pr": "#504",
    "createdAt": "2026-11-12T01:59:21.464Z",
-   "updatedAt": "2026-11-12T02:23:04.953Z",
+   "updatedAt": "2026-11-15T00:23:31.149Z",
    "builtAt": "2026-11-12T02:23:04.953Z",
    "notes": [
     {
@@ -163133,6 +163167,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:23:31.054Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrator/plugin.json, apps/console-web/plugins/build-orchestrator/server/__init__.py, apps/console-web/plugins/build-orchestrator/w"
+     }
+    ]
    },
    "steps": [
     {
@@ -163210,7 +163261,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -163248,7 +163299,7 @@
    "branch": "claude/main-gate-nothing-reaches-main-without-passing",
    "pr": "#508",
    "createdAt": "2026-11-12T02:00:17.612Z",
-   "updatedAt": "2026-11-12T02:42:29.325Z",
+   "updatedAt": "2026-11-15T00:23:27.684Z",
    "builtAt": "2026-11-12T02:36:08.572Z",
    "notes": [
     {
@@ -163323,6 +163374,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:23:27.593Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/push-banner/land/merge-queue.mjs, apps/console-web/plugins/push-banner/land/merge-queue.test.mjs, apps/console-web/plugins/push-banner/plugin.json, apps/console-web/plugins/push-banner/server/__init__.py, apps/console-web/plugins/p"
+     }
+    ]
    },
    "steps": [
     {
@@ -163400,7 +163468,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
