@@ -87,6 +87,7 @@ function mount(asset?: Record<string, unknown>) {
   eq(row.getAttribute('aria-expanded'), 'true', 'open: aria-expanded true');
   eq(p.q('.fx-pick__sub').getAttribute('aria-hidden'), 'false', 'open: the grid is exposed');
   eq(p.tiles().length, 4, 'every option is a tile');
+  eq([row.getAttribute('data-axf-target'), ...p.tiles().map((t) => t.getAttribute('data-axf-target'))], ['button:theme-row', 'button:theme-dark', 'button:theme-light', 'button:theme-sepia', 'button:theme-off'], 'the row and every option are addressable buttons (press through the API like a tap)');
   ok(p.q('.fx-pick').nextElementSibling?.matches('.fx-field__hint') && p.el.querySelector('#below'), 'the grid lives in the flow, content below follows it');
   ok(p.tile('Dark').querySelector('.fx-pick__swatch'), 'a swatch previews on its tile');
   eq(p.tiles().filter((t) => t.tabIndex === 0).map((t) => t.textContent?.includes('Dark')), [true], 'the applied option is the one tab stop');

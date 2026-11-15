@@ -170,13 +170,16 @@ export function ExpanderPicker({ label, value, options, onChange, onPreview, hin
     state: () => ({ type: 'choice', options: all.map((o) => o.value), labels: Object.fromEntries(all.map((o) => [o.value, o.label])), expanded: open, highlighted: armed, asset: attrs['data-fx-pick'] }),
   } : null, [open, armed, value, disabled, all.map((o) => o.value).join('|')]);
 
+  // the row and each option are addressable buttons too (`button:<picker>-row`, `button:<picker>-<value>`): press one option
+  // through the API like a tap (once highlights, twice applies); none when a host row owns the API (address false)
+  const base = address !== false && (labelText || address) ? (address || controlSlug(labelText)) : '';
   const arrow = attrs['data-fx-pick-arrow'] as ExpanderPickerData['arrow'];
   const arrowIcon = arrow === 'plus' ? (open ? 'minus' : 'plus') : ARROW_ICON[arrow];
   const pending = armed !== null && armed !== value ? all.find((o) => o.value === armed) : undefined;
   return (
     <div className={`fx-field fx-pick-field ${error ? 'is-error' : ''} ${className ?? ''}`}>
         <div ref={targetRef} className="fx-pick" style={vars as Record<string, string>} data-fx-pick-open={open ? 'on' : 'off'} {...attrs}>
-          <button ref={rowRef} type="button" id={id} className="fx-pick__row" aria-expanded={open} aria-controls={gridId} aria-labelledby={`${nameId} ${valueId}`} aria-describedby={describedBy} aria-invalid={error ? true : undefined} aria-required={required || undefined} disabled={disabled} onClick={onRow} onKeyDown={onRowKey}
+          <button ref={rowRef} type="button" id={id} className="fx-pick__row" data-axf-target={base ? `button:${base}-row` : undefined} aria-expanded={open} aria-controls={gridId} aria-labelledby={`${nameId} ${valueId}`} aria-describedby={describedBy} aria-invalid={error ? true : undefined} aria-required={required || undefined} disabled={disabled} onClick={onRow} onKeyDown={onRowKey}
             title={open ? (pending ? `Apply ${pending.label} and close` : 'Close') : 'Show the options'}>
             <span className="fx-pick__name" id={nameId}>{label}{required && <span className="fx-field__required" aria-hidden="true"> *</span>}</span>
             <span className={`fx-pick__value ${current ? '' : 'is-empty'}`} id={valueId}>{current?.label ?? empty ?? 'Pick one'}</span>
@@ -191,7 +194,7 @@ export function ExpanderPicker({ label, value, options, onChange, onPreview, hin
                   const on = o.value === value;
                   const isArmed = armed === o.value;
                   return (
-                    <button key={o.value || '\u0000'} type="button" role="option" aria-selected={on} data-armed={isArmed ? 'on' : 'off'} disabled={o.disabled || disabled} tabIndex={open ? (isArmed || (armed === null && on) || (armed === null && !current && i === 0) ? 0 : -1) : -1}
+                    <button key={o.value || '\u0000'} type="button" role="option" data-axf-target={base ? `button:${base}-${controlSlug(o.value) || 'none'}` : undefined} aria-selected={on} data-armed={isArmed ? 'on' : 'off'} disabled={o.disabled || disabled} tabIndex={open ? (isArmed || (armed === null && on) || (armed === null && !current && i === 0) ? 0 : -1) : -1}
                       className="fx-pick__tile" onClick={() => press(o)} onKeyDown={(e) => move(e, i)} title={!firstPress && isArmed && !on ? 'Press again to apply' : undefined}>
                       {o.preview ? <span className="fx-pick__preview" aria-hidden="true">{o.preview}</span> : o.swatch && <span className="fx-pick__swatch" style={{ background: o.swatch }} aria-hidden="true" />} {/* theme-ok: the option's own colour is data, not style */}
                       <span className="fx-pick__tile-top">
