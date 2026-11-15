@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5712,
- "updatedAt": "2026-11-15T00:02:29.342Z",
+ "rev": 5713,
+ "updatedAt": "2026-11-15T00:02:55.459Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -209558,7 +209558,7 @@
    "title": "Skin animations: swatches, skin-switch sweep, picker",
    "category": "",
    "detail": "Cool animations for skins, all token-driven (duration, easing, intensity tokens) and respecting reduced-motion:\n- Skins gallery (Skins plugin and the built-in skins panel): each skin card shows a row of animated colour swatches that ripple/wave on hover or tap.\n- Switching skins: the new colours sweep or ripple across the screen from where you tapped, instead of snapping.\n- Colour pickers in token editors, UI Manager and Quick settings: swatches pop and fan out into their shades when picked, with a smooth morph to the new colour.\n- Animations are assets, so they're swappable and per-skin, with an Animations section in settings (on/off per animation, speed).\n- Full API: REST/MCP/CLI/voice. Tests, help, Shipped features.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -209567,8 +209567,8 @@
    "mergedAt": "2026-11-14T20:51:15Z",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:31.102Z",
-   "updatedAt": "2026-11-14T23:32:53.518Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-15T00:02:46.930Z",
+   "builtAt": "2026-11-15T00:02:46.930Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -209617,6 +209617,10 @@
     {
      "text": "Landed: PR merged Nov 14 by the merge queue in the land batch (land-batch-merge-main-each-finished, report _claude/builds/reports/land-batch-merge-main-each-finished.md). Marked complete; the open bookkeeping steps were covered by that landing.",
      "at": "2026-11-14T23:32:53.518Z"
+    },
+    {
+     "text": "Reconciler: PR #652 merged: complete",
+     "at": "2026-11-15T00:02:46.930Z"
     }
    ],
    "approvals": [],
@@ -209862,7 +209866,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -225822,11 +225826,11 @@
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/merge-main-land-move-amberx-web-app",
+   "pr": "#688",
    "priority": "P0",
    "createdAt": "2026-11-14T23:10:38.526Z",
-   "updatedAt": "2026-11-14T23:43:31.736Z",
+   "updatedAt": "2026-11-15T00:02:46.930Z",
    "builtAt": "",
    "notes": [
     {
@@ -225840,6 +225844,10 @@
     {
      "text": "Headless run axf-merge-main-land-move-amberx-web-app--earl: brief only · start 11.8K tokens ($0.03) · cost $0.40 · 18 turns · 6 tools, MCP none",
      "at": "2026-11-14T23:43:31.736Z"
+    },
+    {
+     "text": "Reconciler: branch claude/merge-main-land-move-amberx-web-app (PR #688); PR #688",
+     "at": "2026-11-15T00:02:46.930Z"
     }
    ],
    "approvals": [],
@@ -226123,7 +226131,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -226446,7 +226454,7 @@
    "title": "Merge main and land console-app-part-3-native-bridge-mic",
    "category": "",
    "detail": "Auto-land could not land `console-app-part-3-native-bridge-mic` (console-app-part-3-native-bridge-mic): merging main into it clashes in code: framework/ui/axf.css.\n\nWork on its own branch `claude/console-app-part-3-native-bridge-mic` (PR #633); do not open a new PR.\n1. git fetch origin && git checkout claude/console-app-part-3-native-bridge-mic && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/console-app-part-3-native-bridge-mic. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
@@ -226454,8 +226462,8 @@
    "pr": "#633",
    "priority": "P0",
    "createdAt": "2026-11-14T23:16:22.160Z",
-   "updatedAt": "2026-11-14T23:48:32.009Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-15T00:02:46.930Z",
+   "builtAt": "2026-11-15T00:02:46.930Z",
    "notes": [
     {
      "text": "Queued by land-finish-auto-land-live-clear-backlog.",
@@ -226476,6 +226484,10 @@
     {
      "text": "Headless run axf-merge-main-land-console-app-part-3--joey: brief only · start 11.6K tokens ($0.03) · cost $0.38 · 22 turns · 6 tools, MCP none",
      "at": "2026-11-14T23:48:32.009Z"
+    },
+    {
+     "text": "Reconciler: PR #633 names s1, s2, s3, s4, s5, s6, s7, s8, s10 done",
+     "at": "2026-11-15T00:02:46.930Z"
     }
    ],
    "approvals": [],
@@ -226608,12 +226620,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-15T00:02:46.930Z",
+     "note": "PR #633 (claude/console-app-part-3-native-bridge-mic)",
+     "rev": 2,
      "createdAt": "2026-11-14T23:20:49.007Z",
-     "updatedAt": "2026-11-14T23:20:49.007Z"
+     "updatedAt": "2026-11-15T00:02:46.932Z"
     },
     {
      "id": "s5",
@@ -226759,7 +226771,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
