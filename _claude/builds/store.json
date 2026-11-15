@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6060,
- "updatedAt": "2026-11-15T12:00:06.237Z",
+ "rev": 6061,
+ "updatedAt": "2026-11-15T12:00:23.981Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -232842,7 +232842,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:25.282Z",
-   "updatedAt": "2026-11-15T11:59:59.544Z",
+   "updatedAt": "2026-11-15T12:00:17.754Z",
    "builtAt": "",
    "notes": [
     {
@@ -232970,7 +232970,7 @@
      "id": "s3",
      "uid": "st-mwhs5pxb0qqv4h",
      "title": "",
-     "text": "Write the reference core framework/core/gate-rules.mjs: validate, default rule set (CI green, tests, check-theme, check-controls, check-toolbars, UI Review gate, clash handling, merge-queue only), evaluate(rules, prSnapshot) → pass/fail per rule with reasons, and migrate from today's push-banner/lander settings keys.",
+     "text": "Write the reference core framework/core/gate-rules.mjs: validate, default rule set (CI green, tests, check-theme, check-controls, check-toolbars, UI Review gate, clash handling) plus a landing-mode setting mergeQueue: on|off (default off = one-at-a-time auto-lander; on = stacked merge queue, lander off), evaluate(rules, prSnapshot) → pass/fail per rule with reasons, and migrate from today's push-banner/lander settings keys. Put the landing mode in the gate-rules@1 / lander-state@1 schema (s2) too.",
      "model": "Fable",
      "why": "Engine internals and the migration from the old lander settings",
      "phase": "",
@@ -232986,9 +232986,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T11:57:45.983Z",
-     "updatedAt": "2026-11-15T11:57:45.983Z"
+     "updatedAt": "2026-11-15T12:00:18.298Z"
     },
     {
      "id": "s4",
@@ -233114,7 +233114,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-15T11:57:45.983Z",
-     "updatedAt": "2026-11-15T11:59:59.728Z"
+     "updatedAt": "2026-11-15T12:00:16.337Z"
     },
     {
      "id": "s9",
@@ -233497,7 +233497,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
