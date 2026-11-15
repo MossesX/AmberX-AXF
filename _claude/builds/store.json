@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5713,
- "updatedAt": "2026-11-15T00:02:55.459Z",
+ "rev": 5714,
+ "updatedAt": "2026-11-15T00:03:40.424Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -200460,7 +200460,7 @@
    "pr": "#631",
    "priority": "P1",
    "createdAt": "2026-11-13T17:59:17.167Z",
-   "updatedAt": "2026-11-15T00:01:42.554Z",
+   "updatedAt": "2026-11-15T00:03:34.735Z",
    "builtAt": "",
    "notes": [
     {
@@ -200496,7 +200496,16 @@
      "at": "2026-11-15T00:01:42.554Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-15T00:03:34.735Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "find the archive build for it and rebuild it, branches should still be around somewhere",
@@ -200513,12 +200522,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T17:59:19.826Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-restore-asset-designer-plugin-merged-nov--lenny",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-15T00:01:37.955Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:02:00.272Z",
@@ -200528,9 +200537,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"c35d172d-5489-40cd-9973-a48ce90e9a68\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-15T00:01:37.955Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -200539,7 +200548,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-15T00:01:37.955Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -200582,12 +200591,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:03:34.735Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T18:02:00.272Z",
-     "updatedAt": "2026-11-13T18:02:00.272Z"
+     "updatedAt": "2026-11-15T00:03:35.211Z"
     },
     {
      "id": "s3",
