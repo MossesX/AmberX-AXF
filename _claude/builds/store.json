@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5889,
- "updatedAt": "2026-11-15T01:08:57.663Z",
+ "rev": 5890,
+ "updatedAt": "2026-11-15T01:09:18.480Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -201014,8 +201014,8 @@
    "pr": "#698",
    "priority": "P1",
    "createdAt": "2026-11-13T18:07:49.026Z",
-   "updatedAt": "2026-11-15T01:08:48.744Z",
-   "builtAt": "2026-11-15T01:08:38.297Z",
+   "updatedAt": "2026-11-15T01:09:09.454Z",
+   "builtAt": "2026-11-15T01:09:09.454Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -201044,6 +201044,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-quick-settings-pinned-collapsible-pane--paulie, shared account login)",
      "at": "2026-11-15T00:10:50.662Z"
+    },
+    {
+     "text": "Headless run axf-quick-settings-pinned-collapsible-pane--paulie: brief only · start 11.9K tokens ($0.03) · cost $8.43 · 181 turns · 6 tools, MCP none",
+     "at": "2026-11-15T01:09:09.454Z"
     },
     {
      "text": "Phase 2 done, PR #698. UI Review shots are in _claude/builds/reports/quick-settings-pinned-collapsible-pane/ and were not submitted because the headless session has no AXF_TOKEN. To submit: node apps/console-web/plugins/ui-review/review.mjs submit --kind screen --app console-web --screen settings --pr 698 --console --single-option '...'. The s1 asset-gate files conflict with main (runtime.ts, build-engine, PORTING, android.yml).",
