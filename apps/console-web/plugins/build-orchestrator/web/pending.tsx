@@ -92,7 +92,7 @@ export function PendingTab({ api, log, tick, onChanged }: { api: Api; log: (t: s
         </div>
       </div>
       {ans.rows.length === 0 ? <div className="fx-empty">Nothing pending.</div> : (
-        <ControlScope address="grid:pending"><div className="oc-prows" role="list">
+        <ControlScope address="grid:pending"><div className="oc-prows" role="list" data-layout="one-line">
           {ans.rows.map((r) => (
             <PendingRow key={r.id} row={r} expanded={r.expanded} focused={r.id === focusId} busy={busy === r.id}
               onToggle={(id) => void rowOp(id, 'toggle')} onCommand={(id, op) => void rowOp(id, op)}

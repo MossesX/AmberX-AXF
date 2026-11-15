@@ -1,0 +1,20 @@
+{
+ "$axf": "asset@1",
+ "type": "container",
+ "id": "pending-row-layout-one-line",
+ "name": "pending-row-layout: One line, chips on the right",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Title on the left, status-and-why chip, priority, steps and age on the right of the same line. Phone: title line, chips line. Default.",
+ "tags": [
+  "ui-choice",
+  "choice-set:pending-row-layout",
+  "choice-option:one-line"
+ ],
+ "data": {
+  "layout": "one-line",
+  "rowGap": "md",
+  "titleWeight": 600,
+  "chips": "inline"
+ }
+}

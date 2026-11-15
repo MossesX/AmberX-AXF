@@ -1,0 +1,20 @@
+{
+ "$axf": "asset@1",
+ "type": "container",
+ "id": "pending-row-layout-compact",
+ "name": "pending-row-layout: Compact list",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "The same one line with less space between rows and a lighter title: more builds on one screen.",
+ "tags": [
+  "ui-choice",
+  "choice-set:pending-row-layout",
+  "choice-option:compact"
+ ],
+ "data": {
+  "layout": "compact",
+  "rowGap": "xs",
+  "titleWeight": 500,
+  "chips": "inline"
+ }
+}

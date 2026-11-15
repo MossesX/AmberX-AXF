@@ -1,0 +1,20 @@
+{
+ "$axf": "asset@1",
+ "type": "container",
+ "id": "pending-row-layout-stacked",
+ "name": "pending-row-layout: Title, then chips",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Title on its own line, chips under it, on every width: easier to scan long titles, two lines per build.",
+ "tags": [
+  "ui-choice",
+  "choice-set:pending-row-layout",
+  "choice-option:stacked"
+ ],
+ "data": {
+  "layout": "stacked",
+  "rowGap": "md",
+  "titleWeight": 600,
+  "chips": "below"
+ }
+}

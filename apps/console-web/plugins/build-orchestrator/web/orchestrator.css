@@ -73,6 +73,13 @@ button.oc-model { cursor: pointer }
 .oc-prow__steps > li.is-done { color: var(--fx-muted) }
 .oc-prow__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
 /* phone: the title takes its own line, the chips wrap under it; the actions keep a full tap target */
-:where([data-fx-small]) .oc-prow__title { flex-basis: 100%; white-space: normal; overflow-wrap: anywhere }
+:where([data-fx-small]) .oc-prow__title { flex: 1 1 0; white-space: normal; overflow-wrap: anywhere }
 :where([data-fx-small]) .oc-prow__chips { flex-basis: 100% }
 :where([data-fx-small]) .oc-prow__actions > .fx-btn { min-block-size: var(--fx-size-field-height); flex: 1 1 auto }
+/* Pending row layout options for UI Review (assets/container/build-orchestrator-pending-row-layout-*.json); one-line is
+   the default until Brett picks: compact = tighter list, stacked = title on its own line with the chips under it */
+.oc-prows[data-layout="compact"] { gap: var(--fx-dens-gap-xs) }
+.oc-prows[data-layout="compact"] .oc-prow__head { min-block-size: 0 }
+.oc-prows[data-layout="compact"] .oc-prow__title { font-weight: 500 }
+.oc-prows[data-layout="stacked"] .oc-prow__title { flex: 1 1 0; white-space: normal; overflow-wrap: anywhere }
+.oc-prows[data-layout="stacked"] .oc-prow__chips { flex-basis: 100% }

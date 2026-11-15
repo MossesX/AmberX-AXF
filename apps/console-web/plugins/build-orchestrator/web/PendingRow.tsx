@@ -101,7 +101,7 @@ function PendingBody({ id, r, busy, onQueue, onEdit, onArchive, onRoute, onSplit
           <ol className="oc-prow__steps">
             {r.stepList.map((s) => (
               <li key={s.id} className={s.done || s.skip ? 'is-done' : ''}>
-                <Icon name={s.done ? 'check-circle' : s.skip ? 'minus' : 'chevron-right'} size={13} />
+                <Icon name={s.done ? 'check-circle' : s.skip ? 'minus' : 'clock'} size={13} />
                 <span className="fx-small fx-mono">{s.id}</span>
                 <span className={`oc-model is-${s.model.toLowerCase()}`}>{s.model}</span>
                 <span className={`fx-small${s.done || s.skip ? ' oc-done' : ''}`}>{s.text}{s.estimate ? <span className="fx-muted"> · {s.estimate}</span> : null}</span>
