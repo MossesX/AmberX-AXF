@@ -455,6 +455,148 @@ def append_jsonl(path: str | os.PathLike[str], entry: Any, **kw: Any) -> None:
             log_drift("append", key, "append-failed", None, None, f"{e.code}: {e}")
 
 
+def remote_mode(path: str | os.PathLike[str]) -> bool:
+    """True when the file's namespace is in cutover or rollback (axf-data is the store, the file is a backup)."""
+    return _route(path)[1] in ("cutover", "rollback")
+
+
+def mirror(path: str | os.PathLike[str], raw: bytes) -> None:
+    """For callers that keep their own local write (modes, owners): in shadow, the same bytes to axf-data."""
+    key, mode = _route(path)
+    if mode != "shadow":
+        return
+    body, ct = _remote_body(key, raw)
+    try:
+        REMOTE.put_latest(key, body, ct)
+    except DataStoreError as e:
+        log_drift("write", key, "write-failed", {"etag": f"0-{_hash16(body)}"}, None, f"{e.code}: {e}")
+
+
+def exists(path: str | os.PathLike[str]) -> bool:
+    if remote_mode(path):
+        key = key_for(path)
+        try:
+            return REMOTE.get(key) is not None
+        except DataStoreError as e:
+            if e.code != "unavailable":
+                raise
+    return Path(path).is_file()
+
+
+def remove(path: str | os.PathLike[str]) -> bool:
+    """Delete a file (a tombstone on axf-data in cutover; mirrored in shadow). False when it wasn't there."""
+    key, mode = _route(path)
+    if mode == "rollback":
+        raise DataStoreError("read_only", f"{nsid_of(key)} is rolling back", 423)
+
+    def remote_delete() -> bool:
+        try:
+            REMOTE._send("DELETE", urllib.parse.quote(key), q={"force": 1})
+            return True
+        except DataStoreError as e:
+            if e.code == "not_found":
+                return False
+            raise
+    if mode == "cutover":
+        return remote_delete()
+    try:
+        Path(path).unlink()
+        was = True
+    except FileNotFoundError:
+        was = False
+    if mode == "shadow":
+        try:
+            remote_delete()
+        except DataStoreError as e:
+            log_drift("write", key, "write-failed", None, None, f"delete: {e.code}: {e}")
+    return was
+
+
+def list_files(directory: str | os.PathLike[str]) -> list[str]:
+    """Every file under `directory`, as posix paths relative to it (from axf-data in cutover / rollback)."""
+    d = Path(directory)
+    probe = key_for(d / "__probe__.md")
+    if probe and mode_of(probe) in ("cutover", "rollback"):
+        ns, _, rest = probe.partition("/")
+        prefix = rest[: -len("__probe__.md")]
+        out, after = [], ""
+        try:
+            while True:
+                r = REMOTE.json("GET", ns, q={"prefix": prefix, "after": after, "limit": 1000})
+                out += [i["path"][len(prefix):] for i in r["items"]]
+                if not r.get("next"):
+                    return sorted(out)
+                after = r["next"]
+        except DataStoreError as e:
+            if e.code != "unavailable":
+                raise
+    if not d.is_dir():
+        return []
+    return sorted(p.relative_to(d).as_posix() for p in d.rglob("*") if p.is_file())
+
+
+def sqlite_hydrate(path: str | os.PathLike[str]) -> bool:
+    """A SQLite file kept as one blob (blob-sqlite): in cutover / rollback, fetch axf-data's newer copy before opening it
+    (same `<file>.axf-etag` marker as framework/core/data-files.mjs sqliteHydrate)."""
+    if not remote_mode(path):
+        return False
+    key, f = key_for(path), Path(path)
+    tag = Path(f"{f}.axf-etag")
+    have = tag.read_text().strip() if tag.is_file() else ""
+    try:
+        r = REMOTE.get(key)
+    except DataStoreError as e:
+        if e.code != "unavailable":
+            raise
+        log_drift("read", key, "write-failed", None, None, "axf-data unreachable: opened the local copy")
+        return False
+    if r is None or r[0]["etag"] == have:
+        return False
+    f.parent.mkdir(parents=True, exist_ok=True)
+    tmp = f.with_name(f"{f.name}.axf-fetch-{os.getpid()}")
+    tmp.write_bytes(r[1])
+    for x in ("-wal", "-shm"):
+        Path(f"{f}{x}").unlink(missing_ok=True)
+    os.replace(tmp, f)
+    tag.write_text(r[0]["etag"])
+    return True
+
+
+def sqlite_upload(path: str | os.PathLike[str], conn: Any) -> bool:
+    """After a write transaction on a blob-sqlite file: in shadow / cutover, a consistent copy (VACUUM INTO) to axf-data.
+    A newer copy found there is logged as drift and overwritten; in shadow any failure is drift only."""
+    key, mode = _route(path)
+    if not key or mode == "local":
+        return False
+    if mode == "rollback":
+        raise DataStoreError("read_only", f"{nsid_of(key)} is rolling back", 423)
+    f = Path(path)
+    tmp = f.with_name(f"{f.name}.axf-upload-{os.getpid()}")
+    tmp.unlink(missing_ok=True)
+    try:
+        conn.execute("VACUUM INTO ?", (str(tmp),))
+        raw = tmp.read_bytes()
+    finally:
+        tmp.unlink(missing_ok=True)
+    tag = Path(f"{f}.axf-etag")
+    have = tag.read_text().strip() if tag.is_file() else ""
+    try:
+        try:
+            r = REMOTE.put(key, raw, "application/vnd.sqlite3", if_match=have) if have else json.loads(REMOTE._send("PUT", urllib.parse.quote(key), headers={"content-type": "application/vnd.sqlite3"}, body=raw, q={"force": 1})[2])
+        except DataStoreError as e:
+            if e.code != "conflict":
+                raise
+            log_drift("write", key, "etag", {"etag": have}, {"rev": e.extra.get("rev"), "etag": e.extra.get("etag")}, "a newer copy was on axf-data: overwritten")
+            r = json.loads(REMOTE._send("PUT", urllib.parse.quote(key), headers={"content-type": "application/vnd.sqlite3"}, body=raw, q={"force": 1})[2])
+        tag.write_text(r["etag"])
+        return True
+    except DataStoreError as e:
+        if mode == "shadow":
+            log_drift("write", key, "write-failed", None, None, f"{e.code}: {e}")
+            return False
+        raise
+
+
 class PluginData:
     """A plugin's lifecycle dataDir through the data layer: relative paths, same calls."""
 

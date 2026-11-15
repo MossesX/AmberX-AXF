@@ -91,5 +91,30 @@ try {
     setMode('rollback');
     assert.throws(() => add('b4'), (e) => e.code === 'read_only');
   });
+  await t('blob-sqlite: a consistent copy uploaded after a write, the newest fetched before opening in cutover', async () => {
+    const f = join(dir, '.axf-console/plugins/shipped-features/ledger.sqlite');
+    mkdirSync(join(dir, '.axf-console/plugins/shipped-features'), { recursive: true });
+    writeFileSync(f, 'SQLite format 3\0 one');
+    const fakeDb = { exec: (sql) => { const m = /VACUUM INTO '(.+)'/.exec(sql); writeFileSync(m[1], readFileSync(f)); } };
+    const nsMode = (ns, mode) => { const doc = JSON.parse(readFileSync(modeFile, 'utf8')); doc.namespaces[ns] = { mode }; writeFileSync(modeFile, JSON.stringify(doc)); const tt = new Date(Date.now() + 10000 + Math.random() * 5000); utimesSync(modeFile, tt, tt); };
+    assert.equal(files.sqliteUpload(f, fakeDb), false, 'local: nothing uploaded');
+    nsMode('plugins/shipped-features', 'shadow');
+    assert.equal(files.sqliteUpload(f, fakeDb), true);
+    const got = await fetch(`${url}/v1/plugins/shipped-features/ledger.sqlite`, { headers: H });
+    assert.equal(Buffer.from(await got.arrayBuffer()).toString(), 'SQLite format 3\0 one');
+    // someone else (axf-molly) uploads a newer copy; cutover fetches it before opening
+    await fetch(`${url}/v1/plugins/shipped-features/ledger.sqlite?force=1`, { method: 'PUT', headers: { ...H, 'content-type': 'application/vnd.sqlite3' }, body: 'SQLite format 3\0 two' });
+    nsMode('plugins/shipped-features', 'cutover');
+    assert.equal(files.sqliteHydrate(f), true);
+    assert.equal(readFileSync(f, 'utf8'), 'SQLite format 3\0 two');
+    assert.equal(files.sqliteHydrate(f), false, 'already the newest');
+  });
+  await t('changes log: the axf-data backend writes and lists entries', async () => {
+    const ch = await import('../../apps/console-web/plugins/codebase-changes/changes.mjs');
+    const b = ch.dataStoreBackend(files.remoteStore());
+    const e = await b.put({ id: 'chg-20261115-abcdef12', title: 'Data container', kind: 'feature', asked: 'the console goes down…', repos: ['MossesX/AmberX-AXF'], startedAt: '2026-11-15T05:00:00Z' });
+    assert.equal((await b.get(e.id)).title, 'Data container');
+    assert.deepEqual((await b.list()).map((x) => x.id), [e.id]);
+  });
 } finally { srv.kill(); rmSync(dir, { recursive: true, force: true }); }
 console.log(`builds-store on data-store: ${n} checks ok`);

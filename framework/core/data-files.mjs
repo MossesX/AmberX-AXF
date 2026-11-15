@@ -298,6 +298,52 @@ export function callSync(req) {
   return r.result;
 }
 
+/**
+ * SQLite files kept as one blob (migration policy blob-sqlite: shipped-features/ledger.sqlite, chat-viewer/chats.db).
+ * The local file stays the working copy SQLite opens; in shadow / cutover a consistent copy (VACUUM INTO) is uploaded
+ * after each write transaction, and in cutover / rollback the newest copy is fetched before opening. `<file>.axf-etag`
+ * remembers the etag last synced, so a copy written elsewhere (axf-molly, another console) is fetched, and an upload
+ * that finds a newer copy there is a conflict: logged as drift, then written (the ledgers re-merge from build hooks).
+ */
+export function sqliteHydrate(file) {
+  const key = keyFor(file); if (!key) return false;
+  const mode = modeOf(key); if (mode !== 'cutover' && mode !== 'rollback') return false;
+  const tag = `${file}.axf-etag`;
+  const have = existsSync(tag) ? readFileSync(tag, 'utf8').trim() : '';
+  let rec;
+  try { rec = callSync({ op: 'get', key }); } catch (e) { if (e.code !== 'unavailable') throw e; logDrift('read', key, 'write-failed', null, null, 'axf-data unreachable: opened the local copy'); return false; }
+  if (!rec || rec.etag === have || rec.data?.$bytes === undefined) return false;
+  mkdirSync(dirname(file), { recursive: true });
+  const tmp = `${file}.axf-fetch-${process.pid}`;
+  writeFileSync(tmp, Buffer.from(rec.data.$bytes, 'base64'));
+  for (const x of ['-wal', '-shm']) rmSync(`${file}${x}`, { force: true });
+  renameSync(tmp, file);
+  writeFileSync(tag, rec.etag);
+  return true;
+}
+export function sqliteUpload(file, db) {
+  const key = keyFor(file); if (!key) return false;
+  const mode = modeOf(key); if (mode === 'local') return false;
+  if (mode === 'rollback') throw new DataStoreError('read_only', `${nsIdOf(key)} is rolling back`);
+  const tmp = `${file}.axf-upload-${process.pid}`;
+  rmSync(tmp, { force: true });
+  db.exec(`VACUUM INTO '${tmp.replace(/'/g, "''")}'`);
+  const bytes = readFileSync(tmp); rmSync(tmp, { force: true });
+  const tag = `${file}.axf-etag`;
+  const have = existsSync(tag) ? readFileSync(tag, 'utf8').trim() : '';
+  const put = (pre) => callSync({ op: 'put', key, data: { $bytes: bytes.toString('base64') }, contentType: 'application/vnd.sqlite3', ...pre });
+  try {
+    let r;
+    try { r = put(have ? { ifMatch: have } : { force: true }); }
+    catch (e) { if (e.code !== 'conflict') throw e; logDrift('write', key, 'etag', { etag: have }, { rev: e.rev, etag: e.etag }, 'a newer copy was on axf-data: overwritten'); r = put({ force: true }); }
+    writeFileSync(tag, r.etag);
+    return true;
+  } catch (e) {
+    if (mode === 'shadow') { logDrift('write', key, 'write-failed', null, null, `${e.code || 'error'}: ${e.message}`); return false; }
+    throw e;
+  }
+}
+
 /** A plugin's lifecycle dataDir through the layer: relative paths, same calls. */
 export function pluginData(folder, env = process.env) {
   if (!FOLDER.test(String(folder || ''))) throw new DataStoreError('invalid_key', `bad plugin folder "${folder}"`);
