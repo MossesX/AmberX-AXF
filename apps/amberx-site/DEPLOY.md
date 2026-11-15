@@ -12,6 +12,14 @@ Host: **join.amberxai.com**. The apex `amberxai.com` is not used because the exi
 already claims `amberxai.com` / `www.amberxai.com` in the proxy, and the apex DNS still points at Hostinger
 (2.57.91.91), not the VPS.
 
+## Status (Nov 15 2026)
+
+- Container `amberx-site` is up and healthy; through the proxy (`--resolve join.amberxai.com:443:31.97.13.252`)
+  `/` serves the landing page, `/api/health` and `/api/site` answer.
+- `join.amberxai.com` has no DNS record yet (nameservers: Hostinger dns-parking), so the public URL and the
+  Let's Encrypt certificate wait on step 1 below. No Hostinger API token exists on the VPS, so the record can't be
+  added from here. Brett was notified (console alert `launch:amberx-site-dns`, delivered to ntfy and web push).
+
 ## Steps that need Brett
 
 1. **DNS** (Hostinger hPanel → Domains → amberxai.com → DNS): A record `join` → `31.97.13.252`, TTL 300.
