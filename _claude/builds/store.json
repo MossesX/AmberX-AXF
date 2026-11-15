@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6181,
- "updatedAt": "2026-11-15T13:22:37.383Z",
+ "rev": 6182,
+ "updatedAt": "2026-11-15T13:22:51.565Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -234577,12 +234577,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T13:22:11.842Z",
-   "updatedAt": "2026-11-15T13:22:14.493Z",
+   "updatedAt": "2026-11-15T13:22:50.077Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-15T13:22:14.493Z"
+    },
+    {
+     "text": "Brett (08:23): EVERY plugin gets its own home card, built at the same time as the plugin. Make a home card part of the plugin lifecycle: the plugin _template and plugin scaffold create a card (declared in plugin.json), install adds it, uninstall removes it, and the plugin-lifecycle check fails CI if a plugin has no card. Then audit all ~75 existing plugins and add a card to every one that's missing one.",
+     "at": "2026-11-15T13:22:50.077Z"
     }
    ],
    "approvals": [],
@@ -234630,7 +234634,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
