@@ -797,7 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 22:44 UTC · `inline-edit-plugin-install-in-console-molly-and` → queued (all) · orchestrator
 - 2026-11-14 22:44 UTC · `pass-approval-hook-deep-link-amberx-notification` → queued (all) · orchestrator
 - 2026-11-14 22:44 UTC · `molly-gap-axhub-cors` → queued (all) · orchestrator
 - 2026-11-14 22:44 UTC · `molly-gap-expenses-cors` → queued (all) · orchestrator
@@ -1197,6 +1196,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 00:06 UTC · `fix-axhub-36-pull-main-in-failed` s17 done, → running (all) · orchestrator
 - 2026-11-15 00:06 UTC · `fix-axhub-36-pull-main-in-failed` s18 done (all) · orchestrator
 - 2026-11-15 00:06 UTC · `fix-axhub-36-pull-main-in-failed` s19 done (all) · orchestrator
+- 2026-11-15 00:07 UTC · `restore-asset-designer-plugin-merged-nov` s4 done (all) · orchestrator
 
 ## Token passes (log)
 
