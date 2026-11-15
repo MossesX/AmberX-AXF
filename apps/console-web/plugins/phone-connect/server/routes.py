@@ -26,6 +26,13 @@ Recorder (Audio Output Recorder, moved in whole)
   POST   recorder/stop
   GET    recorder/transcripts       the transcription worker; POST recorder/transcripts/run looks now
 
+Auto-approval rules (the Monitor watch; never destructive tools, personOnly actions, recorder_start or vps.run)
+  GET    rules                      every rule (active or not)
+  POST   rules                      {what, scope?, expiresAt?, note?}: on at once from Brett's click, proposed from a command
+  POST   rules/{id}/enable          {on}: turning a rule on is personOnly
+  DELETE rules/{id}
+  POST   rules/evaluate             {tool, project?, agent?, build?, destructive?, personOnly?} → {approve, rule?, why}
+
 Every error answers {"error": {code, message, retryable}} with the HTTP status for its code.
 """
 from __future__ import annotations
@@ -38,6 +45,7 @@ from fastapi.responses import JSONResponse
 from . import commands as Q
 from . import devices as D
 from . import recorder as R
+from . import rules as RU
 from . import settings as S
 from .core import PhoneError
 from .identity import caller, require_person
@@ -143,7 +151,7 @@ def command(cid: str) -> Any:
 @router.post("/devices/{device_id}/next")
 def next_commands(device_id: str, body: dict = Body(default_factory=dict)) -> Any:
     """The phone's poll: a heartbeat plus every queued command for it (marked delivered)."""
-    return answer(lambda: {"commands": Q.take(device_id, body), "settings": S.get()})
+    return answer(lambda: {"commands": Q.take(device_id, body), "settings": S.get(), "rules": RU.synced()})
 
 
 @router.post("/commands/{cid}/ack")
@@ -190,3 +198,33 @@ def recorder_transcripts() -> Any:
 @router.post("/recorder/transcripts/run")
 def recorder_transcripts_run() -> Any:
     return answer(R.run_now)
+
+
+# ------------------------------------------------------------------ auto-approval rules
+
+@router.get("/rules")
+def rules_list() -> Any:
+    return answer(lambda: {"rules": RU.list_rules()})
+
+
+@router.post("/rules")
+def rules_add(request: Request, body: dict = Body(default_factory=dict)) -> Any:
+    name, person = caller(request)
+    return answer(lambda: RU.add(str(body.get("what") or ""), str(body.get("scope") or "any"), str(body.get("expiresAt") or ""),
+                                 str(body.get("note") or ""), name, person))
+
+
+@router.post("/rules/{rule_id}/enable")
+def rules_enable(rule_id: str, request: Request, body: dict = Body(default_factory=dict)) -> Any:
+    on = body.get("on", True) is not False
+    return answer(lambda: RU.enable(rule_id, on) if not on else (require_person(request, "Turning an auto-approval rule on") and RU.enable(rule_id, True)))
+
+
+@router.delete("/rules/{rule_id}")
+def rules_remove(rule_id: str) -> Any:
+    return answer(lambda: RU.remove(rule_id))
+
+
+@router.post("/rules/evaluate")
+def rules_evaluate(body: dict = Body(default_factory=dict)) -> Any:
+    return answer(lambda: RU.evaluate(body))
