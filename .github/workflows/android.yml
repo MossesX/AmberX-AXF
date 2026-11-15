@@ -366,6 +366,7 @@ jobs:
             python apps/console-web/server/test_readcache.py         # shared read cache (single-flight, stale-while-revalidate, file-change) + node spawn cap
             python apps/console-web/server/test_previews.py          # Watch live: registry, signed keys, /preview proxy auth (HTTP + HMR WebSocket)
             python apps/console-web/plugins/console-commands/server/test_console_commands.py  # console commands: consoles announce + stream, resolve, deliver + ack, per-user mailbox, confirm, liveness, failover to the next live console, wake, late acks, build focus  # axf-plugin:console-commands
+            python apps/console-web/plugins/phone-connect/test.py  # Phone Connect: the Python port replays the phone-connect@1 fixture; pairing (personOnly), commands + acks, recorder straight approval, rules, aliases, overlay  # axf-plugin:phone-connect
             python apps/console-web/plugins/phone-connect/test_transcripts.py  # recorder transcripts (moved in from the output recorder)  # axf-plugin:phone-connect
             python apps/console-web/plugins/claude-session/test.py  # axf-plugin:claude-session
             python apps/console-web/plugins/follow-amber/test.py  # axf-plugin:follow-amber

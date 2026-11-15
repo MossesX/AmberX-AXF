@@ -331,7 +331,7 @@ def norm_command(c: dict[str, Any], at: str = "") -> dict[str, Any]:
     out: dict[str, Any] = {
         "$axf": COMMAND_FRAME, "id": c["id"] if UUID_RE.match(str(c.get("id") or "")) else "", "at": _iso(c.get("at")) or _iso(at),
         "deviceId": c["deviceId"] if DEVICE_ID_RE.match(str(c.get("deviceId") or "")) else "", "tool": r["tool"], "arguments": args,
-        "policy": TOOL_POLICY[r["tool"]] if r["tool"] else "confirm",
+        "policy": TOOL_POLICY[r["tool"]] if r["tool"] else (c.get("policy") if c.get("policy") in ("allow", "confirm") else "confirm"),
         "from": {"who": _s(frm.get("who"), NAME_MAX), "via": frm.get("via") if frm.get("via") in VIAS else "console"},
     }
     if r["deprecated"]:
@@ -375,6 +375,8 @@ def open_url_allowed(raw: Any, policy: str = "own", allowlist: list[str] | None 
     if len(s) > URL_MAX:
         raise PhoneError("validation", "url is too long.")
     try:
+        if not re.match(r"^[A-Za-z][A-Za-z0-9+.-]*:", s):
+            raise ValueError("no scheme")  # what WHATWG URL refuses too (the reference uses new URL)
         u = urlsplit(s)
         port = u.port
     except ValueError:
