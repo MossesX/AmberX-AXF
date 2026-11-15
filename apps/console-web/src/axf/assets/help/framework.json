@@ -812,6 +812,26 @@
         "text": "Lists everything this interface overrides, each with Reset. Assets that carry their own settings show in the line below it."
       },
       {
+        "target": "override-console-skin",
+        "title": "Override console skin",
+        "text": "Tick to draw just this settings interface in another skin, then pick it beside it. Untick to follow the console's skin again."
+      },
+      {
+        "target": "skin-for-this-interface",
+        "title": "Skin for this interface",
+        "text": "The skin this settings interface uses instead of the console's. Greyed out until Override console skin is ticked."
+      },
+      {
+        "target": "override-console-default",
+        "title": "Override console default",
+        "text": "Tick to use another asset for this part of this settings interface only; the picker beside it unlocks. Untick to follow the console's default again."
+      },
+      {
+        "target": "reset-all-here",
+        "title": "Reset all here",
+        "text": "Drops every override this settings interface has in Quick settings: it follows the console's skin and defaults again."
+      },
+      {
         "target": "activate",
         "title": "Activate",
         "text": "Makes this asset the one in use, live."
