@@ -31,16 +31,21 @@ function* walk(dir) {
   }
 }
 
-/** Names of components whose own body draws <QuickSettingsFrame>. */
+/**
+ * Names of components that draw <QuickSettingsFrame>: in their own body, or by rendering a component that does
+ * (AllDialog → SettingsView), followed until nothing new is found.
+ */
 function framedComponents(files) {
-  const out = new Set();
+  const bodies = new Map();
   for (const { text } of files) {
     const re = /(?:export\s+)?function\s+([A-Z]\w*)\s*\(/g;
     const starts = [...text.matchAll(re)].map((m) => ({ name: m[1], at: m.index }));
-    starts.forEach((s, i) => {
-      const body = text.slice(s.at, starts[i + 1]?.at ?? text.length);
-      if (body.includes('<QuickSettingsFrame')) out.add(s.name);
-    });
+    starts.forEach((s, i) => bodies.set(s.name, (bodies.get(s.name) ?? '') + text.slice(s.at, starts[i + 1]?.at ?? text.length)));
+  }
+  const out = new Set([...bodies].filter(([, b]) => b.includes('<QuickSettingsFrame')).map(([n]) => n));
+  for (let grew = true; grew;) {
+    grew = false;
+    for (const [n, b] of bodies) if (!out.has(n) && [...out].some((f) => new RegExp(`<${f}[\\s/>]`).test(b))) { out.add(n); grew = true; }
   }
   return out;
 }
