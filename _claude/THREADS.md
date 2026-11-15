@@ -806,7 +806,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 00:18 UTC · `fix-axhub-36-pull-main-in-failed` s22 done, → built (all) · orchestrator
 - 2026-11-15 00:19 UTC · `fix-axhub-36-pull-main-in-failed` note (all) · orchestrator
 - 2026-11-15 00:19 UTC · `all-settings-interfaces-open-floating` note (all) · orchestrator
 - 2026-11-15 00:19 UTC · `merge-main-land-voice-listener-use` → running, note (all) · pipeline
@@ -1206,6 +1205,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 12:28 UTC · `data-container-axf-data-holds-all` s6 done (all) · orchestrator
 - 2026-11-15 12:29 UTC · `data-container-axf-data-holds-all` s7 done (all) · orchestrator
 - 2026-11-15 12:30 UTC · `gate-rules-plugin-in-the-console` s12 done (all) · orchestrator
+- 2026-11-15 12:30 UTC · `auto-lander-controls-in-the-gate-plugin` → pending, note (all) · reconciler
 
 ## Token passes (log)
 
