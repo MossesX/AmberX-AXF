@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5868,
- "updatedAt": "2026-11-15T01:02:42.343Z",
+ "rev": 5869,
+ "updatedAt": "2026-11-15T01:02:57.383Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -206082,7 +206082,7 @@
    "pr": "#643",
    "priority": "P1",
    "createdAt": "2026-11-13T18:44:52.063Z",
-   "updatedAt": "2026-11-15T01:01:54.364Z",
+   "updatedAt": "2026-11-15T01:02:48.480Z",
    "builtAt": "",
    "notes": [
     {
@@ -206136,6 +206136,10 @@
     {
      "text": "Reconciler: PR #643 names s2, s9 done",
      "at": "2026-11-15T01:01:54.364Z"
+    },
+    {
+     "text": "Headless run axf-console-app-wake-word-voice-listener--sully: brief only · start 11.8K tokens ($0.03) · cost $2.20 · 62 turns · 6 tools, MCP none",
+     "at": "2026-11-15T01:02:48.480Z"
     }
    ],
    "approvals": [],
@@ -206441,7 +206445,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
