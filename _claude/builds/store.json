@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5719,
- "updatedAt": "2026-11-15T00:07:29.167Z",
+ "rev": 5720,
+ "updatedAt": "2026-11-15T00:07:45.628Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -162198,7 +162198,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-12T01:46:10.127Z",
-   "updatedAt": "2026-11-15T00:06:50.641Z",
+   "updatedAt": "2026-11-15T00:07:12.039Z",
    "builtAt": "",
    "notes": [
     {
@@ -162252,6 +162252,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-axhub-36-pull-main-in-failed--earl, shared account login)",
      "at": "2026-11-15T00:01:07.015Z"
+    },
+    {
+     "text": "Self-check: fix-axhub-36-pull-main-in-failed had no session on record but axf-fix-axhub-36-pull-main-in-failed--earl is alive: kept running and tracking it.",
+     "at": "2026-11-15T00:07:12.039Z"
     }
    ],
    "approvals": [],
@@ -162272,7 +162276,7 @@
     "queuedAt": "2026-11-12T01:46:12.403Z",
     "queuedBy": "push-banner",
     "account": "mossesx-max-",
-    "session": "",
+    "session": "axf-fix-axhub-36-pull-main-in-failed--earl",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-14T23:56:20.868Z",
