@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:40:42.459Z",
+ "updatedAt": "2026-11-15T00:41:03.394Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -78906,7 +78906,7 @@
    "pr": "#395",
    "priority": "P0",
    "createdAt": "2026-11-08T16:57:58.978Z",
-   "updatedAt": "2026-11-15T00:25:01.296Z",
+   "updatedAt": "2026-11-15T00:39:38.587Z",
    "builtAt": "2026-11-10T22:39:24.231Z",
    "notes": [
     {
@@ -79467,7 +79467,7 @@
    "pr": "#477",
    "priority": "P0",
    "createdAt": "2026-11-08T16:59:02.204Z",
-   "updatedAt": "2026-11-15T00:24:49.372Z",
+   "updatedAt": "2026-11-15T00:39:34.790Z",
    "builtAt": "2026-11-10T23:19:41.007Z",
    "notes": [
     {
@@ -87523,7 +87523,7 @@
    "pr": "#494",
    "priority": "P0",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-15T00:26:37.257Z",
+   "updatedAt": "2026-11-15T00:39:50.633Z",
    "builtAt": "2026-11-10T18:51:53.510Z",
    "notes": [
     {
@@ -94458,7 +94458,7 @@
    "pr": "#447",
    "priority": "P0",
    "createdAt": "2026-11-10T04:23:08.521Z",
-   "updatedAt": "2026-11-15T00:25:48.010Z",
+   "updatedAt": "2026-11-15T00:39:45.910Z",
    "builtAt": "2026-11-10T19:44:21.932Z",
    "notes": [
     {
@@ -98349,7 +98349,7 @@
    "pr": "#469",
    "priority": "P0",
    "createdAt": "2026-11-10T16:39:09.087Z",
-   "updatedAt": "2026-11-15T00:25:40.395Z",
+   "updatedAt": "2026-11-15T00:39:44.471Z",
    "builtAt": "2026-11-10T21:13:50.883Z",
    "notes": [
     {
@@ -99453,7 +99453,7 @@
    "pr": "#454",
    "priority": "P0",
    "createdAt": "2026-11-10T16:41:39.193Z",
-   "updatedAt": "2026-11-15T00:27:01.099Z",
+   "updatedAt": "2026-11-15T00:40:07.353Z",
    "builtAt": "2026-11-10T17:08:49.567Z",
    "notes": [
     {
@@ -100203,7 +100203,7 @@
    "pr": "#457",
    "priority": "P0",
    "createdAt": "2026-11-10T16:44:49.604Z",
-   "updatedAt": "2026-11-15T00:26:57.372Z",
+   "updatedAt": "2026-11-15T00:39:59.143Z",
    "builtAt": "2026-11-10T17:22:08.084Z",
    "notes": [
     {
@@ -100321,7 +100321,7 @@
    "pr": "#459",
    "priority": "P0",
    "createdAt": "2026-11-10T16:45:23.543Z",
-   "updatedAt": "2026-11-15T00:26:50.060Z",
+   "updatedAt": "2026-11-15T00:39:56.346Z",
    "builtAt": "2026-11-10T17:31:53.379Z",
    "notes": [
     {
@@ -100435,7 +100435,7 @@
    "pr": "#458",
    "priority": "P0",
    "createdAt": "2026-11-10T16:45:47.022Z",
-   "updatedAt": "2026-11-15T00:26:53.818Z",
+   "updatedAt": "2026-11-15T00:39:57.823Z",
    "builtAt": "2026-11-10T17:26:05.038Z",
    "notes": [
     {
@@ -100549,7 +100549,7 @@
    "pr": "#460",
    "priority": "P0",
    "createdAt": "2026-11-10T16:47:11.863Z",
-   "updatedAt": "2026-11-15T00:26:39.858Z",
+   "updatedAt": "2026-11-15T00:39:51.983Z",
    "builtAt": "2026-11-10T18:10:42.752Z",
    "notes": [
     {
@@ -100667,7 +100667,7 @@
    "pr": "#461",
    "priority": "P0",
    "createdAt": "2026-11-10T16:50:14.626Z",
-   "updatedAt": "2026-11-15T00:26:46.262Z",
+   "updatedAt": "2026-11-15T00:39:54.878Z",
    "builtAt": "2026-11-10T17:46:32.477Z",
    "notes": [
     {
@@ -100936,7 +100936,7 @@
    "pr": "#462",
    "priority": "P0",
    "createdAt": "2026-11-10T16:51:08.892Z",
-   "updatedAt": "2026-11-15T00:26:43.138Z",
+   "updatedAt": "2026-11-15T00:39:53.441Z",
    "builtAt": "2026-11-10T17:56:06.164Z",
    "notes": [
     {
@@ -101358,7 +101358,7 @@
    "pr": "#466",
    "priority": "P0",
    "createdAt": "2026-11-10T17:11:27.008Z",
-   "updatedAt": "2026-11-15T00:25:59.325Z",
+   "updatedAt": "2026-11-15T00:39:47.706Z",
    "builtAt": "2026-11-10T19:31:24.543Z",
    "notes": [
     {
@@ -104012,7 +104012,7 @@
    "pr": "#464",
    "priority": "P0",
    "createdAt": "2026-11-10T18:57:34.689Z",
-   "updatedAt": "2026-11-15T00:26:06.135Z",
+   "updatedAt": "2026-11-15T00:39:49.130Z",
    "builtAt": "2026-11-10T19:11:29.628Z",
    "notes": [
     {
@@ -104277,7 +104277,7 @@
    "pr": "#473",
    "priority": "P0",
    "createdAt": "2026-11-10T20:40:20.356Z",
-   "updatedAt": "2026-11-15T00:25:25.230Z",
+   "updatedAt": "2026-11-15T00:39:42.991Z",
    "builtAt": "2026-11-10T21:24:10.425Z",
    "notes": [
     {
@@ -104399,7 +104399,7 @@
    "pr": "#475",
    "priority": "P0",
    "createdAt": "2026-11-10T20:44:19.333Z",
-   "updatedAt": "2026-11-15T00:25:16.064Z",
+   "updatedAt": "2026-11-15T00:39:41.357Z",
    "builtAt": "2026-11-10T21:45:30.832Z",
    "notes": [
     {
@@ -104521,7 +104521,7 @@
    "pr": "#476",
    "priority": "P0",
    "createdAt": "2026-11-10T20:45:52.606Z",
-   "updatedAt": "2026-11-15T00:25:09.212Z",
+   "updatedAt": "2026-11-15T00:39:39.923Z",
    "builtAt": "2026-11-10T21:48:20.598Z",
    "notes": [
     {
@@ -105187,7 +105187,7 @@
    "pr": "#478",
    "priority": "P0",
    "createdAt": "2026-11-10T20:59:45.064Z",
-   "updatedAt": "2026-11-15T00:24:52.895Z",
+   "updatedAt": "2026-11-15T00:39:36.984Z",
    "builtAt": "2026-11-10T23:18:41.268Z",
    "notes": [
     {
@@ -105341,7 +105341,7 @@
    "pr": "#479",
    "priority": "P0",
    "createdAt": "2026-11-10T21:02:31.264Z",
-   "updatedAt": "2026-11-15T00:24:41.591Z",
+   "updatedAt": "2026-11-15T00:39:28.803Z",
    "builtAt": "2026-11-10T23:23:14.336Z",
    "notes": [
     {
@@ -105491,7 +105491,7 @@
    "pr": "#480",
    "priority": "P0",
    "createdAt": "2026-11-10T21:21:49.158Z",
-   "updatedAt": "2026-11-15T00:24:44.885Z",
+   "updatedAt": "2026-11-15T00:39:32.461Z",
    "builtAt": "2026-11-10T23:21:24.841Z",
    "notes": [
     {
