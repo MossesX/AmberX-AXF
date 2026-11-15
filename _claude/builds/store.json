@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5828,
- "updatedAt": "2026-11-15T00:43:01.480Z",
+ "rev": 5829,
+ "updatedAt": "2026-11-15T00:43:23.589Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -136276,7 +136276,7 @@
    "pr": "#440",
    "priority": "P1",
    "createdAt": "2026-11-09T17:50:55.358Z",
-   "updatedAt": "2026-11-15T00:33:53.942Z",
+   "updatedAt": "2026-11-15T00:43:02.720Z",
    "builtAt": "2026-11-10T04:27:26.682Z",
    "notes": [
     {
@@ -136381,6 +136381,23 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "flagged",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:33:53.821Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/build-manager/plugin.json, apps/console-web/plugins/build-manager/server/__init__.py, apps/console-web/plugins/build-manager/test.py, apps/console-web/plugins/build-manager/web/build-manager.css, apps/console-web/plugins/build-manager/web/flow.tsx, apps/console-"
+     }
+    ]
    },
    "steps": [
     {
@@ -136637,7 +136654,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 64,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -142370,7 +142387,7 @@
    "pr": "#443",
    "priority": "P1",
    "createdAt": "2026-11-10T02:44:38.021Z",
-   "updatedAt": "2026-11-15T00:33:45.567Z",
+   "updatedAt": "2026-11-15T00:42:58.740Z",
    "builtAt": "2026-11-10T15:10:28.257Z",
    "notes": [
     {
@@ -142415,6 +142432,23 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "flagged",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:33:45.463Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/agent-slots/web/index.tsx, apps/console-web/plugins/claude-badge/web/index.tsx, apps/console-web/plugins/container-access/web/index.tsx, apps/console-web/plugins/maintenance/engine/maint.py, apps/console-web/plugins/maintenance/help.json, apps/console-web/plugin"
+     }
+    ]
    },
    "steps": [
     {
@@ -142495,7 +142529,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
