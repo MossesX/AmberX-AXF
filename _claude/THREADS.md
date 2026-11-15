@@ -798,8 +798,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:23 UTC · `land-batch-merge-main-each-finished` → running, note (all) · pipeline
-- 2026-11-14 23:23 UTC · `land-batch-merge-main-each-finished` note (all) · orchestrator
 - 2026-11-14 23:23 UTC · `fix-build-whose-session-finishes-phase-e` s2 done, note (all) · foreign-write
 - 2026-11-14 23:24 UTC · `auto-land-merge-main-land-land-mjs-clash` note (all) · pipeline
 - 2026-11-14 23:24 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` → pending (all) · builds-live
@@ -1198,6 +1196,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 01:22 UTC · `molly-gap-expenses-cors` → running, note (all) · pipeline
 - 2026-11-15 01:22 UTC · `molly-gap-expenses-cors` note (all) · orchestrator
 - 2026-11-15 01:23 UTC · `banner-widget-shapes-more-than-circle` s2 done, → running (all) · orchestrator
+- 2026-11-15 01:24 UTC · `molly-gap-axhub-cors` → running, note (all) · pipeline
+- 2026-11-15 01:24 UTC · `molly-gap-axhub-cors` note (all) · orchestrator
 
 ## Token passes (log)
 
