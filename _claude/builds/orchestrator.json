@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:20:48.519Z",
+ "updatedAt": "2026-11-15T00:21:15.950Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -126355,7 +126355,7 @@
    "pr": "#628",
    "priority": "P1",
    "createdAt": "2026-11-13T18:03:04.047Z",
-   "updatedAt": "2026-11-15T00:18:55.549Z",
+   "updatedAt": "2026-11-15T00:20:20.557Z",
    "builtAt": "2026-11-15T00:09:27.527Z",
    "notes": [
     {
@@ -126397,6 +126397,14 @@
     {
      "text": "Phase 1 done, PR #628 (draft). UI Review shots exist only in the worktree (r-20261113-8voz001): the session had no AXF_CONSOLE_URL/AXF_TOKEN. Re-submit with --console from a session that has them (shots regenerate via apps/console-web/scripts/settings-open.e2e.mjs).",
      "at": "2026-11-13T18:33:05.693Z"
+    },
+    {
+     "text": "Headless run axf-all-settings-interfaces-open-floating--joey: brief only · start 11.4K tokens ($0.03) · cost $0.53 · 28 turns · 6 tools, MCP none",
+     "at": "2026-11-15T00:19:23.829Z"
+    },
+    {
+     "text": "Session axf-all-settings-interfaces-open-floating--joey on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-15T00:20:20.557Z"
     }
    ],
    "approvals": [],
@@ -146253,15 +146261,15 @@
    "title": "Merge main and land voice-listener-use-claude-when-connected",
    "category": "",
    "detail": "Auto-land could not land `voice-listener-use-claude-when-connected` (voice-listener-use-claude-when-connected): its tests fail: Build engine sweep (Node).\n\nWork on its own branch `claude/voice-listener-use-claude-when-connected` (PR #666); do not open a new PR.\n1. git fetch origin && git checkout claude/voice-listener-use-claude-when-connected && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the failing checks pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/voice-listener-use-claude-when-connected. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/merge-main-land-voice-listener-use",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T00:06:57.847Z",
-   "updatedAt": "2026-11-15T00:13:25.615Z",
+   "updatedAt": "2026-11-15T00:19:43.172Z",
    "builtAt": "",
    "notes": [
     {
@@ -146271,6 +146279,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"a7e9495e-5c20-4385-b3ad-1c6e8733bf1d\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-15T00:13:25.615Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-merge-main-land-voice-listener-use--gina.",
+     "at": "2026-11-15T00:19:37.534Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-merge-main-land-voice-listener-use--gina, shared account login)",
+     "at": "2026-11-15T00:19:43.171Z"
     }
    ],
    "approvals": [],
@@ -146281,8 +146297,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "merge-main-land-voice-listener-use",
+    "brief": "# Build: merge-main-land-voice-listener-use\n\n## Brett said (verbatim)\nAt: 2026-11-15T00:06:57.846Z\n> can we have a setting to make it use Claude if Claude's connected\n> \n> Failing check after merging main into claude/voice-listener-use-claude-when-connected: Build engine sweep (Node) (CI failed on the merged head (Build engine sweep (Node)). No fix build: the orchestrator did not take it.)\n\n## What to build\nContinue build \"Merge main and land voice-listener-use-claude-when-connected\" (merge-main-land-voice-listener-use) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-15 00:06):\n\"can we have a setting to make it use Claude if Claude's connected\n\nFailing check after merging main into claude/voice-listener-use-claude-when-connected: Build engine sweep (Node) (CI failed on the merged head (Build engine sweep (Node)). No fix build: the orchestrator did not take it.)\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (2 left, ~20 min):\n[ ] s1 (~10 min) Auto-land could not land `voice-listener-use-claude-when-connected` (voice-listener-use-claude-when-connected): its tests fail: Build engine sweep (Node).\n[ ] s2 (~10 min) Failing check after merging main into claude/voice-listener-use-claude-when-connected: Build engine sweep (Node) (CI failed on the merged head (Build engine sweep (Node)). No fix build: the orchestrator did not take it.)\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step merge-main-land-voice-listener-use <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link merge-main-land-voice-listener-use --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step merge-main-land-voice-listener-use <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note merge-main-land-voice-listener-use \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -146488,15 +146504,15 @@
    "title": "Merge main and land console-axhub-retry-failed-calls",
    "category": "",
    "detail": "Auto-land could not land `console-axhub-retry-failed-calls` (console-axhub-retry-failed-calls): merging main into it clashes in code: .github/workflows/android.yml, apps/console-web/server/mcp_server.py.\n\nWork on its own branch `claude/console-axhub-retry-failed-calls` (PR #589); do not open a new PR.\n1. git fetch origin && git checkout claude/console-axhub-retry-failed-calls && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/console-axhub-retry-failed-calls. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/merge-main-land-console-axhub-retry",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T00:07:23.857Z",
-   "updatedAt": "2026-11-15T00:14:18.287Z",
+   "updatedAt": "2026-11-15T00:20:56.066Z",
    "builtAt": "",
    "notes": [
     {
@@ -146506,6 +146522,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"6bdd7e71-b66d-490d-b70d-5052493ae67d\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-15T00:14:18.287Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-merge-main-land-console-axhub-retry--rhonda.",
+     "at": "2026-11-15T00:20:48.312Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-merge-main-land-console-axhub-retry--rhonda, shared account login)",
+     "at": "2026-11-15T00:20:56.066Z"
     }
    ],
    "approvals": [],
@@ -146516,8 +146540,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "merge-main-land-console-axhub-retry",
+    "brief": "# Build: merge-main-land-console-axhub-retry\n\n## Brett said (verbatim)\nAt: 2026-11-15T00:07:23.857Z\n> Merging main into claude/console-axhub-retry-failed-calls clashes in code: .github/workflows/android.yml, apps/console-web/server/mcp_server.py\n\n## What to build\nContinue build \"Merge main and land console-axhub-retry-failed-calls\" (merge-main-land-console-axhub-retry) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-15 00:07):\n\"Merging main into claude/console-axhub-retry-failed-calls clashes in code: .github/workflows/android.yml, apps/console-web/server/mcp_server.py\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (9 left, ~1.5 h):\n[ ] s1 (~10 min) Auto-land could not land `console-axhub-retry-failed-calls` (console-axhub-retry-failed-calls): merging main into it clashes in code: .github/workflows/android.yml, apps/console-web/server/mcp_server.py.\n[ ] s2 (~10 min) Work on its own branch `claude/console-axhub-retry-failed-calls` (PR #589); do not open a new PR.\n[ ] s3 (~10 min) git fetch origin && git checkout claude/console-axhub-retry-failed-calls && git merge origin/main\n[ ] s4 (~10 min) Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n[ ] s5 (~10 min) Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n[ ] s6 (~10 min) Commit and push to claude/console-axhub-retry-failed-calls. Auto-land and the merge queue land it by themselves.\n[ ] s7 (~10 min) Attempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.\n[ ] s8 (~10 min) Merging main into claude/console-axhub-retry-failed-calls clashes in code: .github/workflows/android.yml, apps/console-web/server/mcp_server.py\n[ ] s9 (~10 min) Tests green, report _claude/builds/reports/merge-main-land-console-axhub-retry.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/merge-main-land-console-axhub-retry.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step merge-main-land-console-axhub-retry <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link merge-main-land-console-axhub-retry --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step merge-main-land-console-axhub-retry <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note merge-main-land-console-axhub-retry \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
