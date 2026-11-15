@@ -339,3 +339,12 @@ animIntensity` (core/engines/behavior.ts: `skinAnimationVars`, `withAnimationPre
 `setAnimationPref`) and the colour maths in core/engines/swatches.ts (`shadesOf`, `mixHex`, `skinSwatches`,
 `sweepOrigin`); fixture framework/spec/fixtures/skin-animations.json. Kotlin twin deferred (no new Android work): the
 Compose behaviour reader ignores the new fields (defaults apply), so Android skins stay still until it is ported.
+
+## Deferred: data-store@1 client (Nov 15 2026)
+
+Build data-container-axf-data-holds-all adds `framework/core/data-store.mjs` (the axf-data client: get / put / update /
+delete / list / append / read / watch / snapshot / manifest over http, file and memory backends, rev / etag conflicts,
+backoff, `manifestOf`), `framework/core/data-store-mode.mjs` (local → shadow → cutover → rollback) and the fixtures
+`framework/spec/fixtures/data-store*.json`; spec `framework/spec/DATA-STORE.md`. Kotlin twin deferred (no new Android
+work): axf-data's `JsonDocumentStore` / `OfflineFirstRepository` keep their own shapes until a lib-hubstore successor
+speaks data-store@1 (same keys, `If-Match` etags, `data-error@1` codes, the `pure` and `http` blocks of the fixture).

@@ -2336,5 +2336,65 @@
     "wave": 1,
     "module": "app-console",
     "notes": "Build gate-rules-plugin-in-the-console (Nov 15 2026; Brett: \"Where is the gate and rules plugin, open it on my screen.\"): Builds → Gate & rules (view:gate, tabs gate.tabs=rules|auto-lander|history), Settings → Plugins → Gate. REST /api/plugins/gate, MCP gate_* / lander_*, CLI axf gate …, voice gate.open, gate.rule, lander.land-now, lander.pause, lander.resume, gate.setting. Merge queue switch off by default (one at a time). Self-tests: the plugin's test.mjs and server/test_routes.py. Kotlin twin deferred (PORTING.md)."
+  },
+  "cx.datastore": {
+    "status": "partial",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Built on branch claude/data-container-axf-data-holds-all (PR #704): contract, service, deploy, backups, clients, migration, modes, UI + API parity, axHub route, drill. Every namespace starts local; moving one is staged (shadow, then cutover once drift is zero). Console infrastructure: no Kotlin twin (PORTING.md)."
+  },
+  "cx.datastore.contract": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "framework/core/data-store.mjs + data-store-mode.mjs, spec DATA-STORE.md, check-data-store.mjs (incl. --http live replay)."
+  },
+  "cx.datastore.service": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "services/axf-data: test_store.py (CRUD, conflicts, append-only triggers, history/restore, watch, auth, backups, MCP, live Node contract)."
+  },
+  "cx.datastore.deploy": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "deploy/install-data.sh + services/axf-data/compose.yaml; image built and health-checked here; the VPS install runs after the merge."
+  },
+  "cx.datastore.backups": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "backup.py run/verify/restore/prune, deploy/axf-data-backup.cron, systems-check item axf-data with Auto fix (veto calls)."
+  },
+  "cx.datastore.clients": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "data_store.py (test_data_store.py), data-files.mjs, builds-store (check-builds-store-data.mjs: lock = rev check in cutover), claude-settings, plan-studio, ui-review, notes-browser, changes log, shipped-features + chat-viewer SQLite as blobs."
+  },
+  "cx.datastore.migrate": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "data-migrate.mjs, check-data-migrate.mjs on a seeded copy of real data (migrate, verify, roll back, idempotent, forced mismatch fails)."
+  },
+  "cx.datastore.modes": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "data-mode.mjs status|shadow|cutover|rollback|local; mode + drift log on axf-data (_meta/mode, _meta/drift/<ns>)."
+  },
+  "cx.datastore.ui": {
+    "status": "partial",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Data store plugin: three layout options waiting in UI Review; REST state/drift/backup/verify/mode/voice, plugin commands, axf data, deep link view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=data-store."
+  },
+  "cx.datastore.hub": {
+    "status": "partial",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "services/axf-data/mcp.py + deploy/axhub/axf-data.downstream.json (axHub repo registers the downstream); deploy/dryrun/console-down-drill.sh passed (results/console-down-drill.json)."
   }
 }
