@@ -109,6 +109,15 @@ export function accountSet(p) {
   return ownsScope(p, 'claude-accounts') ? { members: [...(p.accounts?.members ?? [])], active: p.accounts?.active ?? '' } : null;
 }
 
+/** `carry` as given ('all', a list or a comma string) → the scopes carried over to a clone, in SCOPES order. */
+export function carryList(carry) {
+  if (carry === undefined || carry === null || carry === 'all') return [...SCOPES];
+  const want = new Set((Array.isArray(carry) ? carry : String(carry).split(',')).map((x) => str(x, 40)));
+  const bad = [...want].filter((x) => x && !SCOPES.includes(x));
+  if (bad.length) throw new Error(`unknown scope "${bad[0]}" (${SCOPES.join(', ')})`);
+  return SCOPES.filter((x) => want.has(x));
+}
+
 /** The registry as written (no derived fields). */
 export const registryOut = (reg, now) => ({ $axf: SCHEMA, updatedAt: now, projects: reg.projects.map(({ base, active, ...p }) => p) });
 
@@ -154,10 +163,36 @@ export function applyChange(reg, change, ctx) {
       if ((ctx.profileIds ?? []).includes(id)) throw new Error(`"${id}" is taken by a build profile; pick another id`);
       if (reg.projects.some((p) => p.name.toLowerCase() === name.toLowerCase())) throw new Error(`a project called "${name}" already exists`);
       const p = { id, name, description: str(c.description, 600), profile: id, status: 'active', createdAt: now, updatedAt: now, ...(ctx.by ? { createdBy: str(ctx.by, 80) } : {}), owns: [], ownedAt: {}, base: false };
+      // Clone (PROJECTS.md): by default the new project carries over every setting of the project you're in; its
+      // builds, notes, to-dos, tasks, lists and plans always start empty (its build profile is new).
+      const plain = c.from === null || c.from === 'none';
+      const source = plain ? null : (c.from ? find(c.from) : activeProject);
+      const carry = carryList(c.carry);
+      const copies = [];
+      if (source) {
+        for (const scope of SCOPES) {
+          if (carry.includes(scope)) {
+            if (!ownsScope(source, scope)) continue;              // the source shares it: so does the clone
+            p.owns.push(scope); p.ownedAt[scope] = now;
+            if (scope === 'claude-accounts') p.accounts = accountSet(source);
+            copies.push({ scope, from: source.id });
+          } else {                                                 // not carried: the clone's own, starting empty
+            p.owns.push(scope); p.ownedAt[scope] = now;
+            if (scope === 'claude-accounts') p.accounts = { members: [], active: '' };
+          }
+        }
+        if (source.repo) p.repo = { ...source.repo };
+        if (source.hub) p.hub = { ...source.hub };
+        p.clonedFrom = { id: source.id, at: now };
+      }
+      for (const k of ['repo', 'hub']) if (c[k] && typeof c[k] === 'object') p[k] = ownedFields({ [k]: c[k] })[k];
       reg.projects.push(p);
       const select = c.select !== false;
-      log.push(`project "${name}" (${id}) created, empty${select ? ' and made active' : ''}`);
-      return { reg, project: p, log, profile: { action: 'create', id, name, description: `Project ${name}`, select } };
+      const fresh = SCOPES.filter((sc) => !carry.includes(sc));
+      log.push(source
+        ? `project "${name}" (${id}) created from ${source.name} (carried: ${carry.join(', ') || 'nothing'}${fresh.length ? `; its own, empty: ${fresh.join(', ')}` : ''}; builds, notes, to-dos and plans start empty)${select ? ' and made active' : ''}`
+        : `project "${name}" (${id}) created, empty${select ? ' and made active' : ''}`);
+      return { reg, project: p, log, copies, profile: { action: 'create', id, name, description: `Project ${name}`, select } };
     }
     case 'update': case 'rename': {
       const p = find(c.id);

@@ -11,7 +11,11 @@
  *
  *   node framework/cli/projects.mjs                       list (★ = active)
  *   node framework/cli/projects.mjs current               the active project
- *   node framework/cli/projects.mjs new "<name>" [--id x] [--description "…"] [--no-select]   an empty workspace
+ *   node framework/cli/projects.mjs new "<name>" [--id x] [--description "…"] [--no-select] [--from <id>|none] [--carry all|a,b]
+ *                                                         a new workspace: empty builds, notes, to-dos and plans; by
+ *                                                         default it carries over every setting of the active project
+ *                                                         (--from another; none = plain); scopes left out of --carry
+ *                                                         start as its own, empty
  *   node framework/cli/projects.mjs select <id|name>      make it the active project (saved for everyone)
  *   node framework/cli/projects.mjs rename <id> "<name>" [--description "…"]
  *   node framework/cli/projects.mjs archive <id> --confirm <id> | unarchive <id>
@@ -184,6 +188,7 @@ export async function act(change) {
   const log = [...r.log];
   // Copies first, registry last: the registry never says "own" while the folder is missing.
   if (r.copy) log.push(...copyScope(r.copy.scope, r.copy.from === 'shared' ? null : r.reg.projects.find((p) => p.id === r.copy.from), r.project));
+  for (const cp of r.copies ?? []) log.push(...copyScope(cp.scope, r.reg.projects.find((p) => p.id === cp.from), r.project));
   if (r.profile) { const pr = await profileChange(r.profile); log.push(...(pr.log ?? []).map((l) => `  ${l}`)); }
   save(r.reg);
   return { project: r.project ? { ...r.project } : null, log, state: await state() };
@@ -228,7 +233,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     } else {
       let change;
       if (cmd === 'act') change = JSON.parse(pos[1] ?? flag('--json') ?? '{}');
-      else if (cmd === 'new' || cmd === 'create') change = { action: 'create', name: pos[1], id: flag('--id'), description: flag('--description'), select: !args.includes('--no-select') };
+      else if (cmd === 'new' || cmd === 'create') change = { action: 'create', name: pos[1], id: flag('--id'), description: flag('--description'), select: !args.includes('--no-select'), ...(flag('--from') ? { from: flag('--from') } : {}), ...(flag('--carry') ? { carry: flag('--carry') } : {}) };
       else if (cmd === 'select' || cmd === 'switch') change = { action: 'select', id: pos[1] };
       else if (cmd === 'own') change = { action: 'own', id: pos[1], scope: pos[2], from: flag('--from'), reseed: args.includes('--reseed') };
       else if (cmd === 'share') change = { action: 'share', id: pos[1], scope: pos[2] };
