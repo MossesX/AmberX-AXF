@@ -272,5 +272,24 @@ t('say: "select the main toolbar, set its transparency to 80", and the window st
   assert.equal(core.select('target:view:builds/button:save').selected, 'target:view:builds/button:save', 'a live console target is selectable by id');
 });
 
+const M = await import('./lib/manifest.mjs');
+t('manifest: a new plugin appears with nothing written for the UI Manager; uiElements add more', () => {
+  const fresh = { $axf: 'plugin@1', id: 'ai.example.console.weather', name: 'Weather', provides: ['view:weather', 'settings-tab:weather', 'dialog:weather-pick', 'banner:weather', 'service:weather@1'], tabable: { view: 'weather', label: 'Weather' } };
+  const got = M.manifestElements(fresh, cat.types);
+  assert.deepEqual(got.map((e) => e.id).sort(), ['plugin:ai.example.console.weather', 'plugin:ai.example.console.weather/banner:weather', 'target:dialog:weather-pick', 'target:settings-tab:weather', 'target:view:weather'].sort());
+  assert.ok(got.every((e) => e.plugin === 'ai.example.console.weather'), 'named by id, never a folder');
+  assert.equal(got.find((e) => e.id === 'target:view:weather').category, 'screens');
+  assert.equal(got.find((e) => e.id === 'target:settings-tab:weather').category, 'settings');
+  const declared = M.manifestElements({ ...fresh, uiElements: [{ id: 'radar', label: 'Radar grid', kind: 'grid', address: 'view:weather/grid:radar' }] }, cat.types);
+  assert.ok(declared.some((e) => e.id === 'ai.example.console.weather/radar' && e.kind === 'grid'));
+  assert.deepEqual(M.manifestElements({ id: 'x' }), [], 'not a plugin@1 manifest: nothing');
+  assert.equal(M.allManifestElements([fresh, { ...fresh, id: 'ai.other' }]).filter((e) => e.id === 'target:view:weather').length, 1, 'one id once');
+  // the real console: every installed plugin is an element, its own declared parts too
+  const all = core.listElements({ limit: 5000 }).items;
+  assert.ok(all.filter((e) => e.kind === 'plugin').length >= 20, 'every plugin');
+  assert.ok(all.some((e) => e.id === 'ai.amberx.axf.console.ui-manager/window'), 'declared uiElements');
+  assert.ok(core.rows('target:view:ui-manager').total >= 2, 'a derived element opens with its properties');
+});
+
 rmSync(TMP, { recursive: true, force: true });
 console.log(`✓ ui-manager: ${n} test groups passed`);

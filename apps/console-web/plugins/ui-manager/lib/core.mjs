@@ -6,6 +6,7 @@
 import { readFileSync } from 'node:fs';
 import * as R from '../../../../../framework/core/engines/ui-manager-rules.mjs';
 import { buildCatalog, pluginManifests } from './catalog.mjs';
+import { allManifestElements } from './manifest.mjs';
 import * as Q from './query.mjs';
 import { readChanges, readOverrides, readSelection, saveOverrides, saveSelection, undoEntry, VIEWS } from './store.mjs';
 import * as S from './say.mjs';
@@ -17,7 +18,10 @@ let cache = null;
 export function world({ fresh = false, targets = null } = {}) {
   if (fresh || !cache || Date.now() - cache.at > 1000) {
     const catalog = buildCatalog();
-    const elements = [...R.frameworkElements(catalog), ...pluginManifests().flatMap((m) => R.elementsFromManifest(m, catalog.types))];
+    // framework slots, then every plugin's manifest (lib/manifest.mjs): a new plugin appears without registering anything
+    const fw = R.frameworkElements(catalog);
+    const fromPlugins = allManifestElements(pluginManifests(), catalog.types).filter((e) => !fw.some((f) => f.id === e.id));
+    const elements = [...fw, ...fromPlugins];
     cache = { at: Date.now(), catalog, elements };
   }
   // live console targets (passed in, or named by a saved override) resolve on the server too: `target:<address>` is enough

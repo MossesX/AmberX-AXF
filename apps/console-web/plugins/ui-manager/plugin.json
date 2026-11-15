@@ -71,6 +71,11 @@
     "model": "fable",
     "builtAt": "2026-11-13"
   },
+  "uiElements": [
+    { "id": "window", "label": "UI Manager window", "kind": "panel", "category": "dialogs", "selector": ".axp-uim" },
+    { "id": "tree", "label": "UI Manager element tree", "kind": "tree", "selector": ".axp-uim__tree" },
+    { "id": "filters", "label": "UI Manager search and filters", "kind": "toolbar", "selector": ".axp-uim__filterbox" }
+  ],
   "help": "help.json",
   "opens": "main"
 }

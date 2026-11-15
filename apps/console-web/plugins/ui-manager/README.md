@@ -68,3 +68,17 @@ Everything the window does is reachable without it, through one set of functions
 | search / sort / filter | `GET elements?q=&kinds=&categories=&plugins=&overridden=&onScreen=&sort=&desc=` | `ui-manager_elements` | `ui-manager.mjs elements --kinds toolbar --sort overrides --desc` | `ui-manager.search:<words>` |
 | properties of an element | `GET element?id=` (`q`, `groups`, `changed`) | `ui-manager_element` | `ui-manager.mjs props asset:toolbar --groups Tokens` | |
 | set / reset | `POST set`, `POST reset` | `ui-manager_set-element`, `ui-manager_reset` | `ui-manager.mjs set asset:toolbar transparency 80` | via `ui-manager.say` |
+
+## How elements register (new plugins appear on their own)
+
+`lib/manifest.mjs` turns every installed plugin's existing `plugin.json` into elements: the plugin itself
+(`plugin:<id>`), each `provides` view, settings tab, dialog, banner item and context menu (views, tabs and dialogs use
+the same `target:…` ids the open console reports, so the two merge into one entry). Nothing has to be written for the
+UI Manager. A plugin adds more (grids, toolbars, panels) with `uiElements` in its `plugin.json`:
+
+```json
+"uiElements": [{ "id": "queue-grid", "label": "Queue", "kind": "grid", "address": "view:builds/grid:queue", "tokens": ["tokens.theme:accent"] }]
+```
+
+Open gap: `uiElements` is read by `framework/core/engines/ui-manager-rules.mjs` (`elementsFromManifest`) but is not
+yet a documented field of `framework/schemas/plugin.schema.json`. Adding it changes a contract, so it is left for a Fable step.
