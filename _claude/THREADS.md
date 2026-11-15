@@ -806,8 +806,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 00:02 UTC · `merge-main-land-console-app-part-3` s4 done, → built, note (all) · reconciler
-- 2026-11-15 00:03 UTC · `restore-asset-designer-plugin-merged-nov` s2 done, → running (all) · orchestrator
 - 2026-11-15 00:03 UTC · `restore-asset-designer-plugin-merged-nov` s3 done (all) · orchestrator
 - 2026-11-15 00:05 UTC · `picker-dialog-plugin-replaces-all` s21 done (all) · orchestrator
 - 2026-11-15 00:06 UTC · `fix-axhub-36-pull-main-in-failed` s17 done, → running (all) · orchestrator
@@ -1206,6 +1204,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 12:09 UTC · `shipped-features-organized-sortable` added (0 steps) (all) · console
 - 2026-11-15 12:09 UTC · `shipped-features-organized-sortable` → queued, note (all) · console
 - 2026-11-15 12:11 UTC · `shipped-features-organized-sortable` note (all) · orchestrator
+- 2026-11-15 12:11 UTC · `shipped-features-organized-sortable` → running, note (all) · pipeline
+- 2026-11-15 12:11 UTC · `shipped-features-organized-sortable` branch claude/shipped-features-organized-sortable (all) · pipeline
 
 ## Token passes (log)
 

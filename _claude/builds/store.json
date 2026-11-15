@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6079,
- "updatedAt": "2026-11-15T12:11:23.628Z",
+ "rev": 6080,
+ "updatedAt": "2026-11-15T12:11:31.814Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -233525,15 +233525,15 @@
    "title": "Shipped features: organized, sortable table with more columns",
    "category": "",
    "detail": "Brett: the Shipped features table is a mess. Rebuild it properly on the shared framework grid (follows the skin's 1-or-2-row setting; default console skin = 2 rows, styled to look great in every skin, light/dark, desktop/phone). ORGANIZE: group by plugin/area with collapsible group headers and counts; option to group by date, build, PR or status instead; de-duplicate repeated rows. SORTABLE: tap any column header to sort asc/desc, multi-sort with shift/long-press, remembered per viewer. MORE COLUMNS (show/hide and reorder via a column picker, remembered): feature name, plugin/area, description, status (live, behind a switch, partial, removed), build id (link), PR # (link), commit, date+time shipped, landed on main (yes/no), deployed live (yes/no), how to reach it (deep link, REST, MCP, CLI, voice: icons for each), settings key, help link, version, who asked (Brett's words), tests (pass/count). Plus search box, filter chips (plugin, status, date range, has API, not deployed), row count, export CSV. Each row expands for full details; context menu per row and cell (open feature, open build, open PR, copy link, mark removed). Uses the shared status badges from the pending-tab build. Full API parity (list/sort/filter/columns via REST/MCP/CLI/voice). Tests, help. Land when done with the one-at-a-time lander.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/shipped-features-organized-sortable",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T12:09:29.937Z",
-   "updatedAt": "2026-11-15T12:11:20.131Z",
+   "updatedAt": "2026-11-15T12:11:28.283Z",
    "builtAt": "",
    "notes": [
     {
@@ -233543,6 +233543,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":2416,\"stop_reason\":\"tool_use\",\"session_id\":\"215d960b-3be1-49e2-8511-7aec6af2a05c\",\"total_cost_usd\":0.39652899999999996,\"usage\":{\"input_tokens\":2,\"cache_creation_input): one step per line of the request, review the steps.",
      "at": "2026-11-15T12:11:05.553Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-shipped-features-organized-sortable--lenny.",
+     "at": "2026-11-15T12:11:25.231Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-shipped-features-organized-sortable--lenny, shared account login)",
+     "at": "2026-11-15T12:11:28.283Z"
     }
    ],
    "approvals": [],
@@ -233562,12 +233570,12 @@
    "pipeline": {
     "queuedAt": "2026-11-15T12:09:31.833Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-shipped-features-organized-sortable--lenny",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-15T12:11:24.634Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-15T12:11:05.553Z",
@@ -233577,9 +233585,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":2416,\"stop_reason\":\"tool_use\",\"session_id\":\"215d960b-3be1-49e2-8511-7aec6af2a05c\",\"total_cost_usd\":0.39652899999999996,\"usage\":{\"input_tokens\":2,\"cache_creation_input): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-15T12:11:24.634Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -233588,7 +233596,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-15T12:11:24.634Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -233672,7 +233680,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
