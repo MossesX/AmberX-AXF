@@ -1,0 +1,36 @@
+{
+  "$manifest": "project-manifest@1",
+  "name": "phone-connect-droid",
+  "displayName": "Phone Connect (Android)",
+  "description": "Brett's small Android companion for the Dev Console: one-time sign-in and permissions, then only an always-on-top overlay (floating toolbar that collapses to a draggable button, popups for approvals, alerts and notifications acted on in place), the Monitor watch, open-page commands and the Audio Output Recorder. Replaces AmberX.",
+  "kind": "app",
+  "status": "active",
+  "version": "0.1.0",
+  "platforms": [
+    "android"
+  ],
+  "framework": {
+    "relation": "built-on",
+    "version": "0.2.0",
+    "template": "android-compose",
+    "appManifest": "axf.manifest.json"
+  },
+  "repo": {
+    "host": "github",
+    "owner": "MossesX",
+    "name": "phone-connect-droid",
+    "exists": false,
+    "visibility": "private"
+  },
+  "location": {
+    "repo": "MossesX/AmberX-AXF",
+    "path": "apps/phone-connect-droid"
+  },
+  "data": {
+    "shared": []
+  },
+  "owners": [
+    "MossesX"
+  ],
+  "created": "2026-11-15"
+}

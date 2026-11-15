@@ -1,0 +1,110 @@
+{
+  "$axf": "manifest@1",
+  "app": {
+    "id": "phone-connect",
+    "name": "Phone Connect",
+    "version": "0.1.0"
+  },
+  "framework": {
+    "version": "0.2.0",
+    "template": "android-compose"
+  },
+  "initializedAt": "2026-11-15T15:30:00.000Z",
+  "targets": [
+    "android"
+  ],
+  "startView": "overlay",
+  "defaults": {
+    "color-theme": "arctic-daylight",
+    "style-theme": "glass-orbit",
+    "layout": "classic-ide",
+    "app-menu": "console-menu",
+    "toolbar": "standard-icons",
+    "nav-menu": "console-nav",
+    "context-menu": "compact-classic",
+    "dialog": "centered-modal",
+    "popup": "corner-solid",
+    "button": "rounded-solid",
+    "slider": "classic-round",
+    "container": "soft-card",
+    "uac-policy": "standard",
+    "banner": "amberx-thin",
+    "clock": "digital-12h",
+    "search-bar": "everything",
+    "logo": "wordmark",
+    "action-button": "settings",
+    "label": "version",
+    "status": "online",
+    "counter": "alerts",
+    "progress": "build",
+    "avatar": "account",
+    "link": "docs",
+    "theme-switch": "day-night",
+    "spacer": "gap",
+    "divider": "rule",
+    "badge": "new"
+  },
+  "hidden": [
+    "toolbar",
+    "app-menu",
+    "nav-menu",
+    "banner"
+  ],
+  "structure": [
+    {
+      "path": "axf.manifest.json",
+      "purpose": "App identity, framework version, targets and the default asset for every slot."
+    },
+    {
+      "path": "app/",
+      "purpose": "The Gradle app module: one-time sign-in/permissions page, the overlay service (floating toolbar, bubble, popups), Monitor, commands, notifications, recorder."
+    }
+  ],
+  "android": {
+    "applicationId": "ai.amberx.axf.console",
+    "scheme": "axf",
+    "modules": [
+      "ai.amberx.axf.settings",
+      "ai.amberx.axf.logging",
+      "ai.amberx.axf.devtools",
+      "ai.amberx.axf.accounts",
+      "ai.amberx.axf.profile",
+      "ai.amberx.axf.billing",
+      "ai.amberx.axf.admin",
+      "ai.amberx.axf.ui.windows",
+      "ai.amberx.axf.browser",
+      "ai.amberx.axf.mcp"
+    ],
+    "minSdk": 26,
+    "targetSdk": 35
+  },
+  "libraries": {
+    "browser": {
+      "tabGroups": [
+        "library-browser"
+      ],
+      "itemKinds": [
+        "kit-preview",
+        "library-info"
+      ],
+      "defaultWindowType": "floating",
+      "toolbarDefault": "forced",
+      "allowGridView": true,
+      "compareLimit": 6,
+      "panes": [
+        "Hot-swappable (AXF kits)",
+        "Third-party / existing"
+      ],
+      "minimizeCorner": "bottom-right"
+    },
+    "$installed": [
+      "ai.amberx.axf.browser"
+    ],
+    "mcp": {
+      "timeoutMs": 30000
+    }
+  },
+  "options": {
+    "wrap-groups": true
+  }
+}
