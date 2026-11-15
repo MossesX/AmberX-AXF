@@ -27,6 +27,11 @@ export const sessions = () => call<{ sessions: SessionSummary[] }>('sessions');
 export const session = (ui: UiPick) => call<Session>(`sessions/${encodeURIComponent(uiKey(ui))}`);
 export const pick = (ui: UiPick) => post<Session>(`sessions/${encodeURIComponent(uiKey(ui))}/pick`, { label: ui.label });
 export const edit = (ui: UiPick, edits: { token: string; to: string | number | null }[], by = 'skin-editor') => post<Session & { snapshot: SkinSnapshot | null }>(`sessions/${encodeURIComponent(uiKey(ui))}/edit`, { edits, by });
+export interface SnapshotHead { id: string; label: string; at: string; by: string; kind: string }
+export interface SnapshotDetail extends SnapshotHead { parent: string | null; edits: { token: string; from: string | number | boolean | null; to: string | number | boolean | null }[]; state: SkinState; tokens: number }
+export interface Comparison { a: SnapshotHead; b: SnapshotHead; changes: SnapshotDetail['edits'] }
+export const snapshot = (ui: UiPick, id: string) => call<SnapshotDetail>(`sessions/${encodeURIComponent(uiKey(ui))}/snapshots/${encodeURIComponent(id)}`);
+export const compare = (ui: UiPick, a: string, b = 'head') => call<Comparison>(`sessions/${encodeURIComponent(uiKey(ui))}/compare${qs({ a, b })}`);
 export const revert = (ui: UiPick, body: { snapshot?: string; minutesAgo?: number; at?: string }) => post<Session & { snapshot: SkinSnapshot | null }>(`sessions/${encodeURIComponent(uiKey(ui))}/revert`, body);
 export const undo = (ui: UiPick) => post<Session & { snapshot: SkinSnapshot | null }>(`sessions/${encodeURIComponent(uiKey(ui))}/undo`);
 export const exportSkin = (ui: UiPick, body: { id?: string; name: string; description?: string; snapshot?: string; base?: Record<string, unknown> }) => post<ExportResult>(`sessions/${encodeURIComponent(uiKey(ui))}/export`, body);

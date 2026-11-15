@@ -53,3 +53,8 @@
 .axp-registry__table td:first-child { font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-xs); }
 .axp-registry__table td:nth-child(7) { min-width: 14em; }
 .axp-registry__default { font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-xs); color: var(--fx-muted); max-width: 14em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* a snapshot's edits and a comparison: one token per line, old → new */
+.axp-skin__snap[aria-selected="true"] { background: var(--fx-surface2); }
+.axp-skin__diff { list-style: none; margin: var(--fx-dens-gap-xs) 0 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); font-size: var(--fx-type-scale-xs); }
+.axp-skin__diff code { font-family: var(--fx-font-mono); color: var(--fx-accent); }

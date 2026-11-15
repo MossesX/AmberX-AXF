@@ -72,10 +72,17 @@ export function snapshotRows(chain: SkinSnapshot[], headId: string): SnapshotRow
 export function revertSnapshot(chain: SkinSnapshot[], head: SkinSnapshot, targetId: string, opts?: SnapshotOpts): SkinSnapshot | null;
 export function snapshotBefore(chain: SkinSnapshot[], headId: string, iso: string): SkinSnapshot | null;
 export function chainErrors(chain: unknown): string[];
+export interface SnapshotHead { id: string; label: string; at: string; by: string; kind: SnapshotKind }
+export function compareSnapshots(chain: SkinSnapshot[], aId: string, bId: string): { a: SnapshotHead; b: SnapshotHead; changes: SnapshotEdit[] };
+export function snapshotDetail(chain: SkinSnapshot[], id: string): SnapshotHead & { parent: string | null; ui: SnapshotUi; edits: SnapshotEdit[]; state: SkinState; tokens: number };
 
 export interface SkinBase { layoutTheme: string; colorTheme: string; styleTheme: string; behaviorTheme?: string; assets: Record<string, string>; extras?: Record<string, unknown>; iconPack?: string; parts?: Record<string, unknown> }
 export interface ExportedSkin { asset: { $axf: 'asset@1'; type: 'skin'; id: string; name: string; version: string; description: string; author: string; tags: string[]; data: SkinBase & { preview: { caption: string } } }; mapped: string[]; unmapped: string[] }
 export function exportSkin(state: SkinState, opts: { id: string; name?: string; base: SkinBase; description?: string; author?: string; tags?: string[]; sets?: Record<string, TokenSetRef | null> }): ExportedSkin;
+export const skinIdOf: (raw: unknown) => string;
+export const LOCKED_SKINS: string[];
+export const isLockedSkin: (id: unknown) => boolean;
+export function defaultSkinAsset(base: SkinBase): ExportedSkin['asset'];
 export function skinState(skinData: unknown, sets?: Record<string, TokenSetRef | null>): SkinState;
 
 export type SkinVoiceIntent =

@@ -124,6 +124,34 @@
         "readOnly": true
       },
       {
+        "route": "GET /sessions/{ui}/snapshots/{sid}",
+        "id": "snapshot",
+        "title": "One skin snapshot",
+        "description": "A snapshot of a UI's skin chain (an id, 'head' or 'default'): when, who or what made it, exactly which tokens it changed (old → new) and its full state, which is what a preview draws.",
+        "readOnly": true
+      },
+      {
+        "route": "GET /sessions/{ui}/compare",
+        "id": "compare",
+        "title": "Compare two skin snapshots",
+        "description": "Every token that differs between snapshot A and snapshot B (ids, 'head' or 'default'): A's value → B's, null = the default skin's.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "a": {
+              "type": "string"
+            },
+            "b": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "a"
+          ]
+        }
+      },
+      {
         "route": "POST /sessions/{ui}/edit",
         "id": "edit",
         "title": "Edit tokens",

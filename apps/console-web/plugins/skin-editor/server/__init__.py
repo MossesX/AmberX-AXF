@@ -283,6 +283,25 @@ def snapshot_before(chain: list[dict[str, Any]], head_id: str, iso: str) -> dict
     return pick
 
 
+def _snap_head(s: dict[str, Any]) -> dict[str, Any]:
+    return {"id": s["id"], "label": s["label"], "at": s["at"], "by": s["by"], "kind": s["kind"]}
+
+
+def compare_snapshots(chain: list[dict[str, Any]], a_id: str, b_id: str) -> dict[str, Any]:
+    a = next((s for s in chain if s["id"] == a_id), None)
+    b = next((s for s in chain if s["id"] == b_id), None)
+    if not a or not b:
+        raise HTTPException(404, f'no snapshot "{a_id if not a else b_id}"')
+    return {"a": _snap_head(a), "b": _snap_head(b), "changes": diff_states(a["state"], b["state"])}
+
+
+def snapshot_detail(chain: list[dict[str, Any]], sid: str) -> dict[str, Any]:
+    s = next((x for x in chain if x["id"] == sid), None)
+    if not s:
+        raise HTTPException(404, f'no snapshot "{sid}"')
+    return {**_snap_head(s), "parent": s["parent"], "ui": s["ui"], "edits": s["edits"], "state": s["state"], "tokens": len(s["state"])}
+
+
 LOCKED_SKINS = (DEFAULT_SKIN_ID,)
 
 
@@ -478,6 +497,33 @@ def edit_session(ui: str, body: dict = Body(...)) -> dict[str, Any]:
         doc = load_session(ui, create=True)
         snap = edit_snapshot(doc["chain"], head_of(doc), edits, str(body.get("by") or "skin-editor")[:80], now_iso(), str(body.get("label") or ""))
         return _snapshot_result(doc, snap)
+
+
+def _snap_ref(doc: dict[str, Any], sid: str) -> str:
+    """A snapshot reference: an id, 'head', or 'default' (the root)."""
+    if sid in ("", "head", "current"):
+        return doc["head"]
+    if sid in ("default", "start", "beginning", "original"):
+        return doc["chain"][0]["id"]
+    return sid
+
+
+@router.get("/sessions/{ui}/snapshots/{sid}")
+def get_snapshot(ui: str, sid: str) -> dict[str, Any]:
+    """One snapshot: when, who/what made it, the tokens it changed (old → new) and its full state (what a preview draws)."""
+    with _lock:
+        doc = load_session(ui)
+        return snapshot_detail(doc["chain"], _snap_ref(doc, sid))
+
+
+@router.get("/sessions/{ui}/compare")
+def compare_session(ui: str, a: str = "", b: str = "head") -> dict[str, Any]:
+    """Compare any two snapshots (ids, 'head' or 'default'): every token that differs, A's value → B's."""
+    if not a:
+        raise HTTPException(400, "a (a snapshot id, 'head' or 'default') required")
+    with _lock:
+        doc = load_session(ui)
+        return compare_snapshots(doc["chain"], _snap_ref(doc, a), _snap_ref(doc, b))
 
 
 def revert_target(doc: dict[str, Any], body: dict[str, Any]) -> str:

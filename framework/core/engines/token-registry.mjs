@@ -394,6 +394,27 @@ export function snapshotBefore(chain, headId, iso) {
   return pick;
 }
 
+const snapHead = (s) => ({ id: s.id, label: s.label, at: s.at, by: s.by, kind: s.kind });
+
+/**
+ * Compare any two snapshots of a chain: the tokens that differ, `from` = A's value, `to` = B's (null = the default skin's).
+ * Order matters only for the direction of each change; the same id twice compares to nothing.
+ */
+export function compareSnapshots(chain, aId, bId) {
+  const a = chain.find((s) => s.id === aId);
+  const b = chain.find((s) => s.id === bId);
+  if (!a) throw new Error(`no snapshot "${aId}"`);
+  if (!b) throw new Error(`no snapshot "${bId}"`);
+  return { a: snapHead(a), b: snapHead(b), changes: diffStates(a.state, b.state) };
+}
+
+/** One snapshot for the timeline: who/what made it, when, and exactly which tokens it changed (old → new). */
+export function snapshotDetail(chain, id) {
+  const s = chain.find((x) => x.id === id);
+  if (!s) throw new Error(`no snapshot "${id}"`);
+  return { ...snapHead(s), parent: s.parent, ui: s.ui, edits: s.edits, state: s.state, tokens: Object.keys(s.state).length };
+}
+
 /** What is wrong with a stored chain (empty = valid): one root, no dangling parent, no duplicate id, bounded. */
 export function chainErrors(chain) {
   const errors = [];

@@ -7,7 +7,7 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type ReactNode } from 'react';
 import { Button, Chip, ColorField, Container, HubSkinLockArea, Icon, IconButton, Note, Segmented, SelectField, Slider, Switch, TabGroup, TextField, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
-import { ELEMENT_LABELS } from '@console/axf/core/engines/token-registry.mjs';
+import { ELEMENT_LABELS, compareSnapshots } from '@console/axf/core/engines/token-registry.mjs';
 import * as api from './api';
 import type { Session, UiListItem, UiPick } from './api';
 import { ELEMENT_KEY, LEVELS, LEVEL_KEY, PANEL_KEY, UI_KEY, ago, baseFromActive, cssVars, elementOf, groupByElement, isColourToken, skinIdOf, visibleTokens, type RegistryToken, type TokenLevel } from './model';
@@ -88,6 +88,9 @@ export function SkinEditorView() {
   const [exported, setExported] = useState<api.ExportResult | null>(null);
   const [skins, setSkins] = useState<api.SkinListItem[]>([]);
   const [live, setLive] = useState<Record<string, string | number | boolean>>({});
+  const [preview, setPreview] = useState<string | null>(null);
+  const [cmpA, setCmpA] = useState('default');
+  const [cmpB, setCmpB] = useState('');
   const sandboxRef = useRef<HTMLDivElement>(null);
 
   const loadRegistry = useCallback(() => api.registry({ level: 'advanced' }).then((r) => setTokens(r.tokens), (e: Error) => setMsg(e.message)), []);
@@ -113,13 +116,15 @@ export function SkinEditorView() {
   }, [rt]);
   useEffect(() => { if (ui && !session) void choose(ui); }, [ui, session, choose]);
 
-  // deep links: skin-editor.open:view:<id> | dialog:<id> | element:<id> | plugin:<id> | token:<token id> | pick
+  // deep links: skin-editor.open:view:<id> | dialog:<id> | element:<id> | plugin:<id> | token:<token id> | pick | snapshot:<id> (preview) | compare:<a>:<b>
   useEffect(() => {
     const off = rt.actions.register('skin-editor.load', (args) => {
       const [kind, ...rest] = args;
       const id = rest.join(':');
       if (kind === 'token') { setPanel('tokens'); setQ(id.replace(/^--fx-/, '')); setLevel('advanced'); return; }
       if (kind === 'pick') { setPicking(true); return; }
+      if (kind === 'snapshot') { setPanel('history'); setPreview(id && id !== 'head' ? id : null); return; }
+      if (kind === 'compare') { const [a, b = ''] = rest; setPanel('history'); setCmpA(a || 'default'); setCmpB(b === 'head' ? '' : b); return; }
       if (kind && id) { const found = allUis.find((u) => u.kind === kind && u.id === id); void choose(found ?? { kind: kind as UiPick['kind'], id, label: id }); }
     }, { label: 'Skin editor: load a UI into the sandbox', params: true });
     return off;
@@ -127,6 +132,14 @@ export function SkinEditorView() {
 
   const state = useMemo(() => ({ ...(session?.state ?? {}), ...live }), [session, live]);
   const head = session?.chain.find((s) => s.id === session.head);
+  // preview: the sandbox draws any snapshot's state without moving the head (no new snapshot until Revert)
+  const previewed = preview ? session?.chain.find((s) => s.id === preview) ?? null : null;
+  const shown = previewed ? previewed.state : state;
+  const comparison = useMemo(() => {
+    if (!session) return null;
+    try { return compareSnapshots(session.chain, cmpA || session.head, cmpB || session.head); } catch { return null; }
+  }, [session, cmpA, cmpB]);
+  const snapOptions = useMemo(() => [...(session?.rows ?? [])].reverse().map((r) => ({ value: r.id, label: `${r.head ? 'Head · ' : ''}${r.label} (${ago(r.at)})` })), [session]);
 
   /* edits: the sandbox follows the keystroke (live), the snapshot lands when the value settles */
   const commitTimer = useRef<number | null>(null);
@@ -146,7 +159,7 @@ export function SkinEditorView() {
   };
   useEffect(() => () => { if (commitTimer.current) window.clearTimeout(commitTimer.current); }, []);
 
-  const revertTo = async (id: string) => { if (!ui) return; setBusy(true); try { setSession(await api.revert(ui, { snapshot: id })); setLive({}); setMsg(''); } catch (e) { setMsg((e as Error).message); } finally { setBusy(false); } };
+  const revertTo = async (id: string) => { if (!ui) return; setBusy(true); try { setSession(await api.revert(ui, { snapshot: id })); setLive({}); setPreview(null); setMsg(''); } catch (e) { setMsg((e as Error).message); } finally { setBusy(false); } };
   const undo = async () => { if (!ui) return; setBusy(true); try { setSession(await api.undo(ui)); setLive({}); } catch (e) { setMsg((e as Error).message); } finally { setBusy(false); } };
   const doExport = async () => {
     if (!ui || !exportName.trim()) return;
@@ -188,9 +201,17 @@ export function SkinEditorView() {
         <Chip>{edits} edit{edits === 1 ? '' : 's'} · {session?.chain.length ?? 0} snapshot{session?.chain.length === 1 ? '' : 's'}</Chip>
       </div>
       {msg && <Note tone="danger">{msg}</Note>}
+      {previewed && (
+        <Note tone="info">
+          <span className={`${P}__wrap`}>Previewing <b>{previewed.label}</b> ({ago(previewed.at)}, by {previewed.by}). The head is unchanged.
+            <Button size="sm" icon="restore" disabled={busy || previewed.id === session?.head} onClick={() => void revertTo(previewed.id)}>Revert to this</Button>
+            <Button size="sm" tone="neutral" icon="x" onClick={() => setPreview(null)}>Back to head</Button>
+          </span>
+        </Note>
+      )}
       <div className={`${P}__body`}>
-        <div ref={sandboxRef} className={`${P}__sandbox ${picking ? `${P}__sandbox--picking` : ''}`} style={cssVars(state)} onClickCapture={onSandboxClick} data-axf-sandbox={ui ? api.uiKey(ui) : ''}>
-          <span className={`${P}__sandbox-label`}><Icon name="eye" size={12} /> Sandbox · {ui ? `${ui.kind}: ${ui.label || ui.id}` : 'nothing picked'}{head && head.id !== 'default' ? ` · ${head.label}` : ' · default skin'}</span>
+        <div ref={sandboxRef} className={`${P}__sandbox ${picking ? `${P}__sandbox--picking` : ''}`} style={cssVars(shown)} onClickCapture={onSandboxClick} data-axf-sandbox={ui ? api.uiKey(ui) : ''}>
+          <span className={`${P}__sandbox-label`}><Icon name="eye" size={12} /> Sandbox · {ui ? `${ui.kind}: ${ui.label || ui.id}` : 'nothing picked'}{previewed ? ` · previewing ${previewed.label}` : head && head.id !== 'default' ? ` · ${head.label}` : ' · default skin'}</span>
           <div className={`${P}__sandbox-inner`}>{ui ? <SandboxContent key={api.uiKey(ui)} ui={ui} /> : <Note tone="info">Pick a UI from the list, click Pick on screen and then any screen in the console, or start with the element gallery.</Note>}</div>
         </div>
         <aside className={`${P}__side`}>
@@ -213,18 +234,44 @@ export function SkinEditorView() {
             </>
           )}
           {panel === 'history' && (
-            <Container title="Snapshots" icon="clock">
-              <p className="fx-muted">Every edit is a snapshot. Click one to revert to it: the revert is a new snapshot, so nothing is lost.</p>
-              <ol className={`${P}__chain`}>
-                {(session?.rows ?? []).map((r) => (
-                  <li key={r.id} className={`${P}__snap`} aria-current={r.head} data-kind={r.kind} data-on-path={r.onPath} data-fx-row tabIndex={0} title={`${r.id} · ${r.at}`} onClick={() => !r.head && void revertTo(r.id)} onKeyDown={(e) => { if (e.key === 'Enter' && !r.head) void revertTo(r.id); }}>
-                    <span className={`${P}__rail`}><span className={`${P}__dot`} /></span>
-                    <span><span className={`${P}__snap-label`}>{r.label}</span><br /><span className={`${P}__snap-meta`}>{ago(r.at)} · {r.tokens} token{r.tokens === 1 ? '' : 's'} · {r.by}</span></span>
-                    {r.head ? <Chip tone="accent">head</Chip> : <Button size="sm" icon="restore" onClick={(e) => { e.stopPropagation(); void revertTo(r.id); }}>Revert</Button>}
-                  </li>
-                ))}
-              </ol>
-            </Container>
+            <>
+              <Container title="Snapshots" icon="clock">
+                <p className="fx-muted">Every edit is a snapshot. Click one to preview it in the sandbox; Revert makes it the head as a new snapshot, so nothing is lost.</p>
+                <ol className={`${P}__chain`}>
+                  {[...(session?.rows ?? [])].reverse().map((r) => {
+                    const snap = session?.chain.find((s) => s.id === r.id);
+                    return (
+                      <li key={r.id} className={`${P}__snap`} aria-current={r.head} aria-selected={preview === r.id} data-kind={r.kind} data-on-path={r.onPath} data-fx-row tabIndex={0} title={`${r.id} · ${new Date(r.at).toLocaleString()}`} onClick={() => setPreview(r.head ? null : r.id)} onKeyDown={(e) => { if (e.key === 'Enter') setPreview(r.head ? null : r.id); }}>
+                        <span className={`${P}__rail`}><span className={`${P}__dot`} /></span>
+                        <span>
+                          <span className={`${P}__snap-label`}>{r.label}</span><br />
+                          <span className={`${P}__snap-meta`}>{new Date(r.at).toLocaleString()} · {ago(r.at)} · by {r.by} · {r.tokens} token{r.tokens === 1 ? '' : 's'}</span>
+                          {snap && snap.edits.length > 0 && (
+                            <ul className={`${P}__diff`}>
+                              {snap.edits.slice(0, 6).map((e) => <li key={e.token}><code>{e.token.replace(/^--fx-/, '')}</code> {e.from === null ? 'default' : String(e.from)} → {e.to === null ? 'default' : String(e.to)}</li>)}
+                              {snap.edits.length > 6 && <li className="fx-muted">+{snap.edits.length - 6} more</li>}
+                            </ul>
+                          )}
+                        </span>
+                        <span className={`${P}__wrap`}>
+                          {r.head ? <Chip tone="accent">head</Chip> : <Button size="sm" icon="restore" disabled={busy} onClick={(e) => { e.stopPropagation(); void revertTo(r.id); }}>Revert</Button>}
+                          <IconButton icon="layout" label={`Compare ${r.label} with the head`} onClick={(e) => { e.stopPropagation(); setCmpA(r.id); setCmpB(''); }} />
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </Container>
+              <Container title="Compare two snapshots" icon="layout">
+                <div className={`${P}__bar`} role="toolbar" aria-label="Compare snapshots">
+                  <SelectField label="A" value={cmpA} onChange={setCmpA} options={snapOptions} />
+                  <SelectField label="B" value={cmpB || session?.head || ''} onChange={(v) => setCmpB(v === session?.head ? '' : v)} options={snapOptions} />
+                </div>
+                {comparison && (comparison.changes.length
+                  ? <ul className={`${P}__diff`}>{comparison.changes.map((c) => <li key={c.token}><code>{c.token.replace(/^--fx-/, '')}</code> {c.from === null ? 'default' : String(c.from)} → {c.to === null ? 'default' : String(c.to)}</li>)}</ul>
+                  : <p className="fx-muted">Same tokens: nothing differs.</p>)}
+              </Container>
+            </>
           )}
           {panel === 'export' && (
             <Container title="Export as a new skin" icon="download">

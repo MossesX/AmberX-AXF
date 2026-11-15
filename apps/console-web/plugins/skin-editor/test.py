@@ -76,6 +76,10 @@ sets = {"--fx-accent": {"target": "tokens.theme", "path": "accent"}, "--fx-radiu
 base = {"layoutTheme": "focus-top", "colorTheme": "hub-night", "styleTheme": "hub", "behaviorTheme": "standard", "assets": {"button": "rounded-solid"}}
 exp = mod.export_skin({**s2["state"], "--fx-btn-bg-hover": "#333"}, "Midnight Sky", "Midnight", base, sets)
 check("export skin", same(exp, FIX["exported"]), json.dumps(exp)[:400])
+check("compare A → B", same(mod.compare_snapshots(chain, s1["id"], rev["id"]), FIX["compare"]["s1ToRev"]))
+check("compare back to the root", same(mod.compare_snapshots(chain, rev["id"], chain[0]["id"]), FIX["compare"]["revToRoot"]))
+check("compare with itself", same(mod.compare_snapshots(chain, s2["id"], s2["id"]), FIX["compare"]["same"]))
+check("snapshot detail", same(mod.snapshot_detail(chain, s2["id"]), FIX["detail"]))
 check("default skin asset", same(mod.default_skin_asset(base), FIX["defaultSkinAsset"]), json.dumps(mod.default_skin_asset(base))[:400])
 check("locked skins", {k: mod.is_locked_skin(k) for k in FIX["locked"]} == FIX["locked"])
 for case in FIX["voice"]:
@@ -118,6 +122,10 @@ check("revert to now is a no-op", rv3["snapshot"] is None and rv3["head"] == rv2
 rv4 = mod.revert_session("view:home", {"minutesAgo": 10})
 check("revert to 10 minutes ago → the default", rv4["state"] == {} and rv4["target"] == "default")
 un = mod.undo_session("view:home")
+snap = mod.get_snapshot("view:home", e1["head"])
+check("snapshot detail route: who, when, old → new", snap["edits"] == [{"token": "--fx-accent", "from": None, "to": "#ff8800"}] and snap["by"] == "skin-editor" and snap["at"])
+cmp = mod.compare_session("view:home", "default", "head")
+check("compare route: default → head", [c["token"] for c in cmp["changes"]] == ["--fx-accent", "--fx-radius-md"] and all(c["from"] is None for c in cmp["changes"]))
 check("undo goes back one", un["state"] == rv2["state"])
 try:
     mod.revert_session("view:home", {})
