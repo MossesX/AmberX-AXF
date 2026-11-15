@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6247,
- "updatedAt": "2026-11-15T14:54:19.998Z",
+ "rev": 6248,
+ "updatedAt": "2026-11-15T14:55:10.258Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -233680,7 +233680,7 @@
    "pr": "#708",
    "priority": "P1",
    "createdAt": "2026-11-15T12:09:29.937Z",
-   "updatedAt": "2026-11-15T12:33:44.976Z",
+   "updatedAt": "2026-11-15T14:55:07.913Z",
    "builtAt": "2026-11-15T12:33:21.985Z",
    "notes": [
     {
@@ -233710,6 +233710,10 @@
     {
      "text": "Headless run axf-shipped-features-organized-sortable--lenny: brief only · start 11.5K tokens ($0.03) · cost $6.05 · 110 turns · 6 tools, MCP none",
      "at": "2026-11-15T12:33:44.976Z"
+    },
+    {
+     "text": "TO THE RUNNING SESSION, re-read the build. Brett (09:56): every feature row in Shipped features gets an 'Open' button (and a context-menu item) that opens that feature in the live console app at the exact screen, tab or setting, using its console_show deep link. Features with no screen show the button disabled with the reason. The same button appears in the Gate plugin's Pending features expanded rows once the build has landed. Reachable by API/voice too ('open feature X').",
+     "at": "2026-11-15T14:55:07.913Z"
     }
    ],
    "approvals": [],
@@ -233839,7 +233843,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
