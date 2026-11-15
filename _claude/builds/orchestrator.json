@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:19:45.002Z",
+ "updatedAt": "2026-11-15T00:20:05.337Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -108623,8 +108623,8 @@
    "pr": "#691",
    "priority": "P1",
    "createdAt": "2026-11-12T01:46:10.127Z",
-   "updatedAt": "2026-11-15T00:18:47.413Z",
-   "builtAt": "2026-11-15T00:18:47.413Z",
+   "updatedAt": "2026-11-15T00:19:08.976Z",
+   "builtAt": "2026-11-15T00:19:08.976Z",
    "notes": [
     {
      "text": "Queued by push-banner.",
@@ -108685,6 +108685,10 @@
     {
      "text": "Self-check: fix-axhub-36-pull-main-in-failed had no session on record but axf-fix-axhub-36-pull-main-in-failed--earl is alive: kept running and tracking it.",
      "at": "2026-11-15T00:14:22.542Z"
+    },
+    {
+     "text": "Headless run axf-fix-axhub-36-pull-main-in-failed--earl: brief only · start 13.3K tokens ($0.04) · cost $0.65 · 27 turns · 6 tools, MCP none",
+     "at": "2026-11-15T00:19:08.976Z"
     },
     {
      "text": "Result: origin/main merged clean into axHub claude/claude-sync-hold (PR #36, CI green), claude/amberx-open-url and go-pass; 593 tests green; no conflicts, nothing for Brett. Report PR #691.",
