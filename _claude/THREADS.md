@@ -797,10 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 22:59 UTC · `picker-dialog-plugin-replaces-all` s11 done (all) · orchestrator
-- 2026-11-14 22:59 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` note (all) · orchestrator
-- 2026-11-14 22:59 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` s2 done, → complete (all) · orchestrator
-- 2026-11-14 23:00 UTC · `land-finish-auto-land-live-clear-backlog` s11 done (all) · orchestrator
 - 2026-11-14 23:00 UTC · `always-fill-every-slot-when-slots-are` → running, note (all) · pipeline
 - 2026-11-14 23:00 UTC · `always-fill-every-slot-when-slots-are` note (all) · orchestrator
 - 2026-11-14 23:01 UTC · `pass-approval-hook-deep-link-amberx-notification` s6 done (all) · orchestrator
@@ -1197,6 +1193,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 00:33 UTC · `asset-designer` note (all) · orchestrator
 - 2026-11-15 00:34 UTC · `restore-asset-designer-plugin-merged-nov` note (all) · orchestrator
 - 2026-11-15 00:35 UTC · `new-asset-type-animated-expanding-row` s4 done (all) · orchestrator
+- 2026-11-13 19:02 UTC · `prompting-engine-control-panel-events` branch claude/prompting-engine-control-panel-events (all) · builds-live
+- 2026-11-13 19:02 UTC · `prompting-engine-control-panel-events` s2 done (all) · orchestrator
+- 2026-11-13 19:02 UTC · `prompting-engine-control-panel-events` note (all) · orchestrator
+- 2026-11-13 19:02 UTC · `prompting-engine-control-panel-events` s3 done (all) · orchestrator
 
 ## Token passes (log)
 
