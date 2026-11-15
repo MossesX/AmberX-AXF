@@ -14,9 +14,12 @@
  * picker given its own `asset` keeps it while every other follows the app's. Motion is the motion token through
  * --fx-pick-dur (the behaviour theme's speed and reduced motion flow through it); the stylesheet is `.fx-pick` in axf.css.
  *
- * Keyboard: the row is a button (Enter / Space opens, applies the highlighted option when open); in the grid the arrow keys,
- * Home and End move the highlight, Enter / Space applies, Escape closes. Screen readers: the grid is a listbox of options
- * with aria-selected on the applied one, the row carries aria-expanded and aria-controls.
+ * Keyboard: the row is a button (Enter / Space / ArrowDown opens and moves focus to the applied option; Enter / Space on the
+ * row applies the highlighted option when open, Escape closes); in the grid the arrow keys, Home and End move the highlight,
+ * Enter / Space applies, Escape closes. Screen readers: the row is named by the setting and its value and carries
+ * aria-expanded / aria-controls; the grid is a listbox of options with aria-selected on the applied one; a polite live
+ * region says "<option> highlighted, press again to apply" and "<option> applied".
+ * Motion: every transition reads --fx-pick-dur (the motion token, 0ms for animation none) and prefers-reduced-motion stops them.
  *
  * API (console-control@1): every picker is a `setting:<address or label slug>` target, so `state` reads its value, options
  * and whether it is open, `set` applies a value without the UI, `press` toggles the row and `focus` with `expand` opens it:
@@ -82,6 +85,10 @@ export function ExpanderPicker({ label, value, options, onChange, onPreview, hin
   const gridId = `${baseId}-grid`, id = `${baseId}-row`, nameId = `${baseId}-name`, valueId = `${baseId}-value`, noteId = `${baseId}-note`;
   const describedBy = error || hint ? noteId : undefined;
   const rowRef = useRef<HTMLButtonElement>(null);
+  /** opened from the keyboard: focus moves into the grid; a pointer press leaves focus where it is */
+  const focusOnOpen = useRef(false);
+  /** what a screen reader is told (polite live region): highlighted, applied, closed */
+  const [said, say] = useState('');
   const gridRef = useRef<HTMLDivElement>(null);
   const all: ExpanderOption[] = empty !== undefined ? [{ value: '', label: empty }, ...options] : options;
   const current = all.find((o) => o.value === value);
@@ -89,29 +96,47 @@ export function ExpanderPicker({ label, value, options, onChange, onPreview, hin
 
   const preview = (v: string | null) => { if (previewOn) onPreview?.(v); };
   const close = (apply?: string | null) => {
+    const picked = apply !== undefined && apply !== null ? all.find((o) => o.value === apply) : undefined;
+    if (picked) say(`${picked.label} applied`);
     if (apply !== undefined && apply !== null && apply !== value) onChange(apply);
     else if (armed !== null) preview(null);
     setArmed(null);
     setOpen(false);
   };
-  const expand = () => { if (disabled) return; setArmed(null); setOpen(true); };
+  const expand = () => { if (disabled) return; setArmed(null); setOpen(true); say(''); };
   const onRow = () => { if (open) close(armed); else expand(); };
+  /** Enter / Space are the button's click; ArrowDown / ArrowUp open the closed row too, and opening from the keyboard moves focus in */
+  const onRowKey = (e: KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === 'Enter' || e.key === ' ' || ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && !open)) focusOnOpen.current = !open;
+    if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && !open) { e.preventDefault(); expand(); }
+    else if (e.key === 'Escape' && open) { e.preventDefault(); close(); }
+  };
   const press = (o: ExpanderOption) => {
     if (o.disabled) return;
     if (firstPress || armed === o.value) { close(o.value); rowRef.current?.focus({ preventScroll: true }); return; }
     setArmed(o.value);
     preview(o.value);
+    say(`${o.label} highlighted, press again to apply`);
   };
   useEffect(() => { if (disabled && open) close(); }, [disabled]); // eslint-disable-line react-hooks/exhaustive-deps
   // the grid unfolds in place and pushes what is below down; once it has opened, bring it into view if it ran off the bottom
+  // and put keyboard focus on the option to start from (the applied one). The wait is the motion token's own duration
+  // (--fx-pick-dur, read back from the transition), so reduced motion and animation "none" wait for nothing.
   const subRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!open) return;
     const el = subRef.current;
-    const done = () => el?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
-    el?.addEventListener('transitionend', done, { once: true });
-    const t = setTimeout(done, 400); // reduced motion / no animation: no transitionend fires
-    return () => { el?.removeEventListener('transitionend', done); clearTimeout(t); };
+    if (!el) return;
+    const reduced = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const stop = (gridRef.current?.querySelector('[tabindex="0"]') ?? null) as HTMLButtonElement | null;
+    if (focusOnOpen.current) stop?.focus({ preventScroll: true });
+    focusOnOpen.current = false;
+    let done = false;
+    const show = () => { if (done) return; done = true; el.scrollIntoView?.({ block: 'nearest', behavior: reduced ? 'auto' : 'smooth' }); };
+    el.addEventListener('transitionend', show, { once: true });
+    const secs = typeof getComputedStyle === 'function' ? parseFloat(getComputedStyle(el).transitionDuration || '0') || 0 : 0;
+    const t = setTimeout(show, reduced ? 0 : secs * 1000 + 50);
+    return () => { el.removeEventListener('transitionend', show); clearTimeout(t); };
   }, [open]);
 
   const move = (e: KeyboardEvent<HTMLElement>, from: number) => {
@@ -128,6 +153,7 @@ export function ExpanderPicker({ label, value, options, onChange, onPreview, hin
     const o = all[next]!;
     setArmed(o.value);
     preview(o.value);
+    say(firstPress ? '' : `${o.label} highlighted, press again to apply`);
     (gridRef.current?.children[next] as HTMLButtonElement | undefined)?.focus({ preventScroll: true });
   };
 
@@ -149,13 +175,14 @@ export function ExpanderPicker({ label, value, options, onChange, onPreview, hin
   return (
     <div className={`fx-field fx-pick-field ${error ? 'is-error' : ''} ${className ?? ''}`}>
         <div ref={targetRef} className="fx-pick" style={vars as Record<string, string>} data-fx-pick-open={open ? 'on' : 'off'} {...attrs}>
-          <button ref={rowRef} type="button" id={id} className="fx-pick__row" aria-expanded={open} aria-controls={gridId} aria-labelledby={`${nameId} ${valueId}`} aria-describedby={describedBy} aria-invalid={error ? true : undefined} aria-required={required || undefined} disabled={disabled} onClick={onRow}
+          <button ref={rowRef} type="button" id={id} className="fx-pick__row" aria-expanded={open} aria-controls={gridId} aria-labelledby={`${nameId} ${valueId}`} aria-describedby={describedBy} aria-invalid={error ? true : undefined} aria-required={required || undefined} disabled={disabled} onClick={onRow} onKeyDown={onRowKey}
             title={open ? (pending ? `Apply ${pending.label} and close` : 'Close') : 'Show the options'}>
             <span className="fx-pick__name" id={nameId}>{label}{required && <span className="fx-field__required" aria-hidden="true"> *</span>}</span>
             <span className={`fx-pick__value ${current ? '' : 'is-empty'}`} id={valueId}>{current?.label ?? empty ?? 'Pick one'}</span>
             {pending && <span className="fx-pick__pending">→ {pending.label}</span>}
             {arrowIcon && <span className="fx-pick__arrow" aria-hidden="true"><Icon name={arrowIcon} size={16} /></span>}
           </button>
+          <span className="fx-pick__live" aria-live="polite" aria-atomic="true">{said}</span>
           <div ref={subRef} className="fx-pick__sub" id={gridId} aria-hidden={!open}>
             <div className="fx-pick__sub-inner">
               <div ref={gridRef} className="fx-pick__grid" role="listbox" aria-label={labelText || undefined} aria-labelledby={labelText ? undefined : nameId}>

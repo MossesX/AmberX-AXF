@@ -154,6 +154,23 @@ function mount(asset?: Record<string, unknown>) {
   p.click(p.tile('Dark')); // Enter / Space on a focused button is a click
   eq(p.changes, ['sepia', 'light', 'dark'], 'pressing the highlighted option applies it');
   ok(!p.isOpen(), 'and closes');
+
+  /* s7 screen reader + keyboard open */
+  const live = p.q('.fx-pick__live');
+  eq(live.getAttribute('aria-live'), 'polite', 'a polite live region');
+  eq(live.textContent, 'Dark applied', 'it says what was applied');
+  p.key(p.q('.fx-pick__row'), 'ArrowDown');
+  ok(p.isOpen(), 'ArrowDown on the closed row opens it');
+  eq(document.activeElement, p.tile('Dark'), 'opening from the keyboard puts focus on the applied option');
+  p.click(p.tile('Light'));
+  eq(live.textContent, 'Light highlighted, press again to apply', 'it says what is highlighted and what to do');
+  p.key(p.q('.fx-pick__row'), 'Escape');
+  ok(!p.isOpen(), 'Escape on the row closes');
+  eq(p.changes.at(-1), 'dark', 'without applying');
+  act(() => p.q('.fx-pick__row').focus());
+  p.click(p.q('.fx-pick__row'));
+  ok(document.activeElement === p.q('.fx-pick__row'), 'a pointer press leaves focus where it is');
+  p.click(p.q('.fx-pick__row'));
   act(() => p.root.unmount());
 }
 

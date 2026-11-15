@@ -1144,7 +1144,7 @@ textarea.fx-input { resize: vertical; white-space: pre; }
    place into a grid of tiles and pushes what is below down; nothing floats. The element carries its own asset's attributes and
    vars (expanderPickerStyle: --fx-pick-row-py, --fx-pick-tile-pad, --fx-pick-cols, --fx-pick-dur), so a picker with its own asset
    keeps it; every size is a space / density / field token, every time the motion token, so reduced motion stops it. */
-.fx-pick { display: flex; flex-direction: column; min-width: 0; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); color: var(--fx-text); transition: border-color var(--fx-motion) var(--fx-ease), box-shadow var(--fx-motion) var(--fx-ease); }
+.fx-pick { position: relative; display: flex; flex-direction: column; min-width: 0; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); color: var(--fx-text); transition: border-color var(--fx-motion) var(--fx-ease), box-shadow var(--fx-motion) var(--fx-ease); }
 .fx-pick:focus-within, .fx-pick[data-fx-pick-open='on'] { border-color: var(--fx-accent); }
 .fx-pick[data-fx-pick-open='on'] { box-shadow: 0 0 0 calc(var(--fx-border-w) * 3) var(--fx-accent-soft); }
 .fx-field.is-error .fx-pick { border-color: var(--fx-danger); }
@@ -1156,6 +1156,7 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-pick__value { flex: 0 1 auto; max-width: 60%; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fx-muted); text-align: right; }
 .fx-pick__value.is-empty { color: var(--fx-muted); font-style: italic; }
 .fx-pick[data-fx-pick-value='off'] .fx-pick__value { opacity: 0; }
+.fx-pick__live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .fx-pick__pending { color: var(--fx-accent); font-size: var(--fx-type-scale-sm); white-space: nowrap; }
 .fx-pick__arrow { display: inline-flex; align-items: center; justify-content: center; color: var(--fx-muted); transition: transform var(--fx-pick-dur) var(--fx-ease); }
 .fx-pick[data-fx-pick-open='on'] .fx-pick__arrow { transform: rotate(180deg); }

@@ -117,7 +117,9 @@ const start = css.indexOf('/* expander-picker@1 (Nov 13 2026)');
 const block = css.slice(start, css.indexOf('\n\n', start + 10));
 ok(block.includes('grid-template-rows: 0fr') && block.includes('grid-template-rows: 1fr'), 'the unfold is a 0fr → 1fr grid row (no measuring, pushes content down)');
 ok(block.includes('var(--fx-pick-dur)') && block.includes('prefers-reduced-motion'), 'motion reads the picker duration var and stops under reduced motion');
-ok(!block.includes('position: absolute') && !block.includes('position: fixed'), 'nothing floats');
+// the only positioned rule is the screen-reader live region (clipped to nothing); no option, grid or panel floats
+const floating = block.split('\n').filter((l) => /position: (absolute|fixed)/.test(l));
+eq(floating.map((l) => l.split(' {')[0]), ['.fx-pick__live'], 'nothing floats (only the clipped live region is positioned)');
 // tokens only: no literal colours, no px beyond the hairlines the rest of axf.css draws accents with (pill radii stay 999px by convention)
 ok(block.length > 1000 && !/#[0-9a-f]{3,8}\b|rgba?\(|\d+px/i.test(block.replace(/\b(?:[12]|999)px\b/g, '')), 'expander-picker block: no hard-coded colours or px sizes (tokens only)');
 
@@ -136,6 +138,11 @@ ok(css.includes('.fx-pick__name {') && /\.fx-pick__value \{[^}]*text-align: righ
 ok(/onClick=\{onRow\}/.test(picker) && /const onRow = \(\) => \{ if \(open\) close\(armed\); else expand\(\); \}/.test(picker), 'the whole row (arrow included) opens the grid');
 ok(picker.includes('preview?: ReactNode') && picker.includes('fx-pick__preview') && css.includes('.fx-pick__preview {'), 'tiles can show a preview');
 ok(picker.includes("scrollIntoView?.({ block: 'nearest'"), 'the opened grid scrolls into view (nearest, nothing jumps)');
+/* s7 motion + access */
+ok(picker.includes("matchMedia('(prefers-reduced-motion: reduce)')") && picker.includes("behavior: reduced ? 'auto' : 'smooth'"), 'scrolling into view respects reduced motion');
+ok(picker.includes('getComputedStyle(el).transitionDuration'), 'the wait is the motion token read back, not a fixed time');
+ok(picker.includes('aria-live="polite"') && css.includes('.fx-pick__live {'), 'a polite live region announces highlight and apply');
+ok(picker.includes('onKeyDown={onRowKey}') && picker.includes('focusOnOpen'), 'the row opens from the keyboard and moves focus in');
 ok(/firstPress \|\| armed === o\.value/.test(picker), 'one press highlights, the same press again applies (unless the asset says first-press)');
 ok(/if \(open\) close\(armed\)/.test(picker), 'pressing the arrow / row again applies the highlighted option and closes');
 const index = readFileSync(join(root, 'react/index.ts'), 'utf8');
