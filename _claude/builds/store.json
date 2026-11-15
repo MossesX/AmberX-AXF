@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6289,
- "updatedAt": "2026-11-15T15:12:43.103Z",
+ "rev": 6290,
+ "updatedAt": "2026-11-15T15:13:04.241Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -230915,7 +230915,7 @@
    "title": "Data container: axf-data holds all console data",
    "category": "",
    "detail": "Brett's final layout: the console is screens ONLY, with no work and no data in it. New private container 'axf-data' (Coolify, auto-restart, no public port or DNS, internal Docker network only) holds ALL the data: notes, builds store/journal/history, settings, planner items, UI reviews, everything the console stores today. Four parts: console = UI only; axf-molly = does the work (orchestrator, gate, lander); axHub = routes plus credentials/keys only (NO app data stored in axHub); axf-data = stores everything. Goal: if the console goes down, all data and notes stay available (through axHub tools) and builds keep running. Stage it safely: an API in front of the store, migrate with count checks and a backup, run in shadow first, then cut over, and no data is ever lost. Add daily backups. Coordinate with the move-build-orchestrator-to-axhub build (axf-molly reads and writes the builds store through axf-data). Tests, help, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -230923,7 +230923,7 @@
    "pr": "#704",
    "priority": "P0",
    "createdAt": "2026-11-15T04:28:05.062Z",
-   "updatedAt": "2026-11-15T15:12:39.862Z",
+   "updatedAt": "2026-11-15T15:13:00.787Z",
    "builtAt": "",
    "notes": [
     {
@@ -231713,6 +231713,28 @@
      "rev": 2,
      "createdAt": "2026-11-15T04:30:21.947Z",
      "updatedAt": "2026-11-15T13:55:46.005Z"
+    },
+    {
+     "id": "s28",
+     "uid": "st-mwhz4thp01qj8x",
+     "title": "",
+     "text": "Land fix: merge origin/main into the branch and resolve the clash in .github/workflows/android.yml, apps/console-web/src/control/inventory.json, framework/catalog/catalog.json and framework/catalog/status.json by keeping both sides (regenerate catalog/status/inventory with their generators). Run the checks, push, then land with the one-at-a-time lander.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-15T15:13:00.792Z",
+     "updatedAt": "2026-11-15T15:13:01.264Z"
     }
    ],
    "profiles": [
@@ -231723,7 +231745,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
