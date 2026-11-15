@@ -14,23 +14,30 @@ Right-click the banner → **Skins**: every skin in the app, the one in force ti
 ## Shapes (shape@1)
 
 Brett, Nov 14 2026: "banner widgets can only be circles or pills." The shape a chip-like widget is cut to is now an asset
-of type `shape` (`framework/assets/shape/`, rules in `core/engines/shape-rules.mjs`, fixture `spec/fixtures/shape.json`,
-check `spec/check-shape.mts`). Kinds: `circle`, `pill`, `rounded`, `square`, `squircle`, `hexagon`, `diamond`, `tag`,
-`custom` (per-corner radius steps `corners: { tl, tr, br, bl }` in `none | sm | md | lg | pill`, and / or an SVG `mask`).
-Radius steps are the style theme's `--fx-radius-*` tokens, so a shape follows the skin's corners.
+of type `shape` (`framework/assets/shape/`, rules in `core/engines/shape-rules.mjs`, engine `core/engines/shape.ts`,
+fixtures `spec/fixtures/shape.json` + `shape-validate.json`, check `spec/check-shape.mts`). Kinds: `circle`, `pill`,
+`rounded`, `square`, `squircle` (a superellipse), `hexagon`, `diamond`, `tag`, `corners` (a radius step per corner,
+`corners: { tl, tr, br, bl }` in `none | sm | md | lg | pill`; `corners` may also override any other kind) and `mask`
+(closed SVG path data `M … Z` in its own `viewBox`, default `0 0 100 100`; no script, no url() / links / images).
+Radius steps are the style theme's `--fx-radius-*` tokens, never lengths, so a shape follows the skin's corners.
 
-The active shape compiles to tokens on the root (`runtime.compileStyles`), the stylesheet reads only these:
+The active shape compiles per **slot** (`compileShape(shape, slot)`; the one slot today is `widget`, every chip-like
+banner widget) to tokens on the root (`runtime.compileStyles`). The stylesheet reads only these:
 
 | Token | What |
 | --- | --- |
-| `--fx-widget-radius` | the border radius (one value, or four for per-corner shapes) |
-| `--fx-widget-clip` | a clip-path for shapes a radius can't make (hexagon, diamond, tag, custom), else `none` |
-| `--fx-widget-corner` | `round`, or `squircle` where CSS corner-shape is drawn |
-| `--fx-widget-aspect` | `1` when the shape keeps a square box (circle, diamond, hexagon), else `auto` |
-| `data-fx-shape` | the kind, on the root |
+| `--fx-shape-widget-radius` | four corner radii in CSS order, always four values (tokens, `0` or `999px`) |
+| `--fx-shape-widget-clip` | a clip-path polygon in percentages for hexagon, diamond and tag, else `none` |
+| `--fx-shape-widget-mask` | a mask-image `url("data:image/svg+xml,…")` for squircle and mask, stretched over the chip, else `none` |
+| `--fx-shape-widget-corner` | `round`, or `squircle` where CSS corner-shape is drawn |
+| `--fx-shape-widget-aspect` | `1` when the shape keeps a square box (circle, diamond, hexagon), else `auto` |
+| `data-fx-shape-widget` | the kind, on the root |
+
+Clip and mask never both cut; radius + clip + mask together describe every kind. A widget with its own shape gets the
+same five tokens inline (`shapeInlineVars(shape, 'widget')`).
 
 **Default = today's look.** The `pill` starter (`framework/defaults.json`) and "no shape asset at all" both compile to
-a 999px radius and no clip: the circle every square widget drew and the pill every wide one drew before.
+`999px 999px 999px 999px`, no clip and no mask: the circle every square widget drew and the pill every wide one drew before.
 
 Three levels, like every other look pick: the app's **slot** (Appearance → Assets → Widget shape, `swap:shape:<id>`),
 the **skin** (`assets.shape` in a skin@1), and the **widget** (`BannerWidgetPref.shape`, a shape asset id, folded into

@@ -540,7 +540,7 @@ export interface MeterData {
 
 /**
  * shape@1 (build banner-widget-shapes-more-than-circle, Nov 14 2026): the shape every chip-like banner widget is cut to.
- * Rules, normalizer, validator and the --fx-widget-* tokens: engines/shape-rules.mjs. `pill` = today's look.
+ * Rules, normalizer and validator: engines/shape-rules.mjs; the --fx-shape-<slot>-* tokens and the resolve chain: engines/shape.ts. `pill` = today's look.
  */
 export type { ShapeData } from './engines/shape-rules.mjs';
 

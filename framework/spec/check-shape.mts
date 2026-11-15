@@ -13,7 +13,7 @@ import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SHAPE_DEFAULT_KIND, SHAPE_KINDS, SHAPE_RADII, SHAPE_TYPE, normalizeShape, shapeErrors, shapeRadius, shapeSquare } from '../core/engines/shape-rules.mjs';
-import { SHAPE_POLYGONS, compileShape, shapeClip, shapeMask, shapeToken, superellipsePoints } from '../core/engines/shape';
+import { SHAPE_POLYGONS, compileShape, shapeClip, shapeMask, shapeToken, squirclePath, squirclePolygon, superellipsePoints } from '../core/engines/shape';
 import { bannerWidgetView, normalizeBannerWidgetPref, patchBannerWidget } from '../core/engines/bannerwidgets';
 import { ASSET_TYPES, OPTIONAL_TYPES } from '../core/types';
 import { validateAsset } from '../core/validate';
@@ -68,11 +68,22 @@ eq(compileShape(undefined).vars, { '--fx-shape-widget-radius': '999px 999px 999p
 eq(compileShape(undefined).attrs, { 'data-fx-shape-widget': 'pill' }, 'the root attribute names the slot and the kind');
 eq(shapeToken('radius', 'Bad Slot'), '--fx-shape-widget-radius', 'a bad slot name falls back to the widget slot');
 
-// geometry: every clipped kind is a polygon in percentages (it scales with the chip); the squircle never reaches a corner
-for (const k of ['hexagon', 'diamond', 'tag', 'squircle']) check(SHAPE_POLYGONS[k]!.startsWith('polygon(') && !/px/.test(SHAPE_POLYGONS[k]!), `${k} is a percentage polygon`);
+// geometry: every polygon kind is in percentages (it scales with the chip); the squircle is a superellipse path served as a mask
+for (const k of ['hexagon', 'diamond', 'tag']) check(SHAPE_POLYGONS[k]!.startsWith('polygon(') && !/px/.test(SHAPE_POLYGONS[k]!), `${k} is a percentage polygon`);
 const pts = superellipsePoints();
 check(pts.length === 48 && pts.every(([x, y]) => x >= 0 && x <= 100 && y >= 0 && y <= 100), 'squircle points stay inside the box');
 check(pts.every(([x, y]) => !((x < 1 || x > 99) && (y < 1 || y > 99))), 'squircle points never touch a corner');
+check(/^M [\d. L]+ Z$/.test(squirclePath()) && squirclePath().split(' L ').length === 96, 'the squircle path is closed path data, 96 points');
+check(shapeErrors(SHAPE_TYPE, { kind: 'mask', mask: squirclePath() }).length === 0, 'the squircle path passes the mask rules (a port may ship it as a mask asset)');
+const sq = compileShape({ kind: 'squircle' });
+check(sq.vars['--fx-shape-widget-clip'] === 'none' && sq.vars['--fx-shape-widget-mask']!.startsWith('url("data:image/svg+xml,') && sq.vars['--fx-shape-widget-corner'] === 'squircle', 'squircle = mask + corner-shape hint, no clip');
+check(squirclePolygon().startsWith('polygon(') && squirclePolygon().split(',').length === 48, 'the squircle polygon is there for stylesheets that clip');
+for (const k of SHAPE_KINDS) {
+  const v = compileShape({ kind: k, ...(k === 'mask' ? { mask: 'M 0 0 L 100 0 L 100 100 Z' } : {}), ...(k === 'corners' ? { corners: { tl: 'sm' } } : {}) }).vars;
+  check(v['--fx-shape-widget-radius']!.split(' ').length === 4, `${k}: four corner radii`);
+  check(!/\d+px/.test(v['--fx-shape-widget-radius']!.replace(/999px/g, '')), `${k}: radii are tokens (or 0 / 999px)`);
+  check((v['--fx-shape-widget-clip'] === 'none') || (v['--fx-shape-widget-mask'] === 'none'), `${k}: clip and mask never both cut`);
+}
 check(shapeMask({ kind: 'mask', mask: 'M 0 0 L 100 0 L 100 100 Z' }).startsWith('url("data:image/svg+xml,') && shapeMask({ kind: 'mask', mask: 'M 0 0 L 100 0 L 100 100 Z' }).includes("preserveAspectRatio='none'"), 'a mask is a data-URI svg stretched over the chip');
 check(!/<|>|"/.test(shapeMask({ kind: 'mask', mask: 'M 0 0 L 100 0 L 100 100 Z' }).slice(5, -2)), 'the data URI has no raw <, > or quotes');
 

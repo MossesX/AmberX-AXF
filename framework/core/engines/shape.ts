@@ -13,8 +13,9 @@
  *   data-fx-shape-<slot>       the kind, for stylesheet rules that need more than the tokens
  *
  * Built-in kinds that a radius cannot draw are polygons in percentages, so they scale with the chip: hexagon, diamond
- * and tag (a label with a point one text height deep). The squircle is a superellipse |x|ⁿ + |y|ⁿ = 1 (n = 4) sampled
- * to a polygon. A `mask` kind is an SVG path in its own viewBox, stretched over the box (preserveAspectRatio none).
+ * and tag (a label with a point one text height deep). The squircle is a superellipse |x|ⁿ + |y|ⁿ = 1 (n = 4) as a
+ * closed SVG path, served as a mask like a `mask` kind: an SVG path in its own viewBox, stretched over the box
+ * (preserveAspectRatio none). A stylesheet reads radius + clip + mask together; whichever is not `none` cuts the chip.
  * No DOM, no I/O. Kotlin twin deferred (Android on hold, spec/PORTING.md).
  */
 import { KIND_RADIUS, RADIUS_CSS, SHAPE_VIEWBOX_DEFAULT, normalizeShape, parseViewBox, shapeCornerSteps, shapeSquare, type ShapeData, type ShapeKind, type ShapeRadius } from './shape-rules.mjs';
@@ -66,18 +67,23 @@ export function superellipsePoints(n = SQUIRCLE_EXPONENT, samples = SQUIRCLE_SAM
   return out;
 }
 
-/** The squircle as a clip-path polygon (percentages, so it follows the chip's box). */
-export function squirclePolygon(): string {
-  return `polygon(${superellipsePoints().map(([x, y]) => `${pct(x)} ${pct(y)}`).join(', ')})`;
+/** The squircle as closed SVG path data in the default 0–100 box (a mask, so it follows the chip's box and stays smooth). */
+export function squirclePath(samples = SQUIRCLE_SAMPLES * 2): string {
+  const pts = superellipsePoints(SQUIRCLE_EXPONENT, samples);
+  return `M ${pts.map(([x, y]) => `${x} ${y}`).join(' L ')} Z`;
 }
 
-/** The built-in clipped kinds as polygons. The tag's point is one text height deep so it reads at any width. */
+/** The built-in clipped kinds as polygons in percentages. The tag's point is one text height deep so it reads at any width. */
 export const SHAPE_POLYGONS: Readonly<Record<string, string>> = {
   hexagon: 'polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%)',
   diamond: 'polygon(50% 0, 100% 50%, 50% 100%, 0 50%)',
   tag: 'polygon(0 0, calc(100% - 0.6em) 0, 100% 50%, calc(100% - 0.6em) 100%, 0 100%)',
-  squircle: squirclePolygon(),
 };
+
+/** The squircle as a clip-path polygon, for a stylesheet that prefers clipping to masking (same points, coarser). */
+export function squirclePolygon(): string {
+  return `polygon(${superellipsePoints().map(([x, y]) => `${pct(x)} ${pct(y)}`).join(', ')})`;
+}
 
 /** The clip-path a shape needs, `none` when a radius or a mask does the work. */
 export function shapeClip(shape: unknown): string {
@@ -96,9 +102,10 @@ export function svgDataUrl(svg: string): string {
   return `url("data:image/svg+xml,${svg.replace(/[<>#"%{}|\\^`]/g, (c) => `%${c.charCodeAt(0).toString(16).toUpperCase().padStart(2, '0')}`)}")`;
 }
 
-/** The mask-image a shape needs (`mask` kind), `none` for every other kind. */
+/** The mask-image a shape needs: the asset's path (`mask` kind) or the superellipse (`squircle`), `none` for every other kind. */
 export function shapeMask(shape: unknown): string {
   const s = normalizeShape(shape);
+  if (s.kind === 'squircle') return svgDataUrl(maskSvg(squirclePath()));
   return s.kind === 'mask' && s.mask ? svgDataUrl(maskSvg(s.mask, s.viewBox)) : 'none';
 }
 
