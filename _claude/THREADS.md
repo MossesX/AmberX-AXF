@@ -802,7 +802,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:48 UTC · `themed-native-controls-plugin` s24 done (all) · orchestrator
 - 2026-11-14 23:49 UTC · `merge-main-land-one-source-truth-console` → running, note (all) · pipeline
 - 2026-11-14 23:49 UTC · `merge-main-land-one-source-truth-console` branch claude/merge-main-land-one-source-truth-console (all) · pipeline
 - 2026-11-14 23:49 UTC · `merge-main-land-one-source-truth-console` note (all) · orchestrator
@@ -1202,6 +1201,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 05:41 UTC · `voice-listener-use-claude-when-connected` → complete, merged, note (all) · reconciler
 - 2026-11-15 05:41 UTC · `merge-main-land-voice-listener-use` → complete, merged, note (all) · reconciler
 - 2026-11-15 05:41 UTC · `auto-lander-controls-in-the-gate-plugin` → pending, note (all) · reconciler
+- 2026-11-15 05:42 UTC · `voice-listener-use-claude-when-connected` note (all) · orchestrator
 
 ## Token passes (log)
 

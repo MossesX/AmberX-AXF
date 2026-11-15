@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T05:41:19.932Z",
+ "updatedAt": "2026-11-15T05:42:09.330Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137262,7 +137262,7 @@
    "mergedAt": "2026-11-15T05:39:36Z",
    "priority": "P1",
    "createdAt": "2026-11-13T23:42:29.374Z",
-   "updatedAt": "2026-11-15T05:41:17.346Z",
+   "updatedAt": "2026-11-15T05:42:05Z",
    "builtAt": "2026-11-14T01:12:18.165Z",
    "notes": [
     {
@@ -137296,6 +137296,10 @@
     {
      "text": "Reconciler: PR #666 merged",
      "at": "2026-11-15T05:41:17.346Z"
+    },
+    {
+     "text": "Shipped manifest sm-voice-listener-use-claude-when-connected rev 1 sent to Shipped features (orchestrator): landed 39213d1bd, 27 file(s), 4 test line(s), 3 open.",
+     "at": "2026-11-15T05:42:05Z"
     }
    ],
    "approvals": [],

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6032,
- "updatedAt": "2026-11-15T05:41:19.932Z",
+ "rev": 6033,
+ "updatedAt": "2026-11-15T05:42:09.330Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -216401,7 +216401,7 @@
    "mergedAt": "2026-11-15T05:39:36Z",
    "priority": "P1",
    "createdAt": "2026-11-13T23:42:29.374Z",
-   "updatedAt": "2026-11-15T05:41:17.346Z",
+   "updatedAt": "2026-11-15T05:42:05Z",
    "builtAt": "2026-11-14T01:12:18.165Z",
    "notes": [
     {
@@ -216435,6 +216435,10 @@
     {
      "text": "Reconciler: PR #666 merged",
      "at": "2026-11-15T05:41:17.346Z"
+    },
+    {
+     "text": "Shipped manifest sm-voice-listener-use-claude-when-connected rev 1 sent to Shipped features (orchestrator): landed 39213d1bd, 27 file(s), 4 test line(s), 3 open.",
+     "at": "2026-11-15T05:42:05Z"
     }
    ],
    "approvals": [],
@@ -216484,6 +216488,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-voice-listener-use-claude-when-connected",
+    "rev": 1,
+    "at": "2026-11-15T05:42:05Z",
+    "landedCommit": "39213d1bdce16c5762db18ee02b1315e9fa7db70"
    },
    "steps": [
     {
@@ -216853,7 +216863,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
