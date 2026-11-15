@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:11:44.852Z",
+ "updatedAt": "2026-11-15T00:12:05.457Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -145758,7 +145758,7 @@
    "title": "Merge main and land server-gate-one-session-per-build-no",
    "category": "",
    "detail": "Auto-land could not land `server-gate-one-session-per-build-no` (server-gate-one-session-per-build-no): merging main into it clashes in code: apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/server/__init__.py, apps/console-web/plugins/build-orchestrator/web/index.tsx, apps/console-web/plugins/push-banner/land/merge-queue.mjs, deploy/claude-headless.sh, framework/plan/builds-merge-core.mjs.\n\nWork on its own branch `claude/server-gate-one-session-per-build-no` (PR #610); do not open a new PR.\n1. git fetch origin && git checkout claude/server-gate-one-session-per-build-no && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/server-gate-one-session-per-build-no. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
@@ -145767,7 +145767,7 @@
    "priority": "P0",
    "createdAt": "2026-11-14T23:18:06.781Z",
    "updatedAt": "2026-11-15T00:10:15.436Z",
-   "builtAt": "",
+   "builtAt": "2026-11-15T00:10:15.436Z",
    "notes": [
     {
      "text": "Queued by land-finish-auto-land-live-clear-backlog.",
@@ -145932,8 +145932,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:09:41.342Z",
      "note": "",
      "uid": "st-mwh1wsxw0gc5vb",
      "createdAt": "2026-11-14T23:42:59.971Z"
@@ -145951,8 +145951,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:09:46.834Z",
      "note": "",
      "uid": "st-mwh1wsxw0hwsnf",
      "createdAt": "2026-11-14T23:42:59.971Z"
@@ -145973,8 +145973,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:09:50.877Z",
      "note": "",
      "uid": "st-mwh1wsxw0iegq1",
      "createdAt": "2026-11-14T23:42:59.971Z"

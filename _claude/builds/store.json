@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5733,
- "updatedAt": "2026-11-15T00:11:44.852Z",
+ "rev": 5734,
+ "updatedAt": "2026-11-15T00:12:05.457Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -227471,7 +227471,7 @@
    "title": "Merge main and land server-gate-one-session-per-build-no",
    "category": "",
    "detail": "Auto-land could not land `server-gate-one-session-per-build-no` (server-gate-one-session-per-build-no): merging main into it clashes in code: apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/server/__init__.py, apps/console-web/plugins/build-orchestrator/web/index.tsx, apps/console-web/plugins/push-banner/land/merge-queue.mjs, deploy/claude-headless.sh, framework/plan/builds-merge-core.mjs.\n\nWork on its own branch `claude/server-gate-one-session-per-build-no` (PR #610); do not open a new PR.\n1. git fetch origin && git checkout claude/server-gate-one-session-per-build-no && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/server-gate-one-session-per-build-no. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
@@ -227480,7 +227480,7 @@
    "priority": "P0",
    "createdAt": "2026-11-14T23:18:06.781Z",
    "updatedAt": "2026-11-15T00:10:15.436Z",
-   "builtAt": "",
+   "builtAt": "2026-11-15T00:10:15.436Z",
    "notes": [
     {
      "text": "Queued by land-finish-auto-land-live-clear-backlog.",
@@ -227699,12 +227699,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:09:41.342Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:42:59.971Z",
-     "updatedAt": "2026-11-14T23:42:59.971Z"
+     "updatedAt": "2026-11-15T00:09:42.465Z"
     },
     {
      "id": "s8",
@@ -227721,12 +227721,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:09:46.834Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:42:59.971Z",
-     "updatedAt": "2026-11-14T23:42:59.971Z"
+     "updatedAt": "2026-11-15T00:09:47.470Z"
     },
     {
      "id": "s9",
@@ -227746,12 +227746,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:09:50.877Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:42:59.971Z",
-     "updatedAt": "2026-11-14T23:42:59.971Z"
+     "updatedAt": "2026-11-15T00:09:51.297Z"
     }
    ],
    "profiles": [
@@ -227762,7 +227762,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
