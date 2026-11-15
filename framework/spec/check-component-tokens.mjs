@@ -51,8 +51,8 @@ for (const x of list) {
 }
 ok(!vars.includes('--fx-tab-py') && !vars.includes('--fx-tab-px') && !vars.includes('--fx-tabs-per-row'), 'no clash with the tab-group engine\'s own vars');
 // what Brett asked for (s3 / s4 lists), by name
-for (const k of ['headerBg', 'headerText', 'headerBorder', 'sortArrow', 'rowBg', 'rowAltBg', 'hoverBg', 'selectedBg', 'focusRing', 'expandedBg', 'disabledOpacity', 'lineColor', 'outerBorder', 'cellPadY', 'cellPadX', 'rowHeight', 'radius', 'groupHeaderBg', 'stickyShadow', 'emptyText', 'opacity']) ok(componentToken('grid', k), `grid token ${k}`);
-for (const k of ['barBg', 'barBorder', 'text', 'bg', 'border', 'hoverText', 'hoverBg', 'activeText', 'activeBg', 'pressedText', 'pressedBg', 'disabledText', 'focusRing', 'indicator', 'indicatorSize', 'badgeBg', 'badgeText', 'foldBg', 'gap', 'radiusUnderline', 'radiusPills', 'radiusBoxed', 'radiusSegmented', 'radiusPlain', 'radiusChips', 'opacity']) ok(componentToken('tabs', k), `tabs token ${k}`);
+for (const k of ['headerBg', 'headerText', 'headerBorder', 'sortArrow', 'rowBg', 'rowAltBg', 'hoverBg', 'selectedBg', 'focusRing', 'expandedBg', 'disabledOpacity', 'lineColor', 'outerBorder', 'cellPadY', 'cellPadX', 'rowHeight', 'radius', 'groupHeaderBg', 'stickyShadow', 'emptyText', 'opacity', 'filterChipBg', 'filterChipText', 'filterChipActiveBg', 'focusedBg', 'disabledText']) ok(componentToken('grid', k), `grid token ${k}`);
+for (const k of ['barBg', 'barBorder', 'text', 'bg', 'border', 'hoverText', 'hoverBg', 'activeText', 'activeBg', 'pressedText', 'pressedBg', 'disabledText', 'focusRing', 'indicator', 'indicatorSize', 'badgeBg', 'badgeText', 'foldBg', 'gap', 'radiusUnderline', 'radiusPills', 'radiusBoxed', 'radiusSegmented', 'radiusPlain', 'radiusChips', 'opacity', 'border', 'hoverBorder', 'activeBorder', 'pressedBorder', 'disabledBg', 'disabledBorder', 'badgeActiveBg', 'foldText', 'foldBorder']) ok(componentToken('tabs', k), `tabs token ${k}`);
 eq(componentToken('grid', 'opacity').default, '1', 'grid transparency defaults to 100%');
 eq(componentToken('tabs', 'opacity').default, '1', 'tab transparency defaults to 100%');
 
