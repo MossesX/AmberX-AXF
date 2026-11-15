@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6049,
- "updatedAt": "2026-11-15T11:57:22.854Z",
+ "rev": 6050,
+ "updatedAt": "2026-11-15T11:57:37.274Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -231686,7 +231686,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T11:52:18.052Z",
-   "updatedAt": "2026-11-15T11:57:21.169Z",
+   "updatedAt": "2026-11-15T11:57:35.854Z",
    "builtAt": "",
    "notes": [
     {
@@ -231867,7 +231867,7 @@
      "id": "s5",
      "uid": "st-mwhs10yv050a1q",
      "title": "",
-     "text": "Expanded body of PendingRow: step list with done ticks and Fable/Opus badges, notes and What Brett said. It also has an actions toolbar (role=toolbar, aria-label, settings id) with Queue, Edit and Archive wired to the existing orchestrator/pipeline calls. Archive keeps its confirm. Tap the header again to collapse.",
+     "text": "Expanded body of PendingRow, styled to look beautiful in the active skin (skin tokens only for colour, type, spacing, radius, shadows, animation; check it in every installed skin, light and dark, desktop and phone). Shows: step list with done ticks and Fable/Opus badges, notes, What Brett said, branch, PR, CI state, commits ahead/behind main, timeline (added, split, launched, built, landed), account/model, logs link. EXTENSIVE CONTEXT MENU mapped through the console's context-menu system (context-menu-designer / context-menu plugin source of truth): right-click or long-press on the row AND on each piece of data gives the matching actions, e.g. row: queue, run now, pause, land, merge main, re-split, rename, change priority, change model, archive, duplicate, copy id/link; step: mark done/undone, edit, skip, run from here, change model; PR badge: open PR, copy link, re-run CI; commits-behind badge: merge main now; branch: copy, open on GitHub, compare with main; account/model: switch; notes: add, copy; log: open, tail live. HOOKS integrated into the displayed data: every badge and field is live and actionable (tap a badge runs its main action; data updates live from the store/builds-live; hooks fire on status changes so other plugins and notifications can subscribe, e.g. onBuilt, onClash, onLanded). Actions toolbar (role=toolbar) with Queue, Land, Edit, Archive; Archive keeps its confirm. Every menu action also reachable via REST/MCP/CLI/voice. Tap the header again to collapse.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -231883,9 +231883,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T11:54:07.014Z",
-     "updatedAt": "2026-11-15T11:54:07.014Z"
+     "updatedAt": "2026-11-15T11:57:36.047Z"
     },
     {
      "id": "s6",
@@ -232123,7 +232123,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
