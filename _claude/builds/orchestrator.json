@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T14:53:10.741Z",
+ "updatedAt": "2026-11-15T14:53:18.626Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -151952,7 +151952,7 @@
    "title": "Build rules tab in Gate & rules: VPS owns and enforces all builder rules",
    "category": "",
    "detail": "Add a Build rules tab to the Gate & rules plugin (PR #711), with the VPS as the ONE owner and enforcer of every builder rule. 1) Inventory ALL builder rules in CLAUDE.md, the build briefs, the dispatcher prompt templates (Look/API/Checkpoints/Rules blocks), and the _claude rule docs. List every rule first and delete nothing without listing it. 2) Move them into a build-rules store on the VPS (later axf-data), served by REST and gate.* tools. 3) Each rule is marked doer = VPS or session. Mechanical rules are done by the VPS itself, before or after the build, and are removed from Claude's instructions so nothing happens twice. Examples: create the plugin home card from plugin.json and the template, the Shipped features manifest, the help stub, API-parity scaffolding, running the CI checks, tracker/THREADS rows, PR open and link, and landing one at a time. 4) Judgement rules (look and token rules, API parity design, step size) go into the session brief from the store at dispatch time and are not hardcoded in CLAUDE.md. 5) The gate checks every rule before landing; on a fail it blocks, the VPS auto-fixes what it can, and everything is logged in History. 6) The tab shows each rule with doer, on/off, edit, add, and history, with REST/MCP/CLI/voice parity. First rule: every plugin gets a home card, made by the VPS. Tests, help, Shipped features. Land with the one-at-a-time lander.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -151960,7 +151960,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T13:23:46.016Z",
-   "updatedAt": "2026-11-15T14:53:07.014Z",
+   "updatedAt": "2026-11-15T14:53:12.877Z",
    "builtAt": "",
    "notes": [
     {
@@ -151994,6 +151994,14 @@
     {
      "text": "Brett (08:47): also add these as VPS-run rules (plain code, no Claude tokens): (1) UI Review screenshots, taken automatically by the VPS with headless Chrome for each changed screen, desktop and phone; Claude only designs options if asked; (2) help page + glossary entry check for every plugin, which blocks if missing. Full list of VPS rules: home card, Shipped features, run all checks (theme, controls, toolbars, tests, plugin lifecycle), help/glossary, API parity check, paperwork (tracker, THREADS, report, PR link), screenshots, land one at a time.",
      "at": "2026-11-15T14:52:49.012Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 2): axf-build-rules-tab-gate-rules-vps-owns--joey.",
+     "at": "2026-11-15T14:53:11.097Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-build-rules-tab-gate-rules-vps-owns--joey, shared account login)",
+     "at": "2026-11-15T14:53:12.877Z"
     }
    ],
    "approvals": [],
