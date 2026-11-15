@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5752,
- "updatedAt": "2026-11-15T00:20:05.337Z",
+ "rev": 5753,
+ "updatedAt": "2026-11-15T00:20:27.805Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -226216,7 +226216,7 @@
    "pr": "#586",
    "priority": "P0",
    "createdAt": "2026-11-14T23:10:56.028Z",
-   "updatedAt": "2026-11-14T23:44:33.747Z",
+   "updatedAt": "2026-11-15T00:19:29.667Z",
    "builtAt": "2026-11-14T23:44:33.747Z",
    "notes": [
     {
@@ -226287,6 +226287,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:19:29.441Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Superseded: only merges and status files are missing from main. Kept as archive/merge-main-land-change-to-move-amberx."
+     }
+    ]
    },
    "steps": [
     {
@@ -226499,7 +226516,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -226523,7 +226540,7 @@
    "pr": "#633",
    "priority": "P0",
    "createdAt": "2026-11-14T23:16:22.160Z",
-   "updatedAt": "2026-11-15T00:02:46.930Z",
+   "updatedAt": "2026-11-15T00:18:55.121Z",
    "builtAt": "2026-11-15T00:02:46.930Z",
    "notes": [
     {
@@ -226598,6 +226615,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:18:54.883Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-droid/.gitignore, apps/console-droid/BRIDGE.md, apps/console-droid/OVERLAY.md, apps/console-droid/README.md, apps/console-droid/app/build.gradle, apps/console-droid/app/src/main/AndroidManifest.xml, apps/console-droid/app/src/main/assets/offli"
+     }
+    ]
    },
    "steps": [
     {
@@ -226832,7 +226866,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -226856,7 +226890,7 @@
    "pr": "#640",
    "priority": "P0",
    "createdAt": "2026-11-14T23:16:42.547Z",
-   "updatedAt": "2026-11-14T23:53:06.250Z",
+   "updatedAt": "2026-11-15T00:19:16.155Z",
    "builtAt": "2026-11-14T23:53:06.250Z",
    "notes": [
     {
@@ -226938,6 +226972,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:19:15.862Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-droid/.gitignore, apps/console-droid/BRIDGE.md, apps/console-droid/OVERLAY.md, apps/console-droid/README.md, apps/console-droid/app/build.gradle, apps/console-droid/app/src/main/AndroidManifest.xml, apps/console-droid/app/src/main/assets/offli"
+     }
+    ]
    },
    "steps": [
     {
@@ -227172,7 +227223,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -227196,7 +227247,7 @@
    "pr": "#598",
    "priority": "P0",
    "createdAt": "2026-11-14T23:17:55.197Z",
-   "updatedAt": "2026-11-14T23:53:33.650Z",
+   "updatedAt": "2026-11-15T00:19:01.701Z",
    "builtAt": "2026-11-14T23:53:33.650Z",
    "notes": [
     {
@@ -227267,6 +227318,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:19:01.501Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/agent-slots/server/__init__.py, apps/console-web/plugins/agent-slots/web/index.tsx, apps/console-web/plugins/build-orchestrator/orchestrator.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/bu"
+     }
+    ]
    },
    "steps": [
     {
@@ -227479,7 +227547,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
