@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6255,
- "updatedAt": "2026-11-15T14:57:30.285Z",
+ "rev": 6256,
+ "updatedAt": "2026-11-15T14:57:38.731Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -236919,15 +236919,15 @@
    "title": "Shipped features: Open button views each feature in the live app",
    "category": "",
    "detail": "Every feature row in Shipped features gets an 'Open' button (plus a row context-menu item) that opens that feature in the live console app at the exact screen, tab or setting, using its console_show deep link from the feature store record. Features with no screen show the button disabled with the reason. The same button appears in the Gate plugin's Pending features expanded rows once a build has landed. Full API parity (REST/MCP/CLI/voice: 'open feature X'). Tests, help. Land with the one-at-a-time lander.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/shipped-features-open-button-views-each",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T14:55:29.131Z",
-   "updatedAt": "2026-11-15T14:57:26.226Z",
+   "updatedAt": "2026-11-15T14:57:33.136Z",
    "builtAt": "",
    "notes": [
     {
@@ -236937,6 +236937,14 @@
     {
      "text": "Split by Claude into 15 steps (0 Fable).",
      "at": "2026-11-15T14:57:11.931Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-shipped-features-open-button-views-each--sully.",
+     "at": "2026-11-15T14:57:30.339Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-shipped-features-open-button-views-each--sully, shared account login)",
+     "at": "2026-11-15T14:57:33.136Z"
     }
    ],
    "approvals": [],
@@ -236956,12 +236964,12 @@
    "pipeline": {
     "queuedAt": "2026-11-15T14:55:31.373Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-shipped-features-open-button-views-each--sully",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-15T14:57:29.625Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-15T14:57:11.931Z",
@@ -236973,7 +236981,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-15T14:57:29.625Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -236982,7 +236990,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-15T14:57:29.625Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -237374,7 +237382,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
