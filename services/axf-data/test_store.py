@@ -397,6 +397,36 @@ def test_node_contract_live():
             srv.wait(10)
 
 
+def test_mcp_tools():
+    with Env() as c:
+        rpc = lambda method, params=None, who='console': c.post('/mcp', json={'jsonrpc': '2.0', 'id': 1, 'method': method, 'params': params or {}}, headers=H(who)).json()  # noqa: E731
+        call = lambda name, args=None, who='console': (lambda r: (r['result']['isError'], json.loads(r['result']['content'][0]['text'])))(rpc('tools/call', {'name': name, 'arguments': args or {}}, who))  # noqa: E731
+        assert rpc('initialize')['result']['serverInfo']['name'] == 'axf-data'
+        assert {'notes_list', 'note_read', 'builds_list', 'build_note', 'settings_get'} <= {t['name'] for t in rpc('tools/list')['result']['tools']}
+        assert c.post('/mcp', json={'jsonrpc': '2.0', 'id': 1, 'method': 'tools/list'}).status_code == 401
+        err, w = call('note_write', {'path': 'handoffs/a.md', 'text': '# Hi'})
+        assert not err and w['rev'] == 1
+        err, n = call('note_read', {'path': 'handoffs/a.md'})
+        assert n['text'] == '# Hi'
+        err, e = call('note_write', {'path': 'handoffs/a.md', 'text': 'x'})
+        assert err and e['code'] == 'exists'
+        assert not call('note_write', {'path': 'handoffs/a.md', 'text': '# Two', 'etag': n['etag']})[0]
+        assert [x['path'] for x in call('notes_list')[1]['notes']] == ['handoffs/a.md']
+        c.put('/v1/builds/store.json', content=json.dumps({'$axf': 'builds@1', 'rev': 4, 'builds': [{'id': 'b1', 'title': 'One', 'status': 'running', 'steps': [{'done': True}, {}]}]}), headers=J(**{'if-none-match': '*'}))
+        assert call('builds_list')[1]['builds'] == [{'id': 'b1', 'title': 'One', 'status': 'running', 'steps': '1/2', 'pr': None}]
+        err, r = call('build_note', {'id': 'b1', 'text': 'console is down, still noting'})
+        assert not err and r['rev'] == 5 and r['notes'] == 1
+        assert call('build_get', {'id': 'b1'})[1]['notes'][0]['by'] == 'svc:console'
+        month = time.strftime('%Y-%m', time.gmtime())
+        assert c.get(f'/v1/builds/journal/{month}?since=0', headers=H()).json()['entries'][0]['entry']['action'] == 'note'
+        err, e = call('settings_set', {'path': 'claude/settings.json', 'value': {'noWait': True}})
+        assert err and e['code'] == 'forbidden'
+        assert call('settings_set', {'path': 'apps/x.json', 'value': {'a': 1}})[1]['code'] == 'forbidden', 'the test console token holds no settings grant'
+        assert not call('settings_set', {'path': 'apps/x.json', 'value': {'a': 1}}, who='admin')[0]
+        assert call('settings_get', {'path': 'apps/x.json'}, who='admin')[1]['value'] == {'a': 1}
+        assert call('note_read', {'path': 'handoffs/a.md'}, who='reader')[0], 'the reader token holds builds only'
+
+
 def test_registry_is_the_repo_schema():
     repo = HERE.parents[1] / 'framework/schemas/data-store.json'
     if repo.is_file():

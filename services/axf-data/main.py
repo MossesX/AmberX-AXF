@@ -17,6 +17,7 @@ Routes (base /v1, spec framework/spec/DATA-STORE.md → Operations):
   GET    /v1/watch?ns=&prefix=&since=       SSE of data-change@1 (journal.py); ?poll=1 answers JSON once
   GET    /v1/<key>:history · POST /v1/<key>:restore   per-key history (journal.py)
   DELETE /v1/_meta/tokens/<jti>             revoke a token (admin)
+  POST   /mcp                               MCP tools (mcp.py): what axHub proxies as a downstream
   GET    /v1/_meta/counts                   live keys per namespace (backup verify; read on `_meta`)
   GET    /v1/_meta/backup                   last backup + verify result, kept files, the running job
   POST   /v1/_meta/backup  { verify? }      back up now (or re-verify the newest) in the background (write on `_meta/backup`)
@@ -63,6 +64,8 @@ def create_app(data_dir: Path | str = DATA_DIR, store: Store | None = None) -> F
         return st.health(auth.health())
 
     st.journal.mount(app, who)
+    import mcp as mcp_tools
+    mcp_tools.mount(app, st, who, lambda: st.health(auth.health()))
 
     @app.post('/v1/snapshot')
     async def snapshot(req: Request):

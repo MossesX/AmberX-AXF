@@ -31,7 +31,8 @@ VOL=axf-data
 PORT=7700
 CONF="${AXF_DATA_CONF:-/root/hub/data/axf-data/conf}"
 BACKUPS="${AXF_DATA_BACKUPS:-/root/hub/data/axf-data/backups}"
-CLIENTS="${AXF_DATA_CLIENTS:-axf-console}"
+# axHub's container joins too: it routes notes / builds / settings tools to axf-data (deploy/axhub/axf-data.downstream.json)
+CLIENTS="${AXF_DATA_CLIENTS:-axf-console ${AXHUB_CONTAINER:-axhub}}"
 SERVICES=(console orchestrator axhub cli)
 say() { printf '[axf-data] %s\n' "$*"; }
 
