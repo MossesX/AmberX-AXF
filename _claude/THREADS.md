@@ -807,7 +807,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 01:01 UTC · `restore-asset-designer-plugin-merged-nov` → pending, note (all) · reconciler
 - 2026-11-15 01:01 UTC · `new-asset-type-animated-expanding-row` note (all) · reconciler
 - 2026-11-15 01:01 UTC · `prompting-engine-control-panel-events` PR #697, note (all) · reconciler
 - 2026-11-15 01:01 UTC · `console-app-wake-word-voice-listener` s9 done, note (all) · reconciler
@@ -1207,6 +1206,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 13:53 UTC · `data-container-axf-data-holds-all` s26 done (all) · orchestrator
 - 2026-11-15 13:53 UTC · `build-rules-tab-gate-rules-vps-owns` note (all) · orchestrator
 - 2026-11-15 13:54 UTC · `build-rules-tab-gate-rules-vps-owns` note (all) · orchestrator
+- 2026-11-15 13:55 UTC · `data-container-axf-data-holds-all` s27 done, → built (all) · orchestrator
 
 ## Token passes (log)
 
