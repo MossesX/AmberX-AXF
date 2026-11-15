@@ -25,6 +25,8 @@
  * Kotlin twin deferred (Android on hold, spec/PORTING.md).
  */
 
+import { SKIN_NEVER } from './skin-rules.mjs';
+
 export const TOKEN_REGISTRY_FRAME = 'token-registry@1';
 export const SKIN_SNAPSHOT_FRAME = 'skin-snapshot@1';
 export const TOKEN_MANIFEST_FRAME = TOKEN_REGISTRY_FRAME;
@@ -524,7 +526,8 @@ function buildSkin(state, { sid, name, base, description = '', author = 'Skin ed
   const data = {
     layoutTheme: base.layoutTheme, colorTheme: base.colorTheme, styleTheme: base.styleTheme,
     ...(str(base.behaviorTheme) ? { behaviorTheme: base.behaviorTheme } : {}),
-    assets: { ...base.assets },
+    // slots a skin never sets (skin-rules SKIN_NEVER) are left out, so the skin registers anywhere
+    assets: Object.fromEntries(Object.entries(base.assets).filter(([type]) => !SKIN_NEVER.includes(type))),
     preview: { caption: str(description, 160) || `${str(name, 120) || sid}: exported from the Skin editor.`, ...(typeof thumbnail === 'string' && thumbnail.startsWith('data:image/svg+xml;') && thumbnail.length <= 8000 ? { image: thumbnail } : {}) },
     extras: { ...(isObj(base.extras) ? base.extras : {}), settings },
     ...(str(base.iconPack) ? { iconPack: base.iconPack } : {}),

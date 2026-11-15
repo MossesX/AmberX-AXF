@@ -35,6 +35,7 @@ UI_KINDS = ("view", "dialog", "plugin", "element", "screen")
 UI_KEY = re.compile(r"^(view|dialog|plugin|element|screen):[a-z0-9][a-z0-9._:-]{0,79}$", re.I)
 LEVEL_RANK = {"basic": 0, "pro": 1, "advanced": 2}
 SKIN_VARS_KEY = "axf.skin-editor.vars"
+SKIN_NEVER = ("uac-policy", "help", "skin", "design-package", "interface")  # skin-rules.mjs SKIN_NEVER
 _lock = threading.Lock()
 
 
@@ -406,7 +407,7 @@ def build_skin(state: dict[str, Any], sid: str, name: str, base: dict[str, Any],
     data: dict[str, Any] = {"layoutTheme": base["layoutTheme"], "colorTheme": base["colorTheme"], "styleTheme": base["styleTheme"]}
     if isinstance(base.get("behaviorTheme"), str) and base["behaviorTheme"]:
         data["behaviorTheme"] = base["behaviorTheme"]
-    data["assets"] = dict(base["assets"])
+    data["assets"] = {k: v for k, v in base["assets"].items() if k not in SKIN_NEVER}
     data["preview"] = {"caption": (description or f"{name or sid}: exported from the Skin editor.")[:160]}
     if isinstance(thumbnail, str) and thumbnail.startswith("data:image/svg+xml;") and len(thumbnail) <= 8000:
         data["preview"]["image"] = thumbnail

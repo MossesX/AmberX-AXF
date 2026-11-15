@@ -91,6 +91,7 @@ check("restore previous edit", same(rp, FIX["restore"]["prev"]))
 check("restore previous twice redoes", same(rr, FIX["restore"]["redo"]))
 check("restore from axHub", same(rh, FIX["restore"]["hub"]))
 check("restore from axHub again is a no-op", mod.restore_snapshot(rc, rh, "hub", "test", FIX["restore"]["hub"]["at"]) is None and FIX["restore"]["again"] is None)
+check("export leaves out slots a skin never sets", list(mod.export_skin({}, "x", "X", {**base, "assets": {"button": "b", "help": "h", "interface": "i", "uac-policy": "u"}}, sets)["asset"]["data"]["assets"]) == ["button"])
 check("default skin asset", same(mod.default_skin_asset(base), FIX["defaultSkinAsset"]), json.dumps(mod.default_skin_asset(base))[:400])
 check("locked skins", {k: mod.is_locked_skin(k) for k in FIX["locked"]} == FIX["locked"])
 for case in FIX["voice"]:
