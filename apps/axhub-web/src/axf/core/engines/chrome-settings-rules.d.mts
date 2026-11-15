@@ -18,6 +18,8 @@ export interface ChromeField {
   default?: string | number | boolean;
   group: ChromeFieldGroup;
   level: ChromeLevel;
+  /** a choice of the item only (not a field of the asset type), e.g. tapConfirm */
+  instanceOnly?: boolean;
 }
 export interface ChromeMove { positions: ChromePosition[]; via: 'instance' | 'layout' | 'none'; field: string }
 export interface ChromeSettingsTab { id: string; label: string; icon: string; order: number }
@@ -42,21 +44,44 @@ export function CHROME_SETTINGS_PICK_KEY(type: string): string;
 export function CHROME_SETTINGS_PATCH_KEY(type: string): string;
 export function CHROME_INSTANCE_KEY(type: string, instance: string): string;
 export function CHROME_INSTANCE_ASSET_KEY(type: string, instance: string): string;
+export const CHROME_TARGET_PREFIXES: Partial<Record<ChromeType, string[]>>;
+export function chromeInstanceSlug(label: unknown): string;
+export function CHROME_INSTANCE_INTERFACE_KEY(type: string, instance: string): string;
+export const CHROME_INSTANCE_PICK_SUFFIXES: string[];
 export function TAB_GROUP_LAST_KEY(instance: string): string;
 export function TAB_GROUP_FOLD_KEY(instance: string): string;
 export function isChromeInstanceId(id: unknown): id is string;
+export type TabRows = '1' | '2' | '3' | '4' | '5' | '6' | 'auto';
+export const TAB_ROWS_FIELD: 'rows';
+export const TAB_ROWS_MAX: number;
+export const TAB_ROWS_OPTIONS: TabRows[];
+export function parseTabRows(v: unknown): TabRows | null;
+export interface TabRowsLayout { rows: number | 'auto'; perRow: number; wrap: boolean; vars: Record<string, string>; attrs: Record<string, string> }
+export function tabRowsLayout(count: number, value: unknown): TabRowsLayout;
+export function matchTabGroup(rows: { id: string; label?: string; visible?: boolean }[], words: unknown): string | null;
 export const CHROME_TARGETS: Record<ChromeType, string[]>;
 export function chromeTypeOfTarget(target: unknown): ChromeType | null;
 export const CHROME_MOVES: Record<ChromeType, ChromeMove>;
 export const POSITION_LABELS: Record<ChromePosition, string>;
 export const CHROME_FIELDS: Record<ChromeType, ChromeField[]>;
+export const CHROME_TAP_FIELD: 'tapConfirm';
+export const CHROME_TAP_OPTIONS: readonly ['inherit', 'on', 'off'];
 export const CHROME_SETTINGS_TABS: ChromeSettingsTab[];
 export function normalizeInstanceOverride(type: string, raw: unknown): Record<string, string | number | boolean>;
 export function chromeInstanceData<T extends object>(type: string, base: T | null | undefined, override: unknown): T;
 export function chromeFieldValue(type: string, base: unknown, override: unknown, key: string): unknown;
+export interface ChromeOverride { type: ChromeType; instance: string; fields: Record<string, string | number | boolean> }
+export function chromeOverrideList(saved: unknown): ChromeOverride[];
+export const CONTROLLED_COLOR_KEY: string;
+export const CONTROLLED_COLORS: readonly ('warning' | 'accent' | 'info' | 'success' | 'danger')[];
+export function controlledColorOf(v: unknown): (typeof CONTROLLED_COLORS)[number];
 export function chromeSettingsErrors(asset: unknown): string[];
 export function resolveSettingsChain(get: (id: string) => AssetLike | null | undefined, id: string, seen?: string[]): Record<string, unknown> | null;
 export function chromeSettingsPick(saved: unknown, type: ChromeType | string, ids: string[]): string | null;
+export type ChromeInterfaceSource = 'instance' | 'type' | 'default';
+export function chromeInstanceSettingsPick(instanceSaved: unknown, typeSaved: unknown, type: ChromeType | string, ids: string[]): { id: string; source: ChromeInterfaceSource } | null;
+export interface ChromeInstanceInterface { type: ChromeType; instance: string; interface: string }
+export function chromeInstanceInterfaceList(saved: unknown): ChromeInstanceInterface[];
 export function chromeSettingsChoices(type: ChromeType | string, assets: AssetLike[]): ChromeSettingsChoice[];
 export function customCopy(defaultAsset: AssetLike, app: string | { id: string; name?: string }): { $axf: 'asset@1'; type: 'settings'; id: string; name: string; version: string; description: string; author: string; tags: string[]; data: Record<string, unknown> };
 export function chromeSettingsPlan(appId: string): ChromeSettingsPlanEntry[];

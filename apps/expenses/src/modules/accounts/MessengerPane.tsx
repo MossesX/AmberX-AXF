@@ -115,7 +115,7 @@ function PresenceAvatar({
       sx={{
         "& .MuiBadge-badge": {
           boxShadow: `0 0 0 2px ${token("panel")}`,
-          ...(online ? {} : { background: token("dim"), opacity: 0.7 }),
+          ...(online ? {} : { background: token("dim"), opacity: "var(--fx-opacity-glass)" }),
         },
       }}
     >
@@ -159,7 +159,7 @@ function NewMessageDialog({
 
   return (
     <Dialog open onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle sx={{ fontSize: 15 }}>New message</DialogTitle>
+      <DialogTitle sx={{ fontSize: 'var(--fx-type-root-lg)' }}>New message</DialogTitle>
       <DialogContent dividers sx={{ p: 0 }}>
         <Box sx={{ p: 1.5 }}>
           <TextField
@@ -189,8 +189,8 @@ function NewMessageDialog({
                   primary={name}
                   secondary={u.username}
                   slotProps={{
-                    primary: { sx: { fontSize: 13, fontWeight: 600 } },
-                    secondary: { sx: { fontSize: 11, fontFamily: token("mono") } },
+                    primary: { sx: { fontSize: 'var(--fx-type-root-md)', fontWeight: 600 } },
+                    secondary: { sx: { fontSize: 'var(--fx-type-root-xs)', fontFamily: token("mono") } },
                   }}
                 />
               </ListItemButton>
@@ -198,7 +198,7 @@ function NewMessageDialog({
           })}
         </List>
         {candidates.length === 0 && (
-          <Typography sx={{ fontSize: 12.5, color: token("dim"), p: 2 }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-md)', color: token("dim"), p: 2 }}>
             {users.length <= 1
               ? "You are the only member so far — an administrator adds members on the Members tab."
               : needle
@@ -286,17 +286,17 @@ function Conversation({
         direction="row"
         sx={{
           alignItems: "center",
-          gap: 1.25,
+          gap: 'var(--fx-dens-gap-2xl)',
           px: 1.5,
           py: 1,
-          borderBottom: `1px solid ${token("edge")}`,
+          borderBottom: `var(--fx-border-w) solid ${token("edge")}`,
           flexShrink: 0,
         }}
       >
         <PresenceAvatar profile={profile} name={peerName} online={online} size={32} />
         <Box sx={{ minWidth: 0 }}>
-          <Typography sx={{ fontSize: 13.5, fontWeight: 700, lineHeight: 1.2 }}>{peerName}</Typography>
-          <Typography sx={{ fontSize: 10.5, color: token("dim") }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 700, lineHeight: 1.2 }}>{peerName}</Typography>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>
             {online
               ? "online — delivery is live"
               : "offline — messages queue and deliver at their next sign-in"}
@@ -310,7 +310,7 @@ function Conversation({
               : `The presence stream is down — polling every ${settings.messagePollSeconds}s`
           }
         >
-          <Typography sx={{ fontSize: 10.5, color: streamLive ? token("ok") : token("warn") }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: streamLive ? token("ok") : token("warn") }}>
             {streamLive ? "live" : "polling"}
           </Typography>
         </Tooltip>
@@ -330,9 +330,9 @@ function Conversation({
         }}
       >
         {messages.length === 0 && (
-          <Stack sx={{ alignItems: "center", gap: 1, py: 5, opacity: 0.8 }}>
+          <Stack sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-xl)', py: 5, opacity: "var(--fx-opacity-glass)" }}>
             <Glyph id="icon-chat" size={30} />
-            <Typography sx={{ fontSize: 12.5, color: token("dim"), textAlign: "center", maxWidth: 380 }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-md)', color: token("dim"), textAlign: "center", maxWidth: 380 }}>
               No messages yet — say hello. History is kept per pair, and anything you send while{" "}
               {peerName} is offline queues and delivers at their next sign-in.
             </Typography>
@@ -352,7 +352,7 @@ function Conversation({
                 py: dense ? 0.5 : 0.75,
                 borderRadius: mine ? "12px 12px 3px 12px" : "12px 12px 12px 3px",
                 background: mine ? mineTint : theirsTint,
-                border: `1px solid ${mine ? alpha(theme.palette.primary.main, 0.45) : token("edge")}`,
+                border: `var(--fx-border-w) solid ${mine ? alpha(theme.palette.primary.main, 0.45) : token("edge")}`,
               }}
             >
               <Typography
@@ -362,7 +362,7 @@ function Conversation({
               </Typography>
               <Typography
                 sx={{
-                  fontSize: 9.5,
+                  fontSize: 'var(--fx-type-root-2xs)',
                   color: queued ? token("warn") : token("dim"),
                   mt: 0.25,
                   textAlign: mine ? "right" : "left",
@@ -378,12 +378,12 @@ function Conversation({
 
       {/* -------------------------------- composer ------------------------------- */}
       {saveError && (
-        <Alert severity="error" variant="outlined" sx={{ fontSize: 12, mx: 1.5, mb: 1 }}>
+        <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)', mx: 1.5, mb: 1 }}>
           {saveError}
         </Alert>
       )}
       {!canMessage && (
-        <Alert severity="info" variant="outlined" sx={{ fontSize: 12, mx: 1.5, mb: 1 }}>
+        <Alert severity="info" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)', mx: 1.5, mb: 1 }}>
           An administrator has switched messaging off for your account — you can read this
           conversation but not add to it.
         </Alert>
@@ -391,10 +391,10 @@ function Conversation({
       <Stack
         direction="row"
         sx={{
-          gap: 1,
+          gap: 'var(--fx-dens-gap-xl)',
           alignItems: "flex-end",
           p: 1.25,
-          borderTop: `1px solid ${token("edge")}`,
+          borderTop: `var(--fx-border-w) solid ${token("edge")}`,
           flexShrink: 0,
         }}
       >
@@ -539,17 +539,17 @@ export default function MessengerPane() {
           width: 268,
           flexShrink: 0,
           minHeight: 0,
-          borderRight: `1px solid ${token("edge")}`,
+          borderRight: `var(--fx-border-w) solid ${token("edge")}`,
         }}
       >
-        <Stack direction="row" sx={{ alignItems: "center", gap: 1, px: 1.5, py: 1 }}>
-          <Typography sx={{ fontSize: 13, fontWeight: 700, flex: 1 }}>Conversations</Typography>
+        <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-xl)', px: 1.5, py: 1 }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 700, flex: 1 }}>Conversations</Typography>
           <Button
             size="small"
             variant="outlined"
             startIcon={<Glyph id="icon-plus" size={12} />}
             onClick={() => setPicking(true)}
-            sx={{ textTransform: "none", fontSize: 12 }}
+            sx={{ textTransform: "none", fontSize: 'var(--fx-type-root-sm)' }}
           >
             New
           </Button>
@@ -571,7 +571,7 @@ export default function MessengerPane() {
                   // somebody in is the inconsistency the area walk ended.
                   data-axf-area="accounts.user-row"
                   data-axf-user={t.with}
-                  sx={{ alignItems: "flex-start", gap: 0.5 }}
+                  sx={{ alignItems: "flex-start", gap: 'var(--fx-dens-gap-md)' }}
                 >
                   <ListItemAvatar sx={{ minWidth: 46 }}>
                     <PresenceAvatar
@@ -585,10 +585,10 @@ export default function MessengerPane() {
                     primary={name}
                     secondary={preview(t.lastMessage, session?.username ?? "")}
                     slotProps={{
-                      primary: { sx: { fontSize: 13, fontWeight: t.unread ? 700 : 600 } },
+                      primary: { sx: { fontSize: 'var(--fx-type-root-md)', fontWeight: t.unread ? 700 : 600 } },
                       secondary: {
                         sx: {
-                          fontSize: 11.5,
+                          fontSize: 'var(--fx-type-root-sm)',
                           color: t.unread ? token("ink") : token("dim"),
                           overflow: "hidden",
                           textOverflow: "ellipsis",
@@ -601,7 +601,7 @@ export default function MessengerPane() {
                     <Badge
                       badgeContent={t.unread}
                       color="primary"
-                      sx={{ mt: 1.25, mr: 1.25, "& .MuiBadge-badge": { fontSize: 10 } }}
+                      sx={{ mt: 1.25, mr: 1.25, "& .MuiBadge-badge": { fontSize: 'var(--fx-type-root-2xs)' } }}
                     />
                   )}
                 </ListItemButton>
@@ -609,7 +609,7 @@ export default function MessengerPane() {
             })}
           </List>
           {sorted.length === 0 && (
-            <Typography sx={{ fontSize: 12.5, color: token("dim"), p: 2 }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-md)', color: token("dim"), p: 2 }}>
               No conversations yet. Pick a member with “New” — everyone in the studio is
               reachable, online or not.
             </Typography>
@@ -628,9 +628,9 @@ export default function MessengerPane() {
           canMessage={canMessage}
         />
       ) : (
-        <Stack sx={{ flex: 1, alignItems: "center", justifyContent: "center", gap: 1.5, p: 4 }}>
+        <Stack sx={{ flex: 1, alignItems: "center", justifyContent: "center", gap: 'var(--fx-dens-gap-2xl)', p: 4 }}>
           <Glyph id="icon-chat" size={34} />
-          <Typography sx={{ fontSize: 13, color: token("dim"), textAlign: "center", maxWidth: 400 }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-md)', color: token("dim"), textAlign: "center", maxWidth: 400 }}>
             {sorted.length === 0
               ? "Nothing here yet. Start a conversation with any member — messages sent to somebody who is offline queue and deliver at their next sign-in."
               : "Pick a conversation on the left, or start a new one."}

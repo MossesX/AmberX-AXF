@@ -1,0 +1,157 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-fix-hubsync-look-source",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:27:56Z",
+ "build": {
+  "id": "fix-hubsync-look-source",
+  "title": "Fix: console look not saved to axHub (Hub sync replaced the console own hub source)",
+  "profile": "all",
+  "category": "Fix",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "either console isnt saving look to hub or other apps arent getting look from hub. Hub doc unchanged since 02:54 UTC. Cause: HubSync.stop() detached whatever appearance source the runtime had (the console own one too) on every restart and start() attached its own. Fix: runtime appearanceSourceIs; HubSync detaches only its own.",
+  "verbatim": false,
+  "at": "2026-10-28T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "rt.appearanceSourceIs(src); HubSync.stop detaches only its own source; re-bake console + patch baked hubsync in axhub-web + amberx-droid; checks; verify saves reach a local hub",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-28T05:10:31.767Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "fix/hubsync-own-look-source",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 148,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/148"
+ },
+ "landedCommit": "1359f5f53b9c55f198d15ab7b40600285f00016a",
+ "commits": [
+  "1d3a5465b4da247bf999b36b60c25a8ba3798e8f",
+  "8d76f14aacb1fac7babdab9dd3dafa1faa959204",
+  "15608d270cbe4f6e49583f324219bf8427f4e58a",
+  "632b83e702b50d271fe41621efdd3dc4a1f03a76"
+ ],
+ "mergedAt": "2026-10-28T05:19:35Z",
+ "landedAt": "2026-10-28T05:19:35Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "apps/amberx-droid/src/axf/core/runtime.ts",
+  "apps/amberx-droid/src/axf/libs/hubsync/sync.ts",
+  "apps/axhub-web/src/axf/core/runtime.ts",
+  "apps/axhub-web/src/axf/libs/hubsync/sync.ts",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/src/axf/core/runtime.ts",
+  "apps/console-web/src/axf/libs/hubsync/sync.ts",
+  "framework/core/runtime.ts",
+  "framework/libs/hubsync/sync.ts",
+  "framework/plan/profiles/refactor/framework/plan/build-queue.json",
+  "framework/spec/check-hubsync.mts"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/axf/core/runtime.ts",
+    "apps/console-web/src/axf/libs/hubsync/sync.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/src/axf/core/runtime.ts",
+    "apps/amberx-droid/src/axf/libs/hubsync/sync.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/src/axf/core/runtime.ts",
+    "apps/axhub-web/src/axf/libs/hubsync/sync.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/runtime.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/hubsync/sync.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/profiles/refactor/framework/plan/build-queue.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/check-hubsync.mts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/profiles/refactor/orchestrator.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

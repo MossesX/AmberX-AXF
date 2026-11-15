@@ -3,9 +3,11 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 import { setPriorityHost, type PriorityHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
+import { addLoadedSource } from '@console/control/search';
 import { FOLDER, OrchestratorPage, TABS, openTab } from './ui';
 import { GateLogPage, openGate } from './gate-log';
 import { GateBannerPanel, GateInBanner, GateOwnBanner, OWN_BANNER, setGatePlace, startGateBanner } from './gate-banner';
+import { focusBuild } from './focus';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
 
 const ACTION_LABEL: Record<BuildAction, string> = { unqueue: 'Back to Pending', hold: 'Hold (stays in the Queue)', release: 'Release from hold', archive: 'Move to the Archive', unarchive: 'Bring back from the Archive', delete: 'Delete (kept in Deleted)', restore: 'Restore' };
@@ -17,6 +19,10 @@ const ACTION_ICON: Record<BuildAction, string> = { unqueue: 'arrow-left', hold: 
  * active|incomplete|complete|errors|archive|deleted|accounts|builds|approvals|rules>, build-orchestrator.start:<build> (Start
  * = Queue: the dispatcher starts it when its turn comes). Search: every build, by its tab. Context menu: Open / Queue on
  * build rows, plus the actions the build offers.
+ * build-orchestrator.focus:<tab|build> (Nov 11 2026, console-commands-reliable): what a console command's `focus` runs
+ * ("build-orchestrator pending", console_show "build:<id>"): a tab by id or label opens; a build opens its tab with its
+ * row scrolled into view, expanded and highlighted. open / tab / focus only navigate (effect navigate), so Follow Amber's
+ * navigate-only grant may run them.
  * Build actions (Brett, Nov 10 2026: hold, archive, delete, deleted builds kept forever): build-orchestrator.<unqueue|hold|
  * release|archive|unarchive|delete|restore>:<build>[,<build>…] → POST pipeline/action (the same call as the cards, the
  * bulk toolbar, the MCP command pipeline-build-action and `pipeline.mjs <action> <id…>`).
@@ -46,26 +52,33 @@ export const plugin: AxfWebLibrary = {
   version: '0.5.0',
   appMenu,
   register(rt) {
+    /** A tab by id or label ("pending", "Pending", "all builds"), or ''. */
+    const tabOf = (s: string) => { const low = s.trim().toLowerCase(); return TABS.find((t) => t.id === low || t.label.toLowerCase() === low)?.id ?? ''; };
     const open = async (arg = '') => {
       rt.navigate('build-orchestrator');
-      const id = decodeURIComponent(arg);
+      let id = '';
+      try { id = decodeURIComponent(arg).trim(); } catch { id = arg.trim(); }
       if (!id) return;
-      if (TABS.some((t) => t.id === id)) { openTab(id); return; }
+      const tab = tabOf(id);
+      if (tab) { openTab(tab); return; }
+      // the build: its tab opens and the row there scrolls into view, expands and stays highlighted
+      focusBuild(id);
       try { const b = (await loadRows(true)).find((x) => x.id === id); openTab(b?.tab || 'builds'); if (!b) rt.toast(`No open build "${id}" in the tabs: showing All builds.`, 'warning'); }
       catch { openTab('builds'); }
     };
-    rt.actions.register('build-orchestrator.open', ([arg]) => void open(arg ?? ''), { label: 'Open the Build orchestrator (a build or a tab)' });
+    rt.actions.register('build-orchestrator.open', ([arg]) => void open(arg ?? ''), { label: 'Open the Build orchestrator (a build or a tab)', effect: 'navigate' });
+    rt.actions.register('build-orchestrator.focus', ([arg]) => void open(arg ?? ''), { label: 'Build orchestrator: bring a tab or a build forward', params: true, effect: 'navigate' });
     // Server gate log (Nov 12 2026): the page, optionally filtered to one gate (duplicate-launch, duplicate-reaped,
     // slot-limit, dispatch, main). Same data: GET gate-log, MCP command gate-log, `server-gate.mjs log`, voice.
-    rt.actions.register('build-orchestrator.gate-log', ([arg]) => { openGate(decodeURIComponent(arg ?? '')); rt.navigate('server-gate-log'); }, { label: 'Open the Server gate log (optionally one gate)' });
+    rt.actions.register('build-orchestrator.gate-log', ([arg]) => { openGate(decodeURIComponent(arg ?? '')); rt.navigate('server-gate-log'); }, { label: 'Open the Server gate log (optionally one gate)', params: true, effect: 'navigate' });
     // its banner widget: own banner | app banner bar | snapped into any banner | off (GET / POST gate-banner, MCP, CLI, voice)
     startGateBanner(rt);
     rt.actions.register('build-orchestrator.gate-banner', ([arg]) => {
       const place = decodeURIComponent(arg ?? '').trim();
       if (!place) { rt.navigate('settings'); return; }
       void setGatePlace(place).then((p) => rt.toast(`Server gate log widget: ${p === 'own' ? 'its own banner' : p === 'bar' ? 'the app banner bar' : p === 'off' ? 'off' : `in the ${p} banner`}`, 'success')).catch((e: Error) => rt.toast(e.message, 'danger'));
-    }, { label: 'Move the Server gate log widget (own, bar, off or a banner id)' });
-    rt.actions.register('build-orchestrator.tab', ([arg]) => { rt.navigate('build-orchestrator'); openTab(decodeURIComponent(arg ?? 'queue')); }, { label: 'Build orchestrator: open a tab' });
+    }, { label: 'Move the Server gate log widget (own, bar, off or a banner id)', params: true, effect: 'write' });
+    rt.actions.register('build-orchestrator.tab', ([arg]) => { rt.navigate('build-orchestrator'); openTab(tabOf(decodeURIComponent(arg ?? 'queue')) || 'queue'); }, { label: 'Build orchestrator: open a tab', effect: 'navigate' });
     rt.actions.register('build-orchestrator.start', ([arg]) => {
       const id = decodeURIComponent(arg ?? '');
       if (!id) { void open('pending'); return; }
@@ -89,6 +102,12 @@ export const plugin: AxfWebLibrary = {
           .catch((e: Error) => rt.toast(e.message, 'danger'));
       }, { label: `Build orchestrator: ${ACTION_LABEL[action]} (one build or several, comma separated)` });
     }
+    // console-control@1: every loaded build is a search hit with its address (row:<id>, the orchestrator grid's row);
+    // focusing one that is not drawn opens its tab and expands it first, so row:<id>/step:s3 reaches its step too
+    addLoadedSource('build-orchestrator.builds', () => { if (Date.now() - loadedAt > 30_000) void loadRows().catch(() => undefined); return rows.map((r) => ({
+      address: `row:${r.id}`, kind: 'row' as const, label: r.title, icon: 'layers', detail: `Build · ${TAB_NAME[r.tab] ?? r.status}`, keywords: [r.id, r.status, r.tab, r.nextModel].filter(Boolean),
+      open: () => rt.dispatch(`build-orchestrator.focus:${encodeURIComponent(r.id)}`),
+    })); });
     rt.search.add('build-orchestrator.builds', () => {
       if (Date.now() - loadedAt > 30_000) void loadRows().catch(() => undefined);
       return rows.map((r) => ({

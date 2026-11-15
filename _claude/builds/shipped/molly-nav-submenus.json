@@ -1,0 +1,707 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-molly-nav-submenus",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:50Z",
+ "build": {
+  "id": "molly-nav-submenus",
+  "title": "Molly: navigation sub menus that slide open + Navigation settings",
+  "profile": "all",
+  "category": "Molly",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Brett (Nov 3 2026, voice): \"I want Molly to have the console's navigation menu slide open, like when you click console, have a sub menu slide open, show its menu, and same thing for AXHub and AmberX. Have a sub menu slide open with an animation and give the navigation menu its own settings interface to control everything. The theme, the way it looks, its animation, its behavior, all that.\" Agent: Reel Rhonda (headless worktree, not on main). Model: Opus for every step (Claude decides): the nav-style contract is web-only, additive and opt-in; Android twin deferred in PORTING.md; flagged for a Fable review per the shared rule.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-molly-nav-submenus",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-03T21:52:04.453Z",
+   "endedAt": "2026-11-04T01:36:27.251Z",
+   "exit": 0,
+   "costUsd": 56.2179
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T21:52:04.453Z",
+   "doneAt": "2026-11-03T23:27:29.343Z",
+   "actualMin": 95,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T23:27:29.343Z",
+   "doneAt": "2026-11-03T23:28:58.948Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T23:28:58.948Z",
+   "doneAt": "2026-11-03T23:30:17.525Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T23:30:17.525Z",
+   "doneAt": "2026-11-03T23:31:31.530Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T23:31:31.530Z",
+   "doneAt": "2026-11-03T23:54:29.725Z",
+   "actualMin": 23,
+   "done": true
+  }
+ ],
+ "branch": "claude/molly-nav-submenus",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 295,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/295"
+ },
+ "landedCommit": "d857b6032a1040b6f11df31608c807625693600a",
+ "commits": [
+  "033e1865b502ab83f5f4f164322d7d156acd32b1",
+  "669283ca3f22329dd0193fd6b9ae8c5ae4229680",
+  "eb5164b8d902d9c70102ada18b1f20d6e59ddb25",
+  "24e3ffa434ac61618539e27c93bf59939a341159",
+  "7da24c0a4214dd3027035d74553eb5b622b014cf",
+  "67770053d3b0f2bfa50409b424fd168df0b27761",
+  "2971ac1fc4ab78ea2846ae600e211458c3f3e88e"
+ ],
+ "mergedAt": "2026-11-04T13:30:38.928Z",
+ "landedAt": "2026-11-04T13:30:33Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/molly-nav-submenus.md",
+  "_claude/builds/reports/molly-nav-submenus/shots/nav-axhub-open-desktop.png",
+  "_claude/builds/reports/molly-nav-submenus/shots/nav-collapsed-desktop.png",
+  "_claude/builds/reports/molly-nav-submenus/shots/nav-console-open-desktop.png",
+  "_claude/builds/reports/molly-nav-submenus/shots/nav-console-sheet-nested-phone.png",
+  "_claude/builds/reports/molly-nav-submenus/shots/nav-console-sheet-phone.png",
+  "_claude/builds/reports/molly-nav-submenus/shots/nav-context-desktop.png",
+  "_claude/builds/reports/molly-nav-submenus/shots/nav-settings-desktop.png",
+  "_claude/memory/follow-ups.md",
+  "_claude/shared/memory/amber-persona.md",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/assets/help/framework-drafts.json",
+  "apps/amberx-droid/src/axf/assets/nav-style/accordion.json",
+  "apps/amberx-droid/src/axf/assets/nav-style/glide.json",
+  "apps/amberx-droid/src/axf/assets/nav-style/push.json",
+  "apps/amberx-droid/src/axf/assets/nav-style/soft-fade.json",
+  "apps/amberx-droid/src/axf/assets/nav-style/standard.json",
+  "apps/amberx-droid/src/axf/assets/nav-style/still.json",
+  "apps/amberx-droid/src/axf/core/engines/control-rules.mjs",
+  "apps/amberx-droid/src/axf/core/engines/control-tokens.d.mts",
+  "apps/amberx-droid/src/axf/core/engines/control-tokens.mjs",
+  "apps/amberx-droid/src/axf/core/engines/navstyle-rules.d.mts",
+  "apps/amberx-droid/src/axf/core/engines/navstyle-rules.mjs",
+  "apps/amberx-droid/src/axf/core/engines/navstyle.ts",
+  "apps/amberx-droid/src/axf/core/runtime.ts",
+  "apps/amberx-droid/src/axf/core/types.ts",
+  "apps/amberx-droid/src/axf/core/validate.ts",
+  "apps/amberx-droid/src/axf/react/AxfProvider.tsx",
+  "apps/amberx-droid/src/axf/react/components/Chrome.tsx",
+  "apps/amberx-droid/src/axf/react/components/NavStyleSettings.tsx",
+  "apps/amberx-droid/src/axf/react/components/NavTree.tsx",
+  "apps/amberx-droid/src/axf/react/index.ts",
+  "apps/amberx-droid/src/axf/schemas/asset-types.json",
+  "apps/amberx-droid/src/axf/schemas/control.json",
+  "apps/amberx-droid/src/axf/schemas/json/nav-style.schema.json",
+  "apps/amberx-droid/src/axf/ui/axf.css",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/assets/help/framework-drafts.json",
+  "apps/axhub-web/src/axf/assets/nav-style/accordion.json",
+  "apps/axhub-web/src/axf/assets/nav-style/glide.json",
+  "apps/axhub-web/src/axf/assets/nav-style/push.json",
+  "apps/axhub-web/src/axf/assets/nav-style/soft-fade.json",
+  "apps/axhub-web/src/axf/assets/nav-style/standard.json",
+  "apps/axhub-web/src/axf/assets/nav-style/still.json",
+  "apps/axhub-web/src/axf/core/engines/control-rules.mjs",
+  "apps/axhub-web/src/axf/core/engines/control-tokens.d.mts",
+  "apps/axhub-web/src/axf/core/engines/control-tokens.mjs",
+  "apps/axhub-web/src/axf/core/engines/navstyle-rules.d.mts",
+  "apps/axhub-web/src/axf/core/engines/navstyle-rules.mjs",
+  "apps/axhub-web/src/axf/core/engines/navstyle.ts",
+  "apps/axhub-web/src/axf/core/runtime.ts",
+  "apps/axhub-web/src/axf/core/types.ts",
+  "apps/axhub-web/src/axf/core/validate.ts",
+  "apps/axhub-web/src/axf/react/AxfProvider.tsx",
+  "apps/axhub-web/src/axf/react/components/Chrome.tsx",
+  "apps/axhub-web/src/axf/react/components/NavStyleSettings.tsx",
+  "apps/axhub-web/src/axf/react/components/NavTree.tsx",
+  "apps/axhub-web/src/axf/react/index.ts",
+  "apps/axhub-web/src/axf/schemas/asset-types.json",
+  "apps/axhub-web/src/axf/schemas/control.json",
+  "apps/axhub-web/src/axf/schemas/json/nav-style.schema.json",
+  "apps/axhub-web/src/axf/ui/axf.css",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/token-control/web/docs.ts",
+  "apps/console-web/plugins/token-control/web/index.tsx",
+  "apps/console-web/server/mcp_server.py",
+  "apps/console-web/src/axf/assets/help/framework-drafts.json",
+  "apps/console-web/src/axf/assets/nav-style/accordion.json",
+  "apps/console-web/src/axf/assets/nav-style/glide.json",
+  "apps/console-web/src/axf/assets/nav-style/push.json",
+  "apps/console-web/src/axf/assets/nav-style/soft-fade.json",
+  "apps/console-web/src/axf/assets/nav-style/standard.json",
+  "apps/console-web/src/axf/assets/nav-style/still.json",
+  "apps/console-web/src/axf/core/engines/control-rules.mjs",
+  "apps/console-web/src/axf/core/engines/control-tokens.d.mts",
+  "apps/console-web/src/axf/core/engines/control-tokens.mjs",
+  "apps/console-web/src/axf/core/engines/navstyle-rules.d.mts",
+  "apps/console-web/src/axf/core/engines/navstyle-rules.mjs",
+  "apps/console-web/src/axf/core/engines/navstyle.ts",
+  "apps/console-web/src/axf/core/runtime.ts",
+  "apps/console-web/src/axf/core/types.ts",
+  "apps/console-web/src/axf/core/validate.ts",
+  "apps/console-web/src/axf/react/AxfProvider.tsx",
+  "apps/console-web/src/axf/react/components/Chrome.tsx",
+  "apps/console-web/src/axf/react/components/NavStyleSettings.tsx",
+  "apps/console-web/src/axf/react/components/NavTree.tsx",
+  "apps/console-web/src/axf/react/index.ts",
+  "apps/console-web/src/axf/schemas/asset-types.json",
+  "apps/console-web/src/axf/schemas/control.json",
+  "apps/console-web/src/axf/schemas/json/nav-style.schema.json",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/molly/axf.lock.json",
+  "apps/molly/axf.manifest.json",
+  "apps/molly/plugins/navigation/README.md",
+  "apps/molly/plugins/navigation/help.json",
+  "apps/molly/plugins/navigation/install.mjs",
+  "apps/molly/plugins/navigation/plugin.json",
+  "apps/molly/plugins/navigation/uninstall.mjs",
+  "apps/molly/plugins/navigation/web/index.tsx",
+  "apps/molly/plugins/xlayout/web/host.ts",
+  "apps/molly/src/assets/nav-menu/molly.json",
+  "apps/molly/src/axf/assets/help/framework-drafts.json",
+  "apps/molly/src/axf/assets/nav-style/accordion.json",
+  "apps/molly/src/axf/assets/nav-style/glide.json",
+  "apps/molly/src/axf/assets/nav-style/push.json",
+  "apps/molly/src/axf/assets/nav-style/soft-fade.json",
+  "apps/molly/src/axf/assets/nav-style/standard.json",
+  "apps/molly/src/axf/assets/nav-style/still.json",
+  "apps/molly/src/axf/core/engines/control-rules.mjs",
+  "apps/molly/src/axf/core/engines/control-tokens.d.mts",
+  "apps/molly/src/axf/core/engines/control-tokens.mjs",
+  "apps/molly/src/axf/core/engines/navstyle-rules.d.mts",
+  "apps/molly/src/axf/core/engines/navstyle-rules.mjs",
+  "apps/molly/src/axf/core/engines/navstyle.ts",
+  "apps/molly/src/axf/core/runtime.ts",
+  "apps/molly/src/axf/core/types.ts",
+  "apps/molly/src/axf/core/validate.ts",
+  "apps/molly/src/axf/react/AxfProvider.tsx",
+  "apps/molly/src/axf/react/components/Chrome.tsx",
+  "apps/molly/src/axf/react/components/NavStyleSettings.tsx",
+  "apps/molly/src/axf/react/components/NavTree.tsx",
+  "apps/molly/src/axf/react/index.ts",
+  "apps/molly/src/axf/schemas/asset-types.json",
+  "apps/molly/src/axf/schemas/control.json",
+  "apps/molly/src/axf/schemas/json/nav-style.schema.json",
+  "apps/molly/src/axf/ui/axf.css",
+  "apps/walkthrough-studio/src/assets/help/framework-drafts.json",
+  "changes/2026/11/chg-20261103-09c3750c0d.json",
+  "changes/2026/11/chg-20261103-1bd7ac4660.json",
+  "changes/2026/11/chg-20261103-3695c26ddd.json",
+  "changes/2026/11/chg-20261103-5a9ff95e6e.json",
+  "changes/2026/11/chg-20261103-8a07155445.json",
+  "changes/2026/11/chg-20261103-bcfad68561.json",
+  "changes/2026/11/chg-20261103-bf19816808.json",
+  "changes/2026/11/chg-20261103-bfa58ae25e.json",
+  "changes/2026/11/chg-20261103-c96619cfe9.json",
+  "changes/2026/11/chg-20261103-d3fce939af.json",
+  "changes/2026/11/chg-20261103-d6d22c6537.json",
+  "changes/2026/11/chg-20261103-df4d3fcbbc.json",
+  "framework/assets/help/framework-drafts.json",
+  "framework/assets/nav-style/accordion.json",
+  "framework/assets/nav-style/glide.json",
+  "framework/assets/nav-style/push.json",
+  "framework/assets/nav-style/soft-fade.json",
+  "framework/assets/nav-style/standard.json",
+  "framework/assets/nav-style/still.json",
+  "framework/cli/build-engine.mjs",
+  "framework/core/engines/control-rules.mjs",
+  "framework/core/engines/control-tokens.d.mts",
+  "framework/core/engines/control-tokens.mjs",
+  "framework/core/engines/navstyle-rules.d.mts",
+  "framework/core/engines/navstyle-rules.mjs",
+  "framework/core/engines/navstyle.ts",
+  "framework/core/runtime.ts",
+  "framework/core/types.ts",
+  "framework/core/validate.ts",
+  "framework/plan/profiles/current/framework/catalog/status.json",
+  "framework/plan/profiles/current/framework/plan/build-queue.json",
+  "framework/plan/profiles/current/framework/plan/pending.json",
+  "framework/plan/profiles/current/framework/plan/plan.json",
+  "framework/plan/profiles/current/tracker.json",
+  "framework/plan/profiles/urgent/framework/catalog/status.json",
+  "framework/plan/profiles/urgent/framework/plan/plan.json",
+  "framework/plan/profiles/urgent/tracker.json",
+  "framework/react/AxfProvider.tsx",
+  "framework/react/components/Chrome.tsx",
+  "framework/react/components/NavStyleSettings.tsx",
+  "framework/react/components/NavTree.tsx",
+  "framework/react/index.ts",
+  "framework/schemas/asset-types.json",
+  "framework/schemas/control.json",
+  "framework/schemas/json/nav-style.schema.json",
+  "framework/spec/CONTROL.md",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-control.mts",
+  "framework/spec/check-navstyle.mts",
+  "framework/spec/fixtures/appearance.json",
+  "framework/spec/fixtures/control.json",
+  "framework/spec/fixtures/nav-style.json",
+  "framework/spec/fixtures/roll.json",
+  "framework/spec/gen-fixtures.mts",
+  "framework/ui/axf.css",
+  "sessions/archive/2026/11/cc-afabecbe-236e-418e-b518-72971ca6ecc5.json",
+  "sessions/archive/2026/11/cc-c722d2fa-2157-456b-a9bc-7f892c35287c.json"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/axf.lock.json",
+    "apps/molly/axf.manifest.json",
+    "apps/molly/src/assets/nav-menu/molly.json",
+    "apps/molly/src/axf/assets/help/framework-drafts.json",
+    "apps/molly/src/axf/assets/nav-style/accordion.json",
+    "apps/molly/src/axf/assets/nav-style/glide.json",
+    "apps/molly/src/axf/assets/nav-style/push.json",
+    "apps/molly/src/axf/assets/nav-style/soft-fade.json",
+    "apps/molly/src/axf/assets/nav-style/standard.json",
+    "apps/molly/src/axf/assets/nav-style/still.json",
+    "apps/molly/src/axf/core/engines/control-rules.mjs",
+    "apps/molly/src/axf/core/engines/control-tokens.d.mts",
+    "apps/molly/src/axf/core/engines/control-tokens.mjs",
+    "apps/molly/src/axf/core/engines/navstyle-rules.d.mts",
+    "apps/molly/src/axf/core/engines/navstyle-rules.mjs",
+    "apps/molly/src/axf/core/engines/navstyle.ts",
+    "apps/molly/src/axf/core/runtime.ts",
+    "apps/molly/src/axf/core/types.ts",
+    "apps/molly/src/axf/core/validate.ts",
+    "apps/molly/src/axf/react/AxfProvider.tsx",
+    "apps/molly/src/axf/react/components/Chrome.tsx",
+    "apps/molly/src/axf/react/components/NavStyleSettings.tsx",
+    "apps/molly/src/axf/react/components/NavTree.tsx",
+    "apps/molly/src/axf/react/index.ts",
+    "apps/molly/src/axf/schemas/asset-types.json",
+    "apps/molly/src/axf/schemas/control.json",
+    "apps/molly/src/axf/schemas/json/nav-style.schema.json",
+    "apps/molly/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/server/mcp_server.py",
+    "apps/console-web/src/axf/assets/help/framework-drafts.json",
+    "apps/console-web/src/axf/assets/nav-style/accordion.json",
+    "apps/console-web/src/axf/assets/nav-style/glide.json",
+    "apps/console-web/src/axf/assets/nav-style/push.json",
+    "apps/console-web/src/axf/assets/nav-style/soft-fade.json",
+    "apps/console-web/src/axf/assets/nav-style/standard.json",
+    "apps/console-web/src/axf/assets/nav-style/still.json",
+    "apps/console-web/src/axf/core/engines/control-rules.mjs",
+    "apps/console-web/src/axf/core/engines/control-tokens.d.mts",
+    "apps/console-web/src/axf/core/engines/control-tokens.mjs",
+    "apps/console-web/src/axf/core/engines/navstyle-rules.d.mts",
+    "apps/console-web/src/axf/core/engines/navstyle-rules.mjs",
+    "apps/console-web/src/axf/core/engines/navstyle.ts",
+    "apps/console-web/src/axf/core/runtime.ts",
+    "apps/console-web/src/axf/core/types.ts",
+    "apps/console-web/src/axf/core/validate.ts",
+    "apps/console-web/src/axf/react/AxfProvider.tsx",
+    "apps/console-web/src/axf/react/components/Chrome.tsx",
+    "apps/console-web/src/axf/react/components/NavStyleSettings.tsx",
+    "apps/console-web/src/axf/react/components/NavTree.tsx",
+    "apps/console-web/src/axf/react/index.ts",
+    "apps/console-web/src/axf/schemas/asset-types.json",
+    "apps/console-web/src/axf/schemas/control.json",
+    "apps/console-web/src/axf/schemas/json/nav-style.schema.json",
+    "apps/console-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/assets/help/framework-drafts.json",
+    "apps/amberx-droid/src/axf/assets/nav-style/accordion.json",
+    "apps/amberx-droid/src/axf/assets/nav-style/glide.json",
+    "apps/amberx-droid/src/axf/assets/nav-style/push.json",
+    "apps/amberx-droid/src/axf/assets/nav-style/soft-fade.json",
+    "apps/amberx-droid/src/axf/assets/nav-style/standard.json",
+    "apps/amberx-droid/src/axf/assets/nav-style/still.json",
+    "apps/amberx-droid/src/axf/core/engines/control-rules.mjs",
+    "apps/amberx-droid/src/axf/core/engines/control-tokens.d.mts",
+    "apps/amberx-droid/src/axf/core/engines/control-tokens.mjs",
+    "apps/amberx-droid/src/axf/core/engines/navstyle-rules.d.mts",
+    "apps/amberx-droid/src/axf/core/engines/navstyle-rules.mjs",
+    "apps/amberx-droid/src/axf/core/engines/navstyle.ts",
+    "apps/amberx-droid/src/axf/core/runtime.ts",
+    "apps/amberx-droid/src/axf/core/types.ts",
+    "apps/amberx-droid/src/axf/core/validate.ts",
+    "apps/amberx-droid/src/axf/react/AxfProvider.tsx",
+    "apps/amberx-droid/src/axf/react/components/Chrome.tsx",
+    "apps/amberx-droid/src/axf/react/components/NavStyleSettings.tsx",
+    "apps/amberx-droid/src/axf/react/components/NavTree.tsx",
+    "apps/amberx-droid/src/axf/react/index.ts",
+    "apps/amberx-droid/src/axf/schemas/asset-types.json",
+    "apps/amberx-droid/src/axf/schemas/control.json",
+    "apps/amberx-droid/src/axf/schemas/json/nav-style.schema.json",
+    "apps/amberx-droid/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/assets/help/framework-drafts.json",
+    "apps/axhub-web/src/axf/assets/nav-style/accordion.json",
+    "apps/axhub-web/src/axf/assets/nav-style/glide.json",
+    "apps/axhub-web/src/axf/assets/nav-style/push.json",
+    "apps/axhub-web/src/axf/assets/nav-style/soft-fade.json",
+    "apps/axhub-web/src/axf/assets/nav-style/standard.json",
+    "apps/axhub-web/src/axf/assets/nav-style/still.json",
+    "apps/axhub-web/src/axf/core/engines/control-rules.mjs",
+    "apps/axhub-web/src/axf/core/engines/control-tokens.d.mts",
+    "apps/axhub-web/src/axf/core/engines/control-tokens.mjs",
+    "apps/axhub-web/src/axf/core/engines/navstyle-rules.d.mts",
+    "apps/axhub-web/src/axf/core/engines/navstyle-rules.mjs",
+    "apps/axhub-web/src/axf/core/engines/navstyle.ts",
+    "apps/axhub-web/src/axf/core/runtime.ts",
+    "apps/axhub-web/src/axf/core/types.ts",
+    "apps/axhub-web/src/axf/core/validate.ts",
+    "apps/axhub-web/src/axf/react/AxfProvider.tsx",
+    "apps/axhub-web/src/axf/react/components/Chrome.tsx",
+    "apps/axhub-web/src/axf/react/components/NavStyleSettings.tsx",
+    "apps/axhub-web/src/axf/react/components/NavTree.tsx",
+    "apps/axhub-web/src/axf/react/index.ts",
+    "apps/axhub-web/src/axf/schemas/asset-types.json",
+    "apps/axhub-web/src/axf/schemas/control.json",
+    "apps/axhub-web/src/axf/schemas/json/nav-style.schema.json",
+    "apps/axhub-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/molly-nav-submenus.md",
+    "_claude/builds/reports/molly-nav-submenus/shots/nav-axhub-open-desktop.png",
+    "_claude/builds/reports/molly-nav-submenus/shots/nav-collapsed-desktop.png",
+    "_claude/builds/reports/molly-nav-submenus/shots/nav-console-open-desktop.png",
+    "_claude/builds/reports/molly-nav-submenus/shots/nav-console-sheet-nested-phone.png",
+    "_claude/builds/reports/molly-nav-submenus/shots/nav-console-sheet-phone.png",
+    "_claude/builds/reports/molly-nav-submenus/shots/nav-context-desktop.png",
+    "_claude/builds/reports/molly-nav-submenus/shots/nav-settings-desktop.png",
+    "changes/2026/11/chg-20261103-09c3750c0d.json",
+    "changes/2026/11/chg-20261103-1bd7ac4660.json",
+    "changes/2026/11/chg-20261103-3695c26ddd.json",
+    "changes/2026/11/chg-20261103-5a9ff95e6e.json",
+    "changes/2026/11/chg-20261103-8a07155445.json",
+    "changes/2026/11/chg-20261103-bcfad68561.json",
+    "changes/2026/11/chg-20261103-bf19816808.json",
+    "changes/2026/11/chg-20261103-bfa58ae25e.json",
+    "changes/2026/11/chg-20261103-c96619cfe9.json",
+    "changes/2026/11/chg-20261103-d3fce939af.json",
+    "changes/2026/11/chg-20261103-d6d22c6537.json",
+    "changes/2026/11/chg-20261103-df4d3fcbbc.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/control-rules.mjs",
+    "framework/core/engines/control-tokens.d.mts",
+    "framework/core/engines/control-tokens.mjs",
+    "framework/core/engines/navstyle-rules.d.mts",
+    "framework/core/engines/navstyle-rules.mjs",
+    "framework/core/engines/navstyle.ts",
+    "framework/core/runtime.ts",
+    "framework/core/types.ts",
+    "framework/core/validate.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/CONTROL.md",
+    "framework/spec/PORTING.md",
+    "framework/spec/check-control.mts",
+    "framework/spec/check-navstyle.mts",
+    "framework/spec/fixtures/appearance.json",
+    "framework/spec/fixtures/control.json",
+    "framework/spec/fixtures/nav-style.json",
+    "framework/spec/fixtures/roll.json",
+    "framework/spec/gen-fixtures.mts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/profiles/current/framework/catalog/status.json",
+    "framework/plan/profiles/current/framework/plan/build-queue.json",
+    "framework/plan/profiles/current/framework/plan/pending.json",
+    "framework/plan/profiles/current/framework/plan/plan.json",
+    "framework/plan/profiles/current/tracker.json",
+    "framework/plan/profiles/urgent/framework/catalog/status.json",
+    "framework/plan/profiles/urgent/framework/plan/plan.json",
+    "framework/plan/profiles/urgent/tracker.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/help/framework-drafts.json",
+    "framework/assets/nav-style/accordion.json",
+    "framework/assets/nav-style/glide.json",
+    "framework/assets/nav-style/push.json",
+    "framework/assets/nav-style/soft-fade.json",
+    "framework/assets/nav-style/standard.json",
+    "framework/assets/nav-style/still.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "navigation",
+   "files": [
+    "apps/molly/plugins/navigation/README.md",
+    "apps/molly/plugins/navigation/help.json",
+    "apps/molly/plugins/navigation/install.mjs",
+    "apps/molly/plugins/navigation/plugin.json",
+    "apps/molly/plugins/navigation/uninstall.mjs",
+    "apps/molly/plugins/navigation/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/AxfProvider.tsx",
+    "framework/react/components/Chrome.tsx",
+    "framework/react/components/NavStyleSettings.tsx",
+    "framework/react/components/NavTree.tsx",
+    "framework/react/index.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/asset-types.json",
+    "framework/schemas/control.json",
+    "framework/schemas/json/nav-style.schema.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/follow-ups.md",
+    "_claude/shared/memory/amber-persona.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "token-control",
+   "files": [
+    "apps/console-web/plugins/token-control/web/docs.ts",
+    "apps/console-web/plugins/token-control/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": "sessions",
+   "files": [
+    "sessions/archive/2026/11/cc-afabecbe-236e-418e-b518-72971ca6ecc5.json",
+    "sessions/archive/2026/11/cc-c722d2fa-2157-456b-a9bc-7f892c35287c.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "xlayout",
+   "files": [
+    "apps/molly/plugins/xlayout/web/host.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/src/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/build-engine.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "npx -y tsx framework/spec/check-navstyle.mts: 98 checks (new).",
+   "command": "npx -y tsx framework/spec/check-navstyle.mts",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "check-control.mts: updated for the 23rd target. check-xlayout 199, check-chrome 130, check-embed 429, check-dock 1679, check-appearance 107 and check-design-package 1158 all pass.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "check-theme.mjs and check-controls.mjs are green. axf validate --framework reports 498 valid.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "Molly tsc and vite build pass.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "Browser run (Playwright, stub app frames that send chrome@1 exactly as the guests do):",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "Console opens with nested Build / Studio groups.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "Picking Pending builds opens it.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "axHub opens and Console closes (single mode).",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "The context menu shows Navigation settings.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "The settings page renders.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "The phone sheet slides up with nested groups.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "Fixtures regenerated: nav-style.json (new), plus control.json, appearance.json and roll.json (new slot).",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  }
+ ],
+ "uiReview": [
+  {
+   "id": "r-20261103-80599690",
+   "name": "Molly navigation: sub menus that slide open + Navigation settings",
+   "status": "approved",
+   "group": "g-20261103-dd07682a",
+   "url": "/review/r-20261103-80599690"
+  }
+ ],
+ "cost": {
+  "usd": 56.2179,
+  "estimated": false,
+  "tokens": {
+   "input": 404,
+   "output": 3412,
+   "cacheRead": 45399993,
+   "cacheWrite": 340109
+  }
+ },
+ "report": "_claude/builds/reports/molly-nav-submenus.md",
+ "open": [
+  "The live apps send their full nav (plugin pages) only once Console, axHub web and AmberX are redeployed with this framework. Until then Molly shows what they already send: the nav-menu asset's items.",
+  "chrome@1 still folds each app's sections into one in `mergeChrome`, so xLayout reads the raw bundle to keep the section labels. The contract is unchanged.",
+  "Android twin deferred (`framework/spec/PORTING.md`).",
+  "The nav-style contract was built on Opus (web-only, additive, opt-in). Under the shared rule, Opus-built foundation work gets a Fable review.",
+  "Follow-the-active-page ran on every render, so whatever you closed sprang back open (the sheet's Close, and single mode inside a group). It now runs only when the page changes or its branch first appears.",
+  "Collapsed width is `font size × 3.8` (it was `space × 7`, 24 px under Hub Night). The collapse rules only touch the real nav, not the settings preview. The sheet header shows the app name.",
+  "Verified in the browser on the final build: collapse is on and about 49 px wide, presets swap (push), swipe down closes and swipe up opens the phone sheet, the sheet's Close works, and tapping Studio in the sheet opens it and closes Build. tsc and vite build pass."
+ ]
+}

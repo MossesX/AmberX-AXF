@@ -73,7 +73,7 @@ export function mergeBuild(a, b) {
   out.steps = win.steps.map((s) => { const o = other.get(s.uid); if (o && newer(o, s) > 0) { combined = true; return clone(o); } return clone(s); });
   const have = new Set(out.steps.map((s) => s.uid));
   lose.steps.forEach((s, i) => { if (!have.has(s.uid) && str(s.createdAt) > str(win.updatedAt)) { combined = true; out.steps.splice(Math.min(i, out.steps.length), 0, clone(s)); } });
-  for (const k of ['branch', 'pr', 'mergedAt', 'category', 'priority']) if (!str(out[k]) && str(lose[k])) { out[k] = lose[k]; combined = true; }
+  for (const k of ['branch', 'pr', 'mergedAt', 'category', 'priority', 'alias']) if (!str(out[k]) && str(lose[k])) { out[k] = lose[k]; combined = true; }
   // the run record (who runs it, which session): from the copy with the later launch, never from the newer copy alone
   const run = mergeRun(win.pipeline, lose.pipeline);
   if (run) { out.pipeline = run; combined = true; }

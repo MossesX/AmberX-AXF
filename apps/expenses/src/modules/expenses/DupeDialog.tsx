@@ -132,13 +132,13 @@ export default function DupeDialog({ open, expenses, onClose }: { open: boolean;
 
   return (
     <Dialog open={open} onClose={ai.state === "running" ? undefined : onClose} maxWidth="md" fullWidth>
-      <DialogTitle sx={{ fontSize: 15, fontWeight: 700, pb: 1, display: "flex", alignItems: "center", gap: 1 }}>
+      <DialogTitle sx={{ fontSize: 'var(--fx-type-root-lg)', fontWeight: 700, pb: 1, display: "flex", alignItems: "center", gap: 'var(--fx-dens-gap-xl)' }}>
         <Glyph id="icon-search" size={16} />
         Possible duplicates
         <Chip size="small" variant="outlined" label={`${pairs.length} pair${pairs.length === 1 ? "" : "s"}`} sx={{ ml: 0.5 }} />
       </DialogTitle>
-      <DialogContent dividers data-axf-dupes sx={{ display: "grid", gap: 1.4 }}>
-        <Typography sx={{ fontSize: 12, color: token("dim") }}>
+      <DialogContent dividers data-axf-dupes sx={{ display: "grid", gap: 'var(--fx-dens-gap-2xl)' }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
           Entries with the <b>same price</b> and the same kind within a few days of each other, scored by how alike the rest is.
           Ask Claude to read the pairs and say which are one transaction recorded twice — it knows a bank&apos;s abbreviation from a second purchase.
           Nothing is deleted until the button at the bottom.
@@ -154,8 +154,8 @@ export default function DupeDialog({ open, expenses, onClose }: { open: boolean;
             slotProps={{ htmlInput: { min: 0, max: 60, "data-axf-dupes-days": "" } }}
             sx={{ width: 150 }}
           />
-          <FormControlLabel control={<Switch size="small" checked={sameAccount} onChange={(_, v) => setSameAccount(v)} />} label={<Typography sx={{ fontSize: 12.5 }}>Same account only</Typography>} />
-          <FormControlLabel control={<Switch size="small" checked={includePayments} onChange={(_, v) => setIncludePayments(v)} />} label={<Typography sx={{ fontSize: 12.5 }}>Include card payments</Typography>} />
+          <FormControlLabel control={<Switch size="small" checked={sameAccount} onChange={(_, v) => setSameAccount(v)} />} label={<Typography sx={{ fontSize: 'var(--fx-type-root-md)' }}>Same account only</Typography>} />
+          <FormControlLabel control={<Switch size="small" checked={includePayments} onChange={(_, v) => setIncludePayments(v)} />} label={<Typography sx={{ fontSize: 'var(--fx-type-root-md)' }}>Include card payments</Typography>} />
           <Box sx={{ flex: 1 }} />
           {tiers.map((t) => count(t) > 0 && <Chip key={t} size="small" color={TIER[t].color} variant="outlined" label={`${count(t)} ${TIER[t].label.toLowerCase()}`} />)}
           <Tooltip title={`Send the ${pairs.length} pairs (dates, merchants, amounts — never the whole ledger) to ${prefs.aiModel} on your Claude connection.`}>
@@ -167,9 +167,9 @@ export default function DupeDialog({ open, expenses, onClose }: { open: boolean;
           </Tooltip>
         </Stack>
 
-        {ai.state === "error" && <Alert severity="error" sx={{ py: 0, fontSize: 12 }}>{ai.detail}</Alert>}
+        {ai.state === "error" && <Alert severity="error" sx={{ py: 0, fontSize: 'var(--fx-type-root-sm)' }}>{ai.detail}</Alert>}
         {ai.state === "done" && (
-          <Alert severity="success" sx={{ py: 0, fontSize: 12 }}>
+          <Alert severity="success" sx={{ py: 0, fontSize: 'var(--fx-type-root-sm)' }}>
             {ai.detail}{ai.source ? ` · via ${ai.source === "subscription" ? "your Claude subscription" : "the API key"}` : ""}. Its calls set the defaults below; your own clicks override them.
           </Alert>
         )}
@@ -183,34 +183,34 @@ export default function DupeDialog({ open, expenses, onClose }: { open: boolean;
           if (!rows.length) return null;
           return (
             <Box key={t}>
-              <Typography sx={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: t === "likely" ? token("err") : t === "possible" ? token("warn") : token("dim"), mb: 0.2 }}>
+              <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', letterSpacing: "0.08em", textTransform: "uppercase", color: t === "likely" ? token("err") : t === "possible" ? token("warn") : token("dim"), mb: 0.2 }}>
                 {TIER[t].label} · {rows.length}
               </Typography>
-              <Typography sx={{ fontSize: 11.5, color: token("dim"), mb: 0.8 }}>{TIER[t].blurb}</Typography>
+              <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), mb: 0.8 }}>{TIER[t].blurb}</Typography>
               <Stack spacing={1}>
                 {rows.map((p) => {
                   const v = verdicts.get(p.index);
                   const c = choiceOf(p);
                   return (
-                    <Box key={p.index} data-axf-dupe-pair={p.index} data-axf-dupe-choice={c} sx={{ display: "grid", gap: 0.6, p: 1, border: `1px solid ${token(c === "keep" ? "edge" : "err")}`, borderRadius: 1, opacity: c === "keep" ? 1 : 0.95 }}>
-                      <Box sx={{ display: "flex", gap: 1, alignItems: "stretch", flexWrap: "wrap" }}>
-                        <Box sx={{ flex: 1, minWidth: 180, display: "grid", gap: 0.4, opacity: c === "a" ? 0.5 : 1 }}>
+                    <Box key={p.index} data-axf-dupe-pair={p.index} data-axf-dupe-choice={c} sx={{ display: "grid", gap: 'var(--fx-dens-gap-lg)', p: 1, border: `var(--fx-border-w) solid ${token(c === "keep" ? "edge" : "err")}`, borderRadius: 'var(--fx-radius-md)', opacity: c === "keep" ? 1 : 0.95 }}>
+                      <Box sx={{ display: "flex", gap: 'var(--fx-dens-gap-xl)', alignItems: "stretch", flexWrap: "wrap" }}>
+                        <Box sx={{ flex: 1, minWidth: 180, display: "grid", gap: 'var(--fx-dens-gap-sm)', opacity: c === "a" ? 0.5 : 1 }}>
                           <SideOf e={p.a} title={`Earlier${c === "a" ? " · will be deleted" : ""}`} tone={c === "a" ? "dim" : "accent"} />
                         </Box>
-                        <Typography sx={{ fontSize: 18, color: token("dim"), alignSelf: "center" }}>≈</Typography>
-                        <Box sx={{ flex: 1, minWidth: 180, display: "grid", gap: 0.4, opacity: c === "b" ? 0.5 : 1 }}>
+                        <Typography sx={{ fontSize: 'var(--fx-type-root-xl)', color: token("dim"), alignSelf: "center" }}>≈</Typography>
+                        <Box sx={{ flex: 1, minWidth: 180, display: "grid", gap: 'var(--fx-dens-gap-sm)', opacity: c === "b" ? 0.5 : 1 }}>
                           <SideOf e={p.b} title={`Later${c === "b" ? " · will be deleted" : ""}`} tone={c === "b" ? "dim" : "accent"} />
                         </Box>
-                        <Box sx={{ minWidth: 200, display: "grid", gap: 0.5, alignContent: "start" }}>
+                        <Box sx={{ minWidth: 200, display: "grid", gap: 'var(--fx-dens-gap-md)', alignContent: "start" }}>
                           <Stack direction="row" spacing={0.5} useFlexGap sx={{ flexWrap: "wrap", alignItems: "center" }}>
-                            <Chip size="small" color={TIER[p.tier].color} variant="outlined" label={`score ${Math.round(p.score * 100)}`} sx={{ height: 18, fontSize: 10.5 }} />
+                            <Chip size="small" color={TIER[p.tier].color} variant="outlined" label={`score ${Math.round(p.score * 100)}`} sx={{ height: 18, fontSize: 'var(--fx-type-root-xs)' }} />
                             {v && (
-                              <Chip size="small" color={v.duplicate ? "error" : "success"} label={`Claude: ${v.duplicate ? "duplicate" : "not a duplicate"} · ${Math.round(v.confidence * 100)}%`} sx={{ height: 18, fontSize: 10.5 }} />
+                              <Chip size="small" color={v.duplicate ? "error" : "success"} label={`Claude: ${v.duplicate ? "duplicate" : "not a duplicate"} · ${Math.round(v.confidence * 100)}%`} sx={{ height: 18, fontSize: 'var(--fx-type-root-xs)' }} />
                             )}
                           </Stack>
-                          <Typography sx={{ fontSize: 11, color: token("dim") }}>{p.why.join(" · ")}</Typography>
-                          {v && <Typography sx={{ fontSize: 11.5 }}>{v.reason}</Typography>}
-                          <ToggleButtonGroup size="small" exclusive value={c} onChange={(_, val: Choice | null) => val && setChoice(p.index, val)} sx={{ "& .MuiToggleButton-root": { py: 0.2, px: 0.9, fontSize: 11, textTransform: "none" } }}>
+                          <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>{p.why.join(" · ")}</Typography>
+                          {v && <Typography sx={{ fontSize: 'var(--fx-type-root-sm)' }}>{v.reason}</Typography>}
+                          <ToggleButtonGroup size="small" exclusive value={c} onChange={(_, val: Choice | null) => val && setChoice(p.index, val)} sx={{ "& .MuiToggleButton-root": { py: 0.2, px: 0.9, fontSize: 'var(--fx-type-root-xs)', textTransform: "none" } }}>
                             <ToggleButton value="keep">Keep both</ToggleButton>
                             <ToggleButton value="a" color="error">Delete earlier</ToggleButton>
                             <ToggleButton value="b" color="error">Delete later</ToggleButton>
@@ -226,7 +226,7 @@ export default function DupeDialog({ open, expenses, onClose }: { open: boolean;
         })}
       </DialogContent>
       <DialogActions>
-        <Typography sx={{ fontSize: 12, color: token("dim"), mr: "auto", ml: 1 }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), mr: "auto", ml: 1 }}>
           {toDelete.size ? `${toDelete.size} entr${toDelete.size === 1 ? "y" : "ies"} marked for deletion` : "Nothing marked — every pair is kept"}
         </Typography>
         <Button size="small" onClick={onClose} disabled={ai.state === "running"}>Cancel</Button>

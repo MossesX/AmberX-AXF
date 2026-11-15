@@ -1,0 +1,144 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-amberx-assistant-agents",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:07Z",
+ "build": {
+  "id": "amberx-assistant-agents",
+  "title": "AmberX: install the AI assistant + agent manager plugins",
+  "profile": "all",
+  "category": "AmberX app",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Install assistant and agent manager in amberx",
+  "verbatim": false,
+  "at": "2026-10-28T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Bridge + aliases + server proxy + two AmberX plugin folders + Dockerfile + tests",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-28T15:41:17.287Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/amberx-assistant-agents",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 156,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/156"
+ },
+ "landedCommit": "b7d2e17e49a2cf51c3b7a4ca4c417a75c56209e0",
+ "commits": [
+  "4b4b84c39c265ac0855ee70103913b2c226da70a",
+  "ded1949a848a6675562d06dbc623cbad6e3ea41d",
+  "579a6aea18a8d2a8bb00e675c5b80e42bc949fb3"
+ ],
+ "mergedAt": "2026-10-28T15:54:26Z",
+ "landedAt": "2026-10-28T15:54:26Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "apps/amberx-droid/Dockerfile",
+  "apps/amberx-droid/README.md",
+  "apps/amberx-droid/server/main.py",
+  "apps/amberx-droid/server/requirements.txt",
+  "apps/amberx-droid/server/test_server.py",
+  "apps/amberx-droid/src/console/pluginLifecycle.tsx",
+  "apps/amberx-droid/src/console/plugins.ts",
+  "apps/amberx-droid/src/console/virtual.d.ts",
+  "apps/amberx-droid/src/plugins.ts",
+  "apps/amberx-droid/src/plugins/agent-manager/plugin.json",
+  "apps/amberx-droid/src/plugins/agent-manager/web/index.tsx",
+  "apps/amberx-droid/src/plugins/ai-assistant/plugin.json",
+  "apps/amberx-droid/src/plugins/ai-assistant/web/index.tsx",
+  "apps/amberx-droid/tsconfig.json",
+  "apps/amberx-droid/vite.config.ts",
+  "apps/console-web/plugins/agent-manager/plugin.json",
+  "apps/console-web/plugins/ai-assistant/plugin.json"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/Dockerfile",
+    "apps/amberx-droid/README.md",
+    "apps/amberx-droid/server/main.py",
+    "apps/amberx-droid/server/requirements.txt",
+    "apps/amberx-droid/server/test_server.py",
+    "apps/amberx-droid/src/console/pluginLifecycle.tsx",
+    "apps/amberx-droid/src/console/plugins.ts",
+    "apps/amberx-droid/src/console/virtual.d.ts",
+    "apps/amberx-droid/src/plugins.ts",
+    "apps/amberx-droid/tsconfig.json",
+    "apps/amberx-droid/vite.config.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-manager",
+   "files": [
+    "apps/amberx-droid/src/plugins/agent-manager/plugin.json",
+    "apps/amberx-droid/src/plugins/agent-manager/web/index.tsx",
+    "apps/console-web/plugins/agent-manager/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai-assistant",
+   "files": [
+    "apps/amberx-droid/src/plugins/ai-assistant/plugin.json",
+    "apps/amberx-droid/src/plugins/ai-assistant/web/index.tsx",
+    "apps/console-web/plugins/ai-assistant/plugin.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/profiles/refactor/orchestrator.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

@@ -1,0 +1,106 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-laughing-thompson-eqfjw1",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:33:31Z",
+ "build": {
+  "id": "laughing-thompson-eqfjw1",
+  "title": "laughing-thompson-eqfjw1",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "laughing-thompson-eqfjw1",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/laughing-thompson-eqfjw1",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "cc116b4f9aaea92e3fa9a48f012c1967a598668c",
+ "commits": [
+  "f89f77ae4eb8645f05050bb0a3d5e1c2af6d0253"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-23T01:27:22Z",
+ "files": [
+  "CLAUDE.md",
+  "apps/console-web/plugins/ai-assistant/server/__init__.py",
+  "apps/console-web/plugins/ai-assistant/test.py",
+  "apps/console-web/plugins/ai-keys/server/__init__.py",
+  "apps/console-web/plugins/ai-keys/test.py",
+  "apps/console-web/plugins/systems-check/server/checks.py",
+  "apps/console-web/plugins/systems-check/web/SystemCheck.tsx",
+  "framework/plan/pending.json"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "ai-assistant",
+   "files": [
+    "apps/console-web/plugins/ai-assistant/server/__init__.py",
+    "apps/console-web/plugins/ai-assistant/test.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai-keys",
+   "files": [
+    "apps/console-web/plugins/ai-keys/server/__init__.py",
+    "apps/console-web/plugins/ai-keys/test.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "systems-check",
+   "files": [
+    "apps/console-web/plugins/systems-check/server/checks.py",
+    "apps/console-web/plugins/systems-check/web/SystemCheck.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

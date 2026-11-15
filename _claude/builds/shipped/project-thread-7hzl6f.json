@@ -1,0 +1,125 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-7hzl6f",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:33:11Z",
+ "build": {
+  "id": "project-thread-7hzl6f",
+  "title": "project-thread-7hzl6f",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-7hzl6f",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-7hzl6f",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "fd7a000f23ba7f377519ee871f8d0e1d14e6521b",
+ "commits": [
+  "1b668d34cdab0009adaf2242ce6e69b298b80731",
+  "5c1a8bd3c28632c6f87566feb4e0a2e9deddeedd"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-24T16:24:00Z",
+ "files": [
+  "CLAUDE.md",
+  "apps/console-web/plugins/activity/activity.mjs",
+  "apps/console-web/plugins/activity/plugin.json",
+  "apps/console-web/plugins/activity/server/__init__.py",
+  "apps/console-web/plugins/activity/server/complete.py",
+  "apps/console-web/plugins/activity/server/feed.py",
+  "apps/console-web/plugins/activity/test.py",
+  "apps/console-web/plugins/activity/web/activity.css",
+  "apps/console-web/plugins/activity/web/index.tsx",
+  "apps/console-web/plugins/codebase-changes/server/__init__.py",
+  "apps/console-web/plugins/push-banner/plugin.json",
+  "apps/console-web/plugins/push-banner/server/__init__.py",
+  "apps/console-web/src/axf/react/components/Controls.tsx",
+  "framework/react/components/Controls.tsx"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "activity",
+   "files": [
+    "apps/console-web/plugins/activity/activity.mjs",
+    "apps/console-web/plugins/activity/plugin.json",
+    "apps/console-web/plugins/activity/server/__init__.py",
+    "apps/console-web/plugins/activity/server/complete.py",
+    "apps/console-web/plugins/activity/server/feed.py",
+    "apps/console-web/plugins/activity/test.py",
+    "apps/console-web/plugins/activity/web/activity.css",
+    "apps/console-web/plugins/activity/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/plugin.json",
+    "apps/console-web/plugins/push-banner/server/__init__.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "codebase-changes",
+   "files": [
+    "apps/console-web/plugins/codebase-changes/server/__init__.py"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/axf/react/components/Controls.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/Controls.tsx"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

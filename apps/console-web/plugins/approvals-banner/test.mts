@@ -2,11 +2,77 @@
 /** Approvals (veto) banner self-test: the alarm model. node --experimental-strip-types apps/console-web/plugins/approvals-banner/test.mts */
 import assert from 'node:assert/strict';
 import { relayAction, relayDecide, relayHosts } from './web/relay.ts';
+import { nextPopup, vetoGone } from './web/popup.ts';
+import { migrateOverlay, OVERLAY_DEFAULTS, OVERLAY_KEYS as O, overlayBridge, overlayConfig, overlayUrlAllowed, overlayVerbUrl, parseOverlayChange, parseOverlayVerb, RETIRED_KEYS as R } from './web/overlay.ts';
 import { ALARM_DEFAULTS, ALARM_KEYS as K, NOTICE_DEFAULTS, noticeConfig, alarmConfig, alarmDue, alarmLength, nativeAlarmConfig, ringingAt, soundAllowed, startSeconds, START_AT, TONES, tonesOf, VIBRATIONS, volumeAt } from './web/alarm.ts';
 
 let n = 0;
 const t = (name: string, f: () => void) => { try { f(); n++; } catch (e) { console.error(`✗ ${name}`); throw e; } };
 const cfgOf = (o: Record<string, unknown>) => alarmConfig((k) => o[k]);
+
+// The overlay's settings: the same defaults and clamps as Java ApprovalOverlayRules.
+t('overlay defaults', () => assert.deepEqual(overlayConfig(() => undefined), OVERLAY_DEFAULTS));
+t('overlay clamps and fallbacks', () => {
+  const c = overlayConfig((k) => ({ [O.top]: 400, [O.size]: 'huge', [O.edge]: 'start', [O.idleOpacity]: '5', [O.shrinkAfterSec]: -2, [O.expand]: 'held' } as Record<string, unknown>)[k]);
+  assert.deepEqual([c.top, c.size, c.edge, c.idleOpacity, c.shrinkAfterSec, c.expand], [90, 'small', 'start', 40, 0, 'held']);
+});
+t('one on/off setting: the retired float / pages settings are gone from the config', () => {
+  const c = overlayConfig(() => undefined) as Record<string, unknown>;
+  assert.equal('idleVisible' in c, false);
+  assert.equal('pages' in c, false);
+});
+t('overlay changes by name (voice and actions)', () => {
+  assert.deepEqual(parseOverlayChange('off', ''), { key: O.on, value: false });
+  assert.deepEqual(parseOverlayChange('size', 'big'), { key: O.size, value: 'large' });
+  assert.deepEqual(parseOverlayChange('position', 'left'), { key: O.edge, value: 'start' });
+  assert.deepEqual(parseOverlayChange('top', '40%'), { key: O.top, value: 40 });
+  assert.deepEqual(parseOverlayChange('opens', 'always'), { key: O.expand, value: 'every' });
+  assert.ok('error' in parseOverlayChange('colour', 'red'));
+  assert.ok('error' in parseOverlayChange('size', 'tiny'));
+  assert.ok('error' in parseOverlayChange('pages', 'chrome'), 'pages is retired');
+  assert.ok('error' in parseOverlayChange('idle', 'off'), 'idleVisible is retired');
+});
+t('settings from the float and pages builds move over once, nothing lost', () => {
+  const runtimeGet = (o: Record<string, unknown>) => (k: string) => (k in o ? o[k] : null); // the runtime answers null for unsaved keys
+  assert.equal(migrateOverlay(runtimeGet({})), null, 'nothing saved: nothing to move');
+  assert.deepEqual(migrateOverlay(runtimeGet({ [R.idleVisible]: false })), { [R.idleVisible]: null, [O.idleOpacity]: 40 }, 'hidden when idle → faintest toolbar');
+  assert.deepEqual(migrateOverlay(runtimeGet({ [R.idleVisible]: true, [R.pages]: 'browser' })), { [R.idleVisible]: null, [R.pages]: null });
+  assert.equal(migrateOverlay(runtimeGet({ [R.idleVisible]: null, [R.pages]: null })), null, 'already moved: runs once');
+});
+t('overlay verbs: overlay.expand, overlay.collapse, overlay.open {url}', () => {
+  assert.deepEqual(parseOverlayVerb('expand'), { verb: 'expand' });
+  assert.deepEqual(parseOverlayVerb('full screen'), { verb: 'expand' });
+  assert.deepEqual(parseOverlayVerb('collapse'), { verb: 'collapse' });
+  assert.deepEqual(parseOverlayVerb('open', 'https://console.amberxai.com/?axf-view=builds'), { verb: 'open', url: 'https://console.amberxai.com/?axf-view=builds' });
+  assert.deepEqual(parseOverlayVerb('open', ''), { verb: 'expand' }, 'open with no page expands on the last one');
+  assert.ok('error' in (parseOverlayVerb('open', 'https://evil.example/') as object), 'only Brett\'s own pages');
+  // the older approvals.overlay words keep working
+  assert.deepEqual(parseOverlayVerb('page', 'https://axhub.amberxai.com/x'), { verb: 'open', url: 'https://axhub.amberxai.com/x' });
+  assert.deepEqual(parseOverlayVerb('page', ''), { verb: 'expand' });
+  assert.deepEqual(parseOverlayVerb('close-page', ''), { verb: 'collapse' });
+  assert.deepEqual(parseOverlayVerb('bar'), { verb: 'bar-open' });
+  assert.deepEqual(parseOverlayVerb('bar', 'off'), { verb: 'bar-close' });
+  assert.equal(parseOverlayVerb('size', 'large'), null, 'a setting, not a verb');
+});
+t('overlay pages: https on amberxai.com only', () => {
+  assert.ok(overlayUrlAllowed('https://console.amberxai.com/'));
+  assert.ok(overlayUrlAllowed('https://amberxai.com/'));
+  assert.ok(!overlayUrlAllowed('http://console.amberxai.com/'));
+  assert.ok(!overlayUrlAllowed('https://amberxai.com.evil.example/'));
+  assert.ok(!overlayUrlAllowed('https://user:pw@console.amberxai.com/'));
+  assert.ok(!overlayUrlAllowed('javascript:alert(1)'));
+});
+t('verbs ride amberx.open_url as a console URL (Java OverlayPageRules.verb reads it)', () => {
+  assert.equal(overlayVerbUrl('expand'), 'https://console.amberxai.com/?axf-overlay=expand');
+  assert.equal(overlayVerbUrl('collapse', '', 'https://c.amberxai.com/'), 'https://c.amberxai.com/?axf-overlay=collapse');
+  assert.equal(overlayVerbUrl('open', 'https://console.amberxai.com/x'), 'https://console.amberxai.com/x');
+});
+t('the overlay browser bridge is found only when it is really there', () => {
+  assert.equal(overlayBridge({}), null);
+  assert.equal(overlayBridge({ AmberxOverlay: { collapse: 1 } }), null);
+  const b = { collapse() {}, open() {}, state: () => '{}' };
+  assert.equal(overlayBridge({ AmberxOverlay: b }), b);
+});
 
 t('defaults', () => assert.deepEqual(cfgOf({}), ALARM_DEFAULTS));
 t('values clamped', () => {
@@ -141,6 +207,34 @@ await at('owner sign-in, expired, already decided, no credential, relay down: th
   assert.deepEqual([v.ok, v.error], [false, 'That request expired.']);
   const d = await h.approvals.decide!({ id: ID, kind: 'held', title: 'T', revision: 2 } as never, 'approve');
   assert.deepEqual([d.ok, d.message], [false, 'That request expired.']);
+});
+
+t('every held call pops up: a call decided on the phone no longer blocks the next one', () => {
+  const opened = new Set<string>();
+  assert.equal(nextPopup(opened, null, ['a']), 'a');
+  opened.add('a');
+  // a on screen and still held: b waits its turn
+  assert.equal(nextPopup(opened, 'a', ['a', 'b']), null);
+  // a denied from the Android notification (gone from the feed), its screen still open: b pops up anyway
+  assert.equal(nextPopup(opened, 'a', ['b']), 'b');
+  opened.add('b');
+  assert.equal(nextPopup(opened, 'b', ['b', 'c'], ['b', 'c']), null);
+  // a shelved call on screen still blocks (it is still held), though it never pops up itself
+  assert.equal(nextPopup(opened, 'b', ['c'], ['b', 'c']), null);
+  // each call pops up once
+  assert.equal(nextPopup(opened, null, ['a', 'b']), null);
+  assert.equal(nextPopup(new Set(), null, []), null);
+});
+t('the veto screen closes itself only on a read made after it opened', () => {
+  const openedAt = Date.parse('2026-11-13T10:00:00Z');
+  const g = (o: Partial<Parameters<typeof vetoGone>[0]>) => vetoGone({ held: false, status: 'ok', checkedAt: '2026-11-13T10:00:05Z', openedAt, ...o });
+  assert.equal(g({}), true);
+  assert.equal(g({ held: true }), false);
+  assert.equal(g({ status: 'unreachable' }), false);
+  assert.equal(g({ checkedAt: null }), false);
+  // a notification tap opened it before the page read the new call: stays open
+  assert.equal(g({ checkedAt: '2026-11-13T09:59:58Z' }), false);
+  assert.equal(g({ checkedAt: 'bogus' }), false);
 });
 
 console.log(`✓ approvals-banner: ${n} checks passed`);

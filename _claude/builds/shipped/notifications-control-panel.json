@@ -1,0 +1,408 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-notifications-control-panel",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:36Z",
+ "build": {
+  "id": "notifications-control-panel",
+  "title": "Notifications control panel",
+  "profile": "all",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "You need to have an administration panel. I need to control all the notifications. I need you to build a console control panel to enable and control all possible notifications.",
+  "verbatim": true,
+  "at": "2026-11-06T20:57:51.699Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": [
+   {
+    "text": "I need groups with commands with triggers with actions.",
+    "at": "",
+    "source": "",
+    "verbatim": true
+   }
+  ]
+ },
+ "brief": "# Build: notifications-control-panel\n\n## Brett said (verbatim)\n\"You need to have an administration panel. I need to control all the notifications. I need you to build a console control panel to enable and control all possible notifications.\"\n\nConsole plugin: one Notifications control panel.\n1. Inventory every notification source in console, AmberX, axHub (banners, alerts, approvals/veto, UI Review, builds, merge queue, CI, health checks, account/limits, Follow Amber, AmberX push). Report the list.\n2. One registry (notification types, source, channel). Every sender checks it before sending.\n3. Panel: per type on/off, channel (banner, AmberX push, sound, console pop-up), priority, quiet hours, test send; master switch; per app.\n4. REST + MCP + CLI so it can be set by voice.\n5. Coordinate with running build ui-review-notify-audio (UI Review push to AmberX): register its notification type here, don't rebuild it.\n6. Tests, README, screenshots to UI Review, PR to the merge queue. Do NOT land directly. Nothing removed. One session, lean chain.\n## Addendum 1 (Brett, voice)\n\"I need groups with commands with triggers with actions.\"\n- Notification groups (user-made, any types in a group, group on/off).\n- Triggers: rules for when a notification fires (event, conditions, thresholds, schedule).\n- Actions/commands: buttons on each notification that run a command (approve, open screen, run console command); custom commands per group.\n- All editable in the panel and via REST/MCP/CLI.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "account-1"
+ ],
+ "runs": [
+  {
+   "session": "axf-notifications-control-panel--paulie",
+   "account": "account-1",
+   "model": "Opus",
+   "startedAt": "2026-11-06T20:51:21.336Z",
+   "endedAt": "2026-11-06T21:14:44.557Z",
+   "exit": 0,
+   "costUsd": 5.756
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Inventory every notification source (console, AmberX, axHub) and write the report",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T20:51:21.336Z",
+   "doneAt": "2026-11-06T21:07:20.900Z",
+   "actualMin": 16,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Registry + gate: types, channels, decide engine, one seam in the alert hub",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T21:07:20.900Z",
+   "doneAt": "2026-11-06T21:07:21.687Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Panel: per type, channels, priority, quiet hours, test send, master, per app",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T21:07:21.687Z",
+   "doneAt": "2026-11-06T21:07:22.631Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "REST + MCP + CLI + voice phrases, senders outside the hub (AmberX, follow, browser)",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T21:07:22.631Z",
+   "doneAt": "2026-11-06T21:13:53.384Z",
+   "actualMin": 7,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Tests, README, help, CI checks",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T21:13:53.384Z",
+   "doneAt": "2026-11-06T21:13:54.264Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Screenshots to UI Review, PR into the merge queue",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T21:13:54.264Z",
+   "doneAt": "2026-11-06T21:13:55.211Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Addendum 1: Notification groups (user-made, any types in a group, group on/off). Triggers: rules for when a notification fires (event, conditions, thresholds, schedule). Actions/commands: buttons on each notification that run a command (approve, open screen, run console command); custom commands per group. All",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T21:13:55.212Z",
+   "doneAt": "2026-11-07T00:48:05.880Z",
+   "actualMin": 214,
+   "done": true
+  },
+  {
+   "id": "s7-1",
+   "text": "Notification groups (user-made, any types in a group, group on/off).",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T21:13:55.211Z",
+   "doneAt": "2026-11-06T21:13:55.212Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7-2",
+   "text": "Triggers: rules for when a notification fires (event, conditions, thresholds, schedule).",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T21:13:55.211Z",
+   "doneAt": "2026-11-06T21:13:55.212Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7-3",
+   "text": "Actions/commands: buttons on each notification that run a command (approve, open screen, run console command); custom commands per group.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T21:13:55.211Z",
+   "doneAt": "2026-11-06T21:13:55.212Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7-4",
+   "text": "All editable in the panel and via REST/MCP/CLI.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T21:13:55.211Z",
+   "doneAt": "2026-11-06T21:13:55.212Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/notifications-control-panel",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 367,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/367"
+ },
+ "landedCommit": "b244d8f2f3eaca01e5ff88d80cd9241f9d553794",
+ "commits": [
+  "85a2b32cb1ac1ea1e147514599e48d8e037e9ec9",
+  "775a47e743645348bc3e1f83a2b1221f8b04d667"
+ ],
+ "mergedAt": "2026-11-07T05:54:24Z",
+ "landedAt": "2026-11-06T23:35:21Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/notifications-control-panel.md",
+  "_claude/builds/reports/notifications-control-panel/shots/desktop-recent.png",
+  "_claude/builds/reports/notifications-control-panel/shots/desktop-top.png",
+  "_claude/builds/reports/notifications-control-panel/shots/desktop-types.png",
+  "_claude/builds/reports/notifications-control-panel/shots/phone-recent.png",
+  "_claude/builds/reports/notifications-control-panel/shots/phone-top.png",
+  "_claude/builds/reports/notifications-control-panel/shots/phone-types.png",
+  "_claude/memory/STATUS.md",
+  "_claude/rules/RULES.md",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/HubRules.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+  "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/HubRulesTest.java",
+  "apps/console-web/plugins/README.md",
+  "apps/console-web/plugins/activity/notify.json",
+  "apps/console-web/plugins/activity/server/complete.py",
+  "apps/console-web/plugins/activity/web/index.tsx",
+  "apps/console-web/plugins/approvals-banner/notify.json",
+  "apps/console-web/plugins/approvals-banner/web/veto.tsx",
+  "apps/console-web/plugins/build-manager/notify.json",
+  "apps/console-web/plugins/claude-handoff/notify.json",
+  "apps/console-web/plugins/claude-session/notify.json",
+  "apps/console-web/plugins/claude-settings/server/__init__.py",
+  "apps/console-web/plugins/console-terminal/notify.json",
+  "apps/console-web/plugins/console-terminal/web/TerminalSession.tsx",
+  "apps/console-web/plugins/follow-amber/notify.json",
+  "apps/console-web/plugins/follow-amber/server/__init__.py",
+  "apps/console-web/plugins/maintenance/notify.json",
+  "apps/console-web/plugins/notify-control/README.md",
+  "apps/console-web/plugins/notify-control/help.json",
+  "apps/console-web/plugins/notify-control/hooks.mjs",
+  "apps/console-web/plugins/notify-control/install.mjs",
+  "apps/console-web/plugins/notify-control/plugin.json",
+  "apps/console-web/plugins/notify-control/registry.json",
+  "apps/console-web/plugins/notify-control/server/__init__.py",
+  "apps/console-web/plugins/notify-control/server/core.py",
+  "apps/console-web/plugins/notify-control/test.py",
+  "apps/console-web/plugins/notify-control/uninstall.mjs",
+  "apps/console-web/plugins/notify-control/web/index.tsx",
+  "apps/console-web/plugins/notify-control/web/menu.ts",
+  "apps/console-web/plugins/notify-control/web/notify.css",
+  "apps/console-web/plugins/push-banner/notify.json",
+  "apps/console-web/plugins/ui-review/notify.json",
+  "apps/console-web/server/alerts.py",
+  "apps/console-web/server/console_context.py",
+  "apps/console-web/server/main.py"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "notify-control",
+   "files": [
+    "apps/console-web/plugins/notify-control/README.md",
+    "apps/console-web/plugins/notify-control/help.json",
+    "apps/console-web/plugins/notify-control/hooks.mjs",
+    "apps/console-web/plugins/notify-control/install.mjs",
+    "apps/console-web/plugins/notify-control/plugin.json",
+    "apps/console-web/plugins/notify-control/registry.json",
+    "apps/console-web/plugins/notify-control/server/__init__.py",
+    "apps/console-web/plugins/notify-control/server/core.py",
+    "apps/console-web/plugins/notify-control/test.py",
+    "apps/console-web/plugins/notify-control/uninstall.mjs",
+    "apps/console-web/plugins/notify-control/web/index.tsx",
+    "apps/console-web/plugins/notify-control/web/menu.ts",
+    "apps/console-web/plugins/notify-control/web/notify.css"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/notifications-control-panel.md",
+    "_claude/builds/reports/notifications-control-panel/shots/desktop-recent.png",
+    "_claude/builds/reports/notifications-control-panel/shots/desktop-top.png",
+    "_claude/builds/reports/notifications-control-panel/shots/desktop-types.png",
+    "_claude/builds/reports/notifications-control-panel/shots/phone-recent.png",
+    "_claude/builds/reports/notifications-control-panel/shots/phone-top.png",
+    "_claude/builds/reports/notifications-control-panel/shots/phone-types.png"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/plugins/README.md",
+    "apps/console-web/server/alerts.py",
+    "apps/console-web/server/console_context.py",
+    "apps/console-web/server/main.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "activity",
+   "files": [
+    "apps/console-web/plugins/activity/notify.json",
+    "apps/console-web/plugins/activity/server/complete.py",
+    "apps/console-web/plugins/activity/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/HubRules.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+    "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/HubRulesTest.java"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md",
+    "_claude/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "approvals-banner",
+   "files": [
+    "apps/console-web/plugins/approvals-banner/notify.json",
+    "apps/console-web/plugins/approvals-banner/web/veto.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "console-terminal",
+   "files": [
+    "apps/console-web/plugins/console-terminal/notify.json",
+    "apps/console-web/plugins/console-terminal/web/TerminalSession.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "follow-amber",
+   "files": [
+    "apps/console-web/plugins/follow-amber/notify.json",
+    "apps/console-web/plugins/follow-amber/server/__init__.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-manager",
+   "files": [
+    "apps/console-web/plugins/build-manager/notify.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-handoff",
+   "files": [
+    "apps/console-web/plugins/claude-handoff/notify.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-session",
+   "files": [
+    "apps/console-web/plugins/claude-session/notify.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-settings",
+   "files": [
+    "apps/console-web/plugins/claude-settings/server/__init__.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "maintenance",
+   "files": [
+    "apps/console-web/plugins/maintenance/notify.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/notify.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ui-review",
+   "files": [
+    "apps/console-web/plugins/ui-review/notify.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261106-27a9049f",
+   "name": "Notifications control panel",
+   "status": "approved",
+   "group": "g-20261106-f3d26a5d",
+   "url": "/review/r-20261106-27a9049f"
+  }
+ ],
+ "cost": {
+  "usd": 5.756,
+  "estimated": false,
+  "tokens": {
+   "input": 74,
+   "output": 265,
+   "cacheRead": 7518665,
+   "cacheWrite": 277065
+  }
+ },
+ "report": "_claude/builds/reports/notifications-control-panel.md",
+ "open": [
+  "Muting approval and veto types on the phone needs the new AmberX APK. Everything else works on the current one.",
+  "On the phone, AmberX push has no separate sound: its Android channel decides. The Sound channel is the console's.",
+  "Quiet hours hold web push and ntfy by dropping them: they are not re-sent when quiet ends. AmberX does get held alerts.",
+  "An alert shown on the phone before quiet hours can buzz once more when they end, if it is still open.",
+  "`activity.done` also has its own push settings in Settings → Plugins → Activity; the panel can only narrow them.",
+  "Per-app switches cover where it lands: console, AmberX, web push / ntfy. axHub isn't one, because it sends nothing.",
+  "Registry, capability and the `notify` field in `/api/alerts` are additive and were built on Opus. They touch a cross-app reply, so a Fable review is the right next step."
+ ]
+}

@@ -5,7 +5,13 @@ framework/cli/agent-slots.mjs, so the VPS launcher (deploy/claude-headless.sh), 
 and one set of rules (the store is in the hub's shared data, mounted in this container at /projects). Nothing here
 starts a session: the queue starts itself on the VPS when a slot frees.
 
-Routes: GET status · GET/PUT settings · POST queue/{id}/up · POST queue/{id}/cancel.
+Routes: GET status · GET/PUT settings · POST queue/{id}/up · POST queue/{id}/cancel · GET/PUT hard-limit.
+
+Hard build limit (build-limit@1, framework/cli/build-limit.mjs, Nov 12 2026): the VPS refuses the N+1st headless build
+whatever the queue thinks, and runs every build in axf-builds.slice (CPU / memory caps). GET hard-limit = the limit, live
+usage (the host's snapshot, refreshed every 30 s by the enforcer timer) and the slice; anyone with the console token reads
+it (REST, MCP, CLI, voice). PUT hard-limit = Brett only: his own signed-in console session (axf_user.admin), never the
+console token that sessions, MCP and voice use.
 Capability axf.agent-slots@1: status() for other plugins. Registers the systems-check item `agent-slots-memory` on
 axf.health@1 (memory guard tripping often, swap in use for long).
 """
@@ -30,6 +36,8 @@ HEALTH_CAP = "axf.health@1"
 HEALTH_ID = "agent-slots-memory"
 ROOT = Path(__file__).resolve().parents[5]  # the repo root (/axf in the console image)
 CLI = ROOT / "framework" / "cli" / "agent-slots.mjs"
+LIMIT_CLI = ROOT / "framework" / "cli" / "build-limit.mjs"
+LIMIT_KEYS = {"maxBuilds", "cpuQuotaPct", "memoryMaxGb", "memoryHighGb", "tasksMax", "dockerCpus", "dockerMemoryGb", "dockerImages", "reserveSec", "setupSec"}
 ID = re.compile(r"^[A-Za-z0-9-]{1,80}$")
 SETTING_KEYS = {"maxAgents", "maxHeavy", "minFreeGb", "closeFinishedAfterSec", "pollSec", "priorityRules", "guardWarnTrips", "swapWarnMb", "swapWarnMin"}
 CACHE_S = 3
@@ -68,6 +76,9 @@ def health_probe(s: dict[str, Any] | None = None, now_ms: float | None = None) -
     swap_min = (now_ms - since) / 60000 if isinstance(since, (int, float)) else 0
     mem = s.get("memory") or {}
     details = [f"Slots {s.get('used', 0)}/{s.get('cap', '?')}, {s.get('queued', 0)} queued; {mem.get('availGb', '?')} GB free (floor {mem.get('floorGb', '?')} GB)."]
+    hard = s.get("hard") or {}
+    if hard.get("max"):
+        details.append(f"VPS hard build limit: {hard.get('live', '?')}/{hard['max']} running ({hard.get('source', '?')}).")
     problems = []
     if trips >= int(cfg.get("guardWarnTrips") or 5):
         problems.append(f"the memory guard held new sessions {trips} times in the last hour")
@@ -76,6 +87,9 @@ def health_probe(s: dict[str, Any] | None = None, now_ms: float | None = None) -
     if problems:
         return {"status": "warn", "summary": "The VPS is short of memory: " + "; ".join(problems) + ".", "details": details + [
             "Lower Max running agents or Max heavy steps (Settings → Plugins → Agent cap), or stop idle containers."]}
+    if hard.get("max") and hard.get("source") == "unknown":
+        return {"status": "warn", "summary": "The VPS hard build limit enforcer isn't reporting: the limit still refuses launches, but the console can't show live usage and stray builds aren't moved into the capped slice.",
+                "details": details + ["On the VPS as root: `systemctl status axf-build-limit.timer`; if it is missing, `sudo bash /opt/axf/deploy/install-build-limit.sh`."]}
     return {"status": "ok", "summary": f"Memory fine: slots {s.get('used', 0)}/{s.get('cap', '?')}, {mem.get('availGb', '?')} GB free.", "details": details}
 
 
@@ -152,12 +166,62 @@ def queue_cancel(qid: str) -> dict[str, Any]:
     return _queue_action("cancel", qid)
 
 
+def _limit(*args: str, timeout: int = 20) -> tuple[int, str, str]:
+    p = subprocess.run(["node", str(LIMIT_CLI), *args], cwd=str(ROOT), capture_output=True, text=True, timeout=timeout)
+    return p.returncode, p.stdout.strip(), p.stderr.strip()
+
+
+def _owner(request: Request) -> bool:
+    """Brett's own signed-in session (not the console token, which sessions, MCP and voice use)."""
+    user = getattr(request.state, "axf_user", None)
+    return bool(user is not None and getattr(user, "admin", False))
+
+
+def hard_limit() -> dict[str, Any]:
+    code, out, err = _limit("status", "--json")
+    if code != 0 or not out:
+        return {"error": (err or "no answer")[-400:]}
+    try:
+        return json.loads(out)
+    except json.JSONDecodeError as e:
+        return {"error": f"bad answer: {e}"[:400]}
+
+
+@router.get("/hard-limit")
+def get_hard_limit(request: Request) -> dict[str, Any]:
+    """The VPS's hard build limit: max, live usage (what really runs), what counts, the axf-builds.slice caps."""
+    return {**hard_limit(), "canEdit": _owner(request)}
+
+
+@router.put("/hard-limit")
+async def put_hard_limit(request: Request) -> dict[str, Any]:
+    """Brett only: change the hard build limit or the slice / docker caps (his signed-in console, not the console token)."""
+    if not _owner(request):
+        raise HTTPException(403, "Only Brett sets the hard build limit, from his own signed-in console (Settings → Plugins → Agent cap). Sessions, MCP and voice can read it.")
+    body = await request.json()
+    if not isinstance(body, dict):
+        raise HTTPException(400, "send a JSON object")
+    patch = {k: v for k, v in body.items() if k in LIMIT_KEYS}
+    if not patch:
+        raise HTTPException(400, f"nothing to save (keys: {', '.join(sorted(LIMIT_KEYS))})")
+    user = getattr(request.state, "axf_user", None)
+    who = str(getattr(user, "name", "") or getattr(user, "email", "") or "brett")[:60]
+    code, out, err = _limit("set", "--json", json.dumps(patch), "--from-console", "--by", who)
+    if code != 0:
+        raise HTTPException(400, (err or out)[-400:].removeprefix("build-limit: ") or "refused")
+    _cache["value"] = None
+    return {**hard_limit(), "canEdit": True, "saved": json.loads(out.splitlines()[-1])}
+
+
 class Service:
     """axf.agent-slots@1"""
     version = 1
 
     def status(self) -> dict[str, Any]:
         return status()
+
+    def hard_limit(self) -> dict[str, Any]:
+        return hard_limit()
 
 
 plugin_services.provide(SELF, Service(), FOLDER)

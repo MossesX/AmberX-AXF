@@ -1,0 +1,106 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-widget-arrange-fable",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:27:26Z",
+ "build": {
+  "id": "widget-arrange-fable",
+  "title": "Drag and snap widgets (Fable rebuild, with Kotlin twin)",
+  "profile": "all",
+  "category": "Framework",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Fable rebuild of widget-arrange (Opus, PR #92, branch claude/project-thread-c4xw4s). Start by replacing the Opus version; review the arrangement layer as a cross-port contract and record/port the Kotlin WidgetEngine twin when Android is unpaused.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Review the Opus arrangement layer + fixture as a contract",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s2",
+   "text": "Replace/refine engine + runtime",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s3",
+   "text": "Refine drag UX (touch, keyboard moves)",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s4",
+   "text": "Kotlin WidgetEngine twin when Android unpauses + report",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-11-10T04:39:20.621Z",
+ "landedAt": "2026-11-10T04:39:20.621Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": [
+  "s1: Review the Opus arrangement layer + fixture as a contract",
+  "s2: Replace/refine engine + runtime",
+  "s3: Refine drag UX (touch, keyboard moves)",
+  "s4: Kotlin WidgetEngine twin when Android unpauses + report"
+ ]
+}

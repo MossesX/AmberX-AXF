@@ -72,12 +72,12 @@ export default function ChromeEditBar() {
         px: 1.5,
         py: 0.75,
         borderRadius: "var(--axf-radius)",
-        border: `1px solid ${token("accent")}`,
+        border: `var(--fx-border-w) solid ${token("accent")}`,
         background: token("panel")
       }}
     >
       <Stack direction="row" spacing={1.25} sx={{ alignItems: "center" }}>
-        <Typography sx={{ fontSize: 11.5, color: token("dim"), fontFamily: token("mono") }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), fontFamily: token("mono") }}>
           {chrome
             ? "Editing UI layout — drag a handle to move, an edge to dock"
             : "Floating layout on — drag a handle to move, an edge to dock"}
@@ -86,7 +86,7 @@ export default function ChromeEditBar() {
           size="small"
           color="inherit"
           onClick={() => commands.run(RESET_LAYOUTS_COMMAND)}
-          sx={{ fontSize: 11.5, textTransform: "none" }}
+          sx={{ fontSize: 'var(--fx-type-root-sm)', textTransform: "none" }}
         >
           Reset all layouts
         </Button>
@@ -95,7 +95,7 @@ export default function ChromeEditBar() {
             size="small"
             variant="contained"
             onClick={() => accountsSettings.set("editUi", false)}
-            sx={{ fontSize: 11.5, textTransform: "none" }}
+            sx={{ fontSize: 'var(--fx-type-root-sm)', textTransform: "none" }}
           >
             Done
           </Button>

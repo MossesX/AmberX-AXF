@@ -1,0 +1,250 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-asset-designer",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:26:13Z",
+ "build": {
+  "id": "asset-designer",
+  "title": "Asset Designer plugin (no-code)",
+  "profile": "all",
+  "category": "Plugin",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "No-code editors for nav menus, drawers, app menus, context menus, toolbars, layouts, style packs and color themes. Every asset validates against its schema before save. Adds a drawer asset type. Installed by default.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Plugin skeleton: copy `apps/console-web/plugins/_template` to `plugins/asset-designer` (id `ai.amberx.axf.console.asset-designer`, `uiEditor: \"builder\"`, lifecycle block, `install.mjs`/`uninstall.mjs`), nav → Plugins → Asset designer, Settings → Plugins sub-tab (parent `plugins`). `node framework/cli/plugin-lifecycle.mjs check asset-designer` passes; console tsc + vite build pass.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s2",
+   "text": "Designer shell `web/Designer.tsx`: type picker (every non-attachable type from `asset-types.json` the designer covers: nav-menu, drawer, app-menu, context-menu, toolbar, layout, style-theme, color-theme), id + label fields, Save/Cancel; `useEditorSync()` so it reloads values on focus (UI-editor rule). Saves nothing yet.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s3",
+   "text": "Validation gate: every save runs `validateAsset` from the baked `src/axf/core/validate.ts`; errors shown inline next to the field they name; Save disabled until clean. Server route `POST /api/plugins/asset-designer/validate` mirrors it with the CLI validator (`framework/core/project-check.mjs` pattern). Test in `test.py`.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s4",
+   "text": "Storage: designed assets saved as asset@1 files under `.axf-console/plugins/asset-designer/assets/<type>/<id>.json` (lifecycle dataDir), served by `GET /api/plugins/asset-designer/assets`, registered into the runtime on load like the theme-manager plugin does (`registry.register`, origin `asset-designer`). Built-in ids refused.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s5",
+   "text": "Menu editor (nav-menu, app-menu, context-menu): tree of items (label, icon, action, children, divider), drag to reorder, action picker from `rt.actions.list()`, live preview via `rt.swap` on a `ad-preview-<type>` id. Reuses `MenuList.tsx` for the preview.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s6",
+   "text": "Toolbar editor: items (icon, label, action, badge counter), `density`/`surface`/`divider`/`collapsible`, widgets start/end picker from `attachable` types (engine-rpc `app-defaults` → `widgets`), live preview through the React `Toolbar`.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s7",
+   "text": "`drawer` asset type: add it to `asset-types.json` (hideable chrome, `side` left/right, `width`, `items` like nav-menu, `modal`), `layout.slots` accept it in the `drawer` region, starter `framework/assets/drawer/amberx-side.json`, `framework/defaults.json` names it. Validators on all three ports accept it (Kotlin: `AssetTypeSpec` resource); fixture case in `layout-slots.json`.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s8",
+   "text": "Drawer rendering: React `components/Chrome.tsx` draws the drawer region; Compose `axf-ui/components/Chrome.kt` the same (swipe from the edge, scrim from `--fx-opacity-scrim`). Drawer editor in the designer (same editor as nav-menu plus side/width/modal).",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s9",
+   "text": "Layout editor: region grid (9 regions from `layout.slots`), per-region size/visibility, `data.slots` overrides with accepted-type chips; preview through `compileLayout`. Hidden slots greyed like Appearance does.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s10",
+   "text": "Color-theme editor: token groups from the theme engine (`core/engines/theme.ts` token list), colour pickers, contrast warnings (reuse `theme-manager/web/rollEngine.ts` checks), light/dark pair, preview via `rt.swap`.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s11",
+   "text": "Style-theme editor: space, radii, borders, font sizes, opacity tokens (`opacityDisabled/Muted/Hover/Tint/Scrim/Glass`), density; preview; numbers clamped to the ranges known themes use.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s12",
+   "text": "Templates hook: \"Start from\" picker listing starters + designed assets + (later) `x.assets.templates` entries; Duplicate / Rename / Export JSON / Import JSON (validated). Export writes a file a user can drop into an app's assets folder.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s13",
+   "text": "Installed by default: plugin `enabled: true` in the console's plugin defaults, `framework/catalog/plugins.json` entry (planned → built resolves by itself), `node framework/cli/plugins.mjs --check`, status.json + tracker; Plugin Manager shows it.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s14",
+   "text": "Android face (first slice): `axf-devtools` gets an `AssetDesignerModule` placeholder route `asset-designer` listing designed assets received from the console (read-only), so the plugin-inventory shows it on both ports; full editors stay web-only for now (noted as a placeholder capability `axf.designer`).",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s15",
+   "text": "Tests: plugin `test.py` (validate route, storage, built-in id refused, lifecycle), web unit cases for the drawer slot + layout compile, CI line; `uninstall.mjs --all` leaves nothing (`check --after-uninstall`).",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s16",
+   "text": "Close: differences report `_claude/memory/docs/rebuilds/asset-designer.md` (new plugin, so a build report), LOG.md line, web screenshots via `rebuild-shots.mjs`, CLAUDE.md Status, plan epic `x.assets.designer` built via `build_step`, pending item complete.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-11-10T04:39:20.621Z",
+ "landedAt": "2026-11-10T04:39:20.621Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": [
+  "s1: Plugin skeleton: copy `apps/console-web/plugins/_template` to `plugins/asset-designer` (id `ai.amberx.axf.console.asset-designer`, `uiEditor: \"builder\"`, lifecycle block, `install.mjs`/`uninstall.mjs`",
+  "s2: Designer shell `web/Designer.tsx`: type picker (every non-attachable type from `asset-types.json` the designer covers: nav-menu, drawer, app-menu, context-menu, toolbar, layout, style-theme, color-the",
+  "s3: Validation gate: every save runs `validateAsset` from the baked `src/axf/core/validate.ts`; errors shown inline next to the field they name; Save disabled until clean. Server route `POST /api/plugins/",
+  "s4: Storage: designed assets saved as asset@1 files under `.axf-console/plugins/asset-designer/assets/<type>/<id>.json` (lifecycle dataDir), served by `GET /api/plugins/asset-designer/assets`, registered",
+  "s5: Menu editor (nav-menu, app-menu, context-menu): tree of items (label, icon, action, children, divider), drag to reorder, action picker from `rt.actions.list()`, live preview via `rt.swap` on a `ad-pre",
+  "s6: Toolbar editor: items (icon, label, action, badge counter), `density`/`surface`/`divider`/`collapsible`, widgets start/end picker from `attachable` types (engine-rpc `app-defaults` → `widgets`), live",
+  "s7: `drawer` asset type: add it to `asset-types.json` (hideable chrome, `side` left/right, `width`, `items` like nav-menu, `modal`), `layout.slots` accept it in the `drawer` region, starter `framework/ass",
+  "s8: Drawer rendering: React `components/Chrome.tsx` draws the drawer region; Compose `axf-ui/components/Chrome.kt` the same (swipe from the edge, scrim from `--fx-opacity-scrim`). Drawer editor in the des",
+  "s9: Layout editor: region grid (9 regions from `layout.slots`), per-region size/visibility, `data.slots` overrides with accepted-type chips; preview through `compileLayout`. Hidden slots greyed like Appea",
+  "s10: Color-theme editor: token groups from the theme engine (`core/engines/theme.ts` token list), colour pickers, contrast warnings (reuse `theme-manager/web/rollEngine.ts` checks), light/dark pair, previe",
+  "s11: Style-theme editor: space, radii, borders, font sizes, opacity tokens (`opacityDisabled/Muted/Hover/Tint/Scrim/Glass`), density; preview; numbers clamped to the ranges known themes use.",
+  "s12: Templates hook: \"Start from\" picker listing starters + designed assets + (later) `x.assets.templates` entries; Duplicate / Rename / Export JSON / Import JSON (validated). Export writes a file a user c",
+  "s13: Installed by default: plugin `enabled: true` in the console's plugin defaults, `framework/catalog/plugins.json` entry (planned → built resolves by itself), `node framework/cli/plugins.mjs --check`, st",
+  "s14: Android face (first slice): `axf-devtools` gets an `AssetDesignerModule` placeholder route `asset-designer` listing designed assets received from the console (read-only), so the plugin-inventory shows",
+  "s15: Tests: plugin `test.py` (validate route, storage, built-in id refused, lifecycle), web unit cases for the drawer slot + layout compile, CI line; `uninstall.mjs --all` leaves nothing (`check --after-un",
+  "s16: Close: differences report `_claude/memory/docs/rebuilds/asset-designer.md` (new plugin, so a build report), LOG.md line, web screenshots via `rebuild-shots.mjs`, CLAUDE.md Status, plan epic `x.assets."
+ ]
+}

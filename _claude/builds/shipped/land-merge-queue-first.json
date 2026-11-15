@@ -1,0 +1,177 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-land-merge-queue-first",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:18Z",
+ "build": {
+  "id": "land-merge-queue-first",
+  "title": "Land the merge queue first, then the waiting batch as one stack",
+  "profile": "all",
+  "category": "Feature",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "You gotta stop merging these one at a time or they're gonna have to run checks again. That's what happened last time. ... Land the queue first. Stop everything. Stop merging these things one at a time so they don't step on each other's toes. Save the compute.",
+  "verbatim": true,
+  "at": "2026-11-04T17:00:00Z",
+  "source": "voice",
+  "by": "Landin' Lenny",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-land-merge-queue-first--gina",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-04T17:30:56.980Z",
+   "endedAt": "2026-11-04T22:28:07.022Z",
+   "exit": 0,
+   "costUsd": 125.0104
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Pause auto-land, auto-merge and catch-up; Breakroom notice",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s2",
+   "text": "Land PR #320 merge-queue: update from main once, one CI run, merge, redeploy, confirm queue live",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-04T17:30:56.980Z",
+   "doneAt": "2026-11-04T20:11:31.385Z",
+   "actualMin": 161,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Put the waiting batch through the queue as one stack",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T20:11:36.247Z",
+   "doneAt": "2026-11-04T22:19:09.893Z",
+   "actualMin": 128,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Leave auto-land off; settings + RULES.md say only the queue merges",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-04T20:11:31.385Z",
+   "doneAt": "2026-11-04T20:11:34.220Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Save compute: cache GitHub reads in land.mjs, one deploy per stack",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-04T20:11:34.220Z",
+   "doneAt": "2026-11-04T20:11:36.247Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Report in _claude/builds/reports/",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-11-04T22:19:09.893Z",
+   "doneAt": "2026-11-04T22:19:11.974Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/ci-bundle-skipped-shell",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 348,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/348"
+ },
+ "landedCommit": "607afec5f78415a5653ad5ac2152b17a73c78c2d",
+ "commits": [
+  "46624866ee3583c31595e54481d1ac4b175d6016",
+  "2badfc732e5c1dfc0507e87a5e9aec0a3bfcb9ec",
+  "4bc57bfa002a6a8e537d6cda95184f8c8532aa6f"
+ ],
+ "mergedAt": "2026-11-04T19:51:03Z",
+ "landedAt": "2026-11-04T22:42:27Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/reports/land-merge-queue-first.md",
+  "framework/cli/app-bundle.mjs"
+ ],
+ "areas": [
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/app-bundle.mjs"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/land-merge-queue-first.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 125.0104,
+  "estimated": false,
+  "tokens": {
+   "input": 562,
+   "output": 3414,
+   "cacheRead": 57611449,
+   "cacheWrite": 331817
+  }
+ },
+ "report": "_claude/builds/reports/land-merge-queue-first.md",
+ "open": [
+  "s1: Pause auto-land, auto-merge and catch-up; Breakroom notice",
+  "The `AXF_MERGE_QUEUE` repo variable can't be set with the token the runner has (403; the GitHub App broker falls back to the old PAT). The committed `.github/merge-queue.json` does the job; the view still shows the variable error.",
+  "`build-orchestrator`'s and similar repo-store checks read live data in CI; any other test like that can still go red on another session's write."
+ ]
+}

@@ -58,9 +58,21 @@ def _title(content: str, fallback: str) -> str:
 
 
 class NotesStore:
-    def __init__(self, root: str | os.PathLike[str] | None = None, by: str = "console:notes-browser"):
+    def __init__(self, root: str | os.PathLike[str] | None = None, by: str = "console:notes-browser", folder: Any = "notes"):
         self.root = Path(root or os.environ.get("AXHUB_PROJECTS_DIR") or "/projects")
         self.by = by
+        # Projects (projects@1): the notes folder under _shared/_claude, a name or a callable read on every call
+        # (AmberX AXF: `notes`; any other project: `project-notes/<id>`, empty at first).
+        self._folder = folder
+
+    @property
+    def folder(self) -> str:
+        f = self._folder() if callable(self._folder) else self._folder
+        return str(f or "notes").strip("/")
+
+    @property
+    def prefix(self) -> str:
+        return self.folder + "/"
 
     # ---- where things are -------------------------------------------------------------------------------------
     @property
@@ -69,7 +81,7 @@ class NotesStore:
 
     @property
     def notes_dir(self) -> Path:
-        return self.claude_dir / "notes"
+        return self.claude_dir.joinpath(*self.folder.split("/"))
 
     @property
     def state_dir(self) -> Path:
@@ -159,7 +171,7 @@ class NotesStore:
         self._atomic(self.state_dir / "meta.json", json.dumps(meta, separators=(",", ":")), 0o600)
 
     def _versions_file(self, rel: str) -> Path:
-        return self.state_dir / "versions" / f"{quote(PREFIX + rel, safe='')}.json"
+        return self.state_dir / "versions" / f"{quote(self.prefix + rel, safe='')}.json"
 
     def _keep(self, rel: str, content: str, reason: str, now: str) -> None:
         f = self._versions_file(rel)
@@ -181,7 +193,7 @@ class NotesStore:
     # ---- reads ------------------------------------------------------------------------------------------------
     def _info(self, rel: str, f: Path, meta: dict[str, Any], content: str | None = None) -> dict[str, Any]:
         text = f.read_text(encoding="utf-8", errors="replace") if content is None else content
-        m = meta.get(PREFIX + rel) or {}
+        m = meta.get(self.prefix + rel) or {}
         st = f.stat()
         folder, _, name = rel.rpartition("/")
         return {
@@ -253,7 +265,7 @@ class NotesStore:
                 self._keep(rel, cur, "write", now)
             self._atomic(f, content)
             meta = self._meta()
-            meta[PREFIX + rel] = {"updatedAt": now, "updatedBy": self.by}
+            meta[self.prefix + rel] = {"updatedAt": now, "updatedBy": self.by}
             self._save_meta(meta)
             return self._info(rel, f, meta, content)
 
@@ -269,7 +281,7 @@ class NotesStore:
             self._keep(rel, cur, "delete", _now())
             f.unlink()
             meta = self._meta()
-            meta.pop(PREFIX + rel, None)
+            meta.pop(self.prefix + rel, None)
             self._save_meta(meta)
             return True
 

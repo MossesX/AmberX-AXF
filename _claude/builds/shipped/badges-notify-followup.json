@@ -1,0 +1,405 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-badges-notify-followup",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:40Z",
+ "build": {
+  "id": "badges-notify-followup",
+  "title": "Follow-up: one Badges plugin (4 badges, usage meter, tap actions) + notification groups, triggers, actions",
+  "profile": "all",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Run a follow-up.",
+  "verbatim": true,
+  "at": "2026-11-06T23:34:55.329Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": [
+   {
+    "text": "Everything's gonna go through the console. It needs to exist on the console, and then that sends the thing to AmberX to do the notification. It doesn't live on AmberX. AmberX just processes commands from the console.",
+    "at": "",
+    "source": "",
+    "verbatim": true
+   },
+   {
+    "text": "Can I make it so a notification will be a vibration or an alarm or a certain sound, from the console?",
+    "at": "",
+    "source": "",
+    "verbatim": true
+   },
+   {
+    "text": "When something is sent over from the console, AmberX opens it up and brings it to the front of my phone. If I say 'open up the console UI Review and bring this project into focus', it brings that right up to the front.",
+    "at": "",
+    "source": "",
+    "verbatim": true
+   }
+  ]
+ },
+ "brief": "# Build: badges-notify-followup\n\n## Brett said (verbatim)\n\"Run a follow-up.\" (for requests that arrived after claude-badge-vps and notifications-control-panel finished)\n\nBase: merge branches claude/claude-badge-vps and claude/notifications-control-panel (both finished, not landed) and build on top. Read their briefs' addenda: /root/axf-builds/claude-badge-vps/.brief.md and /root/axf-builds/notifications-control-panel/.brief.md.\n\nA. Badges (one plugin):\n1. Claude, axHub, VPS and AmberX badges in ONE plugin; move existing ones in (old ones can be disabled).\n2. Per badge: show/hide, icons only or icon + label, label text, icon per state (ok/warn/error/off), banner order.\n3. VPS account usage meter (5-hour + weekly used of total, reset time) in the same plugin; reuse the existing usage-meter widget code.\n4. Configurable tap action per badge (drop-down, open screen, run command, toggle, nothing). Usage meter default tap = drop-down of every saved Claude account with credits left, reset times, active marker, status. Plain code, zero tokens, cached + refresh.\n\nB. Notifications panel:\n5. Groups (user-made, group on/off), triggers (event, conditions, thresholds, schedule), actions/commands on each notification (approve, open screen, run console command, custom per group). Editable in the panel and via REST/MCP/CLI.\n\nTests, README, report, screenshots to UI Review, ONE PR to the merge queue that supersedes the two branches. Do NOT land directly. One session, lean chain. Stay out of Gizmo and UI registry code (running builds).\n## Addendum 1 (Brett, voice) - notifications architecture\n\"Everything's gonna go through the console. It needs to exist on the console, and then that sends the thing to AmberX to do the notification. It doesn't live on AmberX. AmberX just processes commands from the console.\"\n- The notifications engine (registry, rules, groups, triggers, actions) lives on the console only.\n- AmberX is a dumb delivery end: it receives notification commands from the console (show, sound, open link, action buttons that call back to the console) and nothing else. No notification logic or rules in AmberX; any that exist there get moved to the console.\n\n## Addendum 2 (Brett, voice)\n\"Can I make it so a notification will be a vibration or an alarm or a certain sound, from the console?\"\n- Yes: per notification type/group on the console: delivery style = silent / vibrate (pattern) / sound (pick from a list, custom upload) / alarm (full-screen, repeats until dismissed). AmberX executes it (notification channels per style so Android honours it). Test button per type.\n\n## Addendum 3 (Brett, voice) - bring to front\n\"When something is sent over from the console, AmberX opens it up and brings it to the front of my phone. If I say 'open up the console UI Review and bring this project into focus', it brings that right up to the front.\"\n- Console command -> AmberX: bring AmberX to the foreground on the phone (Android full-screen intent / overlay permission as needed) and open the target directly: a screen, a UI Review group, a specific item scrolled into focus.\n- New UI Review items auto-open this way (setting to turn off; notification is the fallback).\n- Works by voice through the local assistant / Gizmo: 'open UI Review and focus <project>'.\n- Builds on PR #365 (ui-review-notify-audio, truthful wake); merge its branch claude/ui-review-notify-audio first, don't rebuild it. APK change via CI.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "account-1"
+ ],
+ "runs": [
+  {
+   "session": "axf-badges-notify-followup--lenny",
+   "account": "account-1",
+   "model": "Opus",
+   "startedAt": "2026-11-06T23:34:11.452Z",
+   "endedAt": "2026-11-07T00:08:26.917Z",
+   "exit": 0,
+   "costUsd": 14.8876
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Merge claude-badge-vps + notifications-control-panel on main; one Badges plugin holds Claude, axHub, VPS, AmberX badges with per-badge settings",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:54:46.760Z",
+   "doneAt": "2026-11-06T23:54:46Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "VPS usage meter badge reusing the usage-meter code; tap actions; accounts drop-down (cached, zero tokens)",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:34:11.452Z",
+   "doneAt": "2026-11-06T23:54:46.760Z",
+   "actualMin": 21,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Notification groups, triggers, actions: core, REST, MCP, CLI, panel",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:54:46Z",
+   "doneAt": "2026-11-06T23:54:47.638Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Tests, README, report, screenshots to UI Review, one PR to the merge queue superseding #366 + #367",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:54:47.638Z",
+   "doneAt": "2026-11-06T23:57:04.190Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Addendum 1: The notifications engine (registry, rules, groups, triggers, actions) lives on the console only. AmberX is a dumb delivery end: it receives notification commands from the console (show, sound, open link, action buttons that call back to the console) and nothing else. No notification logic or rules i",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:57:04.190Z",
+   "doneAt": "2026-11-07T00:48:13.508Z",
+   "actualMin": 51,
+   "done": true
+  },
+  {
+   "id": "s5-1",
+   "text": "The notifications engine (registry, rules, groups, triggers, actions) lives on the console only.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:54:47.638Z",
+   "doneAt": "2026-11-06T23:57:04.190Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s5-2",
+   "text": "AmberX is a dumb delivery end: it receives notification commands from the console (show, sound, open link, action buttons that call back to the console) and nothing else. No notification logic or rules in AmberX; any that exist there get moved to the console.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:54:47.638Z",
+   "doneAt": "2026-11-06T23:57:04.190Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Addendum 2: Yes: per notification type/group on the console: delivery style = silent / vibrate (pattern) / sound (pick from a list, custom upload) / alarm (full-screen, repeats until dismissed). AmberX executes it (notification channels per style so Android honours it). Test button per type.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:57:04.190Z",
+   "doneAt": "2026-11-07T00:48:13.508Z",
+   "actualMin": 51,
+   "done": true
+  },
+  {
+   "id": "s6-1",
+   "text": "Yes: per notification type/group on the console: delivery style = silent / vibrate (pattern) / sound (pick from a list, custom upload) / alarm (full-screen, repeats until dismissed). AmberX executes it (notification channels per style so Android honours it). Test button per type.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:54:47.638Z",
+   "doneAt": "2026-11-06T23:57:04.190Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Addendum 3: Console command -> AmberX: bring AmberX to the foreground on the phone (Android full-screen intent / overlay permission as needed) and open the target directly: a screen, a UI Review group, a specific item scrolled into focus. New UI Review items auto-open this way (setting to turn off; notification",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:57:04.190Z",
+   "doneAt": "2026-11-07T00:48:13.508Z",
+   "actualMin": 51,
+   "done": true
+  },
+  {
+   "id": "s7-1",
+   "text": "Console command -> AmberX: bring AmberX to the foreground on the phone (Android full-screen intent / overlay permission as needed) and open the target directly: a screen, a UI Review group, a specific item scrolled into focus.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:54:47.638Z",
+   "doneAt": "2026-11-06T23:57:04.190Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s7-2",
+   "text": "New UI Review items auto-open this way (setting to turn off; notification is the fallback).",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:54:47.638Z",
+   "doneAt": "2026-11-06T23:57:04.190Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s7-3",
+   "text": "Works by voice through the local assistant / Gizmo: 'open UI Review and focus <project>'.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:54:47.638Z",
+   "doneAt": "2026-11-06T23:57:04.190Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s7-4",
+   "text": "Builds on PR #365 (ui-review-notify-audio, truthful wake); merge its branch claude/ui-review-notify-audio first, don't rebuild it. APK change via CI.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:54:47.638Z",
+   "doneAt": "2026-11-06T23:57:04.190Z",
+   "actualMin": 2,
+   "done": true
+  }
+ ],
+ "branch": "claude/badges-notify-followup",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 370,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/370"
+ },
+ "landedCommit": "aec306850ae0234f5f5083c5e4ccc53b987ef767",
+ "commits": [
+  "c91f607c3148df825dc6bbb99ef82f4d2d2d4ae1",
+  "a931806401f06075ea79d3f72452aadab0614e0a"
+ ],
+ "mergedAt": "2026-11-07T05:54:22Z",
+ "landedAt": "2026-11-06T23:59:28Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/badges-notify-followup.md",
+  "_claude/builds/reports/badges-notify-followup/shots/desktop-alert-commands.png",
+  "_claude/builds/reports/badges-notify-followup/shots/desktop-badge-settings.png",
+  "_claude/builds/reports/badges-notify-followup/shots/desktop-banner.png",
+  "_claude/builds/reports/badges-notify-followup/shots/desktop-notify-groups.png",
+  "_claude/builds/reports/badges-notify-followup/shots/desktop-trigger-editor.png",
+  "_claude/builds/reports/badges-notify-followup/shots/desktop-usage-dropdown.png",
+  "_claude/builds/reports/badges-notify-followup/shots/phone-alert-commands.png",
+  "_claude/builds/reports/badges-notify-followup/shots/phone-badge-settings.png",
+  "_claude/builds/reports/badges-notify-followup/shots/phone-banner.png",
+  "_claude/builds/reports/badges-notify-followup/shots/phone-notify-groups.png",
+  "_claude/builds/reports/badges-notify-followup/shots/phone-trigger-editor.png",
+  "_claude/builds/reports/badges-notify-followup/shots/phone-usage-dropdown.png",
+  "_claude/memory/STATUS.md",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/libs/alerts/index.tsx",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/libs/alerts/index.tsx",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/README.md",
+  "apps/console-web/plugins/claude-badge/README.md",
+  "apps/console-web/plugins/claude-badge/help.json",
+  "apps/console-web/plugins/claude-badge/plugin.json",
+  "apps/console-web/plugins/claude-badge/server/__init__.py",
+  "apps/console-web/plugins/claude-badge/server/usage_host.py",
+  "apps/console-web/plugins/claude-badge/test.mts",
+  "apps/console-web/plugins/claude-badge/test.py",
+  "apps/console-web/plugins/claude-badge/web/badges.css",
+  "apps/console-web/plugins/claude-badge/web/index.tsx",
+  "apps/console-web/plugins/claude-badge/web/menu.ts",
+  "apps/console-web/plugins/claude-badge/web/model.ts",
+  "apps/console-web/plugins/notify-control/README.md",
+  "apps/console-web/plugins/notify-control/help.json",
+  "apps/console-web/plugins/notify-control/plugin.json",
+  "apps/console-web/plugins/notify-control/server/__init__.py",
+  "apps/console-web/plugins/notify-control/server/core.py",
+  "apps/console-web/plugins/notify-control/server/rules.py",
+  "apps/console-web/plugins/notify-control/test.py",
+  "apps/console-web/plugins/notify-control/web/index.tsx",
+  "apps/console-web/plugins/notify-control/web/notify.css",
+  "apps/console-web/plugins/notify-control/web/rules.tsx",
+  "apps/console-web/src/axf/libs/alerts/index.tsx",
+  "apps/console-web/src/lazyEngine.ts",
+  "apps/molly/axf.lock.json",
+  "apps/molly/src/axf/libs/alerts/index.tsx",
+  "framework/libs/alerts/index.tsx"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/badges-notify-followup.md",
+    "_claude/builds/reports/badges-notify-followup/shots/desktop-alert-commands.png",
+    "_claude/builds/reports/badges-notify-followup/shots/desktop-badge-settings.png",
+    "_claude/builds/reports/badges-notify-followup/shots/desktop-banner.png",
+    "_claude/builds/reports/badges-notify-followup/shots/desktop-notify-groups.png",
+    "_claude/builds/reports/badges-notify-followup/shots/desktop-trigger-editor.png",
+    "_claude/builds/reports/badges-notify-followup/shots/desktop-usage-dropdown.png",
+    "_claude/builds/reports/badges-notify-followup/shots/phone-alert-commands.png",
+    "_claude/builds/reports/badges-notify-followup/shots/phone-badge-settings.png",
+    "_claude/builds/reports/badges-notify-followup/shots/phone-banner.png",
+    "_claude/builds/reports/badges-notify-followup/shots/phone-notify-groups.png",
+    "_claude/builds/reports/badges-notify-followup/shots/phone-trigger-editor.png",
+    "_claude/builds/reports/badges-notify-followup/shots/phone-usage-dropdown.png"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-badge",
+   "files": [
+    "apps/console-web/plugins/claude-badge/README.md",
+    "apps/console-web/plugins/claude-badge/help.json",
+    "apps/console-web/plugins/claude-badge/plugin.json",
+    "apps/console-web/plugins/claude-badge/server/__init__.py",
+    "apps/console-web/plugins/claude-badge/server/usage_host.py",
+    "apps/console-web/plugins/claude-badge/test.mts",
+    "apps/console-web/plugins/claude-badge/test.py",
+    "apps/console-web/plugins/claude-badge/web/badges.css",
+    "apps/console-web/plugins/claude-badge/web/index.tsx",
+    "apps/console-web/plugins/claude-badge/web/menu.ts",
+    "apps/console-web/plugins/claude-badge/web/model.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "notify-control",
+   "files": [
+    "apps/console-web/plugins/notify-control/README.md",
+    "apps/console-web/plugins/notify-control/help.json",
+    "apps/console-web/plugins/notify-control/plugin.json",
+    "apps/console-web/plugins/notify-control/server/__init__.py",
+    "apps/console-web/plugins/notify-control/server/core.py",
+    "apps/console-web/plugins/notify-control/server/rules.py",
+    "apps/console-web/plugins/notify-control/test.py",
+    "apps/console-web/plugins/notify-control/web/index.tsx",
+    "apps/console-web/plugins/notify-control/web/notify.css",
+    "apps/console-web/plugins/notify-control/web/rules.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/plugins/README.md",
+    "apps/console-web/src/axf/libs/alerts/index.tsx",
+    "apps/console-web/src/lazyEngine.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/libs/alerts/index.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/libs/alerts/index.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/axf.lock.json",
+    "apps/molly/src/axf/libs/alerts/index.tsx"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/alerts/index.tsx"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261106-43da9db2",
+   "name": "Badges and notification rules",
+   "status": "approved",
+   "group": "g-20261106-6d4457c9",
+   "url": "/review/r-20261106-43da9db2"
+  }
+ ],
+ "cost": {
+  "usd": 14.8876,
+  "estimated": false,
+  "tokens": {
+   "input": 130,
+   "output": 611,
+   "cacheRead": 13309946,
+   "cacheWrite": 318842
+  }
+ },
+ "report": "_claude/builds/reports/badges-notify-followup.md",
+ "open": []
+}

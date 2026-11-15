@@ -1,0 +1,399 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-menu-scroll",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:23Z",
+ "build": {
+  "id": "menu-scroll",
+  "title": "Scrollable menus that stay on screen",
+  "profile": "all",
+  "category": "Framework > Menus",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "The application menus need to be scrollable when they reach beyond the screen.",
+  "verbatim": false,
+  "at": "2026-11-03T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "# Build: menu-scroll (Urgent profile)\n\nBrett, Nov 3 2026 (voice): \"The application menus need to be scrollable when they reach beyond the screen.\" Assigned agent: **Janitor Joey** (book on his agent-swarm card; set AXF_AGENT=janitor-joey if supported, else record in report + store note). Register in Urgent (id `menu-scroll`) + banner entry.\n\n## Fix (framework level, so every app and plugin gets it)\n- Application menu bar dropdowns, their submenus, and also context menus / overflow (⋯) menus: when a menu is taller than the space left in the viewport, cap its height to the available space (respect safe-area insets, the banner/toolbars, and the on-screen keyboard; use visualViewport on mobile) and make it scroll vertically inside.\n- Smooth touch scrolling on phones (overscroll contained so the page behind doesn't scroll), wheel + keyboard arrow navigation scrolls the highlighted item into view, subtle top/bottom fade or chevron hints when there's more.\n- Positioning: flip up / shift to stay on screen before falling back to scroll; submenus that would go off the right edge open to the left; on compact width they stay inside the screen.\n- Max height + hint style come from tokens/assets (menu asset or component-sizing), no hard-coded sizes (check-theme must pass).\n- Apply in the framework menu components (web reference + axf.css) so console, axHub web, AmberX (Capacitor) and every plugin inherit it; Compose twin recorded in PORTING.md unless trivial.\n- Tests (overflow cases: long menu at bottom of a short phone screen, nested submenu at the edge, keyboard open), before/after screenshots at 412 px and 1280 px, UI Review item, report `_claude/builds/reports/menu-scroll.md`, THREADS, PR, steps through the store. Commits clean and professional.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-menu-scroll",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-03T17:55:43.256Z",
+   "endedAt": "2026-11-03T18:17:33.020Z",
+   "exit": 0,
+   "costUsd": 6.284
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Read menu components (AppMenu, MenuList, Overlays, axf.css) and the positioning code",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T17:55:43.256Z",
+   "doneAt": "2026-11-03T18:07:26.699Z",
+   "actualMin": 12,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Placement engine: viewport rect (visualViewport, safe areas, banner), flip/shift, maxHeight, submenu side",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T18:07:26.699Z",
+   "doneAt": "2026-11-03T18:07:28.958Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Wire into menubar dropdowns, submenus, context and overflow menus; keyboard scroll-into-view",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T18:07:28.958Z",
+   "doneAt": "2026-11-03T18:07:31.060Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "axf.css: scroll container, overscroll-contain, fade hints from tokens",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T18:07:31.060Z",
+   "doneAt": "2026-11-03T18:07:32.800Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Tests for overflow cases (short phone, nested at edge, keyboard open)",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T18:07:32.800Z",
+   "doneAt": "2026-11-03T18:16:06.227Z",
+   "actualMin": 9,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Screenshots 412/1280, UI Review, report, PORTING note, PR",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T18:16:06.227Z",
+   "doneAt": "2026-11-03T18:16:08.260Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/menu-scroll",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 268,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/268"
+ },
+ "landedCommit": "f18333c726665895198dcb4a515892213be87cde",
+ "commits": [
+  "2b8c95531a1b09ac1de6112c6f1072ed8ed18781",
+  "ac893b06b0e871f68cfb14bc57955ab811551409"
+ ],
+ "mergedAt": "2026-11-04T01:22:37Z",
+ "landedAt": "2026-11-04T01:22:36Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/reports/menu-scroll.md",
+  "_claude/builds/reports/menu-scroll/shots/after/desktop-context.png",
+  "_claude/builds/reports/menu-scroll/shots/after/desktop-nested-edge.png",
+  "_claude/builds/reports/menu-scroll/shots/after/desktop-plugin-more.png",
+  "_claude/builds/reports/menu-scroll/shots/after/desktop-submenu-long.png",
+  "_claude/builds/reports/menu-scroll/shots/after/desktop-tools-open.png",
+  "_claude/builds/reports/menu-scroll/shots/after/desktop-tools-scrolled.png",
+  "_claude/builds/reports/menu-scroll/shots/after/phone-context.png",
+  "_claude/builds/reports/menu-scroll/shots/after/phone-drilldown.png",
+  "_claude/builds/reports/menu-scroll/shots/after/phone-keyboard.png",
+  "_claude/builds/reports/menu-scroll/shots/after/phone-plugin-more.png",
+  "_claude/builds/reports/menu-scroll/shots/after/phone-tools-open.png",
+  "_claude/builds/reports/menu-scroll/shots/after/phone-tools-scrolled.png",
+  "_claude/builds/reports/menu-scroll/shots/after/results.json",
+  "_claude/builds/reports/menu-scroll/shots/before/desktop-context.png",
+  "_claude/builds/reports/menu-scroll/shots/before/desktop-nested-edge.png",
+  "_claude/builds/reports/menu-scroll/shots/before/desktop-plugin-more.png",
+  "_claude/builds/reports/menu-scroll/shots/before/desktop-submenu-long.png",
+  "_claude/builds/reports/menu-scroll/shots/before/desktop-tools-open.png",
+  "_claude/builds/reports/menu-scroll/shots/before/desktop-tools-scrolled.png",
+  "_claude/builds/reports/menu-scroll/shots/before/phone-context.png",
+  "_claude/builds/reports/menu-scroll/shots/before/phone-drilldown.png",
+  "_claude/builds/reports/menu-scroll/shots/before/phone-keyboard.png",
+  "_claude/builds/reports/menu-scroll/shots/before/phone-plugin-more.png",
+  "_claude/builds/reports/menu-scroll/shots/before/phone-tools-open.png",
+  "_claude/builds/reports/menu-scroll/shots/before/phone-tools-scrolled.png",
+  "_claude/builds/reports/menu-scroll/shots/before/results.json",
+  "_claude/memory/STATUS.md",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/core/engines/menufit.ts",
+  "apps/amberx-droid/src/axf/core/index.ts",
+  "apps/amberx-droid/src/axf/react/AxfProvider.tsx",
+  "apps/amberx-droid/src/axf/react/components/AppMenu.tsx",
+  "apps/amberx-droid/src/axf/react/components/MenuList.tsx",
+  "apps/amberx-droid/src/axf/react/components/Overlays.tsx",
+  "apps/amberx-droid/src/axf/react/components/menuFit.ts",
+  "apps/amberx-droid/src/axf/react/index.ts",
+  "apps/amberx-droid/src/axf/ui/axf.css",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/core/engines/menufit.ts",
+  "apps/axhub-web/src/axf/core/index.ts",
+  "apps/axhub-web/src/axf/react/AxfProvider.tsx",
+  "apps/axhub-web/src/axf/react/components/AppMenu.tsx",
+  "apps/axhub-web/src/axf/react/components/MenuList.tsx",
+  "apps/axhub-web/src/axf/react/components/Overlays.tsx",
+  "apps/axhub-web/src/axf/react/components/menuFit.ts",
+  "apps/axhub-web/src/axf/react/index.ts",
+  "apps/axhub-web/src/axf/ui/axf.css",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/src/axf/core/engines/menufit.ts",
+  "apps/console-web/src/axf/core/index.ts",
+  "apps/console-web/src/axf/react/AxfProvider.tsx",
+  "apps/console-web/src/axf/react/components/AppMenu.tsx",
+  "apps/console-web/src/axf/react/components/MenuList.tsx",
+  "apps/console-web/src/axf/react/components/Overlays.tsx",
+  "apps/console-web/src/axf/react/components/menuFit.ts",
+  "apps/console-web/src/axf/react/index.ts",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/molly/axf.lock.json",
+  "apps/molly/src/axf/core/engines/menufit.ts",
+  "apps/molly/src/axf/core/index.ts",
+  "apps/molly/src/axf/react/AxfProvider.tsx",
+  "apps/molly/src/axf/react/components/AppMenu.tsx",
+  "apps/molly/src/axf/react/components/MenuList.tsx",
+  "apps/molly/src/axf/react/components/Overlays.tsx",
+  "apps/molly/src/axf/react/components/menuFit.ts",
+  "apps/molly/src/axf/react/index.ts",
+  "apps/molly/src/axf/ui/axf.css",
+  "framework/core/engines/menufit.ts",
+  "framework/core/index.ts",
+  "framework/react/AxfProvider.tsx",
+  "framework/react/components/AppMenu.tsx",
+  "framework/react/components/MenuList.tsx",
+  "framework/react/components/Overlays.tsx",
+  "framework/react/components/menuFit.ts",
+  "framework/react/index.ts",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-menu-fit.mts",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/menu-scroll.md",
+    "_claude/builds/reports/menu-scroll/shots/after/desktop-context.png",
+    "_claude/builds/reports/menu-scroll/shots/after/desktop-nested-edge.png",
+    "_claude/builds/reports/menu-scroll/shots/after/desktop-plugin-more.png",
+    "_claude/builds/reports/menu-scroll/shots/after/desktop-submenu-long.png",
+    "_claude/builds/reports/menu-scroll/shots/after/desktop-tools-open.png",
+    "_claude/builds/reports/menu-scroll/shots/after/desktop-tools-scrolled.png",
+    "_claude/builds/reports/menu-scroll/shots/after/phone-context.png",
+    "_claude/builds/reports/menu-scroll/shots/after/phone-drilldown.png",
+    "_claude/builds/reports/menu-scroll/shots/after/phone-keyboard.png",
+    "_claude/builds/reports/menu-scroll/shots/after/phone-plugin-more.png",
+    "_claude/builds/reports/menu-scroll/shots/after/phone-tools-open.png",
+    "_claude/builds/reports/menu-scroll/shots/after/phone-tools-scrolled.png",
+    "_claude/builds/reports/menu-scroll/shots/after/results.json",
+    "_claude/builds/reports/menu-scroll/shots/before/desktop-context.png",
+    "_claude/builds/reports/menu-scroll/shots/before/desktop-nested-edge.png",
+    "_claude/builds/reports/menu-scroll/shots/before/desktop-plugin-more.png",
+    "_claude/builds/reports/menu-scroll/shots/before/desktop-submenu-long.png",
+    "_claude/builds/reports/menu-scroll/shots/before/desktop-tools-open.png",
+    "_claude/builds/reports/menu-scroll/shots/before/desktop-tools-scrolled.png",
+    "_claude/builds/reports/menu-scroll/shots/before/phone-context.png",
+    "_claude/builds/reports/menu-scroll/shots/before/phone-drilldown.png",
+    "_claude/builds/reports/menu-scroll/shots/before/phone-keyboard.png",
+    "_claude/builds/reports/menu-scroll/shots/before/phone-plugin-more.png",
+    "_claude/builds/reports/menu-scroll/shots/before/phone-tools-open.png",
+    "_claude/builds/reports/menu-scroll/shots/before/phone-tools-scrolled.png",
+    "_claude/builds/reports/menu-scroll/shots/before/results.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/core/engines/menufit.ts",
+    "apps/amberx-droid/src/axf/core/index.ts",
+    "apps/amberx-droid/src/axf/react/AxfProvider.tsx",
+    "apps/amberx-droid/src/axf/react/components/AppMenu.tsx",
+    "apps/amberx-droid/src/axf/react/components/MenuList.tsx",
+    "apps/amberx-droid/src/axf/react/components/Overlays.tsx",
+    "apps/amberx-droid/src/axf/react/components/menuFit.ts",
+    "apps/amberx-droid/src/axf/react/index.ts",
+    "apps/amberx-droid/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/core/engines/menufit.ts",
+    "apps/axhub-web/src/axf/core/index.ts",
+    "apps/axhub-web/src/axf/react/AxfProvider.tsx",
+    "apps/axhub-web/src/axf/react/components/AppMenu.tsx",
+    "apps/axhub-web/src/axf/react/components/MenuList.tsx",
+    "apps/axhub-web/src/axf/react/components/Overlays.tsx",
+    "apps/axhub-web/src/axf/react/components/menuFit.ts",
+    "apps/axhub-web/src/axf/react/index.ts",
+    "apps/axhub-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/axf/core/engines/menufit.ts",
+    "apps/console-web/src/axf/core/index.ts",
+    "apps/console-web/src/axf/react/AxfProvider.tsx",
+    "apps/console-web/src/axf/react/components/AppMenu.tsx",
+    "apps/console-web/src/axf/react/components/MenuList.tsx",
+    "apps/console-web/src/axf/react/components/Overlays.tsx",
+    "apps/console-web/src/axf/react/components/menuFit.ts",
+    "apps/console-web/src/axf/react/index.ts",
+    "apps/console-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/axf.lock.json",
+    "apps/molly/src/axf/core/engines/menufit.ts",
+    "apps/molly/src/axf/core/index.ts",
+    "apps/molly/src/axf/react/AxfProvider.tsx",
+    "apps/molly/src/axf/react/components/AppMenu.tsx",
+    "apps/molly/src/axf/react/components/MenuList.tsx",
+    "apps/molly/src/axf/react/components/Overlays.tsx",
+    "apps/molly/src/axf/react/components/menuFit.ts",
+    "apps/molly/src/axf/react/index.ts",
+    "apps/molly/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/AxfProvider.tsx",
+    "framework/react/components/AppMenu.tsx",
+    "framework/react/components/MenuList.tsx",
+    "framework/react/components/Overlays.tsx",
+    "framework/react/components/menuFit.ts",
+    "framework/react/index.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/menufit.ts",
+    "framework/core/index.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-menu-fit.mts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "npx -y tsx framework/spec/check-menu-fit.mts: 14 engine cases (long menu at the bottom of a short phone, ⋯ near the bottom flipping up, too tall for either side, context menu shift / fill / flip, nested submenu at the right edge, compact width, submenu near the bottom and taller than the screen, key",
+   "command": "npx -y tsx framework/spec/check-menu-fit.mts",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "Browser harness above (Playwright, throwaway Vite page over the console's baked assets): 16 / 16.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "check-theme ✓ (935 files), check-controls ✓, shared-assets check ✓, console tsc --noEmit ✓.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  }
+ ],
+ "uiReview": [
+  {
+   "id": "r-20261103-2637fd91",
+   "name": "Scrollable menus that stay on screen",
+   "status": "approved",
+   "group": "g-20261103-4d5d2438",
+   "url": "/review/r-20261103-2637fd91"
+  }
+ ],
+ "cost": {
+  "usd": 6.284,
+  "estimated": false,
+  "tokens": {
+   "input": 210,
+   "output": 1325,
+   "cacheRead": 15665745,
+   "cacheWrite": 191304
+  }
+ },
+ "report": "_claude/builds/reports/menu-scroll.md",
+ "open": [
+  "Android (Compose) twin deferred, recorded in `framework/spec/PORTING.md` (Android port on hold).",
+  "The \"banner / toolbars\" bound is the screen itself: drop-downs open under the menubar and over the banners by design (Oct 22 2026), so nothing else is subtracted.",
+  "A per-asset height ceiling is not exposed as an asset field (no contract change on Opus); the engine supports it."
+ ]
+}

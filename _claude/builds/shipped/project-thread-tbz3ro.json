@@ -1,0 +1,98 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-tbz3ro",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:33:21Z",
+ "build": {
+  "id": "project-thread-tbz3ro",
+  "title": "project-thread-tbz3ro",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-tbz3ro",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-tbz3ro",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "52a8094e4794b13c17f7e25a0c95a4e87d5dbe77",
+ "commits": [
+  "dd9807722b0b3d1ec2f713e88f4f2d034f99abcd",
+  "595ea129d4c99f40ed8948a7e9555942023a7db2",
+  "393720ee09cdbb7b795410eae130c65971fd692e"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-23T23:02:47Z",
+ "files": [
+  "CLAUDE.md",
+  "apps/console-web/plugins/push-banner/plugin.json",
+  "apps/console-web/plugins/push-banner/server/__init__.py",
+  "apps/console-web/plugins/push-banner/server/claudefix.py",
+  "apps/console-web/plugins/push-banner/test.py",
+  "apps/console-web/plugins/push-banner/web/push-banner.css",
+  "apps/console-web/plugins/push-banner/web/store.ts",
+  "apps/console-web/plugins/push-banner/web/ui.tsx",
+  "apps/console-web/plugins/systems-check/server/claudefix.py"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/plugin.json",
+    "apps/console-web/plugins/push-banner/server/__init__.py",
+    "apps/console-web/plugins/push-banner/server/claudefix.py",
+    "apps/console-web/plugins/push-banner/test.py",
+    "apps/console-web/plugins/push-banner/web/push-banner.css",
+    "apps/console-web/plugins/push-banner/web/store.ts",
+    "apps/console-web/plugins/push-banner/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "systems-check",
+   "files": [
+    "apps/console-web/plugins/systems-check/server/claudefix.py"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

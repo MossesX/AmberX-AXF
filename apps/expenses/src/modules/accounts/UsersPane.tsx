@@ -71,7 +71,7 @@ function PresenceDot({ online }: { online: boolean }) {
         borderRadius: "50%",
         flexShrink: 0,
         background: online ? token("ok") : "transparent",
-        border: `1.5px solid ${online ? token("ok") : token("dim")}`,
+        border: `calc(var(--fx-border-w) * 1.5) solid ${online ? token("ok") : token("dim")}`,
         opacity: online ? 1 : 0.6,
       }}
     />
@@ -111,9 +111,9 @@ function AddUserDialog({ open, onClose }: { open: boolean; onClose: () => void }
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle sx={{ fontSize: 15 }}>Add member</DialogTitle>
+      <DialogTitle sx={{ fontSize: 'var(--fx-type-root-lg)' }}>Add member</DialogTitle>
       <DialogContent>
-        <Stack sx={{ gap: 2, pt: 1 }}>
+        <Stack sx={{ gap: 'var(--fx-dens-gap-3xl)', pt: 1 }}>
           <TextField
             label="Username"
             size="small"
@@ -141,7 +141,7 @@ function AddUserDialog({ open, onClose }: { open: boolean; onClose: () => void }
             <MenuItem value="administrator">administrator</MenuItem>
           </TextField>
           {error && (
-            <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }}>
+            <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
               {error}
             </Alert>
           )}
@@ -170,9 +170,9 @@ function EditUserDialog({ user, onClose }: { user: AccountPublic; onClose: () =>
 
   return (
     <Dialog open onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle sx={{ fontSize: 15 }}>Edit “{user.username}”</DialogTitle>
+      <DialogTitle sx={{ fontSize: 'var(--fx-type-root-lg)' }}>Edit “{user.username}”</DialogTitle>
       <DialogContent>
-        <Stack sx={{ gap: 2, pt: 1 }}>
+        <Stack sx={{ gap: 'var(--fx-dens-gap-3xl)', pt: 1 }}>
           <TextField
             select
             label="Role"
@@ -185,14 +185,14 @@ function EditUserDialog({ user, onClose }: { user: AccountPublic; onClose: () =>
           </TextField>
           <FormControlLabel
             control={<Switch checked={disabled} onChange={(e) => setDisabled(e.target.checked)} />}
-            label={<Typography sx={{ fontSize: 13 }}>Disabled — sign-in refused</Typography>}
+            label={<Typography sx={{ fontSize: 'var(--fx-type-root-md)' }}>Disabled — sign-in refused</Typography>}
           />
-          <Typography sx={{ fontSize: 11, color: token("dim") }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>
             The screenname is {user.screenname ? `“${user.screenname}”` : "not chosen yet"} — it is
             the member’s own choice, made through their profile, and has no admin setter.
           </Typography>
           {error && (
-            <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }}>
+            <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
               {error}
             </Alert>
           )}
@@ -220,9 +220,9 @@ function ResetPasswordDialog({ user, onClose }: { user: AccountPublic; onClose: 
 
   return (
     <Dialog open onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle sx={{ fontSize: 15 }}>Reset password — “{user.username}”</DialogTitle>
+      <DialogTitle sx={{ fontSize: 'var(--fx-type-root-lg)' }}>Reset password — “{user.username}”</DialogTitle>
       <DialogContent>
-        <Stack sx={{ gap: 2, pt: 1 }}>
+        <Stack sx={{ gap: 'var(--fx-dens-gap-3xl)', pt: 1 }}>
           <TextField
             label="New temp password"
             size="small"
@@ -232,7 +232,7 @@ function ResetPasswordDialog({ user, onClose }: { user: AccountPublic; onClose: 
             helperText="Hand this to the member. Their next sign-in is forced through change-password."
           />
           {error && (
-            <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }}>
+            <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
               {error}
             </Alert>
           )}
@@ -261,16 +261,16 @@ function RemoveUserDialog({ user, onClose }: { user: AccountPublic; onClose: () 
 
   return (
     <Dialog open onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle sx={{ fontSize: 15 }}>Remove “{user.username}”?</DialogTitle>
+      <DialogTitle sx={{ fontSize: 'var(--fx-type-root-lg)' }}>Remove “{user.username}”?</DialogTitle>
       <DialogContent>
-        <Stack sx={{ gap: 1.5 }}>
-          <Typography sx={{ fontSize: 12.5 }}>
+        <Stack sx={{ gap: 'var(--fx-dens-gap-2xl)' }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-md)' }}>
             This removes the account row — {user.username} can no longer sign in. Their stored
             data (profile, messages, permission grants) is kept until an administrator removes it
             from the Admin pane.
           </Typography>
           {error && (
-            <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }}>
+            <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
               {error}
             </Alert>
           )}
@@ -337,11 +337,11 @@ export default function UsersPane() {
   });
 
   return (
-    <Stack sx={{ p: 2, gap: 1.5, minWidth: 0 }}>
-      <Stack direction="row" sx={{ alignItems: "center", gap: 1 }}>
-        <Typography sx={{ fontSize: 14, fontWeight: 700, flex: 1 }}>
+    <Stack sx={{ p: 2, gap: 'var(--fx-dens-gap-2xl)', minWidth: 0 }}>
+      <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-xl)' }}>
+        <Typography sx={{ fontSize: "var(--fx-font-size)", fontWeight: 700, flex: 1 }}>
           Members
-          <Typography component="span" sx={{ fontSize: 11.5, color: token("dim"), ml: 1 }}>
+          <Typography component="span" sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), ml: 1 }}>
             {visible.length} of {users.length}
             {settings.showOfflineMembers ? "" : " (online only)"}
           </Typography>
@@ -360,7 +360,7 @@ export default function UsersPane() {
               ),
             },
           }}
-          sx={{ width: 220, "& .MuiInputBase-input": { fontSize: 12.5 } }}
+          sx={{ width: 220, "& .MuiInputBase-input": { fontSize: 'var(--fx-type-root-md)' } }}
         />
         <Tooltip title="Refresh the directory">
           <IconButton size="small" onClick={() => void accountsStore.refreshUsers()}>
@@ -373,7 +373,7 @@ export default function UsersPane() {
             size="small"
             startIcon={<Glyph id="icon-plus" size={12} />}
             onClick={() => setDialog({ kind: "add" })}
-            sx={{ textTransform: "none", fontSize: 12.5 }}
+            sx={{ textTransform: "none", fontSize: 'var(--fx-type-root-md)' }}
           >
             Add member
           </Button>
@@ -383,14 +383,14 @@ export default function UsersPane() {
       <Table size={settings.denseTables ? "small" : "medium"}>
         <TableHead>
           <TableRow>
-            <TableCell sx={{ fontSize: 11.5, color: token("dim") }}>Member</TableCell>
-            <TableCell sx={{ fontSize: 11.5, color: token("dim") }}>Username</TableCell>
-            <TableCell sx={{ fontSize: 11.5, color: token("dim") }}>Role</TableCell>
-            <TableCell sx={{ fontSize: 11.5, color: token("dim") }}>Joined</TableCell>
+            <TableCell sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>Member</TableCell>
+            <TableCell sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>Username</TableCell>
+            <TableCell sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>Role</TableCell>
+            <TableCell sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>Joined</TableCell>
             {administrator && (
               <>
-                <TableCell sx={{ fontSize: 11.5, color: token("dim") }}>Status</TableCell>
-                <TableCell sx={{ fontSize: 11.5, color: token("dim") }} align="right">
+                <TableCell sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>Status</TableCell>
+                <TableCell sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }} align="right">
                   Actions
                 </TableCell>
               </>
@@ -404,7 +404,7 @@ export default function UsersPane() {
             return (
               <TableRow key={u.username} hover>
                 <TableCell>
-                  <Stack direction="row" sx={{ alignItems: "center", gap: 1.25 }}>
+                  <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-2xl)' }}>
                     <PresenceDot online={online} />
                     {u.disabled ? (
                       // A disabled account has no profile to show — `getProfile`
@@ -412,7 +412,7 @@ export default function UsersPane() {
                       // administrators included. Offering the viewer here would
                       // be an affordance that only ever produces a refusal.
                       <Tooltip title="A disabled account has no profile to view">
-                        <Typography sx={{ fontSize: 13, fontWeight: 600, color: token("dim") }}>
+                        <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 600, color: token("dim") }}>
                           {u.screenname ?? "—"}
                         </Typography>
                       </Tooltip>
@@ -421,7 +421,7 @@ export default function UsersPane() {
                         size="small"
                         onClick={() => setDialog({ kind: "view", user: u })}
                         sx={{
-                          fontSize: 13,
+                          fontSize: 'var(--fx-type-root-md)',
                           fontWeight: 600,
                           textTransform: "none",
                           p: 0,
@@ -434,20 +434,20 @@ export default function UsersPane() {
                       </Button>
                     )}
                     {self && (
-                      <Typography component="span" sx={{ fontSize: 11, color: token("dim") }}>
+                      <Typography component="span" sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>
                         (you)
                       </Typography>
                     )}
                   </Stack>
                 </TableCell>
-                <TableCell sx={{ fontFamily: token("mono"), fontSize: 12.5 }}>{u.username}</TableCell>
+                <TableCell sx={{ fontFamily: token("mono"), fontSize: 'var(--fx-type-root-md)' }}>{u.username}</TableCell>
                 <TableCell>
                   <Chip
                     label={u.role}
                     size="small"
                     variant="outlined"
                     sx={{
-                      fontSize: 11,
+                      fontSize: 'var(--fx-type-root-xs)',
                       height: 20,
                       ...(u.role === "administrator"
                         ? { color: token("accent"), borderColor: token("accent") }
@@ -455,7 +455,7 @@ export default function UsersPane() {
                     }}
                   />
                 </TableCell>
-                <TableCell sx={{ fontSize: 12, color: token("dim") }}>
+                <TableCell sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
                   {new Date(u.createdAt).toLocaleDateString()}
                 </TableCell>
                 {administrator && (
@@ -465,26 +465,26 @@ export default function UsersPane() {
                         <Chip
                           label="disabled"
                           size="small"
-                          sx={{ fontSize: 11, height: 20, color: token("err") }}
+                          sx={{ fontSize: 'var(--fx-type-root-xs)', height: 20, color: token("err") }}
                           variant="outlined"
                         />
                       ) : (
-                        <Typography sx={{ fontSize: 12, color: token("dim") }}>enabled</Typography>
+                        <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>enabled</Typography>
                       )}
                     </TableCell>
                     <TableCell align="right">
-                      <Stack direction="row" sx={{ gap: 0.5, justifyContent: "flex-end" }}>
+                      <Stack direction="row" sx={{ gap: 'var(--fx-dens-gap-md)', justifyContent: "flex-end" }}>
                         <Button
                           size="small"
                           onClick={() => setDialog({ kind: "edit", user: u })}
-                          sx={{ fontSize: 11.5, textTransform: "none" }}
+                          sx={{ fontSize: 'var(--fx-type-root-sm)', textTransform: "none" }}
                         >
                           Edit
                         </Button>
                         <Button
                           size="small"
                           onClick={() => setDialog({ kind: "reset", user: u })}
-                          sx={{ fontSize: 11.5, textTransform: "none" }}
+                          sx={{ fontSize: 'var(--fx-type-root-sm)', textTransform: "none" }}
                         >
                           Reset password
                         </Button>
@@ -492,7 +492,7 @@ export default function UsersPane() {
                           <Button
                             size="small"
                             onClick={() => setDialog({ kind: "credits", user: u })}
-                            sx={{ fontSize: 11.5, textTransform: "none" }}
+                            sx={{ fontSize: 'var(--fx-type-root-sm)', textTransform: "none" }}
                           >
                             Credits
                           </Button>
@@ -512,7 +512,7 @@ export default function UsersPane() {
           {visible.length === 0 && (
             <TableRow>
               <TableCell colSpan={administrator ? 6 : 4}>
-                <Typography sx={{ fontSize: 12.5, color: token("dim"), py: 1 }}>
+                <Typography sx={{ fontSize: 'var(--fx-type-root-md)', color: token("dim"), py: 1 }}>
                   {users.length === 0
                     ? "No members loaded yet."
                     : needle

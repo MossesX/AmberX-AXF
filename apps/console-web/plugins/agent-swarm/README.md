@@ -93,6 +93,39 @@ A bare "Boss" is the orchestrator and Boss's and Brett's own posts never count. 
 (`limit`, `negative`), and Breakroom → Group chat → **Everyone / About Brett / Negative**. `AXF_SWARM_CHATS_DIR`
 moves the mirror (`off` = none). Uninstall removes it.
 
+## Section owners (crew-sections@1, Nov 12 2026)
+
+Every section that acts on its own has one employee who owns it and posts its key moments in the group chat: **start,
+done, failed, blocked, waiting** (for Brett). Short plain lines, a `report` from the owner naming the section (and the
+build or PR). Nothing is posted while the chat (or that agent's voice) is off; the same line is posted once per 30
+minutes (longer for "still stuck" lines), so a watchdog that sees the same thing every minute says it once.
+
+| Section | Owner | Lives in | Posts |
+|---|---|---|---|
+| Build orchestrator | Gizmo | Build orchestrator `pipeline.mjs` intake | split done, split by rules (check the steps), auto-queued |
+| Dispatcher (launch queue) | Py Pete | `pipeline.mjs` tick | started on an account, session ended, back in Pending, launch failed, idle / stuck |
+| Watchdog (self-check) | Janitor Joey | `pipeline.mjs` selfCheck | what it fixed, accounts it can't use |
+| Shipped manifests | Doc Holli | `pipeline.mjs` afterTick | manifest sent / failed |
+| Account failover | Manny Fest | `deploy/claude-headless.sh` | account hit its limit, run moved / nothing left / console account switched |
+| Landing (auto-land) | Merge Max | Push banner `land/land.mjs` | PR opened, waits on Brett (held, UI Review, uncommitted code), red CI / conflict, blocked, handed to an agent, ready |
+| Merge queue (test gate) | Landin' Lenny | Push banner `land/merge-queue.mjs` | batch testing, landed, kicked out, green batch that couldn't land |
+| Nightly console deploy | Rio React | `deploy/console-nightly.mjs` | deploying, done, failed |
+| AXP backups | Snap Sully | `deploy/axp-backup/backup.sh` | done, failed |
+| Systems check monitor (`health-monitor`) | Ping Paulie | Systems check server (health monitor) | red item, green again, auto-fix started / ran / failed |
+| Notification rules | Earl the Ear | Notifications control server | a rule fired |
+
+- Registry: `agents/sections.json` (default owners, events, where the code is). Brett reassigns in **Settings → Plugins
+  → Agent swarm → Section owners** (or `sections.mjs assign <section> <agent>`); the pick is kept in the data folder
+  (`sections.json`) and Boss says it in the chat. Rules: `web/sections-core.mjs`.
+- Posting: `node framework/cli/crew-say.mjs <section> <event> <text…> [--ref r]` (Node code imports `crewSay` from it;
+  it finds this plugin by capability `service:crew-sections@1`, never by folder, and is a no-op without it). Python
+  plugins use the capability `axf.crew-sections@1` (`say(section, event, text, ref)`, returns at once). `AXF_CREW_SAY=off`
+  turns posting off (the tests of the posting plugins set it).
+- CI: `node framework/cli/crew-say.mjs check` finds every `crewSay(` / `crew_say(` / `crew-say.mjs` call and fails when a
+  section isn't in the registry, has no owner on the crew, posts an event it doesn't declare, or isn't written out.
+- A new section: add it to `agents/sections.json` with an owner, then post with a literal section id.
+- REST: `GET /api/plugins/agent-swarm/sections`, `POST …/sections/assign {section, agent, note?}`.
+
 ## Jobs and the crew (agent jobs, Nov 1 2026)
 
 Recurring kinds of work are **job types** (`job-type@1` assets in `framework/assets/job-type/`, rules
@@ -119,7 +152,7 @@ build steps.
 ## Files
 
 - Code: this folder. Data: `.axf-console/plugins/agent-swarm/` (`state.json`, `runs.json`, `merges.json`,
-  `pilot-*.json`, `worktrees/`); the read-only chat mirror on the hub (`agent-swarm/chats/` in amberx-axf `_data`).
+  `pilot-*.json`, `worktrees/`, `sections.json`, `sections-said.json`); the read-only chat mirror on the hub (`agent-swarm/chats/` in amberx-axf `_data`).
 - Self-test: `node apps/console-web/plugins/agent-swarm/test.mjs`.
 - Remove: `node apps/console-web/plugins/agent-swarm/uninstall.mjs --all`.
 

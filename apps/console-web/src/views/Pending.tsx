@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { BuildOrigin, Button, Icon, PriorityTag, Slot, useRuntime } from '../axf/react';
+import { BuildOrigin, Button, ControlScope, Icon, PriorityTag, Slot, useRuntime } from '../axf/react';
 import * as api from '../api';
 import * as core from '../axf/plan/pending-core.mjs';
 import pricing from '../axf/schemas/model-pricing.json';
@@ -106,11 +106,12 @@ export function Pending() {
         {filter && <button className="fx-chip is-on" onClick={() => setFilter('')}><Icon name="x" size={13} />{core.STATUS_LABEL[filter]} only</button>}
       </div>
 
-      <div className="pd-list" role="list">
+      {/* console-control@1: every pending build is view:pending/grid:pending/row:<id> (focus scrolls to it, press opens nothing: it is a card) */}
+      <ControlScope address="grid:pending"><div className="pd-list" role="list">
         {items.length === 0
           ? <div className="fx-empty">{filter ? `No ${core.STATUS_LABEL[filter].toLowerCase()} builds.` : 'Nothing parked. Add a build below.'}</div>
           : items.map((it) => <PendingRow key={it.id} it={it} busy={busy} act={act} />)}
-      </div>
+      </div></ControlScope>
 
       <AddForm busy={busy} onAdd={(c) => act({ action: 'add', ...c })} />
     </div>
@@ -144,7 +145,7 @@ function PendingRow({ it, busy, act }: { it: PendingItem; busy: boolean; act: (c
     navigator.clipboard?.writeText(brief).then(() => rt.toast(`Brief for "${it.title}" copied`, 'success'), () => rt.toast('Clipboard blocked', 'warning'));
   };
   return (
-    <article className={`pd-card is-${it.status}`} role="listitem" data-fx-ctx-target="axf-pending-item" data-fx-ctx-payload={it.id}>
+    <article className={`pd-card is-${it.status}`} role="listitem" data-axf-target={`row:${it.id}`} data-fx-ctx-target="axf-pending-item" data-fx-ctx-payload={it.id}>
       <div className="pd-card__top">
         <h2 className="pd-card__title">{it.title}<span className="fx-muted fx-small fx-mono"> {it.id}</span></h2>
         <PriorityTag build={it.id} />

@@ -122,7 +122,13 @@ calls: list[tuple[str, dict]] = []
 real_follow = mcp_server.follow_call
 mcp_server.follow_call = lambda op, args: calls.append((op, args)) or ({"ok": True, "on": True, "by": "Brett", "at": "", "clients": 1} if op == "state" else {"ok": True, "shown": True, "message": "opened Plan Studio"})
 r = asyncio.run(cserver.call_tool("console_show", {"target": "plan studio", "highlight": "h1", "say": "here's the plan"}))
-ok(calls[-1] == ("show", {"target": "plan studio", "highlight": "h1", "say": "here's the plan", "to": "recent"}), "console_show → follow-amber show with target, highlight, say")
+ok(calls[-1] == ("show", {"target": "plan studio", "highlight": "h1", "say": "here's the plan", "focus": "", "to": "recent"}), "console_show → follow-amber show with target, highlight, say")
+asyncio.run(cserver.call_tool("console_show", {"target": "build-orchestrator", "focus": "pending"}))
+ok(calls[-1][1]["focus"] == "pending", "console_show passes focus (a tab or a build on the screen)")
+asyncio.run(cserver.call_tool("console_open", {"screen": "build:console-commands-reliable"}))
+ok(csent[-1]["path"] == "build:console-commands-reliable" and csent[-1]["target"] == "console.screens", "console_open takes build:<id> (Console commands opens the orchestrator on it)")
+asyncio.run(cserver.call_tool("console_open", {"screen": "build-orchestrator", "focus": "pending"}))
+ok(csent[-1]["input"] == {"focus": "pending"}, "console_open passes focus")
 asyncio.run(cserver.call_tool("console_follow", {}))
 ok(calls[-1][0] == "state", "console_follow → follow-amber state")
 mcp_server.follow_call = lambda op, args: {"ok": False, "code": "not_implemented", "message": "off"}

@@ -1,0 +1,740 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-enterprise-branding",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:26:12Z",
+ "build": {
+  "id": "enterprise-branding",
+  "title": "Enterprise design + hot-swappable branding: branding engine, design packages, behaviour themes, 700+ generated brand assets, AmberX app + GizmoX console refactor",
+  "profile": "all",
+  "category": "Design & branding",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "only refactor the console, the AmberX app (amberx.amberxai.com), the plugins currently installed and switched on in Plugin switches, and every banner plugin to enterprise quality. New asset types: branding package (extendable template of UI brand assets), icon pack, logo mark, animated logo, behaviour theme, AmberX design package. Branding engine, fully hot-swappable. Assets: 10 light + 10 dark themes, 10 layout, 10 style themes, 10 context menus, 25 dynamically driven toolbars with docs, 25 style packages, 25 nav menus + behaviour, 25 design packages, 250 logos, 250 animated logos, 100 icon packs, branding packages; console plugin to browse them. Branded banners, toolbars, windows, containers, tab groups, dialogs, floating windows. Includes and replaces orchestrator build design-package. Web only; Android twins deferred (hold).",
+  "verbatim": false,
+  "at": "2026-10-27T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Fable",
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Design language brief: audit the console + AmberX (amberx.amberxai.com) chrome; write the enterprise quality bar (type ramp, spacing scale, elevation, radii, motion, density, iconography, logo placement rules) in framework/spec/DESIGN-LANGUAGE.md. Everything later is held to it. First read, through axHub, which console plugins are installed and switched on in Plugin switches right now: that list, plus every banner plugin, is the plugin scope.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T18:08:21.998Z",
+   "doneAt": "2026-10-27T18:28:33.097Z",
+   "actualMin": 20,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "behavior-theme asset type: asset-types.json entry, schema regen, all validators (motion, interaction, windows & dialogs, feedback).",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-27T18:08:21.998Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Behaviour engine core/engines/behavior.ts + fixture spec/fixtures/behavior.json + check-behavior.mts; wired as the fallbacks look tokens already reference.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-27T18:08:21.998Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "design-package asset type + engine core/engines/designpackage.ts: wraps style-theme, color-theme, layout, behavior-theme (+ optional branding); apply = swaps; capture from the current look; fixture + check.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-27T18:08:21.998Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Retire appearance-package: migrate existing packages (amberx, fresh) and setting axf.appearance.package to design packages (old ids keep working).",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-27T18:08:21.998Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5r1",
+   "text": "Read the Opus design-package report (_claude/memory/docs/rebuilds/design-package.md) + code; list keep / change / wire in.",
+   "model": "Fable",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-10-27T18:28:33.097Z",
+   "doneAt": "2026-10-27T18:28:33.166Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5r2",
+   "text": "Review design-package engine + runtime apply / capture / migration (core/engines/designpackage.ts); fix gaps; same type names, data format and setting keys unless the report says why.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T18:28:33.166Z",
+   "doneAt": "2026-10-27T18:28:33.238Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5r3",
+   "text": "Review behaviour engine + CSS (core/engines/behavior.ts); refine motion / interaction mappings.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T18:28:33.238Z",
+   "doneAt": "2026-10-27T18:28:33.306Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5r4",
+   "text": "Wire windows.stack / minimize / snap + snapGrid into the window manager.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T18:28:33.306Z",
+   "doneAt": "2026-10-27T18:28:33.375Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5r5",
+   "text": "Wire feedback.busyCursor + confirmDelete into framework controls.",
+   "model": "Fable",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-27T18:28:33.375Z",
+   "doneAt": "2026-10-27T18:28:33.433Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5r6",
+   "text": "Extend check-design-package.mts; regenerate fixtures; re-bake apps. (Picker + Everything else polish, shots and the differences report fold into the Ship phase.)",
+   "model": "Fable",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-27T18:39:25.205Z",
+   "doneAt": "2026-10-27T18:39:55.597Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "branding@1 asset type: an extendable template of brand slots (wordmark, mark, animated mark, favicon, app icon, splash, banner art, toolbar / window / floating window / dialog / container / tab-group decorations, palette + type hooks, icon pack) with an open slot registry so new slots never need a kernel change.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T18:28:33.433Z",
+   "doneAt": "2026-10-27T18:39:25.047Z",
+   "actualMin": 11,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Branding engine core/engines/branding.ts: resolve a brand into tokens, CSS vars and asset refs; hot swap via rt.swap(\"branding\", id); fixture + check-branding.mts.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T18:39:25.047Z",
+   "doneAt": "2026-10-27T18:39:25.101Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "logo-mark + animated-logo asset types: safe SVG data model (path data only, no script, size caps), animation from motion tokens with reduced-motion fallback; validators + fixture.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T18:39:25.101Z",
+   "doneAt": "2026-10-27T18:39:25.151Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "icon-pack@1 asset type (glyph name → path, grid, stroke/fill rules, fallbacks to framework icons); Icon component reads the active pack; relation to icon-sets.json defined.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T18:39:25.151Z",
+   "doneAt": "2026-10-27T18:39:25.205Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "React layer part 1: banner, toolbar and tab group read branding decorations (logo placement, accent edge, animated mark) from the engine.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T18:39:55.597Z",
+   "doneAt": "2026-10-27T18:44:28.329Z",
+   "actualMin": 5,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "React layer part 2: windows, floating windows, dialogs and containers read branding decorations (header art, mark, accent).",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T18:44:28.329Z",
+   "doneAt": "2026-10-27T18:46:52.502Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s12",
+   "text": "Seeded procedural generators (framework/cli/brand-gen.mjs): logo marks × wordmark styles, animated-logo motion presets, icon-pack style transforms over the base glyph set; deterministic, every output passes the validators.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T18:46:52.502Z",
+   "doneAt": "2026-10-27T18:51:14.262Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s13",
+   "text": "10 light + 10 dark colour themes (contrast-checked, theme-swap CI passes).",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T18:51:14.262Z",
+   "doneAt": "2026-10-27T20:31:42.318Z",
+   "actualMin": 100,
+   "done": true
+  },
+  {
+   "id": "s14",
+   "text": "10 layout themes.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T20:31:42.318Z",
+   "doneAt": "2026-10-27T20:31:42.369Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s15",
+   "text": "10 style themes.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T20:31:42.369Z",
+   "doneAt": "2026-10-27T20:34:14.770Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s16",
+   "text": "10 context-menu assets.",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-27T20:34:14.770Z",
+   "doneAt": "2026-10-27T20:34:14.844Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s17",
+   "text": "Toolbars 1/2: 13 dynamically driven toolbar assets (live providers, badges, widgets).",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T20:34:14.844Z",
+   "doneAt": "2026-10-27T20:42:08.861Z",
+   "actualMin": 8,
+   "done": true
+  },
+  {
+   "id": "s18",
+   "text": "Toolbars 2/2: 12 more + framework/spec/TOOLBARS.md documenting every toolbar and its providers.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T20:42:08.861Z",
+   "doneAt": "2026-10-27T20:42:08.934Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s19",
+   "text": "Style packages 1/2: 13 component style packages (buttons, containers, sliders, dialogs, tabs).",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T20:42:08.934Z",
+   "doneAt": "2026-10-27T21:47:13.405Z",
+   "actualMin": 65,
+   "done": true
+  },
+  {
+   "id": "s20",
+   "text": "Style packages 2/2: 12 more.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T21:47:13.405Z",
+   "doneAt": "2026-10-27T21:47:13.482Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s21",
+   "text": "Navigation 1/2: 13 nav menus + behaviour themes paired with them.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T21:47:13.482Z",
+   "doneAt": "2026-10-27T21:50:08.047Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s22",
+   "text": "Navigation 2/2: 12 more.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T21:50:08.047Z",
+   "doneAt": "2026-10-27T21:50:08.100Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s23",
+   "text": "14 more AmberX design packages (11 exist on main: amberx + 10 from PR #124), built from the themes above, to reach 25.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T21:50:08.100Z",
+   "doneAt": "2026-10-27T21:51:10.874Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s24",
+   "text": "Run the generators 1/2: 250 logos + 250 animated logos for the AmberX Framework and the GizmoX console; size budget + validation.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T21:51:10.874Z",
+   "doneAt": "2026-10-27T21:55:00.852Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s25",
+   "text": "Run the generators 2/2: 100 icon packs; size budget + validation.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T21:55:00.852Z",
+   "doneAt": "2026-10-27T21:55:00.906Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s26",
+   "text": "Branding packages: complete hot-swappable branding packages built from the generated marks, animated marks and icon packs.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T21:55:00.906Z",
+   "doneAt": "2026-10-27T21:56:06.767Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s27",
+   "text": "Brand library console plugin 1/3: view with tabs Logos · Animated logos · Icon packs · Branding packages, virtualised grid, search, filters.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T21:56:06.767Z",
+   "doneAt": "2026-10-30T18:10:38.482Z",
+   "actualMin": 4095,
+   "done": true
+  },
+  {
+   "id": "s28",
+   "text": "Brand library 2/3: preview pane (light/dark, sizes, animation play), Apply / Set as brand, copy id.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T18:10:38.482Z",
+   "doneAt": "2026-10-30T18:10:38.562Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s29",
+   "text": "Brand library 3/3: settings tab, lifecycle panel, menu, tests.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T18:10:38.562Z",
+   "doneAt": "2026-10-30T18:10:38.667Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s30",
+   "text": "Settings → Appearance: Design package + Branding pickers on top, the rest in one collapsible container.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-27T18:08:21.998Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s31",
+   "text": "AmberX app 1/3: banner, toolbar, nav and app menu on the new design language + branding.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T18:10:38.667Z",
+   "doneAt": "2026-10-30T18:10:38.745Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s32",
+   "text": "AmberX app 2/3: windows, floating windows, dialogs, containers, tab groups.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T18:10:38.745Z",
+   "doneAt": "2026-10-30T18:10:38.826Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s33",
+   "text": "AmberX app 3/3: pages (Approvals, Settings, Plugins, voice, monitor) polished; test.mjs green.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T18:10:38.826Z",
+   "doneAt": "2026-10-30T18:10:38.903Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s34",
+   "text": "Console shell refactor: frame, menu bar, nav, page heads, cards, empty states.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T18:10:38.903Z",
+   "doneAt": "2026-10-30T18:10:38.987Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s35",
+   "text": "Console: refactor the enabled plugins 1/3.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T18:10:38.987Z",
+   "doneAt": "2026-10-30T18:10:39.096Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s36",
+   "text": "Console: refactor the enabled plugins 2/3.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T18:10:39.096Z",
+   "doneAt": "2026-10-30T18:10:39.172Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s37",
+   "text": "Console: refactor the enabled plugins 3/3.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T18:10:39.172Z",
+   "doneAt": "2026-10-30T18:10:39.240Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s38",
+   "text": "Console: refactor every banner plugin (activity, build manager, codebase changes, push, approvals, systems check, keys, handoff).",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T18:10:39.240Z",
+   "doneAt": "2026-10-30T18:10:39.325Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s39",
+   "text": "Re-bake the web apps, defaults + manifests name a design package and branding; before/after web shots.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T18:10:39.325Z",
+   "doneAt": "2026-10-30T18:10:39.409Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s40",
+   "text": "CI checks for every new checker, PORTING.md (Android twins deferred), rebuild report, CLAUDE.md status, THREADS.md.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T18:10:39.409Z",
+   "doneAt": "2026-10-30T18:10:39.491Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/refactor-all",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 166,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/166"
+ },
+ "landedCommit": "24227d9669d45952481d09fa97850fc6fd721305",
+ "commits": [
+  "bef908d745ca88ea2064da3e953f70a784b02ead",
+  "a3249c7f47dc98c047b5b7c5154b0974f59e720c",
+  "9a3d03d4957d2b4a461f5d9538cc4c25d2f7dc3c",
+  "e48c23c69a15cc4b9cdf9b07a72c36891de8151a",
+  "b67a10f5f2986e78cc628b98b3e7448168244b18",
+  "0ce0c82d189fefa04a8439879d4c9e192f033e05",
+  "aae1ec2e5437f4ca44cf2a5ecfb27b215977d85e"
+ ],
+ "mergedAt": "2026-10-29T03:49:47Z",
+ "landedAt": "2026-10-29T03:49:46Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/profiles/refactor/matrices.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/core/settings.ts",
+  "apps/amberx-droid/src/axf/libs/README.md",
+  "apps/amberx-droid/src/axf/libs/plugintheme/core.ts",
+  "apps/amberx-droid/src/axf/libs/plugintheme/index.tsx",
+  "apps/amberx-droid/src/axf/libs/plugintheme/library.json",
+  "apps/amberx-droid/src/axf/libs/plugintheme/plugintheme.css",
+  "apps/amberx-droid/src/axf/libs/settings/index.tsx",
+  "apps/amberx-droid/src/axf/react/components/Forms.tsx",
+  "apps/amberx-droid/src/axf/react/index.ts",
+  "apps/amberx-droid/src/axf/ui/axf.css",
+  "apps/amberx-droid/tsconfig.json",
+  "apps/amberx-droid/vite.config.ts",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/core/settings.ts",
+  "apps/axhub-web/src/axf/libs/README.md",
+  "apps/axhub-web/src/axf/libs/approvals/approvals.css",
+  "apps/axhub-web/src/axf/libs/approvals/core.ts",
+  "apps/axhub-web/src/axf/libs/approvals/index.ts",
+  "apps/axhub-web/src/axf/libs/approvals/library.json",
+  "apps/axhub-web/src/axf/libs/approvals/react.tsx",
+  "apps/axhub-web/src/axf/libs/plugintheme/core.ts",
+  "apps/axhub-web/src/axf/libs/plugintheme/index.tsx",
+  "apps/axhub-web/src/axf/libs/plugintheme/library.json",
+  "apps/axhub-web/src/axf/libs/plugintheme/plugintheme.css",
+  "apps/axhub-web/src/axf/libs/settings/index.tsx",
+  "apps/axhub-web/src/axf/react/components/Forms.tsx",
+  "apps/axhub-web/src/axf/react/index.ts",
+  "apps/axhub-web/src/axf/ui/axf.css",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/plugins-menu/test.mts",
+  "apps/console-web/src/axf/libs/README.md",
+  "apps/demo/axf.lock.json",
+  "apps/demo/src/axf/core/settings.ts",
+  "apps/demo/src/axf/react/components/Forms.tsx",
+  "apps/demo/src/axf/react/index.ts",
+  "apps/demo/src/axf/react/windows/WindowHost.tsx",
+  "apps/demo/src/axf/ui/axf.css",
+  "apps/walkthrough-studio/axf.lock.json",
+  "apps/walkthrough-studio/src/axf/core/settings.ts",
+  "apps/walkthrough-studio/src/axf/libs/README.md",
+  "apps/walkthrough-studio/src/axf/libs/approvals/approvals.css",
+  "apps/walkthrough-studio/src/axf/libs/approvals/core.ts",
+  "apps/walkthrough-studio/src/axf/libs/approvals/index.ts",
+  "apps/walkthrough-studio/src/axf/libs/approvals/library.json",
+  "apps/walkthrough-studio/src/axf/libs/approvals/react.tsx",
+  "apps/walkthrough-studio/src/axf/libs/hub/veto.ts",
+  "apps/walkthrough-studio/src/axf/libs/plugintheme/core.ts",
+  "apps/walkthrough-studio/src/axf/libs/plugintheme/index.tsx",
+  "apps/walkthrough-studio/src/axf/libs/plugintheme/library.json",
+  "apps/walkthrough-studio/src/axf/libs/plugintheme/plugintheme.css",
+  "apps/walkthrough-studio/src/axf/libs/settings/index.tsx",
+  "apps/walkthrough-studio/src/axf/react/components/Forms.tsx",
+  "apps/walkthrough-studio/src/axf/react/index.ts",
+  "apps/walkthrough-studio/src/axf/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/axf.lock.json",
+    "apps/walkthrough-studio/src/axf/core/settings.ts",
+    "apps/walkthrough-studio/src/axf/libs/README.md",
+    "apps/walkthrough-studio/src/axf/libs/approvals/approvals.css",
+    "apps/walkthrough-studio/src/axf/libs/approvals/core.ts",
+    "apps/walkthrough-studio/src/axf/libs/approvals/index.ts",
+    "apps/walkthrough-studio/src/axf/libs/approvals/library.json",
+    "apps/walkthrough-studio/src/axf/libs/approvals/react.tsx",
+    "apps/walkthrough-studio/src/axf/libs/hub/veto.ts",
+    "apps/walkthrough-studio/src/axf/libs/plugintheme/core.ts",
+    "apps/walkthrough-studio/src/axf/libs/plugintheme/index.tsx",
+    "apps/walkthrough-studio/src/axf/libs/plugintheme/library.json",
+    "apps/walkthrough-studio/src/axf/libs/plugintheme/plugintheme.css",
+    "apps/walkthrough-studio/src/axf/libs/settings/index.tsx",
+    "apps/walkthrough-studio/src/axf/react/components/Forms.tsx",
+    "apps/walkthrough-studio/src/axf/react/index.ts",
+    "apps/walkthrough-studio/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/core/settings.ts",
+    "apps/axhub-web/src/axf/libs/README.md",
+    "apps/axhub-web/src/axf/libs/approvals/approvals.css",
+    "apps/axhub-web/src/axf/libs/approvals/core.ts",
+    "apps/axhub-web/src/axf/libs/approvals/index.ts",
+    "apps/axhub-web/src/axf/libs/approvals/library.json",
+    "apps/axhub-web/src/axf/libs/approvals/react.tsx",
+    "apps/axhub-web/src/axf/libs/plugintheme/core.ts",
+    "apps/axhub-web/src/axf/libs/plugintheme/index.tsx",
+    "apps/axhub-web/src/axf/libs/plugintheme/library.json",
+    "apps/axhub-web/src/axf/libs/plugintheme/plugintheme.css",
+    "apps/axhub-web/src/axf/libs/settings/index.tsx",
+    "apps/axhub-web/src/axf/react/components/Forms.tsx",
+    "apps/axhub-web/src/axf/react/index.ts",
+    "apps/axhub-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/core/settings.ts",
+    "apps/amberx-droid/src/axf/libs/README.md",
+    "apps/amberx-droid/src/axf/libs/plugintheme/core.ts",
+    "apps/amberx-droid/src/axf/libs/plugintheme/index.tsx",
+    "apps/amberx-droid/src/axf/libs/plugintheme/library.json",
+    "apps/amberx-droid/src/axf/libs/plugintheme/plugintheme.css",
+    "apps/amberx-droid/src/axf/libs/settings/index.tsx",
+    "apps/amberx-droid/src/axf/react/components/Forms.tsx",
+    "apps/amberx-droid/src/axf/react/index.ts",
+    "apps/amberx-droid/src/axf/ui/axf.css",
+    "apps/amberx-droid/tsconfig.json",
+    "apps/amberx-droid/vite.config.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "demo",
+   "files": [
+    "apps/demo/axf.lock.json",
+    "apps/demo/src/axf/core/settings.ts",
+    "apps/demo/src/axf/react/components/Forms.tsx",
+    "apps/demo/src/axf/react/index.ts",
+    "apps/demo/src/axf/react/windows/WindowHost.tsx",
+    "apps/demo/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/axf/libs/README.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/profiles/refactor/matrices.json",
+    "_claude/builds/profiles/refactor/orchestrator.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plugins-menu",
+   "files": [
+    "apps/console-web/plugins/plugins-menu/test.mts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

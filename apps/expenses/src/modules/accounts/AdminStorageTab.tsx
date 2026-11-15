@@ -121,16 +121,16 @@ function Stat({ label, value, hint }: { label: string; value: React.ReactNode; h
   const tile = (
     <Box
       sx={{
-        border: `1px solid ${token("edge")}`,
+        border: `var(--fx-border-w) solid ${token("edge")}`,
         borderRadius: token("radius"),
         px: 1.75,
         py: 1,
         minWidth: 104,
       }}
     >
-      <Typography sx={{ fontSize: 18, fontWeight: 700, fontFamily: token("mono") }}>{value}</Typography>
+      <Typography sx={{ fontSize: 'var(--fx-type-root-xl)', fontWeight: 700, fontFamily: token("mono") }}>{value}</Typography>
       <Typography
-        sx={{ fontSize: 10.5, color: token("dim"), textTransform: "uppercase", letterSpacing: "0.08em" }}
+        sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), textTransform: "uppercase", letterSpacing: "0.08em" }}
       >
         {label}
       </Typography>
@@ -145,24 +145,24 @@ function Stat({ label, value, hint }: { label: string; value: React.ReactNode; h
 function QuotaBar({ used, limitBytes }: { used: number; limitBytes: number }) {
   if (limitBytes <= 0) {
     return (
-      <Typography sx={{ fontSize: 10.5, color: token("dim") }}>no quota</Typography>
+      <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>no quota</Typography>
     );
   }
   const pct = Math.min(100, (used / limitBytes) * 100);
   return (
-    <Stack sx={{ gap: 0.25, minWidth: 120 }}>
+    <Stack sx={{ gap: 'var(--fx-dens-gap-xs)', minWidth: 120 }}>
       <LinearProgress
         variant="determinate"
         value={pct}
         sx={{
           height: 5,
-          borderRadius: 3,
+          borderRadius: 'var(--fx-radius-lg)',
           "& .MuiLinearProgress-bar": {
             background: pct >= 100 ? token("err") : pct >= 80 ? token("warn") : token("accent"),
           },
         }}
       />
-      <Typography sx={{ fontSize: 10, color: token("dim"), fontFamily: token("mono") }}>
+      <Typography sx={{ fontSize: 'var(--fx-type-root-2xs)', color: token("dim"), fontFamily: token("mono") }}>
         {Math.round(pct)}% of {fmtBytes(limitBytes)}
       </Typography>
     </Stack>
@@ -333,15 +333,15 @@ export default function AdminStorageTab() {
   const working = busy !== "none";
 
   return (
-    <Stack sx={{ gap: 1.5, maxWidth: 1100 }}>
-      <Stack direction="row" sx={{ alignItems: "center", gap: 1, flexWrap: "wrap" }}>
-        <Typography sx={{ fontSize: 13.5, fontWeight: 700, flex: 1 }}>Storage</Typography>
+    <Stack sx={{ gap: 'var(--fx-dens-gap-2xl)', maxWidth: 1100 }}>
+      <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-xl)', flexWrap: "wrap" }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 700, flex: 1 }}>Storage</Typography>
         <Button
           size="small"
           variant="outlined"
           disabled={working || !rows}
           onClick={() => void runAggregate()}
-          sx={{ fontSize: 11.5, textTransform: "none" }}
+          sx={{ fontSize: 'var(--fx-type-root-sm)', textTransform: "none" }}
         >
           {busy === "aggregate" ? <CircularProgress size={14} /> : "Break down by root"}
         </Button>
@@ -351,7 +351,7 @@ export default function AdminStorageTab() {
           color="warning"
           disabled={working || !rows}
           onClick={() => void rescanAll()}
-          sx={{ fontSize: 11.5, textTransform: "none" }}
+          sx={{ fontSize: 'var(--fx-type-root-sm)', textTransform: "none" }}
         >
           {busy === "rescan-all" ? <CircularProgress size={14} /> : "Rescan everyone"}
         </Button>
@@ -365,23 +365,23 @@ export default function AdminStorageTab() {
       </Stack>
 
       {error && (
-        <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }} onClose={() => setError(null)}>
+        <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }} onClose={() => setError(null)}>
           {error}
         </Alert>
       )}
       {note && (
-        <Alert severity="success" variant="outlined" sx={{ fontSize: 12 }} onClose={() => setNote(null)}>
+        <Alert severity="success" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }} onClose={() => setNote(null)}>
           {note}
         </Alert>
       )}
 
       {working && rows && (
-        <Stack sx={{ gap: 0.5 }}>
+        <Stack sx={{ gap: 'var(--fx-dens-gap-md)' }}>
           <LinearProgress
             variant="determinate"
             value={rows.length > 0 ? Math.min(100, (done / rows.length) * 100) : 0}
           />
-          <Typography sx={{ fontSize: 11, color: token("dim") }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>
             {busy === "aggregate" ? "read" : "rescanned"} {done} of {rows.length}…
           </Typography>
         </Stack>
@@ -392,7 +392,7 @@ export default function AdminStorageTab() {
           <CircularProgress size={20} />
         ) : (
           !error && (
-            <Typography sx={{ fontSize: 12, color: token("dim") }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
               The roster could not be read, and nothing here is a measurement of anything.
             </Typography>
           )
@@ -400,7 +400,7 @@ export default function AdminStorageTab() {
       ) : (
         <>
           {/* ------------------------------ totals ----------------------------- */}
-          <Stack direction="row" sx={{ gap: 1, flexWrap: "wrap" }}>
+          <Stack direction="row" sx={{ gap: 'var(--fx-dens-gap-xl)', flexWrap: "wrap" }}>
             <Stat label="accounts" value={total} />
             <Stat
               label="measured"
@@ -430,7 +430,7 @@ export default function AdminStorageTab() {
           </Stack>
 
           {neverScanned.length > 0 && (
-            <Typography sx={{ fontSize: 11, color: token("dim") }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>
               {neverScanned.length} member{neverScanned.length === 1 ? " has" : "s have"} never been
               scanned — their bytes are not in the totals above, and nothing here knows how many
               there are.
@@ -439,14 +439,14 @@ export default function AdminStorageTab() {
 
           {/* ---------------------------- by root ------------------------------ */}
           <Box>
-            <Typography sx={{ fontSize: 12.5, fontWeight: 700, mb: 0.5 }}>By root</Typography>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 700, mb: 0.5 }}>By root</Typography>
             {aggregate === null ? (
-              <Typography sx={{ fontSize: 12, color: token("dim") }}>
+              <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
                 The roster read carries each member’s total, not their breakdown — that is one index
                 read per member, so it happens when you ask for it. Press “Break down by root”.
               </Typography>
             ) : aggregate.read === 0 ? (
-              <Typography sx={{ fontSize: 12, color: token("dim") }}>
+              <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
                 Nobody has an index yet, so there is nothing to break down. Rescan somebody first.
               </Typography>
             ) : (
@@ -455,7 +455,7 @@ export default function AdminStorageTab() {
                   <TableHead>
                     <TableRow>
                       {["Root", "Bytes", "Files", "Members"].map((h) => (
-                        <TableCell key={h} sx={{ fontSize: 11.5, color: token("dim") }}>
+                        <TableCell key={h} sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
                           {h}
                         </TableCell>
                       ))}
@@ -466,31 +466,31 @@ export default function AdminStorageTab() {
                       .sort((a, b) => b[1].bytes - a[1].bytes)
                       .map(([id, cell]) => (
                         <TableRow key={id} hover>
-                          <TableCell sx={{ fontSize: 12 }}>
+                          <TableCell sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
                             {rootTitle(id)}
                             {rootShared(id) && (
                               <Typography
                                 component="span"
-                                sx={{ fontSize: 10.5, color: token("warn"), ml: 0.75 }}
+                                sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("warn"), ml: 0.75 }}
                               >
                                 shared — counted for every participant
                               </Typography>
                             )}
                           </TableCell>
-                          <TableCell sx={{ fontSize: 12, fontFamily: token("mono") }}>
+                          <TableCell sx={{ fontSize: 'var(--fx-type-root-sm)', fontFamily: token("mono") }}>
                             {fmtBytes(cell.bytes)}
                           </TableCell>
-                          <TableCell sx={{ fontSize: 12, fontFamily: token("mono") }}>
+                          <TableCell sx={{ fontSize: 'var(--fx-type-root-sm)', fontFamily: token("mono") }}>
                             {cell.files}
                           </TableCell>
-                          <TableCell sx={{ fontSize: 12, fontFamily: token("mono") }}>
+                          <TableCell sx={{ fontSize: 'var(--fx-type-root-sm)', fontFamily: token("mono") }}>
                             {cell.members}
                           </TableCell>
                         </TableRow>
                       ))}
                   </TableBody>
                 </Table>
-                <Typography sx={{ fontSize: 10.5, color: token("dim"), mt: 0.5 }}>
+                <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), mt: 0.5 }}>
                   Read from {aggregate.read} index
                   {aggregate.read === 1 ? "" : "es"}.
                   {aggregate.drifting > 0
@@ -503,11 +503,11 @@ export default function AdminStorageTab() {
 
           {/* -------------------------- top consumers -------------------------- */}
           <Box>
-            <Typography sx={{ fontSize: 12.5, fontWeight: 700, mb: 0.5 }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 700, mb: 0.5 }}>
               Largest footprints
             </Typography>
             {measured.length === 0 ? (
-              <Typography sx={{ fontSize: 12, color: token("dim") }}>
+              <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
                 Nobody has been scanned, so there is nothing to rank. “Rescan everyone” measures the
                 roster; it walks every registered root per member and is deliberately slow.
               </Typography>
@@ -516,7 +516,7 @@ export default function AdminStorageTab() {
                 <TableHead>
                   <TableRow>
                     {["Member", "Owned", "Against quota", "Shared", "Last scan", ""].map((h) => (
-                      <TableCell key={h} sx={{ fontSize: 11.5, color: token("dim") }}>
+                      <TableCell key={h} sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
                         {h}
                       </TableCell>
                     ))}
@@ -531,28 +531,28 @@ export default function AdminStorageTab() {
                     return (
                       <TableRow key={row.username} hover>
                         <TableCell>
-                          <Typography sx={{ fontSize: 12.5, fontWeight: 600 }}>
+                          <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 600 }}>
                             {row.screenname ?? row.username}
                           </Typography>
                           <Typography
-                            sx={{ fontSize: 10.5, color: token("dim"), fontFamily: token("mono") }}
+                            sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), fontFamily: token("mono") }}
                           >
                             {row.username}
                             {row.disabled ? " · disabled" : ""}
                           </Typography>
                         </TableCell>
-                        <TableCell sx={{ fontSize: 12, fontFamily: token("mono") }}>
+                        <TableCell sx={{ fontSize: 'var(--fx-type-root-sm)', fontFamily: token("mono") }}>
                           {fmtBytes(usage?.totalBytes ?? 0)}
                         </TableCell>
                         <TableCell>
                           <QuotaBar used={usage?.totalBytes ?? 0} limitBytes={quotaBytes} />
                         </TableCell>
-                        <TableCell sx={{ fontSize: 12, fontFamily: token("mono"), color: token("dim") }}>
+                        <TableCell sx={{ fontSize: 'var(--fx-type-root-sm)', fontFamily: token("mono"), color: token("dim") }}>
                           {usage && usage.sharedBytes > 0 ? fmtBytes(usage.sharedBytes) : "—"}
                         </TableCell>
                         <TableCell>
-                          <Stack direction="row" sx={{ alignItems: "center", gap: 0.75 }}>
-                            <Typography sx={{ fontSize: 11.5, color: token("dim") }}>
+                          <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-lg)' }}>
+                            <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
                               {age === null ? fmtWhen(usage?.scannedAt) : fmtAge(age)}
                             </Typography>
                             {isStale && (
@@ -565,7 +565,7 @@ export default function AdminStorageTab() {
                                   label="stale"
                                   sx={{
                                     height: 17,
-                                    fontSize: 9.5,
+                                    fontSize: 'var(--fx-type-root-2xs)',
                                     color: token("warn"),
                                     borderColor: token("warn"),
                                   }}
@@ -598,13 +598,13 @@ export default function AdminStorageTab() {
               </Table>
             )}
             {measured.length > TOP_N && (
-              <Typography sx={{ fontSize: 10.5, color: token("dim"), mt: 0.5 }}>
+              <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), mt: 0.5 }}>
                 The {TOP_N} largest of {measured.length} measured members. The totals above are over
                 all of them, not just these.
               </Typography>
             )}
             {total > ROSTER_LIMIT && (
-              <Typography sx={{ fontSize: 10.5, color: token("warn"), mt: 0.5 }}>
+              <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("warn"), mt: 0.5 }}>
                 This page reads the first {ROSTER_LIMIT} accounts of {total} — the route’s maximum.
                 Nothing on this tab says anything about the remaining {total - ROSTER_LIMIT}.
               </Typography>

@@ -380,43 +380,6 @@
             "order": 23
           },
           {
-            "id": "layouts",
-            "label": "Layouts",
-            "icon": "layout",
-            "order": 24,
-            "items": [
-              {
-                "id": "next",
-                "label": "Next layout",
-                "icon": "layout",
-                "action": "swap:layout:next",
-                "shortcut": "Alt+L"
-              },
-              {
-                "id": "s1",
-                "separator": true
-              },
-              {
-                "id": "focus-top",
-                "label": "Focus top",
-                "icon": "layout",
-                "action": "swap:layout:focus-top"
-              },
-              {
-                "id": "classic-ide",
-                "label": "Classic IDE",
-                "icon": "layout",
-                "action": "swap:layout:classic-ide"
-              },
-              {
-                "id": "studio-dock",
-                "label": "Studio dock",
-                "icon": "layout",
-                "action": "swap:layout:studio-dock"
-              }
-            ]
-          },
-          {
             "id": "s2",
             "separator": true,
             "order": 30
@@ -569,34 +532,27 @@
             "items": [
               {
                 "id": "next-color",
-                "label": "Next color theme",
+                "label": "Next colour theme",
                 "icon": "palette",
                 "action": "swap:color-theme:next",
                 "shortcut": "Alt+C",
                 "order": 10
               },
               {
-                "id": "next-style",
-                "label": "Next style theme",
-                "icon": "type",
-                "action": "swap:style-theme:next",
-                "shortcut": "Alt+S",
+                "id": "next-skin",
+                "label": "Next skin",
+                "icon": "sparkles",
+                "action": "skin.use:next",
+                "requires": "assets.swap",
                 "order": 11
               },
               {
-                "id": "next-layout",
-                "label": "Next layout",
-                "icon": "layout",
-                "action": "swap:layout:next",
-                "order": 12
-              },
-              {
-                "id": "next-design",
-                "label": "Next design package",
+                "id": "prev-skin",
+                "label": "Previous skin",
                 "icon": "sparkles",
-                "action": "design.package:next",
+                "action": "skin.use:prev",
                 "requires": "assets.swap",
-                "order": 13
+                "order": 12
               },
               {
                 "id": "s1",
@@ -628,35 +584,6 @@
             "action": "banner.widgets",
             "requires": "assets.swap",
             "order": 21
-          },
-          {
-            "id": "spacing",
-            "label": "Spacing",
-            "icon": "sliders",
-            "order": 21,
-            "items": [
-              {
-                "id": "tight",
-                "label": "Super tight",
-                "icon": "minus",
-                "action": "spacing:tight",
-                "requires": "assets.swap"
-              },
-              {
-                "id": "compact",
-                "label": "Compact",
-                "icon": "menu",
-                "action": "spacing:compact",
-                "requires": "assets.swap"
-              },
-              {
-                "id": "regular",
-                "label": "Regular",
-                "icon": "list",
-                "action": "spacing:regular",
-                "requires": "assets.swap"
-              }
-            ]
           },
           {
             "id": "appearance",

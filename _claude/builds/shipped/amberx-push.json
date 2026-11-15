@@ -1,0 +1,165 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-amberx-push",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:04Z",
+ "build": {
+  "id": "amberx-push",
+  "title": "All axHub push notifications come from the AmberX Android app",
+  "profile": "all",
+  "category": "AmberX app",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "'From now on all push notifications for approval or anything from axHub comes from amberx android app.' AmberX's WatchService already alerts on hub approvals (incl. merge approvals). Add the Dev Console's alerts (builds, CI, deploys, systems check; alert@1 via GET <console>/api/alerts) to AmberX's watcher, and make Patches and the AXHub app stay quiet while AmberX is installed (Brett approved the small AXHub app change despite the Android hold).",
+  "verbatim": false,
+  "at": "2026-10-28T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "AmberX WatchService: console alerts (errors/warnings once per change, cleared when resolved), with a setting for the console address",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-28T14:42:12.883Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Patches + AXHub app stay quiet while AmberX (ai.amberx.droid) is installed; manifest <queries>; settings text",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-10-28T14:42:12.883Z",
+   "doneAt": "2026-10-28T14:42:12.969Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Docs/rules, CI green, merge approval",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-10-28T14:42:12.969Z",
+   "doneAt": "2026-10-28T14:52:00.523Z",
+   "actualMin": 10,
+   "done": true
+  }
+ ],
+ "branch": "claude/amberx-push",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 154,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/154"
+ },
+ "landedCommit": "9cada4e27bbd22d33cd194ec77ba8becd7737781",
+ "commits": [
+  "282b8c42c964aedf299fdd3533b85688ba51f4fc",
+  "6ed06e361eaeebe6e1aab874fefe398b92ccc7b3"
+ ],
+ "mergedAt": "2026-10-28T14:51:50Z",
+ "landedAt": "2026-10-28T14:51:50Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/memory/STATUS.md",
+  "_claude/memory/decisions.md",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/HubRules.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+  "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/HubRulesTest.java",
+  "apps/amberx-droid/src/native.ts",
+  "apps/amberx-droid/src/plugins/monitor/web/core.ts",
+  "apps/amberx-droid/src/plugins/monitor/web/index.tsx",
+  "apps/amberx-droid/test.mjs",
+  "apps/axhub-android/app/src/main/AndroidManifest.xml",
+  "apps/axhub-android/app/src/main/kotlin/ai/amberx/axf/axhubandroid/watch/ApprovalWatch.kt",
+  "apps/patches/app/src/main/AndroidManifest.xml",
+  "apps/patches/app/src/main/kotlin/ai/amberx/axf/patches/AppModule.kt",
+  "apps/patches/app/src/main/kotlin/ai/amberx/axf/patches/watch/PatchesWatch.kt"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/HubRules.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+    "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/HubRulesTest.java",
+    "apps/amberx-droid/src/native.ts",
+    "apps/amberx-droid/test.mjs"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "patches",
+   "files": [
+    "apps/patches/app/src/main/AndroidManifest.xml",
+    "apps/patches/app/src/main/kotlin/ai/amberx/axf/patches/AppModule.kt",
+    "apps/patches/app/src/main/kotlin/ai/amberx/axf/patches/watch/PatchesWatch.kt"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md",
+    "_claude/memory/decisions.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "monitor",
+   "files": [
+    "apps/amberx-droid/src/plugins/monitor/web/core.ts",
+    "apps/amberx-droid/src/plugins/monitor/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-android",
+   "files": [
+    "apps/axhub-android/app/src/main/AndroidManifest.xml",
+    "apps/axhub-android/app/src/main/kotlin/ai/amberx/axf/axhubandroid/watch/ApprovalWatch.kt"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/profiles/refactor/orchestrator.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

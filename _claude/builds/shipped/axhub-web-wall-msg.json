@@ -1,0 +1,77 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-axhub-web-wall-msg",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:33:22Z",
+ "build": {
+  "id": "axhub-web-wall-msg",
+  "title": "axhub-web-wall-msg",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "axhub-web-wall-msg",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/axhub-web-wall-msg",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "18c21915a92bc76bd733e2dd0d9d0c149eab34b4",
+ "commits": [
+  "ca6955c285de74009a23724515c78bde2a6d9048",
+  "69fa08647cf880617db7516c0624d0485f4a47d6"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-23T22:59:06Z",
+ "files": [
+  "apps/axhub-web/deploy/install.sh",
+  "framework/plan/pending.json"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/deploy/install.sh"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

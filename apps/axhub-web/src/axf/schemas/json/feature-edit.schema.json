@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/feature-edit.schema.json",
+  "title": "feature-edit@1 (feature-ledger@1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "feature",
+    "summary"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "feature-edit@1"
+    },
+    "id": {
+      "type": "string"
+    },
+    "feature": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "enum": [
+        "changed",
+        "fixed",
+        "removed",
+        "renamed",
+        "moved",
+        "reverted",
+        "restored"
+      ]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "build": {
+      "type": "string"
+    },
+    "profile": {
+      "type": "string"
+    },
+    "pr": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "repo": {
+      "type": "string"
+    },
+    "commit": {
+      "type": "string"
+    },
+    "prompt": {
+      "type": "string"
+    },
+    "passage": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "agent": {
+      "type": "string"
+    },
+    "session": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "planned",
+        "queued",
+        "building",
+        "in-pr",
+        "merged",
+        "live",
+        "cancelled",
+        "removed"
+      ]
+    },
+    "at": {
+      "type": "string"
+    },
+    "mergedAt": {
+      "type": "string"
+    },
+    "liveAt": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "at"
+        ],
+        "properties": {
+          "at": {
+            "type": "string"
+          },
+          "guessed": {
+            "type": "boolean"
+          },
+          "deploy": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "source": {
+      "enum": [
+        "live",
+        "import",
+        "manual"
+      ]
+    },
+    "createdAt": {
+      "type": "string"
+    },
+    "updatedAt": {
+      "type": "string"
+    },
+    "rev": {
+      "type": "integer",
+      "minimum": 1
+    }
+  }
+}

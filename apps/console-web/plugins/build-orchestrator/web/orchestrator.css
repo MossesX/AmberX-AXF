@@ -39,6 +39,8 @@ button.oc-model { cursor: pointer }
 .pl-col { min-width: 0 }
 .pl-acct.is-off { opacity: var(--fx-opacity-muted) }
 .pd-card.is-running { border-color: var(--fx-accent) }
+/* the build a console command or search asked for (Nov 11 2026): marked until another one is asked for */
+.pd-card.is-focused { border-color: var(--fx-accent); box-shadow: 0 0 0 var(--fx-border-w) var(--fx-accent) }
 
 /* Queue / Pending cards list their steps (Nov 10 2026): layout only */
 .pl-steps { margin: 0; padding-left: var(--fx-dens-gap-xl); display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }

@@ -1,0 +1,203 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-layout-repeating-slots",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:29Z",
+ "build": {
+  "id": "layout-repeating-slots",
+  "title": "Layouts: repeating slots",
+  "profile": "all",
+  "category": "Framework",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Many-slots with style (tabs/cards/grid/stacked) + fallback slot; pages declare data sets. Web + Android + fixtures.",
+  "verbatim": false,
+  "at": "2026-10-30T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Fable"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Schema",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s2",
+   "text": "Web engine + renderer",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "2026-11-03T13:57:06.541Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Android engine + Compose",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s4",
+   "text": "Fixtures + docs",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "claude/layout-repeating-slots",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 191,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/191"
+ },
+ "landedCommit": "86657f72109eb308179841a29b84b237554643b9",
+ "commits": [
+  "ef27c17da886eb862e5bdd5e2ab304359a55b465",
+  "cdb3ce200002102656a4d6f8486878e53d203fdc",
+  "fa0a9e047190d592e84b9d5aa47b4819c2642b09",
+  "35b2274e6661d47f92b90c9dde56691db112fbb8",
+  "9833b4b2df70ea47b73d8f1aafd618423ca57857"
+ ],
+ "mergedAt": "2026-10-31T07:26:36Z",
+ "landedAt": "2026-10-31T07:01:34Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/memory/STATUS.md",
+  "framework/android/axf-kernel/src/main/kotlin/ai/amberx/axf/kernel/asset/AssetValidator.kt",
+  "framework/android/axf-kernel/src/main/kotlin/ai/amberx/axf/kernel/asset/Models.kt",
+  "framework/android/axf-kernel/src/main/kotlin/ai/amberx/axf/kernel/engine/RepeatEngine.kt",
+  "framework/android/axf-kernel/src/test/kotlin/ai/amberx/axf/kernel/ConformanceTest.kt",
+  "framework/android/axf-ui/src/main/kotlin/ai/amberx/axf/ui/components/Repeat.kt",
+  "framework/cli/build-engine.mjs",
+  "framework/core/engines/repeat.ts",
+  "framework/core/index.ts",
+  "framework/core/types.ts",
+  "framework/core/validate.ts",
+  "framework/react/components/Repeat.tsx",
+  "framework/react/index.ts",
+  "framework/schemas/asset-types.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/fixtures/layout-repeat.json",
+  "framework/spec/fixtures/validation.json",
+  "framework/spec/gen-fixtures.mts",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "framework",
+   "id": "android",
+   "files": [
+    "framework/android/axf-kernel/src/main/kotlin/ai/amberx/axf/kernel/asset/AssetValidator.kt",
+    "framework/android/axf-kernel/src/main/kotlin/ai/amberx/axf/kernel/asset/Models.kt",
+    "framework/android/axf-kernel/src/main/kotlin/ai/amberx/axf/kernel/engine/RepeatEngine.kt",
+    "framework/android/axf-kernel/src/test/kotlin/ai/amberx/axf/kernel/ConformanceTest.kt",
+    "framework/android/axf-ui/src/main/kotlin/ai/amberx/axf/ui/components/Repeat.kt"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/repeat.ts",
+    "framework/core/index.ts",
+    "framework/core/types.ts",
+    "framework/core/validate.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/fixtures/layout-repeat.json",
+    "framework/spec/fixtures/validation.json",
+    "framework/spec/gen-fixtures.mts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/Repeat.tsx",
+    "framework/react/index.ts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/build-engine.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/asset-types.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": [
+  "s1: Schema",
+  "s3: Android engine + Compose",
+  "s4: Fixtures + docs"
+ ]
+}

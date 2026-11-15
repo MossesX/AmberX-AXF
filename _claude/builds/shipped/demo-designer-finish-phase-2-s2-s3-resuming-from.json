@@ -1,0 +1,197 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-demo-designer-finish-phase-2-s2-s3-resuming-from",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:15Z",
+ "build": {
+  "id": "demo-designer-finish-phase-2-s2-s3-resuming-from",
+  "title": "Demo Designer: finish phase 2 (s2, s3), resuming from the existing branch",
+  "profile": "all",
+  "category": "",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Is the demo designer done yet? ... Yes, queue it urgent. Use Hulu's API credits now, burn them up because it resets tomorrow.",
+  "verbatim": true,
+  "at": "2026-11-10T03:10:30.744Z",
+  "source": "",
+  "by": "demo-designer-finish-phase-2-s2-s3-resuming-from",
+  "addenda": []
+ },
+ "brief": "# Build: demo-designer-finish-phase-2-s2-s3-resuming-from\n\n## Brett said (verbatim)\nAt: 2026-11-10T03:10:30.744Z\n> Is the demo designer done yet? ... Yes, queue it urgent. Use Hulu's API credits now, burn them up because it resets tomorrow.\n\n## What to build\nContinue build \"Demo Designer: finish phase 2 (s2, s3), resuming from the existing branch\" (demo-designer-finish-phase-2-s2-s3-resuming-from) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 03:10):\n\"Is the demo designer done yet? ... Yes, queue it urgent. Use Hulu's API credits now, burn them up because it resets tomorrow.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/demo-designer-finish-phase-2-s2-s3-resuming-from\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.\n[ ] s2 (~30 min) Is the demo designer done yet? ... Yes, queue it urgent. Use Hulu's API credits now, burn them up because it resets tomorrow.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/demo-designer-finish-phase-2-s2-s3-resuming-from.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/demo-designer-finish-phase-2-s2-s3-resuming-from.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step demo-designer-finish-phase-2-s2-s3-resuming-from <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link demo-designer-finish-phase-2-s2-s3-resuming-from --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step demo-designer-finish-phase-2-s2-s3-resuming-from <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note demo-designer-finish-phase-2-s2-s3-resuming-from \"…\"); the build goes back to Pending for Brett.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-demo-designer-finish-phase-2-s2-s3-resuming-from--rhonda",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-10T03:37:12.186Z",
+   "endedAt": "2026-11-10T04:05:02.928Z",
+   "exit": 0,
+   "costUsd": 3.0455
+  },
+  {
+   "session": "axf-demo-designer-finish-phase-2-s2-s3-resuming-from--lenny",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-10T03:44:06.876Z",
+   "endedAt": "2026-11-10T04:03:44.272Z",
+   "exit": 0,
+   "costUsd": 1.3928
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-10T03:37:12.186Z",
+   "doneAt": "2026-11-10T04:03:12.609Z",
+   "actualMin": 26,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Is the demo designer done yet? ... Yes, queue it urgent. Use Hulu's API credits now, burn them up because it resets tomorrow.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-10T04:03:12.609Z",
+   "doneAt": "2026-11-10T04:05:01.206Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Tests green, report _claude/builds/reports/demo-designer-finish-phase-2-s2-s3-resuming-from.md, THREADS row, commit, push, PR",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-10T04:03:12.609Z",
+   "doneAt": "2026-11-10T04:05:01.206Z",
+   "actualMin": 2,
+   "done": true
+  }
+ ],
+ "branch": "claude/demo-designer-finish-phase-2-s2-s3-resuming-from",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 438,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/438"
+ },
+ "landedCommit": "f3c3158bca4d5cb2d1382aa458968ba645d33655",
+ "commits": [
+  "d4735fdbabc2ff7080fbba8eaf5c5f076578c4ac",
+  "fe8955fef4e33664584c9bf904bdcb2b05a85a64"
+ ],
+ "mergedAt": "2026-11-10T04:26:11Z",
+ "landedAt": "2026-11-10T04:26:08Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/demo-designer-finish-phase-2-s2-s3-resuming-from.md",
+  "apps/console-web/plugins/agent-voice/plugin.json",
+  "apps/console-web/plugins/agent-voice/server/__init__.py",
+  "apps/console-web/plugins/agent-voice/test.py",
+  "apps/console-web/plugins/demonstration-designer/README.md",
+  "apps/console-web/plugins/demonstration-designer/plugin.json",
+  "apps/console-web/plugins/demonstration-designer/server/__init__.py",
+  "apps/console-web/plugins/demonstration-designer/server_test.py",
+  "apps/console-web/plugins/demonstration-designer/test.mjs",
+  "apps/console-web/plugins/demonstration-designer/web/model.ts",
+  "apps/console-web/plugins/demonstration-designer/web/page.tsx",
+  "apps/console-web/plugins/demonstration-designer/web/settings.tsx",
+  "apps/console-web/plugins/demonstration-designer/web/stage.ts"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "demonstration-designer",
+   "files": [
+    "apps/console-web/plugins/demonstration-designer/README.md",
+    "apps/console-web/plugins/demonstration-designer/plugin.json",
+    "apps/console-web/plugins/demonstration-designer/server/__init__.py",
+    "apps/console-web/plugins/demonstration-designer/server_test.py",
+    "apps/console-web/plugins/demonstration-designer/test.mjs",
+    "apps/console-web/plugins/demonstration-designer/web/model.ts",
+    "apps/console-web/plugins/demonstration-designer/web/page.tsx",
+    "apps/console-web/plugins/demonstration-designer/web/settings.tsx",
+    "apps/console-web/plugins/demonstration-designer/web/stage.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-voice",
+   "files": [
+    "apps/console-web/plugins/agent-voice/plugin.json",
+    "apps/console-web/plugins/agent-voice/server/__init__.py",
+    "apps/console-web/plugins/agent-voice/test.py"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/demo-designer-finish-phase-2-s2-s3-resuming-from.md"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "demonstration-designer/test.mjs: 22 checks (was 21); the new one runs server_test.py (11 checks: no provider → why + 409, narrators as agent:<id>, audio/mpeg, speed clamp, text limit, provider refusal passes through, device voice and bad ids refused, provider withdrawn). It skips with a message wher",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "agent-voice/test.py: 41 checks (4 new: service provided, narrators, say matches /tts and its cache, permission refused).",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "tsc --noEmit clean; check-theme, check-controls, check-toolbars, check-chrome-assets clean; plugin-lifecycle check clean for both plugins; plugin-commands.mjs check 67/67; plugins.mjs --check clean.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  }
+ ],
+ "uiReview": [
+  {
+   "id": "r-20261110-8f523a7c",
+   "name": "Demonstration Designer: cloud narrator voice",
+   "status": "waiting",
+   "group": "g-20261110-04539726",
+   "url": "/review/r-20261110-8f523a7c"
+  }
+ ],
+ "cost": {
+  "usd": 4.4383,
+  "estimated": false,
+  "tokens": {
+   "input": 244,
+   "output": 2233,
+   "cacheRead": 8162431,
+   "cacheWrite": 201331
+  }
+ },
+ "report": "_claude/builds/reports/demo-designer-finish-phase-2-s2-s3-resuming-from.md",
+ "open": []
+}

@@ -1,0 +1,754 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-gizmo-rebuild-fable",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:38Z",
+ "build": {
+  "id": "gizmo-rebuild-fable",
+  "title": "Gizmo rebuild on Fable: talk mode in the background, listener controls, one mic owner",
+  "profile": "all",
+  "category": "AmberX > Gizmo",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "I want to use Fable on the highest possible thinking level on ultra code to rebuild Gizmo. Go ahead. I need more powerful controls over the background listeners for AmberX. I've had problems with the microphone... it's crashing with other apps, and sometimes it'll just do that sound over and over.",
+  "verbatim": true,
+  "at": "2026-11-06T22:31:04.507Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": [
+   {
+    "text": "I'm thinking maybe we should take Assistant out of AmberX since we just have Gizmo... there's a lot of bloat.",
+    "at": "",
+    "source": "",
+    "verbatim": true
+   },
+   {
+    "text": "It should be the other way around. Gizmo should control everything; the assistant should run off of Gizmo.",
+    "at": "",
+    "source": "",
+    "verbatim": true
+   },
+   {
+    "text": "Gizmo needs to be powerful, hardcore. He's got to be my full Claude client. He's gonna replace the Claude app on my phone. I'm not gonna use the Claude app no more. It's all gonna be Gizmo.",
+    "at": "",
+    "source": "",
+    "verbatim": true
+   },
+   {
+    "text": "I don't really need chat history. I've already got the session logs in AmberX. Don't put that in Gizmo, that'd be dumb.",
+    "at": "",
+    "source": "",
+    "verbatim": true
+   },
+   {
+    "text": "When I say replace Claude on my phone, I mean my interface, my chat, my input interface. Just the chat part.",
+    "at": "",
+    "source": "",
+    "verbatim": true
+   },
+   {
+    "text": "I don't want you sending everything every time we exchange words. I don't want to resend the whole conversation... Everything I say is gonna go to the orchestrator first. Everything from Gizmo goes through the console. No AI. Until I send it to Claude.",
+    "at": "",
+    "source": "",
+    "verbatim": true
+   },
+   {
+    "text": "I want to be able to search them. I don't want them to be read as memory every time the project loads, but I do want a database created that is searchable.",
+    "at": "",
+    "source": "",
+    "verbatim": true
+   },
+   {
+    "text": "\"Go ahead.\" (make it a real RAG, search by meaning)",
+    "at": "",
+    "source": "",
+    "verbatim": true
+   }
+  ]
+ },
+ "brief": "# Build: gizmo-rebuild-fable\n\n## Brett said (verbatim)\n\"I want to use Fable on the highest possible thinking level on ultra code to rebuild Gizmo.\" \"Go ahead.\"\nAlso: \"I need more powerful controls over the background listeners for AmberX. I've had problems with the microphone... it's crashing with other apps, and sometimes it'll just do that sound over and over.\"\n\nThinking: MAX (AXF_THINKING=max / --effort max). Model Fable for every step.\n\nRebuild Gizmo (AmberX companion plugin) properly on Fable:\n1. Review the existing companion plugin + shared claude-session lib + assistant-chat-mode fast path; keep what is solid, rebuild what isn't. Report what changed and why.\n2. Talk mode works with the screen off / app backgrounded (foreground service), transcript in the chat, stop from the notification (replaces the stopped gizmo-voice run; reuse /root/axf-builds/gizmo-voice if it has useful work).\n3. Mic / background listener fixes and controls: proper Android audio focus (yield the mic to calls and other apps, resume after), no restart loop replaying the start sound (backoff, max retries, silent restarts), one owner of the mic at a time. Listener control panel in AmberX + console: list every listener, on/off, auto-pause on calls/other apps, sound on/off, retry limits, status and last error, REST/MCP/CLI.\n4. Fix the message box sitting under the bottom nav at phone width.\n5. Tests, APK via CI, README, report, screenshots to UI Review, PR to the merge queue. Do NOT land directly. Tick pending items gizmo-voice and gizmo-companion where covered.\n\nNothing removed. One session, lean chain. Stay out of notes/tasks, badges and notification-panel code (other builds running).\n## Addendum 1 (Brett, voice)\n\"I'm thinking maybe we should take Assistant out of AmberX since we just have Gizmo... there's a lot of bloat.\"\n- Move what Gizmo needs from ai-assistant (server chat route, provider, turn router) into the companion plugin / shared claude-session lib.\n- Then remove the old Assistant plugin from AmberX (UI, nav, server part, bundle). Gizmo is the only assistant in AmberX. Console's own assistant is not affected unless it only depends on the AmberX copy; check and report.\n- Report bundle size before/after.\n\n## Addendum 2 (Brett, voice) - overrides Addendum 1's direction\n\"It should be the other way around. Gizmo should control everything; the assistant should run off of Gizmo.\"\n- Gizmo owns the chat engine: server route, provider, turn router, tools, sessions.\n- Any remaining assistant (console assistant, AmberX) becomes a thin client running on Gizmo's engine, no own copy of the logic.\n- Remove the duplicated AmberX Assistant bloat once it runs on Gizmo.\n\n## Addendum 3 (Brett, voice) - the goal\n\"Gizmo needs to be powerful, hardcore. He's got to be my full Claude client. He's gonna replace the Claude app on my phone. I'm not gonna use the Claude app no more. It's all gonna be Gizmo.\"\n- Target: full Claude app replacement on Brett's phone. Parity list to plan against: voice mode (hands-free, interrupt, screen off), chats with history/search, projects with instructions + files, memory, connectors/MCP (axHub services), web search + fetch, file/photo/camera attach, artifacts/docs, model + thinking picker, timers/alarms/calendar/location on the phone, notifications.\n- This run: write the parity plan as a pending item with ~10-min steps (what exists, what's missing, order), build the core (engine ownership, voice screen-off, mic fixes) first, and as much of the rest as fits. Remaining steps stay in the plan for the next run. Don't pad; no extras beyond the list.\n\n## Addendum 4 (Brett, voice)\n\"I don't really need chat history. I've already got the session logs in AmberX. Don't put that in Gizmo, that'd be dumb.\"\n- Drop chat history/search from the parity list. Gizmo uses AmberX's existing session logs (link to them), no second history store.\n\n## Addendum 5 (Brett, voice) - narrows Addendum 3\n\"When I say replace Claude on my phone, I mean my interface, my chat, my input interface. Just the chat part.\"\n- Scope = the chat/input experience only: talking and typing to Claude (voice mode hands-free, interrupt, screen off; text input; attachments; streaming replies; tool use through axHub/MCP; model + thinking picker).\n- Not in scope: chat history, projects, memory UI, artifacts, phone extras. Drop them from the parity plan.\n\n## Addendum 6 (Brett, voice) - orchestrator-first, no resending\n\"I don't want you sending everything every time we exchange words. I don't want to resend the whole conversation... Everything I say is gonna go to the orchestrator first. Everything from Gizmo goes through the console. No AI. Until I send it to Claude.\"\n- Gizmo input goes to the console/orchestrator first, plain code, zero tokens. Never resend the whole conversation; send Claude only what's needed.\n- Console holds Gizmo input in a sorted, manageable queue (reorder, edit, group/split into threads, delete). Nothing goes to Claude until Brett sends it (one item, a selection, or a thread).\n- Settings: Gizmo plugin carries a settings-interface ASSET (every settings interface is an asset) that attaches to the orchestrator's settings interface as its own Gizmo tab (Gizmo-orchestrator integration settings). Gizmo has hooks to open it. Gizmo's existing AmberX settings stay as they are.\n- API/MCP/CLI for the queue and settings.\n\n## Addendum 7 (Brett, voice) - searchable transcript database\n\"I want to be able to search them. I don't want them to be read as memory every time the project loads, but I do want a database created that is searchable.\"\n- Build on PR #365 (ui-review-notify-audio: session recording + transcripts); don't rebuild it.\n- One searchable database of every session transcript (full-text, plain code; optional local embeddings later): who, when, session, build, text with timestamps, link to the audio at that moment.\n- NEVER loaded into context on project start or by default. Only queried on demand.\n- Search tool for Gizmo/Claude (MCP + REST + CLI: transcripts_search, transcript_get) returning short snippets with links; search UI in the console recorder page.\n\n## Addendum 8 (Brett, voice) - make the transcript search full RAG\n\"Go ahead.\" (make it a real RAG, search by meaning)\n- Install Ollama on the VPS with a small local embedding model (e.g. nomic-embed-text, ~0.5 GB RAM, CPU only). Zero Claude tokens.\n- Index every transcript in chunks with embeddings in the background after each session (niced, one at a time); backfill existing transcripts.\n- Hybrid search: meaning (vectors) + keywords, ranked; results = short snippets with session, time and audio link.\n- Still never auto-loaded into context; only on demand through transcripts_search.\n",
+ "models": [
+  "Fable"
+ ],
+ "accounts": [
+  "account-1"
+ ],
+ "runs": [
+  {
+   "session": "axf-gizmo-rebuild-fable--paulie",
+   "account": "account-1",
+   "model": "Fable",
+   "startedAt": "2026-11-06T22:24:47.869Z",
+   "endedAt": "2026-11-07T00:10:46.002Z",
+   "exit": 0,
+   "costUsd": 261.7916
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Review the companion plugin, lib claude-session and the mic/listener code; register the build; report skeleton",
+   "model": "Fable",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-06T22:24:47.869Z",
+   "doneAt": "2026-11-06T22:31:15.436Z",
+   "actualMin": 6,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "framework/libs/listeners (listener@1): listener model, restart backoff + max retries, sound rule, yield reasons, device state doc; check-listeners.mts + fixture; baked into console-web and amberx-droid",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-06T22:31:15.436Z",
+   "doneAt": "2026-11-06T22:41:45.430Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "AmberX native: ListenerRules.java twin + JUnit; MicGuard one-owner arbiter; AudioFocusGuard (yield to calls/other apps, resume after); WatchService classic loop + one-shot backoff, max retries, silent restarts (no start-tone replay); per-listener policy from prefs",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-06T22:41:45.430Z",
+   "doneAt": "2026-11-06T22:54:45.826Z",
+   "actualMin": 13,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "AmberX native: TalkService foreground service (mic type) for Gizmo talk mode with the screen off: recognizer turns, notification with Stop + last line, audio focus, one mic owner; plugin methods talkStart/talkStop/talkStatus + talk events; ListenerRegistry status/set; manifest",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-06T22:54:45.826Z",
+   "doneAt": "2026-11-06T22:54:46.837Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "AmberX web: native.ts talk + listeners API (browser fallback); companion talk.ts rebuilt on the service (background turns, transcript in the chat, stop from the notification); Chat.tsx message box clear of the bottom nav at phone width",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-06T22:54:46.837Z",
+   "doneAt": "2026-11-06T22:58:32.010Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "AmberX plugin listeners: control panel view (every listener, on/off, auto-pause on calls / other apps, sound, retry limit, status, last error) + settings; device state published to the hub (amberx-axf/_data/listeners)",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-06T22:58:32.010Z",
+   "doneAt": "2026-11-06T23:05:46.328Z",
+   "actualMin": 7,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Console plugin amberx-listeners: page + settings, server routes over the hub data (devices, listeners, set policy), plugin-commands (REST/MCP/CLI), help, install/uninstall, test.py",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-06T23:05:46.328Z",
+   "doneAt": "2026-11-06T23:13:51.298Z",
+   "actualMin": 8,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Tests + checks (AmberX test.mjs, tsc both apps, check-theme/controls/toolbars/chrome, JUnit), READMEs, report, screenshots to UI Review, PR to the merge queue, tick gizmo-voice + gizmo-companion s3/s8 where covered, THREADS.md",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-06T23:13:51.298Z",
+   "doneAt": "2026-11-06T23:23:36.068Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Addendum 1: Move what Gizmo needs from ai-assistant (server chat route, provider, turn router) into the companion plugin / shared claude-session lib. Then remove the old Assistant plugin from AmberX (UI, nav, server part, bundle). Gizmo is the only assistant in AmberX. Console's own assistant is not affected un",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:23:36.068Z",
+   "doneAt": "2026-11-07T00:48:10.097Z",
+   "actualMin": 85,
+   "done": true
+  },
+  {
+   "id": "s9-1",
+   "text": "Move what Gizmo needs from ai-assistant (server chat route, provider, turn router) into the companion plugin / shared claude-session lib.",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:13:51.298Z",
+   "doneAt": "2026-11-06T23:23:36.068Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s9-2",
+   "text": "Then remove the old Assistant plugin from AmberX (UI, nav, server part, bundle). Gizmo is the only assistant in AmberX. Console's own assistant is not affected unless it only depends on the AmberX copy; check and report.",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:13:51.298Z",
+   "doneAt": "2026-11-06T23:23:36.068Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s9-3",
+   "text": "Report bundle size before/after.",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:13:51.298Z",
+   "doneAt": "2026-11-06T23:23:36.068Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "Addendum 2: Gizmo owns the chat engine: server route, provider, turn router, tools, sessions. Any remaining assistant (console assistant, AmberX) becomes a thin client running on Gizmo's engine, no own copy of the logic. Remove the duplicated AmberX Assistant bloat once it runs on Gizmo.",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:23:36.068Z",
+   "doneAt": "2026-11-07T00:48:10.097Z",
+   "actualMin": 85,
+   "done": true
+  },
+  {
+   "id": "s10-1",
+   "text": "Gizmo owns the chat engine: server route, provider, turn router, tools, sessions.",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:13:51.298Z",
+   "doneAt": "2026-11-06T23:23:36.068Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s10-2",
+   "text": "Any remaining assistant (console assistant, AmberX) becomes a thin client running on Gizmo's engine, no own copy of the logic.",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:13:51.298Z",
+   "doneAt": "2026-11-06T23:23:36.068Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s10-3",
+   "text": "Remove the duplicated AmberX Assistant bloat once it runs on Gizmo.",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:13:51.298Z",
+   "doneAt": "2026-11-06T23:23:36.068Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "Addendum 3: Target: full Claude app replacement on Brett's phone. Parity list to plan against: voice mode (hands-free, interrupt, screen off), chats with history/search, projects with instructions + files, memory, connectors/MCP (axHub services), web search + fetch, file/photo/camera attach, artifacts/docs, mod",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:23:36.068Z",
+   "doneAt": "2026-11-07T00:48:10.097Z",
+   "actualMin": 85,
+   "done": true
+  },
+  {
+   "id": "s11-1",
+   "text": "Target: full Claude app replacement on Brett's phone. Parity list to plan against: voice mode (hands-free, interrupt, screen off), chats with history/search, projects with instructions + files, memory, connectors/MCP (axHub services), web search + fetch, file/photo/camera attach, artifacts/docs, model + thinking picker, timers/alarms/calendar/location on the phone, notifications.",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:13:51.298Z",
+   "doneAt": "2026-11-06T23:23:36.068Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s11-2",
+   "text": "This run: write the parity plan as a pending item with ~10-min steps (what exists, what's missing, order), build the core (engine ownership, voice screen-off, mic fixes) first, and as much of the rest as fits. Remaining steps stay in the plan for the next run. Don't pad; no extras beyond the list.",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:13:51.298Z",
+   "doneAt": "2026-11-06T23:23:36.068Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s12",
+   "text": "Addendum 4: Drop chat history/search from the parity list. Gizmo uses AmberX's existing session logs (link to them), no second history store.",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:23:36.068Z",
+   "doneAt": "2026-11-07T00:48:10.097Z",
+   "actualMin": 85,
+   "done": true
+  },
+  {
+   "id": "s12-1",
+   "text": "Drop chat history/search from the parity list. Gizmo uses AmberX's existing session logs (link to them), no second history store.",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:13:51.298Z",
+   "doneAt": "2026-11-06T23:23:36.068Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s13",
+   "text": "Addendum 5: Scope = the chat/input experience only: talking and typing to Claude (voice mode hands-free, interrupt, screen off; text input; attachments; streaming replies; tool use through axHub/MCP; model + thinking picker). Not in scope: chat history, projects, memory UI, artifacts, phone extras. Drop them fr",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:23:36.068Z",
+   "doneAt": "2026-11-07T00:48:10.097Z",
+   "actualMin": 85,
+   "done": true
+  },
+  {
+   "id": "s13-1",
+   "text": "Scope = the chat/input experience only: talking and typing to Claude (voice mode hands-free, interrupt, screen off; text input; attachments; streaming replies; tool use through axHub/MCP; model + thinking picker).",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:13:51.298Z",
+   "doneAt": "2026-11-06T23:23:36.068Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s13-2",
+   "text": "Not in scope: chat history, projects, memory UI, artifacts, phone extras. Drop them from the parity plan.",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:13:51.298Z",
+   "doneAt": "2026-11-06T23:23:36.068Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s14",
+   "text": "Addendum 6: Gizmo input goes to the console/orchestrator first, plain code, zero tokens. Never resend the whole conversation; send Claude only what's needed. Console holds Gizmo input in a sorted, manageable queue (reorder, edit, group/split into threads, delete). Nothing goes to Claude until Brett sends it (on",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:23:36.068Z",
+   "doneAt": "2026-11-07T00:48:10.097Z",
+   "actualMin": 85,
+   "done": true
+  },
+  {
+   "id": "s14-1",
+   "text": "Gizmo input goes to the console/orchestrator first, plain code, zero tokens. Never resend the whole conversation; send Claude only what's needed.",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:13:51.298Z",
+   "doneAt": "2026-11-06T23:23:36.068Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s14-2",
+   "text": "Console holds Gizmo input in a sorted, manageable queue (reorder, edit, group/split into threads, delete). Nothing goes to Claude until Brett sends it (one item, a selection, or a thread).",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:13:51.298Z",
+   "doneAt": "2026-11-06T23:23:36.068Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s14-3",
+   "text": "Settings: Gizmo plugin carries a settings-interface ASSET (every settings interface is an asset) that attaches to the orchestrator's settings interface as its own Gizmo tab (Gizmo-orchestrator integration settings). Gizmo has hooks to open it. Gizmo's existing AmberX settings stay as they are.",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:13:51.298Z",
+   "doneAt": "2026-11-06T23:23:36.068Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s14-4",
+   "text": "API/MCP/CLI for the queue and settings.",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:13:51.298Z",
+   "doneAt": "2026-11-06T23:23:36.068Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s15",
+   "text": "Addendum 7: Build on PR #365 (ui-review-notify-audio: session recording + transcripts); don't rebuild it. One searchable database of every session transcript (full-text, plain code; optional local embeddings later): who, when, session, build, text with timestamps, link to the audio at that moment. NEVER loaded",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:23:36.068Z",
+   "doneAt": "2026-11-07T00:48:10.097Z",
+   "actualMin": 85,
+   "done": true
+  },
+  {
+   "id": "s15-1",
+   "text": "Build on PR #365 (ui-review-notify-audio: session recording + transcripts); don't rebuild it.",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:13:51.298Z",
+   "doneAt": "2026-11-06T23:23:36.068Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s15-2",
+   "text": "One searchable database of every session transcript (full-text, plain code; optional local embeddings later): who, when, session, build, text with timestamps, link to the audio at that moment.",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:13:51.298Z",
+   "doneAt": "2026-11-06T23:23:36.068Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s15-3",
+   "text": "NEVER loaded into context on project start or by default. Only queried on demand.",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:13:51.298Z",
+   "doneAt": "2026-11-06T23:23:36.068Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s15-4",
+   "text": "Search tool for Gizmo/Claude (MCP + REST + CLI: transcripts_search, transcript_get) returning short snippets with links; search UI in the console recorder page.",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:13:51.298Z",
+   "doneAt": "2026-11-06T23:23:36.068Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s16",
+   "text": "Addendum 8: Install Ollama on the VPS with a small local embedding model (e.g. nomic-embed-text, ~0.5 GB RAM, CPU only). Zero Claude tokens. Index every transcript in chunks with embeddings in the background after each session (niced, one at a time); backfill existing transcripts. Hybrid search: meaning (vector",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:23:36.068Z",
+   "doneAt": "2026-11-07T00:48:10.097Z",
+   "actualMin": 85,
+   "done": true
+  },
+  {
+   "id": "s16-1",
+   "text": "Install Ollama on the VPS with a small local embedding model (e.g. nomic-embed-text, ~0.5 GB RAM, CPU only). Zero Claude tokens.",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:13:51.298Z",
+   "doneAt": "2026-11-06T23:23:36.068Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s16-2",
+   "text": "Index every transcript in chunks with embeddings in the background after each session (niced, one at a time); backfill existing transcripts.",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:13:51.298Z",
+   "doneAt": "2026-11-06T23:23:36.068Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s16-3",
+   "text": "Hybrid search: meaning (vectors) + keywords, ranked; results = short snippets with session, time and audio link.",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:13:51.298Z",
+   "doneAt": "2026-11-06T23:23:36.068Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s16-4",
+   "text": "Still never auto-loaded into context; only on demand through transcripts_search.",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T23:13:51.298Z",
+   "doneAt": "2026-11-06T23:23:36.068Z",
+   "actualMin": 10,
+   "done": true
+  }
+ ],
+ "branch": "claude/gizmo-rebuild-fable",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 368,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/368"
+ },
+ "landedCommit": "d4d84c6fe5b3a5652854d850fdd2d5cfa1560d31",
+ "commits": [
+  "19e7f9f592eba18c076cefa43aca780042fdd617",
+  "b2c1afd4a9c96fa689188de9032a56c537d268de",
+  "02a652388d2a3f0eb491ac73aa90db2fdef41191",
+  "52b73606310fdd79abb23d096e72a0cc90f70483",
+  "aa7bf98dca8cd1bca30351127079d1c233482d7b",
+  "55164678528fb64e38777d3affb30cf301c13437",
+  "b8b2dc778a55ca1f3888cb2252206350312b6175",
+  "777f720bd3a756f95dc47a28b377a5db1e8b9a25",
+  "286e24ae3644098affe2bf6cc222ba9c7b148858",
+  "853f3aa7ed675700696a080f79d27020c92f0992",
+  "38a716d32fce6e2434305c602cc85aafee01d8f7",
+  "91a420364bde98a5b867fb3d1941312a81654e84"
+ ],
+ "mergedAt": "2026-11-07T04:54:28Z",
+ "landedAt": "2026-11-07T04:54:27Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/reports/gizmo-rebuild-fable.md",
+  "_claude/builds/reports/gizmo-rebuild-fable/shots/console-listeners-desktop.png",
+  "_claude/builds/reports/gizmo-rebuild-fable/shots/console-listeners-phone.png",
+  "_claude/builds/reports/gizmo-rebuild-fable/shots/gizmo-chat-desktop.png",
+  "_claude/builds/reports/gizmo-rebuild-fable/shots/gizmo-chat-phone.png",
+  "_claude/builds/reports/gizmo-rebuild-fable/shots/listeners-desktop.png",
+  "_claude/builds/reports/gizmo-rebuild-fable/shots/listeners-phone.png",
+  "apps/amberx-droid/android/app/src/main/AndroidManifest.xml",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AudioFocusGuard.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ListenerRegistry.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ListenerRules.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/MicGuard.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/TalkService.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+  "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/ListenerRulesTest.java",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/libs/listeners/cases.json",
+  "apps/amberx-droid/src/axf/libs/listeners/core.ts",
+  "apps/amberx-droid/src/axf/libs/listeners/index.ts",
+  "apps/amberx-droid/src/axf/libs/listeners/library.json",
+  "apps/amberx-droid/src/axf/libs/listeners/registry.json",
+  "apps/amberx-droid/src/native.ts",
+  "apps/amberx-droid/src/plugins/companion/web/Chat.tsx",
+  "apps/amberx-droid/src/plugins/companion/web/companion.css",
+  "apps/amberx-droid/src/plugins/companion/web/talk.ts",
+  "apps/amberx-droid/src/plugins/listeners/README.md",
+  "apps/amberx-droid/src/plugins/listeners/plugin.json",
+  "apps/amberx-droid/src/plugins/listeners/web/core.ts",
+  "apps/amberx-droid/src/plugins/listeners/web/index.tsx",
+  "apps/amberx-droid/src/plugins/listeners/web/listeners.css",
+  "apps/amberx-droid/test.mjs",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/README.md",
+  "apps/console-web/plugins/amberx-listeners/core.mjs",
+  "apps/console-web/plugins/amberx-listeners/help.json",
+  "apps/console-web/plugins/amberx-listeners/hooks.mjs",
+  "apps/console-web/plugins/amberx-listeners/install.mjs",
+  "apps/console-web/plugins/amberx-listeners/listeners.mjs",
+  "apps/console-web/plugins/amberx-listeners/plugin.json",
+  "apps/console-web/plugins/amberx-listeners/server/__init__.py",
+  "apps/console-web/plugins/amberx-listeners/test.mjs",
+  "apps/console-web/plugins/amberx-listeners/test.py",
+  "apps/console-web/plugins/amberx-listeners/uninstall.mjs",
+  "apps/console-web/plugins/amberx-listeners/web/amberx-listeners.css",
+  "apps/console-web/plugins/amberx-listeners/web/index.tsx",
+  "apps/console-web/plugins/amberx-listeners/web/menu.ts",
+  "apps/console-web/src/axf/libs/listeners/cases.json",
+  "apps/console-web/src/axf/libs/listeners/core.ts",
+  "apps/console-web/src/axf/libs/listeners/index.ts",
+  "apps/console-web/src/axf/libs/listeners/library.json",
+  "apps/console-web/src/axf/libs/listeners/registry.json",
+  "framework/libs/listeners/cases.json",
+  "framework/libs/listeners/core.ts",
+  "framework/libs/listeners/index.ts",
+  "framework/libs/listeners/library.json",
+  "framework/libs/listeners/registry.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-listeners.mts"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/android/app/src/main/AndroidManifest.xml",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AudioFocusGuard.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ListenerRegistry.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ListenerRules.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/MicGuard.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/TalkService.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+    "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/ListenerRulesTest.java",
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/libs/listeners/cases.json",
+    "apps/amberx-droid/src/axf/libs/listeners/core.ts",
+    "apps/amberx-droid/src/axf/libs/listeners/index.ts",
+    "apps/amberx-droid/src/axf/libs/listeners/library.json",
+    "apps/amberx-droid/src/axf/libs/listeners/registry.json",
+    "apps/amberx-droid/src/native.ts",
+    "apps/amberx-droid/test.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "amberx-listeners",
+   "files": [
+    "apps/console-web/plugins/amberx-listeners/core.mjs",
+    "apps/console-web/plugins/amberx-listeners/help.json",
+    "apps/console-web/plugins/amberx-listeners/hooks.mjs",
+    "apps/console-web/plugins/amberx-listeners/install.mjs",
+    "apps/console-web/plugins/amberx-listeners/listeners.mjs",
+    "apps/console-web/plugins/amberx-listeners/plugin.json",
+    "apps/console-web/plugins/amberx-listeners/server/__init__.py",
+    "apps/console-web/plugins/amberx-listeners/test.mjs",
+    "apps/console-web/plugins/amberx-listeners/test.py",
+    "apps/console-web/plugins/amberx-listeners/uninstall.mjs",
+    "apps/console-web/plugins/amberx-listeners/web/amberx-listeners.css",
+    "apps/console-web/plugins/amberx-listeners/web/index.tsx",
+    "apps/console-web/plugins/amberx-listeners/web/menu.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/plugins/README.md",
+    "apps/console-web/src/axf/libs/listeners/cases.json",
+    "apps/console-web/src/axf/libs/listeners/core.ts",
+    "apps/console-web/src/axf/libs/listeners/index.ts",
+    "apps/console-web/src/axf/libs/listeners/library.json",
+    "apps/console-web/src/axf/libs/listeners/registry.json"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/gizmo-rebuild-fable.md",
+    "_claude/builds/reports/gizmo-rebuild-fable/shots/console-listeners-desktop.png",
+    "_claude/builds/reports/gizmo-rebuild-fable/shots/console-listeners-phone.png",
+    "_claude/builds/reports/gizmo-rebuild-fable/shots/gizmo-chat-desktop.png",
+    "_claude/builds/reports/gizmo-rebuild-fable/shots/gizmo-chat-phone.png",
+    "_claude/builds/reports/gizmo-rebuild-fable/shots/listeners-desktop.png",
+    "_claude/builds/reports/gizmo-rebuild-fable/shots/listeners-phone.png"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "listeners",
+   "files": [
+    "apps/amberx-droid/src/plugins/listeners/README.md",
+    "apps/amberx-droid/src/plugins/listeners/plugin.json",
+    "apps/amberx-droid/src/plugins/listeners/web/core.ts",
+    "apps/amberx-droid/src/plugins/listeners/web/index.tsx",
+    "apps/amberx-droid/src/plugins/listeners/web/listeners.css"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/listeners/cases.json",
+    "framework/libs/listeners/core.ts",
+    "framework/libs/listeners/index.ts",
+    "framework/libs/listeners/library.json",
+    "framework/libs/listeners/registry.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "companion",
+   "files": [
+    "apps/amberx-droid/src/plugins/companion/web/Chat.tsx",
+    "apps/amberx-droid/src/plugins/companion/web/companion.css",
+    "apps/amberx-droid/src/plugins/companion/web/talk.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-listeners.mts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261106-f106adf9",
+   "name": "Gizmo rebuild: talk mode with the screen off, Listeners control panel (AmberX + console)",
+   "status": "approved",
+   "group": "g-20261106-704afbf2",
+   "url": "/review/r-20261106-f106adf9"
+  }
+ ],
+ "cost": {
+  "usd": 261.7916,
+  "estimated": false,
+  "tokens": {
+   "input": 3296,
+   "output": 2343,
+   "cacheRead": 57091771,
+   "cacheWrite": 669018
+  }
+ },
+ "report": "_claude/builds/reports/gizmo-rebuild-fable.md",
+ "open": []
+}

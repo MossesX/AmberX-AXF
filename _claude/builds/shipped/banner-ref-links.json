@@ -1,0 +1,420 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-banner-ref-links",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:43Z",
+ "build": {
+  "id": "banner-ref-links",
+  "title": "Banner reference links: tap a mention to open what it refers to",
+  "profile": "all",
+  "category": "Framework",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Brett (Nov 3 2026, voice): in banner entries (in progress, merged, live, build/status banners, Codebase changes), text that mentions a real thing (screen, settings page, plugin, dialog, toolbar, build, PR, agent, file) becomes a hook: tap = peek card, double-tap = open + highlight, long-press = context menu. ref@1 resolver from the console registries, explicit 'touches:' refs win. Applied in the generic banner item renderer; banner-pack (#251), banner-editor (#254), banners-one untouched. Agent: Ping Paulie (headless worktree session, not on main). Branch claude/banner-ref-links.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-banner-ref-links",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-03T20:45:16.247Z",
+   "endedAt": "2026-11-03T21:46:13.156Z",
+   "exit": 0,
+   "costUsd": 9.789
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "s1 ref@1 resolver: registries (screens, settings, plugins, dialogs, toolbars, menus, builds, PRs, agents, files), exact/alias matching, explicit touches: refs win",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T20:45:16.247Z",
+   "doneAt": "2026-11-03T20:56:54.797Z",
+   "actualMin": 12,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "s2 Interaction: dotted underline (tokens); tap = peek card, double-tap = open + highlight, long-press/right-click = context menu",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T20:56:54.797Z",
+   "doneAt": "2026-11-03T21:19:53.668Z",
+   "actualMin": 23,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "s3 Every section: In progress, Merged, Ready, Live, build/status banners, Codebase changes; existing part opens live one ('being changed by <build>'), new part opens its UI Review item",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T21:19:53.668Z",
+   "doneAt": "2026-11-03T21:19:56.666Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "s4 Apply through the generic banner item renderer (no banner-pack/banner-editor/banners-one edits; overlap noted)",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T21:19:56.666Z",
+   "doneAt": "2026-11-03T21:19:59.441Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "s5 Commands once -> REST + MCP + CLI; tests; phone + desktop shots; UI Review; report; THREADS; PR",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T21:19:59.441Z",
+   "doneAt": "2026-11-03T21:45:20.551Z",
+   "actualMin": 25,
+   "done": true
+  }
+ ],
+ "branch": "claude/banner-ref-links",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 287,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/287"
+ },
+ "landedCommit": "55d94e1194a319ec8b6535969ca5d0c313fe60a9",
+ "commits": [
+  "fb6975372a1b23fce98245aab87a44be892d5d1b",
+  "804f00b1a02ceb793446551a500ce506fac54ae7",
+  "f834711695e4481e06d9734832937b4dbf4faf32",
+  "869086a96bb2b782826fca4805eaa6a99e385c5d",
+  "4df69fd90f72e016bcc453d373d22ebd8ad7b431",
+  "e0136fbb04451d974286323c09043db2af03e503",
+  "c24eae903aa82fc358e8e001447370c527dd736c",
+  "2857e1bf8e41966688980f5d496e5e541ce8996d",
+  "94401e7a55732e2563205b69dbe99015c4c76fed"
+ ],
+ "mergedAt": "2026-11-04T04:52:23Z",
+ "landedAt": "2026-11-04T04:15:30Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/origins.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/big-dog/orchestrator.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/current/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/reports/banner-ref-links.md",
+  "_claude/builds/reports/banner-ref-links/shots/after/ref-links-menu-desktop.png",
+  "_claude/builds/reports/banner-ref-links/shots/after/ref-links-menu-phone.png",
+  "_claude/builds/reports/banner-ref-links/shots/after/ref-links-peek-desktop.png",
+  "_claude/builds/reports/banner-ref-links/shots/after/ref-links-peek-phone.png",
+  "_claude/builds/reports/banner-ref-links/shots/after/ref-links-try-desktop.png",
+  "_claude/builds/reports/banner-ref-links/shots/after/ref-links-try-phone.png",
+  "_claude/builds/reports/claude-settings.md",
+  "_claude/builds/reports/claude-settings/shots/after/claude-builds-talking-desktop.png",
+  "_claude/builds/reports/claude-settings/shots/after/claude-builds-talking-phone.png",
+  "_claude/builds/reports/claude-settings/shots/after/claude-owner-only-refused-desktop.png",
+  "_claude/builds/reports/claude-settings/shots/after/claude-owner-only-refused-phone.png",
+  "_claude/builds/reports/claude-settings/shots/after/claude-settings-tab-desktop.png",
+  "_claude/builds/reports/claude-settings/shots/after/claude-settings-tab-phone.png",
+  "_claude/builds/reports/claude-settings/shots/shots.json",
+  "_claude/builds/reports/follow-amber.md",
+  "_claude/builds/reports/follow-amber/shots.json",
+  "_claude/builds/reports/follow-amber/shots/after/follow-amber-approval-desktop.png",
+  "_claude/builds/reports/follow-amber/shots/after/follow-amber-approval-frame-desktop.png",
+  "_claude/builds/reports/follow-amber/shots/after/follow-amber-approval-frame-phone.png",
+  "_claude/builds/reports/follow-amber/shots/after/follow-amber-approval-phone.png",
+  "_claude/builds/reports/follow-amber/shots/after/follow-amber-settings-desktop.png",
+  "_claude/builds/reports/follow-amber/shots/after/follow-amber-settings-phone.png",
+  "_claude/builds/reports/follow-amber/shots/after/follow-amber-show-desktop.png",
+  "_claude/builds/reports/follow-amber/shots/after/follow-amber-show-phone.png",
+  "_claude/builds/reports/smart-menus.md",
+  "_claude/builds/reports/smart-menus/shots/after/app-menu-builds-desktop.png",
+  "_claude/builds/reports/smart-menus/shots/after/app-menu-builds-phone.png",
+  "_claude/builds/reports/smart-menus/shots/after/context-menu-desktop.png",
+  "_claude/builds/reports/smart-menus/shots/after/context-menu-phone.png",
+  "_claude/builds/reports/smart-menus/shots/after/menus-look-desktop.png",
+  "_claude/builds/reports/smart-menus/shots/after/menus-look-phone.png",
+  "_claude/builds/reports/smart-menus/shots/after/menus-sections-desktop.png",
+  "_claude/builds/reports/smart-menus/shots/after/menus-sections-phone.png",
+  "_claude/builds/reports/window-resize-fix.md",
+  "_claude/builds/reports/window-resize-fix/terminal-resize-after-desktop.png",
+  "_claude/builds/reports/window-resize-fix/terminal-resize-after-phone.png",
+  "_claude/builds/reports/window-resize-fix/terminal-resize-before-desktop.png",
+  "_claude/builds/reports/window-resize-fix/terminal-resize-before-phone.png",
+  "_claude/builds/reports/window-resize-fix/terminal-settings-dialog-after-desktop.png",
+  "_claude/builds/reports/window-resize-fix/terminal-settings-dialog-after-phone.png",
+  "_claude/builds/reports/window-resize-fix/terminal-settings-dialog-before-desktop.png",
+  "_claude/builds/reports/window-resize-fix/terminal-settings-dialog-before-phone.png",
+  "_claude/builds/store.json",
+  "_claude/memory/STATUS.md",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/build-manager/web/ui.tsx",
+  "apps/console-web/plugins/codebase-changes/web/ui.tsx",
+  "apps/console-web/plugins/main-build-status/web/index.tsx",
+  "apps/console-web/plugins/push-banner/web/ui.tsx",
+  "apps/console-web/plugins/ref-links/help.json",
+  "apps/console-web/plugins/ref-links/hooks.mjs",
+  "apps/console-web/plugins/ref-links/install.mjs",
+  "apps/console-web/plugins/ref-links/plugin.json",
+  "apps/console-web/plugins/ref-links/refs.mjs",
+  "apps/console-web/plugins/ref-links/server/__init__.py",
+  "apps/console-web/plugins/ref-links/server/test_ref_links.py",
+  "apps/console-web/plugins/ref-links/test.mjs",
+  "apps/console-web/plugins/ref-links/uninstall.mjs",
+  "apps/console-web/plugins/ref-links/web/index.tsx",
+  "apps/console-web/plugins/ref-links/web/menu.ts",
+  "apps/console-web/plugins/ref-links/web/ref-links.css",
+  "apps/console-web/src/axf/core/engines/actions.ts",
+  "apps/console-web/src/axf/core/engines/refs.d.mts",
+  "apps/console-web/src/axf/core/engines/refs.mjs",
+  "apps/console-web/src/axf/react/components/RefText.tsx",
+  "apps/console-web/src/axf/react/index.ts",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/walkthrough-studio/src/assets/help/framework-drafts.json",
+  "framework/assets/help/framework-drafts.json",
+  "framework/core/engines/actions.ts",
+  "framework/core/engines/refs.d.mts",
+  "framework/core/engines/refs.mjs",
+  "framework/react/components/RefText.tsx",
+  "framework/react/index.ts",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-refs.mjs",
+  "framework/spec/fixtures/refs.json",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/origins.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/big-dog/orchestrator.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/current/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/reports/banner-ref-links.md",
+    "_claude/builds/reports/banner-ref-links/shots/after/ref-links-menu-desktop.png",
+    "_claude/builds/reports/banner-ref-links/shots/after/ref-links-menu-phone.png",
+    "_claude/builds/reports/banner-ref-links/shots/after/ref-links-peek-desktop.png",
+    "_claude/builds/reports/banner-ref-links/shots/after/ref-links-peek-phone.png",
+    "_claude/builds/reports/banner-ref-links/shots/after/ref-links-try-desktop.png",
+    "_claude/builds/reports/banner-ref-links/shots/after/ref-links-try-phone.png",
+    "_claude/builds/reports/claude-settings.md",
+    "_claude/builds/reports/claude-settings/shots/after/claude-builds-talking-desktop.png",
+    "_claude/builds/reports/claude-settings/shots/after/claude-builds-talking-phone.png",
+    "_claude/builds/reports/claude-settings/shots/after/claude-owner-only-refused-desktop.png",
+    "_claude/builds/reports/claude-settings/shots/after/claude-owner-only-refused-phone.png",
+    "_claude/builds/reports/claude-settings/shots/after/claude-settings-tab-desktop.png",
+    "_claude/builds/reports/claude-settings/shots/after/claude-settings-tab-phone.png",
+    "_claude/builds/reports/claude-settings/shots/shots.json",
+    "_claude/builds/reports/follow-amber.md",
+    "_claude/builds/reports/follow-amber/shots.json",
+    "_claude/builds/reports/follow-amber/shots/after/follow-amber-approval-desktop.png",
+    "_claude/builds/reports/follow-amber/shots/after/follow-amber-approval-frame-desktop.png",
+    "_claude/builds/reports/follow-amber/shots/after/follow-amber-approval-frame-phone.png",
+    "_claude/builds/reports/follow-amber/shots/after/follow-amber-approval-phone.png",
+    "_claude/builds/reports/follow-amber/shots/after/follow-amber-settings-desktop.png",
+    "_claude/builds/reports/follow-amber/shots/after/follow-amber-settings-phone.png",
+    "_claude/builds/reports/follow-amber/shots/after/follow-amber-show-desktop.png",
+    "_claude/builds/reports/follow-amber/shots/after/follow-amber-show-phone.png",
+    "_claude/builds/reports/smart-menus.md",
+    "_claude/builds/reports/smart-menus/shots/after/app-menu-builds-desktop.png",
+    "_claude/builds/reports/smart-menus/shots/after/app-menu-builds-phone.png",
+    "_claude/builds/reports/smart-menus/shots/after/context-menu-desktop.png",
+    "_claude/builds/reports/smart-menus/shots/after/context-menu-phone.png",
+    "_claude/builds/reports/smart-menus/shots/after/menus-look-desktop.png",
+    "_claude/builds/reports/smart-menus/shots/after/menus-look-phone.png",
+    "_claude/builds/reports/smart-menus/shots/after/menus-sections-desktop.png",
+    "_claude/builds/reports/smart-menus/shots/after/menus-sections-phone.png",
+    "_claude/builds/reports/window-resize-fix.md",
+    "_claude/builds/reports/window-resize-fix/terminal-resize-after-desktop.png",
+    "_claude/builds/reports/window-resize-fix/terminal-resize-after-phone.png",
+    "_claude/builds/reports/window-resize-fix/terminal-resize-before-desktop.png",
+    "_claude/builds/reports/window-resize-fix/terminal-resize-before-phone.png",
+    "_claude/builds/reports/window-resize-fix/terminal-settings-dialog-after-desktop.png",
+    "_claude/builds/reports/window-resize-fix/terminal-settings-dialog-after-phone.png",
+    "_claude/builds/reports/window-resize-fix/terminal-settings-dialog-before-desktop.png",
+    "_claude/builds/reports/window-resize-fix/terminal-settings-dialog-before-phone.png",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ref-links",
+   "files": [
+    "apps/console-web/plugins/ref-links/help.json",
+    "apps/console-web/plugins/ref-links/hooks.mjs",
+    "apps/console-web/plugins/ref-links/install.mjs",
+    "apps/console-web/plugins/ref-links/plugin.json",
+    "apps/console-web/plugins/ref-links/refs.mjs",
+    "apps/console-web/plugins/ref-links/server/__init__.py",
+    "apps/console-web/plugins/ref-links/server/test_ref_links.py",
+    "apps/console-web/plugins/ref-links/test.mjs",
+    "apps/console-web/plugins/ref-links/uninstall.mjs",
+    "apps/console-web/plugins/ref-links/web/index.tsx",
+    "apps/console-web/plugins/ref-links/web/menu.ts",
+    "apps/console-web/plugins/ref-links/web/ref-links.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/axf/core/engines/actions.ts",
+    "apps/console-web/src/axf/core/engines/refs.d.mts",
+    "apps/console-web/src/axf/core/engines/refs.mjs",
+    "apps/console-web/src/axf/react/components/RefText.tsx",
+    "apps/console-web/src/axf/react/index.ts",
+    "apps/console-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/actions.ts",
+    "framework/core/engines/refs.d.mts",
+    "framework/core/engines/refs.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-refs.mjs",
+    "framework/spec/fixtures/refs.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/RefText.tsx",
+    "framework/react/index.ts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-manager",
+   "files": [
+    "apps/console-web/plugins/build-manager/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "codebase-changes",
+   "files": [
+    "apps/console-web/plugins/codebase-changes/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "main-build-status",
+   "files": [
+    "apps/console-web/plugins/main-build-status/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/src/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261103-1ad2ede3",
+   "name": "Banner reference links: tap, double-tap, hold a mention",
+   "status": "approved",
+   "group": "g-20261103-0d5de365",
+   "url": "/review/r-20261103-1ad2ede3"
+  }
+ ],
+ "cost": {
+  "usd": 9.789,
+  "estimated": false,
+  "tokens": {
+   "input": 314,
+   "output": 2166,
+   "cacheRead": 27197265,
+   "cacheWrite": 261012
+  }
+ },
+ "report": "_claude/builds/reports/banner-ref-links.md",
+ "open": [
+  "Swarm agents (Breakroom roster) are not targets: the swarm exposes no capability for its roster, and plugins may not read each other's folders. Agents come from axf.agents@1 only. A small `agents@1` read on the swarm would add them.",
+  "Builds declare touches only in text (`touches:` in detail, steps or notes). The orchestrator has no `touches` field yet; `refTargetFromBuild` already reads `b.touches` when one appears.",
+  "Show in UI Review opens UI Review (or the item's URL when the item carries one), not a specific item: UI Review has no deep link to one item. The predicted shot (`ui-review-predicted`) is not on main yet.",
+  "Kotlin twin deferred (Android on hold).",
+  "Fable review suggested for the ref@1 contract (it is a cross-app GUI behaviour contract built on Opus, like plugin-settings-placement s1)."
+ ]
+}

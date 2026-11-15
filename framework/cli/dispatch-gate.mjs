@@ -20,6 +20,13 @@
  * session really starts (consume, after the look gate), so the look waiter's relaunch still passes and nothing can
  * reuse it. Tokens sit in the dispatcher's folder (dispatch.json, 0600; AXF_DISPATCH_DIR, else the pipeline folder).
  * The file holds only a hash of each token. There is no switch to turn this off.
+ *
+ * Only Queued builds take slots (Brett, Nov 12 2026): a build launch passes only while its build is Queued (the
+ * dispatcher's launch) or already Running from that dispatch (the look waiter's relaunch). A Pending (or built, failed,
+ * archived…) build is refused even with a valid token, and `still` (exit 3) stops a run that waited (agent-slots queue,
+ * hard limit) after its build went back to Pending. agent-slots.mjs drops such a build's waiting slot entry the same way.
+ *
+ *   node framework/cli/dispatch-gate.mjs still [--build <id>] [--name <session>] [--brief <file>]   exit 0 may run · 3 not Queued any more
  */
 import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
 import { chmodSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
@@ -31,6 +38,24 @@ import { loadStore } from './builds-store.mjs';
 
 export const SCHEMA = 'dispatch-tokens@1';
 export const DISPATCH_TTL_MS = 24 * 3600e3;
+/** The statuses a build may hold a slot in: Queued (the dispatcher takes it) and Running (that dispatch, started). */
+export const SLOT_STATUSES = Object.freeze(['queued', 'running']);
+export const mayHoldSlot = (b) => !b || SLOT_STATUSES.includes(b.status);
+const notQueued = (b) => `refused: ${b.id} is ${b.status || 'not queued'}${b.status === 'pending' ? ' (Pending)' : ''}: only a Queued build takes a slot. Queue it first (Build orchestrator → Pending → Queue, or \`pipeline.mjs queue ${b.id}\`).`;
+
+/** For a run that waited: may the build it belongs to still take its slot? { ok, build, status, why }. */
+export function still({ build = '', name = '', brief = '', store = null } = {}) {
+  let s = store; if (!s) { try { s = loadStore(); } catch { return { ok: true, build: '', why: 'builds store unreadable: not judged' }; } }
+  const b = findBuild(s, { build, name, brief });
+  if (!b) return { ok: true, build: '', why: 'not an orchestrator build' };
+  return mayHoldSlot(b) ? { ok: true, build: b.id, status: b.status, why: `${b.id} is ${b.status}` } : { ok: false, build: b.id, status: b.status, why: notQueued(b) };
+}
+
+/** By build id (agent-slots' waiting entries): true when it may take a slot, or isn't an orchestrator build. */
+export function buildMayTakeSlot(id, store = null) {
+  if (!id) return true;
+  return still({ build: id, store }).ok;
+}
 const ID_RE = /^[a-z0-9][a-z0-9._-]{0,79}$/;
 
 export function dispatchDir(env = process.env) {
@@ -84,6 +109,7 @@ export function verdict({ b = null, name = '', rec = null, token = '', now = Dat
   if (a.length !== c.length || !timingSafeEqual(a, c)) return { ok: false, build: id, why: `refused: the dispatch token is not ${id}'s. ${how}` };
   if (rec.used) return { ok: false, build: id, why: `refused: ${id}'s dispatch token was already used (${rec.used}). ${how}` };
   if (now - Date.parse(rec.at || 0) > DISPATCH_TTL_MS) return { ok: false, build: id, why: `refused: ${id}'s dispatch token expired. ${how}` };
+  if (!mayHoldSlot(b)) return { ok: false, build: id, why: notQueued(b) };
   return { ok: true, build: id, why: `${id}: dispatched by the orchestrator${rec.account ? ` on ${rec.account}` : ''}${rec.model ? ` (${rec.model})` : ''}` };
 }
 
@@ -118,13 +144,19 @@ async function main(argv) {
     if (!r.ok) process.exitCode = 3;
     return;
   }
+  if (cmd === 'still') {
+    const r = still(common);
+    console.log(json ? JSON.stringify(r) : `${r.ok ? 'ok' : 'refused'}: ${r.why.replace(/^refused: /, '')}`);
+    if (!r.ok) process.exitCode = 3;
+    return;
+  }
   if (cmd === 'issue') { console.log(issue(first, { account: opt('account'), model: opt('model') })); return; }
   if (cmd === 'list') {
     const rows = Object.entries(load(process.env).tokens).map(([b, v]) => ({ build: b, account: v.account, model: v.model, at: v.at, used: v.used }));
     console.log(json ? JSON.stringify({ ok: true, tokens: rows }) : rows.map((r) => `${r.build} ${r.account} ${r.model} ${r.at}${r.used ? ` used ${r.used}` : ' open'}`).join('\n') || 'no dispatch tokens');
     return;
   }
-  console.error('usage: dispatch-gate.mjs check|consume [--build id] [--name n] [--brief f] | issue <build> --account a --model m | list'); process.exitCode = 2;
+  console.error('usage: dispatch-gate.mjs check|consume|still [--build id] [--name n] [--brief f] | issue <build> --account a --model m | list'); process.exitCode = 2;
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

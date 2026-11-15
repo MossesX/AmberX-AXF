@@ -1,0 +1,169 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-axhub-pages-console-style",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:27:28Z",
+ "build": {
+  "id": "axhub-pages-console-style",
+  "title": "Move axHub to console-style pages",
+  "profile": "all",
+  "category": "App",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "From a chat prompt (Gizmo, Oct 26 2026): every route on axhub.amberxai.com goes to the console-style AXHub web app (apps/axhub-web); the hub's plain HTML pages (approvals grid, one approval, postpone, auto-approve, approvals log, users, account, handoff, apps, sign out) are removed and redirect to the new pages; /auth/admin/approvals/<id> links keep working. Cross-repo: axHub (JSON API + redirects) and AmberX-AXF (new views). Branch claude/project-thread-139zmj.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "axHub: session JSON API for approvals (list, one, actions incl. postpone, auto-approve window, log)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-26T02:14:35.557Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "axHub: JSON API for account, users admin, handoff runs; CSRF via /auth/me",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-26T02:14:35.557Z",
+   "doneAt": "2026-10-26T02:14:35.875Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "axHub: redirect old pages to the web app, delete old HTML, restyle sign-in; tests",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-26T02:14:35.875Z",
+   "doneAt": "2026-10-26T02:14:36.257Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "axhub-web: hub API client + deep links (hash routes)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-26T02:14:36.257Z",
+   "doneAt": "2026-10-26T02:14:36.659Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "axhub-web: Approvals grid with actions + auto-approve card",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-26T02:14:36.659Z",
+   "doneAt": "2026-10-26T02:14:36.961Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "axhub-web: approval detail + postpone + approvals log",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-26T02:14:36.961Z",
+   "doneAt": "2026-10-26T02:14:37.268Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "axhub-web: Users + Account views",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-26T02:14:37.268Z",
+   "doneAt": "2026-10-26T02:14:37.610Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "axhub-web: Handoff runs + run detail",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-26T02:14:37.610Z",
+   "doneAt": "2026-10-26T02:14:37.968Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Tests, docs, CLAUDE.md status, PRs",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-26T02:14:37.968Z",
+   "doneAt": "2026-10-26T02:14:38.299Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "Deploy both and verify live",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-26T02:14:38.299Z",
+   "doneAt": "2026-10-26T02:14:38.680Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-26T02:14:35.189Z",
+ "landedAt": "2026-10-26T02:14:35.189Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

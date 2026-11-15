@@ -1,0 +1,238 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-ui-review-shots",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:33Z",
+ "build": {
+  "id": "ui-review-shots",
+  "title": "UI Review shows its pictures again",
+  "profile": "all",
+  "category": "Feature",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "UI Review shows items but NO pictures. Assigned agent: **Snap Sully** (book on his card; AXF_AGENT=snap-sully if supported). Register in Urgent (id `ui-review-shots`) + banner entry. Fix it, then tell.",
+  "verbatim": false,
+  "at": "2026-11-03T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "# Build: ui-review-shots (Urgent profile)\n\nBrett, Nov 3 2026 (voice): UI Review shows items but NO pictures. Assigned agent: **Snap Sully** (book on his card; AXF_AGENT=snap-sully if supported). Register in Urgent (id `ui-review-shots`) + banner entry. Fix it, then tell.\n\n## Evidence\n- Headless builds on the VPS submit UI Review items from their worktrees (/root/axf-builds/<name>/), e.g. menu-scroll: item `r-20261103-2637fd91`, 11 shots, group 'menu-scroll - Nov 3 6:20 PM'. Others today: builds-one-page-done (#269), md-studio (#271), console-wake (#266), molly-fable `r-20261103-80e15b02`, xlayout (3 items).\n- Brett opened UI Review in the live console (axf-console container, console.amberxai.com) and sees the items with no images.\n\n## Do\n- s1 Find the cause: where review.mjs / rebuild-shots --submit write the image files vs where the console's ui-review server reads/serves them (likely: images stay in the build worktree or a sandbox path the axf-console container can't see; or paths are relative to the worktree; or they're in axHub _data but the console serves a different root; or the image route 404s / auth).\n- s2 Fix so every shot is stored somewhere permanent and shared (axHub _data ui-review/ or a mounted volume the console reads), with stable URLs; images uploaded at submit time, never pointing into a worktree that gets deleted.\n- s3 Backfill: re-attach the existing shots for every waiting item today (copy from /root/axf-builds/*/ shots folders, reports' shots/, or re-capture with rebuild-shots if the files are gone). Every waiting item must show its pictures.\n- s4 health@1 check: red if any UI Review item has shots that fail to load. Item rows show a thumbnail; broken image shows 'shot missing' plus a Re-capture button, never a blank.\n- s5 Tests (submit from a fake worktree -> image visible in console after the worktree is deleted), report `_claude/builds/reports/ui-review-shots.md`, THREADS, PR, steps through the store. Commits clean and professional.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-ui-review-shots",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-03T18:54:06.345Z",
+   "endedAt": "2026-11-03T19:56:40.231Z",
+   "exit": 0,
+   "costUsd": 7.9878
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "s1 Find the cause of blank UI Review pictures",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T18:54:06.345Z",
+   "doneAt": "2026-11-03T19:09:11.791Z",
+   "actualMin": 15,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "s2 Fix: shots load reliably from the shared store (stop the status request storm that starves them)",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T19:09:11.791Z",
+   "doneAt": "2026-11-03T19:12:27.360Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "s3 Backfill: every waiting item shows its pictures",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-03T19:12:27.360Z",
+   "doneAt": "2026-11-03T19:13:14.009Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "s4 health@1 check + shot missing / Re-capture in the UI",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T19:13:14.009Z",
+   "doneAt": "2026-11-03T19:56:07.408Z",
+   "actualMin": 43,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "s5 Tests, report, THREADS, PR",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T19:56:07.408Z",
+   "doneAt": "2026-11-03T19:56:10.106Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/ui-review-shots",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 277,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/277"
+ },
+ "landedCommit": "c273c3ba20b5b700e35bc086d6b5c1feddab358b",
+ "commits": [
+  "ec85194d5e09b494b20b5130bc2e75ccdf141822",
+  "296177deb9aa1c2f0df6db504142103ec9051280",
+  "4899517eb6a065370a6fb5395a5d8157bf4c7d0e"
+ ],
+ "mergedAt": "2026-11-04T02:12:59Z",
+ "landedAt": "2026-11-04T02:12:58Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/ui-review-shots.md",
+  "apps/amberx-droid/src/plugins/walkthrough/web/walkthrough.css",
+  "apps/console-web/plugins/agent-slots/web/index.tsx",
+  "apps/console-web/plugins/todo-manager/web/todo-manager.css",
+  "apps/console-web/plugins/token-control/web/pass.tsx",
+  "apps/console-web/plugins/ui-review/help.json",
+  "apps/console-web/plugins/ui-review/review.mjs",
+  "apps/console-web/plugins/ui-review/server/__init__.py",
+  "apps/console-web/plugins/ui-review/test.py",
+  "apps/console-web/plugins/ui-review/web/screenshots.tsx",
+  "apps/console-web/plugins/ui-review/web/shots.tsx",
+  "apps/console-web/plugins/ui-review/web/ui-review.css",
+  "framework/cli/layout-adopt.mjs",
+  "framework/spec/check-layout-tokens.mts"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "ui-review",
+   "files": [
+    "apps/console-web/plugins/ui-review/help.json",
+    "apps/console-web/plugins/ui-review/review.mjs",
+    "apps/console-web/plugins/ui-review/server/__init__.py",
+    "apps/console-web/plugins/ui-review/test.py",
+    "apps/console-web/plugins/ui-review/web/screenshots.tsx",
+    "apps/console-web/plugins/ui-review/web/shots.tsx",
+    "apps/console-web/plugins/ui-review/web/ui-review.css"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-slots",
+   "files": [
+    "apps/console-web/plugins/agent-slots/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "todo-manager",
+   "files": [
+    "apps/console-web/plugins/todo-manager/web/todo-manager.css"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "token-control",
+   "files": [
+    "apps/console-web/plugins/token-control/web/pass.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "walkthrough",
+   "files": [
+    "apps/amberx-droid/src/plugins/walkthrough/web/walkthrough.css"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/layout-adopt.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/check-layout-tokens.mts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/ui-review-shots.md"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "python3 apps/console-web/plugins/ui-review/test.py: 155 → **173** checks. The 18 new ones:",
+   "command": "python3 apps/console-web/plugins/ui-review/test.py",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "npx tsx apps/console-web/plugins/ui-review/test.mts 23 ok; tsc --noEmit (console-web) clean; check-theme, check-controls, check-layout-tokens (412) green.",
+   "command": "npx tsx apps/console-web/plugins/ui-review/test.mts",
+   "result": "pass",
+   "detail": ""
+  }
+ ],
+ "uiReview": [
+  {
+   "id": "r-20261103-17ef4a40",
+   "name": "UI Review: pictures load, Shot missing + Re-capture, phone layout",
+   "status": "approved",
+   "group": "g-20261103-640d3e1c",
+   "url": "/review/r-20261103-17ef4a40"
+  }
+ ],
+ "cost": {
+  "usd": 7.9878,
+  "estimated": false,
+  "tokens": {
+   "input": 312,
+   "output": 2297,
+   "cacheRead": 23991662,
+   "cacheWrite": 223532
+  }
+ },
+ "report": "_claude/builds/reports/ui-review-shots.md",
+ "open": [
+  "The fix reaches Brett when the console is redeployed from main (on merge).",
+  "Re-capture files the new pictures in the screenshots agent's group. Re-attaching them to the original item is a manual step (Send to review)."
+ ]
+}
