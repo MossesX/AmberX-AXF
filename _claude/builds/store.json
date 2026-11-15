@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5838,
- "updatedAt": "2026-11-15T00:45:45.373Z",
+ "rev": 5839,
+ "updatedAt": "2026-11-15T00:46:07.088Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -81174,7 +81174,7 @@
    "branch": "claude/crew-profiles",
    "pr": "#315",
    "createdAt": "2026-11-04T14:05:31.170Z",
-   "updatedAt": "2026-11-04T14:27:49.859Z",
+   "updatedAt": "2026-11-15T00:45:46.351Z",
    "builtAt": "2026-11-04T14:27:48.768Z",
    "notes": [
     {
@@ -81221,6 +81221,13 @@
       "verbatim": true
      }
     ]
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "flagged",
+    "landAttempts": []
    },
    "steps": [
     {
@@ -81364,7 +81371,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -81589,7 +81596,7 @@
    "branch": "claude/console-wake-finish",
    "pr": "#317",
    "createdAt": "2026-11-04T14:15:32.628Z",
-   "updatedAt": "2026-11-04T15:06:22.336Z",
+   "updatedAt": "2026-11-15T00:45:42.433Z",
    "builtAt": "2026-11-04T15:06:19.247Z",
    "notes": [
     {
@@ -81614,6 +81621,13 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "flagged",
+    "landAttempts": []
    },
    "steps": [
     {
@@ -81735,7 +81749,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -81774,7 +81788,7 @@
    "branch": "claude/profile-lists-home-card",
    "pr": "#318",
    "createdAt": "2026-11-04T14:16:24.131Z",
-   "updatedAt": "2026-11-04T14:38:43.338Z",
+   "updatedAt": "2026-11-15T00:45:44.443Z",
    "builtAt": "2026-11-04T14:38:43.338Z",
    "notes": [
     {
@@ -81799,6 +81813,13 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "flagged",
+    "landAttempts": []
    },
    "steps": [
     {
@@ -81898,7 +81919,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -90598,7 +90619,7 @@
    "branch": "claude/apps-control-surface",
    "pr": "#322",
    "createdAt": "2026-11-04T15:00:59.141Z",
-   "updatedAt": "2026-11-08T16:59:20.451Z",
+   "updatedAt": "2026-11-15T00:45:38.282Z",
    "builtAt": "2026-11-04T15:37:57.962Z",
    "notes": [
     {
@@ -90644,6 +90665,13 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "flagged",
+    "landAttempts": []
    },
    "steps": [
     {
@@ -90765,7 +90793,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -91031,7 +91059,7 @@
    "branch": "claude/jump-menu-asset",
    "pr": "#326",
    "createdAt": "2026-11-04T15:29:59.385Z",
-   "updatedAt": "2026-11-04T16:35:39.174Z",
+   "updatedAt": "2026-11-15T00:45:36.246Z",
    "builtAt": "2026-11-04T16:35:37.112Z",
    "notes": [
     {
@@ -91056,6 +91084,13 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "flagged",
+    "landAttempts": []
    },
    "steps": [
     {
@@ -91177,7 +91212,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -91456,7 +91491,7 @@
    "branch": "claude/molly-multi-instance-tabs",
    "pr": "#328",
    "createdAt": "2026-11-04T16:09:41.799Z",
-   "updatedAt": "2026-11-08T16:59:16.537Z",
+   "updatedAt": "2026-11-15T00:45:33.784Z",
    "builtAt": "2026-11-04T16:38:37.644Z",
    "notes": [
     {
@@ -91481,6 +91516,13 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "flagged",
+    "landAttempts": []
    },
    "steps": [
     {
@@ -91580,7 +91622,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": {
