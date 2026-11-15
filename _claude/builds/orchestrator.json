@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:44:35.943Z",
+ "updatedAt": "2026-11-15T00:44:50.618Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -146348,8 +146348,8 @@
    "pr": "#694",
    "priority": "P0",
    "createdAt": "2026-11-15T00:06:57.847Z",
-   "updatedAt": "2026-11-15T00:42:34.863Z",
-   "builtAt": "2026-11-15T00:42:34.863Z",
+   "updatedAt": "2026-11-15T00:44:20.954Z",
+   "builtAt": "2026-11-15T00:44:20.954Z",
    "notes": [
     {
      "text": "Queued by land-finish-auto-land-live-clear-backlog.",
@@ -146420,8 +146420,8 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-15T00:42:34.863Z",
-     "note": "PR #694 (claude/merge-main-land-voice-listener-use)",
+     "doneAt": "2026-11-15T00:44:20.954Z",
+     "note": "",
      "uid": "st-mwh2zxm70c2yyf",
      "createdAt": "2026-11-15T00:13:25.615Z"
     },
