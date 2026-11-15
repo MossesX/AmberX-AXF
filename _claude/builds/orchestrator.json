@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T11:58:06.175Z",
+ "updatedAt": "2026-11-15T11:58:13.680Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -149556,15 +149556,15 @@
    "title": "Every grid: 1 or 2 rows per item, set by the skin",
    "category": "",
    "detail": "Every grid/table/list in the console shows each item as 1 or 2 rows when collapsed, set by the active skin (a skin token, e.g. grid row-lines = 1 or 2), and expands on tap for details. Audit every grid in every plugin and move it onto the shared framework grid/row control so the skin decides; no plugin hard-codes its own row layout. Use the existing grid/tab-group token sets (#654). Skin editor gets the 1-row/2-row setting with live preview. API parity (read/set the setting via REST/MCP/CLI/voice). Tests, check-theme and check-controls green, help, Shipped features. Land when done.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/every-grid-1-2-rows-per-item-set-skin",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:17.286Z",
-   "updatedAt": "2026-11-15T11:58:04.037Z",
+   "updatedAt": "2026-11-15T11:58:11.261Z",
    "builtAt": "",
    "notes": [
     {
@@ -149578,6 +149578,14 @@
     {
      "text": "Split by Claude into 23 steps (4 Fable).",
      "at": "2026-11-15T11:56:35.624Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-every-grid-1-2-rows-per-item-set-skin--sully.",
+     "at": "2026-11-15T11:58:08.332Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-every-grid-1-2-rows-per-item-set-skin--sully, shared account login)",
+     "at": "2026-11-15T11:58:11.261Z"
     }
    ],
    "approvals": [],

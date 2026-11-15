@@ -806,9 +806,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:52 UTC · `merge-main-land-one-source-truth-console` s7 done (all) · orchestrator
-- 2026-11-14 23:52 UTC · `merge-main-land-console-app-part-4` s10 done, → built (all) · orchestrator
-- 2026-11-14 23:52 UTC · `merge-main-land-one-source-truth-console` s8 done (all) · orchestrator
 - 2026-11-14 23:53 UTC · `merge-main-land-one-source-truth-console` s9 done, → built (all) · orchestrator
 - 2026-11-14 23:53 UTC · `themed-native-controls-plugin` s26 done (all) · orchestrator
 - 2026-11-14 23:52 UTC · `merge-main-land-console-app-part-4` note (all) · orchestrator
@@ -1206,6 +1203,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 11:57 UTC · `pending-tab-one-collapsed-row-per-2` s1 done (all) · orchestrator
 - 2026-11-15 11:57 UTC · `pending-tab-one-collapsed-row-per-2` note (all) · mcp
 - 2026-11-15 11:57 UTC · `gate-rules-plugin-in-the-console` note (all) · orchestrator
+- 2026-11-15 11:58 UTC · `every-grid-1-2-rows-per-item-set-skin` → running, note (all) · pipeline
+- 2026-11-15 11:58 UTC · `every-grid-1-2-rows-per-item-set-skin` branch claude/every-grid-1-2-rows-per-item-set-skin (all) · pipeline
+- 2026-11-15 11:58 UTC · `every-grid-1-2-rows-per-item-set-skin` note (all) · orchestrator
 
 ## Token passes (log)
 
