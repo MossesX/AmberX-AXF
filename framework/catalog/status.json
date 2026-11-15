@@ -2330,5 +2330,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "Nov 13 2026 (build skin-axhub-override-switch-greyed-out): console Settings → Appearance → Override axHub, under Get my skin only from axHub (default off). One or the other whichever way either is set (runtime onChange: Override on clears axf.lock.hubskin, axHub-only on clears axf.lock.hubskin.override and the overridden marks). While axHub-only is on every skin and asset editor is disabled, not hidden (HubSkinLockArea: Theme manager rows, Theme editor, Asset studio, nav style, context menu designer; the Appearance panel, skin picker, every-asset picker and plugin themes through the lock), each under HubSkinLockNote with Brett's wording and a Click here to override link; the link and the switch ask one confirm. Edits under Override are recorded in axf.lock.hubskin.overridden and shown as Overridden chips. Reachable by the setting (search, console.settings, settings.set:axf.lock.hubskin.override), the appearance.hubskin.override action and voice (\"override the axHub skin\", Python twin). Kotlin twin deferred (PORTING.md)."
+  },
+  "cx.buildengine.pendingrows": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "pending-rows-view@1 (the build orchestrator plugin: pending-rows.mjs rules, orchestrator.mjs pending CLI, web/PendingRow.tsx): one row per pending build, why it is pending derived (upgrade approval, splitting, no steps, needs a split, back from a run, waiting for Queue); expanded set per viewer in the plugin data dir (pending-rows.json). REST GET /pending/rows, POST /pending/rows/<build>/expand|collapse|toggle, POST /pending/rows/collapse-all; plugin commands pending-* (MCP, CLI axf build-orchestrator, control@1); console actions build-orchestrator.pending-* (voice); control target grid:pending/row:<build>; deep link ?axf-target=row:<build>. Parity test test/test_pending_rows.py. Kotlin twin deferred."
   }
 }

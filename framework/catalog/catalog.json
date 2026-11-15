@@ -2542,6 +2542,10 @@
                   "title": "Custom groups and custom tabs on the builds board: user-made and smart groups sorted by state (partial to landed) with counts, pinned as tabs next to Pending and the other stages, group actions, saved per project"
                 },
                 {
+                  "id": "cx.buildengine.pendingrows",
+                  "title": "Pending tab as one collapsed row per build (title, why it is pending, priority, steps, age), tap to expand; open rows remembered per viewer; REST, MCP, CLI, voice and deep link reach every row"
+                },
+                {
                   "id": "cx.buildengine.sectionowners",
                   "title": "Section owners: every section that acts on its own has one employee who posts its key events in the group chat (crew-sections@1, framework/cli/crew-say.mjs, CI owner check)"
                 }
