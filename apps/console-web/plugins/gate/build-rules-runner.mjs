@@ -179,6 +179,7 @@ export function commitFixes(root, runs, { by = 'vps' } = {}) {
 }
 
 async function main(argv) {
+  process.umask(0o002); // the shared store folder is group-written (the console, the dispatcher and the lander)
   const flag = (n) => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] || '' : ''; };
   const json = argv.includes('--json');
   if (argv[0] === 'runs') {

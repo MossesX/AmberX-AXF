@@ -5,6 +5,9 @@
  *
  *   node framework/cli/build-rules-migrate.mjs                 write _claude/builds/build-rules/seed.json from the inventory
  *   node framework/cli/build-rules-migrate.mjs --check         fail when any inventory rule is missing from the seed (and from the live store when one exists)
+ *   node framework/cli/build-rules-migrate.mjs --live          seed the live store (the engine's store folder: on the VPS
+ *                                                              /projects/amberx-axf/_data/build-rules, data.shared `build-rules/`)
+ *                                                              from the seed, once: an existing live store is never overwritten
  *   node framework/cli/build-rules-migrate.mjs --inventory <p> --out <p> --at <iso>
  *
  * Every inventoried rule is kept (none dropped): id, title, doer, kind and applies as inventoried, every source verbatim;
@@ -172,6 +175,15 @@ function main(argv) {
   const out = arg('--out', B.seedPath(ROOT));
   const at = arg('--at', new Date().toISOString());
   const inventory = JSON.parse(readFileSync(inventoryPath, 'utf8'));
+  if (argv.includes('--live')) {
+    const dir = arg('--dir', B.storeDir());
+    const live = B.load({ dir, seed: out, at });
+    if (!live.seeded) { console.log(live.empty ? `no seed at ${out}: run the migration first` : `live store already at ${live.path} (${live.store.rules.length} rules, rev ${live.store.rev}): left as it is`); process.exit(live.empty ? 1 : 0); }
+    const { store, entry } = B.seedStore(live.store.rules.map((r) => ({ ...r })), { at: live.store.at, by: 'migration', from: B.SEED_REL, pass: live.store.seededFrom?.pass || 0 });
+    B.save(store, [entry], { dir });
+    console.log(`seeded the live store ${B.storeFiles(dir).store}: ${store.rules.length} rules`);
+    process.exit(0);
+  }
   if (argv.includes('--check')) {
     let bad = 0;
     const seed = existsSync(out) ? JSON.parse(readFileSync(out, 'utf8')) : null;
@@ -181,7 +193,7 @@ function main(argv) {
       if (errs.length) { console.error(`seed invalid: ${errs.join('; ')}`); bad += 1; }
       const miss = missingFrom(inventory, seed);
       if (miss.length) { console.error(`seed lacks ${miss.length} inventory rule(s): ${miss.join(', ')}`); bad += 1; }
-      else console.log(`seed holds every inventory rule: ${seed.rules.length} rules (${inventory.rules.length} inventoried + home-card)`);
+      else console.log(`seed holds every inventory rule: ${seed.rules.length} rules (${inventory.rules.length} inventoried + home-card + ${VPS_RULES.length} VPS-native)`);
     }
     const live = B.load({ at }); // the live store when one exists
     if (!live.seeded && !live.empty) {
