@@ -178,7 +178,8 @@ try {
     assert.deepEqual(a, b, `axf gate ${args.join(' ')} == ${op}`);
   };
   t('every op is reachable from the CLI', () => {
-    const reached = new Set([['rules', 'list'], ['rules', 'get', 'x'], ['rules', 'set', 'x', 'severity', 'warn'], ['rules', 'on', 'x'], ['rules', 'reset'], ['check', '1'], ['history'], ['lander', 'status'], ['lander', 'waiting'], ['lander', 'runs'], ['lander', 'mode'], ['lander', 'land-now', '1'], ['lander', 'pause'], ['lander', 'resume'], ['settings'], ['settings', 'set', 'refreshSec', '60']].map((a) => parseCli(a).op));
+    const reached = new Set([['rules', 'list'], ['rules', 'get', 'x'], ['rules', 'set', 'x', 'severity', 'warn'], ['rules', 'on', 'x'], ['rules', 'reset'], ['check', '1'], ['history'], ['lander', 'status'], ['lander', 'waiting'], ['lander', 'runs'], ['lander', 'mode'], ['lander', 'land-now', '1'], ['lander', 'pause'], ['lander', 'resume'], ['settings'], ['settings', 'set', 'refreshSec', '60'],
+      ['build-rules', 'list'], ['build-rules', 'get', 'x'], ['build-rules', 'add', 'x', '--title', 't'], ['build-rules', 'edit', 'x', 'title', 't'], ['build-rules', 'on', 'x'], ['build-rules', 'delete', 'x'], ['build-rules', 'history'], ['build-rules', 'runs'], ['build-rules', 'run', 'b', '--phase', 'after'], ['build-rules', 'brief', 'b']].map((a) => parseCli(a).op));
     assert.deepEqual([...reached].sort(), [...OPS].sort());
   });
   t('CLI and API give the same record for the same input', () => {

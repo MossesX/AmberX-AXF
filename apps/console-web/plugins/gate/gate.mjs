@@ -46,7 +46,7 @@ export const OPS = Object.freeze(['rules_list', 'rules_get', 'rules_set', 'rules
 export const SETTINGS = Object.freeze({
   refreshSec: { type: 'integer', min: 5, max: 600, default: 30, title: 'Refresh every (seconds)' },
   historySize: { type: 'integer', min: 50, max: history.HISTORY_MAX, default: history.HISTORY_DEFAULT, title: 'History size (entries kept)' },
-  defaultTab: { type: 'enum', values: ['rules', 'auto-lander', 'history'], default: 'rules', title: 'Tab it opens on' },
+  defaultTab: { type: 'enum', values: ['rules', 'build-rules', 'auto-lander', 'history'], default: 'rules', title: 'Tab it opens on' },
 });
 
 const fail = (code, message, extra = {}) => ({ ok: false, code, message, ...extra });
@@ -209,7 +209,7 @@ export async function main(argv, { out = (s) => console.log(s), err = (s) => con
 }
 
 /** The first words `axf gate …` hands to this file (framework/cli/axf.mjs, plugin.json "cli"); the rest go to plugin-commands. */
-export const cliWords = Object.freeze(['rules', 'check', 'history', 'lander', 'settings', 'help']);
+export const cliWords = Object.freeze(['rules', 'build-rules', 'check', 'history', 'lander', 'settings', 'help']);
 
 const USAGE = [
   'axf gate rules list [--kind k] [--enabled true|false] [--owner o]',
@@ -222,6 +222,12 @@ const USAGE = [
   'axf gate lander status | waiting [--rule r] [--state s] | runs [--limit n] [--result r]',
   'axf gate lander mode [on|off] | land-now <pr> [--confirm <token>] | pause [--why "…"] | resume',
   'axf gate settings [get] | settings set <key> <value>',
+  'axf gate build-rules list [--doer vps|session] [--kind k] [--phase p] [--enabled true|false] [--q text]',
+  'axf gate build-rules get <id> | on <id> | off <id> | delete <id> [--confirm <token>]',
+  'axf gate build-rules add <id> --title "…" --text "…" --doer vps|session --kind mechanical|judgement --phase before|dispatch|after|gate [--check …] [--autofix …] [--brief-block …]',
+  'axf gate build-rules edit <id> <title|text|doer|kind|phase|check|autofix|briefBlock|applies|note> <value>',
+  'axf gate build-rules history [id] [--action a] [--since d] [--limit n] | runs [id] [--build b] [--result r]',
+  'axf gate build-rules run <build> --phase before|after|gate [--rules a,b] [--dry-run] | brief <build> [--title "…"]',
   '  --json prints the record; --by and --reason say who and why (History)',
 ];
 
@@ -257,6 +263,27 @@ export function parseCli(argv) {
     return { usage: true };
   }
   if (a === 'check') return b ? { op: 'check_pr', input: { pr: b } } : f.branch ? { op: 'check_pr', input: { branch: f.branch } } : { usage: true };
+  if (a === 'build-rules') {
+    if (!b || b === 'list') return { op: 'build_rules_list', input: pick('doer', 'kind', 'phase', 'enabled', 'q') };
+    if (b === 'get' && c) return { op: 'build_rules_get', input: { id: c } };
+    if ((b === 'on' || b === 'off') && c) return { op: 'build_rules_toggle', input: { id: c, enabled: b === 'on', ...who } };
+    if (b === 'toggle' && c) return { op: 'build_rules_toggle', input: { id: c, ...who } };
+    if (b === 'delete' && c) return { op: 'build_rules_delete', input: { id: c, ...pick('confirm'), ...who } };
+    if (b === 'add' && c) {
+      const rule = { id: c, ...pick('title', 'text', 'doer', 'kind', 'phase', 'check', 'autofix', 'applies', 'note'), ...(f['brief-block'] ? { briefBlock: f['brief-block'] } : {}), ...(f.enabled !== undefined ? { enabled: boolOf(f.enabled) ?? true } : {}) };
+      return { op: 'build_rules_add', input: { rule, ...who } };
+    }
+    if (b === 'edit' && c && d) {
+      const value = f._.slice(4).join(' ');
+      if (value === '' || !['title', 'text', 'doer', 'kind', 'phase', 'check', 'autofix', 'briefBlock', 'applies', 'note', 'when'].includes(d)) return { usage: true };
+      return { op: 'build_rules_edit', input: { id: c, patch: { [d]: d === 'when' ? parseValue(value) : value }, ...who } };
+    }
+    if (b === 'history') return { op: 'build_rules_history', input: { ...(c ? { id: c } : {}), ...pick('action', 'since', 'limit') } };
+    if (b === 'runs') return { op: 'build_rules_runs', input: { ...(c ? { id: c } : {}), ...pick('build', 'result', 'since', 'limit') } };
+    if (b === 'run' && c && f.phase) return { op: 'build_rules_run', input: { build: c, phase: f.phase, ...(f.rules ? { rules: f.rules } : {}), dryRun: f['dry-run'] === 'true', ...who } };
+    if (b === 'brief') return { op: 'build_rules_brief', input: { build: c || '', ...pick('title', 'text', 'ui') } };
+    return { usage: true };
+  }
   if (a === 'history') return { op: 'history', input: pick('kind', 'since', 'pr', 'rule', 'action', 'limit') };
   if (a === 'lander') {
     if (!b || b === 'status') return { op: 'lander_status', input: {} };
@@ -294,6 +321,14 @@ export function textOf(op, r) {
     case 'lander_waiting': return r.items.map((w) => `${String(w.position).padStart(3)} #${w.pr} ${w.state.padEnd(8)} ${w.rule ? `[${w.rule}] ` : ''}${w.reason}`).join('\n') || 'nothing waits';
     case 'lander_runs': return r.items.map((x) => `${x.startedAt} ${x.result.padEnd(8)} ${x.landing?.pr ? `#${x.landing.pr} ` : ''}${x.reasonText}`).join('\n') || 'no runs yet';
     case 'lander_land_now': return `#${r.pr} lands next (${r.via})`;
+    case 'build_rules_list': return `${r.counts.total} build rules (${r.counts.vps} VPS, ${r.counts.session} session, ${r.counts.on} on; ${r.source})\n${r.rules.map((x) => `${onOff(x.enabled).padEnd(4)} ${x.doer.padEnd(7)} ${x.phase.padEnd(8)} ${x.id.padEnd(28)} ${x.last ? `[${x.last.result}] ` : ''}${x.title}`).join('\n')}`;
+    case 'build_rules_get': return `${r.rule.id} ${onOff(r.rule.enabled)}: ${r.rule.doer}, ${r.rule.kind}, ${r.rule.phase}${r.rule.check ? `, check ${r.rule.check}` : ''}${r.rule.autofix ? `, fixer ${r.rule.autofix}` : ''}\n${r.rule.title}\n${r.rule.text}${r.runs.length ? `\nlast run: ${r.runs[0].result} ${r.runs[0].at}` : ''}`;
+    case 'build_rules_add': case 'build_rules_edit': case 'build_rules_toggle': return `${r.rule.id}: ${onOff(r.rule.enabled)}, ${r.rule.doer}, ${r.rule.phase}${r.rev ? ` (rev ${r.rev})` : ''}`;
+    case 'build_rules_delete': return `deleted ${r.removed} (rev ${r.rev}); History keeps it`;
+    case 'build_rules_history': return r.entries.map((e) => `${e.at} ${String(e.by).padEnd(14)} ${e.action}${e.id ? ` ${e.id}` : ''} ${e.reason?.title || ''}`).join('\n') || 'no history yet';
+    case 'build_rules_runs': return r.runs.map((x) => `${x.at} ${x.result.padEnd(7)} ${x.id} ${x.build} ${x.phase}`).join('\n') || 'no runs yet';
+    case 'build_rules_run': return `${r.pass ? 'ok' : 'FAIL'} ${r.phase} ${r.build}${r.dryRun ? ' (dry run)' : ''}: ${Object.entries(r.counts).map(([k, v]) => `${v} ${k}`).join(', ')}\n${r.runs.map((x) => `  ${x.result.padEnd(7)} ${x.id}: ${String(x.detail).split('\n')[0].slice(0, 140)}`).join('\n')}`;
+    case 'build_rules_brief': return r.text || 'no session rules for this build';
     case 'settings_get': case 'settings_set': return Object.entries(r.settings).map(([k, v]) => `${k.padEnd(12)} ${v}`).join('\n');
     default: return JSON.stringify(r);
   }
@@ -304,7 +339,7 @@ export async function cli(argv, g, { out }) {
   if (!argv.length || argv[0] === 'help' || argv.includes('--help')) { out(USAGE.join('\n')); return argv.length ? 0 : 2; }
   const p = parseCli(argv);
   if (p.usage) { out(USAGE.join('\n')); return 2; }
-  const r = g.run(p.op, p.input);
+  const r = await g.run(p.op, p.input);
   out(argv.includes('--json') ? JSON.stringify(r, null, 2) : textOf(p.op === 'lander_mode' && p.input.mergeQueue !== undefined ? 'lander_mode' : p.op, r));
   return r.ok ? 0 : r.code === 'confirmation_required' ? 3 : 1;
 }

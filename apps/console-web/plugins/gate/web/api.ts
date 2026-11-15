@@ -5,7 +5,7 @@
 import { pluginFetch } from '@console/plugins';
 
 export const FOLDER = 'gate';
-export const TABS = ['rules', 'auto-lander', 'history'] as const;
+export const TABS = ['rules', 'build-rules', 'auto-lander', 'history'] as const;
 export type GateTab = (typeof TABS)[number];
 
 export interface GateRule { id: string; kind: string; enabled: boolean; severity: 'block' | 'warn' | 'info'; owner: string; title: string; description: string; settings: Record<string, unknown>; source?: string; updatedAt?: string; updatedBy?: string }
@@ -16,6 +16,13 @@ export interface Run { startedAt: string; finishedAt: string; result: string; mo
 export interface LanderStatus { status: string; enabled: boolean; paused: boolean; pause: { why: string; by: string; at: string } | null; mode: string; mergeQueue: boolean; modeSince: string; modeBy: string; landing: { pr: number; title: string; build: string; since: string } | null; counts: { waiting: number; runs: number }; lastRun: Run | null; at: string }
 export interface HistoryEntry { at: string; by: string; kind: 'rule' | 'lander'; action: string; id?: string; pr?: number; before?: unknown; after?: unknown; reason: string | { title: string; description: string } }
 export interface GateSettings { refreshSec: number; historySize: number; defaultTab: GateTab }
+/** build-rule@1 as the list sends it (sources left out, their count kept) with its last run. */
+export interface BuildRule { id: string; title: string; text: string; doer: 'vps' | 'session'; kind: 'mechanical' | 'judgement'; phase: 'before' | 'dispatch' | 'after' | 'gate'; enabled: boolean; check: string; autofix: string; briefBlock: 'look' | 'api' | 'checkpoints' | 'rules'; applies: 'builds' | 'interactive' | 'all'; when: { ui?: boolean; keywords?: string[] }; note?: string; rev: number; updatedAt: string; updatedBy: string; sourceCount?: number; checkKind?: string; last?: BuildRuleRunSummary | null }
+export interface BuildRuleRunSummary { result: 'pass' | 'fixed' | 'fail' | 'skipped'; at: string; build: string; phase: string; detail: string }
+export interface BuildRuleRun extends BuildRuleRunSummary { id: string; by: string; dryRun?: boolean; fix?: { fixer: string; ok: boolean; detail: string; changed: string[] } }
+export interface BuildRuleHistory { at: string; by: string; action: string; id?: string; rev: number; reason: { title: string; description: string }; before?: Partial<BuildRule>; after?: Partial<BuildRule> }
+export interface BuildRuleEnums { doers: string[]; kinds: string[]; phases: string[]; briefBlocks: string[]; applies: string[]; fixers: string[] }
+export interface BuildRuleList { rev: number; at: string; source: 'live' | 'seed' | 'empty'; counts: { total: number; vps: number; session: number; on: number }; rules: BuildRule[]; enums: BuildRuleEnums }
 export interface Answer { ok: boolean; code?: string; message?: string; confirm?: string; [k: string]: unknown }
 
 /** One call: the JSON answer; a failure throws with the server's message (a confirm request is an answer). */

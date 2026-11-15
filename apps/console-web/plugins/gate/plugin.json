@@ -162,7 +162,84 @@
         "id": "settings-set",
         "route": "PUT /settings",
         "title": "Gate: change plugin settings",
-        "description": "Change the plugin's settings: refreshSec (5-600), historySize (50-20000), defaultTab (rules, auto-lander, history)."
+        "description": "Change the plugin's settings: refreshSec (5-600), historySize (50-20000), defaultTab (rules, build-rules, auto-lander, history)."
+      },
+      {
+        "id": "build-rules-list",
+        "route": "GET /build-rules",
+        "title": "Build rules: list",
+        "readOnly": true,
+        "tool": "gate_build_rules_list",
+        "description": "Every build rule (build-rule@1): who does it (vps or session), kind, phase, on/off, check, fixer and its last run. Filters doer, kind, phase, enabled, q."
+      },
+      {
+        "id": "build-rules-get",
+        "route": "GET /build-rules/{rule_id}",
+        "title": "Build rules: one rule",
+        "readOnly": true,
+        "tool": "gate_build_rules_get",
+        "description": "One build rule with its last runs and its change history."
+      },
+      {
+        "id": "build-rules-add",
+        "route": "POST /build-rules",
+        "title": "Build rules: add a rule",
+        "tool": "gate_build_rules_add",
+        "description": "Add a build rule ({rule: {id, title, text, doer, kind, phase, check?, autofix?, briefBlock?, applies?, when?}} or the fields). A vps rule is done by the VPS and never reaches a session brief."
+      },
+      {
+        "id": "build-rules-edit",
+        "route": "PUT /build-rules/{rule_id}",
+        "title": "Build rules: change a rule",
+        "tool": "gate_build_rules_edit",
+        "description": "Change a build rule ({patch} or the fields: title, text, doer, kind, phase, check, autofix, briefBlock, applies, when, note). Logged in the rule history with before and after."
+      },
+      {
+        "id": "build-rules-toggle",
+        "route": "POST /build-rules/{rule_id}/toggle",
+        "title": "Build rules: switch a rule on or off",
+        "tool": "gate_build_rules_toggle",
+        "description": "Switch a build rule on or off ({enabled}; none = flip). Logged in the rule history."
+      },
+      {
+        "id": "build-rules-delete",
+        "route": "POST /build-rules/{rule_id}/delete",
+        "title": "Build rules: delete a rule (confirm)",
+        "tool": "gate_build_rules_delete",
+        "destructive": true,
+        "confirm": true,
+        "description": "Delete a build rule. Two-step: the first call answers confirmation_required with a token; call again with confirm set to it. History keeps the rule."
+      },
+      {
+        "id": "build-rules-history",
+        "route": "GET /build-rules/history",
+        "title": "Build rules: change history",
+        "readOnly": true,
+        "tool": "gate_build_rules_history",
+        "description": "Every change to the build rules, newest first (build-rule-history@1). Filters id, action, since, limit."
+      },
+      {
+        "id": "build-rules-runs",
+        "route": "GET /build-rules/runs",
+        "title": "Build rules: runs",
+        "readOnly": true,
+        "tool": "gate_build_rules_runs",
+        "description": "Every check and fix the VPS ran (build-rule-run@1: pass, fixed, fail, skipped), newest first. Filters id, build, result, since, limit."
+      },
+      {
+        "id": "build-rules-run",
+        "route": "POST /build-rules/run",
+        "title": "Build rules: run a phase now",
+        "tool": "gate_build_rules_run",
+        "description": "Run the build rules of one phase (before, after, gate) for a build ({build, phase, rules?, dryRun?}): checks, fixes what fails, re-checks, and logs to History. dryRun changes nothing."
+      },
+      {
+        "id": "build-rules-brief",
+        "route": "GET /build-rules/brief",
+        "title": "Build rules: a session's brief",
+        "readOnly": true,
+        "tool": "gate_build_rules_brief",
+        "description": "What a build session's brief gets from the store (brief-blocks@1) for {build, title, text, ui}: only session rules; VPS rules never reach it."
       }
     ]
   },
