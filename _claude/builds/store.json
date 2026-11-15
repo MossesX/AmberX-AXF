@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6354,
- "updatedAt": "2026-11-15T19:59:09.331Z",
+ "rev": 6355,
+ "updatedAt": "2026-11-15T20:10:34.353Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -229274,7 +229274,7 @@
    "title": "Auto-lander controls in the gate plugin",
    "category": "",
    "detail": "Add an 'Auto-lander' tab to the server gate plugin built today (the one with the gate rules, ~3 tabs; from server-gate-one-session-per-build-no / owner-recognized-everywhere-veto policy work; find the right one, it's whichever holds the gate rules). The tab controls the auto-lander (cron /etc/cron.d/axf-auto-land, push-banner land.mjs / serial lander): a big On/Off switch (writes the setting the cron reads; off = cron skips), live status (last run time, result, what it's landing now, why it's not landing: queue empty, CI waiting, conflict, token missing), the landing line (one at a time, in order) with move up / skip / land now per build, mode picker (serial one-at-a-time vs merge queue, default serial), and the log of recent runs. Also diagnose now why the auto-lander lands nothing even though its cron exists (console app PRs #637/#639/#633/#640/#643 green for 2h+), and fix it. Remove the stale 'axf-lander inactive' warning (that systemd service doesn't exist). Full API and voice ('turn on the auto lander', 'what's landing'), tokens only, tests, help, Shipped features.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -229282,8 +229282,8 @@
    "pr": "#705",
    "priority": "P0",
    "createdAt": "2026-11-15T04:17:06.158Z",
-   "updatedAt": "2026-11-15T19:57:12.374Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-15T20:10:32.121Z",
+   "builtAt": "2026-11-15T20:10:32.121Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -229778,12 +229778,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T20:10:32.121Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T04:19:53.877Z",
-     "updatedAt": "2026-11-15T04:19:53.877Z"
+     "updatedAt": "2026-11-15T20:10:32.418Z"
     },
     {
      "id": "s16",
@@ -229820,7 +229820,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
