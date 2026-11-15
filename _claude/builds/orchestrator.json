@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:34:33.188Z",
+ "updatedAt": "2026-11-15T00:34:47.756Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -88271,7 +88271,7 @@
    "pr": "#408",
    "priority": "P1",
    "createdAt": "2026-11-09T16:25:54.451Z",
-   "updatedAt": "2026-11-09T17:00:25.393Z",
+   "updatedAt": "2026-11-15T00:34:28.784Z",
    "builtAt": "2026-11-09T17:00:25.393Z",
    "notes": [
     {
@@ -91089,7 +91089,7 @@
    "pr": "#413",
    "priority": "P1",
    "createdAt": "2026-11-09T20:26:06.899Z",
-   "updatedAt": "2026-11-09T20:43:19.545Z",
+   "updatedAt": "2026-11-15T00:34:24.346Z",
    "builtAt": "2026-11-09T20:43:19.545Z",
    "notes": [
     {
@@ -91329,7 +91329,7 @@
    "pr": "#418",
    "priority": "P1",
    "createdAt": "2026-11-09T23:44:46.980Z",
-   "updatedAt": "2026-11-10T00:06:48.385Z",
+   "updatedAt": "2026-11-15T00:34:20.416Z",
    "builtAt": "2026-11-10T00:06:48.385Z",
    "notes": [
     {
@@ -91674,7 +91674,7 @@
    "pr": "#422",
    "priority": "P1",
    "createdAt": "2026-11-09T23:49:14.622Z",
-   "updatedAt": "2026-11-10T00:41:24.742Z",
+   "updatedAt": "2026-11-15T00:34:09.250Z",
    "builtAt": "2026-11-10T00:41:05.700Z",
    "notes": [
     {
@@ -91803,7 +91803,7 @@
    "pr": "#419",
    "priority": "P1",
    "createdAt": "2026-11-09T23:50:13.944Z",
-   "updatedAt": "2026-11-10T00:09:33.092Z",
+   "updatedAt": "2026-11-15T00:34:17.015Z",
    "builtAt": "2026-11-10T00:09:33.092Z",
    "notes": [
     {
@@ -92152,7 +92152,7 @@
    "pr": "#420",
    "priority": "P1",
    "createdAt": "2026-11-10T00:03:04.356Z",
-   "updatedAt": "2026-11-10T00:14:50.236Z",
+   "updatedAt": "2026-11-15T00:34:13.352Z",
    "builtAt": "2026-11-10T00:14:22.861Z",
    "notes": [
     {
@@ -139974,7 +139974,7 @@
    "branch": "claude/ui-review-filter-and-search-by-pr",
    "pr": "#675",
    "createdAt": "2026-11-14T16:50:06.080Z",
-   "updatedAt": "2026-11-14T17:11:04.443Z",
+   "updatedAt": "2026-11-15T00:34:33.512Z",
    "builtAt": "2026-11-14T17:10:24.562Z",
    "notes": [
     {
