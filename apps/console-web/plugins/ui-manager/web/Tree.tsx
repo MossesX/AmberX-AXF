@@ -4,7 +4,7 @@
  * element in its own category point at one element, so both show the same selection and the same override count,
  * and an edit made through either lands on the same override.
  */
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Button, Icon } from '@console/axf/react';
 import type { TreeCategory, UiElement, UiShortcut } from '../../../../../framework/core/engines/ui-manager-rules.mjs';
 import { setUi, toggleIn, type UiState } from './state';
@@ -13,7 +13,7 @@ import type { ElementRow } from './useElements';
 const PAGE = 200;
 const isShortcut = (x: UiElement | UiShortcut): x is UiShortcut => 'ref' in x;
 
-export function Tree({ tree, byId, ui, onOpen }: { tree: TreeCategory[]; byId: Map<string, ElementRow>; ui: UiState; onOpen?: (id: string) => void }) {
+export function Tree({ tree, byId, ui, onOpen, expand }: { tree: TreeCategory[]; byId: Map<string, ElementRow>; ui: UiState; onOpen?: (id: string) => void; expand?: (id: string) => ReactNode }) {
   const [shown, setShown] = useState<Record<string, number>>({});
   if (!tree.length) return <p className="fx-muted">Nothing matches. Change the search or the filters.</p>;
   return (
@@ -40,11 +40,12 @@ export function Tree({ tree, byId, ui, onOpen }: { tree: TreeCategory[]; byId: M
                     <li key={`${c.id}:${id}`} role="none">
                       <button type="button" role="treeitem" aria-selected={on} data-fx-row className={`axp-uim__row${on ? ' is-on' : ''}`}
                         title={isShortcut(x) ? `Shortcut to ${x.label} in ${x.category}: same element, same settings` : id}
-                        onClick={() => { setUi({ selected: id }); onOpen?.(id); }}>
+                        onClick={() => { setUi({ selected: on && expand ? '' : id }); onOpen?.(id); }}>
                         {isShortcut(x) ? <span className="axp-uim__shortcut"><Icon name="external" size={12} /></span> : null}
                         <span className="axp-uim__grow">{x.label}</span>
                         <span className="fx-small axp-uim__muted">{x.kind}{n ? ` · ${n} changed` : ''}</span>
                       </button>
+                      {on && expand ? expand(id) : null}
                     </li>
                   );
                 })}

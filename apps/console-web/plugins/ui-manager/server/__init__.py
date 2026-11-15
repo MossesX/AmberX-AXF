@@ -5,6 +5,8 @@ Every route runs the plugin's Node core (ui-manager.mjs --json), the same code t
 
   GET  elements?q=&category=&visible=a,b   every selectable element (+ the category counts; visible ids = On screen now)
   GET  tree?visible=a,b                    the collapsible categories; On screen now holds shortcuts to the visible ids
+  GET  element?id=                         the same as props/{element}, for ids with slashes (live console targets)
+  POST set                                 body { element, prop, value, by?, reason? }  the same as PUT props/…
   GET  props/{element}                     the expanding row: every property and token with value, base, source, choices
   GET  choices/{element}/{prop}            the predetermined values of one property (never free text)
   PUT  props/{element}/{prop}              body { value, by?, reason? }  set one property to one of its choices and save
@@ -82,6 +84,24 @@ async def set_prop(element: str, prop: str, request: Request) -> JSONResponse:
     b = await _body(request)
     value = b.get("value")
     return await run_in_threadpool(_run, "set", element, prop, json.dumps(value) if isinstance(value, (bool, int, float)) else str(value), *_opt("by", b.get("by")), *_opt("reason", b.get("reason")))
+
+
+@router.get("/element")
+async def element_props(id: str = "") -> JSONResponse:
+    """props by query (`?id=`): element ids of live console targets carry slashes (target:view:builds/button:save)."""
+    if not id:
+        return JSONResponse({"error": "element needs ?id=", "code": "invalid"}, status_code=400)
+    return await run_in_threadpool(_run, "props", id)
+
+
+@router.post("/set")
+async def set_body(request: Request) -> JSONResponse:
+    """set by body { element, prop, value, by?, reason? }: the same as PUT props/{element}/{prop}, for ids with slashes."""
+    b = await _body(request)
+    if not b.get("element") or not b.get("prop") or "value" not in b:
+        return JSONResponse({"error": "set needs { element, prop, value }", "code": "invalid"}, status_code=400)
+    value = b.get("value")
+    return await run_in_threadpool(_run, "set", str(b["element"]), str(b["prop"]), json.dumps(value) if isinstance(value, (bool, int, float)) else str(value), *_opt("by", b.get("by")), *_opt("reason", b.get("reason")))
 
 
 @router.post("/reset")
