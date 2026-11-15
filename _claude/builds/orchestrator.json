@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T13:24:03.673Z",
+ "updatedAt": "2026-11-15T13:24:53.309Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -151506,7 +151506,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T13:22:11.842Z",
-   "updatedAt": "2026-11-15T13:24:00.647Z",
+   "updatedAt": "2026-11-15T13:24:51.863Z",
    "builtAt": "",
    "notes": [
     {
@@ -151524,6 +151524,10 @@
     {
      "text": "Split by Claude into 16 steps (4 Fable).",
      "at": "2026-11-15T13:24:00.647Z"
+    },
+    {
+     "text": "Brett (08:28): skins can restructure the whole app, so the VPS card generator must write DATA ONLY: a home-card@1 record (plugin id, title, icon, description, deep link, live stats source). It must never write markup or styling. The console renders every card at view time with the shared framework card component and the current skin's tokens and layout, so a skin change restyles all cards instantly and never touches the VPS or needs a rebuild. Add a test that switching skins changes the card look with no VPS change.",
+     "at": "2026-11-15T13:24:51.863Z"
     }
    ],
    "approvals": [],

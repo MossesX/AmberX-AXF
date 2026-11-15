@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6186,
- "updatedAt": "2026-11-15T13:24:03.673Z",
+ "rev": 6187,
+ "updatedAt": "2026-11-15T13:24:53.309Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -234581,7 +234581,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T13:22:11.842Z",
-   "updatedAt": "2026-11-15T13:24:00.647Z",
+   "updatedAt": "2026-11-15T13:24:51.863Z",
    "builtAt": "",
    "notes": [
     {
@@ -234599,6 +234599,10 @@
     {
      "text": "Split by Claude into 16 steps (4 Fable).",
      "at": "2026-11-15T13:24:00.647Z"
+    },
+    {
+     "text": "Brett (08:28): skins can restructure the whole app, so the VPS card generator must write DATA ONLY: a home-card@1 record (plugin id, title, icon, description, deep link, live stats source). It must never write markup or styling. The console renders every card at view time with the shared framework card component and the current skin's tokens and layout, so a skin change restyles all cards instantly and never touches the VPS or needs a rebuild. Add a test that switching skins changes the card look with no VPS change.",
+     "at": "2026-11-15T13:24:51.863Z"
     }
    ],
    "approvals": [],
@@ -235056,7 +235060,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
