@@ -20,6 +20,12 @@ Commands (queued while the phone is offline; delivered on its poll; acked with a
   POST   commands/{id}/ack          the phone's answer {deviceId, ok, data? | error?}
   GET/POST settings                 browser, notify per type, monitor, recorderMic (only Brett turns the mic on)
 
+Recorder (Audio Output Recorder, moved in whole)
+  GET    recorder/status            running, session, current part, parts, upload queue, mic, transcripts
+  POST   recorder/start             {session_name, group?, note?, approvalId?}: a straight approval on axHub
+  POST   recorder/stop
+  GET    recorder/transcripts       the transcription worker; POST recorder/transcripts/run looks now
+
 Every error answers {"error": {code, message, retryable}} with the HTTP status for its code.
 """
 from __future__ import annotations
@@ -31,6 +37,7 @@ from fastapi.responses import JSONResponse
 
 from . import commands as Q
 from . import devices as D
+from . import recorder as R
 from . import settings as S
 from .core import PhoneError
 from .identity import caller, require_person
@@ -153,3 +160,33 @@ def settings_get() -> Any:
 @router.post("/settings")
 def settings_put(request: Request, body: dict = Body(default_factory=dict)) -> Any:
     return answer(lambda: S.put(body, caller(request)[1]))
+
+
+# ------------------------------------------------------------------ recorder (moved in from the old output recorder)
+
+@router.get("/recorder/status")
+def recorder_status() -> Any:
+    return answer(R.status)
+
+
+@router.post("/recorder/start")
+def recorder_start(request: Request, body: dict = Body(default_factory=dict)) -> Any:
+    """{session_name, group?, note?, approvalId?, reason?: {title, description}} — a straight approval on axHub."""
+    reason = body.get("reason") if isinstance(body.get("reason"), dict) else None
+    return answer(lambda: R.start(str(body.get("session_name") or ""), str(body.get("group") or ""), str(body.get("note") or ""), reason,
+                                  str(body.get("approvalId") or ""), caller(request)[0], _via(request, body)))
+
+
+@router.post("/recorder/stop")
+def recorder_stop(request: Request, body: dict = Body(default_factory=dict)) -> Any:
+    return answer(lambda: R.stop(caller(request)[0], _via(request, body)))
+
+
+@router.get("/recorder/transcripts")
+def recorder_transcripts() -> Any:
+    return answer(R.transcripts_status)
+
+
+@router.post("/recorder/transcripts/run")
+def recorder_transcripts_run() -> Any:
+    return answer(R.run_now)

@@ -1,5 +1,8 @@
 # Audio Output Recorder
 
+> **Moved (Nov 15 2026):** the server part (session start/stop/status, transcripts, mic switch) now lives in Phone Connect
+> (capability `axf.phone-recorder@1`, REST `recorder/*` under Phone Connect). This plugin keeps only alias routes until it is removed.
+
 Records everything the phone **plays** while it's on and keeps it on axHub. **The mic only when you turn it on** (opt-in "Record my mic too", below).
 
 - **Turn it on:** AmberX → Media → Audio out → the switch, or the quick-settings tile **Record audio out**, or say
@@ -56,7 +59,7 @@ quality. A binary upload endpoint on axHub (bigger files, real delete) would lif
   `OutputRecordQueue` (settings + local chunks), `OutputRecordUploader` (parts → axHub, confirm, retry, cap),
   `OutputRecordStartActivity` (the one consent flow), `OutputRecordTile`, `OutputRecorderPlugin` (the bridge).
   The capture path is Audio Extract's (PR #187) without the screen; `AudioExtractPlugin.offer` takes the hand-over.
-- Test: `node --experimental-strip-types apps/console-web/plugins/output-recorder/test.mts` (or `npx -y tsx …`), `python3 apps/console-web/plugins/output-recorder/test_transcripts.py`.
+- Test: `node --experimental-strip-types apps/console-web/plugins/output-recorder/test.mts` (or `npx -y tsx …`); the transcripts test moved with the server part into Phone Connect.
 
 ## Opt-in mic ("Record my mic too", Nov 1 2026)
 

@@ -1,5 +1,5 @@
 """Automatic transcripts: chunk selection, reassembly + checksum, retries, memory floor, document size, a fake engine.
-  python3 apps/console-web/plugins/output-recorder/test_transcripts.py
+  python3 apps/console-web/plugins/phone-connect/test_transcripts.py
 """
 from __future__ import annotations
 
