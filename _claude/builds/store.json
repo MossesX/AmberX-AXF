@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6356,
- "updatedAt": "2026-11-15T20:12:27.056Z",
+ "rev": 6357,
+ "updatedAt": "2026-11-15T20:12:45.636Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -229282,7 +229282,7 @@
    "pr": "#705",
    "priority": "P0",
    "createdAt": "2026-11-15T04:17:06.158Z",
-   "updatedAt": "2026-11-15T20:12:25.299Z",
+   "updatedAt": "2026-11-15T20:12:43.985Z",
    "builtAt": "2026-11-15T20:10:32.121Z",
    "notes": [
     {
@@ -229348,6 +229348,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-auto-lander-controls-in-the-gate-plugin--earl, shared account login)",
      "at": "2026-11-15T19:57:12.374Z"
+    },
+    {
+     "text": "Headless run axf-auto-lander-controls-in-the-gate-plugin--earl: brief only · start 15.3K tokens ($0.05) · cost $1.83 · 75 turns · 6 tools, MCP none",
+     "at": "2026-11-15T20:12:43.985Z"
     }
    ],
    "approvals": [],
@@ -229820,7 +229824,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
