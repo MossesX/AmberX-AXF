@@ -798,8 +798,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:31 UTC · `themed-native-controls-plugin` s19 done (all) · orchestrator
-- 2026-11-14 23:34 UTC · `themed-native-controls-plugin` s20 done (all) · orchestrator
 - 2026-11-14 23:35 UTC · `skin-config-panel-merge-main-and-land` → running, note (all) · pipeline
 - 2026-11-14 23:35 UTC · `skin-config-panel-merge-main-and-land` note (all) · orchestrator
 - 2026-11-14 23:35 UTC · `auto-land-merge-main-land-land-mjs-clash` branch claude/auto-land-every-finished-build-lands (all) · builds-live
@@ -1198,6 +1196,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 01:45 UTC · `token-registry-skin-editor-live-sandbox` s10 done, → complete (all) · orchestrator
 - 2026-11-15 01:45 UTC · `token-registry-skin-editor-live-sandbox` note (all) · orchestrator
 - 2026-11-15 01:46 UTC · `token-registry-skin-editor-live-sandbox` → running, note (all) · orchestrator
+- 2026-11-15 01:50 UTC · `prompting-engine-control-panel-events` → pending, note (all) · reconciler
+- 2026-11-15 01:50 UTC · `launch-landing-page-waitlist-referral` → pending, note (all) · reconciler
 
 ## Token passes (log)
 

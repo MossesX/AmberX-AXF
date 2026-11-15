@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T01:46:16.964Z",
+ "updatedAt": "2026-11-15T01:50:49.598Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -127791,7 +127791,7 @@
    "title": "Prompting engine with control panel (events, macros, pipelines)",
    "category": "",
    "detail": "A general prompting/rules engine with its own control panel (console plugin), built on the decision dialog (build decision-dialog-ui-review-other).\n- Create 'prompt events': a trigger (any console/axHub/build event: UI Review submitted, build failed, merge clash, approval held, schedule, voice phrase, webhook, custom), conditions, and what to ask Brett (approve/deny, veto countdown, pick from options, text input).\n- Actions on each answer: run tools (MCP/axHub/console commands), macros (saved sequences of commands), or orchestrator pipelines; chain events.\n- Control panel to list, create, edit, enable/disable, test-fire and see history of events; templates for common ones.\n- Reachable by REST/MCP/CLI/voice/control@1.\n- Schema + manifest for events/macros, conformance tests, audit log, Shipped features.\nMODEL: Brett wants Fable for the engine, event/macro schema and contract steps; Opus is fine for UI steps. Brett pre-approves the Fable upgrade for those steps.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -127799,7 +127799,7 @@
    "pr": "#697",
    "priority": "P1",
    "createdAt": "2026-11-13T18:16:04.183Z",
-   "updatedAt": "2026-11-15T01:22:09.793Z",
+   "updatedAt": "2026-11-15T01:50:47.709Z",
    "builtAt": "",
    "notes": [
     {
@@ -127845,6 +127845,10 @@
     {
      "text": "Headless run axf-prompting-engine-control-panel-events--lenny: brief only · start 13.1K tokens ($0.07) · cost $111.70 · 164 turns · 6 tools, MCP none",
      "at": "2026-11-15T01:22:09.793Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-15T01:50:47.709Z"
     }
    ],
    "approvals": [],
@@ -139253,14 +139257,14 @@
    "title": "Launch landing page + waitlist with referral ranking",
    "category": "Launch",
    "detail": "Brett wants to launch AmberX. Public landing page leading with one hook ('talk and it builds your app'), 60-second demo video slot, waitlist signup with referral move-up-the-line ranking, Stripe-ready pricing section (free trial then $30/month), token-driven and themable. Deploy on the VPS via Coolify on the amberxai.com domain (confirm in Hostinger DNS).",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/launch-landing-page-waitlist-referral",
    "pr": "#668",
    "createdAt": "2026-11-14T04:00:27.661Z",
-   "updatedAt": "2026-11-15T01:21:55.370Z",
+   "updatedAt": "2026-11-15T01:50:47.709Z",
    "builtAt": "",
    "notes": [
     {
@@ -139294,6 +139298,10 @@
     {
      "text": "s3 left open: site deployed on the VPS behind the Coolify proxy (container amberx-site healthy, landing + /api/health verified through the proxy). join.amberxai.com has no DNS record and there is no Hostinger API token on the VPS, so the public URL and TLS can't be verified. Brett: Hostinger DNS, add A record join -> 31.97.13.252 (TTL 300), then set AMBERX_SITE_URL and AMBERX_SITE_ADMIN_TOKEN in the console (apps/amberx-site/DEPLOY.md). Phone alert sent (ntfy + web push). Once DNS resolves, the next session verifies https://join.amberxai.com and ticks s3.",
      "at": "2026-11-15T01:21:37.607Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-15T01:50:47.709Z"
     }
    ],
    "approvals": [],
