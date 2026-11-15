@@ -1464,6 +1464,14 @@
               "suggests": []
             },
             {
+              "id": "ui.expanderpicker",
+              "title": "Expander picker replaces every dropdown: a row with the setting's name, value and a little arrow unfolds in place into a grid of option tiles (previews); one press highlights, the same press again applies and closes (expander-picker@1, check-dropdowns)",
+              "note": "Brett, Nov 13 2026: \"I don't want drop-down bars anymore. They are gonna be animated.\"",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
               "id": "ui.charts",
               "title": "Charts (line, bar, area, pie, sparkline, gauge, heatmap) themed from tokens",
               "note": "",

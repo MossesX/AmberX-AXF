@@ -1,6 +1,22 @@
 {
   "$axf": "feature-ledger@1",
   "note": "AI split of AmberX-AXF and axHub history into individual features, merged last by the importer (ledger.mjs import). Each entry is a feature@1 (name, description, type, app, plugin, repo, prs, builds, commits, plannedAt, mergedAt) or, under edits, a feature-edit@1. Empty until a model pass fills it: `node apps/console-web/plugins/shipped-features/ledger/ledger.mjs seed-draft` writes the input for that pass.",
-  "features": [],
+  "features": [
+    {
+      "name": "Expander picker replaces every dropdown",
+      "description": "Brett, Nov 13 2026: \"I don't want drop-down bars anymore. They are gonna be animated. It's gonna be a row with a name and a little arrow; when you press that arrow it expands a subgrid; you got to press it again to apply it and close it.\" New asset type expander-picker@1 (tiles, arrow, columns, density, animation, apply rule, preview; 8 starters) and the framework control ExpanderPicker: a row with the setting's name, current value and a little arrow unfolds in place (motion token, reduced motion respected) into a grid of option tiles that can show previews; one press highlights and previews, the same press again applies and closes. SelectField, every pick-one setting, Acting as and the window settings use it; check-dropdowns fails CI on any new raw <select>. API: every picker is a console-control setting:<label> target (state, set, press, open) reachable through REST, MCP console actions, axf control and voice.",
+      "type": "ui",
+      "app": "framework",
+      "plugin": "",
+      "repo": "amberx-axf",
+      "prs": [
+        630
+      ],
+      "builds": [
+        "new-asset-type-animated-expanding-row"
+      ],
+      "plannedAt": "2026-11-13T18:13:23.702Z"
+    }
+  ],
   "edits": []
 }
