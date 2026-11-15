@@ -2612,6 +2612,14 @@
               "tag": "",
               "recommended": true,
               "suggests": []
+            },
+            {
+              "id": "cx.gate",
+              "title": "Gate & rules plugin: the rules a PR must pass, the auto-lander with one Merge queue on/off switch (off = one at a time), and the history of both; REST, MCP, CLI and voice",
+              "note": "apps/console-web/plugins/gate (gate-rules@1, framework/spec/GATE.md): Rules / Auto-lander / History tabs, gate-store.mjs + lander.mjs adapters (axf-molly replaces only those), gate.mjs one implementation; Kotlin twin deferred",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
             }
           ]
         }
