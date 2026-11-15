@@ -797,7 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 22:46 UTC · `land-finish-auto-land-live-clear-backlog` s6 done (all) · orchestrator
 - 2026-11-14 22:46 UTC · `picker-dialog-plugin-replaces-all` s6 done, → running (all) · orchestrator
 - 2026-11-14 22:46 UTC · `hotfix-desktop-console-draws-app-menu` → queued (all) · orchestrator
 - 2026-11-14 22:46 UTC · `auto-land-merge-main-land-land-mjs-clash` → queued (all) · orchestrator
@@ -1197,6 +1196,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 00:11 UTC · `merge-main-land-console-app-part-2` added (0 steps) (all) · foreign-write
 - 2026-11-15 00:11 UTC · `merge-main-land-voice-listener-use` added (0 steps) (all) · foreign-write
 - 2026-11-15 00:11 UTC · `merge-main-land-console-axhub-retry` added (0 steps) (all) · foreign-write
+- 2026-11-15 00:12 UTC · `merge-main-land-console-app-part-2` note (all) · orchestrator
 
 ## Token passes (log)
 
