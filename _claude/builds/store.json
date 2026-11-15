@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5797,
- "updatedAt": "2026-11-15T00:33:35.762Z",
+ "rev": 5798,
+ "updatedAt": "2026-11-15T00:33:48.780Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -142332,7 +142332,7 @@
    "pr": "#443",
    "priority": "P1",
    "createdAt": "2026-11-10T02:44:38.021Z",
-   "updatedAt": "2026-11-10T15:10:28.257Z",
+   "updatedAt": "2026-11-15T00:33:45.567Z",
    "builtAt": "2026-11-10T15:10:28.257Z",
    "notes": [
     {
@@ -142377,6 +142377,23 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:33:45.463Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/agent-slots/web/index.tsx, apps/console-web/plugins/claude-badge/web/index.tsx, apps/console-web/plugins/container-access/web/index.tsx, apps/console-web/plugins/maintenance/engine/maint.py, apps/console-web/plugins/maintenance/help.json, apps/console-web/plugin"
+     }
+    ]
    },
    "steps": [
     {
@@ -142457,7 +142474,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
