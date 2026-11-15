@@ -126,3 +126,19 @@ export function answer(rows, view, viewer, opts = {}) {
 export function line(s) {
   return `${s.expanded ? '▾' : '▸'} ${s.title} · ${s.statusLabel}: ${s.why} · ${s.priority} · ${s.steps.done}/${s.steps.total} steps · ${s.age || '—'} [${s.id}]`;
 }
+
+/**
+ * A console / voice action (build-orchestrator.pending-rows | pending-<expand|collapse|toggle>:<build> |
+ * pending-collapse-all) as the route it calls, relative to the plugin: { method, path } or null. The console actions in
+ * web/index.tsx use this, so voice reaches exactly the routes REST and MCP do.
+ */
+export function actionRoute(spec) {
+  const m = /^build-orchestrator\.pending-(rows|expand|collapse|toggle|collapse-all)(?::(.*))?$/.exec(str(spec, 300).trim());
+  if (!m) return null;
+  const [, op, raw = ''] = m;
+  if (op === 'rows') return { method: 'GET', path: 'pending/rows' };
+  if (op === 'collapse-all') return { method: 'POST', path: 'pending/rows/collapse-all' };
+  let id = raw; try { id = decodeURIComponent(raw); } catch { /* as given */ }
+  id = id.trim().toLowerCase();
+  return isBuildId(id) ? { method: 'POST', path: `pending/rows/${encodeURIComponent(id)}/${op}` } : null;
+}

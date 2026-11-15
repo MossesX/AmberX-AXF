@@ -54,4 +54,10 @@ t('normView drops junk', () => {
 });
 t('line reads as one plain line', () => { const l = pr.line({ ...pr.summarize(base, { now: NOW }), expanded: true }); assert.match(l, /^▾ Skins · Pending: waiting for Queue · P1 · 2\/5 steps · 3 h \[skins\]$/); });
 
+t('voice actions map onto the REST routes', () => {
+  assert.deepEqual(pr.actionRoute('build-orchestrator.pending-rows'), { method: 'GET', path: 'pending/rows' });
+  assert.deepEqual(pr.actionRoute('build-orchestrator.pending-toggle:Skins'), { method: 'POST', path: 'pending/rows/skins/toggle' });
+  assert.deepEqual(pr.actionRoute('build-orchestrator.pending-collapse-all'), { method: 'POST', path: 'pending/rows/collapse-all' });
+  assert.equal(pr.actionRoute('build-orchestrator.pending-expand:'), null); assert.equal(pr.actionRoute('build-orchestrator.pending-expand:..%2Fx'), null); assert.equal(pr.actionRoute('other.thing'), null);
+});
 console.log(`pending-rows: ${n} tests passed`);

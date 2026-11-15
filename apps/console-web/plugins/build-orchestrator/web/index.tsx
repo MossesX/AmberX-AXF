@@ -7,6 +7,7 @@ import { addLoadedSource } from '@console/control/search';
 import { FOLDER, OrchestratorPage, TABS, openTab } from './ui';
 import { focusBuild } from './focus';
 import { pendingReload } from './pending';
+import { actionRoute } from '../pending-rows.mjs';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
 
 const ACTION_LABEL: Record<BuildAction, string> = { unqueue: 'Back to Pending', hold: 'Hold (stays in the Queue)', release: 'Release from hold', archive: 'Move to the Archive', unarchive: 'Bring back from the Archive', delete: 'Delete (kept in Deleted)', restore: 'Restore' };
@@ -101,17 +102,20 @@ export const plugin: AxfWebLibrary = {
     // Pending rows (pending-rows-view@1): the same routes as the tab, the MCP commands pending-* and `orchestrator.mjs
     // pending …`. Voice: "open skins in pending", "collapse all pending". The open tab reloads to show the change.
     type PendingAnswer = { ok: boolean; error?: string; count: number; expanded: string[] };
-    const pendingCall = (path: string, said: (r: PendingAnswer) => string) => void pipeApi.post<PendingAnswer>(path, {})
-      .then((r) => { if (!r.ok) throw new Error(r.error); pendingReload(); rt.toast(said(r), 'success'); }).catch((e: Error) => rt.toast(e.message, 'danger'));
-    rt.actions.register('build-orchestrator.pending-rows', () => { rt.navigate('build-orchestrator'); openTab('pending'); }, { label: 'Build orchestrator: the Pending rows (one row per build)', effect: 'navigate' });
+    const pendingRun = (spec: string, said: (r: PendingAnswer) => string) => {
+      const route = actionRoute(spec);
+      if (!route) { rt.toast(`Name a pending build: ${spec.split(':')[0]}:<build>`, 'warning'); return; }
+      const call = route.method === 'GET' ? pipeApi.call<PendingAnswer>(route.path) : pipeApi.post<PendingAnswer>(route.path, {});
+      void call.then((r) => { if (!r.ok) throw new Error(r.error); pendingReload(); rt.toast(said(r), 'success'); }).catch((e: Error) => rt.toast(e.message, 'danger'));
+    };
+    rt.actions.register('build-orchestrator.pending-rows', () => { rt.navigate('build-orchestrator'); openTab('pending'); pendingRun('build-orchestrator.pending-rows', (r) => `${r.count} pending, ${r.expanded.length} open`); }, { label: 'Build orchestrator: the Pending rows (one row per build)', effect: 'navigate' });
     for (const op of ['expand', 'collapse', 'toggle'] as const) {
       rt.actions.register(`build-orchestrator.pending-${op}`, ([arg]) => {
-        const id = decodeURIComponent(arg ?? '').trim();
-        if (!id) { rt.toast(`Name a build: build-orchestrator.pending-${op}:<build>`, 'warning'); return; }
-        pendingCall(`pending/rows/${encodeURIComponent(id)}/${op}`, (r) => `${id}: ${r.expanded.includes(id) ? 'expanded' : 'collapsed'} in Pending`);
+        const id = decodeURIComponent(arg ?? '').trim().toLowerCase();
+        pendingRun(`build-orchestrator.pending-${op}:${id}`, (r) => `${id}: ${r.expanded.includes(id) ? 'expanded' : 'collapsed'} in Pending`);
       }, { label: `Build orchestrator: ${op} a pending build's row`, params: true });
     }
-    rt.actions.register('build-orchestrator.pending-collapse-all', () => pendingCall('pending/rows/collapse-all', (r) => `Every pending row collapsed (${r.count})`), { label: 'Build orchestrator: collapse every pending row' });
+    rt.actions.register('build-orchestrator.pending-collapse-all', () => pendingRun('build-orchestrator.pending-collapse-all', (r) => `Every pending row collapsed (${r.count})`), { label: 'Build orchestrator: collapse every pending row' });
     for (const action of BUILD_ACTIONS) {
       rt.actions.register(`build-orchestrator.${action}`, ([arg]) => {
         const ids = decodeURIComponent(arg ?? '').split(',').map((x) => x.trim()).filter(Boolean);

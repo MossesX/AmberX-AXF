@@ -613,10 +613,10 @@ def _pending(*args: str) -> dict[str, Any]:
 
 
 @router.get("/pending/rows")
-def pending_rows(request: Request) -> dict[str, Any]:
+def pending_rows(request: Request, viewer: str = "") -> dict[str, Any]:
     """The Pending tab as one collapsed row per build: title, status label, why it is pending, priority, steps
     done/total, age, plus the expanded body (steps, notes, what Brett said) and each row's `expanded` flag for this viewer."""
-    return _pending("rows", "--viewer", _viewer(request))
+    return _pending("rows", "--viewer", _viewer(request, {"viewer": viewer}))
 
 
 @router.post("/pending/rows/collapse-all")
