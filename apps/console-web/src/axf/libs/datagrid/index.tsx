@@ -19,8 +19,8 @@ import './datagrid.css';
 
 export const DATAGRID_LIBRARY_ID = 'ai.amberx.axf.datagrid';
 const PARTS = (spec as { parts: LibraryPart[] }).parts;
-export interface DataGridConfig { groups: boolean; columnMenu: false | { hidden: string[] }; sort: boolean; expand: boolean; drag: false | { trash: boolean }; compact: boolean }
-let config: DataGridConfig = { groups: true, columnMenu: { hidden: [] }, sort: true, expand: true, drag: { trash: true }, compact: false };
+export interface DataGridConfig { groups: boolean; columnMenu: false | { hidden: string[] }; sort: boolean; expand: boolean; drag: false | { trash: boolean }; compact: boolean; lines: 1 | 2 }
+let config: DataGridConfig = { groups: true, columnMenu: { hidden: [] }, sort: true, expand: true, drag: { trash: true }, compact: false, lines: 2 };
 export function configureDataGrid(installed: { parts?: Record<string, unknown> } | null | undefined): DataGridConfig {
   const pp = (id: string) => partParams(installed, id, PARTS.find((p) => p.id === id));
   config = {
@@ -29,6 +29,7 @@ export function configureDataGrid(installed: { parts?: Record<string, unknown> }
     sort: partOn(installed, 'sort', PARTS), expand: partOn(installed, 'expand', PARTS),
     drag: partOn(installed, 'drag', PARTS) ? { trash: pp('drag').trash !== false } : false,
     compact: partOn(installed, 'compact', PARTS),
+    lines: partOn(installed, 'two-line', PARTS) ? 2 : 1,
   };
   return config;
 }
@@ -44,9 +45,15 @@ export interface GridColumn<R> {
   align?: 'end';
   sortValue?: (r: R) => number | string;
   render: (r: R) => ReactNode;
+  /** the cell's second line when rows show two lines (the app's `two-line` part, or the grid's `lines`) */
+  sub?: (r: R) => ReactNode;
+  /** right-click / long-press on this cell opens this context target (else the row's) */
+  cellCtx?: (r: R) => { target: string; payload?: string } | undefined;
 }
 export interface GridGroup<R> { id: string; title: string; icon?: string; collapsed?: boolean; rows: R[]; groups: GridGroup<R>[]; summary?: ReactNode; progress?: number; counts?: ReactNode; ctx?: { target: string; payload?: string }; fixed?: boolean }
 export type GridSort = { col: string; dir: 1 | -1 } | null;
+/** One key of a multi-column sort (first = primary). */
+export type GridSortKey = { col: string; dir: 1 | -1 };
 export interface DataGridProps<R> {
   id: string;
   label?: string;
@@ -59,7 +66,14 @@ export interface DataGridProps<R> {
   onShowAll?: () => void;
   onChooseColumns?: () => void;
   sort?: GridSort;
-  onSort?: (col: string | null) => void;
+  /** multi-column sort (wins over `sort`): headers show 1, 2, 3…; the grid sorts each group's rows by every key in turn */
+  sorts?: readonly GridSortKey[];
+  /** `add`: shift-click or the header menu's "Then by" (long-press on a phone) adds the column as the next sort key */
+  onSort?: (col: string | null, opts?: { add?: boolean }) => void;
+  /** column order by id (missing ids keep their place after the listed ones); fixed columns stay first */
+  order?: readonly string[];
+  /** 1 or 2 lines per row (default: the app's `two-line` part); the second line is each column's `sub` */
+  lines?: 1 | 2;
   expanded?: readonly string[];
   onToggleExpand?: (id: string) => void;
   renderDetail?: (r: R) => ReactNode;
@@ -114,7 +128,10 @@ export function DataGrid<R>(p: DataGridProps<R>) {
   const rt = useRuntime();
   const zone = p.zone ?? `axf-grid:${p.id}`;
   const drag = config.drag && p.onMove ? config.drag : false;
-  const cols = p.columns.filter((c) => c.fixed || !config.columnMenu || !p.hidden.includes(c.id));
+  const ordered = p.order?.length ? [...p.columns].sort((a, b) => { const r = (c: GridColumn<R>) => (c.fixed ? -1 : p.order!.includes(c.id) ? p.order!.indexOf(c.id) : p.order!.length + p.columns.indexOf(c)); return r(a) - r(b); }) : p.columns;
+  const cols = ordered.filter((c) => c.fixed || !config.columnMenu || !p.hidden.includes(c.id));
+  const sorts: GridSortKey[] = p.sorts ? [...p.sorts] : p.sort ? [p.sort] : [];
+  const lineCount: 1 | 2 = p.lines ?? (p.compact ? 1 : config.lines);
   useDatasetsRevision(); // row hooks registered later redraw the grid
   const tail = p.rowRef && anyRowHooks() ? 'minmax(calc(var(--fx-space) * 4), max-content)' : 'calc(var(--fx-space) * 4)';
   // component-tokens@1: this one grid's own token values (axf.tokens.instances → --fx-grid-* on the element) win over the skin's
@@ -134,14 +151,14 @@ export function DataGrid<R>(p: DataGridProps<R>) {
     rt.contextExtras.set(headerTarget, (_t, col = '') => {
       const c = p.columns.find((x) => x.id === col);
       return [
-        ...(c?.sortable && config.sort && p.onSort ? [{ id: 'sort', label: `Sort by ${c.label}`, icon: 'list', action: `axf.grid.do:${p.id}:sort:${col}` }, { id: 'unsort', label: 'Original order', icon: 'list', action: `axf.grid.do:${p.id}:unsort` }, { id: 's0', separator: true }] : []),
+        ...(c?.sortable && config.sort && p.onSort ? [{ id: 'sort', label: `Sort by ${c.label}`, icon: 'list', action: `axf.grid.do:${p.id}:sort:${col}` }, ...(p.sorts && sorts.length && !sorts.some((s) => s.col === col) ? [{ id: 'sortadd', label: `Then by ${c.label}`, icon: 'plus', action: `axf.grid.do:${p.id}:sortadd:${col}` }] : []), { id: 'unsort', label: 'Original order', icon: 'list', action: `axf.grid.do:${p.id}:unsort` }, { id: 's0', separator: true }] : []),
         ...(c && !c.fixed ? [{ id: 'hide', label: `Hide ${c.label}`, icon: 'eye', action: `axf.grid.do:${p.id}:col:${col}` }] : []),
         { id: 'cols', label: 'Columns', icon: 'list', items: p.columns.filter((x) => !x.fixed).map((x) => ({ id: `c-${x.id}`, label: x.label, icon: p.hidden.includes(x.id) ? 'minus' : 'check', action: `axf.grid.do:${p.id}:col:${x.id}` })) },
         { id: 'all', label: 'Show every column', icon: 'eye', action: `axf.grid.do:${p.id}:all` },
         ...(p.onChooseColumns ? [{ id: 'choose', label: 'Choose columns…', icon: 'sliders', action: `axf.grid.do:${p.id}:choose` }] : []),
       ];
     });
-    grids.set(p.id, { col: (c) => p.onToggleColumn!(c), all: () => p.onShowAll?.(), choose: () => p.onChooseColumns?.(), sort: (c) => p.onSort?.(c) });
+    grids.set(p.id, { col: (c) => p.onToggleColumn!(c), all: () => p.onShowAll?.(), choose: () => p.onChooseColumns?.(), sort: (c, add) => p.onSort?.(c, add ? { add: true } : undefined) });
     return () => { rt.contextExtras.delete(headerTarget); grids.delete(p.id); };
   });
   useEffect(() => {
@@ -158,9 +175,8 @@ export function DataGrid<R>(p: DataGridProps<R>) {
     if (config.groups) lines.push({ kind: 'group', g, depth });
     if (g.collapsed && config.groups) return;
     let rows = dsId ? applyDataset(dsId, g.rows) : g.rows;
-    const s = config.sort ? p.sort : null;
-    const col = s ? p.columns.find((c) => c.id === s.col) : undefined;
-    if (s && col?.sortValue) rows = [...rows].sort((a, b) => { const x = col.sortValue!(a), y = col.sortValue!(b); return (x < y ? -1 : x > y ? 1 : 0) * s.dir; });
+    const keys = config.sort ? sorts.map((s) => ({ s, col: p.columns.find((c) => c.id === s.col) })).filter((k) => k.col?.sortValue) : [];
+    if (keys.length) rows = [...rows].sort((a, b) => { for (const { s, col } of keys) { const x = col!.sortValue!(a), y = col!.sortValue!(b); if (x < y) return -s.dir; if (x > y) return s.dir; } return 0; });
     for (const r of rows) lines.push({ kind: 'row', r, depth });
     for (const c of g.groups) walk(c, depth + 1);
   };
@@ -196,24 +212,28 @@ export function DataGrid<R>(p: DataGridProps<R>) {
     address: `grid:${p.id}`, kind: 'grid', label: p.label ?? p.id, keywords: ['grid', 'table', 'list'], element: () => gridRef.current,
     get: () => p.selected ?? null,
     set: (v) => { const id = String(v ?? ''); const el = rowEl(id); if (!el) return `no row ${id} in ${p.label ?? p.id}`; if (!p.onRowClick) return `${p.label ?? p.id} has no selection`; el.click(); return undefined; },
-    state: () => ({ rows: all.length, shown: shownIds.size, selected: p.selected ?? null, expanded: p.expanded ?? [], groups: p.groups.map((g) => ({ id: g.id, title: g.title, collapsed: !!g.collapsed, rows: g.rows.length })), columns: cols.map((c) => c.id), sort: p.sort ?? null }),
+    state: () => ({ rows: all.length, shown: shownIds.size, selected: p.selected ?? null, expanded: p.expanded ?? [], groups: p.groups.map((g) => ({ id: g.id, title: g.title, collapsed: !!g.collapsed, rows: g.rows.length })), columns: cols.map((c) => c.id), sort: sorts[0] ?? null, sorts, lines: lineCount }),
   }, [p.id]);
   const dragFor = (kind: 'row' | 'group', id: string, label: string, icon: string) => (drag ? {
     onPointerDown: (e: RPointerEvent) => startDrag(e, { kind: `${zone}:${kind}`, id, label, icon, trashable: !!(drag.trash && p.onTrash), onTrash: p.onTrash ? () => p.onTrash!({ kind, id, label }) : undefined }),
   } : {});
 
   const grid = (
-    <div ref={gridRef} className={`axf-grid ${p.compact ? 'is-compact' : ''}`} style={template} role="grid" aria-label={p.label ?? 'Grid'} data-axf-dataset={dsId || undefined} data-axf-grid={p.id}>
+    <div ref={gridRef} className={`axf-grid ${p.compact ? 'is-compact' : ''} ${lineCount === 2 ? 'is-two-line' : ''}`} style={template} role="grid" aria-label={p.label ?? 'Grid'} data-axf-dataset={dsId || undefined} data-axf-grid={p.id}>
       <div className="axf-grid-head" role="row">
         <span />
-        {cols.map((c) => (
-          <button key={c.id} type="button" role="columnheader" className={`fx-btn fx-btn--sm fx-btn--quiet axf-grid-hcell ${c.align === 'end' ? 'is-end' : ''}`}
-            data-fx-ctx-target={config.columnMenu ? headerTarget : undefined} data-fx-ctx-payload={c.id}
-            aria-sort={p.sort?.col === c.id ? (p.sort.dir === 1 ? 'ascending' : 'descending') : 'none'}
-            onClick={() => config.sort && c.sortable && p.onSort?.(c.id)} title={config.columnMenu ? 'Click to sort · right-click for columns' : undefined}>
-            {c.label}{p.sort?.col === c.id && <Icon name={p.sort.dir === 1 ? 'chevron-up' : 'chevron-down'} size={12} />}
-          </button>
-        ))}
+        {cols.map((c) => {
+          const si = sorts.findIndex((s) => s.col === c.id); const sk = sorts[si];
+          return (
+            <button key={c.id} type="button" role="columnheader" className={`fx-btn fx-btn--sm fx-btn--quiet axf-grid-hcell ${c.align === 'end' ? 'is-end' : ''}`}
+              data-fx-ctx-target={config.columnMenu ? headerTarget : undefined} data-fx-ctx-payload={c.id}
+              aria-sort={sk ? (sk.dir === 1 ? 'ascending' : 'descending') : 'none'}
+              onClick={(e) => config.sort && c.sortable && p.onSort?.(c.id, e.shiftKey && p.sorts ? { add: true } : undefined)}
+              title={config.columnMenu ? (p.sorts ? 'Click to sort · shift-click to sort by this too · right-click for columns' : 'Click to sort · right-click for columns') : undefined}>
+              {c.label}{sk && <Icon name={sk.dir === 1 ? 'chevron-up' : 'chevron-down'} size={12} />}{sk && sorts.length > 1 && <span className="axf-grid-sortn">{si + 1}</span>}
+            </button>
+          );
+        })}
         {config.columnMenu ? <IconButton icon="more" label="Columns" onClick={(e) => rt.openContext(e.clientX, e.clientY, headerTarget, '')} /> : <span />}
       </div>
       {lines.map((l) => l.kind === 'group' ? (
@@ -229,7 +249,7 @@ export function DataGrid<R>(p: DataGridProps<R>) {
           {l.g.counts}
         </div>
       ) : (
-        <Row key={p.rowId(l.r)} p={p} r={l.r} depth={l.depth} cols={cols} dragProps={dragFor('row', p.rowId(l.r), p.rowLabel?.(l.r) ?? p.rowId(l.r), 'file')} drop={drag ? zone : undefined} />
+        <Row key={p.rowId(l.r)} p={p} r={l.r} depth={l.depth} cols={cols} lines={lineCount} dragProps={dragFor('row', p.rowId(l.r), p.rowLabel?.(l.r) ?? p.rowId(l.r), 'file')} drop={drag ? zone : undefined} />
       ))}
       {!lines.length && <div className="axf-grid-empty">{p.empty ?? 'Nothing to show.'}</div>}
       {lines.length > 0 && filtered && !lines.some((l) => l.kind === 'row') && <div className="axf-grid-empty">No rows match the filter.</div>}
@@ -239,7 +259,7 @@ export function DataGrid<R>(p: DataGridProps<R>) {
   return dsId ? <><Slot name={DATASET_TOOLBAR_SLOT} props={{ dataset: dsId, label: p.label ?? p.id }} />{grid}</> : grid;
 }
 
-function Row<R>({ p, r, depth, cols, dragProps, drop }: { p: DataGridProps<R>; r: R; depth: number; cols: GridColumn<R>[]; dragProps: { onPointerDown?: (e: RPointerEvent) => void }; drop?: string }) {
+function Row<R>({ p, r, depth, cols, lines, dragProps, drop }: { p: DataGridProps<R>; r: R; depth: number; cols: GridColumn<R>[]; lines: 1 | 2; dragProps: { onPointerDown?: (e: RPointerEvent) => void }; drop?: string }) {
   const id = p.rowId(r);
   const open = config.expand && !!p.expanded?.includes(id);
   const ref = p.rowRef?.(r) ?? null;
@@ -255,7 +275,11 @@ function Row<R>({ p, r, depth, cols, dragProps, drop }: { p: DataGridProps<R>; r
         {...dragProps} onClick={(e) => p.onRowClick?.(r, e)} onDoubleClick={() => config.expand && p.onToggleExpand?.(id)}>
         <ControlScope address={rowScope}>
           <span className="axf-dnd-grip" style={{ marginInlineStart: `calc(var(--fx-space) * ${depth * 2})` }}><Icon name="more" size={12} /></span>
-          {cols.map((c) => <span key={c.id} role="gridcell" className={`axf-grid-cell ${c.align === 'end' ? 'is-end' : ''}`}>{c.render(r)}</span>)}
+          {cols.map((c) => { const cc = c.cellCtx?.(r); const sub = lines === 2 && c.sub ? c.sub(r) : null; return (
+            <span key={c.id} role="gridcell" className={`axf-grid-cell ${c.align === 'end' ? 'is-end' : ''} ${sub != null ? 'has-sub' : ''}`} data-fx-ctx-target={cc?.target} data-fx-ctx-payload={cc?.payload}>
+              {sub != null ? <><span className="axf-grid-main">{c.render(r)}</span><span className="axf-grid-sub">{sub}</span></> : c.render(r)}
+            </span>
+          ); })}
           {ref ? <span className="axf-grid-tail"><RowHookButtons rowRef={ref} dataset={p.dataset === false ? undefined : p.dataset ?? p.id} />{expand}</span> : expand ?? <span />}
         </ControlScope>
       </div>
@@ -279,7 +303,7 @@ export function RowHookButtons({ rowRef, dataset, size }: { rowRef: RowRef | nul
 }
 
 /** header-menu actions of the grids on screen (one action, `axf.grid.do:<grid>:<what>[:<col>]`) */
-const grids = new Map<string, { col: (c: string) => void; all: () => void; choose: () => void; sort: (c: string | null) => void }>();
+const grids = new Map<string, { col: (c: string) => void; all: () => void; choose: () => void; sort: (c: string | null, add?: boolean) => void }>();
 
 export const library: AxfWebLibrary = {
   id: DATAGRID_LIBRARY_ID,
@@ -290,7 +314,7 @@ export const library: AxfWebLibrary = {
     configureDataGrid((rt.manifest as { libraries?: Record<string, { parts?: Record<string, unknown> }> }).libraries?.datagrid);
     rt.actions.register('axf.grid.do', ([grid = '', what = '', col = '']) => {
       const g = grids.get(grid); if (!g) return;
-      if (what === 'col') g.col(col); else if (what === 'all') g.all(); else if (what === 'choose') g.choose(); else if (what === 'sort') g.sort(col); else if (what === 'unsort') g.sort(null);
+      if (what === 'col') g.col(col); else if (what === 'all') g.all(); else if (what === 'choose') g.choose(); else if (what === 'sort') g.sort(col); else if (what === 'sortadd') g.sort(col, true); else if (what === 'unsort') g.sort(null);
     }, { label: 'Grid columns', params: true } as never);
     // row hooks (grid-hook@1): right-click / long-press on any row whose ref is known lists the hooks for its kind
     registerRowRefTarget(ROW_TARGET, (payload) => { const i = payload.indexOf(':'); return i > 0 ? { kind: payload.slice(0, i), id: payload.slice(i + 1) } : null; });

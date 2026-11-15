@@ -12,6 +12,9 @@ only); every write goes through the Node side (ledger/ledger.mjs), so the refere
                               the grid is open, and on the first read after a restart)
     POST /import              the full backfill (builds journal, PRs, early commits, seed), in the background
     GET  /export?kind=csv|md&view=<json>   the grid's rows as a file
+    GET  /table?view=<json>[&kind=csv]   the Shipped features table (shipped-table@1): grouped, filtered, multi-sorted rows
+                              with every column (the grid, MCP, CLI and voice read the same projection)
+    POST /remove              { feature, by }: mark a feature Removed (kept, with its history)
     GET  /search?q=           features (name, Brett's words, edits, PR #, build) and manifests matching the text
     GET  /manifests?q=&since= shipped manifests (shipped-manifest@1), one line each, newest landing first
     GET  /manifest/{build}    one build's full manifest (the ledger's copy, else the sidecar)
@@ -151,6 +154,7 @@ def ledger() -> dict[str, Any]:
         m = {r["key"]: r["value"] for r in c.execute("SELECT key, value FROM meta")}
         out["since"] = m.get("since", "")
         out["updatedAt"] = m.get("updated_at", "")
+        out["manifests"] = [_manifest_brief(m) for m in _manifest_rows(c, "SELECT doc FROM manifests")]
         out["meta"] = {**meta, "schema": int(m.get("schema_version", "0") or 0), "importedAt": m.get("imported_at", ""), "counts": {t: len(out[t]) for t in TABLES}}
         return out
     finally:
@@ -221,6 +225,40 @@ def export(kind: str = "csv", view: str = "{}") -> PlainTextResponse:
         raise HTTPException(500, (err.strip().splitlines() or ["export failed"])[-1][:300])
     media = "text/csv" if kind == "csv" else "text/markdown"
     return PlainTextResponse(out, media_type=media, headers={"content-disposition": f'attachment; filename="shipped-features.{kind}"'})
+
+
+def _manifest_brief(m: dict[str, Any]) -> dict[str, Any]:
+    """What the table needs from a manifest: its build and test results (pass / total)."""
+    tests = m.get("tests") or []
+    return {"build": (m.get("build") or {}).get("id", ""), "tests": {"pass": sum(1 for t in tests if t.get("result") == "pass"), "total": len(tests)}}
+
+
+@router.get("/table", response_model=None)
+def table(view: str = "{}", kind: str = "json") -> Any:
+    """The Shipped features table: view = { by, sorts: [{col, dir}], hidden, order, search, plugins, statuses, from, to,
+    hasApi, notDeployed }. kind=csv gives the shown columns as a file."""
+    if kind not in ("json", "csv"):
+        raise HTTPException(400, "kind is json or csv")
+    try:
+        json.loads(view)
+    except ValueError as e:
+        raise HTTPException(400, "view must be JSON") from e
+    code, out, err = _run("table", "--view", view, "--csv" if kind == "csv" else "--json", timeout=120)
+    if code != 0:
+        raise HTTPException(500, (err.strip().splitlines() or ["table failed"])[-1][:300])
+    if kind == "csv":
+        return PlainTextResponse(out, media_type="text/csv", headers={"content-disposition": 'attachment; filename="shipped-features.csv"'})
+    return json.loads(out)
+
+
+@router.post("/remove")
+def remove(body: dict[str, Any]) -> dict[str, Any]:
+    fid = str(body.get("feature") or "").strip()
+    if not ID.match(fid):
+        raise HTTPException(400, "feature is a feature id, e.g. f-shipped-features-grid")
+    by = re.sub(r"[^\w .@-]", "", str(body.get("by") or "console"))[:60] or "console"
+    code, out, err = _run("mark-removed", fid, "--by", by, timeout=60)
+    return _json_out(code, out, err, "mark removed")
 
 
 # ------------------------------------------------------------------ shipped manifests (shipped-manifest@1) + API control

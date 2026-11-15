@@ -31,3 +31,9 @@
 /* row hooks (grid-hook@1): the hook buttons sit with the expand button; the tail track sizes to them, nothing overlaps */
 .axf-grid-tail { display: inline-flex; align-items: center; justify-content: flex-end; gap: calc(var(--fx-space) / 4); min-width: 0; }
 .axf-grid-hooks { display: inline-flex; align-items: center; gap: calc(var(--fx-space) / 4); }
+/* two-line rows (the `two-line` part / lines={2}): a cell with a second line stacks it under the first, muted and smaller */
+.axf-grid-cell.has-sub { flex-direction: column; align-items: flex-start; justify-content: center; gap: calc(var(--fx-space) / 4); }
+.axf-grid-cell.is-end.has-sub { align-items: flex-end; }
+.axf-grid-main, .axf-grid-sub { display: block; max-width: 100%; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axf-grid-sub { color: var(--fx-muted); font-size: var(--fx-size-chip-font); }
+.axf-grid-sortn { font-size: var(--fx-size-chip-font); color: var(--fx-grid-sort-arrow); }

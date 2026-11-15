@@ -15,18 +15,18 @@
       {
         "target": "view:shipped-features",
         "title": "Shipped features",
-        "text": "Every feature of AmberX-AXF and axHub in one list, from the moment a build plans it to when it went live, with every later change as an edit. Tap a row to see what you said, the builds and PRs behind it, and its edits.",
+        "text": "Every feature of AmberX-AXF and axHub in one table, grouped by plugin / area. Tap a column header to sort, shift-click (or long-press and pick Then by) to sort by more columns, open Columns to show, hide and reorder them. Your view is remembered on this browser.",
         "kind": "screen"
       },
       {
         "target": "shipped-features-view",
-        "title": "View by",
-        "text": "Groups the list by pull request, build, day, app, plugin, feature type or repo, or shows it flat. The counts on each group follow your filters."
+        "title": "Group by",
+        "text": "Groups the table by plugin / area, date shipped, build, PR or status, or shows no groups. Tap a group header to fold it; the counts show how many are live, behind a switch, partial, in progress or removed."
       },
       {
         "target": "shipped-features-filters",
-        "title": "Quick filters",
-        "text": "Hide completed hides Merged, Live and Removed; Hide pending hides Planned, Queued, Building and In PR; tap status chips to show only those. Has edits and Being edited now narrow to changed features. This phone or computer remembers your choice."
+        "title": "Filters",
+        "text": "Search names, areas, builds, PR numbers (#397), commits and Brett's words. Chips narrow to a status, features with an API, or not deployed; pick plugins and a date range. Export CSV gives exactly the rows and columns you see."
       },
       {
         "target": "shipped-features-actions",
@@ -39,81 +39,24 @@
         "text": "Install, uninstall or rebuild the Shipped features ledger (a SQLite file in the console's data folder)."
       },
       {
-        "target": "hide-completed",
-        "title": "Hide completed",
-        "text": "Turns “Hide completed” on or off. It takes effect straight away and is remembered. Part of Shipped features.",
-        "kind": "toggle",
-        "draft": true
+        "target": "shipped-features-columns",
+        "title": "Columns",
+        "text": "Feature, plugin / area, description, status, build, PR, commit, date and time shipped, on main, deployed, how to reach it (deep link, REST, MCP, CLI, voice), settings key, help, version, who asked and tests. Tick to show, use the arrows to move a column. Reset brings back the default set."
       },
       {
-        "target": "hide-pending",
-        "title": "Hide pending",
-        "text": "Turns “Hide pending” on or off. It takes effect straight away and is remembered. Part of Shipped features.",
-        "kind": "toggle",
-        "draft": true
+        "target": "shipped-features-status",
+        "title": "Shipped status",
+        "text": "Live: deployed. Behind a switch: shipped but off until a setting turns it on. Partial: on main, not deployed yet. In progress: still being built. Removed: taken out (kept here with its history)."
       },
       {
-        "target": "show-cancelled",
-        "title": "Show cancelled",
-        "text": "Turns “Show cancelled” on or off. It takes effect straight away and is remembered. Part of Shipped features.",
-        "kind": "toggle",
-        "draft": true
+        "target": "shipped-features-row-menu",
+        "title": "Row menu",
+        "text": "Right-click or long-press a row or a cell: open the feature, open its build, open its PR, copy a link to it, copy the cell's value, or mark it removed. The Build cell also offers the Build orchestrator's own items."
       },
       {
-        "target": "has-edits",
-        "title": "Has edits",
-        "text": "Turns “Has edits” on or off. It takes effect straight away and is remembered. Part of Shipped features.",
-        "kind": "toggle",
-        "draft": true
-      },
-      {
-        "target": "being-edited-now",
-        "title": "Being edited now",
-        "text": "Turns “Being edited now” on or off. It takes effect straight away and is remembered. Part of Shipped features.",
-        "kind": "toggle",
-        "draft": true
-      },
-      {
-        "target": "edit-status",
-        "title": "Edit status",
-        "text": "Where you set “Edit status”. Change it and the app uses the new value. Part of Shipped features.",
-        "kind": "field",
-        "draft": true
-      },
-      {
-        "target": "column:type",
-        "title": "Type",
-        "text": "The “Type” column. Tap its header to sort the list by it.",
-        "kind": "column",
-        "draft": true
-      },
-      {
-        "target": "column:planned",
-        "title": "Planned",
-        "text": "The “Planned” column. Tap its header to sort the list by it.",
-        "kind": "column",
-        "draft": true
-      },
-      {
-        "target": "column:merged",
-        "title": "Merged",
-        "text": "The “Merged” column. Tap its header to sort the list by it.",
-        "kind": "column",
-        "draft": true
-      },
-      {
-        "target": "column:live",
-        "title": "Live",
-        "text": "The “Live” column. Tap its header to sort the list by it.",
-        "kind": "column",
-        "draft": true
-      },
-      {
-        "target": "column:last-edited",
-        "title": "Last edited",
-        "text": "The “Last edited” column. Tap its header to sort the list by it.",
-        "kind": "column",
-        "draft": true
+        "target": "shipped-features-api",
+        "title": "Without the UI",
+        "text": "REST GET /api/plugins/shipped-features/table?view=<json> (kind=csv for a file) and POST /remove; the same as MCP tools (shipped-features table / remove), the CLI (node apps/console-web/plugins/shipped-features/ledger/ledger.mjs table --view '<json>'), the console action shipped-features.view (by=area;sort=shipped:desc;statuses=live) and voice: 'show shipped features not deployed, newest first'."
       }
     ],
     "intros": [

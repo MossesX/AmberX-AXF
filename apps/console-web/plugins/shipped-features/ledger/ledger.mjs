@@ -14,6 +14,8 @@
  *   ledger.mjs manifests [--q text] [--json]           shipped manifests (shipped-manifest@1), newest landing first
  *   ledger.mjs manifest <build> [--json]               one build's manifest as the ledger has it
  *   ledger.mjs apply-manifest <file|->                 take one manifest into the ledger now (the hook / sync do this by themselves)
+ *   ledger.mjs table [--view '<json>'] [--csv] [--json] the Shipped features table (shipped-table@1): grouped, filtered, multi-sorted
+ *   ledger.mjs mark-removed <feature id> [--by who]    mark a feature Removed (kept in history; never deleted)
  */
 import * as L from '../../../../../framework/core/feature-ledger.mjs';
 import * as D from './db.mjs';
@@ -21,6 +23,7 @@ import { importAll, importJournal, importPrs } from './importers.mjs';
 import { applyManifest, syncManifests } from './manifest.mjs';
 import { readFileSync } from 'node:fs';
 import * as SM from '../../../../../framework/core/shipped-manifest.mjs';
+import * as T from './table.mjs';
 
 const args = process.argv.slice(2); const cmd = args[0] || 'stats';
 const flag = (n) => { const i = args.indexOf(`--${n}`); return i >= 0 ? args[i + 1] ?? true : null; };
@@ -94,6 +97,22 @@ async function main() {
     const v = SM.validateManifest(doc); if (!v.ok) { console.error(SM.rejection(v.errors)); return 2; }
     console.log(JSON.stringify(D.tx(db, () => applyManifest(db, doc)))); return 0;
   }
-  console.error('usage: ledger.mjs import|sync|list|show|export|stats|seed-draft|migrate|search|manifests|manifest|apply-manifest'); return 2;
+  if (cmd === 'table') {
+    const view = T.normTableView(typeof flag('view') === 'string' ? JSON.parse(flag('view')) : {});
+    const out = T.tableOf(D.ledger(db), D.listManifests(db).map(SM.summaryOf).filter(Boolean), view);
+    if (args.includes('--csv')) { console.log(T.toCsv(out.rows, out.columns)); return 0; }
+    if (json) { console.log(JSON.stringify(out)); return 0; }
+    console.log(`${out.count} of ${out.total} features${out.folded ? ` (${out.folded} repeated rows folded)` : ''} · grouped by ${T.GROUP_LABEL[view.by]}`);
+    const byId = new Map(out.rows.map((r) => [r.id, r]));
+    for (const g of out.groups) { console.log(`\n${g.title} (${g.count})`); for (const id of g.rows) { const r = byId.get(id); console.log(`  ${T.SHIP_STATUS_LABEL[r.status].padEnd(16)} ${(r.shipped || '').slice(0, 16).padEnd(17)} ${r.pr ? `#${r.pr}`.padEnd(6) : '      '} ${r.name.slice(0, 80)}`); } }
+    return 0;
+  }
+  if (cmd === 'mark-removed') {
+    const f = D.getFeature(db, args[1] || ''); if (!f) { console.error('no such feature'); return 2; }
+    const by = typeof flag('by') === 'string' ? flag('by') : 'console';
+    const next = D.tx(db, () => D.putFeature(db, { ...f, status: 'removed', lastChangedAt: new Date().toISOString() }, { why: `marked removed by ${by}` }));
+    console.log(JSON.stringify({ ok: true, feature: { id: next.id, status: next.status } })); return 0;
+  }
+  console.error('usage: ledger.mjs import|sync|list|show|export|stats|seed-draft|migrate|search|manifests|manifest|apply-manifest|table|mark-removed'); return 2;
 }
 main().then((c) => process.exit(c), (e) => { console.error(e.stack || e.message); process.exit(1); });

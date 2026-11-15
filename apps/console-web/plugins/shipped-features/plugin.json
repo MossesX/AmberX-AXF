@@ -85,6 +85,54 @@
         "readOnly": true
       },
       {
+        "route": "GET /table",
+        "id": "table",
+        "title": "Read the Shipped features table",
+        "description": "The Shipped features table as the grid shows it: rows grouped by plugin/area, date, build, PR or status, multi-sorted, filtered, with every column (feature, area, description, status live / behind a switch / partial / in progress / removed, build, PR, commit, shipped date and time, on main, deployed, how to reach it, settings key, help, version, who asked, tests). Say 'what shipped in the orchestrator, newest first' or 'which features are not deployed'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "view": {
+              "type": "string",
+              "description": "JSON: { by: area|date|build|pr|status|none, sorts: [{ col, dir: asc|desc }], hidden: [col], order: [col], search, plugins: [area], statuses: [live|switch|partial|pending|removed], from: YYYY-MM-DD, to: YYYY-MM-DD, hasApi: bool, notDeployed: bool }"
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "json",
+                "csv"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "output": "{ view, total, count, folded, columns, plugins, rows, groups: [{ key, title, count, counts, rows: [id] }] }"
+      },
+      {
+        "route": "POST /remove",
+        "id": "remove",
+        "title": "Mark a shipped feature removed",
+        "description": "Mark one feature Removed (the row and its history stay). Say 'mark the old veto banner as removed'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "feature": {
+              "type": "string",
+              "description": "feature id, e.g. f-shipped-features-grid"
+            },
+            "by": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "feature"
+          ],
+          "additionalProperties": false
+        },
+        "output": "{ ok, feature: { id, status } }"
+      },
+      {
         "route": "GET /search",
         "id": "search",
         "title": "Search shipped features",

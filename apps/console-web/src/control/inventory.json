@@ -8,7 +8,7 @@
     "tabs": 74,
     "settingsTabs": 71,
     "settings": 89,
-    "functions": 262,
+    "functions": 264,
     "buttons": 62,
     "plugins": 70
   },
@@ -6194,6 +6194,38 @@
         "shipped",
         "features",
         "show"
+      ],
+      "params": true,
+      "plugin": "ai.amberx.axf.console.shipped-features",
+      "file": "plugins/shipped-features/web/index.tsx"
+    },
+    {
+      "address": "function:shipped-features.view",
+      "kind": "function",
+      "id": "shipped-features.view",
+      "label": "Shipped features: group, sort, filter or pick columns (JSON view or by=area;sort=shipped:desc;statuses=live)",
+      "detail": "Action · Shipped features",
+      "keywords": [
+        "shipped-features.view",
+        "shipped",
+        "features",
+        "view"
+      ],
+      "params": true,
+      "plugin": "ai.amberx.axf.console.shipped-features",
+      "file": "plugins/shipped-features/web/index.tsx"
+    },
+    {
+      "address": "function:shipped-features.row",
+      "kind": "function",
+      "id": "shipped-features.row",
+      "label": "Shipped features row: open, open build, open PR, copy link, copy value, mark removed",
+      "detail": "Action · Shipped features",
+      "keywords": [
+        "shipped-features.row",
+        "shipped",
+        "features",
+        "row"
       ],
       "params": true,
       "plugin": "ai.amberx.axf.console.shipped-features",

@@ -35,3 +35,17 @@
 .axp-shipped__pre { margin: 0; max-height: calc(var(--fx-space) * 60); overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--fx-font-mono); font-size: var(--fx-size-chip-font); background: var(--fx-surface2); padding: var(--fx-dens-gap-xl); border-radius: var(--fx-radius-sm); }
 .axp-shipped__steps, .axp-shipped__list { margin: 0; padding-inline-start: var(--fx-dens-gap-2xl); display: grid; gap: calc(var(--fx-space) / 2); }
 .axp-shipped__steps li, .axp-shipped__list li { overflow-wrap: anywhere; }
+/* The table (shipped-table@1): toolbar, column picker, cells. */
+.axp-shipped__bar > .fx-seg { flex: 0 1 auto; max-width: 100%; overflow-x: auto; }
+.axp-shipped__count { color: var(--fx-muted); font-size: var(--fx-size-chip-font); }
+.axp-shipped__filters > .fx-field { flex: 0 1 calc(var(--fx-space) * 22); min-width: 0; }
+.axp-shipped__picker .axp-shipped__pickhead { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xl); }
+.axp-shipped__pickhead > b { flex: 1 1 auto; }
+.axp-shipped__picklist { list-style: none; margin: var(--fx-dens-gap-xl) 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-space) * 34), 1fr)); gap: calc(var(--fx-space) / 2) var(--fx-dens-gap-2xl); }
+.axp-shipped__picklist li { display: flex; align-items: center; gap: calc(var(--fx-space) / 2); min-width: 0; }
+.axp-shipped__picklist li > :first-child { flex: 1 1 auto; min-width: 0; }
+.axp-shipped__name { font-weight: var(--fx-grid-header-weight); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axp-shipped__clip { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axp-shipped__reach { display: inline-flex; gap: calc(var(--fx-space) / 2); color: var(--fx-accent); }
+.axp-shipped__ref { display: inline-flex; align-items: center; gap: calc(var(--fx-space) / 4); }
+:where([data-fx-narrow]) .axp-shipped__bar > .fx-field, :where([data-fx-narrow]) .axp-shipped__filters > .fx-field { flex-basis: 100%; }
