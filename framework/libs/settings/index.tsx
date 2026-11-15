@@ -1002,7 +1002,7 @@ export const library: AxfWebLibrary = {
     };
     rt.actions.register('app.settings', () => openSettings(undefined), { label: 'Settings' });
     rt.actions.register('settings.page', ([tab]) => openSettings(tab || undefined, true), { label: 'Open Settings as a page', params: true });
-    rt.actions.register('settings.opensAs', ([w]) => {
+    rt.actions.register('settings.opensas', ([w]) => {
       const v = w ? parseSettingsOpensAs(w) : (rt.settings.get(SETTINGS_OPENS_AS_KEY) === 'page' ? 'dialog' : 'page');
       if (!v) { rt.toast(`Say "dialog" or "page", not "${w}".`, 'warning', 'Settings open as'); return; }
       rt.settings.set(SETTINGS_OPENS_AS_KEY, v);

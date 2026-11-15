@@ -6,7 +6,7 @@
  *      "page" pick, `settings.page`, the host taking settings and the Settings page already open keep the page; a
  *      plugin's own "Opens in" = dialog forces the dialog; spoken words parse.
  *   2. Library: `app.settings` and `settings.open` go through the engine (never straight to the page), `settings.page`
- *      and `settings.opensAs` exist, both settings dialogs are glass + wide and carry Open as page, the per-user
+ *      and `settings.opensas` exist, both settings dialogs are glass + wide and carry Open as page, the per-user
  *      option is a setting.
  *   3. Source guard: no code outside the settings library opens a settings interface by navigating to the Settings
  *      page (`navigate('settings')`, `dispatch('nav:settings')`): openers use `app.settings` / `settings.open[:tab]` so
@@ -54,7 +54,7 @@ const lib = readFileSync(join(ROOT, 'framework/libs/settings/index.tsx'), 'utf8'
 ok(/register\('app\.settings', \(\) => openSettings\(/.test(lib), 'app.settings goes through openSettings');
 ok(/register\('settings\.open', \(\[tab\]\) => openSettings\(/.test(lib), 'settings.open goes through openSettings');
 ok(/register\('settings\.page'/.test(lib), 'settings.page exists');
-ok(/register\('settings\.opensAs'/.test(lib), 'settings.opensAs exists');
+ok(/register\('settings\.opensas'/.test(lib), 'settings.opensas exists');
 ok(/settingsOpenRoute\(/.test(lib), 'the library asks the engine');
 ok((lib.match(/rt\.navigate\(VIEW\)/g) ?? []).length === 1, 'the library navigates to the Settings page in one place only (openSettings)');
 ok(/\[TAB_DIALOG\]: \{[^\n]*surface: 'glass'[^\n]*size: 'wide'/.test(lib), 'tab dialog is glass + wide');

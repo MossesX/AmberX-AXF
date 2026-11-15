@@ -87,8 +87,8 @@ rt.dispatch('app.settings');
 ok(rt.getState().dialog?.id === 'axf.settings.all', 'app.settings opens the whole interface in the dialog');
 rt.dispatch('settings.page:probe-tab');
 ok(!rt.getState().dialog && rt.getState().view === 'settings', 'settings.page (Open as page) closes the dialog and opens the page');
-rt.dispatch('settings.opensAs:as a page');
-ok(rt.settings.get('axf.settings.opensAs') === 'page', 'settings.opensAs parses spoken words');
+rt.dispatch('settings.opensas:as a page');
+ok(rt.settings.get('axf.settings.opensAs') === 'page', 'settings.opensas parses spoken words');
 // the "Opens in" choice says it also decides where the plugin's settings open, and names the plugin
 const { installLibraries } = await import('../src/axf/react/library');
 installLibraries(rt, [{ id: 'probe.term', label: 'Probe Terminal', opens: 'window', dialogs: { 'probe.term.open': { title: 'Open a tab', render: () => null } }, settingsTabs: [{ id: 'probe-term', label: 'Probe Terminal' }] } as never]);

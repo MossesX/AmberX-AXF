@@ -179,7 +179,7 @@
         "related": [
           "view:settings",
           "action:settings.page",
-          "action:settings.opensAs"
+          "action:settings.opensas"
         ],
         "more": "Every settings interface opens this way unless you pick the page in Appearance → Display → Settings open in. Open as page, at the top of the dialog, moves the same settings onto the full Settings page."
       },
@@ -194,11 +194,11 @@
         "text": "Moves these settings from the floating dialog onto the full Settings page, on the same tab.",
         "related": [
           "action:app.settings",
-          "action:settings.opensAs"
+          "action:settings.opensas"
         ]
       },
       {
-        "target": "action:settings.opensAs",
+        "target": "action:settings.opensas",
         "title": "Settings open in",
         "text": "Where every settings interface opens: a floating dialog over the screen you're on (the default) or the Settings page. Your own choice; it follows you to every device.",
         "tryIt": "Say \"settings open as a page\" or \"settings open in a dialog\".",
