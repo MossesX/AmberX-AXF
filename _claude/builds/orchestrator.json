@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T13:01:25.154Z",
+ "updatedAt": "2026-11-15T13:02:00.788Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -151376,7 +151376,7 @@
    "pr": "#710",
    "priority": "P0",
    "createdAt": "2026-11-15T12:20:29.383Z",
-   "updatedAt": "2026-11-15T13:01:09.651Z",
+   "updatedAt": "2026-11-15T13:01:58.820Z",
    "builtAt": "",
    "notes": [
     {
@@ -151398,6 +151398,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-axf-molly-container-orchestrator-gate--sully, shared account login)",
      "at": "2026-11-15T12:22:48.103Z"
+    },
+    {
+     "text": "Do not cut over before PR #710 lands: the host's pipeline.mjs on main does not read the lease yet, so both sides would launch. After landing and 'bash deploy/install-molly.sh' from /opt/axf the gate is in place.",
+     "at": "2026-11-15T13:01:58.820Z"
     }
    ],
    "approvals": [],
