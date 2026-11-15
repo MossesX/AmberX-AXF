@@ -798,7 +798,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:12 UTC · `one-source-truth-console-shows-only-what` note (all) · pipeline
 - 2026-11-14 23:12 UTC · `owner-recognized-everywhere-veto` → pending, note (all) · pipeline
 - 2026-11-14 23:12 UTC · `picker-dialog-plugin-replaces-all` s14 done (all) · orchestrator
 - 2026-11-14 23:13 UTC · `fix-build-whose-session-finishes-phase-e` → running, note (all) · pipeline
@@ -1198,6 +1197,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 00:57 UTC · `quick-settings-pinned-collapsible-pane` s6 done (all) · orchestrator
 - 2026-11-15 00:57 UTC · `new-asset-type-animated-expanding-row` note (all) · orchestrator
 - 2026-11-15 00:57 UTC · `new-asset-type-animated-expanding-row` s8 done (all) · orchestrator
+- 2026-11-15 00:58 UTC · `new-asset-type-animated-expanding-row` s9 done (all) · orchestrator
 
 ## Token passes (log)
 
