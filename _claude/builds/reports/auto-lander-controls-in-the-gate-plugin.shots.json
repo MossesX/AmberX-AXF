@@ -1,0 +1,65 @@
+[
+ {
+  "name": "opt-status-first--auto-lander",
+  "steps": [
+   {
+    "wait": 4000
+   },
+   {
+    "eval": "localStorage.setItem('axf-console:auto-lander-view', JSON.stringify('status-first')); true"
+   },
+   {
+    "search": "Auto-lander"
+   },
+   {
+    "wait": 4000
+   }
+  ],
+  "viewports": [
+   "desktop",
+   "phone"
+  ]
+ },
+ {
+  "name": "opt-line-first--auto-lander",
+  "steps": [
+   {
+    "wait": 4000
+   },
+   {
+    "eval": "localStorage.setItem('axf-console:auto-lander-view', JSON.stringify('line-first')); true"
+   },
+   {
+    "search": "Auto-lander"
+   },
+   {
+    "wait": 4000
+   }
+  ],
+  "viewports": [
+   "desktop",
+   "phone"
+  ]
+ },
+ {
+  "name": "opt-compact--auto-lander",
+  "steps": [
+   {
+    "wait": 4000
+   },
+   {
+    "eval": "localStorage.setItem('axf-console:auto-lander-view', JSON.stringify('compact')); true"
+   },
+   {
+    "search": "Auto-lander"
+   },
+   {
+    "wait": 4000
+   }
+  ],
+  "viewports": [
+   "desktop",
+   "phone"
+  ]
+ }
+]

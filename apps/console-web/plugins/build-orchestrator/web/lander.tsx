@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState, type ReactNode } from 'react';
+import * as consoleApi from '@console/api';
 import { Button, Chip, Container, Icon, Segmented, Switch, useControlTarget, useRuntime } from '@console/axf/react';
 import { DataGrid, type GridColumn } from '@console/axf/libs/datagrid';
 import { pluginApi } from '@console/plugins';
@@ -40,6 +41,21 @@ const RESULT_TONE: Record<string, 'success' | 'accent' | 'warning' | 'danger' | 
 const CI_TONE: Record<string, 'success' | 'accent' | 'warning' | 'danger' | undefined> = { success: 'success', running: 'accent', failure: 'danger', none: undefined };
 const MODES = [{ value: 'serial' as const, label: 'Serial', title: 'One PR at a time, tested on the real main, then landed' }, { value: 'merge-queue' as const, label: 'Merge queue', title: 'The configured merge queue (batch or stack)' }];
 const SKIP_WHY = 'Skipped in the console';
+
+/*
+ * The tab's look is one of three settings assets (assets/settings/auto-lander-*.json, ui-choices set
+ * build-orchestrator-auto-lander, picked in UI Review): status first (default), line first, compact. The pick is kept
+ * in the console's local store (`auto-lander-view`).
+ */
+export type LanderSection = 'controls' | 'line' | 'runs';
+type LanderView = { id: string; order: LanderSection[]; compact: boolean };
+const STATUS_FIRST: LanderView = { id: 'status-first', order: ['controls', 'line', 'runs'], compact: false };
+export const LANDER_VIEWS: Record<string, LanderView> = {
+  'status-first': STATUS_FIRST,
+  'line-first': { id: 'line-first', order: ['line', 'controls', 'runs'], compact: false },
+  compact: { id: 'compact', order: ['controls', 'line', 'runs'], compact: true },
+};
+export const landerView = (): LanderView => LANDER_VIEWS[consoleApi.readLocal<string>('auto-lander-view', 'status-first')] ?? STATUS_FIRST;
 
 export function AutoLanderTab() {
   const rt = useRuntime();
@@ -91,51 +107,69 @@ export function AutoLanderTab() {
     { id: 'what', label: 'What happened', width: 'minmax(calc(var(--fx-font-size) * 14), 1fr)', render: (r) => <span>{r.merged?.length ? `Landed ${r.merged.map((n) => `#${n}`).join(', ')}` : r.landing ? `Landing #${r.landing.pr}` : ''}{r.reason ? `${r.merged?.length || r.landing ? ' · ' : ''}${r.reasonText || r.reason}` : ''}</span> },
   ];
   const lastRun = st?.lastRun;
-  return (
-    <div className="fx-stack fx-stack--lg al-tab" data-axf-view="auto-lander">
-      <header className="fx-pagehead">
-        <div>
-          <p className="fx-eyebrow">Gate · lands finished PRs on main</p>
-          <h1>Auto-lander {st && <Chip tone={st.enabled ? 'success' : 'warning'}>{st.enabled ? 'on' : 'off'}</Chip>}</h1>
-          <p className="fx-muted">The cron runs it every 3 minutes. Off stops the next run at once. Serial lands one PR at a time, each tested on the main it will sit on.</p>
-        </div>
-        <div className="fx-row fx-row--wrap" role="toolbar" aria-label="Auto-lander"><Button icon="refresh" disabled={!!busy} onClick={() => void load()}>Reload</Button></div>
-      </header>
-      {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
-      <div className="al-controls">
-        <Container title="Switch and mode" icon="zap">
-          <div className="fx-stack">
-            <div ref={(d) => { swEl.current = d; swTarget(d); }} data-axf-target="setting:autoLander.enabled" className="al-switch">
-              <Switch label="Auto-lander" text={st?.enabled ? 'On: lands what is ready' : 'Off: lands nothing'} checked={!!st?.enabled} disabled={!st || busy === 'enabled'} onChange={(v: boolean) => void setOn(v)} />
-            </div>
-            <div ref={(d) => { modeEl.current = d; modeTarget(d); }} data-axf-target="setting:autoLander.mode">
-              <Segmented label="Landing mode" value={st?.mode ?? 'serial'} options={MODES} disabled={!st || busy === 'mode'} onChange={(v) => void setMode(v)} />
-            </div>
-          </div>
-        </Container>
-        <Container title="Status" icon="chart">
-          {!st ? <div className="fx-empty">Loading…</div> : (
-            <dl className="al-status" data-axf-target="auto-lander.status">
-              <dt>Last run</dt><dd>{lastRun ? `${ago(st.lastRunAt)} · ${when(st.lastRunAt)}` : 'no run recorded yet'}</dd>
-              <dt>Result</dt><dd>{st.result ? <Chip tone={RESULT_TONE[st.result]}>{st.result}</Chip> : '—'}</dd>
-              <dt>Landing now</dt><dd>{st.landing ? `#${st.landing.pr} ${st.landing.title}` : 'nothing'}</dd>
-              <dt>Why it is not landing</dt><dd>{st.reason ? st.reasonText || st.reason : st.landing ? 'it is landing' : '—'}</dd>
-              <dt>In line</dt><dd>{st.inLine}</dd>
-            </dl>
-          )}
-        </Container>
+  const view = landerView();
+  const controls = (
+    <div className="fx-stack">
+      <div ref={(d) => { swEl.current = d; swTarget(d); }} data-axf-target="setting:autoLander.enabled" className="al-switch">
+        <Switch label="Auto-lander" text={st?.enabled ? 'On: lands what is ready' : 'Off: lands nothing'} checked={!!st?.enabled} disabled={!st || busy === 'enabled'} onChange={(v: boolean) => void setOn(v)} />
       </div>
-      <Container title="Landing line" icon="list">
+      <div ref={(d) => { modeEl.current = d; modeTarget(d); }} data-axf-target="setting:autoLander.mode">
+        <Segmented label="Landing mode" value={st?.mode ?? 'serial'} options={MODES} disabled={!st || busy === 'mode'} onChange={(v) => void setMode(v)} />
+      </div>
+    </div>
+  );
+  const why = st ? (st.reason ? st.reasonText || st.reason : st.landing ? 'it is landing' : '—') : '';
+  const status = !st ? <div className="fx-empty">Loading…</div> : view.compact ? (
+    <p className="al-statusline" data-axf-target="auto-lander.status">
+      {st.result ? <Chip tone={RESULT_TONE[st.result]}>{st.result}</Chip> : null} Last run {lastRun ? ago(st.lastRunAt) : 'never'} · {st.landing ? `landing #${st.landing.pr} ${st.landing.title}` : 'landing nothing'} · {why} · {st.inLine} in line
+    </p>
+  ) : (
+    <dl className="al-status" data-axf-target="auto-lander.status">
+      <dt>Last run</dt><dd>{lastRun ? `${ago(st.lastRunAt)} · ${when(st.lastRunAt)}` : 'no run recorded yet'}</dd>
+      <dt>Result</dt><dd>{st.result ? <Chip tone={RESULT_TONE[st.result]}>{st.result}</Chip> : '—'}</dd>
+      <dt>Landing now</dt><dd>{st.landing ? `#${st.landing.pr} ${st.landing.title}` : 'nothing'}</dd>
+      <dt>Why it is not landing</dt><dd>{why}</dd>
+      <dt>In line</dt><dd>{st.inLine}</dd>
+    </dl>
+  );
+  const sections: Record<LanderSection, ReactNode> = {
+    controls: view.compact ? status : (
+      <div className="al-controls" key="controls">
+        <Container title="Switch and mode" icon="zap">{controls}</Container>
+        <Container title="Status" icon="chart">{status}</Container>
+      </div>
+    ),
+    line: (
+      <Container key="line" title="Landing line" icon="list">
         <DataGrid<LineRow> id="build-orchestrator.auto-lander.line" label="Landing line" groups={[{ id: 'line', title: `${live.length} in line`, rows, groups: [], fixed: true }]}
           columns={columns} rowId={(r) => `row:${r.pr}`} rowLabel={(r) => `#${r.pr} ${r.build || r.title}`} hidden={[]}
           rowTone={(r) => (r.skipped ? 'muted' : r.conflict ? 'danger' : r.state === 'testing' ? 'accent' : '')}
           empty={<p className="fx-muted">Nothing is in the landing line: no open PR is ready.</p>} />
       </Container>
-      <Container title="Recent runs" icon="clock">
+    ),
+    runs: (
+      <Container key="runs" title="Recent runs" icon="clock" collapsible={view.compact} defaultOpen={!view.compact}>
         <DataGrid<LanderRun & { key: string }> id="build-orchestrator.auto-lander.runs" label="Recent runs" groups={[{ id: 'runs', title: `${runs.length} run(s)`, rows: runs.map((r, i) => ({ ...r, key: `${r.startedAt}-${i}` })), groups: [], fixed: true }]}
           columns={runCols} rowId={(r) => r.key} rowLabel={(r) => `${r.result} ${when(r.finishedAt || r.startedAt)}`} hidden={[]} compact
           empty={<p className="fx-muted">No runs recorded yet. The cron writes one every 3 minutes.</p>} />
       </Container>
+    ),
+  };
+  return (
+    <div className="fx-stack fx-stack--lg al-tab" data-axf-view="auto-lander" data-al-view={view.id}>
+      <header className="fx-pagehead">
+        <div>
+          <p className="fx-eyebrow">Gate · lands finished PRs on main</p>
+          <h1>Auto-lander {st && <Chip tone={st.enabled ? 'success' : 'warning'}>{st.enabled ? 'on' : 'off'}</Chip>}</h1>
+          {!view.compact && <p className="fx-muted">The cron runs it every 3 minutes. Off stops the next run at once. Serial lands one PR at a time, each tested on the main it will sit on.</p>}
+        </div>
+        <div className="fx-row fx-row--wrap" role="toolbar" aria-label="Auto-lander">
+          {view.compact && controls}
+          <Button icon="refresh" disabled={!!busy} onClick={() => void load()}>Reload</Button>
+        </div>
+      </header>
+      {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
+      {view.order.map((k) => <Fragment key={k}>{sections[k]}</Fragment>)}
     </div>
   );
 }

@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "auto-lander-compact",
+  "name": "Auto-lander: compact",
+  "version": "1.0.0",
+  "description": "Switch and mode in the header toolbar, status as one line, then the landing line; recent runs folded.",
+  "author": "Build orchestrator plugin",
+  "tags": [
+    "build-orchestrator",
+    "auto-lander",
+    "ui-choices:build-orchestrator-auto-lander"
+  ],
+  "data": {
+    "view": "compact",
+    "order": [
+      "controls",
+      "line",
+      "runs"
+    ],
+    "compact": true,
+    "storageKey": "auto-lander-view"
+  }
+}

@@ -1,0 +1,63 @@
+{
+ "assetType": "settings",
+ "owner": "build-orchestrator",
+ "options": [
+  {
+   "id": "status-first",
+   "label": "Status first",
+   "notes": "Switch and mode next to the status card on top, then the landing line, then recent runs. The default.",
+   "shots": [
+    "opt-status-first--auto-lander-desktop.png",
+    "opt-status-first--auto-lander-phone.png"
+   ],
+   "data": {
+    "view": "status-first",
+    "order": [
+     "controls",
+     "line",
+     "runs"
+    ],
+    "compact": false,
+    "storageKey": "auto-lander-view"
+   }
+  },
+  {
+   "id": "line-first",
+   "label": "Line first",
+   "notes": "The landing line on top (what lands next is the first thing you see), then switch, mode and status, then recent runs.",
+   "shots": [
+    "opt-line-first--auto-lander-desktop.png",
+    "opt-line-first--auto-lander-phone.png"
+   ],
+   "data": {
+    "view": "line-first",
+    "order": [
+     "line",
+     "controls",
+     "runs"
+    ],
+    "compact": false,
+    "storageKey": "auto-lander-view"
+   }
+  },
+  {
+   "id": "compact",
+   "label": "Compact",
+   "notes": "Switch and mode in the header toolbar, status as one line, then the landing line; recent runs folded.",
+   "shots": [
+    "opt-compact--auto-lander-desktop.png",
+    "opt-compact--auto-lander-phone.png"
+   ],
+   "data": {
+    "view": "compact",
+    "order": [
+     "controls",
+     "line",
+     "runs"
+    ],
+    "compact": true,
+    "storageKey": "auto-lander-view"
+   }
+  }
+ ]
+}
