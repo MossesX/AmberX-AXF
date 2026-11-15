@@ -13,7 +13,8 @@
  *   add --json for the record itself; --by and --reason say who and why (History).
  *
  * Ops (`run`): rules_list, rules_get, rules_set, rules_toggle, rules_reset, check_pr, history, lander_status,
- * lander_waiting, lander_runs, lander_mode, lander_land_now, lander_pause, lander_resume, settings_get, settings_set.
+ * lander_waiting, lander_runs, lander_mode, lander_land_now, lander_pause, lander_resume, settings_get, settings_set, and the
+ * build rules ops build_rules_* (build-rules-api.mjs).
  * Answers: { ok: true, … } or { ok: false, code: invalid | not_found | confirmation_required | unavailable | failed, message }.
  */
 import { existsSync, readFileSync } from 'node:fs';
@@ -24,6 +25,7 @@ import { createStore } from './gate-store.mjs';
 import { createLander } from './lander.mjs';
 import * as history from './history.mjs';
 import { readRuns } from './build-rules-runner.mjs';
+import { BUILD_RULE_OPS, createBuildRulesOps } from './build-rules-api.mjs';
 
 /**
  * The build rules' part of a verdict: the latest gate-phase run of each rule for the build (build-rules@1). A rule whose
@@ -38,7 +40,7 @@ export function buildRulesVerdict(build, { dir } = {}) {
   return { build, ran: true, failing: results.filter((r) => r.result === 'fail').map((r) => r.id), results };
 }
 
-export const OPS = Object.freeze(['rules_list', 'rules_get', 'rules_set', 'rules_toggle', 'rules_reset', 'check_pr', 'history', 'lander_status', 'lander_waiting', 'lander_runs', 'lander_mode', 'lander_land_now', 'lander_pause', 'lander_resume', 'settings_get', 'settings_set']);
+export const OPS = Object.freeze(['rules_list', 'rules_get', 'rules_set', 'rules_toggle', 'rules_reset', 'check_pr', 'history', 'lander_status', 'lander_waiting', 'lander_runs', 'lander_mode', 'lander_land_now', 'lander_pause', 'lander_resume', 'settings_get', 'settings_set', ...BUILD_RULE_OPS]);
 
 /** The plugin's own settings (Settings → Plugins → Gate): key → { type, default, … }. */
 export const SETTINGS = Object.freeze({
@@ -159,6 +161,7 @@ export function createGate(opts = {}) {
     lander_land_now(i = {}) { const r = lander.landNow({ pr: i.pr, by: by(i), reason: i.reason || '', confirm: i.confirm || '' }); return r.ok === false ? { ...r, message: `lands #${r.pr} next: call again with confirm` } : r; },
     lander_pause(i = {}) { return { ok: true, ...lander.pause({ why: i.why || '', by: by(i), reason: i.reason || '' }) }; },
     lander_resume(i = {}) { return { ok: true, ...lander.resume({ by: by(i), reason: i.reason || '' }) }; },
+    ...createBuildRulesOps({ confirms: store }),
     settings_get() { return { ok: true, settings: settingsOf(store), schema: SETTINGS }; },
     settings_set(i = {}) {
       const patch = i.settings && typeof i.settings === 'object' ? i.settings : Object.fromEntries(Object.entries(i).filter(([k]) => k in SETTINGS));
@@ -176,10 +179,13 @@ export function createGate(opts = {}) {
 
   return {
     store, lander, ops,
-    /** One call by op name: never throws (errors come back as { ok: false, code, message }). */
+    /** One call by op name: never throws (errors come back as { ok: false, code, message }). build_rules_run answers a promise. */
     run(op, input = {}) {
       if (!OPS.includes(op)) return fail('invalid', `no op ${op} (${OPS.join(', ')})`);
-      try { return ops[op](input && typeof input === 'object' ? input : {}); } catch (e) { return fail(e.code || 'failed', String(e.message || e).slice(0, 600)); }
+      try {
+        const r = ops[op](input && typeof input === 'object' ? input : {});
+        return r && typeof r.then === 'function' ? r.catch((e) => fail(e.code || 'failed', String(e.message || e).slice(0, 600))) : r;
+      } catch (e) { return fail(e.code || 'failed', String(e.message || e).slice(0, 600)); }
     },
   };
 }
@@ -195,7 +201,7 @@ export async function main(argv, { out = (s) => console.log(s), err = (s) => con
   if (argv[0] === 'api') {
     const op = argv[1] || '';
     let input = {}; try { input = JSON.parse(readStdin() || '{}'); } catch { out(JSON.stringify(fail('invalid', 'the input is not JSON'))); return 2; }
-    const r = g.run(op, input);
+    const r = await g.run(op, input);
     out(JSON.stringify(r));
     return r.ok || r.code === 'confirmation_required' ? 0 : 1;
   }
