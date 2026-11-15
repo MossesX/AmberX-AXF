@@ -15,7 +15,7 @@
  *   land-now also starts a run at once under the cron's lock (/run/axf-auto-land.lock); a held lock = reason `locked`.
  */
 import { spawn, spawnSync } from 'node:child_process';
-import { appendFileSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as A from './auto-lander-core.mjs';
@@ -28,6 +28,8 @@ export const LOCK = process.env.AXF_LAND_LOCK || '/run/axf-auto-land.lock';
 export const configFile = (s) => join(s.dataDir, 'config.json');
 export const runsFile = (s) => join(s.dataDir, 'auto-lander-runs.jsonl');
 export const statusFile = (s) => join(s.dataDir, 'auto-lander-status.json');
+/** The console's Auto fix asks the host for the cron line back by writing this; the host doctor runs cron-heal. */
+export const healFile = (s) => join(s.dataDir, 'auto-lander-cron-heal.json');
 
 export const readConfigDoc = (s) => readJson(configFile(s), {}) || {};
 export const readLanderOf = (s) => A.readLander(readConfigDoc(s));
@@ -102,6 +104,22 @@ export function startRun(s) {
   return { started: true, at };
 }
 
+/**
+ * Host side (root; deploy/console-doctor.sh runs it every 15 minutes): put /etc/cron.d/axf-auto-land back when it is
+ * missing or the console asked for it (healFile). Returns { present, healed }.
+ */
+export function cronHeal(s, { cronDir = '/etc/cron.d', dir = s.repo } = {}) {
+  const f = join(cronDir, A.CRON_NAME);
+  const asked = existsSync(healFile(s));
+  let present = existsSync(f); let healed = false;
+  if (!present || asked) {
+    writeFileSync(f, `# installed by auto-lander.mjs cron-heal (deploy/install-console.sh writes the same line)\n${A.cronLine(dir)}\n`, { mode: 0o644 });
+    present = true; healed = true;
+  }
+  if (asked) rmSync(healFile(s), { force: true });
+  return { present, healed };
+}
+
 // ------------------------------------------------------------------ CLI
 
 const say = {
@@ -122,6 +140,7 @@ export async function main(argv, { s } = {}) {
   if (cmd === 'runs') { const runs = readRuns(s, Number(opt('limit')) || 20); return print({ runs }, runs.map(say.run).join('\n') || 'no runs yet'); }
   if (cmd === 'on' || cmd === 'off') { const st = setSetting(s, 'enabled', cmd === 'on'); return print(st, say.status(st)); }
   if (cmd === 'enabled') { const v = rest[0]; if (!['true', 'false', 'on', 'off'].includes(v)) throw new Error('enabled true|false'); const st = setSetting(s, 'enabled', v === 'true' || v === 'on'); return print(st, say.status(st)); }
+  if (cmd === 'cron-heal') { const r = cronHeal(s); return print(r, r.healed ? `reinstalled /etc/cron.d/${A.CRON_NAME}` : `/etc/cron.d/${A.CRON_NAME} is in place`); }
   if (cmd === 'mode') { const st = setSetting(s, 'mode', rest[0]); return print(st, say.status(st)); }
   if (A.LINE_ACTIONS[cmd]) {
     const r = await act(s, cmd, rest[0], { why: opt('why'), confirm: confirm || !A.LINE_ACTIONS[cmd].confirm });

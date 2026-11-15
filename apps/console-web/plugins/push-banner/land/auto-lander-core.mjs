@@ -164,3 +164,25 @@ export function lineAction(rows, action, pr, { why = '' } = {}) {
   if (action === 'move-up') return { cmd: 'move', pr: n, to: Math.max(0, i - 1) };
   return { cmd: 'move', pr: n, to: Math.min(live.length - 1, i + 1) };
 }
+
+// ------------------------------------------------------------------ the cron's health (systems check)
+
+/** The cron line deploy/install-console.sh installs as /etc/cron.d/axf-auto-land (one copy of it, here). */
+export const CRON_NAME = 'axf-auto-land';
+export const cronLine = (dir) => `*/3 * * * * root L=${dir}/apps/console-web/plugins/push-banner/land/land.mjs; [ -f $L ] && cd ${dir} && AXF_LAND_REPO=${dir} flock -n /run/axf-auto-land.lock timeout 900 node $L run >> /var/log/axf-auto-land.log 2>&1`;
+/** A run every 3 minutes: older than this and the cron is not running. */
+export const CRON_STALE_MIN = 10;
+
+/**
+ * The live check on the real cron (replaces the old watch on a systemd unit `axf-lander` that never existed):
+ * { status: ok | warn | info, summary, autoFix }. last = the newest run record, or null.
+ */
+export function cronHealth({ last = null, enabled = true, now = Date.now(), healRequested = false } = {}) {
+  const at = Date.parse(last?.finishedAt || last?.startedAt || '');
+  const age = Number.isFinite(at) ? Math.max(0, Math.round((now - at) / 60000)) : null;
+  if (healRequested) return { status: 'info', summary: 'cron reinstall asked for: the host doctor puts the line back within 15 minutes', autoFix: false, ageMin: age };
+  if (age === null) return { status: 'warn', summary: `no auto-lander run recorded yet: /etc/cron.d/${CRON_NAME} may be missing (Auto fix reinstalls it)`, autoFix: true, ageMin: null };
+  if (age > CRON_STALE_MIN) return { status: 'warn', summary: `last auto-lander run ${age} min ago (it runs every 3): the cron isn't running (Auto fix reinstalls /etc/cron.d/${CRON_NAME})`, autoFix: true, ageMin: age };
+  if (!enabled) return { status: 'info', summary: `switched off; the cron still checks every 3 minutes (last ${age} min ago)`, autoFix: false, ageMin: age };
+  return { status: last.result === 'error' ? 'warn' : 'ok', summary: `last run ${age} min ago: ${last.result}${last.landing ? ` #${last.landing.pr}` : ''}${last.reason ? ` · ${REASON_TEXT[last.reason] || last.reason}` : ''}`, autoFix: false, ageMin: age };
+}

@@ -124,6 +124,11 @@ write_report() {
     printf '}}\n'; } > "$REPORT.tmp" && chmod 644 "$REPORT.tmp" && mv "$REPORT.tmp" "$REPORT"
 }
 
+# The auto-lander's cron line comes back when it is missing or the console's Auto fix asked for it (Systems check →
+# Auto-lander cron). The plugin owns the logic; nothing happens when the plugin is not installed.  # axf-plugin:push-banner
+AL="$DIR/apps/console-web/plugins/push-banner/land/auto-lander.mjs"
+if [ -f "$AL" ] && command -v node >/dev/null 2>&1; then (cd "$DIR" && AXF_LAND_REPO="$DIR" timeout 30 node "$AL" cron-heal >/dev/null 2>&1) || true; fi
+
 check_all
 if [ "$MODE" = "interactive" ] || [ -n "$ONLY" ]; then
   echo "AXF console setup — $(hostname)"

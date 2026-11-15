@@ -8,13 +8,13 @@
  * 3. run records: every blocking reason from the fixed list; the runs log is trimmed;
  * 4. the landing line: order, move up / down, skip (with reason, remembered), land now.
  */
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import * as A from './auto-lander-core.mjs';
 import { runOnce } from './land.mjs';
 import { readQueueConfig, readQueueControl } from './merge-queue.mjs';
-import { act, lineOf, main as landerMain, readRuns, recordRun, setSetting, status } from './auto-lander.mjs';
+import { act, cronHeal, healFile, lineOf, main as landerMain, readRuns, recordRun, setSetting, status } from './auto-lander.mjs';
 process.env.AXF_CREW_SAY = 'off';
 
 let ok = 0; let bad = 0;
@@ -114,6 +114,19 @@ try {
   const logs = []; const orig = console.log; console.log = (x) => logs.push(x);
   try { await landerMain(['status', '--json'], { s }); await landerMain(['line', '--json'], { s }); } finally { console.log = orig; }
   check(JSON.parse(logs[0]).mode === status(s).mode && JSON.parse(logs[1]).line.length === lineOf(s).length, 'the CLI prints the same status and line as the core');
+  // ---------------------------------------------------------------- 5. the cron (replaces the axf-lander unit watch)
+  console.log('cron health and heal');
+  const cron = join(dir, 'cron.d'); mkdirSync(cron);
+  let h = cronHeal(s, { cronDir: cron, dir: '/opt/axf' });
+  const text = readFileSync(join(cron, 'axf-auto-land'), 'utf8');
+  check(h.healed && text.includes(A.cronLine('/opt/axf')) && text.includes('flock -n /run/axf-auto-land.lock'), 'a missing cron line is put back, the same line install-console.sh writes');
+  check(!cronHeal(s, { cronDir: cron }).healed, 'a present line is left alone');
+  writeFileSync(healFile(s), '{}');
+  check(cronHeal(s, { cronDir: cron }).healed && !existsSync(healFile(s)), "the console's Auto fix request reinstalls it once");
+  const now = Date.parse('2026-11-15T05:00:00Z');
+  check(A.cronHealth({ last: null, now }).autoFix === true, 'no run yet: warn, Auto fix');
+  check(A.cronHealth({ last: { finishedAt: '2026-11-15T04:30:00Z', result: 'idle' }, now }).status === 'warn', 'last run 30 min ago: warn');
+  check(A.cronHealth({ last: { finishedAt: '2026-11-15T04:58:00Z', result: 'landing', landing: { pr: 633 } }, now }).status === 'ok', 'fresh run: ok');
 } finally { rmSync(dir, { recursive: true, force: true }); }
 
 console.log(`\n${ok} passed, ${bad} failed`);

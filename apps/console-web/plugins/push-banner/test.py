@@ -739,4 +739,34 @@ STATE["bsha"]["feat/a"] = "feat/a-sha2"
 n3 = cmp_n(); mod.PUSHES._forget(); mod.PUSHES.branches(force=True)
 check(cmp_n() == n3 + 1, "one branch got a commit: only it is compared again")
 del STATE["bsha"]
+# Auto-lander (Nov 15 2026): auto-lander@1 runs land/auto-lander.mjs (one implementation for REST, MCP, CLI, voice), the
+# settings save keeps autoLander, and the cron check watches the real run log (no systemd unit)
+svc = mod.claudefix.plugin_services.get("auto-lander@1")
+check(svc is not None, "auto-lander@1 is provided")
+st = svc.set_enabled(False)
+check(st["enabled"] is False and mod.PUSHES.config()["mergeQueue"] is False, "off through auto-lander@1: the push banner's merge queue reads off too")
+c.put("/p/config", json={"autoPr": True})
+check(json.loads((mod.data_dir() / "config.json").read_text())["autoLander"]["enabled"] is False, "the push banner's settings save keeps autoLander")
+c.put("/p/config", json={"mergeQueue": True})
+check(svc.status()["enabled"] is True, "the queue's own switch turns the auto-lander back on (one switch)")
+check(svc.set_mode("merge-queue")["mode"] == "merge-queue" and svc.set_mode("serial")["mode"] == "serial", "mode serial / merge-queue")
+try:
+    svc.act("skip", 5, why="x"); check(False, "skip without confirm refused")
+except mod.HTTPException as e:
+    check(e.status_code == 409, "skip without confirm refused (409)")
+try:
+    svc.act("land-now", 5, confirm=True); check(False, "land now from a script refused")
+except mod.HTTPException as e:
+    check(e.status_code == 403, "land now without Brett's signed-in console refused (403)")
+now = 2_000_000_000.0
+iso = lambda t: time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(t))  # noqa: E731
+check(mod._cron_health({"last": None, "enabled": True}, now)["autoFix"] is True, "cron: no run yet = warn with Auto fix")
+check(mod._cron_health({"last": {"finishedAt": iso(now - 30 * 60), "result": "idle"}, "enabled": True}, now)["status"] == "warn", "cron: last run 30 min ago = warn")
+h = mod._cron_health({"last": {"finishedAt": iso(now - 120), "result": "landing", "landing": {"pr": 633}, "reason": "ci-waiting", "reasonText": "Waiting for CI on the PR being landed."}, "enabled": True}, now)
+check(h["status"] == "ok" and "#633" in h["summary"] and "2 min ago" in h["summary"], f"cron: fresh run = ok with what it lands ({h['summary']})")
+items = mod.AutoLanderChecks().items()
+check(items and items[0]["id"] == "auto-lander-cron", "the systems check lists Auto-lander cron (not a systemd unit)")
+msg = mod.AutoLanderChecks().fix("auto-lander-cron")
+check((mod.data_dir() / "auto-lander-cron-heal.json").exists() and "doctor" in msg, "Auto fix asks the host doctor to reinstall the cron line")
+check(mod._cron_health({"last": None, "healRequested": True}, now)["status"] == "info", "after Auto fix the item says the reinstall is on its way")
 print(f"push-banner: {ok} checks passed")

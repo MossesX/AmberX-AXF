@@ -74,6 +74,7 @@ import json
 import os
 import re
 import subprocess
+import calendar
 import copy
 import threading
 import time
@@ -1269,6 +1270,120 @@ class ProtectionChecks:
         raise HTTPException(409, f"{repo}: still can't protect it: {_text(st.get('error'), 200) or 'GITHUB_TOKEN isn’t set'}")
 
 
+LANDER_SCRIPT = Path(__file__).resolve().parent.parent / "land" / "auto-lander.mjs"
+LANDER_ACTIONS = ("move-up", "move-down", "skip", "unskip", "land-now")  # land/auto-lander-core.mjs LINE_ACTIONS
+LANDER_CONFIRM = ("skip", "land-now")
+
+
+class AutoLanderService:
+    """auto-lander@1 (build auto-lander-controls-in-the-gate-plugin, Nov 15 2026): the auto-lander's switch, mode, status,
+    landing line, run log and line actions for other plugins (the gate plugin's Auto-lander tab and routes). One
+    implementation: land/auto-lander.mjs, the same file the cron run, the CLI and voice use. Every call returns plain data
+    or raises HTTPException with the reason."""
+    version = 1
+
+    def _node(self, *args: str) -> dict[str, Any]:
+        try:
+            r = subprocess.run(["node", str(LANDER_SCRIPT), *args, "--json"], capture_output=True, text=True, timeout=30,
+                               env={**os.environ, "AXF_PUSH_BANNER_DIR": str(data_dir()), "AXF_LAND_REPO": str(cx.ROOT)})
+        except (OSError, subprocess.TimeoutExpired) as e:
+            raise HTTPException(502, _text(str(e))) from None
+        if r.returncode != 0:
+            raise HTTPException(400, _text(r.stderr.strip() or r.stdout.strip() or f"auto-lander.mjs {args[0]} failed", 400))
+        try:
+            out = json.loads(r.stdout.strip().splitlines()[-1])
+        except (ValueError, IndexError):
+            raise HTTPException(502, "auto-lander.mjs gave no JSON") from None
+        with PUSHES._lock:
+            PUSHES._cache = None
+        return out
+
+    def status(self) -> dict[str, Any]:
+        return self._node("status")
+
+    def line(self) -> dict[str, Any]:
+        return self._node("line")
+
+    def runs(self, limit: int = 50) -> dict[str, Any]:
+        return self._node("runs", "--limit", str(max(1, min(200, int(limit)))))
+
+    def set_enabled(self, on: bool) -> dict[str, Any]:
+        if not isinstance(on, bool):
+            raise HTTPException(400, "enabled is true or false")
+        return self._node("on" if on else "off")
+
+    def set_mode(self, mode: str) -> dict[str, Any]:
+        if mode not in ("serial", "merge-queue", "queue"):
+            raise HTTPException(400, "mode is serial or merge-queue")
+        return self._node("mode", mode)
+
+    def act(self, action: str, pr: int, why: str = "", confirm: bool = False, owner: str = "") -> dict[str, Any]:
+        if action not in LANDER_ACTIONS:
+            raise HTTPException(400, f"action is one of {', '.join(LANDER_ACTIONS)}")
+        if not isinstance(pr, int) or isinstance(pr, bool) or pr <= 0:
+            raise HTTPException(400, "pr is the PR number")
+        if action in LANDER_CONFIRM and confirm is not True:
+            raise HTTPException(409, f"{action} needs confirm: true")
+        # Jump to front is Brett's own click (merge queue rule, Nov 4 2026): land now is that, plus a run
+        if action == "land-now" and not owner:
+            raise HTTPException(403, "Land now is Brett's own click in the console (signed in on axHub)")
+        args = [action, str(pr)] + (["--why", _text(why, 200)] if action == "skip" else []) + (["--confirm"] if confirm else [])
+        return self._node(*args)
+
+    def cron(self) -> dict[str, Any]:
+        """The cron's live health: the newest run record's age and result (no systemd unit; the cron is the lander)."""
+        runs = self._node("runs", "--limit", "1").get("runs") or []
+        st = self._node("status")
+        return {"last": runs[-1] if runs else None, "enabled": st.get("enabled"), "healRequested": (data_dir() / "auto-lander-cron-heal.json").exists()}
+
+
+AUTO_LANDER = AutoLanderService()
+
+
+class AutoLanderChecks:
+    """axf.syscheck.items@1:auto-lander: one item, "Auto-lander cron", watching the real cron's runs (last run age and
+    result). Auto fix asks the host doctor to put /etc/cron.d/axf-auto-land back (the console can't write the host's cron
+    itself; deploy/console-doctor.sh runs auto-lander.mjs cron-heal as root every 15 minutes)."""
+
+    def items(self) -> list[dict[str, Any]]:
+        try:
+            c = AUTO_LANDER.cron()
+        except HTTPException as e:
+            return [{"id": "auto-lander-cron", "title": "Auto-lander cron", "status": "warn", "summary": _text(e.detail, 200), "autoFix": False}]
+        h = _cron_health(c)
+        return [{"id": "auto-lander-cron", "title": "Auto-lander cron", "status": h["status"], "summary": h["summary"], "autoFix": h["autoFix"],
+                 "details": ["The auto-lander runs from /etc/cron.d/axf-auto-land every 3 minutes (push-banner land/land.mjs run).",
+                             "Auto fix asks the host to reinstall that line; by hand: bash /opt/axf/deploy/install-console.sh",
+                             "Its switch, mode and landing line: Settings → Plugins → Build orchestrator → Auto-lander, or axf lander status."]}]
+
+    def fix(self, item_id: str) -> str:
+        storage.write_json(data_dir() / "auto-lander-cron-heal.json", {"$axf": "auto-lander-cron-heal@1", "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())})
+        return "asked the host to reinstall /etc/cron.d/axf-auto-land: the doctor does it within 15 minutes"
+
+
+def _cron_health(c: dict[str, Any], now: float | None = None) -> dict[str, Any]:
+    """= land/auto-lander-core.mjs cronHealth (kept in step by test.py)."""
+    last = c.get("last") if isinstance(c.get("last"), dict) else None
+    stamp = (last or {}).get("finishedAt") or (last or {}).get("startedAt") or ""
+    try:
+        age = max(0, round(((now or time.time()) - calendar.timegm(time.strptime(stamp[:19], "%Y-%m-%dT%H:%M:%S"))) / 60)) if stamp else None
+    except ValueError:
+        age = None
+    if c.get("healRequested"):
+        return {"status": "info", "summary": "cron reinstall asked for: the host doctor puts the line back within 15 minutes", "autoFix": False}
+    if age is None:
+        return {"status": "warn", "summary": "no auto-lander run recorded yet: /etc/cron.d/axf-auto-land may be missing (Auto fix reinstalls it)", "autoFix": True}
+    if age > 10:
+        return {"status": "warn", "summary": f"last auto-lander run {age} min ago (it runs every 3): the cron isn't running (Auto fix reinstalls /etc/cron.d/axf-auto-land)", "autoFix": True}
+    if c.get("enabled") is False:
+        return {"status": "info", "summary": f"switched off; the cron still checks every 3 minutes (last {age} min ago)", "autoFix": False}
+    land = f" #{last['landing']['pr']}" if isinstance(last.get("landing"), dict) and last["landing"].get("pr") else ""
+    why = f" · {last.get('reasonText') or last.get('reason')}" if last.get("reason") else ""
+    return {"status": "warn" if last.get("result") == "error" else "ok", "summary": f"last run {age} min ago: {last.get('result', '')}{land}{why}", "autoFix": False}
+
+
+claudefix.plugin_services.provide("auto-lander@1", AUTO_LANDER, Path(__file__).resolve().parents[1].name)
+claudefix.plugin_services.provide("axf.syscheck.items@1:auto-lander", AutoLanderChecks(), "push-banner")
 claudefix.plugin_services.provide("axf.merge-queue@1", MergeQueueService(), Path(__file__).resolve().parents[1].name)
 claudefix.plugin_services.provide("axf.syscheck.items@1:push-protection", ProtectionChecks(), "push-banner")
 
