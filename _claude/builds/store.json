@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6000,
- "updatedAt": "2026-11-15T04:26:49.749Z",
+ "rev": 6001,
+ "updatedAt": "2026-11-15T04:27:10.751Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -229740,7 +229740,7 @@
    "title": "Move build orchestrator to axHub",
    "category": "",
    "detail": "Move the entire build orchestrator (queue, pending, splitter, dispatcher/pipeline tick, reconciler, slots, accounts, builds store, notes, steps, landing) out of the console plugin and into axHub (MossesX/axHub), running on the VPS, so builds are managed whether the console is up or not. Staged so nothing breaks mid-flight: (1) Run AFTER auto-lander-controls-in-the-gate-plugin lands (gate + merge queue already in axHub). (2) Stand up the axHub orchestrator service reading the SAME builds store (_claude/builds/*), in shadow mode: it computes what it would launch/land but doesn't act; compare with the console for a while. (3) Cut over: axHub owns the dispatcher, reconciler, splitter and lander; the console's cron/plugin stops acting. (4) Build the full orchestrator UI as axHub screens (all tabs: Pending, Queue, Active, Built, Complete, Errors, Archive, settings, slots, accounts) with every action. (5) axHub tools (orchestrator.*) for Claude, MCP and voice: file a build, note, status, step, approve, land, etc.; today's axf-console.build_orchestrator_pipeline_request and planner.builds callers get equivalent axHub tools. (6) Console keeps only a read-only mirror or a link to the axHub page, then the console plugin is retired. Fix on the way: phase-end builds must never get parked in Pending (reconciler bug), dispatcher alerts link format. No build or data lost; all history migrated. Tests, help, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -229748,7 +229748,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T04:20:19.690Z",
-   "updatedAt": "2026-11-15T04:26:48.086Z",
+   "updatedAt": "2026-11-15T04:27:08.710Z",
    "builtAt": "",
    "notes": [
     {
@@ -229798,6 +229798,10 @@
     {
      "text": "Brett (now): the old standalone Molly app isn't used anymore (everything is merging into the console). The name 'axf-molly' goes to the new orchestrator container. If an old Molly container, cron (/etc/cron.d/molly) or domain still exists, don't let it block the name: note it in the report and flag it for retirement; don't delete anything without listing it first.",
      "at": "2026-11-15T04:26:48.086Z"
+    },
+    {
+     "text": "Dispatch gate: move-build-orchestrator-to-axhub still has axf-move-build-orchestrator-to-axhub--joey alive: not launched again, tracking that session.",
+     "at": "2026-11-15T04:27:08.710Z"
     }
    ],
    "approvals": [],
@@ -229818,7 +229822,7 @@
     "queuedAt": "2026-11-15T04:20:27.813Z",
     "queuedBy": "console",
     "account": "",
-    "session": "",
+    "session": "axf-move-build-orchestrator-to-axhub--joey",
     "slot": "",
     "model": "",
     "launchedAt": "",
@@ -230791,7 +230795,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
