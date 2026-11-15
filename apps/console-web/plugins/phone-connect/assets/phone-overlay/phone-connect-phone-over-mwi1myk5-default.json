@@ -1,0 +1,101 @@
+{
+ "$axf": "asset@1",
+ "type": "phone-overlay",
+ "id": "phone-connect-phone-over-mwi1myk5-default",
+ "name": "phone-connect-phone-over-mwi1myk5: Default",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Six buttons, approvals pop up in the middle with a scale-in, alerts slide from the top. Predicted look: the console's live phone preview.",
+ "tags": [
+  "ui-choice",
+  "choice-set:phone-connect-phone-over-mwi1myk5",
+  "choice-option:default"
+ ],
+ "data": {
+  "$axf": "phone-overlay@1",
+  "items": [
+   {
+    "id": "approvals",
+    "kind": "button",
+    "icon": "check",
+    "label": "Approvals",
+    "action": "approvals"
+   },
+   {
+    "id": "recorder",
+    "kind": "button",
+    "icon": "mic",
+    "label": "Recorder",
+    "action": "recorder"
+   },
+   {
+    "id": "notifications",
+    "kind": "button",
+    "icon": "bell",
+    "label": "Notifications",
+    "action": "notifications"
+   },
+   {
+    "id": "build",
+    "kind": "widget",
+    "icon": "hammer",
+    "label": "Build",
+    "action": "build-status"
+   },
+   {
+    "id": "assistant",
+    "kind": "button",
+    "icon": "sparkles",
+    "label": "Assistant",
+    "action": "open:https://console.amberxai.com/api/plugins/ai-assistant/app"
+   },
+   {
+    "id": "console",
+    "kind": "button",
+    "icon": "monitor",
+    "label": "Console",
+    "action": "open:https://console.amberxai.com/"
+   }
+  ],
+  "popups": {
+   "approval": {
+    "position": "center",
+    "enter": "scale",
+    "exit": "fade",
+    "speedMs": 260,
+    "size": "medium",
+    "stayMs": 0,
+    "sound": true,
+    "vibrate": true,
+    "opacity": 1
+   },
+   "alert": {
+    "position": "top",
+    "enter": "slide-top",
+    "exit": "fade",
+    "speedMs": 260,
+    "size": "medium",
+    "stayMs": 10000,
+    "sound": true,
+    "vibrate": true,
+    "opacity": 1
+   },
+   "notification": {
+    "position": "top",
+    "enter": "fade",
+    "exit": "fade",
+    "speedMs": 260,
+    "size": "medium",
+    "stayMs": 6000,
+    "sound": false,
+    "vibrate": true,
+    "opacity": 1
+   }
+  },
+  "buttonSize": 56,
+  "buttonShape": "circle",
+  "edgeSnap": true,
+  "autoCollapseMs": 6000,
+  "toolbarOpacity": 1
+ }
+}

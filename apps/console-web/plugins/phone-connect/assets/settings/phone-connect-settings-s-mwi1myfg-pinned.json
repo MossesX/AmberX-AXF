@@ -1,0 +1,21 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "phone-connect-settings-s-mwi1myfg-pinned",
+ "name": "phone-connect-settings-s-mwi1myfg: Small preview pinned to the corner",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "The form takes the full width; a small preview floats in the corner.",
+ "tags": [
+  "ui-choice",
+  "choice-set:phone-connect-settings-s-mwi1myfg",
+  "choice-option:pinned"
+ ],
+ "data": {
+  "view": "pinned",
+  "settingKey": "phone-connect.overlayLayout",
+  "appliesTo": [
+   "phone-connect.overlay"
+  ]
+ }
+}

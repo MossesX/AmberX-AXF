@@ -1,0 +1,73 @@
+{
+ "$axf": "asset@1",
+ "type": "phone-overlay",
+ "id": "phone-connect-phone-over-mwi1myk5-minimal",
+ "name": "phone-connect-phone-over-mwi1myk5: Minimal",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Two buttons (approvals, recorder), a rounded button that folds away after 3 s. Predicted look: the console's live phone preview.",
+ "tags": [
+  "ui-choice",
+  "choice-set:phone-connect-phone-over-mwi1myk5",
+  "choice-option:minimal"
+ ],
+ "data": {
+  "$axf": "phone-overlay@1",
+  "items": [
+   {
+    "id": "approvals",
+    "kind": "button",
+    "icon": "check",
+    "label": "Approvals",
+    "action": "approvals"
+   },
+   {
+    "id": "recorder",
+    "kind": "button",
+    "icon": "mic",
+    "label": "Recorder",
+    "action": "recorder"
+   }
+  ],
+  "popups": {
+   "approval": {
+    "position": "center",
+    "enter": "scale",
+    "exit": "fade",
+    "speedMs": 260,
+    "size": "medium",
+    "stayMs": 0,
+    "sound": true,
+    "vibrate": true,
+    "opacity": 1
+   },
+   "alert": {
+    "position": "top",
+    "enter": "slide-top",
+    "exit": "fade",
+    "speedMs": 260,
+    "size": "medium",
+    "stayMs": 10000,
+    "sound": true,
+    "vibrate": true,
+    "opacity": 1
+   },
+   "notification": {
+    "position": "top",
+    "enter": "fade",
+    "exit": "fade",
+    "speedMs": 260,
+    "size": "medium",
+    "stayMs": 6000,
+    "sound": false,
+    "vibrate": true,
+    "opacity": 1
+   }
+  },
+  "buttonSize": 56,
+  "buttonShape": "rounded",
+  "edgeSnap": true,
+  "autoCollapseMs": 3000,
+  "toolbarOpacity": 1
+ }
+}

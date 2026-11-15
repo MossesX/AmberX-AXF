@@ -1,0 +1,21 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "phone-connect-settings-s-mwi1myfg-beside",
+ "name": "phone-connect-settings-s-mwi1myfg: Preview beside the form",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "The phone preview stays at the side while you edit; stacks on narrow screens.",
+ "tags": [
+  "ui-choice",
+  "choice-set:phone-connect-settings-s-mwi1myfg",
+  "choice-option:beside"
+ ],
+ "data": {
+  "view": "beside",
+  "settingKey": "phone-connect.overlayLayout",
+  "appliesTo": [
+   "phone-connect.overlay"
+  ]
+ }
+}
