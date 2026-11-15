@@ -131,6 +131,13 @@ export async function run({ cmd = 'status', only = [], all = false, store = null
       if (store && remoteOk) { try { await uploadDrift(store, ns, env); } catch { /* best effort */ } }
       const mode = MODE.modeOf(state, ns);
       const next = MODE.nextStep(state, ns, { remoteOk, now: at, minDriftFreeMs });
+      // status doesn't compute manifests (it would walk every data folder): say how they are checked instead
+      if (/both manifests/.test(next.reason || '')) next.reason = mode === 'local' ? `copy and verify first: data-migrate apply ${ns}` : 'manifests are compared at the cut';
+      if (mode === 'shadow' && next.next === 'wait' && /manifests are compared/.test(next.reason) && !drift.length) {
+        const quiet = Date.parse(at) - Date.parse(state.namespaces[ns]?.since || at);
+        if (quiet >= minDriftFreeMs) { next.next = 'cutover'; next.reason = 'quiet for the window; the manifests are compared at the cut'; }
+        else next.reason = `quiet for ${Math.round(quiet / 60000)} min, needs ${Math.round(minDriftFreeMs / 60000)}`;
+      }
       rows.push({ ns, mode, since: state.namespaces[ns]?.since || '', drift: drift.length, lastDriftAt: drift.at(-1)?.at || '', cursor: state.namespaces[ns]?.cursor || 0, next: next.next, nextReason: next.reason || '', ...(cmd === 'drift' ? { entries: drift.slice(-Math.max(1, tail)) } : {}) });
     }
     return { $axf: 'data-mode-status@1', at, remote: { configured: !!store, ok: remoteOk, cursor: health?.cursor ?? null }, mode: state.mode, namespaces: rows, summary: MODE.summary(state) };

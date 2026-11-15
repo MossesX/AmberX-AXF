@@ -141,7 +141,60 @@ function DriftLog({ ns }: { ns: string }) {
   );
 }
 
-/** The whole sub-tab (one panel per block, so each keeps its own title and help). */
+// ── the three options (UI Review choices, settings assets in ../assets/settings): panels (default), rows, stages ──
+export const VIEW_KEY = 'axf.data-store.view';
+export type View = 'panels' | 'rows' | 'stages';
+export function currentView(): View { try { const v = globalThis.localStorage?.getItem(VIEW_KEY); return v === 'rows' || v === 'stages' ? v : 'panels'; } catch { return 'panels'; } }
+
+const NEXT_ACTION: Record<Mode, { to: Mode; label: string; icon: string; tone?: 'primary' | 'danger' } | null> = {
+  local: { to: 'shadow', label: 'Shadow', icon: 'copy' }, shadow: { to: 'cutover', label: 'Cut over', icon: 'upload', tone: 'primary' },
+  cutover: { to: 'rollback', label: 'Roll back', icon: 'undo', tone: 'danger' }, rollback: { to: 'rollback', label: 'Finish roll back', icon: 'undo', tone: 'danger' },
+};
+
+/** Option "rows": one row per namespace, its next action on the row. */
+export function RowsView({ s, reload }: { s: State; reload: () => Promise<void> }) {
+  const rt = useRuntime();
+  const [busy, setBusy] = useState('');
+  const go = async (ns: string, to: Mode) => {
+    setBusy(ns);
+    try { await api.post('mode', { ns, to }); rt.toast(`${ns} → ${MODE_LABEL[to]}`, 'success'); await reload(); } catch (e) { rt.toast((e as Error).message, 'danger'); } finally { setBusy(''); }
+  };
+  return (
+    <ul className="fx-stack" data-axf-target="list:data-store-rows">
+      {s.namespaces.map((n) => {
+        const a = NEXT_ACTION[n.mode];
+        return (
+          <li key={n.ns} className="fx-row fx-row--wrap" data-axf-target={`row:data-store-ns-${n.ns.replace('/', '-')}`}>
+            <span className="fx-mono">{n.ns}</span>
+            <Chip tone={MODE_TONE[n.mode]}>{MODE_LABEL[n.mode]}</Chip>
+            <span className="fx-small fx-muted">{n.keys ?? '—'} keys · drift {n.drift}{n.nextReason ? ` · ${n.nextReason}` : ''}</span>
+            {a ? <Button size="sm" icon={a.icon} tone={a.tone ?? 'neutral'} busy={busy === n.ns} disabled={!s.reachable || (n.next === 'wait')} confirm={`${a.label}: ${n.ns}?`} onClick={() => void go(n.ns, a.to)} id={`data-store-${n.ns.replace('/', '-')}-${a.to}`}>{a.label}</Button> : null}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+/** Option "stages": Local → Shadow → On axf-data as a pipeline, namespaces under each stage. */
+export function StagesView({ s }: { s: State }) {
+  const stages: { mode: Mode; title: string }[] = [{ mode: 'local', title: 'Local' }, { mode: 'shadow', title: 'Shadow' }, { mode: 'cutover', title: 'On axf-data' }];
+  return (
+    <div className="fx-row fx-row--wrap" data-axf-target="list:data-store-stages">
+      {stages.map((st, i) => {
+        const here = s.namespaces.filter((n) => n.mode === st.mode || (st.mode === 'cutover' && n.mode === 'rollback'));
+        return (
+          <section key={st.mode} className="fx-stack" aria-label={st.title}>
+            <p className="fx-small"><b>{i + 1}. {st.title}</b> <span className="fx-muted">({here.length})</span></p>
+            {here.length ? here.map((n) => <span key={n.ns} className="fx-small"><Chip tone={MODE_TONE[n.mode]}>{n.ns}</Chip> {n.keys ?? ''}{n.drift ? ` · drift ${n.drift}` : ''}</span>) : <span className="fx-small fx-muted">none</span>}
+          </section>
+        );
+      })}
+    </div>
+  );
+}
+
+/** The whole sub-tab in the chosen option (one panel per block, so each keeps its own title and help). */
 export function DataStoreTab() {
   const { s, err, load } = useDataStore();
   if (err) return <p className="fx-small" role="alert"><Icon name="alert" size={14} /> {err}</p>;
