@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6215,
- "updatedAt": "2026-11-15T13:40:12.546Z",
+ "rev": 6216,
+ "updatedAt": "2026-11-15T13:40:28.876Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -235853,7 +235853,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T13:36:18.858Z",
-   "updatedAt": "2026-11-15T13:39:59.581Z",
+   "updatedAt": "2026-11-15T13:40:12.405Z",
    "builtAt": "",
    "notes": [
     {
@@ -236527,7 +236527,7 @@
      "id": "s24",
      "uid": "st-mwhvsdee0okzi5",
      "title": "",
-     "text": "Android: Settings tab (paired console, sign-out, notification switches, recorder mic opt-in, Monitor on/off) with Axf controls only. Every setting is also settable from the console API through the command channel.",
+     "text": "NO phone Settings tab. Instead, in the CONSOLE plugin, build an Overlay settings screen synced live to the phone: (1) a toolbar editor (reuse the framework toolbar/widget editor) to add, remove and reorder buttons and widgets, pick icons, set labels and actions (open a console page, approve, recorder, notifications, build status); (2) settings for each popup type (approvals, alerts, notifications): position (top, bottom, center, corners, from the button), entry/exit animation (slide from top, burst from the middle, circle reveal, fade, scale, bounce), speed, size, how long it stays, sound or vibrate, and opacity; (3) toolbar and button: size, shape, edge snapping, auto-collapse; (4) paired device, Monitor on/off, recorder mic opt-in. Live phone preview, presets, full API parity. The phone just applies the synced config. Split into more steps if needed.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -236543,9 +236543,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T13:39:21.685Z",
-     "updatedAt": "2026-11-15T13:39:21.685Z"
+     "updatedAt": "2026-11-15T13:40:13.051Z"
     },
     {
      "id": "s25",
