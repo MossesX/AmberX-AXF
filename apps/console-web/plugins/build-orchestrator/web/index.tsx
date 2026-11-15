@@ -6,6 +6,7 @@ import { pluginApi } from '@console/plugins';
 import { addLoadedSource } from '@console/control/search';
 import { FOLDER, OrchestratorPage, TABS, openTab } from './ui';
 import { focusBuild } from './focus';
+import { AutoLanderTab, landerApi } from './lander';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
 
 const ACTION_LABEL: Record<BuildAction, string> = { unqueue: 'Back to Pending', hold: 'Hold (stays in the Queue)', release: 'Release from hold', archive: 'Move to the Archive', unarchive: 'Bring back from the Archive', delete: 'Delete (kept in Deleted)', restore: 'Restore' };
@@ -66,6 +67,23 @@ export const plugin: AxfWebLibrary = {
     };
     rt.actions.register('build-orchestrator.open', ([arg]) => void open(arg ?? ''), { label: 'Open the Build orchestrator (a build or a tab)', effect: 'navigate' });
     rt.actions.register('build-orchestrator.focus', ([arg]) => void open(arg ?? ''), { label: 'Build orchestrator: bring a tab or a build forward', params: true, effect: 'navigate' });
+    // Auto-lander (Nov 15 2026): open the tab, or drive it by voice / console actions. The same calls as the tab, the REST
+    // routes auto-lander/*, the MCP plugin commands lander-* and `axf lander …`:
+    //   build-orchestrator.auto-lander                 open the Auto-lander tab
+    //   build-orchestrator.auto-lander:on | off        the one switch the cron reads
+    //   build-orchestrator.auto-lander:mode:<serial|merge-queue>
+    //   build-orchestrator.auto-lander:land-now:<pr> | skip:<pr> | move-up:<pr>   (land now and skip confirm first)
+    rt.actions.register('build-orchestrator.auto-lander', ([arg]) => {
+      const [cmd = '', val = ''] = decodeURIComponent(arg ?? '').split(':').map((x) => x.trim().toLowerCase());
+      const pr = Number(String(val).replace(/^#/, ''));
+      const done = (p: Promise<unknown>, ok: string) => void p.then(() => rt.toast(ok, 'success')).catch((e: Error) => rt.toast(e.message, 'danger'));
+      if (cmd === 'on' || cmd === 'off') return done(landerApi.enabled(cmd === 'on'), `Auto-lander ${cmd}`);
+      if (cmd === 'mode') return done(landerApi.mode(val === 'queue' ? 'merge-queue' : val), `Auto-lander mode: ${val}`);
+      if (cmd === 'move-up' && pr > 0) return done(landerApi.move(pr, 'up'), `#${pr} moved up`);
+      if (cmd === 'skip' && pr > 0) return done(landerApi.skip(pr, 'Skipped by voice or console action'), `#${pr} skipped`);
+      if (cmd === 'land-now' && pr > 0) return done(landerApi.landNow(pr), `#${pr} is landing next`);
+      rt.navigate('build-orchestrator'); openTab('auto-lander');
+    }, { label: 'Auto-lander: open it, switch it on or off, set the mode, or land / skip / move up a PR', params: true, effect: 'write' });
     rt.actions.register('build-orchestrator.tab', ([arg]) => { rt.navigate('build-orchestrator'); openTab(tabOf(decodeURIComponent(arg ?? 'queue')) || 'queue'); }, { label: 'Build orchestrator: open a tab', effect: 'navigate' });
     // custom groups (groups.tsx, groups.mjs): group:<id> is a custom tab; group-add / group-remove put builds in or out,
     // group-action runs queue | land | archive | priority:<P> on every build of a group (the same POST groups calls)
@@ -128,5 +146,6 @@ export const plugin: AxfWebLibrary = {
   contextMenu: [{ id: 'build-orchestrator.pending', target: 'axf-pending-item', items: [{ id: 'build-orchestrator.open', label: 'Open in Build orchestrator', icon: 'layers', action: 'build-orchestrator.open' }] },
     { id: 'build-orchestrator.default', target: 'default', order: 91, items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', action: 'nav:build-orchestrator' }] }],
   settingsTabs: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', order: 90, parent: 'plugins' }],
-  settingsPanels: [{ id: 'build-orchestrator.lifecycle', tab: 'build-orchestrator', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
+  settingsPanels: [{ id: 'build-orchestrator.auto-lander', tab: 'build-orchestrator', title: 'Auto-lander', icon: 'rocket', order: 10, render: () => <AutoLanderTab /> },
+    { id: 'build-orchestrator.lifecycle', tab: 'build-orchestrator', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

@@ -60,3 +60,9 @@ button.oc-model { cursor: pointer }
 .og-dot.is-success::before { background: var(--fx-success) }
 .og-dot.is-warning::before { background: var(--fx-warning) }
 .og-dot.is-danger::before { background: var(--fx-danger) }
+
+/* Auto-lander tab (lander.tsx): layout only; the controls keep their own look */
+.al-controls { display: grid; gap: var(--fx-dens-gap-md); grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-font-size) * 20), 1fr)) }
+.al-status { display: grid; grid-template-columns: max-content 1fr; gap: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); margin: 0 }
+.al-status dt { color: var(--fx-muted) }
+.al-status dd { margin: 0 }

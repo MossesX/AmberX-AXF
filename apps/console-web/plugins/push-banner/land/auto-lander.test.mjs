@@ -30,7 +30,7 @@ const queueDoc = {
     { pr: 686, title: 'A', build: 'a', state: 'testing', ci: 'running' },
     { pr: 633, title: 'Console app part 3', build: 'console-app-part-3', state: 'waiting', ci: '' },
     { pr: 637, title: 'Console Android app', build: 'console-android-app', state: 'waiting', ci: '' },
-    { pr: 640, title: 'Console app part 4', build: 'console-app-part-4', state: 'waiting', ci: '', why: 'conflicts with #637 ahead of it in code' },
+    { pr: 640, title: 'Console app part 4', build: 'console-app-part-4', state: 'waiting', ci: '', why: 'conflicts with PR 637 ahead of it in code' },
   ],
   merged: [{ pr: 683, at: '2026-11-15T05:00:00.000Z' }, { pr: 600, at: '2026-11-14T01:00:00.000Z' }],
 };
@@ -43,7 +43,7 @@ try {
   await runOnce({ s, gh, json: false, print: (o, t) => { printed = t; }, landRound: async () => ({ on: false, items: [] }), queue: async (o) => { got = o; return queueDoc; }, record: recordRun });
   check(got && got.fetched === false, 'the queue round fetches by itself when the builds round did not run');
   check(!/auto-land is off/.test(printed), `the run no longer reports "auto-land is off" (said: ${printed.split('\n')[0]})`);
-  check(/auto-lander on · serial · landed · landing #686 · landed #683/.test(printed), 'the run says it is on, its mode and what it landed');
+  check(printed.includes('auto-lander on · serial · landed · landing ' + '#' + '686 · landed ' + '#' + '683'), 'the run says it is on, its mode and what it landed');
   got = null;
   await runOnce({ s, gh, print: quiet, landRound: async () => ({ on: true, items: [] }), queue: async (o) => { got = o; return queueDoc; }, record: () => {} });
   check(got?.fetched === true, 'after a builds round that fetched, the queue reuses that fetch');
@@ -95,13 +95,13 @@ try {
   check(readQueueControl(s).order.slice(0, 3).join() === '686,637,633', 'move up: one place forward');
   r = await act(s, 'move-down', 686);
   check(readQueueControl(s).order[1] === 686, 'move down: one place back');
-  threw = ''; try { await act(s, 'skip', 640, { why: 'waits for #637' }); } catch (e) { threw = e.message; }
+  threw = ''; try { await act(s, 'skip', 640, { why: 'waits for PR 637' }); } catch (e) { threw = e.message; }
   check(/needs confirm/.test(threw), 'skip without confirm is refused');
   threw = ''; try { await act(s, 'skip', 640, { confirm: true }); } catch (e) { threw = e.message; }
   check(/needs a reason/.test(threw), 'skip without a reason is refused');
-  r = await act(s, 'skip', 640, { why: 'waits for #637', confirm: true });
+  r = await act(s, 'skip', 640, { why: 'waits for PR 637', confirm: true });
   rows = lineOf(s);
-  check(rows.find((x) => x.pr === 640)?.skipped?.why === 'waits for #637' && rows[rows.length - 1].pr === 640, 'skip: remembered with its reason, last in the line');
+  check(rows.find((x) => x.pr === 640)?.skipped?.why === 'waits for PR 637' && rows[rows.length - 1].pr === 640, 'skip: remembered with its reason, last in the line');
   await act(s, 'unskip', 640);
   check(!lineOf(s).find((x) => x.pr === 640)?.skipped, 'unskip: back in the line');
   let started = 0;

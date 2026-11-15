@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { AutoLanderTab } from './lander';
 import { AgentAvatar, BuildOrigin, Button, ControlScope, Icon, PriorityTag, Segmented, Slot, TabGroup, flashWhenReady, originSubtitle, useControlTarget, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
@@ -46,7 +47,7 @@ export const TABS = [
   { id: 'pending', label: 'Pending', icon: 'clock' }, { id: 'queue', label: 'Queue', icon: 'list' }, { id: 'active', label: 'Active', icon: 'play' },
   { id: 'incomplete', label: 'Incomplete', icon: 'pause' }, { id: 'complete', label: 'Complete', icon: 'check-circle' }, { id: 'errors', label: 'Errors', icon: 'alert' },
   { id: 'archive', label: 'Archive', icon: 'package' }, { id: 'deleted', label: 'Deleted', icon: 'trash' }, { id: 'groups', label: 'Groups', icon: 'folder' },
-  { id: 'accounts', label: 'Accounts', icon: 'user' }, { id: 'builds', label: 'All builds', icon: 'grid' }, { id: 'approvals', label: 'Approvals', icon: 'check' }, { id: 'rules', label: 'Rules', icon: 'settings' },
+  { id: 'accounts', label: 'Accounts', icon: 'user' }, { id: 'builds', label: 'All builds', icon: 'grid' }, { id: 'approvals', label: 'Approvals', icon: 'check' }, { id: 'rules', label: 'Rules', icon: 'settings' }, { id: 'auto-lander', label: 'Auto-lander', icon: 'rocket' },
 ] as const;
 /** A custom tab is a group pinned next to a stage tab (groups.tsx): `group:<group id>`. */
 export type Tab = (typeof TABS)[number]['id'] | `group:${string}`;
@@ -119,6 +120,7 @@ export function OrchestratorPage() {
       {tab === 'builds' && <BuildsTab state={state} busy={busy} act={act} />}
       {tab === 'approvals' && <ApprovalsTab state={state} busy={busy} act={act} />}
       {tab === 'rules' && <RulesTab rules={state.rules} busy={busy} act={act} />}
+      {tab === 'auto-lander' && <AutoLanderTab />}
     </div>
   );
 }
