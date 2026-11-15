@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5902,
- "updatedAt": "2026-11-15T01:15:53.640Z",
+ "rev": 5903,
+ "updatedAt": "2026-11-15T01:16:39.158Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -218960,14 +218960,14 @@
    "title": "Launch landing page + waitlist with referral ranking",
    "category": "Launch",
    "detail": "Brett wants to launch AmberX. Public landing page leading with one hook ('talk and it builds your app'), 60-second demo video slot, waitlist signup with referral move-up-the-line ranking, Stripe-ready pricing section (free trial then $30/month), token-driven and themable. Deploy on the VPS via Coolify on the amberxai.com domain (confirm in Hostinger DNS).",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/launch-landing-page-waitlist-referral",
    "pr": "#668",
    "createdAt": "2026-11-14T04:00:27.661Z",
-   "updatedAt": "2026-11-15T01:15:31.667Z",
+   "updatedAt": "2026-11-15T01:16:11.495Z",
    "builtAt": "",
    "notes": [
     {
@@ -218989,6 +218989,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-14T04:46:42.929Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-launch-landing-page-waitlist-referral--paulie, shared account login)",
+     "at": "2026-11-15T01:16:11.495Z"
     }
    ],
    "approvals": [],
@@ -219109,7 +219113,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
