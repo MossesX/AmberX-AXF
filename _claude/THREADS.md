@@ -806,7 +806,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:50 UTC · `merge-main-land-console-app-part-4` s3 done (all) · orchestrator
 - 2026-11-14 23:50 UTC · `merge-main-land-console-app-part-4` s4 done (all) · orchestrator
 - 2026-11-14 23:51 UTC · `merge-main-land-console-app-part-4` s5 done (all) · orchestrator
 - 2026-11-14 23:51 UTC · `merge-main-land-console-app-part-4` s6 done (all) · orchestrator
@@ -1206,6 +1205,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 09:11 UTC · `molly-gap-axhub-cors` note (all) · orchestrator
 - 2026-11-15 11:52 UTC · `pending-tab-one-collapsed-row-per-2` added (0 steps) (all) · console
 - 2026-11-15 11:52 UTC · `pending-tab-one-collapsed-row-per-2` → queued, note (all) · console
+- 2026-11-15 11:53 UTC · `pending-tab-one-collapsed-row-per-2` note (all) · mcp
 
 ## Token passes (log)
 
