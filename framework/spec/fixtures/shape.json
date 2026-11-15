@@ -1,6 +1,6 @@
 {
   "$axf": "shape@1",
-  "_doc": "shape@1 reference outputs (core/engines/shape-rules.mjs). Every port replays these: normalizeShape, shapeErrors, shapeRadius, shapeClip, shapeSquare, shapeStyle. Regenerate with `npx -y tsx framework/spec/check-shape.mts --write`.",
+  "_doc": "shape@1 reference outputs (core/engines/shape-rules.mjs + core/engines/shape.ts). Every port replays these: normalizeShape, shapeErrors, shapeRadius, shapeClip, shapeMask, shapeSquare, compileShape (slot widget). Regenerate with `npx -y tsx framework/spec/check-shape.mts --write`.",
   "cases": [
     {
       "fn": "normalizeShape",
@@ -40,14 +40,31 @@
           "tl": "lg",
           "tr": "huge",
           "zz": "sm",
-          "bl": "none"
+          "bl": 12
         }
       },
       "expected": {
         "kind": "rounded",
         "corners": {
-          "tl": "lg",
-          "bl": "none"
+          "tl": "lg"
+        }
+      }
+    },
+    {
+      "fn": "normalizeShape",
+      "name": "corners kind keeps its corners",
+      "input": {
+        "kind": "corners",
+        "corners": {
+          "tl": "pill",
+          "br": "pill"
+        }
+      },
+      "expected": {
+        "kind": "corners",
+        "corners": {
+          "tl": "pill",
+          "br": "pill"
         }
       }
     },
@@ -55,23 +72,50 @@
       "fn": "normalizeShape",
       "name": "bad mask dropped",
       "input": {
-        "kind": "custom",
+        "kind": "mask",
         "mask": "url(javascript:1)"
       },
       "expected": {
-        "kind": "custom"
+        "kind": "mask"
       }
     },
     {
       "fn": "normalizeShape",
-      "name": "svg path mask kept and trimmed",
+      "name": "mask kept, whitespace folded, default viewBox dropped",
       "input": {
-        "kind": "custom",
-        "mask": "  M50 0 L100 50 L50 100 L0 50 Z "
+        "kind": "mask",
+        "mask": "  M 0 0  L 100 0\n L 100 100 Z ",
+        "viewBox": "0 0 100 100"
       },
       "expected": {
-        "kind": "custom",
-        "mask": "M50 0 L100 50 L50 100 L0 50 Z"
+        "kind": "mask",
+        "mask": "M 0 0 L 100 0 L 100 100 Z"
+      }
+    },
+    {
+      "fn": "normalizeShape",
+      "name": "mask with its own viewBox",
+      "input": {
+        "kind": "mask",
+        "mask": "M 50 0 L 61 35 L 98 35 L 68 57 L 79 91 L 50 70 L 21 91 L 32 57 L 2 35 L 39 35 Z",
+        "viewBox": "0 0 100   100.5"
+      },
+      "expected": {
+        "kind": "mask",
+        "mask": "M 50 0 L 61 35 L 98 35 L 68 57 L 79 91 L 50 70 L 21 91 L 32 57 L 2 35 L 39 35 Z",
+        "viewBox": "0 0 100 100.5"
+      }
+    },
+    {
+      "fn": "normalizeShape",
+      "name": "mask on another kind is dropped",
+      "input": {
+        "kind": "pill",
+        "mask": "M 50 0 L 61 35 L 98 35 L 68 57 L 79 91 L 50 70 L 21 91 L 32 57 L 2 35 L 39 35 Z",
+        "viewBox": "0 0 10 10"
+      },
+      "expected": {
+        "kind": "pill"
       }
     },
     {
@@ -90,7 +134,30 @@
       "fn": "shapeErrors",
       "name": "good",
       "input": {
-        "kind": "tag"
+        "kind": "hexagon",
+        "square": false
+      },
+      "expected": []
+    },
+    {
+      "fn": "shapeErrors",
+      "name": "good corners",
+      "input": {
+        "kind": "corners",
+        "corners": {
+          "tl": "sm",
+          "br": "pill"
+        }
+      },
+      "expected": []
+    },
+    {
+      "fn": "shapeErrors",
+      "name": "good mask",
+      "input": {
+        "kind": "mask",
+        "mask": "M 50 0 L 61 35 L 98 35 L 68 57 L 79 91 L 50 70 L 21 91 L 32 57 L 2 35 L 39 35 Z",
+        "viewBox": "0 0 100 100"
       },
       "expected": []
     },
@@ -101,7 +168,7 @@
         "kind": "blob"
       },
       "expected": [
-        "data.kind must be one of: circle, pill, rounded, square, squircle, hexagon, diamond, tag, custom"
+        "data.kind must be one of: circle, pill, rounded, square, squircle, hexagon, diamond, tag, corners, mask"
       ]
     },
     {
@@ -121,10 +188,28 @@
     },
     {
       "fn": "shapeErrors",
+      "name": "corners as lengths",
+      "input": {
+        "kind": "corners",
+        "corners": {
+          "tl": 8,
+          "tr": -4,
+          "br": "12px"
+        }
+      },
+      "expected": [
+        "data.corners.tl must be a radius token (one of: none, sm, md, lg, pill), not a length",
+        "data.corners.tr must be a radius token (one of: none, sm, md, lg, pill), not a length (and never negative)",
+        "data.corners.br must be one of: none, sm, md, lg, pill",
+        "data.kind corners needs corners (at least one of tl, tr, br, bl)"
+      ]
+    },
+    {
+      "fn": "shapeErrors",
       "name": "corners not an object",
       "input": {
         "kind": "rounded",
-        "corners": "sm"
+        "corners": "lg"
       },
       "expected": [
         "data.corners must be an object of tl, tr, br, bl"
@@ -132,23 +217,111 @@
     },
     {
       "fn": "shapeErrors",
-      "name": "bad mask",
+      "name": "corners kind with nothing",
       "input": {
-        "kind": "custom",
-        "mask": "url(javascript:1)"
+        "kind": "corners"
       },
       "expected": [
-        "data.mask must be a CSS basic shape (polygon(…), path('…'), inset(…)) or an SVG path (M … Z), at most 2000 characters"
+        "data.kind corners needs corners (at least one of tl, tr, br, bl)"
       ]
     },
     {
       "fn": "shapeErrors",
-      "name": "custom with nothing",
+      "name": "mask kind with nothing",
       "input": {
-        "kind": "custom"
+        "kind": "mask"
       },
       "expected": [
-        "data.kind custom needs a mask or corners"
+        "data.kind mask needs a mask (SVG path data, M … Z)"
+      ]
+    },
+    {
+      "fn": "shapeErrors",
+      "name": "mask with script",
+      "input": {
+        "kind": "mask",
+        "mask": "M 0 0 <script>alert(1)</script> Z"
+      },
+      "expected": [
+        "data.mask must not contain script"
+      ]
+    },
+    {
+      "fn": "shapeErrors",
+      "name": "mask with an external reference",
+      "input": {
+        "kind": "mask",
+        "mask": "M 0 0 url(https://x/y.svg) Z"
+      },
+      "expected": [
+        "data.mask must not reference anything outside the path (no url(), links or images)"
+      ]
+    },
+    {
+      "fn": "shapeErrors",
+      "name": "mask not path data",
+      "input": {
+        "kind": "mask",
+        "mask": "polygon(0 0, 100% 0, 100% 100%)"
+      },
+      "expected": [
+        "data.mask must be SVG path data (M … Z): commands and numbers only"
+      ]
+    },
+    {
+      "fn": "shapeErrors",
+      "name": "mask not closed",
+      "input": {
+        "kind": "mask",
+        "mask": "M 0 0 L 100 0 L 100 100"
+      },
+      "expected": [
+        "data.mask must be a closed path (end with Z)"
+      ]
+    },
+    {
+      "fn": "shapeErrors",
+      "name": "mask too long",
+      "input": {
+        "kind": "mask",
+        "mask": "M 0 0 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 L 1 1 Z"
+      },
+      "expected": [
+        "data.mask must be at most 2000 characters"
+      ]
+    },
+    {
+      "fn": "shapeErrors",
+      "name": "mask on another kind",
+      "input": {
+        "kind": "pill",
+        "mask": "M 50 0 L 61 35 L 98 35 L 68 57 L 79 91 L 50 70 L 21 91 L 32 57 L 2 35 L 39 35 Z"
+      },
+      "expected": [
+        "data.mask only applies to kind mask"
+      ]
+    },
+    {
+      "fn": "shapeErrors",
+      "name": "bad viewBox",
+      "input": {
+        "kind": "mask",
+        "mask": "M 50 0 L 61 35 L 98 35 L 68 57 L 79 91 L 50 70 L 21 91 L 32 57 L 2 35 L 39 35 Z",
+        "viewBox": "0 0 0 100"
+      },
+      "expected": [
+        "data.viewBox must be \"minX minY width height\" with width and height above zero"
+      ]
+    },
+    {
+      "fn": "shapeErrors",
+      "name": "viewBox on another kind",
+      "input": {
+        "kind": "square",
+        "viewBox": "0 0 10 10"
+      },
+      "expected": [
+        "data.viewBox only applies to kind mask"
       ]
     },
     {
@@ -180,7 +353,7 @@
     },
     {
       "fn": "shapeRadius",
-      "name": "rounded = the theme's medium radius",
+      "name": "rounded = the theme medium radius",
       "input": {
         "kind": "rounded"
       },
@@ -196,7 +369,7 @@
     },
     {
       "fn": "shapeRadius",
-      "name": "squircle = the theme's large radius",
+      "name": "squircle = the theme large radius",
       "input": {
         "kind": "squircle"
       },
@@ -206,19 +379,19 @@
       "fn": "shapeRadius",
       "name": "per-corner",
       "input": {
-        "kind": "rounded",
+        "kind": "corners",
         "corners": {
           "tl": "lg",
-          "br": "none"
+          "br": "pill"
         }
       },
-      "expected": "var(--fx-radius-lg) var(--fx-radius-md) 0 var(--fx-radius-md)"
+      "expected": "var(--fx-radius-lg) var(--fx-radius-md) 999px var(--fx-radius-md)"
     },
     {
       "fn": "shapeRadius",
       "name": "every corner the same folds to one value",
       "input": {
-        "kind": "square",
+        "kind": "corners",
         "corners": {
           "tl": "sm",
           "tr": "sm",
@@ -227,6 +400,17 @@
         }
       },
       "expected": "var(--fx-radius-sm)"
+    },
+    {
+      "fn": "shapeRadius",
+      "name": "corners override another kind",
+      "input": {
+        "kind": "pill",
+        "corners": {
+          "tl": "none"
+        }
+      },
+      "expected": "0 999px 999px 999px"
     },
     {
       "fn": "shapeClip",
@@ -262,30 +446,54 @@
     },
     {
       "fn": "shapeClip",
-      "name": "custom basic shape as is",
+      "name": "squircle is a superellipse polygon",
       "input": {
-        "kind": "custom",
-        "mask": "polygon(0 0, 100% 0, 50% 100%)"
+        "kind": "squircle"
       },
-      "expected": "polygon(0 0, 100% 0, 50% 100%)"
+      "expected": "polygon(100% 50%, 99.79% 31.94%, 99.14% 24.56%, 98.06% 19.07%, 96.53% 14.64%, 94.54% 10.99%, 92.04% 7.96%, 89.01% 5.46%, 85.36% 3.47%, 80.93% 1.94%, 75.44% 0.86%, 68.06% 0.21%, 50% 0%, 31.94% 0.21%, 24.56% 0.86%, 19.07% 1.94%, 14.64% 3.47%, 10.99% 5.46%, 7.96% 7.96%, 5.46% 10.99%, 3.47% 14.64%, 1.94% 19.07%, 0.86% 24.56%, 0.21% 31.94%, 0% 50%, 0.21% 68.06%, 0.86% 75.44%, 1.94% 80.93%, 3.47% 85.36%, 5.46% 89.01%, 7.96% 92.04%, 10.99% 94.54%, 14.64% 96.53%, 19.07% 98.06%, 24.56% 99.14%, 31.94% 99.79%, 50% 100%, 68.06% 99.79%, 75.44% 99.14%, 80.93% 98.06%, 85.36% 96.53%, 89.01% 94.54%, 92.04% 92.04%, 94.54% 89.01%, 96.53% 85.36%, 98.06% 80.93%, 99.14% 75.44%, 99.79% 68.06%)"
     },
     {
       "fn": "shapeClip",
-      "name": "custom svg path wrapped",
+      "name": "mask kind clips nothing (the mask does it)",
       "input": {
-        "kind": "custom",
-        "mask": "M50 0 L100 50 L50 100 L0 50 Z"
+        "kind": "mask",
+        "mask": "M 50 0 L 61 35 L 98 35 L 68 57 L 79 91 L 50 70 L 21 91 L 32 57 L 2 35 L 39 35 Z"
       },
-      "expected": "path('M50 0 L100 50 L50 100 L0 50 Z')"
+      "expected": "none"
     },
     {
-      "fn": "shapeClip",
-      "name": "custom with corners only has none",
+      "fn": "shapeMask",
+      "name": "pill has none",
       "input": {
-        "kind": "custom",
-        "corners": {
-          "tl": "lg"
-        }
+        "kind": "pill"
+      },
+      "expected": "none"
+    },
+    {
+      "fn": "shapeMask",
+      "name": "star in the default box",
+      "input": {
+        "kind": "mask",
+        "mask": "M 50 0 L 61 35 L 98 35 L 68 57 L 79 91 L 50 70 L 21 91 L 32 57 L 2 35 L 39 35 Z"
+      },
+      "expected": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath d='M 50 0 L 61 35 L 98 35 L 68 57 L 79 91 L 50 70 L 21 91 L 32 57 L 2 35 L 39 35 Z'/%3E%3C/svg%3E\")"
+    },
+    {
+      "fn": "shapeMask",
+      "name": "triangle in its own box",
+      "input": {
+        "kind": "mask",
+        "mask": "M 0 24 L 12 0 L 24 24 Z",
+        "viewBox": "0 0 24 24"
+      },
+      "expected": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' preserveAspectRatio='none'%3E%3Cpath d='M 0 24 L 12 0 L 24 24 Z'/%3E%3C/svg%3E\")"
+    },
+    {
+      "fn": "shapeMask",
+      "name": "a bad mask has none",
+      "input": {
+        "kind": "mask",
+        "mask": "nope"
       },
       "expected": "none"
     },
@@ -317,191 +525,223 @@
       "fn": "shapeSquare",
       "name": "the asset may say otherwise",
       "input": {
-        "kind": "hexagon",
+        "kind": "circle",
         "square": false
       },
       "expected": false
     },
     {
-      "fn": "shapeStyle",
-      "name": "nothing = today's look",
+      "fn": "compileShape",
+      "name": "nothing = today look",
       "input": null,
       "expected": {
         "vars": {
-          "--fx-widget-radius": "999px",
-          "--fx-widget-clip": "none",
-          "--fx-widget-corner": "round",
-          "--fx-widget-aspect": "auto"
+          "--fx-shape-widget-radius": "999px 999px 999px 999px",
+          "--fx-shape-widget-clip": "none",
+          "--fx-shape-widget-mask": "none",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "auto"
         },
         "attrs": {
-          "data-fx-shape": "pill"
+          "data-fx-shape-widget": "pill"
         }
       }
     },
     {
-      "fn": "shapeStyle",
+      "fn": "compileShape",
       "name": "pill",
       "input": {
         "kind": "pill"
       },
       "expected": {
         "vars": {
-          "--fx-widget-radius": "999px",
-          "--fx-widget-clip": "none",
-          "--fx-widget-corner": "round",
-          "--fx-widget-aspect": "auto"
+          "--fx-shape-widget-radius": "999px 999px 999px 999px",
+          "--fx-shape-widget-clip": "none",
+          "--fx-shape-widget-mask": "none",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "auto"
         },
         "attrs": {
-          "data-fx-shape": "pill"
+          "data-fx-shape-widget": "pill"
         }
       }
     },
     {
-      "fn": "shapeStyle",
+      "fn": "compileShape",
       "name": "circle",
       "input": {
         "kind": "circle"
       },
       "expected": {
         "vars": {
-          "--fx-widget-radius": "999px",
-          "--fx-widget-clip": "none",
-          "--fx-widget-corner": "round",
-          "--fx-widget-aspect": "1"
+          "--fx-shape-widget-radius": "999px 999px 999px 999px",
+          "--fx-shape-widget-clip": "none",
+          "--fx-shape-widget-mask": "none",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "1"
         },
         "attrs": {
-          "data-fx-shape": "circle"
+          "data-fx-shape-widget": "circle"
         }
       }
     },
     {
-      "fn": "shapeStyle",
+      "fn": "compileShape",
       "name": "rounded",
       "input": {
         "kind": "rounded"
       },
       "expected": {
         "vars": {
-          "--fx-widget-radius": "var(--fx-radius-md)",
-          "--fx-widget-clip": "none",
-          "--fx-widget-corner": "round",
-          "--fx-widget-aspect": "auto"
+          "--fx-shape-widget-radius": "var(--fx-radius-md) var(--fx-radius-md) var(--fx-radius-md) var(--fx-radius-md)",
+          "--fx-shape-widget-clip": "none",
+          "--fx-shape-widget-mask": "none",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "auto"
         },
         "attrs": {
-          "data-fx-shape": "rounded"
+          "data-fx-shape-widget": "rounded"
         }
       }
     },
     {
-      "fn": "shapeStyle",
+      "fn": "compileShape",
       "name": "square",
       "input": {
         "kind": "square"
       },
       "expected": {
         "vars": {
-          "--fx-widget-radius": "0",
-          "--fx-widget-clip": "none",
-          "--fx-widget-corner": "round",
-          "--fx-widget-aspect": "auto"
+          "--fx-shape-widget-radius": "0 0 0 0",
+          "--fx-shape-widget-clip": "none",
+          "--fx-shape-widget-mask": "none",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "auto"
         },
         "attrs": {
-          "data-fx-shape": "square"
+          "data-fx-shape-widget": "square"
         }
       }
     },
     {
-      "fn": "shapeStyle",
+      "fn": "compileShape",
       "name": "squircle",
       "input": {
         "kind": "squircle"
       },
       "expected": {
         "vars": {
-          "--fx-widget-radius": "var(--fx-radius-lg)",
-          "--fx-widget-clip": "none",
-          "--fx-widget-corner": "squircle",
-          "--fx-widget-aspect": "auto"
+          "--fx-shape-widget-radius": "var(--fx-radius-lg) var(--fx-radius-lg) var(--fx-radius-lg) var(--fx-radius-lg)",
+          "--fx-shape-widget-clip": "polygon(100% 50%, 99.79% 31.94%, 99.14% 24.56%, 98.06% 19.07%, 96.53% 14.64%, 94.54% 10.99%, 92.04% 7.96%, 89.01% 5.46%, 85.36% 3.47%, 80.93% 1.94%, 75.44% 0.86%, 68.06% 0.21%, 50% 0%, 31.94% 0.21%, 24.56% 0.86%, 19.07% 1.94%, 14.64% 3.47%, 10.99% 5.46%, 7.96% 7.96%, 5.46% 10.99%, 3.47% 14.64%, 1.94% 19.07%, 0.86% 24.56%, 0.21% 31.94%, 0% 50%, 0.21% 68.06%, 0.86% 75.44%, 1.94% 80.93%, 3.47% 85.36%, 5.46% 89.01%, 7.96% 92.04%, 10.99% 94.54%, 14.64% 96.53%, 19.07% 98.06%, 24.56% 99.14%, 31.94% 99.79%, 50% 100%, 68.06% 99.79%, 75.44% 99.14%, 80.93% 98.06%, 85.36% 96.53%, 89.01% 94.54%, 92.04% 92.04%, 94.54% 89.01%, 96.53% 85.36%, 98.06% 80.93%, 99.14% 75.44%, 99.79% 68.06%)",
+          "--fx-shape-widget-mask": "none",
+          "--fx-shape-widget-corner": "squircle",
+          "--fx-shape-widget-aspect": "auto"
         },
         "attrs": {
-          "data-fx-shape": "squircle"
+          "data-fx-shape-widget": "squircle"
         }
       }
     },
     {
-      "fn": "shapeStyle",
+      "fn": "compileShape",
       "name": "hexagon",
       "input": {
         "kind": "hexagon"
       },
       "expected": {
         "vars": {
-          "--fx-widget-radius": "0",
-          "--fx-widget-clip": "polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%)",
-          "--fx-widget-corner": "round",
-          "--fx-widget-aspect": "1"
+          "--fx-shape-widget-radius": "0 0 0 0",
+          "--fx-shape-widget-clip": "polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%)",
+          "--fx-shape-widget-mask": "none",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "1"
         },
         "attrs": {
-          "data-fx-shape": "hexagon"
+          "data-fx-shape-widget": "hexagon"
         }
       }
     },
     {
-      "fn": "shapeStyle",
+      "fn": "compileShape",
       "name": "diamond",
       "input": {
         "kind": "diamond"
       },
       "expected": {
         "vars": {
-          "--fx-widget-radius": "0",
-          "--fx-widget-clip": "polygon(50% 0, 100% 50%, 50% 100%, 0 50%)",
-          "--fx-widget-corner": "round",
-          "--fx-widget-aspect": "1"
+          "--fx-shape-widget-radius": "0 0 0 0",
+          "--fx-shape-widget-clip": "polygon(50% 0, 100% 50%, 50% 100%, 0 50%)",
+          "--fx-shape-widget-mask": "none",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "1"
         },
         "attrs": {
-          "data-fx-shape": "diamond"
+          "data-fx-shape-widget": "diamond"
         }
       }
     },
     {
-      "fn": "shapeStyle",
+      "fn": "compileShape",
       "name": "tag",
       "input": {
         "kind": "tag"
       },
       "expected": {
         "vars": {
-          "--fx-widget-radius": "0",
-          "--fx-widget-clip": "polygon(0 0, calc(100% - 0.6em) 0, 100% 50%, calc(100% - 0.6em) 100%, 0 100%)",
-          "--fx-widget-corner": "round",
-          "--fx-widget-aspect": "auto"
+          "--fx-shape-widget-radius": "0 0 0 0",
+          "--fx-shape-widget-clip": "polygon(0 0, calc(100% - 0.6em) 0, 100% 50%, calc(100% - 0.6em) 100%, 0 100%)",
+          "--fx-shape-widget-mask": "none",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "auto"
         },
         "attrs": {
-          "data-fx-shape": "tag"
+          "data-fx-shape-widget": "tag"
         }
       }
     },
     {
-      "fn": "shapeStyle",
-      "name": "custom corners + mask",
+      "fn": "compileShape",
+      "name": "corners",
       "input": {
-        "kind": "custom",
+        "kind": "corners",
         "corners": {
           "tl": "lg",
-          "tr": "lg"
-        },
-        "mask": "inset(0 round 20% 20% 0 0)"
+          "tr": "none",
+          "br": "pill",
+          "bl": "sm"
+        }
       },
       "expected": {
         "vars": {
-          "--fx-widget-radius": "var(--fx-radius-lg) var(--fx-radius-lg) var(--fx-radius-md) var(--fx-radius-md)",
-          "--fx-widget-clip": "inset(0 round 20% 20% 0 0)",
-          "--fx-widget-corner": "round",
-          "--fx-widget-aspect": "auto"
+          "--fx-shape-widget-radius": "var(--fx-radius-lg) 0 999px var(--fx-radius-sm)",
+          "--fx-shape-widget-clip": "none",
+          "--fx-shape-widget-mask": "none",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "auto"
         },
         "attrs": {
-          "data-fx-shape": "custom"
+          "data-fx-shape-widget": "corners"
+        }
+      }
+    },
+    {
+      "fn": "compileShape",
+      "name": "mask",
+      "input": {
+        "kind": "mask",
+        "mask": "M 50 0 L 61 35 L 98 35 L 68 57 L 79 91 L 50 70 L 21 91 L 32 57 L 2 35 L 39 35 Z",
+        "square": true
+      },
+      "expected": {
+        "vars": {
+          "--fx-shape-widget-radius": "0 0 0 0",
+          "--fx-shape-widget-clip": "none",
+          "--fx-shape-widget-mask": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath d='M 50 0 L 61 35 L 98 35 L 68 57 L 79 91 L 50 70 L 21 91 L 32 57 L 2 35 L 39 35 Z'/%3E%3C/svg%3E\")",
+          "--fx-shape-widget-corner": "round",
+          "--fx-shape-widget-aspect": "1"
+        },
+        "attrs": {
+          "data-fx-shape-widget": "mask"
         }
       }
     }

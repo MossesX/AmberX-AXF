@@ -1,9 +1,10 @@
 /**
- * shape@1 (core/engines/shape-rules.mjs): normalizeShape / shapeErrors / shapeRadius / shapeClip / shapeSquare /
- * shapeStyle against spec/fixtures/shape.json, plus: every starter passes both validators and normalizes to itself, every
- * kind in asset-types.json is one the engine knows, the registry row is a slot (Appearance → Assets, skins), and the
- * default (the `pill` starter, framework/defaults.json) compiles to the look every banner widget had before shapes were
- * assets: a 999px radius, no clip, no square box. `npx -y tsx framework/spec/check-shape.mts [--write]`
+ * shape@1 (core/engines/shape-rules.mjs + core/engines/shape.ts): normalizeShape / shapeErrors / shapeRadius / shapeSquare
+ * / shapeClip / shapeMask / compileShape against spec/fixtures/shape.json, plus: every starter passes both validators and
+ * normalizes to itself, every kind in asset-types.json is one the engine knows, the registry row is a slot (Appearance →
+ * Assets, skins), and the default (the `pill` starter, framework/defaults.json) compiles to the look every banner widget
+ * had before shapes were assets: a 999px radius, no clip, no mask, no square box.
+ *   npx -y tsx framework/spec/check-shape.mts [--write]
  * (--write regenerates the fixture's expected values from the reference engine; review the diff).
  * The Kotlin twin is deferred (spec/PORTING.md): the fixture is what it will replay.
  */
@@ -11,7 +12,8 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SHAPE_DEFAULT_KIND, SHAPE_KINDS, SHAPE_RADII, SHAPE_TYPE, normalizeShape, shapeClip, shapeErrors, shapeRadius, shapeSquare, shapeStyle } from '../core/engines/shape-rules.mjs';
+import { SHAPE_DEFAULT_KIND, SHAPE_KINDS, SHAPE_RADII, SHAPE_TYPE, normalizeShape, shapeErrors, shapeRadius, shapeSquare } from '../core/engines/shape-rules.mjs';
+import { SHAPE_POLYGONS, compileShape, shapeClip, shapeMask, shapeToken, superellipsePoints } from '../core/engines/shape';
 import { bannerWidgetView, normalizeBannerWidgetPref, patchBannerWidget } from '../core/engines/bannerwidgets';
 import { ASSET_TYPES, OPTIONAL_TYPES } from '../core/types';
 import { validateAsset } from '../core/validate';
@@ -25,8 +27,9 @@ const run = {
   shapeErrors: (i: unknown) => shapeErrors(SHAPE_TYPE, i),
   shapeRadius: (i: unknown) => shapeRadius(i),
   shapeClip: (i: unknown) => shapeClip(i),
+  shapeMask: (i: unknown) => shapeMask(i),
   shapeSquare: (i: unknown) => shapeSquare(i),
-  shapeStyle: (i: unknown) => shapeStyle(i),
+  compileShape: (i: unknown) => compileShape(i),
 } as Record<string, (i: unknown) => unknown>;
 let ok = 0;
 const check = (c: unknown, msg: string) => { assert.ok(c, msg); ok++; };
@@ -38,13 +41,17 @@ if (process.argv.includes('--write')) {
 }
 for (const c of fx.cases) eq(run[c.fn]!(c.input), c.expected, `${c.fn} ${c.name}`);
 
-// the registry: a Controls slot, optional, every kind known to the engine, in the same place in both type lists
+// the registry: a Controls slot, optional, every kind known to the engine, in the same place in both type lists, declared `by: slot`
 const spec = JSON.parse(readFileSync(join(here, '../schemas/asset-types.json'), 'utf8')).types;
 eq(spec[SHAPE_TYPE].enums.kind, [...SHAPE_KINDS], 'registry kinds = engine kinds');
 check(spec[SHAPE_TYPE].optional === true && !spec[SHAPE_TYPE].attachable && !spec[SHAPE_TYPE].widget, 'shape is an optional slot, not a widget');
+eq(spec[SHAPE_TYPE].skin?.by, 'slot', 'the registry declares how a skin reaches a shape: the slot');
 eq(Object.keys(spec).indexOf(SHAPE_TYPE), (ASSET_TYPES as readonly string[]).indexOf(SHAPE_TYPE), 'ASSET_TYPES order matches the registry');
 check((OPTIONAL_TYPES as readonly string[]).includes(SHAPE_TYPE), 'shape is optional (an app may ship none)');
 check(SHAPE_RADII.includes('pill') && SHAPE_RADII.includes('none'), 'radius steps span none to pill');
+const schema = JSON.parse(readFileSync(join(here, '../schemas/json/shape.schema.json'), 'utf8'));
+eq(schema.properties.data.properties.kind.enum, [...SHAPE_KINDS], 'the JSON Schema lists every kind');
+for (const k of ['corners', 'mask', 'viewBox', 'square']) check(k in schema.properties.data.properties, `the JSON Schema types ${k}`);
 
 // starters: both validators pass, normalize to themselves; the default is today's look
 const dflt = JSON.parse(readFileSync(join(here, '../defaults.json'), 'utf8'))[SHAPE_TYPE];
@@ -56,8 +63,18 @@ for (const a of starters) {
   eq(cliValidate(a).errors, [], `${a.id} passes the build engine`);
   eq(normalizeShape(a.data), a.data, `${a.id} normalizes to itself`);
 }
-eq(shapeStyle(starters.find((a) => a.id === dflt)!.data), shapeStyle(undefined), 'the default starter = no asset at all');
-eq(shapeStyle(undefined).vars, { '--fx-widget-radius': '999px', '--fx-widget-clip': 'none', '--fx-widget-corner': 'round', '--fx-widget-aspect': 'auto' }, "no asset = today's look (a 999px pill, nothing clipped)");
+eq(compileShape(starters.find((a) => a.id === dflt)!.data), compileShape(undefined), 'the default starter = no asset at all');
+eq(compileShape(undefined).vars, { '--fx-shape-widget-radius': '999px 999px 999px 999px', '--fx-shape-widget-clip': 'none', '--fx-shape-widget-mask': 'none', '--fx-shape-widget-corner': 'round', '--fx-shape-widget-aspect': 'auto' }, "no asset = today's look (a 999px pill, nothing clipped or masked)");
+eq(compileShape(undefined).attrs, { 'data-fx-shape-widget': 'pill' }, 'the root attribute names the slot and the kind');
+eq(shapeToken('radius', 'Bad Slot'), '--fx-shape-widget-radius', 'a bad slot name falls back to the widget slot');
+
+// geometry: every clipped kind is a polygon in percentages (it scales with the chip); the squircle never reaches a corner
+for (const k of ['hexagon', 'diamond', 'tag', 'squircle']) check(SHAPE_POLYGONS[k]!.startsWith('polygon(') && !/px/.test(SHAPE_POLYGONS[k]!), `${k} is a percentage polygon`);
+const pts = superellipsePoints();
+check(pts.length === 48 && pts.every(([x, y]) => x >= 0 && x <= 100 && y >= 0 && y <= 100), 'squircle points stay inside the box');
+check(pts.every(([x, y]) => !((x < 1 || x > 99) && (y < 1 || y > 99))), 'squircle points never touch a corner');
+check(shapeMask({ kind: 'mask', mask: 'M 0 0 L 100 0 L 100 100 Z' }).startsWith('url("data:image/svg+xml,') && shapeMask({ kind: 'mask', mask: 'M 0 0 L 100 0 L 100 100 Z' }).includes("preserveAspectRatio='none'"), 'a mask is a data-URI svg stretched over the chip');
+check(!/<|>|"/.test(shapeMask({ kind: 'mask', mask: 'M 0 0 L 100 0 L 100 100 Z' }).slice(5, -2)), 'the data URI has no raw <, > or quotes');
 
 // both validators say the same about a bad asset
 const bad = { $axf: 'asset@1', type: SHAPE_TYPE, id: 'x', name: 'X', version: '1', data: { kind: 'blob', corners: { tl: 'huge', zz: 'sm' }, mask: 'url(javascript:1)', square: 'yes' } };

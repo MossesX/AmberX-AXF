@@ -631,7 +631,7 @@
       "label": "Widget shape",
       "group": "Controls",
       "icon": "box",
-      "description": "The shape every chip-like banner widget is cut to (shape@1, engine core/engines/shape-rules.mjs): badges, counters, the theme switch, avatars, dots, the progress bar and the ⋯ button. Kinds: circle, pill, rounded, square, squircle, hexagon, diamond, tag, or custom (per-corner radius steps and / or an SVG mask). Compiles to --fx-widget-radius / --fx-widget-clip / --fx-widget-corner / --fx-widget-aspect and data-fx-shape. The pill starter is today's look. Swaps with the skin; a banner widget may name its own shape (per instance).",
+      "description": "The shape every chip-like banner widget is cut to (shape@1, rules core/engines/shape-rules.mjs, engine core/engines/shape.ts): badges, counters, the theme switch, avatars, dots, the progress bar and the ⋯ button. Kinds: circle, pill, rounded, square, squircle (a superellipse), hexagon, diamond, tag, corners (a radius step per corner) or mask (a closed SVG path in its own viewBox). Every radius is a style-theme token (none | sm | md | lg | pill), never a length. Compiles per slot to --fx-shape-<slot>-radius (four corners) / -clip (polygon) / -mask (url) / -corner / -aspect and data-fx-shape-<slot>; the one slot today is `widget`. The pill starter is today's look. Resolved global → skin → app → instance (axf.banner.widget.<id>.shape), the child overriding the parent, with Restore previous edit.",
       "required": [
         "kind"
       ],
@@ -645,14 +645,20 @@
           "hexagon",
           "diamond",
           "tag",
-          "custom"
+          "corners",
+          "mask"
         ]
       },
       "optional": true,
       "optional_fields": {
-        "corners": "{ tl?, tr?, br?, bl? } — radius step per corner: none | sm | md | lg | pill (style-theme radii; default from the kind)",
-        "mask": "string — custom clip: a CSS basic shape (polygon(…), path('…'), inset(…)) or an SVG path (M … Z) in a 0–100 box; at most 2000 characters",
+        "corners": "{ tl?, tr?, br?, bl? } — radius step per corner, each a style-theme token: none | sm | md | lg | pill (never a length; required for kind corners, an override on any other kind; default from the kind)",
+        "mask": "string — kind mask only: SVG path data (M … Z), closed, commands and numbers only (no script, no url() / links / images); at most 2000 characters",
+        "viewBox": "string — kind mask only: the box the path is drawn in, \"minX minY width height\" (default 0 0 100 100); the mask stretches over the chip",
         "square": "boolean — keep a 1:1 box (default: circle, diamond and hexagon do, the rest follow their content)"
+      },
+      "skin": {
+        "by": "slot",
+        "why": "A skin picks the shape slot (assets.shape) like any control; a banner widget may still name its own shape per instance."
       }
     },
     "banner": {
