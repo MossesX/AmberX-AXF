@@ -797,7 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 22:52 UTC · `hotfix-desktop-console-draws-app-menu` note (all) · orchestrator
 - 2026-11-14 22:52 UTC · `hotfix-toolbar-settings-still-change` → running, note (all) · pipeline
 - 2026-11-14 22:52 UTC · `hotfix-toolbar-settings-still-change` note (all) · orchestrator
 - 2026-11-14 22:53 UTC · `pass-approval-hook-deep-link-amberx-notification` s3 done (all) · orchestrator
@@ -1197,6 +1196,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 00:20 UTC · `merge-main-land-console-axhub-retry` → running, note (all) · pipeline
 - 2026-11-15 00:20 UTC · `merge-main-land-console-axhub-retry` branch claude/merge-main-land-console-axhub-retry (all) · pipeline
 - 2026-11-15 00:20 UTC · `merge-main-land-console-axhub-retry` note (all) · orchestrator
+- 2026-11-15 00:23 UTC · `merge-main-land-console-axhub-retry` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
