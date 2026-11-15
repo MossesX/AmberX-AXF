@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5753,
- "updatedAt": "2026-11-15T00:20:27.805Z",
+ "rev": 5754,
+ "updatedAt": "2026-11-15T00:20:48.519Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -151585,7 +151585,7 @@
    "pr": "#681",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-14T23:17:50.720Z",
+   "updatedAt": "2026-11-15T00:19:57.130Z",
    "builtAt": "2026-11-14T23:13:42.882Z",
    "notes": [
     {
@@ -151703,6 +151703,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:19:57.005Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/console-commands/server/__init__.py, apps/console-web/plugins/console-commands/server/test_console_commands.py, apps/console-web/plugins/token-control/control.mjs, apps/console-web/plugins/token-control/lib/pass-approval.mjs, apps/"
+     }
+    ]
    },
    "steps": [
     {
@@ -151942,7 +151959,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 91,
+   "rev": 92,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -188729,7 +188746,7 @@
    "branch": "claude/console-axhub-retry-failed-calls",
    "pr": "#589",
    "createdAt": "2026-11-12T02:37:24.132Z",
-   "updatedAt": "2026-11-14T23:38:07.453Z",
+   "updatedAt": "2026-11-15T00:19:49.681Z",
    "builtAt": "2026-11-14T23:17:05.230Z",
    "notes": [
     {
@@ -188882,6 +188899,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:19:49.572Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/README.md, apps/console-web/plugins/auto-fixes/help.json, apps/console-web/plugins/auto-fixes/hooks.mjs, apps/console-web/plugins/auto-fixes/install.mjs, apps/console-web/plugins/auto-fixes/plugin.json, apps/console-web/plugins/aut"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -189002,7 +189036,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -193922,7 +193956,7 @@
    "branch": "claude/owner-recognized-everywhere-veto",
    "pr": "#601",
    "createdAt": "2026-11-12T02:04:11.564Z",
-   "updatedAt": "2026-11-14T23:17:46.086Z",
+   "updatedAt": "2026-11-15T00:20:06.779Z",
    "builtAt": "2026-11-14T23:12:56.322Z",
    "notes": [
     {
@@ -194075,6 +194109,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:20:06.494Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/README.md, apps/console-web/plugins/claude-settings/README.md, apps/console-web/plugins/claude-settings/claude-settings.mjs, apps/console-web/plugins/claude-settings/core.mjs, apps/console-web/plugins/claude-settings/help.json, apps/console-web/plugins/claude-se"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -194151,7 +194202,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -207597,7 +207648,7 @@
    "pr": "#621",
    "priority": "P0",
    "createdAt": "2026-11-13T19:03:35.763Z",
-   "updatedAt": "2026-11-14T23:22:08.954Z",
+   "updatedAt": "2026-11-15T00:19:43.398Z",
    "builtAt": "2026-11-14T23:21:03.162Z",
    "notes": [
     {
@@ -207705,6 +207756,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:19:43.209Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/README.md, apps/console-web/plugins/notes-browser/hooks.mjs, apps/console-web/plugins/plan-studio/hooks.mjs, apps/console-web/plugins/project-switcher/help.json, apps/console-web/plugins/project-switcher/plugin.json, apps/console-w"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -207784,7 +207852,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -214382,7 +214450,7 @@
    "pr": "#660",
    "priority": "P0",
    "createdAt": "2026-11-13T23:38:56.061Z",
-   "updatedAt": "2026-11-14T23:38:13.166Z",
+   "updatedAt": "2026-11-15T00:19:34.740Z",
    "builtAt": "2026-11-14T23:24:07.334Z",
    "notes": [
     {
@@ -214492,6 +214560,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:19:34.619Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/molly-guide/help.json, apps/console-web/plugins/push-banner/help.json, apps/console-web/plugins/push-banner/land/hook.mjs, apps/console-web/plugins/push-banner/land/land-core.mjs, apps/console-web/plugins/push-banner/land/land.mjs, apps/console-web/plugins/push-"
+     }
+    ]
    },
    "steps": [
     {
@@ -214727,7 +214812,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
