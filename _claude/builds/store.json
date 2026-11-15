@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6102,
- "updatedAt": "2026-11-15T12:20:01.349Z",
+ "rev": 6103,
+ "updatedAt": "2026-11-15T12:20:15.993Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -229824,7 +229824,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T04:20:19.690Z",
-   "updatedAt": "2026-11-15T12:02:39.552Z",
+   "updatedAt": "2026-11-15T12:20:04.652Z",
    "builtAt": "",
    "notes": [
     {
@@ -229886,6 +229886,10 @@
     {
      "text": "gate-rules-plugin-in-the-console (s1 design note, _claude/builds/reports/gate-rules-plugin-in-the-console.md): the molly hand-over seam for the gate is two console adapter files (plugins/gate/gate-store.mjs, plugins/gate/lander.mjs) plus an owner field (console | axf-molly) on every gate-rule@1. Schema, fixtures, GATE.md tool contract (gate.*, lander.*), REST, CLI, MCP names and voice stay the same when axf-molly takes the rules; axHub only routes them.",
      "at": "2026-11-15T12:02:39.552Z"
+    },
+    {
+     "text": "Brett (07:19): do this NOW, top priority, right after axf-data is up: build the axf-molly container, wire it, and move the orchestrator, dispatcher, reconciler, splitter, gate rules, lander, merge watch / Shipped features sender and merge queue into it, as soon as possible. It reads/writes all data through axf-data (data-container-axf-data-holds-all), not repo files. axHub only routes (orchestrator.*, gate.*, lander.*, features.* tools); console is screens only. Cut over with a shadow run, no lost builds, builds keep running during the switch. RE-PLAN the steps first (they still say axHub screens). Land each part with the one-at-a-time lander.",
+     "at": "2026-11-15T12:20:04.652Z"
     }
    ],
    "approvals": [],
@@ -230879,7 +230883,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
