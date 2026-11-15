@@ -798,11 +798,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:15 UTC · `merge-main-land-change-to-move-amberx` note (all) · orchestrator
-- 2026-11-14 23:15 UTC · `themed-native-controls-plugin` s12 done (all) · orchestrator
-- 2026-11-14 23:15 UTC · `console-axhub-retry-failed-calls` → running (all) · builds-live
-- 2026-11-14 23:15 UTC · `land-project-duplicate-boilerplate` → running, note (all) · pipeline
-- 2026-11-14 23:16 UTC · `console-axhub-retry-failed-calls` note (all) · orchestrator
 - 2026-11-14 23:16 UTC · `land-project-duplicate-boilerplate` note (all) · orchestrator
 - 2026-11-14 23:16 UTC · `skin-config-panel-merge-main-and-land` → running, note (all) · pipeline
 - 2026-11-14 23:16 UTC · `themed-native-controls-plugin` s12 done (all) · foreign-write
@@ -1198,6 +1193,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:31 UTC · `console-app-wake-word-voice-listener` s2 done (all) · orchestrator
 - 2026-11-15 01:01 UTC · `prompting-engine-control-panel-events` PR #697 (all) · builds-live
 - 2026-11-15 01:01 UTC · `console-app-wake-word-voice-listener` s9 done (all) · orchestrator
+- 2026-11-15 01:01 UTC · `restore-asset-designer-plugin-merged-nov` → pending, note (all) · reconciler
+- 2026-11-15 01:01 UTC · `new-asset-type-animated-expanding-row` note (all) · reconciler
+- 2026-11-15 01:01 UTC · `prompting-engine-control-panel-events` PR #697, note (all) · reconciler
+- 2026-11-15 01:01 UTC · `console-app-wake-word-voice-listener` s9 done, note (all) · reconciler
+- 2026-11-15 01:01 UTC · `merge-main-land-console-axhub-retry` → pending, note (all) · reconciler
 
 ## Token passes (log)
 
