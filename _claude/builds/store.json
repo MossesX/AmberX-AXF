@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6216,
- "updatedAt": "2026-11-15T13:40:28.876Z",
+ "rev": 6217,
+ "updatedAt": "2026-11-15T13:40:39.943Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -235853,7 +235853,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T13:36:18.858Z",
-   "updatedAt": "2026-11-15T13:40:12.405Z",
+   "updatedAt": "2026-11-15T13:40:34.988Z",
    "builtAt": "",
    "notes": [
     {
@@ -235895,6 +235895,10 @@
     {
      "text": "Brett (08:43): the phone overlay toolbar is fully editable from the console. Use a toolbar editor (reuse the framework toolbar/widget editor) to add, remove and reorder buttons and widgets, pick icons from the icon library, set labels, and choose what each button does (open a console page, approve, start/stop recorder, show notifications, build status), with a live preview of the phone toolbar. Changes push to the phone instantly, with API parity.",
      "at": "2026-11-15T13:39:55.067Z"
+    },
+    {
+     "text": "TO THE RUNNING SESSION, re-read the build. OVERRIDES (Brett 08:37–08:43, these beat the step text): s17, the phone app has NO tabs or screens; only a one-time sign-in/permissions page (incl. display over other apps), and everything visible is the floating OVERLAY toolbar that collapses to a draggable button, with popups. s19, approvals show as an overlay popup you approve or deny in place, not an app page; the lock screen still shows only 'Approval waiting'. s24, NO phone Settings tab; build the Overlay settings + toolbar editor screen in the CONSOLE plugin (icons, buttons, actions, popup position/animation/speed/size/duration/sound/opacity, toolbar size/shape/snap/auto-collapse, Monitor on/off, mic opt-in), with live preview and presets, synced live to the phone. The overlay is themed live by the console skin. Add steps as needed.",
+     "at": "2026-11-15T13:40:34.988Z"
     }
    ],
    "approvals": [],
@@ -236810,7 +236814,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
