@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6093,
- "updatedAt": "2026-11-15T12:17:03.353Z",
+ "rev": 6094,
+ "updatedAt": "2026-11-15T12:17:10.694Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -233727,7 +233727,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T12:14:27.131Z",
-   "updatedAt": "2026-11-15T12:16:53.896Z",
+   "updatedAt": "2026-11-15T12:17:08.859Z",
    "builtAt": "",
    "notes": [
     {
@@ -233751,8 +233751,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "vps-sends-shipped-features-every-merge",
+    "brief": "# Build: vps-sends-shipped-features-every-merge\n\n## Brett said (verbatim)\nAt: 2026-11-15T12:14:27.131Z\n> Why are there no shipped features for the past 2 days. No, the VPS has to send shipped features as soon as a merge to main succeeds since it now controls the orchestrator\n\n## What to build\nContinue build \"VPS sends Shipped features on every merge to main (+ backfill)\" (vps-sends-shipped-features-every-merge) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-15 12:14):\n\"Why are there no shipped features for the past 2 days. No, the VPS has to send shipped features as soon as a merge to main succeeds since it now controls the orchestrator\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~10 min):\n[ ] s1 (~10 min) Design the merge-watch contract: a merge-watch@1 state record (last seen main sha, per-commit send state: pending/sent/failed, attempts, nextRetryAt, the manifest id used as the idempotency key = merge commit sha) and how a merge commit maps to a shipped-manifest@1 (PR, commit, mergedAt, landedAt, files, areas, tests, report link, origin.said). Write the schema and doc, with its data dir behind one path resolver (repo/hub now, axf-data later) so it can move into axf-molly with the orchestrator\nRead first: framework/schemas/merge-watch.json, framework/core/merge-watch.mjs, _claude/memory/docs/merge-watch.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step vps-sends-shipped-features-every-merge <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link vps-sends-shipped-features-every-merge --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step vps-sends-shipped-features-every-merge <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note vps-sends-shipped-features-every-merge \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -234230,7 +234230,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
