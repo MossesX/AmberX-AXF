@@ -84,6 +84,7 @@ function run() {
     landerSettings: { today: G.landerSettingsFrom(CONFIG_TODAY), after705: G.landerSettingsFrom(CONFIG_705), byHand: G.landerSettingsFrom(CONFIG_HAND), empty: G.landerSettingsFrom({}) },
     evaluate: Object.fromEntries(Object.entries(SNAPSHOTS).map(([k, s]) => [k, G.evaluate(set, s, { at: AT })])),
     evaluateSerial: G.evaluate(G.migrate(CONFIG_705, { at: AT }), SNAPSHOTS.redCiSerial, { at: AT }),
+    evaluateBatch: G.evaluate(G.migrate(CONFIG_TODAY, { at: AT }), SNAPSHOTS.redCi, { at: AT }),
     evaluateSoft: { uiWaiting: G.evaluate(SOFT_SET, SNAPSHOTS.uiWaiting, { at: AT }), uiChanges: G.evaluate(SOFT_SET, SNAPSHOTS.uiChanges, { at: AT }), namedChecks: G.evaluate(SOFT_SET, SNAPSHOTS.namedChecks, { at: AT }) },
     evaluateSplit: { console: G.evaluate(SPLIT_SET, SNAPSHOTS.redCi, { owner: 'console', at: AT }), molly: G.evaluate(SPLIT_SET, SNAPSHOTS.redCi, { owner: 'axf-molly', at: AT }) },
     landerState: {
@@ -143,9 +144,15 @@ t('an empty config migrates to the defaults with no keys named', () => { assert.
 const ev = actual.evaluate; const by = (v, id) => v.results.find((r) => r.id === id);
 t('green: every rule passes, nothing holds it', () => { assert.equal(ev.green.pass, true); assert.equal(ev.green.blockedBy, ''); assert.ok(ev.green.results.every((r) => r.verdict === 'pass')); assert.deepEqual(ev.green.reasons, []); assert.equal(ev.green.$axf, G.VERDICT_FRAME); });
 t('red CI in batch mode: the named checks fail, the whole run only holds, a fix is wanted, the headline is the failing check', () => {
-  assert.equal(ev.redCi.pass, false); assert.equal(ev.redCi.held, false); assert.equal(ev.redCi.agent, true);
-  assert.equal(by(ev.redCi, 'ci-green').verdict, 'hold'); assert.equal(by(ev.redCi, 'theme').verdict, 'fail'); assert.equal(by(ev.redCi, 'tests').verdict, 'fail'); assert.equal(by(ev.redCi, 'controls').verdict, 'hold');
-  assert.equal(ev.redCi.blockedBy, 'tests');
+  const b = actual.evaluateBatch;
+  assert.equal(b.pass, false); assert.equal(b.held, false); assert.equal(b.agent, true);
+  assert.equal(by(b, 'ci-green').verdict, 'hold'); assert.equal(by(b, 'theme').verdict, 'fail'); assert.equal(by(b, 'tests').verdict, 'fail'); assert.equal(by(b, 'controls').verdict, 'hold');
+  assert.equal(b.blockedBy, 'tests');
+});
+t('the default set lands one at a time (merge queue off): red CI fails ci-green itself', () => {
+  assert.equal(actual.defaultRuleSet.rules.find((r) => r.id === 'merge-queue-only').settings.mode, 'serial');
+  assert.equal(by(ev.redCi, 'ci-green').verdict, 'fail'); assert.equal(ev.redCi.blockedBy, 'ci-green'); assert.equal(ev.redCi.agent, true);
+  assert.equal(actual.landerSettings.empty.mode, 'serial');
 });
 t('red CI in serial mode: ci-green itself fails', () => { assert.equal(actual.evaluateSerial.pass, false); assert.equal(by(actual.evaluateSerial, 'ci-green').verdict, 'fail'); assert.equal(actual.evaluateSerial.blockedBy, 'ci-green'); assert.equal(by(actual.evaluateSerial, 'controls').verdict, 'fail'); });
 t('CI running: a hold, not a failure, and no agent', () => { assert.equal(ev.ciRunning.held, true); assert.equal(ev.ciRunning.agent, false); assert.equal(ev.ciRunning.blockedBy, 'ci-green'); });
@@ -157,12 +164,13 @@ t('a code clash is the headline even though CI never ran; data clashes resolve b
   assert.equal(ev.clash.pass, false); assert.equal(ev.clash.blockedBy, 'clash'); assert.equal(ev.clash.agent, true); assert.deepEqual(by(ev.clash, 'clash').files, ['framework/ui/axf.css', 'apps/console-web/src/App.tsx']);
   assert.equal(ev.dataClashOnly.pass, true); assert.match(by(ev.dataClashOnly, 'clash').reason, /resolve by themselves/);
 });
-t('a draft and a direct merge are refused by merge-queue-only', () => { assert.equal(ev.draft.blockedBy, 'merge-queue-only'); assert.equal(ev.directMerge.pass, false); assert.match(by(ev.directMerge, 'merge-queue-only').reason, /only the merge queue merges/); });
+t('a draft and a direct merge are refused by merge-queue-only', () => { assert.equal(ev.draft.blockedBy, 'merge-queue-only'); assert.equal(ev.directMerge.pass, false); assert.match(by(ev.directMerge, 'merge-queue-only').reason, /only the lander merges/); });
 t('holds by hand are not rules: every rule passes, the PR still does not land', () => {
   assert.equal(ev.heldByHand.pass, false); assert.equal(ev.heldByHand.blockedBy, 'hand:held'); assert.ok(ev.heldByHand.results.every((r) => r.verdict === 'pass')); assert.equal(ev.heldByHand.held, true);
   assert.equal(ev.kicked.blockedBy, 'hand:kicked'); assert.match(ev.kicked.reasons[0], /rejoins by itself/);
 });
-t("named check results win over the run's colour", () => { const v = ev.namedChecks; assert.equal(by(v, 'theme').verdict, 'pass'); assert.equal(by(v, 'toolbars').verdict, 'fail'); assert.equal(by(v, 'tests').verdict, 'pass'); assert.equal(v.blockedBy, 'toolbars'); });
+t("named check results win over the run's colour", () => { const v = ev.namedChecks; assert.equal(by(v, 'theme').verdict, 'pass'); assert.equal(by(v, 'toolbars').verdict, 'fail'); assert.equal(by(v, 'tests').verdict, 'pass'); assert.equal(v.blockedBy, 'ci-green'); // one at a time: the red run itself is the headline
+});
 t('a warn rule never blocks and an off rule is skipped', () => {
   const s = actual.evaluateSoft;
   assert.equal(s.uiWaiting.pass, true); assert.deepEqual(s.uiWaiting.warnings, []); assert.equal(s.uiChanges.pass, true); assert.equal(s.uiChanges.warnings.length, 1);
@@ -171,7 +179,7 @@ t('a warn rule never blocks and an off rule is skipped', () => {
 t('rules handed to axf-molly are skipped on the console side and run on molly', () => {
   const c = actual.evaluateSplit.console; const m = actual.evaluateSplit.molly;
   assert.equal(by(c, 'ci-green').verdict, 'skip'); assert.match(by(c, 'ci-green').reason, /axf-molly/); assert.equal(by(c, 'theme').verdict, 'fail');
-  assert.equal(by(m, 'ci-green').verdict, 'hold'); assert.equal(by(m, 'theme').verdict, 'skip');
+  assert.equal(by(m, 'ci-green').verdict, 'fail'); assert.equal(by(m, 'theme').verdict, 'skip');
 });
 
 // ------------------------------------------------------------------ lander state

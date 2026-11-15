@@ -272,8 +272,10 @@ export const DEFAULT_TESTS = Object.freeze([['node', 'apps/console-web/scripts/c
  * key, a CI job, or the shared rule "Only the merge queue merges" (Nov 4 2026).
  */
 export const DEFAULT_RULES = Object.freeze([
-  { id: 'merge-queue-only', kind: 'custom', enabled: true, severity: 'block', owner: 'console', title: 'Only the merge queue merges', description: 'A PR lands only through the lander (merge queue or landing line): no direct merge, no auto-merge, no update from main outside the queue; drafts and forks never land.', settings: { mode: 'batch', autoLand: false, directMerge: false, depth: 3, batchSize: 8 }, source: 'shared rule Nov 4 2026; config.json autoLand, mergeQueue, queueMode, queueDepth, batchSize' },
-  { id: 'ci-green', kind: 'ci', enabled: true, severity: 'block', owner: 'console', title: 'CI green', description: 'Every check is green on the commit that lands (the PR head, or the queue commit built on main). Red = needs a code fix; running or not started = waits.', settings: { on: 'queue-commit', redJoins: true, noRunMin: 10 }, source: 'land-core.blockReason ci; merge-queue-core.notReady' },
+  // Brett (Nov 15 2026, 06:59): one switch "Merge queue on/off", off by default = the auto-lander lands one at a time. The
+  // id stays (GATE.md fixes it); the default no longer forces the merge queue, only that nothing but the lander merges.
+  { id: 'merge-queue-only', kind: 'custom', enabled: true, severity: 'block', owner: 'console', title: 'Only the lander merges', description: 'A PR lands only through the lander: one at a time by default, or through the merge queue while its switch is on. No direct merge and no merge outside the lander; drafts and forks never land.', settings: { mode: 'serial', autoLand: false, directMerge: false, depth: 3, batchSize: 8 }, source: 'shared rule Nov 4 2026 (Merge queue switch Nov 15 2026); config.json autoLand, mergeQueue, queueMode, queueDepth, batchSize' },
+  { id: 'ci-green', kind: 'ci', enabled: true, severity: 'block', owner: 'console', title: 'CI green', description: 'Every check is green on the commit that lands (the PR head, or the queue commit built on main). Red = needs a code fix; running or not started = waits.', settings: { on: 'head', redJoins: false, noRunMin: 10 }, source: 'land-core.blockReason ci; merge-queue-core.notReady' },
   { id: 'tests', kind: 'tests', enabled: true, severity: 'block', owner: 'console', title: 'Tests after regeneration', description: 'The quick tests the generated-files manifest asks for pass after the lander resolved generated and additive files.', settings: { commands: DEFAULT_TESTS.map((t) => [...t]) }, source: 'land-core.landTests (framework/spec/generated-files.json)' },
   { id: 'theme', kind: 'theme', enabled: true, severity: 'block', owner: 'console', title: 'Theme tokens', description: 'Every colour, size, spacing, font, radius and border comes from asset tokens (check-theme).', settings: { check: 'framework/cli/check-theme.mjs' }, source: 'CI job check-theme' },
   { id: 'controls', kind: 'controls', enabled: true, severity: 'block', owner: 'console', title: 'Framework controls', description: 'UI uses framework controls, never raw ones (check-controls).', settings: { check: 'framework/cli/check-controls.mjs' }, source: 'CI job check-controls' },
@@ -293,7 +295,8 @@ export function defaultRuleSet({ at = new Date().toISOString(), owner = 'console
 export function landerSettingsFrom(config = {}) {
   const c = obj(config); const a = obj(c.autoLander);
   const queueMode = ['batch', 'stack'].includes(c.queueMode) ? c.queueMode : 'batch';
-  const mode = a.mode === 'serial' ? 'serial' : a.mode === 'merge-queue' ? queueMode : queueMode;
+  // the merge queue's shapes only while its switch is on (Nov 15 2026: off by default = one at a time)
+  const mode = a.mode === 'serial' ? 'serial' : a.mode === 'merge-queue' || c.mergeQueue === true ? queueMode : 'serial';
   return {
     enabled: typeof a.enabled === 'boolean' ? a.enabled : c.mergeQueue !== false, mode, autoLand: c.autoLand === true, waitUi: c.landWaitUi !== false,
     depth: Number.isInteger(c.queueDepth) ? Math.min(6, Math.max(1, c.queueDepth)) : 3, batchSize: Number.isInteger(c.batchSize) ? Math.min(20, Math.max(1, c.batchSize)) : 8,
@@ -401,8 +404,8 @@ export function evaluateRule(rule, snapshot) {
       if (r.id === 'merge-queue-only' || st.directMerge === false) {
         if (s.draft) return V('fail', 'it is a draft.');
         if (s.fork) return V('fail', 'it comes from a fork.');
-        if (s.mergeVia === 'direct') return V('fail', 'only the merge queue merges: a direct merge is refused.');
-        return V('pass', 'It lands through the merge queue.');
+        if (s.mergeVia === 'direct') return V('fail', 'only the lander merges: a direct merge is refused.');
+        return V('pass', 'It lands through the lander.');
       }
       return V('pass', `${r.title || r.id}: nothing to check here.`);
     }

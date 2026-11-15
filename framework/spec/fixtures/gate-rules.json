@@ -157,16 +157,16 @@
      "enabled": true,
      "severity": "block",
      "owner": "console",
-     "title": "Only the merge queue merges",
-     "description": "A PR lands only through the lander (merge queue or landing line): no direct merge, no auto-merge, no update from main outside the queue; drafts and forks never land.",
+     "title": "Only the lander merges",
+     "description": "A PR lands only through the lander: one at a time by default, or through the merge queue while its switch is on. No direct merge and no merge outside the lander; drafts and forks never land.",
      "settings": {
-      "mode": "batch",
+      "mode": "serial",
       "autoLand": false,
       "directMerge": false,
       "depth": 3,
       "batchSize": 8
      },
-     "source": "shared rule Nov 4 2026; config.json autoLand, mergeQueue, queueMode, queueDepth, batchSize"
+     "source": "shared rule Nov 4 2026 (Merge queue switch Nov 15 2026); config.json autoLand, mergeQueue, queueMode, queueDepth, batchSize"
     },
     {
      "$axf": "gate-rule@1",
@@ -178,8 +178,8 @@
      "title": "CI green",
      "description": "Every check is green on the commit that lands (the PR head, or the queue commit built on main). Red = needs a code fix; running or not started = waits.",
      "settings": {
-      "on": "queue-commit",
-      "redJoins": true,
+      "on": "head",
+      "redJoins": false,
       "noRunMin": 10
      },
      "source": "land-core.blockReason ci; merge-queue-core.notReady"
@@ -303,16 +303,16 @@
      "enabled": true,
      "severity": "block",
      "owner": "console",
-     "title": "Only the merge queue merges",
-     "description": "A PR lands only through the lander (merge queue or landing line): no direct merge, no auto-merge, no update from main outside the queue; drafts and forks never land.",
+     "title": "Only the lander merges",
+     "description": "A PR lands only through the lander: one at a time by default, or through the merge queue while its switch is on. No direct merge and no merge outside the lander; drafts and forks never land.",
      "settings": {
-      "mode": "batch",
+      "mode": "serial",
       "autoLand": false,
       "directMerge": false,
       "depth": 3,
       "batchSize": 8
      },
-     "source": "shared rule Nov 4 2026; config.json autoLand, mergeQueue, queueMode, queueDepth, batchSize"
+     "source": "shared rule Nov 4 2026 (Merge queue switch Nov 15 2026); config.json autoLand, mergeQueue, queueMode, queueDepth, batchSize"
     },
     {
      "$axf": "gate-rule@1",
@@ -324,8 +324,8 @@
      "title": "CI green",
      "description": "Every check is green on the commit that lands (the PR head, or the queue commit built on main). Red = needs a code fix; running or not started = waits.",
      "settings": {
-      "on": "queue-commit",
-      "redJoins": true,
+      "on": "head",
+      "redJoins": false,
       "noRunMin": 10
      },
      "source": "land-core.blockReason ci; merge-queue-core.notReady"
@@ -580,16 +580,16 @@
      "enabled": true,
      "severity": "block",
      "owner": "console",
-     "title": "Only the merge queue merges",
-     "description": "A PR lands only through the lander (merge queue or landing line): no direct merge, no auto-merge, no update from main outside the queue; drafts and forks never land.",
+     "title": "Only the lander merges",
+     "description": "A PR lands only through the lander: one at a time by default, or through the merge queue while its switch is on. No direct merge and no merge outside the lander; drafts and forks never land.",
      "settings": {
-      "mode": "batch",
+      "mode": "serial",
       "autoLand": false,
       "directMerge": false,
       "depth": 3,
       "batchSize": 8
      },
-     "source": "shared rule Nov 4 2026; config.json autoLand, mergeQueue, queueMode, queueDepth, batchSize"
+     "source": "shared rule Nov 4 2026 (Merge queue switch Nov 15 2026); config.json autoLand, mergeQueue, queueMode, queueDepth, batchSize"
     },
     {
      "$axf": "gate-rule@1",
@@ -601,8 +601,8 @@
      "title": "CI green",
      "description": "Every check is green on the commit that lands (the PR head, or the queue commit built on main). Red = needs a code fix; running or not started = waits.",
      "settings": {
-      "on": "queue-commit",
-      "redJoins": true,
+      "on": "head",
+      "redJoins": false,
       "noRunMin": 10
      },
      "source": "land-core.blockReason ci; merge-queue-core.notReady"
@@ -727,8 +727,8 @@
       "enabled": true,
       "severity": "block",
       "owner": "console",
-      "title": "Only the merge queue merges",
-      "description": "A PR lands only through the lander (merge queue or landing line): no direct merge, no auto-merge, no update from main outside the queue; drafts and forks never land.",
+      "title": "Only the lander merges",
+      "description": "A PR lands only through the lander: one at a time by default, or through the merge queue while its switch is on. No direct merge and no merge outside the lander; drafts and forks never land.",
       "settings": {
        "mode": "batch",
        "autoLand": false,
@@ -736,7 +736,7 @@
        "depth": 3,
        "batchSize": 8
       },
-      "source": "shared rule Nov 4 2026; config.json autoLand, mergeQueue, queueMode, queueDepth, batchSize",
+      "source": "shared rule Nov 4 2026 (Merge queue switch Nov 15 2026); config.json autoLand, mergeQueue, queueMode, queueDepth, batchSize",
       "updatedAt": "2026-11-15T12:00:00Z",
       "updatedBy": "migration"
      },
@@ -902,8 +902,8 @@
       "enabled": true,
       "severity": "block",
       "owner": "console",
-      "title": "Only the merge queue merges",
-      "description": "A PR lands only through the lander (merge queue or landing line): no direct merge, no auto-merge, no update from main outside the queue; drafts and forks never land.",
+      "title": "Only the lander merges",
+      "description": "A PR lands only through the lander: one at a time by default, or through the merge queue while its switch is on. No direct merge and no merge outside the lander; drafts and forks never land.",
       "settings": {
        "mode": "serial",
        "autoLand": false,
@@ -911,7 +911,7 @@
        "depth": 3,
        "batchSize": 8
       },
-      "source": "shared rule Nov 4 2026; config.json autoLand, mergeQueue, queueMode, queueDepth, batchSize",
+      "source": "shared rule Nov 4 2026 (Merge queue switch Nov 15 2026); config.json autoLand, mergeQueue, queueMode, queueDepth, batchSize",
       "updatedAt": "2026-11-15T12:00:00Z",
       "updatedBy": "migration"
      },
@@ -1078,8 +1078,8 @@
       "enabled": true,
       "severity": "block",
       "owner": "console",
-      "title": "Only the merge queue merges",
-      "description": "A PR lands only through the lander (merge queue or landing line): no direct merge, no auto-merge, no update from main outside the queue; drafts and forks never land.",
+      "title": "Only the lander merges",
+      "description": "A PR lands only through the lander: one at a time by default, or through the merge queue while its switch is on. No direct merge and no merge outside the lander; drafts and forks never land.",
       "settings": {
        "mode": "stack",
        "autoLand": false,
@@ -1087,7 +1087,7 @@
        "depth": 2,
        "batchSize": 8
       },
-      "source": "shared rule Nov 4 2026; config.json autoLand, mergeQueue, queueMode, queueDepth, batchSize",
+      "source": "shared rule Nov 4 2026 (Merge queue switch Nov 15 2026); config.json autoLand, mergeQueue, queueMode, queueDepth, batchSize",
       "updatedAt": "2026-11-15T12:00:00Z",
       "updatedBy": "migration"
      },
@@ -1252,16 +1252,16 @@
       "enabled": true,
       "severity": "block",
       "owner": "console",
-      "title": "Only the merge queue merges",
-      "description": "A PR lands only through the lander (merge queue or landing line): no direct merge, no auto-merge, no update from main outside the queue; drafts and forks never land.",
+      "title": "Only the lander merges",
+      "description": "A PR lands only through the lander: one at a time by default, or through the merge queue while its switch is on. No direct merge and no merge outside the lander; drafts and forks never land.",
       "settings": {
-       "mode": "batch",
+       "mode": "serial",
        "autoLand": false,
        "directMerge": false,
        "depth": 3,
        "batchSize": 8
       },
-      "source": "shared rule Nov 4 2026; config.json autoLand, mergeQueue, queueMode, queueDepth, batchSize"
+      "source": "shared rule Nov 4 2026 (Merge queue switch Nov 15 2026); config.json autoLand, mergeQueue, queueMode, queueDepth, batchSize"
      },
      {
       "$axf": "gate-rule@1",
@@ -1273,8 +1273,8 @@
       "title": "CI green",
       "description": "Every check is green on the commit that lands (the PR head, or the queue commit built on main). Red = needs a code fix; running or not started = waits.",
       "settings": {
-       "on": "queue-commit",
-       "redJoins": true,
+       "on": "head",
+       "redJoins": false,
        "noRunMin": 10
       },
       "source": "land-core.blockReason ci; merge-queue-core.notReady"
@@ -1420,7 +1420,7 @@
    },
    "empty": {
     "enabled": true,
-    "mode": "batch",
+    "mode": "serial",
     "autoLand": false,
     "waitUi": true,
     "depth": 3,
@@ -1446,7 +1446,7 @@
       "owner": "console",
       "enabled": true,
       "verdict": "pass",
-      "reason": "It lands through the merge queue."
+      "reason": "It lands through the lander."
      },
      {
       "id": "ci-green",
@@ -1522,7 +1522,7 @@
     "head": "b702b702b702b702b702b702b702b702b702b702",
     "pass": false,
     "held": false,
-    "blockedBy": "tests",
+    "blockedBy": "ci-green",
     "agent": true,
     "holds": [],
     "results": [
@@ -1533,7 +1533,7 @@
       "owner": "console",
       "enabled": true,
       "verdict": "pass",
-      "reason": "It lands through the merge queue."
+      "reason": "It lands through the lander."
      },
      {
       "id": "ci-green",
@@ -1541,8 +1541,9 @@
       "severity": "block",
       "owner": "console",
       "enabled": true,
-      "verdict": "hold",
-      "reason": "its PR checks are red (android / check-theme, android / conformance tests); it joins behind the green ones and the queue run decides."
+      "verdict": "fail",
+      "reason": "CI is red (android / check-theme, android / conformance tests). Needs a code fix.",
+      "agent": true
      },
      {
       "id": "tests",
@@ -1602,7 +1603,7 @@
      }
     ],
     "reasons": [
-     "ci-green: its PR checks are red (android / check-theme, android / conformance tests); it joins behind the green ones and the queue run decides.",
+     "ci-green: CI is red (android / check-theme, android / conformance tests). Needs a code fix.",
      "tests: The tests fail after regeneration. Needs a code fix.",
      "theme: check-theme fails: a colour, size, spacing, font, radius or border is a literal, not a token.",
      "controls: check-controls has not run on its head yet.",
@@ -1617,7 +1618,7 @@
     "head": "b702b702b702b702b702b702b702b702b702b702",
     "pass": false,
     "held": false,
-    "blockedBy": "controls",
+    "blockedBy": "ci-green",
     "agent": true,
     "holds": [],
     "results": [
@@ -1628,7 +1629,7 @@
       "owner": "console",
       "enabled": true,
       "verdict": "pass",
-      "reason": "It lands through the merge queue."
+      "reason": "It lands through the lander."
      },
      {
       "id": "ci-green",
@@ -1636,8 +1637,9 @@
       "severity": "block",
       "owner": "console",
       "enabled": true,
-      "verdict": "hold",
-      "reason": "its PR checks are red (android / check-controls); it joins behind the green ones and the queue run decides."
+      "verdict": "fail",
+      "reason": "CI is red (android / check-controls). Needs a code fix.",
+      "agent": true
      },
      {
       "id": "tests",
@@ -1696,7 +1698,7 @@
      }
     ],
     "reasons": [
-     "ci-green: its PR checks are red (android / check-controls); it joins behind the green ones and the queue run decides.",
+     "ci-green: CI is red (android / check-controls). Needs a code fix.",
      "tests: The tests have not run on its head yet.",
      "theme: check-theme has not run on its head yet.",
      "controls: check-controls fails: a raw control is used where a framework control exists.",
@@ -1722,7 +1724,7 @@
       "owner": "console",
       "enabled": true,
       "verdict": "pass",
-      "reason": "It lands through the merge queue."
+      "reason": "It lands through the lander."
      },
      {
       "id": "ci-green",
@@ -1815,7 +1817,7 @@
       "owner": "console",
       "enabled": true,
       "verdict": "pass",
-      "reason": "It lands through the merge queue."
+      "reason": "It lands through the lander."
      },
      {
       "id": "ci-green",
@@ -1904,7 +1906,7 @@
       "owner": "console",
       "enabled": true,
       "verdict": "pass",
-      "reason": "It lands through the merge queue."
+      "reason": "It lands through the lander."
      },
      {
       "id": "ci-green",
@@ -1993,7 +1995,7 @@
       "owner": "console",
       "enabled": true,
       "verdict": "pass",
-      "reason": "It lands through the merge queue."
+      "reason": "It lands through the lander."
      },
      {
       "id": "ci-green",
@@ -2092,7 +2094,7 @@
       "owner": "console",
       "enabled": true,
       "verdict": "pass",
-      "reason": "It lands through the merge queue."
+      "reason": "It lands through the lander."
      },
      {
       "id": "ci-green",
@@ -2278,7 +2280,7 @@
       "owner": "console",
       "enabled": true,
       "verdict": "pass",
-      "reason": "It lands through the merge queue."
+      "reason": "It lands through the lander."
      },
      {
       "id": "ci-green",
@@ -2372,7 +2374,7 @@
       "owner": "console",
       "enabled": true,
       "verdict": "pass",
-      "reason": "It lands through the merge queue."
+      "reason": "It lands through the lander."
      },
      {
       "id": "ci-green",
@@ -2461,7 +2463,7 @@
       "owner": "console",
       "enabled": true,
       "verdict": "fail",
-      "reason": "only the merge queue merges: a direct merge is refused."
+      "reason": "only the lander merges: a direct merge is refused."
      },
      {
       "id": "ci-green",
@@ -2528,7 +2530,7 @@
      }
     ],
     "reasons": [
-     "merge-queue-only: only the merge queue merges: a direct merge is refused."
+     "merge-queue-only: only the lander merges: a direct merge is refused."
     ],
     "warnings": []
    },
@@ -2539,7 +2541,7 @@
     "head": "b709b709b709b709b709b709b709b709b709b709",
     "pass": false,
     "held": false,
-    "blockedBy": "toolbars",
+    "blockedBy": "ci-green",
     "agent": true,
     "holds": [],
     "results": [
@@ -2550,7 +2552,7 @@
       "owner": "console",
       "enabled": true,
       "verdict": "pass",
-      "reason": "It lands through the merge queue."
+      "reason": "It lands through the lander."
      },
      {
       "id": "ci-green",
@@ -2558,8 +2560,9 @@
       "severity": "block",
       "owner": "console",
       "enabled": true,
-      "verdict": "hold",
-      "reason": "its PR checks are red (lint); it joins behind the green ones and the queue run decides."
+      "verdict": "fail",
+      "reason": "CI is red (lint). Needs a code fix.",
+      "agent": true
      },
      {
       "id": "tests",
@@ -2618,7 +2621,7 @@
      }
     ],
     "reasons": [
-     "ci-green: its PR checks are red (lint); it joins behind the green ones and the queue run decides.",
+     "ci-green: CI is red (lint). Needs a code fix.",
      "toolbars: check-toolbars fails: a toolbar lacks role=\"toolbar\" or an aria-label, or a tab row is not the TabGroup."
     ],
     "warnings": []
@@ -2642,7 +2645,7 @@
      "owner": "console",
      "enabled": true,
      "verdict": "pass",
-     "reason": "It lands through the merge queue."
+     "reason": "It lands through the lander."
     },
     {
      "id": "ci-green",
@@ -2719,6 +2722,101 @@
    ],
    "warnings": []
   },
+  "evaluateBatch": {
+   "$axf": "gate-verdict@1",
+   "at": "2026-11-15T12:00:00Z",
+   "pr": 702,
+   "head": "b702b702b702b702b702b702b702b702b702b702",
+   "pass": false,
+   "held": false,
+   "blockedBy": "tests",
+   "agent": true,
+   "holds": [],
+   "results": [
+    {
+     "id": "merge-queue-only",
+     "kind": "custom",
+     "severity": "block",
+     "owner": "console",
+     "enabled": true,
+     "verdict": "pass",
+     "reason": "It lands through the lander."
+    },
+    {
+     "id": "ci-green",
+     "kind": "ci",
+     "severity": "block",
+     "owner": "console",
+     "enabled": true,
+     "verdict": "hold",
+     "reason": "its PR checks are red (android / check-theme, android / conformance tests); it joins behind the green ones and the queue run decides."
+    },
+    {
+     "id": "tests",
+     "kind": "tests",
+     "severity": "block",
+     "owner": "console",
+     "enabled": true,
+     "verdict": "fail",
+     "reason": "The tests fail after regeneration. Needs a code fix.",
+     "agent": true
+    },
+    {
+     "id": "theme",
+     "kind": "theme",
+     "severity": "block",
+     "owner": "console",
+     "enabled": true,
+     "verdict": "fail",
+     "reason": "check-theme fails: a colour, size, spacing, font, radius or border is a literal, not a token.",
+     "agent": true
+    },
+    {
+     "id": "controls",
+     "kind": "controls",
+     "severity": "block",
+     "owner": "console",
+     "enabled": true,
+     "verdict": "hold",
+     "reason": "check-controls has not run on its head yet."
+    },
+    {
+     "id": "toolbars",
+     "kind": "controls",
+     "severity": "block",
+     "owner": "console",
+     "enabled": true,
+     "verdict": "hold",
+     "reason": "check-toolbars has not run on its head yet."
+    },
+    {
+     "id": "ui-review",
+     "kind": "ui-review",
+     "severity": "block",
+     "owner": "console",
+     "enabled": true,
+     "verdict": "pass",
+     "reason": "UI Review does not hold it."
+    },
+    {
+     "id": "clash",
+     "kind": "clash",
+     "severity": "block",
+     "owner": "console",
+     "enabled": true,
+     "verdict": "pass",
+     "reason": "It merges cleanly with main."
+    }
+   ],
+   "reasons": [
+    "ci-green: its PR checks are red (android / check-theme, android / conformance tests); it joins behind the green ones and the queue run decides.",
+    "tests: The tests fail after regeneration. Needs a code fix.",
+    "theme: check-theme fails: a colour, size, spacing, font, radius or border is a literal, not a token.",
+    "controls: check-controls has not run on its head yet.",
+    "toolbars: check-toolbars has not run on its head yet."
+   ],
+   "warnings": []
+  },
   "evaluateSoft": {
    "uiWaiting": {
     "$axf": "gate-verdict@1",
@@ -2738,7 +2836,7 @@
       "owner": "console",
       "enabled": true,
       "verdict": "pass",
-      "reason": "It lands through the merge queue."
+      "reason": "It lands through the lander."
      },
      {
       "id": "ci-green",
@@ -2827,7 +2925,7 @@
       "owner": "console",
       "enabled": true,
       "verdict": "pass",
-      "reason": "It lands through the merge queue."
+      "reason": "It lands through the lander."
      },
      {
       "id": "ci-green",
@@ -2906,9 +3004,9 @@
     "pr": 709,
     "head": "b709b709b709b709b709b709b709b709b709b709",
     "pass": false,
-    "held": true,
+    "held": false,
     "blockedBy": "ci-green",
-    "agent": false,
+    "agent": true,
     "holds": [],
     "results": [
      {
@@ -2918,7 +3016,7 @@
       "owner": "console",
       "enabled": true,
       "verdict": "pass",
-      "reason": "It lands through the merge queue."
+      "reason": "It lands through the lander."
      },
      {
       "id": "ci-green",
@@ -2926,8 +3024,9 @@
       "severity": "block",
       "owner": "console",
       "enabled": true,
-      "verdict": "hold",
-      "reason": "its PR checks are red (lint); it joins behind the green ones and the queue run decides."
+      "verdict": "fail",
+      "reason": "CI is red (lint). Needs a code fix.",
+      "agent": true
      },
      {
       "id": "tests",
@@ -2985,7 +3084,7 @@
      }
     ],
     "reasons": [
-     "ci-green: its PR checks are red (lint); it joins behind the green ones and the queue run decides."
+     "ci-green: CI is red (lint). Needs a code fix."
     ],
     "warnings": []
    }
@@ -3009,7 +3108,7 @@
       "owner": "console",
       "enabled": true,
       "verdict": "pass",
-      "reason": "It lands through the merge queue."
+      "reason": "It lands through the lander."
      },
      {
       "id": "ci-green",
@@ -3090,7 +3189,7 @@
     "head": "b702b702b702b702b702b702b702b702b702b702",
     "pass": false,
     "held": false,
-    "blockedBy": "tests",
+    "blockedBy": "ci-green",
     "agent": true,
     "holds": [],
     "results": [
@@ -3109,8 +3208,9 @@
       "severity": "block",
       "owner": "axf-molly",
       "enabled": true,
-      "verdict": "hold",
-      "reason": "its PR checks are red (android / check-theme, android / conformance tests); it joins behind the green ones and the queue run decides."
+      "verdict": "fail",
+      "reason": "CI is red (android / check-theme, android / conformance tests). Needs a code fix.",
+      "agent": true
      },
      {
       "id": "tests",
@@ -3169,7 +3269,7 @@
      }
     ],
     "reasons": [
-     "ci-green: its PR checks are red (android / check-theme, android / conformance tests); it joins behind the green ones and the queue run decides.",
+     "ci-green: CI is red (android / check-theme, android / conformance tests). Needs a code fix.",
      "tests: The tests fail after regeneration. Needs a code fix."
     ],
     "warnings": []
@@ -3480,7 +3580,7 @@
     "enabled": true,
     "paused": false,
     "pause": null,
-    "mode": "batch",
+    "mode": "serial",
     "source": "merge-queue@1",
     "landing": null,
     "lastRuns": [],
