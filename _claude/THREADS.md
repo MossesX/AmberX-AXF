@@ -798,8 +798,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:06 UTC · `owner-recognized-everywhere-veto` note (all) · orchestrator
-- 2026-11-14 23:06 UTC · `server-gate-one-session-per-build-no` s3 done, → built (all) · orchestrator
 - 2026-11-13 10:44 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` branch claude/owner-recognized-everywhere-veto-countdown-only-on-shell-commands, PR #559 (all) · builds-live
 - 2026-11-13 10:44 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` s3 done, → running (all) · orchestrator
 - 2026-11-13 10:45 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` note (all) · orchestrator
@@ -1198,6 +1196,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 00:39 UTC · `ui-manager-floating-window-to-select-any` → running, note (all) · pipeline
 - 2026-11-15 00:39 UTC · `ui-manager-floating-window-to-select-any` → running, note (all) · orchestrator
 - 2026-11-15 00:40 UTC · `merge-main-land-console-app-part-2` → pending, note (all) · pipeline
+- 2026-11-15 00:41 UTC · `merge-main-land-console-app-part-2` → pending, note (all) · pipeline
+- 2026-11-15 00:42 UTC · `merge-main-land-console-app-part-2` → pending, note (all) · pipeline
 
 ## Token passes (log)
 
