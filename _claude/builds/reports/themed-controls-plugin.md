@@ -62,7 +62,7 @@ answers what is themed and open on screen.
 - check-theme (1315 files), check-controls, check-toolbars, check-chrome-assets, check-skin-coverage,
   check-themed-controls (315), check-console-control (inventory regenerated), console-control@1 spec, help-coverage,
   glossary catalog --check, shared-assets check, tracker --check, validate --framework (541 assets): pass.
-- Console `npm run build` (sync-data, control-inventory, tsc, vite): pass.
+- Console `npm run build` (sync-data, control-inventory, tsc, vite): pass. `scripts/theme-swap.mjs` on the build: every colour, transparency and size follows the active themes.
 
 ## Decisions and deviations
 
