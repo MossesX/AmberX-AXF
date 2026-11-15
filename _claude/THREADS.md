@@ -806,7 +806,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 00:19 UTC · `merge-main-land-voice-listener-use` → running, note (all) · pipeline
 - 2026-11-15 00:19 UTC · `merge-main-land-voice-listener-use` branch claude/merge-main-land-voice-listener-use (all) · pipeline
 - 2026-11-15 00:19 UTC · `merge-main-land-voice-listener-use` note (all) · orchestrator
 - 2026-11-15 00:20 UTC · `all-settings-interfaces-open-floating` note (all) · pipeline
@@ -1206,6 +1205,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 12:30 UTC · `auto-lander-controls-in-the-gate-plugin` → pending, note (all) · reconciler
 - 2026-11-15 12:31 UTC · `shipped-features-organized-sortable` s2 done (all) · orchestrator
 - 2026-11-15 12:31 UTC · `data-container-axf-data-holds-all` s8 done (all) · orchestrator
+- 2026-11-15 12:33 UTC · `shipped-features-organized-sortable` PR #708 (all) · builds-live
 
 ## Token passes (log)
 
