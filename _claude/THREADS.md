@@ -807,7 +807,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 01:01 UTC · `console-app-wake-word-voice-listener` s9 done, note (all) · reconciler
 - 2026-11-15 01:01 UTC · `merge-main-land-console-axhub-retry` → pending, note (all) · reconciler
 - 2026-11-15 01:02 UTC · `ui-manager-floating-window-to-select-any` s9 done (all) · orchestrator
 - 2026-11-15 01:02 UTC · `console-app-wake-word-voice-listener` note (all) · orchestrator
@@ -1207,6 +1206,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 13:55 UTC · `data-container-axf-data-holds-all` s27 done, → built (all) · orchestrator
 - 2026-11-15 13:56 UTC · `data-container-axf-data-holds-all` note (all) · orchestrator
 - 2026-11-15 13:58 UTC · `phone-connect-small-android-companion` s3 done (all) · orchestrator
+- 2026-11-15 13:58 UTC · `phone-connect-small-android-companion` PR #712 (all) · builds-live
 
 ## Token passes (log)
 

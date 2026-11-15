@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6235,
- "updatedAt": "2026-11-15T13:58:24.740Z",
+ "rev": 6236,
+ "updatedAt": "2026-11-15T13:58:54.047Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -235874,10 +235874,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/phone-connect-small-android-companion",
-   "pr": "",
+   "pr": "#712",
    "priority": "P1",
    "createdAt": "2026-11-15T13:36:18.858Z",
-   "updatedAt": "2026-11-15T13:58:22.857Z",
+   "updatedAt": "2026-11-15T13:58:52.459Z",
    "builtAt": "",
    "notes": [
     {
@@ -236838,7 +236838,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
