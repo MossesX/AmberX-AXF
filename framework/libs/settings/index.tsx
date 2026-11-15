@@ -19,6 +19,7 @@ import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettin
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { TabGroup } from '../../react/components/TabGroup';
+import { ExpanderPicker } from '../../react/components/ExpanderPicker';
 import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS, LevelEditor, levelEditorAct } from './levels';
 import { FollowHubSwitch, SKIN_WHERE_CSS, SKIN_WHERE_DIALOG, SkinWhere, SkinWhereDialog } from './skinwhere';
 import { SkinScope } from '../../react/components/SkinScope';
@@ -179,12 +180,13 @@ function SettingControl({ spec, off = false }: { spec: SettingSpec; off?: boolea
         );
         break;
       }
-      control = (
-        <select className="axf-settings__field" value={typeof value === 'string' ? value : ''} disabled={locked} onChange={(e) => set(e.target.value)}>
-          {(spec.options ?? []).map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-        </select>
+      // expander-picker@1: a pick-one setting is the row itself (name, value, arrow) that unfolds into its options in place;
+      // the settings row's own `setting:<key>` target is its API, so the picker registers none of its own
+      return (
+        <div className="axf-settings__row axf-settings__row--wide">
+          <ExpanderPicker label={spec.label} value={typeof value === 'string' ? value : ''} options={spec.options ?? []} disabled={locked} hint={spec.description} address={false} onChange={(v) => set(v)} />
+        </div>
       );
-      break;
     case 'multi_choice': {
       const chosen = Array.isArray(value) ? value : [];
       control = (
@@ -324,9 +326,7 @@ function RolePanel() {
       <div className="axf-settings__row">
         <div className="axf-settings__label"><span>Acting as</span><span className="fx-muted axf-settings__hint">Roles come from the active access policy ({policy.name}).</span></div>
         <div className="axf-settings__control">
-          <select className="axf-settings__field" value={state.role} onChange={(e) => rt.setRole(e.target.value)}>
-            {policy.data.roles.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
-          </select>
+          <ExpanderPicker label="Role" value={state.role} options={policy.data.roles.map((r) => ({ value: r.id, label: r.label }))} address="acting-as" onChange={(v) => rt.setRole(v)} />
         </div>
       </div>
     </div>

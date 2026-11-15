@@ -61,8 +61,9 @@ export interface ExpanderPickerProps {
   className?: string;
   /** its own asset data (else the app's active expander-picker asset, else the default) */
   asset?: Partial<ExpanderPickerData> | null;
-  /** console-control address id (`setting:<address>`); default: the label's slug */
-  address?: string;
+  /** console-control address id (`setting:<address>`); default: the label's slug; false = no target of its own (a host
+   *  row that already is the API, like a settings row's `setting:<key>`) */
+  address?: string | false;
 }
 
 const NO_STORE = () => () => {};
@@ -157,11 +158,11 @@ export function ExpanderPicker({ label, value, options, onChange, onPreview, hin
     (gridRef.current?.children[next] as HTMLButtonElement | undefined)?.focus({ preventScroll: true });
   };
 
-  const targetRef = useControlTarget(labelText || address ? {
-    address: `setting:${address ?? controlSlug(labelText)}`, kind: 'setting', label: labelText || address!, detail: 'expander picker', icon: 'chevron-down', keywords: all.map((o) => o.label),
+  const targetRef = useControlTarget(address !== false && (labelText || address) ? {
+    address: `setting:${address ?? controlSlug(labelText)}`, kind: 'setting', label: labelText || (address as string), detail: 'expander picker', icon: 'chevron-down', keywords: all.map((o) => o.label),
     can: ['open', 'state', 'set', 'focus', 'press'],
     get: () => value,
-    set: (v) => { const want = String(v); const o = all.find((x) => x.value === want || x.label.toLowerCase() === want.toLowerCase()); if (!o) return `${labelText || address} has no option "${want}"`; if (o.disabled) return `${o.label} is not available`; close(o.value); return undefined; },
+    set: (v: unknown) => { const want = String(v); const o = all.find((x) => x.value === want || x.label.toLowerCase() === want.toLowerCase()); if (!o) return `${labelText || (address as string)} has no option "${want}"`; if (o.disabled) return `${o.label} is not available`; close(o.value); return undefined; },
     invoke: () => onRow(),
     open: () => expand(),
     expand: () => expand(),
