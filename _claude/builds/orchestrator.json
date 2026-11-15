@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T09:11:06.441Z",
+ "updatedAt": "2026-11-15T11:52:19.617Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -149179,6 +149179,37 @@
      "createdAt": "2026-11-15T04:30:21.947Z"
     }
    ]
+  },
+  {
+   "id": "pending-tab-one-collapsed-row-per-2",
+   "title": "Pending tab: one collapsed row per build (rebuild)",
+   "category": "",
+   "detail": "Rebuild from current main (the old branch claude/pending-tab-one-collapsed-row-per-build is 3000+ commits behind and only has rename commits; ignore it). In the Build Orchestrator's Pending tab, every pending build is ONE collapsed row: title, status/why it's pending, priority, steps done/total, age. Tap the row to expand it and see steps, notes and actions (queue, edit, archive); tap again to collapse. Collapsed by default, remembers expanded rows per viewer. Same for desktop and phone. Uses asset tokens and framework controls; full API parity (deep link, expand/collapse and actions via REST/MCP/CLI/voice). Tests, help, Shipped features. Land when done.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-15T11:52:18.052Z",
+   "updatedAt": "2026-11-15T11:52:18.052Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Why are pending builds not 1 expandable row. Wanna just rebuild it",
+    "at": "2026-11-15T11:52:18.052Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
