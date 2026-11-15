@@ -798,9 +798,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:15 UTC · `console-axhub-retry-failed-calls` note (all) · orchestrator
-- 2026-11-14 23:15 UTC · `console-axhub-retry-failed-calls` s3 done, → built (all) · orchestrator
-- 2026-11-14 23:16 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` s2 undone, → pending (all) · builds-live
 - 2026-11-14 23:17 UTC · `console-axhub-retry-failed-calls` → pending, note (all) · pipeline
 - 2026-11-14 23:17 UTC · `per-toolbar-settings-fix-failing-chrome` → running, note (all) · pipeline
 - 2026-11-14 23:17 UTC · `per-toolbar-settings-fix-failing-chrome` note (all) · orchestrator
@@ -1198,6 +1195,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 01:02 UTC · `console-app-wake-word-voice-listener` note (all) · orchestrator
 - 2026-11-15 01:02 UTC · `console-app-wake-word-voice-listener` s11 done, → built (all) · orchestrator
 - 2026-11-15 01:03 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
+- 2026-11-13 19:53 UTC · `skin-axhub-override-switch-greyed-out` PR #641 (all) · builds-live
+- 2026-11-13 19:53 UTC · `skin-axhub-override-switch-greyed-out` s8 done (all) · orchestrator
+- 2026-11-13 19:53 UTC · `skin-axhub-override-switch-greyed-out` note (all) · orchestrator
 
 ## Token passes (log)
 
