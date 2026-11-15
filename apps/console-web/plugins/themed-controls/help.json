@@ -6,13 +6,133 @@
   "version": "0.1.0",
   "description": "Help mode entries of the Themed controls plugin (help@1): the settings sub-tab, its switches and every themed control family.",
   "author": "Brett",
-  "tags": ["help"],
+  "tags": [
+    "help"
+  ],
   "data": {
     "scope": "plugin:themed-controls",
     "entries": [
-      { "target": "themed-controls", "title": "Themed controls settings", "text": "Turns the themed controls on or off, one switch per kind of browser element. Off brings back the browser's own control; nothing a form holds is lost.", "kind": "screen" },
-      { "target": "setting:axf.themedControls.on", "title": "Themed controls", "text": "The master switch: on swaps every family that is switched on below for its themed control; off makes every control the browser's own again." },
-      { "target": "setting:axf.themedControls.sheet", "title": "Bottom sheet on a phone", "text": "On a phone-sized screen the date, time and colour pickers and the dialogs slide up from the bottom. Off opens them as a pop-over everywhere." }
+      {
+        "target": "themed-controls",
+        "title": "Themed controls settings",
+        "text": "Turns the themed controls on or off, one switch per kind of browser element. Off brings back the browser's own control; nothing a form holds is lost.",
+        "kind": "screen"
+      },
+      {
+        "target": "setting:axf.themedControls.on",
+        "title": "Themed controls",
+        "text": "The master switch: on swaps every family that is switched on below for its themed control; off makes every control the browser's own again."
+      },
+      {
+        "target": "setting:axf.themedControls.sheet",
+        "title": "Bottom sheet on a phone",
+        "text": "On a phone-sized screen the date, time and colour pickers and the dialogs slide up from the bottom. Off opens them as a pop-over everywhere."
+      },
+      {
+        "target": "setting:axf.themedControls.checkbox",
+        "title": "Themed checkboxes",
+        "text": "Tick boxes drawn from the theme instead of the browser. Space ticks one; the colours, size, mark and focus ring are tokens. Off brings the browser box back with the same tick."
+      },
+      {
+        "target": "setting:axf.themedControls.radio",
+        "title": "Themed radio buttons",
+        "text": "Round choices drawn from the theme. The arrow keys move the choice inside a group, like the browser's. Off brings the browser's back with the same choice."
+      },
+      {
+        "target": "setting:axf.themedControls.range",
+        "title": "Themed range sliders",
+        "text": "Sliders with a themed track, fill and thumb. Drag, or use the arrow keys, Page Up / Down, Home and End. A value bubble shows while dragging."
+      },
+      {
+        "target": "setting:axf.themedControls.number",
+        "title": "Themed number fields",
+        "text": "Number fields with − and + buttons; hold one to keep counting. Min, max and step are kept; the arrow keys and Page Up / Down step too."
+      },
+      {
+        "target": "setting:axf.themedControls.datetime",
+        "title": "Themed date and time pickers",
+        "text": "A calendar for dates, months and weeks and hour / minute columns for times, instead of the browser picker. Arrow keys move day by day, Page Up / Down by month. On a phone it slides up from the bottom."
+      },
+      {
+        "target": "setting:axf.themedControls.color",
+        "title": "Themed colour picker",
+        "text": "Theme colours, recent colours, a saturation and brightness area with a hue strip, and a hex field. Done keeps the colour, Cancel or Escape puts it back."
+      },
+      {
+        "target": "setting:axf.themedControls.dialogs",
+        "title": "Themed alert, confirm and prompt",
+        "text": "Messages and questions open as the app's own dialog instead of the browser box. Enter answers OK, Escape cancels; a question that deletes something shows a red button and starts on Cancel."
+      },
+      {
+        "target": "setting:axf.themedControls.file",
+        "title": "Themed file drop zone",
+        "text": "Drop files on the zone or tap it to browse. It lists the chosen files with their size, a remove button and an upload bar each, and only takes the file types the field accepts."
+      },
+      {
+        "target": "setting:axf.themedControls.tooltip",
+        "title": "Themed tooltips",
+        "text": "The little tip that shows when you rest the pointer on something, drawn from the theme. Keyboard focus shows it at once; on a touch screen press and hold."
+      },
+      {
+        "target": "setting:axf.themedControls.scrollbar",
+        "title": "Themed scrollbars",
+        "text": "Scrollbars coloured and sized from the theme on a computer. Phones and tablets keep their own thin scrollbars."
+      },
+      {
+        "target": "themed-controls.tip-scroll",
+        "title": "Tooltips and scrollbars",
+        "text": "How long the pointer rests before a tip shows, how long it stays, how long to press on a touch screen, and how wide the scrollbars are. They are theme tokens, so a theme can set them too; \"Back to the theme's values\" undoes your changes."
+      },
+      {
+        "target": "themed-controls.families-info",
+        "title": "What each switch replaces",
+        "text": "Which browser element each switch replaces and whether it is themed on this page now. Add data-axf-native to an element or a form to keep it the browser's own."
+      },
+      {
+        "target": "setting:themed-controls.tooltip.delayMs",
+        "title": "Tooltip delay",
+        "text": "How long the pointer rests on something before its tip shows, in milliseconds."
+      },
+      {
+        "target": "setting:themed-controls.scrollbar.width",
+        "title": "Scrollbar width",
+        "text": "How wide the themed scrollbars are on a computer, in pixels."
+      },
+      {
+        "target": "panel:themed-controls.datetime",
+        "title": "Date and time picker",
+        "text": "The calendar or time columns that open from a date or time field. Pick a day with the arrow keys and Enter, or tap it."
+      },
+      {
+        "target": "panel:themed-controls.color",
+        "title": "Colour picker",
+        "text": "Opens from a colour field: tap a swatch or drag in the colour area, then Done."
+      },
+      {
+        "target": "panel:themed-controls.dialogs",
+        "title": "Themed dialog",
+        "text": "A message or a question from the page. OK answers yes, Cancel answers no; type into the field when it asks for text."
+      }
+    ],
+    "intros": [
+      {
+        "screen": "themed-controls",
+        "title": "Themed controls",
+        "steps": [
+          {
+            "say": "These switches swap the controls your browser draws, like checkboxes, date pickers and pop-up messages, for ones drawn from your theme.",
+            "target": "setting:axf.themedControls.on"
+          },
+          {
+            "say": "Turn one kind off here if you prefer the browser's own. Nothing you typed into a form is lost.",
+            "target": "setting:axf.themedControls.checkbox"
+          },
+          {
+            "say": "Tooltips and scrollbars have their own timing and size here.",
+            "target": "themed-controls.tip-scroll"
+          }
+        ]
+      }
     ]
   }
 }
