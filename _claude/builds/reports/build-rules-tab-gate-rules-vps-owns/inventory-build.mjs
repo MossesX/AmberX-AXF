@@ -91,7 +91,7 @@ const A = {
   'RULES.md:17': ['load-rules-go-pass', 'vps', 'mechanical', 'all'],
   'RULES.md:18': ['axhub-reason', 'session', 'mechanical', 'all'],
   'RULES.md:19': ['no-model-pick-for-questions', 'session', 'judgement', 'interactive'],
-  'RULES.md:20': ['one-agent-no-subagents', 'vps', 'mechanical', 'all'],
+  'RULES.md:20': ['one-agent-no-subagents', 'session', 'judgement', 'all'],
   'RULES.md:21': ['one-chat-per-task', 'session', 'judgement', 'interactive'],
   'RULES.md:22': ['orchestrator-first', 'session', 'judgement', 'interactive'],
   'RULES.md:23': ['one-builds-store', 'vps', 'mechanical', 'builds'],
@@ -303,8 +303,8 @@ const EMPTY_SOURCES = [{ file: '_claude/instructions/README.md', why: 'a folder 
 
 /** Ids that first appear in pass 2: [doer, kind, applies]. */
 const A2 = {
-  'checkpoints': ['vps', 'mechanical', 'builds'], 'phase-brief-scope': ['vps', 'mechanical', 'builds'], 'api-everything': ['session', 'judgement', 'builds'],
-  'watch-live': ['vps', 'mechanical', 'builds'], 'headless-context': ['vps', 'mechanical', 'builds'], 'rules-brief-only': ['vps', 'mechanical', 'builds'],
+  'checkpoints': ['session', 'mechanical', 'builds'], 'phase-brief-scope': ['session', 'mechanical', 'builds'], 'api-everything': ['session', 'judgement', 'builds'],
+  'watch-live': ['session', 'mechanical', 'builds'], 'headless-context': ['vps', 'mechanical', 'builds'], 'rules-brief-only': ['vps', 'mechanical', 'builds'],
   'hard-build-limit': ['vps', 'mechanical', 'builds'], 'clean-professional-amber': ['session', 'judgement', 'all'], 'banners-launch-expanded': ['session', 'judgement', 'builds'],
 };
 Object.assign(TITLES, {

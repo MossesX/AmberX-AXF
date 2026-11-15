@@ -17,10 +17,10 @@
     "rules": 114,
     "sourceLines": 205,
     "pass2Sources": 61,
-    "vps": 46,
-    "session": 68,
-    "mechanical": 67,
-    "judgement": 47,
+    "vps": 42,
+    "session": 72,
+    "mechanical": 66,
+    "judgement": 48,
     "unannotated": 0
   },
   "sources": [
@@ -1366,8 +1366,8 @@
     {
       "id": "one-agent-no-subagents",
       "title": "One agent, no sub-agents or fan-outs",
-      "doer": "vps",
-      "kind": "mechanical",
+      "doer": "session",
+      "kind": "judgement",
       "applies": "all",
       "annotated": true,
       "sources": [
@@ -2656,7 +2656,7 @@
     {
       "id": "checkpoints",
       "title": "Steps are checkpoints in one session: commit, push, tick, go on; the next session picks up at the first open step",
-      "doer": "vps",
+      "doer": "session",
       "kind": "mechanical",
       "applies": "builds",
       "annotated": true,
@@ -2730,7 +2730,7 @@
     {
       "id": "phase-brief-scope",
       "title": "A phase brief: one session, no sub-agents, steps within the cap, read only the files listed, stop at the end of the phase",
-      "doer": "vps",
+      "doer": "session",
       "kind": "mechanical",
       "applies": "builds",
       "annotated": true,
@@ -2749,7 +2749,7 @@
     {
       "id": "watch-live",
       "title": "Watch live: say which screen and element you are changing so the live preview follows",
-      "doer": "vps",
+      "doer": "session",
       "kind": "mechanical",
       "applies": "builds",
       "annotated": true,
