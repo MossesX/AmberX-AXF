@@ -44,6 +44,14 @@ setPriorityHost({
   set: async (builds, priority) => { await priorityApi.post('priority', { builds, priority }); },
 });
 
+/** The build a deep link names: ?axf-target=row:<build> | build:<build> | …/row:<build>, else ''. */
+export function deepLinkBuild(search: string): string {
+  let t = '';
+  try { t = new URLSearchParams(search).get('axf-target') ?? ''; } catch { return ''; }
+  const m = /(?:^|\/)(?:row|build):([a-z0-9][a-z0-9._-]{0,119})$/i.exec(t.trim());
+  return m ? m[1]!.toLowerCase() : '';
+}
+
 export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.build-orchestrator',
   label: 'Build orchestrator',
@@ -65,6 +73,10 @@ export const plugin: AxfWebLibrary = {
       catch { openTab('builds'); }
     };
     rt.actions.register('build-orchestrator.open', ([arg]) => void open(arg ?? ''), { label: 'Open the Build orchestrator (a build or a tab)', effect: 'navigate' });
+    // deep link ?axf-target=row:<build> (also build:<build>, or a full …/grid:pending/row:<build> address): the build's
+    // tab opens with its row expanded, scrolled into view and highlighted (on Pending the expanded row is remembered)
+    const linked = deepLinkBuild(typeof window === 'undefined' ? '' : window.location.search);
+    if (linked) window.setTimeout(() => void open(linked), 0);
     rt.actions.register('build-orchestrator.focus', ([arg]) => void open(arg ?? ''), { label: 'Build orchestrator: bring a tab or a build forward', params: true, effect: 'navigate' });
     rt.actions.register('build-orchestrator.tab', ([arg]) => { rt.navigate('build-orchestrator'); openTab(tabOf(decodeURIComponent(arg ?? 'queue')) || 'queue'); }, { label: 'Build orchestrator: open a tab', effect: 'navigate' });
     // custom groups (groups.tsx, groups.mjs): group:<id> is a custom tab; group-add / group-remove put builds in or out,

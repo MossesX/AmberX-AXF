@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Button, Note, flashWhenReady, useRuntime } from '@console/axf/react';
+import { Button, ControlScope, Note, flashWhenReady, useRuntime } from '@console/axf/react';
 import { PendingRow, type PendingSummary } from './PendingRow';
 import { buildRowSelector, settleFocus, useFocusedBuild } from './focus';
 
@@ -87,17 +87,17 @@ export function PendingTab({ api, log, tick, onChanged }: { api: Api; log: (t: s
         </div>
       </div>
       {ans.rows.length === 0 ? <div className="fx-empty">Nothing pending.</div> : (
-        <div className="oc-prows" role="list">
+        <ControlScope address="grid:pending"><div className="oc-prows" role="list">
           {ans.rows.map((r) => (
             <PendingRow key={r.id} row={r} expanded={r.expanded} focused={r.id === focusId} busy={busy === r.id}
-              onToggle={(id) => void rowOp(id, 'toggle')}
+              onToggle={(id) => void rowOp(id, 'toggle')} onCommand={(id, op) => void rowOp(id, op)}
               onQueue={(id) => void run(id, 'pipeline/queue', { id }, `${id} → Queue`)}
               onEdit={(id, title) => run(id, 'act', { action: 'update', id, title }, `${id}: renamed`)}
               onArchive={(id) => void run(id, 'pipeline/action', { action: 'archive', ids: [id] }, `${id}: archived`)}
               onRoute={(id, route) => void run(id, 'pipeline/route', { id, route }, `${id}: runs on ${route}`)}
               onSplit={(id) => void run(id, 'pipeline/split', { id }, `${id}: split on the next tick`)} />
           ))}
-        </div>
+        </div></ControlScope>
       )}
     </section>
   );

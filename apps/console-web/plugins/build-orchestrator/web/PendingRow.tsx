@@ -1,5 +1,5 @@
 import { useId, useState } from 'react';
-import { Button, Chip, Container, Icon, PriorityTag, TextField } from '@console/axf/react';
+import { Button, Chip, Container, ControlScope, Icon, PriorityTag, TextField, useControlTarget } from '@console/axf/react';
 
 /*
  * One pending build as one row (build pending-tab-one-collapsed-row-per-2, Brett, Nov 15 2026: "Why are pending builds
@@ -29,6 +29,8 @@ export interface PendingRowProps {
   focused?: boolean;
   busy?: boolean;
   onToggle: (id: string) => void;
+  /** expand / collapse / toggle from a control target (console_open, set, voice) */
+  onCommand: (id: string, op: 'expand' | 'collapse' | 'toggle') => void;
   onQueue: (id: string) => void;
   onEdit: (id: string, title: string) => Promise<boolean>;
   onArchive: (id: string) => void;
@@ -36,19 +38,33 @@ export interface PendingRowProps {
   onRoute: (id: string, route: string) => void;
   /** ask the orchestrator to (re)split it (pipeline/split) */
   onSplit: (id: string) => void;
-  /** the element the row lives in (control targets point focus at it) */
-  rowRef?: (el: HTMLElement | null) => void;
+}
+
+/** A control `set` value as a row op: expanded / collapsed / toggle (and the usual spoken forms). */
+export function rowOpOf(v: unknown): 'expand' | 'collapse' | 'toggle' | null {
+  const t = String(v ?? '').trim().toLowerCase();
+  if (['expanded', 'expand', 'open', 'on', 'true', 'yes', '1'].includes(t)) return 'expand';
+  if (['collapsed', 'collapse', 'close', 'closed', 'off', 'false', 'no', '0'].includes(t)) return 'collapse';
+  return t === 'toggle' ? 'toggle' : null;
 }
 
 const fmtDate = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
 
-export function PendingRow({ row: r, expanded, focused = false, busy = false, onToggle, onQueue, onEdit, onArchive, onRoute, onSplit, rowRef }: PendingRowProps) {
+export function PendingRow({ row: r, expanded, focused = false, busy = false, onToggle, onCommand, onQueue, onEdit, onArchive, onRoute, onSplit }: PendingRowProps) {
   const bodyId = useId();
+  // console-control@1: row:<build> under grid:pending; open / focus expand it, set takes expanded | collapsed | toggle
+  const setTarget = useControlTarget({
+    address: `row:${r.id}`, kind: 'row', label: r.title, detail: `Pending · ${r.why}`, keywords: [r.id, r.priority, r.statusLabel, 'pending'],
+    can: ['open', 'state', 'focus', 'set'], get: () => (expanded ? 'expanded' : 'collapsed'),
+    set: (v) => { const op = rowOpOf(v); if (!op) return `"${String(v)}" is not expanded, collapsed or toggle`; onCommand(r.id, op); return undefined; },
+    open: () => onCommand(r.id, 'expand'), expand: () => onCommand(r.id, 'expand'),
+    state: () => ({ expanded, title: r.title, status: r.status, why: r.why, priority: r.priority, steps: r.steps, age: r.age }),
+  }, [expanded, r.why, r.priority, r.steps.done]);
   return (
-    <div ref={rowRef} className={`oc-prow${expanded ? ' is-open' : ''}${focused ? ' is-focused' : ''}`} role="listitem" aria-current={focused ? 'true' : undefined}
+    <div ref={setTarget} className={`oc-prow${expanded ? ' is-open' : ''}${focused ? ' is-focused' : ''}`} role="listitem" aria-current={focused ? 'true' : undefined}
       data-fx-ctx-target="axf-orchestrator-build" data-fx-ctx-payload={r.id}>
-      <Container className="oc-prow__card">
-        <button data-fx-row className="oc-prow__head" aria-expanded={expanded} aria-controls={bodyId} data-axf-target={`row:${r.id}`}
+      <ControlScope address={`row:${r.id}`}><Container className="oc-prow__card">
+        <button data-fx-row className="oc-prow__head" aria-expanded={expanded} aria-controls={bodyId} data-axf-target="button:toggle"
           title={r.said ? `“${r.said}”` : r.id} onClick={() => onToggle(r.id)}>
           <Icon name="chevron-down" size={14} className={`oc-prow__chev${expanded ? '' : ' fx-rot--90'}`} />
           <span className="oc-prow__title">{r.title}</span>
@@ -60,7 +76,7 @@ export function PendingRow({ row: r, expanded, focused = false, busy = false, on
           </span>
         </button>
         {expanded && <PendingBody id={bodyId} r={r} busy={busy} onQueue={onQueue} onEdit={onEdit} onArchive={onArchive} onRoute={onRoute} onSplit={onSplit} />}
-      </Container>
+      </Container></ControlScope>
     </div>
   );
 }

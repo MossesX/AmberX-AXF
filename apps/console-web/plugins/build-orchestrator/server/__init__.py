@@ -815,6 +815,10 @@ class ConsoleFocus:
         for prefix in ("build:", "builds:"):
             if low.startswith(prefix) and p[len(prefix):].strip():
                 return {"screen": self.SCREEN, "focus": p[len(prefix):].strip(), "explicit": True}
+        # row:<build> (the Pending row's control address, pending-rows-view@1): only when it names a known build
+        tail = low.rsplit("/", 1)[-1]
+        if tail.startswith("row:") and tail[4:] in self.ids():
+            return {"screen": self.SCREEN, "focus": tail[4:], "explicit": True}
         if self.ID_RE.match(low) and low in self.ids():
             return {"screen": self.SCREEN, "focus": low, "explicit": False}
         return None
