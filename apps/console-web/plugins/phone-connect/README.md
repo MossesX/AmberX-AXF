@@ -45,6 +45,7 @@ clean plan, 2 when a verify failed (nothing is written then). Test: `node apps/c
 | Open a page on the phone | — | `open` | `phone_open_url` (`amberx_open_url`) | `axf phone open <url>` | `phone.open <url>` |
 | Notifications | `…tabs=notifications` | `notify`, `settings` | `phone_notify`, `phone_settings(_set)` | `axf phone notify`, `axf phone settings --notify-<kind> on|off` | `phone.notify <kind> <title>` |
 | Recorder | `view:phone-recorder`, `…tabs=recorder` | `recorder/start|stop|status` | `phone_recorder_*` (`amberx_recorder_*`) | `axf phone recorder start|stop|status` | `phone.recorder.start|stop|status` |
+| Overlay (toolbar, popups, button) | `…tabs=overlay` | `overlay`, `overlay/presets`, `overlay/presets/{id}` | `phone_overlay`, `phone_overlay_set`, `phone_overlay_presets`, `phone_overlay_preset` | `axf phone overlay [presets|preset <id>|set '<json>']` | `phone.overlay.preset <id>` |
 | Auto-approval rules | `view:phone-rules`, `…tabs=rules` | `rules`, `rules/{id}/enable`, `rules/{id}` | `phone_rules_list|add|enable|remove|evaluate` | `axf phone rules list|add|remove|enable|check` | `phone-connect.open rules` |
 
 Every button and setting on the screens carries a `data-axf-target` (`phone-connect.*`), so console-control reaches it.

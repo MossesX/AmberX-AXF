@@ -12,6 +12,7 @@
  *   axf phone rules list | add <what> [--scope any|project:<id>|agent:<id>|build:<id>] [--expires <iso>] [--note …]
  *                   | remove <id> | enable <id> [--off] | check <tool> [--project …]
  *   axf phone commands | settings [--browser …] [--monitor on|off] [--notify-<kind> on|off]
+ *   axf phone overlay [presets | preset <id> | set '<json patch>']
  * Add --json for JSON.
  */
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
@@ -22,7 +23,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const FOLDER = HERE.split(/[\\/]/).pop();
 const PLUGINS = dirname(HERE);
 
-export const cliWords = ['status', 'devices', 'device', 'pair', 'revoke', 'forget', 'open', 'notify', 'recorder', 'rules', 'commands', 'settings', 'help'];
+export const cliWords = ['status', 'devices', 'device', 'pair', 'revoke', 'forget', 'open', 'notify', 'recorder', 'rules', 'commands', 'settings', 'overlay', 'help'];
 
 const USAGE = readFileSync(fileURLToPath(import.meta.url), 'utf8').split('\n').filter((l) => l.startsWith(' *   axf phone')).map((l) => l.slice(3)).join('\n');
 
@@ -62,6 +63,13 @@ export function plan(argv) {
       else throw new Error(`rules ${a}? list | add | remove | enable | check`);
       break;
     case 'commands': id = a ? 'phone-command' : 'phone-commands'; if (a) pass.cid = a; break;
+    case 'overlay':
+      if (!a) id = 'phone-overlay';
+      else if (a === 'presets') id = 'phone-overlay-presets';
+      else if (a === 'preset') { id = 'phone-overlay-preset'; pass.preset_id = need(b, '<preset-id>'); }
+      else if (a === 'set') { id = 'phone-overlay-set'; JSON.parse(need(b, "'<json patch>'")); pass.body = b; }
+      else throw new Error(`overlay ${a}? presets | preset <id> | set '<json>'`);
+      break;
     case 'settings': {
       const set = {};
       if (flags.browser) set.browser = flags.browser;

@@ -212,6 +212,34 @@
         "readOnly": true
       },
       {
+        "route": "GET /overlay",
+        "id": "phone-overlay",
+        "tool": "phone_overlay",
+        "title": "Phone overlay",
+        "description": "The phone's overlay config (phone-overlay@1): toolbar buttons and widgets, popup position / animation / speed / size / stay / sound / vibrate / opacity per type, button size / shape / edge snapping / auto-collapse."
+      },
+      {
+        "route": "POST /overlay",
+        "id": "phone-overlay-set",
+        "tool": "phone_overlay_set",
+        "title": "Change the phone overlay",
+        "description": "A patch: items (whole list of {id, kind: button|widget, icon, label, action}), popups.<approval|alert|notification>.<field>, buttonSize, buttonShape, edgeSnap, autoCollapseMs, toolbarOpacity. The phone applies it on its next poll."
+      },
+      {
+        "route": "GET /overlay/presets",
+        "id": "phone-overlay-presets",
+        "tool": "phone_overlay_presets",
+        "title": "Overlay presets",
+        "description": "Named starting points: default, quiet, loud, minimal."
+      },
+      {
+        "route": "POST /overlay/presets/{preset_id}",
+        "id": "phone-overlay-preset",
+        "tool": "phone_overlay_preset",
+        "title": "Apply an overlay preset",
+        "description": "Copies a preset into the phone's overlay config."
+      },
+      {
         "route": "POST /amberx/open_url",
         "id": "amberx-open-url",
         "tool": "amberx_open_url",

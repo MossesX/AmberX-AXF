@@ -4,8 +4,8 @@
   "counts": {
     "views": 66,
     "nav": 16,
-    "tabGroups": 27,
-    "tabs": 82,
+    "tabGroups": 28,
+    "tabs": 85,
     "settingsTabs": 72,
     "settings": 89,
     "functions": 275,
@@ -1493,6 +1493,32 @@
       "file": "plugins/glossary-index/web/index.tsx",
       "line": 250,
       "tabs": []
+    },
+    {
+      "address": "view:phone-connect/tab:phone-connect.overlay.popups",
+      "id": "phone-connect.overlay.popups",
+      "dynamic": false,
+      "view": "phone-connect",
+      "plugin": "ai.amberx.axf.console.phone-connect",
+      "file": "plugins/phone-connect/web/OverlaySettings.tsx",
+      "line": 113,
+      "tabs": [
+        {
+          "address": "view:phone-connect/tab:phone-connect.overlay.popups=approval",
+          "value": "approval",
+          "label": "Approvals"
+        },
+        {
+          "address": "view:phone-connect/tab:phone-connect.overlay.popups=alert",
+          "value": "alert",
+          "label": "Alerts"
+        },
+        {
+          "address": "view:phone-connect/tab:phone-connect.overlay.popups=notification",
+          "value": "notification",
+          "label": "Notifications"
+        }
+      ]
     },
     {
       "address": "view:phone-connect/tab:phone-connect.tabs",

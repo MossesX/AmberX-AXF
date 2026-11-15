@@ -20,6 +20,11 @@ Commands (queued while the phone is offline; delivered on its poll; acked with a
   POST   commands/{id}/ack          the phone's answer {deviceId, ok, data? | error?}
   GET/POST settings                 browser, notify per type, monitor, recorderMic (only Brett turns the mic on)
 
+Overlay (the phone's toolbar, popups and button; synced on the phone's next poll)
+  GET    overlay                    the config (phone-overlay@1)
+  POST   overlay                    a patch: items (whole list), popups.<approval|alert|notification>.*, buttonSize, …
+  GET    overlay/presets            named starting points; POST overlay/presets/{id} applies one
+
 Recorder (Audio Output Recorder, moved in whole)
   GET    recorder/status            running, session, current part, parts, upload queue, mic, transcripts
   POST   recorder/start             {session_name, group?, note?, approvalId?}: a straight approval on axHub
@@ -280,3 +285,25 @@ def pair_qr() -> Any:
     buf = io.BytesIO()
     segno.make(f"axf-phone://pair?code={p['code']}", error="m").save(buf, kind="svg", scale=6, border=2, dark="currentColor", light=None, xmldecl=False, svgns=True)
     return Response(buf.getvalue(), media_type="image/svg+xml", headers={"cache-control": "no-store"})
+
+
+# ------------------------------------------------------------------ overlay (synced to the phone)
+
+@router.get("/overlay")
+def overlay_get() -> Any:
+    return answer(lambda: S.get()["overlay"])
+
+
+@router.post("/overlay")
+def overlay_set(request: Request, body: dict = Body(default_factory=dict)) -> Any:
+    return answer(lambda: S.put({"overlay": body}, caller(request)[1])["overlay"])
+
+
+@router.get("/overlay/presets")
+def overlay_presets() -> Any:
+    return answer(lambda: {"presets": S.presets()})
+
+
+@router.post("/overlay/presets/{preset_id}")
+def overlay_preset(preset_id: str, request: Request) -> Any:
+    return answer(lambda: S.apply_preset(preset_id, caller(request)[1])["overlay"])
