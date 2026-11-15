@@ -123,8 +123,8 @@ try {
   check(!Q.stuckUnbuilt(prevItems, [{ number: 680, head: 'new' }]).size, 'a new head: tried again');
   check(!Q.stuckUnbuilt(prevItems, prs, { mainMoved: true }).size, 'main moved in code: tried again');
   const stack = [{ pr: 686, head: 'h686', ahead: [], sha: 's1' }];
-  check(Q.keepStack(stack, [{ number: 680, head: 'h680' }, { number: 686, head: 'h686' }]).length === 0, 'before: with #680 in the ready list the stack was dropped');
-  check(Q.keepStack(stack, [{ number: 686, head: 'h686' }]).length === 1, 'after: #680 waits outside the ready list and the stack (and its CI run) is kept');
+  check(Q.keepStack(stack, [{ number: 680, head: 'h680' }, { number: 686, head: 'h686' }]).length === 0, 'before: with PR 680 in the ready list the stack was dropped');
+  check(Q.keepStack(stack, [{ number: 686, head: 'h686' }]).length === 1, 'after: PR 680 waits outside the ready list and the stack (and its CI run) is kept');
 
   // ---------------------------------------------------------------- a command written during a round survives it
   console.log('merge queue: a Skip / Move written while a round runs is kept');
