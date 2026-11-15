@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T04:19:53.441Z",
+ "updatedAt": "2026-11-15T04:20:11.634Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -147152,7 +147152,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T04:17:06.158Z",
-   "updatedAt": "2026-11-15T04:19:51.810Z",
+   "updatedAt": "2026-11-15T04:19:53.877Z",
    "builtAt": "",
    "notes": [
     {
@@ -147166,6 +147166,10 @@
     {
      "text": "Brett (now) OVERRIDE: move the WHOLE server gate plugin to axHub (not the console). Everything: the gate rules tabs (all ~3), policy/veto rules, server gate log, plus the new Merge queue / Auto-lander tab. It lives in the axHub repo (MossesX/axHub) as an axHub screen, served by axHub on the VPS, so it keeps working when the console is down or broken. The merge queue / auto-lander runs as a VPS service that axHub controls directly. Remove the plugin from the console after the axHub version is live (console may keep a read-only link that opens the axHub page). Expose everything through axHub tools (vps.* / gate.*) for Claude and voice. Keep all existing rules and data, migrated, nothing lost.",
      "at": "2026-11-15T04:19:51.810Z"
+    },
+    {
+     "text": "Split by Claude into 16 steps (0 Fable).",
+     "at": "2026-11-15T04:19:53.877Z"
     }
    ],
    "approvals": [],
@@ -147182,7 +147186,372 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Find the server gate plugin that holds the gate rules (built Nov 15 from server-gate-one-session-per-build / owner-recognized-everywhere-veto work, about 3 tabs). Read its plugin.json, settings tabs, server routes and commands, plus push-banner land/ (land.mjs, the serial lander, merge-queue.mjs) and /etc/cron.d/axf-auto-land. Write down which file holds the gate rules and where the lander reads autoLand/autoMerge in _claude/builds/reports/auto-lander-controls-in-the-gate-plugin.md (notes section).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/",
+      "apps/console-web/plugins/push-banner/land/",
+      "/etc/cron.d/axf-auto-land",
+      "_claude/builds/reports/auto-lander-controls-in-the-gate-plugin.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhbswba01y774",
+     "createdAt": "2026-11-15T04:19:53.877Z"
+    },
+    {
+     "id": "s2",
+     "text": "Find out why the auto-lander lands nothing. Run land.mjs run --dry-run (or its status) the way the cron runs it, with the same env and user. Read its recent cron log output and check the setting it reads (autoLand off since 0.7.1?), the lock file, the token broker, and the green PRs #637/#639/#633/#640/#643 (queue membership, mergeable state, CI on the pinned head). Record the root cause(s) with evidence in the report.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/land.mjs",
+      "apps/console-web/plugins/push-banner/land/merge-queue.mjs",
+      "/etc/cron.d/axf-auto-land",
+      "_claude/builds/reports/auto-lander-controls-in-the-gate-plugin.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhbswba02e3wh",
+     "createdAt": "2026-11-15T04:19:53.877Z"
+    },
+    {
+     "id": "s3",
+     "text": "Fix the root cause in the lander (e.g. setting gate, env/PATH or token in the cron line, a stale lock, queue not picking up ready PRs, or the serial path never selected). Add a regression test for that exact failure next to the existing land tests. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/",
+      "deploy/",
+      "apps/console-web/plugins/push-banner/test*"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhbswba03ij5f",
+     "createdAt": "2026-11-15T04:19:53.877Z"
+    },
+    {
+     "id": "s4",
+     "text": "Remove the stale 'axf-lander inactive' warning: find the health@1 check or banner source that watches the systemd unit axf-lander, which doesn't exist. Replace it with a live check on the real cron (last run age, last result), with an Auto fix that re-enables or reinstalls the cron line. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/systems-check/",
+      "apps/console-web/plugins/push-banner/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhbswba04ro7y",
+     "createdAt": "2026-11-15T04:19:53.877Z"
+    },
+    {
+     "id": "s5",
+     "text": "Add the lander settings to the push-banner/lander settings registry, all keys with defaults: autoLander.enabled (one On/Off that the cron reads, off = the cron run exits early with reason 'switched off') and autoLander.mode (serial | merge-queue, default serial). Wire land.mjs run to read both at the start of every run. Unit test: off skips, mode switches the path. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/land.mjs",
+      "apps/console-web/plugins/push-banner/plugin.json",
+      "apps/console-web/plugins/push-banner/test*"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhbswba05hqzd",
+     "createdAt": "2026-11-15T04:19:53.877Z"
+    },
+    {
+     "id": "s6",
+     "text": "Lander status record: every run of land.mjs writes a run record (startedAt, finishedAt, result, mode, PR it is landing now, blocking reason from a fixed list: switched-off | queue-empty | ci-waiting | conflict | token-missing | locked | error) to the plugin's data dir as an append-only runs log plus status.json, trimmed to the last N runs. Test the reasons. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/land.mjs",
+      "apps/console-web/plugins/push-banner/land/status.mjs",
+      "apps/console-web/plugins/push-banner/test*"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhbswba06gdcw",
+     "createdAt": "2026-11-15T04:19:53.877Z"
+    },
+    {
+     "id": "s7",
+     "text": "Landing line actions in the lander core: list (ordered, one at a time, with each PR's build, CI and conflict state), move up/down, skip (with reason, remembered until removed), land now (puts it at the head and starts a run under the lock). Reuse land.mjs queue list|add|remove|move where it exists. Tests for order and skip. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/",
+      "apps/console-web/plugins/push-banner/test*"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhbswba07auc9",
+     "createdAt": "2026-11-15T04:19:53.877Z"
+    },
+    {
+     "id": "s8",
+     "text": "REST routes in the gate plugin's server for the lander: GET status, GET line, GET runs, POST enabled, POST mode, POST line/move, POST line/skip, POST line/land-now. Each one calls the push-banner core through a capability service (plugin_services, no folder imports), and land-now/skip carry confirm. Python route tests. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/<gate-plugin>/server/",
+      "apps/console-web/plugins/push-banner/server/",
+      "apps/console-web/plugins/<gate-plugin>/test*"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhbswba08qwiz",
+     "createdAt": "2026-11-15T04:19:53.877Z"
+    },
+    {
+     "id": "s9",
+     "text": "Gate plugin UI part 1: add an 'Auto-lander' tab (TabGroup asset row, settings id) with a big On/Off Switch, a mode SegmentedControl-as-setting (serial/merge queue) and a live status card (last run time, result, what's landing now, why it's not landing). Framework controls and --fx-* tokens only, each control registered with data-axf-target. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/<gate-plugin>/web/",
+      "apps/console-web/plugins/<gate-plugin>/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhbswba09d184",
+     "createdAt": "2026-11-15T04:19:53.877Z"
+    },
+    {
+     "id": "s10",
+     "text": "Gate plugin UI part 2: the landing line as a framework DataGrid (position, PR, build, CI, state) with row toolbar Move up / Skip / Land now (role=toolbar, aria-label, tap-confirm, Land now confirm) and a Recent runs grid below it. Rows get addresses row:<pr>. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/<gate-plugin>/web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhbswba0agds4",
+     "createdAt": "2026-11-15T04:19:53.877Z"
+    },
+    {
+     "id": "s11",
+     "text": "API part for the tab: console-control addresses (view:…/tab:…=auto-lander, setting:autoLander.enabled, setting:autoLander.mode, row:<pr>/action:move-up|skip|land-now) so console_show/console_open deep-link to it, plus control@1 targets appended at the end. MCP plugin-commands for status/line/runs/enable/mode/move/skip/land-now come from the routes. check-console-control and check-control pass. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/<gate-plugin>/",
+      "framework/cli/check-console-control.mjs",
+      "apps/console-web/plugins/plugin-commands/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhbswba0bs2rb",
+     "createdAt": "2026-11-15T04:19:53.877Z"
+    },
+    {
+     "id": "s12",
+     "text": "CLI and voice: `axf lander status|line|runs|on|off|mode <serial|queue>|move|skip|land-now` (same core calls), and AmberX voice actions/intents 'turn on/off the auto lander', 'what's landing', 'why isn't it landing', 'land <PR> now'. Each maps to the same commands. Tests that CLI, REST and MCP give the same results. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/axf.mjs",
+      "apps/console-web/plugins/<gate-plugin>/",
+      "apps/console-web/plugins/<gate-plugin>/voice*"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhbswba0czdaf",
+     "createdAt": "2026-11-15T04:19:53.877Z"
+    },
+    {
+     "id": "s13",
+     "text": "Conformance and docs: run check-theme, check-controls, check-toolbars, check-chrome-assets and plugin-lifecycle check (fix any findings, add lifecycle markers). Add help entries for the tab and commands, plugin.json descriptions for the glossary, and an update of the plugin README. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/<gate-plugin>/README.md",
+      "apps/console-web/plugins/<gate-plugin>/help*",
+      "apps/console-web/plugins/glossary-index/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhbswba0deim8",
+     "createdAt": "2026-11-15T04:19:53.877Z"
+    },
+    {
+     "id": "s14",
+     "text": "Land it live: install the fixed cron on the VPS (veto call), switch the lander on, and check that a run lands the green console PRs (#637/#639/#633/#640/#643) or names the exact blocking reason. Record the before/after in the report.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "/etc/cron.d/axf-auto-land",
+      "_claude/builds/reports/auto-lander-controls-in-the-gate-plugin.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhbswba0ed4xg",
+     "createdAt": "2026-11-15T04:19:53.877Z"
+    },
+    {
+     "id": "s15",
+     "text": "UI Review: desktop and phone shots of the Auto-lander tab with 3 options as assets (choices JSON), submitted with review.mjs submit and the group named after the build. Shipped features ledger entry and an axf_deploy_log line.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/<gate-plugin>/assets/",
+      "apps/console-web/plugins/ui-review/review.mjs",
+      "apps/console-web/plugins/shipped-features/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhbswba0f20wy",
+     "createdAt": "2026-11-15T04:19:53.877Z"
+    },
+    {
+     "id": "s16",
+     "text": "Final: run all the tests (lander tests, plugin route tests, check-console-control, check-control, the theme/toolbar checks, catalog --check, tracker --check). Finish the report _claude/builds/reports/auto-lander-controls-in-the-gate-plugin.md (root cause, fix, API map REST/MCP/CLI/voice/deep link). Add the THREADS.md row, push the branch, open the PR with the API section and the UI Review note, and link it with builds-live.mjs link.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/auto-lander-controls-in-the-gate-plugin.md",
+      "_claude/THREADS.md",
+      "framework/cli/builds-live.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhbswba0gsec2",
+     "createdAt": "2026-11-15T04:19:53.877Z"
+    }
+   ]
   }
  ]
 }
