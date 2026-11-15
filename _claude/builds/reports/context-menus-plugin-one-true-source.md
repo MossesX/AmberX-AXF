@@ -31,14 +31,14 @@ Phase 2 (Opus, s2–s8):
   control inventory regenerated.
 
 ## How each piece is reached (API parity)
-| Feature | Deep link | REST | MCP | CLI | Voice |
+| Feature | Deep link | REST | MCP (plugin command id) | CLI | Voice |
 |---|---|---|---|---|---|
-| Page / tabs | `context-menus.open:<tab>::<zone>` | `GET /state` | `context_menus_state` | `menus.mjs list` | "list context menus" |
-| Generate (level, app, page) | `context-menus.generate:<level>:<app>:<page>` | `POST /generate` | `context_menus_generate` | `menus.mjs prompt` / `generate --reply-file` | "generate pro context menus" |
-| Per element / zone | — | `GET /zones/{zone}/menus` | `context_menus_zone-menus` | `menus.mjs zone <z>` | — |
-| Register actions | — | `POST /actions/register` | `context_menus_register-actions` | `menus.mjs register-actions` | — |
-| Index per zone / page | `context-menus.open:menus::<zone>` | `GET /index` | `context_menus_index` | `menus.mjs index` | — |
-| In force per page | — | `GET /active?page=`, `POST /unuse` | `context_menus_active`, `_unuse` | `active --page`, `unuse` | "use menu <id>" |
+| Page / tabs | `context-menus.open:<tab>::<zone>` | `GET /state` | `state` | `menus.mjs list` | "list context menus" |
+| Generate (level, app, page) | `context-menus.generate:<level>:<app>:<page>` | `POST /generate` | `generate` | `menus.mjs prompt` / `generate --reply-file` | "generate pro context menus" |
+| Per element / zone | — | `GET /zones/{zone}/menus` | `zone-menus` | `menus.mjs zone <z>` | — |
+| Register actions | — | `POST /actions/register` | `register-actions` | `menus.mjs register-actions` | — |
+| Index per zone / page | `context-menus.open:menus::<zone>` | `GET /index` | `index` | `menus.mjs index` | — |
+| In force per page | — | `GET /active?page=`, `POST /unuse` | `active`, `unuse` | `active --page`, `unuse` | "use menu <id>" |
 
 ## Tests
 - `node apps/console-web/plugins/context-menus/test.mjs`: 90 checks (was 72).
