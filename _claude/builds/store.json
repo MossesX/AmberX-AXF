@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5802,
- "updatedAt": "2026-11-15T00:34:47.756Z",
+ "rev": 5803,
+ "updatedAt": "2026-11-15T00:35:08.857Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -187750,7 +187750,7 @@
    "branch": "claude/badge-shape-picker-banners-screen-pill",
    "pr": "#584",
    "createdAt": "2026-11-12T23:14:26.317Z",
-   "updatedAt": "2026-11-13T17:31:38.368Z",
+   "updatedAt": "2026-11-15T00:34:49.396Z",
    "builtAt": "2026-11-13T11:31:10.158Z",
    "notes": [
     {
@@ -187849,6 +187849,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:34:49.305Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: framework/core/engines/bannerwidgets.ts, framework/core/runtime.ts, framework/react/components/BadgeShapes.tsx, framework/react/components/Banner.tsx, framework/react/components/BannerSettings.tsx, framework/react/components/BannerWidgets.tsx, framework/spec/check-widgets.mts, framework"
+     }
+    ]
    },
    "steps": [
     {
@@ -187951,7 +187968,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -196997,7 +197014,7 @@
    "branch": "claude/show-commits-behind-main-every-build",
    "pr": "#611",
    "createdAt": "2026-11-12T10:39:34.736Z",
-   "updatedAt": "2026-11-13T17:41:33.191Z",
+   "updatedAt": "2026-11-15T00:34:53.064Z",
    "builtAt": "2026-11-13T11:31:04.877Z",
    "notes": [
     {
@@ -197124,6 +197141,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:34:52.857Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/build-orchestrator/orchestrator.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.test.mjs, apps/console-web/plugins/build-orchestrator/plugin.json, apps/console-web/plugins/build-orchestrator/ser"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -197203,7 +197237,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -198988,7 +199022,7 @@
    "branch": "claude/tap-to-confirm-follows-label-visibility",
    "pr": "#614",
    "createdAt": "2026-11-12T20:45:12.311Z",
-   "updatedAt": "2026-11-13T17:38:37.590Z",
+   "updatedAt": "2026-11-15T00:34:56.997Z",
    "builtAt": "2026-11-13T02:11:47.409Z",
    "notes": [
     {
@@ -199120,6 +199154,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:34:56.917Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: framework/core/engines/chrome-settings-rules.d.mts, framework/core/engines/chrome-settings-rules.mjs, framework/core/engines/tapconfirm.ts, framework/libs/toolbars/index.tsx, framework/react/components/Chrome.tsx, framework/react/components/ChromeContext.tsx, framework/react/components/"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -199196,7 +199247,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -199233,7 +199284,7 @@
    "branch": "claude/unlink-plan-studio-builds-delete-all",
    "pr": "#615",
    "createdAt": "2026-11-12T10:49:12.963Z",
-   "updatedAt": "2026-11-13T17:41:33.191Z",
+   "updatedAt": "2026-11-15T00:34:45.790Z",
    "builtAt": "2026-11-13T11:34:54.213Z",
    "notes": [
     {
@@ -199340,6 +199391,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:34:45.692Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, _claude/memory/docs/plan-studio/README.md, _claude/memory/docs/priority-tags.md, _claude/shared/rules/RULES.md, apps/console-web/plugins/README.md, apps/console-web/plugins/build-orchestrator/test.mjs, apps/console-web/plugins/plan-studio/catalog.mjs, apps"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -199419,7 +199487,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -199456,7 +199524,7 @@
    "branch": "claude/vps-badge-shows-shell-commands-work",
    "pr": "#616",
    "createdAt": "2026-11-12T22:31:52.977Z",
-   "updatedAt": "2026-11-13T17:38:59.194Z",
+   "updatedAt": "2026-11-15T00:34:59.840Z",
    "builtAt": "2026-11-13T02:05:17.671Z",
    "notes": [
     {
@@ -199536,6 +199604,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:34:59.758Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: apps/console-web/plugins/claude-badge/README.md, apps/console-web/plugins/claude-badge/help.json, apps/console-web/plugins/claude-badge/plugin.json, apps/console-web/plugins/claude-badge/server/__init__.py, apps/console-web/plugins/claude-badge/server/vps.py, apps/console-web/plugins/cl"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -199612,7 +199697,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -218574,7 +218659,7 @@
    "branch": "claude/ui-directory-plugin-self-updating-data",
    "pr": "#670",
    "createdAt": "2026-11-14T03:50:42.413Z",
-   "updatedAt": "2026-11-14T04:39:08.832Z",
+   "updatedAt": "2026-11-15T00:34:41.025Z",
    "builtAt": "2026-11-14T04:38:19.810Z",
    "notes": [
     {
@@ -218708,6 +218793,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:34:40.934Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/console-web/plugins/README.md, apps/console-web/plugins/molly-guide/help.json, apps/console-web/plugins/ui-directory/README.md, apps/console-web/plugins/ui-directory/build-hooks.mjs, apps/console-web/plugins/ui-directory/coverage.json, apps/console-we"
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -218784,7 +218886,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -219832,7 +219934,7 @@
    "branch": "claude/group-chat-audio-hear-agents-talk-while",
    "pr": "#671",
    "createdAt": "2026-11-14T04:20:23.886Z",
-   "updatedAt": "2026-11-14T04:49:52.705Z",
+   "updatedAt": "2026-11-15T00:34:37.585Z",
    "builtAt": "2026-11-14T04:49:52.705Z",
    "notes": [
     {
@@ -219893,6 +219995,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "landing",
+    "landAttempts": [
+     {
+      "at": "2026-11-15T00:34:37.501Z",
+      "run": "",
+      "base": "",
+      "merged": "",
+      "outcome": "",
+      "ci": "",
+      "note": "Unique work: .github/workflows/android.yml, apps/amberx-droid/src/console/api.ts, apps/amberx-droid/tsconfig.json, apps/amberx-droid/vite.config.ts, apps/console-web/plugins/agent-swarm/README.md, apps/console-web/plugins/agent-swarm/help.json, apps/console-web/plugins/agent-swarm/plugin.json, apps/"
+     }
+    ]
    },
    "steps": [
     {
@@ -219970,7 +220089,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {

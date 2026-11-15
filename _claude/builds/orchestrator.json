@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:34:47.756Z",
+ "updatedAt": "2026-11-15T00:35:08.857Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -111200,7 +111200,7 @@
    "branch": "claude/show-commits-behind-main-every-build",
    "pr": "#611",
    "createdAt": "2026-11-12T10:39:34.736Z",
-   "updatedAt": "2026-11-13T17:41:33.191Z",
+   "updatedAt": "2026-11-15T00:34:53.064Z",
    "builtAt": "2026-11-13T11:31:04.877Z",
    "notes": [
     {
@@ -111591,7 +111591,7 @@
    "branch": "claude/unlink-plan-studio-builds-delete-all",
    "pr": "#615",
    "createdAt": "2026-11-12T10:49:12.963Z",
-   "updatedAt": "2026-11-13T17:41:33.191Z",
+   "updatedAt": "2026-11-15T00:34:45.790Z",
    "builtAt": "2026-11-13T11:34:54.213Z",
    "notes": [
     {
@@ -114140,7 +114140,7 @@
    "branch": "claude/tap-to-confirm-follows-label-visibility",
    "pr": "#614",
    "createdAt": "2026-11-12T20:45:12.311Z",
-   "updatedAt": "2026-11-13T17:38:37.590Z",
+   "updatedAt": "2026-11-15T00:34:56.997Z",
    "builtAt": "2026-11-13T02:11:47.409Z",
    "notes": [
     {
@@ -115110,7 +115110,7 @@
    "branch": "claude/vps-badge-shows-shell-commands-work",
    "pr": "#616",
    "createdAt": "2026-11-12T22:31:52.977Z",
-   "updatedAt": "2026-11-13T17:38:59.194Z",
+   "updatedAt": "2026-11-15T00:34:59.840Z",
    "builtAt": "2026-11-13T02:05:17.671Z",
    "notes": [
     {
@@ -115328,7 +115328,7 @@
    "branch": "claude/badge-shape-picker-banners-screen-pill",
    "pr": "#584",
    "createdAt": "2026-11-12T23:14:26.317Z",
-   "updatedAt": "2026-11-13T17:31:38.368Z",
+   "updatedAt": "2026-11-15T00:34:49.396Z",
    "builtAt": "2026-11-13T11:31:10.158Z",
    "notes": [
     {
@@ -138807,7 +138807,7 @@
    "branch": "claude/ui-directory-plugin-self-updating-data",
    "pr": "#670",
    "createdAt": "2026-11-14T03:50:42.413Z",
-   "updatedAt": "2026-11-14T04:39:08.832Z",
+   "updatedAt": "2026-11-15T00:34:41.025Z",
    "builtAt": "2026-11-14T04:38:19.810Z",
    "notes": [
     {
@@ -139677,7 +139677,7 @@
    "branch": "claude/group-chat-audio-hear-agents-talk-while",
    "pr": "#671",
    "createdAt": "2026-11-14T04:20:23.886Z",
-   "updatedAt": "2026-11-14T04:49:52.705Z",
+   "updatedAt": "2026-11-15T00:34:37.585Z",
    "builtAt": "2026-11-14T04:49:52.705Z",
    "notes": [
     {
