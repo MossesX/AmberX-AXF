@@ -42,7 +42,8 @@
       "CLAUDE.md",
       "_claude/rules/RULES.md",
       "framework/spec/BUILD-RULES.md",
-      "_claude/builds/BRIEF-TEMPLATE.md"
+      "_claude/builds/BRIEF-TEMPLATE.md",
+      ".github/workflows/android.yml"
     ]
   },
   "commands": {

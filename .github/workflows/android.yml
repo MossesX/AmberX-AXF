@@ -146,6 +146,10 @@ jobs:
         run: node framework/cli/check-plugin-pages.mjs
       - name: Shipped features plugin (SQLite ledger, build-hook listener plans features and edits, importers, live dates from the deploy log)  # axf-plugin:shipped-features
         run: node apps/console-web/plugins/shipped-features/test.mjs  # axf-plugin:shipped-features
+      - name: Gate & rules plugin (gate rules, lander adapter, History, CLI-vs-API parity)  # axf-plugin:gate
+        run: node apps/console-web/plugins/gate/test.mjs  # axf-plugin:gate
+      - name: Gate build rules (REST/MCP/CLI parity, home-card fixer, gate block then fix, store rules in the brief)  # axf-plugin:gate
+        run: node apps/console-web/plugins/gate/test/test.build-rules.mjs  # axf-plugin:gate
       - name: Session check-in plugin (installer keeps other hooks, archive scrubs secrets, hook output)
         run: node apps/console-web/plugins/session-checkin/test.mjs
       - name: Project wizard plugin (new AXF app / GitHub / folder sources, GitHub + VPS homes, Claude.ai kit, folder guard)
