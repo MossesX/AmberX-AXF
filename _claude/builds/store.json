@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6099,
- "updatedAt": "2026-11-15T12:17:58.883Z",
+ "rev": 6100,
+ "updatedAt": "2026-11-15T12:18:05.851Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -233743,7 +233743,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T12:14:27.131Z",
-   "updatedAt": "2026-11-15T12:17:34.278Z",
+   "updatedAt": "2026-11-15T12:17:53.929Z",
    "builtAt": "",
    "notes": [
     {
@@ -234103,7 +234103,7 @@
      "id": "s12",
      "uid": "st-mwhsubnt0cno97",
      "title": "",
-     "text": "Small Merge watch status panel in Shipped features (last sha, pending/failed sends, Retry and Backfill buttons, built only from framework controls and tokens, data-axf-target ids) and submit 3 UI Review options",
+     "text": "No panel inside Shipped features (Brett 07:14): the Merge watch status and controls (on/off, last sha, pending/failed sends, Retry, Backfill) are shown by the Gate & rules plugin's 'After merge' rule 'Send Shipped features'. Here, make sure the REST routes and features.*/gate.* MCP tools expose everything that plugin needs. Also serve the ONE TRUE feature store (one record per build, in-progress through shipped) through a single list/get API with filters (state, build, PR, since) that both Shipped features and the Gate & rules Pending features tab read.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -234120,9 +234120,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T12:16:53.896Z",
-     "updatedAt": "2026-11-15T12:16:53.896Z"
+     "updatedAt": "2026-11-15T12:17:54.202Z"
     },
     {
      "id": "s13",
@@ -234258,7 +234258,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T12:17:58.883Z",
+ "updatedAt": "2026-11-15T12:18:05.851Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -150846,7 +150846,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T12:14:27.131Z",
-   "updatedAt": "2026-11-15T12:17:34.278Z",
+   "updatedAt": "2026-11-15T12:17:53.929Z",
    "builtAt": "",
    "notes": [
     {
@@ -151137,7 +151137,7 @@
     },
     {
      "id": "s12",
-     "text": "Small Merge watch status panel in Shipped features (last sha, pending/failed sends, Retry and Backfill buttons, built only from framework controls and tokens, data-axf-target ids) and submit 3 UI Review options",
+     "text": "No panel inside Shipped features (Brett 07:14): the Merge watch status and controls (on/off, last sha, pending/failed sends, Retry, Backfill) are shown by the Gate & rules plugin's 'After merge' rule 'Send Shipped features'. Here, make sure the REST routes and features.*/gate.* MCP tools expose everything that plugin needs. Also serve the ONE TRUE feature store (one record per build, in-progress through shipped) through a single list/get API with filters (state, build, PR, since) that both Shipped features and the Gate & rules Pending features tab read.",
      "model": "Opus",
      "why": "",
      "phase": "",
