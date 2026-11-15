@@ -1,7 +1,7 @@
 """What the console core shares with its plugins' server parts (set by main.py before plugins load).
 
     import console_context as cx
-    cx.ROOT, cx.current_token(), cx.persist_root(), cx.data_path(rel), cx.build_profile(), cx.project(), cx.project_dir(path), cx.PLUGINS, cx.set_plugin_enabled(folder, on), cx.log(channel, text, level), cx.GITHUB_REPO,
+    cx.ROOT, cx.current_token(), cx.persist_root(), cx.data_path(rel), cx.build_profile(), cx.project(), cx.project_dir(path), cx.scope_dir(path, scope), cx.PLUGINS, cx.set_plugin_enabled(folder, on), cx.log(channel, text, level), cx.GITHUB_REPO,
     cx.terminal_lines(), cx.raise_alert({source, severity, title, body?, key?, link?}), cx.resolve_alerts([keys]),
     cx.asgi_app (the console's ASGI app), cx.mcp_server (its MCP server: plugins may add and remove tools)
 
@@ -26,6 +26,9 @@ build_profile: Callable[[], dict[str, Any]] = lambda: {"id": "all", "name": "All
 # project_of_profile(id) = the project owning a build profile (a build's project: its profiles[0]).
 project: Callable[[], dict[str, Any]] = lambda: {"id": "amberx-axf", "name": "AmberX AXF", "profile": "all", "base": True}  # noqa: E731
 project_dir: Callable[[Any], Path] = lambda path: Path(path)  # noqa: E731
+# scope_dir(path, scope) = where the active project keeps a shareable store (claude-accounts, credentials, plugins,
+# console, hub): `path` (the shared one) unless the project owns that scope, then path/projects/<id> (PROJECTS.md).
+scope_dir: Callable[[Any, str], Path] = lambda path, scope: Path(path)  # noqa: E731
 project_of_profile: Callable[[str], dict[str, Any]] = lambda pid: {"id": "amberx-axf", "name": "AmberX AXF", "profile": "all", "base": True}  # noqa: E731
 project_of_build: Callable[[str], dict[str, Any] | None] = lambda build_id: None  # noqa: E731
 log: Callable[..., None] = lambda *a, **k: None  # noqa: E731

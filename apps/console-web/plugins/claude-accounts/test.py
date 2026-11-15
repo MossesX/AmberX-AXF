@@ -195,7 +195,9 @@ print("no secret anywhere")
 ok(not any(SECRET in b or "accessToken" in b or "refreshToken" in b for b in seen_bodies), "no answer carries a token")
 ok(SECRET not in (Path(os.environ["AXF_CLAUDE_ACCOUNTS_DATA_DIR"]) / "seen.json").read_text(), "nor the data file")
 source = (HERE / "server" / "__init__.py").read_text()
-ok(".credentials" not in source and "shell=True" not in source and source.count("subprocess.run(") == 1 and '["node", str(ROUTER), op]' in source, "no path to a credentials file; the only process it starts is the job router (fixed argv, no shell)")
+ok(".credentials" not in source and "shell=True" not in source and source.count("subprocess.run(") == 2 and '["node", str(ROUTER), op]' in source
+   and '["node", str(ROOT / "framework" / "cli" / "projects.mjs"), "accounts", project_id, "--active", name, "--json"]' in source,
+   "no path to a credentials file; the only processes it starts are the job router and the projects CLI (fixed argv, no shell)")
 
 
 print("workers")

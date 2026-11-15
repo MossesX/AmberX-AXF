@@ -95,7 +95,8 @@ LIMIT_RE = re.compile(r"hit your (?:weekly |daily |session |5-hour )?limit|weekl
 
 
 def data_dir() -> Path:
-    return Path(os.environ.get("AXF_AI_KEYS_DIR") or (cx.ROOT / ".axf-console" / "plugins" / FOLDER))
+    """The keyring folder: the shared one, or the active project's own when it owns its Claude accounts (projects@1)."""
+    return Path(os.environ.get("AXF_AI_KEYS_DIR") or cx.scope_dir(cx.ROOT / ".axf-console" / "plugins" / FOLDER, "claude-accounts"))
 
 
 def _load() -> dict[str, Any]:

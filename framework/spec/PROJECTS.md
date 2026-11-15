@@ -28,7 +28,7 @@ Five scopes. Each names one store that exists today, its shared location, and wh
 
 | Scope | What it covers | Shared location today | Own copy (`<shared>/projects/<id>/`) |
 |---|---|---|---|
-| `claude-accounts` | Which saved Claude logins and API-key accounts the project uses, which one is active for its console session and its builds, and its job routing (claude-workers@1: workers, rules, caps). Also the console's AI keys keyring (ai-keys plugin). | `~/.claude-accounts/` (logins, `active`, `workers.json`), `.axf-console/plugins/ai-keys/keys.json` | `~/.claude-accounts/projects/<id>/accounts.json` = `{ members: [names], active, workers }`; `.axf-console/plugins/ai-keys/projects/<id>/keys.json`. **Logins are never copied**: a login is stored once in `~/.claude-accounts/<name>/` and a project's own set is a membership list, so a token refresh never leaves a stale copy behind (see "Why accounts are a set, not a copy"). |
+| `claude-accounts` | Which saved Claude logins and API-key accounts the project uses and which one it prefers as active. Also the console's AI keys keyring (its plugin declares it with `lifecycle.projectScoped`). | `~/.claude-accounts/` (logins, `.active`); the keyring in its plugin's data folder | The set lives **on the project record** (`accounts: { members, active }` in the registry), so the console container, the VPS host and every build read the same one; the keyring at `<its dataDir>/projects/<id>/keys.json`. **Logins are never copied**: a login is stored once in `~/.claude-accounts/<name>/` and a project's own set is a membership list, so a token refresh never leaves a stale copy behind (see "Why accounts are a set, not a copy"). |
 | `credentials` | The console credential vault: GitHub, Anthropic, Hostinger, Coolify, axHub URL and token, Moshi key (`CREDENTIALS` in `apps/console-web/server/credentials.py`). | `.axf-console/secrets.env` (0600) | `.axf-console/projects/<id>/secrets.env` (0600, seeded from the shared file). The own file is the whole vault for that project: no per-key fallback, so a project never silently uses another project's token. |
 | `plugins` | Every plugin's settings and which plugins are on. Includes Claude settings (claude-settings@1). | each plugin's `lifecycle.dataDir` settings files; the console's enabled set; axHub `/projects/_shared/_data/claude/settings.json` | `<dataDir>/projects/<id>/…` for each plugin's settings (its *data* already goes there regardless of this scope); enabled set in `.axf-console/projects/<id>/plugins.json`; Claude settings at `/projects/_shared/_data/claude/projects/<id>/settings.json`. |
 | `console` | Console settings and look: appearance source, layout, settings.ts app settings, banner widgets. | `shared/settings/apps/axf-console.json` on axHub, `shared/settings/appearance.json` | `shared/settings/apps/axf-console/projects/<id>.json`; the look follows `appearance.json` unless the project owns `console`, then `shared/settings/appearance/projects/<id>.json`. |
@@ -86,7 +86,7 @@ Rules (`projects-core.mjs`, pure):
 
 Every change goes through `act` in `framework/cli/projects.mjs`, which performs the copies (`copyScope(scope, from, to)`
 per store, 0600 for secret files, under the builds-store style lock) before saving the registry, so the registry never
-says "own" while the folder is missing. `copyScope` for `claude-accounts` writes `accounts.json` with the source's
+says "own" while the folder is missing. `own` for `claude-accounts` sets the project's `accounts` from the source's
 members, active and routing; for `credentials` copies `secrets.env`; for `plugins` copies each plugin's settings files
 plus `plugins.json`; for `console` and `hub` the hub documents through the same hub client lib-hubsync uses.
 
@@ -132,7 +132,7 @@ mirror (`projects.py`) reads `owns` and offers `cx.scope_dir`; it never writes t
    the active project's file for reads and writes, and a project switch reloads the environment from the new file
    (`STORE.reload()`); subprocesses the console starts inherit the right set. Builds get theirs through
    `claude-headless.sh` sourcing `secrets.env` resolved for the build's project.
-2. **Claude accounts / AI keys / worker-routing / claude-login / claude-headless**: read the set (`accounts.json`) for
+2. **Claude accounts / AI keys / worker-routing / claude-login / claude-headless**: read the set (`accounts` on the project record) for
    the project in force; `claude-account list` gains `--project`; the one-account picker build
    (`one-account-picker-…`) picks *within* the project's set and stores the pick in it. The dispatcher plans
    `planned.account` from the build's project's set.
@@ -145,13 +145,28 @@ mirror (`projects.py`) reads `owns` and offers `cx.scope_dir`; it never writes t
    sharing source shares, from an owning source copies; clone never carries builds, notes, to-dos or plans; a pinned
    `AXF_BUILD_PROFILE` resolves to its own project's set while the active project is another.
 
+## Built (s2, Nov 15 2026)
+
+- `projects-core.mjs`: `SCOPES`, `ownsScope`, `scopeDir`, `accountSet`; changes `own` (with `from`, `reseed`), `share`,
+  `accounts` (add / remove / active on an own set). `projects.mjs`: `owns`, `own`, `share`, `accounts`; the file copies
+  run before the registry is saved. Plugin stores are found through `lifecycle.projectScoped: [{ scope, files, secret? }]`
+  in each plugin's manifest, so the framework never names a plugin.
+- Console server: `cx.scope_dir(path, scope)`; the credential vault re-resolves its file on every use and swaps the
+  credential keys in the environment when the project in force changes. The Claude accounts screen lists only the
+  project's set when it owns one, and a switch there records the project's preferred account.
+- Not yet wired (follow-ups, recorded in the PR): the dispatcher picking `planned.account` within the build's project's
+  set, `claude-headless.sh` sourcing a project's own vault, and the hub documents of the `console` and `hub` scopes (the
+  flip is recorded on the project; readers still use the shared documents).
+
 ## Decisions taken here (say so in the PR)
 
 - **Opt-in per scope, not all-or-nothing.** Brett asked for both "own everything" and "don't make the project have to";
   five independent switches give both.
 - **Copy on flip, no live fallback.** An own vault or own set is complete on its own; a missing key fails loudly in that
   project instead of quietly using another project's secret.
-- **Accounts are a membership set over logins stored once**, to keep token refresh correct.
+- **Accounts are a membership set over logins stored once**, to keep token refresh correct. The set is kept on the
+  project record rather than in `~/.claude-accounts/projects/<id>/`: the console runs in a container without that
+  folder, and the registry is already readable by the console, the host and every build.
 - **One folder rule** (`<shared>/projects/<id>/`) for every scope, including hub documents, so a reader that knows the
   shared path can always find the own one.
 - **Base project = the shared set**; `migrate` moves nothing.
