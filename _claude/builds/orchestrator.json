@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:45:28.711Z",
+ "updatedAt": "2026-11-15T00:45:45.373Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14333,7 +14333,7 @@
    "branch": "claude/app-voice-commands",
    "pr": "#323",
    "createdAt": "2026-11-04T14:43:48.090Z",
-   "updatedAt": "2026-11-08T16:59:22.752Z",
+   "updatedAt": "2026-11-15T00:45:32.172Z",
    "builtAt": "2026-11-04T17:16:47.198Z",
    "notes": [
     {
@@ -14990,7 +14990,7 @@
    "branch": "claude/settings-placement-everywhere",
    "pr": "#329",
    "createdAt": "2026-11-04T16:03:38.989Z",
-   "updatedAt": "2026-11-07T16:49:06.961Z",
+   "updatedAt": "2026-11-15T00:45:29.457Z",
    "builtAt": "2026-11-04T17:18:27.648Z",
    "notes": [
     {
@@ -15287,7 +15287,7 @@
    "branch": "claude/live-sessions-plugin",
    "pr": "#331",
    "createdAt": "2026-11-04T16:46:03.374Z",
-   "updatedAt": "2026-11-04T17:42:44.089Z",
+   "updatedAt": "2026-11-15T00:45:25.389Z",
    "builtAt": "2026-11-04T17:19:21.361Z",
    "notes": [
     {
@@ -15661,7 +15661,7 @@
    "branch": "claude/model-thinking-audit",
    "pr": "#334",
    "createdAt": "2026-11-04T17:53:07.338Z",
-   "updatedAt": "2026-11-04T19:03:36.919Z",
+   "updatedAt": "2026-11-15T00:45:21.956Z",
    "builtAt": "2026-11-04T19:03:35.128Z",
    "notes": [
     {
@@ -16130,7 +16130,7 @@
    "branch": "claude/handoff-2",
    "pr": "#338",
    "createdAt": "2026-11-04T18:45:40.326Z",
-   "updatedAt": "2026-11-08T17:01:38.192Z",
+   "updatedAt": "2026-11-15T00:45:11.668Z",
    "builtAt": "2026-11-04T19:59:02.487Z",
    "notes": [
     {
@@ -16392,7 +16392,7 @@
    "branch": "claude/fable-packager",
    "pr": "#336",
    "createdAt": "2026-11-04T19:31:11.060Z",
-   "updatedAt": "2026-11-04T19:51:49.355Z",
+   "updatedAt": "2026-11-15T00:45:17.895Z",
    "builtAt": "2026-11-04T19:51:49.355Z",
    "notes": [
     {
@@ -16524,7 +16524,7 @@
    "branch": "claude/grid-column-hiding",
    "pr": "#340",
    "createdAt": "2026-11-04T19:59:59.405Z",
-   "updatedAt": "2026-11-04T20:18:11.226Z",
+   "updatedAt": "2026-11-15T00:45:09.324Z",
    "builtAt": "2026-11-04T20:18:11.226Z",
    "notes": [
     {
@@ -16675,7 +16675,7 @@
    "branch": "claude/drag-to-tab",
    "pr": "#344",
    "createdAt": "2026-11-04T20:44:51.127Z",
-   "updatedAt": "2026-11-08T16:59:19.176Z",
+   "updatedAt": "2026-11-15T00:45:02.317Z",
    "builtAt": "2026-11-04T21:26:36.967Z",
    "notes": [
     {
@@ -16811,7 +16811,7 @@
    "branch": "claude/build-optimizer",
    "pr": "#342",
    "createdAt": "2026-11-04T20:46:33.439Z",
-   "updatedAt": "2026-11-04T21:14:27.954Z",
+   "updatedAt": "2026-11-15T00:45:07.464Z",
    "builtAt": "2026-11-04T21:14:27.954Z",
    "notes": [
     {
@@ -40384,7 +40384,7 @@
    "branch": "claude/amberx-live-audio",
    "pr": "#335",
    "createdAt": "2026-11-04T19:08:27.526Z",
-   "updatedAt": "2026-11-04T19:28:32.043Z",
+   "updatedAt": "2026-11-15T00:45:19.736Z",
    "builtAt": "2026-11-04T19:27:33.720Z",
    "notes": [
     {
@@ -73152,7 +73152,7 @@
    "branch": "claude/readme-rule-every-build",
    "pr": "#337",
    "createdAt": "2026-11-04T19:55:55.715Z",
-   "updatedAt": "2026-11-04T19:56:49.367Z",
+   "updatedAt": "2026-11-15T00:45:14.064Z",
    "builtAt": "2026-11-04T19:56:47.922Z",
    "notes": [
     {
