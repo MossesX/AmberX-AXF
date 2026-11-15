@@ -91,7 +91,7 @@ export function ageLabel(from, now = Date.now()) {
 }
 
 /** One pending build as its collapsed row (plus what the expanded body shows). `row` is pipeline.mjs row(b). */
-export function summarize(row, { now = Date.now(), notes = [] } = {}) {
+export function summarize(row, { now = Date.now(), notes = [], said = '' } = {}) {
   const r = row ?? {};
   const status = str(r.status, 20) || 'pending';
   return {
@@ -99,17 +99,26 @@ export function summarize(row, { now = Date.now(), notes = [] } = {}) {
     why: whyPending(r), priority: str(r.priority, 10) || 'P2',
     steps: { done: Number(r.steps?.done) || 0, total: Number(r.steps?.total) || 0 },
     createdAt: str(r.createdAt, 40), age: ageLabel(r.createdAt, now),
-    said: str(r.said, 400), nextModel: str(r.nextModel, 20),
+    said: str(said || r.said, 2000), nextModel: str(r.nextModel, 20),
     stepList: (Array.isArray(r.stepList) ? r.stepList : []).map((s) => ({ id: str(s.id, 20), text: str(s.text, 200), model: str(s.model, 20), estimate: str(s.estimate, 20), done: !!s.done, skip: !!s.skip })),
     notes: (Array.isArray(notes) ? notes : []).slice(-5).map((n) => ({ text: str(n?.text, 600), at: str(n?.at, 40) })),
     actions: Array.isArray(r.actions) ? r.actions.filter((a) => typeof a === 'string') : [],
   };
 }
 
-/** Every pending summary with the viewer's `expanded` flag, in the order given. `notes` = { <id>: [{text, at}] }. */
-export function rowsFor(rows, view, viewer, { now = Date.now(), notes = {} } = {}) {
+/**
+ * Every pending summary with the viewer's `expanded` flag, in the order given. `notes` = { <id>: [{text, at}] },
+ * `said` = { <id>: full words } (the row's own `said` is the short subtitle).
+ */
+export function rowsFor(rows, view, viewer, { now = Date.now(), notes = {}, said = {} } = {}) {
   const open = new Set(expandedFor(view, viewer));
-  return (Array.isArray(rows) ? rows : []).map((r) => ({ ...summarize(r, { now, notes: notes[r?.id] ?? [] }), expanded: open.has(r?.id) }));
+  return (Array.isArray(rows) ? rows : []).map((r) => ({ ...summarize(r, { now, notes: notes[r?.id] ?? [], said: said[r?.id] ?? '' }), expanded: open.has(r?.id) }));
+}
+
+/** The answer every interface gives (REST, MCP, CLI, voice): the viewer, its expanded ids and every row. */
+export function answer(rows, view, viewer, opts = {}) {
+  const list = rowsFor(rows, view, viewer, opts);
+  return { ok: true, $axf: SCHEMA, viewer: viewerKey(viewer).slice(7), expanded: list.filter((r) => r.expanded).map((r) => r.id), count: list.length, rows: list };
 }
 
 /** One collapsed row as one plain line (the CLI and voice read this out). */

@@ -110,10 +110,57 @@ function line(b, rules) {
   return `${b.id.padEnd(34)} ${priorityLabel(effectivePriority(b)).padEnd(7)} ${core.STATUS_LABEL[b.status].padEnd(15)} ${String(p.done).padStart(2)}/${p.total} steps · ${core.formatMinutes(p.minutesLeft) || '0 min'} left · next: ${next}`;
 }
 
+// ---- Pending rows (pending-rows-view@1): one collapsed row per pending build, expanded set remembered per viewer
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../../..');
+/** The plugin's data dir (plugin.json lifecycle.dataDir); AXF_ORCH_DATA in tests. */
+export const dataDir = (env = process.env) => env.AXF_ORCH_DATA || resolve(ROOT, '.axf-console/plugins/build-orchestrator');
+export const pendingViewFile = (env = process.env) => resolve(dataDir(env), 'pending-rows.json');
+const readJsonFile = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
+function writeJsonFile(f, v) { mkdirSync(dirname(f), { recursive: true }); const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify(v, null, 1)}\n`); renameSync(tmp, f); }
+/** The Pending tab's builds: the store (pipeline.mjs pendingTab) or, in tests, AXF_PENDING_FIXTURE (a JSON file). */
+async function pendingSource(env = process.env) {
+  if (env.AXF_PENDING_FIXTURE) return readJsonFile(env.AXF_PENDING_FIXTURE, []);
+  return (await import('./pipeline.mjs')).pendingTab();
+}
+export const PENDING_OPS = ['rows', 'expand', 'collapse', 'toggle', 'collapse-all'];
+/**
+ * `pending [rows|expand|collapse|toggle|collapse-all] [build] [--viewer <id>]`: the same answer the REST route, the MCP
+ * command and the voice action give ({ viewer, expanded, rows }). The viewer defaults to AXF_VIEWER, else "console".
+ */
+export async function pending(op = 'rows', id = '', viewer = process.env.AXF_VIEWER || 'console', env = process.env) {
+  const PR = await import('./pending-rows.mjs');
+  if (!PENDING_OPS.includes(op)) throw Object.assign(new Error(`pending is one of ${PENDING_OPS.join(', ')}`), { code: 2 });
+  const src = await pendingSource(env);
+  const rows = src.map((x) => x.row); const ids = rows.map((r) => r.id);
+  const notes = Object.fromEntries(src.map((x) => [x.row.id, x.notes ?? []])); const said = Object.fromEntries(src.map((x) => [x.row.id, x.said ?? '']));
+  const file = pendingViewFile(env);
+  let view = PR.normView(readJsonFile(file, null));
+  if (op !== 'rows') {
+    if (op !== 'collapse-all') {
+      if (!PR.isBuildId(id)) throw Object.assign(new Error(`name a build: pending ${op} <build>`), { code: 2 });
+      if (!ids.includes(id)) throw Object.assign(new Error(`no build "${id}" in Pending`), { code: 2 });
+    }
+    const now = new Date().toISOString();
+    view = op === 'collapse-all' ? PR.collapseAll(view, viewer, now) : PR[op](view, viewer, id, now);
+    view = PR.prune(view, viewer, ids, now);
+    writeJsonFile(file, view);
+  }
+  return PR.answer(rows, view, viewer, { notes, said });
+}
+async function pendingCmd(given) {
+  const vi = given.indexOf('--viewer'); const viewer = vi >= 0 ? given[vi + 1] ?? '' : process.env.AXF_VIEWER || 'console';
+  const pos = vi >= 0 ? [...given.slice(0, vi), ...given.slice(vi + 2)] : given;
+  const [op = 'rows', id = ''] = pos;
+  const r = await pending(op, id, viewer || 'console');
+  const PR = await import('./pending-rows.mjs');
+  return [r, [`Pending (${r.count}) · viewer ${r.viewer}`, ...r.rows.map(PR.line)].join('\n')];
+}
+
 async function main(argv) {
   const json = argv.includes('--json'); const args = argv.filter((a) => a !== '--json');
   const out = (o, text) => console.log(json ? JSON.stringify(o) : text);
   const [cmd = 'list', ...given] = args;
+  if (cmd === 'pending') return out(...(await pendingCmd(given)));
   const rest = !legacy() && ['next', 'brief', 'request-upgrade'].includes(cmd) && given[0] ? [resolveId(loadStore(), given[0]), ...given.slice(1)] : given;
   const s = load(['next', 'brief'].includes(cmd) ? rest[0] : '');
   if (cmd === 'where') return out({ ok: true, file: trackerFile() }, trackerFile());

@@ -586,6 +586,56 @@ async def pipeline_route(request: Request) -> dict[str, Any]:
     return _pipeline("route", _build_id(body.get("id")), route, "--by", (who or "console")[:80])
 
 
+# ---- Pending rows (pending-rows-view@1; Brett, Nov 15 2026: "Why are pending builds not 1 expandable row")
+# One collapsed row per pending build; which rows are expanded is remembered per viewer in the plugin data dir
+# (.axf-console/plugins/build-orchestrator/pending-rows.json). The rules live in pending-rows.mjs and the CLI
+# (`orchestrator.mjs pending …`), so REST, the MCP commands, the CLI and voice give the same answer.
+PENDING_OPS = ("expand", "collapse", "toggle")
+VIEWER_RE = re.compile(r"[^A-Za-z0-9._@-]+")
+
+
+def _viewer(request: Request, body: dict[str, Any] | None = None) -> str:
+    """Whose expanded set: an explicit viewer (body, ?viewer=, X-Axf-Viewer: a session or console id), else the signed-in
+    hub user, else 'console'."""
+    v = str((body or {}).get("viewer") or request.query_params.get("viewer") or request.headers.get("x-axf-viewer") or "")
+    if not v.strip():
+        c = getattr(request.state, "axf_user", None)
+        v = str(getattr(c, "name", "") or "") if c is not None else ""
+    v = VIEWER_RE.sub("-", v.strip())[:80].strip("-")
+    return v or "console"
+
+
+def _pending(*args: str) -> dict[str, Any]:
+    res = _run("pending", *args)
+    if not res.get("ok"):
+        err = str(res.get("error") or "pending rows failed")
+        raise HTTPException(404 if err.startswith("no build") else 400, err[:400])
+    return res
+
+
+@router.get("/pending/rows")
+def pending_rows(request: Request) -> dict[str, Any]:
+    """The Pending tab as one collapsed row per build: title, status label, why it is pending, priority, steps
+    done/total, age, plus the expanded body (steps, notes, what Brett said) and each row's `expanded` flag for this viewer."""
+    return _pending("rows", "--viewer", _viewer(request))
+
+
+@router.post("/pending/rows/collapse-all")
+async def pending_collapse_all(request: Request) -> dict[str, Any]:
+    """{viewer?}: collapse every pending row for this viewer. Answers like GET pending/rows."""
+    body = await _json_body(request)
+    return _pending("collapse-all", "--viewer", _viewer(request, body))
+
+
+@router.post("/pending/rows/{build}/{op}")
+async def pending_row_op(build: str, op: str, request: Request) -> dict[str, Any]:
+    """{viewer?}: expand, collapse or toggle one pending build's row for this viewer. Answers like GET pending/rows."""
+    if op not in PENDING_OPS:
+        raise HTTPException(400, f"op is one of {', '.join(PENDING_OPS)}")
+    body = await _json_body(request)
+    return _pending(op, _build_id(build), "--viewer", _viewer(request, body))
+
+
 # ---- custom groups and custom tabs (groups.mjs, build-groups@1; Brett, Nov 13 2026)
 GROUPS_CLI = CLI.parent / "groups.mjs"
 GROUP_OPS = ("create", "update", "move", "delete", "assign")

@@ -206,6 +206,18 @@ const row = (b) => {
     tab: BP.tabOf(b), held: BP.isHeld(b), actions: BP.actionsFor(b), deleted: !!b.deleted, deletedAt: b.deletedAt ?? '', builtAt: b.builtAt ?? '', stepList: (b.steps ?? []).slice(0, 40).map((x) => ({ id: x.id, text: str(x.text, 160), model: x.model, estimate: x.estimate ?? '', done: !!x.done, skip: !!x.skip })) };
 };
 
+/**
+ * The active project's Pending tab without the account read (pending-rows-view@1, orchestrator.mjs pending): each
+ * build's row, its last notes and the full words Brett said, newest change first like the tab.
+ */
+export function pendingTab() {
+  loadUpgradePolicy();
+  const store = loadStore(); const p = profile();
+  return store.builds.filter((b) => inProfile(b, p) && BP.tabOf(b) === 'pending')
+    .sort((a, b) => str(b.updatedAt).localeCompare(str(a.updatedAt)))
+    .map((b) => ({ row: row(b), notes: (b.notes ?? []).slice(-5), said: str(b.origin?.said, 2000) }));
+}
+
 /** The whole picture for the console and the CLI. */
 export function status() {
   loadUpgradePolicy();
