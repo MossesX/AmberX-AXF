@@ -2,5 +2,6 @@
 import commute from './commute.mjs';
 import expenses from './expenses.mjs';
 import bossTexts from './boss-texts.mjs';
+import privateChat from './private-chat.mjs';
 
-export const MORE = [commute, expenses, bossTexts];
+export const MORE = [commute, expenses, bossTexts, privateChat];
