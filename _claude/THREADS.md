@@ -801,7 +801,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:17 UTC · `merge-main-land-one-source-truth-console` added (0 steps) (all) · land-finish-auto-land-live-clear-backlog
 - 2026-11-14 23:17 UTC · `merge-main-land-one-source-truth-console` → queued, note (all) · land-finish-auto-land-live-clear-backlog
 - 2026-11-14 23:18 UTC · `merge-main-land-server-gate-one-session` added (0 steps) (all) · land-finish-auto-land-live-clear-backlog
 - 2026-11-14 23:18 UTC · `merge-main-land-server-gate-one-session` → queued, note (all) · land-finish-auto-land-live-clear-backlog
@@ -1201,6 +1200,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 02:11 UTC · `demo-video-series-three-minute-browser` → pending, note (all) · reconciler
 - 2026-11-15 02:56 UTC · `console-app-land-parts-1-4-build-apk` note (all) · orchestrator
 - 2026-11-15 02:57 UTC · `console-app-land-parts-1-4-build-apk` → pending, note (all) · pipeline
+- 2026-11-15 04:17 UTC · `auto-lander-controls-in-the-gate-plugin` added (0 steps) (all) · console
 
 ## Token passes (log)
 
