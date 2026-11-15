@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6201,
- "updatedAt": "2026-11-15T13:36:28.930Z",
+ "rev": 6202,
+ "updatedAt": "2026-11-15T13:36:37.706Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -234581,7 +234581,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T13:22:11.842Z",
-   "updatedAt": "2026-11-15T13:34:10.070Z",
+   "updatedAt": "2026-11-15T13:36:32.048Z",
    "builtAt": "",
    "notes": [
     {
@@ -234635,7 +234635,7 @@
     "queuedAt": "2026-11-15T13:22:14.015Z",
     "queuedBy": "console",
     "account": "",
-    "session": "axf-home-cards-follow-plugin-off-home-always--rhonda",
+    "session": "",
     "slot": "",
     "model": "",
     "launchedAt": "",
@@ -234709,12 +234709,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T13:36:32.048Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T13:24:00.647Z",
-     "updatedAt": "2026-11-15T13:24:00.647Z"
+     "updatedAt": "2026-11-15T13:36:32.308Z"
     },
     {
      "id": "s3",
