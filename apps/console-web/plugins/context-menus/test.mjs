@@ -99,6 +99,17 @@ ok(a2.ok && !a2.menu.active, 'saved without switching');
 eq(M.activeMap()['console-web'], 'console-web-beginner', 'beginner still in use');
 eq(M.loadMenus().map((m) => m.id), ['console-web-beginner', 'console-web-pro'], 'listed by level order');
 
+/* ---- the level can differ per page: a page menu wins on its page only */
+const pg = M.draftFromReply(JSON.stringify({ name: 'Builds advanced', targets: { default: [{ id: 'h', label: 'Home', action: 'nav:home' }] } }), { level: 'advanced', page: 'builds', by: 'test' });
+ok(pg.ok, 'page draft');
+const pga = M.applyDraft(pg.draft.id, { by: 'test' });
+ok(pga.ok && pga.menu.active && pga.menu.page === 'builds', 'page menu in use');
+eq(M.activeMap()['console-web'], 'console-web-beginner', 'the app keeps its menu');
+eq(M.activeFor('console-web', 'builds').id, pga.menu.id, 'the page shows its own');
+eq(M.activeFor('console-web', 'home').id, 'console-web-beginner', 'other pages show the app menu');
+ok(M.unuse('console-web', 'builds').changed && M.activeFor('console-web', 'builds').id === 'console-web-beginner', 'unuse falls back to the app menu');
+M.deleteMenu(pga.menu.id);
+
 /* ---- index per zone (owner, pages) and per page */
 const ix = M.menuIndex();
 ok(ix.zones.find((z) => z.zone === 'asset-card')?.menus.some((m) => m.id === 'console-web-pro'), 'index lists menus per zone');

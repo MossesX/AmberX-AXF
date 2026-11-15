@@ -99,8 +99,31 @@ function Generate({ level: initial, onDraft }: { level?: LevelId; onDraft: () =>
         {msg && <Note tone={msg.tone}>{msg.text}</Note>}
         <p className="fx-muted axp-ctxm-fine">Zones mapped at this level: {R.zonesForLevel(level, s?.zones ?? []).length} of {s?.zones.length ?? 0}. Items per zone: at most {l.perTarget}; the rest fold under More…. Submenus: {l.depth} deep. {l.developer ? 'Developer actions included.' : 'No developer jargon.'}</p>
         {prompt && <TextField label="The prompt Claude gets" value={prompt} onChange={() => undefined} rows={12} mono />}
+        <InForce />
       </div>
     </Container>
+  );
+}
+
+/** Which menu (and so which level) is in force per app and per page: a page's own menu wins on that page. */
+function InForce() {
+  const rt = useRuntime();
+  const s = S.getState();
+  const rows = Object.entries(s?.active ?? {}).sort(([a], [b]) => a.localeCompare(b));
+  if (!rows.length) return <p className="fx-muted axp-ctxm-fine">No generated menu in force yet: every app shows its built-in menu.</p>;
+  return (
+    <ul className="axp-ctxm-list" aria-label="Menus in force per app and page">
+      {rows.map(([key, id]) => {
+        const m = s?.menus.find((x) => x.id === id);
+        const [app, page = ''] = key.split('/');
+        return (
+          <li key={key} className="fx-row axp-ctxm-hist">
+            <span><strong>{page ? `${app} · ${page}` : `${app} (whole app)`}</strong> · {m ? `${R.LEVELS[m.level].label} · ${m.name}` : id}</span>
+            <Button size="sm" icon="x" onClick={() => void S.unuseMenu(app ?? S.APP, page).then(() => S.load(rt))}>{page ? 'Use the app’s menu here' : 'Back to the built-in menu'}</Button>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
 
@@ -294,7 +317,7 @@ function Zones() {
   const [q, setQ] = useState('');
   const ui = S.uiElements();
   const zones = (s?.zones ?? []).filter((z) => !q || `${z.id} ${z.label} ${z.owner.id} ${z.pages.join(' ')} ${z.elements.join(' ')}`.toLowerCase().includes(q.toLowerCase()));
-  const covered = new Set(Object.keys((s?.menus.find((m) => m.id === s.active[S.APP]) ?? s?.menus[0])?.asset.data.targets ?? {}));
+  const covered = new Set(Object.keys((s?.menus.find((m) => m.id === S.activeIdFor(s, S.APP)) ?? s?.menus[0])?.asset.data.targets ?? {}));
   return (
     <div className="fx-stack">
       <p className="fx-muted axp-ctxm-fine">Every right-click zone the code draws, with its owner and the pages that showed it. {ui ? 'The UI Manager is on: a zone opens there.' : 'Turn the UI Manager plugin on to open a zone’s elements.'}</p>

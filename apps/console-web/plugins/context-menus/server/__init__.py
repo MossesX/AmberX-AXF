@@ -154,8 +154,16 @@ def unknown_actions(mid: str) -> dict[str, Any]:
 
 
 @router.get("/active")
-def active(app: str = "console-web") -> dict[str, Any]:
-    return run({"op": "active", "app": app})
+def active(app: str = "console-web", page: str = "") -> dict[str, Any]:
+    """The menu an app shows; with page, that page's own menu first (the level can differ per app and page)."""
+    return run({"op": "active", "app": app, "page": page})
+
+
+@router.post("/unuse")
+async def unuse(request: Request) -> dict[str, Any]:
+    """Stop using a page's own menu (it falls back to the app's) or the app's (falls back to the built-in default)."""
+    body = await request.json() or {}
+    return run({"op": "unuse", "app": str(body.get("app") or "console-web"), "page": str(body.get("page") or "")})
 
 
 @router.get("/drafts")
@@ -308,8 +316,8 @@ class ContextMenusService:
         r = run({"op": "get", "id": mid})
         return r.get("menu") if r.get("ok") else None
 
-    def active(self, app: str = "console-web") -> dict[str, Any] | None:
-        return run({"op": "active", "app": app}).get("menu")
+    def active(self, app: str = "console-web", page: str = "") -> dict[str, Any] | None:
+        return run({"op": "active", "app": app, "page": page}).get("menu")
 
     def save(self, menu: dict[str, Any], by: str = "plugin") -> dict[str, Any]:
         return run({"op": "save", "menu": menu, "by": by})

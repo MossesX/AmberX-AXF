@@ -33,14 +33,33 @@ export const getError = () => error;
 export const isLoading = () => loading;
 export function subscribe(f: () => void): () => void { listeners.add(f); return () => { listeners.delete(f); }; }
 
-/** Register every hub menu as a runtime asset and put the one the app shows on screen. */
+/** The menu id in force for a page: that page's own menu first, else the app's (the level can differ per page). */
+export function activeIdFor(s: Pick<State, 'active'> | null | undefined, app = APP, page = ''): string | undefined {
+  return (page && s?.active[`${app}/${page}`]) || s?.active[app] || undefined;
+}
+
+let swappedFor = '';
+/** Register every hub menu as a runtime asset and put the one this page shows on screen. */
 export function applyToRuntime(rt: AxfRuntime, s: State): void {
   const activeNow = (rt.getState().active as Record<string, string>)['context-menu'];
   for (const m of s.menus) rt.registry.register(m.asset, 'imported', FOLDER);
-  const want = s.active[APP];
+  const want = activeIdFor(s, APP, String(rt.getState().view ?? ''));
+  swappedFor = String(rt.getState().view ?? '');
   const wantAsset = want ? s.menus.find((m) => m.id === want)?.asset.id : undefined;
   if (wantAsset && activeNow !== wantAsset) rt.swap('context-menu' as never, wantAsset);
   else if (wantAsset && activeNow === wantAsset) rt.swap('context-menu' as never, wantAsset); // recompile after an edit
+}
+
+/** Follow navigation: a page with its own menu swaps it in, leaving it swaps the app's back (only when they differ). */
+export function followPages(rt: AxfRuntime): () => void {
+  return rt.subscribe(() => {
+    const v = String(rt.getState().view ?? '');
+    if (!state || v === swappedFor) return;
+    const before = activeIdFor(state, APP, swappedFor);
+    swappedFor = v;
+    const want = activeIdFor(state, APP, v);
+    if (want && want !== before) { const a = state.menus.find((m) => m.id === want)?.asset.id; if (a) rt.swap('context-menu' as never, a); }
+  });
 }
 
 export async function load(rt?: AxfRuntime): Promise<State | null> {
@@ -61,6 +80,7 @@ export async function generate(level: LevelId, opts: { app?: string; page?: stri
 }
 export const applyDraft = (id: string, use = true) => api.post<{ ok: boolean; menu: MenuDoc }>('apply', { id, use });
 export const discardDraft = (id: string) => api.post<{ ok: boolean }>('discard', { id });
+export const unuseMenu = (app: string, page = '') => api.post<{ ok: boolean }>('unuse', { app, page });
 export const useMenu = (id: string) => api.post<{ ok: boolean }>(`menus/${encodeURIComponent(id)}/use`, {});
 export const saveMenu = (id: string, menu: MenuDoc) => api.put<{ ok: boolean; menu: MenuDoc }>(`menus/${encodeURIComponent(id)}`, { menu });
 export const deleteMenu = (id: string) => api.del<{ ok: boolean }>(`menus/${encodeURIComponent(id)}`);
@@ -135,9 +155,9 @@ export function zoneOf(el: Element | null): { zone: string; implicit: boolean } 
 }
 
 /** Per zone, from the loaded state (no request): the same answer as GET /zones/{zone}/menus. */
-export function menusForZone(zone: string, app = APP, implicit = false): ElementMenus {
+export function menusForZone(zone: string, app = APP, implicit = false, page = ''): ElementMenus {
   const st = state;
-  const id = st?.active[app];
+  const id = activeIdFor(st, app, page);
   const act = id ? st?.menus.find((m) => m.id === id) ?? null : null;
   const t = act?.asset.data.targets;
   return {
@@ -154,9 +174,9 @@ export interface ContextMenusService {
   version: 1;
   list(filter?: { app?: string; level?: string; zone?: string; q?: string }): MenuDoc[];
   get(id: string): MenuDoc | null;
-  active(app?: string): MenuDoc | null;
+  active(app?: string, page?: string): MenuDoc | null;
   zones(): Zone[];
-  itemsFor(zone: string, app?: string): CtxItem[];
+  itemsFor(zone: string, app?: string, page?: string): CtxItem[];
   /** The UI Manager's per-element view: the zone an element sits in, the items shown there and every menu that maps it. */
   forElement(el: Element | null, app?: string): ElementMenus | null;
   forZone(zone: string, app?: string): ElementMenus;
@@ -171,10 +191,10 @@ export function publishService(rt: AxfRuntime): () => void {
     version: 1,
     list: (f = {}) => R.filterMenus(state?.menus ?? [], f),
     get: (id) => state?.menus.find((m) => m.id === id) ?? null,
-    active: (app = APP) => { const id = state?.active[app]; return (id && state?.menus.find((m) => m.id === id)) || null; },
+    active: (app = APP, page = '') => { const id = activeIdFor(state, app, page); return (id && state?.menus.find((m) => m.id === id)) || null; },
     zones: () => state?.zones ?? [],
-    itemsFor: (zone, app = APP) => { const id = state?.active[app]; const m = id ? state?.menus.find((x) => x.id === id) : null; return m?.asset.data.targets[zone] ?? m?.asset.data.targets.default ?? []; },
-    forElement: (el, app = APP) => { if (!el) return null; const z = zoneOf(el); return menusForZone(z.zone, app, z.implicit); },
+    itemsFor: (zone, app = APP, page = '') => { const id = activeIdFor(state, app, page); const m = id ? state?.menus.find((x) => x.id === id) : null; return m?.asset.data.targets[zone] ?? m?.asset.data.targets.default ?? []; },
+    forElement: (el, app = APP) => { if (!el) return null; const z = zoneOf(el); return menusForZone(z.zone, app, z.implicit, String(rt.getState().view ?? '')); },
     forZone: (zone, app = APP) => menusForZone(zone, app),
     registerActions: async (owner, actions) => { await registerActions(owner, actions); },
     use: async (id) => { await useMenu(id); await load(rt); },

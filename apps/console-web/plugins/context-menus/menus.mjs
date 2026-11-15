@@ -7,7 +7,7 @@
  *   <store>/history/<id>.json    ctx-history@1 (snapshots, restore like skins)
  *   <store>/zones.json           ctx-zone@1 registry (code scan + what open consoles report)
  *   <store>/drafts/<id>.json     ctx-draft@1 (a generated menu waiting for Preview → Apply)
- *   <store>/active.json          { "<app>": "<menu id>" } — which menu each app shows
+ *   <store>/active.json          { "<app>": "<menu id>", "<app>/<page>": "<menu id>" } — which menu each app (and page) shows
  *   <store>/actions/<owner>.json ctx-actions@1 — the actions / hooks a plugin or app offers; menu items reference them
  *
  * <store> is the hub's shared data where /projects is mounted (the console container): /projects/amberx-axf/_data/
@@ -20,7 +20,8 @@
  *   … save <file.json|->              save a menu (validated, snapshot kept)
  *   … delete <id>
  *   … history <id> · restore <id> <v>
- *   … use <id> · active [--app a]     which menu an app shows
+ *   … use <id> · active [--app a] [--page p]   which menu an app (page) shows; a page menu wins on its page
+ *   … unuse [--app a] [--page p]      stop using the page's (or app's) own menu
  *   … zones [--scan]                  the zone registry (--scan rescans the code)
  *   … index [--app a]                 every menu per zone (owner plugin / app, pages) and per page
  *   … zone <zone> [--app a]            the menus that map one zone and the items shown there (what the UI Manager shows)
@@ -69,13 +70,13 @@ export function loadMenus() {
   if (!existsSync(dir)) return [];
   const active = activeMap();
   return readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => readJson(join(dir, f))).filter(Boolean)
-    .map((m) => ({ ...R.normalizeMenu(m), active: active[m.app] === m.id }))
+    .map((m) => ({ ...R.normalizeMenu(m), active: active[activeKey(m)] === m.id }))
     .sort((a, b) => a.app.localeCompare(b.app) || R.LEVELS[a.level].order - R.LEVELS[b.level].order || a.name.localeCompare(b.name));
 }
 export function getMenu(id) {
   if (!idOk(id)) throw new Error(`bad menu id "${id}"`);
   const raw = readJson(P('menus', `${id}.json`));
-  return raw ? { ...R.normalizeMenu(raw), active: activeMap()[raw.app] === id } : null;
+  return raw ? { ...R.normalizeMenu(raw), active: activeMap()[activeKey(raw)] === id } : null;
 }
 export function history(id) { return idOk(id) ? readJson(P('history', `${id}.json`), R.emptyHistory(id)) : R.emptyHistory(id); }
 
@@ -88,7 +89,7 @@ export function saveMenu(raw, { by = '', source } = {}) {
   if (prev) writeJson(P('history', `${doc.id}.json`), R.snapshot(history(doc.id), R.normalizeMenu(prev), prev.by, prev.updatedAt));
   const { active: _a, ...stored } = doc;
   writeJson(P('menus', `${doc.id}.json`), stored);
-  return { ok: true, menu: { ...doc, active: activeMap()[doc.app] === doc.id } };
+  return { ok: true, menu: { ...doc, active: activeMap()[activeKey(doc)] === doc.id } };
 }
 
 export function deleteMenu(id) {
@@ -98,7 +99,7 @@ export function deleteMenu(id) {
   const m = readJson(f);
   rmSync(f);
   const act = activeMap();
-  if (m?.app && act[m.app] === id) { delete act[m.app]; writeJson(P('active.json'), act); }
+  if (m?.app && act[activeKey(m)] === id) { delete act[activeKey(m)]; writeJson(P('active.json'), act); }
   return { ok: true, id };
 }
 
@@ -110,15 +111,32 @@ export function restore(id, v, by = '') {
 
 /* ---------------- which menu an app shows ---------------- */
 
+/** The key a menu is "in use" under: its app, or app/page for a page menu (the level can differ per app and page). */
+export const activeKey = (m) => (m?.page ? `${m.app}/${m.page}` : String(m?.app ?? R.DEFAULT_APP));
+
 export function activeMap() { const m = readJson(P('active.json'), {}); return m && typeof m === 'object' ? m : {}; }
 export function useMenu(id, by = '') {
   const m = getMenu(id);
   if (!m) return { ok: false, error: 'no such menu' };
-  const act = { ...activeMap(), [m.app]: id };
+  const act = { ...activeMap(), [activeKey(m)]: id };
   writeJson(P('active.json'), act);
-  return { ok: true, app: m.app, id, by };
+  return { ok: true, app: m.app, page: m.page, key: activeKey(m), id, by };
 }
-export function activeFor(app = R.DEFAULT_APP) { const id = activeMap()[app]; return id ? getMenu(id) : null; }
+/** The menu an app shows (on a page: that page's menu first, else the app's). */
+export function activeFor(app = R.DEFAULT_APP, page = '') {
+  const map = activeMap();
+  const id = (page && map[`${app}/${page}`]) || map[app];
+  return id ? getMenu(id) : null;
+}
+/** Stop using a page's own menu (the page falls back to the app's), or the app's (falls back to the built-in default). */
+export function unuse(app = R.DEFAULT_APP, page = '') {
+  const map = activeMap();
+  const key = page ? `${app}/${page}` : app;
+  if (!(key in map)) return { ok: true, key, changed: false };
+  delete map[key];
+  writeJson(P('active.json'), map);
+  return { ok: true, key, changed: true };
+}
 
 /* ---------------- zones: the code scan + what consoles report ---------------- */
 
@@ -291,7 +309,7 @@ export function draftFromReply(reply, { level = 'pro', app = R.DEFAULT_APP, page
   const errors = R.validateMenu(doc);
   if (errors.length) return { ok: false, error: errors.join('; '), warnings };
   const draftId = R.slug(`${doc.id}-${t.replace(/\D/g, '').slice(4, 14)}`, 44);
-  const draft = { $axf: R.DRAFT_FORMAT, id: draftId, at: t, by, model, level, app, page, menu: doc, warnings, diff: R.diffMenus(activeFor(app), doc), summary: R.summarize(doc) };
+  const draft = { $axf: R.DRAFT_FORMAT, id: draftId, at: t, by, model, level, app, page, menu: doc, warnings, diff: R.diffMenus(activeFor(app, page), doc), summary: R.summarize(doc) };
   writeJson(P('drafts', `${draftId}.json`), draft);
   return { ok: true, draft };
 }
@@ -325,7 +343,8 @@ export async function api(req) {
     case 'history': return { ok: true, history: history(req.id) };
     case 'restore': return restore(req.id, req.v, by);
     case 'use': return useMenu(req.id, by);
-    case 'active': return { ok: true, active: activeMap(), menu: activeFor(req.app || R.DEFAULT_APP) };
+    case 'active': return { ok: true, active: activeMap(), menu: activeFor(req.app || R.DEFAULT_APP, req.page || '') };
+    case 'unuse': return unuse(req.app || R.DEFAULT_APP, req.page || '');
     case 'zones': return { ok: true, ...zones({ scan: !!req.scan }) };
     case 'report-zones': return reportZones(req.items, req.page);
     case 'index': return menuIndex(req);
@@ -376,7 +395,8 @@ async function main(argv) {
     case 'history': return out({ ok: true, history: history(a1) }, history(a1).versions.map((v) => `v${v.v}  ${v.at}  ${v.by || '-'}  ${v.doc.name}`).join('\n') || 'no history');
     case 'restore': return out(restore(a1, a2, f.by || 'cli'));
     case 'use': return out(useMenu(a1, f.by || 'cli'));
-    case 'active': { const m = activeFor(f.app || R.DEFAULT_APP); return out({ ok: true, active: activeMap(), menu: m }, m ? `${m.app}: ${m.id} (${m.level})` : `${f.app || R.DEFAULT_APP}: the app's own default`); }
+    case 'unuse': return out(unuse(f.app || R.DEFAULT_APP, f.page || ''));
+    case 'active': { const m = activeFor(f.app || R.DEFAULT_APP, f.page || ''); return out({ ok: true, active: activeMap(), menu: m }, m ? `${m.app}: ${m.id} (${m.level})` : `${f.app || R.DEFAULT_APP}: the app's own default`); }
     case 'index': { const r = menuIndex({ app: f.app }); return out(r, r.zones.map((z) => `${z.zone.padEnd(28)} ${z.owner ? `${z.owner.kind}${z.owner.id ? `:${z.owner.id}` : ''}` : '?'}  ${z.menus.map((m) => `${m.active ? '●' : '○'}${m.id}`).join(' ')}`).join('\n') || 'no menus yet'); }
     case 'zone': { const r = menusForZone(a1, f.app || R.DEFAULT_APP); return out(r, r.ok ? `${r.zone}: ${r.active ? `${r.active.name}${r.active.fallback ? ' (default items)' : ''}` : 'app default'} · ${r.items.length} items\n${r.menus.map((m) => `  ${m.active ? '●' : '○'} ${m.id} ${m.level} ${m.items} items`).join('\n')}` : r.error); }
     case 'zones': { const z = zones({ scan: !!f.scan }); return out({ ok: true, ...z }, z.items.map((x) => `${x.weight.padEnd(7)} ${x.id.padEnd(28)} ${x.owner.kind}${x.owner.id ? `:${x.owner.id}` : ''}${x.pages.length ? ` · ${x.pages.join(', ')}` : ''}`).join('\n')); }
