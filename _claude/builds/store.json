@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6037,
- "updatedAt": "2026-11-15T09:10:46.933Z",
+ "rev": 6038,
+ "updatedAt": "2026-11-15T09:11:06.441Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -159963,7 +159963,7 @@
    "pr": "#702",
    "mergedAt": "2026-11-15T09:06:29Z",
    "createdAt": "2026-11-10T22:09:27.000Z",
-   "updatedAt": "2026-11-15T09:10:44.961Z",
+   "updatedAt": "2026-11-15T09:11:03Z",
    "builtAt": "2026-11-15T01:28:08.024Z",
    "notes": [
     {
@@ -160029,6 +160029,10 @@
     {
      "text": "Reconciler: PR #702 merged",
      "at": "2026-11-15T09:10:44.961Z"
+    },
+    {
+     "text": "Shipped manifest sm-molly-gap-axhub-cors rev 1 sent to Shipped features (orchestrator): landed 00b8aba6d, 2 file(s), 0 test line(s), 6 open.",
+     "at": "2026-11-15T09:11:03Z"
     }
    ],
    "approvals": [],
@@ -160079,6 +160083,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-molly-gap-axhub-cors",
+    "rev": 1,
+    "at": "2026-11-15T09:11:03Z",
+    "landedCommit": "00b8aba6d355fed50b918fe5d52f406a9f8dc743"
    },
    "steps": [
     {
@@ -160159,7 +160169,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
