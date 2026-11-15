@@ -93,4 +93,4 @@ Branch `claude/quick-settings-pinned-collapsible-pane`. Status: **s1–s8 done, 
   tab rows inside. The inline page is still laid out by the console Settings interface's pick.
 - Kotlin twin deferred (PORTING.md, quick-settings@1).
 - UI Review: desktop and phone shots are in `_claude/builds/reports/quick-settings-pinned-collapsible-pane/`. They are
-  submitted to the queue if a console token is available; otherwise they wait there.
+  not in the review queue yet: this headless session has no console token (AXF_CONSOLE_URL / AXF_TOKEN). PR #698.
