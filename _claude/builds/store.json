@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5925,
- "updatedAt": "2026-11-15T01:27:00.084Z",
+ "rev": 5926,
+ "updatedAt": "2026-11-15T01:27:19.791Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -159960,9 +159960,9 @@
    "source": "molly-sign-in-once",
    "pendingId": "",
    "branch": "claude/molly-gap-axhub-cors",
-   "pr": "",
+   "pr": "#702",
    "createdAt": "2026-11-10T22:09:27.000Z",
-   "updatedAt": "2026-11-15T01:24:26.756Z",
+   "updatedAt": "2026-11-15T01:26:59.702Z",
    "builtAt": "",
    "notes": [
     {
@@ -160035,12 +160035,12 @@
    "pipeline": {
     "queuedAt": "2026-11-12T01:43:09.945Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-molly-gap-axhub-cors--gina",
+    "account": "",
+    "session": "",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-15T01:24:21.442Z",
-    "runs": 2,
+    "launchedAt": "2026-11-12T01:45:51.956Z",
+    "runs": 1,
     "lastRun": {
      "at": "2026-11-12T01:56:03.497Z",
      "exit": 1,
@@ -160051,9 +160051,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
-    "dispatchedAt": "2026-11-15T01:24:21.442Z",
+    "dispatchedAt": "2026-11-12T01:45:51.956Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -160062,7 +160062,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-15T01:24:21.442Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
