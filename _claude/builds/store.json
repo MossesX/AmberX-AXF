@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6084,
- "updatedAt": "2026-11-15T12:12:54.220Z",
+ "rev": 6085,
+ "updatedAt": "2026-11-15T12:14:28.828Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -233686,6 +233686,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-15T12:11:05.553Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "vps-sends-shipped-features-every-merge",
+   "title": "VPS sends Shipped features on every merge to main (+ backfill)",
+   "category": "",
+   "detail": "Bug: Shipped features has nothing for 2 days, but main DID get many merges (Nov 14-15: PRs #687, #694, #691, #693, #696, #689, #702, #324, plus build_land of console-look-becomes-default-axhub-skin, and the hand-merged skin PRs #647 #648 #590 #618 #641 #652 #657 #654). The last shipped manifests in _claude/builds/shipped/ are from Nov 13. The orchestrator is supposed to send shipped-manifest@1 to Shipped features (commit 7a6668231) but stopped. RULE (Brett): the VPS controls the orchestrator, so the VPS sends the shipped manifest AS SOON AS any merge to main succeeds, whatever the path (merge queue, auto-lander, build_land, manual GitHub merge, push to main). Implement it server-side on the VPS: a watcher on origin/main (post-merge hook + a poll/webhook fallback) that, for each new merge commit, maps it to its build/PR, builds the shipped-manifest@1 (PR, commit, mergedAt, landedAt, files, areas, tests, report link, what Brett said) and sends it to Shipped features at once; idempotent (no duplicates); alerts Brett if a send fails, and retries. Find and fix why it stopped on Nov 13. BACKFILL every merge to main since Nov 13 that has no manifest. Design it so it moves into the axf-molly container with the orchestrator (coordinate with move-build-orchestrator-to-axhub); the data goes to axf-data once that exists. Tests, help. Land with the one-at-a-time lander.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-15T12:14:27.131Z",
+   "updatedAt": "2026-11-15T12:14:27.131Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Why are there no shipped features for the past 2 days. No, the VPS has to send shipped features as soon as a merge to main succeeds since it now controls the orchestrator",
+    "at": "2026-11-15T12:14:27.131Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 881
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

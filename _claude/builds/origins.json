@@ -9054,6 +9054,18 @@
    "from": "",
    "addenda": []
   },
+  "vps-sends-shipped-features-every-merge": {
+   "said": "Why are there no shipped features for the past 2 days. No, the VPS has to send shipped features as soon as a merge to main succeeds since it now controls the orchestrator",
+   "at": "2026-11-15T12:14:27.131Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "vps-server-gate-no-build-starts-without-an-orchestrator-issued-id": {
    "said": "",
    "at": "",

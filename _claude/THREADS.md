@@ -806,7 +806,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 00:06 UTC · `fix-axhub-36-pull-main-in-failed` s19 done (all) · orchestrator
 - 2026-11-15 00:07 UTC · `restore-asset-designer-plugin-merged-nov` s4 done (all) · orchestrator
 - 2026-11-15 00:07 UTC · `fix-axhub-36-pull-main-in-failed` note (all) · pipeline
 - 2026-11-15 00:07 UTC · `picker-dialog-plugin-replaces-all` s22 done, → built (all) · orchestrator
@@ -1206,6 +1205,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 12:12 UTC · `pending-tab-one-collapsed-row-per-2` s11 done (all) · orchestrator
 - 2026-11-15 12:09 UTC · `gate-rules-plugin-in-the-console` s3 done (all) · orchestrator
 - 2026-11-15 12:12 UTC · `gate-rules-plugin-in-the-console` s4 done (all) · orchestrator
+- 2026-11-15 12:14 UTC · `vps-sends-shipped-features-every-merge` added (0 steps) (all) · console
 
 ## Token passes (log)
 
