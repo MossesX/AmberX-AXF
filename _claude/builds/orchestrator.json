@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T13:38:38.065Z",
+ "updatedAt": "2026-11-15T13:38:56.201Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -152541,7 +152541,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T13:36:18.858Z",
-   "updatedAt": "2026-11-15T13:38:25.365Z",
+   "updatedAt": "2026-11-15T13:38:54.650Z",
    "builtAt": "",
    "notes": [
     {
@@ -152563,6 +152563,10 @@
     {
      "text": "Brett (08:40): lots of overlay settings, all in the console plugin and synced to the phone. Settings for each popup type (approvals, alerts, notifications): where it appears (top, bottom, center, corners, from the button), entry/exit animation (slide down from top, burst out from the middle, circle/radial reveal, fade, scale, bounce), speed, size, how long it stays, sound/vibrate, and opacity. Settings for the toolbar and button: size, shape, edge snapping, and auto-collapse delay. Live preview in the console, presets, and full API parity.",
      "at": "2026-11-15T13:38:25.365Z"
+    },
+    {
+     "text": "Brett (08:41): the overlay, button, toolbar and popups are themed by the console's current skin and theme (same tokens through Axf.colors/type/space/shapes on Android). When he changes the skin or theme in the console, the phone overlay updates live without a new APK.",
+     "at": "2026-11-15T13:38:54.650Z"
     }
    ],
    "approvals": [],
