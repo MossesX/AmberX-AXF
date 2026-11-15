@@ -1,0 +1,15 @@
+/* Phone Connect: layout only. Every control is a framework component; sizes, spacing and colours are theme tokens. */
+.axp-phone-stack { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0; }
+.axp-phone-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.axp-phone-actions { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); }
+.axp-phone-card { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); }
+.axp-phone-muted { color: var(--fx-muted); }
+.axp-phone-facts { display: grid; grid-template-columns: max-content 1fr; gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); margin: 0; }
+.axp-phone-facts dt { color: var(--fx-muted); }
+.axp-phone-facts dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.axp-phone-pair { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--fx-dens-gap-md); }
+.axp-phone-qr { width: calc(var(--fx-space) * 24); height: calc(var(--fx-space) * 24); color: var(--fx-text); background: var(--fx-surface); border-radius: var(--fx-radius-sm); }
+.axp-phone-code { font-family: var(--fx-font-mono); font-size: var(--fx-type-root-2xl); letter-spacing: 0.2em; }
+.axp-phone-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.axp-phone-item { display: flex; align-items: center; justify-content: space-between; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-sm) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axp-phone-item:last-child { border-bottom: 0; }

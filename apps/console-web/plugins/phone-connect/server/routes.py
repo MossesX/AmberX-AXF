@@ -259,3 +259,24 @@ def amberx_recorder_stop(request: Request, body: dict = Body(default_factory=dic
 @router.get("/amberx/recorder_status")
 def amberx_recorder_status() -> Any:
     return _deprecated("amberx.recorder_status", "phone.recorder_status", R.status)
+
+
+# ------------------------------------------------------------------ pairing QR
+
+@router.get("/pair/qr.svg")
+def pair_qr() -> Any:
+    """The waiting code as a QR (axf-phone://pair?code=…), for the phone's one-time sign-in page to scan."""
+    from fastapi.responses import Response
+
+    p = D.pairing()
+    if not p:
+        return JSONResponse({"error": PhoneError("not_found", "No pairing is waiting.").as_dict()}, status_code=404)
+    try:
+        import io
+
+        import segno
+    except ImportError:
+        return JSONResponse({"error": PhoneError("unavailable", "The QR engine isn't installed; type the code on the phone.").as_dict()}, status_code=503)
+    buf = io.BytesIO()
+    segno.make(f"axf-phone://pair?code={p['code']}", error="m").save(buf, kind="svg", scale=6, border=2, dark="currentColor", light=None, xmldecl=False, svgns=True)
+    return Response(buf.getvalue(), media_type="image/svg+xml", headers={"cache-control": "no-store"})

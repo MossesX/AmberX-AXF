@@ -258,6 +258,10 @@
       {
         "route": "GET /health",
         "skip": "liveness probe; phone_status answers the same and more"
+      },
+      {
+        "route": "GET /pair/qr.svg",
+        "skip": "an image for the settings screen; phone_pair answers the same code as text"
       }
     ]
   },

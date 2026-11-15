@@ -13,7 +13,7 @@ from fastapi import APIRouter
 import plugin_services
 
 router = APIRouter()
-MOVED = "The Audio Output Recorder moved into Phone Connect: use /api/plugins/phone-connect/recorder/*."
+MOVED = "The Audio Output Recorder moved into Phone Connect: use its recorder routes (capability axf.phone-recorder@1)."
 
 
 def _svc() -> Any:
