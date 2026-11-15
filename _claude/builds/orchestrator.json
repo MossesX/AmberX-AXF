@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T12:09:31.539Z",
+ "updatedAt": "2026-11-15T12:09:38.674Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -150696,16 +150696,22 @@
    "title": "Shipped features: organized, sortable table with more columns",
    "category": "",
    "detail": "Brett: the Shipped features table is a mess. Rebuild it properly on the shared framework grid (follows the skin's 1-or-2-row setting; default console skin = 2 rows, styled to look great in every skin, light/dark, desktop/phone). ORGANIZE: group by plugin/area with collapsible group headers and counts; option to group by date, build, PR or status instead; de-duplicate repeated rows. SORTABLE: tap any column header to sort asc/desc, multi-sort with shift/long-press, remembered per viewer. MORE COLUMNS (show/hide and reorder via a column picker, remembered): feature name, plugin/area, description, status (live, behind a switch, partial, removed), build id (link), PR # (link), commit, date+time shipped, landed on main (yes/no), deployed live (yes/no), how to reach it (deep link, REST, MCP, CLI, voice: icons for each), settings key, help link, version, who asked (Brett's words), tests (pass/count). Plus search box, filter chips (plugin, status, date range, has API, not deployed), row count, export CSV. Each row expands for full details; context menu per row and cell (open feature, open build, open PR, copy link, mark removed). Uses the shared status badges from the pending-tab build. Full API parity (list/sort/filter/columns via REST/MCP/CLI/voice). Tests, help. Land when done with the one-at-a-time lander.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-15T12:09:29.937Z",
-   "updatedAt": "2026-11-15T12:09:29.937Z",
+   "updatedAt": "2026-11-15T12:09:32.291Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-15T12:09:32.291Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
