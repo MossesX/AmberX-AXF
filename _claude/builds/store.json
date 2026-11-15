@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5709,
- "updatedAt": "2026-11-15T00:00:26.193Z",
+ "rev": 5710,
+ "updatedAt": "2026-11-15T00:01:06.109Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -215987,7 +215987,7 @@
    "pr": "#666",
    "priority": "P1",
    "createdAt": "2026-11-13T23:42:29.374Z",
-   "updatedAt": "2026-11-14T01:12:18.165Z",
+   "updatedAt": "2026-11-15T00:00:38.016Z",
    "builtAt": "2026-11-14T01:12:18.165Z",
    "notes": [
     {
@@ -216066,6 +216066,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "red",
+    "landAttempts": [
+     {
+      "at": "2026-11-14T23:50:51.455Z",
+      "run": "lr-voice-listener-use-claude-when-connected-20261114T235051",
+      "base": "1a84b7da13a65f04a55725b10211b87b84b0baf6",
+      "merged": "ec07d3ac7c54678352ab30763277515061281f19",
+      "outcome": "red",
+      "ci": "failure",
+      "note": "CI failed on the merged head (Build engine sweep (Node)). No fix build: the orchestrator did not take it."
+     }
+    ]
    },
    "steps": [
     {
@@ -216435,7 +216452,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
