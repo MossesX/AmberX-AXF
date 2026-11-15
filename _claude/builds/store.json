@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6353,
- "updatedAt": "2026-11-15T19:58:30.994Z",
+ "rev": 6354,
+ "updatedAt": "2026-11-15T19:59:09.331Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -235200,7 +235200,7 @@
    "mergedAt": "2026-11-15T19:56:03Z",
    "priority": "P0",
    "createdAt": "2026-11-15T13:23:46.016Z",
-   "updatedAt": "2026-11-15T19:58:29.496Z",
+   "updatedAt": "2026-11-15T19:59:06Z",
    "builtAt": "2026-11-15T17:08:47.543Z",
    "notes": [
     {
@@ -235250,6 +235250,10 @@
     {
      "text": "Reconciler: PR #715 merged",
      "at": "2026-11-15T19:58:29.496Z"
+    },
+    {
+     "text": "Shipped manifest sm-build-rules-tab-gate-rules-vps-owns rev 1 sent to Shipped features (orchestrator): landed 2cf47a634, 64 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-15T19:59:06Z"
     }
    ],
    "approvals": [
@@ -235308,6 +235312,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-build-rules-tab-gate-rules-vps-owns",
+    "rev": 1,
+    "at": "2026-11-15T19:59:06Z",
+    "landedCommit": "2cf47a6341c0abcf1b148d111e0e92079a1c74bf"
    },
    "steps": [
     {
@@ -235949,7 +235959,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

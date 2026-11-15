@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 02:01 UTC · `banner-widget-shapes-more-than-circle` → pending, note (all) · reconciler
 - 2026-11-15 02:11 UTC · `demo-video-series-three-minute-browser` → pending, note (all) · reconciler
 - 2026-11-15 02:56 UTC · `console-app-land-parts-1-4-build-apk` note (all) · orchestrator
 - 2026-11-15 02:57 UTC · `console-app-land-parts-1-4-build-apk` → pending, note (all) · pipeline
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 19:57 UTC · `auto-lander-controls-in-the-gate-plugin` → running, note (all) · pipeline
 - 2026-11-15 19:57 UTC · `auto-lander-controls-in-the-gate-plugin` note (all) · orchestrator
 - 2026-11-15 19:58 UTC · `build-rules-tab-gate-rules-vps-owns` → complete, merged, note (all) · reconciler
+- 2026-11-15 19:59 UTC · `build-rules-tab-gate-rules-vps-owns` note (all) · orchestrator
 
 ## Token passes (log)
 
