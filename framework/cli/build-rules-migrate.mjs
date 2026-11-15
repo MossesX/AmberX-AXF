@@ -64,9 +64,9 @@ export const SEED_DEFAULTS = Object.freeze({
   'plugin-settings-subtab': { ...PLUGIN },
   'shared-assets': { phase: 'gate', check: 'node framework/cli/shared-assets.mjs check', ...UI },
   'skins': { phase: 'gate', check: 'npx -y tsx framework/spec/check-skin.mts', ...UI },
-  'skin-coverage': { phase: 'gate', check: 'node framework/spec/check-skin-coverage.mjs' },
-  'notify-registry': { phase: 'gate', check: 'ci:notify-registry' },
-  'android-on-hold': { phase: 'gate', check: 'ci:no-android-diff' },
+  'skin-coverage': { phase: 'gate', check: 'node framework/spec/check-skin-coverage.mjs', when: { keywords: ['skin', 'asset type', 'asset-type'] } },
+  'notify-registry': { phase: 'gate', check: 'ci:notify-registry', when: { keywords: ['notif', 'alert', 'push', 'badge'] } },
+  'android-on-hold': { phase: 'gate', check: 'ci:no-android-diff', when: { keywords: ['android', 'kotlin', 'droid', 'compose'] } },
   'no-secrets': { phase: 'gate', check: 'ci:secret-scan' },
   'ui-review-options': { phase: 'after', check: 'gate:ui-review', ...UI },
   'shots-not-review': { ...UI },
@@ -95,6 +95,13 @@ export const SEED_DEFAULTS = Object.freeze({
   'builds-live': { phase: 'after', check: 'store:builds-live', autofix: 'pr-open-link' }, 'orchestrator-tracks': { phase: 'after', check: 'store:steps-ticked' },
   'threads-log': { phase: 'after', check: 'fixer:tracker-threads', autofix: 'tracker-threads' }, 'change-log': { phase: 'after' }, 'rebuild-shots': { phase: 'after' }, 'recurring-agents': { phase: 'after' },
   'plugin-built-with': { phase: 'after', ...PLUGIN }, 'app-defaults': { phase: 'after' }, 'carry-on-block': { phase: 'after' }, 'push-via-amberx': { phase: 'after' },
+  // narrow rules: only builds that name their subject get them in the brief (keeps the brief within its budget)
+  'dns-self': { when: { keywords: ['dns', 'domain', 'cloudflare', 'coolify'] } },
+  'kernel-pure-kotlin': { when: { keywords: ['android', 'kotlin', 'kernel'] } },
+  'interop-adapters': { when: { keywords: ['kernel', 'interop', 'protocol', 'adapter'] } },
+  'hub-badge-red': { when: { keywords: ['badge', 'axhub', 'hub settings'] } },
+  'rebuild-report': { when: { keywords: ['rebuild'] } },
+  'coolify-apps': { when: { keywords: ['coolify', 'web app', 'deploy', 'new app'] } },
 });
 
 /** How good a source is as the rule's own text: the rules-brief bullets first (they are what briefs send today), then quoted constants, then the rules files, then other docs; a code line only when nothing else exists. */

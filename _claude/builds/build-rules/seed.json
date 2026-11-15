@@ -625,7 +625,13 @@
       "autofix": "",
       "briefBlock": "rules",
       "applies": "builds",
-      "when": {},
+      "when": {
+        "keywords": [
+          "android",
+          "kotlin",
+          "kernel"
+        ]
+      },
       "sources": [
         {
           "source": "CLAUDE.md:115",
@@ -653,7 +659,14 @@
       "autofix": "",
       "briefBlock": "rules",
       "applies": "builds",
-      "when": {},
+      "when": {
+        "keywords": [
+          "kernel",
+          "interop",
+          "protocol",
+          "adapter"
+        ]
+      },
       "sources": [
         {
           "source": "CLAUDE.md:116",
@@ -1468,7 +1481,14 @@
       "autofix": "",
       "briefBlock": "rules",
       "applies": "builds",
-      "when": {},
+      "when": {
+        "keywords": [
+          "coolify",
+          "web app",
+          "deploy",
+          "new app"
+        ]
+      },
       "sources": [
         {
           "source": "CLAUDE.md:153",
@@ -2580,7 +2600,14 @@
       "autofix": "",
       "briefBlock": "rules",
       "applies": "all",
-      "when": {},
+      "when": {
+        "keywords": [
+          "dns",
+          "domain",
+          "cloudflare",
+          "coolify"
+        ]
+      },
       "sources": [
         {
           "source": "_claude/shared/rules/RULES.md:64",
@@ -2939,7 +2966,11 @@
       "autofix": "",
       "briefBlock": "rules",
       "applies": "builds",
-      "when": {},
+      "when": {
+        "keywords": [
+          "rebuild"
+        ]
+      },
       "sources": [
         {
           "source": "_claude/rules/RULES.md:19",
@@ -3102,7 +3133,14 @@
       "autofix": "",
       "briefBlock": "rules",
       "applies": "builds",
-      "when": {},
+      "when": {
+        "keywords": [
+          "android",
+          "kotlin",
+          "droid",
+          "compose"
+        ]
+      },
       "sources": [
         {
           "source": "_claude/rules/RULES.md:26",
@@ -3332,7 +3370,13 @@
       "autofix": "",
       "briefBlock": "rules",
       "applies": "builds",
-      "when": {},
+      "when": {
+        "keywords": [
+          "badge",
+          "axhub",
+          "hub settings"
+        ]
+      },
       "sources": [
         {
           "source": "_claude/rules/RULES.md:36",
@@ -3574,7 +3618,13 @@
       "autofix": "",
       "briefBlock": "rules",
       "applies": "builds",
-      "when": {},
+      "when": {
+        "keywords": [
+          "skin",
+          "asset type",
+          "asset-type"
+        ]
+      },
       "sources": [
         {
           "source": "_claude/rules/RULES.md:47",
@@ -3680,7 +3730,14 @@
       "autofix": "",
       "briefBlock": "rules",
       "applies": "builds",
-      "when": {},
+      "when": {
+        "keywords": [
+          "notif",
+          "alert",
+          "push",
+          "badge"
+        ]
+      },
       "sources": [
         {
           "source": "_claude/rules/RULES.md:53",
