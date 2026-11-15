@@ -7,7 +7,8 @@ import * as core from './orchestrator-core.mjs';
 import * as pendingCore from '@console/axf/plan/pending-core.mjs';
 import pricing from '@console/axf/schemas/model-pricing.json';
 import { DataGrid, RowHookButtons, registerRowRefTarget, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
-import { PipelineTab, type PipelineView } from './pipeline';
+import { FamilyNote, PipelineTab, type PipelineView } from './pipeline';
+import { familyOf, splitFamilies } from './family';
 import { SplitSettings } from './split-settings';
 import { buildRowSelector, settleFocus, useFocusedBuild } from './focus';
 import './orchestrator.css';
@@ -27,7 +28,7 @@ export const FOLDER = 'build-orchestrator';
 registerRowRefTarget('axf-orchestrator-build', (id) => (id ? { kind: 'orchestrator', id } : null));
 const api = pluginApi(FOLDER, 'Build orchestrator', { unavailable: 'The build orchestrator is switched off or its server part is not running.' });
 type Step = { id: string; text: string; model: 'Fable' | 'Opus'; why: string; phase: string; group: string; estimate: string; files: string[]; checks: string[]; session: 'same' | 'new'; agent: boolean; done: boolean; doneAt: string; note: string };
-type Build = { id: string; title: string; category: string; detail: string; status: string; hidden: boolean; source: string; pendingId: string; branch: string; pr: string; createdAt: string; updatedAt: string; builtAt: string; notes: { text: string; at: string }[]; approvals: { phase: number; from: string; to: string; at: string; by?: string; via?: string; kind?: string; selfApproved?: boolean }[]; upgradeRequests?: { id: string; phase: number; from: string; to: string; at: string; by: string; state: string }[]; origin?: unknown; steps: Step[] };
+type Build = { id: string; title: string; category: string; detail: string; status: string; hidden: boolean; source: string; pendingId: string; branch: string; pr: string; createdAt: string; updatedAt: string; builtAt: string; notes: { text: string; at: string }[]; approvals: { phase: number; from: string; to: string; at: string; by?: string; via?: string; kind?: string; selfApproved?: boolean }[]; upgradeRequests?: { id: string; phase: number; from: string; to: string; at: string; by: string; state: string }[]; origin?: unknown; steps: Step[]; pipeline?: { parallel?: { role?: string; lead?: string; part?: number; parts?: string[] } | null } | null };
 type Rules = { sameSession: boolean; subAgents: boolean; approveModelSwitch: boolean; maxStepMinutes: number };
 type State = { updatedAt: string; rules: Rules; builds: Build[] };
 type Res = { ok: boolean; error?: string; state?: State; log?: string[]; brief?: string; upgradePolicy?: { approvalRequired: boolean; source: string } };
@@ -153,8 +154,8 @@ function BuildsTab({ state, busy, act }: { state: State; busy: boolean; act: Act
         {filter && <button data-fx-row className="pd-sort" onClick={() => setFilter('')}><Icon name="x" size={13} />{(core.STATUS_LABEL as Record<string, string>)[filter]} only</button>}
       </div>
       {builds.length === 0 ? <div className="fx-empty">{filter || cat ? 'No builds match.' : 'Nothing to orchestrate. Add a build below.'}</div>
-        : view === 'grid' ? <BuildGrid builds={builds} rules={state.rules} busy={busy} act={act} />
-        : <div className="pd-list" role="list">{builds.map((b) => <BuildCard key={b.id} b={b} rules={state.rules} busy={busy} act={act} />)}</div>}
+        : view === 'grid' ? <BuildGrid builds={builds} all={state.builds} rules={state.rules} busy={busy} act={act} />
+        : <div className="pd-list" role="list">{builds.map((b) => <BuildCard key={b.id} b={b} rules={state.rules} busy={busy} act={act} all={state.builds} />)}</div>}
       <AddForm busy={busy} act={act} />
       <ImportForm busy={busy} act={act} known={state.builds.map((b) => b.pendingId).filter(Boolean)} />
     </>
@@ -162,7 +163,7 @@ function BuildsTab({ state, busy, act }: { state: State; busy: boolean; act: Act
 }
 
 type Mode = 'note' | 'step' | 'edit' | 'confirm' | null;
-function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; busy: boolean; act: Act; embedded?: boolean }) {
+function BuildCard({ b, rules, busy, act, embedded, all = [] }: { b: Build; rules: Rules; busy: boolean; act: Act; embedded?: boolean; all?: Build[] }) {
   const rt = useRuntime();
   const [mode, setMode] = useState<Mode>(null);
   const [statusOpen, setStatusOpen] = useState(false);
@@ -212,6 +213,7 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
         {b.branch && <span className="fx-mono">{b.branch}</span>}
         {(b.status === 'running' || b.status === 'waiting') && <WatchLiveFor branch={b.branch} text={`${b.id} ${b.pendingId ?? ''}`} />}
       </div>
+      {(() => { const f = familyOf(b, all); return f ? <FamilyNote f={f} self={b.id} /> : null; })()}
       {!embedded && n.needsApproval && n.phase && (
         <div className="pl-note is-warn oc-gate"><Icon name="alert" size={14} />Next phase upgrades {n.phase.from} → {n.phase.model}. Only you can approve it; no session starts it before you do.
           <Button tone="primary" icon="check" disabled={busy} onClick={() => act({ action: 'approve', id: b.id, phase: n.phase!.index })}>Approve upgrade to {n.phase.model}</Button>
@@ -440,7 +442,7 @@ function figures(b: Build) {
 }
 
 /** Grid: one row per build, grouped by category (columns like the Pending builds grid); a row expands to its steps as a subgrid plus the build's actions. */
-function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules; busy: boolean; act: Act }) {
+function BuildGrid({ builds, all, rules, busy, act }: { builds: Build[]; all: Build[]; rules: Rules; busy: boolean; act: Act }) {
   const [sort, setSort] = useState<GridSort>(() => consoleApi.readLocal<GridSort>('orch-grid-sort', null));
   const [hidden, setHidden] = useState<string[]>(() => consoleApi.readLocal<string[]>('orch-grid-hidden', ['left']));
   const [stepHidden, setStepHidden] = useState<string[]>(() => consoleApi.readLocal<string[]>('orch-step-hidden', ['doneAt']));
@@ -460,13 +462,17 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
   const fig = useMemo(() => new Map(builds.map((b) => [b.id, figures(b)])), [builds]);
   const groups: GridGroup<Build>[] = useMemo(() => {
     const by = new Map<string, Build[]>();
-    for (const b of builds) { const c = b.category || core.UNCATEGORISED; by.set(c, [...(by.get(c) ?? []), b]); }
+    // a parallel part sits in its lead's category, so the family stays together
+    const catOf = (b: Build) => { const p = b.pipeline?.parallel; const lead = p?.role === 'part' ? all.find((x) => x.id === p.lead) : null; return (lead ?? b).category || core.UNCATEGORISED; };
+    for (const b of builds) { const c = catOf(b); by.set(c, [...(by.get(c) ?? []), b]); }
     return [...by.entries()].sort((a, c) => a[0].localeCompare(c[0])).map(([name, rows]) => {
       const t = rows.reduce((a, b) => { const f = fig.get(b.id)!; const p = core.progress(b); return { left: a.left + f.left, cost: a.cost + f.costLeft, done: a.done + p.done, total: a.total + p.total }; }, { left: 0, cost: 0, done: 0, total: 0 });
-      return { id: `cat:${name}`, title: `${name} (${rows.length})`, icon: 'layers', rows, groups: [], collapsed: collapsed.includes(`cat:${name}`),
+      // parallel split families (Nov 13 2026): the lead and its parts as one sub-group with the combined progress
+      const fam = splitFamilies(rows, all, `cat:${name}:`, collapsed);
+      return { id: `cat:${name}`, title: `${name} (${rows.length})`, icon: 'layers', rows: fam.singles, groups: fam.groups, collapsed: collapsed.includes(`cat:${name}`),
         summary: `${core.formatMinutes(t.left) || 'nothing'} left · ${money(t.cost)}`, progress: t.total ? (t.done / t.total) * 100 : undefined };
     });
-  }, [builds, fig, collapsed]);
+  }, [builds, all, fig, collapsed]);
   const cols: GridColumn<Build>[] = [
     { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-font-size) * 16), calc(var(--fx-font-size) * 25))', fixed: true, sortable: true, sortValue: (b) => b.title.toLowerCase(),
       render: (b) => <span className="oc-cell-title" title={b.detail || b.title}><strong><AgentAvatar inText={`${b.id}\n${b.detail}`} size="small" /> {b.title}{b.hidden && <span className="fx-muted fx-small"> · hidden</span>}</strong>{summary(b) && <span className="fx-small fx-muted">{summary(b)}</span>}</span> },
@@ -504,7 +510,7 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
             <div className="oc-detail">
               <BuildOrigin origin={b.origin} showEmpty />
               <StepGrid b={b} rules={rules} busy={busy} act={act} hidden={stepHidden} setHidden={setStepHidden} />
-              <BuildCard b={b} rules={rules} busy={busy} act={act} embedded />
+              <BuildCard b={b} rules={rules} busy={busy} act={act} embedded all={all} />
             </div>
           )} />
       </div>

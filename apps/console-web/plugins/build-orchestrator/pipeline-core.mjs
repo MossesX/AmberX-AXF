@@ -471,10 +471,10 @@ export function parallelSteps(b, parsed, settings = normSettings(), rules = { ma
     steps.push({ id: `s${steps.length + 1}`, text: `Tests green, commit, push, PR (part ${i + 1} of ${parts.length} of ${b.id})`, model: 'Opus', estimate: est, why: '', files: [], checks: [] });
     const detail = [`Part ${i + 1} of ${parts.length} of build ${b.id} ("${str(b.title, 300)}"), split to run in parallel.`, `Scope: ${p.title}.`,
       settings.parallelContract ? `Build against the shared contract the lead (${b.id}, branch claude/${b.id}) writes first; the dispatcher starts this part once that step is done. Touch only this part's files.` : 'Touch only this part\'s files.',
-      settings.parallelIntegrate ? `The lead's integration step merges and tests every part together at the end.` : 'This part lands on its own PR.'].join('\n');
+      settings.parallelIntegrate ? `Lands together: push this branch and open a draft PR; the lead's integration step merges and tests every part together and lands them as one PR.` : `Lands in order: this part lands on its own PR, ${i ? `after part ${i} of ${b.id}` : `first of ${b.id}'s parts`}.`].join('\n');
     return { id: ids[i], title: `${str(b.title, 240)} · part ${i + 1}: ${p.title}`, detail, steps, parallel: { role: 'part', lead: b.id, part: i + 1, of: parts.length } };
   });
-  return { lead, children, parallel: { role: 'lead', parts: ids, contractStep: settings.parallelContract ? 's1' : '', integrationStep: `s${lead.length}` } };
+  return { lead, children, parallel: { role: 'lead', parts: ids, contractStep: settings.parallelContract ? 's1' : '', integrationStep: `s${lead.length}`, landing: settings.parallelIntegrate ? 'together' : 'own' } };
 }
 
 /**

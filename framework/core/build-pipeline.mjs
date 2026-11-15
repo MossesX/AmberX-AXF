@@ -52,6 +52,8 @@ export const ROUTES = ['', 'api', 'subscription'];
 export const SPLIT_PROVIDERS = ['claude', 'rules', 'hand'];
 /** Parallel split roles: the lead (contract first, integration last) and its parts (independent sub-builds). */
 export const PARALLEL_ROLES = ['lead', 'part'];
+/** How a parallel split lands: together = the lead's integration step merges every part into its one PR; own = each part lands on its own PR, in part order. */
+export const PARALLEL_LANDINGS = ['together', 'own'];
 export const DEFAULT_MAX_RUNS = 3;
 
 const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
@@ -70,7 +72,7 @@ const count = (v) => (Number.isInteger(v) && v > 0 ? Math.min(v, 99) : 0);
 export function normParallel(p) {
   if (!p || typeof p !== 'object' || !PARALLEL_ROLES.includes(p.role)) return null;
   const parts = (Array.isArray(p.parts) ? p.parts : []).map(buildRef).filter(Boolean).slice(0, 12);
-  return { role: p.role, lead: p.role === 'part' ? buildRef(p.lead) : '', parts: p.role === 'lead' ? parts : [], part: p.role === 'part' ? count(p.part) : 0, of: count(p.of), contractStep: p.role === 'lead' ? str(p.contractStep, 40) : '', integrationStep: p.role === 'lead' ? str(p.integrationStep, 40) : '' };
+  return { role: p.role, lead: p.role === 'part' ? buildRef(p.lead) : '', parts: p.role === 'lead' ? parts : [], part: p.role === 'part' ? count(p.part) : 0, of: count(p.of), contractStep: p.role === 'lead' ? str(p.contractStep, 40) : '', integrationStep: p.role === 'lead' ? str(p.integrationStep, 40) : '', landing: PARALLEL_LANDINGS.includes(p.landing) ? p.landing : 'together' };
 }
 
 /** The record, every field in shape; null for nothing (a build the pipeline never touched carries none). */

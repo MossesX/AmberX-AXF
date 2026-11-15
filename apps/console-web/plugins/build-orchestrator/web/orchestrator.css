@@ -53,3 +53,6 @@ button.oc-model { cursor: pointer }
 
 /* Bulk select (Nov 10 2026: hold, archive, delete, restore on many builds at once): layout only */
 .pl-bulk { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+
+/* Parallel split family note (Nov 13 2026): layout only */
+.oc-family { gap: var(--fx-dens-gap-sm) }
