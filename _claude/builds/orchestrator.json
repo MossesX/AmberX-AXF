@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T00:41:54.149Z",
+ "updatedAt": "2026-11-15T00:42:16.816Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -20039,7 +20039,7 @@
    "pr": "#415",
    "priority": "P0",
    "createdAt": "2026-11-06T13:10:47.768Z",
-   "updatedAt": "2026-11-15T00:29:07.594Z",
+   "updatedAt": "2026-11-15T00:41:10.527Z",
    "builtAt": "2026-11-09T20:51:26.623Z",
    "notes": [
     {
@@ -33458,7 +33458,7 @@
    "pr": "#269",
    "priority": "P0",
    "createdAt": "2026-11-03T17:53:08.980Z",
-   "updatedAt": "2026-11-15T00:29:45.080Z",
+   "updatedAt": "2026-11-15T00:41:48.971Z",
    "builtAt": "2026-11-03T18:22:43.443Z",
    "notes": [
     {
@@ -35601,7 +35601,7 @@
    "pr": "#281",
    "priority": "P0",
    "createdAt": "2026-11-03T19:45:20.635Z",
-   "updatedAt": "2026-11-15T00:29:36.177Z",
+   "updatedAt": "2026-11-15T00:41:39.059Z",
    "builtAt": "2026-11-03T20:43:38.552Z",
    "notes": [
     {
@@ -78165,7 +78165,7 @@
    "pr": "#421",
    "priority": "P0",
    "createdAt": "2026-11-08T00:52:07.400Z",
-   "updatedAt": "2026-11-15T00:28:40.157Z",
+   "updatedAt": "2026-11-15T00:40:55.282Z",
    "builtAt": "2026-11-10T00:36:13.510Z",
    "notes": [
     {
@@ -78326,7 +78326,7 @@
    "pr": "#416",
    "priority": "P0",
    "createdAt": "2026-11-08T02:35:00.329Z",
-   "updatedAt": "2026-11-15T00:29:02.177Z",
+   "updatedAt": "2026-11-15T00:41:06.993Z",
    "builtAt": "2026-11-09T20:51:39.392Z",
    "notes": [
     {
@@ -84414,7 +84414,7 @@
    "pr": "#398",
    "priority": "P0",
    "createdAt": "2026-11-08T22:30:52.988Z",
-   "updatedAt": "2026-11-15T00:29:26.498Z",
+   "updatedAt": "2026-11-15T00:41:35.150Z",
    "builtAt": "2026-11-08T22:46:45.882Z",
    "notes": [
     {
@@ -84528,7 +84528,7 @@
    "pr": "#417",
    "priority": "P0",
    "createdAt": "2026-11-08T22:32:08.043Z",
-   "updatedAt": "2026-11-15T00:28:56.500Z",
+   "updatedAt": "2026-11-15T00:41:03.319Z",
    "builtAt": "2026-11-09T21:00:47.340Z",
    "notes": [
     {
@@ -87232,7 +87232,7 @@
    "pr": "#409",
    "priority": "P0",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-15T00:28:52.861Z",
+   "updatedAt": "2026-11-15T00:40:58.607Z",
    "builtAt": "2026-11-09T23:50:28.253Z",
    "notes": [
     {
@@ -88153,7 +88153,7 @@
    "pr": "#407",
    "priority": "P0",
    "createdAt": "2026-11-09T16:25:52.442Z",
-   "updatedAt": "2026-11-15T00:29:20.494Z",
+   "updatedAt": "2026-11-15T00:41:27.044Z",
    "builtAt": "2026-11-09T16:45:22.046Z",
    "notes": [
     {
@@ -90764,7 +90764,7 @@
    "pr": "#412",
    "priority": "P0",
    "createdAt": "2026-11-09T20:14:49.766Z",
-   "updatedAt": "2026-11-15T00:29:17.540Z",
+   "updatedAt": "2026-11-15T00:41:22.100Z",
    "builtAt": "2026-11-09T20:30:31.836Z",
    "notes": [
     {
@@ -91207,7 +91207,7 @@
    "pr": "#414",
    "priority": "P0",
    "createdAt": "2026-11-09T20:26:33.987Z",
-   "updatedAt": "2026-11-15T00:29:13.748Z",
+   "updatedAt": "2026-11-15T00:41:16.445Z",
    "builtAt": "2026-11-09T20:44:45.045Z",
    "notes": [
     {
@@ -128687,7 +128687,7 @@
    "pr": "#637",
    "priority": "P1",
    "createdAt": "2026-11-13T18:38:53.122Z",
-   "updatedAt": "2026-11-15T00:31:28.379Z",
+   "updatedAt": "2026-11-15T00:42:10.713Z",
    "builtAt": "2026-11-13T19:28:57.835Z",
    "notes": [
     {
@@ -130370,7 +130370,7 @@
    "pr": "#644",
    "priority": "P1",
    "createdAt": "2026-11-13T18:50:33.284Z",
-   "updatedAt": "2026-11-15T00:31:07.670Z",
+   "updatedAt": "2026-11-15T00:42:03.917Z",
    "builtAt": "2026-11-13T20:05:03.288Z",
    "notes": [
     {
@@ -130973,7 +130973,7 @@
    "pr": "#646",
    "priority": "P1",
    "createdAt": "2026-11-13T19:01:19.839Z",
-   "updatedAt": "2026-11-15T00:30:55.195Z",
+   "updatedAt": "2026-11-15T00:41:59.675Z",
    "builtAt": "2026-11-13T20:20:33.465Z",
    "notes": [
     {
@@ -132834,7 +132834,7 @@
    "pr": "#664",
    "priority": "P1",
    "createdAt": "2026-11-13T19:55:30.979Z",
-   "updatedAt": "2026-11-15T00:30:41.010Z",
+   "updatedAt": "2026-11-15T00:41:54.305Z",
    "builtAt": "2026-11-14T03:51:56.235Z",
    "notes": [
     {
@@ -134933,7 +134933,7 @@
    "pr": "#662",
    "priority": "P1",
    "createdAt": "2026-11-13T20:45:51.589Z",
-   "updatedAt": "2026-11-15T00:30:47.181Z",
+   "updatedAt": "2026-11-15T00:41:56.825Z",
    "builtAt": "2026-11-13T21:27:07.106Z",
    "notes": [
     {
