@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T11:54:44.385Z",
+ "updatedAt": "2026-11-15T11:55:39.244Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -149193,7 +149193,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T11:52:18.052Z",
-   "updatedAt": "2026-11-15T11:54:34.838Z",
+   "updatedAt": "2026-11-15T11:55:36.587Z",
    "builtAt": "",
    "notes": [
     {
@@ -149215,6 +149215,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-pending-tab-one-collapsed-row-per-2--paulie, shared account login)",
      "at": "2026-11-15T11:54:34.838Z"
+    },
+    {
+     "text": "Brett (06:55): for the CURRENT skin (the console default), the Pending tab uses the 2-row layout, packed with info, buttons and badges. Row 1: title, priority, status badge, action buttons (queue, land, edit, archive, open PR). Row 2: badges/info: commits behind main, date+time added, date+time built, PR #, steps done/total, account/model, why it's pending. Status badges: pending build, queued, building, built/waiting to merge, merging, landed, clashing, failed, held. ANIMATION: any build that's actively doing something (building, merging, splitting, landing) gets its icon/badge animated (e.g. a spinner or pulse) using the skin's animation tokens (#652); idle states stay still; respects reduced motion. Same badge set reused by the every-grid build so all grids can show it.",
+     "at": "2026-11-15T11:55:36.587Z"
     }
    ],
    "approvals": [],
