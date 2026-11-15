@@ -34,7 +34,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 
 /** Entry animation for a popup, from the console's Overlay settings. */
@@ -63,7 +62,7 @@ fun PopupCard(popup: Popup, style: PopupStyle, onAction: (Popup, String) -> Unit
     val state = remember(popup.id) { MutableTransitionState(false).apply { targetState = true } }
     LaunchedEffect(popup.id, style.stayMs) { if (style.stayMs > 0) { delay(style.stayMs.toLong()); state.targetState = false } }
     LaunchedEffect(state.currentState, state.isIdle) { if (state.isIdle && !state.currentState) onGone(popup) }
-    val width = when (style.size) { "small" -> 260.dp; "large" -> 420.dp; else -> 340.dp }
+    val width = Axf.space.unit * when (style.size) { "small" -> 32; "large" -> 52; else -> 42 }
     val tone = when (popup.kind) { "approval" -> Axf.colors.accent; "alert" -> Axf.colors.danger; else -> Axf.colors.border }
     AnimatedVisibility(state, enter = enterOf(style.enter, style.speedMs), exit = exitOf(style.exit, style.speedMs)) {
         Column(

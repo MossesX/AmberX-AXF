@@ -1,7 +1,7 @@
 name: Android framework + console
 
 # Builds everything the sandbox cannot (Maven + Android SDK): the kernel tests, every framework module,
-# the Dev Console APK, and the build-engine sweep. Artifacts: console-debug.apk + framework maven repo.
+# the Dev Console APK, and the build-engine sweep. Artifacts: console-debug.apk, phone-connect-debug.apk + framework maven repo.
 
 on:
   push:
@@ -433,60 +433,11 @@ jobs:
           name: console-web-dist
           path: apps/console-web/dist
 
-  amberx:
-    name: AmberX — web app in the Capacitor Android shell (APK + native unit tests)
-    needs: scope
-    if: ${{ needs.scope.outputs.amberx == 'true' }}
-    runs-on: ubuntu-latest
-    env:
-      AXF_BUILD_NUMBER: ${{ github.run_number }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 22 }
-      # Capacitor 8 builds with JDK 21 and compileSdk 36.
-      - uses: actions/setup-java@v4
-        with: { distribution: temurin, java-version: '21' }
-      - name: Android SDK 36
-        run: |
-          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36" "build-tools;36.0.0" "platform-tools" > /dev/null
-      - name: Stable debug signing key (secret ANDROID_DEBUG_KEYSTORE, base64)
-        env: { KS: '${{ secrets.ANDROID_DEBUG_KEYSTORE }}' }
-        run: if [ -n "$KS" ]; then mkdir -p ~/.android && echo "$KS" | base64 -d > ~/.android/debug.keystore; fi
-      - name: Build the web app, copy it into the shell
-        working-directory: apps/amberx-droid
-        run: |
-          rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done && node ../../framework/cli/shared-assets.mjs bake .
-          npm ci --no-audit --no-fund && npm run build && npx cap sync android
-      - name: Native unit tests + debug APK
-        working-directory: apps/amberx-droid/android
-        run: |
-          chmod +x gradlew
-          set -o pipefail
-          ./gradlew :app:testDebugUnitTest :app:assembleDebug --no-daemon --stacktrace 2>&1 | tee /tmp/amberx-gradle.log
-      - name: Report AmberX build/test errors to the "CI build errors" issue
-        if: failure()
-        env: { GH_TOKEN: '${{ github.token }}' }
-        run: |
-          {
-            echo "### AmberX Android build failed on \`${{ github.ref_name }}\` — ${{ github.sha }}"; echo; echo '```'
-            grep -E "error:|\.java:[0-9]+|FAILED|expected|but was|AssertionError|What went wrong|> Task .*FAILED" /tmp/amberx-gradle.log 2>/dev/null | grep -vE "^\s+at " | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||' | head -60
-            for f in apps/amberx-droid/android/app/build/test-results/testDebugUnitTest/*.xml; do [ -f "$f" ] && grep -A3 "<failure" "$f" | head -20; done
-            echo '```'
-          } > /tmp/amberx-report.md
-          N=$(gh issue list --search "CI build errors in:title" --state open --json number --jq '.[0].number')
-          if [ -z "$N" ]; then gh issue create --title "CI build errors" --body-file /tmp/amberx-report.md; else gh issue comment "$N" --body-file /tmp/amberx-report.md; fi
-      - uses: actions/upload-artifact@v4
-        with:
-          name: amberx-debug.apk
-          path: apps/amberx-droid/android/app/build/outputs/apk/debug/app-debug.apk
-          retention-days: 14
   android:
     name: Gradle — framework modules, kernel tests, console APK
     runs-on: ubuntu-latest
-    # Waits for the AmberX shell so its APK joins the app catalog bundle; runs whatever that job's result.
-    needs: [scope, amberx]
+    # Phone Connect replaced the AmberX Capacitor shell (Nov 15 2026): its APK is built here like every framework app.
+    needs: [scope]
     if: ${{ !cancelled() && needs.scope.outputs.android == 'true' }}
     env:
       # Every app's versionCode = this run number, so each catalog build installs over the previous one.
@@ -539,6 +490,9 @@ jobs:
       - name: Build AXHub (apps/axhub-android) + its unit tests
         working-directory: apps/axhub-android
         run: gradle :app:testDebugUnitTest :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-axhub.log; exit ${PIPESTATUS[0]}
+      - name: Build Phone Connect (apps/phone-connect-droid) + its unit tests (lock screen, URL filter, overlay config, auto-approval, recorder)
+        working-directory: apps/phone-connect-droid
+        run: gradle :app:testDebugUnitTest :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-phone-connect.log; exit ${PIPESTATUS[0]}
       - name: Build every other framework Android app (apps/* found by app-bundle.mjs; new apps need no CI change)
         run: |
           set -o pipefail
@@ -546,21 +500,14 @@ jobs:
             ls "$d"/app/build/outputs/apk/debug/*.apk >/dev/null 2>&1 && continue
             echo "== $d"; (cd "$d" && gradle :app:assembleDebug --no-daemon) 2>&1 | tee -a /tmp/build-apps.log
           done
-      - name: AmberX APK from its own job (Capacitor shell) for the catalog bundle
-        if: ${{ needs.amberx.result == 'success' }}
-        uses: actions/download-artifact@v4
-        with:
-          name: amberx-debug.apk
-          path: apps/amberx-droid/android/app/build/outputs/apk/debug/
       - name: App catalog bundle (every app's APK + apps.json, read by the Dev Console into the hub's app catalog)
-        # the AmberX shell's APK comes from its own job; when CI scope skipped that job (nothing it builds changed), the
-        # bundle is made without it rather than failing main (Nov 4 2026)
-        run: node framework/cli/app-bundle.mjs collect dist/app-apks --build "${{ github.run_number }}" --commit "${{ github.sha }}" --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" ${{ needs.amberx.result != 'success' && '--skip apps/amberx-droid' || '' }}
+        # AmberX (Capacitor shell) is retired for Phone Connect: no APK of its own any more, so it is left out of the bundle
+        run: node framework/cli/app-bundle.mjs collect dist/app-apks --build "${{ github.run_number }}" --commit "${{ github.sha }}" --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" --skip apps/amberx-droid
       - name: Report compiler errors to the "CI build errors" issue (readable without artifact downloads)
         if: failure()
         env: { GH_TOKEN: '${{ github.token }}' }
         run: |
-          { echo "### ${{ github.sha }} — $(date -u +%FT%TZ)"; echo; echo '```'; grep -hE "^e: |error:|What went wrong|> Task .* FAILED|Could not resolve|Unresolved|Execution failed" /tmp/build-framework.log /tmp/build-console.log /tmp/test-libs.log /tmp/build-voicevault.log /tmp/build-axhub.log /tmp/build-apps.log 2>/dev/null | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||' | sort -u | head -300; echo '```'; } > /tmp/report.md
+          { echo "### ${{ github.sha }} — $(date -u +%FT%TZ)"; echo; echo '```'; grep -hE "^e: |error:|What went wrong|> Task .* FAILED|Could not resolve|Unresolved|Execution failed" /tmp/build-framework.log /tmp/build-console.log /tmp/test-libs.log /tmp/build-voicevault.log /tmp/build-axhub.log /tmp/build-phone-connect.log /tmp/build-apps.log 2>/dev/null | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||' | sort -u | head -300; echo '```'; } > /tmp/report.md
           N=$(gh issue list --search "CI build errors in:title" --state open --json number --jq '.[0].number')
           if [ -z "$N" ]; then gh issue create --title "CI build errors" --body-file /tmp/report.md; else gh issue comment "$N" --body-file /tmp/report.md; fi
       - uses: actions/upload-artifact@v4
@@ -575,6 +522,10 @@ jobs:
         with:
           name: axhub-debug.apk
           path: apps/axhub-android/app/build/outputs/apk/debug/*.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: phone-connect-debug.apk
+          path: apps/phone-connect-droid/app/build/outputs/apk/debug/*.apk
       - uses: actions/upload-artifact@v4
         with:
           name: app-apks

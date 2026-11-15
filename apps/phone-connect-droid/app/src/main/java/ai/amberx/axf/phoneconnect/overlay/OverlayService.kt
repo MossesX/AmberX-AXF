@@ -95,11 +95,24 @@ class OverlayService : LifecycleService(), SavedStateRegistryOwner {
             val lp = if (style.position == "from-button") windows.params(Gravity.TOP or Gravity.START, store.spotX.coerceAtLeast(0), store.spotY.coerceAtLeast(0), focusable = false)
             else windows.params(OverlayWindows.gravityOf(style.position))
             windows.show(POPUP + p.id, lp) { PopupCard(p, style, onAction = { pp, a -> popupHandler(this, pp, a) }, onGone = { store.dismiss(it.id) }) }
+            cue(style)
         }
         drawn.clear(); drawn.addAll(shown)
     }
 
     private val drawn = mutableSetOf<String>()
+
+    /** The popup type's sound and vibration, as the console set them. */
+    private fun cue(style: PopupStyle) {
+        if (style.vibrate) runCatching {
+            val v = if (Build.VERSION.SDK_INT >= 31) (getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as android.os.VibratorManager).defaultVibrator
+            else @Suppress("DEPRECATION") (getSystemService(Context.VIBRATOR_SERVICE) as android.os.Vibrator)
+            v.vibrate(android.os.VibrationEffect.createOneShot(120, android.os.VibrationEffect.DEFAULT_AMPLITUDE))
+        }
+        if (style.sound) runCatching {
+            android.media.RingtoneManager.getRingtone(this, android.media.RingtoneManager.getDefaultUri(android.media.RingtoneManager.TYPE_NOTIFICATION))?.play()
+        }
+    }
 
     private fun onAction(a: String) {
         when (a) {
