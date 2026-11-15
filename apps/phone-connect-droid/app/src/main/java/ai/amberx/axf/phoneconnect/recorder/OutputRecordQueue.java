@@ -1,4 +1,4 @@
-package ai.amberx.droid;
+package ai.amberx.axf.phoneconnect.recorder;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -23,7 +23,7 @@ import org.json.JSONObject;
 final class OutputRecordQueue {
     private OutputRecordQueue() {}
 
-    static final String PREFS = "amberx.output-recorder";
+    static final String PREFS = "phone-connect.recorder";
     static final String DIR = "output-recorder";
 
     /* ---------------------------------------------------------------- settings (same defaults as core.ts DEFAULTS) */

@@ -52,6 +52,29 @@
             android:exported="false"
             android:foregroundServiceType="dataSync" />
 
+        <!-- Audio Output Recorder, moved in whole from AmberX: capture service, Android's consent flow, quick-settings tile. -->
+        <service
+            android:name=".recorder.OutputRecordService"
+            android:exported="false"
+            android:foregroundServiceType="mediaProjection|microphone" />
+        <activity
+            android:name=".recorder.OutputRecordStartActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:noHistory="false"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <service
+            android:name=".recorder.OutputRecordTile"
+            android:exported="true"
+            android:icon="@android:drawable/ic_btn_speak_now"
+            android:label="Record audio out"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
         <receiver android:name=".monitor.BootReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

@@ -1,4 +1,4 @@
-package ai.amberx.droid;
+package ai.amberx.axf.phoneconnect.recorder;
 
 import android.Manifest;
 import android.app.Activity;
@@ -9,7 +9,6 @@ import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.core.content.ContextCompat;
-import com.getcapacitor.JSObject;
 
 /**
  * The one consent flow for Audio Output Recorder, used by the AmberX switch and the quick-settings tile alike
@@ -76,8 +75,8 @@ public class OutputRecordStartActivity extends Activity {
 
     private void refuse(String message, String state) {
         OutputRecordQueue.clearSession(this); // a session from axHub that never started doesn't name a later recording
-        AxppLink.consentRefused(this, message);
-        JSObject e = new JSObject();
+        Recorder.consentRefused(this, message);
+        Js e = new Js();
         e.put("message", message);
         OutputRecordService.emit(state, e);
         OutputRecordTile.refresh(this);

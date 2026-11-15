@@ -70,6 +70,7 @@ class WatchService : LifecycleService() {
         rules = AutoRules.parse(j.optJSONObject("rules"))
         settings?.optJSONObject("overlay")?.let { OverlayStore.of(this).applyConfig(it) }
         settings?.let { Channels.applySwitches(this, it.optJSONObject("notify")) }
+        settings?.let { if (it.has("recorderMic")) ai.amberx.axf.phoneconnect.recorder.Recorder.applyMic(this, it.optBoolean("recorderMic", false)) }
         CommandRunner.runAll(this, session, j.optJSONArray("commands"))
         if (settings?.optBoolean("monitor", true) == false) { stopSelf(); return ROUND_MS }
 

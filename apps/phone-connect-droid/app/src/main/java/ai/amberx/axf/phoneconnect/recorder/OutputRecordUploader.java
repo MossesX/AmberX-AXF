@@ -1,4 +1,4 @@
-package ai.amberx.droid;
+package ai.amberx.axf.phoneconnect.recorder;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Base64;
 import android.webkit.CookieManager;
-import com.getcapacitor.JSObject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -56,12 +55,12 @@ final class OutputRecordUploader {
 
     /* ---------------------------------------------------------------- status (kept so the page shows it after a restart) */
 
-    static JSObject status(Context c) {
+    static Js status(Context c) {
         SharedPreferences p = c.getSharedPreferences(OutputRecordQueue.PREFS, Context.MODE_PRIVATE);
         List<JSONObject> q = OutputRecordQueue.list(c);
         long bytes = 0;
         for (JSONObject m : q) bytes += OutputRecordQueue.audio(c, m.optString("id")).length();
-        JSObject o = new JSObject();
+        Js o = new Js();
         o.put("upload", p.getString("up.state", "idle"));
         o.put("message", p.getString("up.message", ""));
         o.put("lastUploadAt", p.getString("up.lastAt", ""));
@@ -77,7 +76,7 @@ final class OutputRecordUploader {
         e.putString("up.state", state).putString("up.message", message == null ? "" : message).putString("up.nextAt", nextAt == null ? "" : nextAt);
         if ("idle".equals(state) && message == null) e.putString("up.lastAt", OutputRecordService.iso(System.currentTimeMillis()));
         e.apply();
-        JSObject ev = status(c);
+        Js ev = status(c);
         OutputRecordService.emit("queue", ev);
     }
 
@@ -97,7 +96,7 @@ final class OutputRecordUploader {
                     String old = m.optString("id");
                     if (old.equals(id)) continue;
                     OutputRecordQueue.removeLocal(c, old);
-                    JSObject e = new JSObject();
+                    Js e = new Js();
                     e.put("id", old);
                     OutputRecordService.emit("dropped", e);
                 }
@@ -162,7 +161,7 @@ final class OutputRecordUploader {
         }
     }
 
-    static String hubUrl(String project, String path) { return HubRules.HUB + "/data/" + project + "/" + path; }
+    static String hubUrl(String project, String path) { return HubData.HUB + "/data/" + project + "/" + path; }
     static String partPath(String id, int n) { return "output-recorder/parts/" + id + "/" + String.format(Locale.US, "%04d", n) + ".json"; }
     static String indexPath(String id) { return "output-recorder/recordings/" + id + ".json"; }
 
@@ -171,7 +170,7 @@ final class OutputRecordUploader {
         File f = OutputRecordQueue.audio(c, id);
         if (!OutputRecordQueue.isId(id) || !f.isFile()) return;
         String project = OutputRecordQueue.settings(c).project;
-        String cookie = CookieManager.getInstance().getCookie(HubRules.HUB);
+        String cookie = CookieManager.getInstance().getCookie(HubData.HUB);
         if (cookie == null || cookie.isEmpty()) throw new Stop("signed-out", "Sign in to axHub in AmberX to send recordings.");
         try {
             long size = f.length();
@@ -224,7 +223,7 @@ final class OutputRecordUploader {
             index.put("deleted", false);
             put(project, indexPath(id), index.toString(), cookie);
             // confirmed only by reading the index back
-            HubRules.Reply r = HubRules.get(hubUrl(project, indexPath(id)), cookie);
+            HubData.Reply r = HubData.get(hubUrl(project, indexPath(id)), cookie);
             if (r.status != 200) throw new Stop("offline", "axHub didn’t confirm " + id + " (" + r.status + ").");
             JSONObject back = new JSONObject(r.body);
             if (back.optInt("parts") != parts || back.optLong("bytes") != size || !sha.equals(back.optString("sha256"))) {
@@ -234,7 +233,7 @@ final class OutputRecordUploader {
             }
             OutputRecordQueue.removeLocal(c, id);
             OutputRecordQueue.sessionUploaded(c, m.optString("session"));
-            JSObject e = new JSObject();
+            Js e = new Js();
             e.put("id", id);
             OutputRecordService.emit("uploaded", e);
         } catch (Stop s) {
@@ -247,7 +246,7 @@ final class OutputRecordUploader {
     }
 
     private static void put(String project, String path, String body, String cookie) throws IOException, Stop {
-        HubRules.Reply r = HubRules.put(HubRules.HUB, hubUrl(project, path), body, null, cookie);
+        HubData.Reply r = HubData.put(hubUrl(project, path), body, null, cookie);
         if (r.status == 200) return;
         if (r.status == 401 || r.status == 403 || (r.status >= 300 && r.status < 400)) throw new Stop("signed-out", "axHub refused the upload (" + r.status + "): sign in again, or ask for the data.write permission.");
         String msg = message(r.body);

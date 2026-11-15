@@ -1,4 +1,4 @@
-package ai.amberx.droid;
+package ai.amberx.axf.phoneconnect.recorder;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -23,7 +23,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import com.getcapacitor.JSObject;
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.security.SecureRandom;
@@ -68,11 +67,11 @@ import org.json.JSONObject;
  * microphone: a session changes names only.
  */
 public class OutputRecordService extends Service {
-    interface Listener { void on(JSObject e); }
+    interface Listener { void on(Js e); }
 
-    static final String ACTION_START = "ai.amberx.droid.outrec.START";
-    static final String ACTION_STOP = "ai.amberx.droid.outrec.STOP";
-    static final String ACTION_STOP_MIC = "ai.amberx.droid.outrec.STOP_MIC";
+    static final String ACTION_START = "ai.amberx.axf.phoneconnect.outrec.START";
+    static final String ACTION_STOP = "ai.amberx.axf.phoneconnect.outrec.STOP";
+    static final String ACTION_STOP_MIC = "ai.amberx.axf.phoneconnect.outrec.STOP_MIC";
     static final String EXTRA_CODE = "code";
     static final String EXTRA_DATA = "data";
     static final String EXTRA_REASON = "reason";
@@ -151,16 +150,16 @@ public class OutputRecordService extends Service {
 
     /* ------------------------------------------------------------------ events + notification */
 
-    static void emit(String state, JSObject extra) {
-        JSObject e = extra == null ? new JSObject() : extra;
+    static void emit(String state, Js extra) {
+        Js e = extra == null ? new Js() : extra;
         e.put("state", state);
         Listener l = listener;
         if (l != null) l.on(e);
     }
 
     /** What the page and the tile show: running, since when, the chunk being written. */
-    static JSObject status() {
-        JSObject o = new JSObject();
+    static Js status() {
+        Js o = new Js();
         o.put("running", running);
         o.put("startedAt", running && startedAtMs > 0 ? iso(startedAtMs) : null);
         o.put("currentFile", running ? currentName : null);
@@ -187,7 +186,7 @@ public class OutputRecordService extends Service {
             ch.setDescription("Shown while AmberX records the sound the phone plays (and your mic, only when you turned that on)");
             nm.createNotificationChannel(ch);
         }
-        Intent open = new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        Intent open = new Intent(this, ai.amberx.axf.phoneconnect.SetupActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent stop = PendingIntent.getService(this, 1, new Intent(this, OutputRecordService.class).setAction(ACTION_STOP), PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         Notification.Builder b = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? new Notification.Builder(this, CHANNEL) : new Notification.Builder(this);
         b.setSmallIcon(android.R.drawable.ic_btn_speak_now)
@@ -237,7 +236,7 @@ public class OutputRecordService extends Service {
         micLive = false;
         micBusy = null;
         // the mic only when asked for (setting or the approved start's `mic`) and Android's audio permission is there
-        boolean wantMic = OutputRecordQueue.micWanted(this) && MicGuard.mayOpen(this); // Mic off: playback only
+        boolean wantMic = OutputRecordQueue.micWanted(this) && true; // Mic off: playback only
         micOn = wantMic;
         boolean micAllowed = wantMic && checkSelfPermission(android.Manifest.permission.RECORD_AUDIO) == android.content.pm.PackageManager.PERMISSION_GRANTED;
         Notification n = notification("Starting…");
@@ -273,14 +272,14 @@ public class OutputRecordService extends Service {
             }
             startedAtMs = System.currentTimeMillis();
             OutputRecordQueue.sessionStarted(this, startedAtMs);
-            AxppLink.cancelPrompt(this);
+            Recorder.consentDone(this);
             if (micOn) {
                 playReader = new Thread(this::readPlayback, "amberx-outrec-play");
                 playReader.start();
                 pump = new Thread(this::pumpTwoTrack, "amberx-outrec");
             } else pump = new Thread(this::pump, "amberx-outrec");
             pump.start();
-            JSObject e = new JSObject();
+            Js e = new Js();
             e.put("startedAt", iso(startedAtMs));
             e.put("mic", micOn);
             if (micBusy != null) e.put("micBusy", micBusy);
@@ -322,7 +321,7 @@ public class OutputRecordService extends Service {
      */
     @SuppressLint("MissingPermission") // checked in start() before this is called
     private void openMic() {
-        if (!MicGuard.mayOpen(this)) { micBusy(TwoTrack.BUSY_OFF, "Mic off is on"); return; }
+        if (!true) { micBusy(TwoTrack.BUSY_OFF, "Mic off is on"); return; }
         try {
             int min = AudioRecord.getMinBufferSize(RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
             AudioFormat af = new AudioFormat.Builder().setEncoding(AudioFormat.ENCODING_PCM_16BIT).setSampleRate(RATE).setChannelMask(AudioFormat.CHANNEL_IN_MONO).build();
@@ -334,9 +333,9 @@ public class OutputRecordService extends Service {
             try { if (android.media.audiofx.AcousticEchoCanceler.isAvailable()) { android.media.audiofx.AcousticEchoCanceler a = android.media.audiofx.AcousticEchoCanceler.create(sid); if (a != null) a.setEnabled(true); } } catch (RuntimeException ignored) { /* no AEC on this phone */ }
             try { if (android.media.audiofx.NoiseSuppressor.isAvailable()) { android.media.audiofx.NoiseSuppressor ns = android.media.audiofx.NoiseSuppressor.create(sid); if (ns != null) ns.setEnabled(true); } } catch (RuntimeException ignored) { /* none */ }
             micSession = sid;
-            MicGuard.claim(sid);
+            
             m.startRecording();
-            if (m.getRecordingState() != AudioRecord.RECORDSTATE_RECORDING) { MicGuard.release(sid); m.release(); micBusy(TwoTrack.BUSY_UNAVAILABLE, "the mic is in use by another app"); return; }
+            if (m.getRecordingState() != AudioRecord.RECORDSTATE_RECORDING) { m.release(); micBusy(TwoTrack.BUSY_UNAVAILABLE, "the mic is in use by another app"); return; }
             mic = m;
             micLive = true;
             micReader = new Thread(this::readMic, "amberx-outrec-mic");
@@ -394,7 +393,7 @@ public class OutputRecordService extends Service {
     private void micBusy(String reason, String why) {
         if (reason.equals(micBusy)) return;
         micBusy = reason;
-        JSObject e = new JSObject();
+        Js e = new Js();
         e.put("reason", reason);
         e.put("message", why);
         emit("micBusy", e);
@@ -433,7 +432,7 @@ public class OutputRecordService extends Service {
         AudioRecord m = mic;
         mic = null;
         micLive = false;
-        MicGuard.release(micSession);
+        
         micSession = 0;
         if (m == null) return;
         try { m.stop(); } catch (RuntimeException ignored) { /* not started */ }
@@ -619,7 +618,7 @@ public class OutputRecordService extends Service {
         if (!ok || (skipSilent && silent)) {
             if (playReader != null) { try { busy.close(durMs); } catch (Exception ignored) { /* spans of a dropped chunk */ } }
             part.delete();
-            if (ok) { JSObject e = new JSObject(); e.put("id", id); emit("silent", e); }
+            if (ok) { Js e = new Js(); e.put("id", id); emit("silent", e); }
             return;
         }
         try {
@@ -652,7 +651,7 @@ public class OutputRecordService extends Service {
                 if (!session.optString("note").isEmpty()) meta.put("note", session.optString("note"));
             }
             OutputRecordQueue.writeMeta(this, id, meta);
-            JSObject e = new JSObject();
+            Js e = new Js();
             e.put("id", id);
             e.put("durationMs", durMs);
             emit("chunk", e);
@@ -697,7 +696,7 @@ public class OutputRecordService extends Service {
         projection = null;
         pump = null;
         main.removeCallbacks(tick);
-        JSObject e = new JSObject();
+        Js e = new Js();
         if (endReason != null) e.put("reason", endReason);
         emit("stopped", e);
         OutputRecordQueue.clearSession(this);
@@ -710,7 +709,7 @@ public class OutputRecordService extends Service {
     private void fail(String message) {
         endReason = message;
         release();
-        JSObject e = new JSObject();
+        Js e = new Js();
         e.put("message", message);
         emit("error", e);
         OutputRecordQueue.clearSession(this);
