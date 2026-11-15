@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6170,
- "updatedAt": "2026-11-15T13:03:58.204Z",
+ "rev": 6171,
+ "updatedAt": "2026-11-15T13:04:07.859Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -232906,7 +232906,7 @@
    "title": "Gate & rules plugin in the console",
    "category": "",
    "detail": "There is no Gate & rules screen anywhere (not on main, not on the auto-lander branch). Build a console plugin 'gate' with tabs: Rules (the checks a build must pass before it lands: CI green, tests, theme/controls checks, UI Review on/off, clash handling, etc., each with on/off and settings), Auto-lander (status, last runs, what's waiting and why, land now / pause), and History. Per the final layout: the screens live in the console only; the rules and lander logic run in the axf-molly container; axHub only routes the gate.* and lander.* tools. Until axf-molly exists, read/write through the current orchestrator/lander code. Coordinate with auto-lander-controls-in-the-gate-plugin and move-build-orchestrator-to-axhub. Rows follow the skin's 1-or-2-row grid setting. Full API parity, tests, help, Shipped features. Land when done.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -232914,8 +232914,8 @@
    "pr": "#711",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:25.282Z",
-   "updatedAt": "2026-11-15T13:03:56.791Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-15T13:03:58.446Z",
+   "builtAt": "2026-11-15T13:03:58.446Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -233609,12 +233609,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T13:03:58.446Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T11:57:45.983Z",
-     "updatedAt": "2026-11-15T11:57:45.983Z"
+     "updatedAt": "2026-11-15T13:03:58.687Z"
     }
    ],
    "profiles": [
@@ -233625,7 +233625,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
