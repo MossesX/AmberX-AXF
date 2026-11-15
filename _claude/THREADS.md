@@ -798,10 +798,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 23:54 UTC · `auto-land-merge-main-land-land-mjs-clash` s6 done (all) · orchestrator
-- 2026-11-13 23:55 UTC · `auto-land-merge-main-land-land-mjs-clash` s7 done (all) · orchestrator
-- 2026-11-13 23:56 UTC · `auto-land-merge-main-land-land-mjs-clash` branch claude/auto-land-every-finished-build-lands, PR #660 (all) · builds-live
-- 2026-11-13 23:56 UTC · `auto-land-merge-main-land-land-mjs-clash` s8 done (all) · orchestrator
 - 2026-11-13 23:57 UTC · `auto-land-merge-main-land-land-mjs-clash` s9 done, → built (all) · orchestrator
 - 2026-11-13 23:58 UTC · `auto-land-merge-main-land-land-mjs-clash` note (all) · orchestrator
 - 2026-11-14 23:23 UTC · `auto-land-merge-main-land-land-mjs-clash` → running, note (all) · orchestrator
@@ -1198,6 +1194,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 01:21 UTC · `orchestrator-settings-collapsible-split` s8 done, → built (all) · orchestrator
 - 2026-11-15 01:21 UTC · `launch-landing-page-waitlist-referral` note (all) · orchestrator
 - 2026-11-15 01:22 UTC · `context-menus-plugin-one-true-source` s5 done (all) · orchestrator
+- 2026-11-15 01:21 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-15 01:22 UTC · `prompting-engine-control-panel-events` note (all) · orchestrator
+- 2026-11-15 01:22 UTC · `demo-video-series-three-minute-browser` → running, note (all) · pipeline
+- 2026-11-15 01:22 UTC · `demo-video-series-three-minute-browser` note (all) · orchestrator
 
 ## Token passes (log)
 

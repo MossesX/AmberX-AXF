@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5911,
- "updatedAt": "2026-11-15T01:22:35.975Z",
+ "rev": 5912,
+ "updatedAt": "2026-11-15T01:22:51.135Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -202758,7 +202758,7 @@
    "pr": "#697",
    "priority": "P1",
    "createdAt": "2026-11-13T18:16:04.183Z",
-   "updatedAt": "2026-11-15T01:01:54.364Z",
+   "updatedAt": "2026-11-15T01:22:09.793Z",
    "builtAt": "",
    "notes": [
     {
@@ -202800,6 +202800,10 @@
     {
      "text": "Reconciler: PR #697; PR #697 names s1 done",
      "at": "2026-11-15T01:01:54.364Z"
+    },
+    {
+     "text": "Headless run axf-prompting-engine-control-panel-events--lenny: brief only · start 13.1K tokens ($0.07) · cost $111.70 · 164 turns · 6 tools, MCP none",
+     "at": "2026-11-15T01:22:09.793Z"
     }
    ],
    "approvals": [],
@@ -203061,7 +203065,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -204569,8 +204573,8 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-15T01:21:44.672Z",
-   "builtAt": "2026-11-15T01:21:44.672Z",
+   "updatedAt": "2026-11-15T01:21:59.421Z",
+   "builtAt": "2026-11-15T01:21:59.421Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -204627,6 +204631,10 @@
     {
      "text": "s7: Brett's ask checked: collapsible Split section (Rules tab + Settings → Plugins) holds every split option (provider, largest step, model per step, phases, step format, parallel split auto|ask|off, max slots, contract, integration) and the parallel split runs parts as parallel builds. UI Review shots could not be taken headless: the scratch console (rebuild-shots) can't load its look from axHub from this box, so the review is still owed.",
      "at": "2026-11-15T01:13:55.564Z"
+    },
+    {
+     "text": "Headless run axf-orchestrator-settings-collapsible-split--paulie: brief only · start 11.5K tokens ($0.03) · cost $5.48 · 122 turns · 6 tools, MCP none",
+     "at": "2026-11-15T01:21:59.421Z"
     }
    ],
    "approvals": [
@@ -219160,14 +219168,14 @@
    "title": "Demo video series: three-minute browser walkthroughs of AmberX",
    "category": "Launch",
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T22:46:47.154Z",
+   "updatedAt": "2026-11-15T01:22:19.341Z",
    "builtAt": "",
    "notes": [
     {
@@ -219269,6 +219277,14 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-14T12:40:56.408Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Opus, Phase 1): axf-demo-video-series-three-minute-browser--sully.",
+     "at": "2026-11-15T01:22:16.353Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-demo-video-series-three-minute-browser--sully, shared account login)",
+     "at": "2026-11-15T01:22:19.341Z"
     }
    ],
    "approvals": [],
@@ -219288,12 +219304,12 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-demo-video-series-three-minute-browser--sully",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-14T04:03:16.135Z",
-    "runs": 1,
+    "launchedAt": "2026-11-15T01:22:15.704Z",
+    "runs": 2,
     "lastRun": {
      "at": "2026-11-14T04:09:08.606Z",
      "exit": 0,
@@ -219304,9 +219320,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-14T04:03:16.135Z",
+    "dispatchedAt": "2026-11-15T01:22:15.704Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -219315,7 +219331,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-14T04:03:16.135Z",
+    "pickedAt": "2026-11-15T01:22:15.704Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -219858,7 +219874,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 55,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": {
