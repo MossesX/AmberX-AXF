@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5926,
- "updatedAt": "2026-11-15T01:27:19.791Z",
+ "rev": 5927,
+ "updatedAt": "2026-11-15T01:27:35.015Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212764,7 +212764,7 @@
    "pr": "#659",
    "priority": "P1",
    "createdAt": "2026-11-13T20:14:18.034Z",
-   "updatedAt": "2026-11-15T01:26:56.489Z",
+   "updatedAt": "2026-11-15T01:27:06.155Z",
    "builtAt": "2026-11-15T01:26:56.489Z",
    "notes": [
     {
@@ -212810,6 +212810,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-context-menus-plugin-one-true-source--lenny, shared account login)",
      "at": "2026-11-15T01:08:23.017Z"
+    },
+    {
+     "text": "Phase 2 done. Still owed: desktop and phone UI Review shots. rebuild-shots needs the playwright npm package, which isn't installed in the VPS checkout (only the Chromium builds in ~/.cache/ms-playwright are there).",
+     "at": "2026-11-15T01:27:06.155Z"
     }
    ],
    "approvals": [
@@ -213065,7 +213069,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
