@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T22:55:43.951Z",
+ "updatedAt": "2026-11-16T22:55:56.606Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -163669,7 +163669,7 @@
    "title": "Own look per grid and tab group",
    "category": "",
    "detail": "Fresh build on current main replacing the archived own-token-sets-for-grids-and-tab-groups (2,196 behind). Every grid and tab group can get its own look separate from the app's skin: row colour, text size, spacing, borders, radius, hover and selected colours. Set per instance from its right-click Settings, with Reset to skin. Old branch for intent only, don't merge it. Tokens through the asset engines, console-control addresses, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -163677,7 +163677,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:23.121Z",
-   "updatedAt": "2026-11-16T22:49:48.091Z",
+   "updatedAt": "2026-11-16T22:55:46.656Z",
    "builtAt": "",
    "notes": [
     {
@@ -163695,6 +163695,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-own-look-per-grid-and-tab-group--sully.",
      "at": "2026-11-16T22:49:42.979Z"
+    },
+    {
+     "text": "Dispatch gate: own-look-per-grid-and-tab-group still has axf-own-look-per-grid-and-tab-group--sully alive: not launched again, tracking that session.",
+     "at": "2026-11-16T22:55:46.656Z"
     }
    ],
    "approvals": [],

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6955,
- "updatedAt": "2026-11-16T22:55:43.951Z",
+ "rev": 6956,
+ "updatedAt": "2026-11-16T22:55:56.606Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -250744,7 +250744,7 @@
    "title": "Own look per grid and tab group",
    "category": "",
    "detail": "Fresh build on current main replacing the archived own-token-sets-for-grids-and-tab-groups (2,196 behind). Every grid and tab group can get its own look separate from the app's skin: row colour, text size, spacing, borders, radius, hover and selected colours. Set per instance from its right-click Settings, with Reset to skin. Old branch for intent only, don't merge it. Tokens through the asset engines, console-control addresses, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -250752,7 +250752,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:23.121Z",
-   "updatedAt": "2026-11-16T22:49:48.091Z",
+   "updatedAt": "2026-11-16T22:55:46.656Z",
    "builtAt": "",
    "notes": [
     {
@@ -250770,6 +250770,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-own-look-per-grid-and-tab-group--sully.",
      "at": "2026-11-16T22:49:42.979Z"
+    },
+    {
+     "text": "Dispatch gate: own-look-per-grid-and-tab-group still has axf-own-look-per-grid-and-tab-group--sully alive: not launched again, tracking that session.",
+     "at": "2026-11-16T22:55:46.656Z"
     }
    ],
    "approvals": [],
@@ -250790,7 +250794,7 @@
     "queuedAt": "2026-11-16T22:44:25.286Z",
     "queuedBy": "console",
     "account": "",
-    "session": "",
+    "session": "axf-own-look-per-grid-and-tab-group--sully",
     "slot": "",
     "model": "",
     "phase": "",
@@ -251241,7 +251245,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -251310,7 +251314,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-16T22:55:44.030Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -251804,7 +251814,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -252456,7 +252466,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-16T22:55:44.030Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -253323,7 +253339,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -253392,7 +253408,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-16T22:55:44.030Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -254242,7 +254264,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
