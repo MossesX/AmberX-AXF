@@ -557,8 +557,8 @@
     "src/axf/core/engines/brandgen.mjs": "54432263bf2cb0e8",
     "src/axf/core/engines/card-rules.d.mts": "7785a8c1eaf95fa7",
     "src/axf/core/engines/card-rules.mjs": "47b0cf42426b8b61",
-    "src/axf/core/engines/chrome-settings-rules.d.mts": "1382c7f5568daf9c",
-    "src/axf/core/engines/chrome-settings-rules.mjs": "e1bb299cc8b2531e",
+    "src/axf/core/engines/chrome-settings-rules.d.mts": "4383c7d9d1c8bcfb",
+    "src/axf/core/engines/chrome-settings-rules.mjs": "c8b7c2bf7760dcf8",
     "src/axf/core/engines/chrome.ts": "ba8e2707fdaeaeb7",
     "src/axf/core/engines/components.ts": "2482ee77f08dc47d",
     "src/axf/core/engines/console-commands.d.mts": "e93db997c7351360",
@@ -646,7 +646,7 @@
     "src/axf/core/rules-brief.mjs": "08110b73aa902026",
     "src/axf/core/runtime.ts": "39a95eb64413b309",
     "src/axf/core/session-schema.mjs": "1f8a8e1e3cd76d04",
-    "src/axf/core/settings.ts": "b53d99068b7a9b42",
+    "src/axf/core/settings.ts": "d137bd4f6951fd45",
     "src/axf/core/shipped-manifest.d.mts": "74953e3d3940936f",
     "src/axf/core/shipped-manifest.mjs": "64607346406d57c5",
     "src/axf/core/sse.ts": "08f145e37866aba1",
@@ -760,7 +760,7 @@
     "src/axf/react/components/Brand.tsx": "6a760e003265bf1f",
     "src/axf/react/components/BuildOrigin.tsx": "3bb7209320577a40",
     "src/axf/react/components/Chrome.tsx": "2cc7a930d2453b7b",
-    "src/axf/react/components/ChromeContext.tsx": "86d0d05273cfa840",
+    "src/axf/react/components/ChromeContext.tsx": "161628ea8a010466",
     "src/axf/react/components/Controls.tsx": "e4ca2bef33361544",
     "src/axf/react/components/DataCard.tsx": "b927c7d4d6517664",
     "src/axf/react/components/Forms.tsx": "e26fe52e23777ae7",
@@ -920,7 +920,7 @@
     "src/axf/schemas/ui-review.json": "0a34b5e29eb76cca",
     "src/axf/ui/axf.css": "f0805759380d32da",
     "src/axf/react/components/HubSkinLock.tsx": "cdfc5684a7fefc5d",
-    "src/axf/core/engines/console-control-voice.mjs": "ec82dc9d99dfd31d",
+    "src/axf/core/engines/console-control-voice.mjs": "438f619f7335f913",
     "src/axf/core/engines/console-control-voice.d.mts": "e91a57d59285d3a3"
   }
 }
