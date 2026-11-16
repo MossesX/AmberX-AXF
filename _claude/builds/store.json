@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6523,
- "updatedAt": "2026-11-16T16:35:27.994Z",
+ "rev": 6524,
+ "updatedAt": "2026-11-16T16:35:47.918Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -242151,7 +242151,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:34.116Z",
-   "updatedAt": "2026-11-16T16:33:30.133Z",
+   "updatedAt": "2026-11-16T16:35:14.487Z",
    "builtAt": "",
    "notes": [
     {
@@ -242188,12 +242188,12 @@
    "pipeline": {
     "queuedAt": "2026-11-16T16:29:36.208Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-re-sync-stuck-branches-lander-can-push--earl",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-16T16:33:19.335Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T16:32:36.505Z",
@@ -242205,7 +242205,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-16T16:33:19.335Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -242214,7 +242214,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-16T16:33:19.335Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -242237,12 +242237,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T16:35:14.487Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T16:32:36.505Z",
-     "updatedAt": "2026-11-16T16:32:36.505Z"
+     "updatedAt": "2026-11-16T16:35:14.921Z"
     },
     {
      "id": "s2",
