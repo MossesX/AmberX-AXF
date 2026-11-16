@@ -346,5 +346,5 @@
     "builtAt": "2026-11-14"
   },
   "help": "help.json",
-  "opens": "main"
+  "opens": false
 }

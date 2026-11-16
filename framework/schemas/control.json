@@ -3123,6 +3123,25 @@
       },
       "doc": "console-control@1 (spec/CONSOLE-CONTROL.md): one address for every screen, tab, setting, button, function, plugin, grid row and build step (\"view:settings/tab:settings.tabs=plugins\", \"row:<build>/step:s3\", \"plugin:<id>\"). path = the address (full or short); list = every target under it, get = its state (no path: where the console is), act <verb> runs it (open, focus, press, set, scroll, search, state, plugin.enable, plugin.disable). A plan's links[] entry or any item may carry { address } to point here. Same guards as /api/console-control: deciding presses refused, destructive ones need input.confirm. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
     },
+    "tokens.instances": {
+      "domain": "tokens",
+      "label": "Per-instance component tokens",
+      "ops": [
+        "list",
+        "get",
+        "set",
+        "reset",
+        "act"
+      ],
+      "paths": "pattern",
+      "pathShape": "<grid|tabs>.<instance>[.<token>]",
+      "value": "field",
+      "acts": {
+        "restore-previous": {},
+        "restore-hub": {}
+      },
+      "doc": "component-tokens@1: the grid / tab-group tokens one instance overrides (a tab row by its TabGroup id, a grid by its DataGrid id): set <family>.<instance>.<token> value; reset <family>.<instance>[.<token>]; act <family>.<instance> restore-previous (back to the values before the last edit) | restore-hub (drop every override so the instance follows the shared axHub look). Stored in the one setting axf.tokens.instances, shared through the axHub look."
+    },
     "tokens.controls": {
       "domain": "tokens",
       "label": "Themed control tokens",
@@ -8493,25 +8512,6 @@
       ],
       "value": "field",
       "doc": "themed-controls@1 (core/engines/themed-controls-rules.mjs, spec/THEMED-CONTROLS.md): the token families behind the browser controls the Themed controls plugin replaces: checkbox, radio, range, number, date / time, colour, dialogs, file, tooltip, scrollbar. path = <family>.<field> (a size, radius or timing) or <family>.<state>.<prop> (one colour of one state: rest, hover, focus, active, checked, disabled, invalid). Colours are colour-theme token ids, a light|dark pair of them, or theme. Which families are themed is a setting (axf.themedControls.on, axf.themedControls.<family>), not a token."
-    },
-    "tokens.instances": {
-      "domain": "tokens",
-      "label": "Per-instance component tokens",
-      "ops": [
-        "list",
-        "get",
-        "set",
-        "reset",
-        "act"
-      ],
-      "paths": "pattern",
-      "pathShape": "<grid|tabs>.<instance>[.<token>]",
-      "value": "field",
-      "acts": {
-        "restore-previous": {},
-        "restore-hub": {}
-      },
-      "doc": "component-tokens@1: the grid / tab-group tokens one instance overrides (a tab row by its TabGroup id, a grid by its DataGrid id): set <family>.<instance>.<token> value; reset <family>.<instance>[.<token>]; act <family>.<instance> restore-previous (back to the values before the last edit) | restore-hub (drop every override so the instance follows the shared axHub look). Stored in the one setting axf.tokens.instances, shared through the axHub look."
     }
   },
   "aliases": {
@@ -8597,6 +8597,7 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
+              "tokens.instances",
               "tokens.controls"
             ],
             "description": "what to control"
@@ -8653,6 +8654,7 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
+              "tokens.instances",
               "tokens.controls"
             ],
             "description": "what to control"
@@ -8710,6 +8712,7 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
+              "tokens.instances",
               "tokens.controls"
             ],
             "description": "what to control"
@@ -8774,6 +8777,7 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
+              "tokens.instances",
               "tokens.controls"
             ],
             "description": "what to control"
@@ -8838,6 +8842,7 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
+              "tokens.instances",
               "tokens.controls"
             ],
             "description": "what to control"
@@ -8902,6 +8907,7 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
+              "tokens.instances",
               "tokens.controls"
             ],
             "description": "what to control"
@@ -8970,449 +8976,8 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
+              "tokens.instances",
               "tokens.controls"
-            ],
-            "description": "what to control"
-          },
-          "path": {
-            "type": "string"
-          },
-          "action": {
-            "type": "string"
-          },
-          "input": {
-            "type": "object"
-          },
-          "by": {
-            "type": "string",
-            "description": "who asks (audited)"
-          },
-          "reason": {
-            "type": "string",
-            "description": "why (audited)"
-          }
-        },
-        "additionalProperties": false
-      },
-      "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false,
-        "idempotentHint": false,
-        "openWorldHint": false
-      },
-      "effect": "write"
-    },
-    {
-      "name": "control_list",
-      "title": "Control: list",
-      "description": "List the tokens or records of a target (filters in select).",
-      "inputSchema": {
-        "type": "object",
-        "required": [
-          "target"
-        ],
-        "properties": {
-          "target": {
-            "type": "string",
-            "enum": [
-              "tokens.theme",
-              "tokens.style",
-              "tokens.layout",
-              "tokens.typography",
-              "tokens.density",
-              "tokens.sizing",
-              "tokens.look",
-              "tokens.custom",
-              "tokens.slots",
-              "amberx.items",
-              "amberx.lists",
-              "planner.plans",
-              "planner.builds",
-              "console.screens",
-              "console.dialogs",
-              "console.settings",
-              "console.actions",
-              "console.nav",
-              "console.clients",
-              "pass.scopes",
-              "plugins.commands",
-              "plugins.reads",
-              "tokens.nav",
-              "console.control",
-              "tokens.instances"
-            ],
-            "description": "what to control"
-          },
-          "select": {
-            "type": "object"
-          }
-        },
-        "additionalProperties": false
-      },
-      "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false
-      },
-      "effect": "read"
-    },
-    {
-      "name": "control_get",
-      "title": "Control: get",
-      "description": "One token value or one record.",
-      "inputSchema": {
-        "type": "object",
-        "required": [
-          "target",
-          "path"
-        ],
-        "properties": {
-          "target": {
-            "type": "string",
-            "enum": [
-              "tokens.theme",
-              "tokens.style",
-              "tokens.layout",
-              "tokens.typography",
-              "tokens.density",
-              "tokens.sizing",
-              "tokens.look",
-              "tokens.custom",
-              "tokens.slots",
-              "amberx.items",
-              "amberx.lists",
-              "planner.plans",
-              "planner.builds",
-              "console.screens",
-              "console.dialogs",
-              "console.settings",
-              "console.actions",
-              "console.nav",
-              "console.clients",
-              "pass.scopes",
-              "plugins.commands",
-              "plugins.reads",
-              "tokens.nav",
-              "console.control",
-              "tokens.instances"
-            ],
-            "description": "what to control"
-          },
-          "path": {
-            "type": "string"
-          }
-        },
-        "additionalProperties": false
-      },
-      "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false
-      },
-      "effect": "read"
-    },
-    {
-      "name": "control_set",
-      "title": "Control: set",
-      "description": "Set a token (an override on the theme) or change a record's fields.",
-      "inputSchema": {
-        "type": "object",
-        "required": [
-          "target",
-          "path",
-          "value"
-        ],
-        "properties": {
-          "target": {
-            "type": "string",
-            "enum": [
-              "tokens.theme",
-              "tokens.style",
-              "tokens.layout",
-              "tokens.typography",
-              "tokens.density",
-              "tokens.sizing",
-              "tokens.look",
-              "tokens.custom",
-              "tokens.slots",
-              "amberx.items",
-              "amberx.lists",
-              "planner.plans",
-              "planner.builds",
-              "console.screens",
-              "console.dialogs",
-              "console.settings",
-              "console.actions",
-              "console.nav",
-              "console.clients",
-              "pass.scopes",
-              "plugins.commands",
-              "plugins.reads",
-              "tokens.nav",
-              "console.control",
-              "tokens.instances"
-            ],
-            "description": "what to control"
-          },
-          "path": {
-            "type": "string"
-          },
-          "value": {},
-          "by": {
-            "type": "string",
-            "description": "who asks (audited)"
-          },
-          "reason": {
-            "type": "string",
-            "description": "why (audited)"
-          }
-        },
-        "additionalProperties": false
-      },
-      "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false
-      },
-      "effect": "write"
-    },
-    {
-      "name": "control_reset",
-      "title": "Control: reset",
-      "description": "Drop a token override (or every override of the target when path is left out).",
-      "inputSchema": {
-        "type": "object",
-        "required": [
-          "target"
-        ],
-        "properties": {
-          "target": {
-            "type": "string",
-            "enum": [
-              "tokens.theme",
-              "tokens.style",
-              "tokens.layout",
-              "tokens.typography",
-              "tokens.density",
-              "tokens.sizing",
-              "tokens.look",
-              "tokens.custom",
-              "tokens.slots",
-              "amberx.items",
-              "amberx.lists",
-              "planner.plans",
-              "planner.builds",
-              "console.screens",
-              "console.dialogs",
-              "console.settings",
-              "console.actions",
-              "console.nav",
-              "console.clients",
-              "pass.scopes",
-              "plugins.commands",
-              "plugins.reads",
-              "tokens.nav",
-              "console.control",
-              "tokens.instances"
-            ],
-            "description": "what to control"
-          },
-          "path": {
-            "type": "string"
-          },
-          "by": {
-            "type": "string",
-            "description": "who asks (audited)"
-          },
-          "reason": {
-            "type": "string",
-            "description": "why (audited)"
-          }
-        },
-        "additionalProperties": false
-      },
-      "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false
-      },
-      "effect": "write"
-    },
-    {
-      "name": "control_add",
-      "title": "Control: add",
-      "description": "Add a record (a note, a list, a plan, a build).",
-      "inputSchema": {
-        "type": "object",
-        "required": [
-          "target",
-          "value"
-        ],
-        "properties": {
-          "target": {
-            "type": "string",
-            "enum": [
-              "tokens.theme",
-              "tokens.style",
-              "tokens.layout",
-              "tokens.typography",
-              "tokens.density",
-              "tokens.sizing",
-              "tokens.look",
-              "tokens.custom",
-              "tokens.slots",
-              "amberx.items",
-              "amberx.lists",
-              "planner.plans",
-              "planner.builds",
-              "console.screens",
-              "console.dialogs",
-              "console.settings",
-              "console.actions",
-              "console.nav",
-              "console.clients",
-              "pass.scopes",
-              "plugins.commands",
-              "plugins.reads",
-              "tokens.nav",
-              "console.control",
-              "tokens.instances"
-            ],
-            "description": "what to control"
-          },
-          "value": {
-            "type": "object"
-          },
-          "by": {
-            "type": "string",
-            "description": "who asks (audited)"
-          },
-          "reason": {
-            "type": "string",
-            "description": "why (audited)"
-          }
-        },
-        "additionalProperties": false
-      },
-      "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false,
-        "idempotentHint": false,
-        "openWorldHint": false
-      },
-      "effect": "write"
-    },
-    {
-      "name": "control_remove",
-      "title": "Control: remove",
-      "description": "Delete a record. Needs a confirm token: the first call answers confirmation_required with one, send it back within 10 minutes.",
-      "inputSchema": {
-        "type": "object",
-        "required": [
-          "target",
-          "path"
-        ],
-        "properties": {
-          "target": {
-            "type": "string",
-            "enum": [
-              "tokens.theme",
-              "tokens.style",
-              "tokens.layout",
-              "tokens.typography",
-              "tokens.density",
-              "tokens.sizing",
-              "tokens.look",
-              "tokens.custom",
-              "tokens.slots",
-              "amberx.items",
-              "amberx.lists",
-              "planner.plans",
-              "planner.builds",
-              "console.screens",
-              "console.dialogs",
-              "console.settings",
-              "console.actions",
-              "console.nav",
-              "console.clients",
-              "pass.scopes",
-              "plugins.commands",
-              "plugins.reads",
-              "tokens.nav",
-              "console.control",
-              "tokens.instances"
-            ],
-            "description": "what to control"
-          },
-          "path": {
-            "type": "string"
-          },
-          "confirm": {
-            "type": "string"
-          },
-          "by": {
-            "type": "string",
-            "description": "who asks (audited)"
-          },
-          "reason": {
-            "type": "string",
-            "description": "why (audited)"
-          }
-        },
-        "additionalProperties": false
-      },
-      "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": true,
-        "idempotentHint": true,
-        "openWorldHint": false
-      },
-      "effect": "destructive"
-    },
-    {
-      "name": "control_act",
-      "title": "Control: act",
-      "description": "Run a verb on a record (done, move, approve, step, …; control_list on the target shows them).",
-      "inputSchema": {
-        "type": "object",
-        "required": [
-          "target",
-          "path",
-          "action"
-        ],
-        "properties": {
-          "target": {
-            "type": "string",
-            "enum": [
-              "tokens.theme",
-              "tokens.style",
-              "tokens.layout",
-              "tokens.typography",
-              "tokens.density",
-              "tokens.sizing",
-              "tokens.look",
-              "tokens.custom",
-              "tokens.slots",
-              "amberx.items",
-              "amberx.lists",
-              "planner.plans",
-              "planner.builds",
-              "console.screens",
-              "console.dialogs",
-              "console.settings",
-              "console.actions",
-              "console.nav",
-              "console.clients",
-              "pass.scopes",
-              "plugins.commands",
-              "plugins.reads",
-              "tokens.nav",
-              "console.control",
-              "tokens.instances"
             ],
             "description": "what to control"
           },
@@ -9545,8 +9110,8 @@
       "plugins.reads",
       "tokens.nav",
       "console.control",
-      "tokens.controls",
-      "tokens.instances"
+      "tokens.instances",
+      "tokens.controls"
     ]
   },
   "schema": {
@@ -9599,8 +9164,8 @@
           "plugins.reads",
           "tokens.nav",
           "console.control",
-          "tokens.controls",
-          "tokens.instances"
+          "tokens.instances",
+          "tokens.controls"
         ]
       },
       "path": {
@@ -10868,6 +10433,21 @@
         },
         "paths": "host"
       },
+      "tokens.instances": {
+        "description": "component-tokens@1: the grid / tab-group tokens one instance overrides (a tab row by its TabGroup id, a grid by its DataGrid id): set <family>.<instance>.<token> value; reset <family>.<instance>[.<token>]; act <family>.<instance> restore-previous (back to the values before the last edit) | restore-hub (drop every override so the instance follows the shared axHub look). Stored in the one setting axf.tokens.instances, shared through the axHub look.",
+        "ops": [
+          "list",
+          "get",
+          "set",
+          "reset",
+          "act"
+        ],
+        "acts": {
+          "restore-previous": {},
+          "restore-hub": {}
+        },
+        "paths": "pattern"
+      },
       "tokens.controls": {
         "description": "themed-controls@1 (core/engines/themed-controls-rules.mjs, spec/THEMED-CONTROLS.md): the token families behind the browser controls the Themed controls plugin replaces: checkbox, radio, range, number, date / time, colour, dialogs, file, tooltip, scrollbar. path = <family>.<field> (a size, radius or timing) or <family>.<state>.<prop> (one colour of one state: rest, hover, focus, active, checked, disabled, invalid). Colours are colour-theme token ids, a light|dark pair of them, or theme. Which families are themed is a setting (axf.themedControls.on, axf.themedControls.<family>), not a token.",
         "ops": [
@@ -11125,21 +10705,6 @@
           "scrollbar.thumbHover.bg",
           "scrollbar.thumbActive.bg"
         ]
-      },
-      "tokens.instances": {
-        "description": "component-tokens@1: the grid / tab-group tokens one instance overrides (a tab row by its TabGroup id, a grid by its DataGrid id): set <family>.<instance>.<token> value; reset <family>.<instance>[.<token>]; act <family>.<instance> restore-previous (back to the values before the last edit) | restore-hub (drop every override so the instance follows the shared axHub look). Stored in the one setting axf.tokens.instances, shared through the axHub look.",
-        "ops": [
-          "list",
-          "get",
-          "set",
-          "reset",
-          "act"
-        ],
-        "acts": {
-          "restore-previous": {},
-          "restore-hub": {}
-        },
-        "paths": "pattern"
       }
     }
   }
