@@ -380,6 +380,28 @@ export function endOutcome(b, { exit, account = '', session = '', now = new Date
   return { outcome: r.outcome, status, reason: r.reason, run, crashes: r.crashes, keepQueue: r.keepQueue, patch, note };
 }
 
+/**
+ * A Pending build parked by the old exit rule: its last run ended clean (exit 0, outcome returned, no reason or
+ * 'stopped') with steps left, yet the phase it ran is done (or the next open step is on another model), and the next
+ * phase needs nobody (no upgrade waiting for approval). Returns { id, phase, next, why } or null. requeue-stuck moves it
+ * back to the Queue; needs-brett and upgrade-blocked builds are left where they are.
+ */
+export function stuckAfterPhase(b) {
+  if (!b || b.status !== 'pending' || b.deleted || b.hidden) return null;
+  const p = b.pipeline ?? {}; const lr = p.lastRun;
+  if (!lr || lr.outcome !== 'returned' || lr.exit !== 0 || (lr.reason && lr.reason !== 'stopped')) return null;
+  const steps = list(b.steps);
+  if (!openSteps({ steps }).length) return null;
+  const rec = { ...b, steps, pipeline: { ...p, phase: lr.phase || p.phase || '' } };
+  const ps = orchPhases(rec);
+  const launched = launchedPhase(rec, ps);
+  const modelSwitch = !!p.model && nextModel(rec) !== p.model;
+  if (!launched?.done && !modelSwitch) return null;
+  if (orchNextUp(rec).needsApproval) return null;
+  const phase = launched?.name || lr.phase || p.phase || '';
+  return { id: b.id, phase, next: nextModel(rec), why: `${phase ? `phase ${phase}` : 'its phase'} finished on ${lr.at ? lr.at.slice(0, 16).replace('T', ' ') : '?'} with ${openSteps(rec).length} step(s) left and nothing needing Brett` };
+}
+
 // ------------------------------------------------------------------ split
 
 /** The one-shot prompt the orchestrator sends to Claude to split a build. The answer must be JSON only. */

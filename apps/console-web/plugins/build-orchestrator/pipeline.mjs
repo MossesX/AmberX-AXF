@@ -16,6 +16,8 @@
  *   … split <id> [--request] [--provider claude|rules]   split a build now (or ask the next tick to)
  *   … intake [--json]              split every build with no steps (and every split the console asked for); auto-queue when the Claude setting says so
  *   … tick [--json]                one dispatcher round: intake, session ends, launches, idle alert, state file
+ *   … requeue-stuck [--apply]       Pending builds whose last run ended phase-done with steps left (parked by the old rule):
+ *                                  list them (dry run), --apply moves them back to the Queue, journalled
  *   … exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p]   a session ended (claude-headless.sh
  *                                  calls it): end the run now and, when it is back in the Queue, run one tick in-process so the
  *                                  next phase starts at once. Under the dispatcher's lock (flock AXF_PIPELINE_LOCK, default
@@ -257,6 +259,31 @@ export function queue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
   logLine({ event: 'queued', build: b.id, by });
   return r;
 }
+/**
+ * Repair builds the old exit rule parked: every Pending build whose last run ended phase-done with steps left
+ * (pipeline-core stuckAfterPhase()) goes back to the Queue, keeping its place (queuedAt) when it had one, with a
+ * journalled note. Dry run unless apply. Returns { apply, found: [{ id, phase, next, why }], moved: [ids] }.
+ * The same function behind the CLI (requeue-stuck), REST, MCP and voice, and builds-reconcile.mjs --apply.
+ */
+export function requeueStuck({ apply = false, by = process.env.AXF_ACTOR || 'cli' } = {}) {
+  const found = live(loadStore()).map((b) => P.stuckAfterPhase(b)).filter(Boolean);
+  const moved = [];
+  if (apply) {
+    for (const f of found) {
+      const b = storeCore.findBuild(loadStore(), f.id);
+      if (!P.stuckAfterPhase(b)) continue; // changed meanwhile
+      const lr = b.pipeline?.lastRun ?? {};
+      const note = `phase ${f.phase || '?'} done, requeued for ${f.next || '?'}: back in the Queue (requeue-stuck by ${by}; ${f.why}).`;
+      setPipeline(b.id, { queuedAt: b.pipeline?.queuedAt || nowIso(), queuedBy: b.pipeline?.queuedBy || str(by, 80), note: `requeued after ${f.phase ? `phase ${f.phase}` : 'its phase'}: next phase ${f.next || '?'} waits for a slot and an account`, lastRun: { ...lr, outcome: 'requeued', reason: 'phase-done' } },
+        { status: 'queued', note, by, action: 'pipeline:requeue-stuck' });
+      logLine({ event: 'requeued-stuck', build: b.id, phase: f.phase, next: f.next, by });
+      moved.push(b.id);
+    }
+    if (moved.length) crewSay('dispatcher', 'done', `Moved ${moved.length} build(s) parked in Pending after a finished phase back to the Queue: ${moved.join(', ')}.`);
+  }
+  return { apply, found, moved };
+}
+
 export function unqueue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
   const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
   if (!BP.canUnqueue(b)) throw Object.assign(new Error(`${b.id} is ${b.status}: only a queued build goes back to Pending`), { code: 2 });
@@ -944,6 +971,10 @@ async function main(argv) {
   if (cmd === 'show') { const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 }); const r = row(b); return out({ ok: true, build: r }, `${r.id} ${r.status} ${r.steps.done}/${r.steps.total}${r.pipeline?.account ? ` on ${r.pipeline.account}` : ''}`); }
   if (cmd === 'route') { const b = setRoute(rest[0], rest[1], { by }); return out({ ok: true, id: b.id, route: b.pipeline?.route || 'auto' }, `${b.id}: route ${b.pipeline?.route || 'auto'}`); }
   if (cmd === 'intake') { const r = intake(); return out({ ok: true, ...r }, [`split: ${r.split.map((x) => `${x.id} (${x.provider}, ${x.steps})`).join(', ') || 'nothing'}`, `queued: ${r.queued.join(', ') || 'nothing'}`, ...r.skipped.map((x) => `skipped ${x.id}: ${x.error}`)].join('\n')); }
+  if (cmd === 'requeue-stuck') {
+    const r = requeueStuck({ apply: has('apply'), by });
+    return out({ ok: true, ...r }, r.found.length ? [...r.found.map((f) => `${r.apply ? (r.moved.includes(f.id) ? 'requeued' : 'left') : 'would requeue'} ${f.id}: ${f.why}, next ${f.next || '?'}`), r.apply ? '' : '(dry run: --apply moves them)'].filter(Boolean).join('\n') : 'no Pending build is parked after a finished phase');
+  }
   if (cmd === 'exit') {
     // the dispatcher's lock first: re-exec under flock (the cron tick's lock) unless already inside it or no flock here
     const lock = pipelineLock();
@@ -994,7 +1025,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p] | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | requeue-stuck [--apply] | exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p] | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
