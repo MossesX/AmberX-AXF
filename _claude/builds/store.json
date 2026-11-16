@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6827,
- "updatedAt": "2026-11-16T20:05:37.522Z",
+ "rev": 6828,
+ "updatedAt": "2026-11-16T20:06:09.459Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -247351,7 +247351,7 @@
    "pr": "#732",
    "priority": "P1",
    "createdAt": "2026-11-16T19:23:12.681Z",
-   "updatedAt": "2026-11-16T20:05:18.807Z",
+   "updatedAt": "2026-11-16T20:06:07.446Z",
    "builtAt": "2026-11-16T20:03:57.558Z",
    "notes": [
     {
@@ -247377,6 +247377,10 @@
     {
      "text": "Session axf-every-settings-interface-gets--paulie on mossesx-max- ended (exit 0); the build was already complete.",
      "at": "2026-11-16T20:05:07.385Z"
+    },
+    {
+     "text": "Session axf-every-settings-interface-gets--paulie on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-16T20:06:07.446Z"
     }
    ],
    "approvals": [],
@@ -247397,12 +247401,19 @@
     "queuedAt": "2026-11-16T19:23:15.921Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-every-settings-interface-gets--paulie",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-16T19:46:04.279Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-16T20:06:06.733Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-every-settings-interface-gets--paulie"
+    },
     "split": {
      "at": "2026-11-16T19:25:58.523Z",
      "by": "orchestrator",
@@ -247506,7 +247517,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
