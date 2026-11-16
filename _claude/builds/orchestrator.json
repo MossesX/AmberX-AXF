@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T17:10:50.558Z",
+ "updatedAt": "2026-11-16T17:11:07.005Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -99697,7 +99697,7 @@
    "title": "Inline edit plugin: install in console, Molly and AmberX web (not Android); Molly never renders a plugin twice",
    "category": "",
    "detail": "Amends the inline element editing build. 1) Install the plugin in the console, Molly and AmberX web. Not the AmberX Android app. 2) Molly rule for every plugin: when a console page is open inside Molly, render the console's plugin only if Molly doesn't already have that plugin, so nothing ever renders twice.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -99705,7 +99705,7 @@
    "pr": "#471",
    "priority": "P1",
    "createdAt": "2026-11-10T16:40:38.588Z",
-   "updatedAt": "2026-11-16T16:43:52.424Z",
+   "updatedAt": "2026-11-16T17:10:54.799Z",
    "builtAt": "",
    "notes": [
     {
@@ -99743,6 +99743,10 @@
     {
      "text": "Note from build remove-old-molly-app-project-keep-axf (Nov 16 2026): the Molly app is removed (apps/molly, molly.amberxai.com, the molly agent add-on; the guide is now gizmo-guide). Drop the Molly part of this build; the rest stands.",
      "at": "2026-11-16T16:43:52.424Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-16T17:10:54.799Z"
     }
    ],
    "approvals": [],
@@ -120449,7 +120453,7 @@
    "title": "Remove Molly completely: delete the molly add-on bundle from agent-manager, the _offer_molly auto-install on start, the molly-guide plugin and anything that pops Molly up on load",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -120457,7 +120461,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T07:10:15.600Z",
-   "updatedAt": "2026-11-16T16:45:27.038Z",
+   "updatedAt": "2026-11-16T17:10:54.799Z",
    "builtAt": "",
    "notes": [
     {
@@ -120487,6 +120491,10 @@
     {
      "text": "Built together with remove-old-molly-app-project-keep-axf (branch claude/remove-old-molly-app-project-keep-axf): the molly add-on and _offer_molly are gone (an installed copy is retired once on start), the guide moved to gizmo-guide (AmberX uses it, so it is renamed rather than deleted), nothing opens on load. Report _claude/builds/reports/remove-old-molly-app-project-keep-axf.md.",
      "at": "2026-11-16T16:45:21.878Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-16T17:10:54.799Z"
     }
    ],
    "approvals": [],
@@ -141986,7 +141994,7 @@
    "title": "Hotfix: toolbar settings still change nothing (live console)",
    "category": "hotfix",
    "detail": "Brett (Nov 14): 'the toolbar settings still don't work. When I click the toolbar and go to its settings, the settings don't change anything.' Earlier builds touched this (fix-toolbar-settings-doing-nothing, chrome-settings-actually-apply-toolbars, per-toolbar-settings PR #650, per-instance picker #642/#622) but it's still broken on the live console. Reproduce on the LIVE console first (open a toolbar's settings, change each setting, confirm whether the stored value changes and whether the toolbar re-renders). Find which of those PRs never landed vs. what's genuinely broken, land or fix, and verify on the live console after redeploy.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -141994,8 +142002,8 @@
    "pr": "#673",
    "mergedAt": "2026-11-14T17:36:16Z",
    "createdAt": "2026-11-14T16:51:14.645Z",
-   "updatedAt": "2026-11-16T17:07:07.828Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T17:10:54.799Z",
+   "builtAt": "2026-11-16T17:10:54.799Z",
    "notes": [
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-hotfix-toolbar-settings-still-change--lenny, own login copy)",
@@ -142048,6 +142056,10 @@
     {
      "text": "Brett (Nov 16 17:02): toolbar settings (per-toolbar settings) STILL don't work. Check whether the Nov 15 hand-merge of PR #503 (bug-asset-settings-nav-menu-tab-bar-toolbar-chan) is actually on main AND deployed in the running console; then finish this hotfix, fix its CI, land it, redeploy the console, and verify on a real toolbar that changing its settings applies and sticks.",
      "at": "2026-11-16T17:06:55.483Z"
+    },
+    {
+     "text": "Reconciler: PR #673 merged: complete",
+     "at": "2026-11-16T17:10:54.799Z"
     }
    ],
    "approvals": [],
