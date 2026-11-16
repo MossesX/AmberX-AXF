@@ -814,10 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 19:09 UTC · `reset-all-button-every-asset-override` s1 done (all) · orchestrator
-- 2026-11-16 19:10 UTC · `hotfix-orchestrator-grid-columns-don-t` s7 done (all) · orchestrator
-- 2026-11-16 19:10 UTC · `reset-all-button-every-asset-override` s2 done (all) · orchestrator
-- 2026-11-16 19:11 UTC · `fix-red-ci-blocked-builds-they-land` → queued, note (all) · brett
 - 2026-11-16 19:12 UTC · `alert-every-time-build-falls-back-to` added (0 steps) (all) · console
 - 2026-11-16 19:12 UTC · `alert-every-time-build-falls-back-to` → queued, note (all) · console
 - 2026-11-16 19:12 UTC · `alert-every-time-build-falls-back-to` note (all) · mcp
@@ -1214,6 +1210,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 23:17 UTC · `own-look-per-grid-and-tab-group` → queued, note (all) · pipeline
 - 2026-11-16 23:17 UTC · `data-container-axf-data-holds-all` → queued, note (all) · brett
 - 2026-11-16 23:17 UTC · `orchestrator-table-columns-model-queue-assigned` → built (all) · builds-live
+- 2026-11-16 23:17 UTC · `axhub-veto-countdown-setting-read-only` → running, note (all) · pipeline
+- 2026-11-16 23:18 UTC · `axhub-veto-countdown-setting-read-only` note (all) · orchestrator
+- 2026-11-16 23:18 UTC · `every-plugin-screen-gets-a-settings-gear` → queued, note (all) · brett
+- 2026-11-16 23:18 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → queued, note (all) · brett
 
 ## Token passes (log)
 
