@@ -26,3 +26,10 @@ Out of scope, not touched: `claude/axf-data-postgres-real-tables-own`, `claude/d
 - s3 `claude/one-source-truth-console-shows-only-what`: merged origin a7febca2e into local dc873adac → eccfe754a; merge driver resolved the builds-store files; pushed fast-forward.
 - s4 `claude/console-axhub-retry-failed-calls`: merged origin ba0c8fa31 into local da3e3477b → e68f9aa05; merge driver resolved the builds-store files; pushed fast-forward.
 - s5 `claude/demo-video-series-three-minute-browser`: merged origin 6936a3fc8 into local 388338407 → 5e77e6939; merge driver resolved the builds-store files; pushed fast-forward.
+
+## Strays dropped (s6)
+
+- `claude/merge-main-land-one-source-truth-console` (dbc20af28): `git cherry origin/main` shows no commit missing from main. Deleted locally; it never existed on origin. Its old worktree (`/root/axf-builds/merge-main-land-one-source-truth-console`) stays as it is, detached at a7febca2e, with an expired Nov 14 build lock; it only holds builds-store snapshots and logs.
+- `land-native-bridge-mic` (2259d0b69): 30 commits are not patch-equivalent on main, but every one is on its real build branch on origin (17 on `claude/console-android-app-thin-webview-wrapper`, 12 on `claude/console-app-part-3-native-bridge-mic`, 1 on `claude/console-app-part-2-native-floating-2`). The worktree was clean, so it was removed and the branch deleted locally; it never existed on origin.
+- Backup tags (local, on the VPS repo): `backup/stray/land-native-bridge-mic`, `backup/stray/merge-main-land-one-source-truth-console`.
+- No remote delete was needed, so no GitHub App veto call was made.
