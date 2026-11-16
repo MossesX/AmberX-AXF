@@ -241,7 +241,9 @@
         "id": "shape-assets",
         "route": "GET /shapes/assets",
         "title": "The shapes added on the hub, whole",
-        "readOnly": true
+        "readOnly": true,
+        "description": "The custom shape assets added on the hub (POST /shapes/assets, axf shape add), whole, so a console or an MCP client can register them; the starters ship with the framework.",
+        "output": "{ items: shape assets }"
       }
     ]
   },

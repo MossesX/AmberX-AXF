@@ -1314,7 +1314,7 @@
             {
               "id": "ui.shape",
               "title": "Shape tokens (radius ladder, corner families, cutouts)",
-              "note": "",
+              "note": "shape@1: every chip-like banner widget is cut to a shape asset (circle, pill, rounded square, square, squircle, hexagon, diamond, tag, per-corner radii or an SVG mask), compiled to --fx-shape-widget-* tokens and resolved global → skin → app → widget with Restore previous edit.",
               "tag": "core",
               "recommended": true,
               "suggests": []

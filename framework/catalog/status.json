@@ -705,7 +705,8 @@
   "ui.shape": {
     "status": "built",
     "wave": 1,
-    "module": "axf-ui"
+    "module": "axf-ui",
+    "notes": "shape@1 (build banner-widget-shapes-more-than-circle): chip-like banner widgets cut to a shape asset (10 starters incl. corners + SVG mask examples), --fx-shape-widget-* tokens, chain global → skin → app → widget → banner default with Restore previous edit; ShapePicker, Theme manager → Shapes, UI manager, Settings → Appearance; REST /shapes, MCP shape-* + control@1 tokens.shape, CLI axf shape, voice. Per-widget Change icon… (widget.icon). Kotlin twin deferred."
   },
   "ui.space": {
     "status": "built",
