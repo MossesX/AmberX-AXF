@@ -85,6 +85,18 @@ export function scan(env = process.env) {
   return { roots: r, mapped, unmapped, skipped };
 }
 
+/**
+ * A SQLite file as SQLite itself sees it: the backup API copies the main file plus whatever still sits in its -wal
+ * (the console writes ledger.sqlite in WAL mode; the raw bytes alone miss the rows not checkpointed yet, and the row
+ * counts, read through SQLite, would then differ). The source is opened read-only. Raw bytes when python3 is missing.
+ */
+function sqliteSnapshot(file) {
+  const dir = mkdtempSync(join(tmpdir(), 'data-migrate-sqlite-')); const out = join(dir, 'snap.sqlite');
+  try {
+    execFileSync('python3', ['-I', '-c', 'import sqlite3,sys;s=sqlite3.connect("file:"+sys.argv[1]+"?mode=ro",uri=True);d=sqlite3.connect(sys.argv[2]);s.backup(d);d.execute("PRAGMA journal_mode=DELETE");d.close();s.close()', file, out], { stdio: ['ignore', 'ignore', 'pipe'] });
+    return readFileSync(out);
+  } catch { return readFileSync(file); } finally { rmSync(dir, { recursive: true, force: true }); }
+}
 /** One source file as it will be stored: kind, the body to send, and its rev-1 manifest item. */
 function sourceItem(src) {
   // ns = the registry namespace (plugins, builds, …); nsid = the migration unit (plugins/<folder> for open namespaces).
@@ -92,7 +104,7 @@ function sourceItem(src) {
   const ns = src.key.split('/')[0];
   const nsid = src.ns || nsIdOf(src.key);
   const path = src.key.slice(nsid.length + 1);
-  const raw = readFileSync(src.file);
+  const raw = sqliteFile(src.key) ? sqliteSnapshot(src.file) : readFileSync(src.file);
   let kind = kindOfKey(src.key);
   const notes = [];
   if (kind === 'record') {
