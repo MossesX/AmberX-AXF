@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:28:52.858Z",
+ "updatedAt": "2026-11-16T19:29:14.310Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -161376,7 +161376,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:19:11.374Z",
-   "updatedAt": "2026-11-16T19:28:51.049Z",
+   "updatedAt": "2026-11-16T19:29:11.949Z",
    "builtAt": "",
    "notes": [
     {
@@ -161433,6 +161433,25 @@
      "note": "",
      "uid": "st-mwjngq89017gbp",
      "createdAt": "2026-11-16T19:21:53.865Z"
+    },
+    {
+     "id": "s4",
+     "text": "Archiving a build anywhere (this grid, orchestrator, API, CLI, voice) also closes its open PR with a note (branch kept) and drops it from the auto-lander list at once.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjnq4kk01x8qu",
+     "createdAt": "2026-11-16T19:29:11.950Z"
     },
     {
      "id": "s2",
