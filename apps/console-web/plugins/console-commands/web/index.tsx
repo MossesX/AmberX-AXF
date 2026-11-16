@@ -216,7 +216,7 @@ function ConsoleCommandsClient() {
   useEffect(() => {
     if (!on || typeof window === 'undefined') return;
     const id = clientId();
-    // Inside a host (Molly) this console says so: app `molly/console-web`, and whether the host shows its frame now
+    // Inside a host this console says so: app `<host>/console-web`, and whether the host shows its frame now
     // (`front`), so a command for "the console Brett is using" comes here only while he can see it.
     const host = rt.embedded?.host ?? '';
     const app = host ? `${host}/console-web` : 'console-web';
@@ -254,7 +254,7 @@ function ConsoleCommandsClient() {
       if (document.visibilityState === 'visible') wake();
       if (rt.inFront()) used(); else void seen(where());
     };
-    // the host showed or hid this console's frame (Molly switched apps): showing it means Brett is using it now
+    // the host showed or hid this console's frame (the host switched apps): showing it means Brett is using it now
     const offFront = rt.onFront(onVisible);
     const onShow = (e: PageTransitionEvent) => { if (e.persisted) { catalogKey = ''; wake(); void announce(rt.inFront()); } };
     window.addEventListener('focus', used);

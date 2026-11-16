@@ -24,14 +24,14 @@ TOKEN = "ghp_" + "W" * 36
 ROOT = TMP / "root"
 (ROOT / "apps" / "console-web" / "plugins" / "sample-editor").mkdir(parents=True)
 (ROOT / "apps" / "axhub-web").mkdir(parents=True)
-(ROOT / "apps" / "molly").mkdir(parents=True)
-(ROOT / "apps" / "molly" / "project.manifest.json").write_text(json.dumps({"name": "molly", "displayName": "Molly"}))
+(ROOT / "apps" / "sample-app").mkdir(parents=True)
+(ROOT / "apps" / "sample-app" / "project.manifest.json").write_text(json.dumps({"name": "sample-app", "displayName": "Sample App"}))
 (ROOT / "apps" / "console-web" / "plugins" / "sample-editor" / "plugin.json").write_text(json.dumps({"name": "Theme Editor"}))
 (ROOT / "_claude" / "builds" / "reports").mkdir(parents=True)
 STORE = {"builds": [
     {"id": "sample-editor", "title": "Theme Editor plugin", "profiles": ["all"], "status": "complete", "pr": "#243", "branch": "claude/sample-editor", "steps": []},
     {"id": "dock-engine", "title": "Shared dock engine", "profiles": ["all"], "status": "pending", "pr": "", "branch": "",
-     "steps": [{"id": "s1", "branch": "claude/molly-fable", "pr": ""}]},
+     "steps": [{"id": "s1", "branch": "claude/sample-app-fable", "pr": ""}]},
     {"id": "quiet-fix", "title": "Quiet fix shipped by hand", "profiles": ["main-framework"], "status": "complete", "merged": True, "mergedAt": "2026-11-02T08:00:00Z", "branch": "claude/quiet"},
     {"id": "gone", "title": "Deleted", "deleted": True, "pr": "#999"},
 ]}
@@ -40,15 +40,15 @@ STORE = {"builds": [
     "# Theme Editor — report (Nov 3 2026, Opus)\n\n## Tests\n- 12 pass\n\n## What changed\n\n- Colour and style sections list every token\n- Copy, save and load themes\n\n## Known gaps\n- none\n")
 (ROOT / "changes" / "2026" / "11").mkdir(parents=True)
 (ROOT / "changes" / "2026" / "11" / "chg-1.json").write_text(json.dumps(
-    {"updatedAt": "2026-11-03T10:00:00Z", "branch": "claude/molly-fable", "result": {"state": "done", "summary": "Dock engine: split, float and re-dock panes."}}))
+    {"updatedAt": "2026-11-03T10:00:00Z", "branch": "claude/sample-app-fable", "result": {"state": "done", "summary": "Dock engine: split, float and re-dock panes."}}))
 
 # ---------------------------------------------------------------- fakes
 SEEN: list[str] = []
 PRS = [
     {"number": 250, "title": "feat(sample-tools): Token control plugin", "merged_at": "2026-11-03T12:00:00Z", "merge_commit_sha": "a" * 40,
      "head": {"ref": "claude/sample-tools-opus"}, "html_url": "https://github.com/MossesX/AmberX-AXF/pull/250", "body": "Every token from one API.\n\nMore."},
-    {"number": 245, "title": "Molly Fable foundation", "merged_at": "2026-11-03T09:00:00Z", "merge_commit_sha": "b" * 40,
-     "head": {"ref": "claude/molly-fable"}, "html_url": "https://github.com/MossesX/AmberX-AXF/pull/245", "body": ""},
+    {"number": 245, "title": "Sample App Fable foundation", "merged_at": "2026-11-03T09:00:00Z", "merge_commit_sha": "b" * 40,
+     "head": {"ref": "claude/sample-app-fable"}, "html_url": "https://github.com/MossesX/AmberX-AXF/pull/245", "body": ""},
     {"number": 243, "title": "Theme Editor plugin", "merged_at": "2026-10-20T09:00:00Z", "merge_commit_sha": "c" * 40,
      "head": {"ref": "claude/sample-editor"}, "html_url": "javascript:alert(1)", "body": ""},
     {"number": 242, "title": "Plan MD Studio", "merged_at": "2026-11-02T09:00:00Z", "merge_commit_sha": "d" * 40,
@@ -57,7 +57,7 @@ PRS = [
 ]
 FILES = {
     250: ["apps/console-web/plugins/sample-tools/web/index.tsx", "framework/core/engines/layout.ts", "apps/axhub-web/src/axf/core/x.ts"],
-    245: ["framework/core/engines/dock.ts", "apps/molly/src/App.tsx", "apps/molly/_claude/x.md"],
+    245: ["framework/core/engines/dock.ts", "apps/sample-app/src/App.tsx", "apps/sample-app/_claude/x.md"],
     243: ["apps/console-web/plugins/sample-editor/web/index.tsx"],
     242: ["_claude/THREADS.md", "framework/plan/plan.json", "changes/2026/11/c.json"],
 }
@@ -132,7 +132,7 @@ NOW["t"] = mod._ts("2026-11-03T14:00:00Z")
 
 cfg = c.get("/p/config").json()
 check(cfg["days"] == 30 and cfg["apps"] == [] and cfg["deployedOnly"] is False and cfg["deployWorkflows"] == ["deploy.yml"], "default config: 30 days, every app, merged, deploy.yml")
-check({"id": "plugin:sample-editor", "label": "Theme Editor", "kind": "plugin"} in cfg["appChoices"] and any(a["id"] == "app:molly" and a["label"] == "Molly" for a in cfg["appChoices"]),
+check({"id": "plugin:sample-editor", "label": "Theme Editor", "kind": "plugin"} in cfg["appChoices"] and any(a["id"] == "app:sample-app" and a["label"] == "Sample App" for a in cfg["appChoices"]),
       "app choices from manifests and plugin.json")
 
 f = c.get("/p/feed").json()
@@ -151,7 +151,7 @@ check(t["build"] is None and t["where"].startswith("Dev Console → Plugins → 
 m = by["pr-245"]
 check(m["build"] == {"id": "dock-engine", "title": "Shared dock engine", "profile": "all"}, "build matched by a step's branch (per-step fields)")
 check(m["summary"] == "Dock engine: split, float and re-dock panes.", "summary from the Codebase changes entry for the branch")
-check([a["id"] for a in m["apps"]] == ["app:molly", "framework"] and m["where"] == "Molly", "app _claude files ignored; where = the app")
+check([a["id"] for a in m["apps"]] == ["app:sample-app", "framework"] and m["where"] == "Sample App", "app _claude files ignored; where = the app")
 te = by["pr-243"]
 check(te["build"]["id"] == "sample-editor" and te["report"] == "_claude/builds/reports/sample-editor.md", "build matched by its PR number; report linked")
 check(te["summary"] == "Colour and style sections list every token" and te["details"] == ["Colour and style sections list every token", "Copy, save and load themes"], "wording from the report's What changed bullets")
@@ -165,8 +165,8 @@ check(f["total"] == 4 and len(f["items"]) == 4, "every item is inside 30 days he
 # filters
 c.put("/p/config", json={"days": 7})
 check([i["id"] for i in c.get("/p/feed").json()["items"]] == ["pr-250", "pr-245", "build-quiet-fix"], "how far back: 7 days drops the older one")
-c.put("/p/config", json={"days": 30, "apps": ["app:molly"]})
-check([i["id"] for i in c.get("/p/feed").json()["items"]] == ["pr-245"], "which apps: only items touching Molly")
+c.put("/p/config", json={"days": 30, "apps": ["app:sample-app"]})
+check([i["id"] for i in c.get("/p/feed").json()["items"]] == ["pr-245"], "which apps: only items touching Sample App")
 c.put("/p/config", json={"days": 30, "apps": [], "deployedOnly": True})
 check([i["id"] for i in c.get("/p/feed").json()["items"]] == ["pr-245", "build-quiet-fix", "pr-243"], "deployed only: what a deploy carried")
 for body, why in [({"days": 5}, "days not a choice"), ({"apps": ["../x"]}, "bad app id"), ({"deployedOnly": "yes"}, "deployedOnly not bool"),

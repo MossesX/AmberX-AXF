@@ -29,7 +29,7 @@
  *   node framework/cli/skins.mjs covers <skin>             what one skin sets or styles, type by type
  *   node framework/cli/skins.mjs modes                     every skin's light and dark colour themes, and any skin missing one
  *   node framework/cli/skins.mjs mode <app> [light|dark|system] [--system light|dark] [--scope …]   the skin's light / dark theme, or the device's
- *   add --json for machine output. An app is its id (axf-console) or its folder (console-web), or `console`, `axhub`, `amberx`, `molly`.
+ *   add --json for machine output. An app is its id (axf-console) or its folder (console-web), or `console`, `axhub`, `amberx`.
  *
  * Files are written where /projects is mounted (the hub's data folder), so open apps follow through the hub's change
  * feed. AXF_LOOKS_DIR points elsewhere (tests, local development); AXF_APPEARANCE_FILE is the shared document;

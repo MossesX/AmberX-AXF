@@ -14,7 +14,7 @@
  *
  * In the open console the same picks are the actions animations.set:<key>:<value>, animations.off[:<key>],
  * animations.reset and animations.open (console.actions run: REST POST /api/control, MCP control, `axf control`, voice).
- * An app is its id (axf-console) or its folder (console-web), or `console`, `axhub`, `amberx`, `molly`.
+ * An app is its id (axf-console) or its folder (console-web), or `console`, `axhub`, `amberx`.
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';

@@ -159,7 +159,7 @@ HOST_RE = re.compile(r"^[a-z0-9][a-z0-9-]{0,30}$")
 
 def _front_of(c: dict[str, Any], b: dict[str, Any]) -> None:
     """What a console says about where it is (under _lock): `front` = visible and shown by its host; `host` = the app it
-    runs inside (embed@1, e.g. molly)."""
+    runs inside (embed@1, e.g. a host app)."""
     if isinstance(b.get("front"), bool):
         c["front"] = b["front"]
     if isinstance(b.get("host"), str):

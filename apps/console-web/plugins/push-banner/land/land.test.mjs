@@ -50,18 +50,18 @@ check(core.classifyPath('_claude/THREADS.md') === 'union' && core.classifyPath('
 check(core.classifyPath('tracker.json') === 'generated' && core.classifyPath('changes/2026/11/x.json') === 'generated', 'tracker + hub data copies = generated');
 check(core.classifyPath('framework/core/x.ts') === 'code' && core.classifyPath('deploy/claude-headless.sh') === 'code', 'everything else = code');
 // generated-files@1 (build lander-regenerates-generated-files-clash, Nov 13 2026): the Nov 13 land failures were all in these
-const GEN = ['apps/console-web/src/control/inventory.json', 'apps/console-web/src/assets/help/framework.json', 'apps/axhub-web/src/axf/assets/help/framework.json', 'apps/molly/src/axf/core/runtime.ts', 'apps/console-web/axf.lock.json', 'framework/spec/fixtures/theme.json'];
+const GEN = ['apps/console-web/src/control/inventory.json', 'apps/console-web/src/assets/help/framework.json', 'apps/axhub-web/src/axf/assets/help/framework.json', 'apps/sample-app/src/axf/core/runtime.ts', 'apps/console-web/axf.lock.json', 'framework/spec/fixtures/theme.json'];
 check(GEN.every((p) => core.classifyPath(p) === 'generated'), 'control inventory, baked help, baked framework copies, locks, fixtures = generated');
 check(core.classifyPath('framework/assets/help/framework.json') === 'union-json' && core.classifyPath('framework/catalog/status.json') === 'union-json', 'help packs + catalog status = union by key');
 check(core.classifyPath('framework/spec/PORTING.md') === 'union', 'PORTING.md = union of lines');
 check(core.regenFor('apps/console-web/src/control/inventory.json')?.join(' ') === 'node apps/console-web/scripts/control-inventory.mjs', 'the control inventory regenerates with its script');
-check(core.regenFor('apps/molly/src/axf/core/runtime.ts')?.join(' ') === 'node framework/cli/rebake.mjs apply apps/molly' && core.regenFor('apps/demo/axf.lock.json')?.join(' ') === 'node framework/cli/rebake.mjs apply apps/demo', 'a baked copy or lock re-bakes its own app');
+check(core.regenFor('apps/sample-app/src/axf/core/runtime.ts')?.join(' ') === 'node framework/cli/rebake.mjs apply apps/sample-app' && core.regenFor('apps/demo/axf.lock.json')?.join(' ') === 'node framework/cli/rebake.mjs apply apps/demo', 'a baked copy or lock re-bakes its own app');
 check(core.regenFor('framework/spec/fixtures/theme.json')?.join(' ') === 'npx -y tsx framework/spec/gen-fixtures.mts' && core.regenFor('apps/axhub-web/src/assets/help/framework.json')?.join(' ') === 'node framework/cli/help-coverage.mjs --sync', 'fixtures and baked help have their generators');
 check(core.regenFor('changes/2026/11/x.json') === null && core.regenFor('framework/core/x.ts') === null, "main's copy is enough for hub data copies; code has no generator");
 {
-  const plan = core.regenPlan(['apps/molly/src/axf/core/a.ts', 'apps/molly/axf.lock.json', 'apps/molly/src/axf/ui/axf.css', 'apps/demo/axf.lock.json', 'framework/spec/fixtures/a.json', 'framework/spec/fixtures/b.json', 'changes/2026/11/x.json']);
-  check(plan.map((g) => g.id).join(' ') === 'rebake:molly rebake:demo fixtures', `each generator once, per app for re-bakes (${plan.map((g) => g.id).join(' ')})`);
-  check(plan[0].outputs.join(' ') === 'apps/molly/src/axf apps/molly/axf.lock.json' && plan[2].timeoutMs === 300000 && Array.isArray(plan[2].check), 'a generator knows its outputs, check and time limit');
+  const plan = core.regenPlan(['apps/sample-app/src/axf/core/a.ts', 'apps/sample-app/axf.lock.json', 'apps/sample-app/src/axf/ui/axf.css', 'apps/demo/axf.lock.json', 'framework/spec/fixtures/a.json', 'framework/spec/fixtures/b.json', 'changes/2026/11/x.json']);
+  check(plan.map((g) => g.id).join(' ') === 'rebake:sample-app rebake:demo fixtures', `each generator once, per app for re-bakes (${plan.map((g) => g.id).join(' ')})`);
+  check(plan[0].outputs.join(' ') === 'apps/sample-app/src/axf apps/sample-app/axf.lock.json' && plan[2].timeoutMs === 300000 && Array.isArray(plan[2].check), 'a generator knows its outputs, check and time limit');
   const pc = core.planConflicts(['framework/catalog/status.json', 'framework/spec/PORTING.md', 'apps/console-web/src/control/inventory.json', 'framework/core/x.ts', '_claude/builds/store.json']);
   check(pc.unionJson.length === 1 && pc.union.length === 1 && pc.generated.length === 1 && pc.code.length === 1 && pc.builds.length === 1, 'planConflicts sorts every kind');
   check(core.landTests().length >= 1 && core.landTests().every((t) => Array.isArray(t) && t[0] === 'node'), 'tests after regenerating are node commands from the manifest');

@@ -44,7 +44,7 @@ def check(cond: bool, what: str) -> None:
 
 r = c.get("/p/narrators").json()
 check(r["available"] is False and r["items"] == [] and "axf.speech@1" in r["why"], "no speech provider: no cloud narrators, and it says why")
-check(c.post("/p/narrate", json={"narrator": "agent:molly", "text": "hi"}).status_code == 409, "no speech provider: narrate answers 409")
+check(c.post("/p/narrate", json={"narrator": "agent:gizmo", "text": "hi"}).status_code == 409, "no speech provider: narrate answers 409")
 
 said: list[tuple[str, str, float]] = []
 
@@ -53,10 +53,10 @@ class FakeSpeech:
     max_text = 20
 
     def narrators(self):
-        return [{"agentId": "molly", "name": "Molly", "provider": "openai", "voice": "nova"}, {"bad": 1}]
+        return [{"agentId": "gizmo", "name": "Gizmo", "provider": "openai", "voice": "nova"}, {"bad": 1}]
 
     def say(self, agent_id: str, text: str, rate: float | None = None) -> bytes:
-        if agent_id != "molly":
+        if agent_id != "gizmo":
             raise HTTPException(403, f"{agent_id} isn't allowed cloud voices")
         said.append((agent_id, text, rate))
         return b"ID3fake"
@@ -64,15 +64,15 @@ class FakeSpeech:
 
 plugin_services.provide("axf.speech@1", FakeSpeech(), "fake-speech")
 r = c.get("/p/narrators").json()
-check(r["available"] and [i["value"] for i in r["items"]] == ["agent:molly"] and "Molly" in r["items"][0]["label"], "narrators listed as agent:<id>, bad rows dropped")
-r = c.post("/p/narrate", json={"narrator": "agent:molly", "text": "  Meet the designer, the fastest pitch.  ", "speed": 9})
+check(r["available"] and [i["value"] for i in r["items"]] == ["agent:gizmo"] and "Gizmo" in r["items"][0]["label"], "narrators listed as agent:<id>, bad rows dropped")
+r = c.post("/p/narrate", json={"narrator": "agent:gizmo", "text": "  Meet the designer, the fastest pitch.  ", "speed": 9})
 check(r.status_code == 200 and r.content == b"ID3fake" and r.headers["content-type"] == "audio/mpeg", "a line comes back as audio/mpeg")
-check(said[-1][0] == "molly" and said[-1][2] == 2.0, "speed clamped to 2")
+check(said[-1][0] == "gizmo" and said[-1][2] == 2.0, "speed clamped to 2")
 check(said[-1][1] == "Meet the designer, t", "text trimmed and cut to the provider's limit")
 check(c.post("/p/narrate", json={"narrator": "agent:ghost", "text": "hi"}).status_code == 403, "the provider's refusal passes through")
 check(c.post("/p/narrate", json={"narrator": "Samantha", "text": "hi"}).status_code == 400, "a device voice is not a cloud narrator")
 check(c.post("/p/narrate", json={"narrator": "agent:../x", "text": "hi"}).status_code == 400, "a bad agent id is refused")
-check(c.post("/p/narrate", json={"narrator": "agent:molly", "text": "  "}).status_code == 400, "empty text refused")
+check(c.post("/p/narrate", json={"narrator": "agent:gizmo", "text": "  "}).status_code == 400, "empty text refused")
 plugin_services.withdraw("fake-speech")
 check(c.get("/p/narrators").json()["available"] is False, "provider removed: back to none")
 print(f"demonstration-designer server: {ok} checks passed")
