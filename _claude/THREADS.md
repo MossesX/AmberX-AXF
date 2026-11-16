@@ -813,17 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 16:27 UTC · `get-main-green-unblock-lander-land-axf` → running, note (all) · pipeline
-- 2026-11-16 16:27 UTC · `remove-old-molly-app-project-keep-axf` s5 done (all) · orchestrator
-- 2026-11-16 16:28 UTC · `remove-old-molly-app-project-keep-axf` s6 done (all) · orchestrator
-- 2026-11-16 16:28 UTC · `remove-old-molly-app-project-keep-axf` s7 done (all) · orchestrator
-- 2026-11-16 16:29 UTC · `get-main-green-unblock-lander-land-axf` s1 done (all) · orchestrator
-- 2026-11-16 16:29 UTC · `fix-red-ci-blocked-builds-they-land` added (0 steps) (all) · console
-- 2026-11-16 16:29 UTC · `fix-red-ci-blocked-builds-they-land` → queued, note (all) · console
-- 2026-11-16 16:29 UTC · `re-sync-stuck-branches-lander-can-push` added (0 steps) (all) · console
-- 2026-11-16 16:29 UTC · `re-sync-stuck-branches-lander-can-push` → queued, note (all) · console
-- 2026-11-16 16:29 UTC · `get-main-green-unblock-lander-land-axf` note (all) · mcp
-- 2026-11-16 16:31 UTC · `phone-connect-small-android-companion` s35 done, → built, note (all) · reconciler
 - 2026-11-16 16:31 UTC · `fix-console-deep-links-open-page-lands` added (0 steps) (all) · console
 - 2026-11-16 16:31 UTC · `fix-console-deep-links-open-page-lands` → queued, note (all) · console
 - 2026-11-16 16:31 UTC · `fix-red-ci-blocked-builds-they-land` note (all) · orchestrator
@@ -1213,6 +1202,17 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 19:49 UTC · `assets-menu-hide-any-asset-hidden-list` → running, note (all) · pipeline
 - 2026-11-16 19:49 UTC · `assets-menu-hide-any-asset-hidden-list` branch claude/assets-menu-hide-any-asset-hidden-list (all) · pipeline
 - 2026-11-16 19:49 UTC · `assets-menu-hide-any-asset-hidden-list` note (all) · orchestrator
+- 2026-11-16 19:50 UTC · `reset-all-button-every-asset-override` s10 done (all) · orchestrator
+- 2026-11-16 19:51 UTC · `reset-all-button-every-asset-override` PR #730 (all) · builds-live
+- 2026-11-16 19:51 UTC · `settings-interface-gear-every-plugin` s14 done (all) · orchestrator
+- 2026-11-16 19:51 UTC · `reset-all-button-every-asset-override` s11 done, → built (all) · orchestrator
+- 2026-11-16 19:52 UTC · `reset-all-button-every-asset-override` note (all) · orchestrator
+- 2026-11-16 19:52 UTC · `reset-all-button-every-asset-override` → pending, note (all) · pipeline
+- 2026-11-16 19:53 UTC · `fix-red-ci-blocked-builds-they-land` s22 done (all) · orchestrator
+- 2026-11-16 19:53 UTC · `banner-widget-shapes-more-than-circle` s28 done, → running (all) · orchestrator
+- 2026-11-16 19:53 UTC · `settings-interface-gear-every-plugin` s15 done (all) · orchestrator
+- 2026-11-16 19:53 UTC · `banner-widget-shapes-more-than-circle` s8 done (all) · orchestrator
+- 2026-11-16 19:54 UTC · `assets-menu-hide-any-asset-hidden-list` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
