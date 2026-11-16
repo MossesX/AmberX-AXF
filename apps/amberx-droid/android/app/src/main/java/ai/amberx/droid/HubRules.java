@@ -363,6 +363,33 @@ final class HubRules {
         }
     }
 
+    /**
+     * POST open-url-route@1's console-tab request to the Dev Console with the phone's console session (the same cookie
+     * the alerts read uses; the console as Origin, no redirects, a short timeout: a page that takes long is the wrong page).
+     * Only the navigate route: no other console path takes a POST from here.
+     */
+    static Reply postConsoleNavigate(String body, String cookie, int timeoutMs) throws IOException {
+        byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
+        if (bytes.length > PUT_MAX_BYTES) throw new IOException("request too large");
+        HttpURLConnection c = (HttpURLConnection) new URL(CONSOLE + OpenUrlRoute.NAVIGATE_PATH).openConnection();
+        try {
+            c.setInstanceFollowRedirects(false);
+            c.setConnectTimeout(timeoutMs); c.setReadTimeout(timeoutMs); c.setUseCaches(false);
+            c.setRequestMethod("POST"); c.setDoOutput(true);
+            c.setRequestProperty("Content-Type", "application/json");
+            c.setRequestProperty("Accept", "application/json");
+            c.setRequestProperty("Origin", CONSOLE);
+            if (cookie != null) c.setRequestProperty("Cookie", cookie);
+            c.getOutputStream().write(bytes);
+            int code = c.getResponseCode();
+            InputStream in = code >= 400 ? c.getErrorStream() : c.getInputStream();
+            String reply = in == null ? "" : readLimited(in, FEED_MAX_BYTES);
+            return new Reply(code, reply, c.getHeaderField("Location"), c.getHeaderField("ETag"));
+        } finally {
+            c.disconnect();
+        }
+    }
+
     static final int PUT_MAX_BYTES = 64 * 1024;
 
     /** Writes only to the hub's data server (`/data/...`): no other hub path takes a PUT from the app. */

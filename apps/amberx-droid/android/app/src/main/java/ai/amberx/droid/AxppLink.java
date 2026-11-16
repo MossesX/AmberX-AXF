@@ -156,6 +156,15 @@ final class AxppLink {
             case OpenUrlRules.OPEN: {
                 String url = OpenUrlRules.allowed(args.optString("url", ""));
                 String verb = OverlayPageRules.verb(url);
+                // open-url-route@1 console-tab first: the console tab Brett has on screen opens it in place. Chrome in
+                // front with the console in it is exactly when Android drops AmberX's own background start.
+                if (OverlayPageRules.OPEN.equals(verb)) {
+                    OpenUrlRoute.Attempt tab = tryConsoleTab(url, args.optString("where", "auto"));
+                    if (tab != null && tab.ok) {
+                        return new JSONObject().put("url", url).put("verb", OverlayPageRules.OPEN).put("browser", "console").put("opened", true)
+                            .put("notified", false).put("where", "console").put("route", OpenUrlRoute.CONSOLE_TAB).put("reason", tab.reason);
+                    }
+                }
                 boolean ready = WatchService.overlayPagesReady(c);
                 // overlay.collapse / overlay.expand from the console, MCP, the CLI or voice, through the same hub tool.
                 if (OverlayPageRules.COLLAPSE.equals(verb)) {
@@ -256,6 +265,26 @@ final class AxppLink {
     }
 
     /* ---------------------------------------------------------------- console wake: open one of Brett's pages */
+
+    static final int CONSOLE_TAB_TIMEOUT_MS = 6_000;  // the console waits 2.5 s for its tab; the rest is the network
+
+    /**
+     * open-url-route@1 `console-tab`: ask the Dev Console (with the phone's console session, the same one the alerts
+     * read uses) to open the page in the console tab Brett focused last. → the attempt, or null when skipped (signed
+     * out of the console, or the caller asked for the overlay or the browser).
+     */
+    static OpenUrlRoute.Attempt tryConsoleTab(String url, String where) {
+        if ("overlay".equals(where) || "browser".equals(where)) return null;
+        String cookie;
+        try { cookie = android.webkit.CookieManager.getInstance().getCookie(HubRules.CONSOLE); } catch (RuntimeException e) { cookie = null; }
+        if (cookie == null || cookie.isEmpty()) return null;
+        try {
+            HubRules.Reply r = HubRules.postConsoleNavigate(OpenUrlRoute.navigateBody(url), cookie, CONSOLE_TAB_TIMEOUT_MS);
+            return OpenUrlRoute.consoleAnswer(r.status, r.body);
+        } catch (Exception e) {
+            return new OpenUrlRoute.Attempt(OpenUrlRoute.CONSOLE_TAB, false, "console-stale");
+        }
+    }
 
     /** The browser intent for a URL: Chrome when asked for and installed, else whatever handles https. */
     private static Intent browserIntent(Context c, String url, String browser) {
