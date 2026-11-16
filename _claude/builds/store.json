@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6726,
- "updatedAt": "2026-11-16T19:26:07.905Z",
+ "rev": 6727,
+ "updatedAt": "2026-11-16T19:26:17.138Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -247141,12 +247141,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T19:23:12.681Z",
-   "updatedAt": "2026-11-16T19:23:16.586Z",
+   "updatedAt": "2026-11-16T19:25:58.523Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-16T19:23:16.586Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"0245c55e-7fac-4a7a-b3bc-f8d8b05387d5\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-16T19:25:58.523Z"
     }
    ],
    "approvals": [],
@@ -247173,19 +247177,101 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-16T19:25:58.523Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"0245c55e-7fac-4a7a-b3bc-f8d8b05387d5\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-16T19:26:08.698Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwjnlz0b01c89d",
+     "title": "",
+     "text": "Every settings interface in every app (console Settings sections, plugin settings, chrome/asset settings for toolbars, tab groups, banners, nav, menus, and any future one) groups its fields into collapsible sections with a header and chevron, remembered open/closed state per user, Expand all / Collapse all, search opens the matching section. Make it the framework default in the settings asset/template so new interfaces get it automatically, plus a CI check that fails on a settings interface without sections. Builds on orchestrator-settings-collapsible-split (same pattern, don't duplicate). Tokens only; reachable on REST, MCP, CLI, voice. Land through the orchestrator.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T19:25:58.523Z",
+     "updatedAt": "2026-11-16T19:25:58.523Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwjnlz0b02g6bb",
+     "title": "",
+     "text": "Why don't these settings interfaces have collapsible sections?",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T19:25:58.523Z",
+     "updatedAt": "2026-11-16T19:25:58.523Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwjnlz0b03szct",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/every-settings-interface-gets.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/every-settings-interface-gets.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T19:25:58.523Z",
+     "updatedAt": "2026-11-16T19:25:58.523Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -247194,12 +247280,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-16T19:25:58.523Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
