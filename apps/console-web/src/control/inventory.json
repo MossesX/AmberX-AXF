@@ -4,11 +4,11 @@
   "counts": {
     "views": 65,
     "nav": 16,
-    "tabGroups": 26,
+    "tabGroups": 27,
     "tabs": 78,
     "settingsTabs": 71,
     "settings": 89,
-    "functions": 270,
+    "functions": 271,
     "buttons": 62,
     "plugins": 71
   },
@@ -1361,6 +1361,16 @@
       "plugin": "ai.amberx.axf.console.build-orchestrator",
       "file": "plugins/build-orchestrator/web/ui.tsx",
       "line": 115,
+      "tabs": []
+    },
+    {
+      "address": "view:claude-settings/tab:claude-settings.tabs",
+      "id": "claude-settings.tabs",
+      "dynamic": false,
+      "view": "claude-settings",
+      "plugin": "ai.amberx.axf.console.claude-settings",
+      "file": "plugins/claude-settings/web/index.tsx",
+      "line": 234,
       "tabs": []
     },
     {
@@ -4488,6 +4498,23 @@
         "orchestrator",
         "start"
       ],
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/index.tsx"
+    },
+    {
+      "address": "function:build-orchestrator.requeue-stuck",
+      "kind": "function",
+      "id": "build-orchestrator.requeue-stuck",
+      "label": "Build orchestrator: requeue builds parked in Pending after a finished phase (\":apply\" moves them)",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "build-orchestrator.requeue-stuck",
+        "build",
+        "orchestrator",
+        "requeue",
+        "stuck"
+      ],
+      "params": true,
       "plugin": "ai.amberx.axf.console.build-orchestrator",
       "file": "plugins/build-orchestrator/web/index.tsx"
     },
@@ -9251,7 +9278,7 @@
       "id": "ai.amberx.axf.console.claude-settings",
       "label": "Claude",
       "folder": "claude-settings",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "detail": "Plugin · module",
       "keywords": [
         "claude-settings",
