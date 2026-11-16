@@ -257,9 +257,9 @@
     ]
   },
   "builtWith": {
-    "model": "claude-opus-5-5",
+    "model": "opus",
     "builtAt": "2026-11-14"
   },
   "help": "help.json",
-  "opens": "main"
+  "opens": false
 }
