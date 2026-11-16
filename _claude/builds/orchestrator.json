@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T16:26:49.208Z",
+ "updatedAt": "2026-11-16T16:27:10.464Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -153548,7 +153548,7 @@
    "pr": "#712",
    "priority": "P1",
    "createdAt": "2026-11-15T13:36:18.858Z",
-   "updatedAt": "2026-11-16T16:26:43.959Z",
+   "updatedAt": "2026-11-16T16:26:49.200Z",
    "builtAt": "",
    "notes": [
     {
@@ -153650,6 +153650,10 @@
     {
      "text": "Started run 2 on mossesx-max- (Opus, Phase 2): axf-phone-connect-small-android-companion--sully.",
      "at": "2026-11-16T16:26:38.453Z"
+    },
+    {
+     "text": "Brief only: brief is 35552 characters (~8888 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-16T16:26:49.200Z"
     },
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-phone-connect-small-android-companion--sully, shared account login)",
@@ -156590,7 +156594,7 @@
    "title": "Get main green, unblock the lander, land axf-data and Postgres",
    "category": "",
    "detail": "TOP PRIORITY, ahead of everything. The auto-lander is ON but has landed nothing in 6 hours: about 20 builds are blocked because CI is red, nearly all failing the same checks (Web Dev Console (React/TS) + Python API, Build engine sweep (Node), plus some AmberX APK / Gradle). That points to main itself being broken, likely from the disk-full night. 1) Find and fix what's red on main (gh run list --branch main, --log-failed) until main is green. 2) Re-sync the 4 branches whose push failed because local and GitHub differ (server-gate-one-session-per-build-no, one-source-truth-console-shows-only-what, console-axhub-retry-failed-calls, demo-video-series-three-minute-browser); drop the stray merge-main-land-one-source-truth-console. 3) auto-lander-controls-in-the-gate-plugin: commit or drop its uncommitted worktree changes. 4) Then land, one at a time, data-container-axf-data-holds-all (bring the axf-data container up), then axf-data-postgres-real-tables-own, and run and verify the Postgres migration. 5) Confirm the auto-lander is landing the rest one at a time. Log each fix and send Brett FYI notifications.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -156598,7 +156602,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T16:22:57.802Z",
-   "updatedAt": "2026-11-16T16:26:27.798Z",
+   "updatedAt": "2026-11-16T16:27:05.569Z",
    "builtAt": "",
    "notes": [
     {
@@ -156616,6 +156620,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-get-main-green-unblock-lander-land-axf--paulie.",
      "at": "2026-11-16T16:26:23.951Z"
+    },
+    {
+     "text": "Dispatch gate: get-main-green-unblock-lander-land-axf still has axf-get-main-green-unblock-lander-land-axf--paulie alive: not launched again, tracking that session.",
+     "at": "2026-11-16T16:27:05.569Z"
     }
    ],
    "approvals": [],

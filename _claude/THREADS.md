@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 13:03 UTC · `gate-rules-plugin-in-the-console` PR #711 (all) · builds-live
 - 2026-11-15 13:03 UTC · `gate-rules-plugin-in-the-console` s23 done, → built (all) · orchestrator
 - 2026-11-15 13:04 UTC · `gate-rules-plugin-in-the-console` note (all) · orchestrator
 - 2026-11-15 13:08 UTC · `data-container-axf-data-holds-all` s18 done (all) · orchestrator
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 16:26 UTC · `get-main-green-unblock-lander-land-axf` note (all) · orchestrator
 - 2026-11-16 16:26 UTC · `phone-connect-small-android-companion` → running, note (all) · pipeline
 - 2026-11-16 16:26 UTC · `phone-connect-small-android-companion` note (all) · orchestrator
+- 2026-11-16 16:27 UTC · `get-main-green-unblock-lander-land-axf` → running, note (all) · pipeline
 
 ## Token passes (log)
 
