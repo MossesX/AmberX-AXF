@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T23:25:36.907Z",
+ "updatedAt": "2026-11-16T23:25:51.937Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -166640,6 +166640,43 @@
      "createdAt": "2026-11-16T23:24:34.880Z"
     }
    ]
+  },
+  {
+   "id": "orchestrator-runs-long-builds-across",
+   "title": "Orchestrator runs long builds across multiple slots",
+   "category": "",
+   "detail": "Any build estimated over 30 minutes is split into independent step groups that run in parallel in separate slots (separate sessions on their own worktrees or sub-branches), then merged back onto the build's branch in order before landing. The splitter marks which steps are independent (no shared files) vs must run in sequence; dependent steps wait for their group. Uses free slots on any usable account. Shows per-group progress in the orchestrator. Server-gate rule. Same on REST, MCP, CLI, voice. Tests, land through the orchestrator.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-16T23:25:33.721Z",
+   "updatedAt": "2026-11-16T23:25:41.104Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-16T23:25:41.104Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "We need to wire the orchestrator to be able to do that. Any build that's over 30 minutes, split the steps up for multiple slots.",
+    "at": "2026-11-16T23:25:33.721Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
