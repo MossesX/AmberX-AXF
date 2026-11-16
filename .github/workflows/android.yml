@@ -129,7 +129,7 @@ jobs:
       - run: node framework/cli/build-rules-migrate.mjs --check      # every inventoried builder rule is in the seed store
       - run: node framework/spec/check-feature-ledger.mjs            # feature-ledger@1 + deploy-log@1: one status lifecycle for features and edits, merge never loses a date / build / PR / prompt, live from the deploy log, grouping / sort / filter / export projections, schema snapshots
       - run: node framework/spec/check-merge-watch.mjs               # merge-watch@1: main's first-parent line → landings (PR merge, batch, build_land, direct; status commits never ship), idempotent by merge sha, retries, fold across ticks, manifest overlay, one path resolver, schema snapshots
-      - run: node framework/cli/merge-watch/test.mjs                 # merge-watch host: main's landings incl. PR merges hidden behind a build_land fast-forward; the after-tick send ships phase landings, store-less branches, second landings, never twice
+      - run: node framework/cli/merge-watch/test.mjs                 # merge-watch host: walk (PR merges hidden behind build_land, stacked PRs), mapper (merge, squash, no-PR push), builder, idempotent sender, retry + alert, lock, backfill range, the after-tick send
       - run: node framework/cli/help-coverage.mjs --check            # Help mode: every control in the framework chrome, the console + plugins and axHub web has help; fails if coverage drops below framework/spec/help-coverage.json
       - run: node framework/cli/axf.mjs libraries
       - name: Asset conformance — every web CSS/TSX and Kotlin UI (handwritten or generated) takes its look from asset tokens; file:line + token to use

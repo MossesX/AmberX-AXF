@@ -56,6 +56,7 @@ export function githubToken(env = process.env) {
 
 /** GET a GitHub API path with If-None-Match; returns the JSON body (cached on 304) or null. */
 export async function githubGet(path, { env = process.env, fetchFn = globalThis.fetch } = {}) {
+  if (env.AXF_MERGE_WATCH_GITHUB === 'off') return null; // tests, CI: the subject only
   const token = githubToken(env); if (!token || !fetchFn) return null;
   const cache = readCache(env); const hit = cache[path];
   try {

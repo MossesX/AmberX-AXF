@@ -20,6 +20,8 @@ const repo = join(tmp, 'repo');
 const store = join(tmp, 'store.json');
 process.env.AXF_BUILDS_STORE = store;
 process.env.AXF_BUILDS_EXPORTS = 'off';
+// the watch's own switches: no GitHub, no ledger, no alerts, no fetch, no background ticks; local sends only
+Object.assign(process.env, { AXF_MERGE_WATCH_GITHUB: 'off', AXF_MERGE_WATCH_LEDGER: 'off', AXF_MERGE_WATCH_ALERTS: 'off', AXF_MERGE_WATCH_FETCH: 'off', AXF_MERGE_WATCH_KICK: 'off', AXF_MERGE_WATCH_SEND: 'local', AXF_MERGE_WATCH_DATA: join(tmp, 'mw'), AXF_MERGE_WATCH_REPO: repo, AXF_MERGE_WATCH_REF: 'main' });
 
 const W = await import('./walk.mjs');
 const { shipLanded, sentFor } = await import('../shipped.mjs');
@@ -32,6 +34,7 @@ const mergeNoFf = (branch, msg) => { n += 1; git('merge', '-q', '--no-ff', branc
 
 let failed = 0; let passed = 0;
 const check = (name, fn) => { try { fn(); passed += 1; console.log(`  ✓ ${name}`); } catch (e) { failed += 1; console.log(`  ✗ ${name}\n    ${e.message.split('\n').join('\n    ')}`); } };
+const acheck = async (name, fn) => { try { await fn(); passed += 1; console.log(`  ✓ ${name}`); } catch (e) { failed += 1; console.log(`  ✗ ${name}\n    ${e.message.split('\n').join('\n    ')}`); } };
 
 try {
   mkdirSync(repo);
@@ -86,6 +89,120 @@ try {
   check('sentFor: an old manifest with no landedCommit matches a PR-less landing within 30 min', () => {
     assert.equal(sentFor({ landedCommit: '', landedAt: '2026-11-13T23:38:48Z', pr: { number: 661 } }, { sha: 'f'.repeat(40), pr: 0, at: '2026-11-13T23:39:14Z', commits: [] }), true);
     assert.equal(sentFor({ landedCommit: 'a'.repeat(40), landedAt: '2026-11-13T23:38:48Z' }, { sha: 'f'.repeat(40), pr: 0, at: '2026-11-13T23:39:14Z', commits: [] }), false);
+  });
+
+  // ---------------------------------------------------------------- s15: mapper, builder, sender, retry, lock, backfill
+  const MW = await import('../../core/merge-watch.mjs');
+  const { mapCommit, buildOf } = await import('./map-commit.mjs');
+  const { buildManifest } = await import('./build-manifest.mjs');
+  const S = await import('./send.mjs');
+  const R = await import('./retry.mjs');
+  const CLI = await import('../merge-watch.mjs');
+  const { loadStore } = await import('../builds-store.mjs');
+  const entryOf = (sha) => { const [h, p, at, sub] = git('log', '-1', '--format=%H%x1f%P%x1f%cI%x1f%s', sha).split('\x1f'); return MW.landingsOf([{ sha: h, parents: p.split(' '), at, subject: sub }], { now: '2026-11-20T00:00:00Z' })[0]; };
+  const gh = (routes) => async (path) => { for (const [re, body] of routes) if (re.test(path)) return body; return null; };
+
+  console.log('mapper');
+  git('checkout', '-q', 'main');
+  git('checkout', '-q', '-b', 'claude/squash-c'); commit('squash-c: work'); git('checkout', '-q', 'main');
+  git('merge', '-q', '--squash', 'claude/squash-c'); n += 1; git('commit', '-q', '-m', 'Squash C: one change (#21)'); const squash = git('rev-parse', 'HEAD');
+  const push = commit('hotfix typo in a doc');
+  await acheck('a merge commit: PR and branch from the subject, build by branch, files and areas from base..sha', async () => {
+    const m = await mapCommit(bySha.get(pr11), { store: loadStore(), github: gh([]) });
+    assert.equal(m.entry.pr, 11); assert.equal(m.entry.branch, 'claude/hotfix-x'); assert.equal(m.build.id, 'hotfix-x');
+    assert.equal(m.files.length, 1, 'the hotfix branch\'s one file'); assert.match(m.files[0], /^f\d+\.txt$/); assert.ok(m.areas.length >= 1);
+  });
+  await acheck('a squash commit: the PR from "(#N)", the head branch from GitHub', async () => {
+    const m = await mapCommit(entryOf(squash), { store: loadStore(), github: gh([[/\/pulls\/21$/, { number: 21, title: 'Squash C', head: { ref: 'claude/squash-c' }, merged_at: '2026-11-14T11:00:00Z', merge_commit_sha: squash }]]) });
+    assert.equal(m.entry.pr, 21); assert.equal(m.entry.branch, 'claude/squash-c'); assert.equal(m.build.id, 'squash-c'); assert.equal(m.pr.mergedAt, '2026-11-14T11:00:00Z');
+  });
+  await acheck('a push with no PR: GitHub has none, no build, unlinked', async () => {
+    const m = await mapCommit(entryOf(push), { store: loadStore(), github: gh([[/\/commits\/.*\/pulls$/, []]]) });
+    assert.equal(m.pr, null); assert.equal(m.build.id, ''); assert.equal(m.entry.pr, 0);
+  });
+  check('build lookup order: branch, store PR link, store branch, build-origin, subject prefix', () => {
+    const st = { builds: [{ id: 'one', pr: '#5' }, { id: 'two', branch: 'claude/other-name' }] };
+    assert.deepEqual(buildOf({ branch: 'claude/one', pr: 0 }, { store: st }), { id: 'one', via: 'branch' });
+    assert.deepEqual(buildOf({ branch: 'claude/x-report', pr: 5 }, { store: st }), { id: 'one', via: 'store-pr' });
+    assert.deepEqual(buildOf({ branch: 'claude/other-name', pr: 0 }, { store: st }), { id: 'two', via: 'store-branch' });
+    assert.deepEqual(buildOf({ branch: 'claude/said-only', pr: 0 }, { store: st, origins: { 'said-only': { said: 'x' } } }), { id: 'said-only', via: 'origin' });
+    assert.deepEqual(buildOf({ branch: '', pr: 0, guess: 'two' }, { store: st }), { id: 'two', via: 'guess' });
+  });
+
+  console.log('builder');
+  await acheck('a manifest: mergedAt from the PR, landedAt from the commit, CI runs and the report as tests, Brett\'s words from build-origin', async () => {
+    const root = join(tmp, 'root'); mkdirSync(join(root, '_claude/builds/reports'), { recursive: true });
+    writeFileSync(join(root, '_claude/builds/reports/squash-c.md'), '# Squash C\n\n## Tests\n\n- node test.mjs: 3 passed\n');
+    const m = await mapCommit(entryOf(squash), { store: loadStore(), github: gh([[/\/pulls\/21$/, { number: 21, title: 'Squash C', head: { ref: 'claude/squash-c' }, merged_at: '2026-11-14T11:00:00Z', merge_commit_sha: squash }]]) });
+    const b = await buildManifest(m, { store: loadStore(), root, origins: { 'squash-c': { said: 'make C one change', verbatim: true, source: 'voice', at: '2026-11-14T09:00:00Z' } },
+      github: gh([[/actions\/runs/, { workflow_runs: [{ name: 'Android', run_number: 2, status: 'completed', conclusion: 'success', html_url: 'u' }, { name: 'Android', run_number: 1, status: 'completed', conclusion: 'failure' }] }]]) });
+    assert.ok(b.valid.ok, JSON.stringify(b.valid.errors)); assert.equal(b.unlinked, false);
+    assert.equal(b.manifest.mergedAt, '2026-11-14T11:00:00Z'); assert.equal(b.manifest.landedAt, entryOf(squash).at); assert.equal(b.manifest.landedCommit, squash);
+    assert.deepEqual(b.manifest.tests.find((t) => t.name === 'CI: Android')?.result, 'pass'); assert.equal(b.manifest.tests.filter((t) => t.name === 'CI: Android').length, 1, 'newest run per workflow');
+    assert.equal(b.manifest.report, '_claude/builds/reports/squash-c.md'); assert.equal(b.manifest.said.text, 'make C one change'); assert.equal(b.manifest.said.verbatim, true);
+  });
+  await acheck('a landing with no build goes out unlinked: main-<sha9>, its subject, not verbatim', async () => {
+    const b = await buildManifest(await mapCommit(entryOf(push), { store: loadStore(), github: gh([]) }), { store: loadStore(), github: gh([]) });
+    assert.ok(b.valid.ok); assert.equal(b.unlinked, true); assert.equal(b.id, `main-${push.slice(0, 9)}`); assert.equal(b.manifest.said.verbatim, false); assert.equal(b.manifest.said.source, 'git');
+  });
+
+  const ghSquash = gh([[/\/pulls\/21$/, { number: 21, title: 'Squash C', head: { ref: 'claude/squash-c' }, merged_at: '2026-11-14T11:00:00Z', merge_commit_sha: squash }]]);
+  console.log('sender');
+  await acheck('send twice gives one manifest: the second is skipped as already sent', async () => {
+    const env = { ...process.env, AXF_SHIPPED_DIR: join(tmp, 'side-1') };
+    let st = MW.startState({ ref: 'main', now: '2026-11-20T00:00:00Z' });
+    const a = await S.sendOne(st, entryOf(squash), { store: loadStore(), env, github: ghSquash, now: '2026-11-20T00:00:00Z' }); st = a.state;
+    const b = await S.sendOne(st, entryOf(squash), { store: loadStore(), env, github: ghSquash, now: '2026-11-20T00:01:00Z' });
+    assert.equal(a.result.status, 'sent', a.result.error); assert.equal(b.result.status, 'skipped'); assert.equal(b.result.why, 'already sent');
+    assert.equal(readManifest('squash-c', env).rev, 1);
+  });
+  await acheck('a fresh state finds the sidecar: skipped, recorded sent, no second rev', async () => {
+    const env = { ...process.env, AXF_SHIPPED_DIR: join(tmp, 'side-1') };
+    const r = await S.sendOne(MW.startState({ ref: 'main', now: '2026-11-20T00:00:00Z' }), entryOf(squash), { store: loadStore(), env, github: ghSquash, now: '2026-11-20T00:02:00Z' });
+    assert.equal(r.result.why, 'in the sidecar'); assert.equal(r.state.entries[squash].state, 'sent'); assert.equal(readManifest('squash-c', env).rev, 1);
+  });
+  await acheck('an unlinked landing writes only the sidecar (no main-* build in the store)', async () => {
+    const env = { ...process.env, AXF_SHIPPED_DIR: join(tmp, 'side-2') };
+    const r = await S.sendOne(MW.startState({ ref: 'main', now: '2026-11-20T00:00:00Z' }), entryOf(push), { store: loadStore(), env, github: gh([]), now: '2026-11-20T00:00:00Z' });
+    assert.equal(r.result.status, 'sent'); assert.ok(readManifest(`main-${push.slice(0, 9)}`, env)); assert.ok(!loadStore().builds.some((b) => b.id.startsWith('main-')));
+  });
+  await acheck('a failing transport records failed with a 1-minute retry', async () => {
+    const off = S.registerTransport('boom', async () => { throw new Error('ledger down'); });
+    try {
+      const env = { ...process.env, AXF_SHIPPED_DIR: join(tmp, 'side-3'), AXF_MERGE_WATCH_SEND: 'boom' };
+      const r = await S.sendOne(MW.startState({ ref: 'main', now: '2026-11-20T00:00:00Z' }), entryOf(push), { store: loadStore(), env, github: gh([]), now: '2026-11-20T00:00:00Z' });
+      assert.equal(r.result.status, 'failed'); assert.match(r.result.error, /ledger down/); assert.equal(r.state.entries[push].nextRetryAt, '2026-11-20T00:01:00Z');
+    } finally { off(); }
+  });
+
+  console.log('retry and alert');
+  check('backoff 1, 5, 15, 60 min; the alert once at the 3rd failure; Retry resets and resolves it', () => {
+    const env = { ...process.env, AXF_MERGE_WATCH_DATA: join(tmp, 'mw-alert') };
+    let st = MW.normState({ ...MW.startState({ now: '2026-11-20T00:00:00Z' }), entries: { [push]: { ...entryOf(push), state: 'pending' } } });
+    const posts = []; const post = (p) => posts.push(p); const waits = [];
+    for (let i = 0; i < 4; i += 1) { const t = new Date(Date.parse('2026-11-20T00:00:00Z') + i * 3600e3).toISOString(); st = MW.markFailed(st, push, 'x', t); waits.push((Date.parse(st.entries[push].nextRetryAt) - Date.parse(t)) / 60e3); R.syncAlert(st, { env, post }); }
+    assert.deepEqual(waits, [1, 5, 15, 60]); assert.deepEqual(posts, ['/api/alerts']);
+    const back = R.retryAll(st); assert.equal(back.state.entries[push].state, 'pending'); R.syncAlert(back.state, { env, post }); assert.deepEqual(posts, ['/api/alerts', '/api/alerts/resolve']);
+  });
+
+  console.log('lock');
+  check('one tick at a time: a held lock refuses, a dead holder\'s lock is taken', () => {
+    const env = { ...process.env, AXF_MERGE_WATCH_DATA: join(tmp, 'mw-lock') };
+    const un = CLI.takeLock(env); assert.ok(un); assert.equal(CLI.takeLock(env), null); un();
+    mkdirSync(join(tmp, 'mw-lock'), { recursive: true }); writeFileSync(join(tmp, 'mw-lock', 'tick.lock'), JSON.stringify({ pid: 999999, at: '2026-11-20T00:00:00Z' }));
+    const again = CLI.takeLock(env); assert.ok(again, 'stale lock taken'); again();
+  });
+
+  console.log('backfill range');
+  await acheck('backfill --since takes only landings from that date on, and a second run sends nothing', async () => {
+    const env = { ...process.env, AXF_MERGE_WATCH_DATA: join(tmp, 'mw-bf'), AXF_SHIPPED_DIR: join(tmp, 'side-bf') };
+    const since = bySha.get(pr12).at;
+    const a = await CLI.backfill({ since, env, now: '2026-11-20T00:00:00Z' });
+    assert.ok(a.ok, JSON.stringify(a.results.filter((r) => r.status === 'failed')));
+    assert.ok(a.results.every((r) => r.at >= since), 'nothing older than since'); assert.ok(!a.results.some((r) => r.sha === pr10 || r.sha === pr11));
+    assert.ok(a.results.some((r) => r.sha === pr12 && r.status === 'sent')); assert.ok(a.results.some((r) => r.sha === land && r.status === 'sent'));
+    const b = await CLI.backfill({ since, env, now: '2026-11-20T00:05:00Z' });
+    assert.equal(b.results.filter((r) => r.status === 'sent').length, 0);
   });
 } finally {
   rmSync(tmp, { recursive: true, force: true });
