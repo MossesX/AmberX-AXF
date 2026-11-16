@@ -809,10 +809,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 13:23 UTC · `fix-build-whose-session-finishes-phase-e` s12 done, → built (all) · orchestrator
-- 2026-11-16 13:23 UTC · `fix-build-whose-session-finishes-phase-e` note (all) · orchestrator
-- 2026-11-16 13:23 UTC · `group-chat-audio-hear-agents-talk-while` s4 done (all) · orchestrator
-- 2026-11-16 13:24 UTC · `fix-build-whose-session-finishes-phase-e` → pending, note (all) · pipeline
 - 2026-11-16 13:24 UTC · `console-look-becomes-default-axhub-skin` → running, note (all) · pipeline
 - 2026-11-16 13:24 UTC · `console-look-becomes-default-axhub-skin` note (all) · orchestrator
 - 2026-11-16 13:24 UTC · `console-look-becomes-default-axhub-skin` note (all) · orchestrator
@@ -1209,6 +1205,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 19:05 UTC · `reset-all-button-every-asset-override` note (all) · mcp
 - 2026-11-16 19:06 UTC · `auto-lander-controls-in-the-gate-plugin` note (all) · orchestrator
 - 2026-11-16 19:06 UTC · `hotfix-orchestrator-grid-columns-don-t` s6 done (all) · orchestrator
+- 2026-11-16 19:05 UTC · `reset-all-button-every-asset-override` → running, note (all) · pipeline
+- 2026-11-16 19:06 UTC · `reset-all-button-every-asset-override` note (all) · orchestrator
+- 2026-11-16 19:06 UTC · `reset-all-button-every-asset-override` note (all) · orchestrator
+- 2026-11-16 19:06 UTC · `reset-all-button-every-asset-override` branch claude/reset-all-button-every-asset-override (all) · pipeline
 
 ## Token passes (log)
 
