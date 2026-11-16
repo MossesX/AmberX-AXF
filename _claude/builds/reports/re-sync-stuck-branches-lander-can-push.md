@@ -23,3 +23,4 @@ Out of scope, not touched: `claude/axf-data-postgres-real-tables-own`, `claude/d
 ## Re-syncs (merge origin into local, both sides kept, plain push)
 
 - s2 `claude/server-gate-one-session-per-build-no`: merged origin 949c25d49 into local be75e0ae8 → 8b5495bd1; builds-store files resolved by the `axf-builds` merge driver, no manual conflicts; pushed fast-forward.
+- s3 `claude/one-source-truth-console-shows-only-what`: merged origin a7febca2e into local dc873adac → eccfe754a; merge driver resolved the builds-store files; pushed fast-forward.
