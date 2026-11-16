@@ -813,7 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 13:29 UTC · `console-look-becomes-default-axhub-skin` s8 done (all) · orchestrator
 - 2026-11-16 13:30 UTC · `vps-sends-shipped-features-every-merge` s2 done, → running (all) · orchestrator
 - 2026-11-16 13:31 UTC · `banner-widget-shapes-more-than-circle` → pending, note (all) · reconciler
 - 2026-11-16 13:31 UTC · `vps-sends-shipped-features-every-merge` s2 done, note (all) · reconciler
@@ -1213,6 +1212,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 19:10 UTC · `hotfix-orchestrator-grid-columns-don-t` s7 done (all) · orchestrator
 - 2026-11-16 19:10 UTC · `reset-all-button-every-asset-override` s2 done (all) · orchestrator
 - 2026-11-16 19:11 UTC · `fix-red-ci-blocked-builds-they-land` → queued, note (all) · brett
+- 2026-11-16 19:12 UTC · `alert-every-time-build-falls-back-to` added (0 steps) (all) · console
 
 ## Token passes (log)
 

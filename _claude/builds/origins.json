@@ -309,6 +309,18 @@
    "from": "",
    "addenda": []
   },
+  "alert-every-time-build-falls-back-to": {
+   "said": "Every time something falls back to Pending, I need a fucking alert somewhere.",
+   "at": "2026-11-16T19:12:13.425Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "all-banners-hide-when-empty": {
    "said": "",
    "at": "",
