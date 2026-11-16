@@ -140,12 +140,6 @@
     "module": "axf-kernel",
     "notes": "component-tokens@1 (Nov 13 2026, build own-token-sets-for-grids-and-tab-groups): grids / tables (--fx-grid-*, 32 tokens) and tab groups (--fx-tab-*, 58 tokens) have their own token families (core/engines/component-tokens.mjs: kind, level, description, default = today's general token), set by the style theme (grid.* / tabs.*), control@1 tokens.style, and per instance (axf.tokens.instances, tokens.instances; Restore previous edit / Restore from axHub). CI spec/check-component-tokens.mjs. Kotlin twin deferred."
   },
-  "f.tokenregistry": {
-    "status": "built",
-    "wave": 1,
-    "module": "axf-kernel",
-    "notes": "Build token-registry-skin-editor-live-sandbox (Nov 13 2026): framework/schemas/token-registry.json, spec/check-token-registry.mjs, console plugin skin-editor (web + Python twin), REST / MCP / CLI / voice. Kotlin twin deferred (PORTING.md)."
-  },
   "f.locals": {
     "status": "built",
     "wave": 1,
@@ -2307,6 +2301,18 @@
     "module": "app-console",
     "notes": "context-lead@1: rt.contextExtras keys '^:<name>' lead every context menu above one separator (core/engines/windows.ts withContextLead, react Overlays ContextMenuHost; any target, even contributions:false, right-click and long-press). The console registers Console settings (app.settings, folding the asset's own Settings in) plus console.settings.open for search, voice, MCP and CLI; help entries; checks spec/check-context-lead.mts + apps/console-web/scripts/console-settings-menu.mts. Kotlin twin deferred."
   },
+  "cx.buildengine.groups": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "build-groups@1 (the build orchestrator plugin: groups-core.mjs rules, groups.mjs CLI): groups per project in <pipeline dir>/groups.json; hand-picked members (drag, select, voice, API) plus smart rules (title contains, more than N behind main, filed in the last N days, states, priorities); state order partial, pending, queued, running, failed, done, landed with counts, sort and filter; a group pinned as a tab sits next to its stage tab (group:<id>); group actions queue, land (Urgent in the merge queue), archive, priority. REST /groups, plugin commands groups-* (MCP, CLI axf build-orchestrator, control@1 plugins.commands), console actions build-orchestrator.groups / group-add / group-remove / group-action. Kotlin twin deferred."
+  },
+  "f.tokenregistry": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel",
+    "notes": "Build token-registry-skin-editor-live-sandbox (Nov 13 2026): framework/schemas/token-registry.json, spec/check-token-registry.mjs, console plugin skin-editor (web + Python twin), REST / MCP / CLI / voice. Kotlin twin deferred (PORTING.md)."
+  },
   "cx.skin.animations": {
     "status": "built",
     "wave": 1,
@@ -2324,5 +2330,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "Nov 13 2026 (build skin-axhub-override-switch-greyed-out): console Settings → Appearance → Override axHub, under Get my skin only from axHub (default off). One or the other whichever way either is set (runtime onChange: Override on clears axf.lock.hubskin, axHub-only on clears axf.lock.hubskin.override and the overridden marks). While axHub-only is on every skin and asset editor is disabled, not hidden (HubSkinLockArea: Theme manager rows, Theme editor, Asset studio, nav style, context menu designer; the Appearance panel, skin picker, every-asset picker and plugin themes through the lock), each under HubSkinLockNote with Brett's wording and a Click here to override link; the link and the switch ask one confirm. Edits under Override are recorded in axf.lock.hubskin.overridden and shown as Overridden chips. Reachable by the setting (search, console.settings, settings.set:axf.lock.hubskin.override), the appearance.hubskin.override action and voice (\"override the axHub skin\", Python twin). Kotlin twin deferred (PORTING.md)."
+  },
+  "cx.gate": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Build gate-rules-plugin-in-the-console (Nov 15 2026; Brett: \"Where is the gate and rules plugin, open it on my screen.\"): Builds → Gate & rules (view:gate, tabs gate.tabs=rules|auto-lander|history), Settings → Plugins → Gate. REST /api/plugins/gate, MCP gate_* / lander_*, CLI axf gate …, voice gate.open, gate.rule, lander.land-now, lander.pause, lander.resume, gate.setting. Merge queue switch off by default (one at a time). Self-tests: the plugin's test.mjs and server/test_routes.py. Kotlin twin deferred (PORTING.md)."
   }
 }
