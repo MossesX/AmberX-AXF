@@ -814,7 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 19:33 UTC · `fix-red-ci-blocked-builds-they-land` s18 done (all) · orchestrator
 - 2026-11-16 19:33 UTC · `hide-any-ui-asset-global-context-menu` note (all) · orchestrator
 - 2026-11-16 19:33 UTC · `alert-every-time-build-falls-back-to` note (all) · pipeline
 - 2026-11-16 19:34 UTC · `settings-interface-gear-every-plugin` s8 done (all) · orchestrator
@@ -1214,6 +1213,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 23:33 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → running, note (all) · pipeline
 - 2026-11-16 23:33 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` branch claude/server-watchdog-orchestrator-auto-recovers-stuck (all) · pipeline
 - 2026-11-16 23:33 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · orchestrator
+- 2026-11-16 23:34 UTC · `icon-packs-with-drag-drop-pack-designer` s6 done (all) · orchestrator
 
 ## Token passes (log)
 
