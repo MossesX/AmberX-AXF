@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6469,
- "updatedAt": "2026-11-16T14:14:18.592Z",
+ "rev": 6470,
+ "updatedAt": "2026-11-16T14:14:43.746Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -221129,11 +221129,11 @@
     "all"
    ],
    "order": {
-    "all": 866
+    "all": 867
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -221365,11 +221365,11 @@
     "all"
    ],
    "order": {
-    "all": 867
+    "all": 868
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -222026,11 +222026,11 @@
     "all"
    ],
    "order": {
-    "all": 868
+    "all": 869
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -222761,11 +222761,11 @@
     "all"
    ],
    "order": {
-    "all": 869
+    "all": 870
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -223665,11 +223665,11 @@
     "all"
    ],
    "order": {
-    "all": 870
+    "all": 871
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -224431,11 +224431,11 @@
     "all"
    ],
    "order": {
-    "all": 871
+    "all": 872
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -226032,7 +226032,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T22:19:00.612Z",
-   "updatedAt": "2026-11-16T14:14:15.251Z",
+   "updatedAt": "2026-11-16T14:14:42.260Z",
    "builtAt": "",
    "notes": [
     {
@@ -226695,12 +226695,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T14:14:42.260Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T22:21:08.816Z",
-     "updatedAt": "2026-11-14T22:21:08.816Z"
+     "updatedAt": "2026-11-16T14:14:42.567Z"
     },
     {
      "id": "s20",
@@ -226733,11 +226733,11 @@
     "all"
    ],
    "order": {
-    "all": 865
+    "all": 866
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
