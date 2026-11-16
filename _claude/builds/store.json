@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7085,
- "updatedAt": "2026-11-16T23:53:21.185Z",
+ "rev": 7086,
+ "updatedAt": "2026-11-16T23:53:43.403Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -258223,15 +258223,15 @@
    "title": "Orchestrator runs long builds across multiple slots",
    "category": "",
    "detail": "Any build estimated over 30 minutes is split into independent step groups that run in parallel in separate slots (separate sessions on their own worktrees or sub-branches), then merged back onto the build's branch in order before landing. The splitter marks which steps are independent (no shared files) vs must run in sequence; dependent steps wait for their group. Uses free slots on any usable account. Shows per-group progress in the orchestrator. Server-gate rule. Same on REST, MCP, CLI, voice. Tests, land through the orchestrator.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/orchestrator-runs-long-builds-across",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T23:25:33.721Z",
-   "updatedAt": "2026-11-16T23:53:18.458Z",
+   "updatedAt": "2026-11-16T23:53:33.872Z",
    "builtAt": "",
    "notes": [
     {
@@ -258241,6 +258241,14 @@
     {
      "text": "Split by Claude into 20 steps (4 Fable).",
      "at": "2026-11-16T23:28:18.115Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-orchestrator-runs-long-builds-across--earl.",
+     "at": "2026-11-16T23:53:27.981Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-orchestrator-runs-long-builds-across--earl, shared account login)",
+     "at": "2026-11-16T23:53:33.871Z"
     }
    ],
    "approvals": [],
@@ -258260,13 +258268,13 @@
    "pipeline": {
     "queuedAt": "2026-11-16T23:25:37.627Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-orchestrator-runs-long-builds-across--earl",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-16T23:53:26.881Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -258279,7 +258287,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-16T23:53:26.881Z",
     "planned": {
      "model": "Fable",
      "account": "hulu0241",
@@ -258288,7 +258296,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-16T23:53:26.881Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -258801,7 +258809,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
