@@ -7,7 +7,7 @@ const A = (g: string, id: string, l: string, d: string, p: string[], prompt: str
 const { chain: C, wizard: W } = c;
 
 /* ---------------------------------------------------------------- ask */
-A('Ask', 'ask', 'Ask anything', 'A free question, answered out loud.', ['ask {text}', 'question {text}', 'hey gizmo {text}', 'hey molly {text}'], '{text}');
+A('Ask', 'ask', 'Ask anything', 'A free question, answered out loud.', ['ask {text}', 'question {text}', 'hey gizmo {text}'], '{text}');
 A('Ask', 'explain', 'Explain simply', 'Explains something like you\'re new to it.', ['explain {text} simply', 'eli5 {text}', 'explain like im five {text}'], 'Explain simply, in four sentences, for someone new to it: {text}');
 A('Ask', 'define', 'Define', 'One-sentence definition.', ['define {text}', 'what does {text} mean', 'meaning of {text}'], 'Define in one sentence: {text}');
 A('Ask', 'compare', 'Compare', 'Compares two things, pros and cons.', ['compare {text}', 'difference between {text}', 'which is better {text}'], 'Compare these, pros and cons, then a one-line verdict: {text}');

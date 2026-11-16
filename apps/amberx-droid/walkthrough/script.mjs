@@ -101,7 +101,7 @@ export const CHAPTERS = [
     ],
   },
   {
-    id: 'molly', title: 'Gizmo', start: 'Command center',
+    id: 'gizmo', title: 'Gizmo', start: 'Command center',
     scenes: [
       { say: "Meet Gizmo. He's your companion, like Vinny and Mosses on the console. He knows the code, answers questions about the app, and builds or fixes things in any container.", act: async (h) => { await h.calm(); await h.click('role=tab[name=/Developer/]', 'Developer commands'); } },
       { say: "Developer commands go through Gizmo. Anything he runs on the server is a veto call, so it lands on your Home page first, with a countdown and a Deny button.", act: async (h) => { await h.scroll(300); await h.wait(1500); await h.scroll(-300); } },

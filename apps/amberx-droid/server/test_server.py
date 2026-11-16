@@ -303,19 +303,19 @@ a = c.post("/api/ai/ask", headers=P, json={"question": "what is the gate code?",
 sent = json.loads(fake.calls[-1].body)
 check("ask answers from the notes", a["answer"].startswith("Your notes say") and "code 1234" in sent["system"] and "ONLY the notes" in sent["system"], (a, sent["system"][:200]))
 
-# prompt (AI snippets) + Molly (Oct 28 2026)
+# prompt (AI snippets) + Gizmo (Oct 28 2026)
 fake.on("api.anthropic.com", anthropic("step one\nstep two"))
 pr = c.post("/api/ai/prompt", headers=P, json={"prompt": "plan a garden", "notes": [{"title": "Garden", "text": "tomatoes"}]})
 sent = json.loads(fake.calls[-1].body)
 check("prompt answers (a signed-in user may)", pr.status_code == 200 and pr.json()["answer"] == "step one\nstep two" and "read aloud" in sent["system"] and "tomatoes" in sent["system"], pr.text[:200])
 check("prompt cap", c.post("/api/ai/prompt", headers=P, json={"prompt": "x" * 8001}).status_code == 413)
 check("prompt required", c.post("/api/ai/prompt", headers=P, json={"prompt": " "}).status_code == 400)
-check("Molly is admins only", c.post("/api/ai/molly", headers=P, json={"task": "status"}).status_code == 403)
+check("Gizmo is admins only", c.post("/api/ai/gizmo", headers=P, json={"task": "status"}).status_code == 403)
 AP = {**A, "origin": ORIGIN}
 os.environ.pop("AMBERX_CONSOLE_TOKEN", None)
-ms = c.get("/api/ai/molly/status", headers=A).json()
-check("Molly without a console token: not connected, says why", ms["ok"] is False and "AMBERX_CONSOLE_TOKEN" in ms["reason"] and ms["fix"] == "token", ms)
-check("Molly without a console token: 503", c.post("/api/ai/molly", headers=AP, json={"task": "status"}).status_code == 503)
+ms = c.get("/api/ai/gizmo/status", headers=A).json()
+check("Gizmo without a console token: not connected, says why", ms["ok"] is False and "AMBERX_CONSOLE_TOKEN" in ms["reason"] and ms["fix"] == "token", ms)
+check("Gizmo without a console token: 503", c.post("/api/ai/gizmo", headers=AP, json={"task": "status"}).status_code == 503)
 
 
 class FakeConsole:
@@ -324,7 +324,7 @@ class FakeConsole:
 
     def call(self, method, path, body=None, timeout=None):
         self.calls.append((method, path, body))
-        if path.startswith(main.MOLLY_ASK):
+        if path.startswith(main.GIZMO_ASK):
             return {"text": "CI is green.", "walkthrough": {"title": "Open CI", "steps": []}}
         return {"walkthroughs": []}
 
@@ -332,9 +332,9 @@ class FakeConsole:
 fc = FakeConsole()
 _real = main.console_client
 main.console_client = lambda: fc
-mr = c.post("/api/ai/molly", headers=AP, json={"task": "is ci green", "page": "developer<x>"}).json()
-check("Molly: asks the console's walkthrough guide, answer + walkthrough title back", mr == {"answer": "CI is green.", "walkthrough": "Open CI"} and fc.calls[-1] == ("POST", main.MOLLY_ASK, {"task": "is ci green", "app": "amberx", "page": "developerx"}), (mr, fc.calls))
-check("Molly status: connected", c.get("/api/ai/molly/status", headers=A).json()["ok"] is True)
+mr = c.post("/api/ai/gizmo", headers=AP, json={"task": "is ci green", "page": "developer<x>"}).json()
+check("Gizmo: asks the console's walkthrough guide, answer + walkthrough title back", mr == {"answer": "CI is green.", "walkthrough": "Open CI"} and fc.calls[-1] == ("POST", main.GIZMO_ASK, {"task": "is ci green", "app": "amberx", "page": "developerx"}), (mr, fc.calls))
+check("Gizmo status: connected", c.get("/api/ai/gizmo/status", headers=A).json()["ok"] is True)
 # Re-voice a walkthrough with edits: checked here, then sent to the console's re-record call (a veto call on axHub)
 rv = c.post("/api/walkthrough/stack/render", headers=AP, json={"voiceOnly": True, "overrides": {"voice": "en_US-amy-medium", "speed": 5, "lines": {"open-0": "  Yo\n kid ", "Bad Key": "x", "open-1": 7}}})
 check("walkthrough re-voice: sent to the console with clean edits", rv.status_code == 200 and fc.calls[-1] == ("POST", main.WALKTHROUGH_RENDER,

@@ -19,12 +19,12 @@ export interface RunEnv {
   /** say the question, return the answer ('' = nothing heard) */
   listen(question: string, kind: SlotKind, choices?: string[]): Promise<string>;
   ai(prompt: string): Promise<string | null>;
-  molly(task: string): Promise<string | null>;
+  gizmo(task: string): Promise<string | null>;
   command(id: string): Effective | undefined;
   /** the AI connection is on and answering */
   aiReady(): boolean;
   /** Gizmo (the console's agent) is reachable; developer commands need him (default: aiReady) */
-  mollyReady?(): boolean;
+  gizmoReady?(): boolean;
 }
 
 export interface RunResult { ok: boolean; did: string; stoppedAt?: number; slots: Record<string, string>; said: string[] }
@@ -72,7 +72,7 @@ export async function runCommand(hit: Pick<CommandHit, 'command' | 'slots'>, env
   const stop = (did: string, ok: boolean, i?: number): RunResult => ({ ok, did, stoppedAt: i, slots, said });
 
   if (depth > MAX_DEPTH) return stop('Too many commands inside commands.', false);
-  const ready = cmd.developer ? (env.mollyReady?.() ?? env.aiReady()) : !cmd.needsAi || env.aiReady();
+  const ready = cmd.developer ? (env.gizmoReady?.() ?? env.aiReady()) : !cmd.needsAi || env.aiReady();
   if (!ready) {
     await speak(cmd.developer ? 'Gizmo isn\'t connected, so developer commands are off. Open AI snippets to set him up.' : 'The AI isn\'t connected. Open AI snippets to set it up.');
     return stop('AI not connected.', false);
@@ -133,8 +133,8 @@ export async function runCommand(hit: Pick<CommandHit, 'command' | 'slots'>, env
         break;
       }
       case 'ai':
-      case 'molly': {
-        const answer = step.do === 'ai' ? await env.ai(step.prompt) : await env.molly(step.task);
+      case 'gizmo': {
+        const answer = step.do === 'ai' ? await env.ai(step.prompt) : await env.gizmo(step.task);
         if (answer === null) { await speak(step.do === 'ai' ? 'The AI didn\'t answer.' : 'Gizmo didn\'t answer.'); return stop('No answer from the AI.', false, i); }
         slots[step.do === 'ai' && step.into ? step.into : 'answer'] = answer;
         if (!(step.do === 'ai' && step.into)) await speak(answer);

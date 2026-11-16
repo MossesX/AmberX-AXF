@@ -907,7 +907,7 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
         say: (t) => { log.push(`say ${t}`); },
         listen: async (q) => { log.push(`ask ${q}`); return answers.shift() ?? ''; },
         ai: async (p) => { log.push(`ai ${p}`); return 'step one\nstep two'; },
-        molly: async (t) => { log.push(`molly ${t}`); return 'ok'; },
+        gizmo: async (t) => { log.push(`gizmo ${t}`); return 'ok'; },
         command: (id) => eff.find((c) => c.id === id),
         aiReady: () => ai,
       },
@@ -944,11 +944,11 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   {
     const f = fake(['yes']);
     const r = await rn.runCommand({ command: byId('dev.morning'), slots: {} }, f.env);
-    eq(f.log.filter((l) => l.startsWith('molly')).length, 4, 'runner: chain of chains runs every Molly task');
+    eq(f.log.filter((l) => l.startsWith('gizmo')).length, 4, 'runner: chain of chains runs every Gizmo task');
     ok(r.ok, 'runner: dev morning ok');
   }
   /* custom commands + the voice wizard */
-  const custom = cc.parseCustom(JSON.stringify([{ id: 'mine.home', category: 'tasks', kind: 'chain', label: 'Home', phrases: ['im home'], steps: [{ do: 'say', text: 'hi' }, { do: 'evil' }] }, { id: 'bad id', category: 'tasks', kind: 'chain', phrases: ['x'], steps: [{ do: 'say', text: 'x' }] }, { id: 'mine.dev', category: 'developer', kind: 'chain', phrases: ['dev thing'], steps: [{ do: 'molly', task: 'x' }] }]));
+  const custom = cc.parseCustom(JSON.stringify([{ id: 'mine.home', category: 'tasks', kind: 'chain', label: 'Home', phrases: ['im home'], steps: [{ do: 'say', text: 'hi' }, { do: 'evil' }] }, { id: 'bad id', category: 'tasks', kind: 'chain', phrases: ['x'], steps: [{ do: 'say', text: 'x' }] }, { id: 'mine.dev', category: 'developer', kind: 'chain', phrases: ['dev thing'], steps: [{ do: 'gizmo', task: 'x' }] }]));
   eq(custom.map((c) => [c.id, c.steps.length, !!c.developer]), [['mine.home', 1, false], ['mine.dev', 1, true]], 'custom: checked, bad ids and steps dropped, developer flagged');
   eq(cc.mineId('Good Night!', (id) => id === 'mine.good-night'), 'mine.good-night-2', 'custom: ids never clash');
   const vw = await import('./src/plugins/commands/web/voicewizard.ts');
@@ -1242,7 +1242,7 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   eq([wt.speedOf('1.5'), wt.speedOf(3), wt.speedOf(undefined)], [1.5, 1, 1], 'walkthrough: speed presets only');
   eq(walkthroughErrors(WALKTHROUGH, CHAPTERS), [], 'walkthrough: the script validates (walkthrough-video@1)');
   ok(CHAPTERS.length >= 10 && CHAPTERS.every((c) => c.scenes.length), 'walkthrough: every main part has a chapter');
-  for (const want of ['home', 'terminal', 'command-center', 'dictate', 'ask', 'voice', 'molly', 'recorder', 'settings', 'hub'])
+  for (const want of ['home', 'terminal', 'command-center', 'dictate', 'ask', 'voice', 'gizmo', 'recorder', 'settings', 'hub'])
     ok(CHAPTERS.some((c) => c.id === want), `walkthrough: chapter ${want}`);
   ok(walkthroughErrors(WALKTHROUGH, [{ id: 'Bad Id', title: '', scenes: [{ say: 'short', act: 1 }] }]).length >= 3, 'walkthrough: a broken script is refused');
   ok(walkthroughErrors(WALKTHROUGH, [{ id: 'x', title: 'X', scenes: [{ say: 'this is some shit right here kid', act: () => {} }] }]).some((e) => e.includes('clean')), 'walkthrough: narration stays clean');

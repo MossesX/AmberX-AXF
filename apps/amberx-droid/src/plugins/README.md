@@ -16,5 +16,5 @@ everything a plugin declares in its library (views + nav, app-menu and context-m
 Settings → Plugins, banners, actions) is all there is besides it. Voice commands: a plugin adds phrases with
 `registerVoiceCommands(module, commands)` from `voice/web/index.tsx`; each maps trigger phrases to an action id the
 runtime already knows. The **Voice command center** (`commands`, Oct 28 2026) holds the big library (notes, tasks,
-developer through Molly, AI snippets; chains and wizards) and runs before the simple commands through
+developer through Gizmo, AI snippets; chains and wizards) and runs before the simple commands through
 `registerVoiceRouter`; spec: `_claude/memory/docs/voice-command-center.md`.

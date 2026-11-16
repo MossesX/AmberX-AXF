@@ -111,3 +111,18 @@ Its help topic is `plugin:gizmo-guide` (`help.json`, Help mode), with a screen e
 - Saved data is not migrated: the old folder held only the last 20 walkthroughs, and the three switches default to the
   same safe values (speak on, move on, auto-open off). The old data folder `.axf-console/plugins/molly-guide` in the
   console container is unused from now on.
+
+## API surfaces (s5–s6)
+
+Removed together on every surface:
+
+| Was | Now |
+|---|---|
+| Agent `molly` (agent-manager add-on; REST `/api/plugins/agent-manager/addons/molly/*`, MCP plugin commands, agent lists, voice) | gone; an installed copy is uninstalled once on start (`RETIRED_ADDONS`, open list) with its Safety entry and offered flag |
+| Console functions `molly.ask` / `.replay` / `.next` / `.prev` (hidden aliases; console_show, Ctrl+K, `axf console`, voice) | retired; `gizmo.*` unchanged |
+| REST `/api/plugins/molly-guide/*` (plugin-commands auto: MCP) | `/api/plugins/gizmo-guide/*` |
+| AmberX REST `GET /api/ai/molly/status`, `POST /api/ai/molly`, env `AMBERX_MOLLY_PLUGIN` | `/api/ai/gizmo/status`, `/api/ai/gizmo`, env `AMBERX_GUIDE_PLUGIN` (default `gizmo-guide`) |
+| AmberX command step `molly` (command builder "Task for Gizmo", developer chains and wizards), voice phrase "hey molly …" | step `gizmo`; phrase dropped ("hey gizmo …" stays) |
+
+The axf CLI had no Molly subcommand. Tests updated: agent-manager (178), agent-voice (41 + 22), gizmo-guide (20),
+AmberX server (172), AmberX web (2335).

@@ -68,30 +68,30 @@ mod.http = fake_http
 
 class FakeAgents:
     def list_agents(self):
-        return [{"id": "molly", "name": "Molly", "icon": "mic"}, {"id": "mosses", "name": "Mosses"}, {"name": "no id"}]
+        return [{"id": "gizmo", "name": "Gizmo", "icon": "mic"}, {"id": "mosses", "name": "Mosses"}, {"name": "no id"}]
 
 
 r = c.get("/p/store").json()
 check(r["agents"] == [] and r["agentsService"] is False, "no agent manager: no agents, no crash")
 plugin_services.provide("axf.agents@1", FakeAgents(), "fake-agents")
 r = c.get("/p/store").json()
-check([a["id"] for a in r["agents"]] == ["molly", "mosses"], "agents from axf.agents@1 (bad rows dropped)")
+check([a["id"] for a in r["agents"]] == ["gizmo", "mosses"], "agents from axf.agents@1 (bad rows dropped)")
 check(r["cloud"] == {"openai": False, "elevenlabs": False}, "no cloud keys yet")
 
 check(c.put("/p/profiles/../x", json={}).status_code in (400, 404), "bad agent id refused")
-check(c.put("/p/profiles/molly", json={"x": "y" * 70000}).status_code == 413, "huge profile refused")
-p = c.put("/p/profiles/molly", json={"enabled": True, "agentId": "someone-else", "permissions": {"listen": True, "cloud": False}, "cloud": {"provider": "openai", "voice": "nova"}}).json()["profile"]
-check(p["agentId"] == "molly" and p["$axf"] == "agent-voice@1" and p["updatedAt"], "profile saved under its path id")
-check(c.get("/p/store").json()["store"]["profiles"]["molly"]["enabled"] is True, "profile reads back")
+check(c.put("/p/profiles/gizmo", json={"x": "y" * 70000}).status_code == 413, "huge profile refused")
+p = c.put("/p/profiles/gizmo", json={"enabled": True, "agentId": "someone-else", "permissions": {"listen": True, "cloud": False}, "cloud": {"provider": "openai", "voice": "nova"}}).json()["profile"]
+check(p["agentId"] == "gizmo" and p["$axf"] == "agent-voice@1" and p["updatedAt"], "profile saved under its path id")
+check(c.get("/p/store").json()["store"]["profiles"]["gizmo"]["enabled"] is True, "profile reads back")
 check((DATA / "store.json").stat().st_mode & 0o777 == 0o600, "store is private (0600)")
 
 check(c.put("/p/mic", json={"mode": "toggle"}).json()["ok"], "mic saved")
 check(c.put("/p/pronunciations", json=[{"from": "k8s", "to": "kubernetes"}, {"from": ""}, 3]).json()["count"] == 1, "pronunciations keep good rows")
 
-r = c.post("/p/tts", json={"agentId": "molly", "text": "hello"})
+r = c.post("/p/tts", json={"agentId": "gizmo", "text": "hello"})
 check(r.status_code == 403 and "cloud" in r.json()["detail"], "cloud speech refused without the agent's cloud permission")
-c.put("/p/profiles/molly", json={"enabled": True, "permissions": {"listen": True, "cloud": True}, "cloud": {"provider": "openai", "voice": "nova", "style": "warm"}, "rate": 1.2})
-r = c.post("/p/tts", json={"agentId": "molly", "text": "hello"})
+c.put("/p/profiles/gizmo", json={"enabled": True, "permissions": {"listen": True, "cloud": True}, "cloud": {"provider": "openai", "voice": "nova", "style": "warm"}, "rate": 1.2})
+r = c.post("/p/tts", json={"agentId": "gizmo", "text": "hello"})
 check(r.status_code == 400 and "key" in r.json()["detail"], "no key: says where to add one")
 
 check(c.put("/p/keys/openai", json={"key": "bad-key"}).status_code == 400, "a refused key isn't stored")
@@ -103,30 +103,30 @@ check(keys[0]["set"] and keys[0]["stored"] and "sk-good" not in json.dumps(keys)
 check(c.put("/p/keys/nope", json={"key": "x"}).status_code == 404, "unknown provider")
 
 calls.clear()
-r = c.post("/p/tts", json={"agentId": "molly", "text": "hello there"})
+r = c.post("/p/tts", json={"agentId": "gizmo", "text": "hello there"})
 check(r.status_code == 200 and r.content == b"ID3fakeaudio" and r.headers["x-agent-voice-cache"] == "miss", "OpenAI speech returned")
 sent = calls[-1]["body"]
 check(sent["voice"] == "nova" and sent["instructions"] == "warm" and sent["speed"] == 1.2 and sent["model"] == "gpt-4o-mini-tts", "profile's voice, style and speed sent")
 check(calls[-1]["headers"]["authorization"] == "Bearer sk-good", "key goes only to the provider")
 calls.clear()
-r = c.post("/p/tts", json={"agentId": "molly", "text": "hello there"})
+r = c.post("/p/tts", json={"agentId": "gizmo", "text": "hello there"})
 check(r.headers["x-agent-voice-cache"] == "hit" and not calls, "second time from the cache")
-check(c.post("/p/tts", json={"agentId": "molly", "text": "x" * 5000}).status_code == 413, "too long refused")
-check(c.post("/p/tts", json={"agentId": "molly", "text": "  "}).status_code == 400, "empty refused")
+check(c.post("/p/tts", json={"agentId": "gizmo", "text": "x" * 5000}).status_code == 413, "too long refused")
+check(c.post("/p/tts", json={"agentId": "gizmo", "text": "  "}).status_code == 400, "empty refused")
 
 check(c.get("/p/voices/elevenlabs").status_code == 400, "ElevenLabs voices need a key")
 check(c.put("/p/keys/elevenlabs", json={"key": "xi-good"}).json()["ok"], "ElevenLabs key tested + stored")
 v = c.get("/p/voices/elevenlabs").json()
 check(v["voices"][0] == {"id": "abc123", "name": "Rachel", "category": "premade"}, "ElevenLabs voices listed")
 check(len(c.get("/p/voices/openai").json()["voices"]) >= 6, "OpenAI voices listed")
-c.put("/p/profiles/molly", json={"enabled": True, "permissions": {"cloud": True}, "cloud": {"provider": "elevenlabs", "voice": "abc123", "stability": 0.3}})
-r = c.post("/p/tts", json={"agentId": "molly", "text": "eleven"})
+c.put("/p/profiles/gizmo", json={"enabled": True, "permissions": {"cloud": True}, "cloud": {"provider": "elevenlabs", "voice": "abc123", "stability": 0.3}})
+r = c.post("/p/tts", json={"agentId": "gizmo", "text": "eleven"})
 check(r.status_code == 200 and "text-to-speech/abc123" in calls[-1]["url"] and calls[-1]["body"]["voice_settings"]["stability"] == 0.3, "ElevenLabs speech with the voice settings")
 
 speech = plugin_services.get("axf.speech@1")
 check(speech is not None, "axf.speech@1 is provided")
-check([n["agentId"] for n in speech.narrators()] == ["molly"] and speech.narrators()[0]["provider"] == "elevenlabs", "narrators: agents allowed cloud voices whose provider has a key")
-check(speech.say("molly", "eleven") == b"ID3fakeaudio", "the service speaks with the same profile and cache as /tts")
+check([n["agentId"] for n in speech.narrators()] == ["gizmo"] and speech.narrators()[0]["provider"] == "elevenlabs", "narrators: agents allowed cloud voices whose provider has a key")
+check(speech.say("gizmo", "eleven") == b"ID3fakeaudio", "the service speaks with the same profile and cache as /tts")
 try:
     speech.say("nobody", "hi")
     check(False, "an agent without cloud permission is refused through the service too")

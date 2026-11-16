@@ -10,11 +10,11 @@
  *   summarize(text)                → { title, summary, tags } or null; never throws
  *   ask(question, notes)           → answer text or null; never throws
  *   prompt(text, notes?)           → answer text or null (AI snippets); never throws
- *   molly(task, ctx?)              → Gizmo's reply or null (developer commands, app questions); never throws
+ *   gizmo(task, ctx?)              → Gizmo's reply or null (developer commands, app questions); never throws
  *   aiEnabled() / setAiEnabled()   → the app-level AI switch (aiReady() is false while it's off)
  *
  * Server routes (JSON, same origin): GET /api/ai/status · POST /api/ai/parse · POST /api/ai/summarize · POST /api/ai/ask ·
- * POST /api/ai/prompt · POST /api/ai/molly
+ * POST /api/ai/prompt · POST /api/ai/gizmo
  * (plus the config routes the AI plugin's settings use).
  */
 import { useSyncExternalStore } from 'react';
@@ -106,10 +106,10 @@ export async function prompt(text: string, notes: { title: string; text: string;
 
 /** Gizmo (the console's AmberX agent on axHub): a developer task or an app question. Anything he runs on the VPS asks
  * Brett on axHub first; this returns his spoken answer, and `walkthrough` when he opened one in the console. */
-export interface MollyReply { answer: string; walkthrough?: string; approvals?: string[] }
-export async function molly(task: string, context: { page?: string; app?: string } = {}): Promise<MollyReply | null> {
+export interface GizmoReply { answer: string; walkthrough?: string; approvals?: string[] }
+export async function gizmo(task: string, context: { page?: string; app?: string } = {}): Promise<GizmoReply | null> {
   if (!task.trim()) return null;
-  const r = await post<{ answer?: unknown; walkthrough?: unknown; approvals?: unknown }>('/api/ai/molly', { task: task.slice(0, 4000), page: context.page ?? '', app: context.app ?? 'amberx' }, 120_000);
+  const r = await post<{ answer?: unknown; walkthrough?: unknown; approvals?: unknown }>('/api/ai/gizmo', { task: task.slice(0, 4000), page: context.page ?? '', app: context.app ?? 'amberx' }, 120_000);
   if (!r || typeof r.answer !== 'string') return null;
   return { answer: r.answer, ...(typeof r.walkthrough === 'string' ? { walkthrough: r.walkthrough } : {}), ...(Array.isArray(r.approvals) ? { approvals: r.approvals.filter((a): a is string => typeof a === 'string') } : {}) };
 }

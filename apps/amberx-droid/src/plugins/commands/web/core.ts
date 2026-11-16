@@ -57,7 +57,7 @@ export type Step =
   /** send a prompt to Gizmo / the AI (`{slot}` filled); the answer is said and kept in slot `answer` */
   | { do: 'ai'; prompt: string; into?: string }
   /** a developer task for Gizmo on the console / VPS (approvals happen on axHub) */
-  | { do: 'molly'; task: string }
+  | { do: 'gizmo'; task: string }
   /** a notes / tasks operation from ops.ts (`args` strings take `{slot}`) */
   | { do: 'op'; op: string; args?: Record<string, string> };
 
@@ -196,8 +196,8 @@ export function parseCustom(raw: unknown): Command[] {
       description: typeof r.description === 'string' ? r.description.slice(0, 300) : '',
       settings: cleanSettings(r.settings),
       ...(category === 'developer' ? { developer: true, needsAi: true } : {}),
-      ...(steps.some((s) => s.do === 'ai' || s.do === 'molly') ? { needsAi: true } : {}),
-      ...(steps.some((s) => s.do === 'molly') ? { developer: true } : {}),
+      ...(steps.some((s) => s.do === 'ai' || s.do === 'gizmo') ? { needsAi: true } : {}),
+      ...(steps.some((s) => s.do === 'gizmo') ? { developer: true } : {}),
     });
   }
   return out;
@@ -245,7 +245,8 @@ export function cleanSteps(raw: unknown[]): Step[] {
       case 'wait': { const ms = Number(s.ms); if (ms > 0) out.push({ do: 'wait', ms: Math.min(ms, 30_000) }); break; }
       case 'run': if (/^[a-z0-9._:-]{1,80}$/i.test(str('command'))) out.push({ do: 'run', command: str('command', 80) }); break;
       case 'ai': if (str('prompt', 4000)) out.push({ do: 'ai', prompt: str('prompt', 4000), ...(str('into', 40) ? { into: str('into', 40) } : {}) }); break;
-      case 'molly': if (str('task', 4000)) out.push({ do: 'molly', task: str('task', 4000) }); break;
+      case 'molly': // a custom command saved before Nov 16 2026 (the agent's old name); read as a Gizmo task
+      case 'gizmo': if (str('task', 4000)) out.push({ do: 'gizmo', task: str('task', 4000) }); break;
       case 'op': {
         if (!/^[a-z][a-z0-9-]{1,40}$/.test(str('op', 41))) break;
         const args: Record<string, string> = {};
@@ -426,7 +427,7 @@ export function describeStep(s: Step): string {
     case 'wait': return `Wait ${Math.round(s.ms / 100) / 10} s`;
     case 'run': return `Run command ${s.command}`;
     case 'ai': return `Ask the AI: “${s.prompt.slice(0, 80)}${s.prompt.length > 80 ? '…' : ''}”`;
-    case 'molly': return `Gizmo: ${s.task.slice(0, 80)}${s.task.length > 80 ? '…' : ''}`;
+    case 'gizmo': return `Gizmo: ${s.task.slice(0, 80)}${s.task.length > 80 ? '…' : ''}`;
     case 'op': return `${s.op.replace(/-/g, ' ')}${s.args ? ` (${Object.entries(s.args).map(([k, v]) => `${k}: ${v}`).join(', ')})` : ''}`;
   }
 }

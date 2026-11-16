@@ -13,8 +13,8 @@ The page never holds an AI key: keys, provider profiles and the provider switchi
     GET  /api/walkthrough/{file}          the recorded app walkthrough (walkthrough.mp4 with Range, .vtt, chapters.json,
                                           poster.jpg) from `$AMBERX_DATA_DIR/walkthrough/` (walkthrough/rebuild.sh writes it)
   hub admins only:
-    GET  /api/ai/molly/status                     {ok, reason}   is Gizmo (the console's agent; route name kept) reachable
-    POST /api/ai/molly      {task, page?, app?}   → {answer, walkthrough?}   Gizmo through the console's walkthrough guide
+    GET  /api/ai/gizmo/status                     {ok, reason}   is Gizmo (the console's agent) reachable
+    POST /api/ai/gizmo      {task, page?, app?}   → {answer, walkthrough?}   Gizmo through the console's walkthrough guide
                                                    (every VPS command she runs is approved by Brett on axHub)
     GET  /api/ai/config                   profiles without keys (+ hasKey), order, active, Claude switch, kinds
     PUT  /api/ai/config     {profiles?, order?, active?, claude?: plan|api, keepAliveMin?}
@@ -123,18 +123,18 @@ def walkthrough_edits(raw: Any) -> dict[str, Any]:
     return out
 CONSOLE_URL = (os.environ.get("AMBERX_CONSOLE_URL") or "http://axf-console:7090").rstrip("/")
 _CONSOLE_TOKEN = TokenFile(os.environ.get("AMBERX_CONSOLE_TOKEN_FILE") or None, fallback=lambda: os.environ.get("AMBERX_CONSOLE_TOKEN", ""))
-MOLLY_TIMEOUT = 300.0
+GIZMO_TIMEOUT = 300.0
 # Where the console serves the Gizmo guide (its walkthrough plugin's folder). If that plugin is removed the console answers
 # 404 and AmberX says Gizmo can't be reached; nothing here breaks.
-MOLLY_PLUGIN = re.sub(r"[^a-z0-9-]", "", os.environ.get("AMBERX_MOLLY_PLUGIN") or "gizmo-guide") or "gizmo-guide"
-MOLLY_ASK = f"/api/plugins/{MOLLY_PLUGIN}/ask"
-WALKTHROUGH_RENDER = f"/api/plugins/{MOLLY_PLUGIN}/amberx-walkthrough/rerecord"  # re-voice / re-record a walkthrough
-MOLLY_WALKS = f"/api/plugins/{MOLLY_PLUGIN}/walkthroughs"
+GUIDE_PLUGIN = re.sub(r"[^a-z0-9-]", "", os.environ.get("AMBERX_GUIDE_PLUGIN") or "gizmo-guide") or "gizmo-guide"
+GIZMO_ASK = f"/api/plugins/{GUIDE_PLUGIN}/ask"
+WALKTHROUGH_RENDER = f"/api/plugins/{GUIDE_PLUGIN}/amberx-walkthrough/rerecord"  # re-voice / re-record a walkthrough
+GIZMO_WALKS = f"/api/plugins/{GUIDE_PLUGIN}/walkthroughs"
 
 
 def console_client() -> ConsoleClient | None:
     """The console, for Gizmo; None when no token is configured."""
-    return ConsoleClient(CONSOLE_URL, token=_CONSOLE_TOKEN, timeout=MOLLY_TIMEOUT, token_hint="AMBERX_CONSOLE_TOKEN") if _CONSOLE_TOKEN() else None
+    return ConsoleClient(CONSOLE_URL, token=_CONSOLE_TOKEN, timeout=GIZMO_TIMEOUT, token_hint="AMBERX_CONSOLE_TOKEN") if _CONSOLE_TOKEN() else None
 DEV = wallmod.Caller("dev", "admin", frozenset({"*"}), "dev")
 
 
@@ -436,19 +436,19 @@ def make_app(router: Router | None = None, approvals_transport: httpx.BaseTransp
 
     # ---- admin
 
-    @app.get("/api/ai/molly/status")
-    async def molly_status() -> dict[str, Any]:
+    @app.get("/api/ai/gizmo/status")
+    async def gizmo_status() -> dict[str, Any]:
         c = console_client()
         if c is None:
             return {"ok": False, "reason": "Gizmo isn't connected: this AmberX server has no console token (AMBERX_CONSOLE_TOKEN).", "fix": "token"}
         try:
-            await run_in_threadpool(c.call, "GET", f"{MOLLY_WALKS}?after=999999999", None, 10)
+            await run_in_threadpool(c.call, "GET", f"{GIZMO_WALKS}?after=999999999", None, 10)
             return {"ok": True, "reason": ""}
         except ConsoleError as e:
             return {"ok": False, "reason": f"The console answered: {str(e)[:200]}", "fix": "console"}
 
-    @app.post("/api/ai/molly")
-    async def molly(request: Request) -> dict[str, Any]:
+    @app.post("/api/ai/gizmo")
+    async def gizmo(request: Request) -> dict[str, Any]:
         """A developer task or app question for Gizmo. Runs on the console (its walkthrough guide → axf.agents@1); anything he
         does on the VPS waits for Brett's approval on axHub, so this can take minutes."""
         b = await body_of(request)
@@ -462,7 +462,7 @@ def make_app(router: Router | None = None, approvals_transport: httpx.BaseTransp
             raise HTTPException(503, "Gizmo isn't connected: this AmberX server has no console token (AMBERX_CONSOLE_TOKEN).")
         body = {"task": task.strip(), "app": "amberx", "page": re.sub(r"[^\w.:-]", "", str(b.get("page") or ""))[:80]}
         try:
-            r = await run_in_threadpool(c.call, "POST", MOLLY_ASK, body, MOLLY_TIMEOUT)
+            r = await run_in_threadpool(c.call, "POST", GIZMO_ASK, body, GIZMO_TIMEOUT)
         except ConsoleError as e:
             raise HTTPException(502, f"Gizmo couldn't answer: {str(e)[:300]}") from None
         r = r if isinstance(r, dict) else {}
@@ -601,7 +601,7 @@ def make_app(router: Router | None = None, approvals_transport: httpx.BaseTransp
 
     # ---------------------------------------------------------------- the built web app, single-page fallback
 
-    SEC = {"X-Content-Type-Options": "nosniff", "Referrer-Policy": "strict-origin-when-cross-origin", "Content-Security-Policy": "frame-ancestors 'self' https://molly.amberxai.com"}
+    SEC = {"X-Content-Type-Options": "nosniff", "Referrer-Policy": "strict-origin-when-cross-origin", "Content-Security-Policy": "frame-ancestors 'self'"}
 
     @app.get("/healthz", include_in_schema=False)
     def healthz() -> Response:

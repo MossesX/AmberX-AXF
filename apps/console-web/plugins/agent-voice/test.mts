@@ -10,7 +10,7 @@ import { createLease } from './web/lease.ts';
 let n = 0;
 const t = (name: string, f: () => void) => { try { f(); n++; } catch (e) { console.error(`✗ ${name}`); throw e; } };
 
-const voiced = (patch = {}) => normProfile({ ...defaultProfile('molly'), enabled: true, ...patch }, 'molly');
+const voiced = (patch = {}) => normProfile({ ...defaultProfile('gizmo'), enabled: true, ...patch }, 'gizmo');
 
 t('normProfile clamps and drops junk', () => {
   const p = normProfile({ agentId: 'x', rate: 9, pitch: -1, volume: '0.5', engine: 'laser', narrator: { readMode: 'nope', sentences: 400, maxChars: 5 }, permissions: { listen: 'yes' }, junk: 1 });
@@ -27,21 +27,21 @@ t('mic defaults keep phrases; empty string means none', () => {
   assert.equal(normMic({}).sendPhrase, 'send it'); assert.equal(normMic({ sendPhrase: '' }).sendPhrase, ''); assert.equal(normMic({ cancelPhrase: 'Scrap That' }).cancelPhrase, 'scrap that');
 });
 t('presets', () => {
-  for (const pr of PRESETS) { const p = applyPreset(voiced(), pr.id); assert.equal(p.agentId, 'molly'); assert.equal(p.enabled, true); }
+  for (const pr of PRESETS) { const p = applyPreset(voiced(), pr.id); assert.equal(p.agentId, 'gizmo'); assert.equal(p.enabled, true); }
   assert.equal(applyPreset(voiced(), 'briefing').narrator.readMode, 'summary');
   assert.equal(applyPreset(voiced(), 'nope').rate, 1);
 });
 
 t('micGate: not installed', () => { const g = micGate({ installed: false, agent: null, profile: null, deviceDenied: false, holder: null, speaking: false, mic: DEFAULT_MIC }); assert.equal(g.ok, false); assert.equal(g.reason, 'not-installed'); assert.equal(g.fix, 'install'); });
 t('micGate: names the agent missing permission', () => {
-  const g1 = micGate({ installed: true, agent: { id: 'molly', name: 'Molly' }, profile: null, deviceDenied: false, holder: null, speaking: false, mic: DEFAULT_MIC });
-  assert.equal(g1.reason, 'not-voice'); assert.match(g1.message, /^Molly is missing permission/);
-  const g2 = micGate({ installed: true, agent: { id: 'molly', name: 'Molly' }, profile: voiced(), deviceDenied: false, holder: null, speaking: false, mic: DEFAULT_MIC });
-  assert.equal(g2.reason, 'missing-permission'); assert.match(g2.message, /Molly is missing permission: Listen/); assert.equal(g2.fix, 'allow-listen');
+  const g1 = micGate({ installed: true, agent: { id: 'gizmo', name: 'Gizmo' }, profile: null, deviceDenied: false, holder: null, speaking: false, mic: DEFAULT_MIC });
+  assert.equal(g1.reason, 'not-voice'); assert.match(g1.message, /^Gizmo is missing permission/);
+  const g2 = micGate({ installed: true, agent: { id: 'gizmo', name: 'Gizmo' }, profile: voiced(), deviceDenied: false, holder: null, speaking: false, mic: DEFAULT_MIC });
+  assert.equal(g2.reason, 'missing-permission'); assert.match(g2.message, /Gizmo is missing permission: Listen/); assert.equal(g2.fix, 'allow-listen');
 });
 t('micGate: busy, device, ok + barge-in', () => {
   const p = voiced({ permissions: { listen: true } });
-  const base = { installed: true, agent: { id: 'molly', name: 'Molly' }, profile: p, deviceDenied: false, holder: null, speaking: false, mic: DEFAULT_MIC };
+  const base = { installed: true, agent: { id: 'gizmo', name: 'Gizmo' }, profile: p, deviceDenied: false, holder: null, speaking: false, mic: DEFAULT_MIC };
   assert.equal(micGate({ ...base, holder: 'dictation' }).reason, 'busy');
   assert.match(micGate({ ...base, holder: 'dictation' }).message, /Dictation is using the microphone/);
   assert.equal(micGate({ ...base, deviceDenied: true }).reason, 'device-denied');
@@ -53,7 +53,7 @@ t('micGate: busy, device, ok + barge-in', () => {
 t('heard: send / cancel / punctuation', () => {
   assert.deepEqual(interpretHeard('never mind', DEFAULT_MIC), { kind: 'cancel' });
   assert.deepEqual(interpretHeard('open the build list send it', DEFAULT_MIC), { kind: 'send', text: 'Open the build list' });
-  assert.deepEqual(interpretHeard('hello comma molly period how are you question mark', DEFAULT_MIC), { kind: 'text', text: 'Hello, molly. How are you?' });
+  assert.deepEqual(interpretHeard('hello comma gizmo period how are you question mark', DEFAULT_MIC), { kind: 'text', text: 'Hello, gizmo. How are you?' });
   assert.deepEqual(interpretHeard('first new line second', DEFAULT_MIC), { kind: 'text', text: 'First\nSecond' });
   assert.deepEqual(interpretHeard('keep comma words', { ...DEFAULT_MIC, spokenPunctuation: false }), { kind: 'text', text: 'keep comma words' });
 });
@@ -78,9 +78,9 @@ t('inline: links, code, emphasis, emoji, symbols', () => {
 const REPLY = `# Build status\n\nThe **AmberX** build passed. Two steps are left.\n\n- Merge the PR\n- Install the APK\n\n\`\`\`ts\nconst a = 1;\nconst b = 2;\n\`\`\`\n\n| Step | State |\n|---|---|\n| s1 | done |\n| s2 | left |\n\nThat's all for now.`;
 
 t('narrate: full', () => {
-  const c = narrate(REPLY, voiced({ narrator: { intro: '{name} here.' } }), { agentName: 'Molly' });
+  const c = narrate(REPLY, voiced({ narrator: { intro: '{name} here.' } }), { agentName: 'Gizmo' });
   const texts = c.map((x) => x.text);
-  assert.deepEqual(texts, ['Molly here.', 'Build status', 'The Amber X build passed.', 'Two steps are left.', 'Merge the P R', 'Install the A P K', "There's some ts code here, 2 lines.", 'A table of Step, State, with 2 rows.', "That's all for now."]);
+  assert.deepEqual(texts, ['Gizmo here.', 'Build status', 'The Amber X build passed.', 'Two steps are left.', 'Merge the P R', 'Install the A P K', "There's some ts code here, 2 lines.", 'A table of Step, State, with 2 rows.', "That's all for now."]);
   assert.equal(c.find((x) => x.kind === 'heading').rateMul < 1, true);
   assert.equal(c[c.length - 1].pause, 0);
   assert.ok(estimateMs(c, 1) > 1000);
@@ -111,9 +111,9 @@ t('light', () => {
   assert.equal(lightState({ profile: voiced(), speaking: true, paused: false, listening: false, error: true }), 'error');
 });
 t('export / import', () => {
-  const s = normStore({ profiles: { molly: voiced() }, pronunciations: [{ from: 'k8s', to: 'kubernetes' }] });
+  const s = normStore({ profiles: { gizmo: voiced() }, pronunciations: [{ from: 'k8s', to: 'kubernetes' }] });
   const back = importProfiles(normStore({}), exportProfiles(s));
-  assert.equal(back.count, 1); assert.equal(back.store.profiles.molly.enabled, true); assert.equal(back.store.pronunciations.length, 1);
+  assert.equal(back.count, 1); assert.equal(back.store.profiles.gizmo.enabled, true); assert.equal(back.store.pronunciations.length, 1);
   assert.equal(importProfiles(s, 'nope').error, "That file isn't JSON.");
   assert.match(importProfiles(s, '{"a":1}').error, /agent-voice@1/);
 });

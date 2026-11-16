@@ -22,7 +22,7 @@ import { native } from '../../../native';
 import { withMic } from '../../../miclease';
 import { parseIntent, validateIntent } from '../../notes/web/core';
 import { NOTES_ID, load as loadNotes, mutate, runIntent, snapshot as notesSnapshot } from '../../notes/web/store';
-import { aiEnabled, aiReady, molly as askMolly, prompt as askPrompt, useAiEnabled, useAiStatus } from '../../ai/web/client';
+import { aiEnabled, aiReady, gizmo as askGizmo, prompt as askPrompt, useAiEnabled, useAiStatus } from '../../ai/web/client';
 import { askAloud, registerVoiceRouter, say as speak } from '../../voice/web/index';
 import {
   CATEGORIES, categoryOf, describeStep, effective, filterCommands, findCommand, groupsOf, parseCustom, parseOverrides, phraseTaken, recordingsMatch,
@@ -57,21 +57,21 @@ const patchCommand = (rt: AxfRuntime, id: string, patch: CommandOverride) => sav
 
 /* ---------------------------------------------------------------- Gizmo status (developer tab) */
 
-interface MollyState { known: boolean; ok: boolean; reason: string; fix: string; checking: boolean }
-let mollyState: MollyState = { known: false, ok: false, reason: 'Not checked yet.', fix: '', checking: false };
-const mollySubs = new Set<() => void>();
-const setMolly = (p: Partial<MollyState>) => { mollyState = { ...mollyState, ...p }; mollySubs.forEach((f) => f()); };
-const useMolly = () => useSyncExternalStore((f) => { mollySubs.add(f); return () => { mollySubs.delete(f); }; }, () => mollyState);
-export async function checkMolly(): Promise<MollyState> {
-  setMolly({ checking: true });
+interface GizmoState { known: boolean; ok: boolean; reason: string; fix: string; checking: boolean }
+let gizmoState: GizmoState = { known: false, ok: false, reason: 'Not checked yet.', fix: '', checking: false };
+const gizmoSubs = new Set<() => void>();
+const setGizmo = (p: Partial<GizmoState>) => { gizmoState = { ...gizmoState, ...p }; gizmoSubs.forEach((f) => f()); };
+const useGizmo = () => useSyncExternalStore((f) => { gizmoSubs.add(f); return () => { gizmoSubs.delete(f); }; }, () => gizmoState);
+export async function checkGizmo(): Promise<GizmoState> {
+  setGizmo({ checking: true });
   try {
-    const r = await fetch('/api/ai/molly/status', { credentials: 'same-origin', redirect: 'error', cache: 'no-store' });
-    if (r.status === 403) setMolly({ known: true, ok: false, reason: 'Developer commands are for hub admins.', fix: 'admin' });
-    else if (!r.ok) setMolly({ known: true, ok: false, reason: r.status === 404 ? 'This AmberX has no server for Gizmo.' : `The AmberX server answered ${r.status}.`, fix: 'server' });
-    else { const j = (await r.json()) as { ok?: boolean; reason?: string; fix?: string }; setMolly({ known: true, ok: !!j.ok, reason: j.reason ?? '', fix: j.fix ?? '' }); }
-  } catch (e) { setMolly({ known: true, ok: false, reason: `The AmberX server can't be reached (${(e as Error).message}).`, fix: 'server' }); }
-  setMolly({ checking: false });
-  return mollyState;
+    const r = await fetch('/api/ai/gizmo/status', { credentials: 'same-origin', redirect: 'error', cache: 'no-store' });
+    if (r.status === 403) setGizmo({ known: true, ok: false, reason: 'Developer commands are for hub admins.', fix: 'admin' });
+    else if (!r.ok) setGizmo({ known: true, ok: false, reason: r.status === 404 ? 'This AmberX has no server for Gizmo.' : `The AmberX server answered ${r.status}.`, fix: 'server' });
+    else { const j = (await r.json()) as { ok?: boolean; reason?: string; fix?: string }; setGizmo({ known: true, ok: !!j.ok, reason: j.reason ?? '', fix: j.fix ?? '' }); }
+  } catch (e) { setGizmo({ known: true, ok: false, reason: `The AmberX server can't be reached (${(e as Error).message}).`, fix: 'server' }); }
+  setGizmo({ checking: false });
+  return gizmoState;
 }
 
 /* ---------------------------------------------------------------- running (the real app) */
@@ -102,14 +102,14 @@ function makeEnv(rt: AxfRuntime): RunEnv {
     say: (text) => speak(rt, text),
     listen: (question) => askAloud(rt, question),
     ai: async (p) => { await ensureNotes(); return askPrompt(p, /my notes|my tasks|notes only|tasks only/i.test(p) ? notesFor() : []); },
-    molly: async (task) => {
-      const r = await askMolly(task, { page: rt.getState().view, app: 'amberx' });
+    gizmo: async (task) => {
+      const r = await askGizmo(task, { page: rt.getState().view, app: 'amberx' });
       if (!r) return null;
       return r.walkthrough ? `${r.answer} I've opened “${r.walkthrough}” in the console.` : r.answer;
     },
     command: (id) => allCommands(rt).find((c) => c.id === id),
     aiReady: () => aiReady(),
-    mollyReady: () => aiEnabled() && mollyState.ok,
+    gizmoReady: () => aiEnabled() && gizmoState.ok,
   };
 }
 
@@ -117,7 +117,7 @@ export async function run(rt: AxfRuntime, cmd: Effective, slots: Record<string, 
   if (running) return { did: 'Another command is still running.', ok: false };
   running = true;
   try {
-    if (cmd.developer && !mollyState.known) await checkMolly();
+    if (cmd.developer && !gizmoState.known) await checkGizmo();
     const r = await runCommand({ command: cmd, slots }, makeEnv(rt));
     return { did: r.did, ok: r.ok };
   } catch (e) {
@@ -197,7 +197,7 @@ function RecordPhrase({ cmd, all, onSave, onClose }: { cmd: Effective; all: Effe
 const STEP_KINDS: { value: Step['do']; label: string }[] = [
   { value: 'say', label: 'Say something' }, { value: 'ask', label: 'Ask a question' }, { value: 'confirm', label: 'Ask yes / no (no stops)' },
   { value: 'run', label: 'Run another command' }, { value: 'op', label: 'Notes / tasks operation' }, { value: 'action', label: 'App action' },
-  { value: 'ai', label: 'Ask the AI' }, { value: 'molly', label: 'Task for Gizmo' }, { value: 'wait', label: 'Wait' },
+  { value: 'ai', label: 'Ask the AI' }, { value: 'gizmo', label: 'Task for Gizmo' }, { value: 'wait', label: 'Wait' },
 ];
 
 function newStep(kind: Step['do'], a: string, b: string): Step | null {
@@ -208,7 +208,7 @@ function newStep(kind: Step['do'], a: string, b: string): Step | null {
   if (kind === 'run') raw.command = a;
   if (kind === 'action') raw.action = a;
   if (kind === 'ai') raw.prompt = a;
-  if (kind === 'molly') raw.task = a;
+  if (kind === 'gizmo') raw.task = a;
   if (kind === 'wait') raw.ms = Math.round(Number(a || '1') * 1000);
   if (kind === 'op') raw.args = Object.fromEntries(b.split(';').map((kv) => kv.split('=').map((x) => x.trim())).filter((kv) => kv.length === 2 && kv[0]));
   if (kind === 'op') raw.op = a;
@@ -380,7 +380,7 @@ function Unavailable({ cat }: { cat: CategoryId }) {
   const rt = useRuntime();
   const enabled = useAiEnabled();
   const s = useAiStatus();
-  const m = useMolly();
+  const m = useGizmo();
   let why: string; let what: ReactNode;
   if (!enabled) {
     why = 'The AI is switched off in this app\'s settings, so nothing is sent to it and these commands can\'t run.';
@@ -397,7 +397,7 @@ function Unavailable({ cat }: { cat: CategoryId }) {
       : m.fix === 'admin' ? 'Developer commands drive the console and the VPS, so only hub admins can use them.'
         : `Gizmo can't be reached: ${m.reason}`;
     what = <>
-      <Button tone="primary" icon="refresh" disabled={m.checking} onClick={() => void checkMolly()}>{m.checking ? 'Checking…' : 'Check again'}</Button>
+      <Button tone="primary" icon="refresh" disabled={m.checking} onClick={() => void checkGizmo()}>{m.checking ? 'Checking…' : 'Check again'}</Button>
       <Button tone="quiet" icon="settings" onClick={() => rt.dispatch('ai.status.open')}>AI settings</Button>
     </>;
   }
@@ -422,12 +422,12 @@ export function CommandCenter({ start }: { start?: string }) {
   useSetting(rt, K.custom);
   const enabled = useAiEnabled();
   const ai = useAiStatus();
-  const m = useMolly();
+  const m = useGizmo();
   const [cat, setCat] = useState<CategoryId>(CATEGORIES.some((c) => c.id === start) ? (start as CategoryId) : 'notes');
   const [inner, setInner] = useState<Inner>('commands');
   const [f, setF] = useState<GridFilter>({ q: '', group: '', kind: '', state: '' });
   const [recording, setRecording] = useState('');
-  useEffect(() => { if (cat === 'developer' && !m.known && !m.checking) void checkMolly(); }, [cat, m.known, m.checking]);
+  useEffect(() => { if (cat === 'developer' && !m.known && !m.checking) void checkGizmo(); }, [cat, m.known, m.checking]);
   const all = allCommands(rt);
   const inCat = all.filter((c) => c.category === cat);
   const inTab = inCat.filter((c) => (inner === 'commands' ? c.kind === 'action' : c.kind !== 'action'));
@@ -491,7 +491,7 @@ export const library: AxfWebLibrary = {
   version: '0.1.0',
   builtWith: { model: 'opus', builtAt: '2026-10-28' },
   provides: ['amberx.commands'],
-  views: { [VIEW]: { title: 'Command center', icon: 'mic', keywords: ['voice', 'commands', 'chains', 'wizards', 'molly', 'snippets', 'developer'], render: () => <CommandCenter /> } },
+  views: { [VIEW]: { title: 'Command center', icon: 'mic', keywords: ['voice', 'commands', 'chains', 'wizards', 'gizmo', 'snippets', 'developer'], render: () => <CommandCenter /> } },
   nav: { label: 'Voice', items: [{ id: VIEW, label: 'Command center', icon: 'mic', view: VIEW }] },
   dialogs: { [DIALOG]: { title: 'Voice command center', icon: 'mic', render: (p) => <CommandCenter start={str(p.tab)} /> } },
   settingsTabs: [{ id: 'commands', label: 'Command center', icon: 'mic', order: 22, parent: 'plugins', description: 'Notes, tasks, developer and AI-snippet voice commands, chains and wizards.' }],
@@ -508,7 +508,7 @@ export const library: AxfWebLibrary = {
     registerVoiceRouter(ID, route);
     // the notes store is shared: make sure it's there before the first command
     if (rt.libraries.some((l) => l.id === NOTES_ID)) void loadNotes().catch(() => undefined);
-    void checkMolly();
+    void checkGizmo();
   },
 };
 

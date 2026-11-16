@@ -23,11 +23,11 @@ function appApi(seed) {
       profiles: [{ id: 'demo-claude', kind: 'claude-code', label: 'Claude plan', model: 'claude', baseUrl: '', enabled: true, hasKey: true, keySource: 'saved', pair: false, expiresAt: null, refreshError: null, health: { ok: true, at: new Date().toISOString(), ms: 900 } }],
       order: ['demo-claude'], active: 'demo-claude', claude: 'plan', keepAliveMin: 0, kinds: [],
     }),
-    'GET /api/ai/molly/status': () => ({ ok: true, reason: '' }),
+    'GET /api/ai/gizmo/status': () => ({ ok: true, reason: '' }),
     'POST /api/ai/ask': () => ({ answer: 'You have two work tasks: send the launch email today (high priority) and review the landing page tomorrow. The launch moved to the 14th.' }),
     'POST /api/ai/summarize': () => ({ title: 'Print shop flyers', summary: 'Call the print shop about the flyers before Friday.', tags: ['errand'] }),
     'POST /api/ai/prompt': () => ({ answer: 'Here you go: a short, friendly reminder for the team about the launch on the 14th.' }),
-    'POST /api/ai/molly': () => ({ answer: 'Sure. Open Settings, then Plugins, then Command center to change what I listen for. I can walk you through it.' }),
+    'POST /api/ai/gizmo': () => ({ answer: 'Sure. Open Settings, then Plugins, then Command center to change what I listen for. I can walk you through it.' }),
   };
 }
 

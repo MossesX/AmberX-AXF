@@ -8,7 +8,7 @@ export const ask = (slot: string, question: string, kind: SlotKind = 'text', mor
 export const confirm = (question: string): Step => ({ do: 'confirm', question });
 export const run = (command: string): Step => ({ do: 'run', command });
 export const ai = (prompt: string, into?: string): Step => (into ? { do: 'ai', prompt, into } : { do: 'ai', prompt });
-export const molly = (task: string): Step => ({ do: 'molly', task });
+export const gizmo = (task: string): Step => ({ do: 'gizmo', task });
 export const intent = (i: Record<string, unknown>): Step => ({ do: 'intent', intent: i });
 export const wait = (ms: number): Step => ({ do: 'wait', ms });
 
