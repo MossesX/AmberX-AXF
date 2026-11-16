@@ -48,7 +48,7 @@ import { Icon } from './Icon';
 import type { DialogMap } from './Overlays';
 import { TabGroup } from './TabGroup';
 import { BANNER_SETTINGS_DIALOG } from './BannerSettings';
-import { contextChromeAsset } from './PageAssets';
+import { chromePageAssetId, contextChromeAsset } from './PageAssets';
 
 export const CHROME_SETTINGS_DIALOG = 'axf.chrome.settings';
 export const CHROME_PICK_DIALOG = 'axf.chrome.pick';
@@ -482,11 +482,13 @@ export function ChromeSettingsPanel({ type, instance }: { type: ChromeType; inst
     if (id === 'interface') return <InterfacePicker type={type} />;
     return <div className="fx-stack">{ui.groups.filter((g) => g.tab === id).map((g) => <ExtraGroup key={g.id} group={g} />)}</div>;
   };
+  const pageId = chromePageAssetId(rt, type, instance);
   const header = ui.header === 'none' ? null : (
     <div className="fx-row fx-row--between">
       <div><strong>{title}</strong>{ui.header === 'full' && <div className="fx-muted">{Object.keys(overrides).length ? `${Object.keys(overrides).length} setting(s) set for this one` : 'Follows its asset'}{res ? ` · interface ${res.id}${res.source === 'instance' ? ' (its own)' : ''}` : ''}</div>}</div>
       <div className="fx-row">
         {Object.keys(overrides).length > 0 && <Button size="sm" icon="undo" onClick={() => rt.dispatch(`chrome.reset:${type}:${instance}`)}>Reset</Button>}
+        {pageId && <Button size="sm" icon="eye" title={`Hide this ${chromeLabel(type).toLowerCase()} on this page (Settings → Appearance → Assets brings it back)`} onClick={() => rt.dispatch(`assets.hide:${pageId}`)}>Hide</Button>}
         {ui.levels && <Segmented<SettingsLevel> size="sm" label="Level" value={level} options={SETTINGS_LEVELS.map((l) => ({ value: l, label: SETTINGS_LEVEL_LABEL[l] }))} onChange={(l) => rt.settings.set(SETTINGS_LEVEL_KEY, l)} />}
       </div>
     </div>

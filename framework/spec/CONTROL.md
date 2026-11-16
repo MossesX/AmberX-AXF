@@ -139,10 +139,14 @@ action can't be exposed, whose declarations name something gone, or that has no 
 Page assets (page-assets@1, build assets-menu-hide-any-asset-visible-and-hidden-li, Nov 13 2026): every console reports the assets on its
 page in `here.assets` (`[{ id: "<type>:<instance>", type, label, hidden }]`; types toolbar, tab-group, nav-menu, app-menu, banner, widget,
 grid, container), so `console.nav get here` (MCP `console_where`, REST `GET /api/console/where`, `console.mjs where`) lists them.
-`console.actions run` drives them: `assets.hide:<type>:<instance>[:all]`, `assets.unhide:<type>:<instance>`, `assets.toggle:…`,
+`console.actions run` drives them: `assets.hide:<type>:<instance>[:all]`, `assets.unhide:<type>:<instance>[:<page>]`, `assets.toggle:…`,
 `assets.unhide-all[:all]`, `assets.highlight:<type>:<instance>[:<ms>]` (`assets.highlight:off`), `assets.colour:<type|hidden>:<colour|default>`
 (colours are token names: accent, info, success, warning, danger, muted), `assets.open` (the context menu holding Assets ▸ Visible / Hidden)
 and `assets.list`. Hidden is per page (`all`: every page) in the setting `axf.assets.hidden`; rules in core/engines/page-assets-rules.mjs.
+Rebuilt Nov 16 2026 (build assets-menu-hide-any-asset-hidden-list): `axf.assets.*` is an appearance setting, so the hidden list and
+colours live in the app's own look on axHub (app-look@1 `own.settings`) and survive reloads. The Assets menu also opens from the menu
+bar (View ▸ Assets…, View ▸ Hidden assets…) and Settings ▸ Appearance ▸ Assets (Visible list, Hide = every page; Hidden list from every
+page, Show; Show all = `assets.unhide-all:all`). Every chrome settings dialog has Hide (`assets.hide` on its page).
 
 ## Auth
 

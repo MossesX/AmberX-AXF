@@ -1364,8 +1364,9 @@
       "tabs": []
     },
     {
-      "id": "*",
-      "dynamic": true,
+      "address": "view:claude-settings/tab:claude-settings.tabs",
+      "id": "claude-settings.tabs",
+      "dynamic": false,
       "view": "claude-settings",
       "plugin": "ai.amberx.axf.console.claude-settings",
       "file": "plugins/claude-settings/web/index.tsx",
@@ -7813,7 +7814,7 @@
       "address": "function:assets.unhide",
       "kind": "function",
       "id": "assets.unhide",
-      "label": "Show a hidden asset again (assets.unhide:<type>:<instance>)",
+      "label": "Show a hidden asset again (assets.unhide:<type>:<instance>[:<page>])",
       "detail": "Action",
       "keywords": [
         "assets.unhide",

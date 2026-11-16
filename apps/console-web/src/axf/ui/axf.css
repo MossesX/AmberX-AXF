@@ -2071,3 +2071,7 @@ html[data-fx-skin-switching='fade']::view-transition-new(root) { animation: fx-f
 .axf-asset-colours__row { align-items: flex-end; gap: var(--fx-dens-gap-xl); }
 .axf-asset-colours__row > :last-child { flex: 1; min-width: 0; }
 .axf-asset-colours__row > .fx-menu__swatch { margin-block-end: calc(var(--fx-type-scale-sm) * 0.75); }
+.axf-assets-list { display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); }
+.axf-assets-list--scroll { max-height: calc(var(--fx-row-h) * 8); overflow-y: auto; overscroll-behavior: contain; }
+.axf-assets-list__row { align-items: center; gap: var(--fx-dens-gap-sm); padding-block: var(--fx-dens-gap-2xs); border-block-end: var(--fx-border-w) solid var(--fx-border); }
+.axf-assets-list__name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

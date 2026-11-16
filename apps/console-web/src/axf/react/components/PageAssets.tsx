@@ -17,6 +17,7 @@
  *   assets.highlight:<type>:<instance>[:<ms>]  highlight it for a moment (default 4 s); assets.highlight:off clears
  *   assets.colour:<type|hidden>:<colour|default>   a type's list colour, or the hidden colour
  *   assets.open                                open the context menu whose Assets entry holds both lists (the deep link)
+ *   assets.unhide:<type>:<instance>:<page>     show one hidden on another page (Settings → Appearance → Assets lists them all)
  *   assets.list                                say what the page has (the list itself: console_where → here.assets)
  *   settings.open:appearance                   the type colours and the hidden colour (Settings → Appearance)
  */
@@ -24,11 +25,13 @@ import { useEffect, useState } from 'react';
 import {
   FRAMEWORK_MODULE, PAGE_ANY, PAGE_ASSETS_HIDDEN_KEY, PAGE_ASSET_COLOURS, PAGE_ASSET_COLOUR_KEY, PAGE_ASSET_HIDDEN_COLOUR_KEY,
   PAGE_ASSET_ICONS, PAGE_ASSET_TYPES, hiddenOnPage, isPageAssetColour, isPageAssetType, pageAssetColourOf, pageAssetHiddenColourOf,
-  pageAssetHighlightMs, pageAssetId, pageAssetLabel, pageAssetSlug, parsePageAssetId, withAssetHidden,
+  normalizeHiddenAssets, pageAssetHighlightMs, pageAssetId, pageAssetLabel, pageAssetSlug, parsePageAssetId, withAssetHidden,
   type AxfRuntime, type ChromeType, type MenuItem, type PageAssetColour, type PageAssetSummary, type PageAssetType,
 } from '../../core';
 import { useAxfState, useRuntime } from '../AxfProvider';
+import { Button } from './Controls';
 import { SelectField } from './Forms';
+import { Icon } from './Icon';
 
 /** One asset found on the page. */
 export interface PageAsset { id: string; type: PageAssetType; instance: string; label: string; hidden: boolean; el: Element }
@@ -226,10 +229,10 @@ export function installPageAssets(rt: AxfRuntime): void {
       const id = idOf(type, instance);
       if (!setHidden(rt, id, true, where === 'all' ? PAGE_ANY : undefined)) rt.toast(`"${id}" isn't an asset id (type:instance).`, 'warning', 'Assets');
     }, { label: 'Hide an asset on this page (assets.hide:<type>:<instance>[:all])', params: true, effect: 'write' });
-    rt.actions.register('assets.unhide', ([type, instance]) => {
+    rt.actions.register('assets.unhide', ([type, instance, page]) => {
       const id = idOf(type, instance);
-      if (!setHidden(rt, id, false)) rt.toast(`"${id}" isn't an asset id (type:instance).`, 'warning', 'Assets');
-    }, { label: 'Show a hidden asset again (assets.unhide:<type>:<instance>)', params: true, effect: 'write' });
+      if (!setHidden(rt, id, false, page || undefined)) rt.toast(`"${id}" isn't an asset id (type:instance).`, 'warning', 'Assets');
+    }, { label: 'Show a hidden asset again (assets.unhide:<type>:<instance>[:<page>])', params: true, effect: 'write' });
     rt.actions.register('assets.toggle', ([type, instance]) => {
       const id = idOf(type, instance);
       const a = scanPageAssets(rt).find((x) => x.id === id);
@@ -268,6 +271,82 @@ export function installPageAssets(rt: AxfRuntime): void {
     }, { label: 'Assets on this page (shown / hidden)', effect: 'read' });
   });
   rt.contextExtras.set('*:assets', () => pageAssetsMenu(rt));
+  // the Assets menu from the menu bar (View → Assets…) and Settings → Appearance → Assets
+  rt.addAppMenuItems({ id: 'axf.assets', module: 'axf', menu: 'view', menuLabel: 'View', menuOrder: 60, order: 40, items: [
+    { id: 'axf-assets-open', label: 'Assets…', icon: 'layers', action: 'assets.open' },
+    { id: 'axf-assets-settings', label: 'Hidden assets…', icon: 'lock', action: 'settings.open:appearance' },
+  ] });
+}
+
+/** The page-asset id of a chrome piece a settings dialog was opened for (its instance as the Assets menu names it). */
+export function chromePageAssetId(rt: AxfRuntime, type: ChromeType, instance: string): string | null {
+  if (!isPageAssetType(type)) return null;
+  const slug = pageAssetSlug(instance);
+  const found = typeof document === 'undefined' ? undefined : scanPageAssets(rt).find((a) => a.type === type && (a.instance === slug || a.instance === instance));
+  const id = found?.id ?? pageAssetId(type, slug);
+  return parsePageAssetId(id) ? id : null;
+}
+
+/** One saved hidden entry, for the Hidden list in Settings. */
+interface HiddenEntry { page: string; id: string; type: PageAssetType; instance: string }
+function hiddenEntries(rt: AxfRuntime): HiddenEntry[] {
+  const out: HiddenEntry[] = [];
+  for (const e of normalizeHiddenAssets(rt.settings.get(PAGE_ASSETS_HIDDEN_KEY))) {
+    const bar = e.indexOf('|');
+    const p = parsePageAssetId(e.slice(bar + 1));
+    if (p) out.push({ page: e.slice(0, bar), id: e.slice(bar + 1), type: p.type as PageAssetType, instance: p.instance });
+  }
+  return out;
+}
+
+/**
+ * Settings → Appearance → Assets: every asset showing in the app now (tap Hide: hidden on every page) and every hidden
+ * one, on any page (tap Show: back). Saved in the app's look on axHub (`axf.assets.hidden`), so it survives reloads.
+ */
+export function PageAssetsList() {
+  const rt = useRuntime();
+  useAxfState();
+  const [, force] = useState(0);
+  useEffect(() => rt.settings.onAnyChange((k) => { if (k.startsWith('axf.assets.')) force((n) => n + 1); }), [rt]);
+  // scanned after paint, so the list matches what the page shows (and refreshed when the page changes)
+  const [shown, setShown] = useState<PageAsset[]>([]);
+  useEffect(() => {
+    const scan = () => setShown(scanPageAssets(rt).filter((a) => !a.hidden && !a.el.closest('[data-axf-assets-list]')));
+    scan();
+    const t = setInterval(scan, 1500);
+    return () => clearInterval(t);
+  }, [rt]);
+  const hidden = hiddenEntries(rt);
+  const nameOfId = (type: PageAssetType, instance: string) => `${pageAssetLabel(type)}: ${instance.replace(/[-_]+/g, ' ')}`;
+  return (
+    <div className="fx-stack fx-stack--xs" data-axf-assets-list="" data-axf-target="setting:axf.assets.hidden">
+      <span className="fx-field__label">Assets</span>
+      <span className="fx-small fx-muted">Every asset showing in this app. Hide one and it moves to Hidden (on every page); Show brings it back. Right-click or long-press any asset for the same list on its own page.</span>
+      <strong className="fx-small">Visible ({shown.length})</strong>
+      <div className="axf-assets-list axf-assets-list--scroll" role="list" aria-label="Visible assets">
+        {shown.map((a) => (
+          <div key={a.id} role="listitem" className="fx-row axf-assets-list__row" data-axf-asset-row={a.id} onMouseEnter={() => highlightPageAsset(rt, a.id, 1500)}>
+            <span className={`fx-menu__swatch fx-tone-mark--${typeColour(rt, a.type)}`} aria-hidden="true" />
+            <Icon name={PAGE_ASSET_ICONS[a.type]} />
+            <span className="axf-assets-list__name">{a.label.toLowerCase() === pageAssetLabel(a.type).toLowerCase() ? pageAssetLabel(a.type) : `${pageAssetLabel(a.type)}: ${a.label}`}</span>
+            <Button size="sm" icon="eye" onClick={() => rt.dispatch(`assets.hide:${a.id}:all`)}>Hide</Button>
+          </div>
+        ))}
+      </div>
+      <strong className="fx-small">Hidden ({hidden.length})</strong>
+      <div className="axf-assets-list" role="list" aria-label="Hidden assets">
+        {hidden.length ? hidden.map((h) => (
+          <div key={`${h.page}|${h.id}`} role="listitem" className="fx-row axf-assets-list__row" data-axf-asset-row={h.id}>
+            <span className={`fx-menu__swatch fx-tone-mark--${hiddenColour(rt)}`} aria-hidden="true" />
+            <Icon name={PAGE_ASSET_ICONS[h.type]} />
+            <span className="axf-assets-list__name fx-muted">{nameOfId(h.type, h.instance)}<span className="fx-small"> · {h.page === PAGE_ANY ? 'every page' : h.page}</span></span>
+            <Button size="sm" icon="undo" onClick={() => rt.dispatch(`assets.unhide:${h.id}:${h.page}`)}>Show</Button>
+          </div>
+        )) : <span className="fx-small fx-muted">Nothing hidden.</span>}
+      </div>
+      {hidden.length > 0 && <div className="fx-row"><Button size="sm" icon="undo" onClick={() => rt.dispatch('assets.unhide-all:all')}>Show all</Button></div>}
+    </div>
+  );
 }
 
 /**
