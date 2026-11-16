@@ -814,9 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 18:50 UTC · `amberx-open-url-must-open-page-even-when` s1 done, → running (all) · orchestrator
-- 2026-11-16 18:51 UTC · `settings-interface-gear-every-plugin` s2 done, note (all) · orchestrator
-- 2026-11-16 18:51 UTC · `amberx-open-url-must-open-page-even-when` s2 done (all) · orchestrator
 - 2026-11-16 18:52 UTC · `settings-interface-gear-every-plugin` → queued, note (all) · pipeline
 - 2026-11-16 18:52 UTC · `settings-interface-gear-every-plugin` → running, note (all) · pipeline
 - 2026-11-16 18:52 UTC · `amberx-open-url-must-open-page-even-when` note (all) · orchestrator
@@ -1214,6 +1211,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 23:14 UTC · `fable-rebuild-plan-studio-cleared-out` → running, note (all) · pipeline
 - 2026-11-16 23:14 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · orchestrator
 - 2026-11-16 23:14 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · orchestrator
+- 2026-11-16 23:14 UTC · `always-fill-every-slot-when-slots-are` → running, note (all) · pipeline
+- 2026-11-16 23:14 UTC · `always-fill-every-slot-when-slots-are` note (all) · orchestrator
+- 2026-11-16 23:14 UTC · `one-source-truth-console-shows-only-what` → archived, note (all) · cli
 
 ## Token passes (log)
 
