@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T13:46:46.383Z",
+ "updatedAt": "2026-11-16T13:47:17.918Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -147921,7 +147921,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T04:20:19.690Z",
-   "updatedAt": "2026-11-15T12:45:55.244Z",
+   "updatedAt": "2026-11-16T13:47:12.646Z",
    "builtAt": "",
    "notes": [
     {
@@ -147995,6 +147995,10 @@
     {
      "text": "Coordination (data-container-axf-data-holds-all, Nov 15 2026): the builds store and its journal now follow the data-store@1 mode of the builds namespace. In cutover they live on axf-data (record builds/store.json, journals builds/journal/<month>), framework/cli/builds-store.mjs reads and writes them through the client (lock = rev check: a conflict re-reads and re-applies), so a headless session or axf-molly with AXF_DATA_URL + an orchestrator token (conf/env/orchestrator.env) writes the same store with the console down. If this build is picked up again, move the orchestrator onto that client rather than a second store in axHub; axHub only routes to axf-data (no data kept in axHub).",
      "at": "2026-11-15T12:45:55.244Z"
+    },
+    {
+     "text": "Merge watch (merge-watch@1, build vps-sends-shipped-features-every-merge) moves with the orchestrator: run deploy/molly/merge-watch.entry.mjs as a molly job (shadow = dry tick until molly holds the lease) and drop the VPS cron axf-merge-watch. Set AXF_MERGE_WATCH_DATA (state, lock, alert memo, GitHub ETag cache), AXF_MERGE_WATCH_REPO (molly's clone), AXF_MERGE_WATCH_SEND=api with AXF_CONSOLE_URL + AXF_TOKEN. Nothing in the runner is repo-relative beyond those.",
+     "at": "2026-11-16T13:47:12.646Z"
     }
    ],
    "approvals": [],
