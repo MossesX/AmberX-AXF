@@ -401,6 +401,13 @@ class Pushes:
         lst = lambda k: [x for x in st.get(k, []) if isinstance(x, dict)] if isinstance(st.get(k), list) else []  # noqa: E731
         items = lst("items")
         kicked = lst("kicked")
+        # Projects (projects@1): main is one for every project, so the queue is too; each PR is tagged with its build's
+        # project and `project` says which one is active (the view shows the active project's first, the rest tagged).
+        active = cx.project()
+        for row in [*items, *kicked, *lst("waiting")]:
+            pj = cx.project_of_build(row.get("build")) if row.get("build") else None
+            row["project"] = {"id": pj["id"], "name": pj["name"]} if pj else None
+            row["inProject"] = (pj or {}).get("id", active["id"]) == active["id"]
         b = st.get("batch") if isinstance(st.get("batch"), dict) else None
         batch = None if not b else {"prs": [m.get("pr") for m in b.get("members", []) if isinstance(m, dict)], "sha": _text(b.get("sha"), 40), "ci": _text(b.get("ci"), 20),
                                      "runUrl": _safe_url(b.get("runUrl")), "builtAt": _text(b.get("builtAt"), 40), "bisect": b.get("bisect") is True, "why": _text(b.get("why"), 300)}
@@ -408,6 +415,7 @@ class Pushes:
                 "split": [n for n in st.get("split", []) if isinstance(n, int)] if isinstance(st.get("split"), list) else [],
                 "enlisted": [x for x in st.get("enlisted", []) if isinstance(x, dict)][:10] if isinstance(st.get("enlisted"), list) else [],
                 "repo": UI_REVIEW_REPO, "at": st.get("at"),
+                "project": {"id": active["id"], "name": active["name"], "inProject": sum(1 for x in items if x.get("inProject")), "elsewhere": sum(1 for x in items if not x.get("inProject"))},
                 "items": items, "waiting": lst("waiting"), "kicked": kicked, "merged": lst("merged")[-10:],
                 "avgMin": st.get("avgMin") if isinstance(st.get("avgMin"), int) else None,
                 "variable": _text(st.get("variable"), 10), "variableError": _text(st.get("variableError"), 300),

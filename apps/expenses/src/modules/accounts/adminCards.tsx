@@ -81,7 +81,7 @@ export interface AdminCardSpec {
 
 const LABEL = {
   fontFamily: token("mono"),
-  fontSize: 10,
+  fontSize: 'var(--fx-type-root-2xs)',
   letterSpacing: "0.08em",
   textTransform: "uppercase" as const,
   color: token("dim"),
@@ -122,13 +122,13 @@ function Figure({
 /** A label/value line — the readout voice the whole canvas shares. */
 function Row({ k, v, tone }: { k: string; v: React.ReactNode; tone?: string }) {
   return (
-    <Stack direction="row" sx={{ alignItems: "baseline", gap: 1, minWidth: 0 }}>
+    <Stack direction="row" sx={{ alignItems: "baseline", gap: 'var(--fx-dens-gap-xl)', minWidth: 0 }}>
       <Typography sx={{ ...LABEL, flexShrink: 0 }}>{k}</Typography>
-      <Box sx={{ flex: 1, borderBottom: `1px dotted ${token("edge")}`, opacity: 0.5 }} />
+      <Box sx={{ flex: 1, borderBottom: `var(--fx-border-w) dotted ${token("edge")}`, opacity: "var(--fx-opacity-muted)" }} />
       <Typography
         sx={{
           fontFamily: token("mono"),
-          fontSize: 12,
+          fontSize: 'var(--fx-type-root-sm)',
           color: tone ?? token("ink"),
           whiteSpace: "nowrap",
         }}
@@ -151,7 +151,7 @@ function Waiting() {
 /** The honest empty state. Never a zero — see the file's docblock. */
 function Nothing({ children }: { children: React.ReactNode }) {
   return (
-    <Typography sx={{ fontSize: 11.5, color: token("dim"), fontStyle: "italic" }}>
+    <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), fontStyle: "italic" }}>
       {children}
     </Typography>
   );
@@ -172,7 +172,7 @@ function OnlineCard({ facts, orientation }: CardContext) {
     ) : (
       <Stack
         direction={wide ? "row" : "column"}
-        sx={{ gap: 0.5, flexWrap: wide ? "wrap" : "nowrap", alignItems: wide ? "center" : "stretch" }}
+        sx={{ gap: 'var(--fx-dens-gap-md)', flexWrap: wide ? "wrap" : "nowrap", alignItems: wide ? "center" : "stretch" }}
       >
         {online.map((p) => (
           <Chip
@@ -181,7 +181,7 @@ function OnlineCard({ facts, orientation }: CardContext) {
             variant="outlined"
             label={p.connections > 1 ? `${p.username} ×${p.connections}` : p.username}
             sx={{
-              fontSize: 11,
+              fontSize: 'var(--fx-type-root-xs)',
               height: 20,
               justifyContent: "flex-start",
               color: p.away ? token("warn") : token("ok"),
@@ -193,7 +193,7 @@ function OnlineCard({ facts, orientation }: CardContext) {
     );
 
   return (
-    <Stack sx={{ gap: 1, flex: 1, minHeight: 0 }}>
+    <Stack sx={{ gap: 'var(--fx-dens-gap-xl)', flex: 1, minHeight: 0 }}>
       <Stack direction={wide ? "row" : "column"} sx={{ gap: wide ? 2.5 : 0.75 }}>
         <Figure value={onlineCount} label="online now" tone={onlineCount ? token("ok") : undefined} />
         <Figure value={members} label="members" size={wide ? 26 : 18} />
@@ -220,7 +220,7 @@ function SignupsCard({ facts }: CardContext) {
   const { buckets, recent, total } = facts.signups;
   if (buckets.length === 0) {
     return (
-      <Stack sx={{ gap: 1 }}>
+      <Stack sx={{ gap: 'var(--fx-dens-gap-xl)' }}>
         <Figure value={total} label="accounts" />
         <Nothing>No account carries a usable creation date yet.</Nothing>
       </Stack>
@@ -233,15 +233,15 @@ function SignupsCard({ facts }: CardContext) {
   const shown = buckets.slice(-14);
 
   return (
-    <Stack sx={{ gap: 1, flex: 1, minHeight: 0 }}>
-      <Stack direction="row" sx={{ gap: 2.5, alignItems: "flex-end" }}>
+    <Stack sx={{ gap: 'var(--fx-dens-gap-xl)', flex: 1, minHeight: 0 }}>
+      <Stack direction="row" sx={{ gap: 'var(--fx-dens-gap-3xl)', alignItems: "flex-end" }}>
         <Figure value={total} label="accounts" />
         <Figure value={shown[shown.length - 1]?.count ?? 0} label={fmtMonth(shown[shown.length - 1]?.month ?? "")} size={18} />
       </Stack>
 
       <Stack
         direction="row"
-        sx={{ gap: "3px", alignItems: "flex-end", height: 48, flexShrink: 0 }}
+        sx={{ gap: "var(--fx-dens-gap-sm)", alignItems: "flex-end", height: 48, flexShrink: 0 }}
       >
         {shown.map((b) => (
           <Tooltip key={b.month} title={`${fmtMonth(b.month)} — ${b.count} signup(s)`}>
@@ -252,7 +252,7 @@ function SignupsCard({ facts }: CardContext) {
                 height: `${Math.max(3, (b.count / peak) * 100)}%`,
                 background: b.count === 0 ? token("edge") : token("accent"),
                 opacity: b.count === 0 ? 0.5 : 0.85,
-                borderRadius: "2px 2px 0 0",
+                borderRadius: "var(--fx-radius-sm) var(--fx-radius-sm) 0 0",
               }}
             />
           </Tooltip>
@@ -286,7 +286,7 @@ function StorageCard({ facts, orientation, reload }: CardContext) {
   const wide = orientation === "horizontal";
 
   return (
-    <Stack sx={{ gap: 1, flex: 1, minHeight: 0 }}>
+    <Stack sx={{ gap: 'var(--fx-dens-gap-xl)', flex: 1, minHeight: 0 }}>
       <Stack direction={wide ? "row" : "column"} sx={{ gap: wide ? 2.5 : 0.75 }}>
         <Figure value={fmtBytes(s.totalBytes)} label="owned" size={wide ? 24 : 20} />
         <Figure value={fmtBytes(s.sharedBytes)} label="shared" size={wide ? 24 : 18} tone={token("dim")} />
@@ -294,13 +294,13 @@ function StorageCard({ facts, orientation, reload }: CardContext) {
       </Stack>
 
       {s.unscannedCount > 0 && (
-        <Typography sx={{ fontSize: 11, color: token("warn") }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("warn") }}>
           {s.unscannedCount} member{s.unscannedCount === 1 ? "" : "s"} never scanned — not counted,
           not assumed empty.
         </Typography>
       )}
       {note && (
-        <Typography sx={{ fontSize: 11, color: token("ok") }}>{note}</Typography>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("ok") }}>{note}</Typography>
       )}
 
       <Box sx={scroll}>
@@ -309,7 +309,7 @@ function StorageCard({ facts, orientation, reload }: CardContext) {
           <Nothing>Nothing has been scanned yet — run a rescan from the Storage tab.</Nothing>
         ) : (
           s.top.map((c) => (
-            <Stack key={c.username} direction="row" sx={{ alignItems: "center", gap: 0.75 }}>
+            <Stack key={c.username} direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-lg)' }}>
               <Box sx={{ flex: 1, minWidth: 0 }}>
                 <Row k={c.username} v={fmtBytes(c.totalBytes)} />
               </Box>
@@ -372,7 +372,7 @@ function AuditCard({ orientation }: CardContext) {
   }, [load]);
 
   if (error) {
-    return <Typography sx={{ fontSize: 11.5, color: token("err") }}>{error}</Typography>;
+    return <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("err") }}>{error}</Typography>;
   }
   if (!entries) return <Waiting />;
   if (entries.length === 0) return <Nothing>No administrative acts recorded yet.</Nothing>;
@@ -387,19 +387,19 @@ function AuditCard({ orientation }: CardContext) {
             gap: wide ? 1 : 0,
             alignItems: wide ? "baseline" : "flex-start",
             py: 0.35,
-            borderBottom: `1px solid ${token("edge")}`,
+            borderBottom: `var(--fx-border-w) solid ${token("edge")}`,
           }}
         >
           <Typography
-            sx={{ fontFamily: token("mono"), fontSize: 11, color: token("accent"), flexShrink: 0 }}
+            sx={{ fontFamily: token("mono"), fontSize: 'var(--fx-type-root-xs)', color: token("accent"), flexShrink: 0 }}
           >
             {e.verb}
           </Typography>
-          <Typography sx={{ fontSize: 11.5, flex: wide ? 1 : undefined, minWidth: 0 }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', flex: wide ? 1 : undefined, minWidth: 0 }}>
             {e.actor} → {e.subject}
             {e.path ? ` · ${e.path}` : e.field ? ` · ${e.field}` : ""}
           </Typography>
-          <Typography sx={{ fontSize: 10.5, color: token("dim"), flexShrink: 0 }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), flexShrink: 0 }}>
             {fmtWhen(e.at)}
           </Typography>
         </Stack>
@@ -426,7 +426,7 @@ function SessionsCard({ facts, orientation }: CardContext) {
   const wide = orientation === "horizontal";
 
   return (
-    <Stack sx={{ gap: 1, flex: 1, minHeight: 0 }}>
+    <Stack sx={{ gap: 'var(--fx-dens-gap-xl)', flex: 1, minHeight: 0 }}>
       <Stack direction={wide ? "row" : "column"} sx={{ gap: wide ? 2.5 : 0.75 }}>
         <Figure value={connections} label="open streams" />
         <Figure value={onlineCount} label="members holding" size={wide ? 26 : 18} />
@@ -464,7 +464,7 @@ function PolicyCard({ facts, orientation }: CardContext) {
     p.overQuotaCount === 0 && p.suspendedCount === 0 && p.loginDisabled === 0;
 
   return (
-    <Stack sx={{ gap: 1, flex: 1, minHeight: 0 }}>
+    <Stack sx={{ gap: 'var(--fx-dens-gap-xl)', flex: 1, minHeight: 0 }}>
       <Stack direction={wide ? "row" : "column"} sx={{ gap: wide ? 2.5 : 0.75 }}>
         <Figure
           value={p.overQuotaCount}
@@ -537,7 +537,7 @@ function HealthCard({ facts, orientation }: CardContext) {
       : (media.error ?? `HTTP ${media.status ?? "?"}`);
 
   return (
-    <Stack sx={{ gap: 1, flex: 1, minHeight: 0 }}>
+    <Stack sx={{ gap: 'var(--fx-dens-gap-xl)', flex: 1, minHeight: 0 }}>
       <Stack direction={wide ? "row" : "column"} sx={{ gap: wide ? 2.5 : 0.75 }}>
         <Figure value={fmtUptime(proc.uptimeSec)} label="uptime" />
         <Figure value={fmtBytes(proc.rssBytes)} label="resident" size={wide ? 26 : 18} />
@@ -550,7 +550,7 @@ function HealthCard({ facts, orientation }: CardContext) {
         <LinearProgress
           variant="determinate"
           value={Math.min(100, heapPct)}
-          sx={{ height: 5, borderRadius: 3, mt: 0.5 }}
+          sx={{ height: 5, borderRadius: 'var(--fx-radius-lg)', mt: 0.5 }}
         />
       </Box>
 
@@ -562,7 +562,7 @@ function HealthCard({ facts, orientation }: CardContext) {
         <Row k="media server" v={mediaText} tone={mediaTone} />
         {media.configured && media.url && (
           <Typography
-            sx={{ fontSize: 10, color: token("dim"), fontFamily: token("mono"), mt: 0.25 }}
+            sx={{ fontSize: 'var(--fx-type-root-2xs)', color: token("dim"), fontFamily: token("mono"), mt: 0.25 }}
           >
             {media.url}
           </Typography>

@@ -1,0 +1,82 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-banner-apply-all-fable",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:27:40Z",
+ "build": {
+  "id": "banner-apply-all-fable",
+  "title": "Banner settings Apply to all (Fable rebuild)",
+  "profile": "all",
+  "category": "App",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Fable suggested, Opus chosen. Rebuild the Apply to all pane in framework/react/components/BannerSettings.tsx (Opus build: branch claude/banner-apply-all-keys-recheck). Replace the Opus version first; move the shared-value/Mixed rules into a pure engine with a fixture.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Replace the Opus Apply to all pane; pure engine for shared values + Mixed with a fixture",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s2",
+   "text": "Re-bake every app, before/after shots, differences report",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-11-10T04:39:20.621Z",
+ "landedAt": "2026-11-10T04:39:20.621Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": [
+  "s1: Replace the Opus Apply to all pane; pure engine for shared values + Mixed with a fixture",
+  "s2: Re-bake every app, before/after shots, differences report"
+ ]
+}

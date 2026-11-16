@@ -5,7 +5,8 @@
  * record just gains an optional `priority`, and an agent-slots entry an optional `build`.
  *
  * A build without a stored priority is worked out on read (effectivePriority): Normal, or Urgent when it is marked
- * urgent. So there is nothing to migrate, and no store write that would touch every record.
+ * urgent (in its title or brief). Urgency is never a profile (Nov 7 2026: the Urgent profile's builds were merged into
+ * `all` with `priority: 'P0'` stored on each).
  */
 export const PRIORITIES = ['P0', 'P1', 'P2', 'P3'];
 export const PRIORITY_DEFAULT = 'P2';
@@ -29,7 +30,6 @@ const BRIEF_SHOUT = /\b(URGENT|HOTFIX)\b/;
 const BRIEF_OPENS = /^\s*(urgent|hotfix)\b/im;
 export function markedUrgent(b) {
   if (!b) return false;
-  if ((b.profiles ?? []).includes('urgent')) return true;
   if (TITLE_MARK.test(`${b.id ?? ''} ${b.title ?? ''}`)) return true;
   const brief = `${b.detail ?? ''}\n${b.origin?.brief ?? ''}`;
   return BRIEF_SHOUT.test(brief) || BRIEF_OPENS.test(brief);

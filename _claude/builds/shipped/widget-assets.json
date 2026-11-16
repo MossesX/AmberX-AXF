@@ -1,0 +1,56 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-widget-assets",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:26:22Z",
+ "build": {
+  "id": "widget-assets",
+  "title": "Widget asset category + search bar (Fable rebuild)",
+  "profile": "all",
+  "category": "Plugin",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Widgets (\"widget\": true: clock, search-bar) attach to banners and toolbars through one host engine (engines/widgets.ts = Kotlin WidgetEngine.kt, fixtures widgets.json): banner.attach and toolbar.widgets (start/end), rt.attachToToolbar/detachFromToolbar/toolbarWidgets on both ports. search-bar asset type (placeholder, maxResults, width, kinds, shortcut) sits in the banner center and searches the whole console: views, settings, actions, assets, windows, dialogs, page words, plan features, tracker items, pending builds, plugins (console providers in consoleSearch.ts). Rebuild with an Android Compose banner + toolbar widgets + search UI. Builds on banner-assets.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-20T22:30:00Z",
+ "landedAt": "2026-10-20T22:30:00Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

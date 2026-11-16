@@ -1,0 +1,181 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-hotfix-build-manager",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:00Z",
+ "build": {
+  "id": "hotfix-build-manager",
+  "title": "Hotfix: Build manager rows open, step actions work, running count is real",
+  "profile": "all",
+  "category": "Framework",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Can you check build manager to see what's going? It says 21 things are going. ... When I click them, they don't open up, and the steps in the build menu don't work.",
+  "verbatim": true,
+  "at": "2026-11-04T00:00:00Z",
+  "source": "voice",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-hotfix-build-manager--paulie",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-04T12:17:57.056Z",
+   "endedAt": "2026-11-04T13:29:47.466Z",
+   "exit": 0,
+   "costUsd": 9.9188
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Find and fix: build row click opens nothing",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-04T12:47:56.382Z",
+   "doneAt": "2026-11-04T13:28:12.810Z",
+   "actualMin": 40,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Fix step actions in the build menu",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-04T12:17:57.056Z",
+   "doneAt": "2026-11-04T12:47:54.565Z",
+   "actualMin": 30,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Reconciler rule: running only when a process is alive; banner count = running; clean stale statuses",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-04T12:47:54.565Z",
+   "doneAt": "2026-11-04T12:47:55.501Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Tests, screenshot, report, PR",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-04T12:47:55.501Z",
+   "doneAt": "2026-11-04T12:47:56.382Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/hotfix-build-manager",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 309,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/309"
+ },
+ "landedCommit": "cde1d8b82179b106b02c39c1622797468b43c3d1",
+ "commits": [
+  "170151d5f8491b96b3b3c454a8fc7b3be4127998",
+  "44edb0ca664a87072a0b8a11fad65a84b48525be",
+  "2ceecd4c107f4c2d7eca81a8fed47a4b6acf4829",
+  "3781ea25c991c9bee9f164cf0abb3b59edc0076a",
+  "940a9234d6452d35862c850b4b2354febb05775a",
+  "4f44dfd6239f023218b797475b885ce946059e8c"
+ ],
+ "mergedAt": "2026-11-04T13:20:57Z",
+ "landedAt": "2026-11-04T13:21:18Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/origins.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/big-dog/orchestrator.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/current/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/store.json"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/origins.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/big-dog/orchestrator.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/current/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "node framework/spec/check-builds-live.mjs: 42 → 47 passed (5 new: paused stays pending, merged stays complete, aliveIds, idlePlan, no-tmux = no change).",
+   "command": "node framework/spec/check-builds-live.mjs",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "node framework/spec/check-builds-store.mjs: 37 passed. build-manager test.mjs: 128 passed. builds-page test.py: 14 passed. tsc --noEmit (console): clean.",
+   "command": "node framework/spec/check-builds-store.mjs",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "build-orchestrator test.mjs: fails on the live data check \"repo store: orchestrator builds are small-stepped\" for **urgent-land-lazy-loader** (another session's build, a step over 30 min). Before the cleanup it failed on kill-patches-pilot; not caused by this change.",
+   "command": "",
+   "result": "fail",
+   "detail": ""
+  },
+  {
+   "name": "Verified on a 412 px phone viewport against the live API: a tapped build opens; a tick shows at once and holds through the next poll; untick holds too. Screenshot: UI Review → Screenshots, group \"hotfix-build-manager - Nov 4 12:47 PM\" (shots/builds-row-open-phone.png).",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 9.9188,
+  "estimated": false,
+  "tokens": {
+   "input": 344,
+   "output": 2702,
+   "cacheRead": 31108322,
+   "cacheWrite": 254343
+  }
+ },
+ "report": "_claude/builds/reports/hotfix-build-manager.md",
+ "open": []
+}

@@ -1,0 +1,424 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-home-cards-live",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:36Z",
+ "build": {
+  "id": "home-cards-live",
+  "title": "Home cards draw live data: one card engine (card@1 binding), Add card, drag to Home, suggested cards",
+  "profile": "all",
+  "category": "Console",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "I shouldn't need to build cards. I should draw dynamic data.",
+  "verbatim": false,
+  "at": "2026-11-03T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "# Build: home-cards-live (Urgent profile) - replaces pending item `home-cards`\n\nBrett, Nov 3 2026 (voice): \"I shouldn't need to build cards. I should draw dynamic data.\" Assigned agent: **Ping Paulie** (book on his card; if busy and the all-rounder router is on main, whoever is free - record who). Register in Urgent (id `home-cards-live`) + banner entry. Mark pending item `home-cards` replaced by this build (pending_change status, note) - do NOT hand-build a card per plugin.\n\n## What to build: one card engine that draws any data\n- s1 `card@1` asset = a data binding, not a design: {source: any control@1 / plugin-commands-auto read command (REST/MCP/CLI already generated for every plugin), args, path into the result, view: number | list | meter | chart (line/bar/spark) | feed | table | status, refresh: live (subscribe to the live feed when the source has one) or every N s, title, icon, size}. Open registry for views. Tokens/assets only.\n- s2 **Add card** on Home: pick any plugin -> any of its read commands -> preview the live result -> pick a view (smart default from the data shape: single number -> number, array -> list/table, time series -> chart, status field -> status) -> pick fields -> Save. Zero code, zero agents, zero tokens.\n- s3 **Drag any hook / data element onto Home** (use the `hook@1` / `drop-target@1` contract from the toolbar build if on main, else define Home as a drop target the same way and note it) -> configure dialog prefilled -> card.\n- s4 Home layout: drag to reorder, resize, show/hide, card context menu (Edit card, Change view, Size, Open plugin, Remove), Show all / Hide all, saved per user on axHub. The 5 existing Home cards become card@1 assets bound to their existing data.\n- s5 Starter set auto-offered (not hand-built): one-tap 'Suggested cards' from whatever read commands exist (builds running, today's cost, agents working, approvals waiting, UI Review waiting, notes recent).\n- s6 Zero-token test (no LLM imports in the card engine), tests for binding/live refresh/view picking, phone + desktop screenshots, UI Review item, report `_claude/builds/reports/home-cards-live.md`, THREADS, PR, steps through the store. Commits clean and professional.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-home-cards-live",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-03T19:41:08.713Z",
+   "endedAt": "2026-11-03T21:18:22.564Z",
+   "exit": 0,
+   "costUsd": 32.9253
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "card@1 asset = data binding (source command, args, path, view, refresh live|every N s, title, icon, size); open view registry; tokens only",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T19:41:08.713Z",
+   "doneAt": "2026-11-03T20:00:18.561Z",
+   "actualMin": 19,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Add card on Home: plugin -> read command -> live preview -> smart default view from data shape -> fields -> Save",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T20:00:18.561Z",
+   "doneAt": "2026-11-03T20:00:19.768Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Drag any hook / data element onto Home (hook@1 / drop-target@1 if on main, else Home as drop target) -> prefilled configure dialog",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T20:00:21.689Z",
+   "doneAt": "2026-11-03T21:17:50.508Z",
+   "actualMin": 77,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Home layout: reorder, resize, show/hide, card context menu, Show all / Hide all, saved per user on axHub; the 5 existing cards become card@1 assets",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T20:00:19.768Z",
+   "doneAt": "2026-11-03T20:00:20.707Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Suggested cards: one-tap starter set from existing read commands (builds running, today's cost, agents working, approvals waiting, UI Review waiting, notes recent)",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T20:00:20.707Z",
+   "doneAt": "2026-11-03T20:00:21.689Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Zero-token test, binding/live refresh/view picking tests, phone + desktop screenshots, UI Review item, report, THREADS, PR",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T21:17:50.508Z",
+   "doneAt": "2026-11-03T21:17:53.520Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/home-cards-live",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 283,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/283"
+ },
+ "landedCommit": "b73e893f822874fb6f9df6d2f319a2bf998149fe",
+ "commits": [
+  "021f62b728936e8404054efc2e0bb0e25191ddff",
+  "d5a8b45a969ea979b843da3c57803c5e9052f439",
+  "d914b398eb7fa157c2dd490c6033ca2f2b9f98a3",
+  "9c89b6153c3638f99217d64c3a64f6095a8a93e0"
+ ],
+ "mergedAt": "2026-11-04T04:52:23Z",
+ "landedAt": "2026-11-04T04:14:38Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/reports/home-cards-live.md",
+  "_claude/builds/reports/home-cards-live/shots/desktop-1-home.png",
+  "_claude/builds/reports/home-cards-live/shots/desktop-2-suggested.png",
+  "_claude/builds/reports/home-cards-live/shots/desktop-3-cards.png",
+  "_claude/builds/reports/home-cards-live/shots/desktop-4-addcard.png",
+  "_claude/builds/reports/home-cards-live/shots/desktop-5-menu.png",
+  "_claude/builds/reports/home-cards-live/shots/phone-1-home.png",
+  "_claude/builds/reports/home-cards-live/shots/phone-3-cards.png",
+  "_claude/builds/reports/home-cards-live/shots/phone-4-addcard.png",
+  "_claude/builds/reports/home-cards-live/shots/phone-5-menu.png",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/core/engines/card-rules.d.mts",
+  "apps/amberx-droid/src/axf/core/engines/card-rules.mjs",
+  "apps/amberx-droid/src/axf/core/index.ts",
+  "apps/amberx-droid/src/axf/core/types.ts",
+  "apps/amberx-droid/src/axf/core/validate.ts",
+  "apps/amberx-droid/src/axf/react/components/DataCard.tsx",
+  "apps/amberx-droid/src/axf/react/index.ts",
+  "apps/amberx-droid/src/axf/schemas/asset-types.json",
+  "apps/amberx-droid/src/axf/schemas/json/card.schema.json",
+  "apps/amberx-droid/src/axf/ui/axf.css",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/core/engines/card-rules.d.mts",
+  "apps/axhub-web/src/axf/core/engines/card-rules.mjs",
+  "apps/axhub-web/src/axf/core/index.ts",
+  "apps/axhub-web/src/axf/core/types.ts",
+  "apps/axhub-web/src/axf/core/validate.ts",
+  "apps/axhub-web/src/axf/react/components/DataCard.tsx",
+  "apps/axhub-web/src/axf/react/index.ts",
+  "apps/axhub-web/src/axf/schemas/asset-types.json",
+  "apps/axhub-web/src/axf/schemas/json/card.schema.json",
+  "apps/axhub-web/src/axf/ui/axf.css",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/plugin-commands/help.json",
+  "apps/console-web/plugins/plugin-commands/web/index.tsx",
+  "apps/console-web/server/main.py",
+  "apps/console-web/src/assets/card/build-summary.json",
+  "apps/console-web/src/assets/card/coverage.json",
+  "apps/console-web/src/assets/card/plan-summary.json",
+  "apps/console-web/src/assets/card/project.json",
+  "apps/console-web/src/assets/card/recent-installs.json",
+  "apps/console-web/src/assets/help/console-web-drafts.json",
+  "apps/console-web/src/axf/core/engines/card-rules.d.mts",
+  "apps/console-web/src/axf/core/engines/card-rules.mjs",
+  "apps/console-web/src/axf/core/index.ts",
+  "apps/console-web/src/axf/core/types.ts",
+  "apps/console-web/src/axf/core/validate.ts",
+  "apps/console-web/src/axf/react/components/DataCard.tsx",
+  "apps/console-web/src/axf/react/index.ts",
+  "apps/console-web/src/axf/schemas/asset-types.json",
+  "apps/console-web/src/axf/schemas/json/card.schema.json",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/console-web/src/console.css",
+  "apps/console-web/src/dialogs.tsx",
+  "apps/console-web/src/views/Home.tsx",
+  "apps/console-web/src/views/HomeCards.tsx",
+  "apps/molly/axf.lock.json",
+  "apps/molly/src/axf/core/engines/card-rules.d.mts",
+  "apps/molly/src/axf/core/engines/card-rules.mjs",
+  "apps/molly/src/axf/core/index.ts",
+  "apps/molly/src/axf/core/types.ts",
+  "apps/molly/src/axf/core/validate.ts",
+  "apps/molly/src/axf/react/components/DataCard.tsx",
+  "apps/molly/src/axf/react/index.ts",
+  "apps/molly/src/axf/schemas/asset-types.json",
+  "apps/molly/src/axf/schemas/json/card.schema.json",
+  "apps/molly/src/axf/ui/axf.css",
+  "framework/cli/build-engine.mjs",
+  "framework/core/engines/card-rules.d.mts",
+  "framework/core/engines/card-rules.mjs",
+  "framework/core/index.ts",
+  "framework/core/types.ts",
+  "framework/core/validate.ts",
+  "framework/react/components/DataCard.tsx",
+  "framework/react/index.ts",
+  "framework/schemas/asset-types.json",
+  "framework/schemas/json/card.schema.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-card.mjs",
+  "framework/spec/fixtures/appearance.json",
+  "framework/spec/fixtures/card.json",
+  "framework/spec/fixtures/roll.json",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/server/main.py",
+    "apps/console-web/src/assets/card/build-summary.json",
+    "apps/console-web/src/assets/card/coverage.json",
+    "apps/console-web/src/assets/card/plan-summary.json",
+    "apps/console-web/src/assets/card/project.json",
+    "apps/console-web/src/assets/card/recent-installs.json",
+    "apps/console-web/src/assets/help/console-web-drafts.json",
+    "apps/console-web/src/axf/core/engines/card-rules.d.mts",
+    "apps/console-web/src/axf/core/engines/card-rules.mjs",
+    "apps/console-web/src/axf/core/index.ts",
+    "apps/console-web/src/axf/core/types.ts",
+    "apps/console-web/src/axf/core/validate.ts",
+    "apps/console-web/src/axf/react/components/DataCard.tsx",
+    "apps/console-web/src/axf/react/index.ts",
+    "apps/console-web/src/axf/schemas/asset-types.json",
+    "apps/console-web/src/axf/schemas/json/card.schema.json",
+    "apps/console-web/src/axf/ui/axf.css",
+    "apps/console-web/src/console.css",
+    "apps/console-web/src/dialogs.tsx",
+    "apps/console-web/src/views/Home.tsx",
+    "apps/console-web/src/views/HomeCards.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/core/engines/card-rules.d.mts",
+    "apps/amberx-droid/src/axf/core/engines/card-rules.mjs",
+    "apps/amberx-droid/src/axf/core/index.ts",
+    "apps/amberx-droid/src/axf/core/types.ts",
+    "apps/amberx-droid/src/axf/core/validate.ts",
+    "apps/amberx-droid/src/axf/react/components/DataCard.tsx",
+    "apps/amberx-droid/src/axf/react/index.ts",
+    "apps/amberx-droid/src/axf/schemas/asset-types.json",
+    "apps/amberx-droid/src/axf/schemas/json/card.schema.json",
+    "apps/amberx-droid/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/core/engines/card-rules.d.mts",
+    "apps/axhub-web/src/axf/core/engines/card-rules.mjs",
+    "apps/axhub-web/src/axf/core/index.ts",
+    "apps/axhub-web/src/axf/core/types.ts",
+    "apps/axhub-web/src/axf/core/validate.ts",
+    "apps/axhub-web/src/axf/react/components/DataCard.tsx",
+    "apps/axhub-web/src/axf/react/index.ts",
+    "apps/axhub-web/src/axf/schemas/asset-types.json",
+    "apps/axhub-web/src/axf/schemas/json/card.schema.json",
+    "apps/axhub-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/axf.lock.json",
+    "apps/molly/src/axf/core/engines/card-rules.d.mts",
+    "apps/molly/src/axf/core/engines/card-rules.mjs",
+    "apps/molly/src/axf/core/index.ts",
+    "apps/molly/src/axf/core/types.ts",
+    "apps/molly/src/axf/core/validate.ts",
+    "apps/molly/src/axf/react/components/DataCard.tsx",
+    "apps/molly/src/axf/react/index.ts",
+    "apps/molly/src/axf/schemas/asset-types.json",
+    "apps/molly/src/axf/schemas/json/card.schema.json",
+    "apps/molly/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/home-cards-live.md",
+    "_claude/builds/reports/home-cards-live/shots/desktop-1-home.png",
+    "_claude/builds/reports/home-cards-live/shots/desktop-2-suggested.png",
+    "_claude/builds/reports/home-cards-live/shots/desktop-3-cards.png",
+    "_claude/builds/reports/home-cards-live/shots/desktop-4-addcard.png",
+    "_claude/builds/reports/home-cards-live/shots/desktop-5-menu.png",
+    "_claude/builds/reports/home-cards-live/shots/phone-1-home.png",
+    "_claude/builds/reports/home-cards-live/shots/phone-3-cards.png",
+    "_claude/builds/reports/home-cards-live/shots/phone-4-addcard.png",
+    "_claude/builds/reports/home-cards-live/shots/phone-5-menu.png"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/card-rules.d.mts",
+    "framework/core/engines/card-rules.mjs",
+    "framework/core/index.ts",
+    "framework/core/types.ts",
+    "framework/core/validate.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-card.mjs",
+    "framework/spec/fixtures/appearance.json",
+    "framework/spec/fixtures/card.json",
+    "framework/spec/fixtures/roll.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plugin-commands",
+   "files": [
+    "apps/console-web/plugins/plugin-commands/help.json",
+    "apps/console-web/plugins/plugin-commands/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/DataCard.tsx",
+    "framework/react/index.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/asset-types.json",
+    "framework/schemas/json/card.schema.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/build-engine.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261103-7cc685ea",
+   "name": "Predicted look: Home cards draw live data: one card engine (card@1 binding), Add card, drag to Home, suggested cards",
+   "status": "approved",
+   "group": "g-20261103-d8c5e30e",
+   "url": "/review/r-20261103-7cc685ea"
+  },
+  {
+   "id": "r-20261103-88aadcbf",
+   "name": "Home cards draw live data",
+   "status": "approved",
+   "group": "g-20261103-cc4ef09e",
+   "url": "/review/r-20261103-88aadcbf"
+  },
+  {
+   "id": "r-20261103-89343f32",
+   "name": "Predicted look: Home cards draw live data: one card engine (card@1 binding), Add card, drag to Home, suggested cards",
+   "status": "approved",
+   "group": "g-20261103-d8c5e30e",
+   "url": "/review/r-20261103-89343f32"
+  }
+ ],
+ "cost": {
+  "usd": 32.9253,
+  "estimated": false,
+  "tokens": {
+   "input": 354,
+   "output": 2936,
+   "cacheRead": 33440646,
+   "cacheWrite": 292196
+  }
+ },
+ "report": "_claude/builds/reports/home-cards-live.md",
+ "open": [
+  "Approvals waiting: approvals-banner exposes no read of waiting approvals (only its data folder), so that suggestion is not offered. A `GET /pending` route on approvals-banner (or an `approvals` plugin read) makes it appear by itself.",
+  "Slow reads under VPS load: each control@1 read runs two node processes on the console server; cards on the same source share one read (3 s window). A faster in-process path for reads would help every surface, not just Home.",
+  "Non-admin hub users: the axHub wall may refuse `/api/home/layout` for them until it is added to the wall's user paths.",
+  "Live refresh listens to the console's `/api/events` feed by plugin channel, with a 2-minute fallback re-read; plugins that never log on the feed refresh at that pace or by hand.",
+  "Kotlin card engine deferred (Android on hold)."
+ ]
+}

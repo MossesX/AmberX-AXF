@@ -1,0 +1,15 @@
+{
+ "$axf": "projects@1",
+ "updatedAt": "2026-11-12T18:23:46.696Z",
+ "projects": [
+  {
+   "id": "amberx-axf",
+   "name": "AmberX AXF",
+   "description": "The AmberX framework, its apps and the console: every build, note, to-do and plan from before projects.",
+   "profile": "all",
+   "status": "active",
+   "createdAt": "2026-11-12T00:00:00.000Z",
+   "updatedAt": "2026-11-12T00:00:00.000Z"
+  }
+ ]
+}

@@ -1,0 +1,20 @@
+{
+ "$axf": "asset@1",
+ "type": "nav-menu",
+ "id": "molly-expenses-nav-menu",
+ "name": "molly-expenses-nav: Molly menu only",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "No nav entries: the Molly menu, search and deep links (#/expenses/ledger …) reach the screens. Setting expenses.navPlacement = menu.",
+ "tags": [
+  "ui-choice",
+  "choice-set:molly-expenses-nav",
+  "choice-option:menu"
+ ],
+ "data": {
+  "style": "list",
+  "navStyle": true,
+  "placement": "menu",
+  "sections": []
+ }
+}

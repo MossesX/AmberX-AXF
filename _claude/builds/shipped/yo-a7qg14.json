@@ -1,0 +1,378 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-yo-a7qg14",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:33:34Z",
+ "build": {
+  "id": "yo-a7qg14",
+  "title": "yo-a7qg14",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "yo-a7qg14",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/yo-a7qg14",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "b04a5254f73b9064066dc550fbe30942f5603f1a",
+ "commits": [
+  "07d8d304364558b43875c6a4b8a7e1d07f037825",
+  "8a4041710276d22aeaf540bfd6f8fb0602cd92cf",
+  "50941591705a3d0a7e65cebc7fedd48927dd0d40",
+  "49043f3afee742d609791536b0137b57d6112ad3",
+  "9c1c49d00e7232a6e036313c5b8ea0b10ee0dc8b",
+  "4eed7650998321706763aba9c9381c238dfeeda4",
+  "94d2830ff41f6f237bd1ecf84a4e289165430414",
+  "1f82018d5d1de5d2a0924466f6f532bc9c655c5f",
+  "ed1e419dffcb8b9a2e5988c7b847bf0ae51883d4",
+  "2ecd4e79696ee80b324fb0ed25b8064a83ad0412",
+  "b0429280bece327f3d54f00838db9b321fbbf93b"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-22T05:57:20Z",
+ "files": [
+  "CLAUDE.md",
+  "_claude/rules/RULES.md",
+  "_claude/shared/rules/RULES.md",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/deploy/install.sh",
+  "apps/axhub-web/src/axf/core/engines/appmenu.ts",
+  "apps/axhub-web/src/axf/core/engines/embed.ts",
+  "apps/axhub-web/src/axf/core/runtime.ts",
+  "apps/axhub-web/src/axf/libs/settings/index.tsx",
+  "apps/axhub-web/src/axf/react/AppShell.tsx",
+  "apps/axhub-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/axhub-web/src/axf/react/components/Chrome.tsx",
+  "apps/axhub-web/src/axf/react/components/Icon.tsx",
+  "apps/axhub-web/src/axf/react/components/MenuList.tsx",
+  "apps/axhub-web/src/axf/react/components/Overlays.tsx",
+  "apps/axhub-web/src/axf/react/components/Widgets.tsx",
+  "apps/axhub-web/src/axf/react/index.ts",
+  "apps/axhub-web/src/axf/react/library.ts",
+  "apps/axhub-web/src/axf/schemas/model-pricing.json",
+  "apps/axhub-web/src/axf/ui/axf.css",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/README.md",
+  "apps/console-web/plugins/activity/server/__init__.py",
+  "apps/console-web/plugins/activity/server/feed.py",
+  "apps/console-web/plugins/activity/test.py",
+  "apps/console-web/plugins/activity/web/activity.css",
+  "apps/console-web/plugins/activity/web/index.tsx",
+  "apps/console-web/plugins/alerts-bell/web/index.tsx",
+  "apps/console-web/plugins/app-tabs/web/index.tsx",
+  "apps/console-web/plugins/approvals-banner/web/index.tsx",
+  "apps/console-web/plugins/build-manager/server/__init__.py",
+  "apps/console-web/plugins/build-manager/test.py",
+  "apps/console-web/plugins/build-manager/web/build-manager.css",
+  "apps/console-web/plugins/build-manager/web/index.tsx",
+  "apps/console-web/plugins/build-manager/web/store.ts",
+  "apps/console-web/plugins/build-manager/web/ui.tsx",
+  "apps/console-web/plugins/claude-badge/web/index.tsx",
+  "apps/console-web/plugins/codebase-changes/server/__init__.py",
+  "apps/console-web/plugins/codebase-changes/test.py",
+  "apps/console-web/plugins/codebase-changes/web/codebase-changes.css",
+  "apps/console-web/plugins/codebase-changes/web/index.tsx",
+  "apps/console-web/plugins/codebase-changes/web/store.ts",
+  "apps/console-web/plugins/codebase-changes/web/ui.tsx",
+  "apps/console-web/plugins/push-banner/hooks.mjs",
+  "apps/console-web/plugins/push-banner/install.mjs",
+  "apps/console-web/plugins/push-banner/plugin.json",
+  "apps/console-web/plugins/push-banner/server/__init__.py",
+  "apps/console-web/plugins/push-banner/test.py",
+  "apps/console-web/plugins/push-banner/uninstall.mjs",
+  "apps/console-web/plugins/push-banner/web/index.tsx",
+  "apps/console-web/plugins/push-banner/web/menu.ts",
+  "apps/console-web/plugins/push-banner/web/push-banner.css",
+  "apps/console-web/plugins/push-banner/web/store.ts",
+  "apps/console-web/plugins/push-banner/web/ui.tsx",
+  "apps/console-web/plugins/systems-check/web/KeysBanner.tsx",
+  "apps/console-web/plugins/systems-check/web/SystemCheck.tsx",
+  "apps/console-web/plugins/systems-check/web/WhatsNew.tsx",
+  "apps/console-web/plugins/systems-check/web/index.tsx",
+  "apps/console-web/src/App.tsx",
+  "apps/console-web/src/axf/core/engines/embed.ts",
+  "apps/console-web/src/axf/core/runtime.ts",
+  "apps/console-web/src/axf/libs/settings/index.tsx",
+  "apps/console-web/src/axf/react/AppShell.tsx",
+  "apps/console-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/console-web/src/axf/react/components/Overlays.tsx",
+  "apps/console-web/src/axf/react/index.ts",
+  "apps/console-web/src/axf/react/library.ts",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/console-web/src/bannerStrip.tsx",
+  "apps/console-web/src/console.css",
+  "apps/console-web/src/views/BuildManager.tsx",
+  "apps/patches-web/axf.lock.json",
+  "apps/patches-web/src/axf/core/engines/embed.ts",
+  "apps/patches-web/src/axf/core/runtime.ts",
+  "apps/patches-web/src/axf/libs/settings/index.tsx",
+  "apps/patches-web/src/axf/react/AppShell.tsx",
+  "apps/patches-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/patches-web/src/axf/react/components/Overlays.tsx",
+  "apps/patches-web/src/axf/react/index.ts",
+  "apps/patches-web/src/axf/react/library.ts",
+  "apps/patches-web/src/axf/schemas/model-pricing.json",
+  "apps/patches-web/src/axf/ui/axf.css",
+  "apps/patches-web/src/patches.ts",
+  "apps/patches-web/src/patchesLibrary.tsx",
+  "framework/android/axf-kernel/src/main/kotlin/ai/amberx/axf/kernel/engine/EmbedTakes.kt",
+  "framework/core/engines/embed.ts",
+  "framework/core/runtime.ts",
+  "framework/libs/settings/index.tsx",
+  "framework/react/AppShell.tsx",
+  "framework/react/components/BannerSettings.tsx",
+  "framework/react/components/Overlays.tsx",
+  "framework/react/index.ts",
+  "framework/react/library.ts",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-embed.mts",
+  "framework/spec/fixtures/embed-takes.json",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/deploy/install.sh",
+    "apps/axhub-web/src/axf/core/engines/appmenu.ts",
+    "apps/axhub-web/src/axf/core/engines/embed.ts",
+    "apps/axhub-web/src/axf/core/runtime.ts",
+    "apps/axhub-web/src/axf/libs/settings/index.tsx",
+    "apps/axhub-web/src/axf/react/AppShell.tsx",
+    "apps/axhub-web/src/axf/react/components/BannerSettings.tsx",
+    "apps/axhub-web/src/axf/react/components/Chrome.tsx",
+    "apps/axhub-web/src/axf/react/components/Icon.tsx",
+    "apps/axhub-web/src/axf/react/components/MenuList.tsx",
+    "apps/axhub-web/src/axf/react/components/Overlays.tsx",
+    "apps/axhub-web/src/axf/react/components/Widgets.tsx",
+    "apps/axhub-web/src/axf/react/index.ts",
+    "apps/axhub-web/src/axf/react/library.ts",
+    "apps/axhub-web/src/axf/schemas/model-pricing.json",
+    "apps/axhub-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/plugins/README.md",
+    "apps/console-web/src/App.tsx",
+    "apps/console-web/src/axf/core/engines/embed.ts",
+    "apps/console-web/src/axf/core/runtime.ts",
+    "apps/console-web/src/axf/libs/settings/index.tsx",
+    "apps/console-web/src/axf/react/AppShell.tsx",
+    "apps/console-web/src/axf/react/components/BannerSettings.tsx",
+    "apps/console-web/src/axf/react/components/Overlays.tsx",
+    "apps/console-web/src/axf/react/index.ts",
+    "apps/console-web/src/axf/react/library.ts",
+    "apps/console-web/src/axf/ui/axf.css",
+    "apps/console-web/src/bannerStrip.tsx",
+    "apps/console-web/src/console.css",
+    "apps/console-web/src/views/BuildManager.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "patches-web",
+   "files": [
+    "apps/patches-web/axf.lock.json",
+    "apps/patches-web/src/axf/core/engines/embed.ts",
+    "apps/patches-web/src/axf/core/runtime.ts",
+    "apps/patches-web/src/axf/libs/settings/index.tsx",
+    "apps/patches-web/src/axf/react/AppShell.tsx",
+    "apps/patches-web/src/axf/react/components/BannerSettings.tsx",
+    "apps/patches-web/src/axf/react/components/Overlays.tsx",
+    "apps/patches-web/src/axf/react/index.ts",
+    "apps/patches-web/src/axf/react/library.ts",
+    "apps/patches-web/src/axf/schemas/model-pricing.json",
+    "apps/patches-web/src/axf/ui/axf.css",
+    "apps/patches-web/src/patches.ts",
+    "apps/patches-web/src/patchesLibrary.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/hooks.mjs",
+    "apps/console-web/plugins/push-banner/install.mjs",
+    "apps/console-web/plugins/push-banner/plugin.json",
+    "apps/console-web/plugins/push-banner/server/__init__.py",
+    "apps/console-web/plugins/push-banner/test.py",
+    "apps/console-web/plugins/push-banner/uninstall.mjs",
+    "apps/console-web/plugins/push-banner/web/index.tsx",
+    "apps/console-web/plugins/push-banner/web/menu.ts",
+    "apps/console-web/plugins/push-banner/web/push-banner.css",
+    "apps/console-web/plugins/push-banner/web/store.ts",
+    "apps/console-web/plugins/push-banner/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-manager",
+   "files": [
+    "apps/console-web/plugins/build-manager/server/__init__.py",
+    "apps/console-web/plugins/build-manager/test.py",
+    "apps/console-web/plugins/build-manager/web/build-manager.css",
+    "apps/console-web/plugins/build-manager/web/index.tsx",
+    "apps/console-web/plugins/build-manager/web/store.ts",
+    "apps/console-web/plugins/build-manager/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "codebase-changes",
+   "files": [
+    "apps/console-web/plugins/codebase-changes/server/__init__.py",
+    "apps/console-web/plugins/codebase-changes/test.py",
+    "apps/console-web/plugins/codebase-changes/web/codebase-changes.css",
+    "apps/console-web/plugins/codebase-changes/web/index.tsx",
+    "apps/console-web/plugins/codebase-changes/web/store.ts",
+    "apps/console-web/plugins/codebase-changes/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "activity",
+   "files": [
+    "apps/console-web/plugins/activity/server/__init__.py",
+    "apps/console-web/plugins/activity/server/feed.py",
+    "apps/console-web/plugins/activity/test.py",
+    "apps/console-web/plugins/activity/web/activity.css",
+    "apps/console-web/plugins/activity/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/AppShell.tsx",
+    "framework/react/components/BannerSettings.tsx",
+    "framework/react/components/Overlays.tsx",
+    "framework/react/index.ts",
+    "framework/react/library.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "systems-check",
+   "files": [
+    "apps/console-web/plugins/systems-check/web/KeysBanner.tsx",
+    "apps/console-web/plugins/systems-check/web/SystemCheck.tsx",
+    "apps/console-web/plugins/systems-check/web/WhatsNew.tsx",
+    "apps/console-web/plugins/systems-check/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-embed.mts",
+    "framework/spec/fixtures/embed-takes.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/rules/RULES.md",
+    "_claude/shared/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/embed.ts",
+    "framework/core/runtime.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "alerts-bell",
+   "files": [
+    "apps/console-web/plugins/alerts-bell/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "app-tabs",
+   "files": [
+    "apps/console-web/plugins/app-tabs/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "approvals-banner",
+   "files": [
+    "apps/console-web/plugins/approvals-banner/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-badge",
+   "files": [
+    "apps/console-web/plugins/claude-badge/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "android",
+   "files": [
+    "framework/android/axf-kernel/src/main/kotlin/ai/amberx/axf/kernel/engine/EmbedTakes.kt"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/settings/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

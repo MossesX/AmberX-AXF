@@ -1,0 +1,92 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-settings-asset",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:27:05Z",
+ "build": {
+  "id": "settings-asset",
+  "title": "Settings interface as an asset type (settings-ui@1)",
+  "profile": "all",
+  "category": "Framework",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "make the settings interface an asset type so several apps use the same settings interface with the same options. New optional asset type `settings`: layout tabs-top / tabs-side / list, header, search, descriptions, tab order + labels, hide (tab/group/panel/setting ids), data-only option groups the app gets while the asset is active. Engine core/engines/settingsui.ts, fixture settings-ui.json, web settings library reads it, starters standard (default) / side-tabs / developer-apps. Android twin deferred.",
+  "verbatim": false,
+  "at": "2026-10-23T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Asset type + types + engine",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-23T18:22:53Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Settings library reads the asset (layout, header, search, hide, groups)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-23T18:22:53Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Starters, app manifests, re-bakes, fixture + checker, CI, docs",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-23T18:22:53Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-23T18:22:53Z",
+ "landedAt": "2026-10-23T18:22:53Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

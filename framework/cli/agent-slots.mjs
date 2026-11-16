@@ -25,12 +25,21 @@
  *   … settings [--json] · set key=value… | set --json '{…}' · get <key>
  *   … heavy [--label l] -- <cmd…>  run a heavy step under the test/build lock
  *   … sweep                        close finished tmux sessions, count unregistered axf-* ones
+ *
+ * Hard limit (build-limit@1, Nov 12 2026): framework/cli/build-limit.mjs counts what really runs on the host and refuses
+ * the N+1st build whatever this queue thinks. Here maxAgents is capped at that limit (settings keep the value asked for
+ * as maxAgentsSet), status carries `hard` { max, live, free } and `free` is the smaller of the two. Heavy steps run in
+ * axf-builds.slice (systemd-run --scope) with the docker shim first on PATH (--cpus / --memory on test containers).
+ * Only Queued builds take slots (Brett, Nov 12 2026): a waiting entry whose build is no longer Queued / Running (moved
+ * back to Pending, built, failed…) is dropped instead of started (framework/cli/dispatch-gate.mjs buildMayTakeSlot).
  */
 import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { homedir, hostname } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { loadLimit, scopePrefix, usage as hardUsage } from './build-limit.mjs';
+import { buildMayTakeSlot } from './dispatch-gate.mjs';
 
 export const LEVELS = ['boss', 'urgent', 'high', 'normal', 'low'];
 export const DEFAULTS = {
@@ -166,7 +175,23 @@ const readJson = (f, dflt) => { try { return JSON.parse(readFileSync(f, 'utf8'))
 function writeJson(f, v) { const tmp = `${f}.${process.pid}.tmp`; writeFileSync(tmp, `${JSON.stringify(v, null, 2)}\n`); renameSync(tmp, f); }
 
 /** Read fresh on every call: a change in the console applies to the next check, nothing to restart. */
-export const loadSettings = () => normSettings(readJson(files().settings, {}));
+export function loadSettings() {
+  const s = normSettings(readJson(files().settings, {}));
+  let hard = null; try { hard = loadLimit().maxBuilds; } catch { /* no limit file: defaults */ }
+  if (hard != null) { s.hardMax = hard; if (s.maxAgents > hard) { s.maxAgentsSet = s.maxAgents; s.maxAgents = hard; } }
+  return s;
+}
+
+/** Adds the hard limit's live count to a status: `hard` { max, live, free, source, at }; `free` = the smaller. */
+export function withHard(sum, facts = {}) {
+  if (facts.hard === false || process.env.AXF_BUILD_LIMIT === 'off') return sum;
+  try {
+    const h = facts.hard ?? hardUsage();
+    sum.hard = { max: h.max, live: h.live, free: h.free, source: h.source, at: h.at, items: h.items ?? [] };
+    if (h.free != null) sum.free = Math.min(sum.free, h.free);
+  } catch (e) { sum.hard = { error: String(e.message).slice(0, 200) }; }
+  return sum;
+}
 export function saveSettings(patch) {
   const f = files(); mkdirSync(f.dir, { recursive: true });
   const next = normSettings({ ...readJson(f.settings, {}), ...patch });
@@ -295,6 +320,14 @@ export function enqueue(opts = {}, facts = {}) {
 
 function tryStart(st, settings, id, avail, facts = {}) {
   const now = facts.now ?? Date.now();
+  // only Queued builds take slots: an entry whose build went back to Pending (or ended) leaves the queue, never starts
+  const q0 = st.queue.find((x) => x.id === id);
+  const mayTake = facts.mayTake ?? ((b) => (process.env.AXF_SLOTS_BUILD_CHECK === 'off' ? true : buildMayTakeSlot(b)));
+  if (q0?.build && !mayTake(q0.build)) {
+    st.queue = st.queue.filter((x) => x.id !== id);
+    st.done = [...st.done, { ...q0, state: 'cancelled', cancelledBy: 'not-queued', closedAt: new Date(now).toISOString() }].slice(-KEEP_DONE);
+    return { started: false, gone: true, position: 0, reason: 'notqueued', used: holding(st).length, cap: settings.maxAgents };
+  }
   const d = decide(st, settings, id, avail);
   if (d.reason === 'memory' && now - (st.guard.trips.at(-1) ?? 0) > 60_000) st.guard.trips.push(now);
   if (!d.go) return { started: false, position: d.position, reason: d.reason, used: holding(st).length, cap: settings.maxAgents };
@@ -431,7 +464,7 @@ export function status(facts = {}) {
   const settings = loadSettings();
   let mem = {};
   const st = withState((s) => { mem = prune(s, settings, facts); return s; });
-  return summary(st, settings, mem, facts.now);
+  return withHard(summary(st, settings, mem, facts.now), facts);
 }
 
 /* ---------------- CLI ---------------- */
@@ -458,7 +491,7 @@ async function cli(argv) {
       if (!f['no-sweep']) sweep();
       const s = status();
       if (f.json) return json(s);
-      console.log(`slots ${s.used}/${s.cap} · ${s.queued} queued · heavy ${s.heavy.used}/${s.heavy.cap} · memory ${s.memory.availGb ?? '?'} GB free (floor ${s.memory.floorGb})${s.memory.swapMb ? ` · swap ${s.memory.swapMb} MB` : ''}`);
+      console.log(`slots ${s.used}/${s.cap}${s.hard?.max ? ` · hard limit ${s.hard.live ?? '?'}/${s.hard.max} running on the VPS` : ''} · ${s.queued} queued · heavy ${s.heavy.used}/${s.heavy.cap} · memory ${s.memory.availGb ?? '?'} GB free (floor ${s.memory.floorGb})${s.memory.swapMb ? ` · swap ${s.memory.swapMb} MB` : ''}`);
       for (const r of s.running) console.log(`  ${r.state.padEnd(9)} ${r.name} (${r.kind}, ${r.priority}) ${r.session || `pid ${r.pid}`} · ${ago(r.startedAt)}`);
       for (const q of s.queue) console.log(`  #${q.position} waiting ${q.name} (${q.priority}) since ${ago(q.enqueuedAt)} · ${q.id}`);
       return;
@@ -493,8 +526,12 @@ async function cli(argv) {
     case 'heavy': {
       const cmdv = f['--'] ?? [];
       if (!cmdv.length) throw new Error('heavy -- <command…>');
+      // in axf-builds.slice (CPU / memory caps for every build), docker test runs through the limits shim
+      const shim = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'deploy', 'build-limit');
+      const env = existsSync(join(shim, 'docker')) && process.env.AXF_BUILD_SLICE !== 'off' ? { ...process.env, PATH: `${shim}:${process.env.PATH ?? ''}` } : process.env;
+      const full = [...scopePrefix('axf-heavy'), ...cmdv];
       const code = await withHeavy(f.label || cmdv.join(' '), () => new Promise((res) => {
-        const c = spawn(cmdv[0], cmdv.slice(1), { stdio: 'inherit' });
+        const c = spawn(full[0], full.slice(1), { stdio: 'inherit', env });
         c.on('error', (e) => { console.error(e.message); res(127); });
         c.on('close', (n) => res(n ?? 1));
       }), { onWait: () => console.error(`agent-slots: waiting for a test/build slot (max ${loadSettings().maxHeavy} at once)…`) });

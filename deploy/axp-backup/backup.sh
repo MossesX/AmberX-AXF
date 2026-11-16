@@ -17,6 +17,8 @@ alert() { # alert <key> <severity> <title> <body>
   payload=$(python3 -c 'import json,sys; print(json.dumps({"source":"system","severity":sys.argv[2],"key":sys.argv[1],"title":sys.argv[3][:200],"body":sys.argv[4][:1900]}))' "$@")
   docker exec -i axf-console sh -c 'curl -s -o /dev/null -w "%{http_code}" -X POST http://127.0.0.1:7090/api/alerts -H "Authorization: Bearer $AXF_TOKEN" -H "Content-Type: application/json" --data-binary @-' <<<"$payload" >/dev/null 2>&1 || log "could not raise console alert $1"
 }
+# Group chat: the result goes out as the owner of section "backups" (framework/cli/crew-say.mjs in the console checkout).
+AXF_DIR=${AXF_DIR:-/opt/axf}
 resolve() {
   docker exec -i axf-console sh -c 'curl -s -o /dev/null -X POST http://127.0.0.1:7090/api/alerts/resolve -H "Authorization: Bearer $AXF_TOKEN" -H "Content-Type: application/json" --data-binary @-' <<<"{\"keys\":[\"$1\"]}" >/dev/null 2>&1 || true
 }
@@ -66,4 +68,8 @@ for p in "${SOURCES[@]}"; do
   fi
   cd "$ROOT"
 done
+if [ -f "$AXF_DIR/framework/cli/crew-say.mjs" ] && command -v node >/dev/null; then
+  if [ $fail -eq 0 ]; then node "$AXF_DIR/framework/cli/crew-say.mjs" backups done "Backups done: ${#SOURCES[@]} AXP folders copied, scanned and pushed where they changed." --ref "$(date -u +%F)" >/dev/null 2>&1 || true
+  else node "$AXF_DIR/framework/cli/crew-say.mjs" backups failed "Backups: at least one AXP folder was not backed up. The red banner item says which and why. Log: $LOG" --ref "$(date -u +%F)" >/dev/null 2>&1 || true; fi
+fi
 exit $fail

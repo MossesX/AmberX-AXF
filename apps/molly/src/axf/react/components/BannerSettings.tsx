@@ -229,8 +229,28 @@ function installActions(rt: AxfRuntime): void {
   rt.actions.register('banners.unhide', ([id]) => { if (id) setBannerHide(rt, id, false); }, { label: 'Unhide banner' });
   rt.actions.register('banners.show-all', () => showAllBannersNow(rt), { label: 'Show all banners (reset hide timers)' });
   // One entry, named after the banner that was right-clicked (payload = its id), never the others.
-  rt.contextExtras.set(BANNER_CTX_TARGET, (_t, id) => (id ? [bannerMenu(rt, id)] : []));
+  rt.contextExtras.set(BANNER_CTX_TARGET, (_t, id) => [...(id ? [bannerMenu(rt, id)] : []), ...skinsMenu(rt)]);
+  // The Skins widget (Brett, Nov 10 2026: "widget hidden by default"): a chip that opens the skin picker, off until it
+  // is ticked in Widgets… or shown by `banner.widget:skins:show`. The Skins sub-menu above is there either way.
+  rt.attachToBanner({ type: 'action-button', id: SKINS_WIDGET_ID, at: 'right', order: 27, origin: FRAMEWORK_MODULE, widget: { label: 'Skins', icon: 'sparkles', size: 'compact', priority: 4, hidden: true, aliases: ['skins', 'skin', 'skin picker'] } });
   rt.addContextItems({ id: 'axf.banners.ctx', module: 'axf', target: BANNER_CTX_TARGET, order: 1, items: [{ id: 'axf-banner-settings', label: 'Banner settings', icon: 'settings', action: 'banners.settings' }] });
+}
+
+const SKINS_WIDGET_ID = 'skins';
+
+/**
+ * Banner right-click → Skins: every skin in this app, the one in force ticked; a pick applies it live (`skin.use:<id>`,
+ * the same action the API, MCP, CLI and voice run), plus Skin off and the picker. Empty when the app has no skins.
+ */
+export function skinsMenu(rt: AxfRuntime): MenuEntry[] {
+  const list = rt.skinList();
+  if (!list.length) return [];
+  const cur = rt.skinInForce().id;
+  const items: MenuEntry[] = list.map((s) => ({ id: `axf-skin-${s.id}`, label: s.name, icon: s.id === cur ? 'check' : 'sparkles', action: `skin.use:${s.id}` }));
+  items.push({ id: 'axf-skins-sep', separator: true });
+  if (cur) items.push({ id: 'axf-skin-off', label: 'Skin off', icon: 'x', action: 'skin.off' });
+  items.push({ id: 'axf-skins-picker', label: 'Skin picker…', icon: 'settings', action: 'dialog:axf.settings.skin' });
+  return [{ id: 'axf-skins', label: 'Skins', icon: 'sparkles', items }];
 }
 
 function bannerMenu(rt: AxfRuntime, id: string): MenuEntry {

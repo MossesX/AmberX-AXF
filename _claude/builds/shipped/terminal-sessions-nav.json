@@ -1,0 +1,242 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-terminal-sessions-nav",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:39Z",
+ "build": {
+  "id": "terminal-sessions-nav",
+  "title": "Terminal: sessions navigation rail",
+  "profile": "all",
+  "category": "Console > Terminal",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "give the Terminal a collapsible navigation menu on the left listing live sessions, including each session he is personally doing with Claude, so he can mirror it and jump in. Assigned agent: whoever is free (router if on main; else **Earl the Ear**; record who). Register in `current` (id `terminal-sessions-nav`) + banner entry. Runs after / builds on `terminal-vps-host` (the Terminal's VPS host must be set up; if that isn't on main yet, wait for it or include its fix).",
+  "verbatim": false,
+  "at": "2026-11-03T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "# Build: terminal-sessions-nav (Current profile)\n\nBrett, Nov 3 2026 (voice): give the Terminal a collapsible navigation menu on the left listing live sessions, including each session he is personally doing with Claude, so he can mirror it and jump in. Assigned agent: whoever is free (router if on main; else **Earl the Ear**; record who). Register in `current` (id `terminal-sessions-nav`) + banner entry. Runs after / builds on `terminal-vps-host` (the Terminal's VPS host must be set up; if that isn't on main yet, wait for it or include its fix).\n\n## Build INTO the existing Terminal plugin (Windows Terminal + headless-tabs). No second terminal.\n- s1 **Left nav rail:** collapsible (icon-only collapsed, full when open, swipe/hamburger on phone), framework nav component + tokens, remembers state. Sections: **My sessions** (Brett's own), **Agents** (headless builds, with agent avatar/name, model, live cost, status dot - reuse headless meters), **Connections** (VPS, containers, axHub...). Tap = open/focus that tab; right-click = context menu (open, split, open in Moshi, stop with confirm, session info).\n- s2 **My sessions:** (a) Claude Code sessions he runs (tmux / claude-headless / phone via Moshi, Session check-in archive) - live mirror of the tmux pane, read-only by default, **Jump in** = attach writable and type into it. (b) Claude.ai chat/voice sessions (Amber): claude.ai has no live API for the transcript, so mirror what reaches axHub: every axHub call the session makes (tool, args summary, result, approvals) as a live activity feed per session (group by axHub session/correlation + client), with the session's agent (agent-pick) and cost if known; 'Jump in' = open that chat in claude.ai (deep link if the session reports its URL) and keep the feed beside it. Add MCP tool `console_session_note` (allow) so a Claude session can post what it's saying/doing as short lines into its own mirror feed, and add a rule: 'Chat/voice sessions post a short line to console_session_note when they act.' Zero tokens on the console side.\n- s3 Session list is live (websocket), shows started time + running timer, sort/search/filter, collapsible groups; ended sessions move to a 'Recent' group (link to Session browser).\n- s4 Commands declared once -> REST + MCP + CLI (list sessions, mirror, jump in, stop). Tests, phone + desktop screenshots, UI Review item, report `_claude/builds/reports/terminal-sessions-nav.md`, THREADS, PR, steps through the store. Commits clean and professional.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-terminal-sessions-nav",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-03T19:56:43.811Z",
+   "endedAt": "2026-11-03T22:03:24.005Z",
+   "exit": 0,
+   "costUsd": 39.1387
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Left nav rail: collapsible (icons collapsed, full open, hamburger on phone), framework nav + tokens, remembers state; My sessions / Agents / Connections; tap = open/focus tab; right-click menu (open, split, open in Moshi, stop with confirm, info)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T19:56:43.811Z",
+   "doneAt": "2026-11-03T20:19:13.572Z",
+   "actualMin": 22,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "My sessions: tmux Claude Code mirror read-only + Jump in (writable attach); claude.ai sessions as axHub activity feed per session; MCP console_session_note + rule",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T20:19:13.572Z",
+   "doneAt": "2026-11-03T20:19:15.457Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Live session list (websocket): started + running timer, sort/search/filter, collapsible groups, Recent group linking Session browser",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T20:19:15.457Z",
+   "doneAt": "2026-11-03T20:19:17.505Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Commands once -> REST + MCP + CLI (list, mirror, jump in, stop); tests, screenshots, UI Review, report, THREADS, PR",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T20:19:17.505Z",
+   "doneAt": "2026-11-03T21:45:30.056Z",
+   "actualMin": 86,
+   "done": true
+  }
+ ],
+ "branch": "claude/terminal-sessions-nav",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 286,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/286"
+ },
+ "landedCommit": "8c6c0beecd16f775062586ccb99c3249fb136868",
+ "commits": [
+  "ab49400abe37acadf2afe94f47a4742324573169",
+  "9c7d80735f2d39f524b564f4fa66645dc81cf5d3",
+  "d952d5d42c89dfbe76aaf100d1cf2609ce1f738c",
+  "d3bc3502017679774f807ef3ba79b66739554908",
+  "7a930ed74db81a76ba1d95ae8d688a53719a9962",
+  "b8f4959eb56d3962313cc714d89ba74662597d86",
+  "4d15d019a22df9bdd15941de404f6ab6deab36d8"
+ ],
+ "mergedAt": "2026-11-04T04:52:23Z",
+ "landedAt": "2026-11-04T04:14:52Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/reports/terminal-sessions-nav.md",
+  "_claude/builds/reports/terminal-sessions-nav/shots.json",
+  "_claude/builds/reports/terminal-sessions-nav/terminal-nav-collapsed-desktop.png",
+  "_claude/builds/reports/terminal-sessions-nav/terminal-nav-desktop.png",
+  "_claude/builds/reports/terminal-sessions-nav/terminal-nav-drawer-phone.png",
+  "_claude/builds/reports/terminal-sessions-nav/terminal-nav-feed-desktop.png",
+  "_claude/builds/reports/terminal-sessions-nav/terminal-nav-menu-desktop.png",
+  "_claude/builds/reports/terminal-sessions-nav/terminal-nav-mirror-desktop.png",
+  "_claude/builds/reports/terminal-sessions-nav/terminal-nav-phone.png",
+  "_claude/memory/STATUS.md",
+  "_claude/shared/rules/RULES.md",
+  "apps/console-web/plugins/console-terminal/README.md",
+  "apps/console-web/plugins/console-terminal/help.json",
+  "apps/console-web/plugins/console-terminal/plugin.json",
+  "apps/console-web/plugins/console-terminal/server/__init__.py",
+  "apps/console-web/plugins/console-terminal/server/nav.py",
+  "apps/console-web/plugins/console-terminal/server/sessions.py",
+  "apps/console-web/plugins/console-terminal/server/store.py",
+  "apps/console-web/plugins/console-terminal/test.py",
+  "apps/console-web/plugins/console-terminal/web/TerminalHost.tsx",
+  "apps/console-web/plugins/console-terminal/web/TerminalSession.tsx",
+  "apps/console-web/plugins/console-terminal/web/api.ts",
+  "apps/console-web/plugins/console-terminal/web/index.tsx",
+  "apps/console-web/plugins/console-terminal/web/look.tsx",
+  "apps/console-web/plugins/console-terminal/web/menu.ts",
+  "apps/console-web/plugins/console-terminal/web/nav-core.ts",
+  "apps/console-web/plugins/console-terminal/web/nav.tsx",
+  "apps/console-web/plugins/console-terminal/web/terminal.css",
+  "apps/console-web/server/main.py",
+  "apps/console-web/server/mcp_server.py",
+  "apps/console-web/server/test_mcp_tools.py",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-terminal-nav.mts"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "console-terminal",
+   "files": [
+    "apps/console-web/plugins/console-terminal/README.md",
+    "apps/console-web/plugins/console-terminal/help.json",
+    "apps/console-web/plugins/console-terminal/plugin.json",
+    "apps/console-web/plugins/console-terminal/server/__init__.py",
+    "apps/console-web/plugins/console-terminal/server/nav.py",
+    "apps/console-web/plugins/console-terminal/server/sessions.py",
+    "apps/console-web/plugins/console-terminal/server/store.py",
+    "apps/console-web/plugins/console-terminal/test.py",
+    "apps/console-web/plugins/console-terminal/web/TerminalHost.tsx",
+    "apps/console-web/plugins/console-terminal/web/TerminalSession.tsx",
+    "apps/console-web/plugins/console-terminal/web/api.ts",
+    "apps/console-web/plugins/console-terminal/web/index.tsx",
+    "apps/console-web/plugins/console-terminal/web/look.tsx",
+    "apps/console-web/plugins/console-terminal/web/menu.ts",
+    "apps/console-web/plugins/console-terminal/web/nav-core.ts",
+    "apps/console-web/plugins/console-terminal/web/nav.tsx",
+    "apps/console-web/plugins/console-terminal/web/terminal.css"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/terminal-sessions-nav.md",
+    "_claude/builds/reports/terminal-sessions-nav/shots.json",
+    "_claude/builds/reports/terminal-sessions-nav/terminal-nav-collapsed-desktop.png",
+    "_claude/builds/reports/terminal-sessions-nav/terminal-nav-desktop.png",
+    "_claude/builds/reports/terminal-sessions-nav/terminal-nav-drawer-phone.png",
+    "_claude/builds/reports/terminal-sessions-nav/terminal-nav-feed-desktop.png",
+    "_claude/builds/reports/terminal-sessions-nav/terminal-nav-menu-desktop.png",
+    "_claude/builds/reports/terminal-sessions-nav/terminal-nav-mirror-desktop.png",
+    "_claude/builds/reports/terminal-sessions-nav/terminal-nav-phone.png"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/server/main.py",
+    "apps/console-web/server/mcp_server.py",
+    "apps/console-web/server/test_mcp_tools.py"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md",
+    "_claude/shared/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-terminal-nav.mts"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261103-107a9e61",
+   "name": "Terminal sessions nav",
+   "status": "approved",
+   "group": "g-20261103-b79d9530",
+   "url": "/review/r-20261103-107a9e61"
+  }
+ ],
+ "cost": {
+  "usd": 39.1387,
+  "estimated": false,
+  "tokens": {
+   "input": 374,
+   "output": 3231,
+   "cacheRead": 40115540,
+   "cacheWrite": 332662
+  }
+ },
+ "report": "_claude/builds/reports/terminal-sessions-nav.md",
+ "open": [
+  "Other axHub services are not in a chat's feed. axHub does not pass the caller's session or correlation id to downstream MCP servers (`packages/connectors/mcp-proxy` sends only the tool and arguments), and its audit log is readable only from Brett's signed-in browser and holds no arguments. So a chat's feed has its own `console_session_note` lines and the console MCP tools it calls; calls to other hub services need an axHub change (forward `X-Axhub-Session` downstream, or a token-readable activit",
+  "axHub policy: `console_session_note` must be allowed in axHub's per-tool policy for the console service (an axHub admin setting, like the other `console_*` tools); until then a chat's first note may be held as a veto call.",
+  "Sync holds: `_claude/shared/rules/RULES.md` (and THREADS.md, STATUS.md) are held by claude-sync (changed in two places). The rule is added to the repo copy through this PR; which copy wins on the hub is Brett's call (`claude-sync resolve shared:rules/RULES.md --keep local|hub`).",
+  "Kotlin / Android twin deferred (Android on hold), recorded in PORTING.md."
+ ]
+}

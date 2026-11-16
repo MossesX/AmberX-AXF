@@ -1,0 +1,130 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-vinny-offline-commands",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:27:13Z",
+ "build": {
+  "id": "vinny-offline-commands",
+  "title": "Vinny runs mapped VPS + GitHub commands on triggers, no Claude needed; Auto fix tries Vinny → Mosses → Claude",
+  "profile": "all",
+  "category": "Framework",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Vinny runs mapped VPS + GitHub commands on triggers, no Claude needed; Auto fix tries Vinny → Mosses → Claude",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Command book engine + matcher + runs (agent manager)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s2",
+   "text": "Routes + axf.vinny@1 capability",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s3",
+   "text": "Settings dialog to manage commands and triggers",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s4",
+   "text": "Systems check Auto fix: Vinny → Mosses → Claude",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s5",
+   "text": "Push banner: Vinny first",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s6",
+   "text": "Tests, docs, PR",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-25T14:46:42.221Z",
+ "landedAt": "2026-10-25T14:46:42.221Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": [
+  "s1: Command book engine + matcher + runs (agent manager)",
+  "s2: Routes + axf.vinny@1 capability",
+  "s3: Settings dialog to manage commands and triggers",
+  "s4: Systems check Auto fix: Vinny → Mosses → Claude",
+  "s5: Push banner: Vinny first",
+  "s6: Tests, docs, PR"
+ ]
+}

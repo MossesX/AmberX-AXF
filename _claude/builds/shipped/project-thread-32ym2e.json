@@ -1,0 +1,138 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-32ym2e",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:33:26Z",
+ "build": {
+  "id": "project-thread-32ym2e",
+  "title": "project-thread-32ym2e",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-32ym2e",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-32ym2e",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "b5dd21f03e049ec3971f306e52fd6422101b7de0",
+ "commits": [
+  "3479c1ff43905b7e3a168d3429c96c3d6383d9cb"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-23T17:56:14Z",
+ "files": [
+  "CLAUDE.md",
+  "apps/console-web/plugins/build-manager/test.mjs",
+  "apps/console-web/plugins/build-manager/web/merge.d.mts",
+  "apps/console-web/plugins/build-manager/web/merge.mjs",
+  "apps/console-web/plugins/build-manager/web/store.ts",
+  "apps/console-web/plugins/build-manager/web/ui.tsx",
+  "apps/console-web/server/mcp_server.py",
+  "apps/console-web/src/axf/plan/build-queue-core.mjs",
+  "apps/console-web/src/axf/plan/build-queue.json",
+  "apps/console-web/src/axf/plan/pending-core.d.mts",
+  "apps/console-web/src/axf/plan/pending-core.mjs",
+  "apps/console-web/src/axf/plan/pending.json",
+  "apps/console-web/src/views/Pending.tsx",
+  "framework/cli/build-queue.mjs",
+  "framework/cli/pending.mjs",
+  "framework/plan/build-queue-core.mjs",
+  "framework/plan/build-queue.json",
+  "framework/plan/pending-core.d.mts",
+  "framework/plan/pending-core.mjs",
+  "framework/plan/pending.json",
+  "framework/spec/check-build-steps.mjs"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/server/mcp_server.py",
+    "apps/console-web/src/axf/plan/build-queue-core.mjs",
+    "apps/console-web/src/axf/plan/build-queue.json",
+    "apps/console-web/src/axf/plan/pending-core.d.mts",
+    "apps/console-web/src/axf/plan/pending-core.mjs",
+    "apps/console-web/src/axf/plan/pending.json",
+    "apps/console-web/src/views/Pending.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-manager",
+   "files": [
+    "apps/console-web/plugins/build-manager/test.mjs",
+    "apps/console-web/plugins/build-manager/web/merge.d.mts",
+    "apps/console-web/plugins/build-manager/web/merge.mjs",
+    "apps/console-web/plugins/build-manager/web/store.ts",
+    "apps/console-web/plugins/build-manager/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/build-queue-core.mjs",
+    "framework/plan/build-queue.json",
+    "framework/plan/pending-core.d.mts",
+    "framework/plan/pending-core.mjs",
+    "framework/plan/pending.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/build-queue.mjs",
+    "framework/cli/pending.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/check-build-steps.mjs"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

@@ -1,0 +1,122 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-theme-editor",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:59Z",
+ "build": {
+  "id": "theme-editor",
+  "title": "Theme Editor plugin: colour + style sections, every token, copy/save/load, multi-view toolbar",
+  "profile": "all",
+  "category": "Urgent",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "theme editor plugin that lets you copy, save, load. Colour section and style section, each collapsible, with collapsible categories listing every possible token; toolbar with multiple views. Own plugin, reusing the Theme manager's token tree through a capability service (both stay installed). Look rule: saves go to the axHub appearance document / asset@1 themes.",
+  "verbatim": false,
+  "at": "2026-11-02T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Plugin scaffold + use the Theme manager's token tree via a capability service",
+   "model": "Opus",
+   "estimate": "20m",
+   "estimateMin": 20,
+   "startedAt": "",
+   "doneAt": "2026-11-03T13:56:31.369Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Colour and Style sections, collapsible, with collapsible categories listing every token (from asset types)",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-11-03T13:56:31.369Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Copy, save, load themes (asset@1), live apply through the hub look",
+   "model": "Opus",
+   "estimate": "25m",
+   "estimateMin": 25,
+   "startedAt": "",
+   "doneAt": "2026-11-03T13:56:31.369Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Toolbar with multiple views (tree, grid, swatches, compare)",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-11-03T13:56:31.369Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Tests, checks, lifecycle, UI Review shots, PR",
+   "model": "Opus",
+   "estimate": "25m",
+   "estimateMin": 25,
+   "startedAt": "",
+   "doneAt": "2026-11-03T13:56:31.369Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/theme-editor",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 243,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/243"
+ },
+ "landedCommit": "a9a2a793d80a6a3635372bf142e02c955470d9bb",
+ "commits": [],
+ "mergedAt": "2026-11-03T17:09:34.322Z",
+ "landedAt": "2026-11-04T14:38:20Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261103-6a35ef38",
+   "name": "Theme editor",
+   "status": "approved",
+   "group": "g-20261103-4844e0b0",
+   "url": "/review/r-20261103-6a35ef38"
+  }
+ ],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

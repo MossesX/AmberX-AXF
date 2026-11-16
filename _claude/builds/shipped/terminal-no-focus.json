@@ -1,0 +1,262 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-terminal-no-focus",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:57Z",
+ "build": {
+  "id": "terminal-no-focus",
+  "title": "Terminal: new sessions stop stealing focus",
+  "profile": "all",
+  "category": "Feature",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "I don't want the terminal to come to the front on every session.",
+  "verbatim": true,
+  "at": "2026-11-04T00:00:00Z",
+  "source": "voice",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-terminal-no-focus--rhonda",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-04T10:46:31.595Z",
+   "endedAt": "2026-11-04T13:06:44.281Z",
+   "exit": 0,
+   "costUsd": 19.9146
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "newSession setting (server store + REST/MCP/CLI command)",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-04T10:46:31.595Z",
+   "doneAt": "2026-11-04T10:53:50.061Z",
+   "actualMin": 7,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Headless watcher: quiet tabs + toolbar badge, no window pop",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-04T10:53:50.061Z",
+   "doneAt": "2026-11-04T10:53:50.702Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Settings UI, tests, report, PR",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-04T10:53:50.702Z",
+   "doneAt": "2026-11-04T10:55:44.452Z",
+   "actualMin": 2,
+   "done": true
+  }
+ ],
+ "branch": "claude/terminal-no-focus",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 305,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/305"
+ },
+ "landedCommit": "d58f9c72b912085c53b8a9dea8bd3e1e402b762b",
+ "commits": [
+  "12135fe4812756082fc555acfab438e2c39e95cb",
+  "d108f37235a2da9d6c90ffb4c0756788982e9e2c",
+  "c9d842a4cdabed6bc7a6dfd3a9428178dfe17cef",
+  "d7dbf87254f886eec4965bed741cff514ea775db",
+  "c5b1536f72428ddd55749f3d845a52a19da11346",
+  "6a915bc2de2c257475d92c613edc2ef55c3671de",
+  "ed83cf3a2a597bdb8e3d30cd6a92f4a10bbab9ce",
+  "4af263f6a3815623d5be9bc015de784efec6879f",
+  "302e8a9153d4d2762e860500a3883d3f82b4a5c3"
+ ],
+ "mergedAt": "2026-11-04T14:03:08Z",
+ "landedAt": "2026-11-04T13:57:10Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/origins.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/big-dog/orchestrator.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/current/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/reports/terminal-no-focus.md",
+  "_claude/builds/reports/terminal-no-focus/shots/phone-headless-tabs.png",
+  "_claude/builds/store.json",
+  "apps/amberx-droid/src/axf/assets/help/framework-drafts.json",
+  "apps/axhub-web/src/axf/assets/help/framework-drafts.json",
+  "apps/console-web/plugins/console-terminal/help.json",
+  "apps/console-web/plugins/console-terminal/plugin.json",
+  "apps/console-web/plugins/console-terminal/server/__init__.py",
+  "apps/console-web/plugins/console-terminal/server/store.py",
+  "apps/console-web/plugins/console-terminal/test.py",
+  "apps/console-web/plugins/console-terminal/web/api.ts",
+  "apps/console-web/plugins/console-terminal/web/headless-core.ts",
+  "apps/console-web/plugins/console-terminal/web/headless.ts",
+  "apps/console-web/plugins/console-terminal/web/hosts.ts",
+  "apps/console-web/plugins/console-terminal/web/index.tsx",
+  "apps/console-web/plugins/console-terminal/web/look.tsx",
+  "apps/console-web/plugins/console-terminal/web/menu.ts",
+  "apps/console-web/plugins/console-terminal/web/panels.tsx",
+  "apps/console-web/src/assets/help/console-web-drafts.json",
+  "apps/console-web/src/assets/toolbar/console-search.json",
+  "apps/console-web/src/axf/assets/help/framework-drafts.json",
+  "apps/molly/src/axf/assets/help/framework-drafts.json",
+  "changes/2026/11/chg-20261104-453a6ef0f9.json",
+  "changes/2026/11/chg-20261104-6f5a2b2c5e.json",
+  "framework/spec/check-headless-tabs.mts"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/origins.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/big-dog/orchestrator.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/current/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/reports/terminal-no-focus.md",
+    "_claude/builds/reports/terminal-no-focus/shots/phone-headless-tabs.png",
+    "_claude/builds/store.json",
+    "changes/2026/11/chg-20261104-453a6ef0f9.json",
+    "changes/2026/11/chg-20261104-6f5a2b2c5e.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "console-terminal",
+   "files": [
+    "apps/console-web/plugins/console-terminal/help.json",
+    "apps/console-web/plugins/console-terminal/plugin.json",
+    "apps/console-web/plugins/console-terminal/server/__init__.py",
+    "apps/console-web/plugins/console-terminal/server/store.py",
+    "apps/console-web/plugins/console-terminal/test.py",
+    "apps/console-web/plugins/console-terminal/web/api.ts",
+    "apps/console-web/plugins/console-terminal/web/headless-core.ts",
+    "apps/console-web/plugins/console-terminal/web/headless.ts",
+    "apps/console-web/plugins/console-terminal/web/hosts.ts",
+    "apps/console-web/plugins/console-terminal/web/index.tsx",
+    "apps/console-web/plugins/console-terminal/web/look.tsx",
+    "apps/console-web/plugins/console-terminal/web/menu.ts",
+    "apps/console-web/plugins/console-terminal/web/panels.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/assets/help/console-web-drafts.json",
+    "apps/console-web/src/assets/toolbar/console-search.json",
+    "apps/console-web/src/axf/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/src/axf/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/src/axf/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/src/axf/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/check-headless-tabs.mts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "npx -y tsx framework/spec/check-headless-tabs.mts: 58 → 63 checks (mode default/fallback, quiet with and without a window, nothing, front).",
+   "command": "npx -y tsx framework/spec/check-headless-tabs.mts",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "python3 apps/console-web/plugins/console-terminal/test.py: 136 → 139 checks (default quiet, PUT saves, bad value refused).",
+   "command": "python3 apps/console-web/plugins/console-terminal/test.py",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "tsc --noEmit (console-web) clean; check-theme, check-controls, check-toolbars, plugin-commands test, asset validate all pass.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  }
+ ],
+ "uiReview": [
+  {
+   "id": "r-20261104-22549d23",
+   "name": "Terminal: When a new session starts",
+   "status": "approved",
+   "group": "g-20261104-9daf3c88",
+   "url": "/review/r-20261104-22549d23"
+  }
+ ],
+ "cost": {
+  "usd": 19.9146,
+  "estimated": false,
+  "tokens": {
+   "input": 232,
+   "output": 2171,
+   "cacheRead": 14907508,
+   "cacheWrite": 160996
+  }
+ },
+ "report": "_claude/builds/reports/terminal-no-focus.md",
+ "open": [
+  "\"Seen\" is per browser page (in memory); a reload recounts sessions that got a quiet tab only if they no longer have one.",
+  "Hub-run output tabs (approved VPS commands, `showHubRuns`) are not sessions and keep their own behaviour."
+ ]
+}

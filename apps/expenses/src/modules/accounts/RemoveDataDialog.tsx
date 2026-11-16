@@ -70,10 +70,10 @@ export default function RemoveDataDialog({ username, onClose, onDone }: RemoveDa
 
   return (
     <Dialog open onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle sx={{ fontSize: 15 }}>Remove stored data — “{username}”</DialogTitle>
+      <DialogTitle sx={{ fontSize: 'var(--fx-type-root-lg)' }}>Remove stored data — “{username}”</DialogTitle>
       <DialogContent>
-        <Stack sx={{ gap: 2 }}>
-          <Typography sx={{ fontSize: 12.5 }}>
+        <Stack sx={{ gap: 'var(--fx-dens-gap-3xl)' }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-md)' }}>
             Deletes {username}’s profile, permission grants and live presence. Message threads are
             managed separately and are not touched. There is no undo.
           </Typography>
@@ -86,7 +86,7 @@ export default function RemoveDataDialog({ username, onClose, onDone }: RemoveDa
             slotProps={{ htmlInput: { autoCapitalize: "none", autoCorrect: "off" } }}
           />
           {error && (
-            <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }}>
+            <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
               {error}
             </Alert>
           )}

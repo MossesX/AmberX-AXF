@@ -1,0 +1,70 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-fix-stale-running-counts-per-claude-account-not-cleared",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:12Z",
+ "build": {
+  "id": "fix-stale-running-counts-per-claude-account-not-cleared",
+  "title": "Fix: stale running counts per Claude account not cleared",
+  "profile": "all",
+  "category": "Builds",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Seen Nov 9: claude_accounts shows Hulu 1/3, Moses X 4/3, account-1 4/3 running while the VPS has 0 tmux axf-* sessions and 0 claude -p processes. Rule (Brett): every time the console loads, and on the watchdog tick, the orchestrator checks for stale runs and releases any slot or running entry with no live process (agent-slots, claude-workers.mjs counts, orchestrator.json statuses). Find why the existing check didn't run or didn't clear these; fix; add a test with fake stale entries; log each release.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Find why stale running counts survive (console-load check, slot-watchdog, claude-workers counts); fix release of slots with no live process on console load and watchdog tick; test; log releases",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-11-09T16:39:28.294Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-11-09T16:39:28.294Z",
+ "landedAt": "2026-11-09T16:39:28.294Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

@@ -1,0 +1,155 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-console-commands",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:15Z",
+ "build": {
+  "id": "console-commands",
+  "title": "Console commands over API, MCP and CLI: Amber loads screens, dialogs, settings and actions in Brett's open console",
+  "profile": "all",
+  "category": "Urgent",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "add console commands to the MCP, the API and the CLI so he can tell Amber (a Claude session) to load screens for him.",
+  "verbatim": false,
+  "at": "2026-11-03T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "# Console commands over API, MCP and CLI (Urgent, Opus)\n\nBrett Nov 3 2026 07:16 ET (voice): add console commands to the MCP, the API and the CLI so he can tell Amber (a Claude session) to load screens for him.\n\nBased on claude/token-control (control@1 contract, PR #246). A sibling build `token-control-opus` (branch claude/token-control-opus) is building the token/AmberX/planner API, MCP and CLI right now: fetch it and build on its server/MCP/CLI layout if it exists, and merge origin/main + that branch before the PR. Don't duplicate its work.\n\nDo:\n1. control@1 `console` namespace: open a view/screen (by id, title or search), open a dialog, open a settings tab/sub-tab, run any registered action, go back, list available screens/actions (so Claude can find the right one).\n2. Live delivery: the open console in Brett's browser receives the command and navigates right away (reuse Watch live / `axf focus` channel if it fits; one target per signed-in user, all his open consoles or the most recent). Also Molly and AmberX web if the same runtime makes it cheap; say in the PR what's covered.\n3. REST API endpoints, MCP tools (registered through axHub so this voice/Claude session can call them), and CLI: `axf console open <screen>`, `axf console action <id>`, `axf console list`.\n4. Safety: navigation and opening only; running an action that changes data needs the same approval policy as the action itself.\n5. Tests, check-theme/check-controls, help pack, interactive docs entries, UI Review shots if anything visible changes.\n\nRules: one session, no sub-agents. Tokens only (--fx-*), framework controls, no var() fallbacks. Add a THREADS.md row (profile urgent) and update each step. Commit + push branch claude/console-commands often; open the PR at the end (push banner merges it). In the PR, say exactly which axHub tool names a Claude session calls to load a screen.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "control@1 console namespace: console.screens/dialogs/settings/actions/nav/clients targets, navigate effect + permission, schema snapshot, fixtures",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-11-03T12:54:18.196Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Pure engine framework/core/engines/console-commands.mjs: catalog, resolve by id/title/search, action effects, delivery message, runner for the console domain",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T12:54:18.196Z",
+   "doneAt": "2026-11-03T12:54:18.767Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Token control runner: console domain through a context (catalog + clients) handed in by the console server",
+   "model": "Opus",
+   "estimate": "20m",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T12:54:18.767Z",
+   "doneAt": "2026-11-03T12:54:19.322Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "console-commands plugin server: per-user mailbox, SSE stream, hello/seen/ack, console-commands@1 capability, /api/console REST",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T12:54:19.322Z",
+   "doneAt": "2026-11-03T12:54:19.832Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Browser client library: stream, catalog publish, run commands through rt.search.focus / dispatch, back history, toast",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T12:54:19.832Z",
+   "doneAt": "2026-11-03T12:54:20.309Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "MCP console_* tools (registered through axHub) + CLI axf console open|dialog|settings|action|back|list",
+   "model": "Opus",
+   "estimate": "25m",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T12:54:20.309Z",
+   "doneAt": "2026-11-03T12:54:20.793Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Settings sub-tab, help pack, interactive docs entries",
+   "model": "Opus",
+   "estimate": "25m",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T12:54:20.793Z",
+   "doneAt": "2026-11-03T12:54:21.279Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Tests (engine, runner, server), check-theme/check-controls, plugin-lifecycle check, UI Review shots, THREADS, PR",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T12:54:21.279Z",
+   "doneAt": "2026-11-03T12:55:34.473Z",
+   "actualMin": 1,
+   "done": true
+  }
+ ],
+ "branch": "claude/console-commands",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 249,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/249"
+ },
+ "landedCommit": "dfee2c7fb713e2db3ef08016bb6cbf4e8780dec3",
+ "commits": [],
+ "mergedAt": "2026-11-03T17:03:44.742Z",
+ "landedAt": "2026-11-04T14:38:31Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261103-39040777",
+   "name": "Console commands: settings sub-tab + live screen loading",
+   "status": "approved",
+   "group": "g-20261103-f28673c0",
+   "url": "/review/r-20261103-39040777"
+  }
+ ],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

@@ -1,0 +1,1089 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-toolbar-tap-confirm",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:27Z",
+ "build": {
+  "id": "toolbar-tap-confirm",
+  "title": "Toolbars plugin: tap-to-confirm on touch, per-toolbar settings + editor, drag-and-drop hooks",
+  "profile": "all",
+  "category": "Toolbars",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "every EXISTING and FUTURE toolbar uses the Terminal's Tooltip mode (first tap shows what the button does and arms it lit for 3 s, second tap within 3 s runs it, duration configurable; built in headless-tabs PR #259, s8). The double tap is ONLY on phones / touch. On a computer it stays a normal single click (hover tooltip as usual) - 'it really works on a computer.' Assigned agent: **Landin' Lenny** (book on his card; AXF_AGENT=landin-lenny if supported). Register in Urgent (id `toolbar-tap-confirm`) + banner entry.",
+  "verbatim": false,
+  "at": "2026-11-03T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": [
+   {
+    "text": "The framework toolbar becomes a **Toolbars plugin** (plugin@1, lifecycle install/uninstall) that owns every toolbar in every app, existing and future. Everything below is part of it.\n\n### Settings\n- Plugin settings (Settings > Plugins > Toolbars): global on/off for the touch double-tap tip (default on, phone/touch only), arm duration, defaults for all toolbars (theme, colours, density, icon size, labels on/off, position).\n- **Every toolbar carries its OWN settings** (stored per toolbar id, synced via axHub like other settings): theming and colours (tokens/assets only: colour theme, style, background, button style, icon/label size, spacing, rounded/flat, opacity), layout (position, orientation, wrap vs scroll vs overflow menu, show/hide, auto-hide), behaviour (double-tap override for this toolbar, tooltips), and its button list.\n- **Context-menu hooks on every toolbar** (right-click / long-press): 'Toolbar settings' (that toolbar's own settings), 'Edit toolbar' (opens the Toolbar editor), 'All toolbars...' (Toolbars plugin page that lists and controls every toolbar in the app). Contributed as runtime context items, so every existing and future toolbar gets them; CI check fails any toolbar without them.\n\n### Toolbar editor\n- Opens from the toolbar context menu. Add / remove / reorder / group / separators, edit each button (label, icon, tooltip text, action/hook, colour, visibility by level/role, keyboard shortcut), reset to default, undo/redo, live preview, save as an asset so it's hot-swappable and shareable.\n\n### Drag and drop hooks anywhere\n- A **hook** = any actionable thing in the app (menu item, nav item, toolbar button, banner item, 'Go to it' hooks, plugin commands from control@1 / plugin-commands-auto, settings pages, screens). Reuse the control@1 command registry and the pending `context-menu-editor` idea (save the action/destination, not the element).\n- Drag any hook from anywhere and drop it on a **drop target**: any toolbar, the navigation menu, the banners, application menus, context menus, Home. Drag a button from one toolbar to another; nav menu -> toolbar and toolbar -> nav menu.\n- On drop: a **configure dialog that depends on where it's dropped** (toolbar = new button dialog; nav menu = nav item dialog; banner = banner item dialog; menu = menu item dialog), prefilled with default values from the hook (label, icon, action, tooltip), with all the options for that target. Confirm creates it; move vs copy choice (default: copy from menus, move between toolbars), undo.\n- Make it a framework contract: `drop-target@1` (what it accepts + which configure dialog) and `hook@1` (draggable action descriptor), open registries so any plugin/app can add targets and hooks without kernel changes. Phone: long-press to pick up, drag with edge auto-scroll, drop zones highlight.\n- **Banners:** only add the banner drop target through the generic contract. Do NOT merge or rewrite banner-pack (#251), banner-editor (#254) or banners-one work; Brett is reviewing those himself. Note any overlap in the report.\n- Rules: add to shared RULES.md + CLAUDE.md: 'Every toolbar is a Toolbars plugin toolbar: per-toolbar settings + editor via its context menu, tap-to-confirm on touch only, accepts dropped hooks.' Commands declared once -> REST + MCP + CLI.\n- Split into clear steps in the store; tests for drop targets/dialogs/move-copy/undo, phone + desktop screenshots, UI Review items.",
+    "at": "2026-11-03T00:00:00Z",
+    "source": "",
+    "verbatim": true
+   }
+  ]
+ },
+ "brief": "# Build: toolbar-tap-confirm (Urgent profile)\n\nBrett, Nov 3 2026 (voice): every EXISTING and FUTURE toolbar uses the Terminal's Tooltip mode (first tap shows what the button does and arms it lit for 3 s, second tap within 3 s runs it, duration configurable; built in headless-tabs PR #259, s8). The double tap is ONLY on phones / touch. On a computer it stays a normal single click (hover tooltip as usual) - 'it really works on a computer.' Assigned agent: **Landin' Lenny** (book on his card; AXF_AGENT=landin-lenny if supported). Register in Urgent (id `toolbar-tap-confirm`) + banner entry.\n\n## Steps\n- s1 Lift Tooltip mode out of the Terminal plugin into the framework toolbar component (web reference + axf.css; Compose twin in PORTING.md unless trivial) as one shared behaviour; the Terminal uses the framework version (no duplicate code left in the plugin).\n- s2 Device rule: double-tap confirm only when the input is touch (pointer: coarse / touch events / compact window class on a touch device). Mouse/trackpad/pen-hover = single click + hover tooltip. Decide per interaction (a touchscreen laptop: touch = double tap, mouse = single click).\n- s3 Adopt everywhere: every toolbar in the console, every plugin, axHub web, AmberX (Capacitor), Molly, walkthrough-studio, templates/boilerplates, so new apps get it by default. Inventory every toolbar first and list them in the report.\n- s4 Future-proof: the framework toolbar has it ON by default; a check (like check-controls) fails CI if any toolbar is built outside the framework toolbar or turns the behaviour off without an explicit, recorded reason. Add the rule to shared RULES.md + CLAUDE.md: 'Every toolbar uses tap-to-confirm on touch (framework toolbar); single click on desktop.'\n- s5 Settings > Appearance (or Interaction): on/off for touch, arm duration (default 3 s); per-toolbar override only via the setting, not code. Destructive buttons keep their own confirm on top.\n- s6 Tests (touch vs mouse paths, timeout, second tap on a different button re-arms instead of running), screenshots phone + desktop, UI Review item, report `_claude/builds/reports/toolbar-tap-confirm.md`, THREADS, PR, steps through the store. Commits clean and professional.\n## Addendum 1 (Brett, Nov 3 2026, voice, before start): make all of this ONE Toolbars plugin\nThe framework toolbar becomes a **Toolbars plugin** (plugin@1, lifecycle install/uninstall) that owns every toolbar in every app, existing and future. Everything below is part of it.\n\n### Settings\n- Plugin settings (Settings > Plugins > Toolbars): global on/off for the touch double-tap tip (default on, phone/touch only), arm duration, defaults for all toolbars (theme, colours, density, icon size, labels on/off, position).\n- **Every toolbar carries its OWN settings** (stored per toolbar id, synced via axHub like other settings): theming and colours (tokens/assets only: colour theme, style, background, button style, icon/label size, spacing, rounded/flat, opacity), layout (position, orientation, wrap vs scroll vs overflow menu, show/hide, auto-hide), behaviour (double-tap override for this toolbar, tooltips), and its button list.\n- **Context-menu hooks on every toolbar** (right-click / long-press): 'Toolbar settings' (that toolbar's own settings), 'Edit toolbar' (opens the Toolbar editor), 'All toolbars...' (Toolbars plugin page that lists and controls every toolbar in the app). Contributed as runtime context items, so every existing and future toolbar gets them; CI check fails any toolbar without them.\n\n### Toolbar editor\n- Opens from the toolbar context menu. Add / remove / reorder / group / separators, edit each button (label, icon, tooltip text, action/hook, colour, visibility by level/role, keyboard shortcut), reset to default, undo/redo, live preview, save as an asset so it's hot-swappable and shareable.\n\n### Drag and drop hooks anywhere\n- A **hook** = any actionable thing in the app (menu item, nav item, toolbar button, banner item, 'Go to it' hooks, plugin commands from control@1 / plugin-commands-auto, settings pages, screens). Reuse the control@1 command registry and the pending `context-menu-editor` idea (save the action/destination, not the element).\n- Drag any hook from anywhere and drop it on a **drop target**: any toolbar, the navigation menu, the banners, application menus, context menus, Home. Drag a button from one toolbar to another; nav menu -> toolbar and toolbar -> nav menu.\n- On drop: a **configure dialog that depends on where it's dropped** (toolbar = new button dialog; nav menu = nav item dialog; banner = banner item dialog; menu = menu item dialog), prefilled with default values from the hook (label, icon, action, tooltip), with all the options for that target. Confirm creates it; move vs copy choice (default: copy from menus, move between toolbars), undo.\n- Make it a framework contract: `drop-target@1` (what it accepts + which configure dialog) and `hook@1` (draggable action descriptor), open registries so any plugin/app can add targets and hooks without kernel changes. Phone: long-press to pick up, drag with edge auto-scroll, drop zones highlight.\n- **Banners:** only add the banner drop target through the generic contract. Do NOT merge or rewrite banner-pack (#251), banner-editor (#254) or banners-one work; Brett is reviewing those himself. Note any overlap in the report.\n- Rules: add to shared RULES.md + CLAUDE.md: 'Every toolbar is a Toolbars plugin toolbar: per-toolbar settings + editor via its context menu, tap-to-confirm on touch only, accepts dropped hooks.' Commands declared once -> REST + MCP + CLI.\n- Split into clear steps in the store; tests for drop targets/dialogs/move-copy/undo, phone + desktop screenshots, UI Review items.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-toolbar-tap-confirm",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-03T18:17:35.632Z",
+   "endedAt": "2026-11-03T18:52:53.672Z",
+   "exit": 0,
+   "costUsd": 8.7048
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Inventory every toolbar (console, plugins, framework, axHub web, AmberX, Molly, walkthrough-studio, templates) + report skeleton",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T18:37:04.764Z",
+   "doneAt": "2026-11-03T18:51:21.801Z",
+   "actualMin": 14,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Tap-to-confirm in the framework toolbar (web): per-pointer rule (touch = arm + tip, mouse/pen = click), arm window, re-arm on another button; shared ToolbarButton; axf.css armed state on tokens",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T18:17:35.632Z",
+   "doneAt": "2026-11-03T18:29:34.075Z",
+   "actualMin": 12,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Toolbars plugin scaffold (plugin@1, install/uninstall, Settings > Plugins > Toolbars: touch on/off, arm duration, defaults for all toolbars)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T18:33:53.404Z",
+   "doneAt": "2026-11-03T18:37:04.764Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Adopt batch 1: framework Toolbar/AssetToolbar, window toolbars, Terminal",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T18:29:34.075Z",
+   "doneAt": "2026-11-03T18:33:51.650Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Adopt batch 2: console plugin toolbars",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T18:33:51.650Z",
+   "doneAt": "2026-11-03T18:33:52.210Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Adopt batch 3: axHub web, AmberX, Molly, walkthrough-studio, templates/boilerplates; re-bake",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T18:33:52.210Z",
+   "doneAt": "2026-11-03T18:33:52.778Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "check-toolbars CI check (built outside framework toolbar / behaviour off without recorded reason / no context hooks) + rules in shared RULES.md and CLAUDE.md",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T18:33:52.778Z",
+   "doneAt": "2026-11-03T18:33:53.404Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Per-toolbar settings (per toolbar id, hub-synced) + context items on every toolbar: Toolbar settings, Edit toolbar, All toolbars",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T18:51:21.801Z",
+   "doneAt": "2026-11-03T18:54:23.691Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Toolbar settings dialog: theming (tokens only), layout (position, orientation, wrap/scroll/overflow, auto-hide), behaviour override",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s10",
+   "text": "All toolbars page in the Toolbars plugin",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s11",
+   "text": "Toolbar editor: add/remove/reorder/group/separators, per-button edit, reset, undo/redo, live preview",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s12",
+   "text": "Toolbar editor: save as toolbar asset (hot-swappable, shareable)",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s13",
+   "text": "hook@1 + drop-target@1 contracts: asset-types, schemas, core registries, fixtures, PORTING gap for Compose",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s14",
+   "text": "Drop semantics engine: accept rules, move vs copy defaults, undo record; fixture",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s15",
+   "text": "Web drag layer: mouse drag + touch long-press pick up, edge auto-scroll, drop-zone highlight",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s16",
+   "text": "Drop targets: toolbars, nav menu, app menus, context menus, Home",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s17",
+   "text": "Banner drop target through the generic contract only (no banner-pack/editor/banners-one changes)",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s18",
+   "text": "Per-target configure dialogs prefilled from the hook; move/copy choice; undo",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s19",
+   "text": "Commands declared once -> REST + MCP + CLI",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s20",
+   "text": "Tests: touch vs mouse, timeout, re-arm; drop targets, dialogs, move/copy, undo; help, lifecycle, check-theme/controls",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s21",
+   "text": "Phone + desktop screenshots, UI Review items, report _claude/builds/reports/toolbar-tap-confirm.md, THREADS, PR",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "claude/toolbar-tap-confirm",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 272,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/272"
+ },
+ "landedCommit": "9959d5db19a4cb30128fae7cb8e6e9dade1c4ef6",
+ "commits": [
+  "c693fca95fbcee4b396fcf54a8f5e8c1186bbcea",
+  "178318bbf060c36b11110e6842254f2cf8a99256",
+  "94fa8793d9bddc505c34c671d3be249f12ed8bf2",
+  "21e6e5c82bfdb714ea2008ed3ef0c1138aca8139",
+  "c3b8d2565bd99f2cf96635f10230b5181036a218",
+  "f2342a317eaffa94f65d0a6033a65e6171d88d65",
+  "b683f06422eac0dda14313e2d297059f0d364be5",
+  "9ec8cd8e46803f2875afa778ab373b71738c7964",
+  "361948945181b3ea6d2d5bcb74625192ddfd9671",
+  "c0038baf7a795b323e71f54035907c8e45c27c93"
+ ],
+ "mergedAt": "2026-11-04T04:11:27Z",
+ "landedAt": "2026-11-04T04:11:27Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "_claude/builds/reports/toolbar-tap-confirm.md",
+  "_claude/builds/reports/toolbar-tap-confirm/shots/desktop-1-click-runs.png",
+  "_claude/builds/reports/toolbar-tap-confirm/shots/desktop-2-settings-toolbars.png",
+  "_claude/builds/reports/toolbar-tap-confirm/shots/phone-1-before.png",
+  "_claude/builds/reports/toolbar-tap-confirm/shots/phone-2-armed-tip.png",
+  "_claude/builds/reports/toolbar-tap-confirm/shots/phone-3-ran.png",
+  "_claude/rules/RULES.md",
+  "_claude/shared/rules/RULES.md",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/App.tsx",
+  "apps/amberx-droid/src/axf/core/engines/tapconfirm.ts",
+  "apps/amberx-droid/src/axf/core/index.ts",
+  "apps/amberx-droid/src/axf/libs/README.md",
+  "apps/amberx-droid/src/axf/libs/ashes/index.tsx",
+  "apps/amberx-droid/src/axf/libs/mcp/index.tsx",
+  "apps/amberx-droid/src/axf/libs/plugintheme/index.tsx",
+  "apps/amberx-droid/src/axf/libs/toolbars/index.tsx",
+  "apps/amberx-droid/src/axf/libs/toolbars/library.json",
+  "apps/amberx-droid/src/axf/libs/toolbars/toolbars.css",
+  "apps/amberx-droid/src/axf/libs/tree/index.tsx",
+  "apps/amberx-droid/src/axf/react/AppShell.tsx",
+  "apps/amberx-droid/src/axf/react/AxfProvider.tsx",
+  "apps/amberx-droid/src/axf/react/components/Chrome.tsx",
+  "apps/amberx-droid/src/axf/react/components/Help.tsx",
+  "apps/amberx-droid/src/axf/react/components/WatchLive.tsx",
+  "apps/amberx-droid/src/axf/react/index.ts",
+  "apps/amberx-droid/src/axf/react/placeTip.ts",
+  "apps/amberx-droid/src/axf/react/studio/OutputTerminal.tsx",
+  "apps/amberx-droid/src/axf/react/tapConfirm.ts",
+  "apps/amberx-droid/src/axf/react/windows/WindowHost.tsx",
+  "apps/amberx-droid/src/axf/ui/axf.css",
+  "apps/amberx-droid/src/plugins/commands/web/index.tsx",
+  "apps/amberx-droid/src/plugins/notes/web/NotesView.tsx",
+  "apps/amberx-droid/test.mjs",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/App.tsx",
+  "apps/axhub-web/src/axf/core/engines/tapconfirm.ts",
+  "apps/axhub-web/src/axf/core/index.ts",
+  "apps/axhub-web/src/axf/libs/README.md",
+  "apps/axhub-web/src/axf/libs/ashes/index.tsx",
+  "apps/axhub-web/src/axf/libs/mcp/index.tsx",
+  "apps/axhub-web/src/axf/libs/plugintheme/index.tsx",
+  "apps/axhub-web/src/axf/libs/toolbars/index.tsx",
+  "apps/axhub-web/src/axf/libs/toolbars/library.json",
+  "apps/axhub-web/src/axf/libs/toolbars/toolbars.css",
+  "apps/axhub-web/src/axf/libs/tree/index.tsx",
+  "apps/axhub-web/src/axf/react/AppShell.tsx",
+  "apps/axhub-web/src/axf/react/AxfProvider.tsx",
+  "apps/axhub-web/src/axf/react/components/Chrome.tsx",
+  "apps/axhub-web/src/axf/react/components/Help.tsx",
+  "apps/axhub-web/src/axf/react/components/WatchLive.tsx",
+  "apps/axhub-web/src/axf/react/index.ts",
+  "apps/axhub-web/src/axf/react/placeTip.ts",
+  "apps/axhub-web/src/axf/react/studio/OutputTerminal.tsx",
+  "apps/axhub-web/src/axf/react/tapConfirm.ts",
+  "apps/axhub-web/src/axf/react/windows/WindowHost.tsx",
+  "apps/axhub-web/src/axf/ui/axf.css",
+  "apps/axhub-web/test.mjs",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/ai-assistant/web/chat.tsx",
+  "apps/console-web/plugins/basic-filter/web/ui.tsx",
+  "apps/console-web/plugins/builds-page/web/ui.tsx",
+  "apps/console-web/plugins/chat-viewer/web/ui.tsx",
+  "apps/console-web/plugins/claude-handoff/web/files.tsx",
+  "apps/console-web/plugins/claude-handoff/web/lookDialog.tsx",
+  "apps/console-web/plugins/console-terminal/web/ChainPane.tsx",
+  "apps/console-web/plugins/console-terminal/web/TerminalSession.tsx",
+  "apps/console-web/plugins/context-menu-designer/web/ActionsWindow.tsx",
+  "apps/console-web/plugins/crew-live/web/ui.tsx",
+  "apps/console-web/plugins/notes-browser/web/index.tsx",
+  "apps/console-web/plugins/plugin-commands/web/index.tsx",
+  "apps/console-web/plugins/plugin-manager/web/PluginManager.tsx",
+  "apps/console-web/plugins/plugins-menu/web/index.tsx",
+  "apps/console-web/plugins/session-checkin/web/index.tsx",
+  "apps/console-web/plugins/theme-manager/web/ThemeManager.tsx",
+  "apps/console-web/plugins/todo-manager/web/ui.tsx",
+  "apps/console-web/plugins/whats-shipped/web/index.tsx",
+  "apps/console-web/src/App.tsx",
+  "apps/console-web/src/axf/core/engines/tapconfirm.ts",
+  "apps/console-web/src/axf/core/index.ts",
+  "apps/console-web/src/axf/libs/README.md",
+  "apps/console-web/src/axf/libs/ashes/index.tsx",
+  "apps/console-web/src/axf/libs/mcp/index.tsx",
+  "apps/console-web/src/axf/libs/plugintheme/index.tsx",
+  "apps/console-web/src/axf/libs/toolbars/index.tsx",
+  "apps/console-web/src/axf/libs/toolbars/library.json",
+  "apps/console-web/src/axf/libs/toolbars/toolbars.css",
+  "apps/console-web/src/axf/libs/tree/index.tsx",
+  "apps/console-web/src/axf/react/AppShell.tsx",
+  "apps/console-web/src/axf/react/AxfProvider.tsx",
+  "apps/console-web/src/axf/react/components/Chrome.tsx",
+  "apps/console-web/src/axf/react/components/Help.tsx",
+  "apps/console-web/src/axf/react/components/WatchLive.tsx",
+  "apps/console-web/src/axf/react/index.ts",
+  "apps/console-web/src/axf/react/placeTip.ts",
+  "apps/console-web/src/axf/react/studio/OutputTerminal.tsx",
+  "apps/console-web/src/axf/react/tapConfirm.ts",
+  "apps/console-web/src/axf/react/windows/WindowHost.tsx",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/console-web/src/views/Plan.tsx",
+  "apps/molly/axf.lock.json",
+  "apps/molly/src/App.tsx",
+  "apps/molly/src/axf/core/engines/tapconfirm.ts",
+  "apps/molly/src/axf/core/index.ts",
+  "apps/molly/src/axf/libs/README.md",
+  "apps/molly/src/axf/libs/ashes/index.tsx",
+  "apps/molly/src/axf/libs/mcp/index.tsx",
+  "apps/molly/src/axf/libs/plugintheme/index.tsx",
+  "apps/molly/src/axf/libs/toolbars/index.tsx",
+  "apps/molly/src/axf/libs/toolbars/library.json",
+  "apps/molly/src/axf/libs/toolbars/toolbars.css",
+  "apps/molly/src/axf/libs/tree/index.tsx",
+  "apps/molly/src/axf/react/AppShell.tsx",
+  "apps/molly/src/axf/react/AxfProvider.tsx",
+  "apps/molly/src/axf/react/components/Chrome.tsx",
+  "apps/molly/src/axf/react/components/Help.tsx",
+  "apps/molly/src/axf/react/components/WatchLive.tsx",
+  "apps/molly/src/axf/react/index.ts",
+  "apps/molly/src/axf/react/placeTip.ts",
+  "apps/molly/src/axf/react/studio/OutputTerminal.tsx",
+  "apps/molly/src/axf/react/tapConfirm.ts",
+  "apps/molly/src/axf/react/windows/WindowHost.tsx",
+  "apps/molly/src/axf/ui/axf.css",
+  "apps/walkthrough-studio/axf.lock.json",
+  "apps/walkthrough-studio/src/App.tsx",
+  "apps/walkthrough-studio/src/axf/core/engines/agent-card-rules.d.mts",
+  "apps/walkthrough-studio/src/axf/core/engines/agent-card-rules.mjs",
+  "apps/walkthrough-studio/src/axf/core/engines/appearance.ts",
+  "apps/walkthrough-studio/src/axf/core/engines/chrome.ts",
+  "apps/walkthrough-studio/src/axf/core/engines/console-commands.d.mts",
+  "apps/walkthrough-studio/src/axf/core/engines/console-commands.mjs",
+  "apps/walkthrough-studio/src/axf/core/engines/control-pass.mjs",
+  "apps/walkthrough-studio/src/axf/core/engines/control-rules.d.mts",
+  "apps/walkthrough-studio/src/axf/core/engines/control-rules.mjs",
+  "apps/walkthrough-studio/src/axf/core/engines/control-tokens.d.mts",
+  "apps/walkthrough-studio/src/axf/core/engines/control-tokens.mjs",
+  "apps/walkthrough-studio/src/axf/core/engines/designpackage.ts",
+  "apps/walkthrough-studio/src/axf/core/engines/dock.ts",
+  "apps/walkthrough-studio/src/axf/core/engines/embed.ts",
+  "apps/walkthrough-studio/src/axf/core/engines/layout-rules.d.mts",
+  "apps/walkthrough-studio/src/axf/core/engines/layout-rules.mjs",
+  "apps/walkthrough-studio/src/axf/core/engines/layout.ts",
+  "apps/walkthrough-studio/src/axf/core/engines/plugin-commands.d.mts",
+  "apps/walkthrough-studio/src/axf/core/engines/plugin-commands.mjs",
+  "apps/walkthrough-studio/src/axf/core/engines/swarm-chat.d.mts",
+  "apps/walkthrough-studio/src/axf/core/engines/swarm-chat.mjs",
+  "apps/walkthrough-studio/src/axf/core/engines/swarm-rules.d.mts",
+  "apps/walkthrough-studio/src/axf/core/engines/swarm-rules.mjs",
+  "apps/walkthrough-studio/src/axf/core/engines/swarm-vibe.d.mts",
+  "apps/walkthrough-studio/src/axf/core/engines/swarm-vibe.mjs",
+  "apps/walkthrough-studio/src/axf/core/engines/tapconfirm.ts",
+  "apps/walkthrough-studio/src/axf/core/engines/windows.ts",
+  "apps/walkthrough-studio/src/axf/core/engines/xlayout.ts",
+  "apps/walkthrough-studio/src/axf/core/index.ts",
+  "apps/walkthrough-studio/src/axf/core/model-policy.mjs",
+  "apps/walkthrough-studio/src/axf/core/model-switch.mjs",
+  "apps/walkthrough-studio/src/axf/core/runtime.ts",
+  "apps/walkthrough-studio/src/axf/core/settings.ts",
+  "apps/walkthrough-studio/src/axf/core/types.ts",
+  "apps/walkthrough-studio/src/axf/core/validate.ts",
+  "apps/walkthrough-studio/src/axf/libs/README.md",
+  "apps/walkthrough-studio/src/axf/libs/alerts/alerts.css",
+  "apps/walkthrough-studio/src/axf/libs/approvals/approvals.css",
+  "apps/walkthrough-studio/src/axf/libs/ashes/ashes.css",
+  "apps/walkthrough-studio/src/axf/libs/ashes/index.tsx",
+  "apps/walkthrough-studio/src/axf/libs/hubsync/sync.ts",
+  "apps/walkthrough-studio/src/axf/libs/mcp/index.tsx",
+  "apps/walkthrough-studio/src/axf/libs/mcp/mcp.css",
+  "apps/walkthrough-studio/src/axf/libs/plugintheme/index.tsx",
+  "apps/walkthrough-studio/src/axf/libs/settings/index.tsx",
+  "apps/walkthrough-studio/src/axf/libs/settings/levels.tsx",
+  "apps/walkthrough-studio/src/axf/libs/toolbars/index.tsx",
+  "apps/walkthrough-studio/src/axf/libs/toolbars/library.json",
+  "apps/walkthrough-studio/src/axf/libs/toolbars/toolbars.css",
+  "apps/walkthrough-studio/src/axf/libs/tree/index.tsx",
+  "apps/walkthrough-studio/src/axf/libs/tree/tree.css",
+  "apps/walkthrough-studio/src/axf/libs/workspace/workspace.css",
+  "apps/walkthrough-studio/src/axf/react/AppShell.tsx",
+  "apps/walkthrough-studio/src/axf/react/AxfProvider.tsx",
+  "apps/walkthrough-studio/src/axf/react/components/BannerSettings.tsx",
+  "apps/walkthrough-studio/src/axf/react/components/Chrome.tsx",
+  "apps/walkthrough-studio/src/axf/react/components/Help.tsx",
+  "apps/walkthrough-studio/src/axf/react/components/Overlays.tsx",
+  "apps/walkthrough-studio/src/axf/react/components/WatchLive.tsx",
+  "apps/walkthrough-studio/src/axf/react/hubAppearance.ts",
+  "apps/walkthrough-studio/src/axf/react/index.ts",
+  "apps/walkthrough-studio/src/axf/react/placeTip.ts",
+  "apps/walkthrough-studio/src/axf/react/studio/OutputTerminal.tsx",
+  "apps/walkthrough-studio/src/axf/react/tapConfirm.ts",
+  "apps/walkthrough-studio/src/axf/react/windows/DockHost.tsx",
+  "apps/walkthrough-studio/src/axf/react/windows/WindowHost.tsx",
+  "apps/walkthrough-studio/src/axf/schemas/asset-types.json",
+  "apps/walkthrough-studio/src/axf/schemas/control.json",
+  "apps/walkthrough-studio/src/axf/schemas/json/agent-skill.schema.json",
+  "apps/walkthrough-studio/src/axf/schemas/json/agent.schema.json",
+  "apps/walkthrough-studio/src/axf/schemas/json/dock-layout.schema.json",
+  "apps/walkthrough-studio/src/axf/schemas/json/layout.schema.json",
+  "apps/walkthrough-studio/src/axf/schemas/json/swarm-job.schema.json",
+  "apps/walkthrough-studio/src/axf/schemas/json/swarm-report.schema.json",
+  "apps/walkthrough-studio/src/axf/schemas/json/swarm-roster.schema.json",
+  "apps/walkthrough-studio/src/axf/schemas/json/swarm-run.schema.json",
+  "apps/walkthrough-studio/src/axf/schemas/json/swarm-state.schema.json",
+  "apps/walkthrough-studio/src/axf/schemas/json/xlayout.schema.json",
+  "apps/walkthrough-studio/src/axf/schemas/model-policy.json",
+  "apps/walkthrough-studio/src/axf/schemas/plugin.schema.json",
+  "apps/walkthrough-studio/src/axf/schemas/shared-assets.json",
+  "apps/walkthrough-studio/src/axf/schemas/swarm.json",
+  "apps/walkthrough-studio/src/axf/ui/axf.css",
+  "apps/walkthrough-studio/src/studio/panes/capture.tsx",
+  "apps/walkthrough-studio/src/studio/panes/grid.tsx",
+  "apps/walkthrough-studio/src/studio/panes/outline.tsx",
+  "apps/walkthrough-studio/src/studio/panes/video.tsx",
+  "apps/walkthrough-studio/src/studio/panes/writing.tsx",
+  "framework/cli/check-toolbars.mjs",
+  "framework/core/engines/tapconfirm.ts",
+  "framework/core/index.ts",
+  "framework/libs/README.md",
+  "framework/libs/ashes/index.tsx",
+  "framework/libs/mcp/index.tsx",
+  "framework/libs/plugintheme/index.tsx",
+  "framework/libs/toolbars/index.tsx",
+  "framework/libs/toolbars/library.json",
+  "framework/libs/toolbars/toolbars.css",
+  "framework/libs/tree/index.tsx",
+  "framework/plan/profiles/urgent/framework/catalog/status.json",
+  "framework/plan/profiles/urgent/framework/plan/plan.json",
+  "framework/plan/profiles/urgent/tracker.json",
+  "framework/react/AppShell.tsx",
+  "framework/react/AxfProvider.tsx",
+  "framework/react/components/Chrome.tsx",
+  "framework/react/components/Help.tsx",
+  "framework/react/components/WatchLive.tsx",
+  "framework/react/index.ts",
+  "framework/react/placeTip.ts",
+  "framework/react/studio/OutputTerminal.tsx",
+  "framework/react/tapConfirm.ts",
+  "framework/react/windows/WindowHost.tsx",
+  "framework/spec/check-tapconfirm.mts",
+  "framework/templates/next-ts/src/App.tsx",
+  "framework/templates/react-ts/src/App.tsx",
+  "framework/templates/web-fastapi-wall/src/App.tsx",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/axf.lock.json",
+    "apps/walkthrough-studio/src/App.tsx",
+    "apps/walkthrough-studio/src/axf/core/engines/agent-card-rules.d.mts",
+    "apps/walkthrough-studio/src/axf/core/engines/agent-card-rules.mjs",
+    "apps/walkthrough-studio/src/axf/core/engines/appearance.ts",
+    "apps/walkthrough-studio/src/axf/core/engines/chrome.ts",
+    "apps/walkthrough-studio/src/axf/core/engines/console-commands.d.mts",
+    "apps/walkthrough-studio/src/axf/core/engines/console-commands.mjs",
+    "apps/walkthrough-studio/src/axf/core/engines/control-pass.mjs",
+    "apps/walkthrough-studio/src/axf/core/engines/control-rules.d.mts",
+    "apps/walkthrough-studio/src/axf/core/engines/control-rules.mjs",
+    "apps/walkthrough-studio/src/axf/core/engines/control-tokens.d.mts",
+    "apps/walkthrough-studio/src/axf/core/engines/control-tokens.mjs",
+    "apps/walkthrough-studio/src/axf/core/engines/designpackage.ts",
+    "apps/walkthrough-studio/src/axf/core/engines/dock.ts",
+    "apps/walkthrough-studio/src/axf/core/engines/embed.ts",
+    "apps/walkthrough-studio/src/axf/core/engines/layout-rules.d.mts",
+    "apps/walkthrough-studio/src/axf/core/engines/layout-rules.mjs",
+    "apps/walkthrough-studio/src/axf/core/engines/layout.ts",
+    "apps/walkthrough-studio/src/axf/core/engines/plugin-commands.d.mts",
+    "apps/walkthrough-studio/src/axf/core/engines/plugin-commands.mjs",
+    "apps/walkthrough-studio/src/axf/core/engines/swarm-chat.d.mts",
+    "apps/walkthrough-studio/src/axf/core/engines/swarm-chat.mjs",
+    "apps/walkthrough-studio/src/axf/core/engines/swarm-rules.d.mts",
+    "apps/walkthrough-studio/src/axf/core/engines/swarm-rules.mjs",
+    "apps/walkthrough-studio/src/axf/core/engines/swarm-vibe.d.mts",
+    "apps/walkthrough-studio/src/axf/core/engines/swarm-vibe.mjs",
+    "apps/walkthrough-studio/src/axf/core/engines/tapconfirm.ts",
+    "apps/walkthrough-studio/src/axf/core/engines/windows.ts",
+    "apps/walkthrough-studio/src/axf/core/engines/xlayout.ts",
+    "apps/walkthrough-studio/src/axf/core/index.ts",
+    "apps/walkthrough-studio/src/axf/core/model-policy.mjs",
+    "apps/walkthrough-studio/src/axf/core/model-switch.mjs",
+    "apps/walkthrough-studio/src/axf/core/runtime.ts",
+    "apps/walkthrough-studio/src/axf/core/settings.ts",
+    "apps/walkthrough-studio/src/axf/core/types.ts",
+    "apps/walkthrough-studio/src/axf/core/validate.ts",
+    "apps/walkthrough-studio/src/axf/libs/README.md",
+    "apps/walkthrough-studio/src/axf/libs/alerts/alerts.css",
+    "apps/walkthrough-studio/src/axf/libs/approvals/approvals.css",
+    "apps/walkthrough-studio/src/axf/libs/ashes/ashes.css",
+    "apps/walkthrough-studio/src/axf/libs/ashes/index.tsx",
+    "apps/walkthrough-studio/src/axf/libs/hubsync/sync.ts",
+    "apps/walkthrough-studio/src/axf/libs/mcp/index.tsx",
+    "apps/walkthrough-studio/src/axf/libs/mcp/mcp.css",
+    "apps/walkthrough-studio/src/axf/libs/plugintheme/index.tsx",
+    "apps/walkthrough-studio/src/axf/libs/settings/index.tsx",
+    "apps/walkthrough-studio/src/axf/libs/settings/levels.tsx",
+    "apps/walkthrough-studio/src/axf/libs/toolbars/index.tsx",
+    "apps/walkthrough-studio/src/axf/libs/toolbars/library.json",
+    "apps/walkthrough-studio/src/axf/libs/toolbars/toolbars.css",
+    "apps/walkthrough-studio/src/axf/libs/tree/index.tsx",
+    "apps/walkthrough-studio/src/axf/libs/tree/tree.css",
+    "apps/walkthrough-studio/src/axf/libs/workspace/workspace.css",
+    "apps/walkthrough-studio/src/axf/react/AppShell.tsx",
+    "apps/walkthrough-studio/src/axf/react/AxfProvider.tsx",
+    "apps/walkthrough-studio/src/axf/react/components/BannerSettings.tsx",
+    "apps/walkthrough-studio/src/axf/react/components/Chrome.tsx",
+    "apps/walkthrough-studio/src/axf/react/components/Help.tsx",
+    "apps/walkthrough-studio/src/axf/react/components/Overlays.tsx",
+    "apps/walkthrough-studio/src/axf/react/components/WatchLive.tsx",
+    "apps/walkthrough-studio/src/axf/react/hubAppearance.ts",
+    "apps/walkthrough-studio/src/axf/react/index.ts",
+    "apps/walkthrough-studio/src/axf/react/placeTip.ts",
+    "apps/walkthrough-studio/src/axf/react/studio/OutputTerminal.tsx",
+    "apps/walkthrough-studio/src/axf/react/tapConfirm.ts",
+    "apps/walkthrough-studio/src/axf/react/windows/DockHost.tsx",
+    "apps/walkthrough-studio/src/axf/react/windows/WindowHost.tsx",
+    "apps/walkthrough-studio/src/axf/schemas/asset-types.json",
+    "apps/walkthrough-studio/src/axf/schemas/control.json",
+    "apps/walkthrough-studio/src/axf/schemas/json/agent-skill.schema.json",
+    "apps/walkthrough-studio/src/axf/schemas/json/agent.schema.json",
+    "apps/walkthrough-studio/src/axf/schemas/json/dock-layout.schema.json",
+    "apps/walkthrough-studio/src/axf/schemas/json/layout.schema.json",
+    "apps/walkthrough-studio/src/axf/schemas/json/swarm-job.schema.json",
+    "apps/walkthrough-studio/src/axf/schemas/json/swarm-report.schema.json",
+    "apps/walkthrough-studio/src/axf/schemas/json/swarm-roster.schema.json",
+    "apps/walkthrough-studio/src/axf/schemas/json/swarm-run.schema.json",
+    "apps/walkthrough-studio/src/axf/schemas/json/swarm-state.schema.json",
+    "apps/walkthrough-studio/src/axf/schemas/json/xlayout.schema.json",
+    "apps/walkthrough-studio/src/axf/schemas/model-policy.json",
+    "apps/walkthrough-studio/src/axf/schemas/plugin.schema.json",
+    "apps/walkthrough-studio/src/axf/schemas/shared-assets.json",
+    "apps/walkthrough-studio/src/axf/schemas/swarm.json",
+    "apps/walkthrough-studio/src/axf/ui/axf.css",
+    "apps/walkthrough-studio/src/studio/panes/capture.tsx",
+    "apps/walkthrough-studio/src/studio/panes/grid.tsx",
+    "apps/walkthrough-studio/src/studio/panes/outline.tsx",
+    "apps/walkthrough-studio/src/studio/panes/video.tsx",
+    "apps/walkthrough-studio/src/studio/panes/writing.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/App.tsx",
+    "apps/amberx-droid/src/axf/core/engines/tapconfirm.ts",
+    "apps/amberx-droid/src/axf/core/index.ts",
+    "apps/amberx-droid/src/axf/libs/README.md",
+    "apps/amberx-droid/src/axf/libs/ashes/index.tsx",
+    "apps/amberx-droid/src/axf/libs/mcp/index.tsx",
+    "apps/amberx-droid/src/axf/libs/plugintheme/index.tsx",
+    "apps/amberx-droid/src/axf/libs/toolbars/index.tsx",
+    "apps/amberx-droid/src/axf/libs/toolbars/library.json",
+    "apps/amberx-droid/src/axf/libs/toolbars/toolbars.css",
+    "apps/amberx-droid/src/axf/libs/tree/index.tsx",
+    "apps/amberx-droid/src/axf/react/AppShell.tsx",
+    "apps/amberx-droid/src/axf/react/AxfProvider.tsx",
+    "apps/amberx-droid/src/axf/react/components/Chrome.tsx",
+    "apps/amberx-droid/src/axf/react/components/Help.tsx",
+    "apps/amberx-droid/src/axf/react/components/WatchLive.tsx",
+    "apps/amberx-droid/src/axf/react/index.ts",
+    "apps/amberx-droid/src/axf/react/placeTip.ts",
+    "apps/amberx-droid/src/axf/react/studio/OutputTerminal.tsx",
+    "apps/amberx-droid/src/axf/react/tapConfirm.ts",
+    "apps/amberx-droid/src/axf/react/windows/WindowHost.tsx",
+    "apps/amberx-droid/src/axf/ui/axf.css",
+    "apps/amberx-droid/test.mjs"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/App.tsx",
+    "apps/axhub-web/src/axf/core/engines/tapconfirm.ts",
+    "apps/axhub-web/src/axf/core/index.ts",
+    "apps/axhub-web/src/axf/libs/README.md",
+    "apps/axhub-web/src/axf/libs/ashes/index.tsx",
+    "apps/axhub-web/src/axf/libs/mcp/index.tsx",
+    "apps/axhub-web/src/axf/libs/plugintheme/index.tsx",
+    "apps/axhub-web/src/axf/libs/toolbars/index.tsx",
+    "apps/axhub-web/src/axf/libs/toolbars/library.json",
+    "apps/axhub-web/src/axf/libs/toolbars/toolbars.css",
+    "apps/axhub-web/src/axf/libs/tree/index.tsx",
+    "apps/axhub-web/src/axf/react/AppShell.tsx",
+    "apps/axhub-web/src/axf/react/AxfProvider.tsx",
+    "apps/axhub-web/src/axf/react/components/Chrome.tsx",
+    "apps/axhub-web/src/axf/react/components/Help.tsx",
+    "apps/axhub-web/src/axf/react/components/WatchLive.tsx",
+    "apps/axhub-web/src/axf/react/index.ts",
+    "apps/axhub-web/src/axf/react/placeTip.ts",
+    "apps/axhub-web/src/axf/react/studio/OutputTerminal.tsx",
+    "apps/axhub-web/src/axf/react/tapConfirm.ts",
+    "apps/axhub-web/src/axf/react/windows/WindowHost.tsx",
+    "apps/axhub-web/src/axf/ui/axf.css",
+    "apps/axhub-web/test.mjs"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/App.tsx",
+    "apps/console-web/src/axf/core/engines/tapconfirm.ts",
+    "apps/console-web/src/axf/core/index.ts",
+    "apps/console-web/src/axf/libs/README.md",
+    "apps/console-web/src/axf/libs/ashes/index.tsx",
+    "apps/console-web/src/axf/libs/mcp/index.tsx",
+    "apps/console-web/src/axf/libs/plugintheme/index.tsx",
+    "apps/console-web/src/axf/libs/toolbars/index.tsx",
+    "apps/console-web/src/axf/libs/toolbars/library.json",
+    "apps/console-web/src/axf/libs/toolbars/toolbars.css",
+    "apps/console-web/src/axf/libs/tree/index.tsx",
+    "apps/console-web/src/axf/react/AppShell.tsx",
+    "apps/console-web/src/axf/react/AxfProvider.tsx",
+    "apps/console-web/src/axf/react/components/Chrome.tsx",
+    "apps/console-web/src/axf/react/components/Help.tsx",
+    "apps/console-web/src/axf/react/components/WatchLive.tsx",
+    "apps/console-web/src/axf/react/index.ts",
+    "apps/console-web/src/axf/react/placeTip.ts",
+    "apps/console-web/src/axf/react/studio/OutputTerminal.tsx",
+    "apps/console-web/src/axf/react/tapConfirm.ts",
+    "apps/console-web/src/axf/react/windows/WindowHost.tsx",
+    "apps/console-web/src/axf/ui/axf.css",
+    "apps/console-web/src/views/Plan.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/axf.lock.json",
+    "apps/molly/src/App.tsx",
+    "apps/molly/src/axf/core/engines/tapconfirm.ts",
+    "apps/molly/src/axf/core/index.ts",
+    "apps/molly/src/axf/libs/README.md",
+    "apps/molly/src/axf/libs/ashes/index.tsx",
+    "apps/molly/src/axf/libs/mcp/index.tsx",
+    "apps/molly/src/axf/libs/plugintheme/index.tsx",
+    "apps/molly/src/axf/libs/toolbars/index.tsx",
+    "apps/molly/src/axf/libs/toolbars/library.json",
+    "apps/molly/src/axf/libs/toolbars/toolbars.css",
+    "apps/molly/src/axf/libs/tree/index.tsx",
+    "apps/molly/src/axf/react/AppShell.tsx",
+    "apps/molly/src/axf/react/AxfProvider.tsx",
+    "apps/molly/src/axf/react/components/Chrome.tsx",
+    "apps/molly/src/axf/react/components/Help.tsx",
+    "apps/molly/src/axf/react/components/WatchLive.tsx",
+    "apps/molly/src/axf/react/index.ts",
+    "apps/molly/src/axf/react/placeTip.ts",
+    "apps/molly/src/axf/react/studio/OutputTerminal.tsx",
+    "apps/molly/src/axf/react/tapConfirm.ts",
+    "apps/molly/src/axf/react/windows/WindowHost.tsx",
+    "apps/molly/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/AppShell.tsx",
+    "framework/react/AxfProvider.tsx",
+    "framework/react/components/Chrome.tsx",
+    "framework/react/components/Help.tsx",
+    "framework/react/components/WatchLive.tsx",
+    "framework/react/index.ts",
+    "framework/react/placeTip.ts",
+    "framework/react/studio/OutputTerminal.tsx",
+    "framework/react/tapConfirm.ts",
+    "framework/react/windows/WindowHost.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/README.md",
+    "framework/libs/ashes/index.tsx",
+    "framework/libs/mcp/index.tsx",
+    "framework/libs/plugintheme/index.tsx",
+    "framework/libs/toolbars/index.tsx",
+    "framework/libs/toolbars/library.json",
+    "framework/libs/toolbars/toolbars.css",
+    "framework/libs/tree/index.tsx"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/toolbar-tap-confirm.md",
+    "_claude/builds/reports/toolbar-tap-confirm/shots/desktop-1-click-runs.png",
+    "_claude/builds/reports/toolbar-tap-confirm/shots/desktop-2-settings-toolbars.png",
+    "_claude/builds/reports/toolbar-tap-confirm/shots/phone-1-before.png",
+    "_claude/builds/reports/toolbar-tap-confirm/shots/phone-2-armed-tip.png",
+    "_claude/builds/reports/toolbar-tap-confirm/shots/phone-3-ran.png"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md",
+    "_claude/rules/RULES.md",
+    "_claude/shared/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/profiles/urgent/framework/catalog/status.json",
+    "framework/plan/profiles/urgent/framework/plan/plan.json",
+    "framework/plan/profiles/urgent/tracker.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "templates",
+   "files": [
+    "framework/templates/next-ts/src/App.tsx",
+    "framework/templates/react-ts/src/App.tsx",
+    "framework/templates/web-fastapi-wall/src/App.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-handoff",
+   "files": [
+    "apps/console-web/plugins/claude-handoff/web/files.tsx",
+    "apps/console-web/plugins/claude-handoff/web/lookDialog.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "console-terminal",
+   "files": [
+    "apps/console-web/plugins/console-terminal/web/ChainPane.tsx",
+    "apps/console-web/plugins/console-terminal/web/TerminalSession.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/tapconfirm.ts",
+    "framework/core/index.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai-assistant",
+   "files": [
+    "apps/console-web/plugins/ai-assistant/web/chat.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "basic-filter",
+   "files": [
+    "apps/console-web/plugins/basic-filter/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "builds-page",
+   "files": [
+    "apps/console-web/plugins/builds-page/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "chat-viewer",
+   "files": [
+    "apps/console-web/plugins/chat-viewer/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "commands",
+   "files": [
+    "apps/amberx-droid/src/plugins/commands/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "context-menu-designer",
+   "files": [
+    "apps/console-web/plugins/context-menu-designer/web/ActionsWindow.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "crew-live",
+   "files": [
+    "apps/console-web/plugins/crew-live/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "notes",
+   "files": [
+    "apps/amberx-droid/src/plugins/notes/web/NotesView.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "notes-browser",
+   "files": [
+    "apps/console-web/plugins/notes-browser/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plugin-commands",
+   "files": [
+    "apps/console-web/plugins/plugin-commands/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plugin-manager",
+   "files": [
+    "apps/console-web/plugins/plugin-manager/web/PluginManager.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plugins-menu",
+   "files": [
+    "apps/console-web/plugins/plugins-menu/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "session-checkin",
+   "files": [
+    "apps/console-web/plugins/session-checkin/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "theme-manager",
+   "files": [
+    "apps/console-web/plugins/theme-manager/web/ThemeManager.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "todo-manager",
+   "files": [
+    "apps/console-web/plugins/todo-manager/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "whats-shipped",
+   "files": [
+    "apps/console-web/plugins/whats-shipped/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/check-toolbars.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/check-tapconfirm.mts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "touch vs mouse, pen and keyboard;",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "the arm window edge and expiry;",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "re-arming on a different button;",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "a mouse click on a touch-armed button;",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "global, per-toolbar and bad override values;",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "disabled buttons, buttons outside toolbars, and code opt-outs;",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "dispose.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  }
+ ],
+ "uiReview": [
+  {
+   "id": "r-20261103-6815df1d",
+   "name": "Toolbars: tap-to-confirm on touch + Settings → Plugins → Toolbars",
+   "status": "approved",
+   "group": "g-20261103-b7bfb18e",
+   "url": "/review/r-20261103-6815df1d"
+  },
+  {
+   "id": "r-20261103-ad8e91a3",
+   "name": "Predicted look: Toolbars plugin: tap-to-confirm on touch, per-toolbar settings + editor, drag-and-drop hooks",
+   "status": "approved",
+   "group": "g-20261103-d8c5e30e",
+   "url": "/review/r-20261103-ad8e91a3"
+  }
+ ],
+ "cost": {
+  "usd": 8.7048,
+  "estimated": false,
+  "tokens": {
+   "input": 312,
+   "output": 1952,
+   "cacheRead": 24308050,
+   "cacheWrite": 247425
+  }
+ },
+ "report": "_claude/builds/reports/toolbar-tap-confirm.md",
+ "open": [
+  "s9: Toolbar settings dialog: theming (tokens only), layout (position, orientation, wrap/scroll/overflow, auto-hide), behaviour override",
+  "s10: All toolbars page in the Toolbars plugin",
+  "s11: Toolbar editor: add/remove/reorder/group/separators, per-button edit, reset, undo/redo, live preview",
+  "s12: Toolbar editor: save as toolbar asset (hot-swappable, shareable)",
+  "s13: hook@1 + drop-target@1 contracts: asset-types, schemas, core registries, fixtures, PORTING gap for Compose",
+  "s14: Drop semantics engine: accept rules, move vs copy defaults, undo record; fixture",
+  "s15: Web drag layer: mouse drag + touch long-press pick up, edge auto-scroll, drop-zone highlight",
+  "s16: Drop targets: toolbars, nav menu, app menus, context menus, Home",
+  "s17: Banner drop target through the generic contract only (no banner-pack/editor/banners-one changes)",
+  "s18: Per-target configure dialogs prefilled from the hook; move/copy choice; undo",
+  "s19: Commands declared once -> REST + MCP + CLI",
+  "s20: Tests: touch vs mouse, timeout, re-arm; drop targets, dialogs, move/copy, undo; help, lifecycle, check-theme/controls",
+  "s21: Phone + desktop screenshots, UI Review items, report _claude/builds/reports/toolbar-tap-confirm.md, THREADS, PR",
+  "Per-toolbar override id. It is the toolbar's label slug, or `data-axf-toolbar`. If a label is renamed, the override saved under the old id is dropped. Stable `data-axf-toolbar` ids are worth adding where labels might change.",
+  "Lit-button colour. The armed state uses `--fx-accent-soft` with an inset accent ring. Some control hover styles have higher specificity, so the fill can look faint. The ring and the tip always show.",
+  "Lenny's card. `agent-job.mjs` has no \"book without launching\" command, and this run was launched as `build:toolbar-tap-confirm` without `AXF_AGENT`. The run is recorded on the build's note, not on his card."
+ ]
+}

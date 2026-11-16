@@ -1,0 +1,186 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-2ijgui-restore",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:32:55Z",
+ "build": {
+  "id": "project-thread-2ijgui-restore",
+  "title": "project-thread-2ijgui-restore",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-2ijgui-restore",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-2ijgui-restore",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "b4b95a8e9deaf557a09434a138460a660dc87a42",
+ "commits": [
+  "d698294862f813adc1c6f100604bf01b537ac7b3",
+  "f4d67e70d8a3f2dac2fc121ff183f36bbc786073",
+  "6e5d3a586b5bc9b127b12f58bbf05abd23d41a79"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-25T10:24:36Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "CLAUDE.md",
+  "apps/console-web/plugins/README.md",
+  "apps/console-web/plugins/activity/activity.mjs",
+  "apps/console-web/plugins/activity/hooks.mjs",
+  "apps/console-web/plugins/activity/install.mjs",
+  "apps/console-web/plugins/activity/plugin.json",
+  "apps/console-web/plugins/activity/server/__init__.py",
+  "apps/console-web/plugins/activity/server/complete.py",
+  "apps/console-web/plugins/activity/server/feed.py",
+  "apps/console-web/plugins/activity/test.py",
+  "apps/console-web/plugins/activity/uninstall.mjs",
+  "apps/console-web/plugins/activity/web/activity.css",
+  "apps/console-web/plugins/activity/web/index.tsx",
+  "apps/console-web/plugins/activity/web/menu.ts",
+  "apps/console-web/plugins/approvals-banner/hooks.mjs",
+  "apps/console-web/plugins/approvals-banner/install.mjs",
+  "apps/console-web/plugins/approvals-banner/plugin.json",
+  "apps/console-web/plugins/approvals-banner/uninstall.mjs",
+  "apps/console-web/plugins/approvals-banner/web/approvals-banner.css",
+  "apps/console-web/plugins/approvals-banner/web/index.tsx",
+  "apps/console-web/plugins/approvals-banner/web/menu.ts",
+  "apps/console-web/plugins/systems-check/README.md",
+  "apps/console-web/plugins/systems-check/hooks.mjs",
+  "apps/console-web/plugins/systems-check/install.mjs",
+  "apps/console-web/plugins/systems-check/plugin.json",
+  "apps/console-web/plugins/systems-check/server/__init__.py",
+  "apps/console-web/plugins/systems-check/server/checks.py",
+  "apps/console-web/plugins/systems-check/server/claudefix.py",
+  "apps/console-web/plugins/systems-check/server/derive.py",
+  "apps/console-web/plugins/systems-check/server/hostfix.py",
+  "apps/console-web/plugins/systems-check/server/mosses.py",
+  "apps/console-web/plugins/systems-check/server/routine.py",
+  "apps/console-web/plugins/systems-check/server/store.py",
+  "apps/console-web/plugins/systems-check/server/whatsnew.py",
+  "apps/console-web/plugins/systems-check/test.py",
+  "apps/console-web/plugins/systems-check/uninstall.mjs",
+  "apps/console-web/plugins/systems-check/web/KeysBanner.tsx",
+  "apps/console-web/plugins/systems-check/web/SystemCheck.tsx",
+  "apps/console-web/plugins/systems-check/web/WhatsNew.tsx",
+  "apps/console-web/plugins/systems-check/web/index.tsx",
+  "apps/console-web/plugins/systems-check/web/menu.ts",
+  "apps/console-web/plugins/systems-check/web/panels.tsx",
+  "apps/console-web/plugins/systems-check/web/systems-check.css"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "systems-check",
+   "files": [
+    "apps/console-web/plugins/systems-check/README.md",
+    "apps/console-web/plugins/systems-check/hooks.mjs",
+    "apps/console-web/plugins/systems-check/install.mjs",
+    "apps/console-web/plugins/systems-check/plugin.json",
+    "apps/console-web/plugins/systems-check/server/__init__.py",
+    "apps/console-web/plugins/systems-check/server/checks.py",
+    "apps/console-web/plugins/systems-check/server/claudefix.py",
+    "apps/console-web/plugins/systems-check/server/derive.py",
+    "apps/console-web/plugins/systems-check/server/hostfix.py",
+    "apps/console-web/plugins/systems-check/server/mosses.py",
+    "apps/console-web/plugins/systems-check/server/routine.py",
+    "apps/console-web/plugins/systems-check/server/store.py",
+    "apps/console-web/plugins/systems-check/server/whatsnew.py",
+    "apps/console-web/plugins/systems-check/test.py",
+    "apps/console-web/plugins/systems-check/uninstall.mjs",
+    "apps/console-web/plugins/systems-check/web/KeysBanner.tsx",
+    "apps/console-web/plugins/systems-check/web/SystemCheck.tsx",
+    "apps/console-web/plugins/systems-check/web/WhatsNew.tsx",
+    "apps/console-web/plugins/systems-check/web/index.tsx",
+    "apps/console-web/plugins/systems-check/web/menu.ts",
+    "apps/console-web/plugins/systems-check/web/panels.tsx",
+    "apps/console-web/plugins/systems-check/web/systems-check.css"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "activity",
+   "files": [
+    "apps/console-web/plugins/activity/activity.mjs",
+    "apps/console-web/plugins/activity/hooks.mjs",
+    "apps/console-web/plugins/activity/install.mjs",
+    "apps/console-web/plugins/activity/plugin.json",
+    "apps/console-web/plugins/activity/server/__init__.py",
+    "apps/console-web/plugins/activity/server/complete.py",
+    "apps/console-web/plugins/activity/server/feed.py",
+    "apps/console-web/plugins/activity/test.py",
+    "apps/console-web/plugins/activity/uninstall.mjs",
+    "apps/console-web/plugins/activity/web/activity.css",
+    "apps/console-web/plugins/activity/web/index.tsx",
+    "apps/console-web/plugins/activity/web/menu.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "approvals-banner",
+   "files": [
+    "apps/console-web/plugins/approvals-banner/hooks.mjs",
+    "apps/console-web/plugins/approvals-banner/install.mjs",
+    "apps/console-web/plugins/approvals-banner/plugin.json",
+    "apps/console-web/plugins/approvals-banner/uninstall.mjs",
+    "apps/console-web/plugins/approvals-banner/web/approvals-banner.css",
+    "apps/console-web/plugins/approvals-banner/web/index.tsx",
+    "apps/console-web/plugins/approvals-banner/web/menu.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/plugins/README.md"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

@@ -1,0 +1,169 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-amberx-handsfree",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:27:51Z",
+ "build": {
+  "id": "amberx-handsfree",
+  "title": "AmberX: hands-free listening on screen + in background, ActiveX-style detection overlay (level graph, dB, quick settings)",
+  "profile": "all",
+  "category": "AI & voice",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "'It only detects words when I press speak' in AmberX (apps/amberx-droid). Cause: the native wake listener runs only while 'Watch axHub in the background' is on (default off) and pauses while the app is on screen. Fix: hands-free listening is its own setting (default on), works on screen and in the background, independent of axHub monitoring; optional always-armed (no wake phrase). Plus a detection overlay like ActiveX: floating draggable window over other apps with a moving audio-level line graph, decibel number, what was heard, and quick settings (listening on/off, always armed, hide). Colours from the app's theme tokens. Profile refactor, Opus (Brett's pick). Android exception: AmberX shell is allowed (rule Oct 25).",
+  "verbatim": false,
+  "at": "2026-10-27T00:00:00Z",
+  "source": "chat",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "WatchService: hands-free listening independent of monitoring, keeps listening on screen (wake → straight to the web side, no alert), pauses while the Speak button listens, always-armed mode, level + heard events",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-27T23:48:40.444Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Detection overlay: TYPE_APPLICATION_OVERLAY window (draggable), level line graph, dB number, last heard, quick settings (mic, always armed, hide), overlay permission flow, theme colours from the web side",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T23:48:40.444Z",
+   "doneAt": "2026-10-27T23:48:40.492Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Voice plugin: settings (hands-free default on, always armed, overlay), native bridge methods + browser fallback, in-app live level graph + dB on the Voice page, monitor no longer owns the wake phrase",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-27T23:48:40.492Z",
+   "doneAt": "2026-10-27T23:48:40.545Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Tests (test.mjs), README, CI green, PR + merge approval",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-10-27T23:48:40.545Z",
+   "doneAt": "2026-10-28T19:08:50.049Z",
+   "actualMin": 1160,
+   "done": true
+  }
+ ],
+ "branch": "claude/amberx-handsfree",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 141,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/141"
+ },
+ "landedCommit": "eaba8c587bd42ebe23fa1ccb5c73e37dd90989c2",
+ "commits": [
+  "0dabe81c97ec783d0357a95cf12e37fb91bfc8e0",
+  "5826fb182196ac59a0cd4cc3e24173bddb93c4a1",
+  "bc1641c7c9ee43e222a4e8b4e3519680a222518b",
+  "260345ae27934d2d9c6df5eed72ececaca6ddd30",
+  "3e69bec6f18ba589d811a6ff18a628c39eab37c7"
+ ],
+ "mergedAt": "2026-10-28T00:27:04Z",
+ "landedAt": "2026-10-28T00:27:04Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/memory/decisions.md",
+  "apps/amberx-droid/android/app/src/main/AndroidManifest.xml",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/BootReceiver.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/DetectionOverlay.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+  "apps/amberx-droid/src/native.ts",
+  "apps/amberx-droid/src/plugins/monitor/web/index.tsx",
+  "apps/amberx-droid/src/plugins/voice/plugin.json",
+  "apps/amberx-droid/src/plugins/voice/web/handsfree.ts",
+  "apps/amberx-droid/src/plugins/voice/web/index.tsx",
+  "apps/amberx-droid/test.mjs"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/android/app/src/main/AndroidManifest.xml",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/BootReceiver.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/DetectionOverlay.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+    "apps/amberx-droid/src/native.ts",
+    "apps/amberx-droid/test.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "voice",
+   "files": [
+    "apps/amberx-droid/src/plugins/voice/plugin.json",
+    "apps/amberx-droid/src/plugins/voice/web/handsfree.ts",
+    "apps/amberx-droid/src/plugins/voice/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/decisions.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "monitor",
+   "files": [
+    "apps/amberx-droid/src/plugins/monitor/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/profiles/refactor/orchestrator.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

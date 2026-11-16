@@ -27,7 +27,7 @@ what it needs, and what it answers are decided here once, so the docs, the tools
 | Field | Meaning |
 |---|---|
 | `op` | `list` · `get` · `set` · `reset` · `add` · `remove` · `act` |
-| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `tokens.nav` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` · `pass.scopes` · `plugins.commands` · `plugins.reads` |
+| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `tokens.nav` · `tokens.instances` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` · `pass.scopes` · `plugins.commands` · `plugins.reads` · `console.control` |
 | `path` | the token id (`navWidth`, `accent`, `scale.md`, `button.radius@amber`) or the record id; `get`/`set`/`remove`/`act` need it, `reset` without one resets the whole target |
 | `value` | what to set (a token value, or the fields to change on a record) · the new record for `add` |
 | `action` + `input` | the verb for `act` and what it wants (`done`, `move {list}`, `approve {phase}`, `step {step, done}` …) |
@@ -46,6 +46,11 @@ Effects: `list`/`get` read · `set`/`reset`/`add`/`act` write · `remove` destru
 and range. The static targets (theme, style, layout, typography, density, sizing) are listed by the registry itself; `look`,
 `custom` and `slots` are listed by the running app (look@1 ids, asset-customize@1 tokens, the appearance slot types).
 `tokens.slots` set = `runtime.swap(type, id)`, the hot-swap.
+`tokens.style` also carries the component token families (component-tokens@1, `core/engines/component-tokens.mjs`): `grid.<token>` and
+`tabs.<token>` rows with their CSS variable, level and description (`set tokens.style tabs.pillsActiveBg accent2`).
+`tokens.instances` (same build) is one tab row's or one grid's own values on top of them: path `<grid|tabs>.<instance>[.<token>]`;
+`set` a token, `reset` a token / a whole instance / everything, `act <family>.<instance> restore-previous` (the values before the
+last edit) or `restore-hub` (drop the instance's values so it follows the shared look). One setting, `axf.tokens.instances`.
 `tokens.nav` (nav-style@1, `core/engines/navstyle-rules.mjs`) tunes the navigation menu with sub menus: colours, font, icons,
 density, width, the sub-menu animation, behaviour, pinned / hidden / ordered items and `accents.<item id>`; only navs that opt in
 (nav-menu `navStyle: true`) read it.
@@ -67,6 +72,9 @@ goes there. `console.screens`, `console.dialogs` and `console.settings` (tabs an
 takes `get` (where the console is) and `act back | home | close`; `console.clients` lists the consoles open for the caller. Every
 list and resolve runs against the catalog the open consoles report (their search index: views, settings tabs, dialogs, actions),
 so plugins' screens are found too. Every act takes `input.to`: `recent` (default, the console Brett is looking at: a client in front wins, then the one used last), `all`, or a client id.
+`console.control` reaches any console-control@1 address (spec/CONSOLE-CONTROL.md): path = the address, `list` the targets under it,
+`get` its state (no path: where the console is), `act <verb>` with the verb as the action (focus, scroll navigate; press, set,
+plugin.enable / plugin.disable write). A plan's `links[]` entry (or any item) may carry `{ address }` to point at a place in the console.
 A console inside a host says so (Nov 3 2026, build `molly-console-commands`): `app: molly/console-web`, `host: molly`, and `front` (its page is visible
 and the host shows its frame, embed@1 `shown`); before it runs a command while hidden it asks the host to bring it forward (embed@1 `show`), and
 Molly with xLayout opens the Console frame hidden at start (`warm`), so a command while Molly is open always lands in Molly.
@@ -79,6 +87,32 @@ console that says hello (checked first against that user's last catalog, so a wr
 waits up to 60 s. After 3 s with no console, the owner's AmberX phone is asked through axHub (`amberx.open_url`, amberxai.com only)
 to open `…/?axf-cmd=<id>`. Every sent answer carries `delivery.how`: `live` · `after reconnect` · `woke via AmberX` · `queued`
 (`queued: true`, still waiting when the call returned). A command for one named client that isn't there still answers `not_found`.
+
+Reliable delivery (build console-commands-reliable, Nov 11 2026). Only the console proves it is alive (hello, seen every
+`CONSOLE_HEARTBEAT_MS` = 15 s and on every wake, ack, opening its stream); the server's stream keep-alive never counts, because a
+frozen phone tab keeps its socket open. Quiet for `CONSOLE_CLIENT_STALE_MS` (45 s) = gone. A beat from a console the server holds
+no catalog for (a restart) answers `hello: true`, and the console sends its catalog again. A `recent` command goes to the live console
+used last; no ack within 3.5 s → the next live console of the same app (up to 3), and the silent one stays out of `recent` until it
+beats again. Nobody answered: a navigate-only command is queued and AmberX is asked at once; a command that changes data is not
+re-sent and answers `failed`. A console that gets a live command more than `CONSOLE_LATE_MS` (30 s) after it was sent skips it
+(`consoleMessageLate`) and acks `skipped`; a late ack from the console asked first settles the queued copy (`how: late ack`).
+Every act answer carries `status`: `delivered` (a console acked it as done) · `pending` (nobody acked yet) · `failed`, and
+`delivery.tried` (the consoles asked, in turn) with `delivery.how` `live` · `after retry` · the ones above.
+Single settings (build full-voice-and-ai-control, Nov 13 2026): every console reports each setting with a value as a catalog item of kind
+`field` (id = its key, parent = its tab, type, current value as text, options, min / max; secrets say `secret: true` and never send a value).
+`console.settings` reaches them: `act open` with a key, `field:<key>`, `<tab>/<key>` or its name opens the tab scrolled to it (a tab of the
+same name wins); `get` reads the value; `list` with `q` lists matching fields after the tabs. `console.actions run settings.set:<key>:<value>`
+changes one (`consoleFieldValue` parses on/off/toggle, numbers in range, choices by value, comma lists; the setting's own `requires` applies;
+a refused value is the ack's message). The catalog is re-sent when a setting changes, so a `get` right after a set reads the new value.
+Find by content (same build): Plan Studio's `plan-studio.focus:<focus>` opens a plan down to one item: `<plan id>`, `<plan id>/<item ref>`
+(step id, `risks:2`, comment id, `body:4`) or words — "the plan about X, the step that mentions Y" — that its `find` resolves to the best
+hit. REST `GET /api/plugins/plan-studio/find?q=|plan=&item=&kind=` (also `plugins.reads plan-studio/find`, MCP `plan-studio_find`, <!-- axf-plugin:plan-studio -->
+`axf plan-studio find`), CLI `plans.mjs find <words>`; every hit carries its `focus`, and `console_open "plan-studio <focus or words>"` /
+`console_show` open it. <!-- axf-plugin:plan-studio -->
+Focus on a screen: `act open` on `console.screens` takes `input.focus` or a path "<screen id or title> <rest>" ("build-orchestrator
+pending", `consoleSplitFocus`); the message carries `focus` and the console runs the screen's own `<screen>.focus:<focus>` action.
+The console server asks the capability `console-focus@1` (the Build orchestrator provides it) to map `build:<id>` (or a bare build id that is no screen id) to its screen with that focus: the build's
+tab opens, its row scrolls into view, expands and stays highlighted.
 
 **Follow Amber** (build follow-amber, Nov 3 2026, Brett): one switch for the owner's consoles. While it is on, a Claude session
 calls MCP `console_show` {target, highlight?, say?} every time it mentions something in the console; the Follow Amber plugin

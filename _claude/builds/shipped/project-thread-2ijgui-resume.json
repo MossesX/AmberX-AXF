@@ -1,0 +1,102 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-2ijgui-resume",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:32:52Z",
+ "build": {
+  "id": "project-thread-2ijgui-resume",
+  "title": "project-thread-2ijgui-resume",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-2ijgui-resume",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-2ijgui-resume",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "0ea292cf9ab29d2262349e557004845a39339e4b",
+ "commits": [
+  "97fc85a16471c6c4626c82411ce391a7c1c751e9"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-25T11:29:41Z",
+ "files": [
+  "CLAUDE.md",
+  "_claude/rules/RULES.md",
+  "apps/console-web/plugins/codebase-changes/changes-core.mjs",
+  "apps/console-web/plugins/codebase-changes/changes.mjs",
+  "apps/console-web/plugins/codebase-changes/schema/change-log.schema.json",
+  "apps/console-web/plugins/codebase-changes/server/__init__.py",
+  "apps/console-web/plugins/codebase-changes/server/store.py",
+  "apps/console-web/plugins/codebase-changes/test.mjs",
+  "apps/console-web/plugins/codebase-changes/test.py",
+  "apps/console-web/plugins/codebase-changes/web/store.ts",
+  "apps/console-web/plugins/codebase-changes/web/ui.tsx",
+  "framework/plan/pending.json"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "codebase-changes",
+   "files": [
+    "apps/console-web/plugins/codebase-changes/changes-core.mjs",
+    "apps/console-web/plugins/codebase-changes/changes.mjs",
+    "apps/console-web/plugins/codebase-changes/schema/change-log.schema.json",
+    "apps/console-web/plugins/codebase-changes/server/__init__.py",
+    "apps/console-web/plugins/codebase-changes/server/store.py",
+    "apps/console-web/plugins/codebase-changes/test.mjs",
+    "apps/console-web/plugins/codebase-changes/test.py",
+    "apps/console-web/plugins/codebase-changes/web/store.ts",
+    "apps/console-web/plugins/codebase-changes/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

@@ -1,0 +1,152 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-shot-groups",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:41Z",
+ "build": {
+  "id": "shot-groups",
+  "title": "UI Review → Screenshots: named, timestamped groups (`shot-groups`, Nov 1 2026)",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "UI Review → Screenshots: named, timestamped groups (`shot-groups`, Nov 1 2026)",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/shot-groups",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "ce73487abdc3cfd164feada61d13dc0e4899bb28",
+ "commits": [
+  "247d6a471d9655530f19b231d5a0a2e5a5bd467d",
+  "603a2a80e13dfe2f8b82ff663420814dc1b0d24c",
+  "e96b83a6397cb41595df55cb3348e068e0925a12"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-11-01T02:08:18Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/shot-groups.md",
+  "_claude/memory/docs/ui-review/shot-groups/shots.json",
+  "_claude/memory/docs/ui-review/shot-groups/shots/after/group-open-desktop.png",
+  "_claude/memory/docs/ui-review/shot-groups/shots/after/group-open-phone.png",
+  "_claude/memory/docs/ui-review/shot-groups/shots/after/group-tools-desktop.png",
+  "_claude/memory/docs/ui-review/shot-groups/shots/after/group-tools-phone.png",
+  "_claude/memory/docs/ui-review/shot-groups/shots/after/groups-list-desktop.png",
+  "_claude/memory/docs/ui-review/shot-groups/shots/after/groups-list-phone.png",
+  "_claude/memory/docs/ui-review/shot-groups/shots/after/groups-search-desktop.png",
+  "_claude/memory/docs/ui-review/shot-groups/shots/after/groups-search-phone.png",
+  "_claude/memory/docs/ui-review/shot-groups/shots/after/groups-thumbs-desktop.png",
+  "_claude/memory/docs/ui-review/shot-groups/shots/after/groups-thumbs-phone.png",
+  "_claude/shared/rules/RULES.md",
+  "apps/console-web/plugins/ui-review/README.md",
+  "apps/console-web/plugins/ui-review/plugin.json",
+  "apps/console-web/plugins/ui-review/server/__init__.py",
+  "apps/console-web/plugins/ui-review/server/screenshots.py",
+  "apps/console-web/plugins/ui-review/shots.mjs",
+  "apps/console-web/plugins/ui-review/test.mts",
+  "apps/console-web/plugins/ui-review/test.py",
+  "apps/console-web/plugins/ui-review/web/groups-core.d.mts",
+  "apps/console-web/plugins/ui-review/web/groups-core.mjs",
+  "apps/console-web/plugins/ui-review/web/screenshots.tsx",
+  "apps/console-web/plugins/ui-review/web/shots-core.d.mts",
+  "apps/console-web/plugins/ui-review/web/ui-review.css",
+  "framework/cli/shot.mjs"
+ ],
+ "areas": [
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/docs/ui-review/shot-groups/shots.json",
+    "_claude/memory/docs/ui-review/shot-groups/shots/after/group-open-desktop.png",
+    "_claude/memory/docs/ui-review/shot-groups/shots/after/group-open-phone.png",
+    "_claude/memory/docs/ui-review/shot-groups/shots/after/group-tools-desktop.png",
+    "_claude/memory/docs/ui-review/shot-groups/shots/after/group-tools-phone.png",
+    "_claude/memory/docs/ui-review/shot-groups/shots/after/groups-list-desktop.png",
+    "_claude/memory/docs/ui-review/shot-groups/shots/after/groups-list-phone.png",
+    "_claude/memory/docs/ui-review/shot-groups/shots/after/groups-search-desktop.png",
+    "_claude/memory/docs/ui-review/shot-groups/shots/after/groups-search-phone.png",
+    "_claude/memory/docs/ui-review/shot-groups/shots/after/groups-thumbs-desktop.png",
+    "_claude/memory/docs/ui-review/shot-groups/shots/after/groups-thumbs-phone.png",
+    "_claude/shared/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ui-review",
+   "files": [
+    "apps/console-web/plugins/ui-review/README.md",
+    "apps/console-web/plugins/ui-review/plugin.json",
+    "apps/console-web/plugins/ui-review/server/__init__.py",
+    "apps/console-web/plugins/ui-review/server/screenshots.py",
+    "apps/console-web/plugins/ui-review/shots.mjs",
+    "apps/console-web/plugins/ui-review/test.mts",
+    "apps/console-web/plugins/ui-review/test.py",
+    "apps/console-web/plugins/ui-review/web/groups-core.d.mts",
+    "apps/console-web/plugins/ui-review/web/groups-core.mjs",
+    "apps/console-web/plugins/ui-review/web/screenshots.tsx",
+    "apps/console-web/plugins/ui-review/web/shots-core.d.mts",
+    "apps/console-web/plugins/ui-review/web/ui-review.css"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/shot.mjs"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/shot-groups.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261101-dab86343",
+   "name": "Screenshots: named, timestamped groups (group list, open group, rename / select + move)",
+   "status": "approved",
+   "group": "g-20261101-shot-groups-2026-11-01",
+   "url": "/review/r-20261101-dab86343"
+  }
+ ],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "_claude/builds/reports/shot-groups.md",
+ "open": [
+  "Moving a single shot from the full-screen viewer isn't there; use Select in the group.",
+  "A deleted group's shots are deleted (with a confirm that says so); to keep them, merge or `delete --into`.",
+  "The rule can only ask; the console can't tell whether a session asked Brett first."
+ ]
+}

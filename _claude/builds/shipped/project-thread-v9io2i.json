@@ -1,0 +1,73 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-v9io2i",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:33:23Z",
+ "build": {
+  "id": "project-thread-v9io2i",
+  "title": "project-thread-v9io2i",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-v9io2i",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-v9io2i",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "76c26f353c036445e1de4362cafdabe853d11008",
+ "commits": [
+  "034b28d0922fa600dffd7471248f66464637e6ad",
+  "b1a7d140f93754c5206bfd6844ccdfc1c85b0b44"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-23T22:49:29Z",
+ "files": [
+  "_claude/handoff/CONTINUE.md",
+  "_claude/rules/RULES.md",
+  "_claude/shared/rules/RULES.md"
+ ],
+ "areas": [
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/handoff/CONTINUE.md",
+    "_claude/rules/RULES.md",
+    "_claude/shared/rules/RULES.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

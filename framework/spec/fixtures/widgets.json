@@ -285,6 +285,7 @@
   "exists": [
     "action-button:help",
     "action-button:settings",
+    "action-button:skins",
     "action-button:win-close",
     "action-button:win-maximize",
     "action-button:win-minimize",
