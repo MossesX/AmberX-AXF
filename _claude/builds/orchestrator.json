@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T16:17:07.407Z",
+ "updatedAt": "2026-11-16T16:17:22.372Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -156156,16 +156156,22 @@
    "title": "Remove the old Molly app from the project (keep axf-molly)",
    "category": "",
    "detail": "The old Molly app is dead (container 'molly' at molly.amberxai.com is being shut down and deleted). Remove every reference to the OLD Molly from the project: the molly app/web UI, the molly.amberxai.com deploy and its DNS/proxy route, the Molly agent add-on in the Agent manager (apps/console-web/plugins/agent-manager/addons/molly), the console's 'Molly guide', docs, rules, help and glossary mentions. Move anything still useful into the console. DO NOT touch the axf-molly container or its name: it is the current worker (orchestrator, gate, lander, Shipped sender) and stays as-is. List everything being removed in the PR first. Tests green, land with the one-at-a-time lander.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-16T16:17:05.624Z",
-   "updatedAt": "2026-11-16T16:17:05.624Z",
+   "updatedAt": "2026-11-16T16:17:08.258Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-16T16:17:08.258Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
