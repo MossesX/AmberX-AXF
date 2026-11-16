@@ -66,7 +66,13 @@ Claude project with its homes on GitHub / the VPS / a local git folder and a Cla
 
 WebSockets in a plugin: get a one-time ticket from `POST /api/ws-ticket` (`{"path": "/api/plugins/<folder>/…"}`, 30 s, single use) and connect with `?ticket=` (the console token never goes in a URL). Banners: `AxfWebLibrary.banners`. Items on every context menu: `rt.contextExtras.set('*:<owner>', (target, payload) => [...])`. Boxes inside a view: `AxfWebLibrary.slots` (`<Slot name=… />`, e.g. the Plan view's `plan.top` / `plan.feature`). Start an assistant chat from anywhere: action `ai.chat.start:<uri-encoded JSON {agentId, message, title, profileId?, model?}>`.
 
-Start a plugin: `cp -r plugins/_template plugins/<folder>`, then edit `plugin.json` (id, name, description,
+Start a plugin: `node framework/cli/axf.mjs new-plugin <folder> --name "Display name"` (framework/cli/new-plugin.mjs)
+copies `_template` and renames it, with its settings already wired (plugin-settings@1): the `settings` block in
+plugin.json (its Settings → Plugins sub-tab, the default enable / info / logs sections, its option keys, `gear`), the
+sub-tab and one example option in web/index.tsx, and the screen header as `PluginScreenHeader`, whose gear opens the
+sub-tab. A plugin without a screen drops its view and sets `"gear": false`; every option key it registers goes in
+`settings.options` (REST /api/plugins/plugin-manager/settings/<folder>, MCP plugin-settings-*, `axf plugin-settings`,
+voice plugin.settings.*). Or by hand: `cp -r plugins/_template plugins/<folder>`, then edit `plugin.json` (id, name, description,
 `lifecycle.dataDir`), the `id`, `FOLDER` and views in `web/index.tsx`, the routes in `server/__init__.py`, and the
 folder name in `install.mjs` / `uninstall.mjs`.
 
