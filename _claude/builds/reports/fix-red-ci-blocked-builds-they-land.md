@@ -65,3 +65,16 @@ targets, glossary, builds-live heal cases, kernel conformance. Causes B and C (c
 
 Overlap: `get-main-green-unblock-lander-land-axf` plans the same main fixes (s3–s7 on `fix/main-green`, not started at
 s2 time). This build fixes A, F and G once on `fix/ci-common-cause` and notes it on that build so it is not done twice.
+
+## Common-cause fix (s3)
+
+Branch `fix/ci-common-cause` (37995d9b9), PR [#719](https://github.com/MossesX/AmberX-AXF/pull/719):
+
+- **F**: `apps/amberx-droid/src/console/api.ts` (empty console token store; AmberX's server adds the token) + `@console/api`
+  alias in `vite.config.ts` and path in `tsconfig.json`. amberx-droid re-bake + build passes locally.
+- **G**: Gate page head gets its description; the gate's `ui-review` rule id lines carry `axf-not-plugin:ui-review`.
+  `check-plugin-pages.mjs` and `plugin-lifecycle.mjs check gate|ui-review` pass.
+- **A**: `android.yml` runners pinned to `ubuntu-24.04` (Playwright 1.56 has no chromium for 26.04).
+
+Each blocked branch needs #719 (or main after it lands) merged in to go green; until #719 lands, branches merge
+`origin/fix/ci-common-cause` along with `origin/main`.
