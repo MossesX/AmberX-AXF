@@ -643,3 +643,394 @@ export function stats(doc) {
   }
   return { nodes: Object.keys(doc.nodes).length, byKind, done, maxDepth, trash: doc.trash.length, ops: doc.ops.length, seq: doc.seq };
 }
+
+// ================================================================================================ operations (s4)
+/*
+ * Every operation runs in a Txn: a shallow copy of the node map, a record of what each touched node looked like before,
+ * and one commit that appends the op-log entry ({ seq, token, at, op, nodeId, args, touched: [{ id, before, after }] }).
+ * The input document is never changed. `touched` is complete, so undo (s5) is generic: put every `before` back.
+ */
+
+export const OPS = ['create', 'rename', 'edit', 'move', 'reorder', 'duplicate', 'complete', 'delete', 'restore', 'collapse', 'undo', 'migrate'];
+export const CASCADES = ['none', 'down', 'up', 'both'];
+export const DEFAULT_CASCADE = 'down';
+const EDITABLE = ['title', 'body', 'due', 'priority', 'status', 'done', 'tags', 'tone', 'icon', 'fields', 'kind', 'source'];
+
+class Txn {
+  constructor(doc, ctx = {}) {
+    this.base = doc;
+    this.nodes = { ...doc.nodes };
+    this.trash = doc.trash.slice();
+    this.before = new Map();
+    this.now = Number.isFinite(ctx.now) ? ctx.now : Date.now();
+    this.by = typeof ctx.by === 'string' ? ctx.by.slice(0, 120) : '';
+    this.token = ctx.token || newToken(this.now);
+  }
+  /** A document view over the working nodes, for the navigation helpers. */
+  view() { return { ...this.base, nodes: this.nodes, trash: this.trash }; }
+  get(id) { return this.nodes[String(id)]; }
+  need(id) {
+    const n = this.get(id);
+    if (!n) throw new TodoError('not-found', `No node ${id}`, 404);
+    return n;
+  }
+  set(next) {
+    if (!this.before.has(next.id)) this.before.set(next.id, this.base.nodes[next.id] ?? null);
+    this.nodes[next.id] = next;
+    return next;
+  }
+  patch(id, patch) {
+    const n = this.need(id);
+    return this.set({ ...n, ...patch, updatedAt: this.now });
+  }
+  remove(id) {
+    if (!this.before.has(id)) this.before.set(id, this.base.nodes[id] ?? null);
+    delete this.nodes[id];
+  }
+  commit(op, nodeId, args = {}, extra = {}) {
+    const touched = [];
+    for (const [id, before] of this.before) {
+      const after = this.nodes[id] ?? null;
+      if (before !== after) touched.push({ id, before, after });
+    }
+    const entry = { seq: this.base.seq + 1, token: this.token, at: this.now, op, nodeId: nodeId ?? null, args, touched, ...extra };
+    if (this.by) entry.by = this.by;
+    const doc = { ...this.base, nodes: this.nodes, trash: this.trash.slice(-LIMITS.trash), ops: [...this.base.ops, entry].slice(-LIMITS.ops), seq: entry.seq };
+    return { doc, op: entry };
+  }
+}
+
+/** An order key for a node placed among `parentId`'s children: before / after a sibling, else last. */
+function placeKey(txn, parentId, { before = null, after = null } = {}, excludeId = null) {
+  const sibs = children(txn.view(), parentId).filter((n) => n.id !== excludeId);
+  if (before != null) {
+    const i = sibs.findIndex((n) => n.id === String(before));
+    if (i < 0) throw new TodoError('bad-sibling', `${before} is not a child of ${parentId ?? 'the root'}`);
+    return orderBetween(sibs[i - 1]?.order ?? null, sibs[i].order);
+  }
+  if (after != null) {
+    const i = sibs.findIndex((n) => n.id === String(after));
+    if (i < 0) throw new TodoError('bad-sibling', `${after} is not a child of ${parentId ?? 'the root'}`);
+    return orderBetween(sibs[i].order, sibs[i + 1]?.order ?? null);
+  }
+  return orderBetween(sibs.at(-1)?.order ?? null, null);
+}
+
+/** `parentId` (id) or `parent` (id or title path) → the parent id. */
+function targetParent(txn, input) {
+  if (input.parentId !== undefined) {
+    if (input.parentId == null) return null;
+    return txn.need(input.parentId).id;
+  }
+  return resolveParent(txn.view(), input.parent, { from: input.from });
+}
+
+function doneFields(n, done, now) {
+  if (done) return { done: true, status: 'done', doneAt: n.done ? n.doneAt ?? now : now };
+  return { done: false, status: n.status === 'done' || !n.status ? 'open' : n.status, doneAt: null };
+}
+
+// ---- create
+
+function createIn(txn, input) {
+  if (Object.keys(txn.nodes).length >= LIMITS.nodes) throw new TodoError('limit', `At most ${LIMITS.nodes} nodes`);
+  const parentId = targetParent(txn, input);
+  const kind = typeof input.kind === 'string' && KIND_RE.test(input.kind) ? input.kind : 'todo';
+  const order = placeKey(txn, parentId, input);
+  const n = normalizeNode({ ...input, id: input.id && !txn.get(input.id) && ID_RE.test(String(input.id)) ? String(input.id) : newId(txn.now), kind, parentId, order, createdAt: txn.now, updatedAt: txn.now, collapsed: input.collapsed === true, doneAt: undefined }, txn.now);
+  if (n.done) n.doneAt = txn.now;
+  return txn.set(n);
+}
+
+/**
+ * create(doc, { kind, title, parentId | parent (id or path), before?, after?, body?, due?, priority?, status?, done?, tags?, tone?, icon?, fields?, source? })
+ * → { doc, node, op }. The default kind is todo; an empty title becomes "Untitled <kind>".
+ */
+export function create(doc, input = {}, ctx = {}) {
+  const txn = new Txn(doc, ctx);
+  const n = createIn(txn, input);
+  const { doc: next, op } = txn.commit('create', n.id, { kind: n.kind, title: n.title, parentId: n.parentId });
+  return { doc: next, node: n, op };
+}
+
+// ---- rename / edit
+
+export function rename(doc, id, title, ctx = {}) {
+  const txn = new Txn(doc, ctx);
+  const t = text(title, LIMITS.title).trim();
+  if (!t) throw new TodoError('empty-title', 'A title is required');
+  const n = txn.patch(txn.need(id).id, { title: t });
+  const { doc: next, op } = txn.commit('rename', n.id, { title: t });
+  return { doc: next, node: n, op };
+}
+
+function editIn(txn, id, patch) {
+  const n = txn.need(id);
+  const p = {};
+  for (const k of EDITABLE) if (patch[k] !== undefined) p[k] = patch[k];
+  if ('title' in p && !text(p.title, LIMITS.title).trim()) throw new TodoError('empty-title', 'A title is required');
+  const merged = normalizeNode({ ...n, ...p, id: n.id, parentId: n.parentId, order: n.order, createdAt: n.createdAt, collapsed: n.collapsed }, txn.now);
+  // done / status: whichever the patch named wins; they always agree afterwards
+  let done = n.done;
+  if (typeof p.done === 'boolean') done = p.done;
+  else if (p.status !== undefined && STATUSES.includes(p.status)) done = p.status === 'done';
+  const statusIn = STATUSES.includes(p.status) ? p.status : n.status;
+  const df = doneFields({ ...n, status: statusIn }, done, txn.now);
+  if (!done && statusIn !== 'done') df.status = statusIn;
+  for (const k of ['tags', 'tone', 'icon', 'fields', 'source']) if (p[k] !== undefined && merged[k] === undefined) delete merged[k];
+  return txn.set({ ...merged, ...df, updatedAt: txn.now });
+}
+
+/** edit(doc, id, patch) → { doc, node, op }. Any of title, body, due, priority, status, done, tags, tone, icon, fields, kind, source. */
+export function edit(doc, id, patch = {}, ctx = {}) {
+  const txn = new Txn(doc, ctx);
+  const n = editIn(txn, id, patch);
+  const { doc: next, op } = txn.commit('edit', n.id, { keys: Object.keys(patch).filter((k) => EDITABLE.includes(k)) });
+  return { doc: next, node: n, op };
+}
+
+// ---- move / reorder
+
+function moveIn(txn, id, input) {
+  const n = txn.need(id);
+  const parentId = targetParent(txn, input);
+  if (parentId != null && isSelfOrAncestor(txn.view(), parentId, n.id)) {
+    throw new TodoError('cycle', parentId === n.id ? 'A node cannot be moved into itself' : 'A node cannot be moved into one of its own descendants', 409);
+  }
+  const order = placeKey(txn, parentId, input, n.id);
+  return txn.set({ ...n, parentId, order, updatedAt: txn.now });
+}
+
+/** move(doc, id, { parentId | parent, before?, after? }) → { doc, node, op }. The whole subtree moves. 409 `cycle` into itself or below. */
+export function move(doc, id, input = {}, ctx = {}) {
+  const txn = new Txn(doc, ctx);
+  const n = moveIn(txn, id, input);
+  const { doc: next, op } = txn.commit('move', n.id, { parentId: n.parentId, before: input.before ?? null, after: input.after ?? null });
+  return { doc: next, node: n, op };
+}
+
+function renumberIn(txn, parentId, sequence = null) {
+  const sibs = children(txn.view(), parentId);
+  let ordered = sibs;
+  if (sequence) {
+    const want = sequence.map(String).filter((x, i, a) => a.indexOf(x) === i);
+    const byId = new Map(sibs.map((n) => [n.id, n]));
+    for (const x of want) if (!byId.has(x)) throw new TodoError('bad-sibling', `${x} is not a child of ${parentId ?? 'the root'}`);
+    const front = want.map((x) => byId.get(x));
+    ordered = [...front, ...sibs.filter((n) => !want.includes(n.id))];
+  }
+  const keys = orderKeys(ordered.length);
+  ordered.forEach((n, i) => { if (n.order !== keys[i]) txn.set({ ...n, order: keys[i], updatedAt: txn.now }); });
+  return ordered.map((n) => n.id);
+}
+
+/** reorder(doc, parentId, ids) → { doc, ids, op }: the given ids take the front of the parent's order in this sequence. */
+export function reorder(doc, parentId, ids, ctx = {}) {
+  const txn = new Txn(doc, ctx);
+  const p = parentId == null ? null : txn.need(parentId).id;
+  if (!Array.isArray(ids) || !ids.length) throw new TodoError('bad-ids', 'ids is required');
+  const sequence = renumberIn(txn, p, ids);
+  const { doc: next, op } = txn.commit('reorder', p, { ids: ids.map(String) });
+  return { doc: next, ids: sequence, op };
+}
+
+/** Fresh short keys for a parent's children, order unchanged. */
+export function renumber(doc, parentId = null, ctx = {}) {
+  const txn = new Txn(doc, ctx);
+  const sequence = renumberIn(txn, parentId == null ? null : txn.need(parentId).id);
+  const { doc: next, op } = txn.commit('reorder', parentId ?? null, { renumber: true });
+  return { doc: next, ids: sequence, op };
+}
+
+// ---- duplicate
+
+function duplicateIn(txn, id, input = {}) {
+  const src = txn.need(id);
+  const view = txn.view();
+  const subtree = [src.id, ...descendants(view, src.id)];
+  if (Object.keys(txn.nodes).length + subtree.length > LIMITS.nodes) throw new TodoError('limit', `At most ${LIMITS.nodes} nodes`);
+  const parentId = input.parentId !== undefined || input.parent !== undefined ? targetParent(txn, input) : src.parentId;
+  const place = input.before != null || input.after != null ? input : parentId === src.parentId ? { after: src.id } : {};
+  const order = placeKey(txn, parentId, place);
+  const ids = new Map();
+  for (const oid of subtree) ids.set(oid, newId(txn.now));
+  const made = [];
+  for (const oid of subtree) {
+    const o = view.nodes[oid];
+    const copy = { ...o, id: ids.get(oid), parentId: oid === src.id ? parentId : ids.get(o.parentId), createdAt: txn.now, updatedAt: txn.now };
+    if (oid === src.id) { copy.order = order; copy.title = text(`${o.title} (copy)`, LIMITS.title); }
+    if (copy.done) copy.doneAt = txn.now;
+    if (copy.tags) copy.tags = [...copy.tags];
+    if (copy.fields) copy.fields = { ...copy.fields };
+    made.push(txn.set(copy));
+  }
+  return { root: made[0], ids: made.map((n) => n.id) };
+}
+
+/** duplicate(doc, id, { parentId | parent?, before?, after? }) → { doc, node, ids, op }: the subtree with new ids, placed after the original. */
+export function duplicate(doc, id, input = {}, ctx = {}) {
+  const txn = new Txn(doc, ctx);
+  const r = duplicateIn(txn, id, input);
+  const { doc: next, op } = txn.commit('duplicate', r.root.id, { from: String(id), count: r.ids.length });
+  return { doc: next, node: r.root, ids: r.ids, op };
+}
+
+// ---- complete
+
+function completeIn(txn, id, done, cascade) {
+  const n = txn.need(id);
+  const view = txn.view();
+  const changed = [];
+  const apply = (x, d) => { if (x.done !== d) changed.push(txn.set({ ...x, ...doneFields(x, d, txn.now), updatedAt: txn.now })); };
+  apply(n, !!done);
+  if (done && (cascade === 'down' || cascade === 'both')) {
+    for (const did of descendants(view, n.id)) {
+      const d = txn.get(did);
+      if (isCheckable(d) && !d.done) apply(d, true);
+    }
+  }
+  if (cascade === 'up' || cascade === 'both') {
+    let cur = txn.get(n.id);
+    let steps = 0;
+    while (cur.parentId != null && ++steps <= LIMITS.depth) {
+      const parent = txn.get(cur.parentId);
+      if (!parent) break;
+      if (isCheckable(parent)) {
+        const kids = children(txn.view(), parent.id).filter(isCheckable);
+        const allDone = kids.length > 0 && kids.every((k) => k.done);
+        if (allDone && !parent.done) apply(parent, true);
+        else if (!allDone && parent.done && kids.some((k) => !k.done)) apply(parent, false);
+      }
+      cur = txn.get(parent.id);
+    }
+  }
+  return { node: txn.get(n.id), changed: changed.map((x) => x.id) };
+}
+
+/** complete(doc, id, done = true, { cascade: none | down | up | both }) → { doc, node, changed, op }. See SPEC §6. */
+export function complete(doc, id, done = true, ctx = {}) {
+  const cascade = CASCADES.includes(ctx.cascade) ? ctx.cascade : DEFAULT_CASCADE;
+  const txn = new Txn(doc, ctx);
+  const r = completeIn(txn, id, done, cascade);
+  const { doc: next, op } = txn.commit('complete', r.node.id, { done: !!done, cascade });
+  return { doc: next, node: r.node, changed: r.changed, op };
+}
+
+// ---- delete (to the trash) / restore
+
+function deleteIn(txn, id) {
+  const n = txn.need(id);
+  const view = txn.view();
+  const ids = [n.id, ...descendants(view, n.id)];
+  const snapshot = ids.map((x) => view.nodes[x]);
+  for (const x of ids) txn.remove(x);
+  txn.trash.push({ token: txn.token, at: txn.now, rootId: n.id, parentId: n.parentId, nodes: snapshot });
+  return { id: n.id, title: n.title, count: ids.length };
+}
+
+/** deleteNode(doc, id) → { doc, token, count, title, op }: the subtree goes to the trash; `token` undoes it. */
+export function deleteNode(doc, id, ctx = {}) {
+  const txn = new Txn(doc, ctx);
+  const r = deleteIn(txn, id);
+  const { doc: next, op } = txn.commit('delete', r.id, { count: r.count }, { trashToken: txn.token });
+  return { doc: next, token: txn.token, count: r.count, title: r.title, op };
+}
+export { deleteNode as remove };
+
+function restoreIn(txn, token) {
+  const entries = txn.trash.filter((t) => t.token === token);
+  if (!entries.length) throw new TodoError('unknown-token', `Nothing in the trash for ${token}`, 404);
+  const restored = [];
+  for (const t of entries) {
+    for (const n of t.nodes) if (txn.get(n.id)) throw new TodoError('id-taken', `${n.id} exists again; restore refused`, 409);
+    const parentId = t.parentId != null && txn.get(t.parentId) ? t.parentId : null;
+    const root = t.nodes.find((n) => n.id === t.rootId) ?? t.nodes[0];
+    const sibs = children(txn.view(), parentId);
+    const order = sibs.some((s) => s.order === root.order) || parentId !== t.parentId ? orderBetween(sibs.at(-1)?.order ?? null, null) : root.order;
+    for (const n of t.nodes) txn.set(n.id === root.id ? { ...n, parentId, order, updatedAt: txn.now } : { ...n });
+    restored.push({ id: root.id, title: root.title, count: t.nodes.length, parentId, movedToRoot: parentId !== t.parentId });
+  }
+  txn.trash = txn.trash.filter((t) => t.token !== token);
+  return restored;
+}
+
+/** restore(doc, token) → { doc, restored: [{ id, title, count, parentId, movedToRoot }], op }. */
+export function restore(doc, token, ctx = {}) {
+  const txn = new Txn(doc, ctx);
+  const restored = restoreIn(txn, String(token));
+  const { doc: next, op } = txn.commit('restore', restored[0]?.id ?? null, { count: restored.reduce((a, r) => a + r.count, 0) }, { trashToken: String(token) });
+  return { doc: next, restored, op };
+}
+
+/** What sits in the trash, newest first (for the UI's Trash list and `todo_trash`). */
+export function trashList(doc) {
+  return doc.trash.slice().reverse().map((t) => ({ token: t.token, at: t.at, id: t.rootId, title: (t.nodes.find((n) => n.id === t.rootId) ?? t.nodes[0]).title, count: t.nodes.length, parentId: t.parentId }));
+}
+
+/** Empty the trash (forgetting the deleted subtrees for good). Journalled; cannot be undone. */
+export function emptyTrash(doc, ctx = {}) {
+  const txn = new Txn(doc, ctx);
+  const count = txn.trash.length;
+  txn.trash = [];
+  const { doc: next, op } = txn.commit('delete', null, { emptyTrash: true, count });
+  return { doc: next, count, op };
+}
+
+// ---- collapse
+
+export function collapse(doc, id, collapsed = true, ctx = {}) {
+  const txn = new Txn(doc, ctx);
+  const n = txn.need(id);
+  const next = n.collapsed === !!collapsed ? n : txn.set({ ...n, collapsed: !!collapsed, updatedAt: txn.now });
+  const { doc: out, op } = txn.commit('collapse', n.id, { collapsed: !!collapsed });
+  return { doc: out, node: next, op };
+}
+
+/** collapseAll(doc, collapsed, { under }) folds or unfolds every node (with children) below `under` (null = everything). */
+export function collapseAll(doc, collapsed = true, ctx = {}) {
+  const txn = new Txn(doc, ctx);
+  const view = txn.view();
+  const index = childrenIndex(view);
+  const ids = ctx.under == null ? Object.keys(view.nodes) : descendants(view, txn.need(ctx.under).id, index);
+  let changed = 0;
+  for (const id of ids) {
+    const n = txn.get(id);
+    if ((index.get(id) ?? []).length && n.collapsed !== !!collapsed) { txn.set({ ...n, collapsed: !!collapsed, updatedAt: txn.now }); changed++; }
+  }
+  const { doc: out, op } = txn.commit('collapse', ctx.under ?? null, { collapsed: !!collapsed, all: true, changed });
+  return { doc: out, changed, op };
+}
+
+// ---- bulk (one op, one undo)
+
+export const BULK_ACTIONS = ['delete', 'move', 'complete', 'duplicate', 'edit', 'collapse'];
+
+/** Only the ids that are not below another selected id. */
+export function rootsOf(doc, ids) {
+  const set = new Set(ids.map(String).filter((x) => doc.nodes[x]));
+  return [...set].filter((id) => !ancestors(doc, id).some((a) => set.has(a.id)));
+}
+
+/**
+ * bulk(doc, ids, action, args) → { doc, count, results, op }. `delete` (one trash token for the lot), `move {parentId|parent}`,
+ * `complete {done, cascade}`, `duplicate`, `edit {patch}`, `collapse {collapsed}`. Descendants of another selected id are skipped.
+ */
+export function bulk(doc, ids, action, args = {}, ctx = {}) {
+  if (!BULK_ACTIONS.includes(action)) throw new TodoError('bad-action', `Unknown bulk action ${action}`);
+  if (!Array.isArray(ids) || !ids.length) throw new TodoError('bad-ids', 'ids is required');
+  const txn = new Txn(doc, ctx);
+  const roots = rootsOf(txn.view(), ids);
+  if (!roots.length) throw new TodoError('not-found', 'No such nodes', 404);
+  const results = [];
+  for (const id of roots) {
+    if (action === 'delete') results.push(deleteIn(txn, id));
+    else if (action === 'move') results.push({ id, node: moveIn(txn, id, args).id });
+    else if (action === 'complete') results.push({ id, ...completeIn(txn, id, args.done !== false, CASCADES.includes(args.cascade) ? args.cascade : DEFAULT_CASCADE) });
+    else if (action === 'duplicate') results.push({ id, ...duplicateIn(txn, id, {}) });
+    else if (action === 'edit') results.push({ id, node: editIn(txn, id, args.patch ?? args).id });
+    else if (action === 'collapse') { const n = txn.need(id); if (n.collapsed !== (args.collapsed !== false)) txn.set({ ...n, collapsed: args.collapsed !== false, updatedAt: txn.now }); results.push({ id }); }
+  }
+  const extra = action === 'delete' ? { trashToken: txn.token } : {};
+  const { doc: next, op } = txn.commit(action, roots.length === 1 ? roots[0] : null, { bulk: true, action, ids: roots, ...(action === 'move' ? { parentId: args.parentId ?? args.parent ?? null } : {}) }, extra);
+  return { doc: next, count: roots.length, results, token: action === 'delete' ? txn.token : undefined, op };
+}
