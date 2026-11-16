@@ -17,7 +17,7 @@ import { usePoll } from './usePoll';
 const SEVERITIES = ['block', 'warn', 'info'] as const;
 const OWNERS = ['console', 'axf-molly'] as const;
 const sevTone = (s: string) => (s === 'block' ? 'danger' : s === 'warn' ? 'warning' : undefined);
-const KIND_LABEL: Record<string, string> = { ci: 'CI', tests: 'Tests', theme: 'Theme', controls: 'Controls', 'ui-review': 'UI Review', clash: 'Clash', custom: 'Policy' };
+const KIND_LABEL: Record<string, string> = { ci: 'CI', tests: 'Tests', theme: 'Theme', controls: 'Controls', 'ui-review': 'UI Review', clash: 'Clash', custom: 'Policy' }; // rule kinds, axf-not-plugin:ui-review
 
 /** A settings value as text for its field, and back. */
 const toText = (v: unknown) => (Array.isArray(v) ? (v.every((x) => typeof x === 'string') ? (v as string[]).join(', ') : JSON.stringify(v)) : String(v ?? ''));
