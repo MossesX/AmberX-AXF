@@ -8,7 +8,7 @@
     "tabs": 78,
     "settingsTabs": 71,
     "settings": 89,
-    "functions": 274,
+    "functions": 276,
     "buttons": 62,
     "plugins": 71
   },
@@ -1360,7 +1360,7 @@
       "view": "build-orchestrator",
       "plugin": "ai.amberx.axf.console.build-orchestrator",
       "file": "plugins/build-orchestrator/web/ui.tsx",
-      "line": 115,
+      "line": 117,
       "tabs": []
     },
     {
@@ -4408,6 +4408,40 @@
         "tab"
       ],
       "effect": "navigate",
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/index.tsx"
+    },
+    {
+      "address": "function:build-orchestrator.split-settings",
+      "kind": "function",
+      "id": "build-orchestrator.split-settings",
+      "label": "Build orchestrator: open the Split settings (split provider, parallel split)",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "build-orchestrator.split-settings",
+        "build",
+        "orchestrator",
+        "split",
+        "settings"
+      ],
+      "effect": "navigate",
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/index.tsx"
+    },
+    {
+      "address": "function:build-orchestrator.parallel",
+      "kind": "function",
+      "id": "build-orchestrator.parallel",
+      "label": "Build orchestrator: split a build into N parallel builds (id, 2-12 | off | default)",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "build-orchestrator.parallel",
+        "build",
+        "orchestrator",
+        "parallel"
+      ],
+      "effect": "write",
+      "params": true,
       "plugin": "ai.amberx.axf.console.build-orchestrator",
       "file": "plugins/build-orchestrator/web/index.tsx"
     },
