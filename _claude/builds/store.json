@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6603,
- "updatedAt": "2026-11-16T17:28:21.691Z",
+ "rev": 6604,
+ "updatedAt": "2026-11-16T17:28:37.378Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -241066,10 +241066,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/get-main-green-unblock-lander-land-axf",
-   "pr": "",
+   "pr": "#723",
    "priority": "P0",
    "createdAt": "2026-11-16T16:22:57.802Z",
-   "updatedAt": "2026-11-16T17:28:08.378Z",
+   "updatedAt": "2026-11-16T17:28:11.434Z",
    "builtAt": "",
    "notes": [
     {
@@ -241136,14 +241136,7 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "lastRun": {
-     "at": "2026-11-16T17:28:05.203Z",
-     "exit": 143,
-     "outcome": "requeued",
-     "stepsLeft": 14,
-     "account": "",
-     "session": "axf-get-main-green-unblock-lander-land-axf--paulie"
-    },
+    "lastRun": null,
     "split": {
      "at": "2026-11-16T16:25:07.589Z",
      "by": "orchestrator",
@@ -241152,7 +241145,7 @@
      "note": "Split by Claude into 19 steps (0 Fable)."
     },
     "splitRequested": "",
-    "note": "Session ended (exit 143) with 14 steps left: back in the Queue (run 1).",
+    "note": "",
     "route": "",
     "dispatchedAt": "",
     "planned": {

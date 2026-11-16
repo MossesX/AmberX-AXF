@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 16:11 UTC · `axf-data-postgres-real-tables-own` → running (all) · session
 - 2026-11-15 16:11 UTC · `axf-data-postgres-real-tables-own` note (all) · orchestrator
 - 2026-11-15 16:11 UTC · `axf-data-postgres-real-tables-own` s1 done (all) · orchestrator
 - 2026-11-15 16:12 UTC · `axf-data-postgres-real-tables-own` note (all) · orchestrator
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 17:28 UTC · `phone-connect-small-android-companion` note (all) · pipeline
 - 2026-11-16 17:28 UTC · `get-main-green-unblock-lander-land-axf` → queued, note (all) · pipeline
 - 2026-11-16 17:28 UTC · `get-main-green-unblock-lander-land-axf` → running, note (all) · pipeline
+- 2026-11-16 17:28 UTC · `get-main-green-unblock-lander-land-axf` PR #723 (all) · builds-live
 
 ## Token passes (log)
 
