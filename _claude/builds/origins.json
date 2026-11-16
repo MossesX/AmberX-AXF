@@ -1135,6 +1135,18 @@
    "from": "detail",
    "addenda": []
   },
+  "attach-widgets-to-any-toolbar-banner": {
+   "said": "Rebuild.",
+   "at": "2026-11-16T22:44:59.053Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "audio-extract": {
    "said": "strip the audio out of his phone screen recordings into an audio file; extraction from a video file only, no live mic, no fallbacks. Then: add a Record screen mode (MediaProjection + playback capture, foreground service, chip, countdown) whose recordings go straight through the extractor. Profile: Angel. Opus, one session.",
    "at": "2026-10-30",
