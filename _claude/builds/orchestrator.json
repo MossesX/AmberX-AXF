@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:27:48.304Z",
+ "updatedAt": "2026-11-16T19:27:56.192Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -158317,7 +158317,7 @@
    "pr": "#721",
    "priority": "P0",
    "createdAt": "2026-11-16T16:31:15.510Z",
-   "updatedAt": "2026-11-16T17:01:43.397Z",
+   "updatedAt": "2026-11-16T19:27:54.276Z",
    "builtAt": "2026-11-16T17:01:43.397Z",
    "notes": [
     {
@@ -158343,6 +158343,10 @@
     {
      "text": "Headless run axf-fix-console-deep-links-open-page-lands--rhonda: brief only · start 15.6K tokens ($0.05) · cost $4.31 · 113 turns · 6 tools, MCP none",
      "at": "2026-11-16T17:01:43.397Z"
+    },
+    {
+     "text": "Brett Nov 16: a browser refresh must reload exactly where he is (same screen, tab, sub-tab, open dialog, scroll), not drop him on the console home. The URL must always carry the current address (view:/tab:...) and the console restores it on load. Same root cause as the deep-link bug.",
+     "at": "2026-11-16T19:27:54.276Z"
     }
    ],
    "approvals": [],

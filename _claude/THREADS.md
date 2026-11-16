@@ -813,7 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 14:05 UTC · `console-look-becomes-default-axhub-skin` s16 done (all) · orchestrator
 - 2026-11-16 14:06 UTC · `ui-manager-floating-window-to-select-any` s12 done, → running (all) · orchestrator
 - 2026-11-16 14:06 UTC · `vps-sends-shipped-features-every-merge` s13 done (all) · orchestrator
 - 2026-11-16 14:06 UTC · `console-look-becomes-default-axhub-skin` s16 done (all) · foreign-write
@@ -1213,6 +1212,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 19:26 UTC · `console-app-part-3-native-bridge-mic` → archived (all) · mcp
 - 2026-11-16 19:27 UTC · `fix-red-ci-blocked-builds-they-land` s11 done, → running (all) · orchestrator
 - 2026-11-16 19:27 UTC · `settings-interface-gear-every-plugin` s6 done (all) · orchestrator
+- 2026-11-16 19:27 UTC · `fix-console-deep-links-open-page-lands` note (all) · mcp
 
 ## Token passes (log)
 
