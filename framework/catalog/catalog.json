@@ -2614,14 +2614,6 @@
               "suggests": []
             },
             {
-              "id": "cx.gate",
-              "title": "Gate & rules plugin: the rules a PR must pass, the auto-lander with one Merge queue on/off switch (off = one at a time), and the history of both; REST, MCP, CLI and voice",
-              "note": "apps/console-web/plugins/gate (gate-rules@1, framework/spec/GATE.md): Rules / Auto-lander / History tabs, gate-store.mjs + lander.mjs adapters (axf-molly replaces only those), gate.mjs one implementation; Kotlin twin deferred",
-              "tag": "",
-              "recommended": true,
-              "suggests": []
-            },
-            {
               "id": "cx.datastore",
               "title": "axf-data: one container holds all console data, so notes, builds and settings stay available and builds keep running when the console is down",
               "note": "Brett, Nov 15 2026: \"the console goes down, all the data is still available, all the notes are available, and the builds keep running.\"",
@@ -2676,7 +2668,13 @@
                   "id": "cx.datastore.registry",
                   "title": "The API / control registry is a generated table (control_targets), published from each plugin's targets; inventory.json is no longer committed"
                 }
-              ]
+              ],
+              "id": "cx.gate",
+              "title": "Gate & rules plugin: the rules a PR must pass, the auto-lander with one Merge queue on/off switch (off = one at a time), and the history of both; REST, MCP, CLI and voice",
+              "note": "apps/console-web/plugins/gate (gate-rules@1, framework/spec/GATE.md; build-rules@1, framework/spec/BUILD-RULES.md): Rules / Build rules / Auto-lander / History tabs, the VPS build rules runner and fixers (home card, help stub, Shipped features manifest, API parity, THREADS + tracker, CI checks, PR open + link), gate-store.mjs + lander.mjs adapters (axf-molly replaces only those), gate.mjs one implementation; Kotlin twin deferred",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
             }
           ]
         }

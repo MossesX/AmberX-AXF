@@ -15,13 +15,13 @@
       {
         "target": "view:gate",
         "title": "Gate & rules",
-        "text": "The rules a PR must pass before it lands, the auto-lander that lands it, and the history of every change to either. Same calls as `axf gate \u2026`, the gate_* and lander_* MCP tools and voice.",
+        "text": "The rules a PR must pass before it lands, the auto-lander that lands it, and the history of every change to either. Same calls as `axf gate …`, the gate_* and lander_* MCP tools and voice.",
         "kind": "screen"
       },
       {
         "target": "gate",
         "title": "Gate settings",
-        "text": "This plugin's settings under Settings \u2192 Plugins: how often the open tab refreshes, how much History keeps, and which tab it opens on."
+        "text": "This plugin's settings under Settings → Plugins: how often the open tab refreshes, how much History keeps, and which tab it opens on."
       },
       {
         "target": "rules",
@@ -152,6 +152,89 @@
         "target": "gate.view",
         "title": "Show the lists as",
         "text": "How the gate's lists are drawn: a grid with two lines a row, cards (best on a phone), or a compact one-line grid. Unset, it follows the skin."
+      },
+      {
+        "target": "build-rules",
+        "title": "Build rules",
+        "text": "Every rule a build has to follow, in one list: who does it (the VPS or the build session), when, its check and fixer, on or off, and how it went last time. VPS rules are done by the VPS and never reach a session's brief, so nothing is done twice. Same as `axf gate build-rules …`, the gate_build_rules_* MCP tools and voice (gate.build-rules.*).",
+        "kind": "tab"
+      },
+      {
+        "target": "view:gate/tab:build-rules",
+        "title": "Build rules tab",
+        "text": "Open it with console_show view:gate/tab:gate.tabs=build-rules or the voice action gate.build-rules.open. A rule's History opens with gate.build-rules.open:<rule>.",
+        "kind": "screen"
+      },
+      {
+        "target": "the-rule",
+        "title": "The rule",
+        "text": "The words a build session reads in its brief, or what the VPS enforces. Keep it to what has to happen."
+      },
+      {
+        "target": "who-does-it",
+        "title": "Who does it",
+        "text": "The VPS: it is run by the dispatcher, the end hook or the gate, with its check and fixer, and never reaches a brief. The build session: it goes into the brief block you pick."
+      },
+      {
+        "target": "when",
+        "title": "When",
+        "text": "When the VPS acts on it: before launch, in the brief, after the build, or at the gate before the PR lands."
+      },
+      {
+        "target": "fixer",
+        "title": "Fixer",
+        "text": "What the VPS runs when the check fails (for example home-card writes the missing Home card); then it checks again. None = the failure blocks and shows in History."
+      },
+      {
+        "target": "brief-block",
+        "title": "Brief block",
+        "text": "Where a session rule goes in the brief: the Look, API or Checkpoints line, or the Rules for this job list."
+      },
+      {
+        "target": "goes-to",
+        "title": "Goes to",
+        "text": "Build sessions only, sessions with Brett only, or both."
+      },
+      {
+        "target": "only-when-the-build-mentions",
+        "title": "Only when the build mentions",
+        "text": "Comma-separated words. The rule goes into a build's brief only when its title or text names one of them; empty = every build."
+      },
+      {
+        "target": "who",
+        "title": "Who",
+        "text": "Show the rules the VPS does, the ones the session does, or all of them."
+      },
+      {
+        "target": "phase",
+        "title": "Phase",
+        "text": "Which rules to run for the build: before launch, after the build, or at the gate."
+      },
+      {
+        "target": "dry-run",
+        "title": "Dry run",
+        "text": "Checks the build's rules and says what the fixers would write, without changing anything."
+      },
+      {
+        "target": "run-now",
+        "title": "Run now",
+        "text": "Runs the build's rules now: checks, fixes what fails in the build's worktree (committed on its branch), checks again, and writes it all to History."
+      },
+      {
+        "target": "add-a-rule",
+        "title": "Add a rule",
+        "text": "Opens the rule dialog for a new build rule."
+      },
+      {
+        "target": "last-result",
+        "title": "Last result",
+        "text": "How the rule went the last time the VPS ran it: pass, fixed, fail or skipped (its checker runs elsewhere)."
+      },
+      {
+        "target": "cli:gate/build-rules",
+        "title": "axf gate build-rules",
+        "text": "The CLI: list, get, add, edit, on, off, delete (two-step), history, runs, run <build> --phase before|after|gate [--dry-run], brief <build>. Also node apps/console-web/plugins/gate/build-rules.mjs.",
+        "kind": "control"
       }
     ],
     "intros": [
