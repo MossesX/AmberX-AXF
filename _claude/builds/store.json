@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7082,
- "updatedAt": "2026-11-16T23:52:05.538Z",
+ "rev": 7083,
+ "updatedAt": "2026-11-16T23:52:31.641Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -208607,7 +208607,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:01:01.567Z",
-   "updatedAt": "2026-11-16T23:51:59.685Z",
+   "updatedAt": "2026-11-16T23:52:27.547Z",
    "builtAt": "",
    "notes": [
     {
@@ -208629,6 +208629,10 @@
     {
      "text": "Dispatch gate: land-project-create-mcp-resolve-clash still has axf-land-project-create-mcp-resolve-clash--gina alive: not launched again, tracking that session.",
      "at": "2026-11-16T23:38:08.349Z"
+    },
+    {
+     "text": "Headless run axf-land-project-create-mcp-resolve-clash--gina: brief only · start 14.2K tokens ($0.08) · cost $2.63 · 33 turns · 6 tools, MCP none",
+     "at": "2026-11-16T23:52:27.547Z"
     },
     {
      "text": "s1 done (Fable): PR #579's head 81fc47239 (branch deleted, PR closed unmerged) is merged into claude/land-project-create-mcp-resolve-clash on top of main, commit 3d1979e38, pushed. status.json: both sides. PORTING.md: main's rows plus the branch's Projects row. Main's framework/cli/project-seed.mjs (test-sandbox CLI) kept; the branch's seed writer is now framework/cli/project-seed-write.mjs (projects.mjs imports it). tracker.json and plan.json: main's snapshots kept (hub data already has cx.buildengine.projectcreate). Checks green: check-project-create, check-projects, test_mcp_projects, test_projects, check-theme, check-controls, tracker --check, console tsc. Note: hub status.json and the repo copy have drifted both ways (9 hub-only entries, 2 repo-only, 3 differ), pre-existing, not touched.",
