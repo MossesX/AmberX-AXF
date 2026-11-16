@@ -877,7 +877,7 @@ function TabBody({ id, all = false }: { id: string; all?: boolean }) {
   const allPanels = rt.settings.panelsIn(id).filter((p) => settingsShown(ui, p.id));
   const panels = allPanels.filter((p) => !at || shownAtLevel(ui, p.id, at));
   const restPanels = at ? allPanels.filter((p) => !panels.includes(p)) : [];
-  const panelNode = (p: SettingsPanel, icon: string) => <FlatSection anchor={`settings-panel:${p.id}`} title={p.title} icon={p.icon ?? tab?.icon ?? icon} collapsible={COLLAPSIBLE_PANELS.has(p.id) ? true : undefined} defaultOpen={COLLAPSIBLE_PANELS.has(p.id) ? false : undefined}><div className="axf-settings__panel">{p.render() as ReactNode}</div></FlatSection>;
+  const panelNode = (p: SettingsPanel, icon: string) => <FlatSection anchor={`settings-panel:${p.id}`} title={p.title} icon={p.icon ?? tab?.icon ?? icon} collapsible={COLLAPSIBLE_PANELS.has(p.id) ? true : undefined} defaultOpen={COLLAPSIBLE_PANELS.has(p.id) ? false : undefined}><div className="axf-settings__panel"><SectionsScope prefix={`settings-panel:${p.id}`}>{p.render() as ReactNode}</SectionsScope></div></FlatSection>;
   const ordered = (ps: SettingsPanel[], gs: SettingsGroup[]) => [...ps.map((p) => ({ order: p.order ?? 100, tie: 0, key: `p:${p.id}`, node: panelNode(p, 'settings') })),
     ...gs.map((g) => ({ order: g.order ?? 100, tie: 1, key: `g:${g.id}`, node: <GroupCard group={g} /> }))]
     .sort((a, b) => a.order - b.order || a.tie - b.tie)

@@ -29,14 +29,18 @@ export function setSections(rt: AxfRuntime, ids: readonly string[] | '*', open: 
   rt.settings.set(SETTINGS_SECTIONS_KEY, JSON.stringify(setSectionsOpen(sectionState(rt), ids, open)));
 }
 
-interface ScopeValue { ui?: SettingsUi; force?: boolean }
+interface ScopeValue { ui?: SettingsUi; force?: boolean; prefix?: string }
 const SectionsCtx = createContext<ScopeValue>({});
 /** Gives the sections below the interface they belong to (`ui`) and, while searching, opens them all (`force`). */
-export function SectionsScope({ ui, force, children }: ScopeValue & { children: ReactNode }) {
+/** `prefix`: the enclosing panel's id, so a framework <Section> inside it gets a stable saved id (`<prefix>/<title slug>`). */
+export function SectionsScope({ ui, force, prefix, children }: ScopeValue & { children: ReactNode }) {
   const outer = useContext(SectionsCtx);
-  const value = useMemo(() => ({ ui: ui ?? outer.ui, force: force ?? outer.force }), [ui, force, outer.ui, outer.force]);
+  const value = useMemo(() => ({ ui: ui ?? outer.ui, force: force ?? outer.force, prefix: prefix ?? outer.prefix }), [ui, force, prefix, outer.ui, outer.force, outer.prefix]);
   return <SectionsCtx.Provider value={value}>{children}</SectionsCtx.Provider>;
 }
+
+/** The settings interface around this component (empty outside one). */
+export function useSectionsScope(): ScopeValue { return useContext(SectionsCtx); }
 
 export interface SectionOwn { collapsible?: boolean; collapsed?: boolean; index?: number }
 /** [open, collapsible, toggle] for one section, live with the saved state. */

@@ -6,7 +6,7 @@ export { BuildOrigin, originSubtitle, originSearch, originWhen } from './compone
 export { PriorityTag, setPriorityHost, setBuildPriority, PRIORITY_DIALOG, priorityDialogs, type PriorityHost } from './components/PriorityTag';
 export { HubSkinLockArea, HubSkinLockNote, askHubSkinOverride, useHubSkinLocked } from './components/HubSkinLock';
 export { Switch, Checkbox, ColorField, Field, TextField, SelectField, ChoiceGrid, Note, Section, LibraryParamField, type SwitchProps, type CheckboxProps, type ColorFieldProps, type FieldProps, type TextFieldProps, type SelectFieldProps, type SelectOption, type ChoiceGridProps, type Choice, type NoteProps, type NoteTone, type SectionProps, type LibraryParamFieldProps } from './components/Forms';
-export { SettingsSection, SectionsBar, SectionsScope, useSettingsSection, sectionState, setSections, type SettingsSectionProps, type SectionOwn } from './components/SettingsSections';
+export { SettingsSection, SectionsBar, SectionsScope, useSectionsScope, useSettingsSection, sectionState, setSections, type SettingsSectionProps, type SectionOwn } from './components/SettingsSections';
 export { Markdown, safeHref, type MarkdownProps } from './components/Markdown';
 export { Icon, ICON_NAMES } from './components/Icon';
 export { MenuList, MenuSub, MenuScroll } from './components/MenuList';
