@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6890,
- "updatedAt": "2026-11-16T20:41:46.132Z",
+ "rev": 6891,
+ "updatedAt": "2026-11-16T20:41:58.507Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -248987,7 +248987,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T20:26:44.199Z",
-   "updatedAt": "2026-11-16T20:41:44.068Z",
+   "updatedAt": "2026-11-16T20:41:52.058Z",
    "builtAt": "2026-11-16T20:41:44.068Z",
    "notes": [
     {
@@ -249005,6 +249005,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-plan-studio-collapse-all-expand-all--gina, shared account login)",
      "at": "2026-11-16T20:29:43.883Z"
+    },
+    {
+     "text": "Opus phase done (s1, s2). Plan Studio 2.0 (plugin plan-studio-2) does not exist yet, so its copy of the layout switcher is not built: when it lands, reuse web/layout-core.mjs + layout.tsx unchanged. Layouts are an open registry in layout-core.mjs; IDE arrangements are dock-layout@1 assets. A dedicated page-layout asset type would need a Fable contract step (asset-types.json) — not done here. Pre-existing CI finding not from this build: check-console-control flags plugins/claude-settings/web/index.tsx:234 (TabGroup id is a constant the checker cannot read).",
+     "at": "2026-11-16T20:41:52.058Z"
     }
    ],
    "approvals": [],
@@ -249103,7 +249107,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

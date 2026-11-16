@@ -813,7 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 16:53 UTC · `orchestrator-on-hold-status-and-tab` → queued, note (all) · console
 - 2026-11-16 16:54 UTC · `orchestrator-on-hold-status-and-tab` → queued, note (all) · builds-live
 - 2026-11-16 16:55 UTC · `orchestrator-on-hold-status-and-tab` → pending (all) · mcp
 - 2026-11-16 16:55 UTC · `orchestrator-on-hold-status-and-tab` note (all) · orchestrator
@@ -1213,6 +1212,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 20:41 UTC · `to-do-manager-fully-voice-mcp-controlled` note (all) · pipeline
 - 2026-11-16 20:41 UTC · `fable-rebuild-plan-studio-cleared-out` → running, note (all) · pipeline
 - 2026-11-16 20:41 UTC · `plan-studio-collapse-all-expand-all` s2 done, → complete (all) · orchestrator
+- 2026-11-16 20:41 UTC · `plan-studio-collapse-all-expand-all` note (all) · orchestrator
 
 ## Token passes (log)
 
