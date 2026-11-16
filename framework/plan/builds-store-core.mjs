@@ -48,6 +48,7 @@ import { mergeOrigin, normOrigin } from '../core/build-origin.mjs';
 import { effectivePriority, normPriority } from '../core/build-priority.mjs';
 import { normRef as normShippedRef } from '../core/shipped-manifest.mjs';
 import { normPipeline } from '../core/build-pipeline.mjs';
+import { isBuildId, namesOf, shortBuildId, uniqueBuildId } from '../core/build-id.mjs';
 
 export const SCHEMA = 'builds@1';
 export const MODELS = ['Fable', 'Opus'];
@@ -81,6 +82,8 @@ const stepModel = (m) => (m === 'Fable' ? 'Fable' : 'Opus');
 const clone = (o) => JSON.parse(JSON.stringify(o));
 const nowIso = () => new Date().toISOString();
 export const slug = (t) => str(t, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'build';
+/** A new build's id from a title (build-id@1: at most 40 characters). `slug` stays for profile names and old lookups. */
+export const newBuildId = (t) => shortBuildId(str(t, 300));
 const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'priority', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps'];
 const ORCH_STEP_KEYS = ['id', 'text', 'model', 'why', 'phase', 'group', 'estimate', 'files', 'checks', 'session', 'agent', 'skip', 'done', 'doneAt', 'note'];
 
@@ -127,7 +130,7 @@ export function normStep(s, i = 0, ctx = {}) {
 export function normBuild(b, ctx = {}) {
   const o = b && typeof b === 'object' ? b : {};
   const at = ctx.now || nowIso();
-  const id = str(o.id, 80) || slug(o.title);
+  const id = str(o.id, 80) || newBuildId(o.title);
   const steps = (Array.isArray(o.steps) ? o.steps : []).map((s, i) => normStep(s, i, { ...ctx, seed: ctx.seed ? `${ctx.seed}/${id}` : '' }));
   const seen = new Set();
   steps.forEach((s, i) => { if (seen.has(s.id)) s.id = `s${i + 1}-${i}`; seen.add(s.id); });
@@ -151,6 +154,7 @@ export function normBuild(b, ctx = {}) {
     hidden: o.hidden === true,
     source: str(o.source, 40) || 'console',
     pendingId: str(o.pendingId, 80),
+    ...(isBuildId(o.alias) && o.alias !== id ? { alias: o.alias } : {}), // build-id@1: the short name of a build whose id is longer than 40 characters
     branch: str(o.branch, 200),
     pr: str(o.pr, 200),
     ...(str(o.mergedAt) ? { mergedAt: str(o.mergedAt, 40) } : {}), // when its PR merged (built → complete)
@@ -333,7 +337,7 @@ export function buildsOf(store, profile, { withDeleted = false } = {}) {
     .sort((a, b) => (a.order[profile] ?? 0) - (b.order[profile] ?? 0) || (a.createdAt < b.createdAt ? -1 : 1));
 }
 const nextOrder = (store, profile) => buildsOf(store, profile, { withDeleted: true }).reduce((m, b) => Math.max(m, b.order[profile] ?? 0), -1) + 1;
-export const findBuild = (store, id) => store.builds.find((b) => b.id === id) ?? store.builds.find((b) => b.pendingId && b.pendingId === id) ?? null;
+export const findBuild = (store, id) => store.builds.find((b) => b.id === id) ?? store.builds.find((b) => b.alias && b.alias === id) ?? store.builds.find((b) => b.pendingId && b.pendingId === id) ?? null;
 
 /** A record's content without bookkeeping, to tell whether a write really changed it. */
 const content = (b) => JSON.stringify({ ...b, rev: 0, updatedAt: '', steps: b.steps.map((s) => ({ ...s, rev: 0, updatedAt: '' })), defaultSteps: b.defaultSteps.map((s) => ({ ...s, rev: 0, updatedAt: '' })) });
@@ -969,7 +973,7 @@ function applyOps(s, profile, ops, { now = nowIso(), by = 'console', dry = false
         const picked = op.from.map((f) => { const b = get(f.build); const st = b.steps.find((x) => x.uid === f.uid); if (!st) throw new Error(`no step ${f.uid} in ${f.build}`); return { b, st }; });
         const made = [];
         for (const t of op.into) {
-          let id = slug(t.id || t.title); let n = 2; while (s.builds.some((x) => x.id === id)) id = `${slug(t.id || t.title)}-${n++}`;
+          const id = uniqueBuildId(t.id || t.title, new Set(s.builds.flatMap(namesOf)));
           const steps = t.uids.map((u) => picked.find((p) => p.st.uid === u)).map((p, i) => ({ ...p.st, id: `s${i + 1}`, origin: { build: p.b.id, step: p.st.uid, how: 'harvested' } }));
           const nb = normBuild({ id, title: str(t.title, 300).trim(), category: picked[0].b.category, status: 'pending', source: 'harvest', profiles: [profile], order: { [profile]: nextOrder(s, profile) }, steps, createdAt: now, updatedAt: now, notes: [{ text: `Harvested from ${[...new Set(picked.map((p) => p.b.id))].join(', ')} in the Steps view.`, at: now }] }, { now });
           nb.steps = steps.map((x, i) => normStep(x, i, { now }));

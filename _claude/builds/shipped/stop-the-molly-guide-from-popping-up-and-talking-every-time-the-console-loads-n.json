@@ -1,0 +1,194 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-13T17:22:06Z",
+ "build": {
+  "id": "stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n",
+  "title": "Stop the Molly guide from popping up and talking every time the console loads: no auto-open, it only opens when Brett asks. Carry out the Nov 3 decision: Molly is no longer an agent, so swap the Molly guide, Ask Molly and walkthrough texts over to Gizmo. Android twin too.",
+  "profile": "all",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Stop the Molly guide from popping up and talking every time the console loads: no auto-open, it only opens when Brett asks. Carry out the Nov 3 decision: Molly is no longer an agent, so swap the Molly guide, Ask Molly and walkthrough texts over to Gizmo. Android twin too.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Build: stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Stop the Molly guide from popping up and talking every time the console loads: no auto-open, it only opens when Brett asks. Carry out the Nov 3 decision: Molly is no longer an agent, so swap the Molly guide, Ask Molly and walkthrough texts over to Gizmo. Android twin too.\" (stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n) — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (4 left, ~1.8 h):\n[ ] s1 (~30 min) Stop the Molly guide from popping up and talking every time the console loads: no auto-open, it only opens when Brett asks.\n[ ] s2 (~30 min) Carry out the Nov 3 decision: Molly is no longer an agent, so swap the Molly guide, Ask Molly and walkthrough texts over to Gizmo.\n[ ] s3 (~30 min) Android twin too.\n[ ] s4 (~20 min) Tests green, report _claude/builds/reports/stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n \"…\"); the build goes back to Pending for Brett.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-stop-the-molly-guide-from-popping-up-and-talking--rhonda",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-13T10:51:15.503Z",
+   "endedAt": "2026-11-13T11:03:49.096Z",
+   "exit": 0,
+   "costUsd": 2.2345
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Stop the Molly guide from popping up and talking every time the console loads: no auto-open, it only opens when Brett asks.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-13T10:51:15.503Z",
+   "doneAt": "2026-11-13T10:53:46.880Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Carry out the Nov 3 decision: Molly is no longer an agent, so swap the Molly guide, Ask Molly and walkthrough texts over to Gizmo.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-13T10:53:46.880Z",
+   "doneAt": "2026-11-13T10:55:45.024Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Android twin too.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-13T10:55:45.024Z",
+   "doneAt": "2026-11-13T10:56:15.598Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Tests green, report _claude/builds/reports/stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n.md, THREADS row, commit, push, PR",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-13T10:56:15.598Z",
+   "doneAt": "2026-11-13T11:03:34.563Z",
+   "actualMin": 7,
+   "done": true
+  }
+ ],
+ "branch": "claude/stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 564,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/564"
+ },
+ "landedCommit": "5402a7ad6b679a042757ff03e1528ce992d7a3cd",
+ "commits": [
+  "93e99382b88898fb4c4a015b5cbd694b07e59ba2",
+  "c465dd7e9e9e41c79c03edce2a2848290f60ae10",
+  "5cb7bb18d840cfd06b8f696d6d8844017ee88b2a",
+  "bc0db32b96d7211cdd4c95096d26c1af809bda82"
+ ],
+ "mergedAt": "2026-11-13T17:20:15Z",
+ "landedAt": "2026-11-13T17:20:10Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n.md",
+  "apps/amberx-droid/server/main.py",
+  "apps/amberx-droid/walkthrough/README.md",
+  "apps/amberx-droid/walkthrough/script.mjs",
+  "apps/amberx-droid/walkthrough/seed.mts",
+  "apps/amberx-droid/walkthrough/stack.mjs",
+  "apps/console-web/plugins/glossary-index/terms.json",
+  "apps/console-web/plugins/molly-guide/help.json",
+  "apps/console-web/plugins/molly-guide/hooks.mjs",
+  "apps/console-web/plugins/molly-guide/plugin.json",
+  "apps/console-web/plugins/molly-guide/server/__init__.py",
+  "apps/console-web/plugins/molly-guide/test.mts",
+  "apps/console-web/plugins/molly-guide/test.py",
+  "apps/console-web/plugins/molly-guide/web/index.tsx",
+  "apps/console-web/plugins/molly-guide/web/menu.ts",
+  "apps/console-web/plugins/molly-guide/web/walkthrough.ts",
+  "framework/spec/PORTING.md"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "molly-guide",
+   "files": [
+    "apps/console-web/plugins/molly-guide/help.json",
+    "apps/console-web/plugins/molly-guide/hooks.mjs",
+    "apps/console-web/plugins/molly-guide/plugin.json",
+    "apps/console-web/plugins/molly-guide/server/__init__.py",
+    "apps/console-web/plugins/molly-guide/test.mts",
+    "apps/console-web/plugins/molly-guide/test.py",
+    "apps/console-web/plugins/molly-guide/web/index.tsx",
+    "apps/console-web/plugins/molly-guide/web/menu.ts",
+    "apps/console-web/plugins/molly-guide/web/walkthrough.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/server/main.py",
+    "apps/amberx-droid/walkthrough/README.md",
+    "apps/amberx-droid/walkthrough/script.mjs",
+    "apps/amberx-droid/walkthrough/seed.mts",
+    "apps/amberx-droid/walkthrough/stack.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "glossary-index",
+   "files": [
+    "apps/console-web/plugins/glossary-index/terms.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 2.2345,
+  "estimated": false,
+  "tokens": {
+   "input": 120,
+   "output": 711,
+   "cacheRead": 4046624,
+   "cacheWrite": 94156
+  }
+ },
+ "report": "",
+ "open": []
+}

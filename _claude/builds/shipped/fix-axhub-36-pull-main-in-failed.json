@@ -1,0 +1,352 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-fix-axhub-36-pull-main-in-failed",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-15T07:11:04Z",
+ "build": {
+  "id": "fix-axhub-36-pull-main-in-failed",
+  "title": "Fix axHub #36: pull main in failed",
+  "profile": "all",
+  "category": "",
+  "priority": "P1",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "## Setup (run first, then work only in that folder)\n```\nmkdir -p '/root/axf-fixes/repos'\n[ -d '/root/axf-fixes/repos/MossesX-axHub' ] || git clone -q 'https://github.com/MossesX/axHub.git' '/root/axf-fixes/repos/MossesX-axHub'\ngit -C '/root/axf-fixes/repos/MossesX-axHub' fetch -q origin && git -C '/root/axf-fixes/repos/MossesX-axHub' worktree prune\nif [ -d '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold' ]; then git -C '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold' checkout -q -B 'claude/claude-sync-hold' 'origin/claude/claude-sync-hold'; else git -C '/root/axf-fixes/repos/MossesX-axHub' worktree add -q -B 'claude/claude-sync-hold' '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold' 'origin/claude/claude-sync-hold'; fi\ncd '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold'\n```\nDo no work in the orchestrator's own build folder: it only hosts this session. Tick the build's steps there when done.\n\n# Fix pull request #36 (claude-sync: leave a checkout with .claude-sync-hold alone) in MossesX/axHub so it can reach main\n\nThe Dev Console's push banner tried to pull main in and it failed: the banner's Pull all stopped at a failed pull and handed this repo's pulls to this session.\n\n- Repository: MossesX/axHub (the setup above makes a worktree of it, on branch `claude/claude-sync-hold`)\n- Base branch: `main`\n- Pull request: #36 https://github.com/MossesX/axHub/pull/36\n\nWhat to do:\n1. `git fetch origin`, then `git merge origin/main` into `claude/claude-sync-hold`.\n2. Resolve every conflict keeping both sides' intent; when unsure which side wins, keep both and say so in the commit.\n3. Run the repo's own fast checks for what you touched (its CLAUDE.md lists them).\n4. Commit, then `git push origin HEAD:claude/claude-sync-hold`. CI runs again on the PR by itself.\n\nThen finish the banner's Pull all: pull `main` into each of these branches too, one at a time:\n- `claude/amberx-open-url`\n- `go-pass`\nFor each: `git checkout -B <branch> origin/<branch>`, `git merge origin/main`, resolve, run the checks, `git push origin HEAD:<branch>`. If one can't be fixed, skip it, keep going, and list it at the end.\n\nRules:\n- Push only to `claude/claude-sync-hold`. Never push to `main` or any other branch, never force-push, never merge the PR.\n- Never print, copy or commit secrets (tokens, keys, .env files, .axf-console/).\n- If a conflict needs a decision only Brett can make, stop and say exactly what and why in your final message.\n- Record steps and the result on your change-log entry (the hooks do most of it).\n- Pushes may also go to those branches (each only to itself); the base-branch and force rules hold for all of them.\n- You can edit files and run git only; list any other command Brett should run at the end.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Build: fix-axhub-36-pull-main-in-failed\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Fix axHub #36: pull main in failed\" (fix-axhub-36-pull-main-in-failed) — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/fix-axhub-36-pull-main-in-failed\nSteps in this phase (6 left, ~1.9 h):\n[x] s1 (~30 min) ## Setup (run first, then work only in that folder)\n[x] s2 (~30 min) mkdir -p '/root/axf-fixes/repos'\n[x] s3 (~30 min) [ -d '/root/axf-fixes/repos/MossesX-axHub' ] || git clone -q 'https://github.com/MossesX/axHub.git' '/root/axf-fixes/repos/MossesX-axHub'\n[x] s4 (~30 min) git -C '/root/axf-fixes/repos/MossesX-axHub' fetch -q origin && git -C '/root/axf-fixes/repos/MossesX-axHub' worktree prune\n[x] s5 (~30 min) if [ -d '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold' ]; then git -C '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold' checkout -q -B 'claude/claude-sync-hold' 'origin/claude/claude-sync-hold'; else git -C '/root/axf-fixes/repos/MossesX-axHub' worktree add -q -B 'claude/claude-sync-hold' '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold' 'origin/claude/claude-sync-hold'; fi\n[x] s6 (~30 min) Do no work in the orchestrator's own build folder: it only hosts this session. Tick the build's steps there when done.\n[x] s7 (~30 min) # Fix pull request #36 (claude-sync: leave a checkout with .claude-sync-hold alone) in MossesX/axHub so it can reach main\n[x] s8 (~30 min) The Dev Console's push banner tried to pull main in and it failed: the banner's Pull all stopped at a failed pull and handed this repo's pulls to this session.\n[x] s9 (~30 min) Repository: MossesX/axHub (the setup above makes a worktree of it, on branch `claude/claude-sync-hold`)\n[x] s10 (~30 min) Base branch: `main`\n[x] s11 (~30 min) `git fetch origin`, then `git merge origin/main` into `claude/claude-sync-hold`.\n[x] s12 (~30 min) Resolve every conflict keeping both sides' intent; when unsure which side wins, keep both and say so in the commit.\n[x] s13 (~30 min) Run the repo's own fast checks for what you touched (its CLAUDE.md lists them).\n[x] s14 (~30 min) Commit, then `git push origin HEAD:claude/claude-sync-hold`. CI runs again on the PR by itself.\n[x] s15 (~30 min) For each: `git checkout -B <branch> origin/<branch>`, `git merge origin/main`, resolve, run the checks, `git push origin HEAD:<branch>`. If one can't be fixed, skip it, keep going, and list it at the end.\n[x] s16 (~20 min) Tests green, report _claude/builds/reports/fix-axhub-36-pull-main-in-failed.md, THREADS row, commit, push, PR\n[ ] s17 (~10 min) Run the build's Setup block: clone or refresh MossesX/axHub under /root/axf-fixes/repos, prune worktrees, then create or reset the worktree /root/axf-fixes/MossesX-axHub--claude-claude-sync-hold on claude/claude-sync-hold from origin. Read its CLAUDE.md to find the fast checks. Run git fetch origin, then git merge origin/main. List every conflicted file with git diff --name-only --diff-filter=U. Do no work in the orchestrator's build folder.\n[ ] s18 (~25 min) Resolve every merge conflict in the claude/claude-sync-hold worktree so both sides' intent survives. Keep PR #36's rule that claude-sync leaves alone any checkout that has .claude-sync-hold, and keep main's newer sync changes. Where it is unclear which side wins, keep both and note it for the commit message. If a conflict needs a decision only Brett can make, stop and record exactly what and why. Never touch .env files, .axf-console/ or secrets.\n[ ] s19 (~15 min) In the claude/claude-sync-hold worktree, run the fast checks that CLAUDE.md lists for the touched areas and fix any failures the merge caused. Commit the merge with a message that names each keep-both choice. Push with git push origin HEAD:claude/claude-sync-hold, never force and never to main. CI on PR #36 re-runs by itself.\n[ ] s20 (~25 min) Finish the push banner's Pull all for claude/amberx-open-url, in the same worktree folder. Run git checkout -B claude/amberx-open-url origin/claude/amberx-open-url, then git merge origin/main. Resolve conflicts keeping both sides' intent, run the CLAUDE.md fast checks, commit, and git push origin HEAD:claude/amberx-open-url (no force). If it can't be fixed, abort the merge, skip the branch and note why.\n[ ] s21 (~25 min) Do the same for go-pass. Run git checkout -B go-pass origin/go-pass, then git merge origin/main. Resolve conflicts keeping both sides' intent, run the CLAUDE.md fast checks, commit, and git push origin HEAD:go-pass (no force). If it can't be fixed, abort the merge, skip the branch and note why. Afterwards check out claude/claude-sync-hold again.\n[ ] s22 (~15 min) Tests, report, THREADS row and PR. Confirm that each pushed branch's checks passed and that PR #36 CI was re-triggered. Write _claude/builds/reports/fix-axhub-36-pull-main-in-failed.md listing each branch (merged and pushed, or skipped and why), every keep-both decision, anything only Brett can decide, and any non-git command Brett should run. This build adds no UI, so it has no API surface. Add the THREADS row and post a PR #36 note that summarises the merge and the other two branches. Tick the build's steps in the orchestrator folder and record the change-log result.\nRead first: /root/axf-fixes/repos/MossesX-axHub, /root/axf-fixes/MossesX-axHub--claude-claude-sync-hold, /root/axf-fixes/MossesX-axHub--claude-claude-sync-hold/CLAUDE.md, /root/axf-fixes/MossesX-axHub--claude-claude-sync-hold (conflicted files from step 1, e.g. the claude-sync sources and their tests), /root/axf-fixes/MossesX-axHub--claude-claude-sync-hold (branch claude/amberx-open-url: conflicted files), /root/axf-fixes/MossesX-axHub--claude-claude-sync-hold (branch go-pass: conflicted files), _claude/builds/reports/fix-axhub-36-pull-main-in-failed.md, _claude/THREADS.md, https://github.com/MossesX/axHub/pull/36\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step fix-axhub-36-pull-main-in-failed <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link fix-axhub-36-pull-main-in-failed --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step fix-axhub-36-pull-main-in-failed <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note fix-axhub-36-pull-main-in-failed \"…\"); the build goes back to Pending for Brett.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "mossesx-max-",
+  "account-5"
+ ],
+ "runs": [
+  {
+   "session": "axf-fix-axhub-36-pull-main-in-failed--lenny",
+   "account": "account-5",
+   "model": "Opus",
+   "startedAt": "2026-11-12T01:51:25.701Z",
+   "endedAt": "2026-11-12T01:53:49.088Z",
+   "exit": 0,
+   "costUsd": 0.2256
+  },
+  {
+   "session": "axf-fix-axhub-36-pull-main-in-failed--rhonda",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-14T23:56:20.859Z",
+   "endedAt": "2026-11-14T23:56:34.629Z",
+   "exit": 3,
+   "costUsd": 0
+  },
+  {
+   "session": "axf-fix-axhub-36-pull-main-in-failed--earl",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-15T00:00:54.640Z",
+   "endedAt": "2026-11-15T00:19:05.713Z",
+   "exit": 0,
+   "costUsd": 0.6463
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "## Setup (run first, then work only in that folder)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-12T01:51:25.701Z",
+   "doneAt": "2026-11-12T01:52:28.852Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "mkdir -p '/root/axf-fixes/repos'",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-12T01:52:28.852Z",
+   "doneAt": "2026-11-12T01:52:30.352Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "[ -d '/root/axf-fixes/repos/MossesX-axHub' ] || git clone -q 'https://github.com/MossesX/axHub.git' '/root/axf-fixes/repos/MossesX-axHub'",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-12T01:52:30.352Z",
+   "doneAt": "2026-11-12T01:52:31.798Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "git -C '/root/axf-fixes/repos/MossesX-axHub' fetch -q origin && git -C '/root/axf-fixes/repos/MossesX-axHub' worktree prune",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-12T01:52:31.798Z",
+   "doneAt": "2026-11-12T01:52:33.222Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "if [ -d '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold' ]; then git -C '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold' checkout -q -B 'claude/claude-sync-hold' 'origin/claude/claude-sync-hold'; else git -C '/root/axf-fixes/repos/MossesX-axHub' worktree add -q -B 'claude/claude-sync-hold' '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold' 'origin/claude/claude-sync-hold'; fi",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-12T01:52:33.222Z",
+   "doneAt": "2026-11-12T01:52:34.612Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Do no work in the orchestrator's own build folder: it only hosts this session. Tick the build's steps there when done.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-12T01:52:34.612Z",
+   "doneAt": "2026-11-12T01:52:37.647Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "# Fix pull request #36 (claude-sync: leave a checkout with .claude-sync-hold alone) in MossesX/axHub so it can reach main",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-12T01:52:37.647Z",
+   "doneAt": "2026-11-12T01:52:39.235Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "The Dev Console's push banner tried to pull main in and it failed: the banner's Pull all stopped at a failed pull and handed this repo's pulls to this session.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-12T01:52:39.235Z",
+   "doneAt": "2026-11-12T01:52:40.688Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Repository: MossesX/axHub (the setup above makes a worktree of it, on branch `claude/claude-sync-hold`)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-12T01:52:40.688Z",
+   "doneAt": "2026-11-12T01:52:42.097Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "Base branch: `main`",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-12T01:52:42.097Z",
+   "doneAt": "2026-11-12T01:52:43.449Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "`git fetch origin`, then `git merge origin/main` into `claude/claude-sync-hold`.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-12T01:52:43.449Z",
+   "doneAt": "2026-11-12T01:52:46.374Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s12",
+   "text": "Resolve every conflict keeping both sides' intent; when unsure which side wins, keep both and say so in the commit.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-12T01:52:46.374Z",
+   "doneAt": "2026-11-12T01:52:47.760Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s13",
+   "text": "Run the repo's own fast checks for what you touched (its CLAUDE.md lists them).",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-12T01:52:47.760Z",
+   "doneAt": "2026-11-12T01:52:49.113Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s14",
+   "text": "Commit, then `git push origin HEAD:claude/claude-sync-hold`. CI runs again on the PR by itself.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-12T01:52:49.113Z",
+   "doneAt": "2026-11-12T01:52:50.539Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s15",
+   "text": "For each: `git checkout -B <branch> origin/<branch>`, `git merge origin/main`, resolve, run the checks, `git push origin HEAD:<branch>`. If one can't be fixed, skip it, keep going, and list it at the end.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-12T01:52:50.539Z",
+   "doneAt": "2026-11-12T01:52:55.383Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s16",
+   "text": "Tests green, report _claude/builds/reports/fix-axhub-36-pull-main-in-failed.md, THREADS row, commit, push, PR",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-12T01:52:55.383Z",
+   "doneAt": "2026-11-12T01:53:39.080Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s17",
+   "text": "Run the build's Setup block: clone or refresh MossesX/axHub under /root/axf-fixes/repos, prune worktrees, then create or reset the worktree /root/axf-fixes/MossesX-axHub--claude-claude-sync-hold on claude/claude-sync-hold from origin. Read its CLAUDE.md to find the fast checks. Run git fetch origin, then git merge origin/main. List every conflicted file with git diff --name-only --diff-filter=U. Do no work in the orchestrator's build folder.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-12T01:53:39.080Z",
+   "doneAt": "2026-11-15T00:06:38.450Z",
+   "actualMin": 4213,
+   "done": true
+  },
+  {
+   "id": "s18",
+   "text": "Resolve every merge conflict in the claude/claude-sync-hold worktree so both sides' intent survives. Keep PR #36's rule that claude-sync leaves alone any checkout that has .claude-sync-hold, and keep main's newer sync changes. Where it is unclear which side wins, keep both and note it for the commit message. If a conflict needs a decision only Brett can make, stop and record exactly what and why. Never touch .env files, .axf-console/ or secrets.",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-15T00:06:38.450Z",
+   "doneAt": "2026-11-15T00:06:44.314Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s19",
+   "text": "In the claude/claude-sync-hold worktree, run the fast checks that CLAUDE.md lists for the touched areas and fix any failures the merge caused. Commit the merge with a message that names each keep-both choice. Push with git push origin HEAD:claude/claude-sync-hold, never force and never to main. CI on PR #36 re-runs by itself.",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-11-15T00:06:44.314Z",
+   "doneAt": "2026-11-15T00:06:50.641Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s20",
+   "text": "Finish the push banner's Pull all for claude/amberx-open-url, in the same worktree folder. Run git checkout -B claude/amberx-open-url origin/claude/amberx-open-url, then git merge origin/main. Resolve conflicts keeping both sides' intent, run the CLAUDE.md fast checks, commit, and git push origin HEAD:claude/amberx-open-url (no force). If it can't be fixed, abort the merge, skip the branch and note why.",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-15T00:06:50.641Z",
+   "doneAt": "2026-11-15T00:11:12.308Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s21",
+   "text": "Do the same for go-pass. Run git checkout -B go-pass origin/go-pass, then git merge origin/main. Resolve conflicts keeping both sides' intent, run the CLAUDE.md fast checks, commit, and git push origin HEAD:go-pass (no force). If it can't be fixed, abort the merge, skip the branch and note why. Afterwards check out claude/claude-sync-hold again.",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-15T00:11:12.308Z",
+   "doneAt": "2026-11-15T00:17:44.768Z",
+   "actualMin": 7,
+   "done": true
+  },
+  {
+   "id": "s22",
+   "text": "Tests, report, THREADS row and PR. Confirm that each pushed branch's checks passed and that PR #36 CI was re-triggered. Write _claude/builds/reports/fix-axhub-36-pull-main-in-failed.md listing each branch (merged and pushed, or skipped and why), every keep-both decision, anything only Brett can decide, and any non-git command Brett should run. This build adds no UI, so it has no API surface. Add the THREADS row and post a PR #36 note that summarises the merge and the other two branches. Tick the build's steps in the orchestrator folder and record the change-log result.",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-11-15T00:17:44.768Z",
+   "doneAt": "2026-11-15T00:18:47.413Z",
+   "actualMin": 1,
+   "done": true
+  }
+ ],
+ "branch": "claude/fix-axhub-36-pull-main-in-failed",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 691,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/691"
+ },
+ "landedCommit": "5e9f07faf9ab46324eabe7a9dadd557eaf953ceb",
+ "commits": [
+  "780bbc1b15e2a464850333eac81599d36376657a"
+ ],
+ "mergedAt": "2026-11-15T07:06:19Z",
+ "landedAt": "2026-11-15T07:06:18Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/fix-axhub-36-pull-main-in-failed.md"
+ ],
+ "areas": [
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/fix-axhub-36-pull-main-in-failed.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0.8719,
+  "estimated": false,
+  "tokens": {
+   "input": 86,
+   "output": 995,
+   "cacheRead": 1041369,
+   "cacheWrite": 49018
+  }
+ },
+ "report": "",
+ "open": []
+}

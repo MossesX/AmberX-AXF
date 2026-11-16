@@ -30,7 +30,7 @@ export const CHAPTERS = [
     id: 'home', title: 'Home: approvals', start: 'home',
     scenes: [
       { say: "This is Home. Anything on your hub that wants to write, delete, or run a command lands here first. Nothing sneaks by you.", act: async (h) => { await h.calm(); await h.hl('h1, h2', 'Home'); } },
-      { say: "Each row says what it is in plain words, then the tool it calls. That chip on the left tells you who asked: Claude Code, an agent like Molly, or a Claude chat.", act: async (h) => { await h.hl('text=Restart the demo web app', 'What it is'); await h.wait(2500); await h.hl('text=/^Agent$/', 'Who asked'); } },
+      { say: "Each row says what it is in plain words, then the tool it calls. That chip on the left tells you who asked: Claude Code, an agent like Gizmo, or a Claude chat.", act: async (h) => { await h.hl('text=Restart the demo web app', 'What it is'); await h.wait(2500); await h.hl('text=/^Agent$/', 'Who asked'); } },
       { say: "This top one is a held call. It runs by itself when the countdown hits zero, unless you stop it. That's the veto system: you don't have to do anything to let it go.", act: async (h) => { await h.hl('text=/runs in/', 'Countdown'); } },
       { say: "Tap Show the details and the row opens up. You get the full command, when it was asked, and its timeline. No guessing what you're signing off on.", act: async (h) => { await h.click('role=button[name="Show the details"] >> nth=0', 'Show the details'); await h.wait(1500); await h.scroll(250); } },
       { say: "Deny stops it cold. Approve runs it right now, no waiting. On a held call there's also Shelve, which pauses the clock until you make up your mind.", act: async (h) => { await h.scroll(-400); await h.hl('role=button[name="Deny"] >> nth=0', 'Deny'); await h.wait(1800); await h.hl('role=button[name="Approve"] >> nth=0', 'Approve now'); } },
@@ -52,7 +52,7 @@ export const CHAPTERS = [
       { say: "Search it, sort it, filter it. Every row opens up to show the phrases it listens for and what it does.", act: async (h) => { await h.type('input[placeholder*="what you"]', 'pin'); await h.wait(1500); await h.click('role=button[name="Expand row"] >> nth=0', 'Open a command'); } },
       { say: "Each command has its own switch, so you can turn off anything you never use. Record your own phrase, say it twice so AmberX knows it's really you, or pick a ready-made one.", act: async (h) => { await h.hl('[role=switch] >> nth=0', 'On or off'); await h.wait(2500); await h.scroll(300); } },
       { say: "Chains and wizards string commands together. One phrase, a whole routine. The voice wizard walks you through building one, out loud, step by step.", act: async (h) => { await h.scroll(-600); await h.clear('input[placeholder*="what you"]'); await h.click('role=tab[name=/Chains/]', 'Chains & wizards'); } },
-      { say: "The developer tab is where Molly lives. More on her in a minute.", act: async (h) => { await h.click('role=tab[name=/Developer/]', 'Developer'); } },
+      { say: "The developer tab is where Gizmo lives. More on him in a minute.", act: async (h) => { await h.click('role=tab[name=/Developer/]', 'Developer'); } },
     ],
   },
   {
@@ -101,10 +101,10 @@ export const CHAPTERS = [
     ],
   },
   {
-    id: 'molly', title: 'Agent Molly', start: 'Command center',
+    id: 'molly', title: 'Gizmo', start: 'Command center',
     scenes: [
-      { say: "Meet Molly. She's the hub's agent, like Vinny and Mosses on the console. She knows the code, answers questions about the app, and builds or fixes things in any container.", act: async (h) => { await h.calm(); await h.click('role=tab[name=/Developer/]', 'Developer commands'); } },
-      { say: "Developer commands go through Molly. Anything she runs on the server is a veto call, so it lands on your Home page first, with a countdown and a Deny button.", act: async (h) => { await h.scroll(300); await h.wait(1500); await h.scroll(-300); } },
+      { say: "Meet Gizmo. He's your companion, like Vinny and Mosses on the console. He knows the code, answers questions about the app, and builds or fixes things in any container.", act: async (h) => { await h.calm(); await h.click('role=tab[name=/Developer/]', 'Developer commands'); } },
+      { say: "Developer commands go through Gizmo. Anything he runs on the server is a veto call, so it lands on your Home page first, with a countdown and a Deny button.", act: async (h) => { await h.scroll(300); await h.wait(1500); await h.scroll(-300); } },
       { say: "She also does walkthroughs: ask her how to do something and she'll walk you through it in a floating window, one step at a time.", act: async (h) => { await h.wait(500); } },
     ],
   },
@@ -146,7 +146,7 @@ export const CHAPTERS = [
   {
     id: 'closing', title: "That's AmberX", start: 'home',
     scenes: [
-      { say: "That's AmberX. Approvals with a veto, notes and tasks by voice, a command center, Molly, recording, and a look you can swap in a tap. Go get after it, kid. Amber out.", act: async (h) => { await h.calm(); await h.wait(1000); } },
+      { say: "That's AmberX. Approvals with a veto, notes and tasks by voice, a command center, Gizmo, recording, and a look you can swap in a tap. Go get after it, kid. Amber out.", act: async (h) => { await h.calm(); await h.wait(1000); } },
     ],
   },
 ];
