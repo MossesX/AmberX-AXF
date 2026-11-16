@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6771,
- "updatedAt": "2026-11-16T19:42:18.796Z",
+ "rev": 6772,
+ "updatedAt": "2026-11-16T19:42:27.908Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -194276,7 +194276,7 @@
    "pr": "#601",
    "mergedAt": "2026-11-16T19:09:18Z",
    "createdAt": "2026-11-12T02:04:11.564Z",
-   "updatedAt": "2026-11-16T19:41:08.651Z",
+   "updatedAt": "2026-11-16T19:42:13Z",
    "builtAt": "2026-11-16T19:41:08.651Z",
    "notes": [
     {
@@ -194390,6 +194390,10 @@
     {
      "text": "Reconciler: PR #601 merged",
      "at": "2026-11-16T19:41:08.651Z"
+    },
+    {
+     "text": "Shipped manifest sm-owner-recognized-everywhere-veto rev 1 sent to Shipped features (orchestrator): landed d46ec0f78, 20 file(s), 0 test line(s), 2 open.",
+     "at": "2026-11-16T19:42:13Z"
     }
    ],
    "approvals": [],
@@ -194440,6 +194444,12 @@
     "heldAt": "2026-11-16T18:30:25.768Z",
     "heldBy": "cli",
     "heldWhy": "Brett review Nov 16: on hold"
+   },
+   "shipped": {
+    "id": "sm-owner-recognized-everywhere-veto",
+    "rev": 1,
+    "at": "2026-11-16T19:42:13Z",
+    "landedCommit": "d46ec0f788e957fe04dd915465c9428e5a8d790e"
    },
    "steps": [
     {
@@ -194517,7 +194527,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 55,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": {
