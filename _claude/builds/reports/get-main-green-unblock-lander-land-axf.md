@@ -93,3 +93,26 @@ Ran CI's block for real: re-bake `core react ui schemas libs`, `shared-assets ba
 - Merge queue: `queue add 724`, `move 719 0`, `move 724 1`. #719 lands first, #724 right behind it.
 - `builds-live link` would have replaced the build's own branch/PR (#723), which the later steps still use. So the fix PRs went into a build note, plus a step on the codebase-changes entry (`chg-20261116-537d490149`).
 - FYI to Brett through the alert hub (`axf.notify@1`): key `pipeline:fyi:get-main-green-unblock-lander-land-axf:main-fix`, delivered to the bell. The new notify type `pipeline.fyi` is registered in `build-orchestrator/notify.json`, so the Notifications panel controls these FYIs once this build lands (`notify-control/test.py`: 133 checks pass).
+
+## Merge queue fix found on the way (s8/s9)
+
+`land.mjs queue move` lost the first of two moves made before the next round. `applyQueueControl` rebuilt the order as `[last round's order …, manual order …]`, so `move 719 0` followed by `move 724 1` came out as `685, 724, 723, 719`. Fixed in df373063b: when the manual order is newer than the round's order, the manual order leads. Test added (`merge-queue.test.mjs`: 18 checks). After the fix the control order is `719, 724, 685, 723, 706`.
+
+## Branch re-sync (s10, s11)
+
+Fetched each branch and compared the local worktree head with GitHub:
+
+| Branch | Local | GitHub | Ahead / behind | Kept |
+|---|---|---|---|---|
+| `claude/server-gate-one-session-per-build-no` | 8b5495bd1 | 8b5495bd1 | 0 / 0 | already level, nothing to rebase or push |
+| `claude/one-source-truth-console-shows-only-what` (#598) | eccfe754a | eccfe754a | 0 / 0 | already level |
+| `claude/console-axhub-retry-failed-calls` | e68f9aa05 | e68f9aa05 | 0 / 0 | already level |
+| `claude/demo-video-series-three-minute-browser` | 5e77e6939 | 5e77e6939 | 0 / 0 | already level |
+
+The `re-sync-stuck-branches-lander-can-push` build had already re-synced them before this one reached the step. The only local leftovers are untracked session logs.
+
+**Stray `merge-main-land-one-source-truth-console`:**
+- The branch was already gone from GitHub and from local refs. Its worktree (`/root/axf-builds/merge-main-land-one-source-truth-console`, detached at a7febca2e) was still there.
+- `git log HEAD --not origin/claude/one-source-truth-console-shows-only-what origin/main` is empty, so nothing on it is missing from #598 or main. Its uncommitted changes were stale builds-store snapshots only. Worktree removed.
+- It was not in the merge queue. Auto-land listed it as **blocked** every round ("pushing its branch failed … not on GitHub"), because the build record still points at the deleted branch and at the same PR (#598) as the real build.
+- Held in auto-land (`land.mjs hold`, with the reason) and noted on the build. #598 is the one to land.
