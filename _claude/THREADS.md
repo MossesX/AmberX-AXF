@@ -813,10 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 13:42 UTC · `vps-sends-shipped-features-every-merge` s8 done (all) · orchestrator
-- 2026-11-16 13:43 UTC · `demo-video-series-three-minute-browser` s2 done, note (all) · orchestrator
-- 2026-11-16 13:44 UTC · `demo-video-series-three-minute-browser` note (all) · orchestrator
-- 2026-11-16 13:44 UTC · `console-look-becomes-default-axhub-skin` s13 done (all) · orchestrator
 - 2026-11-16 13:44 UTC · `console-look-becomes-default-axhub-skin` note (all) · orchestrator
 - 2026-11-16 13:44 UTC · `console-look-becomes-default-axhub-skin` s14 done (all) · orchestrator
 - 2026-11-16 13:45 UTC · `console-look-becomes-default-axhub-skin` note (all) · foreign-write
@@ -1213,6 +1209,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 19:15 UTC · `reset-all-button-every-asset-override` s4 done (all) · orchestrator
 - 2026-11-16 19:16 UTC · `settings-interface-gear-every-plugin` s5 done (all) · orchestrator
 - 2026-11-16 19:16 UTC · `banner-widget-shapes-more-than-circle` → running (all) · mcp
+- 2026-11-16 19:16 UTC · `pending-banner-list-every-pending-build` added (0 steps) (all) · console
+- 2026-11-16 19:17 UTC · `alert-every-time-build-falls-back-to` → running, note (all) · pipeline
+- 2026-11-16 19:17 UTC · `alert-every-time-build-falls-back-to` note (all) · orchestrator
+- 2026-11-16 19:17 UTC · `alert-every-time-build-falls-back-to` branch claude/alert-every-time-build-falls-back-to (all) · pipeline
 
 ## Token passes (log)
 

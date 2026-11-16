@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:16:56.778Z",
+ "updatedAt": "2026-11-16T19:17:14.902Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -161113,15 +161113,15 @@
    "title": "Alert every time a build falls back to Pending",
    "category": "",
    "detail": "Whenever any build drops out of Queue/Running back to Pending (session stopped with steps left, reconciler pause, self-check release, CI or land failure, anything), raise a console banner item (systems check health@1) saying which build, why, steps left and since when, with buttons Requeue and Open, and push it once to the AmberX phone app. Clear it when the build is requeued, archived or held. Also fix the dispatcher alert link: ALERT_LINK is '#/build-orchestrator', must be 'view:build-orchestrator' so alerts open the right screen. Same via REST, MCP, CLI, voice. Tests, land through the orchestrator.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/alert-every-time-build-falls-back-to",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:12:13.425Z",
-   "updatedAt": "2026-11-16T19:16:21.592Z",
+   "updatedAt": "2026-11-16T19:17:05.454Z",
    "builtAt": "",
    "notes": [
     {
@@ -161135,6 +161135,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"e97eb14b-4f75-424b-b388-454df6247164\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-16T19:14:22.611Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-alert-every-time-build-falls-back-to--earl.",
+     "at": "2026-11-16T19:17:02.860Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-alert-every-time-build-falls-back-to--earl, shared account login)",
+     "at": "2026-11-16T19:17:05.454Z"
     }
    ],
    "approvals": [],
@@ -161213,6 +161221,38 @@
      "createdAt": "2026-11-16T19:14:22.611Z"
     }
    ]
+  },
+  {
+   "id": "pending-banner-list-every-pending-build",
+   "title": "Pending banner: list every pending build, send to Queue from the banner",
+   "category": "",
+   "detail": "New banner plugin 'Pending': lists every build in Pending (title, plain-words what it does, priority, steps done/total, why it fell back), each row with Queue, Hold, Archive and Open buttons, plus 'Send all to Queue' and multi-select. Count badge on the banner. Joins the one Banners settings, launches expanded, pushes to AmberX when a build lands in Pending (ties in with alert-every-time-build-falls-back-to). Same actions on REST, MCP, CLI and voice. Tests, land through the orchestrator.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-16T19:16:56.830Z",
+   "updatedAt": "2026-11-16T19:17:10.902Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need a pending banner that lists all the pending things and lets me send everything to the queue right from the banner.",
+    "at": "2026-11-16T19:16:56.830Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
