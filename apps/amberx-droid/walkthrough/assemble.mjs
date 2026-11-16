@@ -122,8 +122,15 @@ writeFileSync(`${PUB}/script.json`, JSON.stringify({
   chapters: BASE.map((c) => ({ id: c.id, title: c.title, scenes: c.scenes.map((x, i) => ({ key: `${c.id}-${i}`, say: x.say })) })),
 }));
 writeFileSync(`${PUB}/walkthrough.vtt`, `WEBVTT\n\n${cues.join('\n\n')}\n`);
+// MP4s for socials (the three-minute series: 9:16, 1:1, 16:9 with captions burned in), offered as downloads too
+if (WALKTHROUGH.socials) {
+  const { exportSocials } = await import('./series/social.mjs');
+  downloads.push(...exportSocials(PUB));
+}
 const index = {
   $axf: WALKTHROUGH.$axf, id: WALKTHROUGH.id, title: WALKTHROUGH.title, app: WALKTHROUGH.app,
+  // the series a video belongs to and the skin its player and cards wear (walkthrough-series@1; absent on the tours)
+  ...(WALKTHROUGH.series ? { series: WALKTHROUGH.series, video: WALKTHROUGH.video, cut: WALKTHROUGH.cut, skin: WALKTHROUGH.skin } : {}),
   recordedAt: new Date().toISOString(), duration: r1(offset), width: W, height: H,
   bytes: statSync(`${PUB}/walkthrough.mp4`).size,
   video: 'walkthrough.mp4', captions: 'walkthrough.vtt', poster: 'poster.jpg', downloads, chapters,

@@ -95,7 +95,7 @@ USER_ROUTES = frozenset({("GET", "/api/health"), ("GET", "/api/me"), ("GET", "/a
 # The recorded walkthrough (walkthrough/rebuild.sh writes these into $AMBERX_DATA_DIR/walkthrough); nothing else is served.
 WALKTHROUGH_FILES = {"walkthrough.mp4": "video/mp4", "walkthrough.vtt": "text/vtt", "chapters.json": "application/json",
                      "poster.jpg": "image/jpeg", "script.json": "application/json", "segments.json": "application/json"}
-WALKTHROUGH_COPY = re.compile(r"^walkthrough-(\d{3,4})\.mp4$")  # smaller download copies (walkthrough-720.mp4)
+WALKTHROUGH_COPY = re.compile(r"^walkthrough-(\d{3,4}|social-(9x16|1x1|16x9))\.mp4$")  # smaller copies (walkthrough-720.mp4) and social exports
 WALKTHROUGH_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")  # other walkthroughs: $AMBERX_DATA_DIR/walkthrough/<id>/
 WALKTHROUGH_DEFAULT = "amberx-app"  # the AmberX tour, at the folder's top level
 # Voice edits from the Walkthrough page (walkthrough-voice@1), checked here before they go to the console's re-record call.
@@ -264,8 +264,12 @@ def make_app(router: Router | None = None, approvals_transport: httpx.BaseTransp
                 continue
             if not isinstance(ix, dict):
                 continue
-            found.append({"id": wid, "title": str(ix.get("title") or wid)[:80], "duration": ix.get("duration") if isinstance(ix.get("duration"), (int, float)) else 0,
-                          "recordedAt": str(ix.get("recordedAt") or "")[:40], "base": "" if wid == WALKTHROUGH_DEFAULT else f"{wid}/"})
+            row = {"id": wid, "title": str(ix.get("title") or wid)[:80], "duration": ix.get("duration") if isinstance(ix.get("duration"), (int, float)) else 0,
+                   "recordedAt": str(ix.get("recordedAt") or "")[:40], "base": "" if wid == WALKTHROUGH_DEFAULT else f"{wid}/"}
+            for k in ("series", "skin", "cut"):  # the three-minute series: which series, the player's skin, full or 60-second cut
+                if isinstance(ix.get(k), str) and WALKTHROUGH_ID.match(ix[k]):
+                    row[k] = ix[k]
+            found.append(row)
         return {"walkthroughs": found}
 
     @app.get("/api/walkthrough/{name}")

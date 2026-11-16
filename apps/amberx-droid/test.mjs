@@ -1264,6 +1264,17 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   eq([wt.sizeLabel(1.4e9), wt.sizeLabel(4.2e8), wt.sizeLabel(0)], ['1.4 GB', '420 MB', ''], 'walkthrough: download sizes');
   eq(wt.parseList({ walkthroughs: [{ id: 'amberx-app', title: 'AmberX' }, { id: 'stack', title: 'The whole stack', duration: 5400 }, { id: 'Bad!' }, { id: 'stack' }] }).map((w) => [w.id, w.base]),
     [['amberx-app', ''], ['stack', 'stack/']], 'walkthrough: the list, each with its folder');
+  // the three-minute series (Nov 16 2026): series fields, social exports, a player skin scope per video
+  const sv = wt.parseIndex({ ...raw, id: 'series-axhub', series: 'amberx-three-minute', skin: 'windows', cut: 'full', downloads: [{ file: 'walkthrough.mp4' }, { file: 'walkthrough-social-9x16.mp4', label: 'Reels 9:16', social: '9x16' }, { file: 'walkthrough-social-x.mp4', social: '<b>' }] });
+  eq([sv.series, sv.skin, sv.cut, sv.downloads.map((d) => d.social ?? '')], ['amberx-three-minute', 'windows', 'full', ['', '9x16', '']], 'walkthrough series: series, skin, cut and social rows read');
+  eq(wt.parseIndex({ ...raw, skin: 'Bad Skin!' }).skin, undefined, 'walkthrough series: a bad skin id is dropped');
+  const sl = wt.parseList({ walkthroughs: [{ id: 'series-commute-60', title: 'Commute', duration: 58, series: 'amberx-three-minute', skin: 'atelier', cut: 'short' }] });
+  eq([sl[0].skin, sl[0].cut, wt.entryLabel(sl[0]), wt.playerScope('series-commute-60')], ['atelier', 'short', 'Commute (60 s) · 0:58', 'walkthrough-series-commute-60'], 'walkthrough series: list row, label, player scope');
+  ok(/'walkthrough\.play'/.test(plug) && /<SkinScope kind="ui"/.test(plug) && /SelectField/.test(plug), 'walkthrough series: play action, per-video skin scope, picker for many');
+  const sw = await import('./walkthrough/series/walkthrough.mjs');
+  const ids = sw.seriesIds();
+  ok(ids.length >= 40 && ids.every((i) => /^[a-z0-9][a-z0-9-]{0,39}$/.test(i)), 'walkthrough series: every cut has a walkthrough id the server accepts');
+  for (const i of ids) { const w = sw.seriesWalkthrough(i); eq(w.walkthroughErrors(w.WALKTHROUGH, w.CHAPTERS), [], `walkthrough series: ${i} records`); }
   const script = wt.parseScript({ id: 'stack', voice: 'en_US-kristin-medium', speed: 0.93, edits: { lines: { 'open-1': 'Edited before' } },
     chapters: [{ id: 'open', title: 'Open', scenes: [{ key: 'open-0', say: 'Yo, it is Amber.' }, { key: 'open-1', say: 'Second line.' }, { key: 'bad key', say: 'x' }] }] });
   eq([script.chapters[0].scenes.length, script.speed, script.edits.lines['open-1']], [2, 0.93, 'Edited before'], 'walkthrough voice: script.json read, bad scenes dropped');

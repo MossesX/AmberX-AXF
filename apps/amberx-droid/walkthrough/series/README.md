@@ -97,6 +97,22 @@ ONLY=queue bash apps/amberx-droid/walkthrough/series/record.sh orchestrator-agen
 Each run goes through the VPS heavy slot (`framework/cli/agent-slots.mjs`) and leaves `publish/` (MP4, captions,
 chapters, poster) unpublished; s4 publishes.
 
-What the next step does with this:
+## Narration, sync, player, socials, publishing (s4)
 
-- s4 adds narration, sync, the themed player (each video's `skin`), MP4 export and publishing.
+| Piece | How |
+|---|---|
+| Narration | Piper, one clip per scene (`../tts.mjs`), voice `en_US-kristin-medium` at speed 1. Adjustable per video like every walkthrough: AmberX → Walkthrough → pick the video → **Edit the voice** (voice, speed 0.75–1.3, any line), then Re-voice (only changed lines, no re-recording) or Re-record. The same edits: `POST /api/walkthrough/series-<id>/render` on the AmberX server, or `VOICE_OVERRIDES_B64=… WALKTHROUGH=series-<id> bash ../rebuild.sh` (walkthrough-voice@1). |
+| Sync | the recorder holds every scene until its clip ends (plus a short beat), and the assembler cuts each scene to its clip, so the picture, the voice and the captions (one cue per sentence, `walkthrough.vtt`) line up by construction. |
+| Player | AmberX's Walkthrough page lists every published video (a picker once there are more than four). Each player sits in its own skin scope, `ui:walkthrough-series-<id>`, so it can wear any skin: Settings → Appearance → Where, `node framework/cli/skins.mjs use amberx <skin> --scope ui:walkthrough-series-<id>`, the theme-manager routes or the `skin.scope` action. `chapters.json` carries the video's own `skin`; `SKIN=1 series/publish.sh` puts each player in it. |
+| Socials | `social.mjs`: `walkthrough-social-9x16.mp4` (1080×1920), `-1x1` (1080×1080) and `-16x9` (1920×1080), H.264 + AAC with faststart, captions burned in, the picture fitted whole over a blurred fill. Made by the assembler for every series cut, offered as downloads on the player and served at `/api/walkthrough/series-<id>/walkthrough-social-<format>.mp4`. |
+| Publishing | `publish.sh` runs the secrets scan again, then copies a recorded video into AmberX's data folder as walkthrough `series-<id>` (behind axHub's wall). |
+
+```bash
+bash apps/amberx-droid/walkthrough/series/publish.sh                 # every recorded video
+bash apps/amberx-droid/walkthrough/series/publish.sh axhub commute-60
+```
+
+Reaching it without the UI: `GET /api/walkthrough/walkthroughs.json` (every video with its series, skin and cut),
+`GET /api/walkthrough/series-<id>/chapters.json` (chapters, scenes, downloads), the files next to it; the
+`walkthrough.play:series-<id>[:<chapter>]` action (deep link, Ctrl+K, voice "play the walkthrough"), `walkthrough.open:<chapter>`;
+re-voice / re-record through `POST /api/walkthrough/series-<id>/render` (the console sends it to axHub as a veto call).

@@ -75,6 +75,7 @@ export function seriesWalkthrough(id) {
     desktop: SERIES.viewport.desktop,
     output: phone ? { width: 1080, height: 1920, crf: 24, preset: 'veryfast' } : { width: 1920, height: 1080, crf: 24, preset: 'veryfast' },
     downloads: [720],
+    socials: true,
     voice: SERIES.voice,
     speed: 1,
   };

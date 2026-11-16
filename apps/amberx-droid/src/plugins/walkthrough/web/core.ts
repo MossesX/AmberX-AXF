@@ -10,7 +10,7 @@ export const SPEEDS = [0.75, 1, 1.25, 1.5, 2] as const;
 
 export interface Segment { start: number; title: string }
 /** A file the Download button offers: the full video and its smaller copies (walkthrough-720.mp4). */
-export interface Download { file: string; label: string; bytes: number }
+export interface Download { file: string; label: string; bytes: number; social?: string }
 export interface Chapter { id: string; title: string; start: number; duration: number; segments: Segment[] }
 export interface WalkthroughIndex {
   id: string; title: string; recordedAt: string; duration: number;
@@ -18,8 +18,13 @@ export interface WalkthroughIndex {
   /** Landscape recording (the whole-stack one, 1920×1080) rather than a phone screen. */
   wide: boolean;
   downloads: Download[];
+  /** The three-minute series: its id, the skin the video is drawn in (its player's skin scope), full video or 60-second cut. */
+  series?: string; skin?: string; cut?: string;
 }
 
+/** The social exports a download row may be (walkthrough/series/social.mjs SOCIAL_FORMATS). */
+export const SOCIAL = ['9x16', '1x1', '16x9'] as const as readonly string[];
+const ID = /^[a-z0-9][a-z0-9-]{0,39}$/;
 const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) && v >= 0 ? v : null);
 const text = (v: unknown, max: number) => (typeof v === 'string' ? v.replace(/[\u0000-\u001f\u007f]+/g, ' ').trim().slice(0, max) : '');
 /** Only plain file names next to chapters.json (never a path or another site). */
@@ -58,10 +63,14 @@ export function parseIndex(raw: unknown): WalkthroughIndex | null {
     if (!d || typeof d !== 'object') continue;
     const r = d as Record<string, unknown>;
     const f = file(r.file, '');
-    if (f && f.endsWith('.mp4') && !downloads.some((x) => x.file === f)) downloads.push({ file: f, label: text(r.label, 12) || f, bytes: num(r.bytes) ?? 0 });
+    const social = typeof r.social === 'string' && SOCIAL.includes(r.social) ? r.social : undefined;
+    if (f && f.endsWith('.mp4') && !downloads.some((x) => x.file === f)) downloads.push({ file: f, label: text(r.label, 16) || f, bytes: num(r.bytes) ?? 0, ...(social ? { social } : {}) });
   }
   if (!downloads.length) downloads.push({ file: video, label: 'Video', bytes: 0 });
+  const extra: Pick<WalkthroughIndex, 'series' | 'skin' | 'cut'> = {};
+  for (const k of ['series', 'skin', 'cut'] as const) { const v = text(o[k], 40); if (ID.test(v)) extra[k] = v; }
   return {
+    ...extra,
     wide: (num(o.width) ?? 0) > (num(o.height) ?? 0), downloads,
     id: text(o.id, 40) || 'walkthrough', title: text(o.title, 80) || 'Walkthrough', recordedAt: text(o.recordedAt, 40), duration,
     video, captions: file(o.captions, 'walkthrough.vtt'), poster: file(o.poster, 'poster.jpg'), chapters,
@@ -108,7 +117,7 @@ export function sizeLabel(bytes: number): string {
 
 export const DEFAULT_WALKTHROUGH = 'amberx-app';
 /** One row of /api/walkthrough/walkthroughs.json; `base` is its folder under WALKTHROUGH_BASE ("" for the AmberX tour). */
-export interface WalkthroughEntry { id: string; title: string; duration: number; recordedAt: string; base: string }
+export interface WalkthroughEntry { id: string; title: string; duration: number; recordedAt: string; base: string; series?: string; skin?: string; cut?: string }
 
 export function parseList(raw: unknown): WalkthroughEntry[] {
   const rows = raw && typeof raw === 'object' && Array.isArray((raw as { walkthroughs?: unknown }).walkthroughs) ? (raw as { walkthroughs: unknown[] }).walkthroughs : [];
@@ -118,9 +127,20 @@ export function parseList(raw: unknown): WalkthroughEntry[] {
     const o = r as Record<string, unknown>;
     const id = text(o.id, 40);
     if (!/^[a-z0-9][a-z0-9-]{0,39}$/.test(id) || out.some((x) => x.id === id)) continue;
-    out.push({ id, title: text(o.title, 80) || id, duration: num(o.duration) ?? 0, recordedAt: text(o.recordedAt, 40), base: id === DEFAULT_WALKTHROUGH ? '' : `${id}/` });
+    const row: WalkthroughEntry = { id, title: text(o.title, 80) || id, duration: num(o.duration) ?? 0, recordedAt: text(o.recordedAt, 40), base: id === DEFAULT_WALKTHROUGH ? '' : `${id}/` };
+    for (const k of ['series', 'skin', 'cut'] as const) { const v = text(o[k], 40); if (ID.test(v)) row[k] = v; }
+    out.push(row);
   }
   return out;
+}
+
+/** The player's skin scope for a walkthrough (SkinScope kind 'ui'): one per video, so each can wear its own skin. */
+export const playerScope = (id: string) => `walkthrough-${id}`;
+
+/** The picker's label: series videos say which cut they are. */
+export function entryLabel(w: WalkthroughEntry): string {
+  const cut = w.cut === 'short' && !/60 seconds/i.test(w.title) ? ' (60 s)' : '';
+  return `${w.title}${cut}${w.duration ? ` · ${clock(w.duration)}` : ''}`;
 }
 
 /* ---------------------------------------------------------------- the voice editor (walkthrough-voice@1) */

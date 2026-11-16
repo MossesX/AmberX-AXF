@@ -9,9 +9,9 @@
  * Controls are the framework's; the look comes from theme tokens only (walkthrough.css).
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Button, Chip, Segmented, useRuntime, type AxfWebLibrary } from '../../../axf/react';
+import { Button, Chip, Segmented, SelectField, SkinScope, useRuntime, type AxfWebLibrary } from '../../../axf/react';
 import type { AxfRuntime } from '../../../axf/core';
-import { DEFAULT_WALKTHROUGH, SPEEDS, WALKTHROUGH_BASE, chapterAt, clock, nextStart, parseIndex, parseList, previousStart, sizeLabel, speedOf, type WalkthroughEntry, type WalkthroughIndex } from './core';
+import { DEFAULT_WALKTHROUGH, SPEEDS, WALKTHROUGH_BASE, chapterAt, clock, entryLabel, nextStart, parseIndex, parseList, playerScope, previousStart, sizeLabel, speedOf, type WalkthroughEntry, type WalkthroughIndex } from './core';
 import { ChaptersView } from './chapters';
 import { VoiceEditor } from './voice';
 import './walkthrough.css';
@@ -27,6 +27,12 @@ export function openWalkthrough(rt: AxfRuntime, chapter?: string) {
   pending = chapter || null;
   rt.navigate(VIEW);
   listeners.forEach((f) => f());
+}
+/** walkthrough.play:<walkthrough id>[:<chapter id>] — pick a walkthrough (a series video: series-<id>) and open it. */
+const pickListeners = new Set<(id: string) => void>();
+export function playWalkthrough(rt: AxfRuntime, id?: string, chapter?: string) {
+  if (id && /^[a-z0-9][a-z0-9-]{0,39}$/.test(id)) { rt.settings.set(K.pick, id); pickListeners.forEach((f) => f(id)); }
+  openWalkthrough(rt, chapter);
 }
 
 type Load = { phase: 'loading' } | { phase: 'ready'; index: WalkthroughIndex } | { phase: 'missing' } | { phase: 'error'; message: string };
@@ -175,6 +181,7 @@ export function WalkthroughPage() {
   const entry = list.find((w) => w.id === pick) ?? list[0] ?? { id: DEFAULT_WALKTHROUGH, title: 'AmberX walkthrough', duration: 0, recordedAt: '', base: '' };
   const s = useIndex(entry.base);
   const choose = (id: string) => { setPick(id); rt.settings.set(K.pick, id); };
+  useEffect(() => { const f = (id: string) => setPick(id); pickListeners.add(f); return () => { pickListeners.delete(f); }; }, []);
   return (
     <div className="fx-stack fx-stack--lg axp-walkthrough">
       <header className="fx-pagehead">
@@ -188,9 +195,13 @@ export function WalkthroughPage() {
         </div>
       </header>
       <div className="fx-row fx-row--wrap">
-        {list.length > 1 && (
+        {list.length > 1 && list.length <= 4 && (
           <Segmented label="Which walkthrough" value={entry.id} onChange={(v) => { choose(v); pending = null; }}
-            options={list.map((w) => ({ value: w.id, label: w.duration ? `${w.title} · ${clock(w.duration)}` : w.title }))} />
+            options={list.map((w) => ({ value: w.id, label: entryLabel(w) }))} />
+        )}
+        {list.length > 4 && (
+          <SelectField label="Which walkthrough" value={entry.id} onChange={(v) => { choose(v); pending = null; }}
+            options={list.map((w) => ({ value: w.id, label: entryLabel(w) }))} />
         )}
         <Segmented label="Watch or edit" value={mode} onChange={(v) => setMode(v === 'voice' || v === 'chapters' ? v : 'watch')}
           options={[{ value: 'watch', label: 'Watch' }, { value: 'chapters', label: 'Chapters' }, { value: 'voice', label: 'Edit the voice' }]} />
@@ -200,7 +211,12 @@ export function WalkthroughPage() {
           {s.phase === 'loading' && <div className="axp-walkthrough__skeleton" aria-busy="true" aria-label="Loading the walkthrough" />}
           {s.phase === 'missing' && <p className="fx-muted">This walkthrough hasn't been recorded on this server yet. Edit the voice, then Re-record, or an admin runs <code>WALKTHROUGH={entry.id} bash apps/amberx-droid/walkthrough/rebuild.sh</code>.</p>}
           {s.phase === 'error' && <p className="fx-muted" role="alert">{s.message}</p>}
-          {s.phase === 'ready' && <Player key={entry.id} index={s.index} base={entry.base} />}
+          {s.phase === 'ready' && (
+            // each video's own skin scope: Settings → Appearance → Where (ui:walkthrough-<id>), skins.mjs at, skin.scope
+            <SkinScope kind="ui" id={playerScope(entry.id)} attrs={{ 'data-axf-target': `walkthrough:${entry.id}`, ...(s.index.skin ? { 'data-axp-walkthrough-skin': s.index.skin } : {}) }}>
+              <Player key={entry.id} index={s.index} base={entry.base} />
+            </SkinScope>
+          )}
         </>
       )}
     </div>
@@ -221,5 +237,7 @@ export const library: AxfWebLibrary = {
   register(rt) {
     // walkthrough.open — the player; walkthrough.open:<chapterId> — straight at one chapter
     rt.actions.register('walkthrough.open', ([chapter]) => openWalkthrough(rt, chapter), { label: 'Watch the walkthrough', params: true });
+    // walkthrough.play:<walkthrough id>[:<chapter>] — a given walkthrough, e.g. a series video (series-voice-control)
+    rt.actions.register('walkthrough.play', ([id, chapter]) => playWalkthrough(rt, id, chapter), { label: 'Play a walkthrough', params: true });
   },
 };
