@@ -814,7 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 19:49 UTC · `assets-menu-hide-any-asset-hidden-list` branch claude/assets-menu-hide-any-asset-hidden-list (all) · pipeline
 - 2026-11-16 19:49 UTC · `assets-menu-hide-any-asset-hidden-list` note (all) · orchestrator
 - 2026-11-16 19:50 UTC · `reset-all-button-every-asset-override` s10 done (all) · orchestrator
 - 2026-11-16 19:51 UTC · `reset-all-button-every-asset-override` PR #730 (all) · builds-live
@@ -1214,6 +1213,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 23:50 UTC · `auto-recover-stuck-builds` note (all) · orchestrator
 - 2026-11-16 23:50 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · orchestrator
 - 2026-11-16 23:50 UTC · `auto-recover-stuck-builds` note (all) · foreign-write
+- 2026-11-16 23:51 UTC · `axhub-veto-countdown-setting-read-only` s11 done (all) · orchestrator
 
 ## Token passes (log)
 
