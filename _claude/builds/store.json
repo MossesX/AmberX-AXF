@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6799,
- "updatedAt": "2026-11-16T19:53:17.510Z",
+ "rev": 6800,
+ "updatedAt": "2026-11-16T19:53:24.185Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -218459,7 +218459,7 @@
    "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "#703",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-16T19:47:30.043Z",
+   "updatedAt": "2026-11-16T19:53:21.452Z",
    "builtAt": "",
    "notes": [
     {
@@ -218527,7 +218527,16 @@
      "at": "2026-11-16T19:47:30.043Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-16T19:53:21.452Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "",
@@ -218544,12 +218553,12 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "mossesx-max-",
-    "session": "axf-banner-widget-shapes-more-than-circle--sully",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-16T19:47:18.419Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T04:47:26.735Z",
@@ -218561,7 +218570,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-16T19:47:18.419Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -218570,7 +218579,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-16T19:47:18.419Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -218765,12 +218774,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:53:21.452Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T19:16:49.558Z",
-     "updatedAt": "2026-11-16T19:16:49.844Z"
+     "updatedAt": "2026-11-16T19:53:21.778Z"
     },
     {
      "id": "s8",
