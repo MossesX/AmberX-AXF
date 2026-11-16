@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6979,
- "updatedAt": "2026-11-16T23:13:30.641Z",
+ "rev": 6980,
+ "updatedAt": "2026-11-16T23:13:41.385Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -187104,7 +187104,7 @@
    "title": "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -187112,7 +187112,7 @@
    "pr": "#582",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-14T23:09:13.297Z",
+   "updatedAt": "2026-11-16T23:13:31.011Z",
    "builtAt": "",
    "notes": [
     {
@@ -187234,6 +187234,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-14T23:09:13.297Z"
+    },
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-16T23:13:31.011Z"
     }
    ],
    "approvals": [
@@ -187260,8 +187264,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-13T10:35:08.117Z",
-    "queuedBy": "console",
+    "queuedAt": "2026-11-16T23:13:30.402Z",
+    "queuedBy": "brett",
     "account": "mossesx-max-",
     "session": "",
     "slot": "",
@@ -187288,7 +187292,7 @@
      "note": "Split by Claude into 21 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+    "note": "",
     "route": "",
     "dispatchedAt": "2026-11-14T23:00:36.515Z",
     "planned": {
@@ -187962,7 +187966,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 64,
    "deleted": false,
    "deletedAt": "",
    "pending": {
