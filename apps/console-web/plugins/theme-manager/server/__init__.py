@@ -14,7 +14,7 @@ import threading
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter, Body, HTTPException
+from fastapi import APIRouter, Body, HTTPException, Request
 
 import console_context as cx
 import axf_framework  # noqa: F401 — framework/python on sys.path
@@ -396,3 +396,59 @@ def skin_config_make(app: str, body: dict[str, Any] | None = Body(None)) -> Any:
     except OSError as e:
         raise HTTPException(502, f"skins: {e}") from e
     return {"started": True, "app": app, "wish": wish, "results": f"/api/plugins/theme-manager/skin-config/{app}/made"}
+
+
+# ---- asset overrides: Reset all (build reset-all-button-every-asset-override) ----
+# The overrides (axf.chrome.<type>.<instance>[.asset|.interface], plus tab-row tokens in axf.tokens.instances) are the
+# open console's own settings, so these routes drive it through console-control@1 (permission, policy, rate limit,
+# audit): the same target the Reset all button carries. No console open = 503 with the link to open one.
+
+RESET_ALL_TARGET = "setting:appearance.asset-overrides.reset-all"
+RESET_ALL_DEEP_LINK = f"view:settings/tab:settings.tabs=appearance/{RESET_ALL_TARGET}"
+
+
+def _control(request: Request | None, body: dict[str, Any]) -> dict[str, Any]:
+    import console_control_api as api  # the console server's /api/console-control half
+    if request is None:
+        audience, by, grants = api.OWNER, "theme-manager", {"*"}
+    else:
+        audience, by = api.audience_of(request)
+        grants = api.grants_of(request)
+    r = api.command(body, f"theme-manager:{by}", audience, grants)
+    if not r.get("ok"):
+        status = 503 if r.get("code") == "unavailable" else 409 if r.get("code") == "confirmation_required" else 403 if r.get("code") == "denied" else 400
+        raise HTTPException(status_code=status, detail={k: r[k] for k in ("code", "message", "openUrl") if k in r} or "console-control failed")
+    return r
+
+
+def _overrides_of(r: dict[str, Any]) -> dict[str, Any]:
+    s = r.get("state") if isinstance(r.get("state"), dict) else {}
+    s = s.get("target", s) if isinstance(s.get("target"), dict) else s
+    return {"count": int(s.get("count") or 0), "overrides": s.get("overrides") or [], "undo": s.get("undo") or [], "deepLink": RESET_ALL_DEEP_LINK}
+
+
+@router.get("/overrides")
+def overrides(request: Request) -> dict[str, Any]:
+    """Every asset controlled by its own settings in the open console ('what asset overrides are there'): count, rows, undo ids."""
+    return _overrides_of(_control(request, {"verb": "state", "address": RESET_ALL_TARGET}))
+
+
+@router.post("/reset-all")
+def reset_all(request: Request, body: dict[str, Any] | None = Body(None)) -> dict[str, Any]:
+    """Reset all asset overrides ('reset all asset overrides'). Destructive: body {"confirm": true} or 409. Returns
+    {reset: [<type>:<instance>…], undoId}; nothing overridden = {reset: [], undoId: ""} (idempotent)."""
+    if not (isinstance(body, dict) and body.get("confirm") is True):
+        raise HTTPException(status_code=409, detail={"code": "confirmation_required", "message": "Reset all clears every asset override: send {\"confirm\": true}", "deepLink": RESET_ALL_DEEP_LINK})
+    r = _control(request, {"verb": "press", "address": RESET_ALL_TARGET, "confirm": True, "reason": body.get("reason") or "Reset all asset overrides"})
+    res = r.get("result") if isinstance(r.get("result"), dict) else {}
+    return {"reset": list(res.get("reset") or []), "undoId": str(res.get("undoId") or "")}
+
+
+@router.post("/reset-all/undo")
+def reset_all_undo(request: Request, body: dict[str, Any] | None = Body(None)) -> dict[str, Any]:
+    """Undo a Reset all: body {"undoId": "<id>"} (absent or "last" = the newest). Returns the overrides after it."""
+    undo_id = str((body or {}).get("undoId") or "last")
+    if not re.fullmatch(r"last|ra-[a-z0-9]{1,16}", undo_id):
+        raise HTTPException(status_code=400, detail="undoId: the id Reset all returned (ra-…) or last")
+    _control(request, {"verb": "press", "address": "function:chrome.overrides-undo", "value": undo_id})
+    return {"undone": undo_id, **_overrides_of(_control(request, {"verb": "state", "address": RESET_ALL_TARGET}))}
