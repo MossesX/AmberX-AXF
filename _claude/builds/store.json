@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6779,
- "updatedAt": "2026-11-16T19:45:30.693Z",
+ "rev": 6780,
+ "updatedAt": "2026-11-16T19:45:44.459Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -246885,7 +246885,7 @@
    "title": "Auto-lander grid: one row per build, behind-main count, archive",
    "category": "",
    "detail": "Gate & rules > Auto-lander tab: make the grid ONE row per build (no multi-line rows). Columns: build, what it does (plain words), PR, status (ready/blocked), reason, commits behind main (sortable), last activity. Row actions: Open, Merge main + fix, Archive, Hold; multi-select bulk Archive. Filter e.g. 'behind > 500'. Stale records with no branch/PR are hidden or cleaned. Same data and actions on REST, MCP, CLI and voice. Tests, land through the orchestrator.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -246893,8 +246893,8 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:19:11.374Z",
-   "updatedAt": "2026-11-16T19:44:56.851Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T19:45:35.013Z",
+   "builtAt": "2026-11-16T19:45:35.013Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -247058,12 +247058,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:45:35.013Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T19:21:53.865Z",
-     "updatedAt": "2026-11-16T19:21:53.865Z"
+     "updatedAt": "2026-11-16T19:45:35.497Z"
     }
    ],
    "profiles": [
@@ -247074,7 +247074,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
