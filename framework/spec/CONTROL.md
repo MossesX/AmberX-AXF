@@ -75,9 +75,9 @@ so plugins' screens are found too. Every act takes `input.to`: `recent` (default
 `console.control` reaches any console-control@1 address (spec/CONSOLE-CONTROL.md): path = the address, `list` the targets under it,
 `get` its state (no path: where the console is), `act <verb>` with the verb as the action (focus, scroll navigate; press, set,
 plugin.enable / plugin.disable write). A plan's `links[]` entry (or any item) may carry `{ address }` to point at a place in the console.
-A console inside a host says so (Nov 3 2026, build `molly-console-commands`): `app: molly/console-web`, `host: molly`, and `front` (its page is visible
+A console inside a host says so (Nov 3 2026): `app: <host>/console-web`, `host: <host>`, and `front` (its page is visible
 and the host shows its frame, embed@1 `shown`); before it runs a command while hidden it asks the host to bring it forward (embed@1 `show`), and
-Molly with xLayout opens the Console frame hidden at start (`warm`), so a command while Molly is open always lands in Molly.
+A host with xLayout opens the Console frame hidden at start (`warm`), so a command while the host is open always lands in it.
 Delivery and resolution: `core/engines/console-commands.mjs`; the console server's `console-commands` plugin keeps one mailbox
 per signed-in user (the console token and hub admins share the owner's) and streams to each open console, which runs the command
 through its own runtime (`rt.search.focus`, `rt.dispatch`) and acks what it opened.

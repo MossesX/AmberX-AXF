@@ -135,8 +135,8 @@ check([f["viewport"] for f in item["files"]["after"]] == ["phone", "desktop"] an
 check(c.get("/p/shot", params={"path": item["files"]["after"][0]["src"]}).status_code == 200, "submitted screenshot served")
 check(c.post("/p/submit", json={"kind": "Bad Kind", "title": ""}).status_code == 400, "bad kind / no title refused")
 check(c.post("/p/submit", json={"title": "x", "files": [{"name": "a.png", "data": base64.b64encode(b"not an image").decode()}]}).status_code == 400, "non-image refused")
-check(c.post("/p/submit", json={"kind": "walkthrough", "name": "Molly steps", "app": "Walkthrough", "screen": "Steps", **WHO}).status_code == 400, "an item with no screenshots is refused")
-r2 = c.post("/p/submit", json={"kind": "walkthrough", "title": "Molly steps", "app": "Walkthrough", "screen": "Steps", "branch": "claude/t", **WHO, "files": SET[:1]}).json()["item"]
+check(c.post("/p/submit", json={"kind": "walkthrough", "name": "Guide steps", "app": "Walkthrough", "screen": "Steps", **WHO}).status_code == 400, "an item with no screenshots is refused")
+r2 = c.post("/p/submit", json={"kind": "walkthrough", "title": "Guide steps", "app": "Walkthrough", "screen": "Steps", "branch": "claude/t", **WHO, "files": SET[:1]}).json()["item"]
 check(r2["section"] == "walkthrough" and r2["group"]["name"].startswith("headless - "), "a section nobody listed is accepted; no group = '<source> - <date time>'")
 check(stored_ok(), "items.json conforms after submits")
 

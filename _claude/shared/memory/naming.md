@@ -48,3 +48,6 @@ Brett said (verbatim): "Hire Gizmo, give him his job back."
 - Still open: **front desk** (greets each new Claude session, runs the agent picker, routes Brett's requests).
 - **Chachi** = front desk: greets each new Claude session, runs the agent picker (agent-pick build), routes Brett's requests. All-rounder, $7.50/h.
 - Correction: **Chachi is a she** (Brett: "It's a she, don't you misgender anybody."). Use she/her for Chachi.
+
+## Update 6 (Brett, Nov 16 2026): the Molly app is gone
+- "Molly's dead. Kill it." The app (apps/molly, molly.amberxai.com) and the old agent add-on are removed; the walkthrough guide is the Gizmo guide (`gizmo-guide`). The name stays only in `axf-molly`, the private container that will own the gate and lander. Updates 1–5 above are history.

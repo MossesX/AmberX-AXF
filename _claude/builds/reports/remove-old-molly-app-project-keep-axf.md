@@ -181,3 +181,22 @@ by other sessions). The VPS checkout's sync sends them once this lands on main.
 - Folded in and completed: `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` (all ten
   steps ticked, note with this branch).
 - Kept: `axf-molly-container-orchestrator-gate` (the axf-molly container).
+
+## Final sweep (s15): intentional keeps
+
+`git grep -i molly`, excluding `axf-molly`, `.axf-molly` and history (journal, changes/, sessions/, shipped builds, old
+reports, THREADS). Leftovers fixed in this step: spec docs (CONTROL, PORTING, GATE, APPEARANCE-SOURCE), the Gizmo
+companion prompt and roster bio, demonstration-designer and maintenance docs, ui-review / check-demo samples, the
+vision, naming (Update 6), follow-ups, install-keys and install-guides notes. What still says Molly, and why:
+
+| Where | Why it stays |
+|---|---|
+| `agent-manager/server/__init__.py` `RETIRED_ADDONS = ("molly",)` + its test | uninstalls an installed copy of the old add-on once on start |
+| `systems-check/server/retired.py` (+ test) | the banner items that clean the VPS leftovers and the DNS record; they name what they remove |
+| `amberx-droid/.../commands/web/core.ts` `case 'molly':` | a custom voice command saved before today still loads (read as a Gizmo task) |
+| `docs/voice-command-center.md` (that alias), `STATUS.md` / `decisions.md` (this build's id, the superseded Oct 28 decision) | the record of what changed |
+| `gate-rules` engine, schemas, fixture (`evaluateSplit.molly`), `GATE.md`, gate plugin | `axf-molly`, kept by Brett |
+| `_claude/builds/{store,orchestrator,origins,advice,bugs,matrices}.json`, `profiles/all/matrices.json`, `framework/plan/pending.json`, `build-rules/seed.json` | build records and generated snapshots: changed only through their CLIs (seed.json copies its rule text verbatim from a fixed inventory) |
+| `build-breaker/data/asks.jsonl` | the Oct 29 snapshot of what Brett asked for, history |
+| `_claude/memory/handoff-*`, `_claude/sessions/*`, `todo/features-landed.md`, `_claude/shared/notes/**`, `naming.md` Updates 1–5 | dated history |
+| `_claude/shared/memory/write-ups.md` | Molly the cat, not the app |

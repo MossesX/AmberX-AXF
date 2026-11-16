@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Demonstration Designer store + CLI. Every pitch demo is a demonstration@1 asset (asset@1 envelope, the shape the
- * framework's player, Molly's guide and the recorder already play) in this plugin's data folder,
+ * framework's player, the Gizmo guide and the recorder already play) in this plugin's data folder,
  * <dataDir>/demonstration/<id>.json, with its production facts (length, narrator, music, logo, topic) beside it in
  * <dataDir>/pitch/<id>.json, recordings in <dataDir>/media/ as clip@1 assets in <dataDir>/clip/, and the plugin's
  * settings (pitch-settings@1) in <dataDir>/settings.json. The glossary catalog indexes the demonstration folder of

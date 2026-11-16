@@ -195,7 +195,7 @@ def post_chain(body: dict[str, Any]) -> dict[str, Any]:
 
 @router.get("/walkthrough")
 def get_walkthrough(id: str) -> dict[str, Any]:  # noqa: A002
-    """The demo and its chain as one walkthrough@1 (what the stage, Molly's guide and the recorder play)."""
+    """The demo and its chain as one walkthrough@1 (what the stage, the Gizmo guide and the recorder play)."""
     return _node_json("walkthrough", _check_id(id))
 
 

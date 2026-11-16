@@ -364,8 +364,8 @@ override it." The skin is the only thing that applies look and layout. Engine: `
    - the local settings are backed up into `axf.legacy.look` (`look-migration@1`: first value kept, later runs add
      keys) and cleared; the document gets `legacy.own` (the moved picks) and `migrated { version, at, by }`; the
      profile gets `axf.skin.migrated`. `normalizeAppLook` keeps both fields through every writer (runtime, skins CLI).
-5. **Today's hub documents** (console on `enterprise-day` with a layout override, axHub with the skin off, Molly and
-   AmberX untouched) fold to nothing but the stamp (pinned in the check).
+5. **Today's hub documents** (console on `enterprise-day` with a layout override, axHub with the skin off, the other
+   apps untouched) fold to nothing but the stamp (pinned in the check).
 6. **The runtime** (`AxfRuntime`, every app with a look document, which is every real app): `ensureLook` runs the
    local half once per runtime and the document half when a document arrives, saving the folded document back
    (`migrateLocalLook`, `migrateLookDocument`); `swap` refuses a folded type other than `color-theme` with the skin

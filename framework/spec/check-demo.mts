@@ -157,7 +157,7 @@ ok(fx.generated.data.keywords.includes('approve') && fx.generated.data.keywords.
 eq(fx.generatedPlugin.data.steps[0].do, 'nav:ui-review', 'a plugin entry opens its own view');
 ok(fx.generatedPlugin.data.steps.some((s: { title: string }) => s.title === 'Contains'), 'a plugin lists what it contains');
 ok(fx.seconds.demo > 2 && fx.seconds.generated > fx.seconds.demo, 'length estimates grow with the words');
-eq(fx.walkthrough, { $axf: 'walkthrough@1', id: 'what-is-an-asset', title: 'What is an asset?', app: 'console', steps: [{ say: 'Hello.', do: 'nav:home', target: 'home' }, { say: 'Bye.', do: '', target: '' }], source: 'demonstration' }, 'walkthrough@1 shape Molly plays');
+eq(fx.walkthrough, { $axf: 'walkthrough@1', id: 'what-is-an-asset', title: 'What is an asset?', app: 'console', steps: [{ say: 'Hello.', do: 'nav:home', target: 'home' }, { say: 'Bye.', do: '', target: '' }], source: 'demonstration' }, 'walkthrough@1 shape the Gizmo guide plays');
 eq(fx.targets, { control: 'approve', screen: 'view:glossary-index', concept: '', view: 'ui-review', viewOwn: 'ui-review', viewScreen: 'builds' }, 'help targets and views');
 
 // books

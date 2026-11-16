@@ -91,7 +91,7 @@ node apps/console-web/plugins/maintenance/engine/profiles.mjs runs
 
 ## Commands (API, MCP, CLI)
 
-Every route is a plugin command (`forFramework: true`, so Molly gets voice commands too):
+Every route is a plugin command (`forFramework: true`, so every framework app gets voice commands too):
 
 | Command | Kind | What |
 | --- | --- | --- |

@@ -2,7 +2,7 @@
 
 Goal: Hostinger runs through axHub on the VPS (vault key), then the direct Claude Hostinger connector gets removed. Nov 5 2026.
 
-Status: axHub vault is configured but holds 3 secrets, none for Hostinger. `hostinger.*` calls fail with "credential not available". DNS for molly is already correct (molly A -> 31.97.13.252, checked via the Claude connector).
+Status: axHub vault is configured but holds 3 secrets, none for Hostinger. `hostinger.*` calls fail with "credential not available".
 
 ## Steps
 
@@ -13,7 +13,7 @@ Status: axHub vault is configured but holds 3 secrets, none for Hostinger. `host
 - [ ] 5. Paste the token when it prompts. Never paste it in chat.
 - [ ] 6. Run: `docker exec <same container> axhub vault status` and check the secret count went from 3 to 4.
 - [ ] 7. If the service is off, enable it: `docker exec <same container> axhub services enable hostinger`.
-- [ ] 8. Tell Amber. Amber reruns `hostinger.DNS_getDNSRecordsV1` for amberxai.com through axHub. Pass = molly record comes back.
+- [ ] 8. Tell Amber. Amber reruns `hostinger.DNS_getDNSRecordsV1` for amberxai.com through axHub. Pass = the zone's records come back.
 - [ ] 9. Only after step 8 passes: claude.ai -> Settings -> Connectors -> remove the Hostinger connector.
 - [ ] 10. Amber confirms Hostinger still answers through axHub after the connector is gone.
 
