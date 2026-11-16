@@ -10,6 +10,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type 
 import { createPortal } from 'react-dom';
 import { BANNER_SIDES, type PlacedAttachment } from '../../core/engines/banner';
 import { BANNER_WIDGET_MAX_WIDTH, BANNER_WIDGET_PRIORITY, BANNER_WIDGET_SHOWS, BANNER_WIDGET_SIZES, bannerWidgetCapCss, overflowWidgets, type BannerWidgetShow, type BannerWidgetSize, type BannerWidthUnit } from '../../core/engines/bannerwidgets';
+import { normalizeShape } from '../../core/engines/shape-rules.mjs';
 import { BANNER_WIDGETS_DIALOG, type AxfRuntime, type BannerWidget } from '../../core/runtime';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { Banner } from './Banner';
@@ -23,11 +24,20 @@ const SIZE_LABEL: Record<BannerWidgetSize, string> = { icon: 'Icon only', compac
 const SHOW_LABEL: Record<BannerWidgetShow, string> = { auto: 'Its own mix', both: 'Icon and text', icon: 'Icon only', text: 'Text only', number: 'Number only' };
 const SIDE_LABEL: Record<string, string> = { left: 'Left', center: 'Centre', right: 'Right' };
 
-/** What the banner item around a widget carries: its size, what it shows, its width cap. */
+/**
+ * What the banner item around a widget carries: its size, what it shows, its width cap, and its shape (shape@1): the
+ * resolved shape's kind as `data-fx-shape`, and when this one widget resolves to another shape than the app's (a
+ * per-widget pick or the banner's icon default), that shape's `--fx-shape-widget-*` tokens inline, which the chip inside
+ * inherits. The item stays an ordinary flex child sized by its content, so a wider shape (tag, pill) still snaps
+ * between its neighbours and never draws over them.
+ */
 export function bannerItemAttrs(rt: AxfRuntime, key: string): Record<string, unknown> {
   const v = rt.bannerWidgetView(key);
   const max = bannerWidgetCapCss(v.cap);
-  return { 'data-fx-wsize': v.size, 'data-fx-wshow': v.show === 'auto' ? undefined : v.show, ...(max ? { style: { maxWidth: max } } : {}) };
+  const own = rt.widgetShapeVars(key);
+  const kind = normalizeShape(rt.shapeData(own?.id ?? rt.resolveShape().id)).kind;
+  const style: Record<string, string> = { ...(own?.vars ?? {}), ...(max ? { maxWidth: max } : {}) };
+  return { 'data-fx-wsize': v.size, 'data-fx-wshow': v.show === 'auto' ? undefined : v.show, 'data-fx-shape': kind, ...(own ? { 'data-fx-shape-own': own.id } : {}), ...(Object.keys(style).length ? { style } : {}) };
 }
 
 /**

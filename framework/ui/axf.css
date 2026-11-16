@@ -217,7 +217,7 @@ button.fx-banner__badge { cursor: pointer; }
  * host); radius + clip-path + mask are read together, whichever is not `none` cuts the chip. The focus ring is drawn on
  * the item around the chip (never clipped), the hover tint is a fill inside the shape, so both stay visible.
  */
-.fx-banner :where(.fx-banner__badge, .fx-widget-counter__num, .fx-widget-theme, .fx-widget-avatar img, .fx-widget-avatar__initials, .fx-banner__more-btn .fx-iconbtn) {
+.fx-banner :where(.fx-banner__badge, .fx-widget-counter__num, .fx-widget-status__dot, .fx-widget-theme, .fx-widget-avatar img, .fx-widget-avatar__initials, .fx-banner__more-btn .fx-iconbtn) {
   border-radius: var(--fx-shape-widget-radius); clip-path: var(--fx-shape-widget-clip);
   -webkit-mask: var(--fx-shape-widget-mask) center / 100% 100% no-repeat; mask: var(--fx-shape-widget-mask) center / 100% 100% no-repeat;
   corner-shape: var(--fx-shape-widget-corner);
