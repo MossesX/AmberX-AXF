@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6805,
- "updatedAt": "2026-11-16T19:55:50.986Z",
+ "rev": 6811,
+ "updatedAt": "2026-11-16T19:58:26.882Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -218459,7 +218459,7 @@
    "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "#703",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-16T19:54:38.836Z",
+   "updatedAt": "2026-11-16T19:57:59.503Z",
    "builtAt": "",
    "notes": [
     {
@@ -218848,12 +218848,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:57:12.247Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:47:26.735Z",
-     "updatedAt": "2026-11-14T04:47:26.735Z"
+     "updatedAt": "2026-11-16T19:57:12.718Z"
     },
     {
      "id": "s11",
@@ -218872,12 +218872,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:57:59.503Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:47:26.735Z",
-     "updatedAt": "2026-11-14T04:47:26.735Z"
+     "updatedAt": "2026-11-16T19:57:59.836Z"
     },
     {
      "id": "s12",
@@ -219287,7 +219287,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -241881,16 +241881,16 @@
    "title": "Fix the red CI on the blocked builds so they land",
    "category": "",
    "detail": "Split from get-main-green-unblock-lander-land-axf. Main is NOT red (its last runs succeeded or were cancelled), so the red CI is on the branches themselves. For each build the auto-lander shows as 'CI is red' (owner-recognized-everywhere-veto, pass-approval-hook-deep-link-amberx-notification, land-project-duplicate-boilerplate, picker-dialog-plugin-replaces-all, all-settings-interfaces-open-floating, themed-native-controls-plugin, new-asset-type-animated-expanding-row, quick-settings-pinned-collapsible-pane, orchestrator-settings-collapsible-split, context-menus-plugin-one-true-source, projects-own-everything-per-project, pending-tab-one-collapsed-row-per-2, shipped-features-open-button-views-each, fix-build-whose-session-finishes-phase-e, group-chat-audio-hear-agents-talk-while, ui-manager-floating-window-to-select-any, console-look-becomes-default-axhub-skin, vps-sends-shipped-features-every-merge): merge origin/main into the branch, read the failed CI log, fix it, push, and let the auto-lander land them one at a time. Find the common cause first; most fail the same Web Dev Console + Build engine sweep checks. Also shipped-features-organized-sortable (build rules ci-checks). Do NOT touch the axf-data / Postgres branches (another build has those).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/fix-red-ci-blocked-builds-they-land",
-   "pr": "",
+   "pr": "#726",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:28.078Z",
-   "updatedAt": "2026-11-16T19:55:46.472Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T19:58:17.812Z",
+   "builtAt": "2026-11-16T19:58:12.228Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -241947,6 +241947,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-red-ci-blocked-builds-they-land--lenny, shared account login)",
      "at": "2026-11-16T19:13:02.604Z"
+    },
+    {
+     "text": "Phase 1 done. Main itself fails 3 checks (console-control inventory, shared help bake, gate token manifest): fixed on fix/ci-common-cause, PR #726. 2 branches landed, 17 in the merge queue. Still red on their own: themed-native (light checks), context-menus (glossary), picker-dialog (check-agent-slots).",
+     "at": "2026-11-16T19:58:17.812Z"
     }
    ],
    "approvals": [],
@@ -242576,12 +242580,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:58:12.227Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T16:31:32.976Z",
-     "updatedAt": "2026-11-16T16:31:32.976Z"
+     "updatedAt": "2026-11-16T19:58:12.496Z"
     }
    ],
    "profiles": [
@@ -242592,7 +242596,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -244362,7 +244366,7 @@
    "pr": "#725",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:38.814Z",
-   "updatedAt": "2026-11-16T19:53:18.339Z",
+   "updatedAt": "2026-11-16T19:56:35.826Z",
    "builtAt": "",
    "notes": [
     {
@@ -244915,12 +244919,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:55:54.288Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:31:29.535Z",
-     "updatedAt": "2026-11-16T18:31:29.535Z"
+     "updatedAt": "2026-11-16T19:55:54.827Z"
     },
     {
      "id": "s17",
@@ -244939,12 +244943,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:56:35.826Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:31:29.535Z",
-     "updatedAt": "2026-11-16T18:31:29.535Z"
+     "updatedAt": "2026-11-16T19:56:36.251Z"
     },
     {
      "id": "s18",
@@ -245223,7 +245227,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
