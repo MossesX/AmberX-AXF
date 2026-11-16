@@ -44,3 +44,26 @@ Out of scope, not touched: `claude/axf-data-postgres-real-tables-own`, `claude/d
 All five builds re-linked with `builds-live.mjs link <id> --branch claude/<id> --pr <n>` (they were already linked; status `built`): #610, #598, #589, #667, #705, all open.
 #667 (demo video series) was still a draft although every step of its build is ticked; the lander skips drafts, so it was marked ready for review.
 `land.mjs queue list` lists all five; none is queued yet only because CI on the new heads is still running or hasn't started. The lander adds each one by itself once its checks are green. Nothing was added or merged by hand.
+
+## After (s10)
+
+| Branch | Before (local / origin) | After (local = origin) |
+|---|---|---|
+| claude/server-gate-one-session-per-build-no | be75e0ae8 / 949c25d49 | 8b5495bd1 |
+| claude/one-source-truth-console-shows-only-what | dc873adac / a7febca2e | eccfe754a |
+| claude/console-axhub-retry-failed-calls | da3e3477b / ba0c8fa31 | e68f9aa05 |
+| claude/demo-video-series-three-minute-browser | 388338407 / 6936a3fc8 | 5e77e6939 |
+| claude/auto-lander-controls-in-the-gate-plugin | 5fde0e9bd / 5fde0e9bd | 61013c9db |
+
+- `git ls-remote origin` matches the local head for all five branches; both strays are gone locally and were never on origin.
+- `node framework/cli/builds-store.mjs verify`: valid builds@1, 948 records.
+- No force push anywhere. Every merge kept both sides' commits.
+
+## API
+
+No UI was added or changed. The branches reach main through the auto-lander as before: `land.mjs queue list|…` (CLI), MCP `push_banner_mergequeue_*`, the console REST merge-queue routes, and voice (AmberX) through the same console actions.
+
+## Left open
+
+- `/root/axf-builds/merge-main-land-one-source-truth-console`: an old worktree, detached at a7febca2e, with an expired Nov 14 build lock and only builds-store snapshots in it. It is harmless and was left alone; remove it with `git worktree remove --force` when convenient.
+- The five PRs still need green CI on their new heads before the lander queues them. If one goes red, the lander's own banner shows it.
