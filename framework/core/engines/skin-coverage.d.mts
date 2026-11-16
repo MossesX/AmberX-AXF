@@ -58,3 +58,5 @@ export function uncoveredTypes(spec: TypeSpecs, targets?: StyleTargets, never?: 
 export function coverageSummary(rows: readonly CoverageRow[]): CoverageSummary;
 export function partsTypes(spec: TypeSpecs, targets?: StyleTargets): string[];
 export function partsErrors(parts: unknown, spec: TypeSpecs, targets?: StyleTargets): string[];
+export function referenceErrors(spec: TypeSpecs, targets?: StyleTargets, never?: readonly string[]): string[];
+export function referencedTypes(spec: TypeSpecs): Array<{ type: string; via: string }>;

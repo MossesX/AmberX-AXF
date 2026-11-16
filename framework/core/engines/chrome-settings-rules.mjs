@@ -68,8 +68,18 @@ export const CHROME_INSTANCE_KEY = (type, instance) => `axf.chrome.${type}.${ins
 export const CHROME_INSTANCE_ASSET_KEY = (type, instance) => `axf.chrome.${type}.${instance}.asset`;
 /** The settings interface one instance picked for its own dialog (every kind; unset = the kind's pick, else the default). */
 export const CHROME_INSTANCE_INTERFACE_KEY = (type, instance) => `axf.chrome.${type}.${instance}.interface`;
-/** Suffixes of per-instance keys that are picks, not field overrides (never listed as "assets with edits"). */
-export const CHROME_INSTANCE_PICK_SUFFIXES = ['.asset', '.interface'];
+/**
+ * instance-look@1 (build own-look-per-grid-and-tab-group, Nov 16 2026): the kinds whose instances carry an own-look
+ * record (core/engines/instance-look.ts). `grid` is a look kind without being a chrome-settings@1 kind: a grid has no
+ * settings interface asset yet, so its record is addressed here and nowhere else in this registry.
+ */
+export const CHROME_LOOK_KINDS = ['tab-group', 'grid'];
+/** One instance's own look record: axf.chrome.<kind>.<instance>.look (a cleaned instance-look@1 record). */
+export const CHROME_INSTANCE_LOOK_KEY = (kind, instance) => `axf.chrome.${kind}.${instance}.look`;
+/** The app-wide look record of a kind (every instance of it in this app): axf.chrome.<kind>.look. */
+export const CHROME_KIND_LOOK_KEY = (kind) => `axf.chrome.${kind}.look`;
+/** Suffixes of per-instance keys that are picks or looks, not field overrides (never listed as "assets with edits"). */
+export const CHROME_INSTANCE_PICK_SUFFIXES = ['.asset', '.interface', '.look'];
 /** A tab group's remembered tab and fold state (per device). */
 export const TAB_GROUP_LAST_KEY = (instance) => `axf.tabs.${instance}.last`;
 export const TAB_GROUP_FOLD_KEY = (instance) => `axf.tabs.${instance}.folded`;

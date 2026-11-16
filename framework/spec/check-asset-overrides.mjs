@@ -15,6 +15,10 @@ const saved = {
   'axf.chrome.tab-group.settings.main': { style: 'pills', bogus: 1 },
   'axf.chrome.tab-group.settings.main.asset': 'pills-tabs',
   'axf.chrome.tab-group.settings.main.interface': 'chrome-tab-group-axf-console',
+  // instance-look@1 records are looks, never field overrides (an own look is not an "asset with edits")
+  'axf.chrome.tab-group.settings.main.look': { hoverBg: 'accent' },
+  'axf.chrome.tab-group.look': { radius: 'pill' },
+  'axf.chrome.grid.ui-review.items.look': { rowAltBg: 'surface2' },
   'axf.chrome.toolbar.app.interface': 'chrome-toolbar',
   'axf.chrome.toolbar.app': { variant: 'labels', density: 'nope' },
   'axf.chrome.banner.app': { height: 99 },

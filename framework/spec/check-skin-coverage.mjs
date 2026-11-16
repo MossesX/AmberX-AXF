@@ -18,9 +18,10 @@
 import { readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { COVERAGE_KINDS, SKIN_SCOPE_DEFAULT, SKIN_SCOPE_KINDS, coverageSummary, coverageTable, declarationErrors, partsTypes, skinScopeChain } from '../core/engines/skin-coverage.mjs';
+import { COVERAGE_KINDS, SKIN_SCOPE_DEFAULT, SKIN_SCOPE_KINDS, coverageSummary, coverageTable, declarationErrors, partsTypes, referenceErrors, skinScopeChain } from '../core/engines/skin-coverage.mjs';
 import { SKIN_NEVER, normalizeSkinChrome, skinChromeErrors } from '../core/engines/skin-rules.mjs';
-import { CHROME_TYPES } from '../core/engines/chrome-settings-rules.mjs';
+import { CHROME_LOOK_KINDS, CHROME_TYPES } from '../core/engines/chrome-settings-rules.mjs';
+import { INSTANCE_LOOK_KINDS, INSTANCE_LOOK_TYPE } from '../core/engines/instance-look-rules.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const readJson = (f) => JSON.parse(readFileSync(f, 'utf8'));
@@ -36,8 +37,21 @@ const problems = [];
 for (const r of rows) if (r.by === 'uncovered') problems.push(`${r.type}: ${r.why}`);
 for (const [type, t] of Object.entries(spec)) {
   for (const e of declarationErrors(type, t)) if (!problems.some((p) => p.startsWith(`${type}:`))) problems.push(e);
-  const via = t?.skin?.via;
-  if (t?.skin?.by === 'reference' && via && via !== 'iconPack' && !spec[via]) problems.push(`${type}: skin.via "${via}" is neither iconPack nor a registered type`);
+}
+// a reference points at iconPack or at a registered type that is itself covered (the chain never ends in nothing)
+for (const e of referenceErrors(spec, targets, SKIN_NEVER)) if (!problems.includes(e)) problems.push(e);
+// instance-look@1 (build own-look-per-grid-and-tab-group): the per-instance look record is reached through the skin's own
+// floor (its style theme's grid / tabs token maps), its kinds are the chrome-settings look kinds, and every kind that is a
+// registered type is one a skin picks as a slot (so the skin reaches the row and its own look alike)
+{
+  const row = rows.find((r) => r.type === INSTANCE_LOOK_TYPE);
+  if (!row) problems.push(`${INSTANCE_LOOK_TYPE} is not a registered asset type`);
+  else if (row.by !== 'reference' || row.via !== 'skin') problems.push(`${INSTANCE_LOOK_TYPE} must be covered by reference via skin (got ${row.by}${row.via ? ` via ${row.via}` : ''})`);
+  if (JSON.stringify(INSTANCE_LOOK_KINDS) !== JSON.stringify(CHROME_LOOK_KINDS)) problems.push('INSTANCE_LOOK_KINDS (instance-look-rules) and CHROME_LOOK_KINDS (chrome-settings-rules) must be the same list');
+  for (const kind of INSTANCE_LOOK_KINDS) {
+    const r = rows.find((x) => x.type === kind);
+    if (r && r.by !== 'slot') problems.push(`instance-look kind "${kind}" is covered by ${r.by}, not as a slot`);
+  }
 }
 for (const type of Object.keys(targets)) if (!spec[type]) problems.push(`customize target "${type}" is not a registered asset type`);
 // the kinds list is the contract (docs, the UI's legend and the CLI print it)

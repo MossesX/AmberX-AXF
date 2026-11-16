@@ -35,7 +35,8 @@ import {
   type InstanceLookKeyId,
   type InstanceLookKind,
 } from './instance-look-rules.mjs';
-import { COMPONENT_TOKEN_FAMILIES, componentTokenVar } from './component-tokens.mjs';
+import { COMPONENT_TOKEN_FAMILIES, INSTANCE_TOKENS_KEY, componentTokenVar, normalizeInstanceTokens } from './component-tokens.mjs';
+import { CHROME_INSTANCE_LOOK_KEY, CHROME_KIND_LOOK_KEY } from './chrome-settings-rules.mjs';
 
 export * from './instance-look-rules.mjs';
 
@@ -59,10 +60,10 @@ export interface ResolvedInstanceLook {
   followsSkin: boolean;
 }
 
-/** The settings key of one instance's record: axf.chrome.<kind>.<id>.look. */
-export const instanceLookSettingsKey = (kind: InstanceLookKind, id: string): string => `axf.chrome.${kind}.${id}.look`;
-/** The settings key of the app-wide record of a kind: axf.chrome.<kind>.look. */
-export const kindLookSettingsKey = (kind: InstanceLookKind): string => `axf.chrome.${kind}.look`;
+/** The settings key of one instance's record: axf.chrome.<kind>.<id>.look (chrome-settings-rules CHROME_INSTANCE_LOOK_KEY). */
+export const instanceLookSettingsKey = (kind: InstanceLookKind, id: string): string => CHROME_INSTANCE_LOOK_KEY(kind, id);
+/** The settings key of the app-wide record of a kind: axf.chrome.<kind>.look (chrome-settings-rules CHROME_KIND_LOOK_KEY). */
+export const kindLookSettingsKey = (kind: InstanceLookKind): string => CHROME_KIND_LOOK_KEY(kind);
 const LOOK_KEY = /^axf\.chrome\.(tab-group|grid)\.(?:([a-z0-9][a-z0-9._:/-]{0,119})\.)?look$/i;
 /** 'axf.chrome.grid.ui-review.items.look' → { kind, id } ('' id = the app-wide record), or null for any other key. */
 export function parseInstanceLookSettingsKey(key: unknown): { kind: InstanceLookKind; id: string } | null {
@@ -241,6 +242,65 @@ export function instanceLookList(saved: unknown, colourTokens: readonly string[]
     if (Object.keys(look).length) out.push({ kind: p.kind, id: p.id, look });
   }
   return out.sort((a, b) => Number(a.id !== '') - Number(b.id !== '') || a.kind.localeCompare(b.kind) || a.id.localeCompare(b.id));
+}
+
+/* ------------------------------------------------------------------ migration from component-tokens@1 per-instance values */
+
+export interface InstanceLookMigration {
+  /** The settings map after the move (a copy; equal to the input when nothing moved). */
+  settings: Saved;
+  /** Every legacy value that became a look value: which record, which key, from which family token. */
+  moved: Array<{ kind: InstanceLookKind; id: string; key: InstanceLookKeyId; from: string; value: string }>;
+  /** Every legacy value left where it was (a raw colour, a shadow, a weight, or a token with no look key): still applied by component-tokens@1. */
+  kept: Array<{ family: string; instance: string; token: string; value: string | number }>;
+  changed: boolean;
+}
+
+const KIND_OF_FAMILY: Record<string, InstanceLookKind> = { grid: 'grid', tabs: 'tab-group' };
+
+/**
+ * Move the legacy per-row overrides (component-tokens@1 `axf.tokens.instances`, entries `tabs.<id>` / `grid.<id>`) into
+ * instance-look@1 records: every family token that binds to a look key and holds a token-ref value becomes that key of
+ * `axf.chrome.<kind>.<id>.look` (an existing look value is never overwritten); the moved tokens leave the legacy entry
+ * (values and history); anything the record cannot express stays in `axf.tokens.instances` and keeps applying through
+ * component-tokens@1, so nothing is lost. Idempotent: a second run moves nothing. Pure: the caller saves `settings`.
+ */
+export function migrateLegacyInstanceLooks(saved: unknown, colourTokens: readonly string[]): InstanceLookMigration {
+  const base: Saved = isObj(saved) ? { ...saved } : {};
+  const legacy = normalizeInstanceTokens(base[INSTANCE_TOKENS_KEY]) as Record<string, { values: Record<string, string | number>; previous?: Record<string, string | number> }>;
+  const out: InstanceLookMigration = { settings: base, moved: [], kept: [], changed: false };
+  if (!Object.keys(legacy).length) return out;
+  const nextLegacy: typeof legacy = {};
+  for (const [entryId, entry] of Object.entries(legacy)) {
+    const dot = entryId.indexOf('.');
+    const family = entryId.slice(0, dot), instance = entryId.slice(dot + 1);
+    const kind = KIND_OF_FAMILY[family];
+    const values = { ...entry.values };
+    const previous = entry.previous ? { ...entry.previous } : undefined;
+    if (kind && isInstanceLookId(instance)) {
+      const key = instanceLookSettingsKey(kind, instance);
+      const look: InstanceLook = normalizeInstanceLook(base[key], colourTokens);
+      let touched = false;
+      for (const lookKey of INSTANCE_LOOK_KEY_IDS) {
+        const famKey = familyKeyFor(kind, lookKey);
+        if (!famKey || !(famKey in values)) continue;
+        const v = lookValueFromFamily(lookKey, values[famKey], colourTokens);
+        // not a look value, or the record already says something for this key: the legacy value stays where it is
+        if (v === null || lookKey in look) continue;
+        look[lookKey] = v; touched = true;
+        out.moved.push({ kind, id: instance, key: lookKey, from: famKey, value: v });
+        delete values[famKey];
+        if (previous) delete previous[famKey];
+      }
+      if (touched) { out.settings[key] = look; out.changed = true; }
+    }
+    for (const [token, value] of Object.entries(values)) out.kept.push({ family, instance, token, value });
+    if (Object.keys(values).length || (previous && Object.keys(previous).length)) nextLegacy[entryId] = previous === undefined ? { values } : { values, previous };
+  }
+  if (out.changed) {
+    if (Object.keys(nextLegacy).length) out.settings[INSTANCE_TOKENS_KEY] = nextLegacy; else delete out.settings[INSTANCE_TOKENS_KEY];
+  }
+  return out;
 }
 
 /** The CSS custom property names a kind's root may carry, for stylesheets and checks: every --fx-inst-* plus the bound family tokens. */

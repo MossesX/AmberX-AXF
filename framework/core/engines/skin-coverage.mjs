@@ -196,6 +196,33 @@ export function coverageOf(type, spec, targets = {}, never = []) {
   return { ...base, by: 'slot', also: elements.length ? ['parts'] : [] };
 }
 
+/**
+ * A `reference` declaration must point somewhere a skin reaches: `iconPack` (the skin's own field) or a registered type
+ * that is itself covered (a slot, parts or a bundle: never `none` or uncovered, or the chain would end in nothing).
+ * instance-look@1 (build own-look-per-grid-and-tab-group) is the first type referenced through `skin` itself: a skin sets
+ * the floor of every grid's / tab row's own look through its style theme's grid / tabs token maps, so the per-instance
+ * record counts as covered by the skin it can only ever name tokens of. CI (spec/check-skin-coverage.mjs) lists these.
+ */
+export function referenceErrors(spec, targets = {}, never = []) {
+  const out = [];
+  if (!isObj(spec)) return out;
+  for (const [type, t] of Object.entries(spec)) {
+    const d = declaredCoverage(t);
+    if (!d || d.by !== 'reference') continue;
+    if (d.via === 'iconPack') continue;
+    if (!d.via) { out.push(`${type}: skin.by "reference" needs via`); continue; }
+    if (!spec[d.via]) { out.push(`${type}: skin.via "${d.via}" is neither iconPack nor a registered type`); continue; }
+    const target = coverageOf(d.via, spec, targets, never);
+    if (target.by === 'none' || target.by === 'uncovered') out.push(`${type}: skin.via "${d.via}" is covered by ${target.by}, so a skin cannot reach ${type} through it`);
+  }
+  return out;
+}
+
+/** The types a skin reaches through another (`reference`): [{ type, via }], registry order. */
+export function referencedTypes(spec) {
+  return Object.entries(isObj(spec) ? spec : {}).map(([type, t]) => ({ type, via: declaredCoverage(t)?.by === 'reference' ? declaredCoverage(t).via : '' })).filter((x) => x.via);
+}
+
 /** Every registered type in registry order with its coverage. */
 export function coverageTable(spec, targets = {}, never = []) {
   return Object.keys(isObj(spec) ? spec : {}).map((type) => coverageOf(type, spec, targets, never));

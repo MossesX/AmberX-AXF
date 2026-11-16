@@ -43,6 +43,8 @@ import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppear
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY, buildHelpIndex, helpTarget, introFor, introToShow, markSeen, resolveHelp, type HelpDescriptor, type HelpEntry, type HelpIndex, type HelpIntro } from './engines/help';
 import { Diagnostics } from './diagnostics';
 import { CHROME_INSTANCE_KEY, CHROME_TYPES, chromeInstanceData } from './engines/chrome-settings-rules.mjs';
+import { colourTokensOf, migrateLegacyInstanceLooks } from './engines/instance-look';
+import assetTypeSpec from '../schemas/asset-types.json';
 import { OutputTerminal } from './terminal';
 import {
   ASSET_TYPES,
@@ -735,6 +737,7 @@ export class AxfRuntime {
   /** The app's look document; the first read saves the snapshot, so the app's current look is its default from then on. */
   private ensureLook(): AppLookDocument | null {
     this.migrateLocalLook();
+    this.migrateInstanceLooks();
     if (!this.lookLayerOn()) return null;
     const store = this.lookStore();
     const cur = store.get();
@@ -768,6 +771,21 @@ export class AxfRuntime {
     for (const k of r.clear) this.settings.clear(k);
     for (const [k, v] of Object.entries(r.set)) this.settings.set(k, v);
     if (r.clear.length) this.terminal.ok('appearance', `skins only: ${r.clear.length} retired look setting(s) backed up under ${LEGACY_LOOK_KEY}: ${r.clear.join(', ')}`);
+  }
+
+  /* ---- instance-look@1 (build own-look-per-grid-and-tab-group, Nov 16 2026): once per profile on load, engines/instance-look.ts ---- */
+
+  private instanceLooksMigrated = false;
+  /** Legacy per-row token values (component-tokens@1 axf.tokens.instances) that are token refs move into own-look records; the rest stay. */
+  private migrateInstanceLooks(): void {
+    if (this.instanceLooksMigrated) return;
+    this.instanceLooksMigrated = true;
+    const values = this.settings.savedValues();
+    const r = migrateLegacyInstanceLooks(values, colourTokensOf(assetTypeSpec));
+    if (!r.changed) return;
+    for (const k of Object.keys(values)) if (!(k in r.settings)) this.settings.clear(k);
+    for (const [k, v] of Object.entries(r.settings)) if (JSON.stringify(values[k]) !== JSON.stringify(v)) this.settings.set(k, v as SettingValue);
+    this.terminal.ok('appearance', `instance looks: ${r.moved.length} legacy per-row value(s) moved into own-look records (axf.chrome.<kind>.<id>.look); ${r.kept.length} kept as token values`);
   }
 
   /** The pure fold of one document against this app's skins and registry (engines/look-migration.mjs). */
