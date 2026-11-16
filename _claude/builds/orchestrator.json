@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:26:17.138Z",
+ "updatedAt": "2026-11-16T19:26:34.297Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -161353,7 +161353,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:19:11.374Z",
-   "updatedAt": "2026-11-16T19:25:51.997Z",
+   "updatedAt": "2026-11-16T19:26:17.195Z",
    "builtAt": "",
    "notes": [
     {
@@ -161390,7 +161390,7 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Gate & rules > Auto-lander tab: make the grid ONE row per build (no multi-line rows). Columns: build, what it does (plain words), PR, status (ready/blocked), reason, commits behind main (sortable), last activity. Row actions: Open, Merge main + fix, Archive, Hold; multi-select bulk Archive. Filter e.g. 'behind > 500'. Stale records with no branch/PR are hidden or cleaned. Same data and actions on REST, MCP, CLI and voice. Tests, land through the orchestrator.",
+     "text": "Gate & rules > Auto-lander tab: TWO rows per build, never more (row 1: PR number, build name, status, commits behind main, actions; row 2: what it does in plain words + why blocked). Columns sortable by tapping the header: PR number, name, commits behind main, status. Row actions: Open, Merge main + fix, Archive, Hold; multi-select bulk Archive. Filter e.g. 'behind > 500'. Hide/clean stale records with no branch/PR. Same data and actions on REST, MCP, CLI and voice.",
      "model": "Opus",
      "why": "",
      "phase": "",
