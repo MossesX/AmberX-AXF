@@ -453,6 +453,19 @@ async def pipeline_selfcheck(request: Request) -> dict[str, Any]:
     return _pipeline("selfcheck", "--request", "--reason", reason, who=(brett_click(request) or "console")[:80])
 
 
+@router.post("/pipeline/requeue-stuck")
+async def pipeline_requeue_stuck(request: Request) -> dict[str, Any]:
+    """{apply?: bool}: Pending builds whose last run finished its phase with steps left (parked by the old exit rule):
+    listed (dry run) or, with apply, moved back to the Queue at their place, journalled. Same function as the CLI
+    (pipeline.mjs requeue-stuck), the MCP tool, voice and builds-reconcile --apply."""
+    try:
+        body = await request.json()
+    except (ValueError, UnicodeDecodeError):
+        body = {}
+    apply = bool(isinstance(body, dict) and body.get("apply") is True)
+    return _pipeline("requeue-stuck", *(["--apply"] if apply else []), who=(brett_click(request) or "console")[:80])
+
+
 PIPELINE_TABS = ("pending", "queue", "active", "incomplete", "complete", "errors", "archive", "deleted")
 
 
