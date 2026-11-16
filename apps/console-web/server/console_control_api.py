@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import threading
 import time
 from collections import deque
@@ -325,6 +326,12 @@ def voice(text: str, by: str = "voice", audience: str = OWNER, grants: set[str] 
     """A spoken phrase → its command (console_control.voice_intent), words resolved by the same search, then run with the
     same guards. The answer carries `heard`, `intent`, `command` and `say` (the line to speak back)."""
     g = grants if grants is not None else {"*"}
+    page = open_url_phrase(text)
+    if page is not None:  # "open page console.amberxai.com/…" → open-url-route@1 console-tab
+        ans = open_url(page["url"], page.get("newTab"), by, audience, g, to)
+        say = f"Opened it in the console tab ({ans.get('mode') or 'here'})." if ans.get("opened") else \
+            "That isn't one of your pages." if ans.get("reason") == "url-refused" else "No console tab is on screen. Ask AmberX to open it on the phone."
+        return {**ans, "heard": text, "intent": {"verb": "navigate", **page}, "command": {"verb": "navigate", **page}, "say": say}
     intent = cc.voice_intent(text)
     if intent is None:
         return {"$axf": cc.FRAME, "ok": False, "code": "invalid", "message": "not a console command", "heard": text, "intent": None, "say": "That isn't a console command I know."}
@@ -382,6 +389,23 @@ def open_url_last(audience: str = OWNER, n: int = 20) -> dict[str, Any]:
     relay = _relay()
     items = relay.navigated(audience, n) if relay is not None and hasattr(relay, "navigated") else []
     return {"$axf": "open-url-route@1", "ok": True, "items": items, "count": len(items)}
+
+
+OPEN_URL_PHRASE = re.compile(r"^(?:open|load|show(?: me)?|go to)(?: the)? (?:page|site|url|link) (\S+?)(?: in (?:a )?(new|this|the same) tab)?[.!]?$", re.I)
+
+
+def open_url_phrase(text: str) -> dict[str, Any] | None:
+    """A spoken "open page <address> [in a new tab]" → {url, newTab?}; a bare name ("console") is <name>.amberxai.com."""
+    m = OPEN_URL_PHRASE.match(str(text or "").strip())
+    if not m:
+        return None
+    raw = m.group(1).strip().rstrip("/") or ""
+    if "://" not in raw:
+        raw = "https://" + (raw if "." in raw.split("/", 1)[0] else f"{raw}.amberxai.com")
+    out: dict[str, Any] = {"url": raw if "/" in raw.split("://", 1)[1] else raw + "/"}
+    if m.group(2):
+        out["newTab"] = m.group(2).lower() == "new"
+    return out
 
 
 def _kinds(v: str | None) -> list[str] | None:

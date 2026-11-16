@@ -11,6 +11,8 @@
  *   axf console scroll up|down|page-up|page-down|top|bottom [--amount 0.5] [--address <pane>] · scroll to <address>
  *   axf console plugin enable|disable <plugin> [--force]
  *   axf console voice "<phrase>"                       what AmberX does with a spoken phrase ("scroll down", "disable plugin skins")
+ *   axf console open-url <url> [--new-tab|--same-tab]  open one of Brett's amberxai.com pages in the console tab he focused last
+ *   axf console open-url last                           the last pages asked of a console tab and what happened
  *   axf console do <verb> [address] [--value v] [--confirm] [--reason "…"] [--to recent|all|<client>]
  *   --json  the answer as JSON · --remote <url>  another console
  *
@@ -18,7 +20,7 @@
  */
 import { pathToFileURL } from 'node:url';
 
-export const CONTROL_SUBCOMMANDS = new Set(['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice']);
+export const CONTROL_SUBCOMMANDS = new Set(['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice', 'open-url']);
 const VERBS = ['open', 'state', 'press', 'set', 'scroll', 'focus', 'search', 'list', 'plugin.enable', 'plugin.disable'];
 const SCROLL_DIRS = ['up', 'down', 'page-up', 'page-down', 'top', 'bottom', 'to'];
 const FLAGS_WITH_VALUE = new Set(['value', 'reason', 'to', 'kinds', 'limit', 'under', 'source', 'amount', 'address', 'remote', 'by']);
@@ -88,6 +90,11 @@ export function toRequest(argv) {
       if (!text) throw new Error('usage: axf console voice "<phrase>"');
       return { method: 'POST', path: '/voice', body: { text, ...extra } };
     }
+    case 'open-url': {
+      if (args[0] === 'last') return { method: 'GET', path: `/navigate/last${flags.limit ? `?n=${Number(flags.limit)}` : ''}` };
+      if (!args[0]) throw new Error('usage: axf console open-url <https://….amberxai.com/…> [--new-tab|--same-tab] · open-url last');
+      return { method: 'POST', path: '/navigate', body: { url: args[0], ...(flags['new-tab'] ? { newTab: true } : flags['same-tab'] ? { newTab: false } : {}), ...extra } };
+    }
     case 'do': {
       const [verb, address] = args;
       if (!VERBS.includes(verb)) throw new Error(`usage: axf console do <${VERBS.join('|')}> [address] [--value v] [--confirm]`);
@@ -116,8 +123,11 @@ export async function send(req, { base = process.env.AXF_CONSOLE_URL || 'https:/
 
 /** A few readable lines for an answer. */
 export function describe(r) {
+  if (!r.ok && r.$axf === 'open-url-result@1') return [`✗ ${r.route}: ${r.message ?? r.reason}${r.fallThrough ? ' (try AmberX next: amberx.open_url)' : ''}`];
   if (!r.ok) return [`✗ ${r.code}: ${r.message}`, ...(r.openUrl ? [`  open the console: ${r.openUrl}`] : []), ...(r.nearest?.length ? [`  nearest: ${r.nearest.join(', ')}`] : [])];
   const out = [];
+  if (r.$axf === 'open-url-result@1') return [`${r.opened ? '✓' : '✗'} ${r.route}${r.mode ? ` (${r.mode})` : ''}: ${r.message ?? r.reason}`];
+  if (r.$axf === 'open-url-route@1' && Array.isArray(r.items)) return r.items.length ? r.items.map((i) => `${i.opened ? '✓' : '✗'} ${i.at} ${i.url} → ${i.route}${i.mode ? ` (${i.mode})` : ''} · ${i.reason} · ${i.ms} ms`) : ['no page opened yet'];
   if (Array.isArray(r.hits)) for (const h of r.hits) out.push(`${h.address}  ${h.label}${h.detail ? `  · ${h.detail}` : ''}`);
   else if (Array.isArray(r.targets)) { out.push(`${r.targets.length} targets (${r.source ?? 'console'})`); for (const t of r.targets.slice(0, 200)) out.push(`${t.address}  ${t.label}`); }
   else out.push(`✓ ${r.verb ?? 'ok'}${r.address ? ` ${r.address}` : ''}${r.value !== undefined ? ` = ${JSON.stringify(r.value)}` : ''}${r.enabled !== undefined ? ` (${r.enabled ? 'on' : 'off'})` : ''}`);

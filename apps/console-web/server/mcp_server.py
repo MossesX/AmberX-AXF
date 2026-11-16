@@ -1068,7 +1068,7 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
 # ---------------------------------------------------------------------- console control (console-control@1, CONSOLE-CONTROL.md)
 
 CONSOLE_CONTROL_TOOLS = ("console_control_targets", "console_control_state", "console_control_do", "console_control_search", "console_control_focus",
-                         "console_control_scroll", "console_control_plugin", "console_control_voice")
+                         "console_control_scroll", "console_control_plugin", "console_control_voice", "console_open_url", "console_open_url_last")
 ADDRESS_RE = re.compile(r"^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):")
 
 
@@ -1086,6 +1086,11 @@ def console_control_runner() -> Callable[[dict[str, Any]], dict[str, Any]]:
         if body.get("verb") == "voice":
             req = urllib.request.Request(f"{base}/voice", data=json.dumps({"text": body.get("text"), "by": body.get("by"), "to": body.get("to")}).encode(), method="POST",
                                          headers={"content-type": "application/json", **auth})
+        elif body.get("verb") == "navigate":
+            req = urllib.request.Request(f"{base}/navigate", data=json.dumps({k: body[k] for k in ("url", "newTab", "by", "to") if k in body}).encode(), method="POST",
+                                         headers={"content-type": "application/json", **auth})
+        elif body.get("verb") == "navigate.last":
+            req = urllib.request.Request(f"{base}/navigate/last?n={int(body.get('n') or 20)}", headers=auth)
         elif body.get("verb") == "targets":
             q = urllib.parse.urlencode({k: body[k] for k in ("under", "kinds", "source") if body.get(k)})
             req = urllib.request.Request(f"{base}/targets?{q}", headers=auth)
@@ -1113,6 +1118,10 @@ def console_control_runner() -> Callable[[dict[str, Any]], dict[str, Any]]:
             return api.targets(str(body.get("under") or ""), ks or None, str(body.get("source") or "auto"), str(body.get("by") or "mcp"))
         if body.get("verb") == "voice":
             return api.voice(str(body.get("text") or ""), str(body.get("by") or "voice"), to=str(body.get("to") or "recent"))
+        if body.get("verb") == "navigate":
+            return api.open_url(body.get("url"), body.get("newTab"), str(body.get("by") or "mcp"), to=str(body.get("to") or "recent"))
+        if body.get("verb") == "navigate.last":
+            return api.open_url_last(n=int(body.get("n") or 20))
         return api.command(body, str(body.get("by") or "mcp"))
 
     return run
@@ -1197,6 +1206,26 @@ def _register_console_control_tools(mcp: MCPServer, run: Callable[[dict[str, Any
         if not r.get("ok") and r.get("code") not in ("confirmation_required", "unavailable", "not_found", "invalid"):
             raise ToolError(f"{r.get('code', 'unexpected')}: {r.get('message', 'failed')}")
         return r
+
+    @mcp.tool(annotations=NAVIGATE)
+    async def console_open_url(url: str, new_tab: bool | None = None, to: str = "recent") -> dict[str, Any]:
+        """Open one of Brett's own https pages (amberxai.com or a subdomain) in the console tab he focused last
+        (open-url-route@1 console-tab): a console address in place, another page in a new tab (same tab when blocked).
+        Answers open-url-result@1: opened + route console-tab, or route none with fallThrough (no tab on screen: try
+        AmberX's amberx.open_url next). Another host is refused. = POST /api/console-control/navigate."""
+        body: dict[str, Any] = {"verb": "navigate", "url": url, "to": to, "by": "mcp"}
+        if new_tab is not None:
+            body["newTab"] = bool(new_tab)
+        r = await anyio.to_thread.run_sync(lambda: run(body))
+        if not r.get("ok") and r.get("code") not in ("unavailable", "invalid"):
+            raise ToolError(f"{r.get('code', 'unexpected')}: {r.get('message', 'failed')}")
+        return r
+
+    @mcp.tool(annotations=READ)
+    async def console_open_url_last(n: int = 20) -> dict[str, Any]:
+        """The last pages asked of a console tab (newest first): url, route, opened, reason, mode, client, ms.
+        = GET /api/console-control/navigate/last."""
+        return await anyio.to_thread.run_sync(lambda: run({"verb": "navigate.last", "n": n}))
 
 
 def follow_call(op: str, args: dict[str, Any]) -> dict[str, Any]:

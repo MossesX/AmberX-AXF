@@ -16,6 +16,8 @@
  *   node framework/cli/check-console-control.mjs            check (CI)
  *   node framework/cli/check-console-control.mjs --update   lower the baseline to today's counts (never raises it)
  *   --json                                                    the counts as JSON
+ * API parity pins (framework/spec/console-control-pins.json, append-only): every pinned REST route, MCP tool, CLI
+ * command, voice phrase and UI target must still be in its file.
  * The inventory must be current too (apps/console-web/scripts/control-inventory.mjs --check).
  */
 import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
@@ -27,6 +29,29 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../..');
 const APP = join(ROOT, 'apps/console-web');
 const INVENTORY = join(APP, 'src/control/inventory.json');
 const BASELINE = join(ROOT, 'framework/spec/console-control-baseline.json');
+const PINS = join(ROOT, 'framework/spec/console-control-pins.json');
+
+/** Pins whose text is gone from their file (or whose file is gone): ['<id>: <file> lost "<text>"']. */
+export function pinErrors(pins = existsSync(PINS) ? JSON.parse(readFileSync(PINS, 'utf8')).pins ?? [] : []) {
+  const ids = new Set();
+  const out = [];
+  for (const p of pins) {
+    if (ids.has(p.id)) out.push(`${p.id}: pinned twice`);
+    ids.add(p.id);
+    const f = join(ROOT, p.file);
+    if (!existsSync(f) || !readFileSync(f, 'utf8').includes(p.text)) out.push(`${p.id}: ${p.file} lost ${JSON.stringify(p.text)} (${p.feature})`);
+  }
+  // append-only: every pin on main is still here, unchanged
+  try {
+    const main = JSON.parse(execFileSync('git', ['show', 'origin/main:framework/spec/console-control-pins.json'], { cwd: ROOT, stdio: ['ignore', 'pipe', 'ignore'] }).toString()).pins ?? [];
+    for (const m of main) {
+      const now = pins.find((p) => p.id === m.id);
+      if (!now) out.push(`${m.id}: removed (pins are append-only)`);
+      else if (now.file !== m.file || now.text !== m.text) out.push(`${m.id}: changed (pins are append-only: add a new one instead)`);
+    }
+  } catch { /* no main copy yet (first pins) or no git: the file's own pins still count */ }
+  return out;
+}
 /** Code the console draws: its own source, its plugins' web parts and the framework's React layer and libraries. */
 const CODE_DIRS = [join(APP, 'src'), join(APP, 'plugins'), join(ROOT, 'framework/react'), join(ROOT, 'framework/libs')];
 const SKIP = new Set(['node_modules', 'dist', 'axf', 'server', '__tests__']);
@@ -98,6 +123,12 @@ function main(argv) {
   const update = argv.includes('--update');
   try { execFileSync('node', [join(APP, 'scripts/control-inventory.mjs'), '--check'], { stdio: 'pipe' }); } catch (e) {
     console.error(`✗ the console-control inventory is stale: run node apps/console-web/scripts/control-inventory.mjs\n${String(e.stdout ?? '')}${String(e.stderr ?? '')}`.trim());
+    return 1;
+  }
+  const pinned = pinErrors();
+  if (pinned.length) {
+    console.error('✗ console-control API pins broken (framework/spec/console-control-pins.json, append-only):');
+    for (const e of pinned) console.error(`  ${e}`);
     return 1;
   }
   const { counts, where } = coverage();
