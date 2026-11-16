@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6751,
- "updatedAt": "2026-11-16T19:31:52.848Z",
+ "rev": 6752,
+ "updatedAt": "2026-11-16T19:31:59.341Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -246646,7 +246646,7 @@
    "title": "Pending banner: list every pending build, send to Queue from the banner",
    "category": "",
    "detail": "New banner plugin 'Pending': lists every build in Pending (title, plain-words what it does, priority, steps done/total, why it fell back), each row with Queue, Hold, Archive and Open buttons, plus 'Send all to Queue' and multi-select. Count badge on the banner. Joins the one Banners settings, launches expanded, pushes to AmberX when a build lands in Pending (ties in with alert-every-time-build-falls-back-to). Same actions on REST, MCP, CLI and voice. Tests, land through the orchestrator.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -246654,8 +246654,8 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:16:56.830Z",
-   "updatedAt": "2026-11-16T19:30:58.222Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T19:31:41.979Z",
+   "builtAt": "2026-11-16T19:31:41.979Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -246793,12 +246793,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:31:41.979Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T19:19:19.385Z",
-     "updatedAt": "2026-11-16T19:19:19.385Z"
+     "updatedAt": "2026-11-16T19:31:42.303Z"
     }
    ],
    "profiles": [
@@ -246809,7 +246809,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
