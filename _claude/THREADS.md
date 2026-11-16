@@ -813,7 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 14:08 UTC · `console-look-becomes-default-axhub-skin` s17 done (all) · orchestrator
 - 2026-11-16 14:08 UTC · `ui-manager-floating-window-to-select-any` s13 done (all) · orchestrator
 - 2026-11-16 14:07 UTC · `hotfix-launcher-splitter` added (0 steps) (all) · merge-watch
 - 2026-11-16 14:08 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` note (all) · merge-watch
@@ -1213,6 +1212,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 19:28 UTC · `fix-console-deep-links-open-page-lands` → running (all) · mcp
 - 2026-11-16 19:28 UTC · `auto-lander-grid-one-row-per-build` note (all) · mcp
 - 2026-11-16 19:29 UTC · `toolbars-moved-to-side-become-vertical` note (all) · mcp
+- 2026-11-16 19:29 UTC · `alert-every-time-build-falls-back-to` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
