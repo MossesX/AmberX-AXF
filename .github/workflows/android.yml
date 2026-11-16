@@ -38,7 +38,6 @@ jobs:
       console: ${{ steps.s.outputs.console }}
       axhubweb: ${{ steps.s.outputs.axhubweb }}
       amberxweb: ${{ steps.s.outputs.amberxweb }}
-      molly: ${{ steps.s.outputs.molly }}
       walkthrough: ${{ steps.s.outputs.walkthrough }}
       amberx: ${{ steps.s.outputs.amberx }}
       android: ${{ steps.s.outputs.android }}
@@ -124,7 +123,7 @@ jobs:
       - run: node framework/spec/check-refs.mjs                      # ref@1: mentions in banner text → links (fixtures/refs.json: names, kind words, explicit touches, PRs, files, peek)
       - run: node framework/spec/check-build-hook.mjs               # build-hook@1: one event per builds store change (created with steps + his words, steps-added, step-done, status, PR, merge, addendum, cancelled), stable ids, journal replay
       - run: node framework/spec/check-landing-line.mjs              # landing-line@1: one entry in flight, cancelled / superseded / stale runs re-run and never fail, red files a fix and the line moves on, pause / skip / move, merge-queue migration fixture
-      - run: node framework/spec/check-gate-rules.mjs                # gate-rules@1: default rule set, migration from the lander settings, verdicts (green, red CI, UI Review held, clash, draft, held by hand, warn / off / molly-owned rules), lander-state@1 from the merge queue, schema snapshots
+      - run: node framework/spec/check-gate-rules.mjs                # gate-rules@1: default rule set, migration from the lander settings, verdicts (green, red CI, UI Review held, clash, draft, held by hand, warn / off / axf-molly-owned rules), lander-state@1 from the merge queue, schema snapshots
       - run: node framework/spec/check-build-rules.mjs               # build-rules@1: schema validation, the inventory → seed migration losing nothing (home-card first), briefBlocks per build (VPS rules never in a brief), history on edit / toggle / add / remove / restore, disabled rules skipped, the locked store round trip, schema snapshots
       - run: node framework/cli/build-rules-migrate.mjs --check      # every inventoried builder rule is in the seed store
       - run: node framework/spec/check-feature-ledger.mjs            # feature-ledger@1 + deploy-log@1: one status lifecycle for features and edits, merge never loses a date / build / PR / prompt, live from the deploy log, grouping / sort / filter / export projections, schema snapshots
@@ -238,12 +237,6 @@ jobs:
         run: |
           rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done && node ../../framework/cli/shared-assets.mjs bake .
           npm install --no-audit --no-fund --silent && npm run build
-      - name: molly — re-bake the framework into it and build it
-        if: ${{ needs.scope.outputs.molly == 'true' }}
-        working-directory: apps/molly
-        run: |
-          rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done && node ../../framework/cli/shared-assets.mjs bake .
-          npm install --no-audit --no-fund --silent && npm run build
       - name: walkthrough-studio — re-bake the framework into it and build it
         if: ${{ needs.scope.outputs.walkthrough == 'true' }}
         working-directory: apps/walkthrough-studio
@@ -271,9 +264,9 @@ jobs:
             npx -y tsx framework/spec/check-menu-fit.mts               # menu-fit@1: menus flip / shift to stay on screen and scroll only when taller than the room
             npx -y tsx framework/spec/check-windows.mts                # window engine: 8 resize handles, maximize / restore, frames, snapping (windows.json)
             npx -y tsx framework/spec/check-dock.mts                   # dock engine (dock@1): pane tree, drop zones, pane limit, splitters, snapshots, dock-layout@1 presets (dock.json)
-            npx -y tsx framework/spec/check-xlayout.mts                # xlayout@1 (Molly as one app): apps, merge modes, IDE block, toolbar slots, guest URLs (xlayout.json)
+            npx -y tsx framework/spec/check-xlayout.mts                # xlayout@1 (several apps as one): apps, merge modes, IDE block, toolbar slots, guest URLs (xlayout.json)
             npx -y tsx framework/spec/check-chrome.mts                 # chrome@1: guests send chrome as data, the host merges under namespaces and routes picks back (chrome.json)
-            npx -y tsx framework/spec/check-banner-strip.mts           # banner strip: a host shows an app's live banners as its one banner region (Molly)
+            npx -y tsx framework/spec/check-banner-strip.mts           # banner strip: a host shows an app's live banners as its one banner region
             npx -y tsx framework/spec/check-meters.mts                 # gauge + meter control assets: fixture replay, starters, enums
             npx -y tsx framework/spec/check-customize.mts              # tab-group asset + per-asset appearance tokens, 100 icon sets, apply to all
             npx -y tsx framework/spec/check-tab-group.mts              # tab-group@1: position / display / overflow / sticky / collapsible / closable / badges / rememberLast, starters, fixture replay, stylesheet tokens only

@@ -34,7 +34,7 @@ import { installClash } from './plugin-instances.mjs';
 import { coverage as commandCoverage } from './plugin-commands.mjs';
 
 export const ROOT = resolve(process.env.AXF_ROOT || join(dirname(fileURLToPath(import.meta.url)), '../..'));
-// An app's own plugins folder (e.g. apps/molly/plugins) instead of the console's: AXF_PLUGINS_DIR, relative to the root.
+// An app's own plugins folder (e.g. apps/amberx-droid/src/plugins) instead of the console's: AXF_PLUGINS_DIR, relative to the root.
 export const PLUGINS_DIR = resolve(ROOT, process.env.AXF_PLUGINS_DIR || 'apps/console-web/plugins');
 const PLUGINS_REL = relative(ROOT, PLUGINS_DIR);
 const STATE = resolve(process.env.AXF_STATE || join(ROOT, '.axf-console/state.json'));
@@ -126,7 +126,7 @@ const CONSOLE_APP_DIR = dirname(PLUGINS_DIR);
 
 /**
  * Inside another app's tree (apps/<app>/, not the host app's) a bare `plugins/<folder>` is that app's own plugin
- * system: Expenses, AmberX, axHub web and Molly each have one, and their folder names may repeat the console's. Only
+ * system: Expenses, AmberX and axHub web each have one, and their folder names may repeat the console's. Only
  * the host app's own path (`console-web/plugins/<folder>`), the plugin id or the marker names this plugin from there.
  */
 export function namesHostPlugin(line, folder, id = '') {
