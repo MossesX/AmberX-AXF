@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6680,
- "updatedAt": "2026-11-16T19:07:06.149Z",
+ "rev": 6681,
+ "updatedAt": "2026-11-16T19:07:30.957Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -244221,7 +244221,7 @@
    "title": "Settings interface and gear for every plugin",
    "category": "",
    "detail": "Brett: every plugin needs a settings interface. Audit: 44 plugins with a screen; 10 have no settings tab (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review), and hub-sync's screen has no gear. Check plugins WITHOUT a screen too. Give EVERY plugin a Settings → Plugins sub-tab (at minimum enable/disable, info, logs, plus its real options), and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when any plugin lacks a settings tab, or a plugin screen lacks the gear. Full API parity.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -244229,7 +244229,7 @@
    "pr": "#725",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:38.814Z",
-   "updatedAt": "2026-11-16T19:03:59.405Z",
+   "updatedAt": "2026-11-16T19:07:16.123Z",
    "builtAt": "",
    "notes": [
     {
@@ -244291,6 +244291,10 @@
     {
      "text": "Headless run axf-settings-interface-gear-every-plugin--gina: brief only · start 18.8K tokens ($0.14) · cost $8.80 · 79 turns · 6 tools, MCP none",
      "at": "2026-11-16T19:03:59.405Z"
+    },
+    {
+     "text": "Self-check: settings-interface-gear-every-plugin was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-16T19:07:16.123Z"
     }
    ],
    "approvals": [
@@ -244321,7 +244325,7 @@
    "pipeline": {
     "queuedAt": "2026-11-16T18:27:41.302Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
+    "account": "",
     "session": "",
     "slot": "",
     "model": "Opus",
@@ -244343,7 +244347,7 @@
      "note": "Split by Claude into 28 steps (2 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- stopped on its own with 25 steps left: back in Pending for Brett.",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
     "dispatchedAt": "2026-11-16T18:34:01.102Z",
     "planned": {
@@ -245066,7 +245070,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
