@@ -202,6 +202,112 @@ export function nextStatusOnExit(run, maxRuns = DEFAULT_MAX_RUNS) {
   return out('pending', 'returned', 'stopped');
 }
 
+// ------------------------------------------------------------------ step-groups@1: one build over several slots
+/*
+ * step-groups@1 — a long build runs as several step groups at once (Brett, Nov 16 2026: "Any build that's over 30
+ * minutes, split the steps up for multiple slots."). The grouping engine (framework/core/build-groups.mjs, planGroups)
+ * reads a build's steps and writes `groups[]` on the build; the dispatcher starts each ready group in its own slot, on
+ * its own sub-branch and worktree, and merges the groups back onto the build branch in `mergeOrder` before landing.
+ * Spec: framework/spec/BUILD-GROUPS.md.
+ *
+ * Step fields on a builds@1 step (all optional; a step without them is in the one implicit group):
+ *   group      the id of the group the step runs in ('' = not grouped yet / the implicit group)
+ *   dependsOn  ids of steps in the same build that must be done before this one starts (an explicit edge on top of
+ *              the edges the engine derives from `files` overlap)
+ *   files      the files the step touches (already a step field): two steps that share a file run in sequence
+ *
+ * `groups[]` on the build, one BuildGroup per group, in merge order:
+ *   id          g1, g2 … (GROUP_ID)                       steps      step ids in run order (every step in exactly one group)
+ *   state       one of GROUP_STATES (below)               dependsOn  group ids that must be merged / done before it starts
+ *   slot        agent-slots entry of its run ('' idle)    account    the Claude account the run is on ('' idle)
+ *   session     its tmux session                          branch     its sub-branch (<build branch>/<group id>)
+ *   worktree    the worktree path of that branch          mergeOrder its place when the groups land (0-based)
+ *   startedAt   ISO: first launch                         endedAt    ISO: its last session ended
+ *   mergedAt    ISO: merged onto the build branch         note       one plain line (why it waits, what happened)
+ *
+ * states:  planned → ready → running → ready-to-merge → merging → merged
+ *          planned         made by the engine, a dependency not merged yet (or no slot)
+ *          ready           every group it depends on is merged: the next free slot takes it
+ *          running         a session is on it                 ready-to-merge  every step done, waiting for its turn in mergeOrder
+ *          merging         being merged onto the build branch   merged  on the build branch (mergedAt set)
+ *          conflict        the merge hit conflicts: a session resolves it on the group branch, then it merges again
+ *          failed          its run crashed past the crash limit, or it was stopped: Brett decides
+ *
+ * Unset = ONE sequential group: groupsOf() answers [{ id: 'g1', steps: every step, state from the steps }] for a build
+ * without `groups`, so every build from before step-groups@1 reads the same and nothing is written to it. The journal
+ * records group writes because `groups` is part of the record (builds@1 content), like every other field.
+ * Later steps attach to this contract (open, nothing here constrains them): the setting that decides the threshold
+ * (pipeline-settings@1 `splitOverMin`, default 30), the server-gate rule `parallel-groups`, the groups REST / MCP / CLI /
+ * voice actions (start, re-run, merge now, move in merge order) and the per-group progress panel.
+ */
+export const GROUPS_SCHEMA = 'step-groups@1';
+export const GROUP_STATES = ['planned', 'ready', 'running', 'ready-to-merge', 'merging', 'merged', 'conflict', 'failed'];
+export const GROUP_STATE_LABEL = Object.freeze({ planned: 'Planned', ready: 'Ready', running: 'Running', 'ready-to-merge': 'Ready to merge', merging: 'Merging', merged: 'Merged', conflict: 'Conflict', failed: 'Failed' });
+/** Group states that hold a slot or a branch a session may still be on. */
+export const GROUP_LIVE_STATES = ['running', 'merging', 'conflict'];
+export const IMPLICIT_GROUP = 'g1';
+const GROUP_ID = /^[a-z0-9][a-z0-9-]{0,39}$/;
+/** A group id, or ''. Engine-made ids are g1, g2 …; a hand-made one may be any short slug. */
+export const groupId = (v) => (GROUP_ID.test(str(v, 40)) ? str(v, 40) : '');
+const STEP_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,39}$/;
+const stepIds = (v, max) => [...new Set((Array.isArray(v) ? v : []).filter((x) => typeof x === 'string').map((x) => str(x, 40)).filter((x) => STEP_ID.test(x)))].slice(0, max);
+/** A step's dependsOn list: unique step ids, at most 30; anything else reads as none. */
+export const normDependsOn = (v) => stepIds(v, 30);
+
+/** One group record, every field in shape; null for nothing (no id and no steps). */
+export function normGroup(g, i = 0) {
+  if (!g || typeof g !== 'object') return null;
+  const id = groupId(g.id) || `g${i + 1}`;
+  const steps = stepIds(g.steps, 200);
+  if (!steps.length && !groupId(g.id)) return null;
+  const state = GROUP_STATES.includes(g.state) ? g.state : 'planned';
+  const live = GROUP_LIVE_STATES.includes(state);
+  return {
+    id, steps, state,
+    dependsOn: [...new Set((Array.isArray(g.dependsOn) ? g.dependsOn : []).map(groupId).filter((x) => x && x !== id))].slice(0, 60),
+    slot: live ? str(g.slot, 60) : '', account: live ? accountName(g.account) : '', session: live ? str(g.session, 120) : '',
+    branch: str(g.branch, 200), worktree: str(g.worktree, 300),
+    mergeOrder: Number.isInteger(g.mergeOrder) && g.mergeOrder >= 0 ? g.mergeOrder : i,
+    startedAt: iso(g.startedAt), endedAt: iso(g.endedAt), mergedAt: state === 'merged' ? iso(g.mergedAt) : '',
+    note: str(g.note, 400),
+  };
+}
+/** A build's `groups[]` in shape: unique ids (a repeated id gets its position), in merge order; [] when unset. */
+export function normGroups(list) {
+  if (!Array.isArray(list)) return [];
+  const seen = new Set(); const out = [];
+  list.forEach((g, i) => {
+    const n = normGroup(g, i); if (!n) return;
+    if (seen.has(n.id)) n.id = `g${i + 1}`; if (seen.has(n.id)) return;
+    seen.add(n.id); out.push(n);
+  });
+  return out.sort((a, b) => a.mergeOrder - b.mergeOrder || a.id.localeCompare(b.id)).map((g, i) => ({ ...g, mergeOrder: i }));
+}
+/** The state one group reads as from its steps alone (the implicit group has no run record). */
+export function groupStateOfSteps(steps) {
+  const live = (steps ?? []).filter((s) => !s.skip);
+  if (!live.length) return 'planned';
+  if (live.every((s) => s.done)) return 'ready-to-merge';
+  return live.some((s) => s.done) ? 'running' : 'planned';
+}
+/** The ONE implicit group of a build without `groups`: every step (skipped ones included, so the ids stay complete), in step order. */
+export function implicitGroups(b) {
+  const steps = (b?.steps ?? []).map((s) => str(s?.id, 40)).filter(Boolean);
+  return [normGroup({ id: IMPLICIT_GROUP, steps, state: str(b?.mergedAt) ? 'merged' : groupStateOfSteps(b?.steps), mergeOrder: 0, mergedAt: str(b?.mergedAt), branch: str(b?.branch, 200) }, 0)];
+}
+/** A build's groups as the dispatcher sees them: its `groups[]` when set, else the one implicit group. */
+export const groupsOf = (b) => { const g = normGroups(b?.groups); return g.length ? g : implicitGroups(b); };
+/** Split over several slots: more than one group. */
+export const isSplit = (b) => normGroups(b?.groups).length > 1;
+/** The group a step is in (by its `group` field, else the group that lists it), or null. */
+export function groupOfStep(b, stepId) {
+  const id = str(stepId, 40); const groups = groupsOf(b);
+  const step = (b?.steps ?? []).find((s) => s.id === id);
+  return (groupId(step?.group) && groups.find((g) => g.id === step.group)) || groups.find((g) => g.steps.includes(id)) || null;
+}
+/** Groups whose dependencies are all merged and that have not started: what a free slot may take, in merge order. */
+export const readyGroups = (b) => { const gs = groupsOf(b); const merged = new Set(gs.filter((g) => g.state === 'merged').map((g) => g.id)); return gs.filter((g) => (g.state === 'planned' || g.state === 'ready') && g.dependsOn.every((d) => merged.has(d))); };
+
 /** The outcome alone (older callers). `phaseSwitch` is the phase-done signal. */
 export function outcomeOf({ exit, stepsLeft, runs, crashes, phaseSwitch = false }, maxRuns = DEFAULT_MAX_RUNS) {
   return nextStatusOnExit({ exit, stepsLeft, runs, crashes, phaseDone: phaseSwitch }, maxRuns).outcome;

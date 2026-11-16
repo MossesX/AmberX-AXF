@@ -52,3 +52,29 @@ export interface ExitResult { status: 'built' | 'queued' | 'pending'; outcome: '
 export function nextStatusOnExit(run: ExitInput, maxRuns?: number): ExitResult;
 export function outcomeOf(run: ExitInput & { phaseSwitch?: boolean }, maxRuns?: number): 'finished' | 'requeued' | 'returned' | 'failed';
 export function outcomeLine(b: { pipeline?: { runs?: number } | null }, run: PipelineRun): string;
+
+// step-groups@1: one build over several slots (framework/spec/BUILD-GROUPS.md)
+export const GROUPS_SCHEMA: 'step-groups@1';
+export type GroupState = 'planned' | 'ready' | 'running' | 'ready-to-merge' | 'merging' | 'merged' | 'conflict' | 'failed';
+export const GROUP_STATES: GroupState[];
+export const GROUP_STATE_LABEL: Readonly<Record<GroupState, string>>;
+export const GROUP_LIVE_STATES: GroupState[];
+export const IMPLICIT_GROUP: 'g1';
+/** One step group on a build: its steps run in sequence in one slot; groups run beside each other and merge in `mergeOrder`. */
+export interface BuildGroup {
+  id: string; steps: string[]; state: GroupState; dependsOn: string[];
+  slot: string; account: string; session: string; branch: string; worktree: string;
+  mergeOrder: number; startedAt: string; endedAt: string; mergedAt: string; note: string;
+}
+type GroupStepLike = { id?: string; done?: boolean; skip?: boolean; group?: string };
+type GroupBuildLike = { steps?: GroupStepLike[]; groups?: unknown; branch?: string; mergedAt?: string } | null | undefined;
+export function groupId(v: unknown): string;
+export function normDependsOn(v: unknown): string[];
+export function normGroup(g: unknown, i?: number): BuildGroup | null;
+export function normGroups(list: unknown): BuildGroup[];
+export function groupStateOfSteps(steps: GroupStepLike[] | undefined): GroupState;
+export function implicitGroups(b: GroupBuildLike): BuildGroup[];
+export function groupsOf(b: GroupBuildLike): BuildGroup[];
+export function isSplit(b: GroupBuildLike): boolean;
+export function groupOfStep(b: GroupBuildLike, stepId: string): BuildGroup | null;
+export function readyGroups(b: GroupBuildLike): BuildGroup[];
