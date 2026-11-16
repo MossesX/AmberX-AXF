@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T16:53:47.591Z",
+ "updatedAt": "2026-11-16T16:54:07.520Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -158170,16 +158170,22 @@
    "title": "Orchestrator: On hold status and tab",
    "category": "",
    "detail": "Add a new build status 'held' (On hold) and a new On hold tab/grid in the Build Orchestrator. 1) Multi-select in EVERY orchestrator table (Pending, Queue, Active, Built, Complete, Errors, Archive): checkbox per row, select all, and a bulk action bar with 'Put on hold'. Also on each row's context menu. Putting a running build on hold stops its session cleanly first (branch and worktree kept). 2) On hold tab: grid of held builds (shared 2-row status row and badges, follows the skin's 1-or-2-row setting) showing when it was held, by whom and the build's previous status. Multi-select + bulk actions: Move to Pending, Move to Queue, Archive, Delete (Delete asks for confirm). 3) The dispatcher, reconciler and auto-lander never touch held builds (no launch, no requeue, no land). 4) Status 'held' added to the builds store schema and journal; the reconciler must not flip it. 5) Full API parity: deep link to the tab, REST, MCP (planner.builds action 'status' with 'held', plus bulk actions), CLI and voice. Tests, help, Shipped features. NOTE: an older build 'orchestrator-hold-status-archive-tab' (Nov 12) asked for something similar but never landed and was cleaned up today; check main first and reuse anything that exists rather than duplicate it.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-16T16:53:45.431Z",
-   "updatedAt": "2026-11-16T16:53:45.431Z",
+   "updatedAt": "2026-11-16T16:53:48.417Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-16T16:53:48.417Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
