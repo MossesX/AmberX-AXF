@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6956,
- "updatedAt": "2026-11-16T22:55:56.606Z",
+ "rev": 6957,
+ "updatedAt": "2026-11-16T22:56:51.595Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -250752,7 +250752,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:23.121Z",
-   "updatedAt": "2026-11-16T22:55:46.656Z",
+   "updatedAt": "2026-11-16T22:56:49.417Z",
    "builtAt": "",
    "notes": [
     {
@@ -250764,12 +250764,12 @@
      "at": "2026-11-16T22:48:13.206Z"
     },
     {
-     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-own-look-per-grid-and-tab-group--sully, shared account login)",
-     "at": "2026-11-16T22:49:48.091Z"
-    },
-    {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-own-look-per-grid-and-tab-group--sully.",
      "at": "2026-11-16T22:49:42.979Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-own-look-per-grid-and-tab-group--sully, shared account login)",
+     "at": "2026-11-16T22:49:48.091Z"
     },
     {
      "text": "Dispatch gate: own-look-per-grid-and-tab-group still has axf-own-look-per-grid-and-tab-group--sully alive: not launched again, tracking that session.",
@@ -250793,13 +250793,13 @@
    "pipeline": {
     "queuedAt": "2026-11-16T22:44:25.286Z",
     "queuedBy": "console",
-    "account": "",
+    "account": "mossesx-max-",
     "session": "axf-own-look-per-grid-and-tab-group--sully",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-16T22:49:42.023Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -250812,7 +250812,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-16T22:49:42.023Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -250821,7 +250821,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-16T22:49:42.023Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -250844,12 +250844,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T22:56:49.417Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T22:48:13.206Z",
-     "updatedAt": "2026-11-16T22:48:13.206Z"
+     "updatedAt": "2026-11-16T22:56:49.704Z"
     },
     {
      "id": "s2",

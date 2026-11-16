@@ -814,7 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 18:33 UTC · `hotfix-orchestrator-grid-columns-don-t` note (all) · orchestrator
 - 2026-11-16 18:33 UTC · `all-settings-interfaces-open-floating` → running (all) · mcp
 - 2026-11-16 18:33 UTC · `hotfix-orchestrator-grid-columns-don-t` → running, note (all) · pipeline
 - 2026-11-16 18:33 UTC · `hotfix-orchestrator-grid-columns-don-t` branch claude/hotfix-orchestrator-grid-columns-don-t (all) · pipeline
@@ -1214,6 +1213,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 22:54 UTC · `molly-gap-expenses-cors` → archived, note (all) · cli
 - 2026-11-16 22:55 UTC · `icon-pack-studio-on-fable` note (all) · orchestrator
 - 2026-11-16 22:55 UTC · `own-look-per-grid-and-tab-group` → running, note (all) · pipeline
+- 2026-11-16 22:56 UTC · `own-look-per-grid-and-tab-group` s1 done (all) · orchestrator
 
 ## Token passes (log)
 
