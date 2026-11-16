@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7095,
- "updatedAt": "2026-11-16T23:57:59.224Z",
+ "rev": 7096,
+ "updatedAt": "2026-11-16T23:58:17.885Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -256145,7 +256145,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:46.098Z",
-   "updatedAt": "2026-11-16T23:56:44.851Z",
+   "updatedAt": "2026-11-16T23:57:29.212Z",
    "builtAt": "",
    "notes": [
     {
@@ -256167,6 +256167,10 @@
     {
      "text": "Claude account: hulu0241 (axf-icon-packs-with-drag-drop-pack-designer--lenny, shared account login)",
      "at": "2026-11-16T23:04:28.920Z"
+    },
+    {
+     "text": "Phase 1 (Fable) done, s1-s11 on branch claude/icon-packs-with-drag-drop-pack-designer: icon-map@1 + extended icon-pack@1 types, icon-scope@1 chain (plugin > ui > app > global > brand), engines icon-pack / icon-map / icon-gen / icon-import, rules mirror icon-rules.mjs, validators, fixtures + check-icon-pack (CI), starter map (711 spots) and packs default / outline / filled / generated-ember baked into the 4 shared apps, <AxfIcon spot> + useIconSpot + rt.icon* facade. Every check green (skin, interface, appearance, brand, design-language, coverage, shared-assets). Supersedes the pending records fable-icon-map-icon-packs-icon-pack, icon-pack-studio-fable and icon-pack-studio-on-fable (same scope); they should be archived against this build. Kotlin twin deferred in PORTING.md. Next phase (Opus s12+) wraps rt.icon* in REST / CLI / MCP / voice and builds the designer.",
+     "at": "2026-11-16T23:57:29.212Z"
     }
    ],
    "approvals": [],
@@ -256994,7 +256998,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
