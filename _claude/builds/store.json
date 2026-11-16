@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6916,
- "updatedAt": "2026-11-16T21:21:06.431Z",
+ "rev": 6917,
+ "updatedAt": "2026-11-16T21:30:50.096Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -249610,7 +249610,7 @@
    "title": "Fable rebuild: Plan Studio cleared out, unlimited nesting, context menus, full voice control",
    "category": "",
    "detail": "Full professional rebuild of the Plan Studio plugin (plan-studio) on Fable. First CLEAR IT OUT: remove every existing plan and stop all syncing into Plan Studio (no rules, builds, pending list or anything else synced into it); it starts empty. Then rebuild to the same standard as the To-do/Note manager rebuild: unlimited nesting of plans, sections, steps, notes and lists inside each other; drag to move/reorder at any level; full context menu on every item (new inside, rename, edit, duplicate, move, delete with undo, export, send to build orchestrator); everything voice and MCP controlled (plugin-commands MCP tools, console-control addresses, CLI, AmberX voice). Integrated with everything else (to-do manager, build orchestrator, notes, Shipped features) by explicit links only, never auto-sync. Professional, powerful UI on framework controls and tokens, desktop and phone. Rebuild differences report. Tests, land through the orchestrator.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -249618,7 +249618,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T20:25:16.196Z",
-   "updatedAt": "2026-11-16T21:09:34.546Z",
+   "updatedAt": "2026-11-16T21:30:48.368Z",
    "builtAt": "",
    "notes": [
     {
@@ -249676,6 +249676,10 @@
     {
      "text": "Headless run axf-fable-rebuild-plan-studio-cleared-out--paulie: brief only · start 19.0K tokens ($0.14) · cost $12.99 · 123 turns · 6 tools, MCP none",
      "at": "2026-11-16T21:09:34.546Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-16T21:30:48.368Z"
     }
    ],
    "approvals": [],
@@ -249816,7 +249820,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
