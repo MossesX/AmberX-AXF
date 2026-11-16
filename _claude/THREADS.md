@@ -808,9 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 13:42 UTC · `home-cards-follow-plugin-off-home-always` s4 done (all) · orchestrator
-- 2026-11-15 13:42 UTC · `build-rules-tab-gate-rules-vps-owns` s3 done (all) · orchestrator
-- 2026-11-15 13:42 UTC · `home-cards-follow-plugin-off-home-always` note (all) · orchestrator
 - 2026-11-15 13:42 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · mcp
 - 2026-11-15 13:43 UTC · `home-cards-follow-plugin-off-home-always` note (all) · orchestrator
 - 2026-11-15 13:46 UTC · `build-rules-tab-gate-rules-vps-owns` s4 done (all) · orchestrator
@@ -1208,6 +1205,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 16:40 UTC · `re-sync-stuck-branches-lander-can-push` PR #718 (all) · builds-live
 - 2026-11-16 16:40 UTC · `re-sync-stuck-branches-lander-can-push` note (all) · orchestrator
 - 2026-11-16 16:40 UTC · `re-sync-stuck-branches-lander-can-push` s10 done, → built (all) · orchestrator
+- 2026-11-10 18:08 UTC · `shipped-features-show-each-landed-build-s-screen` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
+- 2026-11-16 16:40 UTC · `remove-old-molly-app-project-keep-axf` s12 done (all) · orchestrator
+- 2026-11-16 16:41 UTC · `remove-old-molly-app-project-keep-axf` s13 done (all) · orchestrator
 
 ## Token passes (log)
 
