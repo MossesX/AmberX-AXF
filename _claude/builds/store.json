@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6695,
- "updatedAt": "2026-11-16T19:13:47.491Z",
+ "rev": 6696,
+ "updatedAt": "2026-11-16T19:14:14.093Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -246027,7 +246027,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T19:03:55.794Z",
-   "updatedAt": "2026-11-16T19:10:57.795Z",
+   "updatedAt": "2026-11-16T19:14:10.557Z",
    "builtAt": "",
    "notes": [
     {
@@ -246108,6 +246108,28 @@
     "heldWhy": ""
    },
    "steps": [
+    {
+     "id": "s12",
+     "uid": "st-mwjn6t1s01zeez",
+     "title": "",
+     "text": "Brett Nov 16: whenever a theme or skin is applied in any app, ask first: 'Apply to the hub (every app that follows axHub)' or 'Just this app (e.g. the console)'. Hub choice writes the hub-wide skin/theme; app choice writes only that app's look (follow off). Remember-my-choice option. Same choice as a parameter on REST, MCP, CLI and voice (scope=hub|app).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T19:14:10.558Z",
+     "updatedAt": "2026-11-16T19:14:10.960Z"
+    },
     {
      "id": "s1",
      "uid": "st-mwjmvcmx01ebs6",
@@ -246395,7 +246417,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
