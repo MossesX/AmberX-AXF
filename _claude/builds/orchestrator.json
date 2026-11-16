@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T16:50:29.533Z",
+ "updatedAt": "2026-11-14T17:10:13.168Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -139173,15 +139173,15 @@
    "title": "Builds share one Claude login and write refreshed tokens back",
    "category": "orchestrator",
    "detail": "Brett: 'they're supposed to, it's supposed to write the new refresh token to the same place in whatever account, whatever build uses the next updates the refresh token.' Right now each build gets its own saved copy of the account login (log shows 'own copy (saved)'), so when one copy refreshes, the rotated refresh token kills every other copy. demo-video-series-three-minute-browser died with 'OAuth session expired and could not be refreshed' on mossesx-max. Fix: every build uses the account's one shared credentials file, and any refreshed token is written back there under a lock. Phone alert on any auth failure; re-queue the failed build once login works.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/builds-share-one-claude-login-write",
-   "pr": "",
+   "pr": "#674",
    "createdAt": "2026-11-14T16:44:38.923Z",
-   "updatedAt": "2026-11-14T16:46:28.189Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-14T17:09:04.593Z",
+   "builtAt": "2026-11-14T17:07:43.504Z",
    "notes": [
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-builds-share-one-claude-login-write--earl.",
@@ -139190,6 +139190,14 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-builds-share-one-claude-login-write--earl, own login copy)",
      "at": "2026-11-14T16:46:28.189Z"
+    },
+    {
+     "text": "Headless run axf-builds-share-one-claude-login-write--earl: brief only · start 11.1K tokens ($0.03) · cost $5.70 · 97 turns · 6 tools, MCP none",
+     "at": "2026-11-14T17:08:35.665Z"
+    },
+    {
+     "text": "Session axf-builds-share-one-claude-login-write--earl on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-14T17:09:04.593Z"
     }
    ],
    "approvals": [],
@@ -139220,8 +139228,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T16:54:31.316Z",
      "note": "",
      "uid": "st-mwgmyszd0588b5",
      "createdAt": "2026-11-14T16:44:38.924Z"
@@ -139239,8 +139247,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T16:56:06.491Z",
      "note": "",
      "uid": "st-mwgmyszd062j22",
      "createdAt": "2026-11-14T16:44:38.924Z"
@@ -139258,8 +139266,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T16:57:12.978Z",
      "note": "",
      "uid": "st-mwgmyszd0763qs",
      "createdAt": "2026-11-14T16:44:38.924Z"
@@ -139277,8 +139285,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T17:01:23.336Z",
      "note": "",
      "uid": "st-mwgmyszd086agn",
      "createdAt": "2026-11-14T16:44:38.924Z"
@@ -139296,8 +139304,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T17:05:29.676Z",
      "note": "",
      "uid": "st-mwgmzoad011ew7",
      "createdAt": "2026-11-14T16:45:19.485Z"
@@ -139315,8 +139323,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T17:07:43.504Z",
      "note": "",
      "uid": "st-mwgn0cg40106ty",
      "createdAt": "2026-11-14T16:45:50.814Z"
@@ -139328,18 +139336,39 @@
    "title": "UI Review: filter and search by PR",
    "category": "ui-review",
    "detail": "Brett: 'I need a filter in UI reviews to search by PR.' Add a PR filter/search to the UI Review screen: type or pick a PR number (e.g. #647) and see only that PR's review items. Also reachable by API/MCP/CLI/voice ('show UI Review for PR 647') and as a focus target so console_open can jump straight to a PR's items.",
-   "status": "queued",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/ui-review-filter-and-search-by-pr",
+   "pr": "#675",
    "createdAt": "2026-11-14T16:50:06.080Z",
-   "updatedAt": "2026-11-14T16:50:27.794Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-14T17:10:10.967Z",
+   "builtAt": "2026-11-14T17:10:10.967Z",
+   "notes": [
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-ui-review-filter-and-search-by-pr--rhonda.",
+     "at": "2026-11-14T16:51:22.179Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-ui-review-filter-and-search-by-pr--rhonda, own login copy)",
+     "at": "2026-11-14T16:51:26.793Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "ui-review-filter-and-search-by-pr",
+    "brief": "# Build: ui-review-filter-and-search-by-pr\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"UI Review: filter and search by PR\" (ui-review-filter-and-search-by-pr) [ui-review] — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~40 min):\n[ ] s1 (~15 min) Add a PR filter and search box to UI Review (type #647 or pick from a list of PRs that have items)\n[ ] s2 (~15 min) Same filter through API, MCP, CLI and voice, and as a focus target so opening UI Review can jump to a PR's items\n[ ] s3 (~10 min) Tests, help entry, commit, push, PR\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ui-review-filter-and-search-by-pr <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link ui-review-filter-and-search-by-pr --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step ui-review-filter-and-search-by-pr <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note ui-review-filter-and-search-by-pr \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -139354,8 +139383,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T16:57:06.062Z",
      "note": "",
      "uid": "st-mwgn5tmn04x1ya",
      "createdAt": "2026-11-14T16:50:06.081Z"
@@ -139373,8 +139402,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T17:01:25.903Z",
      "note": "",
      "uid": "st-mwgn5tmo05xb3h",
      "createdAt": "2026-11-14T16:50:06.081Z"
@@ -139392,11 +139421,140 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T17:10:10.967Z",
      "note": "",
      "uid": "st-mwgn5tmo06cthv",
      "createdAt": "2026-11-14T16:50:06.081Z"
+    }
+   ]
+  },
+  {
+   "id": "hotfix-toolbar-settings-still-change",
+   "title": "Hotfix: toolbar settings still change nothing (live console)",
+   "category": "hotfix",
+   "detail": "Brett (Nov 14): 'the toolbar settings still don't work. When I click the toolbar and go to its settings, the settings don't change anything.' Earlier builds touched this (fix-toolbar-settings-doing-nothing, chrome-settings-actually-apply-toolbars, per-toolbar-settings PR #650, per-instance picker #642/#622) but it's still broken on the live console. Reproduce on the LIVE console first (open a toolbar's settings, change each setting, confirm whether the stored value changes and whether the toolbar re-renders). Find which of those PRs never landed vs. what's genuinely broken, land or fix, and verify on the live console after redeploy.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/hotfix-toolbar-settings-still-change",
+   "pr": "#673",
+   "createdAt": "2026-11-14T16:51:14.645Z",
+   "updatedAt": "2026-11-14T16:59:46.101Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-hotfix-toolbar-settings-still-change--lenny, own login copy)",
+     "at": "2026-11-14T16:52:28.592Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-hotfix-toolbar-settings-still-change--lenny.",
+     "at": "2026-11-14T16:52:19.825Z"
+    },
+    {
+     "text": "Dispatch gate: hotfix-toolbar-settings-still-change still has axf-hotfix-toolbar-settings-still-change--lenny alive: not launched again, tracking that session.",
+     "at": "2026-11-14T16:53:07.541Z"
+    },
+    {
+     "text": "Headless run axf-hotfix-toolbar-settings-still-change--lenny: brief only · start 11.0K tokens ($0.03) · cost $2.44 · 78 turns · 6 tools, MCP none",
+     "at": "2026-11-14T16:59:46.101Z"
+    },
+    {
+     "text": "s1-s3 done, PR #673 (supersedes #625). Cause: #625, the fix that makes toolbar settings reach the renderers, never landed (its light checks failed on an unrelated main error and it went stale); workspace toolbars were never wired at all. Both fixed, check-chrome-apply.mts 174 checks. s4 left open: landing goes through the merge queue (agents may not merge), and checking the live console needs a console token this VPS build runner lacks (console.amberxai.com returns 401). After #673 lands and redeploys: right-click the toolbar, Settings, Look, Buttons = Labels, and the toolbar should switch to text at once. Then send the phone alert.",
+     "at": "2026-11-14T16:59:22.592Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "hotfix-toolbar-settings-still-change",
+    "brief": "# Build: hotfix-toolbar-settings-still-change\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Hotfix: toolbar settings still change nothing (live console)\" (hotfix-toolbar-settings-still-change) [hotfix] — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (4 left, ~1.2 h):\n[ ] s1 (~15 min) Reproduce on the live console: open a toolbar's settings, change each one, log whether the value saves and whether the toolbar redraws\n[ ] s2 (~15 min) Check which earlier toolbar-settings PRs (#650, #642, #622, chrome-settings-actually-apply-toolbars) landed; find the real break\n[ ] s3 (~25 min) Fix so every toolbar setting applies live to that toolbar; add a test that changes each setting and checks the toolbar changed\n[ ] s4 (~15 min) Land through the queue, confirm on the live console after redeploy, phone alert to Brett when verified\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step hotfix-toolbar-settings-still-change <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link hotfix-toolbar-settings-still-change --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step hotfix-toolbar-settings-still-change <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note hotfix-toolbar-settings-still-change \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Reproduce on the live console: open a toolbar's settings, change each one, log whether the value saves and whether the toolbar redraws",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-14T16:54:33.179Z",
+     "note": "",
+     "uid": "st-mwgn7ac20552fu",
+     "createdAt": "2026-11-14T16:51:14.646Z"
+    },
+    {
+     "id": "s2",
+     "text": "Check which earlier toolbar-settings PRs (#650, #642, #622, chrome-settings-actually-apply-toolbars) landed; find the real break",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-14T16:57:18.037Z",
+     "note": "",
+     "uid": "st-mwgn7ac2069o6z",
+     "createdAt": "2026-11-14T16:51:14.646Z"
+    },
+    {
+     "id": "s3",
+     "text": "Fix so every toolbar setting applies live to that toolbar; add a test that changes each setting and checks the toolbar changed",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-14T16:59:07.191Z",
+     "note": "",
+     "uid": "st-mwgn7ac207ykxo",
+     "createdAt": "2026-11-14T16:51:14.646Z"
+    },
+    {
+     "id": "s4",
+     "text": "Land through the queue, confirm on the live console after redeploy, phone alert to Brett when verified",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgn7ac208etds",
+     "createdAt": "2026-11-14T16:51:14.646Z"
     }
    ]
   }
