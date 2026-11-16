@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6716,
- "updatedAt": "2026-11-16T19:21:20.733Z",
+ "rev": 6717,
+ "updatedAt": "2026-11-16T19:21:56.670Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -246795,7 +246795,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:19:11.374Z",
-   "updatedAt": "2026-11-16T19:19:23.358Z",
+   "updatedAt": "2026-11-16T19:21:53.865Z",
    "builtAt": "",
    "notes": [
     {
@@ -246805,6 +246805,10 @@
     {
      "text": "Brett Nov 16: TWO rows per build (not one): row 1 build + status + behind-main + actions, row 2 what it does + reason. Never more than two.",
      "at": "2026-11-16T19:19:23.358Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"ad17b5ca-3671-43f7-8bd9-6757abe1c7a8\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-16T19:21:53.865Z"
     }
    ],
    "approvals": [],
@@ -246831,9 +246835,15 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-16T19:21:53.865Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"ad17b5ca-3671-43f7-8bd9-6757abe1c7a8\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
@@ -246843,7 +246853,77 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwjngq89017gbp",
+     "title": "",
+     "text": "Gate & rules > Auto-lander tab: make the grid ONE row per build (no multi-line rows). Columns: build, what it does (plain words), PR, status (ready/blocked), reason, commits behind main (sortable), last activity. Row actions: Open, Merge main + fix, Archive, Hold; multi-select bulk Archive. Filter e.g. 'behind > 500'. Stale records with no branch/PR are hidden or cleaned. Same data and actions on REST, MCP, CLI and voice. Tests, land through the orchestrator.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T19:21:53.865Z",
+     "updatedAt": "2026-11-16T19:21:53.865Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwjngq89029sml",
+     "title": "",
+     "text": "You need to fix that grid, make it one row. I need to see everything waiting to be merged and how far behind main.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T19:21:53.865Z",
+     "updatedAt": "2026-11-16T19:21:53.865Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwjngq890326qk",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/auto-lander-grid-one-row-per-build.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/auto-lander-grid-one-row-per-build.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T19:21:53.865Z",
+     "updatedAt": "2026-11-16T19:21:53.865Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -246852,12 +246932,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-16T19:21:53.865Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
