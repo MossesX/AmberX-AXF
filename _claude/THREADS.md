@@ -814,8 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 19:42 UTC · `hotfix-orchestrator-grid-columns-don-t` s10 done (all) · orchestrator
-- 2026-11-16 19:42 UTC · `owner-recognized-everywhere-veto` note (all) · orchestrator
 - 2026-11-16 19:43 UTC · `hotfix-orchestrator-grid-columns-don-t` PR #729 (all) · builds-live
 - 2026-11-16 19:43 UTC · `hotfix-orchestrator-grid-columns-don-t` s11 done, → built (all) · orchestrator
 - 2026-11-16 19:43 UTC · `hotfix-orchestrator-grid-columns-don-t` note (all) · orchestrator
@@ -1214,6 +1212,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 23:37 UTC · `icon-packs-with-drag-drop-pack-designer` s8 done (all) · orchestrator
 - 2026-11-16 23:37 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` note (all) · orchestrator
 - 2026-11-16 23:37 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` → built, PR #762 (all) · builds-live
+- 2026-11-16 23:36 UTC · `land-project-create-mcp-resolve-clash` note (all) · orchestrator
+- 2026-11-16 23:37 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` → pending, note (all) · pipeline
 
 ## Token passes (log)
 

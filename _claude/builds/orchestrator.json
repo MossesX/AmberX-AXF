@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T23:38:18.646Z",
+ "updatedAt": "2026-11-16T23:38:32.207Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -120613,6 +120613,14 @@
     {
      "text": "s9 done on this build's branch: guard framework/spec/check-no-molly.mjs (in CI) + full sweep green. Branch = claude/remove-old-molly-app-project-keep-axf (PR #760) + main merged + s9; it supersedes #760 (main's newer systems-check test fix restored, a stray apps/molly file dropped). Land this one and close #760, or land #760 first; either way merges clean.",
      "at": "2026-11-16T23:37:28.831Z"
+    },
+    {
+     "text": "Headless run axf-remove-molly-completely-delete-the-molly-add-on---earl: brief only · start 14.7K tokens ($0.04) · cost $1.04 · 36 turns · 6 tools, MCP none",
+     "at": "2026-11-16T23:37:44.410Z"
+    },
+    {
+     "text": "Session on hulu0241 stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-16T23:37:46.272Z"
     }
    ],
    "approvals": [],
@@ -132104,7 +132112,7 @@
    "title": "Land project-create-mcp: resolve clash in status.json and PORTING.md",
    "category": "",
    "detail": "Branch claude/project-create-mcp clashed with main in framework/catalog/status.json and framework/spec/PORTING.md (merge aborted, main untouched). Merge origin/main into the branch, resolving by keeping both sides' entries (catalog/status and porting notes are additive), run tests, push, then land it on main. No feature changes.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -132112,7 +132120,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:01:01.567Z",
-   "updatedAt": "2026-11-16T23:36:44.149Z",
+   "updatedAt": "2026-11-16T23:36:57.822Z",
    "builtAt": "",
    "notes": [
     {
@@ -132122,6 +132130,10 @@
     {
      "text": "Queued by brett.",
      "at": "2026-11-16T23:20:49.719Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-land-project-create-mcp-resolve-clash--gina, shared account login)",
+     "at": "2026-11-16T23:36:57.822Z"
     },
     {
      "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-land-project-create-mcp-resolve-clash--gina.",
