@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6795,
- "updatedAt": "2026-11-16T19:51:49.664Z",
+ "rev": 6796,
+ "updatedAt": "2026-11-16T19:51:59.087Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -246120,7 +246120,7 @@
    "title": "Reset all button for every asset override in Appearance",
    "category": "",
    "detail": "Settings > Appearance, the 'N assets are controlled by their own settings' row (AssetsWithEdits in framework/react/components/ChromeContext.tsx) only has a Reset all per asset. Add one 'Reset all' button on the header row that clears every asset override at once (chrome.reset for each, one confirm, one undo), so every asset follows the skin again. Same action through REST, MCP, CLI and voice (chrome.reset-all). Tests, land.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -246128,8 +246128,8 @@
    "pr": "#730",
    "priority": "P1",
    "createdAt": "2026-11-16T19:03:55.794Z",
-   "updatedAt": "2026-11-16T19:51:36.264Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T19:51:40.907Z",
+   "builtAt": "2026-11-16T19:51:40.908Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -246480,12 +246480,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:51:40.907Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T19:05:16.473Z",
-     "updatedAt": "2026-11-16T19:05:16.473Z"
+     "updatedAt": "2026-11-16T19:51:41.355Z"
     }
    ],
    "profiles": [
@@ -246496,7 +246496,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
