@@ -809,10 +809,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 13:24 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · orchestrator
-- 2026-11-16 13:24 UTC · `vps-sends-shipped-features-every-merge` → running, note (all) · pipeline
-- 2026-11-16 13:24 UTC · `vps-sends-shipped-features-every-merge` note (all) · orchestrator
-- 2026-11-16 13:24 UTC · `demo-video-series-three-minute-browser` → running, note (all) · pipeline
 - 2026-11-16 13:25 UTC · `demo-video-series-three-minute-browser` note (all) · orchestrator
 - 2026-11-16 13:25 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
 - 2026-11-16 13:26 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
@@ -1209,6 +1205,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 19:07 UTC · `settings-interface-gear-every-plugin` → queued, note (all) · pipeline
 - 2026-11-16 19:07 UTC · `all-settings-interfaces-open-floating` → complete, merged, note (all) · reconciler
 - 2026-11-16 19:07 UTC · `axhub-veto-countdown-setting-read-only` → pending, note (all) · reconciler
+- 2026-11-16 19:08 UTC · `settings-interface-gear-every-plugin` → running, note (all) · pipeline
+- 2026-11-16 19:08 UTC · `settings-interface-gear-every-plugin` note (all) · orchestrator
+- 2026-11-16 19:08 UTC · `settings-interface-gear-every-plugin` note (all) · orchestrator
+- 2026-11-16 19:08 UTC · `all-settings-interfaces-open-floating` note (all) · orchestrator
 
 ## Token passes (log)
 

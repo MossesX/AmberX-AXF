@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6683,
- "updatedAt": "2026-11-16T19:08:10.494Z",
+ "rev": 6684,
+ "updatedAt": "2026-11-16T19:08:41.676Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -201169,7 +201169,7 @@
    "mergedAt": "2026-11-16T19:01:40Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:03:04.047Z",
-   "updatedAt": "2026-11-16T19:07:34.640Z",
+   "updatedAt": "2026-11-16T19:08:23Z",
    "builtAt": "2026-11-16T18:44:45.128Z",
    "notes": [
     {
@@ -201247,6 +201247,10 @@
     {
      "text": "Reconciler: PR #628 merged",
      "at": "2026-11-16T19:07:34.640Z"
+    },
+    {
+     "text": "Shipped manifest sm-all-settings-interfaces-open-floating rev 1 sent to Shipped features (orchestrator): landed 2e73f739d, 56 file(s), 0 test line(s), 2 open.",
+     "at": "2026-11-16T19:08:23Z"
     }
    ],
    "approvals": [],
@@ -201303,6 +201307,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-all-settings-interfaces-open-floating",
+    "rev": 1,
+    "at": "2026-11-16T19:08:23Z",
+    "landedCommit": "2e73f739deaa3e19e933aea2409c02acd6c401ba"
    },
    "steps": [
     {
@@ -201405,7 +201415,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -244230,7 +244240,7 @@
    "title": "Settings interface and gear for every plugin",
    "category": "",
    "detail": "Brett: every plugin needs a settings interface. Audit: 44 plugins with a screen; 10 have no settings tab (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review), and hub-sync's screen has no gear. Check plugins WITHOUT a screen too. Give EVERY plugin a Settings → Plugins sub-tab (at minimum enable/disable, info, logs, plus its real options), and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when any plugin lacks a settings tab, or a plugin screen lacks the gear. Full API parity.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -244238,7 +244248,7 @@
    "pr": "#725",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:38.814Z",
-   "updatedAt": "2026-11-16T19:08:07.737Z",
+   "updatedAt": "2026-11-16T19:08:27.711Z",
    "builtAt": "",
    "notes": [
     {
@@ -244304,6 +244314,18 @@
     {
      "text": "Self-check: settings-interface-gear-every-plugin was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-16T19:07:16.123Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Opus, Phase 3): axf-settings-interface-gear-every-plugin--sully.",
+     "at": "2026-11-16T19:08:21.680Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-settings-interface-gear-every-plugin--sully, shared account login)",
+     "at": "2026-11-16T19:08:24.547Z"
+    },
+    {
+     "text": "Brief only: brief is 29603 characters (~7401 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-16T19:08:27.711Z"
     }
    ],
    "approvals": [
@@ -244334,12 +244356,12 @@
    "pipeline": {
     "queuedAt": "2026-11-16T18:27:41.302Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-settings-interface-gear-every-plugin--sully",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-16T18:34:01.102Z",
-    "runs": 1,
+    "launchedAt": "2026-11-16T19:08:19.596Z",
+    "runs": 2,
     "lastRun": {
      "at": "2026-11-16T19:03:07.897Z",
      "exit": 0,
@@ -244356,9 +244378,9 @@
      "note": "Split by Claude into 28 steps (2 Fable)."
     },
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-16T18:34:01.102Z",
+    "dispatchedAt": "2026-11-16T19:08:19.596Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -244367,7 +244389,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-16T18:34:01.102Z",
+    "pickedAt": "2026-11-16T19:08:19.596Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -245079,7 +245101,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
