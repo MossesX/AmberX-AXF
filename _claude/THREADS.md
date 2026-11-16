@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 15:23 UTC · `phone-connect-small-android-companion` s19 done (all) · orchestrator
 - 2026-11-15 15:24 UTC · `phone-connect-small-android-companion` s20 done (all) · orchestrator
 - 2026-11-15 15:24 UTC · `build-rules-tab-gate-rules-vps-owns` s22 done (all) · orchestrator
 - 2026-11-15 15:25 UTC · `phone-connect-small-android-companion` s21 done (all) · orchestrator
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 17:12 UTC · `orchestrator-on-hold-status-and-tab` note (all) · orchestrator
 - 2026-11-16 17:16 UTC · `fix-red-ci-blocked-builds-they-land` s5 done (all) · orchestrator
 - 2026-11-16 17:18 UTC · `fix-red-ci-blocked-builds-they-land` s7 done (all) · orchestrator
+- 2026-11-16 17:19 UTC · `fix-red-ci-blocked-builds-they-land` s8 done (all) · orchestrator
 
 ## Token passes (log)
 
