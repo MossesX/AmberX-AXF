@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6693,
- "updatedAt": "2026-11-16T19:13:08.343Z",
+ "rev": 6694,
+ "updatedAt": "2026-11-16T19:13:36.041Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -244270,7 +244270,7 @@
    "pr": "#725",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:38.814Z",
-   "updatedAt": "2026-11-16T19:08:27.711Z",
+   "updatedAt": "2026-11-16T19:13:31.685Z",
    "builtAt": "",
    "notes": [
     {
@@ -244360,6 +244360,14 @@
      "via": "policy",
      "kind": "upgrade",
      "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    },
+    {
+     "phase": 2,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-16T19:13:31.685Z",
+     "by": "auto",
+     "kind": "downgrade"
     }
    ],
    "upgradeRequests": [],
@@ -244378,12 +244386,12 @@
    "pipeline": {
     "queuedAt": "2026-11-16T18:27:41.302Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-settings-interface-gear-every-plugin--sully",
+    "account": "",
+    "session": "",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-16T19:08:19.596Z",
-    "runs": 2,
+    "launchedAt": "2026-11-16T18:34:01.102Z",
+    "runs": 1,
     "lastRun": {
      "at": "2026-11-16T19:03:07.897Z",
      "exit": 0,
@@ -244400,9 +244408,9 @@
      "note": "Split by Claude into 28 steps (2 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
-    "dispatchedAt": "2026-11-16T19:08:19.596Z",
+    "dispatchedAt": "2026-11-16T18:34:01.102Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -244411,7 +244419,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-16T19:08:19.596Z",
+    "pickedAt": "2026-11-16T18:34:01.102Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -244512,12 +244520,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:13:31.685Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:31:29.535Z",
-     "updatedAt": "2026-11-16T18:31:29.535Z"
+     "updatedAt": "2026-11-16T19:13:32.257Z"
     },
     {
      "id": "s5",
