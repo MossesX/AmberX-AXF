@@ -41,6 +41,7 @@ import { SCALE_FIELDS, SCALE_ENUMS, scaleErrors } from './scale-rules.mjs';
 import { LAYOUT_ENUMS, LAYOUT_FIELDS, LAYOUT_SWITCHES, layoutErrors, layoutToken } from './layout-rules.mjs';
 import { NAV_ACCENT_PREFIX, navFieldErrors, navStyleTokens } from './navstyle-rules.mjs';
 import { PASS_ACTS, PASS_SCOPES, PASS_SCOPE_IDS, PASS_TARGET, passGrantErrors } from './control-pass.mjs';
+import { componentTokenError, componentTokenFields, componentTokenPaths, parseInstanceTokenPath } from './component-tokens.mjs';
 
 export const CONTROL_FRAME = 'control@1';
 export const CONTROL_OPS = ['list', 'get', 'set', 'reset', 'add', 'remove', 'act'];
@@ -72,7 +73,10 @@ const STYLE_FIELDS = {
   density: 'enum:compact,comfortable,spacious', 'radius.sm': 'number', 'radius.md': 'number', 'radius.lg': 'number', 'shadow.sm': 'string', 'shadow.md': 'string', 'shadow.lg': 'string',
   wrapGroups: 'boolean', opacityDisabled: 'number', opacityMuted: 'number', opacityHover: 'number', opacityTint: 'number', opacityScrim: 'number', opacityGlass: 'number',
   opacityDialog: 'number', opacitySettings: 'number', opacityPanel: 'number', opacityMenu: 'number', opacityToolbar: 'number', opacityBanner: 'number',
+  // component-tokens@1: grid.<token> / tabs.<token> (core/engines/component-tokens.mjs is the one schema)
+  ...componentTokenFields(),
 };
+const COMPONENT_PATHS = componentTokenPaths();
 const ITEM_KINDS = ['note', 'todo', 'task'];
 const ITEM_FIELDS = { kind: `enum:${ITEM_KINDS.join(',')}`, list: 'string', title: 'string', text: 'string', summary: 'string', tags: 'string[]', pinned: 'boolean', starred: 'boolean', status: 'enum:open,doing,done', priority: 'enum:0,1,2,3', due: 'string', checklist: 'object[]', parent: 'string', order: 'number', url: 'string' };
 const LIST_FIELDS = { name: 'string', parent: 'string|null', order: 'number', icon: 'string', aliases: 'string[]' };
@@ -86,6 +90,8 @@ const CONSOLE_DELIVERY = 'Every console act takes optional input.to: recent (def
 
 const scalePaths = (type) => [...Object.keys(SCALE_FIELDS[type]), ...Object.keys(SCALE_ENUMS[type] ?? {})];
 const TOKEN_OPS = ['list', 'get', 'set', 'reset'];
+/** component-tokens@1 per-instance target id (control-rules + the Token control runner + the chrome dialogs share it). */
+export const INSTANCE_TOKENS_TARGET = 'tokens.instances';
 const ENTITY_OPS = ['list', 'get', 'set', 'add', 'remove', 'act'];
 
 /**
@@ -121,6 +127,8 @@ export const CONTROL_TARGETS = {
     acts: { open: { options: 'object' }, focus: { options: 'object' }, press: { value: 'any', confirm: 'boolean' }, set: { value: 'any' }, scroll: { scroll: 'object' }, search: { query: 'object' }, state: {}, 'plugin.enable': {}, 'plugin.disable': { options: 'object' } },
     actEffect: { open: 'navigate', focus: 'navigate', scroll: 'navigate', search: 'read', state: 'read', press: 'write', set: 'write', 'plugin.enable': 'write', 'plugin.disable': 'write' },
     doc: `console-control@1 (spec/CONSOLE-CONTROL.md): one address for every screen, tab, setting, button, function, plugin, grid row and build step ("view:settings/tab:settings.tabs=plugins", "row:<build>/step:s3", "plugin:<id>"). path = the address (full or short); list = every target under it, get = its state (no path: where the console is), act <verb> runs it (open, focus, press, set, scroll, search, state, plugin.enable, plugin.disable). A plan's links[] entry or any item may carry { address } to point here. Same guards as /api/console-control: deciding presses refused, destructive ones need input.confirm. ${CONSOLE_DELIVERY}` },
+  // component-tokens@1 (core/engines/component-tokens.mjs): one grid's or one tab row's own token values, on top of the style theme's grid.* / tabs.*
+  [INSTANCE_TOKENS_TARGET]: { domain: 'tokens', label: 'Per-instance component tokens', ops: ['list', 'get', 'set', 'reset', 'act'], paths: 'pattern', pathShape: '<grid|tabs>.<instance>[.<token>]', value: 'field', acts: { 'restore-previous': {}, 'restore-hub': {} }, doc: 'component-tokens@1: the grid / tab-group tokens one instance overrides (a tab row by its TabGroup id, a grid by its DataGrid id): set <family>.<instance>.<token> value; reset <family>.<instance>[.<token>]; act <family>.<instance> restore-previous (back to the values before the last edit) | restore-hub (drop every override so the instance follows the shared axHub look). Stored in the one setting axf.tokens.instances, shared through the axHub look.' },
 };
 export const CONTROL_TARGET_IDS = Object.keys(CONTROL_TARGETS);
 
@@ -163,7 +171,7 @@ export const controlPermission = (target, op, action) => (isControlTarget(target
 export function controlPaths(target) {
   switch (target) {
     case 'tokens.theme': return COLOR_TOKENS.map((id) => ({ id, token: `--fx-${id.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)}`, kind: 'color' }));
-    case 'tokens.style': return Object.entries(STYLE_FIELDS).map(([id, t]) => ({ id, kind: t.startsWith('enum:') ? 'enum' : t, ...(t.startsWith('enum:') ? { options: t.slice(5).split(',') } : {}) }));
+    case 'tokens.style': return Object.entries(STYLE_FIELDS).map(([id, t]) => COMPONENT_PATHS.find((p) => p.id === id) ?? ({ id, kind: t.startsWith('enum:') ? 'enum' : t, ...(t.startsWith('enum:') ? { options: t.slice(5).split(',') } : {}) }));
     case 'tokens.layout': return [
       ...Object.entries(LAYOUT_FIELDS).map(([id, [def, min, max, unit]]) => ({ id, token: layoutToken(id), kind: 'number', unit, default: def, min, max })),
       ...Object.entries(LAYOUT_ENUMS).map(([id, options]) => ({ id, token: layoutToken(id), kind: 'enum', options: [...options] })),
@@ -186,6 +194,7 @@ export function controlPaths(target) {
 /** Is `path` a path of a static token target? (host / entity targets: the host decides.) */
 export function controlPathKnown(target, path) {
   if (target === 'tokens.nav' && typeof path === 'string' && path.startsWith(NAV_ACCENT_PREFIX)) return /^accents\.[a-z0-9][a-z0-9._:/-]{0,119}$/i.test(path);
+  if (target === INSTANCE_TOKENS_TARGET) return parseInstanceTokenPath(path) !== null;
   const ps = controlPaths(target);
   return ps ? ps.some((p) => p.id === path) : null;
 }
@@ -231,7 +240,17 @@ export function controlValueErrors(target, path, value) {
   if (controlPathKnown(target, path) === false) return [`${target} has no token ${path} (control list ${target} names them)`];
   switch (target) {
     case 'tokens.theme': return typeof value === 'string' && COLOR.test(value.trim()) ? [] : ['value must be a colour (#rgb, #rrggbb, #rrggbbaa, rgb(), hsl())'];
-    case 'tokens.style': { const e = typeError('value', STYLE_FIELDS[path], value); return e ? [e] : typeof value === 'string' && value.length > 400 ? ['value is too long'] : []; }
+    case 'tokens.style': {
+      const comp = COMPONENT_PATHS.find((p) => p.id === path);
+      if (comp) { const e = componentTokenError(comp.family, path.slice(comp.family.length + 1), value); return e ? [e] : []; }
+      const e = typeError('value', STYLE_FIELDS[path], value); return e ? [e] : typeof value === 'string' && value.length > 400 ? ['value is too long'] : [];
+    }
+    case INSTANCE_TOKENS_TARGET: {
+      const p = parseInstanceTokenPath(path);
+      if (!p) return [`${target} wants a path <grid|tabs>.<instance>[.<token>] (grid.ui-review.items.hoverBg, tabs.settings.main.activeText)`];
+      if (!p.key) return ['a set on a whole instance needs a token: <family>.<instance>.<token>'];
+      const e = componentTokenError(p.family, p.key, value); return e ? [e] : [];
+    }
     case 'tokens.layout': return layoutErrors('layout', { [path]: value });
     case 'tokens.typography': case 'tokens.density': case 'tokens.sizing': { const [g, f] = path.split('.'); return scaleErrors(target.slice('tokens.'.length), { [g]: { [f]: value } }); }
     case 'tokens.nav': return navFieldErrors(path, value);

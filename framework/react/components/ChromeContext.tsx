@@ -39,6 +39,7 @@ import { CONTROLLED_COLORS, CONTROLLED_COLOR_KEY, chromeOverrideList, controlled
 import { TAP_KEYS, TAP_KINDS, isTapKind, tapArmMs, tapKindKey } from '../../core/engines/tapconfirm';
 import { CHROME_TAP_FIELD, CHROME_TAP_OPTIONS, TAB_ROWS_FIELD, matchTabGroup, parseTabRows } from '../../core/engines/chrome-settings-rules.mjs';
 import { CONTROL_TOKEN_SLOTS, withTokenOverride, withoutTokenOverride } from '../../core/engines/control-tokens.mjs';
+import { COMPONENT_TOKEN_FAMILIES, INSTANCE_TOKENS_KEY, componentToken, componentTokenError, instanceHasPrevious, instanceTokenValues, isComponentTokenFamily, restoreInstanceTokensFromHub, restorePreviousInstanceTokens, setInstanceToken, type ComponentTokenFamily } from '../../core/engines/component-tokens.mjs';
 import type { MenuEntry } from '../../core/engines/windows';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { Button, Segmented, Slider } from './Controls';
@@ -193,6 +194,17 @@ export function installChrome(rt: AxfRuntime): void {
     rt.actions.register('chrome.swap', ([type, instance, asset = 'next'], ctx) => { const ty = t(type); if (ty && !swapChrome(rt, ty, inst(ty, instance, ctx), asset)) rt.toast(`No ${chromeLabel(ty).toLowerCase()} asset "${asset}".`, 'warning', 'Change'); }, { label: 'Use another chrome asset (chrome.swap:<type>:<instance>:<asset|next>)', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.unset', ([type, instance, key = ''], ctx) => { const ty = t(type); if (ty && key) setChromeField(rt, ty, inst(ty, instance, ctx), key, null); }, { label: 'Reset one chrome setting to the app (chrome.unset:<type>:<instance>:<field>)', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.edits', () => rt.dispatch('settings.open:appearance'), { label: 'Assets with edits (Settings → Appearance)' });
+    // component-tokens@1: one tab row's (or grid's) own token values; the same three moves as the settings dialog's panel
+    const fam = (v: unknown): ComponentTokenFamily | null => (isComponentTokenFamily(v) ? v : null);
+    rt.actions.register('chrome.token', ([family, instance, key = '', ...rest], ctx) => {
+      const fa = fam(family); if (!fa) return;
+      const id = (typeof instance === 'string' && instance) || (typeof ctx?.payload === 'string' ? ctx.payload : '') || CHROME_APP_INSTANCE;
+      const value = rest.join(':');
+      try { rt.settings.set(INSTANCE_TOKENS_KEY, setInstanceToken(rt.settings.get(INSTANCE_TOKENS_KEY), fa, id, key, value === '' ? null : value) as never); }
+      catch (e) { rt.toast((e as Error).message, 'warning', 'Component tokens'); }
+    }, { label: 'Set one token of one tab row or grid (chrome.token:<tabs|grid>:<instance>:<token>:<value>; empty value = drop it)', params: true, requires: 'assets.swap' });
+    rt.actions.register('chrome.token-restore', ([family, instance], ctx) => { const fa = fam(family); if (fa) rt.settings.set(INSTANCE_TOKENS_KEY, restorePreviousInstanceTokens(rt.settings.get(INSTANCE_TOKENS_KEY), fa, (typeof instance === 'string' && instance) || (typeof ctx?.payload === 'string' ? ctx.payload : '') || CHROME_APP_INSTANCE) as never); }, { label: 'Restore previous edit of a tab row\'s / grid\'s tokens (chrome.token-restore:<tabs|grid>:<instance>)', params: true, requires: 'assets.swap' });
+    rt.actions.register('chrome.token-hub', ([family, instance], ctx) => { const fa = fam(family); if (fa) rt.settings.set(INSTANCE_TOKENS_KEY, restoreInstanceTokensFromHub(rt.settings.get(INSTANCE_TOKENS_KEY), fa, (typeof instance === 'string' && instance) || (typeof ctx?.payload === 'string' ? ctx.payload : '') || CHROME_APP_INSTANCE) as never); }, { label: 'Restore a tab row\'s / grid\'s tokens from axHub (drop its own values; follow the shared look) (chrome.token-hub:<tabs|grid>:<instance>)', params: true, requires: 'assets.swap' });
     rt.actions.register('settings.controlled-colour', ([c]) => { if (c && (CONTROLLED_COLORS as readonly string[]).includes(c)) rt.settings.set(CONTROLLED_COLOR_KEY, c); }, { label: 'Colour of controlled (overridden) settings', params: true });
     rt.actions.register('chrome.interface', ([type, which = 'default']) => {
       const ty = t(type); if (!ty) return;
@@ -264,6 +276,50 @@ function FieldControl({ type, instance, field, descriptions }: { type: ChromeTyp
       {control}
       <span className="fx-row fx-small fx-muted axf-controlled__note">Overrides the app's setting<Button size="sm" tone="neutral" icon="undo" onClick={() => rt.dispatch(`chrome.unset:${type}:${instance}:${field.key}`)}>Reset</Button></span>
     </div>
+  );
+}
+
+/**
+ * component-tokens@1: one instance's own token values (this tab row / this grid), on top of the skin's grid.* / tabs.*.
+ * Pick a token, type a value (a colour-theme token name like accentSoft, a CSS colour, a length), Set. Restore previous
+ * edit swaps back to the values before the last edit; Restore from axHub drops every value of this instance so it follows
+ * the shared look again. The same moves by API: control@1 tokens.instances (REST / MCP / CLI) and the chrome.token*
+ * actions (voice, console actions).
+ */
+export function InstanceTokensPanel({ family, instance }: { family: ComponentTokenFamily; instance: string }) {
+  const rt = useRuntime();
+  useSettingsTick(rt, [INSTANCE_TOKENS_KEY]);
+  const fam = COMPONENT_TOKEN_FAMILIES[family];
+  const values = instanceTokenValues(rt.settings.get(INSTANCE_TOKENS_KEY), family, instance);
+  const [key, setKey] = useState(fam.tokens[0]!.key);
+  const [text, setText] = useState('');
+  const [error, setError] = useState<string | undefined>(undefined);
+  const tok = componentToken(family, key)!;
+  const current = values[key];
+  const save = (raw: string | null) => {
+    const err = raw === null ? null : componentTokenError(family, key, raw);
+    if (err) { setError(err); return; }
+    setError(undefined);
+    try { rt.settings.set(INSTANCE_TOKENS_KEY, setInstanceToken(rt.settings.get(INSTANCE_TOKENS_KEY), family, instance, key, raw) as never); setText(''); }
+    catch (e) { setError((e as Error).message); }
+  };
+  const n = Object.keys(values).length;
+  const hasPrevious = instanceHasPrevious(rt.settings.get(INSTANCE_TOKENS_KEY), family, instance);
+  const colour = controlledColorOf(rt.settings.get(CONTROLLED_COLOR_KEY));
+  return (
+    <Section title={`${fam.label} colours & style (this one)`} aside={<span className="fx-small fx-muted">{n ? `${n} token${n === 1 ? '' : 's'} set for this one` : 'Follows the skin'}</span>}>
+      <div className="fx-stack fx-stack--xs" data-axf-instance-tokens={`${family}.${instance}`}>
+        <SelectField label="Token" value={key} options={fam.tokens.map((x) => ({ value: x.key, label: `${x.key}${x.key in values ? ' •' : ''} — ${x.description}` }))} onChange={(k) => { setKey(k); setText(''); setError(undefined); }} />
+        <TextField label="Value" value={text} onChange={setText} placeholder={current !== undefined ? `now ${current} (default ${tok.default})` : `default ${tok.default}`} hint={error ?? `${tok.kind}: a colour-theme token name (accent, surface2, accentSoft), a CSS value or a number`} error={error} mono />
+        <div className="fx-row fx-row--wrap">
+          <Button size="sm" icon="check" onClick={() => save(text)} disabled={!text.trim()}>Set</Button>
+          {current !== undefined && <Button size="sm" tone="neutral" icon="undo" onClick={() => save(null)}>Drop this token</Button>}
+          <Button size="sm" tone="neutral" icon="undo" onClick={() => rt.dispatch(`chrome.token-restore:${family}:${instance}`)} disabled={!hasPrevious}>Restore previous edit</Button>
+          <Button size="sm" tone="neutral" icon="refresh" onClick={() => rt.dispatch(`chrome.token-hub:${family}:${instance}`)} disabled={!n && !hasPrevious}>Restore from axHub</Button>
+        </div>
+        {n > 0 && <ul className={`fx-small axf-controlled axf-controlled--${colour}`}>{Object.entries(values).map(([k, v]) => <li key={k}><span className="fx-mono">{k}</span>: <span className="fx-mono">{String(v)}</span></li>)}</ul>}
+      </div>
+    </Section>
   );
 }
 
@@ -407,6 +463,7 @@ export function ChromeSettingsPanel({ type, instance }: { type: ChromeType; inst
         <div className="fx-stack">
           {fs.length ? fs.map((f) => <FieldControl key={f.key} type={type} instance={instance} field={f} descriptions={ui.descriptions} />) : <p className="fx-muted">Nothing at this level{q ? ' matches' : ''}.</p>}
           {id === 'look' && type === 'banner' && <Button icon="settings" onClick={() => rt.openDialog(BANNER_SETTINGS_DIALOG, instance !== CHROME_APP_INSTANCE ? { id: instance } : {})}>Banner settings (look, behaviour, Apply to all)…</Button>}
+          {id === 'look' && type === 'tab-group' && levelOk('tokens', 'basic') && <InstanceTokensPanel family="tabs" instance={instance} />}
           {id === 'behaviour' && <Note tone="info">Tap to confirm: on a touch screen the first tap shows what an item is and the second tap confirms it. Same as all follows the switch for every {chromeLabel(type).toLowerCase()} in Settings → Plugins → Toolbars.</Note>}
           {id === 'behaviour' && type === 'nav-menu' && <Note tone="info">Sub menus, animation and colours of a nav that opts in are the Navigation style settings (nav-style@1).</Note>}
           {ui.groups.filter((g) => g.tab === id && levelOk(g.id, g.level ?? ui.defaultLevel)).map((g) => <ExtraGroup key={g.id} group={g} />)}

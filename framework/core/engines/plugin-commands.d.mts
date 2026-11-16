@@ -20,6 +20,8 @@ export interface PluginCommand {
   output: string;
   source: 'route' | 'action' | 'declared' | 'auto';
   context?: boolean;
+  /** a declared MCP tool name (commands.items[].tool) */
+  tool?: string;
 }
 export interface PluginSkip { route?: string; action?: string; id?: string; why: string }
 export interface PluginCommandEntry {
@@ -52,6 +54,7 @@ export const PLUGIN_COMMAND_EFFECTS: readonly PluginCommandEffect[];
 export const PLUGIN_TOOL_MAX: number;
 export const PLUGIN_AUTO_READS: readonly string[];
 export const PLUGIN_GENERIC_TOOLS: readonly string[];
+export const PLUGIN_TOOL_NAME: RegExp;
 export function commandSlug(s: unknown): string;
 export function scanPythonRoutes(src: string, file?: string): { routes: PluginRoute[]; unread: { file: string; line: number; why: string }[] };
 export function scanWebActions(src: string, file?: string): { id: string; label: string; context: boolean; searchable: boolean; file: string; line: number }[];
