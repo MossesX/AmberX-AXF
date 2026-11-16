@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6920,
- "updatedAt": "2026-11-16T22:43:05.702Z",
+ "rev": 6921,
+ "updatedAt": "2026-11-16T22:43:15.780Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -249990,16 +249990,22 @@
    "title": "Rebuild: UI manager floating window to select any UI part",
    "category": "",
    "detail": "Fresh rebuild on current main of the old ui-manager-floating-window-to-select-any build (PR #634, 2,532 commits behind, archived). A floating UI manager window that lets Brett select any part of the UI (toolbar, tab group, banner, nav, menu, widget, any asset) and open its settings, change, move or hide it. Read the old branch claude/ui-manager-floating-window-to-select-any for intent only; don't merge it. Framework controls and tokens, console-control addresses, MCP/CLI/voice control. Land through the orchestrator.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-16T22:43:03.598Z",
-   "updatedAt": "2026-11-16T22:43:03.598Z",
+   "updatedAt": "2026-11-16T22:43:08.044Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-16T22:43:08.044Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -250014,6 +250020,30 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-16T22:43:05.981Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -250023,7 +250053,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
