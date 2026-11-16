@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T13:13:51.519Z",
+ "updatedAt": "2026-11-16T13:14:30.883Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -154687,7 +154687,7 @@
    "title": "Voice Designer plugin, built into each employee's card",
    "category": "",
    "detail": "New console plugin 'Voice Designer'. Design a voice for each employee (agent) and save it as a voice@1 asset. Multiple providers, batteries included: OpenAI TTS, ElevenLabs (including voice design and cloning), Google, Azure, Polly, Deepgram Aura, Cartesia, PlayHT, plus free local voices (browser, Piper/Kokoro on the VPS) that work with no key. Provider manager keeps API keys in the hub credential store, with a test button and a status badge. Designer: describe a voice ('cat-like, raspy, fast'), generate or match it, then tune speed, pitch, style and accent, preview with sample lines, save and version it with restore. Integrated with the EMPLOYEE CARD in the Agent manager: a voice section on each card with play-sample, change voice, and 'open in Voice Designer'; the card shows the voice in use. Group chat audio uses each employee's voice. Takes over the voice-picker step s4 of group-chat-audio-hear-agents-talk-while (merge, don't duplicate). Full REST/MCP/CLI/voice parity, token-driven UI, tests, help, Shipped features.",
-   "status": "queued",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -154695,7 +154695,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T13:13:27.564Z",
-   "updatedAt": "2026-11-16T13:13:29.836Z",
+   "updatedAt": "2026-11-16T13:14:28.360Z",
    "builtAt": "",
    "notes": [
     {
