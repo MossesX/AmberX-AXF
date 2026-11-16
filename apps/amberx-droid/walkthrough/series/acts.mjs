@@ -16,37 +16,39 @@ export const APPS = {
   'axhub-android': { url: null, device: 'phone' },
 };
 
-const view = (id, label) => async (h) => { await h.view(id, label); await h.hl('main', label); };
+// h.view takes the nav title (the console's nav items are titled; the banner search is the fallback)
+const MAIN = 'main h1, main h2, main';
+const view = (title, label) => async (h) => { await h.view(title, label); await h.hl(MAIN, label); };
 const go = (title, sel, label) => async (h) => { await h.go(title); if (sel) await h.hl(sel, label ?? title); };
 
 /** Shot text → screen, per app. First match wins; the last rule of each app is its home. */
 export const ROUTES = {
   'console-web': [
-    [/feature matrix/i, view('feature-matrix', 'Feature matrix')],
-    [/\bcrew\b/i, view('crew', 'Crew, live')],
-    [/swarm/i, view('agent-swarm', 'Agent swarm')],
-    [/ui review/i, view('ui-review', 'UI Review')],
-    [/theme editor/i, view('theme-editor', 'Theme editor')],
-    [/theme manager|roll/i, view('theme-manager', 'Theme manager')],
-    [/hot-swap|stress test/i, async (h) => { await h.settings('Appearance'); await h.hl('main', 'Hot-swap studio'); }],
-    [/context menu designer|chunk/i, view('context-menu-designer', 'Context menu designer')],
-    [/toolbar customizer|customize toolbars/i, async (h) => { await h.view('home', 'Home'); await h.hl('[role=toolbar]', 'Right-click to customize'); }],
-    [/appearance|skin|tab group card/i, async (h) => { await h.settings('Appearance'); await h.hl('main', 'Appearance'); }],
-    [/settings/i, async (h) => { await h.view('settings', 'Settings'); await h.hl('main', 'Settings'); }],
-    [/plan studio|plan\b|plans tab|catalog tab|categories|turn into a build/i, view('plan-studio', 'Plan Studio')],
-    [/orchestrator|pending|queue|active tab|complete tab|build note|steps/i, view('build-orchestrator', 'Build orchestrator')],
-    [/codebase changes|changes log/i, view('codebase-changes', 'Codebase changes')],
-    [/shipped/i, view('shipped-features', 'Shipped features')],
-    [/plugin/i, view('plugin-manager', 'Plugin Manager')],
-    [/banner/i, async (h) => { await h.view('home', 'Home'); await h.hl('.fx-banner', 'The banner'); }],
-    [/./, async (h) => { await h.view('home', 'Home'); await h.hl('main', 'The Dev Console'); }],
+    [/feature matrix/i, view('Feature matrix', 'Feature matrix')],
+    [/\bcrew\b/i, view('Crew', 'Crew, live')],
+    [/swarm/i, view('Agent swarm', 'Agent swarm')],
+    [/ui review/i, view('UI Review', 'UI Review')],
+    [/theme editor/i, view('Theme editor', 'Theme editor')],
+    [/theme manager|roll/i, view('Theme manager', 'Theme manager')],
+    [/hot-swap|stress test/i, async (h) => { await h.settings('Appearance'); await h.hl(MAIN, 'Hot-swap studio'); }],
+    [/context menu designer|chunk/i, view('Context menu designer', 'Context menu designer')],
+    [/toolbar customizer|customize toolbars/i, async (h) => { await h.view('Home', 'Home'); await h.hl('[role=toolbar]', 'Right-click to customize'); }],
+    [/appearance|skin|tab group card/i, async (h) => { await h.settings('Appearance'); await h.hl(MAIN, 'Appearance'); }],
+    [/settings/i, async (h) => { await h.view('Settings', 'Settings'); await h.hl(MAIN, 'Settings'); }],
+    [/plan studio|plan\b|plans tab|catalog tab|categories|turn into a build/i, view('Plan Studio', 'Plan Studio')],
+    [/orchestrator|pending|queue|active tab|complete tab|build note|steps/i, view('Build orchestrator', 'Build orchestrator')],
+    [/codebase changes|changes log/i, view('Codebase changes', 'Codebase changes')],
+    [/shipped/i, view('Shipped features', 'Shipped features')],
+    [/plugin/i, view('Plugin Manager', 'Plugin Manager')],
+    [/banner/i, async (h) => { await h.view('Home', 'Home'); await h.hl('.fx-banner', 'The banner'); }],
+    [/./, async (h) => { await h.view('Home', 'Home'); await h.hl(MAIN, 'The Dev Console'); }],
   ],
   'axhub-web': [
-    [/\bapps\b/i, async (h) => { await h.view('apps', 'Apps'); await h.hl('main', 'Apps'); }],
-    [/audit|manage/i, async (h) => { await h.view('audit', 'Audit log'); await h.hl('main', 'Manage'); }],
-    [/hub tab|sign-in|signed in|security|shared memory|project data/i, async (h) => { await h.view('hub', 'Hub'); await h.hl('main', 'Hub'); }],
+    [/\bapps\b/i, async (h) => { await h.view('Apps', 'Apps'); await h.hl(MAIN, 'Apps'); }],
+    [/audit|manage/i, async (h) => { await h.view('Audit log', 'Audit log'); await h.hl(MAIN, 'Manage'); }],
+    [/hub tab|sign-in|signed in|security|shared memory|project data/i, async (h) => { await h.view('Hub', 'Hub'); await h.hl(MAIN, 'Hub'); }],
     [/look|theme|re-renders/i, async (h) => { await h.hl('.fx-banner', 'Same look as the console'); }],
-    [/./, async (h) => { await h.view('home', 'Approvals'); await h.hl('main', 'Approvals'); }],
+    [/./, async (h) => { await h.view('Approvals', 'Approvals'); await h.hl(MAIN, 'Approvals'); }],
   ],
   'amberx-droid': [
     [/command center|four tabs|record-your-own|chains|wizard|developer tab|ai snippets|molly/i, go('Command center', '[role=tablist] >> nth=0', 'Command center')],
@@ -74,20 +76,20 @@ export const ACTS = {
     'developer-1': async (h) => { await h.go('Approvals'); await h.openHeld(); await h.hl('[role=dialog] button:has-text("Deny")', 'Deny or Approve'); },
   },
   'orchestrator-agents': {
-    'intro-1': async (h) => { await h.view('build-orchestrator', 'Build orchestrator'); await h.click('main [role=row] >> nth=1', 'One build'); await h.hl('main', 'Steps, minutes, models'); },
-    'queue-0': async (h) => { await h.view('build-orchestrator', 'Build orchestrator'); await h.click('role=tab[name=/Queue/]', 'Queue'); },
-    'queue-1': async (h) => { await h.click('role=tab[name=/Active/]', 'Active'); await h.hl('main', 'Ticked as it goes'); },
-    'crew-1': async (h) => { await h.view('crew', 'Crew'); await h.click('main [role=row] >> nth=1', 'What it is doing now'); },
-    'checks-1': async (h) => { await h.view('build-orchestrator', 'Build orchestrator'); await h.click('role=tab[name=/Complete/]', 'Complete'); },
+    'intro-1': async (h) => { await h.view('Build orchestrator', 'Build orchestrator'); await h.click('main [role=row] >> nth=1', 'One build'); await h.hl(MAIN, 'Steps, minutes, models'); },
+    'queue-0': async (h) => { await h.view('Build orchestrator', 'Build orchestrator'); await h.click('role=tab[name=/Queue/]', 'Queue'); },
+    'queue-1': async (h) => { await h.click('role=tab[name=/Active/]', 'Active'); await h.hl(MAIN, 'Ticked as it goes'); },
+    'crew-1': async (h) => { await h.view('Crew', 'Crew'); await h.click('main [role=row] >> nth=1', 'What it is doing now'); },
+    'checks-1': async (h) => { await h.view('Build orchestrator', 'Build orchestrator'); await h.click('role=tab[name=/Complete/]', 'Complete'); },
   },
   'plan-studio': {
-    'intro-1': async (h) => { await h.view('plan-studio', 'Plan Studio'); for (const v of ['Board', 'Roadmap', 'Reader']) { await h.click(`role=button[name=/${v}/] >> nth=0, role=tab[name=/${v}/]`, v); await h.wait(900); } },
+    'intro-1': async (h) => { await h.view('Plan Studio', 'Plan Studio'); for (const v of ['Board', 'Roadmap', 'Reader']) { await h.click(`role=button[name=/${v}/] >> nth=0, role=tab[name=/${v}/]`, v); await h.wait(900); } },
     'intro-2': async (h) => { await h.click('role=tab[name=/Categories/]', 'Categories'); },
     'catalog-0': async (h) => { await h.click('role=tab[name=/Catalog/]', 'Catalog'); },
-    'catalog-1': async (h) => { await h.scroll(500); await h.hl('main', 'New and gone'); },
+    'catalog-1': async (h) => { await h.scroll(500); await h.hl(MAIN, 'New and gone'); },
   },
   'skins-tokens': {
-    'intro-1': async (h) => { await h.settings('Appearance'); await h.hl('main', 'Skins'); await h.mock('skin', { skin: 'atelier' }); await h.steps(4, 1800); },
+    'intro-1': async (h) => { await h.settings('Appearance'); await h.hl(MAIN, 'Skins'); await h.mock('skin', { skin: 'atelier' }); await h.steps(4, 1800); },
     'intro-2': async (h) => { await h.skin('newsroom'); await h.wait(2500); await h.skin('atelier'); },
   },
 };
