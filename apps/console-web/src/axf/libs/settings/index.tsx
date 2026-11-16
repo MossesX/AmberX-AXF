@@ -31,7 +31,6 @@ import { RETIRED_SETTINGS_OPEN_KEYS, SETTINGS_ALL_DIALOG, SETTINGS_TAB_DIALOG, s
 // quick-settings@1: the pinned Quick settings pane of every settings interface
 import { QuickSettingsFrame, useQuickAsset } from '../../react/components/QuickSettings';
 import { normalizeQuickAssets, quickAssetsKey, quickHandleOf, quickScopeId, QUICK_HANDLE_KEY, QUICK_HANDLE_LABEL, QUICK_HANDLES } from '../../core/engines/quick-settings.mjs';
-import { SelectField } from '../../react/components/Forms';
 
 export const SETTINGS_LIBRARY_ID = 'ai.amberx.axf.settings';
 const VIEW = 'settings';
