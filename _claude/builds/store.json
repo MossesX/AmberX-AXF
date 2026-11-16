@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6978,
- "updatedAt": "2026-11-16T23:13:06.941Z",
+ "rev": 6979,
+ "updatedAt": "2026-11-16T23:13:30.641Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -249766,7 +249766,7 @@
    "title": "Fable rebuild: Plan Studio cleared out, unlimited nesting, context menus, full voice control",
    "category": "",
    "detail": "Full professional rebuild of the Plan Studio plugin (plan-studio) on Fable. First CLEAR IT OUT: remove every existing plan and stop all syncing into Plan Studio (no rules, builds, pending list or anything else synced into it); it starts empty. Then rebuild to the same standard as the To-do/Note manager rebuild: unlimited nesting of plans, sections, steps, notes and lists inside each other; drag to move/reorder at any level; full context menu on every item (new inside, rename, edit, duplicate, move, delete with undo, export, send to build orchestrator); everything voice and MCP controlled (plugin-commands MCP tools, console-control addresses, CLI, AmberX voice). Integrated with everything else (to-do manager, build orchestrator, notes, Shipped features) by explicit links only, never auto-sync. Professional, powerful UI on framework controls and tokens, desktop and phone. Rebuild differences report. Tests, land through the orchestrator.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -249774,7 +249774,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T20:25:16.196Z",
-   "updatedAt": "2026-11-16T21:30:48.368Z",
+   "updatedAt": "2026-11-16T23:13:29.094Z",
    "builtAt": "",
    "notes": [
     {
@@ -249836,6 +249836,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-16T21:30:48.368Z"
+    },
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-16T23:13:29.094Z"
     }
    ],
    "approvals": [],
@@ -249853,7 +249857,7 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-16T20:27:13.362Z",
+    "queuedAt": "2026-11-16T23:13:28.485Z",
     "queuedBy": "brett",
     "account": "mossesx-max-",
     "session": "",
@@ -249881,7 +249885,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"11fc71db-c0de-46e5-97a7-1fb14dc25f77\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- ended (exit 1) with 3 steps left: back in the Queue (run 1).",
+    "note": "",
     "route": "",
     "dispatchedAt": "2026-11-16T20:29:03.156Z",
     "planned": {
@@ -249976,7 +249980,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
