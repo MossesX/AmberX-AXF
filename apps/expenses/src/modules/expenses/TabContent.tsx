@@ -62,7 +62,7 @@ export default function TabContent({ tab, expenses, onUpdate, onAdd, onAddIncome
       // Unreachable through `TabKind`, but a tab restored from a future shape
       // should say so rather than render blank.
       return (
-        <Typography sx={{ fontSize: 12, color: token("err") }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("err") }}>
           Unknown tab kind — close this tab.
         </Typography>
       );

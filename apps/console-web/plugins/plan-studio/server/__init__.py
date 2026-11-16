@@ -28,7 +28,7 @@ router = APIRouter()
 FOLDER = "plan-studio"
 CLI = Path(__file__).resolve().parent.parent / "plans.mjs"
 ROOT = CLI.parents[4]
-OPS = {"get", "save", "delete", "restore", "bulk", "category", "template-save", "template-delete", "view-save", "view-delete",
+OPS = {"get", "find", "save", "delete", "restore", "bulk", "category", "template-save", "template-delete", "view-save", "view-delete",
        "import", "export", "catalog", "feature", "plan-feature", "build", "sync-builds", "ai-apply"}
 
 
@@ -56,6 +56,14 @@ def _llm():
 @router.get("/state")
 def state() -> dict[str, Any]:
     return run({"op": "state"})
+
+
+@router.get("/find")
+def find(q: str = "", plan: str = "", item: str = "", kind: str = "", limit: int = 10) -> dict[str, Any]:
+    """Find by content: the plan about `plan`, the item (step, risk, question, comment …) that mentions `item`, or one
+    spoken sentence in `q` ("the plan about X, the step that mentions Y"). Each hit's `focus` opens it in Plan Studio
+    (console.screens act open plan-studio, input.focus)."""
+    return run({"op": "find", "q": q, "plan": plan, "item": item, "kind": kind, "limit": max(1, min(limit, 100))})
 
 
 @router.get("/catalog")

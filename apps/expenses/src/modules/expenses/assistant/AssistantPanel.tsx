@@ -197,7 +197,7 @@ export default function AssistantPanel() {
     <Drawer anchor="right" open={ui.open} onClose={() => assistantUi.close()} slotProps={{ paper: { sx: { width: { xs: "100%", sm: 460 }, maxWidth: "100vw", background: token("page"), color: token("ink") } } }}>
       <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }} data-axf-assistant>
         {/* ---------------------------------------------------------- header */}
-        <Stack direction="row" spacing={0.6} sx={{ alignItems: "center", p: "8px 8px 6px", borderBottom: `1px solid ${token("edge")}` }}>
+        <Stack direction="row" spacing={0.6} sx={{ alignItems: "center", p: "var(--fx-dens-gap-xl) var(--fx-dens-gap-xl) var(--fx-dens-gap-lg)", borderBottom: `var(--fx-border-w) solid ${token("edge")}` }}>
           <Tooltip title="Conversations">
             <IconButton size="small" onClick={() => setShowList((v) => !v)} aria-label="Conversations" sx={{ color: showList ? token("accent") : token("ink") }}>
               <Glyph id="icon-history" size={16} />
@@ -205,8 +205,8 @@ export default function AssistantPanel() {
           </Tooltip>
           <Glyph id="icon-sparkle" size={16} />
           <Box sx={{ minWidth: 0, flex: 1 }}>
-            <Typography sx={{ fontSize: 13.5, fontWeight: 700, lineHeight: 1.1 }}>{name}</Typography>
-            <Typography sx={{ fontSize: 10.5, color: token("dim"), ...MONO }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 700, lineHeight: 1.1 }}>{name}</Typography>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), ...MONO }}>
               {backend}
               {status ? ` · ${status.model}` : ""}
             </Typography>
@@ -234,30 +234,30 @@ export default function AssistantPanel() {
         </Stack>
 
         {/* ------------------------------------------------------ mode switch */}
-        <Box sx={{ p: "6px 8px", borderBottom: `1px solid ${token("edge")}` }}>
-          <ToggleButtonGroup size="small" exclusive value={ui.mode} onChange={(_, v: AssistantMode | null) => v && changeMode(v)} aria-label="Assistant mode" data-axf-assistant-mode={ui.mode} fullWidth sx={{ "& .MuiToggleButton-root": { textTransform: "none", fontSize: 12, py: 0.4 } }}>
+        <Box sx={{ p: "var(--fx-dens-gap-lg) var(--fx-dens-gap-xl)", borderBottom: `var(--fx-border-w) solid ${token("edge")}` }}>
+          <ToggleButtonGroup size="small" exclusive value={ui.mode} onChange={(_, v: AssistantMode | null) => v && changeMode(v)} aria-label="Assistant mode" data-axf-assistant-mode={ui.mode} fullWidth sx={{ "& .MuiToggleButton-root": { textTransform: "none", fontSize: 'var(--fx-type-root-sm)', py: 0.4 } }}>
             <ToggleButton value="chat">Chat</ToggleButton>
             <ToggleButton value="edit">Edit source</ToggleButton>
             <ToggleButton value="build">Build</ToggleButton>
           </ToggleButtonGroup>
-          <Typography sx={{ fontSize: 10.5, color: token("dim"), mt: 0.4 }}>{MODE_HINT[ui.mode]}</Typography>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), mt: 0.4 }}>{MODE_HINT[ui.mode]}</Typography>
         </Box>
 
         {/* -------------------------------------------------- workspace strip */}
         {ui.mode !== "chat" && workspace && (
-          <Box sx={{ px: 1, py: 0.6, borderBottom: `1px solid ${token("edge")}`, background: token("panel") }}>
+          <Box sx={{ px: 1, py: 0.6, borderBottom: `var(--fx-border-w) solid ${token("edge")}`, background: token("panel") }}>
             <Stack direction="row" spacing={0.8} sx={{ alignItems: "center", flexWrap: "wrap" }}>
-              <Typography sx={{ fontSize: 11.5 }}>
+              <Typography sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
                 Workspace:{" "}
                 <Box component="span" sx={{ ...MONO, color: workspace.files.length ? token("warn") : token("dim") }}>
                   {workspace.files.length} file{workspace.files.length === 1 ? "" : "s"} changed
                 </Box>
               </Typography>
               <Box sx={{ flex: 1 }} />
-              <Button size="small" disabled={!workspace.files.length} onClick={() => setShowDiff((v) => !v)} sx={{ fontSize: 11, py: 0 }}>
+              <Button size="small" disabled={!workspace.files.length} onClick={() => setShowDiff((v) => !v)} sx={{ fontSize: 'var(--fx-type-root-xs)', py: 0 }}>
                 {showDiff ? "Hide diff" : "Diff"}
               </Button>
-              <Button size="small" disabled={!workspace.files.length} component="a" href="/api/ai/workspace/patch" sx={{ fontSize: 11, py: 0 }}>
+              <Button size="small" disabled={!workspace.files.length} component="a" href="/api/ai/workspace/patch" sx={{ fontSize: 'var(--fx-type-root-xs)', py: 0 }}>
                 Patch
               </Button>
               <Button
@@ -267,13 +267,13 @@ export default function AssistantPanel() {
                 onClick={() => {
                   if (confirm("Discard every change in the workspace?")) void aiApi.resetWorkspace().then(refreshWorkspace);
                 }}
-                sx={{ fontSize: 11, py: 0, color: token("dim") }}
+                sx={{ fontSize: 'var(--fx-type-root-xs)', py: 0, color: token("dim") }}
               >
                 Reset
               </Button>
             </Stack>
             {showDiff && workspace.diff && (
-              <Box component="pre" sx={{ m: "6px 0 0", maxHeight: 220, overflow: "auto", fontSize: 11, ...MONO, background: token("panel2"), p: 1, borderRadius: 1, whiteSpace: "pre" }}>
+              <Box component="pre" sx={{ m: "var(--fx-dens-gap-lg) 0 0", maxHeight: 220, overflow: "auto", fontSize: 'var(--fx-type-root-xs)', ...MONO, background: token("panel2"), p: 1, borderRadius: 'var(--fx-radius-md)', whiteSpace: "pre" }}>
                 {workspace.diff.slice(0, 60000)}
               </Box>
             )}
@@ -284,10 +284,10 @@ export default function AssistantPanel() {
         {showList ? (
           <Box sx={{ flex: 1, overflow: "auto" }}>
             {conversations.length === 0 ? (
-              <Typography sx={{ p: 2, fontSize: 12.5, color: token("dim") }}>No {MODE_LABEL[ui.mode].toLowerCase()} conversations yet.</Typography>
+              <Typography sx={{ p: 2, fontSize: 'var(--fx-type-root-md)', color: token("dim") }}>No {MODE_LABEL[ui.mode].toLowerCase()} conversations yet.</Typography>
             ) : (
               conversations.map((c) => (
-                <Stack key={c.id} direction="row" sx={{ alignItems: "center", px: 1, py: 0.5, borderBottom: `1px solid ${token("edge")}`, background: c.id === ui.conversationId ? token("panel") : undefined }}>
+                <Stack key={c.id} direction="row" sx={{ alignItems: "center", px: 1, py: 0.5, borderBottom: `var(--fx-border-w) solid ${token("edge")}`, background: c.id === ui.conversationId ? token("panel") : undefined }}>
                   <Box
                     component="button"
                     onClick={() => {
@@ -296,8 +296,8 @@ export default function AssistantPanel() {
                     }}
                     sx={{ flex: 1, textAlign: "left", background: "none", border: 0, color: "inherit", cursor: "pointer", p: 0.4, font: "inherit" }}
                   >
-                    <Typography sx={{ fontSize: 12.5, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.title}</Typography>
-                    <Typography sx={{ fontSize: 10.5, color: token("dim") }}>
+                    <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.title}</Typography>
+                    <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>
                       {c.messages} messages · {new Date(c.updatedAt).toLocaleDateString()}
                     </Typography>
                   </Box>
@@ -319,11 +319,11 @@ export default function AssistantPanel() {
             )}
           </Box>
         ) : (
-          <Box sx={{ flex: 1, overflow: "auto", p: 1.2, display: "flex", flexDirection: "column", gap: 1 }}>
+          <Box sx={{ flex: 1, overflow: "auto", p: 1.2, display: "flex", flexDirection: "column", gap: 'var(--fx-dens-gap-xl)' }}>
             {status && !connected && (
               <Alert
                 severity="warning"
-                sx={{ fontSize: 12 }}
+                sx={{ fontSize: 'var(--fx-type-root-sm)' }}
                 action={
                   <Button
                     size="small"
@@ -343,8 +343,8 @@ export default function AssistantPanel() {
             {messages.length === 0 && !live && (
               <Box sx={{ textAlign: "center", py: 3, px: 1 }}>
                 <Glyph id="icon-sparkle" size={28} />
-                <Typography sx={{ fontSize: 14, fontWeight: 700, mt: 1 }}>Ask {name} anything about this app</Typography>
-                <Typography sx={{ fontSize: 12, color: token("dim"), mt: 0.5 }}>
+                <Typography sx={{ fontSize: "var(--fx-font-size)", fontWeight: 700, mt: 1 }}>Ask {name} anything about this app</Typography>
+                <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), mt: 0.5 }}>
                   {MODE_HINT[ui.mode]} It reads the real source{status ? ` (snapshot ${status.sourceVersion})` : ""}.
                 </Typography>
                 <Stack direction="row" spacing={0.6} useFlexGap sx={{ flexWrap: "wrap", justifyContent: "center", mt: 1.5 }}>
@@ -356,7 +356,7 @@ export default function AssistantPanel() {
             )}
             {messages.map((m) => (
               <Bubble key={m.id} role={m.role} selection={m.meta.context?.selection} meta={m.role === "assistant" ? m.meta : undefined}>
-                {m.role === "assistant" ? <Markdown text={m.content} /> : <Typography sx={{ fontSize: 13, whiteSpace: "pre-wrap" }}>{m.content}</Typography>}
+                {m.role === "assistant" ? <Markdown text={m.content} /> : <Typography sx={{ fontSize: 'var(--fx-type-root-md)', whiteSpace: "pre-wrap" }}>{m.content}</Typography>}
               </Bubble>
             ))}
             {live && (
@@ -364,12 +364,12 @@ export default function AssistantPanel() {
                 {live.tools.length > 0 && (
                   <Stack direction="row" spacing={0.5} useFlexGap sx={{ flexWrap: "wrap", mb: 0.6 }}>
                     {live.tools.slice(-6).map((t, i) => (
-                      <Chip key={i} size="small" variant="outlined" label={`${t.name}${t.input ? `: ${t.input}` : ""}`} sx={{ height: 20, fontSize: 10.5, maxWidth: 260 }} />
+                      <Chip key={i} size="small" variant="outlined" label={`${t.name}${t.input ? `: ${t.input}` : ""}`} sx={{ height: 20, fontSize: 'var(--fx-type-root-xs)', maxWidth: 260 }} />
                     ))}
                   </Stack>
                 )}
-                {live.text ? <Markdown text={live.text} /> : <Typography sx={{ fontSize: 12, color: token("dim") }}>{live.status}</Typography>}
-                {live.error && <Typography sx={{ fontSize: 12, color: token("err") }}>{live.error}</Typography>}
+                {live.text ? <Markdown text={live.text} /> : <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>{live.status}</Typography>}
+                {live.error && <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("err") }}>{live.error}</Typography>}
               </Bubble>
             )}
             <div ref={endRef} />
@@ -377,7 +377,7 @@ export default function AssistantPanel() {
         )}
 
         {/* -------------------------------------------------------- compose */}
-        <Box component="form" onSubmit={(e: React.FormEvent) => void send(e)} sx={{ p: 1, borderTop: `1px solid ${token("edge")}` }}>
+        <Box component="form" onSubmit={(e: React.FormEvent) => void send(e)} sx={{ p: 1, borderTop: `var(--fx-border-w) solid ${token("edge")}` }}>
           {(context.selection || context.element) && (
             <Chip size="small" variant="outlined" onDelete={() => setContext({})} label={context.element ? `Element: ${context.element}` : `Selection: “${context.selection!.slice(0, 80)}”`} sx={{ mb: 0.6, maxWidth: "100%" }} />
           )}
@@ -426,15 +426,15 @@ export default function AssistantPanel() {
 function Bubble({ role, children, selection, meta }: { role: "user" | "assistant"; children: React.ReactNode; selection?: string; meta?: AiMessage["meta"] }) {
   const ai = role === "assistant";
   return (
-    <Box sx={{ display: "flex", gap: 0.8, alignItems: "flex-start", flexDirection: ai ? "row" : "row-reverse" }}>
-      <Box sx={{ width: 24, height: 24, borderRadius: "50%", display: "grid", placeItems: "center", background: ai ? token("panel2") : token("accent"), color: ai ? token("ink") : token("page"), flexShrink: 0, fontSize: 10, fontWeight: 700 }}>
+    <Box sx={{ display: "flex", gap: 'var(--fx-dens-gap-lg)', alignItems: "flex-start", flexDirection: ai ? "row" : "row-reverse" }}>
+      <Box sx={{ width: 24, height: 24, borderRadius: "50%", display: "grid", placeItems: "center", background: ai ? token("panel2") : token("accent"), color: ai ? token("ink") : token("page"), flexShrink: 0, fontSize: 'var(--fx-type-root-2xs)', fontWeight: 700 }}>
         {ai ? <Glyph id="icon-sparkle" size={13} /> : "you"}
       </Box>
-      <Box sx={{ maxWidth: "88%", minWidth: 0, p: "6px 10px", borderRadius: 1.5, background: ai ? token("panel") : `color-mix(in srgb, ${token("accent")} 16%, ${token("panel")})`, border: `1px solid ${token("edge")}` }}>
+      <Box sx={{ maxWidth: "88%", minWidth: 0, p: "var(--fx-dens-gap-lg) var(--fx-dens-gap-2xl)", borderRadius: 'var(--fx-radius-lg)', background: ai ? token("panel") : `color-mix(in srgb, ${token("accent")} 16%, ${token("panel")})`, border: `var(--fx-border-w) solid ${token("edge")}` }}>
         {children}
-        {selection && <Typography sx={{ fontSize: 11, color: token("dim"), mt: 0.4 }}>“{selection.slice(0, 160)}”</Typography>}
+        {selection && <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), mt: 0.4 }}>“{selection.slice(0, 160)}”</Typography>}
         {meta && (meta.backend || meta.tools?.length || meta.changed?.length) ? (
-          <Typography sx={{ fontSize: 10.5, color: token("dim"), mt: 0.5, ...MONO }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), mt: 0.5, ...MONO }}>
             {meta.backend === "subscription" ? "subscription" : meta.backend === "api" ? "API" : ""}
             {meta.tools?.length ? ` · ${meta.tools.filter((t) => !t.startsWith("changed:")).length} tool calls` : ""}
             {meta.changed?.length ? ` · changed ${meta.changed.join(", ")}` : ""}

@@ -117,7 +117,7 @@ function WindowFrame({ tab, expenses, onUpdate, onAdd }: WindowProps) {
     window.addEventListener("pointerup", up);
   };
 
-  const button = { padding: "2px", fontSize: 13, color: token("dim") } as const;
+  const button = { padding: "var(--fx-dens-gap-xs)", fontSize: 'var(--fx-type-root-md)', color: token("dim") } as const;
 
   return (
     <Paper
@@ -140,9 +140,9 @@ function WindowFrame({ tab, expenses, onUpdate, onAdd }: WindowProps) {
         overflow: "hidden",
         background: token("panel"),
         backgroundImage: "none",
-        border: `1px solid color-mix(in srgb, ${token("accent")} 25%, ${token("edge")})`,
+        border: `var(--fx-border-w) solid color-mix(in srgb, ${token("accent")} 25%, ${token("edge")})`,
         borderRadius: token("radius"),
-        boxShadow: "0 18px 50px rgba(0, 0, 0, 0.55)"
+        boxShadow: "0 18px 50px var(--fx-shadow)"
       }}
     >
       <Stack
@@ -156,19 +156,19 @@ function WindowFrame({ tab, expenses, onUpdate, onAdd }: WindowProps) {
         data-axf-tab-title={tab.title}
         sx={{
           alignItems: "center",
-          gap: "8px",
-          padding: "4px 10px",
+          gap: "var(--fx-dens-gap-xl)",
+          padding: "var(--fx-dens-gap-md) var(--fx-dens-gap-2xl)",
           cursor: "grab",
           userSelect: "none",
           touchAction: "none",
-          background: `color-mix(in srgb, ${token("accent")} 8%, transparent)`,
-          borderBottom: `1px solid ${token("edge")}`
+          background: `color-mix(in srgb, ${token("accent")} calc(var(--fx-opacity-hover) * 100%), transparent)`,
+          borderBottom: `var(--fx-border-w) solid ${token("edge")}`
         }}
       >
         <Typography
           component="span"
           sx={{
-            fontSize: 12.5,
+            fontSize: 'var(--fx-type-root-md)',
             fontWeight: 700,
             flex: 1,
             minWidth: 0,
@@ -222,8 +222,8 @@ function WindowFrame({ tab, expenses, onUpdate, onAdd }: WindowProps) {
             bottom: 3,
             width: 8,
             height: 8,
-            borderRight: `2px solid ${token("dim")}`,
-            borderBottom: `2px solid ${token("dim")}`
+            borderRight: `calc(var(--fx-border-w) * 2) solid ${token("dim")}`,
+            borderBottom: `calc(var(--fx-border-w) * 2) solid ${token("dim")}`
           }}
         />
       </Box>
@@ -254,7 +254,7 @@ export default function ExpenseWindows({
         ))}
 
       {minimized.length > 0 && (
-        <Stack sx={{ position: "fixed", right: 8, top: 96, zIndex: 1600, gap: "6px", width: 190 }}>
+        <Stack sx={{ position: "fixed", right: 8, top: 96, zIndex: 1600, gap: "var(--fx-dens-gap-lg)", width: 190 }}>
           {minimized.map((tab) => (
             <Paper
               key={tab.id}
@@ -262,13 +262,13 @@ export default function ExpenseWindows({
               sx={{
                 display: "flex",
                 alignItems: "center",
-                gap: "6px",
-                padding: "4px 8px",
+                gap: "var(--fx-dens-gap-lg)",
+                padding: "var(--fx-dens-gap-md) var(--fx-dens-gap-xl)",
                 background: token("panel"),
                 backgroundImage: "none",
-                border: `1px solid ${token("edge")}`,
+                border: `var(--fx-border-w) solid ${token("edge")}`,
                 borderRadius: token("radius"),
-                boxShadow: "0 6px 18px rgba(0, 0, 0, 0.4)"
+                boxShadow: "0 6px 18px var(--fx-shadow)"
               }}
             >
               <ButtonBase
@@ -283,7 +283,7 @@ export default function ExpenseWindows({
                   whiteSpace: "nowrap",
                   display: "block",
                   textAlign: "left",
-                  fontSize: 11.5,
+                  fontSize: 'var(--fx-type-root-sm)',
                   fontWeight: 600,
                   color: token("ink")
                 }}
@@ -295,7 +295,7 @@ export default function ExpenseWindows({
                 title="Dock"
                 aria-label="Dock"
                 onClick={() => expenseTabs.dock(tab.id)}
-                sx={{ padding: "2px", fontSize: 13, color: token("dim") }}
+                sx={{ padding: "var(--fx-dens-gap-xs)", fontSize: 'var(--fx-type-root-md)', color: token("dim") }}
               >
                 ⇲
               </IconButton>
@@ -304,7 +304,7 @@ export default function ExpenseWindows({
                 title="Close"
                 aria-label="Close"
                 onClick={() => expenseTabs.close(tab.id)}
-                sx={{ padding: "2px", fontSize: 14, color: token("dim"), "&:hover": { color: token("err") } }}
+                sx={{ padding: "var(--fx-dens-gap-xs)", fontSize: "var(--fx-font-size)", color: token("dim"), "&:hover": { color: token("err") } }}
               >
                 ×
               </IconButton>

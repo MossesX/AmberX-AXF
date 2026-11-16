@@ -1,0 +1,80 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-jjbcw6",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:32:25Z",
+ "build": {
+  "id": "project-thread-jjbcw6",
+  "title": "project-thread-jjbcw6",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-jjbcw6",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-jjbcw6",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "c9661b9016f5628e55b262631b78ef38d68cd861",
+ "commits": [
+  "03cc38789cfac63fabdfed0a2661d1fbbc56f27e"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-25T23:34:23Z",
+ "files": [
+  "apps/console-web/plugins/build-manager/web/build-manager.css",
+  "apps/console-web/plugins/build-manager/web/ui.tsx",
+  "apps/console-web/plugins/codebase-changes/web/codebase-changes.css",
+  "apps/console-web/plugins/codebase-changes/web/ui.tsx"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "build-manager",
+   "files": [
+    "apps/console-web/plugins/build-manager/web/build-manager.css",
+    "apps/console-web/plugins/build-manager/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "codebase-changes",
+   "files": [
+    "apps/console-web/plugins/codebase-changes/web/codebase-changes.css",
+    "apps/console-web/plugins/codebase-changes/web/ui.tsx"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

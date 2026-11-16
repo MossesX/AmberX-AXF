@@ -1,0 +1,270 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-55oakl",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:33:16Z",
+ "build": {
+  "id": "project-thread-55oakl",
+  "title": "project-thread-55oakl",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-55oakl",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-55oakl",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "2e487e348581c1347cc6a0925e9339248829befe",
+ "commits": [
+  "03200cef12efeb43133a0c935b6c0e16b0ce4a92"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-23T23:24:50Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "CLAUDE.md",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/axf.manifest.json",
+  "apps/axhub-web/src/assets/settings/developer-apps.json",
+  "apps/axhub-web/src/assets/settings/side-tabs.json",
+  "apps/axhub-web/src/assets/settings/standard.json",
+  "apps/axhub-web/src/axf/core/engines/settingsui.ts",
+  "apps/axhub-web/src/axf/core/index.ts",
+  "apps/axhub-web/src/axf/core/settings.ts",
+  "apps/axhub-web/src/axf/core/types.ts",
+  "apps/axhub-web/src/axf/schemas/asset-types.json",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/axf.manifest.json",
+  "apps/console-web/src/assets/settings/developer-apps.json",
+  "apps/console-web/src/assets/settings/side-tabs.json",
+  "apps/console-web/src/assets/settings/standard.json",
+  "apps/console-web/src/axf/core/engines/settingsui.ts",
+  "apps/console-web/src/axf/core/index.ts",
+  "apps/console-web/src/axf/core/settings.ts",
+  "apps/console-web/src/axf/core/types.ts",
+  "apps/console-web/src/axf/libs/README.md",
+  "apps/console-web/src/axf/libs/settings/index.tsx",
+  "apps/console-web/src/axf/schemas/asset-types.json",
+  "apps/patches-web/axf.lock.json",
+  "apps/patches-web/src/axf/core/engines/settingsui.ts",
+  "apps/patches-web/src/axf/core/index.ts",
+  "apps/patches-web/src/axf/core/settings.ts",
+  "apps/patches-web/src/axf/core/types.ts",
+  "apps/patches-web/src/axf/schemas/asset-types.json",
+  "apps/walkthrough-studio/axf.lock.json",
+  "apps/walkthrough-studio/axf.manifest.json",
+  "apps/walkthrough-studio/src/assets/settings/developer-apps.json",
+  "apps/walkthrough-studio/src/assets/settings/side-tabs.json",
+  "apps/walkthrough-studio/src/assets/settings/standard.json",
+  "apps/walkthrough-studio/src/axf/core/engines/settingsui.ts",
+  "apps/walkthrough-studio/src/axf/core/index.ts",
+  "apps/walkthrough-studio/src/axf/core/settings.ts",
+  "apps/walkthrough-studio/src/axf/core/types.ts",
+  "apps/walkthrough-studio/src/axf/schemas/asset-types.json",
+  "framework/assets/settings/developer-apps.json",
+  "framework/assets/settings/side-tabs.json",
+  "framework/assets/settings/standard.json",
+  "framework/catalog/libraries.json",
+  "framework/core/engines/settingsui.ts",
+  "framework/core/index.ts",
+  "framework/core/settings.ts",
+  "framework/core/types.ts",
+  "framework/defaults.json",
+  "framework/libs/settings/index.tsx",
+  "framework/plan/pending.json",
+  "framework/plan/plan.json",
+  "framework/schemas/asset-types.json",
+  "framework/schemas/json/settings.schema.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-settings-ui.mts",
+  "framework/spec/fixtures/appearance.json",
+  "framework/spec/fixtures/roll.json",
+  "framework/spec/fixtures/settings-ui.json",
+  "tracker.json"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/axf.manifest.json",
+    "apps/console-web/src/assets/settings/developer-apps.json",
+    "apps/console-web/src/assets/settings/side-tabs.json",
+    "apps/console-web/src/assets/settings/standard.json",
+    "apps/console-web/src/axf/core/engines/settingsui.ts",
+    "apps/console-web/src/axf/core/index.ts",
+    "apps/console-web/src/axf/core/settings.ts",
+    "apps/console-web/src/axf/core/types.ts",
+    "apps/console-web/src/axf/libs/README.md",
+    "apps/console-web/src/axf/libs/settings/index.tsx",
+    "apps/console-web/src/axf/schemas/asset-types.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/axf.manifest.json",
+    "apps/axhub-web/src/assets/settings/developer-apps.json",
+    "apps/axhub-web/src/assets/settings/side-tabs.json",
+    "apps/axhub-web/src/assets/settings/standard.json",
+    "apps/axhub-web/src/axf/core/engines/settingsui.ts",
+    "apps/axhub-web/src/axf/core/index.ts",
+    "apps/axhub-web/src/axf/core/settings.ts",
+    "apps/axhub-web/src/axf/core/types.ts",
+    "apps/axhub-web/src/axf/schemas/asset-types.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/axf.lock.json",
+    "apps/walkthrough-studio/axf.manifest.json",
+    "apps/walkthrough-studio/src/assets/settings/developer-apps.json",
+    "apps/walkthrough-studio/src/assets/settings/side-tabs.json",
+    "apps/walkthrough-studio/src/assets/settings/standard.json",
+    "apps/walkthrough-studio/src/axf/core/engines/settingsui.ts",
+    "apps/walkthrough-studio/src/axf/core/index.ts",
+    "apps/walkthrough-studio/src/axf/core/settings.ts",
+    "apps/walkthrough-studio/src/axf/core/types.ts",
+    "apps/walkthrough-studio/src/axf/schemas/asset-types.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "patches-web",
+   "files": [
+    "apps/patches-web/axf.lock.json",
+    "apps/patches-web/src/axf/core/engines/settingsui.ts",
+    "apps/patches-web/src/axf/core/index.ts",
+    "apps/patches-web/src/axf/core/settings.ts",
+    "apps/patches-web/src/axf/core/types.ts",
+    "apps/patches-web/src/axf/schemas/asset-types.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-settings-ui.mts",
+    "framework/spec/fixtures/appearance.json",
+    "framework/spec/fixtures/roll.json",
+    "framework/spec/fixtures/settings-ui.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/settingsui.ts",
+    "framework/core/index.ts",
+    "framework/core/settings.ts",
+    "framework/core/types.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/settings/developer-apps.json",
+    "framework/assets/settings/side-tabs.json",
+    "framework/assets/settings/standard.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json",
+    "framework/plan/plan.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/asset-types.json",
+    "framework/schemas/json/settings.schema.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/libraries.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/settings/index.tsx"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": "framework",
+   "files": [
+    "framework/defaults.json"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": "tracker.json",
+   "files": [
+    "tracker.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

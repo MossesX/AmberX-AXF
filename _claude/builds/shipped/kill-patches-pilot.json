@@ -1,0 +1,153 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-kill-patches-pilot",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:10Z",
+ "build": {
+  "id": "kill-patches-pilot",
+  "title": "Retire Patches and Build Pilot (remove everywhere)",
+  "profile": "all",
+  "category": "Cleanup",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Patches is dead. Delete it, all references. Build Pilot dead, same thing. Delete it. All references.",
+  "verbatim": false,
+  "at": "2026-11-03T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "# Build: kill-patches-pilot (Urgent profile)\n\nRequested by Brett, Nov 3 2026 (voice): \"Patches is dead. Delete it, all references. Build Pilot dead, same thing. Delete it. All references.\" GO given. Do it now.\n\n## First\n- Register in the Urgent profile via the orchestrator CLI (id `kill-patches-pilot`, branch claude/kill-patches-pilot) + banner entry. Never hand-edit store.json (orch-live-sync is running). Other parallel builds: notes-vault, headless-tabs, whats-new-banner, amberx-backup-fix.\n\n## Remove from this repo (AmberX-AXF), everything\n- Patches: apps/patches-web, the Patches Android app/module, any patches plugin/wrapper code, patches-specific assets, banners, boilerplates, catalog/tracker entries, CI workflow jobs and deploy steps, rebake targets, demo/walkthrough chapters or captions mentioning it, help packs, docs (_claude/memory/docs/patches-*, rebuilds/patches-*), tracker.json rows.\n- Build Pilot: any build-pilot app/plugin/tab/integration code, Dev Console or axHub hooks into it, catalog/docs/help/walkthrough references.\n- Rules/instructions: rewrite every rule that depends on Patches. In particular the hub-sync rule that \"Console and Pilot can only run inside Patches (never standalone)\" -> Console runs standalone; Pilot is gone. Update RULES.md (repo + shared), CLAUDE.md, THREADS.md (one closing line, don't rewrite history), STATUS, decisions.md (add a decision entry: Patches and Build Pilot retired Nov 3 2026; don't delete old decision text, mark superseded).\n- Orchestrator store: archive every build whose subject is Patches or Build Pilot (via CLI), note \"retired Nov 3 2026\". Pending queue too.\n- grep -ri 'patches\\|build.pilot\\|build-pilot\\|buildpilot' across the repo afterward; the only hits left may be historical log lines and the decision entry. Note: don't confuse with generic words like 'patch' / 'patching' / 'autopilot' / PilotX (separate app).\n- Everything must still build: tsc, vite builds of every remaining app, check-theme/check-controls, plugin lifecycle, CI block. Open the PR.\n\n## Remove from the VPS (live)\n- Before removing anything: snapshot each container's volumes/data + its Coolify app config to /root/archive/retired-2026-11-03/ (tar.gz), so it's recoverable.\n- Stop and remove the `patches-web` and `build-pilot` containers and their Coolify applications (Coolify API/UI so they don't come back on redeploy), Traefik routes/domains, any cron/systemd units, images.\n- axHub projects tree: remove /projects/patches, /projects/patches-web (and any build-pilot project) via the hub memory API so versions stay recoverable; remove them from shared/memory/projects.md.\n- axHub repo: references to Patches/Build Pilot (services, examples, docs, approvals) -> clone /root/axHub fresh on branch claude/kill-patches-pilot, remove them, open a PR there too.\n- GitHub repo MossesX/Build-Pilot: ARCHIVE it (read-only), do not delete; deleting a repo is irreversible and Brett can delete it in one click later. Say so in the report.\n\n## Report\n`_claude/builds/reports/kill-patches-pilot.md`: everything removed (paths, containers, apps, domains), where the archive is, PR links. Mark each step done through the store as you go. Commits clean and professional.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Remove Patches apps (apps/patches, apps/patches-web) and Build Pilot code/integration from the repo",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "2026-11-03T14:25:43.844Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Remove Patches/Pilot from framework, console, other apps, CI workflows, deploy, catalog, tracker",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T14:25:43.844Z",
+   "doneAt": "2026-11-03T14:25:45.123Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Rewrite rules/CLAUDE.md/STATUS/decisions/THREADS; delete Patches/Pilot docs",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T14:25:45.123Z",
+   "doneAt": "2026-11-03T14:25:46.326Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Archive Patches/Pilot builds in the store and pending lists",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T14:25:46.326Z",
+   "doneAt": "2026-11-03T14:25:47.327Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Builds and checks pass (tsc, vite, check-theme/controls, lifecycle); open PR",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T14:25:47.327Z",
+   "doneAt": "2026-11-03T14:43:48.200Z",
+   "actualMin": 18,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "VPS: snapshot then remove patches-web/build-pilot containers, Coolify apps, routes, images",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T14:43:48.200Z",
+   "doneAt": "2026-11-03T14:43:48.735Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "axHub: remove /projects trees + projects.md entries; axHub repo PR; archive MossesX/Build-Pilot",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s8",
+   "text": "Write report _claude/builds/reports/kill-patches-pilot.md",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T14:43:48.735Z",
+   "doneAt": "2026-11-03T14:43:49.260Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/kill-patches-pilot",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 258,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/258"
+ },
+ "landedCommit": "dfee2c7fb713e2db3ef08016bb6cbf4e8780dec3",
+ "commits": [],
+ "mergedAt": "2026-11-03T16:23:48.889Z",
+ "landedAt": "2026-11-04T14:38:31Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "_claude/builds/reports/kill-patches-pilot.md",
+ "open": [
+  "s7: axHub: remove /projects trees + projects.md entries; axHub repo PR; archive MossesX/Build-Pilot",
+  "Archive MossesX/Build-Pilot — not done: the token on the VPS can't change repo settings (403) and the GitHub App isn't set up. One tap: github.com/MossesX/Build-Pilot → Settings → Danger Zone → Archive this repository. Archive, not delete: deleting is irreversible; he can delete it in one click later.",
+  "axHub projects `/projects/patches` and `/projects/patches-web` — snapshotted, not deleted: this headless session has no axHub MCP access, and hub deletes must go through axHub as a veto call (`axhub.memory_*`) so versions stay recoverable. `shared/memory/projects.md` never listed them. No build-pilot project existed.",
+  "DNS `patches` and `pilot` A records on amberxai.com — still there (Hostinger connector not authorized here).",
+  "Live axHub env `AXHUB_EMBED_FRAME_ANCESTORS` still names `https://patches.amberxai.com` — harmless (nothing serves it); drop it on the next hub redeploy."
+ ]
+}

@@ -48,6 +48,12 @@ class FakeConsole:
             return {"ok": False, "code": "not_found", "message": "no console is open for you right now: open the Dev Console"}
         if path == "queued":
             return {"ok": True, "queued": True, "delivery": {"how": "queued", "id": "cq-1"}, "message": "queued, not open yet"}
+        if path == "asleep":  # the real Console commands: tried every live console, queued, woke one; says pending
+            return {"ok": True, "queued": True, "status": "pending", "delivered": [{"client": "cc-1", "ok": False, "pending": True}], "delivery": {"how": "queued", "id": "cq-9", "tried": ["cc-1"]}, "message": "not shown yet: no open console answered"}
+        if path == "build-orchestrator" and (command.get("input") or {}).get("focus"):
+            return {"ok": True, "status": "delivered", "item": {"label": "Build orchestrator"}, "focus": command["input"]["focus"], "delivered": [{"client": "cc-abc123", "ok": True, "message": "opened Build orchestrator"}], "delivery": {"how": "live", "tried": ["cc-abc123"]}}
+        if path.startswith("build:"):
+            return {"ok": True, "status": "delivered", "item": {"label": "Build orchestrator"}, "focus": path[6:], "delivered": [{"client": "cc-abc123", "ok": True, "message": "opened Build orchestrator"}], "delivery": {"how": "after retry", "tried": ["cc-1", "cc-abc123"]}}
         if path == "frozen":
             return {"ok": True, "item": {"label": "Frozen"}, "delivered": [{"client": "cc-1", "ok": False, "pending": True, "message": "sent; the console didn't answer yet"}]}
         label = known.get(target, {}).get(path.lower())
@@ -169,6 +175,18 @@ r = fa.show("screen:queued")
 ok(r["ok"] and r["shown"] is False and r["queued"] is True and "opened" not in r["message"], f"queued: not shown, says so ({r})")
 r = fa.show("screen:frozen")
 ok(r["ok"] and r["shown"] is False and r["queued"] is True and len(fake.queued) == 1, f"a console that never answered: queued for the next one ({r})")
+
+# console-commands-reliable (Nov 11 2026): the status Console commands answers is passed on as is
+q_before = len(fake.queued)
+r = fa.show("screen:asleep")
+ok(r["ok"] and r["shown"] is False and r["status"] == "pending" and r["delivery"]["tried"] == ["cc-1"] and len(fake.queued) == q_before, f"pending stays pending, no second queue ({r})")
+r = fa.show("build:console-commands-reliable")
+ok(fake.calls[-1][0]["target"] == "console.screens" and fake.calls[-1][0]["path"] == "build:console-commands-reliable", "build:<id> goes to Console commands as a screen command")
+ok(r["shown"] and r["status"] == "delivered" and r["focus"] == "console-commands-reliable" and "on console-commands-reliable" in r["message"], f"a build is shown, focused ({r})")
+r = fa.show("console-commands-reliable", kind="build")
+ok(fake.calls[-1][0]["path"] == "build:console-commands-reliable", "kind=build too")
+r = svc.show("build-orchestrator", focus="pending")
+ok(fake.calls[-1][0].get("input") == {"focus": "pending"} and r["focus"] == "pending", f"focus reaches the console command ({fake.calls[-1][0]})")
 
 ok(svc.show("plan studio")["shown"] is True, "follow-amber@1 show")
 c.post(f"{P}/state", json={"on": False})

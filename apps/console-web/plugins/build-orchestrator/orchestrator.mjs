@@ -25,6 +25,7 @@
  * axHub-approved MCP tool set AXF_APPROVER + AXF_APPROVER_VIA, and nothing in the environment says the caller is a
  * Claude session, a headless build or an agent. An `approver` inside a --json change is never trusted.
  *   … where                           the tracker file in use
+ * Any <id> may be a build's alias (build-id@1): a build whose id is over 40 characters answers to a short one too.
  *   --json on any command prints JSON (the console server uses this).
  */
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
@@ -36,6 +37,10 @@ import { approverFrom, upgradeLine, upgradePolicy } from '../../../../framework/
 import { loadUpgradePolicy } from '../../../../framework/cli/upgrade-policy.mjs';
 import { readPolicy as readContextPolicy, rulesFor } from '../../../../framework/cli/headless-context.mjs';
 import { briefBudget } from '../../../../framework/core/headless-context.mjs';
+import * as BR from '../../../../framework/core/build-rules.mjs';
+
+/** The session's share of the build rules for one build (brief-blocks@1); null when the store can't be read. */
+function storeBlocks(b) { try { return BR.briefBlocks(BR.load().store, { id: b.id, title: b.title, text: b.detail || '' }); } catch { return null; } }
 
 loadUpgradePolicy(); // Fable upgrades need my approval (owner-only Claude setting, default off; Brett, Nov 4 2026)
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
@@ -44,13 +49,23 @@ import { absorbOrchestrator, projectOrchestrator } from '../../../../framework/p
 
 const legacy = () => process.env.AXF_ORCH_FILE || '';
 const profile = () => activeProfile().id;
+/**
+ * The profile a change works in (projects@1): the active project's, unless the build it names lives only in another
+ * project (a session still running that project's build after Brett switched), which then gets its own.
+ */
+export function profileFor(store, id, active = profile()) {
+  if (!id) return active;
+  const b = store.builds.find((x) => x.id === id && !x.deleted) ?? store.builds.find((x) => x.id === id);
+  return !b || (b.profiles ?? []).includes(active) || !b.profiles?.length ? active : b.profiles[0];
+}
 /** Where the builds are: the store (normally) or AXF_ORCH_FILE. */
 export const trackerFile = () => legacy() || storeFile();
 
-export function load() {
+export function load(id = '') {
   const f = legacy();
   if (f) return core.normalizeState(existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')) : core.emptyState());
-  return core.normalizeState(projectOrchestrator(loadStore(), profile()));
+  const store = loadStore();
+  return core.normalizeState(projectOrchestrator(store, profileFor(store, id)));
 }
 export function save(state, by = 'orchestrator') {
   const f = legacy();
@@ -59,13 +74,19 @@ export function save(state, by = 'orchestrator') {
   withStore((s) => absorbOrchestrator(s, p, state, { by }), { by, action: 'orchestrator' });
 }
 /** One change: applied to the profile's view of the store and taken back into it, under the store lock (versioned). */
+/** A build's id from its id or alias (build-id@1: a build made before ids were capped answers to a short alias too). */
+export function resolveId(store, id) {
+  if (!id || store.builds.some((x) => x.id === id)) return id;
+  return store.builds.find((x) => x.alias === id)?.id ?? id;
+}
+
 export function act(change, by = process.env.AXF_ACTOR || 'orchestrator') {
   change = withApprover(change);
+  if (!legacy() && change?.id && change.action !== 'add') change = { ...change, id: resolveId(loadStore(), change.id) };
   if (change.approver) by = `${change.approver.by} (${change.approver.via})`;
   if (legacy()) { const r = core.apply(load(), change); save(r.state); return r; }
-  const p = profile();
   let r;
-  withStore((s) => { r = core.apply(projectOrchestrator(s, p), change); return absorbOrchestrator(s, p, r.state, { by }); }, { by, action: `orchestrator:${change?.action}`, note: change?.id ?? '' });
+  withStore((s) => { const p = change?.action === 'add' ? profile() : profileFor(s, change?.id); r = core.apply(projectOrchestrator(s, p), change); return absorbOrchestrator(s, p, r.state, { by }); }, { by, action: `orchestrator:${change?.action}`, note: change?.id ?? '' });
   return r;
 }
 
@@ -96,8 +117,9 @@ function line(b, rules) {
 async function main(argv) {
   const json = argv.includes('--json'); const args = argv.filter((a) => a !== '--json');
   const out = (o, text) => console.log(json ? JSON.stringify(o) : text);
-  const [cmd = 'list', ...rest] = args;
-  const s = load();
+  const [cmd = 'list', ...given] = args;
+  const rest = !legacy() && ['next', 'brief', 'request-upgrade'].includes(cmd) && given[0] ? [resolveId(loadStore(), given[0]), ...given.slice(1)] : given;
+  const s = load(['next', 'brief'].includes(cmd) ? rest[0] : '');
   if (cmd === 'where') return out({ ok: true, file: trackerFile() }, trackerFile());
   if (cmd === 'list' || cmd === 'state') return out({ ok: true, state: s, upgradePolicy: upgradePolicy() }, s.builds.filter((b) => !b.hidden && b.status !== 'archived').map((b) => line(b, s.rules)).join('\n') || 'No builds.');
   if (cmd === 'next') {
@@ -106,8 +128,11 @@ async function main(argv) {
     const n = core.nextUp(b, s.rules);
     return out({ ok: true, id: b.id, ...n }, `${b.title} (${b.id})\n${n.done ? 'complete' : n.needsApproval ? `Needs Brett's approval: model UPGRADE ${n.phase.from} → ${n.phase.model} (phase ${n.phase.index + 1}). Stop here: request-upgrade ${b.id} ${n.phase.index}` : `Next: ${n.step.id} on ${n.step.model} — ${n.step.text}`}`);
   }
-  if (cmd === 'brief') { const b = s.builds.find((x) => x.id === rest[0]); if (!b) throw new Error(`no build "${rest[0]}"`); let t = core.brief(b, s.rules);
-    if (!rest.includes('--no-rules')) { const r = rulesFor(t, { model: (core.nextUp(b, s.rules).phase?.model || '').toLowerCase(), name: b.id }); if (r.text) t = `${t}\n\n${r.text}`; }
+  if (cmd === 'brief') { const b = s.builds.find((x) => x.id === rest[0]); if (!b) throw new Error(`no build "${rest[0]}"`);
+    // the session's rules come from the build rules store (build-rules@1), as at dispatch
+    const blocks = storeBlocks(b);
+    let t = core.brief(b, s.rules, { blocks });
+    if (!rest.includes('--no-rules')) { if (blocks?.blocks?.rules) t = `${t}\n\n${blocks.blocks.rules}`; else { const r = rulesFor(t, { model: (core.nextUp(b, s.rules).phase?.model || '').toLowerCase(), name: b.id }); if (r.text) t = `${t}\n\n${r.text}`; } }
     const budget = briefBudget(t, readContextPolicy()); if (!budget.ok) process.stderr.write(`orchestrator: ${budget.warning}\n`);
     return out({ ok: true, brief: t, budget }, t); }
   if (cmd === 'request-upgrade') {

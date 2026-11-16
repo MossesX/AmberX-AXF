@@ -1,0 +1,135 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-jx0w7u",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:32:58Z",
+ "build": {
+  "id": "project-thread-jx0w7u",
+  "title": "project-thread-jx0w7u",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-jx0w7u",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-jx0w7u",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "ea1ccb55d61df865408e6e3e908317d2a6854782",
+ "commits": [
+  "6043c04008400693fb41dea79c8e17dcb9db972a",
+  "af82620c9d63fba3910f58685fe3853c81b980f8"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-24T21:59:56Z",
+ "files": [
+  "_claude/rules/RULES.md",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/axhub-web/src/axf/react/components/Slots.tsx",
+  "apps/console-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/console-web/src/axf/react/components/Slots.tsx",
+  "apps/patches-web/axf.lock.json",
+  "apps/patches-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/patches-web/src/axf/react/components/Slots.tsx",
+  "apps/patches-web/src/patches.ts",
+  "apps/patches-web/src/patchesLibrary.tsx",
+  "apps/patches/app/src/main/kotlin/ai/amberx/axf/patches/AppModule.kt",
+  "apps/patches/app/src/main/kotlin/ai/amberx/axf/patches/MainActivity.kt",
+  "framework/android/lib-hub/src/main/kotlin/ai/amberx/axf/hub/WebAppView.kt",
+  "framework/react/components/BannerSettings.tsx",
+  "framework/react/components/Slots.tsx"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "patches-web",
+   "files": [
+    "apps/patches-web/axf.lock.json",
+    "apps/patches-web/src/axf/react/components/BannerSettings.tsx",
+    "apps/patches-web/src/axf/react/components/Slots.tsx",
+    "apps/patches-web/src/patches.ts",
+    "apps/patches-web/src/patchesLibrary.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/react/components/BannerSettings.tsx",
+    "apps/axhub-web/src/axf/react/components/Slots.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/axf/react/components/BannerSettings.tsx",
+    "apps/console-web/src/axf/react/components/Slots.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "patches",
+   "files": [
+    "apps/patches/app/src/main/kotlin/ai/amberx/axf/patches/AppModule.kt",
+    "apps/patches/app/src/main/kotlin/ai/amberx/axf/patches/MainActivity.kt"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/BannerSettings.tsx",
+    "framework/react/components/Slots.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "android",
+   "files": [
+    "framework/android/lib-hub/src/main/kotlin/ai/amberx/axf/hub/WebAppView.kt"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/rules/RULES.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

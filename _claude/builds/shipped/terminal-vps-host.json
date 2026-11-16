@@ -1,0 +1,186 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-terminal-vps-host",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:34Z",
+ "build": {
+  "id": "terminal-vps-host",
+  "title": "Terminal VPS host: headless tabs attach to build tmux sessions",
+  "profile": "all",
+  "category": "Ops > Terminal",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Terminal VPS host: headless tabs attach to build tmux sessions",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Build: terminal-vps-host (Current profile) - URGENT ops fix\n\nBrett, Nov 3 2026: the console Terminal shows NO headless tabs. `console-terminal/headless` read returns `{ready:false, items:[], why:\"the VPS tab isn't set up (Settings -> Plugins -> Terminal -> VPS host)\"}`. So headless-tabs (PR #259, live) can't attach to any build's tmux session. Assigned agent: whoever is free (all-rounder router if on main; else book on **Ping Paulie**; record who). Register in the `current` profile (id `terminal-vps-host`) + banner entry. Fix right away, tell after.\n\n## Do\n- s1 Find how the Terminal plugin (apps/console-web/plugins/console-terminal or terminal) stores the VPS host connection and what it needs (host, user, port, SSH key/agent). Configure it for the axf-console container to reach the VPS host (same Hostinger VPS: host.docker.internal / docker gateway / the VPS address) as root with a dedicated key: generate an ed25519 key for the console, add its public key to /root/.ssh/authorized_keys (restricted is fine), store the private key in the console's secure store / a mounted secret (never in the repo, never echoed in logs).\n- s2 Make the setting persistent across container redeploys (Coolify env/secret or mounted volume) so Lenny's landings don't wipe it. If Coolify config is needed, document it and use the existing Coolify API path (COOLIFY_TOKEN) if available.\n- s3 Verify: `console-terminal/headless` returns ready:true and lists the running axf-* tmux sessions (toolbar-tap-confirm, crew-live, auto-land-2, ui-review-shots, follow-amber, claude-settings, ...); meters return cost; opening the Terminal auto-opens a tab per build with agent + model + live cost.\n- s4 Add a health@1 check: red when the Terminal VPS host isn't ready, with Auto fix. Systems check banner row.\n- s5 Report `_claude/builds/reports/terminal-vps-host.md`, THREADS, PR, steps through the store. Commits clean and professional.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-terminal-vps-host",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-03T19:25:58.767Z",
+   "endedAt": "2026-11-03T19:41:06.696Z",
+   "exit": 0,
+   "costUsd": 2.1207
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Configure the Terminal VPS host: console ed25519 key, authorized on the host, host = coolify gateway",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-11-03T19:25:58.767Z",
+   "doneAt": "2026-11-03T19:31:23.156Z",
+   "actualMin": 5,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Persist the setting across redeploys (bind-mounted dataDir) and auto-detect the host",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T19:31:25.587Z",
+   "doneAt": "2026-11-03T19:37:52.475Z",
+   "actualMin": 6,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Verify headless list, meters and auto-opened tabs",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-03T19:31:23.156Z",
+   "doneAt": "2026-11-03T19:31:25.587Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "health@1 check: Terminal VPS host ready, with Auto fix",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T19:37:52.475Z",
+   "doneAt": "2026-11-03T19:37:53.543Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Report, THREADS, PR",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-11-03T19:37:53.543Z",
+   "doneAt": "2026-11-03T19:40:51.453Z",
+   "actualMin": 3,
+   "done": true
+  }
+ ],
+ "branch": "claude/terminal-vps-host",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 274,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/274"
+ },
+ "landedCommit": "f424591c8e267f6d52bf2b8feff6aa45508511b9",
+ "commits": [
+  "b1d959ef4b4470e0f2916350e2f4eed76f9a888c",
+  "1c9e0893b7c860e1eefa0f282ee06f947ad466a4"
+ ],
+ "mergedAt": "2026-11-04T03:59:20Z",
+ "landedAt": "2026-11-04T03:59:20Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/terminal-vps-host.md",
+  "apps/console-web/plugins/console-terminal/server/__init__.py",
+  "apps/console-web/plugins/console-terminal/server/health.py",
+  "apps/console-web/plugins/console-terminal/server/store.py",
+  "apps/console-web/plugins/console-terminal/test.py"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "console-terminal",
+   "files": [
+    "apps/console-web/plugins/console-terminal/server/__init__.py",
+    "apps/console-web/plugins/console-terminal/server/health.py",
+    "apps/console-web/plugins/console-terminal/server/store.py",
+    "apps/console-web/plugins/console-terminal/test.py"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/terminal-vps-host.md"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "From the console: headless → ready:true, 6 sessions (auto-land-2, ui-review-shots, follow-amber, claude-settings, agent-pick, terminal-vps-host), each with agent + model.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "headless/meters → ready:true with costUsd, tokens, status per session.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "Tests: terminal self-test 106/106 (was 97 + the flake failing on this host).",
+   "command": "",
+   "result": "fail",
+   "detail": ""
+  },
+  {
+   "name": "The browser side (auto-open a tab per build) is PR #259's web/headless.ts, unchanged; it only needed ready:true.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 2.1207,
+  "estimated": false,
+  "tokens": {
+   "input": 94,
+   "output": 668,
+   "cacheRead": 4087074,
+   "cacheWrite": 105026
+  }
+ },
+ "report": "_claude/builds/reports/terminal-vps-host.md",
+ "open": [
+  "The health item appears once this PR is on main and the console restarts (plugins load from `/opt/axf`)."
+ ]
+}

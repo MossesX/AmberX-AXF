@@ -6,8 +6,9 @@ import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import * as q from './merge-queue-core.mjs';
-import { queueRound, readQueue, queueControl } from './merge-queue.mjs';
+import { chatLines, queueRound, readQueue, queueControl } from './merge-queue.mjs';
 import { makeGit } from './land.mjs';
+process.env.AXF_CREW_SAY = 'off'; // group-chat posts (crew-say.mjs) stay out of the real Breakroom
 
 let n = 0;
 const t = async (name, fn) => { await fn(); n++; console.log(`ok ${name}`); };
@@ -286,6 +287,20 @@ await t('batch rules: members, holds, decide (land all / split in half / kick th
     const main = sh(origin2, 'rev-parse', 'main');
     assert.equal(sh(origin2, 'diff', '--name-only', tested, main), '_claude/status.md', 'only status differs from what CI tested');
   });
+}
+
+// group chat (crew-sections@1): only what happened this round, as plain lines for the merge queue's owner
+{
+  const at = '2026-11-12T10:00:00.000Z'; const before = '2026-11-12T09:57:00.000Z';
+  const st = { at, merged: [{ pr: 7, at }, { pr: 8, at }, { pr: 3, at: before }], kicked: [{ pr: 9, at, why: 'CI is red (lint).' }, { pr: 2, at: before, why: 'old' }],
+    batch: { builtAt: at, sha: 'abcdef1234', members: [{ pr: 10 }, { pr: 11 }], state: '' }, stack: [] };
+  const lines = chatLines({}, st);
+  assert.deepEqual(lines.map((l) => l.event), ['done', 'failed', 'start']);
+  assert.equal(lines[0].text, 'Landed #7, #8 on main.'); assert.match(lines[1].text, /^Kicked #9 out of the queue: CI is red/); assert.match(lines[2].text, /#10, #11 together/);
+  const stuck = { at, merged: [], kicked: [], batch: { builtAt: before, members: [{ pr: 4 }], state: 'passed', why: 'GitHub refused the push' } };
+  assert.equal(chatLines({}, stuck)[0].event, 'blocked');
+  assert.deepEqual(chatLines({ batch: stuck.batch }, stuck), [], 'the same stuck batch is said once');
+  n += 1; console.log('ok group chat lines: landed, kicked, started, stuck; nothing old said again');
 }
 
 console.log(`merge queue: ${n} checks passed`);

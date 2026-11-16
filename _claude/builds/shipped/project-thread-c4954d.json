@@ -1,0 +1,172 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-c4954d",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:33:18Z",
+ "build": {
+  "id": "project-thread-c4954d",
+  "title": "project-thread-c4954d",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-c4954d",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-c4954d",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "52fb3a1b55e62f3a369d72d72e712c436ffe8f08",
+ "commits": [
+  "c18bb0e8d4a60f8b22486566dcaac36663ff399c"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-23T23:14:56Z",
+ "files": [
+  "CLAUDE.md",
+  "apps/console-web/plugins/activity/web/index.tsx",
+  "apps/console-web/plugins/approvals-banner/web/index.tsx",
+  "apps/console-web/plugins/build-manager/web/ui.tsx",
+  "apps/console-web/plugins/claude-handoff/web/ui.tsx",
+  "apps/console-web/plugins/codebase-changes/web/ui.tsx",
+  "apps/console-web/plugins/push-banner/web/index.tsx",
+  "apps/console-web/plugins/push-banner/web/ui.tsx",
+  "apps/console-web/plugins/systems-check/web/KeysBanner.tsx",
+  "apps/console-web/plugins/systems-check/web/SystemCheck.tsx",
+  "apps/console-web/plugins/systems-check/web/WhatsNew.tsx",
+  "apps/console-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/console-web/src/axf/react/index.ts",
+  "apps/console-web/src/axf/react/library.ts",
+  "apps/console-web/src/axf/ui/axf.css",
+  "framework/plan/pending.json",
+  "framework/react/components/BannerSettings.tsx",
+  "framework/react/index.ts",
+  "framework/react/library.ts",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/axf/react/components/BannerSettings.tsx",
+    "apps/console-web/src/axf/react/index.ts",
+    "apps/console-web/src/axf/react/library.ts",
+    "apps/console-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "systems-check",
+   "files": [
+    "apps/console-web/plugins/systems-check/web/KeysBanner.tsx",
+    "apps/console-web/plugins/systems-check/web/SystemCheck.tsx",
+    "apps/console-web/plugins/systems-check/web/WhatsNew.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/BannerSettings.tsx",
+    "framework/react/index.ts",
+    "framework/react/library.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/web/index.tsx",
+    "apps/console-web/plugins/push-banner/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "activity",
+   "files": [
+    "apps/console-web/plugins/activity/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "approvals-banner",
+   "files": [
+    "apps/console-web/plugins/approvals-banner/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-manager",
+   "files": [
+    "apps/console-web/plugins/build-manager/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-handoff",
+   "files": [
+    "apps/console-web/plugins/claude-handoff/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "codebase-changes",
+   "files": [
+    "apps/console-web/plugins/codebase-changes/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

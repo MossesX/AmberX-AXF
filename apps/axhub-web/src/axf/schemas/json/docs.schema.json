@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/docs.schema.json",
+  "title": "AmberX AXF Documentation asset",
+  "type": "object",
+  "required": [
+    "$axf",
+    "type",
+    "id",
+    "name",
+    "version",
+    "data"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "asset@1"
+    },
+    "type": {
+      "const": "docs"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "source",
+        "depth",
+        "format",
+        "files"
+      ],
+      "properties": {
+        "source": {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "enum": [
+                "book",
+                "demonstration",
+                "entries"
+              ]
+            },
+            "id": {
+              "type": "string"
+            },
+            "entries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "depth": {
+          "enum": [
+            "light",
+            "standard",
+            "deep",
+            "extreme"
+          ]
+        },
+        "format": {
+          "enum": [
+            "markdown",
+            "html",
+            "interactive-html-ts"
+          ]
+        },
+        "files": {
+          "type": "array",
+          "maxItems": 2000,
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "kind"
+            ],
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "index",
+                  "page",
+                  "asset",
+                  "script",
+                  "style",
+                  "data",
+                  "media"
+                ]
+              },
+              "title": {
+                "type": "string"
+              },
+              "bytes": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "interactive": {
+          "enum": [
+            "none",
+            "examples",
+            "live"
+          ]
+        },
+        "generatedAt": {
+          "type": "string"
+        },
+        "sourceHash": {
+          "type": "string"
+        },
+        "build": {
+          "type": "string"
+        },
+        "keywords": {
+          "type": "array",
+          "maxItems": 200,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

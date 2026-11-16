@@ -4,6 +4,7 @@
  * (framework/cli/ui-predict.mjs, offline: no browser, no console).
  *   node framework/spec/check-ui-predict.mjs
  */
+process.env.AXF_BUILD_LIMIT ??= 'off'; // the hard build limit counts the VPS's real builds: keep these tests off it (check-build-limit.mjs covers it)
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';

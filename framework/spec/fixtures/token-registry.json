@@ -1,0 +1,552 @@
+{
+  "$axf": "fixture@1",
+  "frame": "token-registry@1",
+  "voiceFrame": "skin-editor-voice@1",
+  "classify": {
+    "--fx-accent": {
+      "element": "palette",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Accent colour: primary buttons, links, selection."
+    },
+    "--fx-accent-soft": {
+      "element": "palette",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Soft accent wash behind selected rows and chips."
+    },
+    "--fx-btn-bg-hover": {
+      "element": "button",
+      "area": "colour",
+      "state": "hover",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Button: background when hover."
+    },
+    "--fx-layout-nav-width": {
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: navigation width."
+    },
+    "--fx-type-scale-sm": {
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Text: scale small."
+    },
+    "--fx-opacity-dialog": {
+      "element": "transparency",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Transparency of dialogs, drawers and sheets."
+    },
+    "--fx-tab-indicator-h": {
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: active indicator height."
+    },
+    "--fx-grid-row-bg-selected": {
+      "element": "grid",
+      "area": "colour",
+      "state": "selected",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: row background when selected."
+    },
+    "--fx-motion": {
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Duration of transitions and animations."
+    },
+    "--fx-shadow-md": {
+      "element": "surface",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Medium shadow under cards and popovers."
+    },
+    "--fx-dialog-radius": {
+      "element": "dialog",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Dialog: corner radius."
+    },
+    "--fx-navs-pill-bg-active": {
+      "element": "nav-style",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Navigation style: pill background when active."
+    }
+  },
+  "registryErrors": {
+    "empty": [],
+    "bad": [
+      "$axf must be token-registry@1",
+      "tokens[0]: id \"accent\" is not a --fx-* token",
+      "tokens[0] accent: area must be one of layout, style, colour, behaviour",
+      "tokens[0] accent: description must be a plain sentence ending with a full stop",
+      "tokens[2]: duplicate id --fx-a"
+    ]
+  },
+  "search": [
+    "--fx-btn-bg-hover"
+  ],
+  "levels": {
+    "basic": [
+      "--fx-accent",
+      "--fx-accent-soft"
+    ],
+    "pro": [
+      "--fx-accent",
+      "--fx-accent-soft",
+      "--fx-btn-bg-hover",
+      "--fx-opacity-dialog",
+      "--fx-tab-indicator-h",
+      "--fx-grid-row-bg-selected",
+      "--fx-dialog-radius"
+    ]
+  },
+  "manifest": {
+    "ok": [],
+    "missing": [
+      "no \"tokens\" block (token-registry@1): list the --fx-* tokens the UI reads under \"uses\""
+    ],
+    "bad": [
+      "tokens.$axf must be token-registry@1",
+      "tokens.uses: \"accent\" is not a --fx-* token",
+      "tokens.defines --fx-z: a plain-English description is required"
+    ]
+  },
+  "coverage": {
+    "unregistered": [
+      {
+        "id": "--fx-new",
+        "files": [
+          "b.css"
+        ]
+      }
+    ],
+    "unused": [
+      "--fx-old"
+    ]
+  },
+  "usesDiff": {
+    "missing": [
+      "--fx-c"
+    ],
+    "stale": [
+      "--fx-a"
+    ]
+  },
+  "tokenSet": {
+    "accent": {
+      "target": "tokens.theme",
+      "path": "accent"
+    },
+    "layout": {
+      "target": "tokens.layout",
+      "path": "navWidth"
+    },
+    "style": {
+      "target": "tokens.style",
+      "path": "radius.md"
+    },
+    "scale": {
+      "target": "tokens.typography",
+      "path": "scale.sm"
+    },
+    "none": null
+  },
+  "chain": [
+    {
+      "$axf": "skin-snapshot@1",
+      "id": "default",
+      "parent": null,
+      "at": "2026-11-13T20:00:00.000Z",
+      "by": "test",
+      "label": "Default skin",
+      "kind": "default",
+      "ui": {
+        "kind": "view",
+        "id": "home",
+        "label": "Home"
+      },
+      "edits": [],
+      "state": {}
+    },
+    {
+      "$axf": "skin-snapshot@1",
+      "id": "smwfeolpc1",
+      "parent": "default",
+      "at": "2026-11-13T20:05:00.000Z",
+      "by": "test",
+      "label": "--fx-accent → #ff8800",
+      "kind": "edit",
+      "ui": {
+        "kind": "view",
+        "id": "home",
+        "label": "Home"
+      },
+      "edits": [
+        {
+          "token": "--fx-accent",
+          "from": null,
+          "to": "#ff8800"
+        }
+      ],
+      "state": {
+        "--fx-accent": "#ff8800"
+      }
+    },
+    {
+      "$axf": "skin-snapshot@1",
+      "id": "smwfexls02",
+      "parent": "smwfeolpc1",
+      "at": "2026-11-13T20:12:00.000Z",
+      "by": "test",
+      "label": "--fx-radius-md → 12px",
+      "kind": "edit",
+      "ui": {
+        "kind": "view",
+        "id": "home",
+        "label": "Home"
+      },
+      "edits": [
+        {
+          "token": "--fx-radius-md",
+          "from": null,
+          "to": "12px"
+        }
+      ],
+      "state": {
+        "--fx-accent": "#ff8800",
+        "--fx-radius-md": "12px"
+      }
+    },
+    {
+      "$axf": "skin-snapshot@1",
+      "id": "smwff7w5c3",
+      "parent": "smwfexls02",
+      "at": "2026-11-13T20:20:00.000Z",
+      "by": "test",
+      "label": "--fx-accent → default",
+      "kind": "edit",
+      "ui": {
+        "kind": "view",
+        "id": "home",
+        "label": "Home"
+      },
+      "edits": [
+        {
+          "token": "--fx-accent",
+          "from": "#ff8800",
+          "to": null
+        }
+      ],
+      "state": {
+        "--fx-radius-md": "12px"
+      }
+    },
+    {
+      "$axf": "skin-snapshot@1",
+      "id": "smwffkr404",
+      "parent": "smwff7w5c3",
+      "at": "2026-11-13T20:30:00.000Z",
+      "by": "test",
+      "label": "Reverted to --fx-accent → #ff8800",
+      "kind": "revert",
+      "ui": {
+        "kind": "view",
+        "id": "home",
+        "label": "Home"
+      },
+      "edits": [
+        {
+          "token": "--fx-accent",
+          "from": null,
+          "to": "#ff8800"
+        },
+        {
+          "token": "--fx-radius-md",
+          "from": "12px",
+          "to": null
+        }
+      ],
+      "state": {
+        "--fx-accent": "#ff8800"
+      }
+    }
+  ],
+  "noop": null,
+  "rows": [
+    {
+      "id": "default",
+      "parent": null,
+      "at": "2026-11-13T20:00:00.000Z",
+      "by": "test",
+      "label": "Default skin",
+      "kind": "default",
+      "edits": 0,
+      "tokens": 0,
+      "depth": 0,
+      "onPath": true,
+      "head": false
+    },
+    {
+      "id": "smwfeolpc1",
+      "parent": "default",
+      "at": "2026-11-13T20:05:00.000Z",
+      "by": "test",
+      "label": "--fx-accent → #ff8800",
+      "kind": "edit",
+      "edits": 1,
+      "tokens": 1,
+      "depth": 1,
+      "onPath": true,
+      "head": false
+    },
+    {
+      "id": "smwfexls02",
+      "parent": "smwfeolpc1",
+      "at": "2026-11-13T20:12:00.000Z",
+      "by": "test",
+      "label": "--fx-radius-md → 12px",
+      "kind": "edit",
+      "edits": 1,
+      "tokens": 2,
+      "depth": 2,
+      "onPath": true,
+      "head": false
+    },
+    {
+      "id": "smwff7w5c3",
+      "parent": "smwfexls02",
+      "at": "2026-11-13T20:20:00.000Z",
+      "by": "test",
+      "label": "--fx-accent → default",
+      "kind": "edit",
+      "edits": 1,
+      "tokens": 1,
+      "depth": 3,
+      "onPath": true,
+      "head": false
+    },
+    {
+      "id": "smwffkr404",
+      "parent": "smwff7w5c3",
+      "at": "2026-11-13T20:30:00.000Z",
+      "by": "test",
+      "label": "Reverted to --fx-accent → #ff8800",
+      "kind": "revert",
+      "edits": 2,
+      "tokens": 1,
+      "depth": 4,
+      "onPath": true,
+      "head": true
+    }
+  ],
+  "pathToS3": [
+    "default",
+    "smwfeolpc1",
+    "smwfexls02",
+    "smwff7w5c3"
+  ],
+  "before": {
+    "tenMinutesAgo": "smwff7w5c3",
+    "beforeAll": "default",
+    "afterAll": "smwffkr404"
+  },
+  "chainErrors": {
+    "ok": [],
+    "bad": [
+      "the root snapshot is the default skin",
+      "duplicate snapshot id smwfeolpc1",
+      "snapshot smwfeolpc1 has an unknown parent ghost"
+    ]
+  },
+  "diff": [
+    {
+      "token": "--fx-radius-md",
+      "from": "12px",
+      "to": null
+    }
+  ],
+  "apply": {
+    "--fx-b": "x"
+  },
+  "exported": {
+    "asset": {
+      "$axf": "asset@1",
+      "type": "skin",
+      "id": "midnight-sky",
+      "name": "Midnight",
+      "version": "1.0.0",
+      "description": "Exported from the Skin editor with 3 token edit(s).",
+      "author": "Skin editor",
+      "tags": [
+        "skin",
+        "exported"
+      ],
+      "data": {
+        "layoutTheme": "focus-top",
+        "colorTheme": "hub-night",
+        "styleTheme": "hub",
+        "behaviorTheme": "standard",
+        "assets": {
+          "button": "rounded-solid"
+        },
+        "preview": {
+          "caption": "Midnight: exported from the Skin editor."
+        },
+        "extras": {
+          "settings": {
+            "axf.tokens.theme": {
+              "*": {
+                "accent": "#ff8800"
+              }
+            },
+            "axf.tokens.style": {
+              "*": {
+                "radius.md": "12px"
+              }
+            },
+            "axf.skin-editor.vars": {
+              "--fx-btn-bg-hover": "#333"
+            }
+          }
+        }
+      }
+    },
+    "mapped": [
+      "--fx-accent",
+      "--fx-radius-md"
+    ],
+    "unmapped": [
+      "--fx-btn-bg-hover"
+    ]
+  },
+  "roundTrip": {
+    "--fx-accent": "#ff8800",
+    "--fx-radius-md": "12px",
+    "--fx-btn-bg-hover": "#333"
+  },
+  "defaultSkin": "default",
+  "voice": [
+    {
+      "phrase": "revert the skin to 10 minutes ago",
+      "intent": {
+        "verb": "revert",
+        "minutes": 10
+      }
+    },
+    {
+      "phrase": "Amber, roll the skin back to two hours ago",
+      "intent": {
+        "verb": "revert",
+        "minutes": 120
+      }
+    },
+    {
+      "phrase": "revert the skin to the default",
+      "intent": {
+        "verb": "revert",
+        "snapshot": "default"
+      }
+    },
+    {
+      "phrase": "revert the skin to snapshot s12",
+      "intent": {
+        "verb": "revert",
+        "snapshot": "s12"
+      }
+    },
+    {
+      "phrase": "export this as a new skin called Midnight",
+      "intent": {
+        "verb": "export",
+        "name": "Midnight"
+      }
+    },
+    {
+      "phrase": "save this skin as Deep Ocean",
+      "intent": {
+        "verb": "export",
+        "name": "Deep Ocean"
+      }
+    },
+    {
+      "phrase": "undo the last skin edit",
+      "intent": {
+        "verb": "undo"
+      }
+    },
+    {
+      "phrase": "open the skin editor",
+      "intent": {
+        "verb": "open"
+      }
+    },
+    {
+      "phrase": "open plan studio in the skin editor",
+      "intent": {
+        "verb": "open",
+        "ui": "plan studio"
+      }
+    },
+    {
+      "phrase": "set the accent to #ff8800 in the skin",
+      "intent": {
+        "verb": "set",
+        "token": "--fx-accent",
+        "value": "#ff8800"
+      }
+    },
+    {
+      "phrase": "skin: set --fx-radius-md to 12px",
+      "intent": {
+        "verb": "set",
+        "token": "--fx-radius-md",
+        "value": "12px"
+      }
+    },
+    {
+      "phrase": "search the token registry for hover",
+      "intent": {
+        "verb": "registry",
+        "q": "hover"
+      }
+    },
+    {
+      "phrase": "show the token registry",
+      "intent": {
+        "verb": "registry"
+      }
+    },
+    {
+      "phrase": "turn the lights off",
+      "intent": null
+    }
+  ]
+}

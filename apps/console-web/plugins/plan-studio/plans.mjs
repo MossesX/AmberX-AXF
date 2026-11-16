@@ -15,6 +15,8 @@
  *
  *   node apps/console-web/plugins/plan-studio/plans.mjs list [--status s] [--category c] [--q words]
  *   … show <id> [--md]                one plan (JSON, or Markdown)
+ *   … find <words> [--plan w] [--item w] [--kind step|risk|…]   find by content: "the plan about X, the step that mentions Y"
+ *                                     → hits with the focus to open (`axf control act console.screens plan-studio --focus <focus>`)
  *   … add "<title>" [--status parked] [--category "A > B"] [--priority P1] [--summary …] [--template feature] [--step "text|Opus|20"]…
  *   … status <id> <status>
  *   … import <file.md|file.json|->    a Markdown plan, a plan@1 JSON, or a JSON array of them (parked unless they say)
@@ -32,6 +34,7 @@ import * as pc from './web/plan-core.mjs';
 import * as ai from './web/plan-ai.mjs';
 import { discover, readMatrices, writeBack } from './catalog.mjs';
 import { dataPath, orchestratorPath, persistRoot, readProfiles, activeProfile } from '../../../../framework/cli/persist.mjs';
+import { activeProject, projectDataDir } from '../../../../framework/cli/projects.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(HERE, '../../../..');
@@ -41,10 +44,14 @@ const ID_RE = /^[a-z0-9][a-z0-9._-]{0,79}$/;
 const readJson = (f, d = null) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
 function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify(v, null, 1)}\n`); renameSync(tmp, f); }
 
+/**
+ * Where the plans live: the active project's copy (projects@1). AmberX AXF keeps the plugin folder itself; any other
+ * project keeps `<folder>/projects/<id>/` and starts with no plans. AXF_PLANS_DIR (tests) is used as given.
+ */
 export function storeDir() {
   if (process.env.AXF_PLANS_DIR) return process.env.AXF_PLANS_DIR;
   const root = persistRoot();
-  return root ? join(root, FOLDER) : join(ROOT, '.axf-console/plugins', FOLDER);
+  return projectDataDir(root ? join(root, FOLDER) : join(ROOT, '.axf-console/plugins', FOLDER));
 }
 const P = (...x) => join(storeDir(), ...x);
 export const onHub = () => !process.env.AXF_PLANS_DIR && !!persistRoot();
@@ -60,8 +67,12 @@ export function prices() {
 
 /* ------------------------------------------------------------------ store */
 
-/** Copy seed plans that are missing (never over a plan that exists, never one deleted on purpose). */
+/**
+ * Copy seed plans that are missing (never over a plan that exists, never one deleted on purpose). The seeds are
+ * AmberX AXF's plans: a new project starts with none (projects@1).
+ */
 export function seed() {
+  if (!process.env.AXF_PLANS_DIR && !activeProject().base) return [];
   const deleted = new Set(readJson(P('deleted.json'), { ids: [] }).ids ?? []);
   const added = [];
   for (const f of existsSync(SEED_DIR) ? readdirSync(SEED_DIR).filter((x) => x.endsWith('.json')) : []) {
@@ -228,6 +239,7 @@ export async function api(req) {
       try { synced = syncBuilds(); } catch { /* the orchestrator file is optional */ }
       return { ok: true, plans: loadPlans(), categories: categories(), templates: { ...templates(), all: pc.allTemplates(templates()) }, views: views(), profiles: profiles(), activeProfile: activeProfile().id, store: storeDir(), onHub: onHub(), synced };
     }
+    case 'find': return { ok: true, ...pc.findInPlans(loadPlans(), { q: r.q, plan: r.plan, item: r.item, kind: r.kind }, { limit: r.limit }) };
     case 'get': { const plan = getPlan(r.id); if (!plan) throw new Error(`no plan ${r.id}`); return { ok: true, plan, history: history(r.id) }; }
     case 'save': return savePlan(r.plan, { by, kind: r.kind, note: r.note, force: !!r.force });
     case 'delete': return deletePlan(r.id);
@@ -297,6 +309,10 @@ async function main(argv) {
     let body = rest[0];
     if (!body) body = readFileSync(0, 'utf8');
     return console.log(JSON.stringify(await api(JSON.parse(body))));
+  }
+  if (cmd === 'find') {
+    const r = pc.findInPlans(loadPlans(), { q: rest.join(' '), plan: typeof f.plan === 'string' ? f.plan : '', item: typeof f.item === 'string' ? f.item : '', kind: typeof f.kind === 'string' ? f.kind : '' }, { limit: Number(f.limit) || 10 });
+    return out({ ok: true, ...r }, r.hits.map((h) => `${h.focus.padEnd(48)} ${h.plan.title}${h.item ? ` › ${h.item.label}: ${h.item.text}` : ''}`).join('\n') || 'Nothing found.');
   }
   if (cmd === 'list') {
     const ps = pc.sortPlans(pc.filterPlans(loadPlans(), { q: f.q, statuses: f.status ? [].concat(f.status) : [], categories: f.category ? [].concat(f.category) : [] }), 'priority');

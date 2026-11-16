@@ -3,7 +3,7 @@ import { Button, Checkbox, Chip, Icon, IconButton, Markdown, Segmented, TabGroup
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as pc from './plan-core.mjs';
 import type { CatNode, Filter, Plan, SavedView } from './plan-core.mjs';
-import { call, fmtDay, KEYS, putPlan, reload, savePlan, setPart, statusInfo, useBusy, useStudio } from './api';
+import { api, call, fmtDay, KEYS, putPlan, reload, savePlan, setPart, statusInfo, useBusy, useStudio } from './api';
 import { CommandBox, VoicePanel } from './ai';
 import { PlanEditor } from './editor';
 import { CatalogTab } from './catalog';
@@ -25,10 +25,40 @@ const LAYOUTS: { value: Layout; label: string; icon: string }[] = [
 ];
 const setting = (rt: ReturnType<typeof useRuntime>, k: string, d: string) => { try { const v = rt.settings.get(k); return typeof v === 'string' && v ? v : d; } catch { return d; } };
 
-/** A plan to open when the page shows (quick capture, "Plan this", a search hit). */
-let pendingOpen: { id?: string; plan?: Plan } | null = null;
+/** A plan to open when the page shows (quick capture, "Plan this", a search hit, a find-by-content focus). */
+type PendingOpen = { id?: string; plan?: Plan; item?: string; find?: string };
+let pendingOpen: PendingOpen | null = null;
 const openers = new Set<() => void>();
-export function openPlan(o: { id?: string; plan?: Plan }) { pendingOpen = o; openers.forEach((f) => f()); }
+export function openPlan(o: PendingOpen) { pendingOpen = o; openers.forEach((f) => f()); }
+
+/**
+ * Open a plan down to one item (build full-voice-and-ai-control, Nov 13 2026): focus = `<plan id>`, `<plan id>/<item ref>`
+ * (a step id, `risks:2`, a comment id, `body:4`) or words ("the plan about X, the step that mentions Y") the server's
+ * find resolves to its best hit. What `plan-studio.focus:<focus>` runs, so console_open / console_show land here.
+ */
+export function focusPlan(focus: string) {
+  const t = focus.trim();
+  if (!t) return;
+  const slash = t.indexOf('/');
+  openPlan({ id: slash < 0 ? t : t.slice(0, slash), item: slash < 0 ? '' : t.slice(slash + 1), find: t });
+}
+
+/** The section an item ref lives in, when the item itself has no row on the page (a comment, a body paragraph). */
+const sectionOf = (ref: string) => (ref.startsWith('body:') ? 'notes' : pc.LIST_IDS.some((k) => ref.startsWith(`${k}:`)) ? 'lists' : /^c-/.test(ref) ? 'comments' : 'steps');
+
+/** Scroll the item into view and keep it marked until another find (waits for the editor to render it). */
+function revealItem(ref: string) {
+  document.querySelectorAll('[data-plan-found]').forEach((e) => e.removeAttribute('data-plan-found'));
+  if (!ref) return;
+  let tries = 0;
+  const look = () => {
+    const el = document.querySelector(`.axp-plan-studio [data-plan-item="${CSS.escape(ref)}"]`) ?? (tries > 20 ? document.getElementById(`axp-ps-${sectionOf(ref)}`) : null);
+    if (!el) { if (++tries < 40) setTimeout(look, 50); return; }
+    el.setAttribute('data-plan-found', '');
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+  look();
+}
 
 export function Head({ count }: { count?: number }) {
   return (
@@ -44,6 +74,7 @@ export function Head({ count }: { count?: number }) {
 
 export function PlanStudioPage() {
   const { state, error } = useStudio();
+  const rt = useRuntime();
   const [tab, setTab] = useState<Tab>('plans');
   const [open, setOpen] = useState<{ plan: Plan; isNew: boolean } | null>(null);
   const [voice, setVoice] = useState(false);
@@ -53,8 +84,16 @@ export function PlanStudioPage() {
     const take = () => {
       if (!pendingOpen || !state) return;
       const o = pendingOpen; pendingOpen = null;
-      if (o.plan) { setOpen({ plan: o.plan, isNew: !state.plans.some((p) => p.id === o.plan!.id) }); setTab('plans'); }
-      else if (o.id) { const p = state.plans.find((x) => x.id === o.id); if (p) { setOpen({ plan: p, isNew: false }); setTab('plans'); } }
+      if (o.plan) { setOpen({ plan: o.plan, isNew: !state.plans.some((p) => p.id === o.plan!.id) }); setTab('plans'); return; }
+      const p = o.id ? state.plans.find((x) => x.id === o.id) : undefined;
+      if (p) { setOpen({ plan: p, isNew: false }); setTab('plans'); revealItem(o.item ?? ''); return; }
+      if (!o.find) return;
+      // not a plan id: find by content and open the best hit
+      void api.call<{ ok: boolean; hits: pc.FindHit[] }>(`find?q=${encodeURIComponent(o.find)}&limit=1`).then((r) => {
+        const hit = r.hits?.[0];
+        if (!hit) { rt.toast(`No plan matches "${o.find}".`, 'warning', 'Plan Studio'); return; }
+        focusPlan(hit.focus);
+      }).catch((e: unknown) => rt.toast(String((e as Error)?.message ?? e), 'warning', 'Plan Studio'));
     };
     openers.add(take); take();
     return () => { openers.delete(take); };
@@ -187,7 +226,7 @@ function Row({ p, sel, pick, onOpen }: { p: Plan; sel: Set<string>; pick: (id: s
   const st = statusInfo(p.status);
   const t = pc.totals(p);
   return (
-    <li className={`axp-plan-studio__row${open ? ' is-open' : ''}`}>
+    <li data-axf-target={`row:${p.id}`} className={`axp-plan-studio__row${open ? ' is-open' : ''}`}>
       <div className="axp-plan-studio__rline">
         <input type="checkbox" className="fx-check" checked={sel.has(p.id)} onChange={() => pick(p.id)} aria-label={`Select ${p.title}`} />
         <button type="button" data-fx-row className="axp-plan-studio__rmain" aria-expanded={open} onClick={() => setOpen(!open)}>
@@ -274,7 +313,7 @@ function TreeView({ plans, sel, pick, onOpen, onCategory }: { plans: Plan[]; sel
 function TreeLeaf({ p, sel, pick, onOpen }: { p: Plan; sel: Set<string>; pick: (id: string) => void; onOpen: (p: Plan) => void }) {
   const st = statusInfo(p.status);
   return (
-    <li className="axp-plan-studio__tleaf" role="treeitem" aria-selected={sel.has(p.id)}>
+    <li data-axf-target={`row:${p.id}`} className="axp-plan-studio__tleaf" role="treeitem" aria-selected={sel.has(p.id)}>
       <input type="checkbox" className="fx-check" checked={sel.has(p.id)} onChange={() => pick(p.id)} aria-label={`Select ${p.title}`} />
       <button type="button" data-fx-row className="axp-plan-studio__tname" onClick={() => onOpen(p)}><span className={`axp-plan-studio__prio is-${p.priority.toLowerCase()}`}>{p.priority}</span>{p.title}</button>
       <Chip tone={st.tone || undefined}>{st.label}</Chip>
@@ -302,7 +341,7 @@ function Board({ plans, onOpen }: { plans: Plan[]; onOpen: (p: Plan) => void }) 
           <section key={s.id} role="listitem" className={`axp-plan-studio__col${over === s.id ? ' is-over' : ''}`} onDragOver={(e) => { e.preventDefault(); setOver(s.id); }} onDragLeave={() => setOver('')} onDrop={(e) => void drop(e, s.id)} aria-label={s.label}>
             <h3><Icon name={s.icon} size={12} />{s.label}<span className="axp-plan-studio__n">{col.length}</span></h3>
             {col.map((p) => (
-              <button key={p.id} type="button" data-fx-row draggable className="axp-plan-studio__card" onDragStart={(e) => e.dataTransfer.setData('text/plain', p.id)} onClick={() => onOpen(p)}>
+              <button key={p.id} type="button" data-axf-target={`row:${p.id}`} data-fx-row draggable className="axp-plan-studio__card" onDragStart={(e) => e.dataTransfer.setData('text/plain', p.id)} onClick={() => onOpen(p)}>
                 <span className={`axp-plan-studio__prio is-${p.priority.toLowerCase()}`}>{p.priority}</span>
                 <span className="axp-plan-studio__ctitle">{p.title}</span>
                 <span className="fx-muted axp-plan-studio__n">{[p.category, pc.fmtMinutes(p.effort.left)].filter(Boolean).join(' · ')}</span>
@@ -326,7 +365,7 @@ function Roadmap({ plans, onOpen }: { plans: Plan[]; onOpen: (p: Plan) => void }
           <ul>{l.plans.map((p) => {
             const t = pc.totals(p);
             return (
-              <li key={p.id}><button type="button" data-fx-row className="axp-plan-studio__rmain" onClick={() => onOpen(p)}>
+              <li key={p.id} data-axf-target={`row:${p.id}`} ><button type="button" data-fx-row className="axp-plan-studio__rmain" onClick={() => onOpen(p)}>
                 <span className="axp-plan-studio__rdate">{p.targetDate ? fmtDay(p.targetDate) : '—'}</span>
                 <span className="axp-plan-studio__rtitle">{p.title}</span>
                 <span className="axp-plan-studio__bar" aria-label={`${t.progress}% done`}><span style={{ width: `${t.progress}%` }} /></span>

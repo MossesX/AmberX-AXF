@@ -1,0 +1,276 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-agent-cap",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:44Z",
+ "build": {
+  "id": "agent-cap",
+  "title": "Configurable max-agents cap + queue",
+  "profile": "all",
+  "category": "Plugin",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "a configurable cap on headless Claude sessions/builds running at once (default 6), a heavy test/build lock (default 3), a memory guard (default 2 GB); extras wait in a FIFO+priority queue and start when a slot frees; finished sessions don't count and close by themselves. Console: slots in the activity banner summary, queue on the Builds page (move up / cancel), settings in Settings and the Breakroom; swarm respects the cap; systems-check memory/swap item.",
+  "verbatim": false,
+  "at": "2026-11-01T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "agent-slots@1 engine + CLI (framework/cli/agent-slots.mjs): settings, registry, queue, claim/release, heavy lock, memory guard, sweep",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "2026-11-01T06:41:06.666Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "deploy/claude-headless.sh + swarm runner go through the slots; finished sessions auto-close",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T06:41:06.666Z",
+   "doneAt": "2026-11-01T06:41:07.129Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "agent-slots console plugin: API, settings panel (Settings + Breakroom), Builds-page queue, banner summary slot, swarm desks",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T06:41:07.129Z",
+   "doneAt": "2026-11-01T06:49:16.956Z",
+   "actualMin": 8,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "systems-check memory guard / swap item",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T06:49:16.956Z",
+   "doneAt": "2026-11-01T06:49:17.449Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "tests, full check block, screenshots, report, push",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T06:49:17.449Z",
+   "doneAt": "2026-11-01T07:21:33.817Z",
+   "actualMin": 32,
+   "done": true
+  }
+ ],
+ "branch": "claude/agent-cap",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "725c60e7cce47a8136cee97e062c3677f8f158e5",
+ "commits": [
+  "b7401e4cbe64bb6de4d52b4a37fbd7cd0ee76b9d",
+  "292e2cdeec3de1b5a8565ca03aa4b2199ec24585"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-11-01T07:23:37Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/reports/agent-cap.md",
+  "_claude/builds/reports/agent-cap/builds-queue-desktop.png",
+  "_claude/builds/reports/agent-cap/builds-queue-phone.png",
+  "_claude/builds/reports/agent-cap/settings-agent-cap-desktop.png",
+  "_claude/builds/reports/agent-cap/settings-agent-cap-phone.png",
+  "_claude/builds/reports/agent-cap/swarm-desks-desktop.png",
+  "_claude/builds/reports/agent-cap/swarm-desks-phone.png",
+  "_claude/builds/store.json",
+  "_claude/memory/STATUS.md",
+  "apps/console-web/plugins/README.md",
+  "apps/console-web/plugins/activity/web/index.tsx",
+  "apps/console-web/plugins/agent-slots/hooks.mjs",
+  "apps/console-web/plugins/agent-slots/install.mjs",
+  "apps/console-web/plugins/agent-slots/plugin.json",
+  "apps/console-web/plugins/agent-slots/server/__init__.py",
+  "apps/console-web/plugins/agent-slots/test.py",
+  "apps/console-web/plugins/agent-slots/uninstall.mjs",
+  "apps/console-web/plugins/agent-slots/web/index.tsx",
+  "apps/console-web/plugins/agent-slots/web/menu.ts",
+  "apps/console-web/plugins/agent-slots/web/slots.css",
+  "apps/console-web/plugins/agent-swarm/swarm.mjs",
+  "apps/console-web/plugins/agent-swarm/test.mjs",
+  "apps/console-web/plugins/agent-swarm/web/cards.tsx",
+  "apps/console-web/plugins/agent-swarm/web/index.tsx",
+  "apps/console-web/plugins/builds-page/web/ui.tsx",
+  "deploy/claude-headless.sh",
+  "framework/cli/agent-slots.mjs",
+  "framework/plan/profiles/angel/framework/plan/pending.json",
+  "framework/plan/profiles/breakroom/framework/plan/pending.json",
+  "framework/plan/profiles/refactor/framework/plan/pending.json",
+  "framework/spec/check-agent-slots.mjs"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/reports/agent-cap.md",
+    "_claude/builds/reports/agent-cap/builds-queue-desktop.png",
+    "_claude/builds/reports/agent-cap/builds-queue-phone.png",
+    "_claude/builds/reports/agent-cap/settings-agent-cap-desktop.png",
+    "_claude/builds/reports/agent-cap/settings-agent-cap-phone.png",
+    "_claude/builds/reports/agent-cap/swarm-desks-desktop.png",
+    "_claude/builds/reports/agent-cap/swarm-desks-phone.png",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-slots",
+   "files": [
+    "apps/console-web/plugins/agent-slots/hooks.mjs",
+    "apps/console-web/plugins/agent-slots/install.mjs",
+    "apps/console-web/plugins/agent-slots/plugin.json",
+    "apps/console-web/plugins/agent-slots/server/__init__.py",
+    "apps/console-web/plugins/agent-slots/test.py",
+    "apps/console-web/plugins/agent-slots/uninstall.mjs",
+    "apps/console-web/plugins/agent-slots/web/index.tsx",
+    "apps/console-web/plugins/agent-slots/web/menu.ts",
+    "apps/console-web/plugins/agent-slots/web/slots.css"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-swarm",
+   "files": [
+    "apps/console-web/plugins/agent-swarm/swarm.mjs",
+    "apps/console-web/plugins/agent-swarm/test.mjs",
+    "apps/console-web/plugins/agent-swarm/web/cards.tsx",
+    "apps/console-web/plugins/agent-swarm/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/profiles/angel/framework/plan/pending.json",
+    "framework/plan/profiles/breakroom/framework/plan/pending.json",
+    "framework/plan/profiles/refactor/framework/plan/pending.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "activity",
+   "files": [
+    "apps/console-web/plugins/activity/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "builds-page",
+   "files": [
+    "apps/console-web/plugins/builds-page/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/plugins/README.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/agent-slots.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/check-agent-slots.mjs"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/claude-headless.sh"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "_claude/builds/reports/agent-cap.md",
+ "open": [
+  "The heavy lock is opt-in per command (`agent-slots.mjs heavy -- …`): the brief tells every headless session to use it, but nothing forces a session that ignores it. A PreToolUse hook that wraps matching Bash commands would make it hard.",
+  "Orchestrator / build-manager / systems-check / push-banner launches go through `claude-headless.sh` and so are capped; their nohup fallback (no helper script on the host) is not.",
+  "The activity banner only shows while something is active, so the slots chip shows with it, not on its own.",
+  "Android: nothing (web/TS/Python only; no cross-port contract changed)."
+ ]
+}

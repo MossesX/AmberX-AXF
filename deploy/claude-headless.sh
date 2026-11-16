@@ -78,10 +78,20 @@
 # Claude settings (headless.briefOnly) or AXF_BRIEF_ONLY=off for one launch = the full chain as before. A brief without
 # a "## Rules for this job" block gets one appended (rules-briefs@1 + every rule bullet whose tag it names); a brief over
 # the budget (headless.briefBudgetChars) is sent anyway, with a warning in the log and a note on the build.
+# Hard build limit (build-limit@1, Brett, Nov 12 2026: "a HARD limit enforced by the VPS itself"): before it books a slot,
+# a new launch asks framework/cli/build-limit.mjs `admit --mode launch`, which counts what really runs on the host (live
+# `claude -p` trees, sessions still setting up, launches admitted a moment ago) under a lock: at the limit (one config
+# file, default 8) it is refused with exit 3, whoever asked. Inside tmux, right before `claude -p`, `admit --mode run
+# --wait` holds the start until a place is free, so N+1 never run even when the soft queue is wrong. The inner run
+# re-execs itself into axf-builds.slice (CPUQuota, MemoryMax: systemd-run --scope) and puts a docker shim first on PATH
+# (deploy/build-limit/docker: --cpus / --memory / --cgroup-parent on node:* and Playwright test containers).
+# AXF_BUILD_LIMIT=off skips the gates (tests only); AXF_BUILD_SLICE=off skips the slice.
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ORIG_ARGS=("$@")
 export PATH="$HOME/.local/bin:$PATH"   # vps.run / cron shells don't load the profile; Claude Code installs here
 
+inner_skip_still="${AXF_STILL_CHECK_OFF:-}"
 name="" brief="" log=".axf-headless.log" inner="" envfile="" mcp="" slot="" queued="" priority="${AXF_PRIORITY:-}" agent="${AXF_AGENT_NAME:-${AXF_AGENT:-}}" agent_line="" account="${AXF_CLAUDE_ACCOUNT:-}" login_line=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -100,7 +110,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 [[ -n "$brief" && -f "$brief" ]] || { echo "claude-headless: --brief <file> is required" >&2; exit 2; }
-[[ "$log" =~ ^[A-Za-z0-9._-]{1,80}$ ]] || { echo "claude-headless: --log is a plain file name" >&2; exit 2; }
+[[ "$log" =~ ^[A-Za-z0-9._-]{1,200}$ ]] || { echo "claude-headless: --log is a plain file name" >&2; exit 2; }
 [[ -z "$account" || "$account" =~ ^[a-z0-9][a-z0-9-]{0,31}$ ]] || { echo "claude-headless: --account is a saved account name (or active / live)" >&2; exit 2; }
 raw="${log%.log}.jsonl"
 HDIR="${AXF_HEADLESS_DIR:-/var/tmp/axf-headless}"
@@ -136,28 +146,33 @@ start_watch_live() {   # $1 = session name; prints the watcher pid (empty when o
 LOGIN_JS="$HERE/claude-login.mjs"
 TOKEN_JS="$HERE/claude-token-save.mjs"
 ORCH_JS="$HERE/../apps/console-web/plugins/build-orchestrator/orchestrator.mjs"  # axf-plugin:build-orchestrator
-login_session="" login_dir="" login_account="" login_email="" login_source="" login_token="" login_kind=""
+login_session="" login_dir="" login_account="" login_email="" login_source="" login_token="" login_kind="" login_config=""
 own_login() {   # $1 = account (active | live | <saved name>): snapshot it for this run; never stops the run
   [[ "${AXF_OWN_LOGIN:-on}" == off ]] && return 0
   command -v node >/dev/null && [[ -f "$LOGIN_JS" ]] || { printf 'claude-login: not available; this run uses the shared login\n' >&2; return 0; }
   local out sh
   out="$(node "$LOGIN_JS" snapshot --dir "$(pwd)" --session "$login_session" --account "${1:-active}" --sh 2>&1)"
-  sh="$(grep -E "^login_dir='[^']+' login_account='[a-z0-9-]+' login_email='[^']*' login_source=(saved|live) login_token=[01]( login_kind=(api|subscription))?\$" <<<"$out" | tail -1)"
+  sh="$(grep -E "^login_dir='[^']+' login_account='[a-z0-9-]+' login_email='[^']*' login_source=(saved|live) login_token=[01]( login_kind=(api|subscription))?( login_config='[^']+')?\$" <<<"$out" | tail -1)"
   if [[ -z "$sh" ]]; then printf '\033[33mclaude-login: %s · this run uses the shared login\033[0m\n' "${out##*$'\n'}" >&2; return 0; fi
   eval "$sh"
   [[ -d "$login_dir" && -O "$login_dir" ]] || return 0
-  export CLAUDE_CONFIG_DIR="$login_dir"
+  # a saved subscription runs in its account's one shared config dir (every build on it shares one credentials file)
+  [[ -n "$login_config" && -d "$login_config" && -O "$login_config" ]] || login_config="$login_dir"
+  export CLAUDE_CONFIG_DIR="$login_config"
   # shellcheck disable=SC1091
   source "$login_dir/token.env"   # the account's saved token, else `unset CLAUDE_CODE_OAUTH_TOKEN`: the copy wins
   # a rotated token goes back to the saved login straight away; the watcher ends with the copy or this run
   [[ -f "$TOKEN_JS" ]] && { nohup node "$TOKEN_JS" watch --copy "$login_dir" ${inner:+--parent "$$"} >/dev/null 2>&1 & disown; }
-  login_line="# login ${login_account}${login_email:+ (${login_email})} · own copy (${login_source})${login_kind:+$([[ "$login_kind" == api ]] && echo ' · API key, billed per token')}"
+  local how='own copy'; [[ "$login_config" != "$login_dir" ]] && how='shared account login'
+  login_line="# login ${login_account}${login_email:+ (${login_email})} · ${how} (${login_source})${login_kind:+$([[ "$login_kind" == api ]] && echo ' · API key, billed per token')}"
   tmux set-option -t "=$(tmux display-message -p '#S' 2>/dev/null)" @axf_login "${login_account}${login_email:+ (${login_email})}" >/dev/null 2>&1 || true
   event session-login "$login_session"
+  # every sign-in is verified with Anthropic and reported to the phone (claude-login-notify.mjs); never delays the run
+  [[ -f "$HERE/claude-login-notify.mjs" ]] && { nohup node "$HERE/claude-login-notify.mjs" verify --dir "$(pwd)" --session "$login_session" --build "${name:-$login_session}" >/dev/null 2>&1 & disown; }
   local bid=""   # the orchestrator build this run belongs to: a note says which account it runs on
   read -r _ bid < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$name" --brief "$brief" 2>/dev/null) || true
   [[ -n "$bid" && -f "$ORCH_JS" && "${AXF_LOGIN_NOTE:-on}" != off ]] && \
-    (node "$ORCH_JS" act note "$bid" "Claude account: ${login_account}${login_email:+ (${login_email})} (${login_session}, own login copy)" >/dev/null 2>&1 &)  # axf-plugin:build-orchestrator
+    (node "$ORCH_JS" act note "$bid" "Claude account: ${login_account}${login_email:+ (${login_email})} (${login_session}, ${how/own copy/own login copy})" >/dev/null 2>&1 &)  # axf-plugin:build-orchestrator
   return 0
 }
 WORKERS_JS="$HERE/claude-workers.mjs"
@@ -190,8 +205,8 @@ build_note() {   # one line on the orchestrator build this run belongs to
 }
 release_login() {
   [[ -n "$login_dir" && -f "$LOGIN_JS" ]] && node "$LOGIN_JS" release --dir "$(pwd)" --session "$login_session" >/dev/null 2>&1
-  [[ -n "$login_dir" && "${CLAUDE_CONFIG_DIR:-}" == "$login_dir" ]] && unset CLAUDE_CONFIG_DIR
-  login_dir="" login_line=""; return 0
+  [[ -n "$login_dir" && ( "${CLAUDE_CONFIG_DIR:-}" == "$login_dir" || "${CLAUDE_CONFIG_DIR:-}" == "$login_config" ) ]] && unset CLAUDE_CONFIG_DIR
+  login_dir="" login_config="" login_line=""; return 0
 }
 
 GATE="$HERE/../framework/cli/model-gate.mjs"
@@ -270,7 +285,16 @@ ctx_plan() {   # $1 = session name
   return 0
 }
 
+LIMIT_JS="$HERE/../framework/cli/build-limit.mjs"
+limit_on() { [[ "${AXF_BUILD_LIMIT:-on}" != off ]] && command -v node >/dev/null && [[ -f "$LIMIT_JS" ]]; }
+
 if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
+  # every build process (claude, tsc, test runs) lives in axf-builds.slice: CPU and memory caps for all builds together
+  if [[ "${AXF_BUILD_SLICE:-on}" != off ]] && ! grep -q '/axf-builds.slice/' /proc/self/cgroup 2>/dev/null && [[ -f /etc/systemd/system/axf-builds.slice ]] \
+     && command -v systemd-run >/dev/null && systemd-run --scope --quiet --collect --slice=axf-builds.slice -- true >/dev/null 2>&1; then
+    exec systemd-run --scope --quiet --collect --slice=axf-builds.slice --unit="axf-run-${name//[^A-Za-z0-9_.-]/-}-$$" -- bash "$HERE/claude-headless.sh" "${ORIG_ARGS[@]}"
+  fi
+  [[ -x "$HERE/build-limit/docker" && "${AXF_BUILD_SLICE:-on}" != off ]] && export PATH="$HERE/build-limit:$PATH"   # docker test runs get --cpus / --memory
   if [[ -n "$envfile" && -f "$envfile" && -O "$envfile" ]]; then
     # shellcheck disable=SC1090
     source "$envfile"
@@ -296,15 +320,29 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   act="$HERE/../apps/console-web/plugins/activity/activity.mjs"  # axf-plugin:activity
   command -v node >/dev/null && [[ -f "${act:-}" ]] && node "$act" hooks ensure >/dev/null 2>&1 || true  # axf-plugin:activity
   login_session="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"
+  # One build account (claude-workers build-account; build one-account-picker): every build runs on it, an explicit
+  # --account included; every other account is off for builds. Read once here, so a switch takes effect for the next run.
+  build_pick="" pick_line=""
+  if [[ "${AXF_WORKERS:-on}" != off && "${AXF_OWN_LOGIN:-on}" != off && -f "$WORKERS_JS" ]] && command -v node >/dev/null; then
+    build_pick="$(node "$WORKERS_JS" build-account 2>/dev/null | grep -E '^[a-z0-9][a-z0-9-]{0,31}$' | grep -vx off | head -1)" || build_pick=""
+  fi
+  if [[ -n "$build_pick" && -n "$account" && "$account" != "$build_pick" && "$account" != active && "$account" != live ]]; then
+    pick_line="# $account is off for builds: this run uses the one build account, $build_pick"
+    build_note "Asked for $account, ran on $build_pick (the one build account)"
+    account=""
+  fi
   if [[ -z "$account" ]]; then
     wait_for_worker ""
     if [[ -n "$worker" ]]; then on_worker=1 account="$worker" tried_workers="$worker"
       [[ "$worker_kind" == api ]] && build_note "Routed to API account $worker (billed per token) by a routing rule"
+    elif [[ -n "$build_pick" ]]; then account="$build_pick"
+      build_note "The one build account $build_pick can't take more now (out or its queue full): this run uses it anyway"
     elif [[ "${AXF_WORKERS:-on}" != off && "${AXF_OWN_LOGIN:-on}" != off && -f "$WORKERS_JS" ]] && command -v node >/dev/null; then
       build_note "No Claude account free (every one out or its queue full): this run uses the console's account"
     fi
   fi
   own_login "${account:-active}"
+  [[ -n "$pick_line" ]] && login_line="$pick_line${login_line:+$'\n'$login_line}"   # the log says why it isn't the asked account
   [[ -n "$login_line" ]] && printf '\033[2m%s\033[0m\n' "$login_line"
   [[ -n "$ctx_line" ]] && printf '\033[2m%s\033[0m\n' "$ctx_line"
   for w in "${ctx_warn[@]}"; do printf '\033[33m# warning: %s\033[0m\n' "$w"; done
@@ -324,10 +362,23 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   # Several Claude accounts (Nov 2 2026, Brett): when the run stops on a usage limit ("You've hit your weekly limit"),
   # AI keys switches to the next saved account that still answers and writes it to the VPS (the AI keys plugin),
   # then the run starts again on it. At most AXF_ACCOUNT_SWITCHES times (default 3; 0 turns it off).
+  # the hard limit, right before claude starts: wait for a place whatever the queue says (never N+1 at once)
+  # (exit 3 = still full after a day: not started; any other failure is a broken gate: say so and start, the enforcer still counts)
+  gate_ok=1 st=0
+  if [[ -z "$inner_skip_still" ]] && command -v node >/dev/null && [[ -f "$DISPATCH" ]]; then   # waited in a queue: is its build still Queued?
+    # by name / brief only: a tmux server keeps the AXF_BUILD_ID of whichever launch started it in its global env
+    still_line="$(env -u AXF_BUILD_ID node "$DISPATCH" still --name "$name" --brief "$brief" 2>&1)"
+    if (( $? == 3 )); then gate_ok="" st=3; printf 'Not started: %s\n' "${still_line#refused: }" | tee "$log"; fi
+  fi
+  if [[ -n "$gate_ok" ]] && limit_on; then
+    node "$LIMIT_JS" admit --mode run --session "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")" --pid "$$" --wait >/dev/null; g_st=$?
+    if (( g_st == 3 )); then gate_ok="" st=3; printf 'Not started: the VPS hard build limit stayed full for a day.\n' | tee "$log"
+    elif (( g_st != 0 )); then printf '\033[33m# build-limit: the hard-limit gate failed (exit %s); starting\033[0m\n' "$g_st"; fi
+  fi
   switches=0 max_switches="${AXF_ACCOUNT_SWITCHES:-3}"
   run_build=""   # the orchestrator build of this run: its meter (start tokens, cost) is grouped under it
   read -r _ run_build < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$name" --brief "$brief" 2>/dev/null) || true
-  while :; do
+  while [[ -n "$gate_ok" ]]; do
     if command -v node >/dev/null; then
       ses="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"; meter=()
       hdir_ready && meter=(--meter "$HDIR/$ses.meter.json" --chain "$HDIR/$ses.chain.json" --session "$ses" --name "$name" --agent "$agent" --model "$model" --build "${run_build:-}")
@@ -347,21 +398,28 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
       wait_for_worker "$tried_workers"
       if [[ -z "$worker" ]]; then
         build_note "Worker $gone stopped ($hit) and no worker is left: the run stopped here"
+        node "$HERE/../framework/cli/crew-say.mjs" accounts failed "Account $gone stopped ($hit) and no account is left to take over: ${name:-the run} stopped." --ref "${name:-run}" >/dev/null 2>&1 || true  # group chat, as the accounts section's owner
         printf 'No worker account left to take over.\n'; break
       fi
       tried_workers="$tried_workers,$worker"
       release_login; own_login "$worker"
       build_note "Worker $gone stopped ($hit): the run moved to $worker"
+      node "$HERE/../framework/cli/crew-say.mjs" accounts blocked "Account $gone stopped ($hit). Moved ${name:-the run} to $worker." --ref "${name:-run}" >/dev/null 2>&1 || true
       prompt="$prompt"$'\n\n'"An account limit cut off an earlier run of this brief. Read the worktree and the build's ticked steps first, and carry on from there instead of starting over."
       switches=$((switches + 1))
       continue
     fi
     tail -n 40 "$log" 2>/dev/null | grep -qiE "hit your (weekly |daily |session |5-hour )?limit|usage limit reached|out of credits|credit balance is too low" || break
+    if [[ -n "$build_pick" ]]; then   # one build account: no other account takes over, and the console stays on it
+      build_note "The one build account $build_pick hit its limit: the run stopped here (every other account is off for builds)"
+      printf '\n\033[1m── %s hit its limit; it is the one build account, so no other account takes over ──\033[0m\n' "$build_pick"; break
+    fi
     sw_js="$HERE/../apps/console-web/plugins/ai-keys/switch.mjs"  # axf-plugin:ai-keys
     command -v node >/dev/null && [[ -f "$sw_js" ]] || break
     printf '\n\033[1m── this Claude account hit its limit: switching accounts ──\033[0m\n'
     sw="$(node "$sw_js" --reason "headless build ${name:-run} hit its limit" 2>&1)" || { printf '%s\n' "$sw"; break; }
     printf '%s · starting again\n\n' "$sw"
+    node "$HERE/../framework/cli/crew-say.mjs" accounts done "The Claude account hit its limit during ${name:-a run}: switched accounts and started it again." --ref "${name:-run}" >/dev/null 2>&1 || true
     [[ -n "$login_dir" ]] && { release_login; own_login live; }   # the run's copy follows the switch AI keys wrote
     switches=$((switches + 1))
   done
@@ -418,6 +476,12 @@ if [[ -z "$queued" && -z "${AXF_AGENT_BOOKED:-}" && "${AXF_AGENT_BOOK:-on}" != o
   fi  # axf-plugin:agent-swarm
 fi  # axf-plugin:agent-swarm
 [[ -n "${AXF_AGENT:-}" && "$slug" != "${AXF_AGENT}-"* ]] && session="axf-${slug}--${AXF_AGENT}"  # axf-plugin:agent-swarm
+limit_res=""
+if [[ -z "$queued" ]] && limit_on; then   # the hard limit: refuse a new launch once N builds run on the VPS
+  lverdict="$(node "$LIMIT_JS" admit --mode launch --session "$session" --name "$slug" --pid "$$" 2>&1)"; l_st=$?
+  if (( l_st == 3 )); then echo "claude-headless: $lverdict" >&2; echo "$lverdict"; exit 3; fi
+  [[ "$lverdict" =~ ^res=(bl-[a-z0-9-]+) ]] && limit_res="${BASH_REMATCH[1]}"
+fi
 if [[ -n "$queued" ]]; then   # the background waiter: hold until the queue hands this run a slot
   slots_on || exit 0
   node "$SLOTS" wait "$queued" --pid "$$" || { echo "claude-headless: $queued left the queue (cancelled); not starting"; exit 0; }
@@ -430,9 +494,14 @@ elif slots_on; then
   read -r tag_level slot_build < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$slug" --brief "$brief" 2>/dev/null) || true
   [[ -z "$priority" && -n "${tag_level:-}" ]] && priority="$tag_level"
   eval "$(node "$SLOTS" enqueue --name "$slug" --kind headless ${priority:+--priority "$priority"} ${slot_build:+--build "$slot_build"} --pid "$$" --cwd "$(pwd)" --sh 2>/dev/null | grep -E '^slot_id=[A-Za-z0-9-]+ slot_started=[01] slot_pos=[0-9]+ slot_reason=[a-z]+$')"
+  if [[ "$slot_reason" == notqueued ]]; then   # only Queued builds take slots
+    [[ -n "$limit_res" ]] && node "$LIMIT_JS" release "$limit_res" >/dev/null 2>&1
+    echo "claude-headless: refused: this build is not Queued (only a Queued build takes a slot)" >&2; echo "refused: this build is not Queued (only a Queued build takes a slot)"; exit 3
+  fi
   if [[ -n "$slot_id" && "$slot_started" == 0 ]]; then
     ${SETSID:-$(command -v setsid)} nohup bash "$HERE/claude-headless.sh" --queued "$slot_id" --name "$name" --agent "$agent" ${account:+--account "$account"} --brief "$brief" --log "$log" -- "$@" > .axf-queue.log 2>&1 &
     why=""; [[ "$slot_reason" == memory ]] && why=", waiting for free memory"
+    [[ -n "$limit_res" ]] && node "$LIMIT_JS" release "$limit_res" >/dev/null 2>&1
     echo "queued at position $slot_pos ($slot_id$why) in $(pwd): starts by itself when a slot frees"
     exit 0
   fi
@@ -448,11 +517,19 @@ if ! command -v tmux >/dev/null; then
   echo "started pid $! in $(pwd) (tmux missing: the console can't show it)"
   exit 0
 fi
+# One live session per build (framework/cli/build-lock.mjs, Nov 13 2026): a build launch never opens a second tmux
+# session beside a live one (axf-<build>*, or a claude pid in this worktree); other runs keep the -HHMMSS rename.
+LOCK_CLI="$HERE/../framework/cli/build-lock.mjs"
+if [[ -n "${AXF_BUILD_ID:-}" ]] && command -v node >/dev/null && [[ -f "$LOCK_CLI" ]]; then
+  lverdict="$(node "$LOCK_CLI" check "$AXF_BUILD_ID" --dir "$(pwd)" --no-lock 2>&1)"; l_st=$?
+  if (( l_st == 3 )); then echo "claude-headless: $lverdict" >&2; echo "$lverdict"; [[ -n "$slot" ]] && slots_on && node "$SLOTS" release "$slot" --exit 3 >/dev/null 2>&1; exit 3; fi
+fi
 tmux has-session -t "=$session" 2>/dev/null && session="$session-$(date +%H%M%S)"
 envs=()   # tmux starts the command in its server's environment: pass what the run needs explicitly
-for v in PATH HOME AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE AXF_CLAUDE_ACCOUNT AXF_OWN_LOGIN AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_HOME AXF_CLAUDE_GLOBAL AXF_CLAUDE_SEEN AXF_LOGIN_NOTE AXF_WORKERS AXF_CLAUDE_WORKERS AXF_WORKER_POLL AXF_WORKERS_ALIVE AXF_BUILD_PROFILE AXF_JOB_TYPE; do
+for v in PATH HOME AXF_BUILD_LIMIT AXF_BUILD_SLICE AXF_BUILD_LIMIT_ONLY AXF_BUILD_LIMIT_POLL AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE AXF_CLAUDE_ACCOUNT AXF_OWN_LOGIN AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_HOME AXF_CLAUDE_GLOBAL AXF_CLAUDE_SEEN AXF_LOGIN_NOTE AXF_WORKERS AXF_CLAUDE_WORKERS AXF_WORKER_POLL AXF_WORKERS_ALIVE AXF_BUILD_PROFILE AXF_JOB_TYPE; do
   [[ -n "${!v:-}" ]] && envs+=(-e "$v=${!v}")
 done
+envs+=(-e "AXF_BUILD_ID=${AXF_BUILD_ID:-}")   # always set: never the tmux server's stale value from an older launch
 # Secrets go through a private file, not tmux's command line: git auth (GIT_CONFIG_COUNT/KEY_n/VALUE_n, which tmux
 # never passed before, so pushes from a headless build failed) and the axHub token (env, else the console's env file).
 secret="$(umask 077; mktemp "${TMPDIR:-/tmp}/axf-headless-env-XXXXXX")"

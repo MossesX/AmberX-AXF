@@ -1,0 +1,333 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-agent-swarm-fable-rebuild",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:40Z",
+ "build": {
+  "id": "agent-swarm-fable-rebuild",
+  "title": "Fable rebuild: agent swarm (steps Opus built that were pinned to Fable)",
+  "profile": "all",
+  "category": "Breakroom",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "go on agent-swarm-fable-rebuild, finish the Breakroom profile.",
+  "verbatim": false,
+  "at": "2026-11-03T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "# Breakroom: agent-swarm-fable-rebuild (Fable)\n\nBrett Nov 3 2026 (voice): go on agent-swarm-fable-rebuild, finish the Breakroom profile.\n\nFirst run: `AXF_BUILD_PROFILE=breakroom node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief agent-swarm-fable-rebuild` and do every step it lists (7 steps). Read the THREADS.md row and To carry on block for the Fable review of the agent swarm (Brett Nov 1: Opus or Fable only, never Sonnet; Fable reviews first, rebuilds only what it flags). Check origin/main first and skip anything already landed.\n\nTick each: AXF_BUILD_PROFILE=breakroom node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step agent-swarm-fable-rebuild <sN> done.\n\nRules: one session, no sub-agents; steps <= 30 min. Tokens only (--fx-*), framework controls, no var() fallbacks; check-theme and check-controls pass. Reference engine changed -> regenerate framework/spec/fixtures. Android on hold: Kotlin twins are deferred gaps in PORTING.md. Update the THREADS.md row at each step. Commit + push branch claude/agent-swarm-fable-rebuild often; open the PR at the end (push banner merges it). UI Review shots for any visible change.",
+ "models": [
+  "Fable",
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Start: read the Opus version (apps/console-web/plugins/agent-swarm) and the Fable review verdict (_claude/builds/reports/fable-review.md); move the contracts agent@1, agent-skill@1, swarm-roster@1, swarm-state@1, swarm-job@1, swarm-run@1 (shared with agent jobs, kind job) and swarm-report@1 into framework/core/engines/swarm-rules.mjs: one registry, normalizers, validators that name the field, JSON snapshot framework/schemas/swarm.json, JSON Schemas, fixture framework/spec/fixtures/swarm.json, check framework/spec/check-swarm.mts in CI; the plugin imports them. Models only through framework/core/model-policy.mjs.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-11-03T11:32:15.362Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Job planner: model tiers, skill matching, lease overlap and wave sequencing reviewed and replaced where better; keep the planner tests passing or replace them with stronger ones",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T11:32:15.362Z",
+   "doneAt": "2026-11-03T11:36:29.042Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Context packer + cached shared prefix: measure brief sizes, tighten snippet extraction",
+   "model": "Fable",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T11:36:29.042Z",
+   "doneAt": "2026-11-03T11:40:49.733Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Agent cards/profiles: agent-card@1 passed the Fable review (no rebuild). Only check that the avatar (face, hair, gear, hue) and the card layout are driven by agent-card@1 and theme tokens, not component-drawn, and add a fixture case for the avatar.",
+   "model": "Fable",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T11:40:49.733Z",
+   "doneAt": "2026-11-03T11:44:46.881Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Group chat contract (swarm-state@1 messages, Boss work lines, banter batch)",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T11:44:46.881Z",
+   "doneAt": "2026-11-03T11:54:11.600Z",
+   "actualMin": 9,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Vibe engine: scoring, ceiling, tone-down/drop as a pure engine with a fixture",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T11:54:11.600Z",
+   "doneAt": "2026-11-03T11:54:12.080Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Differences report _claude/memory/docs/rebuilds/agent-swarm.md + LOG.md entry + screenshots",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T11:54:12.080Z",
+   "doneAt": "2026-11-03T12:01:23.473Z",
+   "actualMin": 7,
+   "done": true
+  }
+ ],
+ "branch": "claude/agent-swarm-fable-rebuild",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 247,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/247"
+ },
+ "landedCommit": "e1ced4d7c49ebd93c8211aff7ce5d03fec53bda4",
+ "commits": [
+  "951c5cf9ec3ca855a913824778d82d58c3885cc1",
+  "f8e73c3236049fca26a9001e28bd256f1ab7770f",
+  "c4c09151c0e7f1d5f78ba2b2c13f05cde53ab76e",
+  "9debb2289939260e8170671135c6964d153b87df",
+  "ed446a3241d37306b7f4bf0d20c51c7342779400",
+  "7388d4f85e5f046148242b8579296f8d455199a2",
+  "6754e3b1d4258617d12d852d0eb73d351dce7735"
+ ],
+ "mergedAt": "2026-11-03T12:10:18Z",
+ "landedAt": "2026-11-03T12:10:18Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/big-dog/orchestrator.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/reports/one-look-default.md",
+  "_claude/builds/reports/one-look-default/shots/after/amberx-droid/appearance-desktop.png",
+  "_claude/builds/reports/one-look-default/shots/after/amberx-droid/appearance-phone.png",
+  "_claude/builds/reports/one-look-default/shots/after/amberx-droid/home-desktop.png",
+  "_claude/builds/reports/one-look-default/shots/after/amberx-droid/home-phone.png",
+  "_claude/builds/reports/one-look-default/shots/after/appearance-desktop.png",
+  "_claude/builds/reports/one-look-default/shots/after/appearance-phone.png",
+  "_claude/builds/reports/one-look-default/shots/after/appearance-style-changed-desktop.png",
+  "_claude/builds/reports/one-look-default/shots/after/appearance-style-changed-phone.png",
+  "_claude/builds/reports/one-look-default/shots/after/axhub-web/appearance-desktop.png",
+  "_claude/builds/reports/one-look-default/shots/after/axhub-web/appearance-phone.png",
+  "_claude/builds/reports/one-look-default/shots/after/axhub-web/home-desktop.png",
+  "_claude/builds/reports/one-look-default/shots/after/axhub-web/home-phone.png",
+  "_claude/builds/reports/one-look-default/shots/after/home-desktop.png",
+  "_claude/builds/reports/one-look-default/shots/after/home-phone.png",
+  "_claude/builds/reports/one-look-default/shots/apps-shots.mjs",
+  "_claude/builds/reports/one-look-default/shots/before/appearance-desktop.png",
+  "_claude/builds/reports/one-look-default/shots/before/appearance-phone.png",
+  "_claude/builds/reports/one-look-default/shots/before/appearance-style-changed-desktop.png",
+  "_claude/builds/reports/one-look-default/shots/before/appearance-style-changed-phone.png",
+  "_claude/builds/reports/one-look-default/shots/before/home-desktop.png",
+  "_claude/builds/reports/one-look-default/shots/before/home-phone.png",
+  "_claude/builds/reports/one-look-default/shots/console.json",
+  "_claude/builds/store.json",
+  "_claude/memory/docs/rebuilds/LOG.md",
+  "_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild.md",
+  "_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild/shots.json",
+  "apps/console-web/plugins/agent-swarm/jobs-core.mjs",
+  "apps/console-web/plugins/agent-swarm/jobs.mjs",
+  "apps/console-web/plugins/agent-swarm/plugin.json",
+  "apps/console-web/plugins/agent-swarm/runner.mjs",
+  "apps/console-web/plugins/agent-swarm/swarm.mjs",
+  "apps/console-web/plugins/agent-swarm/test.mjs",
+  "apps/console-web/plugins/agent-swarm/web/cards.tsx",
+  "apps/console-web/plugins/agent-swarm/web/swarm-core.d.mts",
+  "apps/console-web/plugins/agent-swarm/web/swarm-core.mjs",
+  "framework/cli/build-engine.mjs",
+  "framework/core/engines/agent-card-rules.d.mts",
+  "framework/core/engines/agent-card-rules.mjs",
+  "framework/core/engines/swarm-chat.d.mts",
+  "framework/core/engines/swarm-chat.mjs",
+  "framework/core/engines/swarm-rules.d.mts",
+  "framework/core/engines/swarm-rules.mjs",
+  "framework/core/engines/swarm-vibe.d.mts",
+  "framework/core/engines/swarm-vibe.mjs",
+  "framework/schemas/json/agent-skill.schema.json",
+  "framework/schemas/json/agent.schema.json",
+  "framework/schemas/json/swarm-job.schema.json",
+  "framework/schemas/json/swarm-report.schema.json",
+  "framework/schemas/json/swarm-roster.schema.json",
+  "framework/schemas/json/swarm-run.schema.json",
+  "framework/schemas/json/swarm-state.schema.json",
+  "framework/schemas/swarm.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-agent-card.mts",
+  "framework/spec/check-swarm.mts",
+  "framework/spec/fixtures/agent-card.json",
+  "framework/spec/fixtures/swarm-chat.json",
+  "framework/spec/fixtures/swarm-vibe.json",
+  "framework/spec/fixtures/swarm.json"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/big-dog/orchestrator.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/reports/one-look-default.md",
+    "_claude/builds/reports/one-look-default/shots/after/amberx-droid/appearance-desktop.png",
+    "_claude/builds/reports/one-look-default/shots/after/amberx-droid/appearance-phone.png",
+    "_claude/builds/reports/one-look-default/shots/after/amberx-droid/home-desktop.png",
+    "_claude/builds/reports/one-look-default/shots/after/amberx-droid/home-phone.png",
+    "_claude/builds/reports/one-look-default/shots/after/appearance-desktop.png",
+    "_claude/builds/reports/one-look-default/shots/after/appearance-phone.png",
+    "_claude/builds/reports/one-look-default/shots/after/appearance-style-changed-desktop.png",
+    "_claude/builds/reports/one-look-default/shots/after/appearance-style-changed-phone.png",
+    "_claude/builds/reports/one-look-default/shots/after/axhub-web/appearance-desktop.png",
+    "_claude/builds/reports/one-look-default/shots/after/axhub-web/appearance-phone.png",
+    "_claude/builds/reports/one-look-default/shots/after/axhub-web/home-desktop.png",
+    "_claude/builds/reports/one-look-default/shots/after/axhub-web/home-phone.png",
+    "_claude/builds/reports/one-look-default/shots/after/home-desktop.png",
+    "_claude/builds/reports/one-look-default/shots/after/home-phone.png",
+    "_claude/builds/reports/one-look-default/shots/apps-shots.mjs",
+    "_claude/builds/reports/one-look-default/shots/before/appearance-desktop.png",
+    "_claude/builds/reports/one-look-default/shots/before/appearance-phone.png",
+    "_claude/builds/reports/one-look-default/shots/before/appearance-style-changed-desktop.png",
+    "_claude/builds/reports/one-look-default/shots/before/appearance-style-changed-phone.png",
+    "_claude/builds/reports/one-look-default/shots/before/home-desktop.png",
+    "_claude/builds/reports/one-look-default/shots/before/home-phone.png",
+    "_claude/builds/reports/one-look-default/shots/console.json",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-swarm",
+   "files": [
+    "apps/console-web/plugins/agent-swarm/jobs-core.mjs",
+    "apps/console-web/plugins/agent-swarm/jobs.mjs",
+    "apps/console-web/plugins/agent-swarm/plugin.json",
+    "apps/console-web/plugins/agent-swarm/runner.mjs",
+    "apps/console-web/plugins/agent-swarm/swarm.mjs",
+    "apps/console-web/plugins/agent-swarm/test.mjs",
+    "apps/console-web/plugins/agent-swarm/web/cards.tsx",
+    "apps/console-web/plugins/agent-swarm/web/swarm-core.d.mts",
+    "apps/console-web/plugins/agent-swarm/web/swarm-core.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/agent-card-rules.d.mts",
+    "framework/core/engines/agent-card-rules.mjs",
+    "framework/core/engines/swarm-chat.d.mts",
+    "framework/core/engines/swarm-chat.mjs",
+    "framework/core/engines/swarm-rules.d.mts",
+    "framework/core/engines/swarm-rules.mjs",
+    "framework/core/engines/swarm-vibe.d.mts",
+    "framework/core/engines/swarm-vibe.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/json/agent-skill.schema.json",
+    "framework/schemas/json/agent.schema.json",
+    "framework/schemas/json/swarm-job.schema.json",
+    "framework/schemas/json/swarm-report.schema.json",
+    "framework/schemas/json/swarm-roster.schema.json",
+    "framework/schemas/json/swarm-run.schema.json",
+    "framework/schemas/json/swarm-state.schema.json",
+    "framework/schemas/swarm.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-agent-card.mts",
+    "framework/spec/check-swarm.mts",
+    "framework/spec/fixtures/agent-card.json",
+    "framework/spec/fixtures/swarm-chat.json",
+    "framework/spec/fixtures/swarm-vibe.json",
+    "framework/spec/fixtures/swarm.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/docs/rebuilds/LOG.md",
+    "_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild.md",
+    "_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild/shots.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/build-engine.mjs"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

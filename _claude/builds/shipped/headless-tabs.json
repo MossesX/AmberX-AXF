@@ -1,0 +1,174 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-headless-tabs",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:12Z",
+ "build": {
+  "id": "headless-tabs",
+  "title": "Headless tabs: persistent tmux-backed terminal tabs, auto-opened headless sessions with agent/model/live cost, split pane with the context chain",
+  "profile": "all",
+  "category": "Console > Terminal",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Brett, Nov 3 2026 (voice). Every terminal tab backed by a persistent tmux session on the VPS (reconnect + scrollback replay, Moshi attach command, detach vs kill). Every headless session auto-opens a tab (also those started while the console was closed). Tab title: agent, model, live cost (stream-json usage x price table config), status dot. Split pane (vertical/horizontal) with the context chain: files read in order and rules revealed one at a time. Android: deferred gap in PORTING.md.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Build: headless-tabs (Urgent profile)\n\nRequested by Brett, Nov 3 2026 (voice). GO given. Build it now.\n\n## First\n- Register in the Urgent profile through the orchestrator/store (id `headless-tabs`, branch claude/headless-tabs) with the steps below + in-progress banner entry, per standing rules. Check the pending queue.\n- Builds `orch-live-sync` and `notes-vault` are running in parallel and touch the builds store / claude-sync: never hand-edit store.json, go through the orchestrator CLI. If orch-live-sync's live status writes (framework/cli/builds-live.mjs) are on main by the time you finish a step, use them.\n\n## What Brett wants\n1. Every terminal tab in the console's terminal (the Windows Terminal plugin / terminal in the console) runs on a session that never dies, like Mosh/Moshi: it survives disconnects, reloads, phone sleep, and stays current. Browsers can't speak Mosh (UDP), so: every tab is backed by a persistent tmux session on the VPS, attached over the console's websocket/pty bridge with automatic reconnect + resume (scrollback replay on reattach, no lost output). The same tmux sessions must be attachable from Brett's Moshi phone app (document the one-line `mosh`/ssh + `tmux attach -t <name>` command in the help pack and show it in a tab menu item \"Open in Moshi\" that copies it). Closing a tab detaches, it doesn't kill (explicit \"Kill session\" with confirm).\n2. Every time a headless session starts (deploy/claude-headless.sh, `vps.build_start`, agent swarm jobs, orchestrator-launched builds), the console automatically opens a NEW tab attached to that build's tmux session (axf-<name>). Works for builds started while the console is closed too: on open, tabs for all running headless sessions appear.\n3. Tab title bar: the agent running it (agent/persona name from the session's env/brief/swarm roster, e.g. the swarm agent name, else the build name) + model + a real-time cost counter that climbs as it spends. Cost: run claude -p with `--output-format stream-json --verbose` (or tee it alongside the human log) and sum usage per message (input, output, cache read, cache write) x the model's price table (config file, not hard-coded in UI); final value reconciles to the result event's total_cost_usd. Expose cost via a small server route/websocket so the title updates live. Show status dot (working / waiting / done / failed).\n4. The tab splits into two panes; split direction vertical or horizontal (toggle in the tab menu + default in Settings, remembered per tab). Pane A = the live session. Pane B = the context chain: as the session reads CLAUDE.md and every file it pulls in (imports/@ references, .claude/rules, _claude/rules/RULES.md, shared rules, instructions, persona, memory, THREADS etc.), show the chain as a tree in the order it happens, and print the rules it picks up ONE AT A TIME, deliberately slower than real time (typewriter/reveal pacing, speed setting, skip-to-end button), so Brett can watch what the agent is learning. Source the chain from the session's actual reads (stream-json tool events for Read, plus the CLAUDE.md load order Claude Code uses); rules = the bullet/heading items of each file.\n5. Tokens only, follows the hub look, phone-friendly (on narrow screens the split stacks and becomes swipeable).\n\n## Steps\n- s1 Persistent tmux-backed tabs + reconnect/resume in the console terminal; Moshi attach command; detach vs kill.\n- s2 Headless launcher emits session-start events (claude-headless.sh + build_start path + swarm/orchestrator launches) with build name, agent, model, tmux session; console auto-opens tabs, and lists running ones on load.\n- s3 stream-json capture alongside the human log; cost meter service (price table config) + live route.\n- s4 Tab title: agent, model, live cost, status dot.\n- s5 Split pane with vertical/horizontal toggle + setting.\n- s6 Context chain pane: tree in read order + slow rule-by-rule reveal, speed setting, skip.\n- s7 Help pack, tests, check-theme/check-controls, lifecycle, UI Review shots, report `_claude/builds/reports/headless-tabs.md`, THREADS.md, PR.\nMark each step done through the store as you finish it. Android port: log as a deferred gap in PORTING.md (Android on hold). Code, comments and commits stay clean and professional.\n## ADDENDUM (Brett, Nov 3 2026) - where it goes\nEverything in this build goes INTO the console's existing built-in Terminal plugin (Terminal v0.3.0: frameless window, tab strip as title bar, connections, profiles, Windows keys; window engine resize/snap/maximize from refactor-all s17-s23, see `_claude/memory/docs/rebuilds/windows-terminal.md` and `windows-terminal-fable.md`). Extend that plugin; do NOT create a separate terminal plugin or a second terminal UI. Persistent tmux sessions become the Terminal's session backend / a connection type, auto-opened headless tabs are Terminal tabs, title/cost/status live in its tab strip, the split + context-chain pane are Terminal pane features. Bump the Terminal plugin version and keep every existing feature working.\n\n## ADDENDUM 2 (Brett, Nov 3 2026) - clarification, overrides any ambiguity above\nTarget = the Terminal PLUGIN produced by the Refactor build `windows-terminal` (the Windows-Terminal-style plugin, v0.3.0, in the console's plugins folder). NOT any terminal hardwired into the console core/shell. If the console core has its own built-in terminal, leave it untouched. All features of this build (persistent tmux/Moshi sessions, auto headless tabs, agent name + live cost + status in the tab strip, vertical/horizontal split, context-chain pane) live inside that plugin. If you already started any of it outside the plugin, move it into the plugin.\n\n## ADDENDUM 3 (Brett, Nov 3 2026) - Tooltip mode (add as step s8)\n- Terminal plugin Settings gets a switch **Tooltip mode** (off by default, saved in terminal-settings@1, carries data-axf-level, help text).\n- When on: the FIRST tap/click on any command-toolbar item does NOT run it; it shows a tooltip saying what the button does (reuse the existing help pack text for that control; every toolbar item must have one) and the button stays lit (highlighted/armed state via tokens) for 3 seconds with a subtle countdown. A SECOND tap on the same button within those 3 seconds runs it. After 3 s, or tapping elsewhere/another button, it disarms (tapping another button arms that one instead). Keyboard shortcuts are unaffected. Works on touch and mouse; the tooltip stays on screen on phones (not hover-only). Make the 3 s a setting (default 3).\n- Tests for arm/run/timeout/switch, UI Review shots of the armed state on phone + desktop.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "s1 Persistent tmux-backed tabs + reconnect/resume; Moshi attach command; detach vs kill",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "2026-11-03T14:11:39.099Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "s2 Headless launcher emits session-start events (build name, agent, model, tmux session); console auto-opens tabs and lists running ones on load",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T14:11:39.099Z",
+   "doneAt": "2026-11-03T14:11:39.786Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "s3 stream-json capture alongside the human log; cost meter service (price table config) + live route",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T14:11:39.786Z",
+   "doneAt": "2026-11-03T14:11:40.659Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "s4 Tab title: agent, model, live cost, status dot",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T14:11:40.659Z",
+   "doneAt": "2026-11-03T14:36:03.523Z",
+   "actualMin": 24,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "s5 Split pane with vertical/horizontal toggle + setting",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T14:36:03.523Z",
+   "doneAt": "2026-11-03T14:36:04.366Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "s6 Context chain pane: tree in read order + slow rule-by-rule reveal, speed setting, skip",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T14:36:04.366Z",
+   "doneAt": "2026-11-03T14:36:04.946Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "s7 Help pack, tests, check-theme/check-controls, lifecycle, UI Review shots, report, THREADS.md, PR",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T14:36:04.946Z",
+   "doneAt": "2026-11-03T14:44:38.397Z",
+   "actualMin": 9,
+   "done": true
+  }
+ ],
+ "branch": "claude/headless-tabs",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 259,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/259"
+ },
+ "landedCommit": "dfee2c7fb713e2db3ef08016bb6cbf4e8780dec3",
+ "commits": [],
+ "mergedAt": "2026-11-03T16:29:45.837Z",
+ "landedAt": "2026-11-04T14:38:31Z",
+ "files": [],
+ "areas": [],
+ "tests": [
+  {
+   "name": "python3 apps/console-web/plugins/console-terminal/test.py: 75 → **97** checks. New: a real tmux console tab survives its link closing, is tagged / quiet / 50000 lines, re-opening replays scrollback that had scrolled off the screen, Kill session ends it; tmux name guards; the token reaches a Claude t",
+   "command": "python3 apps/console-web/plugins/console-terminal/test.py",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "npx -y tsx framework/spec/check-headless-tabs.mts (new, in CI): **30** checks: rules and imports, the memory chain order with an import cycle, cost per message once, reconciliation to total_cost_usd, re-runs adding up, no-result = failed, unpriced models flagged, the stream printer writing both file",
+   "command": "npx -y tsx framework/spec/check-headless-tabs.mts",
+   "result": "fail",
+   "detail": ""
+  },
+  {
+   "name": "End to end on this VPS: claude-headless.sh with real tmux tagged the session, wrote session-start, and the meter tracked a real Claude Code stream live ($0.07 at kill time).",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "apps/console-web/plugins/agent-swarm/test.mjs 87/87, framework/spec/check-agent-slots.mjs 56/56, tsc --noEmit clean, check-theme and check-controls clean, help coverage back at 100% (19 new entries), plugin lifecycle clean.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  }
+ ],
+ "uiReview": [
+  {
+   "id": "r-20261103-3sp5x01",
+   "name": "Headless tabs: agent, model, live cost, split with the context chain",
+   "status": "approved",
+   "group": "g-20261103-e6ad82e2",
+   "url": "/review/r-20261103-3sp5x01"
+  }
+ ],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "_claude/builds/reports/headless-tabs.md",
+ "open": [
+  "Interactive (non-headless) Claude Code tabs have no cost meter or context chain: they don't speak stream-json. Their transcript could feed the same meter later.",
+  "The `events.jsonl` log is written but the console reads the live list from `tmux ls` (tags included), which already covers sessions started while the console was closed; the log is there for other readers (Build manager, axHub).",
+  "The console's local tmux tabs end when the console container is rebuilt (VPS tabs do not).",
+  "Android: deferred gap recorded in `framework/spec/PORTING.md` (Android on hold)."
+ ]
+}

@@ -51,12 +51,12 @@ export function StatTile({
 }) {
   return (
     <Paper variant="outlined" sx={{ px: 1.4, py: 0.8, minWidth: 110 }}>
-      <Typography sx={{ ...MONO, fontSize: 15, fontWeight: 700 }}>{value}</Typography>
-      <Typography sx={{ fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: token("dim") }}>
+      <Typography sx={{ ...MONO, fontSize: 'var(--fx-type-root-lg)', fontWeight: 700 }}>{value}</Typography>
+      <Typography sx={{ fontSize: 'var(--fx-type-root-2xs)', letterSpacing: "0.08em", textTransform: "uppercase", color: token("dim") }}>
         {label}
       </Typography>
       {sub ? (
-        <Typography sx={{ fontSize: 10.5, color: subTone ? token(subTone) : token("dim") }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: subTone ? token(subTone) : token("dim") }}>
           {sub}
         </Typography>
       ) : null}
@@ -73,7 +73,7 @@ export function SourceChip({ source }: { source: ExpenseSource }) {
       label={source}
       sx={{
         height: 18,
-        fontSize: 10.5,
+        fontSize: 'var(--fx-type-root-xs)',
         color:
           source === "receipt"
             ? token("accent")
@@ -104,10 +104,10 @@ export function KindChip({ kind, onToggle }: { kind: ExpenseKind; onToggle: () =
       title={income ? "Money in — click to make this an expense" : "Money out — click to make this income"}
       sx={{
         height: 18,
-        fontSize: 10.5,
+        fontSize: 'var(--fx-type-root-xs)',
         cursor: "pointer",
         ...(income
-          ? { color: token("page"), bgcolor: token("ok"), "&:hover": { bgcolor: token("ok"), opacity: 0.85 } }
+          ? { color: token("page"), bgcolor: token("ok"), "&:hover": { bgcolor: token("ok"), opacity: "var(--fx-opacity-glass)" } }
           : { color: token("dim") })
       }}
     />
@@ -148,7 +148,7 @@ export function MoneyCell({
           setText(value === null ? "" : (value / 100).toFixed(2));
           setEditing(true);
         }}
-        sx={{ ...MONO, fontSize: 11.8, cursor: "text", "&:hover": { color: token("accent") } }}
+        sx={{ ...MONO, fontSize: 'var(--fx-type-root-sm)', cursor: "text", "&:hover": { color: token("accent") } }}
       >
         {value === null ? "—" : money(value)}
       </Typography>
@@ -167,7 +167,7 @@ export function MoneyCell({
         if (e.key === "Enter") commit();
         if (e.key === "Escape") setEditing(false);
       }}
-      sx={{ width, "& input": { ...MONO, fontSize: 11.8, py: 0.2 } }}
+      sx={{ width, "& input": { ...MONO, fontSize: 'var(--fx-type-root-sm)', py: 0.2 } }}
     />
   );
 }
@@ -193,7 +193,7 @@ export function TextCell({
       <Typography
         onClick={() => setEditing(true)}
         sx={{
-          fontSize: 12.3,
+          fontSize: 'var(--fx-type-root-sm)',
           cursor: "text",
           color: value ? token("ink") : token("dim"),
           "&:hover": { color: token("accent") }
@@ -222,7 +222,7 @@ export function TextCell({
           setEditing(false);
         }
       }}
-      sx={{ width, "& input": { fontSize: 12.3, py: 0.2 } }}
+      sx={{ width, "& input": { fontSize: 'var(--fx-type-root-sm)', py: 0.2 } }}
     />
   );
 }
@@ -241,7 +241,7 @@ export function PaymentCell({ value, onCommit }: { value: string; onCommit: (v: 
           setEditing(true);
         }}
         sx={{
-          fontSize: 11.8,
+          fontSize: 'var(--fx-type-root-sm)',
           cursor: "text",
           color: value ? token("ink") : token("dim"),
           "&:hover": { color: token("accent") }
@@ -274,7 +274,7 @@ export function PaymentCell({ value, onCommit }: { value: string; onCommit: (v: 
           onKeyDown={(e) => {
             if (e.key === "Escape") setEditing(false);
           }}
-          sx={{ "& input": { fontSize: 11.8, py: 0 } }}
+          sx={{ "& input": { fontSize: 'var(--fx-type-root-sm)', py: 0 } }}
         />
       )}
     />

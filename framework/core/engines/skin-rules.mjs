@@ -16,9 +16,16 @@
  * different skin starts from that skin's own colours. A document saved before the rule kept the pick as
  * `overrides["color-theme"]`; reading it moves it to `colorTheme` (`normalizeAppLook`).
  */
-import { isSubScopeKey, resolveSkinChain, skinScopeChain, SKIN_SCOPE_APP, SKIN_SCOPE_GLOBAL } from './skin-coverage.mjs';
+import { isSubScopeKey, resolveSkinChain, skinScopeChain, SKIN_SCOPE_APP, SKIN_SCOPE_DEFAULT, SKIN_SCOPE_GLOBAL } from './skin-coverage.mjs';
+import { CHROME_INSTANCE_KEY, CHROME_SETTINGS_PICK_KEY, CHROME_TYPES, isChromeInstanceId, normalizeInstanceOverride } from './chrome-settings-rules.mjs';
 
 export const APP_LOOK_FRAME = 'app-look@1';
+/**
+ * Backups (build console-look-becomes-default-axhub-skin, Nov 14 2026): before an app is moved onto the hub default
+ * skin, what it drew (own picks, skin state, scopes) is kept in the document under `backups`, newest first, so Restore
+ * from backup can bring it back. At most this many are kept; an older one falls off the end.
+ */
+export const LOOK_BACKUPS_MAX = 5;
 export const APP_LOOK_PROJECT = 'shared';
 export const APP_LOOK_MAX_BYTES = 64 * 1024;
 export const appLookPath = (appId) => `settings/looks/${appId}.json`;
@@ -28,6 +35,32 @@ export const SKIN_NEVER = ['uac-policy', 'help', 'skin', 'design-package', 'inte
 export const SKIN_COLOR_SLOT = 'color-theme';
 /** The three per-level choices. */
 export const SKIN_USES = ['on', 'off', 'inherit'];
+/**
+ * The skin's four sections → the asset type that holds a section's presets (skins only, Nov 10 2026, Brett: "remove all
+ * the styling and theme and layout stuff … the new thing's going to override it"): colour, style, layout and behaviour
+ * themes are no longer picked on their own; they are the sections of a skin. Same names as skin@2 (PR #430).
+ */
+export const SKIN_SECTIONS = { colors: 'color-theme', style: 'style-theme', layout: 'layout', behavior: 'behavior-theme' };
+/** Section → the skin field that names its preset. */
+export const SKIN_SECTION_FIELDS = { colors: 'colorTheme', style: 'styleTheme', layout: 'layoutTheme', behavior: 'behaviorTheme' };
+/** The one section a user still swaps inside a skin (the theme switch, "Next colour theme"): the skin and its colour theme. */
+export const SKIN_SWAPPABLE_SECTION = 'color-theme';
+/**
+ * The retired bundle types a skin replaced: a slot or setting naming one reads as the skin of the same id. A style
+ * package (one matched set of controls) is not here yet: it becomes a skin when skin@2 lands (PR #430); until then it
+ * stays a swappable set of control slots.
+ */
+export const RETIRED_PACKAGE_TYPES = ['design-package', 'appearance-package'];
+/** The scale picks (density / sizing / typography): the skin's `assets` name them; they are never picked on their own. */
+export const SKIN_SCALE_TYPES = ['typography', 'density', 'sizing'];
+export const isSkinSectionType = (type) => Object.values(SKIN_SECTIONS).includes(type);
+export const sectionOfType = (type) => Object.keys(SKIN_SECTIONS).find((s) => SKIN_SECTIONS[s] === type) ?? '';
+/** Every slot a skin sets: its `assets` plus the four section presets (a named section wins over an `assets` entry of that type). */
+export function skinSlotMap(skin) {
+  const out = { ...(skin?.assets ?? {}) };
+  for (const s of ['layout', 'colors', 'style', 'behavior']) { const v = skin?.[SKIN_SECTION_FIELDS[s]]; if (typeof v === 'string' && v) out[SKIN_SECTIONS[s]] = v; }
+  return out;
+}
 
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 const ID = /^[a-z0-9][a-z0-9-]*$/;
@@ -58,6 +91,67 @@ function withColor(state, pick) {
   return pick ? { ...rest, colorTheme: pick } : rest;
 }
 
+/* ---------------- the skin's chrome block (skin@1 `chrome`, chrome-settings@1) ---------------- */
+
+/**
+ * How one chrome kind is set up under a skin (build console-look-becomes-default-axhub-skin, Nov 14 2026):
+ * `chrome: { <kind>: { interface?, instances? } }` for the chrome-settings@1 kinds (tab-group, toolbar, banner,
+ * nav-menu, app-menu, context-menu). `interface` = the settings interface the kind's dialog renders through
+ * (`axf.chrome.settings.<kind>`); `instances` = field overrides per instance over the active asset
+ * (`axf.chrome.<kind>.<instance>`, only the kind's CHROME_FIELDS, cleaned the way the dialog saves them). Kept: known
+ * kinds, an id that passes, instances with at least one valid field. Plain JS so the build engine validates the same.
+ */
+export function normalizeSkinChrome(raw) {
+  const out = {};
+  if (!isObj(raw)) return out;
+  for (const [type, v] of Object.entries(raw)) {
+    if (!CHROME_TYPES.includes(type) || !isObj(v)) continue;
+    const kind = {};
+    if (typeof v.interface === 'string' && ID.test(v.interface)) kind.interface = v.interface;
+    if (isObj(v.instances)) {
+      const instances = {};
+      for (const [inst, fields] of Object.entries(v.instances)) {
+        if (!isChromeInstanceId(inst)) continue;
+        const n = normalizeInstanceOverride(type, fields);
+        if (Object.keys(n).length) instances[inst] = n;
+      }
+      if (Object.keys(instances).length) kind.instances = instances;
+    }
+    if (Object.keys(kind).length) out[type] = kind;
+  }
+  return out;
+}
+
+/** Validation messages for a skin's `chrome` block (the TS engine and the build engine push the same lines). */
+export function skinChromeErrors(raw) {
+  if (raw === undefined) return [];
+  if (!isObj(raw)) return ['data.chrome must be an object (chrome kind → { interface, instances })'];
+  const out = [];
+  for (const [type, v] of Object.entries(raw)) {
+    if (!CHROME_TYPES.includes(type)) { out.push(`data.chrome.${type}: not a chrome kind (${CHROME_TYPES.join(', ')})`); continue; }
+    if (!isObj(v)) { out.push(`data.chrome.${type} must be an object`); continue; }
+    if ('interface' in v && (typeof v.interface !== 'string' || !ID.test(v.interface))) out.push(`data.chrome.${type}.interface must be a settings asset id`);
+    if ('instances' in v) {
+      if (!isObj(v.instances)) out.push(`data.chrome.${type}.instances must be an object (instance → fields)`);
+      else for (const [inst, fields] of Object.entries(v.instances)) {
+        if (!isChromeInstanceId(inst)) out.push(`data.chrome.${type}.instances: "${inst}" is not an instance id`);
+        else if (!isObj(fields) || !Object.keys(normalizeInstanceOverride(type, fields)).length) out.push(`data.chrome.${type}.instances.${inst}: no valid ${type} field (chrome-settings@1)`);
+      }
+    }
+  }
+  return out;
+}
+
+/** The settings a skin's chrome block puts in force: the interface pick per kind, the field overrides per instance. */
+export function skinChromeSettings(chrome) {
+  const out = {};
+  for (const [type, kind] of Object.entries(chrome ?? {})) {
+    if (kind.interface) out[CHROME_SETTINGS_PICK_KEY(type)] = kind.interface;
+    for (const [inst, fields] of Object.entries(kind.instances ?? {})) out[CHROME_INSTANCE_KEY(type, inst)] = { ...fields };
+  }
+  return out;
+}
+
 /** Keep what a look holds: slots, spacing, chrome and look settings. */
 export function normalizeLookPart(raw) {
   const d = isObj(raw) ? raw : {};
@@ -86,6 +180,17 @@ function normalizeScopes(raw) {
   return out;
 }
 
+/**
+ * One backup record: `{ id, at, by, reason, own, skin, scopes }`, what the app drew before a move (the same three parts
+ * the undo record keeps). `id` names it for Restore from backup (defaults to `at`); a record without a time is dropped.
+ */
+export function normalizeLookBackup(raw) {
+  if (!isObj(raw)) return null;
+  const at = String(raw.at ?? '');
+  if (!at) return null;
+  return { id: String(raw.id || at), at, by: String(raw.by ?? ''), reason: String(raw.reason ?? '').slice(0, 200), own: normalizeLookPart(raw.own), skin: normalizeSkinState(raw.skin), scopes: normalizeScopes(raw.scopes) };
+}
+
 /** A new app-look: `snapshot` as the default, nothing picked, no skin, every scope inheriting. */
 export function newAppLook(app, snapshot) {
   return { $axf: APP_LOOK_FRAME, app, default: normalizeLookPart(snapshot), own: {}, skin: { use: false, inherit: false, id: '', overrides: {} }, scopes: {}, undo: null };
@@ -97,7 +202,33 @@ export function normalizeAppLook(raw) {
   out.own = normalizeLookPart(raw.own);
   out.skin = normalizeSkinState(raw.skin);
   out.scopes = normalizeScopes(raw.scopes);
-  if (isObj(raw.undo)) out.undo = { own: normalizeLookPart(raw.undo.own), skin: normalizeSkinState(raw.undo.skin), scopes: normalizeScopes(raw.undo.scopes), at: String(raw.undo.at ?? '') };
+  if (isObj(raw.undo)) {
+    out.undo = { own: normalizeLookPart(raw.undo.own), skin: normalizeSkinState(raw.undo.skin), scopes: normalizeScopes(raw.undo.scopes), at: String(raw.undo.at ?? '') };
+    // skin-switch@1: the action and scope that left the record (the Undo label), and the hub-wide skin before a hub switch
+    if (typeof raw.undo.action === 'string' && raw.undo.action) out.undo.action = raw.undo.action;
+    if (typeof raw.undo.scope === 'string' && raw.undo.scope) out.undo.scope = raw.undo.scope;
+    if (out.undo.scope === 'hub' && 'global' in raw.undo) {
+      const g = raw.undo.global;
+      out.undo.global = isObj(g) && typeof g.id === 'string' && ID.test(g.id) ? withColor({ id: g.id, overrides: idMap(g.overrides, [SKIN_COLOR_SLOT]) }, colorPick(g)) : null;
+    }
+  }
+  // skins only (look-migration@1): the one-run stamp and the backup of what the fold moved; kept through every writer
+  if (isObj(raw.migrated) && Number.isFinite(Number(raw.migrated.version))) {
+    out.migrated = { version: Math.max(0, Math.floor(Number(raw.migrated.version))), at: String(raw.migrated.at ?? ''), by: String(raw.migrated.by ?? '') };
+    const kept = Array.isArray(raw.migrated.kept) ? raw.migrated.kept.filter((t) => typeof t === 'string' && ID.test(t)) : [];
+    if (kept.length) out.migrated.kept = kept;
+  }
+  if (isObj(raw.legacy)) {
+    const legacy = { at: String(raw.legacy.at ?? '') };
+    if (isObj(raw.legacy.own)) legacy.own = normalizeLookPart(raw.legacy.own);
+    if (isObj(raw.legacy.settings)) legacy.settings = { ...raw.legacy.settings };
+    out.legacy = legacy;
+  }
+  // the per-app backups taken before a move onto the hub default skin: kept through every writer, newest first, capped
+  if (Array.isArray(raw.backups)) {
+    const backups = raw.backups.map(normalizeLookBackup).filter(Boolean).slice(0, LOOK_BACKUPS_MAX);
+    if (backups.length) out.backups = backups;
+  }
   if (typeof raw.updatedBy === 'string') out.updatedBy = raw.updatedBy;
   if (typeof raw.updatedAt === 'string') out.updatedAt = raw.updatedAt;
   return out;
@@ -112,6 +243,17 @@ export function parseAppLook(text) {
 export function setUseSkin(look, on) { return { ...look, skin: { ...look.skin, use: on } }; }
 /** Follow the hub-wide skin while Use skin is off (Brett: "a switch to do it, but by default they're all their own"). */
 export function setInheritSkin(look, on) { return { ...look, skin: { ...look.skin, inherit: on } }; }
+/**
+ * The look drawn while an app takes its skin from axHub only (Settings → Appearance → "Get my skin only from axHub"):
+ * the hub-wide skin, with the colour theme axHub picked inside it, over the app's default snapshot. The app's own picks,
+ * its Use skin switch, skin, overrides and colour theme pick, and every UI / plugin scope are left out of what is drawn;
+ * they stay in the stored document (this only builds the document to compose), so switching back shows them again.
+ * The undo and migration stamps ride along unchanged. null stays null.
+ */
+export function hubOnlyLook(look) {
+  if (!look) return look;
+  return { ...look, own: {}, skin: { use: false, inherit: true, id: '', overrides: {} }, scopes: {} };
+}
 /** Pick a skin: a different one starts with no overrides and its own colour theme; the same one keeps both. */
 export function pickSkin(look, id) { return id === look.skin.id ? look : { ...look, skin: { ...withColor(look.skin, ''), id, overrides: {} } }; }
 /**
@@ -164,6 +306,68 @@ export function setLookSlot(look, slot, id, global = null) {
   return { ...look, own: { ...look.own, slots } };
 }
 
+/* ---------------- the hub default skin: adopt it, back up, restore from backup ---------------- */
+
+/** The three parts a backup (and the undo record) keeps. */
+const partsOf = (look) => ({ own: look.own, skin: look.skin, scopes: look.scopes ?? {} });
+const sameParts = (a, b) => JSON.stringify(partsOf(a)) === JSON.stringify(partsOf(b));
+
+/**
+ * Keep what the app draws now as a backup: `{ id, at, by, reason, own, skin, scopes }` at the head of `backups`,
+ * capped at LOOK_BACKUPS_MAX (the oldest falls off). `meta` = `{ at, by?, reason?, id? }` (`id` defaults to `at`).
+ * A backup identical to the newest one is not added twice.
+ */
+export function backupLook(look, meta) {
+  const at = String(meta?.at ?? '');
+  if (!at) throw new Error('backupLook needs the time (at)');
+  const rec = normalizeLookBackup({ id: meta?.id, at, by: meta?.by, reason: meta?.reason, ...partsOf(look) });
+  const cur = look.backups ?? [];
+  if (cur[0] && sameParts(cur[0], rec)) return look;
+  return { ...look, backups: [rec, ...cur].slice(0, LOOK_BACKUPS_MAX) };
+}
+
+/** The backup named `id`, or the newest when `id` is empty; null when there is none. */
+export function lookBackup(look, id = '') {
+  const all = look?.backups ?? [];
+  return (id ? all.find((b) => b.id === id) : all[0]) ?? null;
+}
+
+/**
+ * Move the app onto the hub default skin (Brett, Nov 14 2026: "make all the apps inherit it right now"), keeping only
+ * what was edited: a backup of what it drew is taken first; then Use skin goes off (the picked skin id stays, so Use
+ * skin on brings it back), the overrides and colour pick made under that skin become the app's own picks (they were
+ * edits: skin-axhub-override rule), Follow goes off, every UI / plugin scope goes back to inherit, and one undo is left
+ * (`adopt-default`). Own picks stay as they are: they are the edits drawn over the floor. An app that already stands on
+ * the floor with nothing to move is returned unchanged (no backup, no undo).
+ */
+export function adoptHubDefault(look, meta) {
+  const at = String(meta?.at ?? '');
+  if (!at) throw new Error('adoptHubDefault needs the time (at)');
+  const skin = look.skin;
+  const moving = skin.use || skin.inherit || Object.keys(look.scopes ?? {}).length > 0;
+  if (!moving) return look;
+  const slots = { ...(look.own.slots ?? {}) };
+  if (skin.use) {
+    Object.assign(slots, skin.overrides);
+    if (skin.colorTheme) slots[SKIN_COLOR_SLOT] = skin.colorTheme;
+  }
+  const own = Object.keys(slots).length ? { ...look.own, slots } : look.own;
+  const backed = backupLook(look, { at, by: meta?.by, reason: meta?.reason ?? 'before the hub default skin', id: meta?.id });
+  return { ...backed, own, skin: { use: false, inherit: false, id: skin.id, overrides: {} }, scopes: {}, undo: { ...partsOf(look), at, action: 'adopt-default', scope: `app:${look.app}` } };
+}
+
+/**
+ * Restore from backup: the backup named `id` (the newest when empty) puts its own picks, skin state and scopes back;
+ * the list of backups is kept and one undo is left (`restore-backup`). No such backup = unchanged.
+ */
+export function restoreLookBackup(look, id, at) {
+  const b = lookBackup(look, id);
+  if (!b) return look;
+  const stamp = String(at ?? '');
+  if (!stamp) throw new Error('restoreLookBackup needs the time (at)');
+  return { ...look, own: b.own, skin: b.skin, scopes: b.scopes ?? {}, undo: { ...partsOf(look), at: stamp, action: 'restore-backup', scope: `app:${look.app}` } };
+}
+
 /* ---------------- scopes: a skin per UI / plugin, the hub-wide skin ---------------- */
 
 /** The state of one scope key in a document (`app` = the app level, `ui:` / `plugin:` = a sub scope; `global` is not in the document). */
@@ -199,14 +403,38 @@ export function scopeEntries(look) {
 }
 
 /**
- * The skin in force at a place: the chain plugin → ui → app → global over this document and the hub-wide skin
- * (`global` = `{ id, overrides, colorTheme? }` from the shared appearance document, or null). `{ id, overrides, from }`,
- * plus `colorTheme` when a level picked one inside the skin; an empty id means no skin there.
+ * The skin in force at a place: the chain plugin → ui → app → global → default over this document, the hub-wide skin
+ * (`global` = `{ id, overrides, colorTheme? }` from the shared appearance document, or null) and the hub default skin
+ * (`hubDefault`, same shape, the `defaultSkin` pointer of that document, or null). `{ id, overrides, from }`, plus
+ * `colorTheme` when a level picked one inside the skin; an empty id means no skin there.
+ *
+ * Resolve order with a hub default (Brett, Nov 14 2026: "make all the apps inherit it right now"):
+ *   default  the hub default skin, always on: the floor every app stands on
+ *   app      Use skin on = the app's own skin, as before. Use skin off and not following = nothing picked here: the
+ *            app inherits the floor (`from: 'default'`), never the hub-wide skin (that still takes Follow); its own
+ *            picks are the edits drawn over the floor (composeLookAt), not part of `overrides`. The colour theme kept
+ *            beside its switched-off skin stays with that skin and does not leak onto the floor.
+ *   global   the hub-wide skin while the app follows it; with none to follow, the floor
+ *   ui / plugin  as before: on = its own skin, inherit = the parent, off = no skin inside it (an explicit choice, so
+ *            it stands below the floor on the app's saved look)
+ * Without a hub default nothing changes: an app with Use skin off draws its own saved look (`from: 'app'`).
  */
-export function resolveLookSkin(look, global, scope) {
+export function resolveLookSkin(look, global, scope, hubDefault = null) {
   const chain = skinScopeChain({ ...scope, app: look?.app ?? '' });
+  const floor = !!(hubDefault && typeof hubDefault.id === 'string' && ID.test(hubDefault.id));
+  const pointer = (p) => withColor({ use: 'on', id: p.id, overrides: p.overrides ?? {} }, p.colorTheme);
+  const off = () => ({ use: 'off', id: '', overrides: {} });
+  const follows = !!look?.skin?.inherit;
   return resolveSkinChain(chain, (key) => {
-    if (key === SKIN_SCOPE_GLOBAL) return global?.id ? withColor({ use: 'on', id: global.id, overrides: global.overrides ?? {} }, global.colorTheme) : { use: 'off', id: '', overrides: {} };
-    return look ? scopeState(look, key) : { use: 'off', id: '', overrides: {} };
+    if (key === SKIN_SCOPE_DEFAULT) return floor ? pointer(hubDefault) : off();
+    if (key === SKIN_SCOPE_GLOBAL) {
+      if (global?.id && (follows || !floor)) return pointer(global);
+      return floor ? { use: 'inherit' } : off();
+    }
+    // no look document yet: with a floor every level of the app inherits it; without one, nothing is drawn (as before)
+    if (!look) return floor ? { use: 'inherit' } : off();
+    const st = scopeState(look, key);
+    if (key === SKIN_SCOPE_APP && st.use === 'off' && floor) return { use: 'inherit' };
+    return st;
   });
 }

@@ -1,0 +1,24 @@
+{
+ "$axf": "asset@1",
+ "type": "help",
+ "id": "project-switcher-help",
+ "name": "project-switcher help",
+ "version": "0.1.0",
+ "description": "Help mode entries for plugin:project-switcher.",
+ "author": "AmberX AXF",
+ "tags": [
+  "help"
+ ],
+ "data": {
+  "scope": "plugin:project-switcher",
+  "entries": [
+   { "target": "new-project", "title": "New project", "text": "Starts a new project with no builds, notes, to-dos or plans. Give it a name; it becomes the active project unless you turn that off.", "kind": "button" },
+   { "target": "switch-to-it-right-away", "title": "Switch to it right away", "text": "On: the new project becomes the active one for every device and session as soon as it is created.", "kind": "toggle" },
+   { "target": "switch-or-manage-projects", "title": "Switch or manage projects", "text": "Opens the project list: switch, start a new one, rename, archive or delete (archive and delete ask you to type the project id; the data stays on disk).", "kind": "button" },
+   { "target": "show-the-project-on-the-banner", "title": "Project on the banner", "text": "Shows the active project as a chip on the banner. Tap the chip to switch.", "kind": "toggle" },
+   { "target": "projects", "title": "Projects", "text": "Settings for the project switcher: the banner chip, reloading after a switch, and the CLI and API to do the same without the console.", "kind": "tab" },
+   { "target": "action:projects.new", "title": "New project", "text": "Opens the form for a new, empty project.", "kind": "menu-item" }
+  ],
+  "intros": []
+ }
+}

@@ -1,0 +1,136 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-plugins-menu",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:26:54Z",
+ "build": {
+  "id": "plugins-menu",
+  "title": "Plugins context menu + settings browser + plugin installer with archives",
+  "profile": "all",
+  "category": "Plugin",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Right-click → Plugins ▸ Install, Settings, Manage, Enable ▸, Disable ▸. Settings browser (dialog by default, floating window switch; plugin column + the selected plugin's settings; own parameters + placeholders for every parameter type). Install dialog: plugin browser over configurable archive locations with credentials (axHub permanent, needs credentials), download + install, own settings. New plugin apps/console-web/plugins/plugins-menu.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Server: archive store (credentials server-side only), axHub permanent archive, test",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-23T15:09:51.640Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Server: browse + install from folder / https / console / axHub archives",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-23T15:09:51.640Z",
+   "doneAt": "2026-10-23T15:09:51.710Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "CLI: install-package from any archive with the same checks",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-10-23T15:09:51.710Z",
+   "doneAt": "2026-10-23T15:09:51.771Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Context menu Plugins submenu with live Enable/Disable lists",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-23T15:09:51.771Z",
+   "doneAt": "2026-10-23T15:09:51.832Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Settings browser dialog/window + own parameters + placeholders",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-23T15:09:51.832Z",
+   "doneAt": "2026-10-23T15:09:51.896Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Install dialog: browser, archives tab, its settings",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-23T15:09:51.896Z",
+   "doneAt": "2026-10-23T15:09:51.952Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Self-tests, checks, docs, PR",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-23T15:09:51.952Z",
+   "doneAt": "2026-10-23T15:09:52.016Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-23T15:09:52.083Z",
+ "landedAt": "2026-10-23T15:09:52.083Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

@@ -145,6 +145,16 @@ check("store format", json.loads(f.read_text())["$axf"] == "todo-store@1")
 fresh = mod.Store(f)
 check("reload from disk", [x["id"] for x in fresh.lists()] == [b["id"]])
 
+# ---- projects (projects@1): a new project gets its own, empty store; switching back finds everything
+base_lists = [x["id"] for x in c.get("/p/lists").json()["lists"]]
+cx.set_context(project_dir=lambda p: Path(p) / "projects" / "garden")
+check("new project: no lists", c.get("/p/lists").json()["lists"] == [])
+check("new project: own list", c.post("/p/lists", json={"title": "Seeds"}).status_code == 201)
+check("new project: own file", (Path(DATA) / "projects" / "garden" / "store.json").exists())
+cx.set_context(project_dir=lambda p: Path(p))
+check("back to AmberX AXF: same lists", [x["id"] for x in c.get("/p/lists").json()["lists"]] == base_lists)
+check("back to AmberX AXF: other project's list not here", all(x["title"] != "Seeds" for x in c.get("/p/lists").json()["lists"]))
+
 print(f"todo-manager: {ok} passed, {len(fails)} failed")
 for x in fails:
     print("  ✗", x)

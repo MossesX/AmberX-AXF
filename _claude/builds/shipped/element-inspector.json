@@ -1,0 +1,256 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-element-inspector",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:28Z",
+ "build": {
+  "id": "element-inspector",
+  "title": "Element inspector (Android first)",
+  "profile": "all",
+  "category": "Feature",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Left click only. Press-drag: panel follows, live updates to element under pointer. Release closes. Double click pins; pinned panel drags and resizes. Current fields + size.",
+  "verbatim": false,
+  "at": "2026-10-30T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Fable",
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Pointer model",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "2026-11-03T13:57:06.541Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Panel + pin/drag/resize",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "2026-11-03T13:57:06.541Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Compose port, then web",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s4",
+   "text": "Tests + docs",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "2026-11-03T13:57:06.541Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/element-inspector",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 192,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/192"
+ },
+ "landedCommit": "",
+ "commits": [
+  "9bd227669c9884eddf0e985c404bbf17b9a33b74",
+  "cfd0ac6e97971ca7cd6fe1205a19e51f004466b0",
+  "2cee2a98f211d3db9b9cd33f1bfa4bfb43a9be23",
+  "0b8e59ca67c3d479a58d9cb0cad20bf15da18b29",
+  "41535422231f5c5cfd3e8b46bad183cb514ac2ee",
+  "2bcc39c9484d122adee98f49c3e7b118bfc35c4c",
+  "db5051451afe47da9d6cab8b2845db28bc0c339e",
+  "f6b10e090005bb7f75bb5a16105fe847366b56c2",
+  "451a4588c136a84cc70de36b3cf60f817f8d48bd",
+  "fca012dc0d7da8297962dc18b05d777a2f9b5e7b",
+  "16e1a01bb068d6ab796397fe9c7489e738b35f8d",
+  "aa9b93ef261694a78760f5ab85eb5006207caf97",
+  "23b584cec691baf768c682b1c825bf8bd994b931",
+  "8be7e6f29f02e0d8c5411e46ad958ff12fc1043f",
+  "91ed8bb7cbbfaec31eea6bf659fc5eca542212e2",
+  "83252992aa947dd4d3bd7038e692d6a5aa6fe3bf",
+  "00895bdc00e982e0a493c3d5b058ee80cf6c144c",
+  "2a9a26ec91b769a3c3fcfe2974eb674f5ec568d5",
+  "ab2f1d54d638dc471dd42d1462172a7fefe1ca6f",
+  "f171208ca752512521973df18e9b5056f595f71d",
+  "0300a1cda4e9d9592914618fa0ac019c9294373a",
+  "0eaa09ed075f9601ca4534416544223cea429f02",
+  "5b8997eb467cfd0128a9f2e84f19601c1883ee1b",
+  "4ea544a55514b7c5e52a5ca10b80a87ced1649d9",
+  "183546e62cfc07c1b1614772df898273eb4bfccc"
+ ],
+ "mergedAt": "",
+ "landedAt": "",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/breakroom/matrices.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/memory/STATUS.md",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/src/axf/core/engines/inspect.ts",
+  "apps/console-web/src/axf/libs/README.md",
+  "apps/console-web/src/axf/libs/ashes/ashes.css",
+  "apps/console-web/src/axf/libs/ashes/core.ts",
+  "apps/console-web/src/axf/libs/ashes/index.tsx",
+  "apps/console-web/src/axf/libs/ashes/library.json",
+  "framework/android/axf-devtools/README.md",
+  "framework/android/axf-devtools/src/main/kotlin/ai/amberx/axf/devtools/ElementInspector.kt",
+  "framework/android/axf-kernel/src/main/kotlin/ai/amberx/axf/kernel/engine/InspectEngine.kt",
+  "framework/android/axf-kernel/src/test/kotlin/ai/amberx/axf/kernel/ElementInspectorConformanceTest.kt",
+  "framework/catalog/libraries.json",
+  "framework/core/engines/inspect.ts",
+  "framework/libs/README.md",
+  "framework/libs/ashes/ashes.css",
+  "framework/libs/ashes/core.ts",
+  "framework/libs/ashes/index.tsx",
+  "framework/libs/ashes/library.json",
+  "framework/plan/profiles/refactor/framework/plan/plan.json",
+  "framework/plan/profiles/refactor/tracker.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-ashes.mts",
+  "framework/spec/check-inspector.mts",
+  "framework/spec/fixtures/element-inspector.json",
+  "framework/spec/gen-fixtures.mts"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/axf/core/engines/inspect.ts",
+    "apps/console-web/src/axf/libs/README.md",
+    "apps/console-web/src/axf/libs/ashes/ashes.css",
+    "apps/console-web/src/axf/libs/ashes/core.ts",
+    "apps/console-web/src/axf/libs/ashes/index.tsx",
+    "apps/console-web/src/axf/libs/ashes/library.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/README.md",
+    "framework/libs/ashes/ashes.css",
+    "framework/libs/ashes/core.ts",
+    "framework/libs/ashes/index.tsx",
+    "framework/libs/ashes/library.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-ashes.mts",
+    "framework/spec/check-inspector.mts",
+    "framework/spec/fixtures/element-inspector.json",
+    "framework/spec/gen-fixtures.mts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "android",
+   "files": [
+    "framework/android/axf-devtools/README.md",
+    "framework/android/axf-devtools/src/main/kotlin/ai/amberx/axf/devtools/ElementInspector.kt",
+    "framework/android/axf-kernel/src/main/kotlin/ai/amberx/axf/kernel/engine/InspectEngine.kt",
+    "framework/android/axf-kernel/src/test/kotlin/ai/amberx/axf/kernel/ElementInspectorConformanceTest.kt"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/breakroom/matrices.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/profiles/refactor/framework/plan/plan.json",
+    "framework/plan/profiles/refactor/tracker.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/libraries.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/inspect.ts"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": [
+  "s3: Compose port, then web"
+ ]
+}

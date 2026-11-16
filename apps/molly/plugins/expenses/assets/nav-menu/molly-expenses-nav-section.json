@@ -1,0 +1,50 @@
+{
+ "$axf": "asset@1",
+ "type": "nav-menu",
+ "id": "molly-expenses-nav-section",
+ "name": "molly-expenses-nav: Own section",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "An Expenses section of its own under the apps: every screen one tap away. Setting expenses.navPlacement = section (the default now).",
+ "tags": [
+  "ui-choice",
+  "choice-set:molly-expenses-nav",
+  "choice-option:section"
+ ],
+ "data": {
+  "style": "list",
+  "navStyle": true,
+  "placement": "section",
+  "sections": [
+   {
+    "label": "Expenses",
+    "items": [
+     {
+      "id": "expenses.ledger",
+      "label": "Ledger",
+      "icon": "list",
+      "view": "expenses/ledger"
+     },
+     {
+      "id": "expenses.paydays",
+      "label": "Paydays",
+      "icon": "clock",
+      "view": "expenses/paydays"
+     },
+     {
+      "id": "expenses.reports",
+      "label": "Reports",
+      "icon": "chart",
+      "view": "expenses/reports"
+     },
+     {
+      "id": "expenses.assistant",
+      "label": "Assistant",
+      "icon": "sparkles",
+      "view": "expenses/assistant"
+     }
+    ]
+   }
+  ]
+ }
+}

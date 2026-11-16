@@ -1,0 +1,316 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-plan-studio",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:35Z",
+ "build": {
+  "id": "plan-studio",
+  "title": "Plan Studio: store, enter and view every plan (plan@1), Catalog of every plugin/app/library with have/planned features, plain-English AI and AmberX voice planning",
+  "profile": "all",
+  "category": "Console",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "a planning studio to store and view all plans, entered by hand, categorized; every plugin and app listed with its features checked off as have or planned. + plain-English AI command box (Oct 30 ~14:20) + AmberX voice conversation mode (Oct 30 ~14:22). Profile Angel, Opus, one session. Branch claude/plans. Web/TS/Python only; AmberX is its Capacitor web shell (allowed exception). Don't touch push-banner, approvals/veto, design-packs/ui-review, enterprise-branding, agent-voice files.",
+  "verbatim": false,
+  "at": "2026-10-30T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "plan@1 contract: JSON Schema, normalize + migrate (v0 → plan@1), categories tree ops (add/rename/move/merge), totals from steps, diff/versions, Markdown import/export, fixtures",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-30T19:00:32.903Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Store + CLI plans.mjs (add|list|show|status|import|export|categories), data folder mirrored to axHub _data (plan-studio/), capability plans@1",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T19:00:32.903Z",
+   "doneAt": "2026-10-30T19:00:32.954Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Catalog discovery: every console plugin, app in apps/, framework library and axHub, with features from the Feature matrix / tracker.json / catalog.json; gone marks; planned features written back through the plugin's overlay",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T19:00:32.954Z",
+   "doneAt": "2026-10-30T19:00:33.008Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Server part (FastAPI routes: plans, plan, save, versions, restore, catalog, feature, turn-into-build, import, export)",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-30T19:00:33.008Z",
+   "doneAt": "2026-10-30T19:00:33.063Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Studio home: tree with multi-select, grid with expandable panes, sub-grids (category/status/project/tag/priority), board by status (drag), roadmap, reader; search, filters, sort, saved views, counts, bulk actions",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T19:00:33.063Z",
+   "doneAt": "2026-10-30T19:00:33.115Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Plan editor: sectioned, autosave drafts, templates (7 + user), quick capture (+ banner, menu, search, right-click), categories editor, Markdown preview + outline, history diff/restore, comments, duplicate check",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T19:00:33.115Z",
+   "doneAt": "2026-10-30T19:00:33.170Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Catalog views: tree with checkboxes, expandable grid, sub-grids, coverage matrix; filters (gaps, planned, profile); Plan this on a feature",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-30T19:00:33.170Z",
+   "doneAt": "2026-10-30T19:00:33.218Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Turn into a build: pick profile, preview steps, orchestrator add, link both ways, live progress, done when the build completes; Import/export Markdown + JSON",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-10-30T19:00:33.218Z",
+   "doneAt": "2026-10-30T19:00:33.269Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Plain-English AI: command box on every plan + home, edit parser (rules first, assistant@1 for the rest), diff apply/undo, questions, AI history entries, tests with fixed model replies",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T19:00:33.269Z",
+   "doneAt": "2026-10-30T19:00:33.318Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "AmberX: target amberx-droid, voice conversation loop (mic-lease@1, agent-voice@1 else native speak), undo by voice, confirm big edits, tests with fake speech",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T19:00:33.318Z",
+   "doneAt": "2026-10-30T19:00:33.363Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "Imports: Docs Studio (15 steps, Framework > Docs, parked), AmberX Selling It (Product > Installer), other parked plans; close draft PR #159 with the note",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-10-30T19:00:33.363Z",
+   "doneAt": "2026-10-30T19:00:33.413Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s12",
+   "text": "Checks + ship: tests, console tsc + vite build, check-theme, check-controls, check-plugin-pages, lifecycle check, menu-reach, screenshots, shared rule, THREADS, PR",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T19:00:33.413Z",
+   "doneAt": "2026-10-30T19:00:33.460Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/plans",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 185,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/185"
+ },
+ "landedCommit": "89930ac6cff0e994e688912ba3f4d1c48143d7c3",
+ "commits": [
+  "7b734579a07b0c11107fec534e69385817e6930e",
+  "414e9a1719dd1597c45052f46234827da6c4834b",
+  "a8f7d572b2a76f2483ce653ca5548acbe2faf90c",
+  "dfd816d13ef32df99b3b2fe6e603911f9cf7d5ef",
+  "163cd5caea3a3ad505fc621b72c06a895c4615d6",
+  "51c5fb985e39d2c3544e89f0bd1e05d9b0eccf34"
+ ],
+ "mergedAt": "2026-10-31T07:26:37Z",
+ "landedAt": "2026-10-31T07:26:28Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/memory/STATUS.md",
+  "_claude/memory/docs/plan-studio/README.md",
+  "_claude/memory/docs/plan-studio/shots/after/plan-studio-board-desktop.png",
+  "_claude/memory/docs/plan-studio/shots/after/plan-studio-capture-phone.png",
+  "_claude/memory/docs/plan-studio/shots/after/plan-studio-catalog-desktop.png",
+  "_claude/memory/docs/plan-studio/shots/after/plan-studio-catalog-phone.png",
+  "_claude/memory/docs/plan-studio/shots/after/plan-studio-coverage-desktop.png",
+  "_claude/memory/docs/plan-studio/shots/after/plan-studio-editor-desktop.png",
+  "_claude/memory/docs/plan-studio/shots/after/plan-studio-editor-phone.png",
+  "_claude/memory/docs/plan-studio/shots/after/plan-studio-grid-desktop.png",
+  "_claude/memory/docs/plan-studio/shots/after/plan-studio-grid-phone.png",
+  "_claude/memory/docs/plan-studio/shots/after/plan-studio-tree-desktop.png",
+  "_claude/memory/docs/plan-studio/shots/after/plan-studio-tree-phone.png",
+  "_claude/shared/rules/RULES.md",
+  "apps/console-web/plugins/README.md",
+  "apps/console-web/plugins/plan-studio/catalog.mjs",
+  "apps/console-web/plugins/plan-studio/data/plans/amberx-selling-it.json",
+  "apps/console-web/plugins/plan-studio/data/plans/clipx.json",
+  "apps/console-web/plugins/plan-studio/data/plans/docs-studio.json",
+  "apps/console-web/plugins/plan-studio/fixtures/cases.json",
+  "apps/console-web/plugins/plan-studio/fixtures/plan.json",
+  "apps/console-web/plugins/plan-studio/hooks.mjs",
+  "apps/console-web/plugins/plan-studio/install.mjs",
+  "apps/console-web/plugins/plan-studio/plans.mjs",
+  "apps/console-web/plugins/plan-studio/plugin.json",
+  "apps/console-web/plugins/plan-studio/schema/plan.schema.json",
+  "apps/console-web/plugins/plan-studio/server/__init__.py",
+  "apps/console-web/plugins/plan-studio/test.mjs",
+  "apps/console-web/plugins/plan-studio/test.py",
+  "apps/console-web/plugins/plan-studio/uninstall.mjs",
+  "apps/console-web/plugins/plan-studio/web/ai.tsx",
+  "apps/console-web/plugins/plan-studio/web/api.ts",
+  "apps/console-web/plugins/plan-studio/web/capture.tsx",
+  "apps/console-web/plugins/plan-studio/web/catalog.tsx",
+  "apps/console-web/plugins/plan-studio/web/editor.tsx",
+  "apps/console-web/plugins/plan-studio/web/index.tsx",
+  "apps/console-web/plugins/plan-studio/web/menu.ts",
+  "apps/console-web/plugins/plan-studio/web/plan-ai.d.mts",
+  "apps/console-web/plugins/plan-studio/web/plan-ai.mjs",
+  "apps/console-web/plugins/plan-studio/web/plan-core.d.mts",
+  "apps/console-web/plugins/plan-studio/web/plan-core.mjs",
+  "apps/console-web/plugins/plan-studio/web/plan-studio.css",
+  "apps/console-web/plugins/plan-studio/web/ui.tsx",
+  "apps/console-web/plugins/plan-studio/web/voice.ts"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "plan-studio",
+   "files": [
+    "apps/console-web/plugins/plan-studio/catalog.mjs",
+    "apps/console-web/plugins/plan-studio/data/plans/amberx-selling-it.json",
+    "apps/console-web/plugins/plan-studio/data/plans/clipx.json",
+    "apps/console-web/plugins/plan-studio/data/plans/docs-studio.json",
+    "apps/console-web/plugins/plan-studio/fixtures/cases.json",
+    "apps/console-web/plugins/plan-studio/fixtures/plan.json",
+    "apps/console-web/plugins/plan-studio/hooks.mjs",
+    "apps/console-web/plugins/plan-studio/install.mjs",
+    "apps/console-web/plugins/plan-studio/plans.mjs",
+    "apps/console-web/plugins/plan-studio/plugin.json",
+    "apps/console-web/plugins/plan-studio/schema/plan.schema.json",
+    "apps/console-web/plugins/plan-studio/server/__init__.py",
+    "apps/console-web/plugins/plan-studio/test.mjs",
+    "apps/console-web/plugins/plan-studio/test.py",
+    "apps/console-web/plugins/plan-studio/uninstall.mjs",
+    "apps/console-web/plugins/plan-studio/web/ai.tsx",
+    "apps/console-web/plugins/plan-studio/web/api.ts",
+    "apps/console-web/plugins/plan-studio/web/capture.tsx",
+    "apps/console-web/plugins/plan-studio/web/catalog.tsx",
+    "apps/console-web/plugins/plan-studio/web/editor.tsx",
+    "apps/console-web/plugins/plan-studio/web/index.tsx",
+    "apps/console-web/plugins/plan-studio/web/menu.ts",
+    "apps/console-web/plugins/plan-studio/web/plan-ai.d.mts",
+    "apps/console-web/plugins/plan-studio/web/plan-ai.mjs",
+    "apps/console-web/plugins/plan-studio/web/plan-core.d.mts",
+    "apps/console-web/plugins/plan-studio/web/plan-core.mjs",
+    "apps/console-web/plugins/plan-studio/web/plan-studio.css",
+    "apps/console-web/plugins/plan-studio/web/ui.tsx",
+    "apps/console-web/plugins/plan-studio/web/voice.ts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md",
+    "_claude/memory/docs/plan-studio/README.md",
+    "_claude/memory/docs/plan-studio/shots/after/plan-studio-board-desktop.png",
+    "_claude/memory/docs/plan-studio/shots/after/plan-studio-capture-phone.png",
+    "_claude/memory/docs/plan-studio/shots/after/plan-studio-catalog-desktop.png",
+    "_claude/memory/docs/plan-studio/shots/after/plan-studio-catalog-phone.png",
+    "_claude/memory/docs/plan-studio/shots/after/plan-studio-coverage-desktop.png",
+    "_claude/memory/docs/plan-studio/shots/after/plan-studio-editor-desktop.png",
+    "_claude/memory/docs/plan-studio/shots/after/plan-studio-editor-phone.png",
+    "_claude/memory/docs/plan-studio/shots/after/plan-studio-grid-desktop.png",
+    "_claude/memory/docs/plan-studio/shots/after/plan-studio-grid-phone.png",
+    "_claude/memory/docs/plan-studio/shots/after/plan-studio-tree-desktop.png",
+    "_claude/memory/docs/plan-studio/shots/after/plan-studio-tree-phone.png",
+    "_claude/shared/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/plugins/README.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/profiles/angel/orchestrator.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

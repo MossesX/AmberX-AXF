@@ -1,0 +1,58 @@
+{
+ "$axf": "asset@1",
+ "type": "nav-menu",
+ "id": "molly-expenses-nav-nested",
+ "name": "molly-expenses-nav: Under the Expenses app",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "The screens slide open under Apps → Expenses; the nav stays as short as before. Setting expenses.navPlacement = nested.",
+ "tags": [
+  "ui-choice",
+  "choice-set:molly-expenses-nav",
+  "choice-option:nested"
+ ],
+ "data": {
+  "style": "list",
+  "navStyle": true,
+  "placement": "nested",
+  "sections": [
+   {
+    "label": "Apps",
+    "items": [
+     {
+      "id": "expenses",
+      "label": "Expenses",
+      "icon": "chart",
+      "view": "expenses",
+      "items": [
+       {
+        "id": "expenses.ledger",
+        "label": "Ledger",
+        "icon": "list",
+        "view": "expenses/ledger"
+       },
+       {
+        "id": "expenses.paydays",
+        "label": "Paydays",
+        "icon": "clock",
+        "view": "expenses/paydays"
+       },
+       {
+        "id": "expenses.reports",
+        "label": "Reports",
+        "icon": "chart",
+        "view": "expenses/reports"
+       },
+       {
+        "id": "expenses.assistant",
+        "label": "Assistant",
+        "icon": "sparkles",
+        "view": "expenses/assistant"
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ }
+}

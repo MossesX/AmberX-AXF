@@ -1,0 +1,380 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-urgent-land-gizmo-chat",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:08Z",
+ "build": {
+  "id": "urgent-land-gizmo-chat",
+  "title": "Urgent: land PR #296 (Gizmo basic chat)",
+  "profile": "all",
+  "category": "App",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Is the Claude chat feature built yet? ... So put another agent on to do it now.",
+  "verbatim": true,
+  "at": "2026-11-04T14:14:12.849Z",
+  "source": "voice",
+  "by": "brett",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-gizmo-companion",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-03T22:17:27.670Z",
+   "endedAt": "2026-11-04T01:18:49.440Z",
+   "exit": 0,
+   "costUsd": 13.9182
+  },
+  {
+   "session": "axf-urgent-land-gizmo-chat--rhonda",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-04T14:13:10.873Z",
+   "endedAt": "2026-11-04T15:52:35.678Z",
+   "exit": 0,
+   "costUsd": 7.8406
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Merge main into claude/gizmo-companion, resolve conflicts",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T22:17:27.670Z",
+   "doneAt": "2026-11-04T14:21:03.666Z",
+   "actualMin": 964,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Verify basic chat + shared claude-session lib, finish gaps",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-04T14:21:03.666Z",
+   "doneAt": "2026-11-04T14:21:07.722Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Type-check, tests, CI green",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-04T14:21:07.722Z",
+   "doneAt": "2026-11-04T15:24:58.362Z",
+   "actualMin": 64,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Merge, redeploy AmberX web, confirm one chat answer, report",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-04T15:24:58.362Z",
+   "doneAt": "2026-11-04T15:50:27.527Z",
+   "actualMin": 25,
+   "done": true
+  }
+ ],
+ "branch": "claude/gizmo-companion",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 296,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/296"
+ },
+ "landedCommit": "471e66fe2703937e990fb5e1d0ef6bf89bbc93f0",
+ "commits": [
+  "f6862f0346f82993a1ab298f1c5266b59e496690",
+  "efe58a9d752c11701a38de52ddd9f267d7511b56",
+  "f0af582611d175a5120b5a3eb607395a011044cd",
+  "4793e06a149e7daff0e1f0e1cbae7a7abb216608",
+  "1354f6cc8e17c273076e3754d4297cf9c9c50daa",
+  "e8fb328768e8280f0def364b33cf196e93b62fa5",
+  "7c15b4398c46f08e2847e3ef8054b0150383c4cd",
+  "1a7e2352cc193b5502cdfc60a95eff718d815dcc",
+  "e3f9903eafd2aba3d52f9b7e41dbea7c2d739964",
+  "894dc99f4bccbb3c12b2a44217a87a2a25626bcd",
+  "8616ea05a92de5bb65bf3b60cc7f98447c679f89",
+  "62aa97753b7b05767173df055af56f4be19bc8a1"
+ ],
+ "mergedAt": "2026-11-04T15:24:48Z",
+ "landedAt": "2026-11-04T15:24:48Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/origins.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/big-dog/orchestrator.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/current/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/reports/gizmo-companion.md",
+  "_claude/builds/reports/gizmo-companion/shots/gizmo-chat-desktop.png",
+  "_claude/builds/reports/gizmo-companion/shots/gizmo-chat-phone.png",
+  "_claude/builds/reports/gizmo-companion/shots/gizmo-drawer-desktop.png",
+  "_claude/builds/reports/gizmo-companion/shots/gizmo-drawer-phone.png",
+  "_claude/builds/reports/gizmo-companion/shots/gizmo-empty-desktop.png",
+  "_claude/builds/reports/gizmo-companion/shots/gizmo-empty-phone.png",
+  "_claude/builds/reports/urgent-land-gizmo-chat.md",
+  "_claude/builds/store.json",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/libs/claude-session/core.ts",
+  "apps/amberx-droid/src/axf/libs/claude-session/index.ts",
+  "apps/amberx-droid/src/axf/libs/claude-session/library.json",
+  "apps/amberx-droid/src/miclease.ts",
+  "apps/amberx-droid/src/plugins/ai/web/client.ts",
+  "apps/amberx-droid/src/plugins/ai/web/index.tsx",
+  "apps/amberx-droid/src/plugins/commands/plugin.json",
+  "apps/amberx-droid/src/plugins/commands/web/core.ts",
+  "apps/amberx-droid/src/plugins/commands/web/index.tsx",
+  "apps/amberx-droid/src/plugins/commands/web/lib-developer.ts",
+  "apps/amberx-droid/src/plugins/commands/web/lib-snippets.ts",
+  "apps/amberx-droid/src/plugins/commands/web/runner.ts",
+  "apps/amberx-droid/src/plugins/companion/plugin.json",
+  "apps/amberx-droid/src/plugins/companion/web/Chat.tsx",
+  "apps/amberx-droid/src/plugins/companion/web/api.ts",
+  "apps/amberx-droid/src/plugins/companion/web/companion.css",
+  "apps/amberx-droid/src/plugins/companion/web/core.ts",
+  "apps/amberx-droid/src/plugins/companion/web/index.tsx",
+  "apps/amberx-droid/src/plugins/companion/web/keys.ts",
+  "apps/amberx-droid/src/plugins/companion/web/mirror.ts",
+  "apps/amberx-droid/src/plugins/companion/web/talk.ts",
+  "apps/amberx-droid/test.mjs",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/libs/claude-session/core.ts",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/agent-manager/addons/gizmo/addon.json",
+  "apps/console-web/plugins/agent-manager/server/__init__.py",
+  "apps/console-web/plugins/agent-manager/test.py",
+  "apps/console-web/plugins/agent-swarm/agents/roster.json",
+  "apps/console-web/plugins/agent-swarm/agents/skills/companion.md",
+  "apps/console-web/plugins/agent-swarm/test.mjs",
+  "apps/console-web/plugins/console-terminal/web/headless-core.ts",
+  "apps/console-web/src/axf/libs/claude-session/core.ts",
+  "apps/console-web/src/axf/libs/claude-session/index.ts",
+  "apps/console-web/src/axf/libs/claude-session/library.json",
+  "apps/molly/axf.lock.json",
+  "apps/molly/src/axf/libs/claude-session/core.ts",
+  "framework/libs/claude-session/core.ts",
+  "framework/libs/claude-session/index.ts",
+  "framework/libs/claude-session/library.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-claude-session.mts"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/origins.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/big-dog/orchestrator.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/current/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/reports/gizmo-companion.md",
+    "_claude/builds/reports/gizmo-companion/shots/gizmo-chat-desktop.png",
+    "_claude/builds/reports/gizmo-companion/shots/gizmo-chat-phone.png",
+    "_claude/builds/reports/gizmo-companion/shots/gizmo-drawer-desktop.png",
+    "_claude/builds/reports/gizmo-companion/shots/gizmo-drawer-phone.png",
+    "_claude/builds/reports/gizmo-companion/shots/gizmo-empty-desktop.png",
+    "_claude/builds/reports/gizmo-companion/shots/gizmo-empty-phone.png",
+    "_claude/builds/reports/urgent-land-gizmo-chat.md",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "companion",
+   "files": [
+    "apps/amberx-droid/src/plugins/companion/plugin.json",
+    "apps/amberx-droid/src/plugins/companion/web/Chat.tsx",
+    "apps/amberx-droid/src/plugins/companion/web/api.ts",
+    "apps/amberx-droid/src/plugins/companion/web/companion.css",
+    "apps/amberx-droid/src/plugins/companion/web/core.ts",
+    "apps/amberx-droid/src/plugins/companion/web/index.tsx",
+    "apps/amberx-droid/src/plugins/companion/web/keys.ts",
+    "apps/amberx-droid/src/plugins/companion/web/mirror.ts",
+    "apps/amberx-droid/src/plugins/companion/web/talk.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "commands",
+   "files": [
+    "apps/amberx-droid/src/plugins/commands/plugin.json",
+    "apps/amberx-droid/src/plugins/commands/web/core.ts",
+    "apps/amberx-droid/src/plugins/commands/web/index.tsx",
+    "apps/amberx-droid/src/plugins/commands/web/lib-developer.ts",
+    "apps/amberx-droid/src/plugins/commands/web/lib-snippets.ts",
+    "apps/amberx-droid/src/plugins/commands/web/runner.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/libs/claude-session/core.ts",
+    "apps/amberx-droid/src/axf/libs/claude-session/index.ts",
+    "apps/amberx-droid/src/axf/libs/claude-session/library.json",
+    "apps/amberx-droid/src/miclease.ts",
+    "apps/amberx-droid/test.mjs"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/axf/libs/claude-session/core.ts",
+    "apps/console-web/src/axf/libs/claude-session/index.ts",
+    "apps/console-web/src/axf/libs/claude-session/library.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-manager",
+   "files": [
+    "apps/console-web/plugins/agent-manager/addons/gizmo/addon.json",
+    "apps/console-web/plugins/agent-manager/server/__init__.py",
+    "apps/console-web/plugins/agent-manager/test.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-swarm",
+   "files": [
+    "apps/console-web/plugins/agent-swarm/agents/roster.json",
+    "apps/console-web/plugins/agent-swarm/agents/skills/companion.md",
+    "apps/console-web/plugins/agent-swarm/test.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/claude-session/core.ts",
+    "framework/libs/claude-session/index.ts",
+    "framework/libs/claude-session/library.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai",
+   "files": [
+    "apps/amberx-droid/src/plugins/ai/web/client.ts",
+    "apps/amberx-droid/src/plugins/ai/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/libs/claude-session/core.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/axf.lock.json",
+    "apps/molly/src/axf/libs/claude-session/core.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-claude-session.mts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "console-terminal",
+   "files": [
+    "apps/console-web/plugins/console-terminal/web/headless-core.ts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "AmberX tsc --noEmit clean; console-web tsc --noEmit clean; AmberX vite build clean.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "AmberX test.mjs 2213/2213; check-claude-session.mts 43/43; check-headless-tabs.mts 63/63; agent-swarm 100; agent-manager 178.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "check-theme, check-controls, check-toolbars, check-plugin-pages, shared-assets check, framework asset validation: all pass.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  }
+ ],
+ "uiReview": [
+  {
+   "id": "r-20261104-4db7efaa",
+   "name": "Gizmo companion (AmberX): chat, chats drawer, welcome",
+   "status": "approved",
+   "group": "g-20261104-387a2635",
+   "url": "/review/r-20261104-4db7efaa"
+  }
+ ],
+ "cost": {
+  "usd": 21.7588,
+  "estimated": false,
+  "tokens": {
+   "input": 718,
+   "output": 5324,
+   "cacheRead": 68571540,
+   "cacheWrite": 538000
+  }
+ },
+ "report": "_claude/builds/reports/urgent-land-gizmo-chat.md",
+ "open": []
+}

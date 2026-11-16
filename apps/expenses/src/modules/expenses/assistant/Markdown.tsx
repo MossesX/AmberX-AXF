@@ -13,20 +13,20 @@ export function Markdown({ text }: { text: string }) {
   return (
     <Box
       sx={{
-        fontSize: 13,
+        fontSize: 'var(--fx-type-root-md)',
         lineHeight: 1.55,
-        "& p": { m: "0 0 8px" },
-        "& h2, & h3, & h4": { m: "12px 0 6px", fontSize: 13.5, fontWeight: 700 },
-        "& ul, & ol": { m: "0 0 8px", pl: 2.4 },
+        "& p": { m: "0 0 var(--fx-dens-gap-xl)" },
+        "& h2, & h3, & h4": { m: "var(--fx-dens-gap-2xl) 0 var(--fx-dens-gap-lg)", fontSize: 'var(--fx-type-root-md)', fontWeight: 700 },
+        "& ul, & ol": { m: "0 0 var(--fx-dens-gap-xl)", pl: 2.4 },
         "& li": { mb: 0.3 },
-        "& code": { fontFamily: token("mono"), fontSize: 12, background: token("panel2"), px: 0.5, borderRadius: "3px" },
-        "& pre": { m: "0 0 8px", p: 1, background: token("panel2"), borderRadius: 1, overflow: "auto", border: `1px solid ${token("edge")}` },
+        "& code": { fontFamily: token("mono"), fontSize: 'var(--fx-type-root-sm)', background: token("panel2"), px: 0.5, borderRadius: "var(--fx-radius-sm)" },
+        "& pre": { m: "0 0 var(--fx-dens-gap-xl)", p: 1, background: token("panel2"), borderRadius: 'var(--fx-radius-md)', overflow: "auto", border: `var(--fx-border-w) solid ${token("edge")}` },
         "& pre code": { background: "transparent", p: 0 },
-        "& blockquote": { m: "0 0 8px", pl: 1.2, borderLeft: `2px solid ${token("edge")}`, color: token("dim") },
-        "& table": { borderCollapse: "collapse", mb: 1, fontSize: 12 },
-        "& th, & td": { border: `1px solid ${token("edge")}`, px: 0.8, py: 0.3, textAlign: "left" },
+        "& blockquote": { m: "0 0 var(--fx-dens-gap-xl)", pl: 1.2, borderLeft: `calc(var(--fx-border-w) * 2) solid ${token("edge")}`, color: token("dim") },
+        "& table": { borderCollapse: "collapse", mb: 1, fontSize: 'var(--fx-type-root-sm)' },
+        "& th, & td": { border: `var(--fx-border-w) solid ${token("edge")}`, px: 0.8, py: 0.3, textAlign: "left" },
         "& a": { color: token("accent") },
-        "& hr": { border: 0, borderTop: `1px solid ${token("edge")}`, my: 1 }
+        "& hr": { border: 0, borderTop: `var(--fx-border-w) solid ${token("edge")}`, my: 1 }
       }}
     >
       {parseBlocks(text)}
