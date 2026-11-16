@@ -54,6 +54,15 @@ final class OpenUrlRules {
         return "default".equals(b) ? "default" : "chrome";
     }
 
+    /**
+     * True when the call asks for a page of its own ({@code newTab: true}, or {@code where: "tab"}): it skips the overlay
+     * (one page only) and opens a new browser tab instead of reusing the one AmberX opened last.
+     */
+    static boolean newTab(JSONObject args) {
+        if (args == null) return false;
+        return args.optBoolean("newTab", false) || "tab".equals(args.optString("where", ""));
+    }
+
     /** True for the commands this class answers. */
     static boolean known(String tool) {
         return OPEN.equals(tool);

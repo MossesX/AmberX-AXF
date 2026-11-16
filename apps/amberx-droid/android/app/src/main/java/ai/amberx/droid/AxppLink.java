@@ -168,11 +168,12 @@ final class AxppLink {
                         .put("notified", false).put("overlay", true).put("where", "overlay");
                 }
                 // Every open goes through the overlay: the toolbar expands into its full-screen browser on the page.
-                if (OverlayPageRules.inOverlay(args, ready) && WatchService.openOverlayPage(c, url)) {
+                boolean newTab = OpenUrlRules.newTab(args);
+                if (!newTab && OverlayPageRules.inOverlay(args, ready) && WatchService.openOverlayPage(c, url)) {
                     return new JSONObject().put("url", url).put("verb", OverlayPageRules.OPEN).put("browser", "overlay").put("opened", true)
                         .put("notified", false).put("overlay", true).put("where", "overlay");
                 }
-                return openUrl(c, url, OpenUrlRules.browserOf(args)).put("where", "browser");
+                return openUrl(c, url, OpenUrlRules.browserOf(args), newTab).put("where", "browser").put("newTab", newTab);
             }
             case RecorderControl.START: {
                 RecorderControl.Session s = RecorderControl.sessionOf(args);
@@ -258,9 +259,11 @@ final class AxppLink {
     /* ---------------------------------------------------------------- console wake: open one of Brett's pages */
 
     /** The browser intent for a URL: Chrome when asked for and installed, else whatever handles https. */
-    private static Intent browserIntent(Context c, String url, String browser) {
+    private static Intent browserIntent(Context c, String url, String browser, boolean newTab) {
         Intent i = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url)).addCategory(Intent.CATEGORY_BROWSABLE)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        // a page of its own: Chrome otherwise reuses the tab it opened for AmberX last time
+        if (newTab) i.putExtra(android.provider.Browser.EXTRA_CREATE_NEW_TAB, true);
         if ("chrome".equals(browser)) {
             try {
                 c.getPackageManager().getPackageInfo(OpenUrlRules.CHROME, 0);
@@ -288,8 +291,8 @@ final class AxppLink {
      * The answer says what really happened: `opened` only for a start Android can't have dropped, `notified` only when
      * notifications are on, `overlay` whether "Display over other apps" is granted.
      */
-    private static JSONObject openUrl(Context c, String url, String browser) throws Exception {
-        Intent open = browserIntent(c, url, browser);
+    private static JSONObject openUrl(Context c, String url, String browser, boolean newTab) throws Exception {
+        Intent open = browserIntent(c, url, browser, newTab);
         boolean[] started = { false };
         boolean[] notified = { false };
         java.util.concurrent.CountDownLatch done = new java.util.concurrent.CountDownLatch(1);

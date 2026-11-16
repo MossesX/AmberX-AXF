@@ -167,5 +167,15 @@ table; writes carry `audit { by, reason, at }`. Failure: `{ $axf, ok: false, cod
 - Voice (AmberX): the assistant maps "scroll down", "press save", "open the pipeline tab", "show me step three of the running
   build", "turn the skins plugin off", "find <words>" to the same commands through `console_control`; a short address is enough.
 
+- Link (a page load): `https://console.amberxai.com/?axf-target=<address>` (or `#/?axf-target=<address>`) opens the
+  address once the console is up: a screen or tab is opened, a row or step is focused, the same as `console_show`. The
+  console retries until the screen it names has registered (lazy plugin chunks, a slow backend; up to 30 s), holds it
+  for a moment against late boot steps, then takes the parameter off the address bar. The address is kept in the tab's
+  sessionStorage until it lands, so a reload or the axHub sign-in round trip (its wall returns to the full URL, query
+  included) still arrives. A link that can't land ends with a warning toast. `window.axfDeepLink` reports
+  `{address, done, answer}` (tests). Code `apps/console-web/src/control/deepLink.ts`, test `scripts/deep-link.e2e.mjs`.
+  On the phone, `amberx.open_url {url, newTab: true}` (or `where: "tab"`) opens the link in a browser tab of its own
+  instead of the overlay or the last tab AmberX opened.
+
 Delivery, mailbox, `recent` / `all`, acks, wake through AmberX and the `status` field are console-commands' (CONTROL.md →
 Console). A console acks a console-control command with its answer envelope, so the caller gets the state it asked for.

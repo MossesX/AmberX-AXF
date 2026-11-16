@@ -1,0 +1,146 @@
+#!/usr/bin/env node
+/**
+ * Console deep links on load (src/control/deepLink.ts), end to end (Playwright against `vite preview` of dist/):
+ * every page is loaded fresh with `?axf-target=<address>` and must land on that screen (and tab), not the home screen.
+ *
+ *   node scripts/deep-link.e2e.mjs          (build first: npm run build)
+ *   DL_E2E_PORT=7098 · PW_CHROMIUM=<chromium path> · DL_E2E_SHOTS=<dir> (one screenshot per address)
+ *
+ * Covers: plugin screens (build orchestrator, gate), a tab of a plugin screen (gate › auto-lander), a tab of a built-in
+ * screen (settings › plugins), the link in the hash, a slow backend (the plugin list answers late), the link surviving a
+ * reload before it landed (sessionStorage, the sign-in round trip), the parameter taken off the address bar, and an
+ * unknown screen answering with a warning instead of hanging.
+ */
+import { spawn } from 'node:child_process';
+import { createRequire } from 'node:module';
+import { mkdirSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { setTimeout as sleep } from 'node:timers/promises';
+
+const APP = join(dirname(fileURLToPath(import.meta.url)), '..');
+const ROOT = join(APP, '../..');
+const PORT = Number(process.env.DL_E2E_PORT) || 7098;
+const SHOTS = process.env.DL_E2E_SHOTS;
+
+let playwright;
+for (const base of [APP, ROOT, process.env.PLAYWRIGHT_DIR, '/tmp/sc-pw'].filter(Boolean)) { try { playwright = createRequire(join(base, 'x.js'))('playwright'); break; } catch { /* next */ } }
+if (!playwright) { try { playwright = await import('playwright'); } catch { console.error('playwright not found (npm i -D playwright, or PLAYWRIGHT_DIR)'); process.exit(2); } }
+
+let checks = 0;
+const ok = (c, what) => { if (!c) throw new Error(`✗ ${what}`); checks++; };
+const ME = { wall: false, hub: '', appearanceHub: 'off', user: null, admin: true, role: 'admin', themes: true, plugins: [] };
+
+const server = spawn('npx', ['vite', 'preview', '--host', '127.0.0.1', '--port', String(PORT), '--strictPort'], { cwd: APP, stdio: 'ignore' });
+const stop = () => { try { server.kill('SIGTERM'); } catch { /* gone */ } };
+process.on('exit', stop);
+
+let browser;
+/** A fresh tab with the backend mocked offline (admin); `slowMs` holds every API answer back that long. */
+async function freshPage(ctx, slowMs = 0) {
+  const page = await ctx.newPage();
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(String(e)));
+  await page.route('**/api/**', async (r) => {
+    const u = new URL(r.request().url());
+    if (slowMs) await sleep(slowMs);
+    const json = (body, status = 200) => r.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) }).catch(() => {});
+    if (u.pathname === '/api/me') return json(ME);
+    if (r.request().method() === 'GET' && u.pathname === '/api/events') return r.abort().catch(() => {});
+    return json({ ok: false, error: 'offline (e2e)' }, 503);
+  });
+  return { page, errors };
+}
+
+/** Wait for the deep link to finish and return where the console is. */
+async function landed(page, address) {
+  await page.waitForFunction(() => window.axfDeepLink?.done === true, null, { timeout: 45_000 }).catch(async () => {
+    throw new Error(`✗ ${address}: the deep link never finished (${JSON.stringify(await page.evaluate(() => ({ link: window.axfDeepLink ?? null, screen: window.axfConsoleControlState?.().screen ?? null })))})`);
+  });
+  return page.evaluate(() => ({ link: window.axfDeepLink, state: window.axfConsoleControlState(), url: location.href }));
+}
+
+const CASES = [
+  { address: 'view:build-orchestrator', screen: 'build-orchestrator' },
+  { address: 'view:gate', screen: 'gate' },
+  { address: 'view:gate/tab:gate.tabs=auto-lander', screen: 'gate', tab: ['view:gate/tab:gate.tabs', 'auto-lander'] },
+  { address: 'view:settings/tab:settings.tabs=plugins', screen: 'settings', tab: ['view:settings/tab:settings.tabs', 'plugins'] },
+];
+
+try {
+  let up = false;
+  for (let i = 0; i < 60 && !up; i++) { try { up = (await fetch(`http://127.0.0.1:${PORT}/`)).ok; } catch { await sleep(500); } }
+  ok(up, `vite preview on :${PORT} (is dist/ built?)`);
+  browser = await playwright.chromium.launch(process.env.PW_CHROMIUM ? { executablePath: process.env.PW_CHROMIUM } : {});
+  if (SHOTS) mkdirSync(SHOTS, { recursive: true });
+
+  // each address, loaded fresh in its own tab: the focused screen (and tab) is the one asked for
+  for (const c of CASES) {
+    const ctx = await browser.newContext({ viewport: { width: 1400, height: 900 } });
+    const { page, errors } = await freshPage(ctx);
+    await page.goto(`http://127.0.0.1:${PORT}/?axf-target=${encodeURIComponent(c.address)}`);
+    const r = await landed(page, c.address);
+    ok(r.link.answer?.ok, `${c.address}: the link opened (${r.link.answer?.message ?? ''})`);
+    ok(r.state.screen === c.screen, `${c.address}: lands on ${c.screen}, not ${r.state.screen}`);
+    if (c.tab) ok(r.state.tabs?.[c.tab[0]] === c.tab[1], `${c.address}: tab ${c.tab[0]} is ${c.tab[1]} (${JSON.stringify(r.state.tabs)})`);
+    ok(!r.url.includes('axf-target'), `${c.address}: the parameter is taken off the address bar (${r.url})`);
+    // the screen is still the one asked for a moment later (no late boot step moved it back home)
+    await sleep(1500);
+    ok((await page.evaluate(() => window.axfConsoleControlState().screen)) === c.screen, `${c.address}: still on ${c.screen} after boot settled`);
+    ok(!errors.length, `${c.address}: no page errors (${errors.slice(0, 3).join(' | ')})`);
+    if (SHOTS) await page.screenshot({ path: join(SHOTS, `deep-link-${c.address.replace(/[^a-z0-9]+/gi, '-')}.png`) });
+    await ctx.close();
+  }
+
+  // the link in the hash query
+  {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    const { page } = await freshPage(ctx);
+    await page.goto(`http://127.0.0.1:${PORT}/#/?axf-target=${encodeURIComponent('view:build-orchestrator')}`);
+    const r = await landed(page, 'hash');
+    ok(r.state.screen === 'build-orchestrator', `hash link (phone) lands on build-orchestrator, not ${r.state.screen}`);
+    await ctx.close();
+  }
+
+  // a slow backend: the plugin list answers 2.5 s late, so the screen registers late
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1400, height: 900 } });
+    const { page } = await freshPage(ctx, 2500);
+    await page.goto(`http://127.0.0.1:${PORT}/?axf-target=${encodeURIComponent('view:gate/tab:gate.tabs=auto-lander')}`);
+    const r = await landed(page, 'slow');
+    ok(r.state.screen === 'gate' && r.state.tabs?.['view:gate/tab:gate.tabs'] === 'auto-lander', `slow backend still lands on gate › auto-lander (${r.state.screen} ${JSON.stringify(r.state.tabs)})`);
+    await ctx.close();
+  }
+
+  // a reload before it landed (a sign-in round trip in the same tab): the tab's saved copy still lands it
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1400, height: 900 } });
+    const { page } = await freshPage(ctx);
+    await page.goto(`http://127.0.0.1:${PORT}/`);
+    await page.evaluate(() => sessionStorage.setItem('axf.console.deep-link', 'view:build-orchestrator'));
+    await page.reload();
+    const r = await landed(page, 'saved');
+    ok(r.state.screen === 'build-orchestrator', `the saved link lands after a reload (${r.state.screen})`);
+    ok(!(await page.evaluate(() => sessionStorage.getItem('axf.console.deep-link'))), 'the saved link is cleared once it landed');
+    await ctx.close();
+  }
+
+  // an unknown screen answers (not ok) instead of hanging, and leaves the console usable
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1400, height: 900 } });
+    const { page } = await freshPage(ctx);
+    await page.goto(`http://127.0.0.1:${PORT}/?axf-target=${encodeURIComponent('view:no-such-screen-e2e')}`);
+    await page.waitForFunction(() => window.axfDeepLink?.done === true, null, { timeout: 60_000 });
+    const r = await page.evaluate(() => window.axfDeepLink);
+    ok(r.answer && !r.answer.ok, `an unknown screen ends not ok (${JSON.stringify(r.answer)?.slice(0, 200)})`);
+    await ctx.close();
+  }
+
+  console.log(`✓ deep-link e2e — ${checks} checks (${CASES.map((c) => c.address).join(', ')}, hash, slow backend, reload, unknown)`);
+} catch (e) {
+  console.error(e instanceof Error ? e.message : e);
+  process.exitCode = 1;
+} finally {
+  try { await browser?.close(); } catch { /* gone */ }
+  stop();
+}

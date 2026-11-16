@@ -60,4 +60,14 @@ public class OpenUrlRulesTest {
         assertTrue(OpenUrlRules.known("browser.open"));
         assertFalse(OpenUrlRules.known("recorder.start"));
     }
+
+    @Test
+    public void newTabOnlyWhenAsked() throws Exception {
+        assertFalse(OpenUrlRules.newTab(null));
+        assertFalse(OpenUrlRules.newTab(new JSONObject()));
+        assertFalse(OpenUrlRules.newTab(new JSONObject().put("where", "browser")));
+        assertTrue(OpenUrlRules.newTab(new JSONObject().put("newTab", true)));
+        assertTrue(OpenUrlRules.newTab(new JSONObject().put("where", "tab")));
+        assertFalse(OpenUrlRules.newTab(new JSONObject().put("newTab", false)));
+    }
 }
