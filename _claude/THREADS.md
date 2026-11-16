@@ -815,7 +815,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 19:58 UTC · `banner-widget-shapes-more-than-circle` s12 done (all) · orchestrator
 - 2026-11-16 19:59 UTC · `settings-interface-gear-every-plugin` s18 done (all) · orchestrator
 - 2026-11-16 20:00 UTC · `banner-widget-shapes-more-than-circle` s13 done (all) · orchestrator
 - 2026-11-16 20:01 UTC · `settings-interface-gear-every-plugin` s19 done (all) · orchestrator
@@ -1215,6 +1214,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 23:56 UTC · `every-plugin-screen-gets-a-settings-gear` branch claude/every-plugin-screen-gets-a-settings-gear (all) · pipeline
 - 2026-11-16 23:57 UTC · `axhub-veto-countdown-setting-read-only` note (all) · orchestrator
 - 2026-11-16 23:57 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · orchestrator
+- 2026-11-16 23:57 UTC · `amberx-open-url-must-open-page-even-when` → pending, note (all) · pipeline
 
 ## Token passes (log)
 

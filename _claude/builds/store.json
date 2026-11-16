@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7093,
- "updatedAt": "2026-11-16T23:57:25.532Z",
+ "rev": 7094,
+ "updatedAt": "2026-11-16T23:57:43.792Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -245071,7 +245071,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-16T23:57:05.912Z",
+   "updatedAt": "2026-11-16T23:57:09.533Z",
    "builtAt": "",
    "notes": [
     {
@@ -245089,6 +245089,10 @@
     {
      "text": "Claude account: hulu0241 (axf-every-plugin-screen-gets-a-settings-gear--rhonda, shared account login)",
      "at": "2026-11-16T23:57:05.912Z"
+    },
+    {
+     "text": "Brief only: brief is 29077 characters (~7270 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-16T23:57:09.533Z"
     }
    ],
    "approvals": [],
@@ -245654,7 +245658,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -246959,7 +246963,7 @@
    "title": "AmberX open_url must open the page even when Chrome is already in front",
    "category": "",
    "detail": "Bug Nov 16: amberx.open_url only posts a notification instead of opening the page, even while Brett has Chrome in the foreground on the console. Android background-start limits block AmberX. Fix: (1) when an AXF console tab is open and connected, route open_url through it (console navigates the tab / opens a new tab via a console-control 'navigate' command); (2) otherwise use a full-screen-intent or an allowed exemption (SYSTEM_ALERT_WINDOW / companion device) so it really opens; (3) notification only as a last resort. Tests on the S26 Ultra, land, new APK, AmberX FYI.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -246967,7 +246971,7 @@
    "pr": "#763",
    "priority": "P0",
    "createdAt": "2026-11-16T18:37:43.199Z",
-   "updatedAt": "2026-11-16T23:56:13.423Z",
+   "updatedAt": "2026-11-16T23:57:14.703Z",
    "builtAt": "",
    "notes": [
     {
@@ -247023,6 +247027,10 @@
      "at": "2026-11-16T23:55:38.707Z"
     },
     {
+     "text": "Session on hulu0241 stopped on its own with 2 steps left: back in Pending for Brett.",
+     "at": "2026-11-16T23:57:14.703Z"
+    },
+    {
      "text": "Headless run axf-amberx-open-url-must-open-page-even-when--paulie: brief only · start 17.4K tokens ($0.06) · cost $10.81 · 180 turns · 6 tools, MCP none",
      "at": "2026-11-16T23:56:03.536Z"
     },
@@ -247058,14 +247066,23 @@
     "queuedAt": "2026-11-16T23:16:42.120Z",
     "queuedBy": "brett",
     "account": "hulu0241",
-    "session": "axf-amberx-open-url-must-open-page-even-when--paulie",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "phase": "",
     "launchedAt": "2026-11-16T23:17:18.218Z",
     "runs": 1,
     "crashes": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-16T23:57:06.448Z",
+     "exit": 0,
+     "outcome": "returned",
+     "reason": "stopped",
+     "stepsLeft": 2,
+     "account": "hulu0241",
+     "session": "axf-amberx-open-url-must-open-page-even-when--paulie",
+     "phase": "Phase 2"
+    },
     "split": {
      "at": "2026-11-16T18:40:21.344Z",
      "by": "orchestrator",
@@ -247074,7 +247091,7 @@
      "note": "Split by Claude into 15 steps (2 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on hulu0241 stopped on its own with 2 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-16T23:17:18.218Z",
     "planned": {

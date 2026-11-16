@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T23:57:25.532Z",
+ "updatedAt": "2026-11-16T23:57:43.792Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -159445,7 +159445,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-16T23:57:05.912Z",
+   "updatedAt": "2026-11-16T23:57:09.533Z",
    "builtAt": "",
    "notes": [
     {
@@ -159463,6 +159463,10 @@
     {
      "text": "Claude account: hulu0241 (axf-every-plugin-screen-gets-a-settings-gear--rhonda, shared account login)",
      "at": "2026-11-16T23:57:05.912Z"
+    },
+    {
+     "text": "Brief only: brief is 29077 characters (~7270 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-16T23:57:09.533Z"
     }
    ],
    "approvals": [],
@@ -160991,7 +160995,7 @@
    "title": "AmberX open_url must open the page even when Chrome is already in front",
    "category": "",
    "detail": "Bug Nov 16: amberx.open_url only posts a notification instead of opening the page, even while Brett has Chrome in the foreground on the console. Android background-start limits block AmberX. Fix: (1) when an AXF console tab is open and connected, route open_url through it (console navigates the tab / opens a new tab via a console-control 'navigate' command); (2) otherwise use a full-screen-intent or an allowed exemption (SYSTEM_ALERT_WINDOW / companion device) so it really opens; (3) notification only as a last resort. Tests on the S26 Ultra, land, new APK, AmberX FYI.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -160999,7 +161003,7 @@
    "pr": "#763",
    "priority": "P0",
    "createdAt": "2026-11-16T18:37:43.199Z",
-   "updatedAt": "2026-11-16T23:56:13.423Z",
+   "updatedAt": "2026-11-16T23:57:14.703Z",
    "builtAt": "",
    "notes": [
     {
@@ -161053,6 +161057,10 @@
     {
      "text": "s3-s13 done and ticked; PR #763 open. s14 and s15 left open: (1) the S26 runs of amberx.open_url (console tab open / no tab / idle) and the Open pages screenshots need axHub access, and this session had no AXHUB_TOKEN and no axHub tools; the AmberX vite dev server also fails on an unrelated @console/api import (console-web/plugins/wake-listener/web/flow.ts), which blocked a local screenshot. (2) CI was still queued at 'CI scope' for 30+ min, so the new APK isn't built yet, and the AmberX FYI waits for it. Everything else in s15 is done: checks green, report, THREADS row, catalog status, PR. Next session: once PR CI builds the APK, install it through axHub, run the three device cases, record the routes in the report, take the screenshots (axf shot --group 'AmberX open_url must open the page even when Chrome is already in front'), submit the Open pages UI, send the FYI, tick s14 and s15.",
      "at": "2026-11-16T23:55:38.707Z"
+    },
+    {
+     "text": "Session on hulu0241 stopped on its own with 2 steps left: back in Pending for Brett.",
+     "at": "2026-11-16T23:57:14.703Z"
     },
     {
      "text": "Headless run axf-amberx-open-url-must-open-page-even-when--paulie: brief only · start 17.4K tokens ($0.06) · cost $10.81 · 180 turns · 6 tools, MCP none",
