@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6908,
- "updatedAt": "2026-11-16T20:57:35.352Z",
+ "rev": 6909,
+ "updatedAt": "2026-11-16T21:09:09.488Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -248793,7 +248793,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T20:25:16.196Z",
-   "updatedAt": "2026-11-16T20:41:13.398Z",
+   "updatedAt": "2026-11-16T21:09:07.072Z",
    "builtAt": "",
    "notes": [
     {
@@ -248867,7 +248867,7 @@
     "queuedAt": "2026-11-16T20:27:13.362Z",
     "queuedBy": "brett",
     "account": "mossesx-max-",
-    "session": "axf-fable-rebuild-plan-studio-cleared-out--paulie",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-16T20:29:03.156Z",
@@ -248920,12 +248920,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T21:09:07.072Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-16T20:28:44.064Z",
-     "updatedAt": "2026-11-16T20:32:54.197Z"
+     "updatedAt": "2026-11-16T21:09:07.428Z"
     },
     {
      "id": "s2",
