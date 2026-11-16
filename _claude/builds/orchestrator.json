@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:30:12.785Z",
+ "updatedAt": "2026-11-16T19:30:25.010Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -161262,7 +161262,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:16:56.830Z",
-   "updatedAt": "2026-11-16T19:29:51.523Z",
+   "updatedAt": "2026-11-16T19:30:15.854Z",
    "builtAt": "",
    "notes": [
     {
@@ -161284,6 +161284,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-pending-banner-list-every-pending-build--rhonda, shared account login)",
      "at": "2026-11-16T19:20:01.222Z"
+    },
+    {
+     "text": "Overlaps alert-every-time-build-falls-back-to (Nov 16): the 'why it fell back' column and the push when a build lands in Pending already exist there. Read fell-back.mjs list / GET /api/plugins/build-orchestrator/pipeline/fell-back (fell-back@1) instead of working it out again; Requeue = POST pipeline/fell-back/requeue.",
+     "at": "2026-11-16T19:30:15.854Z"
     }
    ],
    "approvals": [],

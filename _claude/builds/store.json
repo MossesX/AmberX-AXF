@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6742,
- "updatedAt": "2026-11-16T19:30:12.785Z",
+ "rev": 6743,
+ "updatedAt": "2026-11-16T19:30:25.010Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -246646,7 +246646,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:16:56.830Z",
-   "updatedAt": "2026-11-16T19:29:51.523Z",
+   "updatedAt": "2026-11-16T19:30:15.854Z",
    "builtAt": "",
    "notes": [
     {
@@ -246668,6 +246668,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-pending-banner-list-every-pending-build--rhonda, shared account login)",
      "at": "2026-11-16T19:20:01.222Z"
+    },
+    {
+     "text": "Overlaps alert-every-time-build-falls-back-to (Nov 16): the 'why it fell back' column and the push when a build lands in Pending already exist there. Read fell-back.mjs list / GET /api/plugins/build-orchestrator/pipeline/fell-back (fell-back@1) instead of working it out again; Requeue = POST pipeline/fell-back/requeue.",
+     "at": "2026-11-16T19:30:15.854Z"
     }
    ],
    "approvals": [],
@@ -246687,12 +246691,12 @@
    "pipeline": {
     "queuedAt": "2026-11-16T19:17:11.838Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-pending-banner-list-every-pending-build--rhonda",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-16T19:19:49.423Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T19:19:19.385Z",
@@ -246702,9 +246706,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"0de3e76f-e459-4f5e-a5b9-961ef7386bb3\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-16T19:19:49.423Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -246713,7 +246717,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-16T19:19:49.423Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -246797,7 +246801,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
