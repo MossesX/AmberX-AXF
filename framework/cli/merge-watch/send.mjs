@@ -12,23 +12,33 @@
  *   local       a build: shipped.mjs ship(id, { manifest: overlay }) (sidecar + builds store ref → build-hook@1 `shipped` →
  *               ledger); an unlinked landing: the sidecar only (the ledger's sync takes any sidecar), so the builds store
  *               never gets `main-<sha9>` records
- *   api         POST <AXF_CONSOLE_URL>/api/plugins/shipped-features/manifest with AXF_TOKEN (the ledger API; the same
+ *   api         POST <AXF_CONSOLE_URL><the axf.shipped@1 plugin's route>/manifest with AXF_TOKEN (the ledger API; the same
  *               ship() behind it), for a host with no checkout or store
  *   console     the same ledger API through `docker exec axf-console` (the VPS host has no AXF_TOKEN in its shell)
- *   capability  axf.shipped@1: an open slot; used when a host registers a sender (registerTransport), none is registered yet
+ *   (any host may add one with registerTransport; the console route comes from the plugin providing service:axf.shipped@1)
  *
  * The result is recorded in merge-watch state (MW.markSent / MW.markFailed: attempts, nextRetryAt backoff, error).
  */
 import { spawnSync } from 'node:child_process';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import * as MW from '../../core/merge-watch.mjs';
 import { readManifest, writeManifest } from '../shipped-files.mjs';
 import { ship, sentFor } from '../shipped.mjs';
 import { buildManifest } from './build-manifest.mjs';
 import { mapCommit } from './map-commit.mjs';
-import { gitRoot } from './walk.mjs';
+import { gitRoot, REPO_ROOT } from './walk.mjs';
 
 // ------------------------------------------------------------------ transports (open registry)
+
+/** The console route of the plugin that provides axf.shipped@1 (found by capability, never by folder name). */
+export function shippedApi(root = REPO_ROOT) {
+  const dir = join(root, 'apps', 'console-web', 'plugins');
+  for (const d of (() => { try { return readdirSync(dir); } catch { return []; } })()) {
+    try { if (JSON.parse(readFileSync(join(dir, d, 'plugin.json'), 'utf8')).provides?.includes('service:axf.shipped@1')) return `/api/plugins/${d}`; } catch { /* not a plugin */ }
+  }
+  throw new Error('no console plugin provides axf.shipped@1 (Shipped features is not installed)');
+}
 
 const TRANSPORTS = new Map();
 export function registerTransport(name, fn) { TRANSPORTS.set(name, fn); return () => TRANSPORTS.delete(name); }
@@ -43,7 +53,7 @@ registerTransport('local', async ({ built, env, now }) => {
 registerTransport('api', async ({ built, env, fetchFn = globalThis.fetch }) => {
   const base = env.AXF_CONSOLE_URL; const token = env.AXF_TOKEN;
   if (!base || !token) throw new Error('api: AXF_CONSOLE_URL and AXF_TOKEN are not set');
-  const res = await fetchFn(`${base.replace(/\/$/, '')}/api/plugins/shipped-features/manifest`, { method: 'POST', headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' }, body: JSON.stringify({ manifest: built.unlinked ? built.manifest : { ...built.overlay, build: { id: built.id } }, by: 'merge-watch' }), signal: AbortSignal.timeout(60e3) });
+  const res = await fetchFn(`${base.replace(/\/$/, '')}${shippedApi()}/manifest`, { method: 'POST', headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' }, body: JSON.stringify({ manifest: built.unlinked ? built.manifest : { ...built.overlay, build: { id: built.id } }, by: 'merge-watch' }), signal: AbortSignal.timeout(60e3) });
   const body = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(`api: ${res.status} ${String(body.detail || body.error || '').slice(0, 200)}`);
   return { id: body.manifest?.id || built.manifest.id, rev: body.manifest?.rev || built.manifest.rev };
@@ -54,7 +64,7 @@ registerTransport('api', async ({ built, env, fetchFn = globalThis.fetch }) => {
 registerTransport('console', async ({ built, env }) => {
   const name = env.AXF_PIPELINE_CONSOLE || 'axf-console';
   const body = JSON.stringify({ manifest: built.unlinked ? built.manifest : { ...built.overlay, build: { id: built.id } }, by: 'merge-watch' });
-  const cmd = `curl -s -m 120 -w '\\n%{http_code}' -X POST -H "Authorization: Bearer $AXF_TOKEN" -H "Content-Type: application/json" --data-binary @- "http://127.0.0.1:${env.AXF_CONSOLE_PORT || 7090}/api/plugins/shipped-features/manifest"`;
+  const cmd = `curl -s -m 120 -w '\\n%{http_code}' -X POST -H "Authorization: Bearer $AXF_TOKEN" -H "Content-Type: application/json" --data-binary @- "http://127.0.0.1:${env.AXF_CONSOLE_PORT || 7090}${shippedApi()}/manifest"`;
   const r = spawnSync('docker', ['exec', '-i', name, 'sh', '-c', cmd], { input: body, encoding: 'utf8', timeout: 150e3 });
   if (r.error || r.status !== 0) throw new Error(`console: docker exec ${name} failed (${(r.stderr || r.error?.message || '').trim().slice(0, 160)})`);
   const lines = String(r.stdout).trimEnd().split('\n'); const code = Number(lines.pop()); let out = {}; try { out = JSON.parse(lines.join('\n')); } catch { /* not JSON */ }

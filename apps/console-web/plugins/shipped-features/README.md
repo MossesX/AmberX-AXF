@@ -74,6 +74,29 @@ node framework/cli/shipped.mjs backfill --since 2026-11-08 [--dry]   # landed bu
 node apps/console-web/plugins/shipped-features/ledger/ledger.mjs search <text> | manifests | manifest <build>
 ```
 
+## Merge watch (merge-watch@1): every merge to main, sent as it lands
+
+Brett, Nov 15 2026: "the VPS has to send shipped features as soon as a merge to main succeeds since it now controls the
+orchestrator". The VPS reads main's history, not the builds store's status: every landing (merge-queue PR merge or batch,
+build_land fast-forward, a PR merge hidden behind a build_land's second parent, a stacked PR's `Merge branch 'land/…'`,
+a direct push) gets one shipped-manifest@1, keyed by its merge sha, exactly once.
+
+- Runner: `framework/cli/merge-watch.mjs` (`axf merge-watch`) tick | status | send <sha> | backfill --since <date> | retry |
+  on | off | list; host modules in `framework/cli/merge-watch/` (walk, map-commit, build-manifest, send, retry, kick).
+  Contract and doc: `framework/core/merge-watch.mjs`, `_claude/memory/docs/merge-watch.md`.
+- Triggers: the merge queue after a batch lands, the orchestrator's after-tick hook when a session ends, builds-live
+  when it records a merge, and the cron `axf-merge-watch` every minute (manual merges, direct pushes, the console's own).
+- Sending: local `ship()` (a build) or the sidecar alone (a merge no build owns, `main-<sha9>`), else the ledger API
+  (`api`, or `console` through docker exec). Skips what merge-watch state, the sidecar or the ledger already has.
+- Failures back off 1, 5, 15, 60 min…; after 3 the systems check item `shipped-merge-watch` turns red (Auto fix =
+  retry) and one AmberX alert goes out (`notify.json` → `shipped.merge-watch.failed`).
+- No panel here (Brett, Nov 16): the Gate & rules plugin's build rule `shipped-features` shows status and controls.
+- API: `GET merge-watch`, `GET merge-watch/list`, `POST merge-watch/send | retry | backfill | switch | tick`
+  (`server/merge_watch.py`); MCP `features_merge_watch_*`; voice through the same plugin commands.
+- One feature store: `GET builds?state=&build=&pr=&since=` and `GET builds/{id|PR|sha}` (`framework/cli/feature-store.mjs`,
+  MCP `features_list` / `features_get`): one record per build, pending → building → in-pr → built → landed → shipped.
+- Moving to axf-molly: `deploy/molly/merge-watch.entry.mjs`, `AXF_MERGE_WATCH_DATA`, `AXF_MERGE_WATCH_REPO`.
+
 ## Tests
 
 `node apps/console-web/plugins/shipped-features/test.mjs` (store, hook, importers, live) ·

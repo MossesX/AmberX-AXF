@@ -61,7 +61,7 @@ Both are written to History.
 The gate shows no copy of these; it reads them. The 'After merge' build rule `shipped-features` (Build rules tab, row
 `shipped-features`) shows the merge watch's status and controls, and the Pending features tab lists the one feature store.
 
-| Tool (MCP) | REST (`/api/plugins/shipped-features/…`) | What |
+| Tool (MCP) | REST (`/api/plugins/shipped-features/…`) | What | <!-- axf-plugin:shipped-features -->
 | --- | --- | --- |
 | `features_list` | `GET builds?state=&build=&pr=&since=&limit=` | one record per build, pending → building → in-pr → built → landed → shipped (or failed / archived) |
 | `features_get` | `GET builds/{id \| PR \| sha}` | one build-feature record |

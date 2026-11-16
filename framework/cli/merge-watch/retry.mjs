@@ -6,13 +6,13 @@
  *
  *   failing(state, now)   entries that failed ALERT_AFTER (3) times or more: what broke, since when, the last error
  *   alertOf(failing)      the console alert (alerts API, notify type `shipped.merge-watch.failed` in
- *                         apps/console-web/plugins/shipped-features/notify.json): pushed once per failing spell
+ *                         the Shipped features plugin's notify.json): pushed once per failing spell
  *   syncAlert(state, ctx) raise it the first time something crosses the line, resolve it when nothing fails; the memo
  *                         (alert.json next to the state) keeps it to one push per spell
  *   retryAll(state, now)  the Auto fix: every failed entry back to pending (MW.reset) so the next send goes now
  *
  * The systems check item (health@1 `shipped-merge-watch`) reads the same state through the plugin server
- * (apps/console-web/plugins/shipped-features/server/health.py); its Auto fix runs `merge-watch.mjs retry`.
+ * (the Shipped features plugin's server/health.py); its Auto fix runs `merge-watch.mjs retry`.
  */
 import { spawnSync } from 'node:child_process';
 import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';

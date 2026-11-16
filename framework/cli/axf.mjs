@@ -9,7 +9,7 @@
  *   axf claude-project [dir] [--where github,vps,device] [--port bake|rebuild|no] …   make any folder a Claude project
  *                               and give it a home (framework/cli/claude-project.mjs; also /claude-project in Claude Code)
  *   axf merge-watch tick|status|send <sha>|backfill --since <date>|retry|on|off|list   every merge to main sent to
- *                               Shipped features (framework/cli/merge-watch.mjs; REST /api/plugins/shipped-features/merge-watch)
+ *                               Shipped features (framework/cli/merge-watch.mjs; REST GET merge-watch on the Shipped features plugin)
  *
  *   build options (framework/schemas/build-options.json; --x = on, --x on|off, --no-x = off; new builds default every option off):
  *     --wrap-groups              every section / group gets a collapse toggle top-right (style-theme wrapGroups)

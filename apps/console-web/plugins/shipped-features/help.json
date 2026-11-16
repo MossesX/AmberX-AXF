@@ -19,6 +19,11 @@
         "kind": "screen"
       },
       {
+        "target": "shipped-features-merge-watch",
+        "title": "Every merge to main shows up here",
+        "text": "The VPS watches main: as soon as a merge lands (a PR, a merge-queue batch, a build_land, a stacked PR or a direct push) its shipped manifest is sent here, once per merge. Its status, Retry and Backfill are in Gate & rules → Build rules → Send Shipped features; a merge that keeps failing raises a systems check item with Auto fix. Ask 'are merges reaching shipped features'."
+      },
+      {
         "target": "shipped-features-view",
         "title": "View by",
         "text": "Groups the list by pull request, build, day, app, plugin, feature type or repo, or shows it flat. The counts on each group follow your filters."

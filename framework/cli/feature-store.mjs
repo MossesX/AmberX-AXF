@@ -19,7 +19,7 @@
  *   node framework/cli/feature-store.mjs list [--state <s>[,<s>]] [--build <text>] [--pr <n>] [--since <date>] [--limit N] [--json]
  *   node framework/cli/feature-store.mjs get <build id | PR number | merge sha> [--json]
  *
- * REST: GET /api/plugins/shipped-features/builds (same filters), GET /api/plugins/shipped-features/builds/{key};
+ * REST (Shipped features plugin): GET builds (same filters), GET builds/{key};
  * MCP features_list / features_get; CLI `axf shipped-features features-list` or this file.
  */
 import { resolve } from 'node:path';
