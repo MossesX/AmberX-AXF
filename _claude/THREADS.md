@@ -814,7 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 17:07 UTC · `hotfix-toolbar-settings-still-change` → running (all) · mcp
 - 2026-11-16 17:07 UTC · `fix-red-ci-blocked-builds-they-land` s6 done (all) · orchestrator
 - 2026-11-16 17:08 UTC · `orchestrator-on-hold-status-and-tab` s1 done, → running (all) · orchestrator
 - 2026-11-16 17:08 UTC · `phone-connect-small-android-companion` s35 done, → built (all) · orchestrator
@@ -1214,6 +1213,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 21:09 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · orchestrator
 - 2026-11-16 21:11 UTC · `fix-build-whose-session-finishes-phase-e` → complete, merged, note (all) · reconciler
 - 2026-11-16 21:12 UTC · `fix-build-whose-session-finishes-phase-e` note (all) · orchestrator
+- 2026-11-16 21:18 UTC · `get-main-green-unblock-lander-land-axf` s9 done (all) · orchestrator
 
 ## Token passes (log)
 
