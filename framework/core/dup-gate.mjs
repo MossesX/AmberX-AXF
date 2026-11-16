@@ -306,3 +306,270 @@ export function jsonSchemas() {
   };
   return { 'dup-gate-match.schema.json': match, 'dup-gate-verdict.schema.json': verdict };
 }
+
+// ------------------------------------------------------------------ the matcher (pure, no I/O)
+//
+// A corpus item is anything that exists, in the candidate's shape plus where it lives:
+//   { kind, id, title, said, detail, plugins[], settings[], files[], where, landed, since, state, fix, note }
+// The fixer builds the items (Shipped manifests → shipped / build, builds@1 records → build, plugin inventory → plugin,
+// settings keys → setting, files on main → file) and calls `check(candidate, items, options)`.
+//
+// Score of one item against the candidate = max(subject, text):
+//   subject  how much of the candidate's SUBJECT (its title's tokens, weighted: KEY tokens 3 = canonical synonyms,
+//            plugin ids and setting keys; words common across the corpus 0.3; the rest 1) the item's whole text already
+//            covers, blended with the plain token Jaccard. At least one key token must be covered or the subject is 0,
+//            so generic overlap never blocks. This is what catches "Auto-land: every finished build lands itself
+//            immediately" against "Auto-land finished builds (zero-token merge pipeline)": every word of the candidate's
+//            subject is already there. "Lander regenerates generated files on clash" shares only `autoland` and keeps
+//            regenerate / generated / files / clash uncovered, so it passes.
+//   text     the weighted mean over the candidate's fields (title, said, detail, plugin, setting, file, id) of the best
+//            textual similarity (half trigram Dice, half token Jaccard) against the item's fields; title / said / detail
+//            cross-compare so a title matches a manifest's said text too. This is what catches the same words re-filed.
+
+/** Words that carry no subject on their own. */
+export const STOP_WORDS = Object.freeze(new Set(['a', 'an', 'the', 'and', 'or', 'of', 'to', 'in', 'on', 'for', 'with', 'by', 'is', 'it', 'its', 'this', 'that', 'these', 'those', 'every', 'all', 'any', 'as', 'at', 'be', 'from', 'into', 'so', 'we', 'can', 'put', 'some', 'kind', 'not', 'no', 'now', 'when', 'then', 'than', 'are', 'was', 'were', 'has', 'have', 'had', 'do', 'does', 'did', 'but', 'if', 'you', 'your', 'he', 'his', 'him', 'i', 'me', 'my', 'our', 'us', 'they', 'them', 'their', 'there', 'here', 'what', 'which', 'who', 'how', 'why', 'also', 'just', 'only', 'very', 'more', 'most', 'up', 'out', 'over', 'again', 'already', 'still', 'even', 'because', 'thing', 'things', 'something', 'anything', 'everything', 'make', 'makes', 'made', 'get', 'gets', 'got', 'let', 'lets', 'need', 'needs', 'should', 'would', 'could', 'will', 'please', 'brett', 'claude', 'amber', 'said',
+  // filler that says when or how much, never what
+  'immediately', 'straight', 'away', 'right', 'now', 'today', 'tonight', 'asap', 'soon', 'quickly', 'properly', 'actually', 'really', 'moment', 'finally', 'first', 'last', 'once', 'ever', 'never', 'always', 'nothing', 'everything', 'sitting', 'itself', 'themselves', 'yet']));
+
+/**
+ * Synonym groups: every phrase in `from` (matched on the lower-cased, punctuation-free text, whole words) folds to the
+ * one canonical token `to`, which is a KEY token. Open: the fixer passes the plugin's extra groups in `options.synonyms`.
+ */
+export const SYNONYMS = Object.freeze([
+  { to: 'autoland', from: ['auto land', 'autoland', 'auto lander', 'autolander', 'lander', 'land on finish', 'lands itself', 'land itself', 'land by itself', 'lands by itself', 'land themselves', 'self landing', 'auto merge pipeline', 'zero token merge', 'landing line'] },
+  { to: 'mergequeue', from: ['merge queue', 'mergequeue', 'stacked merge', 'merge stack', 'batch merge', 'merge batch'] },
+  { to: 'duplicate', from: ['duplicate', 'duplicates', 'duplicated', 'dup', 'dupe', 'dupes', 'dup check', 'dupcheck', 'redundancy', 'redundant', 'rebuilt twice', 'built twice'] },
+  { to: 'uireview', from: ['ui review', 'uireview', 'screenshot review', 'screenshots review', 'review queue'] },
+  { to: 'shippedfeatures', from: ['shipped features', 'shippedfeatures', 'shipped feature', 'feature ledger', 'featureledger', 'shipped manifest', 'shipped manifests', 'shipped store'] },
+  { to: 'gaterules', from: ['gate rules', 'gate and rules', 'gate rule', 'rules plugin', 'gate plugin', 'build rules', 'build rule'] },
+  { to: 'orchestrator', from: ['orchestrator', 'dispatcher', 'build pipeline'] },
+  { to: 'pushbanner', from: ['push banner', 'pushbanner'] },
+  { to: 'homecard', from: ['home card', 'homecard', 'home cards'] },
+  { to: 'pendinglist', from: ['pending list', 'pending builds', 'pending build list', 'build queue'] },
+  { to: 'turnon', from: ['turn on', 'turned on', 'switch on', 'switched on', 'enable', 'enabled', 'make live', 'go live', 'activate'] },
+  { to: 'turnoff', from: ['turn off', 'turned off', 'switch off', 'switched off', 'disable', 'disabled', 'deactivate'] },
+]);
+
+/** Trailing round markers an id or title carries when the same work was filed again: foo-r2, foo-2, foo-fable, foo (round 2). */
+export const ROUND_RE = /(?:[-_ ]+(?:r\d+|v\d+|\d+|fable|opus|again|redo|retry|fix|round[-_ ]?\d+|phase[-_ ]?\d+|p\d+|rebuild|relaunch))+$|\s*\((?:r|round|v)\s*\d+\)\s*$/i;
+/** An id with its round markers folded away ('auto-land-2' → 'auto-land'; 'skins-r3' → 'skins'). */
+export const foldRound = (s) => slug(str(s, 200).replace(ROUND_RE, '')) || slug(s);
+
+const splitCamel = (s) => s.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2');
+const plain = (s) => splitCamel(str(s, SAID_MAX)).toLowerCase().replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
+const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+/** The synonym groups in use: the built-in table plus the caller's, canonical names kept as given. */
+export function synonymTable(extra = []) {
+  const out = [...SYNONYMS.map((g) => ({ to: g.to, from: [...g.from] }))];
+  for (const g of list(extra, 200)) {
+    if (!isObj(g)) continue;
+    const to = plain(g.to).replace(/ /g, ''); const from = strList(g.from, 60, 80).map(plain).filter(Boolean);
+    if (!to || !from.length) continue;
+    const have = out.find((x) => x.to === to); if (have) have.from.push(...from); else out.push({ to, from });
+  }
+  // longest phrase first inside a group so 'auto lander' wins over 'lander'; compiled once per table
+  for (const g of out) { g.from = [...new Set(g.from)].sort((a, b) => b.length - a.length); g.re = new RegExp(`\\b(?:${g.from.map(escapeRe).join('|')})\\b`, 'g'); }
+  return out;
+}
+/** Lower-cased, punctuation-free text with every synonym phrase folded to its canonical token. */
+export function foldSynonyms(text, table = synonymTable()) {
+  let s = plain(text); if (!s) return '';
+  for (const g of table) s = s.replace(g.re, ` ${g.to} `);
+  return s.replace(/\s+/g, ' ').trim();
+}
+/** A light stem: plurals and -ing / -ed on words long enough to keep their sense (builds → build, landing → land). */
+export function stem(w) {
+  if (w.length <= 3) return w;
+  if (/ies$/.test(w) && w.length > 4) return `${w.slice(0, -3)}y`;
+  if (/(ss|us|is)$/.test(w)) return w;
+  if (/ing$/.test(w) && w.length > 5) return w.slice(0, -3);
+  if (/ed$/.test(w) && w.length > 4) return w.slice(0, -2);
+  if (/s$/.test(w)) return w.slice(0, -1);
+  return w;
+}
+/** The tokens of a text: camelCase split, synonyms folded, stop words out, stemmed, unique, in order of first sight. */
+export function tokens(text, table = synonymTable()) {
+  const out = []; const seen = new Set();
+  for (const w of foldSynonyms(text, table).split(' ')) {
+    if (!w || STOP_WORDS.has(w) || (w.length < 2 && !/\d/.test(w))) continue;
+    const t = stem(w); if (!t || STOP_WORDS.has(t) || seen.has(t)) continue;
+    seen.add(t); out.push(t);
+  }
+  return out;
+}
+/** Character trigrams of a padded string ('land' → '  l', ' la', 'lan', 'and', 'nd ', 'd  '). */
+export function trigrams(s) {
+  const p = `  ${str(s, SAID_MAX)}  `; const out = new Set();
+  for (let i = 0; i + 3 <= p.length; i += 1) out.add(p.slice(i, i + 3));
+  return out;
+}
+/** Dice coefficient of two sets (2|A∩B| / (|A|+|B|)). */
+export function dice(a, b) {
+  if (!a.size || !b.size) return 0;
+  let n = 0; for (const x of a) if (b.has(x)) n += 1;
+  return (2 * n) / (a.size + b.size);
+}
+/** Jaccard of two sets, weighted by `w(token)` (1 when not given). */
+export function jaccard(a, b, w = () => 1) {
+  if (!a.size || !b.size) return 0;
+  let inter = 0; let union = 0;
+  for (const x of a) { const k = w(x); union += k; if (b.has(x)) inter += k; }
+  for (const x of b) if (!a.has(x)) union += w(x);
+  return union > 0 ? inter / union : 0;
+}
+
+const TEXT_FIELDS = Object.freeze(['title', 'said', 'detail']);
+const LIST_FIELDS = Object.freeze({ plugin: 'plugins', setting: 'settings', file: 'files' });
+const textOf = (o, f) => str(o?.[f], SAID_MAX);
+const listOf = (o, f) => strList(o?.[LIST_FIELDS[f]], LIST_MAX, 300);
+const allText = (o) => [...TEXT_FIELDS.map((f) => textOf(o, f)), ...Object.keys(LIST_FIELDS).flatMap((f) => listOf(o, f))].filter(Boolean).join(' ');
+
+/** Per-token document frequency over a corpus (how many items name a token), with the corpus size. */
+export function corpusStats(items, table = synonymTable()) {
+  const df = new Map(); let n = 0;
+  for (const it of list(items, 100000)) { n += 1; for (const t of new Set(tokens(allText(it), table))) df.set(t, (df.get(t) || 0) + 1); }
+  return { n, df };
+}
+
+/** A token named by more than this share of a corpus of at least `COMMON_MIN_CORPUS` items is common and weighs little. */
+export const COMMON_SHARE = 0.25;
+export const COMMON_MIN_CORPUS = 50;
+export const KEY_WEIGHT = 3;
+export const COMMON_WEIGHT = 0.3;
+/**
+ * What makes a token KEY: a canonical synonym (`autoland`), a plugin id or a setting key. Returns `isKey` and a weight
+ * function: 3 for key tokens, 0.3 for words common across the corpus (more than a quarter of the items name them),
+ * 1 otherwise.
+ */
+export function keyWeights({ table = synonymTable(), plugins = [], settings = [], stats = null } = {}) {
+  const keys = new Set(table.map((g) => g.to));
+  for (const p of strList(plugins, LIST_MAX, 80)) for (const t of tokens(p, table)) keys.add(t);
+  for (const s of strList(settings, LIST_MAX, 120)) for (const t of tokens(s, table)) keys.add(t);
+  const common = (t) => !!stats && stats.n >= COMMON_MIN_CORPUS && (stats.df.get(t) || 0) / stats.n > COMMON_SHARE;
+  const isKey = (t) => keys.has(t);
+  return { isKey, weight: (t) => (isKey(t) ? KEY_WEIGHT : common(t) ? COMMON_WEIGHT : 1) };
+}
+/** Weighted share of `mine` that `theirs` covers (Σ w over the intersection / Σ w over mine). */
+export function coverage(mine, theirs, w = () => 1) {
+  let have = 0; let all = 0;
+  for (const t of mine) { const k = w(t); all += k; if (theirs.has(t)) have += k; }
+  return all > 0 ? have / all : 0;
+}
+
+/** Textual similarity of two strings: half trigram Dice over the folded text, half token Jaccard. 0 when either is empty. */
+export function textSimilarity(a, b, table = synonymTable()) {
+  const fa = foldSynonyms(a, table); const fb = foldSynonyms(b, table);
+  if (!fa || !fb) return 0;
+  return unit(0.5 * dice(trigrams(fa), trigrams(fb)) + 0.5 * jaccard(new Set(tokens(fa, table)), new Set(tokens(fb, table))));
+}
+
+/**
+ * One item against the candidate → { score, subject, text, fields: [{ field, score, against }], note }.
+ * `ctx` comes from `prepare()` (synonym table, key weights, corpus stats) so a run over a corpus pays for them once.
+ */
+export function similarity(candidate, item, ctx = prepare()) {
+  const c = normCandidate(candidate); if (!c || !isObj(item)) return { score: 0, subject: 0, text: 0, fields: [], note: '' };
+  const { table, weight, isKey } = ctx;
+  const fields = []; let wsum = 0; let acc = 0;
+  // text fields: the candidate's title / said / detail against the best of the item's three
+  for (const f of TEXT_FIELDS) {
+    const mine = textOf(c, f); if (!mine) continue;
+    let best = 0; let against = '';
+    for (const g of TEXT_FIELDS) { const theirs = textOf(item, g); if (!theirs) continue; const s = textSimilarity(mine, theirs, table); if (s > best) { best = s; against = theirs.slice(0, 300); } }
+    if (!against) continue;
+    fields.push({ field: f, score: unit(best), against }); wsum += WEIGHTS[f]; acc += WEIGHTS[f] * best;
+  }
+  // list fields: plugins / settings / files as token sets (a setting key 'autoLand' is also the words 'auto land')
+  for (const f of Object.keys(LIST_FIELDS)) {
+    const mine = listOf(c, f); const theirs = listOf(item, f); if (!mine.length || !theirs.length) continue;
+    const a = new Set(mine.flatMap((x) => tokens(x, table))); const b = new Set(theirs.flatMap((x) => tokens(x, table)));
+    const exact = mine.some((x) => theirs.some((y) => slug(x) === slug(y)));
+    const s = exact ? 1 : jaccard(a, b);
+    fields.push({ field: f, score: unit(s), against: theirs.slice(0, 5).join(', ').slice(0, 300) }); wsum += WEIGHTS[f]; acc += WEIGHTS[f] * s;
+  }
+  // id: the same id once round markers are folded is the same work filed again
+  let note = '';
+  if (c.id && item.id) {
+    const same = foldRound(c.id) === foldRound(item.id); const s = same ? 1 : textSimilarity(c.id.replace(/-/g, ' '), str(item.id, 300).replace(/-/g, ' '), table);
+    fields.push({ field: 'id', score: unit(s), against: str(item.id, 300) }); wsum += WEIGHTS.id; acc += WEIGHTS.id * s;
+    if (same && c.id !== item.id) note = `same id once the round marker is folded (${c.id} → ${foldRound(c.id)})`;
+  }
+  const text = wsum > 0 ? acc / wsum : 0;
+  // subject: how much of the candidate's subject line the item's whole text already covers; a key token must be among it
+  const subjectLine = c.title || c.said.split(/[.!?\n]/)[0].slice(0, 160) || c.detail.split(/[.!?\n]/)[0].slice(0, 160);
+  const cs = new Set(tokens(`${subjectLine} ${c.settings.join(' ')}`, table));
+  const ia = new Set(tokens(subjectText(item), table));
+  // the key must sit in the item's own subject (title, setting keys, plugin ids): a long brief that mentions it in passing is not the same work
+  const ih = new Set(tokens(subjectHead(item), table));
+  const keysCovered = [...cs].filter((t) => isKey(t) && ih.has(t));
+  const ca = new Set(tokens(allText(c), table));
+  const subject = keysCovered.length ? 0.85 * coverage(cs, ia, weight) + 0.15 * jaccard(ca, ia, weight) : 0;
+  if (!note && subject >= 0.8) note = `same subject: ${keysCovered.join(', ')}`;
+  return { score: unit(Math.max(subject, text)), subject: unit(subject), text: unit(text), fields, note };
+}
+/** How many words of an item's said / detail count towards its subject: the opening, not the whole brief. */
+export const SUBJECT_HEAD_WORDS = 40;
+const headOf = (s, n = SUBJECT_HEAD_WORDS) => plain(s).split(' ').slice(0, n).join(' ');
+/** An item's own subject: title, setting keys and plugin ids. */
+const subjectHead = (o) => [textOf(o, 'title'), ...listOf(o, 'setting'), ...listOf(o, 'plugin')].filter(Boolean).join(' ');
+/** An item's text for the subject coverage: its subject plus the opening words of said and detail (never its file list or the whole brief, which cover anything). */
+const subjectText = (o) => [subjectHead(o), headOf(textOf(o, 'said')), headOf(textOf(o, 'detail'))].filter(Boolean).join(' ');
+
+/** What a run over a corpus shares: the synonym table, the key weights and the corpus stats. Pure; call once per check. */
+export function prepare({ items = [], synonyms = [], plugins = [], settings = [] } = {}) {
+  const table = synonymTable(synonyms);
+  const stats = corpusStats(items, table);
+  const allPlugins = [...strList(plugins, LIST_MAX, 80), ...list(items, 100000).filter((i) => i?.kind === 'plugin').map((i) => str(i.id, 80))];
+  const allSettings = [...strList(settings, LIST_MAX, 120), ...list(items, 100000).filter((i) => i?.kind === 'setting').map((i) => str(i.id, 120))];
+  return { table, stats, ...keyWeights({ table, plugins: allPlugins, settings: allSettings, stats }) };
+}
+
+/**
+ * The one fix a match offers when the item names none: a switched-off thing → turn its setting on; a build in progress
+ * → use it; a shipped feature that is on → nothing to build; a plugin → extend it; a file → it is there.
+ */
+export function fixFor(item) {
+  if (isObj(item?.fix) && FIX_KINDS.includes(item.fix.kind)) return normFix(item.fix);
+  const st = normState(item?.state);
+  if (st && st.on === false && st.key) return normFix({ kind: 'setting', key: st.key, value: true, source: st.source, text: `turn ${st.key} on` });
+  const kind = oneOf(MATCH_KINDS, item?.kind, '');
+  if (kind === 'build') return normFix({ kind: 'reuse', build: item.id, pr: item?.where?.pr, text: `use build ${slug(item.id)}${item?.where?.pr ? ` (PR #${item.where.pr})` : ''} instead of filing another` });
+  if (kind === 'shipped') return normFix({ kind: 'none', text: st && st.on === true ? 'already on main and switched on' : 'already on main' });
+  if (kind === 'plugin') return normFix({ kind: 'none', text: `plugin ${str(item.id, 80)} exists: extend it` });
+  if (kind === 'setting') return normFix({ kind: 'none', text: `setting ${str(item.id, 120)} exists${st && typeof st.on === 'boolean' ? ` and is ${st.on ? 'on' : 'off'}` : ''}` });
+  if (kind === 'file') return normFix({ kind: 'none', text: `${str(item?.where?.path || item.id, 300)} is on main` });
+  return normFix(null);
+}
+
+/** Every item scored against the candidate, best first, as dup-gate-match@1 (items under `floor` left out). */
+export function matchAll(candidate, items, { ctx = null, floor = 0.2, synonyms = [], plugins = [], settings = [] } = {}) {
+  const c = normCandidate(candidate); if (!c) return [];
+  const k = ctx || prepare({ items, synonyms, plugins, settings });
+  const out = [];
+  for (const it of list(items, 100000)) {
+    if (!isObj(it) || !MATCH_KINDS.includes(it.kind)) continue;
+    if (c.id && it.kind === 'build' && slug(it.id) === c.id) continue; // a record is never its own duplicate
+    const s = similarity(c, it, k);
+    if (s.score < floor) continue;
+    const m = normMatch({ ...it, score: s.score, fields: s.fields, fix: fixFor(it), note: [it.note, s.note].filter(Boolean).join('; ') });
+    if (m) out.push(m);
+  }
+  return out.sort((a, b) => b.score - a.score || MATCH_KINDS.indexOf(a.kind) - MATCH_KINDS.indexOf(b.kind) || a.id.localeCompare(b.id));
+}
+
+const CORPUS_OF = Object.freeze({ shipped: 'shipped', build: 'builds', plugin: 'plugins', setting: 'settings', file: 'files' });
+/**
+ * The gate: candidate + corpus items + options → dup-gate-verdict@1. Options: thresholds { block, warn }, synonyms
+ * (extra groups), plugins / settings (extra key tokens), override (dup-gate-override@1), sources { shipped, builds, … }
+ * (where each corpus was read, for `checked`), now (ISO), tookMs.
+ */
+export function check(candidate, items, { thresholds = THRESHOLDS, synonyms = [], plugins = [], settings = [], override = null, sources = {}, now = '', tookMs = 0, floor = 0.2 } = {}) {
+  const c = normCandidate(candidate);
+  const all = list(items, 100000).filter((i) => isObj(i) && MATCH_KINDS.includes(i.kind));
+  const ctx = prepare({ items: all, synonyms, plugins, settings });
+  const matches = c ? matchAll(c, all, { ctx, floor }) : [];
+  const counts = new Map();
+  for (const i of all) { const k = CORPUS_OF[i.kind]; counts.set(k, (counts.get(k) || 0) + 1); }
+  const corpora = CORPORA.filter((k) => counts.has(k) || sources[k]).map((k) => ({ kind: k, count: counts.get(k) || 0, source: str(sources[k], 300), at: '' }));
+  return normVerdict({ candidate: c, checked: { corpora, tookMs, thresholds, synonyms: ctx.table.length }, matches, override, thresholds }, { now });
+}
