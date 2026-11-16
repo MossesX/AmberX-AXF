@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent as RKeyboardEvent, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { AgentAvatar, BuildOrigin, Button, Checkbox, Chip, Icon, IconButton, Meter, PriorityTag, Segmented, SelectField, Slot, Switch, originSubtitle, setBuildPriority, useRuntime } from '@console/axf/react';
+import { AgentAvatar, BuildOrigin, Button, Checkbox, Chip, Icon, IconButton, Meter, PluginSettingsGear, PriorityTag, Segmented, SelectField, Slot, Switch, originSubtitle, setBuildPriority, useRuntime } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridGroup } from '@console/axf/libs/datagrid';
 import { pluginApi } from '@console/plugins';
 import './builds.css';
@@ -17,7 +17,9 @@ import './builds.css';
 
 export const FOLDER = 'builds-page';
 export const VIEW = 'builds';
-export const KEYS = { banner: 'builds.banner', select: 'builds.select', view: 'builds.view', profile: 'builds.profile', filter: 'builds.filter', scope: 'builds.scope' } as const;
+export const KEYS = { banner: 'builds.banner', select: 'builds.select', view: 'builds.view', profile: 'builds.profile', filter: 'builds.filter', scope: 'builds.scope', refresh: 'builds.refresh' } as const;
+/** How often the page re-reads the store while it is visible, in seconds (Settings → Plugins → Builds). */
+export const REFRESH_DEFAULT = 5;
 export const api = pluginApi(FOLDER, 'Builds', { unavailable: 'The Builds page is switched off or its server part is not running.' });
 
 export type Progress = { total: number; done: number; pct: number; active: boolean; status?: string };
@@ -226,7 +228,8 @@ export function BuildsPage() {
   useEffect(() => {
     void reload((rt.settings.get(KEYS.profile) as string) || '');
     const tick = () => { if (document.visibilityState === 'visible') void reload(); };
-    const t = window.setInterval(tick, 5000);
+    const secs = Number(rt.settings.get(KEYS.refresh)) || REFRESH_DEFAULT;
+    const t = window.setInterval(tick, Math.max(2, secs) * 1000);
     addEventListener('focus', tick); document.addEventListener('visibilitychange', tick);
     return () => { window.clearInterval(t); removeEventListener('focus', tick); document.removeEventListener('visibilitychange', tick); };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -236,11 +239,15 @@ export function BuildsPage() {
   const builds = state.builds.filter(keep(filter));
   return (
     <div className="fx-page axp-builds">
-      <header className="fx-pagehead axp-builds__head">
+      {/* plugin-settings@1: the shared header carries the gear that opens Settings → Plugins → Builds */}
+      <header className="fx-pagehead axp-builds__head" data-axf-plugin-header={FOLDER}>
         <div>
           <p className="fx-eyebrow">Builds · one store for every profile · rev {state.rev}</p>
           <h1 className="axp-builds__title"><InlineName label="Profile name" value={prof?.name ?? state.profile} onSave={(name) => send('rename-profile', { id: state.profile, name }, rt.toast)} /><span className="fx-small fx-muted fx-mono">{state.profile}</span><span className="axp-builds__pct" data-active={state.progress.active || undefined} aria-label={`Profile ${state.progress.pct}% built`}>{state.progress.pct}%</span></h1>
           <p className="fx-muted axp-builds__sub">{state.progress.complete}/{state.progress.builds} builds complete · {state.progress.done}/{state.progress.total} steps{state.profile !== state.active ? ` · the console's active profile is ${state.active}` : ''}</p>
+        </div>
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Builds tools" data-axf-toolbar={`plugin-header.${FOLDER}`}>
+          <PluginSettingsGear tab={FOLDER} plugin="Builds" />
         </div>
       </header>
       <Meter value={state.progress.pct} active={state.progress.active} done={state.progress.pct === 100} label={`${prof?.name ?? state.profile}: ${state.progress.done} of ${state.progress.total} steps`} />

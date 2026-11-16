@@ -7,7 +7,7 @@
     "tabGroups": 26,
     "tabs": 78,
     "settingsTabs": 83,
-    "settings": 177,
+    "settings": 180,
     "functions": 274,
     "buttons": 62,
     "plugins": 71
@@ -3091,6 +3091,64 @@
       "detail": "Settings › Plugins › Builds",
       "keywords": [
         "builds.select",
+        "Builds"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.builds-page",
+      "file": "plugins/builds-page/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=builds-page/setting:builds.view",
+      "kind": "setting",
+      "label": "Opens on",
+      "key": "builds.view",
+      "type": "choice",
+      "options": [
+        "builds",
+        "steps"
+      ],
+      "detail": "Settings › Plugins › Builds",
+      "keywords": [
+        "builds.view",
+        "Builds"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.builds-page",
+      "file": "plugins/builds-page/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=builds-page/setting:builds.filter",
+      "kind": "setting",
+      "label": "Default filter",
+      "key": "builds.filter",
+      "type": "choice",
+      "options": [
+        "open",
+        "queue",
+        "complete",
+        "archived",
+        "all"
+      ],
+      "detail": "Settings › Plugins › Builds",
+      "keywords": [
+        "builds.filter",
+        "Builds"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.builds-page",
+      "file": "plugins/builds-page/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=builds-page/setting:builds.refresh",
+      "kind": "setting",
+      "label": "Refresh every (seconds, while the page is visible)",
+      "key": "builds.refresh",
+      "type": "number",
+      "min": 2,
+      "max": 300,
+      "detail": "Settings › Plugins › Builds",
+      "keywords": [
+        "builds.refresh",
         "Builds"
       ],
       "runs": "console",

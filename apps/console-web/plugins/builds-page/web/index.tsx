@@ -7,7 +7,7 @@ import type { AxfRuntime } from '@console/axf/core';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
-import { BuildsPage, FOLDER, KEYS, StorePanel, VIEW, api } from './ui';
+import { BuildsPage, FOLDER, KEYS, REFRESH_DEFAULT, StorePanel, VIEW, api } from './ui';
 
 const ID = 'ai.amberx.axf.console.builds-page';
 const BANNER_ASSET = 'builds-progress';
@@ -59,6 +59,9 @@ export const plugin: AxfWebLibrary = {
     settings: [
       { key: KEYS.banner, label: 'Show the build profile\'s percentage on the banner', kind: 'toggle', default: true, scope: 'device' },
       { key: KEYS.select, label: 'Steps view: also show a selection control on every row', kind: 'choice', default: 'off', options: [{ value: 'off', label: 'No (Ctrl+click / long-press)' }, { value: 'checkboxes', label: 'Checkboxes' }, { value: 'switches', label: 'Switches' }] },
+      { key: KEYS.view, label: 'Opens on', kind: 'choice', default: 'builds', options: [{ value: 'builds', label: 'Builds (one row per build)' }, { value: 'steps', label: 'Steps (every step as a row)' }] },
+      { key: KEYS.filter, label: 'Default filter', kind: 'choice', default: 'open', options: [{ value: 'open', label: 'Open' }, { value: 'queue', label: 'Queue' }, { value: 'complete', label: 'Done' }, { value: 'archived', label: 'Archived' }, { value: 'all', label: 'All' }] },
+      { key: KEYS.refresh, label: 'Refresh every (seconds, while the page is visible)', kind: 'number', default: REFRESH_DEFAULT, min: 2, max: 300 },
     ],
   }],
   settingsPanels: [
