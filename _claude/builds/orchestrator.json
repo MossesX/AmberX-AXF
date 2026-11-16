@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T16:39:55.881Z",
+ "updatedAt": "2026-11-16T16:40:35.726Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -157649,10 +157649,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/re-sync-stuck-branches-lander-can-push",
-   "pr": "",
+   "pr": "#718",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:34.116Z",
-   "updatedAt": "2026-11-16T16:39:53.978Z",
+   "updatedAt": "2026-11-16T16:40:33.493Z",
    "builtAt": "",
    "notes": [
     {
