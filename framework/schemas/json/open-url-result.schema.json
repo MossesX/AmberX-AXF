@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/open-url-result.schema.json",
+  "title": "open-url-result@1 (open-url-route@1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "route",
+    "opened",
+    "reason"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "open-url-result@1"
+    },
+    "url": {
+      "type": "string"
+    },
+    "route": {
+      "enum": [
+        "none",
+        "console-tab",
+        "overlay",
+        "direct",
+        "full-screen-intent",
+        "notification"
+      ]
+    },
+    "opened": {
+      "type": "boolean"
+    },
+    "notified": {
+      "type": "boolean"
+    },
+    "reason": {
+      "enum": [
+        "console-visible",
+        "overlay-open",
+        "direct-start",
+        "screen-locked-open",
+        "tap-to-open",
+        "url-refused",
+        "no-console",
+        "console-stale",
+        "console-behind",
+        "console-other-origin",
+        "asked-elsewhere",
+        "console-only",
+        "no-phone",
+        "overlay-off",
+        "overlay-not-ready",
+        "background-start-blocked",
+        "phone-unlocked",
+        "no-full-screen-intent",
+        "notifications-off",
+        "attempt-failed",
+        "nothing-left"
+      ]
+    },
+    "tried": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "route",
+          "outcome",
+          "reason"
+        ],
+        "properties": {
+          "route": {
+            "enum": [
+              "console-tab",
+              "overlay",
+              "direct",
+              "full-screen-intent",
+              "notification"
+            ]
+          },
+          "outcome": {
+            "enum": [
+              "skipped",
+              "not-tried",
+              "ok",
+              "failed"
+            ]
+          },
+          "reason": {
+            "enum": [
+              "",
+              "console-visible",
+              "overlay-open",
+              "direct-start",
+              "screen-locked-open",
+              "tap-to-open",
+              "url-refused",
+              "no-console",
+              "console-stale",
+              "console-behind",
+              "console-other-origin",
+              "asked-elsewhere",
+              "console-only",
+              "no-phone",
+              "overlay-off",
+              "overlay-not-ready",
+              "background-start-blocked",
+              "phone-unlocked",
+              "no-full-screen-intent",
+              "notifications-off",
+              "attempt-failed",
+              "nothing-left"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -27,6 +27,7 @@ import { REGISTRY as SHIPPED_MANIFEST_REGISTRY, jsonSchemas as shippedManifestJs
 import { REGISTRY as GATE_RULES_REGISTRY, jsonSchemas as gateRulesJsonSchemas } from '../core/gate-rules.mjs';
 import { REGISTRY as BUILD_RULES_REGISTRY, jsonSchemas as buildRulesJsonSchemas } from '../core/build-rules.mjs';
 import { consoleControlRegistry, jsonSchemas as consoleControlJsonSchemas } from '../core/engines/console-control-rules.mjs';
+import { REGISTRY as OPEN_URL_ROUTE_REGISTRY, jsonSchemas as openUrlRouteJsonSchemas } from '../core/open-url-route.mjs';
 import { skinConfigSchema, skinConfigSnapshot, skinConfigTree } from '../core/engines/skin-config-rules.mjs';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
@@ -933,6 +934,9 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   // console-control@1: one address + ten verbs for everything the console shows (address, command, result, targets) + the registry snapshot
   for (const [n, schema] of Object.entries(consoleControlJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const ccreg = join(FRAMEWORK_DIR, 'schemas/console-control.json'); writeFileSync(ccreg, JSON.stringify(consoleControlRegistry(), null, 2) + '\n'); written.push(ccreg);
+  // open-url-route@1: the route order a page asked for by Amber takes to Brett's screen (request, plan, result) + the registry snapshot
+  for (const [n, schema] of Object.entries(openUrlRouteJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  const ourreg = join(FRAMEWORK_DIR, 'schemas/open-url-route.json'); writeFileSync(ourreg, JSON.stringify(OPEN_URL_ROUTE_REGISTRY, null, 2) + '\n'); written.push(ourreg);
   // skin-config@1: what the AI may change when it makes a skin. The tree comes from the shared registry (never the
   // port extensions) and the style targets, so the schema enumerates every category, group, option and limit.
   const skinTree = skinConfigTree(readJson(join(FRAMEWORK_DIR, 'schemas/asset-types.json')), customizeSpec, SKIN_NEVER);

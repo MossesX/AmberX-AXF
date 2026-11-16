@@ -1,0 +1,66 @@
+{
+  "schema": "open-url-route@1",
+  "request": "open-url-request@1",
+  "plan": "open-url-plan@1",
+  "result": "open-url-result@1",
+  "version": 1,
+  "routes": [
+    "console-tab",
+    "overlay",
+    "direct",
+    "full-screen-intent",
+    "notification"
+  ],
+  "opens": {
+    "console-tab": true,
+    "overlay": true,
+    "direct": true,
+    "full-screen-intent": true,
+    "notification": false
+  },
+  "where": [
+    "auto",
+    "console",
+    "overlay",
+    "browser"
+  ],
+  "browsers": [
+    "chrome",
+    "default"
+  ],
+  "foregrounds": [
+    "console",
+    "browser",
+    "amberx",
+    "other",
+    "unknown"
+  ],
+  "defaultHosts": [
+    "amberxai.com"
+  ],
+  "maxUrl": 2000,
+  "consoleStaleMs": 45000,
+  "reasons": {
+    "console-visible": "the console tab on screen took it and opened the page",
+    "overlay-open": "AmberX opened it full screen in its overlay",
+    "direct-start": "AmberX started the browser on the page",
+    "screen-locked-open": "the phone is locked; the full-screen notice opens the page as the screen wakes",
+    "tap-to-open": "Android held the browser back: AmberX's notification opens the page with one tap",
+    "url-refused": "the address is not one of Brett's own https pages",
+    "no-console": "no console tab is connected",
+    "console-stale": "the console tab stopped answering",
+    "console-behind": "the console tab is connected but not on screen",
+    "console-other-origin": "the connected console is not the site the page is on",
+    "asked-elsewhere": "the caller asked for another place",
+    "console-only": "the caller asked for the console tab only",
+    "no-phone": "no AmberX phone is paired",
+    "overlay-off": "Display over other apps is off on the phone",
+    "overlay-not-ready": "AmberX's toolbar is not on screen",
+    "background-start-blocked": "Android blocks a browser start from the background while Display over other apps is off and AmberX is not in front",
+    "phone-unlocked": "the phone is unlocked, so a full-screen notice would only show as a banner",
+    "no-full-screen-intent": "AmberX may not use full-screen notices on this phone",
+    "notifications-off": "AmberX's notifications are off",
+    "attempt-failed": "the route was tried and failed",
+    "nothing-left": "every route was skipped or failed"
+  }
+}

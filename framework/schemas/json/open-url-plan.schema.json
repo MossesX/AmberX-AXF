@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/open-url-plan.schema.json",
+  "title": "open-url-plan@1 (open-url-route@1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "url",
+    "ok",
+    "routes"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "open-url-plan@1"
+    },
+    "url": {
+      "type": "string"
+    },
+    "ok": {
+      "type": "boolean"
+    },
+    "reason": {
+      "enum": [
+        "",
+        "console-visible",
+        "overlay-open",
+        "direct-start",
+        "screen-locked-open",
+        "tap-to-open",
+        "url-refused",
+        "no-console",
+        "console-stale",
+        "console-behind",
+        "console-other-origin",
+        "asked-elsewhere",
+        "console-only",
+        "no-phone",
+        "overlay-off",
+        "overlay-not-ready",
+        "background-start-blocked",
+        "phone-unlocked",
+        "no-full-screen-intent",
+        "notifications-off",
+        "attempt-failed",
+        "nothing-left"
+      ]
+    },
+    "detail": {
+      "type": "string"
+    },
+    "routes": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "route",
+          "try",
+          "reason"
+        ],
+        "properties": {
+          "route": {
+            "enum": [
+              "console-tab",
+              "overlay",
+              "direct",
+              "full-screen-intent",
+              "notification"
+            ]
+          },
+          "try": {
+            "type": "boolean"
+          },
+          "reason": {
+            "enum": [
+              "",
+              "console-visible",
+              "overlay-open",
+              "direct-start",
+              "screen-locked-open",
+              "tap-to-open",
+              "url-refused",
+              "no-console",
+              "console-stale",
+              "console-behind",
+              "console-other-origin",
+              "asked-elsewhere",
+              "console-only",
+              "no-phone",
+              "overlay-off",
+              "overlay-not-ready",
+              "background-start-blocked",
+              "phone-unlocked",
+              "no-full-screen-intent",
+              "notifications-off",
+              "attempt-failed",
+              "nothing-left"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

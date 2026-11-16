@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/open-url-request.schema.json",
+  "title": "open-url-request@1 (open-url-route@1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "url"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "open-url-request@1"
+    },
+    "url": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "hosts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "where": {
+      "enum": [
+        "auto",
+        "console",
+        "overlay",
+        "browser"
+      ]
+    },
+    "browser": {
+      "enum": [
+        "chrome",
+        "default"
+      ]
+    },
+    "console": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "connected": {
+          "type": "boolean"
+        },
+        "visible": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "origin": {
+          "type": "string"
+        },
+        "ageMs": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "phone": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "paired": {
+          "type": "boolean"
+        },
+        "inFront": {
+          "type": "boolean"
+        },
+        "overlay": {
+          "type": "boolean"
+        },
+        "overlayReady": {
+          "type": "boolean"
+        },
+        "notifications": {
+          "type": "boolean"
+        },
+        "fullScreenIntent": {
+          "type": "boolean"
+        },
+        "locked": {
+          "type": "boolean"
+        }
+      }
+    },
+    "foreground": {
+      "enum": [
+        "console",
+        "browser",
+        "amberx",
+        "other",
+        "unknown"
+      ]
+    }
+  }
+}
