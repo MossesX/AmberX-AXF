@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T17:08:08.626Z",
+ "updatedAt": "2026-11-16T17:08:53.512Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -153714,8 +153714,8 @@
    "pr": "#712",
    "priority": "P1",
    "createdAt": "2026-11-15T13:36:18.858Z",
-   "updatedAt": "2026-11-16T16:31:06.531Z",
-   "builtAt": "2026-11-16T16:31:06.531Z",
+   "updatedAt": "2026-11-16T17:08:51.405Z",
+   "builtAt": "2026-11-16T17:08:51.405Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -154621,8 +154621,8 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-16T16:31:06.531Z",
-     "note": "PR #712 (claude/phone-connect-small-android-companion)",
+     "doneAt": "2026-11-16T17:08:51.405Z",
+     "note": "",
      "uid": "st-mwjadomf018anu",
      "createdAt": "2026-11-16T13:15:36.513Z"
     }
