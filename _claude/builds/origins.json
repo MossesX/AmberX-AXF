@@ -8819,6 +8819,18 @@
     }
    ]
   },
+  "to-do-manager-fully-voice-mcp-controlled": {
+   "said": "Everything needs to be voice controlled. Make a new list called New build and a note called Build.",
+   "at": "2026-11-16T20:22:23.083Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "token-control": {
    "said": "new plugin, powerful API and MCP and CLI server/client that can change every single token (theme, style, layout); every layout parameter is a token. Connect MCP, API and CLI to Claude and axHub. API and MCP control every aspect of AmberX tasks, to-dos and notes, and the console's planner (Brett: both Plan Studio and the Build orchestrator). Extensive interactive documentation. Folds in the dead VPS build amberx-full-mcp-api (do not relaunch it separately). Overlaps the blocked interactive docs engine (docs-engine/plan.md): reuse it if it lands first.",
    "at": "2026-11-02",

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T20:20:21.122Z",
+ "updatedAt": "2026-11-16T20:22:25.475Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -162094,6 +162094,37 @@
      "createdAt": "2026-11-16T19:33:52.963Z"
     }
    ]
+  },
+  {
+   "id": "to-do-manager-fully-voice-mcp-controlled",
+   "title": "To-do manager fully voice and MCP controlled",
+   "category": "",
+   "detail": "The To-do manager plugin (todo-manager) has REST routes (/api/plugins/todo-manager: lists, entries, types) but no MCP tools, console actions or voice phrases, so it can't be driven by voice. Expose every action: create/rename/reorder/delete lists, add/edit/move/complete/delete notes, to-dos and tasks, search, export, through plugin-commands MCP tools, console-control addresses, the CLI and AmberX voice ('make a list called X', 'add a note called Y to X'). Add a CI check that fails when any plugin has REST routes with no MCP/voice twin. Tests, land through the orchestrator.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-16T20:22:23.083Z",
+   "updatedAt": "2026-11-16T20:22:23.083Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Everything needs to be voice controlled. Make a new list called New build and a note called Build.",
+    "at": "2026-11-16T20:22:23.083Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
