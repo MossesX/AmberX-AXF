@@ -22,6 +22,7 @@ export * from './engines/designpackage';
 export * from './engines/skin';
 export * from './engines/brand';
 export * from './engines/icon-pack';
+export * from './engines/icon-map';
 export * from './engines/interface';
 export * from './engines/roller';
 export * from './engines/behavior';
