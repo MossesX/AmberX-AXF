@@ -3,9 +3,14 @@
  * before, so nothing looks different until a skin or this one grid sets a token). spec/check-component-tokens.mjs fails on a
  * general colour token or a literal in this file. Header cells are quiet framework buttons: their text follows the button
  * asset; the row-tone edge keeps the status colours (success / warning / danger / info are semantics, not grid style). */
-.axf-grid { --axf-grid-pad: calc(var(--fx-space) * 0.5); min-width: 0; color: var(--fx-grid-row-text); border-radius: var(--fx-grid-radius); box-shadow: 0 0 0 var(--fx-border-w) var(--fx-grid-outer-border); }
+/* One column definition (hotfix Nov 16 2026): the grid root owns the only grid-template-columns (DataGrid computes it from the
+ * column specs, gridTemplate()); the header and every row are subgrids spanning it, so a cell can't size its own track and a
+ * long row can't push its columns away from the header. Group headers, details and the empty line span every track. The gap
+ * and padding are the same tokens on the header and the rows. */
+.axf-grid { --axf-grid-pad: calc(var(--fx-space) * 0.5); display: grid; column-gap: var(--fx-dens-gap-md); align-content: start; min-width: min-content; color: var(--fx-grid-row-text); border-radius: var(--fx-grid-radius); box-shadow: 0 0 0 var(--fx-border-w) var(--fx-grid-outer-border); }
 .axf-grid.is-compact { --axf-grid-pad: 0; }
-.axf-grid-head, .axf-grid-row { display: grid; grid-template-columns: var(--axf-grid-cols); align-items: center; gap: var(--fx-dens-gap-md); padding: var(--axf-grid-pad) var(--fx-dens-gap-xl); min-width: max-content; position: relative; }
+.axf-grid-head, .axf-grid-row { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; align-items: center; row-gap: var(--fx-dens-gap-xs); padding: var(--axf-grid-pad) var(--fx-dens-gap-xl); min-width: 0; position: relative; }
+.axf-grid-group, .axf-grid-detail, .axf-grid-empty { grid-column: 1 / -1; min-width: 0; }
 .axf-grid-head { position: sticky; top: 0; z-index: 3; color: var(--fx-grid-header-text); font-weight: var(--fx-grid-header-weight); background: color-mix(in srgb, var(--fx-grid-header-bg) calc(var(--fx-grid-opacity) * 100%), transparent); border-bottom: var(--fx-border-w) solid var(--fx-grid-header-border); box-shadow: var(--fx-grid-sticky-shadow); }
 .axf-grid-hcell { justify-content: flex-start; min-width: 0; }
 .axf-grid-hcell[aria-sort='ascending'] > .fx-icon, .axf-grid-hcell[aria-sort='descending'] > .fx-icon { color: var(--fx-grid-sort-arrow); }
@@ -18,7 +23,7 @@
 .axf-grid-row:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-grid-focus-ring); outline-offset: calc(var(--fx-border-w) * -2); }
 .axf-grid-row[aria-disabled='true'] { opacity: var(--fx-grid-disabled-opacity); }
 .axf-grid-cell { display: flex; align-items: center; min-width: 0; overflow: hidden; }
-.axf-grid-group { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); color: var(--fx-grid-group-header-text); background: var(--fx-grid-group-header-bg); border-bottom: var(--fx-border-w) solid var(--fx-grid-line-color); min-width: max-content; position: relative; user-select: none; -webkit-user-select: none; }
+.axf-grid-group { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); color: var(--fx-grid-group-header-text); background: var(--fx-grid-group-header-bg); border-bottom: var(--fx-border-w) solid var(--fx-grid-line-color); position: relative; user-select: none; -webkit-user-select: none; }
 .axf-grid-group--d0 { font-weight: 700; } .axf-grid-group--d1 { background: var(--fx-grid-group-header-bg-nested); font-weight: 600; } .axf-grid-group--d2, .axf-grid-group--d3 { background: var(--fx-grid-group-header-bg-deep); }
 .axf-grid-gtitle { font-weight: inherit; }
 .axf-grid-gsummary { font-size: var(--fx-type-root-sm); color: var(--fx-grid-group-summary-text); font-weight: normal; }
@@ -29,5 +34,5 @@
 .axf-grid-edge--muted { --axf-grid-edge: var(--fx-grid-line-color); } .axf-grid-edge--success { --axf-grid-edge: var(--fx-success); } .axf-grid-edge--accent { --axf-grid-edge: var(--fx-accent); }
 .axf-grid-edge--danger { --axf-grid-edge: var(--fx-danger); } .axf-grid-edge--warning { --axf-grid-edge: var(--fx-warning); } .axf-grid-edge--info { --axf-grid-edge: var(--fx-info); }
 /* row hooks (grid-hook@1): the hook buttons sit with the expand button; the tail track sizes to them, nothing overlaps */
-.axf-grid-tail { display: inline-flex; align-items: center; justify-content: flex-end; gap: calc(var(--fx-space) / 4); min-width: 0; }
+.axf-grid-tail { display: inline-flex; min-width: calc(var(--fx-space) * 4); align-items: center; justify-content: flex-end; gap: calc(var(--fx-space) / 4); min-width: 0; }
 .axf-grid-hooks { display: inline-flex; align-items: center; gap: calc(var(--fx-space) / 4); }

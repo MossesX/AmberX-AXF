@@ -108,6 +108,19 @@ function columnFields<R>(columns: GridColumn<R>[]): DatasetField<R>[] {
 }
 const flatRows = <R,>(gs: GridGroup<R>[]): R[] => gs.flatMap((g) => [...g.rows, ...flatRows(g.groups)]);
 
+/** The grip track (drag handle, nesting indent) before the columns, and the tail track after them (expand + row hooks). */
+export const GRID_GRIP = 'calc(var(--fx-space) * 3)';
+export const GRID_TAIL = 'calc(var(--fx-space) * 4)';
+/** With row hooks the tail holds a varying number of buttons: one shared track as wide as the widest row's (cells never size themselves). */
+export const GRID_TAIL_HOOKS = 'max-content';
+/**
+ * The grid's one column definition: grip, every shown column's width in order, tail. Set on the grid root; the header and
+ * every row are subgrids of it, so all of them share the same tracks.
+ */
+export function gridTemplate(widths: readonly string[], tail: string = GRID_TAIL): string {
+  return [GRID_GRIP, ...widths, tail].join(' ');
+}
+
 type Line<R> = { kind: 'group'; g: GridGroup<R>; depth: number } | { kind: 'row'; r: R; depth: number };
 
 export function DataGrid<R>(p: DataGridProps<R>) {
@@ -116,11 +129,12 @@ export function DataGrid<R>(p: DataGridProps<R>) {
   const drag = config.drag && p.onMove ? config.drag : false;
   const cols = p.columns.filter((c) => c.fixed || !config.columnMenu || !p.hidden.includes(c.id));
   useDatasetsRevision(); // row hooks registered later redraw the grid
-  const tail = p.rowRef && anyRowHooks() ? 'minmax(calc(var(--fx-space) * 4), max-content)' : 'calc(var(--fx-space) * 4)';
+  const tail = p.rowRef && anyRowHooks() ? GRID_TAIL_HOOKS : GRID_TAIL;
   // component-tokens@1: this one grid's own token values (axf.tokens.instances → --fx-grid-* on the element) win over the skin's
   const [, tokensTick] = useState(0);
   useEffect(() => rt.settings.onChange(INSTANCE_TOKENS_KEY, () => tokensTick((n) => n + 1)), [rt]);
-  const template = { '--axf-grid-cols': `calc(var(--fx-space) * 3) ${cols.map((c) => c.width).join(' ')} ${tail}`, ...instanceTokenVars(rt.settings.get(INSTANCE_TOKENS_KEY), 'grid', p.id) } as CSSProperties;
+  const columnsTemplate = gridTemplate(cols.map((c) => c.width), tail);
+  const template = { gridTemplateColumns: columnsTemplate, ...instanceTokenVars(rt.settings.get(INSTANCE_TOKENS_KEY), 'grid', p.id) } as CSSProperties;
   const headerTarget = `axf-grid-header:${p.id}`;
   const dsId = p.dataset === false ? '' : p.dataset ?? p.id;
   const all = useMemo(() => flatRows(p.groups), [p.groups]);
