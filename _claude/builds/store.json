@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7060,
- "updatedAt": "2026-11-16T23:38:45.933Z",
+ "rev": 7061,
+ "updatedAt": "2026-11-16T23:39:07.351Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -179654,7 +179654,7 @@
    "pr": "#762",
    "priority": "P0",
    "createdAt": "2026-11-13T07:10:15.600Z",
-   "updatedAt": "2026-11-16T23:37:51.614Z",
+   "updatedAt": "2026-11-16T23:39:05.420Z",
    "builtAt": "2026-11-16T23:37:25.374Z",
    "notes": [
     {
@@ -179712,6 +179712,10 @@
     {
      "text": "Session on hulu0241 stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-16T23:37:46.272Z"
+    },
+    {
+     "text": "Session axf-remove-molly-completely-delete-the-molly-add-on---earl on hulu0241 ended (exit 0); the build was already built.",
+     "at": "2026-11-16T23:39:05.420Z"
     }
    ],
    "approvals": [],
@@ -179732,14 +179736,23 @@
     "queuedAt": "2026-11-16T23:17:03.631Z",
     "queuedBy": "brett",
     "account": "hulu0241",
-    "session": "axf-remove-molly-completely-delete-the-molly-add-on---earl",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "phase": "",
     "launchedAt": "2026-11-16T23:25:51.201Z",
     "runs": 1,
     "crashes": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-16T23:39:04.400Z",
+     "exit": 0,
+     "outcome": "finished",
+     "reason": "all-done",
+     "stepsLeft": 0,
+     "account": "hulu0241",
+     "session": "axf-remove-molly-completely-delete-the-molly-add-on---earl",
+     "phase": "Phase 1"
+    },
     "split": {
      "at": "2026-11-13T07:12:11.360Z",
      "by": "orchestrator",
@@ -180031,7 +180044,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 62,
+   "rev": 63,
    "deleted": false,
    "deletedAt": "",
    "pending": {
