@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6541,
- "updatedAt": "2026-11-16T16:43:39.747Z",
+ "rev": 6542,
+ "updatedAt": "2026-11-16T16:44:11.528Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -90596,7 +90596,7 @@
    "branch": "claude/apps-control-surface",
    "pr": "#322",
    "createdAt": "2026-11-04T15:00:59.141Z",
-   "updatedAt": "2026-11-15T00:45:38.282Z",
+   "updatedAt": "2026-11-16T16:44:06.666Z",
    "builtAt": "2026-11-04T15:37:57.962Z",
    "notes": [
     {
@@ -90618,6 +90618,10 @@
     {
      "text": "molly-one-shell (Nov 8 2026) builds on this PR: its shell-surface@1 / menu index / layout steps reuse it. Land it before molly-one-shell phase 3 (Opus UI) starts, or that phase rebases on it.",
      "at": "2026-11-08T16:59:20.451Z"
+    },
+    {
+     "text": "Note from build remove-old-molly-app-project-keep-axf (Nov 16 2026): the Molly app is removed (apps/molly, molly.amberxai.com, the molly agent add-on; the guide is now gizmo-guide). Drop the Molly part of this build; the rest stands.",
+     "at": "2026-11-16T16:44:06.666Z"
     }
    ],
    "approvals": [
@@ -90763,7 +90767,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -149188,7 +149192,7 @@
    "title": "Inline edit plugin: install in console, Molly and AmberX web (not Android); Molly never renders a plugin twice",
    "category": "",
    "detail": "Amends the inline element editing build. 1) Install the plugin in the console, Molly and AmberX web. Not the AmberX Android app. 2) Molly rule for every plugin: when a console page is open inside Molly, render the console's plugin only if Molly doesn't already have that plugin, so nothing ever renders twice.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -149197,7 +149201,7 @@
    "pr": "#471",
    "priority": "P1",
    "createdAt": "2026-11-10T16:40:38.588Z",
-   "updatedAt": "2026-11-14T23:31:51.006Z",
+   "updatedAt": "2026-11-16T16:43:52.424Z",
    "builtAt": "",
    "notes": [
     {
@@ -149231,6 +149235,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-14T23:31:51.006Z"
+    },
+    {
+     "text": "Note from build remove-old-molly-app-project-keep-axf (Nov 16 2026): the Molly app is removed (apps/molly, molly.amberxai.com, the molly agent add-on; the guide is now gizmo-guide). Drop the Molly part of this build; the rest stands.",
+     "at": "2026-11-16T16:43:52.424Z"
     }
    ],
    "approvals": [],
@@ -149540,7 +149548,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 95,
+   "rev": 96,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161340,7 +161348,7 @@
    "pr": "#488",
    "priority": "P0",
    "createdAt": "2026-11-10T23:46:07.460Z",
-   "updatedAt": "2026-11-15T00:39:06.502Z",
+   "updatedAt": "2026-11-16T16:43:58.133Z",
    "builtAt": "2026-11-11T00:38:01.223Z",
    "notes": [
     {
@@ -161418,6 +161426,10 @@
     {
      "text": "Headless run axf-ai-assistant-in-molly-console-drives-by-api-open--lenny: brief only · start 11.0K tokens ($0.03) · cost $0.72 · 35 turns · 6 tools, MCP none",
      "at": "2026-11-11T00:41:29.090Z"
+    },
+    {
+     "text": "Note from build remove-old-molly-app-project-keep-axf (Nov 16 2026): the Molly app is removed (apps/molly, molly.amberxai.com, the molly agent add-on; the guide is now gizmo-guide). Drop the Molly part of this build; the rest stands.",
+     "at": "2026-11-16T16:43:58.133Z"
     }
    ],
    "approvals": [
@@ -161557,7 +161569,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {

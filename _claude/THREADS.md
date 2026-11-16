@@ -808,9 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 14:53 UTC · `build-rules-tab-gate-rules-vps-owns` note (all) · orchestrator
-- 2026-11-15 14:54 UTC · `phone-connect-small-android-companion` → running, note (all) · mcp
-- 2026-11-15 14:54 UTC · `phone-connect-small-android-companion` → queued (all) · mcp
 - 2026-11-15 14:55 UTC · `shipped-features-organized-sortable` note (all) · mcp
 - 2026-11-15 14:55 UTC · `vps-sends-shipped-features-every-merge` → running, note (all) · mcp
 - 2026-11-15 14:55 UTC · `phone-connect-small-android-companion` → running, note (all) · pipeline
@@ -1208,6 +1205,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 16:43 UTC · `molly-gap-expenses-token-handoff` → archived, note (all) · cli
 - 2026-11-16 16:43 UTC · `molly-gap-console-warm-token` → archived, note (all) · cli
 - 2026-11-16 16:43 UTC · `molly-gap-axhub-cors-live` → archived, note (all) · cli
+- 2026-11-16 16:43 UTC · `inline-edit-plugin-install-in-console-molly-and` → running, note (all) · orchestrator
+- 2026-11-16 16:43 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
+- 2026-11-16 16:44 UTC · `apps-control-surface` note (all) · orchestrator
 
 ## Token passes (log)
 
