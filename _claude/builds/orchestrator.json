@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T13:23:44.956Z",
+ "updatedAt": "2026-11-16T13:23:58.072Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -120979,7 +120979,7 @@
    "title": "Fix: a build whose session finishes its phase (e.g. the Fable steps) with steps left goes back to Pending instead of the Queue, so the next phase never starts and slots sit empty. Send it back to the Queue and launch the next phase automatically",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -120987,8 +120987,8 @@
    "pr": "#685",
    "priority": "P0",
    "createdAt": "2026-11-13T10:35:03.675Z",
-   "updatedAt": "2026-11-16T13:22:28.158Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T13:23:41.716Z",
+   "builtAt": "2026-11-16T13:23:41.716Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -121351,8 +121351,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T13:23:41.716Z",
      "note": "",
      "uid": "st-mweuedao0cfsxf",
      "createdAt": "2026-11-13T10:37:10.223Z"
