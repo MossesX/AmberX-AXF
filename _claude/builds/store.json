@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6475,
- "updatedAt": "2026-11-16T14:16:45.126Z",
+ "rev": 6476,
+ "updatedAt": "2026-11-16T14:17:08.154Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -226032,7 +226032,7 @@
    "pr": "#717",
    "priority": "P0",
    "createdAt": "2026-11-14T22:19:00.612Z",
-   "updatedAt": "2026-11-16T14:16:08.095Z",
+   "updatedAt": "2026-11-16T14:17:06.592Z",
    "builtAt": "2026-11-16T14:16:08.095Z",
    "notes": [
     {
@@ -226150,6 +226150,10 @@
     {
      "text": "Headless run axf-console-look-becomes-default-axhub-skin--rhonda: brief only · start 11.5K tokens ($0.03) · cost $14.14 · 266 turns · 6 tools, MCP none",
      "at": "2026-11-16T14:16:08.095Z"
+    },
+    {
+     "text": "Session axf-console-look-becomes-default-axhub-skin--rhonda on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-16T14:17:06.592Z"
     }
    ],
    "approvals": [
@@ -226189,18 +226193,18 @@
     "queuedAt": "2026-11-14T22:19:03.857Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-console-look-becomes-default-axhub-skin--rhonda",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-16T13:24:18.129Z",
     "runs": 3,
     "lastRun": {
-     "at": "2026-11-15T00:00:15.489Z",
+     "at": "2026-11-16T14:17:05.961Z",
      "exit": 0,
-     "outcome": "requeued",
-     "stepsLeft": 14,
+     "outcome": "finished",
+     "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-console-look-becomes-default-axhub-skin--paulie"
+     "session": "axf-console-look-becomes-default-axhub-skin--rhonda"
     },
     "split": {
      "at": "2026-11-14T22:21:08.816Z",
@@ -226745,7 +226749,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
