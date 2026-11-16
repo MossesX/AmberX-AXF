@@ -1,0 +1,79 @@
+# Remove the old Molly app from the project (keep axf-molly)
+
+Build `remove-old-molly-app-project-keep-axf` (Opus). Brett, Nov 16 2026: "Molly's dead. Kill it. Make sure all the
+references to Molly are removed from the project. We can keep the axf-molly name."
+
+Built together with the pending build `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the`
+(Nov 13 2026: delete the molly add-on, `_offer_molly`, the molly-guide plugin and anything that pops Molly up). It touches
+the same files, so it is done here and closed with this build's branch.
+
+## Being removed
+
+Inventory: `git grep -i molly` across apps/, framework/, deploy/, _claude/, .github/, help and glossary, excluding
+`axf-molly`, `.axf-molly/` and `AXF_MOLLY*` worker names. 415 files hit; most are history (see "Kept as history").
+Mark: **remove**, **move to console** (function kept, Molly name dropped), **keep (axf-molly)**.
+
+### The Molly app and its deploy
+
+| Where | What | Mark |
+|---|---|---|
+| `apps/molly/` (1007 files) | the app: shell, FrameDeck, plugins (xlayout, banners, toolbar-designer, navigation, expenses), baked `src/axf`, assets, Dockerfile, `deploy/install.sh` + `nginx.conf`, manifests, `_claude/` | remove |
+| `.github/workflows/android.yml` | `molly` scope output, the "molly — re-bake and build" job; comments on check-xlayout / check-banner-strip | remove (comments reworded) |
+| `framework/cli/ci-scope.mjs`, `framework/spec/check-ci-scope.mjs` | `molly` CI scope key and `apps/molly/` rule | remove |
+| `framework/schemas/shared-assets.json` (+ baked copies) | `apps/molly` in the shared-asset app list | remove |
+| `framework/assets/settings/chrome-*-molly` | per-app chrome settings copies (if any) | remove |
+| `_claude/rules/RULES.md` | project manifest list (eleven → ten), "Molly" in the tab-group rule | remove |
+| `framework/core/deploy-log.mjs`, `framework/schemas/deploy-log.json`, `feature-ledger.json` | `molly` deploy target (molly.amberxai.com) | remove |
+| `apps/axhub-web/deploy/nginx.conf`, `apps/amberx-droid/server/main.py` | `frame-ancestors https://molly.amberxai.com` | remove |
+| `apps/expenses/src/server/cors.ts` + routes + test | default CORS origin `https://molly.amberxai.com` | remove (env `EXPENSES_CORS_ORIGINS` stays) |
+| `apps/expenses/CLAUDE.md`, `deploy/install.sh` | "Molly frames it", "same shape as apps/molly" | remove |
+| DNS `molly.amberxai.com` A → 31.97.13.252 | the app's subdomain | remove (s10) |
+| `framework/assets/xlayout/molly.json` | the xLayout asset only Molly loaded | remove |
+| `framework/core/engines/xlayout.ts`, `chrome.ts`, `embed.ts`, `runtime.ts`, `react/bannerStrip.ts`, `Chrome.tsx`, `navstyle*.ts/.mjs`, `EmbedTakes.kt`, `asset-types.json` | doc comments "Molly as one app", default host id `molly` | remove (engines stay: generic multi-app host, named `host`) |
+| `framework/spec/check-*.mts`, `gen-fixtures.mts`, fixtures `xlayout.json`, `chrome.json`, `chrome-settings.json` | `molly` used as the sample host / app id | remove (sample renamed, fixtures regenerated) |
+| `framework/cli/animations.mjs`, `skins.mjs`, `plugin-lifecycle.mjs` | `molly` app alias / doc mention | remove |
+| `apps/console-web/plugins/console-commands` (server, web, tests), `framework/core/engines/console-commands.mjs`, `framework/spec/CONTROL.md` | "a console inside Molly" wording and `molly` test host | remove (generic host wording) |
+| `apps/console-web/plugins/glossary-index/catalog.mjs`, `demonstration-designer/registry.mjs` | `molly` in the UI registry app list | remove |
+| `framework/spec/PORTING.md`, `APPEARANCE-SOURCE.md` | Molly lines in deferred gaps | remove / reword |
+| `apps/console-web/plugins/build-orchestrator/pipeline.mjs` | `apps/molly/node_modules` in the cleanup list | remove |
+
+### The Molly agent and the Molly guide
+
+| Where | What | Mark |
+|---|---|---|
+| `apps/console-web/plugins/agent-manager/addons/molly/` | the Molly agent add-on bundle | remove |
+| `agent-manager/server/__init__.py` `_offer_molly()` + `mollyOffered` setting | auto-install on start | remove (one-time uninstall of an installed copy) |
+| `agent-manager/test.py`, `agent-voice` tests, `ui-review/test.py`, `whats-shipped/test.py`, `push-banner/land/land.test.mjs`, `demonstration-designer/server_test.py` | `molly` as sample agent / data | remove (renamed samples) |
+| `apps/console-web/plugins/molly-guide/` (already titled "Gizmo guide") | walkthrough window, `/ask`, `/walkthroughs`, AmberX walkthrough re-record, `molly.*` hidden function aliases, `molly-guide.*` setting keys | move to console: renamed `gizmo-guide`, aliases retired, settings and data migrated once |
+| `apps/console-web/src/control/inventory.json` | `molly.*` functions, `molly-guide` sub-tab, settings, plugin row | remove (retired; regenerated) |
+| `apps/amberx-droid/server/main.py` + `test_server.py`, `src/plugins/ai/web/client.ts`, `commands/web/*`, `test.mjs`, `walkthrough/*` | `/api/ai/molly` routes, `AMBERX_MOLLY_PLUGIN`, `molly` command step, `checkMolly` | remove (renamed `gizmo`; a saved custom command with the old step still loads) |
+| `apps/amberx-droid/deploy/install.sh` | "Molly: connected to the console's token" | remove (Gizmo wording) |
+| `framework/libs/claude-session/core.ts` (+ check) | `replaces: 'Molly'`, "Ask Molly" → "Ask Gizmo" rename helper | remove |
+| `agent-manager/addons/gizmo/addon.json`, `agent-swarm/agents/*` | "replaced agent Molly", molly-guide pointers | remove |
+| `apps/console-web/src/assets/help/console.json`, `glossary-index` (README, demos.mjs, plugin.json, terms.json), `maintenance/docs/README.md`, `demonstration-designer`, `framework/core/engines/demo-rules.mjs`, `help-rules.mjs`, job-type assets | "Molly's guide", "Molly and friends" | remove (reworded to Gizmo guide / walkthrough guide) |
+| `framework/spec/token-manifest-baseline.json` | `molly-guide` plugin id | remove (renamed) |
+| `apps/console-web/plugins/build-breaker/data/asks.jsonl` | generated asks list with `plg-molly` | remove (row dropped) |
+| `framework/catalog/catalog.json`, `status.json`, `tracker.json` | Molly features | remove (s14) |
+| `_claude/memory/STATUS.md`, `docs/voice-command-center.md`, `CLAUDE.md`, `_claude/shared/rules/RULES.md`, `_claude/shared/memory/*` | current-state Molly lines | remove (s12) |
+
+### Keep (axf-molly)
+
+| Where | Why |
+|---|---|
+| `framework/core/gate-rules.mjs` (`OWNERS`, `STATE_SOURCES`), `framework/schemas/gate-rules.json`, `json/gate-rule*.schema.json`, `json/lander-state.schema.json`, `framework/spec/fixtures/gate-rules.json`, `check-gate-rules.mjs`, `GATE.md`, `PORTING.md` gate row | the `axf-molly` container owner name |
+| `apps/console-web/plugins/gate/` (README, gate-store.mjs, lander.mjs, help.json, plugin.json, web/RulesTab.tsx), `framework/catalog/catalog.json` gate note | same |
+| builds `axf-molly-container-orchestrator-gate` (store, THREADS) | the axf-molly container build |
+
+Guard list (must not change in this build): `framework/core/gate-rules.mjs`, `framework/schemas/gate-rules.json`,
+`framework/schemas/json/gate-rule.schema.json`, `framework/schemas/json/gate-rule-set.schema.json`,
+`framework/schemas/json/lander-state.schema.json`, `framework/spec/fixtures/gate-rules.json`,
+`framework/spec/check-gate-rules.mjs`, `framework/spec/GATE.md`, `apps/console-web/plugins/gate/**`, `.axf-molly/`
+(not in the repo), and the `axf-molly` container definitions on the VPS.
+
+### Kept as history (not edited)
+
+`changes/**`, `sessions/archive/**`, `_claude/builds/journal/**`, `_claude/builds/shipped/**`, `_claude/THREADS.md`
+rows, old build reports (`_claude/builds/reports/molly-*.md`), dated handoffs and session notes
+(`_claude/memory/handoff-*`, `_claude/sessions/*`, `_claude/shared/notes/**`), and the build records in
+`_claude/builds/store.json` / `orchestrator.json` / `origins.json` / `framework/plan/pending.json` (exports, changed only
+through orchestrator.mjs / plans.mjs).
