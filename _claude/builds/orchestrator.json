@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:03:57.644Z",
+ "updatedAt": "2026-11-16T19:04:18.056Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -159310,7 +159310,7 @@
    "title": "Settings interface and gear for every plugin",
    "category": "",
    "detail": "Brett: every plugin needs a settings interface. Audit: 44 plugins with a screen; 10 have no settings tab (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review), and hub-sync's screen has no gear. Check plugins WITHOUT a screen too. Give EVERY plugin a Settings → Plugins sub-tab (at minimum enable/disable, info, logs, plus its real options), and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when any plugin lacks a settings tab, or a plugin screen lacks the gear. Full API parity.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -159318,7 +159318,7 @@
    "pr": "#725",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:38.814Z",
-   "updatedAt": "2026-11-16T19:03:11.530Z",
+   "updatedAt": "2026-11-16T19:03:59.405Z",
    "builtAt": "",
    "notes": [
     {
@@ -159376,6 +159376,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 25 steps left: back in Pending for Brett.",
      "at": "2026-11-16T19:03:11.530Z"
+    },
+    {
+     "text": "Headless run axf-settings-interface-gear-every-plugin--gina: brief only · start 18.8K tokens ($0.14) · cost $8.80 · 79 turns · 6 tools, MCP none",
+     "at": "2026-11-16T19:03:59.405Z"
     }
    ],
    "approvals": [
@@ -160726,16 +160730,26 @@
    "title": "Reset all button for every asset override in Appearance",
    "category": "",
    "detail": "Settings > Appearance, the 'N assets are controlled by their own settings' row (AssetsWithEdits in framework/react/components/ChromeContext.tsx) only has a Reset all per asset. Add one 'Reset all' button on the header row that clears every asset override at once (chrome.reset for each, one confirm, one undo), so every asset follows the skin again. Same action through REST, MCP, CLI and voice (chrome.reset-all). Tests, land.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-16T19:03:55.794Z",
-   "updatedAt": "2026-11-16T19:03:55.794Z",
+   "updatedAt": "2026-11-16T19:04:10.501Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-16T19:04:03.915Z"
+    },
+    {
+     "text": "Brett Nov 16: also add a 'Save as new skin' button in Settings > Appearance: saves the current look (skin + every asset override) as a new skin@1, with a field to type its name; it shows up in the skin list and the hub (can be picked hub-wide). Same action on REST, MCP, CLI and voice (skins.save-as <name>).",
+     "at": "2026-11-16T19:04:10.501Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {

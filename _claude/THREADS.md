@@ -809,9 +809,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 13:20 UTC · `duplicate-gate-vps-checks-shipped` s2 done (all) · orchestrator
-- 2026-11-16 13:21 UTC · `fix-build-whose-session-finishes-phase-e` s10 done (all) · orchestrator
-- 2026-11-16 13:22 UTC · `fix-build-whose-session-finishes-phase-e` s11 done (all) · orchestrator
 - 2026-11-16 13:22 UTC · `ui-manager-floating-window-to-select-any` → queued, note (all) · build:fix-build-whose-session-finishes-phase-e
 - 2026-11-16 13:22 UTC · `demo-video-series-three-minute-browser` → queued, note (all) · build:fix-build-whose-session-finishes-phase-e
 - 2026-11-16 13:22 UTC · `console-look-becomes-default-axhub-skin` → queued, note (all) · build:fix-build-whose-session-finishes-phase-e
@@ -1209,6 +1206,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 19:03 UTC · `all-settings-interfaces-open-floating` note (all) · pipeline
 - 2026-11-16 19:03 UTC · `settings-interface-gear-every-plugin` → pending, note (all) · pipeline
 - 2026-11-16 19:03 UTC · `reset-all-button-every-asset-override` added (0 steps) (all) · console
+- 2026-11-16 19:03 UTC · `settings-interface-gear-every-plugin` → running, note (all) · orchestrator
+- 2026-11-16 19:04 UTC · `reset-all-button-every-asset-override` → queued, note (all) · console
+- 2026-11-16 19:04 UTC · `reset-all-button-every-asset-override` note (all) · mcp
 
 ## Token passes (log)
 
