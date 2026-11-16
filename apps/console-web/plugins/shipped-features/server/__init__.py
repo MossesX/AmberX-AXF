@@ -39,7 +39,12 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import PlainTextResponse
 
+import plugin_services
+
+from . import health as merge_watch_health
+
 router = APIRouter()
+merge_watch_health.register_later(plugin_services)  # systems check item: merges to main not sent (merge-watch@1)
 FOLDER = Path(__file__).resolve().parents[1].name
 ROOT = Path(__file__).resolve().parents[5]  # the repo root (/axf in the console image)
 CLI = Path(__file__).resolve().parents[1] / "ledger" / "ledger.mjs"

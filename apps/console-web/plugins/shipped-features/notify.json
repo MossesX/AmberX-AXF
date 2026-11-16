@@ -1,0 +1,20 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "shipped.merge-watch.failed",
+      "label": "Merges not sent to Shipped features",
+      "group": "builds",
+      "app": "console",
+      "source": "Shipped features merge watch",
+      "description": "A merge to main failed to reach Shipped features three times (merge-watch@1): which merges, since when, the last error. Pushed to the phone once per failing spell; cleared when every merge has gone out. The systems check item 'Merges to main reach Shipped features' has the Auto fix that resends them.",
+      "match": {
+        "source": "shipped-features",
+        "keyPrefix": "shipped:merge-watch"
+      },
+      "setting": "notify.blocked",
+      "push": true,
+      "priority": "high"
+    }
+  ]
+}
