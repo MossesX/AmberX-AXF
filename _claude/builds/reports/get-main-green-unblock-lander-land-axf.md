@@ -202,3 +202,21 @@ Queue history so far:
 - 19:25, run 3: after bd8a8f0ed, pending.
 
 In a clean env the whole Alerts/MCP step (114 commands) passes locally. The only exceptions are host ones: port 7097 is in use, and live tmux sessions take the agent-slots test's slots.
+
+### How #628 reached main red (and the guard)
+
+#628 (`all-settings-interfaces-open-floating`) merged at 19:01 while the lander had it **blocked as red**. Its own build session ran `gh pr merge 628 --merge --auto`. GitHub's native auto-merge then merged it as soon as the branch-protection checks passed, and those are only the light ones, so the queue's full CI never ran. It brought two new reds onto main:
+- the framework help changed with only the amberx-droid copy updated (`check-help`, `shared-assets check`);
+- a TabGroup id given as a constant the console-control inventory can't read (the ratchet).
+
+Both are fixed in #724 (bd8a8f0ed, then the commit before bf3d87e43). Along the way, `systems-check/test.py` "ask first" turned out flaky on a host over the disk limit (81% now): the monitor's first real run tried the real Auto fix. The test now stops the monitor, clears the disk record and saves "ask" before the disk turns red. 5/5 runs pass.
+
+**Guard:** I tried to turn GitHub auto-merge off for the repo (`allow_auto_merge=false`), but the console's token can't change repo settings (403). So the push banner now registers a systems-check item, **"PRs land through the merge queue only"**. It is amber while the queue is on and the repo allows auto-merge, and it carries the exact fix (untick "Allow auto-merge", or the `gh api` call with an admin token).
+
+### data-container (#704) light checks
+
+#704's light PR checks failed on `shipped-features/test.py` (`No module named 'data_store'`). Running the light list in node:22 with Python 3.11 then found:
+- **`backup.py`** used `tarfile`'s `filter='data'`, which Python 3.11.2 lacks, so every backup verify failed with a `TypeError`. An `_extract` helper now uses the filter where it exists and the same rules by hand otherwise.
+- **`data-store/test.py`** gave the backup job only 5 s (now 30 s).
+
+All fixed (72cfbbb1a) and merged into the Postgres branch, whose `pg_dump` extracts use the same helper (62fc60196). Light list after the fixes: all pass except systems-check, which #724 fixes on main.
