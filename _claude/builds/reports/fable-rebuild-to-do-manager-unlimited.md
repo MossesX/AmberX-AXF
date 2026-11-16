@@ -18,6 +18,27 @@ confirm + undo) plus Rename, New list inside, and Move to every list's context m
 voice / MCP controlled. That build's s1 also asked for a CI check that fails when any plugin has REST routes with no
 MCP / voice twin (carried into this build's Opus phase, s10 / s21).
 
+## Phase 1 result (Fable, s1–s7)
+
+| Step | What landed | Where |
+|---|---|---|
+| s1 | design notes below (data shape, every entry point, clash check, decisions) | this report |
+| s2 | `todo-tree@1` contract: one node record, any kind in any kind, no depth limit, trash, op log | `schema/todo-tree.json`, `SPEC.md` |
+| s3 | engine part 1: load with repair (orphans, cycles, order keys, done/status), validate, children / ancestors / breadcrumbs / descendants, title paths (`Groceries > Weekend`, ambiguity and not-found answers), fractional order keys (base 62, integer + fraction, `a0` first) | `core/todo-tree.mjs` |
+| s4 | engine part 2: create (by parent id or path, before / after), rename, edit (kind change keeps fields), move (409 `cycle`), reorder, renumber, duplicate (new ids), complete with cascade none / down / up / both, delete to trash with token, restore, collapse / collapseAll, bulk (one op, one token) | `core/todo-tree.mjs` |
+| s5 | engine part 3: op log with `touched[{before, after}]`, generic undo (redo by undoing an undo, trash kept in step, 409 `stale`), `opLog`, `undoable`; Markdown and JSON export of any subtree | `core/todo-tree.mjs`, `core/export.mjs` |
+| s6 | 22 engine tests incl. a schema checker that holds every produced document to the JSON schema; in CI (`android.yml`) | `test/tree.test.mjs`, `test/schema-check.mjs` |
+| s7 | migration `convert` / `migrateFile` / `migrateAll` + CLI (`--dry-run`, `--json`): ids, dates, done kept, `in_progress → doing`, `dueAt → YYYY-MM-DD[THH:mm]`, checklists → child to-dos (`<entry>.<item>`), orphans to the root, old `types` in `meta.legacyTypes`, timestamped 0600 backup first, idempotent; 5 tests in CI | `core/migrate.mjs`, `test/migrate.test.mjs` |
+
+Dry-run against the live VPS stores (read only): base store 4 lists + 1 entry → 5 nodes; `test-sandbox` 10 lists +
+10 entries + 22 checklist items → 42 nodes; no warnings. Nothing on the VPS was changed: the server (s8) runs the
+migration on its first load.
+
+Notes for the Opus phase: the Python server calls the engine through a node CLI (precedent: `agent-slots`,
+`agent-swarm`, `build-breaker`), so s8 needs a thin `core/cli.mjs` that reads the store, applies one operation and
+writes atomically under the server's lock; `project-seed.mjs` must write todo-tree@1 (or call `create`) once the server
+switches; the `commands.auto` tool names in SPEC §10 are the names to declare in s10.
+
 ## s1: design notes (the plugin as it is today)
 
 ### Files
