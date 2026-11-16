@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T16:40:35.726Z",
+ "updatedAt": "2026-11-16T16:40:55.509Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -157652,7 +157652,7 @@
    "pr": "#718",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:34.116Z",
-   "updatedAt": "2026-11-16T16:40:33.493Z",
+   "updatedAt": "2026-11-16T16:40:52.641Z",
    "builtAt": "",
    "notes": [
     {
@@ -157670,6 +157670,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-re-sync-stuck-branches-lander-can-push--earl, shared account login)",
      "at": "2026-11-16T16:33:30.133Z"
+    },
+    {
+     "text": "Headless run axf-re-sync-stuck-branches-lander-can-push--earl: brief only · start 15.0K tokens ($0.05) · cost $1.04 · 32 turns · 6 tools, MCP none",
+     "at": "2026-11-16T16:40:52.641Z"
     }
    ],
    "approvals": [],
