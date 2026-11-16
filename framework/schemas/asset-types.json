@@ -701,7 +701,7 @@
       "optional": true,
       "hideable": true,
       "attach": {
-        "_doc": "data.attach = [{type, id, at: left|center|right, order?}]. Every attachable type (\"attachable\": true: badges and all widgets) is placed; an entry whose asset doesn't exist is skipped. Runtime attachments (rt.attachToBanner) with the same type+id replace the asset's own.",
+        "_doc": "data.attach = [{type, id, at: left|center|right, order?, widget?}]. Every attachable type (\"attachable\": true: badges and all widgets) is placed; an entry whose asset doesn't exist is skipped. Runtime attachments (rt.attachToBanner) with the same type+id replace the asset's own. `widget` is the optional picker hint (attachDefaults.widgetHint), including the widget-shape@1 fields shape / customPath / iconOverride (top-level `widgetShape`).",
         "sides": [
           "left",
           "center",
@@ -1945,7 +1945,48 @@
     "_doc": "Hidden slots. A type with \"hideable\": true gets a Hidden choice in Settings → Appearance → Assets; while hidden its chrome is not drawn (the layout drops its region; a hidden context menu leaves the platform's own menu) and rolls skip it. Only chrome types: hiding a theme, layout, control or policy would leave nothing to draw with. Runtime overrides: settings axf.hide.<type> (Kotlin: KV <key>:hide)."
   },
   "attachDefaults": {
-    "_doc": "Attachable types (\"attachable\": true) aren't slots you pick in Appearance → Assets: their assets are attached to a host by the host's data or by modules at run time, and they're never rolled. Widgets (\"widget\": true) attach to every host (banners, toolbars); badges to hosts with an `attach` block (banners). A host's `attach` block without `types` takes every attachable type; a `widgets` block takes every widget type."
+    "_doc": "Attachable types (\"attachable\": true) aren't slots you pick in Appearance → Assets: their assets are attached to a host by the host's data or by modules at run time, and they're never rolled. Widgets (\"widget\": true) attach to every host (banners, toolbars); badges to hosts with an `attach` block (banners). A host's `attach` block without `types` takes every attachable type; a `widgets` block takes every widget type. An entry may carry a `widget` hint (the module's defaults for the Widgets picker, core/engines/bannerwidgets.ts): the fields in `widgetHint`, every one optional; the person's own choices per widget (setting axf.banners.widgets.<app>.<phone|desktop>[\"<type>:<id>\"]) take the same fields minus label, icon and aliases and always win.",
+    "widgetHint": [
+      "label",
+      "icon",
+      "size",
+      "show",
+      "priority",
+      "hideWhenEmpty",
+      "overflow",
+      "hidden",
+      "aliases",
+      "shape",
+      "customPath",
+      "iconOverride"
+    ]
+  },
+  "widgetShape": {
+    "_doc": "widget-shape@1 (core/engines/bannerwidgets.ts): the outline a widget is clipped to on its host and the icon it draws, chosen per widget. `shape` is one of `shapes` (default circle = today's look, so an unset or migrated widget never changes); `customPath` goes with shape custom only: an SVG path in a 0..100 square (commands M L H V C S Q T A Z, absolute or relative, at most `customPath.max` characters, closed with Z); `iconOverride` = {pack: icon-pack asset id, id: glyph name} draws that glyph instead of the widget's own icon. A shape that isn't listed, a custom shape without a valid path, or an override whose pack or glyph doesn't exist falls back to circle / the widget's own icon: bad input never breaks the bar. Compiled per widget into the tokens below (web: CSS custom properties on the widget's host item; Android twin deferred, spec/PORTING.md).",
+    "frame": "widget-shape@1",
+    "shapes": [
+      "circle",
+      "square",
+      "rounded",
+      "pill",
+      "hexagon",
+      "custom"
+    ],
+    "default": "circle",
+    "customPath": {
+      "max": 400,
+      "commands": "MLHVCSQTAZ",
+      "box": 100
+    },
+    "iconOverride": {
+      "pack": "^[a-z0-9][a-z0-9-]{1,47}$",
+      "id": "^[a-z0-9][a-z0-9._-]{0,63}$"
+    },
+    "tokens": {
+      "radius": "--fx-widget-shape-radius",
+      "clip": "--fx-widget-shape-clip",
+      "icon": "--fx-widget-icon"
+    }
   },
   "skinConfig": {
     "_doc": "skin-config@1 (core/engines/skin-config-rules.mjs): the permission tree Brett sets before the AI makes a skin (category > group > option, each allow / lock / ask). Categories are every registered type a skin can reach (skin-coverage@1) in the order above, plus this one category for the look's extras. A type declares `skinConfig.limits` on its own entry when the AI must be held to a size (`depth` = the deepest `items` nesting it may build, 1 = flat, with `root` naming the field whose lists are the first level; `count:<field>` = how many entries an array field may hold); nothing else is named by hand.",

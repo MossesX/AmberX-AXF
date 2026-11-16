@@ -4050,6 +4050,9 @@
                         "radius": {
                           "$ref": "#/$defs/mode"
                         },
+                        "widgetShape": {
+                          "$ref": "#/$defs/mode"
+                        },
                         "borderWidth": {
                           "$ref": "#/$defs/mode"
                         },

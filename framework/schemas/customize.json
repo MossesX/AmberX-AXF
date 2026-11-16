@@ -315,6 +315,23 @@
       ]
     },
     {
+      "key": "widgetShape",
+      "label": "Widget shape",
+      "group": "Shape",
+      "kind": "choice",
+      "default": "circle",
+      "options": [
+        "circle",
+        "square",
+        "rounded",
+        "pill",
+        "hexagon"
+      ],
+      "types": [
+        "banner"
+      ]
+    },
+    {
       "key": "borderWidth",
       "label": "Border width",
       "group": "Shape",
@@ -571,7 +588,8 @@
     },
     "banner": {
       "root": ".fx-banner",
-      "item": ".fx-banner__item"
+      "item": ".fx-banner__item",
+      "widget": ".fx-banner__item"
     },
     "dialog": {
       "root": ".fx-dialog"

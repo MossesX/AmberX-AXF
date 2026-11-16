@@ -855,6 +855,40 @@ function skinSchemaProperties() {
   };
 }
 
+/** widget-shape@1 (asset-types.json → widgetShape): the shape / customPath / iconOverride fields a widget hint or a per-widget choice carries. */
+function widgetShapeSchemaProperties() {
+  const ws = spec.widgetShape;
+  return {
+    shape: { enum: ws.shapes, description: `The outline the widget is clipped to (default ${ws.default}).` },
+    customPath: { type: 'string', maxLength: ws.customPath.max, description: `SVG path in a 0..${ws.customPath.box} square (commands ${ws.customPath.commands.split('').join(' ')}), shape custom only.` },
+    iconOverride: { type: 'object', required: ['pack', 'id'], properties: { pack: { type: 'string', pattern: ws.iconOverride.pack }, id: { type: 'string', pattern: ws.iconOverride.id } }, additionalProperties: false, description: 'Draw this glyph of this icon pack instead of the widget\'s own icon.' },
+  };
+}
+
+/** The `widget` picker hint on a host attachment (attachDefaults.widgetHint + bannerwidgets.ts). */
+function widgetHintSchema() {
+  const sizes = ['icon', 'compact', 'normal', 'wide'];
+  const shows = ['auto', 'both', 'icon', 'text', 'number'];
+  return {
+    type: 'object',
+    properties: {
+      label: { type: 'string' }, icon: { type: 'string' }, size: { enum: sizes }, show: { enum: shows },
+      priority: { type: 'integer', minimum: 1, maximum: 9 }, hideWhenEmpty: { type: 'boolean' }, overflow: { type: 'boolean' }, hidden: { type: 'boolean' },
+      aliases: { type: 'array', items: { type: 'string' } },
+      ...widgetShapeSchemaProperties(),
+    },
+    additionalProperties: false,
+  };
+}
+
+/** A host's attachment list (banner.attach, toolbar.widgets): type + id + side, optional order and the widget hint. */
+function hostAttachmentsSchema(types, sides) {
+  return {
+    type: 'array',
+    items: { type: 'object', required: ['type', 'id', 'at'], properties: { type: { enum: types }, id: { type: 'string' }, at: { enum: sides }, order: { type: 'number' }, widget: { $ref: '#/$defs/widgetHint' } } },
+  };
+}
+
 /** Emit JSON Schema files (for editor autocompletion) from the type spec. */
 export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   mkdirSync(outDir, { recursive: true });
@@ -877,7 +911,10 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
     // skin@1: the light / dark pair every skin ships (skin-modes@1), the behaviour section, the chrome block (chrome-settings@1 kinds)
     const required = type === 'skin' ? [...ts.required, 'colorThemes'] : ts.required;
     if (type === 'skin') Object.assign(props, skinSchemaProperties());
-    const $defs = type === 'app-menu' || type === 'context-menu' ? { menuItem: menuItemSchema() } : undefined;
+    // widget hosts (banner.attach, toolbar.widgets): typed entries with the widget hint, incl. widget-shape@1
+    const host = hostSpec(type);
+    if (host) props[host.field] = hostAttachmentsSchema(host.types, host.sides);
+    const $defs = type === 'app-menu' || type === 'context-menu' ? { menuItem: menuItemSchema() } : host ? { widgetHint: widgetHintSchema() } : undefined;
     const schema = {
       ...($defs ? { $defs } : {}),
       $schema: 'https://json-schema.org/draft/2020-12/schema',

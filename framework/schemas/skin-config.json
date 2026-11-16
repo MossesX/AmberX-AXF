@@ -23,7 +23,7 @@
   "summary": {
     "categories": 48,
     "groups": 289,
-    "options": 1147,
+    "options": 1148,
     "limits": 4,
     "sections": [
       "Themes",
@@ -1597,6 +1597,7 @@
           "kind": "parts",
           "options": [
             "radius",
+            "widgetShape",
             "borderWidth",
             "shadow"
           ]
