@@ -47,6 +47,20 @@ KEEP_WEEKS = int(os.environ.get('AXF_DATA_BACKUP_WEEKS', '12'))
 PREFIX = 'axf-data-'
 
 
+
+def _extract(tar: "tarfile.TarFile", to, members=None) -> None:
+    """Extract safely on every Python: the 'data' filter where tarfile has it (3.12, 3.11.4+), otherwise the same
+    rules by hand (regular files and folders only, no absolute path, nothing climbing out with ..)."""
+    chosen = list(members) if members is not None else tar.getmembers()
+    if hasattr(tarfile, "data_filter"):
+        tar.extractall(to, members=chosen, filter="data")
+        return
+    for m in chosen:
+        parts = m.name.replace("\\", "/").split("/")
+        if m.name.startswith("/") or ".." in parts or not (m.isfile() or m.isdir()):
+            raise ValueError(f"unsafe member in backup: {m.name}")
+    tar.extractall(to, members=chosen)
+
 def _now() -> datetime:
     return datetime.now(timezone.utc)
 
@@ -129,7 +143,7 @@ def verify(file: Path, data: Path) -> dict:
     with tempfile.TemporaryDirectory() as tmp, tarfile.open(file, 'r:gz') as tar:
         names = set(tar.getnames())
         meta = json.loads(tar.extractfile('backup.json').read())
-        tar.extract('axf-data.sqlite', tmp, filter='data')
+        _extract(tar, tmp, [tar.getmember('axf-data.sqlite')])
         copy = Path(tmp) / 'axf-data.sqlite'
         if _sha_file(copy) != meta['sqliteSha256']:
             problems.append('the database copy does not match its recorded hash')
@@ -215,7 +229,7 @@ def restore(file: Path, to: Path, force: bool = False) -> dict:
     with tarfile.open(file, 'r:gz') as tar:
         meta = json.loads(tar.extractfile('backup.json').read())
         members = [m for m in tar.getmembers() if m.name == 'axf-data.sqlite' or m.name.startswith('blobs/')]
-        tar.extractall(to, members=members, filter='data')
+        _extract(tar, to, members)
     got = counts_of(sqlite3.connect(db))
     ok = got['counts'] == meta['counts']
     return {'$axf': 'data-restore@1', 'file': file.name, 'at': meta['at'], 'counts': got['counts'], 'ok': ok, 'movedAside': moved}

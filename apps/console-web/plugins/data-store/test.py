@@ -63,7 +63,7 @@ s = R.state()
 check(s["configured"] and s["reachable"] and s["counts"] == {"settings": 1} and s["namespaces"][0]["keys"] == 1, "state: reachable, keys per namespace, mode rows")
 job = R.backup()
 check(job["state"] in ("running", "done"), "Backup now starts a job on axf-data")
-for _ in range(100):
+for _ in range(600):  # up to 30 s: a CI runner or a container takes longer than a workstation
     b = R.state()["backup"]
     if b["job"]["state"] != "running":
         break
