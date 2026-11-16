@@ -12,6 +12,7 @@ import * as P from './pipeline-core.mjs';
 import * as OC from './web/orchestrator-core.mjs';
 import { verdict as dispatchVerdict } from '../../../../framework/cli/dispatch-gate.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
+import * as BR from '../../../../framework/core/build-rules.mjs';
 import { setUpgradePolicy } from '../../../../framework/core/model-switch.mjs';
 process.env.AXF_LOGIN_NOTIFY ??= 'off'; process.env.AXF_LOGIN_VERIFY ??= 'off'; // login events (claude-login-notify.mjs) never reach the real phone or Anthropic
 
@@ -380,7 +381,8 @@ t('account health: classify the call, a fresh answer decides usable and Fable, s
 t('every brief and the split prompt carry the API rule (deep link, state, every action and setting; REST / MCP / CLI / voice)', () => {
   assert.match(OC.API_RULE, /deep link/); assert.match(OC.API_RULE, /every action and setting/); assert.match(OC.API_RULE, /MCP/); assert.match(OC.API_RULE, /CLI/); assert.match(OC.API_RULE, /voice/);
   const b = OC.normalizeState({ builds: [build('ui-thing', 'queued', [step('s1', 'Opus')])] }).builds[0];
-  assert.ok(OC.brief(b).includes(OC.API_RULE), 'the phase brief');
+  const blocks = BR.briefBlocks(JSON.parse(readFileSync(BR.seedPath(), 'utf8')), { id: b.id, title: 'ui thing: a settings screen' });
+  assert.match(OC.brief(b, OC.DEFAULT_RULES, { blocks }), /API: Everything comes with an API/, 'the phase brief (from the build rules store)');
   assert.ok(P.splitPrompt(b).includes(OC.API_RULE), 'the split prompt: every UI step names its API part');
 });
 // ---------------- one way to start builds (framework/cli/dispatch-gate.mjs)

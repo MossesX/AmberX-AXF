@@ -1,0 +1,605 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-build-rules-tab-gate-rules-vps-owns",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-15T19:59:06Z",
+ "build": {
+  "id": "build-rules-tab-gate-rules-vps-owns",
+  "title": "Build rules tab in Gate & rules: VPS owns and enforces all builder rules",
+  "profile": "all",
+  "category": "",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Can we put these in a build rules tab on the VPS in that rules plugin? Will it enforce it? Will the VPS make sure it builds the home card instead of Claude? Remove it from Claude so it doesn't build it twice. Remove everything for all the builders from Claude so it don't happen twice and put them all in that plugin.",
+  "verbatim": true,
+  "at": "2026-11-15T13:23:46.016Z",
+  "source": "",
+  "by": "build-rules-tab-gate-rules-vps-owns",
+  "addenda": []
+ },
+ "brief": "# Build: build-rules-tab-gate-rules-vps-owns\n\n## Brett said (verbatim)\nAt: 2026-11-15T13:23:46.016Z\n> Can we put these in a build rules tab on the VPS in that rules plugin? Will it enforce it? Will the VPS make sure it builds the home card instead of Claude? Remove it from Claude so it doesn't build it twice. Remove everything for all the builders from Claude so it don't happen twice and put them all in that plugin.\n\n## What to build\nContinue build \"Build rules tab in Gate & rules: VPS owns and enforces all builder rules\" (build-rules-tab-gate-rules-vps-owns) — Phase 2, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-15 13:23):\n\"Can we put these in a build rules tab on the VPS in that rules plugin? Will it enforce it? Will the VPS make sure it builds the home card instead of Claude? Remove it from Claude so it doesn't build it twice. Remove everything for all the builders from Claude so it don't happen twice and put them all in that plugin.\"\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/build-rules-tab-gate-rules-vps-owns\nSteps in this phase (19 left, ~3.2 h):\n[ ] s7 (~10 min) VPS fixer 1, home card: apps/console-web/plugins/gate-rules/fixers/home-card.mjs builds a missing plugin home card from plugin.json and the home-card template, idempotent, with a dry-run mode.\n[ ] s8 (~10 min) VPS fixers 2: help stub (plugin help entry from plugin.json description) and the Shipped features manifest (feature-ledger row via build-hook@1), both idempotent, in apps/console-web/plugins/gate-rules/fixers/.\n[ ] s9 (~10 min) VPS fixers 3: API-parity scaffolding (plugin-commands route + MCP + CLI + voice action stubs for a new plugin setting or action) and tracker/THREADS rows (tracker.mjs regen + THREADS Live line), in apps/console-web/plugins/gate-rules/fixers/.\n[ ] s10 (~10 min) VPS fixers 4: run-ci-checks (runs each rule's check command in agent-slots heavy, collects pass/fail) and pr-open-link (opens the PR through github-token.mjs, then builds-live.mjs link) in apps/console-web/plugins/gate-rules/fixers/.\n[ ] s11 (~10 min) Rule runner: apps/console-web/plugins/gate-rules/build-rules-runner.mjs runs the enabled VPS rules for a build at a phase (before|after|gate), calls each check, runs the autofix on a fail, re-checks, and writes every result to the rule history and gate History.\n[ ] s12 (~10 min) Dispatcher wiring: pipeline.mjs runs the 'before' VPS rules before launch and builds the session brief's Look/API/Checkpoints/Rules blocks from briefBlocks(store) instead of hardcoded text; the build's end hook runs the 'after' VPS rules.\n[ ] s13 (~10 min) Gate wiring: landing-line/gate-rules verdict evaluates every enabled build rule (phase gate) before landing; a fail blocks, the runner auto-fixes what it can, re-checks, and logs to History; unfixable ones raise a systems-check banner item.\n[ ] s14 (~10 min) Server REST: /api/plugins/gate-rules/build-rules list/get/add/edit/toggle/delete(confirm)/history/run (dry-run and real), using framework/core/build-rules.mjs; deciding nothing personOnly is needed here, destructive delete needs confirm.\n[ ] s15 (~10 min) API parity for the backend: gate.build_rules_* MCP tools via plugin-commands, CLI apps/console-web/plugins/gate-rules/build-rules.mjs (list|get|add|edit|on|off|history|run), voice actions build-rules.list/toggle/add/run, all four calling the same REST.\n[ ] s16 (~10 min) UI: a Build rules tab in the Gate & rules plugin (TabGroup on the tab-group asset): DataGrid of rules with doer, kind, phase, on/off Switch and last result; framework controls and tokens only.\n[ ] s17 (~10 min) UI: add/edit rule dialog (dialog asset, TextField/SelectField for doer, kind, phase, check, autofix, brief block) and a History panel per rule; toolbar with role=toolbar + aria-label.\n[ ] s18 (~10 min) API parity for the UI: console-control addresses (view:gate-rules/tab:build-rules, row:<rule>, setting:<rule>.enabled) via data-axf-target, console_show deep links for the tab, a rule and its history, state readable through console_control_get.\n[ ] s19 (~10 min) Seed the live store: run the migration into /projects/amberx-axf/_data/build-rules/ (persist.mjs data.shared entry in project.manifest.json) and make sure the runner reads it there with the repo seed as fallback.\n[ ] s20 (~10 min) Remove the VPS-owned mechanical rules from Claude's instructions: cut home card, Shipped features, help stub, API-parity scaffolding, CI-run, tracker/THREADS rows, PR open/link and landing text from CLAUDE.md and the _claude rule files, leaving one pointer line to the Build rules tab. Each removal is listed in the report against its store rule id.\n[ ] s21 (~10 min) Remove the session judgement rules (look and token rules, API parity design, step size) from the hardcoded brief template and CLAUDE.md text; they now come from the store at dispatch. Run build-rules-migrate.mjs --check to prove every removed rule is in the store.\n[ ] s22 (~10 min) Plugin tests: apps/console-web/plugins/gate-rules/test for REST/MCP/CLI parity, the home-card fixer on a plugin without a card, the gate blocking then auto-fixing, and the dispatcher brief containing the store's session rules.\n[ ] s23 (~10 min) Help, lifecycle and ledger: help entries for the tab and CLI, plugin-lifecycle markers on every doc line outside the folder, install/uninstall covers the build-rules data dir, Shipped features rows, glossary descriptions; claude-sync sync.\n[ ] s24 (~10 min) UI Review: shoot the Build rules tab, the rule dialog and History on desktop + phone, submit 3 options (ui-choices@1, assets in plugins/gate-rules/assets/) with review.mjs submit --choices.\n[ ] s25 (~10 min) Final: run check-build-rules, check-gate-rules, check-landing-line, check-theme, check-controls, check-toolbars, check-console-control, check-chrome-assets, plugin-lifecycle and the plugin tests; write _claude/builds/reports/build-rules-tab-gate-rules-vps-owns.md (inventory, what moved where, what left Claude's instructions, how each feature is reached by deep link/REST/MCP/CLI/voice); THREADS row; open the PR and add it to the merge queue (one-at-a-time lander).\nRead first: apps/console-web/plugins/gate-rules/fixers/home-card.mjs, apps/console-web/plugins/gate-rules/fixers/help-stub.mjs, apps/console-web/plugins/gate-rules/fixers/shipped-features.mjs, apps/console-web/plugins/gate-rules/fixers/api-parity.mjs, apps/console-web/plugins/gate-rules/fixers/tracker-threads.mjs, apps/console-web/plugins/gate-rules/fixers/run-ci-checks.mjs, apps/console-web/plugins/gate-rules/fixers/pr-open-link.mjs, apps/console-web/plugins/gate-rules/build-rules-runner.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, deploy/claude-headless.sh, apps/console-web/plugins/push-banner/land/, apps/console-web/plugins/gate-rules/server/, apps/console-web/plugins/gate-rules/build-rules.mjs, apps/console-web/plugins/gate-rules/plugin.json, apps/console-web/plugins/gate-rules/commands.json, apps/console-web/plugins/gate-rules/web/BuildRulesTab.tsx, apps/console-web/plugins/gate-rules/web/index.tsx, apps/console-web/plugins/gate-rules/web/BuildRuleDialog.tsx, apps/console-web/plugins/gate-rules/web/BuildRuleHistory.tsx, apps/console-web/plugins/gate-rules/web/, project.manifest.json, _claude/builds/build-rules/seed.json, framework/cli/persist.mjs, CLAUDE.md, _claude/shared/rules/RULES.md, _claude/rules/RULES.md, _claude/builds/BRIEF-TEMPLATE.md, apps/console-web/plugins/gate-rules/test/, apps/console-web/plugins/gate-rules/help/, apps/console-web/plugins/gate-rules/install.mjs, apps/console-web/plugins/gate-rules/uninstall.mjs, apps/console-web/plugins/gate-rules/assets/, apps/console-web/plugins/ui-review/review.mjs, _claude/builds/reports/build-rules-tab-gate-rules-vps-owns.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step build-rules-tab-gate-rules-vps-owns <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link build-rules-tab-gate-rules-vps-owns --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step build-rules-tab-gate-rules-vps-owns <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note build-rules-tab-gate-rules-vps-owns \"…\"); the build goes back to Pending for Brett.\n",
+ "models": [
+  "Fable",
+  "Opus"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-build-rules-tab-gate-rules-vps-owns--earl",
+   "account": "mossesx-max-",
+   "model": "Fable",
+   "startedAt": "2026-11-15T13:27:45.694Z",
+   "endedAt": "2026-11-15T13:54:12.139Z",
+   "exit": 0,
+   "costUsd": 12.4257
+  },
+  {
+   "session": "axf-build-rules-tab-gate-rules-vps-owns--joey",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-15T14:53:10.455Z",
+   "endedAt": "2026-11-15T17:09:05.018Z",
+   "exit": 0,
+   "costUsd": 24.5075
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Inventory pass 1: list every builder rule in CLAUDE.md, _claude/shared/rules/RULES.md and _claude/rules/RULES.md into _claude/builds/reports/build-rules-tab-gate-rules-vps-owns/inventory.json (id, source file:line, verbatim text, proposed doer VPS|session, mechanical|judgement). Nothing is deleted yet.",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T13:27:45.694Z",
+   "doneAt": "2026-11-15T13:34:06.507Z",
+   "actualMin": 6,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Inventory pass 2: add the rules from the build briefs (_claude/builds/BRIEF-TEMPLATE.md), the dispatcher prompt templates (Look / API / Checkpoints / Rules blocks in apps/console-web/plugins/build-orchestrator/pipeline.mjs and the brief writers) and _claude/instructions + _claude/memory/docs rule docs to inventory.json, merging duplicates with every source kept.",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T13:34:06.507Z",
+   "doneAt": "2026-11-15T13:38:28.879Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Design build-rule@1 + build-rules-store@1: rule id, title, text, doer (vps|session), kind (mechanical|judgement), phase (before|dispatch|after|gate), enabled, check (CI command or checker id), autofix (fixer id), brief block (look|api|checkpoints|rules), sources[], revisions and history entries. Write framework/schemas/build-rules.json and the spec section in framework/spec/BUILD-RULES.md.",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T13:38:28.879Z",
+   "doneAt": "2026-11-15T13:42:23.026Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Write the core engine framework/core/build-rules.mjs: validate, normalise, load and save with a lock and a versioned history (append-only jsonl), resolve the store path (/projects/amberx-axf/_data/build-rules/ now, axf-data later, behind one path function), plus a pure briefBlocks(rules, build) that renders the session rules for dispatch.",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T13:42:23.026Z",
+   "doneAt": "2026-11-15T13:46:50.334Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Migration: framework/cli/build-rules-migrate.mjs turns inventory.json into the seed store (_claude/builds/build-rules/seed.json), with every inventoried rule present (none dropped), the doer and kind set, and rule #1 'every plugin gets a home card, made by the VPS' (doer vps, phase after, autofix home-card). Add a --check that fails when any inventory rule is missing from the store.",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T13:46:50.334Z",
+   "doneAt": "2026-11-15T13:50:46.543Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Engine checks: framework/spec/check-build-rules.mjs covers schema validation, the migration losing nothing, briefBlocks output for a sample build, history append on edit/toggle, and a disabled rule being skipped; fixture framework/spec/fixtures/build-rules.json (--write regenerates it).",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T13:50:46.543Z",
+   "doneAt": "2026-11-15T13:53:49.485Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "VPS fixer 1, home card: apps/console-web/plugins/gate-rules/fixers/home-card.mjs builds a missing plugin home card from plugin.json and the home-card template, idempotent, with a dry-run mode.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T13:53:49.485Z",
+   "doneAt": "2026-11-15T14:55:47.330Z",
+   "actualMin": 62,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "VPS fixers 2: help stub (plugin help entry from plugin.json description) and the Shipped features manifest (feature-ledger row via build-hook@1), both idempotent, in apps/console-web/plugins/gate-rules/fixers/.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T14:55:47.330Z",
+   "doneAt": "2026-11-15T14:56:38.359Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "VPS fixers 3: API-parity scaffolding (plugin-commands route + MCP + CLI + voice action stubs for a new plugin setting or action) and tracker/THREADS rows (tracker.mjs regen + THREADS Live line), in apps/console-web/plugins/gate-rules/fixers/.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T14:56:38.359Z",
+   "doneAt": "2026-11-15T14:58:10.642Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "VPS fixers 4: run-ci-checks (runs each rule's check command in agent-slots heavy, collects pass/fail) and pr-open-link (opens the PR through github-token.mjs, then builds-live.mjs link) in apps/console-web/plugins/gate-rules/fixers/.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T14:58:10.642Z",
+   "doneAt": "2026-11-15T14:58:58.235Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "Rule runner: apps/console-web/plugins/gate-rules/build-rules-runner.mjs runs the enabled VPS rules for a build at a phase (before|after|gate), calls each check, runs the autofix on a fail, re-checks, and writes every result to the rule history and gate History.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T14:58:58.235Z",
+   "doneAt": "2026-11-15T15:02:24.748Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s12",
+   "text": "Dispatcher wiring: pipeline.mjs runs the 'before' VPS rules before launch and builds the session brief's Look/API/Checkpoints/Rules blocks from briefBlocks(store) instead of hardcoded text; the build's end hook runs the 'after' VPS rules.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T15:02:24.748Z",
+   "doneAt": "2026-11-15T15:04:58.175Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s13",
+   "text": "Gate wiring: landing-line/gate-rules verdict evaluates every enabled build rule (phase gate) before landing; a fail blocks, the runner auto-fixes what it can, re-checks, and logs to History; unfixable ones raise a systems-check banner item.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T15:04:58.175Z",
+   "doneAt": "2026-11-15T15:07:23.247Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s14",
+   "text": "Server REST: /api/plugins/gate-rules/build-rules list/get/add/edit/toggle/delete(confirm)/history/run (dry-run and real), using framework/core/build-rules.mjs; deciding nothing personOnly is needed here, destructive delete needs confirm.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T15:07:23.247Z",
+   "doneAt": "2026-11-15T15:08:58.143Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s15",
+   "text": "API parity for the backend: gate.build_rules_* MCP tools via plugin-commands, CLI apps/console-web/plugins/gate-rules/build-rules.mjs (list|get|add|edit|on|off|history|run), voice actions build-rules.list/toggle/add/run, all four calling the same REST.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T15:08:58.143Z",
+   "doneAt": "2026-11-15T15:10:29.886Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s16",
+   "text": "UI: a Build rules tab in the Gate & rules plugin (TabGroup on the tab-group asset): DataGrid of rules with doer, kind, phase, on/off Switch and last result; framework controls and tokens only.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T15:10:29.886Z",
+   "doneAt": "2026-11-15T15:14:44.092Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s17",
+   "text": "UI: add/edit rule dialog (dialog asset, TextField/SelectField for doer, kind, phase, check, autofix, brief block) and a History panel per rule; toolbar with role=toolbar + aria-label.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T15:14:44.092Z",
+   "doneAt": "2026-11-15T15:14:49.954Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s18",
+   "text": "API parity for the UI: console-control addresses (view:gate-rules/tab:build-rules, row:<rule>, setting:<rule>.enabled) via data-axf-target, console_show deep links for the tab, a rule and its history, state readable through console_control_get.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T15:14:49.954Z",
+   "doneAt": "2026-11-15T15:17:32.766Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s19",
+   "text": "Seed the live store: run the migration into /projects/amberx-axf/_data/build-rules/ (persist.mjs data.shared entry in project.manifest.json) and make sure the runner reads it there with the repo seed as fallback.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T15:17:32.766Z",
+   "doneAt": "2026-11-15T15:18:17.315Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s20",
+   "text": "Remove the VPS-owned mechanical rules from Claude's instructions: cut home card, Shipped features, help stub, API-parity scaffolding, CI-run, tracker/THREADS rows, PR open/link and landing text from CLAUDE.md and the _claude rule files, leaving one pointer line to the Build rules tab. Each removal is listed in the report against its store rule id.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T15:18:17.315Z",
+   "doneAt": "2026-11-15T15:20:55.149Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s21",
+   "text": "Remove the session judgement rules (look and token rules, API parity design, step size) from the hardcoded brief template and CLAUDE.md text; they now come from the store at dispatch. Run build-rules-migrate.mjs --check to prove every removed rule is in the store.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T15:20:55.149Z",
+   "doneAt": "2026-11-15T15:23:26.064Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s22",
+   "text": "Plugin tests: apps/console-web/plugins/gate-rules/test for REST/MCP/CLI parity, the home-card fixer on a plugin without a card, the gate blocking then auto-fixing, and the dispatcher brief containing the store's session rules.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T15:23:26.064Z",
+   "doneAt": "2026-11-15T15:24:50.303Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s23",
+   "text": "Help, lifecycle and ledger: help entries for the tab and CLI, plugin-lifecycle markers on every doc line outside the folder, install/uninstall covers the build-rules data dir, Shipped features rows, glossary descriptions; claude-sync sync.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T15:24:50.303Z",
+   "doneAt": "2026-11-15T15:26:40.578Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s24",
+   "text": "UI Review: shoot the Build rules tab, the rule dialog and History on desktop + phone, submit 3 options (ui-choices@1, assets in plugins/gate-rules/assets/) with review.mjs submit --choices.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T15:26:40.578Z",
+   "doneAt": "2026-11-15T17:07:23.435Z",
+   "actualMin": 101,
+   "done": true
+  },
+  {
+   "id": "s25",
+   "text": "Final: run check-build-rules, check-gate-rules, check-landing-line, check-theme, check-controls, check-toolbars, check-console-control, check-chrome-assets, plugin-lifecycle and the plugin tests; write _claude/builds/reports/build-rules-tab-gate-rules-vps-owns.md (inventory, what moved where, what left Claude's instructions, how each feature is reached by deep link/REST/MCP/CLI/voice); THREADS row; open the PR and add it to the merge queue (one-at-a-time lander).",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T17:07:23.435Z",
+   "doneAt": "2026-11-15T17:08:47.542Z",
+   "actualMin": 1,
+   "done": true
+  }
+ ],
+ "branch": "claude/build-rules-tab-gate-rules-vps-owns",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 715,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/715"
+ },
+ "landedCommit": "2cf47a6341c0abcf1b148d111e0e92079a1c74bf",
+ "commits": [
+  "79bf4d1f4f5df0ab39bf34f0e5505aac4b914566",
+  "77c7746f7387581a39d88e092d9d021f26ce3bfd",
+  "6a9f9347cbc1fec3389446701cc1795ef32a84c1",
+  "8af0e8178151422fc7ba8fad741e35a29231407a",
+  "b383f5209ef80fe74765ae786dcf112d1c604257",
+  "2409f6ed6433da0e2e0a9f41d281b07d94bd7e00",
+  "58b572bee1c00ac5c88acb1376ea849179432bc5",
+  "a0bac3f9d6f97f315df2bcfde9aea0a6b7c67f86",
+  "b14fae1ef0bb99e3a0b87a082ae85eb0d40e2f47",
+  "86ea8e6c3481c44f64ec2f373226988609cc47fa",
+  "2fa4841a4313a7e89b4f00e6f7f0ad84bfc91831",
+  "14ef5f98a7f70894ff121c4a04bb377427339e27",
+  "b64164772dd35ed99e2cce335838387674e1f1c9",
+  "3a9fdb45813d94e372ece46582cce2e3956b572e",
+  "25815497a8b8fc35306b4de9fb24d8de5ffbb46d",
+  "f755959d4bae58fccd079be72752b5df95233b91",
+  "f8770725bac719cb0f6fc765fc47431bdc9d893c",
+  "c045237ac61fbba96fa862725cfef284efcef591",
+  "ce0d63a9111009ca239e0e44c70ce7226222a3e4",
+  "d7d72f205b1039ea7a44b71fff4f033dd2b04357",
+  "2fb365ea9407216cf6ae8e3f4033e199d0dff7a3",
+  "cdc63c62521a3d1a1c5b57e0ea644b2aae10dde6",
+  "06241836f4ee41e7f231fb0f48759a6a755d0d11",
+  "a8faef63fc56e59200607c91a2930eb49d6ee89b",
+  "c7cb4dd66296dd1e17871be159aba294d00c4a23",
+  "a10fbb3420aa002f0ab151967b6f1b3db0ad72e4"
+ ],
+ "mergedAt": "2026-11-15T19:56:03Z",
+ "landedAt": "2026-11-15T19:55:58Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "_claude/builds/BRIEF-TEMPLATE.md",
+  "_claude/builds/build-rules/seed.json",
+  "_claude/builds/reports/build-rules-tab-gate-rules-vps-owns.md",
+  "_claude/builds/reports/build-rules-tab-gate-rules-vps-owns/inventory-build.mjs",
+  "_claude/builds/reports/build-rules-tab-gate-rules-vps-owns/inventory.json",
+  "_claude/rules/RULES.md",
+  "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+  "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+  "apps/console-web/plugins/build-orchestrator/pipeline.test.mjs",
+  "apps/console-web/plugins/build-orchestrator/test.mjs",
+  "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+  "apps/console-web/plugins/gate/assets/settings/build-rules-lists-cards.json",
+  "apps/console-web/plugins/gate/assets/settings/build-rules-lists-compact.json",
+  "apps/console-web/plugins/gate/assets/settings/build-rules-lists-grid.json",
+  "apps/console-web/plugins/gate/build-rules-api.mjs",
+  "apps/console-web/plugins/gate/build-rules-runner.mjs",
+  "apps/console-web/plugins/gate/build-rules.mjs",
+  "apps/console-web/plugins/gate/fixers/api-parity.mjs",
+  "apps/console-web/plugins/gate/fixers/help-stub.mjs",
+  "apps/console-web/plugins/gate/fixers/home-card.mjs",
+  "apps/console-web/plugins/gate/fixers/lib.mjs",
+  "apps/console-web/plugins/gate/fixers/pr-open-link.mjs",
+  "apps/console-web/plugins/gate/fixers/run-ci-checks.mjs",
+  "apps/console-web/plugins/gate/fixers/shipped-features.mjs",
+  "apps/console-web/plugins/gate/fixers/tracker-threads.mjs",
+  "apps/console-web/plugins/gate/gate.mjs",
+  "apps/console-web/plugins/gate/help.json",
+  "apps/console-web/plugins/gate/history.mjs",
+  "apps/console-web/plugins/gate/hooks.mjs",
+  "apps/console-web/plugins/gate/plugin.json",
+  "apps/console-web/plugins/gate/server/routes.py",
+  "apps/console-web/plugins/gate/test.mjs",
+  "apps/console-web/plugins/gate/test/test.build-rules.mjs",
+  "apps/console-web/plugins/gate/web/BuildRuleDialog.tsx",
+  "apps/console-web/plugins/gate/web/BuildRuleHistory.tsx",
+  "apps/console-web/plugins/gate/web/BuildRulesTab.tsx",
+  "apps/console-web/plugins/gate/web/BuildRulesToolbar.tsx",
+  "apps/console-web/plugins/gate/web/GateView.tsx",
+  "apps/console-web/plugins/gate/web/actions.ts",
+  "apps/console-web/plugins/gate/web/api.ts",
+  "apps/console-web/plugins/gate/web/buildRulesState.ts",
+  "apps/console-web/plugins/gate/web/index.tsx",
+  "apps/console-web/plugins/glossary-index/terms.json",
+  "apps/console-web/plugins/push-banner/land/land-core.mjs",
+  "apps/console-web/plugins/push-banner/land/land.mjs",
+  "apps/console-web/plugins/push-banner/land/land.test.mjs",
+  "apps/console-web/src/control/inventory.json",
+  "apps/console-web/src/main.tsx",
+  "framework/catalog/catalog.json",
+  "framework/cli/build-engine.mjs",
+  "framework/cli/build-rules-migrate.mjs",
+  "framework/core/build-rules.mjs",
+  "framework/schemas/build-rules.json",
+  "framework/schemas/json/build-rule-history.schema.json",
+  "framework/schemas/json/build-rule.schema.json",
+  "framework/schemas/json/build-rules-store.schema.json",
+  "framework/spec/BUILD-RULES.md",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-build-rules.mjs",
+  "framework/spec/fixtures/build-rules.json",
+  "project.manifest.json"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "gate",
+   "files": [
+    "apps/console-web/plugins/gate/assets/settings/build-rules-lists-cards.json",
+    "apps/console-web/plugins/gate/assets/settings/build-rules-lists-compact.json",
+    "apps/console-web/plugins/gate/assets/settings/build-rules-lists-grid.json",
+    "apps/console-web/plugins/gate/build-rules-api.mjs",
+    "apps/console-web/plugins/gate/build-rules-runner.mjs",
+    "apps/console-web/plugins/gate/build-rules.mjs",
+    "apps/console-web/plugins/gate/fixers/api-parity.mjs",
+    "apps/console-web/plugins/gate/fixers/help-stub.mjs",
+    "apps/console-web/plugins/gate/fixers/home-card.mjs",
+    "apps/console-web/plugins/gate/fixers/lib.mjs",
+    "apps/console-web/plugins/gate/fixers/pr-open-link.mjs",
+    "apps/console-web/plugins/gate/fixers/run-ci-checks.mjs",
+    "apps/console-web/plugins/gate/fixers/shipped-features.mjs",
+    "apps/console-web/plugins/gate/fixers/tracker-threads.mjs",
+    "apps/console-web/plugins/gate/gate.mjs",
+    "apps/console-web/plugins/gate/help.json",
+    "apps/console-web/plugins/gate/history.mjs",
+    "apps/console-web/plugins/gate/hooks.mjs",
+    "apps/console-web/plugins/gate/plugin.json",
+    "apps/console-web/plugins/gate/server/routes.py",
+    "apps/console-web/plugins/gate/test.mjs",
+    "apps/console-web/plugins/gate/test/test.build-rules.mjs",
+    "apps/console-web/plugins/gate/web/BuildRuleDialog.tsx",
+    "apps/console-web/plugins/gate/web/BuildRuleHistory.tsx",
+    "apps/console-web/plugins/gate/web/BuildRulesTab.tsx",
+    "apps/console-web/plugins/gate/web/BuildRulesToolbar.tsx",
+    "apps/console-web/plugins/gate/web/GateView.tsx",
+    "apps/console-web/plugins/gate/web/actions.ts",
+    "apps/console-web/plugins/gate/web/api.ts",
+    "apps/console-web/plugins/gate/web/buildRulesState.ts",
+    "apps/console-web/plugins/gate/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+    "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+    "apps/console-web/plugins/build-orchestrator/pipeline.test.mjs",
+    "apps/console-web/plugins/build-orchestrator/test.mjs",
+    "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/BRIEF-TEMPLATE.md",
+    "_claude/builds/build-rules/seed.json",
+    "_claude/builds/reports/build-rules-tab-gate-rules-vps-owns.md",
+    "_claude/builds/reports/build-rules-tab-gate-rules-vps-owns/inventory-build.mjs",
+    "_claude/builds/reports/build-rules-tab-gate-rules-vps-owns/inventory.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/build-rules.json",
+    "framework/schemas/json/build-rule-history.schema.json",
+    "framework/schemas/json/build-rule.schema.json",
+    "framework/schemas/json/build-rules-store.schema.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/BUILD-RULES.md",
+    "framework/spec/PORTING.md",
+    "framework/spec/check-build-rules.mjs",
+    "framework/spec/fixtures/build-rules.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/land/land-core.mjs",
+    "apps/console-web/plugins/push-banner/land/land.mjs",
+    "apps/console-web/plugins/push-banner/land/land.test.mjs"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md",
+    "_claude/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/control/inventory.json",
+    "apps/console-web/src/main.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/build-engine.mjs",
+    "framework/cli/build-rules-migrate.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "glossary-index",
+   "files": [
+    "apps/console-web/plugins/glossary-index/terms.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/catalog.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/build-rules.mjs"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": "project.manifest.json",
+   "files": [
+    "project.manifest.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261115-0969e483",
+   "name": "Build rules tab: list, rule dialog and History",
+   "status": "waiting",
+   "group": "g-20261115-0a4edbf6",
+   "url": "/review/r-20261115-0969e483"
+  }
+ ],
+ "cost": {
+  "usd": 36.9332,
+  "estimated": false,
+  "tokens": {
+   "input": 1944,
+   "output": 5484,
+   "cacheRead": 88586495,
+   "cacheWrite": 692948
+  }
+ },
+ "report": "",
+ "open": []
+}
