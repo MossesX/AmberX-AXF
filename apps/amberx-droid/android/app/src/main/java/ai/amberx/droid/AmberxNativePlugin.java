@@ -174,6 +174,10 @@ public class AmberxNativePlugin extends Plugin {
         if (p == null || intent == null) return;
         String open = intent.getStringExtra(MainActivity.EXTRA_OPEN);
         if (open != null) p.notifyListeners("open", new JSObject().put("url", open), true);
+        // amberx://settings/<tab> (e.g. open-pages): the page opens that settings tab
+        android.net.Uri data = intent.getData();
+        if (Intent.ACTION_VIEW.equals(intent.getAction()) && data != null && "amberx".equals(data.getScheme()))
+            p.notifyListeners("deeplink", new JSObject().put("url", data.toString()), true);
         String veto = intent.getStringExtra(MainActivity.EXTRA_VETO);
         if (veto != null) p.notifyListeners("veto", new JSObject().put("id", veto).put("action", "open"), true);
         String wake = intent.getStringExtra(MainActivity.EXTRA_WAKE);

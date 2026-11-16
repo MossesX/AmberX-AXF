@@ -2,14 +2,107 @@
   "$axf": "console-control-pins@1",
   "note": "API parity pins (Brett, Nov 8 2026: everything comes with an API). Append-only: a pin is never removed or edited, only added. Each pin names a feature and the text that must stay in each file that reaches it (REST, MCP, CLI, voice, UI target). node framework/cli/check-console-control.mjs fails when one is gone.",
   "pins": [
-    { "id": "navigate.rest", "feature": "open-url-route@1 console-tab", "file": "apps/console-web/server/console_control_api.py", "text": "@r.post(\"/navigate\")" },
-    { "id": "navigate.last.rest", "feature": "open-url-route@1 console-tab", "file": "apps/console-web/server/console_control_api.py", "text": "@r.get(\"/navigate/last\")" },
-    { "id": "navigate.mcp", "feature": "open-url-route@1 console-tab", "file": "apps/console-web/server/mcp_server.py", "text": "async def console_open_url(" },
-    { "id": "navigate.last.mcp", "feature": "open-url-route@1 console-tab", "file": "apps/console-web/server/mcp_server.py", "text": "async def console_open_url_last(" },
-    { "id": "navigate.cli", "feature": "open-url-route@1 console-tab", "file": "framework/cli/console-control.mjs", "text": "case 'open-url':" },
-    { "id": "navigate.voice", "feature": "open-url-route@1 console-tab", "file": "apps/console-web/server/console_control_api.py", "text": "def open_url_phrase(" },
-    { "id": "navigate.amberx-voice", "feature": "open-url-route@1 console-tab", "file": "apps/amberx-droid/src/plugins/commands/web/lib-developer.ts", "text": "A('Console', 'open-url'," },
-    { "id": "navigate.tab", "feature": "open-url-route@1 console-tab", "file": "apps/console-web/plugins/console-commands/web/index.tsx", "text": "nav.op === 'navigate'" },
-    { "id": "navigate.target", "feature": "open-url-route@1 console-tab", "file": "apps/console-web/plugins/console-commands/web/index.tsx", "text": "data-axf-target=\"panel:console-commands.navigate\"" }
+    {
+      "id": "navigate.rest",
+      "feature": "open-url-route@1 console-tab",
+      "file": "apps/console-web/server/console_control_api.py",
+      "text": "@r.post(\"/navigate\")"
+    },
+    {
+      "id": "navigate.last.rest",
+      "feature": "open-url-route@1 console-tab",
+      "file": "apps/console-web/server/console_control_api.py",
+      "text": "@r.get(\"/navigate/last\")"
+    },
+    {
+      "id": "navigate.mcp",
+      "feature": "open-url-route@1 console-tab",
+      "file": "apps/console-web/server/mcp_server.py",
+      "text": "async def console_open_url("
+    },
+    {
+      "id": "navigate.last.mcp",
+      "feature": "open-url-route@1 console-tab",
+      "file": "apps/console-web/server/mcp_server.py",
+      "text": "async def console_open_url_last("
+    },
+    {
+      "id": "navigate.cli",
+      "feature": "open-url-route@1 console-tab",
+      "file": "framework/cli/console-control.mjs",
+      "text": "case 'open-url':"
+    },
+    {
+      "id": "navigate.voice",
+      "feature": "open-url-route@1 console-tab",
+      "file": "apps/console-web/server/console_control_api.py",
+      "text": "def open_url_phrase("
+    },
+    {
+      "id": "navigate.amberx-voice",
+      "feature": "open-url-route@1 console-tab",
+      "file": "apps/amberx-droid/src/plugins/commands/web/lib-developer.ts",
+      "text": "A('Console', 'open-url',"
+    },
+    {
+      "id": "navigate.tab",
+      "feature": "open-url-route@1 console-tab",
+      "file": "apps/console-web/plugins/console-commands/web/index.tsx",
+      "text": "nav.op === 'navigate'"
+    },
+    {
+      "id": "navigate.target",
+      "feature": "open-url-route@1 console-tab",
+      "file": "apps/console-web/plugins/console-commands/web/index.tsx",
+      "text": "data-axf-target=\"panel:console-commands.navigate\""
+    },
+    {
+      "id": "open-pages.deeplink",
+      "feature": "open-url-route@1 AmberX Open pages",
+      "file": "apps/amberx-droid/android/app/src/main/AndroidManifest.xml",
+      "text": "<data android:scheme=\"amberx\" android:host=\"settings\" />"
+    },
+    {
+      "id": "open-pages.bridge.state",
+      "feature": "open-url-route@1 AmberX Open pages",
+      "file": "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java",
+      "text": "public void openPagesState(PluginCall call)"
+    },
+    {
+      "id": "open-pages.bridge.test",
+      "feature": "open-url-route@1 AmberX Open pages",
+      "file": "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java",
+      "text": "public void openPagesTest(PluginCall call)"
+    },
+    {
+      "id": "open-pages.hub.state",
+      "feature": "open-url-route@1 AmberX Open pages",
+      "file": "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/OpenUrlRules.java",
+      "text": "PAGES_STATE = \"open-pages.state\""
+    },
+    {
+      "id": "open-pages.hub.test",
+      "feature": "open-url-route@1 AmberX Open pages",
+      "file": "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/OpenUrlRules.java",
+      "text": "PAGES_TEST = \"open-pages.test\""
+    },
+    {
+      "id": "open-pages.actions",
+      "feature": "open-url-route@1 AmberX Open pages",
+      "file": "apps/amberx-droid/src/plugins/web/web/OpenPages.tsx",
+      "text": "rt.actions.register('open-pages.test'"
+    },
+    {
+      "id": "open-pages.voice",
+      "feature": "open-url-route@1 AmberX Open pages",
+      "file": "apps/amberx-droid/src/plugins/commands/web/lib-notes.ts",
+      "text": "'open-pages-test'"
+    },
+    {
+      "id": "open-pages.target",
+      "feature": "open-url-route@1 AmberX Open pages",
+      "file": "apps/amberx-droid/src/plugins/web/web/OpenPages.tsx",
+      "text": "data-axf-target=\"panel:open-pages\""
+    }
   ]
 }

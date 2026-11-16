@@ -13,7 +13,7 @@ import type { Item } from '../../notes/web/core';
 import { addItem, addList, flatTree, type Store } from '../../notes/web/core';
 import { mutate, useNotes } from '../../notes/web/store';
 import { MAX_TABS, WEB_LIST, clipToItem, hostOf, toUrl } from './core';
-import { OPEN_PAGES_TAB, OpenPagesPanel } from './OpenPages';
+import { OPEN_PAGES_TAB, openPagesPanel, registerOpenPages } from './OpenPages';
 import './web.css';
 
 const ID = 'ai.amberx.amberx.web';
@@ -179,9 +179,9 @@ export const library: AxfWebLibrary = {
   nav: { label: 'Work', items: [{ id: 'web', label: 'Web', icon: 'monitor', view: 'web' }] },
   settingsTabs: [
     { id: 'web', label: 'Web', icon: 'monitor', order: 60, parent: 'plugins' },
-    { id: OPEN_PAGES_TAB, label: 'Open pages', icon: 'external-link', order: 61, parent: 'plugins', description: 'How AmberX opens a page Amber asks for: permissions, the order it tries, Test open' },
+    { id: OPEN_PAGES_TAB, label: 'Open pages', icon: 'external', order: 61, parent: 'plugins', description: 'How AmberX opens a page Amber asks for: permissions, the order it tries, Test open' },
   ],
-  settingsPanels: [{ id: 'amberx.open-pages', tab: OPEN_PAGES_TAB, title: 'Open pages', icon: 'external-link', order: 0, render: () => <OpenPagesPanel /> }],
+  settingsPanels: [openPagesPanel],
   settings: [{
     id: 'amberx.web', label: 'Web', icon: 'monitor', tab: 'web', settings: [
       { key: K.home, label: 'Open on start', kind: 'text', default: '', description: 'An address to open in a tab when AmberX starts (empty = none).' },
@@ -189,6 +189,7 @@ export const library: AxfWebLibrary = {
   }],
   contextMenu: [{ id: 'amberx.web', items: [{ id: 'web.open', label: 'Open the web', icon: 'monitor', action: 'nav:web' }] }],
   register(rt) {
+    registerOpenPages(rt);
     rt.actions.register('web.open', (args) => (args.length ? openUrl(rt, args.join(':')) : rt.navigate('web')), { label: 'Open the web' });
     rt.actions.register('web.clip', () => { const t = state.tabs.find((x) => x.id === state.active); if (t) set({ clip: t }); rt.navigate('web'); }, { label: 'Clip this page' });
     try {

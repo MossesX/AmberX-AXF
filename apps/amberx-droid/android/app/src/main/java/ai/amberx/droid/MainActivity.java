@@ -44,6 +44,7 @@ public class MainActivity extends BridgeActivity {
     static Intent spent(Intent intent) {
         if (intent == null) return null;
         Intent i = new Intent(intent);
+        if (Intent.ACTION_VIEW.equals(i.getAction()) && i.getData() != null && "amberx".equals(i.getData().getScheme())) i.setData(null); // a deep link is handed over once
         for (String k : new String[] { EXTRA_OPEN, EXTRA_VETO, EXTRA_WAKE, EXTRA_WAKE_TEXT, EXTRA_WAKE_ID, EXTRA_WAKE_AT }) i.removeExtra(k);
         return i;
     }

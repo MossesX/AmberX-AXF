@@ -169,6 +169,16 @@ final class AxppLink {
                 }
                 return openPage(c, url, OpenUrlRules.browserOf(args), args.optString("where", "auto"));
             }
+            case OpenUrlRules.PAGES_STATE: {
+                OpenUrlRoute.Phone p = phoneNow(c, "auto");
+                JSONObject last = last(c);
+                return new JSONObject().put("$axf", OpenUrlRoute.SCHEMA).put("overlay", p.overlay).put("fullScreenIntent", p.fullScreenIntent)
+                    .put("notifications", p.notifications).put("consoleSignedIn", p.consoleSignedIn).put("overlayReady", p.overlayReady)
+                    .put("locked", p.locked).put("order", new org.json.JSONArray(OpenUrlRoute.order(p))).put("last", last == null ? JSONObject.NULL : last)
+                    .put("deepLink", "amberx://settings/open-pages");
+            }
+            case OpenUrlRules.PAGES_TEST:
+                return openPage(c, OpenUrlRules.allowed(args.optString("url", OverlayPageRules.HOME)), OpenUrlRules.browserOf(args), args.optString("where", "auto"));
             case RecorderControl.START: {
                 RecorderControl.Session s = RecorderControl.sessionOf(args);
                 if (OutputRecordService.running) {

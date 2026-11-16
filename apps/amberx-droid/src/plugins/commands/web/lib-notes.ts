@@ -11,6 +11,10 @@ A('Open', 'open-list', 'Open a list', 'Opens one list by name.', ['open {list} l
 A('Open', 'open-inbox', 'Open the inbox', 'Opens the Inbox list.', ['open inbox', 'show inbox', 'go to inbox'], [act('notes.open:inbox')]);
 A('Open', 'open-plugins', 'Open plugin lists', 'Opens the Plugins list (one list per plugin).', ['open plugin notes', 'show plugin lists', 'open plugins list'], [act('notes.open:plugins')]);
 A('Open', 'open-voice', 'Open voice notes', 'Opens the Voice notes list.', ['open voice notes', 'show voice notes', 'show recordings'], [act('notes.open:voice-notes')]);
+// AmberX opening pages (open-url-route@1, Settings → Plugins → Open pages): local actions, no Gizmo
+A('Open', 'open-pages-test', 'Test open a page', 'AmberX opens the Dev Console the way it opens any page Amber asks for, and says which route worked.', ['test open page', 'test opening pages', 'can you open pages'], [act('open-pages.test')]);
+A('Open', 'open-pages-state', 'How AmberX opens pages', 'Says which permissions are off and how the last page opened.', ['how do you open pages', 'open pages status', 'why didn\'t the page open'], [act('open-pages.state')]);
+A('Open', 'open-pages-settings', 'Open pages settings', 'Opens Settings → Plugins → Open pages.', ['open pages settings', 'open the open pages settings', 'page opening settings'], [act('open-pages.open')]);
 A('Open', 'manage-lists', 'Manage lists', 'Opens the list manager: rename, move, sort, delete.', ['manage lists', 'edit lists', 'organize lists', 'list manager'], [act('dialog:notes.lists')]);
 A('Open', 'export', 'Export dialog', 'Opens the export window (Markdown, JSON, copy).', ['export notes', 'open export', 'export dialog'], [act('dialog:notes.export')]);
 A('Open', 'search', 'Search notes', 'Searches every note and shows the results.', ['search notes for {text}', 'search for {text}', 'find notes about {text}', 'look for {text}'], [act('notes.search:{text}')], { slots: { text: 'text' } });

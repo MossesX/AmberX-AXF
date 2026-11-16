@@ -6,6 +6,7 @@
  * `open-pages.*` actions, the amberx://settings/open-pages deep link and the voice phrase "test open page".
  */
 import { useEffect, useState } from 'react';
+import type { AxfRuntime } from '../../../axf/core';
 import { Button, Container, Note } from '../../../axf/react';
 import { native, type OpenPagesGrant, type OpenPagesResult, type OpenPagesState } from '../../../native';
 
@@ -69,9 +70,43 @@ export function OpenPagesPanel() {
       <Container title="Right now" icon="list">
         <Note tone="info">Order: {st.order.length ? st.order.map((r) => ROUTE_WORDS[r] ?? r).join(' → ') : 'nothing can open a page'}.</Note>
         <Note tone={st.last?.opened ? 'success' : st.last ? 'warning' : 'info'}>Last: {resultLine(st.last)}</Note>
-        <Button icon="external-link" onClick={() => void test()}>Test open</Button>
+        <Button icon="external" onClick={() => void test()}>Test open</Button>
         <Button icon="refresh" onClick={() => void load()}>Refresh</Button>
       </Container>
     </div>
   );
+}
+
+/** Settings → Plugins → Open pages (a settings panel, not a page). */
+export const openPagesPanel = { id: 'amberx.open-pages', tab: OPEN_PAGES_TAB, title: 'Open pages', icon: 'external', order: 0, render: () => <OpenPagesPanel /> };
+
+/** The deep link for this screen (also the console-control address view:settings/tab:settings.tabs=open-pages). */
+export const OPEN_PAGES_LINK = 'amberx://settings/open-pages';
+
+/**
+ * Actions (voice, commands, the hub through the bridge's own tools): open-pages.open, open-pages.state (says the
+ * permissions and the last route), open-pages.test[:<url>], open-pages.grant:<overlay|full-screen|notifications>.
+ * amberx://settings/<tab> opens that settings tab.
+ */
+export function registerOpenPages(rt: AxfRuntime) {
+  const open = () => { rt.dispatch(`settings.open:${OPEN_PAGES_TAB}`); };
+  rt.actions.register('open-pages.open', open, { label: 'Open Settings → Open pages' });
+  rt.actions.register('open-pages.state', () => {
+    void native.openPagesState().then((st) => {
+      const off = GRANTS.filter((g) => !st[g.key]).map((g) => g.label);
+      rt.toast(`${off.length ? `Off: ${off.join(', ')}.` : 'Everything AmberX needs to open pages is on.'} Last: ${resultLine(st.last)}`, off.length ? 'warning' : 'info', 'Open pages');
+    }, () => undefined);
+  }, { label: 'Say how AmberX opens pages' });
+  rt.actions.register('open-pages.test', (args) => {
+    const url = args.length ? args.join(':') : undefined;
+    void native.openPagesTest(url ? { url } : undefined).then((r) => rt.toast(resultLine(r), r.opened ? 'info' : 'warning', 'Test open'), (e) => rt.toast(`Test open failed: ${String((e as Error)?.message ?? e)}`, 'warning', 'Test open'));
+  }, { label: 'Test open a page' });
+  rt.actions.register('open-pages.grant', (args) => {
+    const which = (GRANTS.find((g) => g.which === args[0])?.which ?? 'overlay') as OpenPagesGrant;
+    void native.openPagesGrant({ which }).catch(() => undefined);
+  }, { label: 'Turn on what AmberX needs to open pages' });
+  void native.addListener('deeplink', ({ url }) => {
+    const m = /^amberx:\/\/settings\/([a-z0-9-]+)/i.exec(url);
+    if (m) rt.dispatch(`settings.open:${m[1]!.toLowerCase()}`);
+  }).catch(() => undefined);
 }

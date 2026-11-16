@@ -17,6 +17,8 @@ final class OpenUrlRules {
     private OpenUrlRules() {}
 
     static final String OPEN = "browser.open";
+    /** Settings → Open pages through the hub: the permissions + last result, and Test open (open-url-route@1). */
+    static final String PAGES_STATE = "open-pages.state", PAGES_TEST = "open-pages.test";
     static final String CAPABILITY = "open-url@1";
     static final String[] DOMAINS = { "amberxai.com" };
     static final String CHROME = "com.android.chrome";
@@ -56,6 +58,6 @@ final class OpenUrlRules {
 
     /** True for the commands this class answers. */
     static boolean known(String tool) {
-        return OPEN.equals(tool);
+        return OPEN.equals(tool) || PAGES_STATE.equals(tool) || PAGES_TEST.equals(tool);
     }
 }

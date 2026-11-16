@@ -61,3 +61,23 @@ waiting"; the hub session and watch settings are excluded from backups.
    `banners`, actions, search entries. Voice phrases: `registerVoiceCommands` from `plugins/voice/web/index.tsx`.
 3. `npm run dev` and try it; `npx -y tsx test.mjs` checks the shell still holds.
 4. Ship it through the plugin catalog (see `src/plugins/README.md`); the hosted app picks it up on its 5-minute update.
+
+## Opening pages (open-url-route@1)
+
+When Amber asks the phone to open a page (`amberx.open_url`, AXPP `browser.open`), AmberX tries, in order: the console
+tab on screen (`POST https://console.amberxai.com/api/console-control/navigate` with the phone's console session), the
+overlay's full-screen browser, a direct browser start (in front, or exempt with Display over other apps), a full-screen
+notice (`OpenPageActivity` trampoline), and a tap-to-open notification only as the last resort. Each start is checked
+to have landed; the answer carries `route`, `opened`, `reason` and every attempt (`OpenUrlRoute.java`, `AxppLink.openPage`).
+
+Settings → Plugins → Open pages shows the permissions, the order right now, the last result and Test open. Every part
+of it is reachable without the screen:
+
+| What | How |
+| --- | --- |
+| Open the screen | `amberx://settings/open-pages`; action `open-pages.open`; voice "open pages settings"; console-control address `view:settings/tab:settings.tabs=open-pages` (AmberX runtime) |
+| Read the state (permissions, order, last route) | bridge `openPagesState()`; hub tool `open-pages.state` (AXPP, `OpenUrlRules.PAGES_STATE`); action `open-pages.state`; voice "how do you open pages" |
+| Test open | bridge `openPagesTest({url?, where?})`; hub tool `open-pages.test`; action `open-pages.test[:<url>]`; voice "test open page" |
+| Grant a permission | bridge `openPagesGrant({which: overlay\|full-screen\|notifications})`; action `open-pages.grant:<which>`; the systems check's Auto fix |
+
+The hub tools need axHub's relay to list them for the AmberX device (`MossesX/axHub`, same path as `amberx.open_url`).

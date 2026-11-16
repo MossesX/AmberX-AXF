@@ -23,6 +23,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+            <!-- Deep links: amberx://settings/<tab> (amberx://settings/open-pages: Settings → Plugins → Open pages) -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="amberx" android:host="settings" />
+            </intent-filter>
+
             <!-- Share → AmberX for videos: Audio Extract pulls their audio out (AudioExtractPlugin) -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
