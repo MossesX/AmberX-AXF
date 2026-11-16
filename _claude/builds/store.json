@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6903,
- "updatedAt": "2026-11-16T20:50:17.271Z",
+ "rev": 6904,
+ "updatedAt": "2026-11-16T20:50:55.731Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -247545,14 +247545,14 @@
    "title": "Assets menu: hide any asset, hidden list to bring them back",
    "category": "",
    "detail": "Rebuild of assets-menu-hide-any-asset-visible (branch lost in cleanup, never shipped). An Assets menu (banner/menu button and Settings > Appearance) lists every visible UI asset on the current screen and app (toolbars, tab groups, banners, widgets, nav, menus, panels, any asset). Tap any one to Hide it; it moves to a Hidden section in the same menu, where one tap shows it again. Also a Hide option in every asset's right-click/long-press menu and settings. Hidden state saved per app in the look on axHub, survives reloads. Same list/hide/show on REST, MCP, CLI and voice. Tests, land through the orchestrator.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/assets-menu-hide-any-asset-hidden-list",
    "pr": "",
    "createdAt": "2026-11-16T19:30:07.770Z",
-   "updatedAt": "2026-11-16T20:20:07.843Z",
+   "updatedAt": "2026-11-16T20:50:53.866Z",
    "builtAt": "",
    "notes": [
     {
@@ -247574,6 +247574,10 @@
     {
      "text": "Headless run axf-assets-menu-hide-any-asset-hidden-list--lenny: brief only · start 15.9K tokens ($0.05) · cost $3.07 · 84 turns · 6 tools, MCP none",
      "at": "2026-11-16T20:07:50.628Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-16T20:50:53.866Z"
     }
    ],
    "approvals": [],
@@ -247725,7 +247729,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
