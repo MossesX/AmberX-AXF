@@ -35,6 +35,11 @@
  *
  *     origin                       build-origin@1 (framework/core/build-origin.mjs): Brett's verbatim words that started it,
  *                                  when / where / who launched it, the brief, later addenda; merged, never overwritten
+ *     recoveries                   build-watchdog@1 (framework/core/build-watchdog.mjs): every time the watchdog found the
+ *                                  build marked Building with no live session and fixed it ({ at, buildId, phase, step,
+ *                                  cause, exit, action, attempt, account, notified, … }), oldest first, the newest 50 kept.
+ *                                  Optional: absent until the first recovery, so older records load unchanged (no
+ *                                  migration). Each such write is journalled with the action `watchdog-recover`.
  *
  *   StepRecord = orchestrator@1 step fields (id, text, model, why, phase, group, estimate, files, checks, session,
  *     agent, skip, done, doneAt, note) plus uid (never changes, also across a harvest), title (rename; shown instead
@@ -48,6 +53,7 @@ import { mergeOrigin, normOrigin } from '../core/build-origin.mjs';
 import { effectivePriority, normPriority } from '../core/build-priority.mjs';
 import { normRef as normShippedRef } from '../core/shipped-manifest.mjs';
 import { normPipeline } from '../core/build-pipeline.mjs';
+import { normRecoveries, normRecovery } from '../core/build-watchdog.mjs';
 import { isBuildId, namesOf, shortBuildId, uniqueBuildId } from '../core/build-id.mjs';
 
 export const SCHEMA = 'builds@1';
@@ -145,6 +151,7 @@ export function normBuild(b, ctx = {}) {
   const fromProfile = str(o.fromProfile, 40) || retired[0] || '';
   const priority = normPriority(o.priority) || (retired.includes('urgent') ? 'P0' : '');
   const origin = normOrigin(o.origin); // build-origin@1: what Brett said that started it (framework/core/build-origin.mjs)
+  const recoveries = normRecoveries(o.recoveries); // build-watchdog@1: the watchdog's fixes (framework/core/build-watchdog.mjs)
   return {
     id,
     title: str(o.title, 300) || 'Untitled build',
@@ -168,6 +175,7 @@ export function normBuild(b, ctx = {}) {
     ...(origin ? { origin } : {}),
     ...(normPipeline(o.pipeline) ? { pipeline: normPipeline(o.pipeline) } : {}), // build-pipeline@1: queue / run record (framework/core/build-pipeline.mjs)
     ...(normShippedRef(o.shipped) ? { shipped: normShippedRef(o.shipped) } : {}), // shipped-manifest@1 ref: the manifest the orchestrator sent when it landed (sidecar _claude/builds/shipped/<id>.json)
+    ...(recoveries.length ? { recoveries } : {}), // build-watchdog@1: optional, only once the watchdog has fixed the build
     steps,
     profiles,
     order,
@@ -306,6 +314,11 @@ export function validateStore(store) {
     for (const k of ['createdAt', 'updatedAt']) if (typeof b[k] !== 'string' || !ISO.test(b[k])) err(`${at}.${k}`, 'is not an ISO timestamp');
     if (b.deleted === true && !ISO.test(b.deletedAt ?? '')) err(`${at}.deletedAt`, 'a deleted build says when');
     if (!Array.isArray(b.notes) || b.notes.some((n) => !n || typeof n.text !== 'string')) err(`${at}.notes`, 'must be a list of { text, at }');
+    // build-watchdog@1: optional; when present, every record is a watchdog-recovery@1 (an action, a time, a known cause)
+    if (b.recoveries !== undefined) {
+      if (!Array.isArray(b.recoveries) || !b.recoveries.length) err(`${at}.recoveries`, 'is absent until the watchdog fixed the build, then a non-empty list');
+      else b.recoveries.forEach((r, j) => { const x = normRecovery(r); if (!x) err(`${at}.recoveries[${j}]`, 'is not a watchdog-recovery@1 (needs at, a known action, a cause)'); else if (x.cause === 'unknown' && r.cause !== 'unknown') err(`${at}.recoveries[${j}].cause`, `"${r.cause}" is not a watchdog cause`); });
+    }
     if (!Array.isArray(b.steps)) return err(`${at}.steps`, 'must be a list');
     const sids = new Set();
     b.steps.forEach((s, j) => {

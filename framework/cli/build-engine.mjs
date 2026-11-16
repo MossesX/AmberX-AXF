@@ -26,6 +26,7 @@ import { REGISTRY as BUILD_HOOK_REGISTRY, jsonSchemas as buildHookJsonSchemas } 
 import { REGISTRY as SHIPPED_MANIFEST_REGISTRY, jsonSchemas as shippedManifestJsonSchemas } from '../core/shipped-manifest.mjs';
 import { REGISTRY as GATE_RULES_REGISTRY, jsonSchemas as gateRulesJsonSchemas } from '../core/gate-rules.mjs';
 import { REGISTRY as BUILD_RULES_REGISTRY, jsonSchemas as buildRulesJsonSchemas } from '../core/build-rules.mjs';
+import { jsonSchema as buildWatchdogJsonSchema } from '../core/build-watchdog.mjs';
 import { consoleControlRegistry, jsonSchemas as consoleControlJsonSchemas } from '../core/engines/console-control-rules.mjs';
 import { skinConfigSchema, skinConfigSnapshot, skinConfigTree } from '../core/engines/skin-config-rules.mjs';
 import { createHash } from 'node:crypto';
@@ -921,6 +922,8 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   // build-hook@1: the one event every build creator fires (builds store writes → listeners)
   for (const [n, schema] of Object.entries(buildHookJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const hreg = join(FRAMEWORK_DIR, 'schemas/build-hook.json'); writeFileSync(hreg, JSON.stringify(BUILD_HOOK_REGISTRY, null, 2) + '\n'); written.push(hreg);
+  // build-watchdog@1: the stuck-build recovery record on builds@1 (recoveries[]), the probe, the decision and the settings
+  const wreg = join(FRAMEWORK_DIR, 'schemas/build-watchdog.json'); writeFileSync(wreg, JSON.stringify(buildWatchdogJsonSchema(), null, 2) + '\n'); written.push(wreg);
   // shipped-manifest@1: what the orchestrator sends Shipped features when a build lands
   for (const [n, schema] of Object.entries(shippedManifestJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const smreg = join(FRAMEWORK_DIR, 'schemas/shipped-manifest.json'); writeFileSync(smreg, JSON.stringify(SHIPPED_MANIFEST_REGISTRY, null, 2) + '\n'); written.push(smreg);

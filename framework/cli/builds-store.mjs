@@ -445,7 +445,10 @@ async function main(argv) {
     const bad = checks.filter((c) => !c.ok);
     if (bad.length || !v.ok) process.exitCode = 1;
     const lines = [...v.errors.map((e) => `✗ store ${e.path} ${e.message}`), ...bad.map((b) => `✗ ${b.what}`)];
-    return out({ ok: !bad.length && v.ok, store: v, total: checks.length, failed: bad }, lines.length ? lines.join('\n') : `ok: the store is a valid builds@1 (${store.builds.length} records); ${checks.length} checks, everything from the old files is in the store`);
+    // build-watchdog@1: recoveries[] is optional on a build; records without it load unchanged, records with it carry only valid watchdog-recovery@1 entries (validateStore above)
+    const recovered = store.builds.filter((b) => Array.isArray(b.recoveries) && b.recoveries.length);
+    const recoveries = { builds: recovered.length, records: recovered.reduce((n, b) => n + b.recoveries.length, 0), without: store.builds.length - recovered.length };
+    return out({ ok: !bad.length && v.ok, store: v, total: checks.length, failed: bad, recoveries }, lines.length ? lines.join('\n') : `ok: the store is a valid builds@1 (${store.builds.length} records); ${checks.length} checks, everything from the old files is in the store; watchdog recoveries on ${recoveries.builds} build(s) (${recoveries.records} record(s)), ${recoveries.without} without`);
   }
   const s = loadStore();
   if (cmd === 'status') {
