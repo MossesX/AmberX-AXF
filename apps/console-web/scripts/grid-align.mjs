@@ -11,11 +11,12 @@
  *   GRID_ALIGN_TABS=pending,…   only these orchestrator tabs; default: every build tab plus All builds
  *   GRID_ALIGN_ROWS=1,2         row modes; default both
  *   GRID_ALIGN_VIEWPORTS=desktop,phone
+ *   GRID_ALIGN_VIEWS=a,b        other console views with a DataGrid (measured with whatever data they show offline)
  *
  * The backend is mocked: /api/me as admin with the appearance source off (the look is local), the orchestrator state
  * and GET /pipeline built from this checkout's builds (long and short titles in every tab), everything else offline.
  * Row mode and skin are switched the way REST / MCP / CLI / voice switch them: window.axfConsoleControl
- * (`set setting:axf.grid.rows`, `press function:skin.use`). Exit 1 when any edge is off by more than 1px.
+ * (`set setting:axf.grid.rowLines`, `press function:skin.use`). Exit 1 when any edge is off by more than 1px.
  */
 import { spawn, execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
@@ -40,6 +41,7 @@ const PIPELINE_TABS = ['pending', 'queue', 'active', 'incomplete', 'complete', '
 const TABS = list(process.env.GRID_ALIGN_TABS, [...PIPELINE_TABS, 'builds']);
 const ROWS = list(process.env.GRID_ALIGN_ROWS, ['1', '2']).map(Number);
 const VIEWPORTS = { desktop: { viewport: { width: 1366, height: 860 }, deviceScaleFactor: 1 }, phone: { viewport: { width: 412, height: 915 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true } };
+const VIEWS = list(process.env.GRID_ALIGN_VIEWS, ['builds', 'feature-matrix', 'shipped-features', 'ui-review', 'chat-viewer', 'agent-swarm']);
 const VPS = list(process.env.GRID_ALIGN_VIEWPORTS, Object.keys(VIEWPORTS));
 
 // ---- mocked backend: this checkout's builds, spread over every tab (titles long and short, real steps) ----
@@ -97,7 +99,7 @@ function measure() {
         if (dl > 1 || dr > 1) bad.push({ row: row.getAttribute('data-axf-row'), col: hcells[i].textContent?.trim() || `#${i}`, left: +(r.left - h.left).toFixed(1), right: +(r.right - h.right).toFixed(1) });
       });
     }
-    out.push({ id, rows: rows.length, pairs, mode: grid.getAttribute('data-axf-rows') ?? '1', template: getComputedStyle(grid).gridTemplateColumns, bad });
+    out.push({ id, rows: rows.length, pairs, mode: grid.getAttribute('data-axf-row-lines') ?? '1', template: getComputedStyle(grid).gridTemplateColumns, bad });
   }
   return out;
 }
@@ -137,7 +139,7 @@ try {
       const s = skin === 'default' ? await run({ verb: 'press', address: 'function:skin.off' }) : await run({ verb: 'press', address: 'function:skin.use', value: skin });
       if (!s.ok && skin !== 'default') { failures.push(`${vp} · skin ${skin}: could not switch (${s.message ?? s.code})`); continue; }
       for (const rows of ROWS) {
-        const m = await run({ verb: 'set', address: 'setting:axf.grid.rows', value: rows });
+        const m = await run({ verb: 'set', address: 'setting:axf.grid.rowLines', value: rows });
         if (!m.ok) {
           const what = `${vp} · ${skin} · ${rows}-row: row mode can't be set (${m.code ?? ''} ${m.message ?? ''})`.trim();
           if (rows !== 1) { failures.push(what); continue; }
@@ -158,10 +160,25 @@ try {
           if (!grids.length) notes.push(`${label}: no grid on screen`);
           for (const g of grids) {
             pairsTotal += g.pairs;
-            if (String(rows) !== g.mode && rows !== 1) failures.push(`${label} · grid ${g.id}: asked for ${rows} rows, drew ${g.mode}`);
+            if (g.rows && String(rows) !== g.mode) failures.push(`${label} · grid ${g.id}: asked for ${rows} line(s) per row, drew ${g.mode}`);
             if (g.bad.length) failures.push(`${label} · grid ${g.id}: ${g.bad.length} misaligned cell(s) of ${g.pairs}, e.g. ${g.bad.slice(0, 3).map((b) => JSON.stringify(b)).join(' ')}`);
           }
           if (SHOTS) await page.screenshot({ path: join(SHOTS, `${skin}-${rows}row-${vp}-${tab}.png`), fullPage: false });
+        }
+        // every other console view that draws a DataGrid (offline data: whatever rows it has are measured)
+        for (const view of VIEWS) {
+          const o = await run({ verb: 'open', address: `view:${view}` });
+          if (!o.ok) { notes.push(`${vp} · view ${view}: not installed here (${o.code ?? o.message})`); continue; }
+          await page.waitForTimeout(600);
+          const grids = await page.evaluate(measure);
+          cases++;
+          const label = `${vp} · ${skin} · ${rows}-row · view ${view}`;
+          for (const g of grids) {
+            pairsTotal += g.pairs;
+            if (g.rows && String(rows) !== g.mode) failures.push(`${label} · grid ${g.id}: asked for ${rows} line(s) per row, drew ${g.mode}`);
+            if (g.bad.length) failures.push(`${label} · grid ${g.id}: ${g.bad.length} misaligned cell(s) of ${g.pairs}, e.g. ${g.bad.slice(0, 3).map((b) => JSON.stringify(b)).join(' ')}`);
+          }
+          if (SHOTS && grids.length) await page.screenshot({ path: join(SHOTS, `${skin}-${rows}row-${vp}-view-${view}.png`), fullPage: false });
         }
       }
     }
