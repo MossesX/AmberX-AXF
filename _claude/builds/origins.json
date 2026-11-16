@@ -593,6 +593,18 @@
    "from": "",
    "addenda": []
   },
+  "amberx-open-url-must-open-page-even-when": {
+   "said": "It sent a notification, but it didn't open. I have the browser open right now.",
+   "at": "2026-11-16T18:37:43.199Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "amberx-open-url-tapping-the-command-waiting-noti": {
    "said": "It says a command is waiting for you. I clicked it. I'm in the AmberX app. Are you gonna fix that?",
    "at": "2026-11-10T16:41:39.193Z",
