@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 13:11 UTC · `fix-build-whose-session-finishes-phase-e` → running, note (all) · mcp
 - 2026-11-16 13:11 UTC · `fix-build-whose-session-finishes-phase-e` → queued (all) · mcp
 - 2026-11-16 13:12 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · mcp
 - 2026-11-16 13:12 UTC · `group-chat-audio-hear-agents-talk-while` → running (all) · mcp
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 18:40 UTC · `axhub-veto-countdown-setting-read-only` s1 done, → running (all) · orchestrator
 - 2026-11-16 18:40 UTC · `amberx-open-url-must-open-page-even-when` note (all) · orchestrator
 - 2026-11-16 18:41 UTC · `get-main-green-unblock-lander-land-axf` s15 done (all) · orchestrator
+- 2026-11-16 18:40 UTC · `axhub-veto-countdown-setting-read-only` note (all) · orchestrator
 
 ## Token passes (log)
 

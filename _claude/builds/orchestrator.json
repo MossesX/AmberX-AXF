@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T18:41:12.395Z",
+ "updatedAt": "2026-11-16T18:41:35.393Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -158493,7 +158493,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T18:24:30.100Z",
-   "updatedAt": "2026-11-16T18:40:24.242Z",
+   "updatedAt": "2026-11-16T18:40:51.297Z",
    "builtAt": "",
    "notes": [
     {
@@ -158515,6 +158515,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-axhub-veto-countdown-setting-read-only--sully, shared account login)",
      "at": "2026-11-16T18:27:09.262Z"
+    },
+    {
+     "text": "s1 done (Fable): spec docs/veto-countdown.md + ApprovalSettingsSchema in axHub, branch claude/axhub-veto-countdown-setting-read-only (worktree /root/axf-builds/axhub-veto-countdown-setting-read-only.axhub, pushed faac5ad). Default 10 s, range 0-120, 0 = runs at next Vinnie pass; read-only vps.run commands skip the countdown. Opus phase builds s2-s12 per spec section 4.",
+     "at": "2026-11-16T18:40:51.297Z"
     }
    ],
    "approvals": [],

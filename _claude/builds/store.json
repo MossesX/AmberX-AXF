@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6653,
- "updatedAt": "2026-11-16T18:41:12.395Z",
+ "rev": 6654,
+ "updatedAt": "2026-11-16T18:41:35.393Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -243206,7 +243206,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T18:24:30.100Z",
-   "updatedAt": "2026-11-16T18:40:24.242Z",
+   "updatedAt": "2026-11-16T18:40:51.297Z",
    "builtAt": "",
    "notes": [
     {
@@ -243228,6 +243228,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-axhub-veto-countdown-setting-read-only--sully, shared account login)",
      "at": "2026-11-16T18:27:09.262Z"
+    },
+    {
+     "text": "s1 done (Fable): spec docs/veto-countdown.md + ApprovalSettingsSchema in axHub, branch claude/axhub-veto-countdown-setting-read-only (worktree /root/axf-builds/axhub-veto-countdown-setting-read-only.axhub, pushed faac5ad). Default 10 s, range 0-120, 0 = runs at next Vinnie pass; read-only vps.run commands skip the countdown. Opus phase builds s2-s12 per spec section 4.",
+     "at": "2026-11-16T18:40:51.297Z"
     }
    ],
    "approvals": [],
@@ -243584,7 +243588,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
