@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6476,
- "updatedAt": "2026-11-16T14:17:08.154Z",
+ "rev": 6477,
+ "updatedAt": "2026-11-16T14:18:44.107Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -238203,7 +238203,7 @@
    "title": "Duplicate gate: VPS checks Shipped features before any build is filed or split",
    "category": "",
    "detail": "A VPS-run gate (plain code, no Claude tokens) registered as a 'before' rule in the Gate & rules Build rules store, doer VPS. Before any build is filed, queued or split, the VPS checks the ONE true feature store (Shipped features + in-progress records) AND main (plugins, files, settings). It also checks the lander/plugin's own state and log, so a feature that exists but is switched off is caught (e.g. auto-land existed on main but was off since Nov 4 and got rebuilt ~5 times). If a match is found, it BLOCKS the build and tells Brett what already exists, where it is, whether it's on or off, and what single setting or fix is actually needed. He can override with one tap/voice ('build it anyway'). Also blocks a new build that duplicates an already-queued/running/built-but-unlanded build, and points to that one instead. Fuzzy matching on titles, said text, plugin names and settings keys, with a similarity score shown. Log every block in Gate History. API parity (REST/MCP/CLI/voice). Tests: auto-land case must be caught. Land with the one-at-a-time lander.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -238211,7 +238211,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T13:06:22.511Z",
-   "updatedAt": "2026-11-16T13:55:24.301Z",
+   "updatedAt": "2026-11-16T14:18:42.369Z",
    "builtAt": "",
    "notes": [
     {
@@ -238237,6 +238237,10 @@
     {
      "text": "Headless run axf-duplicate-gate-vps-checks-shipped--rhonda: brief only · start 16.0K tokens ($0.14) · cost $10.41 · 85 turns · 6 tools, MCP none",
      "at": "2026-11-16T13:55:24.301Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-16T14:18:42.369Z"
     }
    ],
    "approvals": [],
@@ -238796,7 +238800,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
