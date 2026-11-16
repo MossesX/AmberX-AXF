@@ -1681,7 +1681,7 @@
     "target": "default-look",
     "title": "Default look",
     "text": "The skin every app stands on unless it uses its own (the axHub default skin), and the moves that change it: make this the default, restore the previous skin.",
-    "more": "Also: GET /api/plugins/theme-manager/skins/default-skin, skins.mjs default get, console-control state on view:settings/tab:settings.tabs=appearance/panel:default-look."
+    "more": "Also: the theme manager's GET skins/default-skin, skins.mjs default get, console-control state on view:settings/tab:settings.tabs=appearance/panel:default-look."
    },
    {
     "target": "skin-default",

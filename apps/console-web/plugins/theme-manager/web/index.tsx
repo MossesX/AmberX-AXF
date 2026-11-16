@@ -3,7 +3,7 @@ import type { AxfRuntime } from '@console/axf/core';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { AppearancePanel } from '@console/axf/libs/settings';
 import { registerSkinConfig, SKIN_CONFIG_SERVICE } from './skinConfig';
-import { FOLDER, ID, call, type SavedTheme } from './api';
+import { FOLDER, ID, call, post, type SavedTheme } from './api';
 import { ThemeManager, lastApplied } from './ThemeManager';
 import './theme-manager.css';
 import { appMenu } from './menu';
@@ -42,6 +42,12 @@ export const plugin: AxfWebLibrary = {
   provides: ['axf.theme-manager', TOKEN_TREE, SKIN_CONFIG_SERVICE],
   register(rt) {
     services()[TOKEN_TREE] = { version: 1, buildTree, leaves, getAt, setAt };
+    // The skin hub (build console-look-becomes-default-axhub-skin): "Make this the default look" and "save this look as
+    // a skin" reach every app's look through this plugin's routes (backups of every app, the hub default, adopt all).
+    rt.setSkinHub({
+      setDefault: (skin) => post('skins/default-skin', { skin, adopt: true, confirm: true }),
+      snapshot: (app, id, name) => post('skins/snapshot', { from: app, as: id, ...(name ? { name } : {}) }),
+    });
     registerSkinConfig(rt);
     void loadSaved(rt);
     rt.actions.register('theme-manager.open', () => rt.navigate('theme-manager'), { label: 'Open the theme manager' });
