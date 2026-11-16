@@ -7,6 +7,55 @@ Built together with the pending build `remove-molly-completely-delete-the-molly-
 (Nov 13 2026: delete the molly add-on, `_offer_molly`, the molly-guide plugin and anything that pops Molly up). It touches
 the same files, so it is done here and closed with this build's branch.
 
+## Result
+
+**Removed:** the Molly app (`apps/molly`, 1007 files) with its CI job and scope, deploy target, shared-asset slot,
+project-registry entry, CORS and frame-ancestors allowances; the `molly` agent add-on and its auto-install (an
+installed copy is uninstalled once on start); the `molly.*` console aliases, the `molly-guide` plugin name, its control
+targets and settings; AmberX's `/api/ai/molly` routes and `molly` command step; every Molly mention in current code,
+rules, docs, help, glossary, agent prompts and test samples.
+
+**Moved:** the walkthrough guide is the `gizmo-guide` plugin (AmberX's developer commands and the AmberX walkthrough
+re-record still work through it); its help topic is `plugin:gizmo-guide`. The xLayout starter is the neutral
+`multi-app` host.
+
+**Kept:** `axf-molly` (gate owner, lander state, container), history (journal, changes, sessions, shipped builds,
+old reports, dated notes), and the deliberate keeps listed under s15.
+
+**Needs the VPS (banner items, not chat):** `retired-molly-host` (Auto fix: one veto call removes the cron, update
+script, log and `/opt/molly`) and `retired-molly-dns` (delete `molly.amberxai.com A 31.97.13.252`). Both show in the
+systems check once the console runs this code.
+
+## API: how the moved guide is reached
+
+| Surface | How |
+|---|---|
+| Deep link / console_show | `panel:gizmo-guide` (the window, `data-axf-target`), `function:gizmo.ask` (opens it), settings `view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gizmo-guide` |
+| REST | `POST /api/plugins/gizmo-guide/ask`, `GET /api/plugins/gizmo-guide/walkthroughs?after=`, `POST|GET /api/plugins/gizmo-guide/amberx-walkthrough/rerecord`; AmberX `POST /api/ai/gizmo`, `GET /api/ai/gizmo/status` |
+| MCP | plugin commands (`commands.auto`) for the routes above; `console_control_*` for the functions and settings |
+| CLI | `axf console run gizmo.ask` / `gizmo.replay` / `gizmo.next` / `gizmo.prev` / `gizmo.close`; `axf console open settings.open:gizmo-guide` |
+| Voice | AmberX "ask Gizmo to show me …", "hey gizmo …", developer chains and wizards (step `gizmo`) |
+| Settings | `gizmo-guide.speak`, `gizmo-guide.runSteps`, `gizmo-guide.autoOpen` (control@1 / console-control setting addresses) |
+
+## Tests (s16)
+
+All green: `project.mjs validate --all` (10 projects), `tracker.mjs --check`, `check-theme`, `check-controls`,
+`check-toolbars`, `check-chrome-assets`, `chrome-settings.mjs check`, `check-console-control`, `control-inventory --check`,
+`plugin-lifecycle check` agent-manager / gizmo-guide, agent-manager (178), notify-control (133), systems-check (237),
+gizmo-guide (20 + 18), agent-voice (41 + 22), console-commands (10 + 119), land (110), whats-shipped (47), ui-review (229),
+demonstration-designer (11), AmberX server (172) and web (2335), `catalog.mjs --check`, help coverage, shared assets,
+ci-scope, framework checks (xlayout 198, chrome 130, chrome-settings 291, banner strip 29, embed 429, look migration 241,
+claude-session 42, control 396, demo 243, feature ledger 66, builds-live 68), `npm run build` in apps/console-web.
+
+Notes:
+- `plugin-lifecycle check systems-check` flags only untracked files in this worktree (the local build brief and the
+  per-app `_claude/shared/rules/RULES.md` copies claude-sync wrote here); on a clean checkout it passes, as on main.
+- AmberX `npm run build`: `tsc --noEmit` passes; Vite then fails on `@console/api` imported by the console's
+  `wake-listener` plugin, which AmberX's `vite.config.ts` has no alias for. The same on main, untouched here.
+- The Expenses API test runs in CI (no Expenses `node_modules` in this checkout).
+- Baked copies (console, axHub web, AmberX, Walkthrough Studio, demo) carry only this build's framework edits, with
+  their lock hashes updated.
+
 ## Being removed
 
 Inventory: `git grep -i molly` across apps/, framework/, deploy/, _claude/, .github/, help and glossary, excluding
