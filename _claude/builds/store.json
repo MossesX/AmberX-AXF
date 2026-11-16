@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6568,
- "updatedAt": "2026-11-16T16:57:09.145Z",
+ "rev": 6569,
+ "updatedAt": "2026-11-16T16:57:24.703Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -242806,7 +242806,7 @@
    "title": "Orchestrator: On hold status and tab",
    "category": "",
    "detail": "Add a new build status 'held' (On hold) and a new On hold tab/grid in the Build Orchestrator. 1) Multi-select in EVERY orchestrator table (Pending, Queue, Active, Built, Complete, Errors, Archive): checkbox per row, select all, and a bulk action bar with 'Put on hold'. Also on each row's context menu. Putting a running build on hold stops its session cleanly first (branch and worktree kept). 2) On hold tab: grid of held builds (shared 2-row status row and badges, follows the skin's 1-or-2-row setting) showing when it was held, by whom and the build's previous status. Multi-select + bulk actions: Move to Pending, Move to Queue, Archive, Delete (Delete asks for confirm). 3) The dispatcher, reconciler and auto-lander never touch held builds (no launch, no requeue, no land). 4) Status 'held' added to the builds store schema and journal; the reconciler must not flip it. 5) Full API parity: deep link to the tab, REST, MCP (planner.builds action 'status' with 'held', plus bulk actions), CLI and voice. Tests, help, Shipped features. NOTE: an older build 'orchestrator-hold-status-archive-tab' (Nov 12) asked for something similar but never landed and was cleaned up today; check main first and reuse anything that exists rather than duplicate it.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -242814,7 +242814,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T16:53:45.431Z",
-   "updatedAt": "2026-11-16T16:57:07.100Z",
+   "updatedAt": "2026-11-16T16:57:17.722Z",
    "builtAt": "",
    "notes": [
     {
@@ -242883,8 +242883,8 @@
      "id": "s1",
      "uid": "st-mwji8fyn01vt5r",
      "title": "",
-     "text": "Add a new build status 'held' (On hold) and a new On hold tab/grid in the Build Orchestrator. 1) Multi-select in EVERY orchestrator table (Pending, Queue, Active, Built, Complete, Errors, Archive): checkbox per row, select all, and a bulk action bar with 'Put on hold'. Also on each row's context menu. Putting a running build on hold stops its session cleanly first (branch and worktree kept). 2) On hold tab: grid of held builds (shared 2-row status row and badges, follows the skin's 1-or-2-row setting) showing when it was held, by whom and the build's previous status. Multi-select + bulk actions: Move to Pending, Move to Queue, Archive, Delete (Delete asks for confirm). 3) The dispatcher, reconciler and auto-lander never touch held builds (no launch, no requeue, no land). 4) Status 'held' added to the builds store schema and journal; the reconciler must not flip it. 5) Full API parity: deep link to the tab, REST, MCP (planner.builds action 'status' with 'held', plus bulk actions), CLI and voice. Tests, help, Shipped features. NOTE: an older build 'orchestrator-hold-status-archive-tab' (Nov 12) asked for something similar but never landed and was cleaned up today; check main first and reuse anything that exists rather than duplicate it.",
-     "model": "Fable",
+     "text": "Hold already exists on main (pipeline.mjs hold/release, BP.isHeld/canHold, dispatcher skips held, Hold/Release buttons, bulk select, Archive and Deleted tabs, tests). Reuse it; don't rebuild it. Add only the gap: (1) canHold works for builds in ANY tab, not just queued; a running build stops its session cleanly first; save the old tab in pipeline.heldFrom. (2) A separate 'On hold' tab listing every held build (they leave their old tab), with bulk Release to Pending, Release to Queue, Archive, Delete (confirm). (3) Lander and reconciler skip held builds. (4) 'Put on hold' in every tab's multi-select bar and row menu. Extend pipeline.test.mjs; add --to pending|queue to the existing release command for API parity.",
+     "model": "Opus",
      "why": "foundation words in the step",
      "phase": "",
      "group": "",
@@ -242897,9 +242897,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T16:55:29.231Z",
-     "updatedAt": "2026-11-16T16:55:29.231Z"
+     "updatedAt": "2026-11-16T16:57:17.982Z"
     },
     {
      "id": "s2",
@@ -242957,7 +242957,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
