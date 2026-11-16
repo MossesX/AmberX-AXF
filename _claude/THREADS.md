@@ -813,7 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 17:01 UTC · `remove-old-molly-app-project-keep-axf` s16 done, → built, note (all) · reconciler
 - 2026-11-16 17:01 UTC · `fix-console-deep-links-open-page-lands` PR #721, note (all) · reconciler
 - 2026-11-16 17:01 UTC · `fix-console-deep-links-open-page-lands` note (all) · orchestrator
 - 2026-11-16 17:02 UTC · `get-main-green-unblock-lander-land-axf` s5 done (all) · orchestrator
@@ -1213,6 +1212,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 20:50 UTC · `settings-interface-gear-every-plugin` note (all) · orchestrator
 - 2026-11-16 20:50 UTC · `assets-menu-hide-any-asset-hidden-list` → pending, note (all) · reconciler
 - 2026-11-16 20:52 UTC · `fable-rebuild-to-do-manager-unlimited` s6 done (all) · orchestrator
+- 2026-11-16 20:56 UTC · `fable-rebuild-to-do-manager-unlimited` s7 done (all) · orchestrator
 
 ## Token passes (log)
 
