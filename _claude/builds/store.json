@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6883,
- "updatedAt": "2026-11-16T20:39:47.047Z",
+ "rev": 6884,
+ "updatedAt": "2026-11-16T20:39:55.511Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -247895,7 +247895,7 @@
    "title": "To-do manager fully voice and MCP controlled",
    "category": "",
    "detail": "The To-do manager plugin (todo-manager) has REST routes (/api/plugins/todo-manager: lists, entries, types) but no MCP tools, console actions or voice phrases, so it can't be driven by voice. Expose every action: create/rename/reorder/delete lists, add/edit/move/complete/delete notes, to-dos and tasks, search, export, through plugin-commands MCP tools, console-control addresses, the CLI and AmberX voice ('make a list called X', 'add a note called Y to X'). Add a CI check that fails when any plugin has REST routes with no MCP/voice twin. Tests, land through the orchestrator.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -247903,8 +247903,8 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T20:22:23.083Z",
-   "updatedAt": "2026-11-16T20:38:05.655Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T20:39:27.617Z",
+   "builtAt": "2026-11-16T20:39:27.617Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -248042,12 +248042,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:39:27.617Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T20:23:51.246Z",
-     "updatedAt": "2026-11-16T20:23:51.246Z"
+     "updatedAt": "2026-11-16T20:39:27.982Z"
     }
    ],
    "profiles": [
@@ -248058,7 +248058,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
