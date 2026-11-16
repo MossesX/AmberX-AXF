@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T17:26:37.587Z",
+ "updatedAt": "2026-11-16T17:27:16.506Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -157275,7 +157275,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:28.078Z",
-   "updatedAt": "2026-11-16T17:26:35.622Z",
+   "updatedAt": "2026-11-16T17:27:14.439Z",
    "builtAt": "",
    "notes": [
     {
@@ -157297,6 +157297,10 @@
     {
      "text": "Brief only: brief is 31271 characters (~7818 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-16T16:33:07.802Z"
+    },
+    {
+     "text": "Headless run axf-fix-red-ci-blocked-builds-they-land--lenny: brief only · start 19.9K tokens ($0.07) · cost $6.10 · 188 turns · 6 tools, MCP none",
+     "at": "2026-11-16T17:27:14.439Z"
     }
    ],
    "approvals": [],
