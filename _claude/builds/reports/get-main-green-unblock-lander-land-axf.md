@@ -169,3 +169,16 @@ Source: `claude/data-container-axf-data-holds-all` @ 050fac6b4 (level with GitHu
 - Postgres rows: builds 949, build_steps 5425, journal 44510, changes 14799, records 8640, blobs 5396, ui_review_items 218, settings 9, notes 40, ledger_features 2570 (mirror equals source).
 - axf-data counts per namespace: builds 1384, changes 1851, planner 265, ui-review 1807, sessions 5183, chat-viewer 3439, and so on.
 - The throwaway database, service and copy were removed afterwards. The backup stays.
+
+### s12 correction (found during s18 prep)
+
+The lander kept #705 blocked: "its worktree has code changes that were never committed". Its worktree map holds **one path per branch**, and this branch was checked out twice:
+- `/root/axf-builds/auto-lander-controls-in-the-gate-plugin`: clean. This is the one s12 checked.
+- `/tmp/wt-lander`: a merge of main abandoned around 13:24. `framework/cli/axf.mjs` was still unmerged, it held asset names older than the branch head, and its staged changes deleted newer reports and journals.
+
+The lander used the last one listed, the dirty one. That checkout was broken and older than GitHub's head (61013c9db), so:
+- its diff was saved to `_claude/builds/reports/get-main-green-unblock-lander-land-axf/wt-lander-dropped.diff` (code in full, `_claude/` data as a stat);
+- the worktree was removed;
+- a correction note was added on the build.
+
+**Lander fix:** `worktrees()` now prefers the build's own folder (`claude/<id>` → `…/<id>`), otherwise the first one listed, so a stray checkout never stands in for the build's worktree. `land.test.mjs`: 113 checks.
