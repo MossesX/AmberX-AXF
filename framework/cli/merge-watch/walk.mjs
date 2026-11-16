@@ -7,6 +7,9 @@
  * Nov 13-15 gap (report: _claude/builds/reports/vps-sends-shipped-features-every-merge.md): #687 #693 #696 #689 #324
  * were only reachable that way.
  *
+ * Stacked PRs (merged into a land/* branch that landed as one PR) keep their own merge commit behind that PR merge's
+ * second parent: each "Merge branch 'land/…' into …" there is a landing of its own (one commit).
+ *
  * So the walk takes main's first-parent line and, for every merge commit on it that is not a PR merge / batch (those
  * carry the branch on parent 2), the main line behind its second parent (`--first-parent p2 ^p1`), recursively.
  * Each line becomes landings through the pure engine (framework/core/merge-watch.mjs landingsOf) on its own, so a
@@ -28,6 +31,7 @@ export const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..
 export const gitRoot = (env = process.env) => env.AXF_MERGE_WATCH_REPO || REPO_ROOT;
 const SEP = '\x1f';
 const MAX_DEPTH = 4;
+const MAX_STACK = 16; // stacked land/* branches chain one into the next (Nov 14: own-tokens ← token-reg ← anim ← override ← axhub-only ← light-dark ← skin-config ← skins-plugin)
 
 export function runGit(args, { cwd = gitRoot() } = {}) {
   const r = spawnSync('git', args, { cwd, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
@@ -48,6 +52,7 @@ export function commitsOf({ tip, exclude = [], since = '', git = runGit, cwd = g
   return parse(git(args, { cwd }));
 }
 
+export const STACK_MERGE = /^Merge branch '(land\/[^']+)' into /;
 const carriesBranch = (c) => { const k = MW.classifyCommit(c).kind; return k === 'pr-merge' || k === 'batch'; };
 /** A merge whose second parent is main's line: build_land, "Merge origin/main into …", "Merge branch 'main' …". */
 export const mergesMain = (c) => c.parents.length > 1 && !carriesBranch(c) && /\b(origin\/main|'main'|branch main)\b|\(build_land\)/.test(c.subject);
@@ -61,6 +66,16 @@ export function mainLines({ ref = MW.DEFAULT_REF, since = '', stop = '', git = r
     for (const c of cs) seen.add(c.sha);
     lines.push({ via, commits: cs });
     if (depth >= MAX_DEPTH) return;
+    // a stack: PRs merged into a land/* branch that then landed as one PR; each "Merge branch 'land/…'" is that PR's
+    // merge commit (GitHub's merge_commit_sha), so it is a landing of its own, one commit each
+    const stack = (tip, exclude, via, d) => {
+      for (const s of commitsOf({ tip, exclude, since, git, cwd })) {
+        if (seen.has(s.sha) || !STACK_MERGE.test(s.subject)) continue;
+        seen.add(s.sha); lines.push({ via, stack: true, commits: [{ ...s, via }] });
+        if (d < MAX_STACK && s.parents.length > 1) stack(s.parents[1], [s.parents[0], stop], via, d + 1); // stacks are chained
+      }
+    };
+    for (const c of cs) if (carriesBranch(c) && c.parents.length > 1) stack(c.parents[1], [c.parents[0], stop], c.sha, 0);
     for (const c of cs) if (mergesMain(c)) walk(c.parents[1], [c.parents[0], stop], c.sha, depth + 1);
   };
   walk(ref, [stop], '', 0);

@@ -85,19 +85,23 @@ export async function sendOne(state, entry, ctx = {}) {
   let st = ensureEntry(state, entry, now);
   const e = st.entries[MW.sha(entry.sha)];
   if (!e) return { state: st, result: { sha: entry.sha, status: 'failed', error: 'not a landing (no sha)' } };
-  if (e.state === 'sent') return { state: st, result: { sha: e.sha, status: 'skipped', why: 'already sent', id: e.manifest?.id, rev: e.manifest?.rev } };
+  if (e.state === 'sent') return { state: st, result: { sha: e.sha, status: 'skipped', why: 'already sent', id: e.manifest?.id, rev: e.manifest?.rev, pr: e.pr, kind: e.kind, at: e.at } };
   try {
-    const mapped = await mapCommit(e, ctx);
+    const mapped = await mapCommit({ ...e, via: entry.via || '' }, ctx);
+    if (mapped.fold) {
+      if (!dry) st = MW.normState({ ...st, entries: { ...st.entries, [e.sha]: { ...e, state: 'skipped', reason: 'folded', into: MW.sha(mapped.fold), nextRetryAt: '' } } }, { now });
+      return { state: st, result: { sha: e.sha, status: 'skipped', why: 'a sync inside a stack: its PR ships it', pr: 0, kind: e.kind, at: e.at } };
+    }
     const built = await buildManifest(mapped, { ...ctx, prev: readManifest(mapped.build.id || `main-${e.sha.slice(0, 9)}`, env), now });
     const side = readManifest(built.id, env);
     if (side && sentFor(side, mapped.entry)) {
       if (!dry) st = MW.markSent(st, e.sha, side, now);
-      return { state: st, result: { sha: e.sha, status: 'skipped', why: 'in the sidecar', id: side.id, rev: side.rev } };
+      return { state: st, result: { sha: e.sha, status: 'skipped', why: 'in the sidecar', id: side.id, rev: side.rev, build: built.id, pr: mapped.entry.pr, kind: e.kind, at: e.at } };
     }
     const led = ledgerHas(e.sha, env);
     if (led) {
       if (!dry) st = MW.markSent(st, e.sha, { id: `sm-${led.id}`, rev: led.rev }, now);
-      return { state: st, result: { sha: e.sha, status: 'skipped', why: 'in the ledger', id: `sm-${led.id}`, rev: led.rev } };
+      return { state: st, result: { sha: e.sha, status: 'skipped', why: 'in the ledger', id: `sm-${led.id}`, rev: led.rev, build: built.id, pr: mapped.entry.pr, kind: e.kind, at: e.at } };
     }
     if (!built.valid.ok) throw new Error(`shipped-manifest@1 rejected: ${MW.rejection(built.valid.errors)}`);
     if (dry) return { state: st, result: { sha: e.sha, status: 'dry', id: built.manifest.id, rev: built.manifest.rev, build: built.id, unlinked: built.unlinked, pr: mapped.entry.pr, kind: e.kind, at: e.at, subject: e.subject } };
@@ -106,13 +110,13 @@ export async function sendOne(state, entry, ctx = {}) {
       try {
         const r = await TRANSPORTS.get(name)({ built, env, now, fetchFn: ctx.fetchFn });
         st = MW.markSent(st, e.sha, { id: r.id, rev: r.rev }, now);
-        return { state: st, result: { sha: e.sha, status: 'sent', id: r.id, rev: r.rev, via: name, build: built.id, unlinked: built.unlinked, pr: mapped.entry.pr } };
+        return { state: st, result: { sha: e.sha, status: 'sent', id: r.id, rev: r.rev, via: name, build: built.id, unlinked: built.unlinked, pr: mapped.entry.pr, kind: e.kind, at: e.at } };
       } catch (err) { errs.push(`${name}: ${err.message}`); }
     }
     throw new Error(errs.join('; ') || 'no transport (AXF_MERGE_WATCH_SEND)');
   } catch (err) {
     if (!dry) st = MW.markFailed(st, e.sha, err.message, now);
-    return { state: st, result: { sha: e.sha, status: 'failed', error: String(err.message).slice(0, 500) } };
+    return { state: st, result: { sha: e.sha, status: 'failed', error: String(err.message).slice(0, 500), pr: e.pr, kind: e.kind, at: e.at } };
   }
 }
 

@@ -85,3 +85,44 @@ screenshot of the view was not available to this session, so the exact view he c
 
 Dry run on the VPS (Nov 16, 4 days): 20 landings due, including #687 #693 #696 #689 #324 #672, the
 console-look-becomes-default-axhub-skin phase landing and orch-build-id-40-chars. The real send is the backfill (s14).
+
+## Backfill dry run (s13)
+
+`node framework/cli/merge-watch.mjs backfill --since 2026-11-13 --dry` against the VPS data (sidecars in /opt/axf, the ledger),
+Nov 16 2026: 64 landings on main since Nov 13 (status-only commits never count). 21 to send, 30 in the sidecar, 2 in the ledger, 11 a sync inside a stack: its PR ships it.
+No sha twice, no unlinked landing. Every merge the step names is covered: #687 #693 #696 #689 #324 #618 and the
+console-look-becomes-default-axhub-skin phase landing go out; #694 #691 #702 #647 #648 #590 #641 #652 #657 #654 already
+have their manifest. #548–#552 are second PRs of five builds that landed by squash at 06:14 on Nov 13: rev 2 of the same
+manifest id, not new rows.
+
+The dry run found two more shapes the walk now covers:
+
+- **Stacked PRs.** #647 #648 #590 #618 merged into chained land/* branches (own-tokens ← token-reg ← anim ← override ←
+  axhub-only ← light-dark ← skin-config ← skins-plugin) that landed as one PR. Each `Merge branch 'land/…'` behind a PR
+  merge's second parent is a landing of its own when GitHub names it a PR's merge_commit_sha (search + pulls/{n}); the
+  other syncs inside the stack fold into the stack's PR (11 here).
+- **Deep chains.** Stacks recurse up to 16 branches deep.
+
+| Landed (UTC) | Kind | PR | Build | Merge sha | Manifest |
+|---|---|---|---|---|---|
+| 2026-11-13 01:09 | pr-merge | #534 | hotfix-launcher-splitter | 0f67f0d7f | new |
+| 2026-11-13 06:27 | batch | #548 | amberx-approval-pop-up-not-showing-only-the-android-notification | 9a7a04f93 | rev 2 |
+| 2026-11-13 06:27 | batch | #549 | one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds | 4d917727c | rev 2 |
+| 2026-11-13 06:27 | batch | #550 | everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the | d342201c4 | rev 2 |
+| 2026-11-13 06:27 | batch | #551 | full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app | 8ea73d3c8 | rev 2 |
+| 2026-11-13 06:28 | batch | #552 | 10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less | 4dbbdd96f | rev 2 |
+| 2026-11-13 17:20 | build-land |  | overlay-float | 5497cc657 | new |
+| 2026-11-13 17:20 | build-land |  | overlay-pages | 038e4fb02 | new |
+| 2026-11-13 17:22 | build-land |  | orch-build-id-40-chars | f9391678a | new |
+| 2026-11-13 18:42 | build-land |  | notes-tasks-r2-land | 5b8fb0e4c | new |
+| 2026-11-13 18:54 | build-land |  | context-menu-console-settings | 05d23b6f3 | new |
+| 2026-11-13 19:28 | build-land |  | test-project-seed | ea98536da | new |
+| 2026-11-14 14:39 | pr-merge | #672 | hotfix-console-deploy-build-id | 8ee0adce5 | new |
+| 2026-11-14 19:11 | direct | #618 | console-skin-axhub-only | c1a92b67b | new |
+| 2026-11-15 04:00 | pr-merge | #683 | per-toolbar-settings-fix-failing-chrome | a5e2f7640 | rev 2 |
+| 2026-11-15 04:00 | pr-merge | #687 | land-batch-merge-main-each-finished | e35574224 | rev 2 |
+| 2026-11-15 07:36 | pr-merge | #693 | merge-main-land-console-axhub-retry | 7801e65f3 | new |
+| 2026-11-15 07:51 | pr-merge | #696 | land-all-skin-builds | fc744e5e3 | new |
+| 2026-11-15 08:06 | pr-merge | #689 | merge-main-land-change-to-move-amberx | 35cfd9eae | new |
+| 2026-11-15 10:06 | pr-merge | #324 | urgent-land-gizmo-chat-report | 32e55adee | new |
+| 2026-11-15 11:45 | build-land |  | console-look-becomes-default-axhub-skin | 56503d108 | new |

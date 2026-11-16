@@ -1,7 +1,8 @@
 /**
  * merge-watch@1 host: map one landing on main (merge-watch-entry@1) to its PR, its build, its files and areas.
  *
- *   PR      the subject (merge queue "Merge pull request #N", batch "#N", squash "(#N)"); else GitHub
+ *   PR      the subject (merge queue "Merge pull request #N", batch "#N", squash "(#N)"); a stacked PR's
+ *           "Merge branch 'land/…'" by GitHub search + merge_commit_sha; else GitHub
  *           GET /repos/{repo}/commits/{sha}/pulls (a manual merge, a rebase merge). A known PR number with no branch
  *           (batch, squash) asks GET /repos/{repo}/pulls/{n} for its head branch, title and merged_at.
  *   build   the branch (claude/<id>, build-id@1 branches are made from the id) when the store or build-origin knows it;
@@ -21,7 +22,7 @@ import { dirname, join } from 'node:path';
 import * as MW from '../../core/merge-watch.mjs';
 import * as SM from '../../core/shipped-manifest.mjs';
 import { mergeWatchDir } from '../merge-watch-files.mjs';
-import { gitRoot, REPO_ROOT, runGit } from './walk.mjs';
+import { gitRoot, REPO_ROOT, runGit, STACK_MERGE } from './walk.mjs';
 
 export const GITHUB_REPO = 'MossesX/AmberX-AXF';
 const CACHE_MAX = 400;
@@ -59,7 +60,7 @@ export async function githubGet(path, { env = process.env, fetchFn = globalThis.
   } catch { return hit?.body ?? null; }
 }
 
-const prShape = (p) => (p && p.number ? { number: Number(p.number), title: String(p.title || ''), branch: String(p.head?.ref || ''), mergedAt: p.merged_at || '', mergeSha: p.merge_commit_sha || '', url: p.html_url || '' } : null);
+const prShape = (p) => (p && p.number ? { number: Number(p.number), title: String(p.title || ''), branch: String(p.head?.ref || ''), headSha: String(p.head?.sha || ''), mergedAt: p.merged_at || '', mergeSha: p.merge_commit_sha || '', url: p.html_url || '' } : null);
 
 /** The PR a landing came from, with its head branch: the subject first, GitHub second. */
 export async function prOf(e, { github = githubGet, repo = GITHUB_REPO } = {}) {
@@ -68,6 +69,16 @@ export async function prOf(e, { github = githubGet, repo = GITHUB_REPO } = {}) {
     return p || { number: e.pr, title: '', branch: e.branch, mergedAt: '', mergeSha: '', url: '' };
   }
   if (e.kind === 'build-land') return null; // a fast-forward has no PR of its own
+  if (STACK_MERGE.test(e.subject)) {
+    // a stacked PR (walk.mjs): GitHub's merge_commit_sha is this merge. Search finds the PRs that contain the sha (the
+    // stack's own PR too); the one whose merge commit it is wins
+    const found = await github(`/search/issues?q=${e.sha}+repo:${repo}+is:pr&per_page=10`);
+    for (const it of (Array.isArray(found?.items) ? found.items : []).slice(0, 10)) {
+      const p = prShape(await github(`/repos/${repo}/pulls/${it.number}`));
+      if (p && p.mergeSha === e.sha) return p;
+    }
+    return null;
+  }
   const list = await github(`/repos/${repo}/commits/${e.sha}/pulls`);
   const ps = (Array.isArray(list) ? list : []).map(prShape).filter(Boolean);
   return ps.find((p) => p.mergeSha === e.sha) || ps.find((p) => p.mergedAt) || null;
@@ -115,7 +126,9 @@ export async function mapCommit(entry, { store, origins = {}, git = runGit, cwd 
   const filled = { ...e, pr: e.pr || pr?.number || 0, branch, build: e.build || MW.buildOfBranch(branch) };
   const build = buildOf(filled, { store, origins });
   const files = filesOf(filled, { git, cwd });
-  return { entry: { ...filled, build: build.id }, pr, build, files, areas: SM.areasOf(files) };
+  // a "Merge branch 'land/…'" that is no PR's merge commit is a sync inside a stack: the stack's PR ships it
+  const fold = STACK_MERGE.test(e.subject) && !pr ? (entry.via || 'stack') : '';
+  return { entry: { ...filled, build: build.id }, pr, build, files, areas: SM.areasOf(files), fold };
 }
 
 export const knownSets = (store) => {
