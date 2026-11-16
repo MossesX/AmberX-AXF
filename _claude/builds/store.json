@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7062,
- "updatedAt": "2026-11-16T23:39:19.761Z",
+ "rev": 7063,
+ "updatedAt": "2026-11-16T23:39:36.328Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -181771,16 +181771,16 @@
    "title": "Drag anything by API and voice (follow-up to full API control, start only after PR #556 lands): every draggable thing (banner widgets, toolbar items, tabs, dock panes, grid columns/rows, list items, layout slots) gets a move command with drop zones, incl. add/remove/reorder banner widgets; REST, MCP",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "alias": "drag-anything-api-voice-follow-up-to",
-   "branch": "",
+   "branch": "claude/drag-anything-by-api-and-voice-follow-up-to-full",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:13:21.086Z",
-   "updatedAt": "2026-11-16T23:39:17.582Z",
+   "updatedAt": "2026-11-16T23:39:33.452Z",
    "builtAt": "",
    "notes": [
     {
@@ -181790,6 +181790,14 @@
     {
      "text": "Queued by brett.",
      "at": "2026-11-16T23:21:07.905Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-drag-anything-by-api-and-voice-follow-up-to-full--paulie.",
+     "at": "2026-11-16T23:39:25.123Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-drag-anything-by-api-and-voice-follow-up-to-full--paulie, shared account login)",
+     "at": "2026-11-16T23:39:33.452Z"
     }
    ],
    "approvals": [],
@@ -181809,13 +181817,13 @@
    "pipeline": {
     "queuedAt": "2026-11-16T23:21:03.826Z",
     "queuedBy": "brett",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-drag-anything-by-api-and-voice-follow-up-to-full--paulie",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-16T23:39:24.195Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -181828,7 +181836,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-16T23:39:24.195Z",
     "planned": {
      "model": "Fable",
      "account": "hulu0241",
@@ -181837,7 +181845,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-16T23:39:24.195Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -182381,7 +182389,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
