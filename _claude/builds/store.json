@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6737,
- "updatedAt": "2026-11-16T19:29:14.310Z",
+ "rev": 6738,
+ "updatedAt": "2026-11-16T19:29:28.713Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -247018,7 +247018,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:20:10.281Z",
-   "updatedAt": "2026-11-16T19:22:41.951Z",
+   "updatedAt": "2026-11-16T19:29:26.320Z",
    "builtAt": "",
    "notes": [
     {
@@ -247040,6 +247040,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"65af8f1f-b1dd-4a52-a727-086ed516a0d9\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-16T19:22:41.951Z"
+    },
+    {
+     "text": "Brett Nov 16: toolbar settings have NO 'Hide this toolbar' option (it's missing or broken). Add a Hide/Show switch to every toolbar's and tab group's settings and context menu, remembered per instance, with a way to bring it back (Settings > Appearance hidden-chrome list); same on REST, MCP, CLI and voice.",
+     "at": "2026-11-16T19:29:26.320Z"
     }
    ],
    "approvals": [],
@@ -247169,7 +247173,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
