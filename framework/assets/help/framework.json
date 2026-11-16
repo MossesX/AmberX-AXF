@@ -175,15 +175,16 @@
       {
         "target": "action:app.settings",
         "title": "Settings",
-        "text": "Opens Settings: the look, your account, connections, plugins and Help mode.",
+        "text": "Opens Settings in a floating dialog over the screen you're on: the look, your account, connections, plugins and Help mode.",
         "related": [
           "view:settings"
-        ]
+        ],
+        "more": "Every settings interface always opens this way, as a floating popup; there is no page option."
       },
       {
         "target": "action:settings.open",
         "title": "Settings",
-        "text": "Opens Settings on the tab this item names."
+        "text": "Opens the settings tab this item names in a floating dialog over the screen you're on."
       },
       {
         "target": "action:help.docs",
