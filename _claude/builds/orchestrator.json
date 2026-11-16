@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T16:49:59.983Z",
+ "updatedAt": "2026-11-16T16:50:29.734Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -107206,7 +107206,7 @@
    "branch": "claude/molly-gap-expenses-cors",
    "pr": "#701",
    "createdAt": "2026-11-10T22:09:28.380Z",
-   "updatedAt": "2026-11-16T16:49:10.140Z",
+   "updatedAt": "2026-11-16T16:50:16.769Z",
    "builtAt": "2026-11-16T16:47:19.678Z",
    "notes": [
     {
@@ -107260,6 +107260,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-molly-gap-expenses-cors--joey, shared account login)",
      "at": "2026-11-16T16:47:19.678Z"
+    },
+    {
+     "text": "Session axf-molly-gap-expenses-cors--joey on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-16T16:50:16.769Z"
     },
     {
      "text": "Headless run axf-molly-gap-expenses-cors--joey: brief only · start 10.8K tokens ($0.03) · cost $0.56 · 40 turns · 6 tools, MCP none",
