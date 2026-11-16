@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T20:25:50.436Z",
+ "updatedAt": "2026-11-16T20:26:14.945Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -162214,14 +162214,14 @@
    "title": "Fable rebuild: To-do manager with unlimited nesting, context menus, full voice control",
    "category": "",
    "detail": "Full professional rebuild of the To-do manager plugin (todo-manager) on Fable. Unlimited nesting of any item in any item: lists inside lists, notes inside lists, lists inside notes, notes inside notes, to-dos and tasks anywhere, no depth limit (one tree model, drag to move/reorder at any level, collapse/expand, breadcrumbs). Full context menu on every list and item: New list/note/to-do/task inside, Rename, Edit, Duplicate, Move to, Delete (confirm + undo), Complete, Export. Everything voice and MCP controlled: every action exposed as plugin-commands MCP tools, console-control addresses, CLI and AmberX voice ('make a list called X inside Y'). Migrate existing lists and entries. Professional UI on framework controls and tokens only, desktop and phone. Supersedes to-do-manager-fully-voice-mcp-controlled (fold its notes in). Rebuild differences report. Tests, land through the orchestrator.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-16T20:24:18.253Z",
-   "updatedAt": "2026-11-16T20:24:18.253Z",
+   "updatedAt": "2026-11-16T20:25:54.670Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -162245,7 +162245,7 @@
    "title": "Fable rebuild: Plan Studio cleared out, unlimited nesting, context menus, full voice control",
    "category": "",
    "detail": "Full professional rebuild of the Plan Studio plugin (plan-studio) on Fable. First CLEAR IT OUT: remove every existing plan and stop all syncing into Plan Studio (no rules, builds, pending list or anything else synced into it); it starts empty. Then rebuild to the same standard as the To-do/Note manager rebuild: unlimited nesting of plans, sections, steps, notes and lists inside each other; drag to move/reorder at any level; full context menu on every item (new inside, rename, edit, duplicate, move, delete with undo, export, send to build orchestrator); everything voice and MCP controlled (plugin-commands MCP tools, console-control addresses, CLI, AmberX voice). Integrated with everything else (to-do manager, build orchestrator, notes, Shipped features) by explicit links only, never auto-sync. Professional, powerful UI on framework controls and tokens, desktop and phone. Rebuild differences report. Tests, land through the orchestrator.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -162253,9 +162253,13 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T20:25:16.196Z",
-   "updatedAt": "2026-11-16T20:25:24.180Z",
+   "updatedAt": "2026-11-16T20:26:00.727Z",
    "builtAt": "",
    "notes": [
+    {
+     "text": "Brett Nov 16 CHANGE: do NOT rebuild, clear or touch the existing Plan Studio. Build a brand-new separate plugin called 'Plan Studio 2.0' (id plan-studio-2), starting empty, nothing synced into it. Everything else in this build applies to Plan Studio 2.0: unlimited nesting, full context menus, full voice/MCP control, explicit links to the to-do manager, orchestrator, notes and Shipped features.",
+     "at": "2026-11-16T20:26:00.727Z"
+    },
     {
      "text": "Queued by console.",
      "at": "2026-11-16T20:25:24.180Z"
