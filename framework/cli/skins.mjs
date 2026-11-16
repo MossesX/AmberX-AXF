@@ -20,6 +20,16 @@
  *   node framework/cli/skins.mjs restore <app>             back to the snapshot = the Default skin (keeps one undo)
  *   node framework/cli/skins.mjs undo <app>                undo the last restore
  *   node framework/cli/skins.mjs default <app>|global      the app's Default skin (its saved look as a skin@1 asset, default-<app>)
+ *   node framework/cli/skins.mjs default get               the hub default skin (the floor every app stands on) and each app on it
+ *   node framework/cli/skins.mjs default set <skin> [--adopt] [--keep-equal]   back up every app's look, then set the hub default skin;
+ *                                                           --adopt moves every app onto it (Use skin / Follow off, only its edits kept;
+ *                                                           own picks equal to the skin are dropped unless --keep-equal)
+ *   node framework/cli/skins.mjs default off               clear the hub default skin (apps draw their own saved look again)
+ *   node framework/cli/skins.mjs default adopt <app>|--all [--keep-equal]   move one app (or all) onto the hub default skin (backup first)
+ *   node framework/cli/skins.mjs backup <app> [--reason "…"]   keep what the app draws now as a backup in its app-look@1 (newest first, max 5)
+ *   node framework/cli/skins.mjs backups <app>             the app's backups
+ *   node framework/cli/skins.mjs restore <app> --backup [<id>]   put a backup back (the newest when no id; one undo); also `restore-backup <app> [<id>]`
+ *   node framework/cli/skins.mjs snapshot --from <app> --as <id> [--name "…"]   capture what the app draws now as a skin@1 (hub, made skins)
  *   node framework/cli/skins.mjs migrate [--all | <app>|global] [--dry]   write every Default skin that is missing or stale (idempotent:
  *                                                           a second run keeps everything); snapshots an app with no look document first
  *   node framework/cli/skins.mjs delete <skin>             refuse to delete a Default skin (framework skins are repo files, not deleted here)
@@ -38,10 +48,10 @@
 import { chownSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { backToSkin, newAppLook, normalizeAppLook, normalizeLookPart, overriddenSlots, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setLookSlot, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorTheme, undoRestore, SKIN_COLOR_SLOT, SKIN_NEVER } from '../core/engines/skin-rules.mjs';
+import { adoptHubDefault, backupLook, lookBackup, restoreLookBackup, skinChromeSettings, skinSlotMap, backToSkin, newAppLook, normalizeAppLook, normalizeLookPart, overriddenSlots, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setLookSlot, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorTheme, undoRestore, SKIN_COLOR_SLOT, SKIN_NEVER } from '../core/engines/skin-rules.mjs';
 import { coverageSummary, coverageTable, isSubScopeKey, partElements, skinScopeOf } from '../core/engines/skin-coverage.mjs';
 import { effectiveScheme, isSkinMode, skinModeColor, skinModeProblems, skinModeRows, skinSchemeOf, SKIN_MODES } from '../core/engines/skin-modes.mjs';
-import { defaultSkinMigration, isDefaultSkin, skinDeleteError, SKIN_CONFIG_GLOBAL } from '../core/engines/skin-config-rules.mjs';
+import { defaultSkinMigration, defaultSkinOf, isDefaultSkin, skinDeleteError, SKIN_CONFIG_GLOBAL } from '../core/engines/skin-config-rules.mjs';
 import * as SC from '../core/engines/skin-config-rules.mjs';
 import { spawnSync } from 'node:child_process';
 
@@ -208,7 +218,7 @@ const scopeArg = (argv) => { const i = argv.indexOf('--scope'); const v = i >= 0
 
 export const status = (app) => {
   const l = readLook(app);
-  const inForce = resolveLookSkin(l, readGlobal(), null);
+  const inForce = resolveLookSkin(l, readGlobal(), null, readHubDefault());
   return { app, snapshot: !!l, defaultSkin: readDefaultSkin(app)?.id ?? '', useSkin: !!l?.skin.use, follow: !!l?.skin.inherit, skin: l?.skin.id ?? '', inForce: inForce.id, from: inForce.from, colorTheme: inForce.colorTheme ?? '', overrides: overriddenSlots(l), scopes: scopeEntries(l), canUndo: !!l?.undo, own: Object.keys(l?.own.slots ?? {}) };
 };
 
@@ -216,7 +226,7 @@ export const status = (app) => {
 export function at(app, scopeKey = '') {
   const l = readLook(app);
   const scope = scopeKey ? skinScopeOf(scopeKey, app) : { app };
-  return { app, scope: scopeKey || 'app', ...resolveLookSkin(l, readGlobal(), scope) };
+  return { app, scope: scopeKey || 'app', ...resolveLookSkin(l, readGlobal(), scope, readHubDefault()) };
 }
 
 /** One change to one app's look; every transport comes through here. */
@@ -271,6 +281,168 @@ export function color(app, scopeKey = '') {
   const own = skin ? (skin.type === 'skin' ? skin.data?.colorTheme : skin.data?.['color-theme']) ?? '' : '';
   const shows = inForce.colorTheme || own;
   return { app, scope: scopeKey || 'app', skin: inForce.id, from: inForce.from, colorTheme: shows, own, picked: !!shows && shows !== own, pickedHere: l ? skinColorTheme(l, scopeKey || undefined) : '' };
+}
+
+/* ---------------------------------------------------------------- the hub default skin (the floor, Nov 14 2026) */
+
+/** The hub default skin on the shared document (`defaultSkin: { id, overrides?, colorTheme? }`), null = none. */
+export function readHubDefault() {
+  const s = readJson(sharedFile())?.defaultSkin;
+  if (!s || typeof s.id !== 'string' || !ID.test(s.id)) return null;
+  const overrides = { ...(s.overrides ?? {}) };
+  const colorTheme = typeof s.colorTheme === 'string' && ID.test(s.colorTheme) ? s.colorTheme : '';
+  return colorTheme ? { id: s.id, overrides, colorTheme } : { id: s.id, overrides };
+}
+
+/** Set (`id`) or clear (`''`) the hub default skin: the one field written on the shared document. */
+export function writeHubDefault(id, by = 'skins-cli') {
+  const f = sharedFile();
+  const doc = readJson(f);
+  if (!doc) throw new Error(`can't read the shared look at ${f}`);
+  if (id) doc.defaultSkin = { id }; else delete doc.defaultSkin;
+  doc.updatedBy = by;
+  doc.updatedAt = new Date().toISOString();
+  const tmp = `${f}.${process.pid}.tmp`;
+  writeFileSync(tmp, `${JSON.stringify(doc)}\n`);
+  renameSync(tmp, f);
+  chownLike(f);
+  return readHubDefault();
+}
+
+/** A skin's data by id: a framework / made / Default skin, or a design package read as a skin. */
+export function skinDataOf(id) {
+  const s = assetsOf('skin').find((a) => a.id === id) ?? madeSkins().find((a) => a.id === id) ?? defaultSkins().find((a) => a.id === id);
+  if (s) return s.data ?? null;
+  const p = assetsOf('design-package').find((a) => a.id === id);
+  if (!p) return null;
+  const d = p.data ?? {};
+  const assets = { ...(d.extras?.slots ?? {}) };
+  if (d['behavior-theme']) assets['behavior-theme'] = d['behavior-theme'];
+  const x = d.extras ?? {};
+  return { layoutTheme: d.layout, colorTheme: d['color-theme'], styleTheme: d['style-theme'], assets, extras: { ...(x.spacing ? { spacing: x.spacing } : {}), ...(x.hidden ? { hidden: x.hidden } : {}), ...(x.settings ? { settings: x.settings } : {}) } };
+}
+
+/**
+ * What an app draws now at the app level, as a look part `{ slots, spacing?, hidden, settings }`: the saved default,
+ * then the skin in force (its slots, extras and chrome block, the chain's overrides and colour pick) with the app's
+ * own picks under it (an own skin) or over it (the hub default floor), the order composeLookAt keeps.
+ */
+export function currentLookPart(app) {
+  const l = need(app);
+  const hubDefault = readHubDefault();
+  const r = resolveLookSkin(l, readGlobal(), null, hubDefault);
+  const skin = r.id ? skinDataOf(r.id) : null;
+  const floor = !!skin && r.from === 'default';
+  const part = { slots: { ...l.default.slots, ...(floor ? {} : l.own.slots) }, hidden: { ...l.default.hidden, ...(floor ? {} : l.own.hidden) }, settings: { ...l.default.settings, ...(floor ? {} : l.own.settings) } };
+  let spacing = (floor ? undefined : l.own.spacing) ?? l.default.spacing;
+  if (skin) {
+    Object.assign(part.slots, skinSlotMap(skin), floor ? hubDefault.overrides ?? {} : r.overrides ?? {});
+    const pick = floor ? hubDefault.colorTheme : r.colorTheme;
+    if (pick) part.slots[SKIN_COLOR_SLOT] = pick;
+    if (skin.extras?.spacing) spacing = skin.extras.spacing;
+    Object.assign(part.hidden, skin.extras?.hidden);
+    Object.assign(part.settings, skin.extras?.settings, skinChromeSettings(skin.chrome));
+    if (floor) {
+      Object.assign(part.slots, l.own.slots);
+      Object.assign(part.hidden, l.own.hidden);
+      if (l.own.spacing) spacing = l.own.spacing;
+      Object.assign(part.settings, l.own.settings);
+    }
+  }
+  if (spacing) part.spacing = spacing;
+  return part;
+}
+
+const sameValue = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+/** The app's own picks with every entry the floor skin already draws the same way dropped (only real edits stay). */
+export function editsOver(own, skin) {
+  const slots = skinSlotMap(skin);
+  const out = {};
+  const s = Object.fromEntries(Object.entries(own.slots ?? {}).filter(([t, v]) => slots[t] !== v));
+  if (Object.keys(s).length) out.slots = s;
+  const h = Object.fromEntries(Object.entries(own.hidden ?? {}).filter(([t, v]) => (skin.extras?.hidden ?? {})[t] !== v));
+  if (Object.keys(h).length) out.hidden = h;
+  if (own.spacing && own.spacing !== skin.extras?.spacing) out.spacing = own.spacing;
+  const floorSettings = { ...skin.extras?.settings, ...skinChromeSettings(skin.chrome) };
+  const st = Object.fromEntries(Object.entries(own.settings ?? {}).filter(([k, v]) => !(k in floorSettings) || !sameValue(floorSettings[k], v)));
+  if (Object.keys(st).length) out.settings = st;
+  return out;
+}
+
+const backupRow = (b) => ({ id: b.id, at: b.at, by: b.by, reason: b.reason, skin: b.skin.id, useSkin: b.skin.use, follow: b.skin.inherit, own: Object.keys(b.own.slots ?? {}), scopes: Object.keys(b.scopes ?? {}) });
+
+/** Keep what the app draws now as a backup in its app-look@1 (`backups`, newest first, capped; a twin of the newest is not added). */
+export function backup(app, reason = 'kept by hand', by = 'skins-cli') {
+  const l = need(app);
+  const next = backupLook(l, { at: new Date().toISOString(), by, reason });
+  if (next !== l) writeLook(next, by);
+  return { app, added: next !== l, backups: (next.backups ?? []).map(backupRow) };
+}
+
+/** The app's backups, newest first. */
+export const backups = (app) => ({ app, backups: (readLook(app)?.backups ?? []).map(backupRow) });
+
+/** Put a backup back (the newest when `id` is empty): own picks, skin state and scopes; the backups stay; one undo. */
+export function restoreBackup(app, id = '', by = 'skins-cli') {
+  const l = need(app);
+  const b = lookBackup(l, id);
+  if (!b) throw new Error(id ? `${app} has no backup "${id}"` : `${app} has no backup to restore`);
+  writeLook(restoreLookBackup(l, b.id, new Date().toISOString()), by);
+  return { ...status(app), restored: b.id };
+}
+
+/**
+ * Move an app onto the hub default skin (adoptHubDefault: backup first, Use skin / Follow off, overrides and the colour
+ * pick become own picks, scopes back to inherit, one undo). Unless `keepEqual`, own picks the floor already draws the
+ * same way are dropped, so the app keeps only its real edits and follows any later change of the default.
+ */
+export function adopt(app, { keepEqual = false, by = 'skins-cli' } = {}) {
+  const hub = readHubDefault();
+  if (!hub) throw new Error('there is no hub default skin: set one with `skins.mjs default set <skin>` first');
+  const skin = skinDataOf(hub.id);
+  if (!skin) throw new Error(`the hub default skin "${hub.id}" is unknown`);
+  const l = need(app);
+  let next = adoptHubDefault(l, { at: new Date().toISOString(), by, reason: `before ${app} moved onto the hub default skin ${hub.id}` });
+  if (!keepEqual) {
+    const own = editsOver(next.own, skin);
+    if (!sameValue(own, next.own)) next = { ...(next === l ? backupLook(l, { at: new Date().toISOString(), by, reason: `before ${app} dropped picks the hub default skin ${hub.id} already draws` }) : next), own };
+  }
+  if (next !== l) writeLook(next, by);
+  return { ...status(app), changed: next !== l };
+}
+
+/** `default set <skin>`: back up every app's look first, then set the hub default; `adopt` moves every app onto it. */
+export function setHubDefault(id, { adoptAll = false, keepEqual = false, by = 'skins-cli' } = {}) {
+  if (!skinKnown(id)) throw new Error(`no skin "${id}"`);
+  if (!skinDataOf(id)) throw new Error(`"${id}" has no skin data`);
+  const before = readHubDefault();
+  const taken = appIds().filter((a) => readLook(a)).map((a) => ({ app: a, ...backup(a, `before the hub default skin became ${id}${before ? ` (was ${before.id})` : ''}`, by) }));
+  const hub = writeHubDefault(id, by);
+  const moved = adoptAll ? appIds().filter((a) => readLook(a)).map((a) => adopt(a, { keepEqual, by })) : [];
+  return { defaultSkin: hub, previous: before, backups: taken.map((t) => ({ app: t.app, added: t.added, backup: t.backups[0]?.id ?? '' })), adopted: moved.map((m) => ({ app: m.app, changed: m.changed, own: m.own })) };
+}
+
+/** `default get`: the hub default skin and, per app, whether it stands on it (inherit), what it overrides, its backups. */
+export function hubDefaultState() {
+  const hub = readHubDefault();
+  const skin = hub ? assetsOf('skin').find((a) => a.id === hub.id) : null;
+  return {
+    defaultSkin: hub, name: skin?.name ?? (hub?.id ?? ''),
+    apps: appIds().map((a) => { const s = status(a); const l = readLook(a); return { app: a, inherit: s.from === 'default', inForce: s.inForce, from: s.from, useSkin: s.useSkin, follow: s.follow, override: Object.keys(l?.own.slots ?? {}), overrideSettings: Object.keys(l?.own.settings ?? {}), backups: (l?.backups ?? []).length, latestBackup: l?.backups?.[0] ? backupRow(l.backups[0]) : null }; }),
+  };
+}
+
+/** `snapshot --from <app> --as <id>`: capture what the app draws now as a skin@1, saved with the made skins on the hub. */
+export function snapshotAs(app, id, { name = '', by = 'skins-cli' } = {}) {
+  if (!/^[a-z0-9][a-z0-9-]{1,47}$/.test(id ?? '')) throw new Error(`"${id}" is not a skin id (a-z, 0-9, -; 2-48)`);
+  if (assetsOf('skin').some((a) => a.id === id) || defaultSkins().some((a) => a.id === id)) throw new Error(`"${id}" is a framework or Default skin: pick another id`);
+  const part = currentLookPart(app);
+  const shaped = defaultSkinOf(app, part, themeFill(readJson(sharedFile())), SKIN_NEVER);
+  const { protected: _p, roll: _r, ...rest } = shaped;
+  const asset = { ...rest, id, name: String(name || `${app} look`).slice(0, 80), description: `What ${app} drew on ${new Date().toISOString().slice(0, 10)}, captured as a skin.`, tags: ['skin', 'snapshot'], app, madeBy: 'snapshot', at: new Date().toISOString(), by, data: { ...shaped.data, preview: { caption: `The look ${app} had when it was captured.` } } };
+  if (!asset.data.colorThemes && asset.data.colorTheme) asset.data.colorThemes = { light: asset.data.colorTheme, dark: 'fresh-dark' };
+  writeAtomic(join(madeDir(), 'skins', `${id}.json`), asset);
+  return { app, skin: id, path: join(madeDir(), 'skins', `${id}.json`), slots: Object.keys(asset.data.assets ?? {}).length + 3 };
 }
 
 /* ---------------------------------------------------------------- light / dark (skin-modes@1) */
@@ -550,7 +722,7 @@ function configMain(args, argv) {
 
 function main(argv) {
   const json = argv.includes('--json');
-  const valued = ['--scope', '--system', '--wish', '--from', '--json-doc'];
+  const valued = ['--scope', '--system', '--wish', '--from', '--json-doc', '--as', '--name', '--reason'];
   const args = argv.filter((a, i) => !a.startsWith('--') && !valued.includes(argv[i - 1]));
   const [cmd, app, arg] = args;
   const scope = cmd === 'config' ? '' : scopeArg(argv);
@@ -558,6 +730,17 @@ function main(argv) {
   if (!cmd || cmd === 'apps') out = appIds().map(status);
   else if (cmd === 'config') out = configMain(args.slice(1), argv);
   else if (cmd === 'list') out = skinRows();
+  else if (cmd === 'snapshot' && argv.includes('--from')) { const from = optArg(argv, '--from'), as = optArg(argv, '--as'); if (!from || !as) throw new Error('snapshot --from <app> --as <id>'); out = snapshotAs(appId(from), as, { name: optArg(argv, '--name') }); }
+  else if (cmd === 'default' && ['get', 'set', 'off', 'adopt'].includes(app)) {
+    const keepEqual = argv.includes('--keep-equal');
+    if (app === 'get') out = hubDefaultState();
+    else if (app === 'off') out = { defaultSkin: writeHubDefault('') };
+    else if (app === 'set') { if (!arg) throw new Error('default set needs a skin id'); out = setHubDefault(arg, { adoptAll: argv.includes('--adopt'), keepEqual }); }
+    else { if (!arg && !argv.includes('--all')) throw new Error('default adopt needs <app> or --all'); out = (argv.includes('--all') ? appIds().filter((a) => readLook(a)) : [appId(arg)]).map((a) => adopt(a, { keepEqual })); }
+  }
+  else if (cmd === 'backup') { if (!app) throw new Error('backup needs <app>'); out = backup(appId(app), optArg(argv, '--reason') || 'kept by hand'); }
+  else if (cmd === 'backups') { if (!app) throw new Error('backups needs <app>'); out = backups(appId(app)); }
+  else if (cmd === 'restore-backup' || (cmd === 'restore' && argv.includes('--backup'))) { if (!app) throw new Error('restore needs <app>'); const b = optArg(argv, '--backup'); out = restoreBackup(appId(app), cmd === 'restore-backup' ? (arg ?? '') : (b.startsWith('--') ? '' : b)); }
   else if (cmd === 'snapshot') out = (argv.includes('--all') ? appIds() : [appId(app)]).map((a) => snapshot(a, argv.includes('--force')));
   else if (cmd === 'migrate') out = (argv.includes('--all') || !app ? [SKIN_CONFIG_GLOBAL, ...appIds()] : [app === SKIN_CONFIG_GLOBAL ? app : appId(app)]).map((a) => migrate(a, argv.includes('--dry')));
   else if (cmd === 'default') { if (!app) throw new Error('default needs <app> or global'); out = defaultSkin(app === SKIN_CONFIG_GLOBAL ? app : appId(app)); }
