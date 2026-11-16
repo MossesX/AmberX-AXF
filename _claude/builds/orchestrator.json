@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:21:56.670Z",
+ "updatedAt": "2026-11-16T19:22:11.764Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -161459,7 +161459,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:20:10.281Z",
-   "updatedAt": "2026-11-16T19:21:08.428Z",
+   "updatedAt": "2026-11-16T19:22:02.831Z",
    "builtAt": "",
    "notes": [
     {
@@ -161473,6 +161473,10 @@
     {
      "text": "Brett Nov 16: toolbar settings today only have alignment (start / center / spread); there is NO placement option. Add a Position setting to every toolbar (and tab group): Top, Bottom, Left, Right, in its settings dialog, its Move menu and the API. Left/Right render as a vertical column next to the content.",
      "at": "2026-11-16T19:21:08.427Z"
+    },
+    {
+     "text": "Brett Nov 16: REMOVE the option to swap a toolbar for a whole other toolbar asset ('Change...' / 'Change asset' asset picker) from toolbar settings and the toolbar context menu. He edits the toolbar's own settings only; no whole-asset swap. Remove it from the API/voice too.",
+     "at": "2026-11-16T19:22:02.831Z"
     }
    ],
    "approvals": [],
