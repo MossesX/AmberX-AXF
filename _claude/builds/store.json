@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6838,
- "updatedAt": "2026-11-16T20:10:15.260Z",
+ "rev": 6839,
+ "updatedAt": "2026-11-16T20:10:58.624Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -233080,7 +233080,7 @@
    "title": "Every grid: 1 or 2 rows per item, set by the skin",
    "category": "",
    "detail": "Every grid/table/list in the console shows each item as 1 or 2 rows when collapsed, set by the active skin (a skin token, e.g. grid row-lines = 1 or 2), and expands on tap for details. Audit every grid in every plugin and move it onto the shared framework grid/row control so the skin decides; no plugin hard-codes its own row layout. Use the existing grid/tab-group token sets (#654). Skin editor gets the 1-row/2-row setting with live preview. API parity (read/set the setting via REST/MCP/CLI/voice). Tests, check-theme and check-controls green, help, Shipped features. Land when done.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -233088,7 +233088,7 @@
    "pr": "#707",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:17.286Z",
-   "updatedAt": "2026-11-16T19:44:03.134Z",
+   "updatedAt": "2026-11-16T20:10:56.750Z",
    "builtAt": "",
    "notes": [
     {
@@ -233126,6 +233126,10 @@
     {
      "text": "Clash note from hotfix-orchestrator-grid-columns-don-t (PR #729): DataGrid now draws 1 or 2 lines per row on one shared column definition (rowLines prop > axf.grid.rowLines.<grid id> > axf.grid.rowLines > 1; root attr data-axf-row-lines; primary = fixed columns on line 1). s5 here should feed the skin token grid.rowLines into that rather than add a second row renderer for DataGrid.",
      "at": "2026-11-16T19:44:03.133Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-16T20:10:56.750Z"
     }
    ],
    "approvals": [],
@@ -233771,7 +233775,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
