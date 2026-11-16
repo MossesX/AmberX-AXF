@@ -97,9 +97,12 @@ try {
       // brand marks keep their brand colours in every theme (branding@1 palette; DESIGN-LANGUAGE.md §6, §9)
       if (e.closest('.fx-brand, .fx-brand-watermark, svg[role="img"]')) return;
       const name = `${typeof e.className === 'string' && e.className ? e.className.split(' ')[0] : e.tagName.toLowerCase()}#${i}`;
+      // Fully transparent paints nothing, whatever form Chromium reports it in: rgba(…, 0), or color(srgb … / 0) when it
+      // comes out of a color-mix() with a transparent token (e.g. the default --fx-tab-bar-bg).
+      const clear = (c) => /^rgba\(.*,\s*0\)$|\/\s*0\)$|^transparent$/.test(c);
       const v = { color: cs.color };
-      if (cs.backgroundColor !== 'rgba(0, 0, 0, 0)') v.background = cs.backgroundColor;
-      if (parseFloat(cs.borderTopWidth) > 0 && cs.borderTopColor !== 'rgba(0, 0, 0, 0)') v.border = cs.borderTopColor;
+      if (!clear(cs.backgroundColor)) v.background = cs.backgroundColor;
+      if (parseFloat(cs.borderTopWidth) > 0 && !clear(cs.borderTopColor)) v.border = cs.borderTopColor;
       out[name] = v;
     });
     return out;
