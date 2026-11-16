@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T13:08:39.467Z",
+ "updatedAt": "2026-11-16T13:08:50.174Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -113038,7 +113038,7 @@
    "title": "Move AmberX web app into the console; AmberX Android reads the console",
    "category": "",
    "detail": "Move every AmberX web app feature (notes, to-dos, lists, approvals, recorder, open_url, notifications, settings) into the console. Repoint the AmberX Android app to read and call the console instead of the AmberX web app. Keep old AmberX web addresses forwarding to the console until the phone app is switched, so nothing breaks. Each feature moved is its own step.",
-   "status": "built",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -113046,8 +113046,8 @@
    "pr": "#596",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-15T00:37:21.648Z",
-   "builtAt": "2026-11-12T23:17:54.369Z",
+   "updatedAt": "2026-11-16T13:08:45.861Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -130309,7 +130309,7 @@
    "title": "Console app: wake-word voice listener, voice approvals, every console command by voice",
    "category": "",
    "detail": "Voice control for the console Android app (wrapper, parts 1-4), working offline where possible.\n- Always-on wake-word listener, with a wake phrase Brett sets in Settings (several allowed). Runs on-device (offline engine, e.g. Vosk/whisper.cpp + a local intent matcher), with a mic-on indicator and an off switch.\n- After the wake phrase the app answers out loud ('What's up?') and listens for a command.\n- Voice approvals: 'approve' reads pending approvals one at a time (who asked, what it does); Brett says approve, deny, skip or details. 'Approve all pending' and 'deny all' ask for one spoken confirm. Works from the floating overlay and the lock screen.\n- Settings by voice, e.g. 'change the veto timer to two hours' (the axHub veto countdown, so he has that long to veto something before it runs/builds), with the value read back.\n- Command catalog: every console action, plugin command, control@1 target and pipeline gets a voice entry, built from the API registry so new plugins appear automatically. Multi-field actions run as a spoken wizard that asks for each missing field ('create a new project' -> 'name?' -> 'Gizmo Johnson' -> confirm). Covers projects, builds/pipelines (file, split, prioritise, land, stop), approvals, settings, tokens/skins, notes/tasks, navigation.\n- A Voice commands screen lists every command and its phrasings, searchable, with custom phrases Brett adds.\n- Destructive commands always need a spoken confirm.\n- Full API parity. Tests, help, Shipped features.",
-   "status": "built",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -130317,8 +130317,8 @@
    "pr": "#643",
    "priority": "P1",
    "createdAt": "2026-11-13T18:44:52.063Z",
-   "updatedAt": "2026-11-15T01:02:48.480Z",
-   "builtAt": "2026-11-15T01:02:48.480Z",
+   "updatedAt": "2026-11-16T13:08:42.642Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -145085,7 +145085,7 @@
    "title": "Merge main and land move-amberx-web-app-console-amberx-andr",
    "category": "",
    "detail": "Auto-land could not land `move-amberx-web-app-console-amberx-andr` (move-amberx-web-app-console-amberx-andr): merging main into it clashes in code: apps/console-web/plugins/approvals-banner/plugin.json, apps/console-web/server/main.py.\n\nWork on its own branch `claude/move-amberx-web-app-console-amberx-andr` (PR #596); do not open a new PR.\n1. git fetch origin && git checkout claude/move-amberx-web-app-console-amberx-andr && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/move-amberx-web-app-console-amberx-andr. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
@@ -145093,7 +145093,7 @@
    "pr": "#688",
    "priority": "P0",
    "createdAt": "2026-11-14T23:10:38.526Z",
-   "updatedAt": "2026-11-15T00:42:34.863Z",
+   "updatedAt": "2026-11-16T13:08:48.238Z",
    "builtAt": "",
    "notes": [
     {
@@ -154151,7 +154151,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T13:06:22.511Z",
-   "updatedAt": "2026-11-16T13:06:29.367Z",
+   "updatedAt": "2026-11-16T13:08:41.019Z",
    "builtAt": "",
    "notes": [
     {
@@ -154161,6 +154161,10 @@
     {
      "text": "Brett (Nov 16): build this INSIDE the Gate & rules plugin (apps/console-web/plugins/gate, landed Nov 15) as a rule in its Build rules tab, doer VPS. No new plugin. Blocks and overrides show in the plugin's History tab.",
      "at": "2026-11-16T13:06:29.367Z"
+    },
+    {
+     "text": "Split by Claude into 20 steps (4 Fable).",
+     "at": "2026-11-16T13:08:41.019Z"
     }
    ],
    "approvals": [],
@@ -154177,7 +154181,447 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Audit what already exists before writing anything: the earlier dup-check work, the Shipped features store, the in-progress build records (builds@1), the gate-rules@1 'before' rule hooks and the lander state and log. Write the reuse plan (what to extend and what is missing) to _claude/builds/reports/duplicate-gate-vps-checks-shipped.md and commit it.",
+     "model": "Fable",
+     "why": "Picks which store and contract the gate builds on, so no third copy gets built",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/core/",
+      "framework/cli/",
+      "apps/console-web/plugins/gate/",
+      "apps/console-web/plugins/build-orchestrator/",
+      "_claude/builds/reports/duplicate-gate-vps-checks-shipped.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwja4rsr01ic2u",
+     "createdAt": "2026-11-16T13:08:41.019Z"
+    },
+    {
+     "id": "s2",
+     "text": "Design the dup-gate@1 verdict contract: what was checked, every match with kind (shipped / plugin / file / setting / build), similarity score, where it lives, on/off state with its source, the one fix needed (setting key and value, or an action), block/pass and override fields. Add the JSON Schema and schema docs.",
+     "model": "Fable",
+     "why": "New cross-surface schema that the gate, the console, MCP, the CLI and voice all read",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/schemas/dup-gate.json",
+      "framework/spec/BUILD-RULES.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwja4rsr0237hb",
+     "createdAt": "2026-11-16T13:08:41.019Z"
+    },
+    {
+     "id": "s3",
+     "text": "Write the matching engine framework/core/dup-gate.mjs: normalising tokens, synonym folding (auto-land = autoLand = lander), weighted fuzzy score (trigram plus token Jaccard) over titles, said text, plugin names and settings keys, with block and warn thresholds. Pure functions, no I/O.",
+     "model": "Fable",
+     "why": "Engine internals that every surface's verdict depends on",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/dup-gate.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwja4rsr03wqvx",
+     "createdAt": "2026-11-16T13:08:41.019Z"
+    },
+    {
+     "id": "s4",
+     "text": "Add golden fixtures for the engine: the auto-land case (exists on main, setting off since Nov 4, must block with the fix 'turn autoLand on'), a duplicate queued build, a duplicate built-but-unlanded build, near-miss titles that must pass, and an override. Generate framework/spec/fixtures/dup-gate.json.",
+     "model": "Fable",
+     "why": "The conformance contract for the engine",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/spec/fixtures/dup-gate.json",
+      "framework/spec/gen-dup-gate-fixtures.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwja4rsr04esr3",
+     "createdAt": "2026-11-16T13:08:41.019Z"
+    },
+    {
+     "id": "s5",
+     "text": "Collector 1, the feature store: read Shipped features and the in-progress builds@1 records (queued, running, built, unlanded) into one candidate list with ids, titles, said text, PR and branch.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/cli/dup-gate/collect-features.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwja4rsr05sh9c",
+     "createdAt": "2026-11-16T13:08:41.019Z"
+    },
+    {
+     "id": "s6",
+     "text": "Collector 2, main: scan origin/main without a checkout (git ls-tree / git show) for plugin.json ids, names and descriptions, CLI headers, files and settings keys (plugin settings schemas, Claude settings, build-options) into candidates.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/dup-gate/collect-main.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwja4rsr06wruy",
+     "createdAt": "2026-11-16T13:08:41.019Z"
+    },
+    {
+     "id": "s7",
+     "text": "Collector 3, live state: read each matched plugin's and the lander's live settings (on/off, since when from the settings history), lander-state@1 and the tail of its log, so the verdict can say 'exists, off since Nov 4, switch X'.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/dup-gate/collect-state.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwja4rsr074cw3",
+     "createdAt": "2026-11-16T13:08:41.019Z"
+    },
+    {
+     "id": "s8",
+     "text": "CLI framework/cli/dup-gate.mjs: check <build-id> | check --title --said, override <build-id> --reason, history, explain <verdict-id>. Plain Node with no Claude call. Exit 4 = blocked. Prints the phone-readable answer: what exists, where, on/off, the fix, the score.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "framework/cli/dup-gate.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwja4rsr08tio3",
+     "createdAt": "2026-11-16T13:08:41.019Z"
+    },
+    {
+     "id": "s9",
+     "text": "Gate History: append every verdict (blocked, passed, overridden) to the gate's history store with the build id, matches, scores, who overrode it and how (tap or voice). Reuse the gate plugin's history writer.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/gate/",
+      "framework/cli/dup-gate.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwja4rsr090m61",
+     "createdAt": "2026-11-16T13:08:41.019Z"
+    },
+    {
+     "id": "s10",
+     "text": "Register 'duplicate-gate' as a build-rules@1 'before' rule (doer VPS, enabled, runs on file, queue and split) in the default rule set. Regenerate the gate-rules fixture.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "framework/spec/BUILD-RULES.md",
+      "apps/console-web/plugins/gate/",
+      "framework/spec/check-gate-rules.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwja4rss0auyjw",
+     "createdAt": "2026-11-16T13:08:41.019Z"
+    },
+    {
+     "id": "s11",
+     "text": "Hook the gate into intake: orchestrator add, MCP pending_change add and Plan Studio 'Turn into a build' run dup-gate before writing the store. Blocked = no build record, the verdict is returned instead. Override flag passes through.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+      "apps/console-web/plugins/build-orchestrator/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwja4rss0b6o32",
+     "createdAt": "2026-11-16T13:08:41.019Z"
+    },
+    {
+     "id": "s12",
+     "text": "Hook the gate into the pipeline: pipeline.mjs intake (before split) and queue (before Pending → Queue) call dup-gate. A blocked build stays in Pending, holding the verdict and a 'build it anyway' action.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwja4rss0cdmgf",
+     "createdAt": "2026-11-16T13:08:41.019Z"
+    },
+    {
+     "id": "s13",
+     "text": "Build-vs-build duplicates: when the match is a queued, running or built-but-unlanded build, block and point to it (id, status, PR), and offer 'add as addendum there' using build-origin addendum so Brett's words aren't lost.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/cli/dup-gate.mjs",
+      "framework/cli/build-origin.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwja4rss0d6032",
+     "createdAt": "2026-11-16T13:08:41.019Z"
+    },
+    {
+     "id": "s14",
+     "text": "REST routes on the gate plugin: POST /dup-gate/check, POST /dup-gate/override (Brett's session or voice only, recorded), GET /dup-gate/history, GET /dup-gate/verdict/:id. Python server side shells out to the CLI.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/gate/server/",
+      "apps/console-web/plugins/gate/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwja4rss0ezn7a",
+     "createdAt": "2026-11-16T13:08:41.019Z"
+    },
+    {
+     "id": "s15",
+     "text": "MCP and voice parity: plugin commands dup-gate-check, dup-gate-override, dup-gate-history. AmberX voice phrases 'build it anyway' and 'what already exists'. axf CLI alias 'axf gate dup …'.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/gate/commands.json",
+      "framework/cli/axf.mjs",
+      "apps/console-web/plugins/gate/voice.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwja4rss0fezdb",
+     "createdAt": "2026-11-16T13:08:41.019Z"
+    },
+    {
+     "id": "s16",
+     "text": "Console UI: a Blocked card in Builds → Gate & rules → Gate History and on the Pending row. It shows matches with score chips, where each one lives, on/off, the one fix (button that applies the setting) and 'Build it anyway' (Toolbars toolbar, tokens only). Register a control@1 / data-axf-target address for the card and its actions so console_show deep-links to it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/gate/ui/",
+      "framework/schemas/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwja4rss0g4wh1",
+     "createdAt": "2026-11-16T13:08:41.019Z"
+    },
+    {
+     "id": "s17",
+     "text": "Alert and banner: a block pushes one axf.notify@1 notice to the AmberX app with the verdict line and the override action. Declare it in the gate's notify.json.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "apps/console-web/plugins/gate/notify.json",
+      "apps/console-web/plugins/gate/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwja4rss0hpntf",
+     "createdAt": "2026-11-16T13:08:41.019Z"
+    },
+    {
+     "id": "s18",
+     "text": "Tests: engine against fixtures, collectors on a temp repo, the auto-land case end to end (orchestrator add 'auto-land' → blocked, names the autoLand setting off since Nov 4), the duplicate-queued case, the override path, and REST/MCP/CLI giving the same verdict. Add them to CI.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/check-dup-gate.mjs",
+      "apps/console-web/plugins/gate/test.py",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwja4rss0i13ue",
+     "createdAt": "2026-11-16T13:08:41.019Z"
+    },
+    {
+     "id": "s19",
+     "text": "UI Review: submit desktop and phone shots of the Blocked card with 3 choice options (assets under plugins/gate/assets/).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/gate/assets/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwja4rss0jzkk3",
+     "createdAt": "2026-11-16T13:08:41.019Z"
+    },
+    {
+     "id": "s20",
+     "text": "Finish: run the checks (check-gate-rules, check-builds-store, check-theme, check-controls, check-toolbars, check-console-control, the new tests). Complete the report _claude/builds/reports/duplicate-gate-vps-checks-shipped.md, including how each feature is reached over REST, MCP, CLI and voice. Add the THREADS row and open the PR for the one-at-a-time lander.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/duplicate-gate-vps-checks-shipped.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwja4rss0krcm6",
+     "createdAt": "2026-11-16T13:08:41.019Z"
+    }
+   ]
   }
  ]
 }
