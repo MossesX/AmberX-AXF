@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 05:41 UTC · `merge-main-land-voice-listener-use` → complete, merged, note (all) · reconciler
 - 2026-11-15 05:41 UTC · `auto-lander-controls-in-the-gate-plugin` → pending, note (all) · reconciler
 - 2026-11-15 05:42 UTC · `voice-listener-use-claude-when-connected` note (all) · orchestrator
 - 2026-11-15 05:42 UTC · `merge-main-land-voice-listener-use` note (all) · orchestrator
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 13:16 UTC · `fix-build-whose-session-finishes-phase-e` s6 done (all) · orchestrator
 - 2026-11-16 13:17 UTC · `fix-build-whose-session-finishes-phase-e` s7 done (all) · orchestrator
 - 2026-11-16 13:18 UTC · `fix-build-whose-session-finishes-phase-e` s8 done (all) · orchestrator
+- 2026-11-16 13:20 UTC · `fix-build-whose-session-finishes-phase-e` s9 done (all) · orchestrator
 
 ## Token passes (log)
 
