@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 11:57 UTC · `gate-rules-plugin-in-the-console` note (all) · orchestrator
 - 2026-11-15 11:58 UTC · `every-grid-1-2-rows-per-item-set-skin` → running, note (all) · pipeline
 - 2026-11-15 11:58 UTC · `every-grid-1-2-rows-per-item-set-skin` branch claude/every-grid-1-2-rows-per-item-set-skin (all) · pipeline
 - 2026-11-15 11:58 UTC · `every-grid-1-2-rows-per-item-set-skin` note (all) · orchestrator
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 13:24 UTC · `demo-video-series-three-minute-browser` → running, note (all) · pipeline
 - 2026-11-16 13:25 UTC · `demo-video-series-three-minute-browser` note (all) · orchestrator
 - 2026-11-16 13:25 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
+- 2026-11-16 13:26 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
 
 ## Token passes (log)
 

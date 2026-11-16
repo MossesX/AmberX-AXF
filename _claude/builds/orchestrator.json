@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T13:26:14.768Z",
+ "updatedAt": "2026-11-16T13:26:30.589Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -140191,7 +140191,7 @@
    "branch": "claude/group-chat-audio-hear-agents-talk-while",
    "pr": "#671",
    "createdAt": "2026-11-14T04:20:23.886Z",
-   "updatedAt": "2026-11-16T13:25:13.946Z",
+   "updatedAt": "2026-11-16T13:26:04.940Z",
    "builtAt": "2026-11-16T13:24:35.134Z",
    "notes": [
     {
@@ -140227,12 +140227,16 @@
      "at": "2026-11-16T13:24:35.134Z"
     },
     {
-     "text": "Session axf-group-chat-audio-hear-agents-talk-while--joey on mossesx-max- ended (exit 0); the build was already built.",
-     "at": "2026-11-16T13:25:13.946Z"
-    },
-    {
      "text": "s4 done (c71306a64), PR #671 added to the merge queue (the rules replace the one-at-a-time lander with the queue). Not done in s4: no screenshots of the Voices tab, and no live preview on a phone or in a browser (only server tests, swarm tests and tsc ran). Baked framework copies weren't rebaked because every app's baked copy has hand edits; the console reads the framework contract directly. The Kotlin AgentVoice rate/pitch twin is listed as deferred in PORTING.",
      "at": "2026-11-16T13:24:14.862Z"
+    },
+    {
+     "text": "Session axf-group-chat-audio-hear-agents-talk-while--joey on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-16T13:26:04.940Z"
+    },
+    {
+     "text": "Session axf-group-chat-audio-hear-agents-talk-while--joey on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-16T13:25:13.946Z"
     }
    ],
    "approvals": [],
