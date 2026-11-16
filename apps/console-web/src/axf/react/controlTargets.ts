@@ -579,12 +579,13 @@ export function useControlTargets(defs: ControlTargetDef[], key: string): void {
   }, [rt, scope, key]);
 }
 
-/** Register every view of the shell as a target (open = navigate). AppShell calls it. */
+/** Register every view of the shell as a target (open = navigate; the Settings view opens through app.settings, so in
+ *  the floating dialog by default: core/engines/settingsopen.ts). AppShell calls it. */
 export function useViewTargets(views: Record<string, { title: string; icon?: string; keywords?: string[] }>): void {
   const rt = useRuntime();
   useEffect(() => {
     const reg = controlRegistry(rt);
-    const offs = Object.entries(views).map(([id, v]) => reg.register({ address: `view:${id}`, kind: 'view', label: v.title, icon: v.icon, keywords: [id, ...(v.keywords ?? [])], open: () => rt.navigate(id), element: () => document.querySelector(`[data-axf-view="${cssEscape(id)}"]:not([hidden]), .fx-main__inner:not([hidden])`) }));
+    const offs = Object.entries(views).map(([id, v]) => reg.register({ address: `view:${id}`, kind: 'view', label: v.title, icon: v.icon, keywords: [id, ...(v.keywords ?? [])], open: () => (id === 'settings' ? rt.dispatch('app.settings') : rt.navigate(id)), element: () => document.querySelector(`[data-axf-view="${cssEscape(id)}"]:not([hidden]), .fx-main__inner:not([hidden])`) }));
     return () => offs.forEach((off) => off());
   }, [rt, Object.keys(views).join('|')]);
 }
