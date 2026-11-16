@@ -231,6 +231,13 @@
         "target": "edit-step-deps",
         "title": "Edit",
         "text": "Opens the step's dependencies: pick the earlier steps it waits for (none = independent, it may run in parallel as soon as the build runs), then Save."
+      },
+      {
+        "target": "view:build-orchestrator",
+        "title": "Build orchestrator",
+        "text": "Breaks every build into small steps (10 min or less; checkpoints inside one session, each committed and ticked as it finishes), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets an id and a Claude split (Fable only where needed) and sits in Pending; Bret",
+        "kind": "screen",
+        "draft": true
       }
     ],
     "intros": []
