@@ -1,0 +1,21 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "settings-appearance-defa-mwjc59sj-top-of-panel",
+ "name": "settings-appearance-defa-mwjc59sj: Top of Appearance",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Default look first on the page, above Skin source: the hub-wide default is the first thing you see, the per-app skin below it.",
+ "tags": [
+  "ui-choice",
+  "choice-set:settings-appearance-defa-mwjc59sj",
+  "choice-option:top-of-panel"
+ ],
+ "data": {
+  "layout": "tabs-top",
+  "header": "full",
+  "search": false,
+  "descriptions": true,
+  "view": "default-look-top"
+ }
+}
