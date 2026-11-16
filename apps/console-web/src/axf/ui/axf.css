@@ -858,6 +858,8 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-pagehead { display: flex; gap: var(--fx-dens-gap-3xl); justify-content: space-between; align-items: flex-end; flex-wrap: wrap; }
 .fx-pagehead h1 { font-size: var(--fx-type-scale-2xl); }
 .fx-pagehead p { margin: var(--fx-dens-gap-lg) 0 0; max-width: 62ch; }
+/* plugin-settings@1: a plugin screen's tools strip; the settings gear sits last (react/components/PluginScreenHeader) */
+.fx-pagehead__tools { display: flex; align-items: center; gap: var(--fx-dens-gap-md); margin-left: auto; flex-wrap: wrap; justify-content: flex-end; }
 .fx-eyebrow { margin: 0 0 var(--fx-dens-gap-lg) !important; font-size: var(--fx-type-scale-xs); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fx-accent); }
 .fx-muted { color: var(--fx-muted); }
 .fx-small { font-size: var(--fx-type-scale-sm); }

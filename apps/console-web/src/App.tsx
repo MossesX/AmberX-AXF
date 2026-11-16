@@ -21,6 +21,7 @@ import type { AxfWebLibrary } from './axf/react/library';
 import { bundledPlugins, enabledFolders, enabledPlugins, fetchPluginStatus, hostEnabledPlugins, pluginReport, PLUGINS_CHANGED, serverPartsToSwitchOn, type BundledPlugin, type PluginStatus } from './plugins';
 import { post } from './api';
 import { library as settingsLibrary } from './axf/libs/settings';
+import { pluginSettingsDefaults, withPluginTab } from './settings/pluginTabs';
 import { toolbarsLibrary } from './axf/libs/toolbars';
 import { createAlertsLibrary } from './axf/libs/alerts';
 import { createAshesLibrary, ownersFrom } from './axf/libs/ashes';
@@ -88,8 +89,9 @@ function underPlugins(p: BundledPlugin): AxfWebLibrary {
   // Plugin theme override (Brett, Oct 28 2026): every plugin UI root carries data-axf-plugin and its settings tab gets an
   // Appearance panel (framework/libs/plugintheme), so no plugin needs code of its own.
   const themed = (l: AxfWebLibrary) => withPluginTheme(countingUses(p.folder, l), { id: m.id, name: m.name });
-  if (!lib.settingsTabs?.length) return themed(out);
-  return themed({ ...out, settingsTabs: lib.settingsTabs.map((t) => ({ ...t, parent: 'plugins' })) });
+  // plugin-settings@1 (Nov 16 2026): every plugin has its sub-tab, its own when it declares one, else the default
+  // (src/settings/pluginTabs.ts); the enable / info / logs sections come from pluginSettingsDefaults below.
+  return themed(withPluginTab(p, out));
 }
 
 /** Installed console plugins (apps/console-web/plugins), filtered by what the backend says is enabled. */
@@ -147,7 +149,7 @@ function usePlugins() {
     const enabled = all.filter((p) => loader.config.modes[p.folder] !== 'off');
     const off = all.filter((p) => !enabled.includes(p)).map((p) => loader.disabledLibrary(p.folder, p.manifest.name)).filter((l): l is AxfWebLibrary => !!l);
     for (const p of bundledPlugins) if (!enabled.includes(p)) { rt.removeNavSection(p.manifest.id); rt.removeContextItems(p.manifest.id); rt.removeAppMenuItems(p.manifest.id); rt.settings.removeModule(p.manifest.id); rt.detachAll(p.manifest.id); rt.removePlacement(p.manifest.id); }
-    return installLibraries(rt, [settingsLibrary, toolbarsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ashesLibrary, hubStatusLibrary, dataGridLibrary, pluginThemeLibrary, ...enabled.map(underPlugins), ...off]);
+    return installLibraries(rt, [settingsLibrary, toolbarsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ashesLibrary, hubStatusLibrary, dataGridLibrary, pluginThemeLibrary, pluginSettingsDefaults(bundledPlugins, enabled), ...enabled.map(underPlugins), ...off]);
   }, [rt, status, loaded, managed, hostIds, lazy]);
   useEffect(() => { loader.markInstalled(); }, [contributed]);
   return { contributed };

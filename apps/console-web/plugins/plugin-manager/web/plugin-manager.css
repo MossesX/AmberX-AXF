@@ -329,3 +329,7 @@ select.fx-input.axp-plugin-manager-studio__filtersel { display: none; width: aut
 .axp-plugin-manager-lazy__name { margin-right: var(--fx-dens-gap-sm); font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axp-plugin-manager-lazy__table td { vertical-align: middle; white-space: nowrap }
 .axp-plugin-manager-lazy__num { font-variant-numeric: tabular-nums; text-align: right }
+
+/* ---------- default sections of every plugin's settings sub-tab (DefaultPluginSettingsTab) ---------- */
+.axp-plugin-manager-defaults__deps { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--fx-dens-gap-sm) }
+.axp-plugin-manager-defaults__deps code { overflow-wrap: anywhere }
