@@ -50,3 +50,35 @@ the CI check fails code that navigates to the Settings page or registers a setti
 
 - UI Review: desktop + phone shots of the whole-interface dialog and a tab dialog submitted (see the PR).
 - Kotlin twin deferred (PORTING.md). Expenses (vendored core) not changed.
+
+## s4 (Nov 16 2026): the choice is gone
+
+Brett, Nov 16: remove the setting that picks where settings screens open (page / pane / floating), everywhere. Every
+settings interface always opens as a floating popup.
+
+| Removed | Where |
+|---|---|
+| Per-user **Settings open in** (`axf.settings.opensAs`, Appearance → Display) and its engine exports (`SETTINGS_OPENS_AS*`, `parseSettingsOpensAs`, `normalizeSettingsOpensAs`, `settingsOpensAsOptions`) | `framework/core/engines/settingsopen.ts`, `framework/libs/settings/index.tsx` |
+| Actions `settings.opensas` (voice / CLI / MCP / REST) and `settings.page`, the dialogs' **Open as page** button | settings library, help packs, control inventory |
+| A plugin's **Opens in** pulling its settings onto the page (it now moves only the plugin's own UI; the wording says its settings always open in a dialog) | `framework/react/library.ts` |
+| Baked copies (console, axHub web, AmberX, Molly), help (framework + walkthrough-studio packs), status `cx.settings.opendialog`, PORTING | |
+
+The page / pane placement build (`settings-placement@1`, `settingsPlacement`, `opensIn`) never landed, so no app,
+plugin or asset carries it; nothing else to remove.
+
+Migration: saved `axf.settings.opensAs` values are cleared on load (`RETIRED_SETTINGS_OPEN_KEYS`). Old links still work:
+`view:settings` and `settings.open:<tab>` open the popup; only an embedding host that takes settings (embed@1) or the
+Settings view already being up keep it in place.
+
+No-comeback CI: `framework/spec/check-settings-open.mts` now scans code, schemas, assets, help, CLI, server and docs
+(`.ts/.tsx/.mjs/.mts/.json/.py/.md/.kt/.java`) and the console-control inventory, and fails on the retired key or
+actions, a `settingsPlacement` / `opensIn` field, a "Settings open(s) in" / "Open as page" / "Pops up in" option or
+help entry, or the pop-out button. Negative probe (a plugin with all of them) failed 5 ways as expected.
+
+| Check | Result |
+|---|---|
+| check-settings-open | 42 |
+| window-handles-check | 38 (every plugin Opens in pick still opens its settings in the dialog; actions gone) |
+| settings-open.e2e | updated (no Open as page, retired setting gone, still a popup); not run here |
+| check-embed 429, check-theme, check-controls, check-console-control, inventory --check, validate --framework | green |
+| tsc console-web | clean (axHub web / AmberX show errors in untouched files: Overlays, HubSkinLock) |
