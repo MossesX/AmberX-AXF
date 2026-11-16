@@ -1159,6 +1159,21 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-choice:hover:not(:disabled) { border-color: var(--fx-accent); }
 .fx-choice:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w); }
 .fx-choice.is-active { border-color: var(--fx-accent); box-shadow: 0 0 0 var(--fx-border-w) var(--fx-accent); background: var(--fx-accent-soft); }
+/* Shape picker (react/components/ShapePicker.tsx): each preview is drawn with its own --fx-shape-widget-* tokens */
+.fx-shape-picker { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); min-width: 0; }
+.fx-shape-picker__previews { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-lg); }
+.fx-shape-picker__sample { display: inline-flex; flex-direction: column; align-items: center; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm); border: var(--fx-border-w) solid transparent; border-radius: var(--fx-radius-sm); }
+.fx-shape-picker__sample.is-active { border-color: var(--fx-accent); }
+.fx-shape-picker__make { display: flex; align-items: flex-start; gap: var(--fx-dens-gap-lg); flex-wrap: wrap; }
+.fx-shape-picker__make > .fx-stack { flex: 1 1 calc(var(--fx-font-size) * 16); min-width: 0; }
+.fx-shape-picker__upload { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); font-size: var(--fx-type-root-sm); }
+.fx-shape-preview {
+  display: inline-flex; align-items: center; justify-content: center; height: calc(var(--fx-font-size) * 2.2); min-width: calc(var(--fx-font-size) * 2.2);
+  padding: 0 var(--fx-dens-gap-md); font-size: var(--fx-type-root-xs); font-weight: 600; color: var(--fx-accent); border: var(--fx-border-w) solid var(--fx-accent);
+  background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent);
+  border-radius: var(--fx-shape-widget-radius); clip-path: var(--fx-shape-widget-clip); aspect-ratio: var(--fx-shape-widget-aspect); corner-shape: var(--fx-shape-widget-corner);
+  -webkit-mask: var(--fx-shape-widget-mask) center / 100% 100% no-repeat; mask: var(--fx-shape-widget-mask) center / 100% 100% no-repeat;
+}
 /* Icon picker (react/components/IconPicker.tsx): small cards, the list scrolls inside the dialog */
 .fx-icon-picker { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); min-width: 0; }
 .fx-icon-picker .fx-choices { grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--fx-font-size) * 8)), 1fr)); max-height: calc(var(--fx-font-size) * 28); overflow-y: auto; gap: var(--fx-dens-gap-sm); }
