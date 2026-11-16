@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 11:59 UTC · `pending-tab-one-collapsed-row-per-2` s3 done (all) · orchestrator
 - 2026-11-15 11:59 UTC · `gate-rules-plugin-in-the-console` note (all) · mcp
 - 2026-11-15 12:00 UTC · `gate-rules-plugin-in-the-console` note (all) · mcp
 - 2026-11-15 12:02 UTC · `pending-tab-one-collapsed-row-per-2` s4 done (all) · orchestrator
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 13:31 UTC · `vps-sends-shipped-features-every-merge` s2 done, note (all) · reconciler
 - 2026-11-16 13:31 UTC · `console-look-becomes-default-axhub-skin` s9 done (all) · orchestrator
 - 2026-11-16 13:34 UTC · `duplicate-gate-vps-checks-shipped` s3 done (all) · orchestrator
+- 2026-11-16 13:35 UTC · `vps-sends-shipped-features-every-merge` s3 done (all) · orchestrator
 
 ## Token passes (log)
 
