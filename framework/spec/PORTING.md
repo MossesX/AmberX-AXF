@@ -340,3 +340,14 @@ animIntensity` (core/engines/behavior.ts: `skinAnimationVars`, `withAnimationPre
 `setAnimationPref`) and the colour maths in core/engines/swatches.ts (`shadesOf`, `mixHex`, `skinSwatches`,
 `sweepOrigin`); fixture framework/spec/fixtures/skin-animations.json. Kotlin twin deferred (no new Android work): the
 Compose behaviour reader ignores the new fields (defaults apply), so Android skins stay still until it is ported.
+
+## Deferred: plugin-settings@1 (Nov 16 2026)
+
+Build settings-interface-gear-every-plugin adds the `settings` block of plugin.json (core/plugin-settings.mjs:
+`defaultSettings`, `normalizeSettings`, `checkSettings`, `settingsAddress`; schema schemas/plugin-settings.json; fixture
+spec/fixtures/plugin-settings.json) and the web gear + header slot (react/components/PluginSettingsGear.tsx,
+PluginScreenHeader.tsx). Kotlin twin deferred (no new Android work): the kernel's `Plugin.kt` manifest reader ignores the
+block (the derived default applies: first settings-tab, sections enable / info / logs, a gear when it has a view), the
+Android Plugin Manager draws no gear yet. When Android resumes: a `PluginSettings` data class with the same defaults,
+replay `in` → `out` of the fixture, and a Compose `PluginSettingsGear` on `Axf.colors / Axf.shapes` that opens the
+plugin's sub-tab through console control.
