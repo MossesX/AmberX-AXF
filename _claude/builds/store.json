@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6699,
- "updatedAt": "2026-11-16T19:14:57.052Z",
+ "rev": 6700,
+ "updatedAt": "2026-11-16T19:15:43.571Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -246027,7 +246027,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T19:03:55.794Z",
-   "updatedAt": "2026-11-16T19:14:18.168Z",
+   "updatedAt": "2026-11-16T19:15:40.380Z",
    "builtAt": "",
    "notes": [
     {
@@ -246108,28 +246108,6 @@
     "heldWhy": ""
    },
    "steps": [
-    {
-     "id": "s12",
-     "uid": "st-mwjn6t1s01zeez",
-     "title": "",
-     "text": "Brett Nov 16: whenever a theme or skin is applied in any app, ask first: 'Apply to the hub (every app that follows axHub)' or 'Just this app (e.g. the console)'. Hub choice writes the hub-wide skin/theme; app choice writes only that app's look (follow off). Remember-my-choice option. Same choice as a parameter on REST, MCP, CLI and voice (scope=hub|app).",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-16T19:14:10.558Z",
-     "updatedAt": "2026-11-16T19:14:10.960Z"
-    },
     {
      "id": "s1",
      "uid": "st-mwjmvcmx01ebs6",
@@ -246222,12 +246200,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:15:40.380Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T19:05:16.473Z",
-     "updatedAt": "2026-11-16T19:05:16.473Z"
+     "updatedAt": "2026-11-16T19:15:40.814Z"
     },
     {
      "id": "s5",
@@ -246305,28 +246283,6 @@
      "rev": 1,
      "createdAt": "2026-11-16T19:05:16.473Z",
      "updatedAt": "2026-11-16T19:05:16.473Z"
-    },
-    {
-     "id": "s13",
-     "uid": "st-mwjn6yzw01cpry",
-     "title": "",
-     "text": "Brett Nov 16: (a) 'Save as new skin' button in Settings > Appearance: saves the current look (skin + every asset override) as a new skin@1 with a name field; it appears in the skin list and can be picked hub-wide; skins.save-as <name> on REST, MCP, CLI and voice. (b) When any skin is applied, show a notice 'N assets override this skin' with a 'View them' link opening the assets-with-edits list (only when N > 0); the apply result on API/CLI/voice carries the same count.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-16T19:14:18.169Z",
-     "updatedAt": "2026-11-16T19:14:18.668Z"
     },
     {
      "id": "s8",

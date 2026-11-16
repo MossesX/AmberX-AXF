@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:14:57.052Z",
+ "updatedAt": "2026-11-16T19:15:43.571Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -160795,7 +160795,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T19:03:55.794Z",
-   "updatedAt": "2026-11-16T19:14:18.168Z",
+   "updatedAt": "2026-11-16T19:15:40.380Z",
    "builtAt": "",
    "notes": [
     {
@@ -160842,25 +160842,6 @@
     "addenda": []
    },
    "steps": [
-    {
-     "id": "s12",
-     "text": "Brett Nov 16: whenever a theme or skin is applied in any app, ask first: 'Apply to the hub (every app that follows axHub)' or 'Just this app (e.g. the console)'. Hub choice writes the hub-wide skin/theme; app choice writes only that app's look (follow off). Remember-my-choice option. Same choice as a parameter on REST, MCP, CLI and voice (scope=hub|app).",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjn6t1s01zeez",
-     "createdAt": "2026-11-16T19:14:10.558Z"
-    },
     {
      "id": "s1",
      "text": "Read AssetsWithEdits and the chrome.reset path in framework/react/components/ChromeContext.tsx, the chrome-settings engine in framework/core/engines/chrome-settings-rules.mjs and the console actions registry. Write a short plan in _claude/builds/reports/reset-all-button-every-asset-override.md covering which override keys chrome.reset clears today (axf.chrome.<type>.<id>.asset, axf.chrome.<type>.<id>, axf.tokens.* per asset) and how its undo works. Commit the plan.",
@@ -160942,8 +160923,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:15:40.380Z",
      "note": "",
      "uid": "st-mwjmvcmx04mliq",
      "createdAt": "2026-11-16T19:05:16.473Z"
@@ -161015,25 +160996,6 @@
      "note": "",
      "uid": "st-mwjmvcmx07qth2",
      "createdAt": "2026-11-16T19:05:16.473Z"
-    },
-    {
-     "id": "s13",
-     "text": "Brett Nov 16: (a) 'Save as new skin' button in Settings > Appearance: saves the current look (skin + every asset override) as a new skin@1 with a name field; it appears in the skin list and can be picked hub-wide; skins.save-as <name> on REST, MCP, CLI and voice. (b) When any skin is applied, show a notice 'N assets override this skin' with a 'View them' link opening the assets-with-edits list (only when N > 0); the apply result on API/CLI/voice carries the same count.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjn6yzw01cpry",
-     "createdAt": "2026-11-16T19:14:18.169Z"
     },
     {
      "id": "s8",
