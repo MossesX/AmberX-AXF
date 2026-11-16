@@ -1,0 +1,2109 @@
+{
+  "$axf": "plugin-settings-audit@1",
+  "build": "settings-interface-gear-every-plugin",
+  "root": "apps/console-web/plugins",
+  "script": "framework/cli/plugin-settings-audit.mjs",
+  "summary": {
+    "plugins": 72,
+    "withScreen": 44,
+    "withoutScreen": 28,
+    "withSettingsTab": 71,
+    "missingSettingsTab": [
+      "notes-tasks"
+    ],
+    "screensWithGear": 3,
+    "screensMissingGear": [
+      "agent-manager",
+      "agent-swarm",
+      "agent-voice",
+      "ai-assistant",
+      "amberx-listeners",
+      "audio-extract",
+      "brand-library",
+      "build-breaker",
+      "build-orchestrator",
+      "builds-page",
+      "changes-grid",
+      "chat-viewer",
+      "claude-accounts",
+      "claude-handoff",
+      "claude-settings",
+      "codebase-changes",
+      "context-menu-designer",
+      "crew-live",
+      "demonstration-designer",
+      "fable-rebuilds",
+      "feature-matrix",
+      "gate",
+      "glossary-index",
+      "maintenance",
+      "mcp-client",
+      "md-studio",
+      "notes-browser",
+      "notify-control",
+      "output-recorder",
+      "plan-studio",
+      "plugin-commands",
+      "plugin-manager",
+      "plugin-update",
+      "shipped-features",
+      "skin-editor",
+      "skin-gallery",
+      "theme-editor",
+      "theme-manager",
+      "todo-manager",
+      "token-control",
+      "ui-review"
+    ],
+    "noScreen": [
+      "activity",
+      "agent-slots",
+      "ai-keys",
+      "alerts-bell",
+      "approvals-banner",
+      "basic-filter",
+      "build-profiles",
+      "claude-badge",
+      "claude-session",
+      "console-commands",
+      "console-terminal",
+      "container-access",
+      "feature-assist",
+      "follow-amber",
+      "github-app",
+      "hub-sync",
+      "main-build-status",
+      "molly-guide",
+      "notes-tasks",
+      "plugin-switches",
+      "plugins-menu",
+      "project-switcher",
+      "push-banner",
+      "ref-links",
+      "snapshot-manager",
+      "systems-check",
+      "wake-listener",
+      "whats-shipped"
+    ],
+    "complete": 30
+  },
+  "plugins": [
+    {
+      "folder": "_template",
+      "id": "ai.amberx.axf.console.example",
+      "name": "Example",
+      "template": true,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "example"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "example"
+      ],
+      "settingsSections": [
+        "example"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "activity",
+      "id": "ai.amberx.axf.console.activity",
+      "name": "Activity banner",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "activity"
+      ],
+      "settingsSections": [
+        "activity"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": []
+    },
+    {
+      "folder": "agent-manager",
+      "id": "ai.amberx.axf.console.agent-manager",
+      "name": "Agent manager",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "agent-manager"
+      ],
+      "dialogs": [
+        "agent-manager.vinny",
+        "agent-manager.wizard"
+      ],
+      "settingsTab": true,
+      "settingsTabs": [
+        "agent-manager"
+      ],
+      "settingsSections": [
+        "agent-manager"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": true,
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/agent-manager/web/menu.ts:18",
+          "kind": "menu",
+          "target": "agent-manager",
+          "own": true,
+          "headerHint": false
+        }
+      ],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "agent-slots",
+      "id": "ai.amberx.axf.console.agent-slots",
+      "name": "Agent cap",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "agent-slots"
+      ],
+      "settingsSections": [],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": []
+    },
+    {
+      "folder": "agent-swarm",
+      "id": "ai.amberx.axf.console.agent-swarm",
+      "name": "Agent swarm",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "agent-swarm"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "agent-swarm"
+      ],
+      "settingsSections": [
+        "agent-swarm"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "agent-voice",
+      "id": "ai.amberx.axf.console.agent-voice",
+      "name": "Agent voice",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "agent-voice"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "agent-voice"
+      ],
+      "settingsSections": [
+        "agent-voice"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "ai-assistant",
+      "id": "ai.amberx.axf.console.ai-assistant",
+      "name": "AI assistant",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "ai-assistant"
+      ],
+      "dialogs": [
+        "ai-assistant.chat"
+      ],
+      "settingsTab": true,
+      "settingsTabs": [
+        "ai-assistant"
+      ],
+      "settingsSections": [
+        "ai-assistant"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": true,
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/ai-assistant/web/menu.ts:12",
+          "kind": "menu",
+          "target": "ai-assistant",
+          "own": true,
+          "headerHint": false
+        }
+      ],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "ai-keys",
+      "id": "ai.amberx.axf.console.ai-keys",
+      "name": "AI keys",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [
+        "ai-keys",
+        "ai-keys.accounts"
+      ],
+      "settingsTab": true,
+      "settingsTabs": [
+        "ai-keys"
+      ],
+      "settingsSections": [
+        "ai-keys"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": []
+    },
+    {
+      "folder": "alerts-bell",
+      "id": "ai.amberx.axf.console.alerts-bell",
+      "name": "Alerts bell",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "alerts-bell"
+      ],
+      "settingsSections": [
+        "alerts-bell"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/alerts-bell/web/index.tsx:47",
+          "kind": "screen",
+          "target": "alerts",
+          "own": false,
+          "headerHint": false
+        }
+      ],
+      "missing": []
+    },
+    {
+      "folder": "amberx-listeners",
+      "id": "ai.amberx.axf.console.amberx-listeners",
+      "name": "AmberX listeners",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "amberx-listeners"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "amberx-listeners"
+      ],
+      "settingsSections": [],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "approvals-banner",
+      "id": "ai.amberx.axf.console.approvals-banner",
+      "name": "Approvals banner",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [
+        "approvals.review",
+        "approvals.veto"
+      ],
+      "settingsTab": true,
+      "settingsTabs": [
+        "approvals-banner"
+      ],
+      "settingsSections": [
+        "approvals-banner"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": []
+    },
+    {
+      "folder": "audio-extract",
+      "id": "ai.amberx.axf.console.audio-extract",
+      "name": "Audio Extract",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "audio-extract"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "audio-extract"
+      ],
+      "settingsSections": [
+        "audio-extract"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": true,
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/audio-extract/web/menu.ts:9",
+          "kind": "menu",
+          "target": "audio-extract",
+          "own": true,
+          "headerHint": false
+        }
+      ],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "basic-filter",
+      "id": "ai.amberx.axf.console.basic-filter",
+      "name": "Basic filter",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [
+        "basic-filter"
+      ],
+      "settingsTab": true,
+      "settingsTabs": [
+        "basic-filter"
+      ],
+      "settingsSections": [
+        "basic-filter"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": []
+    },
+    {
+      "folder": "brand-library",
+      "id": "ai.amberx.axf.console.brand-library",
+      "name": "Brand library",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "brand-library"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "brand-library"
+      ],
+      "settingsSections": [
+        "logos"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "build-breaker",
+      "id": "ai.amberx.axf.console.build-breaker",
+      "name": "Build Breaker",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "build-breaker"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "build-breaker"
+      ],
+      "settingsSections": [
+        "build-breaker.tab"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "build-orchestrator",
+      "id": "ai.amberx.axf.console.build-orchestrator",
+      "name": "Build orchestrator",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "build-orchestrator"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "build-orchestrator"
+      ],
+      "settingsSections": [
+        "build-orchestrator",
+        "pending"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "build-profiles",
+      "id": "ai.amberx.axf.console.build-profiles",
+      "name": "Build profiles",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [
+        "build-profiles"
+      ],
+      "settingsTab": true,
+      "settingsTabs": [
+        "build-profiles"
+      ],
+      "settingsSections": [
+        "build-profiles"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": []
+    },
+    {
+      "folder": "builds-page",
+      "id": "ai.amberx.axf.console.builds-page",
+      "name": "Builds",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "builds"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "builds-page"
+      ],
+      "settingsSections": [],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "changes-grid",
+      "id": "ai.amberx.axf.console.changes-grid",
+      "name": "Changes & features grid",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "changes-grid"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "changes-grid"
+      ],
+      "settingsSections": [
+        "changes-grid"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "chat-viewer",
+      "id": "ai.amberx.axf.console.chat-viewer",
+      "name": "Chat viewer",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "chat-viewer"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "chat-viewer"
+      ],
+      "settingsSections": [
+        "chat-viewer"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": true,
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/chat-viewer/web/menu.ts:10",
+          "kind": "menu",
+          "target": "chat-viewer",
+          "own": true,
+          "headerHint": false
+        }
+      ],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "claude-accounts",
+      "id": "ai.amberx.axf.console.claude-accounts",
+      "name": "Claude accounts",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "claude-accounts"
+      ],
+      "dialogs": [
+        "claude-accounts.switch"
+      ],
+      "settingsTab": true,
+      "settingsTabs": [
+        "claude-accounts"
+      ],
+      "settingsSections": [],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "claude-badge",
+      "id": "ai.amberx.axf.console.claude-badge",
+      "name": "Badges",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "claude-badge"
+      ],
+      "settingsSections": [
+        "claude-badge"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/claude-badge/web/index.tsx:277",
+          "kind": "screen",
+          "target": null,
+          "own": false,
+          "headerHint": false
+        }
+      ],
+      "missing": []
+    },
+    {
+      "folder": "claude-handoff",
+      "id": "ai.amberx.axf.console.claude-handoff",
+      "name": "Claude handoff banner",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "claude-handoff",
+        "claude-handoff-preview"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "claude-handoff"
+      ],
+      "settingsSections": [
+        "claude-handoff"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "claude-session",
+      "id": "ai.amberx.axf.console.claude-session",
+      "name": "Claude sessions",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [
+        "claude.picker"
+      ],
+      "settingsTab": true,
+      "settingsTabs": [
+        "claude-session"
+      ],
+      "settingsSections": [],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": []
+    },
+    {
+      "folder": "claude-settings",
+      "id": "ai.amberx.axf.console.claude-settings",
+      "name": "Claude",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "claude-settings"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "claude-settings"
+      ],
+      "settingsSections": [],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "codebase-changes",
+      "id": "ai.amberx.axf.console.codebase-changes",
+      "name": "Codebase changes banner",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "codebase-changes"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "codebase-changes"
+      ],
+      "settingsSections": [
+        "codebase-changes"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "console-commands",
+      "id": "ai.amberx.axf.console.console-commands",
+      "name": "Console commands",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "console-commands"
+      ],
+      "settingsSections": [],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": []
+    },
+    {
+      "folder": "console-terminal",
+      "id": "ai.amberx.axf.console.terminal",
+      "name": "Terminal",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [
+        "terminal.connect",
+        "terminal.connection"
+      ],
+      "settingsTab": true,
+      "settingsTabs": [
+        "terminal"
+      ],
+      "settingsSections": [
+        "terminal"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": true,
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/console-terminal/web/menu.ts:11",
+          "kind": "menu",
+          "target": "terminal",
+          "own": true,
+          "headerHint": false
+        }
+      ],
+      "missing": []
+    },
+    {
+      "folder": "container-access",
+      "id": "ai.amberx.axf.console.container-access",
+      "name": "Container access",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "container-access"
+      ],
+      "settingsSections": [
+        "container-access"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": []
+    },
+    {
+      "folder": "context-menu-designer",
+      "id": "ai.amberx.axf.console.context-menu-designer",
+      "name": "Context menu designer",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "context-menu-designer",
+        "id",
+        "label"
+      ],
+      "dialogs": [
+        "id",
+        "label"
+      ],
+      "settingsTab": true,
+      "settingsTabs": [
+        "context-menu-designer"
+      ],
+      "settingsSections": [
+        "context-menu-designer"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "crew-live",
+      "id": "ai.amberx.axf.console.crew-live",
+      "name": "Crew",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "crew"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "crew-live"
+      ],
+      "settingsSections": [
+        "crew-live"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "demonstration-designer",
+      "id": "ai.amberx.axf.console.demonstration-designer",
+      "name": "Demonstration Designer",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "demonstration-designer"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "demonstration-designer"
+      ],
+      "settingsSections": [],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "fable-rebuilds",
+      "id": "ai.amberx.axf.console.fable-rebuilds",
+      "name": "Fable rebuilds",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "fable-rebuilds"
+      ],
+      "dialogs": [
+        "fable-rebuilds.report"
+      ],
+      "settingsTab": true,
+      "settingsTabs": [
+        "fable-rebuilds"
+      ],
+      "settingsSections": [
+        "fable-rebuilds"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "feature-assist",
+      "id": "ai.amberx.axf.console.feature-assist",
+      "name": "Feature assistant",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [
+        "feature-assist.build"
+      ],
+      "settingsTab": true,
+      "settingsTabs": [
+        "feature-assist"
+      ],
+      "settingsSections": [
+        "feature-assist"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": true,
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/feature-assist/web/menu.ts:9",
+          "kind": "menu",
+          "target": "feature-assist",
+          "own": true,
+          "headerHint": false
+        }
+      ],
+      "missing": []
+    },
+    {
+      "folder": "feature-matrix",
+      "id": "ai.amberx.axf.console.feature-matrix",
+      "name": "Feature matrix",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "feature-matrix"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "feature-matrix"
+      ],
+      "settingsSections": [
+        "feature-matrix"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "follow-amber",
+      "id": "ai.amberx.axf.console.follow-amber",
+      "name": "Follow Amber",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [
+        "follow-amber.approval"
+      ],
+      "settingsTab": true,
+      "settingsTabs": [
+        "follow-amber"
+      ],
+      "settingsSections": [],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": []
+    },
+    {
+      "folder": "gate",
+      "id": "ai.amberx.axf.console.gate",
+      "name": "Gate & rules",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "gate"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "gate"
+      ],
+      "settingsSections": [],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "github-app",
+      "id": "ai.amberx.axf.console.github-app",
+      "name": "GitHub",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "github-app"
+      ],
+      "settingsSections": [],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": []
+    },
+    {
+      "folder": "glossary-index",
+      "id": "ai.amberx.axf.console.glossary-index",
+      "name": "Glossary, Index & Demos",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "book-builder",
+        "demo-designer",
+        "glossary-index"
+      ],
+      "dialogs": [
+        "glossary-index.add-to-book",
+        "glossary-index.book-wizard"
+      ],
+      "settingsTab": true,
+      "settingsTabs": [
+        "glossary-index"
+      ],
+      "settingsSections": [
+        "glossary-index"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "hub-sync",
+      "id": "ai.amberx.axf.console.hub-sync",
+      "name": "axHub sync",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "hubsync"
+      ],
+      "settingsSections": [
+        "hubsync"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": []
+    },
+    {
+      "folder": "main-build-status",
+      "id": "ai.amberx.axf.console.main-build-status",
+      "name": "Main build status",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [
+        "main-build-status.run"
+      ],
+      "settingsTab": true,
+      "settingsTabs": [
+        "main-build-status"
+      ],
+      "settingsSections": [
+        "main-build-status"
+      ],
+      "gear": true,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/main-build-status/web/index.tsx:142",
+          "kind": "screen",
+          "target": "main-build-status",
+          "own": true,
+          "headerHint": false
+        }
+      ],
+      "missing": []
+    },
+    {
+      "folder": "maintenance",
+      "id": "ai.amberx.axf.console.maintenance",
+      "name": "Maintenance",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "maintenance"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "maintenance"
+      ],
+      "settingsSections": [],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "mcp-client",
+      "id": "ai.amberx.axf.console.mcp-client",
+      "name": "MCP client",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "mcp"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "mcp"
+      ],
+      "settingsSections": [
+        "mcp"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": true,
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/mcp-client/web/menu.ts:9",
+          "kind": "menu",
+          "target": "mcp",
+          "own": true,
+          "headerHint": false
+        }
+      ],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "md-studio",
+      "id": "ai.amberx.axf.console.md-studio",
+      "name": "MD Studio",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "md-studio"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "md-studio"
+      ],
+      "settingsSections": [],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "molly-guide",
+      "id": "ai.amberx.axf.console.molly-guide",
+      "name": "Gizmo guide",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "molly-guide"
+      ],
+      "settingsSections": [
+        "molly-guide"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": []
+    },
+    {
+      "folder": "notes-browser",
+      "id": "ai.amberx.axf.console.notes-browser",
+      "name": "Notes",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "notes"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "notes-browser"
+      ],
+      "settingsSections": [
+        "notes-browser"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "notes-tasks",
+      "id": null,
+      "name": "notes-tasks",
+      "template": false,
+      "manifest": false,
+      "screen": false,
+      "views": [],
+      "dialogs": [],
+      "settingsTab": false,
+      "settingsTabs": [],
+      "settingsSections": [],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "settings-tab"
+      ]
+    },
+    {
+      "folder": "notify-control",
+      "id": "ai.amberx.axf.console.notify-control",
+      "name": "Notifications",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "notify-control"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "notify-control"
+      ],
+      "settingsSections": [],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "output-recorder",
+      "id": "ai.amberx.axf.console.output-recorder",
+      "name": "Audio Output Recorder",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "output-recorder"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "output-recorder"
+      ],
+      "settingsSections": [
+        "output-recorder"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": true,
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/output-recorder/web/menu.ts:7",
+          "kind": "menu",
+          "target": "output-recorder",
+          "own": true,
+          "headerHint": false
+        }
+      ],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "plan-studio",
+      "id": "ai.amberx.axf.console.plan-studio",
+      "name": "Plan Studio",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "items",
+        "plan-studio"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "plan-studio"
+      ],
+      "settingsSections": [],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "plugin-commands",
+      "id": "ai.amberx.axf.console.plugin-commands",
+      "name": "Plugin commands",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "plugin-commands"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "plugin-commands"
+      ],
+      "settingsSections": [],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "plugin-manager",
+      "id": "ai.amberx.axf.console.plugin-manager",
+      "name": "Plugin Manager",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "id",
+        "plugin-manager"
+      ],
+      "dialogs": [
+        "id",
+        "plugin-manager.window"
+      ],
+      "settingsTab": true,
+      "settingsTabs": [
+        "plugin-manager"
+      ],
+      "settingsSections": [
+        "plugin-manager"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/plugin-manager/web/Detail.tsx:40",
+          "kind": "screen",
+          "target": null,
+          "own": false,
+          "headerHint": true
+        },
+        {
+          "at": "apps/console-web/plugins/plugin-manager/web/PluginManager.tsx:393",
+          "kind": "screen",
+          "target": null,
+          "own": false,
+          "headerHint": false
+        },
+        {
+          "at": "apps/console-web/plugins/plugin-manager/web/views.tsx:108",
+          "kind": "screen",
+          "target": null,
+          "own": false,
+          "headerHint": false
+        }
+      ],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "plugin-switches",
+      "id": "ai.amberx.axf.console.plugin-switches",
+      "name": "Plugin switches",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [
+        "plugin-switches"
+      ],
+      "settingsTab": true,
+      "settingsTabs": [
+        "plugin-switches"
+      ],
+      "settingsSections": [
+        "plugin-switches"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": []
+    },
+    {
+      "folder": "plugin-update",
+      "id": "ai.amberx.axf.console.plugin-update",
+      "name": "Plugin Update",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "plugin-update"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "plugin-update"
+      ],
+      "settingsSections": [
+        "plugin-update"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "plugins-menu",
+      "id": "ai.amberx.axf.console.plugins-menu",
+      "name": "Plugins menu",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [
+        "plugins-menu.install",
+        "plugins-menu.settings"
+      ],
+      "settingsTab": true,
+      "settingsTabs": [
+        "plugins-menu"
+      ],
+      "settingsSections": [],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/plugins-menu/web/core.ts:219",
+          "kind": "menu",
+          "target": null,
+          "own": false,
+          "headerHint": false
+        },
+        {
+          "at": "apps/console-web/plugins/plugins-menu/web/index.tsx:163",
+          "kind": "screen",
+          "target": null,
+          "own": false,
+          "headerHint": false
+        }
+      ],
+      "missing": []
+    },
+    {
+      "folder": "project-switcher",
+      "id": "ai.amberx.axf.console.project-switcher",
+      "name": "Project switcher",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [
+        "projects"
+      ],
+      "settingsTab": true,
+      "settingsTabs": [
+        "projects"
+      ],
+      "settingsSections": [
+        "projects"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": []
+    },
+    {
+      "folder": "project-wizard",
+      "id": "ai.amberx.axf.console.project-wizard",
+      "name": "Project wizard",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "project-wizard"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "project-wizard"
+      ],
+      "settingsSections": [
+        "project-wizard"
+      ],
+      "gear": true,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/project-wizard/web/index.tsx:112",
+          "kind": "screen",
+          "target": "project-wizard",
+          "own": true,
+          "headerHint": false
+        }
+      ],
+      "missing": []
+    },
+    {
+      "folder": "push-banner",
+      "id": "ai.amberx.axf.console.push-banner",
+      "name": "Push banner",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "push-banner"
+      ],
+      "settingsSections": [
+        "push-banner"
+      ],
+      "gear": true,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/push-banner/web/ui.tsx:389",
+          "kind": "screen",
+          "target": "push-banner",
+          "own": true,
+          "headerHint": false
+        }
+      ],
+      "missing": []
+    },
+    {
+      "folder": "ref-links",
+      "id": "ai.amberx.axf.console.ref-links",
+      "name": "Reference links",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "ref-links"
+      ],
+      "settingsSections": [],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": []
+    },
+    {
+      "folder": "session-checkin",
+      "id": "ai.amberx.axf.console.session-checkin",
+      "name": "Session check-in",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "session-checkin",
+        "sessions"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "session-checkin"
+      ],
+      "settingsSections": [
+        "session-checkin"
+      ],
+      "gear": true,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/session-checkin/web/index.tsx:90",
+          "kind": "screen",
+          "target": "session-checkin",
+          "own": true,
+          "headerHint": false
+        }
+      ],
+      "missing": []
+    },
+    {
+      "folder": "shipped-features",
+      "id": "ai.amberx.axf.console.shipped-features",
+      "name": "Shipped features",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "shipped-features"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "shipped-features"
+      ],
+      "settingsSections": [],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "skin-editor",
+      "id": "ai.amberx.axf.console.skin-editor",
+      "name": "Skin editor",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "skin-editor",
+        "token-registry"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "skin-editor"
+      ],
+      "settingsSections": [
+        "skin-editor"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "skin-gallery",
+      "id": "ai.amberx.axf.console.skin-gallery",
+      "name": "Skins",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "id",
+        "skin-gallery"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "skin-gallery"
+      ],
+      "settingsSections": [
+        "skin-gallery"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": true,
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/skin-gallery/web/contextItems.ts:34",
+          "kind": "menu",
+          "target": "skin-gallery",
+          "own": true,
+          "headerHint": false
+        }
+      ],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "snapshot-manager",
+      "id": "ai.amberx.axf.console.snapshot-manager",
+      "name": "Snapshot Manager",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "snapshots"
+      ],
+      "settingsSections": [
+        "snapshots"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": []
+    },
+    {
+      "folder": "systems-check",
+      "id": "ai.amberx.axf.console.systems-check",
+      "name": "Systems check banner",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [
+        "fix-help",
+        "keys-needed",
+        "system-check"
+      ],
+      "settingsTab": true,
+      "settingsTabs": [
+        "systems-check"
+      ],
+      "settingsSections": [
+        "plugins",
+        "systems-check"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": true,
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/systems-check/web/FixHelp.tsx:124",
+          "kind": "screen",
+          "target": "ai-assistant",
+          "own": false,
+          "headerHint": false
+        },
+        {
+          "at": "apps/console-web/plugins/systems-check/web/menu.ts:10",
+          "kind": "menu",
+          "target": "systems-check",
+          "own": true,
+          "headerHint": false
+        },
+        {
+          "at": "apps/console-web/plugins/systems-check/web/SystemCheck.tsx:500",
+          "kind": "screen",
+          "target": null,
+          "own": false,
+          "headerHint": false
+        }
+      ],
+      "missing": []
+    },
+    {
+      "folder": "theme-editor",
+      "id": "ai.amberx.axf.console.theme-editor",
+      "name": "Theme editor",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "theme-editor"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "theme-editor"
+      ],
+      "settingsSections": [
+        "theme-editor"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "theme-manager",
+      "id": "ai.amberx.axf.console.theme-manager",
+      "name": "Theme manager",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "theme-manager"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "theme-manager"
+      ],
+      "settingsSections": [
+        "theme-manager"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "todo-manager",
+      "id": "ai.amberx.axf.console.todo-manager",
+      "name": "Todo manager",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "todo-manager"
+      ],
+      "dialogs": [
+        "todo-manager.entry"
+      ],
+      "settingsTab": true,
+      "settingsTabs": [
+        "todo-manager"
+      ],
+      "settingsSections": [
+        "todo-manager"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "token-control",
+      "id": "ai.amberx.axf.console.token-control",
+      "name": "Token control",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "token-control"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "token-control"
+      ],
+      "settingsSections": [
+        "token-control"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "ui-review",
+      "id": "ai.amberx.axf.console.ui-review",
+      "name": "UI Review",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "design-packs",
+        "ui-review"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "ui-review"
+      ],
+      "settingsSections": [
+        "ui-review.tab"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [],
+      "missing": [
+        "gear"
+      ]
+    },
+    {
+      "folder": "voice-notes",
+      "id": "ai.amberx.axf.console.voice-notes",
+      "name": "Voice notes",
+      "template": false,
+      "manifest": true,
+      "screen": true,
+      "views": [
+        "voice-notes"
+      ],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "voice-notes"
+      ],
+      "settingsSections": [
+        "voice-notes"
+      ],
+      "gear": true,
+      "gearInHeader": false,
+      "settingsMenuItem": true,
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/voice-notes/web/index.tsx:435",
+          "kind": "screen",
+          "target": "voice-notes",
+          "own": true,
+          "headerHint": false
+        },
+        {
+          "at": "apps/console-web/plugins/voice-notes/web/menu.ts:7",
+          "kind": "menu",
+          "target": "voice-notes",
+          "own": true,
+          "headerHint": false
+        }
+      ],
+      "missing": []
+    },
+    {
+      "folder": "wake-listener",
+      "id": "ai.amberx.axf.console.wake-listener",
+      "name": "Wake listener",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [],
+      "settingsTab": true,
+      "settingsTabs": [
+        "wake-listener"
+      ],
+      "settingsSections": [
+        "wake-listener"
+      ],
+      "gear": false,
+      "gearInHeader": false,
+      "settingsMenuItem": true,
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/wake-listener/web/menu.ts:8",
+          "kind": "menu",
+          "target": "wake-listener",
+          "own": true,
+          "headerHint": false
+        }
+      ],
+      "missing": []
+    },
+    {
+      "folder": "whats-shipped",
+      "id": "ai.amberx.axf.console.whats-shipped",
+      "name": "What's new",
+      "template": false,
+      "manifest": true,
+      "screen": false,
+      "views": [],
+      "dialogs": [
+        "whats-shipped.panel"
+      ],
+      "settingsTab": true,
+      "settingsTabs": [
+        "whats-shipped"
+      ],
+      "settingsSections": [
+        "whats-shipped"
+      ],
+      "gear": true,
+      "gearInHeader": false,
+      "settingsMenuItem": false,
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/whats-shipped/web/index.tsx:185",
+          "kind": "screen",
+          "target": "whats-shipped",
+          "own": true,
+          "headerHint": false
+        }
+      ],
+      "missing": []
+    }
+  ]
+}
