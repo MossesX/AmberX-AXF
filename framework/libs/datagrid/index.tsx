@@ -78,6 +78,11 @@ export interface DataGridProps<R> {
   rowRef?: (r: R) => RowRef | null;
   compact?: boolean;
   /**
+   * Lines per row (1 or 2). 2: the fixed (primary) columns fill line 1 across the row, every other column sits on line 2
+   * in its own track, the header the same way. Unset: the grid's setting `axf.grid.rowLines.<id>`, else `axf.grid.rowLines`, else 1.
+   */
+  rowLines?: GridRowLines;
+  /**
    * console-control@1 (react/controlTargets.ts): the grid is `grid:<id>`, every row `grid:<id>/row:<row id>`; `step` makes rows
    * `step:<row id>` directly under the enclosing scope (a build's steps inside its row: `…/row:<build>/step:s3`).
    */
@@ -121,6 +126,27 @@ export function gridTemplate(widths: readonly string[], tail: string = GRID_TAIL
   return [GRID_GRIP, ...widths, tail].join(' ');
 }
 
+export type GridRowLines = 1 | 2;
+/** Settings: every grid's lines per row, and one grid's own (`axf.grid.rowLines.<grid id>`, wins). */
+export const GRID_ROW_LINES_KEY = 'axf.grid.rowLines';
+export const gridRowLinesKey = (gridId: string) => `${GRID_ROW_LINES_KEY}.${gridId}`;
+const asLines = (v: unknown): GridRowLines | null => (v === 2 || v === '2' ? 2 : v === 1 || v === '1' ? 1 : null);
+/** Lines per row in force for one grid: its prop, its own setting, the setting for every grid, else 1. */
+export function resolveGridRowLines(prop: unknown, own: unknown, all: unknown): GridRowLines {
+  return asLines(prop) ?? asLines(own) ?? asLines(all) ?? 1;
+}
+/** Which columns sit on line 1 in 2-line mode: the fixed ones, else the first. */
+export function primaryColumns<C extends { id: string; fixed?: boolean }>(cols: readonly C[]): Set<string> {
+  const fixed = cols.filter((c) => c.fixed).map((c) => c.id);
+  return new Set(fixed.length ? fixed : cols.slice(0, 1).map((c) => c.id));
+}
+/** A track function (minmax(), fr, auto, content keywords) can't be a flex basis; a plain length can. */
+const isTrackFunction = (w: string) => /minmax\(|fit-content\(|\dfr\b|^auto$|content$/.test(w.trim());
+/** A primary cell inside line 1 of a 2-line row (the same style on the header, so they line up): a fixed basis, or the rest of the line. */
+export const primaryCellStyle = (width: string): CSSProperties => (isTrackFunction(width) ? { flex: '1 1 0', minWidth: 0 } : { flex: `0 0 ${width}`, minWidth: 0 });
+/** The filler track in 2-line mode: line 2's columns keep their own widths, the rest of the row's width goes here. */
+export const GRID_FILL = 'minmax(0, 1fr)';
+
 type Line<R> = { kind: 'group'; g: GridGroup<R>; depth: number } | { kind: 'row'; r: R; depth: number };
 
 export function DataGrid<R>(p: DataGridProps<R>) {
@@ -133,7 +159,14 @@ export function DataGrid<R>(p: DataGridProps<R>) {
   // component-tokens@1: this one grid's own token values (axf.tokens.instances → --fx-grid-* on the element) win over the skin's
   const [, tokensTick] = useState(0);
   useEffect(() => rt.settings.onChange(INSTANCE_TOKENS_KEY, () => tokensTick((n) => n + 1)), [rt]);
-  const columnsTemplate = gridTemplate(cols.map((c) => c.width), tail);
+  const [, linesTick] = useState(0);
+  useEffect(() => { const t = () => linesTick((n) => n + 1); const a = rt.settings.onChange(GRID_ROW_LINES_KEY, t), b = rt.settings.onChange(gridRowLinesKey(p.id), t); return () => { a(); b(); }; }, [rt, p.id]);
+  const rowLines = resolveGridRowLines(p.rowLines, rt.settings.get(gridRowLinesKey(p.id)), rt.settings.get(GRID_ROW_LINES_KEY));
+  const primary = rowLines === 2 ? primaryColumns(cols) : new Set<string>();
+  const lead = rowLines === 2 ? cols.filter((c) => primary.has(c.id)) : [], rest = rowLines === 2 ? cols.filter((c) => !primary.has(c.id)) : cols;
+  // 1 line: every column is a track. 2 lines: line 1 is the primary columns across the row, line 2 the others in their own tracks.
+  const columnsTemplate = rowLines === 2 ? gridTemplate([...rest.map((c) => c.width), GRID_FILL], tail) : gridTemplate(cols.map((c) => c.width), tail);
+  const layout: GridLayout<R> = { lines: rowLines, lead, rest };
   const template = { gridTemplateColumns: columnsTemplate, ...instanceTokenVars(rt.settings.get(INSTANCE_TOKENS_KEY), 'grid', p.id) } as CSSProperties;
   const headerTarget = `axf-grid-header:${p.id}`;
   const dsId = p.dataset === false ? '' : p.dataset ?? p.id;
@@ -216,19 +249,22 @@ export function DataGrid<R>(p: DataGridProps<R>) {
     onPointerDown: (e: RPointerEvent) => startDrag(e, { kind: `${zone}:${kind}`, id, label, icon, trashable: !!(drag.trash && p.onTrash), onTrash: p.onTrash ? () => p.onTrash!({ kind, id, label }) : undefined }),
   } : {});
 
+  // a cell's track is explicit (grip = 1, then the columns in order) so auto-placement never moves it, on line 1 or 2
+  const headCell = (c: GridColumn<R>, style?: CSSProperties, track?: number) => (
+    <button key={c.id} type="button" role="columnheader" style={style ?? { gridColumn: track! + 2 }} className={`fx-btn fx-btn--sm fx-btn--quiet axf-grid-hcell ${c.align === 'end' ? 'is-end' : ''} ${rowLines === 2 && !style ? 'is-line2' : ''}`}
+      data-fx-ctx-target={config.columnMenu ? headerTarget : undefined} data-fx-ctx-payload={c.id} data-axf-col={c.id}
+      aria-sort={p.sort?.col === c.id ? (p.sort.dir === 1 ? 'ascending' : 'descending') : 'none'}
+      onClick={() => config.sort && c.sortable && p.onSort?.(c.id)} title={config.columnMenu ? 'Click to sort · right-click for columns' : undefined}>
+      {c.label}{p.sort?.col === c.id && <Icon name={p.sort.dir === 1 ? 'chevron-up' : 'chevron-down'} size={12} />}
+    </button>
+  );
   const grid = (
-    <div ref={gridRef} className={`axf-grid ${p.compact ? 'is-compact' : ''}`} style={template} role="grid" aria-label={p.label ?? 'Grid'} data-axf-dataset={dsId || undefined} data-axf-grid={p.id}>
+    <div ref={gridRef} className={`axf-grid ${p.compact ? 'is-compact' : ''}`} style={template} role="grid" aria-label={p.label ?? 'Grid'} data-axf-dataset={dsId || undefined} data-axf-grid={p.id} data-axf-row-lines={rowLines}>
       <div className="axf-grid-head" role="row">
-        <span />
-        {cols.map((c) => (
-          <button key={c.id} type="button" role="columnheader" className={`fx-btn fx-btn--sm fx-btn--quiet axf-grid-hcell ${c.align === 'end' ? 'is-end' : ''}`}
-            data-fx-ctx-target={config.columnMenu ? headerTarget : undefined} data-fx-ctx-payload={c.id}
-            aria-sort={p.sort?.col === c.id ? (p.sort.dir === 1 ? 'ascending' : 'descending') : 'none'}
-            onClick={() => config.sort && c.sortable && p.onSort?.(c.id)} title={config.columnMenu ? 'Click to sort · right-click for columns' : undefined}>
-            {c.label}{p.sort?.col === c.id && <Icon name={p.sort.dir === 1 ? 'chevron-up' : 'chevron-down'} size={12} />}
-          </button>
-        ))}
-        {config.columnMenu ? <IconButton icon="more" label="Columns" onClick={(e) => rt.openContext(e.clientX, e.clientY, headerTarget, '')} /> : <span />}
+        <span className="axf-grid-grip" />
+        {rowLines === 2 ? <span className="axf-grid-lead">{lead.map((c) => headCell(c, primaryCellStyle(c.width)))}</span> : null}
+        {rest.map((c, i) => headCell(c, undefined, i))}
+        {config.columnMenu ? <span className="axf-grid-tail"><IconButton icon="more" label="Columns" onClick={(e) => rt.openContext(e.clientX, e.clientY, headerTarget, '')} /></span> : <span className="axf-grid-tail" />}
       </div>
       {lines.map((l) => l.kind === 'group' ? (
         <div key={`g-${l.g.id}`} className={`axf-grid-group axf-grid-group--d${Math.min(l.depth, 3)}`} role="row" data-axf-drop={drag ? zone : undefined} data-axf-drop-id={`group:${l.g.id}`}
@@ -243,7 +279,7 @@ export function DataGrid<R>(p: DataGridProps<R>) {
           {l.g.counts}
         </div>
       ) : (
-        <Row key={p.rowId(l.r)} p={p} r={l.r} depth={l.depth} cols={cols} dragProps={dragFor('row', p.rowId(l.r), p.rowLabel?.(l.r) ?? p.rowId(l.r), 'file')} drop={drag ? zone : undefined} />
+        <Row key={p.rowId(l.r)} p={p} r={l.r} depth={l.depth} layout={layout} dragProps={dragFor('row', p.rowId(l.r), p.rowLabel?.(l.r) ?? p.rowId(l.r), 'file')} drop={drag ? zone : undefined} />
       ))}
       {!lines.length && <div className="axf-grid-empty">{p.empty ?? 'Nothing to show.'}</div>}
       {lines.length > 0 && filtered && !lines.some((l) => l.kind === 'row') && <div className="axf-grid-empty">No rows match the filter.</div>}
@@ -253,7 +289,9 @@ export function DataGrid<R>(p: DataGridProps<R>) {
   return dsId ? <><Slot name={DATASET_TOOLBAR_SLOT} props={{ dataset: dsId, label: p.label ?? p.id }} />{grid}</> : grid;
 }
 
-function Row<R>({ p, r, depth, cols, dragProps, drop }: { p: DataGridProps<R>; r: R; depth: number; cols: GridColumn<R>[]; dragProps: { onPointerDown?: (e: RPointerEvent) => void }; drop?: string }) {
+interface GridLayout<R> { lines: GridRowLines; lead: GridColumn<R>[]; rest: GridColumn<R>[] }
+
+function Row<R>({ p, r, depth, layout, dragProps, drop }: { p: DataGridProps<R>; r: R; depth: number; layout: GridLayout<R>; dragProps: { onPointerDown?: (e: RPointerEvent) => void }; drop?: string }) {
   const id = p.rowId(r);
   const open = config.expand && !!p.expanded?.includes(id);
   const ref = p.rowRef?.(r) ?? null;
@@ -261,6 +299,7 @@ function Row<R>({ p, r, depth, cols, dragProps, drop }: { p: DataGridProps<R>; r
   if (ref && ctx) noteDrawnRef(ctx.target, ctx.payload ?? '', ref, p.dataset === false ? undefined : p.dataset ?? p.id);
   // the row's buttons and its detail (a nested grid, say) compose under the row's address (console-control@1)
   const rowScope = (p.rowKind ?? 'row') === 'step' ? `step:${id}` : `grid:${p.id}/row:${id}`;
+  const cell = (c: GridColumn<R>, style?: CSSProperties, track?: number) => <span key={c.id} role="gridcell" style={style ?? { gridColumn: track! + 2 }} data-axf-col={c.id} className={`axf-grid-cell ${c.align === 'end' ? 'is-end' : ''} ${layout.lines === 2 && !style ? 'is-line2' : ''}`}>{c.render(r)}</span>;
   const expand = config.expand && p.renderDetail ? <IconButton icon={open ? 'chevron-up' : 'chevron-down'} label={open ? 'Collapse row' : 'Expand row'} onClick={(e) => { e.stopPropagation(); p.onToggleExpand?.(id); }} /> : null;
   return (
     <>
@@ -268,9 +307,10 @@ function Row<R>({ p, r, depth, cols, dragProps, drop }: { p: DataGridProps<R>; r
         data-axf-drop={drop} data-axf-drop-id={`row:${id}`} data-axf-row={id} data-fx-ctx-target={ctx?.target} data-fx-ctx-payload={ctx?.payload}
         {...dragProps} onClick={(e) => p.onRowClick?.(r, e)} onDoubleClick={() => config.expand && p.onToggleExpand?.(id)}>
         <ControlScope address={rowScope}>
-          <span className="axf-dnd-grip" style={{ marginInlineStart: `calc(var(--fx-space) * ${depth * 2})` }}><Icon name="more" size={12} /></span>
-          {cols.map((c) => <span key={c.id} role="gridcell" className={`axf-grid-cell ${c.align === 'end' ? 'is-end' : ''}`}>{c.render(r)}</span>)}
-          {ref ? <span className="axf-grid-tail"><RowHookButtons rowRef={ref} dataset={p.dataset === false ? undefined : p.dataset ?? p.id} />{expand}</span> : expand ?? <span />}
+          <span className="axf-grid-grip"><span className="axf-dnd-grip" style={{ marginInlineStart: `calc(var(--fx-space) * ${depth * 2})` }}><Icon name="more" size={12} /></span></span>
+          {layout.lines === 2 ? <span className="axf-grid-lead">{layout.lead.map((c) => cell(c, primaryCellStyle(c.width)))}</span> : null}
+          {layout.rest.map((c, i) => cell(c, undefined, i))}
+          <span className="axf-grid-tail">{ref ? <RowHookButtons rowRef={ref} dataset={p.dataset === false ? undefined : p.dataset ?? p.id} /> : null}{expand}</span>
         </ControlScope>
       </div>
       {open && p.renderDetail && <div className="axf-grid-detail" role="row"><ControlScope address={rowScope}>{p.renderDetail(r)}</ControlScope></div>}

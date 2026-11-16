@@ -13,10 +13,11 @@
  *   GRID_ALIGN_VIEWPORTS=desktop,phone
  *   GRID_ALIGN_VIEWS=a,b        other console views with a DataGrid (measured with whatever data they show offline)
  *
- * The backend is mocked: /api/me as admin with the appearance source off (the look is local), the orchestrator state
- * and GET /pipeline built from this checkout's builds (long and short titles in every tab), everything else offline.
- * Row mode and skin are switched the way REST / MCP / CLI / voice switch them: window.axfConsoleControl
- * (`set setting:axf.grid.rowLines`, `press function:skin.use`). Exit 1 when any edge is off by more than 1px.
+ * The backend is mocked: /api/me as admin, axHub's data server on the same origin (the shared appearance document
+ * answers 404 = defaults; this app's app-look@1 document has Use skin on with the skin under test, which is how a skin
+ * reaches the console), the orchestrator state and GET /pipeline built from this checkout's builds (long and short
+ * titles in every tab), everything else offline. Row mode is switched the way REST / MCP / CLI / voice switch it:
+ * window.axfConsoleControl `set setting:axf.grid.rowLines`. Exit 1 when any edge is off by more than 1px.
  */
 import { spawn, execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
@@ -45,7 +46,10 @@ const VIEWS = list(process.env.GRID_ALIGN_VIEWS, ['builds', 'feature-matrix', 's
 const VPS = list(process.env.GRID_ALIGN_VIEWPORTS, Object.keys(VIEWPORTS));
 
 // ---- mocked backend: this checkout's builds, spread over every tab (titles long and short, real steps) ----
-const ME = { wall: false, hub: '', appearanceHub: 'off', user: null, admin: true, role: 'admin', themes: true, plugins: [] };
+const ORIGIN = `http://127.0.0.1:${PORT}`;
+const ME = { wall: false, hub: ORIGIN, appearanceHub: ORIGIN, user: null, admin: true, role: 'admin', themes: true, plugins: [] };
+let skinUnderTest = 'default';
+const appLook = () => ({ $axf: 'app-look@1', app: 'axf-console', default: {}, own: {}, skin: { use: skinUnderTest !== 'default', inherit: false, id: skinUnderTest === 'default' ? '' : skinUnderTest, overrides: {} }, scopes: {}, undo: null });
 const full = JSON.parse(execFileSync('node', [join(APP, 'plugins/build-orchestrator/orchestrator.mjs'), 'state', '--json'], { encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 }).trim().split('\n').pop());
 const withSteps = full.state.builds.filter((b) => b.steps?.length && !b.deleted);
 const byLen = [...withSteps].sort((a, b) => b.title.length - a.title.length);
@@ -89,6 +93,14 @@ function measure() {
     const rows = own('.axf-grid-row');
     const bad = [];
     let pairs = 0;
+    // every header cell sits inside the header and none overlaps another on the same line (a cell auto-placed into the
+    // wrong track moves the header and the rows together, so the pairs alone would not see it)
+    const hb = head.getBoundingClientRect();
+    const hr = hcells.map((c) => c.getBoundingClientRect());
+    hr.forEach((r, i) => {
+      if (r.left < hb.left - 1 || r.right > hb.right + 1) bad.push({ header: hcells[i].textContent?.trim() || `#${i}`, what: 'outside the header' });
+      hr.forEach((o, j) => { if (j > i && Math.abs(o.top - r.top) < 2 && o.left < r.right - 1 && r.left < o.right - 1) bad.push({ header: hcells[i].textContent?.trim() || `#${i}`, what: `overlaps ${hcells[j].textContent?.trim() || `#${j}`}` }); });
+    });
     for (const row of rows) {
       const cells = [...row.querySelectorAll('[role=gridcell]')].filter((el) => el.closest('.axf-grid-row') === row);
       if (cells.length !== hcells.length) { bad.push({ row: row.getAttribute('data-axf-row'), what: `${cells.length} cells under ${hcells.length} headers` }); continue; }
@@ -111,6 +123,7 @@ process.on('exit', stop);
 const failures = [];
 const notes = [];
 let cases = 0, pairsTotal = 0;
+const prints = new Map();
 let browser;
 try {
   let up = false;
@@ -123,10 +136,13 @@ try {
     const page = await ctx.newPage();
     const errors = [];
     page.on('pageerror', (e) => errors.push(String(e)));
-    await page.route('**/api/**', (r) => {
+    await page.route(/\/data-events/, (r) => r.abort());
+    await page.route(/\/(api|data)\//, (r) => {
       const u = new URL(r.request().url());
       const json = (body, status = 200) => r.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) });
       if (u.pathname === '/api/me') return json(ME);
+      if (u.pathname === '/data/shared/settings/appearance.json') return json({ error: 'not found' }, 404);
+      if (u.pathname === '/data/shared/settings/looks/axf-console.json') return r.fulfill({ status: 200, contentType: 'application/json', headers: { 'X-Data-Version': `v-${skinUnderTest}` }, body: JSON.stringify(appLook()) });
       if (u.pathname.endsWith('/build-orchestrator/state')) return json(state);
       if (u.pathname.endsWith('/build-orchestrator/pipeline')) return json(pipeline);
       if (r.request().method() === 'GET' && u.pathname === '/api/events') return r.abort();
@@ -136,8 +152,14 @@ try {
     await page.waitForFunction(() => typeof window.axfConsoleControl === 'function', null, { timeout: 30_000 });
     const run = (cmd) => Promise.race([page.evaluate((c) => window.axfConsoleControl(c), cmd), sleep(20_000).then(() => ({ ok: false, message: 'no answer in 20 s' }))]);
     for (const skin of SKINS) {
-      const s = skin === 'default' ? await run({ verb: 'press', address: 'function:skin.off' }) : await run({ verb: 'press', address: 'function:skin.use', value: skin });
-      if (!s.ok && skin !== 'default') { failures.push(`${vp} · skin ${skin}: could not switch (${s.message ?? s.code})`); continue; }
+      skinUnderTest = skin;
+      await page.reload();
+      await page.waitForFunction(() => typeof window.axfConsoleControl === 'function', null, { timeout: 30_000 });
+      await page.waitForTimeout(800);
+      // proof the skin is drawn: its tokens differ from the default look's
+      const print = await page.evaluate(() => { const cs = getComputedStyle(document.documentElement); return ['--fx-bg', '--fx-surface', '--fx-accent', '--fx-font-size', '--fx-space', '--fx-radius-md', '--fx-font'].map((k) => cs.getPropertyValue(k).trim()).join('|'); });
+      if (skin === 'default') prints.set(vp, print);
+      else if (print === prints.get(vp)) failures.push(`${vp} · skin ${skin}: not applied (the tokens equal the default look's)`);
       for (const rows of ROWS) {
         const m = await run({ verb: 'set', address: 'setting:axf.grid.rowLines', value: rows });
         if (!m.ok) {
