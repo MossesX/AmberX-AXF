@@ -20,7 +20,8 @@
  *   to-console-<hash>.json  written here, only when a saved pair really holds the spent token; AI keys absorbs it
  *   to-host-<hash>.json     written by AI keys when it renews a pair; the sweep applies it here and deletes it
  *
- * Writes are atomic and 0600, keep every other field of the target (mcpOAuth…), and never print a credential.
+ * Every store write runs under the host's one token lock (<accounts>/.token.lock, withTokenLock), so parallel builds
+ * renewing the same account never clobber each other. Writes are atomic and 0600, keep every other field of the target (mcpOAuth…), and never print a credential.
  * token-chain.json in a copy holds sha256 prefixes only. Paths: AXF_CLAUDE_ACCOUNTS, AXF_CLAUDE_HOME, AXF_AI_KEYS_HOST_DIR.
  */
 import { spawn } from 'node:child_process';
@@ -29,6 +30,8 @@ import { chmodSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync
 import { homedir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import { record as notifyLogin } from './claude-login-notify.mjs';
 
 export const CHAIN = 'token-chain.json';
 const CHAIN_MAX = 32;
@@ -45,6 +48,40 @@ function writeAtomic(file, doc) {
   renameSync(tmp, file);
 }
 
+function alive(pid) { try { process.kill(pid, 0); return true; } catch (e) { return e.code === 'EPERM'; } }
+
+export const LOCK = '.token.lock';
+const LOCK_STALE_MS = 30e3;
+const LOCK_WAIT_MS = 20e3;
+const nap = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+
+/**
+ * Run `fn` holding the host's one token lock (<accounts>/.token.lock, a directory: mkdir is atomic). Every write of a
+ * login store goes through it (save-back, the sweep, seeding a shared login), so parallel builds renewing the same
+ * account never interleave a read-modify-write. A lock whose holder is gone, or older than 30 s, is taken over; after
+ * 20 s of waiting the lock is taken over too (a stuck holder never blocks a build). No accounts folder = no lock.
+ */
+let lockDepth = 0;
+export function withTokenLock(accountsDir, fn, { waitMs = LOCK_WAIT_MS } = {}) {
+  if (!accountsDir || !existsSync(accountsDir) || lockDepth > 0) return fn();   // re-entrant within one process
+  const dir = join(accountsDir, LOCK);
+  const until = Date.now() + waitMs;
+  let held = false;
+  while (!held) {
+    try { mkdirSync(dir, { mode: 0o700 }); held = true; break; } catch (e) { if (e.code !== 'EEXIST') return fn(); }
+    let stale = false;
+    try {
+      const pid = Number(readFileSync(join(dir, 'pid'), 'utf8')) || 0;
+      stale = (pid > 0 && pid !== process.pid && !alive(pid)) || Date.now() - statSync(dir).mtimeMs > LOCK_STALE_MS;
+    } catch { stale = (() => { try { return Date.now() - statSync(dir).mtimeMs > 2000; } catch { return false; } })(); }
+    if (stale || Date.now() > until) { try { rmSync(dir, { recursive: true, force: true }); } catch { /* raced */ } continue; }
+    nap(25 + Math.floor(Math.random() * 50));
+  }
+  try { writeFileSync(join(dir, 'pid'), String(process.pid)); } catch { /* the lock itself is what counts */ }
+  lockDepth++;
+  try { return fn(); } finally { lockDepth--; try { rmSync(dir, { recursive: true, force: true }); } catch { /* gone */ } }
+}
+
 /** Where this host keeps logins. */
 export function places(env = process.env) {
   const home = env.HOME || homedir();
@@ -57,7 +94,19 @@ export function places(env = process.env) {
 
 function stores(p) {
   let names = []; try { names = readdirSync(p.accounts); } catch { /* no saved accounts */ }
-  return [p.live, ...names.map((n) => join(p.accounts, n, '.credentials.json'))].filter(isFile);
+  // the accounts' shared config dirs (claude-login.mjs shareHome) are stores too: a renewal made elsewhere reaches
+  // the builds running there (Claude Code re-reads the file when it changes)
+  let homes = []; try { homes = readdirSync(join(p.accounts, '.shared')); } catch { /* none yet */ }
+  return [p.live, ...names.map((n) => join(p.accounts, n, '.credentials.json')), ...homes.map((n) => join(p.accounts, '.shared', n, '.credentials.json'))].filter(isFile);
+}
+
+/**
+ * Where a build's login really lives: a build folder whose build-login@1 marker names a shared config dir
+ * (claude-login.mjs) is saved back from that dir; an old-style private copy from itself.
+ */
+export function loginHome(copyDir) {
+  const config = readJson(join(copyDir, 'build-login.json'))?.config;
+  return typeof config === 'string' && config && existsSync(join(config, CHAIN)) ? config : copyDir;
 }
 
 /**
@@ -104,29 +153,51 @@ export function beginChain(copyDir, p) {
  * Save one login copy back. Safe to run at any time and from several processes: the same state always gives the same
  * writes. The paths come from the chain file, because a build's own CLAUDE_CONFIG_DIR points at the copy itself.
  */
-export function saveBack(copyDir) {
+export function saveBack(dir) {
+  const copyDir = loginHome(dir);
+  const first = readJson(join(copyDir, CHAIN));
+  if (first?.$axf !== 'token-chain@1') return [];
+  return withTokenLock(first.places?.accounts, () => saveBackLocked(copyDir, dir));
+}
+
+function saveBackLocked(copyDir, dir = copyDir) {
   const file = join(copyDir, CHAIN);
   const state = readJson(file);
   if (state?.$axf !== 'token-chain@1') return [];
   const fresh = readJson(join(copyDir, '.credentials.json'))?.claudeAiOauth;
   const cur = tokenHash(fresh?.refreshToken);
   if (!cur) return [];
-  if (!state.chain.includes(cur)) {
+  // a renewal this login has not seen yet: the one pass (under the lock) that writes it back also confirms it
+  const renewed = !state.chain.includes(cur);
+  if (renewed) {
     state.chain = [...state.chain, cur].slice(-CHAIN_MAX);
     writeFileSync(file, JSON.stringify(state), { mode: 0o600 });
   }
   const spent = new Set(state.chain.filter((h) => h !== cur));
-  const written = applyRotation(fresh, spent, state.places);
-  tellAiKeys(fresh, spent, state.places);
+  let written = []; let error = '';
+  try { written = applyRotation(fresh, spent, state.places); tellAiKeys(fresh, spent, state.places); }
+  catch (e) { error = String(e?.code || e?.message || e).slice(0, 200); }
+  if (renewed && state.chain.length > 1) confirmRenewal(copyDir, dir, cur, written, error);
+  if (error) throw new Error(`token save-back failed: ${error}`);
   return written;
 }
 
-const alive = (pid) => { try { process.kill(pid, 0); return true; } catch { return false; } };
+/** Read the new token back from the login file and every store written, and tell the phone (claude-login-notify.mjs). */
+function confirmRenewal(copyDir, dir, cur, written, error) {
+  const bad = [join(copyDir, '.credentials.json'), ...written].filter((f) => tokenHash(readJson(f)?.claudeAiOauth?.refreshToken) !== cur);
+  const marker = readJson(join(dir, 'build-login.json')) || readJson(join(copyDir, 'build-login.json'));
+  const account = readJson(join(copyDir, 'shared-login.json'))?.account || marker?.account || '';
+  const build = marker?.session || '';
+  const ok = !error && !bad.length;
+  notifyLogin({ kind: 'refresh', account, build, result: ok ? 'ok' : 'failed', saved: written.filter((f) => f !== join(copyDir, '.credentials.json')).length,
+    detail: ok ? '' : error || `${bad.length} file${bad.length === 1 ? '' : 's'} did not read back the new token` });
+}
+
 
 /** Save a copy back until it is released or the run that owns it exits (one last pass then). */
 export async function watch(copyDir, { parent = 0, every = 3000 } = {}) {
   for (;;) {
-    if (!existsSync(join(copyDir, CHAIN))) return;
+    if (!existsSync(join(copyDir, CHAIN)) && !existsSync(join(copyDir, 'build-login.json'))) return;
     const going = parent > 0 && !alive(parent);
     try { saveBack(copyDir); } catch { /* the next pass tries again */ }
     if (going) return;
@@ -142,6 +213,10 @@ export function watchCopy(copyDir, parent = process.pid) {
 /** One pass on the host: AI keys' renewals come in, and the live login's own renewals go out to the saved copies. */
 export function sweep(env = process.env) {
   const p = places(env);
+  return withTokenLock(p.accounts, () => sweepLocked(p));
+}
+
+function sweepLocked(p) {
   const out = { fromAiKeys: 0, fromLive: 0 };
   const inbox = p.aiKeys ? join(p.aiKeys, 'rotations') : '';
   let files = []; try { files = readdirSync(inbox).filter((n) => /^to-host-[a-f0-9]+\.json$/.test(n)); } catch { /* no inbox */ }
@@ -157,6 +232,7 @@ export function sweep(env = process.env) {
   const prev = readJson(stateFile)?.live || '';
   const spent = new Set(prev && prev !== cur ? [prev] : []);
   out.fromLive = applyRotation(fresh, spent, p).length;
+  if (out.fromLive) notifyLogin({ kind: 'refresh', account: 'live login', build: 'host sweep', result: 'ok', saved: out.fromLive });
   tellAiKeys(fresh, spent, p);
   if (prev !== cur && existsSync(p.accounts)) writeAtomic(stateFile, { live: cur, at: new Date().toISOString() });
   return out;
@@ -167,6 +243,10 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const flag = (n, d = '') => { const i = rest.indexOf(`--${n}`); return i >= 0 && rest[i + 1] !== undefined ? rest[i + 1] : d; };
   if (cmd === 'watch' && flag('copy')) {
     await watch(flag('copy'), { parent: Number(flag('parent', '0')) || 0, every: Number(flag('every', '3000')) || 3000 });
+  } else if (cmd === 'hold-lock' && flag('accounts')) {   // tests: hold the token lock for --ms
+    withTokenLock(flag('accounts'), () => { console.log('held'); nap(Number(flag('ms', '500')) || 500); });
+  } else if (cmd === 'save-back' && flag('copy')) {   // tests: one save-back pass from its own process
+    saveBack(flag('copy'));
   } else if (cmd === 'sweep') {
     const r = sweep();
     if (r.fromAiKeys || r.fromLive) console.log(`${new Date().toISOString()} saved rotated tokens: ${r.fromLive} from the live login, ${r.fromAiKeys} from AI keys`);

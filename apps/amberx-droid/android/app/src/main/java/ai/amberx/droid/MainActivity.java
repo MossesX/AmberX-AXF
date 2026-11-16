@@ -63,6 +63,9 @@ public class MainActivity extends BridgeActivity {
         // refused the microphone then, so hands-free picks it up now that AmberX is on screen.
         if (MicGuard.mayOpen(this) && WatchService.handsFree(this) && WatchService.yielded == null && !WatchService.status.optBoolean("listening", false)) {
             try { WatchService.refresh(this); } catch (RuntimeException ignored) { /* started by the page's voiceSet instead */ }
+        } else if (WatchService.running == null && WatchService.overlayWanted(this)) {
+            // The overlay toolbar is on but its service isn't up (e.g. "Display over other apps" was just granted).
+            try { WatchService.refresh(this); } catch (RuntimeException ignored) { /* next app open */ }
         }
     }
 

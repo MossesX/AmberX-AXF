@@ -1,0 +1,55 @@
+/* Skin editor — layout only. Every colour, size, spacing, radius and border is a token; controls are framework controls. */
+.axp-skin { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-height: 0; }
+.axp-skin__bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); }
+.axp-skin__bar > .fx-input { flex: 1 1 12em; min-width: 8em; }
+.axp-skin__bar > .fx-field { flex: 0 1 16em; min-width: 10em; }
+.axp-skin__grow { flex: 1 1 auto; }
+.axp-skin__body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(16em, 22em); gap: var(--fx-dens-gap-md); min-height: 0; align-items: start; }
+:root[data-fx-narrow] .axp-skin__body, :root[data-fx-small] .axp-skin__body, :root[data-fx-tiny] .axp-skin__body { grid-template-columns: minmax(0, 1fr); }
+
+/* the sandbox: a framed surface whose inline custom properties restyle everything inside it */
+.axp-skin__sandbox { position: relative; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); padding: var(--fx-dens-pad-card); min-height: 16em; overflow: auto; max-height: 70vh; }
+.axp-skin__sandbox--picking { cursor: crosshair; }
+.axp-skin__sandbox--picking * { cursor: crosshair !important; }
+.axp-skin__sandbox-label { display: flex; align-items: center; justify-content: flex-end; gap: var(--fx-dens-gap-xs); margin-bottom: var(--fx-dens-gap-sm); font-size: var(--fx-type-scale-xs); color: var(--fx-muted); }
+.axp-skin__sandbox-inner { min-height: 12em; }
+.axp-skin__sandbox-inner .fx-dialog { position: static; transform: none; margin: 0 auto; }
+.axp-skin__gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(14em, 1fr)); gap: var(--fx-dens-gap-md); }
+.axp-skin__gallery-card { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); }
+.axp-skin__wrap { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); align-items: center; }
+.axp-skin__row { cursor: pointer; }
+.axp-skin__row[aria-selected="true"] td { background: var(--fx-accent-soft); }
+.axp-skin__row:hover td, .axp-skin__row:focus-visible td { background: var(--fx-surface2); }
+
+/* the side panel: tokens / history / export */
+.axp-skin__side { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.axp-skin__tokens { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); max-height: 60vh; overflow: auto; }
+.axp-skin__group > summary { cursor: pointer; font-size: var(--fx-type-scale-sm); color: var(--fx-muted); padding: var(--fx-dens-gap-xs) 0; }
+.axp-skin__token { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--fx-dens-gap-xs) var(--fx-dens-gap-sm); align-items: center; padding: var(--fx-dens-gap-xs) 0; }
+.axp-skin__token-name { font-size: var(--fx-type-scale-xs); color: var(--fx-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axp-skin__token-desc { grid-column: 1 / -1; font-size: var(--fx-type-scale-xs); color: var(--fx-muted); }
+.axp-skin__token--edited .axp-skin__token-name { color: var(--fx-accent); }
+.axp-skin__token .fx-field { margin: 0; grid-column: 1 / -1; }
+.axp-skin__swatch { display: inline-block; width: 1em; height: 1em; border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); vertical-align: middle; margin-right: var(--fx-dens-gap-xs); }
+
+/* the snapshot chain, drawn like disk snapshots: a rail, one node per snapshot, the head marked */
+.axp-skin__chain { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; max-height: 50vh; overflow: auto; }
+.axp-skin__snap { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--fx-dens-gap-sm); align-items: center; padding: var(--fx-dens-gap-xs) 0; border-radius: var(--fx-radius-sm); }
+.axp-skin__snap[aria-current="true"] { background: var(--fx-accent-soft); }
+.axp-skin__snap:not([data-on-path="true"]) { opacity: var(--fx-opacity-muted); }
+.axp-skin__rail { position: relative; width: 1.2em; align-self: stretch; display: flex; align-items: center; justify-content: center; }
+.axp-skin__rail::before { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; border-left: var(--fx-border-w) solid var(--fx-border); }
+.axp-skin__snap:first-child .axp-skin__rail::before { top: 50%; }
+.axp-skin__snap:last-child .axp-skin__rail::before { bottom: 50%; }
+.axp-skin__dot { position: relative; width: 0.7em; height: 0.7em; border-radius: var(--fx-radius-lg); background: var(--fx-border); border: var(--fx-border-w) solid var(--fx-surface); }
+.axp-skin__snap[aria-current="true"] .axp-skin__dot { background: var(--fx-accent); }
+.axp-skin__snap[data-kind="revert"] .axp-skin__dot { background: var(--fx-warning); }
+.axp-skin__snap-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fx-type-scale-sm); }
+.axp-skin__snap-meta { font-size: var(--fx-type-scale-xs); color: var(--fx-muted); }
+
+/* the registry page */
+.axp-registry__summary { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); }
+.axp-registry__table th, .axp-registry__table td:nth-child(-n+6) { white-space: nowrap; }
+.axp-registry__table td:first-child { font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-xs); }
+.axp-registry__table td:nth-child(7) { min-width: 14em; }
+.axp-registry__default { font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-xs); color: var(--fx-muted); max-width: 14em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

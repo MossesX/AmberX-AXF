@@ -24,7 +24,8 @@ const check = (c, m) => { if (c) { ok++; console.log(`  ✓ ${m}`); } else { bad
 console.log('zero tokens: the merge pipeline never calls a model');
 const LLM = [/@anthropic-ai\//, /\banthropic\b/i, /\bopenai\b/i, /claude-agent-sdk/, /\bclaude\s+-p\b/, /['"]claude['"]\s*,/, /claude-headless\.sh/, /axf\.llm@1/, /\bllm\b.*\bimport\b|\bimport\b.*\bllm\b/i, /chat[-_]engine/, /swarm-chat/, /\bgenerativeai\b|\bmistral\b|\bollama\b|\bcohere\b/i];
 const landFiles = readdirSync(HERE).filter((f) => /\.(mjs|js|ts|py|sh)$/.test(f) && !/\.test\.mjs$/.test(f));
-const LOCAL = new Set(['./land-core.mjs', './land.mjs', './merge-queue-core.mjs', './merge-queue.mjs']);
+// the generated-files manifest (generated-files@1) is data, not code: the one import from outside this folder
+const LOCAL = new Set(['./land-core.mjs', './land.mjs', './merge-queue-core.mjs', './merge-queue.mjs', '../../../../../framework/spec/generated-files.json']);
 for (const f of landFiles) {
   const text = readFileSync(join(HERE, f), 'utf8');
   const imports = [...text.matchAll(/^\s*import\s[^;]*?from\s+['"]([^'"]+)['"]|import\(\s*['"]([^'"]+)['"]\s*\)|require\(\s*['"]([^'"]+)['"]\s*\)/gm)].map((m) => m[1] || m[2] || m[3]);
@@ -48,6 +49,34 @@ check(core.classifyPath('_claude/builds/store.json') === 'builds' && core.classi
 check(core.classifyPath('_claude/THREADS.md') === 'union' && core.classifyPath('deploy.log') === 'union', 'THREADS + logs = union');
 check(core.classifyPath('tracker.json') === 'generated' && core.classifyPath('changes/2026/11/x.json') === 'generated', 'tracker + hub data copies = generated');
 check(core.classifyPath('framework/core/x.ts') === 'code' && core.classifyPath('deploy/claude-headless.sh') === 'code', 'everything else = code');
+// generated-files@1 (build lander-regenerates-generated-files-clash, Nov 13 2026): the Nov 13 land failures were all in these
+const GEN = ['apps/console-web/src/control/inventory.json', 'apps/console-web/src/assets/help/framework.json', 'apps/axhub-web/src/axf/assets/help/framework.json', 'apps/molly/src/axf/core/runtime.ts', 'apps/console-web/axf.lock.json', 'framework/spec/fixtures/theme.json'];
+check(GEN.every((p) => core.classifyPath(p) === 'generated'), 'control inventory, baked help, baked framework copies, locks, fixtures = generated');
+check(core.classifyPath('framework/assets/help/framework.json') === 'union-json' && core.classifyPath('framework/catalog/status.json') === 'union-json', 'help packs + catalog status = union by key');
+check(core.classifyPath('framework/spec/PORTING.md') === 'union', 'PORTING.md = union of lines');
+check(core.regenFor('apps/console-web/src/control/inventory.json')?.join(' ') === 'node apps/console-web/scripts/control-inventory.mjs', 'the control inventory regenerates with its script');
+check(core.regenFor('apps/molly/src/axf/core/runtime.ts')?.join(' ') === 'node framework/cli/rebake.mjs apply apps/molly' && core.regenFor('apps/demo/axf.lock.json')?.join(' ') === 'node framework/cli/rebake.mjs apply apps/demo', 'a baked copy or lock re-bakes its own app');
+check(core.regenFor('framework/spec/fixtures/theme.json')?.join(' ') === 'npx -y tsx framework/spec/gen-fixtures.mts' && core.regenFor('apps/axhub-web/src/assets/help/framework.json')?.join(' ') === 'node framework/cli/help-coverage.mjs --sync', 'fixtures and baked help have their generators');
+check(core.regenFor('changes/2026/11/x.json') === null && core.regenFor('framework/core/x.ts') === null, "main's copy is enough for hub data copies; code has no generator");
+{
+  const plan = core.regenPlan(['apps/molly/src/axf/core/a.ts', 'apps/molly/axf.lock.json', 'apps/molly/src/axf/ui/axf.css', 'apps/demo/axf.lock.json', 'framework/spec/fixtures/a.json', 'framework/spec/fixtures/b.json', 'changes/2026/11/x.json']);
+  check(plan.map((g) => g.id).join(' ') === 'rebake:molly rebake:demo fixtures', `each generator once, per app for re-bakes (${plan.map((g) => g.id).join(' ')})`);
+  check(plan[0].outputs.join(' ') === 'apps/molly/src/axf apps/molly/axf.lock.json' && plan[2].timeoutMs === 300000 && Array.isArray(plan[2].check), 'a generator knows its outputs, check and time limit');
+  const pc = core.planConflicts(['framework/catalog/status.json', 'framework/spec/PORTING.md', 'apps/console-web/src/control/inventory.json', 'framework/core/x.ts', '_claude/builds/store.json']);
+  check(pc.unionJson.length === 1 && pc.union.length === 1 && pc.generated.length === 1 && pc.code.length === 1 && pc.builds.length === 1, 'planConflicts sorts every kind');
+  check(core.landTests().length >= 1 && core.landTests().every((t) => Array.isArray(t) && t[0] === 'node'), 'tests after regenerating are node commands from the manifest');
+}
+// 3-way JSON merge by key: both sides' additions kept, a deletion on one side holds, main wins a scalar clash
+{
+  const base = { a: { status: 'planned' }, b: { status: 'built' }, c: { status: 'built' } };
+  const ours = { a: { status: 'built' }, b: { status: 'built' }, d: { status: 'partial' } };
+  const theirs = { a: { status: 'partial' }, b: { status: 'built' }, c: { status: 'built' }, e: { status: 'built' } };
+  const m = core.mergeJson3(base, ours, theirs, 'theirs');
+  check(m.d?.status === 'partial' && m.e?.status === 'built' && !('c' in m) && m.a.status === 'partial' && m.b.status === 'built', `catalog status unions by key (${JSON.stringify(m)})`);
+  const lists = core.mergeJson3({ items: [{ id: 'x', n: 1 }] }, { items: [{ id: 'x', n: 2 }, { id: 'y' }] }, { items: [{ id: 'x', n: 1 }, { id: 'z' }] }, 'theirs');
+  check(lists.items.map((i) => i.id).join('') === 'xyz' && lists.items[0].n === 2, 'id lists merge by id; an unchanged side yields to the changed one');
+  check(core.mergeJson3(undefined, { k: 1 }, { k: 2 }, 'ours').k === 1 && core.mergeJson3(undefined, [1, 2], [2, 3]).join('') === '123', 'no base: prefer picks a scalar, plain lists union');
+}
 const sp = core.strayPlan(' M _claude/builds/store.json\n?? .brief.md\n?? auto-land.jsonl\n?? _claude/dup.md\n M framework/core/a.ts\n?? notes.txt\n M changes/2026/11/c.json\n M _claude/shared/x.md', (p) => p === '_claude/dup.md' || p === '_claude/shared/x.md');
 check(sp.commit.join() === '_claude/builds/store.json,changes/2026/11/c.json', 'synced data the build wrote is committed on its branch');
 check(sp.skip.join() === '.brief.md,auto-land.jsonl', '.brief.md and top-level jsonl/logs are skipped');
