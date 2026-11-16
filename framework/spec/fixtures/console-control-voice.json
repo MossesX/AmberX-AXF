@@ -229,6 +229,22 @@
       },
       "value": false
     },
+    "Make this the default look": {
+      "verb": "press",
+      "address": "function:skin.default"
+    },
+    "make the console look the default for every app": {
+      "verb": "press",
+      "address": "function:skin.default"
+    },
+    "Restore my old look": {
+      "verb": "press",
+      "address": "function:skin.restoreBackup"
+    },
+    "bring back the previous skin": {
+      "verb": "press",
+      "address": "function:skin.restoreBackup"
+    },
     "what time is it": null,
     "": null
   },
@@ -366,6 +382,22 @@
       "verb": "set",
       "address": "view:build-orchestrator/grid:builds/row:b1",
       "value": false
+    },
+    "Make this the default look": {
+      "verb": "press",
+      "address": "function:skin.default"
+    },
+    "make the console look the default for every app": {
+      "verb": "press",
+      "address": "function:skin.default"
+    },
+    "Restore my old look": {
+      "verb": "press",
+      "address": "function:skin.restoreBackup"
+    },
+    "bring back the previous skin": {
+      "verb": "press",
+      "address": "function:skin.restoreBackup"
     }
   },
   "replies": {

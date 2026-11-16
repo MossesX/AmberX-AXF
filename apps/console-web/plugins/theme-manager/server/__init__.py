@@ -217,6 +217,71 @@ def skin_global_color(body: dict[str, Any] = Body(...)) -> Any:
     return _skins("global-color", str(body.get("theme") or "default"))
 
 
+# ---- the hub default skin (build console-look-becomes-default-axhub-skin): the floor every app stands on ----
+
+
+@router.get("/skins/default-skin")
+def skin_default_get() -> Any:
+    """The hub default skin and, per app, whether it stands on it (inherit), what it overrides, and its backups: 'which look is the default'."""
+    return _skins("default", "get")
+
+
+@router.post("/skins/default-skin")
+def skin_default_set(body: dict[str, Any] = Body(...)) -> Any:
+    """Make a skin the hub default, body {skin, adopt?, keepEqual?, confirm}: 'make this the default look'. Every app's look is backed up first; adopt (default true) moves every app onto it, keeping only its own edits. skin 'off' clears the default. Changes every app, so confirm must be true."""
+    skin = str(body.get("skin") or "")
+    if not skin:
+        raise HTTPException(400, "skin is required (a skin id, or off)")
+    if body.get("confirm") is not True:
+        raise HTTPException(409, "confirmation_required: this changes the look of every app; send confirm: true")
+    if skin in ("off", "none"):
+        return _skins("default", "off")
+    args = ["default", "set", skin]
+    if body.get("adopt", True):
+        args.append("--adopt")
+    if body.get("keepEqual"):
+        args.append("--keep-equal")
+    return _skins(*args)
+
+
+@router.post("/skins/default-skin/adopt")
+def skin_default_adopt(body: dict[str, Any] | None = Body(None)) -> Any:
+    """Move one app (body {app}) or every app (no app) onto the hub default skin; a backup is taken first."""
+    b = body or {}
+    extra = ["--keep-equal"] if b.get("keepEqual") else []
+    return _skins("default", "adopt", str(b["app"]), *extra) if b.get("app") else _skins("default", "adopt", "--all", *extra)
+
+
+@router.post("/skins/snapshot")
+def skin_snapshot_as(body: dict[str, Any] = Body(...)) -> Any:
+    """Capture what an app draws now as a skin, body {from, as, name?}: 'save the console look as a skin'. Saved with the made skins on the hub."""
+    src, as_id = str(body.get("from") or ""), str(body.get("as") or "")
+    if not src or not as_id:
+        raise HTTPException(400, "from (an app) and as (a new skin id) are required")
+    extra = ["--name", str(body["name"])] if body.get("name") else []
+    return _skins("snapshot", "--from", src, "--as", as_id, *extra)
+
+
+@router.get("/skins/backups/{app}")
+def skin_backups(app: str) -> Any:
+    """An app's look backups, newest first (taken before every switch onto the hub default)."""
+    return _skins("backups", app)
+
+
+@router.post("/skins/backup/{app}")
+def skin_backup(app: str, body: dict[str, Any] | None = Body(None)) -> Any:
+    """Keep what an app draws now as a backup, body {reason?}."""
+    reason = str((body or {}).get("reason") or "kept by hand")
+    return _skins("backup", app, "--reason", reason)
+
+
+@router.post("/skins/restore/{app}")
+def skin_restore_backup(app: str, body: dict[str, Any] | None = Body(None)) -> Any:
+    """Restore an app's previous skin from a backup, body {backup?} (the newest when none): 'restore my old look'. Keeps one undo."""
+    bid = str((body or {}).get("backup") or "")
+    return _skins("restore-backup", app, *([bid] if bid else []))
+
+
 @router.get("/skins/{app}/at")
 def skin_at(app: str, scope: str | None = None) -> Any:
     """Which skin is in force in an app, or in one of its screens / plugins (scope=ui:<id> | plugin:<id>), and which level decided."""

@@ -459,6 +459,11 @@ def clean_phrase(text: Any) -> str:
 HUB_SKIN_SETTING = "get my skin only from axhub"
 # The Override switch under it (HUB_SKIN_OVERRIDE_SETTING in console-control-voice.mjs).
 HUB_SKIN_OVERRIDE_SETTING = "override axhub"
+# the hub default skin (build console-look-becomes-default-axhub-skin): the console actions the look phrases press
+DEFAULT_LOOK_FUNCTION = "function:skin.default"
+RESTORE_LOOK_FUNCTION = "function:skin.restoreBackup"
+_DEFAULT_LOOK_RE = re.compile(r"^(?:make|set) (?:this|the current|my|the console|this console)(?: look| skin)?(?: as| to)? (?:the )?(?:default|axhub default)(?: look| skin)?(?: for (?:every|all)(?: the)? apps?)?$")
+_RESTORE_LOOK_RE = re.compile(r"^(?:restore|bring back|put back|go back to|undo to) (?:my|the|this apps?) (?:old|previous|last|earlier) (?:look|skin)$")
 
 
 def _strip(s: str) -> str:
@@ -498,6 +503,10 @@ def voice_intent(text: Any) -> dict[str, Any] | None:
         return {"verb": "set", "find": {"q": HUB_SKIN_SETTING, "kinds": ["setting"]}, "value": m.group(1) == "lock"}
     if m := re.match(r"^(override|stop overriding|don't override|do not override) (?:the )?axhub(?: skin| look)?$", p):
         return {"verb": "set", "find": {"q": HUB_SKIN_OVERRIDE_SETTING, "kinds": ["setting"]}, "value": m.group(1) == "override"}
+    if _DEFAULT_LOOK_RE.match(p):
+        return {"verb": "press", "address": DEFAULT_LOOK_FUNCTION}
+    if _RESTORE_LOOK_RE.match(p):
+        return {"verb": "press", "address": RESTORE_LOOK_FUNCTION}
     if m := re.match(r"^set (?:the )?(.+?) (?:to|at) (.+)$", p):
         return {"verb": "set", "find": {"q": _strip(m.group(1)), "kinds": ["setting"]}, "value": m.group(2).strip()}
     if m := re.match(r"^(?:turn|switch) (?:the )?(.+?) (on|off)$", p):

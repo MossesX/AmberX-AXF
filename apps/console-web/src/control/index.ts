@@ -10,6 +10,7 @@ import { installControlExecutor } from './executor';
 import { installVoiceControl } from '../actions/voice-control';
 import { installConsoleControlActions } from '../actions/console-control';
 import { installSearchPalette } from './SearchPalette';
+import { installSkinHub } from '../actions/skin-hub';
 
 export function installConsoleControl(rt: AxfRuntime): () => void {
   const actions = installActionTargets(rt);
@@ -19,5 +20,6 @@ export function installConsoleControl(rt: AxfRuntime): () => void {
   const voice = installVoiceControl(rt);
   const verbs = installConsoleControlActions(rt);
   const palette = installSearchPalette(rt);
-  return () => { actions.off(); plugins(); search(); executor(); voice(); verbs(); palette(); };
+  const skinHub = installSkinHub(rt);
+  return () => { actions.off(); plugins(); search(); executor(); voice(); verbs(); palette(); skinHub(); };
 }

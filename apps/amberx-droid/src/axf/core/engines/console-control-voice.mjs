@@ -22,6 +22,11 @@ export const VOICE_FRAME = 'console-control-voice@1';
 export const HUB_SKIN_SETTING = 'get my skin only from axhub';
 /** The words the override phrases search for: the Override switch's label (under the axHub-only switch). */
 export const HUB_SKIN_OVERRIDE_SETTING = 'override axhub';
+/** The hub default skin (build console-look-becomes-default-axhub-skin): the console actions the look phrases press. */
+export const DEFAULT_LOOK_FUNCTION = 'function:skin.default';
+export const RESTORE_LOOK_FUNCTION = 'function:skin.restoreBackup';
+const DEFAULT_LOOK_RE = /^(?:make|set) (?:this|the current|my|the console|this console)(?: look| skin)?(?: as| to)? (?:the )?(?:default|axhub default)(?: look| skin)?(?: for (?:every|all)(?: the)? apps?)?$/;
+const RESTORE_LOOK_RE = /^(?:restore|bring back|put back|go back to|undo to) (?:my|the|this apps?) (?:old|previous|last|earlier) (?:look|skin)$/;
 
 const NUMBERS = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20, first: 1, second: 2, third: 3, fourth: 4, fifth: 5 };
 const AMOUNTS = { 'a bit': 0.25, 'a little': 0.25, 'a little bit': 0.25, 'a lot': 2, 'a page': 1, 'one page': 1, 'half a page': 0.5 };
@@ -85,6 +90,10 @@ export function voiceIntent(text) {
   if ((m = /^(override|stop overriding|don't override|do not override) (?:the )?axhub(?: skin| look)?$/.exec(p))) {
     return { verb: 'set', find: { q: HUB_SKIN_OVERRIDE_SETTING, kinds: ['setting'] }, value: m[1] === 'override' };
   }
+
+  // the hub default skin: "make this the default look", "restore my old look" (Settings → Appearance)
+  if (DEFAULT_LOOK_RE.test(p)) return { verb: 'press', address: DEFAULT_LOOK_FUNCTION };
+  if (RESTORE_LOOK_RE.test(p)) return { verb: 'press', address: RESTORE_LOOK_FUNCTION };
 
   // settings
   if ((m = /^set (?:the )?(.+?) (?:to|at) (.+)$/.exec(p))) return { verb: 'set', find: { q: strip(m[1]), kinds: ['setting'] }, value: m[2].trim() };

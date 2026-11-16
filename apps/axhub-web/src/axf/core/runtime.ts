@@ -32,7 +32,7 @@ import { SearchIndex } from './engines/search';
 import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
 import { isSkinMode, skinModeColor, skinModePair } from './engines/skin-modes.mjs';
-import { backToSkin, composeLookAt, globalSkinOf, hubDefaultOf, hubOnlyLook, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState, foldLegacyPicks, isFoldedPickType, lookNeedsMigration, migrateLookSettings, parseLegacyLook, settingsNeedMigration, skinSlots, isRetiredLookKey, LEGACY_LOOK_KEY, SKIN_SWAPPABLE_SECTION } from './engines/skin';
+import { adoptHubDefault, backupLook, restoreLookBackup, type LookBackup, backToSkin, composeLookAt, globalSkinOf, hubDefaultOf, hubOnlyLook, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState, foldLegacyPicks, isFoldedPickType, lookNeedsMigration, migrateLookSettings, parseLegacyLook, settingsNeedMigration, skinSlots, isRetiredLookKey, LEGACY_LOOK_KEY, SKIN_SWAPPABLE_SECTION } from './engines/skin';
 import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
 import { ANIMATION_PREFS_KEY, animationState, behaviorStyle, confirmBeforeDelete, normalizeBehavior, setAnimationPref, skinAnimationVars, vibrationPattern, withAnimationPrefs, type AnimationState } from './engines/behavior';
 import { sweepOrigin } from './engines/swatches';
@@ -291,6 +291,14 @@ export interface BrandPlace { mode: string; name: string; asset: string; svg: st
 
 /** Where this device keeps its light / dark / system choice for skins (skin-modes@1). */
 const SKIN_MODE_KEY = 'axf.skin.mode';
+
+/** The server side of moves that reach every app's look (the console's theme-manager routes); `AxfRuntime.setSkinHub`. */
+export interface SkinHub {
+  /** Back up every app's look, set the hub default skin, move every app onto it. */
+  setDefault(skin: string): Promise<unknown>;
+  /** Capture what `app` draws now as a skin `id`. */
+  snapshot(app: string, id: string, name?: string): Promise<unknown>;
+}
 
 export class AxfRuntime {
   readonly registry = new AssetRegistry();
@@ -1034,6 +1042,62 @@ export class AxfRuntime {
 
   /** The hub default skin the shared document carries (`defaultSkin`; null = none): the floor every app stands on without opting in. */
   hubDefaultSkin(): { id: string; overrides?: Record<string, string>; colorTheme?: string } | null { return hubDefaultOf(this.lastAppearance); }
+
+  /* ---- the hub default skin, backups (build console-look-becomes-default-axhub-skin, Nov 14 2026) ---- */
+
+  /**
+   * Where moves that reach every app go when this app has a server for them (the console's theme-manager routes:
+   * backups of every app, the pointer, every app adopted, a skin captured from a look). Null = this app's own look only.
+   */
+  private skinHubRef: SkinHub | null = null;
+  setSkinHub(hub: SkinHub | null): void { this.skinHubRef = hub; }
+  skinHub(): SkinHub | null { return this.skinHubRef; }
+
+  /** This app's look backups, newest first (taken before every switch onto the hub default). */
+  lookBackups(): LookBackup[] { return this.appLook()?.backups ?? []; }
+
+  /** Restore a backup of this app's look (the newest when `id` is empty): "Restore previous skin". One undo. */
+  restoreLookBackupNow(id = ''): boolean {
+    const b = id ? this.lookBackups().find((x) => x.id === id) : this.lookBackups()[0];
+    if (!b) { this.toast('There is no earlier look to restore.', 'warning', 'Appearance'); return false; }
+    if (!this.changeLook((cur) => restoreLookBackup(cur, b.id, new Date().toISOString()))) return false;
+    this.terminal.ok('hot-swap', `restored the look backed up ${b.at}${b.skin.id ? ` (${b.skin.id})` : ''}`);
+    this.toast(`Previous look restored${b.skin.id ? `: ${b.skin.id}` : ''}.`, 'success', 'Appearance');
+    return true;
+  }
+
+  /**
+   * Make a skin the hub default ("Make this the default look"): `id` or, when empty, the skin in force in this app.
+   * With a skin hub (the console) every app is backed up and moved onto it; without one, this app is backed up and
+   * moved, and the pointer goes on the shared document through the appearance source.
+   */
+  async makeDefaultSkin(id = ''): Promise<boolean> {
+    const pick = id || this.skinInForce().id;
+    if (!pick || !this.skinData(pick)) { this.toast(pick ? `No skin "${pick}" in this app.` : 'Pick a skin first: the default look is a skin.', 'warning', 'Appearance'); return false; }
+    if (this.lockedByAppearance('assets.swap')) { this.lockedToast(); return false; }
+    if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
+    if (this.skinHubRef) {
+      try { await this.skinHubRef.setDefault(pick); } catch (e) { this.toast(`The default look was not changed: ${String((e as Error)?.message ?? e)}`, 'danger', 'Appearance'); return false; }
+      this.refreshFromSaved();
+    } else {
+      if (!this.appearanceSource || !this.appearanceRunning) { this.toast("axHub isn't connected, so the default look can't change.", 'warning', 'Appearance'); return false; }
+      const at = new Date().toISOString();
+      if (!this.changeLook((cur) => backupLook(cur, { at, by: this.manifest.app.id, reason: `before the hub default skin became ${pick}` }))) return false;
+      this.appearanceSource.save({ defaultSkin: { id: pick } });
+      this.changeLook((cur) => adoptHubDefault(cur, { at, by: this.manifest.app.id }));
+    }
+    this.terminal.ok('hot-swap', `hub default skin: ${pick}`);
+    this.toast(`${this.skinList().find((s) => s.id === pick)?.name ?? pick} is now the default look. Every app's old look is backed up.`, 'success', 'Appearance');
+    return true;
+  }
+
+  /** Capture what this app draws now as a skin (`id`, optional `name`), through the skin hub. */
+  async snapshotSkin(id: string, name = ''): Promise<boolean> {
+    if (!this.skinHubRef) { this.toast('Capturing a look as a skin needs the Dev Console (theme manager).', 'warning', 'Appearance'); return false; }
+    try { await this.skinHubRef.snapshot(this.manifest.app.id, id, name); } catch (e) { this.toast(`Not captured: ${String((e as Error)?.message ?? e)}`, 'danger', 'Appearance'); return false; }
+    this.toast(`This look is saved as the skin ${name || id}.`, 'success', 'Appearance');
+    return true;
+  }
 
   /**
    * A UI or plugin level of the chain: `key` = `ui:<id>` | `plugin:<id>`, `use` on (with `id`, else the skin already
@@ -3243,6 +3307,11 @@ export class AxfRuntime {
     if (this.skinMode() === 'system') queueMicrotask(() => { if (this.skinInForce().id) this.setSkinMode('system'); });
     a.register('skin.restore', () => this.restoreDefaultAppearance(), { label: 'Restore this app to its default look', requires: 'assets.swap' });
     a.register('skin.undo', () => { this.undoRestoreDefault(); }, { label: 'Undo Restore to default', requires: 'assets.swap' });
+    // The hub default skin (Nov 14 2026): skin.default[:<skin>] makes a skin (or the one in force here) the default look of
+    // every app; skin.restoreBackup[:<id>] puts this app's previous look back; skin.snapshot:<id>[:<name>] captures this look as a skin
+    a.register('skin.default', ([id]) => { void this.makeDefaultSkin(id ?? ''); }, { label: 'Make this the default look', requires: 'assets.swap', params: true, effect: 'write' });
+    a.register('skin.restoreBackup', ([id]) => { this.restoreLookBackupNow(id ?? ''); }, { label: 'Restore my old look (previous skin)', requires: 'assets.swap', params: true });
+    a.register('skin.snapshot', ([id, ...name]) => { if (id) void this.snapshotSkin(id, name.join(':')); else this.toast('skin.snapshot needs a skin id.', 'warning', 'Skin'); }, { label: 'Save this look as a skin', requires: 'assets.swap', params: true });
     // Scopes (skin-coverage@1): skin.inherit:on|off follows the hub-wide skin; skin.scope:<ui|plugin>:<id>:<on|off|inherit>[:<skin>] sets one level
     a.register('skin.inherit', ([v]) => { this.skinInherit(v !== 'off'); }, { label: 'Follow the hub-wide skin in this app', requires: 'assets.swap', params: true });
     a.register('skin.scope', ([kind, id, use, skinId]) => {
