@@ -808,12 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 13:42 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · mcp
-- 2026-11-15 13:43 UTC · `home-cards-follow-plugin-off-home-always` note (all) · orchestrator
-- 2026-11-15 13:46 UTC · `build-rules-tab-gate-rules-vps-owns` s4 done (all) · orchestrator
-- 2026-11-15 13:49 UTC · `phone-connect-small-android-companion` s1 done, → running (all) · orchestrator
-- 2026-11-15 13:49 UTC · `phone-connect-small-android-companion` branch claude/phone-connect-small-android-companion (all) · builds-live
-- 2026-11-15 13:50 UTC · `build-rules-tab-gate-rules-vps-owns` s5 done (all) · orchestrator
 - 2026-11-15 13:52 UTC · `data-container-axf-data-holds-all` s25 done (all) · orchestrator
 - 2026-11-15 13:53 UTC · `phone-connect-small-android-companion` s2 done (all) · orchestrator
 - 2026-11-15 13:53 UTC · `build-rules-tab-gate-rules-vps-owns` s6 done (all) · orchestrator
@@ -1208,6 +1202,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 18:08 UTC · `shipped-features-show-each-landed-build-s-screen` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-16 16:40 UTC · `remove-old-molly-app-project-keep-axf` s12 done (all) · orchestrator
 - 2026-11-16 16:41 UTC · `remove-old-molly-app-project-keep-axf` s13 done (all) · orchestrator
+- 2026-11-16 16:42 UTC · `molly-multi-instance-tabs` note (all) · orchestrator
+- 2026-11-16 16:42 UTC · `molly-one-shell` note (all) · orchestrator
+- 2026-11-16 16:42 UTC · `molly-sign-in-once` note (all) · orchestrator
+- 2026-11-16 16:42 UTC · `molly-fable-version-the-one-interface-for-amberx` note (all) · orchestrator
+- 2026-11-16 16:42 UTC · `molly-flagship-skin-premium-sellable-uncluttered` note (all) · orchestrator
+- 2026-11-16 16:42 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
 
 ## Token passes (log)
 
