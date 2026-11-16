@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6943,
- "updatedAt": "2026-11-16T22:51:28.424Z",
+ "rev": 6944,
+ "updatedAt": "2026-11-16T22:51:59.508Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -247808,7 +247808,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:19:11.374Z",
-   "updatedAt": "2026-11-16T19:46:05.295Z",
+   "updatedAt": "2026-11-16T22:51:57.257Z",
    "builtAt": "2026-11-16T19:46:05.295Z",
    "notes": [
     {
@@ -247899,7 +247899,7 @@
      "id": "s1",
      "uid": "st-mwjngq89017gbp",
      "title": "",
-     "text": "Gate & rules > Auto-lander tab: the grid has exactly THREE columns, in this order: PR number, build name, commits behind main. Each sortable by tapping its header. Max two rows per build (second row only for what it does + why blocked, under the name). Row actions (Open, Merge main + fix, Archive, Hold) in the row's menu, plus multi-select bulk Archive; filter e.g. 'behind > 500'. Hide/clean stale records with no branch/PR. Same data and actions on REST, MCP, CLI and voice.",
+     "text": "Brett Nov 16 CHANGE: keep ALL the existing columns in the Auto-lander table, don't cut any. Just ADD a 'Commits behind main' column (number, sortable). Also: every column sortable, max two rows per build, row actions, bulk archive, filter for >500 behind, hide stale records.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -247913,9 +247913,9 @@
      "done": true,
      "doneAt": "2026-11-16T19:44:47.517Z",
      "note": "",
-     "rev": 4,
+     "rev": 5,
      "createdAt": "2026-11-16T19:21:53.865Z",
-     "updatedAt": "2026-11-16T19:44:48.074Z"
+     "updatedAt": "2026-11-16T22:51:57.584Z"
     },
     {
      "id": "s4",
@@ -247995,7 +247995,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
