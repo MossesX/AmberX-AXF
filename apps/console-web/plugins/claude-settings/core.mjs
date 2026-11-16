@@ -236,11 +236,8 @@ export function setView(device, patch, { by = 'unknown', name, now = new Date() 
   const doc = readViews();
   const was = Object.hasOwn(doc.devices, device) ? doc.devices[device] : {};
   const next = { ...normView({ ...was, ...patch }), ...(name || was.name ? { name: String(name || was.name).slice(0, 60) } : {}), updatedAt: now.toISOString(), by: String(by).slice(0, 80) };
-  const file = viewsFile();
-  mkdirSync(dirname(file), { recursive: true });
-  const tmp = `${file}.tmp-${process.pid}`;
-  writeFileSync(tmp, `${JSON.stringify({ ...doc, devices: { ...doc.devices, [device]: next } }, null, 1)}\n`);
-  renameSync(tmp, file);
+  // through data-files like the settings document (atomic locally; mirrored / served by axf-data per its mode)
+  files.writeJsonSync(viewsFile(), { ...doc, devices: { ...doc.devices, [device]: next } }, 1);
   return getView(device);
 }
 
