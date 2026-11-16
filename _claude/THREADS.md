@@ -808,8 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 12:20 UTC · `axf-molly-container-orchestrator-gate` → queued, note (all) · console
-- 2026-11-15 12:20 UTC · `move-build-orchestrator-to-axhub` → archived (all) · mcp
 - 2026-11-15 12:21 UTC · `pending-tab-one-collapsed-row-per-2` note (all) · orchestrator
 - 2026-11-15 12:21 UTC · `move-build-orchestrator-to-axhub` note (all) · builds-live
 - 2026-11-15 12:21 UTC · `axf-molly-container-orchestrator-gate` added (0 steps) (all) · builds-live
@@ -1208,6 +1206,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 14:07 UTC · `urgent-land-gizmo-chat-report` added (0 steps) (all) · merge-watch
 - 2026-11-16 14:08 UTC · `console-look-becomes-default-axhub-skin` s17 done (all) · orchestrator
 - 2026-11-16 14:08 UTC · `ui-manager-floating-window-to-select-any` s13 done (all) · orchestrator
+- 2026-11-16 14:07 UTC · `hotfix-launcher-splitter` added (0 steps) (all) · merge-watch
+- 2026-11-16 14:08 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` note (all) · merge-watch
 
 ## Token passes (log)
 
