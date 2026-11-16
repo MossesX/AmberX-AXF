@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6427,
- "updatedAt": "2026-11-16T13:43:38.953Z",
+ "rev": 6428,
+ "updatedAt": "2026-11-16T13:44:08.969Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -219473,7 +219473,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-16T13:43:37.163Z",
+   "updatedAt": "2026-11-16T13:44:07.159Z",
    "builtAt": "",
    "notes": [
     {
@@ -219615,6 +219615,10 @@
     {
      "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
      "at": "2026-11-16T13:43:37.163Z"
+    },
+    {
+     "text": "Headless run axf-demo-video-series-three-minute-browser--joey: brief only · start 17.8K tokens ($0.12) · cost $8.09 · 51 turns · 6 tools, MCP none",
+     "at": "2026-11-16T13:44:07.159Z"
     }
    ],
    "approvals": [
@@ -220215,7 +220219,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
