@@ -814,7 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 17:02 UTC · `get-main-green-unblock-lander-land-axf` s5 done (all) · orchestrator
 - 2026-11-16 17:06 UTC · `hotfix-toolbar-settings-still-change` note (all) · mcp
 - 2026-11-16 17:06 UTC · `hotfix-toolbar-settings-still-change` → queued (all) · mcp
 - 2026-11-16 17:07 UTC · `hotfix-toolbar-settings-still-change` → running (all) · mcp
@@ -1214,6 +1213,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 20:56 UTC · `fable-rebuild-to-do-manager-unlimited` s7 done (all) · orchestrator
 - 2026-11-16 20:57 UTC · `fable-rebuild-to-do-manager-unlimited` note (all) · orchestrator
 - 2026-11-16 21:09 UTC · `fable-rebuild-plan-studio-cleared-out` s1 done, → running (all) · orchestrator
+- 2026-11-16 21:09 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · orchestrator
 
 ## Token passes (log)
 
