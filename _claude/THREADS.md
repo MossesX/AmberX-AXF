@@ -814,9 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 18:43 UTC · `hotfix-orchestrator-grid-columns-don-t` s3 done (all) · orchestrator
-- 2026-11-16 18:44 UTC · `all-settings-interfaces-open-floating` s4 done, → built (all) · orchestrator
-- 2026-11-16 18:47 UTC · `hotfix-orchestrator-grid-columns-don-t` s4 done (all) · orchestrator
 - 2026-11-16 18:50 UTC · `amberx-open-url-must-open-page-even-when` s1 done, → running (all) · orchestrator
 - 2026-11-16 18:51 UTC · `settings-interface-gear-every-plugin` s2 done, note (all) · orchestrator
 - 2026-11-16 18:51 UTC · `amberx-open-url-must-open-page-even-when` s2 done (all) · orchestrator
@@ -1214,6 +1211,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 23:13 UTC · `icon-packs-with-drag-drop-pack-designer` s1 done, → running (all) · orchestrator
 - 2026-11-16 23:14 UTC · `icon-packs-with-drag-drop-pack-designer` s1 done (all) · foreign-write
 - 2026-11-14 23:08 UTC · `always-fill-every-slot-when-slots-are` s25 done, → built (all) · orchestrator
+- 2026-11-16 23:14 UTC · `fable-rebuild-plan-studio-cleared-out` → running, note (all) · pipeline
+- 2026-11-16 23:14 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · orchestrator
+- 2026-11-16 23:14 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · orchestrator
 
 ## Token passes (log)
 
