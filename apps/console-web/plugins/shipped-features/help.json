@@ -57,6 +57,22 @@
         "target": "shipped-features-api",
         "title": "Without the UI",
         "text": "REST GET /api/plugins/shipped-features/table?view=<json> (kind=csv for a file) and POST /remove; the same as MCP tools (shipped-features table / remove), the CLI (node apps/console-web/plugins/shipped-features/ledger/ledger.mjs table --view '<json>'), the console action shipped-features.view (by=area;sort=shipped:desc;statuses=live) and voice: 'show shipped features not deployed, newest first'."
+      },
+      {
+        "target": "close-the-column-picker",
+        "title": "Close the column picker",
+        "text": "Closes the column picker. Your column choices and order are already saved."
+      },
+      {
+        "target": "export-csv",
+        "title": "Export CSV",
+        "text": "Downloads the rows and columns you see right now (filters, sort and hidden columns applied) as a CSV file.",
+        "more": "Also: GET /api/plugins/shipped-features/export?kind=csv, MCP shipped_features_export, axf shipped-features export."
+      },
+      {
+        "target": "help",
+        "title": "Help",
+        "text": "Opens this feature's help page in a new tab."
       }
     ],
     "intros": [
