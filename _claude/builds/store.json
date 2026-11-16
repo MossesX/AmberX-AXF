@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6620,
- "updatedAt": "2026-11-16T18:24:32.297Z",
+ "rev": 6621,
+ "updatedAt": "2026-11-16T18:24:50.008Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -243114,16 +243114,22 @@
    "title": "axHub: veto countdown setting, read-only calls skip it",
    "category": "",
    "detail": "In axHub (MossesX/axHub): 1) Add a setting for the veto countdown length (0 to 120 seconds), default 10 s per Brett; editable in the axHub approvals settings and through the API. 2) Read-only calls never get held: vps.run commands that only read (classify by a read-only allow list or an explicit readOnly flag on the call; inspect, logs, ps, git log/fetch, cat, grep, df, docker inspect) run at once. Anything that changes something keeps the countdown. Irreversible calls keep their approval. Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-16T18:24:30.100Z",
-   "updatedAt": "2026-11-16T18:24:30.100Z",
+   "updatedAt": "2026-11-16T18:24:33.583Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-16T18:24:33.583Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -243138,6 +243144,28 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-16T18:24:32.598Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -243147,7 +243175,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
