@@ -49,7 +49,23 @@ one-sided rule is `orchestrator.css`'s `white-space: nowrap` on cells, which is 
 
 ## Fix
 
-_(s4–s7)_
+- **One column definition (s4).** `gridTemplate()` (`framework/libs/datagrid/index.tsx`) builds the single
+  `grid-template-columns` (grip, every shown column's width, tail) from the column specs; the grid root carries it and
+  the header and every row are `grid-template-columns: subgrid` spanning it. Group headers, the expanded detail and the
+  empty line span every track. The row-hook tail is one shared `max-content` track (it was sized per row). The root is
+  `min-width: min-content`, so a narrow screen scrolls sideways with every row on the same tracks.
+- **2 lines per row (s5).** `rowLines` prop → `axf.grid.rowLines.<grid id>` → `axf.grid.rowLines` → 1; the root carries
+  `data-axf-row-lines`. Line 1 is the fixed (primary) columns across the row, line 2 every other column in its own
+  track of the same template; every cell has an explicit track (auto-placement put line 2 one track to the left at
+  first, the header and rows together, so the edge check couldn't see it; the check now also fails on a header cell
+  outside the header or overlapping another).
+- **Same padding and alignment on both sides (s5–s6).** Header cells are framework buttons: the button asset's padding
+  and centring applied to the header only, so a label sat right of its column's content. `.axf-grid .axf-grid-hcell`
+  now has no inline padding and starts where the cell starts (`is-end` columns end where the cell ends).
+- **Skin assets and `console.css` (s6).** Nothing to remove: no skin (`framework/assets/skin/*`) sets grid widths, gaps
+  or padding, and `console.css` has no grid rule. The only one-sided rule left is `orchestrator.css`'s
+  `white-space: nowrap` on cells, harmless on shared tracks. `check-theme`, `check-controls`, `check-chrome-assets`
+  and `check-component-tokens` pass.
 
 ## Tests
 
