@@ -17,6 +17,7 @@ export * from './engines/hide';
 export * from './engines/embed';
 export * from './engines/spacing';
 export * from './engines/settingsui';
+export * from './engines/settingsopen';
 export * from './engines/designpackage';
 export * from './engines/skin';
 export * from './engines/brand';

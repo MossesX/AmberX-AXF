@@ -321,6 +321,13 @@ collapsible Quick settings pane first: `framework/core/engines/quick-settings.mj
 enforced by `framework/cli/check-quick-settings.mjs`. The Compose settings screens need the same pane (a Kotlin
 `QuickSettingsPane` over the same keys, the skin level `ui:qs.<scope>` and the asset gate) when the Android side resumes;
 the engine checks to replay are `framework/spec/check-quick-settings.mjs`.
+
+## Deferred: settings open in a floating dialog (Nov 13 2026)
+
+`framework/core/engines/settingsopen.ts` (build `all-settings-interfaces-open-floating`): every settings interface
+always opens in a floating glass dialog (`app.settings`, `settings.open[:tab]`); there is no page / pane / floating
+choice (removed Nov 16 2026). Web only; the Kotlin twin (`lib-settings` always opening its screen in a dialog, with no
+placement option) is a deferred gap, no new Android work. Check: `framework/spec/check-settings-open.mts`.
 ## Deferred: the console app's on-device wake listener (Nov 13 2026)
 Build `console-app-wake-word-voice-listener` (Fable). The wake listener is the console plugin `apps/console-web/plugins/wake-listener`
 (wake-listener@1: wake phrases, switch, state machine, command catalog and spoken wizard in `core.mjs` / `catalog.mjs`; the page
