@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6669,
- "updatedAt": "2026-11-16T19:02:09.860Z",
+ "rev": 6670,
+ "updatedAt": "2026-11-16T19:02:26.196Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -244221,7 +244221,7 @@
    "pr": "#725",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:38.814Z",
-   "updatedAt": "2026-11-16T18:52:09.899Z",
+   "updatedAt": "2026-11-16T19:02:24.030Z",
    "builtAt": "",
    "notes": [
     {
@@ -244306,16 +244306,16 @@
     "queuedAt": "2026-11-16T18:27:41.302Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-settings-interface-gear-every-plugin--gina",
+    "session": "axf-settings-interface-gear-every-plugin--earl",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-16T18:34:01.102Z",
     "runs": 1,
     "lastRun": {
-     "at": "2026-11-16T18:52:06.465Z",
+     "at": "2026-11-16T18:37:03.897Z",
      "exit": 0,
      "outcome": "requeued",
-     "stepsLeft": 26,
+     "stepsLeft": 27,
      "account": "mossesx-max-",
      "session": "axf-settings-interface-gear-every-plugin--earl"
     },
@@ -244327,7 +244327,7 @@
      "note": "Split by Claude into 28 steps (2 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- ended (exit 0) with 26 steps left: back in the Queue (run 1).",
+    "note": "Session on mossesx-max- ended (exit 0) with 27 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-16T18:34:01.102Z",
     "planned": {
@@ -244414,12 +244414,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:02:24.030Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:31:29.535Z",
-     "updatedAt": "2026-11-16T18:31:29.535Z"
+     "updatedAt": "2026-11-16T19:02:24.347Z"
     },
     {
      "id": "s4",
