@@ -352,3 +352,14 @@ animIntensity` (core/engines/behavior.ts: `skinAnimationVars`, `withAnimationPre
 `setAnimationPref`) and the colour maths in core/engines/swatches.ts (`shadesOf`, `mixHex`, `skinSwatches`,
 `sweepOrigin`); fixture framework/spec/fixtures/skin-animations.json. Kotlin twin deferred (no new Android work): the
 Compose behaviour reader ignores the new fields (defaults apply), so Android skins stay still until it is ported.
+
+## Deferred: build-watchdog@1 stuck-build recovery (Nov 16 2026)
+
+Build server-watchdog-orchestrator-auto-recovers-stuck adds `framework/core/build-watchdog.mjs`: the decision table for a
+build marked Building with no live session (`isMarkedRunning`, `causeOf`, `decide`, `attemptOf`), the recovery record
+(`recoveryRecord` / `normRecovery` / `normRecoveries`, kept on a builds@1 build as the optional `recoveries[]`, journal
+action `watchdog-recover`), the settings (`normSettings`: enabled, staleMin, graceMin, maxRetries) and the JSON Schema
+(`framework/schemas/build-watchdog.json`, written by `axf schemas`). Golden cases: `spec/fixtures/build-watchdog.json`
+(`check-build-watchdog.mjs`). The probe and the executor run only on the VPS host (the Build orchestrator plugin). No
+Kotlin twin while Android is on hold: a port replays the fixture's `decisions`, `records` and `settings` blocks and keeps
+`recoveries[]` through its builds@1 reader unchanged when absent.

@@ -96,7 +96,8 @@ const minutes = (ms) => Math.round(ms / 60e3);
 export function normSettings(raw = {}) {
   const o = raw && typeof raw === 'object' ? raw : {};
   const clamp = (k, v) => { const n = Number(v); const [lo, hi] = RANGES[k]; return Number.isFinite(n) ? Math.min(hi, Math.max(lo, Math.round(n))) : DEFAULTS[k]; };
-  return { enabled: o.enabled !== false, staleMin: o.staleMin === undefined ? DEFAULTS.staleMin : clamp('staleMin', o.staleMin), graceMin: o.graceMin === undefined ? DEFAULTS.graceMin : clamp('graceMin', o.graceMin), maxRetries: o.maxRetries === undefined ? DEFAULTS.maxRetries : clamp('maxRetries', o.maxRetries) };
+  const num = (k) => (o[k] == null || o[k] === '' ? DEFAULTS[k] : clamp(k, o[k]));
+  return { enabled: o.enabled !== false, staleMin: num('staleMin'), graceMin: num('graceMin'), maxRetries: num('maxRetries') };
 }
 
 /** A probe in shape (null = not probed; '' = none). */
@@ -154,6 +155,9 @@ export function causeOf(b, probe, settings = DEFAULTS, now = '') {
   if (ageMin != null && ageMin < s.graceMin && p.pid !== false && p.tmux !== false) return out('starting');
   const processAlive = p.pid === true || p.tmux === true;
   if (processAlive) return out(heartbeatMin != null && !fresh ? 'stale-heartbeat' : 'live');
+  // two sources agree the session is gone: stuck, however fresh the last heartbeat (it only says when it died)
+  if (p.tmux === false && p.pid === false) return out('tmux-missing');
+  // one source says gone, the other was not probed: a fresh heartbeat still counts as alive (one broken probe never decides alone)
   if (fresh) return out('live');
   if (p.tmux === false) return out('tmux-missing');
   if (p.pid === false) return out('pid-gone');
@@ -180,9 +184,11 @@ export function decide(b, probe, settings = DEFAULTS, ctx = {}) {
   const account = accountName(b?.pipeline?.account);
   const step = str(currentStep(b)?.id, 40);
   const phase = currentPhase(b);
-  const base = { stuck: c.stuck, cause: c.cause, exit: c.exit, action: 'none', attempt: 0, account, excludeAccounts: [], resetStep: false, releaseSlot: false, requeue: false, status: '', step, phase, banner: false, notify: '', note: '' };
-  if (!s.enabled) return { ...base, note: 'watchdog off' };
-  if (!isMarkedRunning(b)) return { ...base, stuck: false, note: `not marked running (${str(b?.status, 20) || 'no status'})` };
+  const marked = isMarkedRunning(b);
+  // stuck = the store says Building and the probe says nothing is alive; the action may still be none (watchdog off)
+  const base = { stuck: marked && c.stuck, cause: c.cause, exit: c.exit, action: 'none', attempt: 0, account, excludeAccounts: [], resetStep: false, releaseSlot: false, requeue: false, status: '', step, phase, banner: false, notify: '', note: '' };
+  if (!marked) return { ...base, note: `not marked running (${str(b?.status, 20) || 'no status'})` };
+  if (!s.enabled) return { ...base, note: c.stuck ? 'stuck, but the watchdog is off: nothing done' : 'watchdog off' };
   if (!c.stuck) return { ...base, note: c.cause === 'live' ? `alive: ${c.alive.join(', ')}` : c.cause === 'starting' ? `launched ${c.ageMin} min ago, inside the ${s.graceMin} min grace` : 'nothing probed yet' };
   const act = (action, extra = {}) => ({ ...base, action, releaseSlot: true, requeue: action !== 'give-up', status: action === 'give-up' ? 'pending' : 'queued', resetStep: RETRY_ACTIONS.includes(action) || action === 'retry-other-account', banner: action === 'give-up', notify: action === 'give-up' ? NOTIFY.gaveUp : NOTIFY.fix, ...extra });
   const where = account ? ` on ${account}` : '';
