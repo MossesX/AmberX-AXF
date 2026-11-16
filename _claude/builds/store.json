@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6865,
- "updatedAt": "2026-11-16T20:27:51.214Z",
+ "rev": 6866,
+ "updatedAt": "2026-11-16T20:28:03.567Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -248835,7 +248835,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T20:26:44.199Z",
-   "updatedAt": "2026-11-16T20:27:31.486Z",
+   "updatedAt": "2026-11-16T20:27:51.320Z",
    "builtAt": "",
    "notes": [
     {
@@ -248905,6 +248905,28 @@
      "rev": 1,
      "createdAt": "2026-11-16T20:27:31.487Z",
      "updatedAt": "2026-11-16T20:27:31.757Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwjptk1001od2g",
+     "title": "",
+     "text": "IDE layout details: drag tabs between panes, drop a tab into another pane's tab group, drop on a pane edge to split, reorder tabs by drag, close/reopen panes. Plus Collapse all / Expand all buttons on Plan Studio's toolbar (every plan, section, step), remembered per user. All by voice/MCP/CLI too. Tests, push, let the orchestrator land it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T20:27:51.321Z",
+     "updatedAt": "2026-11-16T20:27:51.588Z"
     }
    ],
    "profiles": [
@@ -248915,7 +248937,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

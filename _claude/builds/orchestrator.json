@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T20:27:51.214Z",
+ "updatedAt": "2026-11-16T20:28:03.567Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -162818,7 +162818,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T20:26:44.199Z",
-   "updatedAt": "2026-11-16T20:27:31.486Z",
+   "updatedAt": "2026-11-16T20:27:51.320Z",
    "builtAt": "",
    "notes": [
     {
@@ -162863,6 +162863,25 @@
      "note": "",
      "uid": "st-mwjpt4q501skfa",
      "createdAt": "2026-11-16T20:27:31.487Z"
+    },
+    {
+     "id": "s2",
+     "text": "IDE layout details: drag tabs between panes, drop a tab into another pane's tab group, drop on a pane edge to split, reorder tabs by drag, close/reopen panes. Plus Collapse all / Expand all buttons on Plan Studio's toolbar (every plan, section, step), remembered per user. All by voice/MCP/CLI too. Tests, push, let the orchestrator land it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjptk1001od2g",
+     "createdAt": "2026-11-16T20:27:51.321Z"
     }
    ]
   }
