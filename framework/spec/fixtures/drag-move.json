@@ -1,0 +1,3413 @@
+{
+  "contract": "drag-move@1",
+  "snapshot": {
+    "$axf": "drag-move@1",
+    "planFrame": "drag-move-plan@1",
+    "resultFrame": "drag-move-result@1",
+    "action": "drag-move",
+    "idMax": 160,
+    "ops": [
+      "move",
+      "add",
+      "remove"
+    ],
+    "zones": [
+      "before",
+      "after",
+      "into",
+      "side"
+    ],
+    "codes": [
+      "invalid",
+      "unknown_kind",
+      "unknown_container",
+      "unknown_item",
+      "unknown_ref",
+      "invalid_zone",
+      "out_of_range",
+      "not_allowed",
+      "duplicate",
+      "limit",
+      "no_change",
+      "confirmation_required",
+      "failed"
+    ],
+    "kinds": [
+      {
+        "kind": "banner-widget",
+        "label": "Banner widget",
+        "container": "the banner asset id",
+        "item": "the attachment key type:id",
+        "zones": [
+          "before",
+          "after",
+          "into",
+          "side"
+        ],
+        "sides": [
+          "left",
+          "center",
+          "right"
+        ],
+        "add": true,
+        "remove": true,
+        "crossContainer": true,
+        "confirmRemove": false
+      },
+      {
+        "kind": "toolbar-item",
+        "label": "Toolbar item",
+        "container": "the toolbar id",
+        "item": "the item or widget key",
+        "zones": [
+          "before",
+          "after",
+          "into",
+          "side"
+        ],
+        "sides": [
+          "start",
+          "end"
+        ],
+        "add": true,
+        "remove": true,
+        "crossContainer": true,
+        "confirmRemove": false
+      },
+      {
+        "kind": "tab",
+        "label": "Tab",
+        "container": "the tab row id (tab:<row>)",
+        "item": "the tab value",
+        "zones": [
+          "before",
+          "after",
+          "into"
+        ],
+        "sides": null,
+        "add": false,
+        "remove": false,
+        "crossContainer": true,
+        "confirmRemove": false
+      },
+      {
+        "kind": "dock-pane",
+        "label": "Dock pane",
+        "container": "the dock host (window) id",
+        "item": "the pane id",
+        "zones": [
+          "into",
+          "side"
+        ],
+        "sides": [
+          "left",
+          "right",
+          "top",
+          "bottom"
+        ],
+        "add": false,
+        "remove": true,
+        "crossContainer": false,
+        "confirmRemove": true
+      },
+      {
+        "kind": "grid-column",
+        "label": "Grid column",
+        "container": "the grid id",
+        "item": "the column id",
+        "zones": [
+          "before",
+          "after",
+          "into"
+        ],
+        "sides": null,
+        "add": true,
+        "remove": true,
+        "crossContainer": false,
+        "confirmRemove": false
+      },
+      {
+        "kind": "grid-row",
+        "label": "Grid row",
+        "container": "the grid id",
+        "item": "the row id",
+        "zones": [
+          "before",
+          "after",
+          "into"
+        ],
+        "sides": null,
+        "add": false,
+        "remove": false,
+        "crossContainer": false,
+        "confirmRemove": false
+      },
+      {
+        "kind": "list-item",
+        "label": "List item",
+        "container": "the list id",
+        "item": "the item id",
+        "zones": [
+          "before",
+          "after",
+          "into"
+        ],
+        "sides": null,
+        "add": true,
+        "remove": true,
+        "crossContainer": true,
+        "confirmRemove": false
+      },
+      {
+        "kind": "layout-slot",
+        "label": "Layout slot",
+        "container": "the layout region (top, left, right, bottom, main)",
+        "item": "the slot type",
+        "zones": [
+          "before",
+          "after",
+          "into",
+          "side"
+        ],
+        "sides": null,
+        "add": true,
+        "remove": true,
+        "crossContainer": true,
+        "confirmRemove": false
+      }
+    ],
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://axf.amberxai.com/schemas/drag-move.schema.json",
+      "title": "drag-move@1 command",
+      "type": "object",
+      "required": [
+        "kind",
+        "source"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "$axf": {
+          "const": "drag-move@1"
+        },
+        "op": {
+          "enum": [
+            "move",
+            "add",
+            "remove"
+          ],
+          "default": "move"
+        },
+        "kind": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160,
+          "description": "a registered draggable kind (DRAG_KINDS, open registry)"
+        },
+        "source": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "container": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            },
+            "type": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            }
+          }
+        },
+        "target": {
+          "type": "object",
+          "required": [
+            "container"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "container": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            },
+            "zone": {
+              "enum": [
+                "before",
+                "after",
+                "into",
+                "side"
+              ]
+            },
+            "ref": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            },
+            "side": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            },
+            "index": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "confirm": {
+          "type": "boolean"
+        },
+        "by": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "registry": {
+    "kinds": [
+      "banner-widget",
+      "toolbar-item",
+      "tab",
+      "dock-pane",
+      "grid-column",
+      "grid-row",
+      "list-item",
+      "layout-slot"
+    ],
+    "ops": [
+      "move",
+      "add",
+      "remove"
+    ],
+    "zones": [
+      "before",
+      "after",
+      "into",
+      "side"
+    ],
+    "codes": [
+      "invalid",
+      "unknown_kind",
+      "unknown_container",
+      "unknown_item",
+      "unknown_ref",
+      "invalid_zone",
+      "out_of_range",
+      "not_allowed",
+      "duplicate",
+      "limit",
+      "no_change",
+      "confirmation_required",
+      "failed"
+    ],
+    "specs": {
+      "banner-widget": {
+        "kind": "banner-widget",
+        "label": "Banner widget",
+        "container": "the banner asset id",
+        "item": "the attachment key type:id",
+        "zones": [
+          "before",
+          "after",
+          "into",
+          "side"
+        ],
+        "sides": [
+          "left",
+          "center",
+          "right"
+        ],
+        "add": true,
+        "remove": true,
+        "crossContainer": true,
+        "confirmRemove": false
+      },
+      "toolbar-item": {
+        "kind": "toolbar-item",
+        "label": "Toolbar item",
+        "container": "the toolbar id",
+        "item": "the item or widget key",
+        "zones": [
+          "before",
+          "after",
+          "into",
+          "side"
+        ],
+        "sides": [
+          "start",
+          "end"
+        ],
+        "add": true,
+        "remove": true,
+        "crossContainer": true,
+        "confirmRemove": false
+      },
+      "tab": {
+        "kind": "tab",
+        "label": "Tab",
+        "container": "the tab row id (tab:<row>)",
+        "item": "the tab value",
+        "zones": [
+          "before",
+          "after",
+          "into"
+        ],
+        "sides": null,
+        "add": false,
+        "remove": false,
+        "crossContainer": true,
+        "confirmRemove": false
+      },
+      "dock-pane": {
+        "kind": "dock-pane",
+        "label": "Dock pane",
+        "container": "the dock host (window) id",
+        "item": "the pane id",
+        "zones": [
+          "into",
+          "side"
+        ],
+        "sides": [
+          "left",
+          "right",
+          "top",
+          "bottom"
+        ],
+        "add": false,
+        "remove": true,
+        "crossContainer": false,
+        "confirmRemove": true
+      },
+      "grid-column": {
+        "kind": "grid-column",
+        "label": "Grid column",
+        "container": "the grid id",
+        "item": "the column id",
+        "zones": [
+          "before",
+          "after",
+          "into"
+        ],
+        "sides": null,
+        "add": true,
+        "remove": true,
+        "crossContainer": false,
+        "confirmRemove": false
+      },
+      "grid-row": {
+        "kind": "grid-row",
+        "label": "Grid row",
+        "container": "the grid id",
+        "item": "the row id",
+        "zones": [
+          "before",
+          "after",
+          "into"
+        ],
+        "sides": null,
+        "add": false,
+        "remove": false,
+        "crossContainer": false,
+        "confirmRemove": false
+      },
+      "list-item": {
+        "kind": "list-item",
+        "label": "List item",
+        "container": "the list id",
+        "item": "the item id",
+        "zones": [
+          "before",
+          "after",
+          "into"
+        ],
+        "sides": null,
+        "add": true,
+        "remove": true,
+        "crossContainer": true,
+        "confirmRemove": false
+      },
+      "layout-slot": {
+        "kind": "layout-slot",
+        "label": "Layout slot",
+        "container": "the layout region (top, left, right, bottom, main)",
+        "item": "the slot type",
+        "zones": [
+          "before",
+          "after",
+          "into",
+          "side"
+        ],
+        "sides": null,
+        "add": true,
+        "remove": true,
+        "crossContainer": true,
+        "confirmRemove": false
+      }
+    }
+  },
+  "hosts": [
+    {
+      "kind": "tab",
+      "container": "settings.tabs",
+      "label": "Settings",
+      "items": [
+        {
+          "id": "general"
+        },
+        {
+          "id": "appearance"
+        },
+        {
+          "id": "plugins"
+        },
+        {
+          "id": "about"
+        }
+      ]
+    },
+    {
+      "kind": "tab",
+      "container": "pane.b",
+      "items": [
+        {
+          "id": "readme"
+        }
+      ],
+      "accepts": {
+        "from": [
+          "settings.tabs"
+        ]
+      }
+    },
+    {
+      "kind": "tab",
+      "container": "other.tabs",
+      "items": [
+        {
+          "id": "x1"
+        }
+      ],
+      "accepts": {
+        "from": [
+          "nowhere"
+        ]
+      }
+    },
+    {
+      "kind": "banner-widget",
+      "container": "main",
+      "sides": [
+        "left",
+        "center",
+        "right"
+      ],
+      "items": [
+        {
+          "id": "logo:brand",
+          "side": "left",
+          "type": "logo"
+        },
+        {
+          "id": "clock:utc",
+          "side": "center",
+          "type": "clock"
+        },
+        {
+          "id": "counter:alerts",
+          "side": "right",
+          "type": "counter"
+        },
+        {
+          "id": "status:ci",
+          "side": "right",
+          "type": "status"
+        }
+      ],
+      "max": 6
+    },
+    {
+      "kind": "banner-widget",
+      "container": "second",
+      "sides": [
+        "left",
+        "center",
+        "right"
+      ],
+      "items": [
+        {
+          "id": "label:hi",
+          "side": "center",
+          "type": "label"
+        }
+      ],
+      "max": 1
+    },
+    {
+      "kind": "toolbar-item",
+      "container": "main",
+      "sides": [
+        "start",
+        "end"
+      ],
+      "items": [
+        {
+          "id": "search-bar:main",
+          "side": "start"
+        },
+        {
+          "id": "help",
+          "side": "end"
+        }
+      ],
+      "max": 2,
+      "accepts": {
+        "add": false
+      }
+    },
+    {
+      "kind": "grid-row",
+      "container": "queue",
+      "items": [
+        {
+          "id": "b1",
+          "locked": true
+        },
+        {
+          "id": "b2"
+        },
+        {
+          "id": "b3"
+        }
+      ]
+    },
+    {
+      "kind": "dock-pane",
+      "container": "studio",
+      "items": [
+        {
+          "id": "g1"
+        },
+        {
+          "id": "g2"
+        },
+        {
+          "id": "g3"
+        }
+      ]
+    }
+  ],
+  "orders": {
+    "tab:settings.tabs": [
+      "general",
+      "appearance",
+      "plugins",
+      "about"
+    ],
+    "tab:pane.b": [
+      "readme"
+    ],
+    "tab:other.tabs": [
+      "x1"
+    ],
+    "banner-widget:main": {
+      "left": [
+        "logo:brand"
+      ],
+      "center": [
+        "clock:utc"
+      ],
+      "right": [
+        "counter:alerts",
+        "status:ci"
+      ]
+    },
+    "banner-widget:second": {
+      "left": [],
+      "center": [
+        "label:hi"
+      ],
+      "right": []
+    },
+    "toolbar-item:main": {
+      "start": [
+        "search-bar:main"
+      ],
+      "end": [
+        "help"
+      ]
+    },
+    "grid-row:queue": [
+      "b1",
+      "b2",
+      "b3"
+    ],
+    "dock-pane:studio": [
+      "g1",
+      "g2",
+      "g3"
+    ]
+  },
+  "normalized": {
+    "reorder before": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "tab",
+      "source": {
+        "id": "plugins",
+        "container": "settings.tabs"
+      },
+      "target": {
+        "container": "settings.tabs",
+        "zone": "before",
+        "ref": "appearance"
+      }
+    },
+    "reorder after (default zone with ref)": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "tab",
+      "source": {
+        "id": "general",
+        "container": "settings.tabs"
+      },
+      "target": {
+        "container": "settings.tabs",
+        "zone": "after",
+        "ref": "plugins"
+      }
+    },
+    "reorder after explicit": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "tab",
+      "source": {
+        "id": "about",
+        "container": "settings.tabs"
+      },
+      "target": {
+        "container": "settings.tabs",
+        "zone": "after",
+        "ref": "general"
+      }
+    },
+    "reorder into explicit": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "tab",
+      "source": {
+        "id": "general",
+        "container": "settings.tabs"
+      },
+      "target": {
+        "container": "settings.tabs",
+        "zone": "into",
+        "index": 2
+      }
+    },
+    "reorder into index 0": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "tab",
+      "source": {
+        "id": "about",
+        "container": "settings.tabs"
+      },
+      "target": {
+        "container": "settings.tabs",
+        "zone": "into",
+        "index": 0
+      }
+    },
+    "reorder into end": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "tab",
+      "source": {
+        "id": "general",
+        "container": "settings.tabs"
+      },
+      "target": {
+        "container": "settings.tabs",
+        "zone": "into"
+      }
+    },
+    "reorder into last index": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "tab",
+      "source": {
+        "id": "general",
+        "container": "settings.tabs"
+      },
+      "target": {
+        "container": "settings.tabs",
+        "zone": "into",
+        "index": 3
+      }
+    },
+    "case-insensitive ids": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "tab",
+      "source": {
+        "id": "PLUGINS",
+        "container": "Settings.Tabs"
+      },
+      "target": {
+        "container": "SETTINGS.TABS",
+        "zone": "before",
+        "ref": "General"
+      }
+    },
+    "cross-container into": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "tab",
+      "source": {
+        "id": "plugins",
+        "container": "settings.tabs"
+      },
+      "target": {
+        "container": "pane.b",
+        "zone": "into"
+      }
+    },
+    "cross-container before ref": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "tab",
+      "source": {
+        "id": "about",
+        "container": "settings.tabs"
+      },
+      "target": {
+        "container": "pane.b",
+        "zone": "before",
+        "ref": "readme"
+      }
+    },
+    "cross-container refused by accepts.from": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "tab",
+      "source": {
+        "id": "readme",
+        "container": "pane.b"
+      },
+      "target": {
+        "container": "other.tabs",
+        "zone": "into"
+      }
+    },
+    "cross-container not for the kind": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "grid-row",
+      "source": {
+        "id": "b2",
+        "container": "queue"
+      },
+      "target": {
+        "container": "other",
+        "zone": "into",
+        "index": 0
+      }
+    },
+    "sided: move to a side index 0": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "banner-widget",
+      "source": {
+        "id": "clock:utc",
+        "container": "main"
+      },
+      "target": {
+        "container": "main",
+        "zone": "side",
+        "side": "right",
+        "index": 0
+      }
+    },
+    "sided: after a ref on another side": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "banner-widget",
+      "source": {
+        "id": "logo:brand",
+        "container": "main"
+      },
+      "target": {
+        "container": "main",
+        "zone": "after",
+        "ref": "counter:alerts"
+      }
+    },
+    "sided: into stays on its side": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "banner-widget",
+      "source": {
+        "id": "counter:alerts",
+        "container": "main"
+      },
+      "target": {
+        "container": "main",
+        "zone": "into",
+        "index": 1
+      }
+    },
+    "sided: side with ref": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "banner-widget",
+      "source": {
+        "id": "logo:brand",
+        "container": "main"
+      },
+      "target": {
+        "container": "main",
+        "zone": "side",
+        "ref": "counter:alerts",
+        "side": "right"
+      }
+    },
+    "sided: cross-banner": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "banner-widget",
+      "source": {
+        "id": "label:hi",
+        "container": "second"
+      },
+      "target": {
+        "container": "main",
+        "zone": "side",
+        "side": "left"
+      }
+    },
+    "add a widget": {
+      "$axf": "drag-move@1",
+      "op": "add",
+      "kind": "banner-widget",
+      "source": {
+        "id": "theme-switch:main",
+        "type": "theme-switch"
+      },
+      "target": {
+        "container": "main",
+        "zone": "side",
+        "side": "left"
+      },
+      "by": "claude",
+      "reason": "fixture"
+    },
+    "add with a catalogue source": {
+      "$axf": "drag-move@1",
+      "op": "add",
+      "kind": "banner-widget",
+      "source": {
+        "id": "spacer:a",
+        "container": "catalogue"
+      },
+      "target": {
+        "container": "main",
+        "zone": "into",
+        "index": 0
+      }
+    },
+    "add: full host": {
+      "$axf": "drag-move@1",
+      "op": "add",
+      "kind": "banner-widget",
+      "source": {
+        "id": "clock:local",
+        "type": "clock"
+      },
+      "target": {
+        "container": "second",
+        "zone": "into"
+      }
+    },
+    "add: host refuses adds": {
+      "$axf": "drag-move@1",
+      "op": "add",
+      "kind": "toolbar-item",
+      "source": {
+        "id": "label:x"
+      },
+      "target": {
+        "container": "main",
+        "zone": "side",
+        "side": "end"
+      }
+    },
+    "add: kind refuses adds": {
+      "$axf": "drag-move@1",
+      "op": "add",
+      "kind": "tab",
+      "source": {
+        "id": "new"
+      },
+      "target": {
+        "container": "settings.tabs",
+        "zone": "into"
+      }
+    },
+    "add: duplicate": {
+      "$axf": "drag-move@1",
+      "op": "add",
+      "kind": "banner-widget",
+      "source": {
+        "id": "CLOCK:UTC"
+      },
+      "target": {
+        "container": "main",
+        "zone": "side",
+        "side": "left"
+      }
+    },
+    "move into a full host": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "banner-widget",
+      "source": {
+        "id": "clock:utc",
+        "container": "main"
+      },
+      "target": {
+        "container": "second",
+        "zone": "side",
+        "side": "center"
+      }
+    },
+    "remove a widget": {
+      "$axf": "drag-move@1",
+      "op": "remove",
+      "kind": "banner-widget",
+      "source": {
+        "id": "status:ci",
+        "container": "main"
+      }
+    },
+    "remove: kind refuses": {
+      "$axf": "drag-move@1",
+      "op": "remove",
+      "kind": "tab",
+      "source": {
+        "id": "about",
+        "container": "settings.tabs"
+      }
+    },
+    "remove: needs confirm": {
+      "$axf": "drag-move@1",
+      "op": "remove",
+      "kind": "dock-pane",
+      "source": {
+        "id": "g2",
+        "container": "studio"
+      }
+    },
+    "remove: confirmed": {
+      "$axf": "drag-move@1",
+      "op": "remove",
+      "kind": "dock-pane",
+      "source": {
+        "id": "g2",
+        "container": "studio"
+      },
+      "confirm": true
+    },
+    "locked item": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "grid-row",
+      "source": {
+        "id": "b1",
+        "container": "queue"
+      },
+      "target": {
+        "container": "queue",
+        "zone": "into",
+        "index": 2
+      }
+    },
+    "dock split (side with ref on a flat host)": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "dock-pane",
+      "source": {
+        "id": "g3",
+        "container": "studio"
+      },
+      "target": {
+        "container": "studio",
+        "zone": "side",
+        "ref": "g1",
+        "side": "left"
+      }
+    },
+    "dock join (into)": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "dock-pane",
+      "source": {
+        "id": "g1",
+        "container": "studio"
+      },
+      "target": {
+        "container": "studio",
+        "zone": "into",
+        "index": 2
+      }
+    },
+    "invalid zone: tab has no side": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "tab",
+      "source": {
+        "id": "about",
+        "container": "settings.tabs"
+      },
+      "target": {
+        "container": "settings.tabs",
+        "zone": "side",
+        "side": "left"
+      }
+    },
+    "invalid zone: unknown side": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "banner-widget",
+      "source": {
+        "id": "clock:utc",
+        "container": "main"
+      },
+      "target": {
+        "container": "main",
+        "zone": "side",
+        "side": "middle"
+      }
+    },
+    "invalid zone: dock takes no before": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "dock-pane",
+      "source": {
+        "id": "g3",
+        "container": "studio"
+      },
+      "target": {
+        "container": "studio",
+        "zone": "before",
+        "ref": "g1"
+      }
+    },
+    "invalid zone: dock side unknown": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "dock-pane",
+      "source": {
+        "id": "g3",
+        "container": "studio"
+      },
+      "target": {
+        "container": "studio",
+        "zone": "side",
+        "side": "centre"
+      }
+    },
+    "out of range: past the end": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "tab",
+      "source": {
+        "id": "about",
+        "container": "settings.tabs"
+      },
+      "target": {
+        "container": "settings.tabs",
+        "zone": "into",
+        "index": 9
+      }
+    },
+    "out of range: negative": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "tab",
+      "source": {
+        "id": "about",
+        "container": "settings.tabs"
+      },
+      "target": {
+        "container": "settings.tabs",
+        "zone": "into",
+        "index": -1
+      }
+    },
+    "out of range: cross-container": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "tab",
+      "source": {
+        "id": "about",
+        "container": "settings.tabs"
+      },
+      "target": {
+        "container": "pane.b",
+        "zone": "into",
+        "index": 2
+      }
+    },
+    "unknown kind": {
+      "code": "unknown_kind"
+    },
+    "unknown container": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "tab",
+      "source": {
+        "id": "about",
+        "container": "nowhere"
+      },
+      "target": {
+        "container": "settings.tabs",
+        "zone": "into"
+      }
+    },
+    "unknown target container": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "tab",
+      "source": {
+        "id": "about",
+        "container": "settings.tabs"
+      },
+      "target": {
+        "container": "nowhere",
+        "zone": "into"
+      }
+    },
+    "unknown item": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "tab",
+      "source": {
+        "id": "ghost",
+        "container": "settings.tabs"
+      },
+      "target": {
+        "container": "settings.tabs",
+        "zone": "into",
+        "index": 0
+      }
+    },
+    "unknown ref": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "tab",
+      "source": {
+        "id": "about",
+        "container": "settings.tabs"
+      },
+      "target": {
+        "container": "settings.tabs",
+        "zone": "before",
+        "ref": "ghost"
+      }
+    },
+    "unknown ref on side": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "dock-pane",
+      "source": {
+        "id": "g3",
+        "container": "studio"
+      },
+      "target": {
+        "container": "studio",
+        "zone": "side",
+        "ref": "g9",
+        "side": "top"
+      }
+    },
+    "no change: after its predecessor": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "tab",
+      "source": {
+        "id": "plugins",
+        "container": "settings.tabs"
+      },
+      "target": {
+        "container": "settings.tabs",
+        "zone": "after",
+        "ref": "appearance"
+      }
+    },
+    "no change: into own index": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "tab",
+      "source": {
+        "id": "appearance",
+        "container": "settings.tabs"
+      },
+      "target": {
+        "container": "settings.tabs",
+        "zone": "into",
+        "index": 1
+      }
+    },
+    "no change: before itself": {
+      "$axf": "drag-move@1",
+      "op": "move",
+      "kind": "tab",
+      "source": {
+        "id": "appearance",
+        "container": "settings.tabs"
+      },
+      "target": {
+        "container": "settings.tabs",
+        "zone": "before",
+        "ref": "appearance"
+      }
+    },
+    "invalid: no source": {
+      "code": "invalid"
+    },
+    "invalid: remove with a target": {
+      "code": "invalid"
+    },
+    "invalid: before without ref": {
+      "code": "invalid"
+    },
+    "invalid: before with index": {
+      "code": "invalid"
+    },
+    "invalid: into with ref": {
+      "code": "invalid"
+    },
+    "invalid: side without side": {
+      "code": "invalid"
+    },
+    "invalid: bad op": {
+      "code": "invalid"
+    },
+    "invalid: wrong contract": {
+      "code": "invalid"
+    },
+    "invalid: move without source container": {
+      "code": "invalid"
+    },
+    "invalid: fractional index": {
+      "code": "invalid"
+    },
+    "invalid: not an object": {
+      "code": "invalid"
+    }
+  },
+  "errors": {
+    "reorder before": [],
+    "reorder after (default zone with ref)": [],
+    "reorder after explicit": [],
+    "reorder into explicit": [],
+    "reorder into index 0": [],
+    "reorder into end": [],
+    "reorder into last index": [],
+    "case-insensitive ids": [],
+    "cross-container into": [],
+    "cross-container before ref": [],
+    "cross-container refused by accepts.from": [],
+    "cross-container not for the kind": [],
+    "sided: move to a side index 0": [],
+    "sided: after a ref on another side": [],
+    "sided: into stays on its side": [],
+    "sided: side with ref": [],
+    "sided: cross-banner": [],
+    "add a widget": [],
+    "add with a catalogue source": [],
+    "add: full host": [],
+    "add: host refuses adds": [],
+    "add: kind refuses adds": [],
+    "add: duplicate": [],
+    "move into a full host": [],
+    "remove a widget": [],
+    "remove: kind refuses": [],
+    "remove: needs confirm": [],
+    "remove: confirmed": [],
+    "locked item": [],
+    "dock split (side with ref on a flat host)": [],
+    "dock join (into)": [],
+    "invalid zone: tab has no side": [],
+    "invalid zone: unknown side": [],
+    "invalid zone: dock takes no before": [],
+    "invalid zone: dock side unknown": [],
+    "out of range: past the end": [],
+    "out of range: negative": [],
+    "out of range: cross-container": [],
+    "unknown kind": [
+      "unknown kind sticker"
+    ],
+    "unknown container": [],
+    "unknown target container": [],
+    "unknown item": [],
+    "unknown ref": [],
+    "unknown ref on side": [],
+    "no change: after its predecessor": [],
+    "no change: into own index": [],
+    "no change: before itself": [],
+    "invalid: no source": [
+      "source is required"
+    ],
+    "invalid: remove with a target": [
+      "remove takes no target"
+    ],
+    "invalid: before without ref": [
+      "zone before needs target.ref"
+    ],
+    "invalid: before with index": [
+      "zone before takes no target.index"
+    ],
+    "invalid: into with ref": [
+      "zone into takes no target.ref"
+    ],
+    "invalid: side without side": [
+      "zone side needs target.side"
+    ],
+    "invalid: bad op": [
+      "op must be one of move, add, remove"
+    ],
+    "invalid: wrong contract": [
+      "$axf must be drag-move@1"
+    ],
+    "invalid: move without source container": [
+      "source.container is required for move"
+    ],
+    "invalid: fractional index": [
+      "target.index must be an integer"
+    ],
+    "invalid: not an object": [
+      "command must be an object"
+    ]
+  },
+  "cases": {
+    "reorder before": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "plugins"
+        },
+        "target": {
+          "container": "settings.tabs",
+          "zone": "before",
+          "ref": "appearance"
+        }
+      },
+      "plan": {
+        "$axf": "drag-move-plan@1",
+        "op": "move",
+        "kind": "tab",
+        "item": {
+          "id": "plugins"
+        },
+        "from": {
+          "container": "settings.tabs",
+          "index": 2
+        },
+        "to": {
+          "container": "settings.tabs",
+          "index": 1
+        },
+        "order": {
+          "settings.tabs": [
+            "general",
+            "plugins",
+            "appearance",
+            "about"
+          ]
+        }
+      }
+    },
+    "reorder after (default zone with ref)": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "general"
+        },
+        "target": {
+          "container": "settings.tabs",
+          "ref": "plugins"
+        }
+      },
+      "plan": {
+        "$axf": "drag-move-plan@1",
+        "op": "move",
+        "kind": "tab",
+        "item": {
+          "id": "general"
+        },
+        "from": {
+          "container": "settings.tabs",
+          "index": 0
+        },
+        "to": {
+          "container": "settings.tabs",
+          "index": 2
+        },
+        "order": {
+          "settings.tabs": [
+            "appearance",
+            "plugins",
+            "general",
+            "about"
+          ]
+        }
+      }
+    },
+    "reorder after explicit": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "about"
+        },
+        "target": {
+          "container": "settings.tabs",
+          "zone": "after",
+          "ref": "general"
+        }
+      },
+      "plan": {
+        "$axf": "drag-move-plan@1",
+        "op": "move",
+        "kind": "tab",
+        "item": {
+          "id": "about"
+        },
+        "from": {
+          "container": "settings.tabs",
+          "index": 3
+        },
+        "to": {
+          "container": "settings.tabs",
+          "index": 1
+        },
+        "order": {
+          "settings.tabs": [
+            "general",
+            "about",
+            "appearance",
+            "plugins"
+          ]
+        }
+      }
+    },
+    "reorder into explicit": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "general"
+        },
+        "target": {
+          "container": "settings.tabs",
+          "zone": "into",
+          "index": 2
+        }
+      },
+      "plan": {
+        "$axf": "drag-move-plan@1",
+        "op": "move",
+        "kind": "tab",
+        "item": {
+          "id": "general"
+        },
+        "from": {
+          "container": "settings.tabs",
+          "index": 0
+        },
+        "to": {
+          "container": "settings.tabs",
+          "index": 2
+        },
+        "order": {
+          "settings.tabs": [
+            "appearance",
+            "plugins",
+            "general",
+            "about"
+          ]
+        }
+      }
+    },
+    "reorder into index 0": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "about"
+        },
+        "target": {
+          "container": "settings.tabs",
+          "index": 0
+        }
+      },
+      "plan": {
+        "$axf": "drag-move-plan@1",
+        "op": "move",
+        "kind": "tab",
+        "item": {
+          "id": "about"
+        },
+        "from": {
+          "container": "settings.tabs",
+          "index": 3
+        },
+        "to": {
+          "container": "settings.tabs",
+          "index": 0
+        },
+        "order": {
+          "settings.tabs": [
+            "about",
+            "general",
+            "appearance",
+            "plugins"
+          ]
+        }
+      }
+    },
+    "reorder into end": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "general"
+        },
+        "target": {
+          "container": "settings.tabs"
+        }
+      },
+      "plan": {
+        "$axf": "drag-move-plan@1",
+        "op": "move",
+        "kind": "tab",
+        "item": {
+          "id": "general"
+        },
+        "from": {
+          "container": "settings.tabs",
+          "index": 0
+        },
+        "to": {
+          "container": "settings.tabs",
+          "index": 3
+        },
+        "order": {
+          "settings.tabs": [
+            "appearance",
+            "plugins",
+            "about",
+            "general"
+          ]
+        }
+      }
+    },
+    "reorder into last index": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "general"
+        },
+        "target": {
+          "container": "settings.tabs",
+          "index": 3
+        }
+      },
+      "plan": {
+        "$axf": "drag-move-plan@1",
+        "op": "move",
+        "kind": "tab",
+        "item": {
+          "id": "general"
+        },
+        "from": {
+          "container": "settings.tabs",
+          "index": 0
+        },
+        "to": {
+          "container": "settings.tabs",
+          "index": 3
+        },
+        "order": {
+          "settings.tabs": [
+            "appearance",
+            "plugins",
+            "about",
+            "general"
+          ]
+        }
+      }
+    },
+    "case-insensitive ids": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "Settings.Tabs",
+          "id": "PLUGINS"
+        },
+        "target": {
+          "container": "SETTINGS.TABS",
+          "zone": "before",
+          "ref": "General"
+        }
+      },
+      "plan": {
+        "$axf": "drag-move-plan@1",
+        "op": "move",
+        "kind": "tab",
+        "item": {
+          "id": "plugins"
+        },
+        "from": {
+          "container": "settings.tabs",
+          "index": 2
+        },
+        "to": {
+          "container": "settings.tabs",
+          "index": 0
+        },
+        "order": {
+          "settings.tabs": [
+            "plugins",
+            "general",
+            "appearance",
+            "about"
+          ]
+        }
+      }
+    },
+    "cross-container into": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "plugins"
+        },
+        "target": {
+          "container": "pane.b"
+        }
+      },
+      "plan": {
+        "$axf": "drag-move-plan@1",
+        "op": "move",
+        "kind": "tab",
+        "item": {
+          "id": "plugins"
+        },
+        "from": {
+          "container": "settings.tabs",
+          "index": 2
+        },
+        "to": {
+          "container": "pane.b",
+          "index": 1
+        },
+        "order": {
+          "settings.tabs": [
+            "general",
+            "appearance",
+            "about"
+          ],
+          "pane.b": [
+            "readme",
+            "plugins"
+          ]
+        }
+      }
+    },
+    "cross-container before ref": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "about"
+        },
+        "target": {
+          "container": "pane.b",
+          "zone": "before",
+          "ref": "readme"
+        }
+      },
+      "plan": {
+        "$axf": "drag-move-plan@1",
+        "op": "move",
+        "kind": "tab",
+        "item": {
+          "id": "about"
+        },
+        "from": {
+          "container": "settings.tabs",
+          "index": 3
+        },
+        "to": {
+          "container": "pane.b",
+          "index": 0
+        },
+        "order": {
+          "settings.tabs": [
+            "general",
+            "appearance",
+            "plugins"
+          ],
+          "pane.b": [
+            "about",
+            "readme"
+          ]
+        }
+      }
+    },
+    "cross-container refused by accepts.from": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "pane.b",
+          "id": "readme"
+        },
+        "target": {
+          "container": "other.tabs"
+        }
+      },
+      "code": "not_allowed",
+      "message": "other.tabs does not take items from pane.b"
+    },
+    "cross-container not for the kind": {
+      "command": {
+        "kind": "grid-row",
+        "source": {
+          "container": "queue",
+          "id": "b2"
+        },
+        "target": {
+          "container": "other",
+          "index": 0
+        }
+      },
+      "code": "unknown_container",
+      "message": "no grid row host other",
+      "nearest": [
+        "queue"
+      ]
+    },
+    "sided: move to a side index 0": {
+      "command": {
+        "kind": "banner-widget",
+        "source": {
+          "container": "main",
+          "id": "clock:utc"
+        },
+        "target": {
+          "container": "main",
+          "zone": "side",
+          "side": "right",
+          "index": 0
+        }
+      },
+      "plan": {
+        "$axf": "drag-move-plan@1",
+        "op": "move",
+        "kind": "banner-widget",
+        "item": {
+          "id": "clock:utc",
+          "type": "clock"
+        },
+        "from": {
+          "container": "main",
+          "side": "center",
+          "index": 0
+        },
+        "to": {
+          "container": "main",
+          "index": 0,
+          "side": "right"
+        },
+        "order": {
+          "main": {
+            "left": [
+              "logo:brand"
+            ],
+            "center": [],
+            "right": [
+              "clock:utc",
+              "counter:alerts",
+              "status:ci"
+            ]
+          }
+        }
+      }
+    },
+    "sided: after a ref on another side": {
+      "command": {
+        "kind": "banner-widget",
+        "source": {
+          "container": "main",
+          "id": "logo:brand"
+        },
+        "target": {
+          "container": "main",
+          "ref": "counter:alerts"
+        }
+      },
+      "plan": {
+        "$axf": "drag-move-plan@1",
+        "op": "move",
+        "kind": "banner-widget",
+        "item": {
+          "id": "logo:brand",
+          "type": "logo"
+        },
+        "from": {
+          "container": "main",
+          "side": "left",
+          "index": 0
+        },
+        "to": {
+          "container": "main",
+          "index": 1,
+          "side": "right"
+        },
+        "order": {
+          "main": {
+            "left": [],
+            "center": [
+              "clock:utc"
+            ],
+            "right": [
+              "counter:alerts",
+              "logo:brand",
+              "status:ci"
+            ]
+          }
+        }
+      }
+    },
+    "sided: into stays on its side": {
+      "command": {
+        "kind": "banner-widget",
+        "source": {
+          "container": "main",
+          "id": "counter:alerts"
+        },
+        "target": {
+          "container": "main",
+          "index": 1
+        }
+      },
+      "plan": {
+        "$axf": "drag-move-plan@1",
+        "op": "move",
+        "kind": "banner-widget",
+        "item": {
+          "id": "counter:alerts",
+          "type": "counter"
+        },
+        "from": {
+          "container": "main",
+          "side": "right",
+          "index": 0
+        },
+        "to": {
+          "container": "main",
+          "index": 1,
+          "side": "right"
+        },
+        "order": {
+          "main": {
+            "left": [
+              "logo:brand"
+            ],
+            "center": [
+              "clock:utc"
+            ],
+            "right": [
+              "status:ci",
+              "counter:alerts"
+            ]
+          }
+        }
+      }
+    },
+    "sided: side with ref": {
+      "command": {
+        "kind": "banner-widget",
+        "source": {
+          "container": "main",
+          "id": "logo:brand"
+        },
+        "target": {
+          "container": "main",
+          "zone": "side",
+          "side": "right",
+          "ref": "counter:alerts"
+        }
+      },
+      "plan": {
+        "$axf": "drag-move-plan@1",
+        "op": "move",
+        "kind": "banner-widget",
+        "item": {
+          "id": "logo:brand",
+          "type": "logo"
+        },
+        "from": {
+          "container": "main",
+          "side": "left",
+          "index": 0
+        },
+        "to": {
+          "container": "main",
+          "index": 1,
+          "side": "right",
+          "ref": "counter:alerts"
+        },
+        "order": {
+          "main": {
+            "left": [],
+            "center": [
+              "clock:utc"
+            ],
+            "right": [
+              "counter:alerts",
+              "logo:brand",
+              "status:ci"
+            ]
+          }
+        }
+      }
+    },
+    "sided: cross-banner": {
+      "command": {
+        "kind": "banner-widget",
+        "source": {
+          "container": "second",
+          "id": "label:hi"
+        },
+        "target": {
+          "container": "main",
+          "zone": "side",
+          "side": "left"
+        }
+      },
+      "plan": {
+        "$axf": "drag-move-plan@1",
+        "op": "move",
+        "kind": "banner-widget",
+        "item": {
+          "id": "label:hi",
+          "type": "label"
+        },
+        "from": {
+          "container": "second",
+          "side": "center",
+          "index": 0
+        },
+        "to": {
+          "container": "main",
+          "index": 1,
+          "side": "left"
+        },
+        "order": {
+          "second": {
+            "left": [],
+            "center": [],
+            "right": []
+          },
+          "main": {
+            "left": [
+              "logo:brand",
+              "label:hi"
+            ],
+            "center": [
+              "clock:utc"
+            ],
+            "right": [
+              "counter:alerts",
+              "status:ci"
+            ]
+          }
+        }
+      }
+    },
+    "add a widget": {
+      "command": {
+        "kind": "banner-widget",
+        "source": {
+          "id": "theme-switch:main",
+          "type": "theme-switch"
+        },
+        "target": {
+          "container": "main",
+          "zone": "side",
+          "side": "left"
+        },
+        "op": "add",
+        "by": "claude",
+        "reason": "fixture"
+      },
+      "plan": {
+        "$axf": "drag-move-plan@1",
+        "op": "add",
+        "kind": "banner-widget",
+        "item": {
+          "id": "theme-switch:main",
+          "type": "theme-switch"
+        },
+        "from": null,
+        "to": {
+          "container": "main",
+          "index": 1,
+          "side": "left"
+        },
+        "order": {
+          "main": {
+            "left": [
+              "logo:brand",
+              "theme-switch:main"
+            ],
+            "center": [
+              "clock:utc"
+            ],
+            "right": [
+              "counter:alerts",
+              "status:ci"
+            ]
+          }
+        }
+      }
+    },
+    "add with a catalogue source": {
+      "command": {
+        "kind": "banner-widget",
+        "source": {
+          "container": "catalogue",
+          "id": "spacer:a"
+        },
+        "target": {
+          "container": "main",
+          "index": 0
+        },
+        "op": "add"
+      },
+      "plan": {
+        "$axf": "drag-move-plan@1",
+        "op": "add",
+        "kind": "banner-widget",
+        "item": {
+          "id": "spacer:a"
+        },
+        "from": null,
+        "to": {
+          "container": "main",
+          "index": 0,
+          "side": "left"
+        },
+        "order": {
+          "main": {
+            "left": [
+              "spacer:a",
+              "logo:brand"
+            ],
+            "center": [
+              "clock:utc"
+            ],
+            "right": [
+              "counter:alerts",
+              "status:ci"
+            ]
+          }
+        }
+      }
+    },
+    "add: full host": {
+      "command": {
+        "kind": "banner-widget",
+        "source": {
+          "id": "clock:local",
+          "type": "clock"
+        },
+        "target": {
+          "container": "second"
+        },
+        "op": "add"
+      },
+      "code": "limit",
+      "message": "second is full (1)"
+    },
+    "add: host refuses adds": {
+      "command": {
+        "kind": "toolbar-item",
+        "source": {
+          "id": "label:x"
+        },
+        "target": {
+          "container": "main",
+          "zone": "side",
+          "side": "end"
+        },
+        "op": "add"
+      },
+      "code": "not_allowed",
+      "message": "toolbar items cannot be added to main"
+    },
+    "add: kind refuses adds": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "id": "new"
+        },
+        "target": {
+          "container": "settings.tabs"
+        },
+        "op": "add"
+      },
+      "code": "not_allowed",
+      "message": "tabs cannot be added to settings.tabs"
+    },
+    "add: duplicate": {
+      "command": {
+        "kind": "banner-widget",
+        "source": {
+          "id": "CLOCK:UTC"
+        },
+        "target": {
+          "container": "main",
+          "zone": "side",
+          "side": "left"
+        },
+        "op": "add"
+      },
+      "code": "duplicate",
+      "message": "CLOCK:UTC is already in main"
+    },
+    "move into a full host": {
+      "command": {
+        "kind": "banner-widget",
+        "source": {
+          "container": "main",
+          "id": "clock:utc"
+        },
+        "target": {
+          "container": "second",
+          "zone": "side",
+          "side": "center"
+        }
+      },
+      "code": "limit",
+      "message": "second is full (1)"
+    },
+    "remove a widget": {
+      "command": {
+        "kind": "banner-widget",
+        "source": {
+          "container": "main",
+          "id": "status:ci"
+        },
+        "op": "remove"
+      },
+      "plan": {
+        "$axf": "drag-move-plan@1",
+        "op": "remove",
+        "kind": "banner-widget",
+        "item": {
+          "id": "status:ci",
+          "type": "status"
+        },
+        "from": {
+          "container": "main",
+          "side": "right",
+          "index": 1
+        },
+        "to": null,
+        "order": {
+          "main": {
+            "left": [
+              "logo:brand"
+            ],
+            "center": [
+              "clock:utc"
+            ],
+            "right": [
+              "counter:alerts"
+            ]
+          }
+        }
+      }
+    },
+    "remove: kind refuses": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "about"
+        },
+        "op": "remove"
+      },
+      "code": "not_allowed",
+      "message": "tabs cannot be removed from settings.tabs"
+    },
+    "remove: needs confirm": {
+      "command": {
+        "kind": "dock-pane",
+        "source": {
+          "container": "studio",
+          "id": "g2"
+        },
+        "op": "remove"
+      },
+      "code": "confirmation_required",
+      "message": "removing g2 closes it; send confirm: true"
+    },
+    "remove: confirmed": {
+      "command": {
+        "kind": "dock-pane",
+        "source": {
+          "container": "studio",
+          "id": "g2"
+        },
+        "op": "remove",
+        "confirm": true
+      },
+      "plan": {
+        "$axf": "drag-move-plan@1",
+        "op": "remove",
+        "kind": "dock-pane",
+        "item": {
+          "id": "g2"
+        },
+        "from": {
+          "container": "studio",
+          "index": 1
+        },
+        "to": null,
+        "order": {
+          "studio": [
+            "g1",
+            "g3"
+          ]
+        }
+      }
+    },
+    "locked item": {
+      "command": {
+        "kind": "grid-row",
+        "source": {
+          "container": "queue",
+          "id": "b1"
+        },
+        "target": {
+          "container": "queue",
+          "index": 2
+        }
+      },
+      "code": "not_allowed",
+      "message": "b1 is locked in queue"
+    },
+    "dock split (side with ref on a flat host)": {
+      "command": {
+        "kind": "dock-pane",
+        "source": {
+          "container": "studio",
+          "id": "g3"
+        },
+        "target": {
+          "container": "studio",
+          "zone": "side",
+          "side": "left",
+          "ref": "g1"
+        }
+      },
+      "plan": {
+        "$axf": "drag-move-plan@1",
+        "op": "move",
+        "kind": "dock-pane",
+        "item": {
+          "id": "g3"
+        },
+        "from": {
+          "container": "studio",
+          "index": 2
+        },
+        "to": {
+          "container": "studio",
+          "index": 1,
+          "side": "left",
+          "ref": "g1"
+        },
+        "order": {
+          "studio": [
+            "g1",
+            "g3",
+            "g2"
+          ]
+        }
+      }
+    },
+    "dock join (into)": {
+      "command": {
+        "kind": "dock-pane",
+        "source": {
+          "container": "studio",
+          "id": "g1"
+        },
+        "target": {
+          "container": "studio",
+          "index": 2
+        }
+      },
+      "plan": {
+        "$axf": "drag-move-plan@1",
+        "op": "move",
+        "kind": "dock-pane",
+        "item": {
+          "id": "g1"
+        },
+        "from": {
+          "container": "studio",
+          "index": 0
+        },
+        "to": {
+          "container": "studio",
+          "index": 2
+        },
+        "order": {
+          "studio": [
+            "g2",
+            "g3",
+            "g1"
+          ]
+        }
+      }
+    },
+    "invalid zone: tab has no side": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "about"
+        },
+        "target": {
+          "container": "settings.tabs",
+          "zone": "side",
+          "side": "left"
+        }
+      },
+      "code": "invalid_zone",
+      "message": "tabs take before, after, into, not side"
+    },
+    "invalid zone: unknown side": {
+      "command": {
+        "kind": "banner-widget",
+        "source": {
+          "container": "main",
+          "id": "clock:utc"
+        },
+        "target": {
+          "container": "main",
+          "zone": "side",
+          "side": "middle"
+        }
+      },
+      "code": "invalid_zone",
+      "message": "main has sides left, center, right, not middle",
+      "nearest": [
+        "left",
+        "center",
+        "right"
+      ]
+    },
+    "invalid zone: dock takes no before": {
+      "command": {
+        "kind": "dock-pane",
+        "source": {
+          "container": "studio",
+          "id": "g3"
+        },
+        "target": {
+          "container": "studio",
+          "zone": "before",
+          "ref": "g1"
+        }
+      },
+      "code": "invalid_zone",
+      "message": "dock panes take into, side, not before"
+    },
+    "invalid zone: dock side unknown": {
+      "command": {
+        "kind": "dock-pane",
+        "source": {
+          "container": "studio",
+          "id": "g3"
+        },
+        "target": {
+          "container": "studio",
+          "zone": "side",
+          "side": "centre"
+        }
+      },
+      "code": "invalid_zone",
+      "message": "studio has sides left, right, top, bottom, not centre",
+      "nearest": [
+        "left",
+        "right",
+        "top",
+        "bottom"
+      ]
+    },
+    "out of range: past the end": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "about"
+        },
+        "target": {
+          "container": "settings.tabs",
+          "index": 9
+        }
+      },
+      "code": "out_of_range",
+      "message": "index 9 is outside 0..3 in settings.tabs"
+    },
+    "out of range: negative": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "about"
+        },
+        "target": {
+          "container": "settings.tabs",
+          "index": -1
+        }
+      },
+      "code": "out_of_range",
+      "message": "index -1 is outside 0..3 in settings.tabs"
+    },
+    "out of range: cross-container": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "about"
+        },
+        "target": {
+          "container": "pane.b",
+          "index": 2
+        }
+      },
+      "code": "out_of_range",
+      "message": "index 2 is outside 0..1 in pane.b"
+    },
+    "unknown kind": {
+      "command": {
+        "kind": "sticker",
+        "source": {
+          "container": "a",
+          "id": "b"
+        },
+        "target": {
+          "container": "a"
+        }
+      },
+      "code": "unknown_kind",
+      "message": "unknown kind sticker",
+      "nearest": [
+        "banner-widget",
+        "toolbar-item",
+        "tab",
+        "dock-pane",
+        "grid-column",
+        "grid-row",
+        "list-item",
+        "layout-slot"
+      ]
+    },
+    "unknown container": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "nowhere",
+          "id": "about"
+        },
+        "target": {
+          "container": "settings.tabs"
+        }
+      },
+      "code": "unknown_container",
+      "message": "no tab host nowhere",
+      "nearest": [
+        "settings.tabs",
+        "pane.b",
+        "other.tabs"
+      ]
+    },
+    "unknown target container": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "about"
+        },
+        "target": {
+          "container": "nowhere"
+        }
+      },
+      "code": "unknown_container",
+      "message": "no tab host nowhere",
+      "nearest": [
+        "settings.tabs",
+        "pane.b",
+        "other.tabs"
+      ]
+    },
+    "unknown item": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "ghost"
+        },
+        "target": {
+          "container": "settings.tabs",
+          "index": 0
+        }
+      },
+      "code": "unknown_item",
+      "message": "ghost is not in settings.tabs",
+      "nearest": [
+        "general",
+        "appearance",
+        "plugins",
+        "about"
+      ]
+    },
+    "unknown ref": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "about"
+        },
+        "target": {
+          "container": "settings.tabs",
+          "zone": "before",
+          "ref": "ghost"
+        }
+      },
+      "code": "unknown_ref",
+      "message": "ghost is not in settings.tabs",
+      "nearest": [
+        "general",
+        "appearance",
+        "plugins"
+      ]
+    },
+    "unknown ref on side": {
+      "command": {
+        "kind": "dock-pane",
+        "source": {
+          "container": "studio",
+          "id": "g3"
+        },
+        "target": {
+          "container": "studio",
+          "zone": "side",
+          "side": "top",
+          "ref": "g9"
+        }
+      },
+      "code": "unknown_ref",
+      "message": "g9 is not in studio",
+      "nearest": [
+        "g1",
+        "g2"
+      ]
+    },
+    "no change: after its predecessor": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "plugins"
+        },
+        "target": {
+          "container": "settings.tabs",
+          "ref": "appearance"
+        }
+      },
+      "code": "no_change",
+      "message": "plugins already sits there"
+    },
+    "no change: into own index": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "appearance"
+        },
+        "target": {
+          "container": "settings.tabs",
+          "index": 1
+        }
+      },
+      "code": "no_change",
+      "message": "appearance already sits there"
+    },
+    "no change: before itself": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "appearance"
+        },
+        "target": {
+          "container": "settings.tabs",
+          "zone": "before",
+          "ref": "appearance"
+        }
+      },
+      "code": "unknown_ref",
+      "message": "appearance is not in settings.tabs",
+      "nearest": [
+        "general",
+        "plugins",
+        "about"
+      ]
+    },
+    "invalid: no source": {
+      "command": {
+        "kind": "tab",
+        "target": {
+          "container": "settings.tabs"
+        }
+      },
+      "code": "invalid",
+      "message": "source is required"
+    },
+    "invalid: remove with a target": {
+      "command": {
+        "kind": "banner-widget",
+        "source": {
+          "container": "main",
+          "id": "status:ci"
+        },
+        "target": {
+          "container": "main"
+        },
+        "op": "remove"
+      },
+      "code": "invalid",
+      "message": "remove takes no target"
+    },
+    "invalid: before without ref": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "about"
+        },
+        "target": {
+          "container": "settings.tabs",
+          "zone": "before"
+        }
+      },
+      "code": "invalid",
+      "message": "zone before needs target.ref"
+    },
+    "invalid: before with index": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "about"
+        },
+        "target": {
+          "container": "settings.tabs",
+          "zone": "before",
+          "ref": "general",
+          "index": 1
+        }
+      },
+      "code": "invalid",
+      "message": "zone before takes no target.index"
+    },
+    "invalid: into with ref": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "about"
+        },
+        "target": {
+          "container": "settings.tabs",
+          "zone": "into",
+          "ref": "general"
+        }
+      },
+      "code": "invalid",
+      "message": "zone into takes no target.ref"
+    },
+    "invalid: side without side": {
+      "command": {
+        "kind": "banner-widget",
+        "source": {
+          "container": "main",
+          "id": "clock:utc"
+        },
+        "target": {
+          "container": "main",
+          "zone": "side"
+        }
+      },
+      "code": "invalid",
+      "message": "zone side needs target.side"
+    },
+    "invalid: bad op": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "about"
+        },
+        "target": {
+          "container": "settings.tabs"
+        },
+        "op": "swap"
+      },
+      "code": "invalid",
+      "message": "op must be one of move, add, remove"
+    },
+    "invalid: wrong contract": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "about"
+        },
+        "target": {
+          "container": "settings.tabs"
+        },
+        "$axf": "dock@1"
+      },
+      "code": "invalid",
+      "message": "$axf must be drag-move@1"
+    },
+    "invalid: move without source container": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "id": "about"
+        },
+        "target": {
+          "container": "settings.tabs"
+        }
+      },
+      "code": "invalid",
+      "message": "source.container is required for move"
+    },
+    "invalid: fractional index": {
+      "command": {
+        "kind": "tab",
+        "source": {
+          "container": "settings.tabs",
+          "id": "about"
+        },
+        "target": {
+          "container": "settings.tabs",
+          "index": 1.5
+        }
+      },
+      "code": "invalid",
+      "message": "target.index must be an integer"
+    },
+    "invalid: not an object": {
+      "command": "move it",
+      "code": "invalid",
+      "message": "command must be an object"
+    }
+  },
+  "applyOrder": {
+    "reorder": [
+      {
+        "id": "about"
+      },
+      {
+        "id": "general"
+      },
+      {
+        "id": "plugins"
+      },
+      {
+        "id": "appearance"
+      }
+    ],
+    "sided": [
+      {
+        "id": "clock:utc",
+        "side": "center",
+        "type": "clock"
+      },
+      {
+        "id": "logo:brand",
+        "side": "center",
+        "type": "logo"
+      },
+      {
+        "id": "status:ci",
+        "side": "right",
+        "type": "status"
+      },
+      {
+        "id": "counter:alerts",
+        "side": "right",
+        "type": "counter"
+      }
+    ],
+    "added": [
+      {
+        "id": "theme-switch:main",
+        "type": "theme-switch",
+        "side": "left"
+      },
+      {
+        "id": "logo:brand",
+        "side": "left",
+        "type": "logo"
+      },
+      {
+        "id": "clock:utc",
+        "side": "center",
+        "type": "clock"
+      },
+      {
+        "id": "counter:alerts",
+        "side": "right",
+        "type": "counter"
+      },
+      {
+        "id": "status:ci",
+        "side": "right",
+        "type": "status"
+      }
+    ],
+    "arrivals": [
+      {
+        "id": "general"
+      },
+      {
+        "id": "ghost"
+      },
+      {
+        "id": "about"
+      }
+    ]
+  },
+  "pointer": {
+    "rect": {
+      "x": 100,
+      "y": 50,
+      "width": 80,
+      "height": 30
+    },
+    "probes": [
+      {
+        "px": 101,
+        "py": 51,
+        "horizontal": "before",
+        "vertical": "before",
+        "drop": {
+          "container": "settings.tabs",
+          "zone": "before",
+          "ref": "appearance"
+        }
+      },
+      {
+        "px": 139,
+        "py": 60,
+        "horizontal": "before",
+        "vertical": "before",
+        "drop": {
+          "container": "settings.tabs",
+          "zone": "before",
+          "ref": "appearance"
+        }
+      },
+      {
+        "px": 140,
+        "py": 60,
+        "horizontal": "after",
+        "vertical": "before",
+        "drop": {
+          "container": "settings.tabs",
+          "zone": "after",
+          "ref": "appearance"
+        }
+      },
+      {
+        "px": 179,
+        "py": 79,
+        "horizontal": "after",
+        "vertical": "after",
+        "drop": {
+          "container": "settings.tabs",
+          "zone": "after",
+          "ref": "appearance"
+        }
+      },
+      {
+        "px": 120,
+        "py": 64,
+        "horizontal": "before",
+        "vertical": "before",
+        "drop": {
+          "container": "settings.tabs",
+          "zone": "before",
+          "ref": "appearance"
+        }
+      },
+      {
+        "px": 120,
+        "py": 65,
+        "horizontal": "before",
+        "vertical": "after",
+        "drop": {
+          "container": "settings.tabs",
+          "zone": "before",
+          "ref": "appearance"
+        }
+      }
+    ]
+  },
+  "envelopes": {
+    "ok": {
+      "$axf": "drag-move-result@1",
+      "ok": true,
+      "op": "add",
+      "kind": "banner-widget",
+      "item": {
+        "id": "theme-switch:main",
+        "type": "theme-switch"
+      },
+      "from": null,
+      "to": {
+        "container": "main",
+        "index": 1,
+        "side": "left"
+      },
+      "order": {
+        "main": {
+          "left": [
+            "logo:brand",
+            "theme-switch:main"
+          ],
+          "center": [
+            "clock:utc"
+          ],
+          "right": [
+            "counter:alerts",
+            "status:ci"
+          ]
+        }
+      },
+      "by": "claude"
+    },
+    "okNoBy": {
+      "$axf": "drag-move-result@1",
+      "ok": true,
+      "op": "move",
+      "kind": "tab",
+      "item": {
+        "id": "plugins"
+      },
+      "from": {
+        "container": "settings.tabs",
+        "index": 2
+      },
+      "to": {
+        "container": "settings.tabs",
+        "index": 1
+      },
+      "order": {
+        "settings.tabs": [
+          "general",
+          "plugins",
+          "appearance",
+          "about"
+        ]
+      }
+    },
+    "fail": {
+      "$axf": "drag-move-result@1",
+      "ok": false,
+      "code": "unknown_container",
+      "message": "no tab host nowhere",
+      "nearest": [
+        "settings.tabs"
+      ]
+    },
+    "failPlain": {
+      "$axf": "drag-move-result@1",
+      "ok": false,
+      "code": "failed",
+      "message": "boom"
+    },
+    "failText": {
+      "$axf": "drag-move-result@1",
+      "ok": false,
+      "code": "failed",
+      "message": "text"
+    }
+  },
+  "replay": {
+    "move tab": {
+      "$axf": "drag-move-result@1",
+      "ok": true,
+      "op": "move",
+      "kind": "tab",
+      "item": {
+        "id": "plugins"
+      },
+      "from": {
+        "container": "settings.tabs",
+        "index": 2
+      },
+      "to": {
+        "container": "settings.tabs",
+        "index": 1
+      },
+      "order": {
+        "settings.tabs": [
+          "general",
+          "plugins",
+          "appearance",
+          "about"
+        ]
+      }
+    },
+    "same move again is no change": {
+      "$axf": "drag-move-result@1",
+      "ok": false,
+      "code": "no_change",
+      "message": "plugins already sits there"
+    },
+    "add widget": {
+      "$axf": "drag-move-result@1",
+      "ok": true,
+      "op": "add",
+      "kind": "banner-widget",
+      "item": {
+        "id": "theme-switch:main",
+        "type": "theme-switch"
+      },
+      "from": null,
+      "to": {
+        "container": "main",
+        "index": 1,
+        "side": "left"
+      },
+      "order": {
+        "main": {
+          "left": [
+            "logo:brand",
+            "theme-switch:main"
+          ],
+          "center": [
+            "clock:utc"
+          ],
+          "right": [
+            "counter:alerts",
+            "status:ci"
+          ]
+        }
+      },
+      "by": "claude"
+    },
+    "remove widget": {
+      "$axf": "drag-move-result@1",
+      "ok": true,
+      "op": "remove",
+      "kind": "banner-widget",
+      "item": {
+        "id": "status:ci",
+        "type": "status"
+      },
+      "from": {
+        "container": "main",
+        "side": "right",
+        "index": 1
+      },
+      "to": null,
+      "order": {
+        "main": {
+          "left": [
+            "logo:brand",
+            "theme-switch:main"
+          ],
+          "center": [
+            "clock:utc"
+          ],
+          "right": [
+            "counter:alerts"
+          ]
+        }
+      }
+    },
+    "cross-container": {
+      "$axf": "drag-move-result@1",
+      "ok": true,
+      "op": "move",
+      "kind": "tab",
+      "item": {
+        "id": "plugins"
+      },
+      "from": {
+        "container": "settings.tabs",
+        "index": 1
+      },
+      "to": {
+        "container": "pane.b",
+        "index": 1
+      },
+      "order": {
+        "settings.tabs": [
+          "general",
+          "appearance",
+          "about"
+        ],
+        "pane.b": [
+          "readme",
+          "plugins"
+        ]
+      }
+    },
+    "host apply throws": {
+      "$axf": "drag-move-result@1",
+      "ok": false,
+      "code": "failed",
+      "message": "host refused"
+    },
+    "not json": {
+      "$axf": "drag-move-result@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "not JSON: Expected property name or '}' in JSON at position 1"
+    },
+    "after": {
+      "tabs": {
+        "kind": "tab",
+        "container": "settings.tabs",
+        "label": "Settings",
+        "items": [
+          {
+            "id": "general"
+          },
+          {
+            "id": "appearance"
+          },
+          {
+            "id": "about"
+          }
+        ]
+      },
+      "paneB": {
+        "kind": "tab",
+        "container": "pane.b",
+        "items": [
+          {
+            "id": "readme"
+          },
+          {
+            "id": "plugins"
+          }
+        ],
+        "accepts": {
+          "from": [
+            "settings.tabs"
+          ]
+        }
+      },
+      "banner": {
+        "kind": "banner-widget",
+        "container": "main",
+        "sides": [
+          "left",
+          "center",
+          "right"
+        ],
+        "items": [
+          {
+            "id": "logo:brand",
+            "side": "left",
+            "type": "logo"
+          },
+          {
+            "id": "theme-switch:main",
+            "type": "theme-switch",
+            "side": "left"
+          },
+          {
+            "id": "clock:utc",
+            "side": "center",
+            "type": "clock"
+          },
+          {
+            "id": "counter:alerts",
+            "side": "right",
+            "type": "counter"
+          }
+        ],
+        "max": 6
+      },
+      "applied": [
+        {
+          "container": "settings.tabs",
+          "order": [
+            "general",
+            "plugins",
+            "appearance",
+            "about"
+          ]
+        },
+        {
+          "container": "main",
+          "order": {
+            "left": [
+              "logo:brand",
+              "theme-switch:main"
+            ],
+            "center": [
+              "clock:utc"
+            ],
+            "right": [
+              "counter:alerts",
+              "status:ci"
+            ]
+          }
+        },
+        {
+          "container": "main",
+          "order": {
+            "left": [
+              "logo:brand",
+              "theme-switch:main"
+            ],
+            "center": [
+              "clock:utc"
+            ],
+            "right": [
+              "counter:alerts"
+            ]
+          }
+        },
+        {
+          "container": "settings.tabs",
+          "order": [
+            "general",
+            "appearance",
+            "about"
+          ]
+        },
+        {
+          "container": "pane.b",
+          "order": [
+            "readme",
+            "plugins"
+          ]
+        }
+      ],
+      "containers": [
+        {
+          "kind": "tab",
+          "container": "settings.tabs",
+          "label": "Settings",
+          "count": 3
+        },
+        {
+          "kind": "tab",
+          "container": "pane.b",
+          "count": 2
+        },
+        {
+          "kind": "tab",
+          "container": "other.tabs",
+          "count": 1
+        },
+        {
+          "kind": "banner-widget",
+          "container": "main",
+          "count": 4
+        },
+        {
+          "kind": "banner-widget",
+          "container": "second",
+          "count": 1
+        },
+        {
+          "kind": "toolbar-item",
+          "container": "main",
+          "count": 2
+        },
+        {
+          "kind": "grid-row",
+          "container": "queue",
+          "count": 3
+        },
+        {
+          "kind": "dock-pane",
+          "container": "studio",
+          "count": 3
+        },
+        {
+          "kind": "list-item",
+          "container": "broken",
+          "count": 2
+        }
+      ],
+      "tabContainers": [
+        {
+          "kind": "tab",
+          "container": "settings.tabs",
+          "label": "Settings",
+          "count": 3
+        },
+        {
+          "kind": "tab",
+          "container": "pane.b",
+          "count": 2
+        },
+        {
+          "kind": "tab",
+          "container": "other.tabs",
+          "count": 1
+        }
+      ],
+      "missing": null
+    }
+  }
+}

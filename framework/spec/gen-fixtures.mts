@@ -55,6 +55,7 @@ import { intentCommand, voiceIntent, voiceReply } from '../core/engines/console-
 import { animationState, behaviorErrors, behaviorStyle, setAnimationPref, withAnimationPrefs } from '../core/engines/behavior';
 import { mixHex, shadesOf, skinSwatches, sweepOrigin } from '../core/engines/swatches';
 import { CONSOLE_CONTROL_CODES, CONSOLE_CONTROL_DEFAULT_CAN, CONSOLE_CONTROL_KINDS, CONSOLE_CONTROL_TARGETS_FRAME, CONSOLE_CONTROL_VERB_IDS, childAddress, consoleControlErrors, consoleControlFailure, consoleControlResult, failureOf, focusOptions, formatAddress, listTargets, nearestRegisteredParent, nearestTargets, normalizeConsoleControl, parseAddress, resolveAddress, resolveForVerb, scrollState, scrollStep, searchTargets, splitTabId, tabAddressId, type AddressSegment, type ConsoleControlScrollDir, type ConsoleControlVerb, type ScrollState, type TargetSnapshot } from '../core/engines/console-control';
+import { DRAG_KINDS, DRAG_MOVE_CODES, DRAG_MOVE_CONTRACT, DRAG_OPS, DROP_ZONES, DragHostRegistry, DragMoveError, applyOrder, dragKind, dragMoveErrors, dragMoveFailure, dragMoveResult, dragMoveSnapshot, normalizeDragMove, orderOf, planDragMove, pointerDrop, pointerZone, type DragHostSnapshot } from '../core/engines/drag-move';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
 
 const root = new URL('..', import.meta.url).pathname;
@@ -2552,5 +2553,128 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       skin: skinSwatches({ bg: '#101010', surface: '#202020', surface2: '#202020', accent: '#ff8800', text: '#eeeeee' }), none: skinSwatches(undefined),
       sweepTap: sweepOrigin({ x: 900, y: 100 }, { w: 1000, h: 800 }), sweepNone: sweepOrigin(null, { w: 1000, h: 800 }), sweepOut: sweepOrigin({ x: -5, y: 2000 }, { w: 1000, h: 800 }),
     },
+  });
+}
+
+// drag-move@1 (build drag-anything-by-api-and-voice, Nov 16 2026; core/engines/drag-move.ts): one move command for every
+// draggable kind. The registry, the schema, normalizing, and every plan / code a port must reproduce (reorder in every zone,
+// cross-container, sided hosts, add, remove, locked, confirm, limits, duplicates, invalid zones, out-of-range, no change),
+// the pointer maths, the envelopes and a live-registry replay. Kotlin `DragMoveEngine.kt` is deferred (PORTING.md).
+{
+  const hosts: DragHostSnapshot[] = [
+    { kind: 'tab', container: 'settings.tabs', label: 'Settings', items: [{ id: 'general' }, { id: 'appearance' }, { id: 'plugins' }, { id: 'about' }] },
+    { kind: 'tab', container: 'pane.b', items: [{ id: 'readme' }], accepts: { from: ['settings.tabs'] } },
+    { kind: 'tab', container: 'other.tabs', items: [{ id: 'x1' }], accepts: { from: ['nowhere'] } },
+    { kind: 'banner-widget', container: 'main', sides: ['left', 'center', 'right'], items: [{ id: 'logo:brand', side: 'left', type: 'logo' }, { id: 'clock:utc', side: 'center', type: 'clock' }, { id: 'counter:alerts', side: 'right', type: 'counter' }, { id: 'status:ci', side: 'right', type: 'status' }], max: 6 },
+    { kind: 'banner-widget', container: 'second', sides: ['left', 'center', 'right'], items: [{ id: 'label:hi', side: 'center', type: 'label' }], max: 1 },
+    { kind: 'toolbar-item', container: 'main', sides: ['start', 'end'], items: [{ id: 'search-bar:main', side: 'start' }, { id: 'help', side: 'end' }], max: 2, accepts: { add: false } },
+    { kind: 'grid-row', container: 'queue', items: [{ id: 'b1', locked: true }, { id: 'b2' }, { id: 'b3' }] },
+    { kind: 'dock-pane', container: 'studio', items: [{ id: 'g1' }, { id: 'g2' }, { id: 'g3' }] },
+  ];
+  const cmd = (kind: string, source: Record<string, unknown>, target?: Record<string, unknown>, extra: Record<string, unknown> = {}) => ({ kind, source, ...(target ? { target } : {}), ...extra });
+  const cases: Record<string, unknown> = {
+    'reorder before': cmd('tab', { container: 'settings.tabs', id: 'plugins' }, { container: 'settings.tabs', zone: 'before', ref: 'appearance' }),
+    'reorder after (default zone with ref)': cmd('tab', { container: 'settings.tabs', id: 'general' }, { container: 'settings.tabs', ref: 'plugins' }),
+    'reorder after explicit': cmd('tab', { container: 'settings.tabs', id: 'about' }, { container: 'settings.tabs', zone: 'after', ref: 'general' }),
+    'reorder into explicit': cmd('tab', { container: 'settings.tabs', id: 'general' }, { container: 'settings.tabs', zone: 'into', index: 2 }),
+    'reorder into index 0': cmd('tab', { container: 'settings.tabs', id: 'about' }, { container: 'settings.tabs', index: 0 }),
+    'reorder into end': cmd('tab', { container: 'settings.tabs', id: 'general' }, { container: 'settings.tabs' }),
+    'reorder into last index': cmd('tab', { container: 'settings.tabs', id: 'general' }, { container: 'settings.tabs', index: 3 }),
+    'case-insensitive ids': cmd('tab', { container: 'Settings.Tabs', id: 'PLUGINS' }, { container: 'SETTINGS.TABS', zone: 'before', ref: 'General' }),
+    'cross-container into': cmd('tab', { container: 'settings.tabs', id: 'plugins' }, { container: 'pane.b' }),
+    'cross-container before ref': cmd('tab', { container: 'settings.tabs', id: 'about' }, { container: 'pane.b', zone: 'before', ref: 'readme' }),
+    'cross-container refused by accepts.from': cmd('tab', { container: 'pane.b', id: 'readme' }, { container: 'other.tabs' }),
+    'cross-container not for the kind': cmd('grid-row', { container: 'queue', id: 'b2' }, { container: 'other', index: 0 }),
+    'sided: move to a side index 0': cmd('banner-widget', { container: 'main', id: 'clock:utc' }, { container: 'main', zone: 'side', side: 'right', index: 0 }),
+    'sided: after a ref on another side': cmd('banner-widget', { container: 'main', id: 'logo:brand' }, { container: 'main', ref: 'counter:alerts' }),
+    'sided: into stays on its side': cmd('banner-widget', { container: 'main', id: 'counter:alerts' }, { container: 'main', index: 1 }),
+    'sided: side with ref': cmd('banner-widget', { container: 'main', id: 'logo:brand' }, { container: 'main', zone: 'side', side: 'right', ref: 'counter:alerts' }),
+    'sided: cross-banner': cmd('banner-widget', { container: 'second', id: 'label:hi' }, { container: 'main', zone: 'side', side: 'left' }),
+    'add a widget': cmd('banner-widget', { id: 'theme-switch:main', type: 'theme-switch' }, { container: 'main', zone: 'side', side: 'left' }, { op: 'add', by: 'claude', reason: 'fixture' }),
+    'add with a catalogue source': cmd('banner-widget', { container: 'catalogue', id: 'spacer:a' }, { container: 'main', index: 0 }, { op: 'add' }),
+    'add: full host': cmd('banner-widget', { id: 'clock:local', type: 'clock' }, { container: 'second' }, { op: 'add' }),
+    'add: host refuses adds': cmd('toolbar-item', { id: 'label:x' }, { container: 'main', zone: 'side', side: 'end' }, { op: 'add' }),
+    'add: kind refuses adds': cmd('tab', { id: 'new' }, { container: 'settings.tabs' }, { op: 'add' }),
+    'add: duplicate': cmd('banner-widget', { id: 'CLOCK:UTC' }, { container: 'main', zone: 'side', side: 'left' }, { op: 'add' }),
+    'move into a full host': cmd('banner-widget', { container: 'main', id: 'clock:utc' }, { container: 'second', zone: 'side', side: 'center' }),
+    'remove a widget': cmd('banner-widget', { container: 'main', id: 'status:ci' }, undefined, { op: 'remove' }),
+    'remove: kind refuses': cmd('tab', { container: 'settings.tabs', id: 'about' }, undefined, { op: 'remove' }),
+    'remove: needs confirm': cmd('dock-pane', { container: 'studio', id: 'g2' }, undefined, { op: 'remove' }),
+    'remove: confirmed': cmd('dock-pane', { container: 'studio', id: 'g2' }, undefined, { op: 'remove', confirm: true }),
+    'locked item': cmd('grid-row', { container: 'queue', id: 'b1' }, { container: 'queue', index: 2 }),
+    'dock split (side with ref on a flat host)': cmd('dock-pane', { container: 'studio', id: 'g3' }, { container: 'studio', zone: 'side', side: 'left', ref: 'g1' }),
+    'dock join (into)': cmd('dock-pane', { container: 'studio', id: 'g1' }, { container: 'studio', index: 2 }),
+    'invalid zone: tab has no side': cmd('tab', { container: 'settings.tabs', id: 'about' }, { container: 'settings.tabs', zone: 'side', side: 'left' }),
+    'invalid zone: unknown side': cmd('banner-widget', { container: 'main', id: 'clock:utc' }, { container: 'main', zone: 'side', side: 'middle' }),
+    'invalid zone: dock takes no before': cmd('dock-pane', { container: 'studio', id: 'g3' }, { container: 'studio', zone: 'before', ref: 'g1' }),
+    'invalid zone: dock side unknown': cmd('dock-pane', { container: 'studio', id: 'g3' }, { container: 'studio', zone: 'side', side: 'centre' }),
+    'out of range: past the end': cmd('tab', { container: 'settings.tabs', id: 'about' }, { container: 'settings.tabs', index: 9 }),
+    'out of range: negative': cmd('tab', { container: 'settings.tabs', id: 'about' }, { container: 'settings.tabs', index: -1 }),
+    'out of range: cross-container': cmd('tab', { container: 'settings.tabs', id: 'about' }, { container: 'pane.b', index: 2 }),
+    'unknown kind': cmd('sticker', { container: 'a', id: 'b' }, { container: 'a' }),
+    'unknown container': cmd('tab', { container: 'nowhere', id: 'about' }, { container: 'settings.tabs' }),
+    'unknown target container': cmd('tab', { container: 'settings.tabs', id: 'about' }, { container: 'nowhere' }),
+    'unknown item': cmd('tab', { container: 'settings.tabs', id: 'ghost' }, { container: 'settings.tabs', index: 0 }),
+    'unknown ref': cmd('tab', { container: 'settings.tabs', id: 'about' }, { container: 'settings.tabs', zone: 'before', ref: 'ghost' }),
+    'unknown ref on side': cmd('dock-pane', { container: 'studio', id: 'g3' }, { container: 'studio', zone: 'side', side: 'top', ref: 'g9' }),
+    'no change: after its predecessor': cmd('tab', { container: 'settings.tabs', id: 'plugins' }, { container: 'settings.tabs', ref: 'appearance' }),
+    'no change: into own index': cmd('tab', { container: 'settings.tabs', id: 'appearance' }, { container: 'settings.tabs', index: 1 }),
+    'no change: before itself': cmd('tab', { container: 'settings.tabs', id: 'appearance' }, { container: 'settings.tabs', zone: 'before', ref: 'appearance' }),
+    'invalid: no source': { kind: 'tab', target: { container: 'settings.tabs' } },
+    'invalid: remove with a target': cmd('banner-widget', { container: 'main', id: 'status:ci' }, { container: 'main' }, { op: 'remove' }),
+    'invalid: before without ref': cmd('tab', { container: 'settings.tabs', id: 'about' }, { container: 'settings.tabs', zone: 'before' }),
+    'invalid: before with index': cmd('tab', { container: 'settings.tabs', id: 'about' }, { container: 'settings.tabs', zone: 'before', ref: 'general', index: 1 }),
+    'invalid: into with ref': cmd('tab', { container: 'settings.tabs', id: 'about' }, { container: 'settings.tabs', zone: 'into', ref: 'general' }),
+    'invalid: side without side': cmd('banner-widget', { container: 'main', id: 'clock:utc' }, { container: 'main', zone: 'side' }),
+    'invalid: bad op': cmd('tab', { container: 'settings.tabs', id: 'about' }, { container: 'settings.tabs' }, { op: 'swap' }),
+    'invalid: wrong contract': cmd('tab', { container: 'settings.tabs', id: 'about' }, { container: 'settings.tabs' }, { $axf: 'dock@1' }),
+    'invalid: move without source container': cmd('tab', { id: 'about' }, { container: 'settings.tabs' }),
+    'invalid: fractional index': cmd('tab', { container: 'settings.tabs', id: 'about' }, { container: 'settings.tabs', index: 1.5 }),
+    'invalid: not an object': 'move it',
+  };
+  const outcome = (raw: unknown) => { try { return { plan: planDragMove(raw, hosts) }; } catch (e) { return e instanceof DragMoveError ? { code: e.code, message: e.message, ...(e.nearest ? { nearest: e.nearest } : {}) } : { code: 'failed', message: String(e) }; } };
+  const normalized = (raw: unknown) => { try { return normalizeDragMove(raw); } catch (e) { return { code: (e as DragMoveError).code }; } };
+  const rect = { x: 100, y: 50, width: 80, height: 30 };
+  const probes = [[101, 51], [139, 60], [140, 60], [179, 79], [120, 64], [120, 65]] as const;
+  // live registry replay: hosts that keep objects, a host whose apply throws
+  const live = new DragHostRegistry();
+  const kept: Record<string, DragHostSnapshot> = Object.fromEntries(hosts.map((h) => [h.container + '|' + h.kind, structuredClone(h)]));
+  const applied: unknown[] = [];
+  for (const h of hosts) live.register({ kind: h.kind, container: h.container, list: () => kept[h.container + '|' + h.kind]!, apply: (plan) => { const k = h.container + '|' + h.kind; const order = plan.order[h.container]!; const arriving = { id: plan.item.id, ...(plan.item.type ? { type: plan.item.type } : {}) }; kept[k] = { ...kept[k]!, items: applyOrder(kept[k]!, order, arriving) }; applied.push({ container: h.container, order }); } });
+  live.register({ kind: 'list-item', container: 'broken', list: () => ({ kind: 'list-item', container: 'broken', items: [{ id: 'a' }, { id: 'b' }] }), apply: () => { throw new Error('host refused'); } });
+  const replay: Record<string, unknown> = {};
+  const step = async (name: string, raw: unknown) => { replay[name] = await live.run(raw); };
+  await step('move tab', cases['reorder before']);
+  await step('same move again is no change', cases['reorder before']);
+  await step('add widget', cases['add a widget']);
+  await step('remove widget', cases['remove a widget']);
+  await step('cross-container', cases['cross-container into']);
+  await step('host apply throws', cmd('list-item', { container: 'broken', id: 'b' }, { container: 'broken', index: 0 }));
+  replay['not json'] = await live.run_text('{nope');
+  replay['after'] = { tabs: live.snapshot('tab', 'settings.tabs'), paneB: live.snapshot('tab', 'PANE.B'), banner: live.snapshot('banner-widget', 'main'), applied, containers: live.containers(), tabContainers: live.containers('tab'), missing: live.snapshot('tab', 'nowhere') };
+  write('drag-move.json', {
+    contract: DRAG_MOVE_CONTRACT,
+    snapshot: dragMoveSnapshot(),
+    registry: { kinds: [...DRAG_KINDS], ops: [...DRAG_OPS], zones: [...DROP_ZONES], codes: [...DRAG_MOVE_CODES], specs: Object.fromEntries(DRAG_KINDS.map((k) => [k, dragKind(k)])) },
+    hosts,
+    orders: Object.fromEntries(hosts.map((h) => [`${h.kind}:${h.container}`, orderOf(h)])),
+    normalized: Object.fromEntries(Object.entries(cases).map(([n, c]) => [n, normalized(c)])),
+    errors: Object.fromEntries(Object.entries(cases).map(([n, c]) => [n, dragMoveErrors(c)])),
+    cases: Object.fromEntries(Object.entries(cases).map(([n, c]) => [n, { command: c, ...outcome(c) }])),
+    applyOrder: {
+      reorder: applyOrder(hosts[0]!, ['about', 'general', 'plugins', 'appearance']),
+      sided: applyOrder(hosts[3]!, { left: [], center: ['clock:utc', 'logo:brand'], right: ['status:ci', 'counter:alerts'] }),
+      added: applyOrder(hosts[3]!, { left: ['theme-switch:main', 'logo:brand'], center: ['clock:utc'], right: ['counter:alerts', 'status:ci'] }, { id: 'theme-switch:main', type: 'theme-switch' }),
+      arrivals: applyOrder(hosts[0]!, ['general', 'ghost', 'about']),
+    },
+    pointer: { rect, probes: probes.map(([px, py]) => ({ px, py, horizontal: pointerZone(rect, px, py), vertical: pointerZone(rect, px, py, true), drop: pointerDrop('settings.tabs', 'appearance', rect, px, py) })) },
+    envelopes: {
+      ok: dragMoveResult(normalizeDragMove(cases['add a widget']), planDragMove(cases['add a widget'], hosts)),
+      okNoBy: dragMoveResult(normalizeDragMove(cases['reorder before']), planDragMove(cases['reorder before'], hosts)),
+      fail: dragMoveFailure(new DragMoveError('unknown_container', 'no tab host nowhere', ['settings.tabs'])),
+      failPlain: dragMoveFailure(new Error('boom')),
+      failText: dragMoveFailure('text'),
+    },
+    replay,
   });
 }

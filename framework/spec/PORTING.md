@@ -352,3 +352,14 @@ animIntensity` (core/engines/behavior.ts: `skinAnimationVars`, `withAnimationPre
 `setAnimationPref`) and the colour maths in core/engines/swatches.ts (`shadesOf`, `mixHex`, `skinSwatches`,
 `sweepOrigin`); fixture framework/spec/fixtures/skin-animations.json. Kotlin twin deferred (no new Android work): the
 Compose behaviour reader ignores the new fields (defaults apply), so Android skins stay still until it is ported.
+
+## Deferred: drag-move@1, one move command for everything draggable (Nov 16 2026)
+
+Build `drag-anything-by-api-and-voice-follow-up-to-full` (Fable). Web only; the Kotlin twin `DragMoveEngine.kt` is deferred
+(Android on hold): `framework/core/engines/drag-move.ts` (the open kinds registry with the eight framework kinds, the command
+normalizer, `planDragMove` with zone → index after the source leaves, cross-container, sided hosts, add / remove / locked /
+confirm / limit / duplicate / no_change, `applyOrder`, `pointerZone`, the envelopes and `DragHostRegistry`), the snapshot
+`framework/schemas/drag-move.json` and the fixture `framework/spec/fixtures/drag-move.json`. A port registers its Compose lists
+(banner widgets, toolbar items, tab rows, dock panes, grid columns / rows, list items, layout slots) as hosts of the same kinds,
+replays every fixture case to the same plan or code, and runs the same command from the pointer drop and from the API.
+Check: `npx -y tsx framework/spec/check-drag-move.mts`. Spec: `framework/spec/DRAG-MOVE.md`.

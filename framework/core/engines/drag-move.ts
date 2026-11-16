@@ -120,7 +120,8 @@ export function dragMoveErrors(raw: unknown): string[] {
     if (tgt.index !== undefined && !(Number.isInteger(tgt.index))) e.push('target.index must be an integer');
     const zone = tgt.zone ?? (tgt.ref !== undefined ? 'after' : tgt.side !== undefined ? 'side' : 'into');
     if ((zone === 'before' || zone === 'after') && tgt.ref === undefined) e.push(`zone ${zone} needs target.ref`);
-    if ((zone === 'into' || zone === 'side') && tgt.ref !== undefined) e.push(`zone ${zone} takes no target.ref`);
+    if (zone === 'into' && tgt.ref !== undefined) e.push('zone into takes no target.ref');
+    if ((zone === 'before' || zone === 'after') && tgt.index !== undefined) e.push(`zone ${zone} takes no target.index`);
     if (zone === 'side' && tgt.side === undefined) e.push('zone side needs target.side');
     if (zone !== 'side' && tgt.side !== undefined) e.push(`zone ${zone} takes no target.side`);
   }
@@ -174,7 +175,8 @@ export interface DragHostSnapshot {
 }
 
 export type ContainerOrder = string[] | Record<string, string[]>;
-export interface DragPosition { container: string; side?: string; index: number }
+/** A place in a container: the side (a sided host, or the kind's fixed side such as a dock split) and the index; `ref` = the item it was placed next to (`side` zone with a ref: the pane to split). */
+export interface DragPosition { container: string; side?: string; index: number; ref?: string }
 export interface DragPlan {
   $axf: typeof DRAG_MOVE_PLAN_FRAME;
   op: DragOp;
@@ -196,13 +198,17 @@ export function orderOf(snap: DragHostSnapshot): ContainerOrder {
   return snap.items.map((it) => it.id);
 }
 
-/** The host's items in a new order (a host that keeps objects applies the plan with this). Unknown ids are skipped; ids left out are dropped. */
-export function applyOrder(snap: DragHostSnapshot, order: ContainerOrder, added?: DragItemSnapshot): DragItemSnapshot[] {
+/**
+ * The host's items in a new order (a host that keeps objects applies the plan with this). An id the host does not hold is
+ * an arrival (an add, or a cross-container move in) and is kept as `arriving` when that is its id, else as a bare `{ id }`;
+ * ids left out of the order are dropped (a remove, or a move out).
+ */
+export function applyOrder(snap: DragHostSnapshot, order: ContainerOrder, arriving?: DragItemSnapshot): DragItemSnapshot[] {
   const byId = new Map(snap.items.map((it) => [it.id.toLowerCase(), it]));
-  if (added) byId.set(added.id.toLowerCase(), added);
-  const pick = (id: string, side?: string) => { const it = byId.get(id.toLowerCase()); return it ? (side ? { ...it, side } : it) : null; };
-  if (Array.isArray(order)) return order.map((id) => pick(id)).filter((x): x is DragItemSnapshot => !!x);
-  return Object.entries(order).flatMap(([side, ids]) => ids.map((id) => pick(id, side)).filter((x): x is DragItemSnapshot => !!x));
+  if (arriving && !byId.has(arriving.id.toLowerCase())) byId.set(arriving.id.toLowerCase(), arriving);
+  const pick = (id: string, side?: string): DragItemSnapshot => { const it = byId.get(id.toLowerCase()) ?? { id }; return side ? { ...it, side } : it; };
+  if (Array.isArray(order)) return order.map((id) => pick(id));
+  return Object.entries(order).flatMap(([side, ids]) => ids.map((id) => pick(id, side)));
 }
 
 const findId = (list: readonly string[], id: string) => list.findIndex((x) => same(x, id));
@@ -272,18 +278,28 @@ export function planDragMove(raw: unknown, snapshots: readonly DragHostSnapshot[
   const { sided: dstSided, lists: dstLists0 } = crossing ? sideLists(dst) : { sided: srcSided, lists: srcLists };
   const dstLists: Record<string, string[]> = Object.fromEntries(Object.entries(dstLists0).map(([s, l]) => [s, [...l]]));
   if (!spec.zones.includes(tgt.zone)) throw new DragMoveError('invalid_zone', `${spec.label.toLowerCase()}s take ${spec.zones.join(', ')}, not ${tgt.zone}`);
+  // a sided host names its own sides; a flat host of a kind with fixed sides (dock-pane: split left / right / top / bottom) takes the kind's
+  const hostSides = dstSided ? Object.keys(dstLists) : [...(spec.sides ?? [])];
+  let kindSide: string | undefined;
   if (tgt.zone === 'side') {
-    if (!dstSided) throw new DragMoveError('invalid_zone', `${dst.container} has no sides`);
-    if (!Object.keys(dstLists).some((s) => same(s, tgt.side!))) throw new DragMoveError('invalid_zone', `${dst.container} has sides ${Object.keys(dstLists).join(', ')}, not ${tgt.side}`, Object.keys(dstLists));
+    if (!hostSides.length) throw new DragMoveError('invalid_zone', `${dst.container} has no sides`);
+    kindSide = hostSides.find((s) => same(s, tgt.side!));
+    if (kindSide === undefined) throw new DragMoveError('invalid_zone', `${dst.container} has sides ${hostSides.join(', ')}, not ${tgt.side}`, hostSides);
   }
   if (crossing && Object.values(dstLists).flat().some((id) => same(id, item.id))) throw new DragMoveError('duplicate', `${item.id} is already in ${dst.container}`);
   if (crossing && dst.max != null && Object.values(dstLists).flat().length >= dst.max) throw new DragMoveError('limit', `${dst.container} is full (${dst.max})`);
 
   let side: string;
   let index: number;
+  let ref: string | undefined;
   if (tgt.zone === 'side') {
-    side = Object.keys(dstLists).find((s) => same(s, tgt.side!))!;
-    index = tgt.index ?? dstLists[side]!.length;
+    side = dstSided ? kindSide! : '';
+    if (tgt.ref !== undefined) {
+      const at = findId(dstLists[side]!, tgt.ref);
+      if (at < 0) throw new DragMoveError('unknown_ref', `${tgt.ref} is not in ${dst.container}${dstSided ? ` (${kindSide})` : ''}`, dstLists[side]!);
+      ref = dstLists[side]![at]!;
+      index = at + 1;
+    } else index = tgt.index ?? dstLists[side]!.length;
   } else if (tgt.zone === 'into') {
     side = dstSided ? (from && !crossing ? from.side! : Object.keys(dstLists)[0]!) : '';
     index = tgt.index ?? dstLists[side]!.length;
@@ -296,7 +312,9 @@ export function planDragMove(raw: unknown, snapshots: readonly DragHostSnapshot[
   const len = dstLists[side]!.length;
   if (index < 0 || index > len) throw new DragMoveError('out_of_range', `index ${index} is outside 0..${len} in ${dst.container}${side ? ` (${side})` : ''}`);
   dstLists[side]!.splice(index, 0, item.id);
-  const to: DragPosition = dstSided ? { container: dst.container, side, index } : { container: dst.container, index };
+  const to: DragPosition = { container: dst.container, index };
+  if (dstSided) to.side = side; else if (kindSide !== undefined) to.side = kindSide;
+  if (ref !== undefined) to.ref = ref;
 
   if (crossing && src) order[src.container] = srcSided ? srcLists : srcLists['']!;
   order[dst.container] = dstSided ? dstLists : dstLists['']!;

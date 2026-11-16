@@ -53,8 +53,11 @@ Rules (`normalizeDragMove` enforces them, `dragMoveErrors` lists every problem):
 - `add`: the kind's `add` must be true; `target.container` required; the item must not already be in the target
   (`duplicate`). `source.container` may name where it comes from (a catalogue, a palette) and is echoed only.
 - `remove`: the kind's `remove` must be true; `target` must be absent (`invalid`); a `locked` item answers `not_allowed`.
-- `zone`: `before` / `after` need `ref`; `into` takes `index` or lands last; `side` needs `side` and a sided host
-  (`invalid_zone` when the host has no sides or the kind does not offer the zone). `ref` on `into` / `side` is `invalid`.
+- `zone`: `before` / `after` need `ref` and take no `index`; `into` takes `index` or lands last and takes no `ref`;
+  `side` needs `side`: a sided host names its own sides, a flat host of a kind with fixed sides (`dock-pane`) takes the
+  kind's (`invalid_zone` when neither has sides, the side is unknown or the kind does not offer the zone). `side` takes an
+  optional `ref` (the item it lands next to, right after it; for a dock pane the pane to split) or an `index`; the plan's
+  `to` carries `side` and `ref` so the host knows what to split.
 - Indices are counted on the list **after** the source has left it (same-container moves), so `index: 0` always means
   first and `length` always means last. `before ref` is `ref`'s index on that list, `after ref` is one more.
 - A `max` on the host: a cross-container move or an add into a host that is full answers `limit`.
@@ -110,7 +113,8 @@ interface DragPlan {
 ```
 
 The order is the whole container, not a delta, so a host applies it with one write and a port replays it with one
-compare. `applyOrder(snapshot, order)` gives the host's item list in the new order for a host that keeps objects.
+compare. `applyOrder(snapshot, order, arriving?)` gives the host's item list in the new order for a host that keeps
+objects: an id it does not hold is an arrival (kept as `arriving` or a bare `{ id }`), an id left out is gone.
 
 Codes (`DRAG_MOVE_CODES`, append-only): `invalid`, `unknown_kind`, `unknown_container`, `unknown_item`, `unknown_ref`,
 `invalid_zone`, `out_of_range`, `not_allowed`, `duplicate`, `limit`, `no_change`, `confirmation_required`, `failed`.
