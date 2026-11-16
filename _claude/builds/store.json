@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6480,
- "updatedAt": "2026-11-16T14:22:52.039Z",
+ "rev": 6481,
+ "updatedAt": "2026-11-16T14:23:09.566Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -234370,8 +234370,8 @@
    "pr": "#709",
    "priority": "P0",
    "createdAt": "2026-11-15T12:14:27.131Z",
-   "updatedAt": "2026-11-16T14:22:50.320Z",
-   "builtAt": "2026-11-16T14:22:50.320Z",
+   "updatedAt": "2026-11-16T14:23:07.480Z",
+   "builtAt": "2026-11-16T14:23:07.480Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -234436,6 +234436,10 @@
     {
      "text": "Reconciler: PR #709 names s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12 done",
      "at": "2026-11-16T13:56:51.798Z"
+    },
+    {
+     "text": "Headless run axf-vps-sends-shipped-features-every-merge--lenny: brief only · start 15.5K tokens ($0.05) · cost $16.09 · 240 turns · 6 tools, MCP none",
+     "at": "2026-11-16T14:23:07.480Z"
     }
    ],
    "approvals": [
