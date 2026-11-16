@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6854,
- "updatedAt": "2026-11-16T20:23:21.785Z",
+ "rev": 6855,
+ "updatedAt": "2026-11-16T20:23:53.283Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -247903,7 +247903,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T20:22:23.083Z",
-   "updatedAt": "2026-11-16T20:23:20.105Z",
+   "updatedAt": "2026-11-16T20:23:51.246Z",
    "builtAt": "",
    "notes": [
     {
@@ -247913,6 +247913,10 @@
     {
      "text": "Brett Nov 16: there is no way to delete a list from its right-click/long-press context menu. Add Delete (with confirm + undo) plus Rename, New list inside, and Move to every list's context menu, and the same for entries; all also voice/MCP controlled.",
      "at": "2026-11-16T20:23:20.105Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":5104,\"stop_reason\":\"tool_use\",\"session_id\":\"5d58f73e-2161-42b5-a264-73d6928d64b4\",\"total_cost_usd\":0.455168,\"usage\":{\"input_tokens\":2,\"cache_creation_input_tokens\":55): one step per line of the request, review the steps.",
+     "at": "2026-11-16T20:23:51.246Z"
     }
    ],
    "approvals": [],
@@ -247939,9 +247943,15 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-16T20:23:51.246Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":5104,\"stop_reason\":\"tool_use\",\"session_id\":\"5d58f73e-2161-42b5-a264-73d6928d64b4\",\"total_cost_usd\":0.455168,\"usage\":{\"input_tokens\":2,\"cache_creation_input_tokens\":55): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
@@ -247951,7 +247961,77 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwjpoekv01mman",
+     "title": "",
+     "text": "The To-do manager plugin (todo-manager) has REST routes (/api/plugins/todo-manager: lists, entries, types) but no MCP tools, console actions or voice phrases, so it can't be driven by voice. Expose every action: create/rename/reorder/delete lists, add/edit/move/complete/delete notes, to-dos and tasks, search, export, through plugin-commands MCP tools, console-control addresses, the CLI and AmberX voice ('make a list called X', 'add a note called Y to X'). Add a CI check that fails when any plugin has REST routes with no MCP/voice twin. Tests, land through the orchestrator.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T20:23:51.246Z",
+     "updatedAt": "2026-11-16T20:23:51.246Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwjpoekv02dbyo",
+     "title": "",
+     "text": "Everything needs to be voice controlled. Make a new list called New build and a note called Build.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T20:23:51.246Z",
+     "updatedAt": "2026-11-16T20:23:51.246Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwjpoekv03sa6n",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/to-do-manager-fully-voice-mcp-controlled.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/to-do-manager-fully-voice-mcp-controlled.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T20:23:51.246Z",
+     "updatedAt": "2026-11-16T20:23:51.246Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -247960,12 +248040,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-16T20:23:51.246Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
