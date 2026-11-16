@@ -14,6 +14,7 @@
     "apps/console-web/plugins/plan-studio/web/ui.tsx": 1,
     "apps/console-web/plugins/project-wizard/web/index.tsx": 1,
     "apps/console-web/plugins/session-checkin/web/index.tsx": 1,
+    "apps/console-web/plugins/skin-gallery/web/SkinsScreen.tsx": 1,
     "apps/console-web/plugins/theme-manager/web/ThemeManager.tsx": 1,
     "apps/console-web/plugins/todo-manager/web/ui.tsx": 2,
     "apps/console-web/plugins/ui-review/web/shots.tsx": 1,
@@ -22,6 +23,7 @@
     "apps/walkthrough-studio/src/studio/panes/capture.tsx": 1,
     "apps/walkthrough-studio/src/studio/panes/outline.tsx": 2,
     "apps/walkthrough-studio/src/studio/panes/writing.tsx": 1,
-    "framework/libs/settings/index.tsx": 1
+    "framework/libs/settings/index.tsx": 1,
+    "framework/libs/settings/SkinConfigPanel.tsx": 1
   }
 }
