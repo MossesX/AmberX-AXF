@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6864,
- "updatedAt": "2026-11-16T20:27:27.557Z",
+ "rev": 6865,
+ "updatedAt": "2026-11-16T20:27:51.214Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -248077,7 +248077,7 @@
    "branch": "claude/fable-rebuild-to-do-manager-unlimited",
    "pr": "",
    "createdAt": "2026-11-16T20:24:18.253Z",
-   "updatedAt": "2026-11-16T20:27:24.567Z",
+   "updatedAt": "2026-11-16T20:27:28.659Z",
    "builtAt": "",
    "notes": [
     {
@@ -248087,6 +248087,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-fable-rebuild-to-do-manager-unlimited--rhonda.",
      "at": "2026-11-16T20:27:21.531Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fable-rebuild-to-do-manager-unlimited--rhonda, shared account login)",
+     "at": "2026-11-16T20:27:28.659Z"
     },
     {
      "text": "Brief only: brief is 25751 characters (~6438 tokens), over the 24000-character budget: trim it to what this job needs",
@@ -248831,7 +248835,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T20:26:44.199Z",
-   "updatedAt": "2026-11-16T20:27:03.275Z",
+   "updatedAt": "2026-11-16T20:27:31.486Z",
    "builtAt": "",
    "notes": [
     {
@@ -248879,7 +248883,30 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwjpt4q501skfa",
+     "title": "",
+     "text": "Brett Nov 16 (replaces 'swap nav for tabs'): keep the current navigation menu as one layout and add a layout switcher on Plan Studio's toolbar with multiple layouts: (1) Nav menu (today's), (2) Tab group across the top, (3) IDE style: drag-and-drop dockable panes, each pane container holding its own tab group, panes split/resize/rearrange, layout saved per user. Layouts are assets so more can be added. Same in Plan Studio 2.0. Layout switch reachable by voice/MCP/CLI.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T20:27:31.487Z",
+     "updatedAt": "2026-11-16T20:27:31.757Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -248888,12 +248915,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-16T20:27:31.487Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
