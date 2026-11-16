@@ -198,7 +198,7 @@ html[data-axf-strip='on'] .fx-main__inner { padding: 0; margin: 0; max-width: no
 .fx-banner__clock.is-mono { font-family: var(--fx-font-mono); font-variant-numeric: tabular-nums; }
 .fx-banner__badge {
   display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); padding: 0 var(--fx-dens-gap-lg);
-  height: calc(var(--fx-banner-h) * 0.72); border-radius: 999px; font: inherit; font-weight: 600; white-space: nowrap;
+  height: calc(var(--fx-banner-h) * 0.72); border-radius: var(--fx-shape-widget-radius); font: inherit; font-weight: 600; white-space: nowrap;
   color: var(--fx-text); border: var(--fx-border-w) solid currentColor;
   background: color-mix(in srgb, currentColor calc(var(--fx-opacity-tint) * 100%), transparent);
 }
@@ -210,8 +210,25 @@ html[data-axf-strip='on'] .fx-main__inner { padding: 0; margin: 0; max-width: no
 .fx-banner__badge[data-tone='muted'] { color: var(--fx-muted); }
 .fx-banner__badge.is-icon, .fx-banner__badge.is-dot { padding: 0; width: calc(var(--fx-banner-h) * 0.72); justify-content: center; }
 button.fx-banner__badge { cursor: pointer; }
-button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); outline-offset: 1px; }
 .fx-banner__dot { width: 40%; height: 40%; border-radius: 999px; background: currentColor; }
+/*
+ * Widget shapes (shape@1, core/engines/shape.ts): every chip-like banner widget is cut to the shape in force. The tokens
+ * are compiled on the root for the app's shape and laid inline on one banner item for a per-widget pick (BannerWidgets
+ * host); radius + clip-path + mask are read together, whichever is not `none` cuts the chip. The focus ring is drawn on
+ * the item around the chip (never clipped), the hover tint is a fill inside the shape, so both stay visible.
+ */
+.fx-banner :where(.fx-banner__badge, .fx-widget-counter__num, .fx-widget-theme, .fx-widget-avatar img, .fx-widget-avatar__initials, .fx-banner__more-btn .fx-iconbtn) {
+  border-radius: var(--fx-shape-widget-radius); clip-path: var(--fx-shape-widget-clip);
+  -webkit-mask: var(--fx-shape-widget-mask) center / 100% 100% no-repeat; mask: var(--fx-shape-widget-mask) center / 100% 100% no-repeat;
+  corner-shape: var(--fx-shape-widget-corner);
+}
+.fx-banner :where(.fx-banner__badge.is-icon, .fx-banner__badge.is-dot, .fx-widget-theme, .fx-banner__more-btn .fx-iconbtn) { aspect-ratio: var(--fx-shape-widget-aspect); }
+.fx-banner .fx-widget-progress__bar, .fx-banner .fx-widget-progress__fill { border-radius: var(--fx-shape-widget-radius); }
+.fx-banner :where(button.fx-banner__badge, .fx-widget-theme, .fx-banner__more-btn .fx-iconbtn):hover { background: color-mix(in srgb, currentColor calc(var(--fx-opacity-hover) * 100%), transparent); }
+.fx-banner :where(button.fx-banner__badge, .fx-widget-theme, .fx-banner__more-btn .fx-iconbtn):focus-visible { outline: none; }
+.fx-banner .fx-banner__item:has(:where(button.fx-banner__badge, .fx-widget-theme, .fx-iconbtn):focus-visible) { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w); border-radius: var(--fx-radius-sm); }
+/* a tag or a wide pill needs a little room for its point / ends: padding inside the item keeps the neighbours clear */
+.fx-banner__item[data-fx-shape='tag'] > :where(.fx-banner__badge, .fx-widget-counter) { padding-right: calc(var(--fx-dens-gap-lg) + var(--fx-dens-gap-xl)); }
 .fx-banner__pop {
   /* in the flow, next to its attachment: the neighbours make room for it (snap, never overlap) instead of being covered */
   position: relative; flex: none; margin-inline-start: var(--fx-dens-gap-xl); white-space: nowrap;
