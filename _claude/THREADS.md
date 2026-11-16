@@ -813,7 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 14:08 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` note (all) · merge-watch
 - 2026-11-16 14:09 UTC · `overlay-float` added (0 steps) (all) · merge-watch
 - 2026-11-16 14:09 UTC · `overlay-pages` added (0 steps) (all) · merge-watch
 - 2026-11-16 14:09 UTC · `orch-build-id-40-chars` added (0 steps) (all) · merge-watch
@@ -1213,6 +1212,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 19:30 UTC · `alert-every-time-build-falls-back-to` s3 done, → complete (all) · orchestrator
 - 2026-11-16 19:30 UTC · `hide-any-ui-asset-global-context-menu` added (0 steps) (all) · console
 - 2026-11-16 19:30 UTC · `pending-banner-list-every-pending-build` s2 done (all) · orchestrator
+- 2026-11-16 19:30 UTC · `alert-every-time-build-falls-back-to` note (all) · orchestrator
 
 ## Token passes (log)
 

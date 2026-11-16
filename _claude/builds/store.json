@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6746,
- "updatedAt": "2026-11-16T19:31:06.449Z",
+ "rev": 6747,
+ "updatedAt": "2026-11-16T19:31:14.013Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -246467,8 +246467,8 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:12:13.425Z",
-   "updatedAt": "2026-11-16T19:30:30.747Z",
-   "builtAt": "2026-11-16T19:30:30.748Z",
+   "updatedAt": "2026-11-16T19:30:49.214Z",
+   "builtAt": "2026-11-16T19:30:49.214Z",
    "notes": [
     {
      "text": "Brett Nov 16: also, ANY item that goes into ANY banner (systems check, approvals, push banner, every banner plugin, any app) sends a phone notification through AmberX, once per item, tapping it opens that item. Make it a framework rule: the banner registry pushes on add, with a CI check so no banner can skip it.",
@@ -246493,6 +246493,10 @@
     {
      "text": "Bug found Nov 16: adding a note (control_act note) within seconds of filing a build races with intake and knocks it back to Pending with its priority wiped (seen on alert-every-time-build-falls-back-to and toolbars-moved-to-side-become-vertical). Fix the race: a note never changes status or priority.",
      "at": "2026-11-16T19:20:48.414Z"
+    },
+    {
+     "text": "Headless run axf-alert-every-time-build-falls-back-to--earl: brief only · start 15.7K tokens ($0.05) · cost $3.41 · 69 turns · 6 tools, MCP none",
+     "at": "2026-11-16T19:30:49.214Z"
     }
    ],
    "approvals": [],
