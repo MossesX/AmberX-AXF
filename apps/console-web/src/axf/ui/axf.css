@@ -1174,6 +1174,9 @@ textarea.fx-input { resize: vertical; white-space: pre; }
   border-radius: var(--fx-shape-widget-radius); clip-path: var(--fx-shape-widget-clip); aspect-ratio: var(--fx-shape-widget-aspect); corner-shape: var(--fx-shape-widget-corner);
   -webkit-mask: var(--fx-shape-widget-mask) center / 100% 100% no-repeat; mask: var(--fx-shape-widget-mask) center / 100% 100% no-repeat;
 }
+.fx-shape-list { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); }
+.fx-shape-list__row { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface); min-width: 0; }
+.fx-shape-list__name { min-width: 0; gap: 0; }
 /* Icon picker (react/components/IconPicker.tsx): small cards, the list scrolls inside the dialog */
 .fx-icon-picker { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); min-width: 0; }
 .fx-icon-picker .fx-choices { grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--fx-font-size) * 8)), 1fr)); max-height: calc(var(--fx-font-size) * 28); overflow-y: auto; gap: var(--fx-dens-gap-sm); }

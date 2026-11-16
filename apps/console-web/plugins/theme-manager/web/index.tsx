@@ -2,6 +2,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import type { AxfRuntime } from '@console/axf/core';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { AppearancePanel } from '@console/axf/libs/settings';
+import { BannerShapesManager } from '@console/axf/react';
 import { FOLDER, ID, call, type SavedTheme } from './api';
 import { ThemeManager, lastApplied } from './ThemeManager';
 import { SkinShapes } from './SkinShapes';
@@ -45,8 +46,12 @@ export const plugin: AxfWebLibrary = {
     void loadSaved(rt);
     rt.actions.register('theme-manager.open', () => rt.navigate('theme-manager'), { label: 'Open the theme manager' });
   },
-  views: { 'theme-manager': { title: 'Theme manager', icon: 'palette', keywords: ['roll', 'theme', 'colors', 'tokens'], render: () => <div className="fx-stack fx-stack--lg"><header className="fx-pagehead"><div><p className="fx-eyebrow">Design &amp; branding</p><h1>Theme manager</h1><p className="fx-muted" title="Roll colour themes and themeable parts from a token tree, preview them live and save the ones you like. Style, layout and behaviour come with the skin.">Roll themes from a token tree, preview live, save the keepers.</p></div></header><AppearancePanel /><SkinShapes /><ThemeManager /></div> } },
-  nav: { label: 'Plugins', items: [{ id: 'theme-manager', label: 'Theme manager', icon: 'palette', view: 'theme-manager' }] },
+  views: {
+    // UI manager (first section: banner widget shapes; build banner-widget-shapes-more-than-circle). Hosted here until a
+    // dedicated UI manager plugin exists: every section of it is a framework component, so it moves without a rewrite.
+    'ui-manager': { title: 'UI manager', icon: 'layout', keywords: ['ui', 'shapes', 'banner widgets', 'widget shape'], render: () => <div className="fx-stack fx-stack--lg"><header className="fx-pagehead"><div><p className="fx-eyebrow">Design &amp; branding</p><h1>UI manager</h1><p className="fx-muted">Every banner widget, the shape it draws and where that comes from.</p></div></header><BannerShapesManager /></div> },
+    'theme-manager': { title: 'Theme manager', icon: 'palette', keywords: ['roll', 'theme', 'colors', 'tokens'], render: () => <div className="fx-stack fx-stack--lg"><header className="fx-pagehead"><div><p className="fx-eyebrow">Design &amp; branding</p><h1>Theme manager</h1><p className="fx-muted" title="Roll colour themes and themeable parts from a token tree, preview them live and save the ones you like. Style, layout and behaviour come with the skin.">Roll themes from a token tree, preview live, save the keepers.</p></div></header><AppearancePanel /><SkinShapes /><ThemeManager /></div> } },
+  nav: { label: 'Plugins', items: [{ id: 'theme-manager', label: 'Theme manager', icon: 'palette', view: 'theme-manager' }, { id: 'ui-manager', label: 'UI manager', icon: 'layout', view: 'ui-manager' }] },
   settingsTabs: [{ id: 'theme-manager', label: 'Themes', icon: 'palette', parent: 'plugins', order: 44, description: 'Roll colour themes (or any themeable part a skin leaves open), pick which tokens change, save rolls as assets. Style, layout and behaviour come with the skin.' }],
   settingsPanels: [
     { id: 'theme-manager.appearance', tab: 'theme-manager', title: 'Appearance', icon: 'palette', order: 5, render: () => <AppearancePanel /> },

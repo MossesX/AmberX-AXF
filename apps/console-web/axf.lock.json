@@ -773,7 +773,7 @@
     "src/axf/react/components/Banner.tsx": "f3279feae4eef41a",
     "src/axf/react/components/BannerGroup.tsx": "bf29c024591b48c3",
     "src/axf/react/components/BannerSettings.tsx": "8e0194d48d0c03a0",
-    "src/axf/react/components/BannerShapes.tsx": "8c9e7081c083f43e",
+    "src/axf/react/components/BannerShapes.tsx": "e88fba44de1b4328",
     "src/axf/react/components/BannerStrip.tsx": "12f40c2a4d0150b4",
     "src/axf/react/components/BannerWidgets.tsx": "b5c2c65cba8a5fb2",
     "src/axf/react/components/Brand.tsx": "6a760e003265bf1f",
@@ -812,7 +812,7 @@
     "src/axf/react/editorSync.ts": "4d2dfe9847350acb",
     "src/axf/react/hubAppLook.ts": "5e9a996b10ea76a0",
     "src/axf/react/hubAppearance.ts": "355ca539e1bed83b",
-    "src/axf/react/index.ts": "58de18fe5fe24303",
+    "src/axf/react/index.ts": "d0ea70f8387a31ba",
     "src/axf/react/library.ts": "a1e3ee41389eca00",
     "src/axf/react/placeTip.ts": "72554dc0b42e13a3",
     "src/axf/react/placement.tsx": "e50243526c856169",
@@ -940,6 +940,6 @@
     "src/axf/schemas/shipped-manifest.json": "b0ed855f1141e630",
     "src/axf/schemas/swarm.json": "35dd72b97f7a4a89",
     "src/axf/schemas/ui-review.json": "0a34b5e29eb76cca",
-    "src/axf/ui/axf.css": "4ebe8361930e2bec"
+    "src/axf/ui/axf.css": "1b702ede6c6a0e54"
   }
 }
