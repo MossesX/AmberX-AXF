@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:33:51.080Z",
+ "updatedAt": "2026-11-16T19:33:59.127Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -161865,9 +161865,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-16T19:30:36.556Z",
-   "updatedAt": "2026-11-16T19:30:36.556Z",
+   "updatedAt": "2026-11-16T19:33:52.963Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"a4b88901-ceae-465e-9b75-6c82a9bc594a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-16T19:33:52.963Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -161882,7 +161887,68 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Rebuild of assets-menu-hide-any-asset-visible (branch lost, never shipped). A GLOBAL context menu item on every asset in every app (right-click / long-press): 'Hide'. Plus an Assets menu (global context menu item and Settings > Appearance) listing every asset on the current screen and app (toolbars, tab groups, banners, widgets, nav, menus, panels, anything). Hidden ones move to a Hidden section, one tap shows them again. Saved per app on axHub, survives reload. Same list/hide/show on REST, MCP, CLI, voice. Tests, land through the orchestrator.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjnw53701tlnl",
+     "createdAt": "2026-11-16T19:33:52.963Z"
+    },
+    {
+     "id": "s2",
+     "text": "Rebuild the build where I could hide anything: a menu showing all the assets, hide them, they move to hidden. A global context menu item.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjnw53702pkjo",
+     "createdAt": "2026-11-16T19:33:52.963Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/hide-any-ui-asset-global-context-menu.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/hide-any-ui-asset-global-context-menu.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjnw53703ou5r",
+     "createdAt": "2026-11-16T19:33:52.963Z"
+    }
+   ]
   }
  ]
 }
