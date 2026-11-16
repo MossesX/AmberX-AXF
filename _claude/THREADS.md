@@ -814,7 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 17:21 UTC · `fix-red-ci-blocked-builds-they-land` s13 done (all) · orchestrator
 - 2026-11-16 17:22 UTC · `fix-red-ci-blocked-builds-they-land` s14 done (all) · orchestrator
 - 2026-11-16 17:22 UTC · `fix-red-ci-blocked-builds-they-land` s15 done (all) · orchestrator
 - 2026-11-16 17:23 UTC · `fix-red-ci-blocked-builds-they-land` s16 done (all) · orchestrator
@@ -1214,6 +1213,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 22:44 UTC · `toolbar-widgets-in-any-banner-style` added (0 steps) (all) · console
 - 2026-11-16 22:44 UTC · `attach-widgets-to-any-toolbar-banner` added (0 steps) (all) · console
 - 2026-11-16 22:45 UTC · `attach-widgets-to-any-toolbar-banner` → queued, note (all) · console
+- 2026-11-16 22:45 UTC · `attach-widgets-to-any-toolbar-banner` added (0 steps) (all) · builds-live
 
 ## Token passes (log)
 
