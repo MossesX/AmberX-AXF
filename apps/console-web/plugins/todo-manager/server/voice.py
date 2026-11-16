@@ -41,8 +41,10 @@ def _pick(rows: list[dict[str, Any]], name: str, what: str) -> dict[str, Any]:
         if len(hits) == 1:
             return hits[0]
         if len(hits) > 1:
-            names = ", ".join(sorted({h["title"] for h in hits})[:5])
-            raise Invalid(f"More than one {what} matches “{name}”: {names}. Say the full name.", 409)
+            names = sorted({h["title"] for h in hits})
+            if len(names) == 1:
+                raise Invalid(f"{len(hits)} {what}s are called {names[0]}. Rename one, then say it again.", 409)
+            raise Invalid(f"More than one {what} matches “{name}”: {', '.join(names[:5])}. Say the full name.", 409)
     raise Invalid(f"No {what} called “{name}”.", 404)
 
 
@@ -69,9 +71,11 @@ def list_create(store: Store, b: dict[str, Any]) -> dict[str, Any]:
     title = text(b.get("title") or b.get("list"), 120).strip()
     if not title:
         raise Invalid("Give the list a name")
-    for x in store.lists():
-        if _norm(x["title"]) == _norm(title):
-            return {"ok": True, "created": False, "list": x, "say": f"There is already a list called {x['title']}."}
+    same = [x for x in store.lists() if _norm(x["title"]) == _norm(title)]
+    if same:
+        x = max(same, key=lambda y: y["id"])  # the newest of that name (duplicates are named in the answer)
+        dup = f" ({len(same)} lists have that name; using the newest)" if len(same) > 1 else ""
+        return {"ok": True, "created": False, "list": x, "say": f"There is already a list called {x['title']}{dup}."}
     parent = find_list(store, b["parent"])["id"] if b.get("parent") else None
     x = store.create_list({"title": title, "parentId": parent})
     return {"ok": True, "created": True, "list": x, "say": f"Made the list {x['title']}."}
@@ -118,7 +122,7 @@ def entry_add(store: Store, b: dict[str, Any]) -> dict[str, Any]:
         raise Invalid(f"What should the {LABEL[kind]} be called?")
     if not b.get("list"):
         raise Invalid(f"Which list should the {LABEL[kind]} go in?")
-    x = find_list(store, b["list"])
+    x = b["list"] if isinstance(b["list"], dict) else find_list(store, b["list"])
     parent = find_entry(store, b["under"], x["title"])["id"] if b.get("under") else None
     e, warnings = store.create_entry({"listId": x["id"], "parentId": parent, "kind": kind, "title": title,
                                       "body": text(b.get("body"), 50_000), "draft": True})
@@ -190,7 +194,7 @@ def export(store: Store, b: dict[str, Any]) -> dict[str, Any]:
 def list_and_entry(store: Store, b: dict[str, Any]) -> dict[str, Any]:
     """'Make a list called X and a note called Y': the list (made, or the one already called that) with the item in it."""
     x = list_create(store, {"title": b.get("list"), "parent": b.get("parent")})
-    e = entry_add(store, {"list": x["list"]["title"], "kind": b.get("kind"), "title": b.get("title"), "body": b.get("body")})
+    e = entry_add(store, {"list": x["list"], "kind": b.get("kind"), "title": b.get("title"), "body": b.get("body")})
     return {"ok": True, "created": x["created"], "list": e["list"], "entry": e["entry"], "warnings": e["warnings"],
             "say": f"{x['say']} {e['say']}"}
 

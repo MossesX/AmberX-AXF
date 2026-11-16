@@ -199,6 +199,13 @@ check("by-name 404 plain", c.post("/p/by-name/entry-complete", json={"entry": "n
 import plugin_services as _ps  # noqa: E402
 check("voice service registered", any(n == "axf.voice-phrases@1:todo-manager" for n, _ in _ps.get_all("axf.voice-phrases@1:")))
 
+# ---- two lists with one name (the live store on Nov 16: Brett made "New build" twice in the UI)
+c.post("/p/lists", json={"title": "Twin"}); c.post("/p/lists", json={"title": "Twin"})
+r = V("what's in twin")
+check("same name twice: refused, says so plainly", r["code"] == "ambiguous" and "2 lists are called Twin" in r["say"], r)
+r = V("make a list called twin and a note called Inside")
+check("compound phrase with duplicate names: uses the newest, says so", r["ok"] and r["created"] is False and "2 lists have that name" in r["say"], r)
+
 # ---- the console's voice endpoint hands Todo manager phrases over (console_control_api.plugin_voice)
 try:
     import console_control_api as _cca  # noqa: E402
