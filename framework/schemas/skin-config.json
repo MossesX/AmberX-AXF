@@ -21,9 +21,9 @@
   "extrasCategory": "extras",
   "global": "global",
   "summary": {
-    "categories": 48,
-    "groups": 289,
-    "options": 1147,
+    "categories": 49,
+    "groups": 299,
+    "options": 1189,
     "limits": 4,
     "sections": [
       "Themes",
@@ -1118,6 +1118,117 @@
             "thumb",
             "fill",
             "ticks"
+          ]
+        },
+        {
+          "id": "parts.text",
+          "kind": "parts",
+          "options": [
+            "fontSize",
+            "fontWeight",
+            "fontFamily",
+            "letterSpacing",
+            "textTransform",
+            "italic",
+            "lineHeight",
+            "textAlign"
+          ]
+        },
+        {
+          "id": "parts.colour",
+          "kind": "parts",
+          "options": [
+            "textColor",
+            "background",
+            "borderColor",
+            "opacity",
+            "glass"
+          ]
+        },
+        {
+          "id": "parts.layout",
+          "kind": "parts",
+          "options": [
+            "alignment",
+            "width",
+            "padding",
+            "gap"
+          ]
+        },
+        {
+          "id": "parts.shape",
+          "kind": "parts",
+          "options": [
+            "radius",
+            "borderWidth",
+            "shadow"
+          ]
+        },
+        {
+          "id": "parts.icons",
+          "kind": "parts",
+          "options": [
+            "iconSet",
+            "iconSize",
+            "iconColor",
+            "showIcons"
+          ]
+        },
+        {
+          "id": "parts.motion",
+          "kind": "parts",
+          "options": [
+            "animation",
+            "animationSpeed",
+            "easing"
+          ]
+        },
+        {
+          "id": "parts.hover",
+          "kind": "parts",
+          "options": [
+            "hover",
+            "hoverColor",
+            "cursor"
+          ]
+        },
+        {
+          "id": "parts.click",
+          "kind": "parts",
+          "options": [
+            "click",
+            "clickColor",
+            "focusRing"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "expander-picker",
+      "label": "Expander picker",
+      "section": "Controls",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "tiles",
+            "arrow",
+            "columns",
+            "density",
+            "animation",
+            "apply",
+            "preview",
+            "divider"
           ]
         },
         {
