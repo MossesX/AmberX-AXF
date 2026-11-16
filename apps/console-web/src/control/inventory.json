@@ -10,7 +10,7 @@
     "settings": 89,
     "functions": 274,
     "buttons": 62,
-    "plugins": 71
+    "plugins": 72
   },
   "views": [
     {
@@ -10338,6 +10338,27 @@
         "service:axf.token-tree@1",
         "service:axf.skin-config@1"
       ],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.themed-controls",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.themed-controls",
+      "label": "Themed controls",
+      "folder": "themed-controls",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "themed-controls",
+        "Themed controls",
+        "Replaces the controls and dialogs the browser draws itself with themed ones draw"
+      ],
+      "aliases": [
+        "themed-controls",
+        "themed controls"
+      ],
+      "provides": [],
       "requires": [],
       "optional": []
     },
