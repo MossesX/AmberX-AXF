@@ -814,9 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 19:00 UTC · `themed-native-controls-plugin` → pending, note (all) · reconciler
-- 2026-11-16 19:00 UTC · `fix-red-ci-blocked-builds-they-land` → pending, note (all) · reconciler
-- 2026-11-16 19:02 UTC · `all-settings-interfaces-open-floating` note (all) · orchestrator
 - 2026-11-16 19:02 UTC · `settings-interface-gear-every-plugin` s3 done (all) · orchestrator
 - 2026-11-16 19:03 UTC · `all-settings-interfaces-open-floating` note (all) · pipeline
 - 2026-11-16 19:03 UTC · `settings-interface-gear-every-plugin` → pending, note (all) · pipeline
@@ -1214,6 +1211,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 23:14 UTC · `attach-widgets-to-any-toolbar-banner` s4 done (all) · orchestrator
 - 2026-11-16 23:14 UTC · `orchestrator-table-columns-model-queue-assigned` → archived, note (all) · cli
 - 2026-11-16 23:14 UTC · `per-instance-settings-small-live-preview` → archived, note (all) · cli
+- 2026-11-16 23:15 UTC · `re-sync-stuck-branches-lander-can-push` → archived, note (all) · cli
+- 2026-11-16 23:15 UTC · `remove-old-molly-app-project-keep-axf` → archived, note (all) · cli
+- 2026-11-16 23:15 UTC · `server-gate-one-session-per-build-no` → archived, note (all) · cli
 
 ## Token passes (log)
 

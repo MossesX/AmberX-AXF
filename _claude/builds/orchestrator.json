@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T23:15:42.529Z",
+ "updatedAt": "2026-11-16T23:16:00.045Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -111130,15 +111130,15 @@
    "title": "Server gate: one session per build, no duplicate launches",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. The dispatcher double/triple-launched builds: owner-recognized-everywhere ran 3 sessions and molly-gap-console-token-handoff ran 2, in the same worktree folders, clobbering each other and wasting slots. Add a SERVER GATE on the VPS, enforced by the server itself: only ONE live session per build ID and per worktree folder, ever. Every launch path (vps build_start, dispatcher, agent-slots, any claude -p/tmux axf-* launcher) takes an exclusive lock per build ID + folder (flock), and refuses a second launch while a session for that build is alive. A watchdog finds any duplicates that slip through, keeps the oldest, stops the rest, and logs it in 'Automatic fixes' with an AmberX FYI. Also fix the dispatcher's double-launch root cause (see pending dispatcher-a-worktree-store-write-can-erase-a-fr: store write erases the fresh launch record). Tests: second launch of the same build refused; duplicates reaped.",
-   "status": "built",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/server-gate-one-session-per-build-no",
    "pr": "#610",
    "createdAt": "2026-11-12T02:42:15.357Z",
-   "updatedAt": "2026-11-15T00:37:58.247Z",
-   "builtAt": "2026-11-14T23:06:34.786Z",
+   "updatedAt": "2026-11-16T23:15:35.930Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -111207,6 +111207,10 @@
     {
      "text": "Session axf-server-gate-one-session-per-build-no--sully on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-14T23:08:06.478Z"
+    },
+    {
+     "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
+     "at": "2026-11-16T23:15:35.930Z"
     }
    ],
    "approvals": [],
@@ -156667,7 +156671,7 @@
    "title": "Remove the old Molly app from the project (keep axf-molly)",
    "category": "",
    "detail": "The old Molly app is dead (container 'molly' at molly.amberxai.com is being shut down and deleted). Remove every reference to the OLD Molly from the project: the molly app/web UI, the molly.amberxai.com deploy and its DNS/proxy route, the Molly agent add-on in the Agent manager (apps/console-web/plugins/agent-manager/addons/molly), the console's 'Molly guide', docs, rules, help and glossary mentions. Move anything still useful into the console. DO NOT touch the axf-molly container or its name: it is the current worker (orchestrator, gate, lander, Shipped sender) and stays as-is. List everything being removed in the PR first. Tests green, land with the one-at-a-time lander.",
-   "status": "built",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -156675,8 +156679,8 @@
    "pr": "#720",
    "priority": "P1",
    "createdAt": "2026-11-16T16:17:05.624Z",
-   "updatedAt": "2026-11-16T17:01:41.126Z",
-   "builtAt": "2026-11-16T17:01:41.126Z",
+   "updatedAt": "2026-11-16T23:15:26.403Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -156705,6 +156709,10 @@
     {
      "text": "Reconciler: PR #720 names s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16 done",
      "at": "2026-11-16T17:01:41.126Z"
+    },
+    {
+     "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
+     "at": "2026-11-16T23:15:26.403Z"
     }
    ],
    "approvals": [],
@@ -158235,7 +158243,7 @@
    "title": "Re-sync stuck branches so the lander can push them",
    "category": "",
    "detail": "Split from get-main-green-unblock-lander-land-axf. 1) Re-sync the 4 branches whose push failed because local and GitHub differ: server-gate-one-session-per-build-no, one-source-truth-console-shows-only-what, console-axhub-retry-failed-calls, demo-video-series-three-minute-browser (keep both sides' commits; never force-delete work). 2) Drop the stray branch merge-main-land-one-source-truth-console and the stray land-native-bridge-mic. 3) auto-lander-controls-in-the-gate-plugin: commit its uncommitted worktree changes if they belong to the build, otherwise drop them; regenerate inventory.json; keep both sides in framework/cli/axf.mjs. Then let the auto-lander take them. Do NOT touch axf-data / Postgres branches.",
-   "status": "built",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -158243,8 +158251,8 @@
    "pr": "#718",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:34.116Z",
-   "updatedAt": "2026-11-16T16:40:52.641Z",
-   "builtAt": "2026-11-16T16:40:52.641Z",
+   "updatedAt": "2026-11-16T23:15:19.233Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -158265,6 +158273,10 @@
     {
      "text": "Headless run axf-re-sync-stuck-branches-lander-can-push--earl: brief only · start 15.0K tokens ($0.05) · cost $1.04 · 32 turns · 6 tools, MCP none",
      "at": "2026-11-16T16:40:52.641Z"
+    },
+    {
+     "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
+     "at": "2026-11-16T23:15:19.233Z"
     }
    ],
    "approvals": [],
