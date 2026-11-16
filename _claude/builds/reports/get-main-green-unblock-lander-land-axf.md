@@ -85,3 +85,11 @@ Ran CI's block for real: re-bake `core react ui schemas libs`, `shared-assets ba
 - Ran that step on a scratch copy in `node:22`: re-bake, `npm ci`, `npm run build`, `npx cap sync android`. All clean.
 - No Gradle, Capacitor config or native file changed. No new Android features.
 - `fix/main-green` is pushed. No PR run started, so I dispatched `android.yml` on it once: run 43923133971. The Gradle and APK result is checked in s8/s9.
+
+## Fix PR and merge queue (s8)
+
+- **Clash found:** #719 (`fix/ci-common-cause`, opened 16:50 by another session) already holds the same `@console/api` bridge and gate fixes as `fix/main-green`. It also pins every job to `ubuntu-24.04`, because `ubuntu-latest` rolls to 26.04, where Playwright 1.56 has no Chromium. It does **not** have the theme-swap fix.
+- I didn't open a duplicate PR. `fix/theme-swap-zero-alpha` (6bf967236, off main, one file) → **#724**. `fix/main-green` stays as a record and is not opened as a PR.
+- Merge queue: `queue add 724`, `move 719 0`, `move 724 1`. #719 lands first, #724 right behind it.
+- `builds-live link` would have replaced the build's own branch/PR (#723), which the later steps still use. So the fix PRs went into a build note, plus a step on the codebase-changes entry (`chg-20261116-537d490149`).
+- FYI to Brett through the alert hub (`axf.notify@1`): key `pipeline:fyi:get-main-green-unblock-lander-land-axf:main-fix`, delivered to the bell. The new notify type `pipeline.fyi` is registered in `build-orchestrator/notify.json`, so the Notifications panel controls these FYIs once this build lands (`notify-control/test.py`: 133 checks pass).
