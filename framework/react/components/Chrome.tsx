@@ -1,6 +1,7 @@
 /** Shell chrome: application menu bar, toolbar, navigation menu, status bar. */
-import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react';
-import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem } from '../../core';
+import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type KeyboardEvent, type ReactNode } from 'react';
+import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem, type ToolbarData } from '../../core';
+import { toolbarStyle } from '../../core/engines/components';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { NavTree } from './NavTree';
@@ -88,8 +89,10 @@ export function MenuBar() {
 
 export function Toolbar({ views }: { views: ViewMap }) {
   const rt = useRuntime();
-  const tb = useAsset('toolbar');
+  const asset = useAsset('toolbar');
   useAxfState();
+  // chrome-settings@1: the settings dialog's overrides for this toolbar (instance `app`) over the asset's data
+  const tb = { ...asset, data: rt.chromeData('toolbar', 'app', asset.data) ?? asset.data };
   const [q, setQ] = useState('');
   // Widgets (clock, search bar) at the toolbar's start / end: its own `widgets` + run-time ones (core/engines/widgets.ts).
   const widgets = rt.toolbarWidgets();
@@ -224,11 +227,16 @@ export function AssetToolbar({ id, search, label = 'Page toolbar' }: { id: strin
   useAxfState();
   const tb = rt.registry.list('toolbar').find((a) => a.id === id);
   if (!tb) return null;
-  const data = tb.data as { variant: string; align?: string; showSearch?: boolean; groups: ToolbarGroup[] };
+  // chrome-settings@1: a page toolbar is its own instance (its asset id): its overrides apply to it alone, through the
+  // same style engine as the app toolbar, scoped by a layout-free wrapper carrying the attributes and vars
+  const data = (rt.chromeData('toolbar', tb.id, tb.data) ?? tb.data) as ToolbarData;
+  const out = toolbarStyle(data);
   return (
-    <div className={`fx-toolbar fx-toolbar--${data.variant}`} data-align={data.align} role="toolbar" aria-label={label} data-axf-toolbar-asset={tb.id}>
-      {data.groups.map((g) => <ToolbarGroupView key={g.id} group={g} variant={data.variant} />)}
-      {data.showSearch && search}
+    <div className="fx-toolbar-scope" style={out.vars as CSSProperties} {...out.attrs}>
+      <div className={`fx-toolbar fx-toolbar--${data.variant}`} data-align={data.align} role="toolbar" aria-label={label} data-axf-toolbar-asset={tb.id} data-fx-ctx-target="toolbar" data-fx-ctx-payload={tb.id}>
+        {data.groups.map((g) => <ToolbarGroupView key={g.id} group={g as ToolbarGroup} variant={data.variant} />)}
+        {data.showSearch && search}
+      </div>
     </div>
   );
 }
@@ -282,7 +290,9 @@ function NavBadge({ badge }: { badge?: string }) {
 
 export function NavMenu({ views }: { views: ViewMap }) {
   const rt = useRuntime();
-  const nav = useAsset('nav-menu');
+  const navAsset = useAsset('nav-menu');
+  // chrome-settings@1: the settings dialog's overrides for the nav (instance `app`) over the asset's data
+  const nav = { ...navAsset, data: rt.chromeData('nav-menu', 'app', navAsset.data) ?? navAsset.data };
   const layout = useAsset('layout');
   const state = useAxfState();
   const orient = layout.data.nav === 'top' ? 'horizontal' : 'vertical';

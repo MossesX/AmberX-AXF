@@ -341,6 +341,36 @@ o = said({"held": True, "job_id": "j"})
 ok(not o["ok"], "a held call is not a wake")
 o = said({"error": {"message": "device offline"}}, isError=True)
 ok(not o["ok"] and "device offline" in o["message"], "a phone error is passed on")
+# one overlay (Nov 13 2026): the always-on toolbar takes opens directly, and carries the collapse verb
+o = said({"url": "u", "verb": "open", "where": "overlay", "opened": True, "notified": False, "overlay": True})
+ok(o["ok"] and o["opened"] and not o["notified"] and "overlay" in o["message"], f"opened in the overlay, no tap ({o})")
+o = said({"url": "u", "verb": "collapse", "where": "overlay", "collapsed": True, "opened": False})
+ok(o["ok"] and "collapsed" in o["message"], f"collapse verb answered ({o})")
+o = said({"url": "u", "verb": "collapse", "where": "overlay", "collapsed": False, "opened": False, "overlay": False})
+ok(not o["ok"], f"collapse with no toolbar on screen is not ok ({o})")
+
+# ======================================================================== the phone's overlay verbs (overlay.expand / collapse / open)
+WOKEN.clear()
+j = client.post("/api/console/overlay", json={"verb": "expand"}).json()
+ok(j["ok"] and WOKEN[-1][0] == f"{cc.CONSOLE_URL}/?axf-overlay=expand", f"expand rides amberx.open_url with the verb ({WOKEN[-1:]})")
+j = client.post("/api/console/overlay", json={"verb": "collapse"}).json()
+eq(WOKEN[-1][0], f"{cc.CONSOLE_URL}/?axf-overlay=collapse", "collapse too")
+j = client.post("/api/console/overlay", json={"verb": "open", "url": "https://console.amberxai.com/?axf-view=ui-review"}).json()
+ok(j["ok"] and WOKEN[-1][0] == "https://console.amberxai.com/?axf-view=ui-review", "open sends the page itself")
+n = len(WOKEN)
+r = client.post("/api/console/overlay", json={"verb": "open", "url": "https://evil.example/"})
+eq((r.status_code, len(WOKEN)), (400, n), "open refuses a page off Brett's domain, nothing sent")
+r = client.post("/api/console/overlay", json={"verb": "open", "url": "http://console.amberxai.com/"})
+eq(r.status_code, 400, "https only")
+r = client.post("/api/console/overlay", json={"verb": "dance"})
+eq(r.status_code, 400, "unknown verb")
+r = client.post("/api/console/overlay", json={"verb": "expand"}, headers={"x-user": "guest"})
+eq((r.status_code, len(WOKEN)), (403, n), "another user never reaches Brett's phone")
+saved_waker = cc.WAKER
+cc.WAKER = lambda url, browser: (_ for _ in ()).throw(RuntimeError("hub down"))
+j = client.post("/api/console/overlay", json={"verb": "expand"}).json()
+ok(not j["ok"] and "hub down" in j["message"], "a hub failure is an answer, not a crash")
+cc.WAKER = saved_waker
 
 # a wake that reached nobody leaves a tappable console alert (AmberX's watch reads it), cleared on delivery
 alerts: list[dict] = []

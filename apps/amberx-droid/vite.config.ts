@@ -20,6 +20,7 @@ const consoleAxf = join(consoleSrc, 'axf') + sep;
 const consoleAliases = [
   { find: /^@console\/axf\//, replacement: `${src}/axf/` },
   { find: /^@console\/plugins$/, replacement: `${src}/console/plugins.ts` },
+  { find: /^@console\/api$/, replacement: `${src}/console/api.ts` }, // token store only: the page holds no console token
   { find: /^@console\/pluginLifecycle$/, replacement: `${src}/console/pluginLifecycle.tsx` },
   { find: /^@console\/watchLive$/, replacement: `${src}/console/watchLive.tsx` }, // Watch live previews need the console token: none here
   { find: /^@console\/changeBatch$/, replacement: join(consoleSrc, 'changeBatch.tsx') },
@@ -35,6 +36,12 @@ function consolePlugins(): { folder: string; manifest: Record<string, unknown> }
       return Array.isArray(manifest.targets) && manifest.targets.includes(APP_TARGET) ? [{ folder, manifest }] : [];
     } catch { return []; }
   });
+}
+/** Capability service → folder for the console plugins installed here (their plugin.json `provides`), for `pluginProviding`. */
+function consoleServices(): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const p of consolePlugins()) for (const s of Array.isArray(p.manifest.provides) ? p.manifest.provides : []) if (typeof s === 'string' && s.startsWith('service:') && !(s in out)) out[s] = p.folder;
+  return out;
 }
 const VIRTUAL = 'virtual:amberx-console-plugins';
 const consolePluginsModule = {
@@ -73,6 +80,7 @@ export default defineConfig(({ mode }) => ({
     ...(mode === 'single' ? [viteSingleFile()] : []),
   ],
   resolve: { alias: consoleAliases, dedupe: ['react', 'react-dom'] },
+  define: { __AMBERX_CONSOLE_SERVICES__: JSON.stringify(consoleServices()) },
   build: { outDir: mode === 'single' ? 'dist-single' : 'dist' },
   // `npm run dev`: /api goes to the AmberX server (AMBERX_DEV_OPEN=1 uvicorn main:app --app-dir server --port 7492)
   server: { proxy: { '/api': { target: process.env.AMBERX_API ?? 'http://127.0.0.1:7492', changeOrigin: false } } },

@@ -123,7 +123,16 @@ export function normalizeAppLook(raw) {
   out.own = normalizeLookPart(raw.own);
   out.skin = normalizeSkinState(raw.skin);
   out.scopes = normalizeScopes(raw.scopes);
-  if (isObj(raw.undo)) out.undo = { own: normalizeLookPart(raw.undo.own), skin: normalizeSkinState(raw.undo.skin), scopes: normalizeScopes(raw.undo.scopes), at: String(raw.undo.at ?? '') };
+  if (isObj(raw.undo)) {
+    out.undo = { own: normalizeLookPart(raw.undo.own), skin: normalizeSkinState(raw.undo.skin), scopes: normalizeScopes(raw.undo.scopes), at: String(raw.undo.at ?? '') };
+    // skin-switch@1: the action and scope that left the record (the Undo label), and the hub-wide skin before a hub switch
+    if (typeof raw.undo.action === 'string' && raw.undo.action) out.undo.action = raw.undo.action;
+    if (typeof raw.undo.scope === 'string' && raw.undo.scope) out.undo.scope = raw.undo.scope;
+    if (out.undo.scope === 'hub' && 'global' in raw.undo) {
+      const g = raw.undo.global;
+      out.undo.global = isObj(g) && typeof g.id === 'string' && ID.test(g.id) ? withColor({ id: g.id, overrides: idMap(g.overrides, [SKIN_COLOR_SLOT]) }, colorPick(g)) : null;
+    }
+  }
   // skins only (look-migration@1): the one-run stamp and the backup of what the fold moved; kept through every writer
   if (isObj(raw.migrated) && Number.isFinite(Number(raw.migrated.version))) {
     out.migrated = { version: Math.max(0, Math.floor(Number(raw.migrated.version))), at: String(raw.migrated.at ?? ''), by: String(raw.migrated.by ?? '') };
@@ -150,6 +159,17 @@ export function parseAppLook(text) {
 export function setUseSkin(look, on) { return { ...look, skin: { ...look.skin, use: on } }; }
 /** Follow the hub-wide skin while Use skin is off (Brett: "a switch to do it, but by default they're all their own"). */
 export function setInheritSkin(look, on) { return { ...look, skin: { ...look.skin, inherit: on } }; }
+/**
+ * The look drawn while an app takes its skin from axHub only (Settings → Appearance → "Get my skin only from axHub"):
+ * the hub-wide skin, with the colour theme axHub picked inside it, over the app's default snapshot. The app's own picks,
+ * its Use skin switch, skin, overrides and colour theme pick, and every UI / plugin scope are left out of what is drawn;
+ * they stay in the stored document (this only builds the document to compose), so switching back shows them again.
+ * The undo and migration stamps ride along unchanged. null stays null.
+ */
+export function hubOnlyLook(look) {
+  if (!look) return look;
+  return { ...look, own: {}, skin: { use: false, inherit: true, id: '', overrides: {} }, scopes: {} };
+}
 /** Pick a skin: a different one starts with no overrides and its own colour theme; the same one keeps both. */
 export function pickSkin(look, id) { return id === look.skin.id ? look : { ...look, skin: { ...withColor(look.skin, ''), id, overrides: {} } }; }
 /**

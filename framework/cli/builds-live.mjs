@@ -222,7 +222,9 @@ export function publish(entries, { journalExtra = {} } = {}) {
     if (threads !== null && threadLines.length) files[THREADS_REL] = appendThreads(threads, threadLines);
     for (const x of orchestratorExports(merged)) { const old = show(base, x.rel); if (old !== null || x.builds) files[x.rel] = x.text; }
     // One profile (Brett, Nov 7 2026): an orchestrator export of a profile that is not registered any more (a retired
-    // profile's file an older checkout or a merge brought back) is taken off main, never rewritten.
+    // profile's file an older checkout or a merge brought back) is taken off main, never rewritten. The same for a
+    // profile registered only on the hub (test-sandbox, Nov 13 2026): orchestratorExports lists repo-registered
+    // profiles only, so its folder leaves main with the next publish instead of failing check-profiles.mjs there.
     for (const rel of staleProfileExports(base, files)) files[rel] = null;
     // what Brett said (build-origin@1): main's sidecar + every origin on the merged records, never fewer
     { let mine = ''; try { mine = readFileSync(originsFile(), 'utf8'); } catch { /* none yet */ }

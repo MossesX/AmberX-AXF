@@ -1,13 +1,14 @@
 /**
- * The approval overlay (Brett, Nov 13 2026: "Build me a overlay that expands with the approval every time one's sent.
- * A little overlay, like a little toolbar, but it expands when I need an approval."). On the phone (AmberX, Java
- * `ApprovalOverlay`) a small toolbar floats over every app and opens into the full card (what, why, countdown,
- * Approve / Deny / Shelve) the moment an approval or held command arrives, then shrinks back.
+ * The AmberX overlay (one overlay since Nov 13 2026, replacing the separate float and pages builds). On the phone
+ * (AmberX, Java `ApprovalOverlay`) an always-on toolbar floats over every app: it spawns the approval bar (what, why,
+ * countdown, Approve / Deny / Shelve) when something waits, and expands into a full-screen browser with the toolbar
+ * docked top-left, where Amber drives the console live while Brett watches. Because the toolbar window is always
+ * visible, AmberX may open pages from the background, so every AI "open X" goes through it.
  *
- * Pure part: its settings, runtime settings `approvals-banner.overlay.*`, so they show in Settings → Plugins →
- * Approvals banner, follow the level toolbar, and are set from the console API / MCP / CLI like every setting; the
- * `approvals.overlay:<what>:<value>` action (voice, console actions) changes them by name. The phone gets them through
- * the veto host (`VetoHost.overlay`); its colours follow the active skin (the theme tokens AmberX sends natively).
+ * Pure part: its settings, runtime settings `approvals-banner.overlay.*` (Settings → Plugins → Approvals banner, the
+ * level toolbar, the console API / MCP / CLI like every setting), the one-time move off the retired settings, and the
+ * verbs `overlay.expand`, `overlay.collapse`, `overlay.open {url}` (voice, console actions, MCP, the CLI). The phone gets
+ * the settings through the veto host (`VetoHost.overlay`); its colours follow the active skin.
  */
 
 export const OVERLAY_KEYS = {
@@ -17,45 +18,44 @@ export const OVERLAY_KEYS = {
   size: 'approvals-banner.overlay.size',
   expand: 'approvals-banner.overlay.expand',
   show: 'approvals-banner.overlay.show',
-  idleVisible: 'approvals-banner.overlay.idleVisible',
   idleOpacity: 'approvals-banner.overlay.idleOpacity',
   shrinkAfterSec: 'approvals-banner.overlay.shrinkAfterSec',
+} as const;
+
+/**
+ * Settings the float and pages builds had, folded in by {@link migrateOverlay}: the toolbar now always shows (it is
+ * what lets AmberX open pages from the background) and every open goes through the overlay.
+ */
+export const RETIRED_KEYS = {
+  idleVisible: 'approvals-banner.overlay.idleVisible',
   pages: 'approvals-banner.overlay.pages',
 } as const;
 
 export type OverlayKey = keyof typeof OVERLAY_KEYS;
 
 export interface OverlayConfig {
-  /** the toolbar is on (the phone also needs "Display over other apps") */ on: boolean;
-  /** which side of the screen it sits on */ edge: 'end' | 'start';
+  /** the one on/off switch (the phone also needs "Display over other apps") */ on: boolean;
+  /** which side of the screen the toolbar sits on; dragging it on the phone sets this */ edge: 'end' | 'start';
   /** distance from the top, percent of the screen height (0–90); dragging it on the phone sets this */ top: number;
   /** text and spacing scale */ size: 'small' | 'medium' | 'large';
-  /** what opens the card: every approval, only held calls (they run on their own), or never */ expand: 'every' | 'held' | 'never';
+  /** what opens the approval bar: every approval, only held calls (they run on their own), or never */ expand: 'every' | 'held' | 'never';
   /** what the toolbar says: the next held call's countdown, or how many wait */ show: 'next' | 'count';
-  /** keep the toolbar on screen when nothing waits (off: it appears only with an approval) */ idleVisible: boolean;
   /** toolbar opacity while nothing waits, percent */ idleOpacity: number;
-  /** after the last approval goes, shrink back after this many seconds (0 = at once) */ shrinkAfterSec: number;
-  /**
-   * where pages Amber opens go (open_url, console_show; Brett, Nov 13 2026: "I want it to pop up a full browser window
-   * if I want to, if I go to a page. But I want it to be just a floating toolbar unless you call it to open something."):
-   * the toolbar's own full-screen browser window, closed back to the toolbar; or Chrome
-   */ pages: 'overlay' | 'browser';
+  /** after the last approval goes, fold the approval bar after this many seconds (0 = at once) */ shrinkAfterSec: number;
 }
 
 export const OVERLAY_DEFAULTS: OverlayConfig = {
-  on: true, edge: 'end', top: 30, size: 'small', expand: 'every', show: 'next', idleVisible: true, idleOpacity: 85, shrinkAfterSec: 0, pages: 'overlay',
+  on: true, edge: 'end', top: 30, size: 'small', expand: 'every', show: 'next', idleOpacity: 85, shrinkAfterSec: 0,
 };
+
+export const IDLE_OPACITY_MIN = 40;
 
 export const EDGES = [{ value: 'end', label: 'Right' }, { value: 'start', label: 'Left' }] as const;
 export const SIZES = [{ value: 'small', label: 'Small' }, { value: 'medium', label: 'Medium' }, { value: 'large', label: 'Large' }] as const;
 export const EXPANDS = [
   { value: 'every', label: 'Every approval' },
   { value: 'held', label: 'Only held commands (they run by themselves)' },
-  { value: 'never', label: 'Never (tap the toolbar to open it)' },
-] as const;
-export const PAGES = [
-  { value: 'overlay', label: 'The toolbar opens into a full browser window' },
-  { value: 'browser', label: 'Chrome' },
+  { value: 'never', label: 'Never (tap ▸ on the toolbar to open it)' },
 ] as const;
 export const SHOWS = [{ value: 'next', label: 'Next countdown' }, { value: 'count', label: 'How many wait' }] as const;
 
@@ -76,21 +76,35 @@ export function overlayConfig(get: (k: string) => unknown): OverlayConfig {
     size: pick(get(OVERLAY_KEYS.size), SIZES, d.size),
     expand: pick(get(OVERLAY_KEYS.expand), EXPANDS, d.expand),
     show: pick(get(OVERLAY_KEYS.show), SHOWS, d.show),
-    idleVisible: bool(get(OVERLAY_KEYS.idleVisible), d.idleVisible),
-    idleOpacity: num(get(OVERLAY_KEYS.idleOpacity), 40, 100, d.idleOpacity),
+    idleOpacity: num(get(OVERLAY_KEYS.idleOpacity), IDLE_OPACITY_MIN, 100, d.idleOpacity),
     shrinkAfterSec: num(get(OVERLAY_KEYS.shrinkAfterSec), 0, 60, d.shrinkAfterSec),
-    pages: pick(get(OVERLAY_KEYS.pages), PAGES, d.pages),
   };
+}
+
+/**
+ * The one-time move off the retired settings (the same rule as Java `ApprovalOverlayRules.migrate`): "hide the
+ * toolbar when nothing waits" becomes the faintest idle toolbar, "pages in Chrome" is dropped (Chrome stays one tap
+ * away on the docked toolbar). → the settings to write (retired keys set to null to clear them), or null when there is
+ * nothing to move.
+ */
+export function migrateOverlay(get: (k: string) => unknown): Record<string, unknown> | null {
+  const idle = get(RETIRED_KEYS.idleVisible), pages = get(RETIRED_KEYS.pages);
+  const has = (v: unknown) => v !== undefined && v !== null; // the runtime answers null for a key nobody saved
+  if (!has(idle) && !has(pages)) return null;
+  const out: Record<string, unknown> = {};
+  if (has(idle)) out[RETIRED_KEYS.idleVisible] = null;
+  if (has(pages)) out[RETIRED_KEYS.pages] = null;
+  if (idle === false) out[OVERLAY_KEYS.idleOpacity] = IDLE_OPACITY_MIN;
+  return out;
 }
 
 /** Spoken / typed names for each setting (voice: "overlay size large", "overlay position left"). */
 const ALIASES: Record<string, OverlayKey> = {
   on: 'on', enabled: 'on', edge: 'edge', side: 'edge', position: 'edge', top: 'top', height: 'top', y: 'top', size: 'size',
-  expand: 'expand', opens: 'expand', show: 'show', shows: 'show', label: 'show', idle: 'idleVisible', idlevisible: 'idleVisible',
+  expand: 'expand', opens: 'expand', opensfor: 'expand', show: 'show', shows: 'show', label: 'show',
   opacity: 'idleOpacity', idleopacity: 'idleOpacity', shrink: 'shrinkAfterSec', shrinkafter: 'shrinkAfterSec', shrinkaftersec: 'shrinkAfterSec',
-  pages: 'pages', links: 'pages', browser: 'pages',
 };
-const WORDS: Record<string, string> = { right: 'end', left: 'start', medium: 'medium', big: 'large', small: 'small', large: 'large', held: 'held', all: 'every', always: 'every', chrome: 'browser', window: 'overlay', toolbar: 'overlay', inside: 'overlay' };
+const WORDS: Record<string, string> = { right: 'end', left: 'start', medium: 'medium', big: 'large', small: 'small', large: 'large', held: 'held', all: 'every', always: 'every' };
 
 /**
  * One setting change by name (`approvals.overlay:<what>:<value>`): the key and parsed value, or an error to show.
@@ -100,7 +114,7 @@ export function parseOverlayChange(what: string, value: string): { key: string; 
   const w = what.trim().toLowerCase().replace(/[\s_-]/g, '');
   if ((w === 'on' || w === 'off') && !value) return { key: OVERLAY_KEYS.on, value: w === 'on' };
   const name = ALIASES[w];
-  if (!name) return { error: `unknown overlay setting "${what}" (on, edge, top, size, expand, show, idle, opacity, shrink, pages)` };
+  if (!name) return { error: `unknown overlay setting "${what}" (on, edge, top, size, opens, show, opacity, shrink)` };
   const raw = value.trim().toLowerCase();
   const v = WORDS[raw] ?? raw;
   const yes = /^(on|true|yes|1)$/.test(v), no = /^(off|false|no|0)$/.test(v);
@@ -110,21 +124,63 @@ export function parseOverlayChange(what: string, value: string): { key: string; 
     const n = Number(v.replace(/%|s$/g, ''));
     return Number.isFinite(n) ? { key: OVERLAY_KEYS[name], value: n } : { error: `${name} takes a number` };
   }
-  const list = name === 'edge' ? EDGES : name === 'size' ? SIZES : name === 'expand' ? EXPANDS : name === 'pages' ? PAGES : SHOWS;
+  const list = name === 'edge' ? EDGES : name === 'size' ? SIZES : name === 'expand' ? EXPANDS : SHOWS;
   return list.some((o) => o.value === v) ? { key: OVERLAY_KEYS[name], value: v } : { error: `${name} takes ${list.map((o) => o.value).join(', ')}` };
 }
 
+/* ---------------- the verbs: overlay.expand, overlay.collapse, overlay.open {url} ---------------- */
+
+export type OverlayVerb = 'expand' | 'collapse' | 'open';
+/** The approval bar on its own (it opens by itself when something waits). */
+export type OverlayBarVerb = 'bar-open' | 'bar-close';
+
+/** The pages the overlay's browser loads: https on Brett's own domain (the same rule as Java `OpenUrlRules`). */
+export function overlayUrlAllowed(url: string): boolean {
+  try {
+    const u = new URL(url);
+    return u.protocol === 'https:' && (u.hostname === 'amberxai.com' || u.hostname.endsWith('.amberxai.com')) && !u.username && !u.password;
+  } catch { return false; }
+}
+
 /**
- * The page window by name: `approvals.overlay:page[:<url>]` opens one of Brett's pages in the toolbar's full browser
- * window (no URL: the last page or the console); `approvals.overlay:close` closes it, just the toolbar again. Null when
- * [what] isn't one of these.
+ * A spoken or typed overlay command → the verb (and URL for open), or null when it isn't one. Accepts the action
+ * names (`expand`, `collapse`, `open <url>`) and the older `approvals.overlay` words (`page[:<url>]`, `close`,
+ * `close-page`, `fullscreen`, `minimize`); `bar` / `bar:off` work the approval bar.
  */
-export function parsePageCommand(what: string, value: string): { command: 'page' | 'close-page'; url?: string } | null {
+export function parseOverlayVerb(what: string, value = ''): { verb: OverlayVerb; url?: string } | { verb: OverlayBarVerb } | { error: string } | null {
   const w = what.trim().toLowerCase().replace(/[\s_-]/g, '');
-  const url = value.trim();
-  if (w === 'page' || w === 'openpage' || w === 'go') return url ? { command: 'page', url } : { command: 'page' };
-  if (w === 'close' || w === 'closepage') return { command: 'close-page' };
+  const arg = value.trim();
+  if (w === 'expand' || w === 'fullscreen' || w === 'maximize' || ((w === 'page' || w === 'go') && !arg)) return { verb: 'expand' };
+  if (w === 'collapse' || w === 'close' || w === 'closepage' || w === 'minimize') return { verb: 'collapse' };
+  if (w === 'open' || w === 'page' || w === 'openpage' || w === 'go') {
+    if (!arg) return { verb: 'expand' };
+    return overlayUrlAllowed(arg) ? { verb: 'open', url: arg } : { error: `overlay.open takes one of your own pages (https://…amberxai.com), not "${arg}"` };
+  }
+  if (w === 'bar' || w === 'approvals' || w === 'card') return { verb: /^(off|close|fold|no|false|0)$/i.test(arg) ? 'bar-close' : 'bar-open' };
+  if (w === 'fold') return { verb: 'bar-close' };
   return null;
+}
+
+/**
+ * The URL that carries a verb to the phone through axHub's `amberx.open_url` (AXPP `browser.open`, no new hub tool):
+ * expand and collapse are the console URL with `axf-overlay=<verb>`; open is the page itself.
+ */
+export function overlayVerbUrl(verb: OverlayVerb, url = '', consoleUrl = 'https://console.amberxai.com'): string {
+  if (verb === 'open') return url;
+  return `${consoleUrl.replace(/\/$/, '')}/?axf-overlay=${verb}`;
+}
+
+/** What the overlay's browser exposes to the console running inside it (Java `ApprovalOverlay.Bridge`). */
+export interface OverlayBridge {
+  collapse(): void;
+  open(url: string): void;
+  state(): string;
+}
+
+/** The bridge when this console runs inside AmberX's overlay browser, else null. */
+export function overlayBridge(scope: unknown = globalThis): OverlayBridge | null {
+  const b = (scope as { AmberxOverlay?: Partial<OverlayBridge> } | null)?.AmberxOverlay;
+  return b && typeof b.collapse === 'function' && typeof b.open === 'function' ? (b as OverlayBridge) : null;
 }
 
 /** The phone's settings payload (Java `WatchService.setApprovalOverlay`). */

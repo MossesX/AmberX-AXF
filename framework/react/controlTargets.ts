@@ -414,7 +414,8 @@ export class ControlRegistry {
     scan();
     let pending: ReturnType<typeof setTimeout> | null = null;
     const mo = new MutationObserver(() => { if (pending) return; pending = setTimeout(() => { pending = null; scan(); }, 60); });
-    mo.observe(root instanceof Document ? root.documentElement : (root as Node), { childList: true, subtree: true, attributes: true, attributeFilter: [CONTROL_TARGET_ATTR, CONTROL_SCOPE_ATTR] });
+    // a document by its node type, not `instanceof Document`: that needs a global constructor jsdom hosts don't install
+    mo.observe((root as Node).nodeType === 9 ? (root as Document).documentElement : (root as Node), { childList: true, subtree: true, attributes: true, attributeFilter: [CONTROL_TARGET_ATTR, CONTROL_SCOPE_ATTR] });
     return () => { mo.disconnect(); if (pending) clearTimeout(pending); for (const off of owned.values()) off(); owned.clear(); };
   }
 }
@@ -579,12 +580,13 @@ export function useControlTargets(defs: ControlTargetDef[], key: string): void {
   }, [rt, scope, key]);
 }
 
-/** Register every view of the shell as a target (open = navigate). AppShell calls it. */
+/** Register every view of the shell as a target (open = navigate; the Settings view opens through app.settings, so in
+ *  the floating dialog by default: core/engines/settingsopen.ts). AppShell calls it. */
 export function useViewTargets(views: Record<string, { title: string; icon?: string; keywords?: string[] }>): void {
   const rt = useRuntime();
   useEffect(() => {
     const reg = controlRegistry(rt);
-    const offs = Object.entries(views).map(([id, v]) => reg.register({ address: `view:${id}`, kind: 'view', label: v.title, icon: v.icon, keywords: [id, ...(v.keywords ?? [])], open: () => rt.navigate(id), element: () => document.querySelector(`[data-axf-view="${cssEscape(id)}"]:not([hidden]), .fx-main__inner:not([hidden])`) }));
+    const offs = Object.entries(views).map(([id, v]) => reg.register({ address: `view:${id}`, kind: 'view', label: v.title, icon: v.icon, keywords: [id, ...(v.keywords ?? [])], open: () => (id === 'settings' ? rt.dispatch('app.settings') : rt.navigate(id)), element: () => document.querySelector(`[data-axf-view="${cssEscape(id)}"]:not([hidden]), .fx-main__inner:not([hidden])`) }));
     return () => offs.forEach((off) => off());
   }, [rt, Object.keys(views).join('|')]);
 }
