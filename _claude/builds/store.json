@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6449,
- "updatedAt": "2026-11-16T13:57:46.950Z",
+ "rev": 6450,
+ "updatedAt": "2026-11-16T13:58:07.910Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -203769,7 +203769,7 @@
    "title": "UI Manager: floating window to select any element in the console and edit all its tokens",
    "category": "",
    "detail": "UI Manager (console plugin), opens in a floating window.\n- Lets Brett select ANY UI element in the whole console (every screen, plugin, dialog, toolbar, tab group, banner, nav, widget, control).\n- Left: collapsible categorized tree of all elements. Top category 'On screen now' lists every element currently visible; these are references (like Windows shortcuts / symlinks) to the same element that also lives in its normal category - both point to one shared source, edit either and both change.\n- Selecting an element (or picking it on screen with an inspector/picker mode) opens it according to the chosen view (several views: expanding row, side panel, grid...). Default: an expanding row listing all its properties and every token it reads.\n- Each property/token is edited by choosing from predetermined, valid values supplied by the console/framework integration (token sets, skins, assets, enums, ranges) - never free text where a valid list exists; schema-validated; live preview; reset to skin/default; shows overrides.\n- Searchable, sortable, multi-filter lists everywhere (thousands of elements).\n- Full API: REST/MCP/CLI/voice/control@1 ('select the main toolbar, set its transparency to 80').\n- Elements register via the framework (manifest) so new plugins appear automatically.\n- Tests, help, Shipped features. Fable for the element registry/schema core, Opus for UI.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -203777,7 +203777,7 @@
    "pr": "#634",
    "priority": "P1",
    "createdAt": "2026-11-13T18:30:38.922Z",
-   "updatedAt": "2026-11-16T13:57:13.448Z",
+   "updatedAt": "2026-11-16T13:58:05.610Z",
    "builtAt": "",
    "notes": [
     {
@@ -203931,6 +203931,10 @@
     {
      "text": "Dispatch gate: ui-manager-floating-window-to-select-any still has axf-ui-manager-floating-window-to-select-any--gina alive: not launched again, tracking that session.",
      "at": "2026-11-16T13:57:13.448Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 0) with 4 steps left: back in the Queue (run 3).",
+     "at": "2026-11-16T13:58:05.610Z"
     }
    ],
    "approvals": [
@@ -203970,13 +203974,13 @@
     "queuedAt": "2026-11-13T18:30:41.004Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-ui-manager-floating-window-to-select-any--gina",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-16T13:23:15.243Z",
     "runs": 3,
     "lastRun": {
-     "at": "2026-11-16T13:57:09.368Z",
+     "at": "2026-11-16T13:58:04.843Z",
      "exit": 0,
      "outcome": "requeued",
      "stepsLeft": 4,
@@ -204328,7 +204332,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 59,
+   "rev": 60,
    "deleted": false,
    "deletedAt": "",
    "pending": {
