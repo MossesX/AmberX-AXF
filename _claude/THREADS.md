@@ -808,8 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 13:01 UTC · `axf-molly-container-orchestrator-gate` branch claude/axf-molly-container-orchestrator-gate, PR #710 (all) · builds-live
-- 2026-11-15 13:01 UTC · `axf-molly-container-orchestrator-gate` s1 done, → running (all) · orchestrator
 - 2026-11-15 13:01 UTC · `axf-molly-container-orchestrator-gate` note (all) · orchestrator
 - 2026-11-15 13:01 UTC · `gate-rules-plugin-in-the-console` s22 done (all) · orchestrator
 - 2026-11-15 13:02 UTC · `axf-molly-container-orchestrator-gate` note (all) · orchestrator
@@ -1208,6 +1206,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 16:25 UTC · `phone-connect-small-android-companion` → queued, note (all) · pipeline
 - 2026-11-16 16:25 UTC · `remove-old-molly-app-project-keep-axf` s3 done (all) · orchestrator
 - 2026-11-16 16:25 UTC · `remove-old-molly-app-project-keep-axf` s4 done (all) · orchestrator
+- 2026-11-16 16:26 UTC · `get-main-green-unblock-lander-land-axf` → running, note (all) · pipeline
+- 2026-11-16 16:26 UTC · `get-main-green-unblock-lander-land-axf` branch claude/get-main-green-unblock-lander-land-axf (all) · pipeline
 
 ## Token passes (log)
 
