@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6659,
- "updatedAt": "2026-11-16T18:43:37.171Z",
+ "rev": 6660,
+ "updatedAt": "2026-11-16T18:44:47.032Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -201160,7 +201160,7 @@
    "title": "All settings interfaces open in a floating dialog by default",
    "category": "",
    "detail": "Every settings interface (console Settings sections, plugin settings, chrome settings for tab groups/toolbars/banners/nav/menu bar, and any future one) opens by default in a floating dialog over the current screen instead of navigating to the Settings page. Make it a framework default so new settings interfaces get it automatically (template + check that fails if a settings interface navigates away by default). Keep a per-user option to open it as a page instead, and a 'pop out to page' button in the dialog. Dialogs use the glass/transparency tokens (opacityGlass, blur). Deep links and voice/MCP/API still work. Tests, help entry, Shipped features.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -201168,8 +201168,8 @@
    "pr": "#628",
    "priority": "P1",
    "createdAt": "2026-11-13T18:03:04.047Z",
-   "updatedAt": "2026-11-16T18:36:28.352Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T18:44:45.128Z",
+   "builtAt": "2026-11-16T18:44:45.128Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -201329,12 +201329,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T18:44:45.128Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:33:23.861Z",
-     "updatedAt": "2026-11-16T18:33:24.082Z"
+     "updatedAt": "2026-11-16T18:44:45.420Z"
     },
     {
      "id": "s2",
@@ -201392,7 +201392,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
