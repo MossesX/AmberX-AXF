@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T18:32:50.218Z",
+ "updatedAt": "2026-11-16T18:33:19.372Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -159887,12 +159887,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T18:28:00.561Z",
-   "updatedAt": "2026-11-16T18:28:07.935Z",
+   "updatedAt": "2026-11-16T18:33:17.177Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-16T18:28:07.935Z"
+    },
+    {
+     "text": "Split by Claude into 11 steps (0 Fable).",
+     "at": "2026-11-16T18:33:17.177Z"
     }
    ],
    "approvals": [],
@@ -159909,7 +159913,261 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Reproduce: build the console from this checkout (rebake src/axf), serve it with vite preview and the /api/me mock, and take signed-in headless Chrome shots of every Build Orchestrator tab (Pending, Queue, Building, Pipeline and the rest) in 1-row and 2-row modes, desktop and phone, under the default skin and the console-look skin. Save them as the 'before' set with axf shot --group 'hotfix-orchestrator-grid-columns-don-t - before'. Commit the shot manifest (shots.json).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/axf/",
+      "framework/cli/shot.mjs",
+      "_claude/builds/reports/hotfix-orchestrator-grid-columns-don-t/shots.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjlq7p61dqsam",
+     "createdAt": "2026-11-16T18:33:17.177Z"
+    },
+    {
+     "id": "s2",
+     "text": "Find the root cause: diff what the console-look-becomes-default-axhub-skin and every-grid-1-2-rows-per-item-set-skin builds changed in the grid CSS, the skin assets and the DataGrid component. Look for header and row tracks that are sized separately (max-content rows, auto columns, a gap or padding token used on only one side, 2-row wrap). Write the finding in the report draft and commit it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/DataGrid.tsx",
+      "framework/ui/axf.css",
+      "framework/assets/skin/",
+      "apps/console-web/src/console.css",
+      "_claude/builds/reports/hotfix-orchestrator-grid-columns-don-t.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjlq7p61edjvm",
+     "createdAt": "2026-11-16T18:33:17.177Z"
+    },
+    {
+     "id": "s3",
+     "text": "Write a failing alignment check first: a Playwright/tsx test that opens each orchestrator tab grid and every other console DataGrid in 1-row and 2-row modes under every skin, reads the left and right edges of each header cell and of the matching cell in every row, and fails when any edge is off by more than 1px. Commit it red.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/scripts/grid-align.mjs",
+      "apps/console-web/package.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjlq7p61fv4ur",
+     "createdAt": "2026-11-16T18:33:17.177Z"
+    },
+    {
+     "id": "s4",
+     "text": "Fix DataGrid so the header and every row share one column definition: compute a single grid-template-columns from the column specs (widths from the grid asset tokens, no var() fallbacks), set it on the grid root, and have the header and rows use subgrid or inherit it, so the cells can't size themselves. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/DataGrid.tsx",
+      "framework/ui/axf.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjlq7p61gq9da",
+     "createdAt": "2026-11-16T18:33:17.177Z"
+    },
+    {
+     "id": "s5",
+     "text": "Fix 2-row mode: lay out the second line of each item on the same shared template (span the right columns) so the header and line 1 stay lined up, and padding, gap and border tokens are the same on header and row cells. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/DataGrid.tsx",
+      "framework/ui/axf.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjlq7p61h0lhb",
+     "createdAt": "2026-11-16T18:33:17.177Z"
+    },
+    {
+     "id": "s6",
+     "text": "Remove the skin overrides that broke alignment (per-row or per-header column widths, gap or padding set on only one side) from the skin assets and console.css, and keep the look on tokens only. Run check-theme.mjs, check-controls.mjs and check-chrome-assets.mjs. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/assets/skin/",
+      "apps/console-web/src/console.css",
+      "apps/console-web/plugins/build-orchestrator/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjlq7p61ij9zd",
+     "createdAt": "2026-11-16T18:33:17.177Z"
+    },
+    {
+     "id": "s7",
+     "text": "Move the orchestrator's own grids (Pending, Queue, Building, Pipeline, the steps sub-grid) and any hand-made grid in the console that skips DataGrid onto the shared column definition. Fix any fixed cell widths that clash with it. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/",
+      "apps/console-web/src/views/",
+      "apps/console-web/plugins/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjlq7p61j2fs7",
+     "createdAt": "2026-11-16T18:33:17.177Z"
+    },
+    {
+     "id": "s8",
+     "text": "API part: make the grid's row mode (1-row or 2-row) and its resolved column template readable and settable without the UI: a console-control target on each grid (view:builds/tab:orchestrator=pending/grid), a state read that returns the columns and row mode, and the set action through REST /api/console-control, the console_control_* MCP tools, axf console and voice. Register the targets in the control registry (append only). Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/",
+      "framework/cli/check-console-control.mjs",
+      "framework/core/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjlq7p61k4se2",
+     "createdAt": "2026-11-16T18:33:17.177Z"
+    },
+    {
+     "id": "s9",
+     "text": "Rebake the console (rebake.mjs apply console-web), regenerate fixtures and the tracker if they moved, and run the alignment test green under every skin in both row modes, plus theme-swap.mjs, check-theme, check-controls, check-toolbars and check-console-control. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/axf/",
+      "framework/spec/fixtures/",
+      "tracker.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjlq7p61lcole",
+     "createdAt": "2026-11-16T18:33:17.177Z"
+    },
+    {
+     "id": "s10",
+     "text": "Take the 'after' shots of the same set as step 1 (every orchestrator tab, the other console grids, 1-row and 2-row, desktop and phone, both skins) and submit them to UI Review with at least 3 grid-density options as grid assets (or --single-option with the reason that it's a hotfix restoring the intended look). Commit the shot manifest.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/review.mjs",
+      "apps/console-web/plugins/build-orchestrator/assets/",
+      "_claude/builds/reports/hotfix-orchestrator-grid-columns-don-t/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjlq7p61mmmac",
+     "createdAt": "2026-11-16T18:33:17.177Z"
+    },
+    {
+     "id": "s11",
+     "text": "Finish: wire the alignment test into CI (android.yml console job), write the report (_claude/builds/reports/hotfix-orchestrator-grid-columns-don-t.md: root cause, before/after shots, tests before→after, how each API part is reached), add the THREADS row, push the branch, open the PR (say UI Review is waiting and list the REST, MCP, CLI and voice routes), link it with builds-live.mjs link, and put it in the merge queue. After it lands and the console redeploys, check by hand on the live console signed in and note the result on the build.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      ".github/workflows/android.yml",
+      "_claude/builds/reports/hotfix-orchestrator-grid-columns-don-t.md",
+      "_claude/THREADS.md",
+      "framework/cli/builds-live.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjlq7p61nkrfw",
+     "createdAt": "2026-11-16T18:33:17.177Z"
+    }
+   ]
   }
  ]
 }
