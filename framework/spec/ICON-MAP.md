@@ -116,3 +116,89 @@ nothing of its own. What main has today, and this build stands on:
 | s11 | `<AxfIcon spot=…>`, `useIconSpot`, `rt.icons` | `react/components/AxfIcon.tsx` |
 
 Kotlin twin: deferred (Android on hold), recorded in `spec/PORTING.md` by s9.
+
+## Which pack draws where: icon-scope@1
+
+The chain for a place is the skin chain: **`plugin:<id>` → `ui:<view>` → `app` → `global` (hub-wide) → `brand`**, the
+child overrides the parent. Engine `core/engines/icon-pack.ts` (`resolveIcon`, `iconChain`, s4), fixture
+`spec/fixtures/icon-pack.json` (`scopes`, `resolve`, `reset`).
+
+**Each level has a pack layer and an override layer.**
+
+| level | pack (`pack`) | per-spot overrides (`overrides`) | where it is stored |
+| --- | --- | --- | --- |
+| `plugin:<id>` / `ui:<view>` | the scope's own pick, else the skin in force there (`axf.icons.pack.<scopeKey>`), else *inherit* | the scope's | app-look@1 `icon.scopes[<key>]` |
+| `app` | the app's pick, else its skin's `iconPack`, else *inherit* | the app's | app-look@1 `icon.pack`, `icon.overrides` |
+| `global` | the hub-wide pick, else the hub-wide / default skin's `iconPack`, else *inherit* | hub-wide | appearance@1 `icon.pack`, `icon.overrides` |
+| `brand` | the branding package's `iconPack` (`branding@1 data.iconPack`), else none | — | the branding asset |
+
+A level with no pick and no skin pack says nothing (*inherit*). The nearest level that names a pack decides the pack;
+that pack's `extends` chain is folded first (inherit@1, depth ≤ 4, a cycle stops where it is).
+
+**Resolving one spot** (`resolveIcon(spot, name, chain)` → `{ glyph, pack, scope, by }`), nearest level first:
+
+1. **override**: an `overrides[spot]` entry at this level or any level nearer the leaf wins outright (`by: override`).
+   An override is a glyph entry (path / svg / png / font / ref) or a glyph reference `pack:<id>/<name>` / `name:<glyph>`.
+2. **spot**: the level's folded pack has a per-spot entry `spots[spot]` (`by: spot`).
+3. **name**: the folded pack has a per-name entry `glyphs[<name>]` for the spot's glyph name (its default glyph, or the
+   name a dynamic spot was given at run time) (`by: name`).
+4. A name the pack lacks **falls through to the parent level's pack** while the pack says `fallback: framework`
+   (the default), so a plugin's partial pack draws its own few glyphs and leaves the rest to the app's pack. A pack with
+   `fallback: none` stops the walk: a name it lacks goes straight to step 5 (one consistent set, nothing mixed in).
+5. **framework**: the framework glyph set (`react/components/Icon.tsx`), `by: framework`, `pack: ''`.
+
+`scope` names the level that won (`plugin:<id>`, `ui:<view>`, `app`, `global`, `brand`, `framework`), so the designer
+can show "from the app pack" / "overridden here" on every spot and offer the right reset.
+
+**Reset** (pure, each returns the new document):
+
+| op | what goes | function |
+| --- | --- | --- |
+| spot | one `overrides[spot]` at one level | `resetIconSpot(doc, spot, scopeKey?)` |
+| scope | a `ui:` / `plugin:` entry (its pack and overrides) | `resetIconScope(look, scopeKey)` |
+| app | the app's `icon` block (pack, scopes, overrides) | `resetIconApp(look)` |
+| hub-wide | the shared document's `icon` block | `resetIconHub(appearance)` |
+
+Resets never touch a skin's `iconPack` or the branding: after every reset the app draws what its skins and brand say.
+
+**Dynamic spots** (`glyph: ''`): the name comes from data at run time (`<Icon name={item.icon}>`), so step 2 applies
+only when a pack names the spot explicitly and step 3 uses the run-time name. `<AxfIcon spot=… name=…>` passes both.
+
+**App icons** (`kind: app-icon`) resolve the same way; the winning glyph is tiled with the pack's `appIcon`
+(shape, bg / fg tokens, padding) by `appIconSvg`.
+
+### Storage
+
+appearance@1 (hub-wide, `shared/settings/appearance.json`):
+
+```json
+"icon": { "pack": "outline", "overrides": { "framework:tab-group/x": "name:x-circle" } }
+```
+
+app-look@1 (`shared/settings/looks/<app>.json`):
+
+```json
+"icon": {
+  "pack": "filled",
+  "overrides": { "console-web:view-explorer/star": { "d": "M12 2 …" } },
+  "scopes": { "plugin:console-terminal": { "pack": "generated-ember", "overrides": {} }, "ui:plan": { "pack": "", "overrides": { "console-web:view-plan/plus": "name:sparkles" } } }
+}
+```
+
+`pack: ""` at a scope = inherit (the entry is kept for its overrides). Ids only and small glyph entries (an override
+entry is capped like a pack glyph); never asset bodies. Both documents drop the block when it is empty. Settings:
+the look document rides `axf.skin.look` as today, so the runtime needs no new key; the skin's `axf.icons.pack.<scopeKey>`
+stays the skin layer. `axf.icons.*` is already an appearance setting prefix (`designpackage.ts`), so a skin's pack still
+reaches every app through the hub document.
+
+### Migration from the existing `iconPack` fields
+
+Nothing on main stores an icon pick outside a skin or branding asset, so no document changes shape:
+
+- `branding@1 data.iconPack` is the `brand` level, unchanged.
+- `skin@1 data.iconPack` → `axf.icons.pack.<scopeKey>` is the skin layer at each level, unchanged (`SKIN_ICON_PACK_KEY`).
+- `rt.brandGlyph(name)` (the per-name path `Icon` uses) is re-implemented over `resolveIcon` with no spot, so every
+  existing `<Icon name=…>` draws exactly what it drew: with no `icon` block anywhere the chain is skin → branding →
+  framework, as today. Pinned by the `legacy` cases of `spec/fixtures/icon-pack.json`.
+- A look document that carries a top-level `iconPack` string or `own.settings["axf.icons.pack.app"]` (written by
+  pre-main experiments) is read as `icon.pack` on normalize (`normalizeIconLook`) and written back in the new shape.

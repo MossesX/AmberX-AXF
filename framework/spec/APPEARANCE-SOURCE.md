@@ -186,6 +186,24 @@ under `<SkinScope>` on every view root and every plugin root; a skin's `iconPack
 and its `parts` in the customize sheet. Pure functions: `resolveSkinChain`, `resolveLookSkin`, `composeLookAt`,
 `setScopeSkin`, `setInheritSkin`; fixture `spec/fixtures/skin.json` (`coverage`, `scopes`), `spec/check-skin.mts`.
 
+## Icons per scope: icon-scope@1 (build icon-packs-with-drag-drop-pack-designer, Nov 16 2026)
+
+Which icon pack draws at a place follows the skin chain, `plugin:<id>` → `ui:<view>` → `app` → `global` → `brand`, the
+child overriding the parent; every level has a pack and per-spot overrides. Full rules, resolution order and reset ops
+in `framework/spec/ICON-MAP.md` (engine `core/engines/icon-pack.ts`, fixture `spec/fixtures/icon-pack.json`). Storage:
+
+- **appearance@1** gains an optional `icon: { pack?: icon-pack id, overrides?: { <spot id>: glyph | "name:<glyph>" |
+  "pack:<id>/<name>" } }`: the hub-wide pack and hub-wide per-spot overrides. Merged per key like every other field
+  (`mergeAppearance`: a change's `icon` replaces the block, `null` clears it); dropped when empty.
+- **app-look@1** gains an optional `icon: { pack?, overrides?, scopes?: { "ui:<view>" | "plugin:<id>": { pack?, overrides? } } }`
+  (`normalizeIconLook`): the app's pick, its overrides, and each UI / plugin scope's. `pack: ""` = inherit. Kept
+  through every writer (runtime, `skins.mjs`, the icon-packs CLI).
+- A skin's `iconPack` stays the skin layer at each level (`axf.icons.pack.<scopeKey>`, `SKIN_ICON_PACK_KEY`); the
+  branding package's `iconPack` is the root. A level with no pick takes its skin's pack, else inherits. With no `icon`
+  block anywhere every app draws exactly what it drew before this build.
+- Reset: one spot at one level, one scope, one app (`icon` block gone), hub-wide (`icon` gone from appearance@1); a
+  reset never touches a skin or the branding.
+
 ## The document: `appearance@1`
 
 Project `shared`, path `settings/appearance.json` on the hub's data server (`/projects/_shared/_data/settings/appearance.json`,
