@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 12:02 UTC · `pending-tab-one-collapsed-row-per-2` s5 done (all) · orchestrator
 - 2026-11-15 12:02 UTC · `auto-lander-controls-in-the-gate-plugin` → running, note (all) · orchestrator
 - 2026-11-15 12:02 UTC · `move-build-orchestrator-to-axhub` note (all) · orchestrator
 - 2026-11-15 12:02 UTC · `auto-lander-controls-in-the-gate-plugin` → running, note (all) · foreign-write
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 13:36 UTC · `phone-connect-small-android-companion` → pending, note (all) · reconciler
 - 2026-11-16 13:36 UTC · `console-look-becomes-default-axhub-skin` s10 done (all) · orchestrator
 - 2026-11-16 13:36 UTC · `vps-sends-shipped-features-every-merge` s4 done (all) · orchestrator
+- 2026-11-16 13:37 UTC · `vps-sends-shipped-features-every-merge` s5 done (all) · orchestrator
 
 ## Token passes (log)
 
