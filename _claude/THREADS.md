@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 15:04 UTC · `build-rules-tab-gate-rules-vps-owns` s12 done (all) · orchestrator
 - 2026-11-15 15:05 UTC · `shipped-features-open-button-views-each` s6 done (all) · orchestrator
 - 2026-11-15 15:05 UTC · `phone-connect-small-android-companion` s9 done (all) · orchestrator
 - 2026-11-15 15:05 UTC · `shipped-features-open-button-views-each` s6 done (all) · foreign-write
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 16:47 UTC · `molly-gap-expenses-cors` s3 done, → built (all) · builds-live
 - 2026-11-16 16:47 UTC · `amberx-walkthrough-2-hour-indexed` → archived, note (all) · console
 - 2026-11-16 16:47 UTC · `fix-red-ci-blocked-builds-they-land` s2 done (all) · orchestrator
+- 2026-11-16 16:48 UTC · `fix-console-deep-links-open-page-lands` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
