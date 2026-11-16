@@ -327,6 +327,816 @@
         {
           "id": "opacityBanner",
           "kind": "number"
+        },
+        {
+          "id": "grid.headerBg",
+          "token": "--fx-grid-header-bg",
+          "kind": "color",
+          "default": "var(--fx-surface2)",
+          "level": "basic",
+          "description": "Background of the header row.",
+          "family": "grid"
+        },
+        {
+          "id": "grid.tableHeaderBg",
+          "token": "--fx-grid-table-header-bg",
+          "kind": "color",
+          "default": "transparent",
+          "level": "pro",
+          "description": "Background of a plain table's header row (.fx-table; the data grid uses headerBg).",
+          "family": "grid"
+        },
+        {
+          "id": "grid.headerText",
+          "token": "--fx-grid-header-text",
+          "kind": "color",
+          "default": "var(--fx-muted)",
+          "level": "basic",
+          "description": "Text colour of the column headers (a data grid's header buttons follow the quiet button until this is set).",
+          "family": "grid"
+        },
+        {
+          "id": "grid.headerActiveText",
+          "token": "--fx-grid-header-active-text",
+          "kind": "color",
+          "default": "var(--fx-accent)",
+          "level": "pro",
+          "description": "Text of the current / highlighted column header (matrix tables).",
+          "family": "grid"
+        },
+        {
+          "id": "grid.headerBorder",
+          "token": "--fx-grid-header-border",
+          "kind": "color",
+          "default": "var(--fx-border)",
+          "level": "pro",
+          "description": "Line under the header row.",
+          "family": "grid"
+        },
+        {
+          "id": "grid.headerWeight",
+          "token": "--fx-grid-header-weight",
+          "kind": "number",
+          "default": "600",
+          "level": "advanced",
+          "description": "Font weight of the column headers.",
+          "family": "grid"
+        },
+        {
+          "id": "grid.sortArrow",
+          "token": "--fx-grid-sort-arrow",
+          "kind": "color",
+          "default": "currentColor",
+          "level": "pro",
+          "description": "The sort direction arrow on a sorted column (currentColor = the header text).",
+          "family": "grid"
+        },
+        {
+          "id": "grid.rowBg",
+          "token": "--fx-grid-row-bg",
+          "kind": "color",
+          "default": "transparent",
+          "level": "basic",
+          "description": "Background of a plain row.",
+          "family": "grid"
+        },
+        {
+          "id": "grid.rowAltBg",
+          "token": "--fx-grid-row-alt-bg",
+          "kind": "color",
+          "default": "transparent",
+          "level": "pro",
+          "description": "Background of every second row (zebra striping; same as rowBg = no stripes).",
+          "family": "grid"
+        },
+        {
+          "id": "grid.rowText",
+          "token": "--fx-grid-row-text",
+          "kind": "color",
+          "default": "inherit",
+          "level": "basic",
+          "description": "Text colour of a row.",
+          "family": "grid"
+        },
+        {
+          "id": "grid.hoverBg",
+          "token": "--fx-grid-hover-bg",
+          "kind": "color",
+          "default": "var(--fx-surface2)",
+          "level": "basic",
+          "description": "Background of the row under the pointer.",
+          "family": "grid"
+        },
+        {
+          "id": "grid.hoverText",
+          "token": "--fx-grid-hover-text",
+          "kind": "color",
+          "default": "inherit",
+          "level": "advanced",
+          "description": "Text colour of the row under the pointer.",
+          "family": "grid"
+        },
+        {
+          "id": "grid.selectedBg",
+          "token": "--fx-grid-selected-bg",
+          "kind": "color",
+          "default": "var(--fx-accent-soft)",
+          "level": "basic",
+          "description": "Background of the selected row.",
+          "family": "grid"
+        },
+        {
+          "id": "grid.selectedText",
+          "token": "--fx-grid-selected-text",
+          "kind": "color",
+          "default": "inherit",
+          "level": "advanced",
+          "description": "Text colour of the selected row.",
+          "family": "grid"
+        },
+        {
+          "id": "grid.selectedBorder",
+          "token": "--fx-grid-selected-border",
+          "kind": "color",
+          "default": "var(--fx-accent)",
+          "level": "pro",
+          "description": "Outline of a row in a multi-selection.",
+          "family": "grid"
+        },
+        {
+          "id": "grid.focusRing",
+          "token": "--fx-grid-focus-ring",
+          "kind": "color",
+          "default": "var(--fx-focus)",
+          "level": "pro",
+          "description": "Keyboard focus ring on a row or header cell.",
+          "family": "grid"
+        },
+        {
+          "id": "grid.expandedBg",
+          "token": "--fx-grid-expanded-bg",
+          "kind": "color",
+          "default": "var(--fx-surface2)",
+          "level": "pro",
+          "description": "Background of an expanded row's detail panel.",
+          "family": "grid"
+        },
+        {
+          "id": "grid.disabledOpacity",
+          "token": "--fx-grid-disabled-opacity",
+          "kind": "number",
+          "default": "1",
+          "level": "advanced",
+          "description": "How faded a disabled row is (1 = not faded; set var(--fx-opacity-disabled) or a number below 1).",
+          "family": "grid"
+        },
+        {
+          "id": "grid.lineColor",
+          "token": "--fx-grid-line-color",
+          "kind": "color",
+          "default": "var(--fx-border)",
+          "level": "basic",
+          "description": "Grid lines between rows and cells.",
+          "family": "grid"
+        },
+        {
+          "id": "grid.outerBorder",
+          "token": "--fx-grid-outer-border",
+          "kind": "color",
+          "default": "transparent",
+          "level": "pro",
+          "description": "Border around the whole grid.",
+          "family": "grid"
+        },
+        {
+          "id": "grid.cellPadY",
+          "token": "--fx-grid-cell-pad-y",
+          "kind": "string",
+          "default": "var(--fx-size-table-pad-y)",
+          "level": "pro",
+          "description": "Vertical cell padding (table cells).",
+          "family": "grid"
+        },
+        {
+          "id": "grid.cellPadX",
+          "token": "--fx-grid-cell-pad-x",
+          "kind": "string",
+          "default": "var(--fx-size-table-pad-x)",
+          "level": "pro",
+          "description": "Horizontal cell padding (table cells).",
+          "family": "grid"
+        },
+        {
+          "id": "grid.rowHeight",
+          "token": "--fx-grid-row-height",
+          "kind": "string",
+          "default": "auto",
+          "level": "pro",
+          "description": "Minimum row height; auto = as tall as the content.",
+          "family": "grid"
+        },
+        {
+          "id": "grid.radius",
+          "token": "--fx-grid-radius",
+          "kind": "string",
+          "default": "0",
+          "level": "basic",
+          "description": "Corner radius of the whole grid.",
+          "family": "grid"
+        },
+        {
+          "id": "grid.groupHeaderBg",
+          "token": "--fx-grid-group-header-bg",
+          "kind": "color",
+          "default": "var(--fx-surface3)",
+          "level": "pro",
+          "description": "Background of a top-level group header row.",
+          "family": "grid"
+        },
+        {
+          "id": "grid.groupHeaderBgNested",
+          "token": "--fx-grid-group-header-bg-nested",
+          "kind": "color",
+          "default": "var(--fx-surface2)",
+          "level": "advanced",
+          "description": "Background of a second-level group header row.",
+          "family": "grid"
+        },
+        {
+          "id": "grid.groupHeaderBgDeep",
+          "token": "--fx-grid-group-header-bg-deep",
+          "kind": "color",
+          "default": "var(--fx-surface)",
+          "level": "advanced",
+          "description": "Background of a third-level (or deeper) group header row.",
+          "family": "grid"
+        },
+        {
+          "id": "grid.groupHeaderText",
+          "token": "--fx-grid-group-header-text",
+          "kind": "color",
+          "default": "inherit",
+          "level": "advanced",
+          "description": "Text colour of a group header row.",
+          "family": "grid"
+        },
+        {
+          "id": "grid.groupSummaryText",
+          "token": "--fx-grid-group-summary-text",
+          "kind": "color",
+          "default": "var(--fx-muted)",
+          "level": "advanced",
+          "description": "The summary text beside a group title.",
+          "family": "grid"
+        },
+        {
+          "id": "grid.stickyShadow",
+          "token": "--fx-grid-sticky-shadow",
+          "kind": "string",
+          "default": "none",
+          "level": "advanced",
+          "description": "Shadow under a sticky header / beside a sticky column.",
+          "family": "grid"
+        },
+        {
+          "id": "grid.emptyText",
+          "token": "--fx-grid-empty-text",
+          "kind": "color",
+          "default": "var(--fx-muted)",
+          "level": "pro",
+          "description": "Text colour of the empty state (\"Nothing to show\").",
+          "family": "grid"
+        },
+        {
+          "id": "grid.opacity",
+          "token": "--fx-grid-opacity",
+          "kind": "number",
+          "default": "1",
+          "level": "basic",
+          "description": "Transparency of the grid's backgrounds (1 = opaque).",
+          "family": "grid"
+        },
+        {
+          "id": "tabs.barBg",
+          "token": "--fx-tab-bar-bg",
+          "kind": "color",
+          "default": "transparent",
+          "level": "basic",
+          "description": "Background of the tab row.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.barBorder",
+          "token": "--fx-tab-bar-border",
+          "kind": "color",
+          "default": "var(--fx-border)",
+          "level": "basic",
+          "description": "Rule under (or beside) the tab row.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.gap",
+          "token": "--fx-tab-gap",
+          "kind": "string",
+          "default": "var(--fx-dens-gap-md)",
+          "level": "pro",
+          "description": "Space between tabs.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.text",
+          "token": "--fx-tab-text",
+          "kind": "color",
+          "default": "var(--fx-muted)",
+          "level": "basic",
+          "description": "Text of an idle tab.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.bg",
+          "token": "--fx-tab-bg",
+          "kind": "color",
+          "default": "transparent",
+          "level": "basic",
+          "description": "Background of an idle tab.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.border",
+          "token": "--fx-tab-border",
+          "kind": "color",
+          "default": "transparent",
+          "level": "pro",
+          "description": "Border of an idle tab (boxed and chips styles).",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.hoverText",
+          "token": "--fx-tab-hover-text",
+          "kind": "color",
+          "default": "var(--fx-text)",
+          "level": "basic",
+          "description": "Text of the tab under the pointer.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.hoverBg",
+          "token": "--fx-tab-hover-bg",
+          "kind": "color",
+          "default": "transparent",
+          "level": "basic",
+          "description": "Background of the tab under the pointer.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.hoverBorder",
+          "token": "--fx-tab-hover-border",
+          "kind": "color",
+          "default": "var(--fx-tab-border)",
+          "level": "advanced",
+          "description": "Border of the tab under the pointer.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.activeText",
+          "token": "--fx-tab-active-text",
+          "kind": "color",
+          "default": "var(--fx-text)",
+          "level": "basic",
+          "description": "Text of the active tab.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.activeBg",
+          "token": "--fx-tab-active-bg",
+          "kind": "color",
+          "default": "transparent",
+          "level": "basic",
+          "description": "Background of the active tab (underline style).",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.activeBorder",
+          "token": "--fx-tab-active-border",
+          "kind": "color",
+          "default": "transparent",
+          "level": "pro",
+          "description": "Border of the active tab (underline style).",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.activeWeight",
+          "token": "--fx-tab-active-weight",
+          "kind": "number",
+          "default": "inherit",
+          "level": "advanced",
+          "description": "Font weight of the active tab.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.pressedText",
+          "token": "--fx-tab-pressed-text",
+          "kind": "color",
+          "default": "var(--fx-tab-hover-text)",
+          "level": "advanced",
+          "description": "Text of a tab while it is pressed.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.pressedBg",
+          "token": "--fx-tab-pressed-bg",
+          "kind": "color",
+          "default": "var(--fx-tab-hover-bg)",
+          "level": "advanced",
+          "description": "Background of a tab while it is pressed.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.disabledText",
+          "token": "--fx-tab-disabled-text",
+          "kind": "color",
+          "default": "var(--fx-tab-text)",
+          "level": "pro",
+          "description": "Text of a disabled tab.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.disabledOpacity",
+          "token": "--fx-tab-disabled-opacity",
+          "kind": "number",
+          "default": "1",
+          "level": "advanced",
+          "description": "How faded a disabled tab is (1 = not faded; set var(--fx-opacity-disabled) or a number below 1).",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.focusRing",
+          "token": "--fx-tab-focus-ring",
+          "kind": "color",
+          "default": "var(--fx-focus)",
+          "level": "pro",
+          "description": "Keyboard focus ring on a tab.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.indicator",
+          "token": "--fx-tab-indicator",
+          "kind": "color",
+          "default": "var(--fx-accent)",
+          "level": "basic",
+          "description": "The active tab's line (underline style) and drop marker.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.indicatorSize",
+          "token": "--fx-tab-indicator-size",
+          "kind": "string",
+          "default": "2px",
+          "level": "pro",
+          "description": "Thickness of the active tab's line.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.badgeBg",
+          "token": "--fx-tab-badge-bg",
+          "kind": "color",
+          "default": "var(--fx-surface3)",
+          "level": "pro",
+          "description": "Background of the count badge on an idle tab.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.badgeText",
+          "token": "--fx-tab-badge-text",
+          "kind": "color",
+          "default": "var(--fx-muted)",
+          "level": "pro",
+          "description": "Text of the count badge on an idle tab.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.badgeActiveBg",
+          "token": "--fx-tab-badge-active-bg",
+          "kind": "color",
+          "default": "color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent)",
+          "level": "advanced",
+          "description": "Background of the count badge on the active tab.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.badgeActiveText",
+          "token": "--fx-tab-badge-active-text",
+          "kind": "color",
+          "default": "var(--fx-text)",
+          "level": "advanced",
+          "description": "Text of the count badge on the active tab.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.closeText",
+          "token": "--fx-tab-close-text",
+          "kind": "color",
+          "default": "var(--fx-muted)",
+          "level": "advanced",
+          "description": "The close (×) button on a closable tab.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.closeHoverText",
+          "token": "--fx-tab-close-hover-text",
+          "kind": "color",
+          "default": "var(--fx-danger)",
+          "level": "advanced",
+          "description": "The close button under the pointer.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.closeHoverBg",
+          "token": "--fx-tab-close-hover-bg",
+          "kind": "color",
+          "default": "var(--fx-surface3)",
+          "level": "advanced",
+          "description": "Background of the close button under the pointer.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.foldBg",
+          "token": "--fx-tab-fold-bg",
+          "kind": "color",
+          "default": "var(--fx-surface)",
+          "level": "pro",
+          "description": "Background of the dropdown pick (overflow \"dropdown\": the one button that stands for the row).",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.foldText",
+          "token": "--fx-tab-fold-text",
+          "kind": "color",
+          "default": "var(--fx-text)",
+          "level": "pro",
+          "description": "Text of the dropdown pick.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.foldBorder",
+          "token": "--fx-tab-fold-border",
+          "kind": "color",
+          "default": "var(--fx-border)",
+          "level": "advanced",
+          "description": "Border of the dropdown pick.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.foldRadius",
+          "token": "--fx-tab-fold-radius",
+          "kind": "string",
+          "default": "var(--fx-radius-sm)",
+          "level": "advanced",
+          "description": "Corner radius of the dropdown pick.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.stickyBg",
+          "token": "--fx-tab-sticky-bg",
+          "kind": "color",
+          "default": "var(--fx-surface)",
+          "level": "pro",
+          "description": "Background of a sticky tab row (so content scrolling under it stays hidden).",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.windowBarBg",
+          "token": "--fx-tab-window-bar-bg",
+          "kind": "color",
+          "default": "var(--fx-surface2)",
+          "level": "pro",
+          "description": "Background of a window's tab bar.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.windowActiveBg",
+          "token": "--fx-tab-window-active-bg",
+          "kind": "color",
+          "default": "var(--fx-surface)",
+          "level": "pro",
+          "description": "Background of the active tab in a window's tab bar.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.windowActiveShadow",
+          "token": "--fx-tab-window-active-shadow",
+          "kind": "string",
+          "default": "var(--fx-shadow-sm)",
+          "level": "advanced",
+          "description": "Shadow of the active tab in a window's tab bar.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.radiusUnderline",
+          "token": "--fx-tab-radius-underline",
+          "kind": "string",
+          "default": "0",
+          "level": "pro",
+          "description": "Corner radius of a tab in the underline style.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.radiusPills",
+          "token": "--fx-tab-radius-pills",
+          "kind": "string",
+          "default": "999px",
+          "level": "pro",
+          "description": "Corner radius of a tab in the pills style.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.radiusBoxed",
+          "token": "--fx-tab-radius-boxed",
+          "kind": "string",
+          "default": "var(--fx-radius-sm)",
+          "level": "pro",
+          "description": "Corner radius (top corners) of a tab in the boxed style.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.radiusSegmented",
+          "token": "--fx-tab-radius-segmented",
+          "kind": "string",
+          "default": "var(--fx-radius-sm)",
+          "level": "pro",
+          "description": "Corner radius of a tab in the segmented style.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.radiusPlain",
+          "token": "--fx-tab-radius-plain",
+          "kind": "string",
+          "default": "0",
+          "level": "pro",
+          "description": "Corner radius of a tab in the plain style.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.radiusChips",
+          "token": "--fx-tab-radius-chips",
+          "kind": "string",
+          "default": "999px",
+          "level": "pro",
+          "description": "Corner radius of a tab in the chips style.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.radiusWindow",
+          "token": "--fx-tab-radius-window",
+          "kind": "string",
+          "default": "var(--fx-radius-sm)",
+          "level": "advanced",
+          "description": "Corner radius of a tab in a window's tab bar.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.pillsActiveBg",
+          "token": "--fx-tab-pills-active-bg",
+          "kind": "color",
+          "default": "var(--fx-accent)",
+          "level": "basic",
+          "description": "Background of the active pill.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.pillsActiveText",
+          "token": "--fx-tab-pills-active-text",
+          "kind": "color",
+          "default": "var(--fx-accent-text)",
+          "level": "basic",
+          "description": "Text of the active pill.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.boxedActiveBg",
+          "token": "--fx-tab-boxed-active-bg",
+          "kind": "color",
+          "default": "var(--fx-surface)",
+          "level": "pro",
+          "description": "Background of the active boxed tab.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.boxedActiveBorder",
+          "token": "--fx-tab-boxed-active-border",
+          "kind": "color",
+          "default": "var(--fx-border)",
+          "level": "pro",
+          "description": "Border of the active boxed tab.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.segmentedBg",
+          "token": "--fx-tab-segmented-bg",
+          "kind": "color",
+          "default": "var(--fx-surface2)",
+          "level": "pro",
+          "description": "Background of the segmented control's track.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.segmentedBorder",
+          "token": "--fx-tab-segmented-border",
+          "kind": "color",
+          "default": "var(--fx-border)",
+          "level": "advanced",
+          "description": "Border of the segmented control's track.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.segmentedRadius",
+          "token": "--fx-tab-segmented-radius",
+          "kind": "string",
+          "default": "var(--fx-radius-md)",
+          "level": "advanced",
+          "description": "Corner radius of the segmented control's track.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.segmentedActiveBg",
+          "token": "--fx-tab-segmented-active-bg",
+          "kind": "color",
+          "default": "var(--fx-surface)",
+          "level": "pro",
+          "description": "Background of the active segment.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.segmentedActiveShadow",
+          "token": "--fx-tab-segmented-active-shadow",
+          "kind": "string",
+          "default": "var(--fx-shadow-sm)",
+          "level": "advanced",
+          "description": "Shadow of the active segment.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.plainActiveText",
+          "token": "--fx-tab-plain-active-text",
+          "kind": "color",
+          "default": "var(--fx-accent)",
+          "level": "pro",
+          "description": "Text of the active tab in the plain style.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.plainActiveWeight",
+          "token": "--fx-tab-plain-active-weight",
+          "kind": "number",
+          "default": "600",
+          "level": "advanced",
+          "description": "Font weight of the active tab in the plain style.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.chipsBg",
+          "token": "--fx-tab-chips-bg",
+          "kind": "color",
+          "default": "var(--fx-surface)",
+          "level": "pro",
+          "description": "Background of an idle chip.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.chipsBorder",
+          "token": "--fx-tab-chips-border",
+          "kind": "color",
+          "default": "var(--fx-border)",
+          "level": "pro",
+          "description": "Border of an idle chip.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.chipsActiveBg",
+          "token": "--fx-tab-chips-active-bg",
+          "kind": "color",
+          "default": "var(--fx-accent-soft)",
+          "level": "pro",
+          "description": "Background of the active chip.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.chipsActiveBorder",
+          "token": "--fx-tab-chips-active-border",
+          "kind": "color",
+          "default": "var(--fx-accent)",
+          "level": "pro",
+          "description": "Border of the active chip.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.opacity",
+          "token": "--fx-tab-opacity",
+          "kind": "number",
+          "default": "1",
+          "level": "basic",
+          "description": "Transparency of the tab row's backgrounds (1 = opaque).",
+          "family": "tabs"
         }
       ],
       "value": "field",
@@ -2312,6 +3122,25 @@
         "plugin.disable": "write"
       },
       "doc": "console-control@1 (spec/CONSOLE-CONTROL.md): one address for every screen, tab, setting, button, function, plugin, grid row and build step (\"view:settings/tab:settings.tabs=plugins\", \"row:<build>/step:s3\", \"plugin:<id>\"). path = the address (full or short); list = every target under it, get = its state (no path: where the console is), act <verb> runs it (open, focus, press, set, scroll, search, state, plugin.enable, plugin.disable). A plan's links[] entry or any item may carry { address } to point here. Same guards as /api/console-control: deciding presses refused, destructive ones need input.confirm. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
+    },
+    "tokens.instances": {
+      "domain": "tokens",
+      "label": "Per-instance component tokens",
+      "ops": [
+        "list",
+        "get",
+        "set",
+        "reset",
+        "act"
+      ],
+      "paths": "pattern",
+      "pathShape": "<grid|tabs>.<instance>[.<token>]",
+      "value": "field",
+      "acts": {
+        "restore-previous": {},
+        "restore-hub": {}
+      },
+      "doc": "component-tokens@1: the grid / tab-group tokens one instance overrides (a tab row by its TabGroup id, a grid by its DataGrid id): set <family>.<instance>.<token> value; reset <family>.<instance>[.<token>]; act <family>.<instance> restore-previous (back to the values before the last edit) | restore-hub (drop every override so the instance follows the shared axHub look). Stored in the one setting axf.tokens.instances, shared through the axHub look."
     }
   },
   "aliases": {
@@ -2396,7 +3225,8 @@
               "plugins.commands",
               "plugins.reads",
               "tokens.nav",
-              "console.control"
+              "console.control",
+              "tokens.instances"
             ],
             "description": "what to control"
           },
@@ -2451,7 +3281,8 @@
               "plugins.commands",
               "plugins.reads",
               "tokens.nav",
-              "console.control"
+              "console.control",
+              "tokens.instances"
             ],
             "description": "what to control"
           },
@@ -2507,7 +3338,8 @@
               "plugins.commands",
               "plugins.reads",
               "tokens.nav",
-              "console.control"
+              "console.control",
+              "tokens.instances"
             ],
             "description": "what to control"
           },
@@ -2570,7 +3402,8 @@
               "plugins.commands",
               "plugins.reads",
               "tokens.nav",
-              "console.control"
+              "console.control",
+              "tokens.instances"
             ],
             "description": "what to control"
           },
@@ -2633,7 +3466,8 @@
               "plugins.commands",
               "plugins.reads",
               "tokens.nav",
-              "console.control"
+              "console.control",
+              "tokens.instances"
             ],
             "description": "what to control"
           },
@@ -2696,7 +3530,8 @@
               "plugins.commands",
               "plugins.reads",
               "tokens.nav",
-              "console.control"
+              "console.control",
+              "tokens.instances"
             ],
             "description": "what to control"
           },
@@ -2763,7 +3598,8 @@
               "plugins.commands",
               "plugins.reads",
               "tokens.nav",
-              "console.control"
+              "console.control",
+              "tokens.instances"
             ],
             "description": "what to control"
           },
@@ -2895,7 +3731,8 @@
       "plugins.commands",
       "plugins.reads",
       "tokens.nav",
-      "console.control"
+      "console.control",
+      "tokens.instances"
     ]
   },
   "schema": {
@@ -2947,7 +3784,8 @@
           "plugins.commands",
           "plugins.reads",
           "tokens.nav",
-          "console.control"
+          "console.control",
+          "tokens.instances"
         ]
       },
       "path": {
@@ -3050,7 +3888,97 @@
           "opacityPanel",
           "opacityMenu",
           "opacityToolbar",
-          "opacityBanner"
+          "opacityBanner",
+          "grid.headerBg",
+          "grid.tableHeaderBg",
+          "grid.headerText",
+          "grid.headerActiveText",
+          "grid.headerBorder",
+          "grid.headerWeight",
+          "grid.sortArrow",
+          "grid.rowBg",
+          "grid.rowAltBg",
+          "grid.rowText",
+          "grid.hoverBg",
+          "grid.hoverText",
+          "grid.selectedBg",
+          "grid.selectedText",
+          "grid.selectedBorder",
+          "grid.focusRing",
+          "grid.expandedBg",
+          "grid.disabledOpacity",
+          "grid.lineColor",
+          "grid.outerBorder",
+          "grid.cellPadY",
+          "grid.cellPadX",
+          "grid.rowHeight",
+          "grid.radius",
+          "grid.groupHeaderBg",
+          "grid.groupHeaderBgNested",
+          "grid.groupHeaderBgDeep",
+          "grid.groupHeaderText",
+          "grid.groupSummaryText",
+          "grid.stickyShadow",
+          "grid.emptyText",
+          "grid.opacity",
+          "tabs.barBg",
+          "tabs.barBorder",
+          "tabs.gap",
+          "tabs.text",
+          "tabs.bg",
+          "tabs.border",
+          "tabs.hoverText",
+          "tabs.hoverBg",
+          "tabs.hoverBorder",
+          "tabs.activeText",
+          "tabs.activeBg",
+          "tabs.activeBorder",
+          "tabs.activeWeight",
+          "tabs.pressedText",
+          "tabs.pressedBg",
+          "tabs.disabledText",
+          "tabs.disabledOpacity",
+          "tabs.focusRing",
+          "tabs.indicator",
+          "tabs.indicatorSize",
+          "tabs.badgeBg",
+          "tabs.badgeText",
+          "tabs.badgeActiveBg",
+          "tabs.badgeActiveText",
+          "tabs.closeText",
+          "tabs.closeHoverText",
+          "tabs.closeHoverBg",
+          "tabs.foldBg",
+          "tabs.foldText",
+          "tabs.foldBorder",
+          "tabs.foldRadius",
+          "tabs.stickyBg",
+          "tabs.windowBarBg",
+          "tabs.windowActiveBg",
+          "tabs.windowActiveShadow",
+          "tabs.radiusUnderline",
+          "tabs.radiusPills",
+          "tabs.radiusBoxed",
+          "tabs.radiusSegmented",
+          "tabs.radiusPlain",
+          "tabs.radiusChips",
+          "tabs.radiusWindow",
+          "tabs.pillsActiveBg",
+          "tabs.pillsActiveText",
+          "tabs.boxedActiveBg",
+          "tabs.boxedActiveBorder",
+          "tabs.segmentedBg",
+          "tabs.segmentedBorder",
+          "tabs.segmentedRadius",
+          "tabs.segmentedActiveBg",
+          "tabs.segmentedActiveShadow",
+          "tabs.plainActiveText",
+          "tabs.plainActiveWeight",
+          "tabs.chipsBg",
+          "tabs.chipsBorder",
+          "tabs.chipsActiveBg",
+          "tabs.chipsActiveBorder",
+          "tabs.opacity"
         ]
       },
       "tokens.layout": {
@@ -4124,6 +5052,21 @@
           }
         },
         "paths": "host"
+      },
+      "tokens.instances": {
+        "description": "component-tokens@1: the grid / tab-group tokens one instance overrides (a tab row by its TabGroup id, a grid by its DataGrid id): set <family>.<instance>.<token> value; reset <family>.<instance>[.<token>]; act <family>.<instance> restore-previous (back to the values before the last edit) | restore-hub (drop every override so the instance follows the shared axHub look). Stored in the one setting axf.tokens.instances, shared through the axHub look.",
+        "ops": [
+          "list",
+          "get",
+          "set",
+          "reset",
+          "act"
+        ],
+        "acts": {
+          "restore-previous": {},
+          "restore-hub": {}
+        },
+        "paths": "pattern"
       }
     }
   }

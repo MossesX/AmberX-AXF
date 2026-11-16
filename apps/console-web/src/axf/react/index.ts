@@ -4,7 +4,8 @@ export { Button, IconButton, Segmented, Slider, Container, Chip, Kbd, type Butto
 export { ModelBadge, modelLabel, modelFamily } from './components/ModelBadge';
 export { BuildOrigin, originSubtitle, originSearch, originWhen } from './components/BuildOrigin';
 export { PriorityTag, setPriorityHost, setBuildPriority, PRIORITY_DIALOG, priorityDialogs, type PriorityHost } from './components/PriorityTag';
-export { Switch, Checkbox, ColorField, Field, TextField, SelectField, Select, ChoiceGrid, Note, Section, LibraryParamField, type SwitchProps, type CheckboxProps, type ColorFieldProps, type FieldProps, type TextFieldProps, type SelectFieldProps, type SelectProps, type SelectOption, type ChoiceGridProps, type Choice, type NoteProps, type NoteTone, type SectionProps, type LibraryParamFieldProps } from './components/Forms';
+export { HubSkinLockArea, HubSkinLockNote, askHubSkinOverride, useHubSkinLocked } from './components/HubSkinLock';
+export { Switch, Checkbox, ColorField, Field, TextField, SelectField, ChoiceGrid, Note, Section, LibraryParamField, type SwitchProps, type CheckboxProps, type ColorFieldProps, type FieldProps, type TextFieldProps, type SelectFieldProps, type SelectOption, type ChoiceGridProps, type Choice, type NoteProps, type NoteTone, type SectionProps, type LibraryParamFieldProps } from './components/Forms';
 export { Markdown, safeHref, type MarkdownProps } from './components/Markdown';
 export { Icon, ICON_NAMES } from './components/Icon';
 export { MenuList, MenuSub, MenuScroll } from './components/MenuList';
@@ -24,14 +25,10 @@ export { HelpLayer, HelpModeButton, HelpPanel, HelpIntroCard, useHelpMode, descr
 export { BrandMark, BrandWatermark, brandHostProps, useBrandPlace } from './components/Brand';
 export { InterfaceScope, usePortalRoot, useScopeId } from './components/InterfaceScope';
 export { SkinScope } from './components/SkinScope';
+export { Swatches, SwatchFan, type SwatchesProps, type SwatchFanProps } from './components/Swatches';
 export { LookEditor, LookLevelSwitch, LookTokenRow } from './components/LookEditor';
 export { WidgetView, SearchBarWidget, registerWidgetRenderer, widgetRenderer, type WidgetRenderer, type WidgetRenderProps } from './components/Widgets';
 export { LiveSearch, useSearchHost, scanPage, flashWhenReady } from './components/Search';
-export { PickerField, pickerModelOf, labelOfElement, type PickerFieldProps } from './components/PickerField';
-export { installPickerSwap, enhanceSelect, restoreSelect, readSelect, writeSelect, enhancedCount } from './pickerSwap';
-export { getPickerSwap, setPickerSwap, subscribePickerSwap, usePickerSwap, swapActive, PICKER_SWAP_DEFAULT, type PickerSwapConfig } from './pickerConfig';
-export { PickerDialog, rootSearchThreshold, type PickerDialogProps } from './components/PickerDialog';
-export { pickerApi, listPickers, pickerState, pickerOpen, pickerClose, pickerSearch, pickerChoose, pickerSet, pickerClear, pickerTarget, registerPicker, onPickers, type PickerHandle, type PickerSnapshot, type PickerResult } from './pickerRegistry';
 export { DialogHost, ToastHost, ContextMenuHost, type DialogDef, type DialogMap } from './components/Overlays';
 export { AssetStudio } from './studio/AssetStudio';
 export { AccountView } from './studio/AccountView';

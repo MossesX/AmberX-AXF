@@ -1,0 +1,307 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-orchestrator-custom-groups-custom-tabs",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-15T00:42:39Z",
+ "build": {
+  "id": "orchestrator-custom-groups-custom-tabs",
+  "title": "Orchestrator: custom groups and custom tabs on the builds board",
+  "profile": "all",
+  "category": "",
+  "priority": "P1",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "I want to be able to add some custom groups to my board, sorted by state from partials to done, running; mostly for pending; custom pending tabs, custom groups",
+  "verbatim": true,
+  "at": "2026-11-13T18:50:33.284Z",
+  "source": "",
+  "by": "orchestrator-custom-groups-custom-tabs",
+  "addenda": []
+ },
+ "brief": "# Build: orchestrator-custom-groups-custom-tabs\n\n## Brett said (verbatim)\nAt: 2026-11-13T18:50:33.284Z\n> I want to be able to add some custom groups to my board, sorted by state from partials to done, running; mostly for pending; custom pending tabs, custom groups\n\n## What to build\nContinue build \"Orchestrator: custom groups and custom tabs on the builds board\" (orchestrator-custom-groups-custom-tabs) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 18:50):\n\"I want to be able to add some custom groups to my board, sorted by state from partials to done, running; mostly for pending; custom pending tabs, custom groups\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (10 left, ~1.7 h):\n[ ] s1 (~10 min) Build Orchestrator board gets user-made groups.\n[ ] s2 (~10 min) Brett creates, renames, reorders, colours and deletes custom groups/tabs (e.g. 'Console app', 'UI', 'Urgent').\n[ ] s3 (~10 min) Builds are dragged or assigned into a group (one or several), by hand, by voice or by API.\n[ ] s4 (~10 min) Custom tabs can sit next to Pending, Queued, Building and Done. Mostly used for Pending: custom Pending tabs.\n[ ] s5 (~10 min) Inside a group, builds are sorted by state (partial/pending, queued, running, done, landed) with a sort and filter picker, and the group shows counts per state.\n[ ] s6 (~10 min) Smart groups by rule (e.g. 'title contains console app', 'more than 500 behind main', 'filed today').\n[ ] s7 (~10 min) Group actions: queue all, land all, archive all, change priority.\n[ ] s8 (~10 min) Groups are saved per project. Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.\n[ ] s9 (~10 min) I want to be able to add some custom groups to my board, sorted by state from partials to done, running; mostly for pending; custom pending tabs, custom groups\n[ ] s10 (~10 min) Tests green, report _claude/builds/reports/orchestrator-custom-groups-custom-tabs.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/orchestrator-custom-groups-custom-tabs.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step orchestrator-custom-groups-custom-tabs <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link orchestrator-custom-groups-custom-tabs --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step orchestrator-custom-groups-custom-tabs <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note orchestrator-custom-groups-custom-tabs \"…\"); the build goes back to Pending for Brett.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-orchestrator-custom-groups-custom-tabs--joey",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-13T19:31:39.412Z",
+   "endedAt": "2026-11-13T20:04:59.751Z",
+   "exit": 0,
+   "costUsd": 6.0406
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Build Orchestrator board gets user-made groups.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T19:31:39.412Z",
+   "doneAt": "2026-11-13T19:40:47.837Z",
+   "actualMin": 9,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Brett creates, renames, reorders, colours and deletes custom groups/tabs (e.g. 'Console app', 'UI', 'Urgent').",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T19:40:47.837Z",
+   "doneAt": "2026-11-13T19:40:51.535Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Builds are dragged or assigned into a group (one or several), by hand, by voice or by API.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T19:40:51.535Z",
+   "doneAt": "2026-11-13T19:40:55.606Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Custom tabs can sit next to Pending, Queued, Building and Done. Mostly used for Pending: custom Pending tabs.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T19:40:55.606Z",
+   "doneAt": "2026-11-13T19:41:07.805Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Inside a group, builds are sorted by state (partial/pending, queued, running, done, landed) with a sort and filter picker, and the group shows counts per state.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T19:41:07.805Z",
+   "doneAt": "2026-11-13T19:41:12.540Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Smart groups by rule (e.g. 'title contains console app', 'more than 500 behind main', 'filed today').",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T19:41:12.540Z",
+   "doneAt": "2026-11-13T19:41:16.031Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Group actions: queue all, land all, archive all, change priority.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T19:41:16.031Z",
+   "doneAt": "2026-11-13T19:41:18.594Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Groups are saved per project. Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T19:41:18.594Z",
+   "doneAt": "2026-11-13T19:43:56.716Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "I want to be able to add some custom groups to my board, sorted by state from partials to done, running; mostly for pending; custom pending tabs, custom groups",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T19:43:56.716Z",
+   "doneAt": "2026-11-13T20:03:42.221Z",
+   "actualMin": 20,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "Tests green, report _claude/builds/reports/orchestrator-custom-groups-custom-tabs.md, THREADS row, commit, push, PR",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T20:03:42.221Z",
+   "doneAt": "2026-11-13T20:04:39.984Z",
+   "actualMin": 1,
+   "done": true
+  }
+ ],
+ "branch": "claude/orchestrator-custom-groups-custom-tabs",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 644,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/644"
+ },
+ "landedCommit": "e9d111583ffc17dcce619c5ae420f8072621ba6e",
+ "commits": [
+  "dae8ed20cee957fa3f0e7b9431cfcd39b6321ba5",
+  "25f8e6f6097833b560adf60100cbc2d2a0b01945",
+  "39a49058de3aa94b2805155745af85d3b97492fd",
+  "206a7f81f89fcbec0aa5e09f1f4c2a72deeb1146",
+  "e5155352e267e0e2b993088c1d9f6dcb2e9714ae",
+  "9de225ff95d00c9ebd7d624022caaa134cfe387e"
+ ],
+ "mergedAt": "2026-11-15T00:39:22Z",
+ "landedAt": "2026-11-15T00:39:21Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/reports/orchestrator-custom-groups-custom-tabs.md",
+  "apps/console-web/plugins/build-orchestrator/groups-core.mjs",
+  "apps/console-web/plugins/build-orchestrator/groups.mjs",
+  "apps/console-web/plugins/build-orchestrator/groups.test.mjs",
+  "apps/console-web/plugins/build-orchestrator/help.json",
+  "apps/console-web/plugins/build-orchestrator/plugin.json",
+  "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+  "apps/console-web/plugins/build-orchestrator/test.py",
+  "apps/console-web/plugins/build-orchestrator/web/groups.tsx",
+  "apps/console-web/plugins/build-orchestrator/web/index.tsx",
+  "apps/console-web/plugins/build-orchestrator/web/menu.ts",
+  "apps/console-web/plugins/build-orchestrator/web/orchestrator.css",
+  "apps/console-web/plugins/build-orchestrator/web/ui.tsx",
+  "apps/console-web/src/control/inventory.json",
+  "framework/catalog/catalog.json",
+  "framework/catalog/status.json",
+  "framework/spec/PORTING.md"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/groups-core.mjs",
+    "apps/console-web/plugins/build-orchestrator/groups.mjs",
+    "apps/console-web/plugins/build-orchestrator/groups.test.mjs",
+    "apps/console-web/plugins/build-orchestrator/help.json",
+    "apps/console-web/plugins/build-orchestrator/plugin.json",
+    "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+    "apps/console-web/plugins/build-orchestrator/test.py",
+    "apps/console-web/plugins/build-orchestrator/web/groups.tsx",
+    "apps/console-web/plugins/build-orchestrator/web/index.tsx",
+    "apps/console-web/plugins/build-orchestrator/web/menu.ts",
+    "apps/console-web/plugins/build-orchestrator/web/orchestrator.css",
+    "apps/console-web/plugins/build-orchestrator/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/catalog.json",
+    "framework/catalog/status.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/control/inventory.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/orchestrator-custom-groups-custom-tabs.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "node apps/console-web/plugins/build-orchestrator/groups.test.mjs: 8 checks pass (core rules, plus the CLI against a scratch store, including a real queue-all). Added to CI next to the other orchestrator tests.",
+   "command": "node apps/console-web/plugins/build-orchestrator/groups.test.mjs",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "python3 apps/console-web/plugins/build-orchestrator/test.py: 47 checks pass (6 new ones exercise the groups routes against a scratch store).",
+   "command": "python3 apps/console-web/plugins/build-orchestrator/test.py",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "tsc --noEmit (console-web) is clean; groups.tsx is in the program.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "check-theme, check-controls, check-toolbars, check-plugin-commands and help-coverage all pass.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "plugin-lifecycle check build-orchestrator still lists stale references, but every one is in a file this build did not touch (project-seed, check-build-limit, check-projects, console-control e2e) or in an untracked session file.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 6.0406,
+  "estimated": false,
+  "tokens": {
+   "input": 220,
+   "output": 1250,
+   "cacheRead": 14320654,
+   "cacheWrite": 193452
+  }
+ },
+ "report": "_claude/builds/reports/orchestrator-custom-groups-custom-tabs.md",
+ "open": [
+  "No UI Review shots yet. I couldn't capture them: in a scratch console (the worktree's API plus Vite) the orchestrator's web part never showed up in any menu, so neither the Groups tab nor a custom tab could be shot. The PR stays a draft until desktop and phone shots of the Groups board and a custom Pending tab are in UI Review.",
+  "\"Behind main\" rules only match builds the merge queue reports a `behind` count for, read through `axf.merge-queue@1`. If that service has no number for a build, the rule doesn't match it.",
+  "\"Land all\" doesn't merge anything itself. The merge queue lands every ready PR on its own; this action tags the group's Done builds Urgent so they go first.",
+  "Kotlin twin deferred (PORTING.md).",
+  "While I was cleaning up the screenshot runs, a broad `pkill -f \"vite --host 127.0.0.1 --port\"` / `uvicorn main:app --host 127.0.0.1` ran on the VPS. It may also have stopped another session's local dev server: the overlay-merge-tmp vite was still running afterwards, but other sessions may have been hit."
+ ]
+}

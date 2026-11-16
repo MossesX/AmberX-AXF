@@ -16,6 +16,10 @@
   "data": {
     "layoutTheme": "command-center",
     "colorTheme": "obsidian",
+    "colorThemes": {
+      "light": "glacier",
+      "dark": "obsidian"
+    },
     "styleTheme": "industrial",
     "behaviorTheme": "alert",
     "assets": {

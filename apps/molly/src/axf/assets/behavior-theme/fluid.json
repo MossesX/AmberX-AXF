@@ -14,7 +14,12 @@
       "speed": "normal",
       "easing": "spring",
       "reduced": "system",
-      "entrance": "scale"
+      "entrance": "scale",
+      "swatches": "wave",
+      "skinSwitch": "ripple",
+      "picker": "fan",
+      "animSpeed": 100,
+      "animIntensity": 70
     },
     "interaction": {
       "hover": "lift",

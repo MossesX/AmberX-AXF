@@ -6,10 +6,11 @@
  * `axf-grid-header:<grid id>`, payload = column id) hides and shows columns; drag uses lib-dnd.
  * Parts (installed config `libraries.datagrid.parts`): groups, column-menu {hidden}, sort, expand, drag {trash}, compact.
  */
-import { useEffect, useMemo, useRef, type CSSProperties, type ReactNode, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent } from 'react';
 import { ControlScope, Icon, IconButton, Meter, Slot, escapeSelector, useControlTarget, useControlTargets, useRuntime, type ControlTargetDef } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { partOn, partParams, type LibraryPart } from '../../core/library';
+import { INSTANCE_TOKENS_KEY, instanceTokenVars } from '../../core/engines/component-tokens.mjs';
 import { registerZone, startDrag, type DropPos } from '../dnd';
 import spec from './library.json';
 import { anyRowHooks, applyDataset, DATASET_TOOLBAR_SLOT, datasetFiltered, noteDrawnRef, registerRowRefTarget, rowHooks, rowRefForContext, runRowHook, useDataset, useDatasetsRevision, type DatasetField, type RowRef } from './datasets';
@@ -116,7 +117,10 @@ export function DataGrid<R>(p: DataGridProps<R>) {
   const cols = p.columns.filter((c) => c.fixed || !config.columnMenu || !p.hidden.includes(c.id));
   useDatasetsRevision(); // row hooks registered later redraw the grid
   const tail = p.rowRef && anyRowHooks() ? 'minmax(calc(var(--fx-space) * 4), max-content)' : 'calc(var(--fx-space) * 4)';
-  const template = { '--axf-grid-cols': `calc(var(--fx-space) * 3) ${cols.map((c) => c.width).join(' ')} ${tail}` } as CSSProperties;
+  // component-tokens@1: this one grid's own token values (axf.tokens.instances → --fx-grid-* on the element) win over the skin's
+  const [, tokensTick] = useState(0);
+  useEffect(() => rt.settings.onChange(INSTANCE_TOKENS_KEY, () => tokensTick((n) => n + 1)), [rt]);
+  const template = { '--axf-grid-cols': `calc(var(--fx-space) * 3) ${cols.map((c) => c.width).join(' ')} ${tail}`, ...instanceTokenVars(rt.settings.get(INSTANCE_TOKENS_KEY), 'grid', p.id) } as CSSProperties;
   const headerTarget = `axf-grid-header:${p.id}`;
   const dsId = p.dataset === false ? '' : p.dataset ?? p.id;
   const all = useMemo(() => flatRows(p.groups), [p.groups]);

@@ -618,6 +618,19 @@
       ],
       "summary": "The themed list every drop-down opens instead of the browser's: a centred dialog on desktop, a bottom sheet on phones, with search past a threshold, groups, icons, descriptions and checkboxes for multiple choice.",
       "detail": "One engine (framework/core/engines/picker.ts) runs filtering, grouping, choosing, the keyboard and voice matching; PickerField, PickerDialog and Select draw it with the --fx-picker-* tokens only, so a theme, a skin's parts.picker or a control@1 tokens.picker override restyles it. The picker-dialog plugin switches it on for every SelectField and native select; turned off, the original drop-downs come back untouched. Every picker is reachable by REST, MCP, the CLI and voice (button:picker-<id>)."
+    },
+    {
+      "id": "build-rule",
+      "term": "Build rule (build-rule@1)",
+      "group": "Framework",
+      "aka": [
+        "build-rules@1",
+        "build rules",
+        "build-rule@1"
+      ],
+      "summary": "One rule every build follows, in the one store the VPS owns: who does it (the VPS or the build session), whether a check or fixer can do it, when the VPS acts (before launch, in the brief, after the build, at the gate), its check, its fixer and the brief block it rides in.",
+      "detail": "VPS rules (home card, help stub, Shipped features manifest, API-parity scaffolding, CI checks, THREADS rows, PR open + link, landing) are run by the gate's build rules runner and never reach a session's brief; session rules are rendered into the brief by briefBlocks at dispatch. Edited in Builds → Gate & rules → Build rules, and the same through the console's REST routes, MCP tools, CLI and voice actions for build rules. Contract: framework/spec/BUILD-RULES.md; engine framework/core/build-rules.mjs.",
+      "related": []
     }
   ]
 }

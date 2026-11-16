@@ -8,6 +8,7 @@ import * as pendingCore from '@console/axf/plan/pending-core.mjs';
 import pricing from '@console/axf/schemas/model-pricing.json';
 import { DataGrid, RowHookButtons, registerRowRefTarget, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import { PipelineTab, type PipelineView } from './pipeline';
+import { GroupTab, GroupsBoard } from './groups';
 import { buildRowSelector, settleFocus, useFocusedBuild } from './focus';
 import './orchestrator.css';
 
@@ -44,14 +45,28 @@ const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.ge
 export const TABS = [
   { id: 'pending', label: 'Pending', icon: 'clock' }, { id: 'queue', label: 'Queue', icon: 'list' }, { id: 'active', label: 'Active', icon: 'play' },
   { id: 'incomplete', label: 'Incomplete', icon: 'pause' }, { id: 'complete', label: 'Complete', icon: 'check-circle' }, { id: 'errors', label: 'Errors', icon: 'alert' },
-  { id: 'archive', label: 'Archive', icon: 'package' }, { id: 'deleted', label: 'Deleted', icon: 'trash' },
+  { id: 'archive', label: 'Archive', icon: 'package' }, { id: 'deleted', label: 'Deleted', icon: 'trash' }, { id: 'groups', label: 'Groups', icon: 'folder' },
   { id: 'accounts', label: 'Accounts', icon: 'user' }, { id: 'builds', label: 'All builds', icon: 'grid' }, { id: 'approvals', label: 'Approvals', icon: 'check' }, { id: 'rules', label: 'Rules', icon: 'settings' },
 ] as const;
-export type Tab = (typeof TABS)[number]['id'];
+/** A custom tab is a group pinned next to a stage tab (groups.tsx): `group:<group id>`. */
+export type Tab = (typeof TABS)[number]['id'] | `group:${string}`;
+const GROUP_TAB = /^group:[a-z0-9-]{1,48}$/;
+const isTab = (t: string) => TABS.some((x) => x.id === t) || GROUP_TAB.test(t);
+type CustomTab = { id: string; label: string; stage: string; count: number };
+/** The tab row: each custom tab sits right after the stage tab it belongs to; 'all' ones after Groups. */
+function tabRow(custom: CustomTab[]) {
+  const out: { id: string; label: string; icon: string; count?: number }[] = [];
+  for (const t of TABS) {
+    out.push(t);
+    const stage = t.id === 'groups' ? 'all' : t.id;
+    for (const c of custom.filter((x) => x.stage === stage)) out.push({ id: c.id, label: c.label, icon: 'folder', count: c.count });
+  }
+  return out;
+}
 const PIPELINE_VIEWS = new Set<string>(['pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'archive', 'deleted', 'accounts']);
 /** Another part of the console (an action, a deep link) asks for a tab: the page switches to it. */
 const TAB_EVENT = 'axf:orchestrator-tab';
-export function openTab(t: string) { if (TABS.some((x) => x.id === t)) { consoleApi.writeLocal('orch-tab', t); window.dispatchEvent(new CustomEvent(TAB_EVENT, { detail: t })); } }
+export function openTab(t: string) { if (isTab(t)) { consoleApi.writeLocal('orch-tab', t); window.dispatchEvent(new CustomEvent(TAB_EVENT, { detail: t })); } }
 
 export function OrchestratorPage() {
   const rt = useRuntime();
@@ -59,7 +74,10 @@ export function OrchestratorPage() {
   const [state, setState] = useState<State | null>(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
-  const [tab, setTab] = useState<Tab>(() => { const t = consoleApi.readLocal<string>('orch-tab', 'queue'); return (TABS.some((x) => x.id === t) ? t : 'queue') as Tab; });
+  const [tab, setTab] = useState<Tab>(() => { const t = consoleApi.readLocal<string>('orch-tab', 'queue'); return (isTab(t) ? t : 'queue') as Tab; });
+  const [custom, setCustom] = useState<CustomTab[]>([]);
+  const loadTabs = () => api.call<{ ok: boolean; tabs?: CustomTab[] }>('groups/tabs').then((r) => setCustom(r.tabs ?? [])).catch(() => undefined);
+  useEffect(() => { void loadTabs(); }, [tab]);
   useEffect(() => { consoleApi.writeLocal('orch-tab', tab); }, [tab]);
   useEffect(() => { const on = (e: Event) => setTab((e as CustomEvent<Tab>).detail); window.addEventListener(TAB_EVENT, on); return () => window.removeEventListener(TAB_EVENT, on); }, []);
 
@@ -94,8 +112,10 @@ export function OrchestratorPage() {
         <div className="fx-row fx-row--wrap"><Button icon="refresh" disabled={busy} onClick={() => load().then(() => log('reloaded', 'ok'))}>Reload</Button><Slot name="builds.toolbar" props={{ page: 'build-orchestrator' }} /></div>
       </header>
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
-      <TabGroup id="build-orchestrator.tabs" label="Build orchestrator" value={tab} onChange={setTab} tabs={TABS.map((t) => ({ value: t.id, label: t.label, icon: t.icon, badge: t.id === 'approvals' && waiting > 0 ? waiting : undefined }))} />
+      <TabGroup id="build-orchestrator.tabs" label="Build orchestrator" value={tab} onChange={setTab} tabs={tabRow(custom).map((t) => ({ value: t.id as Tab, label: t.label, icon: t.icon, badge: t.id === 'approvals' && waiting > 0 ? waiting : t.count || undefined }))} />
       {PIPELINE_VIEWS.has(tab) && <PipelineTab key={tab} api={api} log={log} view={tab as PipelineView} />}
+      {tab === 'groups' && <GroupsBoard api={api} log={log} />}
+      {tab.startsWith('group:') && <GroupTab key={tab} api={api} log={log} group={tab.slice(6)} />}
       {tab === 'builds' && <BuildsTab state={state} busy={busy} act={act} />}
       {tab === 'approvals' && <ApprovalsTab state={state} busy={busy} act={act} />}
       {tab === 'rules' && <RulesTab rules={state.rules} busy={busy} act={act} />}
