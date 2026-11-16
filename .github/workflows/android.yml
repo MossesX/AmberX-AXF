@@ -30,7 +30,7 @@ jobs:
   # is on (repo variable AXF_MERGE_QUEUE=on), and nothing again on main when the queue already ran CI on the same code.
   scope:
     name: CI scope (what changed)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # pinned: ubuntu-latest rolls to 26.04, where Playwright 1.56 has no chromium (theme-swap)
     outputs:
       mode: ${{ steps.s.outputs.mode }}
       light: ${{ steps.s.outputs.light }}
@@ -57,7 +57,7 @@ jobs:
     name: Light PR checks (full run happens once, in the merge queue)
     needs: scope
     if: ${{ needs.scope.outputs.light == 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
@@ -72,7 +72,7 @@ jobs:
     name: Build engine sweep (Node)
     needs: scope
     if: ${{ needs.scope.outputs.engine == 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       AXF_BUILD_PROFILE: all   # the sweep checks the base profile's data whatever profile Brett has saved
     steps:
@@ -134,6 +134,8 @@ jobs:
         run: node framework/cli/check-theme.mjs
       - name: Asset conformance — every web button is a framework control (apps, plugins, libraries, templates)
         run: node framework/cli/check-controls.mjs
+      - name: Dropdowns — no new raw <select>; pick-one controls are the expander picker (row + arrow unfolds a grid, press again to apply)
+        run: node framework/cli/check-dropdowns.mjs
       - name: Toolbars — every toolbar is a framework toolbar (role="toolbar" + settings id; tap-to-confirm off in code only with a recorded reason)
         run: node framework/cli/check-toolbars.mjs
       - name: Console control — every view, tab row, setting, plugin, toolbar, grid and button has a console-control address (ratchet framework/spec/console-control-baseline.json only goes down)
@@ -210,7 +212,7 @@ jobs:
     name: Web Dev Console (React/TS) + Python API
     needs: scope
     if: ${{ needs.scope.outputs.console == 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -277,6 +279,7 @@ jobs:
             npx -y tsx framework/spec/check-meters.mts                 # gauge + meter control assets: fixture replay, starters, enums
             npx -y tsx framework/spec/check-customize.mts              # tab-group asset + per-asset appearance tokens, 100 icon sets, apply to all
             npx -y tsx framework/spec/check-tab-group.mts              # tab-group@1: position / display / overflow / sticky / collapsible / closable / badges / rememberLast, starters, fixture replay, stylesheet tokens only
+            npx -y tsx framework/spec/check-expander-picker.mts        # expander-picker@1: the dropdown's replacement (row + arrow unfolds into a grid, press again to apply): enums, starters, fixture replay, customize target, stylesheet tokens only, no native <select> in Forms
             node framework/spec/check-component-tokens.mjs             # component-tokens@1: grid + tab-group token families (schema, :root defaults, no general colour token in grid / tab rules, style compile, per-instance set / Restore previous edit / Restore from axHub, control@1 paths, fixture)
             npx -y tsx framework/spec/check-chrome-settings.mts        # chrome-settings@1: one shared default settings interface per chrome type + a custom copy per app (extends), default selected, dialog fields = asset fields
             npx -y tsx framework/spec/check-chrome-apply.mts           # chrome-settings@1 applies: every dialog value on every toolbar, nav, menu bar, banner and context menu changes the render, per instance, survives reload
@@ -356,6 +359,7 @@ jobs:
             npx -y tsx framework/spec/check-approvals.mts               # lib-approvals: approvals + held calls in one list, badge words, deciding rules, watcher
             npx -y tsx framework/spec/check-approvals-menu.mts          # app menu Waiting for approval: Deny / Approve on every row, flips in place (jsdom)
             npx -y tsx framework/spec/check-approval-expand.mts         # expandable approval rows: details model, open in place, stays open on refresh, Deny / Approve inside (jsdom)
+            npx -y tsx framework/spec/check-expander-picker-dom.mts     # expander-picker@1 pressed for real: name + value + arrow row, opens in place, one press highlights + previews, the same press again applies and closes, Escape, keyboard (jsdom)
             npx -y tsx framework/spec/check-hubstore.mts               # lib-hubstore: settings + tables on a fake axHub data server, installer parts = runtime config
             npx -y tsx framework/spec/check-hubsync.mts                # lib-hubsync: look/settings/data config, follow source, settings mirror on a fake hub
             npx -y tsx framework/spec/check-web-client.mts             # SSE reader, API client library, typed catalog models (fixture + real files)
@@ -441,7 +445,7 @@ jobs:
     name: AmberX — web app in the Capacitor Android shell (APK + native unit tests)
     needs: scope
     if: ${{ needs.scope.outputs.amberx == 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       AXF_BUILD_NUMBER: ${{ github.run_number }}
     steps:
@@ -488,7 +492,7 @@ jobs:
           retention-days: 14
   android:
     name: Gradle — framework modules, kernel tests, console APK
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # Waits for the AmberX shell so its APK joins the app catalog bundle; runs whatever that job's result.
     needs: [scope, amberx]
     if: ${{ !cancelled() && needs.scope.outputs.android == 'true' }}

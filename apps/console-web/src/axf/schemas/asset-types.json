@@ -532,6 +532,62 @@
         ]
       }
     },
+    "expander-picker": {
+      "label": "Expander picker",
+      "group": "Controls",
+      "icon": "chevron-down",
+      "description": "expander-picker@1: how every pick-one control looks and behaves (Brett, Nov 13 2026: \"I don't want drop-down bars anymore. They are gonna be animated. It's gonna be a row with a name and a little arrow; when you press that arrow it expands a subgrid; you got to press it again to apply it and close it\"). Collapsed: a row with the setting's name, its current value and a small arrow. Pressed: the row grows in place into a grid of every option (pushing what is below down, nothing floats). One press on an option highlights it (and previews it where the host can); pressing it again, or the arrow, applies it and the grid closes. Motion follows the motion tokens and reduced motion. The framework SelectField draws one, so no native <select> remains and every dropdown in every app follows the active asset. Engine normalizeExpanderPicker / expanderPickerStyle in core/engines/components.ts; stylesheet .fx-pick in ui/axf.css.",
+      "required": [
+        "tiles",
+        "arrow"
+      ],
+      "enums": {
+        "tiles": [
+          "cards",
+          "chips",
+          "list",
+          "swatches"
+        ],
+        "arrow": [
+          "chevron",
+          "caret",
+          "plus",
+          "none"
+        ],
+        "columns": [
+          "auto",
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "density": [
+          "compact",
+          "regular",
+          "roomy"
+        ],
+        "animation": [
+          "unfold",
+          "fade",
+          "slide",
+          "none"
+        ],
+        "apply": [
+          "second-press",
+          "first-press"
+        ]
+      },
+      "optional_fields": {
+        "columns": "auto (default: tiles fill the width) | 1 | 2 | 3 | 4 — grid columns of the open grid",
+        "density": "compact | regular (default) | roomy — row and tile padding (size)",
+        "animation": "unfold (default: grows in place) | fade | slide (drops in) | none — how the grid opens; its speed is the motion token, reduced motion turns it off",
+        "apply": "second-press (default, Brett's rule: first press highlights, pressing the same option again applies and closes) | first-press (one press applies and closes)",
+        "preview": "boolean, default true — the highlighted option previews before it is applied where the host can (themes, assets)",
+        "showValue": "boolean, default true — the collapsed row shows the current value next to the name",
+        "divider": "boolean, default false — a rule between the row and the open grid"
+      },
+      "optional": true
+    },
     "container": {
       "label": "Container",
       "group": "Controls",
@@ -1303,6 +1359,7 @@
         "dialog",
         "popup",
         "tab-group",
+        "expander-picker",
         "gauge",
         "meter"
       ],

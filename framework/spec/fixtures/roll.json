@@ -12,6 +12,7 @@
     "popup": true,
     "button": true,
     "slider": true,
+    "expander-picker": true,
     "container": true,
     "gauge": true,
     "meter": true,
@@ -356,6 +357,16 @@
           "terminal",
           "touch-friendly",
           "warm-craft"
+        ],
+        "expander-picker": [
+          "chips-quick",
+          "compact-admin",
+          "fade-cards",
+          "list-rows",
+          "plain-static",
+          "swatch-tiles",
+          "touch-large",
+          "unfold-cards"
         ],
         "container": [
           "amber-signature",
@@ -775,6 +786,16 @@
           "terminal",
           "touch-friendly",
           "warm-craft"
+        ],
+        "expander-picker": [
+          "chips-quick",
+          "compact-admin",
+          "fade-cards",
+          "list-rows",
+          "plain-static",
+          "swatch-tiles",
+          "touch-large",
+          "unfold-cards"
         ],
         "container": [
           "amber-signature",
@@ -1201,6 +1222,16 @@
           "touch-friendly",
           "warm-craft"
         ],
+        "expander-picker": [
+          "chips-quick",
+          "compact-admin",
+          "fade-cards",
+          "list-rows",
+          "plain-static",
+          "swatch-tiles",
+          "touch-large",
+          "unfold-cards"
+        ],
         "container": [
           "amber-signature",
           "boardroom",
@@ -1620,6 +1651,16 @@
           "touch-friendly",
           "warm-craft"
         ],
+        "expander-picker": [
+          "chips-quick",
+          "compact-admin",
+          "fade-cards",
+          "list-rows",
+          "plain-static",
+          "swatch-tiles",
+          "touch-large",
+          "unfold-cards"
+        ],
         "container": [
           "amber-signature",
           "boardroom",
@@ -2009,6 +2050,16 @@
           "terminal",
           "touch-friendly",
           "warm-craft"
+        ],
+        "expander-picker": [
+          "chips-quick",
+          "compact-admin",
+          "fade-cards",
+          "list-rows",
+          "plain-static",
+          "swatch-tiles",
+          "touch-large",
+          "unfold-cards"
         ],
         "container": [
           "amber-signature",
@@ -2428,6 +2479,16 @@
           "terminal",
           "touch-friendly",
           "warm-craft"
+        ],
+        "expander-picker": [
+          "chips-quick",
+          "compact-admin",
+          "fade-cards",
+          "list-rows",
+          "plain-static",
+          "swatch-tiles",
+          "touch-large",
+          "unfold-cards"
         ],
         "container": [
           "amber-signature",

@@ -12,6 +12,7 @@
     "popup",
     "button",
     "slider",
+    "expander-picker",
     "container",
     "gauge",
     "meter",

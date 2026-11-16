@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "expander-picker",
+  "id": "unfold-cards",
+  "name": "Unfold cards",
+  "version": "1.0.0",
+  "description": "The default: the row unfolds in place into cards (title + text) with a chevron; press an option once to highlight it, again to apply and close.",
+  "author": "AmberX AXF",
+  "tags": [
+    "default",
+    "cards"
+  ],
+  "data": {
+    "tiles": "cards",
+    "arrow": "chevron",
+    "columns": "auto",
+    "density": "regular",
+    "animation": "unfold",
+    "apply": "second-press",
+    "preview": true,
+    "showValue": true,
+    "divider": false
+  }
+}

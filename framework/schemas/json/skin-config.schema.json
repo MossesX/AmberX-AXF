@@ -3016,6 +3016,298 @@
             }
           }
         },
+        "expander-picker": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Expander picker (Controls)",
+          "properties": {
+            "mode": {
+              "$ref": "#/$defs/mode"
+            },
+            "groups": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "pick": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "mode": {
+                      "$ref": "#/$defs/mode"
+                    },
+                    "options": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "asset": {
+                          "$ref": "#/$defs/mode"
+                        }
+                      }
+                    }
+                  }
+                },
+                "fields": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "mode": {
+                      "$ref": "#/$defs/mode"
+                    },
+                    "options": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "tiles": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "arrow": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "columns": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "density": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "animation": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "apply": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "preview": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "divider": {
+                          "$ref": "#/$defs/mode"
+                        }
+                      }
+                    }
+                  }
+                },
+                "parts.text": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "mode": {
+                      "$ref": "#/$defs/mode"
+                    },
+                    "options": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "fontSize": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "fontWeight": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "fontFamily": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "letterSpacing": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "textTransform": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "italic": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "lineHeight": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "textAlign": {
+                          "$ref": "#/$defs/mode"
+                        }
+                      }
+                    }
+                  }
+                },
+                "parts.colour": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "mode": {
+                      "$ref": "#/$defs/mode"
+                    },
+                    "options": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "textColor": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "background": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "borderColor": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "opacity": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "glass": {
+                          "$ref": "#/$defs/mode"
+                        }
+                      }
+                    }
+                  }
+                },
+                "parts.layout": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "mode": {
+                      "$ref": "#/$defs/mode"
+                    },
+                    "options": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "alignment": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "width": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "padding": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "gap": {
+                          "$ref": "#/$defs/mode"
+                        }
+                      }
+                    }
+                  }
+                },
+                "parts.shape": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "mode": {
+                      "$ref": "#/$defs/mode"
+                    },
+                    "options": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "radius": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "borderWidth": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "shadow": {
+                          "$ref": "#/$defs/mode"
+                        }
+                      }
+                    }
+                  }
+                },
+                "parts.icons": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "mode": {
+                      "$ref": "#/$defs/mode"
+                    },
+                    "options": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "iconSet": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "iconSize": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "iconColor": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "showIcons": {
+                          "$ref": "#/$defs/mode"
+                        }
+                      }
+                    }
+                  }
+                },
+                "parts.motion": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "mode": {
+                      "$ref": "#/$defs/mode"
+                    },
+                    "options": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "animation": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "animationSpeed": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "easing": {
+                          "$ref": "#/$defs/mode"
+                        }
+                      }
+                    }
+                  }
+                },
+                "parts.hover": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "mode": {
+                      "$ref": "#/$defs/mode"
+                    },
+                    "options": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "hover": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "hoverColor": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "cursor": {
+                          "$ref": "#/$defs/mode"
+                        }
+                      }
+                    }
+                  }
+                },
+                "parts.click": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "mode": {
+                      "$ref": "#/$defs/mode"
+                    },
+                    "options": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "click": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "clickColor": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "focusRing": {
+                          "$ref": "#/$defs/mode"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "container": {
           "type": "object",
           "additionalProperties": false,

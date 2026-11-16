@@ -4,7 +4,7 @@
  * document root. axf.css keys off these, so every Button, Slider, etc. in
  * every AmberX AXF app restyles the instant an asset is swapped.
  */
-import type { AppMenuData, ButtonData, ChromeDensity, ContainerData, ContextMenuData, DialogData, GaugeData, MeterData, NavMenuData, PopupData, SliderData, TabGroupData, ToolbarData } from '../types';
+import type { AppMenuData, ButtonData, ChromeDensity, ContainerData, ContextMenuData, DialogData, ExpanderPickerData, GaugeData, MeterData, NavMenuData, PopupData, SliderData, TabGroupData, ToolbarData } from '../types';
 import type { VarMap } from './theme';
 
 export interface StyleOutput {
@@ -209,6 +209,67 @@ export function tabGroupStyle(t: Partial<TabGroupData> | null | undefined, hidde
       'data-fx-tabs-collapsible': n.collapsible ? 'on' : 'off',
       'data-fx-tabs-badges': n.badges ? 'on' : 'off',
       'data-fx-tabs-hidden': hidden ? 'on' : 'off',
+    },
+  };
+}
+
+/* ---------- expander-picker: every pick-one control (the dropdown's replacement) ----------
+ * Brett, Nov 13 2026: "I don't want drop-down bars anymore. They are gonna be animated. It's gonna be a row with a name
+ * and a little arrow; when you press that arrow it expands a subgrid; you got to press it again to apply it and close it."
+ * A missing asset = the default (unfold cards, chevron, second press applies), so an app without one still has no
+ * native <select>. Nothing floats: the grid opens in place and pushes what is below it down. */
+
+export const EXPANDER_PICKER_DEFAULT: Required<ExpanderPickerData> = { tiles: 'cards', arrow: 'chevron', columns: 'auto', density: 'regular', animation: 'unfold', apply: 'second-press', preview: true, showValue: true, divider: false };
+export const EXPANDER_PICKER_TILES = ['cards', 'chips', 'list', 'swatches'] as const;
+export const EXPANDER_PICKER_ARROWS = ['chevron', 'caret', 'plus', 'none'] as const;
+export const EXPANDER_PICKER_COLUMNS = ['auto', '1', '2', '3', '4'] as const;
+export const EXPANDER_PICKER_ANIMATIONS = ['unfold', 'fade', 'slide', 'none'] as const;
+export const EXPANDER_PICKER_APPLIES = ['second-press', 'first-press'] as const;
+/** [row padding, tile padding] in --fx-space units per density */
+const PICK_PAD: Record<ChromeDensity, [number, number]> = { compact: [0.5, 0.75], regular: [0.75, 1], roomy: [1.1, 1.4] };
+/** how long the grid takes to open, in --fx-motion units (the behaviour theme's motion speed and reduced motion flow through the token) */
+const PICK_DUR: Record<(typeof EXPANDER_PICKER_ANIMATIONS)[number], number> = { unfold: 1.6, fade: 1.2, slide: 1.4, none: 0 };
+
+/** Every field at a value the engine knows; an older asset's missing fields take the default. */
+export function normalizeExpanderPicker(p: Partial<ExpanderPickerData> | null | undefined): Required<ExpanderPickerData> {
+  const d = EXPANDER_PICKER_DEFAULT;
+  return {
+    tiles: pick(p?.tiles, EXPANDER_PICKER_TILES, d.tiles),
+    arrow: pick(p?.arrow, EXPANDER_PICKER_ARROWS, d.arrow),
+    columns: pick(typeof p?.columns === 'number' ? String(p.columns) : p?.columns, EXPANDER_PICKER_COLUMNS, d.columns),
+    density: pick(p?.density, ['compact', 'regular', 'roomy'] as const, d.density),
+    animation: pick(p?.animation, EXPANDER_PICKER_ANIMATIONS, d.animation),
+    apply: pick(p?.apply, EXPANDER_PICKER_APPLIES, d.apply),
+    preview: flag(p?.preview, d.preview),
+    showValue: flag(p?.showValue, d.showValue),
+    divider: flag(p?.divider, d.divider),
+  };
+}
+
+/**
+ * CSS vars + data attributes for the app root (the app's active expander-picker asset) and for every ExpanderPicker
+ * element (its own effective asset, so a picker given another asset keeps it: element rules outrank the root's).
+ * Sizes are multiples of the space and motion tokens, never a px; columns 'auto' leaves the stylesheet's auto-fill grid.
+ */
+export function expanderPickerStyle(p: Partial<ExpanderPickerData> | null | undefined): StyleOutput {
+  const n = normalizeExpanderPicker(p);
+  const [row, tile] = PICK_PAD[n.density];
+  return {
+    vars: {
+      '--fx-pick-row-py': `calc(var(--fx-space) * ${row})`,
+      '--fx-pick-tile-pad': `calc(var(--fx-space) * ${tile})`,
+      '--fx-pick-dur': n.animation === 'none' ? '0ms' : `calc(var(--fx-motion) * ${PICK_DUR[n.animation]})`,
+      '--fx-pick-cols': n.columns === 'auto' ? 'repeat(auto-fill, minmax(min(100%, calc(var(--fx-font-size) * 11)), 1fr))' : `repeat(${n.columns}, minmax(0, 1fr))`,
+    },
+    attrs: {
+      'data-fx-pick': n.tiles,
+      'data-fx-pick-arrow': n.arrow,
+      'data-fx-pick-anim': n.animation,
+      'data-fx-pick-apply': n.apply,
+      'data-fx-pick-density': n.density,
+      'data-fx-pick-preview': n.preview ? 'on' : 'off',
+      'data-fx-pick-value': n.showValue ? 'on' : 'off',
+      'data-fx-pick-divider': n.divider ? 'on' : 'off',
     },
   };
 }
