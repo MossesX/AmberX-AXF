@@ -3095,6 +3095,15 @@ export class AxfRuntime {
       this.setShape(level, id === 'inherit' ? '' : id, widget ?? undefined);
     }, { label: 'Change the banner widget shape', requires: 'assets.swap', params: true, searchable: false });
     a.register('shape.restore', ([scope, ...rest]) => {
+      // `last`: the most recent shape edit at any level ("undo the shape change")
+      if (scope === 'last') {
+        const h = this.shapeHistory();
+        const key = Object.keys(h).sort((x, y) => (h[x]!.at < h[y]!.at ? 1 : -1))[0];
+        const where = key ? shapeScopeLevel(key) : null;
+        if (!where) { this.toast('No shape change to undo.', 'info', 'Widget shape'); return; }
+        this.restoreShape(where.level, where.widget);
+        return;
+      }
       const level = shapeScope(scope || 'app');
       if (!level) return;
       const widget = level === 'instance' ? shapeWidget(rest) : undefined;

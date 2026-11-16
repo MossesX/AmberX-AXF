@@ -205,6 +205,31 @@
       "address": "function:widget.icon",
       "value": "banner:clock:reset"
     },
+    "make the banner widgets hexagons": {
+      "verb": "press",
+      "address": "function:shape.set",
+      "value": "app:hexagon"
+    },
+    "make the banner widgets squircles everywhere": {
+      "verb": "press",
+      "address": "function:shape.set",
+      "value": "global:squircle"
+    },
+    "make the clock widget a squircle": {
+      "verb": "press",
+      "address": "function:shape.set",
+      "value": "widget:squircle:clock"
+    },
+    "turn the banner widgets into rounded squares": {
+      "verb": "press",
+      "address": "function:shape.set",
+      "value": "app:rounded-square"
+    },
+    "undo the shape change": {
+      "verb": "press",
+      "address": "function:shape.restore",
+      "value": "last"
+    },
     "": null
   },
   "commands": {
@@ -336,6 +361,31 @@
       "verb": "press",
       "address": "function:widget.icon",
       "value": "banner:clock:reset"
+    },
+    "make the banner widgets hexagons": {
+      "verb": "press",
+      "address": "function:shape.set",
+      "value": "app:hexagon"
+    },
+    "make the banner widgets squircles everywhere": {
+      "verb": "press",
+      "address": "function:shape.set",
+      "value": "global:squircle"
+    },
+    "make the clock widget a squircle": {
+      "verb": "press",
+      "address": "function:shape.set",
+      "value": "widget:squircle:clock"
+    },
+    "turn the banner widgets into rounded squares": {
+      "verb": "press",
+      "address": "function:shape.set",
+      "value": "app:rounded-square"
+    },
+    "undo the shape change": {
+      "verb": "press",
+      "address": "function:shape.restore",
+      "value": "last"
     }
   },
   "replies": {

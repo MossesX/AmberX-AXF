@@ -13,6 +13,8 @@
  *   "press <button>" · "click <button>" · "tap <button>"
  *   "set <setting> to <value>" · "turn <setting> on|off"
  *   "change the clock icon to star" · "set the toolbar search icon to bell" · "reset the clock icon"   (widget.icon)
+ *   "make the banner widgets hexagons" · "make the banner widgets squircles everywhere" · "make the clock widget a squircle"
+ *   · "undo the shape change"   (shape.set / shape.restore)
  */
 
 export const VOICE_FRAME = 'console-control-voice@1';
@@ -33,6 +35,8 @@ export function cleanPhrase(text) {
 }
 
 const strip = (s) => s.replace(/^(the|a|an|my)\s+/, '').replace(/\s+(screen|page|view)$/, '').trim();
+/** A spoken shape name as a shape asset id: "rounded squares" → rounded-square, "hexagons" → hexagon. */
+const shapeWord = (w) => w.trim().replace(/\s+(shape|one)s?$/, '').replace(/\s+/g, '-').replace(/(?<=[a-z]{3})(es|s)$/, (x) => (x === 'es' ? 'e' : '')).replace(/(squar|circl)$/, '$1e');
 const num = (w) => (/^\d+$/.test(w) ? Number(w) : NUMBERS[w] ?? null);
 
 /**
@@ -76,6 +80,15 @@ export function voiceIntent(text) {
     return { verb: 'press', address: 'function:widget.icon', value: `${m[1] ? 'toolbar' : 'banner'}:${strip(m[2])}:${m[3].trim().replace(/\s+/g, '-')}` };
   }
   if ((m = /^(?:reset|restore)(?: the)? (toolbar )?(.+?) (?:widget )?icon$/.exec(p))) return { verb: 'press', address: 'function:widget.icon', value: `${m[1] ? 'toolbar' : 'banner'}:${strip(m[2])}:reset` };
+
+  // banner widget shapes (runtime actions shape.set:<scope>:<shape>[:<widget>] and shape.restore:last)
+  if (/^(?:undo|revert|restore)(?: the)?(?: last| previous)? (?:widget |banner )?shape(?: change| edit)?$/.test(p)) return { verb: 'press', address: 'function:shape.restore', value: 'last' };
+  if ((m = /^(?:make|turn|set|change)(?: all)?(?: of)?(?: the)? banner widgets?(?: shapes?)? (?:into |to )?(?:an? )?(.+?)( everywhere| on every app| in every app| on all apps)?$/.exec(p))) {
+    return { verb: 'press', address: 'function:shape.set', value: `${m[2] ? 'global' : 'app'}:${shapeWord(m[1])}` };
+  }
+  if ((m = /^(?:make|turn|set|change)(?: the)? (.+?) widgets?(?: shape)? (?:into |to )?(?:an? )?(.+?)$/.exec(p))) {
+    return { verb: 'press', address: 'function:shape.set', value: `widget:${shapeWord(m[2])}:${strip(m[1])}` };
+  }
 
   // settings
   if ((m = /^set (?:the )?(.+?) (?:to|at) (.+)$/.exec(p))) return { verb: 'set', find: { q: strip(m[1]), kinds: ['setting'] }, value: m[2].trim() };

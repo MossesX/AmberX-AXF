@@ -464,6 +464,14 @@ def _num(w: str) -> int | None:
     return int(w) if w.isdigit() else VOICE_NUMBERS.get(w)
 
 
+def _shape_word(w: str) -> str:
+    """A spoken shape name as a shape asset id (same rule as shapeWord in console-control-voice.mjs)."""
+    w = re.sub(r"\s+(shape|one)s?$", "", w.strip())
+    w = re.sub(r"\s+", "-", w)
+    w = re.sub(r"(?<=[a-z]{3})(es|s)$", lambda x: "e" if x.group(0) == "es" else "", w)
+    return re.sub(r"(squar|circl)$", r"\1e", w)
+
+
 def voice_intent(text: Any) -> dict[str, Any] | None:
     """A phrase → an intent (same shape and rules as voiceIntent in console-control-voice.mjs), or None."""
     p = clean_phrase(text)
@@ -494,6 +502,13 @@ def voice_intent(text: Any) -> dict[str, Any] | None:
     if m := re.match(r"^(?:reset|restore)(?: the)? (toolbar )?(.+?) (?:widget )?icon$", p):
         host = "toolbar" if m.group(1) else "banner"
         return {"verb": "press", "address": "function:widget.icon", "value": f"{host}:{_strip(m.group(2))}:reset"}
+    if re.match(r"^(?:undo|revert|restore)(?: the)?(?: last| previous)? (?:widget |banner )?shape(?: change| edit)?$", p):
+        return {"verb": "press", "address": "function:shape.restore", "value": "last"}
+    if m := re.match(r"^(?:make|turn|set|change)(?: all)?(?: of)?(?: the)? banner widgets?(?: shapes?)? (?:into |to )?(?:an? )?(.+?)( everywhere| on every app| in every app| on all apps)?$", p):
+        scope = "global" if m.group(2) else "app"
+        return {"verb": "press", "address": "function:shape.set", "value": f"{scope}:{_shape_word(m.group(1))}"}
+    if m := re.match(r"^(?:make|turn|set|change)(?: the)? (.+?) widgets?(?: shape)? (?:into |to )?(?:an? )?(.+?)$", p):
+        return {"verb": "press", "address": "function:shape.set", "value": f"widget:{_shape_word(m.group(2))}:{_strip(m.group(1))}"}
     if m := re.match(r"^set (?:the )?(.+?) (?:to|at) (.+)$", p):
         return {"verb": "set", "find": {"q": _strip(m.group(1)), "kinds": ["setting"]}, "value": m.group(2).strip()}
     if m := re.match(r"^(?:turn|switch) (?:the )?(.+?) (on|off)$", p):
