@@ -7422,6 +7422,18 @@
    "from": "",
    "addenda": []
   },
+  "rebuild-ui-manager-floating-window-to": {
+   "said": "Rebuild.",
+   "at": "2026-11-16T22:43:03.598Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "refactor-all": {
    "said": "Stop everything from every session right now except the documentation. Put everything left to build into 1 single build in a new session. Send the build to orchestrator and create the matrix then end all other sessions.",
    "at": "2026-10-28",
