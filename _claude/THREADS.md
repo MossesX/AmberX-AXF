@@ -813,7 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 16:23 UTC · `remove-old-molly-app-project-keep-axf` s1 done, → running (all) · orchestrator
 - 2026-11-16 16:23 UTC · `remove-old-molly-app-project-keep-axf` s2 done (all) · orchestrator
 - 2026-11-16 16:25 UTC · `get-main-green-unblock-lander-land-axf` note (all) · orchestrator
 - 2026-11-16 16:25 UTC · `phone-connect-small-android-companion` → queued, note (all) · pipeline
@@ -1213,6 +1212,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 19:46 UTC · `every-settings-interface-gets` → running, note (all) · pipeline
 - 2026-11-16 19:46 UTC · `every-settings-interface-gets` branch claude/every-settings-interface-gets (all) · pipeline
 - 2026-11-16 19:46 UTC · `every-settings-interface-gets` note (all) · orchestrator
+- 2026-11-16 19:46 UTC · `settings-interface-gear-every-plugin` s13 done (all) · orchestrator
 
 ## Token passes (log)
 
