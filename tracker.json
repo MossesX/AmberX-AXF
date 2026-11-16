@@ -1,15 +1,15 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-11-13T18:54:37.201Z",
+  "generatedAt": "2026-11-14T18:45:40.196Z",
   "summary": {
     "foundations": {
-      "built": 68,
+      "built": 71,
       "partial": 3,
       "placeholder": 1,
       "planned": 0,
-      "total": 72,
-      "coverage": 94
+      "total": 75,
+      "coverage": 95
     },
     "kernel": {
       "built": 84,
@@ -453,6 +453,28 @@
       "notes": ""
     },
     {
+      "id": "f.appearance.hubskinonly",
+      "tab": "foundations",
+      "group": "modules-extension-points-placeholders",
+      "title": "Skin from axHub only: Settings → Appearance → Get my skin only from axHub (console) draws the hub-wide skin and axHub's tokens alone, drives the appearance lock (controls locked, \"Following axHub\"), keeps the app's own picks for when it is off",
+      "tag": "lib",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "Nov 13 2026 (build console-skin-axhub-only): console Settings → Appearance → Get my skin only from axHub (default off). On: the look is composed from the hub-wide skin over the default snapshot only (skin-rules.mjs hubOnlyLook, fixture skin.json scopes.hubOnly); own skin, overrides, colour pick, UI/plugin scopes, device tweaks and plugin overrides are kept, not drawn; the switch drives the appearance lock (reason hub) so every look control is locked with \"Following axHub\"; hub changes apply live. Reachable by the setting (search, console.settings, settings.set:axf.lock.hubskin), the appearance.hubskin action and voice (\"lock the console to the axHub skin\", Python twin). Kotlin twin deferred (PORTING.md)."
+    },
+    {
+      "id": "f.appearance.hubskinoverride",
+      "tab": "foundations",
+      "group": "modules-extension-points-placeholders",
+      "title": "Override axHub: the switch under Get my skin only from axHub (one or the other); while axHub-only is on every skin and asset editor is greyed out under a lock note with a \"Click here to override\" link; one confirm unlocks editing and edited parts are marked Overridden",
+      "tag": "lib",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "Nov 13 2026 (build skin-axhub-override-switch-greyed-out): console Settings → Appearance → Override axHub, under Get my skin only from axHub (default off). One or the other whichever way either is set (runtime onChange: Override on clears axf.lock.hubskin, axHub-only on clears axf.lock.hubskin.override and the overridden marks). While axHub-only is on every skin and asset editor is disabled, not hidden (HubSkinLockArea: Theme manager rows, Theme editor, Asset studio, nav style, context menu designer; the Appearance panel, skin picker, every-asset picker and plugin themes through the lock), each under HubSkinLockNote with Brett's wording and a Click here to override link; the link and the switch ask one confirm. Edits under Override are recorded in axf.lock.hubskin.overridden and shown as Overridden chips. Reachable by the setting (search, console.settings, settings.set:axf.lock.hubskin.override), the appearance.hubskin.override action and voice (\"override the axHub skin\", Python twin). Kotlin twin deferred (PORTING.md)."
+    },
+    {
       "id": "f.tokens",
       "tab": "foundations",
       "group": "theme-layout-and-ui-contracts",
@@ -464,6 +486,17 @@
       "notes": ""
     },
     {
+      "id": "f.tokenregistry",
+      "tab": "foundations",
+      "group": "theme-layout-and-ui-contracts",
+      "title": "Token registry and Skin editor: every token registered (element, area, state, scheme, level, description, default, source), new UIs register theirs in the manifest, CI fails unregistered or unread tokens; Skin editor sandboxes any UI with live hot render, snapshot chain with revert, export as a new skin; full API",
+      "tag": "lock",
+      "status": "built",
+      "wave": 1,
+      "module": "axf-kernel",
+      "notes": "Build token-registry-skin-editor-live-sandbox (Nov 13 2026): framework/schemas/token-registry.json, spec/check-token-registry.mjs, console plugin skin-editor (web + Python twin), REST / MCP / CLI / voice. Kotlin twin deferred (PORTING.md)."
+    },
+    {
       "id": "f.tokenset",
       "tab": "foundations",
       "group": "theme-layout-and-ui-contracts",
@@ -472,7 +505,7 @@
       "status": "built",
       "wave": 1,
       "module": "axf-kernel",
-      "notes": ""
+      "notes": "component-tokens@1 (Nov 13 2026, build own-token-sets-for-grids-and-tab-groups): grids / tables (--fx-grid-*, 32 tokens) and tab groups (--fx-tab-*, 58 tokens) have their own token families (core/engines/component-tokens.mjs: kind, level, description, default = today's general token), set by the style theme (grid.* / tabs.*), control@1 tokens.style, and per instance (axf.tokens.instances, tokens.instances; Restore previous edit / Restore from axHub). CI spec/check-component-tokens.mjs. Kotlin twin deferred."
     },
     {
       "id": "f.locals",
@@ -2932,7 +2965,7 @@
       "status": "placeholder",
       "wave": 2,
       "module": "axf-platform-android",
-      "notes": ""
+      "notes": "AmberX shell (app code, not this framework module) has one always-on draw-over-apps overlay since Nov 13 2026: toolbar, approval bar, full-screen browser (ApprovalOverlay + ApprovalOverlayRules / OverlayPageRules, JUnit). The framework capability stays a placeholder (Android on hold)."
     },
     {
       "id": "dv.pip",

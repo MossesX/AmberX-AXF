@@ -383,11 +383,26 @@ const NAVS = [
   ['amber-signature', 'AmberX Signature', NAV('list', [NS(null, ['home', 'approvals', 'apps']), NS('Make', ['components', 'assets', 'demos']), NS(null, ['settings'])], { header: 'AmberX', indicator: 'fill' }), 'amber', BH(['normal', 'emphasized', 'rise'], ['lift', 'shrink', 500, 280, 8], ['scale', 'blur', 'scale', 'slide', true, 8, 'cascade', 'cursor'], ['top-right', 4500, 'subtle', 'light', 'risky']), 'AmberX', 'the AmberX house behaviour', 'The AmberX house feel: emphasized motion, lifting hovers, frosted dialogs, a subtle sound.'],
   ['gizmo-console', 'GizmoX Console', NAV('list', DEV, { header: 'GizmoX', density: 'compact', indicator: 'bar' }), 'gizmo', BH(['fast', 'emphasized', 'fade'], ['tint', 'darken', 500, 260, 6], ['fade', 'dim', 'fade', 'slide', true, 8, 'remember', 'dock'], ['bottom-right', 3500, 'off', 'off', 'risky']), 'GizmoX', 'the GizmoX development console', 'The GizmoX console feel: fast emphasized fades, docked windows that remember their places, quiet notices.'],
 ];
+// Skin animations per behaviour theme (build skin-animations-swatches-skin-switch, Nov 14 2026): swatch rows, the skin
+// switch, the colour picker, speed (percent) and intensity, laid into the theme's motion block.
+const BH_ANIM = {
+  precise: ['ripple', 'sweep', 'fan', 130, 40],
+  fluid: ['wave', 'ripple', 'fan', 100, 70],
+  quiet: ['ripple', 'fade', 'pop', 90, 30],
+  alert: ['pop', 'sweep', 'pop', 160, 55],
+  instant: ['off', 'off', 'off', 100, 0],
+  cinematic: ['wave', 'sweep', 'fan', 60, 80],
+};
+const withAnim = (bid, b) => {
+  const a = BH_ANIM[bid];
+  return a ? { ...b, motion: { ...b.motion, swatches: a[0], skinSwitch: a[1], picker: a[2], animSpeed: a[3], animIntensity: a[4] } } : b;
+};
+
 function navAssets() {
   const out = [];
   for (const [id, name, data, bid, bdata, bname, use, bdesc] of NAVS) {
     out.push(env('nav-menu', { id, name, tags: ['pairs:' + bid], description: `${name}: ${use}. Lists the pages it can; each app shows the ones it has. Pairs with the ${bname ?? bid} behaviour theme.` }, data));
-    if (bdata) out.push(env('behavior-theme', { id: bid, name: bname, tags: ['pairs:' + id], description: bdesc }, bdata));
+    if (bdata) out.push(env('behavior-theme', { id: bid, name: bname, tags: ['pairs:' + id], description: bdesc }, withAnim(bid, bdata)));
   }
   return out;
 }
