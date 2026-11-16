@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6773,
- "updatedAt": "2026-11-16T19:43:52.514Z",
+ "rev": 6774,
+ "updatedAt": "2026-11-16T19:44:12.128Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -233059,7 +233059,7 @@
    "title": "Every grid: 1 or 2 rows per item, set by the skin",
    "category": "",
    "detail": "Every grid/table/list in the console shows each item as 1 or 2 rows when collapsed, set by the active skin (a skin token, e.g. grid row-lines = 1 or 2), and expands on tap for details. Audit every grid in every plugin and move it onto the shared framework grid/row control so the skin decides; no plugin hard-codes its own row layout. Use the existing grid/tab-group token sets (#654). Skin editor gets the 1-row/2-row setting with live preview. API parity (read/set the setting via REST/MCP/CLI/voice). Tests, check-theme and check-controls green, help, Shipped features. Land when done.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -233067,7 +233067,7 @@
    "pr": "#707",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:17.286Z",
-   "updatedAt": "2026-11-15T12:50:54.308Z",
+   "updatedAt": "2026-11-16T19:44:03.134Z",
    "builtAt": "",
    "notes": [
     {
@@ -233101,6 +233101,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-15T12:50:54.308Z"
+    },
+    {
+     "text": "Clash note from hotfix-orchestrator-grid-columns-don-t (PR #729): DataGrid now draws 1 or 2 lines per row on one shared column definition (rowLines prop > axf.grid.rowLines.<grid id> > axf.grid.rowLines > 1; root attr data-axf-row-lines; primary = fixed columns on line 1). s5 here should feed the skin token grid.rowLines into that rather than add a second row renderer for DataGrid.",
+     "at": "2026-11-16T19:44:03.133Z"
     }
    ],
    "approvals": [],
@@ -233746,7 +233750,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -245214,7 +245218,7 @@
    "title": "Hotfix: orchestrator grid columns don't line up",
    "category": "",
    "detail": "Brett: in the Build Orchestrator, the Pending grid (and every other tab's grid) has columns that don't line up; it looks like trash. Likely caused by the new skin Brett built on Fable (console-look-becomes-default-axhub-skin / every-grid-1-2-rows-per-item-set-skin). Fix the grid so header and every row share the same column widths (CSS grid template or a shared column definition from the grid asset tokens), in 1-row and 2-row modes, under every skin. Check every orchestrator tab and the other grids in the console. Screenshot before and after (headless Chrome, signed in). Add a test that fails when header and row column edges differ. Land it, redeploy, and check by hand on the live console.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -245222,8 +245226,8 @@
    "pr": "#729",
    "priority": "P0",
    "createdAt": "2026-11-16T18:28:00.561Z",
-   "updatedAt": "2026-11-16T19:43:49.848Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T19:43:57.392Z",
+   "builtAt": "2026-11-16T19:43:53.433Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -245244,6 +245248,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-hotfix-orchestrator-grid-columns-don-t--lenny, shared account login)",
      "at": "2026-11-16T18:33:48.489Z"
+    },
+    {
+     "text": "Phase 1 done: PR #729, in the merge queue. Header and rows share one column definition (subgrid); 1 or 2 lines per row via setting:axf.grid.rowLines. grid-align 420 cases, 0 failures (was 52). UI Review r-20261116-k7rk501 waiting. Still to do after landing + redeploy: hand check on the live console signed in.",
+     "at": "2026-11-16T19:43:57.392Z"
     }
    ],
    "approvals": [],
@@ -245568,12 +245576,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:43:53.433Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:33:17.177Z",
-     "updatedAt": "2026-11-16T18:33:17.177Z"
+     "updatedAt": "2026-11-16T19:43:53.934Z"
     }
    ],
    "profiles": [
@@ -245584,7 +245592,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
