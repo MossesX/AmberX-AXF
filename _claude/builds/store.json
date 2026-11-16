@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6934,
- "updatedAt": "2026-11-16T22:48:14.964Z",
+ "rev": 6935,
+ "updatedAt": "2026-11-16T22:48:47.516Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -251323,6 +251323,55 @@
    "kind": "build",
    "planRef": "",
    "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "icon-pack-studio-fable",
+   "title": "Icon Pack Studio (Fable)",
+   "category": "",
+   "detail": "FABLE. Fresh on main, replaces icon-map-icon-packs-every-icon-badge-app (archive it, close PR). Icon map of every icon spot; icon packs per app or hub-wide with reset; drag-and-drop Icon Pack Designer with live preview; randomly generated icons and packs; import from icon libraries, SVG/PNG upload, URLs, other packs. Tokens, framework controls, console-control, MCP/CLI/voice. Land through the orchestrator.",
+   "status": "pending",
+   "hidden": false,
+   "source": "cli",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-16T22:48:45.269Z",
+   "updatedAt": "2026-11-16T22:48:45.269Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Use Fable. Very powerful, nice, easy drag and drop, random generated ones, import icons from different sources. Make it sick.",
+    "at": "2026-11-16T22:48:45.269Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 930
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
