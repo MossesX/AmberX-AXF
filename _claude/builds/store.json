@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6888,
- "updatedAt": "2026-11-16T20:41:15.831Z",
+ "rev": 6889,
+ "updatedAt": "2026-11-16T20:41:27.351Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -247903,7 +247903,7 @@
    "pr": "#733",
    "priority": "P0",
    "createdAt": "2026-11-16T20:22:23.083Z",
-   "updatedAt": "2026-11-16T20:40:23.059Z",
+   "updatedAt": "2026-11-16T20:41:09.683Z",
    "builtAt": "2026-11-16T20:39:27.617Z",
    "notes": [
     {
@@ -247937,6 +247937,10 @@
     {
      "text": "Session axf-to-do-manager-fully-voice-mcp-controlled--earl on mossesx-max- ended (exit 0); the build was already complete.",
      "at": "2026-11-16T20:40:13.381Z"
+    },
+    {
+     "text": "Session axf-to-do-manager-fully-voice-mcp-controlled--earl on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-16T20:41:09.683Z"
     }
    ],
    "approvals": [],
@@ -247957,12 +247961,19 @@
     "queuedAt": "2026-11-16T20:22:25.883Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-to-do-manager-fully-voice-mcp-controlled--earl",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-16T20:24:12.031Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-16T20:41:08.452Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-to-do-manager-fully-voice-mcp-controlled--earl"
+    },
     "split": {
      "at": "2026-11-16T20:23:51.246Z",
      "by": "orchestrator",
@@ -248066,7 +248077,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -248754,7 +248765,7 @@
    "title": "Fable rebuild: Plan Studio cleared out, unlimited nesting, context menus, full voice control",
    "category": "",
    "detail": "Full professional rebuild of the Plan Studio plugin (plan-studio) on Fable. First CLEAR IT OUT: remove every existing plan and stop all syncing into Plan Studio (no rules, builds, pending list or anything else synced into it); it starts empty. Then rebuild to the same standard as the To-do/Note manager rebuild: unlimited nesting of plans, sections, steps, notes and lists inside each other; drag to move/reorder at any level; full context menu on every item (new inside, rename, edit, duplicate, move, delete with undo, export, send to build orchestrator); everything voice and MCP controlled (plugin-commands MCP tools, console-control addresses, CLI, AmberX voice). Integrated with everything else (to-do manager, build orchestrator, notes, Shipped features) by explicit links only, never auto-sync. Professional, powerful UI on framework controls and tokens, desktop and phone. Rebuild differences report. Tests, land through the orchestrator.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -248762,7 +248773,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T20:25:16.196Z",
-   "updatedAt": "2026-11-16T20:39:44.183Z",
+   "updatedAt": "2026-11-16T20:41:13.398Z",
    "builtAt": "",
    "notes": [
     {
@@ -248812,6 +248823,10 @@
     {
      "text": "Started run 2 on mossesx-max- (Fable, Phase 1): axf-fable-rebuild-plan-studio-cleared-out--paulie.",
      "at": "2026-11-16T20:39:32.762Z"
+    },
+    {
+     "text": "Dispatch gate: fable-rebuild-plan-studio-cleared-out still has axf-fable-rebuild-plan-studio-cleared-out--paulie alive: not launched again, tracking that session.",
+     "at": "2026-11-16T20:41:13.398Z"
     }
    ],
    "approvals": [],
@@ -248832,7 +248847,7 @@
     "queuedAt": "2026-11-16T20:27:13.362Z",
     "queuedBy": "brett",
     "account": "mossesx-max-",
-    "session": "",
+    "session": "axf-fable-rebuild-plan-studio-cleared-out--paulie",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-16T20:29:03.156Z",
@@ -248948,7 +248963,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

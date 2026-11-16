@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T20:41:15.831Z",
+ "updatedAt": "2026-11-16T20:41:27.351Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -162108,7 +162108,7 @@
    "pr": "#733",
    "priority": "P0",
    "createdAt": "2026-11-16T20:22:23.083Z",
-   "updatedAt": "2026-11-16T20:40:23.059Z",
+   "updatedAt": "2026-11-16T20:41:09.683Z",
    "builtAt": "2026-11-16T20:39:27.617Z",
    "notes": [
     {
@@ -162142,6 +162142,10 @@
     {
      "text": "Session axf-to-do-manager-fully-voice-mcp-controlled--earl on mossesx-max- ended (exit 0); the build was already complete.",
      "at": "2026-11-16T20:40:13.381Z"
+    },
+    {
+     "text": "Session axf-to-do-manager-fully-voice-mcp-controlled--earl on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-16T20:41:09.683Z"
     }
    ],
    "approvals": [],
@@ -162777,7 +162781,7 @@
    "title": "Fable rebuild: Plan Studio cleared out, unlimited nesting, context menus, full voice control",
    "category": "",
    "detail": "Full professional rebuild of the Plan Studio plugin (plan-studio) on Fable. First CLEAR IT OUT: remove every existing plan and stop all syncing into Plan Studio (no rules, builds, pending list or anything else synced into it); it starts empty. Then rebuild to the same standard as the To-do/Note manager rebuild: unlimited nesting of plans, sections, steps, notes and lists inside each other; drag to move/reorder at any level; full context menu on every item (new inside, rename, edit, duplicate, move, delete with undo, export, send to build orchestrator); everything voice and MCP controlled (plugin-commands MCP tools, console-control addresses, CLI, AmberX voice). Integrated with everything else (to-do manager, build orchestrator, notes, Shipped features) by explicit links only, never auto-sync. Professional, powerful UI on framework controls and tokens, desktop and phone. Rebuild differences report. Tests, land through the orchestrator.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -162785,7 +162789,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T20:25:16.196Z",
-   "updatedAt": "2026-11-16T20:39:44.183Z",
+   "updatedAt": "2026-11-16T20:41:13.398Z",
    "builtAt": "",
    "notes": [
     {
@@ -162835,6 +162839,10 @@
     {
      "text": "Started run 2 on mossesx-max- (Fable, Phase 1): axf-fable-rebuild-plan-studio-cleared-out--paulie.",
      "at": "2026-11-16T20:39:32.762Z"
+    },
+    {
+     "text": "Dispatch gate: fable-rebuild-plan-studio-cleared-out still has axf-fable-rebuild-plan-studio-cleared-out--paulie alive: not launched again, tracking that session.",
+     "at": "2026-11-16T20:41:13.398Z"
     }
    ],
    "approvals": [],
