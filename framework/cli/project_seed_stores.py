@@ -4,8 +4,8 @@
 Writes a test project's to-do lists and notes through the console plugins' own store code, so the files are exactly
 what the console would write:
 
-- to-do manager (todo-store@1): `apps/console-web/plugins/todo-manager/server/model.py` Store, at the file given
-- notes browser: `apps/console-web/plugins/notes-browser/server/store.py` NotesStore, in `_shared/_claude/<folder>/`
+- to-do manager (todo-store@1): `apps/console-web/plugins/todo-manager/server/model.py` Store, at the file given  # axf-plugin:todo-manager
+- notes browser: `apps/console-web/plugins/notes-browser/server/store.py` NotesStore, in `_shared/_claude/<folder>/`  # axf-plugin:notes-browser
 
 Reads one JSON object on stdin and prints one JSON line:
 
@@ -13,7 +13,7 @@ Reads one JSON object on stdin and prints one JSON line:
      "by": "project-seed", "lists": [ListSpec…], "notes": [{"path": "a.md", "content": "…"}…]}
 
     ListSpec = {"title", "tone"?, "icon"?, "entries": [EntryInput…], "children": [ListSpec…]}
-    EntryInput = what POST /api/plugins/todo-manager/entries takes, without listId
+    EntryInput = what POST /api/plugins/todo-manager/entries takes, without listId  # axf-plugin:todo-manager
 
 The to-do store is seeded only while it has no lists (a second run changes nothing); a note is written only when it
 doesn't exist yet. Run with `-I` is fine: paths are resolved from this file, not the working directory.

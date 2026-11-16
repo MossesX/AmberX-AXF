@@ -7,7 +7,7 @@ copy /opt/axf-batch/resolve.py hands over to this file when the repo has it).
       --main   which side is main (default: found from origin/main: the side that is, or descends from, main's head)
 
 Rules, in order, per conflicted file (generated-files@1 manifest, framework/spec/generated-files.json, shared with
-the auto-land runner and the merge queue in apps/console-web/plugins/push-banner/land/):
+the auto-land runner and the merge queue, the push banner plugin's land/ folder):
   retired build profile   removed (the one build profile `all`, Brett Nov 7 2026)
   modify / delete         the preferred side
   regen                   main's copy, then its generator runs on the merged tree (control inventory, help bake,
@@ -92,10 +92,14 @@ def merge3(b, o, t, win):
             out[k] = merge3(None if bv is MISSING else bv, ov, tv, win)
         return out
     if isinstance(o, list) and isinstance(t, list):
+        # entries are matched by "id", or by "target" (help@1 entries): both sides' entries kept, one per key
+        both = o + t
+        field = next((n for n in ("id", "target") if both and all(isinstance(x, dict) and n in x for x in both)), None)
+
         def key(x):
-            return x.get("id") if isinstance(x, dict) and "id" in x else None
-        if (o or t) and all(key(x) is not None for x in o + t):
-            bl = {key(x): x for x in (b or []) if isinstance(x, dict) and "id" in x} if isinstance(b, list) else {}
+            return x.get(field) if field and isinstance(x, dict) and field in x else None
+        if field:
+            bl = {key(x): x for x in (b or []) if key(x) is not None} if isinstance(b, list) else {}
             tm = {key(x): x for x in t}
             om = {key(x): x for x in o}
             out = []

@@ -182,6 +182,8 @@ function Shell() {
   // Every plugin banner goes through Banner settings (framework BannerSettings.tsx): right-click / long-press any of them →
   // Banner settings, one tab per banner, its look and behaviour (Brett, Oct 22 2026). The console's own rescue note stays plain.
   const rt = useRuntime();
+  // the console's own views and dialogs join the plugins' in rt.uiRenderers, so the Skin editor can sandbox any of them
+  useEffect(() => { rt.registerUiRenderers(allViews, { ...plugins.contributed.dialogs, ...dialogs }); });
   const bannerPrefs = useBannerPrefsTick();
   const slots = useMemo(() => {
     // Always called: it registers Banner settings and the full banner list, which the dialog needs.
