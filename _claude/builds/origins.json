@@ -3996,6 +3996,18 @@
    "from": "report",
    "addenda": []
   },
+  "hotfix-orchestrator-grid-columns-don-t": {
+   "said": "Line up the grid in the orchestrator, the pending builds grid, none of the columns are lined up, it looks like trash. I built a skin on Fable and it did that.",
+   "at": "2026-11-16T18:28:00.561Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "hotfix-toolbar-settings-still-change": {
    "said": "",
    "at": "",

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6626,
- "updatedAt": "2026-11-16T18:27:58.268Z",
+ "rev": 6627,
+ "updatedAt": "2026-11-16T18:28:18.689Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -243630,6 +243630,83 @@
    ],
    "order": {
     "all": 908
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "hotfix-orchestrator-grid-columns-don-t",
+   "title": "Hotfix: orchestrator grid columns don't line up",
+   "category": "",
+   "detail": "Brett: in the Build Orchestrator, the Pending grid (and every other tab's grid) has columns that don't line up; it looks like trash. Likely caused by the new skin Brett built on Fable (console-look-becomes-default-axhub-skin / every-grid-1-2-rows-per-item-set-skin). Fix the grid so header and every row share the same column widths (CSS grid template or a shared column definition from the grid asset tokens), in 1-row and 2-row modes, under every skin. Check every orchestrator tab and the other grids in the console. Screenshot before and after (headless Chrome, signed in). Add a test that fails when header and row column edges differ. Land it, redeploy, and check by hand on the live console.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-16T18:28:00.561Z",
+   "updatedAt": "2026-11-16T18:28:07.935Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-16T18:28:07.935Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Line up the grid in the orchestrator, the pending builds grid, none of the columns are lined up, it looks like trash. I built a skin on Fable and it did that.",
+    "at": "2026-11-16T18:28:00.561Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-16T18:28:07.259Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 909
    },
    "kind": "build",
    "planRef": "",
