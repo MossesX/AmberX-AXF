@@ -808,8 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 13:22 UTC · `data-container-axf-data-holds-all` s24 done (all) · orchestrator
-- 2026-11-15 13:22 UTC · `home-cards-follow-plugin-off-home-always` note (all) · mcp
 - 2026-11-15 13:23 UTC · `gate-rules-plugin-in-the-console` note (all) · mcp
 - 2026-11-15 13:23 UTC · `home-cards-follow-plugin-off-home-always` note (all) · mcp
 - 2026-11-15 13:23 UTC · `build-rules-tab-gate-rules-vps-owns` added (0 steps) (all) · console
@@ -1208,6 +1206,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 16:29 UTC · `re-sync-stuck-branches-lander-can-push` → queued, note (all) · console
 - 2026-11-16 16:29 UTC · `get-main-green-unblock-lander-land-axf` note (all) · mcp
 - 2026-11-16 16:31 UTC · `phone-connect-small-android-companion` s35 done, → built, note (all) · reconciler
+- 2026-11-16 16:31 UTC · `fix-console-deep-links-open-page-lands` added (0 steps) (all) · console
+- 2026-11-16 16:31 UTC · `fix-console-deep-links-open-page-lands` → queued, note (all) · console
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T16:31:08.582Z",
+ "updatedAt": "2026-11-16T16:31:25.294Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -157135,6 +157135,43 @@
    "origin": {
     "said": "Put fix main on more than one slot, they won't conflict.",
     "at": "2026-11-16T16:29:34.116Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "fix-console-deep-links-open-page-lands",
+   "title": "Fix console deep links so open-page lands on the right screen",
+   "category": "",
+   "detail": "Deep links are broken: opening https://console.amberxai.com/?axf-target=view:build-orchestrator (or view:gate, any view:/tab: address) loads the console's main screen instead of that screen. console_show via the API works, so the address is valid; the URL parameter isn't applied on load. Fix: on page load (and after sign-in redirect, which likely drops the query string), read ?axf-target= and focus that address once the views are registered, including tabs (e.g. view:gate/tab:gate.tabs=auto-lander). Keep the parameter through the hub sign-in redirect. Each open_url must open its own tab when asked. Tests: load with each view address and assert the focused screen. Land with the one-at-a-time lander.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-16T16:31:15.510Z",
+   "updatedAt": "2026-11-16T16:31:18.631Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-16T16:31:18.631Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "You didn't open the orchestrator, you just opened the main console. Yeah, we need to fix that.",
+    "at": "2026-11-16T16:31:15.510Z",
     "source": "",
     "session": "",
     "link": "",
