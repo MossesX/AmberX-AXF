@@ -262,3 +262,19 @@ The `lander-idle` item (push-banner, axf.health@1) has three states:
 It carries fix steps: the cron line, a stale `/run/axf-auto-land.lock` holder, CI on main, moving the head down.
 
 Not changed, but noted: a lander round takes 7–8 min, because auto-land walks about 60 builds first. So the real cadence is about every 8–10 min, not the cron's 3.
+
+## data-container (#704) through the queue (s14, in progress)
+
+**Stacking.** The queue had picked up #713 (Postgres) again, because my "remove" was pinned to its old head and a later push undid it. I removed it again, pinned to 447ff5edc, so #704 lands without it. #723 (this build) stays ahead of #704 in the stack, so #704's run already includes it, and the two still merge separately.
+
+**First stacked runs failed:**
+
+| PR | Check | Cause | Fix |
+|---|---|---|---|
+| #723 | `amberx-droid/test.mjs` (`CONTEXT_LEAD_PREFIX` missing) | amberx-droid's committed `src/axf` was behind the framework. CI re-bakes it only when a PR touches AmberX, so every other PR failed this test. | Re-baked (`rebake.mjs apply --force` + libs + shared assets); test 2336/2336, `tsc` clean (baac5cb52) |
+| #704 | menu-reach | the data-store plugin has a settings tab but no `web/menu.ts` | Plugins → Data store menu entry (cc26430ef) |
+| #704 | check-ui-review | the seeded path `'ui-review/shots/…'` in `check-data-migrate.mjs` matched the submit-API pattern | path joined from segments (cc26430ef) |
+
+**Earlier on #704:**
+- After main's merge, main's per-device views in claude-settings wrote with `fs` functions this branch no longer imports. Views now save through `data-files` (eedb82421).
+- With these fixes the full light list (24 commands) and the Alerts/MCP list pass locally. The only exceptions are host ones.
