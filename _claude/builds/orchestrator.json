@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T23:16:50.089Z",
+ "updatedAt": "2026-11-16T23:17:03.555Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -158826,7 +158826,7 @@
    "title": "axHub: veto countdown setting, read-only calls skip it",
    "category": "",
    "detail": "In axHub (MossesX/axHub): 1) Add a setting for the veto countdown length (0 to 120 seconds), default 10 s per Brett; editable in the axHub approvals settings and through the API. 2) Read-only calls never get held: vps.run commands that only read (classify by a read-only allow list or an explicit readOnly flag on the call; inspect, logs, ps, git log/fetch, cat, grep, df, docker inspect) run at once. Anything that changes something keeps the countdown. Irreversible calls keep their approval. Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -158834,7 +158834,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T18:24:30.100Z",
-   "updatedAt": "2026-11-16T19:07:34.640Z",
+   "updatedAt": "2026-11-16T23:16:44.925Z",
    "builtAt": "",
    "notes": [
     {
@@ -158868,6 +158868,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-16T19:07:34.640Z"
+    },
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-16T23:16:44.925Z"
     }
    ],
    "approvals": [],
@@ -160700,7 +160704,7 @@
    "title": "AmberX open_url must open the page even when Chrome is already in front",
    "category": "",
    "detail": "Bug Nov 16: amberx.open_url only posts a notification instead of opening the page, even while Brett has Chrome in the foreground on the console. Android background-start limits block AmberX. Fix: (1) when an AXF console tab is open and connected, route open_url through it (console navigates the tab / opens a new tab via a console-control 'navigate' command); (2) otherwise use a full-screen-intent or an allowed exemption (SYSTEM_ALERT_WINDOW / companion device) so it really opens; (3) notification only as a last resort. Tests on the S26 Ultra, land, new APK, AmberX FYI.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -160708,7 +160712,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T18:37:43.199Z",
-   "updatedAt": "2026-11-16T19:41:08.651Z",
+   "updatedAt": "2026-11-16T23:16:42.825Z",
    "builtAt": "",
    "notes": [
     {
@@ -160742,6 +160746,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-16T19:41:08.651Z"
+    },
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-16T23:16:42.825Z"
     }
    ],
    "approvals": [],
@@ -163321,428 +163329,6 @@
     "addenda": []
    },
    "steps": []
-  },
-  {
-   "id": "rebuild-own-token-sets-every-grid-tab",
-   "title": "Rebuild: own token sets for every grid and tab group",
-   "category": "",
-   "detail": "Fresh rebuild on current main of the old own-token-sets-for-grids-and-tab-groups build (2,196 commits behind, archived). Every grid and every tab group can get its own look separate from the app's overall skin: row colour, text size, spacing, borders, radius, hover/selected colours. Set per instance from its right-click Settings, with Reset to skin. Read the old branch for intent only; don't merge it. Tokens through the asset engines, console-control addresses, MCP/CLI/voice control. Land through the orchestrator.",
-   "status": "pending",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "",
-   "pr": "",
-   "priority": "P1",
-   "createdAt": "2026-11-16T22:44:13.842Z",
-   "updatedAt": "2026-11-16T22:47:04.263Z",
-   "builtAt": "",
-   "notes": [
-    {
-     "text": "Split by Claude into 17 steps (4 Fable).",
-     "at": "2026-11-16T22:47:04.263Z"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "Yeah, build it.",
-    "at": "2026-11-16T22:44:13.842Z",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "",
-    "brief": "",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Read the archived branch claude/own-token-sets-for-grids-and-tab-groups for intent only (git log/diff, no merge) and write the design notes for this rebuild: what an instance token set is, which tokens it holds (row bg, alt row, text size, spacing, border width/colour, radius, hover, selected), and how it sits under the skin chain. Commit the notes.",
-     "model": "Fable",
-     "why": "Sets the contract every grid and tab group across apps follows",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "_claude/builds/reports/rebuild-own-token-sets-every-grid-tab.md",
-      "framework/spec/INSTANCE-TOKENS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjuskzr01f0m2",
-     "createdAt": "2026-11-16T22:47:04.263Z"
-    },
-    {
-     "id": "s2",
-     "text": "Add the instance-token-set@1 asset type to the registry (fields, allowed token keys per target kind grid|tab-group, the per-instance settings key axf.chrome.<kind>.<id>.tokens, skin coverage declaration) and regenerate JSON Schemas.",
-     "model": "Fable",
-     "why": "New shared asset type and schema in the single source of truth",
-     "phase": "",
-     "group": "",
-     "estimate": "9 min",
-     "files": [
-      "framework/schemas/asset-types.json",
-      "framework/schemas/json/",
-      "framework/core/engines/skin-coverage.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjuskzr02e8n2",
-     "createdAt": "2026-11-16T22:47:04.263Z"
-    },
-    {
-     "id": "s3",
-     "text": "Write the reference engine framework/core/engines/instance-tokens.ts: validate a set, resolve skin → app → instance with the child overriding the parent, compile to scoped --fx-* custom properties on the instance root (theme tokens only, opacity through --fx-opacity-*), and reset-to-skin = drop the instance layer.",
-     "model": "Fable",
-     "why": "Engine internals that turn assets into tokens",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "framework/core/engines/instance-tokens.ts",
-      "framework/core/index.ts"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjuskzr033f7v",
-     "createdAt": "2026-11-16T22:47:04.263Z"
-    },
-    {
-     "id": "s4",
-     "text": "Add golden fixtures for instance-tokens (resolve, compile, reset, invalid keys refused), wire them into gen-fixtures, record the Kotlin twin as a deferred gap in PORTING.md (Android on hold).",
-     "model": "Fable",
-     "why": "Cross-port conformance contract",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "framework/spec/fixtures/instance-tokens.json",
-      "framework/spec/gen-fixtures.mts",
-      "framework/spec/PORTING.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjuskzr04g1ll",
-     "createdAt": "2026-11-16T22:47:04.263Z"
-    },
-    {
-     "id": "s5",
-     "text": "Add the starter assets: instance-token-set/default-grid and default-tab-group (empty = follow skin) plus two examples (compact-grid, pill-tabs), and validate the framework assets.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "6 min",
-     "files": [
-      "framework/assets/instance-token-set/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjuskzr0519nn",
-     "createdAt": "2026-11-16T22:47:04.263Z"
-    },
-    {
-     "id": "s6",
-     "text": "Add the React hook useInstanceTokens(kind, id) that reads the per-instance setting, keeps it fresh with useEditorSync, and returns the scoped style. Apply it on the TabGroup root.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "9 min",
-     "files": [
-      "framework/react/instanceTokens.ts",
-      "framework/react/components/TabGroup.tsx"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjuskzr06ekvi",
-     "createdAt": "2026-11-16T22:47:04.263Z"
-    },
-    {
-     "id": "s7",
-     "text": "Apply useInstanceTokens on the DataGrid root, and move the grid row, hover, selected, border and radius CSS onto the scoped tokens so an instance set restyles them with no edits.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "framework/react/components/DataGrid.tsx",
-      "framework/ui/axf.css"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjuskzr07ykvq",
-     "createdAt": "2026-11-16T22:47:04.263Z"
-    },
-    {
-     "id": "s8",
-     "text": "Give every grid a stable settings id (data-axf-grid) and a right-click target (data-fx-ctx-target=\"grid\"), add grid to the chrome-settings types, and add the settings/chrome-grid default asset.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "9 min",
-     "files": [
-      "framework/react/components/DataGrid.tsx",
-      "framework/core/engines/chrome-settings-rules.mjs",
-      "framework/assets/settings/chrome-grid.json"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjuskzr08a3t8",
-     "createdAt": "2026-11-16T22:47:04.263Z"
-    },
-    {
-     "id": "s9",
-     "text": "Add the Look section to the chrome Settings… dialog for tab-group and grid: pick a token-set asset, edit each token with framework controls (colour, size, spacing, border, radius, hover, selected), live preview, Reset to skin with confirm and one undo.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "framework/react/components/ChromeContext.tsx",
-      "framework/react/components/InstanceLookPanel.tsx",
-      "framework/assets/settings/chrome-tab-group.json"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjuskzr09y4rx",
-     "createdAt": "2026-11-16T22:47:04.263Z"
-    },
-    {
-     "id": "s10",
-     "text": "Run chrome-settings backfill so every app in shared-assets.json plus Expenses gets its chrome-grid copy, and re-bake the console.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "7 min",
-     "files": [
-      "apps/*/src/assets/settings/",
-      "framework/cli/chrome-settings.mjs",
-      "apps/console-web/src/axf/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjuskzr0apgir",
-     "createdAt": "2026-11-16T22:47:04.263Z"
-    },
-    {
-     "id": "s11",
-     "text": "API part 1: register console-control addresses for each instance look (grid:<id>/look, tab-group:<id>/look, setting:axf.chrome.<kind>.<id>.tokens.<key>) and control@1 token targets, appended last in the registry.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "framework/core/engines/control.ts",
-      "framework/spec/CONSOLE-CONTROL.md",
-      "framework/cli/check-console-control.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjuskzs0b2yqq",
-     "createdAt": "2026-11-16T22:47:04.263Z"
-    },
-    {
-     "id": "s12",
-     "text": "API part 2: add console actions chrome.look.get | set | pick | reset | list (state read: which instances have their own set, resolved values), then a REST route under /api/console-control and MCP tools through plugin-commands.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/src/actions/chromeLook.ts",
-      "apps/console-web/server/",
-      "apps/console-web/server/mcp_server.py"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjuskzs0c1w61",
-     "createdAt": "2026-11-16T22:47:04.263Z"
-    },
-    {
-     "id": "s13",
-     "text": "API part 3: add the CLI framework/cli/instance-tokens.mjs (list|get|set|pick|reset|show) and `axf look …` in axf.mjs, plus AmberX voice phrases for the same actions and the deep link (console_show target opens the instance's Settings → Look).",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "framework/cli/instance-tokens.mjs",
-      "framework/cli/axf.mjs",
-      "apps/console-web/src/voice/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjuskzs0dsrap",
-     "createdAt": "2026-11-16T22:47:04.263Z"
-    },
-    {
-     "id": "s14",
-     "text": "Add tests: npx tsx framework/spec/check-instance-tokens.mts (engine vs fixtures, scoped vars, reset), a theme-swap case that switches skins with an instance set active, and a parity test that REST, MCP, CLI and voice give the same result.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "framework/spec/check-instance-tokens.mts",
-      "apps/console-web/scripts/theme-swap.mjs",
-      "apps/console-web/server/tests/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjuskzs0ep9m0",
-     "createdAt": "2026-11-16T22:47:04.263Z"
-    },
-    {
-     "id": "s15",
-     "text": "Add to CI: the new check plus check-theme, check-controls, check-chrome-assets, chrome-settings check, check-skin-coverage, check-console-control. Fix any findings and add the help and glossary descriptions.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "9 min",
-     "files": [
-      ".github/workflows/android.yml",
-      "apps/console-web/plugins/glossary-index/",
-      "apps/console-web/src/help/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjuskzs0flilc",
-     "createdAt": "2026-11-16T22:47:04.263Z"
-    },
-    {
-     "id": "s16",
-     "text": "Take desktop and phone shots of a grid and a tab group with their own sets, with ≥3 option assets for the Look panel. Submit them to UI Review (review.mjs submit --choices, group 'rebuild-own-token-sets-every-grid-tab - <time>').",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "9 min",
-     "files": [
-      "apps/console-web/plugins/ui-review/assets/",
-      "_claude/builds/reports/rebuild-own-token-sets-every-grid-tab/shots/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjuskzs0gpowt",
-     "createdAt": "2026-11-16T22:47:04.263Z"
-    },
-    {
-     "id": "s17",
-     "text": "Run the full checks (validate --framework, tracker --check, gen-fixtures diff clean, new tests, console typecheck and build). Write the report _claude/builds/reports/rebuild-own-token-sets-every-grid-tab.md, a differences report against the old branch, and the rebuild LOG entry. Add the THREADS row, push the branch, open the PR saying how each feature is reached by deep link, REST, MCP, CLI and voice and that the UI review is waiting, then link it with builds-live.mjs link.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "_claude/builds/reports/rebuild-own-token-sets-every-grid-tab.md",
-      "_claude/memory/docs/rebuilds/LOG.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjuskzs0hzjik",
-     "createdAt": "2026-11-16T22:47:04.263Z"
-    }
-   ]
   },
   {
    "id": "own-look-per-grid-and-tab-group",

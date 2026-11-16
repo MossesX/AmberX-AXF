@@ -814,9 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 19:05 UTC · `reset-all-button-every-asset-override` note (all) · mcp
-- 2026-11-16 19:06 UTC · `auto-lander-controls-in-the-gate-plugin` note (all) · orchestrator
-- 2026-11-16 19:06 UTC · `hotfix-orchestrator-grid-columns-don-t` s6 done (all) · orchestrator
 - 2026-11-16 19:05 UTC · `reset-all-button-every-asset-override` → running, note (all) · pipeline
 - 2026-11-16 19:06 UTC · `reset-all-button-every-asset-override` note (all) · orchestrator
 - 2026-11-16 19:06 UTC · `reset-all-button-every-asset-override` note (all) · orchestrator
@@ -1214,6 +1211,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 23:16 UTC · `always-fill-every-slot-when-slots-are` note (all) · orchestrator
 - 2026-11-16 23:16 UTC · `banner-widget-shapes-and-change-icon` note, removed (all) · cli
 - 2026-11-16 23:16 UTC · `banner-widget-shapes-plus-change-icon` s2 done (all) · orchestrator
+- 2026-11-16 23:16 UTC · `rebuild-own-token-sets-every-grid-tab` note, removed (all) · cli
+- 2026-11-16 23:16 UTC · `amberx-open-url-must-open-page-even-when` → queued, note (all) · brett
+- 2026-11-16 23:16 UTC · `axhub-veto-countdown-setting-read-only` → queued, note (all) · brett
 
 ## Token passes (log)
 

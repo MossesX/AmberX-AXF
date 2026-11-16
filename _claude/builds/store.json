@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6992,
- "updatedAt": "2026-11-16T23:16:50.089Z",
+ "rev": 6993,
+ "updatedAt": "2026-11-16T23:17:03.555Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -244237,7 +244237,7 @@
    "title": "axHub: veto countdown setting, read-only calls skip it",
    "category": "",
    "detail": "In axHub (MossesX/axHub): 1) Add a setting for the veto countdown length (0 to 120 seconds), default 10 s per Brett; editable in the axHub approvals settings and through the API. 2) Read-only calls never get held: vps.run commands that only read (classify by a read-only allow list or an explicit readOnly flag on the call; inspect, logs, ps, git log/fetch, cat, grep, df, docker inspect) run at once. Anything that changes something keeps the countdown. Irreversible calls keep their approval. Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -244245,7 +244245,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T18:24:30.100Z",
-   "updatedAt": "2026-11-16T19:07:34.640Z",
+   "updatedAt": "2026-11-16T23:16:44.925Z",
    "builtAt": "",
    "notes": [
     {
@@ -244279,6 +244279,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-16T19:07:34.640Z"
+    },
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-16T23:16:44.925Z"
     }
    ],
    "approvals": [],
@@ -244296,8 +244300,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-16T18:24:32.598Z",
-    "queuedBy": "console",
+    "queuedAt": "2026-11-16T23:16:44.150Z",
+    "queuedBy": "brett",
     "account": "",
     "session": "",
     "slot": "",
@@ -244643,7 +244647,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -246543,7 +246547,7 @@
    "title": "AmberX open_url must open the page even when Chrome is already in front",
    "category": "",
    "detail": "Bug Nov 16: amberx.open_url only posts a notification instead of opening the page, even while Brett has Chrome in the foreground on the console. Android background-start limits block AmberX. Fix: (1) when an AXF console tab is open and connected, route open_url through it (console navigates the tab / opens a new tab via a console-control 'navigate' command); (2) otherwise use a full-screen-intent or an allowed exemption (SYSTEM_ALERT_WINDOW / companion device) so it really opens; (3) notification only as a last resort. Tests on the S26 Ultra, land, new APK, AmberX FYI.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -246551,7 +246555,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T18:37:43.199Z",
-   "updatedAt": "2026-11-16T19:41:08.651Z",
+   "updatedAt": "2026-11-16T23:16:42.825Z",
    "builtAt": "",
    "notes": [
     {
@@ -246585,6 +246589,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-16T19:41:08.651Z"
+    },
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-16T23:16:42.825Z"
     }
    ],
    "approvals": [],
@@ -246602,8 +246610,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-16T18:37:48.055Z",
-    "queuedBy": "console",
+    "queuedAt": "2026-11-16T23:16:42.120Z",
+    "queuedBy": "brett",
     "account": "",
     "session": "",
     "slot": "",
@@ -247025,7 +247033,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -250204,12 +250212,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:13.842Z",
-   "updatedAt": "2026-11-16T22:47:04.263Z",
+   "updatedAt": "2026-11-16T23:16:39.980Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 17 steps (4 Fable).",
      "at": "2026-11-16T22:47:04.263Z"
+    },
+    {
+     "text": "Deleted (cli): Duplicates of queued builds. Kept in the builds store for good: Deleted tab, restorable.",
+     "at": "2026-11-16T23:16:39.980Z"
     }
    ],
    "approvals": [],
@@ -250707,9 +250719,9 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 6,
+   "deleted": true,
+   "deletedAt": "2026-11-16T23:16:39.980Z",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-16T22:47:04.263Z",
