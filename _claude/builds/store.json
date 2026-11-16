@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6681,
- "updatedAt": "2026-11-16T19:07:30.957Z",
+ "rev": 6682,
+ "updatedAt": "2026-11-16T19:07:50.465Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -201160,15 +201160,16 @@
    "title": "All settings interfaces open in a floating dialog by default",
    "category": "",
    "detail": "Every settings interface (console Settings sections, plugin settings, chrome settings for tab groups/toolbars/banners/nav/menu bar, and any future one) opens by default in a floating dialog over the current screen instead of navigating to the Settings page. Make it a framework default so new settings interfaces get it automatically (template + check that fails if a settings interface navigates away by default). Keep a per-user option to open it as a page instead, and a 'pop out to page' button in the dialog. Dialogs use the glass/transparency tokens (opacityGlass, blur). Deep links and voice/MCP/API still work. Tests, help entry, Shipped features.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/all-settings-interfaces-open-floating",
    "pr": "#628",
+   "mergedAt": "2026-11-16T19:01:40Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:03:04.047Z",
-   "updatedAt": "2026-11-16T19:03:06.588Z",
+   "updatedAt": "2026-11-16T19:07:34.640Z",
    "builtAt": "2026-11-16T18:44:45.128Z",
    "notes": [
     {
@@ -201242,6 +201243,10 @@
     {
      "text": "Session axf-all-settings-interfaces-open-floating--rhonda on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-16T19:03:06.588Z"
+    },
+    {
+     "text": "Reconciler: PR #628 merged",
+     "at": "2026-11-16T19:07:34.640Z"
     }
    ],
    "approvals": [],
@@ -201400,7 +201405,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -243218,7 +243223,7 @@
    "title": "axHub: veto countdown setting, read-only calls skip it",
    "category": "",
    "detail": "In axHub (MossesX/axHub): 1) Add a setting for the veto countdown length (0 to 120 seconds), default 10 s per Brett; editable in the axHub approvals settings and through the API. 2) Read-only calls never get held: vps.run commands that only read (classify by a read-only allow list or an explicit readOnly flag on the call; inspect, logs, ps, git log/fetch, cat, grep, df, docker inspect) run at once. Anything that changes something keeps the countdown. Irreversible calls keep their approval. Tests, help, Shipped features.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -243226,7 +243231,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T18:24:30.100Z",
-   "updatedAt": "2026-11-16T18:41:31.262Z",
+   "updatedAt": "2026-11-16T19:07:34.640Z",
    "builtAt": "",
    "notes": [
     {
@@ -243256,6 +243261,10 @@
     {
      "text": "s1 done (Fable): spec docs/veto-countdown.md + ApprovalSettingsSchema in axHub, branch claude/axhub-veto-countdown-setting-read-only (worktree /root/axf-builds/axhub-veto-countdown-setting-read-only.axhub, pushed faac5ad). Default 10 s, range 0-120, 0 = runs at next Vinnie pass; read-only vps.run commands skip the countdown. Opus phase builds s2-s12 per spec section 4.",
      "at": "2026-11-16T18:40:51.297Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-16T19:07:34.640Z"
     }
    ],
    "approvals": [],
@@ -243612,7 +243621,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
