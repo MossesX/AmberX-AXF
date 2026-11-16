@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 17:07 UTC · `build-rules-tab-gate-rules-vps-owns` s24 done (all) · orchestrator
 - 2026-11-15 17:08 UTC · `build-rules-tab-gate-rules-vps-owns` s25 done, → built (all) · orchestrator
 - 2026-11-15 17:09 UTC · `build-rules-tab-gate-rules-vps-owns` note (all) · orchestrator
 - 2026-11-15 19:56 UTC · `auto-lander-controls-in-the-gate-plugin` → running, note (all) · mcp
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 18:00 UTC · `get-main-green-unblock-lander-land-axf` s12 done (all) · orchestrator
 - 2026-11-16 18:01 UTC · `get-main-green-unblock-lander-land-axf` note (all) · reconciler
 - 2026-11-16 18:01 UTC · `get-main-green-unblock-lander-land-axf` s13 done (all) · orchestrator
+- 2026-11-16 18:24 UTC · `axhub-veto-countdown-setting-read-only` added (0 steps) (all) · console
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6619,
- "updatedAt": "2026-11-16T18:01:36.902Z",
+ "rev": 6620,
+ "updatedAt": "2026-11-16T18:24:32.297Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -243104,6 +243104,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-16T16:55:29.231Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "axhub-veto-countdown-setting-read-only",
+   "title": "axHub: veto countdown setting, read-only calls skip it",
+   "category": "",
+   "detail": "In axHub (MossesX/axHub): 1) Add a setting for the veto countdown length (0 to 120 seconds), default 10 s per Brett; editable in the axHub approvals settings and through the API. 2) Read-only calls never get held: vps.run commands that only read (classify by a read-only allow list or an explicit readOnly flag on the call; inspect, logs, ps, git log/fetch, cat, grep, df, docker inspect) run at once. Anything that changes something keeps the countdown. Irreversible calls keep their approval. Tests, help, Shipped features.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-16T18:24:30.100Z",
+   "updatedAt": "2026-11-16T18:24:30.100Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "We need to stop this 90 second thing. Put the veto thing on zero seconds or 10 seconds.",
+    "at": "2026-11-16T18:24:30.100Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 906
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

@@ -1303,6 +1303,18 @@
    "from": "report",
    "addenda": []
   },
+  "axhub-veto-countdown-setting-read-only": {
+   "said": "We need to stop this 90 second thing. Put the veto thing on zero seconds or 10 seconds.",
+   "at": "2026-11-16T18:24:30.100Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "axhub-veto-pass-web": {
    "said": "axhub-veto-pass-web",
    "at": "",
