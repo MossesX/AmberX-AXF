@@ -116,3 +116,7 @@ The `re-sync-stuck-branches-lander-can-push` build had already re-synced them be
 - `git log HEAD --not origin/claude/one-source-truth-console-shows-only-what origin/main` is empty, so nothing on it is missing from #598 or main. Its uncommitted changes were stale builds-store snapshots only. Worktree removed.
 - It was not in the merge queue. Auto-land listed it as **blocked** every round ("pushing its branch failed … not on GitHub"), because the build record still points at the deleted branch and at the same PR (#598) as the real build.
 - Held in auto-land (`land.mjs hold`, with the reason) and noted on the build. #598 is the one to land.
+
+## auto-lander-controls-in-the-gate-plugin worktree (s12)
+
+**Decision: nothing to commit or drop.** No tracked file has uncommitted changes. The untracked files are only the session brief and logs every worktree carries. The local head 61013c9db (the 11-16 16:38 merge of main) equals GitHub. PR #705 was kicked from the merge queue for the same reds main has (amberx `@console/api`, theme-swap). Once #719 and #724 land, a push or a main merge brings it back into the queue. Noted on the build.
