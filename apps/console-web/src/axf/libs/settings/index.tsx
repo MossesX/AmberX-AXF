@@ -14,8 +14,9 @@
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
+import { SHAPE_SETTING, shapeScopeKey } from '../../core/engines/shape';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, SKIN_COLOR_SLOT, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, ControlScope, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, settingTargetDef, Slider, Switch, useAsset, useAxfState, useControlTarget, useKnownBanners, useRuntime } from '../../react';
+import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, ControlScope, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, ShapePicker, shapeSourceText, settingTargetDef, Slider, Switch, useAsset, useAxfState, useControlTarget, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { TabGroup } from '../../react/components/TabGroup';
@@ -633,6 +634,7 @@ export function AppearancePanel() {
         <Switch key={t} label={assetTypeSpecs[t as AssetType]?.label ?? t} checked={!rt.slotHidden(t as AssetType)} disabled={locked} onChange={(on) => rt.setSlotHidden(t as AssetType, !on)} />
       ))}
       {row('Navigation menu', 'nav-menu')}
+      <GlobalShapeRow locked={locked} />
       <SkinWhere locked={locked} />
       <div className="axf-settings__row">
         <div className="axf-settings__label"><span>Restore to default</span><span className="fx-muted axf-settings__hint">Back to the look this app had when skins landed.</span></div>
@@ -641,6 +643,30 @@ export function AppearancePanel() {
           {!!look?.undo && <Button size="sm" tone="quiet" disabled={locked} onClick={() => rt.undoRestoreDefault()}>Undo</Button>}
         </div>
       </div>
+    </div>
+  );
+}
+
+/**
+ * Banner widget shape, hub-wide (shape@1): the root of the shape chain (axf.tokens.shape.global, so it reaches every
+ * app). A skin, an app or one widget that names its own shape beats it. Recorded for Restore previous edit.
+ */
+function GlobalShapeRow({ locked }: { locked: boolean }) {
+  const rt = useRuntime();
+  useAxfState();
+  const [open, setOpen] = useState(false);
+  const key = shapeScopeKey('global');
+  const picked = rt.shapeAtKey(key);
+  const here = rt.resolveShape();
+  return (
+    <div className="axf-settings__row axf-settings__row--stack" data-axf-target="section:appearance.shape">
+      <div className="axf-settings__label">
+        <span>Banner widget shape</span>
+        <span className="fx-muted axf-settings__hint">Hub-wide default: {picked || 'none (each skin or app decides)'}. Here: {shapeSourceText(here.level, here.id)}.</span>
+      </div>
+      <div className="axf-settings__control axf-skin__action"><Button size="sm" icon="box" disabled={locked} aria-expanded={open} data-axf-target="button:appearance.shape.choose" onClick={() => setOpen(!open)}>{open ? 'Done' : 'Choose…'}</Button></div>
+      {open && <ShapePicker value={picked} target="appearance.shape" onPick={(id) => rt.setShape('global', id)}
+        inherit={{ label: 'No hub-wide shape', onInherit: () => rt.setShape('global', '') }} onRestore={() => rt.restoreShape('global')} canRestore={key in rt.shapeHistory()} />}
     </div>
   );
 }
@@ -936,7 +962,7 @@ const CSS = `
 .axf-settings__search{max-width:none!important}
 .axf-settings>.axf-settings__search{flex:none;margin-left:0;width:100%;box-sizing:border-box;min-height:calc(var(--fx-font-size)*2.4)}
 .axf-settings__gbody .axf-settings__label>:not(:first-child){font-size:var(--fx-type-scale-xs);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-:where([data-fx-small]) .axf-settings__gbody .axf-settings__row:is(:has(.axf-settings__control--pair),:has(select),:has(.fx-seg)) {flex-direction:column;align-items:stretch;gap:var(--fx-dens-gap-md)} :where([data-fx-small]) .axf-settings__gbody .axf-settings__row:is(:has(.axf-settings__control--pair),:has(select),:has(.fx-seg))>.axf-settings__label {flex:none!important} :where([data-fx-small]) .axf-settings__gbody .axf-settings__row:is(:has(.axf-settings__control--pair),:has(select),:has(.fx-seg))>.axf-settings__control {max-width:none!important;width:100%;flex:none!important;justify-content:flex-start} :where([data-fx-small]) .axf-settings__gbody .axf-settings__row {flex-wrap:wrap} :where([data-fx-small]) .axf-settings__gbody .axf-settings__label {flex:1 1 calc(var(--fx-font-size)*10)} :where([data-fx-small]) .axf-settings__gbody .axf-settings__control {max-width:100%;flex:1 1 100%;justify-content:flex-start} :where([data-fx-small]) .axf-settings__gbody .axf-settings__row:has(.fx-switch, .axf-settings__switch) {flex-wrap:nowrap} :where([data-fx-small]) .axf-settings__gbody .axf-settings__row:has(.fx-switch, .axf-settings__switch) .axf-settings__control {flex:0 0 auto;max-width:60%}
+.axf-settings__row--stack {flex-wrap:wrap} .axf-settings__row--stack>.fx-shape-picker {flex:1 1 100%;min-width:0} :where([data-fx-small]) .axf-settings__gbody .axf-settings__row:is(:has(.axf-settings__control--pair),:has(select),:has(.fx-seg)) {flex-direction:column;align-items:stretch;gap:var(--fx-dens-gap-md)} :where([data-fx-small]) .axf-settings__gbody .axf-settings__row:is(:has(.axf-settings__control--pair),:has(select),:has(.fx-seg))>.axf-settings__label {flex:none!important} :where([data-fx-small]) .axf-settings__gbody .axf-settings__row:is(:has(.axf-settings__control--pair),:has(select),:has(.fx-seg))>.axf-settings__control {max-width:none!important;width:100%;flex:none!important;justify-content:flex-start} :where([data-fx-small]) .axf-settings__gbody .axf-settings__row {flex-wrap:wrap} :where([data-fx-small]) .axf-settings__gbody .axf-settings__label {flex:1 1 calc(var(--fx-font-size)*10)} :where([data-fx-small]) .axf-settings__gbody .axf-settings__control {max-width:100%;flex:1 1 100%;justify-content:flex-start} :where([data-fx-small]) .axf-settings__gbody .axf-settings__row:has(.fx-switch, .axf-settings__switch) {flex-wrap:nowrap} :where([data-fx-small]) .axf-settings__gbody .axf-settings__row:has(.fx-switch, .axf-settings__switch) .axf-settings__control {flex:0 0 auto;max-width:60%}
 `;
 
 function injectStyles(): void {
@@ -1033,6 +1059,22 @@ export const library: AxfWebLibrary = {
         LEVEL_BAR_SETTING,
       ],
     },
+    {
+      // shape@1: the hub-wide banner widget shape as a setting (console-control `set`, settings.set, search); the full
+      // picker with previews, Make your own and Restore previous edit is the Banner widget shape row of the Skin panel
+      id: 'axf.shape',
+      label: 'Banner widget shape',
+      icon: 'box',
+      tab: 'appearance',
+      order: 15,
+      level: 'simple',
+      description: 'The shape every banner widget is cut to on every app, unless a skin, an app or one widget names its own.',
+      settings: [
+        { key: SHAPE_SETTING, label: 'Banner widget shape (hub-wide)', kind: 'choice', default: '', requires: 'assets.swap', icon: 'box',
+          options: [{ value: '', label: 'None (each skin or app decides)' }, ...['circle', 'pill', 'rounded-square', 'square', 'squircle', 'hexagon', 'diamond', 'tag'].map((v) => ({ value: v, label: v.replace(/-/g, ' ') }))],
+          description: 'Circle, pill, rounded square, square, squircle, hexagon, diamond or tag. More (your own corners or SVG masks) in the Skin panel above.' },
+      ],
+    } as SettingsGroup & { level: SettingsLevel },
     {
       // Help mode (Brett, Nov 1 2026): the same switch as the ? in the menu bar, F1 and Help → Help mode; per device
       id: 'axf.help',
