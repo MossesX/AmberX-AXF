@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T22:47:06.390Z",
+ "updatedAt": "2026-11-16T22:48:14.964Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -163555,12 +163555,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:23.121Z",
-   "updatedAt": "2026-11-16T22:44:25.786Z",
+   "updatedAt": "2026-11-16T22:48:13.206Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-16T22:44:25.786Z"
+    },
+    {
+     "text": "Split by Claude into 16 steps (5 Fable).",
+     "at": "2026-11-16T22:48:13.206Z"
     }
    ],
    "approvals": [],
@@ -163577,7 +163581,369 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Read the archived branch claude/own-token-sets-for-grids-and-tab-groups for intent only (git log/diff, no merge). Write the design notes for the per-instance look record (instance-look@1): keys rowBg, rowAltBg, textSize, spacing, borderW, borderColor, radius, hoverBg, selectedBg, selectedFg; values are token refs or scaled steps, never raw px or colours; scope key is kind + settings id. Commit the notes to _claude/builds/reports/own-look-per-grid-and-tab-group.md (design section).",
+     "model": "Fable",
+     "why": "schema design for a new cross-app look contract",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/reports/own-look-per-grid-and-tab-group.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuu26u0ieok6",
+     "createdAt": "2026-11-16T22:48:13.206Z"
+    },
+    {
+     "id": "s2",
+     "text": "Add the instance-look@1 shape to framework/schemas (customize.json style target or a new entry in asset-types.json with a skin declaration), run `node framework/cli/axf.mjs schemas` to regenerate json/, and add validators that refuse raw px or colour values.",
+     "model": "Fable",
+     "why": "schema + asset-type registry change shared by every app",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/schemas/asset-types.json",
+      "framework/schemas/customize.json",
+      "framework/schemas/json/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuu26u0jw0au",
+     "createdAt": "2026-11-16T22:48:13.206Z"
+    },
+    {
+     "id": "s3",
+     "text": "Reference engine framework/core/engines/instance-look.ts: resolve(skin tokens, app overrides, instance look) → scoped CSS vars (--fx-inst-*) for one grid or tab group, child over parent, an empty record = skin, and reset() drops the record. Pure TS with no DOM code.",
+     "model": "Fable",
+     "why": "engine internals: token resolution order over skins",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/instance-look.ts",
+      "framework/core/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuu26u0kh1wh",
+     "createdAt": "2026-11-16T22:48:13.206Z"
+    },
+    {
+     "id": "s4",
+     "text": "Storage keys and migration: per-instance settings keys axf.chrome.tab-group.<id>.look and axf.chrome.grid.<id>.look in the chrome-settings rules. Migrate any legacy per-row overrides into them so nothing is lost. Hook it into skin-coverage so the type counts as covered.",
+     "model": "Fable",
+     "why": "settings-key contract + migration across apps",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "framework/core/engines/chrome-settings-rules.mjs",
+      "framework/core/engines/skin-coverage.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuu26u0lzj9o",
+     "createdAt": "2026-11-16T22:48:13.206Z"
+    },
+    {
+     "id": "s5",
+     "text": "Fixtures: add cases to framework/spec/fixtures/instance-look.json (skin only, partial override, full override, reset, skin swap under an override, invalid raw value refused) and generate them with `npx -y tsx framework/spec/gen-fixtures.mts`. Record the Kotlin twin as a deferred gap in framework/spec/PORTING.md (Android is on hold).",
+     "model": "Fable",
+     "why": "cross-port conformance contract",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/spec/fixtures/instance-look.json",
+      "framework/spec/gen-fixtures.mts",
+      "framework/spec/PORTING.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuu26u0mt9o1",
+     "createdAt": "2026-11-16T22:48:13.206Z"
+    },
+    {
+     "id": "s6",
+     "text": "Make framework/react/components/TabGroup.tsx read its instance look through the engine and set the scoped --fx-inst-* vars on its root. Add matching tab-group rules in framework/ui/axf.css that read only those vars and fall back through the skin cascade, with no var() fallbacks.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "framework/react/components/TabGroup.tsx",
+      "framework/ui/axf.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuu26u0nvcwf",
+     "createdAt": "2026-11-16T22:48:13.206Z"
+    },
+    {
+     "id": "s7",
+     "text": "Same for the framework grid (DataGrid): row bg, alternating rows, text size, cell spacing, borders, radius, and hover and selected colours from --fx-inst-*. Make sure it keeps fixed cell widths.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/DataGrid.tsx",
+      "framework/ui/axf.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuu26u0oi24a",
+     "createdAt": "2026-11-16T22:48:13.206Z"
+    },
+    {
+     "id": "s8",
+     "text": "Add grid to the right-click chrome block (ChromeContext) so every DataGrid gets Settings… / Change… / Move with a stable settings id (data-axf-grid or the grid id prop). Add the default settings/chrome-grid asset and run `node framework/cli/chrome-settings.mjs backfill` for the per-app copies.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/ChromeContext.tsx",
+      "framework/assets/settings/chrome-grid.json",
+      "framework/core/engines/chrome-settings-rules.mjs",
+      "apps/*/src/assets/settings/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuu26u0p8ehd",
+     "createdAt": "2026-11-16T22:48:13.206Z"
+    },
+    {
+     "id": "s9",
+     "text": "Add a 'Look' section to the chrome-tab-group and chrome-grid settings assets: token pickers for every look key, a live preview on the instance, and a Reset to skin button with confirm and one undo. Use framework controls only and give every control a level-toolbar level.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/assets/settings/chrome-tab-group.json",
+      "framework/assets/settings/chrome-grid.json",
+      "framework/react/components/ChromeSettingsDialog.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuu26u0qgewg",
+     "createdAt": "2026-11-16T22:48:13.206Z"
+    },
+    {
+     "id": "s10",
+     "text": "API part 1: console-control addresses for every instance look (setting:chrome.<kind>.<id>.look.<key>, an action address for reset) registered through control@1 with append-only targets at the end. Add deep links that open an instance's Settings → Look (console_show target).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "framework/core/engines/console-control.ts",
+      "apps/console-web/src/consoleControl/",
+      "framework/spec/CONSOLE-CONTROL.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuu26u0rjo6v",
+     "createdAt": "2026-11-16T22:48:13.206Z"
+    },
+    {
+     "id": "s11",
+     "text": "API part 2: REST routes in the theme-manager plugin: GET/PUT/DELETE /api/plugins/theme-manager/instance-look/<kind>/<id> plus a list route. Expose them as MCP tools through plugin-commands, and add console actions chrome.look.get|set|reset|list for AmberX voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/theme-manager/server/",
+      "apps/console-web/plugins/theme-manager/plugin.json",
+      "apps/console-web/src/actions/chrome.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuu26u0suat8",
+     "createdAt": "2026-11-16T22:48:13.206Z"
+    },
+    {
+     "id": "s12",
+     "text": "API part 3: CLI `node framework/cli/instance-look.mjs get|set|reset|list <kind> <id> [key=value…]` writing the same settings keys through the console API or the hub look document. Wire `axf look …` into axf.mjs and add help text.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/cli/instance-look.mjs",
+      "framework/cli/axf.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuu26u0tmahv",
+     "createdAt": "2026-11-16T22:48:13.206Z"
+    },
+    {
+     "id": "s13",
+     "text": "Rebake the shared assets and framework into the listed apps (`node framework/cli/shared-assets.mjs bake`, `rebake.mjs apply` for console-web and the others). Run check-theme, check-controls, check-chrome-assets, chrome-settings check and check-console-control, and fix any findings.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/axf/",
+      "apps/*/src/axf/assets/",
+      "framework/spec/chrome-baseline.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuu26u0ubg8t",
+     "createdAt": "2026-11-16T22:48:13.206Z"
+    },
+    {
+     "id": "s14",
+     "text": "Tests: framework/spec/check-instance-look.mts (engine vs fixtures, skin swap restyles, reset returns to the skin), a route test in the theme-manager plugin, and a CLI round-trip. Add them to CI and confirm check-skin-coverage passes.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/check-instance-look.mts",
+      "apps/console-web/plugins/theme-manager/test/",
+      "framework/spec/check-skin-coverage.mjs",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuu26u0vetfw",
+     "createdAt": "2026-11-16T22:48:13.206Z"
+    },
+    {
+     "id": "s15",
+     "text": "UI Review: shoot desktop + phone of a grid and a tab group with an own look and with Reset to skin. Submit 3 option looks as assets (review.mjs submit --choices), owner theme-manager.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/theme-manager/assets/settings/",
+      "_claude/builds/reports/own-look-per-grid-and-tab-group/shots/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuu26u0w7msv",
+     "createdAt": "2026-11-16T22:48:13.206Z"
+    },
+    {
+     "id": "s16",
+     "text": "Wrap-up: run the whole suite (validate --framework, tracker --check, check-instance-look, check-skin-coverage, chrome checks, console typecheck/build). Finish the report _claude/builds/reports/own-look-per-grid-and-tab-group.md, listing how each feature is reached by deep link, REST, MCP, CLI and voice. Add the THREADS row, push the branch and open the PR for the merge queue.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/own-look-per-grid-and-tab-group.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuu26u0x3lm6",
+     "createdAt": "2026-11-16T22:48:13.206Z"
+    }
+   ]
   },
   {
    "id": "toolbar-widgets-in-any-banner-style",
