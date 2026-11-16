@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6621,
- "updatedAt": "2026-11-16T18:24:50.008Z",
+ "rev": 6622,
+ "updatedAt": "2026-11-16T18:25:19.961Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -243122,12 +243122,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T18:24:30.100Z",
-   "updatedAt": "2026-11-16T18:24:33.583Z",
+   "updatedAt": "2026-11-16T18:25:17.334Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-16T18:24:33.583Z"
+    },
+    {
+     "text": "Brett (Nov 16): also add a PASS button in the CONSOLE (Approvals banner and Gate & rules): 'Start pass' with a length picker (15 min to 4 h), scope (everything / one service), an 'include irreversible' toggle off by default, a live countdown of the active pass, and 'End pass'. Uses axhub.pass_grant / pass_revoke / pass_status. Brett's own click starts it, with no extra approval. Full API parity.",
+     "at": "2026-11-16T18:25:17.334Z"
     }
    ],
    "approvals": [],
@@ -243175,7 +243179,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
