@@ -39,6 +39,8 @@ t('foldFellBack: Queue / Building → Pending is recorded, anything else leaves 
   l = P.foldFellBack(l, [ev('a', 'queued', 'pending', '2026-11-16T12:00:00Z'), ev('a', 'pending', 'queued', '2026-11-16T11:30:00Z')]);
   assert.equal(l.builds.a.at, '2026-11-16T12:00:00Z', 'an older event never undoes a newer fall-back');
   assert.deepEqual(P.foldFellBack(l, [ev('a', 'queued', 'pending', '2026-11-16T12:00:00Z')]), l, 'replays are harmless');
+  const fresh = P.foldFellBack(P.emptyFellBack('2026-11-16T12:00:00Z'), [ev('old', 'running', 'pending', '2026-11-01T00:00:00Z'), ev('lag', 'running', 'pending', '2026-11-16T11:55:00Z'), ev('new', 'queued', 'pending', '2026-11-16T12:05:00Z')]);
+  assert.deepEqual(Object.keys(fresh.builds).sort(), ['lag', 'new'], 'history from before the ledger began never lights up the banner');
 });
 t('fellBackView: which, why, steps left, since; null once requeued, held, deleted', () => {
   const rec = { id: 'x', title: 'X', from: 'running', at: '2026-11-16T12:00:00Z', by: 'reconcile' };
@@ -53,6 +55,7 @@ t('fellBackView: which, why, steps left, since; null once requeued, held, delete
   assert.equal(P.fellBackView(rec, null), null);
 });
 process.env.AXF_FELL_BACK_FILE = join(mkdtempSync(join(tmpdir(), 'fell-back-')), 'fell-back.json');
+writeFileSync(process.env.AXF_FELL_BACK_FILE, JSON.stringify(P.emptyFellBack('2026-11-16T00:00:00Z'))); // the ledger began before the test's events
 const FB = await import('./fell-back.mjs');
 const fbStore = { builds: [build('p', 'pending', [step('s1', 'Opus')]), build('q', 'queued', [step('s1', 'Opus')])] };
 let fbItems = null;

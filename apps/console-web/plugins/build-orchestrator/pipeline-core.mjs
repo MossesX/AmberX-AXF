@@ -484,19 +484,28 @@ export const ALERT_LINK = 'view:build-orchestrator';
  * listener (fell-back.mjs) keeps one record per build in the plugin's data folder, and the systems check shows each one
  * as a red banner item with Requeue and Open, pushed once to the AmberX app. The record goes when the build leaves
  * Pending again (requeued, archived, deleted, finished) or is put on hold.
- *   ledger = { $axf: 'fell-back@1', builds: { <id>: { id, title, from, at, by, eventId } } }
+ *   ledger = { $axf: 'fell-back@1', startedAt, builds: { <id>: { id, title, from, at, by, eventId } } }
  */
 export const FELL_BACK_SCHEMA = 'fell-back@1';
 export const FELL_BACK_FROM = ['queued', 'running', 'waiting'];
-export const emptyFellBack = () => ({ $axf: FELL_BACK_SCHEMA, builds: {} });
+/** How far before the ledger began an event may be and still count (a delivery that lagged behind the first write). */
+export const FELL_BACK_GRACE_MS = 10 * 60 * 1000;
+export const emptyFellBack = (startedAt = '') => ({ $axf: FELL_BACK_SCHEMA, startedAt: str(startedAt, 40), builds: {} });
 
-/** Fold build-event@1 events into the ledger (idempotent on event id; replays and out-of-order deliveries are safe). */
+/**
+ * Fold build-event@1 events into the ledger (idempotent on event id; replays and out-of-order deliveries are safe).
+ * Events from before the ledger began (`startedAt` less the grace) are history, not news: a new listener's first
+ * delivery hands it the whole outbox, and builds that fell back weeks ago must not all light up at once.
+ */
 export function foldFellBack(ledger, events) {
-  const out = ledger && typeof ledger === 'object' && ledger.builds && typeof ledger.builds === 'object' ? { $axf: FELL_BACK_SCHEMA, builds: { ...ledger.builds } } : emptyFellBack();
+  const ok = ledger && typeof ledger === 'object' && ledger.builds && typeof ledger.builds === 'object';
+  const out = ok ? { $axf: FELL_BACK_SCHEMA, startedAt: str(ledger.startedAt, 40), builds: { ...ledger.builds } } : emptyFellBack();
+  const from = Date.parse(out.startedAt) - FELL_BACK_GRACE_MS;
   for (const e of list(events)) {
     const id = str(e?.build?.id, 80); if (!id) continue;
     const cur = out.builds[id];
     const at = str(e.at, 40);
+    if (Number.isFinite(from) && !(Date.parse(at) >= from)) continue;
     if (cur && at && cur.at && at < cur.at) continue; // older than what the ledger holds
     if (e.event === 'cancelled') { delete out.builds[id]; continue; }
     if (e.event !== 'status') continue;

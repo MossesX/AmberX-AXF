@@ -8,7 +8,8 @@
  * put on hold. The systems check (server/__init__.py → fell_back_sync) turns each record into a red banner item with
  * Requeue and Open, pushed once to the AmberX app.
  *
- *   node apps/console-web/plugins/build-orchestrator/fell-back.mjs list [--json]     the builds that fell back, with why
+ *   node apps/console-web/plugins/build-orchestrator/fell-back.mjs list [--json] [--no-deliver]   the builds that fell back, with why
+ *                                     (takes this listener's waiting build-hook events first unless --no-deliver)
  *   node apps/console-web/plugins/build-orchestrator/fell-back.mjs clear <id> [--json]  drop one record (it stays in Pending)
  *
  * Requeue is the pipeline's own move: `pipeline.mjs queue <id>` (REST POST /pipeline/queue, MCP pipeline-queue).
@@ -21,10 +22,14 @@ import { emptyFellBack, fellBackView, foldFellBack } from './pipeline-core.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(HERE, '../../../..');
+/** The build-hook@1 listener name: the plugin folder. */
+const LISTENER = 'build-orchestrator';
 export const ledgerFile = () => process.env.AXF_FELL_BACK_FILE || join(REPO_ROOT, '.axf-console', 'plugins', 'build-orchestrator', 'fell-back.json');
 
+/** The ledger; the first read starts it now (events from before then are history, see foldFellBack). */
 export function readLedger() {
-  try { return foldFellBack(JSON.parse(readFileSync(ledgerFile(), 'utf8')), []); } catch { return emptyFellBack(); }
+  try { return foldFellBack(JSON.parse(readFileSync(ledgerFile(), 'utf8')), []); } catch { /* none yet */ }
+  const l = emptyFellBack(new Date().toISOString()); writeLedger(l); return l;
 }
 function writeLedger(l) {
   const f = ledgerFile(); mkdirSync(dirname(f), { recursive: true });
@@ -41,7 +46,8 @@ export function onBuildEvents(events) {
 export default onBuildEvents;
 
 /** The records against the store as it is now; records that no longer apply are dropped from the ledger. */
-export async function listFellBack({ store = null, prune = true } = {}) {
+export async function listFellBack({ store = null, prune = true, deliver = false } = {}) {
+  if (deliver) await deliverOwn();
   const l = readLedger();
   const ids = Object.keys(l.builds);
   if (!ids.length) return [];
@@ -56,6 +62,14 @@ export async function listFellBack({ store = null, prune = true } = {}) {
   return out.sort((a, b) => (a.since < b.since ? 1 : -1));
 }
 
+/**
+ * Take this listener's waiting events now. Builds changed in a worktree reach the console's outbox through builds-live
+ * without a delivery; the console's sync calls this every minute so the banner never waits for the next local write.
+ */
+export async function deliverOwn() {
+  try { const { deliver } = await import('../../../../framework/cli/build-hooks.mjs'); return await deliver({ only: LISTENER }); } catch { return null; }
+}
+
 export function clearFellBack(id) {
   const l = readLedger(); const had = !!l.builds[id];
   if (had) { delete l.builds[id]; writeLedger(l); }
@@ -63,11 +77,11 @@ export function clearFellBack(id) {
 }
 
 async function main(argv) {
-  const json = argv.includes('--json'); const args = argv.filter((a) => a !== '--json');
+  const json = argv.includes('--json'); const args = argv.filter((a) => !a.startsWith('--'));
   const [cmd = 'list', id] = args;
   const out = (o, text) => console.log(json ? JSON.stringify(o) : text);
   if (cmd === 'list') {
-    const items = await listFellBack();
+    const items = await listFellBack({ deliver: !process.argv.includes('--no-deliver') });
     return out({ ok: true, items }, items.map((x) => `${x.id} · from ${x.from} · ${x.since} · ${x.stepsLeft}/${x.stepsTotal} steps left · ${x.why}`).join('\n') || 'no build fell back to Pending');
   }
   if (cmd === 'clear') {
