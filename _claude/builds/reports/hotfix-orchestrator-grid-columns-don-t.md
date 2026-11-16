@@ -82,8 +82,17 @@ same way, so this matches what CI builds. Fixtures and the tracker didn't move (
 
 ## Shots
 
-Before: `hotfix-orchestrator-grid-columns-don-t - before` (UI Review → Screenshots), manifest
-`hotfix-orchestrator-grid-columns-don-t/shots.json`, a subset in `hotfix-orchestrator-grid-columns-don-t/shots/before/`.
+Before: `hotfix-orchestrator-grid-columns-don-t - before`; after: `hotfix-orchestrator-grid-columns-don-t - after`
+(UI Review → Screenshots on the VPS console, default + windows, every orchestrator tab, desktop + phone, 1 and 2 lines).
+Manifest `hotfix-orchestrator-grid-columns-don-t/shots.json` (every case of both runs); subsets in `shots/before/` and
+`shots/after/`.
+
+![before](hotfix-orchestrator-grid-columns-don-t/shots/before/default-1row-desktop-pending.png)
+![after](hotfix-orchestrator-grid-columns-don-t/shots/after/default-1row-desktop-pending.png)
+![after, 2 lines](hotfix-orchestrator-grid-columns-don-t/shots/after/default-2row-desktop-pending.png)
+
+UI Review: `r-20261116-k7rk501` "Orchestrator grids: columns line up again (1 and 2 lines per row)", waiting for Brett,
+submitted with `--single-option` (a hotfix restoring the intended look; 1 or 2 lines per row is already a setting).
 
 ## API
 
