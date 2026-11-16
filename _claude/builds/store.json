@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6820,
- "updatedAt": "2026-11-16T20:03:09.698Z",
+ "rev": 6821,
+ "updatedAt": "2026-11-16T20:04:00.891Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -247343,7 +247343,7 @@
    "title": "Every settings interface gets collapsible sections",
    "category": "",
    "detail": "Every settings interface in every app (console Settings sections, plugin settings, chrome/asset settings for toolbars, tab groups, banners, nav, menus, and any future one) groups its fields into collapsible sections with a header and chevron, remembered open/closed state per user, Expand all / Collapse all, search opens the matching section. Make it the framework default in the settings asset/template so new interfaces get it automatically, plus a CI check that fails on a settings interface without sections. Builds on orchestrator-settings-collapsible-split (same pattern, don't duplicate). Tokens only; reachable on REST, MCP, CLI, voice. Land through the orchestrator.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -247351,8 +247351,8 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T19:23:12.681Z",
-   "updatedAt": "2026-11-16T20:03:05.477Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T20:03:57.557Z",
+   "builtAt": "2026-11-16T20:03:57.558Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -247482,12 +247482,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:03:57.557Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T19:25:58.523Z",
-     "updatedAt": "2026-11-16T19:25:58.523Z"
+     "updatedAt": "2026-11-16T20:03:57.991Z"
     }
    ],
    "profiles": [
@@ -247498,7 +247498,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
