@@ -1,0 +1,22 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "plugin-settings-gear-in-mwjqa3xw-title",
+ "name": "plugin-settings-gear-in-mwjqa3xw: Gear beside the screen title",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "The gear sits right after the screen's title instead of at the far end, so it reads as 'this screen's settings' and never competes with the screen's own actions.",
+ "tags": [
+  "ui-choice",
+  "choice-set:plugin-settings-gear-in-mwjqa3xw",
+  "choice-option:title"
+ ],
+ "data": {
+  "settingKey": "axf.pluginGear.style",
+  "value": "title",
+  "appliesTo": [
+   "PluginSettingsGear",
+   "PluginScreenHeader"
+  ]
+ }
+}

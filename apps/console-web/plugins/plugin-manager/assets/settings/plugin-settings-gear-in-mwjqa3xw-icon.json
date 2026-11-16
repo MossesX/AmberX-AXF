@@ -1,0 +1,22 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "plugin-settings-gear-in-mwjqa3xw-icon",
+ "name": "plugin-settings-gear-in-mwjqa3xw: Gear icon, last in the header tools",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "What is built now: one framework IconButton with the settings icon, last in the screen header's tools strip (fx-pagehead__tools), labelled '<Plugin> settings'. Smallest; on a phone it wraps under the title.",
+ "tags": [
+  "ui-choice",
+  "choice-set:plugin-settings-gear-in-mwjqa3xw",
+  "choice-option:icon"
+ ],
+ "data": {
+  "settingKey": "axf.pluginGear.style",
+  "value": "icon",
+  "appliesTo": [
+   "PluginSettingsGear",
+   "PluginScreenHeader"
+  ]
+ }
+}

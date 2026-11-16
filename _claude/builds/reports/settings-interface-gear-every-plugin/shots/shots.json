@@ -1,0 +1,120 @@
+[
+ {
+  "name": "opt-icon--header",
+  "settle": 25000,
+  "steps": [
+   {
+    "click": "text=Plugins >> nth=0"
+   },
+   {
+    "wait": 600
+   },
+   {
+    "click": "text=Open a plugin"
+   },
+   {
+    "wait": 600
+   },
+   {
+    "click": "text=\"Plan Studio\""
+   },
+   {
+    "wait": 2500
+   }
+  ],
+  "viewports": [
+   "desktop",
+   "phone"
+  ]
+ },
+ {
+  "name": "opt-label--header",
+  "settle": 25000,
+  "steps": [
+   {
+    "click": "text=Plugins >> nth=0"
+   },
+   {
+    "wait": 600
+   },
+   {
+    "click": "text=Open a plugin"
+   },
+   {
+    "wait": 600
+   },
+   {
+    "click": "text=\"Plan Studio\""
+   },
+   {
+    "wait": 2500
+   },
+   {
+    "eval": "(() => { const b = document.querySelector('#plugin-settings-gear-plan-studio'); if (!b) return false; const s = document.createElement('span'); s.textContent = 'Settings'; b.appendChild(s); b.style.width = 'auto'; b.style.paddingInline = 'var(--fx-dens-gap-md)'; b.style.gap = 'var(--fx-dens-gap-sm)'; return true; })()"
+   },
+   {
+    "wait": 300
+   }
+  ],
+  "viewports": [
+   "desktop",
+   "phone"
+  ]
+ },
+ {
+  "name": "opt-title--header",
+  "settle": 25000,
+  "steps": [
+   {
+    "click": "text=Plugins >> nth=0"
+   },
+   {
+    "wait": 600
+   },
+   {
+    "click": "text=Open a plugin"
+   },
+   {
+    "wait": 600
+   },
+   {
+    "click": "text=\"Plan Studio\""
+   },
+   {
+    "wait": 2500
+   },
+   {
+    "eval": "(() => { const b = document.querySelector('#plugin-settings-gear-plan-studio'); const h = document.querySelector('[data-axf-plugin-header=\"plan-studio\"] h1'); if (!b || !h) return false; h.style.display = 'flex'; h.style.alignItems = 'center'; h.style.gap = 'var(--fx-dens-gap-md)'; h.appendChild(b); return true; })()"
+   },
+   {
+    "wait": 300
+   }
+  ],
+  "viewports": [
+   "desktop",
+   "phone"
+  ]
+ },
+ {
+  "name": "settings-tab",
+  "settle": 25000,
+  "steps": [
+   {
+    "click": "text=Plugins >> nth=0"
+   },
+   {
+    "wait": 600
+   },
+   {
+    "click": "text=Plan Studio settings"
+   },
+   {
+    "wait": 2500
+   }
+  ],
+  "viewports": [
+   "desktop",
+   "phone"
+  ]
+ }
+]

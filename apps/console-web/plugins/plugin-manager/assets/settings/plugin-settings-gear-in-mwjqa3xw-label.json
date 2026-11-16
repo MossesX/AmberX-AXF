@@ -1,0 +1,22 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "plugin-settings-gear-in-mwjqa3xw-label",
+ "name": "plugin-settings-gear-in-mwjqa3xw: Gear with the word Settings",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "The same control with the word Settings beside the icon, still last in the tools strip. Easier to spot and to tap on a phone; takes more room in busy headers.",
+ "tags": [
+  "ui-choice",
+  "choice-set:plugin-settings-gear-in-mwjqa3xw",
+  "choice-option:label"
+ ],
+ "data": {
+  "settingKey": "axf.pluginGear.style",
+  "value": "label",
+  "appliesTo": [
+   "PluginSettingsGear",
+   "PluginScreenHeader"
+  ]
+ }
+}

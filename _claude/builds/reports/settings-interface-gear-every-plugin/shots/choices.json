@@ -1,0 +1,57 @@
+{
+  "assetType": "settings",
+  "owner": "plugin-manager",
+  "options": [
+    {
+      "id": "icon",
+      "label": "Gear icon, last in the header tools",
+      "notes": "What is built now: one framework IconButton with the settings icon, last in the screen header's tools strip (fx-pagehead__tools), labelled '<Plugin> settings'. Smallest; on a phone it wraps under the title.",
+      "shots": [
+        "opt-icon--header-desktop.png",
+        "opt-icon--header-phone.png"
+      ],
+      "data": {
+        "settingKey": "axf.pluginGear.style",
+        "value": "icon",
+        "appliesTo": [
+          "PluginSettingsGear",
+          "PluginScreenHeader"
+        ]
+      }
+    },
+    {
+      "id": "label",
+      "label": "Gear with the word Settings",
+      "notes": "The same control with the word Settings beside the icon, still last in the tools strip. Easier to spot and to tap on a phone; takes more room in busy headers.",
+      "shots": [
+        "opt-label--header-desktop.png",
+        "opt-label--header-phone.png"
+      ],
+      "data": {
+        "settingKey": "axf.pluginGear.style",
+        "value": "label",
+        "appliesTo": [
+          "PluginSettingsGear",
+          "PluginScreenHeader"
+        ]
+      }
+    },
+    {
+      "id": "title",
+      "label": "Gear beside the screen title",
+      "notes": "The gear sits right after the screen's title instead of at the far end, so it reads as 'this screen's settings' and never competes with the screen's own actions.",
+      "shots": [
+        "opt-title--header-desktop.png",
+        "opt-title--header-phone.png"
+      ],
+      "data": {
+        "settingKey": "axf.pluginGear.style",
+        "value": "title",
+        "appliesTo": [
+          "PluginSettingsGear",
+          "PluginScreenHeader"
+        ]
+      }
+    }
+  ]
+}
