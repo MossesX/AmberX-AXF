@@ -202,6 +202,15 @@ own skin over the floor, adopt, adopt twice, undo, restore from backup, round tr
 document) through the same functions. Until then an Android app keeps reading `appearance@1` directly and shows no skin,
 so it does not take the hub default either.
 
+
+Pickup by the Android apps (s14, Nov 16 2026): AmberX (`apps/amberx-droid`, the allowed exception) needs no Kotlin: its
+Capacitor shell loads the AmberX web app (`server.url` https://amberx.amberxai.com), which attaches `HubAppearanceSource`,
+reads `defaultSkin` from appearance@1 and ships `skin/console-default` in its baked assets, so it stands on the hub
+default like the web apps once deployed. The other Android apps (the console app, AXHub Android, Voice Vault and any
+Compose app on the Kotlin kernel) are **deferred** under the Android hold: they keep drawing their own look until the
+Kotlin twin above lands (both pointers on `AppearanceEngine`, the chain root, floor-first composition, backups and the
+moves, replaying the `hubDefault` fixture block) and they bake `skin/console-default`. No Kotlin was written.
+
 ## Deferred: skin-switch@1 (Nov 13 2026)
 
 Build skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga (Fable): `framework/core/engines/

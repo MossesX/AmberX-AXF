@@ -105,3 +105,7 @@ Settings → Appearance (`AppearancePanel`, `framework/libs/settings`, every app
 | axhub-web | windows, off | hidden toolbar |
 | molly | own look (no skin) | none (unchanged) |
 Pointer: `defaultSkin: { id: "console-default" }`. Every app reports `from: default`.
+
+## Android (s14, Opus)
+- AmberX droid (allowed exception): no Kotlin needed. The Capacitor shell loads the AmberX web app (`capacitor.config.json` → `server.url` https://amberx.amberxai.com); `src/main.tsx` attaches `HubAppearanceSource`, which reads `defaultSkin` from appearance@1, and the re-baked `src/axf` carries the hub-default engine and `skin/console-default`. `tsc --noEmit` passes. It picks up the default when the AmberX web app is deployed.
+- Other Android apps (console app, AXHub Android, Voice Vault, Kotlin-kernel apps): deferred under the Android hold, recorded in `framework/spec/PORTING.md` → "Deferred: the hub default skin". No Kotlin written.
