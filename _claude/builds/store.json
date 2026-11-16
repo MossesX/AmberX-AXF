@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6579,
- "updatedAt": "2026-11-16T17:06:57.462Z",
+ "rev": 6580,
+ "updatedAt": "2026-11-16T17:07:16.391Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -221318,7 +221318,7 @@
    "title": "Hotfix: toolbar settings still change nothing (live console)",
    "category": "hotfix",
    "detail": "Brett (Nov 14): 'the toolbar settings still don't work. When I click the toolbar and go to its settings, the settings don't change anything.' Earlier builds touched this (fix-toolbar-settings-doing-nothing, chrome-settings-actually-apply-toolbars, per-toolbar-settings PR #650, per-instance picker #642/#622) but it's still broken on the live console. Reproduce on the LIVE console first (open a toolbar's settings, change each setting, confirm whether the stored value changes and whether the toolbar re-renders). Find which of those PRs never landed vs. what's genuinely broken, land or fix, and verify on the live console after redeploy.",
-   "status": "complete",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -221326,8 +221326,8 @@
    "pr": "#673",
    "mergedAt": "2026-11-14T17:36:16Z",
    "createdAt": "2026-11-14T16:51:14.645Z",
-   "updatedAt": "2026-11-16T17:06:55.483Z",
-   "builtAt": "2026-11-14T23:02:03.463Z",
+   "updatedAt": "2026-11-16T17:07:07.828Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-hotfix-toolbar-settings-still-change--lenny, own login copy)",
@@ -221518,6 +221518,28 @@
      "rev": 2,
      "createdAt": "2026-11-14T16:51:14.646Z",
      "updatedAt": "2026-11-14T23:02:03.914Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwjinf9q01puel",
+     "title": "",
+     "text": "Brett (Nov 16): it STILL doesn't work on the live console, even though #673 landed Nov 14. The fix was never clicked through by hand. Sign in to the live console with a real session (headless Chrome via the hub login), right-click a toolbar → Settings, change each setting (Buttons = Labels, size, position, etc.) on several toolbars (main toolbar, workspace toolbars, orchestrator toolbar). Record which ones save but don't redraw, and which don't save. Fix the real break, add a browser test that does exactly this, land it, redeploy, and re-check by hand on the live console. Then send Brett a phone alert.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T17:07:07.829Z",
+     "updatedAt": "2026-11-16T17:07:08.174Z"
     }
    ],
    "profiles": [
@@ -221528,7 +221550,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
