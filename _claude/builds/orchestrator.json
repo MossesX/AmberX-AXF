@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T23:00:20.612Z",
+ "updatedAt": "2026-11-16T23:01:13.660Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -164088,11 +164088,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/attach-widgets-to-any-toolbar-banner",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:50.833Z",
-   "updatedAt": "2026-11-16T22:52:37.783Z",
+   "updatedAt": "2026-11-16T23:01:10.360Z",
    "builtAt": "",
    "notes": [
     {
