@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6739,
- "updatedAt": "2026-11-16T19:29:37.295Z",
+ "rev": 6740,
+ "updatedAt": "2026-11-16T19:29:44.861Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -247018,7 +247018,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:20:10.281Z",
-   "updatedAt": "2026-11-16T19:29:26.320Z",
+   "updatedAt": "2026-11-16T19:29:39.917Z",
    "builtAt": "",
    "notes": [
     {
@@ -247121,7 +247121,7 @@
      "id": "s2",
      "uid": "st-mwjnhrbz05al8o",
      "title": "",
-     "text": "If I move the toolbar to the left instead of the top, it needs to run down the side like a column instead of pushing all the content down.",
+     "text": "Brett Nov 16 extras (must ship in this build): (a) tab bars / tab groups get the same Left/Right vertical column behaviour; (b) add a Position setting (Top, Bottom, Left, Right) to every toolbar and tab group in its settings, Move menu and API, since today there is only alignment; (c) REMOVE the 'Change asset' whole-asset swap from toolbar settings, context menu, API and voice; (d) every toolbar and tab group gets a Hide switch, hidden ones listed in the hidden-assets list to bring back.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -247135,9 +247135,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T19:22:41.951Z",
-     "updatedAt": "2026-11-16T19:22:41.951Z"
+     "updatedAt": "2026-11-16T19:29:40.244Z"
     },
     {
      "id": "s3",
@@ -247173,7 +247173,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
