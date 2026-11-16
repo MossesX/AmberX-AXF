@@ -32,12 +32,15 @@ import { SearchIndex } from './engines/search';
 import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
 import { isSkinMode, skinModeColor, skinModePair } from './engines/skin-modes.mjs';
+import { appIconMarkup, foldIconPack, glyphMarkup, iconChain, listIconOverrides, resetHubIconSpot, resetIconApp, resetIconHub, resetIconScope, resetIconSpot, resolveIcon, setHubIconOverride, setHubIconPack, setIconOverride, setIconPack, type FoldedPack, type IconChainLevel, type IconLevel, type IconLook, type IconOverrideRow, type IconPlace, type ResolvedIcon } from './engines/icon-pack';
+import { buildIconRegistry, iconCoverage, registerIconSpot as addIconSpot, searchIconSpots, spotTree, type IconCoverage, type IconRegistry, type RegisteredSpot, type SpotQuery, type SpotTreeApp } from './engines/icon-map';
+import { frameworkGlyph } from './engines/icon-glyphs.mjs';
 import { backToSkin, composeLookAt, globalSkinOf, hubDefaultOf, hubOnlyLook, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState, foldLegacyPicks, isFoldedPickType, lookNeedsMigration, migrateLookSettings, parseLegacyLook, settingsNeedMigration, skinSlots, isRetiredLookKey, LEGACY_LOOK_KEY, SKIN_SWAPPABLE_SECTION } from './engines/skin';
 import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
 import { ANIMATION_PREFS_KEY, animationState, behaviorStyle, confirmBeforeDelete, normalizeBehavior, setAnimationPref, skinAnimationVars, vibrationPattern, withAnimationPrefs, type AnimationState } from './engines/behavior';
 import { sweepOrigin } from './engines/swatches';
 import { navStyleOutput, normalizeNavStyle, type NavStyleData } from './engines/navstyle';
-import { animationFor, brandingVars, glyphFor, markSvg, resolveBranding, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
+import { animationFor, brandingVars, markSvg, resolveBranding, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
 import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, resolveInterface, scopeAttrs, scopeSheet, scopeVarsCss, type InterfaceData, type ResolvedInterface } from './engines/interface';
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceChange, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY, buildHelpIndex, helpTarget, introFor, introToShow, markSeen, resolveHelp, type HelpDescriptor, type HelpEntry, type HelpIndex, type HelpIntro } from './engines/help';
@@ -63,7 +66,7 @@ import {
   type Toast,
   type AssetDataMap,
 } from './types';
-import { assetTypeSpecs, attachable, type ValidationResult } from './validate';
+import { assetTypeSpecs, attachable, type ValidationResult, collectionType } from './validate';
 
 /** A signed-in account bound to the runtime (bindPrincipal): its policy + role replace the role switcher. */
 export interface BoundPrincipal {
@@ -605,7 +608,7 @@ export class AxfRuntime {
     try {
       const active = { ...this.state.active };
       for (const t of ASSET_TYPES) {
-        if (t === 'uac-policy' || t === SKIN_TYPE) continue; // never slots of a document: the policy is the account's, the skin is the look document's
+        if (t === 'uac-policy' || t === SKIN_TYPE || collectionType(t)) continue; // never slots of a document: the policy is the account's, the skin is the look document's, a collection (help, icon-map) is in force whole
         const want = r.slots[t] ?? this.manifest.defaults[t];
         if (want && this.registry.has(t, want)) active[t] = want;
         else if (!want && (OPTIONAL_TYPES as readonly string[]).includes(t)) active[t] = '';
@@ -3076,15 +3079,131 @@ export class AxfRuntime {
     return { mode: p.mode, name: b.name, asset: p.asset, svg: markSvg(mark.data, { height, text: p.mode !== 'mark' && p.mode !== 'watermark', title: b.name }), animation };
   }
 
-  /** The glyph an icon name resolves to in the active icon pack, or null = the framework's own icon. */
+  /**
+   * The glyph an icon name resolves to through the icon scope chain (icon-scope@1: picks, skins' packs, the branding's
+   * pack, spec/ICON-MAP.md), or null = the framework's own icon. The per-name path the Icon component takes; `AxfIcon`
+   * resolves a spot through `resolveIconSpot`.
+   */
   brandGlyph(name: string): { glyph: Glyph; pack: unknown } | null {
-    // a skin's icon pack (engines/skin.ts, axf.icons.pack.<scope>: this scope's, else the app's) beats the branding's
-    const packId = this.skinIconPack() || this.branding()?.iconPack;
-    if (!packId) return null;
-    const pack = this.registry.get('icon-pack' as AssetType, packId);
-    if (!pack) return null;
-    const glyph = glyphFor(pack.data, name);
-    return glyph ? { glyph, pack: pack.data } : null;
+    const r = this.resolveIconSpot('', name);
+    return r.glyph && r.packData ? { glyph: { d: r.glyph.d, fill: r.glyph.fill, secondary: r.glyph.secondary }, pack: r.packData } : null;
+  }
+
+  /* ---------------- icons: icon-scope@1 over icon-pack@1 + icon-map@1 (engines/icon-pack.ts, engines/icon-map.ts) ---------------- */
+
+  private iconSpotsRuntime = new Map<string, Record<string, unknown>>();
+  private iconRegistryMemo: { key: string; reg: IconRegistry } | null = null;
+
+  /** The icon packs skins put in force here: this scope's key, the app's and the hub-wide level (`axf.icons.pack.<key>`). */
+  private iconSkinPacks(): Record<string, string> {
+    const out: Record<string, string> = {};
+    const key = (this as unknown as { scopeKey?: string }).scopeKey ?? 'app';
+    for (const k of [key, 'app', 'global']) {
+      const v = this.settings.get(SKIN_ICON_PACK_KEY(k));
+      if (typeof v === 'string' && v && this.registry.has('icon-pack' as AssetType, v)) out[k] = v;
+    }
+    return out;
+  }
+
+  /** Where icons are resolved from here: the app's `icon` block, the hub-wide one, the skins' packs and the branding's. */
+  iconPlace(): IconPlace {
+    const look = this.lookLayerOn() ? this.lookStore().get() : null;
+    return {
+      scopeKey: (this as unknown as { scopeKey?: string }).scopeKey ?? 'app',
+      look: look?.icon ?? null,
+      hub: this.lastAppearance?.icon ?? null,
+      skinPacks: this.iconSkinPacks(),
+      brandPack: this.branding()?.iconPack || '',
+    };
+  }
+
+  /** The chain of levels for this place (plugin → ui → app → global → brand), the current view as the `ui:` level. */
+  iconChainHere(): IconChainLevel[] { return iconChain(this.iconPlace(), this.state.view); }
+
+  private iconPackGetter = (id: string): unknown => this.registry.get('icon-pack' as AssetType, id) ?? null;
+
+  /** What `spot` draws here; `name` = the glyph name (the spot's default or the run-time one). `by: framework` → the framework glyph of `name`. */
+  resolveIconSpot(spot: string, name: string): ResolvedIcon { return resolveIcon(spot, name, this.iconChainHere(), this.iconPackGetter); }
+
+  /** Inline SVG for a spot at a size (px or a CSS size token); '' when the framework glyph should be drawn by the caller. */
+  iconMarkup(spot: string, name: string, size: number | string = 16, title?: string): string {
+    const r = this.resolveIconSpot(spot, name);
+    if (!r.glyph || !r.packData) return '';
+    return glyphMarkup(r.glyph, r.packData, size, title);
+  }
+
+  /** An app-icon tile for a spot (favicon, launcher): the resolved glyph on the pack's tile; '' when nothing but the framework glyph applies. */
+  appIconMarkup(spot: string, name: string, size: number | string = 64): string {
+    const r = this.resolveIconSpot(spot, name);
+    if (!r.glyph || !r.packData) return '';
+    return appIconMarkup(r.glyph, r.packData, size);
+  }
+
+  /** A pack folded through its extends chain, or null. */
+  iconPack(id: string): FoldedPack | null { return foldIconPack(id, this.iconPackGetter); }
+
+  /** The framework glyph's path data for a name ('' when unknown), for callers that draw the floor themselves. */
+  frameworkGlyph(name: string): string { return frameworkGlyph(name); }
+
+  /**
+   * A UI piece says where it draws an icon (rt.registerIconSpot, spec/ICON-MAP.md): `{ id: <app>:<area>/<slot>, kind?,
+   * glyph?, size?, tint?, tags?, label?, help? }`. An icon-map asset's entry for the same id wins; registration is
+   * idempotent and never re-renders anything. Returns an unregister function.
+   */
+  registerIconSpot(spot: { id: string } & Record<string, unknown>): () => void {
+    if (!spot || typeof spot.id !== 'string') return () => {};
+    const had = this.iconSpotsRuntime.get(spot.id);
+    this.iconSpotsRuntime.set(spot.id, { ...(had ?? {}), ...spot });
+    this.iconRegistryMemo = null;
+    return () => { this.iconSpotsRuntime.delete(spot.id); this.iconRegistryMemo = null; };
+  }
+
+  /** Every spot: icon-map assets (every map in force at once) plus run-time registrations, deduped. */
+  iconRegistry(): IconRegistry {
+    const maps = this.registry.list('icon-map' as AssetType);
+    const key = `${this.state.rev}:${maps.length}:${this.iconSpotsRuntime.size}`;
+    if (this.iconRegistryMemo?.key === key) return this.iconRegistryMemo.reg;
+    const reg = buildIconRegistry(maps as unknown[], [...this.iconSpotsRuntime.values()], (id) => this.registry.get('icon-map' as AssetType, id) ?? null);
+    this.iconRegistryMemo = { key, reg };
+    return reg;
+  }
+
+  /** Which spots the packs in force here reach, and which fall to the framework. */
+  iconCoverageHere(): IconCoverage { return iconCoverage(this.iconRegistry(), this.iconChainHere(), this.iconPackGetter); }
+  searchIconSpots(query: SpotQuery = {}): RegisteredSpot[] { return searchIconSpots(this.iconRegistry(), query); }
+  iconSpotTree(): SpotTreeApp[] { return spotTree(this.iconRegistry()); }
+  /** Every per-spot override in force for this app (hub-wide, app, each scope). */
+  iconOverrides(): IconOverrideRow[] { return listIconOverrides(this.iconPlace().look, this.iconPlace().hub); }
+
+  /** Change the app's icon block (icon-scope@1) through the look document; gated like every look change (assets.swap). */
+  private changeIconLook(next: (cur: IconLook | null) => IconLook): boolean {
+    return this.changeLook((cur) => {
+      const icon = next(cur.icon ?? null);
+      const { icon: _drop, ...rest } = cur;
+      return icon.pack || Object.keys(icon.overrides).length || Object.keys(icon.scopes).length ? { ...rest, icon } : rest;
+    });
+  }
+  /** Pick the icon pack at `key` (`app` | `ui:<view>` | `plugin:<id>`); '' = inherit. */
+  setIconPack(key: string, pack: string): boolean {
+    if (pack && !this.registry.has('icon-pack' as AssetType, pack)) { this.toast(`Unknown icon pack "${pack}".`, 'warning', 'Icons'); return false; }
+    return this.changeIconLook((cur) => setIconPack(cur, key, pack));
+  }
+  /** Set (a glyph entry, a name or pack:<id>/<name>) or remove (null) one spot's override at `key`. */
+  setIconOverride(key: string, spot: string, entry: unknown | null): boolean { return this.changeIconLook((cur) => setIconOverride(cur, key, spot, entry)); }
+  resetIconSpot(spot: string, key = 'app'): boolean { return this.changeIconLook((cur) => resetIconSpot(cur, spot, key)); }
+  resetIconScope(key: string): boolean { return this.changeIconLook((cur) => resetIconScope(cur, key)); }
+  resetIconApp(): boolean { return this.changeIconLook(() => resetIconApp()); }
+  /** Hub-wide (appearance@1 `icon`): the pack every app draws with unless a nearer level says otherwise. Needs the hub source. */
+  setHubIconPack(pack: string): boolean { return this.saveHubIcon(setHubIconPack(this.lastAppearance?.icon, pack)); }
+  setHubIconOverride(spot: string, entry: unknown | null): boolean { return this.saveHubIcon(setHubIconOverride(this.lastAppearance?.icon, spot, entry)); }
+  resetHubIconSpot(spot: string): boolean { return this.saveHubIcon(resetHubIconSpot(this.lastAppearance?.icon, spot)); }
+  resetHubIcon(): boolean { return this.saveHubIcon(resetIconHub()); }
+  private saveHubIcon(level: IconLevel): boolean {
+    if (this.lockedByAppearance('assets.swap')) { this.lockedToast(); return false; }
+    if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
+    if (!this.appearanceSource || !this.appearanceRunning) { this.toast('Hub-wide icons need the axHub appearance source.', 'warning', 'Icons'); return false; }
+    this.appearanceSource.save({ icon: level.pack || Object.keys(level.overrides).length ? level : null });
+    return true;
   }
 
   private prefersReducedMotion(): boolean {

@@ -5,7 +5,6 @@
  */
 import { useSyncExternalStore } from 'react';
 import { useOptionalRuntime } from '../AxfProvider';
-import { glyphSvg } from '../../core/engines/brand';
 import { FRAMEWORK_GLYPHS } from '../../core/engines/icon-glyphs.mjs';
 
 const PATHS: Record<string, string> = FRAMEWORK_GLYPHS;
@@ -18,11 +17,9 @@ export function Icon({ name, size = 16, className }: { name?: string; size?: num
   const rt = useOptionalRuntime();
   useSyncExternalStore(rt ? rt.subscribe : noStore.subscribe, rt ? rt.getState : noStore.get, rt ? rt.getState : noStore.get);
   if (!name) return null;
-  const packed = rt?.brandGlyph(name);
-  if (packed) {
-    const svg = glyphSvg(packed.pack, name, size);
-    if (svg) return <span className={`fx-icon fx-icon--pack ${className ?? ''}`} style={{ width: size, height: size }} aria-hidden="true" dangerouslySetInnerHTML={{ __html: svg }} />;
-  }
+  // the icon scope chain (icon-scope@1, spec/ICON-MAP.md): picks, skins' packs, the branding's pack; null = the framework glyph
+  const svg = rt ? rt.iconMarkup('', name, size) : '';
+  if (svg) return <span className={`fx-icon fx-icon--pack ${className ?? ''}`} style={{ width: size, height: size }} aria-hidden="true" dangerouslySetInnerHTML={{ __html: svg }} />;
   const d = PATHS[name] ?? PATHS.box;
   return (
     <svg

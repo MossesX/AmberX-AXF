@@ -8,6 +8,7 @@ export { HubSkinLockArea, HubSkinLockNote, askHubSkinOverride, useHubSkinLocked 
 export { Switch, Checkbox, ColorField, Field, TextField, SelectField, ChoiceGrid, Note, Section, LibraryParamField, type SwitchProps, type CheckboxProps, type ColorFieldProps, type FieldProps, type TextFieldProps, type SelectFieldProps, type SelectOption, type ChoiceGridProps, type Choice, type NoteProps, type NoteTone, type SectionProps, type LibraryParamFieldProps } from './components/Forms';
 export { Markdown, safeHref, type MarkdownProps } from './components/Markdown';
 export { Icon, ICON_NAMES } from './components/Icon';
+export { AxfIcon, useIconSpot, iconSizeCss, iconTintCss, frameworkGlyphMarkup, ICON_SIZE_CSS, type AxfIconProps, type IconSpotView } from './components/AxfIcon';
 export { MenuList, MenuSub, MenuScroll } from './components/MenuList';
 export { useMenuFit, fitMenuEl, menuViewBox, focusMenuItem, installMenuFit } from './components/menuFit';
 export { MenuBar, Toolbar, AssetToolbar, NavMenu, StatusBar, mergeNavSections } from './components/Chrome';

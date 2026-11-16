@@ -31,7 +31,7 @@ export const APP_LOOK_PROJECT = 'shared';
 export const APP_LOOK_MAX_BYTES = 64 * 1024;
 export const appLookPath = (appId) => `settings/looks/${appId}.json`;
 /** Slots a skin never sets. */
-export const SKIN_NEVER = ['uac-policy', 'help', 'skin', 'design-package', 'interface'];
+export const SKIN_NEVER = ['uac-policy', 'help', 'skin', 'design-package', 'interface', 'icon-map'];
 /** The section of a skin that is switched on its own: the colour theme slot. Kept as `colorTheme`, never in `overrides`. */
 export const SKIN_COLOR_SLOT = 'color-theme';
 /** The three per-level choices. */
