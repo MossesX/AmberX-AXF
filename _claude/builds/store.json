@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6574,
- "updatedAt": "2026-11-16T17:01:25.759Z",
+ "rev": 6575,
+ "updatedAt": "2026-11-16T17:01:45.183Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -242641,7 +242641,7 @@
    "title": "Fix console deep links so open-page lands on the right screen",
    "category": "",
    "detail": "Deep links are broken: opening https://console.amberxai.com/?axf-target=view:build-orchestrator (or view:gate, any view:/tab: address) loads the console's main screen instead of that screen. console_show via the API works, so the address is valid; the URL parameter isn't applied on load. Fix: on page load (and after sign-in redirect, which likely drops the query string), read ?axf-target= and focus that address once the views are registered, including tabs (e.g. view:gate/tab:gate.tabs=auto-lander). Keep the parameter through the hub sign-in redirect. Each open_url must open its own tab when asked. Tests: load with each view address and assert the focused screen. Land with the one-at-a-time lander.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -242649,8 +242649,8 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T16:31:15.510Z",
-   "updatedAt": "2026-11-16T16:59:16.018Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T17:01:22.643Z",
+   "builtAt": "2026-11-16T17:01:22.643Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -242774,12 +242774,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T17:01:22.643Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T16:34:41.229Z",
-     "updatedAt": "2026-11-16T16:34:41.229Z"
+     "updatedAt": "2026-11-16T17:01:23.107Z"
     }
    ],
    "profiles": [
@@ -242790,7 +242790,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
