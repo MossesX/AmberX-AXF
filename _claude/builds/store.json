@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7100,
- "updatedAt": "2026-11-16T23:59:32.657Z",
+ "rev": 7101,
+ "updatedAt": "2026-11-16T23:59:48.039Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -257633,7 +257633,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T23:22:58.656Z",
-   "updatedAt": "2026-11-16T23:59:02.945Z",
+   "updatedAt": "2026-11-16T23:59:44.346Z",
    "builtAt": "",
    "notes": [
     {
@@ -257674,13 +257674,13 @@
    "pipeline": {
     "queuedAt": "2026-11-16T23:23:02.607Z",
     "queuedBy": "console",
-    "account": "hulu0241",
-    "session": "axf-server-auto-lander-fixes-lands--sully",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
+    "model": "",
     "phase": "",
-    "launchedAt": "2026-11-16T23:52:39.033Z",
-    "runs": 1,
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -257693,7 +257693,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-16T23:52:39.033Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Fable",
      "account": "hulu0241",
@@ -257702,7 +257702,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "2026-11-16T23:52:39.033Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -257726,34 +257726,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T23:59:44.346Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T23:24:34.880Z",
-     "updatedAt": "2026-11-16T23:24:34.880Z"
-    },
-    {
-     "id": "s24",
-     "uid": "st-mwjxd5ku010g50",
-     "title": "",
-     "text": "ROOT CAUSE of the blocked pile (Brett Nov 16): before landing, the auto-lander commits 'synced files left in the worktree (auto-land)' onto each build branch: _claude/builds/store.json, orchestrator.json, origins.json, journal jsonl (thousands of lines). That commit turns CI red on every build (e.g. #733: 98f6c0d0 green, 41e3e2ac red). Stop committing orchestrator/build-tracking data into build branches at all; keep it on the hub/data store only, and reset or ignore those files in worktrees. Also journal files are hitting 70 MB on GitHub: move them out of git. Then re-run CI on every blocked PR and land them one at a time.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-16T23:59:02.946Z",
-     "updatedAt": "2026-11-16T23:59:03.294Z"
+     "updatedAt": "2026-11-16T23:59:44.861Z"
     },
     {
      "id": "s2",

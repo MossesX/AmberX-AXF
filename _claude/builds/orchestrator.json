@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T23:59:32.657Z",
+ "updatedAt": "2026-11-16T23:59:48.039Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -166300,7 +166300,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T23:22:58.656Z",
-   "updatedAt": "2026-11-16T23:59:02.945Z",
+   "updatedAt": "2026-11-16T23:59:44.346Z",
    "builtAt": "",
    "notes": [
     {
@@ -166355,30 +166355,11 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T23:59:44.346Z",
      "note": "",
      "uid": "st-mwjw4tkw012fis",
      "createdAt": "2026-11-16T23:24:34.880Z"
-    },
-    {
-     "id": "s24",
-     "text": "ROOT CAUSE of the blocked pile (Brett Nov 16): before landing, the auto-lander commits 'synced files left in the worktree (auto-land)' onto each build branch: _claude/builds/store.json, orchestrator.json, origins.json, journal jsonl (thousands of lines). That commit turns CI red on every build (e.g. #733: 98f6c0d0 green, 41e3e2ac red). Stop committing orchestrator/build-tracking data into build branches at all; keep it on the hub/data store only, and reset or ignore those files in worktrees. Also journal files are hitting 70 MB on GitHub: move them out of git. Then re-run CI on every blocked PR and land them one at a time.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjxd5ku010g50",
-     "createdAt": "2026-11-16T23:59:02.946Z"
     },
     {
      "id": "s2",
