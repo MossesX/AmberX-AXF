@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6986,
- "updatedAt": "2026-11-16T23:15:05.086Z",
+ "rev": 6987,
+ "updatedAt": "2026-11-16T23:15:19.353Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -140429,7 +140429,7 @@
    "title": "Orchestrator table columns (model, queue #, assigned employee) + auto-hire builders with approval + train employees on website data",
    "category": "",
    "detail": "Builds on the HR/employees build (assign-an-employee-to-every-role-action-type-and); upgrade that, don't duplicate. 1) Orchestrator and Build Manager tables get columns: model (Opus/Fable/etc.), queue position number, assigned employee (avatar + name, links to profile). Sortable and shown on the expandable root rows. 2) Every build must be assigned to an employee in the builder job category. 3) When there's no available builder, the orchestrator sends Brett an AmberX notification: 'Hire a new builder?' with Approve/Deny. On approve, HR hires one automatically: name, avatar, persona, voice, job category builder, tools and permissions from the builder role, added to the roster, and the waiting build is assigned. No hire without approval. 4) Training: any employee can be trained on website data. Add URLs or a site to crawl from their profile; the content is fetched, stored as that employee's knowledge, viewable and removable, and used in their sessions. Same controls via REST, MCP, CLI and voice. Verify on the live console, desktop and phone.",
-   "status": "built",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -140437,8 +140437,8 @@
    "pr": "#680",
    "priority": "P0",
    "createdAt": "2026-11-10T00:17:45.319Z",
-   "updatedAt": "2026-11-15T00:38:00.135Z",
-   "builtAt": "2026-11-14T23:04:07.600Z",
+   "updatedAt": "2026-11-16T23:14:50.682Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -140483,6 +140483,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-14T23:04:07.600Z"
+    },
+    {
+     "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
+     "at": "2026-11-16T23:14:50.682Z"
     }
    ],
    "approvals": [],
@@ -140617,7 +140621,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 99,
+   "rev": 100,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -214592,7 +214596,7 @@
    "title": "Per-instance settings: small live preview pane",
    "category": "",
    "detail": "Follow-up to the landed per-toolbar settings (per-toolbar-settings-fix-failing-chrome). In the settings interface of every individual toolbar, nav menu, application menu and tab group (and dialog), add a small live preview pane at the top: a compact sample of that element type rendered with seed data (e.g. 2-3 toolbar icons with a badge, 2 tab groups of a few tabs with one active, a short nav menu with one selected item, an app menu with a submenu). It hot-renders every setting change in real time (style, colours, transparency, layout, density, hover/active states, with a hover/press demo toggle), before Apply. Collapsible, light/dark toggle, and it uses the real framework components and the instance's tokens. Full API. Tests, help, Shipped features.",
-   "status": "built",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -214600,8 +214604,8 @@
    "pr": "#662",
    "priority": "P1",
    "createdAt": "2026-11-13T20:45:51.589Z",
-   "updatedAt": "2026-11-15T00:41:56.825Z",
-   "builtAt": "2026-11-13T21:27:07.106Z",
+   "updatedAt": "2026-11-16T23:14:56.855Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -214626,6 +214630,10 @@
     {
      "text": "Headless run axf-per-instance-settings-small-live-preview--gina: brief only · start 11.3K tokens ($0.03) · cost $5.05 · 121 turns · 6 tools, MCP none",
      "at": "2026-11-13T21:27:07.106Z"
+    },
+    {
+     "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
+     "at": "2026-11-16T23:14:56.855Z"
     }
    ],
    "approvals": [],
@@ -214757,7 +214765,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {

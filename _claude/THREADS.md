@@ -814,8 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 18:52 UTC · `settings-interface-gear-every-plugin` → running, note (all) · pipeline
-- 2026-11-16 18:52 UTC · `amberx-open-url-must-open-page-even-when` note (all) · orchestrator
 - 2026-11-16 19:00 UTC · `themed-native-controls-plugin` → pending, note (all) · reconciler
 - 2026-11-16 19:00 UTC · `fix-red-ci-blocked-builds-they-land` → pending, note (all) · reconciler
 - 2026-11-16 19:02 UTC · `all-settings-interfaces-open-floating` note (all) · orchestrator
@@ -1214,6 +1212,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 23:14 UTC · `always-fill-every-slot-when-slots-are` note (all) · orchestrator
 - 2026-11-16 23:14 UTC · `one-source-truth-console-shows-only-what` → archived, note (all) · cli
 - 2026-11-16 23:14 UTC · `attach-widgets-to-any-toolbar-banner` s4 done (all) · orchestrator
+- 2026-11-16 23:14 UTC · `orchestrator-table-columns-model-queue-assigned` → archived, note (all) · cli
+- 2026-11-16 23:14 UTC · `per-instance-settings-small-live-preview` → archived, note (all) · cli
 
 ## Token passes (log)
 
