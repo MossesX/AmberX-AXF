@@ -13,6 +13,8 @@ import { AGENT_CARD_TYPE, agentCardErrors, agentCardSchemaProperties } from '../
 import { JOB_TYPE, jobTypeErrors, jobTypeSchemaProperties } from '../core/engines/job-type-rules.mjs';
 import { CARD_TYPE, cardErrors, cardSchemaProperties } from '../core/engines/card-rules.mjs';
 import { partsErrors as skinPartsErrors } from '../core/engines/skin-coverage.mjs';
+import { skinChromeErrors } from '../core/engines/skin-rules.mjs';
+import { CHROME_FIELDS, CHROME_TYPES } from '../core/engines/chrome-settings-rules.mjs';
 import { DEMO_TYPES, demoAssetErrors, demoSchemaProperties } from '../core/engines/demo-rules.mjs';
 import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } from '../core/ui-review-schema.mjs';
 import { jsonSchemas as sessionJsonSchemas, REGISTRY as SESSION_REGISTRY } from '../core/session-schema.mjs';
@@ -22,7 +24,10 @@ import { REGISTRY as LEDGER_REGISTRY, jsonSchemas as ledgerJsonSchemas } from '.
 import { REGISTRY as DEPLOY_LOG_REGISTRY, jsonSchemas as deployLogJsonSchemas } from '../core/deploy-log.mjs';
 import { REGISTRY as BUILD_HOOK_REGISTRY, jsonSchemas as buildHookJsonSchemas } from '../core/build-hook.mjs';
 import { REGISTRY as SHIPPED_MANIFEST_REGISTRY, jsonSchemas as shippedManifestJsonSchemas } from '../core/shipped-manifest.mjs';
+import { REGISTRY as GATE_RULES_REGISTRY, jsonSchemas as gateRulesJsonSchemas } from '../core/gate-rules.mjs';
+import { REGISTRY as BUILD_RULES_REGISTRY, jsonSchemas as buildRulesJsonSchemas } from '../core/build-rules.mjs';
 import { consoleControlRegistry, jsonSchemas as consoleControlJsonSchemas } from '../core/engines/console-control-rules.mjs';
+import { skinConfigSchema, skinConfigSnapshot, skinConfigTree } from '../core/engines/skin-config-rules.mjs';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { applyOptions, readOptions, resolveOptions } from './build-options.mjs';
@@ -227,6 +232,7 @@ export function skinErrors(d) {
       if ('settings' in x && !isO(x.settings)) errors.push('data.extras.settings must be an object');
     }
   }
+  errors.push(...skinChromeErrors(d.chrome));
   return errors;
 }
 
@@ -237,6 +243,9 @@ export const BEHAVIOR_ENUMS = {
   'motion.easing': ['standard', 'emphasized', 'linear', 'spring', 'bounce'],
   'motion.reduced': ['system', 'always', 'never'],
   'motion.entrance': ['theme', 'none', 'fade', 'rise', 'scale'],
+  'motion.swatches': ['wave', 'ripple', 'pop', 'off'],
+  'motion.skinSwitch': ['ripple', 'sweep', 'fade', 'off'],
+  'motion.picker': ['fan', 'pop', 'off'],
   'interaction.hover': ['theme', 'none', 'tint', 'lift', 'glow', 'underline'],
   'interaction.press': ['theme', 'none', 'shrink', 'darken', 'ripple'],
   'interaction.focusRing': ['auto', 'always', 'never'],
@@ -253,6 +262,8 @@ export const BEHAVIOR_ENUMS = {
   'feedback.confirmDelete': ['always', 'risky', 'never'],
 };
 export const BEHAVIOR_RANGES = {
+  'motion.animSpeed': [25, 400],
+  'motion.animIntensity': [0, 100],
   'interaction.longPressMs': [250, 1500],
   'interaction.doubleTapMs': [150, 700],
   'interaction.dragThreshold': [0, 24],
@@ -833,6 +844,17 @@ export function newAsset({ dir, type, id, from, name }) {
   return target;
 }
 
+/** skin@1 properties beyond the required list: the colour pair (skin-modes@1), behaviourTheme, and the chrome block (chrome-settings@1 kinds). */
+function skinSchemaProperties() {
+  const id = { type: 'string', pattern: '^[a-z0-9][a-z0-9-]*$' };
+  const fields = Object.fromEntries(CHROME_TYPES.map((kind) => [kind, { type: 'object', description: `${kind} under this skin: the settings interface its dialog renders through (axf.chrome.settings.${kind}) and field overrides per instance (axf.chrome.${kind}.<instance>, this kind's chrome-settings@1 fields only).`, properties: { interface: id, instances: { type: 'object', additionalProperties: { type: 'object', properties: Object.fromEntries((CHROME_FIELDS[kind] ?? []).map((f) => [f.key, f.kind === 'toggle' ? { type: 'boolean' } : f.kind === 'number' ? { type: 'number', ...(f.min !== undefined ? { minimum: f.min } : {}), ...(f.max !== undefined ? { maximum: f.max } : {}) } : Array.isArray(f.options) ? { enum: f.options } : {}])) } } }, additionalProperties: false }]));
+  return {
+    colorThemes: { type: 'object', description: "The skin's light and dark colour themes (skin-modes@1); colorTheme is one of the two.", required: ['light', 'dark'], properties: { light: id, dark: id } },
+    behaviorTheme: id,
+    chrome: { type: 'object', description: 'Chrome settings the skin puts in force per chrome-settings@1 kind; lands in the composed look\'s settings after extras.settings.', properties: fields, additionalProperties: false },
+  };
+}
+
 /** Emit JSON Schema files (for editor autocompletion) from the type spec. */
 export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   mkdirSync(outDir, { recursive: true });
@@ -852,6 +874,9 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
     if (type === JOB_TYPE) Object.assign(props, jobTypeSchemaProperties());
     if (type === CARD_TYPE) Object.assign(props, cardSchemaProperties());
     if (DEMO_TYPES.includes(type)) Object.assign(props, demoSchemaProperties(type));
+    // skin@1: the light / dark pair every skin ships (skin-modes@1), the behaviour section, the chrome block (chrome-settings@1 kinds)
+    const required = type === 'skin' ? [...ts.required, 'colorThemes'] : ts.required;
+    if (type === 'skin') Object.assign(props, skinSchemaProperties());
     const $defs = type === 'app-menu' || type === 'context-menu' ? { menuItem: menuItemSchema() } : undefined;
     const schema = {
       ...($defs ? { $defs } : {}),
@@ -867,7 +892,7 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
         name: { type: 'string', minLength: 1 },
         version: { type: 'string' },
         description: { type: 'string' },
-        data: { type: 'object', required: ts.required, properties: props },
+        data: { type: 'object', required, properties: props },
       },
     };
     const f = join(outDir, `${type}.schema.json`);
@@ -899,9 +924,20 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   // shipped-manifest@1: what the orchestrator sends Shipped features when a build lands
   for (const [n, schema] of Object.entries(shippedManifestJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const smreg = join(FRAMEWORK_DIR, 'schemas/shipped-manifest.json'); writeFileSync(smreg, JSON.stringify(SHIPPED_MANIFEST_REGISTRY, null, 2) + '\n'); written.push(smreg);
+  // gate-rules@1: the gate a PR passes before it lands (gate-rule@1, gate-rule-set@1) and the lander's state (lander-state@1) + the registry snapshot
+  for (const [n, schema] of Object.entries(gateRulesJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  const greg = join(FRAMEWORK_DIR, 'schemas/gate-rules.json'); writeFileSync(greg, JSON.stringify(GATE_RULES_REGISTRY, null, 2) + '\n'); written.push(greg);
+  // build-rules@1: every builder rule as one store the VPS owns (build-rule@1, build-rules-store@1, build-rule-history@1) + the registry snapshot
+  for (const [n, schema] of Object.entries(buildRulesJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  const breg = join(FRAMEWORK_DIR, 'schemas/build-rules.json'); writeFileSync(breg, JSON.stringify(BUILD_RULES_REGISTRY, null, 2) + '\n'); written.push(breg);
   // console-control@1: one address + ten verbs for everything the console shows (address, command, result, targets) + the registry snapshot
   for (const [n, schema] of Object.entries(consoleControlJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const ccreg = join(FRAMEWORK_DIR, 'schemas/console-control.json'); writeFileSync(ccreg, JSON.stringify(consoleControlRegistry(), null, 2) + '\n'); written.push(ccreg);
+  // skin-config@1: what the AI may change when it makes a skin. The tree comes from the shared registry (never the
+  // port extensions) and the style targets, so the schema enumerates every category, group, option and limit.
+  const skinTree = skinConfigTree(readJson(join(FRAMEWORK_DIR, 'schemas/asset-types.json')), customizeSpec, SKIN_NEVER);
+  const scf = join(outDir, 'skin-config.schema.json'); writeFileSync(scf, JSON.stringify(skinConfigSchema(skinTree), null, 2) + '\n'); written.push(scf);
+  const screg = join(FRAMEWORK_DIR, 'schemas/skin-config.json'); writeFileSync(screg, JSON.stringify(skinConfigSnapshot(skinTree), null, 2) + '\n'); written.push(screg);
   return written;
 }
 

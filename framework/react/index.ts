@@ -4,6 +4,7 @@ export { Button, IconButton, Segmented, Slider, Container, Chip, Kbd, type Butto
 export { ModelBadge, modelLabel, modelFamily } from './components/ModelBadge';
 export { BuildOrigin, originSubtitle, originSearch, originWhen } from './components/BuildOrigin';
 export { PriorityTag, setPriorityHost, setBuildPriority, PRIORITY_DIALOG, priorityDialogs, type PriorityHost } from './components/PriorityTag';
+export { HubSkinLockArea, HubSkinLockNote, askHubSkinOverride, useHubSkinLocked } from './components/HubSkinLock';
 export { Switch, Checkbox, ColorField, Field, TextField, SelectField, ChoiceGrid, Note, Section, LibraryParamField, type SwitchProps, type CheckboxProps, type ColorFieldProps, type FieldProps, type TextFieldProps, type SelectFieldProps, type SelectOption, type ChoiceGridProps, type Choice, type NoteProps, type NoteTone, type SectionProps, type LibraryParamFieldProps } from './components/Forms';
 export { Markdown, safeHref, type MarkdownProps } from './components/Markdown';
 export { Icon, ICON_NAMES } from './components/Icon';
@@ -24,6 +25,7 @@ export { HelpLayer, HelpModeButton, HelpPanel, HelpIntroCard, useHelpMode, descr
 export { BrandMark, BrandWatermark, brandHostProps, useBrandPlace } from './components/Brand';
 export { InterfaceScope, usePortalRoot, useScopeId } from './components/InterfaceScope';
 export { SkinScope } from './components/SkinScope';
+export { Swatches, SwatchFan, type SwatchesProps, type SwatchFanProps } from './components/Swatches';
 export { LookEditor, LookLevelSwitch, LookTokenRow } from './components/LookEditor';
 export { WidgetView, SearchBarWidget, registerWidgetRenderer, widgetRenderer, type WidgetRenderer, type WidgetRenderProps } from './components/Widgets';
 export { LiveSearch, useSearchHost, scanPage, flashWhenReady } from './components/Search';

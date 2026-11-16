@@ -58,6 +58,7 @@ import time
 from collections import deque
 from pathlib import Path
 from typing import Any, Callable
+from urllib.parse import urlsplit
 
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.concurrency import run_in_threadpool
@@ -1028,6 +1029,52 @@ async def refresh(request: Request) -> JSONResponse:
     if b.get("hard") is True:
         cmd["input"] = {**(cmd.get("input") or {}), "hard": True}
     return await go(request, cmd)
+
+
+# ---------------------------------------------------------------------- routes: the phone's overlay
+
+OVERLAY_VERBS = ("expand", "collapse", "open")
+
+
+def overlay_url(verb: str, url: str = "") -> str:
+    """The URL that carries an overlay verb to the phone through axHub's `amberx.open_url` (AXPP `browser.open`): expand
+    and collapse are the console with `axf-overlay=<verb>` (AmberX's OverlayPageRules.verb), open is the page itself."""
+    return url if verb == "open" else f"{CONSOLE_URL}/?axf-overlay={verb}"
+
+
+def overlay_page_ok(url: str) -> bool:
+    """https on Brett's own domain, no credentials: the same rule as the phone (OpenUrlRules) and the hub."""
+    try:
+        u = urlsplit(url)
+    except ValueError:
+        return False
+    host = (u.hostname or "").lower()
+    return u.scheme == "https" and not u.username and not u.password and (host == "amberxai.com" or host.endswith(".amberxai.com"))
+
+
+def overlay(verb: str, url: str = "") -> dict[str, Any]:
+    """overlay.expand / overlay.collapse / overlay.open {url} on Brett's phone. → {ok, verb, opened, message} (never raises)."""
+    if verb not in OVERLAY_VERBS:
+        return {"ok": False, "verb": verb, "code": "bad_request", "message": f"overlay verbs are {', '.join(OVERLAY_VERBS)}"}
+    if verb == "open" and not overlay_page_ok(url):
+        return {"ok": False, "verb": verb, "code": "bad_request", "message": "overlay.open takes one of your own pages (https://…amberxai.com)"}
+    try:
+        r = WAKER(overlay_url(verb, url), settings()["browser"])
+    except Exception as e:  # noqa: BLE001 — the phone or the hub failing is an answer, not a crash
+        r = {"ok": False, "message": str(e)[:300]}
+    return {"ok": bool(r.get("ok")), "verb": verb, "opened": r.get("opened") is True, "message": str(r.get("message") or "")[:300]}
+
+
+@router.post("/overlay")
+async def overlay_route(request: Request) -> JSONResponse:
+    """Expand the phone's overlay into its full-screen browser, collapse it to the toolbar, or open one of Brett's pages
+    in it: {"verb": "expand" | "collapse" | "open", "url"?}. The owner only (it reaches his phone)."""
+    _, _, audience = caller(request)
+    if audience != OWNER:
+        raise HTTPException(403, "only the console's owner drives the phone's overlay")
+    b = await _body(request)
+    out = await run_in_threadpool(overlay, str(b.get("verb") or ""), str(b.get("url") or ""))
+    return JSONResponse(out, status_code=400 if out.get("code") == "bad_request" else 200)
 
 
 @router.get("/where")

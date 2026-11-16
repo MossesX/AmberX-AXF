@@ -1,0 +1,395 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/build-rule-history.schema.json",
+  "title": "build-rule-history@1 (build-rules@1)",
+  "type": "object",
+  "required": [
+    "$axf",
+    "at",
+    "by",
+    "action",
+    "rev",
+    "reason"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$axf": {
+      "const": "build-rule-history@1"
+    },
+    "at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "by": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "action": {
+      "enum": [
+        "seed",
+        "migrate",
+        "add",
+        "edit",
+        "toggle",
+        "remove",
+        "restore"
+      ]
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,47}$"
+    },
+    "rev": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "the store revision after this write"
+    },
+    "ruleRev": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "seed / migrate: how many rules"
+    },
+    "before": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "text",
+        "doer",
+        "kind",
+        "phase",
+        "enabled"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "build-rule@1"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{0,47}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000,
+          "description": "the rule as the builder reads it: the brief sends this line when the session is the doer"
+        },
+        "doer": {
+          "enum": [
+            "vps",
+            "session"
+          ],
+          "description": "vps = the VPS does or enforces it by itself; session = the Claude session has to"
+        },
+        "kind": {
+          "enum": [
+            "mechanical",
+            "judgement"
+          ],
+          "description": "mechanical = a checker, hook or fixer can do or verify it; judgement = it needs reasoning"
+        },
+        "phase": {
+          "enum": [
+            "before",
+            "dispatch",
+            "after",
+            "gate"
+          ],
+          "description": "when the VPS acts: before dispatch, at dispatch, after the session / PR, or at the gate"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "check": {
+          "type": "string",
+          "maxLength": 600,
+          "description": "'' = none; a command (node …) or a checker id (gate:ui-review, ci:check-theme, store:home-card)"
+        },
+        "autofix": {
+          "type": "string",
+          "maxLength": 60,
+          "description": "'' = none; a fixer id (open list in the registry), vps rules only"
+        },
+        "briefBlock": {
+          "enum": [
+            "look",
+            "api",
+            "checkpoints",
+            "rules"
+          ],
+          "description": "the brief block that carries the text when the session is the doer"
+        },
+        "applies": {
+          "enum": [
+            "builds",
+            "interactive",
+            "all"
+          ]
+        },
+        "when": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "ui": {
+              "type": "boolean"
+            },
+            "keywords": {
+              "type": "array",
+              "maxItems": 20,
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "sources": {
+          "type": "array",
+          "maxItems": 40,
+          "items": {
+            "type": "object",
+            "required": [
+              "source",
+              "text"
+            ],
+            "properties": {
+              "source": {
+                "type": "string"
+              },
+              "file": {
+                "type": "string"
+              },
+              "line": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "to": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "part": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "text": {
+                "type": "string",
+                "maxLength": 4000
+              },
+              "pass": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          },
+          "description": "every place the rule was written before this store, verbatim"
+        },
+        "rev": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedBy": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 600
+        }
+      }
+    },
+    "after": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "text",
+        "doer",
+        "kind",
+        "phase",
+        "enabled"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "build-rule@1"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{0,47}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000,
+          "description": "the rule as the builder reads it: the brief sends this line when the session is the doer"
+        },
+        "doer": {
+          "enum": [
+            "vps",
+            "session"
+          ],
+          "description": "vps = the VPS does or enforces it by itself; session = the Claude session has to"
+        },
+        "kind": {
+          "enum": [
+            "mechanical",
+            "judgement"
+          ],
+          "description": "mechanical = a checker, hook or fixer can do or verify it; judgement = it needs reasoning"
+        },
+        "phase": {
+          "enum": [
+            "before",
+            "dispatch",
+            "after",
+            "gate"
+          ],
+          "description": "when the VPS acts: before dispatch, at dispatch, after the session / PR, or at the gate"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "check": {
+          "type": "string",
+          "maxLength": 600,
+          "description": "'' = none; a command (node …) or a checker id (gate:ui-review, ci:check-theme, store:home-card)"
+        },
+        "autofix": {
+          "type": "string",
+          "maxLength": 60,
+          "description": "'' = none; a fixer id (open list in the registry), vps rules only"
+        },
+        "briefBlock": {
+          "enum": [
+            "look",
+            "api",
+            "checkpoints",
+            "rules"
+          ],
+          "description": "the brief block that carries the text when the session is the doer"
+        },
+        "applies": {
+          "enum": [
+            "builds",
+            "interactive",
+            "all"
+          ]
+        },
+        "when": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "ui": {
+              "type": "boolean"
+            },
+            "keywords": {
+              "type": "array",
+              "maxItems": 20,
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "sources": {
+          "type": "array",
+          "maxItems": 40,
+          "items": {
+            "type": "object",
+            "required": [
+              "source",
+              "text"
+            ],
+            "properties": {
+              "source": {
+                "type": "string"
+              },
+              "file": {
+                "type": "string"
+              },
+              "line": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "to": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "part": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "text": {
+                "type": "string",
+                "maxLength": 4000
+              },
+              "pass": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          },
+          "description": "every place the rule was written before this store, verbatim"
+        },
+        "rev": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedBy": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 600
+        }
+      }
+    },
+    "reason": {
+      "type": "object",
+      "required": [
+        "title"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 600
+        }
+      }
+    }
+  }
+}

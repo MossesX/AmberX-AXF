@@ -8,10 +8,13 @@
  * (`axf.tokens.<set>`, engines/control-tokens.mjs), and every app applies it on its next read of the document.
  * `tokens.slots` writes the document's `slots` (the hot-swap), `tokens.look` / `tokens.custom` answer
  * not_implemented for writes: the Sliders and per-asset tokens were retired on Nov 1 2026 (designpackage.ts).
+ * `tokens.instances` (component-tokens@1) writes one tab row's or grid's own grid.* / tabs.* values into the one
+ * setting `axf.tokens.instances`; act restore-previous / restore-hub are the dialog's two Restore buttons.
  */
 import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { controlPaths } from '../../../../../framework/core/engines/control-rules.mjs';
+import { INSTANCE_TOKENS_TARGET, controlPaths } from '../../../../../framework/core/engines/control-rules.mjs';
+import { INSTANCE_TOKENS_KEY, componentToken, instanceTokenList, instanceTokenValues, parseInstanceTokenPath, restoreInstanceTokensFromHub, restorePreviousInstanceTokens, setInstanceToken } from '../../../../../framework/core/engines/component-tokens.mjs';
 import { CONTROL_TOKEN_SLOTS, effectiveTokenOverrides, normalizeTokenOverrides, tokenValueIn, withTokenOverride, withoutTokenOverride } from '../../../../../framework/core/engines/control-tokens.mjs';
 import { ROOT, DATA_DIR, ControlError } from './common.mjs';
 import { setSlotEverywhere } from '../../../../../framework/cli/skins.mjs';
@@ -98,6 +101,7 @@ export function runTokens(c) {
     throw new ControlError('not_implemented', `${c.target} was retired on Nov 1 2026 (look sliders and per-asset tokens); set the same value through tokens.theme / style / layout / typography / density / sizing instead`);
   }
   if (c.target === 'tokens.slots') return runSlots(c, doc);
+  if (c.target === INSTANCE_TOKENS_TARGET) return runInstances(c, doc);
   const spec = CONTROL_TOKEN_SLOTS[c.target];
   const paths = controlPaths(c.target) ?? [];
   switch (c.op) {
@@ -150,5 +154,61 @@ function runSlots(c, doc) {
       return { changed: slots.length > 0, cleared: slots };
     }
     default: throw new ControlError('invalid', `tokens.slots does not take ${c.op}`);
+  }
+}
+
+/**
+ * tokens.instances (component-tokens@1): list = every token any instance sets (one row per <family>.<instance>.<token>);
+ * get / set / reset take a path <family>.<instance>.<token> (reset also <family>.<instance> = every token of it, or nothing =
+ * every instance); act <family>.<instance> restore-previous | restore-hub. Rows carry the instance's whole values map too.
+ */
+function runInstances(c, doc) {
+  const raw = doc.settings?.[INSTANCE_TOKENS_KEY];
+  const row = (family, instance, key, src = raw) => {
+    const tok = componentToken(family, key);
+    const values = instanceTokenValues(src, family, instance);
+    return { id: `${family}.${instance}.${key}`, family, instance, token: key, kind: tok.kind === 'colour' ? 'color' : tok.kind === 'opacity' || tok.kind === 'number' ? 'number' : 'string', default: tok.default, level: tok.level, description: tok.description, value: values[key] ?? null, overridden: key in values, values };
+  };
+  const parsed = c.path ? parseInstanceTokenPath(c.path) : null;
+  if (c.path && !parsed) throw new ControlError('validation', `${INSTANCE_TOKENS_TARGET} wants a path <grid|tabs>.<instance>[.<token>], not ${c.path}`);
+  switch (c.op) {
+    case 'list': {
+      const items = instanceTokenList(raw).flatMap((e) => Object.keys(e.values).map((k) => row(e.family, e.instance, k)));
+      const filtered = parsed ? items.filter((r) => r.family === parsed.family && r.instance === parsed.instance && (!parsed.key || r.token === parsed.key)) : items;
+      return { items: filtered, total: filtered.length, instances: instanceTokenList(raw).map((e) => ({ id: e.id, family: e.family, instance: e.instance, tokens: Object.keys(e.values).length, hasPrevious: e.hasPrevious })), key: INSTANCE_TOKENS_KEY };
+    }
+    case 'get': {
+      if (!parsed) throw new ControlError('validation', 'get needs a path <family>.<instance>.<token>');
+      if (!parsed.key) { const values = instanceTokenValues(raw, parsed.family, parsed.instance); return { item: { id: c.path, family: parsed.family, instance: parsed.instance, values, overridden: Object.keys(values).length > 0 }, value: values }; }
+      const r = row(parsed.family, parsed.instance, parsed.key);
+      return { item: r, value: r.value };
+    }
+    case 'set': {
+      if (!parsed?.key) throw new ControlError('validation', 'set needs a path <family>.<instance>.<token>');
+      let next;
+      try { next = setInstanceToken(raw, parsed.family, parsed.instance, parsed.key, c.value); } catch (e) { throw new ControlError('validation', e.message); }
+      const after = writeAppearance({ settings: { [INSTANCE_TOKENS_KEY]: Object.keys(next).length ? next : null } }, c.by);
+      return { changed: true, item: row(parsed.family, parsed.instance, parsed.key, after.settings?.[INSTANCE_TOKENS_KEY]), key: INSTANCE_TOKENS_KEY };
+    }
+    case 'reset': {
+      const before = JSON.stringify(instanceTokenList(raw));
+      let next;
+      if (!parsed) next = {};
+      else if (parsed.key) next = setInstanceToken(raw, parsed.family, parsed.instance, parsed.key, null);
+      else next = restoreInstanceTokensFromHub(raw, parsed.family, parsed.instance);
+      const changed = before !== JSON.stringify(instanceTokenList(next));
+      if (changed) writeAppearance({ settings: { [INSTANCE_TOKENS_KEY]: Object.keys(next).length ? next : null } }, c.by);
+      return { changed, cleared: parsed ? [c.path] : instanceTokenList(raw).map((e) => e.id) };
+    }
+    case 'act': {
+      if (!parsed || parsed.key) throw new ControlError('validation', 'act needs a path <family>.<instance>');
+      const fn = c.action === 'restore-previous' ? restorePreviousInstanceTokens : c.action === 'restore-hub' ? restoreInstanceTokensFromHub : null;
+      if (!fn) throw new ControlError('validation', `${INSTANCE_TOKENS_TARGET} knows restore-previous and restore-hub, not ${c.action}`);
+      const next = fn(raw, parsed.family, parsed.instance);
+      const changed = JSON.stringify(next) !== JSON.stringify(raw ?? {}) && JSON.stringify(instanceTokenList(next)) !== JSON.stringify(instanceTokenList(raw));
+      if (changed) writeAppearance({ settings: { [INSTANCE_TOKENS_KEY]: Object.keys(next).length ? next : null } }, c.by);
+      return { changed, action: c.action, values: instanceTokenValues(next, parsed.family, parsed.instance) };
+    }
+    default: throw new ControlError('invalid', `${INSTANCE_TOKENS_TARGET} does not take ${c.op}`);
   }
 }

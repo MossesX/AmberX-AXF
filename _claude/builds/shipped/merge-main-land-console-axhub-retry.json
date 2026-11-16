@@ -1,0 +1,219 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-merge-main-land-console-axhub-retry",
+ "rev": 1,
+ "source": "api",
+ "by": "merge-watch",
+ "shippedAt": "2026-11-16T14:11:18Z",
+ "build": {
+  "id": "merge-main-land-console-axhub-retry",
+  "title": "Merge main and land console-axhub-retry-failed-calls",
+  "profile": "all",
+  "category": "",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Merging main into claude/console-axhub-retry-failed-calls clashes in code: .github/workflows/android.yml, apps/console-web/server/mcp_server.py",
+  "verbatim": true,
+  "at": "2026-11-15T00:07:23.857Z",
+  "source": "",
+  "by": "merge-main-land-console-axhub-retry",
+  "addenda": []
+ },
+ "brief": "# Build: merge-main-land-console-axhub-retry\n\n## Brett said (verbatim)\nAt: 2026-11-15T00:07:23.857Z\n> Merging main into claude/console-axhub-retry-failed-calls clashes in code: .github/workflows/android.yml, apps/console-web/server/mcp_server.py\n\n## What to build\nContinue build \"Merge main and land console-axhub-retry-failed-calls\" (merge-main-land-console-axhub-retry) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-15 00:07):\n\"Merging main into claude/console-axhub-retry-failed-calls clashes in code: .github/workflows/android.yml, apps/console-web/server/mcp_server.py\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (9 left, ~1.5 h):\n[ ] s1 (~10 min) Auto-land could not land `console-axhub-retry-failed-calls` (console-axhub-retry-failed-calls): merging main into it clashes in code: .github/workflows/android.yml, apps/console-web/server/mcp_server.py.\n[ ] s2 (~10 min) Work on its own branch `claude/console-axhub-retry-failed-calls` (PR #589); do not open a new PR.\n[ ] s3 (~10 min) git fetch origin && git checkout claude/console-axhub-retry-failed-calls && git merge origin/main\n[ ] s4 (~10 min) Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n[ ] s5 (~10 min) Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n[ ] s6 (~10 min) Commit and push to claude/console-axhub-retry-failed-calls. Auto-land and the merge queue land it by themselves.\n[ ] s7 (~10 min) Attempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.\n[ ] s8 (~10 min) Merging main into claude/console-axhub-retry-failed-calls clashes in code: .github/workflows/android.yml, apps/console-web/server/mcp_server.py\n[ ] s9 (~10 min) Tests green, report _claude/builds/reports/merge-main-land-console-axhub-retry.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/merge-main-land-console-axhub-retry.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step merge-main-land-console-axhub-retry <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link merge-main-land-console-axhub-retry --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step merge-main-land-console-axhub-retry <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note merge-main-land-console-axhub-retry \"…\"); the build goes back to Pending for Brett.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Auto-land could not land `console-axhub-retry-failed-calls` (console-axhub-retry-failed-calls): merging main into it clashes in code: .github/workflows/android.yml, apps/console-web/server/mcp_server.py.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "2026-11-15T00:23:48.826Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Work on its own branch `claude/console-axhub-retry-failed-calls` (PR #589); do not open a new PR.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T00:23:48.826Z",
+   "doneAt": "2026-11-15T00:23:53.793Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "git fetch origin && git checkout claude/console-axhub-retry-failed-calls && git merge origin/main",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T00:23:53.793Z",
+   "doneAt": "2026-11-15T00:23:57.404Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T00:23:57.404Z",
+   "doneAt": "2026-11-15T00:24:02.034Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T00:24:02.034Z",
+   "doneAt": "2026-11-15T00:24:09.438Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Commit and push to claude/console-axhub-retry-failed-calls. Auto-land and the merge queue land it by themselves.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T00:24:09.438Z",
+   "doneAt": "2026-11-15T00:24:13.547Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Attempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s8",
+   "text": "Merging main into claude/console-axhub-retry-failed-calls clashes in code: .github/workflows/android.yml, apps/console-web/server/mcp_server.py",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s9",
+   "text": "Tests green, report _claude/builds/reports/merge-main-land-console-axhub-retry.md, THREADS row, commit, push, PR",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "claude/merge-main-land-console-axhub-retry",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 693,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/589"
+ },
+ "landedCommit": "7801e65f3e20e4bffac556930900c6524f58e46d",
+ "commits": [
+  "7801e65f3e20e4bffac556930900c6524f58e46d"
+ ],
+ "mergedAt": "2026-11-15T07:36:17Z",
+ "landedAt": "2026-11-15T07:36:16Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/merge-main-land-console-axhub-retry.md"
+ ],
+ "areas": [
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/merge-main-land-console-axhub-retry.md"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "CI: Build and publish site",
+   "command": "https://github.com/MossesX/AmberX-AXF/actions/runs/43690691398",
+   "result": "pass",
+   "detail": "success"
+  },
+  {
+   "name": "CI: Android framework + console",
+   "command": "https://github.com/MossesX/AmberX-AXF/actions/runs/43690691414",
+   "result": "pass",
+   "detail": "success"
+  },
+  {
+   "name": "check-build-id 9, check-builds-store-lock 9, check-retry-ladder 76, check-retry-runner 5: pass",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "test_mcp_retry.py 4, test_mcp_tools.py 206, tests/test_console_control.py 8, axf_server/test_retry.py 17, auto-fixes/test.py 23: pass",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "tracker.mjs --check: pass",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "PR #589 after the push: MERGEABLE, CI running; auto-land and the merge queue land it.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "_claude/builds/reports/merge-main-land-console-axhub-retry.md",
+ "open": [
+  "s7: Attempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
+  "s8: Merging main into claude/console-axhub-retry-failed-calls clashes in code: .github/workflows/android.yml, apps/console-web/server/mcp_server.py",
+  "s9: Tests green, report _claude/builds/reports/merge-main-land-console-axhub-retry.md, THREADS row, commit, push, PR"
+ ]
+}

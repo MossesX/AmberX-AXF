@@ -4,6 +4,7 @@ import { NAV_ACCENT_PREFIX, NAV_COLOR_TOKENS, NAV_STYLE_FIELDS, navIdList, norma
 import type { AssetType } from '../../core';
 import { NAV_COLLAPSED_KEY, NAV_OPEN_KEY, NAV_WIDTH_KEY } from '../../core/runtime';
 import { useAxfState, useRuntime } from '../AxfProvider';
+import { HubSkinLockArea } from './HubSkinLock';
 import { Button, Slider } from './Controls';
 import { SelectField, Switch } from './Forms';
 import { Icon } from './Icon';
@@ -119,6 +120,7 @@ function Presets() {
   const cur = presets.find((p) => p.id === assetId);
   const n = Object.keys(overrides).length;
   return (
+    <HubSkinLockArea>
     <div className="fx-stack">
       <SelectField label="Preset" hint={cur?.description} value={assetId ?? ''} options={presets.map((p) => ({ value: p.id, label: p.name }))} onChange={(id) => rt.swap(TYPE, id)} />
       <NavStylePreview />
@@ -127,6 +129,7 @@ function Presets() {
         <Button icon="refresh" onClick={() => { rt.settings.clear(NAV_OPEN_KEY); rt.settings.clear(NAV_WIDTH_KEY); rt.settings.clear(NAV_COLLAPSED_KEY); }}>Reset open menus and width</Button>
       </div>
     </div>
+    </HubSkinLockArea>
   );
 }
 
@@ -164,8 +167,8 @@ export function NavStyleGroup({ group, items = [] }: { group: NavStyleGroupId; i
   const tap = group === 'behavior' ? <TapConfirmChoice kind="nav-menu" /> : null;
   if (!rt.navStyleData()) return <div className="fx-stack">{tap}<p className="fx-muted">This app’s navigation doesn’t use sub menus (its nav-menu asset has no navStyle: true), so these settings don’t apply here.</p></div>;
   if (group === 'presets') return <Presets />;
-  if (group === 'items') return <Items items={items} />;
-  return <div className="fx-stack">{tap}{fieldsOf(group).map((p) => <Field key={p} path={p} />)}</div>;
+  if (group === 'items') return <HubSkinLockArea><Items items={items} /></HubSkinLockArea>;
+  return <HubSkinLockArea><div className="fx-stack">{tap}{fieldsOf(group).map((p) => <Field key={p} path={p} />)}</div></HubSkinLockArea>;
 }
 
 /** Every group in one place (a dialog, or an app without per-panel settings). */
