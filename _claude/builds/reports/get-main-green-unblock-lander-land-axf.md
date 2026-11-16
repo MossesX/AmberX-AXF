@@ -241,3 +241,24 @@ Every fix that reached main:
 8. framework help re-baked into every app
 9. claude-settings TabGroup literal id
 10. systems-check test no longer racing the monitor
+
+## Is the auto-lander fixed? (s18)
+
+**Yes. It landed #724 and then #685 on its own (21:01), one at a time, each after a green queue run.** It wasn't broken in one place. Main was red, so every queue run failed and nothing could land. Around that, five things kept it stuck or hid it:
+
+| Cause | What it did | Fix |
+|---|---|---|
+| Main red for 33 h | every PR's queue run failed and got kicked; nothing landed from 11-15 10:06 | #724 (s9) |
+| `queue move` lost the first of two moves made before a round | `move 719 0` then `move 724 1` put #719 back behind #685 and #723 | df373063b: a newer manual order leads |
+| Two worktrees on one branch | the lander read the stale `/tmp/wt-lander` and kept #705 blocked as "uncommitted changes" | af3accea8: the build's own worktree wins; stale checkout removed |
+| A build session ran `gh pr merge --auto` | GitHub merged #628 after the light checks only, bypassing the queue, and main went red again | systems-check item "PRs land through the merge queue only". The token can't untick "Allow auto-merge" itself (403), so the item carries the steps |
+| No banner said "nothing lands" | 33 h without a merge and no item turned red | systems-check item **"Lander lands the merge queue"** (`lander-idle`) |
+
+The `lander-idle` item (push-banner, axf.health@1) has three states:
+- **red**: PRs wait and no queue round has run for 15 min;
+- **amber**: rounds run but nothing has merged for 6 h, or the head PR has tested for more than 3× the average;
+- **green** otherwise.
+
+It carries fix steps: the cron line, a stale `/run/axf-auto-land.lock` holder, CI on main, moving the head down.
+
+Not changed, but noted: a lander round takes 7–8 min, because auto-land walks about 60 builds first. So the real cadence is about every 8–10 min, not the cron's 3.
