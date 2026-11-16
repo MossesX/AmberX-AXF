@@ -10,7 +10,7 @@
  * always replaces. Web only: the routes are the console's own (plugin catalog, pending list, plugins), no data here.
  */
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Checkbox, Icon, ModelBadge, Note, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Icon, ModelBadge, Note, PluginSettingsGear, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { getToken, post } from '@console/api';
 import { PLUGINS_CHANGED } from '@console/plugins';
@@ -114,13 +114,14 @@ function PluginUpdate() {
   const list = u.rows;
   return (
     <div className="fx-stack axp-plugin-update">
-      <header className="fx-pagehead">
+      <header className="fx-pagehead" data-axf-plugin-header="plugin-update">
         <div>
           <p className="fx-eyebrow">Plugins · updates</p>
           <h1>Plugin Update</h1>
           <p className="fx-muted" title="Every installed plugin, the model that built it, when, and its version, checked against the plugin catalog on axHub. One copy of each plugin, always: a build by another model replaces the installed one.">Installed plugins checked against axHub’s catalog. One copy each.</p>
         </div>
         <Button size="sm" icon="refresh" disabled={u.loading} onClick={() => void u.load()}>{u.loading ? 'Checking…' : 'Check now'}</Button>
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Plugin Update tools" data-axf-toolbar="plugin-header.plugin-update"><PluginSettingsGear tab="plugin-update" plugin="Plugin Update" /></div>
       </header>
       {u.error && <Note tone="danger">{u.error}</Note>}
       {u.catalog !== 'ok' && <Note tone="warning"><span title={u.catalogNote}>Can’t reach axHub’s catalog: showing what’s installed, no update check.</span></Note>}

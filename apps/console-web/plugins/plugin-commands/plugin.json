@@ -44,6 +44,7 @@
       ".github/workflows/android.yml"
     ]
   },
+  "settings": { "$axf":  "plugin-settings@1", "tab":  "plugin-commands", "parent":  "plugins", "sections":  ["enable", "info", "logs"], "options":  [], "gear":  true},
   "commands": {
     "$axf": "plugin-commands@1",
     "auto": true,

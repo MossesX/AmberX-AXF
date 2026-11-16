@@ -14,7 +14,7 @@
  * (player.tsx) are the other views of this plugin.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Icon, SelectField, Switch, TabGroup, TextField, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, PluginSettingsGear, SelectField, Switch, TabGroup, TextField, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { DataGrid, type GridColumn, type GridSort } from '@console/axf/libs/datagrid';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
@@ -231,12 +231,13 @@ function GlossaryPage() {
   const kindOptions = cat ? Object.entries(cat.kinds).filter(([k]) => cat.counts[k]).map(([value, label]) => ({ value, label: `${label} (${cat.counts[value]})` })) : [];
   return (
     <div className="fx-stack fx-stack--lg axp-glossary-index">
-      <header className="fx-pagehead">
+      <header className="fx-pagehead" data-axf-plugin-header="glossary-index">
         <div>
           <p className="fx-eyebrow">Help · reference{cat ? ` · ${cat.total.toLocaleString()} entries` : ''}</p>
           <h1>Glossary & Index</h1>
           <p className="fx-muted">Everything in AmberX AXF in one place: every plugin, feature, screen, control, setting, command, asset and tool, defined, indexed and linked.</p>
         </div>
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Glossary, Index & Demos tools" data-axf-toolbar="plugin-header.glossary-index"><PluginSettingsGear tab="glossary-index" plugin="Glossary, Index & Demos" /></div>
       </header>
 
       <div className="axp-glossary-index__bar">

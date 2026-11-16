@@ -5,7 +5,7 @@
  * in the browser (veto notices, Terminal bell, Activity chime); it stays yes for anything it doesn't know.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Container, Icon, Note, SelectField, Switch, TextField } from '@console/axf/react';
+import { Button, Chip, Container, Icon, Note, PluginSettingsGear, SelectField, Switch, TextField } from '@console/axf/react';
 import type { AxfRuntime } from '@console/axf/core';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { alertsOf } from '@console/axf/libs/alerts';
@@ -187,12 +187,13 @@ function Panel() {
 function Page() {
   return (
     <div className="fx-stack fx-stack--lg">
-      <header className="fx-pagehead">
+      <header className="fx-pagehead" data-axf-plugin-header="notify-control">
         <div>
           <p className="fx-eyebrow">Plugins · Notifications</p>
           <h1>Notifications</h1>
           <p className="fx-muted">Every notification the console, AmberX and axHub can send. Each sender checks this list first.</p>
         </div>
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Notifications tools" data-axf-toolbar="plugin-header.notify-control"><PluginSettingsGear tab="notify-control" plugin="Notifications" /></div>
       </header>
       <Panel />
     </div>

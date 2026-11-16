@@ -17,6 +17,7 @@
   ],
   "scopes": [],
   "enabledByDefault": true,
+  "settings": { "$axf":  "plugin-settings@1", "tab":  "output-recorder", "parent":  "plugins", "sections":  ["enable", "info", "logs", "options"], "options":  ["output-recorder.channels", "output-recorder.chunkMin", "output-recorder.skipSilent", "output-recorder.capMb", "output-recorder.whenFull", "output-recorder.project"], "gear":  true},
   "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "opus", "builtAt": "2026-11-01" },
   "banner": false,

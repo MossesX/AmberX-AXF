@@ -5,7 +5,7 @@
  * the two MCP switches and the last commands run.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Container, Note, Segmented, Switch, TextField, useRuntime, type AxfWebLibrary } from '@console/axf/react';
+import { Button, Chip, Container, Note, PluginSettingsGear, Segmented, Switch, TextField, type AxfWebLibrary, useRuntime } from '@console/axf/react';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { commandToolName, pluginCommandCli, type PluginCommandEntry, type PluginCommand } from '@console/axf/core/engines/plugin-commands.mjs';
@@ -87,7 +87,7 @@ function PluginCommandsView() {
   const total = (plugins ?? []).reduce((n, p) => n + p.commands.length, 0);
   return (
     <div className="fx-stack axf-pc">
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">Plugin · control@1</p><h1>Plugin commands</h1><p className="fx-muted">Everything every plugin can do, as an API call, an MCP tool and a CLI line.</p></div></header>
+      <header className="fx-pagehead" data-axf-plugin-header="plugin-commands"><div><p className="fx-eyebrow">Plugin · control@1</p><h1>Plugin commands</h1><p className="fx-muted">Everything every plugin can do, as an API call, an MCP tool and a CLI line.</p></div><div className="fx-pagehead__tools" role="toolbar" aria-label="Plugin commands tools" data-axf-toolbar="plugin-header.plugin-commands"><PluginSettingsGear tab="plugin-commands" plugin="Plugin commands" /></div></header>
       <Note tone="info">
         Made from what each plugin already has (its routes, its actions, its data folder and plugin.json). Claude reaches them through axHub as MCP tools named <code>&lt;plugin&gt;_&lt;command&gt;</code> (or <code>plugin_commands</code>, <code>plugin_read</code>, <code>plugin_run</code>), the REST API at <code>/api/control/&lt;plugin&gt;/&lt;command&gt;</code>, and the CLI <code>axf &lt;plugin&gt; &lt;command&gt;</code>. A new plugin shows up here by itself.
       </Note>

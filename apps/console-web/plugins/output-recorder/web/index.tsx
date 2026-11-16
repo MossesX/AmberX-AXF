@@ -13,7 +13,7 @@
  */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
-import { Button, Container, Note, Switch, TextField, useRuntime, type AxfWebLibrary } from '@console/axf/react';
+import { Button, Container, Note, PluginSettingsGear, Switch, TextField, type AxfWebLibrary, useRuntime } from '@console/axf/react';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { nativeBridge } from './bridge';
 import { FIND_KEY, HubRecordings, clock, searchTranscripts, type Transcript } from './core';
@@ -194,12 +194,13 @@ function OutputRecorderView() {
   const c = controller();
   return (
     <div className="fx-stack">
-      <header className="fx-pagehead">
+      <header className="fx-pagehead" data-axf-plugin-header="output-recorder">
         <div>
           <p className="fx-eyebrow">Audio Output Recorder</p>
           <h1>Audio out</h1>
           <p className="fx-muted">Everything the phone plays, recorded while it’s on and kept on axHub. Your mic only when you turn it on.</p>
         </div>
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Audio Output Recorder tools" data-axf-toolbar="plugin-header.output-recorder"><PluginSettingsGear tab="output-recorder" plugin="Audio Output Recorder" /></div>
       </header>
       {c.native() ? <Recorder /> : <Note tone="info">Recording runs in the AmberX app on Android (switch or the “Record audio out” quick-settings tile). Here you can play, download, read, search and delete what it sent to axHub.</Note>}
       <HubList />

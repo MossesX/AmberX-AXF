@@ -1484,7 +1484,7 @@
       "view": "glossary-index",
       "plugin": "ai.amberx.axf.console.glossary-index",
       "file": "plugins/glossary-index/web/index.tsx",
-      "line": 250,
+      "line": 251,
       "tabs": []
     },
     {
@@ -1561,7 +1561,7 @@
       "view": "plugin-manager",
       "plugin": "ai.amberx.axf.console.plugin-manager",
       "file": "plugins/plugin-manager/web/PluginManager.tsx",
-      "line": 398,
+      "line": 405,
       "tabs": []
     },
     {

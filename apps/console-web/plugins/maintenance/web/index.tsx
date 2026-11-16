@@ -15,7 +15,7 @@
  * Server health uses no AI: plain reads of what the host engine measured.
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { Button, Checkbox, Chip, Container, Gauge, Icon, Note, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Container, Gauge, Icon, Note, PluginSettingsGear, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -368,9 +368,10 @@ function MaintenanceView() {
   const refresh = () => { void api.post('check', {}).finally(() => { void loadStatus(); setTick((t) => t + 1); }); };
   return (
     <div className="fx-stack fx-stack--lg">
-      <header className="fx-pagehead">
+      <header className="fx-pagehead" data-axf-plugin-header="maintenance">
         <div><p className="fx-eyebrow">Plugin · VPS</p><h1>Maintenance</h1><p className="fx-muted" style={{ margin: 0 }}>Server health and safe clean-up.{s?.at ? ` Measured ${ago(s.at)}.` : ''}</p></div>
         <Button icon="refresh" onClick={refresh}>Check now</Button>
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Maintenance tools" data-axf-toolbar="plugin-header.maintenance"><PluginSettingsGear tab="maintenance" plugin="Maintenance" /></div>
       </header>
       {error && <Note tone="danger">{error}</Note>}
       {status?.note && <Note tone="info">{status.note}</Note>}

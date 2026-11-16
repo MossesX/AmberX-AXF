@@ -6,7 +6,10 @@
  * graph) is the framework's plugin inventory engine, shared with the Python server and the Kotlin kernel.
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Button, Chip, Icon, IconButton, Segmented as FxSegmented, TabGroup, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, IconButton, PluginSettingsGear, Segmented as FxSegmented, TabGroup, useRuntime } from '@console/axf/react';
+
+/** plugin-settings@1: the one gear every layout's header carries (Settings → Plugins → Plugin Manager). */
+const Gear = () => <PluginSettingsGear tab="plugin-manager" plugin="Plugin Manager" />;
 import { hasSettings, hasUi, openSettings, openUi, setEnabled } from './actions';
 import { ConflictList, DetailPane, HealthChip, Monogram } from './Detail';
 import { HEALTH_LABEL, HEALTH_RANK, loadLogs, useInventory, type Inventory, type PluginRow } from './model';
@@ -124,6 +127,7 @@ function Studio(p: LayoutProps) {
       <aside className="axp-plugin-manager-studio__rail">
         <p className="axp-plugin-manager-eyebrow">Plugin Manager</p>
         <h1 className="axp-plugin-manager-studio__title">Plugins</h1>
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Plugin Manager tools" data-axf-toolbar="plugin-header.plugin-manager" data-axf-plugin-header="plugin-manager"><Gear /></div>
         <nav className="axp-plugin-manager-studio__filters" aria-label="Filter">
           {FILTERS.map((f) => (
             <button key={f} type="button" className={`fx-chip axp-plugin-manager-studio__filter ${p.prefs.filter === f ? 'is-on' : ''}`} onClick={() => p.set('filter', f)}>
@@ -202,10 +206,11 @@ function Mission(p: LayoutProps) {
           <p className="axp-plugin-manager-eyebrow">Plugin ops</p>
           <h1 className="axp-plugin-manager-mission__title">Mission control</h1>
         </div>
-        <div className="axp-plugin-manager-mission__controls">
+        <div className="axp-plugin-manager-mission__controls" role="toolbar" aria-label="Plugin Manager tools" data-axf-toolbar="plugin-header.plugin-manager" data-axf-plugin-header="plugin-manager">
           <ViewPicker p={p} iconsOnly />
           <LayoutPicker p={p} iconsOnly />
           <Button tone="primary" icon="refresh" disabled={p.loading} onClick={() => void p.reload()}>{p.loading ? 'Scanning…' : 'Rescan'}</Button>
+          <Gear />
         </div>
       </header>
       <div className="axp-plugin-manager-mission__tiles">
@@ -327,6 +332,7 @@ function Terminal(p: LayoutProps) {
         <span className="fx-grow" />
         <ViewPicker p={p} iconsOnly />
         <LayoutPicker p={p} iconsOnly />
+        <Gear />
       </div>
       <div className="axp-plugin-manager-term__screen">
         <Offline inv={p.inv} />
@@ -378,6 +384,7 @@ function Catalog(p: LayoutProps) {
         <Search q={p.q} setQ={p.setQ} placeholder="Search the catalog" />
         <ViewPicker p={p} iconsOnly />
         <LayoutPicker p={p} iconsOnly />
+        <Gear />
       </header>
       {featured && !p.q && (
         <section className="axp-plugin-manager-hero">

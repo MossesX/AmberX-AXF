@@ -41,6 +41,7 @@
       "_claude/rules/RULES.md"
     ]
   },
+  "settings": { "$axf":  "plugin-settings@1", "tab":  "glossary-index", "parent":  "plugins", "sections":  ["enable", "info", "logs", "options"], "options":  ["glossary.view", "glossary.sort", "glossary.pageSize", "glossary.showDrafts", "glossary.demo.speak", "glossary.demo.runSteps", "glossary.demo.autoAdvance", "glossary.demo.voiceControl"], "gear":  true},
   "commands": {
     "$axf": "plugin-commands@1",
     "auto": true,

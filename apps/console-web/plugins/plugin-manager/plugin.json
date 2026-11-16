@@ -29,6 +29,7 @@
     "SETTINGS"
   ],
   "enabledByDefault": true,
+  "settings": { "$axf":  "plugin-settings@1", "tab":  "plugin-manager", "parent":  "plugins", "sections":  ["enable", "info", "logs", "options"], "options":  ["plugin-manager.view"], "gear":  true},
   "commands": { "$axf": "plugin-commands@1", "auto": true, "items": [
     { "route": "POST /lazy/report", "skip": "the open console sends its live lazy-loader table here; GET /lazy reads it" },
     { "route": "GET /settings", "id": "plugin-settings-list", "title": "Every plugin's settings sub-tab: tab, address, sections, option keys, gear, enabled", "readOnly": true },

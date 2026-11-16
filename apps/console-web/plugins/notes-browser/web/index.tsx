@@ -5,7 +5,7 @@
  * Small on purpose: no window or dock engine, framework controls only, theme tokens only.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, IconButton, Icon, Markdown, Note, Segmented, SelectField, Switch, TextField } from '@console/axf/react';
+import { Button, Icon, IconButton, Markdown, Note, PluginSettingsGear, Segmented, SelectField, Switch, TextField } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -103,13 +103,14 @@ function NotesView() {
 
   return (
     <div className="fx-stack fx-stack--lg axp-notes-browser">
-      <header className="fx-pagehead">
+      <header className="fx-pagehead" data-axf-plugin-header="notes-browser">
         <div><p className="fx-eyebrow">Claude files · notes</p><h1>Notes</h1><p className="fx-muted">Every note saved for Brett in one place: read, search, edit, rename and move them.</p></div>
         <div className="axp-notes-browser__acts">
           <Button icon="plus" disabled={busy || !list?.available} onClick={() => setAsk({ kind: 'note', value: '', folder: open?.folder ?? 'misc' })}>New note</Button>
           <Button tone="ghost" icon="folder" disabled={busy || !list?.available} onClick={() => setAsk({ kind: 'folder', value: '', folder: '' })}>New folder</Button>
           <IconButton icon="refresh" label="Reload" onClick={() => void load()} />
         </div>
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Notes tools" data-axf-toolbar="plugin-header.notes-browser"><PluginSettingsGear tab="notes-browser" plugin="Notes" /></div>
       </header>
 
       {list && !list.available && <Note tone="warning">The hub's shared Claude files aren't mounted on this console ({list.root}).</Note>}

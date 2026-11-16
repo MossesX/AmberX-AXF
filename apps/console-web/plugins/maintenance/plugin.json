@@ -208,6 +208,7 @@
   "model": "opus",
   "builtAt": "2026-11-04"
  },
+ "settings": { "$axf": "plugin-settings@1", "tab": "maintenance", "parent": "plugins", "sections": ["enable", "info", "logs", "options"], "options": ["axf.maintenance.nightly", "axf.maintenance.nightlyJobs", "axf.maintenance.profileMode", "axf.maintenance.profileSchedule", "axf.maintenance.profileWeekday"], "gear": true },
  "help": "help.json",
  "opens": "main"
 }
