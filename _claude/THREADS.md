@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 05:14 UTC · `auto-lander-controls-in-the-gate-plugin` PR #705 (all) · builds-live
 - 2026-11-15 05:14 UTC · `auto-lander-controls-in-the-gate-plugin` note (all) · orchestrator
 - 2026-11-15 05:21 UTC · `data-container-axf-data-holds-all` → pending, note (all) · reconciler
 - 2026-11-15 05:41 UTC · `voice-listener-use-claude-when-connected` → complete, merged, note (all) · reconciler
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 13:15 UTC · `phone-connect-small-android-companion` → queued (all) · mcp
 - 2026-11-16 13:15 UTC · `voice-designer-plugin-built-each` note (all) · orchestrator
 - 2026-11-16 13:15 UTC · `phone-connect-small-android-companion` → running (all) · mcp
+- 2026-11-16 13:15 UTC · `fix-build-whose-session-finishes-phase-e` s5 done (all) · orchestrator
 
 ## Token passes (log)
 
