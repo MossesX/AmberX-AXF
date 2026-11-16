@@ -20,16 +20,7 @@
  *   node framework/cli/skins.mjs restore <app>             back to the snapshot = the Default skin (keeps one undo)
  *   node framework/cli/skins.mjs undo <app>                undo the last restore
  *   node framework/cli/skins.mjs default <app>|global      the app's Default skin (its saved look as a skin@1 asset, default-<app>)
- *   node framework/cli/skins.mjs default get               the hub default skin (the floor every app stands on) and each app on it
- *   node framework/cli/skins.mjs default set <skin> [--adopt] [--keep-equal]   back up every app's look, then set the hub default skin;
- *                                                           --adopt moves every app onto it (Use skin / Follow off, only its edits kept;
- *                                                           own picks equal to the skin are dropped unless --keep-equal)
- *   node framework/cli/skins.mjs default off               clear the hub default skin (apps draw their own saved look again)
- *   node framework/cli/skins.mjs default adopt <app>|--all [--keep-equal]   move one app (or all) onto the hub default skin (backup first)
- *   node framework/cli/skins.mjs backup <app> [--reason "…"]   keep what the app draws now as a backup in its app-look@1 (newest first, max 5)
- *   node framework/cli/skins.mjs backups <app>             the app's backups
- *   node framework/cli/skins.mjs restore <app> --backup [<id>]   put a backup back (the newest when no id; one undo); also `restore-backup <app> [<id>]`
- *   node framework/cli/skins.mjs snapshot --from <app> --as <id> [--name "…"]   capture what the app draws now as a skin@1 (hub, made skins)
+ *   default / backup / restore --backup / snapshot --from: see below
  *   node framework/cli/skins.mjs migrate [--all | <app>|global] [--dry]   write every Default skin that is missing or stale (idempotent:
  *                                                           a second run keeps everything); snapshots an app with no look document first
  *   node framework/cli/skins.mjs delete <skin>             refuse to delete a Default skin (framework skins are repo files, not deleted here)
@@ -45,6 +36,12 @@
  * feed. AXF_LOOKS_DIR points elsewhere (tests, local development); AXF_APPEARANCE_FILE is the shared document;
  * AXF_SKINS_DIR holds the Default skins; AXF_SKIN_CONFIG_DIR the skin configs and made skins; AXF_SKIN_MAKER_CMD the generator.
  */
+// The hub default skin (build console-look-becomes-default-axhub-skin):
+//   default get | off | set <skin> [--adopt] [--keep-equal] | adopt <app>|--all [--keep-equal]
+//     the floor every app stands on; set backs up every app's look first, --adopt moves each app onto it keeping only
+//     its own edits (picks the floor already draws the same way are dropped unless --keep-equal)
+//   backup <app> [--reason "…"] | backups <app> | restore <app> --backup [<id>] (also restore-backup <app> [<id>])
+//   snapshot --from <app> --as <id> [--name "…"]   capture what the app draws now as a skin@1 (made skins on the hub)
 import { chownSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
