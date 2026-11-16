@@ -731,6 +731,12 @@ write('spacing.json', {
       match: Object.fromEntries(['settings', 'the settings tabs', 'ui-review.sections', 'sections', 'review', 'nothing', ''].map((w) => [w || '(empty)', cs.matchTabGroup([{ id: 'ui-review.sections', label: 'Sections' }, { id: 'settings.tabs', label: 'Settings sections', visible: false }, { id: 'settings.main', label: 'Settings', visible: true }], w)])),
       layout: Object.fromEntries([[10, '1'], [10, '3'], [10, '2'], [7, '3'], [2, '3'], [0, '3'], [10, 'auto'], [10, 'bogus']].map(([n, r]) => [`${n}x${r}`, cs.tabRowsLayout(n as number, r)])),
     },
+    // Reset all (Nov 16 2026, build reset-all-button-every-asset-override): what is listed, what one press clears, and the undo
+    resetAll: (() => {
+      const saved = { 'axf.chrome.tab-group.settings': { style: 'pills' }, 'axf.chrome.tab-group.settings.asset': 'tabs-boxed', 'axf.chrome.toolbar.app': { density: 'compact' }, 'axf.chrome.settings.toolbar': 'chrome-toolbar-x', 'axf.tokens.instances': { 'tabs.files': { values: { activeBg: 'accent' } }, 'grid.b': { values: { rowBg: 'surface2' } } } };
+      const plan = cs.resetAllPlan(saved);
+      return { saved, list: cs.listOverriddenAssets(saved), plan, undo: cs.undoResetAllPlan(plan.snapshot) };
+    })(),
   });
 }
 write('components.json', {
@@ -2507,7 +2513,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
 {
   const phrases = ['scroll down', 'Amber, scroll up a bit please', 'scroll down two pages', 'page down', 'go to the top', 'scroll to the bottom', 'open plugins settings', 'open the pipeline tab',
     'go to plan studio', 'open settings', 'find dark mode', 'search for snapshot', 'show step 3 of the console control build', 'step three of skins', 'disable plugin skins',
-    'turn off the skins plugin', 'turn the skins plugin off', 'enable voice notes plugin', 'press save', 'click the refresh button', 'Set font scale to 1.2.', 'turn help mode on', 'Lock the console to the axHub skin', 'unlock the console from the axHub skin', 'Override the axHub skin', 'stop overriding the axHub skin', 'what time is it', ''];
+    'turn off the skins plugin', 'turn the skins plugin off', 'enable voice notes plugin', 'press save', 'click the refresh button', 'Set font scale to 1.2.', 'turn help mode on', 'Lock the console to the axHub skin', 'unlock the console from the axHub skin', 'Override the axHub skin', 'stop overriding the axHub skin', 'reset all asset overrides', 'reset all asset overrides confirm', 'confirm reset all the asset overrides', 'undo reset all', 'show my asset overrides', 'what time is it', ''];
   const intents = Object.fromEntries(phrases.map((p) => [p, voiceIntent(p)]));
   const hit = 'view:build-orchestrator/grid:builds/row:b1';
   write('console-control-voice.json', {
@@ -2524,6 +2530,10 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       confirm: voiceReply({ verb: 'press' }, { ok: false, code: 'confirmation_required', message: 'x' }),
       noConsole: voiceReply({ verb: 'open' }, { ok: false, code: 'unavailable', message: 'x', openUrl: 'https://c/' }),
       failed: voiceReply({ verb: 'press' }, { ok: false, code: 'denied', message: 'needs Brett' }),
+      resetAll: voiceReply({ verb: 'press', address: 'setting:appearance.asset-overrides.reset-all', confirm: true }, { ok: true, result: { reset: ['tab-group:a', 'toolbar:app', 'banner:app'], undoId: 'ra-1' } }),
+      resetAllNone: voiceReply({ verb: 'press', address: 'setting:appearance.asset-overrides.reset-all', confirm: true }, { ok: true, result: { reset: [], undoId: '' } }),
+      overrides: voiceReply({ verb: 'state', address: 'setting:appearance.asset-overrides.reset-all' }, { ok: true, state: { count: 1 } }),
+      resetAllUndo: voiceReply({ verb: 'press', address: 'function:chrome.overrides-undo', value: 'last' }, { ok: true }),
     },
   });
 }
