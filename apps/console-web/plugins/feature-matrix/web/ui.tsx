@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Button, Checkbox, Chip, Icon, IconButton, ModelBadge, Segmented, SelectField, TextField, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, IconButton, ModelBadge, PluginSettingsGear, Segmented, SelectField, TextField, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
@@ -72,7 +72,7 @@ export function FeatureMatrixPage() {
   const dirty = data.rows.filter((r) => r.dirty).length;
   return (
     <div className="fx-stack axp-feature-matrix">
-      <header className="fx-pagehead">
+      <header className="fx-pagehead" data-axf-plugin-header="feature-matrix">
         <div>
           <p className="fx-eyebrow">Builds · {data.rows.length} matrices{dirty ? ` · ${dirty} need apply` : ''}{data.state.updatedAt ? ` · updated ${fmtTime(data.state.updatedAt)}` : ''}</p>
           <h1>Feature matrix</h1>
@@ -82,6 +82,7 @@ export function FeatureMatrixPage() {
           <IconButton icon="refresh" label="Reload" disabled={busy} onClick={() => load().then(() => log('reloaded', 'ok'))} />
           <Button icon="download" disabled={busy} title="The draft matrix and a matrix for every open build of the active profile (only adds)" onClick={() => act('import', { profile: data.active })}>Import open builds</Button>
         </div>
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Feature matrix tools" data-axf-toolbar="plugin-header.feature-matrix"><PluginSettingsGear tab="feature-matrix" plugin="Feature matrix" /></div>
       </header>
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
       <MatricesGrid data={data} busy={busy} act={act} focus={focus} lastReport={lastReport} />

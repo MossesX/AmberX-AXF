@@ -1,6 +1,6 @@
 /* Fable rebuilds — the view, the report dialog and the small hooks shown in other views. */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Container, Icon, IconButton, ModelBadge, useRuntime } from '@console/axf/react';
+import { Button, Container, Icon, IconButton, ModelBadge, PluginSettingsGear, useRuntime } from '@console/axf/react';
 import { pendingPost } from '@console/api';
 import { call, getData, onData, park, refresh, setFocus, takeFocus, type Rebuild } from './api';
 import { LoadingSkeleton } from '@console/emptyState';
@@ -29,7 +29,7 @@ export function FableView() {
   const c = d?.counts ?? {};
   return (
     <div className="fx-page axp-fable">
-      <header className="fx-pagehead">
+      <header className="fx-pagehead" data-axf-plugin-header="fable-rebuilds">
         <div>
           <p className="fx-eyebrow">{(d?.items ?? []).length} on the list · {c.pending ?? 0} pending · {c.unsafe ?? 0} unsafe · {c.complete ?? 0} rebuilt</p>
           <h1>Fable rebuilds</h1>
@@ -42,6 +42,7 @@ export function FableView() {
           <IconButton icon="refresh" label="Refresh" onClick={() => void refresh()} />
           <IconButton icon="list" label="Pending builds" onClick={() => rt.navigate('pending')} />
         </div>
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Fable rebuilds tools" data-axf-toolbar="plugin-header.fable-rebuilds"><PluginSettingsGear tab="fable-rebuilds" plugin="Fable rebuilds" /></div>
       </header>
       {err && <p className="fx-small">{err}</p>}
       {items.length === 0 ? <div className="fx-empty">{d ? 'Nothing here.' : 'Loading…'}</div> : (

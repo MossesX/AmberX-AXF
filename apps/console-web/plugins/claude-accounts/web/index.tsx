@@ -5,7 +5,7 @@
  * only runs headless jobs: the console stays on the active account.
  */
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Chip, Container, Icon, Note, SelectField, TextField, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Icon, Note, PluginSettingsGear, SelectField, TextField, useRuntime } from '@console/axf/react';
 import type { AxfRuntime } from '@console/axf/core';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
@@ -280,13 +280,14 @@ function Page() {
   const { refresh } = useAccounts();
   return (
     <div className="fx-stack fx-stack--lg">
-      <header className="fx-pagehead">
+      <header className="fx-pagehead" data-axf-plugin-header="claude-accounts">
         <div>
           <p className="fx-eyebrow">Plugins · Claude accounts</p>
           <h1>Claude accounts</h1>
           <p className="fx-muted">One account runs the console; every other subscription login runs headless jobs, and API keys take only the jobs a routing rule sends them. Every switch, save, sign-in or removal waits for your approval.</p>
         </div>
         <Button size="sm" tone="ghost" icon="refresh" onClick={() => void refresh()}>Refresh</Button>
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Claude accounts tools" data-axf-toolbar="plugin-header.claude-accounts"><PluginSettingsGear tab="claude-accounts" plugin="Claude accounts" /></div>
       </header>
       <Container title="One account" icon="check"><OneAccount /></Container>
       <Container title="Accounts" icon="key"><Accounts manage /></Container>

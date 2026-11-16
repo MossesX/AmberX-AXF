@@ -1,6 +1,6 @@
 /* Codebase changes — the banner, the log browser and the settings summary. Theme tokens only (codebase-changes.css). */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Button, Icon, IconButton, RefText, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
+import { BannerIcon, Button, Icon, IconButton, PluginSettingsGear, RefText, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
 import { MoreMenu } from './MoreMenu';
 import {
   CHANGED, KIND_ICON, NO_FILTERS, STATE_ICON, STATE_LABEL, VIEW, abandonEntry, ago, api, bannerOn, closeAll, closeEntry, isActive, NO_WORD_MS, quietMs, startedMs, stuckWhy, kindLabel, linkHref, loadEntry, loadOpen, loadResume,
@@ -289,13 +289,14 @@ export function ChangesView() {
   const nFilters = (['kind', 'state', 'open', 'repo', 'from', 'to'] as const).filter((k) => f[k] !== NO_FILTERS[k]).length;
   return (
     <div className="axp-codebase-changes">
-      <header className="fx-pagehead axp-codebase-changes__intro">
+      <header className="fx-pagehead axp-codebase-changes__intro" data-axf-plugin-header="codebase-changes">
         <div>
           <p className="fx-eyebrow">Builds</p>
           <h1 className="axp-codebase-changes__h1"><Icon name="branch" size={20} /> Codebase changes</h1>
           <p className="fx-muted" title="Every request to build, edit, remove or fix something, with its steps and result. Kept on axHub; closing an entry only takes it out of the banner.">Every build, edit, removal and fix, with its steps and result.</p>
         {c && <p className="fx-small axp-codebase-changes__counts"><strong>{c.total}</strong> in the log · <strong>{c.open}</strong> in the banner{Object.entries(c.byState).map(([k, v]) => ` · ${v} ${(STATE_LABEL[k] ?? k).toLowerCase()}`).join('')}</p>}
       </div>
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Codebase changes banner tools" data-axf-toolbar="plugin-header.codebase-changes"><PluginSettingsGear tab="codebase-changes" plugin="Codebase changes banner" /></div>
       </header>
       {/* search + one Filters toggle; the six filters open below it (compact pages, Oct 30 2026) */}
       <div className="axp-codebase-changes__searchbar" role="search">

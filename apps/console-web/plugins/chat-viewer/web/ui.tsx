@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Button, Chip, Container, Icon, IconButton, Note, Segmented, SelectField, Switch, TextField, controlSlug } from '@console/axf/react';
+import { Button, Chip, Container, controlSlug, Icon, IconButton, Note, PluginSettingsGear, Segmented, SelectField, Switch, TextField } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridSort } from '@console/axf/libs/datagrid';
 import { pluginApi } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
@@ -83,13 +83,14 @@ export function ChatViewer() {
 
   return (
     <div className="fx-stack axp-chat-viewer">
-      <header className="fx-pagehead">
+      <header className="fx-pagehead" data-axf-plugin-header="chat-viewer">
         <div><p className="fx-eyebrow">Every session</p><h1>Chats</h1><p className="fx-muted axp-chat-viewer-lede">claude.ai, Claude Code and build sessions in one place: search them, read them, listen to them.</p></div>
         <div className="fx-row axp-chat-viewer-acts">
           <Button icon="refresh" busy={checking} onClick={() => void check()}>Check for updates</Button>
           <Button icon="upload" busy={!!importing} onClick={() => fileRef.current?.click()}>Import export</Button>
           <input ref={fileRef} type="file" accept=".zip,.json,application/zip,application/json" hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) void importFile(f); }} />
         </div>
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Chat viewer tools" data-axf-toolbar="plugin-header.chat-viewer"><PluginSettingsGear tab="chat-viewer" plugin="Chat viewer" /></div>
       </header>
       <UpdateNote report={report} checking={checking} importing={importing} status={status} />
       {error && <Note tone="danger" icon="alert">{error}</Note>}
@@ -219,7 +220,7 @@ function SessionView({ id, seq, onBack }: { id: string; seq?: number; onBack: ()
 
   return (
     <div className="fx-stack axp-chat-viewer axp-chat-viewer-session">
-      <header className="fx-pagehead">
+      <header className="fx-pagehead" data-axf-plugin-header="chat-viewer">
         <div className="axp-chat-viewer-head">
           <p className="fx-eyebrow"><IconButton icon="arrow-left" label="Back to every session" onClick={onBack} /> <SourceChip s={s.source} /> {src.label}</p>
           <h1 className="axp-chat-viewer-h">{s.title}</h1>
@@ -234,6 +235,7 @@ function SessionView({ id, seq, onBack }: { id: string; seq?: number; onBack: ()
           <IconButton icon="file" label="Export as text" onClick={() => void api.download(`sessions/${enc(id)}/export?format=txt`, `${s.title.slice(0, 60)}.txt`)} />
           <Button icon="play" tone={audioOpen ? 'primary' : 'neutral'} onClick={() => setAudioOpen((v) => !v)}>Audio</Button>
         </div>
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Chat viewer tools" data-axf-toolbar="plugin-header.chat-viewer"><PluginSettingsGear tab="chat-viewer" plugin="Chat viewer" /></div>
       </header>
       {note && <Note tone="success" icon="check">{note}</Note>}
       <div className="fx-row axp-chat-viewer-bar">

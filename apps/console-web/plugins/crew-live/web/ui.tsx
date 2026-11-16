@@ -4,7 +4,7 @@
  * its steps, the files it changed with their live diff, its recent tool calls with their cost, links and Stop.
  */
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { AgentAvatar, Button, Icon, IconButton, ModelBadge, PriorityTag, Segmented, TextField, setAgentDirectory, useRuntime } from '@console/axf/react';
+import { AgentAvatar, Button, Icon, IconButton, ModelBadge, PluginSettingsGear, PriorityTag, Segmented, setAgentDirectory, TextField, useRuntime } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import { followSse, sseJson } from '@console/axf/core/sse';
 import { layoutViewports } from '@console/axf/core/engines/layout';
@@ -302,12 +302,13 @@ export function CrewView() {
   const off = snap?.offTheClock ?? [];
   return (
     <div className="axp-crew">
-      <header className="fx-pagehead">
+      <header className="fx-pagehead" data-axf-plugin-header="crew-live">
         <div>
           <p className="fx-eyebrow">Agents · live</p>
           <h1>Crew</h1>
           <p className="fx-muted">Every agent working right now: what it is on, how long, and what it costs.</p>
         </div>
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Crew tools" data-axf-toolbar="plugin-header.crew-live"><PluginSettingsGear tab="crew-live" plugin="Crew" /></div>
       </header>
       <div className="axp-crew__bar" role="status" aria-live="polite">
         <span className="axp-crew__total"><b>{t?.working ?? 0}</b> working</span>

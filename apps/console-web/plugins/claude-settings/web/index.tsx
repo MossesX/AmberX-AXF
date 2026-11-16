@@ -5,7 +5,7 @@
  * otherwise and the message shows under the row).
  */
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Container, Icon, Note, SelectField, Switch, TextField } from '@console/axf/react';
+import { Button, Container, Icon, Note, PluginSettingsGear, SelectField, Switch, TextField } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -151,13 +151,14 @@ function ClaudePage() {
   const { view, error, refresh } = useClaudeSettings();
   return (
     <div className="fx-stack fx-stack--lg axp-cs">
-      <header className="fx-pagehead">
+      <header className="fx-pagehead" data-axf-plugin-header="claude-settings">
         <div>
           <p className="fx-eyebrow">Plugins · Claude</p>
           <h1>Claude</h1>
           <p className="fx-muted">Settings every Claude session reads on axHub before it acts; owner-only ones change only with your own click here.</p>
         </div>
         <Button size="sm" tone="ghost" icon="refresh" onClick={() => void refresh()}>Refresh</Button>
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Claude tools" data-axf-toolbar="plugin-header.claude-settings"><PluginSettingsGear tab="claude-settings" plugin="Claude" /></div>
       </header>
       <Status view={view} error={error} />
       {view?.groups.filter((g) => view.settings.some((s) => s.group === g.id)).map((g) => (

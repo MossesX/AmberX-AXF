@@ -40,6 +40,7 @@
       "_claude/memory/docs/rebuilds/feature-matrix-plugin.md"
     ]
   },
+  "settings": { "$axf":  "plugin-settings@1", "tab":  "feature-matrix", "parent":  "plugins", "sections":  ["enable", "info", "logs", "options"], "options":  ["feature-matrix.sort", "feature-matrix.rowButton", "feature-matrix.history"], "gear":  true},
   "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": {
     "model": "opus",

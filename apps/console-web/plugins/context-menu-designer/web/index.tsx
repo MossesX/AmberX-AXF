@@ -1,4 +1,4 @@
-import { Button, useRuntime } from '@console/axf/react';
+import { Button, PluginSettingsGear, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { Designer } from './Designer';
@@ -38,7 +38,7 @@ export const plugin: AxfWebLibrary = {
       keywords: ['context menu', 'right-click', 'chunk', 'menu designer'],
       render: () => (
         <div className="fx-stack fx-stack--lg">
-          <header className="fx-pagehead"><div><p className="fx-eyebrow">Design &amp; branding</p><h1>Context menu designer</h1><p className="fx-muted" title="Design right-click menus from reusable chunks, preview them live, and save them as context-menu assets.">Right-click menus from reusable chunks, previewed live.</p></div></header>
+          <header className="fx-pagehead" data-axf-plugin-header="context-menu-designer"><div><p className="fx-eyebrow">Design &amp; branding</p><h1>Context menu designer</h1><p className="fx-muted" title="Design right-click menus from reusable chunks, preview them live, and save them as context-menu assets.">Right-click menus from reusable chunks, previewed live.</p></div><div className="fx-pagehead__tools" role="toolbar" aria-label="Context menu designer tools" data-axf-toolbar="plugin-header.context-menu-designer"><PluginSettingsGear tab="context-menu-designer" plugin="Context menu designer" /></div></header>
           <Designer />
         </div>
       ),

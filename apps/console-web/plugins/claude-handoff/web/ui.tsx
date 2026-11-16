@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Chip, Container, Icon, Markdown, Note, SelectField, Switch, TextField, useRuntime, BannerIcon } from '@console/axf/react';
+import { BannerIcon, Button, Chip, Container, Icon, Markdown, Note, PluginSettingsGear, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
 import { InstallerDialog } from './installer';
 import { MoreMenu } from './more';
 import {
@@ -46,7 +46,7 @@ export function HandoffView() {
   const st = s.status;
   return (
     <div className="fx-stack axp-claude-handoff">
-      <header className="fx-pagehead axp-claude-handoff__head">
+      <header className="fx-pagehead axp-claude-handoff__head" data-axf-plugin-header="claude-handoff">
         <div><p className="fx-eyebrow">Tools</p><h1>Claude handoff</h1><p className="fx-muted axp-claude-handoff__lede" title="Everything a new Claude account needs to carry this project on, kept current.">What a new Claude account needs to carry on, kept current.</p></div>
         <div className="axp-claude-handoff__row axp-claude-handoff__acts">
           <Button tone="primary" icon="rocket" disabled={!!s.busy} title="Opens the installer: publishes the kit when out of date, walks every file group, then hands you the prompt" onClick={() => rt.openDialog('claude-handoff.installer')}>Assemble prompt</Button>
@@ -59,6 +59,7 @@ export function HandoffView() {
             { label: 'Handoff files…', icon: 'file', onPick: () => rt.dispatch('claude-handoff.files') },
           ]} />
         </div>
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Claude handoff banner tools" data-axf-toolbar="plugin-header.claude-handoff"><PluginSettingsGear tab="claude-handoff" plugin="Claude handoff banner" /></div>
       </header>
       <details className="axp-claude-handoff__about">
         <summary className="axp-claude-handoff__meta">About this page{st?.state.lastAssembledAt ? ` · last assembled ${ago(st.state.lastAssembledAt)}` : ''}</summary>
@@ -267,9 +268,10 @@ export function PreviewView() {
   const rt = useRuntime();
   return (
     <div className="fx-stack axp-claude-handoff">
-      <header className="fx-pagehead axp-claude-handoff__head">
+      <header className="fx-pagehead axp-claude-handoff__head" data-axf-plugin-header="claude-handoff">
         <div><p className="fx-eyebrow">Tools</p><h1>Installer preview</h1><p className="fx-muted axp-claude-handoff__lede" title="The Claude handoff installer running on this project's real files, with example machines. Nothing is published: the prompt at the end comes from a preview build. Change its layout, gauges, meters and themes with Look (also Tools → Installer look).">The installer on real files with example data; nothing is published.</p></div>
         <Button icon="palette" onClick={() => rt.openDialog('claude-handoff.look')}>Look</Button>
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Claude handoff banner tools" data-axf-toolbar="plugin-header.claude-handoff"><PluginSettingsGear tab="claude-handoff" plugin="Claude handoff banner" /></div>
       </header>
       <div className="axp-claude-handoff__previewbox"><InstallerDialog demo /></div>
     </div>
