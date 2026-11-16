@@ -5703,6 +5703,18 @@
    "from": "",
    "addenda": []
   },
+  "orchestrator-on-hold-status-and-tab": {
+   "said": "I need another group in orchestrator and state. I need to be able to set status of selected items in pending or any other table to on hold and move to new grid that can be moved back to pending, archive, queue, or delete",
+   "at": "2026-11-16T16:53:45.431Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "orchestrator-self-check-when-stuck-verify-each-a": {
    "said": "The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.",
    "at": "2026-11-09T16:25:52.442Z",
