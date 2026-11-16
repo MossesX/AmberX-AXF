@@ -8982,6 +8982,18 @@
    "from": "",
    "addenda": []
   },
+  "urgent-land-gizmo-chat-report": {
+   "said": "urgent-land-gizmo-chat-report",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": false,
+   "from": "report",
+   "addenda": []
+  },
   "urgent-land-lazy-loader": {
    "said": "Move it to next... start it right away.",
    "at": "2026-11-04T12:29:55.129Z",

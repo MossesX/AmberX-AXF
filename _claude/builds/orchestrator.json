@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T14:07:07.149Z",
+ "updatedAt": "2026-11-16T14:07:40.228Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -42,6 +42,47 @@
    "upgradeRequests": [],
    "origin": {
     "said": "yo-a7qg14",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "urgent-land-gizmo-chat-report",
+   "title": "urgent-land-gizmo-chat-report",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/urgent-land-gizmo-chat-report",
+   "pr": "#324",
+   "mergedAt": "2026-11-15T10:06:17Z",
+   "createdAt": "2026-11-15T10:06:16Z",
+   "updatedAt": "2026-11-16T14:07:17Z",
+   "builtAt": "2026-11-15T10:06:16Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (api): it was started outside the builds store and landed as 32e55adee.",
+     "at": "2026-11-16T14:07:17Z"
+    },
+    {
+     "text": "Shipped manifest sm-urgent-land-gizmo-chat-report rev 1 sent to Shipped features (api): landed 32e55adee, 1 file(s), 2 test line(s), 0 open.",
+     "at": "2026-11-16T14:07:17Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "urgent-land-gizmo-chat-report",
     "at": "",
     "source": "",
     "session": "",

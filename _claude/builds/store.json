@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6458,
- "updatedAt": "2026-11-16T14:07:07.149Z",
+ "rev": 6459,
+ "updatedAt": "2026-11-16T14:07:40.228Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -239550,6 +239550,71 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-16T13:15:34.793Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "urgent-land-gizmo-chat-report",
+   "title": "urgent-land-gizmo-chat-report",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/urgent-land-gizmo-chat-report",
+   "pr": "#324",
+   "mergedAt": "2026-11-15T10:06:17Z",
+   "createdAt": "2026-11-15T10:06:16Z",
+   "updatedAt": "2026-11-16T14:07:17Z",
+   "builtAt": "2026-11-15T10:06:16Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (api): it was started outside the builds store and landed as 32e55adee.",
+     "at": "2026-11-16T14:07:17Z"
+    },
+    {
+     "text": "Shipped manifest sm-urgent-land-gizmo-chat-report rev 1 sent to Shipped features (api): landed 32e55adee, 1 file(s), 2 test line(s), 0 open.",
+     "at": "2026-11-16T14:07:17Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "urgent-land-gizmo-chat-report",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "shipped": {
+    "id": "sm-urgent-land-gizmo-chat-report",
+    "rev": 1,
+    "at": "2026-11-16T14:07:17Z",
+    "landedCommit": "32e55adee5601051a27afe133e2f639ac37ced8a"
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
