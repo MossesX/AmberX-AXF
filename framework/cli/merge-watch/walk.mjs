@@ -24,10 +24,12 @@ import { fileURLToPath } from 'node:url';
 import * as MW from '../../core/merge-watch.mjs';
 
 export const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
+/** The checkout git runs in and reports are read from: AXF_MERGE_WATCH_REPO (a container's clone), else this code's repo. */
+export const gitRoot = (env = process.env) => env.AXF_MERGE_WATCH_REPO || REPO_ROOT;
 const SEP = '\x1f';
 const MAX_DEPTH = 4;
 
-export function runGit(args, { cwd = REPO_ROOT } = {}) {
+export function runGit(args, { cwd = gitRoot() } = {}) {
   const r = spawnSync('git', args, { cwd, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
   if (r.status !== 0) throw Object.assign(new Error(`git ${args[0]}: ${(r.stderr || '').trim().slice(0, 300) || `exit ${r.status}`}`), { code: 1 });
   return r.stdout;
@@ -39,7 +41,7 @@ const parse = (out) => String(out || '').split('\n').filter(Boolean).map((l) => 
 });
 
 /** One line of history, newest first. `exclude` = shas whose ancestors are left out (already-seen main, the branch side). */
-export function commitsOf({ tip, exclude = [], since = '', git = runGit, cwd = REPO_ROOT } = {}) {
+export function commitsOf({ tip, exclude = [], since = '', git = runGit, cwd = gitRoot() } = {}) {
   const args = ['log', '--first-parent', `--format=%H${SEP}%P${SEP}%cI${SEP}%s`];
   if (since) args.push(`--since=${since}`);
   args.push(tip, ...exclude.filter(Boolean).map((x) => `^${x}`), '--');
@@ -51,7 +53,7 @@ const carriesBranch = (c) => { const k = MW.classifyCommit(c).kind; return k ===
 export const mergesMain = (c) => c.parents.length > 1 && !carriesBranch(c) && /\b(origin\/main|'main'|branch main)\b|\(build_land\)/.test(c.subject);
 
 /** Main's first-parent line plus the main line behind each non-PR merge's second parent, recursively. */
-export function mainLines({ ref = MW.DEFAULT_REF, since = '', stop = '', git = runGit, cwd = REPO_ROOT } = {}) {
+export function mainLines({ ref = MW.DEFAULT_REF, since = '', stop = '', git = runGit, cwd = gitRoot() } = {}) {
   const lines = []; const seen = new Set();
   const walk = (tip, exclude, via, depth) => {
     const cs = commitsOf({ tip, exclude, since, git, cwd }).filter((c) => !seen.has(c.sha));

@@ -113,6 +113,7 @@ check banner read.
 `framework/cli/merge-watch-files.mjs` is the only module that builds the path. State file: `<data root>/_claude/builds/merge-watch/state.json`.
 Data root, first match wins:
 
+0. `AXF_MERGE_WATCH_DATA` — exactly that folder: the runner's data in a container (axf-molly)
 1. `AXF_MERGE_WATCH_DIR` — exactly that folder (tests, another host)
 2. `AXF_BUILDS_STORE=<file>` — a scratch store: `<file minus .json>.merge-watch/` next to it (tests)
 3. `AXF_DATA_DIR` — `<that>/_claude/builds/merge-watch` (`off` / empty = the repo). **This is the axf-data switch:**
@@ -133,3 +134,13 @@ through the builds store, so build-hook@1 `shipped` keeps firing and the ledger 
 - API: the plugin command / REST / MCP / voice views of `summaryOf`, `reset`, `backfill`; a systems check banner item for
   `failed` entries that gave up; a deep link to the Shipped features grid filtered on the landing.
 - The Kotlin twin is deferred (framework/spec/PORTING.md).
+
+## Moving with the orchestrator (s10)
+
+The runner (`framework/cli/merge-watch.mjs` and `framework/cli/merge-watch/`) reads nothing repo-relative beyond:
+`AXF_MERGE_WATCH_DATA` (state, tick.lock, alert.json, github-cache.json, log.jsonl), `AXF_MERGE_WATCH_REPO` (the clone
+git runs in and reports are read from), `AXF_SHIPPED_DIR` (sidecars), `AXF_SHIPPED_FEATURES_DIR` (ledger, read-only) and
+`AXF_MERGE_WATCH_SEND` (`local,api` on the VPS; `api` with `AXF_CONSOLE_URL` + `AXF_TOKEN` in a container with no store).
+The axf-molly job is `deploy/molly/merge-watch.entry.mjs` (`{ id, everySec, run({ env, shadow }) }`; shadow = a dry tick).
+When molly takes the lease, run it there and remove the VPS cron `axf-merge-watch`. A note sits on
+move-build-orchestrator-to-axhub.

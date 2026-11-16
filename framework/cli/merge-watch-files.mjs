@@ -5,6 +5,7 @@
  *
  * The data root, first match wins (every other merge-watch reader and writer goes through mergeWatchDir, nothing else
  * builds this path):
+ *   AXF_MERGE_WATCH_DATA         exactly that folder: the runner's data in a container (axf-molly), nothing repo-relative
  *   AXF_MERGE_WATCH_DIR          exactly that folder (tests, another host)
  *   AXF_BUILDS_STORE=<file>      a scratch builds store: <file minus .json>.merge-watch/ next to it (tests)
  *   AXF_DATA_DIR                 <that folder> ('off' / '' = the repo); this is the axf-data root the orchestrator
@@ -25,6 +26,7 @@ export const MERGE_WATCH_REL = dirname(STATE_REL);
 
 /** The folder holding merge-watch@1 state (see the header for the chain). */
 export function mergeWatchDir(env = process.env) {
+  if (env.AXF_MERGE_WATCH_DATA) return env.AXF_MERGE_WATCH_DATA;
   if (env.AXF_MERGE_WATCH_DIR) return env.AXF_MERGE_WATCH_DIR;
   if (env.AXF_BUILDS_STORE) return `${env.AXF_BUILDS_STORE.replace(/\.json$/, '')}.merge-watch`;
   if (env.AXF_DATA_DIR !== undefined) return env.AXF_DATA_DIR && env.AXF_DATA_DIR !== 'off' ? join(env.AXF_DATA_DIR, MERGE_WATCH_REL) : join(REPO_ROOT, MERGE_WATCH_REL);
@@ -35,7 +37,7 @@ export const stateFile = (env = process.env) => join(mergeWatchDir(env), 'state.
 /** Where the state is read from, as words for `status` lines and the doc. */
 export function whereIs(env = process.env) {
   const f = stateFile(env);
-  const via = env.AXF_MERGE_WATCH_DIR ? 'AXF_MERGE_WATCH_DIR' : env.AXF_BUILDS_STORE ? 'AXF_BUILDS_STORE' : env.AXF_DATA_DIR !== undefined ? (env.AXF_DATA_DIR && env.AXF_DATA_DIR !== 'off' ? 'AXF_DATA_DIR' : 'repo') : f.startsWith(REPO_ROOT) ? 'repo' : 'hub';
+  const via = env.AXF_MERGE_WATCH_DATA ? 'AXF_MERGE_WATCH_DATA' : env.AXF_MERGE_WATCH_DIR ? 'AXF_MERGE_WATCH_DIR' : env.AXF_BUILDS_STORE ? 'AXF_BUILDS_STORE' : env.AXF_DATA_DIR !== undefined ? (env.AXF_DATA_DIR && env.AXF_DATA_DIR !== 'off' ? 'AXF_DATA_DIR' : 'repo') : f.startsWith(REPO_ROOT) ? 'repo' : 'hub';
   return { file: f, via, exists: existsSync(f) };
 }
 

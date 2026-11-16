@@ -30,8 +30,9 @@ _done = False
 
 
 def state_file() -> Path:
-    if os.environ.get("AXF_MERGE_WATCH_DIR"):
-        return Path(os.environ["AXF_MERGE_WATCH_DIR"]) / "state.json"
+    for key in ("AXF_MERGE_WATCH_DATA", "AXF_MERGE_WATCH_DIR"):
+        if os.environ.get(key):
+            return Path(os.environ[key]) / "state.json"
     data = os.environ.get("AXF_DATA_DIR")
     if data is not None:
         return (Path(data) if data and data != "off" else ROOT) / REL

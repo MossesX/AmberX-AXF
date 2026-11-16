@@ -21,7 +21,7 @@ import { dirname, join } from 'node:path';
 import * as MW from '../../core/merge-watch.mjs';
 import * as SM from '../../core/shipped-manifest.mjs';
 import { mergeWatchDir } from '../merge-watch-files.mjs';
-import { REPO_ROOT, runGit } from './walk.mjs';
+import { gitRoot, REPO_ROOT, runGit } from './walk.mjs';
 
 export const GITHUB_REPO = 'MossesX/AmberX-AXF';
 const CACHE_MAX = 400;
@@ -94,7 +94,7 @@ export function buildOf(e, { store, origins = {} } = {}) {
 
 // ------------------------------------------------------------------ files
 
-export function filesOf(e, { git = runGit, cwd = REPO_ROOT } = {}) {
+export function filesOf(e, { git = runGit, cwd = gitRoot() } = {}) {
   // build_land: main before the landing is the merge's second parent; diffing from the branch's base would also count
   // every main change the branch merged in
   const base = e.kind === 'build-land' ? `${e.sha}^2` : MW.sha(e.base) || `${e.sha}^`;
@@ -108,7 +108,7 @@ export function filesOf(e, { git = runGit, cwd = REPO_ROOT } = {}) {
  * mapped-commit = { entry (with pr / branch filled), pr: { number, title, branch, mergedAt, url } | null,
  *                   build: { id, via } (id '' = unlinked), files, areas }
  */
-export async function mapCommit(entry, { store, origins = {}, git = runGit, cwd = REPO_ROOT, github = githubGet, repo = GITHUB_REPO } = {}) {
+export async function mapCommit(entry, { store, origins = {}, git = runGit, cwd = gitRoot(), github = githubGet, repo = GITHUB_REPO } = {}) {
   const e = MW.normEntry(entry); if (!e) throw Object.assign(new Error('mapCommit: a merge-watch-entry@1 with a sha'), { code: 2 });
   const pr = await prOf(e, { github, repo });
   const branch = MW.normBranch(e.branch || pr?.branch || '');

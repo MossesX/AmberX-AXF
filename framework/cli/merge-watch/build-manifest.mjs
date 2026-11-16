@@ -20,7 +20,7 @@ import * as MW from '../../core/merge-watch.mjs';
 import * as SM from '../../core/shipped-manifest.mjs';
 import { parseReport } from '../shipped.mjs';
 import { githubGet, GITHUB_REPO } from './map-commit.mjs';
-import { REPO_ROOT } from './walk.mjs';
+import { gitRoot } from './walk.mjs';
 
 const CI_RESULT = { success: 'pass', failure: 'fail', cancelled: 'fail', timed_out: 'fail', skipped: 'skip', neutral: 'skip' };
 
@@ -33,7 +33,7 @@ export async function ciTestsOf(sha, { github = githubGet, repo = GITHUB_REPO } 
   return [...newest.values()].map((r) => ({ name: `CI: ${r.name}`, command: r.html_url || '', result: r.status !== 'completed' ? 'unknown' : CI_RESULT[r.conclusion] || 'unknown', detail: r.status !== 'completed' ? r.status : r.conclusion || '' }));
 }
 
-export function reportFor(id, { root = REPO_ROOT } = {}) {
+export function reportFor(id, { root = gitRoot() } = {}) {
   if (!id) return { report: '', tests: [], open: [] };
   const rel = `_claude/builds/reports/${id}.md`;
   if (!existsSync(join(root, rel))) return { report: '', tests: [], open: [] };
@@ -45,7 +45,7 @@ const withOrigin = (rec, origin) => (origin && !String(rec.origin?.said || '').t
 /**
  * mapped = map-commit.mjs mapCommit() result. ctx = { store, origins, github, root, now, prev (the build's current manifest) }.
  */
-export async function buildManifest(mapped, { store, origins = {}, github = githubGet, repo = GITHUB_REPO, root = REPO_ROOT, now = new Date().toISOString(), prev = null, ci = true } = {}) {
+export async function buildManifest(mapped, { store, origins = {}, github = githubGet, repo = GITHUB_REPO, root = gitRoot(), now = new Date().toISOString(), prev = null, ci = true } = {}) {
   const e = mapped.entry; const pr = mapped.pr;
   const unlinked = !mapped.build?.id;
   const id = unlinked ? `main-${e.sha.slice(0, 9)}` : mapped.build.id;

@@ -25,7 +25,7 @@ import { readManifest, writeManifest } from '../shipped-files.mjs';
 import { ship, sentFor } from '../shipped.mjs';
 import { buildManifest } from './build-manifest.mjs';
 import { mapCommit } from './map-commit.mjs';
-import { REPO_ROOT } from './walk.mjs';
+import { gitRoot } from './walk.mjs';
 
 // ------------------------------------------------------------------ transports (open registry)
 
@@ -52,7 +52,7 @@ const order = (env) => String(env.AXF_MERGE_WATCH_SEND || 'local,api').split(','
 
 // ------------------------------------------------------------------ already sent?
 
-const ledgerFile = (env) => join(env.AXF_SHIPPED_FEATURES_DIR || join(REPO_ROOT, '.axf-console', 'plugins', 'shipped-features'), 'ledger.sqlite');
+const ledgerFile = (env) => join(env.AXF_SHIPPED_FEATURES_DIR || join(gitRoot(env), '.axf-console', 'plugins', 'shipped-features'), 'ledger.sqlite');
 const PY = `import sqlite3,sys
 try:
   db=sqlite3.connect('file:'+sys.argv[1]+'?mode=ro',uri=True)

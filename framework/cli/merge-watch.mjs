@@ -16,7 +16,7 @@
  *
  * One tick at a time: a lock file next to the state (tick.lock; stale after 15 min or when its process is gone).
  * Data: framework/cli/merge-watch-files.mjs (AXF_MERGE_WATCH_DIR, AXF_DATA_DIR, the hub, the repo).
- * Env: AXF_MERGE_WATCH_REF (origin/main), AXF_MERGE_WATCH_SEND (local,api), AXF_MERGE_WATCH_ALERTS=off,
+ * Env: AXF_MERGE_WATCH_DATA (data folder), AXF_MERGE_WATCH_REPO (checkout), AXF_MERGE_WATCH_REF (origin/main), AXF_MERGE_WATCH_SEND (local,api), AXF_MERGE_WATCH_ALERTS=off,
  *      AXF_MERGE_WATCH_FETCH=off. Exit 0 ok, 1 failure, 2 bad input, 3 locked (another tick runs).
  */
 import { appendFileSync, closeSync, mkdirSync, openSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
@@ -27,7 +27,7 @@ import { loadStore, readOrigins } from './builds-store.mjs';
 import { mergeWatchDir, readState, whereIs, writeState } from './merge-watch-files.mjs';
 import { readMemo, retryAll, syncAlert } from './merge-watch/retry.mjs';
 import { sendDue, sendOne } from './merge-watch/send.mjs';
-import { mainLines, REPO_ROOT, runGit } from './merge-watch/walk.mjs';
+import { gitRoot, mainLines, runGit } from './merge-watch/walk.mjs';
 
 const nowIso = () => new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
 const LOCK_STALE_MS = 15 * 60e3;
@@ -71,7 +71,7 @@ function fetchMain(env, ref) {
   if (env.AXF_MERGE_WATCH_FETCH === 'off') return;
   const [remote, ...rest] = ref.split('/');
   if (remote !== 'origin' || !rest.length) return;
-  try { runGit(['fetch', '-q', 'origin', `+refs/heads/${rest.join('/')}:refs/remotes/${ref}`], { cwd: REPO_ROOT }); } catch (e) { logLine({ event: 'fetch-failed', error: e.message.slice(0, 300) }, env); }
+  try { runGit(['fetch', '-q', 'origin', `+refs/heads/${rest.join('/')}:refs/remotes/${ref}`], { cwd: gitRoot(env) }); } catch (e) { logLine({ event: 'fetch-failed', error: e.message.slice(0, 300) }, env); }
 }
 
 const tipOf = (ref) => { const out = runGit(['log', '-1', '--format=%H%x1f%cI', ref]).trim().split('\x1f'); return { sha: out[0], at: out[1] }; };
