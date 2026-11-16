@@ -256,6 +256,7 @@ jobs:
           npm i --no-save --no-audit --no-fund playwright@1.56.0
           npx playwright install --with-deps chromium
           node scripts/theme-swap.mjs
+          node scripts/grid-align.mjs                   # every DataGrid's header cells line up with every row's cells: 1 and 2 lines per row, every skin, desktop + phone
           npx tsx scripts/interface-scope-check.mts     # two <InterfaceScope>s read their own interfaces, the app keeps its own
           npx tsx scripts/window-handles-check.mts      # every floating window has its 8 resize handles, windows stay under dialogs, settings 'Opens in' dialog
           npx tsx scripts/fetch-share-check.mts         # one shared /api GET per source, hidden tab quiet, 5xx exponential backoff

@@ -109,3 +109,21 @@ Everything goes through console-control@1, so REST, MCP, the CLI and voice reach
 - CLI: `axf console set setting:axf.grid.rowLines --value 2`; `axf console state grid:build-orchestrator.pending`.
 - Voice (AmberX): "set lines per row to 2", "open data grid settings" (the target's label and keywords: grid, rows, lines, row mode).
 - The settings registry entry is appended to `apps/console-web/src/control/inventory.json` (control-inventory.mjs); `check-console-control` passes. `grid-align.mjs` switches row mode only through `setting:axf.grid.rowLines` and checks that `state grid:build-orchestrator.<tab>` reports the row mode and template the screen draws.
+
+## CI
+
+`node scripts/grid-align.mjs` runs in `.github/workflows/android.yml`, console job, right after `theme-swap.mjs` (same
+Playwright install, same built `dist/`). It falls back to the synced `_claude/builds/store.json` when
+`orchestrator.mjs state` isn't available. The full matrix (7 looks × 2 row modes × 2 viewports × 15 screens) took about
+15 minutes on the busy VPS.
+
+## Open items
+
+- **Live check.** After the PR lands and the console redeploys, open the Build orchestrator → Pending on the live
+  console signed in (desktop and phone) and note the result on the build. Not done in this session: the PR has to land first.
+- **#707 (`every-grid-1-2-rows-per-item-set-skin`, pending).** Its s5 should feed the skin token `grid.rowLines` into
+  DataGrid's `rowLines` (same `data-axf-row-lines` name) instead of drawing rows a second way. A note is on that build.
+  This hotfix's default stays 1 line (today's look); #707 proposes 2 as the default, which is that build's call.
+- **theme-swap `fx-tabs#125`.** A tab group background that stays transparent in every colour theme. That's tab-group
+  chrome, untouched here; left for the build fixing main's red console job.
+- **UI Review.** `r-20261116-k7rk501` waits for Brett.
