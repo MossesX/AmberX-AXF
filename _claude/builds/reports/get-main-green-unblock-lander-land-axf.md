@@ -66,3 +66,15 @@ All 75 single-line sweep commands were run with `AXF_DATA_DIR=off AXF_BUILD_PROF
 - `test_console_commands` and `systems-check` failed in the container but **pass on the host**.
 - `test_wall_users` "the page itself" needs `apps/console-web/dist`, which CI builds first. It is checked again after s6.
 - The plugins changed since green (`build-orchestrator`, `notify-control`, `push-banner`) all pass their `test.py`.
+
+## Web Dev Console (React/TS) job (s6, branch `fix/main-green`)
+
+Ran CI's block for real: re-bake `core react ui schemas libs`, `shared-assets bake`, plugin template copied in as `ci-example`, `npm ci && npm run build` (`tsc --noEmit` + vite) in `node:22`. Then the Playwright steps in `mcr.microsoft.com/playwright:v1.56.0-noble`.
+
+- **console-web**: typecheck and build clean.
+- **amberx-droid**: typecheck and build clean with 7660c26d8. AmberX now aliases `@console/api` to a bridge that has the same token-less `consoleTokens` as `@console/plugins`. That fixes triage #1 and #2.
+- **Real failure:** `theme-swap.mjs`: `fx-tabs#125 background color(srgb 0 0 0 / 0)` never changed across 32 colour themes. Since component-tokens@1 (17f9e2f73, 11-13), the tab bar is `color-mix(var(--fx-tab-bar-bg) …, transparent)` with a transparent default. Chromium reports that as `color(srgb 0 0 0 / 0)`, and the check only skipped `rgba(0, 0, 0, 0)`. **Fixed** in 6c628aa87: any zero-alpha colour counts as unpainted. Two full runs after the fix: 382 elements, 0 stuck.
+- The check samples the page differently from run to run (one run saw 20 elements, the others 382). That is a weakness in the check, but not a red. Noted for later.
+- `interface-scope-check`, `window-handles-check` and `fetch-share-check` pass.
+- `server/test_wall_users.py` (left open from s5) passes against the built `dist/`: 57 checks.
+- The re-bake rewrote the committed baked copies under `src/axf/`. Those were restored, not committed, because CI re-bakes on every run.
