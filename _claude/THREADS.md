@@ -813,7 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 14:29 UTC · `vps-sends-shipped-features-every-merge` s17 done, → built, note (all) · reconciler
 - 2026-11-16 15:16 UTC · `demo-video-series-three-minute-browser` note (all) · orchestrator
 - 2026-11-16 15:17 UTC · `demo-video-series-three-minute-browser` note (all) · pipeline
 - 2026-11-16 16:17 UTC · `remove-old-molly-app-project-keep-axf` added (0 steps) (all) · console
@@ -1213,6 +1212,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 19:41 UTC · `settings-interface-gear-every-plugin` s11 done (all) · orchestrator
 - 2026-11-16 19:42 UTC · `hotfix-orchestrator-grid-columns-don-t` s10 done (all) · orchestrator
 - 2026-11-16 19:42 UTC · `owner-recognized-everywhere-veto` note (all) · orchestrator
+- 2026-11-16 19:43 UTC · `hotfix-orchestrator-grid-columns-don-t` PR #729 (all) · builds-live
 
 ## Token passes (log)
 
