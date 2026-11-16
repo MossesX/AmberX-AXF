@@ -814,7 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 19:31 UTC · `assets-menu-hide-any-asset-hidden-list` → queued (all) · mcp
 - 2026-11-16 19:31 UTC · `pending-banner-list-every-pending-build` s3 done, → complete (all) · orchestrator
 - 2026-11-16 19:31 UTC · `assets-menu-hide-any-asset-hidden-list` note (all) · orchestrator
 - 2026-11-16 19:32 UTC · `alert-every-time-build-falls-back-to` note (all) · pipeline
@@ -1214,6 +1213,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 00:24 UTC · `merge-main-land-console-axhub-retry` s7 done (all) · orchestrator
 - 2026-11-15 00:24 UTC · `merge-main-land-console-axhub-retry` s8 done (all) · orchestrator
 - 2026-11-15 00:25 UTC · `merge-main-land-console-axhub-retry` s9 done (all) · orchestrator
+- 2026-11-16 23:30 UTC · `icon-packs-with-drag-drop-pack-designer` s5 done (all) · orchestrator
 
 ## Token passes (log)
 
