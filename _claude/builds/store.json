@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6440,
- "updatedAt": "2026-11-16T13:54:36.369Z",
+ "rev": 6441,
+ "updatedAt": "2026-11-16T13:55:02.132Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -203777,7 +203777,7 @@
    "pr": "#634",
    "priority": "P1",
    "createdAt": "2026-11-13T18:30:38.922Z",
-   "updatedAt": "2026-11-16T13:23:24.924Z",
+   "updatedAt": "2026-11-16T13:54:46.147Z",
    "builtAt": "",
    "notes": [
     {
@@ -203907,6 +203907,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-ui-manager-floating-window-to-select-any--gina, shared account login)",
      "at": "2026-11-16T13:23:24.924Z"
+    },
+    {
+     "text": "Model switch: phase 3 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
+     "at": "2026-11-16T13:54:46.147Z"
     }
    ],
    "approvals": [
@@ -203917,6 +203921,16 @@
      "at": "2026-11-13T19:17:19.211Z",
      "by": "auto",
      "kind": "downgrade"
+    },
+    {
+     "phase": 2,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-16T13:54:46.147Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
     }
    ],
    "upgradeRequests": [],
@@ -204187,12 +204201,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T13:54:46.147Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T18:32:21.147Z",
-     "updatedAt": "2026-11-13T18:32:21.479Z"
+     "updatedAt": "2026-11-16T13:54:46.974Z"
     },
     {
      "id": "s13",
@@ -204294,7 +204308,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": {
