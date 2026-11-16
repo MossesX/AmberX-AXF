@@ -7,7 +7,7 @@
     "tabGroups": 26,
     "tabs": 78,
     "settingsTabs": 83,
-    "settings": 89,
+    "settings": 94,
     "functions": 274,
     "buttons": 62,
     "plugins": 71
@@ -3012,6 +3012,97 @@
       ],
       "runs": "console",
       "file": "src/axf/libs/settings/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=brand-library/setting:brand-library.tab",
+      "kind": "setting",
+      "label": "Opens on",
+      "key": "brand-library.tab",
+      "type": "choice",
+      "options": [
+        "logos",
+        "animated",
+        "packs",
+        "branding"
+      ],
+      "detail": "Settings › Plugins › Brand library › Brand library",
+      "keywords": [
+        "brand-library.tab",
+        "library",
+        "Brand library"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.brand-library@1",
+      "plugin": "ai.amberx.axf.console.brand-library"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=brand-library/setting:brand-library.tile",
+      "kind": "setting",
+      "label": "Tile size",
+      "key": "brand-library.tile",
+      "type": "choice",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "detail": "Settings › Plugins › Brand library › Brand library",
+      "keywords": [
+        "brand-library.tile",
+        "library",
+        "Brand library"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.brand-library@1",
+      "plugin": "ai.amberx.axf.console.brand-library"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=brand-library/setting:brand-library.brand",
+      "kind": "setting",
+      "label": "Brand filter",
+      "key": "brand-library.brand",
+      "type": "text",
+      "detail": "Settings › Plugins › Brand library › Brand library",
+      "keywords": [
+        "brand-library.brand",
+        "library",
+        "Brand library"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.brand-library@1",
+      "plugin": "ai.amberx.axf.console.brand-library"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=brand-library/setting:brand-library.names",
+      "kind": "setting",
+      "label": "Show names under tiles",
+      "key": "brand-library.names",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Brand library › Brand library",
+      "keywords": [
+        "brand-library.names",
+        "library",
+        "Brand library"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.brand-library@1",
+      "plugin": "ai.amberx.axf.console.brand-library"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=brand-library/setting:brand-library.motion",
+      "kind": "setting",
+      "label": "Play animations",
+      "key": "brand-library.motion",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Brand library › Brand library",
+      "keywords": [
+        "brand-library.motion",
+        "library",
+        "Brand library"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.brand-library@1",
+      "plugin": "ai.amberx.axf.console.brand-library"
     },
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:noWait.enabled",
@@ -9134,7 +9225,9 @@
       ],
       "view": "view:brand-library",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=brand-library",
-      "provides": [],
+      "provides": [
+        "service:axf.plugin-options.brand-library@1"
+      ],
       "requires": [],
       "optional": []
     },

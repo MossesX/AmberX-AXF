@@ -201,3 +201,14 @@ def put_config(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
         c = clean_config(body, clean_config(_read(data_dir() / "config.json")))
         storage.write_json(data_dir() / "config.json", c)  # atomic, 0600, folder 0700
     return c
+
+
+# plugin-settings@1: the options in plugin.json settings.options, read and set through console control (REST, MCP, CLI,
+# voice) with the same validation as PUT /config (server/plugin_options.py; registry.json gives each its address).
+try:
+    import plugin_options
+
+    plugin_options.provide("brand-library", read=get_config, write=put_config,
+                           fields={f"brand-library.{k}": k for k in ("tab", "tile", "brand", "names", "motion")})
+except ImportError:  # a bare test run without the console server on the path
+    pass

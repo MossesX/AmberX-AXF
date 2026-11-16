@@ -1,0 +1,13 @@
+{
+  "$axf": "claude-settings-registry@1",
+  "readme": "Brand library options (plugin-settings@1): the keys in plugin.json settings.options, served from this plugin's config (server/__init__.py) through server/plugin_options.py, so REST, MCP, the CLI and voice read and set them like the Settings → Plugins → Brand library panel does.",
+  "service": "axf.plugin-options.brand-library@1",
+  "groups": [{ "id": "library", "label": "Brand library", "icon": "star", "order": 10 }],
+  "settings": [
+    { "key": "brand-library.tab", "group": "library", "label": "Opens on", "kind": "choice", "default": "logos", "options": ["logos", "animated", "packs", "branding"], "description": "The library tab the screen opens on (logos, animated logos, icon packs, branding packages)." },
+    { "key": "brand-library.tile", "group": "library", "label": "Tile size", "kind": "choice", "default": "md", "options": ["sm", "md", "lg"], "description": "How large the tiles in the grid are." },
+    { "key": "brand-library.brand", "group": "library", "label": "Brand filter", "kind": "text", "default": "", "description": "Show one brand only (AmberX, GizmoX); empty = every brand." },
+    { "key": "brand-library.names", "group": "library", "label": "Show names under tiles", "kind": "toggle", "default": true },
+    { "key": "brand-library.motion", "group": "library", "label": "Play animations", "kind": "toggle", "default": true }
+  ]
+}

@@ -236,7 +236,8 @@ function serverSettings(ps, tabs) {
         ...(typeof s.min === 'number' ? { min: s.min } : {}), ...(typeof s.max === 'number' ? { max: s.max } : {}),
         ...(s.owner === true ? { personOnly: true } : {}), ...(s.owner === 'raise' ? { ownerRaise: true } : {}), ...(s.locked ? { locked: true } : {}),
         detail: `Settings › Plugins › ${tab.label} › ${groups.get(s.group) ?? s.group}`, keywords: words(s.key, s.group, tab.label),
-        runs: 'server', service: 'axf.claude-settings@1', plugin: p.m.id,
+        // a plugin's own options (server/plugin_options.py) name their service; the Claude settings registry doesn't
+        runs: 'server', service: typeof r.service === 'string' && r.service ? r.service : 'axf.claude-settings@1', plugin: p.m.id,
       });
     }
   }

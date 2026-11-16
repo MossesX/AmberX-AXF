@@ -12,7 +12,8 @@
   ],
   "provides": [
     "view:brand-library",
-    "settings-tab:brand-library"
+    "settings-tab:brand-library",
+    "service:axf.plugin-options.brand-library@1"
   ],
   "scopes": [
     "ROUTES"
@@ -31,6 +32,7 @@
     ]
   },
   "commands": { "$axf": "plugin-commands@1", "auto": true },
+  "settings": { "$axf": "plugin-settings@1", "tab": "brand-library", "parent": "plugins", "sections": ["enable", "info", "logs", "options"], "options": ["brand-library.tab", "brand-library.tile", "brand-library.brand", "brand-library.names", "brand-library.motion"], "gear": true },
   "builtWith": { "model": "opus", "builtAt": "2026-10-28" },
   "opens": "main"
 }

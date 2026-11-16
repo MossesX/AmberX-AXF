@@ -4,6 +4,7 @@
  * Brand library. The library is served by this plugin's server part (never bundled); the view is in BrandLibrary.tsx.
  * Actions: brand-library.open.
  */
+import { PluginScreenHeader } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { restoreApplied } from './apply';
@@ -17,7 +18,8 @@ import { appMenu } from './menu';
 function Page() {
   return (
     <div className="fx-stack fx-stack--lg">
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">Design &amp; branding</p><h1>Brand library</h1><p className="fx-muted" title="Every logo, animated logo, icon pack and branding package the framework ships, ready to preview and apply.">Logos, icon packs and branding packages to apply.</p></div></header>
+      {/* plugin-settings@1: the header carries the gear that opens Settings → Plugins → Brand library */}
+      <PluginScreenHeader tab={FOLDER} title="Brand library" eyebrow={<>Design &amp; branding</>} lede={<span title="Every logo, animated logo, icon pack and branding package the framework ships, ready to preview and apply.">Logos, icon packs and branding packages to apply.</span>} />
       <BrandLibrary renderPreview={(p) => <Preview {...p} />} />
     </div>
   );
