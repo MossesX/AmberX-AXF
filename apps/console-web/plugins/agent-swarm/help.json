@@ -74,6 +74,13 @@
         "title": "Use the cast's voice",
         "text": "Drops this agent's own speed and pitch and goes back to the voice the cast gives it.",
         "kind": "button"
+      },
+      {
+        "target": "view:agent-swarm",
+        "title": "Agent swarm",
+        "text": "Headless specialist agents for the Build orchestrator.",
+        "kind": "screen",
+        "draft": true
       }
     ],
     "intros": []
