@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T20:01:57.599Z",
+ "updatedAt": "2026-11-16T20:02:12.132Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -158351,7 +158351,7 @@
    "title": "Fix console deep links so open-page lands on the right screen",
    "category": "",
    "detail": "Deep links are broken: opening https://console.amberxai.com/?axf-target=view:build-orchestrator (or view:gate, any view:/tab: address) loads the console's main screen instead of that screen. console_show via the API works, so the address is valid; the URL parameter isn't applied on load. Fix: on page load (and after sign-in redirect, which likely drops the query string), read ?axf-target= and focus that address once the views are registered, including tabs (e.g. view:gate/tab:gate.tabs=auto-lander). Keep the parameter through the hub sign-in redirect. Each open_url must open its own tab when asked. Tests: load with each view address and assert the focused screen. Land with the one-at-a-time lander.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -158359,7 +158359,7 @@
    "pr": "#721",
    "priority": "P0",
    "createdAt": "2026-11-16T16:31:15.510Z",
-   "updatedAt": "2026-11-16T19:28:10.715Z",
+   "updatedAt": "2026-11-16T20:01:59.903Z",
    "builtAt": "",
    "notes": [
     {
@@ -158389,6 +158389,10 @@
     {
      "text": "Brett Nov 16: a browser refresh must reload exactly where he is (same screen, tab, sub-tab, open dialog, scroll), not drop him on the console home. The URL must always carry the current address (view:/tab:...) and the console restores it on load. Same root cause as the deep-link bug.",
      "at": "2026-11-16T19:27:54.276Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-16T20:01:59.903Z"
     }
    ],
    "approvals": [],
