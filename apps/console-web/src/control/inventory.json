@@ -8,7 +8,7 @@
     "tabs": 78,
     "settingsTabs": 71,
     "settings": 89,
-    "functions": 274,
+    "functions": 282,
     "buttons": 62,
     "plugins": 71
   },
@@ -7793,6 +7793,124 @@
       ],
       "params": true,
       "file": "src/axf/react/components/ChromeContext.tsx"
+    },
+    {
+      "address": "function:assets.hide",
+      "kind": "function",
+      "id": "assets.hide",
+      "label": "Hide an asset on this page (assets.hide:<type>:<instance>[:all])",
+      "detail": "Action",
+      "keywords": [
+        "assets.hide",
+        "assets",
+        "hide"
+      ],
+      "effect": "write",
+      "params": true,
+      "file": "src/axf/react/components/PageAssets.tsx"
+    },
+    {
+      "address": "function:assets.unhide",
+      "kind": "function",
+      "id": "assets.unhide",
+      "label": "Show a hidden asset again (assets.unhide:<type>:<instance>)",
+      "detail": "Action",
+      "keywords": [
+        "assets.unhide",
+        "assets",
+        "unhide"
+      ],
+      "effect": "write",
+      "params": true,
+      "file": "src/axf/react/components/PageAssets.tsx"
+    },
+    {
+      "address": "function:assets.toggle",
+      "kind": "function",
+      "id": "assets.toggle",
+      "label": "Hide or show an asset on this page (assets.toggle:<type>:<instance>)",
+      "detail": "Action",
+      "keywords": [
+        "assets.toggle",
+        "assets",
+        "toggle"
+      ],
+      "effect": "write",
+      "params": true,
+      "file": "src/axf/react/components/PageAssets.tsx"
+    },
+    {
+      "address": "function:assets.unhide-all",
+      "kind": "function",
+      "id": "assets.unhide-all",
+      "label": "Show every hidden asset on this page (assets.unhide-all[:all])",
+      "detail": "Action",
+      "keywords": [
+        "assets.unhide-all",
+        "assets",
+        "unhide",
+        "all"
+      ],
+      "effect": "write",
+      "file": "src/axf/react/components/PageAssets.tsx"
+    },
+    {
+      "address": "function:assets.highlight",
+      "kind": "function",
+      "id": "assets.highlight",
+      "label": "Highlight an asset on the page (assets.highlight:<type>:<instance>[:<ms>] | off)",
+      "detail": "Action",
+      "keywords": [
+        "assets.highlight",
+        "assets",
+        "highlight"
+      ],
+      "effect": "read",
+      "params": true,
+      "file": "src/axf/react/components/PageAssets.tsx"
+    },
+    {
+      "address": "function:assets.colour",
+      "kind": "function",
+      "id": "assets.colour",
+      "label": "Colour of an asset type in the Assets lists, or the hidden colour (assets.colour:<type|hidden>:<colour|default>)",
+      "detail": "Action",
+      "keywords": [
+        "assets.colour",
+        "assets",
+        "colour"
+      ],
+      "effect": "write",
+      "params": true,
+      "file": "src/axf/react/components/PageAssets.tsx"
+    },
+    {
+      "address": "function:assets.open",
+      "kind": "function",
+      "id": "assets.open",
+      "label": "Open the Assets menu (visible and hidden assets on this page)",
+      "detail": "Action",
+      "keywords": [
+        "assets.open",
+        "assets",
+        "open"
+      ],
+      "effect": "navigate",
+      "file": "src/axf/react/components/PageAssets.tsx"
+    },
+    {
+      "address": "function:assets.list",
+      "kind": "function",
+      "id": "assets.list",
+      "label": "Assets on this page (shown / hidden)",
+      "detail": "Action",
+      "keywords": [
+        "assets.list",
+        "assets",
+        "list"
+      ],
+      "effect": "read",
+      "file": "src/axf/react/components/PageAssets.tsx"
     }
   ],
   "buttons": [
