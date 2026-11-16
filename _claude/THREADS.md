@@ -808,8 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 15:39 UTC · `phone-connect-small-android-companion` s28 done (all) · orchestrator
-- 2026-11-15 15:40 UTC · `data-container-axf-data-holds-all` → pending, note (all) · reconciler
 - 2026-11-15 15:42 UTC · `phone-connect-small-android-companion` s29 done (all) · orchestrator
 - 2026-11-15 15:43 UTC · `phone-connect-small-android-companion` s30 done (all) · orchestrator
 - 2026-11-15 16:08 UTC · `axf-data-postgres-real-tables-own` branch claude/axf-data-postgres-real-tables-own, PR #713 (all) · builds-live
@@ -1208,6 +1206,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 17:23 UTC · `fix-red-ci-blocked-builds-they-land` s16 done (all) · orchestrator
 - 2026-11-16 17:26 UTC · `fix-red-ci-blocked-builds-they-land` s17 done (all) · orchestrator
 - 2026-11-16 17:27 UTC · `fix-red-ci-blocked-builds-they-land` note (all) · orchestrator
+- 2026-11-16 17:27 UTC · `phone-connect-small-android-companion` note (all) · orchestrator
+- 2026-11-16 17:27 UTC · `get-main-green-unblock-lander-land-axf` note (all) · orchestrator
 
 ## Token passes (log)
 
