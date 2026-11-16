@@ -2336,5 +2336,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "pending-rows-view@1 (the build orchestrator plugin: pending-rows.mjs rules, orchestrator.mjs pending CLI, web/PendingRow.tsx): one row per pending build, why it is pending derived (upgrade approval, splitting, no steps, needs a split, back from a run, waiting for Queue); expanded set per viewer in the plugin data dir (pending-rows.json). REST GET /pending/rows, POST /pending/rows/<build>/expand|collapse|toggle, POST /pending/rows/collapse-all; plugin commands pending-* (MCP, CLI axf build-orchestrator, control@1); console actions build-orchestrator.pending-* (voice); control target grid:pending/row:<build>; deep link ?axf-target=row:<build>. Parity test test/test_pending_rows.py. Kotlin twin deferred."
+  },
+  "cx.gate": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Build gate-rules-plugin-in-the-console (Nov 15 2026; Brett: \"Where is the gate and rules plugin, open it on my screen.\"): Builds → Gate & rules (view:gate, tabs gate.tabs=rules|auto-lander|history), Settings → Plugins → Gate. REST /api/plugins/gate, MCP gate_* / lander_*, CLI axf gate …, voice gate.open, gate.rule, lander.land-now, lander.pause, lander.resume, gate.setting. Merge queue switch off by default (one at a time). Self-tests: the plugin's test.mjs and server/test_routes.py. Kotlin twin deferred (PORTING.md)."
   }
 }
