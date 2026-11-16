@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6781,
- "updatedAt": "2026-11-16T19:46:00.020Z",
+ "rev": 6782,
+ "updatedAt": "2026-11-16T19:46:22.133Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -246893,8 +246893,8 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:19:11.374Z",
-   "updatedAt": "2026-11-16T19:45:35.013Z",
-   "builtAt": "2026-11-16T19:45:35.013Z",
+   "updatedAt": "2026-11-16T19:46:05.295Z",
+   "builtAt": "2026-11-16T19:46:05.295Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -246923,6 +246923,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-auto-lander-grid-one-row-per-build--gina, shared account login)",
      "at": "2026-11-16T19:32:57.850Z"
+    },
+    {
+     "text": "Headless run axf-auto-lander-grid-one-row-per-build--gina: brief only · start 15.6K tokens ($0.05) · cost $3.07 · 71 turns · 6 tools, MCP none",
+     "at": "2026-11-16T19:46:05.295Z"
     }
    ],
    "approvals": [],
@@ -247281,15 +247285,15 @@
    "title": "Every settings interface gets collapsible sections",
    "category": "",
    "detail": "Every settings interface in every app (console Settings sections, plugin settings, chrome/asset settings for toolbars, tab groups, banners, nav, menus, and any future one) groups its fields into collapsible sections with a header and chevron, remembered open/closed state per user, Expand all / Collapse all, search opens the matching section. Make it the framework default in the settings asset/template so new interfaces get it automatically, plus a CI check that fails on a settings interface without sections. Builds on orchestrator-settings-collapsible-split (same pattern, don't duplicate). Tokens only; reachable on REST, MCP, CLI, voice. Land through the orchestrator.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/every-settings-interface-gets",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T19:23:12.681Z",
-   "updatedAt": "2026-11-16T19:45:43.110Z",
+   "updatedAt": "2026-11-16T19:46:17.478Z",
    "builtAt": "",
    "notes": [
     {
@@ -247299,6 +247303,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"0245c55e-7fac-4a7a-b3bc-f8d8b05387d5\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-16T19:25:58.523Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-every-settings-interface-gets--paulie.",
+     "at": "2026-11-16T19:46:10.381Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-every-settings-interface-gets--paulie, shared account login)",
+     "at": "2026-11-16T19:46:17.478Z"
     }
    ],
    "approvals": [],
@@ -247318,12 +247330,12 @@
    "pipeline": {
     "queuedAt": "2026-11-16T19:23:15.921Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-every-settings-interface-gets--paulie",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-16T19:46:04.279Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T19:25:58.523Z",
@@ -247333,9 +247345,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"0245c55e-7fac-4a7a-b3bc-f8d8b05387d5\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-16T19:46:04.279Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -247344,7 +247356,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-16T19:46:04.279Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -247428,7 +247440,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
