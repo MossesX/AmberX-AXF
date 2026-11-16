@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:03:26.331Z",
+ "updatedAt": "2026-11-16T19:03:57.644Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -160720,6 +160720,37 @@
      "createdAt": "2026-11-16T18:40:21.344Z"
     }
    ]
+  },
+  {
+   "id": "reset-all-button-every-asset-override",
+   "title": "Reset all button for every asset override in Appearance",
+   "category": "",
+   "detail": "Settings > Appearance, the 'N assets are controlled by their own settings' row (AssetsWithEdits in framework/react/components/ChromeContext.tsx) only has a Reset all per asset. Add one 'Reset all' button on the header row that clears every asset override at once (chrome.reset for each, one confirm, one undo), so every asset follows the skin again. Same action through REST, MCP, CLI and voice (chrome.reset-all). Tests, land.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-16T19:03:55.794Z",
+   "updatedAt": "2026-11-16T19:03:55.794Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want to reset all, all. Button.",
+    "at": "2026-11-16T19:03:55.794Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
