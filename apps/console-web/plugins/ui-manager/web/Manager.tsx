@@ -8,6 +8,8 @@ import { useEffect, useMemo, useSyncExternalStore } from 'react';
 import { Button, Note, Segmented, useRuntime } from '@console/axf/react';
 import { facets as facetsOf, queryElements, queryTree } from '../lib/query.mjs';
 import { refreshLive } from './apply';
+import { ChangeLog, PendingBar } from './Changes';
+import { discardDraft } from './draft';
 import { exportLibrary, pullState, shareSelection } from './bridge';
 import { startPicker } from './picker';
 import { ElementFilters } from './Filters';
@@ -43,6 +45,8 @@ export function Manager() {
   const facets = useMemo(() => facetsOf(all), [all]);
   const selected = byId.get(ui.selected) ?? null;
   useEffect(() => { void refreshLive(); }, []);
+  // closing the window (or leaving the page) without Apply drops every pending change and puts the saved look back
+  useEffect(() => () => { void discardDraft(); }, []);
   // the server's selection and view (set through REST / MCP / CLI / voice) reach the open window; the window's reach the server
   useEffect(() => { void pullState(); const t = window.setInterval(() => void pullState(), 3000); return () => clearInterval(t); }, []);
   useEffect(() => { if (ui.selected) shareSelection(ui.selected); }, [ui.selected]);
@@ -62,8 +66,11 @@ export function Manager() {
         <Segmented size="sm" label="View" value={ui.view} options={VIEWS} onChange={(v) => setUi({ view: v })} />
         <span className="axp-uim__grow fx-small fx-muted">{all.length} elements · {visible.length} on screen</span>
         <Button size="sm" icon="download" title="Export everything changed as an asset library: published to the hub library, the package downloaded" onClick={() => void exportLibrary(rt)}>Export library</Button>
+        <Button size="sm" icon="clock" tone={ui.log ? 'primary' : 'neutral'} aria-pressed={ui.log} onClick={() => setUi((s) => ({ log: !s.log }))}>Change log</Button>
         <Button size="sm" icon="refresh" onClick={() => setUi((s) => ({ rev: s.rev + 1 }))}>Refresh</Button>
       </div>
+      <PendingBar />
+      {ui.log ? <section className="axp-uim__log" aria-label="Change log"><ChangeLog rev={ui.rev} /></section> : null}
       <ElementFilters ui={ui} facets={facets} shown={shown} total={all.length} />
       {error ? <Note>{error}</Note> : null}
       <div className={`axp-uim__body${inline ? ' is-stacked' : ''}`}>

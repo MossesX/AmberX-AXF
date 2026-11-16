@@ -9,6 +9,8 @@
  *   ui-manager.view:<row|panel|grid>                    how a selected element opens
  *   ui-manager.pick                                     inspector: the next click on the console selects
  *   ui-manager.search:<words>                           search the element tree
+ *   ui-manager.apply | ui-manager.discard               the window's pending changes: open the exit summary / drop them
+ *   ui-manager.log                                      show the change log; ui-manager.undo:<change id> undoes one entry
  *   ui-manager.export[:<id or words>]                   export the element (default: everything changed) as an asset library:
  *                                                       published to the shared hub library, the package downloaded
  */
@@ -19,6 +21,7 @@ import { getUi, setUi, type ViewMode } from './state';
 import { FOLDER, fetchJson, snapshotAll } from './useElements';
 import { pluginFetch } from '@console/plugins';
 import { openUiManager } from './window';
+import { askApply, discardDraft, getDraft } from './draft';
 
 interface SelectAnswer { selected?: string; label?: string; error?: string }
 interface SayAnswer { steps?: { op: string; selected?: string; element?: string; label?: string; propLabel?: string; value?: unknown; view?: ViewMode }[]; selected?: string; error?: string }
@@ -103,5 +106,13 @@ export function registerActions(rt: AxfRuntime): void {
     setUi({ view: v as ViewMode }); openUiManager(rt); void post('view', { view: v, by: BY });
   }, { label: 'UI Manager: view (row, panel, grid)', params: true, effect: 'navigate' });
   a.register('ui-manager.pick', () => { openUiManager(rt); setUi({ picking: !getUi().picking }); }, { label: 'UI Manager: pick an element on screen', effect: 'navigate' });
+  a.register('ui-manager.apply', () => { openUiManager(rt); if (getDraft().summary.length) askApply(); else rt.toast('Nothing pending.', 'info', 'UI Manager'); }, { label: 'UI Manager: apply the pending changes (shows the exit summary first)', effect: 'navigate' });
+  a.register('ui-manager.discard', () => { void discardDraft(); setUi((s) => ({ rev: s.rev + 1 })); }, { label: 'UI Manager: discard the pending changes', effect: 'write' });
+  a.register('ui-manager.log', () => { openUiManager(rt); setUi({ log: true }); }, { label: 'UI Manager: show the change log', effect: 'navigate' });
+  a.register('ui-manager.undo', (args) => {
+    const id = args.join(':').trim();
+    if (!id) { openUiManager(rt); setUi({ log: true }); return; }
+    void post<{ error?: string }>('undo', { id, by: 'console' }).then(async (r) => { if (r.error) { rt.toast(r.error, 'warning', 'UI Manager'); return; } await refreshLive(); setUi((s) => ({ rev: s.rev + 1 })); rt.toast(`Undid ${id}.`, 'success', 'UI Manager'); });
+  }, { label: 'UI Manager: undo one change-log entry (change id)', params: true, effect: 'write' });
   a.register('ui-manager.search', (args) => { openUiManager(rt); setUi({ q: args.join(':') }); }, { label: 'UI Manager: search elements', params: true, effect: 'navigate' });
 }

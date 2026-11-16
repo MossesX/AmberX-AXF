@@ -36,3 +36,11 @@
 .axp-uim__facets { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-lg); max-height: 40vh; overflow: auto; padding: var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); }
 .axp-uim__switches { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); }
 .axp-uim__facet { display: flex; flex-direction: column; gap: calc(var(--fx-space) / 4); margin: 0; padding: 0; border: 0; min-width: 0; }
+/* pending changes, the exit summary and the change log (s12) */
+.axp-uim__pending { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-warning); border-radius: var(--fx-radius-md); }
+.axp-uim__prop.is-pending { border-left: var(--fx-border-w) solid var(--fx-warning); padding-left: var(--fx-dens-gap-sm); }
+.axp-uim__summary { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); max-height: 40vh; overflow: auto; }
+.axp-uim__line { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); align-items: baseline; padding: var(--fx-dens-gap-sm) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axp-uim__line > .axp-uim__grow { flex: 1; min-width: 0; }
+.axp-uim__log { max-height: 40vh; overflow: auto; padding: var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); }
+.axp-uim__entry { padding: var(--fx-dens-gap-sm) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }

@@ -30,13 +30,15 @@ export interface UiState {
   filtersOpen: boolean;
   /** inspector: the next click on the console picks an element */
   picking: boolean;
+  /** the change log (every applied change set, each with Undo) is open */
+  log: boolean;
   /** bumps when something outside (an action, the API) changed the saved overrides, so open rows reload */
   rev: number;
 }
 
 export const DEFAULT_STATE: UiState = {
   selected: '', view: 'row', q: '', sort: 'label', desc: false, kinds: [], categories: [], plugins: [], overriddenOnly: false, onScreenOnly: false,
-  collapsed: [], propQ: '', propGroups: [], propChanged: false, filtersOpen: false, picking: false, rev: 0,
+  collapsed: [], propQ: '', propGroups: [], propChanged: false, filtersOpen: false, picking: false, log: false, rev: 0,
 };
 
 const KEY = 'ui-manager.window';

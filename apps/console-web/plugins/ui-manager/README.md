@@ -69,6 +69,23 @@ Everything the window does is reachable without it, through one set of functions
 | properties of an element | `GET element?id=` (`q`, `groups`, `changed`) | `ui-manager_element` | `ui-manager.mjs props asset:toolbar --groups Tokens` | |
 | set / reset | `POST set`, `POST reset` | `ui-manager_set-element`, `ui-manager_reset` | `ui-manager.mjs set asset:toolbar transparency 80` | via `ui-manager.say` |
 
+## Pending changes, Apply and the change log (s12)
+
+The window edits a **draft** (`web/draft.ts`), never the saved overrides. Each pick hot-renders at once (`POST preview
+{pending}` → CSS on `--fx-*` tokens in the one override stylesheet), rows show `pending`. **Closing the window, leaving
+the page or Discard drops the draft** and puts the saved look back. **Apply…** shows the exit summary (element, property
+/ token, old → new); only **Save** writes it, as one ui-change@1 entry. Apply re-reads the saved document and writes
+just the draft's keys onto it (last save wins per key). **Change log** lists every applied set, newest first, each with
+its own **Undo** (an undo is itself logged). `set` / `reset` through the API and voice still save at once.
+
+| Do | REST | MCP / control@1 | CLI | Console action / voice |
+|---|---|---|---|---|
+| preview a pending doc | `POST preview {pending}` (css, summary, errors) | `ui-manager_preview` | `ui-manager.mjs preview --pending f` | |
+| apply (exit summary first in the window) | `POST apply {pending}` | `ui-manager_apply` | `ui-manager.mjs apply --pending f` | `ui-manager.apply` |
+| discard the window's draft | | `console_action {action: "ui-manager.discard"}` | `axf console action ui-manager.discard` | `ui-manager.discard` |
+| change log | `GET changes?limit=` | `ui-manager_changes` | `ui-manager.mjs changes` | `ui-manager.log` |
+| undo one entry | `POST undo {id}` | `ui-manager_undo` | `ui-manager.mjs undo <id>` | `ui-manager.undo:<id>` |
+
 ## Export any UI as an asset library (ui-library@1)
 
 Any element (or everything changed) exports as one self-contained, schema-validated library (`libraryFrom` /
