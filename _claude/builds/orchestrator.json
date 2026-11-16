@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T22:49:09.261Z",
+ "updatedAt": "2026-11-16T22:49:24.805Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -163994,12 +163994,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:59.053Z",
-   "updatedAt": "2026-11-16T22:45:04.045Z",
+   "updatedAt": "2026-11-16T22:49:23.111Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-16T22:45:04.045Z"
+    },
+    {
+     "text": "Split by Claude into 19 steps (5 Fable).",
+     "at": "2026-11-16T22:49:23.111Z"
     }
    ],
    "approvals": [],
@@ -164016,7 +164020,430 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Survey current main for intent and seams: read the archived branch diff (git log/diff of toolbar-widgets-attach-any-banner-style) for intent only, plus framework/core/engines (banner widget host, attach/snap rules), framework/react/tapConfirm.ts, framework/ui/axf.css banner section, schemas/customize.json style targets; write the design note _claude/builds/reports/attach-widgets-to-any-toolbar-banner.design.md (contract, settings keys, addresses) and commit",
+     "model": "Fable",
+     "why": "Sets the cross-app attach contract every toolbar in every app will follow",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/core/engines/",
+      "framework/react/",
+      "framework/ui/axf.css",
+      "framework/schemas/customize.json",
+      "_claude/builds/reports/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuvk4n0y6u0k",
+     "createdAt": "2026-11-16T22:49:23.111Z"
+    },
+    {
+     "id": "s2",
+     "text": "Schema: extend the toolbar asset type and widget attach model in framework/schemas/asset-types.json so a toolbar declares a widget slot list (widget id, side, order, banner widget style + shape ref); regenerate JSON Schemas (axf.mjs schemas) and commit",
+     "model": "Fable",
+     "why": "Asset type schema change shared across ports and apps",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/schemas/asset-types.json",
+      "framework/schemas/json/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuvk4n0zdtvr",
+     "createdAt": "2026-11-16T22:49:23.111Z"
+    },
+    {
+     "id": "s3",
+     "text": "Reference engine: toolbar-widget host engine in framework/core/engines (resolve attached widgets per toolbar id, apply banner widget style/shape tokens, snap-not-overlap sizing order: sides size to content, flexible piece shrinks first, overflow scroll-snap); export from core index; commit",
+     "model": "Fable",
+     "why": "Engine internals, cross-port contract",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/toolbar-widgets.ts",
+      "framework/core/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuvk4n10ylf7",
+     "createdAt": "2026-11-16T22:49:23.111Z"
+    },
+    {
+     "id": "s4",
+     "text": "Settings keys + migration: per-toolbar keys axf.toolbar.<id>.widgets (list) and defaults; migrate any existing banner-only widget placements so nothing moves; validators agree (core validator + project-check); commit",
+     "model": "Fable",
+     "why": "Settings schema + migration design",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/core/engines/toolbar-widgets.ts",
+      "framework/core/validate.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuvk4n115dc7",
+     "createdAt": "2026-11-16T22:49:23.111Z"
+    },
+    {
+     "id": "s5",
+     "text": "Fixtures: add framework/spec/fixtures/toolbar-widgets.json golden outputs, regenerate with gen-fixtures.mts, record the Kotlin twin as a deferred gap in framework/spec/PORTING.md; commit",
+     "model": "Fable",
+     "why": "Conformance contract for the new engine",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "framework/spec/gen-fixtures.mts",
+      "framework/spec/fixtures/toolbar-widgets.json",
+      "framework/spec/PORTING.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuvk4n12ozzj",
+     "createdAt": "2026-11-16T22:49:23.111Z"
+    },
+    {
+     "id": "s6",
+     "text": "Engine check: framework/spec/check-toolbar-widgets.mts (attach, detach, reorder, style/shape resolution, snap/overflow cases, fixture match); run it; commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/spec/check-toolbar-widgets.mts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuvk4n1314im",
+     "createdAt": "2026-11-16T22:49:23.111Z"
+    },
+    {
+     "id": "s7",
+     "text": "React host: ToolbarWidgetSlot component in framework/react that renders attached widgets inside any role=toolbar element through the existing banner widget frame (same classes/tokens, any banner widget style + shape), registered data-axf-target addresses toolbar:<id>/widget:<wid>; commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/ToolbarWidgetSlot.tsx",
+      "framework/react/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuvk4n14kqem",
+     "createdAt": "2026-11-16T22:49:23.111Z"
+    },
+    {
+     "id": "s8",
+     "text": "CSS: snap-not-overlap rules for widgets in toolbars in framework/ui/axf.css (tokens only, no var() fallbacks, color-mix opacity tokens); run check-theme.mjs and check-controls.mjs; commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "framework/ui/axf.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuvk4n155jo7",
+     "createdAt": "2026-11-16T22:49:23.111Z"
+    },
+    {
+     "id": "s9",
+     "text": "Wire the slot into the framework toolbar path (AxfProvider/Toolbars plugin toolbar wrapper) so every toolbar with a settings id gets it automatically, tap-to-confirm untouched; run check-toolbars.mjs; commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "framework/react/AxfProvider.tsx",
+      "framework/react/tapConfirm.ts",
+      "apps/console-web/plugins/toolbars/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuvk4n16tlbz",
+     "createdAt": "2026-11-16T22:49:23.111Z"
+    },
+    {
+     "id": "s10",
+     "text": "Context menu UI: toolbar right-click/long-press adds 'Attach widget…' (widget picker + style/shape picker) and per-widget 'Style…', 'Move', 'Detach' via ChromeContext; framework controls only; commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/ChromeContext.tsx",
+      "apps/console-web/plugins/toolbars/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuvk4n1717jn",
+     "createdAt": "2026-11-16T22:49:23.111Z"
+    },
+    {
+     "id": "s11",
+     "text": "Drag/drop: accept a widget dropped on any toolbar (drop-target@1) and reorder within/between toolbars with snap; commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "framework/react/components/ToolbarWidgetSlot.tsx",
+      "apps/console-web/plugins/toolbars/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuvk4n18xlck",
+     "createdAt": "2026-11-16T22:49:23.111Z"
+    },
+    {
+     "id": "s12",
+     "text": "Toolbar settings panel: 'Widgets' section in the toolbar's settings interface (chrome-toolbar settings asset) listing attached widgets with style, shape, order, detach; settings asset update in framework/assets/settings/chrome-toolbar; commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "framework/assets/settings/",
+      "apps/console-web/plugins/toolbars/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuvk4n192t5b",
+     "createdAt": "2026-11-16T22:49:23.111Z"
+    },
+    {
+     "id": "s13",
+     "text": "API REST: toolbars plugin server routes GET /api/plugins/toolbars/widgets[?toolbar=], POST attach|detach|move|style; state readable; destructive detach needs confirm; commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/toolbars/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuvk4n1adhuw",
+     "createdAt": "2026-11-16T22:49:23.111Z"
+    },
+    {
+     "id": "s14",
+     "text": "API console-control + MCP: register addresses (toolbar:<id>/widget:<wid>, setting:axf.toolbar.<id>.widgets), console actions toolbar.widget.attach|detach|move|style, plugin-commands MCP tools, console_show deep link target; run check-console-control.mjs; commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/toolbars/",
+      "framework/cli/check-console-control.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuvk4n1budif",
+     "createdAt": "2026-11-16T22:49:23.111Z"
+    },
+    {
+     "id": "s15",
+     "text": "API CLI + voice: axf toolbar widgets list|attach|detach|move|style (framework/cli) and AmberX voice intents mapping to the same console actions; commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/cli/axf.mjs",
+      "framework/cli/toolbar-widgets.mjs",
+      "apps/console-web/plugins/toolbars/voice.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuvk4n1c6w3g",
+     "createdAt": "2026-11-16T22:49:23.111Z"
+    },
+    {
+     "id": "s16",
+     "text": "Server tests: test the REST routes and MCP tool parity (same results through REST/MCP/CLI); commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/toolbars/test.py",
+      "apps/console-web/plugins/toolbars/test.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuvk4n1d321u",
+     "createdAt": "2026-11-16T22:49:23.111Z"
+    },
+    {
+     "id": "s17",
+     "text": "Rebake console + shared apps (rebake.mjs, shared-assets.mjs bake), backfill chrome settings copies, regenerate tracker/catalog entries and glossary descriptions; run their --check commands; commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/src/axf/",
+      "framework/catalog/status.json",
+      "tracker.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuvk4n1elbp9",
+     "createdAt": "2026-11-16T22:49:23.111Z"
+    },
+    {
+     "id": "s18",
+     "text": "UI Review: shoot desktop + phone (widgets on the console toolbar, the attach menu, the settings Widgets section) and submit with 3 options as assets (style presets) via review.mjs submit --choices, group named after the build; commit assets",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/toolbars/assets/",
+      "_claude/builds/reports/attach-widgets-to-any-toolbar-banner/shots/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuvk4n1fy34j",
+     "createdAt": "2026-11-16T22:49:23.111Z"
+    },
+    {
+     "id": "s19",
+     "text": "Tests, report and PR: run check-toolbar-widgets.mts, check-widgets.mts, check-theme/controls/toolbars/chrome-assets/console-control, validate --framework, tracker --check; write _claude/builds/reports/attach-widgets-to-any-toolbar-banner.md (API reach per feature: deep link, state, actions, REST/MCP/CLI/voice), THREADS row, open the PR and link it with builds-live.mjs link; hand to the merge queue",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/attach-widgets-to-any-toolbar-banner.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjuvk4n1gtk36",
+     "createdAt": "2026-11-16T22:49:23.111Z"
+    }
+   ]
   },
   {
    "id": "fable-icon-map-icon-packs-icon-pack",
