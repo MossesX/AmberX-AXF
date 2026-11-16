@@ -154,3 +154,13 @@ Glossary coverage is rebuilt in s13.
     and nothing else: **`molly.amberxai.com A 31.97.13.252`** (zone `amberxai.com`, name `molly`; resolves to
     31.97.13.252 today). Steps: axHub `hostinger` service → `dns_records_list` → delete that one record → read the
     zone again → log it in `/projects/_shared/_data/dns/log.md`.
+
+## Rules and docs (s12)
+
+`_claude/rules/RULES.md` (ten manifests; tab-group rule without Molly), `STATUS.md` (Gizmo names; the xLayout host
+section now says the host app was removed and which framework parts stay), `docs/voice-command-center.md` (Gizmo,
+`/api/ai/gizmo`, `AMBERX_GUIDE_PLUGIN`), `docs/rebuilds/enterprise-branding-3.md` (gizmo-guide). `CLAUDE.md` and
+`_claude/shared/rules/RULES.md` had no Molly mention left. `decisions.md`: the Oct 28 Molly decision is marked
+superseded, the Nov 16 decision is added. `claude-sync sync` ran: this worktree has no sync baseline, so it held 115
+files "new on both sides", these five among them; they were not forced (that could overwrite newer hub copies written
+by other sessions). The VPS checkout's sync sends them once this lands on main.
