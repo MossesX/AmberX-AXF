@@ -59,3 +59,4 @@ export * from './library';
 export * from './engines/work';
 export * from './engines/placement';
 export * from './engines/console-control';
+export * from './engines/drag-move';

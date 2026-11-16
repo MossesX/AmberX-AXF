@@ -1,0 +1,276 @@
+{
+  "$axf": "drag-move@1",
+  "planFrame": "drag-move-plan@1",
+  "resultFrame": "drag-move-result@1",
+  "action": "drag-move",
+  "idMax": 160,
+  "ops": [
+    "move",
+    "add",
+    "remove"
+  ],
+  "zones": [
+    "before",
+    "after",
+    "into",
+    "side"
+  ],
+  "codes": [
+    "invalid",
+    "unknown_kind",
+    "unknown_container",
+    "unknown_item",
+    "unknown_ref",
+    "invalid_zone",
+    "out_of_range",
+    "not_allowed",
+    "duplicate",
+    "limit",
+    "no_change",
+    "confirmation_required",
+    "failed"
+  ],
+  "kinds": [
+    {
+      "kind": "banner-widget",
+      "label": "Banner widget",
+      "container": "the banner asset id",
+      "item": "the attachment key type:id",
+      "zones": [
+        "before",
+        "after",
+        "into",
+        "side"
+      ],
+      "sides": [
+        "left",
+        "center",
+        "right"
+      ],
+      "add": true,
+      "remove": true,
+      "crossContainer": true,
+      "confirmRemove": false
+    },
+    {
+      "kind": "toolbar-item",
+      "label": "Toolbar item",
+      "container": "the toolbar id",
+      "item": "the item or widget key",
+      "zones": [
+        "before",
+        "after",
+        "into",
+        "side"
+      ],
+      "sides": [
+        "start",
+        "end"
+      ],
+      "add": true,
+      "remove": true,
+      "crossContainer": true,
+      "confirmRemove": false
+    },
+    {
+      "kind": "tab",
+      "label": "Tab",
+      "container": "the tab row id (tab:<row>)",
+      "item": "the tab value",
+      "zones": [
+        "before",
+        "after",
+        "into"
+      ],
+      "sides": null,
+      "add": false,
+      "remove": false,
+      "crossContainer": true,
+      "confirmRemove": false
+    },
+    {
+      "kind": "dock-pane",
+      "label": "Dock pane",
+      "container": "the dock host (window) id",
+      "item": "the pane id",
+      "zones": [
+        "into",
+        "side"
+      ],
+      "sides": [
+        "left",
+        "right",
+        "top",
+        "bottom"
+      ],
+      "add": false,
+      "remove": true,
+      "crossContainer": false,
+      "confirmRemove": true
+    },
+    {
+      "kind": "grid-column",
+      "label": "Grid column",
+      "container": "the grid id",
+      "item": "the column id",
+      "zones": [
+        "before",
+        "after",
+        "into"
+      ],
+      "sides": null,
+      "add": true,
+      "remove": true,
+      "crossContainer": false,
+      "confirmRemove": false
+    },
+    {
+      "kind": "grid-row",
+      "label": "Grid row",
+      "container": "the grid id",
+      "item": "the row id",
+      "zones": [
+        "before",
+        "after",
+        "into"
+      ],
+      "sides": null,
+      "add": false,
+      "remove": false,
+      "crossContainer": false,
+      "confirmRemove": false
+    },
+    {
+      "kind": "list-item",
+      "label": "List item",
+      "container": "the list id",
+      "item": "the item id",
+      "zones": [
+        "before",
+        "after",
+        "into"
+      ],
+      "sides": null,
+      "add": true,
+      "remove": true,
+      "crossContainer": true,
+      "confirmRemove": false
+    },
+    {
+      "kind": "layout-slot",
+      "label": "Layout slot",
+      "container": "the layout region (top, left, right, bottom, main)",
+      "item": "the slot type",
+      "zones": [
+        "before",
+        "after",
+        "into",
+        "side"
+      ],
+      "sides": null,
+      "add": true,
+      "remove": true,
+      "crossContainer": true,
+      "confirmRemove": false
+    }
+  ],
+  "schema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://axf.amberxai.com/schemas/drag-move.schema.json",
+    "title": "drag-move@1 command",
+    "type": "object",
+    "required": [
+      "kind",
+      "source"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "$axf": {
+        "const": "drag-move@1"
+      },
+      "op": {
+        "enum": [
+          "move",
+          "add",
+          "remove"
+        ],
+        "default": "move"
+      },
+      "kind": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 160,
+        "description": "a registered draggable kind (DRAG_KINDS, open registry)"
+      },
+      "source": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "container": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "type": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          }
+        }
+      },
+      "target": {
+        "type": "object",
+        "required": [
+          "container"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "container": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "zone": {
+            "enum": [
+              "before",
+              "after",
+              "into",
+              "side"
+            ]
+          },
+          "ref": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "side": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "index": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "confirm": {
+        "type": "boolean"
+      },
+      "by": {
+        "type": "string"
+      },
+      "reason": {
+        "type": "string"
+      }
+    }
+  }
+}
