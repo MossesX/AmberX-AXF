@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6877,
- "updatedAt": "2026-11-16T20:38:02.945Z",
+ "rev": 6878,
+ "updatedAt": "2026-11-16T20:38:18.486Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -248081,7 +248081,7 @@
    "branch": "claude/fable-rebuild-to-do-manager-unlimited",
    "pr": "",
    "createdAt": "2026-11-16T20:24:18.253Z",
-   "updatedAt": "2026-11-16T20:34:43.711Z",
+   "updatedAt": "2026-11-16T20:38:09.634Z",
    "builtAt": "",
    "notes": [
     {
@@ -248193,12 +248193,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:38:09.634Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T20:26:54.993Z",
-     "updatedAt": "2026-11-16T20:26:54.993Z"
+     "updatedAt": "2026-11-16T20:38:10.076Z"
     },
     {
      "id": "s3",
@@ -248730,7 +248730,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

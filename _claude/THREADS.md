@@ -813,7 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 01:25 UTC · `molly-gap-expenses-cors` s3 done, → built (all) · orchestrator
 - 2026-11-16 16:47 UTC · `molly-gap-expenses-cors` → running, note (all) · pipeline
 - 2026-11-16 16:47 UTC · `molly-gap-expenses-cors` note (all) · orchestrator
 - 2026-11-16 16:47 UTC · `molly-gap-expenses-cors` s3 done, → built (all) · builds-live
@@ -1213,6 +1212,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 20:34 UTC · `fable-rebuild-to-do-manager-unlimited` s1 done, → running (all) · orchestrator
 - 2026-11-16 20:36 UTC · `to-do-manager-fully-voice-mcp-controlled` s1 done (all) · orchestrator
 - 2026-11-16 20:37 UTC · `to-do-manager-fully-voice-mcp-controlled` note (all) · orchestrator
+- 2026-11-16 20:38 UTC · `fable-rebuild-to-do-manager-unlimited` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
