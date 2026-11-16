@@ -1,0 +1,15 @@
+{
+  "$axf": "open-url-phone-order@1",
+  "note": "open-url-route@1 on the AmberX phone (OpenUrlRoute.java): the routes tried, in order, for mocked permissions. Shared by framework/spec/check-open-url-route.mjs (against the reference engine) and OpenUrlRouteTest.java (against the phone). The phone tries the full-screen notice while unlocked too (its trampoline is an allowed start); the engine skips it as phone-unlocked, so the check adds it back for unlocked cases.",
+  "cases": [
+    { "id": "brett-nov-16", "note": "Chrome in front with the console tab, AmberX behind, no Display over other apps", "phone": { "consoleSignedIn": true, "inFront": false, "overlay": false, "overlayReady": false, "notifications": true, "fullScreenIntent": true, "locked": false }, "where": "auto", "order": ["console-tab", "full-screen-intent", "notification"] },
+    { "id": "signed-out-nothing-granted", "phone": { "consoleSignedIn": false, "inFront": false, "overlay": false, "overlayReady": false, "notifications": true, "fullScreenIntent": false, "locked": false }, "where": "auto", "order": ["notification"] },
+    { "id": "overlay-granted-toolbar-up", "phone": { "consoleSignedIn": true, "inFront": false, "overlay": true, "overlayReady": true, "notifications": true, "fullScreenIntent": true, "locked": false }, "where": "auto", "order": ["console-tab", "overlay", "direct", "full-screen-intent", "notification"] },
+    { "id": "overlay-granted-toolbar-off", "phone": { "consoleSignedIn": false, "inFront": false, "overlay": true, "overlayReady": false, "notifications": true, "fullScreenIntent": false, "locked": false }, "where": "auto", "order": ["direct", "notification"] },
+    { "id": "amberx-in-front", "phone": { "consoleSignedIn": false, "inFront": true, "overlay": false, "overlayReady": false, "notifications": true, "fullScreenIntent": true, "locked": false }, "where": "auto", "order": ["direct", "full-screen-intent", "notification"] },
+    { "id": "locked-idle", "phone": { "consoleSignedIn": true, "inFront": false, "overlay": false, "overlayReady": false, "notifications": true, "fullScreenIntent": true, "locked": true }, "where": "auto", "order": ["console-tab", "full-screen-intent", "notification"] },
+    { "id": "notifications-off", "phone": { "consoleSignedIn": false, "inFront": false, "overlay": false, "overlayReady": false, "notifications": false, "fullScreenIntent": true, "locked": false }, "where": "auto", "order": [] },
+    { "id": "asked-for-browser", "phone": { "consoleSignedIn": true, "inFront": false, "overlay": true, "overlayReady": true, "notifications": true, "fullScreenIntent": true, "locked": false }, "where": "browser", "order": ["direct", "full-screen-intent", "notification"] },
+    { "id": "asked-for-console", "phone": { "consoleSignedIn": true, "inFront": false, "overlay": true, "overlayReady": true, "notifications": true, "fullScreenIntent": true, "locked": false }, "where": "console", "order": ["console-tab"] }
+  ]
+}

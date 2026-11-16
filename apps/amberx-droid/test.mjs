@@ -828,6 +828,27 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   ok(dict.includes("addListener('heard'"), 'dictation shows live text');
 }
 
+// Open pages (open-url-route@1 on the phone, Nov 16 2026): the route order for mocked permissions (the shared
+// fixture, the same cases OpenUrlRouteTest.java and check-open-url-route.mjs hold), the panel's words, what is missing
+{
+  const op = await import('./src/plugins/web/web/open-pages-core.ts');
+  const R = await import('../../framework/core/open-url-route.mjs');
+  const fx = JSON.parse(readFileSync(new URL('../../framework/spec/fixtures/open-url-phone-order.json', import.meta.url), 'utf8'));
+  // the phone's order from mocked permissions, through the reference engine (full-screen notice tried unlocked too)
+  const phoneOrder = (p, where) => R.plan({ url: 'https://console.amberxai.com/', where, console: p.consoleSignedIn ? { connected: true, visible: true, ageMs: 1000 } : { connected: false },
+    phone: { paired: true, ...p } }).routes.filter((r) => r.try || (r.route === 'full-screen-intent' && r.reason === 'phone-unlocked')).map((r) => r.route);
+  for (const c of fx.cases) eq(phoneOrder(c.phone, c.where), c.order, `open pages: order for ${c.id}`);
+  const brett = fx.cases.find((c) => c.id === 'brett-nov-16');
+  ok(phoneOrder(brett.phone, 'auto')[0] === 'console-tab', 'open pages: Brett\'s case (Chrome in front with the console) tries the console tab first');
+  eq(op.missingGrants({ overlay: false, fullScreenIntent: false, notifications: true }), ['overlay', 'full-screen'], 'open pages: missing grants in Auto fix order');
+  eq(op.missingGrants({ overlay: true, fullScreenIntent: true, notifications: true }), [], 'open pages: nothing missing');
+  ok(!op.opensByItself({ order: ['notification'] }) && op.opensByItself({ order: ['direct', 'notification'] }), 'open pages: only a notification = cannot open by itself');
+  ok(op.resultLine(null) === 'No page opened yet.', 'open pages: no result yet');
+  ok(op.resultLine({ url: 'u', route: 'console-tab', opened: true, notified: false, reason: 'console-visible' }) === 'Opened through the console tab on screen.', 'open pages: opened line names the route');
+  ok(/^Didn't open by itself: a tap-to-open notification went out \(Android blocked the start from the background\)/.test(op.resultLine({ url: 'u', route: 'notification', opened: false, notified: true, reason: 'tap-to-open', attempts: [{ route: 'direct', opened: false, reason: 'background-start-blocked' }, { route: 'notification', opened: false, reason: 'tap-to-open' }] })), 'open pages: notification line says why');
+  for (const code of Object.keys(R.REASONS)) ok(code in op.REASON_WORDS || code === 'url-refused' || code === 'console-other-origin' || code === 'asked-elsewhere' || code === 'console-only' || code === 'no-phone', `open pages: words for ${code}`);
+}
+
 // voice command center (Oct 28 2026, voice-command@1): matcher, overrides, recordings, library, ops, runner
 {
   const cc = await import('./src/plugins/commands/web/core.ts');

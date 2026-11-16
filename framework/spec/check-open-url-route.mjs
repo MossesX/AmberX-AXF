@@ -185,4 +185,21 @@ t('every reason code has words, every route a success reason, and the registry l
 });
 t('schemas/open-url-route.json + schemas/json/open-url-*.schema.json are current (run axf schemas)', () => { assert.ok(same(JSON.parse(rd('framework/schemas/open-url-route.json')), R.REGISTRY)); for (const [name, s] of Object.entries(R.jsonSchemas())) assert.ok(same(JSON.parse(rd(`framework/schemas/json/${name}`)), s), name); });
 t('PORTING.md indexes the contract and records the deferred twins', () => { const p = rd('framework/spec/PORTING.md'); assert.match(p, /\| Open-url route \(`open-url-route@1`/); assert.match(p, /## Deferred: open-url route@1/); });
+// the AmberX phone's order for mocked permissions (fixtures/open-url-phone-order.json; OpenUrlRouteTest.java replays the same cases)
+{
+  const phone = JSON.parse(rd('framework/spec/fixtures/open-url-phone-order.json'));
+  for (const c of phone.cases) {
+    t(`phone order: ${c.id}`, () => {
+      const p = c.phone;
+      // the engine's view of the same moment: a signed-in console counts as a live tab on screen
+      const req = { url: CONSOLE, where: c.where, console: p.consoleSignedIn ? { connected: true, visible: true, origin: 'https://console.amberxai.com', ageMs: 1000 } : { connected: false },
+        phone: { paired: true, inFront: p.inFront, overlay: p.overlay, overlayReady: p.overlayReady, notifications: p.notifications, fullScreenIntent: p.fullScreenIntent, locked: p.locked } };
+      const planned = R.plan(req).routes.filter((r) => r.try || (r.route === 'full-screen-intent' && r.reason === 'phone-unlocked')).map((r) => r.route);
+      assert.deepEqual(planned, c.order, `${c.id}: engine order ${planned.join(' → ')} vs phone ${c.order.join(' → ')}`);
+    });
+  }
+  const java = rd('apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/OpenUrlRouteTest.java');
+  t('phone order: OpenUrlRouteTest replays every case', () => { for (const c of phone.cases) assert.ok(java.includes(`"${c.id}"`), `OpenUrlRouteTest.java misses ${c.id}`); });
+}
+
 console.log(`check-open-url-route: ${n} checks passed`);

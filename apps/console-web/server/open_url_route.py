@@ -66,7 +66,7 @@ def allowed_url(raw: Any, hosts: Any = DEFAULT_HOSTS) -> dict[str, Any]:
         return refused("only https pages can be opened")
     if u.username is not None or u.password is not None:
         return refused("url cannot carry a user name or password")
-    if port is not None:
+    if port is not None and port != 443:  # the default port is no port (URL drops it, as the engine's does)
         return refused("url cannot name a port")
     host = (u.hostname or "").lower()
     if not own_host(host, hosts):

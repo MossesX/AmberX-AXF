@@ -367,10 +367,13 @@ def open_url(url: Any, new_tab: Any = None, by: str = "api", audience: str = OWN
             raise cc.ControlError("denied", f"navigate needs {NAVIGATE_PERM}", requires=NAVIGATE_PERM)
         check_rate(f"{audience}|{by}", False)
         a = our.allowed_url(url)
+        relay = _relay()
         if not a["ok"]:
-            r = {**our.console_result(str(url or "")[: our.MAX_URL], False, "url-refused", detail=a["detail"]), "ok": False, "code": "invalid", "field": "url"}
+            # the relay checks again and records the refusal in navigate/last; no tab is asked either way
+            res = relay.navigate(str(url or ""), None, by, audience, to) if relay is not None and hasattr(relay, "navigate") else \
+                our.console_result(str(url or "")[: our.MAX_URL], False, "url-refused", detail=a["detail"])
+            r = {**res, "ok": False, "code": "invalid", "field": "url"}
         else:
-            relay = _relay()
             if relay is None or not hasattr(relay, "navigate"):
                 r = {**our.console_result(a["url"], False, "no-console", detail="the Console commands plugin is off"), "ok": False, "code": "unavailable", "because": "no relay"}
             else:
