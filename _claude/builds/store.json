@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6871,
- "updatedAt": "2026-11-16T20:29:46.632Z",
+ "rev": 6872,
+ "updatedAt": "2026-11-16T20:30:00.177Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -248929,7 +248929,7 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/plan-studio-collapse-all-expand-all",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T20:26:44.199Z",
@@ -249049,7 +249049,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
