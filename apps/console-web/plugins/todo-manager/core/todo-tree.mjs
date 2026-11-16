@@ -617,7 +617,7 @@ export function search(doc, { q = '', kind = '', done = null, tag = '', due = ''
     if (done != null && n.done !== done) continue;
     if (tag && !(n.tags ?? []).includes(tag.toLowerCase())) continue;
     if (ql && !(foldTitle(n.title).includes(ql) || (n.body || '').toLowerCase().includes(ql) || (n.tags ?? []).some((t) => t.includes(ql)))) continue;
-    if (due && due !== 'any') {
+    if (due) {
       const ms = n.due ? dueToMs(n.due) : null;
       if (due === 'none' ? ms != null : ms == null) continue;
       if (due === 'overdue' && !(ms < todayMs && !n.done)) continue;
