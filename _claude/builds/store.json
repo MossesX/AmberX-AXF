@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6576,
- "updatedAt": "2026-11-16T17:02:05.572Z",
+ "rev": 6577,
+ "updatedAt": "2026-11-16T17:02:22.678Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -240497,8 +240497,8 @@
    "pr": "#720",
    "priority": "P1",
    "createdAt": "2026-11-16T16:17:05.624Z",
-   "updatedAt": "2026-11-16T17:01:28.673Z",
-   "builtAt": "2026-11-16T17:01:28.673Z",
+   "updatedAt": "2026-11-16T17:01:41.126Z",
+   "builtAt": "2026-11-16T17:01:41.126Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -240523,6 +240523,10 @@
     {
      "text": "Headless run axf-remove-old-molly-app-project-keep-axf--gina: brief only · start 19.6K tokens ($0.07) · cost $12.43 · 195 turns · 6 tools, MCP none",
      "at": "2026-11-16T17:01:28.673Z"
+    },
+    {
+     "text": "Reconciler: PR #720 names s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16 done",
+     "at": "2026-11-16T17:01:41.126Z"
     }
    ],
    "approvals": [],
@@ -240980,11 +240984,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-16T17:00:53.163Z",
-     "note": "",
+     "doneAt": "2026-11-16T17:01:41.126Z",
+     "note": "PR #720 (claude/remove-old-molly-app-project-keep-axf)",
      "rev": 2,
      "createdAt": "2026-11-16T16:19:58.360Z",
-     "updatedAt": "2026-11-16T17:00:53.737Z"
+     "updatedAt": "2026-11-16T17:01:41.128Z"
     }
    ],
    "profiles": [
@@ -240995,7 +240999,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -242645,16 +242649,16 @@
    "title": "Fix console deep links so open-page lands on the right screen",
    "category": "",
    "detail": "Deep links are broken: opening https://console.amberxai.com/?axf-target=view:build-orchestrator (or view:gate, any view:/tab: address) loads the console's main screen instead of that screen. console_show via the API works, so the address is valid; the URL parameter isn't applied on load. Fix: on page load (and after sign-in redirect, which likely drops the query string), read ?axf-target= and focus that address once the views are registered, including tabs (e.g. view:gate/tab:gate.tabs=auto-lander). Keep the parameter through the hub sign-in redirect. Each open_url must open its own tab when asked. Tests: load with each view address and assert the focused screen. Land with the one-at-a-time lander.",
-   "status": "complete",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/fix-console-deep-links-open-page-lands",
-   "pr": "",
+   "pr": "#721",
    "priority": "P0",
    "createdAt": "2026-11-16T16:31:15.510Z",
-   "updatedAt": "2026-11-16T17:01:22.643Z",
-   "builtAt": "2026-11-16T17:01:22.643Z",
+   "updatedAt": "2026-11-16T17:01:43.397Z",
+   "builtAt": "2026-11-16T17:01:43.397Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -242671,6 +242675,14 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-console-deep-links-open-page-lands--rhonda, shared account login)",
      "at": "2026-11-16T16:35:07.906Z"
+    },
+    {
+     "text": "Reconciler: PR #721",
+     "at": "2026-11-16T17:01:41.126Z"
+    },
+    {
+     "text": "Headless run axf-fix-console-deep-links-open-page-lands--rhonda: brief only · start 15.6K tokens ($0.05) · cost $4.31 · 113 turns · 6 tools, MCP none",
+     "at": "2026-11-16T17:01:43.397Z"
     }
    ],
    "approvals": [],
@@ -242794,7 +242806,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
