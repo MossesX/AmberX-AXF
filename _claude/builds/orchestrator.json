@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T18:25:19.961Z",
+ "updatedAt": "2026-11-16T18:26:48.349Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -158415,7 +158415,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T18:24:30.100Z",
-   "updatedAt": "2026-11-16T18:25:17.334Z",
+   "updatedAt": "2026-11-16T18:26:46.768Z",
    "builtAt": "",
    "notes": [
     {
@@ -158425,6 +158425,10 @@
     {
      "text": "Brett (Nov 16): also add a PASS button in the CONSOLE (Approvals banner and Gate & rules): 'Start pass' with a length picker (15 min to 4 h), scope (everything / one service), an 'include irreversible' toggle off by default, a live countdown of the active pass, and 'End pass'. Uses axhub.pass_grant / pass_revoke / pass_status. Brett's own click starts it, with no extra approval. Full API parity.",
      "at": "2026-11-16T18:25:17.334Z"
+    },
+    {
+     "text": "Split by Claude into 12 steps (1 Fable).",
+     "at": "2026-11-16T18:26:46.768Z"
     }
    ],
    "approvals": [],
@@ -158441,7 +158445,274 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Design the veto-countdown setting and read-only contract: setting key (seconds, 0-120, default 10, clamp/validate), where it is stored with the other approval settings, the readOnly flag on a call and the read-only allow-list format for vps.run (command classifier input/output, what counts as a write: pipes to files, redirection, chained commands, sudo, git push/commit, docker run/rm). Write it as a short spec doc in the axHub repo docs folder and the setting schema entry.",
+     "model": "Fable",
+     "why": "Schema + contract design for a hub-wide policy setting and the call classification every caller relies on",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "docs/",
+      "src/settings schema (approvals)"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjlhugg01bod3",
+     "createdAt": "2026-11-16T18:26:46.768Z"
+    },
+    {
+     "id": "s2",
+     "text": "Find where axHub holds veto calls and the hard-coded 90 s countdown (decision #104); replace the constant with a read of the new setting (clamped 0-120, default 10). 0 s = run at once but still log the notice. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "src/ (veto/hold module)",
+      "src/settings"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjlhugg02imm5",
+     "createdAt": "2026-11-16T18:26:46.768Z"
+    },
+    {
+     "id": "s3",
+     "text": "Migration: existing hubs with no stored value get the default 10 s; keep any saved value. Add unit tests for default, clamp (-5 -> 0, 500 -> 120), 0 s runs at once, and the countdown shown on the notice/page matches the setting.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "src/settings",
+      "test/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjlhugg03e71l",
+     "createdAt": "2026-11-16T18:26:46.768Z"
+    },
+    {
+     "id": "s4",
+     "text": "Approvals settings UI: add a 'Veto countdown (seconds)' slider/number field (0-120, default 10) in the axHub approvals settings, using the framework controls and tokens only. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "web/ (approvals settings view)"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjlhugg04y465",
+     "createdAt": "2026-11-16T18:26:46.768Z"
+    },
+    {
+     "id": "s5",
+     "text": "API for the countdown setting: REST GET/PUT on the approvals settings (owner session only, validated), MCP tool (axhub.settings get/set for veto countdown), CLI command, and a voice/AmberX action name; deep link that opens the approvals settings with the field highlighted. Tests for each path agreeing.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "src/routes",
+      "src/mcp",
+      "cli/",
+      "test/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjlhugg05o90i",
+     "createdAt": "2026-11-16T18:26:46.768Z"
+    },
+    {
+     "id": "s6",
+     "text": "Read-only classifier for vps.run: allow-list module (inspect, logs, ps, git log/status/fetch/diff/show, cat, head, tail, ls, grep, rg, df, du, free, uptime, docker ps/inspect/logs, systemctl status, journalctl) that rejects writes: output redirection (> >>), tee, chained commands where any part is not read-only, command substitution, sudo, rm/mv/cp/chmod, git push/commit/reset/checkout, docker run/rm/exec/restart. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "src/readonly-classifier"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjlhugg06xotw",
+     "createdAt": "2026-11-16T18:26:46.768Z"
+    },
+    {
+     "id": "s7",
+     "text": "Classifier tests: table of read-only commands that pass and lookalikes that must be held (cat x > y, git fetch && git reset, ls; rm, $(…), docker logs | tee f, git log --output=f). Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "test/readonly-classifier"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjlhugg07q3q7",
+     "createdAt": "2026-11-16T18:26:46.768Z"
+    },
+    {
+     "id": "s8",
+     "text": "Wire it into the hold path: a call with an explicit readOnly flag or a vps.run whose command the classifier passes skips the veto countdown and runs at once (still logged with 'read-only, not held'); tools whose policy is read-only by definition skip it too. A readOnly flag on a command the classifier rejects is ignored and the call is held. Anything changing keeps the countdown; confirm/irreversible tools keep their approval regardless. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "src/ (veto/hold module)",
+      "src/tools/vps"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjlhugg084cg6",
+     "createdAt": "2026-11-16T18:26:46.768Z"
+    },
+    {
+     "id": "s9",
+     "text": "Integration tests: read-only vps.run runs immediately, mutating vps.run is held for the setting's countdown, readOnly flag on a write is still held, confirm-policy tool still needs approval at 0 s, destructive tools never skip. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "test/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjlhugg09i7kq",
+     "createdAt": "2026-11-16T18:26:46.768Z"
+    },
+    {
+     "id": "s10",
+     "text": "Surface it: approvals log/page shows 'read-only, ran at once' for skipped calls; API exposes the read-only allow list (REST GET + MCP read) so callers can check a command first. Update the MCP server instructions text (90 seconds -> the setting) and the veto docs. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "src/routes",
+      "src/mcp",
+      "web/ (approvals log)",
+      "docs/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjlhugg0ajur5",
+     "createdAt": "2026-11-16T18:26:46.768Z"
+    },
+    {
+     "id": "s11",
+     "text": "Help entries for the countdown setting and the read-only rule, Shipped features entry, and a decision record in axHub's decisions (replacing the fixed 90 s of #104, with Brett's verbatim words). Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "docs/help",
+      "docs/shipped-features",
+      "docs/decisions"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjlhugg0bbhlu",
+     "createdAt": "2026-11-16T18:26:46.768Z"
+    },
+    {
+     "id": "s12",
+     "text": "Run the full axHub test suite (pnpm test), fix failures, write report _claude/builds/reports/axhub-veto-countdown-setting-read-only.md (what changed, before/after: 90 s fixed -> 10 s setting; read-only calls run at once; how each part is reached via REST/MCP/CLI/voice/deep link), add the THREADS row, push the branch and open the PR on MossesX/axHub stating the API paths.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/axhub-veto-countdown-setting-read-only.md",
+      "_claude/THREADS.md",
+      "test/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjlhugg0cnhra",
+     "createdAt": "2026-11-16T18:26:46.768Z"
+    }
+   ]
   }
  ]
 }
