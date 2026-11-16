@@ -10,6 +10,7 @@ import { facets as facetsOf, queryElements, queryTree } from '../lib/query.mjs';
 import { refreshLive } from './apply';
 import { ChangeLog, PendingBar } from './Changes';
 import { discardDraft } from './draft';
+import { togglePreview } from './Preview';
 import { exportLibrary, pullState, shareSelection } from './bridge';
 import { startPicker } from './picker';
 import { ElementFilters } from './Filters';
@@ -66,6 +67,7 @@ export function Manager() {
         <Segmented size="sm" label="View" value={ui.view} options={VIEWS} onChange={(v) => setUi({ view: v })} />
         <span className="axp-uim__grow fx-small fx-muted">{all.length} elements · {visible.length} on screen</span>
         <Button size="sm" icon="download" title="Export everything changed as an asset library: published to the hub library, the package downloaded" onClick={() => void exportLibrary(rt)}>Export library</Button>
+        <Button size="sm" icon="eye" title="A floating, movable, resizable live preview of the screen being edited, with the pending changes" onClick={() => togglePreview(rt)}>Live preview</Button>
         <Button size="sm" icon="clock" tone={ui.log ? 'primary' : 'neutral'} aria-pressed={ui.log} onClick={() => setUi((s) => ({ log: !s.log }))}>Change log</Button>
         <Button size="sm" icon="refresh" onClick={() => setUi((s) => ({ rev: s.rev + 1 }))}>Refresh</Button>
       </div>

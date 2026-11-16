@@ -5,6 +5,7 @@
  */
 
 export type ViewMode = 'row' | 'panel' | 'grid';
+export type PreviewScale = 'fit' | '50' | '75' | '100';
 export type SortKey = 'label' | 'kind' | 'category' | 'plugin' | 'overrides';
 
 export interface UiState {
@@ -30,6 +31,8 @@ export interface UiState {
   filtersOpen: boolean;
   /** inspector: the next click on the console picks an element */
   picking: boolean;
+  /** the live preview window's scale */
+  previewScale: PreviewScale;
   /** the change log (every applied change set, each with Undo) is open */
   log: boolean;
   /** bumps when something outside (an action, the API) changed the saved overrides, so open rows reload */
@@ -38,11 +41,11 @@ export interface UiState {
 
 export const DEFAULT_STATE: UiState = {
   selected: '', view: 'row', q: '', sort: 'label', desc: false, kinds: [], categories: [], plugins: [], overriddenOnly: false, onScreenOnly: false,
-  collapsed: [], propQ: '', propGroups: [], propChanged: false, filtersOpen: false, picking: false, log: false, rev: 0,
+  collapsed: [], propQ: '', propGroups: [], propChanged: false, filtersOpen: false, picking: false, log: false, previewScale: 'fit', rev: 0,
 };
 
 const KEY = 'ui-manager.window';
-const PERSIST: (keyof UiState)[] = ['view', 'sort', 'desc', 'collapsed'];
+const PERSIST: (keyof UiState)[] = ['view', 'sort', 'desc', 'collapsed', 'previewScale'];
 
 function load(): UiState {
   try {

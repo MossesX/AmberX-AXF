@@ -8,7 +8,7 @@
     "tabs": 76,
     "settingsTabs": 68,
     "settings": 85,
-    "functions": 226,
+    "functions": 227,
     "buttons": 62,
     "plugins": 68
   },
@@ -6167,6 +6167,23 @@
         "manager",
         "close"
       ],
+      "plugin": "ai.amberx.axf.console.ui-manager",
+      "file": "plugins/ui-manager/web/index.tsx"
+    },
+    {
+      "address": "function:ui-manager.preview",
+      "kind": "function",
+      "id": "ui-manager.preview",
+      "label": "UI Manager: live preview window (on, off or toggle)",
+      "detail": "Action · UI Manager",
+      "keywords": [
+        "ui-manager.preview",
+        "ui",
+        "manager",
+        "preview"
+      ],
+      "effect": "navigate",
+      "params": true,
       "plugin": "ai.amberx.axf.console.ui-manager",
       "file": "plugins/ui-manager/web/index.tsx"
     },

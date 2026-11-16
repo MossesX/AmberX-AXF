@@ -44,3 +44,7 @@
 .axp-uim__line > .axp-uim__grow { flex: 1; min-width: 0; }
 .axp-uim__log { max-height: 40vh; overflow: auto; padding: var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); }
 .axp-uim__entry { padding: var(--fx-dens-gap-sm) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
+/* the live preview window (s13): the console in a frame at its own size, scaled into the pane */
+.axp-uimp { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm); height: 100%; min-height: 0; }
+.axp-uimp__stage { flex: 1; min-height: 0; overflow: auto; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-bg); }
+.axp-uimp__frame { display: block; border: 0; transform-origin: 0 0; pointer-events: auto; }

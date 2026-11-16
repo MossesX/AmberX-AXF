@@ -48,10 +48,10 @@ export function mergeElements(server: UiElement[], live: UiElement[]): UiElement
 }
 
 /** The DOM nodes an element stands for (its selector, its control address). */
-export function nodesOf(e: UiElement): Element[] {
+export function nodesOf(e: UiElement, doc: Document = document): Element[] {
   const sels = [e.selector, e.address ? `[${CONTROL_TARGET_ATTR}="${e.address.replace(/"/g, '')}"]` : ''].filter(Boolean) as string[];
   const out: Element[] = [];
-  for (const s of sels) { try { out.push(...Array.from(document.querySelectorAll(s))); } catch { /* bad selector */ } }
+  for (const s of sels) { try { out.push(...Array.from(doc.querySelectorAll(s))); } catch { /* bad selector */ } }
   return out;
 }
 

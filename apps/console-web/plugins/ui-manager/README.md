@@ -86,6 +86,15 @@ its own **Undo** (an undo is itself logged). `set` / `reset` through the API and
 | change log | `GET changes?limit=` | `ui-manager_changes` | `ui-manager.mjs changes` | `ui-manager.log` |
 | undo one entry | `POST undo {id}` | `ui-manager_undo` | `ui-manager.mjs undo <id>` | `ui-manager.undo:<id>` |
 
+## Live preview window (s13)
+
+**Live preview** (window toolbar) opens a floating, movable, resizable window (tab kind `ui-manager-preview`): the
+console itself in a same-origin frame at the current route (`?axf-uim-preview=1`), at its own size and scaled to fit (or
+50 / 75 / 100 %). The override CSS in force, saved or pending, is mirrored into it on every change; the selected element
+is scrolled into view and outlined, so off-screen elements are seen as they will look. The UI Manager's own windows are
+hidden in it and the frame never opens a preview of its own. Action `ui-manager.preview[:on|off]` (toggle by default):
+`console_action`, `axf console action ui-manager.preview:on`, voice; the scale is the persisted `previewScale`.
+
 ## Export any UI as an asset library (ui-library@1)
 
 Any element (or everything changed) exports as one self-contained, schema-validated library (`libraryFrom` /

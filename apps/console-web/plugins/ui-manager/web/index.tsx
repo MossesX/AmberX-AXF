@@ -5,6 +5,7 @@ import { registerActions } from './bridge';
 import { appMenu } from './menu';
 import { FOLDER, Manager } from './Manager';
 import { TAB_KIND, closeUiManager, openUiManager } from './window';
+import { PREVIEW_KIND, PreviewPane, closePreview, inPreviewFrame, openPreview, togglePreview } from './Preview';
 import './ui-manager.css';
 
 /*
@@ -33,9 +34,11 @@ export const plugin: AxfWebLibrary = {
   register(rt) {
     rt.actions.register('ui-manager.open', () => openUiManager(rt), { label: 'Open the UI Manager (floating window)' });
     rt.actions.register('ui-manager.close', () => closeUiManager(rt), { label: 'Close the UI Manager window' });
+    rt.actions.register('ui-manager.preview', ([v]) => (v === 'on' ? openPreview(rt) : v === 'off' ? closePreview(rt) : togglePreview(rt)), { label: 'UI Manager: live preview window (on, off or toggle)', params: true, effect: 'navigate' });
     registerActions(rt);
   },
-  tabs: { [TAB_KIND]: () => <Manager /> },
+  // inside the preview frame the manager is not mounted: the frame shows the console as edited, nothing else
+  tabs: { [TAB_KIND]: () => (inPreviewFrame() ? <div className="axp-uim" hidden /> : <Manager />), [PREVIEW_KIND]: () => <PreviewPane /> },
   views: { 'ui-manager': { title: 'UI Manager', icon: 'sliders', keywords: ['ui manager', 'element', 'tokens', 'inspector', 'properties'], render: () => <UiManagerPage /> } },
   nav: { label: 'Plugins', items: [{ id: 'ui-manager', label: 'UI Manager', icon: 'sliders', view: 'ui-manager' }] },
   settingsTabs: [{ id: 'ui-manager', label: 'UI Manager', icon: 'sliders', order: 90, parent: 'plugins' }],

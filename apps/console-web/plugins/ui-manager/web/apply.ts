@@ -7,7 +7,14 @@ import { fetchJson } from './useElements';
 
 const STYLE_ID = 'axp-uim-overrides';
 
+/** The CSS in force now (saved plan or the window's draft), and who mirrors it (the preview window). */
+let current = '';
+const cssListeners = new Set<(css: string) => void>();
+export const currentCss = () => current;
+export const onCss = (f: (css: string) => void) => { cssListeners.add(f); return () => { cssListeners.delete(f); }; };
+
 export function applyCss(css: string): void {
+  if (css !== current) { current = css; cssListeners.forEach((f) => f(css)); }
   if (typeof document === 'undefined') return;
   let el = document.getElementById(STYLE_ID) as HTMLStyleElement | null;
   if (!el) { el = document.createElement('style'); el.id = STYLE_ID; document.head.appendChild(el); }
