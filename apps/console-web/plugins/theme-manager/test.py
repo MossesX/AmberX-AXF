@@ -138,4 +138,70 @@ d = c.post("/p/skin-config/global/make", json={"wish": "calm", "dry": True}).jso
 check(d["status"] == "brief" and d["brief"]["wish"] == "calm", "make, dry: the brief only")
 check(c.get("/p/skin-config/global/made").json()["items"] == [], "nothing made yet")
 check(c.get("/p/skin-config/nope-app").status_code == 400, "an unknown app is refused")
+
+# ---- asset overrides: Reset all (build reset-all-button-every-asset-override), against a fake open console ----
+print("asset overrides")
+
+
+class FakeConsole(types.ModuleType):
+    """console_control_api as the routes use it: command() answers like the console's Reset all target."""
+    OWNER = "owner"
+
+    def __init__(self) -> None:
+        super().__init__("console_control_api")
+        self.rows = ["tab-group:settings", "toolbar:app", "banner:app"]
+        self.undo: list[dict] = []
+        self.sent: list[dict] = []
+        self.open = True
+
+    def audience_of(self, request):  # noqa: ARG002
+        return "owner", "test"
+
+    def grants_of(self, request):  # noqa: ARG002
+        return {"*"}
+
+    def command(self, body, by, audience, grants):  # noqa: ARG002
+        self.sent.append(body)
+        if not self.open:
+            return {"ok": False, "code": "unavailable", "message": "no console open", "openUrl": "https://c/"}
+        state = lambda: {"count": len(self.rows), "overrides": [{"id": r} for r in self.rows], "undo": [{"id": u["id"], "ids": u["ids"]} for u in self.undo]}  # noqa: E731
+        if body["verb"] == "state":
+            return {"ok": True, "state": {"screen": "settings", **state(), "target": {"address": body["address"], **state()}}}
+        if body["address"] == mod.RESET_ALL_TARGET:
+            if not body.get("confirm"):
+                return {"ok": False, "code": "confirmation_required", "message": "deletes something"}
+            if not self.rows:
+                return {"ok": True, "result": {"reset": [], "undoId": ""}}
+            u = {"id": f"ra-{len(self.undo) + 1}", "ids": self.rows}
+            self.undo.insert(0, u)
+            self.rows = []
+            return {"ok": True, "result": {"reset": u["ids"], "undoId": u["id"]}}
+        if body["address"] == "function:chrome.overrides-undo":
+            u = next((x for x in self.undo if body.get("value") in ("last", x["id"])), None)
+            if u:
+                self.undo.remove(u)
+                self.rows = u["ids"]
+            return {"ok": True, "pressed": body["address"]}
+        return {"ok": False, "code": "not_found", "message": "?"}
+
+
+fake = FakeConsole()
+sys.modules["console_control_api"] = fake
+r = c.get("/p/overrides").json()
+check(r["count"] == 3 and [o["id"] for o in r["overrides"]] == fake.rows and r["deepLink"].endswith(mod.RESET_ALL_TARGET), "GET /overrides lists the open console's overrides with the deep link")
+check(c.post("/p/reset-all").status_code == 409 and c.post("/p/reset-all", json={"confirm": "yes"}).status_code == 409, "POST /reset-all without confirm: true is refused (409)")
+check(not any(b["verb"] == "press" for b in fake.sent), "nothing reaches the console without confirm")
+r = c.post("/p/reset-all", json={"confirm": True}).json()
+check(r == {"reset": ["tab-group:settings", "toolbar:app", "banner:app"], "undoId": "ra-1"}, "POST /reset-all resets every override and returns the undo id")
+check(fake.sent[-1]["confirm"] is True and fake.sent[-1]["address"] == mod.RESET_ALL_TARGET, "it presses the Reset all target with confirm")
+check(c.get("/p/overrides").json()["count"] == 0, "nothing is overridden after it")
+check(c.post("/p/reset-all", json={"confirm": True}).json() == {"reset": [], "undoId": ""}, "idempotent: with 0 overrides it resets nothing")
+check(c.post("/p/reset-all/undo", json={"undoId": "../x"}).status_code == 400, "undo checks the id")
+r = c.post("/p/reset-all/undo", json={"undoId": "ra-1"}).json()
+check(r["undone"] == "ra-1" and r["count"] == 3, "POST /reset-all/undo brings every override back")
+fake.open = False
+r = c.get("/p/overrides")
+check(r.status_code == 503 and r.json()["detail"]["openUrl"], "no console open: 503 with the link to open one")
+del sys.modules["console_control_api"]
+
 print(f"all {ok} checks passed")

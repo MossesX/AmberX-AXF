@@ -12,6 +12,7 @@ import { join } from 'node:path';
 import * as cs from '../core/engines/chrome-settings-rules.mjs';
 import { normalizeSettingsUi, settingsUiErrors } from '../core/engines/settingsui';
 import { validateAsset } from '../core/validate';
+import { SettingsRegistry } from '../core/settings';
 import { ASSET_TYPES } from '../core/types';
 // @ts-expect-error plain .mjs (the build engine's own validator)
 import { validateAsset as engineValidate } from '../cli/build-engine.mjs';
@@ -212,6 +213,38 @@ for (const d of apps) {
   eq(cs.listOverriddenAssets(f.resetAll.saved), f.resetAll.list, 'resetAll fixture: list');
   eq(cs.resetAllPlan(f.resetAll.saved), f.resetAll.plan, 'resetAll fixture: plan');
   eq(cs.undoResetAllPlan(f.resetAll.plan.snapshot), f.resetAll.undo, 'resetAll fixture: undo');
+}
+
+
+/* ---- Reset all through the settings store: one batch, the shared default selected again, undo exact ---- */
+{
+  const store = new Map<string, string>();
+  (globalThis as { localStorage?: unknown }).localStorage = { getItem: (k: string) => store.get(k) ?? null, setItem: (k: string, v: string) => { store.set(k, v); }, removeItem: (k: string) => { store.delete(k); } };
+  const reg = new SettingsRegistry('axf.test.reset-all');
+  const seed: Record<string, unknown> = {
+    'axf.chrome.tab-group.settings': { style: 'pills', rows: '3' }, 'axf.chrome.tab-group.settings.asset': 'tabs-boxed',
+    'axf.chrome.tab-group.settings.interface': 'chrome-tab-group-axf-console', 'axf.chrome.toolbar.app': { density: 'compact' },
+    'axf.tokens.instances': { 'tabs.settings': { values: { activeBg: 'accent' } } }, 'axf.theme': 'dark',
+  };
+  for (const [k, v] of Object.entries(seed)) reg.set(k, v as never);
+  let renders = 0; const keys: string[] = [];
+  reg.subscribe(() => { renders++; }); reg.onAnyChange((k) => keys.push(k));
+  const before = reg.savedValues();
+  const plan = cs.resetAllPlan(before);
+  const touched = reg.batch({ clear: plan.clear, set: plan.set as never });
+  eq(renders, 1, 'Reset all is one change for every listener (one batch)');
+  eq([...keys].sort(), [...touched].sort(), 'each touched key is announced once (the axHub look push follows axf.tokens.*)');
+  eq(cs.listOverriddenAssets(reg.savedValues()), [], 'every override is cleared');
+  eq(reg.get('axf.theme'), 'dark', 'other settings stay');
+  const ids = ['chrome-tab-group', 'chrome-tab-group-axf-console'];
+  eq(cs.chromeInstanceSettingsPick(reg.get(cs.CHROME_INSTANCE_INTERFACE_KEY('tab-group', 'settings')), reg.get(cs.CHROME_SETTINGS_PICK_KEY('tab-group')), 'tab-group', ids), { id: 'chrome-tab-group', source: 'default' }, 'the shared default settings interface is selected again');
+  eq(reg.get(cs.CHROME_INSTANCE_ASSET_KEY('tab-group', 'settings')), null, "the row follows the app's tab style again");
+  renders = 0;
+  const back = cs.undoResetAllPlan(plan.snapshot);
+  reg.batch({ clear: back.clear, set: back.set as never });
+  eq(renders, 1, 'undo is one change too');
+  eq(reg.savedValues(), before, 'undo restores the exact snapshot');
+  eq(reg.batch({ clear: ['axf.nothing'] }), [], 'a batch that changes nothing writes nothing');
 }
 
 console.log(`✓ chrome-settings@1: ${checks} checks`);
