@@ -814,8 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 18:30 UTC · `owner-recognized-everywhere-veto` note (all) · cli
-- 2026-11-16 18:31 UTC · `settings-interface-gear-every-plugin` note (all) · orchestrator
 - 2026-11-16 18:31 UTC · `settings-interface-gear-every-plugin` note (all) · builds-live
 - 2026-11-16 18:32 UTC · `fix-red-ci-blocked-builds-they-land` → running, note (all) · mcp
 - 2026-11-16 18:33 UTC · `hotfix-orchestrator-grid-columns-don-t` note (all) · orchestrator
@@ -1214,6 +1212,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 22:54 UTC · `land-all-skin-builds` → archived, note (all) · builds-live
 - 2026-11-16 22:54 UTC · `home-cards-follow-plugin-off-home-always` → archived, note (all) · builds-live
 - 2026-11-16 22:54 UTC · `fable-icon-map-icon-packs-icon-pack` note (all) · builds-live
+- 2026-11-16 22:54 UTC · `launch-landing-page-waitlist-referral` → archived, note (all) · cli
+- 2026-11-16 22:54 UTC · `molly-gap-expenses-cors` → archived, note (all) · cli
 
 ## Token passes (log)
 

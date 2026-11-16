@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T22:54:16.240Z",
+ "updatedAt": "2026-11-16T22:54:38.504Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -107203,15 +107203,15 @@
    "title": "Molly gap: Expenses allows Molly's origin on /api/expenses/v1/* (CORS with credentials) so native screens read the ledger",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. From https://molly.amberxai.com, GET https://expenses.amberxai.com/api/expenses/v1/entries?limit=1 answers 401 with no Access-Control-Allow-Origin and the preflight answers 204 with no CORS headers, so a browser on Molly cannot call the ledger API with the axs_session cookie. The route handler (apps/expenses/app/api/expenses/v1/[...path]/route.ts, or proxy.ts) should answer an allow-list of amberxai.com app origins with Access-Control-Allow-Origin echoing the origin, Allow-Credentials true, Allow-Headers content-type, accept, authorization, x-expenses-user, Allow-Methods GET POST PATCH OPTIONS, Vary Origin, and an OPTIONS handler. Molly side is in place: apps/molly/src/molly/credentials.ts (expenses provider: cookie session or bearer token + X-Expenses-User).",
-   "status": "built",
+   "status": "archived",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
    "branch": "claude/molly-gap-expenses-cors",
    "pr": "#701",
    "createdAt": "2026-11-10T22:09:28.380Z",
-   "updatedAt": "2026-11-16T16:50:16.769Z",
-   "builtAt": "2026-11-16T16:47:19.678Z",
+   "updatedAt": "2026-11-16T22:54:29.119Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -107272,6 +107272,10 @@
     {
      "text": "Headless run axf-molly-gap-expenses-cors--joey: brief only · start 10.8K tokens ($0.03) · cost $0.56 · 40 turns · 6 tools, MCP none",
      "at": "2026-11-16T16:49:10.140Z"
+    },
+    {
+     "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
+     "at": "2026-11-16T22:54:29.119Z"
     }
    ],
    "approvals": [],
@@ -140282,14 +140286,14 @@
    "title": "Launch landing page + waitlist with referral ranking",
    "category": "Launch",
    "detail": "Brett wants to launch AmberX. Public landing page leading with one hook ('talk and it builds your app'), 60-second demo video slot, waitlist signup with referral move-up-the-line ranking, Stripe-ready pricing section (free trial then $30/month), token-driven and themable. Deploy on the VPS via Coolify on the amberxai.com domain (confirm in Hostinger DNS).",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/launch-landing-page-waitlist-referral",
    "pr": "#668",
    "createdAt": "2026-11-14T04:00:27.661Z",
-   "updatedAt": "2026-11-15T01:50:47.709Z",
+   "updatedAt": "2026-11-16T22:54:18.533Z",
    "builtAt": "",
    "notes": [
     {
@@ -140327,6 +140331,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-15T01:50:47.709Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (cli): Brett: archive all >500 behind main.",
+     "at": "2026-11-16T22:54:18.533Z"
     }
    ],
    "approvals": [],
