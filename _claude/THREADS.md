@@ -813,9 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 16:33 UTC · `fix-red-ci-blocked-builds-they-land` branch claude/fix-red-ci-blocked-builds-they-land (all) · pipeline
-- 2026-11-16 16:33 UTC · `fix-red-ci-blocked-builds-they-land` note (all) · orchestrator
-- 2026-11-16 16:33 UTC · `fix-red-ci-blocked-builds-they-land` note (all) · orchestrator
 - 2026-11-16 16:33 UTC · `re-sync-stuck-branches-lander-can-push` → running, note (all) · pipeline
 - 2026-11-16 16:33 UTC · `re-sync-stuck-branches-lander-can-push` branch claude/re-sync-stuck-branches-lander-can-push (all) · pipeline
 - 2026-11-16 16:33 UTC · `remove-old-molly-app-project-keep-axf` s8 done (all) · foreign-write
@@ -1213,6 +1210,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 19:57 UTC · `banner-widget-shapes-more-than-circle` s10 done (all) · orchestrator
 - 2026-11-16 19:57 UTC · `banner-widget-shapes-more-than-circle` s11 done (all) · orchestrator
 - 2026-11-16 19:58 UTC · `fix-red-ci-blocked-builds-they-land` branch fix/ci-common-cause, PR #726 (all) · builds-live
+- 2026-11-16 19:58 UTC · `fix-red-ci-blocked-builds-they-land` branch claude/fix-red-ci-blocked-builds-they-land (all) · builds-live
+- 2026-11-16 19:58 UTC · `fix-red-ci-blocked-builds-they-land` s24 done, → built (all) · orchestrator
+- 2026-11-16 19:58 UTC · `fix-red-ci-blocked-builds-they-land` note (all) · orchestrator
 
 ## Token passes (log)
 
