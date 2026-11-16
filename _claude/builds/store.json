@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6753,
- "updatedAt": "2026-11-16T19:32:10.773Z",
+ "rev": 6754,
+ "updatedAt": "2026-11-16T19:32:20.362Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -246459,16 +246459,16 @@
    "title": "Alert every time a build falls back to Pending",
    "category": "",
    "detail": "Whenever any build drops out of Queue/Running back to Pending (session stopped with steps left, reconciler pause, self-check release, CI or land failure, anything), raise a console banner item (systems check health@1) saying which build, why, steps left and since when, with buttons Requeue and Open, and push it once to the AmberX phone app. Clear it when the build is requeued, archived or held. Also fix the dispatcher alert link: ALERT_LINK is '#/build-orchestrator', must be 'view:build-orchestrator' so alerts open the right screen. Same via REST, MCP, CLI, voice. Tests, land through the orchestrator.",
-   "status": "complete",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/alert-every-time-build-falls-back-to",
-   "pr": "",
+   "pr": "#728",
    "priority": "P0",
    "createdAt": "2026-11-16T19:12:13.425Z",
-   "updatedAt": "2026-11-16T19:32:04.171Z",
-   "builtAt": "2026-11-16T19:31:01.893Z",
+   "updatedAt": "2026-11-16T19:32:11.063Z",
+   "builtAt": "2026-11-16T19:30:30.748Z",
    "notes": [
     {
      "text": "Brett Nov 16: also, ANY item that goes into ANY banner (systems check, approvals, push banner, every banner plugin, any app) sends a phone notification through AmberX, once per item, tapping it opens that item. Make it a framework rule: the banner registry pushes on add, with a CI check so no banner can skip it.",
@@ -246525,19 +246525,12 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "mossesx-max-",
-    "session": "",
+    "session": "axf-alert-every-time-build-falls-back-to--earl",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-16T19:16:48.399Z",
     "runs": 1,
-    "lastRun": {
-     "at": "2026-11-16T19:32:03.210Z",
-     "exit": 0,
-     "outcome": "finished",
-     "stepsLeft": 0,
-     "account": "mossesx-max-",
-     "session": "axf-alert-every-time-build-falls-back-to--earl"
-    },
+    "lastRun": null,
     "split": {
      "at": "2026-11-16T19:14:22.611Z",
      "by": "orchestrator",
