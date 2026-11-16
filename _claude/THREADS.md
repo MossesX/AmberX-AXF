@@ -813,8 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 16:45 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s9 done (all) · orchestrator
-- 2026-11-16 16:45 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s10 done (all) · orchestrator
 - 2026-11-16 16:45 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` note (all) · orchestrator
 - 2026-11-16 16:45 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` → complete (all) · orchestrator
 - 2026-11-16 16:45 UTC · `remove-old-molly-app-project-keep-axf` s14 done (all) · orchestrator
@@ -1213,6 +1211,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 20:29 UTC · `fable-rebuild-plan-studio-cleared-out` branch claude/fable-rebuild-plan-studio-cleared-out (all) · pipeline
 - 2026-11-16 20:29 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · orchestrator
 - 2026-11-16 20:29 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · orchestrator
+- 2026-11-16 20:29 UTC · `plan-studio-collapse-all-expand-all` → running, note (all) · pipeline
+- 2026-11-16 20:29 UTC · `plan-studio-collapse-all-expand-all` note (all) · orchestrator
 
 ## Token passes (log)
 

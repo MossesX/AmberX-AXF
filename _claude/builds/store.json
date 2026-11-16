@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6870,
- "updatedAt": "2026-11-16T20:29:27.839Z",
+ "rev": 6871,
+ "updatedAt": "2026-11-16T20:29:46.632Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -248925,7 +248925,7 @@
    "title": "Plan Studio: Collapse all / Expand all",
    "category": "",
    "detail": "In the existing Plan Studio (plan-studio, not 2.0): add Collapse all and Expand all buttons to its toolbar that fold or unfold every plan, section and step at once, remembered per user. Same actions by voice, MCP, CLI and console-control. Tests, land through the orchestrator.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -248933,7 +248933,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T20:26:44.199Z",
-   "updatedAt": "2026-11-16T20:29:22.589Z",
+   "updatedAt": "2026-11-16T20:29:43.883Z",
    "builtAt": "",
    "notes": [
     {
@@ -248943,6 +248943,14 @@
     {
      "text": "Brett Nov 16: Plan Studio's navigation menu is trash. Replace it with a framework TabGroup (tabs) across the top for its sections, in the old Plan Studio now and the same in Plan Studio 2.0.",
      "at": "2026-11-16T20:27:03.275Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-plan-studio-collapse-all-expand-all--gina.",
+     "at": "2026-11-16T20:29:35.465Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-plan-studio-collapse-all-expand-all--gina, shared account login)",
+     "at": "2026-11-16T20:29:43.883Z"
     }
    ],
    "approvals": [],
@@ -248962,18 +248970,18 @@
    "pipeline": {
     "queuedAt": "2026-11-16T20:26:47.305Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-plan-studio-collapse-all-expand-all--gina",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-16T20:29:30.137Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-16T20:29:30.137Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -248982,7 +248990,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-16T20:29:30.137Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -249041,7 +249049,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
