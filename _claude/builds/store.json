@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6791,
- "updatedAt": "2026-11-16T19:49:21.938Z",
+ "rev": 6792,
+ "updatedAt": "2026-11-16T19:49:33.171Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -247476,14 +247476,14 @@
    "title": "Assets menu: hide any asset, hidden list to bring them back",
    "category": "",
    "detail": "Rebuild of assets-menu-hide-any-asset-visible (branch lost in cleanup, never shipped). An Assets menu (banner/menu button and Settings > Appearance) lists every visible UI asset on the current screen and app (toolbars, tab groups, banners, widgets, nav, menus, panels, any asset). Tap any one to Hide it; it moves to a Hidden section in the same menu, where one tap shows it again. Also a Hide option in every asset's right-click/long-press menu and settings. Hidden state saved per app in the look on axHub, survives reloads. Same list/hide/show on REST, MCP, CLI and voice. Tests, land through the orchestrator.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/assets-menu-hide-any-asset-hidden-list",
    "pr": "",
    "createdAt": "2026-11-16T19:30:07.770Z",
-   "updatedAt": "2026-11-16T19:49:20.066Z",
+   "updatedAt": "2026-11-16T19:49:29.496Z",
    "builtAt": "",
    "notes": [
     {
@@ -247493,6 +247493,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"eb1972e7-c955-4c4a-942f-76345dedfc99\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-16T19:31:58.924Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-assets-menu-hide-any-asset-hidden-list--lenny.",
+     "at": "2026-11-16T19:49:25.332Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-assets-menu-hide-any-asset-hidden-list--lenny, shared account login)",
+     "at": "2026-11-16T19:49:29.496Z"
     }
    ],
    "approvals": [],
@@ -247512,12 +247520,12 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-assets-menu-hide-any-asset-hidden-list--lenny",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-16T19:49:23.375Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T19:31:58.924Z",
@@ -247527,9 +247535,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"eb1972e7-c955-4c4a-942f-76345dedfc99\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-16T19:49:23.375Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -247538,7 +247546,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-16T19:49:23.375Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -247622,7 +247630,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
