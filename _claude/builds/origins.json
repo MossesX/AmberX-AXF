@@ -7713,6 +7713,18 @@
    "from": "detail",
    "addenda": []
   },
+  "settings-interface-gear-every-plugin": {
+   "said": "They all need a settings page. They all need a settings interface.",
+   "at": "2026-11-16T18:27:38.814Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "settings-placement-everywhere": {
    "said": "\"Set the settings interface for Molly to open in a dialog.\" ... \"I should be able to select in every screen where its settings pops up.\" Addendum 1: \"Every settings interface should have a setting to declare where it pops up.\"",
    "at": "2026-11-04T00:00:00.000Z",

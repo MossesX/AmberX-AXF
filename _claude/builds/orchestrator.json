@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T18:27:16.111Z",
+ "updatedAt": "2026-11-16T18:27:40.754Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -158743,6 +158743,37 @@
    "origin": {
     "said": "Every one has a gear icon to open its settings, right? Yeah, check and fix.",
     "at": "2026-11-16T18:27:11.774Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "settings-interface-gear-every-plugin",
+   "title": "Settings interface and gear for every plugin",
+   "category": "",
+   "detail": "Brett: every plugin needs a settings interface. Audit: 44 plugins with a screen; 10 have no settings tab (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review), and hub-sync's screen has no gear. Check plugins WITHOUT a screen too. Give EVERY plugin a Settings → Plugins sub-tab (at minimum enable/disable, info, logs, plus its real options), and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when any plugin lacks a settings tab, or a plugin screen lacks the gear. Full API parity.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-16T18:27:38.814Z",
+   "updatedAt": "2026-11-16T18:27:38.814Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "They all need a settings page. They all need a settings interface.",
+    "at": "2026-11-16T18:27:38.814Z",
     "source": "",
     "session": "",
     "link": "",
