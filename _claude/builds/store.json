@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6999,
- "updatedAt": "2026-11-16T23:18:23.678Z",
+ "rev": 7000,
+ "updatedAt": "2026-11-16T23:19:05.984Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -250876,7 +250876,7 @@
    "title": "Own look per grid and tab group",
    "category": "",
    "detail": "Fresh build on current main replacing the archived own-token-sets-for-grids-and-tab-groups (2,196 behind). Every grid and tab group can get its own look separate from the app's skin: row colour, text size, spacing, borders, radius, hover and selected colours. Set per instance from its right-click Settings, with Reset to skin. Old branch for intent only, don't merge it. Tokens through the asset engines, console-control addresses, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -250884,7 +250884,7 @@
    "pr": "#752",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:23.121Z",
-   "updatedAt": "2026-11-16T23:17:41.566Z",
+   "updatedAt": "2026-11-16T23:19:03.813Z",
    "builtAt": "",
    "notes": [
     {
@@ -250910,6 +250910,10 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session on mossesx-max- finished phase Phase 1 with 11 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-16T23:17:35.364Z"
+    },
+    {
+     "text": "phase Phase 1 done, requeued for Opus: Session on mossesx-max- finished phase Phase 1 with 11 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+     "at": "2026-11-16T23:19:03.813Z"
     }
    ],
    "approvals": [],
@@ -250930,14 +250934,23 @@
     "queuedAt": "2026-11-16T22:44:25.286Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-own-look-per-grid-and-tab-group--sully",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 1",
     "launchedAt": "2026-11-16T22:49:42.023Z",
     "runs": 1,
     "crashes": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-16T23:19:03.085Z",
+     "exit": 0,
+     "outcome": "requeued",
+     "reason": "phase-done",
+     "stepsLeft": 11,
+     "account": "mossesx-max-",
+     "session": "axf-own-look-per-grid-and-tab-group--sully",
+     "phase": "Phase 1"
+    },
     "split": {
      "at": "2026-11-16T22:48:13.206Z",
      "by": "orchestrator",
@@ -250946,7 +250959,7 @@
      "note": "Split by Claude into 16 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- finished phase Phase 1 with 11 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
     "route": "",
     "dispatchedAt": "2026-11-16T22:49:42.023Z",
     "planned": {
@@ -251381,7 +251394,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
