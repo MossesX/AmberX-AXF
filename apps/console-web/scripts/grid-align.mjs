@@ -157,7 +157,9 @@ try {
       await page.waitForFunction(() => typeof window.axfConsoleControl === 'function', null, { timeout: 30_000 });
       await page.waitForTimeout(800);
       // proof the skin is drawn: its tokens differ from the default look's
-      const print = await page.evaluate(() => { const cs = getComputedStyle(document.documentElement); return ['--fx-bg', '--fx-surface', '--fx-accent', '--fx-font-size', '--fx-space', '--fx-radius-md', '--fx-font'].map((k) => cs.getPropertyValue(k).trim()).join('|'); });
+      const fingerprint = () => page.evaluate(() => { const cs = getComputedStyle(document.documentElement); return ['--fx-bg', '--fx-surface', '--fx-accent', '--fx-font-size', '--fx-space', '--fx-radius-md', '--fx-font'].map((k) => cs.getPropertyValue(k).trim()).join('|'); });
+      let print = await fingerprint();
+      for (let i = 0; i < 24 && skin !== 'default' && print === prints.get(vp); i++) { await page.waitForTimeout(250); print = await fingerprint(); }
       if (skin === 'default') prints.set(vp, print);
       else if (print === prints.get(vp)) failures.push(`${vp} · skin ${skin}: not applied (the tokens equal the default look's)`);
       for (const rows of ROWS) {
