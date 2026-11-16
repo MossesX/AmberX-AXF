@@ -186,6 +186,12 @@
         "title": "Time zone",
         "text": "The time zone the plain answers use, such as \"until 10:42 AM\". Default America/New_York.",
         "kind": "field"
+      },
+      {
+        "target": "all-passes",
+        "title": "All passes",
+        "text": "Leaves this pass request and goes back to the list of veto passes.",
+        "kind": "button"
       }
     ],
     "intros": [
