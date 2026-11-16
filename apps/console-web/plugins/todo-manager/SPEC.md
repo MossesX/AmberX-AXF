@@ -76,11 +76,14 @@ and the roll-ups `count` (descendants), `checkable` / `checked` (checkable desce
 
 ## 3. Order keys
 
-Siblings sort by `order`, a fractional index: a string over `0-9A-Za-z` (base 62, ASCII order) read as a fraction in
-(0, 1), with no trailing `0`. Plain string comparison gives the right order, and `orderBetween(a, b)` returns a key
-strictly between any two keys (`a = null` means the start, `b = null` means the end) without touching any other
-sibling. Keys grow by one character only when squeezed between two neighbours one digit apart, so a key stays short in
-practice; the engine renumbers a parent's children (`renumber`) only when a key would pass 200 characters.
+Siblings sort by `order`, a fractional index over `0-9A-Za-z` (base 62, ASCII order), the scheme of Figma's and
+rocicorp's fractional-indexing: an integer part whose first letter says how long it is (`a` + 1 digit … `z` + 26 digits
+for positive ranks, `Z` + 1 … `A` + 26 for negative) followed by an optional fraction with no trailing `0`. Plain
+string comparison gives the right order, and `orderBetween(a, b)` returns a key strictly between any two keys (`a =
+null` means the start, `b = null` means the end) without touching any other sibling. The first key is `a0`; appending
+increments the integer (`a1` … `az`, `b00` …), so keys stay two or three characters in practice; the fraction grows by
+one character only when a key is squeezed between two neighbours one digit apart. The engine renumbers a parent's
+children (`renumber`) only when a key would pass 200 characters.
 
 Ties are impossible after `validate`; where two equal keys are found (hand-edited file) they resolve by id.
 
