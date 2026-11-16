@@ -6,7 +6,7 @@
  * (REST, MCP, `axf md-studio …`), so Amber can open and edit docs by voice.
  */
 import { useEffect } from 'react';
-import { DockHost, IconButton, Note, Segmented, useRuntime, useIsPhone } from '@console/axf/react';
+import { DockHost, IconButton, Note, PluginSettingsGear, Segmented, useRuntime, useIsPhone } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { Column } from './Column';
@@ -37,12 +37,14 @@ function StudioView() {
   const column = phone ? 'drawer' : v.column;
   return (
     <div className="fx-stack axp-md-studio" data-view={view} data-column={column}>
-      <header className="fx-pagehead axp-md-studio__head">
+      {/* plugin-settings@1: the header's tools end with the gear that opens Settings → Plugins → MD Studio */}
+      <header className="fx-pagehead axp-md-studio__head" data-axf-plugin-header={FOLDER}>
         <div className="axp-md-studio__label"><p className="fx-eyebrow">Claude files · docs</p><h1>MD Studio</h1><p className="fx-muted axp-md-studio__hint">Every Markdown file by scope, opened as tabs you can split, float and edit safely. {v.hint}</p></div>
-        <div className="axp-md-studio__acts">
+        <div className="axp-md-studio__acts" role="toolbar" aria-label="MD Studio tools" data-axf-toolbar={`plugin-header.${FOLDER}`}>
           <Segmented label="View" size="sm" value={view} onChange={(x) => setView(x as ViewId)} options={VIEWS.map((x) => ({ value: x.id, label: x.label, icon: x.icon }))} />
           <IconButton icon="layout" label="Pane layouts" onClick={() => rt.openDialog('dock-layout', { arg: rt.windows.mainWindowId })} />
           <IconButton icon="refresh" label="Reload the file list" onClick={() => void loadListing()} />
+          <PluginSettingsGear tab={FOLDER} plugin="MD Studio" />
         </div>
       </header>
       <div className="axp-md-studio__cols">

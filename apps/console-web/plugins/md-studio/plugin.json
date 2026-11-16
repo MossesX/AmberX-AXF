@@ -37,6 +37,7 @@
       "_claude/memory/STATUS.md"
     ]
   },
+  "settings": { "$axf": "plugin-settings@1", "tab": "md-studio", "parent": "plugins", "sections": ["enable", "info", "logs", "options"], "options": ["md-studio.view", "md-studio.splitDirection", "md-studio.autosave", "md-studio.autosaveSeconds", "md-studio.chainDepth"], "gear": true },
   "commands": {
     "$axf": "plugin-commands@1",
     "auto": true,
