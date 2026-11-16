@@ -4,7 +4,7 @@
   "id": "amber",
   "name": "Amber",
   "version": "1.0.0",
-  "description": "The console's Amber right-click menu: every plugin under Plugins (each opens where it's set to open: main area, dialog or window), the everyday console tools, cut / copy / paste, colour theme next / previous / reset, and Settings at the bottom. Shows only its own items.",
+  "description": "The console's Amber right-click menu: every plugin under Plugins (each opens where it's set to open: main area, dialog or window), the everyday console tools, cut / copy / paste, colour theme next / previous / reset, and Settings (shown on top as Console settings, which leads every console menu). Shows only its own items.",
   "author": "AmberX AXF",
   "tags": [],
   "data": {

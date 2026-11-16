@@ -225,28 +225,29 @@ public class AmberxNativePlugin extends Plugin {
         });
     }
 
-    /* ---------------------------------------------------------------- approval overlay (ApprovalOverlay) */
+    /* ---------------------------------------------------------------- the overlay (ApprovalOverlay) */
 
-    /** Changes the approval overlay's settings (any subset); resolves with its state. */
+    /** Changes the overlay's settings (any subset); resolves with its state. */
     @PluginMethod
     public void approvalOverlaySet(PluginCall call) {
         WatchService.setApprovalOverlay(getContext(), call.getData());
         call.resolve(js(WatchService.approvalOverlayState(getContext())));
     }
 
-    /** The approval overlay's settings, whether it is shown or open, and what waits. */
+    /** The overlay's settings, whether it is shown or expanded, the approval bar and what waits. */
     @PluginMethod
     public void approvalOverlayState(PluginCall call) { call.resolve(js(WatchService.approvalOverlayState(getContext()))); }
 
     /**
-     * expand / collapse, a card action (approve, deny, shelve, approve-now, decline) on [id] or the card shown, or the
-     * browser window: {@code page} opens [url] (Brett's own sites; empty: the last page or the console) full screen,
-     * {@code close-page} closes it and leaves the floating toolbar.
+     * {@code expand} (full-screen browser), {@code open} with {@code url} (one of Brett's own pages, full screen),
+     * {@code collapse} (just the toolbar again), {@code bar-open} / {@code bar-close} (the approval bar), or an approval
+     * action (approve, deny, shelve, approve-now, decline) on {@code id} or the one on the bar.
      */
     @PluginMethod
     public void approvalOverlayCommand(PluginCall call) {
         String command = call.getString("command", "");
-        String arg = "page".equals(command) ? call.getString("url", call.getString("id", "")) : call.getString("id", "");
+        boolean page = "open".equals(command) || "page".equals(command);
+        String arg = page ? call.getString("url", call.getString("id", "")) : call.getString("id", "");
         try {
             boolean ok = WatchService.approvalOverlayCommand(getContext(), command, arg);
             call.resolve(new JSObject().put("ok", ok));

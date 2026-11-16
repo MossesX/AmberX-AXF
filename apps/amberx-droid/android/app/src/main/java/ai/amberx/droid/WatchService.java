@@ -80,7 +80,7 @@ public class WatchService extends Service {
     private SpeechRecognizer recognizer;
     private boolean listening;
     private DetectionOverlay overlay;
-    /** The approval overlay: a small toolbar that opens into the approval card (ApprovalOverlay). */
+    /** The overlay: the always-on toolbar, its approval bar and its full-screen browser (ApprovalOverlay). */
     private ApprovalOverlay approvalOverlay;
     /** What waited at the last approvals read, for the approval overlay (main thread). */
     private List<ApprovalOverlayRules.Item> waiting = new ArrayList<>();
@@ -126,8 +126,7 @@ public class WatchService extends Service {
 
     static void stop(Context c) {
         prefs(c).edit().putBoolean("on", false).apply();
-        if (handsFree(c) && MicGuard.mayOpen(c)) refresh(c); // hands-free keeps the service (and the microphone) running on its own
-        else c.startService(new Intent(c, WatchService.class).setAction(ACTION_STOP));
+        refresh(c); // hands-free or the overlay toolbar keep the service running on their own
     }
 
     /* ---------------------------------------------------------------- voice config (hands-free + overlay) */
@@ -166,9 +165,12 @@ public class WatchService extends Service {
         AmberxNativePlugin.voiceChanged(v);
     }
 
-    /** Starts the service when watching or hands-free wants it (never hands-free while Mic off is on), else stops it. */
+    /**
+     * Starts the service when watching, hands-free (never while Mic off is on) or the overlay toolbar wants it, else
+     * stops it.
+     */
     static void refresh(Context c) {
-        boolean want = prefs(c).getBoolean("on", false) || (handsFree(c) && MicGuard.mayOpen(c));
+        boolean want = prefs(c).getBoolean("on", false) || (handsFree(c) && MicGuard.mayOpen(c)) || overlayWanted(c);
         if (want) {
             try { ContextCompat.startForegroundService(c, new Intent(c, WatchService.class)); } catch (Exception ignored) { /* background start refused */ }
         } else c.startService(new Intent(c, WatchService.class).setAction(ACTION_STOP));
@@ -209,8 +211,8 @@ public class WatchService extends Service {
         boolean watching = prefs(this).getBoolean("on", false);
         boolean micAllowed = MicGuard.mayOpen(this);
         if (!micAllowed) yielded = null;
-        if (!watching && !(handsFree(this) && micAllowed)) {
-            // Nothing left to do (hands-free with Mic off): the service goes, and with it the microphone and the green dot.
+        if (!watching && !(handsFree(this) && micAllowed) && !overlayWanted(this)) {
+            // Nothing left to do (hands-free with Mic off, no toolbar): the service goes, and with it the microphone and the green dot.
             stopListening(); hideOverlay(); hideApprovalOverlay();
             ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
             setStatus(idle());
@@ -945,68 +947,91 @@ public class WatchService extends Service {
         if (overlay != null) { overlay.hide(); overlay = null; }
     }
 
-    /* ---------------------------------------------------------------- approval overlay */
+    /* ---------------------------------------------------------------- the overlay (toolbar, approval bar, browser) */
 
+    /** The overlay's settings; settings saved by the older float / pages builds are moved over once (nothing is lost). */
     static ApprovalOverlayRules.Settings approvalOverlaySettings(Context c) {
-        try { return ApprovalOverlayRules.settings(new JSONObject(prefs(c).getString("approvalOverlay", "{}"))); }
-        catch (Exception e) { return ApprovalOverlayRules.settings(null); }
+        JSONObject saved;
+        try { saved = new JSONObject(prefs(c).getString("approvalOverlay", "{}")); } catch (Exception e) { saved = null; }
+        JSONObject moved = ApprovalOverlayRules.migrate(saved);
+        if (moved != null) prefs(c).edit().putString("approvalOverlay", moved.toString()).apply();
+        return ApprovalOverlayRules.settings(moved != null ? moved : saved);
+    }
+
+    /** True when the toolbar should be on screen: the overlay is on and "Display over other apps" is granted. */
+    static boolean overlayWanted(Context c) {
+        return approvalOverlaySettings(c).on && DetectionOverlay.canDraw(c);
+    }
+
+    /** True while the toolbar window is on screen, so AmberX may start activities from the background (AxppLink). */
+    static boolean overlayShown() {
+        WatchService w = running;
+        ApprovalOverlay o = w == null ? null : w.approvalOverlay;
+        return o != null && o.shown();
     }
 
     /**
-     * Changes the approval overlay's settings (any subset: on, edge, top, size, expand, show, idleOpacity, idleVisible,
-     * shrinkAfterSec), from the app, the console API, MCP, the CLI or voice. Returns the saved settings.
+     * Changes the overlay's settings (any subset: on, edge, top, size, expand, show, idleOpacity, shrinkAfterSec), from
+     * the app, the console API, MCP, the CLI or voice, and starts or stops the service to match. Returns the saved settings.
      */
     static ApprovalOverlayRules.Settings setApprovalOverlay(Context c, JSONObject change) {
-        ApprovalOverlayRules.Settings s = ApprovalOverlayRules.merge(approvalOverlaySettings(c).toJson(), change);
+        ApprovalOverlayRules.Settings before = approvalOverlaySettings(c);
+        ApprovalOverlayRules.Settings s = ApprovalOverlayRules.merge(before.toJson(), change);
         prefs(c).edit().putString("approvalOverlay", s.toJson().toString()).apply();
         WatchService w = running;
         if (w != null) w.main.post(w::syncApprovalOverlay);
+        // Switched on or off: start the service for the toolbar, or let it go when nothing else needs it. A drag or a
+        // size change only redraws.
+        if (before.on != s.on || w == null) { try { refresh(c); } catch (RuntimeException ignored) { /* background start refused: next app open */ } }
         AmberxNativePlugin.approvalOverlayChanged(approvalOverlayState(c));
         return s;
     }
 
-    /** The overlay's state for the API: settings, shown, expanded and what waits (settings only when the service is off). */
+    /** The overlay's state for the API: settings, shown, expanded, the approval bar and what waits. */
     static JSONObject approvalOverlayState(Context c) {
         WatchService w = running;
-        if (w != null && w.approvalOverlay != null) return w.approvalOverlay.state();
-        JSONObject o = new JSONObject();
+        JSONObject o = w != null && w.approvalOverlay != null ? w.approvalOverlay.state() : null;
         try {
-            o.put("settings", approvalOverlaySettings(c).toJson()).put("shown", false).put("expanded", false)
-                .put("items", new JSONArray()).put("watching", prefs(c).getBoolean("on", false))
-                .put("overlayAllowed", DetectionOverlay.canDraw(c));
+            if (o == null) {
+                o = new JSONObject().put("settings", approvalOverlaySettings(c).toJson()).put("shown", false).put("expanded", false)
+                    .put("approvalBar", false).put("items", new JSONArray());
+            }
+            o.put("watching", prefs(c).getBoolean("on", false)).put("overlayAllowed", DetectionOverlay.canDraw(c));
         } catch (Exception ignored) {}
         return o;
     }
 
     /**
-     * Opens or folds the card, runs a card action (approve / deny / shelve / approve-now / decline), opens a page in the
-     * overlay's browser window ({@code page}, [id] is the URL; empty: the last page or the console) or closes it
-     * ({@code close-page}: just the toolbar again), without the UI.
+     * One overlay command without the UI: {@code expand} (full-screen browser on the last page or the console),
+     * {@code open} ([arg] is the URL), {@code collapse} (just the toolbar again), {@code bar-open} / {@code bar-close}
+     * (the approval bar), or an approval action (approve / deny / shelve / approve-now / decline) on [arg] or the one
+     * on the bar. {@code page} and {@code close-page} are the older names of open and collapse.
      */
-    static boolean approvalOverlayCommand(Context c, String command, String id) {
-        if ("page".equals(command)) return openOverlayPage(c, OverlayPageRules.pageButtonUrl(lastPage(c, id)));
+    static boolean approvalOverlayCommand(Context c, String command, String arg) {
+        String cmd = "page".equals(command) ? (arg == null || arg.isEmpty() ? "expand" : "open") : "close-page".equals(command) ? "collapse" : command;
+        if ("expand".equals(cmd)) return openOverlayPage(c, OverlayPageRules.expandUrl(lastPage()));
+        if ("open".equals(cmd)) return openOverlayPage(c, arg);
         WatchService w = running;
         if (w == null) return false;
         w.main.post(() -> {
             if (w.approvalOverlay == null) return;
-            if ("expand".equals(command)) w.approvalOverlay.setExpanded(true);
-            else if ("collapse".equals(command)) w.approvalOverlay.setExpanded(false);
-            else if ("close-page".equals(command)) w.approvalOverlay.closePage();
-            else w.approvalOverlay.act(id == null || id.isEmpty() ? null : id, command);
+            if ("collapse".equals(cmd)) w.approvalOverlay.collapse();
+            else if ("bar-open".equals(cmd)) w.approvalOverlay.setBarOpen(true);
+            else if ("bar-close".equals(cmd)) w.approvalOverlay.setBarOpen(false);
+            else w.approvalOverlay.act(arg == null || arg.isEmpty() ? null : arg, cmd);
         });
         return true;
     }
 
-    private static String lastPage(Context c, String url) {
-        if (url != null && !url.isEmpty()) return url;
+    private static String lastPage() {
         WatchService w = running;
         return w != null && w.approvalOverlay != null ? w.approvalOverlay.lastPage() : "";
     }
 
     /**
-     * Opens one of Brett's pages in the overlay's full-screen browser window, from any thread (AXPP {@code browser.open},
-     * the native bridge, voice). True when the window is up; false when the overlay can't take it (watching off,
-     * overlay off, no "Display over other apps"), so the caller opens Chrome instead. The URL must pass
+     * Expands the overlay into the full-screen browser on one of Brett's pages, from any thread (AXPP
+     * {@code browser.open}, the native bridge, voice). True when the browser is up; false when the overlay can't take it
+     * (service down, overlay off, no "Display over other apps"), so the caller opens Chrome instead. The URL must pass
      * {@link OpenUrlRules#allowed} (throws otherwise).
      */
     static boolean openOverlayPage(Context c, String url) {
@@ -1018,7 +1043,7 @@ public class WatchService extends Service {
         w.main.post(() -> {
             try {
                 if (w.approvalOverlay == null) w.syncApprovalOverlay();
-                ok[0] = w.approvalOverlay != null && w.approvalOverlay.openPage(u);
+                ok[0] = w.approvalOverlay != null && w.approvalOverlay.open(u);
             } catch (RuntimeException ignored) { /* the caller falls back to Chrome */ }
             done.countDown();
         });
@@ -1027,12 +1052,12 @@ public class WatchService extends Service {
         return ok[0];
     }
 
-    /** Whether the overlay could take a page now (watching on, overlay on, "Display over other apps" granted). */
+    /** Whether the overlay could take a page now (service up, overlay on, "Display over other apps" granted). */
     static boolean overlayPagesReady(Context c) {
-        return running != null && approvalOverlaySettings(c).on && DetectionOverlay.canDraw(c);
+        return running != null && overlayWanted(c);
     }
 
-    /** Shows the approval overlay to match its settings and the "Display over other apps" permission (main thread). */
+    /** Shows the overlay to match its settings and the "Display over other apps" permission (main thread). */
     void syncApprovalOverlay() {
         ApprovalOverlayRules.Settings s = approvalOverlaySettings(this);
         if (!s.on || !DetectionOverlay.canDraw(this)) { hideApprovalOverlay(); return; }
@@ -1046,7 +1071,7 @@ public class WatchService extends Service {
         if (approvalOverlay != null) { approvalOverlay.hide(); approvalOverlay = null; }
     }
 
-    /** A card button: held calls through VetoAlerts (Deny / Approve now / Shelve), approvals through the hub's decide route. */
+    /** An approval bar button: held calls through VetoAlerts (Deny / Approve now / Shelve), approvals through the hub's decide route. */
     private void approvalAct(ApprovalOverlayRules.Item it, String action, java.util.function.Consumer<Boolean> done) {
         Context app = getApplicationContext();
         new Thread(() -> {

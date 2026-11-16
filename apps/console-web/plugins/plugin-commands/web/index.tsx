@@ -59,7 +59,7 @@ function CommandRow({ p, c }: { p: PluginCommandEntry; c: PluginCommand }) {
           {c.description && <p className="axf-pc__muted">{c.description}</p>}
           <ul className="axf-pc__ways">
             <li><span className="axf-pc__muted">REST</span> <code>{restLine(p, c)}</code></li>
-            <li><span className="axf-pc__muted">MCP</span> <code>{commandToolName(p.folder, c.id)}</code></li>
+            <li><span className="axf-pc__muted">MCP</span> <code>{c.tool ?? commandToolName(p.folder, c.id)}</code></li>
             <li><span className="axf-pc__muted">CLI</span> <code>{cli}</code></li>
           </ul>
           <TextField label="Input (JSON)" value={input} onChange={setInput} mono rows={3} />

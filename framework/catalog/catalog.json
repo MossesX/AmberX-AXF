@@ -318,6 +318,22 @@
               "tag": "lib",
               "recommended": false,
               "suggests": []
+            },
+            {
+              "id": "f.appearance.hubskinonly",
+              "title": "Skin from axHub only: Settings \u2192 Appearance \u2192 Get my skin only from axHub (console) draws the hub-wide skin and axHub's tokens alone, drives the appearance lock (controls locked, \"Following axHub\"), keeps the app's own picks for when it is off",
+              "note": "skin-rules.mjs hubOnlyLook, runtime HUB_SKIN_ONLY_KEY / appearance.hubskin; reachable by settings.set, console.settings, voice; default off; Kotlin twin deferred",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "f.appearance.hubskinoverride",
+              "title": "Override axHub: the switch under Get my skin only from axHub (one or the other); while axHub-only is on every skin and asset editor is greyed out under a lock note with a \"Click here to override\" link; one confirm unlocks editing and edited parts are marked Overridden",
+              "note": "runtime HUB_SKIN_OVERRIDE_KEY / HUB_SKIN_OVERRIDDEN_KEY / appearance.hubskin.override; react HubSkinLockNote / HubSkinLockArea; reachable by settings.set, console.settings, the action, voice; default off; Kotlin twin deferred",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
             }
           ]
         },
@@ -329,6 +345,14 @@
               "id": "f.tokens",
               "title": "Tokens are the only way to style: no literal colors/sizes/fonts in any framework component",
               "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.tokenregistry",
+              "title": "Token registry and Skin editor: every token registered (element, area, state, scheme, level, description, default, source), new UIs register theirs in the manifest, CI fails unregistered or unread tokens; Skin editor sandboxes any UI with live hot render, snapshot chain with revert, export as a new skin; full API",
+              "note": "token-registry@1 + skin-snapshot@1 (core/engines/token-registry.mjs), console plugin skin-editor",
               "tag": "lock",
               "recommended": true,
               "suggests": []
@@ -1355,6 +1379,14 @@
               "id": "ui.opacity",
               "title": "Opacity, z-index, border-width, stroke, icon-size, control-height ladders",
               "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "ui.opacity.surfaces",
+              "title": "Surface transparency tokens: every dialog, settings window, panel, menu, toolbar and banner reads its own opacity",
+              "note": "Each kind of surface (dialog, settings window, panel, menu, toolbar, banner) has its own opacity token, so a skin or a person can make one see-through with a frosted backdrop without touching the others.",
               "tag": "core",
               "recommended": true,
               "suggests": []
@@ -2514,6 +2546,10 @@
                   "title": "Build names fit the VPS tools: every new build id is at most 40 characters (build-id@1), the full title stays the display name, older long ids get a short alias that every command and build_land accept"
                 },
                 {
+                  "id": "cx.buildengine.groups",
+                  "title": "Custom groups and custom tabs on the builds board: user-made and smart groups sorted by state (partial to landed) with counts, pinned as tabs next to Pending and the other stages, group actions, saved per project"
+                },
+                {
                   "id": "cx.buildengine.sectionowners",
                   "title": "Section owners: every section that acts on its own has one employee who posts its key events in the group chat (crew-sections@1, framework/cli/crew-say.mjs, CI owner check)"
                 }
@@ -2581,6 +2617,14 @@
               "id": "cx.search",
               "title": "Console search toolbar: live dropdown over pages, actions, settings, dialogs, assets and words on pages; a pick is brought into focus",
               "note": "Toolbar asset console-search (data.search.live) on the search engine (core/engines/search.ts = Kotlin SearchEngine.kt).",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "cx.gate",
+              "title": "Gate & rules plugin: the rules a PR must pass, the auto-lander with one Merge queue on/off switch (off = one at a time), and the history of both; REST, MCP, CLI and voice",
+              "note": "apps/console-web/plugins/gate (gate-rules@1, framework/spec/GATE.md; build-rules@1, framework/spec/BUILD-RULES.md): Rules / Build rules / Auto-lander / History tabs, the VPS build rules runner and fixers (home card, help stub, Shipped features manifest, API parity, THREADS + tracker, CI checks, PR open + link), gate-store.mjs + lander.mjs adapters (axf-molly replaces only those), gate.mjs one implementation; Kotlin twin deferred",
               "tag": "",
               "recommended": true,
               "suggests": []
