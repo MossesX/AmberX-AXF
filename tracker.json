@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-11-14T18:45:40.196Z",
+  "generatedAt": "2026-11-16T16:51:28.004Z",
   "summary": {
     "foundations": {
       "built": 71,
@@ -20,12 +20,12 @@
       "coverage": 45
     },
     "console": {
-      "built": 14,
+      "built": 15,
       "partial": 1,
       "placeholder": 3,
       "planned": 0,
-      "total": 18,
-      "coverage": 78
+      "total": 19,
+      "coverage": 79
     },
     "modules": {
       "built": 15,
@@ -3721,6 +3721,18 @@
       "notes": "framework/core/build-id.mjs: ids ≤ 40 chars (^[a-z0-9][a-z0-9-]{0,39}$), filler words dropped, cut at a dash, -2/-3 on a collision; used by request, orchestrator add/import/harvest, Pending and Plan Studio. Legacy long ids get an alias (pipeline.mjs aliases, the tick for live builds); land-alias links <worktrees>/<alias> and claude/<alias> for build_land. Kotlin twin deferred."
     },
     {
+      "id": "cx.buildengine.groups",
+      "tab": "console",
+      "group": "console-plumbing",
+      "parent": "cx.buildengine",
+      "title": "Custom groups and custom tabs on the builds board: user-made and smart groups sorted by state (partial to landed) with counts, pinned as tabs next to Pending and the other stages, group actions, saved per project",
+      "tag": "suggested",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "build-groups@1 (the build orchestrator plugin: groups-core.mjs rules, groups.mjs CLI): groups per project in <pipeline dir>/groups.json; hand-picked members (drag, select, voice, API) plus smart rules (title contains, more than N behind main, filed in the last N days, states, priorities); state order partial, pending, queued, running, failed, done, landed with counts, sort and filter; a group pinned as a tab sits next to its stage tab (group:<id>); group actions queue, land (Urgent in the merge queue), archive, priority. REST /groups, plugin commands groups-* (MCP, CLI axf build-orchestrator, control@1 plugins.commands), console actions build-orchestrator.groups / group-add / group-remove / group-action. Kotlin twin deferred."
+    },
+    {
       "id": "cx.buildengine.sectionowners",
       "tab": "console",
       "group": "console-plumbing",
@@ -3845,6 +3857,17 @@
       "wave": 1,
       "module": "app-console",
       "notes": ""
+    },
+    {
+      "id": "cx.gate",
+      "tab": "console",
+      "group": "console-plumbing",
+      "title": "Gate & rules plugin: the rules a PR must pass, the auto-lander with one Merge queue on/off switch (off = one at a time), and the history of both; REST, MCP, CLI and voice",
+      "tag": "",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "Build gate-rules-plugin-in-the-console (Nov 15 2026; Brett: \"Where is the gate and rules plugin, open it on my screen.\"): Builds → Gate & rules (view:gate, tabs gate.tabs=rules|auto-lander|history), Settings → Plugins → Gate. REST /api/plugins/gate, MCP gate_* / lander_*, CLI axf gate …, voice gate.open, gate.rule, lander.land-now, lander.pause, lander.resume, gate.setting. Merge queue switch off by default (one at a time). Self-tests: the plugin's test.mjs and server/test_routes.py. Kotlin twin deferred (PORTING.md)."
     },
     {
       "id": "m.kernel",

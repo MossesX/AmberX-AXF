@@ -153,4 +153,32 @@ ok(wall.ui_role(wall.Caller("u", "user", frozenset({"console.plugin.x"}))) == "u
 ok(wall.user_may(wall.Caller("u", "user", frozenset({"console.plugin.*"})), "GET", "/api/plugins/../token/reset") is False, "a dotted plugin path is no grant, even with console.plugin.*")
 ok(wall.user_may(wall.Caller("u", "user", frozenset({"console.plugin.*"})), "GET", "/api/plugins/x%2f..%2ftoken") is False, "an encoded plugin path is no grant")
 
+print("the signed-in admin is the owner, even when the page also sends the token")
+from starlette.requests import Request as _Req  # noqa: E402
+
+
+def req(method: str, headers: dict[str, str]) -> _Req:
+    return _Req({"type": "http", "method": method, "path": "/api/x", "query_string": b"", "server": (HOST, 80),
+                 "headers": [(k.lower().encode(), v.encode()) for k, v in headers.items()]})
+
+
+bearer = {"authorization": f"Bearer {TOKEN}", "host": HOST}
+admin_session = user("admin", role="admin")
+ok(main._token_caller(req("PUT", same({**bearer, **admin_session}))).name == "admin", "token + signed admin session from the console page = the admin")
+ok(main._token_caller(req("PUT", same({**bearer, **admin_session}))).via == "session", "… as a session (owner-only settings key on it)")
+ok(main._token_caller(req("PUT", bearer)) is wall.TOKEN_CALLER, "the token alone stays the token caller (sessions, MCP, voice)")
+ok(main._token_caller(req("PUT", {**bearer, **admin_session, "origin": "https://evil.example"})) is wall.TOKEN_CALLER, "a cross-site write with session headers stays the token caller")
+ok(main._token_caller(req("PUT", same({**bearer, **user("admin", role="admin", signed=False)}))) is wall.TOKEN_CALLER, "unsigned admin headers stay the token caller")
+ok(main._token_caller(req("PUT", same({**bearer, **user("conrad")}))) is wall.TOKEN_CALLER, "a plain user's session with the token stays the token caller")
+import plugin_services  # noqa: E402
+
+ctl = plugin_services.get("control@1")
+if ctl is not None and hasattr(ctl, "owner"):
+    r = req("PUT", same({**bearer, **admin_session}))
+    r.state.axf_user = main._token_caller(r)
+    ok((ctl.owner(r) or {}).get("via") == "console", "control@1 owner(): the signed-in admin with the token = Brett's approval")
+    r2 = req("PUT", bearer)
+    r2.state.axf_user = main._token_caller(r2)
+    ok(ctl.owner(r2) is None, "control@1 owner(): the token alone is no owner approval")
+
 print(f"all {checks} checks passed")

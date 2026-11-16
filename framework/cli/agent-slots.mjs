@@ -409,8 +409,12 @@ export async function withSlot(opts, fn) {
 }
 
 /** Heavy-step lock (pnpm/vite builds, docker test runs, Playwright): at most maxHeavy at once. */
+let heavySeq = 0;
 export async function withHeavy(label, fn, opts = {}) {
-  const id = `hv-${process.pid}-${Date.now().toString(36)}`;
+  // unique per call: two calls in one process within the same millisecond must not share an id, or the first to finish
+  // releases both slots (seen in CI as a peak of 3 under a cap of 2)
+  heavySeq += 1;
+  const id = `hv-${process.pid}-${Date.now().toString(36)}-${heavySeq.toString(36)}`;
   for (let first = true; ; first = false) {
     const settings = loadSettings();
     const got = withState((st) => {
