@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7098,
- "updatedAt": "2026-11-16T23:58:52.982Z",
+ "rev": 7099,
+ "updatedAt": "2026-11-16T23:59:11.241Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -257633,7 +257633,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T23:22:58.656Z",
-   "updatedAt": "2026-11-16T23:52:49.272Z",
+   "updatedAt": "2026-11-16T23:59:02.945Z",
    "builtAt": "",
    "notes": [
     {
@@ -257732,6 +257732,28 @@
      "rev": 1,
      "createdAt": "2026-11-16T23:24:34.880Z",
      "updatedAt": "2026-11-16T23:24:34.880Z"
+    },
+    {
+     "id": "s24",
+     "uid": "st-mwjxd5ku010g50",
+     "title": "",
+     "text": "ROOT CAUSE of the blocked pile (Brett Nov 16): before landing, the auto-lander commits 'synced files left in the worktree (auto-land)' onto each build branch: _claude/builds/store.json, orchestrator.json, origins.json, journal jsonl (thousands of lines). That commit turns CI red on every build (e.g. #733: 98f6c0d0 green, 41e3e2ac red). Stop committing orchestrator/build-tracking data into build branches at all; keep it on the hub/data store only, and reset or ignore those files in worktrees. Also journal files are hitting 70 MB on GitHub: move them out of git. Then re-run CI on every blocked PR and land them one at a time.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T23:59:02.946Z",
+     "updatedAt": "2026-11-16T23:59:03.294Z"
     },
     {
      "id": "s2",
@@ -258295,7 +258317,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
