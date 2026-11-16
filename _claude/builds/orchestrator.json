@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T20:41:58.507Z",
+ "updatedAt": "2026-11-16T20:42:13.215Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -162935,7 +162935,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T20:26:44.199Z",
-   "updatedAt": "2026-11-16T20:41:52.058Z",
+   "updatedAt": "2026-11-16T20:42:11.002Z",
    "builtAt": "2026-11-16T20:41:44.068Z",
    "notes": [
     {
@@ -162953,6 +162953,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-plan-studio-collapse-all-expand-all--gina, shared account login)",
      "at": "2026-11-16T20:29:43.883Z"
+    },
+    {
+     "text": "Headless run axf-plan-studio-collapse-all-expand-all--gina: brief only · start 15.4K tokens ($0.05) · cost $2.72 · 49 turns · 6 tools, MCP none",
+     "at": "2026-11-16T20:42:11.002Z"
     },
     {
      "text": "Opus phase done (s1, s2). Plan Studio 2.0 (plugin plan-studio-2) does not exist yet, so its copy of the layout switcher is not built: when it lands, reuse web/layout-core.mjs + layout.tsx unchanged. Layouts are an open registry in layout-core.mjs; IDE arrangements are dock-layout@1 assets. A dedicated page-layout asset type would need a Fable contract step (asset-types.json) — not done here. Pre-existing CI finding not from this build: check-console-control flags plugins/claude-settings/web/index.tsx:234 (TabGroup id is a constant the checker cannot read).",
