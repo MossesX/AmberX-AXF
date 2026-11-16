@@ -61,7 +61,8 @@ t('android.yml: runs on queue/**, every heavy job waits on scope and reads its o
   const y = readFileSync(join(ROOT, '.github/workflows/android.yml'), 'utf8');
   assert.match(y, /branches: \[main, 'queue\/\*\*'\]/);
   assert.match(y, /node framework\/cli\/ci-scope\.mjs gha/);
-  for (const [job, key] of [['engine', 'engine'], ['console', 'console'], ['amberx', 'amberx'], ['android', 'android'], ['light', 'light']]) {
+  // The AmberX shell job was retired for Phone Connect, whose APK builds in the android job (build phone-connect-small-android-companion).
+  for (const [job, key] of [['engine', 'engine'], ['console', 'console'], ['android', 'android'], ['light', 'light']]) {
     const block = y.slice(y.indexOf(`\n  ${job}:\n`), y.indexOf('\n    steps:', y.indexOf(`\n  ${job}:\n`)));
     assert.match(block, /needs: (scope|\[scope)/, job);
     assert.match(block, new RegExp(`needs\\.scope\\.outputs\\.${key} == 'true'`), job);
