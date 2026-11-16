@@ -808,15 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 13:58 UTC · `phone-connect-small-android-companion` s3 done (all) · orchestrator
-- 2026-11-15 13:58 UTC · `phone-connect-small-android-companion` PR #712 (all) · builds-live
-- 2026-11-15 13:59 UTC · `phone-connect-small-android-companion` note (all) · orchestrator
-- 2026-11-15 14:10 UTC · `home-cards-follow-plugin-off-home-always` → pending, note (all) · reconciler
-- 2026-11-15 14:20 UTC · `build-rules-tab-gate-rules-vps-owns` → pending, note (all) · reconciler
-- 2026-11-15 14:20 UTC · `phone-connect-small-android-companion` → pending, note (all) · reconciler
-- 2026-11-15 14:52 UTC · `build-rules-tab-gate-rules-vps-owns` → running, note (all) · mcp
-- 2026-11-15 14:52 UTC · `build-rules-tab-gate-rules-vps-owns` → queued (all) · mcp
-- 2026-11-15 14:53 UTC · `build-rules-tab-gate-rules-vps-owns` → running, note (all) · pipeline
 - 2026-11-15 14:53 UTC · `build-rules-tab-gate-rules-vps-owns` note (all) · orchestrator
 - 2026-11-15 14:54 UTC · `phone-connect-small-android-companion` → running, note (all) · mcp
 - 2026-11-15 14:54 UTC · `phone-connect-small-android-companion` → queued (all) · mcp
@@ -1208,6 +1199,15 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 16:42 UTC · `molly-gap-axhub-cors-live` note (all) · orchestrator
 - 2026-11-16 16:43 UTC · `molly-multi-instance-tabs` → archived, note (all) · cli
 - 2026-11-16 16:43 UTC · `molly-one-shell` → archived, note (all) · cli
+- 2026-11-16 16:43 UTC · `molly-sign-in-once` → archived, note (all) · cli
+- 2026-11-16 16:43 UTC · `molly-fable-version-the-one-interface-for-amberx` → archived, note (all) · cli
+- 2026-11-16 16:43 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → archived, note (all) · cli
+- 2026-11-16 16:43 UTC · `convert-every-app-into-a-molly-module-expenses-c` → archived, note (all) · cli
+- 2026-11-16 16:43 UTC · `molly-gap-console-token-handoff` → archived, note (all) · cli
+- 2026-11-16 16:43 UTC · `molly-gap-remote-actions` → archived, note (all) · cli
+- 2026-11-16 16:43 UTC · `molly-gap-expenses-token-handoff` → archived, note (all) · cli
+- 2026-11-16 16:43 UTC · `molly-gap-console-warm-token` → archived, note (all) · cli
+- 2026-11-16 16:43 UTC · `molly-gap-axhub-cors-live` → archived, note (all) · cli
 
 ## Token passes (log)
 
