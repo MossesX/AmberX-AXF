@@ -1364,8 +1364,9 @@
       "tabs": []
     },
     {
-      "id": "*",
-      "dynamic": true,
+      "address": "view:claude-settings/tab:claude-settings.tabs",
+      "id": "claude-settings.tabs",
+      "dynamic": false,
       "view": "claude-settings",
       "plugin": "ai.amberx.axf.console.claude-settings",
       "file": "plugins/claude-settings/web/index.tsx",
