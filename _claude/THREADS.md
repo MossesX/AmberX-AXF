@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 12:06 UTC · `pending-tab-one-collapsed-row-per-2` s8 done (all) · orchestrator
 - 2026-11-15 12:08 UTC · `pending-tab-one-collapsed-row-per-2` s9 done (all) · orchestrator
 - 2026-11-15 12:09 UTC · `shipped-features-organized-sortable` added (0 steps) (all) · console
 - 2026-11-15 12:09 UTC · `shipped-features-organized-sortable` → queued, note (all) · console
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 13:44 UTC · `demo-video-series-three-minute-browser` note (all) · orchestrator
 - 2026-11-16 13:44 UTC · `console-look-becomes-default-axhub-skin` s13 done (all) · orchestrator
 - 2026-11-16 13:44 UTC · `console-look-becomes-default-axhub-skin` note (all) · orchestrator
+- 2026-11-16 13:44 UTC · `console-look-becomes-default-axhub-skin` s14 done (all) · orchestrator
 
 ## Token passes (log)
 
