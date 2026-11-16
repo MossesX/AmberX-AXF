@@ -266,7 +266,7 @@ for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old 
   delete (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost;
 }
 
-// context message (guest → host, Molly's xLayout): a right-click inside a guest that took context-menu goes to the host
+// context message (guest → host, the xLayout host): a right-click inside a guest that took context-menu goes to the host
 {
   const m = parseEmbedMessage({ $axf: 'embed@1', type: 'context', x: 12.4, y: 30, target: 'canvas', payload: 'row-3' });
   eq(m, { $axf: 'embed@1', type: 'context', x: 12, y: 30, target: 'canvas', payload: 'row-3' }, 'context: parsed, coordinates rounded');
@@ -274,7 +274,7 @@ for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old 
   eq((parseEmbedMessage({ $axf: 'embed@1', type: 'context', x: -5, y: 1e9, target: '<b>' }) as { x: number; y: number; target: string }), { $axf: 'embed@1', type: 'context', x: 0, y: 100000, target: 'default' }, 'context: clamped, a bad target is default');
   const posted: { type?: string; target?: string; payload?: string }[] = [];
   (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost = { post: (j: string) => posted.push(JSON.parse(j)) };
-  const guest = make({ host: 'molly', hidden: ['context-menu', 'banner'], takes: ['context-menu'] });
+  const guest = make({ host: 'shell', hidden: ['context-menu', 'banner'], takes: ['context-menu'] });
   guest.openContext(5, 6, 'nav-item', 'build');
   eq(posted.at(-1), { $axf: 'embed@1', type: 'context', x: 5, y: 6, target: 'nav-item', payload: 'build' }, 'context: forwarded to the host');
   eq(guest.getState().context, null, 'context: the guest opens no menu of its own');

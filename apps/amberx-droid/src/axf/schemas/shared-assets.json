@@ -3,8 +3,7 @@
   "apps": [
     "apps/console-web",
     "apps/axhub-web",
-    "apps/amberx-droid",
-    "apps/molly"
+    "apps/amberx-droid"
   ],
   "roots": []
 }

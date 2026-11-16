@@ -79,26 +79,14 @@ export function advance(cur: { step: number; chars: number; wait: number }, seq:
 
 /* ---------------------------------------------------------------- the companion (who it is) */
 
-/** The companion's face and name (Brett, Nov 3 2026: Gizmo replaces agent Molly; Molly is the app that brings it all together). */
+/** The companion's face and name (Brett, Nov 3 2026). */
 export const COMPANION = {
   id: 'gizmo',
   name: 'Gizmo',
   /** the agent-manager agent the chats run as (its persona, tools and approvals live there) */
   agentId: 'gizmo',
-  /** the name he replaced in AmberX's assistant texts */
-  replaces: 'Molly',
   tagline: 'Your AmberX sidekick: chat, talk, build and check on the crew.',
 } as const;
-
-/**
- * An assistant text with the old assistant's name swapped for the companion's ("Ask Molly" → "Ask Gizmo"), whole words
- * only and case kept, so "Molly's" and "MOLLY" follow and "Mollyx" doesn't. Pure.
- */
-export function renameAssistant(text: string, from: string = COMPANION.replaces, to: string = COMPANION.name): string {
-  if (!text || !from) return text;
-  const esc = from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return text.replace(new RegExp(`\\b${esc}\\b`, 'gi'), (w) => (w === w.toUpperCase() && w.length > 1 ? to.toUpperCase() : w[0] === w[0]!.toLowerCase() ? to.toLowerCase() : to));
-}
 
 /* ---------------------------------------------------------------- conversations (assistant@1 summaries) */
 

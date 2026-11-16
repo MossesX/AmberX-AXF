@@ -1,5 +1,5 @@
 /*
- * xLayout (xlayout@1) — Molly as ONE app (Brett, Nov 2 2026): the host-side layout model that makes several apps
+ * xLayout (xlayout@1) — several apps as ONE app (Brett, Nov 2 2026): the host-side layout model that makes several apps
  * (AmberX, axHub web, the Dev Console) look like one. The asset says
  *   - which apps the host frames (`apps`: id, label, url, namespace prefix);
  *   - how each kind of chrome is handled (`merge`: `host` = only the host's own; `merged` = one bar merged from every
@@ -10,7 +10,7 @@
  *     floating window, or — IDE on — a pane).
  * Pure rules; the chrome merge itself is engines/chrome.ts (chrome@1), the pane tree is engines/dock.ts (dock@1). The
  * Toolbar designer is its own plugin reached through a capability service; this engine only holds what it saves.
- * Molly-only: standalone apps never load an xlayout asset and stay exactly as they are. Kotlin twin deferred
+ * Host-only: standalone apps never load an xlayout asset and stay exactly as they are. Kotlin twin deferred
  * (spec/PORTING.md); fixture spec/fixtures/xlayout.json.
  */
 import { DOCK_LAYOUT_MAX_PANES, normalizeDockRules, parsePresetTree, type PresetPane } from './dock';
@@ -23,7 +23,7 @@ export const CHROME_KINDS = ['banner', 'app-menu', 'nav-menu', 'context-menu', '
 export type ChromeKind = (typeof CHROME_KINDS)[number];
 export const MERGE_MODES = ['host', 'merged', 'guest'] as const;
 export type MergeMode = (typeof MERGE_MODES)[number];
-/** What Molly does unless the asset says otherwise: one banner (the host's), everything else merged. */
+/** What a host does unless the asset says otherwise: one banner (the host's), everything else merged. */
 export const DEFAULT_MERGE: Readonly<Record<ChromeKind, MergeMode>> = { banner: 'host', 'app-menu': 'merged', 'nav-menu': 'merged', 'context-menu': 'merged', toolbar: 'merged', widgets: 'merged' };
 
 export const TOOLBAR_SLOT_COUNT = 3;
@@ -269,14 +269,14 @@ export function guestTakes(data: Pick<XLayoutData, 'merge'>): string[] {
   return CHROME_KINDS.filter((k) => data.merge[k] === 'merged' && known.has(k));
 }
 
-/** A guest's frame address: its own URL with the full embed@1 marker (host `molly`, hidden chrome, functions taken). */
-export function guestUrl(data: Pick<XLayoutData, 'merge'>, app: XLayoutApp, host = 'molly', route = ''): string {
+/** A guest's frame address: its own URL with the full embed@1 marker (host `host` unless named, hidden chrome, functions taken). */
+export function guestUrl(data: Pick<XLayoutData, 'merge'>, app: XLayoutApp, host = 'host', route = ''): string {
   const url = route ? `${app.url}/#/${route.replace(/^#?\/?/, '')}` : app.url;
   return embedUrlFull(url, host, { hidden: guestHidden(data), takes: guestTakes(data) });
 }
 
-/** The user-agent suffix a native host's web views would carry for the same marker (Android: the Molly shell, later). */
-export function guestUserAgent(data: Pick<XLayoutData, 'merge'>, host = 'molly'): string {
+/** The user-agent suffix a native host's web views would carry for the same marker (an Android host, later). */
+export function guestUserAgent(data: Pick<XLayoutData, 'merge'>, host = 'host'): string {
   return userAgentSuffixFull(host, guestHidden(data), guestTakes(data));
 }
 

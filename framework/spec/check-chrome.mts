@@ -77,7 +77,7 @@ f.message.forEach((m: unknown, i: number) => eq([parseEmbedMessage({ $axf: 'embe
   const assets = readdirSync(join(root, 'assets')).flatMap((t) => readdirSync(join(root, 'assets', t)).filter((n) => n.endsWith('.json')).map((n) => JSON.parse(readFileSync(join(root, 'assets', t, n), 'utf8'))));
   const defaults = JSON.parse(readFileSync(join(root, 'defaults.json'), 'utf8'));
   const manifest = { app: { id: 'test', name: 'Test' }, defaults } as never;
-  const rt = new AxfRuntime({ manifest, assets, storageKey: `axf-test:${Math.random()}`, embed: { host: 'molly', hidden: ['banner', 'nav-menu', 'context-menu', 'toolbar'], takes: ['app-menu', 'nav-menu', 'context-menu', 'toolbar', 'widgets'] } });
+  const rt = new AxfRuntime({ manifest, assets, storageKey: `axf-test:${Math.random()}`, embed: { host: 'shell', hidden: ['banner', 'nav-menu', 'context-menu', 'toolbar'], takes: ['app-menu', 'nav-menu', 'context-menu', 'toolbar', 'widgets'] } });
   eq(rt.embedded?.takes, ['app-menu', 'nav-menu', 'context-menu', 'toolbar', 'widgets'], 'runtime takes');
   const sent: unknown[] = [];
   (rt as unknown as { postToHost: (m: unknown) => boolean }).postToHost = (m: unknown) => { sent.push(m); return true; };

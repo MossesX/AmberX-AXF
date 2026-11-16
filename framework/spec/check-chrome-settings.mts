@@ -50,7 +50,7 @@ ok(spec.types.settings.optional_fields.for && spec.types.settings.optional_field
 
 /* ---- ids, keys, slugs ---- */
 eq(f.ids, Object.fromEntries(cs.CHROME_TYPES.map((t) => [t, { default: cs.chromeSettingsDefaultId(t), custom: cs.chromeSettingsCustomId(t, 'axf-console'), typeOfDefault: cs.chromeTypeOfSettingsId(cs.chromeSettingsDefaultId(t)), typeOfCustom: cs.chromeTypeOfSettingsId(cs.chromeSettingsCustomId(t, 'axf-console')) }])), 'ids fixture');
-for (const t of cs.CHROME_TYPES) eq(cs.chromeTypeOfSettingsId(cs.chromeSettingsCustomId(t, 'molly')), t, `custom id of ${t} resolves to ${t} (nav-menu vs app-menu never confused)`);
+for (const t of cs.CHROME_TYPES) eq(cs.chromeTypeOfSettingsId(cs.chromeSettingsCustomId(t, 'shell')), t, `custom id of ${t} resolves to ${t} (nav-menu vs app-menu never confused)`);
 eq(cs.chromeTypeOfSettingsId('chrome-tab-group-tab-group'), 'tab-group', 'longest type wins');
 eq(cs.chromeTypeOfSettingsId('standard'), null, 'a plain settings asset is no chrome interface');
 eq(f.keys, { pick: cs.CHROME_SETTINGS_PICK_KEY('tab-group'), patch: cs.CHROME_SETTINGS_PATCH_KEY('tab-group'), instance: cs.CHROME_INSTANCE_KEY('tab-group', 'ui-review.sections'), instanceAsset: cs.CHROME_INSTANCE_ASSET_KEY('tab-group', 'ui-review.sections'), instanceInterface: cs.CHROME_INSTANCE_INTERFACE_KEY('tab-group', 'ui-review.sections'), last: cs.TAB_GROUP_LAST_KEY('ui-review.sections'), fold: cs.TAB_GROUP_FOLD_KEY('ui-review.sections') }, 'keys fixture');
@@ -145,10 +145,10 @@ eq(f.errors, { ok: cs.chromeSettingsErrors(copy), badFor: cs.chromeSettingsError
 ok(cs.chromeSettingsErrors({ id: 'chrome-x', data: { for: 'clock' } }).length === 2 && cs.chromeSettingsErrors({ id: 'chrome-toolbar-a', data: { for: 'toolbar', extends: 'chrome-toolbar-a' } }).length === 1, 'error counts');
 
 /* ---- plan + every app (shared-assets apps + Expenses) ---- */
-eq(f.plan, cs.chromeSettingsPlan('molly'), 'plan fixture');
-eq(f.missing, cs.chromeSettingsMissing('molly', ['chrome-tab-group', 'chrome-tab-group-molly', 'chrome-toolbar']), 'missing fixture');
+eq(f.plan, cs.chromeSettingsPlan('shell'), 'plan fixture');
+eq(f.missing, cs.chromeSettingsMissing('shell', ['chrome-tab-group', 'chrome-tab-group-shell', 'chrome-toolbar']), 'missing fixture');
 const apps = defaultApps() as string[];
-ok(apps.length >= 5, `at least five apps carry copies (${apps.length})`);
+ok(apps.length >= 4, `at least four apps carry copies (${apps.length})`);
 for (const d of apps) {
   const r = checkApp(d, defaults) as { app: { id: string }; dir: string; findings: string[] };
   eq(r.findings, [], `${d.replace(root, '')} (${r.app.id}): custom copies present + valid`);

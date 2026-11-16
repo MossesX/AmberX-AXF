@@ -54,7 +54,7 @@
     "id": 48
   },
   "starters": {
-    "molly": {
+    "multi-app": {
       "normalized": {
         "apps": [
           {
@@ -106,7 +106,7 @@
             "slot": 1,
             "visible": true,
             "location": "top",
-            "label": "Molly",
+            "label": "Host",
             "items": [
               {
                 "id": "home",
@@ -1002,7 +1002,7 @@
             "slot": 1,
             "visible": true,
             "location": "top",
-            "label": "Molly",
+            "label": "Host",
             "items": [
               {
                 "id": "home",
@@ -1104,7 +1104,7 @@
             "slot": 1,
             "visible": true,
             "location": "top",
-            "label": "Molly",
+            "label": "Host",
             "items": [
               {
                 "id": "home",
@@ -1911,9 +1911,9 @@
         "toolbar",
         "widgets"
       ],
-      "url": "https://amberx.amberxai.com?axf-embed=molly&axf-embed-hide=app-menu,toolbar,nav-menu,context-menu,banner&axf-embed-take=app-menu,nav-menu,context-menu,toolbar,widgets",
-      "urlRoute": "https://console.amberxai.com/?axf-embed=molly&axf-embed-hide=app-menu,toolbar,nav-menu,context-menu,banner&axf-embed-take=app-menu,nav-menu,context-menu,toolbar,widgets#/build",
-      "userAgent": "AXF-Embed/molly/app-menu+toolbar+nav-menu+context-menu+banner AXF-Embed-Take/app-menu+nav-menu+context-menu+toolbar+widgets"
+      "url": "https://amberx.amberxai.com?axf-embed=host&axf-embed-hide=app-menu,toolbar,nav-menu,context-menu,banner&axf-embed-take=app-menu,nav-menu,context-menu,toolbar,widgets",
+      "urlRoute": "https://console.amberxai.com/?axf-embed=host&axf-embed-hide=app-menu,toolbar,nav-menu,context-menu,banner&axf-embed-take=app-menu,nav-menu,context-menu,toolbar,widgets#/build",
+      "userAgent": "AXF-Embed/host/app-menu+toolbar+nav-menu+context-menu+banner AXF-Embed-Take/app-menu+nav-menu+context-menu+toolbar+widgets"
     },
     {
       "name": "everything guest",
@@ -1927,9 +1927,9 @@
       },
       "hidden": [],
       "takes": [],
-      "url": "https://amberx.amberxai.com?axf-embed=molly",
-      "urlRoute": "https://console.amberxai.com/?axf-embed=molly#/build",
-      "userAgent": "AXF-Embed/molly"
+      "url": "https://amberx.amberxai.com?axf-embed=host",
+      "urlRoute": "https://console.amberxai.com/?axf-embed=host#/build",
+      "userAgent": "AXF-Embed/host"
     },
     {
       "name": "everything host",
@@ -1949,9 +1949,9 @@
         "toolbar"
       ],
       "takes": [],
-      "url": "https://amberx.amberxai.com?axf-embed=molly&axf-embed-hide=app-menu,toolbar,nav-menu,context-menu,banner",
-      "urlRoute": "https://console.amberxai.com/?axf-embed=molly&axf-embed-hide=app-menu,toolbar,nav-menu,context-menu,banner#/build",
-      "userAgent": "AXF-Embed/molly/app-menu+toolbar+nav-menu+context-menu+banner"
+      "url": "https://amberx.amberxai.com?axf-embed=host&axf-embed-hide=app-menu,toolbar,nav-menu,context-menu,banner",
+      "urlRoute": "https://console.amberxai.com/?axf-embed=host&axf-embed-hide=app-menu,toolbar,nav-menu,context-menu,banner#/build",
+      "userAgent": "AXF-Embed/host/app-menu+toolbar+nav-menu+context-menu+banner"
     },
     {
       "name": "nav merged only",
@@ -1969,9 +1969,9 @@
       "takes": [
         "nav-menu"
       ],
-      "url": "https://amberx.amberxai.com?axf-embed=molly&axf-embed-hide=nav-menu&axf-embed-take=nav-menu",
-      "urlRoute": "https://console.amberxai.com/?axf-embed=molly&axf-embed-hide=nav-menu&axf-embed-take=nav-menu#/build",
-      "userAgent": "AXF-Embed/molly/nav-menu AXF-Embed-Take/nav-menu"
+      "url": "https://amberx.amberxai.com?axf-embed=host&axf-embed-hide=nav-menu&axf-embed-take=nav-menu",
+      "urlRoute": "https://console.amberxai.com/?axf-embed=host&axf-embed-hide=nav-menu&axf-embed-take=nav-menu#/build",
+      "userAgent": "AXF-Embed/host/nav-menu AXF-Embed-Take/nav-menu"
     },
     {
       "name": "banner merged too",
@@ -1997,9 +1997,9 @@
         "toolbar",
         "widgets"
       ],
-      "url": "https://amberx.amberxai.com?axf-embed=molly&axf-embed-hide=app-menu,toolbar,nav-menu,context-menu,banner&axf-embed-take=app-menu,nav-menu,context-menu,toolbar,widgets",
-      "urlRoute": "https://console.amberxai.com/?axf-embed=molly&axf-embed-hide=app-menu,toolbar,nav-menu,context-menu,banner&axf-embed-take=app-menu,nav-menu,context-menu,toolbar,widgets#/build",
-      "userAgent": "AXF-Embed/molly/app-menu+toolbar+nav-menu+context-menu+banner AXF-Embed-Take/app-menu+nav-menu+context-menu+toolbar+widgets"
+      "url": "https://amberx.amberxai.com?axf-embed=host&axf-embed-hide=app-menu,toolbar,nav-menu,context-menu,banner&axf-embed-take=app-menu,nav-menu,context-menu,toolbar,widgets",
+      "urlRoute": "https://console.amberxai.com/?axf-embed=host&axf-embed-hide=app-menu,toolbar,nav-menu,context-menu,banner&axf-embed-take=app-menu,nav-menu,context-menu,toolbar,widgets#/build",
+      "userAgent": "AXF-Embed/host/app-menu+toolbar+nav-menu+context-menu+banner AXF-Embed-Take/app-menu+nav-menu+context-menu+toolbar+widgets"
     }
   ],
   "toolbars": {
@@ -2008,7 +2008,7 @@
         "slot": 1,
         "visible": true,
         "location": "top",
-        "label": "Molly",
+        "label": "Host",
         "items": [
           {
             "id": "home",
@@ -2049,7 +2049,7 @@
         "slot": 1,
         "visible": true,
         "location": "top",
-        "label": "Molly",
+        "label": "Host",
         "items": [
           {
             "id": "home",

@@ -620,19 +620,19 @@
   "bundles": {
     "host": {
       "$axf": "chrome@1",
-      "app": "molly",
-      "label": "Molly",
+      "app": "shell",
+      "label": "Shell",
       "menus": [
         {
-          "id": "molly",
-          "label": "Molly",
+          "id": "shell",
+          "label": "Shell",
           "items": [
             {
-              "id": "molly.home",
+              "id": "shell.home",
               "label": "Home"
             },
             {
-              "id": "molly.layout",
+              "id": "shell.layout",
               "label": "Layout…"
             }
           ]
@@ -655,7 +655,7 @@
           "target": "default",
           "items": [
             {
-              "id": "molly.settings",
+              "id": "shell.settings",
               "label": "Settings"
             }
           ]
@@ -881,17 +881,17 @@
   "merged": {
     "menus": [
       {
-        "id": "molly",
-        "label": "Molly",
+        "id": "shell",
+        "label": "Shell",
         "app": null,
         "items": [
           {
-            "id": "molly.home",
+            "id": "shell.home",
             "label": "Home",
             "app": null
           },
           {
-            "id": "molly.layout",
+            "id": "shell.layout",
             "label": "Layout…",
             "app": null
           }
@@ -1035,7 +1035,7 @@
     "context": {
       "default": [
         {
-          "id": "molly.settings",
+          "id": "shell.settings",
           "label": "Settings",
           "app": null
         },
@@ -1329,17 +1329,17 @@
   "flat": {
     "menus": [
       {
-        "id": "molly",
-        "label": "Molly",
+        "id": "shell",
+        "label": "Shell",
         "app": null,
         "items": [
           {
-            "id": "molly.home",
+            "id": "shell.home",
             "label": "Home",
             "app": null
           },
           {
-            "id": "molly.layout",
+            "id": "shell.layout",
             "label": "Layout…",
             "app": null
           }
@@ -1463,7 +1463,7 @@
     "context": {
       "default": [
         {
-          "id": "molly.settings",
+          "id": "shell.settings",
           "label": "Settings",
           "app": null
         },
@@ -1650,11 +1650,11 @@
   },
   "picks": [
     {
-      "id": "molly.home",
+      "id": "shell.home",
       "app": null
     },
     {
-      "id": "molly.layout",
+      "id": "shell.layout",
       "app": null
     },
     {
@@ -1698,7 +1698,7 @@
       "app": "amberx"
     },
     {
-      "id": "molly.settings",
+      "id": "shell.settings",
       "app": null
     },
     {
@@ -1757,10 +1757,10 @@
       }
     },
     {
-      "id": "molly.home",
+      "id": "shell.home",
       "out": {
         "app": null,
-        "id": "molly.home"
+        "id": "shell.home"
       }
     },
     {
@@ -1787,17 +1787,17 @@
   ],
   "routed": [
     {
-      "id": "molly.home",
+      "id": "shell.home",
       "route": {
         "app": null,
-        "id": "molly.home"
+        "id": "shell.home"
       }
     },
     {
-      "id": "molly.layout",
+      "id": "shell.layout",
       "route": {
         "app": null,
-        "id": "molly.layout"
+        "id": "shell.layout"
       }
     },
     {
@@ -1871,10 +1871,10 @@
       }
     },
     {
-      "id": "molly.settings",
+      "id": "shell.settings",
       "route": {
         "app": null,
-        "id": "molly.settings"
+        "id": "shell.settings"
       }
     },
     {

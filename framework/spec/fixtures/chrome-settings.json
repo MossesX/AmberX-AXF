@@ -1020,44 +1020,44 @@
     {
       "type": "tab-group",
       "defaultId": "chrome-tab-group",
-      "customId": "chrome-tab-group-molly"
+      "customId": "chrome-tab-group-shell"
     },
     {
       "type": "toolbar",
       "defaultId": "chrome-toolbar",
-      "customId": "chrome-toolbar-molly"
+      "customId": "chrome-toolbar-shell"
     },
     {
       "type": "banner",
       "defaultId": "chrome-banner",
-      "customId": "chrome-banner-molly"
+      "customId": "chrome-banner-shell"
     },
     {
       "type": "nav-menu",
       "defaultId": "chrome-nav-menu",
-      "customId": "chrome-nav-menu-molly"
+      "customId": "chrome-nav-menu-shell"
     },
     {
       "type": "app-menu",
       "defaultId": "chrome-app-menu",
-      "customId": "chrome-app-menu-molly"
+      "customId": "chrome-app-menu-shell"
     },
     {
       "type": "context-menu",
       "defaultId": "chrome-context-menu",
-      "customId": "chrome-context-menu-molly"
+      "customId": "chrome-context-menu-shell"
     }
   ],
   "missing": [
-    "chrome-toolbar-molly",
+    "chrome-toolbar-shell",
     "chrome-banner",
-    "chrome-banner-molly",
+    "chrome-banner-shell",
     "chrome-nav-menu",
-    "chrome-nav-menu-molly",
+    "chrome-nav-menu-shell",
     "chrome-app-menu",
-    "chrome-app-menu-molly",
+    "chrome-app-menu-shell",
     "chrome-context-menu",
-    "chrome-context-menu-molly"
+    "chrome-context-menu-shell"
   ],
   "rows": {
     "parse": {

@@ -15,7 +15,7 @@
  *            tab, type = its setting kind, value = its current value as text (never for secrets), options = the choices.
  *            `console.settings` opens it (its tab, scrolled to it), lists and reads it; `settings.set:<key>:<value>` sets it.
  *   client   { id, app, host?, front?, title, device, user, lastUsed, here, catalog }   (one per open console tab, kept by the server;
- *            app `molly/console-web` + host `molly` inside Molly; front = visible and shown by its host)
+ *            app `<host>/console-web` + host `<host>` inside a host app; front = visible and shown by its host)
  *   message  { $axf: 'console-command@1', id, op: open|run|back|home|close|refresh, kind?, target?, label?, spec?, anchor?, arg?, focus?, hard?, by, at }
  *            focus = what to bring forward on the opened screen (a tab or an item: a build id on the Build orchestrator);
  *            the console runs the screen's own `<screen>.focus:<focus>` action when it has one.
@@ -312,8 +312,8 @@ export function consoleActionNeeds(item) {
 
 /**
  * The consoles a command goes to: `recent`, `all`, or a client id. Stale clients are left out. `recent` = the one Brett
- * is looking at: a client in front (`front: true`: its page is visible and, inside a host such as Molly, the host shows
- * its frame) wins over one that isn't, then the one used last (Nov 3 2026: a console hidden behind another app in Molly
+ * is looking at: a client in front (`front: true`: its page is visible and, inside a host app, the host shows
+ * its frame) wins over one that isn't, then the one used last (Nov 3 2026: a console hidden behind another app in its host
  * used to win because it was touched last).
  */
 export function consolePickClients(clients, to = 'recent', now = Date.now()) {
@@ -342,9 +342,11 @@ export function consoleMessage(fields, { id, by = '', now = Date.now() } = {}) {
 export function consoleMessageErrors(m) {
   const errors = [];
   if (!isObj(m) || m.$axf !== CONSOLE_COMMAND_FRAME) return [`$axf must be ${CONSOLE_COMMAND_FRAME}`];
-  if (!['open', 'run', 'back', 'home', 'close', 'refresh'].includes(m.op)) errors.push('op must be open, run, back, home, close or refresh');
+  if (!['open', 'run', 'back', 'home', 'close', 'refresh', 'control'].includes(m.op)) errors.push('op must be open, run, back, home, close, refresh or control');
   if (m.op === 'open' && (!CONSOLE_ITEM_KINDS.includes(m.kind) || m.kind === 'action' || !m.target)) errors.push('open needs a kind (screen, dialog, settings) and a target');
   if (m.op === 'run' && !m.spec) errors.push('run needs an action spec');
+  // a console-control@1 command (spec/CONSOLE-CONTROL.md); the console's executor validates the command itself
+  if (m.op === 'control' && !isObj(m.command)) errors.push('control needs a console-control@1 command');
   return errors;
 }
 

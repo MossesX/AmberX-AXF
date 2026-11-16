@@ -1,7 +1,7 @@
 /**
  * check-claude-session — the shared Claude session library (framework/libs/claude-session, build gizmo-companion,
  * Nov 3 2026): the parts harvested from the console Terminal stay the same objects the Terminal exports, and the
- * companion helpers (conversations, models, budget, speech, interrupts, tool cards, the Molly → Gizmo rename) hold.
+ * companion helpers (conversations, models, budget, speech, interrupts, tool cards) hold.
  *
  *   npx -y tsx framework/spec/check-claude-session.mts
  */
@@ -25,7 +25,6 @@ check(lib.money(1.234) === '$1.23' && lib.money(12.34) === '$12.3' && lib.money(
 
 // ---- the companion
 check(lib.COMPANION.name === 'Gizmo' && lib.COMPANION.agentId === 'gizmo', 'the companion is Gizmo');
-check(lib.renameAssistant('Ask Molly. MOLLY said molly’s thing; Mollyx stays.') === 'Ask Gizmo. GIZMO said gizmo’s thing; Mollyx stays.', 'Molly → Gizmo, whole words, case kept');
 
 // ---- conversations
 const now = new Date('2026-11-03T15:00:00').getTime();

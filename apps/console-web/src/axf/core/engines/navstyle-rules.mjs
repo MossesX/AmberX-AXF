@@ -1,5 +1,5 @@
 /**
- * nav-style rules (nav-style@1, build molly-nav-submenus, Brett Nov 3 2026): how a navigation menu looks and behaves
+ * nav-style rules (nav-style@1, Brett Nov 3 2026): how a navigation menu looks and behaves
  * when it opens sub menus: its colours, fonts, icons, density, width, the sub-menu animation and its behaviour
  * (one or many open, open on tap or hover, auto-collapse, remember, follow the active page, swipe on a phone) and
  * which top-level items are pinned, hidden or reordered.

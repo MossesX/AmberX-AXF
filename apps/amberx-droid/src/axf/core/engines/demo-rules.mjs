@@ -3,7 +3,7 @@
  * demonstration … write my own book with it … interactive HTML, TypeScript documentation … every time we generate a
  * clip it needs to automatically attach a shitload of keywords to it, and it needs itself to be an asset going to a
  * registry"). Four asset types in the asset@1 envelope, all built on the walkthrough engine (walkthrough@1 steps
- * { say, do, target }, the shape Molly's guide plays and the recorder films):
+ * { say, do, target }, the shape the Gizmo guide plays and the recorder films):
  *
  *   demonstration  a narrated demo of one glossary entry: steps (say, do = console action, target = what to highlight,
  *                  wait), the surface it runs on (live UI, a preview, the recorder), a voice, demos chained after it,
@@ -81,7 +81,7 @@ const KEY = /^[a-z0-9][a-z0-9-]{0,47}$/;
 const ENTRY_ID = /^[a-z][a-z0-9-]*:[^\s]{1,200}$/;
 /** An asset reference inside a book: demonstration/<id>, clip/<id>, book/<id>, book/<id>#<chapter>. */
 const ASSET_REF = /^(demonstration|clip|book)\/([a-z0-9][a-z0-9-]{1,47})(?:#([a-z0-9][a-z0-9-]{0,47}))?$/;
-/** A console action spec (walkthrough@1: the same rule as the Molly guide), never a URL or script. */
+/** A console action spec (walkthrough@1: the same rule as the Gizmo guide), never a URL or script. */
 const ACTION = /^[a-z][a-z0-9._-]*(:[^\s<>"'`]{0,160})?$/;
 const BAD_SCHEME = /^(javascript|data|vbscript|file|https?):/i;
 const BAD_TARGET = /[<>{}`]|^javascript/i;
@@ -226,7 +226,7 @@ export function normalizeDemonstration(raw) {
 /** How long a demonstration plays (seconds), at its own voice speed. */
 export const demonstrationSeconds = (data) => Math.round((stepsSeconds(data?.steps) / (num(data?.voice?.speed, 0.5, 2, 1))) * 10) / 10;
 
-/** A demonstration asset (envelope + data) as walkthrough@1, the shape Molly's guide window plays. */
+/** A demonstration asset (envelope + data) as walkthrough@1, the shape the Gizmo guide window plays. */
 export function demonstrationToWalkthrough(asset) {
   const d = normalizeDemonstration(asset?.data);
   return { $axf: WALKTHROUGH_FRAME, id: slugify(asset?.id, 'demonstration'), title: str(asset?.name, DEMO_LIMITS.title) || 'Demonstration', app: d.app, steps: d.steps.map((s) => ({ say: s.say, do: s.do, target: s.target })), source: 'demonstration' };

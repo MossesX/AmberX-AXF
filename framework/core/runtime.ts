@@ -2459,7 +2459,7 @@ export class AxfRuntime {
   }
 
   openContext(x: number, y: number, target: string, payload?: string) {
-    // A host that takes the context menu (embed@1 `context-menu`, Molly's xLayout) shows its one menu for this app.
+    // A host that takes the context menu (embed@1 `context-menu`, an xLayout host) shows its one menu for this app.
     if (this.forwardContext(x, y, target, payload)) return;
     if (this.slotHidden('context-menu')) return;
     this.set({ context: { x, y, target, payload, scope: this.uiScope } });

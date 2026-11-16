@@ -179,7 +179,7 @@ const TAKES = new Map<string, EmbedTakeSpec>([
   // it has (`plugins`), and its plugin-management hooks (Plugin Manager, plugin switches, the plugin catalog, Settings →
   // Plugins) stay on screen greyed out with "Plugins are managed in <host>".
   ['plugins', { actions: ['plugin-switches.open', 'plugin-manager.open', 'plugin-manager.install', 'plugin-manager.window'], prefixes: ['plugin-manager.', 'plugin-switches.', 'plugin-catalog.', 'plugins-menu.', 'plugin-update.'], views: ['plugin-manager', 'plugins'], providers: ['console.plugins'], page: false, hides: [], lock: true }],
-  // Molly as one app (xlayout@1 / chrome@1, Brett Nov 2 2026): the host draws ONE navigation menu, context menu and set
+  // Several apps as one (xlayout@1 / chrome@1, Brett Nov 2 2026): the host draws ONE navigation menu, context menu and set
   // of toolbars / banner widgets merged from every app it frames. The app hides that chrome and sends it as data in a
   // `chrome` message; the host runs a pick back with `run` (the id is the app's own, the host strips its namespace).
   ['nav-menu', { actions: [], prefixes: [], views: [], providers: [], page: false, hides: ['nav-menu'], lock: false }],

@@ -49,9 +49,9 @@ eq(parseBannerStripChannel({ type: 'run' }), null, 'unknown channel type');
 
 // ---- the address ----
 eq(BANNER_STRIP_PAGE, `view:${BANNER_STRIP_VIEW}`, 'page names the view');
-const url = bannerStripUrl('https://console.amberxai.com', 'molly');
+const url = bannerStripUrl('https://console.amberxai.com', 'shell');
 const e = detectEmbedFull(new URL(url).search, '');
-eq(e?.host, 'molly', 'host read back');
+eq(e?.host, 'shell', 'host read back');
 eq(e?.page, BANNER_STRIP_PAGE, 'page read back');
 eq(embedPageView(e?.page), BANNER_STRIP_VIEW, 'AppShell picks the strip view');
 eq(e?.hidden.includes('banner'), true, 'a page hides the app chrome (the strip draws the banners itself)');

@@ -45,7 +45,7 @@ eq(Object.keys(CONTROL_PERMISSIONS).length, 19, 'six domains × read / write / d
 eq(controlPermission('plugins.reads', 'act', 'read'), 'control.plugins.read', 'a plugin read only reads');
 eq(controlPermission('plugins.commands', 'act', 'run'), 'control.plugins.write', 'a plugin command writes (a deleting one asks for more)');
 eq(CONTROL_TARGET_IDS.slice(20, 22), ['plugins.commands', 'plugins.reads'], 'plugin targets come after the console and pass ones (append-only)');
-eq(CONTROL_TARGET_IDS.slice(22, 23), ['tokens.nav'], 'the nav-style token set comes after the plugin ones (append-only, build molly-nav-submenus)');
+eq(CONTROL_TARGET_IDS.slice(22, 23), ['tokens.nav'], 'the nav-style token set comes after the plugin ones (append-only)');
 eq(CONTROL_TARGET_IDS.slice(23, 24), ['console.control'], 'console control by address comes after the nav tokens (append-only, build full-api-and-voice-control)');
 eq(CONTROL_TARGET_IDS.slice(24), ['tokens.instances'], 'per-instance component tokens come last (append-only, build own-token-sets-for-grids-and-tab-groups)');
 eq(controlPermission('console.screens', 'act', 'open'), 'control.console.navigate', 'opening a screen only navigates');

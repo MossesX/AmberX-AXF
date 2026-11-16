@@ -264,7 +264,7 @@ export function mergeNavSections<S extends { label?: string | null; items: NavIt
 
 /**
  * Items joined by view: a new view is added; one already there keeps its own fields and takes the newcomer's children
- * (NavItem.items), so a plugin can hang a sub menu on an item the nav-menu asset already has (Molly's apps).
+ * (NavItem.items), so a plugin can hang a sub menu on an item the nav-menu asset already has (a host's apps).
  */
 function withChildren(have: NavItem[], add: NavItem[]): NavItem[] {
   const out = [...have];

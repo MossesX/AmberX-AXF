@@ -7,7 +7,7 @@
  *
  *   deploy@1 = {
  *     id:      'd-<target>-<unix seconds>-<sha7>'          stable for one deploy
- *     target:  console | site | axhub | axhub-web | amberx | molly | walkthrough | expenses | apk:<app> | maven | <own id>
+ *     target:  console | site | axhub | axhub-web | amberx | walkthrough | expenses | apk:<app> | maven | <own id>
  *     sha:     the commit now live on that target (full or short sha)
  *     from:    the commit it replaced ('' on a first install)
  *     at:      when (ISO, UTC)
@@ -37,7 +37,6 @@ export const TARGETS = {
   axhub: { label: 'axHub', url: 'https://axhub.amberxai.com', repo: 'axhub' },
   'axhub-web': { label: 'axHub web', url: 'https://axhub.amberxai.com', repo: 'amberx-axf' },
   amberx: { label: 'AmberX', url: 'https://amberx.amberxai.com', repo: 'amberx-axf' },
-  molly: { label: 'Molly', url: 'https://molly.amberxai.com', repo: 'amberx-axf' },
   walkthrough: { label: 'Walkthrough Studio', url: 'https://walkthrough.amberxai.com', repo: 'amberx-axf' },
   expenses: { label: 'Expense Tracker', url: 'https://expenses.amberxai.com', repo: 'amberx-axf' },
   'apk:amberx': { label: 'AmberX APK', url: '', repo: 'amberx-axf' },

@@ -24,7 +24,7 @@
     "src/axf/core/engines/designpackage.ts": "00d2744cce0d1258",
     "src/axf/core/engines/embed.ts": "2e75c9842a549650",
     "src/axf/core/engines/help-rules.d.mts": "ae099ec1e9dc9456",
-    "src/axf/core/engines/help-rules.mjs": "488c7547e26c4e35",
+    "src/axf/core/engines/help-rules.mjs": "609fd693dc57892e",
     "src/axf/core/engines/help.ts": "7fe31aa2bfd63c00",
     "src/axf/core/engines/hide.ts": "d7a969db7c5e98a4",
     "src/axf/core/engines/interface.ts": "b19e7a7c4d43f344",

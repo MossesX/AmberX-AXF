@@ -721,8 +721,8 @@ write('spacing.json', {
       badName: cs.chromeSettingsErrors({ id: 'my-settings', data: { for: 'toolbar' } }),
       notAsset: cs.chromeSettingsErrors(null),
     },
-    plan: cs.chromeSettingsPlan('molly'),
-    missing: cs.chromeSettingsMissing('molly', ['chrome-tab-group', 'chrome-tab-group-molly', 'chrome-toolbar']),
+    plan: cs.chromeSettingsPlan('shell'),
+    missing: cs.chromeSettingsMissing('shell', ['chrome-tab-group', 'chrome-tab-group-shell', 'chrome-toolbar']),
     // rows (Nov 13 2026): what a person says → the stored value, and the layout a row of N tabs gets
     rows: {
       parse: Object.fromEntries(['1', '3', 'three', '3 rows', 'Two', 'auto', 'Automatic', '0', '7', 'many', ''].map((v) => [v || '(empty)', cs.parseTabRows(v)])),
@@ -1832,7 +1832,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     },
   });
 }
-// xLayout (xlayout@1, Big Dog build xlayout s1, Nov 3 2026; core/engines/xlayout.ts): Molly as one app — apps, chrome merge
+// xLayout (xlayout@1, Big Dog build xlayout s1, Nov 3 2026; core/engines/xlayout.ts): several apps as one — apps, chrome merge
 // modes, the IDE block, three toolbar slots, namespacing, what the guests hide / the host takes, guest frame URLs.
 {
   const starters = load('xlayout');
@@ -1851,7 +1851,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     'ide preset falls back to the list': { apps: [], ide: { presets: ['two-columns', 'grid-2x2'] } },
     'toolbar items namespaced + repeats dropped': { apps: [{ id: 'a', label: 'A', url: 'https://a.example' }], toolbars: [{ slot: 2, visible: true, location: 'left', items: [{ id: 'one', label: 'One', action: 'a:nav:home', app: 'a', open: 'pane' }, { id: 'two', label: 'Two', action: 'nav:home', app: 'A', open: 'floating', icon: 'home' }, { id: 'one', label: 'Again', action: 'x' }, { id: 'three', label: 'Three', action: 'host.thing' }] }] },
   };
-  const molly = normalizeXLayout(starters[0]!.data);
+  const xl = normalizeXLayout(starters[0]!.data);
   const mergeCases: Record<string, Partial<Record<(typeof CHROME_KINDS)[number], (typeof MERGE_MODES)[number]>>> = {
     default: {}, 'everything guest': Object.fromEntries(CHROME_KINDS.map((k) => [k, 'guest'])), 'everything host': Object.fromEntries(CHROME_KINDS.map((k) => [k, 'host'])),
     'nav merged only': { ...Object.fromEntries(CHROME_KINDS.map((k) => [k, 'guest'])), 'nav-menu': 'merged' }, 'banner merged too': { banner: 'merged' },
@@ -1864,12 +1864,12 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     items: [[{ id: 'a', label: 'A', action: 'nav:home' }, apps], [{ id: 'a', label: 'A', action: 'nav:home', app: 'amberx', open: 'pane' }, apps], [{ id: 'a', label: 'A', action: 'amberx:nav:home', app: 'amberx' }, apps], [{ id: 'a', label: 'A', action: 'nav:home', app: 'nope' }, apps], [{ id: 'bad id!', label: 'A', action: 'x' }, apps], [{ id: 'a', label: '', action: 'x' }, apps], [{ id: 'a', label: 'A', action: 'x', open: 'tab', icon: 'Bad' }, apps], ['x', apps]].map(([raw, a]) => ({ raw, item: parseToolbarItem(raw, a as string[]) })),
     open: OPEN_TARGETS.flatMap((o) => [true, false].map((ide) => ({ open: o, ideOn: ide, target: openTargetFor({ open: o }, ide) }))),
     ns: { make: [['amberx', 'file.save'], ['console', 'nav:home']].map(([a, i]) => ({ app: a, id: i, ns: xNsId(a!, i!) })), split: ['amberx:file.save', 'console:nav:home', 'nope:x', 'amberx', ':x', 'amberx:', 'file.save'].map((v) => ({ id: v, out: splitNs(v, apps) })), strip: [['amberx:file.save', 'amberx'], ['file.save', 'amberx'], ['console:nav:home', 'amberx']].map(([id, a]) => ({ id, app: a, out: stripNs(id!, a!) })) },
-    merge: Object.entries(mergeCases).map(([name, m]) => { const d = normalizeXLayout({ apps: starters[0]!.data.apps, merge: m }); return { name, merge: d.merge, hidden: guestHidden(d), takes: guestTakes(d), url: guestUrl(d, d.apps[0]!), urlRoute: guestUrl(d, d.apps[2]!, 'molly', '#/build'), userAgent: guestUserAgent(d) }; }),
-    toolbars: { all: visibleToolbars(molly), top: visibleToolbars(molly, 'top'), bottom: visibleToolbars(molly, 'bottom'), everyOn: visibleToolbars({ toolbars: molly.toolbars.map((t) => ({ ...t, visible: true })) }).map((t) => t.slot) },
-    presets: { offered: idePresets(molly, ['ide', 'single', 'two-columns', 'other']), none: idePresets(molly, []), rules: dockRulesOf(molly), rulesClamped: dockRulesOf(normalizeXLayout({ apps: [], ide: { paneLimit: 99 } })) },
+    merge: Object.entries(mergeCases).map(([name, m]) => { const d = normalizeXLayout({ apps: starters[0]!.data.apps, merge: m }); return { name, merge: d.merge, hidden: guestHidden(d), takes: guestTakes(d), url: guestUrl(d, d.apps[0]!), urlRoute: guestUrl(d, d.apps[2]!, 'host', '#/build'), userAgent: guestUserAgent(d) }; }),
+    toolbars: { all: visibleToolbars(xl), top: visibleToolbars(xl, 'top'), bottom: visibleToolbars(xl, 'bottom'), everyOn: visibleToolbars({ toolbars: xl.toolbars.map((t) => ({ ...t, visible: true })) }).map((t) => t.slot) },
+    presets: { offered: idePresets(xl, ['ide', 'single', 'two-columns', 'other']), none: idePresets(xl, []), rules: dockRulesOf(xl), rulesClamped: dockRulesOf(normalizeXLayout({ apps: [], ide: { paneLimit: 99 } })) },
   });
 }
-// Navigation style (nav-style@1, build molly-nav-submenus, Nov 3 2026; core/engines/navstyle.ts + navstyle-rules.mjs): the
+// Navigation style (nav-style@1, Nov 3 2026; core/engines/navstyle.ts + navstyle-rules.mjs): the
 // look and behaviour of a nav with sub menus — normalize, validate, compile to tokens, and the pure sub-menu tree logic.
 {
   const starters = load('nav-style');
@@ -1931,7 +1931,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   const amberx: ChromeBundle = { $axf: CHROME_CONTRACT, app: 'amberx', label: 'AmberX', menus: [{ id: 'app', label: 'AmberX', items: [{ id: 'home', label: 'Home', icon: 'home' }, { id: 'sep', label: '', separator: true }, { id: 'notes', label: 'Notes', count: 3, items: [{ id: 'notes.new', label: 'New note' }] }] }], nav: [{ label: 'AmberX', items: [{ id: 'home', label: 'Home', icon: 'home' }, { id: 'notes', label: 'Notes', badge: 3 }] }], active: 'notes', context: [{ target: 'default', items: [{ id: 'copy', label: 'Copy' }] }, { target: 'note', items: [{ id: 'note.delete', label: 'Delete note', icon: 'trash' }] }], toolbars: [{ id: 'main', label: 'Main', items: [{ id: 'record', label: 'Record', icon: 'mic', pressed: true }] }], widgets: [{ id: 'clock', type: 'clock', text: '10:42' }, { id: 'approvals', type: 'counter', label: 'Approvals', count: 2, tone: 'accent' }] };
   const axhub: ChromeBundle = { $axf: CHROME_CONTRACT, app: 'axhub', label: 'axHub', menus: [{ id: 'hub', label: 'Hub', items: [{ id: 'approvals', label: 'Approvals', count: 2 }] }, { id: 'manage', label: 'Manage', items: [{ id: 'services', label: 'Services' }] }], nav: [{ items: [{ id: 'approvals', label: 'Approvals', badge: 2 }, { id: 'services', label: 'Services', locked: true }] }], active: 'approvals', context: [{ target: 'default', items: [{ id: 'refresh', label: 'Refresh' }] }], toolbars: [], widgets: [{ id: 'clock', type: 'clock', text: '10:42' }, { id: 'hub', type: 'status', text: 'Live', tone: 'success' }] };
   const console_: ChromeBundle = { $axf: CHROME_CONTRACT, app: 'console', menus: [], nav: [{ label: 'Build', items: [{ id: 'build', label: 'Builds' }] }], context: [], toolbars: [{ id: 'tb', items: [{ id: 'run', label: 'Run', icon: 'play' }, { id: 'stop', label: 'Stop', icon: 'square', locked: true }] }], widgets: [] };
-  const host: ChromeBundle = { $axf: CHROME_CONTRACT, app: 'molly', label: 'Molly', menus: [{ id: 'molly', label: 'Molly', items: [{ id: 'molly.home', label: 'Home' }, { id: 'molly.layout', label: 'Layout…' }] }], nav: [{ items: [{ id: 'home', label: 'Home', icon: 'home' }] }], active: 'home', context: [{ target: 'default', items: [{ id: 'molly.settings', label: 'Settings' }] }], toolbars: [], widgets: [{ id: 'host-clock', type: 'clock', text: '10:42' }] };
+  const host: ChromeBundle = { $axf: CHROME_CONTRACT, app: 'shell', label: 'Shell', menus: [{ id: 'shell', label: 'Shell', items: [{ id: 'shell.home', label: 'Home' }, { id: 'shell.layout', label: 'Layout…' }] }], nav: [{ items: [{ id: 'home', label: 'Home', icon: 'home' }] }], active: 'home', context: [{ target: 'default', items: [{ id: 'shell.settings', label: 'Settings' }] }], toolbars: [], widgets: [{ id: 'host-clock', type: 'clock', text: '10:42' }] };
   const rawBundles: unknown[] = [
     amberx, { ...amberx, app: 'Amber X' }, { $axf: 'chrome@2', app: 'amberx' }, { $axf: CHROME_CONTRACT, app: 'x', menus: 'nope', nav: [{ items: [{ id: 'bad id!', label: 'x' }, { id: 'ok', label: '' }, { id: 'ok2', label: 'Ok', icon: 'Bad Icon', badge: -1, locked: 'yes' }, { id: 'ok2', label: 'Repeat' }] }, { items: [] }, 'x'], active: 'missing', context: [{ target: 'bad target!', items: [{ id: 'a', label: 'A' }] }, { target: 'ok', items: [] }, { target: 'ok2', items: [{ id: 'a', label: 'A', items: [{ id: 'b', label: 'B' }] }] }], toolbars: [{ id: 'tb', items: [{ id: 'noicon', label: 'No icon' }, { id: 'x' }] }, { id: 'tb', items: [{ id: 'dup', label: 'Dup', icon: 'x' }] }], widgets: [{ id: 'w', type: 'ribbon' }, { id: 'c', type: 'clock', text: 'now', tone: 'loud', count: 2.9 }, { id: 'c', type: 'clock' }] },
     JSON.stringify(axhub), 'not json', null, { $axf: CHROME_CONTRACT, app: 'empty' },
@@ -1947,7 +1947,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     bundles: { host, amberx, axhub, console: console_ },
     merged, noHost, flat, twice,
     picks: chromePicks(merged), active: activeNav(merged), activeNone: activeNav(noHost),
-    route: ['amberx:file.save', 'axhub:nav:home', 'console:tb:run', 'molly.home', 'nope:x', ':x', 'amberx:'].map((id) => ({ id, out: routePick(id, ['amberx', 'axhub', 'console']) })),
+    route: ['amberx:file.save', 'axhub:nav:home', 'console:tb:run', 'shell.home', 'nope:x', ':x', 'amberx:'].map((id) => ({ id, out: routePick(id, ['amberx', 'axhub', 'console']) })),
     // every pick of the merged model routes back to the app that sent it (or the host)
     routed: chromePicks(merged).map((p) => ({ id: p.id, route: routePick(p.id, merged.apps) })),
     message: [parseEmbedMessage({ $axf: 'embed@1', type: 'chrome', chrome: axhub }), parseEmbedMessage({ $axf: 'embed@1', type: 'chrome', chrome: { app: 'x' } }), parseEmbedMessage({ $axf: 'embed@1', type: 'chrome-request' }), parseEmbedMessage(JSON.stringify({ $axf: 'embed@1', type: 'chrome', chrome: amberx })), parseEmbedMessage({ $axf: 'embed@1', type: 'context', x: 12.4, y: 30, target: 'canvas', payload: 'row-3' })],

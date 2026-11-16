@@ -246,7 +246,7 @@ export function introToShow({ mode, intros = true, seen, screen, index }) {
   return introFor(index, screen);
 }
 
-/** A screen intro as walkthrough@1 (Molly guide plays it; Walkthrough Studio's `highlight` cues read the same targets). */
+/** A screen intro as walkthrough@1 (the Gizmo guide plays it; Walkthrough Studio's `highlight` cues read the same targets). */
 export function introToWalkthrough(intro, app = 'app') {
   return { $axf: 'walkthrough@1', id: `intro-${intro.screen}`.replace(/[^a-z0-9-]+/g, '-').slice(0, 60), title: intro.title, app, steps: intro.steps.map((s) => ({ say: s.say, do: s.do ?? '', target: s.target ?? '' })) };
 }

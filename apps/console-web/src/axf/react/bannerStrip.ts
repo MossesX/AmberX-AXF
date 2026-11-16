@@ -1,6 +1,5 @@
 /**
- * Banner strip (web only): an app's live banners, shown by a host as ONE banner region (Brett, Nov 3 2026: "Install the
- * banners in Molly").
+ * Banner strip (web only): an app's live banners, shown by a host as ONE banner region (Brett, Nov 3 2026).
  *
  * The host frames the app's banner-strip page, an embed@1 view page (`axf-embed-page=view:axf-banners`). That page
  * draws only the app's banners: every `banners` plugin it has (app.frame.banners, the same Banner settings, colours and

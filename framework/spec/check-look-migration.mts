@@ -132,7 +132,7 @@ const hubDefault = { slots: { ...skinSlots(realSkins.get('hub-default')!), 'colo
 const real: Record<string, AppLookDocument> = {
   console: { ...newAppLook('axf-console', hubDefault), own: { settings: { 'axf.widgets.arrange.banner': '{}' } }, skin: { use: true, inherit: false, id: 'enterprise-day', overrides: { layout: 'windows-explorer' } } },
   axhub: { ...newAppLook('axhub-web', hubDefault), own: { hidden: { toolbar: true } }, skin: { use: false, inherit: false, id: 'windows', overrides: {} } },
-  molly: newAppLook('molly', hubDefault),
+  shell: newAppLook('shell', hubDefault),
 };
 for (const [name, look] of Object.entries(real)) {
   const r = foldLegacyPicks(look, realCtx);
@@ -145,7 +145,7 @@ for (const [name, look] of Object.entries(real)) {
   eq(strip(foldLegacyPicks(r.look, { ...realCtx, now: '2026-12-01T00:00:00Z' }).look), strip(r.look), `${name} today: a second run changes nothing`);
 }
 // a snapshot without the precedence setting showed the package's colour (hub-night), not its colour slot: the fold says so
-const bare = newAppLook('molly', { ...hubDefault, settings: {} });
+const bare = newAppLook('shell', { ...hubDefault, settings: {} });
 const rb = foldLegacyPicks(bare, realCtx);
 eq(rb.look.default.slots['color-theme'], 'hub-night', 'bare snapshot: the package colour the screen showed');
 eq(realVisible(rb.look), realVisible(bare, true), 'bare snapshot: same screen');
@@ -164,14 +164,14 @@ const consoleSilent = { ...real.console!, own: { ...real.console!.own, slots: { 
 const rs = foldLegacyPicks(consoleSilent, realCtx);
 eq(rs.look.legacy?.own?.slots, { 'color-theme': 'arctic-daylight' }, 'console with a silent pick: the shown value is what is kept');
 eq(realVisible(rs.look), realVisible(consoleSilent, true), 'console with a silent pick: same screen');
-// Molly that applied Hub Default with the old picker: the package is the skin
+// Shell that applied Hub Default with the old picker: the package is the skin
 // (loading a package cleared the recorded override: the look document carries the null that beat the snapshot's value)
-const mollyPkg = { ...real.molly!, own: { slots: { 'design-package': 'hub-default', ...Object.fromEntries(Object.entries(skinSlots(realSkins.get('hub-default')!)).filter(([t]) => t in hubDefault.slots)) }, spacing: 'tight', hidden: { toolbar: true }, settings: { [DESIGN_OVERRIDES_SETTING]: null } } };
-const rm = foldLegacyPicks(mollyPkg, realCtx);
-eq(rm.reason, 'package', 'molly with Hub Default applied: the package is the skin');
-eq(rm.look.skin.id, 'hub-default', 'molly: skin id');
-eq(realVisible(rm.look).slots['color-theme'], 'hub-night', 'molly: the package\'s colour theme stays');
-eq(realVisible(rm.look), realVisible(mollyPkg, true), 'molly: same screen');
-ok(normalizeAppLook(JSON.parse(JSON.stringify(rm.look)))?.migrated?.version === LOOK_MIGRATION_VERSION, 'molly: the stamp survives the document rules');
+const shellPkg = { ...real.shell!, own: { slots: { 'design-package': 'hub-default', ...Object.fromEntries(Object.entries(skinSlots(realSkins.get('hub-default')!)).filter(([t]) => t in hubDefault.slots)) }, spacing: 'tight', hidden: { toolbar: true }, settings: { [DESIGN_OVERRIDES_SETTING]: null } } };
+const rm = foldLegacyPicks(shellPkg, realCtx);
+eq(rm.reason, 'package', 'shell with Hub Default applied: the package is the skin');
+eq(rm.look.skin.id, 'hub-default', 'shell: skin id');
+eq(realVisible(rm.look).slots['color-theme'], 'hub-night', 'shell: the package\'s colour theme stays');
+eq(realVisible(rm.look), realVisible(shellPkg, true), 'shell: same screen');
+ok(normalizeAppLook(JSON.parse(JSON.stringify(rm.look)))?.migrated?.version === LOOK_MIGRATION_VERSION, 'shell: the stamp survives the document rules');
 
 console.log(`check-look-migration: ${n} checks passed`);

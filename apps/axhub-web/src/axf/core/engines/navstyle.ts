@@ -1,5 +1,5 @@
 /**
- * Nav-style engine (nav-style@1, build molly-nav-submenus): compiles a nav-style asset into `--fx-navs-*` tokens and
+ * Nav-style engine (nav-style@1): compiles a nav-style asset into `--fx-navs-*` tokens and
  * `data-fx-navs-*` root attributes, and holds the pure sub-menu logic the navigation component uses (which sub menus
  * are open, the path to the active page, pinned / hidden / reordered items).
  *

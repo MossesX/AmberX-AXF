@@ -178,7 +178,7 @@ async function main() {
     { number: 243, branch: 'claude/theme-editor', title: 'Theme editor plugin', body: '', state: 'open', updatedAt: '5', commits: ['theme-editor s1: sections', 's2 views'] },
     { number: 250, branch: 'claude/token-control-opus', title: 'Token control (token-control s4-s14)', body: '', state: 'open', updatedAt: '4', commits: [] },
     { number: 246, branch: 'claude/token-control', title: 'Token control, Fable phase', body: 'token-control s1–s3 done on Fable', state: 'open', updatedAt: '3', commits: [] },
-    { number: 245, branch: 'claude/molly-fable', title: 'Fable foundation', body: 'Builds dock-engine s1-s4 (all done).', state: 'open', updatedAt: '2', commits: [] },
+    { number: 245, branch: 'claude/sample-fable', title: 'Fable foundation', body: 'Builds dock-engine s1-s4 (all done).', state: 'open', updatedAt: '2', commits: [] },
     { number: 242, branch: 'claude/md-studio-plan', title: 'MD Studio plan', body: '- md-studio s1 layout\n- md-studio s2 browser', state: 'merged', mergedAt: '2026-11-02T00:00:00Z', updatedAt: '1', commits: [] },
     { number: 99, branch: 'claude/random', title: 'Something else', body: '', state: 'open', updatedAt: '0', commits: [] },
     { number: 98, branch: 'claude/old', title: 'theme-editor s5 done', body: '', state: 'closed', updatedAt: '0', commits: [] },

@@ -1,5 +1,5 @@
 /*
- * Unified chrome (chrome@1) — Molly as ONE app (Brett, Nov 2 2026): "only ONE banner, application menu, navigation
+ * Unified chrome (chrome@1) — several apps as ONE app (Brett, Nov 2 2026): "only ONE banner, application menu, navigation
  * menu and context menu render, covering the whole page; the user must not be able to tell it is multiple apps."
  *
  * Guest side: an app the host frames sends its chrome as DATA — application menu, navigation, context menus, toolbars,

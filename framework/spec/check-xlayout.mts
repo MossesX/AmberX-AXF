@@ -33,7 +33,7 @@ for (const k of CHROME_KINDS.filter((k) => k !== 'banner')) ok(embedTakeIds().in
 
 // ---- starters ----
 const starters = readdirSync(join(root, 'assets/xlayout')).filter((n) => n.endsWith('.json')).map((n) => JSON.parse(readFileSync(join(root, 'assets/xlayout', n), 'utf8')));
-ok(starters.length >= 1 && starters.some((a) => a.id === 'molly'), 'the Molly starter ships');
+ok(starters.length >= 1 && starters.some((a) => a.id === 'multi-app'), 'the multi-app starter ships');
 for (const a of starters) {
   const v = validateAsset(a); ok(v.ok, `starter ${a.id} validates: ${v.errors.join('; ')}`);
   eq(xlayoutErrors(a.data), [], `starter ${a.id} has no engine errors`);
@@ -52,21 +52,21 @@ for (const c of f.open) eq(openTargetFor({ open: c.open }, c.ideOn), c.target, `
 for (const c of f.ns.make) eq(nsId(c.app, c.id), c.ns, `ns ${c.app} ${c.id}`);
 for (const c of f.ns.split) eq(splitNs(c.id, ['amberx', 'axhub', 'console']), c.out, `split ${c.id}`);
 for (const c of f.ns.strip) eq(stripNs(c.id, c.app), c.out, `strip ${c.id}`);
-const molly = normalizeXLayout(starters.find((a) => a.id === 'molly')!.data);
+const xl = normalizeXLayout(starters.find((a) => a.id === 'multi-app')!.data);
 for (const c of f.merge) {
-  const d = normalizeXLayout({ apps: starters.find((a) => a.id === 'molly')!.data.apps, merge: c.merge });
+  const d = normalizeXLayout({ apps: starters.find((a) => a.id === 'multi-app')!.data.apps, merge: c.merge });
   eq(guestHidden(d), c.hidden, `hidden ${c.name}`); eq(guestTakes(d), c.takes, `takes ${c.name}`);
-  eq(guestUrl(d, d.apps[0]!), c.url, `url ${c.name}`); eq(guestUrl(d, d.apps[2]!, 'molly', '#/build'), c.urlRoute, `url with route ${c.name}`); eq(guestUserAgent(d), c.userAgent, `user agent ${c.name}`);
+  eq(guestUrl(d, d.apps[0]!), c.url, `url ${c.name}`); eq(guestUrl(d, d.apps[2]!, 'host', '#/build'), c.urlRoute, `url with route ${c.name}`); eq(guestUserAgent(d), c.userAgent, `user agent ${c.name}`);
   // what the guest reads back from that URL is exactly what the host meant
   const e = embedFromQueryFull(new URL(c.url).search);
-  ok(e && e.host === 'molly', `guest detects the host (${c.name})`);
+  ok(e && e.host === 'host', `guest detects the host (${c.name})`);
   eq(e!.takes ?? [], c.takes, `guest reads the takes (${c.name})`);
   for (const h of c.hidden) ok(e!.hidden.includes(h), `guest hides ${h} (${c.name})`);
 }
-eq(visibleToolbars(molly), f.toolbars.all, 'visible toolbars'); eq(visibleToolbars(molly, 'top'), f.toolbars.top, 'top toolbars'); eq(visibleToolbars(molly, 'bottom'), f.toolbars.bottom, 'bottom toolbars');
-eq(visibleToolbars({ toolbars: molly.toolbars.map((t) => ({ ...t, visible: true })) }).map((t) => t.slot), f.toolbars.everyOn, 'every slot on, in order');
-eq(idePresets(molly, ['ide', 'single', 'two-columns', 'other']), f.presets.offered, 'presets offered'); eq(idePresets(molly, []), f.presets.none, 'no presets');
-eq(dockRulesOf(molly), f.presets.rules, 'dock rules'); eq(dockRulesOf(normalizeXLayout({ apps: [], ide: { paneLimit: 99 } })), f.presets.rulesClamped, 'dock rules clamped');
+eq(visibleToolbars(xl), f.toolbars.all, 'visible toolbars'); eq(visibleToolbars(xl, 'top'), f.toolbars.top, 'top toolbars'); eq(visibleToolbars(xl, 'bottom'), f.toolbars.bottom, 'bottom toolbars');
+eq(visibleToolbars({ toolbars: xl.toolbars.map((t) => ({ ...t, visible: true })) }).map((t) => t.slot), f.toolbars.everyOn, 'every slot on, in order');
+eq(idePresets(xl, ['ide', 'single', 'two-columns', 'other']), f.presets.offered, 'presets offered'); eq(idePresets(xl, []), f.presets.none, 'no presets');
+eq(dockRulesOf(xl), f.presets.rules, 'dock rules'); eq(dockRulesOf(normalizeXLayout({ apps: [], ide: { paneLimit: 99 } })), f.presets.rulesClamped, 'dock rules clamped');
 
 // ---- validator and engine agree ----
 for (const c of f.errors) {
@@ -77,6 +77,6 @@ for (const c of f.errors) {
 }
 // an item's `open: pane` only applies while the IDE is on; standalone apps never get an xlayout (not shared, not baked)
 ok(openTargetFor({ open: 'pane' }, false) === 'floating' && openTargetFor({ open: 'pane' }, true) === 'pane', 'pane needs the IDE switch');
-for (const app of ['apps/console-web', 'apps/axhub-web', 'apps/amberx-droid', 'apps/molly']) ok(!existsSync(join(root, '..', app, 'src/axf/assets/xlayout')), `${app} does not bake xlayout (host-only)`);
+for (const app of ['apps/console-web', 'apps/axhub-web', 'apps/amberx-droid']) ok(!existsSync(join(root, '..', app, 'src/axf/assets/xlayout')), `${app} does not bake xlayout (host-only)`);
 
 console.log(`check-xlayout: ok (${checks} checks)`);
