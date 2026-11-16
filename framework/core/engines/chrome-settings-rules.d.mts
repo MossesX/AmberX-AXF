@@ -20,6 +20,10 @@ export interface ChromeField {
   level: ChromeLevel;
   /** a choice of the item only (not a field of the asset type), e.g. tapConfirm */
   instanceOnly?: boolean;
+  /** for the app instance: this app layout field (e.g. toolbarPosition), set through chrome.move; other instances keep it as an override */
+  layout?: string;
+  /** for the app instance: this hideable slot's Hidden choice (hide engine, slot.hide); other instances keep it as an override */
+  slot?: string;
 }
 export interface ChromeMove { positions: ChromePosition[]; via: 'instance' | 'layout' | 'none'; field: string }
 export interface ChromeSettingsTab { id: string; label: string; icon: string; order: number }
@@ -86,3 +90,8 @@ export function chromeSettingsChoices(type: ChromeType | string, assets: AssetLi
 export function customCopy(defaultAsset: AssetLike, app: string | { id: string; name?: string }): { $axf: 'asset@1'; type: 'settings'; id: string; name: string; version: string; description: string; author: string; tags: string[]; data: Record<string, unknown> };
 export function chromeSettingsPlan(appId: string): ChromeSettingsPlanEntry[];
 export function chromeSettingsMissing(appId: string, ids: string[]): string[];
+export const CHROME_NO_SWAP: ChromeType[];
+export function chromeCanSwap(type: string): boolean;
+export const CHROME_HIDE_FIELD: 'hidden';
+export const CHROME_HIDE_SLOT: Partial<Record<ChromeType, string>>;
+export function chromeHiddenList(saved: unknown): { type: ChromeType; instance: string }[];

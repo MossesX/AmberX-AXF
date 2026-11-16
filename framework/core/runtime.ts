@@ -62,6 +62,7 @@ import {
   type NavItem,
   type Toast,
   type AssetDataMap,
+  type LayoutData,
 } from './types';
 import { assetTypeSpecs, attachable, type ValidationResult } from './validate';
 
@@ -2809,6 +2810,14 @@ export class AxfRuntime {
   /* ---------------- rendering ---------------- */
 
   /** Compile every active asset into CSS vars + root data-attributes. */
+  /**
+   * The layout the shell draws: the active layout asset with its control@1 tokens.layout overrides (Move ▸, the
+   * toolbar's Position setting, REST / MCP / CLI tokens) written in. Regions read their side / position from this.
+   */
+  layoutData(): LayoutData {
+    return this.withTokenOverrides('tokens.layout', 'layout', this.asset('layout').data);
+  }
+
   /** An asset's data with the control@1 token overrides of its set written in (engines/control-tokens.mjs). */
   private withTokenOverrides<T>(target: string, type: AssetType, data: T): T {
     const spec = (CONTROL_TOKEN_SLOTS as Record<string, { key: string }>)[target];

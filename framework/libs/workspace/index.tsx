@@ -16,7 +16,7 @@ import type { Rect, ResizeEdge, SnapZone } from '../../core/engines/windows';
 import type { AxfWebLibrary } from '../../react/library';
 import type { AxfRuntime, MenuEntry } from '../../core';
 import { partOn, partParams, type LibraryPart } from '../../core/library';
-import { WS_TOOLBAR_FOLD_KEY, wsToolbarAttrs, wsToolbarLook } from './look';
+import { WS_TOOLBAR_FOLD_KEY, wsToolbarAttrs, wsToolbarLook, wsToolbarPlace } from './look';
 import { DragLayer, registerZone, startDrag } from '../dnd';
 import { AREAS, FLOAT_DEFAULT, Workspace, useWorkspace, type Area, type Dock, type FloatRect, type ToolbarDef, type WorkspaceOptions } from './store';
 import spec from './library.json';
@@ -98,7 +98,7 @@ export function WorkspaceHost({ ws, renderPane, describe, emptyHint, dragLayer =
   useEffect(() => { const el = rootRef.current; if (!el) return; const report = () => { ws.area = { x: 0, y: 0, width: el.clientWidth, height: el.clientHeight }; }; report(); const ro = new ResizeObserver(report); ro.observe(el); return () => ro.disconnect(); }, [ws]);
   const by = Object.fromEntries(AREAS.map((a) => [a, ws.visible(a)])) as Record<(typeof AREAS)[number], string[]>;
   const floating = config.floatingPanes ? ws.visible('float') : [];
-  const dock = (d: Dock) => (config.toolbars ? s.toolbars.filter((t) => t.visible && t.dock === d && (d !== 'float' || config.floatingToolbars)).sort((a, b) => a.order - b.order) : []);
+  const dock = (d: Dock) => (config.toolbars ? s.toolbars.filter((t) => { const at = wsToolbarPlace((k) => rt.settings.get(k), t); return at.visible && at.dock === d && (d !== 'float' || config.floatingToolbars); }).sort((a, b) => a.order - b.order) : []);
   const zoom = config.maximise ? s.zoom : null;
   const style = { '--axf-ws-left': by.left.length && !zoom ? `${lay.sizes.left}px` : '0px', '--axf-ws-right': by.right.length && !zoom ? `${lay.sizes.right}px` : '0px', '--axf-ws-bottom': by.bottom.length && !zoom ? `${lay.sizes.bottom}px` : '0px' } as CSSProperties;
   const area = (a: Area, ids: string[]) => <AreaView ws={ws} area={a} ids={ids} zone={zone} renderPane={renderPane} emptyHint={emptyHint} />;

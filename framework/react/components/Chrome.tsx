@@ -94,7 +94,8 @@ export function Toolbar({ views }: { views: ViewMap }) {
   // chrome-settings@1: the settings dialog's overrides for this toolbar (instance `app`) over the asset's data
   const tb = { ...asset, data: rt.chromeData('toolbar', 'app', asset.data) ?? asset.data };
   // layout toolbarPosition left / right: the toolbar is a column beside the content (axf.css draws it; phone = a row)
-  const pos = (useAsset('layout').data as { toolbarPosition?: string }).toolbarPosition;
+  useAsset('layout');
+  const pos = rt.layoutData().toolbarPosition;
   const vertical = (pos === 'left' || pos === 'right') && !rt.viewportAttrs()['data-fx-narrow'];
   const orientation = vertical ? 'vertical' as const : undefined;
   const [q, setQ] = useState('');

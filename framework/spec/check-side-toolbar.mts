@@ -10,7 +10,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { compileLayout, layoutVars, LAYOUT_ENUMS } from '../core/engines/layout';
-import { CHROME_MOVES } from '../core/engines/chrome-settings-rules.mjs';
+import { CHROME_FIELDS, CHROME_MOVES, chromeCanSwap, chromeHiddenList, normalizeInstanceOverride } from '../core/engines/chrome-settings-rules.mjs';
 
 let n = 0;
 const ok = (c: unknown, m: string) => { assert.ok(c, m); n++; };
@@ -83,5 +83,26 @@ ok(/\.fx-region--toolbar:is\(\[data-pos='left'\], \[data-pos='right'\]\) \.fx-to
 ok(/:where\(\[data-fx-narrow\]\) \.fx-region--toolbar:is\(\[data-pos='left'\], \[data-pos='right'\]\) \.fx-toolbar \{ flex-direction: row/.test(css), 'axf.css: phone draws it as a row');
 ok(/:where\(\[data-fx-medium\]\)[^{]*\.fx-toolbtn:has\(> svg\) > span:not\(\.fx-toolbtn__badge\)[^{]*\{ display: none/.test(css), 'axf.css: a side toolbar drops to icons when the window is narrow');
 ok(/aria-orientation=\{orientation\}/.test(text('framework/react/components/Chrome.tsx')), 'Toolbar announces aria-orientation vertical at the side');
+
+/* Nov 16 extras: tab groups at the side, Position everywhere, no whole-asset swap for toolbars, Hide + the hidden list */
+eq([...CHROME_MOVES['tab-group'].positions].sort(), [...four].sort(), 'tab group Move ▸: the four positions');
+for (const t of ['toolbar', 'tab-group'] as const) {
+  const pos = CHROME_FIELDS[t].find((f) => f.key === 'position');
+  eq([...(pos?.options ?? [])].sort(), [...four].sort(), `${t} settings: a Position field with the four positions`);
+  ok(CHROME_FIELDS[t].some((f) => f.key === 'hidden' && f.kind === 'toggle'), `${t} settings: a Hide switch`);
+}
+ok(!chromeCanSwap('toolbar'), 'toolbars are never swapped as a whole asset (Change asset removed)');
+ok(chromeCanSwap('tab-group') && chromeCanSwap('nav-menu'), 'other kinds keep their asset picker');
+const ctx = text('framework/react/components/ChromeContext.tsx');
+ok(/if \(chromeCanSwap\(type\)\) items\.push\(\{ id: `chrome-pick-/.test(ctx), 'context menu: Change … only for kinds that swap');
+ok(/t\.id !== 'asset' \|\| chromeCanSwap\(type\)/.test(ctx), 'settings dialog: no Asset tab for toolbars');
+ok(/'chrome\.pick'[^\n]*!chromeCanSwap\(ty\)/.test(ctx) && /'chrome\.swap'[^\n]*!chromeCanSwap\(ty\)/.test(ctx), 'chrome.pick / chrome.swap (REST, MCP, CLI, voice) refuse toolbars');
+ok(/rt\.actions\.register\('chrome\.hide'/.test(ctx), 'chrome.hide action (REST, MCP, CLI, voice)');
+eq(chromeHiddenList({ 'axf.chrome.tab-group.settings.tabs': { hidden: true }, 'axf.chrome.toolbar.ws-main': { hidden: true }, 'axf.chrome.tab-group.other': { style: 'pills' } }), [{ type: 'tab-group', instance: 'settings.tabs' }, { type: 'toolbar', instance: 'ws-main' }].sort((a, b) => (a.type === b.type ? 0 : a.type === 'tab-group' ? -1 : 1)), 'hidden list: every hidden tab row / toolbar instance, nothing else');
+eq(normalizeInstanceOverride('tab-group', { hidden: true, position: 'left' }), { position: 'left', hidden: true }, 'tab group Hide and Position are instance settings');
+ok(/:where\(:has\(> \.fx-tabs--group:is\(\[data-fx-tabs-position='left'\], \[data-fx-tabs-position='right'\]\)\)\):not\(\.fx-tabframe\) \{\s*display: grid/.test(css), 'axf.css: a row-only tab group at the side is a column beside its siblings');
+ok(/\.fx-tabframe\[data-fx-tabs-position='left'\] \{ flex-direction: row; \}/.test(css), 'axf.css: a tab group with a panel sits beside it');
+ok(/data-axf-tab-group-hidden/.test(text('framework/react/components/TabGroup.tsx')), 'TabGroup: a hidden row goes, its panel stays');
+ok(/chromeHiddenList\(rt\.settings\.savedValues\(\)\)/.test(text('framework/libs/settings/index.tsx')), 'Settings → Appearance → Visible parts lists the hidden rows to bring back');
 
 console.log(`check-side-toolbar: ${n} checks passed`);

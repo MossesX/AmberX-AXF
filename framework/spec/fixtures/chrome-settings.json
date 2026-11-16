@@ -150,6 +150,15 @@
         "level": "simple"
       },
       {
+        "key": "hidden",
+        "label": "Hide",
+        "kind": "toggle",
+        "default": false,
+        "group": "look",
+        "level": "simple",
+        "instanceOnly": true
+      },
+      {
         "key": "display",
         "label": "Show",
         "kind": "choice",
@@ -313,6 +322,38 @@
       }
     ],
     "toolbar": [
+      {
+        "key": "position",
+        "label": "Position",
+        "kind": "choice",
+        "options": [
+          "top",
+          "bottom",
+          "left",
+          "right"
+        ],
+        "labels": {
+          "top": "Top",
+          "bottom": "Bottom",
+          "left": "Left",
+          "right": "Right"
+        },
+        "default": "top",
+        "group": "look",
+        "level": "simple",
+        "instanceOnly": true,
+        "layout": "toolbarPosition"
+      },
+      {
+        "key": "hidden",
+        "label": "Hide",
+        "kind": "toggle",
+        "default": false,
+        "group": "look",
+        "level": "simple",
+        "instanceOnly": true,
+        "slot": "toolbar"
+      },
       {
         "key": "variant",
         "label": "Buttons",

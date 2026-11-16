@@ -145,7 +145,7 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
     <Slot name="app.frame.top" />
     <div className="fx-shell">
       {showToolbar && (
-        <div className="fx-region fx-region--toolbar" data-axf-not-toolbar="layout region; the Toolbar inside it is the toolbar" style={{ gridArea: 'toolbar' }} data-pos={layout.toolbarPosition}>
+        <div className="fx-region fx-region--toolbar" data-axf-not-toolbar="layout region; the Toolbar inside it is the toolbar" style={{ gridArea: 'toolbar' }} data-pos={rt.layoutData().toolbarPosition}>
           <Toolbar views={views} />
         </div>
       )}

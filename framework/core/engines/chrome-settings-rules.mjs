@@ -107,6 +107,23 @@ export const CHROME_MOVES = {
 };
 export const POSITION_LABELS = { top: 'Top', bottom: 'Bottom', left: 'Left', right: 'Right' };
 
+/**
+ * Kinds that are never swapped as a whole asset (Brett, Nov 16 2026: remove "Change asset" from toolbars). Their
+ * look is changed through their settings (Position, Buttons, Size, Surface, …); chrome.pick / chrome.swap refuse them
+ * and the context menu and settings dialog leave the asset picker out.
+ */
+export const CHROME_NO_SWAP = ['toolbar'];
+export const chromeCanSwap = (type) => !CHROME_NO_SWAP.includes(type);
+
+/**
+ * Hide (Brett, Nov 16 2026: every toolbar and tab group gets a Hide switch, listed in the hidden list to bring back).
+ * Toolbar: the app's toolbar slot (slot.hide:toolbar, hide engine; Settings → Appearance → Visible parts).
+ * Tab group: one instance-only toggle per row (axf.chrome.tab-group.<id>.hidden); a hidden row with a panel still
+ * shows the panel. `chromeHiddenList` gives the rows to bring back.
+ */
+export const CHROME_HIDE_FIELD = 'hidden';
+export const CHROME_HIDE_SLOT = { toolbar: 'toolbar' };
+
 /* ---------------- the fields a settings dialog edits per type ---------------- */
 
 const DENSITY = ['compact', 'regular', 'roomy'];
@@ -121,6 +138,7 @@ export const CHROME_FIELDS = {
   'tab-group': [
     { key: 'style', label: 'Tab style', kind: 'choice', options: ['underline', 'pills', 'boxed', 'segmented', 'plain', 'chips'], default: "underline", group: 'look', level: 'simple' },
     { key: 'position', label: 'Position', kind: 'choice', options: ['top', 'bottom', 'left', 'right'], default: "top", group: 'look', level: 'simple' },
+    { key: 'hidden', label: 'Hide', kind: 'toggle', default: false, group: 'look', level: 'simple', instanceOnly: true },
     { key: 'display', label: 'Show', kind: 'choice', options: ['both', 'text', 'icons'], labels: { both: 'Icons + text', text: 'Text', icons: 'Icons' }, default: "both", group: 'look', level: 'simple' },
     { key: 'density', label: 'Size', kind: 'choice', options: DENSITY, default: 'regular', group: 'look', level: 'basic' },
     { key: 'align', label: 'Align', kind: 'choice', options: ['start', 'center', 'end', 'stretch'], default: "start", group: 'look', level: 'basic' },
@@ -134,6 +152,11 @@ export const CHROME_FIELDS = {
     { key: 'reorderable', label: 'Reorderable (where the host allows)', kind: 'toggle', default: true, group: 'behaviour', level: 'developer' },
   ],
   toolbar: [
+    // Position + Hide (Brett, Nov 16 2026): the app toolbar's are the layout's toolbarPosition (control@1 tokens.layout,
+    // `layout`) and its slot (hide engine, `slot`), routed there by chrome.set / the dialog; any other toolbar (a
+    // workspace toolbar) keeps them as its own instance override and docks / hides by them
+    { key: 'position', label: 'Position', kind: 'choice', options: ['top', 'bottom', 'left', 'right'], labels: { top: 'Top', bottom: 'Bottom', left: 'Left', right: 'Right' }, default: 'top', group: 'look', level: 'simple', instanceOnly: true, layout: 'toolbarPosition' },
+    { key: 'hidden', label: 'Hide', kind: 'toggle', default: false, group: 'look', level: 'simple', instanceOnly: true, slot: 'toolbar' },
     { key: 'variant', label: 'Buttons', kind: 'choice', options: ['icons', 'icons-labels', 'labels'], labels: { icons: 'Icons', 'icons-labels': 'Icons + labels', labels: 'Labels' }, default: "icons", group: 'look', level: 'simple' },
     { key: 'align', label: 'Align', kind: 'choice', options: ['start', 'center', 'spread'], default: "start", group: 'look', level: 'basic' },
     { key: 'density', label: 'Size', kind: 'choice', options: DENSITY, default: 'regular', group: 'look', level: 'basic' },
@@ -262,6 +285,11 @@ export function normalizeInstanceOverride(type, raw) {
     else if (f.kind === 'number' && typeof v === 'number' && Number.isFinite(v)) out[f.key] = Math.min(f.max ?? v, Math.max(f.min ?? v, Math.round(v)));
   }
   return out;
+}
+
+/** The hidden tab rows to bring back (from the saved settings): [{ type, instance }], sorted. */
+export function chromeHiddenList(saved) {
+  return chromeOverrideList(saved).filter((o) => o.fields[CHROME_HIDE_FIELD] === true).map(({ type, instance }) => ({ type, instance }));
 }
 
 /** An instance's effective data: the active asset's data with the instance's overrides written over it (a copy). */

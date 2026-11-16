@@ -22,7 +22,10 @@
  *   chrome.set:tab-group:<instance>:rows:<1-6|auto>   stack a tab group's tabs on that many rows ("three" works too)
  *   tabs.rows:<tab group id or words>:<1-6|auto|three…>   the same, naming the row the way a person does ("settings")
  *   chrome.reset:<type>:<instance>               drop every override + the instance's own asset pick
- *   chrome.swap:<type>:<instance>:<asset|next>   use another asset (tab groups: for this row; the rest: the app's slot)
+ *   chrome.swap:<type>:<instance>:<asset|next>   use another asset (tab groups: for this row; the rest: the app's slot;
+ *                                                toolbars never: CHROME_NO_SWAP, they change through their settings)
+ *   chrome.hide:<type>:<instance>:<on|off|toggle>   hide a toolbar (its slot) or one tab group; Settings → Appearance →
+ *                                                Visible parts lists them to bring back
  *   chrome.interface:<type>:<settings id|default|custom|reset>   which settings interface the dialog uses
  *   chrome.instance-interface:<type>:<instance>:<settings id|default|custom|inherit>   which settings interface THIS
  *                                                one instance's dialog uses (inherit = the kind's pick; build
@@ -35,7 +38,7 @@
  *   tapconfirm.window:<ms>                        how long an armed item waits for the second tap (1000–10000)
  */
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { CONTROLLED_COLORS, CONTROLLED_COLOR_KEY, chromeOverrideList, controlledColorOf, CHROME_FIELDS, CHROME_ICONS, CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_INTERFACE_KEY, CHROME_INSTANCE_KEY, CHROME_LABELS, CHROME_MANY, CHROME_MOVES, CHROME_SETTINGS_PATCH_KEY, CHROME_SETTINGS_PICK_KEY, CHROME_SETTINGS_TABS, CHROME_TYPES, FRAMEWORK_MODULE, POSITION_LABELS, SETTINGS_LEVEL_KEY, SETTINGS_LEVELS, SETTINGS_LEVEL_LABEL, chromeFieldValue, chromeInstanceSettingsPick, chromeLabel, chromeSettingsChoices, chromeSettingsCustomId, chromeSettingsDefaultId, chromeSettingsPick, chromeTypeOfTarget, isChromeInstanceId, isChromeType, normalizeInstanceOverride, normalizeSettingsUi, resolveSettingsChain, settingsLevelOf, settingsLevelRank, type AssetType, type AxfRuntime, type ChromeField, type ChromeType, type SettingsLevel, type SettingsUi, type SettingSpec, type SettingValue } from '../../core';
+import { CONTROLLED_COLORS, CONTROLLED_COLOR_KEY, chromeOverrideList, controlledColorOf, CHROME_FIELDS, CHROME_ICONS, CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_INTERFACE_KEY, CHROME_INSTANCE_KEY, CHROME_LABELS, CHROME_MANY, CHROME_MOVES, CHROME_HIDE_FIELD, CHROME_SETTINGS_PATCH_KEY, chromeCanSwap, CHROME_SETTINGS_PICK_KEY, CHROME_SETTINGS_TABS, CHROME_TYPES, FRAMEWORK_MODULE, POSITION_LABELS, SETTINGS_LEVEL_KEY, SETTINGS_LEVELS, SETTINGS_LEVEL_LABEL, chromeFieldValue, chromeInstanceSettingsPick, chromeLabel, chromeSettingsChoices, chromeSettingsCustomId, chromeSettingsDefaultId, chromeSettingsPick, chromeTypeOfTarget, isChromeInstanceId, isChromeType, normalizeInstanceOverride, normalizeSettingsUi, resolveSettingsChain, settingsLevelOf, settingsLevelRank, type AssetType, type AxfRuntime, type ChromeField, type ChromeType, type SettingsLevel, type SettingsUi, type SettingSpec, type SettingValue } from '../../core';
 import { TAP_KEYS, TAP_KINDS, isTapKind, tapArmMs, tapKindKey } from '../../core/engines/tapconfirm';
 import { CHROME_TAP_FIELD, CHROME_TAP_OPTIONS, TAB_ROWS_FIELD, matchTabGroup, parseTabRows } from '../../core/engines/chrome-settings-rules.mjs';
 import { CONTROL_TOKEN_SLOTS, withTokenOverride, withoutTokenOverride } from '../../core/engines/control-tokens.mjs';
@@ -102,6 +105,12 @@ function baseDataOf(rt: AxfRuntime, type: ChromeType, instance: string): Record<
 
 /** Set one field for an instance (dropping the override when it equals the asset's own value). */
 export function setChromeField(rt: AxfRuntime, type: ChromeType, instance: string, key: string, value: string | number | boolean | null): void {
+  // a field that lives in the app layout (toolbar Position): the same as Move ▸; reset = the layout asset's own value
+  const spec = CHROME_FIELDS[type].find((f) => f.key === key);
+  const app = instance === CHROME_APP_INSTANCE;
+  if (app && spec?.slot) { rt.setSlotHidden(spec.slot as AssetType, value === true); return; }
+  const lay = app ? spec?.layout : undefined;
+  if (lay) { moveChrome(rt, type, instance, typeof value === 'string' ? value : String(layoutOwn(rt, lay) ?? '')); return; }
   const k = CHROME_INSTANCE_KEY(type, instance);
   const cur = normalizeInstanceOverride(type, rt.settings.get(k));
   const base = baseDataOf(rt, type, instance);
@@ -122,6 +131,16 @@ function parseValue(type: ChromeType, key: string, raw: string): string | number
   return f.options?.includes(raw) ? raw : null;
 }
 
+/** The layout asset's own value for a field (before any tokens.layout override). */
+function layoutOwn(rt: AxfRuntime, field: string): unknown {
+  return (rt.asset('layout').data as unknown as Record<string, unknown>)[field];
+}
+
+/** The value a layout-backed field shows now (the layout with its tokens.layout override), else the field default. */
+function layoutNow(rt: AxfRuntime, field: string): unknown {
+  return (rt.layoutData() as unknown as Record<string, unknown>)[field] ?? layoutOwn(rt, field);
+}
+
 /** Move a chrome kind: tab groups set their own position; toolbar / nav set the layout token (tokens.layout override). */
 export function moveChrome(rt: AxfRuntime, type: ChromeType, instance: string, position: string): boolean {
   const m = CHROME_MOVES[type];
@@ -138,8 +157,25 @@ export function moveChrome(rt: AxfRuntime, type: ChromeType, instance: string, p
   return false;
 }
 
-/** Use another asset: a tab group picks for itself, every other kind swaps the app's slot. `next` cycles. */
+/** Is this chrome piece hidden now (toolbar: its slot; tab group: its own row switch)? */
+export function chromeHidden(rt: AxfRuntime, type: ChromeType, instance: string): boolean {
+  const f = CHROME_FIELDS[type].find((x) => x.key === CHROME_HIDE_FIELD);
+  if (!f) return false;
+  if (f.slot && instance === CHROME_APP_INSTANCE) return rt.slotHidden(f.slot as AssetType);
+  return chromeFieldValue(type, baseDataOf(rt, type, instance), rt.settings.get(CHROME_INSTANCE_KEY(type, instance)), CHROME_HIDE_FIELD) === true;
+}
+
+/** Hide or show a chrome piece (on / off / toggle); false when the kind has no Hide. */
+export function hideChrome(rt: AxfRuntime, type: ChromeType, instance: string, how: string): boolean {
+  if (!CHROME_FIELDS[type].some((x) => x.key === CHROME_HIDE_FIELD)) return false;
+  const on = how === 'toggle' ? !chromeHidden(rt, type, instance) : !/^(off|false|no|0|show)$/i.test(how);
+  setChromeField(rt, type, instance, CHROME_HIDE_FIELD, on ? true : null);
+  return true;
+}
+
+/** Use another asset: a tab group picks for itself, every other kind swaps the app's slot. `next` cycles. Toolbars never swap whole (CHROME_NO_SWAP). */
 export function swapChrome(rt: AxfRuntime, type: ChromeType, instance: string, asset: string): boolean {
+  if (!chromeCanSwap(type)) return false;
   const list = rt.registry.list(type as AssetType);
   if (!list.length) return false;
   let id = asset;
@@ -163,12 +199,13 @@ export function chromeMenu(rt: AxfRuntime, type: ChromeType, instance: string): 
   const m = CHROME_MOVES[type];
   const items: MenuEntry[] = [
     { id: `chrome-settings-${type}`, label: `${label} settings…`, icon: 'settings', action: `chrome.settings:${type}:${instance}` },
-    { id: `chrome-pick-${type}`, label: type === 'tab-group' ? 'Change tab style…' : `Change ${label.toLowerCase()}…`, icon: CHROME_ICONS[type], action: `chrome.pick:${type}:${instance}` },
   ];
+  if (chromeCanSwap(type)) items.push({ id: `chrome-pick-${type}`, label: type === 'tab-group' ? 'Change tab style…' : `Change ${label.toLowerCase()}…`, icon: CHROME_ICONS[type], action: `chrome.pick:${type}:${instance}` });
   if (m.positions.length) {
-    const cur = m.via === 'instance' ? chromeFieldValue(type, baseDataOf(rt, type, instance), rt.settings.get(CHROME_INSTANCE_KEY(type, instance)), m.field) : (rt.asset('layout').data as unknown as Record<string, unknown>)[m.field];
+    const cur = m.via === 'instance' ? chromeFieldValue(type, baseDataOf(rt, type, instance), rt.settings.get(CHROME_INSTANCE_KEY(type, instance)), m.field) : layoutNow(rt, m.field);
     items.push({ id: `chrome-move-${type}`, label: 'Move', icon: 'move', items: m.positions.map((p) => ({ id: `chrome-move-${type}-${p}`, label: `${POSITION_LABELS[p]}${cur === p ? ' ✓' : ''}`, action: `chrome.move:${type}:${instance}:${p}` })) });
   }
+  if (CHROME_FIELDS[type].some((x) => x.key === CHROME_HIDE_FIELD)) items.push({ id: `chrome-hide-${type}`, label: `Hide ${type === 'tab-group' ? 'these tabs' : `the ${label.toLowerCase()}`}`, icon: 'eye', action: `chrome.hide:${type}:${instance}:on` });
   // every chrome kind leads to this app's own look; the action asks first (lib-settings)
   if (rt.actions.list().some(({ id }) => id === 'skin.restore.ask')) items.push({ id: `chrome-restore-${type}`, label: 'Restore to default…', icon: 'refresh', action: 'skin.restore.ask' });
   return items;
@@ -182,7 +219,9 @@ export function installChrome(rt: AxfRuntime): void {
     const t = (v: unknown): ChromeType | null => (isChromeType(v) ? v : null);
     const inst = (type: ChromeType, v: unknown, ctx?: { payload?: unknown }) => instanceOf(type, (typeof v === 'string' && v) || (typeof ctx?.payload === 'string' ? ctx.payload : undefined)) || CHROME_APP_INSTANCE;
     rt.actions.register('chrome.settings', ([type, instance], ctx) => { const ty = t(type); if (ty) rt.openDialog(CHROME_SETTINGS_DIALOG, { type: ty, instance: inst(ty, instance, ctx) }); }, { label: 'Chrome settings (tab group, toolbar, banner, nav, menu bar)', params: true });
-    rt.actions.register('chrome.pick', ([type, instance], ctx) => { const ty = t(type); if (ty) rt.openDialog(CHROME_PICK_DIALOG, { type: ty, instance: inst(ty, instance, ctx) }); }, { label: 'Change a chrome asset (picker)', params: true });
+    const noSwap = (ty: ChromeType) => { rt.toast(`${chromeLabel(ty)}s aren't swapped as a whole: change it in its settings (Position, Buttons, Size, Surface).`, 'info', 'Change'); };
+    rt.actions.register('chrome.hide', ([type, instance, how = 'on'], ctx) => { const ty = t(type); if (ty && !hideChrome(rt, ty, inst(ty, instance, ctx), how)) rt.toast(`${chromeLabel(ty)} has no Hide.`, 'warning', 'Hide'); }, { label: 'Hide or show a toolbar or tab group (chrome.hide:<type>:<instance>:<on|off|toggle>)', params: true, requires: 'assets.swap' });
+    rt.actions.register('chrome.pick', ([type, instance], ctx) => { const ty = t(type); if (ty && !chromeCanSwap(ty)) { noSwap(ty); return; } if (ty) rt.openDialog(CHROME_PICK_DIALOG, { type: ty, instance: inst(ty, instance, ctx) }); }, { label: 'Change a chrome asset (picker)', params: true });
     rt.actions.register('chrome.move', ([type, instance, position = ''], ctx) => { const ty = t(type); if (ty && !moveChrome(rt, ty, inst(ty, instance, ctx), position)) rt.toast(`${chromeLabel(ty ?? type ?? '')} can't move to "${position}".`, 'warning', 'Move'); }, { label: 'Move a chrome piece (top / bottom / left / right)', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.set', ([type, instance, key = '', ...rest], ctx) => {
       const ty = t(type); if (!ty) return;
@@ -191,7 +230,7 @@ export function installChrome(rt: AxfRuntime): void {
       setChromeField(rt, ty, inst(ty, instance, ctx), key, v);
     }, { label: 'Set one chrome setting (chrome.set:<type>:<instance>:<field>:<value>)', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.reset', ([type, instance], ctx) => { const ty = t(type); if (!ty) return; const i = inst(ty, instance, ctx); rt.settings.clear(CHROME_INSTANCE_KEY(ty, i)); rt.settings.clear(CHROME_INSTANCE_ASSET_KEY(ty, i)); rt.settings.clear(CHROME_INSTANCE_INTERFACE_KEY(ty, i)); }, { label: 'Reset a chrome piece to its asset', params: true, requires: 'assets.swap' });
-    rt.actions.register('chrome.swap', ([type, instance, asset = 'next'], ctx) => { const ty = t(type); if (ty && !swapChrome(rt, ty, inst(ty, instance, ctx), asset)) rt.toast(`No ${chromeLabel(ty).toLowerCase()} asset "${asset}".`, 'warning', 'Change'); }, { label: 'Use another chrome asset (chrome.swap:<type>:<instance>:<asset|next>)', params: true, requires: 'assets.swap' });
+    rt.actions.register('chrome.swap', ([type, instance, asset = 'next'], ctx) => { const ty = t(type); if (ty && !chromeCanSwap(ty)) { noSwap(ty); return; } if (ty && !swapChrome(rt, ty, inst(ty, instance, ctx), asset)) rt.toast(`No ${chromeLabel(ty).toLowerCase()} asset "${asset}".`, 'warning', 'Change'); }, { label: 'Use another chrome asset (chrome.swap:<type>:<instance>:<asset|next>)', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.unset', ([type, instance, key = ''], ctx) => { const ty = t(type); if (ty && key) setChromeField(rt, ty, inst(ty, instance, ctx), key, null); }, { label: 'Reset one chrome setting to the app (chrome.unset:<type>:<instance>:<field>)', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.edits', () => rt.dispatch('settings.open:appearance'), { label: 'Assets with edits (Settings → Appearance)' });
     // component-tokens@1: one tab row's (or grid's) own token values; the same three moves as the settings dialog's panel
@@ -264,7 +303,8 @@ function FieldControl({ type, instance, field, descriptions }: { type: ChromeTyp
   const rt = useRuntime();
   const base = baseDataOf(rt, type, instance);
   const override = rt.settings.get(CHROME_INSTANCE_KEY(type, instance));
-  const value = chromeFieldValue(type, base, override, field.key);
+  const app = instance === CHROME_APP_INSTANCE;
+  const value = app && field.slot ? rt.slotHidden(field.slot as AssetType) : app && field.layout ? layoutNow(rt, field.layout) ?? field.default : chromeFieldValue(type, base, override, field.key);
   const overridden = field.key in normalizeInstanceOverride(type, override);
   const hint = descriptions && overridden ? 'Set for this one (the asset says otherwise)' : undefined;
   const set = (v: string | number | boolean | null) => setChromeField(rt, type, instance, field.key, v);
@@ -446,8 +486,8 @@ export function ChromeSettingsPanel({ type, instance }: { type: ChromeType; inst
     const base = CHROME_SETTINGS_TABS.map((t) => ({ ...t }));
     const extra = ui.tabs.filter((t) => !base.some((b) => b.id === t.id)).map((t, i) => ({ id: t.id, label: t.label ?? t.id, icon: t.icon ?? 'settings', order: t.order ?? 100 + i }));
     const all = [...base, ...extra].map((t) => { const o = ui.tabs.find((x) => x.id === t.id); return o ? { ...t, label: o.label ?? t.label, icon: o.icon ?? t.icon, order: o.order ?? t.order, hidden: o.hidden } : t; });
-    return all.filter((t) => !('hidden' in t && t.hidden) && !ui.hide.includes(t.id)).sort((a, b) => a.order - b.order);
-  }, [ui]);
+    return all.filter((t) => !('hidden' in t && t.hidden) && !ui.hide.includes(t.id) && (t.id !== 'asset' || chromeCanSwap(type))).sort((a, b) => a.order - b.order);
+  }, [ui, type]);
   const [tab, setTab] = useState(tabs[0]?.id ?? 'look');
   const shownTab = tabs.some((t) => t.id === tab) ? tab : tabs[0]?.id ?? 'look';
   const levelOk = (id: string, own: string) => !ui.levels || settingsLevelRank(level) >= settingsLevelRank(settingsLevelOf(ui.levelOf[id]) ?? (own as SettingsLevel));
@@ -470,7 +510,7 @@ export function ChromeSettingsPanel({ type, instance }: { type: ChromeType; inst
         </div>
       );
     }
-    if (id === 'asset') return <ChromeAssetPicker type={type} instance={instance} />;
+    if (id === 'asset' && chromeCanSwap(type)) return <ChromeAssetPicker type={type} instance={instance} />;
     if (id === 'interface') return <InterfacePicker type={type} />;
     return <div className="fx-stack">{ui.groups.filter((g) => g.tab === id).map((g) => <ExtraGroup key={g.id} group={g} />)}</div>;
   };
@@ -507,7 +547,7 @@ export const chromeDialogs: DialogMap = {
 };
 
 /** Every chrome type's settings reachable by voice: the catalog lists these ids (console.actions). */
-export const CHROME_ACTION_IDS = ['chrome.settings', 'chrome.pick', 'chrome.move', 'chrome.set', 'chrome.reset', 'chrome.swap', 'chrome.interface', 'chrome.instance-interface', 'chrome.unset', 'chrome.edits'] as const;
+export const CHROME_ACTION_IDS = ['chrome.settings', 'chrome.pick', 'chrome.move', 'chrome.hide', 'chrome.set', 'chrome.reset', 'chrome.swap', 'chrome.interface', 'chrome.instance-interface', 'chrome.unset', 'chrome.edits'] as const;
 export { CHROME_TYPES as CHROME_SETTINGS_TYPES, CHROME_LABELS as CHROME_SETTINGS_LABELS };
 
 /**

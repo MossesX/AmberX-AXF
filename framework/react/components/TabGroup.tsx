@@ -21,7 +21,7 @@
  * `id` is the row's settings id: stable, unique in the app (`<plugin>.<row>`), and what check-chrome-assets.mjs asks for.
  */
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type DragEvent, type ReactNode } from 'react';
-import { CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, TAB_GROUP_FOLD_KEY, TAB_GROUP_LAST_KEY, TAB_ROWS_FIELD, chromeFieldValue, chromeInstanceData, tabRowsLayout, normalizeTabGroup, tabGroupStyle, type AxfRuntime, type TabGroupData } from '../../core';
+import { CHROME_HIDE_FIELD, CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, TAB_GROUP_FOLD_KEY, TAB_GROUP_LAST_KEY, TAB_ROWS_FIELD, chromeFieldValue, chromeInstanceData, tabRowsLayout, normalizeTabGroup, tabGroupStyle, type AxfRuntime, type TabGroupData } from '../../core';
 import { INSTANCE_TOKENS_KEY, instanceTokenVars } from '../../core/engines/component-tokens.mjs';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { ControlScope, escapeSelector, useControlScope, useControlTarget, useControlTargets } from '../controlTargets';
@@ -288,6 +288,11 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
     );
   }
 
+  // Hide (chrome.hide:tab-group:<id>, its settings' Hide switch): the row goes; a panel stays. Settings → Appearance →
+  // Visible parts lists the hidden rows to bring back.
+  if (chromeFieldValue('tab-group', null, rt.settings.get(CHROME_INSTANCE_KEY('tab-group', id)), CHROME_HIDE_FIELD) === true) {
+    return children === undefined ? null : <div className="fx-tabframe__panel" role="tabpanel" data-axf-tab-group-hidden={id}><ControlScope address={`${tabKind}:${id}=${value}`}>{children}</ControlScope></div>;
+  }
   if (children === undefined) return row;
   return (
     <div className="fx-tabframe" data-fx-tabs-position={data.position}>

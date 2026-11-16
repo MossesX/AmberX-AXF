@@ -75,6 +75,7 @@ const valuesOf = (f: { kind: string; options?: string[]; min?: number; max?: num
     const key = CHROME_INSTANCE_KEY(kind, 'app');
     for (const f of CHROME_FIELDS[kind]) {
       if (f.key === CHROME_TAP_FIELD) continue; // instance-only: checked below through the tap-confirm engine
+      if (f.layout || f.slot) continue; // the app toolbar's Position / Hide live in the layout / hide engine: checked below
       const seen = new Map<string, string | number | boolean>();
       for (const v of valuesOf(f)) {
         rt.settings.set(key, { [f.key]: v } as never);
@@ -162,4 +163,25 @@ const valuesOf = (f: { kind: string; options?: string[]; min?: number; max?: num
 }
 
 if (failures.length) { console.error(`check-chrome-apply: ${failures.length} failure(s)\n  ${failures.join('\n  ')}`); process.exit(1); }
+/* the app toolbar's Position and Hide (Brett, Nov 16 2026) are the layout's toolbarPosition and the toolbar slot */
+{
+  const rt = make();
+  const pos = CHROME_FIELDS.toolbar.find((f) => f.key === 'position');
+  const hide = CHROME_FIELDS.toolbar.find((f) => f.key === 'hidden');
+  ok(pos?.layout === 'toolbarPosition' && pos.options?.join() === 'top,bottom,left,right', 'toolbar Position: top / bottom / left / right, the layout\'s toolbarPosition');
+  ok(hide?.slot === 'toolbar' && hide.kind === 'toggle', 'toolbar Hide: a switch on the toolbar slot');
+  ok(CHROME_FIELDS['tab-group'].some((f) => f.key === 'position') && CHROME_FIELDS['tab-group'].some((f) => f.key === 'hidden' && f.kind === 'toggle'), 'tab group: Position and Hide');
+  const before = JSON.stringify(rt.compileStyles().vars);
+  for (const p of ['left', 'right', 'bottom', 'top']) {
+    rt.settings.set('axf.tokens.layout', { '*': { toolbarPosition: p } } as never);
+    ok(rt.layoutData().toolbarPosition === p, `toolbar Position ${p}: the layout the shell draws says so`);
+  }
+  rt.settings.set('axf.tokens.layout', { '*': { toolbarPosition: 'left' } } as never);
+  ok(JSON.stringify(rt.compileStyles().vars) !== before, 'toolbar Position left: the grid changes');
+  rt.settings.clear('axf.tokens.layout');
+  rt.setSlotHidden('toolbar' as never, true);
+  ok(rt.slotHidden('toolbar' as never) && !String(rt.compileStyles().vars['--fx-grid-areas']).includes('toolbar'), 'toolbar Hide: the toolbar region drops out');
+  rt.setSlotHidden('toolbar' as never, false);
+}
+
 console.log(`check-chrome-apply: ${n} checks passed (every chrome settings value applies on toolbar, nav, menu bar, banner, context menu, workspace toolbars)`);

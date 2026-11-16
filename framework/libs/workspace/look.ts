@@ -7,7 +7,7 @@
 import { CHROME_INSTANCE_KEY, chromeInstanceData } from '../../core/engines/chrome-settings-rules.mjs';
 import type { ToolbarDef } from './store';
 
-export interface WsToolbarLook { variant: 'icons' | 'icons-labels' | 'labels'; align: 'start' | 'center' | 'spread'; density: 'compact' | 'regular' | 'roomy'; surface: 'flat' | 'raised' | 'glass'; divider: boolean; showSearch: boolean; collapsible: boolean }
+export interface WsToolbarLook { variant: 'icons' | 'icons-labels' | 'labels'; align: 'start' | 'center' | 'spread'; density: 'compact' | 'regular' | 'roomy'; surface: 'flat' | 'raised' | 'glass'; divider: boolean; showSearch: boolean; collapsible: boolean; position?: 'top' | 'bottom' | 'left' | 'right'; hidden?: boolean }
 
 /** The per-device fold of one collapsible workspace toolbar. */
 export const WS_TOOLBAR_FOLD_KEY = (toolbarId: string) => `axf.workspace.toolbar.${toolbarId}.folded`;
@@ -21,5 +21,17 @@ export function wsToolbarLook(get: (key: string) => unknown, tb: Pick<ToolbarDef
 export function wsToolbarAttrs(look: WsToolbarLook, folded: boolean): Record<string, string> {
   const out: Record<string, string> = { 'data-variant': look.variant, 'data-align': look.align, 'data-density': look.density, 'data-surface': look.surface, 'data-divider': look.divider ? 'on' : 'off' };
   if (folded) out['data-folded'] = 'on';
+  if (look.position) out['data-position'] = look.position;
+  if (look.hidden) out['data-hidden'] = 'on';
   return out;
+}
+
+/**
+ * Where a workspace toolbar docks and whether it shows, after its settings (chrome-settings@1 Position / Hide, Brett,
+ * Nov 16 2026): the Position setting wins over the workspace's own dock (a floating toolbar stays floating until a
+ * Position is picked), Hide takes it off the workspace until it is shown again (Settings → Appearance → Visible parts).
+ */
+export function wsToolbarPlace<D extends string>(get: (key: string) => unknown, tb: Pick<ToolbarDef, 'id' | 'labels'> & { dock: D; visible: boolean }): { dock: D | 'top' | 'bottom' | 'left' | 'right'; visible: boolean } {
+  const look = wsToolbarLook(get, tb);
+  return { dock: look.position ?? tb.dock, visible: tb.visible && look.hidden !== true };
 }
