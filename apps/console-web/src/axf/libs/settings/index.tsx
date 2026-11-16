@@ -675,6 +675,7 @@ export function AppearancePanel() {
       </div>
       <Switch label="Use skin" hint={skinOn ? 'Off goes back to this app\'s own look and keeps your picks.' : 'On applies the last skin you picked.'} checked={skinOn} disabled={locked || !skins.length} onChange={(on) => { useSkin(on); }} />
       <FollowHubSwitch locked={locked} />
+      <DefaultLookSection locked={locked || following} />
       {row('Colour theme', 'color-theme')}
       <p className="fx-eyebrow">Visible parts</p>
       {hideableTypes().map((t) => (
@@ -698,6 +699,50 @@ export function AppearancePanel() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+/**
+ * Settings → Appearance → Default look (build console-look-becomes-default-axhub-skin, Nov 14 2026, Brett: "make it
+ * the default axHub look, and then make all the apps inherit it"): the hub default skin every app stands on (badge),
+ * "Make this the default look" for the skin in force here (asks first; every app's look is backed up before it moves)
+ * and "Restore previous skin" from this app's backups (one tap, one undo). Same moves as the skin.default /
+ * skin.restoreBackup actions, the theme manager's routes, `skins.mjs default|restore --backup` and voice.
+ */
+function DefaultLookSection({ locked }: { locked: boolean }) {
+  const rt = useRuntime();
+  useAxfState();
+  useSettingsRevision(rt);
+  const hub = rt.hubDefaultSkin();
+  const skins = rt.skinList();
+  const nameOf = (id: string) => skins.find((s) => s.id === id)?.name ?? id;
+  const onFloor = !!hub && rt.skinAt(null).from === 'default';
+  const inForce = rt.skinInForce().id;
+  const candidate = inForce && inForce !== hub?.id ? inForce : '';
+  const last = rt.lookBackups()[0];
+  const when = last ? last.at.slice(0, 16).replace('T', ' ') : '';
+  return (
+    <div className="fx-stack" data-axf-settings-section="default-look" data-axf-default-look="">
+      <p className="fx-eyebrow">Default look</p>
+      <div className="axf-settings__row" data-axf-default-skin={hub?.id ?? ''}>
+        <div className="axf-settings__label">
+          <span>axHub default {hub ? <Chip tone="accent">Default: {nameOf(hub.id)}</Chip> : <Chip>None</Chip>}</span>
+          <span className="fx-muted axf-settings__hint">{!hub ? 'No default look yet: every app draws its own.' : onFloor ? 'This app stands on it; your picks are drawn over it.' : 'This app uses its own skin; turn Use skin off to stand on the default.'}</span>
+        </div>
+        <div className="axf-settings__control axf-skin__action">
+          <Button id="skin-default" size="sm" icon="palette" disabled={locked || !candidate} title={candidate ? undefined : inForce ? 'This skin is already the default look.' : 'Pick a skin first: the default look is a skin.'} confirm={`Make ${nameOf(candidate)} the default look of every app? Each app's current look is backed up first and can be restored.`} onClick={() => { void rt.makeDefaultSkin(candidate); }}>Make this the default look</Button>
+        </div>
+      </div>
+      <div className="axf-settings__row" data-axf-restore-backup={last?.id ?? ''}>
+        <div className="axf-settings__label">
+          <span>Restore previous skin</span>
+          <span className="fx-muted axf-settings__hint">{last ? `Back to the look kept ${when}${last.skin.id ? ` (${nameOf(last.skin.id)}${last.skin.use ? '' : ', skin off'})` : ''}.` : 'No earlier look is kept for this app.'}</span>
+        </div>
+        <div className="axf-settings__control axf-skin__action">
+          <Button id="skin-restore-backup" size="sm" tone="quiet" icon="refresh" disabled={locked || !last} onClick={() => { rt.restoreLookBackupNow(); }}>Restore previous skin</Button>
+        </div>
+      </div>
     </div>
   );
 }
