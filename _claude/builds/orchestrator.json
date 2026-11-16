@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T22:53:24.949Z",
+ "updatedAt": "2026-11-16T22:53:38.621Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -140396,15 +140396,15 @@
    "title": "Demo video series: three-minute browser walkthroughs of AmberX",
    "category": "Launch",
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
-   "status": "built",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-16T15:17:03.377Z",
-   "builtAt": "2026-11-16T14:11:20.988Z",
+   "updatedAt": "2026-11-16T22:53:26.884Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-demo-video-series-three-minute-browser--earl.",
@@ -140601,6 +140601,10 @@
     {
      "text": "Session axf-demo-video-series-three-minute-browser--gina on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-16T15:17:03.377Z"
+    },
+    {
+     "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
+     "at": "2026-11-16T22:53:26.884Z"
     }
    ],
    "approvals": [
@@ -150900,7 +150904,7 @@
    "title": "Every grid: 1 or 2 rows per item, set by the skin",
    "category": "",
    "detail": "Every grid/table/list in the console shows each item as 1 or 2 rows when collapsed, set by the active skin (a skin token, e.g. grid row-lines = 1 or 2), and expands on tap for details. Audit every grid in every plugin and move it onto the shared framework grid/row control so the skin decides; no plugin hard-codes its own row layout. Use the existing grid/tab-group token sets (#654). Skin editor gets the 1-row/2-row setting with live preview. API parity (read/set the setting via REST/MCP/CLI/voice). Tests, check-theme and check-controls green, help, Shipped features. Land when done.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -150908,7 +150912,7 @@
    "pr": "#707",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:17.286Z",
-   "updatedAt": "2026-11-16T20:10:56.750Z",
+   "updatedAt": "2026-11-16T22:53:33.189Z",
    "builtAt": "",
    "notes": [
     {
@@ -150950,6 +150954,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-16T20:10:56.750Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (cli): Brett: archive all >500 behind main.",
+     "at": "2026-11-16T22:53:33.189Z"
     }
    ],
    "approvals": [],
@@ -155398,7 +155406,7 @@
    "title": "Duplicate gate: VPS checks Shipped features before any build is filed or split",
    "category": "",
    "detail": "A VPS-run gate (plain code, no Claude tokens) registered as a 'before' rule in the Gate & rules Build rules store, doer VPS. Before any build is filed, queued or split, the VPS checks the ONE true feature store (Shipped features + in-progress records) AND main (plugins, files, settings). It also checks the lander/plugin's own state and log, so a feature that exists but is switched off is caught (e.g. auto-land existed on main but was off since Nov 4 and got rebuilt ~5 times). If a match is found, it BLOCKS the build and tells Brett what already exists, where it is, whether it's on or off, and what single setting or fix is actually needed. He can override with one tap/voice ('build it anyway'). Also blocks a new build that duplicates an already-queued/running/built-but-unlanded build, and points to that one instead. Fuzzy matching on titles, said text, plugin names and settings keys, with a similarity score shown. Log every block in Gate History. API parity (REST/MCP/CLI/voice). Tests: auto-land case must be caught. Land with the one-at-a-time lander.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -155406,7 +155414,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T13:06:22.511Z",
-   "updatedAt": "2026-11-16T14:18:42.369Z",
+   "updatedAt": "2026-11-16T22:53:31.199Z",
    "builtAt": "",
    "notes": [
     {
@@ -155436,6 +155444,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-16T14:18:42.369Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (cli): Brett: archive all >500 behind main.",
+     "at": "2026-11-16T22:53:31.199Z"
     }
    ],
    "approvals": [],
