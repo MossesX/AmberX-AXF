@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 12:45 UTC · `move-build-orchestrator-to-axhub` note (all) · orchestrator
 - 2026-11-15 12:46 UTC · `gate-rules-plugin-in-the-console` s20 done (all) · orchestrator
 - 2026-11-15 12:47 UTC · `gate-rules-plugin-in-the-console` s21 done (all) · orchestrator
 - 2026-11-15 12:46 UTC · `data-container-axf-data-holds-all` s14 done (all) · orchestrator
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 16:20 UTC · `remove-old-molly-app-project-keep-axf` note (all) · orchestrator
 - 2026-11-16 16:20 UTC · `remove-old-molly-app-project-keep-axf` note (all) · orchestrator
 - 2026-11-16 16:22 UTC · `get-main-green-unblock-lander-land-axf` added (0 steps) (all) · console
+- 2026-11-16 16:23 UTC · `get-main-green-unblock-lander-land-axf` → queued, note (all) · console
 
 ## Token passes (log)
 

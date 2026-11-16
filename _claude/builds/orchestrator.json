@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T16:22:59.410Z",
+ "updatedAt": "2026-11-16T16:23:14.894Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -156578,16 +156578,22 @@
    "title": "Get main green, unblock the lander, land axf-data and Postgres",
    "category": "",
    "detail": "TOP PRIORITY, ahead of everything. The auto-lander is ON but has landed nothing in 6 hours: about 20 builds are blocked because CI is red, nearly all failing the same checks (Web Dev Console (React/TS) + Python API, Build engine sweep (Node), plus some AmberX APK / Gradle). That points to main itself being broken, likely from the disk-full night. 1) Find and fix what's red on main (gh run list --branch main, --log-failed) until main is green. 2) Re-sync the 4 branches whose push failed because local and GitHub differ (server-gate-one-session-per-build-no, one-source-truth-console-shows-only-what, console-axhub-retry-failed-calls, demo-video-series-three-minute-browser); drop the stray merge-main-land-one-source-truth-console. 3) auto-lander-controls-in-the-gate-plugin: commit or drop its uncommitted worktree changes. 4) Then land, one at a time, data-container-axf-data-holds-all (bring the axf-data container up), then axf-data-postgres-real-tables-own, and run and verify the Postgres migration. 5) Confirm the auto-lander is landing the rest one at a time. Log each fix and send Brett FYI notifications.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-16T16:22:57.802Z",
-   "updatedAt": "2026-11-16T16:22:57.802Z",
+   "updatedAt": "2026-11-16T16:23:00.354Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-16T16:23:00.354Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
