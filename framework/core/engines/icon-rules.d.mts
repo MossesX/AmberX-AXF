@@ -47,3 +47,19 @@ export function normalizeIconPackFull(raw: unknown): IconPackFull;
 export function iconPackExtendedErrors(raw: unknown): string[];
 export function iconAssetErrors(type: string, data: unknown): string[] | null;
 export function iconSchemaProperties(type: string): { $defs: Record<string, unknown>; properties: Record<string, unknown> };
+
+export const ICON_SCOPE_CONTRACT: 'icon-scope@1';
+export const ICON_SCOPE_LEVELS: readonly string[];
+export const ICON_OVERRIDES_MAX: number;
+export function isIconSubScope(key: unknown): key is string;
+/** A normalized glyph entry or a glyph reference (`name:<glyph>` | `pack:<id>/<name>`). */
+export type IconOverride = PackGlyph | string;
+export interface IconLevel { pack: string; overrides: Record<string, IconOverride> }
+export interface IconLook extends IconLevel { scopes: Record<string, IconLevel> }
+export function normalizeOverride(raw: unknown): IconOverride | null;
+export function normalizeIconLevel(raw: unknown): IconLevel;
+export function iconLevelEmpty(lv: IconLevel | null | undefined): boolean;
+export function normalizeIconLook(raw: unknown, legacyPack?: string): IconLook;
+export function iconLookEmpty(b: IconLook | null | undefined): boolean;
+export function normalizeIconHub(raw: unknown): IconLevel;
+export function iconBlockErrors(raw: unknown, where?: string): string[];

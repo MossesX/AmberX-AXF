@@ -49,6 +49,8 @@ export interface AppLookDocument {
   legacy?: LegacyLook;
   /** Backups taken before a move onto the hub default skin, newest first (at most LOOK_BACKUPS_MAX); absent = none. */
   backups?: LookBackup[];
+  /** icon-scope@1 (spec/ICON-MAP.md): the app's icon pack, per-spot overrides and each UI / plugin scope's; absent = nothing picked. */
+  icon?: import('./icon-rules.mjs').IconLook;
   updatedBy?: string;
   updatedAt?: string;
 }

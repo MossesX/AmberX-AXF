@@ -17,6 +17,7 @@
  * `overrides["color-theme"]`; reading it moves it to `colorTheme` (`normalizeAppLook`).
  */
 import { isSubScopeKey, resolveSkinChain, skinScopeChain, SKIN_SCOPE_APP, SKIN_SCOPE_DEFAULT, SKIN_SCOPE_GLOBAL } from './skin-coverage.mjs';
+import { iconLookEmpty, normalizeIconLook } from './icon-rules.mjs';
 import { CHROME_INSTANCE_KEY, CHROME_SETTINGS_PICK_KEY, CHROME_TYPES, isChromeInstanceId, normalizeInstanceOverride } from './chrome-settings-rules.mjs';
 
 export const APP_LOOK_FRAME = 'app-look@1';
@@ -228,6 +229,14 @@ export function normalizeAppLook(raw) {
   if (Array.isArray(raw.backups)) {
     const backups = raw.backups.map(normalizeLookBackup).filter(Boolean).slice(0, LOOK_BACKUPS_MAX);
     if (backups.length) out.backups = backups;
+  }
+  // icon-scope@1 (spec/ICON-MAP.md): the app's icon pack, its per-spot overrides and each UI / plugin scope's; kept through
+  // every writer. A legacy top-level `iconPack` or own.settings["axf.icons.pack.app"] folds into icon.pack.
+  const legacyPack = typeof raw.iconPack === 'string' ? raw.iconPack : typeof out.own.settings?.['axf.icons.pack.app'] === 'string' ? out.own.settings['axf.icons.pack.app'] : '';
+  if (raw.icon !== undefined || legacyPack) {
+    const icon = normalizeIconLook(raw.icon, legacyPack);
+    if (!iconLookEmpty(icon)) out.icon = icon;
+    if (legacyPack && out.own.settings) { const rest = { ...out.own.settings }; delete rest['axf.icons.pack.app']; out.own.settings = rest; }
   }
   if (typeof raw.updatedBy === 'string') out.updatedBy = raw.updatedBy;
   if (typeof raw.updatedAt === 'string') out.updatedAt = raw.updatedAt;

@@ -11,6 +11,7 @@
  * Pure and port-neutral: Kotlin mirrors it as `AppearanceEngine` (fixtures: spec/fixtures/appearance.json).
  */
 import { hideable } from './hide';
+import { iconLevelEmpty, normalizeIconHub, type IconLevel } from './icon-rules.mjs';
 import { spacingOf, type Spacing } from './spacing';
 import { ASSET_TYPES } from '../types';
 
@@ -28,7 +29,7 @@ export const APPEARANCE_SETTING_MAX_BYTES = 4 * 1024;
  * replaced (Oct 27 2026), so a document an older build wrote with that slot loses it on read, and the next write by any
  * app drops it from the hub (one-shot clean, Nov 3 2026).
  */
-export const APPEARANCE_NEVER: readonly string[] = ['uac-policy', 'help', 'appearance-package', 'skin'];
+export const APPEARANCE_NEVER: readonly string[] = ['uac-policy', 'help', 'appearance-package', 'skin', 'icon-map'];
 
 const ID = /^[a-z0-9][a-z0-9-]{0,63}$/;
 /** A look settings key (`axf.look`, `axf.custom.button.amber`, …); which keys count is the runtime's call. */
@@ -68,6 +69,12 @@ export interface AppearanceDocument {
    * no floor: an app without a skin draws its own saved look, as before.
    */
   defaultSkin?: { id: string; overrides?: Record<string, string>; colorTheme?: string };
+  /**
+   * The hub-wide icon layer (icon-scope@1, spec/ICON-MAP.md, build icon-packs-with-drag-drop-pack-designer, Nov 16 2026):
+   * the icon pack every app draws with unless a nearer level (app, screen, plugin) names its own, and hub-wide per-spot
+   * overrides. Absent = no hub-wide pick (skins and brandings decide, as before).
+   */
+  icon?: IconLevel;
   /** who saved it last (app id), when; informational */
   updatedBy?: string;
   updatedAt?: string;
@@ -161,6 +168,7 @@ export function normalizeAppearance(raw: unknown): AppearanceDocument | null {
   if (skin) doc.skin = skin;
   const defaultSkin = normalizeHubSkin(o.defaultSkin);
   if (defaultSkin) doc.defaultSkin = defaultSkin;
+  if (o.icon !== undefined) { const icon = normalizeIconHub(o.icon); if (!iconLevelEmpty(icon)) doc.icon = icon; }
   if (typeof o.updatedBy === 'string' && o.updatedBy.length <= 80) doc.updatedBy = o.updatedBy;
   if (typeof o.updatedAt === 'string' && o.updatedAt.length <= 40) doc.updatedAt = o.updatedAt;
   return doc;
@@ -211,6 +219,8 @@ export interface AppearanceChange {
   skin?: AppearanceDocument['skin'] | null;
   /** The hub default skin: a pick, or null to clear it (apps go back to their own saved looks). */
   defaultSkin?: AppearanceDocument['defaultSkin'] | null;
+  /** The hub-wide icon layer (pack + overrides), or null to clear it. */
+  icon?: IconLevel | null;
 }
 
 /** Fold a later change into an earlier pending one (per key, the later wins). */
@@ -224,6 +234,7 @@ export function combineAppearanceChanges(a: AppearanceChange | null, b: Appearan
   const palette = b.palette ?? a.palette; if (palette) out.palette = palette;
   if (b.skin !== undefined) out.skin = b.skin; else if (a.skin !== undefined) out.skin = a.skin;
   if (b.defaultSkin !== undefined) out.defaultSkin = b.defaultSkin; else if (a.defaultSkin !== undefined) out.defaultSkin = a.defaultSkin;
+  if (b.icon !== undefined) out.icon = b.icon; else if (a.icon !== undefined) out.icon = a.icon;
   return out;
 }
 
@@ -244,6 +255,7 @@ export function mergeAppearance(base: AppearanceDocument | null, change: Appeara
   if (change.palette) doc.palette = change.palette;
   if (change.skin === null) delete doc.skin; else if (change.skin) doc.skin = change.skin;
   if (change.defaultSkin === null) delete doc.defaultSkin; else if (change.defaultSkin) doc.defaultSkin = change.defaultSkin;
+  if (change.icon === null) delete doc.icon; else if (change.icon) doc.icon = normalizeIconHub(change.icon);
   if (change.settings) {
     const before = doc.settings;
     const settings = { ...(before ?? {}) };
@@ -268,6 +280,7 @@ export function serializeAppearance(doc: AppearanceDocument): string {
   // the two skin pointers ride the text too: a writer that serialized without them lost the hub-wide skin on every save
   if (doc.skin) ordered.skin = doc.skin;
   if (doc.defaultSkin) ordered.defaultSkin = doc.defaultSkin;
+  if (doc.icon) ordered.icon = doc.icon;
   if (doc.updatedBy) ordered.updatedBy = doc.updatedBy;
   if (doc.updatedAt) ordered.updatedAt = doc.updatedAt;
   return JSON.stringify(ordered, null, 2);

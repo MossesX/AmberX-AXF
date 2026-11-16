@@ -342,3 +342,71 @@ export function iconSchemaProperties(type) {
   }
   return { $defs: {}, properties: {} };
 }
+
+/* ---------------------------------------------------------------- icon-scope@1 storage (spec/ICON-MAP.md) */
+
+export const ICON_SCOPE_CONTRACT = 'icon-scope@1';
+/** Scope levels from the leaf to the root; `plugin:<id>` / `ui:<view>` are the sub-scope keys of the skin chain. */
+export const ICON_SCOPE_LEVELS = ['plugin', 'ui', 'app', 'global', 'brand', 'framework'];
+export const ICON_OVERRIDES_MAX = 400;
+const SUB_SCOPE = /^(ui|plugin):[a-z0-9][a-z0-9._-]{0,119}$/;
+export const isIconSubScope = (key) => typeof key === 'string' && SUB_SCOPE.test(key);
+
+/** An override entry: a glyph (normalized) or a glyph reference string (`name:<glyph>` | `pack:<id>/<name>`). Null when neither. */
+export function normalizeOverride(raw) {
+  if (typeof raw === 'string') return GLYPH_REF.test(raw) ? raw : GLYPH_NAME.test(raw) ? `name:${raw}` : null;
+  return normalizeGlyph(raw);
+}
+
+function normalizeOverrides(raw) {
+  const out = {};
+  if (!isObj(raw)) return out;
+  for (const [spot, v] of Object.entries(raw).slice(0, ICON_OVERRIDES_MAX)) { if (!SPOT_ID.test(spot)) continue; const n = normalizeOverride(v); if (n) out[spot] = n; }
+  return out;
+}
+
+/** One level's icon state: `{ pack, overrides }`; `pack: ''` = inherit. */
+export function normalizeIconLevel(raw) {
+  const o = isObj(raw) ? raw : typeof raw === 'string' ? { pack: raw } : {};
+  return { pack: PACK_ID.test(str(o.pack, 48)) ? str(o.pack, 48) : '', overrides: normalizeOverrides(o.overrides) };
+}
+export const iconLevelEmpty = (lv) => !lv || (!lv.pack && !Object.keys(lv.overrides ?? {}).length);
+
+/**
+ * The `icon` block of an app-look@1 document: `{ pack, overrides, scopes: { "ui:<view>" | "plugin:<id>": level } }`.
+ * Legacy shapes fold in: a plain string (the pack id), a top-level `iconPack`, or `own.settings["axf.icons.pack.app"]`
+ * passed as `legacyPack`. Empty scopes are dropped.
+ */
+export function normalizeIconLook(raw, legacyPack = '') {
+  const o = isObj(raw) ? raw : typeof raw === 'string' ? { pack: raw } : {};
+  const base = normalizeIconLevel(o);
+  if (!base.pack && PACK_ID.test(str(legacyPack, 48))) base.pack = str(legacyPack, 48);
+  const scopes = {};
+  if (isObj(o.scopes)) for (const [k, v] of Object.entries(o.scopes)) { if (!isIconSubScope(k)) continue; const lv = normalizeIconLevel(v); if (!iconLevelEmpty(lv)) scopes[k] = lv; }
+  return { pack: base.pack, overrides: base.overrides, scopes };
+}
+export const iconLookEmpty = (b) => !b || (iconLevelEmpty(b) && !Object.keys(b.scopes ?? {}).length);
+
+/** The `icon` block of the shared appearance@1 document (hub-wide): `{ pack, overrides }`. */
+export function normalizeIconHub(raw) { return normalizeIconLevel(raw); }
+
+/** Errors of an `icon` block (either document), prefixed with `where`. */
+export function iconBlockErrors(raw, where = 'icon') {
+  const e = [];
+  if (raw === undefined) return e;
+  if (!isObj(raw)) return [`${where} must be an object { pack?, overrides?, scopes? }`];
+  if (raw.pack !== undefined && raw.pack !== '' && (typeof raw.pack !== 'string' || !PACK_ID.test(raw.pack))) e.push(`${where}.pack must be an icon-pack asset id (or "" to inherit)`);
+  if (raw.overrides !== undefined) {
+    if (!isObj(raw.overrides)) e.push(`${where}.overrides must be an object of spot id → glyph`);
+    else for (const [spot, v] of Object.entries(raw.overrides)) {
+      if (!SPOT_ID.test(spot)) { e.push(`${where}.overrides.${spot}: a spot id is <app>:<area>/<slot>`); continue; }
+      if (typeof v === 'string') { if (!GLYPH_REF.test(v) && !GLYPH_NAME.test(v)) e.push(`${where}.overrides.${spot}: a glyph name, name:<glyph> or pack:<id>/<name>`); }
+      else e.push(...glyphErrors(v, `${where}.overrides.${spot}`));
+    }
+  }
+  if (raw.scopes !== undefined) {
+    if (!isObj(raw.scopes)) e.push(`${where}.scopes must be an object of ui:<view> | plugin:<id> → { pack?, overrides? }`);
+    else for (const [k, v] of Object.entries(raw.scopes)) { if (!isIconSubScope(k)) e.push(`${where}.scopes.${k}: a scope key is ui:<view> or plugin:<id>`); else e.push(...iconBlockErrors(v, `${where}.scopes.${k}`).filter((m) => !m.includes('.scopes.' + k + '.scopes'))); }
+  }
+  return e;
+}
