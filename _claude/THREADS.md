@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 12:38 UTC · `gate-rules-plugin-in-the-console` s16 done (all) · orchestrator
 - 2026-11-15 12:40 UTC · `gate-rules-plugin-in-the-console` s17 done (all) · orchestrator
 - 2026-11-15 12:41 UTC · `data-container-axf-data-holds-all` s12 done (all) · orchestrator
 - 2026-11-15 12:41 UTC · `gate-rules-plugin-in-the-console` s18 done (all) · orchestrator
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 16:17 UTC · `remove-old-molly-app-project-keep-axf` added (0 steps) (all) · console
 - 2026-11-16 16:17 UTC · `remove-old-molly-app-project-keep-axf` → queued, note (all) · console
 - 2026-11-16 16:18 UTC · `phone-connect-small-android-companion` → running, note (all) · mcp
+- 2026-11-16 16:19 UTC · `remove-old-molly-app-project-keep-axf` note (all) · orchestrator
 
 ## Token passes (log)
 

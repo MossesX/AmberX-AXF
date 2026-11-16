@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T16:18:11.718Z",
+ "updatedAt": "2026-11-16T16:19:59.992Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -156168,12 +156168,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T16:17:05.624Z",
-   "updatedAt": "2026-11-16T16:17:08.258Z",
+   "updatedAt": "2026-11-16T16:19:58.360Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-16T16:17:08.258Z"
+    },
+    {
+     "text": "Split by Claude into 16 steps (0 Fable).",
+     "at": "2026-11-16T16:19:58.360Z"
     }
    ],
    "approvals": [],
@@ -156190,7 +156194,372 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Inventory every OLD Molly reference with a grep for molly, Molly and molly.amberxai.com across apps/, framework/, deploy/, _claude/, .github/, docs, help and glossary. Exclude axf-molly, .axf-molly/ and the AXF_MOLLY worker names. Write the list to _claude/builds/reports/remove-old-molly-app-project-keep-axf.md under 'Being removed'. Mark each entry remove, move to console or keep (axf-molly), and add a guard list of the axf-molly worker paths that must not change.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/reports/remove-old-molly-app-project-keep-axf.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjgyrrt01k19r",
+     "createdAt": "2026-11-16T16:19:58.360Z"
+    },
+    {
+     "id": "s2",
+     "text": "Read the old Molly app and the console's 'Molly guide' and pick out anything still useful: guide text, settings, actions, assets that other apps use. List each item in the report with the console place it will move to: a help page, the agent-manager README, or a shared asset in framework/assets. Nothing is deleted in this step.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "apps/molly/",
+      "apps/console-web/src/",
+      "_claude/builds/reports/remove-old-molly-app-project-keep-axf.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjgyrrt021bxq",
+     "createdAt": "2026-11-16T16:19:58.360Z"
+    },
+    {
+     "id": "s3",
+     "text": "Move the useful Molly guide content into the console's help: a new or existing help topic under apps/console-web help or the agent-manager docs, without the Molly name. Give it a console_show deep link (view or help target) and register the target with data-axf-target. If no UI remains, write 'docs only, no UI' in the report.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/src/help/",
+      "apps/console-web/plugins/agent-manager/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjgyrrt03z4y4",
+     "createdAt": "2026-11-16T16:19:58.360Z"
+    },
+    {
+     "id": "s4",
+     "text": "Remove the console's 'Molly guide' entry: the view, menu or nav item, its control@1 / console-control target, its Ctrl+K entry and any console action or MCP tool that opens it. Point any old deep link that is still referenced at the new help topic. Fix check-console-control.mjs inputs so CI stays green, keeping control@1 append-only (retire the target, don't reorder).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/src/",
+      "framework/cli/check-console-control.mjs",
+      "framework/spec/CONSOLE-CONTROL.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjgyrrt04ztdd",
+     "createdAt": "2026-11-16T16:19:58.360Z"
+    },
+    {
+     "id": "s5",
+     "text": "Delete the Molly agent add-on (apps/console-web/plugins/agent-manager/addons/molly). Unregister it from the agent-manager add-on registry, its plugin.json / addons index, settings and notify.json entries. Remove its axf-plugin / axf-build doc-line markers so plugin-lifecycle checks still pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/agent-manager/addons/molly/",
+      "apps/console-web/plugins/agent-manager/plugin.json",
+      "apps/console-web/plugins/agent-manager/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjgyrrt057lm3",
+     "createdAt": "2026-11-16T16:19:58.360Z"
+    },
+    {
+     "id": "s6",
+     "text": "Update the agent-manager's API surface after removing the add-on: REST routes, plugin-commands (MCP), the axf CLI subcommands and AmberX voice actions that named Molly. Remove them all together across the four surfaces and update the agent-manager tests to match.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/agent-manager/server/",
+      "apps/console-web/plugins/agent-manager/test.py",
+      "framework/cli/axf.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjgyrrt06ts5r",
+     "createdAt": "2026-11-16T16:19:58.360Z"
+    },
+    {
+     "id": "s7",
+     "text": "Delete the old Molly app (apps/molly, its project.manifest.json, src, baked src/axf, assets and package files) and its .github workflow jobs, if any. Leave .axf-molly/ and everything named axf-molly alone.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "apps/molly/",
+      ".github/workflows/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjgyrrt07mgym",
+     "createdAt": "2026-11-16T16:19:58.360Z"
+    },
+    {
+     "id": "s8",
+     "text": "Remove the molly project from the project registries: the project manifest list in _claude/rules/RULES.md (eleven to ten), project.mjs validate --all inputs, framework/schemas/shared-assets.json and the chrome-settings app copies (settings/chrome-*-molly). Run chrome-settings.mjs check, then project.mjs validate --all.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "framework/schemas/shared-assets.json",
+      "framework/assets/settings/",
+      "framework/cli/chrome-settings.mjs",
+      "_claude/rules/RULES.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjgyrrt08hwt4",
+     "createdAt": "2026-11-16T16:19:58.360Z"
+    },
+    {
+     "id": "s9",
+     "text": "Lower the ratchet baselines that counted Molly files: framework/spec/chrome-baseline.json (--write-baseline), framework/spec/conform-baseline.json, the help ratchet and glossary coverage.json. Counts may only go down. Then re-run check-chrome-assets.mjs and check-theme.mjs.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/spec/chrome-baseline.json",
+      "framework/spec/conform-baseline.json",
+      "apps/console-web/plugins/glossary-index/coverage.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjgyrrt09jm6r",
+     "createdAt": "2026-11-16T16:19:58.360Z"
+    },
+    {
+     "id": "s10",
+     "text": "Remove the molly.amberxai.com deploy: its installer and Coolify config in deploy/ (install-molly or the molly section of the install scripts), any Traefik/proxy label and any watch or health target. Don't touch the axf-molly container definitions. Add a systems-check note or report line saying the DNS A record for molly.amberxai.com is to be removed, with the exact record. If the Hostinger connector needs authorization, file a banner item with the exact steps.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "deploy/",
+      "framework/deploy/axf-deploy.sh",
+      "apps/console-web/plugins/systems-check/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjgyrrt0aaozp",
+     "createdAt": "2026-11-16T16:19:58.360Z"
+    },
+    {
+     "id": "s11",
+     "text": "Remove Molly health checks and alerts from the console: health@1 registrations, watch-live targets (framework/cli/watch-live.mjs), the nightly deploy / rebake app lists (deploy/console-nightly.mjs, rebake.mjs) and notify-control registry entries that name the old app.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/systems-check/",
+      "framework/cli/watch-live.mjs",
+      "framework/cli/rebake.mjs",
+      "deploy/console-nightly.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjgyrrt0byiis",
+     "createdAt": "2026-11-16T16:19:58.360Z"
+    },
+    {
+     "id": "s12",
+     "text": "Clean up rules and docs: remove the old Molly mentions from _claude/shared/rules/RULES.md (e.g. 'the console, Molly, AmberX web' in the tab-group rule), _claude/rules/RULES.md, CLAUDE.md, _claude/memory/docs/ and the Molly lines in STATUS.md (grep only). Record the decision in _claude/memory/decisions.md, then claude-sync sync.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "_claude/shared/rules/RULES.md",
+      "_claude/rules/RULES.md",
+      "CLAUDE.md",
+      "_claude/memory/decisions.md",
+      "_claude/memory/STATUS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjgyrrt0c9kwi",
+     "createdAt": "2026-11-16T16:19:58.360Z"
+    },
+    {
+     "id": "s13",
+     "text": "Clean up help and the glossary: remove the Molly help pages and Molly entries in the console help registry, then rebuild the glossary/index (catalog.mjs) so no entry points at the deleted app or add-on. Run catalog.mjs --check.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "apps/console-web/src/help/",
+      "apps/console-web/plugins/glossary-index/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjgyrrt0dj1ql",
+     "createdAt": "2026-11-16T16:19:58.360Z"
+    },
+    {
+     "id": "s14",
+     "text": "Clean up the feature tracker and builds data: remove Molly features from framework/catalog/catalog.json, status.json and libraries.json and regenerate tracker.json (tracker.mjs). Mark open Molly-only builds or plans as cancelled through orchestrator.mjs / plans.mjs with a note naming this build. Never edit the exports directly.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/catalog/",
+      "tracker.json",
+      "_claude/builds/store.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjgyrrt0e22o8",
+     "createdAt": "2026-11-16T16:19:58.360Z"
+    },
+    {
+     "id": "s15",
+     "text": "Run a final reference sweep: grep the repo again for molly and Molly, excluding axf-molly, .axf-molly and history (journal, changes/). Fix any leftovers, and record each intentional keep in the report with its reason.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "_claude/builds/reports/remove-old-molly-app-project-keep-axf.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjgyrrt0fzcwp",
+     "createdAt": "2026-11-16T16:19:58.360Z"
+    },
+    {
+     "id": "s16",
+     "text": "Tests and close: run project.mjs validate --all, tracker.mjs --check, check-theme.mjs, check-controls.mjs, check-toolbars.mjs, check-chrome-assets.mjs, chrome-settings.mjs check, check-console-control.mjs, plugin-lifecycle.mjs check agent-manager, the agent-manager and notify-control tests, catalog.mjs --check, then npm run build in apps/console-web. Finish the report _claude/builds/reports/remove-old-molly-app-project-keep-axf.md (removed list first, moved, kept axf-molly, API: how the moved help is reached through console_show / REST / MCP / CLI / voice). Add the THREADS.md row and open the PR with the removed list first. Hand it to the lander queue.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/remove-old-molly-app-project-keep-axf.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjgyrrt0gd44j",
+     "createdAt": "2026-11-16T16:19:58.360Z"
+    }
+   ]
   }
  ]
 }
