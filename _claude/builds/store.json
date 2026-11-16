@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6712,
- "updatedAt": "2026-11-16T19:19:59.673Z",
+ "rev": 6713,
+ "updatedAt": "2026-11-16T19:20:20.505Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -246616,7 +246616,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:16:56.830Z",
-   "updatedAt": "2026-11-16T19:19:52.326Z",
+   "updatedAt": "2026-11-16T19:20:01.222Z",
    "builtAt": "",
    "notes": [
     {
@@ -246634,6 +246634,10 @@
     {
      "text": "Brief only: brief is 24924 characters (~6231 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-16T19:19:52.326Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-pending-banner-list-every-pending-build--rhonda, shared account login)",
+     "at": "2026-11-16T19:20:01.222Z"
     }
    ],
    "approvals": [],
@@ -246845,6 +246849,83 @@
    "kind": "build",
    "planRef": "",
    "rev": 4,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "toolbars-moved-to-side-become-vertical",
+   "title": "Toolbars moved to the side become a vertical column next to the content",
+   "category": "",
+   "detail": "When any toolbar is moved to the left or right (Move from its context menu, settings, API), it must render as a vertical column beside the content: buttons stacked top to bottom, the content area beside it takes the remaining width, nothing pushed down. Top/bottom stay horizontal rows. Applies to every toolbar asset in every app (framework layout rule, tokens only), snaps without overlapping neighbours, collapses to icons when narrow, phone falls back sensibly. Add a test that a left/right toolbar never adds height above the content. Same placement via REST, MCP, CLI, voice. Land through the orchestrator.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-16T19:20:10.281Z",
+   "updatedAt": "2026-11-16T19:20:15.430Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-16T19:20:15.430Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "If I move the toolbar to the left instead of the top, it needs to run down the side like a column instead of pushing all the content down.",
+    "at": "2026-11-16T19:20:10.281Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-16T19:20:14.555Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 915
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
