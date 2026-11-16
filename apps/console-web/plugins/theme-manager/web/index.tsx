@@ -4,6 +4,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { AppearancePanel } from '@console/axf/libs/settings';
 import { FOLDER, ID, call, type SavedTheme } from './api';
 import { ThemeManager, lastApplied } from './ThemeManager';
+import { SkinShapes } from './SkinShapes';
 import './theme-manager.css';
 import { appMenu } from './menu';
 import { buildTree, getAt, leaves, setAt } from './rollEngine';
@@ -44,11 +45,12 @@ export const plugin: AxfWebLibrary = {
     void loadSaved(rt);
     rt.actions.register('theme-manager.open', () => rt.navigate('theme-manager'), { label: 'Open the theme manager' });
   },
-  views: { 'theme-manager': { title: 'Theme manager', icon: 'palette', keywords: ['roll', 'theme', 'colors', 'tokens'], render: () => <div className="fx-stack fx-stack--lg"><header className="fx-pagehead"><div><p className="fx-eyebrow">Design &amp; branding</p><h1>Theme manager</h1><p className="fx-muted" title="Roll colour themes and themeable parts from a token tree, preview them live and save the ones you like. Style, layout and behaviour come with the skin.">Roll themes from a token tree, preview live, save the keepers.</p></div></header><AppearancePanel /><ThemeManager /></div> } },
+  views: { 'theme-manager': { title: 'Theme manager', icon: 'palette', keywords: ['roll', 'theme', 'colors', 'tokens'], render: () => <div className="fx-stack fx-stack--lg"><header className="fx-pagehead"><div><p className="fx-eyebrow">Design &amp; branding</p><h1>Theme manager</h1><p className="fx-muted" title="Roll colour themes and themeable parts from a token tree, preview them live and save the ones you like. Style, layout and behaviour come with the skin.">Roll themes from a token tree, preview live, save the keepers.</p></div></header><AppearancePanel /><SkinShapes /><ThemeManager /></div> } },
   nav: { label: 'Plugins', items: [{ id: 'theme-manager', label: 'Theme manager', icon: 'palette', view: 'theme-manager' }] },
   settingsTabs: [{ id: 'theme-manager', label: 'Themes', icon: 'palette', parent: 'plugins', order: 44, description: 'Roll colour themes (or any themeable part a skin leaves open), pick which tokens change, save rolls as assets. Style, layout and behaviour come with the skin.' }],
   settingsPanels: [
     { id: 'theme-manager.appearance', tab: 'theme-manager', title: 'Appearance', icon: 'palette', order: 5, render: () => <AppearancePanel /> },
+    { id: 'theme-manager.shapes', tab: 'theme-manager', title: 'Shapes', icon: 'box', order: 7, render: () => <SkinShapes /> },
     { id: 'theme-manager.main', tab: 'theme-manager', title: 'Theme manager', icon: 'palette', order: 10, render: () => <ThemeManager /> },
     { id: 'theme-manager.lifecycle', tab: 'theme-manager', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],

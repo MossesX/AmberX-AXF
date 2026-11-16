@@ -38,6 +38,10 @@
         "order": 50
       }
     ],
-    "divider": true
+    "divider": true,
+    "shape": {
+      "icon": "circle",
+      "chip": "pill"
+    }
   }
 }

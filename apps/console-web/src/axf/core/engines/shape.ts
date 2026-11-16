@@ -158,8 +158,15 @@ export type ShapeLevel = (typeof SHAPE_LEVELS)[number];
 export const SHAPE_KEY_GLOBAL = 'global';
 export const SHAPE_KEY_SKIN = 'skin';
 export const SHAPE_KEY_APP = 'app';
-/** The hub-wide setting the global level reads. */
-export const SHAPE_SETTING = 'axf.shape';
+/**
+ * The hub-wide setting the global level reads. Under `axf.tokens.` (control@1 token overrides), so it travels in the
+ * shared appearance document and reaches every app; the skin overrides and the edit history sit next to it.
+ */
+export const SHAPE_SETTING = 'axf.tokens.shape.global';
+/** Per-skin overrides of a skin's own shape (`{ <skin id>: <shape id> }`): the skin editor's Shapes section. */
+export const SHAPE_SKIN_SETTING = 'axf.tokens.shape.skin';
+/** The edit history Restore previous edit reads (ShapeHistory). */
+export const SHAPE_HISTORY_SETTING = 'axf.tokens.shape.history';
 /** The per-widget setting prefix and suffix: `axf.banner.widget.<type:id>.shape`. */
 export const SHAPE_WIDGET_SETTING_PREFIX = 'axf.banner.widget.';
 export const SHAPE_WIDGET_SETTING_SUFFIX = '.shape';
@@ -290,4 +297,19 @@ export function forgetShapeEdit(history: ShapeHistory, key: string): ShapeHistor
   if (!(key in history)) return history;
   const { [key]: _gone, ...rest } = history;
   return rest;
+}
+
+/* ---------------------------------------------------------------- the banner's own default (the lowest level) */
+
+/** What a banner asset with no `shape` field draws: circles for icon-only widgets, pills for chips (today's look). */
+export const BANNER_SHAPE_DEFAULTS: Readonly<{ icon: string; chip: string }> = { icon: 'circle', chip: 'pill' };
+
+/**
+ * The shape a banner asset gives one of its widgets when nobody picked one anywhere in the chain: `data.shape.icon` for
+ * an icon-only / square widget, `data.shape.chip` for one with text, else BANNER_SHAPE_DEFAULTS. A junk id falls back.
+ */
+export function bannerShapeDefault(bannerData: unknown, iconOnly: boolean): string {
+  const s = isObj(bannerData) && isObj(bannerData.shape) ? bannerData.shape : {};
+  const id = shapeId(iconOnly ? s.icon : s.chip);
+  return id || (iconOnly ? BANNER_SHAPE_DEFAULTS.icon : BANNER_SHAPE_DEFAULTS.chip);
 }

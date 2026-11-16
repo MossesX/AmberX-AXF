@@ -697,7 +697,8 @@
       },
       "optional_fields": {
         "divider": "boolean — line under the banner (default true)",
-        "height": "number — px, 16 to 48 (thin = 24)"
+        "height": "number — px, 16 to 48 (thin = 24)",
+        "shape": "{ icon?, chip? } — default shape@1 asset ids for the banner's widgets: icon for icon-only / square widgets (default circle), chip for widgets with text (default pill). The lowest level of the shape chain: a widget, app, skin or global pick wins."
       }
     },
     "clock": {

@@ -36,3 +36,4 @@ export function shapeCornerSteps(shape: unknown): ShapeRadius[];
 export function shapeRadius(shape: unknown): string;
 export function shapeSquare(shape: unknown): boolean;
 export function shapeSchemaProperties(): Record<string, unknown>;
+export declare const SHAPE_WIDGET_TOKENS: string[];

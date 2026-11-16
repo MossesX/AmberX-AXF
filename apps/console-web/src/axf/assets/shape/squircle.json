@@ -1,0 +1,15 @@
+{
+  "$axf": "asset@1",
+  "type": "shape",
+  "id": "squircle",
+  "name": "Squircle",
+  "version": "1.0.0",
+  "description": "A superellipse: softer than a rounded square, the corners flow into the sides. Drawn as a mask, so it follows the widget's box.",
+  "author": "AmberX AXF",
+  "tags": [
+    "shape"
+  ],
+  "data": {
+    "kind": "squircle"
+  }
+}

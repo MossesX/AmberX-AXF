@@ -47,6 +47,7 @@ import { Icon } from './Icon';
 import type { DialogMap } from './Overlays';
 import { TabGroup } from './TabGroup';
 import { BANNER_SETTINGS_DIALOG } from './BannerSettings';
+import { BannerShapeSettings } from './BannerShapes';
 
 export const CHROME_SETTINGS_DIALOG = 'axf.chrome.settings';
 export const CHROME_PICK_DIALOG = 'axf.chrome.pick';
@@ -413,6 +414,8 @@ export function ChromeSettingsPanel({ type, instance }: { type: ChromeType; inst
         </div>
       );
     }
+    // shape@1: the banner's widget shapes (this app, then the widget that was right-clicked)
+    if (id === 'shape' && type === 'banner') return <BannerShapeSettings />;
     if (id === 'asset') return <ChromeAssetPicker type={type} instance={instance} />;
     if (id === 'interface') return <InterfacePicker type={type} />;
     return <div className="fx-stack">{ui.groups.filter((g) => g.tab === id).map((g) => <ExtraGroup key={g.id} group={g} />)}</div>;

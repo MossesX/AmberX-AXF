@@ -198,7 +198,7 @@ html[data-axf-strip='on'] .fx-main__inner { padding: 0; margin: 0; max-width: no
 .fx-banner__clock.is-mono { font-family: var(--fx-font-mono); font-variant-numeric: tabular-nums; }
 .fx-banner__badge {
   display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); padding: 0 var(--fx-dens-gap-lg);
-  height: calc(var(--fx-banner-h) * 0.72); border-radius: 999px; font: inherit; font-weight: 600; white-space: nowrap;
+  height: calc(var(--fx-banner-h) * 0.72); border-radius: var(--fx-shape-widget-radius); font: inherit; font-weight: 600; white-space: nowrap;
   color: var(--fx-text); border: var(--fx-border-w) solid currentColor;
   background: color-mix(in srgb, currentColor calc(var(--fx-opacity-tint) * 100%), transparent);
 }
@@ -210,8 +210,25 @@ html[data-axf-strip='on'] .fx-main__inner { padding: 0; margin: 0; max-width: no
 .fx-banner__badge[data-tone='muted'] { color: var(--fx-muted); }
 .fx-banner__badge.is-icon, .fx-banner__badge.is-dot { padding: 0; width: calc(var(--fx-banner-h) * 0.72); justify-content: center; }
 button.fx-banner__badge { cursor: pointer; }
-button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); outline-offset: 1px; }
 .fx-banner__dot { width: 40%; height: 40%; border-radius: 999px; background: currentColor; }
+/*
+ * Widget shapes (shape@1, core/engines/shape.ts): every chip-like banner widget is cut to the shape in force. The tokens
+ * are compiled on the root for the app's shape and laid inline on one banner item for a per-widget pick (BannerWidgets
+ * host); radius + clip-path + mask are read together, whichever is not `none` cuts the chip. The focus ring is drawn on
+ * the item around the chip (never clipped), the hover tint is a fill inside the shape, so both stay visible.
+ */
+.fx-banner :where(.fx-banner__badge, .fx-widget-counter__num, .fx-widget-status__dot, .fx-widget-theme, .fx-widget-avatar img, .fx-widget-avatar__initials, .fx-banner__more-btn .fx-iconbtn) {
+  border-radius: var(--fx-shape-widget-radius); clip-path: var(--fx-shape-widget-clip);
+  -webkit-mask: var(--fx-shape-widget-mask) center / 100% 100% no-repeat; mask: var(--fx-shape-widget-mask) center / 100% 100% no-repeat;
+  corner-shape: var(--fx-shape-widget-corner);
+}
+.fx-banner :where(.fx-banner__badge.is-icon, .fx-banner__badge.is-dot, .fx-widget-theme, .fx-banner__more-btn .fx-iconbtn) { aspect-ratio: var(--fx-shape-widget-aspect); }
+.fx-banner .fx-widget-progress__bar, .fx-banner .fx-widget-progress__fill { border-radius: var(--fx-shape-widget-radius); }
+.fx-banner :where(button.fx-banner__badge, .fx-widget-theme, .fx-banner__more-btn .fx-iconbtn):hover { background: color-mix(in srgb, currentColor calc(var(--fx-opacity-hover) * 100%), transparent); }
+.fx-banner :where(button.fx-banner__badge, .fx-widget-theme, .fx-banner__more-btn .fx-iconbtn):focus-visible { outline: none; }
+.fx-banner .fx-banner__item:has(:where(button.fx-banner__badge, .fx-widget-theme, .fx-iconbtn):focus-visible) { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w); border-radius: var(--fx-radius-sm); }
+/* a tag or a wide pill needs a little room for its point / ends: padding inside the item keeps the neighbours clear */
+.fx-banner__item[data-fx-shape='tag'] > :where(.fx-banner__badge, .fx-widget-counter) { padding-right: calc(var(--fx-dens-gap-lg) + var(--fx-dens-gap-xl)); }
 .fx-banner__pop {
   /* in the flow, next to its attachment: the neighbours make room for it (snap, never overlap) instead of being covered */
   position: relative; flex: none; margin-inline-start: var(--fx-dens-gap-xl); white-space: nowrap;
@@ -1142,6 +1159,24 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-choice:hover:not(:disabled) { border-color: var(--fx-accent); }
 .fx-choice:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w); }
 .fx-choice.is-active { border-color: var(--fx-accent); box-shadow: 0 0 0 var(--fx-border-w) var(--fx-accent); background: var(--fx-accent-soft); }
+/* Shape picker (react/components/ShapePicker.tsx): each preview is drawn with its own --fx-shape-widget-* tokens */
+.fx-shape-picker { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); min-width: 0; }
+.fx-shape-picker__previews { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-lg); }
+.fx-shape-picker__sample { display: inline-flex; flex-direction: column; align-items: center; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm); border: var(--fx-border-w) solid transparent; border-radius: var(--fx-radius-sm); }
+.fx-shape-picker__sample.is-active { border-color: var(--fx-accent); }
+.fx-shape-picker__make { display: flex; align-items: flex-start; gap: var(--fx-dens-gap-lg); flex-wrap: wrap; }
+.fx-shape-picker__make > .fx-stack { flex: 1 1 calc(var(--fx-font-size) * 16); min-width: 0; }
+.fx-shape-picker__upload { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); font-size: var(--fx-type-root-sm); }
+.fx-shape-preview {
+  display: inline-flex; align-items: center; justify-content: center; height: calc(var(--fx-font-size) * 2.2); min-width: calc(var(--fx-font-size) * 2.2);
+  padding: 0 var(--fx-dens-gap-md); font-size: var(--fx-type-root-xs); font-weight: 600; color: var(--fx-accent); border: var(--fx-border-w) solid var(--fx-accent);
+  background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent);
+  border-radius: var(--fx-shape-widget-radius); clip-path: var(--fx-shape-widget-clip); aspect-ratio: var(--fx-shape-widget-aspect); corner-shape: var(--fx-shape-widget-corner);
+  -webkit-mask: var(--fx-shape-widget-mask) center / 100% 100% no-repeat; mask: var(--fx-shape-widget-mask) center / 100% 100% no-repeat;
+}
+/* Icon picker (react/components/IconPicker.tsx): small cards, the list scrolls inside the dialog */
+.fx-icon-picker { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); min-width: 0; }
+.fx-icon-picker .fx-choices { grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--fx-font-size) * 8)), 1fr)); max-height: calc(var(--fx-font-size) * 28); overflow-y: auto; gap: var(--fx-dens-gap-sm); }
 .fx-choice:disabled { opacity: var(--fx-opacity-disabled); cursor: not-allowed; }
 .fx-choice__top { display: flex; align-items: center; gap: var(--fx-dens-gap-md); }
 .fx-choice__title { flex: 1; min-width: 0; font-weight: 600; }

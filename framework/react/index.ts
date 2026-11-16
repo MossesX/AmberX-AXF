@@ -52,6 +52,7 @@ export { TapConfirmChoice } from './components/TapConfirmChoice';
 export { RefText, REFS_SETTING, addRefSource, refSourcesChanged, refIndexOf, openRef, refLink, type RefTextProps, type RefHow } from './components/RefText';
 export { TabGroup, useTabGroupData, tabGroupDataFor, type TabDef, type TabGroupProps } from './components/TabGroup';
 export { ControlRegistry, ControlScope, controlRegistry, composeAddress, controlSlug, escapeSelector, installControlRegistry, settingTargetDef, targetKindLabel, useControlScope, useControlTarget, useControlTargets, useViewTargets, CONTROL_ACTION, CONTROL_ACTIONS, CONTROL_HIGHLIGHT_CLASS, CONTROL_TARGET_ATTR, CONTROL_SCOPE_ATTR, SETTINGS_VIEW_ADDRESS, SETTINGS_TAB_ROW, SETTINGS_SUBTAB_ROW, MAIN_SCROLL_ADDRESS, type ControlTargetDef, type ControlScroller, type ControlSearcher } from './controlTargets';
+export { BannerShapeSettings, LevelShapeField, WidgetShapeField, shapeSourceText } from './components/BannerShapes';
 export { ShapePicker, ShapePreview, svgFirstPath, type ShapePickerProps } from './components/ShapePicker';
 export { IconPicker, WidgetIconPanel, useIconChoices, widgetIconDialog } from './components/IconPicker';
 export { BannerWidgetsPanel, BannerMore, bannerItemAttrs, bannerWidgetsDialog, useBannerOverflow } from './components/BannerWidgets';

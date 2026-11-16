@@ -1,7 +1,7 @@
 {
   "$axf": "asset@1",
   "type": "shape",
-  "id": "rounded",
+  "id": "rounded-square",
   "name": "Rounded square",
   "version": "1.0.0",
   "description": "Soft corners at the style theme's medium radius, so the shape follows the skin's corners.",

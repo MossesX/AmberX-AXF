@@ -29,7 +29,8 @@
       "container": "frosted-glass",
       "typography": "standard",
       "density": "roomy",
-      "sizing": "standard"
+      "sizing": "standard",
+      "shape": "pill"
     },
     "preview": {
       "caption": "Canvas studio, soft glass, fluid motion."

@@ -14,7 +14,8 @@ import { LAYOUT_VIEWPORTS, layoutViewports, layoutVars } from './engines/layout'
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from './engines/components';
 import { CUSTOM_KEY, customizableTypes, customizeSheet, effectiveCustom, normalizeCustomSlot, type CustomSlot, type CustomValues } from './engines/customize';
 import { CONTROL_TOKEN_SLOTS, applyTokenOverrides, effectiveTokenOverrides } from './engines/control-tokens.mjs';
-import { compileShape } from './engines/shape';
+import { SHAPE_HISTORY_SETTING, SHAPE_SETTING, SHAPE_SKIN_SETTING, bannerShapeDefault, compileShape, normalizeShapeHistory, recordShapeEdit, resolveShapeAt, restorePreviousShape, shapeId, shapeInlineVars, shapeScopeKey, shapeScopeLevel, type ShapeLevel, type ShapeResolved } from './engines/shape';
+import { isIconName, normalizeWidgetIcons, setWidgetIcon, widgetIconOf, widgetIconsSetting, type WidgetIcons } from './engines/widgeticons';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { normalizeDockLayout } from './engines/dock';
@@ -104,6 +105,8 @@ export const NAV_OPEN_KEY = 'axf.nav.open';
 export const ARRANGE_KEY = (host: string) => `axf.widgets.arrange.${host}`;
 /** Dialog id of the banner's Widgets picker (react/components/BannerWidgets.tsx). */
 export const BANNER_WIDGETS_DIALOG = 'axf.banner.widgets';
+/** Dialog id of the icon picker for one host widget (react/components/IconPicker.tsx): props `{ host, widget }`. */
+export const WIDGET_ICON_DIALOG = 'axf.widget.icon';
 
 /** One widget the banner knows about: on the bar now or not. */
 export interface BannerWidget {
@@ -1380,6 +1383,131 @@ export class AxfRuntime {
     this.resetHostArrangement('banner');
   }
 
+  /* ---------------- widget shapes (core/engines/shape.ts): global → skin → app → instance, Restore previous edit ---------------- */
+
+  /** A shape asset's data ('' or an unknown id = null: the engine's default). */
+  shapeData(id: string): unknown { return id && this.registry.has('shape' as AssetType, id) ? this.registry.get('shape' as AssetType, id)!.data : null; }
+
+  /** Per-skin overrides of a skin's shape (the skin editor's Shapes section). */
+  shapeSkinOverrides(): Record<string, string> {
+    const raw = this.settings.get(SHAPE_SKIN_SETTING) as unknown;
+    const out: Record<string, string> = {};
+    if (raw && typeof raw === 'object' && !Array.isArray(raw)) for (const [k, v] of Object.entries(raw)) { const id = shapeId(v); if (id && /^[a-z0-9][a-z0-9-]*$/.test(k)) out[k] = id; }
+    return out;
+  }
+
+  /** The shape a skin draws: its override (Shapes section), else its own `assets.shape`, '' = none. */
+  skinShape(skin?: string): string {
+    const id = skin ?? this.skinInForce().id;
+    if (!id) return '';
+    return this.shapeSkinOverrides()[id] || shapeId((this.skinData(id) as { assets?: Record<string, unknown> } | null)?.assets?.shape);
+  }
+
+  /** What one level of the chain holds right now ('' = inherit). Keys: shapeScopeKey (engines/shape.ts). */
+  shapeAtKey(key: string): string {
+    const where = shapeScopeLevel(key);
+    if (!where) return '';
+    if (where.level === 'instance') return shapeId(this.bannerWidgetPrefs()[where.widget!]?.shape);
+    if (where.level === 'global') return shapeId(this.settings.get(SHAPE_SETTING));
+    if (where.level === 'skin') return this.skinShape();
+    // app: the app's own slot pick (swap:shape:<id>), unless it is only the skin's shape carried into the slot
+    const active = shapeId((this.state.active as Record<string, string | undefined>).shape);
+    return active && active !== this.skinShape() ? active : '';
+  }
+
+  /** The shape in force at a place (one banner widget, or the app when no widget): id, deciding level, chain. */
+  resolveShape(widget?: string | null): ShapeResolved {
+    const r = resolveShapeAt(widget ? { widget } : null, (k) => this.shapeAtKey(k));
+    if (r.level !== 'default') return r;
+    // nobody picked anywhere: the banner asset's own default (circle for icon-only widgets, pill for chips)
+    const iconOnly = !!widget && this.bannerWidgetView(widget).size === 'icon';
+    return { ...r, id: bannerShapeDefault(this.assetOrNull('banner')?.data, iconOnly) };
+  }
+
+  /** Inline token vars for one widget whose shape differs from the app's (per-instance); null = the app's tokens apply. */
+  widgetShapeVars(widget: string): { id: string; vars: Record<string, string> } | null {
+    const mine = this.resolveShape(widget), app = this.resolveShape();
+    return mine.id === app.id ? null : { id: mine.id, vars: shapeInlineVars(this.shapeData(mine.id)) };
+  }
+
+  /** The edit history Restore previous edit reads. */
+  shapeHistory() { return normalizeShapeHistory(this.settings.get(SHAPE_HISTORY_SETTING)); }
+
+  /** Write one level ('' = inherit) without touching the history. */
+  private writeShapeLevel(level: ShapeLevel, id: string, widget?: string): boolean {
+    if (level === 'instance') return !!widget && this.setBannerWidget(widget, { shape: id || null });
+    if (level === 'global') { if (id) this.settings.set(SHAPE_SETTING, id); else this.settings.clear(SHAPE_SETTING); }
+    else if (level === 'skin') {
+      const skin = this.skinInForce().id;
+      if (!skin) { this.toast('No skin in force here: pick a skin first, or set the app or global shape.', 'info', 'Widget shape'); return false; }
+      const next = { ...this.shapeSkinOverrides() };
+      if (id) next[skin] = id; else delete next[skin];
+      if (Object.keys(next).length) this.settings.set(SHAPE_SKIN_SETTING, next as never); else this.settings.clear(SHAPE_SKIN_SETTING);
+    } else if (!id) {
+      const back = this.skinShape() || (this.manifest.defaults as Record<string, string | undefined>).shape;
+      if (back && this.registry.has('shape' as AssetType, back)) this.swap('shape' as AssetType, back);
+    } else if (!this.swap('shape' as AssetType, id)) return false;
+    this.set({});
+    return true;
+  }
+
+  /** Pick a shape at one level ('' = back to inherit). Recorded for Restore previous edit. */
+  setShape(level: ShapeLevel, id: string, widget?: string): boolean {
+    if (!this.canArrange()) { this.toast('Your account can\'t change the look.', 'warning', 'Widget shape'); return false; }
+    const next = shapeId(id);
+    if (id && (!next || !this.registry.has('shape' as AssetType, next))) { this.toast(`No shape "${id}".`, 'warning', 'Widget shape'); return false; }
+    let key: string;
+    try { key = shapeScopeKey(level, widget); } catch { this.toast('Pick a banner widget first.', 'warning', 'Widget shape'); return false; }
+    const before = this.shapeAtKey(key);
+    if (!this.writeShapeLevel(level, next, widget)) return false;
+    this.settings.set(SHAPE_HISTORY_SETTING, recordShapeEdit(this.shapeHistory(), key, before, next, new Date().toISOString()) as never);
+    this.terminal.ok('shape', `${key}: ${before || 'inherit'} → ${next || 'inherit'}`);
+    return true;
+  }
+
+  /** Put back what a level held before its last edit (a second restore brings the edit back). */
+  restoreShape(level: ShapeLevel, widget?: string): boolean {
+    let key: string;
+    try { key = shapeScopeKey(level, widget); } catch { return false; }
+    const r = restorePreviousShape(this.shapeHistory(), key, new Date().toISOString());
+    if (!r) { this.toast('Nothing to restore here yet.', 'info', 'Widget shape'); return false; }
+    if (!this.writeShapeLevel(level, r.id, widget)) return false;
+    this.settings.set(SHAPE_HISTORY_SETTING, r.history as never);
+    this.terminal.ok('shape', `${key}: restored ${r.id || 'inherit'}`);
+    return true;
+  }
+
+  /* ---------------- widget icons (core/engines/widgeticons.ts): Change icon… on any host widget ---------------- */
+
+  /** The host widget under the last right-click or long-press (`{ host, widget }`), set by the context menu host. */
+  contextHostWidget: { host: string; widget: string } | null = null;
+
+  /** Every icon override on this app (`<host>/<type:id>` → icon name). */
+  widgetIcons(): WidgetIcons { return normalizeWidgetIcons(this.settings.get(widgetIconsSetting(this.manifest.app.id))); }
+
+  /** The icon one host widget draws: the person's pick, else `own` (the asset's icon). */
+  widgetIcon(host: string, widget: string, own?: string | null): string | undefined { return widgetIconOf(this.widgetIcons(), host, widget, own); }
+
+  /** Find a widget on a host from a key, id or name ("clock"): the banner's finder, else the host's placed widgets. */
+  findHostWidget(host: string, query: string): string | null {
+    if (host === 'banner') return this.findBannerWidget(query)?.key ?? null;
+    const all = Object.values(this.hostPlaced(host)).flat();
+    const q = query.toLowerCase().replace(/^the\s+/, '').trim();
+    return (all.find((p) => p.key === query || p.id === query) ?? all.find((p) => p.type === q || p.id.toLowerCase().includes(q)))?.key ?? null;
+  }
+
+  /** Give one host widget another icon (null = back to the asset's own). Saved at once, drawn at once. */
+  setWidgetIconOverride(host: string, widget: string, icon: string | null): boolean {
+    if (!this.canArrange()) { this.toast('Your account can\'t change the look.', 'warning', 'Widget icon'); return false; }
+    if (icon !== null && !isIconName(icon)) { this.toast(`"${icon}" is not an icon name`, 'warning', 'Widget icon'); return false; }
+    const key = widgetIconsSetting(this.manifest.app.id);
+    const next = setWidgetIcon(this.widgetIcons(), host, widget, icon);
+    if (Object.keys(next).length) this.settings.set(key, next as never); else this.settings.clear(key);
+    this.terminal.ok('widgets', `icon: ${host}/${widget} → ${icon ?? 'reset'}`);
+    this.set({});
+    return true;
+  }
+
   /** Attach a widget (clock, search bar) to the toolbar at run time (at: start | end). Same type + id replaces. Returns detach. */
   attachToToolbar(a: HostAttachment & { at: 'start' | 'end'; origin: string }): () => void { return this.attachToHost('toolbar', a); }
 
@@ -2586,7 +2714,7 @@ export class AxfRuntime {
       meterStyle(this.assetOrNull('meter')?.data),
       tabGroupStyle(this.assetOrNull('tab-group')?.data, this.slotHidden('tab-group')),
       // shape@1 (core/engines/shape.ts): the shape every chip-like banner widget is cut to (slot `widget`); no asset = the pill every widget drew before
-      compileShape(this.assetOrNull('shape')?.data),
+      compileShape(this.shapeData(this.resolveShape().id)),
     ];
     const vars: VarMap = {
       ...colorThemeVars(color),
@@ -2947,6 +3075,19 @@ export class AxfRuntime {
       else if (what === 'reset') this.setBannerWidget(w.key, { hidden: null, size: null, show: null, maxWidth: null, maxUnit: null, priority: null, hideWhenEmpty: null, overflow: null });
       else this.toast(`"${what}": use hide, show, reset or a size (${BANNER_WIDGET_SIZES.join(', ')})`, 'warning', 'Banner widgets');
     }, { label: 'Change a banner widget', requires: 'assets.swap', params: true, searchable: false });
+    // Widget icons: widget.icon:<host>:<widget…>:<icon|reset> · widget.icon.pick:<host>:<widget…> (opens the icon picker)
+    a.register('widget.icon', (args) => {
+      const [host = 'banner', ...rest] = args;
+      const icon = rest[rest.length - 1] ?? '';
+      const w = this.findHostWidget(host, rest.slice(0, -1).join(':'));
+      if (!w) { this.toast(`No ${host} widget "${rest.slice(0, -1).join(':')}"`, 'warning', 'Widget icon'); return; }
+      this.setWidgetIconOverride(host, w, icon === 'reset' ? null : icon);
+    }, { label: 'Change a widget\'s icon', requires: 'assets.swap', params: true, searchable: false });
+    a.register('widget.icon.pick', (args) => {
+      const [host = 'banner', ...rest] = args;
+      const w = rest.length ? this.findHostWidget(host, rest.join(':')) : this.contextHostWidget?.host === host ? this.contextHostWidget.widget : null;
+      if (w) this.openDialog(WIDGET_ICON_DIALOG, { host, widget: w });
+    }, { label: 'Change icon…', requires: 'assets.swap', params: true, searchable: false });
     a.register('assets.reset', () => this.reset(), { label: 'Reset to defaults' });
     // design.package:<id> · design.package:next|prev|random steps through the registered packages and applies one
     // (swap:design-package:next would only move the slot, never apply the package's themes).
@@ -3055,8 +3196,11 @@ export class AxfRuntime {
         const hit = this.contextBannerWidget ? this.bannerWidgets().find((w) => w.key === this.contextBannerWidget) : null;
         if (hit) items.push(
           { id: 'banner-widget-settings', label: `Widget settings: ${hit.label}`, icon: 'settings', action: `banner.widgets:${hit.key}` },
+          { id: 'banner-widget-icon', label: 'Change icon…', icon: 'star', action: `widget.icon.pick:banner:${hit.key}` },
           { id: 'banner-widget-hide', label: `Hide ${hit.label}`, icon: 'eye', action: `banner.widget:${hit.key}:hide` },
         );
+      } else if (this.contextHostWidget?.host === host) {
+        items.push({ id: `widget-icon-${host}`, label: 'Change icon…', icon: 'star', action: `widget.icon.pick:${host}:${this.contextHostWidget.widget}` });
       }
       items.push({ id: `widgets-arrange-${host}`, label: this.arranging(host) ? 'Done arranging widgets' : 'Arrange widgets…', icon: 'move', action: `widgets.arrange:${host}` });
       if (Object.keys(this.hostArrangement(host)).length) items.push({ id: `widgets-reset-${host}`, label: 'Put widgets back', icon: 'undo', action: `widgets.reset:${host}` });
