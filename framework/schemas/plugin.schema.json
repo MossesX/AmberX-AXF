@@ -232,6 +232,10 @@
       "type": "string",
       "description": "The plugin's help pack (help@1 data: { entries, intros }), a file in the plugin folder; default help.json. Loaded into Help mode while the plugin runs; counted by framework/cli/help-coverage.mjs."
     },
+    "settings": {
+      "$ref": "plugin-settings.json",
+      "description": "plugin-settings@1 (framework/core/plugin-settings.mjs; Brett, Nov 16 2026: \"They all need a settings page. They all need a settings interface.\"): its Settings → Plugins sub-tab (tab, parent plugins), the sections it shows (enable, info and logs on every plugin), its real option keys and whether its screen carries the gear that opens the tab. Missing = the default derived from provides (first settings-tab, three sections, no options, gear when it has a view)."
+    },
     "commands": {
       "type": "object",
       "description": "plugin-commands@1 (framework/core/engines/plugin-commands.mjs, CONTROL.md plugins domain): every command and read the plugin exposes on REST /api/control/<plugin>/<command>, MCP <plugin>_<command> and the CLI axf <plugin> <command>. Derived automatically from its server routes, registered actions and data folder; items add titles, input schemas, flags, extra commands and skips that say why.",

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/plugin-settings.json",
+  "title": "plugin-settings@1: the `settings` block of a plugin@1 manifest",
+  "description": "Brett, Nov 16 2026: \"They all need a settings page. They all need a settings interface.\" Every plugin's settings are one sub-tab of Settings → Plugins (never a top-level tab, never a screen of its own) and every plugin with a screen carries one gear that opens it. Reference engine framework/core/plugin-settings.mjs (defaultSettings, normalizeSettings, checkSettings, settingsAddress); fixture framework/spec/fixtures/plugin-settings.json; check framework/spec/check-plugin-settings.mjs and plugins.mjs --check. A manifest without the block gets the default: its first settings-tab, the three default sections, no options, a gear exactly when it has a screen.",
+  "type": "object",
+  "required": ["tab"],
+  "additionalProperties": false,
+  "properties": {
+    "$axf": {
+      "const": "plugin-settings@1"
+    },
+    "tab": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$",
+      "description": "Its Settings → Plugins sub-tab: the `settings-tab:<id>` it provides (AxfWebLibrary.settingsTabs[].id). Console-control address view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=<tab>; runtime action settings.open:<tab>."
+    },
+    "parent": {
+      "const": "plugins",
+      "default": "plugins",
+      "description": "Always plugins: the console re-parents every plugin tab under Settings → Plugins (App.tsx underPlugins), so a plugin cannot opt out."
+    },
+    "sections": {
+      "type": "array",
+      "uniqueItems": true,
+      "default": ["enable", "info", "logs"],
+      "allOf": [
+        { "contains": { "const": "enable" } },
+        { "contains": { "const": "info" } },
+        { "contains": { "const": "logs" } }
+      ],
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+      },
+      "description": "What the tab shows, in order. Defaults on every plugin: enable (enable / disable), info (name, version, built-with badge, description, dependencies), logs (its log lines). Built-in extras the console draws: options (the keys below), appearance (plugin theme override), placement (Opens in, axf.placement.<id>), commands (plugin-commands@1). A plugin's own panels are sections too, as <plugin>.<section> ids (open registry)."
+    },
+    "options": {
+      "type": "array",
+      "uniqueItems": true,
+      "default": [],
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+      },
+      "description": "The real option keys the plugin registers under its tab (SettingSpec.key in its settings groups). Each is reachable as setting:<key> through console control, and read / set the same way through REST, MCP, the CLI and voice. [] = nothing beyond the default sections."
+    },
+    "gear": {
+      "type": "boolean",
+      "description": "A gear on its screen header opens the sub-tab (react/components/PluginSettingsGear, data-axf-target on the button). true whenever the plugin has a screen (a `view:<id>` in provides); false only when it has none. Default: whether it has a screen."
+    }
+  },
+  "x-builtinSections": ["enable", "info", "logs", "options", "appearance", "placement", "commands"]
+}
