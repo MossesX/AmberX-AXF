@@ -1295,6 +1295,51 @@ def health_probe(p: "Pushes") -> dict[str, Any]:
                                        "(tested by the GitHub token item)."}
 
 
+LANDER_HEALTH_ID = "lander-idle"
+LANDER_ROUND_STALE_MIN = 15      # the VPS cron runs a round every 3 minutes; 15 without one = the lander stopped
+LANDER_NO_MERGE_H = 6            # PRs waiting and nothing merged for this long = the line is stuck (usually main is red)
+
+
+def _age_min(iso: Any, now: float) -> float | None:
+    try:
+        from datetime import datetime
+        return (now - datetime.fromisoformat(str(iso).replace("Z", "+00:00")).timestamp()) / 60
+    except (TypeError, ValueError):
+        return None
+
+
+def lander_health(st: dict[str, Any], now: float | None = None) -> dict[str, Any]:
+    """health@1 run() for the merge queue (lander-state from land/merge-queue.mjs's merge-queue.json): red when PRs wait
+    and no round has run lately, amber when nothing has merged for hours or the head PR has tested far longer than usual."""
+    now = time.time() if now is None else now
+    st = st if isinstance(st, dict) else {}
+    items = [x for x in st.get("items", []) if isinstance(x, dict)] if isinstance(st.get("items"), list) else []
+    if st.get("on") is False:
+        return {"status": "ok", "summary": "Merge queue is off (Settings → Plugins → Push banner): nothing to watch."}
+    if not items:
+        return {"status": "ok", "summary": "Lander: the merge queue is empty."}
+    n = len(items)
+    rnd = _age_min(st.get("at"), now)
+    if rnd is None or rnd > LANDER_ROUND_STALE_MIN:
+        when = "never" if rnd is None else f"{int(rnd)} min ago"
+        return {"status": "error", "summary": f"Lander idle while the queue is ready: {n} PR(s) wait and the last queue round ran {when}.",
+                "breaks": "Nothing lands: finished builds pile up in the queue and branches drift from main."}
+    merged = [x for x in st.get("merged", []) if isinstance(x, dict)] if isinstance(st.get("merged"), list) else []
+    last = _age_min(merged[-1].get("at"), now) if merged else None
+    if last is None or last > LANDER_NO_MERGE_H * 60:
+        since = "nothing has merged yet" if last is None else f"the last merge was {int(last // 60)} h ago (#{merged[-1].get('pr')})"
+        return {"status": "warn", "summary": f"Lander runs but lands nothing: {n} PR(s) in the queue and {since}.",
+                "breaks": "Builds stay unlanded. Usually CI is red on main (see the CI on main item) or every PR is kicked out."}
+    avg = st.get("avgMin") if isinstance(st.get("avgMin"), (int, float)) and st.get("avgMin") else 14
+    stack = [x for x in st.get("stack", []) if isinstance(x, dict)] if isinstance(st.get("stack"), list) else []
+    head = stack[0] if stack else None
+    took = _age_min(head.get("builtAt"), now) if head else None
+    if head and head.get("ci") == "running" and took is not None and took > 3 * avg:
+        return {"status": "warn", "summary": f"Lander: #{head.get('pr')} has been testing for {int(took)} min (usually ~{int(avg)}).",
+                "breaks": "The PRs behind it wait. Its CI run may be stuck or waiting for a GitHub runner."}
+    return {"status": "ok", "summary": f"Lander: {n} PR(s) in the queue, last round {int(rnd)} min ago, last merge {int(last // 60)} h ago."}
+
+
 _health_done = False
 
 
@@ -1315,6 +1360,13 @@ def ensure_health() -> bool:
                       "instructions": ["Reads go through axHub when the console has AXHUB_TOKEN (Settings → Plugins → Systems check → GitHub route).",
                                        "PRs, merges and branch protection need the console's GITHUB_TOKEN (Contents, Pull requests, "
                                        "Administration: read and write); set it and tap Check now."]}, "push-banner")
+        reg.register({"id": LANDER_HEALTH_ID, "label": "Lander lands the merge queue", "service": "github", "order": 15, "severity": "error",
+                      "run": lambda: lander_health(storage.read_json(data_dir() / "merge-queue.json", {}) or {}),
+                      "breaks": "Finished builds don't land on main by themselves.",
+                      "instructions": ["Rounds run from the VPS cron (/etc/cron.d, land.mjs run every 3 minutes, log /var/log/axf-auto-land.log).",
+                                       "Idle: check the cron line is there and that no stale /run/axf-auto-land.lock holder hangs (ps aux | grep land.mjs).",
+                                       "Lands nothing: open Builds → Merge queue; if CI on main is red, fix main first (the CI on main item).",
+                                       "Stuck head: open its run; re-run it, or move it down (land.mjs queue move <pr> <index>)."]}, "push-banner")
     except Exception:  # noqa: BLE001 — the banner works without its health item
         return False
     _health_done = True
