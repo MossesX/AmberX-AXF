@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7014,
- "updatedAt": "2026-11-16T23:23:19.691Z",
+ "rev": 7015,
+ "updatedAt": "2026-11-16T23:23:40.616Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -257377,7 +257377,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T23:22:58.656Z",
-   "updatedAt": "2026-11-16T23:23:16.757Z",
+   "updatedAt": "2026-11-16T23:23:34.260Z",
    "builtAt": "",
    "notes": [
     {
@@ -257427,7 +257427,30 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwjw3j04010s7d",
+     "title": "",
+     "text": "Brett Nov 16: the WHOLE orchestrator runs on the VPS as host services (systemd), independent of the console: intake, split, queue tick, slot filling, account routing, launching, requeue of stalled builds, auto-lander with auto-fix, alerts and phone pushes. If the console container is down or restarting, everything keeps running. The console only views and controls it through the same API. Test: stop the console container, confirm builds still launch and land.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T23:23:34.261Z",
+     "updatedAt": "2026-11-16T23:23:34.516Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -257436,12 +257459,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-16T23:23:34.261Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

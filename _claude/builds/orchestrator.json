@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T23:23:19.691Z",
+ "updatedAt": "2026-11-16T23:23:40.616Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -166086,7 +166086,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T23:22:58.656Z",
-   "updatedAt": "2026-11-16T23:23:16.757Z",
+   "updatedAt": "2026-11-16T23:23:34.260Z",
    "builtAt": "",
    "notes": [
     {
@@ -166112,7 +166112,27 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Brett Nov 16: the WHOLE orchestrator runs on the VPS as host services (systemd), independent of the console: intake, split, queue tick, slot filling, account routing, launching, requeue of stalled builds, auto-lander with auto-fix, alerts and phone pushes. If the console container is down or restarting, everything keeps running. The console only views and controls it through the same API. Test: stop the console container, confirm builds still launch and land.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjw3j04010s7d",
+     "createdAt": "2026-11-16T23:23:34.261Z"
+    }
+   ]
   }
  ]
 }
