@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6874,
- "updatedAt": "2026-11-16T20:33:02.773Z",
+ "rev": 6875,
+ "updatedAt": "2026-11-16T20:34:45.852Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -248077,7 +248077,7 @@
    "branch": "claude/fable-rebuild-to-do-manager-unlimited",
    "pr": "",
    "createdAt": "2026-11-16T20:24:18.253Z",
-   "updatedAt": "2026-11-16T20:27:28.659Z",
+   "updatedAt": "2026-11-16T20:34:43.711Z",
    "builtAt": "",
    "notes": [
     {
@@ -248114,12 +248114,12 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "mossesx-max-",
-    "session": "axf-fable-rebuild-to-do-manager-unlimited--rhonda",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-16T20:27:19.777Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T20:26:54.993Z",
@@ -248131,7 +248131,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-16T20:27:19.777Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -248140,7 +248140,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-16T20:27:19.777Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -248164,12 +248164,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:34:43.711Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T20:26:54.993Z",
-     "updatedAt": "2026-11-16T20:26:54.993Z"
+     "updatedAt": "2026-11-16T20:34:44.014Z"
     },
     {
      "id": "s2",
