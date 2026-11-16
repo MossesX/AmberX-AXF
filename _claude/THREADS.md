@@ -814,7 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 19:21 UTC · `toolbars-moved-to-side-become-vertical` → queued (all) · builds-live
 - 2026-11-16 19:21 UTC · `auto-lander-grid-one-row-per-build` note (all) · orchestrator
 - 2026-11-16 19:22 UTC · `toolbars-moved-to-side-become-vertical` note (all) · mcp
 - 2026-11-16 19:22 UTC · `auto-lander-grid-one-row-per-build` note (all) · builds-live
@@ -1214,6 +1213,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 23:22 UTC · `demonstration-designer-demos-must-actually-show-things-when-a-demo-plays-the-c` → archived, note (all) · cli
 - 2026-11-16 23:22 UTC · `session-summaries-amberx-axf-project-history-readiness-audit` → archived, note (all) · cli
 - 2026-11-16 23:22 UTC · `amberx-open-any-url-apk` → archived, note (all) · cli
+- 2026-11-16 23:22 UTC · `server-auto-lander-fixes-lands` added (0 steps) (all) · console
 
 ## Token passes (log)
 

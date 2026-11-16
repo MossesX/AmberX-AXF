@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T23:22:35.026Z",
+ "updatedAt": "2026-11-16T23:23:01.289Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -166072,6 +166072,37 @@
      "createdAt": "2026-11-16T23:02:45.499Z"
     }
    ]
+  },
+  {
+   "id": "server-auto-lander-fixes-lands",
+   "title": "Server auto-lander fixes and lands everything on its own",
+   "category": "",
+   "detail": "Server-side rule enforced as a gate, runs as a VPS service (systemd), no console needed. Lands finished builds one at a time through the orchestrator. When a build clashes: merge main into it and resolve automatically (regenerate generated files), retry. When CI is red: automatically start a fix session for that build through the orchestrator on an available account, push the fix, re-run CI, retry until green, then land. Nothing ever sits blocked: every blocked build gets an automatic fix attempt, logged per attempt. Only after repeated failed attempts does it go to a banner item with what broke and a Fix button, plus a phone push. Merge with fix-red-ci-blocked-builds-they-land and get-main-green-unblock-lander-land-axf where they overlap. Status visible in Gate > Auto-lander; same on REST, MCP, CLI, voice. Tests, land through the orchestrator.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-16T23:22:58.656Z",
+   "updatedAt": "2026-11-16T23:22:58.656Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "We need the auto lander to bang shit out on its own. It needs to automatically fix it. We need a server rule to do that. Make the server do it automatically without the console.",
+    "at": "2026-11-16T23:22:58.656Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
