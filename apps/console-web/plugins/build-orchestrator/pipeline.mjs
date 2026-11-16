@@ -16,6 +16,10 @@
  *   … split <id> [--request] [--provider claude|rules]   split a build now (or ask the next tick to)
  *   … intake [--json]              split every build with no steps (and every split the console asked for); auto-queue when the Claude setting says so
  *   … tick [--json]                one dispatcher round: intake, session ends, launches, idle alert, state file
+ *   … exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p]   a session ended (claude-headless.sh
+ *                                  calls it): end the run now and, when it is back in the Queue, run one tick in-process so the
+ *                                  next phase starts at once. Under the dispatcher's lock (flock AXF_PIPELINE_LOCK, default
+ *                                  /run/axf-pipeline.lock, the cron tick's), so nothing launches twice.
  *   … accounts [--json]            every account as the pipeline sees it (Fable yes / no, parallel, running)
  *   … selfcheck [--request] [--reason r] [--json]   check every account one by one, release stale claims / slots / builds,
  *                                  rebuild the account snapshot, alert AmberX on a fix or an unusable account. Off the host
@@ -523,6 +527,34 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
   return out;
 }
 
+/** The kinds of session end the headless wrapper reports (claude-headless.sh → pipeline.mjs exit --kind). */
+export const EXIT_KINDS = ['phase-done', 'crash', 'stopped'];
+/** The dispatcher's lock: the cron tick holds it (deploy/install-console.sh: flock -n /run/axf-pipeline.lock). */
+export const pipelineLock = (env = process.env) => env.AXF_PIPELINE_LOCK || '/run/axf-pipeline.lock';
+
+/**
+ * A session ended (the headless wrapper calls this on exit, after its agent slot is free): end the run at once, and when
+ * it went back to the Queue, run one dispatcher tick in-process so the next phase starts on a free slot and an account
+ * with its model now, not on the next 1-minute cron. Runs under the pipeline lock (main() re-execs under flock), so it
+ * never launches twice next to the cron tick; a run already ended (session cleared, another session) is left alone and
+ * no tick runs for it. Returns { ok, id, ended, tick }.
+ */
+export function onExit(id, { session = '', exit = 0, kind = '', phase = '', env = process.env, runTick = true } = {}) {
+  if (kind && !EXIT_KINDS.includes(kind)) throw Object.assign(new Error(`kind is one of ${EXIT_KINDS.join(', ')}`), { code: 2 });
+  const b = storeCore.findBuild(loadStore(), id);
+  if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  const p = b.pipeline ?? {};
+  const open = p.session && (b.status === 'running' || b.status === 'waiting' || b.status === 'built' || b.status === 'complete');
+  if (!open || (session && p.session !== session)) return { ok: true, id, ended: null, tick: null, why: 'this run was already ended (or another session holds the build)' };
+  const ended = endRun(b, { exit: Number.isInteger(exit) ? exit : Number(exit) || 0, kind, phase, settings: loadSettings(env) });
+  let t = null;
+  if (runTick && ended.status === 'queued') {
+    try { const r = tick({ env }); t = { at: r.at, launched: r.launched.map((l) => ({ id: l.id, account: l.account, model: l.model, phase: l.phase || '' })), waits: r.plan.waits.filter((w) => w.id === id) }; }
+    catch (e) { logLine({ event: 'exit-tick-failed', build: id, error: str(e.message, 300) }); t = { error: str(e.message, 300) }; }
+  }
+  return { ok: true, id, ended, tick: t };
+}
+
 // ------------------------------------------------------------------ alerts (the console's alerts API, from the host)
 
 export function makeConsole(env = process.env) {
@@ -912,6 +944,19 @@ async function main(argv) {
   if (cmd === 'show') { const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 }); const r = row(b); return out({ ok: true, build: r }, `${r.id} ${r.status} ${r.steps.done}/${r.steps.total}${r.pipeline?.account ? ` on ${r.pipeline.account}` : ''}`); }
   if (cmd === 'route') { const b = setRoute(rest[0], rest[1], { by }); return out({ ok: true, id: b.id, route: b.pipeline?.route || 'auto' }, `${b.id}: route ${b.pipeline?.route || 'auto'}`); }
   if (cmd === 'intake') { const r = intake(); return out({ ok: true, ...r }, [`split: ${r.split.map((x) => `${x.id} (${x.provider}, ${x.steps})`).join(', ') || 'nothing'}`, `queued: ${r.queued.join(', ') || 'nothing'}`, ...r.skipped.map((x) => `skipped ${x.id}: ${x.error}`)].join('\n')); }
+  if (cmd === 'exit') {
+    // the dispatcher's lock first: re-exec under flock (the cron tick's lock) unless already inside it or no flock here
+    const lock = pipelineLock();
+    if (process.env.AXF_PIPELINE_LOCKED !== '1' && spawnSync('flock', ['-V'], { encoding: 'utf8' }).status === 0) {
+      try { mkdirSync(dirname(lock), { recursive: true }); } catch { /* flock reports it */ }
+      const r = spawnSync('flock', ['-w', flag('wait', '120'), lock, process.execPath, fileURLToPath(import.meta.url), ...argv], { stdio: 'inherit', env: { ...process.env, AXF_PIPELINE_LOCKED: '1' } });
+      process.exitCode = r.status ?? 1; return undefined;
+    }
+    const r = onExit(rest[0], { session: flag('session'), exit: Number(flag('exit', '0')), kind: flag('kind'), phase: flag('phase') });
+    const e = r.ended;
+    return out(r, !e ? `${r.id}: ${r.why}` : [`${r.id}: ${e.outcome} → ${e.status}${e.reason ? ` (${e.reason})` : ''}${e.phase ? `, phase ${e.phase}` : ''}${e.next ? `, next ${e.next}` : ''}`,
+      r.tick ? (r.tick.error ? `tick failed: ${r.tick.error}` : `tick: launched ${r.tick.launched.map((l) => `${l.id} on ${l.account} (${l.model})`).join(', ') || 'nothing'}${r.tick.waits.map((w) => ` · ${w.id} waits: ${w.why}`).join('')}`) : ''].filter(Boolean).join('\n'));
+  }
   if (cmd === 'tick') {
     const r = tick();
     return out(r, [`tick ${r.at}`, `split ${r.intake.split.length} · ended ${r.ended.map((e) => `${e.id} ${e.outcome}`).join(', ') || 'none'} · launched ${r.launched.map((l) => `${l.id} on ${l.account} (${l.model})`).join(', ') || 'none'}${r.failed.length ? ` · launch failed ${r.failed.map((f) => `${f.id}: ${f.error}`).join('; ')}` : ''}`,
@@ -949,7 +994,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p] | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
