@@ -6,7 +6,7 @@
  * Inline element editing: click an element in the sandbox (Pick element) and the token list narrows to that element.
  */
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type ReactNode } from 'react';
-import { Button, Chip, ColorField, Container, HubSkinLockArea, Icon, IconButton, Note, Segmented, SelectField, Slider, Switch, TabGroup, TextField, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
+import { Button, Chip, ColorField, Container, HubSkinLockArea, Icon, IconButton, Note, PluginSettingsGear, Segmented, SelectField, Slider, Switch, TabGroup, TextField, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
 import { ELEMENT_LABELS } from '@console/axf/core/engines/token-registry.mjs';
 import * as api from './api';
 import type { Session, UiListItem, UiPick } from './api';
@@ -176,7 +176,7 @@ export function SkinEditorView() {
   return (
     <HubSkinLockArea>
     <div className={`${P} fx-stack`}>
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">Framework</p><h1>Skin editor</h1><p className="fx-muted" title="Edit a skin token by token with a live sandbox preview of any screen, keep a snapshot after each change, revert to any snapshot and export the skin.">Edit a skin token by token with a live preview.</p></div></header>
+      <header className="fx-pagehead" data-axf-plugin-header="skin-editor"><div><p className="fx-eyebrow">Framework</p><h1>Skin editor</h1><p className="fx-muted" title="Edit a skin token by token with a live sandbox preview of any screen, keep a snapshot after each change, revert to any snapshot and export the skin.">Edit a skin token by token with a live preview.</p></div><div className="fx-pagehead__tools" role="toolbar" aria-label="Skin editor tools" data-axf-toolbar="plugin-header.skin-editor"><PluginSettingsGear tab="skin-editor" plugin="Skin editor" /></div></header>
       <div className={`${P}__bar`} role="toolbar" aria-label="Skin editor">
         <SelectField label="UI" value={ui ? api.uiKey(ui) : ''} onChange={(k) => { const u = allUis.find((x) => api.uiKey(x) === k); if (u) void choose(u); }} options={[{ value: '', label: 'Pick a UI…' }, ...allUis.map((u) => ({ value: api.uiKey(u), label: `${u.kind}: ${u.label}` }))]} />
         <Button size="sm" icon="eye" title="Click a screen anywhere in the console to load it here" onClick={() => rt.dispatch('skin-editor.pick')}>Pick on screen</Button>

@@ -1,4 +1,5 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
+import { PluginSettingsGear } from '@console/axf/react';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER, ID } from './api';
 import { ThemeEditor, UNSET_KEY, VIEW_KEY, VIEWS } from './ThemeEditor';
@@ -20,7 +21,7 @@ export const plugin: AxfWebLibrary = {
   register(rt) {
     rt.actions.register('theme-editor.open', () => rt.navigate('theme-editor'), { label: 'Open the theme editor' });
   },
-  views: { 'theme-editor': { title: 'Theme editor', icon: 'edit', keywords: ['theme', 'colours', 'style', 'tokens', 'edit'], render: () => <div className="fx-stack fx-stack--lg"><header className="fx-pagehead"><div><p className="fx-eyebrow">Design &amp; branding</p><h1>Theme editor</h1><p className="fx-muted" title="Edit every colour and style token, copy a theme, save it as an asset and load any theme. Saves apply in every app through the hub look.">Edit every token, copy, save and load themes.</p></div></header><ThemeEditor /></div> } },
+  views: { 'theme-editor': { title: 'Theme editor', icon: 'edit', keywords: ['theme', 'colours', 'style', 'tokens', 'edit'], render: () => <div className="fx-stack fx-stack--lg"><header className="fx-pagehead" data-axf-plugin-header="theme-editor"><div><p className="fx-eyebrow">Design &amp; branding</p><h1>Theme editor</h1><p className="fx-muted" title="Edit every colour and style token, copy a theme, save it as an asset and load any theme. Saves apply in every app through the hub look.">Edit every token, copy, save and load themes.</p></div><div className="fx-pagehead__tools" role="toolbar" aria-label="Theme editor tools" data-axf-toolbar="plugin-header.theme-editor"><PluginSettingsGear tab="theme-editor" plugin="Theme editor" /></div></header><ThemeEditor /></div> } },
   nav: { label: 'Plugins', items: [{ id: 'theme-editor', label: 'Theme editor', icon: 'edit', view: 'theme-editor' }] },
   settingsTabs: [{ id: 'theme-editor', label: 'Theme editor', icon: 'edit', parent: 'plugins', order: 45, description: 'Edit colour and style themes token by token; copy, save and load them.' }],
   settings: [

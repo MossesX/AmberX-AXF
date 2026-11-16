@@ -11,7 +11,7 @@
  * notes the listener saved to table `notes` on axHub: newest first, by list and subcategory, search, copy, delete.
  */
 import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { Button, Chip, IconButton, Note, Section, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
+import { Button, Chip, IconButton, Note, PluginSettingsGear, Section, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import {
@@ -430,9 +430,10 @@ function NotesPage() {
             <h1>Voice notes</h1>
             <p className="fx-muted axp-voice-notes-lede" title="The notes Voice Vault heard and saved to axHub, newest first. It fetches them again every 30 seconds while this page is open.">{snap.notes.length} saved{snap.notesAt ? ` · fetched ${new Date(snap.notesAt).toLocaleTimeString()}` : ''} · from Voice Vault, newest first</p>
           </div>
-          <div className="fx-row axp-voice-notes-acts">
+          <div className="fx-row axp-voice-notes-acts" role="toolbar" aria-label="Voice notes tools" data-axf-toolbar="plugin-header.voice-notes">
             <IconButton icon="refresh" label={snap.notesBusy ? 'Fetching…' : 'Fetch now'} disabled={snap.notesBusy} onClick={() => void store.loadNotes()} />
-            <IconButton icon="settings" label="Set up" onClick={() => rt.dispatch('settings.open:voice-notes')} />
+            {/* plugin-settings@1: the shared gear (was a hand-made "Set up" settings button) */}
+            <PluginSettingsGear tab="voice-notes" plugin="Voice notes" />
           </div>
         </header>
       )}

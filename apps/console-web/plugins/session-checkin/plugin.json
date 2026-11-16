@@ -13,6 +13,7 @@
   "enabledByDefault": true,
   "banner": false,
   "tabable": false,
+  "settings": { "$axf":  "plugin-settings@1", "tab":  "session-checkin", "parent":  "plugins", "sections":  ["enable", "info", "logs"], "options":  [], "gear":  true},
   "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "opus", "builtAt": "2026-10-18" },
   "opens": "main"

@@ -1,4 +1,5 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
+import { PluginSettingsGear } from '@console/axf/react';
 import type { AxfRuntime } from '@console/axf/core';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { AppearancePanel } from '@console/axf/libs/settings';
@@ -46,7 +47,7 @@ export const plugin: AxfWebLibrary = {
     void loadSaved(rt);
     rt.actions.register('theme-manager.open', () => rt.navigate('theme-manager'), { label: 'Open the theme manager' });
   },
-  views: { 'theme-manager': { title: 'Theme manager', icon: 'palette', keywords: ['roll', 'theme', 'colors', 'tokens'], render: () => <div className="fx-stack fx-stack--lg"><header className="fx-pagehead"><div><p className="fx-eyebrow">Design &amp; branding</p><h1>Theme manager</h1><p className="fx-muted" title="Roll colour themes and themeable parts from a token tree, preview them live and save the ones you like. Style, layout and behaviour come with the skin.">Roll themes from a token tree, preview live, save the keepers.</p></div></header><AppearancePanel /><ThemeManager /></div> } },
+  views: { 'theme-manager': { title: 'Theme manager', icon: 'palette', keywords: ['roll', 'theme', 'colors', 'tokens'], render: () => <div className="fx-stack fx-stack--lg"><header className="fx-pagehead" data-axf-plugin-header="theme-manager"><div><p className="fx-eyebrow">Design &amp; branding</p><h1>Theme manager</h1><p className="fx-muted" title="Roll colour themes and themeable parts from a token tree, preview them live and save the ones you like. Style, layout and behaviour come with the skin.">Roll themes from a token tree, preview live, save the keepers.</p></div><div className="fx-pagehead__tools" role="toolbar" aria-label="Theme manager tools" data-axf-toolbar="plugin-header.theme-manager"><PluginSettingsGear tab="theme-manager" plugin="Theme manager" /></div></header><AppearancePanel /><ThemeManager /></div> } },
   nav: { label: 'Plugins', items: [{ id: 'theme-manager', label: 'Theme manager', icon: 'palette', view: 'theme-manager' }] },
   // Settings → Appearance → Skin config is the settings library's own sub-tab (plugins keep their tabs under Plugins);
   // it shows while this plugin provides axf.skin-config@1. Deep link: settings:appearance/skin-config.

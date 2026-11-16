@@ -27,6 +27,7 @@
     "ROUTES"
   ],
   "enabledByDefault": true,
+  "settings": { "$axf":  "plugin-settings@1", "tab":  "theme-editor", "parent":  "plugins", "sections":  ["enable", "info", "logs", "options"], "options":  ["axf.theme-editor.view"], "gear":  true},
   "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "opus", "builtAt": "2026-11-03" },
   "banner": false,

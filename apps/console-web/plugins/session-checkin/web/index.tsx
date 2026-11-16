@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Button, Chip, Icon, IconButton, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, IconButton, PluginSettingsGear, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import './session-checkin.css';
@@ -85,9 +85,10 @@ function SessionsView() {
           <h1>Sessions</h1>
           <p className={`fx-muted ${P}__lede`} title="Every session check-in, newest first. Pick one to see what was detected, what was picked and what the baseline build costs.">Every session check-in, newest first. Tap one for details.</p>
         </div>
-        <div className={`${P}__acts`}>
+        <div className={`${P}__acts`} role="toolbar" aria-label="Session check-in tools" data-axf-toolbar="plugin-header.session-checkin">
           <IconButton icon="refresh" label="Refresh" onClick={load} />
-          <IconButton icon="settings" label="Check-in settings" onClick={() => rt.dispatch('settings.open:session-checkin')} />
+          {/* plugin-settings@1: the shared gear (was a hand-made settings button) */}
+          <PluginSettingsGear tab="session-checkin" plugin="Session check-in" />
         </div>
       </header>
 

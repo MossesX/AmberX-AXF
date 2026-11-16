@@ -5,7 +5,7 @@
  * Framework controls only (they follow the app's button, style theme and spacing); plugin CSS lays things out.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Container, Field, Icon, IconButton, Note, Section, Segmented, SelectField, Switch, TextField, useAxfState, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Field, Icon, IconButton, Note, PluginSettingsGear, Section, Segmented, SelectField, Switch, TextField, useAxfState, useRuntime } from '@console/axf/react';
 import {
   CORE_PARTS, DEFAULT_VIEW, FIELD_TYPES, KINDS, TONES, checklistText, childLists, dateInput, fromDateInput, groupEntries, listPaths, progress, readView, sortEntries, visible, words,
   type CorePart, type CoreRule, type Entry, type EntryKind, type FieldDef, type GroupBy, type ListView, type SortBy, type TodoList, type Tone, type TypeDef, type TypeSchema,
@@ -34,7 +34,7 @@ export function TodoView({ embedded = false }: { embedded?: boolean }) {
   useEffect(() => { if (!s.types && !s.loading) void loadAll(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <div className={`axp-todo ${embedded ? 'is-embedded' : ''}`}>
-      {!embedded && <header className="fx-pagehead"><div><p className="fx-eyebrow">Work</p><h1>Todos</h1><p className="fx-muted" title="Lists of notes, to-dos and tasks with subtasks, checklists, tags and due dates — as a tree or a grid.">Notes, to-dos and tasks, as a tree or a grid.</p></div></header>}
+      {!embedded && <header className="fx-pagehead" data-axf-plugin-header="todo-manager"><div><p className="fx-eyebrow">Work</p><h1>Todos</h1><p className="fx-muted" title="Lists of notes, to-dos and tasks with subtasks, checklists, tags and due dates — as a tree or a grid.">Notes, to-dos and tasks, as a tree or a grid.</p></div><div className="fx-pagehead__tools" role="toolbar" aria-label="Todo manager tools" data-axf-toolbar="plugin-header.todo-manager"><PluginSettingsGear tab="todo-manager" plugin="Todo manager" /></div></header>}
       {s.error && <Note tone="danger">{s.error}</Note>}
       <div className="axp-todo__body">
         <ListsColumn />

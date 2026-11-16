@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { Button, Chip, Container, Icon, IconButton, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Icon, IconButton, PluginSettingsGear, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import './project-wizard.css';
@@ -82,13 +82,14 @@ function ProjectWizardView() {
   const [wizardKey, setWizardKey] = useState(0);
   return (
     <div className="fx-stack">
-      <header className="fx-pagehead">
+      <header className="fx-pagehead" data-axf-plugin-header="project-wizard">
         <div>
           <p className="fx-eyebrow">Projects</p>
           <h1>New project</h1>
           <p className={`fx-muted ${P}__lede`} title="Take a repo or a folder (or start a new AXF app), give it a home on GitHub, the VPS or a local git folder, and get it ready as a Claude project with its instructions and context files.">A repo, folder or new AXF app, homed and ready as a Claude project.</p>
         </div>
         <IconButton icon="refresh" label="Start over" onClick={() => { void reload(); setWizardKey((k) => k + 1); }} />
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Project wizard tools" data-axf-toolbar="plugin-header.project-wizard"><PluginSettingsGear tab="project-wizard" plugin="Project wizard" /></div>
       </header>
       {err && <p className={`${P}__error`}>{err}</p>}
       {st && <Readiness st={st} />}
@@ -99,17 +100,15 @@ function ProjectWizardView() {
 }
 
 function Readiness({ st }: { st: Status }) {
-  const rt = useRuntime();
   const issues: ReactNode[] = [];
   if (!st.github.token) issues.push(<>No GitHub token on the console server, so GitHub sources and homes are off. Add one in the Systems check.</>);
   else if (st.github.error) issues.push(<>GitHub token problem: {st.github.error}</>);
-  if (st.vps.mode === 'off') issues.push(<>VPS git is off: {st.vps.why}. See Settings → Plugins → Project wizard.</>);
+  if (st.vps.mode === 'off') issues.push(<>VPS git is off: {st.vps.why}. See Settings → Plugins → Project wizard (the gear above).</>);
   if (!issues.length) return null;
   return (
     <div className={`${P}__notice`} role="status">
       <Icon name="info" />
       <div className="fx-grow fx-small">{issues.map((i, n) => <p key={n} style={{ margin: 0 }}>{i}</p>)}</div>
-      <IconButton icon="settings" label="Project wizard settings" onClick={() => rt.dispatch('settings.open:project-wizard')} />
     </div>
   );
 }

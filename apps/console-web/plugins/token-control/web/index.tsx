@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Container, Markdown, Note, Segmented, SelectField, TextField } from '@console/axf/react';
+import { Button, Container, Markdown, Note, PluginSettingsGear, Segmented, SelectField, TextField } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -224,7 +224,7 @@ function TokenControlView() {
   const tryIt = (c: Partial<ControlCommand>) => { setPreset({ ...c }); setTab('try'); };
   return (
     <div className="fx-stack fx-stack--lg axf-tc">
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">Plugin · control@1</p><h1>Token control</h1><p className="fx-muted">Change any token, AmberX note or planner item, and see the same command as an API call, an MCP tool and a CLI line.</p></div></header>
+      <header className="fx-pagehead" data-axf-plugin-header="token-control"><div><p className="fx-eyebrow">Plugin · control@1</p><h1>Token control</h1><p className="fx-muted">Change any token, AmberX note or planner item, and see the same command as an API call, an MCP tool and a CLI line.</p></div><div className="fx-pagehead__tools" role="toolbar" aria-label="Token control tools" data-axf-toolbar="plugin-header.token-control"><PluginSettingsGear tab="token-control" plugin="Token control" /></div></header>
       <Segmented label="Token control" value={tab} onChange={setTab} className="axf-tc-wrap" options={[
         { value: 'tokens', label: <span data-help="tc-tab-tokens">Tokens</span>, icon: 'sliders' },
         { value: 'passes', label: <span data-help="tc-tab-passes">Passes</span>, icon: 'key' },

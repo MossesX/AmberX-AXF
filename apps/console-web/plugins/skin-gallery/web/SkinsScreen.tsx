@@ -6,7 +6,7 @@
  * Deep links: #/skin-gallery?skin=&scope=&view=phone, or console_open … focus skin/<id> | scope/<scope> | preview/<id>?view=phone.
  */
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, SkinScope, useRuntime } from '@console/axf/react';
+import { Button, Chip, PluginSettingsGear, SkinScope, useRuntime } from '@console/axf/react';
 import { followAt, getActingApp, listScopes, listSkins, PLUGIN_ID, readState, scopeLabel, setActingApp, type ScopeView, type SkinRow } from './api';
 import { getLink, linkFromHash, subscribeLink } from './link';
 import { kindOf, ScopePicker, scopeOf, type Kind } from './ScopePicker';
@@ -67,7 +67,7 @@ export function SkinsScreen() {
 
   return (
     <SkinScope kind="plugin" id={PLUGIN_ID} className="fx-stack fx-stack--lg axp-skin-gallery" attrs={{ 'data-axf-skin-gallery': '', 'data-layout': layout }}>
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">Plugins</p><h1>Skins</h1><p className="fx-muted">Tap a skin to preview it live. Nothing is saved until Use skin.</p></div></header>
+      <header className="fx-pagehead" data-axf-plugin-header="skin-gallery"><div><p className="fx-eyebrow">Plugins</p><h1>Skins</h1><p className="fx-muted">Tap a skin to preview it live. Nothing is saved until Use skin.</p></div><div className="fx-pagehead__tools" role="toolbar" aria-label="Skins tools" data-axf-toolbar="plugin-header.skin-gallery"><PluginSettingsGear tab="skin-gallery" plugin="Skins" /></div></header>
 
       <ScopePicker kind={kind} target={target} app={app} known={known} view={view} skins={skins} busy={busy}
         onKind={(k) => { setKind(k); setTarget(''); }} onTarget={setTarget} onApp={pickApp} onFollow={follow} />
