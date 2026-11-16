@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 15:13 UTC · `shipped-features-open-button-views-each` s12 done (all) · orchestrator
 - 2026-11-15 15:13 UTC · `data-container-axf-data-holds-all` → running (all) · builds-live
 - 2026-11-15 15:13 UTC · `axf-data-postgres-real-tables-own` note (all) · orchestrator
 - 2026-11-15 15:13 UTC · `phone-connect-small-android-companion` s14 done (all) · orchestrator
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 17:00 UTC · `remove-old-molly-app-project-keep-axf` PR #720 (all) · builds-live
 - 2026-11-16 17:00 UTC · `remove-old-molly-app-project-keep-axf` s16 done, → built (all) · orchestrator
 - 2026-11-16 17:01 UTC · `fix-console-deep-links-open-page-lands` s3 done, → complete (all) · orchestrator
+- 2026-11-16 17:01 UTC · `remove-old-molly-app-project-keep-axf` note (all) · orchestrator
 
 ## Token passes (log)
 

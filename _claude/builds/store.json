@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6575,
- "updatedAt": "2026-11-16T17:01:45.183Z",
+ "rev": 6576,
+ "updatedAt": "2026-11-16T17:02:05.572Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -240497,8 +240497,8 @@
    "pr": "#720",
    "priority": "P1",
    "createdAt": "2026-11-16T16:17:05.624Z",
-   "updatedAt": "2026-11-16T17:00:53.163Z",
-   "builtAt": "2026-11-16T17:00:53.163Z",
+   "updatedAt": "2026-11-16T17:01:28.673Z",
+   "builtAt": "2026-11-16T17:01:28.673Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -240519,6 +240519,10 @@
     {
      "text": "Brief only: brief is 30778 characters (~7695 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-16T16:20:33.943Z"
+    },
+    {
+     "text": "Headless run axf-remove-old-molly-app-project-keep-axf--gina: brief only · start 19.6K tokens ($0.07) · cost $12.43 · 195 turns · 6 tools, MCP none",
+     "at": "2026-11-16T17:01:28.673Z"
     }
    ],
    "approvals": [],
