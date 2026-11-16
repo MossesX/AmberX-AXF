@@ -198,11 +198,21 @@ export function accountsRead(store, settings = loadSettings(), env = process.env
 /** Accounts as the pipeline sees them: claude-workers rows + what the store says runs on each + the pipeline's own records. */
 export function accountsNow(store, settings = loadSettings()) { return accountsRead(store, settings).accounts; }
 
+/**
+ * Why a queued build is back in the Queue after a finished phase: { reason, phase, next, at } (lastRun.reason phase-done),
+ * else null. The Pipeline view shows "Next phase: <model>, waiting for slot/account"; REST / MCP read it on the row.
+ */
+export function requeueOf(b) {
+  const lr = b?.pipeline?.lastRun;
+  if (b?.status !== 'queued' || !lr || lr.reason !== 'phase-done') return null;
+  return { reason: 'phase-done', phase: lr.phase || '', next: BP.nextModel(b), at: lr.at || '' };
+}
+
 const row = (b) => {
   const p = orch.progress(b); const nx = orch.nextUp(b);
   return { id: b.id, title: b.title, status: b.status, priority: priorityLabel(effectivePriority(b)), steps: { done: p.done, total: p.total, left: p.total - p.done - p.skipped }, minutesLeft: p.minutesLeft,
     nextModel: BP.nextModel(b), nextStep: nx.step ? `${nx.step.id} ${nx.step.text}`.slice(0, 200) : '', needsApproval: nx.needsApproval, needsSplit: P.needsSplit(b), pipeline: b.pipeline ?? null, said: subtitle(b.origin, 160), branch: b.branch, pr: b.pr, createdAt: b.createdAt, updatedAt: b.updatedAt,
-    tab: BP.tabOf(b), held: BP.isHeld(b), actions: BP.actionsFor(b), deleted: !!b.deleted, deletedAt: b.deletedAt ?? '', builtAt: b.builtAt ?? '', stepList: (b.steps ?? []).slice(0, 40).map((x) => ({ id: x.id, text: str(x.text, 160), model: x.model, estimate: x.estimate ?? '', done: !!x.done, skip: !!x.skip })) };
+    tab: BP.tabOf(b), held: BP.isHeld(b), actions: BP.actionsFor(b), deleted: !!b.deleted, deletedAt: b.deletedAt ?? '', builtAt: b.builtAt ?? '', requeue: requeueOf(b), stuck: P.stuckAfterPhase(b), stepList: (b.steps ?? []).slice(0, 40).map((x) => ({ id: x.id, text: str(x.text, 160), model: x.model, estimate: x.estimate ?? '', done: !!x.done, skip: !!x.skip })) };
 };
 
 /** The whole picture for the console and the CLI. */
