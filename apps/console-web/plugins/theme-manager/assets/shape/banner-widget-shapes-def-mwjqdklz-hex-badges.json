@@ -1,0 +1,17 @@
+{
+ "$axf": "asset@1",
+ "type": "shape",
+ "id": "banner-widget-shapes-def-mwjqdklz-hex-badges",
+ "name": "banner-widget-shapes-def-mwjqdklz: Hex badges",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Hexagon chips: a distinct, technical look; wide text chips get pointed ends.",
+ "tags": [
+  "ui-choice",
+  "choice-set:banner-widget-shapes-def-mwjqdklz",
+  "choice-option:hex-badges"
+ ],
+ "data": {
+  "kind": "hexagon"
+ }
+}

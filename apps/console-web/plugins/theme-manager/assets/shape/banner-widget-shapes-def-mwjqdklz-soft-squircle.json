@@ -1,0 +1,17 @@
+{
+ "$axf": "asset@1",
+ "type": "shape",
+ "id": "banner-widget-shapes-def-mwjqdklz-soft-squircle",
+ "name": "banner-widget-shapes-def-mwjqdklz: Soft squircle",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Superellipse chips: calmer than pills, corners flow into the sides. Reads well at every width.",
+ "tags": [
+  "ui-choice",
+  "choice-set:banner-widget-shapes-def-mwjqdklz",
+  "choice-option:soft-squircle"
+ ],
+ "data": {
+  "kind": "squircle"
+ }
+}

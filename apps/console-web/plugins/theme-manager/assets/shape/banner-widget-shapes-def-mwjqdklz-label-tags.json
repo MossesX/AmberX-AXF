@@ -1,0 +1,21 @@
+{
+ "$axf": "asset@1",
+ "type": "shape",
+ "id": "banner-widget-shapes-def-mwjqdklz-label-tags",
+ "name": "banner-widget-shapes-def-mwjqdklz: Label tags",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Tag chips with softened back corners: a label pointing right, good for counters and status.",
+ "tags": [
+  "ui-choice",
+  "choice-set:banner-widget-shapes-def-mwjqdklz",
+  "choice-option:label-tags"
+ ],
+ "data": {
+  "kind": "tag",
+  "corners": {
+   "tl": "sm",
+   "bl": "sm"
+  }
+ }
+}
