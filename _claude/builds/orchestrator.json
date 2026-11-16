@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T16:25:09.914Z",
+ "updatedAt": "2026-11-16T16:25:25.582Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -153540,7 +153540,7 @@
    "title": "Phone Connect: small Android companion + console plugin; retire AmberX",
    "category": "",
    "detail": "Replace the AmberX app with Phone Connect. Two parts: (A) a console plugin 'phone-connect' for screens, settings and pairing, with full API parity; (B) a SMALL native Android companion app, not the whole console, for phone-only work. KEEP and port from apps/amberx-droid: 1) the Approvals page with alerts, including the lock screen showing only 'Approval waiting'; 2) Monitor: background WatchService foreground service, approvals watch, alerts, auto-approval rules; 3) open a page on the phone (bring Chrome to the front; keep the amberx.open_url tool working in axHub, renamed phone.open_url with an alias); 4) phone notifications (FYI and fix updates, alerts); 5) the audio output recorder: move the WHOLE thing out of the console's output-recorder plugin into Phone Connect (recorder_start/stop/status tools move too, with aliases). DROP: voice commands, notes, dictation, web tabs, AI connection, the phone AI assistant and agent manager (everything merges into the console AI Assistant), the walkthrough video and recorder, and the wake word listener. Also REMOVE the console wake-listener plugin and the always-on wake mic, because it grabs Brett's mic. Keep the hub sign-in and session security rules. Before deleting anything, list every AmberX piece and console plugin being removed, then retire apps/amberx-droid, the amberx.amberxai.com deploy, and the axHub amberx device, once Phone Connect is installed and working. CI builds the APK. Tests, help, Shipped features. Land with the one-at-a-time lander.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -153548,7 +153548,7 @@
    "pr": "#712",
    "priority": "P1",
    "createdAt": "2026-11-15T13:36:18.858Z",
-   "updatedAt": "2026-11-16T16:18:09.670Z",
+   "updatedAt": "2026-11-16T16:25:12.621Z",
    "builtAt": "",
    "notes": [
     {
@@ -153642,6 +153642,10 @@
     {
      "text": "Brett (Nov 16): once Phone Connect has landed and the new AmberX phone app (APK) is installed and working, KILL the old amberx-web container and amberx.amberxai.com (Coolify app + DNS + proxy route) as part of s33's retirement. Keep it running until then.",
      "at": "2026-11-16T16:18:09.670Z"
+    },
+    {
+     "text": "Self-check: phone-connect-small-android-companion was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-16T16:25:12.621Z"
     }
    ],
    "approvals": [
