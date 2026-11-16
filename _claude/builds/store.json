@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6697,
- "updatedAt": "2026-11-16T19:14:23.965Z",
+ "rev": 6698,
+ "updatedAt": "2026-11-16T19:14:32.608Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -246027,7 +246027,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T19:03:55.794Z",
-   "updatedAt": "2026-11-16T19:14:14.216Z",
+   "updatedAt": "2026-11-16T19:14:18.168Z",
    "builtAt": "",
    "notes": [
     {
@@ -246108,6 +246108,28 @@
     "heldWhy": ""
    },
    "steps": [
+    {
+     "id": "s12",
+     "uid": "st-mwjn6t1s01zeez",
+     "title": "",
+     "text": "Brett Nov 16: whenever a theme or skin is applied in any app, ask first: 'Apply to the hub (every app that follows axHub)' or 'Just this app (e.g. the console)'. Hub choice writes the hub-wide skin/theme; app choice writes only that app's look (follow off). Remember-my-choice option. Same choice as a parameter on REST, MCP, CLI and voice (scope=hub|app).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T19:14:10.558Z",
+     "updatedAt": "2026-11-16T19:14:10.960Z"
+    },
     {
      "id": "s1",
      "uid": "st-mwjmvcmx01ebs6",
@@ -246285,6 +246307,28 @@
      "updatedAt": "2026-11-16T19:05:16.473Z"
     },
     {
+     "id": "s13",
+     "uid": "st-mwjn6yzw01cpry",
+     "title": "",
+     "text": "Brett Nov 16: (a) 'Save as new skin' button in Settings > Appearance: saves the current look (skin + every asset override) as a new skin@1 with a name field; it appears in the skin list and can be picked hub-wide; skins.save-as <name> on REST, MCP, CLI and voice. (b) When any skin is applied, show a notice 'N assets override this skin' with a 'View them' link opening the assets-with-edits list (only when N > 0); the apply result on API/CLI/voice carries the same count.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T19:14:18.169Z",
+     "updatedAt": "2026-11-16T19:14:18.668Z"
+    },
+    {
      "id": "s8",
      "uid": "st-mwjmvcmx08jswb",
      "title": "",
@@ -246395,7 +246439,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -246419,7 +246463,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:12:13.425Z",
-   "updatedAt": "2026-11-16T19:13:26.384Z",
+   "updatedAt": "2026-11-16T19:14:22.611Z",
    "builtAt": "",
    "notes": [
     {
@@ -246429,6 +246473,10 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-16T19:12:31.278Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"e97eb14b-4f75-424b-b388-454df6247164\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-16T19:14:22.611Z"
     }
    ],
    "approvals": [],
@@ -246445,7 +246493,105 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-16T19:14:22.611Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"e97eb14b-4f75-424b-b388-454df6247164\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwjn721f011ik8",
+     "title": "",
+     "text": "Whenever any build drops out of Queue/Running back to Pending (session stopped with steps left, reconciler pause, self-check release, CI or land failure, anything), raise a console banner item (systems check health@1) saying which build, why, steps left and since when, with buttons Requeue and Open, and push it once to the AmberX phone app. Clear it when the build is requeued, archived or held. Also fix the dispatcher alert link: ALERT_LINK is '#/build-orchestrator', must be 'view:build-orchestrator' so alerts open the right screen. Same via REST, MCP, CLI, voice. Tests, land through the orchestrator.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T19:14:22.611Z",
+     "updatedAt": "2026-11-16T19:14:22.611Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwjn721f027gg7",
+     "title": "",
+     "text": "Every time something falls back to Pending, I need a fucking alert somewhere.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T19:14:22.611Z",
+     "updatedAt": "2026-11-16T19:14:22.611Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwjn721f03vdvw",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/alert-every-time-build-falls-back-to.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/alert-every-time-build-falls-back-to.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T19:14:22.611Z",
+     "updatedAt": "2026-11-16T19:14:22.611Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -246454,12 +246600,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-16T19:14:22.611Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

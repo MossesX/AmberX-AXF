@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:14:23.965Z",
+ "updatedAt": "2026-11-16T19:14:32.608Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -160795,7 +160795,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T19:03:55.794Z",
-   "updatedAt": "2026-11-16T19:14:14.216Z",
+   "updatedAt": "2026-11-16T19:14:18.168Z",
    "builtAt": "",
    "notes": [
     {
@@ -160842,6 +160842,25 @@
     "addenda": []
    },
    "steps": [
+    {
+     "id": "s12",
+     "text": "Brett Nov 16: whenever a theme or skin is applied in any app, ask first: 'Apply to the hub (every app that follows axHub)' or 'Just this app (e.g. the console)'. Hub choice writes the hub-wide skin/theme; app choice writes only that app's look (follow off). Remember-my-choice option. Same choice as a parameter on REST, MCP, CLI and voice (scope=hub|app).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjn6t1s01zeez",
+     "createdAt": "2026-11-16T19:14:10.558Z"
+    },
     {
      "id": "s1",
      "text": "Read AssetsWithEdits and the chrome.reset path in framework/react/components/ChromeContext.tsx, the chrome-settings engine in framework/core/engines/chrome-settings-rules.mjs and the console actions registry. Write a short plan in _claude/builds/reports/reset-all-button-every-asset-override.md covering which override keys chrome.reset clears today (axf.chrome.<type>.<id>.asset, axf.chrome.<type>.<id>, axf.tokens.* per asset) and how its undo works. Commit the plan.",
@@ -160998,6 +161017,25 @@
      "createdAt": "2026-11-16T19:05:16.473Z"
     },
     {
+     "id": "s13",
+     "text": "Brett Nov 16: (a) 'Save as new skin' button in Settings > Appearance: saves the current look (skin + every asset override) as a new skin@1 with a name field; it appears in the skin list and can be picked hub-wide; skins.save-as <name> on REST, MCP, CLI and voice. (b) When any skin is applied, show a notice 'N assets override this skin' with a 'View them' link opening the assets-with-edits list (only when N > 0); the apply result on API/CLI/voice carries the same count.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjn6yzw01cpry",
+     "createdAt": "2026-11-16T19:14:18.169Z"
+    },
+    {
      "id": "s8",
      "text": "Rebake the shared framework into the apps that carry AppearancePanel / ChromeContext (node framework/cli/rebake.mjs status, then apply for the console, axHub web, AmberX and Expenses as listed). Run node framework/cli/shared-assets.mjs check. Commit.",
      "model": "Opus",
@@ -161102,7 +161140,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:12:13.425Z",
-   "updatedAt": "2026-11-16T19:13:26.384Z",
+   "updatedAt": "2026-11-16T19:14:22.611Z",
    "builtAt": "",
    "notes": [
     {
@@ -161112,6 +161150,10 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-16T19:12:31.278Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"e97eb14b-4f75-424b-b388-454df6247164\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-16T19:14:22.611Z"
     }
    ],
    "approvals": [],
@@ -161128,7 +161170,68 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Whenever any build drops out of Queue/Running back to Pending (session stopped with steps left, reconciler pause, self-check release, CI or land failure, anything), raise a console banner item (systems check health@1) saying which build, why, steps left and since when, with buttons Requeue and Open, and push it once to the AmberX phone app. Clear it when the build is requeued, archived or held. Also fix the dispatcher alert link: ALERT_LINK is '#/build-orchestrator', must be 'view:build-orchestrator' so alerts open the right screen. Same via REST, MCP, CLI, voice. Tests, land through the orchestrator.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjn721f011ik8",
+     "createdAt": "2026-11-16T19:14:22.611Z"
+    },
+    {
+     "id": "s2",
+     "text": "Every time something falls back to Pending, I need a fucking alert somewhere.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjn721f027gg7",
+     "createdAt": "2026-11-16T19:14:22.611Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/alert-every-time-build-falls-back-to.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/alert-every-time-build-falls-back-to.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjn721f03vdvw",
+     "createdAt": "2026-11-16T19:14:22.611Z"
+    }
+   ]
   }
  ]
 }
