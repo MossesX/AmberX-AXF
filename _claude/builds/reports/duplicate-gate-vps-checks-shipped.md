@@ -66,6 +66,66 @@ build. Nothing on the VPS looked at the Shipped features store before a build wa
    `GET /api/plugins/gate/dup-gate/<build>`, Build rules tab row + History entries, AmberX push on block, systems check
    when the Shipped store cannot be read, API parity test. No new plugin, no Kotlin (PORTING.md row).
 
+## s2 — dup-gate@1 contract
+
+`framework/core/dup-gate.mjs` (records, `decide`, `reasonOf`, `historyEntry`, validators), registry
+`framework/schemas/dup-gate.json`, JSON Schemas `schemas/json/dup-gate-verdict.schema.json` + `dup-gate-match.schema.json`
+(through `axf schemas`, wired in `framework/cli/build-engine.mjs`), contract `framework/spec/DUP-GATE.md`, PORTING.md row
+(Kotlin twin deferred). Records: candidate, match (kind shipped / plugin / file / setting / build, score, per-field
+scores, where, landed, since, state with its source, the one fix), verdict (checked corpora, matches best first, top,
+block / warn / pass, reason in one line, fix lifted, override), override (by, at, reason, via). Thresholds default
+`block 0.82`, `warn 0.6`, open to the Gate plugin's settings and recorded on every verdict.
+
+## s3 — matching engine (pure)
+
+Same file. Tokens: camelCase split, punctuation out, synonym phrases folded to canonical KEY tokens (`auto land` =
+`autoLand` = `lander` = `land on finish` = `lands itself` → `autoland`; `dup` / `redundancy` → `duplicate`; `ui review`,
+`shipped features`, `merge queue`, `gate rules`, `push banner`, `home card`, `turn on` …; the fixer may pass more), stop
+words and filler adverbs out, light stem. Round markers folded on ids (`-r2`, `-2`, `-fable`, `(round 2)`).
+
+Score of an item = max(subject, text):
+- **subject**: how much of the candidate's subject line (title, else the opening words of what was said) the item's own
+  subject text (title, setting keys, plugin ids, first 40 words of said / detail) covers, weighted (key tokens 3,
+  corpus-common words 0.3, others 1), blended 85 / 15 with the token Jaccard of everything both say. A candidate with
+  key tokens needs one of them in the item's **title / keys / plugin ids** (a brief that mentions the lander in passing is
+  not the lander). A candidate with no key token needs three plain words, all in the item's title, with the item's title
+  covered back by the candidate (the same words both ways, never a subset).
+- **text**: weighted mean over title / said / detail (cross-compared, best of the item's three), plugins, settings, files
+  (exact key = 1) and id (same folded id = 1) of half trigram Dice + half token Jaccard.
+
+Fix derivation when the item names none: a switched-off thing → `setting key=true` from its state source; an open build
+→ `reuse build (PR)`; shipped and on → nothing to build; plugin → extend it.
+
+Calibration on today's store (641 items: 276 landed manifests, 364 open or recorded-only build records, the autoLand
+setting): the auto-land rebuild blocks at 0.92 against the setting and 0.87 against the `auto-land` manifest with the fix
+"set autoLand to true"; "Lander regenerates generated files on clash", "Auto-lander controls in the gate plugin" and
+"Theme sync pane: colour swatches" pass or warn; a re-file of this very build blocks at 0.98 pointing at the running
+record. Sweep of every live build record (261) against the rest: 12 would block, every one a real pair already in the
+store (`splitter-crash-fix` ↔ `fix-the-step-splitter-crash`, `auto-recover-stuck-builds` ↔
+`server-watchdog-orchestrator-auto-recovers-stuck`, `console-app-part-2-native-floating` ↔ `-2`, `every-skin-ships-…`
+re-file, `pending-tab-one-collapsed-row-per-2` ↔ `-per-build`, the auto-land case …); the one arguable pair is
+`build-statuses-tell-the-truth-orchestrator-list` ↔ `resolve-the-conflict-and-land-the-orchestrator-list`. One check
+over the whole store takes about half a second (no model tokens).
+
+## s4 — golden fixtures
+
+`framework/spec/gen-dup-gate-fixtures.mjs` (`--write` regenerates, plain run checks; CI line in android.yml) →
+`framework/spec/fixtures/dup-gate.json`. Cases pinned: the auto-land rebuild (on main since Nov 4 with `autoLand` off →
+block, fix `autoLand = true`, the `auto-land` manifest among the blocking matches, PR #270), the same from his words only
+(no title), a queued duplicate (reuse the queued build), a built-but-unlanded duplicate (reuse the build and its PR), the
+same id filed again with a round marker, three near misses that never block, a shipped record that never landed (scored
+as a `build` with status `recorded`, never as "on main"), new work (pass), an override that turns the block into a pass
+with the override kept, settings thresholds recorded, History entries (fail / override / pass), tokeniser and round
+folding samples, validation naming every bad field, and the schema snapshots. 20 checks.
+
+## Phase 2 (Opus) — what is left
+
+The fixer `apps/console-web/plugins/gate/fixers/dup-gate.mjs` (gather manifests, builds, plugin inventory, settings
+keys and lander state; `check` → verdict → History), the `dup-gate` rule in the seed and the live store, synchronous
+'before' hold at `act add` / `splitBuild` / `queue` / `launch` with the verdict as the build's note, the override
+command on every surface (REST, MCP, CLI, voice "build it anyway"), the Build rules row and held-build verdict in the
+Gate plugin, AmberX push on block, a systems-check item when the Shipped store cannot be read, API parity test.
+
 ### Decisions taken in this audit
 
 - Shipped records count as **on main only when `landedCommit` is a sha or `pr.number > 0` with `mergedAt`**; otherwise

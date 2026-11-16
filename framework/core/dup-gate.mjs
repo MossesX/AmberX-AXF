@@ -329,14 +329,14 @@ export function jsonSchemas() {
 /** Words that carry no subject on their own. */
 export const STOP_WORDS = Object.freeze(new Set(['a', 'an', 'the', 'and', 'or', 'of', 'to', 'in', 'on', 'for', 'with', 'by', 'is', 'it', 'its', 'this', 'that', 'these', 'those', 'every', 'all', 'any', 'as', 'at', 'be', 'from', 'into', 'so', 'we', 'can', 'put', 'some', 'kind', 'not', 'no', 'now', 'when', 'then', 'than', 'are', 'was', 'were', 'has', 'have', 'had', 'do', 'does', 'did', 'but', 'if', 'you', 'your', 'he', 'his', 'him', 'i', 'me', 'my', 'our', 'us', 'they', 'them', 'their', 'there', 'here', 'what', 'which', 'who', 'how', 'why', 'also', 'just', 'only', 'very', 'more', 'most', 'up', 'out', 'over', 'again', 'already', 'still', 'even', 'because', 'thing', 'things', 'something', 'anything', 'everything', 'make', 'makes', 'made', 'get', 'gets', 'got', 'let', 'lets', 'need', 'needs', 'should', 'would', 'could', 'will', 'please', 'brett', 'claude', 'amber', 'said',
   // filler that says when or how much, never what
-  'immediately', 'straight', 'away', 'right', 'now', 'today', 'tonight', 'asap', 'soon', 'quickly', 'properly', 'actually', 'really', 'moment', 'finally', 'first', 'last', 'once', 'ever', 'never', 'always', 'nothing', 'everything', 'sitting', 'itself', 'themselves', 'yet']));
+  'immediately', 'straight', 'away', 'right', 'now', 'today', 'tonight', 'asap', 'soon', 'quickly', 'properly', 'actually', 'really', 'moment', 'finally', 'first', 'last', 'once', 'ever', 'never', 'always', 'nothing', 'everything', 'sitting', 'itself', 'themselves', 'yet', 'done']));
 
 /**
  * Synonym groups: every phrase in `from` (matched on the lower-cased, punctuation-free text, whole words) folds to the
  * one canonical token `to`, which is a KEY token. Open: the fixer passes the plugin's extra groups in `options.synonyms`.
  */
 export const SYNONYMS = Object.freeze([
-  { to: 'autoland', from: ['auto land', 'autoland', 'auto lander', 'autolander', 'lander', 'land on finish', 'lands itself', 'land itself', 'land by itself', 'lands by itself', 'land themselves', 'self landing', 'auto merge pipeline', 'zero token merge', 'landing line'] },
+  { to: 'autoland', from: ['auto land', 'autoland', 'auto lands', 'autolands', 'auto lander', 'autolander', 'lander', 'land on finish', 'lands itself', 'land itself', 'landing itself', 'land by itself', 'lands by itself', 'landing by itself', 'land themselves', 'land by themselves', 'self landing', 'auto merge pipeline', 'zero token merge', 'landing line'] },
   { to: 'mergequeue', from: ['merge queue', 'mergequeue', 'stacked merge', 'merge stack', 'batch merge', 'merge batch'] },
   { to: 'duplicate', from: ['duplicate', 'duplicates', 'duplicated', 'dup', 'dupe', 'dupes', 'dup check', 'dupcheck', 'redundancy', 'redundant', 'rebuilt twice', 'built twice'] },
   { to: 'uireview', from: ['ui review', 'uireview', 'screenshot review', 'screenshots review', 'review queue'] },
@@ -496,19 +496,30 @@ export function similarity(candidate, item, ctx = prepare()) {
   }
   const text = wsum > 0 ? acc / wsum : 0;
   // subject: how much of the candidate's subject line the item's whole text already covers; a key token must be among it
-  const subjectLine = c.title || c.said.split(/[.!?\n]/)[0].slice(0, 160) || c.detail.split(/[.!?\n]/)[0].slice(0, 160);
+  // the subject line: the title, else the opening words of what was said (voice adds have no title)
+  const subjectLine = c.title || headOf(c.said, SUBJECT_LINE_WORDS) || headOf(c.detail, SUBJECT_LINE_WORDS);
   const cs = new Set(tokens(`${subjectLine} ${c.settings.join(' ')}`, table));
   const ia = new Set(tokens(subjectText(item), table));
-  // the key must sit in the item's own subject (title, setting keys, plugin ids): a long brief that mentions it in passing is not the same work
+  // a candidate with key tokens needs one of them in the item's own subject (title, setting keys, plugin ids): a long
+  // brief that mentions it in passing is not the same work; the rest of its line may be covered by the item's opening.
+  // One without any key token has only generic words, so it needs at least three of them, every one in the item's own
+  // title, and the item's title covered back by the candidate's text: the same words both ways, not a subset.
   const ih = new Set(tokens(subjectHead(item), table));
-  const keysCovered = [...cs].filter((t) => isKey(t) && ih.has(t));
+  const candKeys = [...cs].filter(isKey);
+  const keysCovered = candKeys.filter((t) => ih.has(t));
   const ca = new Set(tokens(allText(c), table));
-  const subject = keysCovered.length ? 0.85 * coverage(cs, ia, weight) + 0.15 * jaccard(ca, ia, weight) : 0;
-  if (!note && subject >= 0.8) note = `same subject: ${keysCovered.join(', ')}`;
+  let subject = 0;
+  if (candKeys.length && keysCovered.length) subject = 0.85 * coverage(cs, ia, weight) + 0.15 * jaccard(ca, ia, weight);
+  else if (!candKeys.length && cs.size >= MIN_PLAIN_WORDS) subject = 0.85 * Math.sqrt(coverage(cs, ih, weight) * coverage(ih, ca)) + 0.15 * jaccard(ca, ia, weight);
+  if (!note && subject >= 0.8) note = `same subject: ${(keysCovered.length ? keysCovered : [...cs].filter((t) => ih.has(t))).join(', ')}`;
   return { score: unit(Math.max(subject, text)), subject: unit(subject), text: unit(text), fields, note };
 }
 /** How many words of an item's said / detail count towards its subject: the opening, not the whole brief. */
 export const SUBJECT_HEAD_WORDS = 40;
+/** How many opening words of a candidate's said text stand in for a title when it has none. */
+export const SUBJECT_LINE_WORDS = 30;
+/** A subject line with no key token needs at least this many words before it can match on words alone. */
+export const MIN_PLAIN_WORDS = 3;
 const headOf = (s, n = SUBJECT_HEAD_WORDS) => plain(s).split(' ').slice(0, n).join(' ');
 /** An item's own subject: title, setting keys and plugin ids. */
 const subjectHead = (o) => [textOf(o, 'title'), ...listOf(o, 'setting'), ...listOf(o, 'plugin')].filter(Boolean).join(' ');
