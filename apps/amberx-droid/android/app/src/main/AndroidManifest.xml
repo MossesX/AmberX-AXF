@@ -68,6 +68,16 @@
             android:name=".OutputRecordService"
             android:exported="false"
             android:foregroundServiceType="mediaProjection|microphone" />
+        <!-- open-url-route@1 full-screen-intent: the trampoline a full-screen notice starts; it fires the browser and finishes -->
+        <activity
+            android:name=".OpenPageActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name=".OutputRecordStartActivity"
             android:exported="false"

@@ -266,6 +266,50 @@ final class AxppLink {
 
     /* ---------------------------------------------------------------- console wake: open one of Brett's pages */
 
+    static final String CHANNEL_PAGE = "open-page";
+    static final int NOTE_PAGE = 0x0A11;
+
+    /** True when Android lets AmberX use full-screen notices (Android 14+ asks; older phones grant it with the manifest). */
+    static boolean canFullScreen(Context c) {
+        NotificationManager nm = (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (nm == null) return false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !nm.areNotificationsEnabled()) return false;
+        return Build.VERSION.SDK_INT < 34 || nm.canUseFullScreenIntent();
+    }
+
+    /**
+     * open-url-route@1 `full-screen-intent`: a high-priority notice whose full-screen intent is {@link OpenPageActivity},
+     * the trampoline that fires the browser on the page and finishes. Its tap opens the page too, so when Android only
+     * shows it as a banner (phone unlocked and in use) it is already the last-resort notification. → true when posted.
+     */
+    static boolean postFullScreen(Context c, String url, String browser) {
+        if (!canFullScreen(c)) return false;
+        try {
+            NotificationManager nm = (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && nm.getNotificationChannel(CHANNEL_PAGE) == null) {
+                NotificationChannel ch = new NotificationChannel(CHANNEL_PAGE, "Pages Amber opens", NotificationManager.IMPORTANCE_HIGH);
+                ch.setDescription("Opens a page Amber asked for, over the lock screen when the phone is locked");
+                nm.createNotificationChannel(ch);
+            }
+            Intent tramp = OpenPageActivity.intent(c, url, browser, NOTE_PAGE);
+            PendingIntent full = PendingIntent.getActivity(c, 5, tramp, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+            Notification.Builder b = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? new Notification.Builder(c, CHANNEL_PAGE) : new Notification.Builder(c);
+            b.setSmallIcon(android.R.drawable.ic_menu_view)
+                .setContentTitle("Opening a page for you")
+                .setContentText(url)
+                .setContentIntent(full)
+                .setFullScreenIntent(full, true)
+                .setCategory(Notification.CATEGORY_REMINDER)
+                .setPriority(Notification.PRIORITY_MAX)
+                .setAutoCancel(true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) b.setTimeoutAfter(10 * 60_000L);
+            nm.notify(NOTE_PAGE, b.build());
+            return true;
+        } catch (RuntimeException e) {
+            return false;
+        }
+    }
+
     static final int CONSOLE_TAB_TIMEOUT_MS = 6_000;  // the console waits 2.5 s for its tab; the rest is the network
 
     /**
@@ -287,7 +331,7 @@ final class AxppLink {
     }
 
     /** The browser intent for a URL: Chrome when asked for and installed, else whatever handles https. */
-    private static Intent browserIntent(Context c, String url, String browser) {
+    static Intent browserIntent(Context c, String url, String browser) {
         Intent i = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url)).addCategory(Intent.CATEGORY_BROWSABLE)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if ("chrome".equals(browser)) {
