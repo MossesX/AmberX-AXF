@@ -813,7 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 16:31 UTC · `phone-connect-small-android-companion` s35 done, → built, note (all) · reconciler
 - 2026-11-16 16:31 UTC · `fix-console-deep-links-open-page-lands` added (0 steps) (all) · console
 - 2026-11-16 16:31 UTC · `fix-console-deep-links-open-page-lands` → queued, note (all) · console
 - 2026-11-16 16:31 UTC · `fix-red-ci-blocked-builds-they-land` note (all) · orchestrator
@@ -1213,6 +1212,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 19:53 UTC · `banner-widget-shapes-more-than-circle` s28 done, → running (all) · orchestrator
 - 2026-11-16 19:53 UTC · `settings-interface-gear-every-plugin` s15 done (all) · orchestrator
 - 2026-11-16 19:53 UTC · `banner-widget-shapes-more-than-circle` s8 done (all) · orchestrator
+- 2026-11-16 19:54 UTC · `assets-menu-hide-any-asset-hidden-list` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
