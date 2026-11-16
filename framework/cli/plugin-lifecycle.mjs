@@ -164,6 +164,8 @@ export function scanReferences(p) {
     const lines = readFileSync(file, 'utf8').split('\n');
     lines.forEach((line, i) => {
       let hit = needles.some((n) => line.includes(n)) || (inOtherPlugin && quoted.some((q) => line.includes(q)));
+      // a line that uses the folder name as a plain word of its own vocabulary says so: `axf-not-plugin:<folder>`
+      if (hit && line.includes(`axf-not-plugin:${p.folder}`)) hit = false;
       if (hit && inOtherApp && !namesHostPlugin(line, p.folder, id)) hit = false;
       if (!hit) return;
       const managed = line.includes(`axf-plugin:${p.folder}`) && mentions.has(file);

@@ -31,6 +31,7 @@ import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded,
 import { SearchIndex } from './engines/search';
 import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
+import { isSkinMode, skinModeColor, skinModePair } from './engines/skin-modes.mjs';
 import { backToSkin, composeLookAt, globalSkinOf, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState, foldLegacyPicks, isFoldedPickType, lookNeedsMigration, migrateLookSettings, parseLegacyLook, settingsNeedMigration, skinSlots, isRetiredLookKey, LEGACY_LOOK_KEY, SKIN_SWAPPABLE_SECTION } from './engines/skin';
 import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
@@ -257,6 +258,9 @@ export interface AppearanceSource {
 
 /** What `rt.brandPlace(slot)` gives a UI piece to draw. */
 export interface BrandPlace { mode: string; name: string; asset: string; svg: string; animation: MarkAnimation | null }
+
+/** Where this device keeps its light / dark / system choice for skins (skin-modes@1). */
+const SKIN_MODE_KEY = 'axf.skin.mode';
 
 export class AxfRuntime {
   readonly registry = new AssetRegistry();
@@ -803,6 +807,35 @@ export class AxfRuntime {
     this.terminal.ok('hot-swap', "back to the skin's own colours");
     return true;
   }
+
+  /**
+   * Light / dark inside the skin in force (skin-modes@1, Brett: "every skin needs a light and dark"): every skin names a
+   * light and a dark colour theme (`data.colorThemes`); `light` / `dark` picks one inside the skin (the skin stays),
+   * `system` follows the device's prefers-color-scheme and keeps following it while this page is open.
+   */
+  setSkinMode(mode: string): boolean {
+    if (!isSkinMode(mode)) { this.toast(`"${mode}" is not light, dark or system.`, 'warning', 'Skin'); return false; }
+    const at = this.skinInForce();
+    const skin = at.id ? this.registry.get(SKIN_TYPE as AssetType, at.id) : undefined;
+    if (!skin) { this.toast('Use a skin first: light and dark switch inside a skin.', 'warning', 'Skin'); return false; }
+    const mq = typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+    let pick: { pick: string };
+    try { pick = skinModeColor(skin, mode, !!mq?.matches); } catch (e) { this.toast((e as Error).message, 'warning', 'Skin'); return false; }
+    this.skinModeFollow?.();
+    this.skinModeFollow = null;
+    if (mode === 'system' && mq) {
+      const on = () => { void this.setSkinMode('system'); };
+      mq.addEventListener('change', on);
+      this.skinModeFollow = () => mq.removeEventListener('change', on);
+    }
+    try { globalThis.localStorage?.setItem(SKIN_MODE_KEY, mode); } catch { /* storage off: this page only */ }
+    return this.setSkinColorTheme(pick.pick || null);
+  }
+
+  /** The light / dark choice saved on this device ('' = none: the skin's own colours). */
+  skinMode(): string { try { return globalThis.localStorage?.getItem(SKIN_MODE_KEY) ?? ''; } catch { return ''; } }
+
+  private skinModeFollow: (() => void) | null = null;
 
   /** The 'Use skin' switch. `id` picks the skin too; on with none picked takes the first skin. */
   useSkin(on: boolean, id?: string): boolean {
@@ -2978,6 +3011,9 @@ export class AxfRuntime {
       if ((x === 'ui' || x === 'plugin') && id) this.setSkinColorTheme(pick(theme), `${x}:${id}`);
       else this.setSkinColorTheme(pick(x));
     }, { label: 'Change the colour theme inside the skin', requires: 'assets.swap', params: true });
+    // skin.mode:light|dark|system: the skin's light or dark colour theme, or follow the device (skin-modes@1)
+    a.register('skin.mode', ([m]) => { this.setSkinMode(m || (this.skinColorTheme().id === skinModePair(this.registry.get(SKIN_TYPE as AssetType, this.skinInForce().id)).dark ? 'light' : 'dark')); }, { label: 'Switch the skin to light, dark or follow the system', requires: 'assets.swap', params: true });
+    if (this.skinMode() === 'system') queueMicrotask(() => { if (this.skinInForce().id) this.setSkinMode('system'); });
     a.register('skin.restore', () => this.restoreDefaultAppearance(), { label: 'Restore this app to its default look', requires: 'assets.swap' });
     a.register('skin.undo', () => { this.undoRestoreDefault(); }, { label: 'Undo Restore to default', requires: 'assets.swap' });
     // Scopes (skin-coverage@1): skin.inherit:on|off follows the hub-wide skin; skin.scope:<ui|plugin>:<id>:<on|off|inherit>[:<skin>] sets one level

@@ -4,6 +4,10 @@ import { mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import * as c from './web/orchestrator-core.mjs';
+import * as BR from '../../../../framework/core/build-rules.mjs';
+
+/** The store's blocks for a build (the seed: what the dispatcher passes when no live store differs). */
+const seedBlocks = (b) => BR.briefBlocks(JSON.parse(readFileSync(BR.seedPath(), 'utf8')), { id: b.id, title: b.title, text: b.detail || '' });
 
 let n = 0; const t = (name, fn) => { fn(); n += 1; };
 const steps = [{ text: 'design', model: 'Fable', estimate: '25 min' }, { text: 'contract', model: 'Fable', estimate: '20 min' }, { text: 'wire', model: 'Opus', estimate: '30 min' }, { text: 'review', model: 'Fable', estimate: '15 min' }];
@@ -68,7 +72,9 @@ t('10-minute steps: a ceiling the rule can lower, never raise; older steps keep 
   assert.equal(c.apply(c.emptyState(), { action: 'rules', rules: { maxStepMinutes: 6 } }).state.rules.maxStepMinutes, 6);
 });
 t('steps are checkpoints inside one session: the brief says commit + push + tick per step, no relaunch', () => {
-  const br = c.brief(c.apply(c.emptyState(), { action: 'add', title: 'Fresh', steps: [{ text: 'first', model: 'Opus', estimate: '10 min' }] }).state.builds[0]); assert.ok(br.includes(c.CHECKPOINT_RULE)); assert.match(br, /steps ≤ 10 min/); assert.match(br, /Tick each step right after its commit/);
+  const fresh = c.apply(c.emptyState(), { action: 'add', title: 'Fresh', steps: [{ text: 'first', model: 'Opus', estimate: '10 min' }] }).state.builds[0];
+  const br = c.brief(fresh, undefined, { blocks: seedBlocks(fresh) }); assert.match(br, /Checkpoints: Steps are checkpoints inside this ONE session/); assert.match(br, /teps ≤ 10 min/); assert.match(br, /Tick each step right after its commit/);
+  assert.doesNotMatch(c.brief(fresh), /Checkpoints:/, 'no store blocks = no rule text of its own');
   assert.match(c.CHECKPOINT_RULE, /ONE session/); assert.match(c.CHECKPOINT_RULE, /commit it on your branch, push, then tick it done/); assert.match(c.CHECKPOINT_RULE, /Never ask for a new prompt or a relaunch per step/);
 });
 t('split check flags big steps', () => { const r = c.apply(c.emptyState(), { action: 'add', title: 'Big', steps: [{ text: 'all', estimate: '2 h' }] }); assert.equal(c.splitCheck(r.state.builds[0]).needsSplit, true); });
@@ -145,10 +151,12 @@ t('matrix-applied build: skipped step leaves progress, phases and the brief', ()
   const one = { ...b2, steps: b2.steps.map((st) => ({ ...st, model: 'Fable' })) };
   assert.match(c.brief(one), /\[skip\] s3/); assert.match(c.brief(one), /\[ \] fm-dark-mode-shots/); assert.match(c.brief(one), /3 left, ~1 h/);
 });
-t('every brief carries the asset-conformance rule', () => {
+t('the asset-conformance and API rules reach the brief from the build rules store, never from the brief itself', () => {
   const b2 = c.normalizeState({ builds: [fmx.apply.after.build] }).builds[0];
-  assert.ok(c.brief(b2).includes(c.ASSET_RULE));
-  assert.ok(c.brief(b2).includes(c.API_RULE), 'every brief carries the API rule (deep link, state, every action and setting; REST / MCP / CLI / voice)');
+  const blocks = seedBlocks(b2);
+  assert.match(c.brief(b2, undefined, { blocks }), /Look: UI code \(handwritten or generated\) conforms/);
+  assert.match(c.brief(b2, undefined, { blocks }), /API: Everything comes with an API/, 'the API rule (deep link, state, every action and setting; REST / MCP / CLI / voice)');
+  assert.doesNotMatch(c.brief(b2), /Look: |API: Everything/);
 });
 // Fable upgrades need my approval = off (Brett, Nov 4 2026: "If it needs Fable, set it to be Fable."): upgrades run by themselves, recorded
 t('approvals off: an upgrade phase is clear, ticking it records the switch (approvals + a build note)', () => {

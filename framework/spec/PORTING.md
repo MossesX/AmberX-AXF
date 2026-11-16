@@ -11,6 +11,7 @@ A port is quick to write because almost everything is already shared and languag
 | Standard vocabularies | action ids (`StandardActions`), UAC permission ids, extension-point ids, route/settings/work/session/plugin contracts (`framework/android/axf-kernel/.../contract`, mirrored in `framework/core/types.ts`) |
 | Plugin inventory (`plugin-inventory@1`: dependencies, dependents, health, clashes, graph) | `framework/core/engines/plugins.ts` = `axf-kernel/.../plugins/PluginInventoryEngine.kt` = the console plugin's `server/engine.py`; fixture `spec/fixtures/plugin-inventory.json` |
 | Repeating slots (`layout.repeat`: a slot repeats over a data set the page declares, styled tabs / cards / grid / stacked, fallback slot when the set is missing or empty) | `framework/core/engines/repeat.ts` = `axf-kernel/.../engine/RepeatEngine.kt`; renderers `react/components/Repeat.tsx` = `axf-ui/.../components/Repeat.kt`; fixture `spec/fixtures/layout-repeat.json` (+ `validation.json` `repeat-*`) (Oct 31 2026) |
+| Token registry + skin snapshots (`token-registry@1`: every `--fx-*` token with element, area, state, scheme, level, description, default, source; manifest `tokens` block; `skin-snapshot@1`: the Skin editor's chain, revert, revert-by-time, export to a skin asset; voice intents) | `framework/core/engines/token-registry.mjs`; registry `framework/schemas/token-registry.json`; fixture `spec/fixtures/token-registry.json` (checker `spec/check-token-registry.mjs`); voice twin in the console plugin's Python server. **Kotlin twin deferred** (`TokenRegistry.kt`, Compose token picker reading the same registry): Android port on hold, Brett Oct 21 2026 (Nov 13 2026). |
 | Application menu (`app-menu` asset + run-time contributions + live lists → one compiled tree; placement, UAC gating, badges, check marks, depth cap, conflicts) | `framework/core/engines/appmenu.ts`; fixture `spec/fixtures/app-menu.json` (web checker `spec/check-app-menu.mts`). **Android twin deferred** (`AppMenuEngine.kt`, `AxfRuntime.addAppMenuItems` / `registerAppMenuProvider`, Compose menubar): Android port on hold, Brett Oct 21 2026. The Kotlin validator is spec-driven and accepts the new optional item fields as they are. |
 | Page frame order (React `AppShell`): banner asset → `app.frame.head` slot (app tabs above the menu, Oct 22 2026) → application menu bar (moved out of the layout grid above the live banners, Oct 22 2026; its `auto` grid row stays empty) → `app.frame.banners` slot (library banners, above any page-top bar; `FrameBanners`) → `app.frame.top` → layout → `app.frame.cover` | `framework/react/AppShell.tsx`, `framework/react/components/Slots.tsx` (Oct 21 2026). **Android twin deferred**: Compose `AppShell` banner above any page-top slot, plus an `app.frame.banners` slot: Android port on hold, Brett Oct 21 2026. |
 | embed@1 takes + page mode + host/guest messages (a host takes `settings` / `notifications` from the apps it embeds; guests drop those hooks and ask the host; `page=settings` = the page alone) | `framework/core/engines/embed.ts` (second half), runtime `hostTakes` / `takenByHost` / `postToHost`, app-menu env `taken`, React chrome filters + `AppShell` page mode + `keep`; fixture `spec/fixtures/embed-takes.json` (Oct 21 2026). **Kotlin host side built** (`EmbedTakes`, `EmbedTakesConformanceTest`, lib-hub `WebAppHolder(takes)` + `AxfEmbedHost` bridge + `send`) for an Android host. **Guest side deferred**: `AxfRuntime` takes / page mode for a native Android app shown inside another (none exists yet): Android port on hold, Brett Oct 21 2026. |
@@ -27,6 +28,9 @@ A port is quick to write because almost everything is already shared and languag
 | Build engine | `framework/cli/*.mjs` — `init`, `validate`, `new-asset`, `new-module`, `new-demo`, `dev`; a port adds a template folder with a `template.json` |
 | Build hook (`build-hook@1`: the one event every build creator fires: created, steps-added, step-done, status, pr-opened, pr-merged, addendum, cancelled, restored; derived from each builds@1 store change, stable ids for replay) | `framework/core/build-hook.mjs` (pure) + `framework/cli/build-hooks.mjs` (outbox, listeners from plugin.json `buildHooks`, delivery, journal replay); fixture `spec/fixtures/build-hook.json` (`spec/check-build-hook.mjs`); snapshots `schemas/build-hook.json`, `schemas/json/build-event.schema.json`; **Kotlin twin deferred** (Android on hold) |
 | Feature ledger (`feature-ledger@1`: every individual feature, the builds / PRs / prompts behind it, one status lifecycle for features and edits, live per target from `deploy-log@1`, grouping / sort / filter / export projections of the Shipped grid) | `framework/core/feature-ledger.mjs` + `framework/core/deploy-log.mjs` (pure; the Shipped features plugin's SQLite store, importer and grid read only these); fixture `spec/fixtures/feature-ledger.json` (`spec/check-feature-ledger.mjs`); snapshots `schemas/feature-ledger.json`, `schemas/deploy-log.json`, `schemas/json/feature*.schema.json`, `ledger-*.schema.json`, `prompt.schema.json`, `deploy.schema.json`; **Kotlin twin deferred** (Android on hold, Oct 21 2026) |
+| Landing line (`landing-line@1`: finished builds / PRs land on main one at a time, no stacks or batches; states waiting → merging-main → regenerating → checking → landing → landed / fix-filed / skipped / paused, one entry in flight, per-entry attempt log, cancelled / superseded / stale CI runs re-run and never count as a failure, red → fix build filed and the line moves on; migration of merge-queue@1 stacks, batches and `queue/pr-*` refs in their old order) | `framework/core/landing-line.mjs` (pure: `next`, `transition`, `classifyCheckRun`, `migrateMergeQueue`), schema `schemas/landing-line.json`; fixture `spec/fixtures/landing-line-migrate.json` (`spec/check-landing-line.mjs`) (Nov 14 2026, Brett: "get rid of that merge tier and start landing them one at a time"). **Kotlin twin deferred** (a native console reading the line): Android port on hold, Brett Oct 21 2026. |
+| Gate rules (`gate-rules@1`: the gate a PR passes before it lands as one rule set, `gate-rule@1` records with kind ci / tests / theme / controls / ui-review / clash / custom, enabled, settings, severity block / warn / info and owner console / axf-molly; the default set CI green, tests, check-theme, check-controls, check-toolbars, UI Review, clash, merge-queue only; `evaluate(rules, prSnapshot)` → `gate-verdict@1` pass / fail / hold / skip per rule with the reason in plain words, a fail outranks a hold as the headline, holds by hand are not rules; `migrate` from the push banner's config.json lander keys; `lander-state@1` (status, paused, mode, the PR landing now, last runs, waiting PRs each with the rule holding it) built from merge-queue@1 today and landing-line@1 / axf-molly later) | `framework/core/gate-rules.mjs` (pure: `defaultRuleSet`, `migrate`, `evaluate`, `landerStateFrom`, validators), registry `schemas/gate-rules.json`, JSON Schemas `schemas/json/gate-rule.schema.json`, `gate-rule-set.schema.json`, `lander-state.schema.json`; fixture `spec/fixtures/gate-rules.json` (`spec/check-gate-rules.mjs`); tool contract `spec/GATE.md` (Nov 15 2026, Brett: "Where is the gate and rules plugin"). **Kotlin twin deferred** (a native console reading the rule set and the lander state, replaying the fixture): no new Android work in this build, Android port on hold, Brett Oct 21 2026. |
+| Build rules (`build-rules@1`: every builder rule as one store the VPS owns; `build-rule@1` records with doer vps / session, kind mechanical / judgement, phase before / dispatch / after / gate, enabled, check (CI command or checker id), autofix (fixer id), briefBlock look / api / checkpoints / rules, applies, when, every source verbatim, per-rule rev; `build-rules-store@1` with a store rev; `build-rule-history@1` append-only JSONL; `briefBlocks(rules, build)` → `brief-blocks@1`, the session's share of the rules rendered for dispatch, VPS rules never in a brief) | `framework/core/build-rules.mjs` (validate, normalise, load / save under a lock with history, `storeDir`, `briefBlocks`), registry `schemas/build-rules.json`, JSON Schemas `schemas/json/build-rule.schema.json`, `build-rules-store.schema.json`, `build-rule-history.schema.json`; fixture `spec/fixtures/build-rules.json` (`spec/check-build-rules.mjs`); contract `spec/BUILD-RULES.md`; migration `cli/build-rules-migrate.mjs` from `_claude/builds/reports/build-rules-tab-gate-rules-vps-owns/inventory.json` (Nov 15 2026, Brett: "put them all in that plugin"). **Kotlin twin deferred** (a native console reading the rule set and the brief blocks, replaying the fixture): no new Android work in this build, Android port on hold, Brett Oct 21 2026. |
 | Projects (`projects@1`: workspaces with their own builds, notes, to-dos, tasks, lists and plans; each owns a build profile, the base project AmberX AXF keeps every original path, plugin data in `<data dir>/projects/<id>/`, notes in `_shared/_claude/project-notes/<id>/`) | `framework/plan/projects-core.mjs` (pure) + `framework/cli/projects.mjs` (registry `framework/plan/projects.json`, CLI); console server mirror `apps/console-web/server/projects.py`; checks `spec/check-projects.mjs`, `server/test_projects.py` (Nov 12 2026, no fixture yet). **Kotlin twin deferred** (a native app reading the active project and per-project data dirs): Android port on hold, Brett Oct 21 2026. |
 | Notes & tasks (`notes-tasks@1`: one store per project on axHub where notes, to-dos, tasks and lists are one item type, any item holding any other to any depth (`parent`), what each shows set by an editable look (`note`, `todo`, `task`, `list`, added ones) with custom fields, tones and a `blocked` status; every amberx-notes@1 row still reads (`kind` → look, `lists` rows → holder items); documents and Voice notes projected read-only into the same tree; intents, due buckets, tabs, bulk actions, Markdown export, the todo-store@1 import mapping) | Designed Nov 12 2026 (Fable, build one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx s1), revised Nov 13 2026 to one nested item type (build change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to): `apps/console-web/plugins/notes-tasks/DESIGN.md`, schema `apps/console-web/plugins/notes-tasks/schema/notes-tasks.schema.json`. Engine to land as `framework/core/engines/notes-rules.mjs` (the AmberX notes + tasks cores moved into the framework), fixture `spec/fixtures/notes.json`, check `spec/check-notes.mts`, Python mirror in the plugin's `server/model.py`. **Kotlin twin deferred** (`NotesRules.kt` replaying the same fixture, deep trees included, so a native AmberX reads and writes the same rows): Android port on hold, Brett Oct 21 2026. |
 | Shipped manifest (`shipped-manifest@1`: what the orchestrator sends Shipped features when a build lands: Brett's verbatim prompt and the full brief, models, accounts, steps with estimates and actual times, branch, PR, landed commit, commits, files and areas, tests, UI Review items, cost and tokens, report, what is still open; a small ref on the builds@1 record fires build-hook@1 `shipped`) | `framework/core/shipped-manifest.mjs` (pure) + `framework/cli/shipped.mjs` (gather from the store, git, session meters, UI Review and the report; ship through the builds store; `backfill --since`) + `framework/cli/shipped-files.mjs` (sidecar `_claude/builds/shipped/<build>.json`); fixture `spec/fixtures/shipped-manifest.json` (`spec/check-shipped-manifest.mjs`); snapshots `schemas/shipped-manifest.json`, `schemas/json/shipped-manifest.schema.json`; **Kotlin twin deferred** (Android on hold) |
@@ -140,6 +144,7 @@ Regenerate fixtures after changing a reference engine: `npx -y tsx framework/spe
 - **What's new feed — whats-new@1 (Nov 3 2026, Opus, web/Python only; Urgent `whats-new-banner`):** the console plugin `whats-shipped` builds a feed of features merged to main (merged PRs from GitHub or the repo's git history, the builds store, build reports, Codebase changes entries; deployed from the deploy workflow or the `site` branch) and shows it as a framework `status` widget (`status/shipped`, counter `shipped.unread`, framework assets in the banner pack) plus a panel grouped by date, build or app. No new asset type and no engine change. **Android twin deferred** (Android on hold): a Compose panel reading the same `GET /api/plugins/whats-shipped/feed` and the same grouping rules (`web/core.ts`), the widget already works through the Kotlin `status` widget. <!-- axf-plugin:whats-shipped -->
 - **build-origin@1 — what Brett said that started a build (Nov 3 2026, Opus, web/Node only; build `build-prompt-origin`):** `core/engines`-free pure module `core/build-origin.mjs` (record shape, `normOrigin`, `mergeOrigin`, brief parsing of `## Brett said (verbatim)` / `## Addendum N`, backfill heuristics, subtitle) on the builds store's records, and the React `BuildOrigin` block. **Android twin deferred** (Android on hold): a Kotlin `BuildOrigin` normalizer/merger with the same rules for any Android view of the builds store, and a Compose quote block reading `origin` from the console's `GET /api/builds/{id}/origin`.
 - **build-id@1 — internal build names, max 40 characters (Nov 13 2026, Opus, web/Node only; build `orch-build-id-40-chars`):** pure module `core/build-id.mjs` (`shortBuildId`, `uniqueBuildId`, `isBuildId`, `planAliases`) used by every id maker of the builds store, plus the optional `alias` on a build record. **Android twin deferred** (no new Android or Kotlin work): any Android code that files builds would need a Kotlin `BuildId` with the same pattern, filler list, dash cut and `-n` suffix rule, and lookups that accept `alias`.
+- **build-groups@1 — custom groups and custom tabs on the builds board (Nov 13 2026, Opus, web/Node only; build `orchestrator-custom-groups-custom-tabs`):** pure rules in the orchestrator plugin's `groups-core.mjs` (state order partial → landed, counts, smart rules, sort / filter, pinned tabs, group action targets), saved per project in `<pipeline dir>/groups.json`. **Android twin deferred** (no new Android or Kotlin work): an Android builds board would need a Kotlin `BuildGroups` replaying `groups.test.mjs`'s cases and reading `GET /groups`. <!-- axf-plugin:build-orchestrator -->
 - **Dialogs close every way + windows open below the chrome (Nov 3 2026, Opus, web only; Current bug fix `whats-new-open-fix`):** `WindowManager.chromeTop` (the UI reports where the top chrome ends; `openFloating` opens new floating windows below it, shrunk to fit, never under their minimum height; the web host measures the banner, menu bar and banner strip), `DialogHost` closes on Android / browser back (one history entry while a dialog is open) and on a swipe down on the title bar (touch), with a finger-sized close button on coarse pointers; control@1 `console.dialogs` gains act `close` (path `current` = whichever dialog is open). Checks `spec/check-windows.mts`, `spec/check-console-commands.mts`, `spec/check-control.mts`. **Android twin deferred** (Android on hold): the Kotlin `WindowManager` takes the same `chromeTop` rule (status bar + banner height from the shell), and the Compose dialog host closes on the system back (`BackHandler`) and a drag-down on its title bar.
 - **Tab groups, toolbars, banners and nav menus are assets with an asset settings interface — tab-group@1 + chrome-settings@1 (Nov 4 2026, Fable, web only; build tab-group-assets):** `tab-group` grew `style: chips`, `position: left | right`, `overflow: more | dropdown`, `display: both | text | icons` (wins over the older `showIcons`), `sticky`, `collapsible`, `closable`, `reorderable`, `badges`, `rememberLast` (`TAB_GROUP_DEFAULT` keeps the pre-Nov 4 look; `normalizeTabGroup` / `tabGroupStyle` in `core/engines/components.ts`, attributes `data-fx-tabs-display | -sticky | -collapsible | -badges`); six new starters (chips, icon-rail, side-dock, more-menu, dropdown-compact, sticky-badged). Fixture `spec/fixtures/components.json` → `tab-group` + `tab-group-cases`; `spec/check-tab-group.mts`. The React `TabGroup` (`react/components/TabGroup.tsx`) draws every tab row from the asset (its own pick + per-row overrides, settings keys `axf.chrome.tab-group.<id>` / `.asset`), with the chrome context menu (Settings / Change … / Move) that every tab group, toolbar, banner and nav menu shares (`react/components/ChromeContext.tsx`, actions `chrome.settings | chrome.pick | chrome.move | chrome.set | chrome.reset | chrome.interface`). chrome-settings@1 (`core/engines/chrome-settings-rules.mjs`): one shared default settings-interface asset per chrome type (`settings/chrome-<type>`, field `for`), a per-app custom copy (`settings/chrome-<type>-<app>`, field `extends`, written by `axf init` and `cli/chrome-settings.mjs backfill`), the shared default selected by default (`axf.chrome.settings.<type>`); fixture `spec/fixtures/chrome-settings.json`, `spec/check-chrome-settings.mts`; CI `cli/check-chrome-assets.mjs` (hard-coded tab rows / navs / banners, ratchet `spec/chrome-baseline.json`). **Android twin deferred (Android port on hold):** `ComponentStyleEngine.tabGroup` reading the new fields and attributes, a Compose `AxfTabGroup` on the same data with the long-press menu, a Kotlin `ChromeSettingsRules` replaying `chrome-settings.json`, and lib-settings showing a chrome settings dialog through the settings asset; the Kotlin validator is spec-driven and accepts the new fields as they are.
 - **Per-instance settings interface — chrome-settings@1 (Nov 13 2026, Opus, web only; build per-instance-settings-window-picker):** every tab group, toolbar, banner, nav menu and menu bar picks the settings interface its own dialog renders through (`axf.chrome.<type>.<instance>.interface`; `chromeInstanceSettingsPick` → `{ id, source: instance | type | default }`, a missing asset falls back to the kind's pick, then the shared default; `chromeInstanceInterfaceList`; `.interface` keys never count as asset edits; `CHROME_TARGET_PREFIXES` maps library toolbar targets such as `axf-ws-toolbar:<ws>` to the toolbar kind and `chromeInstanceSlug` names unnamed toolbars / tab rows, so every one opens its own dialog). React: `InstanceInterfacePicker` at the top of `ChromeSettingsPanel`, action `chrome.instance-interface:<type>:<instance>:<id|default|custom|inherit>`. Fixture `spec/fixtures/chrome-settings.json` → `instancePicks`, `instanceInterfaces`, `keys.instanceInterface`. **Android twin deferred (Android port on hold):** the Kotlin `ChromeSettingsRules` replaying the new fixture keys and the Compose dialog's picker.
@@ -163,6 +168,56 @@ fold of the retired theme / style / layout picks and settings into the active sk
 skin@1 and the `migrated` / `legacy` fields of app-look@1 have no Kotlin twin (Android on hold). A port runs the same
 fold once per profile against `spec/fixtures/look-migration.json` (`fold`, `settings`, `combined` blocks) and keeps the
 two fields through its document rules. Until then an Android app keeps reading `appearance@1` directly.
+
+**skin-config@1 + the Default skin (build skin-configuration-panel, Fable, Nov 13 2026, web/Node only):**
+`core/engines/skin-config-rules.mjs` is the permission tree Brett sets before the AI makes a skin (category > group >
+option, each allow / lock / ask; categories derived from the registry and skin-coverage@1, the `extras` category and the
+per-type `skinConfig.limits` declared in `asset-types.json`: depth with `root`, `count:<field>`), the document
+`shared/settings/skin-config/<app>.json`, the moves (`setConfigMode`, `setConfigLimit`, `setConfigDefault`,
+`resetSkinConfig`), `effectiveConfig`, `measureAsset`, `skinChangeReport`, `mergeWithDefault`, `skinConfigBrief`,
+`skinConfigSchema`, and the Default skin (`defaultSkinOf`, `isDefaultSkin`, `skinDeleteError`, `defaultSkinMigration`:
+each app's saved look as the protected skin@1 asset `default-<app>` at `shared/settings/skins/<app>.json`, `default-global`
+for the hub-wide look). Fixture `spec/fixtures/skin-config.json` (its own small registry in `in`, so a port replays it
+without the real one), check `spec/check-skin-config.mjs`; snapshot `schemas/skin-config.json`, JSON Schema
+`schemas/json/skin-config.schema.json`. **Kotlin twin deferred** (no new Android or Kotlin work): a `SkinConfigRules`
+object replaying `skin-config.json` (tree, modes, limits, report, merge, Default skin), the `skinConfig` block read by the
+spec-driven `AssetTypeRegistry` (it accepts the field as it is today), and an Android reader of the two hub documents, for
+when an Android app makes or applies AI skins.
+
+## Deferred: the hub default skin (Nov 14 2026)
+
+Build `console-look-becomes-default-axhub-skin` (Fable; Brett: "make it the default axHub look, and then make all the
+apps inherit it right now"). Web / Node only; the Kotlin twin is deferred (no new Android or Kotlin work):
+- appearance@1 `defaultSkin: { id, overrides?, colorTheme? }` (`normalizeHubSkin`, `HubSkinPointer`; `AppearanceChange.
+  defaultSkin`, `mergeAppearance`, `serializeAppearance` writes `skin` and `defaultSkin`). Kotlin `AppearanceEngine` keeps
+  neither pointer today: a port reads both, and the `appearance.json` fixture rows that carry them.
+- The chain `plugin → ui → app → global → default` (`SKIN_SCOPE_DEFAULT`, `SKIN_SCOPE_KINDS`, `skinScopeChain`),
+  `resolveLookSkin(look, global, scope, hubDefault)` (Use skin off and not following = inherit the floor, never the
+  hub-wide skin; a `ui:` / `plugin:` `off` stays below the floor), `hubDefaultOf`, and `composeLookAt`'s floor-first order
+  (hub default skin → pointer overrides and colour → the app's own picks → ui / plugin overrides and colour).
+- skin@1 `chrome` (`SkinChrome`, `normalizeSkinChrome`, `skinChromeErrors`, `skinChromeSettings`: chrome-settings@1
+  kinds, `axf.chrome.settings.<kind>` and `axf.chrome.<kind>.<instance>`); the spec-driven `AssetTypeRegistry` accepts the
+  field as it is today, a Compose skin reader would have to apply those settings.
+- app-look@1 `backups` (`LookBackup`, `LOOK_BACKUPS_MAX`, `normalizeLookBackup`) and the moves `adoptHubDefault`,
+  `backupLook`, `lookBackup`, `restoreLookBackup` (undo actions `adopt-default`, `restore-backup`).
+A port replays the `hubDefault` block of `spec/fixtures/skin.json` (no override, partial override, plugin override,
+own skin over the floor, adopt, adopt twice, undo, restore from backup, round trip, the chrome block, the shared
+document) through the same functions. Until then an Android app keeps reading `appearance@1` directly and shows no skin,
+so it does not take the hub default either.
+
+## Deferred: skin-switch@1 (Nov 13 2026)
+
+Build skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga (Fable): `framework/core/engines/
+skin-switch.mjs`, the action contract of the Skins screen and every other entry point (gallery, banner switcher, console
+API, MCP, CLI, voice): `skinSwitch(state, command, ctx)` runs `use` / `back-to-skin` / `restore-default` / `undo` for one
+scope (`hub`, `app:<id>`, `ui:<view>`, `plugin:<id>`) over `{ look, global }` (the acting app's app-look@1 document and
+the hub-wide skin), `skinSwitchState` reads a scope (own state, the skin in force with the level that decided, the
+overridden slots, the undo on offer), `parseSwitchScope` / `switchScopeOf` / `switchScopes` / `normalizeSkinSwitch` read
+the command. The one undo record is the look document's `undo`, extended with `action`, `scope` and (hub switches) the
+`global` skin before; `normalizeAppLook` keeps the three fields. No Kotlin twin (Android on hold): a port replays
+`spec/fixtures/skin-switch.json` (`sequence` chains the steps and their edits, `views`, `parse`, `normalize`) through the
+same functions and keeps the extended undo record through its document rules. Until then an Android app keeps reading
+`appearance@1` directly and shows no skin.
 
 ## Deferred: build-pipeline@1 route + dispatch (Nov 9 2026)
 
@@ -192,6 +247,22 @@ Build `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides`. Web
 - `chromeOverrideList(saved)`, `CONTROLLED_COLOR_KEY` / `controlledColorOf()` (chrome-settings-rules.mjs), actions `chrome.unset`, `chrome.edits`, `settings.controlled-colour`; spec `check-asset-overrides.mjs`.
 - look-migration@1: a folded colour pick lands as the skin's `colorTheme`, never `overrides['color-theme']` (fixture regenerated).
 
+## Deferred: skin from axHub only (Nov 13 2026)
+
+Build `console-skin-axhub-only`. Web only; the Kotlin twin is deferred (Android on hold):
+- `hubOnlyLook(look)` in `skin-rules.mjs` (the look drawn while an app takes its skin from axHub only: no own picks, no
+  scopes, follow the hub-wide skin, default snapshot kept), pinned by the `scopes.hubOnly` block of `spec/fixtures/skin.json`.
+- Runtime: `HUB_SKIN_ONLY_KEY` (`axf.lock.hubskin`), `hubSkinOnly()` / `setHubSkinOnly()`, `appearanceLockReason()` (the
+  switch drives the appearance lock), action `appearance.hubskin:on|off|toggle`; `customSheet()` keeps the skin's parts while locked.
+- Voice: "lock the console to the axHub skin" / "unlock the console from the axHub skin" (`console-control-voice.mjs`, Python
+  twin in `server/console_control.py`, fixture `console-control-voice.json`).
+- Override (build `skin-axhub-override-switch-greyed-out`): `HUB_SKIN_OVERRIDE_KEY` (`axf.lock.hubskin.override`), mutually
+  exclusive with `axf.lock.hubskin` whichever way either is set; `hubSkinOverride()` / `setHubSkinOverride()`, action
+  `appearance.hubskin.override:on|off|toggle`; edits under Override recorded in `HUB_SKIN_OVERRIDDEN_KEY`
+  (`hubOverridden()` / `isHubOverridden()`), cleared when axHub-only goes back on. React `HubSkinLockNote` /
+  `HubSkinLockArea` (the lock note with "Click here to override", one confirm). Voice "override the axHub skin" / "stop
+  overriding the axHub skin". Checked by `spec/check-appearance-lock.mts`. Compose twin deferred.
+
 ## Deferred: reliable console delivery + screen focus (Nov 11 2026)
 Web only (Android on hold, build `console-commands-reliable`), Kotlin twins when the Android side resumes:
 - `console-command@1` field `focus`, `consoleSplitFocus` ("<screen> <tab or item>"), `consoleMessageLate` + `CONSOLE_LATE_MS`,
@@ -218,6 +289,14 @@ The 286 Kotlin findings stay on the baseline, Android on hold: 285 `.dp` spacing
 `Axf.space` is a `@Composable` getter, so each call site needs a compiler to confirm it sits in a composable scope:
 do it with the Android build, then run `node framework/cli/check-theme.mjs --update-baseline` to empty the file.
 
+## Deferred: skin-modes@1, every skin's light and dark (Nov 13 2026)
+
+Build `every-skin-ships-a-light-and-a-dark-colour-theme`. Web only; the Kotlin twin is deferred (Android on hold):
+`framework/core/engines/skin-modes.mjs` (`skinModePair`, `effectiveScheme`, `skinModeColor`, `skinSchemeOf`,
+`skinModeProblems`, `skinModeRows`), the required `colorThemes: { light, dark }` on skin@1 and the runtime's
+`setSkinMode` / `skin.mode:light|dark|system` (system follows `prefers-color-scheme`). A port maps `system` to the
+device's night mode (`isSystemInDarkTheme()`) and replays the engine cases in `spec/check-skin-modes.mjs`.
+
 ## Deferred: the guide's no-auto-open rule + Gizmo naming (Nov 13 2026)
 Web only (Android on hold, build `stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n`). The console's
 walkthrough guide (plugin code, `molly-guide/web/walkthrough.ts` `pollDecision`) never opens on load: the first read only learns the
@@ -226,3 +305,39 @@ The guide asks agent `gizmo` (Molly is no longer an agent, Nov 3 decision; the `
 `gizmo.ask` / `gizmo.replay` / `gizmo.next` / `gizmo.prev` / `gizmo.close` with the `molly.*` names kept as hidden aliases.
 AmberX on Android runs the web app, so its texts follow already. A native Compose player of walkthrough@1, when the Android side
 resumes, replays the same rule: no auto-open on start, opt-in only, nothing older than the app's start, and the Gizmo names.
+
+## Deferred: the console app's on-device wake listener (Nov 13 2026)
+Build `console-app-wake-word-voice-listener` (Fable). The wake listener is the console plugin `apps/console-web/plugins/wake-listener`
+(wake-listener@1: wake phrases, switch, state machine, command catalog and spoken wizard in `core.mjs` / `catalog.mjs`; the page
+engine in `web/engine.ts`). In a browser it listens with the browser's recognizer. In the console Android app (`apps/console-droid`,
+PRs #637 / #633, not yet on main) it expects an **on-device, offline** recognizer behind the native bridge (native-bridge@1), which is
+the deferred Java twin (no new Android work in this build; the bridge files live on the unlanded branches):
+- tools `listener.start { phrases: string[] }` → `{ listening, micOpen }`, `listener.stop` → `{ listening: false }`, `listener.status`
+  → `{ listening, micOpen, engine, error? }`; add them to `BridgeContract.TOOLS` (page-only: not in `HUB_TOOLS`), capability `listener@1`,
+  needs `mic`;
+- event `listener` `{ text?, final?, listening, micOpen, error? }` for every utterance and every state change;
+- the recognizer runs in a foreground service with the mic notification (Android's own indicator), restarts itself when it stops, uses
+  Android's on-device `SpeechRecognizer` (`EXTRA_PREFER_OFFLINE`, continuous) or Vosk with a bundled small model; nothing leaves the phone;
+  it lets go of the microphone while `mic.status` says the console's own switch is off, and pauses while the page's agent voice speaks;
+- `web/engine.ts` already picks `native` when `window.axfNative.tools` lists the three tools (`available()`), so no page change is needed.
+Until then the console app's WebView has no recognizer (Android WebView ships no Web Speech API) and the listener reports
+"no speech recognizer here"; the API, the settings and the spoken flows work unchanged from a desktop browser and through
+`wake-listener.heard` (REST, MCP, CLI, AmberX hands-free).
+## Deferred: component token families for grids and tab groups (Nov 13 2026)
+Web only (Android on hold, build `own-token-sets-for-grids-and-tab-groups`). `core/engines/component-tokens.mjs` is the one
+schema of the `grid` (`--fx-grid-*`) and `tabs` (`--fx-tab-*`) token families: kind, level, description and a default that
+points at the general token the component read before, so no skin changes. `styleThemeVars` compiles a style theme's optional
+`grid` / `tabs` maps; the TabGroup and DataGrid controls apply one instance's own values from the setting
+`axf.tokens.instances` (set → previous, Restore previous edit, Restore from axHub); control@1 lists them on `tokens.style` and
+`tokens.instances`. The fixture `spec/fixtures/component-tokens.json` carries the defaults, paths, compile cases and the
+per-instance replay. The Kotlin twin, when Android resumes: the same schema in `StyleTheme` (two optional maps), `Axf.colors` /
+`Axf.shapes` lookups for the family tokens in the Compose table and tab row, and a per-instance override read from the same
+settings key; replay the fixture.
+
+## Deferred: skin animations (Nov 13 2026)
+
+Build skin-animations-swatches-skin-switch adds behaviour-theme `motion.swatches / skinSwitch / picker / animSpeed /
+animIntensity` (core/engines/behavior.ts: `skinAnimationVars`, `withAnimationPrefs`, `animationState`,
+`setAnimationPref`) and the colour maths in core/engines/swatches.ts (`shadesOf`, `mixHex`, `skinSwatches`,
+`sweepOrigin`); fixture framework/spec/fixtures/skin-animations.json. Kotlin twin deferred (no new Android work): the
+Compose behaviour reader ignores the new fields (defaults apply), so Android skins stay still until it is ported.

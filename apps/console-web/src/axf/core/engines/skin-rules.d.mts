@@ -27,6 +27,8 @@ export interface LookPart { slots?: Record<string, string>; spacing?: string; hi
 export interface AppSkinState { use: boolean; inherit: boolean; id: string; overrides: Record<string, string>; colorTheme?: string }
 /** The hub-wide skin (kept on the shared appearance document). */
 export interface GlobalSkin { id: string; overrides?: Record<string, string>; colorTheme?: string }
+/** The one undo record: the look before the last Restore or skin switch (skin-switch@1: `action`, `scope`, and `global` for a hub switch). */
+export interface LookUndo { own: LookPart; skin: AppSkinState; scopes: Record<string, SkinScopeState>; at: string; action?: string; scope?: string; global?: GlobalSkin | null }
 export interface AppLookDocument {
   $axf: typeof APP_LOOK_FRAME;
   app: string;
@@ -35,8 +37,8 @@ export interface AppLookDocument {
   skin: AppSkinState;
   /** Per UI / plugin skin states (`ui:<id>`, `plugin:<id>`); a missing key inherits. */
   scopes: Record<string, SkinScopeState>;
-  /** What Restore replaced: one undo. */
-  undo?: { own: LookPart; skin: AppSkinState; scopes: Record<string, SkinScopeState>; at: string } | null;
+  /** What the last Restore or skin switch replaced: one undo (skin-switch@1 adds the action, the scope and the hub-wide skin before a hub switch). */
+  undo?: LookUndo | null;
   /** look-migration@1 ran on this document (absent = not yet). */
   migrated?: LookMigrated;
   /** The retired picks the fold moved out, as they were. */
@@ -52,6 +54,8 @@ export function normalizeAppLook(raw: unknown): AppLookDocument | null;
 export function parseAppLook(text: string | null | undefined): AppLookDocument | null;
 export function setUseSkin(look: AppLookDocument, on: boolean): AppLookDocument;
 export function setInheritSkin(look: AppLookDocument, on: boolean): AppLookDocument;
+/** The look drawn while the app takes its skin from axHub only: the hub-wide skin over the default snapshot, nothing of its own. */
+export function hubOnlyLook<T extends AppLookDocument | null>(look: T): T;
 export function pickSkin(look: AppLookDocument, id: string): AppLookDocument;
 export function setSkinColorTheme(look: AppLookDocument, id: string | null, key?: string): AppLookDocument;
 export function skinColorTheme(look: AppLookDocument | null | undefined, key?: string): string;

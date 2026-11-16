@@ -23,6 +23,33 @@ so the button asset, style theme and spacing restyle it with the app. A whole ro
 width…) but never set its background, colour, border, radius, padding, font size/weight, shadow or case.
 CI: `node framework/cli/check-controls.mjs`.
 
+## Token registry (token-registry@1, Nov 13 2026)
+
+Every `--fx-*` token in the system is listed once, in `framework/schemas/token-registry.json`, with its element type,
+area (layout / style / colour / behaviour), state (hover, selected, disabled …), scheme (light / dark / both), level
+(basic / pro / advanced), a plain-English description, its default and where it comes from (axf.css, an engine, the
+colour themes, a manifest). Engine: `core/engines/token-registry.mjs` (pure); CLI: `node framework/cli/token-registry.mjs
+list | search | get | sync --write | check | manifest <plugin> --write`; CI: `spec/check-token-registry.mjs`.
+
+- **Sync, don't hand-write.** `sync --write` derives the token set the way check-theme does (axf.css, the engines'
+  literals, the colour themes' keys, the scale and layout registries, the names in use under a component prefix) and
+  merges the manifests' `tokens.defines`, keeping every hand-edited description, level, area, state and element.
+- **A new UI, component or plugin registers its tokens through its manifest.** plugin.json (and axf.manifest.json):
+  `"tokens": { "$axf": "token-registry@1", "uses": ["--fx-accent", …], "defines": [{ "id": "--fx-…", "element", "area",
+  "state", "scheme", "level", "description", "default" }] }`. `uses` must equal what the folder's files read
+  (`manifest <folder> --write` fills it); `defines` are the plugin's own tokens, merged into the registry.
+- **CI fails** on a token a UI reads that is not registered, on a registered token nothing reads (generated scale /
+  layout tokens and `deprecated` entries excepted), and on a plugin outside `spec/token-manifest-baseline.json` with no
+  or a stale `tokens` block. The baseline lists the plugins that pre-date the rule and only shrinks.
+- **Levels** are what the Skin editor and Token control show: basic = the handful everyone changes (page colours,
+  accent, font, size, space, radius), pro = per-element looks and transparencies, advanced = layout, scale, density,
+  shadows, motion.
+- **Skin snapshots (skin-snapshot@1).** The Skin editor keeps one chain per picked UI: the root is the default skin (no
+  edits), every edit is a snapshot with a parent, a revert is a new snapshot that copies an older state (nothing is
+  lost), `snapshotBefore` answers "as it was 10 minutes ago", and `exportSkin` turns any state into a skin asset whose
+  mapped tokens ride `extras.settings['axf.tokens.<set>']` (control@1 overrides, applied everywhere the skin is used)
+  while variables no set carries ride `extras.settings['axf.skin-editor.vars']`.
+
 ## Transparency tokens
 
 Part of the style theme (optional fields, 0–1; defaults in `OPACITY_DEFAULTS`, identical on Android):
@@ -72,6 +99,46 @@ an `--fx-opacity-*` token.
 `framework/ui/axf.css` is the base stylesheet. It reads only these variables and provides the shared layout
 primitives (`fx-stack`, `fx-row`, `fx-row--wrap`, `fx-small`, `fx-muted`, `fx-mono`, `fx-eyebrow`, …) and
 the React controls (`Button`, `Chip`, `Container`, …) render through them.
+
+## Component token families: grid and tab group (component-tokens@1, Nov 13 2026)
+
+Brett: "how many tokens does a grid have, colors, don't they need that to have hover colors; what about tab groups, are
+they the same way". Until this build a grid had only its layout tokens and a tab group its padding; both borrowed the
+general colour tokens, so a hovered row or an active tab could not be styled on its own. Now each has its own family,
+declared once in `core/engines/component-tokens.mjs` (kind, level basic / pro / advanced, plain-English description,
+default) and listed by `node framework/cli/component-tokens.mjs list [grid|tabs]`:
+
+| Family | Variables | Read by | Tokens |
+| --- | --- | --- | --- |
+| `grid` | `--fx-grid-*` | `.fx-table` / `.fx-tablewrap` (axf.css), lib-datagrid `.axf-grid` | header (bg, text, active text, border, weight, sort arrow, plain-table header bg), rows (bg, alternate bg, text, hover, selected + border, focus ring, expanded, disabled opacity), lines, outer border, cell padding, row height, radius, group headers (three depths, text, summary), sticky shadow, empty text, opacity |
+| `tabs` | `--fx-tab-*` | `.fx-tabs` / `.fx-tab` (page tabs), `.fx-tabs--group` (TabGroup), `.fx-tabgroup__bar` (window tab bars) | bar bg + border, gap, idle / hover / active / pressed / disabled text, bg, border, weight, focus ring, indicator colour + size, badge (idle + active), close button, dropdown pick, sticky bg, window bar + active tab, radius per style (underline, pills, boxed, segmented, plain, chips, window), the colours each style draws (pills active, boxed active, segmented track + active, plain active, chips), opacity |
+
+**Defaults reproduce today's look.** Every default in the `:root` block of `framework/ui/axf.css` (generated:
+`node framework/cli/component-tokens.mjs write`) points at the general token the component read before
+(`--fx-grid-hover-bg: var(--fx-surface2)`, `--fx-tab-indicator: var(--fx-accent)`, …), so every existing skin renders
+exactly as it did. Three places set a token, lowest to highest:
+
+1. the `:root` defaults;
+2. the style theme: optional `data.grid.<token>` / `data.tabs.<token>` maps (asset-types.json), compiled by `styleThemeVars`;
+   skins set them, and control@1 `tokens.style` lists them as `grid.<token>` / `tabs.<token>` with variable, level,
+   default and description (`axf token style set tabs.pillsActiveBg accent2`; Token control page, REST, MCP, voice);
+3. one instance: a TabGroup by its id, a DataGrid by its id. Right-click a tab row → Settings… → Look → "Tab group colours &
+   style (this one)": pick a token, type a value, Set; **Restore previous edit** swaps back to the values before the last
+   edit (again = redo); **Restore from axHub** drops every value of that instance so it follows the shared look. Stored in
+   the one setting `axf.tokens.instances` (rides the axHub look like every `axf.tokens.*` key). API: control@1
+   `tokens.instances` (`set tabs.<row id>.<token> <value>`, `reset tabs.<row id>[.<token>]`,
+   `act tabs.<row id> restore-previous | restore-hub`) and the actions `chrome.token`, `chrome.token-restore`,
+   `chrome.token-hub` (voice, console actions). A grid's per-instance values are set the same way by API; the grid
+   settings panel comes with the UI Manager work.
+
+Values: a colour-theme token name (`accent`, `surface2`, `accentSoft`) → `var(--fx-accent-soft)`; a CSS colour; for
+lengths a number (px), a CSS length, or a style / scale token (`radius.sm`, `dens-gap-md`, `space`); shadows
+`shadow.sm|md|lg` or a CSS shadow; opacity 0..1. Anything else is refused by name and never written.
+
+CI: `node framework/spec/check-component-tokens.mjs` fails when the `:root` block drifts from the schema, when a grid /
+tab rule in axf.css or lib-datagrid reads a general colour token or a literal, when the compile / per-instance rules stop
+matching `spec/fixtures/component-tokens.json`, or when control@1 stops listing a token. Kotlin twin deferred
+(PORTING.md).
 
 ## Shared form controls (Oct 21 2026)
 
@@ -159,3 +226,28 @@ Names are how the engines, the designer and other plugins find a plugin's parts,
   (`ai.amberx.axf.console.hub`).
 - **Names are stable.** Renaming a part breaks themes and saved designer layouts, so treat part names like
   public API: add new ones, deprecate old ones, don't silently rename.
+
+## Skin animations: where they go (Nov 13 2026)
+
+Brett: "where can I put some cool animations, like color swatches". Animations are part of the skin, so they live in
+the **behaviour theme** a skin carries (`framework/assets/behavior-theme/<id>.json`, `data.motion`), never in a
+plugin's CSS:
+
+| Field | Values | Where it plays |
+|---|---|---|
+| `swatches` | `wave` · `ripple` · `pop` · `off` | every `Swatches` row (`react/components/Swatches.tsx`): skin cards in the skin picker, the Animations preview; a parent with `data-fx-swatch-host` plays its row on hover / focus / tap |
+| `skinSwitch` | `ripple` · `sweep` · `fade` · `off` | every look change (skin on / off, picker preview, Back to skin, colour theme inside a skin): the new colours grow out of the last tap (runtime `withSkinSwitchFx`, View Transitions) |
+| `picker` | `fan` · `pop` · `off` | every `SwatchFan` (ColorField, colour settings, Theme manager, Explorer): the pick pops and fans out into its shades |
+| `animSpeed` | 25 to 400 (percent) | all of them · `animIntensity` 0 to 100: how far they move (0 = still) |
+
+Rules: the engine (`core/engines/behavior.ts`, picks in `core/engines/animation-rules.mjs`) compiles these to
+`--fx-anim-dur`, `--fx-anim-sweep-dur`, `--fx-anim-stagger`, `--fx-anim-ease`, `--fx-anim-pop-ease`,
+`--fx-anim-intensity` and `data-fx-anim-*` attributes; `framework/ui/axf.css` (the "Skin animations" block) is the only
+place keyframes are drawn, and every duration and distance there is a token. Reduced motion (system or the skin's
+`reduced: always`) and intensity 0 turn every one off. Settings → Appearance → Animations lays this app's picks over the
+skin's (`axf.appearance.animations`, carried in the app's look document).
+
+To add a new animation: add its field to `ANIMATION_ENUMS` / `SKIN_ANIMATIONS` in animation-rules.mjs (and the copy in
+`cli/build-engine.mjs`), draw it in the axf.css block under its `data-fx-anim-<name>` attribute, give the shipped
+behaviour themes a value, regenerate `spec/fixtures/skin-animations.json` and extend `spec/check-skin-animations.mts`.
+To put an existing one somewhere new: render `Swatches` (a palette row) or `SwatchFan` (a colour pick); nothing else.

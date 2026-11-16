@@ -6,8 +6,9 @@
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
-import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, overriddenSlots, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
+import { adoptHubDefault, backToSkin, backupLook, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, hubDefaultOf, hubOnlyLook, lookAfterChange, lookBackup, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, overriddenSlots, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, restoreLookBackup, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinChromeErrors, skinChromeSettings, skinColorOf, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
 import { foldLegacyPicks, legacyPicks, lookNeedsMigration, migrateLook, migrateLookSettings, parseLegacyLook, settingsNeedMigration } from '../core/engines/look-migration.mjs';
+import { SKIN_SWITCH_ACTIONS, SKIN_SWITCH_CONTRACT, SKIN_SWITCH_ERRORS, SKIN_SWITCH_HUB, SKIN_SWITCH_SCOPES, normalizeSkinSwitch, parseSwitchScope, skinSwitch, skinSwitchState, switchScopeOf, switchScopes } from '../core/engines/skin-switch.mjs';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
 import { AGENT_CARD_SAMPLE, agentCardErrors, avatarColors, avatarModel, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
 import { AVATAR_FACES, AVATAR_GEAR } from '../core/engines/swarm-rules.mjs';
@@ -22,7 +23,8 @@ import { rollPlan, rollSlotDefault } from '../core/engines/roll';
 import { defaultHidden, hiddenSlots, hideableTypes } from '../core/engines/hide';
 import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedLockNote, embedLockedBy, embedPage, embedPageView, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
 import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
-import { appearanceRetryMs, appearanceSlotTypes, mergeAppearance, paletteFromColorTheme, parseAppearance, resolveAppearance, serializeAppearance } from '../core/engines/appearance';
+import { appearanceRetryMs, appearanceSlotTypes, combineAppearanceChanges, mergeAppearance, paletteFromColorTheme, parseAppearance, resolveAppearance, serializeAppearance } from '../core/engines/appearance';
+import { LOOK_BACKUPS_MAX } from '../core/engines/skin-rules.mjs';
 import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
 import { scoreEntry } from '../core/engines/search';
@@ -36,6 +38,7 @@ import { ASSET_ORIGIN, CHECKED_KINDS, DEFAULT_MENU, MENU_DEFAULT_ORDER, MENU_ITE
 import { LIBRARY_PARAM_TYPES, PARAM_TRUE_WORDS, paramBool, paramDefaultText, paramDefaults, paramError, paramToJson, type LibraryParam } from '../core/library';
 import { validateAsset } from '../core/validate';
 import * as cs from '../core/engines/chrome-settings-rules.mjs';
+import * as ct from '../core/engines/component-tokens.mjs';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
 import { HUB_DEFAULT, HUB_FEED_MAX_BYTES, HUB_FEED_MAX_ITEMS, HUB_FEED_STATUSES, HUB_FIELD_CAPS, HUB_MESSAGES, HUB_PATHS, HUB_SEEN_CAP, accountUrl, apkDownloadName, approvalUrl, approvalsUrl, appsUrl, csrfFromPage, feedUrl, hubOrigin, interpretFeed, isHub, loginUrl, logoutUrl, normalizeHub, seenPlan, unreachableFeed } from '../libs/hub/hub';
 import { APPS_FEED_MAX_BYTES, APPS_FEED_PATH, APPS_MAX, VERSIONS_MAX, appsFeedUrl, interpretApps } from '../libs/hub/apps';
@@ -51,6 +54,8 @@ import { tcFieldErrors } from '../core/engines/themed-controls-rules.mjs';
 import { CHROME_KINDS, DEFAULT_MERGE, DEFAULT_PRESETS, MERGE_MODES, OPEN_TARGETS, TOOLBAR_LOCATIONS, TOOLBAR_SLOT_COUNT, XLAYOUT_CONTRACT, XLAYOUT_LIMITS, dockRulesOf, guestHidden, guestTakes, guestUrl, guestUserAgent, idePresets, normalizeXLayout, nsId as xNsId, openTargetFor, parseToolbarItem, splitNs, stripNs, visibleToolbars, xlayoutErrors } from '../core/engines/xlayout';
 import { CHROME_CONTRACT, CHROME_LIMITS, WIDGET_TONES as CHROME_WIDGET_TONES, WIDGET_TYPES as CHROME_WIDGET_TYPES, activeNav, chromePicks, emptyChrome, mergeChrome, parseChromeBundle, routePick, type ChromeBundle } from '../core/engines/chrome';
 import { intentCommand, voiceIntent, voiceReply } from '../core/engines/console-control-voice.mjs';
+import { animationState, behaviorErrors, behaviorStyle, setAnimationPref, withAnimationPrefs } from '../core/engines/behavior';
+import { mixHex, shadesOf, skinSwatches, sweepOrigin } from '../core/engines/swatches';
 import { CONSOLE_CONTROL_CODES, CONSOLE_CONTROL_DEFAULT_CAN, CONSOLE_CONTROL_KINDS, CONSOLE_CONTROL_TARGETS_FRAME, CONSOLE_CONTROL_VERB_IDS, childAddress, consoleControlErrors, consoleControlFailure, consoleControlResult, failureOf, focusOptions, formatAddress, listTargets, nearestRegisteredParent, nearestTargets, normalizeConsoleControl, parseAddress, resolveAddress, resolveForVerb, scrollState, scrollStep, searchTargets, splitTabId, tabAddressId, type AddressSegment, type ConsoleControlScrollDir, type ConsoleControlVerb, type ScrollState, type TargetSnapshot } from '../core/engines/console-control';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
 
@@ -762,6 +767,44 @@ write('components.json', {
     'menu-roomy-raised': appMenuStyle({ menus: [], density: 'roomy', surface: 'raised' }),
   },
 });
+// component-tokens@1 (Nov 13 2026): the grid / tab-group token schema, the :root defaults, the style-theme compile and the
+// per-instance rules (set → previous, Restore previous edit, Restore from axHub) a port must match
+{
+  const themeCases: Record<string, unknown> = {
+    none: null,
+    'no-maps': { fontSize: 14 },
+    'skin-sets-some': { grid: { hoverBg: 'accentSoft', headerText: 'text', radius: 6, opacity: 0.9 }, tabs: { indicator: '#f5a524', pillsActiveBg: 'accent2', radiusPills: 'radius.md', opacity: 0.8 } },
+    'bad-values-dropped': { grid: { hoverBg: 'red;}x{', bogus: 'x', opacity: 'x' }, tabs: { activeText: 7, indicatorSize: 'big' } },
+    'every-value-kind': { grid: { headerBg: 'surface3', cellPadY: 'dens-gap-sm', rowHeight: 36, stickyShadow: 'shadow.sm', headerWeight: 700, disabledOpacity: 0.4 }, tabs: { barBg: 'rgb(10 20 30 / 50%)', gap: '0.5em', windowActiveShadow: 'none', activeWeight: 600 } },
+  };
+  let saved: unknown = {};
+  const steps: Record<string, unknown> = {};
+  saved = ct.setInstanceToken(saved, 'tabs', 'settings.main', 'activeText', 'accent'); steps['set-first'] = saved;
+  saved = ct.setInstanceToken(saved, 'tabs', 'settings.main', 'indicator', '#ff0000'); steps['set-second'] = saved;
+  saved = ct.setInstanceToken(saved, 'grid', 'ui-review.items', 'hoverBg', 'accentSoft'); steps['set-other-family'] = saved;
+  steps['vars-tabs'] = ct.instanceTokenVars(saved, 'tabs', 'settings.main');
+  steps['vars-grid'] = ct.instanceTokenVars(saved, 'grid', 'ui-review.items');
+  steps['restore-previous'] = ct.restorePreviousInstanceTokens(saved, 'tabs', 'settings.main');
+  steps['restore-previous-twice'] = ct.restorePreviousInstanceTokens(ct.restorePreviousInstanceTokens(saved, 'tabs', 'settings.main'), 'tabs', 'settings.main');
+  steps['restore-hub'] = ct.restoreInstanceTokensFromHub(saved, 'tabs', 'settings.main');
+  steps['drop-one'] = ct.setInstanceToken(saved, 'tabs', 'settings.main', 'indicator', null);
+  steps['list'] = ct.instanceTokenList(saved);
+  steps['normalize-junk'] = ct.normalizeInstanceTokens({ 'tabs.a': { values: { activeText: 'accent', bogus: 1, indicator: 'x;y' } }, 'nav.a': { values: { x: 1 } }, junk: 1 });
+  write('component-tokens.json', {
+    contract: ct.COMPONENT_TOKENS_CONTRACT,
+    families: Object.fromEntries(Object.entries(ct.COMPONENT_TOKEN_FAMILIES).map(([id, f]) => [id, { label: f.label, prefix: f.prefix, tokens: f.tokens.length }])),
+    tokens: ct.componentTokenList(),
+    defaults: ct.componentTokenDefaults(),
+    paths: ct.componentTokenPaths(),
+    fields: ct.componentTokenFields(),
+    themeCases: Object.fromEntries(Object.entries(themeCases).map(([k, style]) => [k, { style, vars: ct.componentTokenVars(style) }])),
+    values: Object.fromEntries(['accentSoft', 'accent-soft', '#ff8800', 'rgb(1 2 3 / 50%)', 'transparent', 'red;}body{display:none', 'radius.sm', 'dens-gap-md', '0.5em', 'auto', 'shadow.md', 'none', 'big'].map((v) => [v, Object.fromEntries(ct.COMPONENT_TOKEN_KINDS.map((k) => [k, ct.componentTokenValue(k, v)]))])),
+    // every step's saved map equals its replay (the engine is deterministic); check-component-tokens replays them
+    instanceCases: Object.fromEntries(Object.entries(steps).map(([k, v]) => [k, { saved: v, replay: v }])),
+    key: ct.INSTANCE_TOKENS_KEY,
+    paths_instances: ['tabs.settings.main.activeText', 'grid.ui-review.items', 'nav.x.y', 'tabs', 'tabs.settings.main.bogus'].map((p) => ({ path: p, parsed: ct.parseInstanceTokenPath(p) })),
+  });
+}
 write('uac.json', Object.fromEntries(load('uac-policy').map((p) => [p.id, {
   roles: Object.fromEntries(p.data.roles.map((r: { id: string }) => [r.id, [...resolvePermissions(p.data, r.id)].sort()])),
   checks: ['files.write', 'dev.deploy', 'assets.swap', 'uac.manage', 'anything.else'].map((perm) => ({ perm, byRole: Object.fromEntries(p.data.roles.map((r: { id: string }) => [r.id, hasPermission(resolvePermissions(p.data, r.id), perm)])) })),
@@ -2130,6 +2173,13 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
         doc: { pluginOn, dropped: setScopeSkin(pluginOn, 'plugin:notes', 'inherit', ''), entries: scopeEntries(chainOver), state: scopeState(chainOver, 'plugin:notes'), appState: scopeState(inherit, 'app'), roundTrip: parseAppLook(JSON.stringify(chainOver)), restored: restoreAppDefault(chainOver, '2026-11-07T00:00:00Z').scopes, undone: undoRestore(restoreAppDefault(chainOver, '2026-11-07T00:00:00Z')).scopes },
         covers: skinCovers(skinned).filter((c) => ['button', 'label', 'icon-pack', 'uac-policy', 'skin', 'logo-mark', 'branding', 'toolbar'].includes(c.type)),
         globalSkin: { good: globalSkinOf(withGlobal as never), none: globalSkinOf(shared as never), junk: globalSkinOf({ $axf: 'appearance@1', skin: { id: 'Bad Id' } } as never) },
+        // Skin from axHub only (build console-skin-axhub-only): an app with its own skin, an override, a colour pick and a
+        // plugin scope draws the hub-wide skin alone; the stored document is untouched
+        hubOnly: (() => {
+          const mine = setScopeSkin(setSkinColorTheme(lookAfterChange(setUseSkin(pickSkin(look0, 'windows'), true), { slots: { button: 'terminal' } }, skinned), 'plum-noir'), 'plugin:notes', 'on', 'aurora');
+          const drawn = hubOnlyLook(mine);
+          return { mine, drawn, composed: composeLookAt(withGlobal as never, drawn, skinOf), inPlugin: composeLookAt(withGlobal as never, drawn, skinOf, place), noHubSkin: composeLookAt(shared as never, drawn, skinOf), none: hubOnlyLook(null) };
+        })(),
       };
     })(),
     // The colour theme inside a skin (Brett, Nov 9 2026): switched on its own, kept as `colorTheme` beside the skin,
@@ -2184,6 +2234,71 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
         },
         restored: { doc: restoreAppDefault(picked, '2026-11-09T00:00:00Z'), undone: undoRestore(restoreAppDefault(picked, '2026-11-09T00:00:00Z')).skin },
         roundTrip: parseAppLook(JSON.stringify(pluginSkin)),
+      };
+    })(),
+    // The hub default skin (build console-look-becomes-default-axhub-skin, Nov 14 2026, Brett: "make it the default axHub
+    // look, and then make all the apps inherit it right now"): the `default` root of the chain, the floor every app stands
+    // on; its own picks are the edits over it; adopt / backup / restore; the skin's chrome block; the shared document.
+    hubDefault: (() => {
+      const consoleSkin = normalizeSkin({ layoutTheme: 'classic-ide', colorTheme: 'arctic-daylight', styleTheme: 'soft-studio', assets: { button: 'rounded-solid', 'nav-menu': 'amber-signature', toolbar: 'standard-icons' }, extras: { spacing: 'tight', hidden: { toolbar: false }, settings: { 'axf.tokens.layout': { '*': { toolbarPosition: 'bottom' } } } }, chrome: { toolbar: { interface: 'chrome-toolbar', instances: { main: { bogus: 1 } } }, 'tab-group': { instances: { builds: { style: 'pills', position: 'left' }, 'Bad Id!': { style: 'pills' } } }, nope: { interface: 'x' } } });
+      const windows = normalizeSkin(skin);
+      const skins: Record<string, typeof windows> = { console: consoleSkin, windows, aurora: normalizeSkin({ ...skin, colorTheme: 'aurora-night' }) };
+      const skinOf = (id: string) => skins[id] ?? null;
+      const withDefault = { ...shared, defaultSkin: { id: 'console', overrides: { dialog: 'hub-dialog' } } };
+      const withGlobal = { ...withDefault, skin: { id: 'aurora' } };
+      const hubDefault = hubDefaultOf(withDefault as never);
+      const place = { app: 'app', ui: 'home', plugin: 'notes' };
+      const edited = lookAfterChange(look0, { slots: { button: 'terminal' }, hidden: { toolbar: true } }, null);
+      const pluginOver = setScopeOverride(edited, 'plugin:notes', 'button', 'plugin-button');
+      const pluginOff = setScopeSkin(look0, 'plugin:notes', 'off');
+      const ownOn = setUseSkin(pickSkin(look0, 'windows'), true);
+      const following = setInheritSkin(look0, true);
+      const mine = setScopeSkin(setSkinColorTheme(lookAfterChange(ownOn, { slots: { dialog: 'my-dialog' } }, windows), 'plum-noir'), 'plugin:notes', 'on', 'aurora');
+      const adopted = adoptHubDefault(mine, { at: '2026-11-14T23:00:00Z', by: 'skins-cli', reason: 'console look becomes the hub default' });
+      const restored = restoreLookBackup(adopted, '', '2026-11-14T23:30:00Z');
+      const backedTwice = backupLook(backupLook(adopted, { at: 'b2', reason: 'twice' }), { at: 'b3', reason: 'a twin of the newest' });
+      let capped = adopted;
+      for (let i = 0; i < LOOK_BACKUPS_MAX + 2; i++) capped = backupLook(lookAfterChange(capped, { slots: { button: `b${i}` } }, null), { at: `t${i}` });
+      const chromeBad = { toolbar: { interface: 'Bad Id', instances: { main: { bogus: 1 }, 'Bad Id!': { variant: 'icons' } } }, 'tab-group': { instances: 7 }, nope: {} };
+      return {
+        chain: skinScopeChain(place),
+        pointer: { good: hubDefault, none: hubDefaultOf(shared as never), junk: hubDefaultOf({ $axf: 'appearance@1', defaultSkin: { id: 'Bad Id' } } as never), legacyColour: hubDefaultOf({ ...shared, defaultSkin: { id: 'console', overrides: { 'color-theme': 'harbor', dialog: 'd' } } } as never) },
+        chrome: { normalized: consoleSkin.chrome, errors: skinChromeErrors(chromeBad), skinErrors: skinErrors({ ...skin, chrome: chromeBad }), settings: skinChromeSettings(consoleSkin.chrome) },
+        resolve: {
+          noOverride: resolveLookSkin(look0, null, place, hubDefault),
+          noDefault: resolveLookSkin(look0, null, place, null),
+          ownSkinOn: resolveLookSkin(ownOn, null, place, hubDefault),
+          pluginOff: resolveLookSkin(pluginOff, null, place, hubDefault),
+          pluginOverride: resolveLookSkin(pluginOver, null, place, hubDefault),
+          followingHub: resolveLookSkin(following, globalSkinOf(withGlobal as never), place, hubDefault),
+          followingNoHub: resolveLookSkin(following, null, place, hubDefault),
+          notFollowingHub: resolveLookSkin(look0, globalSkinOf(withGlobal as never), place, hubDefault),
+          noDocument: resolveLookSkin(null, null, place, hubDefault),
+          offSkinColourStays: resolveLookSkin(setSkinColorTheme(look0, 'plum-noir'), null, place, hubDefault),
+        },
+        composed: {
+          noOverride: composeLookAt(withDefault as never, look0, skinOf),
+          partialOverride: composeLookAt(withDefault as never, edited, skinOf),
+          pluginOverride: composeLookAt(withDefault as never, pluginOver, skinOf, place),
+          pluginOff: composeLookAt(withDefault as never, pluginOff, skinOf, place),
+          ownSkinOn: composeLookAt(withDefault as never, ownOn, skinOf),
+          followingHub: composeLookAt(withGlobal as never, following, skinOf),
+          unknownDefault: composeLookAt({ ...shared, defaultSkin: { id: 'gone' } } as never, look0, skinOf),
+          hubOnly: composeLookAt(withDefault as never, hubOnlyLook(mine), skinOf),
+        },
+        adopt: {
+          mine, adopted, adoptedTwice: adoptHubDefault(adopted, { at: '2026-11-14T23:05:00Z', by: 'skins-cli' }), alreadyOnFloor: adoptHubDefault(look0, { at: '2026-11-14T23:05:00Z' }),
+          composed: composeLookAt(withDefault as never, adopted, skinOf).doc.slots, undone: undoRestore(adopted),
+          restored, restoredUndone: undoRestore(restored), nothingToRestore: restoreLookBackup(look0, '', '2026-11-14T23:30:00Z'), roundTrip: parseAppLook(JSON.stringify(adopted)),
+          backups: { twice: backedTwice.backups, cap: capped.backups!.map((b) => b.id), newest: lookBackup(adopted), byId: lookBackup(backedTwice, 'b2'), missing: lookBackup(adopted, 'nope') },
+        },
+        shared: {
+          parsed: parseAppearance(JSON.stringify(withDefault)),
+          merged: mergeAppearance(parseAppearance(JSON.stringify(withGlobal)), { defaultSkin: { id: 'windows' } }, 'skins-cli', '2026-11-14T23:00:00Z'),
+          cleared: mergeAppearance(parseAppearance(JSON.stringify(withDefault)), { defaultSkin: null }, 'skins-cli', '2026-11-14T23:00:00Z'),
+          serialized: serializeAppearance(parseAppearance(JSON.stringify(withGlobal))!),
+          combined: combineAppearanceChanges({ defaultSkin: { id: 'a' } }, { skin: null }),
+        },
       };
     })(),
   });
@@ -2251,6 +2366,101 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       junkBackup: parseLegacyLook('not json'), wrongFrame: parseLegacyLook({ $axf: 'appearance@1', settings: {} }),
     },
     combined: { ...combined, again: migrateLook(combined.look, (() => { const v: Record<string, unknown> = { 'axf.appearance.design': 'aurora', 'axf.look': 1, ...combined.settings.set }; for (const k of combined.settings.clear) delete v[k]; return v; })(), ctx) },
+  });
+}
+
+/* ---- skin-switch@1 (Nov 13 2026): use / back-to-skin / restore-default / undo per scope, one undo record ---- */
+{
+  const skins: Record<string, unknown> = {
+    windows: { layoutTheme: 'windows-explorer', colorTheme: 'windows-light', styleTheme: 'windows', assets: { button: 'windows' }, extras: { spacing: 'compact' } },
+    aurora: { layoutTheme: 'focus-top', colorTheme: 'aurora-night', styleTheme: 'hub', assets: {} },
+  };
+  const ctx = { has: (id: string) => id in skins, now: '2026-11-13T00:00:00Z' };
+  const shared = { $axf: 'appearance@1', slots: { layout: 'focus-top', 'color-theme': 'arctic-daylight', 'style-theme': 'hub', button: 'rounded-solid' }, spacing: 'tight', hidden: { toolbar: true } };
+  const look0 = newAppLook('app', snapshotLook(shared as never));
+  // the edits a step may make between two commands (what the picker, control@1 or a scope override does), replayed by the check
+  const edits: Record<string, (look: AppLookDocument, ...args: string[]) => AppLookDocument> = {
+    setLookSlot: (look, slot, id) => setLookSlot(look, slot!, id!),
+    setSkinColorTheme: (look, id, key) => setSkinColorTheme(look, id!, key),
+    setScopeOverride: (look, key, slot, id) => setScopeOverride(look, key!, slot!, id!),
+    setInheritSkin: (look, on) => setInheritSkin(look, on === 'true'),
+  };
+  type Step = { name: string; edit?: { fn: string; args: string[] }[]; global?: Record<string, unknown> | null; command: Record<string, unknown> };
+  const steps: Step[] = [
+    { name: 'useApp', command: { action: 'use', scope: 'app:app', skin: 'windows' } },
+    { name: 'usePlugin', command: { action: 'use', scope: 'plugin:notes', skin: 'aurora' } },
+    { name: 'useHub', command: { action: 'use', scope: 'hub', skin: 'aurora' } },
+    { name: 'backSlot', edit: [{ fn: 'setLookSlot', args: ['button', 'terminal'] }, { fn: 'setLookSlot', args: ['dialog', 'app-dialog'] }, { fn: 'setSkinColorTheme', args: ['plum-noir'] }, { fn: 'setScopeOverride', args: ['plugin:notes', 'dialog', 'plugin-dialog'] }, { fn: 'setScopeOverride', args: ['ui:home', 'button', 'ui-button'] }], global: { id: 'aurora', overrides: { button: 'global-button' }, colorTheme: 'harbor' }, command: { action: 'back-to-skin', scope: 'app:app', slot: 'button' } },
+    { name: 'backColour', command: { action: 'back-to-skin', scope: 'app:app', slot: 'color-theme' } },
+    { name: 'backPluginAll', command: { action: 'back-to-skin', scope: 'plugin:notes' } },
+    { name: 'backHubSlot', command: { action: 'back-to-skin', scope: 'hub', slot: 'button' } },
+    { name: 'backHubAll', command: { action: 'back-to-skin', scope: 'hub' } },
+    { name: 'backAppAll', command: { action: 'back-to-skin', scope: 'app:app' } },
+    { name: 'restoreApp', command: { action: 'restore-default', scope: 'app:app' } },
+    { name: 'undoRestoreApp', command: { action: 'undo', scope: 'app:app' } },
+    { name: 'undoAgain', command: { action: 'undo', scope: 'app:app' } },
+    { name: 'restoreHub', command: { action: 'restore-default', scope: 'hub' } },
+    { name: 'undoRestoreHub', command: { action: 'undo', scope: 'hub' } },
+    { name: 'restorePlugin', command: { action: 'restore-default', scope: 'plugin:notes' } },
+    { name: 'undoRestorePlugin', command: { action: 'undo', scope: 'plugin:notes' } },
+    { name: 'restoreUi', command: { action: 'restore-default', scope: 'ui:home' } },
+    { name: 'useSameApp', command: { action: 'use', scope: 'app:app', skin: 'windows' } },
+    { name: 'useOtherApp', command: { action: 'use', scope: 'app:app', skin: 'aurora' } },
+    { name: 'undoUse', command: { action: 'undo', scope: 'app:app' } },
+    { name: 'unknownSkin', command: { action: 'use', scope: 'ui:home', skin: 'nope' } },
+    { name: 'noSkin', command: { action: 'use', scope: 'hub' } },
+    { name: 'otherApp', command: { action: 'use', scope: 'app:other', skin: 'windows' } },
+    { name: 'badScope', command: { action: 'use', scope: 'planet:mars', skin: 'windows' } },
+    { name: 'badAction', command: { action: 'flip', scope: 'hub' } },
+  ];
+  let cur: { look: AppLookDocument; global: Record<string, unknown> | null } = { look: look0, global: null };
+  const sequence = steps.map((s) => {
+    let look = cur.look;
+    for (const e of s.edit ?? []) look = edits[e.fn]!(look, ...e.args);
+    const before = { look, global: s.global === undefined ? cur.global : s.global };
+    const result = skinSwitch(before as never, s.command, ctx);
+    cur = { look: result.look!, global: result.global as never };
+    const scope = parseSwitchScope(s.command.scope)?.scope ?? '';
+    return { ...s, before, result, view: scope ? skinSwitchState(result.look, result.global, scope, ctx) : null, roundTrip: parseAppLook(JSON.stringify(result.look)) };
+  });
+  const after = (name: string) => sequence.find((s) => s.name === name)!.result;
+  const mixed = after('useHub');
+  const inherit = setInheritSkin(look0, true);
+  write('skin-switch.json', {
+    contract: SKIN_SWITCH_CONTRACT, actions: SKIN_SWITCH_ACTIONS, scopes: SKIN_SWITCH_SCOPES, errors: SKIN_SWITCH_ERRORS, hub: SKIN_SWITCH_HUB,
+    skins, shared, snapshot: look0,
+    parse: Object.fromEntries(['hub', 'global', 'app', 'app:notes', 'ui:home', 'plugin:ai.amberx.notes', 'nope', 'app:Bad Id', 'plugin:', '', 'ui:a/b'].map((s) => [s, parseSwitchScope(s)])),
+    scopeOf: { global: switchScopeOf('global', 'app'), app: switchScopeOf('app', 'app'), appNoId: switchScopeOf('app'), ui: switchScopeOf('ui:home', 'app'), plugin: switchScopeOf('plugin:notes'), junk: switchScopeOf('junk') },
+    scopesOf: { bare: switchScopes(look0), withPlugin: switchScopes(after('usePlugin').look!), none: switchScopes(null) },
+    normalize: {
+      good: normalizeSkinSwitch({ action: 'use', scope: 'app:app', skin: 'windows', slot: 'ignored', at: '2026-11-13T00:00:00Z' }),
+      back: normalizeSkinSwitch({ action: 'back-to-skin', scope: ' plugin:notes ', slot: 'button' }),
+      noSkin: normalizeSkinSwitch({ action: 'use', scope: 'hub' }),
+      badAll: normalizeSkinSwitch({ action: 'flip', scope: 'planet', skin: 'Bad Id', slot: 'Bad Slot' }),
+      junk: normalizeSkinSwitch(7),
+    },
+    sequence,
+    views: {
+      // after the hub-wide skin is set while the app has its own and the plugin its own: who decides where
+      hub: skinSwitchState(mixed.look, mixed.global, 'hub', ctx),
+      app: skinSwitchState(mixed.look, mixed.global, 'app:app', ctx),
+      appBare: skinSwitchState(mixed.look, mixed.global, 'app', ctx),
+      ui: skinSwitchState(mixed.look, mixed.global, 'ui:home', ctx),
+      plugin: skinSwitchState(mixed.look, mixed.global, 'plugin:notes', ctx),
+      otherApp: skinSwitchState(mixed.look, mixed.global, 'app:other', ctx),
+      badScope: skinSwitchState(mixed.look, mixed.global, 'nope', ctx),
+      // an app that follows the hub-wide skin
+      following: skinSwitchState(inherit, mixed.global, 'app:app', ctx),
+      followingPlugin: skinSwitchState(inherit, mixed.global, 'plugin:notes', ctx),
+      followingNoHub: skinSwitchState(inherit, null, 'app:app', ctx),
+      // a skin the app lacks
+      unknownInForce: skinSwitchState(setUseSkin(pickSkin(look0, 'gone'), true), null, 'app:app', ctx),
+      noDocument: skinSwitchState(null, mixed.global, 'app:app', ctx),
+      noDocumentHub: skinSwitchState(null, mixed.global, 'hub', ctx),
+    },
+    noDocument: skinSwitch({ look: null, global: null }, { action: 'use', scope: 'app:app', skin: 'windows' }, ctx),
+    // an older record (Restore before skin-switch@1) still undoes
+    legacyUndo: skinSwitch({ look: restoreAppDefault(after('useApp').look!, '2026-11-12T00:00:00Z'), global: null }, { action: 'undo', scope: 'app:app' }, ctx),
   });
 }
 
@@ -2369,7 +2579,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
 {
   const phrases = ['scroll down', 'Amber, scroll up a bit please', 'scroll down two pages', 'page down', 'go to the top', 'scroll to the bottom', 'open plugins settings', 'open the pipeline tab',
     'go to plan studio', 'open settings', 'find dark mode', 'search for snapshot', 'show step 3 of the console control build', 'step three of skins', 'disable plugin skins',
-    'turn off the skins plugin', 'turn the skins plugin off', 'enable voice notes plugin', 'press save', 'click the refresh button', 'Set font scale to 1.2.', 'turn help mode on', 'what time is it', ''];
+    'turn off the skins plugin', 'turn the skins plugin off', 'enable voice notes plugin', 'press save', 'click the refresh button', 'Set font scale to 1.2.', 'turn help mode on', 'Lock the console to the axHub skin', 'unlock the console from the axHub skin', 'Override the axHub skin', 'stop overriding the axHub skin', 'what time is it', ''];
   const intents = Object.fromEntries(phrases.map((p) => [p, voiceIntent(p)]));
   const hit = 'view:build-orchestrator/grid:builds/row:b1';
   write('console-control-voice.json', {
@@ -2386,6 +2596,33 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       confirm: voiceReply({ verb: 'press' }, { ok: false, code: 'confirmation_required', message: 'x' }),
       noConsole: voiceReply({ verb: 'open' }, { ok: false, code: 'unavailable', message: 'x', openUrl: 'https://c/' }),
       failed: voiceReply({ verb: 'press' }, { ok: false, code: 'denied', message: 'needs Brett' }),
+    },
+  });
+}
+
+// Skin animations (build skin-animations-swatches-skin-switch): behaviour-theme animation fields, the Animations
+// settings overlay, and the swatch / sweep colour maths.
+{
+  const fluid = { motion: { speed: 'normal', easing: 'spring', reduced: 'system', entrance: 'scale' } };
+  const ripple = { motion: { swatches: 'ripple', skinSwitch: 'sweep', picker: 'pop', animSpeed: 200, animIntensity: 30 } };
+  write('skin-animations.json', {
+    style: { default: behaviorStyle({}), fluid: behaviorStyle(fluid), ripple: behaviorStyle(ripple), reduced: behaviorStyle(fluid, true), still: behaviorStyle({ motion: { animIntensity: 0 } }) },
+    errors: { ok: behaviorErrors(ripple), bad: behaviorErrors({ motion: { swatches: 'spin', animSpeed: 9000, animIntensity: 'lots' } }) },
+    prefs: {
+      set: setAnimationPref({}, 'swatches', 'pop'),
+      speed: setAnimationPref({ swatches: 'pop' }, 'speed', '150'),
+      back: setAnimationPref({ swatches: 'pop', speed: 150 }, 'swatches', 'skin'),
+      bad: setAnimationPref({}, 'picker', 'spin'),
+      unknown: setAnimationPref({}, 'glow', 'on'),
+      clamp: setAnimationPref({}, 'intensity', 500),
+      overlay: withAnimationPrefs(ripple, { swatches: 'wave', intensity: 80 }).motion,
+    },
+    state: { default: animationState({}, {}), own: animationState(ripple, { picker: 'off', speed: 50 }), reduced: animationState(fluid, {}, true) },
+    colours: {
+      mixDark: mixHex('#3366cc', -0.5), mixLight: mixHex('#3366cc', 0.5), notHex: mixHex('var(--fx-accent)', 0.5),
+      shades5: shadesOf('#3366CC', 5), shades4: shadesOf('#3366cc', 4), shadesNotHex: shadesOf('red', 3),
+      skin: skinSwatches({ bg: '#101010', surface: '#202020', surface2: '#202020', accent: '#ff8800', text: '#eeeeee' }), none: skinSwatches(undefined),
+      sweepTap: sweepOrigin({ x: 900, y: 100 }, { w: 1000, h: 800 }), sweepNone: sweepOrigin(null, { w: 1000, h: 800 }), sweepOut: sweepOrigin({ x: -5, y: 2000 }, { w: 1000, h: 800 }),
     },
   });
 }

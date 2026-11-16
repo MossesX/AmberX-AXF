@@ -47,7 +47,8 @@ eq(controlPermission('plugins.commands', 'act', 'run'), 'control.plugins.write',
 eq(CONTROL_TARGET_IDS.slice(20, 22), ['plugins.commands', 'plugins.reads'], 'plugin targets come after the console and pass ones (append-only)');
 eq(CONTROL_TARGET_IDS.slice(22, 23), ['tokens.nav'], 'the nav-style token set comes after the plugin ones (append-only, build molly-nav-submenus)');
 eq(CONTROL_TARGET_IDS.slice(23, 24), ['console.control'], 'console control by address comes after the nav tokens (append-only, build full-api-and-voice-control)');
-eq(CONTROL_TARGET_IDS.slice(24), ['tokens.controls'], 'the themed-controls token set comes last (append-only, build themed-native-controls-plugin)');
+eq(CONTROL_TARGET_IDS.slice(24, 25), ['tokens.instances'], 'per-instance component tokens come next (append-only, build own-token-sets-for-grids-and-tab-groups)');
+eq(CONTROL_TARGET_IDS.slice(25), ['tokens.controls'], 'the themed-controls token set comes after them (append-only, build themed-native-controls-plugin)');
 eq(controlPermission('console.screens', 'act', 'open'), 'control.console.navigate', 'opening a screen only navigates');
 eq(controlPermission('console.nav', 'act', 'back'), 'control.console.navigate', 'going back only navigates');
 // console.control (console-control@1 by address): focus / scroll navigate, press / set / plugins write
