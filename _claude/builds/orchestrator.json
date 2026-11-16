@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T23:50:12.037Z",
+ "updatedAt": "2026-11-16T23:50:36.376Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -124271,7 +124271,7 @@
    "pr": "#574",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:11.111Z",
-   "updatedAt": "2026-11-15T00:38:25.860Z",
+   "updatedAt": "2026-11-16T23:50:04.988Z",
    "builtAt": "2026-11-13T13:23:41.684Z",
    "notes": [
     {
@@ -124317,6 +124317,10 @@
     {
      "text": "Headless run axf-auto-recover-stuck-builds--gina: brief only · start 15.4K tokens ($0.05) · cost $20.73 · 283 turns · 6 tools, MCP none",
      "at": "2026-11-13T13:23:56.667Z"
+    },
+    {
+     "text": "Superseded: PR #574 was closed unmerged on Nov 16 2026 and its branch is gone, so build-recovery@1 never reached main. Brett re-asked on Nov 13; build server-watchdog-orchestrator-auto-recovers-stuck (branch claude/server-watchdog-orchestrator-auto-recovers-stuck) carries it as build-watchdog@1: framework/core/build-watchdog.mjs, schemas/build-watchdog.json, recoveries[] on builds@1, fixtures + check-build-watchdog in CI.",
+     "at": "2026-11-16T23:50:04.988Z"
     }
    ],
    "approvals": [
