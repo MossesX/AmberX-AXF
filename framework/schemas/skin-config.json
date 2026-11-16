@@ -21,9 +21,9 @@
   "extrasCategory": "extras",
   "global": "global",
   "summary": {
-    "categories": 48,
-    "groups": 289,
-    "options": 1147,
+    "categories": 49,
+    "groups": 291,
+    "options": 1151,
     "limits": 4,
     "sections": [
       "Themes",
@@ -3374,6 +3374,31 @@
             "interactive",
             "build",
             "keywords"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "instance-look",
+      "label": "Instance look",
+      "section": "Themes",
+      "by": "reference",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "skin"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "kind",
+            "look",
+            "for"
           ]
         }
       ],

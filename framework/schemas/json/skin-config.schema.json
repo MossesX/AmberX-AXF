@@ -8595,6 +8595,64 @@
             }
           }
         },
+        "instance-look": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Instance look (Themes)",
+          "properties": {
+            "mode": {
+              "$ref": "#/$defs/mode"
+            },
+            "groups": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "pick": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "mode": {
+                      "$ref": "#/$defs/mode"
+                    },
+                    "options": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "skin": {
+                          "$ref": "#/$defs/mode"
+                        }
+                      }
+                    }
+                  }
+                },
+                "fields": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "mode": {
+                      "$ref": "#/$defs/mode"
+                    },
+                    "options": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "kind": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "look": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "for": {
+                          "$ref": "#/$defs/mode"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "extras": {
           "type": "object",
           "additionalProperties": false,

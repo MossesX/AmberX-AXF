@@ -16,6 +16,7 @@ import { partsErrors as skinPartsErrors } from '../core/engines/skin-coverage.mj
 import { skinChromeErrors } from '../core/engines/skin-rules.mjs';
 import { CHROME_FIELDS, CHROME_TYPES } from '../core/engines/chrome-settings-rules.mjs';
 import { DEMO_TYPES, demoAssetErrors, demoSchemaProperties } from '../core/engines/demo-rules.mjs';
+import { INSTANCE_LOOK_TYPE, colourTokensOf, instanceLookErrors, instanceLookSchemaProperties } from '../core/engines/instance-look-rules.mjs';
 import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } from '../core/ui-review-schema.mjs';
 import { jsonSchemas as sessionJsonSchemas, REGISTRY as SESSION_REGISTRY } from '../core/session-schema.mjs';
 import { MODEL_POLICY } from '../core/model-policy.mjs';
@@ -195,6 +196,8 @@ export function validateAsset(raw) {
   errors.push(...cardErrors(raw.type, raw.data));
   // demonstration@1 / book@1 / clip@1 / docs@1: ONE validator shared with core (core/engines/demo-rules.mjs)
   errors.push(...demoAssetErrors(raw.type, raw.data));
+  // instance-look@1: token refs and scaled steps only; raw px / colours refused (core/engines/instance-look-rules.mjs)
+  errors.push(...instanceLookErrors(raw.type, raw.data, colourTokensOf(spec)));
   // brand types (logo-mark, animated-logo, icon-pack, branding): ONE validator shared with core (core/engines/brand-rules.mjs)
   errors.push(...(brandAssetErrors(raw.type, raw.data) ?? []));
   const host = hostSpec(raw.type);
@@ -874,6 +877,8 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
     if (type === JOB_TYPE) Object.assign(props, jobTypeSchemaProperties());
     if (type === CARD_TYPE) Object.assign(props, cardSchemaProperties());
     if (DEMO_TYPES.includes(type)) Object.assign(props, demoSchemaProperties(type));
+    // instance-look@1: every key an enum of the colour-theme tokens or the step words (raw px / colours cannot pass)
+    if (type === INSTANCE_LOOK_TYPE) Object.assign(props, instanceLookSchemaProperties(colourTokensOf(spec)));
     // skin@1: the light / dark pair every skin ships (skin-modes@1), the behaviour section, the chrome block (chrome-settings@1 kinds)
     const required = type === 'skin' ? [...ts.required, 'colorThemes'] : ts.required;
     if (type === 'skin') Object.assign(props, skinSchemaProperties());

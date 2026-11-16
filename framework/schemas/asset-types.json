@@ -1910,6 +1910,35 @@
         "keywords": "words for search (up to 200)"
       }
     },
+    "instance-look": {
+      "label": "Instance look",
+      "group": "Themes",
+      "icon": "layers",
+      "description": "instance-look@1 (rules core/engines/instance-look-rules.mjs, engine core/engines/instance-look.ts): the own look of one grid or one tab row, a ten-key record drawn over the skin — rowBg, rowAltBg, textSize, spacing, borderW, borderColor, radius, hoverBg, selectedBg, selectedFg. Every value is a colour-theme token name, `transparent` (backgrounds only) or a scaled step (text 2xs…2xl, spacing 2xs…4xl, border none / thin / medium / thick, radius none / sm / md / lg / pill); raw px and raw colours are refused by both validators, so an instance can never leave the skin. Scope key = kind + settings id; the record lives at axf.chrome.<kind>.<id>.look (instance), axf.chrome.<kind>.look (every instance of the kind in the app); resolve order skin → app → instance, child over parent; an empty record = the skin; reset drops the record. A look compiles to --fx-inst-<key> plus the component-tokens@1 family tokens its kind's CSS already reads. This asset type is a named look (a skin or an app ships one to apply); it is never an appearance slot.",
+      "required": [
+        "kind",
+        "look"
+      ],
+      "enums": {
+        "kind": [
+          "tab-group",
+          "grid"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "for": "instance ids (settings ids) this look is meant for; absent = any instance of the kind"
+      },
+      "skin": {
+        "by": "reference",
+        "via": "skin",
+        "why": "A skin sets the floor of every instance look through its style theme's grid / tabs token maps (component-tokens@1); the per-instance record is drawn over that floor and only ever names the skin's tokens."
+      }
+    },
     "uac-policy": {
       "label": "User account control",
       "group": "System",

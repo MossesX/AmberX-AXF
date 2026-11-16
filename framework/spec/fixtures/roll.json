@@ -54,6 +54,7 @@
     "book": false,
     "clip": false,
     "docs": false,
+    "instance-look": false,
     "uac-policy": false
   },
   "cases": {
