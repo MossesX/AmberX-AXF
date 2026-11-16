@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:22:41.065Z",
+ "updatedAt": "2026-11-16T19:22:48.620Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -161459,7 +161459,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:20:10.281Z",
-   "updatedAt": "2026-11-16T19:22:02.831Z",
+   "updatedAt": "2026-11-16T19:22:41.951Z",
    "builtAt": "",
    "notes": [
     {
@@ -161477,6 +161477,10 @@
     {
      "text": "Brett Nov 16: REMOVE the option to swap a toolbar for a whole other toolbar asset ('Change...' / 'Change asset' asset picker) from toolbar settings and the toolbar context menu. He edits the toolbar's own settings only; no whole-asset swap. Remove it from the API/voice too.",
      "at": "2026-11-16T19:22:02.831Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"65af8f1f-b1dd-4a52-a727-086ed516a0d9\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-16T19:22:41.951Z"
     }
    ],
    "approvals": [],
@@ -161493,7 +161497,68 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "When any toolbar is moved to the left or right (Move from its context menu, settings, API), it must render as a vertical column beside the content: buttons stacked top to bottom, the content area beside it takes the remaining width, nothing pushed down. Top/bottom stay horizontal rows. Applies to every toolbar asset in every app (framework layout rule, tokens only), snaps without overlapping neighbours, collapses to icons when narrow, phone falls back sensibly. Add a test that a left/right toolbar never adds height above the content. Same placement via REST, MCP, CLI, voice. Land through the orchestrator.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjnhrbz04xujf",
+     "createdAt": "2026-11-16T19:22:41.951Z"
+    },
+    {
+     "id": "s2",
+     "text": "If I move the toolbar to the left instead of the top, it needs to run down the side like a column instead of pushing all the content down.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjnhrbz05al8o",
+     "createdAt": "2026-11-16T19:22:41.951Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/toolbars-moved-to-side-become-vertical.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/toolbars-moved-to-side-become-vertical.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjnhrbz062fd7",
+     "createdAt": "2026-11-16T19:22:41.951Z"
+    }
+   ]
   }
  ]
 }
