@@ -113,13 +113,21 @@ a raw value is refused and the record is left as it was.
 
 The four surfaces call the same engine functions (`setInstanceLookKey`, `resetInstanceLook`, `resolve`), so they cannot drift.
 
-## Steps
+## Steps (phase 1, Fable: all done)
 
 - [x] s1 design notes (this section)
-- [ ] s2 schema: `instance-look` in `asset-types.json` (+ skin declaration), `axf schemas`, validators refuse raw px / colours
-- [ ] s3 engine `framework/core/engines/instance-look.ts` (pure)
-- [ ] s4 storage keys + migration + skin-coverage hook
-- [ ] s5 fixtures `framework/spec/fixtures/instance-look.json` + PORTING.md (Kotlin twin deferred)
+- [x] s2 schema: `instance-look` in `asset-types.json` (reference via skin), `axf schemas` → `schemas/json/instance-look.schema.json` (every key an enum), both validators call `instanceLookErrors` (`core/engines/instance-look-rules.mjs`); `core/types.ts` registers the type
+- [x] s3 engine `framework/core/engines/instance-look.ts` (pure): `lookFromFamilies`, `resolveInstanceLook`, `instanceLookStyle`, `setInstanceLookKey`, `writeInstanceLook`, `resetInstanceLook`, `instanceLookList`, `resolveFromSettings`
+- [x] s4 `CHROME_LOOK_KINDS`, `CHROME_INSTANCE_LOOK_KEY`, `CHROME_KIND_LOOK_KEY` in chrome-settings rules (`.look` is a pick suffix, never an asset with edits); `migrateLegacyInstanceLooks` + the runtime runs it once per profile; skin-coverage `referenceErrors` / `referencedTypes` and the CI assertions in `check-skin-coverage`
+- [x] s5 fixture `framework/spec/fixtures/instance-look.json` (14 resolve cases: skin only, empty = skin, partial, full, app then instance, skin swap under an override, raw values dropped, nothing; value grammar table; settings write / read / reset / list; 9 refusals; migration) + `spec/check-instance-look.mts` (797 checks, wired in `android.yml`); PORTING.md row with the Kotlin twin deferred
+
+## Checks
+
+`check-instance-look` (797), `check-skin-coverage` (56 types, 0 uncovered), `check-skin` (hub default / runtime scopes / axHub only), `check-skin-config`, `check-chrome-settings` (304), `check-component-tokens` (90 tokens), `check-asset-overrides`, `check-agent-card` (type order), `check-tab-group`, `check-customize`, `check-demo`, `check-brand`, `shared-assets check --all`, `check-ci-scope`; `tsc --strict` over `core/index.ts` + `core/runtime.ts` clean.
+
+## Migration note
+
+The migration moves a legacy per-row value only when it binds to a look key, is a token ref, and the look record does not already hold that key. A raw colour, a shadow, a weight, a px length, or a token the record already covers stays in `axf.tokens.instances` and keeps applying through component-tokens@1; the console log line says how many moved and how many were kept.
 
 ## Open
 

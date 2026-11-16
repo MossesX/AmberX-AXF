@@ -39,6 +39,7 @@ import { LIBRARY_PARAM_TYPES, PARAM_TRUE_WORDS, paramBool, paramDefaultText, par
 import { validateAsset } from '../core/validate';
 import * as cs from '../core/engines/chrome-settings-rules.mjs';
 import * as ct from '../core/engines/component-tokens.mjs';
+import * as il from '../core/engines/instance-look';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
 import { HUB_DEFAULT, HUB_FEED_MAX_BYTES, HUB_FEED_MAX_ITEMS, HUB_FEED_STATUSES, HUB_FIELD_CAPS, HUB_MESSAGES, HUB_PATHS, HUB_SEEN_CAP, accountUrl, apkDownloadName, approvalUrl, approvalsUrl, appsUrl, csrfFromPage, feedUrl, hubOrigin, interpretFeed, isHub, loginUrl, logoutUrl, normalizeHub, seenPlan, unreachableFeed } from '../libs/hub/hub';
 import { APPS_FEED_MAX_BYTES, APPS_FEED_PATH, APPS_MAX, VERSIONS_MAX, appsFeedUrl, interpretApps } from '../libs/hub/apps';
@@ -801,6 +802,96 @@ write('components.json', {
     instanceCases: Object.fromEntries(Object.entries(steps).map(([k, v]) => [k, { saved: v, replay: v }])),
     key: ct.INSTANCE_TOKENS_KEY,
     paths_instances: ['tabs.settings.main.activeText', 'grid.ui-review.items', 'nav.x.y', 'tabs', 'tabs.settings.main.bogus'].map((p) => ({ path: p, parsed: ct.parseInstanceTokenPath(p) })),
+  });
+}
+// instance-look@1 (Nov 16 2026, build own-look-per-grid-and-tab-group): one grid's / tab row's own look — the ten keys, the
+// value grammar (token refs + scaled steps, raw px / colours refused), skin → app → instance resolution, empty = skin,
+// reset, skin swap under an override, the settings keys, and the migration of component-tokens@1 per-row values.
+{
+  const registry = JSON.parse(readFileSync(join(assetsDir, '..', 'schemas', 'asset-types.json'), 'utf8'));
+  const colours = il.colourTokensOf(registry);
+  // two skins' style themes, as component-tokens@1 grid / tabs maps (lineColor is a raw colour: a family value, never a look value)
+  const skinA = { grid: { hoverBg: 'accentSoft', rowAltBg: 'surface2', radius: 'radius.sm', cellPadX: 'dens-gap-md', lineColor: '#ff0000', selectedText: 'accentText' }, tabs: { bg: 'surface', gap: 'dens-gap-sm', activeText: 'accent', indicatorSize: 'border-w', barBorder: 'border' } };
+  const skinB = { grid: { hoverBg: 'surface3', radius: 'radius.lg', rowBg: 'surface' }, tabs: { activeText: 'text', radiusPills: '999px', indicatorSize: 'calc(var(--fx-border-w) * 2)' } };
+  const fromA = (kind: il.InstanceLookKind) => il.lookFromFamilies(kind, skinA, colours);
+  const fromB = (kind: il.InstanceLookKind) => il.lookFromFamilies(kind, skinB, colours);
+  const full: il.InstanceLook = { rowBg: 'surface', rowAltBg: 'surface2', textSize: 'sm', spacing: 'lg', borderW: 'medium', borderColor: 'border', radius: 'md', hoverBg: 'accentSoft', selectedBg: 'accent', selectedFg: 'accentText' };
+  const partial: il.InstanceLook = { hoverBg: 'accent', textSize: 'sm' };
+  const cases: Record<string, { kind: il.InstanceLookKind; layers: il.InstanceLookLayers }> = {
+    'skin-only-grid': { kind: 'grid', layers: { skin: fromA('grid') } },
+    'skin-only-tabs': { kind: 'tab-group', layers: { skin: fromA('tab-group') } },
+    'empty-equals-skin-grid': { kind: 'grid', layers: { skin: fromA('grid'), app: {}, instance: {} } },
+    'empty-equals-skin-tabs': { kind: 'tab-group', layers: { skin: fromA('tab-group'), app: null, instance: {} } },
+    'partial-override': { kind: 'grid', layers: { skin: fromA('grid'), instance: partial } },
+    'full-override': { kind: 'grid', layers: { skin: fromA('grid'), app: { radius: 'lg' }, instance: full } },
+    'full-override-tabs': { kind: 'tab-group', layers: { skin: fromA('tab-group'), instance: full } },
+    'app-then-instance': { kind: 'grid', layers: { skin: fromA('grid'), app: { radius: 'lg', spacing: 'xl' }, instance: { radius: 'pill' } } },
+    'app-only': { kind: 'tab-group', layers: { app: { selectedBg: 'accentSoft', borderW: 'none' } } },
+    'swap-before': { kind: 'grid', layers: { skin: fromA('grid'), instance: { hoverBg: 'accent' } } },
+    'swap-after': { kind: 'grid', layers: { skin: fromB('grid'), instance: { hoverBg: 'accent' } } },
+    'raw-values-dropped': { kind: 'grid', layers: { skin: fromA('grid'), instance: { hoverBg: '#ff0000', radius: '6px', textSize: 'sm', spacing: 12 as never, selectedFg: 'transparent' } } },
+    'junk-layers': { kind: 'grid', layers: { skin: 'nope' as never, app: [] as never, instance: 7 as never } },
+    nothing: { kind: 'tab-group', layers: {} },
+  };
+  const before = { 'axf.theme': 'x', 'axf.chrome.grid.look': { radius: 'md' }, 'axf.chrome.tab-group.settings.main': { style: 'pills' }, 'axf.tokens.instances': { 'grid.other': { values: { headerWeight: 700 } } } };
+  const record = { hoverBg: 'accent', textSize: 'sm', radius: '4px', bogus: 'x' };
+  const written = il.writeInstanceLook(before, 'grid', 'ui-review.items', record, colours);
+  const refusedRecord = { rowBg: '#ff0000', rowAltBg: 'surface2', textSize: '0.9em', spacing: 12, borderW: '2px', borderColor: 'rgb(1 2 3)', radius: 'var(--fx-radius-sm)', hoverBg: 'red', selectedBg: 'transparent', selectedFg: 'transparent', bogus: 'x' };
+  const refusedSet: Record<string, string> = { radius: '6px', hoverBg: '#eee', textSize: 'huge', selectedFg: 'transparent', bogus: 'accent' };
+  const setErrors: Record<string, string> = {};
+  for (const [key, value] of Object.entries(refusedSet)) { try { il.setInstanceLookKey(il.normalizeInstanceLook(refusedRecord, colours), key, value, colours); setErrors[key] = ''; } catch (e) { setErrors[key] = (e as Error).message; } }
+  const legacyBefore = {
+    'axf.tokens.instances': {
+      'tabs.settings.main': { values: { activeText: 'accent', indicator: '#ff0000', gap: 'dens-gap-sm', barBorder: 'var(--fx-border)' }, previous: { activeText: 'muted', gap: 'dens-gap-md' } },
+      'grid.ui-review.items': { values: { hoverBg: 'accentSoft', radius: 'radius.md', stickyShadow: 'shadow.sm', headerWeight: 700, cellPadX: '12px' } },
+      'grid.plain': { values: { selectedBg: 'accent' } },
+    },
+    'axf.chrome.grid.ui-review.items.look': { hoverBg: 'surface3' },
+    'axf.theme': 'x',
+  };
+  write('instance-look.json', {
+    contract: il.INSTANCE_LOOK_CONTRACT,
+    type: il.INSTANCE_LOOK_TYPE,
+    kinds: il.INSTANCE_LOOK_KINDS,
+    keys: il.INSTANCE_LOOK_KEYS,
+    bindings: il.INSTANCE_LOOK_BINDINGS,
+    colourTokens: colours,
+    steps: { text: il.TEXT_STEPS, space: il.SPACE_STEPS, border: il.BORDER_STEPS, radius: il.RADIUS_STEPS },
+    // the value grammar: what each key compiles each raw value to (null = refused)
+    values: Object.fromEntries(il.INSTANCE_LOOK_KEY_IDS.map((key) => [key, Object.fromEntries(['accent', 'accent-soft', 'accentSoft', 'surface2', 'transparent', 'red', '#ff0000', 'rgb(1 2 3)', '2xs', 'sm', 'md', 'xl', '4xl', 'none', 'thin', 'medium', 'thick', 'lg', 'pill', '6px', '0.5em', '0', '12', 'var(--fx-accent)', 'calc(var(--fx-border-w) * 2)', 'bogus', ''].map((raw) => [raw || '(empty)', il.instanceLookValue(key, raw, colours)]))])),
+    wants: Object.fromEntries(il.INSTANCE_LOOK_KEY_IDS.map((key) => [key, il.instanceLookWants(key, colours)])),
+    fromFamilies: {
+      'skin-a-grid': { kind: 'grid', styleTheme: skinA, look: fromA('grid') },
+      'skin-a-tabs': { kind: 'tab-group', styleTheme: skinA, look: fromA('tab-group') },
+      'skin-b-grid': { kind: 'grid', styleTheme: skinB, look: fromB('grid') },
+      'skin-b-tabs': { kind: 'tab-group', styleTheme: skinB, look: fromB('tab-group') },
+      'no-maps': { kind: 'grid', styleTheme: { fontSize: 14 }, look: il.lookFromFamilies('grid', { fontSize: 14 } as never, colours) },
+      none: { kind: 'grid', styleTheme: null, look: il.lookFromFamilies('grid', null, colours) },
+    },
+    cases: Object.fromEntries(Object.entries(cases).map(([k, c]) => [k, { ...c, result: il.resolveInstanceLook(c.kind, c.layers, colours) }])),
+    style: il.instanceLookStyle(il.resolveInstanceLook('grid', cases['partial-override'].layers, colours)),
+    varNames: Object.fromEntries(il.INSTANCE_LOOK_KINDS.map((k) => [k, il.instanceLookVarNames(k)])),
+    settings: {
+      keys: { instance: il.instanceLookSettingsKey('grid', 'ui-review.items'), kind: il.kindLookSettingsKey('tab-group') },
+      parseKeys: ['axf.chrome.grid.ui-review.items.look', 'axf.chrome.tab-group.look', 'axf.chrome.toolbar.app.look', 'axf.chrome.grid.ui-review.items', 'axf.tokens.instances', ''],
+      parsed: Object.fromEntries(['axf.chrome.grid.ui-review.items.look', 'axf.chrome.tab-group.look', 'axf.chrome.toolbar.app.look', 'axf.chrome.grid.ui-review.items', 'axf.tokens.instances', ''].map((k) => [k, il.parseInstanceLookSettingsKey(k)])),
+      scope: { key: il.instanceLookScope('grid', 'ui-review.items'), parsed: il.parseInstanceLookScope('grid:ui-review.items'), bad: [il.parseInstanceLookScope('toolbar:x'), il.parseInstanceLookScope('grid'), il.parseInstanceLookScope('grid:Bad Id')] },
+      before, record, written,
+      read: il.readInstanceLook(written, 'grid', 'ui-review.items', colours),
+      readKind: il.readKindLook(written, 'grid', colours),
+      reset: il.resetInstanceLook(written, 'grid', 'ui-review.items'),
+      list: il.instanceLookList(written, colours),
+      resolved: il.resolveFromSettings(written, 'grid', 'ui-review.items', skinA, colours),
+    },
+    refused: {
+      record: refusedRecord,
+      errors: il.instanceLookRecordErrors(refusedRecord, colours, 'look'),
+      normalized: il.normalizeInstanceLook(refusedRecord, colours),
+      set: refusedSet,
+      setErrors,
+      asset: il.instanceLookErrors('instance-look', { kind: 'grid', look: refusedRecord, for: ['ok.id', 'Bad Id'] }, colours),
+    },
+    migration: { before: legacyBefore, result: il.migrateLegacyInstanceLooks(legacyBefore, colours) },
   });
 }
 write('uac.json', Object.fromEntries(load('uac-policy').map((p) => [p.id, {

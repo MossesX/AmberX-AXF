@@ -38,7 +38,9 @@ import {
 import { COMPONENT_TOKEN_FAMILIES, INSTANCE_TOKENS_KEY, componentTokenVar, normalizeInstanceTokens } from './component-tokens.mjs';
 import { CHROME_INSTANCE_LOOK_KEY, CHROME_KIND_LOOK_KEY } from './chrome-settings-rules.mjs';
 
-export * from './instance-look-rules.mjs';
+// Named re-exports (not `export *`): a star re-export of a .mjs module is dropped by some ESM loaders when a .d.mts sits beside it.
+export { BORDER_STEPS, INSTANCE_LOOK_BINDINGS, INSTANCE_LOOK_CONTRACT, INSTANCE_LOOK_KEYS, INSTANCE_LOOK_KEY_IDS, INSTANCE_LOOK_KINDS, INSTANCE_LOOK_KIND_LABELS, INSTANCE_LOOK_TYPE, INSTANCE_LOOK_VALUE_KINDS, INSTANCE_LOOK_VAR_PREFIX, RADIUS_STEPS, SPACE_STEPS, TEXT_STEPS, colourTokenName, colourTokensOf, instanceLookErrors, instanceLookKey, instanceLookKeyError, instanceLookRecordErrors, instanceLookSchemaProperties, instanceLookScope, instanceLookStored, instanceLookValue, instanceLookVar, instanceLookWants, isInstanceLookId, isInstanceLookKind, normalizeInstanceLook, parseInstanceLookScope } from './instance-look-rules.mjs';
+export type { InstanceLook, InstanceLookData, InstanceLookKeyId, InstanceLookKeySpec, InstanceLookKind, InstanceLookValueKind } from './instance-look-rules.mjs';
 
 /** Where one resolved key's value came from. */
 export type InstanceLookSource = 'skin' | 'app' | 'instance';

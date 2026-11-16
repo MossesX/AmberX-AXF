@@ -1,0 +1,1706 @@
+{
+  "contract": "instance-look@1",
+  "type": "instance-look",
+  "kinds": [
+    "tab-group",
+    "grid"
+  ],
+  "keys": [
+    {
+      "key": "rowBg",
+      "kind": "colour",
+      "label": "Row background",
+      "description": "Background of a plain row / an idle tab.",
+      "transparent": true
+    },
+    {
+      "key": "rowAltBg",
+      "kind": "colour",
+      "label": "Alternate row background",
+      "description": "Background of every second row (zebra striping; grids only).",
+      "transparent": true
+    },
+    {
+      "key": "textSize",
+      "kind": "text",
+      "label": "Text size",
+      "description": "Text size step of the rows / tabs (typography scale)."
+    },
+    {
+      "key": "spacing",
+      "kind": "space",
+      "label": "Spacing",
+      "description": "Space step between cells / tabs (density gap scale)."
+    },
+    {
+      "key": "borderW",
+      "kind": "border",
+      "label": "Border width",
+      "description": "Line thickness: none, thin, medium or thick (multiples of the style theme's border width)."
+    },
+    {
+      "key": "borderColor",
+      "kind": "colour",
+      "label": "Border colour",
+      "description": "Grid lines / the rule under the tab row.",
+      "transparent": true
+    },
+    {
+      "key": "radius",
+      "kind": "radius",
+      "label": "Corner radius",
+      "description": "Corner radius step: none, sm, md, lg or pill."
+    },
+    {
+      "key": "hoverBg",
+      "kind": "colour",
+      "label": "Hover background",
+      "description": "Background of the row / tab under the pointer.",
+      "transparent": true
+    },
+    {
+      "key": "selectedBg",
+      "kind": "colour",
+      "label": "Selected background",
+      "description": "Background of the selected row / the active tab.",
+      "transparent": true
+    },
+    {
+      "key": "selectedFg",
+      "kind": "colour",
+      "label": "Selected text",
+      "description": "Text colour of the selected row / the active tab."
+    }
+  ],
+  "bindings": {
+    "tab-group": {
+      "rowBg": [
+        "--fx-tab-bg"
+      ],
+      "rowAltBg": [],
+      "textSize": [
+        "--fx-tab-font-size"
+      ],
+      "spacing": [
+        "--fx-tab-gap"
+      ],
+      "borderW": [
+        "--fx-tab-indicator-size"
+      ],
+      "borderColor": [
+        "--fx-tab-bar-border"
+      ],
+      "radius": [
+        "--fx-tab-radius-underline",
+        "--fx-tab-radius-pills",
+        "--fx-tab-radius-boxed",
+        "--fx-tab-radius-segmented",
+        "--fx-tab-radius-plain",
+        "--fx-tab-radius-chips"
+      ],
+      "hoverBg": [
+        "--fx-tab-hover-bg"
+      ],
+      "selectedBg": [
+        "--fx-tab-active-bg",
+        "--fx-tab-pills-active-bg",
+        "--fx-tab-boxed-active-bg",
+        "--fx-tab-segmented-active-bg",
+        "--fx-tab-chips-active-bg"
+      ],
+      "selectedFg": [
+        "--fx-tab-active-text",
+        "--fx-tab-pills-active-text",
+        "--fx-tab-plain-active-text"
+      ]
+    },
+    "grid": {
+      "rowBg": [
+        "--fx-grid-row-bg"
+      ],
+      "rowAltBg": [
+        "--fx-grid-row-alt-bg"
+      ],
+      "textSize": [
+        "--fx-grid-font-size"
+      ],
+      "spacing": [
+        "--fx-grid-cell-pad-x"
+      ],
+      "borderW": [
+        "--fx-grid-border-w"
+      ],
+      "borderColor": [
+        "--fx-grid-line-color"
+      ],
+      "radius": [
+        "--fx-grid-radius"
+      ],
+      "hoverBg": [
+        "--fx-grid-hover-bg"
+      ],
+      "selectedBg": [
+        "--fx-grid-selected-bg"
+      ],
+      "selectedFg": [
+        "--fx-grid-selected-text"
+      ]
+    }
+  },
+  "colourTokens": [
+    "bg",
+    "surface",
+    "surface2",
+    "surface3",
+    "text",
+    "muted",
+    "border",
+    "accent",
+    "accentText",
+    "accentSoft",
+    "danger",
+    "success",
+    "warning",
+    "info",
+    "focus",
+    "shadow"
+  ],
+  "steps": {
+    "text": [
+      "2xs",
+      "xs",
+      "sm",
+      "md",
+      "lg",
+      "xl",
+      "2xl"
+    ],
+    "space": [
+      "2xs",
+      "xs",
+      "sm",
+      "md",
+      "lg",
+      "xl",
+      "2xl",
+      "3xl",
+      "4xl"
+    ],
+    "border": [
+      "none",
+      "thin",
+      "medium",
+      "thick"
+    ],
+    "radius": [
+      "none",
+      "sm",
+      "md",
+      "lg",
+      "pill"
+    ]
+  },
+  "values": {
+    "rowBg": {
+      "0": null,
+      "12": null,
+      "accent": "var(--fx-accent)",
+      "accent-soft": "var(--fx-accent-soft)",
+      "accentSoft": "var(--fx-accent-soft)",
+      "surface2": "var(--fx-surface2)",
+      "transparent": "transparent",
+      "red": null,
+      "#ff0000": null,
+      "rgb(1 2 3)": null,
+      "2xs": null,
+      "sm": null,
+      "md": null,
+      "xl": null,
+      "4xl": null,
+      "none": null,
+      "thin": null,
+      "medium": null,
+      "thick": null,
+      "lg": null,
+      "pill": null,
+      "6px": null,
+      "0.5em": null,
+      "var(--fx-accent)": null,
+      "calc(var(--fx-border-w) * 2)": null,
+      "bogus": null,
+      "(empty)": null
+    },
+    "rowAltBg": {
+      "0": null,
+      "12": null,
+      "accent": "var(--fx-accent)",
+      "accent-soft": "var(--fx-accent-soft)",
+      "accentSoft": "var(--fx-accent-soft)",
+      "surface2": "var(--fx-surface2)",
+      "transparent": "transparent",
+      "red": null,
+      "#ff0000": null,
+      "rgb(1 2 3)": null,
+      "2xs": null,
+      "sm": null,
+      "md": null,
+      "xl": null,
+      "4xl": null,
+      "none": null,
+      "thin": null,
+      "medium": null,
+      "thick": null,
+      "lg": null,
+      "pill": null,
+      "6px": null,
+      "0.5em": null,
+      "var(--fx-accent)": null,
+      "calc(var(--fx-border-w) * 2)": null,
+      "bogus": null,
+      "(empty)": null
+    },
+    "textSize": {
+      "0": null,
+      "12": null,
+      "accent": null,
+      "accent-soft": null,
+      "accentSoft": null,
+      "surface2": null,
+      "transparent": null,
+      "red": null,
+      "#ff0000": null,
+      "rgb(1 2 3)": null,
+      "2xs": "var(--fx-type-root-2xs)",
+      "sm": "var(--fx-type-root-sm)",
+      "md": "var(--fx-type-root-md)",
+      "xl": "var(--fx-type-root-xl)",
+      "4xl": null,
+      "none": null,
+      "thin": null,
+      "medium": null,
+      "thick": null,
+      "lg": "var(--fx-type-root-lg)",
+      "pill": null,
+      "6px": null,
+      "0.5em": null,
+      "var(--fx-accent)": null,
+      "calc(var(--fx-border-w) * 2)": null,
+      "bogus": null,
+      "(empty)": null
+    },
+    "spacing": {
+      "0": null,
+      "12": null,
+      "accent": null,
+      "accent-soft": null,
+      "accentSoft": null,
+      "surface2": null,
+      "transparent": null,
+      "red": null,
+      "#ff0000": null,
+      "rgb(1 2 3)": null,
+      "2xs": "var(--fx-dens-gap-2xs)",
+      "sm": "var(--fx-dens-gap-sm)",
+      "md": "var(--fx-dens-gap-md)",
+      "xl": "var(--fx-dens-gap-xl)",
+      "4xl": "var(--fx-dens-gap-4xl)",
+      "none": null,
+      "thin": null,
+      "medium": null,
+      "thick": null,
+      "lg": "var(--fx-dens-gap-lg)",
+      "pill": null,
+      "6px": null,
+      "0.5em": null,
+      "var(--fx-accent)": null,
+      "calc(var(--fx-border-w) * 2)": null,
+      "bogus": null,
+      "(empty)": null
+    },
+    "borderW": {
+      "0": null,
+      "12": null,
+      "accent": null,
+      "accent-soft": null,
+      "accentSoft": null,
+      "surface2": null,
+      "transparent": null,
+      "red": null,
+      "#ff0000": null,
+      "rgb(1 2 3)": null,
+      "2xs": null,
+      "sm": null,
+      "md": null,
+      "xl": null,
+      "4xl": null,
+      "none": "0",
+      "thin": "var(--fx-border-w)",
+      "medium": "calc(var(--fx-border-w) * 2)",
+      "thick": "calc(var(--fx-border-w) * 3)",
+      "lg": null,
+      "pill": null,
+      "6px": null,
+      "0.5em": null,
+      "var(--fx-accent)": null,
+      "calc(var(--fx-border-w) * 2)": null,
+      "bogus": null,
+      "(empty)": null
+    },
+    "borderColor": {
+      "0": null,
+      "12": null,
+      "accent": "var(--fx-accent)",
+      "accent-soft": "var(--fx-accent-soft)",
+      "accentSoft": "var(--fx-accent-soft)",
+      "surface2": "var(--fx-surface2)",
+      "transparent": "transparent",
+      "red": null,
+      "#ff0000": null,
+      "rgb(1 2 3)": null,
+      "2xs": null,
+      "sm": null,
+      "md": null,
+      "xl": null,
+      "4xl": null,
+      "none": null,
+      "thin": null,
+      "medium": null,
+      "thick": null,
+      "lg": null,
+      "pill": null,
+      "6px": null,
+      "0.5em": null,
+      "var(--fx-accent)": null,
+      "calc(var(--fx-border-w) * 2)": null,
+      "bogus": null,
+      "(empty)": null
+    },
+    "radius": {
+      "0": null,
+      "12": null,
+      "accent": null,
+      "accent-soft": null,
+      "accentSoft": null,
+      "surface2": null,
+      "transparent": null,
+      "red": null,
+      "#ff0000": null,
+      "rgb(1 2 3)": null,
+      "2xs": null,
+      "sm": "var(--fx-radius-sm)",
+      "md": "var(--fx-radius-md)",
+      "xl": null,
+      "4xl": null,
+      "none": "0",
+      "thin": null,
+      "medium": null,
+      "thick": null,
+      "lg": "var(--fx-radius-lg)",
+      "pill": "999px",
+      "6px": null,
+      "0.5em": null,
+      "var(--fx-accent)": null,
+      "calc(var(--fx-border-w) * 2)": null,
+      "bogus": null,
+      "(empty)": null
+    },
+    "hoverBg": {
+      "0": null,
+      "12": null,
+      "accent": "var(--fx-accent)",
+      "accent-soft": "var(--fx-accent-soft)",
+      "accentSoft": "var(--fx-accent-soft)",
+      "surface2": "var(--fx-surface2)",
+      "transparent": "transparent",
+      "red": null,
+      "#ff0000": null,
+      "rgb(1 2 3)": null,
+      "2xs": null,
+      "sm": null,
+      "md": null,
+      "xl": null,
+      "4xl": null,
+      "none": null,
+      "thin": null,
+      "medium": null,
+      "thick": null,
+      "lg": null,
+      "pill": null,
+      "6px": null,
+      "0.5em": null,
+      "var(--fx-accent)": null,
+      "calc(var(--fx-border-w) * 2)": null,
+      "bogus": null,
+      "(empty)": null
+    },
+    "selectedBg": {
+      "0": null,
+      "12": null,
+      "accent": "var(--fx-accent)",
+      "accent-soft": "var(--fx-accent-soft)",
+      "accentSoft": "var(--fx-accent-soft)",
+      "surface2": "var(--fx-surface2)",
+      "transparent": "transparent",
+      "red": null,
+      "#ff0000": null,
+      "rgb(1 2 3)": null,
+      "2xs": null,
+      "sm": null,
+      "md": null,
+      "xl": null,
+      "4xl": null,
+      "none": null,
+      "thin": null,
+      "medium": null,
+      "thick": null,
+      "lg": null,
+      "pill": null,
+      "6px": null,
+      "0.5em": null,
+      "var(--fx-accent)": null,
+      "calc(var(--fx-border-w) * 2)": null,
+      "bogus": null,
+      "(empty)": null
+    },
+    "selectedFg": {
+      "0": null,
+      "12": null,
+      "accent": "var(--fx-accent)",
+      "accent-soft": "var(--fx-accent-soft)",
+      "accentSoft": "var(--fx-accent-soft)",
+      "surface2": "var(--fx-surface2)",
+      "transparent": null,
+      "red": null,
+      "#ff0000": null,
+      "rgb(1 2 3)": null,
+      "2xs": null,
+      "sm": null,
+      "md": null,
+      "xl": null,
+      "4xl": null,
+      "none": null,
+      "thin": null,
+      "medium": null,
+      "thick": null,
+      "lg": null,
+      "pill": null,
+      "6px": null,
+      "0.5em": null,
+      "var(--fx-accent)": null,
+      "calc(var(--fx-border-w) * 2)": null,
+      "bogus": null,
+      "(empty)": null
+    }
+  },
+  "wants": {
+    "rowBg": "a colour-theme token (bg, surface, surface2, surface3, text, muted, border, accent, accentText, accentSoft, danger, success, warning, info, focus, shadow) or transparent",
+    "rowAltBg": "a colour-theme token (bg, surface, surface2, surface3, text, muted, border, accent, accentText, accentSoft, danger, success, warning, info, focus, shadow) or transparent",
+    "textSize": "a text step (2xs xs sm md lg xl 2xl)",
+    "spacing": "a spacing step (2xs xs sm md lg xl 2xl 3xl 4xl)",
+    "borderW": "a border step (none thin medium thick)",
+    "borderColor": "a colour-theme token (bg, surface, surface2, surface3, text, muted, border, accent, accentText, accentSoft, danger, success, warning, info, focus, shadow) or transparent",
+    "radius": "a radius step (none sm md lg pill)",
+    "hoverBg": "a colour-theme token (bg, surface, surface2, surface3, text, muted, border, accent, accentText, accentSoft, danger, success, warning, info, focus, shadow) or transparent",
+    "selectedBg": "a colour-theme token (bg, surface, surface2, surface3, text, muted, border, accent, accentText, accentSoft, danger, success, warning, info, focus, shadow) or transparent",
+    "selectedFg": "a colour-theme token (bg, surface, surface2, surface3, text, muted, border, accent, accentText, accentSoft, danger, success, warning, info, focus, shadow)"
+  },
+  "fromFamilies": {
+    "skin-a-grid": {
+      "kind": "grid",
+      "styleTheme": {
+        "grid": {
+          "hoverBg": "accentSoft",
+          "rowAltBg": "surface2",
+          "radius": "radius.sm",
+          "cellPadX": "dens-gap-md",
+          "lineColor": "#ff0000",
+          "selectedText": "accentText"
+        },
+        "tabs": {
+          "bg": "surface",
+          "gap": "dens-gap-sm",
+          "activeText": "accent",
+          "indicatorSize": "border-w",
+          "barBorder": "border"
+        }
+      },
+      "look": {
+        "rowAltBg": "surface2",
+        "spacing": "md",
+        "radius": "sm",
+        "hoverBg": "accentSoft",
+        "selectedFg": "accentText"
+      }
+    },
+    "skin-a-tabs": {
+      "kind": "tab-group",
+      "styleTheme": {
+        "grid": {
+          "hoverBg": "accentSoft",
+          "rowAltBg": "surface2",
+          "radius": "radius.sm",
+          "cellPadX": "dens-gap-md",
+          "lineColor": "#ff0000",
+          "selectedText": "accentText"
+        },
+        "tabs": {
+          "bg": "surface",
+          "gap": "dens-gap-sm",
+          "activeText": "accent",
+          "indicatorSize": "border-w",
+          "barBorder": "border"
+        }
+      },
+      "look": {
+        "rowBg": "surface",
+        "spacing": "sm",
+        "borderW": "thin",
+        "borderColor": "border",
+        "selectedFg": "accent"
+      }
+    },
+    "skin-b-grid": {
+      "kind": "grid",
+      "styleTheme": {
+        "grid": {
+          "hoverBg": "surface3",
+          "radius": "radius.lg",
+          "rowBg": "surface"
+        },
+        "tabs": {
+          "activeText": "text",
+          "radiusPills": "999px",
+          "indicatorSize": "calc(var(--fx-border-w) * 2)"
+        }
+      },
+      "look": {
+        "rowBg": "surface",
+        "radius": "lg",
+        "hoverBg": "surface3"
+      }
+    },
+    "skin-b-tabs": {
+      "kind": "tab-group",
+      "styleTheme": {
+        "grid": {
+          "hoverBg": "surface3",
+          "radius": "radius.lg",
+          "rowBg": "surface"
+        },
+        "tabs": {
+          "activeText": "text",
+          "radiusPills": "999px",
+          "indicatorSize": "calc(var(--fx-border-w) * 2)"
+        }
+      },
+      "look": {
+        "borderW": "medium",
+        "selectedFg": "text"
+      }
+    },
+    "no-maps": {
+      "kind": "grid",
+      "styleTheme": {
+        "fontSize": 14
+      },
+      "look": {}
+    },
+    "none": {
+      "kind": "grid",
+      "styleTheme": null,
+      "look": {}
+    }
+  },
+  "cases": {
+    "skin-only-grid": {
+      "kind": "grid",
+      "layers": {
+        "skin": {
+          "rowAltBg": "surface2",
+          "spacing": "md",
+          "radius": "sm",
+          "hoverBg": "accentSoft",
+          "selectedFg": "accentText"
+        }
+      },
+      "result": {
+        "kind": "grid",
+        "look": {
+          "rowAltBg": "surface2",
+          "spacing": "md",
+          "radius": "sm",
+          "hoverBg": "accentSoft",
+          "selectedFg": "accentText"
+        },
+        "source": {
+          "rowAltBg": "skin",
+          "spacing": "skin",
+          "radius": "skin",
+          "hoverBg": "skin",
+          "selectedFg": "skin"
+        },
+        "vars": {
+          "--fx-inst-row-alt-bg": "var(--fx-surface2)",
+          "--fx-inst-spacing": "var(--fx-dens-gap-md)",
+          "--fx-inst-radius": "var(--fx-radius-sm)",
+          "--fx-inst-hover-bg": "var(--fx-accent-soft)",
+          "--fx-inst-selected-fg": "var(--fx-accent-text)"
+        },
+        "bind": {
+          "--fx-grid-row-alt-bg": "var(--fx-inst-row-alt-bg)",
+          "--fx-grid-cell-pad-x": "var(--fx-inst-spacing)",
+          "--fx-grid-radius": "var(--fx-inst-radius)",
+          "--fx-grid-hover-bg": "var(--fx-inst-hover-bg)",
+          "--fx-grid-selected-text": "var(--fx-inst-selected-fg)"
+        },
+        "empty": false,
+        "followsSkin": true
+      }
+    },
+    "skin-only-tabs": {
+      "kind": "tab-group",
+      "layers": {
+        "skin": {
+          "rowBg": "surface",
+          "spacing": "sm",
+          "borderW": "thin",
+          "borderColor": "border",
+          "selectedFg": "accent"
+        }
+      },
+      "result": {
+        "kind": "tab-group",
+        "look": {
+          "rowBg": "surface",
+          "spacing": "sm",
+          "borderW": "thin",
+          "borderColor": "border",
+          "selectedFg": "accent"
+        },
+        "source": {
+          "rowBg": "skin",
+          "spacing": "skin",
+          "borderW": "skin",
+          "borderColor": "skin",
+          "selectedFg": "skin"
+        },
+        "vars": {
+          "--fx-inst-row-bg": "var(--fx-surface)",
+          "--fx-inst-spacing": "var(--fx-dens-gap-sm)",
+          "--fx-inst-border-w": "var(--fx-border-w)",
+          "--fx-inst-border-color": "var(--fx-border)",
+          "--fx-inst-selected-fg": "var(--fx-accent)"
+        },
+        "bind": {
+          "--fx-tab-bg": "var(--fx-inst-row-bg)",
+          "--fx-tab-gap": "var(--fx-inst-spacing)",
+          "--fx-tab-indicator-size": "var(--fx-inst-border-w)",
+          "--fx-tab-bar-border": "var(--fx-inst-border-color)",
+          "--fx-tab-active-text": "var(--fx-inst-selected-fg)",
+          "--fx-tab-pills-active-text": "var(--fx-inst-selected-fg)",
+          "--fx-tab-plain-active-text": "var(--fx-inst-selected-fg)"
+        },
+        "empty": false,
+        "followsSkin": true
+      }
+    },
+    "empty-equals-skin-grid": {
+      "kind": "grid",
+      "layers": {
+        "skin": {
+          "rowAltBg": "surface2",
+          "spacing": "md",
+          "radius": "sm",
+          "hoverBg": "accentSoft",
+          "selectedFg": "accentText"
+        },
+        "app": {},
+        "instance": {}
+      },
+      "result": {
+        "kind": "grid",
+        "look": {
+          "rowAltBg": "surface2",
+          "spacing": "md",
+          "radius": "sm",
+          "hoverBg": "accentSoft",
+          "selectedFg": "accentText"
+        },
+        "source": {
+          "rowAltBg": "skin",
+          "spacing": "skin",
+          "radius": "skin",
+          "hoverBg": "skin",
+          "selectedFg": "skin"
+        },
+        "vars": {
+          "--fx-inst-row-alt-bg": "var(--fx-surface2)",
+          "--fx-inst-spacing": "var(--fx-dens-gap-md)",
+          "--fx-inst-radius": "var(--fx-radius-sm)",
+          "--fx-inst-hover-bg": "var(--fx-accent-soft)",
+          "--fx-inst-selected-fg": "var(--fx-accent-text)"
+        },
+        "bind": {
+          "--fx-grid-row-alt-bg": "var(--fx-inst-row-alt-bg)",
+          "--fx-grid-cell-pad-x": "var(--fx-inst-spacing)",
+          "--fx-grid-radius": "var(--fx-inst-radius)",
+          "--fx-grid-hover-bg": "var(--fx-inst-hover-bg)",
+          "--fx-grid-selected-text": "var(--fx-inst-selected-fg)"
+        },
+        "empty": false,
+        "followsSkin": true
+      }
+    },
+    "empty-equals-skin-tabs": {
+      "kind": "tab-group",
+      "layers": {
+        "skin": {
+          "rowBg": "surface",
+          "spacing": "sm",
+          "borderW": "thin",
+          "borderColor": "border",
+          "selectedFg": "accent"
+        },
+        "app": null,
+        "instance": {}
+      },
+      "result": {
+        "kind": "tab-group",
+        "look": {
+          "rowBg": "surface",
+          "spacing": "sm",
+          "borderW": "thin",
+          "borderColor": "border",
+          "selectedFg": "accent"
+        },
+        "source": {
+          "rowBg": "skin",
+          "spacing": "skin",
+          "borderW": "skin",
+          "borderColor": "skin",
+          "selectedFg": "skin"
+        },
+        "vars": {
+          "--fx-inst-row-bg": "var(--fx-surface)",
+          "--fx-inst-spacing": "var(--fx-dens-gap-sm)",
+          "--fx-inst-border-w": "var(--fx-border-w)",
+          "--fx-inst-border-color": "var(--fx-border)",
+          "--fx-inst-selected-fg": "var(--fx-accent)"
+        },
+        "bind": {
+          "--fx-tab-bg": "var(--fx-inst-row-bg)",
+          "--fx-tab-gap": "var(--fx-inst-spacing)",
+          "--fx-tab-indicator-size": "var(--fx-inst-border-w)",
+          "--fx-tab-bar-border": "var(--fx-inst-border-color)",
+          "--fx-tab-active-text": "var(--fx-inst-selected-fg)",
+          "--fx-tab-pills-active-text": "var(--fx-inst-selected-fg)",
+          "--fx-tab-plain-active-text": "var(--fx-inst-selected-fg)"
+        },
+        "empty": false,
+        "followsSkin": true
+      }
+    },
+    "partial-override": {
+      "kind": "grid",
+      "layers": {
+        "skin": {
+          "rowAltBg": "surface2",
+          "spacing": "md",
+          "radius": "sm",
+          "hoverBg": "accentSoft",
+          "selectedFg": "accentText"
+        },
+        "instance": {
+          "hoverBg": "accent",
+          "textSize": "sm"
+        }
+      },
+      "result": {
+        "kind": "grid",
+        "look": {
+          "rowAltBg": "surface2",
+          "textSize": "sm",
+          "spacing": "md",
+          "radius": "sm",
+          "hoverBg": "accent",
+          "selectedFg": "accentText"
+        },
+        "source": {
+          "rowAltBg": "skin",
+          "textSize": "instance",
+          "spacing": "skin",
+          "radius": "skin",
+          "hoverBg": "instance",
+          "selectedFg": "skin"
+        },
+        "vars": {
+          "--fx-inst-row-alt-bg": "var(--fx-surface2)",
+          "--fx-inst-text-size": "var(--fx-type-root-sm)",
+          "--fx-inst-spacing": "var(--fx-dens-gap-md)",
+          "--fx-inst-radius": "var(--fx-radius-sm)",
+          "--fx-inst-hover-bg": "var(--fx-accent)",
+          "--fx-inst-selected-fg": "var(--fx-accent-text)"
+        },
+        "bind": {
+          "--fx-grid-row-alt-bg": "var(--fx-inst-row-alt-bg)",
+          "--fx-grid-font-size": "var(--fx-inst-text-size)",
+          "--fx-grid-cell-pad-x": "var(--fx-inst-spacing)",
+          "--fx-grid-radius": "var(--fx-inst-radius)",
+          "--fx-grid-hover-bg": "var(--fx-inst-hover-bg)",
+          "--fx-grid-selected-text": "var(--fx-inst-selected-fg)"
+        },
+        "empty": false,
+        "followsSkin": false
+      }
+    },
+    "full-override": {
+      "kind": "grid",
+      "layers": {
+        "skin": {
+          "rowAltBg": "surface2",
+          "spacing": "md",
+          "radius": "sm",
+          "hoverBg": "accentSoft",
+          "selectedFg": "accentText"
+        },
+        "app": {
+          "radius": "lg"
+        },
+        "instance": {
+          "rowBg": "surface",
+          "rowAltBg": "surface2",
+          "textSize": "sm",
+          "spacing": "lg",
+          "borderW": "medium",
+          "borderColor": "border",
+          "radius": "md",
+          "hoverBg": "accentSoft",
+          "selectedBg": "accent",
+          "selectedFg": "accentText"
+        }
+      },
+      "result": {
+        "kind": "grid",
+        "look": {
+          "rowBg": "surface",
+          "rowAltBg": "surface2",
+          "textSize": "sm",
+          "spacing": "lg",
+          "borderW": "medium",
+          "borderColor": "border",
+          "radius": "md",
+          "hoverBg": "accentSoft",
+          "selectedBg": "accent",
+          "selectedFg": "accentText"
+        },
+        "source": {
+          "rowBg": "instance",
+          "rowAltBg": "instance",
+          "textSize": "instance",
+          "spacing": "instance",
+          "borderW": "instance",
+          "borderColor": "instance",
+          "radius": "instance",
+          "hoverBg": "instance",
+          "selectedBg": "instance",
+          "selectedFg": "instance"
+        },
+        "vars": {
+          "--fx-inst-row-bg": "var(--fx-surface)",
+          "--fx-inst-row-alt-bg": "var(--fx-surface2)",
+          "--fx-inst-text-size": "var(--fx-type-root-sm)",
+          "--fx-inst-spacing": "var(--fx-dens-gap-lg)",
+          "--fx-inst-border-w": "calc(var(--fx-border-w) * 2)",
+          "--fx-inst-border-color": "var(--fx-border)",
+          "--fx-inst-radius": "var(--fx-radius-md)",
+          "--fx-inst-hover-bg": "var(--fx-accent-soft)",
+          "--fx-inst-selected-bg": "var(--fx-accent)",
+          "--fx-inst-selected-fg": "var(--fx-accent-text)"
+        },
+        "bind": {
+          "--fx-grid-row-bg": "var(--fx-inst-row-bg)",
+          "--fx-grid-row-alt-bg": "var(--fx-inst-row-alt-bg)",
+          "--fx-grid-font-size": "var(--fx-inst-text-size)",
+          "--fx-grid-cell-pad-x": "var(--fx-inst-spacing)",
+          "--fx-grid-border-w": "var(--fx-inst-border-w)",
+          "--fx-grid-line-color": "var(--fx-inst-border-color)",
+          "--fx-grid-radius": "var(--fx-inst-radius)",
+          "--fx-grid-hover-bg": "var(--fx-inst-hover-bg)",
+          "--fx-grid-selected-bg": "var(--fx-inst-selected-bg)",
+          "--fx-grid-selected-text": "var(--fx-inst-selected-fg)"
+        },
+        "empty": false,
+        "followsSkin": false
+      }
+    },
+    "full-override-tabs": {
+      "kind": "tab-group",
+      "layers": {
+        "skin": {
+          "rowBg": "surface",
+          "spacing": "sm",
+          "borderW": "thin",
+          "borderColor": "border",
+          "selectedFg": "accent"
+        },
+        "instance": {
+          "rowBg": "surface",
+          "rowAltBg": "surface2",
+          "textSize": "sm",
+          "spacing": "lg",
+          "borderW": "medium",
+          "borderColor": "border",
+          "radius": "md",
+          "hoverBg": "accentSoft",
+          "selectedBg": "accent",
+          "selectedFg": "accentText"
+        }
+      },
+      "result": {
+        "kind": "tab-group",
+        "look": {
+          "rowBg": "surface",
+          "rowAltBg": "surface2",
+          "textSize": "sm",
+          "spacing": "lg",
+          "borderW": "medium",
+          "borderColor": "border",
+          "radius": "md",
+          "hoverBg": "accentSoft",
+          "selectedBg": "accent",
+          "selectedFg": "accentText"
+        },
+        "source": {
+          "rowBg": "instance",
+          "rowAltBg": "instance",
+          "textSize": "instance",
+          "spacing": "instance",
+          "borderW": "instance",
+          "borderColor": "instance",
+          "radius": "instance",
+          "hoverBg": "instance",
+          "selectedBg": "instance",
+          "selectedFg": "instance"
+        },
+        "vars": {
+          "--fx-inst-row-bg": "var(--fx-surface)",
+          "--fx-inst-row-alt-bg": "var(--fx-surface2)",
+          "--fx-inst-text-size": "var(--fx-type-root-sm)",
+          "--fx-inst-spacing": "var(--fx-dens-gap-lg)",
+          "--fx-inst-border-w": "calc(var(--fx-border-w) * 2)",
+          "--fx-inst-border-color": "var(--fx-border)",
+          "--fx-inst-radius": "var(--fx-radius-md)",
+          "--fx-inst-hover-bg": "var(--fx-accent-soft)",
+          "--fx-inst-selected-bg": "var(--fx-accent)",
+          "--fx-inst-selected-fg": "var(--fx-accent-text)"
+        },
+        "bind": {
+          "--fx-tab-bg": "var(--fx-inst-row-bg)",
+          "--fx-tab-font-size": "var(--fx-inst-text-size)",
+          "--fx-tab-gap": "var(--fx-inst-spacing)",
+          "--fx-tab-indicator-size": "var(--fx-inst-border-w)",
+          "--fx-tab-bar-border": "var(--fx-inst-border-color)",
+          "--fx-tab-radius-underline": "var(--fx-inst-radius)",
+          "--fx-tab-radius-pills": "var(--fx-inst-radius)",
+          "--fx-tab-radius-boxed": "var(--fx-inst-radius)",
+          "--fx-tab-radius-segmented": "var(--fx-inst-radius)",
+          "--fx-tab-radius-plain": "var(--fx-inst-radius)",
+          "--fx-tab-radius-chips": "var(--fx-inst-radius)",
+          "--fx-tab-hover-bg": "var(--fx-inst-hover-bg)",
+          "--fx-tab-active-bg": "var(--fx-inst-selected-bg)",
+          "--fx-tab-pills-active-bg": "var(--fx-inst-selected-bg)",
+          "--fx-tab-boxed-active-bg": "var(--fx-inst-selected-bg)",
+          "--fx-tab-segmented-active-bg": "var(--fx-inst-selected-bg)",
+          "--fx-tab-chips-active-bg": "var(--fx-inst-selected-bg)",
+          "--fx-tab-active-text": "var(--fx-inst-selected-fg)",
+          "--fx-tab-pills-active-text": "var(--fx-inst-selected-fg)",
+          "--fx-tab-plain-active-text": "var(--fx-inst-selected-fg)"
+        },
+        "empty": false,
+        "followsSkin": false
+      }
+    },
+    "app-then-instance": {
+      "kind": "grid",
+      "layers": {
+        "skin": {
+          "rowAltBg": "surface2",
+          "spacing": "md",
+          "radius": "sm",
+          "hoverBg": "accentSoft",
+          "selectedFg": "accentText"
+        },
+        "app": {
+          "radius": "lg",
+          "spacing": "xl"
+        },
+        "instance": {
+          "radius": "pill"
+        }
+      },
+      "result": {
+        "kind": "grid",
+        "look": {
+          "rowAltBg": "surface2",
+          "spacing": "xl",
+          "radius": "pill",
+          "hoverBg": "accentSoft",
+          "selectedFg": "accentText"
+        },
+        "source": {
+          "rowAltBg": "skin",
+          "spacing": "app",
+          "radius": "instance",
+          "hoverBg": "skin",
+          "selectedFg": "skin"
+        },
+        "vars": {
+          "--fx-inst-row-alt-bg": "var(--fx-surface2)",
+          "--fx-inst-spacing": "var(--fx-dens-gap-xl)",
+          "--fx-inst-radius": "999px",
+          "--fx-inst-hover-bg": "var(--fx-accent-soft)",
+          "--fx-inst-selected-fg": "var(--fx-accent-text)"
+        },
+        "bind": {
+          "--fx-grid-row-alt-bg": "var(--fx-inst-row-alt-bg)",
+          "--fx-grid-cell-pad-x": "var(--fx-inst-spacing)",
+          "--fx-grid-radius": "var(--fx-inst-radius)",
+          "--fx-grid-hover-bg": "var(--fx-inst-hover-bg)",
+          "--fx-grid-selected-text": "var(--fx-inst-selected-fg)"
+        },
+        "empty": false,
+        "followsSkin": false
+      }
+    },
+    "app-only": {
+      "kind": "tab-group",
+      "layers": {
+        "app": {
+          "selectedBg": "accentSoft",
+          "borderW": "none"
+        }
+      },
+      "result": {
+        "kind": "tab-group",
+        "look": {
+          "borderW": "none",
+          "selectedBg": "accentSoft"
+        },
+        "source": {
+          "borderW": "app",
+          "selectedBg": "app"
+        },
+        "vars": {
+          "--fx-inst-border-w": "0",
+          "--fx-inst-selected-bg": "var(--fx-accent-soft)"
+        },
+        "bind": {
+          "--fx-tab-indicator-size": "var(--fx-inst-border-w)",
+          "--fx-tab-active-bg": "var(--fx-inst-selected-bg)",
+          "--fx-tab-pills-active-bg": "var(--fx-inst-selected-bg)",
+          "--fx-tab-boxed-active-bg": "var(--fx-inst-selected-bg)",
+          "--fx-tab-segmented-active-bg": "var(--fx-inst-selected-bg)",
+          "--fx-tab-chips-active-bg": "var(--fx-inst-selected-bg)"
+        },
+        "empty": false,
+        "followsSkin": false
+      }
+    },
+    "swap-before": {
+      "kind": "grid",
+      "layers": {
+        "skin": {
+          "rowAltBg": "surface2",
+          "spacing": "md",
+          "radius": "sm",
+          "hoverBg": "accentSoft",
+          "selectedFg": "accentText"
+        },
+        "instance": {
+          "hoverBg": "accent"
+        }
+      },
+      "result": {
+        "kind": "grid",
+        "look": {
+          "rowAltBg": "surface2",
+          "spacing": "md",
+          "radius": "sm",
+          "hoverBg": "accent",
+          "selectedFg": "accentText"
+        },
+        "source": {
+          "rowAltBg": "skin",
+          "spacing": "skin",
+          "radius": "skin",
+          "hoverBg": "instance",
+          "selectedFg": "skin"
+        },
+        "vars": {
+          "--fx-inst-row-alt-bg": "var(--fx-surface2)",
+          "--fx-inst-spacing": "var(--fx-dens-gap-md)",
+          "--fx-inst-radius": "var(--fx-radius-sm)",
+          "--fx-inst-hover-bg": "var(--fx-accent)",
+          "--fx-inst-selected-fg": "var(--fx-accent-text)"
+        },
+        "bind": {
+          "--fx-grid-row-alt-bg": "var(--fx-inst-row-alt-bg)",
+          "--fx-grid-cell-pad-x": "var(--fx-inst-spacing)",
+          "--fx-grid-radius": "var(--fx-inst-radius)",
+          "--fx-grid-hover-bg": "var(--fx-inst-hover-bg)",
+          "--fx-grid-selected-text": "var(--fx-inst-selected-fg)"
+        },
+        "empty": false,
+        "followsSkin": false
+      }
+    },
+    "swap-after": {
+      "kind": "grid",
+      "layers": {
+        "skin": {
+          "rowBg": "surface",
+          "radius": "lg",
+          "hoverBg": "surface3"
+        },
+        "instance": {
+          "hoverBg": "accent"
+        }
+      },
+      "result": {
+        "kind": "grid",
+        "look": {
+          "rowBg": "surface",
+          "radius": "lg",
+          "hoverBg": "accent"
+        },
+        "source": {
+          "rowBg": "skin",
+          "radius": "skin",
+          "hoverBg": "instance"
+        },
+        "vars": {
+          "--fx-inst-row-bg": "var(--fx-surface)",
+          "--fx-inst-radius": "var(--fx-radius-lg)",
+          "--fx-inst-hover-bg": "var(--fx-accent)"
+        },
+        "bind": {
+          "--fx-grid-row-bg": "var(--fx-inst-row-bg)",
+          "--fx-grid-radius": "var(--fx-inst-radius)",
+          "--fx-grid-hover-bg": "var(--fx-inst-hover-bg)"
+        },
+        "empty": false,
+        "followsSkin": false
+      }
+    },
+    "raw-values-dropped": {
+      "kind": "grid",
+      "layers": {
+        "skin": {
+          "rowAltBg": "surface2",
+          "spacing": "md",
+          "radius": "sm",
+          "hoverBg": "accentSoft",
+          "selectedFg": "accentText"
+        },
+        "instance": {
+          "hoverBg": "#ff0000",
+          "radius": "6px",
+          "textSize": "sm",
+          "spacing": 12,
+          "selectedFg": "transparent"
+        }
+      },
+      "result": {
+        "kind": "grid",
+        "look": {
+          "rowAltBg": "surface2",
+          "textSize": "sm",
+          "spacing": "md",
+          "radius": "sm",
+          "hoverBg": "accentSoft",
+          "selectedFg": "accentText"
+        },
+        "source": {
+          "rowAltBg": "skin",
+          "textSize": "instance",
+          "spacing": "skin",
+          "radius": "skin",
+          "hoverBg": "skin",
+          "selectedFg": "skin"
+        },
+        "vars": {
+          "--fx-inst-row-alt-bg": "var(--fx-surface2)",
+          "--fx-inst-text-size": "var(--fx-type-root-sm)",
+          "--fx-inst-spacing": "var(--fx-dens-gap-md)",
+          "--fx-inst-radius": "var(--fx-radius-sm)",
+          "--fx-inst-hover-bg": "var(--fx-accent-soft)",
+          "--fx-inst-selected-fg": "var(--fx-accent-text)"
+        },
+        "bind": {
+          "--fx-grid-row-alt-bg": "var(--fx-inst-row-alt-bg)",
+          "--fx-grid-font-size": "var(--fx-inst-text-size)",
+          "--fx-grid-cell-pad-x": "var(--fx-inst-spacing)",
+          "--fx-grid-radius": "var(--fx-inst-radius)",
+          "--fx-grid-hover-bg": "var(--fx-inst-hover-bg)",
+          "--fx-grid-selected-text": "var(--fx-inst-selected-fg)"
+        },
+        "empty": false,
+        "followsSkin": false
+      }
+    },
+    "junk-layers": {
+      "kind": "grid",
+      "layers": {
+        "skin": "nope",
+        "app": [],
+        "instance": 7
+      },
+      "result": {
+        "kind": "grid",
+        "look": {},
+        "source": {},
+        "vars": {},
+        "bind": {},
+        "empty": true,
+        "followsSkin": true
+      }
+    },
+    "nothing": {
+      "kind": "tab-group",
+      "layers": {},
+      "result": {
+        "kind": "tab-group",
+        "look": {},
+        "source": {},
+        "vars": {},
+        "bind": {},
+        "empty": true,
+        "followsSkin": true
+      }
+    }
+  },
+  "style": {
+    "--fx-inst-row-alt-bg": "var(--fx-surface2)",
+    "--fx-inst-text-size": "var(--fx-type-root-sm)",
+    "--fx-inst-spacing": "var(--fx-dens-gap-md)",
+    "--fx-inst-radius": "var(--fx-radius-sm)",
+    "--fx-inst-hover-bg": "var(--fx-accent)",
+    "--fx-inst-selected-fg": "var(--fx-accent-text)",
+    "--fx-grid-row-alt-bg": "var(--fx-inst-row-alt-bg)",
+    "--fx-grid-font-size": "var(--fx-inst-text-size)",
+    "--fx-grid-cell-pad-x": "var(--fx-inst-spacing)",
+    "--fx-grid-radius": "var(--fx-inst-radius)",
+    "--fx-grid-hover-bg": "var(--fx-inst-hover-bg)",
+    "--fx-grid-selected-text": "var(--fx-inst-selected-fg)"
+  },
+  "varNames": {
+    "tab-group": [
+      "--fx-inst-row-bg",
+      "--fx-inst-row-alt-bg",
+      "--fx-inst-text-size",
+      "--fx-inst-spacing",
+      "--fx-inst-border-w",
+      "--fx-inst-border-color",
+      "--fx-inst-radius",
+      "--fx-inst-hover-bg",
+      "--fx-inst-selected-bg",
+      "--fx-inst-selected-fg",
+      "--fx-tab-bg",
+      "--fx-tab-font-size",
+      "--fx-tab-gap",
+      "--fx-tab-indicator-size",
+      "--fx-tab-bar-border",
+      "--fx-tab-radius-underline",
+      "--fx-tab-radius-pills",
+      "--fx-tab-radius-boxed",
+      "--fx-tab-radius-segmented",
+      "--fx-tab-radius-plain",
+      "--fx-tab-radius-chips",
+      "--fx-tab-hover-bg",
+      "--fx-tab-active-bg",
+      "--fx-tab-pills-active-bg",
+      "--fx-tab-boxed-active-bg",
+      "--fx-tab-segmented-active-bg",
+      "--fx-tab-chips-active-bg",
+      "--fx-tab-active-text",
+      "--fx-tab-pills-active-text",
+      "--fx-tab-plain-active-text"
+    ],
+    "grid": [
+      "--fx-inst-row-bg",
+      "--fx-inst-row-alt-bg",
+      "--fx-inst-text-size",
+      "--fx-inst-spacing",
+      "--fx-inst-border-w",
+      "--fx-inst-border-color",
+      "--fx-inst-radius",
+      "--fx-inst-hover-bg",
+      "--fx-inst-selected-bg",
+      "--fx-inst-selected-fg",
+      "--fx-grid-row-bg",
+      "--fx-grid-row-alt-bg",
+      "--fx-grid-font-size",
+      "--fx-grid-cell-pad-x",
+      "--fx-grid-border-w",
+      "--fx-grid-line-color",
+      "--fx-grid-radius",
+      "--fx-grid-hover-bg",
+      "--fx-grid-selected-bg",
+      "--fx-grid-selected-text"
+    ]
+  },
+  "settings": {
+    "keys": {
+      "instance": "axf.chrome.grid.ui-review.items.look",
+      "kind": "axf.chrome.tab-group.look"
+    },
+    "parseKeys": [
+      "axf.chrome.grid.ui-review.items.look",
+      "axf.chrome.tab-group.look",
+      "axf.chrome.toolbar.app.look",
+      "axf.chrome.grid.ui-review.items",
+      "axf.tokens.instances",
+      ""
+    ],
+    "parsed": {
+      "axf.chrome.grid.ui-review.items.look": {
+        "kind": "grid",
+        "id": "ui-review.items"
+      },
+      "axf.chrome.tab-group.look": {
+        "kind": "tab-group",
+        "id": ""
+      },
+      "axf.chrome.toolbar.app.look": null,
+      "axf.chrome.grid.ui-review.items": null,
+      "axf.tokens.instances": null,
+      "": null
+    },
+    "scope": {
+      "key": "grid:ui-review.items",
+      "parsed": {
+        "kind": "grid",
+        "id": "ui-review.items"
+      },
+      "bad": [
+        null,
+        null,
+        null
+      ]
+    },
+    "before": {
+      "axf.theme": "x",
+      "axf.chrome.grid.look": {
+        "radius": "md"
+      },
+      "axf.chrome.tab-group.settings.main": {
+        "style": "pills"
+      },
+      "axf.tokens.instances": {
+        "grid.other": {
+          "values": {
+            "headerWeight": 700
+          }
+        }
+      }
+    },
+    "record": {
+      "hoverBg": "accent",
+      "textSize": "sm",
+      "radius": "4px",
+      "bogus": "x"
+    },
+    "written": {
+      "axf.theme": "x",
+      "axf.chrome.grid.look": {
+        "radius": "md"
+      },
+      "axf.chrome.tab-group.settings.main": {
+        "style": "pills"
+      },
+      "axf.tokens.instances": {
+        "grid.other": {
+          "values": {
+            "headerWeight": 700
+          }
+        }
+      },
+      "axf.chrome.grid.ui-review.items.look": {
+        "textSize": "sm",
+        "hoverBg": "accent"
+      }
+    },
+    "read": {
+      "textSize": "sm",
+      "hoverBg": "accent"
+    },
+    "readKind": {
+      "radius": "md"
+    },
+    "reset": {
+      "axf.theme": "x",
+      "axf.chrome.grid.look": {
+        "radius": "md"
+      },
+      "axf.chrome.tab-group.settings.main": {
+        "style": "pills"
+      },
+      "axf.tokens.instances": {
+        "grid.other": {
+          "values": {
+            "headerWeight": 700
+          }
+        }
+      }
+    },
+    "list": [
+      {
+        "kind": "grid",
+        "id": "",
+        "look": {
+          "radius": "md"
+        }
+      },
+      {
+        "kind": "grid",
+        "id": "ui-review.items",
+        "look": {
+          "textSize": "sm",
+          "hoverBg": "accent"
+        }
+      }
+    ],
+    "resolved": {
+      "kind": "grid",
+      "look": {
+        "rowAltBg": "surface2",
+        "textSize": "sm",
+        "spacing": "md",
+        "radius": "md",
+        "hoverBg": "accent",
+        "selectedFg": "accentText"
+      },
+      "source": {
+        "rowAltBg": "skin",
+        "textSize": "instance",
+        "spacing": "skin",
+        "radius": "app",
+        "hoverBg": "instance",
+        "selectedFg": "skin"
+      },
+      "vars": {
+        "--fx-inst-row-alt-bg": "var(--fx-surface2)",
+        "--fx-inst-text-size": "var(--fx-type-root-sm)",
+        "--fx-inst-spacing": "var(--fx-dens-gap-md)",
+        "--fx-inst-radius": "var(--fx-radius-md)",
+        "--fx-inst-hover-bg": "var(--fx-accent)",
+        "--fx-inst-selected-fg": "var(--fx-accent-text)"
+      },
+      "bind": {
+        "--fx-grid-row-alt-bg": "var(--fx-inst-row-alt-bg)",
+        "--fx-grid-font-size": "var(--fx-inst-text-size)",
+        "--fx-grid-cell-pad-x": "var(--fx-inst-spacing)",
+        "--fx-grid-radius": "var(--fx-inst-radius)",
+        "--fx-grid-hover-bg": "var(--fx-inst-hover-bg)",
+        "--fx-grid-selected-text": "var(--fx-inst-selected-fg)"
+      },
+      "empty": false,
+      "followsSkin": false
+    }
+  },
+  "refused": {
+    "record": {
+      "rowBg": "#ff0000",
+      "rowAltBg": "surface2",
+      "textSize": "0.9em",
+      "spacing": 12,
+      "borderW": "2px",
+      "borderColor": "rgb(1 2 3)",
+      "radius": "var(--fx-radius-sm)",
+      "hoverBg": "red",
+      "selectedBg": "transparent",
+      "selectedFg": "transparent",
+      "bogus": "x"
+    },
+    "errors": [
+      "look.rowBg: a raw colour is never a look value; wants a colour-theme token (bg, surface, surface2, surface3, text, muted, border, accent, accentText, accentSoft, danger, success, warning, info, focus, shadow) or transparent",
+      "look.textSize: a raw size is never a look value; wants a text step (2xs xs sm md lg xl 2xl)",
+      "look.spacing: a bare number is never a look value; wants a spacing step (2xs xs sm md lg xl 2xl 3xl 4xl)",
+      "look.borderW: a raw size is never a look value; wants a border step (none thin medium thick)",
+      "look.borderColor: a raw colour is never a look value; wants a colour-theme token (bg, surface, surface2, surface3, text, muted, border, accent, accentText, accentSoft, danger, success, warning, info, focus, shadow) or transparent",
+      "look.radius: a CSS expression is never a look value; wants a radius step (none sm md lg pill)",
+      "look.hoverBg: wants a colour-theme token (bg, surface, surface2, surface3, text, muted, border, accent, accentText, accentSoft, danger, success, warning, info, focus, shadow) or transparent",
+      "look.selectedFg: wants a colour-theme token (bg, surface, surface2, surface3, text, muted, border, accent, accentText, accentSoft, danger, success, warning, info, focus, shadow)",
+      "look.bogus is not a look key (rowBg, rowAltBg, textSize, spacing, borderW, borderColor, radius, hoverBg, selectedBg, selectedFg)"
+    ],
+    "normalized": {
+      "rowAltBg": "surface2",
+      "selectedBg": "transparent"
+    },
+    "set": {
+      "radius": "6px",
+      "hoverBg": "#eee",
+      "textSize": "huge",
+      "selectedFg": "transparent",
+      "bogus": "accent"
+    },
+    "setErrors": {
+      "radius": "radius: a raw size is never a look value; wants a radius step (none sm md lg pill)",
+      "hoverBg": "hoverBg: a raw colour is never a look value; wants a colour-theme token (bg, surface, surface2, surface3, text, muted, border, accent, accentText, accentSoft, danger, success, warning, info, focus, shadow) or transparent",
+      "textSize": "textSize: wants a text step (2xs xs sm md lg xl 2xl)",
+      "selectedFg": "selectedFg: wants a colour-theme token (bg, surface, surface2, surface3, text, muted, border, accent, accentText, accentSoft, danger, success, warning, info, focus, shadow)",
+      "bogus": "bogus is not a look key (rowBg, rowAltBg, textSize, spacing, borderW, borderColor, radius, hoverBg, selectedBg, selectedFg)"
+    },
+    "asset": [
+      "data.look.rowBg: a raw colour is never a look value; wants a colour-theme token (bg, surface, surface2, surface3, text, muted, border, accent, accentText, accentSoft, danger, success, warning, info, focus, shadow) or transparent",
+      "data.look.textSize: a raw size is never a look value; wants a text step (2xs xs sm md lg xl 2xl)",
+      "data.look.spacing: a bare number is never a look value; wants a spacing step (2xs xs sm md lg xl 2xl 3xl 4xl)",
+      "data.look.borderW: a raw size is never a look value; wants a border step (none thin medium thick)",
+      "data.look.borderColor: a raw colour is never a look value; wants a colour-theme token (bg, surface, surface2, surface3, text, muted, border, accent, accentText, accentSoft, danger, success, warning, info, focus, shadow) or transparent",
+      "data.look.radius: a CSS expression is never a look value; wants a radius step (none sm md lg pill)",
+      "data.look.hoverBg: wants a colour-theme token (bg, surface, surface2, surface3, text, muted, border, accent, accentText, accentSoft, danger, success, warning, info, focus, shadow) or transparent",
+      "data.look.selectedFg: wants a colour-theme token (bg, surface, surface2, surface3, text, muted, border, accent, accentText, accentSoft, danger, success, warning, info, focus, shadow)",
+      "data.look.bogus is not a look key (rowBg, rowAltBg, textSize, spacing, borderW, borderColor, radius, hoverBg, selectedBg, selectedFg)",
+      "data.for[1] is not an instance id"
+    ]
+  },
+  "migration": {
+    "before": {
+      "axf.tokens.instances": {
+        "tabs.settings.main": {
+          "values": {
+            "activeText": "accent",
+            "indicator": "#ff0000",
+            "gap": "dens-gap-sm",
+            "barBorder": "var(--fx-border)"
+          },
+          "previous": {
+            "activeText": "muted",
+            "gap": "dens-gap-md"
+          }
+        },
+        "grid.ui-review.items": {
+          "values": {
+            "hoverBg": "accentSoft",
+            "radius": "radius.md",
+            "stickyShadow": "shadow.sm",
+            "headerWeight": 700,
+            "cellPadX": "12px"
+          }
+        },
+        "grid.plain": {
+          "values": {
+            "selectedBg": "accent"
+          }
+        }
+      },
+      "axf.chrome.grid.ui-review.items.look": {
+        "hoverBg": "surface3"
+      },
+      "axf.theme": "x"
+    },
+    "result": {
+      "settings": {
+        "axf.tokens.instances": {
+          "tabs.settings.main": {
+            "values": {
+              "indicator": "#ff0000"
+            },
+            "previous": {}
+          },
+          "grid.ui-review.items": {
+            "values": {
+              "headerWeight": 700,
+              "hoverBg": "accentSoft",
+              "cellPadX": "12px",
+              "stickyShadow": "shadow.sm"
+            }
+          }
+        },
+        "axf.chrome.grid.ui-review.items.look": {
+          "hoverBg": "surface3",
+          "radius": "md"
+        },
+        "axf.theme": "x",
+        "axf.chrome.tab-group.settings.main.look": {
+          "spacing": "sm",
+          "borderColor": "border",
+          "selectedFg": "accent"
+        },
+        "axf.chrome.grid.plain.look": {
+          "selectedBg": "accent"
+        }
+      },
+      "moved": [
+        {
+          "kind": "tab-group",
+          "id": "settings.main",
+          "key": "spacing",
+          "from": "gap",
+          "value": "sm"
+        },
+        {
+          "kind": "tab-group",
+          "id": "settings.main",
+          "key": "borderColor",
+          "from": "barBorder",
+          "value": "border"
+        },
+        {
+          "kind": "tab-group",
+          "id": "settings.main",
+          "key": "selectedFg",
+          "from": "activeText",
+          "value": "accent"
+        },
+        {
+          "kind": "grid",
+          "id": "ui-review.items",
+          "key": "radius",
+          "from": "radius",
+          "value": "md"
+        },
+        {
+          "kind": "grid",
+          "id": "plain",
+          "key": "selectedBg",
+          "from": "selectedBg",
+          "value": "accent"
+        }
+      ],
+      "kept": [
+        {
+          "family": "tabs",
+          "instance": "settings.main",
+          "token": "indicator",
+          "value": "#ff0000"
+        },
+        {
+          "family": "grid",
+          "instance": "ui-review.items",
+          "token": "headerWeight",
+          "value": 700
+        },
+        {
+          "family": "grid",
+          "instance": "ui-review.items",
+          "token": "hoverBg",
+          "value": "accentSoft"
+        },
+        {
+          "family": "grid",
+          "instance": "ui-review.items",
+          "token": "cellPadX",
+          "value": "12px"
+        },
+        {
+          "family": "grid",
+          "instance": "ui-review.items",
+          "token": "stickyShadow",
+          "value": "shadow.sm"
+        }
+      ],
+      "changed": true
+    }
+  }
+}
