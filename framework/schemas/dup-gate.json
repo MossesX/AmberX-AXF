@@ -1,0 +1,100 @@
+{
+  "schema": "dup-gate@1",
+  "version": 1,
+  "verdict": "dup-gate-verdict@1",
+  "match": "dup-gate-match@1",
+  "candidate": "dup-gate-candidate@1",
+  "override": "dup-gate-override@1",
+  "matchKinds": [
+    "shipped",
+    "plugin",
+    "file",
+    "setting",
+    "build"
+  ],
+  "verdicts": [
+    "block",
+    "warn",
+    "pass"
+  ],
+  "fixKinds": [
+    "setting",
+    "action",
+    "reuse",
+    "none"
+  ],
+  "stateSources": [
+    "lander-config",
+    "gate-lander",
+    "plugin-settings",
+    "plugin-enabled",
+    "build-options",
+    "unknown"
+  ],
+  "fields": [
+    "title",
+    "said",
+    "detail",
+    "plugin",
+    "setting",
+    "file",
+    "id"
+  ],
+  "weights": {
+    "title": 0.45,
+    "said": 0.25,
+    "detail": 0.1,
+    "plugin": 0.1,
+    "setting": 0.05,
+    "file": 0.03,
+    "id": 0.02
+  },
+  "thresholds": {
+    "block": 0.82,
+    "warn": 0.6
+  },
+  "buildStates": [
+    "pending",
+    "queued",
+    "running",
+    "waiting",
+    "blocked",
+    "failed",
+    "built",
+    "recorded"
+  ],
+  "overrideVias": [
+    "console",
+    "voice",
+    "cli",
+    "mcp",
+    "api"
+  ],
+  "corpora": [
+    "shipped",
+    "builds",
+    "plugins",
+    "settings",
+    "files"
+  ],
+  "matchesMax": 20,
+  "textMax": 600,
+  "saidMax": 4000,
+  "listMax": 200,
+  "idPattern": "^[a-z0-9][a-z0-9-]{0,80}$",
+  "rule": {
+    "id": "dup-gate",
+    "doer": "vps",
+    "kind": "mechanical",
+    "phase": "before",
+    "check": "fixer:dup-gate"
+  },
+  "history": {
+    "kind": "build-rule",
+    "actions": [
+      "pass",
+      "fail",
+      "override"
+    ]
+  }
+}

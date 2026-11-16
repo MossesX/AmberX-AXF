@@ -26,6 +26,7 @@ import { REGISTRY as BUILD_HOOK_REGISTRY, jsonSchemas as buildHookJsonSchemas } 
 import { REGISTRY as SHIPPED_MANIFEST_REGISTRY, jsonSchemas as shippedManifestJsonSchemas } from '../core/shipped-manifest.mjs';
 import { REGISTRY as GATE_RULES_REGISTRY, jsonSchemas as gateRulesJsonSchemas } from '../core/gate-rules.mjs';
 import { REGISTRY as BUILD_RULES_REGISTRY, jsonSchemas as buildRulesJsonSchemas } from '../core/build-rules.mjs';
+import { REGISTRY as DUP_GATE_REGISTRY, jsonSchemas as dupGateJsonSchemas } from '../core/dup-gate.mjs';
 import { consoleControlRegistry, jsonSchemas as consoleControlJsonSchemas } from '../core/engines/console-control-rules.mjs';
 import { skinConfigSchema, skinConfigSnapshot, skinConfigTree } from '../core/engines/skin-config-rules.mjs';
 import { createHash } from 'node:crypto';
@@ -930,6 +931,9 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   // build-rules@1: every builder rule as one store the VPS owns (build-rule@1, build-rules-store@1, build-rule-history@1) + the registry snapshot
   for (const [n, schema] of Object.entries(buildRulesJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const breg = join(FRAMEWORK_DIR, 'schemas/build-rules.json'); writeFileSync(breg, JSON.stringify(BUILD_RULES_REGISTRY, null, 2) + '\n'); written.push(breg);
+  // dup-gate@1: the duplicate gate's verdict before a build is filed, split or launched (dup-gate-match@1, dup-gate-verdict@1) + the registry snapshot
+  for (const [n, schema] of Object.entries(dupGateJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  const dgreg = join(FRAMEWORK_DIR, 'schemas/dup-gate.json'); writeFileSync(dgreg, JSON.stringify(DUP_GATE_REGISTRY, null, 2) + '\n'); written.push(dgreg);
   // console-control@1: one address + ten verbs for everything the console shows (address, command, result, targets) + the registry snapshot
   for (const [n, schema] of Object.entries(consoleControlJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const ccreg = join(FRAMEWORK_DIR, 'schemas/console-control.json'); writeFileSync(ccreg, JSON.stringify(consoleControlRegistry(), null, 2) + '\n'); written.push(ccreg);

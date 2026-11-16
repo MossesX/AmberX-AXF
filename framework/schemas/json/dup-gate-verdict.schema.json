@@ -1,0 +1,266 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/dup-gate-verdict.schema.json",
+  "title": "dup-gate-verdict@1 (dup-gate@1): what the duplicate gate found before a build is filed, split or launched",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "candidate",
+    "checked",
+    "matches",
+    "verdict"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "dup-gate-verdict@1"
+    },
+    "version": {
+      "const": 1
+    },
+    "at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "build": {
+      "type": "string"
+    },
+    "rule": {
+      "type": "string",
+      "maxLength": 60,
+      "description": "the build rule that produced it (dup-gate)"
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "$axf": {
+          "const": "dup-gate-candidate@1"
+        },
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "said": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "detail": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "plugins": {
+          "type": "array",
+          "maxItems": 40,
+          "items": {
+            "type": "string"
+          }
+        },
+        "settings": {
+          "type": "array",
+          "maxItems": 40,
+          "items": {
+            "type": "string"
+          }
+        },
+        "files": {
+          "type": "array",
+          "maxItems": 200,
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "what is about to be built: the build id when it has one, the title, Brett's words, the detail, and the plugins / settings keys / files it names"
+    },
+    "checked": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "corpora": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "kind",
+              "count"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "shipped",
+                  "builds",
+                  "plugins",
+                  "settings",
+                  "files"
+                ]
+              },
+              "count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "source": {
+                "type": "string",
+                "maxLength": 300
+              },
+              "at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        },
+        "tookMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "thresholds": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "block": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "warn": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
+        },
+        "synonyms": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "description": "what was checked: each corpus with its size and source, how long it took, the thresholds and synonym count used"
+    },
+    "matches": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "$ref": "https://amberx.ai/axf/schemas/dup-gate-match.schema.json"
+      },
+      "description": "best first"
+    },
+    "top": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "https://amberx.ai/axf/schemas/dup-gate-match.schema.json"
+        }
+      ]
+    },
+    "verdict": {
+      "enum": [
+        "block",
+        "warn",
+        "pass"
+      ],
+      "description": "block = held with the fix named (top.score ≥ thresholds.block, no override); warn = goes on, History says so (≥ warn); pass"
+    },
+    "blocked": {
+      "type": "boolean"
+    },
+    "pass": {
+      "type": "boolean"
+    },
+    "reason": {
+      "type": "string",
+      "maxLength": 600,
+      "description": "one plain line: what exists, where, on or off since when, and the fix"
+    },
+    "fix": {
+      "type": "object",
+      "required": [
+        "kind"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "setting",
+            "action",
+            "reuse",
+            "none"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 600
+        },
+        "key": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "value": {},
+        "source": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "action": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "args": {
+          "type": "object"
+        },
+        "build": {
+          "type": "string"
+        },
+        "pr": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "description": "the one fix that makes the build unnecessary: setting = turn key to value; action = run a named console action; reuse = the build / PR already carrying it; none"
+    },
+    "override": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "by"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "$axf": {
+          "const": "dup-gate-override@1"
+        },
+        "by": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 600
+        },
+        "via": {
+          "enum": [
+            "console",
+            "voice",
+            "cli",
+            "mcp",
+            "api"
+          ]
+        },
+        "build": {
+          "type": "string"
+        }
+      },
+      "description": "Brett's \"build it anyway\": turns a block into a pass and is kept on the verdict and in History"
+    }
+  }
+}
