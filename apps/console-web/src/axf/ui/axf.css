@@ -224,6 +224,8 @@ button.fx-banner__badge { cursor: pointer; }
 }
 .fx-banner :where(.fx-banner__badge.is-icon, .fx-banner__badge.is-dot, .fx-widget-theme, .fx-banner__more-btn .fx-iconbtn) { aspect-ratio: var(--fx-shape-widget-aspect); }
 .fx-banner .fx-widget-progress__bar, .fx-banner .fx-widget-progress__fill { border-radius: var(--fx-shape-widget-radius); }
+/* the ⋯ button is a framework IconButton, whose own radius rule (button asset) outranks a :where() list: name it outright */
+.fx-banner .fx-banner__more-btn .fx-iconbtn { border-radius: var(--fx-shape-widget-radius); clip-path: var(--fx-shape-widget-clip); -webkit-mask: var(--fx-shape-widget-mask) center / 100% 100% no-repeat; mask: var(--fx-shape-widget-mask) center / 100% 100% no-repeat; corner-shape: var(--fx-shape-widget-corner); aspect-ratio: var(--fx-shape-widget-aspect); }
 .fx-banner :where(button.fx-banner__badge, .fx-widget-theme, .fx-banner__more-btn .fx-iconbtn):hover { background: color-mix(in srgb, currentColor calc(var(--fx-opacity-hover) * 100%), transparent); }
 .fx-banner :where(button.fx-banner__badge, .fx-widget-theme, .fx-banner__more-btn .fx-iconbtn):focus-visible { outline: none; }
 .fx-banner .fx-banner__item:has(:where(button.fx-banner__badge, .fx-widget-theme, .fx-iconbtn):focus-visible) { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w); border-radius: var(--fx-radius-sm); }

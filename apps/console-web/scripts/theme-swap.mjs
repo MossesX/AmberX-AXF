@@ -8,7 +8,8 @@
  * colour theme and records each visible element's text, background and border colour. Any colour that stays the
  * same in every theme is hard-coded and fails the check. It then switches style themes and checks that the
  * transparency tokens (--fx-opacity-*) follow, then picks every typography / density / sizing asset and checks the sizes
- * on screen follow too (Angel build ui-all-assets). Needs the `playwright` package and a Chromium.
+ * on screen follow too (Angel build ui-all-assets), and swaps every shape asset (shape@1) checking every chip-like
+ * banner widget follows it. Needs the `playwright` package and a Chromium.
  */
 import { spawn } from 'node:child_process';
 import { setTimeout as sleep } from 'node:timers/promises';
@@ -145,6 +146,28 @@ try {
     const moved = keys.filter((k) => new Set(shots.map((s) => s[k])).size > 1).length;
     log(`${type} ${ids.join(', ')}: ${moved} of ${keys.length} sized elements follow the pick`);
     if (moved < Math.max(5, keys.length * share)) { log(`  ✗ ${type}: too few sizes follow the asset (hard-coded sizes left?)`); failed = true; }
+  }
+  // Widget shapes (shape@1, build banner-widget-shapes-more-than-circle): every chip-like banner widget follows the shape
+  // in force. Swap through every shape asset; a chip whose radius, clip and mask never change has a hard-coded radius.
+  const shapeIds = await page.evaluate(() => (globalThis.AXF?.registry.list('shape') ?? []).map((a) => a.id));
+  if (shapeIds.length < 2) { log('✗ fewer than two shape assets registered'); failed = true; }
+  else {
+    const readShapes = () => page.evaluate(() => {
+      const out = {};
+      document.querySelectorAll('.fx-banner :is(.fx-banner__badge, .fx-widget-counter__num, .fx-widget-status__dot, .fx-widget-theme, .fx-banner__more-btn .fx-iconbtn)').forEach((e, i) => {
+        if (e.offsetParent === null) return;
+        const cs = getComputedStyle(e);
+        out[`${e.className}#${i}`] = [cs.borderTopLeftRadius, cs.borderTopRightRadius, cs.clipPath, cs.maskImage || cs.webkitMaskImage].join(' | ');
+      });
+      return out;
+    });
+    const shots = [];
+    for (const id of shapeIds) { await page.evaluate((x) => globalThis.AXF.swap('shape', x), id); await page.waitForTimeout(200); shots.push(await readShapes()); }
+    const keys = Object.keys(shots[0]).filter((k) => shots.every((s) => k in s));
+    const stuck = keys.filter((k) => new Set(shots.map((s) => s[k])).size === 1);
+    log(`shapes ${shapeIds.join(', ')}: ${keys.length - stuck.length} of ${keys.length} banner chips follow the shape`);
+    for (const k of stuck.slice(0, 20)) log(`  ✗ ${k} keeps ${shots[0][k]}`);
+    if (stuck.length) failed = true;
   }
   if (errors.length) { log(`✗ page errors:\n  ${errors.join('\n  ')}`); failed = true; }
   await browser.close();
