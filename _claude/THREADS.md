@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 15:12 UTC · `axf-data-postgres-real-tables-own` → queued, note (all) · console
 - 2026-11-15 15:12 UTC · `data-container-axf-data-holds-all` note (all) · mcp
 - 2026-11-15 15:12 UTC · `data-container-axf-data-holds-all` → queued (all) · mcp
 - 2026-11-15 15:13 UTC · `data-container-axf-data-holds-all` → running (all) · mcp
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 16:58 UTC · `orchestrator-on-hold-status-and-tab` → running, note (all) · pipeline
 - 2026-11-16 16:58 UTC · `orchestrator-on-hold-status-and-tab` branch claude/orchestrator-on-hold-status-and-tab (all) · pipeline
 - 2026-11-16 16:58 UTC · `orchestrator-on-hold-status-and-tab` note (all) · orchestrator
+- 2026-11-16 16:59 UTC · `fix-console-deep-links-open-page-lands` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
