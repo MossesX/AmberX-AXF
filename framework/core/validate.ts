@@ -7,6 +7,7 @@ import { skinErrors } from './engines/skin';
 import { stylePackageErrors } from './engines/stylepackage';
 import { interfaceErrors } from './engines/interface';
 import { brandAssetErrors } from './engines/brand-rules.mjs';
+import { iconAssetErrors } from './engines/icon-rules.mjs';
 import { scaleErrors } from './engines/scale-rules.mjs';
 import { layoutErrors } from './engines/layout-rules.mjs';
 import { helpErrors } from './engines/help-rules.mjs';
@@ -133,6 +134,8 @@ export function validateAsset(raw: unknown): ValidationResult {
   // demonstration@1 / book@1 / clip@1 / docs@1: ONE validator shared with the build engine (core/engines/demo-rules.mjs)
   errors.push(...demoAssetErrors(raw.type, data));
   errors.push(...(brandAssetErrors(raw.type, data) ?? []));
+  // icon-map@1 / icon-pack@1 extended fields (spots, glyph sources, extends, source, licence, seed): ONE validator shared with the build engine (core/engines/icon-rules.mjs)
+  errors.push(...(iconAssetErrors(raw.type, data) ?? []));
   // Widget hosts (banner.attach, toolbar.widgets): every entry names a type and side the host takes.
   const host = hostSpec(raw.type);
   if (host && host.field in data) errors.push(...validateHostAttachments(raw.type, data[host.field]));

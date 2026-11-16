@@ -41,6 +41,9 @@ export function directDeps(a) {
   if (a.type === 'style-package') for (const [t, id] of Object.entries(d.slots ?? {})) add(t, id);
   if (a.type === 'branding') { for (const [k, id] of Object.entries(d.marks ?? {})) add(k === 'animated' ? 'animated-logo' : 'logo-mark', id); add('icon-pack', d.iconPack); }
   if (a.type === 'animated-logo') add('logo-mark', d.mark);
+  // icon-pack@1 / icon-map@1: the parent a pack or map extends (inherit@1), and the packs its glyph refs point at
+  if (a.type === 'icon-pack' || a.type === 'icon-map') add(a.type, d.extends);
+  if (a.type === 'icon-pack') for (const g of [...Object.values(d.glyphs ?? {}), ...Object.values(d.spots ?? {})]) { const ref = g && typeof g === 'object' ? g.ref : typeof g === 'string' && g.startsWith('pack:') ? g : ''; const m = /^pack:([a-z0-9][a-z0-9-]*)\//.exec(ref ?? ''); if (m) add('icon-pack', m[1]); }
   if (a.type === 'toolbar') for (const w of d.widgets ?? []) add(w.type, w.id);
   if (a.type === 'banner') for (const w of d.attach ?? []) add(w.type, w.id);
   return out;
