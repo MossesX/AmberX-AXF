@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:04:18.056Z",
+ "updatedAt": "2026-11-16T19:05:20.107Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -160738,7 +160738,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T19:03:55.794Z",
-   "updatedAt": "2026-11-16T19:04:10.501Z",
+   "updatedAt": "2026-11-16T19:05:16.473Z",
    "builtAt": "",
    "notes": [
     {
@@ -160748,6 +160748,10 @@
     {
      "text": "Brett Nov 16: also add a 'Save as new skin' button in Settings > Appearance: saves the current look (skin + every asset override) as a new skin@1, with a field to type its name; it shows up in the skin list and the hub (can be picked hub-wide). Same action on REST, MCP, CLI and voice (skins.save-as <name>).",
      "at": "2026-11-16T19:04:10.501Z"
+    },
+    {
+     "text": "Split by Claude into 11 steps (0 Fable).",
+     "at": "2026-11-16T19:05:16.473Z"
     }
    ],
    "approvals": [],
@@ -160764,7 +160768,253 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Read AssetsWithEdits and the chrome.reset path in framework/react/components/ChromeContext.tsx, the chrome-settings engine in framework/core/engines/chrome-settings-rules.mjs and the console actions registry. Write a short plan in _claude/builds/reports/reset-all-button-every-asset-override.md covering which override keys chrome.reset clears today (axf.chrome.<type>.<id>.asset, axf.chrome.<type>.<id>, axf.tokens.* per asset) and how its undo works. Commit the plan.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/react/components/ChromeContext.tsx",
+      "framework/core/engines/chrome-settings-rules.mjs",
+      "_claude/builds/reports/reset-all-button-every-asset-override.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjmvcmx01ebs6",
+     "createdAt": "2026-11-16T19:05:16.473Z"
+    },
+    {
+     "id": "s2",
+     "text": "Add a pure helper listOverriddenAssets(settings) to framework/core/engines/chrome-settings-rules.mjs, plus resetAllPlan(settings), which returns every key chrome.reset would clear for every overridden asset and a snapshot to undo from. No UI. Add unit cases to the existing chrome-settings check (framework/spec/check-chrome-settings.mts).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/chrome-settings-rules.mjs",
+      "framework/spec/check-chrome-settings.mts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjmvcmx02r812",
+     "createdAt": "2026-11-16T19:05:16.473Z"
+    },
+    {
+     "id": "s3",
+     "text": "Add a resetAll() runtime action in framework/react/components/ChromeContext.tsx (or its chrome actions module). It applies resetAllPlan in one SettingsRegistry batch so editors and other apps see one change, then records one undo entry that restores the whole snapshot. Export it next to the existing per-asset reset.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/ChromeContext.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjmvcmx030asc",
+     "createdAt": "2026-11-16T19:05:16.473Z"
+    },
+    {
+     "id": "s4",
+     "text": "UI: in the AssetsWithEdits header row ('N assets are controlled by their own settings'), add a framework Button 'Reset all'. It is shown only when N > 0, uses one destructive confirm string naming N, calls resetAll(), and shows the undo toast once. Use tokens and framework controls only. It sits in a toolbar row with role=\"toolbar\", an aria-label and a data-axf-target address (setting:appearance/asset-overrides/reset-all).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/ChromeContext.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjmvcmx04mliq",
+     "createdAt": "2026-11-16T19:05:16.473Z"
+    },
+    {
+     "id": "s5",
+     "text": "API part 1: register the console action chrome.reset-all next to chrome.reset in the console actions registry. It takes {confirm:true}, returns {reset:[ids], undoId}, and refuses without confirm. Add the read action chrome.overrides, which lists the overridden assets. Both go into control@1 / console-control addresses, appended last. The deep link is view:settings/tab:settings.tabs=appearance plus the target above.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src",
+      "framework/core",
+      "apps/console-web/plugins/theme-manager"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjmvcmx052hfl",
+     "createdAt": "2026-11-16T19:05:16.473Z"
+    },
+    {
+     "id": "s6",
+     "text": "API part 2: add REST routes in the theme-manager plugin server: GET /api/plugins/theme-manager/overrides and POST /api/plugins/theme-manager/reset-all (confirm required). Expose MCP through plugin-commands (static route reading), plus an undo route that takes the undoId.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/theme-manager/server",
+      "apps/console-web/plugins/theme-manager/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjmvcmx06aow3",
+     "createdAt": "2026-11-16T19:05:16.473Z"
+    },
+    {
+     "id": "s7",
+     "text": "API part 3: add the CLI command `node framework/cli/chrome-settings.mjs overrides | reset-all --confirm | undo <id>` and `axf console` passthrough. Add the voice phrase mapping ('reset all asset overrides' -> chrome.reset-all, which asks for confirmation) in the AmberX/console voice action table. Add the help stub and command descriptions for the glossary.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/chrome-settings.mjs",
+      "apps/console-web/plugins/theme-manager",
+      "apps/console-web/src"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjmvcmx07qth2",
+     "createdAt": "2026-11-16T19:05:16.473Z"
+    },
+    {
+     "id": "s8",
+     "text": "Rebake the shared framework into the apps that carry AppearancePanel / ChromeContext (node framework/cli/rebake.mjs status, then apply for the console, axHub web, AmberX and Expenses as listed). Run node framework/cli/shared-assets.mjs check. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/src/axf",
+      "apps/*/src/axf",
+      "apps/*/axf.lock.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjmvcmx08jswb",
+     "createdAt": "2026-11-16T19:05:16.473Z"
+    },
+    {
+     "id": "s9",
+     "text": "Tests: extend check-chrome-settings.mts for reset-all (it clears every override, the shared default is selected again, and undo restores the exact snapshot), plus a server test for the REST routes (confirm required, idempotent with 0 overrides). Run check-theme.mjs, check-controls.mjs, check-toolbars.mjs, check-console-control.mjs, check-chrome-assets.mjs and the glossary catalog --check, and fix any findings.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/check-chrome-settings.mts",
+      "apps/console-web/plugins/theme-manager/server",
+      "framework/cli"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjmvcmx09qsnl",
+     "createdAt": "2026-11-16T19:05:16.473Z"
+    },
+    {
+     "id": "s10",
+     "text": "UI Review: shoot desktop and phone views of Settings > Appearance with 3+ overrides, before and after Reset all, through a vite preview. Submit with review.mjs and three asset options for the button placement and label (header-right button, header toolbar with count chip, overflow menu item), each written to apps/console-web/plugins/theme-manager/assets/<type>/.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/theme-manager/assets",
+      "_claude/builds/reports/reset-all-button-every-asset-override/shots"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjmvcmy0ac7g6",
+     "createdAt": "2026-11-16T19:05:16.473Z"
+    },
+    {
+     "id": "s11",
+     "text": "Finish: complete _claude/builds/reports/reset-all-button-every-asset-override.md (what changed, and how the action is reached by deep link, REST, MCP, CLI and voice, with test results). Add the THREADS.md row, push the branch, open the PR stating the UI Review hold and the API reach, and link it with builds-live.mjs link.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/reports/reset-all-button-every-asset-override.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjmvcmy0bqzeb",
+     "createdAt": "2026-11-16T19:05:16.473Z"
+    }
+   ]
   }
  ]
 }

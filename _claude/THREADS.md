@@ -809,7 +809,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 13:22 UTC · `console-look-becomes-default-axhub-skin` → queued, note (all) · build:fix-build-whose-session-finishes-phase-e
 - 2026-11-16 13:22 UTC · `vps-sends-shipped-features-every-merge` → queued, note (all) · build:fix-build-whose-session-finishes-phase-e
 - 2026-11-16 13:23 UTC · `ui-manager-floating-window-to-select-any` → running, note (all) · pipeline
 - 2026-11-16 13:23 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
@@ -1209,6 +1208,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 19:04 UTC · `reset-all-button-every-asset-override` note (all) · mcp
 - 2026-11-16 19:04 UTC · `settings-interface-gear-every-plugin` → running, note (all) · builds-live
 - 2026-11-16 19:04 UTC · `reset-all-button-every-asset-override` added (0 steps) (all) · builds-live
+- 2026-11-16 19:05 UTC · `reset-all-button-every-asset-override` note (all) · orchestrator
 
 ## Token passes (log)
 
