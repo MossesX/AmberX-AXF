@@ -21,6 +21,7 @@
     "ROUTES"
   ],
   "enabledByDefault": true,
+  "settings": { "$axf":  "plugin-settings@1", "tab":  "github-app", "parent":  "plugins", "sections":  ["enable", "info", "logs"], "options":  [], "gear":  false},
   "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": {
     "model": "opus",

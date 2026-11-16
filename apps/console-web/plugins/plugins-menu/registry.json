@@ -1,0 +1,88 @@
+{
+  "$axf": "claude-settings-registry@1",
+  "readme": "Plugins menu options (plugin-settings@1): the install dialog's config (GET / PUT /config) through server/plugin_options.py. Publishing installs to GitHub and the typed confirm are owner-only.",
+  "service": "axf.plugin-options.plugins-menu@1",
+  "groups": [
+    {
+      "id": "install",
+      "label": "Install dialog",
+      "icon": "package",
+      "order": 10
+    }
+  ],
+  "settings": [
+    {
+      "key": "plugins-menu.showInstalled",
+      "label": "List plugins already installed",
+      "kind": "toggle",
+      "default": true,
+      "group": "install"
+    },
+    {
+      "key": "plugins-menu.showOtherKinds",
+      "label": "List other apps' plugins too",
+      "kind": "toggle",
+      "default": false,
+      "group": "install"
+    },
+    {
+      "key": "plugins-menu.checkOnOpen",
+      "label": "Read every archive when the dialog opens",
+      "kind": "toggle",
+      "default": true,
+      "group": "install"
+    },
+    {
+      "key": "plugins-menu.sort",
+      "label": "Order",
+      "kind": "choice",
+      "default": "name",
+      "options": [
+        "name",
+        "archive",
+        "newest",
+        "model"
+      ],
+      "group": "install"
+    },
+    {
+      "key": "plugins-menu.pageSize",
+      "label": "Rows per page",
+      "kind": "number",
+      "default": 50,
+      "min": 10,
+      "max": 200,
+      "group": "install"
+    },
+    {
+      "key": "plugins-menu.defaultArchive",
+      "label": "Archive it opens on",
+      "kind": "text",
+      "default": "all",
+      "group": "install"
+    },
+    {
+      "key": "plugins-menu.keepDataOnReplace",
+      "label": "Keep the old data when a build is replaced",
+      "kind": "toggle",
+      "default": false,
+      "group": "install"
+    },
+    {
+      "key": "plugins-menu.publish",
+      "label": "Commit installed plugins to GitHub",
+      "kind": "toggle",
+      "default": true,
+      "owner": true,
+      "group": "install"
+    },
+    {
+      "key": "plugins-menu.confirmTyping",
+      "label": "Type the folder name to confirm an install",
+      "kind": "toggle",
+      "default": true,
+      "owner": true,
+      "group": "install"
+    }
+  ]
+}

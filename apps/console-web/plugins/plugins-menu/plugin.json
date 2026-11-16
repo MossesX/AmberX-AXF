@@ -10,7 +10,7 @@
   "targets": [
     "axf-console"
   ],
-  "provides": [
+  "provides": ["service:axf.plugin-options.plugins-menu@1", 
     "dialog:plugins-menu.settings",
     "dialog:plugins-menu.install",
     "settings-tab:plugins-menu",
@@ -22,6 +22,7 @@
     "ROUTES"
   ],
   "enabledByDefault": true,
+  "settings": { "$axf":  "plugin-settings@1", "tab":  "plugins-menu", "parent":  "plugins", "sections":  ["enable", "info", "logs", "options"], "options":  ["plugins-menu.showInstalled", "plugins-menu.showOtherKinds", "plugins-menu.checkOnOpen", "plugins-menu.sort", "plugins-menu.pageSize", "plugins-menu.defaultArchive", "plugins-menu.keepDataOnReplace"], "gear":  false},
   "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "opus", "builtAt": "2026-10-23" },
   "banner": false,

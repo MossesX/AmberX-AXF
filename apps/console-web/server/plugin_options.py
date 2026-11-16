@@ -42,8 +42,8 @@ class ConfigOptions:
         before = self.read() or {}
         try:
             out = self.write({self.fields[k]: v for k, v in patch.items()}) or {}
-        except (ValueError, LookupError) as e:  # the plugin refused the value with a reason
-            return {"ok": False, "code": "validation", "message": str(e) or "refused by the plugin"}
+        except Exception as e:  # noqa: BLE001 — the plugin refused the value (ValueError, its route's HTTPException …)
+            return {"ok": False, "code": "validation", "message": str(getattr(e, "detail", "") or e) or "refused by the plugin"}
         # the plugin's own clean-up drops a bad value and keeps the old one: say so instead of reporting success
         rejected = [k for k, v in patch.items() if isinstance(out, dict) and self.fields[k] in out and out[self.fields[k]] != v and out[self.fields[k]] == before.get(self.fields[k])]
         if rejected:

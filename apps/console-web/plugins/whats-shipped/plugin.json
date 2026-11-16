@@ -10,7 +10,7 @@
   "targets": [
     "axf-console"
   ],
-  "provides": [
+  "provides": ["service:axf.plugin-options.whats-shipped@1", 
     "asset:status/shipped",
     "banner:right",
     "dialog:whats-shipped.panel",
@@ -21,6 +21,7 @@
     "ROUTES"
   ],
   "enabledByDefault": true,
+  "settings": { "$axf":  "plugin-settings@1", "tab":  "whats-shipped", "parent":  "plugins", "sections":  ["enable", "info", "logs", "options"], "options":  ["whats-shipped.ticker", "whats-shipped.days", "whats-shipped.deployedOnly"], "gear":  false},
   "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "opus", "builtAt": "2026-11-03" },
   "banner": false,

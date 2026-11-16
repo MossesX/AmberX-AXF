@@ -585,3 +585,12 @@ def get_config() -> dict[str, Any]:
 def put_config(body: Any = Body(...)) -> dict[str, Any]:
     FEED.save_config(body)
     return get_config()
+
+
+# plugin-settings@1: the feed window through console control (server/plugin_options.py)
+try:
+    import plugin_options
+
+    plugin_options.provide("whats-shipped", read=FEED.config, write=lambda patch: (FEED.save_config(patch), FEED.config())[1], fields={f"whats-shipped.{k}": k for k in ("days", "deployedOnly")})
+except ImportError:  # a bare test run without the console server on the path
+    pass

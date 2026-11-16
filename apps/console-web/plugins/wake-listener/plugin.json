@@ -48,6 +48,7 @@
       "_claude/THREADS.md"
     ]
   },
+  "settings": { "$axf":  "plugin-settings@1", "tab":  "wake-listener", "parent":  "plugins", "sections":  ["enable", "info", "logs", "options"], "options":  ["axf.voice.useClaude", "axf.voice.claudeTimeoutSec"], "gear":  false},
   "commands": {
     "$axf": "plugin-commands@1",
     "auto": true,

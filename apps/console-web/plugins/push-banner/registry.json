@@ -1,0 +1,55 @@
+{
+  "$axf": "claude-settings-registry@1",
+  "readme": "Push banner options (plugin-settings@1): readable through console control; every one decides what merges or lands, so all are owner-only.",
+  "service": "axf.plugin-options.push-banner@1",
+  "groups": [
+    {
+      "id": "merging",
+      "label": "Merging",
+      "icon": "branch",
+      "order": 10
+    }
+  ],
+  "settings": [
+    {
+      "key": "push-banner.autoMerge",
+      "label": "Merge automatically",
+      "kind": "toggle",
+      "default": true,
+      "owner": true,
+      "group": "merging"
+    },
+    {
+      "key": "push-banner.autoPr",
+      "label": "Open a PR for every branch",
+      "kind": "toggle",
+      "default": true,
+      "owner": true,
+      "group": "merging"
+    },
+    {
+      "key": "push-banner.autoLand",
+      "label": "Land finished builds",
+      "kind": "toggle",
+      "default": false,
+      "owner": true,
+      "group": "merging"
+    },
+    {
+      "key": "push-banner.claudeOnFail",
+      "label": "Start Claude when a check fails",
+      "kind": "toggle",
+      "default": false,
+      "owner": true,
+      "group": "merging"
+    },
+    {
+      "key": "push-banner.claudeShell",
+      "label": "Claude may use the shell",
+      "kind": "toggle",
+      "default": false,
+      "owner": true,
+      "group": "merging"
+    }
+  ]
+}

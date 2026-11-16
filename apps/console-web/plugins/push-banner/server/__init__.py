@@ -1528,3 +1528,12 @@ def get_config() -> dict[str, Any]:
 @router.put("/config")
 def put_config(body: Any = Body(None)) -> dict[str, Any]:
     return PUSHES.save_config(body)
+
+
+# plugin-settings@1: readable through console control; registry.json makes every key owner-only
+try:
+    import plugin_options
+
+    plugin_options.provide("push-banner", read=PUSHES.config, write=PUSHES.save_config, fields={f"push-banner.{k}": k for k in ("autoMerge", "autoPr", "autoLand", "claudeOnFail", "claudeShell")})
+except ImportError:  # a bare test run without the console server on the path
+    pass

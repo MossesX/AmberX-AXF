@@ -19,6 +19,7 @@
     "ROUTES"
   ],
   "enabledByDefault": true,
+  "settings": { "$axf":  "plugin-settings@1", "tab":  "molly-guide", "parent":  "plugins", "sections":  ["enable", "info", "logs", "options"], "options":  ["molly-guide.speak", "molly-guide.runSteps", "molly-guide.autoOpen"], "gear":  false},
   "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": {
     "model": "opus",

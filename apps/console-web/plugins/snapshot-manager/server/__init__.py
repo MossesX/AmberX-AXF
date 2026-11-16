@@ -129,3 +129,12 @@ def changes(limit: int = 200, container: str = "", batch: str = "") -> dict[str,
     if not cs:
         return {"items": [], "available": False}
     return {"items": cs.audit(max(1, min(limit, 2000)), container, "", batch), "available": True}
+
+
+# plugin-settings@1: retention options through console control (server/plugin_options.py); prunes like PUT /settings
+try:
+    import plugin_options
+
+    plugin_options.provide("snapshot-manager", read=snapshots.settings, write=put_settings, fields={f"snapshot-manager.{k}": k for k in ("keepDays", "maxGb", "maxSnapshotMb")})
+except ImportError:  # a bare test run without the console server on the path
+    pass

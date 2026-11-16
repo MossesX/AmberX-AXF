@@ -1,0 +1,38 @@
+{
+  "$axf": "claude-settings-registry@1",
+  "readme": "Snapshot options (plugin-settings@1): retention (GET / PUT /settings) through server/plugin_options.py. Shorter retention prunes snapshots, so keepDays and maxGb are owner-only.",
+  "service": "axf.plugin-options.snapshot-manager@1",
+  "groups": [
+    {
+      "id": "retention",
+      "label": "Retention",
+      "icon": "clock",
+      "order": 10
+    }
+  ],
+  "settings": [
+    {
+      "key": "snapshot-manager.keepDays",
+      "label": "Keep snapshots for (days)",
+      "kind": "number",
+      "default": 30,
+      "owner": true,
+      "group": "retention"
+    },
+    {
+      "key": "snapshot-manager.maxGb",
+      "label": "Keep at most (GB)",
+      "kind": "number",
+      "default": 5,
+      "owner": true,
+      "group": "retention"
+    },
+    {
+      "key": "snapshot-manager.maxSnapshotMb",
+      "label": "Largest snapshot (MB)",
+      "kind": "number",
+      "default": 1024,
+      "group": "retention"
+    }
+  ]
+}

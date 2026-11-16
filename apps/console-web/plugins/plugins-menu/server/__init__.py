@@ -621,3 +621,12 @@ def put_config(body: dict[str, Any]) -> dict[str, Any]:
     with _lock:
         storage.write_json(data_dir() / "config.json", cfg, indent=None)
     return {"config": cfg}
+
+
+# plugin-settings@1: the install dialog's options through console control (server/plugin_options.py)
+try:
+    import plugin_options
+
+    plugin_options.provide("plugins-menu", read=_config, write=lambda patch: put_config(patch)["config"], fields={f"plugins-menu.{k}": k for k in ("showInstalled", "showOtherKinds", "checkOnOpen", "sort", "pageSize", "defaultArchive", "keepDataOnReplace", "publish", "confirmTyping")})
+except ImportError:  # a bare test run without the console server on the path
+    pass
