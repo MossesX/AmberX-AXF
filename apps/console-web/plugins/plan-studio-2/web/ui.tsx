@@ -1,16 +1,18 @@
 /**
- * Plan Studio 2.0 page: one tree, nested to any depth, every row dragged (lib-dnd) and right-clicked (context target
+ * Plan Studio 2.0 page: four sections (Tree, Editor, Say, Trash) laid out by layout.tsx (nav menu, tabs, IDE panes); one tree, nested to any depth, every row dragged (lib-dnd) and right-clicked (context target
  * `axp-plan-studio-2-item`, payload = item id), an editor for the selected item, a Trash tab (undo), a command box and a
  * mic that both go through the server's `say`. Framework controls and tokens only; phone first (the editor drops under
  * the tree on a narrow screen).
  */
-import { useEffect, useMemo, useRef, useState, type PointerEvent as RPointerEvent } from 'react';
-import { Button, Checkbox, Chip, Icon, IconButton, Note, SelectField, Switch, TabGroup, TextField, useAxfState, useRuntime } from '@console/axf/react';
+import { useEffect, useMemo, useRef, useState, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
+import { Button, Checkbox, Chip, Icon, IconButton, Note, SelectField, Switch, TextField, useAxfState, useRuntime } from '@console/axf/react';
 import { DragLayer, registerZone, startDrag, type DropPos } from '@console/axf/libs/dnd';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as tc from './tree-core.mjs';
 import type { Item, Kind, Link, State } from './tree-core.mjs';
 import { CTX_TARGET, DIALOGS, DND_ZONE, KEYS, LINK_ICON, LINK_LABEL, TOP, addItem, deleteItem, download, editItem, exportText, linkAction, linkItem, moveItem, requestFocus, reload, sayCommand, select, sendToBuild, setCollapsed, tookFocus, undoDelete, unlinkItem, useTree, type BuildPreview, type OpResult } from './api';
+import * as lc from './layout-core.mjs';
+import { LayoutSwitcher, SectionLayout, showSection, type SectionDef } from './layout';
 import { canListen, isEnd, listenOnce, micLease, speakOut } from './voice';
 
 const B = 'axp-plan-studio-2';
@@ -25,7 +27,6 @@ export function PlanStudio2Page() {
   const rt = useRuntime();
   useAxfState();
   const { state, error, selected, focus, busy, store, onHub } = useTree();
-  const [tab, setTab] = useState<'tree' | 'trash'>('tree');
   const [q, setQ] = useState('');
   const showDone = flag(rt, KEYS.showDone, true);
   const listRef = useRef<HTMLUListElement>(null);
@@ -38,7 +39,7 @@ export function PlanStudio2Page() {
     if (!it) { rt.toast(`Nothing in Plan Studio 2.0 matches "${focus}".`, 'warning', 'Plan Studio 2.0'); return; }
     const shut = tc.ancestors(state, it.id).filter((a) => a.collapsed).map((a) => a.id);
     if (shut.length) setCollapsed(shut, false);
-    setTab('tree'); select(it.id);
+    select(it.id); showSection(rt, 'tree');
     setTimeout(() => listRef.current?.querySelector<HTMLElement>(`[data-axf-drop-id="${it.id}"]`)?.scrollIntoView({ block: 'center', behavior: 'smooth' }), 50);
   }, [focus, state, rt]);
 
@@ -66,6 +67,32 @@ export function PlanStudio2Page() {
   const current = state && selected ? tc.byId(state, selected) : null;
   const newPlan = () => rt.openDialog(DIALOGS.item, { parent: null, kind: 'plan' });
 
+  const treeNode = (
+    <div className={`${B}__main fx-stack`}>
+      <div className={`${B}__tools`} role="toolbar" aria-label="Tree tools">
+        <TextField label="Find" value={q} onChange={setQ} type="search" placeholder="Find a plan, step or note…" className={`${B}__find`} />
+        <Switch label="Show done" checked={showDone} onChange={(v) => rt.settings.set(KEYS.showDone, v)} />
+      </div>
+      {!state ? <LoadingSkeleton rows={4} label="Loading the tree" /> : !state.items.length ? (
+        <EmptyState icon="branch" action={{ label: 'New plan', icon: 'plus', onClick: newPlan }}>Nothing here yet. Plan Studio 2.0 starts empty and nothing is synced into it: start a plan, or say “new plan” followed by its name.</EmptyState>
+      ) : !rows.length ? <EmptyState icon="search" compact>Nothing matches “{q}”.</EmptyState> : (
+        <ul className={`${B}__tree`} ref={listRef} role="tree" aria-label="Plan tree">
+          {rows.map((r) => <Row key={r.item.id} item={r.item} depth={r.depth} kids={r.kids} path={r.path} state={state} selected={selected === r.item.id} />)}
+        </ul>
+      )}
+      {state && state.items.length > 0 && !q && <div className={`${B}__topdrop`} data-axf-drop={DND_ZONE} data-axf-drop-id={TOP}><Icon name="move" size={14} /> Drop here for the top level</div>}
+      <p className={`${B}__hint fx-muted`}>Store: {store || '…'}{onHub ? ' (hub shared data)' : ''}. CLI: <code>node apps/console-web/plugins/plan-studio-2/tree.mjs</code>. Every action here is also an MCP tool, a REST command and a voice command.</p>
+    </div>
+  );
+  const node: Record<string, ReactNode> = {
+    tree: treeNode,
+    editor: current && state ? <Editor item={current} state={state} /> : <EmptyState icon="edit" compact>Pick a row to edit it here.</EmptyState>,
+    say: <CommandBox />,
+    trash: <TrashTab state={state} />,
+  };
+  const badge: Record<string, string | undefined> = { tree: state ? String(state.items.length) : undefined, trash: state?.trash.length ? String(state.trash.length) : undefined };
+  const sections: SectionDef[] = lc.SECTIONS.map((x) => ({ ...x, badge: badge[x.id], node: node[x.id] }));
+
   return (
     <div className={`${B} fx-stack fx-stack--lg`}>
       <header className="fx-pagehead">
@@ -77,36 +104,15 @@ export function PlanStudio2Page() {
         <div className={`${B}__actions`} role="toolbar" aria-label="Plan Studio 2.0 actions">
           <Button tone="primary" icon="plus" onClick={newPlan}>New plan</Button>
           <IconButton icon="undo" label="Undo delete" disabled={!state?.trash.length || busy} onClick={() => void undoDelete().then((r) => rt.toast(r.say ?? 'Undone.', 'success', 'Plan Studio 2.0'))} />
-          <IconButton icon="chevron-down" label="Expand all" disabled={!state} onClick={() => setCollapsed(null, false)} />
-          <IconButton icon="chevron-up" label="Collapse all" disabled={!state} onClick={() => setCollapsed(null, true)} />
+          <IconButton icon="chevron-down" label="Expand all" data-axf-target="action:plan-studio-2.expand-all" disabled={!state} onClick={() => setCollapsed(null, false)} />
+          <IconButton icon="chevron-up" label="Collapse all" data-axf-target="action:plan-studio-2.collapse-all" disabled={!state} onClick={() => setCollapsed(null, true)} />
           <IconButton icon="download" label="Export all as Markdown" disabled={!state?.items.length} onClick={() => void exportText(null, 'md').then((t) => download('plan-studio-2.md', t))} />
           <IconButton icon="refresh" label="Reload" onClick={() => void reload()} />
+          <LayoutSwitcher />
         </div>
       </header>
       {error && <Note tone="danger">{error}</Note>}
-      <TabGroup<'tree' | 'trash'> id="plan-studio-2.tabs" label="Plan Studio 2.0 tabs" value={tab} onChange={setTab}
-        tabs={[{ value: 'tree', label: 'Tree', icon: 'branch', badge: state ? String(state.items.length) : undefined }, { value: 'trash', label: 'Trash', icon: 'trash', badge: state?.trash.length ? String(state.trash.length) : undefined }]} />
-      {tab === 'trash' ? <TrashTab state={state} /> : (
-        <div className={`${B}__body`}>
-          <div className={`${B}__main fx-stack`}>
-            <div className={`${B}__tools`} role="toolbar" aria-label="Tree tools">
-              <TextField label="Find" value={q} onChange={setQ} type="search" placeholder="Find a plan, step or note…" className={`${B}__find`} />
-              <Switch label="Show done" checked={showDone} onChange={(v) => rt.settings.set(KEYS.showDone, v)} />
-            </div>
-            <CommandBox />
-            {!state ? <LoadingSkeleton rows={4} label="Loading the tree" /> : !state.items.length ? (
-              <EmptyState icon="branch" action={{ label: 'New plan', icon: 'plus', onClick: newPlan }}>Nothing here yet. Plan Studio 2.0 starts empty and nothing is synced into it: start a plan, or say “new plan” followed by its name.</EmptyState>
-            ) : !rows.length ? <EmptyState icon="search" compact>Nothing matches “{q}”.</EmptyState> : (
-              <ul className={`${B}__tree`} ref={listRef} role="tree" aria-label="Plan tree">
-                {rows.map((r) => <Row key={r.item.id} item={r.item} depth={r.depth} kids={r.kids} path={r.path} state={state} selected={selected === r.item.id} />)}
-              </ul>
-            )}
-            {state && state.items.length > 0 && !q && <div className={`${B}__topdrop`} data-axf-drop={DND_ZONE} data-axf-drop-id={TOP}><Icon name="move" size={14} /> Drop here for the top level</div>}
-            <p className={`${B}__hint fx-muted`}>Store: {store || '…'}{onHub ? ' (hub shared data)' : ''}. CLI: <code>node apps/console-web/plugins/plan-studio-2/tree.mjs</code>. Every action here is also an MCP tool, a REST command and a voice command.</p>
-          </div>
-          <aside className={`${B}__side`}>{current && state ? <Editor item={current} state={state} /> : <EmptyState icon="edit" compact>Pick a row to edit it here.</EmptyState>}</aside>
-        </div>
-      )}
+      <SectionLayout sections={sections} />
       <DragLayer />
     </div>
   );

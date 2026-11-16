@@ -1,8 +1,6 @@
 /* Plan Studio 2.0: layout only, theme tokens only (controls keep the framework's look). Hairline rows, phone first. */
 .axp-plan-studio-2 { --axp-ps2-hair: var(--fx-border-w) solid var(--fx-border); container: axp-ps2 / inline-size; min-width: 0; }
 .axp-plan-studio-2__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); }
-.axp-plan-studio-2__body { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--fx-dens-gap-xl); align-items: start; min-width: 0; }
-@container axp-ps2 (min-width: 900px) { .axp-plan-studio-2__body { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); } .axp-plan-studio-2__side { position: sticky; top: var(--fx-dens-gap-lg); } }
 .axp-plan-studio-2__main { min-width: 0; }
 .axp-plan-studio-2__tools { display: flex; align-items: end; gap: var(--fx-dens-gap-lg); flex-wrap: wrap; min-width: 0; }
 .axp-plan-studio-2 .axp-plan-studio-2__find { flex: 1 1 auto; min-width: 0; margin: 0; }
@@ -55,3 +53,36 @@
 /* dialogs */
 .axp-plan-studio-2__dialog { min-width: 0; }
 .axp-plan-studio-2__dialog > p { margin: 0; }
+
+/* page layouts (layout.tsx): the switcher, the nav menu layout, the tab layout and the IDE dock */
+.axp-plan-studio-2__layouts { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); flex-wrap: wrap; min-width: 0; }
+.axp-plan-studio-2__jump { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); min-width: 0; border-bottom: var(--axp-ps2-hair); padding-bottom: var(--fx-dens-gap-sm); }
+.axp-plan-studio-2__navbody { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--fx-dens-gap-xl); align-items: start; min-width: 0; }
+.axp-plan-studio-2__sec { min-width: 0; scroll-margin-top: var(--fx-dens-gap-lg); }
+@container axp-ps2 (min-width: 900px) {
+  .axp-plan-studio-2__navbody { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+  .axp-plan-studio-2__sec--tree { grid-column: 1; grid-row: 1 / span 2; }
+  .axp-plan-studio-2__sec--editor { grid-column: 2; position: sticky; top: var(--fx-dens-gap-lg); }
+  .axp-plan-studio-2__sec--say { grid-column: 2; }
+  .axp-plan-studio-2__sec--trash { grid-column: 1 / -1; }
+}
+.axp-plan-studio-2__tabpanel { padding-block: var(--fx-dens-gap-lg); min-width: 0; }
+.axp-plan-studio-2__dock { display: flex; min-height: calc(var(--fx-font-size) * 36); height: calc(100vh - var(--fx-font-size) * 16); border: var(--axp-ps2-hair); border-radius: var(--fx-radius-sm); overflow: hidden; min-width: 0; }
+.axp-plan-studio-2__dock > * { flex: 1 1 auto; min-width: 0; }
+.axp-plan-studio-2__split { display: flex; flex-direction: row; min-width: 0; min-height: 0; flex: 1 1 auto; }
+.axp-plan-studio-2__split.is-v { flex-direction: column; }
+.axp-plan-studio-2__cell { display: flex; flex-basis: 0; flex-shrink: 1; min-width: 0; min-height: 0; }
+.axp-plan-studio-2__cell > * { flex: 1 1 auto; min-width: 0; }
+.axp-plan-studio-2__splitter { flex: 0 0 calc(var(--fx-border-w) * 5); background: var(--fx-border); cursor: col-resize; touch-action: none; }
+.axp-plan-studio-2__split.is-v > .axp-plan-studio-2__splitter { cursor: row-resize; }
+.axp-plan-studio-2__splitter:hover, .axp-plan-studio-2__splitter:focus-visible { background: var(--fx-accent); outline: 0; }
+.axp-plan-studio-2__dpane { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; background: var(--fx-surface); }
+.axp-plan-studio-2__dpanehead { flex: 0 0 auto; min-width: 0; border-bottom: var(--axp-ps2-hair); }
+.axp-plan-studio-2__dpanebody { flex: 1 1 auto; overflow: auto; padding: var(--fx-dens-gap-lg); min-height: 0; }
+.axp-plan-studio-2__dpane.is-drop::after { content: ''; position: absolute; pointer-events: none; inset: 0; background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); border: calc(var(--fx-border-w) * 2) solid var(--fx-accent); border-radius: var(--fx-radius-sm); }
+.axp-plan-studio-2__dpane.is-drop-left::after { inset-inline-end: 50%; }
+.axp-plan-studio-2__dpane.is-drop-right::after { inset-inline-start: 50%; }
+.axp-plan-studio-2__dpane.is-drop-top::after { bottom: 50%; }
+.axp-plan-studio-2__dpane.is-drop-bottom::after { top: 50%; }
+.axp-plan-studio-2__dpane.is-drop-header::after { bottom: auto; height: calc(var(--fx-font-size) * 2.4); }
+@container axp-ps2 (max-width: 600px) { .axp-plan-studio-2__dock { height: auto; flex-direction: column; } .axp-plan-studio-2__split { flex-direction: column; } .axp-plan-studio-2__splitter { display: none; } .axp-plan-studio-2__cell { flex-basis: auto; } }

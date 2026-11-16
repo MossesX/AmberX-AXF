@@ -4,11 +4,11 @@
   "counts": {
     "views": 66,
     "nav": 16,
-    "tabGroups": 28,
-    "tabs": 80,
+    "tabGroups": 29,
+    "tabs": 78,
     "settingsTabs": 71,
     "settings": 89,
-    "functions": 293,
+    "functions": 298,
     "buttons": 62,
     "plugins": 72
   },
@@ -1535,25 +1535,24 @@
       ]
     },
     {
-      "address": "view:plan-studio-2/tab:plan-studio-2.tabs",
-      "id": "plan-studio-2.tabs",
+      "address": "view:plan-studio-2/tab:plan-studio-2.sections",
+      "id": "plan-studio-2.sections",
       "dynamic": false,
       "view": "plan-studio-2",
       "plugin": "ai.amberx.axf.console.plan-studio-2",
-      "file": "plugins/plan-studio-2/web/ui.tsx",
-      "line": 87,
-      "tabs": [
-        {
-          "address": "view:plan-studio-2/tab:plan-studio-2.tabs=tree",
-          "value": "tree",
-          "label": "Tree"
-        },
-        {
-          "address": "view:plan-studio-2/tab:plan-studio-2.tabs=trash",
-          "value": "trash",
-          "label": "Trash"
-        }
-      ]
+      "file": "plugins/plan-studio-2/web/layout.tsx",
+      "line": 120,
+      "tabs": []
+    },
+    {
+      "address": "view:plan-studio-2/tab:plan-studio-2.pane",
+      "id": "plan-studio-2.pane",
+      "dynamic": false,
+      "view": "plan-studio-2",
+      "plugin": "ai.amberx.axf.console.plan-studio-2",
+      "file": "plugins/plan-studio-2/web/layout.tsx",
+      "line": 210,
+      "tabs": []
     },
     {
       "address": "view:plugin-manager/tab:plugin-manager.detail",
@@ -6447,6 +6446,92 @@
         "studio",
         "2",
         "select"
+      ],
+      "plugin": "ai.amberx.axf.console.plan-studio-2",
+      "file": "plugins/plan-studio-2/web/index.tsx"
+    },
+    {
+      "address": "function:plan-studio-2.layout",
+      "kind": "function",
+      "id": "plan-studio-2.layout",
+      "label": "Plan Studio 2.0: switch page layout (nav menu, tabs, IDE panes)",
+      "detail": "Action · Plan Studio 2.0",
+      "keywords": [
+        "plan-studio-2.layout",
+        "plan",
+        "studio",
+        "2",
+        "layout"
+      ],
+      "params": true,
+      "plugin": "ai.amberx.axf.console.plan-studio-2",
+      "file": "plugins/plan-studio-2/web/index.tsx"
+    },
+    {
+      "address": "function:plan-studio-2.dock",
+      "kind": "function",
+      "id": "plan-studio-2.dock",
+      "label": "Plan Studio 2.0: move, split, close or reopen IDE panes and tabs",
+      "detail": "Action · Plan Studio 2.0",
+      "keywords": [
+        "plan-studio-2.dock",
+        "plan",
+        "studio",
+        "2",
+        "dock"
+      ],
+      "params": true,
+      "plugin": "ai.amberx.axf.console.plan-studio-2",
+      "file": "plugins/plan-studio-2/web/index.tsx"
+    },
+    {
+      "address": "function:plan-studio-2.section",
+      "kind": "function",
+      "id": "plan-studio-2.section",
+      "label": "Plan Studio 2.0: show a section (tree, editor, say, trash)",
+      "detail": "Action · Plan Studio 2.0",
+      "keywords": [
+        "plan-studio-2.section",
+        "plan",
+        "studio",
+        "2",
+        "section"
+      ],
+      "effect": "navigate",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.plan-studio-2",
+      "file": "plugins/plan-studio-2/web/index.tsx"
+    },
+    {
+      "address": "function:plan-studio-2.collapse-all",
+      "kind": "function",
+      "id": "plan-studio-2.collapse-all",
+      "label": "Plan Studio 2.0: collapse all",
+      "detail": "Action · Plan Studio 2.0",
+      "keywords": [
+        "plan-studio-2.collapse-all",
+        "plan",
+        "studio",
+        "2",
+        "collapse",
+        "all"
+      ],
+      "plugin": "ai.amberx.axf.console.plan-studio-2",
+      "file": "plugins/plan-studio-2/web/index.tsx"
+    },
+    {
+      "address": "function:plan-studio-2.expand-all",
+      "kind": "function",
+      "id": "plan-studio-2.expand-all",
+      "label": "Plan Studio 2.0: expand all",
+      "detail": "Action · Plan Studio 2.0",
+      "keywords": [
+        "plan-studio-2.expand-all",
+        "plan",
+        "studio",
+        "2",
+        "expand",
+        "all"
       ],
       "plugin": "ai.amberx.axf.console.plan-studio-2",
       "file": "plugins/plan-studio-2/web/index.tsx"

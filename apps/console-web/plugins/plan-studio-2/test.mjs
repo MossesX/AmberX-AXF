@@ -8,6 +8,7 @@ import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import * as tc from './web/tree-core.mjs';
+import * as lc from './web/layout-core.mjs';
 
 let n = 0;
 const t = async (name, fn) => { try { await fn(); n += 1; } catch (e) { console.error(`FAIL ${name}`); throw e; } };
@@ -234,5 +235,59 @@ await t('CLI: empty store, add / say / find / build / undo / export / clear; the
   assert.ok(!existsSync(join(dir, 'plans')), 'no plan@1 files are ever made');
 });
 rmSync(dir, { recursive: true, force: true });
+
+// ---------------------------------------------------------------- page layouts + IDE dock (same dock-layout@1 assets)
+await t('page layouts: open registry, words resolve, nav is the default', () => {
+  assert.deepEqual(lc.layouts().map((l) => l.id), ['nav', 'tabs', 'ide']);
+  assert.equal(lc.resolveLayout('').id, 'nav');
+  assert.equal(lc.resolveLayout('IDE style').id, 'ide');
+  assert.equal(lc.resolveLayout('tab group across the top').id, 'tabs');
+  assert.equal(lc.resolveLayout('nav menu').id, 'nav');
+  assert.equal(lc.resolveLayout('something else'), null);
+  const off = lc.registerLayout({ id: 'reader', label: 'Reader', icon: 'file', kind: 'tabs' });
+  assert.equal(lc.resolveLayout('reader').id, 'reader');
+  off();
+  assert.equal(lc.layouts().length, 3);
+  assert.throws(() => lc.registerLayout({ id: 'x', kind: 'grid' }));
+  assert.deepEqual(lc.SECTION_IDS, ['tree', 'editor', 'say', 'trash']);
+  assert.equal(lc.resolveSection('Trash'), 'trash'); assert.equal(lc.resolveSection('nope'), null);
+});
+{
+  const SEC = lc.SECTION_IDS;
+  const assets = join(here, '../../../../framework/assets/dock-layout');
+  const all = (d) => [...Object.values(d.panes).flatMap((p) => p.tabs), ...d.closed].sort();
+  await t('IDE dock: every framework dock-layout asset spreads the sections over its panes, once each', () => {
+    const files = readdirSync(assets).filter((f) => f.endsWith('.json'));
+    assert.ok(files.length >= 10, 'the framework ships its ten dock-layout starters');
+    for (const f of files) {
+      const d = lc.fromPreset(JSON.parse(readFileSync(join(assets, f), 'utf8')).data, SEC);
+      assert.deepEqual(all(d), [...SEC].sort(), f);
+      for (const p of Object.values(d.panes)) assert.ok(p.tabs.includes(p.active), f);
+    }
+    assert.deepEqual(lc.normalizeDock({ garbage: true }, SEC).panes.p1.tabs, SEC, 'junk in the saved setting heals');
+    assert.equal(lc.paneIds(lc.fromPreset(lc.FALLBACK_PRESET, SEC).tree).length, 2);
+  });
+  await t('IDE dock: drag between panes, drop into a tab group, split on an edge, close, reopen, resize', () => {
+    let d = lc.fromPreset(lc.FALLBACK_PRESET, SEC);
+    const [a, b] = lc.paneIds(d.tree);
+    d = lc.moveTab(d, 'tree', b, 0, SEC);
+    assert.equal(lc.paneOf(d, 'tree'), b); assert.equal(d.panes[b].active, 'tree');
+    d = lc.applyDrop(d, 'say', b, 'centre', SEC); assert.equal(lc.paneOf(d, 'say'), b, 'centre joins the tab group');
+    d = lc.reorder(d, b, ['say', 'tree'], SEC); assert.deepEqual(d.panes[b].tabs.slice(0, 2), ['say', 'tree']);
+    d = lc.applyDrop(d, 'trash', a, 'bottom', SEC);
+    assert.equal(lc.paneIds(d.tree).length, 3, 'an edge drop splits');
+    const c = lc.paneOf(d, 'trash'); assert.deepEqual(d.panes[c].tabs, ['trash']); assert.ok(d.tree.children.some((x) => x.kind === 'split' && x.vertical));
+    d = lc.closePane(d, c, SEC); assert.deepEqual(d.closed, ['trash']);
+    d = lc.runDockOp(d, 'reopen', ['Trash'], SEC); assert.deepEqual(d.closed, []);
+    d = lc.runDockOp(d, 'close', ['trash'], SEC); assert.deepEqual(d.closed, ['trash']);
+    d = lc.runDockOp(d, 'show', ['trash'], SEC); assert.ok(!d.closed.includes('trash'), 'show reopens a closed section');
+    assert.deepEqual(all(d), [...SEC].sort(), 'never loses or doubles a section');
+    const w = d.tree.weights.slice(); d = lc.resize(d, [], 0, 0.2); assert.ok(d.tree.weights[0] > w[0]);
+    assert.throws(() => lc.runDockOp(d, 'bogus', [], SEC), /Dock ops/);
+    const one = lc.fromPreset({ panes: 1, tree: { kind: 'leaf', pane: 1 } }, ['tree']);
+    assert.equal(lc.closeTab(one, 'tree', ['tree']), one, 'the last open section stays');
+    assert.equal(lc.dropZone(0.05, 0.5, false), 'left'); assert.equal(lc.dropZone(0.5, 0.5, false), 'centre'); assert.equal(lc.dropZone(0.5, 0.5, true), 'header');
+  });
+}
 
 console.log(`plan-studio-2: ${n} checks passed`);

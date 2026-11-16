@@ -9,8 +9,10 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { useRuntime, Button } from '@console/axf/react';
 import { appMenu } from './menu';
 import { BuildDialog, ItemDialog, LinkDialog, MoveDialog, PlanStudio2Page } from './ui';
-import { CTX_TARGET, DIALOGS, FOLDER, ID, KEYS, VIEW, deleteItem, download, duplicateItem, editItem, exportText, indentItem, nudgeItem, outdentItem, reload, requestFocus, select, selectedId, treeState, undoDelete } from './api';
+import { CTX_TARGET, DIALOGS, FOLDER, setCollapsed, ID, KEYS, VIEW, deleteItem, download, duplicateItem, editItem, exportText, indentItem, nudgeItem, outdentItem, reload, requestFocus, select, selectedId, treeState, undoDelete } from './api';
 import * as tc from './tree-core.mjs';
+import * as lc from './layout-core.mjs';
+import { readDock, setLayout, showSection, writeDock } from './layout';
 import './plan-studio-2.css';
 
 function OpenButton() {
@@ -56,6 +58,26 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('plan-studio-2.delete', (args, ctx) => { const id = need(args, ctx); if (id) void say(deleteItem(id), 'info'); }, { label: 'Delete the item (undo brings it back)', searchable: false });
     rt.actions.register('plan-studio-2.undo', () => void say(undoDelete()), { label: 'Undo the last delete in Plan Studio 2.0' });
     rt.actions.register('plan-studio-2.select', (args, ctx) => { const id = target(args, ctx); select(id); }, { label: 'Select an item', searchable: false });
+    // Page layouts (nav menu, tab group, IDE dockable panes), the IDE dock and Collapse all / Expand all, the same through
+    // REST (/api/console-control), MCP (console_control_*), the CLI (axf console) and voice:
+    // `plan-studio-2.layout:<id or words>[:<dock-layout asset>]`, `plan-studio-2.dock:<op>:<args…>`, `plan-studio-2.section:<id>`.
+    rt.actions.register('plan-studio-2.layout', ([q = '', preset = '']) => {
+      const id = setLayout(rt, decodeURIComponent(q), preset ? decodeURIComponent(preset) : undefined);
+      rt.navigate(VIEW); rt.toast(`Plan Studio 2.0 layout: ${lc.resolveLayout(id)?.label ?? id}`, 'success', T);
+    }, { label: 'Plan Studio 2.0: switch page layout (nav menu, tabs, IDE panes)', params: true });
+    rt.actions.register('plan-studio-2.dock', ([op = '', ...rest]) => {
+      if (op === 'reset') writeDock(rt, null);
+      else writeDock(rt, lc.runDockOp(readDock(rt), op, rest.map((x) => decodeURIComponent(x)), lc.SECTION_IDS));
+      if (lc.resolveLayout(rt.settings.get(KEYS.pageLayout) as string)?.kind !== 'dock') rt.settings.set(KEYS.pageLayout, 'ide');
+      rt.navigate(VIEW);
+    }, { label: 'Plan Studio 2.0: move, split, close or reopen IDE panes and tabs', params: true });
+    rt.actions.register('plan-studio-2.section', ([q = '']) => {
+      const id = lc.resolveSection(decodeURIComponent(q));
+      if (!id) throw new Error(`Sections: ${lc.SECTION_IDS.join(', ')}.`);
+      rt.navigate(VIEW); showSection(rt, id);
+    }, { label: 'Plan Studio 2.0: show a section (tree, editor, say, trash)', params: true, effect: 'navigate' });
+    rt.actions.register('plan-studio-2.collapse-all', () => { setCollapsed(null, true); rt.toast('Collapsed everything.', 'info', T); }, { label: 'Plan Studio 2.0: collapse all' });
+    rt.actions.register('plan-studio-2.expand-all', () => { setCollapsed(null, false); rt.toast('Expanded everything.', 'info', T); }, { label: 'Plan Studio 2.0: expand all' });
     rt.actions.register('plan-studio-2.reload', () => void reload(), { label: 'Reload Plan Studio 2.0' });
   },
   contextMenu: [
@@ -94,6 +116,7 @@ export const plugin: AxfWebLibrary = {
   settings: [{
     id: 'plan-studio-2.prefs', label: 'Plan Studio 2.0', icon: 'branch', tab: FOLDER, order: 10,
     settings: [
+      { key: KEYS.pageLayout, label: 'Page layout', kind: 'choice', default: lc.DEFAULT_LAYOUT, options: lc.layouts().map((l) => ({ value: l.id, label: l.label })) },
       { key: KEYS.showDone, label: 'Show done steps and list items', kind: 'toggle', default: true },
       { key: KEYS.defaultModel, label: 'Model for new steps', kind: 'choice', default: '', options: [{ value: '', label: 'Any' }, { value: 'Fable', label: 'Fable' }, { value: 'Opus', label: 'Opus' }, { value: 'Sonnet', label: 'Sonnet' }] },
       { key: KEYS.voiceOut, label: 'Spoken replies', kind: 'choice', default: 'auto', options: [{ value: 'auto', label: 'Agent voice when installed, else the device' }, { value: 'device', label: 'The device voice' }] },

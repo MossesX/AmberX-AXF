@@ -12,6 +12,8 @@
   "data": {
     "scope": "plugin:plan-studio-2",
     "entries": [
+      { "target": "reset-the-panes-to-the-pane-layout", "title": "Reset the panes", "text": "Puts the IDE panes back to the picked pane layout (a dock-layout asset): every section returns, splits and sizes start over. Also plan-studio-2.dock:reset.", "kind": "button" },
+      { "target": "close-this-pane-its-sections-can-be-reopened", "title": "Close this pane", "text": "Closes the pane; its sections go to Reopen on the toolbar. The last pane never closes. Also plan-studio-2.dock:close-pane:<pane>.", "kind": "button" },
       { "target": "new-plan", "title": "New plan", "text": "Starts a plan at the top level. Everything else goes inside something.", "kind": "button" },
       { "target": "undo-delete", "title": "Undo delete", "text": "Brings the last deleted item (and everything under it) back where it was.", "kind": "button" },
       { "target": "expand-all", "title": "Expand all", "text": "Opens every branch of the tree.", "kind": "button" },

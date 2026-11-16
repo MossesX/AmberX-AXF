@@ -17,6 +17,7 @@ export const TOP = '__top__';
 export const DIALOGS = { item: 'plan-studio-2.item', move: 'plan-studio-2.move', link: 'plan-studio-2.link', build: 'plan-studio-2.build' } as const;
 export const KEYS = {
   showDone: 'plan-studio-2.showDone', voiceLang: 'plan-studio-2.voiceLang', voiceOut: 'plan-studio-2.voiceOut', defaultModel: 'plan-studio-2.defaultModel', meta: 'plan-studio-2.meta',
+  pageLayout: 'plan-studio-2.pageLayout', dock: 'plan-studio-2.dock', tab: 'plan-studio-2.tab',
 } as const;
 export const api = pluginApi(FOLDER, 'Plan Studio 2.0', { unavailable: 'Plan Studio 2.0 is switched off or its server part is not running.' });
 
