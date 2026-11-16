@@ -78,3 +78,10 @@ Ran CI's block for real: re-bake `core react ui schemas libs`, `shared-assets ba
 - `interface-scope-check`, `window-handles-check` and `fetch-share-check` pass.
 - `server/test_wall_users.py` (left open from s5) passes against the built `dist/`: 57 checks.
 - The re-bake rewrote the committed baked copies under `src/axf/`. Those were restored, not committed, because CI re-bakes on every run.
+
+## AmberX APK / Gradle (s7)
+
+- The APK job's only failure was the step "Build the web app, copy it into the shell", the same `@console/api` resolve error as triage #1. Gradle never ran.
+- Ran that step on a scratch copy in `node:22`: re-bake, `npm ci`, `npm run build`, `npx cap sync android`. All clean.
+- No Gradle, Capacitor config or native file changed. No new Android features.
+- `fix/main-green` is pushed. No PR run started, so I dispatched `android.yml` on it once: run 43923133971. The Gradle and APK result is checked in s8/s9.
