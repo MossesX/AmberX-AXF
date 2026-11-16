@@ -235,7 +235,7 @@ export interface LayoutData {
   navWidth: number;
   showMenubar: boolean;
   showToolbar: boolean;
-  toolbarPosition: 'top' | 'bottom';
+  toolbarPosition: 'top' | 'bottom' | 'left' | 'right';
   showStatusbar: boolean;
   inspector: 'left' | 'right' | 'none';
   inspectorWidth: number;

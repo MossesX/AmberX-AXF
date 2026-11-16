@@ -74,7 +74,9 @@
         "toolbarPosition": {
           "enum": [
             "top",
-            "bottom"
+            "bottom",
+            "left",
+            "right"
           ],
           "description": "token --fx-layout-toolbar-position"
         },

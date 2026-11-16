@@ -99,7 +99,7 @@ export function chromeInstanceSlug(label) {
 /** Where a kind can be moved from its context menu, and the setting that does it. */
 export const CHROME_MOVES = {
   'tab-group': { positions: ['top', 'bottom', 'left', 'right'], via: 'instance', field: 'position' },
-  toolbar: { positions: ['top', 'bottom'], via: 'layout', field: 'toolbarPosition' },
+  toolbar: { positions: ['top', 'bottom', 'left', 'right'], via: 'layout', field: 'toolbarPosition' },
   'nav-menu': { positions: ['left', 'right', 'top'], via: 'layout', field: 'nav' },
   banner: { positions: [], via: 'none', field: '' },
   'app-menu': { positions: [], via: 'none', field: '' },

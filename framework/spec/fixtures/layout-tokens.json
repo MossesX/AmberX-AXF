@@ -179,7 +179,9 @@
       "kind": "enum",
       "options": [
         "top",
-        "bottom"
+        "bottom",
+        "left",
+        "right"
       ],
       "default": "top"
     },
@@ -662,7 +664,6 @@
     ],
     "bad-words": [
       "data.nav must be one of: left, right, top",
-      "data.toolbarPosition must be one of: top, bottom",
       "data.inspector must be one of: left, right, none",
       "data.showMenubar must be true or false"
     ],

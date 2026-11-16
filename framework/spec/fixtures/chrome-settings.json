@@ -59,7 +59,9 @@
     "toolbar": {
       "positions": [
         "top",
-        "bottom"
+        "bottom",
+        "left",
+        "right"
       ],
       "via": "layout",
       "field": "toolbarPosition"

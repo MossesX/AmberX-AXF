@@ -55,7 +55,7 @@ export const LAYOUT_FIELDS = {
 /** Enum fields (word lists; the same as asset-types.json → types.layout.enums). */
 export const LAYOUT_ENUMS = {
   nav: ['left', 'right', 'top'],
-  toolbarPosition: ['top', 'bottom'],
+  toolbarPosition: ['top', 'bottom', 'left', 'right'],
   inspector: ['left', 'right', 'none'],
 };
 export const LAYOUT_ENUM_DEFAULTS = { nav: 'left', toolbarPosition: 'top', inspector: 'none' };

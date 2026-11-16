@@ -420,6 +420,37 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-region--inspector[data-side='left'] { border-right: var(--fx-border-w) solid var(--fx-border); }
 .fx-region--toolbar[data-pos='top'] { border-bottom: var(--fx-border-w) solid var(--fx-border); }
 .fx-region--toolbar[data-pos='bottom'] { border-top: var(--fx-border-w) solid var(--fx-border); }
+/* A toolbar moved to a side (layout toolbarPosition left / right; Brett, Nov 16 2026) is a column in its own grid column
+   beside the content: buttons stacked top to bottom, never a row above the content. It sizes to its buttons up to the
+   nav width, scrolls down (snap) when full, and drops to icons on a medium viewport; on a phone it is a row again. */
+.fx-region--toolbar:is([data-pos='left'], [data-pos='right']) { display: flex; max-width: var(--fx-layout-nav-width); background: var(--fx-surface2); }
+.fx-region--toolbar[data-pos='left'] { border-right: var(--fx-border-w) solid var(--fx-border); }
+.fx-region--toolbar[data-pos='right'] { border-left: var(--fx-border-w) solid var(--fx-border); }
+.fx-region--toolbar:is([data-pos='left'], [data-pos='right']) .fx-toolbar,
+.fx-toolbar[aria-orientation='vertical'] {
+  flex-direction: column; align-items: stretch; flex: 1 1 auto; min-width: 0;
+  padding: var(--fx-dens-gap-2xl) var(--fx-toolbar-py, var(--fx-dens-gap-lg));
+  overflow-x: hidden; overflow-y: auto; scroll-snap-type: y proximity;
+}
+.fx-region--toolbar:is([data-pos='left'], [data-pos='right']) .fx-toolbar__group,
+.fx-toolbar[aria-orientation='vertical'] .fx-toolbar__group {
+  flex-direction: column; padding-right: 0; border-right: 0; padding-bottom: var(--fx-dens-gap-xl); border-bottom: var(--fx-border-w) solid var(--fx-border);
+}
+.fx-region--toolbar:is([data-pos='left'], [data-pos='right']) .fx-toolbar__group:last-of-type,
+.fx-toolbar[aria-orientation='vertical'] .fx-toolbar__group:last-of-type { border-bottom: 0; }
+.fx-region--toolbar:is([data-pos='left'], [data-pos='right']) :is(.fx-toolbar__widgets, .fx-toolbar__brand),
+.fx-toolbar[aria-orientation='vertical'] :is(.fx-toolbar__widgets, .fx-toolbar__brand) { display: flex; flex-direction: column; align-items: stretch; }
+.fx-region--toolbar:is([data-pos='left'], [data-pos='right']) .fx-toolbtn,
+.fx-toolbar[aria-orientation='vertical'] .fx-toolbtn { justify-content: flex-start; }
+.fx-region--toolbar:is([data-pos='left'], [data-pos='right']) .fx-search,
+.fx-toolbar[aria-orientation='vertical'] .fx-search { margin-left: 0; flex: none; min-width: 0; }
+.fx-region--toolbar:is([data-pos='left'], [data-pos='right']) .fx-toolbar__fold,
+.fx-toolbar[aria-orientation='vertical'] .fx-toolbar__fold { margin-left: 0; margin-top: auto; }
+:where([data-fx-medium]) .fx-region--toolbar:is([data-pos='left'], [data-pos='right']) .fx-toolbtn:has(> svg) > span:not(.fx-toolbtn__badge),
+:where([data-fx-medium]) .fx-toolbar[aria-orientation='vertical'] .fx-toolbtn:has(> svg) > span:not(.fx-toolbtn__badge) { display: none; }
+:where([data-fx-medium]) .fx-region--toolbar:is([data-pos='left'], [data-pos='right']) .fx-toolbtn:has(> svg),
+:where([data-fx-medium]) .fx-toolbar[aria-orientation='vertical'] .fx-toolbtn:has(> svg) { justify-content: center; }
+:where([data-fx-medium]) .fx-region--toolbar:is([data-pos='left'], [data-pos='right']) .fx-search { display: none; }
 .fx-main { overflow: auto; background: var(--fx-bg); }
 .fx-main__inner {
   max-width: var(--fx-content-max);
@@ -433,6 +464,14 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 :where([data-fx-narrow]) .fx-region--inspector, :where([data-fx-narrow]) .fx-region--status { display: none; }
 :where([data-fx-narrow]) .fx-region--nav { border: 0 !important; border-top: var(--fx-border-w) solid var(--fx-border) !important; }
 :where([data-fx-narrow]) .fx-region--toolbar { border-top: 0 !important; border-bottom: var(--fx-border-w) solid var(--fx-border) !important; }
+/* phone: a side toolbar falls back to the row on top (the grid's phone areas put it there); undo the column look */
+:where([data-fx-narrow]) .fx-region--toolbar:is([data-pos='left'], [data-pos='right']) { border-left: 0 !important; border-right: 0 !important; max-width: none; display: block; }
+:where([data-fx-narrow]) .fx-region--toolbar:is([data-pos='left'], [data-pos='right']) .fx-toolbar { flex-direction: row; align-items: center; padding: var(--fx-toolbar-py, var(--fx-dens-gap-lg)) var(--fx-dens-gap-2xl); overflow-x: auto; overflow-y: hidden; scroll-snap-type: x proximity; }
+:where([data-fx-narrow]) .fx-region--toolbar:is([data-pos='left'], [data-pos='right']) .fx-toolbar__group { flex-direction: row; padding-bottom: 0; border-bottom: 0; padding-right: var(--fx-dens-gap-xl); border-right: var(--fx-border-w) solid var(--fx-border); }
+:where([data-fx-narrow]) .fx-region--toolbar:is([data-pos='left'], [data-pos='right']) :is(.fx-toolbar__widgets, .fx-toolbar__brand) { flex-direction: row; align-items: center; }
+:where([data-fx-narrow]) .fx-region--toolbar:is([data-pos='left'], [data-pos='right']) .fx-toolbar__fold { margin-top: 0; margin-left: auto; }
+:where([data-fx-narrow]) .fx-region--toolbar:is([data-pos='left'], [data-pos='right']) .fx-toolbtn:has(> svg) > span:not(.fx-toolbtn__badge) { display: inline; }
+:where([data-fx-narrow]) .fx-region--toolbar:is([data-pos='left'], [data-pos='right']) .fx-search { display: flex; margin-left: auto; flex: 0 1 260px; min-width: 150px; }
 :where([data-fx-narrow]) .fx-main__inner { padding: var(--fx-layout-phone-main-pad-top) var(--fx-layout-phone-main-pad-x) var(--fx-layout-phone-main-pad-bottom); }
 :where([data-fx-narrow]) .fx-brand__name { display: none; }
 :where([data-fx-narrow]) .fx-dropdown { left: var(--fx-layout-phone-edge); right: var(--fx-layout-phone-edge); }

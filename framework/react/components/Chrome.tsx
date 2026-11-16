@@ -93,6 +93,10 @@ export function Toolbar({ views }: { views: ViewMap }) {
   useAxfState();
   // chrome-settings@1: the settings dialog's overrides for this toolbar (instance `app`) over the asset's data
   const tb = { ...asset, data: rt.chromeData('toolbar', 'app', asset.data) ?? asset.data };
+  // layout toolbarPosition left / right: the toolbar is a column beside the content (axf.css draws it; phone = a row)
+  const pos = (useAsset('layout').data as { toolbarPosition?: string }).toolbarPosition;
+  const vertical = (pos === 'left' || pos === 'right') && !rt.viewportAttrs()['data-fx-narrow'];
+  const orientation = vertical ? 'vertical' as const : undefined;
   const [q, setQ] = useState('');
   // Widgets (clock, search bar) at the toolbar's start / end: its own `widgets` + run-time ones (core/engines/widgets.ts).
   const widgets = rt.toolbarWidgets();
@@ -107,8 +111,8 @@ export function Toolbar({ views }: { views: ViewMap }) {
   const fold = (on: boolean) => rt.setToolbarCollapsed(on);
   if (collapsible && collapsed) {
     return (
-      <div className={`fx-toolbar fx-toolbar--${tb.data.variant} is-collapsed`} data-align={tb.data.align} role="toolbar" aria-label="Toolbar (folded)" data-axf-toolbar="app">
-        <button type="button" data-axf-target="button:toolbar.unfold" className="fx-toolbtn fx-toolbar__fold" aria-label="Unfold the toolbar" aria-expanded="false" onClick={() => fold(false)}><Icon name="chevron-down" size={14} /></button>
+      <div className={`fx-toolbar fx-toolbar--${tb.data.variant} is-collapsed`} data-align={tb.data.align} role="toolbar" aria-label="Toolbar (folded)" aria-orientation={orientation} data-axf-toolbar="app">
+        <button type="button" data-axf-target="button:toolbar.unfold" className="fx-toolbtn fx-toolbar__fold" aria-label="Unfold the toolbar" aria-expanded="false" onClick={() => fold(false)}><Icon name={vertical ? (pos === 'left' ? 'chevron-right' : 'chevron-left') : 'chevron-down'} size={14} /></button>
       </div>
     );
   }
@@ -136,7 +140,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
   };
 
   return (
-    <div className={`fx-toolbar fx-toolbar--${tb.data.variant}${arrange.on ? ' is-arranging' : ''} ${brandHost.className}`.trim()} data-align={tb.data.align} role="toolbar" aria-label="Toolbar" data-axf-toolbar="app" data-fx-ctx-target="toolbar" data-fx-ctx-payload="app" data-axf-arrange-host="toolbar" data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
+    <div className={`fx-toolbar fx-toolbar--${tb.data.variant}${arrange.on ? ' is-arranging' : ''} ${brandHost.className}`.trim()} data-align={tb.data.align} role="toolbar" aria-label="Toolbar" aria-orientation={orientation} data-axf-toolbar="app" data-fx-ctx-target="toolbar" data-fx-ctx-payload="app" data-axf-arrange-host="toolbar" data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
       <ArrangeBar host="toolbar" label="toolbar" />
       {brand?.svg && <span className="fx-toolbar__brand"><BrandMark slot="toolbar" height={20} /></span>}
       {(arrange.on || widgets.start.length > 0) && <span className="fx-toolbar__widgets is-start" {...arrange.sideProps('start')}>{arrangedSide(arrange, 'start', widgets.start, drawWidget)}</span>}

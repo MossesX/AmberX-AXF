@@ -90,9 +90,17 @@ export function compileLayout(raw: LayoutData, hidden: readonly string[] = []): 
   const shows = (r: Region, type: string) => regionAccepts(slots, r, type) && !hidden.includes(type);
   const navOn = shows('nav', 'nav-menu');
   const nav = navOn ? l.nav : 'none';
+  const menubar = l.showMenubar && shows('menubar', 'app-menu');
+  const toolbar = l.showToolbar && shows('toolbar', 'toolbar');
+  // A toolbar moved to a side is a column hugging the content (Brett, Nov 16 2026: "it needs to run down the side like
+  // a column instead of pushing all the content down"): its own `auto` column between nav / inspector and main, so it
+  // never adds a row above or below the content. Top / bottom stay rows.
+  const toolbarSide = toolbar && (l.toolbarPosition === 'left' || l.toolbarPosition === 'right') ? l.toolbarPosition : null;
   if (nav === 'left') push('nav', `${l.navWidth}px`);
   if (l.inspector === 'left') push('inspector', `${l.inspectorWidth}px`);
+  if (toolbarSide === 'left') push('toolbar', 'auto');
   push('main', 'minmax(0, 1fr)');
+  if (toolbarSide === 'right') push('toolbar', 'auto');
   if (l.inspector === 'right') push('inspector', `${l.inspectorWidth}px`);
   if (nav === 'right') push('nav', `${l.navWidth}px`);
 
@@ -106,19 +114,19 @@ export function compileLayout(raw: LayoutData, hidden: readonly string[] = []): 
     if (!regions.includes(r)) regions.push(r);
   };
 
-  const menubar = l.showMenubar && shows('menubar', 'app-menu');
-  const toolbar = l.showToolbar && shows('toolbar', 'toolbar');
   if (menubar) add('menubar', span('menubar'), 'auto');
   if (nav === 'top') add('nav', span('nav'), 'auto');
   if (toolbar && l.toolbarPosition === 'top') add('toolbar', span('toolbar'), 'auto');
   areas.push(row(cols));
   rows.push('minmax(0, 1fr)');
+  if (toolbarSide) regions.push('toolbar');
   if (nav === 'left' || nav === 'right') regions.push('nav');
   if (l.inspector !== 'none') regions.push('inspector');
   if (toolbar && l.toolbarPosition === 'bottom') add('toolbar', span('toolbar'), 'auto');
   if (l.showStatusbar) add('status', span('status'), 'auto');
 
-  // Phone: single column, nav becomes a bottom tab strip, inspector hidden.
+  // Phone: single column, nav becomes a bottom tab strip, inspector hidden; a side toolbar falls back to a row on top
+  // (a column would leave the content too narrow to read).
   const mAreas: string[] = [];
   const mRows: string[] = [];
   if (menubar) { mAreas.push('"menubar"'); mRows.push('auto'); }
@@ -146,7 +154,7 @@ export function compileLayout(raw: LayoutData, hidden: readonly string[] = []): 
 export function layoutVars(raw: LayoutData, hidden: readonly string[] = []): VarMap {
   const l = normalizeLayout(raw) as NormalizedLayout;
   const c = compileLayout(l, hidden);
-  const token = (region: string) => (region === 'nav' ? `var(${layoutToken('navWidth')})` : region === 'inspector' ? `var(${layoutToken('inspectorWidth')})` : 'minmax(0, 1fr)');
+  const token = (region: string) => (region === 'nav' ? `var(${layoutToken('navWidth')})` : region === 'inspector' ? `var(${layoutToken('inspectorWidth')})` : region === 'toolbar' ? 'auto' : 'minmax(0, 1fr)');
   return {
     ...layoutTokenVars(l),
     [layoutToken('navOrientation')]: c.navOrientation,

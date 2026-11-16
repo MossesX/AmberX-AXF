@@ -1331,7 +1331,9 @@
           "kind": "enum",
           "options": [
             "top",
-            "bottom"
+            "bottom",
+            "left",
+            "right"
           ]
         },
         {

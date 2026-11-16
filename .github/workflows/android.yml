@@ -299,6 +299,7 @@ jobs:
             npx -y tsx framework/spec/check-design-package.mts         # design-package@1 + behavior-theme@1 rules, starters, the Amber context menu
             npx -y tsx framework/spec/check-scale.mts                  # typography@1 + density@1 + sizing@1: registry, defaults, tokens, fixture, starters, validators agree, hub slots
             npx -y tsx framework/spec/check-layout-tokens.mts          # every layout parameter is a token: registry = asset-types, defaults, normalize, --fx-layout-* vars, grid reads tokens, validators agree, starters, schema, fixture
+            npx -y tsx framework/spec/check-side-toolbar.mts           # a toolbar moved left / right is a column beside the content, never a row above it; phone falls back to a row
             npx -y tsx framework/spec/check-control.mts                # control@1: one command schema for tokens, AmberX entities and the planner: registry, gate (roles × ops), confirm flow, errors, projections, snapshot, fixture
             npx -y tsx framework/spec/check-console-commands.mts       # console commands (control@1 console domain): catalog, resolve by id/title/words, action policy, clients, runner, messages, screen focus, late commands
             npx -y tsx framework/spec/check-console-control.mts        # console-control@1: address grammar, verbs, resolve against a target snapshot, search, scroll maths, wire codes, schemas + snapshot + fixture current
