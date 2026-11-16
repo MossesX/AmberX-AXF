@@ -808,61 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 12:12 UTC · `gate-rules-plugin-in-the-console` s4 done (all) · orchestrator
-- 2026-11-15 12:14 UTC · `vps-sends-shipped-features-every-merge` added (0 steps) (all) · console
-- 2026-11-15 12:14 UTC · `gate-rules-plugin-in-the-console` s5 done (all) · orchestrator
-- 2026-11-15 12:14 UTC · `vps-sends-shipped-features-every-merge` → queued, note (all) · console
-- 2026-11-15 12:14 UTC · `gate-rules-plugin-in-the-console` note (all) · orchestrator
-- 2026-11-15 12:14 UTC · `gate-rules-plugin-in-the-console` s5 done (all) · foreign-write
-- 2026-11-15 12:14 UTC · `gate-rules-plugin-in-the-console` note (all) · mcp
-- 2026-11-15 12:14 UTC · `vps-sends-shipped-features-every-merge` note (all) · mcp
-- 2026-11-15 12:16 UTC · `every-grid-1-2-rows-per-item-set-skin` s2 done (all) · orchestrator
-- 2026-11-15 12:16 UTC · `vps-sends-shipped-features-every-merge` note (all) · orchestrator
-- 2026-11-15 12:16 UTC · `gate-rules-plugin-in-the-console` → queued, note (all) · pipeline
-- 2026-11-15 12:17 UTC · `vps-sends-shipped-features-every-merge` → running, note (all) · pipeline
-- 2026-11-15 12:17 UTC · `vps-sends-shipped-features-every-merge` branch claude/vps-sends-shipped-features-every-merge (all) · pipeline
-- 2026-11-15 12:17 UTC · `vps-sends-shipped-features-every-merge` note (all) · orchestrator
-- 2026-11-15 12:17 UTC · `gate-rules-plugin-in-the-console` → running, note (all) · pipeline
-- 2026-11-15 12:17 UTC · `gate-rules-plugin-in-the-console` note (all) · orchestrator
-- 2026-11-15 12:17 UTC · `gate-rules-plugin-in-the-console` note (all) · mcp
-- 2026-11-15 12:17 UTC · `shipped-features-organized-sortable` note (all) · mcp
-- 2026-11-15 12:17 UTC · `vps-sends-shipped-features-every-merge` note (all) · mcp
-- 2026-11-15 12:17 UTC · `pending-tab-one-collapsed-row-per-2` s12 done (all) · orchestrator
-- 2026-11-15 12:19 UTC · `pending-tab-one-collapsed-row-per-2` s13 done (all) · orchestrator
-- 2026-11-15 12:19 UTC · `data-container-axf-data-holds-all` → running, note (all) · mcp
-- 2026-11-15 12:20 UTC · `move-build-orchestrator-to-axhub` note (all) · mcp
-- 2026-11-15 12:20 UTC · `data-container-axf-data-holds-all` → queued (all) · mcp
-- 2026-11-15 12:20 UTC · `pending-tab-one-collapsed-row-per-2` PR #706 (all) · builds-live
-- 2026-11-15 12:20 UTC · `gate-rules-plugin-in-the-console` s6 done, → running (all) · orchestrator
-- 2026-11-15 12:21 UTC · `pending-tab-one-collapsed-row-per-2` s14 done, → built (all) · orchestrator
-- 2026-11-15 12:20 UTC · `axf-molly-container-orchestrator-gate` added (0 steps) (all) · console
-- 2026-11-15 12:20 UTC · `axf-molly-container-orchestrator-gate` → queued, note (all) · console
-- 2026-11-15 12:20 UTC · `move-build-orchestrator-to-axhub` → archived (all) · mcp
-- 2026-11-15 12:21 UTC · `pending-tab-one-collapsed-row-per-2` note (all) · orchestrator
-- 2026-11-15 12:21 UTC · `move-build-orchestrator-to-axhub` note (all) · builds-live
-- 2026-11-15 12:21 UTC · `axf-molly-container-orchestrator-gate` added (0 steps) (all) · builds-live
-- 2026-11-15 12:21 UTC · `every-grid-1-2-rows-per-item-set-skin` s3 done (all) · orchestrator
-- 2026-11-15 12:21 UTC · `gate-rules-plugin-in-the-console` note (all) · mcp
-- 2026-11-15 12:22 UTC · `gate-rules-plugin-in-the-console` s7 done (all) · orchestrator
-- 2026-11-15 12:22 UTC · `axf-molly-container-orchestrator-gate` note (all) · orchestrator
-- 2026-11-15 12:22 UTC · `pending-tab-one-collapsed-row-per-2` note (all) · pipeline
-- 2026-11-15 12:22 UTC · `data-container-axf-data-holds-all` → running, note (all) · pipeline
-- 2026-11-15 12:22 UTC · `data-container-axf-data-holds-all` note (all) · orchestrator
-- 2026-11-15 12:22 UTC · `shipped-features-organized-sortable` s1 done, → running (all) · orchestrator
-- 2026-11-15 12:22 UTC · `axf-molly-container-orchestrator-gate` → running, note (all) · pipeline
-- 2026-11-15 12:22 UTC · `axf-molly-container-orchestrator-gate` branch claude/axf-molly-container-orchestrator-gate (all) · pipeline
-- 2026-11-15 12:24 UTC · `data-container-axf-data-holds-all` s5 done, → running (all) · orchestrator
-- 2026-11-15 12:24 UTC · `gate-rules-plugin-in-the-console` s8 done (all) · orchestrator
-- 2026-11-15 12:24 UTC · `gate-rules-plugin-in-the-console` s9 done (all) · orchestrator
-- 2026-11-15 12:25 UTC · `every-grid-1-2-rows-per-item-set-skin` s4 done (all) · orchestrator
-- 2026-11-15 12:26 UTC · `every-grid-1-2-rows-per-item-set-skin` PR #707 (all) · builds-live
-- 2026-11-15 12:26 UTC · `every-grid-1-2-rows-per-item-set-skin` note (all) · orchestrator
-- 2026-11-15 12:26 UTC · `gate-rules-plugin-in-the-console` s10 done (all) · orchestrator
-- 2026-11-15 12:28 UTC · `gate-rules-plugin-in-the-console` s11 done (all) · orchestrator
-- 2026-11-15 12:28 UTC · `gate-rules-plugin-in-the-console` s11 done (all) · foreign-write
-- 2026-11-15 12:28 UTC · `data-container-axf-data-holds-all` s6 done (all) · orchestrator
-- 2026-11-15 12:29 UTC · `data-container-axf-data-holds-all` s7 done (all) · orchestrator
-- 2026-11-15 12:30 UTC · `gate-rules-plugin-in-the-console` s12 done (all) · orchestrator
 - 2026-11-15 12:30 UTC · `auto-lander-controls-in-the-gate-plugin` → pending, note (all) · reconciler
 - 2026-11-15 12:31 UTC · `shipped-features-organized-sortable` s2 done (all) · orchestrator
 - 2026-11-15 12:31 UTC · `data-container-axf-data-holds-all` s8 done (all) · orchestrator
@@ -1208,6 +1153,61 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 13:46 UTC · `demo-video-series-three-minute-browser` → running, note (all) · orchestrator
 - 2026-11-16 13:47 UTC · `move-build-orchestrator-to-axhub` note (all) · orchestrator
 - 2026-11-16 13:47 UTC · `vps-sends-shipped-features-every-merge` s10 done (all) · orchestrator
+- 2026-11-16 13:51 UTC · `console-look-becomes-default-axhub-skin` s15 done (all) · orchestrator
+- 2026-11-16 13:51 UTC · `vps-sends-shipped-features-every-merge` s11 done (all) · orchestrator
+- 2026-11-16 13:54 UTC · `duplicate-gate-vps-checks-shipped` s4 done (all) · orchestrator
+- 2026-11-16 13:54 UTC · `ui-manager-floating-window-to-select-any` s14 done, note (all) · orchestrator
+- 2026-11-16 13:55 UTC · `duplicate-gate-vps-checks-shipped` note (all) · orchestrator
+- 2026-11-16 13:55 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
+- 2026-11-16 13:56 UTC · `ui-manager-floating-window-to-select-any` → queued, note (all) · pipeline
+- 2026-11-16 13:56 UTC · `ui-manager-floating-window-to-select-any` note (all) · pipeline
+- 2026-11-16 13:56 UTC · `demo-video-series-three-minute-browser` note (all) · pipeline
+- 2026-11-16 13:56 UTC · `vps-sends-shipped-features-every-merge` s12 done (all) · orchestrator
+- 2026-11-16 13:57 UTC · `ui-manager-floating-window-to-select-any` → queued, note (all) · pipeline
+- 2026-11-16 13:56 UTC · `demo-video-series-three-minute-browser` s3 done, note (all) · reconciler
+- 2026-11-16 13:56 UTC · `vps-sends-shipped-features-every-merge` s12 done, note (all) · reconciler
+- 2026-11-16 13:57 UTC · `ui-manager-floating-window-to-select-any` → running, note (all) · pipeline
+- 2026-11-16 13:58 UTC · `ui-manager-floating-window-to-select-any` → queued, note (all) · pipeline
+- 2026-11-16 13:58 UTC · `ui-manager-floating-window-to-select-any` → running, note (all) · pipeline
+- 2026-11-16 13:58 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
+- 2026-11-16 13:58 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
+- 2026-11-16 13:58 UTC · `demo-video-series-three-minute-browser` s3 done (all) · orchestrator
+- 2026-11-16 13:59 UTC · `demo-video-series-three-minute-browser` → queued, note (all) · pipeline
+- 2026-11-16 13:59 UTC · `demo-video-series-three-minute-browser` → running, note (all) · pipeline
+- 2026-11-16 14:05 UTC · `console-look-becomes-default-axhub-skin` s16 done (all) · orchestrator
+- 2026-11-16 14:06 UTC · `ui-manager-floating-window-to-select-any` s12 done, → running (all) · orchestrator
+- 2026-11-16 14:06 UTC · `vps-sends-shipped-features-every-merge` s13 done (all) · orchestrator
+- 2026-11-16 14:06 UTC · `console-look-becomes-default-axhub-skin` s16 done (all) · foreign-write
+- 2026-11-16 14:07 UTC · `urgent-land-gizmo-chat-report` added (0 steps) (all) · merge-watch
+- 2026-11-16 14:08 UTC · `console-look-becomes-default-axhub-skin` s17 done (all) · orchestrator
+- 2026-11-16 14:08 UTC · `ui-manager-floating-window-to-select-any` s13 done (all) · orchestrator
+- 2026-11-16 14:07 UTC · `hotfix-launcher-splitter` added (0 steps) (all) · merge-watch
+- 2026-11-16 14:08 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` note (all) · merge-watch
+- 2026-11-16 14:08 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · merge-watch
+- 2026-11-16 14:08 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` note (all) · merge-watch
+- 2026-11-16 14:08 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` note (all) · merge-watch
+- 2026-11-16 14:08 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` note (all) · merge-watch
+- 2026-11-16 14:09 UTC · `overlay-float` added (0 steps) (all) · merge-watch
+- 2026-11-16 14:09 UTC · `overlay-pages` added (0 steps) (all) · merge-watch
+- 2026-11-16 14:09 UTC · `orch-build-id-40-chars` added (0 steps) (all) · merge-watch
+- 2026-11-16 14:09 UTC · `notes-tasks-r2-land` added (0 steps) (all) · merge-watch
+- 2026-11-16 14:09 UTC · `context-menu-console-settings` added (0 steps) (all) · merge-watch
+- 2026-11-16 14:09 UTC · `test-project-seed` added (0 steps) (all) · merge-watch
+- 2026-11-16 14:10 UTC · `hotfix-console-deploy-build-id` added (0 steps) (all) · merge-watch
+- 2026-11-16 14:10 UTC · `console-skin-axhub-only` added (0 steps) (all) · merge-watch
+- 2026-11-16 14:10 UTC · `per-toolbar-settings-fix-failing-chrome` note (all) · merge-watch
+- 2026-11-16 14:11 UTC · `land-batch-merge-main-each-finished` note (all) · merge-watch
+- 2026-11-16 14:11 UTC · `demo-video-series-three-minute-browser` s4 done, → built, note (all) · reconciler
+- 2026-11-16 14:11 UTC · `test-project-seed` PR #578, note (all) · reconciler
+- 2026-11-16 14:11 UTC · `merge-main-land-console-axhub-retry` note (all) · merge-watch
+- 2026-11-16 14:11 UTC · `land-all-skin-builds` → complete, merged, note (all) · merge-watch
+- 2026-11-16 14:11 UTC · `merge-main-land-change-to-move-amberx` → complete, merged, note (all) · merge-watch
+- 2026-11-16 14:11 UTC · `console-look-becomes-default-axhub-skin` note (all) · merge-watch
+- 2026-11-16 14:11 UTC · `ui-manager-floating-window-to-select-any` s10 done (all) · orchestrator
+- 2026-11-16 14:13 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
+- 2026-11-16 14:12 UTC · `ui-manager-floating-window-to-select-any` s11 done, → built (all) · orchestrator
+- 2026-11-16 14:14 UTC · `console-look-becomes-default-axhub-skin` s18 done (all) · orchestrator
+- 2026-11-16 14:14 UTC · `console-look-becomes-default-axhub-skin` s19 done (all) · orchestrator
 
 ## Token passes (log)
 
