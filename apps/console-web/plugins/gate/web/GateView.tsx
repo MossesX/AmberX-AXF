@@ -33,7 +33,7 @@ export function GateView() {
   }, []);
   return (
     <SkinScope kind="plugin" id={PLUGIN_ID} className="axp-gate">
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">Builds</p><h1>Gate &amp; rules</h1></div></header>
+      <header className="fx-pagehead"><div><p className="fx-eyebrow">Builds</p><h1>Gate &amp; rules</h1><p className="fx-muted">What a PR must pass before it lands, the rules the VPS runs for every build, and the lander that lands them.</p></div></header>
       <TabGroup<GateTab> id="gate.tabs" label="Gate & rules" value={tab} onChange={setTab}
         tabs={[{ value: 'rules', label: 'Rules', icon: 'shield' }, { value: 'build-rules', label: 'Build rules', icon: 'list' }, { value: 'auto-lander', label: 'Auto-lander', icon: 'branch' }, { value: 'history', label: 'History', icon: 'clock' }]}>
         <div className="axp-gate__panel">

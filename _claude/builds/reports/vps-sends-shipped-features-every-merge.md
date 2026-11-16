@@ -5,7 +5,7 @@ Build `vps-sends-shipped-features-every-merge` · branch `claude/vps-sends-shipp
 Brett, Nov 15 2026 12:14 (verbatim): "Why are there no shipped features for the past 2 days. No, the VPS has to send
 shipped features as soon as a merge to main succeeds since it now controls the orchestrator"
 
-Status: draft (Phase 2, Opus). Filled in step by step; the final step completes it.
+Status: Phase 2 (Opus) done, Nov 16 2026. PR #709.
 
 ## Root cause (s2)
 
@@ -144,3 +144,42 @@ list is ~309 KB since the Nov 12 backfill (324 manifests) pushed it past 64 KB. 
 manifests through that CLI (the list, MCP and voice "what shipped") got an error or nothing. Fix: exit after a flushed
 write; plugin test `the ledger CLI lets stdout drain…` seeds 120 manifests and parses the whole piped answer.
 The GitHub ETag cache keeps only the fields the watch reads (716 KB → 18 KB).
+
+## Result
+
+- **Root cause:** the one send path (`shipLanded`, after every orchestrator tick) asked the builds store what had landed,
+  not main. It missed PR merges hidden behind a build_land fast-forward, phase landings, store-less hotfixes, second
+  landings and stacked PRs, and lost ticks to torn store reads. Separately, `GET /manifests` answered 500 because the
+  ledger CLI's piped output was cut at 64 KB.
+- **Fix:** the VPS watches main (merge-watch@1). Every landing, keyed by merge sha, is sent once, retried with backoff,
+  and raises a systems check item plus one AmberX alert after 3 failures. The store write is atomic, the ledger CLI drains
+  stdout, and `shipLanded` reads main too until the watch has state.
+- **Backfill:** 21 merges since Nov 13 sent, 0 failed. 32 already had a manifest, 11 stack syncs folded. All 21 are in
+  the ledger and their sidecars are on main.
+
+## How each surface reaches it
+
+| Surface | Merge watch | One feature store |
+|---|---|---|
+| Deep link | `console_show view:gate/tab:gate.tabs=build-rules` row `shipped-features` (`#/gate`); systems check item `shipped-merge-watch` links there | Shipped features page; Gate & rules Pending features tab (its build) |
+| REST (`/api/plugins/shipped-features/…`) | `GET merge-watch`, `GET merge-watch/list`, `POST merge-watch/send` / `retry` / `backfill` / `switch` / `tick` | `GET builds?state=&build=&pr=&since=`, `GET builds/{id\|PR\|sha}` |
+| MCP (plugin-commands@1) | `features_merge_watch_status`, `_list`, `_send`, `_retry`, `_backfill`, `_switch`, `_tick` | `features_list`, `features_get` |
+| CLI | `axf merge-watch tick\|status\|send <sha>\|backfill --since\|retry\|on\|off\|list` | `node framework/cli/feature-store.mjs list\|get`, `axf shipped-features features-list` |
+| Voice (AmberX) | the same commands' phrases: "are merges reaching shipped features", "retry the shipped features sends", "backfill shipped features since Friday", "turn the merge watch off" | "what is pending", "what shipped since Monday", "where is PR 711" |
+
+## Checks run (s17)
+
+check-theme, check-controls, check-plugin-pages (the Gate page head had no description; main's CI would fail on it, one
+line added), check-console-control (inventory regenerated), check-merge-watch (40), merge-watch/test.mjs (26),
+check-shipped-manifest (35), shipped-features test.mjs (11) and test.py (26), notify-control (133), pipeline (52),
+auto-land (110), merge queue (18), plugin-commands (41), check-plugin-commands (59), check-plugin-catalog (55), gate (21 + 7),
+check-build-rules (27), check-mcp (210), check-console-control.mts (290), check-help (272), glossary-index,
+plugin-lifecycle check (clean), `axf schemas` (no drift). Node 22 where the check needs `node:sqlite`.
+
+## Open
+
+- The Gate & rules plugin shows the merge watch in its 'shipped-features' build rule and lists the feature store in a
+  Pending features tab: that UI is the Gate plugin's own build; the API it needs is here (GATE.md → features.*).
+- The optional push webhook route was not added: the cron poll every minute and the in-process triggers cover it.
+- The axf-molly job is a stub (`deploy/molly/merge-watch.entry.mjs`) until molly's job API is in this repo.
+- Kotlin twin of merge-watch@1 deferred (framework/spec/PORTING.md).

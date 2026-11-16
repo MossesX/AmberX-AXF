@@ -323,7 +323,12 @@ export function shipLanded({ days = 3, max = 10, env = process.env, landings = n
   const store = loadStore();
   const known = new Set(store.builds.filter((b) => !b.deleted).map((b) => b.id));
   const byPr = new Map(store.builds.filter((b) => !b.deleted && str(b.pr)).map((b) => [Number(String(b.pr).replace(/\D/g, '')), b.id]));
-  const all = landings ?? mainLandings({ since: from, ref: env.AXF_MERGE_WATCH_REF || MW.DEFAULT_REF, now });
+  let all = landings;
+  if (!all) {
+    // the repo shipped.mjs reads (AXF_SHIPPED_GIT_DIR); main itself where there is no origin/main (a test repo)
+    const ref = env.AXF_MERGE_WATCH_REF || (git(['rev-parse', '-q', '--verify', 'origin/main'], { env }) ? MW.DEFAULT_REF : 'main');
+    try { all = gitOff(env) ? [] : mainLandings({ since: from, ref, now, cwd: gitDir(env) }); } catch { all = []; }
+  }
   const due = [];
   for (const e of all) {
     if (e.state === 'skipped' || e.at < from || (e.nextRetryAt && e.nextRetryAt > now)) continue;
@@ -332,10 +337,16 @@ export function shipLanded({ days = 3, max = 10, env = process.env, landings = n
     due.push({ e, id });
     if (due.length >= max) break;
   }
+  // and, as before, any build the store calls landed with no manifest yet (a landing outside the walk's window or repo)
+  for (const b of store.builds) {
+    if (due.length >= max) break;
+    if (b.deleted || !SM.isLanded(b) || (b.mergedAt || b.updatedAt) < from || b.shipped || readManifest(b.id, env) || due.some((d) => d.id === b.id)) continue;
+    due.push({ e: null, id: b.id });
+  }
   const shipped = [];
   for (const { e, id } of due) {
-    try { const r = ship(id, { manifest: MW.toManifestOverlay(e, { known, byPr }), source: 'orchestrator', by: 'orchestrator', env, now, dry }); shipped.push({ id, sha: e.sha, pr: e.pr, manifest: r.manifest.id, rev: r.manifest.rev, ...(dry ? { dry: true } : {}) }); }
-    catch (e2) { shipped.push({ id, sha: e.sha, pr: e.pr, error: e2.message }); }
+    try { const r = ship(id, { manifest: e ? MW.toManifestOverlay(e, { known, byPr }) : null, source: 'orchestrator', by: 'orchestrator', env, now, dry }); shipped.push({ id, sha: e?.sha || r.manifest.landedCommit, pr: e?.pr || r.manifest.pr?.number || 0, manifest: r.manifest.id, rev: r.manifest.rev, ...(dry ? { dry: true } : {}) }); }
+    catch (e2) { shipped.push({ id, sha: e?.sha || '', pr: e?.pr || 0, error: e2.message }); }
   }
   return { shipped };
 }

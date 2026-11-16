@@ -10184,7 +10184,9 @@
         "shipped features"
       ],
       "view": "view:shipped-features",
-      "provides": [],
+      "provides": [
+        "service:axf.shipped@1"
+      ],
       "requires": [],
       "optional": []
     },
