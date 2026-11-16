@@ -71,7 +71,14 @@ one-sided rule is `orchestrator.css`'s `white-space: nowrap` on cells, which is 
 
 | Check | Before | After |
 |---|---|---|
-| `apps/console-web/scripts/grid-align.mjs` (default + windows, desktop + phone, 9 tabs) | 52 failures: every `fr`-track grid misaligned; 2-row mode missing | _(s9)_ |
+| `apps/console-web/scripts/grid-align.mjs`: before (default + windows, desktop + phone, 9 tabs); after (default + all 6 framework skins, 1 and 2 lines, desktop + phone, 9 orchestrator tabs + 6 other grid views) | 52 failures: every `fr`-track grid misaligned; 2-row mode missing | **420 cases, 45,344 header/cell pairs, 0 failures**; every skin proven drawn by its tokens; `state grid:…` reports the row mode drawn |
+| check-theme · check-controls · check-toolbars · check-chrome-assets · check-console-control · check-component-tokens · shared-assets check · chrome-settings check | pass | pass |
+| `theme-swap.mjs` | (main's console job red since Nov 15) | one finding, not from this build: `fx-tabs#125` background stays transparent in every colour theme (tab-group chrome, untouched here; left for `fix-red-ci-blocked-builds-they-land`). Every grid colour, opacity, density and sizing pick follows. |
+
+Console re-baked with `rebake.mjs apply apps/console-web --force`: the baked copy was behind the framework in 17 files (the
+console-look-becomes-default-axhub-skin engine changes: hub default skin resolution, skin rules, axf.css) plus five new
+framework files; none had edits that aren't in the framework (each compared). CI bakes the framework into the console the
+same way, so this matches what CI builds. Fixtures and the tracker didn't move (no engine in `framework/core` changed).
 
 ## Shots
 

@@ -21,7 +21,7 @@
  */
 import { spawn, execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
-import { mkdirSync, readdirSync } from 'node:fs';
+import { mkdirSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { setTimeout as sleep } from 'node:timers/promises';
@@ -50,7 +50,14 @@ const ORIGIN = `http://127.0.0.1:${PORT}`;
 const ME = { wall: false, hub: ORIGIN, appearanceHub: ORIGIN, user: null, admin: true, role: 'admin', themes: true, plugins: [] };
 let skinUnderTest = 'default';
 const appLook = () => ({ $axf: 'app-look@1', app: 'axf-console', default: {}, own: {}, skin: { use: skinUnderTest !== 'default', inherit: false, id: skinUnderTest === 'default' ? '' : skinUnderTest, overrides: {} }, scopes: {}, undo: null });
-const full = JSON.parse(execFileSync('node', [join(APP, 'plugins/build-orchestrator/orchestrator.mjs'), 'state', '--json'], { encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 }).trim().split('\n').pop());
+// the orchestrator's state as the console reads it; a checkout without it (CI) reads the synced store snapshot
+let full;
+try { full = JSON.parse(execFileSync('node', [join(APP, 'plugins/build-orchestrator/orchestrator.mjs'), 'state', '--json'], { encoding: 'utf8', maxBuffer: 256 * 1024 * 1024, stdio: ['ignore', 'pipe', 'ignore'] }).trim().split('\n').pop()); } catch { full = null; }
+if (!full?.state?.builds?.length) {
+  const store = JSON.parse(readFileSync(join(ROOT, '_claude/builds/store.json'), 'utf8'));
+  const builds = Array.isArray(store.builds) ? store.builds : Object.values(store.builds ?? {});
+  full = { ok: true, state: { $axf: 'orchestrator@1', updatedAt: new Date().toISOString(), rules: {}, builds } };
+}
 const withSteps = full.state.builds.filter((b) => b.steps?.length && !b.deleted);
 const byLen = [...withSteps].sort((a, b) => b.title.length - a.title.length);
 // per tab: the two longest titles, two short ones and a few in between, so rows with very different content sit together
@@ -116,8 +123,9 @@ function measure() {
   return out;
 }
 
-const server = spawn('npx', ['vite', 'preview', '--host', '127.0.0.1', '--port', String(PORT), '--strictPort'], { cwd: APP, stdio: 'ignore' });
-const stop = () => { try { server.kill('SIGTERM'); } catch { /* gone */ } };
+// its own process group, so stopping it stops vite too (killing npx alone leaves vite holding the port)
+const server = spawn('npx', ['vite', 'preview', '--host', '127.0.0.1', '--port', String(PORT), '--strictPort'], { cwd: APP, stdio: 'ignore', detached: true });
+const stop = () => { try { process.kill(-server.pid, 'SIGTERM'); } catch { try { server.kill('SIGTERM'); } catch { /* gone */ } } };
 process.on('exit', stop);
 
 const failures = [];
