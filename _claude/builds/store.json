@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6741,
- "updatedAt": "2026-11-16T19:29:53.606Z",
+ "rev": 6742,
+ "updatedAt": "2026-11-16T19:30:12.785Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -247342,6 +247342,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-16T19:25:58.523Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "assets-menu-hide-any-asset-hidden-list",
+   "title": "Assets menu: hide any asset, hidden list to bring them back",
+   "category": "",
+   "detail": "Rebuild of assets-menu-hide-any-asset-visible (branch lost in cleanup, never shipped). An Assets menu (banner/menu button and Settings > Appearance) lists every visible UI asset on the current screen and app (toolbars, tab groups, banners, widgets, nav, menus, panels, any asset). Tap any one to Hide it; it moves to a Hidden section in the same menu, where one tap shows it again. Also a Hide option in every asset's right-click/long-press menu and settings. Hidden state saved per app in the look on axHub, survives reloads. Same list/hide/show on REST, MCP, CLI and voice. Tests, land through the orchestrator.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-16T19:30:07.770Z",
+   "updatedAt": "2026-11-16T19:30:07.770Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "What happened to that build where I could hide anything? I could click a menu and it would show all the assets, hide them, and they'd move to hidden. Rebuild it.",
+    "at": "2026-11-16T19:30:07.770Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 917
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

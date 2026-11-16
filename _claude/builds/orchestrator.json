@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:29:53.606Z",
+ "updatedAt": "2026-11-16T19:30:12.785Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -161715,6 +161715,37 @@
      "createdAt": "2026-11-16T19:25:58.523Z"
     }
    ]
+  },
+  {
+   "id": "assets-menu-hide-any-asset-hidden-list",
+   "title": "Assets menu: hide any asset, hidden list to bring them back",
+   "category": "",
+   "detail": "Rebuild of assets-menu-hide-any-asset-visible (branch lost in cleanup, never shipped). An Assets menu (banner/menu button and Settings > Appearance) lists every visible UI asset on the current screen and app (toolbars, tab groups, banners, widgets, nav, menus, panels, any asset). Tap any one to Hide it; it moves to a Hidden section in the same menu, where one tap shows it again. Also a Hide option in every asset's right-click/long-press menu and settings. Hidden state saved per app in the look on axHub, survives reloads. Same list/hide/show on REST, MCP, CLI and voice. Tests, land through the orchestrator.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-16T19:30:07.770Z",
+   "updatedAt": "2026-11-16T19:30:07.770Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "What happened to that build where I could hide anything? I could click a menu and it would show all the assets, hide them, and they'd move to hidden. Rebuild it.",
+    "at": "2026-11-16T19:30:07.770Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
