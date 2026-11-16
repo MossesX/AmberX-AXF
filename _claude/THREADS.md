@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 04:56 UTC · `data-container-axf-data-holds-all` s4 done (all) · foreign-write
 - 2026-11-15 04:56 UTC · `auto-lander-controls-in-the-gate-plugin` s14 done (all) · orchestrator
 - 2026-11-15 04:56 UTC · `data-container-axf-data-holds-all` PR #704 (all) · builds-live
 - 2026-11-15 04:56 UTC · `data-container-axf-data-holds-all` note (all) · orchestrator
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 13:13 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` → pending (all) · builds-live
 - 2026-11-16 13:13 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` s2 undone, → pending (all) · builds-live
 - 2026-11-16 13:14 UTC · `voice-designer-plugin-built-each` → archived (all) · mcp
+- 2026-11-16 13:14 UTC · `group-chat-audio-hear-agents-talk-while` → running (all) · mcp
 
 ## Token passes (log)
 
