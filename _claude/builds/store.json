@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6694,
- "updatedAt": "2026-11-16T19:13:36.041Z",
+ "rev": 6695,
+ "updatedAt": "2026-11-16T19:13:47.491Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -246411,7 +246411,7 @@
    "title": "Alert every time a build falls back to Pending",
    "category": "",
    "detail": "Whenever any build drops out of Queue/Running back to Pending (session stopped with steps left, reconciler pause, self-check release, CI or land failure, anything), raise a console banner item (systems check health@1) saying which build, why, steps left and since when, with buttons Requeue and Open, and push it once to the AmberX phone app. Clear it when the build is requeued, archived or held. Also fix the dispatcher alert link: ALERT_LINK is '#/build-orchestrator', must be 'view:build-orchestrator' so alerts open the right screen. Same via REST, MCP, CLI, voice. Tests, land through the orchestrator.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -246419,7 +246419,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:12:13.425Z",
-   "updatedAt": "2026-11-16T19:12:44.487Z",
+   "updatedAt": "2026-11-16T19:13:26.384Z",
    "builtAt": "",
    "notes": [
     {
@@ -246454,7 +246454,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
