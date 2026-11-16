@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:19:47.621Z",
+ "updatedAt": "2026-11-16T19:19:59.673Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -161227,15 +161227,15 @@
    "title": "Pending banner: list every pending build, send to Queue from the banner",
    "category": "",
    "detail": "New banner plugin 'Pending': lists every build in Pending (title, plain-words what it does, priority, steps done/total, why it fell back), each row with Queue, Hold, Archive and Open buttons, plus 'Send all to Queue' and multi-select. Count badge on the banner. Joins the one Banners settings, launches expanded, pushes to AmberX when a build lands in Pending (ties in with alert-every-time-build-falls-back-to). Same actions on REST, MCP, CLI and voice. Tests, land through the orchestrator.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/pending-banner-list-every-pending-build",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:16:56.830Z",
-   "updatedAt": "2026-11-16T19:19:45.453Z",
+   "updatedAt": "2026-11-16T19:19:52.326Z",
    "builtAt": "",
    "notes": [
     {
@@ -161245,6 +161245,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"0de3e76f-e459-4f5e-a5b9-961ef7386bb3\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-16T19:19:19.385Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-pending-banner-list-every-pending-build--rhonda.",
+     "at": "2026-11-16T19:19:50.387Z"
+    },
+    {
+     "text": "Brief only: brief is 24924 characters (~6231 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-16T19:19:52.326Z"
     }
    ],
    "approvals": [],
