@@ -37,6 +37,15 @@ function writeCache(c, env) {
   const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, JSON.stringify(keep)); renameSync(tmp, f);
 }
 
+/** Only the fields the watch reads (PRs, search hits, CI runs), so the cache stays small. */
+const slimPr = (p) => (p && typeof p === 'object' ? { number: p.number, title: p.title, head: { ref: p.head?.ref, sha: p.head?.sha }, merged_at: p.merged_at, merge_commit_sha: p.merge_commit_sha, html_url: p.html_url } : p);
+export function slim(body) {
+  if (Array.isArray(body)) return body.map(slimPr);
+  if (body && Array.isArray(body.items)) return { items: body.items.map((i) => ({ number: i.number })) };
+  if (body && Array.isArray(body.workflow_runs)) return { workflow_runs: body.workflow_runs.map((r) => ({ name: r.name, run_number: r.run_number, status: r.status, conclusion: r.conclusion, html_url: r.html_url })) };
+  return body && body.number ? slimPr(body) : body;
+}
+
 let tokenMemo;
 export function githubToken(env = process.env) {
   if (tokenMemo !== undefined) return tokenMemo;
@@ -53,7 +62,7 @@ export async function githubGet(path, { env = process.env, fetchFn = globalThis.
     const res = await fetchFn(`https://api.github.com${path}`, { headers: { authorization: `Bearer ${token}`, accept: 'application/vnd.github+json', 'user-agent': 'axf-merge-watch', ...(hit?.etag ? { 'if-none-match': hit.etag } : {}) }, signal: AbortSignal.timeout(15e3) });
     if (res.status === 304 && hit) { cache[path] = { ...hit, at: new Date().toISOString() }; writeCache(cache, env); return hit.body; }
     if (!res.ok) return null;
-    const body = await res.json();
+    const body = slim(await res.json());
     const etag = res.headers.get('etag');
     if (etag) { cache[path] = { etag, body, at: new Date().toISOString() }; writeCache(cache, env); }
     return body;

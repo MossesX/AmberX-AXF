@@ -8,12 +8,13 @@
  *   - the ledger already has a manifest whose landedCommit is the sha (read-only, python3 sqlite3: the host's Node may
  *     predate node:sqlite)
  *
- * Transports, in order (AXF_MERGE_WATCH_SEND=local,api to change; the first that works wins):
+ * Transports, in order (AXF_MERGE_WATCH_SEND, default local,api,console; the first that works wins):
  *   local       a build: shipped.mjs ship(id, { manifest: overlay }) (sidecar + builds store ref → build-hook@1 `shipped` →
  *               ledger); an unlinked landing: the sidecar only (the ledger's sync takes any sidecar), so the builds store
  *               never gets `main-<sha9>` records
  *   api         POST <AXF_CONSOLE_URL>/api/plugins/shipped-features/manifest with AXF_TOKEN (the ledger API; the same
  *               ship() behind it), for a host with no checkout or store
+ *   console     the same ledger API through `docker exec axf-console` (the VPS host has no AXF_TOKEN in its shell)
  *   capability  axf.shipped@1: an open slot; used when a host registers a sender (registerTransport), none is registered yet
  *
  * The result is recorded in merge-watch state (MW.markSent / MW.markFailed: attempts, nextRetryAt backoff, error).
@@ -48,7 +49,20 @@ registerTransport('api', async ({ built, env, fetchFn = globalThis.fetch }) => {
   return { id: body.manifest?.id || built.manifest.id, rev: body.manifest?.rev || built.manifest.rev };
 });
 
-const order = (env) => String(env.AXF_MERGE_WATCH_SEND || 'local,api').split(',').map((s) => s.trim()).filter((s) => TRANSPORTS.has(s));
+// the same ledger API from the VPS host with no token in its shell: docker exec into the console, which holds AXF_TOKEN
+// (the orchestrator's way in, pipeline.mjs makeConsole)
+registerTransport('console', async ({ built, env }) => {
+  const name = env.AXF_PIPELINE_CONSOLE || 'axf-console';
+  const body = JSON.stringify({ manifest: built.unlinked ? built.manifest : { ...built.overlay, build: { id: built.id } }, by: 'merge-watch' });
+  const cmd = `curl -s -m 120 -w '\\n%{http_code}' -X POST -H "Authorization: Bearer $AXF_TOKEN" -H "Content-Type: application/json" --data-binary @- "http://127.0.0.1:${env.AXF_CONSOLE_PORT || 7090}/api/plugins/shipped-features/manifest"`;
+  const r = spawnSync('docker', ['exec', '-i', name, 'sh', '-c', cmd], { input: body, encoding: 'utf8', timeout: 150e3 });
+  if (r.error || r.status !== 0) throw new Error(`console: docker exec ${name} failed (${(r.stderr || r.error?.message || '').trim().slice(0, 160)})`);
+  const lines = String(r.stdout).trimEnd().split('\n'); const code = Number(lines.pop()); let out = {}; try { out = JSON.parse(lines.join('\n')); } catch { /* not JSON */ }
+  if (code < 200 || code >= 300) throw new Error(`console: ${code} ${String(out.detail || out.error || lines.join(' ')).slice(0, 200)}`);
+  return { id: out.manifest?.id || built.manifest.id, rev: out.manifest?.rev || built.manifest.rev };
+});
+
+const order = (env) => String(env.AXF_MERGE_WATCH_SEND || 'local,api,console').split(',').map((s) => s.trim()).filter((s) => TRANSPORTS.has(s));
 
 // ------------------------------------------------------------------ already sent?
 

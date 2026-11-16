@@ -146,5 +146,19 @@ t('the build-hook `shipped` event reads the sidecar; the sync takes manifests th
   delete process.env.AXF_SHIPPED_DIR; D.closeDb(':memory:');
 });
 
+t('the ledger CLI lets stdout drain before it exits (a piped answer over 64 KB arrives whole)', async () => {
+  const { spawnSync } = await import('node:child_process');
+  const { mkdtempSync, rmSync } = await import('node:fs'); const { tmpdir } = await import('node:os'); const { join } = await import('node:path');
+  const dir = mkdtempSync(join(tmpdir(), 'sf-pipe-'));
+  try {
+    const db = D.openDb(join(dir, 'ledger.sqlite'));
+    for (let i = 0; i < 120; i += 1) D.putManifest(db, { ...MANIFEST, id: `sm-big-${i}`, build: { ...MANIFEST.build, id: `big-${i}` }, said: { text: 'x'.repeat(900), verbatim: true } });
+    D.closeDb(join(dir, 'ledger.sqlite'));
+    const r = spawnSync(process.execPath, [new URL('./ledger/ledger.mjs', import.meta.url).pathname, 'manifests', '--json'], { encoding: 'utf8', env: { ...process.env, AXF_SHIPPED_FEATURES_DIR: dir }, maxBuffer: 64 * 1024 * 1024 });
+    assert.ok(r.stdout.length > 65536, `the answer is over 64 KB (${r.stdout.length})`);
+    assert.equal(JSON.parse(r.stdout).length, 120);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
 for (const [name, fn] of tests) { try { await fn(); n += 1; } catch (e) { console.error(`✗ ${name}`); throw e; } }
 console.log(`shipped-features: ${n} checks passed`);

@@ -126,3 +126,21 @@ The dry run found two more shapes the walk now covers:
 | 2026-11-15 08:06 | pr-merge | #689 | merge-main-land-change-to-move-amberx | 35cfd9eae | new |
 | 2026-11-15 10:06 | pr-merge | #324 | urgent-land-gizmo-chat-report | 32e55adee | new |
 | 2026-11-15 11:45 | build-land |  | console-look-becomes-default-axhub-skin | 56503d108 | new |
+
+## Backfill for real (s14)
+
+`merge-watch.mjs backfill --since 2026-11-13` on Nov 16 at 14:07 UTC, sent through the console's ledger API (transport
+`console`: `docker exec axf-console`, production `shipped.mjs ship`): **21 merges sent, 0 failed** (#324 first as a
+single `send`, then 20). All 21 are in the ledger (`manifests.landed_commit`), and builds-live published the 21 sidecars to
+main byte for byte (merged into this branch). The watch's state now lives at
+`/projects/amberx-axf/_data/_claude/builds/merge-watch/state.json` with lastSeen at main's tip: from here every tick
+takes only new merges.
+
+### Second cause found while checking: the manifest list answered 500
+
+`GET /api/plugins/shipped-features/manifests` failed with `JSONDecodeError: Unterminated string … char 130910`.
+`ledger/ledger.mjs` called `process.exit()` before stdout drained, so a piped answer stopped at 65,536 bytes; the manifest
+list is ~309 KB since the Nov 12 backfill (324 manifests) pushed it past 64 KB. Every surface that lists or searches
+manifests through that CLI (the list, MCP and voice "what shipped") got an error or nothing. Fix: exit after a flushed
+write; plugin test `the ledger CLI lets stdout drain…` seeds 120 manifests and parses the whole piped answer.
+The GitHub ETag cache keeps only the fields the watch reads (716 KB → 18 KB).

@@ -96,4 +96,7 @@ async function main() {
   }
   console.error('usage: ledger.mjs import|sync|list|show|export|stats|seed-draft|migrate|search|manifests|manifest|apply-manifest'); return 2;
 }
-main().then((c) => process.exit(c), (e) => { console.error(e.stack || e.message); process.exit(1); });
+// exit only once stdout has drained: process.exit() with a pipe cut the answer at 64 KB (the manifests list is ~300 KB,
+// so GET /manifests parsed half a JSON and answered 500; vps-sends-shipped-features-every-merge s14)
+const exitAfterFlush = (c) => process.stdout.write('', () => process.exit(c));
+main().then(exitAfterFlush, (e) => { console.error(e.stack || e.message); exitAfterFlush(1); });
