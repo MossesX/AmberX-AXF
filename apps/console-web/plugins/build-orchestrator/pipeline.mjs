@@ -82,6 +82,7 @@ import { activeProject, readProjects } from '../../../../framework/cli/projects.
 import { loadUpgradePolicy, settingsFile as claudeSettingsFile } from '../../../../framework/cli/upgrade-policy.mjs';
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
 import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.mjs';
+import { afterArchive } from '../../../../framework/cli/archive-pr.mjs';
 import * as lock from '../../../../framework/cli/build-lock.mjs';
 import { shipLanded } from '../../../../framework/cli/shipped.mjs';
 import { crewSay } from '../../../../framework/cli/crew-say.mjs';
@@ -320,6 +321,7 @@ export function buildAction(action, ids, { by = process.env.AXF_ACTOR || 'consol
         return s;
       }, { by, action: `pipeline:${action}`, note: id });
       logLine({ event: action, build: out.id, by });
+      if (action === 'archive') afterArchive(out, { by, why: reason }); // off the auto-lander list, open PR closed (branch kept)
       done.push({ id: out.id, status: out.status, tab: BP.tabOf(out) });
     } catch (e) { refused.push({ id, error: e.message }); }
   }

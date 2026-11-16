@@ -502,6 +502,38 @@ function defaultAgentJob(s) {
   };
 }
 
+// ------------------------------------------------------------------ archive
+
+/**
+ * A build was archived (orchestrator, Build manager, gate grid, API, CLI, voice): it leaves land.json at once (the
+ * next round skips it anyway: isCandidate) and its open PR is closed with a note. The branch is kept.
+ * Returns { build, branch, pr, closed, dropped, error }.
+ */
+export async function archiveBuild({ s = settings(), id, pr = '', branch = '', why = '', by = 'auto-lander', dry = false, gh = null } = {}) {
+  const st = readState(s);
+  const item = (st.items || []).find((x) => x.id === id || (x.alsoBuilds || []).includes(id));
+  const br = branch || item?.branch || `claude/${id}`;
+  let n = Number(String(pr || item?.pr || '').replace(/^#/, '')) || 0;
+  const out = { build: id, branch: br, pr: n || null, closed: null, dropped: !!item, error: '' };
+  if (item && !dry) { try { writeJson(stateFile(s), { ...st, items: st.items.filter((x) => x !== item) }); } catch (e) { out.dropped = false; out.error = `land.json: ${e.message}`; } }
+  if (dry || process.env.AXF_ARCHIVE_PR === 'off') return out;
+  try {
+    gh ??= makeGitHub(s);
+    if (!n) {
+      const owner = s.slug.split('/')[0];
+      const open = await gh('GET', `/repos/${s.slug}/pulls?state=open&head=${encodeURIComponent(`${owner}:${br}`)}`);
+      n = Array.isArray(open) && open[0]?.number ? open[0].number : 0; out.pr = n || null;
+    }
+    if (!n) return out;
+    const p = await gh('GET', `/repos/${s.slug}/pulls/${n}`);
+    if (p?.state !== 'open') return out;
+    await gh('POST', `/repos/${s.slug}/issues/${n}/comments`, { body: `Build \`${id}\` was archived (${by})${why ? `: ${why}` : ''}. Closing this PR; the branch \`${br}\` is kept. Unarchive the build to bring it back.` });
+    await gh('PATCH', `/repos/${s.slug}/pulls/${n}`, { state: 'closed' });
+    out.closed = n;
+  } catch (e) { out.error = e.message; }
+  return out;
+}
+
 // ------------------------------------------------------------------ CLI
 
 const line = (x) => `${x.state.padEnd(8)} ${x.id}${x.pr ? ` #${x.pr}` : ''}${x.reason ? ` · ${x.reason.text.replace(`${x.id}: `, '')}` : ' · ready: merges at the next push banner round'}`;
@@ -541,6 +573,12 @@ export async function main(argv) {
       : m.conflicts?.length ? `${b.id}: code conflicts with main in ${m.conflicts.join(', ')}` : `${b.id}: ${m.pushError || 'not merged'}`;
     if (!m.merged) process.exitCode = 1;
     return print({ build: b.id, branch: b.branch, ...m }, text);
+  }
+  if (cmd === 'archive') {
+    const id = rest[0]; if (!id || id.startsWith('--')) throw new Error('archive <build> [--pr n] [--branch b] [--why …]');
+    const r = await archiveBuild({ s, id, pr: opt('pr'), branch: opt('branch'), why: opt('why'), by: opt('by') || 'auto-lander', dry });
+    if (r.error) process.exitCode = 1;
+    return print(r, `${id}: off the auto-lander list${r.closed ? `; PR #${r.closed} closed with a note (branch ${r.branch} kept)` : r.pr ? `; PR #${r.pr} not closed: ${r.error}` : '; no open PR'}`);
   }
   if (cmd === 'list' || cmd === 'blocked') {
     const st = readState(s); const items = (st.items || []).filter((x) => cmd === 'list' || x.state === 'blocked');

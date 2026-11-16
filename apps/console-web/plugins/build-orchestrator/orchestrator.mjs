@@ -38,6 +38,7 @@ import { loadUpgradePolicy } from '../../../../framework/cli/upgrade-policy.mjs'
 import { readPolicy as readContextPolicy, rulesFor } from '../../../../framework/cli/headless-context.mjs';
 import { briefBudget } from '../../../../framework/core/headless-context.mjs';
 import * as BR from '../../../../framework/core/build-rules.mjs';
+import { afterArchive } from '../../../../framework/cli/archive-pr.mjs';
 
 /** The session's share of the build rules for one build (brief-blocks@1); null when the store can't be read. */
 function storeBlocks(b) { try { return BR.briefBlocks(BR.load().store, { id: b.id, title: b.title, text: b.detail || '' }); } catch { return null; } }
@@ -87,6 +88,8 @@ export function act(change, by = process.env.AXF_ACTOR || 'orchestrator') {
   if (legacy()) { const r = core.apply(load(), change); save(r.state); return r; }
   let r;
   withStore((s) => { const p = change?.action === 'add' ? profile() : profileFor(s, change?.id); r = core.apply(projectOrchestrator(s, p), change); return absorbOrchestrator(s, p, r.state, { by }); }, { by, action: `orchestrator:${change?.action}`, note: change?.id ?? '' });
+  // archived anywhere: off the auto-lander list at once, its open PR closed with a note (branch kept)
+  if (change?.action === 'archive' || (change?.action === 'status' && change.status === 'archived')) afterArchive(r.build ?? change.id, { by });
   return r;
 }
 
