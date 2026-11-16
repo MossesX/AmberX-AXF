@@ -25,7 +25,7 @@ import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
 import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
 import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
-import { BANNER_FIXED_SHAPE, bannerWidgetEmpty, bannerWidgetView, findBannerWidget, normalizeBannerWidgetPrefs, patchBannerWidget, BANNER_WIDGET_SIZES, type BannerWidgetHint, type BannerWidgetPrefs, type BannerWidgetSize, type BannerWidgetView } from './engines/bannerwidgets';
+import { BANNER_FIXED_SHAPE, WIDGET_SHAPE_FRAME, bannerWidgetEmpty, bannerWidgetView, findBannerWidget, migrateBannerWidgetPrefs, normalizeBannerWidgetPrefs, patchBannerWidget, BANNER_WIDGET_SIZES, type BannerWidgetHint, type BannerWidgetPrefs, type BannerWidgetSize, type BannerWidgetView } from './engines/bannerwidgets';
 import { hostSpec, hostSpecs, moveOnHost, normalizeArrangement, placeHost, placeToolbarWidgets, type HostArrangement, type HostAttachment, type PlacedAttachment } from './engines/widgets';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
@@ -1488,8 +1488,24 @@ export class AxfRuntime {
     return `axf.banners.widgets.${app}.${g.matchMedia?.('(max-width: 640px)').matches ? 'phone' : 'desktop'}`;
   }
 
-  /** The person's widget choices on this app and form factor. */
-  bannerWidgetPrefs(): BannerWidgetPrefs { return normalizeBannerWidgetPrefs(this.settings.get(this.bannerWidgetsKey())); }
+  /** Settings keys already run through the widget-shape@1 migration this session (once per app + form factor). */
+  private readonly bannerWidgetsMigrated = new Set<string>();
+
+  /** The person's widget choices on this app and form factor; the first read migrates them to widget-shape@1 (engines/bannerwidgets.ts). */
+  bannerWidgetPrefs(): BannerWidgetPrefs {
+    const key = this.bannerWidgetsKey();
+    const raw = this.settings.get(key);
+    if (!this.bannerWidgetsMigrated.has(key)) {
+      this.bannerWidgetsMigrated.add(key);
+      const r = migrateBannerWidgetPrefs(raw);
+      if (r.changed) {
+        this.settings.set(key, r.prefs as never);
+        this.terminal.ok('widgets', `banner: ${r.migrated.length} widget choice(s) now say shape circle (${WIDGET_SHAPE_FRAME}): ${r.migrated.join(', ')}`);
+        return r.prefs;
+      }
+    }
+    return normalizeBannerWidgetPrefs(raw);
+  }
 
   private bannerWidgetHint(key: string): BannerWidgetHint | undefined {
     const seen = this.bannerSeen.get(key);

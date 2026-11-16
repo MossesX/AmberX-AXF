@@ -8,8 +8,15 @@
  * axHub appearance document). Region and order stay in the host arrangement (rt.moveHostItem), so arrange mode and the
  * picker can never disagree.
  *
+ * widget-shape@1 (Nov 16 2026, schemas/asset-types.json → widgetShape): a widget also carries the outline it is clipped to
+ * (`shape`, default circle = the look every widget had before the field existed), a `customPath` for shape custom, and an
+ * `iconOverride` {pack, id} that draws another pack's glyph in place of its own icon. The saved setting is migrated once per
+ * profile (`migrateBannerWidgetPrefs`): every choice from before the field gets `shape: 'circle'` written out, so the screen
+ * does not change and a later default can never move an old widget.
+ *
  * Pure functions. Kotlin twin deferred (spec/PORTING.md); checks in spec/check-widgets.mts.
  */
+import spec from '../../schemas/asset-types.json';
 
 export const BANNER_WIDGET_SIZES = ['icon', 'compact', 'normal', 'wide'] as const;
 export type BannerWidgetSize = typeof BANNER_WIDGET_SIZES[number];
@@ -29,8 +36,33 @@ const KEY = /^[a-z0-9-]{1,40}:[A-Za-z0-9._-]{1,80}$/;
 /** Most entries the setting keeps (a damaged setting can't grow without bound). */
 export const BANNER_WIDGET_PREFS_MAX = 200;
 
+/* ---- widget-shape@1 ---- */
+const WS = spec.widgetShape as { frame: string; shapes: string[]; default: string; customPath: { max: number; commands: string; box: number }; iconOverride: { pack: string; id: string }; tokens: { radius: string; clip: string; icon: string } };
+export const WIDGET_SHAPE_FRAME = WS.frame;
+export const BANNER_WIDGET_SHAPES = ['circle', 'square', 'rounded', 'pill', 'hexagon', 'custom'] as const;
+export type BannerWidgetShape = typeof BANNER_WIDGET_SHAPES[number];
+/** The shape every widget had before the field existed; what an unset, migrated or invalid choice resolves to. */
+export const BANNER_WIDGET_SHAPE_DEFAULT: BannerWidgetShape = WS.default as BannerWidgetShape;
+/** Custom paths: most characters, the SVG commands allowed, and the square they are drawn in (0..box). */
+export const BANNER_WIDGET_CUSTOM_PATH = WS.customPath;
+/** The compiled token names (web: CSS custom properties on the widget's host item). */
+export const BANNER_WIDGET_SHAPE_TOKENS = WS.tokens;
+const PACK_ID = new RegExp(WS.iconOverride.pack);
+const GLYPH_ID = new RegExp(WS.iconOverride.id);
+
+/** Another pack's glyph drawn instead of the widget's own icon. */
+export interface BannerWidgetIconOverride { pack: string; id: string }
+
+/** The widget-shape@1 fields a hint and a choice share. */
+export interface BannerWidgetShapeFields {
+  shape?: BannerWidgetShape;
+  /** shape custom only: an SVG path in a 0..100 square */
+  customPath?: string;
+  iconOverride?: BannerWidgetIconOverride;
+}
+
 /** What a module says about its widget when it attaches it (all optional). */
-export interface BannerWidgetHint {
+export interface BannerWidgetHint extends BannerWidgetShapeFields {
   /** the name shown in the picker (default: the asset's name) */
   label?: string;
   icon?: string;
@@ -49,7 +81,7 @@ export interface BannerWidgetHint {
 }
 
 /** A person's choices for one widget: only what they changed. */
-export interface BannerWidgetPref {
+export interface BannerWidgetPref extends BannerWidgetShapeFields {
   hidden?: boolean;
   size?: BannerWidgetSize;
   show?: BannerWidgetShow;
@@ -71,17 +103,40 @@ export interface BannerWidgetView {
   priority: number;
   hideWhenEmpty: boolean;
   overflow: boolean;
+  /** the outline it is clipped to (widget-shape@1) */
+  shape: BannerWidgetShape;
+  /** the path a custom shape uses; undefined for every other shape */
+  customPath?: string;
+  /** another pack's glyph in place of its own icon, null = its own */
+  iconOverride: BannerWidgetIconOverride | null;
 }
 
 const has = <T extends string>(list: readonly T[], v: unknown): v is T => (list as readonly unknown[]).includes(v);
 const clampInt = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, Math.round(v)));
 const num = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
 
+/** A well-formed icon override: an icon-pack asset id and a glyph name. Whether both exist is the host's question (resolve time). */
+export function normalizeIconOverride(raw: unknown): BannerWidgetIconOverride | undefined {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return undefined;
+  const o = raw as Record<string, unknown>;
+  if (typeof o.pack !== 'string' || !PACK_ID.test(o.pack) || typeof o.id !== 'string' || !GLYPH_ID.test(o.id)) return undefined;
+  return { pack: o.pack, id: o.id };
+}
+
+/** The widget-shape@1 fields of a hint or a choice, each well-formed (a path is kept here as text; its grammar is checked at resolve time). */
+export function normalizeShapeFields(p: Record<string, unknown>, out: BannerWidgetShapeFields): void {
+  if (has(BANNER_WIDGET_SHAPES, p.shape)) out.shape = p.shape;
+  if (typeof p.customPath === 'string') { const s = p.customPath.trim(); if (s && s.length <= BANNER_WIDGET_CUSTOM_PATH.max) out.customPath = s; }
+  const io = normalizeIconOverride(p.iconOverride);
+  if (io) out.iconOverride = io;
+}
+
 /** One widget's saved choices with only valid fields. */
 export function normalizeBannerWidgetPref(raw: unknown): BannerWidgetPref {
   const out: BannerWidgetPref = {};
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return out;
   const p = raw as Record<string, unknown>;
+  normalizeShapeFields(p, out);
   if (typeof p.hidden === 'boolean') out.hidden = p.hidden;
   if (has(BANNER_WIDGET_SIZES, p.size)) out.size = p.size;
   if (has(BANNER_WIDGET_SHOWS, p.show)) out.show = p.show;
@@ -110,6 +165,23 @@ export function normalizeBannerWidgetPrefs(raw: unknown): BannerWidgetPrefs {
   return out;
 }
 
+/**
+ * widget-shape@1 migration: before the field existed every widget was a circle by implication. Every saved choice without a
+ * `shape` gets `shape: 'circle'` written out, so nothing on the bar moves and a later default never changes an old widget.
+ * Idempotent (a second run reports no change); a damaged setting is cleaned on the way, like every read. The runtime runs it
+ * once per profile and form factor on the first read of the setting and saves the result when it changed.
+ */
+export function migrateBannerWidgetPrefs(raw: unknown): { prefs: BannerWidgetPrefs; changed: boolean; migrated: string[] } {
+  const prefs = normalizeBannerWidgetPrefs(raw);
+  const migrated: string[] = [];
+  for (const [k, p] of Object.entries(prefs)) {
+    if (p.shape) continue;
+    prefs[k] = { ...p, shape: BANNER_WIDGET_SHAPE_DEFAULT };
+    migrated.push(k);
+  }
+  return { prefs, changed: migrated.length > 0, migrated };
+}
+
 /** The prefs with `patch` on one widget. A field set to null or undefined goes back to the default. */
 export function patchBannerWidget(prefs: BannerWidgetPrefs, key: string, patch: Record<string, unknown>): BannerWidgetPrefs {
   if (!KEY.test(key)) return { ...prefs };
@@ -133,7 +205,11 @@ export function bannerWidgetView(type: string, hint: BannerWidgetHint | null | u
   const spaces = fixed && !picked ? null : BANNER_WIDGET_WIDTH[size];
   const cap: BannerWidgetView['cap'] = num(p.maxWidth) && p.maxWidth > 0 ? { n: p.maxWidth, unit: p.maxUnit ?? 'px' } : spaces === null ? null : { n: spaces, unit: 'space' };
   const priority = num(p.priority) ? p.priority : num(h.priority) ? clampInt(h.priority, BANNER_WIDGET_PRIORITY.min, BANNER_WIDGET_PRIORITY.max) : BANNER_WIDGET_PRIORITY.default;
-  return { hidden: p.hidden ?? h.hidden ?? false, size, show, cap, priority, hideWhenEmpty: p.hideWhenEmpty ?? h.hideWhenEmpty ?? false, overflow: p.overflow ?? h.overflow ?? true };
+  // widget-shape@1: the choice wins over the hint; a custom shape without a path falls back to the default at resolve time
+  const shape: BannerWidgetShape = has(BANNER_WIDGET_SHAPES, p.shape) ? p.shape : has(BANNER_WIDGET_SHAPES, h.shape) ? h.shape : BANNER_WIDGET_SHAPE_DEFAULT;
+  const customPath = shape === 'custom' ? (p.shape === 'custom' ? p.customPath ?? h.customPath : h.customPath) : undefined;
+  const iconOverride = normalizeIconOverride(p.iconOverride) ?? normalizeIconOverride(h.iconOverride) ?? null;
+  return { hidden: p.hidden ?? h.hidden ?? false, size, show, cap, priority, hideWhenEmpty: p.hideWhenEmpty ?? h.hideWhenEmpty ?? false, overflow: p.overflow ?? h.overflow ?? true, shape, ...(customPath ? { customPath } : {}), iconOverride };
 }
 
 /** A width cap as a CSS length. */

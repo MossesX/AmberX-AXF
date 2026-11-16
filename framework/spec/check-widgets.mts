@@ -8,7 +8,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
-import { BANNER_WIDGET_WIDTH, bannerWidgetCapCss, bannerWidgetEmpty, bannerWidgetNumber, bannerWidgetView, findBannerWidget, normalizeBannerWidgetPrefs, overflowWidgets, patchBannerWidget } from '../core/engines/bannerwidgets';
+import { BANNER_WIDGET_WIDTH, bannerWidgetCapCss, bannerWidgetEmpty, bannerWidgetNumber, bannerWidgetView, findBannerWidget, migrateBannerWidgetPrefs, normalizeBannerWidgetPrefs, overflowWidgets, patchBannerWidget } from '../core/engines/bannerwidgets';
 import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, moveOnHost, normalizeArrangement, placeOnHost, placeToolbarWidgets, snapIndex, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
 import { validateAsset } from '../core/validate';
 import { AxfRuntime } from '../core/runtime';
@@ -38,6 +38,13 @@ const eq = (a: unknown, b: unknown, msg: string) => { assert.deepEqual(a, b, msg
   eq(normalizeBannerWidgetPrefs([1]), {}, 'normalize junk');
   eq(patchBannerWidget({ 'status:a': { hidden: true, size: 'wide' } }, 'status:a', { hidden: null }), { 'status:a': { size: 'wide' } }, 'null goes back to the default');
   eq(patchBannerWidget({ 'status:a': { hidden: true } }, 'status:a', { hidden: null }), {}, 'nothing left: the entry goes');
+  // widget-shape@1 migration: the old implicit circle is written out once, nothing else moves, a second run is a no-op
+  const mig = migrateBannerWidgetPrefs({ 'status:a': { size: 'wide' }, 'clock:c': { shape: 'pill' }, 'bad key': { hidden: true } });
+  eq(mig, { prefs: { 'status:a': { size: 'wide', shape: 'circle' }, 'clock:c': { shape: 'pill' } }, changed: true, migrated: ['status:a'] }, 'migrate: circle written out where no shape was saved');
+  eq(migrateBannerWidgetPrefs(mig.prefs).changed, false, 'migrate: idempotent');
+  eq(migrateBannerWidgetPrefs(null), { prefs: {}, changed: false, migrated: [] }, 'migrate: nothing saved, nothing to do');
+  eq(bannerWidgetView('status', null, null).shape, 'circle', 'a widget is a circle by default');
+  eq(bannerWidgetView('status', { shape: 'hexagon' }, { shape: 'square' }).shape, 'square', 'the shape pick beats the hint');
   // empty only means something for a counter-bound widget
   eq(bannerWidgetEmpty('counter', { counter: 'c' }, () => 0), true, 'zero counter is empty');
   eq(bannerWidgetEmpty('status', { counter: 'c' }, () => 2), false, 'lit status is not empty');
