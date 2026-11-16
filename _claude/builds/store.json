@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6944,
- "updatedAt": "2026-11-16T22:51:59.508Z",
+ "rev": 6945,
+ "updatedAt": "2026-11-16T22:52:13.847Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -247800,7 +247800,7 @@
    "title": "Auto-lander grid: one row per build, behind-main count, archive",
    "category": "",
    "detail": "Gate & rules > Auto-lander tab: make the grid ONE row per build (no multi-line rows). Columns: build, what it does (plain words), PR, status (ready/blocked), reason, commits behind main (sortable), last activity. Row actions: Open, Merge main + fix, Archive, Hold; multi-select bulk Archive. Filter e.g. 'behind > 500'. Stale records with no branch/PR are hidden or cleaned. Same data and actions on REST, MCP, CLI and voice. Tests, land through the orchestrator.",
-   "status": "complete",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -247808,8 +247808,8 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:19:11.374Z",
-   "updatedAt": "2026-11-16T22:51:57.257Z",
-   "builtAt": "2026-11-16T19:46:05.295Z",
+   "updatedAt": "2026-11-16T22:52:09.669Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -247985,6 +247985,28 @@
      "rev": 2,
      "createdAt": "2026-11-16T19:21:53.865Z",
      "updatedAt": "2026-11-16T19:45:35.497Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwjuz27x01ia7r",
+     "title": "",
+     "text": "Brett Nov 16 CORRECTION: do NOT cut the Auto-lander table to three columns. Restore ALL the original columns and just ADD a sortable 'Commits behind main' column. Every column sortable. Merge main, push, let the orchestrator land it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T22:52:06.053Z",
+     "updatedAt": "2026-11-16T22:52:06.525Z"
     }
    ],
    "profiles": [
@@ -247995,7 +248017,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
