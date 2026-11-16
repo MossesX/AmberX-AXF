@@ -5,7 +5,7 @@
     "views": 61,
     "nav": 16,
     "tabGroups": 23,
-    "tabs": 76,
+    "tabs": 77,
     "settingsTabs": 67,
     "settings": 85,
     "functions": 230,
@@ -1041,7 +1041,7 @@
       "view": "agent-manager",
       "plugin": "ai.amberx.axf.console.agent-manager",
       "file": "plugins/agent-manager/web/views.tsx",
-      "line": 59,
+      "line": 62,
       "tabs": [
         {
           "address": "view:agent-manager/tab:agent-manager.tabs=agents",
@@ -1057,6 +1057,11 @@
           "address": "view:agent-manager/tab:agent-manager.tabs=personas",
           "value": "personas",
           "label": "Personas & lingo"
+        },
+        {
+          "address": "view:agent-manager/tab:agent-manager.tabs=voices",
+          "value": "voices",
+          "label": "Voices"
         },
         {
           "address": "view:agent-manager/tab:agent-manager.tabs=tools",
@@ -1097,7 +1102,7 @@
       "view": "agent-manager",
       "plugin": "ai.amberx.axf.console.agent-manager",
       "file": "plugins/agent-manager/web/views.tsx",
-      "line": 331,
+      "line": 335,
       "tabs": [
         {
           "address": "view:agent-manager/tab:agent-manager.detail-view=edit",

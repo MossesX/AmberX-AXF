@@ -8,9 +8,14 @@ import {
   KIND_HELP, MEMORY_HELP, RECORD_HELP, SOURCE_HELP, lines, unlines,
   type Agent, type Cache, type JsonSchema, type Lingo, type Persona, type Skill, type Source, type Status, type Step, type Tool, type Training, type Workflow,
 } from './api';
+import { VoicePicker } from './voice-picker';
 
 export function Field({ label, hint, children }: { label: string; hint?: ReactNode; children: ReactNode }) {
   return <label className="axp-agent-manager__field"><span>{label}</span>{children}{hint && <span className="fx-small fx-muted">{hint}</span>}</label>;
+}
+/** Like Field for a group of controls (a div, so a click doesn't land on the first control). */
+export function Group({ label, hint, children }: { label: string; hint?: ReactNode; children: ReactNode }) {
+  return <div className="axp-agent-manager__field" role="group" aria-label={label}><span>{label}</span>{children}{hint && <span className="fx-small fx-muted">{hint}</span>}</div>;
 }
 export function Text({ value, onChange, placeholder, mono }: { value?: string; onChange: (v: string) => void; placeholder?: string; mono?: boolean }) {
   return <input className={`fx-input${mono ? ' fx-mono' : ''}`} value={value ?? ''} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />;
@@ -54,9 +59,9 @@ export function PersonaForm({ v, set }: { v: Partial<Persona>; set: (p: Partial<
       <Field label="Traits" hint="One per line"><Lines value={v.traits} onChange={(traits) => set({ ...v, traits })} /></Field>
       <Field label="Rules" hint="Things this persona always / never does (a persona never weakens safety rules)"><Lines value={v.rules} onChange={(rules) => set({ ...v, rules })} rows={4} /></Field>
       <Field label="Sample replies" hint="One per line: how it talks, not what it says"><Lines value={v.samples} onChange={(samples) => set({ ...v, samples })} rows={3} /></Field>
-      <Field label="Voice (for a future voice plugin)" hint="Empty until a voice plugin is installed; describe the voice you want">
-        <Text value={v.voiceSlot?.hint} onChange={(hint) => set({ ...v, voiceSlot: { ...(v.voiceSlot ?? {}), hint } })} placeholder="e.g. cat-like, warm, fast" />
-      </Field>
+      <Group label="Speaking voice" hint="Agents with this persona speak with it unless they pick their own (group chat audio, Agent voice)">
+        <VoicePicker value={v.voiceSlot} onChange={(voiceSlot) => set({ ...v, voiceSlot })} name={v.name} target={`view:agent-manager/voice:persona=${v.id ?? 'new'}`} />
+      </Group>
     </div>
   );
 }
@@ -264,9 +269,9 @@ export function AgentForm({ v, set, cache, status, only }: { v: Partial<Agent>; 
       {show('delegates') && <Field label="Can delegate to" hint="Each becomes an ask_<agent> tool"><Pick items={cache.agents.filter((a) => a.id !== v.id)} value={v.delegates} onChange={(delegates) => set({ ...v, delegates })} empty="No other agents yet." /></Field>}
       {show('instructions') && <Field label="Extra instructions"><Area value={v.instructions} onChange={(instructions) => set({ ...v, instructions })} rows={4} /></Field>}
       {show('identity') && (
-        <Field label="Voice" hint="Empty until a voice plugin is installed; describe the voice you want so it can be matched later">
-          <Text value={v.voice?.hint} onChange={(hint) => set({ ...v, voice: { ...(v.voice ?? {}), hint } })} placeholder="e.g. cat-like, calm, fast" />
-        </Field>
+        <Group label="Speaking voice" hint="Empty: the persona's voice. Used in group chat audio and by Agent voice">
+          <VoicePicker value={v.voice} onChange={(voice) => set({ ...v, voice })} name={v.name} agentId={v.id} target={`view:agent-manager/voice:agent=${v.id ?? 'new'}`} />
+        </Group>
       )}
       {show('model') && (
         <div className="axp-agent-manager__cols">

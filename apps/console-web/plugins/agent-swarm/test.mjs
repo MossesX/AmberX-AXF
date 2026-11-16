@@ -762,4 +762,27 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
   });
 }
 
+// each agent's own voice from the Agent manager (voice slot) reaches the group chat audio, under the room override
+{
+  const d = mkdtempSync(join(tmpdir(), 'axf-audio-am-')); const am = join(d, 'am'); mkdirSync(am);
+  writeFileSync(join(am, 'personas.json'), JSON.stringify({ items: { purr: { id: 'purr', name: 'Purr', voiceSlot: { provider: 'browser', voiceId: 'Samantha', hint: 'cat-like', rate: 1.1, pitch: 1.3 } } } }));
+  writeFileSync(join(am, 'agents.json'), JSON.stringify({ items: {
+    k: { id: 'k', name: 'Kotlin Kat', personaId: 'purr', voice: null },
+    rio: { id: 'rio', name: 'Rio', voice: { provider: 'openai', voiceId: 'echo', hint: 'calm', rate: 0.9 } },
+    nobody: { id: 'nobody', name: 'Not on the crew', voice: { provider: 'openai', voiceId: 'onyx', hint: '' } },
+  } }));
+  const env = { ...process.env, AXF_SWARM_DIR: d, AXF_SWARM_CHATS_DIR: 'off', AXF_AGENT_MANAGER_DIR: am };
+  const run = (...a) => JSON.parse(spawnSync(process.execPath, [new URL('./swarm.mjs', import.meta.url).pathname, ...a, '--json'], { encoding: 'utf8', env }).stdout);
+  t('audio: Agent manager voices (by id or name, persona slot) under the room override', () => {
+    let v = run('voices').voices;
+    assert.equal(v.kat.rate, 1.1); assert.equal(v.kat.pitch, 1.3); assert.deepEqual(v.kat.prefer, ['Samantha']);
+    assert.equal(v.rio.rate, 0.9); assert.deepEqual(v.rio.cloud, { provider: 'openai', voice: 'echo' });
+    assert.ok(!('nobody' in v));
+    run('audio', 'voice', 'kat', '{"pitch":0.5}');
+    v = run('voices').voices; assert.equal(v.kat.pitch, 0.5); assert.equal(v.kat.rate, 1.1);
+    const h = run('heard'); assert.equal(h.audio.voices.rio.rate, 0.9);
+    assert.equal(JSON.parse(readFileSync(join(d, 'audio.json'), 'utf8')).voices.rio, undefined, 'the slot voices are never written into the room settings');
+  });
+}
+
 console.log(`agent-swarm: ${n} checks passed`);

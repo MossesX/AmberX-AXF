@@ -131,6 +131,39 @@ export function act(change) {
 export const audioFile = () => join(dataDir(), 'audio.json');
 const VOICE_DIR = join(ROOT, 'framework/assets/voice');
 export function loadAudio(roster = loadRoster()) { return audio.normSettings(readJson(audioFile(), {}), roster.agents.map((a) => a.id)); }
+/*
+ * Each agent's own voice from the Agent manager: an agent there whose id or name is a crew member's (Kotlin Kat → kat)
+ * lends its voice slot ({provider, voiceId, hint, rate, pitch}, persona slot when its own is empty). It sits between
+ * the cast and the room's per-agent override: cast < Agent manager voice < room override.
+ */
+export const amDir = () => process.env.AXF_AGENT_MANAGER_DIR || join(ROOT, '.axf-console/plugins/agent-manager');
+const filled = (v) => v && typeof v === 'object' && (v.voiceId || v.provider || v.rate !== undefined || v.pitch !== undefined);
+export function slotVoices(roster = loadRoster()) {
+  const items = (c) => Object.values(readJson(join(amDir(), `${c}.json`), { items: {} })?.items ?? {});
+  const personas = Object.fromEntries(items('personas').map((p) => [p.id, p]));
+  const out = {};
+  for (const a of items('agents')) {
+    const slot = filled(a.voice) ? a.voice : personas[a.personaId]?.voiceSlot;
+    if (!filled(slot)) continue;
+    const nm = String(a.name ?? '').trim().toLowerCase();
+    const hit = roster.agents.find((r) => r.id === a.id) ?? roster.agents.find((r) => r.name.toLowerCase() === nm) ?? (a.id === 'boss' || nm === 'boss' ? { id: 'boss' } : null);
+    if (!hit || out[hit.id]) continue;
+    const v = {};
+    if (Number.isFinite(slot.rate)) v.rate = slot.rate;
+    if (Number.isFinite(slot.pitch)) v.pitch = slot.pitch;
+    if (slot.voiceId && (!slot.provider || slot.provider === 'browser')) v.prefer = [slot.voiceId];
+    if (slot.voiceId && audio.CLOUD_PROVIDERS.includes(slot.provider)) v.cloud = { provider: slot.provider, voice: slot.voiceId };
+    out[hit.id] = v;
+  }
+  return out;
+}
+/** Room settings as the players hear them: Agent manager voices folded under the room's own overrides. */
+export function heardAudio(settings, roster = loadRoster()) {
+  const slots = slotVoices(roster);
+  const voices = { ...settings.voices };
+  for (const [id, v] of Object.entries(slots)) voices[id] = { ...v, ...(voices[id] ?? {}) };
+  return { ...settings, voices };
+}
 /** Every voice asset there is, valid ones only. */
 export function voiceCasts() {
   if (!existsSync(VOICE_DIR)) return [];
@@ -153,7 +186,7 @@ export function audioAct(change) {
 }
 /** What the room sounds like: settings, the casts, the cast in force and each agent's voice. */
 export function audioState(roster = loadRoster()) {
-  const settings = loadAudio(roster); const casts = voiceCasts();
+  const settings = heardAudio(loadAudio(roster), roster); const casts = voiceCasts();
   const id = audio.castId(settings, '', casts.map((a) => a.id)); const cast = audio.normCast(casts.find((a) => a.id === id));
   const names = Object.fromEntries(roster.agents.map((a) => [a.id, a.name]));
   return { settings, casts, cast: id, voices: Object.fromEntries(['boss', ...roster.agents.map((a) => a.id)].map((a) => [a, audio.voiceFor(a, cast, settings)])), text: audio.describe(settings, names) };
@@ -475,7 +508,7 @@ export async function main(argv) {
     const [after = '-', n = '30'] = rest; const roster = loadRoster(); const st = loadState(); const msgs = st.messages;
     const i = after === '-' ? msgs.length - 1 : msgs.findIndex((m) => m.id === after);
     const list = after === '-' ? [] : (i < 0 ? msgs.slice(-1) : msgs.slice(i + 1)).slice(0, Math.max(1, Math.min(100, Number(n) || 30)));
-    const settings = loadAudio(roster); const casts = voiceCasts();
+    const settings = heardAudio(loadAudio(roster), roster); const casts = voiceCasts();
     return out({ ok: true, audio: settings, casts, cast: audio.castId(settings, '', casts.map((c) => c.id)), names: Object.fromEntries(roster.agents.map((a) => [a.id, a.name])), chatOn: st.chat.enabled, last: msgs.at(-1)?.id ?? '', messages: list.map((m) => ({ id: m.id, at: m.at, from: m.from, kind: m.kind, text: m.text })) }, list.map((m) => `${m.from}: ${m.text}`).join('\n') || 'Nothing new.');
   }
   if (cmd === 'voices') { const a = audioState(); return out({ ok: true, casts: a.casts.map((c) => ({ id: c.id, name: c.name, description: c.description ?? '' })), cast: a.cast, voices: a.voices }, [`cast in force: ${a.cast}`, ...a.casts.map((c) => `${c.id === a.cast ? '*' : ' '} ${c.id.padEnd(16)} ${c.name}`), '', ...Object.entries(a.voices).map(([k, v]) => `${k.padEnd(8)} ${v.gender.padEnd(6)} rate ${v.rate} pitch ${v.pitch}${v.prefer.length ? ` · ${v.prefer.join(', ')}` : ''}`)].join('\n')); }
