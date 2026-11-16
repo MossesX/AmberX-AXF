@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6542,
- "updatedAt": "2026-11-16T16:44:11.528Z",
+ "rev": 6543,
+ "updatedAt": "2026-11-16T16:44:47.158Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -79421,7 +79421,7 @@
    "pr": "#313",
    "mergedAt": "2026-11-04T17:27:24Z",
    "createdAt": "2026-11-04T10:43:58.630Z",
-   "updatedAt": "2026-11-12T03:29:56Z",
+   "updatedAt": "2026-11-16T16:44:21.205Z",
    "builtAt": "",
    "notes": [
     {
@@ -79459,6 +79459,10 @@
     {
      "text": "Shipped manifest sm-land-round-2 rev 1 sent to Shipped features (backfill): landed 585c23993, 2 file(s), 0 test line(s), 10 open.",
      "at": "2026-11-12T03:29:56Z"
+    },
+    {
+     "text": "Note from build remove-old-molly-app-project-keep-axf (Nov 16 2026): the Molly app is removed (apps/molly, molly.amberxai.com, the molly agent add-on; the guide is now gizmo-guide). Drop the Molly part of this build; the rest stands.",
+     "at": "2026-11-16T16:44:21.205Z"
     }
    ],
    "approvals": [],
@@ -79689,7 +79693,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161608,7 +161612,7 @@
    "pr": "#487",
    "priority": "P0",
    "createdAt": "2026-11-10T23:46:39.715Z",
-   "updatedAt": "2026-11-15T00:39:11.558Z",
+   "updatedAt": "2026-11-16T16:44:16.708Z",
    "builtAt": "2026-11-11T00:02:27.408Z",
    "notes": [
     {
@@ -161634,6 +161638,10 @@
     {
      "text": "PR #487. UI Review shots not taken: the local console waits for axHub (CORS blocks 127.0.0.1), so rebuild-shots can't render it. Shots are needed from a session with a local hub, or after deploy. Crew headless runs don't get console tools yet (grant recorded only). Sibling ai-assistant build should tag its console tools with apiScope.",
      "at": "2026-11-11T00:02:07.966Z"
+    },
+    {
+     "text": "Note from build remove-old-molly-app-project-keep-axf (Nov 16 2026): the Molly app is removed (apps/molly, molly.amberxai.com, the molly agent add-on; the guide is now gizmo-guide). Drop the Molly part of this build; the rest stands.",
+     "at": "2026-11-16T16:44:16.708Z"
     }
    ],
    "approvals": [],
@@ -161757,7 +161765,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -179276,7 +179284,7 @@
    "title": "Remove Molly completely: delete the molly add-on bundle from agent-manager, the _offer_molly auto-install on start, the molly-guide plugin and anything that pops Molly up on load",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -179285,7 +179293,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T07:10:15.600Z",
-   "updatedAt": "2026-11-13T07:12:11.360Z",
+   "updatedAt": "2026-11-16T16:44:41.344Z",
    "builtAt": "",
    "notes": [
     {
@@ -179367,12 +179375,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T16:44:28.259Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T07:12:11.360Z",
-     "updatedAt": "2026-11-13T07:12:11.360Z"
+     "updatedAt": "2026-11-16T16:44:28.576Z"
     },
     {
      "id": "s2",
@@ -179417,12 +179425,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T16:44:41.344Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T07:12:11.360Z",
-     "updatedAt": "2026-11-13T07:12:11.360Z"
+     "updatedAt": "2026-11-16T16:44:41.964Z"
     },
     {
      "id": "s4",
@@ -179616,7 +179624,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {

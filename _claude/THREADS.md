@@ -808,11 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 14:55 UTC · `shipped-features-organized-sortable` note (all) · mcp
-- 2026-11-15 14:55 UTC · `vps-sends-shipped-features-every-merge` → running, note (all) · mcp
-- 2026-11-15 14:55 UTC · `phone-connect-small-android-companion` → running, note (all) · pipeline
-- 2026-11-15 14:55 UTC · `phone-connect-small-android-companion` note (all) · orchestrator
-- 2026-11-15 14:55 UTC · `phone-connect-small-android-companion` note (all) · orchestrator
 - 2026-11-15 14:55 UTC · `shipped-features-open-button-views-each` added (0 steps) (all) · console
 - 2026-11-15 14:55 UTC · `shipped-features-open-button-views-each` → queued, note (all) · console
 - 2026-11-15 14:55 UTC · `build-rules-tab-gate-rules-vps-owns` s7 done, → running (all) · orchestrator
@@ -1208,6 +1203,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 16:43 UTC · `inline-edit-plugin-install-in-console-molly-and` → running, note (all) · orchestrator
 - 2026-11-16 16:43 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
 - 2026-11-16 16:44 UTC · `apps-control-surface` note (all) · orchestrator
+- 2026-11-16 16:44 UTC · `per-agent-api-control-switch-in-each-employee-s` note (all) · orchestrator
+- 2026-11-16 16:44 UTC · `land-round-2` note (all) · orchestrator
+- 2026-11-16 16:44 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s1 done, → running (all) · orchestrator
+- 2026-11-16 16:44 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s2 done (all) · orchestrator
+- 2026-11-16 16:44 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s3 done (all) · orchestrator
 
 ## Token passes (log)
 

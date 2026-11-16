@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T16:44:11.528Z",
+ "updatedAt": "2026-11-16T16:44:47.158Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -10503,7 +10503,7 @@
    "pr": "#313",
    "mergedAt": "2026-11-04T17:27:24Z",
    "createdAt": "2026-11-04T10:43:58.630Z",
-   "updatedAt": "2026-11-12T03:29:56Z",
+   "updatedAt": "2026-11-16T16:44:21.205Z",
    "builtAt": "",
    "notes": [
     {
@@ -10541,6 +10541,10 @@
     {
      "text": "Shipped manifest sm-land-round-2 rev 1 sent to Shipped features (backfill): landed 585c23993, 2 file(s), 0 test line(s), 10 open.",
      "at": "2026-11-12T03:29:56Z"
+    },
+    {
+     "text": "Note from build remove-old-molly-app-project-keep-axf (Nov 16 2026): the Molly app is removed (apps/molly, molly.amberxai.com, the molly agent add-on; the guide is now gizmo-guide). Drop the Molly part of this build; the rest stands.",
+     "at": "2026-11-16T16:44:21.205Z"
     }
    ],
    "approvals": [],
@@ -108762,7 +108766,7 @@
    "pr": "#487",
    "priority": "P0",
    "createdAt": "2026-11-10T23:46:39.715Z",
-   "updatedAt": "2026-11-15T00:39:11.558Z",
+   "updatedAt": "2026-11-16T16:44:16.708Z",
    "builtAt": "2026-11-11T00:02:27.408Z",
    "notes": [
     {
@@ -108788,6 +108792,10 @@
     {
      "text": "PR #487. UI Review shots not taken: the local console waits for axHub (CORS blocks 127.0.0.1), so rebuild-shots can't render it. Shots are needed from a session with a local hub, or after deploy. Crew headless runs don't get console tools yet (grant recorded only). Sibling ai-assistant build should tag its console tools with apiScope.",
      "at": "2026-11-11T00:02:07.966Z"
+    },
+    {
+     "text": "Note from build remove-old-molly-app-project-keep-axf (Nov 16 2026): the Molly app is removed (apps/molly, molly.amberxai.com, the molly agent add-on; the guide is now gizmo-guide). Drop the Molly part of this build; the rest stands.",
+     "at": "2026-11-16T16:44:16.708Z"
     }
    ],
    "approvals": [],
@@ -120421,7 +120429,7 @@
    "title": "Remove Molly completely: delete the molly add-on bundle from agent-manager, the _offer_molly auto-install on start, the molly-guide plugin and anything that pops Molly up on load",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -120429,7 +120437,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T07:10:15.600Z",
-   "updatedAt": "2026-11-13T07:12:11.360Z",
+   "updatedAt": "2026-11-16T16:44:41.344Z",
    "builtAt": "",
    "notes": [
     {
@@ -120475,8 +120483,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T16:44:28.259Z",
      "note": "",
      "uid": "st-mwen2rfk01nf0l",
      "createdAt": "2026-11-13T07:12:11.360Z"
@@ -120519,8 +120527,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T16:44:41.344Z",
      "note": "",
      "uid": "st-mwen2rfl03j36b",
      "createdAt": "2026-11-13T07:12:11.360Z"
