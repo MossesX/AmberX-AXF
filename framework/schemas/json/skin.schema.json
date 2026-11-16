@@ -38,13 +38,386 @@
         "layoutTheme",
         "colorTheme",
         "styleTheme",
-        "assets"
+        "assets",
+        "colorThemes"
       ],
       "properties": {
         "layoutTheme": {},
         "colorTheme": {},
         "styleTheme": {},
-        "assets": {}
+        "assets": {},
+        "colorThemes": {
+          "type": "object",
+          "description": "The skin's light and dark colour themes (skin-modes@1); colorTheme is one of the two.",
+          "required": [
+            "light",
+            "dark"
+          ],
+          "properties": {
+            "light": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]*$"
+            },
+            "dark": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]*$"
+            }
+          }
+        },
+        "behaviorTheme": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "chrome": {
+          "type": "object",
+          "description": "Chrome settings the skin puts in force per chrome-settings@1 kind; lands in the composed look's settings after extras.settings.",
+          "properties": {
+            "tab-group": {
+              "type": "object",
+              "description": "tab-group under this skin: the settings interface its dialog renders through (axf.chrome.settings.tab-group) and field overrides per instance (axf.chrome.tab-group.<instance>, this kind's chrome-settings@1 fields only).",
+              "properties": {
+                "interface": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9-]*$"
+                },
+                "instances": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object",
+                    "properties": {
+                      "style": {
+                        "enum": [
+                          "underline",
+                          "pills",
+                          "boxed",
+                          "segmented",
+                          "plain",
+                          "chips"
+                        ]
+                      },
+                      "position": {
+                        "enum": [
+                          "top",
+                          "bottom",
+                          "left",
+                          "right"
+                        ]
+                      },
+                      "display": {
+                        "enum": [
+                          "both",
+                          "text",
+                          "icons"
+                        ]
+                      },
+                      "density": {
+                        "enum": [
+                          "compact",
+                          "regular",
+                          "roomy"
+                        ]
+                      },
+                      "align": {
+                        "enum": [
+                          "start",
+                          "center",
+                          "end",
+                          "stretch"
+                        ]
+                      },
+                      "divider": {
+                        "type": "boolean"
+                      },
+                      "badges": {
+                        "type": "boolean"
+                      },
+                      "overflow": {
+                        "enum": [
+                          "scroll",
+                          "wrap",
+                          "more",
+                          "dropdown"
+                        ]
+                      },
+                      "sticky": {
+                        "type": "boolean"
+                      },
+                      "collapsible": {
+                        "type": "boolean"
+                      },
+                      "rememberLast": {
+                        "type": "boolean"
+                      },
+                      "closable": {
+                        "type": "boolean"
+                      },
+                      "reorderable": {
+                        "type": "boolean"
+                      },
+                      "tapConfirm": {
+                        "enum": [
+                          "inherit",
+                          "on",
+                          "off"
+                        ]
+                      },
+                      "rows": {
+                        "enum": [
+                          "1",
+                          "2",
+                          "3",
+                          "4",
+                          "5",
+                          "6",
+                          "auto"
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "toolbar": {
+              "type": "object",
+              "description": "toolbar under this skin: the settings interface its dialog renders through (axf.chrome.settings.toolbar) and field overrides per instance (axf.chrome.toolbar.<instance>, this kind's chrome-settings@1 fields only).",
+              "properties": {
+                "interface": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9-]*$"
+                },
+                "instances": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object",
+                    "properties": {
+                      "variant": {
+                        "enum": [
+                          "icons",
+                          "icons-labels",
+                          "labels"
+                        ]
+                      },
+                      "align": {
+                        "enum": [
+                          "start",
+                          "center",
+                          "spread"
+                        ]
+                      },
+                      "density": {
+                        "enum": [
+                          "compact",
+                          "regular",
+                          "roomy"
+                        ]
+                      },
+                      "surface": {
+                        "enum": [
+                          "flat",
+                          "raised",
+                          "glass"
+                        ]
+                      },
+                      "divider": {
+                        "type": "boolean"
+                      },
+                      "showSearch": {
+                        "type": "boolean"
+                      },
+                      "collapsible": {
+                        "type": "boolean"
+                      },
+                      "tapConfirm": {
+                        "enum": [
+                          "inherit",
+                          "on",
+                          "off"
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "banner": {
+              "type": "object",
+              "description": "banner under this skin: the settings interface its dialog renders through (axf.chrome.settings.banner) and field overrides per instance (axf.chrome.banner.<instance>, this kind's chrome-settings@1 fields only).",
+              "properties": {
+                "interface": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9-]*$"
+                },
+                "instances": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object",
+                    "properties": {
+                      "surface": {
+                        "enum": [
+                          "flat",
+                          "raised",
+                          "accent"
+                        ]
+                      },
+                      "height": {
+                        "type": "number",
+                        "minimum": 16,
+                        "maximum": 48
+                      },
+                      "divider": {
+                        "type": "boolean"
+                      },
+                      "tapConfirm": {
+                        "enum": [
+                          "inherit",
+                          "on",
+                          "off"
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "nav-menu": {
+              "type": "object",
+              "description": "nav-menu under this skin: the settings interface its dialog renders through (axf.chrome.settings.nav-menu) and field overrides per instance (axf.chrome.nav-menu.<instance>, this kind's chrome-settings@1 fields only).",
+              "properties": {
+                "interface": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9-]*$"
+                },
+                "instances": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object",
+                    "properties": {
+                      "style": {
+                        "enum": [
+                          "list",
+                          "pills",
+                          "rail"
+                        ]
+                      },
+                      "density": {
+                        "enum": [
+                          "compact",
+                          "regular",
+                          "roomy"
+                        ]
+                      },
+                      "indicator": {
+                        "enum": [
+                          "auto",
+                          "bar",
+                          "fill",
+                          "none"
+                        ]
+                      },
+                      "showIcons": {
+                        "type": "boolean"
+                      },
+                      "navStyle": {
+                        "type": "boolean"
+                      },
+                      "tapConfirm": {
+                        "enum": [
+                          "inherit",
+                          "on",
+                          "off"
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "app-menu": {
+              "type": "object",
+              "description": "app-menu under this skin: the settings interface its dialog renders through (axf.chrome.settings.app-menu) and field overrides per instance (axf.chrome.app-menu.<instance>, this kind's chrome-settings@1 fields only).",
+              "properties": {
+                "interface": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9-]*$"
+                },
+                "instances": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object",
+                    "properties": {
+                      "density": {
+                        "enum": [
+                          "compact",
+                          "regular",
+                          "roomy"
+                        ]
+                      },
+                      "surface": {
+                        "enum": [
+                          "flat",
+                          "raised",
+                          "glass"
+                        ]
+                      },
+                      "tapConfirm": {
+                        "enum": [
+                          "inherit",
+                          "on",
+                          "off"
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "context-menu": {
+              "type": "object",
+              "description": "context-menu under this skin: the settings interface its dialog renders through (axf.chrome.settings.context-menu) and field overrides per instance (axf.chrome.context-menu.<instance>, this kind's chrome-settings@1 fields only).",
+              "properties": {
+                "interface": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9-]*$"
+                },
+                "instances": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object",
+                    "properties": {
+                      "variant": {
+                        "enum": [
+                          "compact",
+                          "roomy",
+                          "glass"
+                        ]
+                      },
+                      "showIcons": {
+                        "type": "boolean"
+                      },
+                      "showShortcuts": {
+                        "type": "boolean"
+                      },
+                      "tapConfirm": {
+                        "enum": [
+                          "inherit",
+                          "on",
+                          "off"
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
       }
     }
   }

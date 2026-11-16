@@ -18,7 +18,9 @@
     "action:claude-accounts.switch",
     "service:axf.claude-accounts@1",
     "settings-panel:claude-accounts.routing",
-    "action:claude-accounts.routing"
+    "action:claude-accounts.routing",
+    "action:claude-accounts.one-account",
+    "settings-panel:claude-accounts.one-account"
   ],
   "requires": [
     "service:axf.headless@1",
@@ -58,6 +60,31 @@
             "name": {
               "type": "string",
               "description": "saved account name, 1 to 32 lower-case letters, digits or dashes"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      },
+      {
+        "route": "GET /build-account",
+        "id": "build-account",
+        "title": "Show the one Claude account",
+        "description": "The single Claude account the console and every VPS build use (empty = off: builds go to every worker), whether the console is on it yet, and the subscription logins that can be picked.",
+        "readOnly": true
+      },
+      {
+        "route": "POST /build-account",
+        "id": "set-build-account",
+        "title": "Pick the one Claude account",
+        "description": "Pick the single Claude account the console and every VPS build use (voice: 'use account 2 for everything'; 'off' goes back to every worker). Every other account, API keys too, is off for builds. Saved at once and used from the next build on; running builds keep theirs. When the console is on another account, the switch to it is one held axHub call Brett approves or denies.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "saved subscription login, 1 to 32 lower-case letters, digits or dashes; 'off' or empty = no single account"
             }
           },
           "required": [
@@ -270,7 +297,7 @@
                       "items": {
                         "type": "string"
                       },
-                      "description": "build, agent-job or a job-type id (walkthrough, ui-shots\u2026)"
+                      "description": "build, agent-job or a job-type id (walkthrough, ui-shots…)"
                     },
                     "models": {
                       "type": "array",

@@ -99,13 +99,13 @@ function Card({
   return (
     <Box
       data-axs-detail-card={marker}
-      sx={{ border: `1px solid ${token("edge")}`, borderRadius: token("radius") }}
+      sx={{ border: `var(--fx-border-w) solid ${token("edge")}`, borderRadius: token("radius") }}
     >
-      <Stack direction="row" sx={{ alignItems: "center", gap: 1, px: 1.5, py: 0.75 }}>
+      <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-xl)', px: 1.5, py: 0.75 }}>
         <Typography
           sx={{
             flex: 1,
-            fontSize: 10.5,
+            fontSize: 'var(--fx-type-root-xs)',
             fontFamily: token("mono"),
             textTransform: "uppercase",
             letterSpacing: "0.08em",
@@ -124,9 +124,9 @@ function Card({
 /** label → value, the pane's one spelling for a fact. */
 function Fact({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <Stack direction="row" sx={{ gap: 1, alignItems: "baseline" }}>
-      <Typography sx={{ fontSize: 11, color: token("dim"), minWidth: 110 }}>{label}</Typography>
-      <Typography sx={{ fontSize: 12, minWidth: 0, wordBreak: "break-word" }}>{value}</Typography>
+    <Stack direction="row" sx={{ gap: 'var(--fx-dens-gap-xl)', alignItems: "baseline" }}>
+      <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), minWidth: 110 }}>{label}</Typography>
+      <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', minWidth: 0, wordBreak: "break-word" }}>{value}</Typography>
     </Stack>
   );
 }
@@ -162,9 +162,9 @@ function RoleDialog({
 
   return (
     <Dialog open onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle sx={{ fontSize: 15 }}>Role — “{row.username}”</DialogTitle>
+      <DialogTitle sx={{ fontSize: 'var(--fx-type-root-lg)' }}>Role — “{row.username}”</DialogTitle>
       <DialogContent>
-        <Stack sx={{ gap: 2, pt: 1 }}>
+        <Stack sx={{ gap: 'var(--fx-dens-gap-3xl)', pt: 1 }}>
           <TextField
             select
             label="Role"
@@ -175,14 +175,14 @@ function RoleDialog({
             <MenuItem value="member">member</MenuItem>
             <MenuItem value="administrator">administrator</MenuItem>
           </TextField>
-          <Typography sx={{ fontSize: 11.5, color: token("dim") }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
             {role === "administrator"
               ? "An administrator passes every permission check by role — the matrix cannot refuse them anything, and they can reach this suite."
               : "A member is subject to the permission matrix and the policy cascade."}{" "}
             You cannot grant a role above your own, and nobody may demote themselves.
           </Typography>
           {error && (
-            <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }}>
+            <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
               {error}
             </Alert>
           )}
@@ -218,9 +218,9 @@ function TempPasswordDialog({
 
   return (
     <Dialog open onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle sx={{ fontSize: 15 }}>Temp password — “{row.username}”</DialogTitle>
+      <DialogTitle sx={{ fontSize: 'var(--fx-type-root-lg)' }}>Temp password — “{row.username}”</DialogTitle>
       <DialogContent>
-        <Stack sx={{ gap: 2, pt: 1 }}>
+        <Stack sx={{ gap: 'var(--fx-dens-gap-3xl)', pt: 1 }}>
           <TextField
             label="New temp password"
             size="small"
@@ -231,7 +231,7 @@ function TempPasswordDialog({
             slotProps={{ htmlInput: { autoCapitalize: "none", autoCorrect: "off" } }}
           />
           {error && (
-            <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }}>
+            <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
               {error}
             </Alert>
           )}
@@ -276,19 +276,19 @@ function SuspendDialog({
 
   return (
     <Dialog open onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle sx={{ fontSize: 15 }}>
+      <DialogTitle sx={{ fontSize: 'var(--fx-type-root-lg)' }}>
         {suspended ? `Lift the suspension — “${row.username}”` : `Suspend “${row.username}”`}
       </DialogTitle>
       <DialogContent>
-        <Stack sx={{ gap: 2, pt: 1 }}>
+        <Stack sx={{ gap: 'var(--fx-dens-gap-3xl)', pt: 1 }}>
           {suspended ? (
-            <Typography sx={{ fontSize: 12.5 }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-md)' }}>
               This un-pins the three suspension rows, so {row.username} follows the site defaults
               again and can sign in. Their data is untouched — a suspension never removed any.
             </Typography>
           ) : (
             <>
-              <Typography sx={{ fontSize: 12.5 }}>
+              <Typography sx={{ fontSize: 'var(--fx-type-root-md)' }}>
                 A suspension refuses sign-in and TELLS the member why. Their data is untouched.
                 Distinct from disabling the account, which says nothing.
               </Typography>
@@ -311,7 +311,7 @@ function SuspendDialog({
             </>
           )}
           {error && (
-            <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }}>
+            <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
               {error}
             </Alert>
           )}
@@ -406,23 +406,23 @@ function StorageCard({ username, quotaMB }: { username: string; quotaMB: number 
       }
     >
       {error && (
-        <Alert severity="error" variant="outlined" sx={{ fontSize: 12, mb: 1 }}>
+        <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)', mb: 1 }}>
           {error}
         </Alert>
       )}
 
       {usage === null ? (
-        <Typography sx={{ fontSize: 12, color: token("dim") }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
           Never scanned — nothing can honestly say what this member uses, and a quota refuses
           nobody on the strength of a measurement that does not exist. Rescan to measure.
         </Typography>
       ) : (
-        <Stack sx={{ gap: 0.75 }}>
-          <Stack direction="row" sx={{ alignItems: "baseline", gap: 1 }}>
-            <Typography sx={{ fontSize: 17, fontWeight: 700, fontFamily: token("mono") }}>
+        <Stack sx={{ gap: 'var(--fx-dens-gap-lg)' }}>
+          <Stack direction="row" sx={{ alignItems: "baseline", gap: 'var(--fx-dens-gap-xl)' }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-xl)', fontWeight: 700, fontFamily: token("mono") }}>
               {fmtBytes(usage.totalBytes)}
             </Typography>
-            <Typography sx={{ fontSize: 11.5, color: token("dim") }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
               {quotaBytes > 0 ? `of ${fmtBytes(quotaBytes)} quota` : "no quota set"}
               {usage.sharedBytes > 0 ? ` · ${fmtBytes(usage.sharedBytes)} shared with others` : ""}
             </Typography>
@@ -434,7 +434,7 @@ function StorageCard({ username, quotaMB }: { username: string; quotaMB: number 
               value={pct}
               sx={{
                 height: 6,
-                borderRadius: 3,
+                borderRadius: 'var(--fx-radius-lg)',
                 "& .MuiLinearProgress-bar": {
                   background: pct >= 100 ? token("err") : pct >= 80 ? token("warn") : token("accent"),
                 },
@@ -442,24 +442,24 @@ function StorageCard({ username, quotaMB }: { username: string; quotaMB: number 
             />
           )}
 
-          <Stack sx={{ gap: 0.25, mt: 0.5 }}>
+          <Stack sx={{ gap: 'var(--fx-dens-gap-xs)', mt: 0.5 }}>
             {usage.roots.map((r) => (
-              <Stack key={r.rootId} direction="row" sx={{ gap: 1, alignItems: "baseline" }}>
-                <Typography sx={{ fontSize: 11, color: token("dim"), flex: 1, minWidth: 0 }}>
+              <Stack key={r.rootId} direction="row" sx={{ gap: 'var(--fx-dens-gap-xl)', alignItems: "baseline" }}>
+                <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), flex: 1, minWidth: 0 }}>
                   {titleFor(r.rootId)}
                   {isShared(r.rootId) ? " (shared)" : ""}
                 </Typography>
-                <Typography sx={{ fontSize: 11, fontFamily: token("mono") }}>
+                <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', fontFamily: token("mono") }}>
                   {fmtBytes(r.bytes)}
                 </Typography>
-                <Typography sx={{ fontSize: 10.5, color: token("dim"), width: 70, textAlign: "right" }}>
+                <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), width: 70, textAlign: "right" }}>
                   {r.files} file{r.files === 1 ? "" : "s"}
                 </Typography>
               </Stack>
             ))}
           </Stack>
 
-          <Typography sx={{ fontSize: 10.5, color: token("dim"), mt: 0.5 }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), mt: 0.5 }}>
             Last authoritative scan {fmtWhen(usage.scannedAt)} · last change {fmtWhen(usage.updatedAt)}
           </Typography>
         </Stack>
@@ -514,7 +514,7 @@ function ProfileCard({ username, disabled }: { username: string; disabled: boole
   if (!profile) {
     return (
       <Card title="Profile">
-        <Typography sx={{ fontSize: 12, color: token("dim") }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
           {disabled
             ? "A disabled account has no profile to show — the store returns none for one, administrators included. Re-enable the account to reach it."
             : (missing ?? "Loading…")}
@@ -529,8 +529,8 @@ function ProfileCard({ username, disabled }: { username: string; disabled: boole
 
   return (
     <Card title="Profile">
-      <Stack sx={{ gap: 1 }}>
-        <Stack direction="row" sx={{ gap: 1.25, alignItems: "center" }}>
+      <Stack sx={{ gap: 'var(--fx-dens-gap-xl)' }}>
+        <Stack direction="row" sx={{ gap: 'var(--fx-dens-gap-2xl)', alignItems: "center" }}>
           <Box
             sx={{
               width: 38,
@@ -541,7 +541,7 @@ function ProfileCard({ username, disabled }: { username: string; disabled: boole
               alignItems: "center",
               justifyContent: "center",
               background: profile.avatar.kind === "image" ? "transparent" : profile.avatar.color,
-              border: `1px solid ${token("edge")}`,
+              border: `var(--fx-border-w) solid ${token("edge")}`,
               overflow: "hidden",
             }}
           >
@@ -556,16 +556,16 @@ function ProfileCard({ username, disabled }: { username: string; disabled: boole
                 sx={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
             ) : (
-              <Typography sx={{ fontSize: 14, fontWeight: 700 }}>
+              <Typography sx={{ fontSize: "var(--fx-font-size)", fontWeight: 700 }}>
                 {(profile.screenname || profile.username).slice(0, 2).toUpperCase()}
               </Typography>
             )}
           </Box>
           <Box sx={{ minWidth: 0 }}>
-            <Typography sx={{ fontSize: 13, fontWeight: 600 }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 600 }}>
               {profile.screenname || profile.username}
             </Typography>
-            <Typography sx={{ fontSize: 10.5, color: token("dim") }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>
               last seen {fmtWhen(profile.lastSeenAt)} · profile updated {fmtWhen(profile.updatedAt)}
             </Typography>
           </Box>
@@ -578,11 +578,11 @@ function ProfileCard({ username, disabled }: { username: string; disabled: boole
           minRows={2}
           value={bio}
           onChange={(e) => setBio(e.target.value)}
-          sx={{ "& .MuiInputBase-input": { fontSize: 12.5 } }}
+          sx={{ "& .MuiInputBase-input": { fontSize: 'var(--fx-type-root-md)' } }}
         />
 
         {fields.map((f, i) => (
-          <Stack key={i} direction="row" sx={{ gap: 1 }}>
+          <Stack key={i} direction="row" sx={{ gap: 'var(--fx-dens-gap-xl)' }}>
             <TextField
               label="Label"
               size="small"
@@ -590,7 +590,7 @@ function ProfileCard({ username, disabled }: { username: string; disabled: boole
               onChange={(e) =>
                 setFields((prev) => prev.map((row, j) => (j === i ? { ...row, label: e.target.value } : row)))
               }
-              sx={{ width: 160, "& .MuiInputBase-input": { fontSize: 12.5 } }}
+              sx={{ width: 160, "& .MuiInputBase-input": { fontSize: 'var(--fx-type-root-md)' } }}
             />
             <TextField
               label="Value"
@@ -599,7 +599,7 @@ function ProfileCard({ username, disabled }: { username: string; disabled: boole
               onChange={(e) =>
                 setFields((prev) => prev.map((row, j) => (j === i ? { ...row, value: e.target.value } : row)))
               }
-              sx={{ flex: 1, "& .MuiInputBase-input": { fontSize: 12.5 } }}
+              sx={{ flex: 1, "& .MuiInputBase-input": { fontSize: 'var(--fx-type-root-md)' } }}
             />
             <Tooltip title="Remove this field">
               <IconButton size="small" onClick={() => setFields((prev) => prev.filter((_, j) => j !== i))}>
@@ -609,38 +609,38 @@ function ProfileCard({ username, disabled }: { username: string; disabled: boole
           </Stack>
         ))}
 
-        <Stack direction="row" sx={{ gap: 1, alignItems: "center" }}>
+        <Stack direction="row" sx={{ gap: 'var(--fx-dens-gap-xl)', alignItems: "center" }}>
           <Button
             size="small"
             startIcon={<Glyph id="icon-plus" size={11} />}
             onClick={() => setFields((prev) => [...prev, { label: "", value: "" }])}
-            sx={{ fontSize: 11.5, textTransform: "none" }}
+            sx={{ fontSize: 'var(--fx-type-root-sm)', textTransform: "none" }}
           >
             Add field
           </Button>
           <Box sx={{ flex: 1 }} />
           {saved && !dirty && (
-            <Typography sx={{ fontSize: 11, color: token("ok") }}>saved</Typography>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("ok") }}>saved</Typography>
           )}
           <Button
             size="small"
             variant="contained"
             disabled={busy || !dirty}
             onClick={() => void save()}
-            sx={{ fontSize: 11.5, textTransform: "none" }}
+            sx={{ fontSize: 'var(--fx-type-root-sm)', textTransform: "none" }}
           >
             {busy ? <CircularProgress size={14} /> : "Save profile"}
           </Button>
         </Stack>
 
-        <Typography sx={{ fontSize: 10.5, color: token("dim") }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>
           The screenname is the member’s own choice through their profile and has no admin setter —
           the avatar likewise. This form edits what an administrator legitimately owns: the bio and
           the custom fields.
         </Typography>
 
         {error && (
-          <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }}>
+          <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
             {error}
           </Alert>
         )}
@@ -702,25 +702,25 @@ function PermissionsCard({ username }: { username: string }) {
   return (
     <Card title="Module access">
       {error && (
-        <Alert severity="error" variant="outlined" sx={{ fontSize: 12, mb: 1 }}>
+        <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)', mb: 1 }}>
           {error}
         </Alert>
       )}
       {!perms ? (
         <CircularProgress size={16} />
       ) : admin ? (
-        <Typography sx={{ fontSize: 12, color: token("dim") }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
           An administrator passes every permission check by role — every module, both capabilities.
           Change the role to make this row mean something.
         </Typography>
       ) : (
-        <Stack sx={{ gap: 0.25 }}>
+        <Stack sx={{ gap: 'var(--fx-dens-gap-xs)' }}>
           {modules.map((m) => {
             const allowed = !perms.deniedModules.includes(m.id);
             return (
-              <Stack key={m.id} direction="row" sx={{ alignItems: "center", gap: 1 }}>
+              <Stack key={m.id} direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-xl)' }}>
                 <Tooltip title={m.id}>
-                  <Typography sx={{ fontSize: 12, flex: 1, minWidth: 0 }}>{m.title}</Typography>
+                  <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', flex: 1, minWidth: 0 }}>{m.title}</Typography>
                 </Tooltip>
                 <Switch
                   size="small"
@@ -733,8 +733,8 @@ function PermissionsCard({ username }: { username: string }) {
             );
           })}
           {(["canMessage", "canEditProfile"] as const).map((cap) => (
-            <Stack key={cap} direction="row" sx={{ alignItems: "center", gap: 1 }}>
-              <Typography sx={{ fontSize: 12, flex: 1, fontStyle: "italic", color: token("dim") }}>
+            <Stack key={cap} direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-xl)' }}>
+              <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', flex: 1, fontStyle: "italic", color: token("dim") }}>
                 {cap === "canMessage" ? "Messaging" : "Edit profile"}
               </Typography>
               <Switch
@@ -746,7 +746,7 @@ function PermissionsCard({ username }: { username: string }) {
               />
             </Stack>
           ))}
-          <Typography sx={{ fontSize: 10.5, color: token("dim"), mt: 0.5 }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), mt: 0.5 }}>
             The two capabilities are also policy rows; either store saying no is a no, and the
             policy editor below shows the composed answer.
           </Typography>
@@ -815,14 +815,14 @@ export default function AdminUserDetail({ row, onChanged, focusCard = null }: Ad
       // gauge all offer the same member's rows.
       data-axf-area="accounts.user-row"
       data-axf-user={row.username}
-      sx={{ gap: 1.25, p: 1.5, minWidth: 0 }}
+      sx={{ gap: 'var(--fx-dens-gap-2xl)', p: 1.5, minWidth: 0 }}
     >
       {/* ------------------------------- identity ------------------------------- */}
-      <Stack direction="row" sx={{ alignItems: "center", gap: 1, flexWrap: "wrap" }}>
-        <Typography sx={{ fontSize: 15, fontWeight: 700 }}>
+      <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-xl)', flexWrap: "wrap" }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-lg)', fontWeight: 700 }}>
           {row.screenname ?? row.username}
         </Typography>
-        <Typography sx={{ fontSize: 11.5, color: token("dim"), fontFamily: token("mono") }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), fontFamily: token("mono") }}>
           {row.username}
         </Typography>
         <Chip
@@ -831,7 +831,7 @@ export default function AdminUserDetail({ row, onChanged, focusCard = null }: Ad
           label={row.role}
           sx={{
             height: 19,
-            fontSize: 10.5,
+            fontSize: 'var(--fx-type-root-xs)',
             ...(row.role === "administrator"
               ? { color: token("accent"), borderColor: token("accent") }
               : { color: token("dim") }),
@@ -842,7 +842,7 @@ export default function AdminUserDetail({ row, onChanged, focusCard = null }: Ad
             size="small"
             variant="outlined"
             label="online"
-            sx={{ height: 19, fontSize: 10.5, color: token("ok"), borderColor: token("ok") }}
+            sx={{ height: 19, fontSize: 'var(--fx-type-root-xs)', color: token("ok"), borderColor: token("ok") }}
           />
         )}
         {row.disabled && (
@@ -850,7 +850,7 @@ export default function AdminUserDetail({ row, onChanged, focusCard = null }: Ad
             size="small"
             variant="outlined"
             label="disabled"
-            sx={{ height: 19, fontSize: 10.5, color: token("err"), borderColor: token("err") }}
+            sx={{ height: 19, fontSize: 'var(--fx-type-root-xs)', color: token("err"), borderColor: token("err") }}
           />
         )}
         {suspended && (
@@ -858,7 +858,7 @@ export default function AdminUserDetail({ row, onChanged, focusCard = null }: Ad
             size="small"
             variant="outlined"
             label="suspended"
-            sx={{ height: 19, fontSize: 10.5, color: token("warn"), borderColor: token("warn") }}
+            sx={{ height: 19, fontSize: 'var(--fx-type-root-xs)', color: token("warn"), borderColor: token("warn") }}
           />
         )}
         {row.mustChangePassword && (
@@ -866,7 +866,7 @@ export default function AdminUserDetail({ row, onChanged, focusCard = null }: Ad
             size="small"
             variant="outlined"
             label="temp password"
-            sx={{ height: 19, fontSize: 10.5, color: token("warn"), borderColor: token("warn") }}
+            sx={{ height: 19, fontSize: 'var(--fx-type-root-xs)', color: token("warn"), borderColor: token("warn") }}
           />
         )}
         {row.awaitingFirstPassword && (
@@ -874,18 +874,18 @@ export default function AdminUserDetail({ row, onChanged, focusCard = null }: Ad
             size="small"
             variant="outlined"
             label="no password yet"
-            sx={{ height: 19, fontSize: 10.5, color: token("warn"), borderColor: token("warn") }}
+            sx={{ height: 19, fontSize: 'var(--fx-type-root-xs)', color: token("warn"), borderColor: token("warn") }}
           />
         )}
       </Stack>
 
       {/* -------------------------------- actions ------------------------------- */}
-      <Stack direction="row" sx={{ gap: 0.75, flexWrap: "wrap" }}>
+      <Stack direction="row" sx={{ gap: 'var(--fx-dens-gap-lg)', flexWrap: "wrap" }}>
         <Button
           size="small"
           variant="outlined"
           onClick={() => setDialog("role")}
-          sx={{ fontSize: 11.5, textTransform: "none" }}
+          sx={{ fontSize: 'var(--fx-type-root-sm)', textTransform: "none" }}
         >
           Change role
         </Button>
@@ -893,7 +893,7 @@ export default function AdminUserDetail({ row, onChanged, focusCard = null }: Ad
           size="small"
           variant="outlined"
           onClick={() => setDialog("password")}
-          sx={{ fontSize: 11.5, textTransform: "none" }}
+          sx={{ fontSize: 'var(--fx-type-root-sm)', textTransform: "none" }}
         >
           Temp password
         </Button>
@@ -902,21 +902,21 @@ export default function AdminUserDetail({ row, onChanged, focusCard = null }: Ad
           variant="outlined"
           color={suspended ? "primary" : "warning"}
           onClick={() => setDialog("suspend")}
-          sx={{ fontSize: 11.5, textTransform: "none" }}
+          sx={{ fontSize: 'var(--fx-type-root-sm)', textTransform: "none" }}
         >
           {suspended ? "Lift suspension" : "Suspend"}
         </Button>
       </Stack>
 
       {notice && (
-        <Alert severity="success" variant="outlined" sx={{ fontSize: 12 }} onClose={() => setNotice(null)}>
+        <Alert severity="success" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }} onClose={() => setNotice(null)}>
           {notice}
         </Alert>
       )}
 
       {/* --------------------------------- facts -------------------------------- */}
       <Card title="Account">
-        <Stack sx={{ gap: 0.4 }}>
+        <Stack sx={{ gap: 'var(--fx-dens-gap-sm)' }}>
           <Fact label="Created" value={`${fmtWhen(row.createdAt)} by ${row.createdBy}`} />
           <Fact label="Updated" value={fmtWhen(row.updatedAt)} />
           <Fact label="Last login" value={fmtWhen(row.lastLoginAt)} />
@@ -941,7 +941,7 @@ export default function AdminUserDetail({ row, onChanged, focusCard = null }: Ad
 
       {/* ------------------------------- sessions ------------------------------- */}
       <Card title="Sessions & presence">
-        <Stack sx={{ gap: 0.4 }}>
+        <Stack sx={{ gap: 'var(--fx-dens-gap-sm)' }}>
           <Fact
             label="Now"
             value={
@@ -957,7 +957,7 @@ export default function AdminUserDetail({ row, onChanged, focusCard = null }: Ad
           <Fact label="Last seen" value={fmtWhen(here?.lastSeenAt ?? null)} />
           <Fact label="Concurrent cap" value="set by “Concurrent sessions” in the Quotas group below" />
         </Stack>
-        <Typography sx={{ fontSize: 10.5, color: token("dim"), mt: 0.75 }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), mt: 0.75 }}>
           A session here is a live presence stream, which is what being signed in actually costs the
           server — the same thing the concurrent-sessions policy counts. There is no per-device
           session list, so this pane does not draw one.

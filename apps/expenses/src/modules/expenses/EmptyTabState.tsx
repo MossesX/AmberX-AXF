@@ -74,7 +74,7 @@ export default function EmptyTabState({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        gap: 2,
+        gap: 'var(--fx-dens-gap-3xl)',
         py: 6,
         userSelect: "none",
         "@keyframes axfEmptyBreathe": {
@@ -86,8 +86,8 @@ export default function EmptyTabState({
           to: { transform: "rotate(360deg)" }
         },
         "@keyframes axfEmptyHalo": {
-          "0%, 100%": { opacity: 0.25, transform: "scale(0.94)" },
-          "50%": { opacity: 0.6, transform: "scale(1.06)" }
+          "0%, 100%": { opacity: "var(--fx-opacity-disabled)", transform: "scale(0.94)" },
+          "50%": { opacity: "var(--fx-opacity-muted)", transform: "scale(1.06)" }
         },
         "@keyframes axfEmptyRise": {
           from: { opacity: 0, transform: "translateY(8px)" },
@@ -107,7 +107,7 @@ export default function EmptyTabState({
             position: "absolute",
             inset: 18,
             borderRadius: "50%",
-            background: `radial-gradient(circle, color-mix(in srgb, ${token("accent")} 38%, transparent) 0%, transparent 68%)`,
+            background: `radial-gradient(circle, color-mix(in srgb, ${token("accent")} calc(var(--fx-opacity-disabled) * 100%), transparent) 0%, transparent 68%)`,
             animation: "axfEmptyHalo 3.6s ease-in-out infinite"
           }}
         />
@@ -120,7 +120,7 @@ export default function EmptyTabState({
             position: "absolute",
             inset: 0,
             borderRadius: "50%",
-            border: `1px dashed color-mix(in srgb, ${token("accent")} 55%, transparent)`,
+            border: `var(--fx-border-w) dashed color-mix(in srgb, ${token("accent")} calc(var(--fx-opacity-scrim) * 100%), transparent)`,
             animation: "axfEmptyOrbit 14s linear infinite"
           }}
         />
@@ -130,10 +130,10 @@ export default function EmptyTabState({
             position: "absolute",
             inset: 22,
             borderRadius: "50%",
-            borderTop: `2px solid ${token("accent")}`,
-            borderRight: "2px solid transparent",
-            borderBottom: `1px solid color-mix(in srgb, ${token("edge")} 90%, transparent)`,
-            borderLeft: "2px solid transparent",
+            borderTop: `calc(var(--fx-border-w) * 2) solid ${token("accent")}`,
+            borderRight: "calc(var(--fx-border-w) * 2) solid transparent",
+            borderBottom: `var(--fx-border-w) solid color-mix(in srgb, ${token("edge")} calc(var(--fx-opacity-glass) * 100%), transparent)`,
+            borderLeft: "calc(var(--fx-border-w) * 2) solid transparent",
             animation: "axfEmptyOrbit 5.5s linear infinite reverse"
           }}
         />
@@ -161,8 +161,8 @@ export default function EmptyTabState({
         spacing={0.6}
         sx={{ alignItems: "center", animation: "axfEmptyRise 700ms ease-out both", animationDelay: "260ms" }}
       >
-        <Typography sx={{ fontSize: 13.5, fontWeight: 600 }}>No open tabs</Typography>
-        <Typography sx={{ fontSize: 12, color: token("dim"), textAlign: "center", maxWidth: 460 }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 600 }}>No open tabs</Typography>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), textAlign: "center", maxWidth: 460 }}>
           Every view was closed or floated out. The ledger is untouched — reopen a view, generate a
           report, or open one you saved earlier.
         </Typography>

@@ -55,7 +55,7 @@ export default function AdminSurface() {
         render: () => (
           <Box sx={{ minHeight: 0 }}>
             {c.summary && (
-              <Typography sx={{ fontSize: 11.5, color: token("dim"), mb: 1.25 }}>
+              <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), mb: 1.25 }}>
                 {c.summary} · contributed by <code>{c.from}</code>
               </Typography>
             )}

@@ -123,6 +123,7 @@ export interface Category {
  * with the user. Budgets are monthly cents, editable in spirit (0 = untracked).
  */
 export const CATEGORIES: Category[] = [
+  // theme-ok-begin: default category colours are user data, editable per category
   { id: "fuel", label: "Fuel & convenience", color: "#FFB020", budget: 40000 },
   { id: "groceries", label: "Groceries", color: "#34D399", budget: 60000 },
   { id: "dining", label: "Dining & takeout", color: "#F87171", budget: 15000 },
@@ -137,6 +138,7 @@ export const CATEGORIES: Category[] = [
   { id: "pending", label: "Pending / uncleared", color: "#F59E0B", budget: 0 },
   { id: "income", label: "Income", color: "#2DD4BF", budget: 0 },
   { id: "other", label: "Other", color: "#8A8A96", budget: 0 }
+  // theme-ok-end
 ];
 
 export const categoryOf = (id: string): Category =>

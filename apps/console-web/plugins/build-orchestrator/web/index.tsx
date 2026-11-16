@@ -3,6 +3,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 import { setPriorityHost, type PriorityHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
+import { addLoadedSource } from '@console/control/search';
 import { FOLDER, OrchestratorPage, TABS, openTab } from './ui';
 import { focusBuild } from './focus';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
@@ -50,7 +51,7 @@ export const plugin: AxfWebLibrary = {
   appMenu,
   register(rt) {
     /** A tab by id or label ("pending", "Pending", "all builds"), or ''. */
-    const tabOf = (s: string) => { const low = s.trim().toLowerCase(); return TABS.find((t) => t.id === low || t.label.toLowerCase() === low)?.id ?? ''; };
+    const tabOf = (s: string) => { const low = s.trim().toLowerCase(); if (/^group:[a-z0-9-]{1,48}$/.test(low)) return low; return TABS.find((t) => t.id === low || t.label.toLowerCase() === low)?.id ?? ''; };
     const open = async (arg = '') => {
       rt.navigate('build-orchestrator');
       let id = '';
@@ -66,6 +67,15 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('build-orchestrator.open', ([arg]) => void open(arg ?? ''), { label: 'Open the Build orchestrator (a build or a tab)', effect: 'navigate' });
     rt.actions.register('build-orchestrator.focus', ([arg]) => void open(arg ?? ''), { label: 'Build orchestrator: bring a tab or a build forward', params: true, effect: 'navigate' });
     rt.actions.register('build-orchestrator.tab', ([arg]) => { rt.navigate('build-orchestrator'); openTab(tabOf(decodeURIComponent(arg ?? 'queue')) || 'queue'); }, { label: 'Build orchestrator: open a tab', effect: 'navigate' });
+    // custom groups (groups.tsx, groups.mjs): group:<id> is a custom tab; group-add / group-remove put builds in or out,
+    // group-action runs queue | land | archive | priority:<P> on every build of a group (the same POST groups calls)
+    const groupCall = (path: string, body: Record<string, unknown>, done: string) => void pipeApi.post<{ ok: boolean; error?: string }>(path, body)
+      .then((r) => { if (!r.ok) throw new Error(r.error); rt.toast(done, 'success'); }).catch((e: Error) => rt.toast(e.message, 'danger'));
+    const splitArg = (arg?: string) => { const [g = '', rest = ''] = decodeURIComponent(arg ?? '').split('|'); return { group: g.trim(), list: rest.split(',').map((x) => x.trim()).filter(Boolean) }; };
+    rt.actions.register('build-orchestrator.groups', ([arg]) => { rt.navigate('build-orchestrator'); const g = decodeURIComponent(arg ?? '').trim().toLowerCase(); openTab(g ? `group:${g}` : 'groups'); }, { label: 'Build orchestrator: the Groups board, or one group\'s tab', effect: 'navigate' });
+    rt.actions.register('build-orchestrator.group-add', ([arg]) => { const a = splitArg(arg); groupCall('groups', { op: 'assign', groups: [a.group], builds: a.list, mode: 'add' }, `${a.list.join(', ')} → ${a.group}`); }, { label: 'Build orchestrator: put builds in a group (<group>|<build>,<build>)' });
+    rt.actions.register('build-orchestrator.group-remove', ([arg]) => { const a = splitArg(arg); groupCall('groups', { op: 'assign', groups: [a.group], builds: a.list, mode: 'remove' }, `${a.list.join(', ')} out of ${a.group}`); }, { label: 'Build orchestrator: take builds out of a group (<group>|<build>,<build>)' });
+    rt.actions.register('build-orchestrator.group-action', ([arg]) => { const a = splitArg(arg); const [action = '', priority = ''] = (a.list[0] ?? '').split(':'); groupCall(`groups/${encodeURIComponent(a.group)}/action`, { action, priority }, `${a.group}: ${action}`); }, { label: 'Build orchestrator: a group action (<group>|queue, land, archive or priority:P0)' });
     rt.actions.register('build-orchestrator.start', ([arg]) => {
       const id = decodeURIComponent(arg ?? '');
       if (!id) { void open('pending'); return; }
@@ -89,6 +99,12 @@ export const plugin: AxfWebLibrary = {
           .catch((e: Error) => rt.toast(e.message, 'danger'));
       }, { label: `Build orchestrator: ${ACTION_LABEL[action]} (one build or several, comma separated)` });
     }
+    // console-control@1: every loaded build is a search hit with its address (row:<id>, the orchestrator grid's row);
+    // focusing one that is not drawn opens its tab and expands it first, so row:<id>/step:s3 reaches its step too
+    addLoadedSource('build-orchestrator.builds', () => { if (Date.now() - loadedAt > 30_000) void loadRows().catch(() => undefined); return rows.map((r) => ({
+      address: `row:${r.id}`, kind: 'row' as const, label: r.title, icon: 'layers', detail: `Build · ${TAB_NAME[r.tab] ?? r.status}`, keywords: [r.id, r.status, r.tab, r.nextModel].filter(Boolean),
+      open: () => rt.dispatch(`build-orchestrator.focus:${encodeURIComponent(r.id)}`),
+    })); });
     rt.search.add('build-orchestrator.builds', () => {
       if (Date.now() - loadedAt > 30_000) void loadRows().catch(() => undefined);
       return rows.map((r) => ({
@@ -107,7 +123,7 @@ export const plugin: AxfWebLibrary = {
       return out;
     });
   },
-  views: { 'build-orchestrator': { title: 'Build orchestrator', icon: 'layers', keywords: ['orchestrator', 'builds', 'build manager', 'pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'archive', 'deleted', 'hold', 'on hold', 'restore', 'accounts', 'health', 'fable', 'opus', 'steps', 'phases', 'approve model'], render: () => <OrchestratorPage /> } },
+  views: { 'build-orchestrator': { title: 'Build orchestrator', icon: 'layers', keywords: ['orchestrator', 'builds', 'build manager', 'pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'archive', 'deleted', 'hold', 'on hold', 'restore', 'groups', 'custom groups', 'custom tabs', 'accounts', 'health', 'fable', 'opus', 'steps', 'phases', 'approve model'], render: () => <OrchestratorPage /> } },
   nav: { label: 'Builds', items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', view: 'build-orchestrator' }] },
   contextMenu: [{ id: 'build-orchestrator.pending', target: 'axf-pending-item', items: [{ id: 'build-orchestrator.open', label: 'Open in Build orchestrator', icon: 'layers', action: 'build-orchestrator.open' }] },
     { id: 'build-orchestrator.default', target: 'default', order: 91, items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', action: 'nav:build-orchestrator' }] }],

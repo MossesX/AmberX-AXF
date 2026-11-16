@@ -4,6 +4,7 @@ export { Button, IconButton, Segmented, Slider, Container, Chip, Kbd, type Butto
 export { ModelBadge, modelLabel, modelFamily } from './components/ModelBadge';
 export { BuildOrigin, originSubtitle, originSearch, originWhen } from './components/BuildOrigin';
 export { PriorityTag, setPriorityHost, setBuildPriority, PRIORITY_DIALOG, priorityDialogs, type PriorityHost } from './components/PriorityTag';
+export { HubSkinLockArea, HubSkinLockNote, askHubSkinOverride, useHubSkinLocked } from './components/HubSkinLock';
 export { Switch, Checkbox, ColorField, Field, TextField, SelectField, ChoiceGrid, Note, Section, LibraryParamField, type SwitchProps, type CheckboxProps, type ColorFieldProps, type FieldProps, type TextFieldProps, type SelectFieldProps, type SelectOption, type ChoiceGridProps, type Choice, type NoteProps, type NoteTone, type SectionProps, type LibraryParamFieldProps } from './components/Forms';
 export { Markdown, safeHref, type MarkdownProps } from './components/Markdown';
 export { Icon, ICON_NAMES } from './components/Icon';
@@ -24,6 +25,7 @@ export { HelpLayer, HelpModeButton, HelpPanel, HelpIntroCard, useHelpMode, descr
 export { BrandMark, BrandWatermark, brandHostProps, useBrandPlace } from './components/Brand';
 export { InterfaceScope, usePortalRoot, useScopeId } from './components/InterfaceScope';
 export { SkinScope } from './components/SkinScope';
+export { Swatches, SwatchFan, type SwatchesProps, type SwatchFanProps } from './components/Swatches';
 export { LookEditor, LookLevelSwitch, LookTokenRow } from './components/LookEditor';
 export { WidgetView, SearchBarWidget, registerWidgetRenderer, widgetRenderer, type WidgetRenderer, type WidgetRenderProps } from './components/Widgets';
 export { LiveSearch, useSearchHost, scanPage, flashWhenReady } from './components/Search';
@@ -51,5 +53,7 @@ export { installTapConfirm, toolbarOf, toolbarElementId, tipTextOf, tapSurfaceOf
 export { TapConfirmChoice } from './components/TapConfirmChoice';
 export { RefText, REFS_SETTING, addRefSource, refSourcesChanged, refIndexOf, openRef, refLink, type RefTextProps, type RefHow } from './components/RefText';
 export { TabGroup, useTabGroupData, tabGroupDataFor, type TabDef, type TabGroupProps } from './components/TabGroup';
+export { ControlRegistry, ControlScope, controlRegistry, composeAddress, controlSlug, escapeSelector, installControlRegistry, settingTargetDef, targetKindLabel, useControlScope, useControlTarget, useControlTargets, useViewTargets, CONTROL_ACTION, CONTROL_ACTIONS, CONTROL_HIGHLIGHT_CLASS, CONTROL_TARGET_ATTR, CONTROL_SCOPE_ATTR, SETTINGS_VIEW_ADDRESS, SETTINGS_TAB_ROW, SETTINGS_SUBTAB_ROW, MAIN_SCROLL_ADDRESS, type ControlTargetDef, type ControlScroller, type ControlSearcher } from './controlTargets';
 export { BannerWidgetsPanel, BannerMore, bannerItemAttrs, bannerWidgetsDialog, useBannerOverflow } from './components/BannerWidgets';
-export { CHROME_SETTINGS_DIALOG, CHROME_PICK_DIALOG, CHROME_APP_INSTANCE, CHROME_ACTION_IDS, ChromeSettingsPanel, ChromeAssetPicker, chromeDialogs, chromeMenu, chromeSettingsUi, installChrome, moveChrome, setChromeField, swapChrome } from './components/ChromeContext';
+export { CHROME_SETTINGS_DIALOG, CHROME_PICK_DIALOG, CHROME_APP_INSTANCE, CHROME_ACTION_IDS, AssetsWithEdits, ChromeSettingsPanel, ChromeAssetPicker, chromeDialogs, chromeMenu, chromeSettingsUi, installChrome, moveChrome, setChromeField, swapChrome } from './components/ChromeContext';
+export { installScrollControl, useScrollContainer, runScroll, scrollStateOf, scrollContainerOf, activeScrollContainer, mainScrollElement, scrollAddressOf, domScroller, isScrollable, lineHeightIn, offsetWithin, SCROLL_CONTAINER_ATTR, SCROLL_LINE_TOKEN, MAIN_SCROLL_ID } from './scrollControl';

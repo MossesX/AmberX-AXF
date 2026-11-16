@@ -7,12 +7,28 @@ export const SKIN_NEVER: readonly string[];
 /** The section of a skin that is switched on its own: the colour theme slot. */
 export const SKIN_COLOR_SLOT: 'color-theme';
 export const SKIN_USES: readonly ('on' | 'off' | 'inherit')[];
+/** The skin's four sections → the asset type holding that section's presets (never picked on their own). */
+export type SkinSection = 'colors' | 'style' | 'layout' | 'behavior';
+export const SKIN_SECTIONS: Readonly<Record<SkinSection, string>>;
+export const SKIN_SECTION_FIELDS: Readonly<Record<SkinSection, 'colorTheme' | 'styleTheme' | 'layoutTheme' | 'behaviorTheme'>>;
+export const SKIN_SWAPPABLE_SECTION: 'color-theme';
+export const RETIRED_PACKAGE_TYPES: readonly string[];
+export const SKIN_SCALE_TYPES: readonly string[];
+export function isSkinSectionType(type: string): boolean;
+export function sectionOfType(type: string): SkinSection | '';
+export function skinSlotMap(skin: { assets?: Record<string, string>; layoutTheme?: string; colorTheme?: string; styleTheme?: string; behaviorTheme?: string } | null | undefined): Record<string, string>;
+/** What the skins-only fold moved out of a look (look-migration@1): never applied again, kept for an undo by hand. */
+export interface LegacyLook { at: string; own?: LookPart; settings?: Record<string, unknown> }
+/** The one-run stamp of look-migration@1 on a document. */
+export interface LookMigrated { version: number; at: string; by: string; /** picks left as the app's own (no skin could carry them) */ kept?: string[] }
 /** A look: what a snapshot holds and what picks add. */
 export interface LookPart { slots?: Record<string, string>; spacing?: string; hidden?: Record<string, boolean>; settings?: Record<string, unknown> }
 /** The app level: Use skin, follow the hub-wide skin while off, the skin, its overrides, and the colour theme picked inside it (absent = the skin's own; never an override, never a new skin). */
 export interface AppSkinState { use: boolean; inherit: boolean; id: string; overrides: Record<string, string>; colorTheme?: string }
 /** The hub-wide skin (kept on the shared appearance document). */
 export interface GlobalSkin { id: string; overrides?: Record<string, string>; colorTheme?: string }
+/** The one undo record: the look before the last Restore or skin switch (skin-switch@1: `action`, `scope`, and `global` for a hub switch). */
+export interface LookUndo { own: LookPart; skin: AppSkinState; scopes: Record<string, SkinScopeState>; at: string; action?: string; scope?: string; global?: GlobalSkin | null }
 export interface AppLookDocument {
   $axf: typeof APP_LOOK_FRAME;
   app: string;
@@ -21,8 +37,12 @@ export interface AppLookDocument {
   skin: AppSkinState;
   /** Per UI / plugin skin states (`ui:<id>`, `plugin:<id>`); a missing key inherits. */
   scopes: Record<string, SkinScopeState>;
-  /** What Restore replaced: one undo. */
-  undo?: { own: LookPart; skin: AppSkinState; scopes: Record<string, SkinScopeState>; at: string } | null;
+  /** What the last Restore or skin switch replaced: one undo (skin-switch@1 adds the action, the scope and the hub-wide skin before a hub switch). */
+  undo?: LookUndo | null;
+  /** look-migration@1 ran on this document (absent = not yet). */
+  migrated?: LookMigrated;
+  /** The retired picks the fold moved out, as they were. */
+  legacy?: LegacyLook;
   updatedBy?: string;
   updatedAt?: string;
 }

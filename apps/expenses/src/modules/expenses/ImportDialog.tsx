@@ -156,8 +156,8 @@ export default function ImportDialog({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle sx={{ fontSize: 15, fontWeight: 700, pb: 1 }}>Import transactions</DialogTitle>
-      <DialogContent dividers sx={{ display: "grid", gap: 1.4 }}>
+      <DialogTitle sx={{ fontSize: 'var(--fx-type-root-lg)', fontWeight: 700, pb: 1 }}>Import transactions</DialogTitle>
+      <DialogContent dividers sx={{ display: "grid", gap: 'var(--fx-dens-gap-2xl)' }}>
         {!verdicts && (
           <>
             <Stack direction="row" spacing={1.2} useFlexGap sx={{ flexWrap: "wrap", alignItems: "center" }}>
@@ -204,9 +204,9 @@ export default function ImportDialog({
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder={PLACEHOLDER}
-              slotProps={{ htmlInput: { style: { fontFamily: "var(--axf-mono)", fontSize: 12 }, spellCheck: false } }}
+              slotProps={{ htmlInput: { style: { fontFamily: "var(--axf-mono)", fontSize: 'var(--fx-type-root-sm)' }, spellCheck: false } }}
             />
-            <Typography sx={{ fontSize: 12, color: token("dim") }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
               Rows are checked against the ledger five ways — same date, amount and merchant; same amount and
               merchant a few days apart; same day and amount under another name; a tip or rounding
               difference; and anything this importer already added — and against each other. Nothing is
@@ -235,7 +235,7 @@ export default function ImportDialog({
             )}
 
             {verdicts.length > 0 && (
-              <Box sx={{ overflow: "auto", maxHeight: 420, border: `1px solid ${token("edge")}`, borderRadius: 1 }}>
+              <Box sx={{ overflow: "auto", maxHeight: 420, border: `var(--fx-border-w) solid ${token("edge")}`, borderRadius: 'var(--fx-radius-md)' }}>
                 <Table size="small" stickyHeader>
                   <TableHead>
                     <TableRow>
@@ -291,7 +291,7 @@ export default function ImportDialog({
                               <Chip size="small" color="success" variant="outlined" label="new" sx={{ height: 20 }} />
                             )}
                             {dup && (
-                              <Typography component="span" sx={{ fontSize: 11, color: token("dim"), ml: 0.8 }}>
+                              <Typography component="span" sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), ml: 0.8 }}>
                                 {v.reason}
                               </Typography>
                             )}
@@ -305,15 +305,15 @@ export default function ImportDialog({
             )}
 
             {problems.length > 0 && (
-              <Alert severity="info" sx={{ fontSize: 12 }}>
+              <Alert severity="info" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
                 Skipped {problems.length} line{problems.length === 1 ? "" : "s"} that could not be read:
-                <Box component="ul" sx={{ m: "4px 0 0", pl: 2.2 }}>
+                <Box component="ul" sx={{ m: "var(--fx-dens-gap-md) 0 0", pl: 2.2 }}>
                   {problems.slice(0, 6).map((p) => (
                     <li key={p.line}>
-                      <Typography component="span" sx={{ ...MONO, fontSize: 11.5 }}>
+                      <Typography component="span" sx={{ ...MONO, fontSize: 'var(--fx-type-root-sm)' }}>
                         line {p.line}: {p.text}
                       </Typography>{" "}
-                      <Typography component="span" sx={{ fontSize: 11.5, color: token("dim") }}>
+                      <Typography component="span" sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
                         — {p.reason}
                       </Typography>
                     </li>

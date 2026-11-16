@@ -96,13 +96,13 @@ export function Side({ title, date, merchant, amount, income, category, account,
   title: string; date: string; merchant: string; amount: number; income: boolean; category: string; account?: string; tone?: "accent" | "dim";
 }) {
   return (
-    <Box sx={{ flex: 1, minWidth: 0, p: 1, border: `1px solid ${token("edge")}`, borderRadius: 1, background: token("panel") }}>
-      <Typography sx={{ fontSize: 10.5, letterSpacing: "0.08em", textTransform: "uppercase", color: token(tone ?? "dim"), mb: 0.4 }}>{title}</Typography>
-      <Typography sx={{ fontSize: 13, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{merchant}</Typography>
-      <Typography sx={{ ...MONO, fontSize: 12 }}>
+    <Box sx={{ flex: 1, minWidth: 0, p: 1, border: `var(--fx-border-w) solid ${token("edge")}`, borderRadius: 'var(--fx-radius-md)', background: token("panel") }}>
+      <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', letterSpacing: "0.08em", textTransform: "uppercase", color: token(tone ?? "dim"), mb: 0.4 }}>{title}</Typography>
+      <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{merchant}</Typography>
+      <Typography sx={{ ...MONO, fontSize: 'var(--fx-type-root-sm)' }}>
         {date} · <Box component="span" sx={{ color: income ? token("ok") : undefined }}>{income ? "+" : ""}{money(amount)}</Box>
       </Typography>
-      <Typography sx={{ fontSize: 11, color: token("dim") }}>{category}{account ? ` · ${account}` : ""}</Typography>
+      <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>{category}{account ? ` · ${account}` : ""}</Typography>
     </Box>
   );
 }
@@ -261,11 +261,11 @@ export default function ImageImportDialog({ open, expenses, onClose }: { open: b
 
   return (
     <Dialog open={open} onClose={step === "parsing" ? undefined : onClose} maxWidth="md" fullWidth>
-      <DialogTitle sx={{ fontSize: 15, fontWeight: 700, pb: 1 }}>Scan statement images</DialogTitle>
-      <DialogContent dividers sx={{ display: "grid", gap: 1.4 }}>
+      <DialogTitle sx={{ fontSize: 'var(--fx-type-root-lg)', fontWeight: 700, pb: 1 }}>Scan statement images</DialogTitle>
+      <DialogContent dividers sx={{ display: "grid", gap: 'var(--fx-dens-gap-2xl)' }}>
         {step !== "review" && (
           <>
-            <Typography sx={{ fontSize: 12, color: token("dim") }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
               Screenshots of the bank app, photos of a printed statement, or receipts — one or several at a time (up to {MAX_SHOTS}).
               Claude reads every transaction line; you then see what is new and what the ledger already has, side by side,
               before anything is written. A line that two overlapping screenshots both show is caught as a duplicate too.
@@ -273,9 +273,9 @@ export default function ImageImportDialog({ open, expenses, onClose }: { open: b
             <Stack direction="row" spacing={1.2} useFlexGap sx={{ flexWrap: "wrap", alignItems: "flex-start" }}>
               <TextField select size="small" label="Account" value={account} onChange={(e) => setAccount(e.target.value)} sx={{ minWidth: 200 }} disabled={step === "parsing"}>
                 {accounts.map((a) => (
-                  <MenuItem key={a} value={a} sx={{ fontSize: 12.5 }}>{a}</MenuItem>
+                  <MenuItem key={a} value={a} sx={{ fontSize: 'var(--fx-type-root-md)' }}>{a}</MenuItem>
                 ))}
-                <MenuItem value={NEW_ACCOUNT} sx={{ fontSize: 12.5, color: token("accent") }}>Add new account…</MenuItem>
+                <MenuItem value={NEW_ACCOUNT} sx={{ fontSize: 'var(--fx-type-root-md)', color: token("accent") }}>Add new account…</MenuItem>
               </TextField>
               {account === NEW_ACCOUNT && (
                 <TextField size="small" label="New account name" value={newAccount} onChange={(e) => setNewAccount(e.target.value)} autoFocus sx={{ minWidth: 200 }} helperText="Saved to Settings › Import › Extra accounts" />
@@ -291,19 +291,19 @@ export default function ImageImportDialog({ open, expenses, onClose }: { open: b
                 data-axf-scan-shots
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => { e.preventDefault(); if (step !== "parsing") void addFiles(e.dataTransfer.files); }}
-                sx={{ display: "flex", gap: 1, flexWrap: "wrap", alignItems: "flex-start" }}
+                sx={{ display: "flex", gap: 'var(--fx-dens-gap-xl)', flexWrap: "wrap", alignItems: "flex-start" }}
               >
                 {shots.map((s, i) => (
-                  <Box key={`${s.file.name}:${s.file.size}`} data-axf-scan-shot={s.state} sx={{ width: 150, display: "grid", gap: 0.4 }}>
+                  <Box key={`${s.file.name}:${s.file.size}`} data-axf-scan-shot={s.state} sx={{ width: 150, display: "grid", gap: 'var(--fx-dens-gap-sm)' }}>
                     <Box sx={{ position: "relative" }}>
-                      <Box component="img" src={s.preview} alt={`statement image ${i + 1}`} sx={{ width: "100%", height: 120, objectFit: "cover", objectPosition: "top", borderRadius: 1, border: `1px solid ${token(s.state === "failed" ? "warn" : "edge")}`, opacity: s.state === "reading" ? 0.55 : 1, display: "block" }} />
-                      <Chip size="small" label={i + 1} sx={{ position: "absolute", top: 4, left: 4, height: 18, fontSize: 10.5, background: token("panel") }} />
+                      <Box component="img" src={s.preview} alt={`statement image ${i + 1}`} sx={{ width: "100%", height: 120, objectFit: "cover", objectPosition: "top", borderRadius: 'var(--fx-radius-md)', border: `var(--fx-border-w) solid ${token(s.state === "failed" ? "warn" : "edge")}`, opacity: s.state === "reading" ? 0.55 : 1, display: "block" }} />
+                      <Chip size="small" label={i + 1} sx={{ position: "absolute", top: 4, left: 4, height: 18, fontSize: 'var(--fx-type-root-xs)', background: token("panel") }} />
                       {s.state === "reading" && <CircularProgress size={22} sx={{ position: "absolute", top: "calc(50% - 11px)", left: "calc(50% - 11px)" }} />}
                       {step !== "parsing" && (
-                        <Button size="small" aria-label={`Remove image ${i + 1}`} onClick={() => removeShot(i)} sx={{ position: "absolute", top: 2, right: 2, minWidth: 0, px: 0.6, py: 0, fontSize: 11, lineHeight: 1.6, background: token("panel") }}>✕</Button>
+                        <Button size="small" aria-label={`Remove image ${i + 1}`} onClick={() => removeShot(i)} sx={{ position: "absolute", top: 2, right: 2, minWidth: 0, px: 0.6, py: 0, fontSize: 'var(--fx-type-root-xs)', lineHeight: 1.6, background: token("panel") }}>✕</Button>
                       )}
                     </Box>
-                    <Typography sx={{ fontSize: 11, color: token(s.state === "failed" ? "warn" : "dim"), overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={s.error ?? s.file.name}>
+                    <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token(s.state === "failed" ? "warn" : "dim"), overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={s.error ?? s.file.name}>
                       {s.state === "done" ? `${s.count} line${s.count === 1 ? "" : "s"} · ` : s.state === "failed" ? "failed · " : ""}{s.file.name} · {Math.round(s.file.size / 1024)} KB
                     </Typography>
                   </Box>
@@ -311,14 +311,14 @@ export default function ImageImportDialog({ open, expenses, onClose }: { open: b
               </Box>
             )}
             {shots.length > 0 && step !== "parsing" && (
-              <Typography sx={{ fontSize: 12, color: token("dim") }}>
+              <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
                 {shots.length} image{shots.length === 1 ? "" : "s"} · reads with {prefs.aiModel}. Change the model or the Claude connection in Settings › AI.
               </Typography>
             )}
             {step === "parsing" && (
               <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
                 <CircularProgress size={18} />
-                <Typography sx={{ fontSize: 12.5 }}>
+                <Typography sx={{ fontSize: 'var(--fx-type-root-md)' }}>
                   {shots.length === 1 ? "Reading the image…" : `Reading ${reading} of ${shots.length} images · ${done} done…`}
                 </Typography>
               </Stack>
@@ -339,29 +339,29 @@ export default function ImageImportDialog({ open, expenses, onClose }: { open: b
               <Box sx={{ flex: 1 }} />
               <Button size="small" onClick={() => setStep("pick")}>Back</Button>
             </Stack>
-            {notes && <Alert severity={notes.startsWith("Could not read") ? "warning" : "info"} sx={{ py: 0, fontSize: 12, whiteSpace: "pre-line" }}>{notes}</Alert>}
+            {notes && <Alert severity={notes.startsWith("Could not read") ? "warning" : "info"} sx={{ py: 0, fontSize: 'var(--fx-type-root-sm)', whiteSpace: "pre-line" }}>{notes}</Alert>}
 
             {dupes.length > 0 && (
               <Box>
-                <Typography sx={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: token("warn"), mb: 0.6 }}>
+                <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', letterSpacing: "0.08em", textTransform: "uppercase", color: token("warn"), mb: 0.6 }}>
                   Possible duplicates — skipped unless you keep both
                 </Typography>
                 <Stack spacing={1}>
                   {dupes.map((v) => {
                     const ex = existingOf(v)!;
                     return (
-                      <Box key={v.row.line} sx={{ display: "flex", gap: 1, alignItems: "center", flexWrap: "wrap" }}>
+                      <Box key={v.row.line} sx={{ display: "flex", gap: 'var(--fx-dens-gap-xl)', alignItems: "center", flexWrap: "wrap" }}>
                         <Side title={shots.length > 1 ? `In image ${imageOfLine.get(v.row.line) ?? "?"}` : "In the image"} date={v.row.date} merchant={v.row.merchant} amount={v.row.cents} income={v.row.kind === "income"} category={categoryOf(v.row.category).label} tone="accent" />
-                        <Typography sx={{ fontSize: 18, color: token("dim") }}>≈</Typography>
+                        <Typography sx={{ fontSize: 'var(--fx-type-root-xl)', color: token("dim") }}>≈</Typography>
                         <Side
                           title={v.check === "repeated-in-paste" ? (shots.length > 1 ? `Earlier, in image ${imageOfLine.get((v.duplicateOf as ImportRow).line) ?? "?"}` : "Earlier in the image") : "Already in the ledger"}
                           date={ex.date} merchant={ex.merchant} amount={ex.amount} income={ex.income} category={ex.category} account={ex.account}
                         />
                         <Box sx={{ minWidth: 150 }}>
-                          <Typography sx={{ fontSize: 11, color: token("dim") }}>{CHECK_LABEL[v.check!]}</Typography>
+                          <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>{CHECK_LABEL[v.check!]}</Typography>
                           <FormControlLabel
                             control={<Switch size="small" checked={keepBoth.has(v.row.line)} onChange={() => toggleKeep(v.row.line)} />}
-                            label={<Typography sx={{ fontSize: 12.5 }}>Keep both</Typography>}
+                            label={<Typography sx={{ fontSize: 'var(--fx-type-root-md)' }}>Keep both</Typography>}
                             sx={{ mr: 0 }}
                           />
                         </Box>
@@ -374,8 +374,8 @@ export default function ImageImportDialog({ open, expenses, onClose }: { open: b
 
             {fresh.length > 0 && (
               <Box>
-                <Typography sx={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: token("dim"), mb: 0.6 }}>New transactions</Typography>
-                <Box sx={{ overflow: "auto", maxHeight: 300, border: `1px solid ${token("edge")}`, borderRadius: 1 }}>
+                <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', letterSpacing: "0.08em", textTransform: "uppercase", color: token("dim"), mb: 0.6 }}>New transactions</Typography>
+                <Box sx={{ overflow: "auto", maxHeight: 300, border: `var(--fx-border-w) solid ${token("edge")}`, borderRadius: 'var(--fx-radius-md)' }}>
                   <Table size="small" stickyHeader>
                     <TableHead>
                       <TableRow>

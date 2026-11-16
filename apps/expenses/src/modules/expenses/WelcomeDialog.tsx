@@ -39,7 +39,7 @@ import { buildWelcome } from "./welcome";
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <Box>
-      <Typography sx={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: token("dim"), mb: 0.6 }}>
+      <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', letterSpacing: "0.08em", textTransform: "uppercase", color: token("dim"), mb: 0.6 }}>
         {title}
       </Typography>
       {children}
@@ -109,13 +109,13 @@ export default function WelcomeDialog({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ fontSize: 15, fontWeight: 700, pb: 1 }}>
+      <DialogTitle sx={{ fontSize: 'var(--fx-type-root-lg)', fontWeight: 700, pb: 1 }}>
         Welcome back{user ? `, ${user}` : ""}
-        <Typography component="span" sx={{ ml: 1, fontSize: 12, color: token("dim"), ...MONO }}>
+        <Typography component="span" sx={{ ml: 1, fontSize: 'var(--fx-type-root-sm)', color: token("dim"), ...MONO }}>
           {model.today}
         </Typography>
       </DialogTitle>
-      <DialogContent dividers sx={{ display: "grid", gap: 1.8 }}>
+      <DialogContent dividers sx={{ display: "grid", gap: 'var(--fx-dens-gap-3xl)' }}>
         {showPaydays && !model.scheduleReady && (
           <Section title="Paydays">
             <Alert
@@ -135,10 +135,10 @@ export default function WelcomeDialog({
         {showPaydays && model.scheduleReady && (
           <Section title={model.missingPaydays.length ? `${model.missingPaydays.length} missing payday${model.missingPaydays.length === 1 ? "" : "s"}` : "Paydays"}>
             {model.missingPaydays.length === 0 ? (
-              <Typography sx={{ fontSize: 12.5, color: token("ok") }}>Every payday through today is in the ledger.</Typography>
+              <Typography sx={{ fontSize: 'var(--fx-type-root-md)', color: token("ok") }}>Every payday through today is in the ledger.</Typography>
             ) : (
               <>
-                <Typography sx={{ fontSize: 12, color: token("dim"), mb: 0.5 }}>
+                <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), mb: 0.5 }}>
                   Ticked paydays are added as {money(schedule.amount)} income from {schedule.payer}. Untick any that did not happen.
                 </Typography>
                 <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, maxHeight: 220, overflow: "auto" }}>
@@ -146,7 +146,7 @@ export default function WelcomeDialog({
                     <FormControlLabel
                       key={d}
                       control={<Switch size="small" checked={ticked.has(d)} onChange={() => toggle(d)} />}
-                      label={<Typography sx={{ fontSize: 12.5, ...MONO }}>{pretty(d)}</Typography>}
+                      label={<Typography sx={{ fontSize: 'var(--fx-type-root-md)', ...MONO }}>{pretty(d)}</Typography>}
                       sx={{ my: 0, mr: 0 }}
                     />
                   ))}
@@ -158,7 +158,7 @@ export default function WelcomeDialog({
 
         {(model.month || model.nextPayday) && (
           <Section title="At a glance">
-            <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+            <Box sx={{ display: "flex", gap: 'var(--fx-dens-gap-xl)', flexWrap: "wrap" }}>
               {model.month && (
                 <>
                   <StatTile value={money(model.month.spent)} label="spent this month" sub={`${model.month.count} entries`} />
@@ -187,7 +187,7 @@ export default function WelcomeDialog({
           <Section title="Over budget this month">
             <Stack spacing={0.4}>
               {model.overBudget.map((c) => (
-                <Typography key={c.id} sx={{ fontSize: 12.5 }}>
+                <Typography key={c.id} sx={{ fontSize: 'var(--fx-type-root-md)' }}>
                   <Box component="span" sx={{ color: token("warn"), fontWeight: 600 }}>{c.label}</Box>
                   <Box component="span" sx={{ ...MONO, color: token("dim"), ml: 1 }}>
                     {money(c.spent)} of {money(c.budget)}
@@ -202,7 +202,7 @@ export default function WelcomeDialog({
           <Section title="Top categories this month">
             <Stack spacing={0.4}>
               {model.topCategories.map((c) => (
-                <Typography key={c.id} sx={{ fontSize: 12.5 }}>
+                <Typography key={c.id} sx={{ fontSize: 'var(--fx-type-root-md)' }}>
                   {c.label}
                   <Box component="span" sx={{ ...MONO, color: token("dim"), ml: 1 }}>{money(c.spent)}</Box>
                 </Typography>
@@ -216,17 +216,17 @@ export default function WelcomeDialog({
             <Divider />
             <Stack direction="row" spacing={2} useFlexGap sx={{ flexWrap: "wrap" }}>
               {model.unreconciled ? (
-                <Typography sx={{ fontSize: 12.5 }}>
+                <Typography sx={{ fontSize: 'var(--fx-type-root-md)' }}>
                   <Box component="span" sx={{ ...MONO, color: token("warn") }}>{model.unreconciled}</Box> unreconciled
                 </Typography>
               ) : null}
               {model.disputed ? (
-                <Typography sx={{ fontSize: 12.5 }}>
+                <Typography sx={{ fontSize: 'var(--fx-type-root-md)' }}>
                   <Box component="span" sx={{ ...MONO, color: token("warn") }}>{model.disputed}</Box> disputed
                 </Typography>
               ) : null}
               {model.recentImports ? (
-                <Typography sx={{ fontSize: 12.5 }}>
+                <Typography sx={{ fontSize: 'var(--fx-type-root-md)' }}>
                   <Box component="span" sx={{ ...MONO }}>{model.recentImports}</Box> imported this week
                 </Typography>
               ) : null}

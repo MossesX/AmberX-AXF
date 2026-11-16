@@ -70,6 +70,7 @@ export interface ReportInput {
  * rather than a neutral grey: a report that looks like a different application
  * reads as a different application's document.
  */
+// theme-ok-begin: baked values for a document with no theme engine to read from
 export const FALLBACK_PALETTE: ReportPalette = {
   page: "#100c07",
   panel: "#191308",
@@ -83,6 +84,7 @@ export const FALLBACK_PALETTE: ReportPalette = {
   mono: "ui-monospace, SFMono-Regular, Menlo, monospace",
   sans: "Inter, system-ui, sans-serif"
 };
+// theme-ok-end
 
 /**
  * Read the live theme off `:root`.
@@ -256,6 +258,7 @@ export function buildReportHtml(input: ReportInput): string {
 <meta name="axf-period" content="${esc(s.period.key)}">
 <title>${esc(title)}</title>
 <style>
+  /* theme-ok-begin: a standalone exported file; the live theme is baked in through palette, no engine runs here */
   :root { color-scheme: dark; }
   * { box-sizing: border-box; }
   body {
@@ -301,6 +304,7 @@ export function buildReportHtml(input: ReportInput): string {
     th, td { border-color: #ddd; }
     .tile .k, .sub, h2, footer { color: #555; }
   }
+  /* theme-ok-end */
 </style>
 </head>
 <body>
