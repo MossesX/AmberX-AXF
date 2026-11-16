@@ -8,7 +8,7 @@
     "tabs": 78,
     "settingsTabs": 71,
     "settings": 89,
-    "functions": 274,
+    "functions": 276,
     "buttons": 62,
     "plugins": 71
   },
@@ -6832,6 +6832,40 @@
       ],
       "plugin": "ai.amberx.axf.console.todo-manager",
       "file": "plugins/todo-manager/web/index.tsx"
+    },
+    {
+      "address": "function:token-control.pass",
+      "kind": "function",
+      "id": "token-control.pass",
+      "label": "Token control: open a veto pass (pass:<id>, Approve / Deny)",
+      "detail": "Action · Token control",
+      "keywords": [
+        "token-control.pass",
+        "token",
+        "control",
+        "pass"
+      ],
+      "effect": "navigate",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.token-control",
+      "file": "plugins/token-control/web/index.tsx"
+    },
+    {
+      "address": "function:token-control.focus",
+      "kind": "function",
+      "id": "token-control.focus",
+      "label": "Token control: bring a pass forward",
+      "detail": "Action · Token control",
+      "keywords": [
+        "token-control.focus",
+        "token",
+        "control",
+        "focus"
+      ],
+      "effect": "navigate",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.token-control",
+      "file": "plugins/token-control/web/index.tsx"
     },
     {
       "address": "function:ui-review.open",
