@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T23:22:21.497Z",
+ "updatedAt": "2026-11-16T23:22:35.026Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -26865,19 +26865,23 @@
    "title": "AmberX APK + AXHub web: open any website (follow-up to axHub #114, PR #39)",
    "category": "",
    "detail": "axHub now sends other sites as browser.open {url, browser, external:true} to capability open-any-url@1. Until the APK advertises it, the hub answers install the new AmberX APK, so www.hostinger.com still will not open.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "amberx-open-any-url-apk",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T00:45:42.473Z",
-   "updatedAt": "2026-11-07T00:45:42.473Z",
+   "updatedAt": "2026-11-16T23:22:14.664Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (cli): Brett: clear Pending.",
+     "at": "2026-11-16T23:22:14.664Z"
     }
    ],
    "approvals": [],
@@ -112812,16 +112816,21 @@
    "title": "Session summaries: AmberX-AXF project history + readiness audit",
    "category": "report",
    "detail": "Brett said: \"Create summaries then, and then read the summaries. It's only this project, the AmberX framework and axHub. And console and AmberX and Molly, obviously.\"\n\nRead-only source: Chat Viewer SQLite store /opt/axf/.axf-console/plugins/chat-viewer/chats.db (open with mode=ro; sessions + messages tables, fts for search). Scope ONLY sessions about the AmberX-AXF framework, axHub (Patches), the Dev Console, AmberX and Molly; skip everything else. Use Brett's (user role) messages as the primary signal; skip tool output noise. Output to _claude/builds/reports/session-summaries/: (1) one short summary per day (asks, decisions, reversals, shipped, broke); (2) master-summary.md under ~3,000 words: vision, every major component and what it does, features, standing rules, open/unfinished items, known bugs; cite session ids; (3) readiness-audit.md: per component finished / half-done / broken, checked against code on main and CI, UI polish notes. Do not modify the database.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T15:31:59.264Z",
-   "updatedAt": "2026-11-12T15:31:59.264Z",
+   "updatedAt": "2026-11-16T23:22:12.803Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Moved to the Archive from pending (cli): Brett: clear Pending.",
+     "at": "2026-11-16T23:22:12.803Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -116396,19 +116405,23 @@
    "title": "Demonstration Designer demos must actually show things: when a demo plays, the console should go to each screen and tab, scroll to and highlight every control as it's described, and click through it like a walkthrough. Right now pitch-build-orchestrator-5m is just a voice talking over a still screen",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T23:22:45.967Z",
-   "updatedAt": "2026-11-12T23:23:43.766Z",
+   "updatedAt": "2026-11-16T23:22:10.955Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-12T23:23:43.766Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (cli): Brett: clear Pending.",
+     "at": "2026-11-16T23:22:10.955Z"
     }
    ],
    "approvals": [],
