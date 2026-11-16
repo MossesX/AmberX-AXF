@@ -89,3 +89,19 @@ Settings → Appearance (`AppearancePanel`, `framework/libs/settings`, every app
 - Deep links: `view:settings/tab:settings.tabs=appearance/panel:default-look`, `…/button:skin-default`, `…/button:skin-restore-backup` (`console_show` / `console_open`, REST `/api/console-control`, `console_control_*` MCP, `axf console`).
 - State read: `panel:default-look` answers `state` with `rt.defaultLookState()` (default skin, inherit / from / skin in force / Use skin, own picks and settings over the default, backups). Hub-wide: `GET skins/default-skin` / `skins.mjs default get`.
 - `control-inventory.mjs --check`: current. `check-console-control.mjs`: pass (no count rose). Doc: `_claude/memory/docs/console-control.md` → Default look.
+
+## Publish (s13, Opus): staged, not switched live yet
+**Why not live now.** Two blockers found on the hub (`/projects/_shared/_data/settings`):
+1. The deployed console (and every deployed app) has an older baked framework: its `skin-rules.mjs` has no `backups` and no hub default, and its baked assets have no `console-default`. Setting the pointer now would make every live app read an unknown default (= none) while adopt turns their skins off: each app would drop to its old saved look until this PR is merged and deployed. Backups written now would also be dropped by the old runtime's next save.
+2. The console's look moved on after Brett asked: on Nov 15 15:29 it was switched to **AmberX Signature Day** (design package, colour Arctic Daylight inside it; animation speed 255, a desktop banner widget setting). `Console (default)` is the Nov 14 look Brett asked for (Arctic Calm based). Moving the console onto it replaces his newer pick, so that call is his.
+
+**What is in place.** Systems check item `hub-default-skin` ("Console look is the axHub default", registered by the theme manager through `axf.health@1`): green while the deployed console doesn't ship the skin ("waits for the deploy"), then red with **Auto fix: Make Console (default) the axHub default** in **Ask first** mode. The fix runs `skins.mjs default set console-default --adopt` (every app backed up first, pointer, every app adopted keeping only its edits). Undo per app: Settings → Appearance → Restore previous skin, `skins.mjs restore <app> --backup`, or "restore my old look". Green once the hub default is `console-default`.
+
+**Dry run on a copy of the live hub** (`default set console-default --adopt`), the backups list it takes:
+| App | Backup (skin, Use skin) | After: own edits kept over the default |
+|---|---|---|
+| amberx-droid | own look (no skin) | none |
+| axf-console | amberx-signature-day, on | `axf.appearance.animations` (speed 255), `axf.banners.widgets.axf-console.desktop` |
+| axhub-web | windows, off | hidden toolbar |
+| molly | own look (no skin) | none (unchanged) |
+Pointer: `defaultSkin: { id: "console-default" }`. Every app reports `from: default`.

@@ -461,3 +461,77 @@ def skin_config_make(app: str, body: dict[str, Any] | None = Body(None)) -> Any:
     except OSError as e:
         raise HTTPException(502, f"skins: {e}") from e
     return {"started": True, "app": app, "wish": wish, "results": f"/api/plugins/theme-manager/skin-config/{app}/made"}
+
+
+# ---- systems check: the console look as the axHub default (build console-look-becomes-default-axhub-skin) ----
+# The publish (every app backed up, the hub default set, every app moved onto it) waits for a console that ships the
+# skin; then it is a red item with an Auto fix that asks first, because the console's own look may have moved on since
+# Brett asked (Nov 14 2026) and the switch replaces it (Restore previous skin brings it back, per app).
+
+DEFAULT_SKIN_ID = "console-default"
+HEALTH_CAP = "axf.health@1"
+HEALTH_ID = "hub-default-skin"
+_health_done = False
+
+
+def _shared_doc() -> dict[str, Any]:
+    f = Path(os.environ.get("AXF_APPEARANCE_FILE") or "/projects/_shared/_data/settings/appearance.json")
+    try:
+        return json.loads(f.read_text("utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
+def hub_default_probe() -> dict[str, Any]:
+    cur = (_shared_doc().get("defaultSkin") or {}).get("id") or ""
+    if cur == DEFAULT_SKIN_ID:
+        return {"status": "ok", "summary": "Every app stands on Console (default), the hub default skin."}
+    shipped = (cx.ROOT / "apps" / "console-web" / "src" / "axf" / "assets" / "skin" / f"{DEFAULT_SKIN_ID}.json").exists()
+    if not shipped:
+        return {"status": "ok", "summary": "Console (default) ships with the next console deploy; the switch waits for it."}
+    return {"status": "error", "summary": "The console look isn't the axHub default yet" + (f" (the default is {cur})" if cur else ""),
+            "details": "Auto fix backs up every app's look, makes Console (default) the hub default and moves every app onto it. Restore previous skin (Settings → Appearance) undoes it per app."}
+
+
+def _publish_default() -> dict[str, Any]:
+    try:
+        out = _skins("default", "set", DEFAULT_SKIN_ID, "--adopt")
+    except HTTPException as e:
+        return {"state": "failed", "message": str(e.detail)[:200]}
+    moved = [a["app"] for a in out.get("adopted", []) if a.get("changed")]
+    return {"state": "done", "message": f"Console (default) is the hub default; backed up {len(out.get('backups', []))} app(s), moved {', '.join(moved) or 'none'}."}
+
+
+def ensure_health() -> bool:
+    global _health_done
+    if _health_done:
+        return True
+    try:
+        import plugin_services  # the console's service registry (absent in the plugin's own test)
+    except ImportError:
+        return False
+    reg = plugin_services.get(HEALTH_CAP)
+    if reg is None:
+        return False
+    try:
+        reg.register({"id": HEALTH_ID, "label": "Console look is the axHub default", "service": "axhub", "order": 85, "severity": "warn", "interval": 900,
+                      "run": hub_default_probe,
+                      "breaks": "Apps keep their own looks instead of inheriting the console look (Brett, Nov 14 2026: make it the default axHub look, every app inherits it).",
+                      "instructions": ["Auto fix (asks first): every app's look is backed up, Console (default) becomes the hub default, every app moves onto it keeping only its own edits.",
+                                       "The console's own look changed on Nov 15 (AmberX Signature Day); Console (default) is the Nov 14 look. Settings → Appearance → Restore previous skin brings the newer one back.",
+                                       "CLI: node framework/cli/skins.mjs default set console-default --adopt (undo: skins.mjs restore <app> --backup)."],
+                      "autoFix": {"label": "Make Console (default) the axHub default", "mode": "ask", "run": _publish_default}}, "theme-manager")
+    except Exception:  # noqa: BLE001 — the routes work without the item
+        return False
+    _health_done = True
+    return True
+
+
+def _retry_health(n: int = 0) -> None:
+    if not ensure_health() and n < 10:
+        t = threading.Timer(15, _retry_health, (n + 1,))
+        t.daemon = True
+        t.start()
+
+
+_retry_health()
