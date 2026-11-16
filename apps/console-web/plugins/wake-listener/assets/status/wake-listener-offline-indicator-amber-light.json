@@ -1,0 +1,29 @@
+{
+  "$axf": "asset@1",
+  "type": "status",
+  "id": "wake-listener-offline-indicator-amber-light",
+  "name": "Wake listener offline indicator: Mic light turns amber while offline",
+  "version": "0.1.0",
+  "author": "Wake listener plugin",
+  "description": "The banner mic light's dot turns the warning tone and its label reads 'Mic on: offline mode' while Claude mode is on but Claude is away; the panel chip shows the reason. Most visible from any screen.",
+  "tags": [
+    "ui-choice",
+    "choice-set:wake-listener-offline-indicator",
+    "choice-option:amber-light",
+    "wake-listener",
+    "claude-mode"
+  ],
+  "data": {
+    "counter": "wake-listener.live",
+    "dot": true,
+    "link": "wake-listener.toggle",
+    "indicator": {
+      "panelChip": true,
+      "panelLine": false,
+      "bannerSuffix": ": offline mode",
+      "bannerTone": "warning",
+      "chipTone": "warning",
+      "claudeChipTone": "accent"
+    }
+  }
+}
