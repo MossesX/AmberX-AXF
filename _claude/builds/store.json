@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6921,
- "updatedAt": "2026-11-16T22:43:15.780Z",
+ "rev": 6922,
+ "updatedAt": "2026-11-16T22:43:34.780Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -249990,7 +249990,7 @@
    "title": "Rebuild: UI manager floating window to select any UI part",
    "category": "",
    "detail": "Fresh rebuild on current main of the old ui-manager-floating-window-to-select-any build (PR #634, 2,532 commits behind, archived). A floating UI manager window that lets Brett select any part of the UI (toolbar, tab group, banner, nav, menu, widget, any asset) and open its settings, change, move or hide it. Read the old branch claude/ui-manager-floating-window-to-select-any for intent only; don't merge it. Framework controls and tokens, console-control addresses, MCP/CLI/voice control. Land through the orchestrator.",
-   "status": "queued",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -249998,7 +249998,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:43:03.598Z",
-   "updatedAt": "2026-11-16T22:43:08.044Z",
+   "updatedAt": "2026-11-16T22:43:33.148Z",
    "builtAt": "",
    "notes": [
     {
@@ -250053,7 +250053,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
