@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T20:46:42.416Z",
+ "updatedAt": "2026-11-16T20:46:52.014Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -162241,7 +162241,7 @@
    "branch": "claude/fable-rebuild-to-do-manager-unlimited",
    "pr": "",
    "createdAt": "2026-11-16T20:24:18.253Z",
-   "updatedAt": "2026-11-16T20:43:29.462Z",
+   "updatedAt": "2026-11-16T20:46:46.985Z",
    "builtAt": "",
    "notes": [
     {
@@ -162356,8 +162356,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:46:46.985Z",
      "note": "",
      "uid": "st-mwjpsccx04lw61",
      "createdAt": "2026-11-16T20:26:54.993Z"
