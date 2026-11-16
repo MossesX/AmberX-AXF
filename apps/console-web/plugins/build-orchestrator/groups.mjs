@@ -14,7 +14,7 @@
  *   … move <group> <index|up|down|first|last>
  *   … delete <group>                                         the builds stay where they are
  *   … add <group[,group…]> <build…> | remove <group[,group…]> <build…> | set <group> <build…>
- *   … act <group> queue|land|archive|priority [--priority P0-P3|urgent…] [--why w]
+ *   … act <group> queue|land|archive|priority|hold|release [--priority P0-P3|urgent…] [--why w]
  *   … apply  (one op as JSON on stdin: { op: create|update|move|delete|assign, … }, the console API's door)
  * Every command takes --json; --sources reads { behind: { <build>: n } } on stdin (commits behind main, from the merge
  * queue) for "behind main" rules. Exit 0 ok, 2 refused / usage.
@@ -86,7 +86,8 @@ export async function groupAction(ref, action, { priority = '', why = '', by = p
     return { group: gv.id, action, done: r.ids, refused: [], skipped, priority: r.priority, label: r.label };
   }
   const pipe = await import('./pipeline.mjs');
-  if (action === 'archive') { const r = pipe.buildAction('archive', ids, { by, why }); return { group: gv.id, action, done: r.done.map((d) => d.id), refused: r.refused, skipped }; }
+  if (action === 'archive' || action === 'hold') { const r = pipe.buildAction(action, ids, { by, why }); return { group: gv.id, action, done: r.done.map((d) => d.id), refused: r.refused, skipped }; }
+  if (action === 'release') { const r = pipe.buildAction('release', ids, { by, to: 'pending' }); return { group: gv.id, action, done: r.done.map((d) => d.id), refused: r.refused, skipped }; }
   const done = []; const refused = [];
   for (const id of ids) { try { pipe.queue(id, { by }); done.push(id); } catch (e) { refused.push({ id, error: e.message }); } }
   return { group: gv.id, action, done, refused, skipped };

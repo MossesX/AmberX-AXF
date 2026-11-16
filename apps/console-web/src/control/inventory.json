@@ -4464,7 +4464,7 @@
       "address": "function:build-orchestrator.group-action",
       "kind": "function",
       "id": "build-orchestrator.group-action",
-      "label": "Build orchestrator: a group action (<group>|queue, land, archive or priority:P0)",
+      "label": "Build orchestrator: a group action (<group>|queue, land, archive, hold, release or priority:P0)",
       "detail": "Action · Build orchestrator",
       "keywords": [
         "build-orchestrator.group-action",

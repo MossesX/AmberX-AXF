@@ -60,7 +60,7 @@ t('view: sorted partial → pending → queued → running → done → landed, 
   let d = G.apply({}, 'all', { op: 'create', name: 'All of it', tab: 'pending', builds: rows.map((r) => r.id) }).doc;
   let [v] = G.view(G.groupsOf(d, 'all'), rows, { now: NOW });
   assert.deepEqual(v.rows.map((r) => r.id), ['ui-skins', 'console-app-one', 'queued-one', 'console-app-two', 'ui-done', 'ui-landed']);
-  assert.deepEqual(v.counts, { partial: 1, pending: 1, queued: 1, running: 1, failed: 0, done: 1, landed: 1 });
+  assert.deepEqual(v.counts, { partial: 1, pending: 1, queued: 1, held: 0, running: 1, failed: 0, done: 1, landed: 1 });
   assert.deepEqual(v.tabRows.map((r) => r.id), ['console-app-one'], 'a custom Pending tab shows the group\'s Pending builds');
   d = G.apply(d, 'all', { op: 'update', group: 'all of it', filter: ['pending', 'partial'], sort: 'priority' }).doc;
   [v] = G.view(G.groupsOf(d, 'all'), rows, { now: NOW });
@@ -83,6 +83,12 @@ t('action targets: queue = Pending, land = Done, archive = not running, priority
   assert.deepEqual(G.actionTargets(v, 'land').ids, ['ui-done']);
   assert.deepEqual(G.actionTargets(v, 'archive').ids.sort(), ['console-app-one', 'queued-one', 'ui-done', 'ui-skins']);
   assert.equal(G.actionTargets(v, 'priority').ids.length, 6);
+  assert.deepEqual(G.actionTargets(v, 'hold').ids.length, 6, 'hold reaches every build not held yet');
+  assert.deepEqual(G.actionTargets(v, 'release').ids, [], 'release reaches only held builds');
+  const held = [...rows, { ...rows[0], id: 'held-one', tab: 'hold' }];
+  const hv = G.view([G.normGroup({ name: 'H', builds: held.map((r) => r.id) })], held)[0];
+  assert.deepEqual(G.actionTargets(hv, 'release').ids, ['held-one']); assert.equal(hv.counts.held, 1);
+  assert.ok(G.TAB_STAGES.includes('hold') && G.STATE_LABEL.held === 'On hold');
   assert.throws(() => G.actionTargets(v, 'explode'), /action is one of/);
 });
 

@@ -596,7 +596,7 @@ async def pipeline_route(request: Request) -> dict[str, Any]:
 # ---- custom groups and custom tabs (groups.mjs, build-groups@1; Brett, Nov 13 2026)
 GROUPS_CLI = CLI.parent / "groups.mjs"
 GROUP_OPS = ("create", "update", "move", "delete", "assign")
-GROUP_ACTIONS = ("queue", "land", "archive", "priority")
+GROUP_ACTIONS = ("queue", "land", "archive", "priority", "hold", "release")
 
 
 def _behind() -> dict[str, int]:

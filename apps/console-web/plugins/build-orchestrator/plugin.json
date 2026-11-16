@@ -642,6 +642,7 @@
                 "none",
                 "pending",
                 "queue",
+                "hold",
                 "active",
                 "incomplete",
                 "complete",
@@ -714,7 +715,7 @@
         "id": "groups-action",
         "route": "POST /groups/{group}/action",
         "title": "Run an action on a whole build group",
-        "description": "queue = every Pending build of the group goes to the Queue; land = every Done build goes first in the merge queue (tagged Urgent); archive = every build without a live session goes to the Archive; priority = every build gets the priority. Say 'queue all of console app', 'make the UI group urgent'.",
+        "description": "queue = every Pending build of the group goes to the Queue; land = every Done build goes first in the merge queue (tagged Urgent); archive = every build without a live session goes to the Archive; priority = every build gets the priority; hold = every build of the group goes to the On hold tab (running ones are stopped); release = every held build of the group back to Pending. Say 'queue all of console app', 'make the UI group urgent'.",
         "input": {
           "type": "object",
           "properties": {
@@ -728,7 +729,9 @@
                 "queue",
                 "land",
                 "archive",
-                "priority"
+                "priority",
+                "hold",
+                "release"
               ]
             },
             "priority": {

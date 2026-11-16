@@ -21,15 +21,16 @@
 
 export const SCHEMA = 'build-groups@1';
 /** A build's state on the board, in Brett's order: partials first, then pending, queued, running … done, landed. */
-export const STATES = ['partial', 'pending', 'queued', 'running', 'failed', 'done', 'landed'];
-export const STATE_LABEL = Object.freeze({ partial: 'Partial', pending: 'Pending', queued: 'Queued', running: 'Running', failed: 'Failed', done: 'Done', landed: 'Landed' });
+export const STATES = ['partial', 'pending', 'queued', 'held', 'running', 'failed', 'done', 'landed'];
+export const STATE_LABEL = Object.freeze({ partial: 'Partial', pending: 'Pending', queued: 'Queued', held: 'On hold', running: 'Running', failed: 'Failed', done: 'Done', landed: 'Landed' });
 /** Orchestrator tab (build-pipeline@1 tabOf) → board state. Deleted builds have none. */
-export const STATE_OF_TAB = Object.freeze({ incomplete: 'partial', pending: 'pending', queue: 'queued', active: 'running', errors: 'failed', complete: 'done', archive: 'landed' });
+export const STATE_OF_TAB = Object.freeze({ incomplete: 'partial', pending: 'pending', queue: 'queued', hold: 'held', active: 'running', errors: 'failed', complete: 'done', archive: 'landed' });
 /** Where a custom tab may sit: next to one of the orchestrator's stage tabs, or across all of them. */
-export const TAB_STAGES = ['pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'archive', 'all'];
+export const TAB_STAGES = ['pending', 'queue', 'hold', 'active', 'incomplete', 'complete', 'errors', 'archive', 'all'];
 export const COLORS = ['neutral', 'accent', 'info', 'success', 'warning', 'danger'];
 export const SORTS = ['state', 'priority', 'updated', 'title'];
-export const ACTIONS = ['queue', 'land', 'archive', 'priority'];
+/** Group actions; hold / release (Nov 16 2026) = every build of the group to the On hold tab / every held one back to Pending. */
+export const ACTIONS = ['queue', 'land', 'archive', 'priority', 'hold', 'release'];
 export const MAX_GROUPS = 60;
 export const MAX_MEMBERS = 500;
 
@@ -223,6 +224,8 @@ export function actionTargets(groupView, action) {
     land: (r) => r.tab === 'complete',
     archive: (r) => r.tab !== 'active' && r.tab !== 'archive',
     priority: () => true,
+    hold: (r) => r.tab !== 'hold' && r.tab !== 'deleted' && !!r.tab,
+    release: (r) => r.tab === 'hold',
   }[action];
   if (!pick) throw err(`action is one of ${ACTIONS.join(', ')}`);
   const members = groupView.rows ?? []; // the action reaches what the group shows (after its state filter)

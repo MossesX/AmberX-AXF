@@ -11,13 +11,13 @@ import { DataGrid, type GridColumn, type GridGroup } from '@console/axf/libs/dat
  * tab shows up next to its stage tab (GroupTab): a custom Pending tab is the usual one.
  */
 
-export type GroupState = 'partial' | 'pending' | 'queued' | 'running' | 'failed' | 'done' | 'landed';
-const STATES: GroupState[] = ['partial', 'pending', 'queued', 'running', 'failed', 'done', 'landed'];
-const STATE_OF_TAB: Record<string, GroupState> = { incomplete: 'partial', pending: 'pending', queue: 'queued', active: 'running', errors: 'failed', complete: 'done', archive: 'landed' };
-const STATE_TONE: Record<GroupState, 'accent' | 'success' | 'warning' | 'danger' | undefined> = { partial: 'warning', pending: undefined, queued: 'accent', running: 'accent', failed: 'danger', done: 'success', landed: 'success' };
+export type GroupState = 'partial' | 'pending' | 'queued' | 'held' | 'running' | 'failed' | 'done' | 'landed';
+const STATES: GroupState[] = ['partial', 'pending', 'queued', 'held', 'running', 'failed', 'done', 'landed'];
+const STATE_OF_TAB: Record<string, GroupState> = { incomplete: 'partial', pending: 'pending', queue: 'queued', hold: 'held', active: 'running', errors: 'failed', complete: 'done', archive: 'landed' };
+const STATE_TONE: Record<GroupState, 'accent' | 'success' | 'warning' | 'danger' | undefined> = { partial: 'warning', pending: undefined, queued: 'accent', held: 'warning', running: 'accent', failed: 'danger', done: 'success', landed: 'success' };
 const COLORS = ['neutral', 'accent', 'info', 'success', 'warning', 'danger'] as const;
 const STAGES: { value: string; label: string }[] = [
-  { value: '', label: 'No tab (board only)' }, { value: 'pending', label: 'Tab next to Pending' }, { value: 'queue', label: 'Tab next to Queue' },
+  { value: '', label: 'No tab (board only)' }, { value: 'pending', label: 'Tab next to Pending' }, { value: 'queue', label: 'Tab next to Queue' }, { value: 'hold', label: 'Tab next to On hold' },
   { value: 'active', label: 'Tab next to Active' }, { value: 'incomplete', label: 'Tab next to Incomplete' }, { value: 'complete', label: 'Tab next to Complete' },
   { value: 'errors', label: 'Tab next to Errors' }, { value: 'archive', label: 'Tab next to Archive' }, { value: 'all', label: 'Tab with every stage' },
 ];
@@ -178,6 +178,8 @@ function GroupEditor({ g, index, count, busy, change, act, onDeleted }: { g: Gro
         <Button size="sm" tone="primary" icon="arrow-right" disabled={busy === 'action' || !g.counts.pending} title="Every Pending build of the group → the Queue" onClick={() => void act('queue').then(report)}>Queue all ({g.counts.pending})</Button>
         <Button size="sm" tone="neutral" icon="check-circle" disabled={busy === 'action' || !g.counts.done} title="Every Done build of the group goes first in the merge queue (tagged Urgent)" onClick={() => void act('land').then(report)}>Land all ({g.counts.done})</Button>
         <Button size="sm" tone="neutral" icon="package" disabled={busy === 'action' || !g.total} title="Every build of the group without a live session → the Archive" onClick={() => void act('archive').then(report)}>Archive all</Button>
+        <Button size="sm" tone="neutral" icon="pause" disabled={busy === 'action' || g.total === (g.counts.held ?? 0)} title="Every build of the group → the On hold tab (running ones are stopped first); nothing starts, lands or changes them until released" onClick={() => void act('hold').then(report)}>Hold all</Button>
+        <Button size="sm" tone="neutral" icon="play" disabled={busy === 'action' || !g.counts.held} title="Every held build of the group → Pending" onClick={() => void act('release').then(report)}>Release all ({g.counts.held ?? 0})</Button>
         <SelectField label="Priority" value={prio} empty="Change priority…" options={[{ value: 'P0', label: 'Urgent' }, { value: 'P1', label: 'High' }, { value: 'P2', label: 'Normal' }, { value: 'P3', label: 'Low' }]} onChange={setPrio} />
         <Button size="sm" tone="neutral" icon="star" disabled={busy === 'action' || !prio || !g.total} onClick={() => void act('priority', { priority: prio }).then(report)}>Set for all</Button>
       </div>
