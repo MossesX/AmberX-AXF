@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T15:05:25.928Z",
+ "updatedAt": "2026-11-15T16:15:58.515Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -148555,7 +148555,7 @@
    "title": "Data container: axf-data holds all console data",
    "category": "",
    "detail": "Brett's final layout: the console is screens ONLY, with no work and no data in it. New private container 'axf-data' (Coolify, auto-restart, no public port or DNS, internal Docker network only) holds ALL the data: notes, builds store/journal/history, settings, planner items, UI reviews, everything the console stores today. Four parts: console = UI only; axf-molly = does the work (orchestrator, gate, lander); axHub = routes plus credentials/keys only (NO app data stored in axHub); axf-data = stores everything. Goal: if the console goes down, all data and notes stay available (through axHub tools) and builds keep running. Stage it safely: an API in front of the store, migrate with count checks and a backup, run in shadow first, then cut over, and no data is ever lost. Add daily backups. Coordinate with the move-build-orchestrator-to-axhub build (axf-molly reads and writes the builds store through axf-data). Tests, help, Shipped features.",
-   "status": "built",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -148563,8 +148563,8 @@
    "pr": "#704",
    "priority": "P0",
    "createdAt": "2026-11-15T04:28:05.062Z",
-   "updatedAt": "2026-11-15T14:57:08.846Z",
-   "builtAt": "2026-11-15T13:55:45.702Z",
+   "updatedAt": "2026-11-15T15:40:56.586Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -148613,6 +148613,14 @@
     {
      "text": "TO THE RUNNING SESSION, re-read the build. Brett (10:00): migrate EVERYTHING into a real database in its own container: Postgres (his Nov 6 choice), as its own Coolify container with a persistent volume and daily backups. The current design (data-store@1 copying JSON files key for key and storing SQLite files as blobs) is not enough. Real tables for builds, journal, notes, settings, planner, UI reviews, the feature store, the Shipped features ledger and chats (import the SQLite rows into Postgres tables, not blobs), and the API/control registry (apps/console-web/src/control/inventory.json becomes a table generated from each plugin's registered targets, not a hand-edited file). Keep the data-store@1 API on top so callers don't change. Count checks on migration, shadow then cutover. Add steps as needed.",
      "at": "2026-11-15T14:57:08.846Z"
+    },
+    {
+     "text": "LAND FIX (Brett 10:02): build_land clashed with main in 4 files: .github/workflows/android.yml, apps/console-web/src/control/inventory.json, framework/catalog/catalog.json, framework/catalog/status.json. Merge origin/main into the branch, keep BOTH sides (union of entries; regenerate catalog/status/inventory with their generators rather than hand-merging), run the checks, push, then land with the one-at-a-time lander right away. Do nothing else. The Postgres move is its own follow-up build.",
+     "at": "2026-11-15T15:12:36.573Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-15T15:40:56.586Z"
     }
    ],
    "approvals": [
@@ -149234,6 +149242,25 @@
      "note": "",
      "uid": "st-mwhc6cxo0r6961",
      "createdAt": "2026-11-15T04:30:21.947Z"
+    },
+    {
+     "id": "s28",
+     "text": "Land fix: merge origin/main into the branch and resolve the clash in .github/workflows/android.yml, apps/console-web/src/control/inventory.json, framework/catalog/catalog.json and framework/catalog/status.json by keeping both sides (regenerate catalog/status/inventory with their generators). Run the checks, push, then land with the one-at-a-time lander.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhz4thp01qj8x",
+     "createdAt": "2026-11-15T15:13:00.792Z"
     }
    ]
   },
@@ -150953,7 +150980,7 @@
    "title": "VPS sends Shipped features on every merge to main (+ backfill)",
    "category": "",
    "detail": "Bug: Shipped features has nothing for 2 days, but main DID get many merges (Nov 14-15: PRs #687, #694, #691, #693, #696, #689, #702, #324, plus build_land of console-look-becomes-default-axhub-skin, and the hand-merged skin PRs #647 #648 #590 #618 #641 #652 #657 #654). The last shipped manifests in _claude/builds/shipped/ are from Nov 13. The orchestrator is supposed to send shipped-manifest@1 to Shipped features (commit 7a6668231) but stopped. RULE (Brett): the VPS controls the orchestrator, so the VPS sends the shipped manifest AS SOON AS any merge to main succeeds, whatever the path (merge queue, auto-lander, build_land, manual GitHub merge, push to main). Implement it server-side on the VPS: a watcher on origin/main (post-merge hook + a poll/webhook fallback) that, for each new merge commit, maps it to its build/PR, builds the shipped-manifest@1 (PR, commit, mergedAt, landedAt, files, areas, tests, report link, what Brett said) and sends it to Shipped features at once; idempotent (no duplicates); alerts Brett if a send fails, and retries. Find and fix why it stopped on Nov 13. BACKFILL every merge to main since Nov 13 that has no manifest. Design it so it moves into the axf-molly container with the orchestrator (coordinate with move-build-orchestrator-to-axhub); the data goes to axf-data once that exists. Tests, help. Land with the one-at-a-time lander.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -150961,7 +150988,7 @@
    "pr": "#709",
    "priority": "P0",
    "createdAt": "2026-11-15T12:14:27.131Z",
-   "updatedAt": "2026-11-15T14:55:15.377Z",
+   "updatedAt": "2026-11-15T15:20:56.277Z",
    "builtAt": "",
    "notes": [
     {
@@ -151003,6 +151030,10 @@
     {
      "text": "Brett (09:56): each feature record in the one true feature store must carry its deep link (console_show target / view path) so Shipped features can open it in the live app. Pull it from the PR's API-parity table or the plugin's registered console-control targets; backfill links for existing records where they can be found.",
      "at": "2026-11-15T14:55:15.377Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-15T15:20:56.277Z"
     }
    ],
    "approvals": [],
@@ -151972,7 +152003,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-15T13:23:46.016Z",
-   "updatedAt": "2026-11-15T15:02:24.748Z",
+   "updatedAt": "2026-11-15T15:26:40.578Z",
    "builtAt": "",
    "notes": [
     {
@@ -152300,8 +152331,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:04:58.175Z",
      "note": "",
      "uid": "st-mwhvd33l0cvibw",
      "createdAt": "2026-11-15T13:27:28.497Z"
@@ -152322,8 +152353,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:07:23.247Z",
      "note": "",
      "uid": "st-mwhvd33l0d22s0",
      "createdAt": "2026-11-15T13:27:28.497Z"
@@ -152343,8 +152374,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:08:58.143Z",
      "note": "",
      "uid": "st-mwhvd33l0ea3xy",
      "createdAt": "2026-11-15T13:27:28.497Z"
@@ -152366,8 +152397,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:10:29.886Z",
      "note": "",
      "uid": "st-mwhvd33l0f6p0b",
      "createdAt": "2026-11-15T13:27:28.497Z"
@@ -152388,8 +152419,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:14:44.092Z",
      "note": "",
      "uid": "st-mwhvd33l0gklo6",
      "createdAt": "2026-11-15T13:27:28.497Z"
@@ -152410,8 +152441,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:14:49.954Z",
      "note": "",
      "uid": "st-mwhvd33l0hm8gi",
      "createdAt": "2026-11-15T13:27:28.497Z"
@@ -152432,8 +152463,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:17:32.766Z",
      "note": "",
      "uid": "st-mwhvd33l0i8f6o",
      "createdAt": "2026-11-15T13:27:28.497Z"
@@ -152455,8 +152486,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:18:17.315Z",
      "note": "",
      "uid": "st-mwhvd33l0jc1mo",
      "createdAt": "2026-11-15T13:27:28.497Z"
@@ -152478,8 +152509,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:20:55.149Z",
      "note": "",
      "uid": "st-mwhvd33l0k0w5y",
      "createdAt": "2026-11-15T13:27:28.497Z"
@@ -152501,8 +152532,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:23:26.064Z",
      "note": "",
      "uid": "st-mwhvd33l0lrkkv",
      "createdAt": "2026-11-15T13:27:28.497Z"
@@ -152522,8 +152553,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:24:50.303Z",
      "note": "",
      "uid": "st-mwhvd33l0mz5i5",
      "createdAt": "2026-11-15T13:27:28.497Z"
@@ -152545,8 +152576,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:26:40.578Z",
      "note": "",
      "uid": "st-mwhvd33l0n4leq",
      "createdAt": "2026-11-15T13:27:28.497Z"
@@ -152610,7 +152641,7 @@
    "pr": "#712",
    "priority": "P1",
    "createdAt": "2026-11-15T13:36:18.858Z",
-   "updatedAt": "2026-11-15T15:02:43.304Z",
+   "updatedAt": "2026-11-15T15:43:42.183Z",
    "builtAt": "",
    "notes": [
     {
@@ -152680,6 +152711,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-phone-connect-small-android-companion--paulie, shared account login)",
      "at": "2026-11-15T14:55:26.861Z"
+    },
+    {
+     "text": "Reconciler: PR #712 names s1, s3, s4, s5, s6, s8, s9, s10, s11, s12, s13 done",
+     "at": "2026-11-15T15:11:13.449Z"
     }
    ],
    "approvals": [
@@ -152879,8 +152914,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:04:40.957Z",
      "note": "",
      "uid": "st-mwhvsdee080yub",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -152902,8 +152937,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:05:42.091Z",
      "note": "",
      "uid": "st-mwhvsdee09z18s",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -152924,8 +152959,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:06:40.328Z",
      "note": "",
      "uid": "st-mwhvsdee0afkrc",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -152946,8 +152981,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:07:36.927Z",
      "note": "",
      "uid": "st-mwhvsdee0b1n7b",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -152967,8 +153002,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:09:24.950Z",
      "note": "",
      "uid": "st-mwhvsdee0caeup",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -152989,8 +153024,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:10:33.300Z",
      "note": "",
      "uid": "st-mwhvsdee0dwf54",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -153011,8 +153046,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:13:56.054Z",
      "note": "",
      "uid": "st-mwhvsdee0e0lm7",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -153033,8 +153068,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:15:41.510Z",
      "note": "",
      "uid": "st-mwhvsdee0fy2ma",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -153056,8 +153091,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:17:41.925Z",
      "note": "",
      "uid": "st-mwhvsdee0gxdgz",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -153079,8 +153114,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:21:36.793Z",
      "note": "",
      "uid": "st-mwhvsdee0hw4zj",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -153101,8 +153136,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:22:42.377Z",
      "note": "",
      "uid": "st-mwhvsdee0irv23",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -153122,8 +153157,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:23:33.920Z",
      "note": "",
      "uid": "st-mwhvsdee0jpu7u",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -153144,8 +153179,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:24:21.358Z",
      "note": "",
      "uid": "st-mwhvsdee0kdnvy",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -153165,8 +153200,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:25:14.969Z",
      "note": "",
      "uid": "st-mwhvsdee0lhuc5",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -153186,8 +153221,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:25:40.722Z",
      "note": "",
      "uid": "st-mwhvsdee0mynxo",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -153208,8 +153243,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:27:31.129Z",
      "note": "",
      "uid": "st-mwhvsdee0ns8nl",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -153229,8 +153264,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:32:43.261Z",
      "note": "",
      "uid": "st-mwhvsdee0okzi5",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -153252,8 +153287,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:34:04.956Z",
      "note": "",
      "uid": "st-mwhvsdee0ppx4p",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -153274,8 +153309,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:34:54.877Z",
      "note": "",
      "uid": "st-mwhvsdee0qxnsw",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -153296,8 +153331,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:37:15.660Z",
      "note": "",
      "uid": "st-mwhvsdee0ra91q",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -153317,8 +153352,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:39:51.394Z",
      "note": "",
      "uid": "st-mwhvsdee0symhy",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -153340,8 +153375,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:42:08.626Z",
      "note": "",
      "uid": "st-mwhvsdee0tmwnq",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -153362,8 +153397,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:43:42.183Z",
      "note": "",
      "uid": "st-mwhvsdee0ujo70",
      "createdAt": "2026-11-15T13:39:21.685Z"
@@ -153466,16 +153501,16 @@
    "title": "Shipped features: Open button views each feature in the live app",
    "category": "",
    "detail": "Every feature row in Shipped features gets an 'Open' button (plus a row context-menu item) that opens that feature in the live console app at the exact screen, tab or setting, using its console_show deep link from the feature store record. Features with no screen show the button disabled with the reason. The same button appears in the Gate plugin's Pending features expanded rows once a build has landed. Full API parity (REST/MCP/CLI/voice: 'open feature X'). Tests, help. Land with the one-at-a-time lander.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/shipped-features-open-button-views-each",
-   "pr": "",
+   "pr": "#714",
    "priority": "P1",
    "createdAt": "2026-11-15T14:55:29.131Z",
-   "updatedAt": "2026-11-15T15:05:25.640Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-15T16:15:56.588Z",
+   "builtAt": "2026-11-15T16:15:56.589Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -153658,8 +153693,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:07:12.537Z",
      "note": "",
      "uid": "st-mwhykgzj07m24r",
      "createdAt": "2026-11-15T14:57:11.931Z"
@@ -153680,8 +153715,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:08:29.404Z",
      "note": "",
      "uid": "st-mwhykgzj08xbr5",
      "createdAt": "2026-11-15T14:57:11.931Z"
@@ -153702,8 +153737,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:10:05.790Z",
      "note": "",
      "uid": "st-mwhykgzj09ag7n",
      "createdAt": "2026-11-15T14:57:11.931Z"
@@ -153724,8 +153759,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:11:05.633Z",
      "note": "",
      "uid": "st-mwhykgzj0aib0h",
      "createdAt": "2026-11-15T14:57:11.931Z"
@@ -153746,8 +153781,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:11:57.014Z",
      "note": "",
      "uid": "st-mwhykgzj0be3ir",
      "createdAt": "2026-11-15T14:57:11.931Z"
@@ -153769,8 +153804,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:13:12.226Z",
      "note": "",
      "uid": "st-mwhykgzj0cgx9g",
      "createdAt": "2026-11-15T14:57:11.931Z"
@@ -153791,8 +153826,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T15:15:48.869Z",
      "note": "",
      "uid": "st-mwhykgzj0dm9mr",
      "createdAt": "2026-11-15T14:57:11.931Z"
@@ -153813,8 +153848,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T16:14:45.031Z",
      "note": "",
      "uid": "st-mwhykgzj0epgxr",
      "createdAt": "2026-11-15T14:57:11.931Z"
@@ -153835,11 +153870,133 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T16:15:56.588Z",
      "note": "",
      "uid": "st-mwhykgzj0f3tz6",
      "createdAt": "2026-11-15T14:57:11.931Z"
+    }
+   ]
+  },
+  {
+   "id": "axf-data-postgres-real-tables-own",
+   "title": "axf-data on Postgres: real tables in its own container",
+   "category": "",
+   "detail": "Follow-up to data-container-axf-data-holds-all (PR #704, SQLite + blobs). Move axf-data onto Postgres (Brett's Nov 6 choice) as its own private Coolify container with a persistent volume and daily backups. Real tables (not JSON copies or SQLite blobs) for: builds store, journal and history, notes, settings, planner items, UI reviews, the one true feature store, the Shipped features ledger, chats, and the API/control registry (apps/console-web/src/control/inventory.json becomes a table generated from each plugin's registered targets, never hand-edited, so builds stop clashing on it). Keep the data-store@1 API on top so callers don't change. Migrate from the SQLite axf-data with backup first, count checks, shadow, then cutover; never lose data. Tests, help, Shipped features. Land with the one-at-a-time lander.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/axf-data-postgres-real-tables-own",
+   "pr": "#713",
+   "priority": "P0",
+   "createdAt": "2026-11-15T15:12:29.907Z",
+   "updatedAt": "2026-11-15T16:12:30.473Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-15T15:12:33.875Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":2597,\"stop_reason\":\"tool_use\",\"session_id\":\"f2026778-f24a-4666-a627-cdc7bf0c3152\",\"total_cost_usd\":0.397677,\"usage\":{\"input_tokens\":2,\"cache_creation_input_tokens\":48): one step per line of the request, review the steps.",
+     "at": "2026-11-15T15:13:43.323Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-axf-data-postgres-real-tables-own--gina, shared account login)",
+     "at": "2026-11-15T15:14:09.416Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-axf-data-postgres-real-tables-own--gina.",
+     "at": "2026-11-15T15:14:03.897Z"
+    },
+    {
+     "text": "Dispatch gate: axf-data-postgres-real-tables-own still has axf-axf-data-postgres-real-tables-own--gina alive: not launched again, tracking that session.",
+     "at": "2026-11-15T15:15:11.666Z"
+    },
+    {
+     "text": "Split by Claude into 29 steps (7 Fable).",
+     "at": "2026-11-15T16:11:39.179Z"
+    },
+    {
+     "text": "Headless run axf-axf-data-postgres-real-tables-own--gina: brief only · start 13.1K tokens ($0.10) · cost $25.81 · 125 turns · 6 tools, MCP none",
+     "at": "2026-11-15T16:12:30.473Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Yeah, I want to migrate everything to a database in its own container. Land it, and then follow it up with Postgres.",
+    "at": "2026-11-15T15:12:29.907Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "axf-data-postgres-real-tables-own",
+    "brief": "# Build: axf-data-postgres-real-tables-own\n\n## Brett said (verbatim)\nAt: 2026-11-15T15:12:29.907Z\n> Yeah, I want to migrate everything to a database in its own container. Land it, and then follow it up with Postgres.\n\n## What to build\nContinue build \"axf-data on Postgres: real tables in its own container\" (axf-data-postgres-real-tables-own) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-15 15:12):\n\"Yeah, I want to migrate everything to a database in its own container. Land it, and then follow it up with Postgres.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~10 min):\n[ ] s1 (~10 min) Follow-up to data-container-axf-data-holds-all (PR #704, SQLite + blobs). Move axf-data onto Postgres (Brett's Nov 6 choice) as its own private Coolify container with a persistent volume and daily backups. Real tables (not JSON copies or SQLite blobs) for: builds store, journal and history, notes, settings, planner items, UI reviews, the one true feature store, the Shipped features ledger, chats, and the API/control registry (apps/console-web/src/control/inventory.json becomes a table generated from each plugin's registered targets, never hand-edited, so builds stop clashing on it). Keep the data-store@1 API on top so callers don't change. Migrate from the SQLite axf-data with backup first, count checks, shadow, then cutover; never lose data. Tests, help, Shipped features. Land with the one-at-a-time lander.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step axf-data-postgres-real-tables-own <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link axf-data-postgres-real-tables-own --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step axf-data-postgres-real-tables-own <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note axf-data-postgres-real-tables-own \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Follow-up to data-container-axf-data-holds-all (PR #704, SQLite + blobs). Move axf-data onto Postgres (Brett's Nov 6 choice) as its own private Coolify container with a persistent volume and daily backups. Real tables (not JSON copies or SQLite blobs) for: builds store, journal and history, notes, settings, planner items, UI reviews, the one true feature store, the Shipped features ledger, chats, and the API/control registry (apps/console-web/src/control/inventory.json becomes a table generated from each plugin's registered targets, never hand-edited, so builds stop clashing on it). Keep the data-store@1 API on top so callers don't change. Migrate from the SQLite axf-data with backup first, count checks, shadow, then cutover; never lose data. Tests, help, Shipped features. Land with the one-at-a-time lander.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-15T16:11:46.742Z",
+     "note": "",
+     "uid": "st-mwhz5py401kdum",
+     "createdAt": "2026-11-15T15:13:43.323Z"
+    },
+    {
+     "id": "s2",
+     "text": "Yeah, I want to migrate everything to a database in its own container. Land it, and then follow it up with Postgres.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhz5py40225gk",
+     "createdAt": "2026-11-15T15:13:43.323Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/axf-data-postgres-real-tables-own.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/axf-data-postgres-real-tables-own.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwhz5py40324l7",
+     "createdAt": "2026-11-15T15:13:43.323Z"
     }
    ]
   }
