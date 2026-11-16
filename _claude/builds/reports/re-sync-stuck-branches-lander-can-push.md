@@ -33,3 +33,7 @@ Out of scope, not touched: `claude/axf-data-postgres-real-tables-own`, `claude/d
 - `land-native-bridge-mic` (2259d0b69): 30 commits are not patch-equivalent on main, but every one is on its real build branch on origin (17 on `claude/console-android-app-thin-webview-wrapper`, 12 on `claude/console-app-part-3-native-bridge-mic`, 1 on `claude/console-app-part-2-native-floating-2`). The worktree was clean, so it was removed and the branch deleted locally; it never existed on origin.
 - Backup tags (local, on the VPS repo): `backup/stray/land-native-bridge-mic`, `backup/stray/merge-main-land-one-source-truth-console`.
 - No remote delete was needed, so no GitHub App veto call was made.
+
+## auto-lander-controls-in-the-gate-plugin
+
+- s7: the worktree had no tracked changes left at 5fde0e9bd (local == origin); only the dispatcher's untracked session files (`.axf-brief.md`, `.axf-look-follow.log`, `<build>.jsonl/.log`), which every build worktree carries. Nothing to commit, nothing to stash.
