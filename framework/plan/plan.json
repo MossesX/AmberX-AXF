@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-11-16T16:51:28.059Z",
+ "generatedAt": "2026-11-16T19:34:31.784Z",
  "statuses": [
   "built",
   "partial",
@@ -17061,7 +17061,8 @@
    "recommendations": [
     "Bundle with: Token editor with live preview + export JSON (cx.assets.editor)",
     "Bundle with: Validate an asset against asset-types.json (cx.assets.validate)",
-    "Bundle with: Push an asset pack to the VPS (cx.assets.push)"
+    "Bundle with: Push an asset pack to the VPS (cx.assets.push)",
+    "Bundle with: UI Manager: select any UI element of the console and edit every property and token it reads from predetermined choices (asset ids, enum words, colour token refs, ranges) supplied by the framework and the console; On screen now shortcuts, reset to skin / default, live preview, change log with undo (ui-element@1, ui-overrides@1, ui-change@1) (cx.uimanager)"
    ],
    "previews": [],
    "screenshots": [],
@@ -17204,6 +17205,49 @@
    "history": [
     {
      "at": "2026-10-17",
+     "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
+  },
+  {
+   "id": "cx.uimanager",
+   "title": "UI Manager: select any UI element of the console and edit every property and token it reads from predetermined choices (asset ids, enum words, colour token refs, ranges) supplied by the framework and the console; On screen now shortcuts, reset to skin / default, live preview, change log with undo (ui-element@1, ui-overrides@1, ui-change@1)",
+   "area": "Console app",
+   "group": "Modules & packages",
+   "kind": "task",
+   "parent": "cx.assets",
+   "status": "built",
+   "priority": "P3",
+   "wave": 1,
+   "effort": "",
+   "summary": "Suggested together with Asset gallery: swap themes, style packs, layouts, menus live; import via QR/file.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "cx.assets"
+   ],
+   "catalog": [
+    "cx.uimanager"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "console",
+    "suggested"
+   ],
+   "notes": "framework/core/engines/ui-manager-rules.mjs (ui-element@1, ui-catalog@1, ui-overrides@1, ui-change@1) + plugin ui-manager: every selectable element, On screen now shortcuts to one element, every property / token with predetermined choices from the asset types, assets, skin / look and control@1 token sets, validation, reset to skin / default, override marking, preview plan on --fx-* tokens, change log with undo; CLI, REST, MCP via plugin-commands@1. Floating window UI: Opus phase. ui-library@1 (s14, Fable): any UI exported as an asset library (assets + token values + manifest, schema-validated) to the shared hub library (/projects/_shared/_data/libraries/ui) and as a downloadable package; importable into the framework's shared set (every app bakes it), an app, a project, a skin (skin@1 made from it) or a console; Export buttons, action ui-manager.export, REST library/*, MCP ui-manager_library-*, CLI library | libraries | library-get | library-validate | import. Kotlin twin deferred.",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-11-16",
      "text": "Imported from the feature catalog (suggestion)"
     }
    ],
