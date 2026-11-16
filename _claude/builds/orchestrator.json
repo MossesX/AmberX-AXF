@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:41:11.095Z",
+ "updatedAt": "2026-11-16T19:41:18.857Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110371,15 +110371,16 @@
    "title": "Owner recognized everywhere + veto countdown only on shell commands",
    "category": "axhub",
    "detail": "URGENT, boss order from Brett, Nov 12. Two problems: 1) The console and axHub do not recognize Brett as the owner, so owner-only settings (Claude settings > Approvals & veto tab, policy changes) don't work for him. Fix owner detection so Brett's admin console login and his axHub session count as owner everywhere (check the earlier owner-only-settings-brett-s-admin-console-login-counts-as-owner build and claude-settings-tabs-veto s4, axHub owner-only policy API GET/PUT /auth/api/policy; finish whatever is missing). 2) Change the axHub approval policies: a veto countdown ONLY on shell commands that run on the VPS (vps.run and anything executing a shell). Everything in the console/orchestrator (axf-console control_add, control_set, control_act, build_orchestrator_pipeline_queue, priority_set, agent_slots settings, console_open/show, etc.) becomes allow, no countdown. Keep confirm on the few owner-only items that already need it (model upgrades). Repos: axHub and AmberX-AXF. Tests: Brett's session is owner; vps.run still held on veto; console/orchestrator tools run immediately. PR, land through the gate, redeploy, AmberX FYI when live. Don't stop to ask.",
-   "status": "queued",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/owner-recognized-everywhere-veto",
    "pr": "#601",
+   "mergedAt": "2026-11-16T19:09:18Z",
    "createdAt": "2026-11-12T02:04:11.564Z",
-   "updatedAt": "2026-11-16T18:30:25.768Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T19:41:08.651Z",
+   "builtAt": "2026-11-16T19:41:08.651Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -110488,6 +110489,10 @@
     {
      "text": "On hold (cli): Brett review Nov 16: on hold. It keeps its place in the Queue; the dispatcher skips it until released.",
      "at": "2026-11-16T18:30:25.768Z"
+    },
+    {
+     "text": "Reconciler: PR #601 merged",
+     "at": "2026-11-16T19:41:08.651Z"
     }
    ],
    "approvals": [],
@@ -156922,7 +156927,7 @@
    "pr": "#723",
    "priority": "P0",
    "createdAt": "2026-11-16T16:22:57.802Z",
-   "updatedAt": "2026-11-16T18:41:07.823Z",
+   "updatedAt": "2026-11-16T19:41:08.651Z",
    "builtAt": "",
    "notes": [
     {
@@ -156992,6 +156997,10 @@
     {
      "text": "Reconciler: PR #723 names s1, s2, s3, s4, s5, s6, s7, s10, s11 done",
      "at": "2026-11-16T18:01:00.143Z"
+    },
+    {
+     "text": "Reconciler: PR #723 names s1, s2, s3, s4, s5, s6, s7, s9, s10, s11, s12, s13, s15 done",
+     "at": "2026-11-16T19:41:08.651Z"
     }
    ],
    "approvals": [],
@@ -157204,9 +157213,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:41:08.651Z",
+     "note": "PR #723 (claude/get-main-green-unblock-lander-land-axf)",
      "uid": "st-mwjh5edh095e78",
      "createdAt": "2026-11-16T16:25:07.589Z"
     },
@@ -160434,7 +160443,7 @@
    "title": "AmberX open_url must open the page even when Chrome is already in front",
    "category": "",
    "detail": "Bug Nov 16: amberx.open_url only posts a notification instead of opening the page, even while Brett has Chrome in the foreground on the console. Android background-start limits block AmberX. Fix: (1) when an AXF console tab is open and connected, route open_url through it (console navigates the tab / opens a new tab via a console-control 'navigate' command); (2) otherwise use a full-screen-intent or an allowed exemption (SYSTEM_ALERT_WINDOW / companion device) so it really opens; (3) notification only as a last resort. Tests on the S26 Ultra, land, new APK, AmberX FYI.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -160442,7 +160451,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T18:37:43.199Z",
-   "updatedAt": "2026-11-16T18:52:44.783Z",
+   "updatedAt": "2026-11-16T19:41:08.651Z",
    "builtAt": "",
    "notes": [
     {
@@ -160472,6 +160481,10 @@
     {
      "text": "Headless run axf-amberx-open-url-must-open-page-even-when--joey: brief only · start 17.8K tokens ($0.12) · cost $4.54 · 41 turns · 6 tools, MCP none",
      "at": "2026-11-16T18:52:44.783Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-16T19:41:08.651Z"
     }
    ],
    "approvals": [],
@@ -161537,11 +161550,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/toolbars-moved-to-side-become-vertical",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:20:10.281Z",
-   "updatedAt": "2026-11-16T19:37:53.578Z",
+   "updatedAt": "2026-11-16T19:41:08.651Z",
    "builtAt": "",
    "notes": [
     {
@@ -161575,6 +161588,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-toolbars-moved-to-side-become-vertical--joey, shared account login)",
      "at": "2026-11-16T19:32:34.136Z"
+    },
+    {
+     "text": "Reconciler: branch claude/toolbars-moved-to-side-become-vertical (no PR yet)",
+     "at": "2026-11-16T19:41:08.651Z"
     }
    ],
    "approvals": [],
