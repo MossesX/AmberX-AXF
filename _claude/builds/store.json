@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6862,
- "updatedAt": "2026-11-16T20:27:03.396Z",
+ "rev": 6863,
+ "updatedAt": "2026-11-16T20:27:15.575Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -248797,12 +248797,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T20:26:44.199Z",
-   "updatedAt": "2026-11-16T20:26:47.842Z",
+   "updatedAt": "2026-11-16T20:27:03.275Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-16T20:26:47.842Z"
+    },
+    {
+     "text": "Brett Nov 16: Plan Studio's navigation menu is trash. Replace it with a framework TabGroup (tabs) across the top for its sections, in the old Plan Studio now and the same in Plan Studio 2.0.",
+     "at": "2026-11-16T20:27:03.275Z"
     }
    ],
    "approvals": [],
@@ -248850,7 +248854,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

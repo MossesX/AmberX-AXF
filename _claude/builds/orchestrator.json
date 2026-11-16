@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T20:27:03.396Z",
+ "updatedAt": "2026-11-16T20:27:15.575Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -162802,12 +162802,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T20:26:44.199Z",
-   "updatedAt": "2026-11-16T20:26:47.842Z",
+   "updatedAt": "2026-11-16T20:27:03.275Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-16T20:26:47.842Z"
+    },
+    {
+     "text": "Brett Nov 16: Plan Studio's navigation menu is trash. Replace it with a framework TabGroup (tabs) across the top for its sections, in the old Plan Studio now and the same in Plan Studio 2.0.",
+     "at": "2026-11-16T20:27:03.275Z"
     }
    ],
    "approvals": [],
