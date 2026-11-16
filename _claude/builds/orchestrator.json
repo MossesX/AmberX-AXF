@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T20:41:27.351Z",
+ "updatedAt": "2026-11-16T20:41:46.132Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -162927,7 +162927,7 @@
    "title": "Plan Studio: Collapse all / Expand all",
    "category": "",
    "detail": "In the existing Plan Studio (plan-studio, not 2.0): add Collapse all and Expand all buttons to its toolbar that fold or unfold every plan, section and step at once, remembered per user. Same actions by voice, MCP, CLI and console-control. Tests, land through the orchestrator.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -162935,8 +162935,8 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T20:26:44.199Z",
-   "updatedAt": "2026-11-16T20:39:14.664Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T20:41:44.068Z",
+   "builtAt": "2026-11-16T20:41:44.068Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -163002,8 +163002,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:41:44.068Z",
      "note": "",
      "uid": "st-mwjptk1001od2g",
      "createdAt": "2026-11-16T20:27:51.321Z"
