@@ -1,0 +1,15 @@
+{
+  "$axf": "asset@1",
+  "type": "shape",
+  "id": "hexagon",
+  "name": "Hexagon",
+  "version": "1.0.0",
+  "description": "Six sides, pointed at the left and right. Keeps a square box, so wide text chips become hexagonal buttons.",
+  "author": "AmberX AXF",
+  "tags": [
+    "shape"
+  ],
+  "data": {
+    "kind": "hexagon"
+  }
+}

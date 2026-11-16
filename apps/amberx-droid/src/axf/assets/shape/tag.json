@@ -1,0 +1,15 @@
+{
+  "$axf": "asset@1",
+  "type": "shape",
+  "id": "tag",
+  "name": "Tag",
+  "version": "1.0.0",
+  "description": "A label with a point on the right, one text height deep, so it reads at any width. Good for counters and status chips.",
+  "author": "AmberX AXF",
+  "tags": [
+    "shape"
+  ],
+  "data": {
+    "kind": "tag"
+  }
+}

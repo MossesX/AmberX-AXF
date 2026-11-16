@@ -1,0 +1,13 @@
+{
+  "$axf": "asset@1",
+  "type": "shape",
+  "id": "pill",
+  "name": "Pill",
+  "version": "1.0.0",
+  "description": "Fully rounded ends: a pill on wide widgets, a circle on square ones. The look every banner widget had before shapes were assets (the default).",
+  "author": "AmberX AXF",
+  "tags": ["shape", "default"],
+  "data": {
+    "kind": "pill"
+  }
+}

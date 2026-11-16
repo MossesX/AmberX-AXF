@@ -29,6 +29,10 @@
         "at": "right"
       }
     ],
-    "divider": false
+    "divider": false,
+    "shape": {
+      "icon": "circle",
+      "chip": "pill"
+    }
   }
 }

@@ -29,7 +29,8 @@
       "container": "swiss-grid",
       "typography": "reader",
       "density": "standard",
-      "sizing": "standard"
+      "sizing": "standard",
+      "shape": "pill"
     },
     "preview": {
       "caption": "Paper and ink, Swiss grid, reader type."

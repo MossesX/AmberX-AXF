@@ -1,0 +1,13 @@
+{
+  "$axf": "asset@1",
+  "type": "shape",
+  "id": "circle",
+  "name": "Circle",
+  "version": "1.0.0",
+  "description": "A true circle: every widget keeps a square box, so text chips become round buttons.",
+  "author": "AmberX AXF",
+  "tags": ["shape"],
+  "data": {
+    "kind": "circle"
+  }
+}

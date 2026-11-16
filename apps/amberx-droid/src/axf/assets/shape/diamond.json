@@ -1,0 +1,15 @@
+{
+  "$axf": "asset@1",
+  "type": "shape",
+  "id": "diamond",
+  "name": "Diamond",
+  "version": "1.0.0",
+  "description": "A square turned on its point. Keeps a square box; best for icon-only widgets and dots.",
+  "author": "AmberX AXF",
+  "tags": [
+    "shape"
+  ],
+  "data": {
+    "kind": "diamond"
+  }
+}

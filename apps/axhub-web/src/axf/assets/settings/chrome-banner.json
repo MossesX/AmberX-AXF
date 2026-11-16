@@ -25,6 +25,12 @@
         "order": 10
       },
       {
+        "id": "shape",
+        "label": "Shape",
+        "icon": "box",
+        "order": 15
+      },
+      {
         "id": "behaviour",
         "label": "Behaviour",
         "icon": "sliders",
@@ -51,7 +57,8 @@
       "look": "simple",
       "behaviour": "basic",
       "asset": "basic",
-      "interface": "developer"
+      "interface": "developer",
+      "shape": "simple"
     }
   }
 }
