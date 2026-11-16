@@ -1,0 +1,332 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-hotfix-get-main-ci-green-theme-swap",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-14T13:02:10Z",
+ "build": {
+  "id": "hotfix-get-main-ci-green-theme-swap",
+  "title": "HOTFIX: get main CI green (theme-swap opacity + plugin lifecycle stale refs)",
+  "profile": "all",
+  "category": "bug fix",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Main's full CI is red, so the merge queue can't land any batch and builds stop early back to Pending. Fix: (1) scripts/theme-swap.mjs fails because every style theme shows the hub opacities (look pinned to axHub); make style themes use their own opacity values. (2) Plugin lifecycle check: stale refs in 7 plugins; fix them. Land #665 first. Then re-add the console app stack #637 #639 #633 #640 #643 and the land-batch PRs to the merge queue and redeploy the console.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Build: hotfix-get-main-ci-green-theme-swap\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"HOTFIX: get main CI green (theme-swap opacity + plugin lifecycle stale refs)\" (hotfix-get-main-ci-green-theme-swap) [bug fix] — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/hotfix-get-main-ci-green-theme-swap · PR #669\nSteps in this phase (1 left, ~10 min):\n[x] s1 (~20 min) Fix theme-swap opacity pinning so each style theme keeps its own opacities; run theme-swap\n[x] s2 (~20 min) Fix stale refs in the 7 plugins failing plugin-lifecycle; run the check\n[ ] s3 (~10 min) Land #665 and this fix through the merge queue, confirm main green, re-queue the waiting stacks, redeploy console\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step hotfix-get-main-ci-green-theme-swap <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link hotfix-get-main-ci-green-theme-swap --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step hotfix-get-main-ci-green-theme-swap <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note hotfix-get-main-ci-green-theme-swap \"…\"); the build goes back to Pending for Brett.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-hotfix-get-main-ci-green-theme-swap--rhonda",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-14T03:45:24.991Z",
+   "endedAt": "2026-11-14T06:18:51.392Z",
+   "exit": 0,
+   "costUsd": 17.5961
+  },
+  {
+   "session": "axf-hotfix-get-main-ci-green-theme-swap--joey",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-14T12:17:09.660Z",
+   "endedAt": "2026-11-14T12:25:57.498Z",
+   "exit": 0,
+   "costUsd": 1.3798
+  },
+  {
+   "session": "axf-hotfix-get-main-ci-green-theme-swap--sully",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-14T12:28:09.509Z",
+   "endedAt": "",
+   "exit": null,
+   "costUsd": 0.6283
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Fix theme-swap opacity pinning so each style theme keeps its own opacities; run theme-swap",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-14T03:45:24.991Z",
+   "doneAt": "2026-11-14T04:17:54.512Z",
+   "actualMin": 32,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Fix stale refs in the 7 plugins failing plugin-lifecycle; run the check",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-14T04:17:54.512Z",
+   "doneAt": "2026-11-14T04:22:35.827Z",
+   "actualMin": 5,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Land #665 and this fix through the merge queue, confirm main green, re-queue the waiting stacks, redeploy console",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "claude/hotfix-get-main-ci-green-theme-swap",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 669,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/669"
+ },
+ "landedCommit": "c0cceeccaa3264dac03c9d075bd785ea2b2d418b",
+ "commits": [
+  "211f0e0ef86bb69a351f4652ac50eaf2bdd5364f",
+  "2cc76f8132956f44203f84f2312a962e5b801589",
+  "fe408a8ad7fcebcf90e9fb9ae9d857cc2dfadf27",
+  "92761752e6c55080d34138d4c30123d07189b0c1",
+  "2359697248ce2d0f58838baa2a7cbf82a5ade6bc",
+  "483230714ebf24eb6c6696e6c66e65010b467a83",
+  "8a3c7e9d167a9d9a2f0a4561a5b5cccf5cea581a",
+  "c533e2b0b905968b6f1f7b901ca348c1f9840b8b",
+  "1eed0cd501de6972567148ca398bdc79effb30ae",
+  "0f3ffd8f231ecdf825b3158c1ca2bd62d755afcc",
+  "2f12497c07acf4441d9b0f1148bc1a0e93e5c878",
+  "7295734d82a8577a2e44494b1b532e97c09dcb23",
+  "2c16e3301fa4f26ed178480c7267dd1313bfbbb9",
+  "f9314f703931fb856202a4a716d4a9458c3bfcb1",
+  "0b8fbdada984cc9015174f103689f11f9872944e",
+  "91e1dc4ffa4570e68d90f5e8d5e40bd1d629ee18",
+  "892ba1b1478a87c219017f8af790e0dca73e3a95",
+  "7f07d2ea63ceccac894cf148f7a9be63c5c82c95",
+  "c4af48eced95726721ab77fa3354a2f0a9021c72",
+  "e883ee8f809f5e7b2198998ab969b9d71539f1a7",
+  "90ec19f7fa6a27f0309ca2bd2c44ce344220afb7",
+  "60f52496ac5bbeb542b635e55c52a9caf4b4c2ff",
+  "7b69488446a3d6cd5d4f8afb9391a8a74b828097",
+  "13cc4cd99a7108e06f2d3df69e55374e2fe37df0",
+  "39f00b05602a7118ead2cff18cef704d5d955141",
+  "2e2c760430fd975778d54d763ecdf2f9260b15fb",
+  "a12e320fac9368fb0348036fc92128d601c5389b",
+  "4707ef9bb07e482e444e50748be37a1c2c711759",
+  "43e347788098ed05fc070b2292a7357ee3105588"
+ ],
+ "mergedAt": "2026-11-14T12:57:14Z",
+ "landedAt": "2026-11-14T12:57:13Z",
+ "files": [
+  "_claude/builds/reports/land-batch-merge-main-each-finished.md",
+  "apps/amberx-droid/src/axf/assets/help/framework-drafts.json",
+  "apps/amberx-droid/src/console/plugins.ts",
+  "apps/amberx-droid/vite.config.ts",
+  "apps/axhub-web/src/axf/assets/help/framework-drafts.json",
+  "apps/console-web/plugins/approvals-banner/web/index.tsx",
+  "apps/console-web/plugins/build-orchestrator/plugin.json",
+  "apps/console-web/plugins/build-orchestrator/test.mjs",
+  "apps/console-web/plugins/molly-guide/help.json",
+  "apps/console-web/plugins/notes-browser/plugin.json",
+  "apps/console-web/plugins/plan-studio/plugin.json",
+  "apps/console-web/plugins/todo-manager/plugin.json",
+  "apps/console-web/scripts/console-control.e2e.mjs",
+  "apps/console-web/scripts/menu-reach.mts",
+  "apps/console-web/scripts/theme-swap.mjs",
+  "apps/console-web/src/assetPicker.tsx",
+  "apps/console-web/src/plugins.ts",
+  "apps/molly/src/axf/assets/help/framework-drafts.json",
+  "deploy/axf-batch/install.sh",
+  "deploy/axf-batch/resolve.py",
+  "framework/android/axf-kernel/src/test/kotlin/ai/amberx/axf/kernel/ConformanceTest.kt",
+  "framework/catalog/catalog.json",
+  "framework/cli/land-resolve.py",
+  "framework/cli/plugin-lifecycle.mjs",
+  "framework/cli/project-seed.mjs",
+  "framework/cli/project_seed_stores.py",
+  "framework/libs/hub/veto.ts",
+  "framework/react/controlTargets.ts",
+  "framework/spec/BUILDS.md",
+  "framework/spec/CONTROL.md",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-build-limit.mjs",
+  "framework/spec/check-land-resolve.mjs",
+  "framework/spec/generated-files.json"
+ ],
+ "areas": [
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/BUILDS.md",
+    "framework/spec/CONTROL.md",
+    "framework/spec/PORTING.md",
+    "framework/spec/check-build-limit.mjs",
+    "framework/spec/check-land-resolve.mjs",
+    "framework/spec/generated-files.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/scripts/console-control.e2e.mjs",
+    "apps/console-web/scripts/menu-reach.mts",
+    "apps/console-web/scripts/theme-swap.mjs",
+    "apps/console-web/src/assetPicker.tsx",
+    "apps/console-web/src/plugins.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/land-resolve.py",
+    "framework/cli/plugin-lifecycle.mjs",
+    "framework/cli/project-seed.mjs",
+    "framework/cli/project_seed_stores.py"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/src/axf/assets/help/framework-drafts.json",
+    "apps/amberx-droid/src/console/plugins.ts",
+    "apps/amberx-droid/vite.config.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/plugin.json",
+    "apps/console-web/plugins/build-orchestrator/test.mjs"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/axf-batch/install.sh",
+    "deploy/axf-batch/resolve.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "approvals-banner",
+   "files": [
+    "apps/console-web/plugins/approvals-banner/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "molly-guide",
+   "files": [
+    "apps/console-web/plugins/molly-guide/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "notes-browser",
+   "files": [
+    "apps/console-web/plugins/notes-browser/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plan-studio",
+   "files": [
+    "apps/console-web/plugins/plan-studio/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "todo-manager",
+   "files": [
+    "apps/console-web/plugins/todo-manager/plugin.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/src/axf/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/src/axf/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "android",
+   "files": [
+    "framework/android/axf-kernel/src/test/kotlin/ai/amberx/axf/kernel/ConformanceTest.kt"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/catalog.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/hub/veto.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/controlTargets.ts"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/land-batch-merge-main-each-finished.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 19.6042,
+  "estimated": true,
+  "tokens": {
+   "input": 672,
+   "output": 4869,
+   "cacheRead": 31314389,
+   "cacheWrite": 320711
+  }
+ },
+ "report": "",
+ "open": [
+  "s3: Land #665 and this fix through the merge queue, confirm main green, re-queue the waiting stacks, redeploy console"
+ ]
+}

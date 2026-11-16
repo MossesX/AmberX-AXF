@@ -225,6 +225,42 @@ public class AmberxNativePlugin extends Plugin {
         });
     }
 
+    /* ---------------------------------------------------------------- the overlay (ApprovalOverlay) */
+
+    /** Changes the overlay's settings (any subset); resolves with its state. */
+    @PluginMethod
+    public void approvalOverlaySet(PluginCall call) {
+        WatchService.setApprovalOverlay(getContext(), call.getData());
+        call.resolve(js(WatchService.approvalOverlayState(getContext())));
+    }
+
+    /** The overlay's settings, whether it is shown or expanded, the approval bar and what waits. */
+    @PluginMethod
+    public void approvalOverlayState(PluginCall call) { call.resolve(js(WatchService.approvalOverlayState(getContext()))); }
+
+    /**
+     * {@code expand} (full-screen browser), {@code open} with {@code url} (one of Brett's own pages, full screen),
+     * {@code collapse} (just the toolbar again), {@code bar-open} / {@code bar-close} (the approval bar), or an approval
+     * action (approve, deny, shelve, approve-now, decline) on {@code id} or the one on the bar.
+     */
+    @PluginMethod
+    public void approvalOverlayCommand(PluginCall call) {
+        String command = call.getString("command", "");
+        boolean page = "open".equals(command) || "page".equals(command);
+        String arg = page ? call.getString("url", call.getString("id", "")) : call.getString("id", "");
+        try {
+            boolean ok = WatchService.approvalOverlayCommand(getContext(), command, arg);
+            call.resolve(new JSObject().put("ok", ok));
+        } catch (IllegalArgumentException e) {
+            call.reject(e.getMessage());
+        }
+    }
+
+    static void approvalOverlayChanged(JSONObject state) {
+        AmberxNativePlugin p = current;
+        if (p != null) p.notifyListeners("approvalOverlay", js(state), true);
+    }
+
     /** The banner plugin's alarm settings (VetoAlarm). */
     @PluginMethod
     public void vetoAlarm(PluginCall call) {

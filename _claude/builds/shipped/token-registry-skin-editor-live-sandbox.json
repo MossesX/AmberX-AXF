@@ -1,0 +1,420 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-token-registry-skin-editor-live-sandbox",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-14T21:42:04Z",
+ "build": {
+  "id": "token-registry-skin-editor-live-sandbox",
+  "title": "Token registry and Skin Editor: live sandbox preview, snapshot history",
+  "profile": "all",
+  "category": "",
+  "priority": "P1",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "list every token in a registry; any time a new UI is made add its tokens to the registry; an editor that takes whatever UI you pick and throws it in a sandbox with live preview, hot render as you edit; a default skin; every edit takes a snapshot, you see the chain of edits like a disk snapshot and can revert to any point; at any point export current to a new skin",
+  "verbatim": true,
+  "at": "2026-11-13T20:04:16.679Z",
+  "source": "",
+  "by": "token-registry-skin-editor-live-sandbox",
+  "addenda": []
+ },
+ "brief": "# Build: token-registry-skin-editor-live-sandbox\n\n## Brett said (verbatim)\nAt: 2026-11-13T20:04:16.679Z\n> list every token in a registry; any time a new UI is made add its tokens to the registry; an editor that takes whatever UI you pick and throws it in a sandbox with live preview, hot render as you edit; a default skin; every edit takes a snapshot, you see the chain of edits like a disk snapshot and can revert to any point; at any point export current to a new skin\n\n## What to build\nContinue build \"Token registry and Skin Editor: live sandbox preview, snapshot history\" (token-registry-skin-editor-live-sandbox) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 20:04):\n\"list every token in a registry; any time a new UI is made add its tokens to the registry; an editor that takes whatever UI you pick and throws it in a sandbox with live preview, hot render as you edit; a default skin; every edit takes a snapshot, you see the chain of edits like a disk snapshot and can revert to any point; at any point export current to a new skin\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (5 left, ~50 min):\n[ ] s1 (~10 min) Runs after the token schema step of own-token-sets-for-grids-and-tab-groups (builds on its schema).\n[ ] s2 (~10 min) TOKEN REGISTRY: one registry listing every token in the system, with element type, area (layout/style/colour/behaviour), state, light/dark, level (basic/pro/advanced), plain-English description, default and source. Every new UI, component or plugin MUST register its tokens through its manifest. A CI check fails any UI whose tokens aren't in the registry, and any registered token that nothing uses. Browsable and searchable, with full API.\n[ ] s3 (~10 min) SKIN EDITOR (plugin and screen): pick any UI from the list (a screen, plugin, dialog, element), or pick it on screen, and it's loaded into a sandbox live-preview window with real components and sample data. Every edit hot-renders the preview in real time. The token list comes from the registry, with Basic/Pro/Advanced views. Inline element and asset editors work inside it.\n[ ] s4 (~10 min) Full API: REST/MCP/CLI/voice ('revert the skin to 10 minutes ago', 'export this as a new skin called Midnight'). Tests, help, Shipped features. Fable for the registry and snapshot schema.\n[ ] s5 (~10 min) list every token in a registry; any time a new UI is made add its tokens to the registry; an editor that takes whatever UI you pick and throws it in a sandbox with live preview, hot render as you edit; a default skin; every edit takes a snapshot, you see the chain of edits like a disk snapshot and can revert to any point; at any point export current to a new skin\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step token-registry-skin-editor-live-sandbox <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link token-registry-skin-editor-live-sandbox --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step token-registry-skin-editor-live-sandbox <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note token-registry-skin-editor-live-sandbox \"…\"); the build goes back to Pending for Brett.\n",
+ "models": [
+  "Fable"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-token-registry-skin-editor-live-sandbox--lenny",
+   "account": "mossesx-max-",
+   "model": "Fable",
+   "startedAt": "2026-11-13T20:21:22.818Z",
+   "endedAt": "2026-11-13T21:55:23.139Z",
+   "exit": 0,
+   "costUsd": 35.592
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Runs after the token schema step of own-token-sets-for-grids-and-tab-groups (builds on its schema).",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T20:21:22.818Z",
+   "doneAt": "2026-11-13T20:42:06.501Z",
+   "actualMin": 21,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "TOKEN REGISTRY: one registry listing every token in the system, with element type, area (layout/style/colour/behaviour), state, light/dark, level (basic/pro/advanced), plain-English description, default and source. Every new UI, component or plugin MUST register its tokens through its manifest. A CI check fails any UI whose tokens aren't in the registry, and any registered token that nothing uses. Browsable and searchable, with full API.",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T20:42:06.501Z",
+   "doneAt": "2026-11-13T21:08:41.933Z",
+   "actualMin": 27,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "SKIN EDITOR (plugin and screen): pick any UI from the list (a screen, plugin, dialog, element), or pick it on screen, and it's loaded into a sandbox live-preview window with real components and sample data. Every edit hot-renders the preview in real time. The token list comes from the registry, with Basic/Pro/Advanced views. Inline element and asset editors work inside it.",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T21:08:41.933Z",
+   "doneAt": "2026-11-13T21:08:47.373Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Full API: REST/MCP/CLI/voice ('revert the skin to 10 minutes ago', 'export this as a new skin called Midnight'). Tests, help, Shipped features. Fable for the registry and snapshot schema.",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T21:08:47.373Z",
+   "doneAt": "2026-11-13T21:28:48.253Z",
+   "actualMin": 20,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "list every token in a registry; any time a new UI is made add its tokens to the registry; an editor that takes whatever UI you pick and throws it in a sandbox with live preview, hot render as you edit; a default skin; every edit takes a snapshot, you see the chain of edits like a disk snapshot and can revert to any point; at any point export current to a new skin",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T21:28:48.253Z",
+   "doneAt": "2026-11-13T21:53:24.810Z",
+   "actualMin": 25,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "DEFAULT SKIN: there is always a built-in default skin that is locked.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s7",
+   "text": "SNAPSHOTS: every edit to a skin automatically takes a snapshot (like a disk snapshot). A timeline shows the chain of edits, each with time, who/what made it, and a diff of exactly which tokens changed (old -> new). Click any snapshot to preview it, compare any two, or revert to it (a revert is itself a new snapshot, so nothing is ever lost). No breaking skins into separate style or colour groups: the skin is the only unit.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s8",
+   "text": "EXPORT: at any point, 'Export current to new skin' saves the current state as a brand-new skin (name, thumbnail, to the hub library).",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s9",
+   "text": "Restore previous edit / Restore from axHub work through the snapshots.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s10",
+   "text": "Tests green, report _claude/builds/reports/token-registry-skin-editor-live-sandbox.md, THREADS row, commit, push, PR",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "claude/token-registry-skin-editor-live-sandbox",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 657,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/657"
+ },
+ "landedCommit": "c0d47928603d853c87c3d65125624ddfe184bf21",
+ "commits": [
+  "7277412ac24d96566e8efb5cafd5f30599c4b66f",
+  "78dcf0fc11353b9a66c9a2c1dbc2bc3540806b6f",
+  "a8dae14284a6609d48ebbf2f87acacb7bbe87712",
+  "32e1ac7ab95e84549fbf18822a61e8f895018be4",
+  "3605fa7849a9217ffe14ab3c5a45425284bc4a06",
+  "14bad26f7a5146fcc9a488df1887aa335edf7e64",
+  "e4abab6569d9cbc224ec2d1e1ac3d5ccf007ff76",
+  "b87fbda081f947fa44695c583aa24062a8ea8235",
+  "1b5315d08649864c94d83e191b69b4af38b6784d",
+  "d6e505cec0dec181b57448763a6b67f04eab663e",
+  "53a6864fc383fc19bda300bb05b68078c07feac7",
+  "2053d9b18cd3ce42c1a9d099643d67e7086c8cd6",
+  "ca09bed8c89b322f9d58d061cb6049d2d7020075",
+  "2dfe92597855b4ef45b9f622053a77aa29fe135c"
+ ],
+ "mergedAt": "2026-11-14T21:33:25Z",
+ "landedAt": "2026-11-14T21:33:25Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "apps/amberx-droid/src/axf/ui/axf.css",
+  "apps/axhub-web/src/axf/core/engines/token-registry.d.mts",
+  "apps/axhub-web/src/axf/core/engines/token-registry.mjs",
+  "apps/axhub-web/src/axf/core/runtime.ts",
+  "apps/axhub-web/src/axf/react/library.ts",
+  "apps/axhub-web/src/axf/ui/axf.css",
+  "apps/console-web/plugins/_template/plugin.json",
+  "apps/console-web/plugins/molly-guide/help.json",
+  "apps/console-web/plugins/skin-editor/README.md",
+  "apps/console-web/plugins/skin-editor/help.json",
+  "apps/console-web/plugins/skin-editor/hooks.mjs",
+  "apps/console-web/plugins/skin-editor/install.mjs",
+  "apps/console-web/plugins/skin-editor/plugin.json",
+  "apps/console-web/plugins/skin-editor/server/__init__.py",
+  "apps/console-web/plugins/skin-editor/test.mjs",
+  "apps/console-web/plugins/skin-editor/test.py",
+  "apps/console-web/plugins/skin-editor/uninstall.mjs",
+  "apps/console-web/plugins/skin-editor/web/Registry.tsx",
+  "apps/console-web/plugins/skin-editor/web/SkinEditor.tsx",
+  "apps/console-web/plugins/skin-editor/web/api.ts",
+  "apps/console-web/plugins/skin-editor/web/index.tsx",
+  "apps/console-web/plugins/skin-editor/web/menu.ts",
+  "apps/console-web/plugins/skin-editor/web/model.ts",
+  "apps/console-web/plugins/skin-editor/web/skin-editor.css",
+  "apps/console-web/plugins/skin-gallery/plugin.json",
+  "apps/console-web/src/App.tsx",
+  "apps/console-web/src/axf/core/build-id.d.mts",
+  "apps/console-web/src/axf/core/build-id.mjs",
+  "apps/console-web/src/axf/core/engines/token-registry.d.mts",
+  "apps/console-web/src/axf/core/engines/token-registry.mjs",
+  "apps/console-web/src/axf/core/engines/windows.ts",
+  "apps/console-web/src/axf/core/runtime.ts",
+  "apps/console-web/src/axf/plan/pending-core.mjs",
+  "apps/console-web/src/axf/react/library.ts",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/console-web/src/control/inventory.json",
+  "apps/molly/src/axf/core/engines/token-registry.d.mts",
+  "apps/molly/src/axf/core/engines/token-registry.mjs",
+  "apps/molly/src/axf/core/runtime.ts",
+  "apps/molly/src/axf/react/library.ts",
+  "apps/molly/src/axf/ui/axf.css",
+  "framework/catalog/catalog.json",
+  "framework/catalog/status.json",
+  "framework/cli/token-registry.mjs",
+  "framework/core/engines/token-registry.d.mts",
+  "framework/core/engines/token-registry.mjs",
+  "framework/core/runtime.ts",
+  "framework/react/library.ts",
+  "framework/schemas/token-registry.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/THEMING.md",
+  "framework/spec/check-token-registry.mjs",
+  "framework/spec/fixtures/token-registry.json",
+  "framework/spec/token-manifest-baseline.json",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "skin-editor",
+   "files": [
+    "apps/console-web/plugins/skin-editor/README.md",
+    "apps/console-web/plugins/skin-editor/help.json",
+    "apps/console-web/plugins/skin-editor/hooks.mjs",
+    "apps/console-web/plugins/skin-editor/install.mjs",
+    "apps/console-web/plugins/skin-editor/plugin.json",
+    "apps/console-web/plugins/skin-editor/server/__init__.py",
+    "apps/console-web/plugins/skin-editor/test.mjs",
+    "apps/console-web/plugins/skin-editor/test.py",
+    "apps/console-web/plugins/skin-editor/uninstall.mjs",
+    "apps/console-web/plugins/skin-editor/web/Registry.tsx",
+    "apps/console-web/plugins/skin-editor/web/SkinEditor.tsx",
+    "apps/console-web/plugins/skin-editor/web/api.ts",
+    "apps/console-web/plugins/skin-editor/web/index.tsx",
+    "apps/console-web/plugins/skin-editor/web/menu.ts",
+    "apps/console-web/plugins/skin-editor/web/model.ts",
+    "apps/console-web/plugins/skin-editor/web/skin-editor.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/App.tsx",
+    "apps/console-web/src/axf/core/build-id.d.mts",
+    "apps/console-web/src/axf/core/build-id.mjs",
+    "apps/console-web/src/axf/core/engines/token-registry.d.mts",
+    "apps/console-web/src/axf/core/engines/token-registry.mjs",
+    "apps/console-web/src/axf/core/engines/windows.ts",
+    "apps/console-web/src/axf/core/runtime.ts",
+    "apps/console-web/src/axf/plan/pending-core.mjs",
+    "apps/console-web/src/axf/react/library.ts",
+    "apps/console-web/src/axf/ui/axf.css",
+    "apps/console-web/src/control/inventory.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/src/axf/core/engines/token-registry.d.mts",
+    "apps/axhub-web/src/axf/core/engines/token-registry.mjs",
+    "apps/axhub-web/src/axf/core/runtime.ts",
+    "apps/axhub-web/src/axf/react/library.ts",
+    "apps/axhub-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/src/axf/core/engines/token-registry.d.mts",
+    "apps/molly/src/axf/core/engines/token-registry.mjs",
+    "apps/molly/src/axf/core/runtime.ts",
+    "apps/molly/src/axf/react/library.ts",
+    "apps/molly/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/THEMING.md",
+    "framework/spec/check-token-registry.mjs",
+    "framework/spec/fixtures/token-registry.json",
+    "framework/spec/token-manifest-baseline.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/token-registry.d.mts",
+    "framework/core/engines/token-registry.mjs",
+    "framework/core/runtime.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/catalog.json",
+    "framework/catalog/status.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "_template",
+   "files": [
+    "apps/console-web/plugins/_template/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "molly-guide",
+   "files": [
+    "apps/console-web/plugins/molly-guide/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "skin-gallery",
+   "files": [
+    "apps/console-web/plugins/skin-gallery/plugin.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/token-registry.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/library.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/token-registry.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261113-5f636908",
+   "name": "Token registry and Skin editor: live sandbox preview, snapshot history",
+   "status": "waiting",
+   "group": "g-20261113-9294e4ff",
+   "url": "/review/r-20261113-5f636908"
+  }
+ ],
+ "cost": {
+  "usd": 35.592,
+  "estimated": false,
+  "tokens": {
+   "input": 7474,
+   "output": 3660,
+   "cacheRead": 63953310,
+   "cacheWrite": 401133
+  }
+ },
+ "report": "",
+ "open": [
+  "s6: DEFAULT SKIN: there is always a built-in default skin that is locked.",
+  "s7: SNAPSHOTS: every edit to a skin automatically takes a snapshot (like a disk snapshot). A timeline shows the chain of edits, each with time, who/what made it, and a diff of exactly which tokens changed",
+  "s8: EXPORT: at any point, 'Export current to new skin' saves the current state as a brand-new skin (name, thumbnail, to the hub library).",
+  "s9: Restore previous edit / Restore from axHub work through the snapshots.",
+  "s10: Tests green, report _claude/builds/reports/token-registry-skin-editor-live-sandbox.md, THREADS row, commit, push, PR"
+ ]
+}

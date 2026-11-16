@@ -157,8 +157,17 @@ for (const s of navAsset.data.sections) for (const it of s.items) need(reaches(i
 for (const p of pluginNav) need(reaches(p.view), `plugin ${p.folder}'s nav entry (view ${p.view}) isn't in the app menu`);
 for (const v of libViews) need(reaches(v), `library page "${v}" isn't in the app menu`);
 const stubbed = new Set<string>();
+/*
+ * Skins only (#532): the style / layout / spacing / design-package pickers left the console menus; the skin carries
+ * those parts and View › Look steps it (skin.use:next|prev). The shared toolbars still offer the retired picks (the
+ * runtime routes swap:<folded type>:next|prev to the skin step), so they count as reached when the menu steps the skin.
+ */
+const SKIN_STEP = ['skin.use:next', 'skin.use:prev'];
+const retiredPick = (a: string) => /^swap:(style-theme|layout|behavior-theme|style-package):(next|prev)$/.test(a) || /^design\.package:(next|prev)$/.test(a) || /^spacing:(tight|compact|regular)$/.test(a);
+const skinStepped = new Set<string>();
 for (const tb of toolbars) for (const g of tb.data.groups) for (const it of g.items) {
   if (stubs.has(it.action) && !actions.has(it.action)) { stubbed.add(it.action); continue; }
+  if (!actions.has(it.action) && retiredPick(it.action) && SKIN_STEP.every((a) => actions.has(a))) { skinStepped.add(it.action); continue; }
   need(actions.has(it.action), `toolbar ${tb.id}: item "${it.label}" (${it.action}) isn't in the app menu`);
 }
 for (const v of consoleViews) need(reaches(v), `page "${v}" (src/App.tsx) isn't in the app menu`);
@@ -182,5 +191,6 @@ if (problems.length) {
   process.exit(1);
 }
 assert.ok(items > 0);
+if (skinStepped.size) console.log(`menu-reach: retired picks on the toolbars, reached through View › Look › Next / Previous skin: ${[...skinStepped].join(', ')}`);
 if (stubbed.size) console.log(`menu-reach: framework stand-ins with no console handler, reached through View › Toolbar items: ${[...stubbed].join(', ')}`);
 console.log(`menu-reach: ok — ${checks} checks; ${compiled.menus.length} menus, ${items} static items, ${used.size} live lists, ${contributions.length} contributions; ${known.size} pages and items of ${toolbars.length} toolbars reachable`);
