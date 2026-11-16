@@ -275,3 +275,106 @@ def skin_restore(app: str) -> Any:
 def skin_undo(app: str) -> Any:
     """Undo the last restore of an app."""
     return _skins("undo", app)
+
+
+# ---- banner widget shapes (shape@1): framework/cli/shapes.mjs is the one writer (CLI, these routes, control@1 tokens.shape) ----
+
+SHAPES_CLI = cx.ROOT / "framework" / "cli" / "shapes.mjs"
+SHAPE_SCOPES = ("global", "skin", "app", "widget")
+
+
+def _shapes(*args: str) -> Any:
+    try:
+        proc = subprocess.run(["node", str(SHAPES_CLI), *args, "--json"], cwd=cx.ROOT, capture_output=True, text=True, timeout=30)
+        out = json.loads(proc.stdout or "{}")
+    except (OSError, subprocess.TimeoutExpired, json.JSONDecodeError) as e:
+        raise HTTPException(status_code=502, detail=f"shapes: {e}") from e
+    if not out.get("ok"):
+        raise HTTPException(status_code=400, detail=str(out.get("error") or "shapes failed"))
+    return out["result"]
+
+
+def _where(body: dict[str, Any] | None) -> list[str]:
+    """--app / --skin / --widget / --form from a body or query; the CLI validates each."""
+    out: list[str] = []
+    for k in ("app", "skin", "widget", "form"):
+        v = (body or {}).get(k)
+        if isinstance(v, str) and v:
+            out += [f"--{k}", v]
+    return out
+
+
+def _scope(scope: str) -> str:
+    if scope not in SHAPE_SCOPES:
+        raise HTTPException(status_code=404, detail=f"scope must be one of: {', '.join(SHAPE_SCOPES)}")
+    return scope
+
+
+@router.get("/shapes")
+def shapes(app: str | None = None) -> dict[str, Any]:
+    """Every shape asset (starters + added on the hub) and the levels: global, per skin, the app's pick, per widget, history."""
+    return {"shapes": _shapes("list"), "levels": _shapes("get", *([app] if app else []))}
+
+
+@router.get("/shapes/assets")
+def shape_assets() -> dict[str, Any]:
+    """The shape assets added on the hub, whole (the console registers them at start so a pick of one resolves)."""
+    dir_ = Path(os.environ.get("AXF_SHAPES_DIR") or Path(_skins_shared_dir()) / "shapes")
+    items = []
+    if dir_.is_dir():
+        for f in sorted(dir_.glob("*.json")):
+            try:
+                a = json.loads(f.read_text())
+            except (OSError, json.JSONDecodeError):
+                continue
+            if isinstance(a, dict) and a.get("type") == "shape":
+                items.append(a)
+    return {"items": items}
+
+
+def _skins_shared_dir() -> str:
+    shared = os.environ.get("AXF_APPEARANCE_FILE") or "/projects/_shared/_data/settings/appearance.json"
+    return str(Path(shared).parent)
+
+
+@router.get("/shapes/resolve")
+def shape_resolve(app: str = "axf-console", widget: str | None = None, form: str | None = None) -> Any:
+    """The shape in force for an app (and one banner widget, type:id) and which level decided."""
+    return _shapes("resolve", app, *(["--widget", widget] if widget else []), *(["--form", form] if form else []))
+
+
+@router.put("/shapes/{scope}")
+def shape_set(scope: str, body: dict[str, Any] = Body(...)) -> Any:
+    """Pick a shape at one level: body { shape: <id>|"inherit", app?, skin?, widget?, form? }. Recorded for Restore previous edit."""
+    shape = body.get("shape")
+    if not isinstance(shape, str) or not shape:
+        raise HTTPException(status_code=400, detail="shape must be a shape asset id or inherit")
+    return _shapes("set", shape, "--scope", _scope(scope), *_where(body))
+
+
+@router.post("/shapes/{scope}/restore-previous")
+def shape_restore(scope: str, body: dict[str, Any] | None = Body(None)) -> Any:
+    """Restore previous edit at one level (a second call brings the edit back)."""
+    return _shapes("restore", "--scope", _scope(scope), *_where(body))
+
+
+@router.post("/shapes/assets")
+def shape_add(body: dict[str, Any] = Body(...)) -> Any:
+    """Add a custom shape: { id, name?, description?, corners?: {tl,tr,br,bl} | "tl=lg,…", mask?: "M … Z", viewBox? }. Validated (shape@1)."""
+    sid = body.get("id")
+    if not isinstance(sid, str) or not sid:
+        raise HTTPException(status_code=400, detail="id is required")
+    args = ["add", sid]
+    for k in ("name", "description", "mask"):
+        if isinstance(body.get(k), str) and body[k]:
+            args += [f"--{k}", body[k]]
+    if isinstance(body.get("viewBox"), str) and body["viewBox"]:
+        args += ["--viewbox", body["viewBox"]]
+    corners = body.get("corners")
+    if isinstance(corners, dict):
+        corners = ",".join(f"{k}={v}" for k, v in corners.items())
+    if isinstance(corners, str) and corners:
+        args += ["--corners", corners]
+    if "--mask" not in args and "--corners" not in args:
+        raise HTTPException(status_code=400, detail="a shape needs corners or a mask")
+    return _shapes(*args)

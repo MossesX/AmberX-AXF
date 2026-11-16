@@ -26,6 +26,8 @@ async function loadSaved(rt: AxfRuntime) {
   try {
     const r = await call<{ items: SavedTheme[] }>('themes');
     for (const a of r.items) rt.registry.register(a, 'imported', 'theme-manager');
+    // shapes added on the hub (POST /shapes/assets, `axf shape add`): registered so a pick of one resolves here
+    try { for (const a of (await call<{ items: unknown[] }>('shapes/assets')).items) rt.registry.register(a, 'imported', 'theme-manager'); } catch { /* the starters still work */ }
     // Developer app with the look on axHub: the hub document is the truth, so only make the saved themes available
     // (an id it names now resolves) and let the runtime re-apply the document; without a source, re-apply the local pick.
     if (rt.hasAppearanceSource()) { rt.refreshFromSaved(); return; }
