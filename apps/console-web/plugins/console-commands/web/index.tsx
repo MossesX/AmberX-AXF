@@ -151,6 +151,42 @@ async function reloadPage(hard: boolean): Promise<void> {
   location.reload();
 }
 
+/** What a navigate command (open-url-route@1 console-tab) did in this tab: the ack's `result`. */
+export interface NavigateAck { opened: boolean; mode: '' | 'in-place' | 'new-tab' | 'same-tab' | 'already-here'; reason: '' | 'console-behind' | 'url-refused' | 'attempt-failed'; then?: () => void }
+
+/** Brett's own https pages only; the server checked already, this tab checks again (a crafted message stops here). */
+function ownPage(raw: string): URL | null {
+  try {
+    const u = new URL(raw);
+    const h = u.hostname.toLowerCase();
+    return u.protocol === 'https:' && !u.port && !u.username && !u.password && (h === 'amberxai.com' || h.endsWith('.amberxai.com')) ? u : null;
+  } catch { return null; }
+}
+
+/**
+ * open-url-route@1 `console-tab` in this tab. Only a tab on screen takes it (a hidden tab answers console-behind, so
+ * the phone's routes go next). A console address (this console's origin) opens in place; another amberxai.com page
+ * opens in a new tab, and in this tab when the browser blocks the new one. `newTab` true / false forces either. A
+ * same-tab move happens in `then`, after the ack, so the caller hears first.
+ */
+export function navigateHere(url: string, newTab: boolean | undefined, win: Window = window, doc: Document = document): NavigateAck {
+  const u = ownPage(url);
+  if (!u) return { opened: false, mode: '', reason: 'url-refused' };
+  if (doc.visibilityState !== 'visible') return { opened: false, mode: '', reason: 'console-behind' };
+  const here = new URL(win.location.href);
+  const mine = u.origin === here.origin;
+  win.focus();
+  if (mine && newTab !== true) {
+    if (u.href === here.href) return { opened: true, mode: 'already-here', reason: '' };
+    return { opened: true, mode: 'in-place', reason: '', then: () => win.location.assign(u.href) };
+  }
+  if (newTab !== false) {
+    const w = win.open(u.href, '_blank');
+    if (w) { try { w.opener = null; w.focus(); } catch { /* another origin: nothing to tidy */ } return { opened: true, mode: 'new-tab', reason: '' }; }
+  }
+  return { opened: true, mode: 'same-tab', reason: '', then: () => win.location.assign(u.href) };
+}
+
 /** Run one message; → [ok, what happened]. */
 function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [boolean, string] {
   const errors = consoleMessageErrors(m);
@@ -292,6 +328,18 @@ function ConsoleCommandsClient() {
           });
           return;
         }
+        // open-url-route@1 console-tab: open a page Amber asked for here, then ack {opened, mode, reason}
+        const nav = m as unknown as { op: string; url?: string; newTab?: boolean };
+        if (nav.op === 'navigate') {
+          let r: NavigateAck;
+          try { r = navigateHere(String(nav.url ?? ''), nav.newTab); } catch { r = { opened: false, mode: '', reason: 'attempt-failed' }; }
+          const line = r.opened ? `opened ${nav.url} (${r.mode})` : `didn't open ${nav.url}: ${r.reason}`;
+          markDone(m.id, [r.opened, line]);
+          if (r.opened && rt.settings.get(KEYS.toast) !== false) rt.toast(`${who(m.by)}: ${line}`, 'info', 'Console command');
+          const acked = post('ack', { client: id, id: m.id, ok: r.opened, message: line, result: { opened: r.opened, mode: r.mode, reason: r.reason }, here: hereOf(rt), ...where() }).catch(() => undefined);
+          if (r.then) void acked.then(r.then);
+          return;
+        }
         let res: [boolean, string];
         try { res = runMessage(rt, m, history); } catch (e) { res = [false, String((e as Error)?.message ?? e)]; }
         markDone(m.id, res);
@@ -402,6 +450,38 @@ function ConsolesPanel() {
   );
 }
 
+interface NavigatedRow { at: string; by: string; url: string; route: string; opened: boolean; reason: string; mode: string; client: string; ms: number }
+
+/**
+ * Settings → Plugins → Console commands → Pages opened: the last pages Amber asked a console tab to open (open-url-route@1
+ * console-tab) and what happened, plus Test open. Same state as GET /api/console-control/navigate/last, MCP
+ * console_open_url, `axf console open-url`.
+ */
+function NavigatePanel() {
+  const [items, setItems] = useState<NavigatedRow[] | null>(null);
+  const [said, setSaid] = useState('');
+  const load = () => pluginFetch(FOLDER, 'navigated').then((r) => r.json()).then((j: { items?: NavigatedRow[] }) => setItems(j.items ?? []), () => setSaid('The Console commands server part is not answering.'));
+  useEffect(() => { void load(); }, []);
+  const test = () => post('navigate', { url: `${window.location.origin}/`, by: 'test-open' }).then((r) => r.json()).then((j: { message?: string }) => { setSaid(j.message ?? ''); void load(); }, () => setSaid('Not sent: the server part is not answering.'));
+  return (
+    <div className="fx-stack" data-axf-target="panel:console-commands.navigate">
+      {said && <Note tone="info">{said}</Note>}
+      {items === null ? <p className="axf-cc__muted">Loading…</p> : !items.length ? <p className="axf-cc__muted">No page opened yet. When Amber opens a page while this console is on screen, it opens here first.</p> : (
+        <ul className="axf-cc__list">
+          {items.map((r, i) => (
+            <li key={`${r.at}-${i}`} className="axf-cc__row" data-axf-target={`row:navigate-${i}`}>
+              <span className="axf-cc__id">{r.opened ? '✓' : '✗'} {r.url}</span>
+              <span className="axf-cc__muted">{r.by} · {new Date(r.at).toLocaleTimeString()} · {r.route}{r.mode ? ` (${r.mode})` : ''} · {r.reason} · {r.ms} ms</span>
+            </li>
+          ))}
+        </ul>
+      )}
+      <Button icon="external-link" onClick={() => void test()} data-help="cc-test-open">Test open</Button>
+      <Button icon="refresh" onClick={() => void load()}>Refresh</Button>
+    </div>
+  );
+}
+
 export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Console commands',
@@ -421,6 +501,7 @@ export const plugin: AxfWebLibrary = {
   settingsPanels: [
     { id: 'console-commands.wake', tab: FOLDER, title: 'When no console is open', icon: 'smartphone', order: 15, render: () => <WakePanel /> },
     { id: 'console-commands.consoles', tab: FOLDER, title: 'Open consoles and last commands', icon: 'monitor', order: 20, render: () => <ConsolesPanel /> },
+    { id: 'console-commands.navigate', tab: FOLDER, title: 'Pages opened', icon: 'external-link', order: 25, render: () => <NavigatePanel /> },
     { id: 'console-commands.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

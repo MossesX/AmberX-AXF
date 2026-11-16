@@ -1001,6 +1001,23 @@ async def ack(request: Request) -> dict[str, Any]:
     return {"ok": True, **({"late": True} if late else {})}
 
 
+@router.post("/navigate")
+async def navigate_route(request: Request) -> JSONResponse:
+    """{url, newTab?, to?}: /api/console-control/navigate on the plugin mount (the settings panel's Test open)."""
+    import console_control_api as api
+    b = await _body(request)
+    grants, name, audience = caller(request)
+    r = await run_in_threadpool(api.open_url, b.get("url"), b.get("newTab"), str(b.get("by") or name)[:80], audience, set(grants), str(b.get("to") or "recent"))
+    return JSONResponse(r, status_code=200 if r.get("ok") else STATUS.get(str(r.get("code")), 503 if r.get("code") == "unavailable" else 500))
+
+
+@router.get("/navigated")
+def navigated_route(request: Request, n: int = 20) -> dict[str, Any]:
+    _, _, audience = caller(request)
+    items = navigated(audience, n)
+    return {"$axf": "open-url-route@1", "ok": True, "items": items, "count": len(items)}
+
+
 @router.get("/clients")
 def clients(request: Request) -> dict[str, Any]:
     _, _, audience = caller(request)
