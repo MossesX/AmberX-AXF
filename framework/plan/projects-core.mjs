@@ -10,9 +10,14 @@
  * Plugins keep a project's own data in `<their data folder>/projects/<id>/` (the base project: the folder itself).
  *
  *   { $axf: 'projects@1', updatedAt, projects: [
- *       { id, name, description, profile, status: 'active'|'archived', createdAt, updatedAt, archivedAt?, createdBy? } ] }
+ *       { id, name, description, profile, status: 'active'|'archived', createdAt, updatedAt, archivedAt?, createdBy?,
+ *         repo?: 'owner/name', skin?: '<skin id>', seed?: 'demo' } ] }
  *
  * The active pick is not stored here: it is the build profile registry's `active` (one switch, nothing to drift).
+ *
+ * A new project also gets a home in the hub's projects tree, `/projects/<id>/` with `_claude/` and
+ * `_data/project.manifest.json` (framework/cli/project-home.mjs), so its id must not be a folder the hub keeps for
+ * itself (RESERVED_IDS). `seed: 'demo'` fills it with clearly marked test data (framework/plan/project-seed-core.mjs).
  */
 export const SCHEMA = 'projects@1';
 export const PROJECTS_REL = 'framework/plan/projects.json';
@@ -29,9 +34,51 @@ export const BASE_PROJECT = Object.freeze({
 });
 /** Folder name plugins keep non-base projects under (`<data folder>/projects/<id>/`). */
 export const PROJECTS_SUBDIR = 'projects';
+/** Ids that are folders the hub keeps for itself (or the manifest rules reserve), never a project's home. */
+export const RESERVED_IDS = Object.freeze(['shared', 'projects', 'axhub']);
+/** What a new project can start with: nothing, or the demo data set (project-seed-core.mjs). */
+export const SEEDS = Object.freeze(['none', 'demo']);
+const SKIN_ID = /^[a-z0-9][a-z0-9-]{0,62}$/;
 
 const str = (v, max = 200) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 export const slugId = (s) => str(s, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40);
+
+/**
+ * A linked repository as typed ("owner/name", "github.com/owner/name", "https://github.com/owner/name.git") →
+ * "owner/name"; '' for none. Throws on anything else (same owner / name rules as the project manifest).
+ */
+export function repoRef(v) {
+  const s = str(v, 300);
+  if (!s) return '';
+  const m = /^(?:https?:\/\/)?(?:www\.)?(?:github\.com[/:])?([A-Za-z0-9][A-Za-z0-9-]{0,38})\/([A-Za-z0-9._-]{1,100}?)(?:\.git)?\/?$/.exec(s);
+  if (!m || m[2] === '.' || m[2] === '..') throw new Error(`repo: "${s}" is not a GitHub repository (owner/name)`);
+  return `${m[1]}/${m[2]}`;
+}
+
+/** The seed kind asked for ('none' when left out); throws on an unknown one. */
+export function seedKind(v) {
+  if (v === undefined || v === null || v === '' || v === false) return 'none';
+  if (v === true) return 'demo';
+  const s = str(v, 20).toLowerCase();
+  if (!SEEDS.includes(s)) throw new Error(`seed: one of ${SEEDS.join(', ')} (got "${s}")`);
+  return s;
+}
+
+/** A skin id ('' for none); whether the skin exists is checked by the IO side against the skin assets. */
+export function skinId(v) {
+  const s = str(v, 63).toLowerCase();
+  if (s && !SKIN_ID.test(s)) throw new Error(`skin: "${s}" is not a skin id`);
+  return s;
+}
+
+/** The optional fields of a stored project (repo, skin, seed), each kept only when it is well formed. */
+function optional(p) {
+  const out = {};
+  try { const r = repoRef(p.repo); if (r) out.repo = r; } catch { /* dropped */ }
+  try { const s = skinId(p.skin); if (s) out.skin = s; } catch { /* dropped */ }
+  if (p.seed === 'demo') out.seed = 'demo';
+  return out;
+}
 
 /** A registry as read from disk (anything) → a clean one; the base project is always there and first. */
 export function normalizeRegistry(raw, { baseProfile = BASE_PROJECT.profile } = {}) {
@@ -52,6 +99,7 @@ export function normalizeRegistry(raw, { baseProfile = BASE_PROJECT.profile } = 
       updatedAt: str(p.updatedAt, 40) || str(p.createdAt, 40) || BASE_PROJECT.createdAt,
       ...(p.archivedAt ? { archivedAt: str(p.archivedAt, 40) } : {}),
       ...(p.createdBy ? { createdBy: str(p.createdBy, 80) } : {}),
+      ...optional(p),
     });
   }
   let base = projects.find((p) => p.id === BASE_PROJECT.id);
@@ -103,13 +151,16 @@ export function applyChange(reg, change, ctx) {
       if (!name) throw new Error('a project needs a name');
       const id = c.id ? str(c.id, 40) : slugId(name);
       if (!PROJECT_ID.test(id)) throw new Error('id: lowercase letters, digits and dashes, up to 40');
+      if (RESERVED_IDS.includes(id)) throw new Error(`"${id}" is a folder the hub keeps for itself; pick another id`);
       if (reg.projects.some((p) => p.id === id)) throw new Error(`project "${id}" already exists`);
       if ((ctx.profileIds ?? []).includes(id)) throw new Error(`"${id}" is taken by a build profile; pick another id`);
       if (reg.projects.some((p) => p.name.toLowerCase() === name.toLowerCase())) throw new Error(`a project called "${name}" already exists`);
-      const p = { id, name, description: str(c.description, 600), profile: id, status: 'active', createdAt: now, updatedAt: now, ...(ctx.by ? { createdBy: str(ctx.by, 80) } : {}), base: false };
+      const repo = repoRef(c.repo); const skin = skinId(c.skin); const seed = seedKind(c.seed);
+      const p = { id, name, description: str(c.description, 600), profile: id, status: 'active', createdAt: now, updatedAt: now, ...(ctx.by ? { createdBy: str(ctx.by, 80) } : {}),
+        ...(repo ? { repo } : {}), ...(skin ? { skin } : {}), ...(seed !== 'none' ? { seed } : {}), base: false };
       reg.projects.push(p);
       const select = c.select !== false;
-      log.push(`project "${name}" (${id}) created, empty${select ? ' and made active' : ''}`);
+      log.push(`project "${name}" (${id}) created, ${seed === 'demo' ? 'with demo data' : 'empty'}${select ? ' and made active' : ''}`);
       return { reg, project: p, log, profile: { action: 'create', id, name, description: `Project ${name}`, select } };
     }
     case 'update': case 'rename': {

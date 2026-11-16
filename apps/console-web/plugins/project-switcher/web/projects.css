@@ -10,3 +10,5 @@
 .axp-projects__desc, .axp-projects__counts { margin: 0 }
 .axp-projects__counts { color: var(--fx-muted) }
 .axp-projects__new { padding: var(--fx-dens-gap-lg); border: var(--fx-border-w) dashed var(--fx-border); border-radius: var(--fx-radius-md) }
+/* A project that just appeared (created elsewhere: MCP, CLI, voice) stands out for a few seconds. */
+.axp-projects__row.is-new { background: var(--fx-accent-soft); box-shadow: inset calc(var(--fx-border-w) * 3) 0 0 var(--fx-success); transition: background var(--fx-motion) }

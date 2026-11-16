@@ -17,7 +17,7 @@
    { "target": "switch-or-manage-projects", "title": "Switch or manage projects", "text": "Opens the project list: switch, start a new one, rename, archive or delete (archive and delete ask you to type the project id; the data stays on disk).", "kind": "button" },
    { "target": "show-the-project-on-the-banner", "title": "Project on the banner", "text": "Shows the active project as a chip on the banner. Tap the chip to switch.", "kind": "toggle" },
    { "target": "projects", "title": "Projects", "text": "Settings for the project switcher: the banner chip, reloading after a switch, and the CLI and API to do the same without the console.", "kind": "tab" },
-   { "target": "action:projects.new", "title": "New project", "text": "Opens the form for a new, empty project.", "kind": "menu-item" }
+   { "target": "action:projects.new", "title": "New project", "text": "Opens the form for a new project: empty, or with demo data (nested lists, to-dos, notes, plans and sample builds, all marked [Demo]). AI clients create one with the MCP tool project_create; it shows up here live.", "kind": "menu-item" }
   ],
   "intros": []
  }

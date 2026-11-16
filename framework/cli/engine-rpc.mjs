@@ -22,6 +22,15 @@ import { buildsSummary, queueView, reorderQueue, reprocessQueue, stepQueue, step
 import { actPending, loadPending } from './pending.mjs';
 import { baseDataPath, dataPath } from './persist.mjs';
 import { RULES_REL, baseRules, checkProject, findProjects, loadRules, validateProjectManifest, validateProjectRules } from './project.mjs';
+/** One projects@1 change; its log lines go to the caller's terminal channel. Answers without the full registry. */
+async function projectChange(change) {
+  if (!process.env.AXF_ACTOR) process.env.AXF_ACTOR = String(b.by || 'engine-rpc').slice(0, 80); // recorded as createdBy
+  const { act } = await import('./projects.mjs');
+  const r = await act(change);
+  r.log.forEach(log);
+  const { projects, active } = r.state;
+  return { project: r.project, active, ...(r.home ? { home: r.home } : {}), ...(r.seed ? { seed: r.seed } : {}), projects: projects.map(({ id, name, status, base, active: on, counts }) => ({ id, name, status, base, active: on, counts })) };
+}
 const syncAfter = () => { try { syncBuildQueue({ by: 'feature-tracker', log: (m) => log(`build queue: ${m}`) }); } catch (e) { log(`build queue sync failed: ${e.message}`); } };
 
 const ROOT = resolve(FRAMEWORK_DIR, '..');
@@ -110,6 +119,10 @@ function run() {
       const r = checkProject(safeDir(b.dir ?? '.'));
       return { dir: r.rel, manifest: r.manifest, validation: r.validation };
     }
+    // Projects (projects@1, framework/cli/projects.mjs): the console MCP's project_create / project_switch / project_delete.
+    case 'project-create': return projectChange({ action: 'create', name: b.name, id: b.id || undefined, description: b.description, repo: b.repo, skin: b.skin, seed: b.seed, select: b.select !== false });
+    case 'project-switch': return projectChange({ action: 'select', id: b.project });
+    case 'project-delete': return projectChange({ action: 'delete', id: b.project, confirm: b.confirm });
     // catch-up first: edits that bypassed both writers (a session writing the hub copy, a git pull of the tracker)
     case 'pending': return loadPending(); // a projection of the builds store: nothing to sync
     case 'pending-act': { const r = actPending(b.change ?? {}); r.log.forEach(log); return { state: r.state, item: r.item }; }
@@ -139,5 +152,5 @@ function run() {
   }
 }
 
-try { const result = run(); process.stdout.write(JSON.stringify({ ok: true, log: lines, ...result }) + '\n'); }
+try { const result = await run(); process.stdout.write(JSON.stringify({ ok: true, log: lines, ...result }) + '\n'); }
 catch (e) { process.stdout.write(JSON.stringify({ ok: false, error: e.message, log: lines }) + '\n'); process.exitCode = 1; }

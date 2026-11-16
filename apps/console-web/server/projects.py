@@ -34,6 +34,23 @@ def _s(v: Any, n: int = 200) -> str:
     return v.strip()[:n] if isinstance(v, str) else ""
 
 
+REPO_REF = re.compile(r"^[A-Za-z0-9][A-Za-z0-9-]{0,38}/[A-Za-z0-9._-]{1,100}$")
+SKIN_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,62}$")
+
+
+def _optional(p: dict[str, Any]) -> dict[str, Any]:
+    """repo ("owner/name"), skin and seed ("demo"), kept only when well formed (projects-core.mjs optional())."""
+    out: dict[str, Any] = {}
+    repo, skin = _s(p.get("repo"), 300), _s(p.get("skin"), 63)
+    if REPO_REF.match(repo) and repo.split("/")[1] not in (".", ".."):
+        out["repo"] = repo
+    if SKIN_ID.match(skin):
+        out["skin"] = skin
+    if p.get("seed") == "demo":
+        out["seed"] = "demo"
+    return out
+
+
 def normalize_registry(raw: Any, base_profile: str = "all") -> dict[str, Any]:
     """Same rules as projects-core.mjs normalizeRegistry: the base project always there and first."""
     listed = raw.get("projects") if isinstance(raw, dict) and isinstance(raw.get("projects"), list) else []
@@ -52,6 +69,7 @@ def normalize_registry(raw: Any, base_profile: str = "all") -> dict[str, Any]:
             "createdAt": _s(p.get("createdAt"), 40) or BASE_PROJECT["createdAt"],
             "updatedAt": _s(p.get("updatedAt"), 40) or _s(p.get("createdAt"), 40) or BASE_PROJECT["createdAt"],
             **({"archivedAt": _s(p.get("archivedAt"), 40)} if p.get("archivedAt") else {}),
+            **_optional(p),
         })
     base = next((p for p in projects if p["id"] == BASE_PROJECT["id"]), None)
     if base is None:
