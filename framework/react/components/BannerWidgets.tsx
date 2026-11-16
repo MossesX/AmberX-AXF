@@ -14,6 +14,7 @@ import { normalizeShape } from '../../core/engines/shape-rules.mjs';
 import { BANNER_WIDGETS_DIALOG, type AxfRuntime, type BannerWidget } from '../../core/runtime';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { Banner } from './Banner';
+import { WidgetShapeField } from './BannerShapes';
 import { bannerLabel, isBannerHidden, setBannerHide, useBannerHideTick, useKnownBanners } from './BannerSettings';
 import { Button, IconButton } from './Controls';
 import { Checkbox, Note, SelectField, Switch, TextField } from './Forms';
@@ -138,6 +139,7 @@ function WidgetFields({ w }: { w: BannerWidget }) {
       <SelectField label="Priority" hint="Low goes into ⋯ first" value={String(w.view.priority)} options={Array.from({ length: BANNER_WIDGET_PRIORITY.max }, (_, i) => ({ value: String(i + 1), label: String(i + 1) }))} onChange={(v) => set({ priority: Number(v) })} />
       <Switch className="fx-banner-widgets__wide" label="Hide when there's nothing to report" checked={w.view.hideWhenEmpty} onChange={(v) => set({ hideWhenEmpty: v })} />
       <Switch className="fx-banner-widgets__wide" label="Move into the ⋯ menu when space runs out" checked={w.view.overflow} onChange={(v) => set({ overflow: v })} />
+      <div className="fx-banner-widgets__wide"><WidgetShapeField widget={w.key} /></div>
       <div className="fx-row fx-banner-widgets__wide">
         <Button size="sm" tone="ghost" icon={rt.widgetIcon('banner', w.key, w.icon) ?? 'star'} data-axf-target={`button:banner-widget.icon.${w.key.replace(/[^a-z0-9-]+/gi, '-')}`} onClick={() => rt.dispatch(`widget.icon.pick:banner:${w.key}`)}>Change icon…</Button>
         <Button size="sm" tone="ghost" icon="undo" onClick={() => rt.dispatch(`banner.widget:${w.key}:reset`)}>Back to default</Button>
