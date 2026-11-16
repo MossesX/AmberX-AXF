@@ -813,7 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 16:58 UTC · `orchestrator-on-hold-status-and-tab` branch claude/orchestrator-on-hold-status-and-tab (all) · pipeline
 - 2026-11-16 16:58 UTC · `orchestrator-on-hold-status-and-tab` note (all) · orchestrator
 - 2026-11-16 16:59 UTC · `fix-console-deep-links-open-page-lands` s2 done (all) · orchestrator
 - 2026-11-16 17:00 UTC · `remove-old-molly-app-project-keep-axf` PR #720 (all) · builds-live
@@ -1213,6 +1212,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 20:44 UTC · `banner-widget-shapes-more-than-circle` s24 done (all) · foreign-write
 - 2026-11-16 20:44 UTC · `banner-widget-shapes-more-than-circle` s26 done (all) · orchestrator
 - 2026-11-16 20:46 UTC · `banner-widget-shapes-more-than-circle` s27 done, → built (all) · orchestrator
+- 2026-11-16 20:46 UTC · `banner-widget-shapes-more-than-circle` note (all) · orchestrator
 
 ## Token passes (log)
 

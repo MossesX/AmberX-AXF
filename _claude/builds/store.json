@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6898,
- "updatedAt": "2026-11-16T20:46:21.176Z",
+ "rev": 6899,
+ "updatedAt": "2026-11-16T20:46:42.416Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -218459,7 +218459,7 @@
    "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "#703",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-16T20:46:19.060Z",
+   "updatedAt": "2026-11-16T20:46:40.391Z",
    "builtAt": "2026-11-16T20:46:19.060Z",
    "notes": [
     {
@@ -218525,6 +218525,10 @@
     {
      "text": "Brief only: brief is 27367 characters (~6842 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-16T19:47:30.043Z"
+    },
+    {
+     "text": "Headless run axf-banner-widget-shapes-more-than-circle--sully: brief only · start 18.5K tokens ($0.06) · cost $20.24 · 296 turns · 6 tools, MCP none",
+     "at": "2026-11-16T20:46:40.391Z"
     }
    ],
    "approvals": [
@@ -219287,7 +219291,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 59,
+   "rev": 60,
    "deleted": false,
    "deletedAt": "",
    "pending": {
