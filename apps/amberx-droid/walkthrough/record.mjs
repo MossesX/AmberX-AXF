@@ -37,7 +37,11 @@ let VIEW = DEVICES.phone.viewport;
 // The explainer slides (explainer.html next to this file, or in /rec in the recorder image) at a made-up origin.
 export const EXPLAINER = 'https://walkthrough.local/';
 const HERE = dirname(fileURLToPath(import.meta.url));
-const explainerHtml = () => { for (const d of [HERE, '/rec']) { try { return readFileSync(`${d}/explainer.html`, 'utf8'); } catch { /* next */ } } return '<!doctype html><title>missing</title>'; };
+const sideHtml = (name) => { for (const d of [HERE, '/rec']) { try { return readFileSync(`${d}/${name}`, 'utf8'); } catch { /* next */ } } return '<!doctype html><title>missing</title>'; };
+const explainerHtml = () => sideHtml('explainer.html');
+// The staged designer mock of the demo video series (series/mock/build.mjs → designer-mock.html) at EXPLAINER + 'mock'.
+const MOCK = `${EXPLAINER}mock`;
+const mockHtml = () => sideHtml('designer-mock.html');
 const SCALE = 2;
 const durations = JSON.parse(readFileSync(`${OUT}/durations.json`, 'utf8'));
 const seed = JSON.parse(readFileSync(`${OUT}/seed.json`, 'utf8'));
@@ -101,7 +105,7 @@ async function contextFor(kind) {
     permissions: ['microphone'],
   });
   await c.addInitScript(PAGE_SETUP);
-  await c.route(`${EXPLAINER}**`, (route) => route.fulfill({ status: 200, contentType: 'text/html', body: explainerHtml() }));
+  await c.route(`${EXPLAINER}**`, (route) => route.fulfill({ status: 200, contentType: 'text/html', body: route.request().url().startsWith(MOCK) ? mockHtml() : explainerHtml() }));
   if (d.data === 'demo') demo = await installDemoHub(c, seed, hubLog);
   else await installReadOnly(c, hubLog);
   // Registered last so it wins: the appearance document as this recording should see it (RANDOM_LOOK chapters).
@@ -157,6 +161,15 @@ function helpers(page, log) {
       else await page.evaluate((id) => { location.hash = id; }, id);
       await page.waitForTimeout(900);
     }),
+    // a scene of the staged designer mock (designer-mock.html#<scene>?skin=&rows=…): steps play with h.step(); h.skin() re-renders it
+    mock: (id, params = {}) => soft(`mock ${id}`, async () => {
+      await unring();
+      const qs = new URLSearchParams(Object.entries(params).map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : String(v)])).toString();
+      if (!page.url().startsWith(MOCK)) { await page.goto(`${MOCK}#${id}${qs ? `?${qs}` : ''}`, { waitUntil: 'domcontentloaded' }); await page.waitForTimeout(600); }
+      else await page.evaluate(([id, params]) => window.wtMock?.scene(id, params), [id, params]);
+      await page.waitForTimeout(900);
+    }),
+    skin: (id) => soft(`skin ${id}`, async () => { await page.evaluate((id) => window.wtMock?.skin(id), id); await page.waitForTimeout(900); }),
     step: () => soft('step', () => page.evaluate(() => window.wtStep?.())),
     steps: async (n, gap = 1400) => { for (let i = 0; i < n; i++) { await h.step(); await page.waitForTimeout(gap); } },
     // a view on a desktop AXF app (console, axHub): its nav link, else the banner search

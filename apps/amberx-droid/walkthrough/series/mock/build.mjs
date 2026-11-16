@@ -1,0 +1,439 @@
+// The staged UI designer mock of the demo video series (build demo-video-series-three-minute-browser, step s2): an app
+// being built in the full UI designer, which isn't shipped yet. Every staged scene of the series that shows the designer,
+// the library matrix or the assembled time tracker is recorded on this page, with a visible PREVIEW label.
+//
+// Real where it can be: the page draws with framework/ui/axf.css and the token set of each skin compiled through the real
+// engines (tokens.mts → tokens.json: colour, style, scale, layout and component tokens), the parts palette is the asset
+// type registry (framework/schemas/asset-types.json), the library matrix columns are framework/catalog/libraries.json,
+// the layouts are framework/assets/layout. Only the time tracker's entries are sample rows, labelled as such.
+//
+//   node apps/amberx-droid/walkthrough/series/mock/build.mjs            # writes ../../designer-mock.html (the recorder ships *.html)
+//   node … build.mjs --tokens                                           # recompiles tokens.json first (npx tsx)
+//   node … build.mjs --list                                             # the scenes, their steps and params, and the skins
+//
+// In the recorder (record.mjs): h.mock('<scene>', { skin, rows, … }) opens a scene, h.step() plays its next step,
+// h.skin('<id>') re-renders under another skin. In a browser: designer-mock.html#<scene>?skin=clinic&rows=a,b,c, and
+// window.wtMock { scene, step, skin, state, scenes, skins } does the same.
+import { execFileSync } from 'node:child_process';
+import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const here = dirname(fileURLToPath(import.meta.url));
+const repo = join(here, '../../../../..');
+export const OUT = join(here, '../../designer-mock.html');
+
+/** The scenes the recorder can ask for: id, what it shows, how many steps h.step() plays, and the params it takes. */
+export const SCENES = [
+  { id: 'canvas', what: 'An empty canvas: pick a layout, then drag a toolbar, a data grid, tabs and a form onto it.', steps: 5, params: ['skin', 'layout'] },
+  { id: 'grid', what: 'The assembled screen: sort the grid by a column, then show the toolbar\'s screen-reader label.', steps: 2, params: ['skin'] },
+  { id: 'phone', what: 'The same screen on the desktop and in a phone frame side by side.', steps: 1, params: ['skin'] },
+  { id: 'skin', what: 'The skin picker open over the screen; each step switches to the next skin and the screen re-renders.', steps: 3, params: ['skin'] },
+  { id: 'voice', what: 'A spoken request ("add a search bar above the list") arrives as an API call and a search bar lands above the grid.', steps: 3, params: ['skin'] },
+  { id: 'assets', what: 'The asset list with the approved screen layout saved as an asset of its own.', steps: 1, params: ['skin'] },
+  { id: 'app', what: 'The time tracker\'s Today and Week screens assembled part by part (also the hero videos\' assembly view).', steps: 6, params: ['skin', 'app'] },
+  { id: 'actions', what: 'The time tracker\'s action list: every action with its REST, MCP, CLI and voice entry.', steps: 4, params: ['skin', 'app'] },
+  { id: 'matrix', what: 'The library matrix: the app\'s features as rows, real libraries as columns; each step ticks a cell.', steps: 6, params: ['skin', 'rows', 'app'] },
+];
+
+const read = (p) => readFileSync(join(repo, p), 'utf8');
+const json = (p) => JSON.parse(read(p));
+
+export function buildHtml() {
+  const tokensFile = join(here, 'tokens.json');
+  if (!existsSync(tokensFile)) throw new Error('tokens.json is missing: run with --tokens (npx -y tsx series/mock/tokens.mts)');
+  const tokens = JSON.parse(readFileSync(tokensFile, 'utf8'));
+  const css = read('framework/ui/axf.css');
+  const types = json('framework/schemas/asset-types.json');
+  const registry = Object.entries(types.types ?? types).filter(([, v]) => v && typeof v === 'object' && v.label).map(([id, v]) => ({ id, label: v.label, group: v.group ?? 'Other', icon: v.icon ?? '' }));
+  const libs = json('framework/catalog/libraries.json').items.map((l) => ({ id: l.id, module: l.module, name: l.name, features: l.features ?? [] }));
+  const layouts = readdirSync(join(repo, 'framework/assets/layout')).filter((f) => f.endsWith('.json')).sort().map((f) => { const a = json(`framework/assets/layout/${f}`); return { id: a.id, name: a.name, nav: a.data.nav, toolbar: a.data.toolbarPosition }; });
+  const data = {
+    generatedAt: new Date().toISOString(),
+    skins: tokens.skins,
+    registry, libs, layouts,
+    counts: { types: registry.length, libs: libs.length, layouts: layouts.length, skins: tokens.skins.length, tokens: Object.keys(tokens.skins[0]?.vars ?? {}).length },
+    scenes: SCENES.map((s) => s.id),
+  };
+  return template({ css, data: JSON.stringify(data) });
+}
+
+function template({ css, data }) {
+  return `<!doctype html>
+<!-- Generated by apps/amberx-droid/walkthrough/series/mock/build.mjs: the staged UI designer mock of the demo video series.
+     It is a PREVIEW of a designer that is not shipped; the label never leaves the screen. Edit build.mjs, not this file. -->
+<html lang="en" class="mk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UI designer (preview) · AmberX Dev Console</title>
+<style>
+${css}
+</style>
+<style>
+/* The mock's own layout. Every colour, size, gap, radius and border is a token of the skin in force (see tokens.mts). */
+.mk, .mk body { height: 100%; overflow: hidden; }
+.mk-root { display: flex; flex-direction: column; height: 100%; background: var(--fx-bg); color: var(--fx-text); }
+.mk-brand { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-lg); font-weight: var(--fx-type-weights-strong); font-family: var(--fx-font-display); white-space: nowrap; }
+.mk-brand__dot { width: calc(var(--fx-space) * 1.25); height: calc(var(--fx-space) * 1.25); border-radius: 999px; background: var(--fx-accent); }
+.mk-brand__sep { color: var(--fx-muted); font-weight: var(--fx-type-weights-medium); }
+.mk-grow { flex: 1 1 auto; min-width: 0; }
+.mk-body { display: grid; grid-template-columns: calc(var(--fx-space) * 28) minmax(0, 1fr) calc(var(--fx-space) * 32); flex: 1 1 auto; min-height: 0; gap: 0; }
+.mk-body.is-wide { grid-template-columns: calc(var(--fx-space) * 28) minmax(0, 1fr); }
+.mk-pane { display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: auto; background: var(--fx-surface); }
+.mk-pane--parts { border-right: var(--fx-border-w) solid var(--fx-border); }
+.mk-pane--inspector { border-left: var(--fx-border-w) solid var(--fx-border); }
+.mk-pane__head { display: flex; align-items: center; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-xl) var(--fx-dens-gap-2xl); border-bottom: var(--fx-border-w) solid var(--fx-border); font-weight: var(--fx-type-weights-strong); font-size: var(--fx-type-scale-sm); color: var(--fx-muted); text-transform: var(--fx-type-eyebrow-case); letter-spacing: var(--fx-type-eyebrow-tracking); }
+.mk-pane__body { padding: var(--fx-dens-gap-xl); display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); }
+.mk-group { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); }
+.mk-group__title { font-size: var(--fx-type-scale-xs); color: var(--fx-muted); font-weight: var(--fx-type-weights-medium); padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); }
+.mk-part { display: flex; align-items: center; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid transparent; cursor: grab; font-size: var(--fx-type-scale-sm); }
+.mk-part:hover { background: var(--fx-surface2); }
+.mk-part.is-dragging { border-color: var(--fx-accent); background: var(--fx-accent-soft); color: var(--fx-accent); }
+.mk-part.is-placed { color: var(--fx-muted); }
+.mk-part__icon { width: calc(var(--fx-space) * 2.5); height: calc(var(--fx-space) * 2.5); border-radius: var(--fx-radius-sm); background: var(--fx-surface3); display: inline-flex; align-items: center; justify-content: center; font-size: var(--fx-type-scale-xs); color: var(--fx-muted); flex: none; }
+.mk-part.is-dragging .mk-part__icon { background: var(--fx-accent); color: var(--fx-accent-text); }
+.mk-stage { position: relative; min-width: 0; min-height: 0; overflow: auto; background: var(--fx-bg); padding: var(--fx-dens-gap-3xl); display: flex; gap: var(--fx-dens-gap-3xl); align-items: flex-start; justify-content: center; }
+.mk-stage.is-split { align-items: stretch; }
+.mk-screen { flex: 1 1 auto; max-width: var(--fx-content-max); min-width: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xl); background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-lg); box-shadow: var(--fx-shadow-md); padding: var(--fx-dens-gap-2xl); min-height: calc(var(--fx-space) * 60); position: relative; }
+.mk-screen__title { display: flex; align-items: center; gap: var(--fx-dens-gap-lg); font-size: var(--fx-type-scale-xs); color: var(--fx-muted); }
+.mk-drop { border: calc(var(--fx-border-w) * 2) dashed var(--fx-border); border-radius: var(--fx-radius-md); min-height: calc(var(--fx-space) * 8); display: flex; align-items: center; justify-content: center; color: var(--fx-muted); font-size: var(--fx-type-scale-sm); transition: border-color var(--fx-motion), background var(--fx-motion); }
+.mk-drop.is-over { border-color: var(--fx-accent); background: var(--fx-accent-soft); color: var(--fx-accent); }
+.mk-placed { position: relative; animation: mk-land var(--fx-motion) var(--fx-ease); }
+.mk-placed.is-selected { outline: calc(var(--fx-border-w) * 2) solid var(--fx-accent); outline-offset: var(--fx-dens-gap-sm); border-radius: var(--fx-radius-sm); }
+@keyframes mk-land { from { opacity: 0; transform: translateY(calc(var(--fx-space) * -1)); } to { opacity: 1; transform: none; } }
+.mk-tag { position: absolute; z-index: 5; top: calc(var(--fx-dens-gap-sm) * -1); left: var(--fx-dens-gap-lg); transform: translateY(-100%); background: var(--fx-accent); color: var(--fx-accent-text); font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-xs); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-lg); border-radius: var(--fx-radius-sm); white-space: nowrap; box-shadow: var(--fx-shadow-sm); }
+.mk-layouts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--fx-dens-gap-xl); }
+.mk-layout { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-lg); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface2); cursor: pointer; font-size: var(--fx-type-scale-sm); }
+.mk-layout.is-picked { border-color: var(--fx-accent); background: var(--fx-accent-soft); }
+.mk-layout__thumb { display: grid; gap: var(--fx-dens-gap-xs); height: calc(var(--fx-space) * 7); grid-template-columns: calc(var(--fx-space) * 2.5) 1fr; grid-template-rows: calc(var(--fx-space) * 1.5) 1fr; }
+.mk-layout__thumb[data-nav='top'] { grid-template-columns: 1fr; grid-template-rows: calc(var(--fx-space) * 1.5) calc(var(--fx-space) * 1.5) 1fr; }
+.mk-layout__thumb[data-nav='right'] { grid-template-columns: 1fr calc(var(--fx-space) * 2.5); }
+.mk-layout__thumb > i { display: block; border-radius: var(--fx-radius-sm); background: var(--fx-surface3); }
+.mk-layout__thumb > i.is-nav { background: var(--fx-accent-soft); grid-row: 1 / -1; }
+.mk-layout__thumb[data-nav='top'] > i.is-nav { grid-row: auto; }
+.mk-layout__thumb[data-nav='right'] > i.is-nav { grid-column: 2; }
+.mk-layout__thumb[data-nav='left'] > i.is-nav { grid-column: 1; }
+.mk-layout__thumb > i.is-main { grid-column: span 1; }
+.mk-phone { flex: none; width: 412px; height: 915px; transform: scale(.62); transform-origin: top left; margin-right: calc(412px * -0.38); margin-bottom: calc(915px * -0.38); border: calc(var(--fx-border-w) * 8) solid var(--fx-text); border-radius: calc(var(--fx-radius-lg) * 3); background: var(--fx-bg); overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--fx-shadow-lg); } /* theme-ok: device shape, the 412×915 phone viewport of the series, scaled to fit */
+.mk-phone .mk-screen { border: 0; box-shadow: none; border-radius: 0; min-height: 0; flex: 1 1 auto; }
+.mk-phone .mk-cols { grid-template-columns: 1fr; }
+.mk-phone__bar { height: calc(var(--fx-space) * 3); display: flex; align-items: center; justify-content: space-between; padding: 0 var(--fx-dens-gap-2xl); font-size: var(--fx-type-scale-xs); color: var(--fx-muted); background: var(--fx-surface); }
+.mk-cols { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--fx-dens-gap-2xl); }
+.mk-token { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--fx-dens-gap-lg); align-items: center; padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); border-radius: var(--fx-radius-sm); font-size: var(--fx-type-scale-xs); }
+.mk-token:nth-child(even) { background: var(--fx-surface2); }
+.mk-token code { font-size: var(--fx-type-scale-xs); color: var(--fx-text); }
+.mk-token__val { color: var(--fx-muted); font-family: var(--fx-font-mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: calc(var(--fx-space) * 16); display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); }
+.mk-swatch { width: calc(var(--fx-space) * 1.5); height: calc(var(--fx-space) * 1.5); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); flex: none; }
+.mk-preview { position: fixed; z-index: 2147483000; bottom: calc(var(--fx-row-h) + var(--fx-dens-gap-xl)); right: var(--fx-dens-gap-xl); display: inline-flex; align-items: center; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-2xl); border-radius: 999px; background: var(--fx-warning); color: var(--fx-bg); font-weight: var(--fx-type-weights-strong); font-size: var(--fx-type-scale-sm); letter-spacing: var(--fx-type-eyebrow-tracking); text-transform: uppercase; box-shadow: var(--fx-shadow-md); }
+.mk-preview small { font-weight: var(--fx-type-weights-medium); text-transform: none; letter-spacing: 0; opacity: var(--fx-opacity-muted); }
+.mk-big { display: flex; flex-direction: column; align-items: center; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-3xl); }
+.mk-big__time { font-family: var(--fx-font-mono); font-size: var(--fx-type-headings-h1); font-weight: var(--fx-type-weights-strong); letter-spacing: var(--fx-type-headings-tracking); }
+.mk-big .fx-btn { font-size: var(--fx-type-scale-lg); padding-inline: calc(var(--fx-btn-px) * 1.6); }
+.mk-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--fx-dens-gap-lg); align-items: end; height: calc(var(--fx-space) * 18); }
+.mk-week__day { display: flex; flex-direction: column; align-items: center; gap: var(--fx-dens-gap-sm); font-size: var(--fx-type-scale-xs); color: var(--fx-muted); height: 100%; justify-content: flex-end; }
+.mk-week__bar { width: 100%; border-radius: var(--fx-radius-sm) var(--fx-radius-sm) 0 0; background: var(--fx-accent); min-height: var(--fx-dens-gap-sm); }
+.mk-week__bar.is-today { background: var(--fx-success); }
+.mk-voice { position: absolute; z-index: 6; left: 50%; bottom: var(--fx-dens-gap-3xl); transform: translateX(-50%); display: flex; align-items: center; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-xl) var(--fx-dens-gap-3xl); border-radius: 999px; background: color-mix(in srgb, var(--fx-text) calc(var(--fx-opacity-glass) * 100%), transparent); color: var(--fx-bg); box-shadow: var(--fx-shadow-lg); font-size: var(--fx-type-scale-md); animation: mk-land var(--fx-motion) var(--fx-ease); backdrop-filter: blur(var(--fx-blur)); }
+.mk-voice__mic { width: calc(var(--fx-space) * 3); height: calc(var(--fx-space) * 3); border-radius: 999px; background: var(--fx-accent); display: inline-flex; align-items: center; justify-content: center; color: var(--fx-accent-text); flex: none; animation: mk-pulse calc(var(--fx-motion) * 8) ease-in-out infinite; }
+@keyframes mk-pulse { 50% { box-shadow: 0 0 0 var(--fx-dens-gap-lg) color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); } }
+.mk-call { font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-xs); background: var(--fx-surface3); border-radius: var(--fx-radius-md); padding: var(--fx-dens-gap-xl) var(--fx-dens-gap-2xl); white-space: pre-wrap; animation: mk-land var(--fx-motion) var(--fx-ease); }
+.mk-call b { color: var(--fx-accent); font-weight: var(--fx-type-weights-strong); }
+.mk-sheet { position: absolute; z-index: 7; inset: auto 0 0 0; margin: 0 auto; max-width: calc(var(--fx-space) * 90); background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-dialog) * 100%), transparent); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-lg) var(--fx-radius-lg) 0 0; box-shadow: var(--fx-shadow-lg); padding: var(--fx-dens-gap-2xl); display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); animation: mk-land var(--fx-motion) var(--fx-ease); }
+.mk-skins { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--fx-dens-gap-xl); }
+.mk-skin { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-lg); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); cursor: pointer; font-size: var(--fx-type-scale-sm); }
+.mk-skin.is-on { border-color: var(--fx-accent); box-shadow: 0 0 0 var(--fx-border-w) var(--fx-accent); }
+.mk-skin__swatches { display: flex; gap: var(--fx-dens-gap-xs); height: calc(var(--fx-space) * 3); border-radius: var(--fx-radius-sm); overflow: hidden; }
+.mk-skin__swatches > i { flex: 1; display: block; }
+.mk-matrix td.fx-cell { font-size: var(--fx-type-scale-lg); }
+.mk-matrix .mk-tick { color: var(--fx-success); font-weight: var(--fx-type-weights-strong); animation: mk-land var(--fx-motion) var(--fx-ease); display: inline-block; }
+.mk-matrix th code { font-size: var(--fx-type-scale-xs); }
+.mk-matrix .is-live { background: var(--fx-accent-soft); }
+.mk-actions td code { font-size: var(--fx-type-scale-xs); }
+.mk-actions tr.is-new td { background: var(--fx-accent-soft); }
+.mk-assets { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--fx-dens-gap-xl); }
+.mk-asset { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-xl); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface2); font-size: var(--fx-type-scale-sm); }
+.mk-asset.is-new { border-color: var(--fx-success); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent); animation: mk-land var(--fx-motion) var(--fx-ease); }
+.mk-asset__count { font-size: var(--fx-type-headings-h3); font-weight: var(--fx-type-weights-strong); font-family: var(--fx-font-display); }
+.mk-sample { margin-left: auto; }
+.mk-root > .fx-status { flex: none; height: auto; min-height: var(--fx-row-h); }
+.fx-status .mk-kv b { color: var(--fx-text); font-weight: var(--fx-type-weights-medium); }
+</style>
+</head>
+<body>
+<div class="mk-root" id="root"></div>
+<div class="mk-preview" role="status" aria-live="polite">Preview <small>· not shipped yet</small></div>
+<script id="mk-data" type="application/json">${data.replace(/</g, '\\u003c')}</script>
+<script>
+${script()}
+</script>
+</body>
+</html>
+`;
+}
+
+/** The page script: state, scenes, steps and the window.wtMock API. Plain browser JS, no network. */
+function script() {
+  return String.raw`
+(() => {
+  const DATA = JSON.parse(document.getElementById('mk-data').textContent);
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const root = document.getElementById('root');
+
+  // ---- the app being built: the time tracker of the hero videos (its parts are real, its entries are sample rows)
+  const APPS = {
+    'time-tracker': {
+      name: 'Time tracker', screens: ['Today', 'Week'],
+      rows: ['Projects', 'Timer', 'Weekly total', 'Reminder', 'Sync'],
+      libs: ['lib-hubstore', 'lib-hubsync', 'lib-datagrid', 'lib-notifications', 'lib-work', 'lib-lock'],
+      ticks: [['Projects', 'lib-hubstore'], ['Sync', 'lib-hubsync'], ['Weekly total', 'lib-datagrid'], ['Reminder', 'lib-notifications'], ['Timer', 'lib-work'], ['Projects', 'lib-lock']],
+      entries: [['Client website', '09:02', '10:48', '1:46'], ['Sprint planning', '10:50', '11:30', '0:40'], ['Invoice run', '13:05', '14:12', '1:07'], ['Client website', '14:20', '—', 'running']],
+      week: [['Mon', 7.5], ['Tue', 6.8], ['Wed', 8.1], ['Thu', 3.6], ['Fri', 0], ['Sat', 0], ['Sun', 0]],
+      actions: [
+        ['timer.start', 'Start the timer on the selected project', 'start work'],
+        ['timer.stop', 'Stop the running timer', 'stop work'],
+        ['project.select', 'Pick the project the timer books to', 'switch to client website'],
+        ['day.total', 'Read today\'s total', 'how long today'],
+        ['week.total', 'Read this week\'s total', 'how long this week'],
+        ['entry.add', 'Add an entry by hand', 'log one hour on invoices'],
+      ],
+    },
+  };
+  const libByModule = (m) => DATA.libs.find((l) => l.module === m);
+
+  // ---- state
+  const S = { scene: 'canvas', step: 0, skin: DATA.skins[0].id, layout: 'portal-top', app: 'time-tracker', rows: null, placed: [], selected: null, sorted: false, label: false, split: false, sheet: false, voice: 0, saved: false, ticks: 0, actionsShown: 0, screen: 'Today' };
+  const skinOf = (id) => DATA.skins.find((s) => s.id === id) || DATA.skins[0];
+
+  function applySkin(id) {
+    const sk = skinOf(id); S.skin = sk.id;
+    if (!S.layoutPinned) S.layout = sk.themes.layout;
+    const html = document.documentElement;
+    for (const a of [...html.attributes]) if (a.name.startsWith('data-fx-')) html.removeAttribute(a.name);
+    for (const [k, v] of Object.entries(sk.attrs)) html.setAttribute(k, v);
+    let st = document.getElementById('mk-tokens');
+    if (!st) { st = document.createElement('style'); st.id = 'mk-tokens'; document.head.appendChild(st); }
+    st.textContent = ':root {' + Object.entries(sk.vars).map(([k, v]) => k + ':' + v + ';').join('') + '}';
+  }
+
+  // ---- building blocks (framework classes; attributes come from the skin's component assets)
+  const toolbar = (label, items, search) => '<div class="fx-toolbar" role="toolbar" aria-label="' + esc(label) + '" data-align="spread">' +
+    items.map((t) => '<button type="button" class="fx-toolbtn' + (t === S.screen ? ' is-on' : '') + '">' + esc(t) + '</button>').join('') +
+    (search ? '<div class="fx-search mk-grow"><input placeholder="Search entries" aria-label="Search entries"></div>' : '<span class="mk-grow"></span>') +
+    '<button type="button" class="fx-btn fx-btn--primary">New entry</button></div>';
+  const tabs = (names, on) => '<div class="fx-tabs" role="tablist">' + names.map((n) => '<button type="button" role="tab" class="fx-tab" aria-selected="' + (n === on) + '">' + esc(n) + '</button>').join('') + '</div>';
+  const grid = (app, sorted) => {
+    let rows = app.entries.slice();
+    if (sorted) rows = rows.slice().sort((a, b) => a[0].localeCompare(b[0]));
+    return '<div class="fx-card"><div class="fx-card__head"><h3>Today\'s entries</h3><span class="fx-chip mk-sample">Sample data</span></div><div class="fx-tablewrap"><table class="fx-table"><thead><tr>' +
+      '<th aria-sort="' + (sorted ? 'ascending' : 'none') + '">Project ' + (sorted ? '↑' : '') + '</th><th>Start</th><th>Stop</th><th>Hours</th></tr></thead><tbody>' +
+      rows.map((r) => '<tr>' + r.map((c, i) => '<td>' + (c === 'running' ? '<span class="fx-chip fx-chip--success">running</span>' : esc(c)) + '</td>').join('') + '</tr>').join('') + '</tbody></table></div></div>';
+  };
+  const form = () => '<div class="fx-card"><div class="fx-card__head"><h3>New entry</h3></div><div class="fx-form mk-pane__body">' +
+    '<label class="fx-field"><span class="fx-field__label">Project</span><input class="fx-input" value="Client website"></label>' +
+    '<div class="fx-row"><label class="fx-field mk-grow"><span class="fx-field__label">Start</span><input class="fx-input" value="14:20"></label><label class="fx-field mk-grow"><span class="fx-field__label">Stop</span><input class="fx-input" placeholder="—"></label></div>' +
+    '<div class="fx-row fx-row--end"><button type="button" class="fx-btn fx-btn--ghost">Cancel</button><button type="button" class="fx-btn fx-btn--primary">Save</button></div></div></div>';
+  const bigTimer = (app) => '<div class="fx-card"><div class="mk-big"><span class="fx-eyebrow">Client website</span><div class="mk-big__time">1:12:36</div><button type="button" class="fx-btn fx-btn--primary">Stop</button><span class="fx-small fx-muted">Today 3:33 · this week 26:00</span></div></div>';
+  const week = (app) => '<div class="fx-card"><div class="fx-card__head"><h3>This week</h3><span class="fx-chip fx-chip--accent">26.0 h</span></div><div class="mk-pane__body"><div class="mk-week">' +
+    app.week.map(([d, h], i) => '<div class="mk-week__day"><div class="mk-week__bar' + (i === 3 ? ' is-today' : '') + '" style="height:' + Math.round((h / 9) * 100) + '%"></div><span>' + d + '</span><b>' + (h ? h.toFixed(1) : '·') + '</b></div>').join('') +
+    '</div></div></div>';
+  const placed = (id, html, tag) => '<div class="mk-placed' + (S.selected === id ? ' is-selected' : '') + '" data-part="' + id + '">' + (tag && S.label ? '<span class="mk-tag">' + esc(tag) + '</span>' : '') + html + '</div>';
+
+  // the designed screen (parts in the order they were placed)
+  function screen(app, parts, opts = {}) {
+    const has = (p) => parts.includes(p);
+    const body = [];
+    if (has('toolbar')) body.push(placed('toolbar', toolbar('Entries toolbar', ['Today', 'Week', 'Projects'], has('search')), 'role="toolbar" aria-label="Entries toolbar"'));
+    if (has('tabs')) body.push(placed('tabs', tabs(app.screens, S.screen)));
+    const cols = [];
+    if (S.screen === 'Week' && has('week')) cols.push(placed('week', week(app)));
+    else {
+      if (has('timer')) cols.push(placed('timer', bigTimer(app)));
+      if (has('grid')) cols.push(placed('grid', grid(app, S.sorted)));
+    }
+    const side = [];
+    if (has('form')) side.push(placed('form', form()));
+    if (cols.length || side.length) body.push('<div class="mk-cols">' + '<div class="fx-stack">' + cols.join('') + '</div>' + (side.length ? '<div class="fx-stack">' + side.join('') + '</div>' : '') + '</div>');
+    if (!parts.length) body.push('<div class="mk-drop' + (opts.over ? ' is-over' : '') + '">Drop a part here</div>');
+    else if (opts.over) body.push('<div class="mk-drop is-over">Drop here</div>');
+    return '<div class="mk-screen"><div class="mk-screen__title"><span class="fx-badge">' + esc(app.name) + '</span><span>' + esc(S.screen) + ' screen</span><span class="mk-grow"></span><span class="fx-badge">layout ' + esc(S.layout) + '</span><span class="fx-badge">skin ' + esc(skinOf(S.skin).name) + '</span></div>' + body.join('') + '</div>';
+  }
+
+  const layoutPicker = () => '<div class="mk-screen"><div class="fx-pagehead"><div><p class="fx-eyebrow">New screen</p><h1>Pick a layout</h1><p>' + DATA.layouts.length + ' layouts ship with the framework (framework/assets/layout). The screen takes its regions, nav side and toolbar position from the one you pick.</p></div></div><div class="mk-layouts">' +
+    DATA.layouts.map((l) => '<div class="mk-layout' + (l.id === S.layout ? ' is-picked' : '') + '"><div class="mk-layout__thumb" data-nav="' + l.nav + '"><i class="is-nav"></i><i></i><i class="is-main"></i></div><b>' + esc(l.name) + '</b><span class="fx-muted">nav ' + l.nav + ' · toolbar ' + l.toolbar + '</span></div>').join('') + '</div></div>';
+
+  const partsPane = () => {
+    const groups = {};
+    for (const t of DATA.registry) (groups[t.group] ||= []).push(t);
+    const dragging = S.dragging;
+    const mark = (id) => (dragging === id ? ' is-dragging' : S.placed.some((p) => PART_TYPE[p] === id) ? ' is-placed' : '');
+    const dataParts = DATA.libs.filter((l) => /datagrid|tree|browser|workspace|toolbars|dnd/.test(l.module));
+    return '<aside class="mk-pane mk-pane--parts"><div class="mk-pane__head">Parts · ' + DATA.counts.types + ' asset types · ' + DATA.counts.libs + ' libraries</div><div class="mk-pane__body">' +
+      Object.entries(groups).map(([g, ts]) => '<div class="mk-group"><div class="mk-group__title">' + esc(g) + '</div>' + ts.map((t) => '<div class="mk-part' + mark(t.id) + '" draggable="true" data-type="' + t.id + '"><span class="mk-part__icon">' + esc(t.id.slice(0, 2)) + '</span><span>' + esc(t.label) + '</span></div>').join('') + '</div>').join('') +
+      '<div class="mk-group"><div class="mk-group__title">From libraries</div>' + dataParts.map((l) => '<div class="mk-part' + mark(l.module) + '" draggable="true" data-type="' + l.module + '"><span class="mk-part__icon">lib</span><span>' + esc(l.name.replace(/\s*\(.*$/, '')) + '</span></div>').join('') + '</div>' +
+      '</div></aside>';
+  };
+  const PART_TYPE = { toolbar: 'toolbar', tabs: 'tab-group', grid: 'lib-datagrid', form: 'container', timer: 'button', week: 'meter', search: 'search-bar' };
+  const PART_LABEL = { toolbar: 'Toolbar', tabs: 'Tab group', grid: 'Data grid (lib-datagrid)', form: 'Form', timer: 'Start / stop button', week: 'Week totals', search: 'Search bar' };
+
+  const inspector = () => {
+    const sk = skinOf(S.skin);
+    const sel = S.selected;
+    const keys = sel === 'toolbar' ? ['--fx-toolbtn-h', '--fx-toolbar-py', '--fx-surface2', '--fx-dens-gap-xl', '--fx-opacity-toolbar']
+      : sel === 'grid' ? ['--fx-size-table-font', '--fx-dens-gap-xl', '--fx-border', '--fx-border-w', '--fx-surface']
+      : sel === 'form' ? ['--fx-card-pad', '--fx-card-shadow', '--fx-radius-lg', '--fx-size-field-height', '--fx-bg']
+      : sel === 'timer' ? ['--fx-btn-radius', '--fx-btn-px', '--fx-btn-py', '--fx-accent', '--fx-accent-text']
+      : ['--fx-accent', '--fx-bg', '--fx-surface', '--fx-text', '--fx-font', '--fx-font-size', '--fx-space', '--fx-radius-md', '--fx-border-w', '--fx-motion'];
+    const row = (k) => { const v = sk.vars[k] ?? ''; const colour = /^#|^rgb/.test(v); return '<div class="mk-token"><code>' + k + '</code><span class="mk-token__val">' + (colour ? '<i class="mk-swatch" style="background:' + esc(v) + '"></i>' : '') + esc(v) + '</span></div>'; };
+    return '<aside class="mk-pane mk-pane--inspector"><div class="mk-pane__head">' + (sel ? esc(PART_LABEL[sel]) : 'Screen') + ' · tokens</div><div class="mk-pane__body">' +
+      '<div class="fx-small fx-muted">' + (sel ? 'What this part reads from the skin. Change a token in Appearance and the part follows; nothing here is set on the part itself.' : 'Skin <b>' + esc(sk.name) + '</b>: colour ' + esc(sk.themes.color) + ' · style ' + esc(sk.themes.style) + ' · layout ' + esc(sk.themes.layout) + ' · ' + Object.keys(sk.vars).length + ' tokens compiled by the engines.') + '</div>' +
+      '<div class="mk-group">' + keys.map(row).join('') + '</div>' +
+      (sel ? '<div class="fx-row fx-row--wrap"><button type="button" class="fx-btn fx-btn--ghost fx-btn--sm">Settings…</button><button type="button" class="fx-btn fx-btn--ghost fx-btn--sm">Change asset…</button></div>' : '') +
+      '</div></aside>';
+  };
+
+  const topbar = (title) => '<div class="fx-toolbar" role="toolbar" aria-label="Designer toolbar" data-align="spread">' +
+    '<span class="mk-brand"><i class="mk-brand__dot"></i>AmberX Dev Console <span class="mk-brand__sep">/</span> UI designer <span class="fx-chip fx-chip--warning">preview</span></span>' +
+    '<span class="mk-grow"></span>' +
+    '<span class="fx-chip">' + esc(title) + '</span>' +
+    '<button type="button" class="fx-toolbtn' + (S.split ? ' is-on' : '') + '" id="mk-split">Desktop + phone</button>' +
+    '<button type="button" class="fx-toolbtn' + (S.sheet ? ' is-on' : '') + '" id="mk-skin">Skin: ' + esc(skinOf(S.skin).name) + '</button>' +
+    '<button type="button" class="fx-btn fx-btn--ghost">Save as asset</button><button type="button" class="fx-btn fx-btn--primary">Send to UI Review</button></div>';
+  const statusbar = () => '<div class="fx-status"><span class="fx-status__dot"></span><span class="mk-kv">layout <b>' + esc(S.layout) + '</b></span><span class="fx-status__sep"></span><span class="mk-kv">skin <b>' + esc(skinOf(S.skin).name) + '</b></span><span class="fx-status__sep"></span><span class="mk-kv"><b>' + DATA.counts.tokens + '</b> tokens</span><span class="fx-status__sep"></span><span class="mk-kv"><b>' + DATA.counts.libs + '</b> libraries · <b>' + DATA.counts.types + '</b> asset types · <b>' + DATA.counts.layouts + '</b> layouts · <b>' + DATA.counts.skins + '</b> skins</span><span class="fx-status__grow"></span><span>scene ' + esc(S.scene) + ' · step ' + S.step + '</span></div>';
+
+  const skinSheet = () => '<div class="mk-sheet" role="dialog" aria-label="Pick a skin"><div class="fx-section__head"><h3 class="fx-section__title">Skin</h3><span class="fx-small fx-muted">framework/assets/skin · a skin is a layout + colour + style theme plus the assets it picks</span></div><div class="mk-skins">' +
+    DATA.skins.map((s) => '<div class="mk-skin' + (s.id === S.skin ? ' is-on' : '') + '" data-skin="' + s.id + '"><div class="mk-skin__swatches">' + ['--fx-bg', '--fx-surface', '--fx-accent', '--fx-text'].map((k) => '<i style="background:' + esc(s.vars[k]) + '"></i>').join('') + '</div><b>' + esc(s.name) + '</b><span class="fx-muted">' + esc(s.themes.color) + ' · ' + esc(s.themes.style) + '</span></div>').join('') + '</div></div>';
+
+  const voiceBubble = (text) => '<div class="mk-voice"><span class="mk-voice__mic">●</span><span>' + esc(text) + '</span></div>';
+  const apiCall = () => '<div class="mk-call"><b>POST</b> /api/console-control\n{ "verb": "press", "address": "view:ui-designer/function:designer.place",\n  "value": { "type": "search-bar", "where": "above", "of": "grid" },\n  "by": "amberx-voice", "reason": "add a search bar above the list" }\n\n<b>same call</b>: MCP console_control_press · CLI axf console press view:ui-designer/function:designer.place · voice "add a search bar above the list"</div>';
+
+  // the asset list after approval: the screen layout is an asset of its own
+  const assetList = (app) => {
+    const byGroup = {};
+    for (const t of DATA.registry) byGroup[t.group] = (byGroup[t.group] || 0) + 1;
+    return '<div class="mk-screen"><div class="fx-pagehead"><div><p class="fx-eyebrow">Assets</p><h1>Every part of the look is an asset</h1><p>' + DATA.counts.types + ' asset types in the registry (framework/schemas/asset-types.json). An approved screen joins them as a layout asset you can reuse or hand to an agent.</p></div></div><div class="mk-assets">' +
+      (S.saved ? '<div class="mk-asset is-new"><span class="fx-chip fx-chip--success">new · approved</span><b>' + esc(app.name) + ' · Today</b><span class="fx-muted">screen layout · ' + S.placed.length + ' parts · skin ' + esc(skinOf(S.skin).name) + '</span></div>' : '') +
+      Object.entries(byGroup).map(([g, n]) => '<div class="mk-asset"><span class="mk-asset__count">' + n + '</span><b>' + esc(g) + '</b><span class="fx-muted">asset types</span></div>').join('') +
+      '<div class="mk-asset"><span class="mk-asset__count">' + DATA.counts.skins + '</span><b>Skins</b><span class="fx-muted">framework/assets/skin</span></div><div class="mk-asset"><span class="mk-asset__count">' + DATA.counts.layouts + '</span><b>Layouts</b><span class="fx-muted">framework/assets/layout</span></div>' +
+      '</div></div>';
+  };
+
+  // the library matrix: features × real libraries
+  const matrix = (app) => {
+    const rows = S.rows || app.rows;
+    const mods = app.libs.map((m) => libByModule(m)).filter(Boolean);
+    const ticks = app.ticks.slice(0, S.ticks);
+    const on = (r, m) => ticks.some(([tr, tm]) => tr === r && tm === m);
+    const live = ticks.length ? ticks[ticks.length - 1] : null;
+    return '<div class="mk-screen"><div class="fx-pagehead"><div><p class="fx-eyebrow">Library matrix</p><h1>' + esc(app.name) + ': what already exists as parts</h1><p>Rows are the features asked for. Columns are real framework libraries (framework/catalog/libraries.json, ' + DATA.counts.libs + ' in the catalog). A tick means the feature is covered by a library and is never built again.</p></div><span class="fx-chip fx-chip--success">' + ticks.length + ' of ' + app.ticks.length + ' covered</span></div>' +
+      '<div class="fx-tablewrap"><table class="fx-table fx-table--matrix mk-matrix"><thead><tr><th>Feature</th>' + mods.map((l) => '<th' + (live && live[1] === l.module ? ' class="is-current"' : '') + '><code>' + esc(l.module) + '</code><br><span class="fx-small fx-muted">' + esc(l.name.replace(/\s*\(.*$/, '')) + '</span></th>').join('') + '</tr></thead><tbody>' +
+      rows.map((r) => '<tr><th>' + esc(r) + '</th>' + mods.map((l) => '<td class="fx-cell' + (live && live[0] === r && live[1] === l.module ? ' is-live' : '') + '">' + (on(r, l.module) ? '<span class="mk-tick">✓</span>' : '<span class="fx-no">·</span>') + '</td>').join('') + '</tr>').join('') +
+      '</tbody></table></div></div>';
+  };
+
+  // the action list: every action reachable four ways
+  const actions = (app) => {
+    const shown = app.actions.slice(0, Math.max(1, S.actionsShown));
+    return '<div class="mk-screen"><div class="fx-pagehead"><div><p class="fx-eyebrow">Actions</p><h1>' + esc(app.name) + ': every action has an API</h1><p>Each action the screens offer is a registered function (console-control@1): the same address answers REST, MCP, the CLI and AmberX voice. Buttons are never the only way in.</p></div></div>' +
+      '<div class="fx-tablewrap"><table class="fx-table mk-actions"><thead><tr><th>Action</th><th>What</th><th>REST</th><th>MCP</th><th>CLI</th><th>Voice</th></tr></thead><tbody>' +
+      shown.map((a, i) => '<tr' + (i === shown.length - 1 && S.actionsShown > 1 ? ' class="is-new"' : '') + '><td><code>function:' + esc(a[0]) + '</code></td><td>' + esc(a[1]) + '</td><td><code>POST /api/console-control {press}</code></td><td><code>console_control_press</code></td><td><code>axf console press function:' + esc(a[0]) + '</code></td><td>“' + esc(a[2]) + '”</td></tr>').join('') +
+      '</tbody></table></div></div>';
+  };
+
+  // ---- scenes: initial state + ordered steps
+  const SCENES = {
+    canvas: { start: () => { S.placed = []; S.layoutPick = true; S.screen = 'Today'; }, steps: [
+      () => { S.layoutPick = false; S.dragging = 'toolbar'; S.over = true; },
+      () => { S.dragging = null; S.over = false; S.placed.push('toolbar'); S.selected = 'toolbar'; },
+      () => { S.placed.push('grid'); S.selected = 'grid'; },
+      () => { S.placed.push('tabs'); S.selected = 'tabs'; },
+      () => { S.placed.push('form'); S.selected = 'form'; },
+    ] },
+    grid: { start: () => { S.placed = ['toolbar', 'tabs', 'grid', 'form']; S.selected = 'grid'; }, steps: [() => { S.sorted = true; }, () => { S.label = true; S.selected = 'toolbar'; }] },
+    phone: { start: () => { S.placed = ['toolbar', 'tabs', 'grid', 'form']; S.selected = null; }, steps: [() => { S.split = true; }] },
+    skin: { start: () => { S.placed = ['toolbar', 'tabs', 'grid', 'form']; S.sheet = true; }, steps: [() => nextSkin(), () => nextSkin(), () => nextSkin()] },
+    voice: { start: () => { S.placed = ['toolbar', 'tabs', 'grid', 'form']; S.voice = 0; }, steps: [() => { S.voice = 1; }, () => { S.voice = 2; }, () => { S.voice = 3; S.placed.push('search'); S.selected = 'search'; }] },
+    assets: { start: () => { S.placed = ['toolbar', 'tabs', 'grid', 'form']; S.saved = false; }, steps: [() => { S.saved = true; }] },
+    app: { start: () => { S.placed = []; S.screen = 'Today'; }, steps: [
+      () => { S.placed.push('toolbar'); S.selected = 'toolbar'; },
+      () => { S.placed.push('tabs'); S.selected = 'tabs'; },
+      () => { S.placed.push('timer'); S.selected = 'timer'; },
+      () => { S.placed.push('grid'); S.selected = 'grid'; },
+      () => { S.placed.push('week'); S.screen = 'Week'; S.selected = 'week'; },
+      () => { S.selected = null; S.split = true; },
+    ] },
+    actions: { start: () => { S.actionsShown = 1; }, steps: [() => { S.actionsShown = 2; }, () => { S.actionsShown = 4; }, () => { S.actionsShown = 6; }, () => { S.actionsShown = 6; S.selected = null; }] },
+    matrix: { start: () => { S.ticks = 0; }, steps: [1, 2, 3, 4, 5, 6].map((n) => () => { S.ticks = n; }) },
+  };
+  function nextSkin() { const i = DATA.skins.findIndex((s) => s.id === S.skin); applySkin(DATA.skins[(i + 1) % DATA.skins.length].id); }
+
+  function render() {
+    const app = APPS[S.app] || APPS['time-tracker'];
+    let stage;
+    if (S.scene === 'matrix') stage = matrix(app);
+    else if (S.scene === 'actions') stage = actions(app);
+    else if (S.scene === 'assets') stage = assetList(app);
+    else if (S.layoutPick) stage = layoutPicker();
+    else stage = screen(app, S.placed, { over: S.over });
+    const phone = S.split ? '<div class="mk-phone"><div class="mk-phone__bar"><span>9:41</span><span>' + esc(app.name) + ' · phone</span></div>' + screen(app, S.placed).replace(/<div class="mk-screen__title">[\s\S]*?<\/div>/, '') + '</div>' : '';
+    const wide = S.scene === 'matrix' || S.scene === 'actions' || S.scene === 'assets';
+    const voice = S.scene === 'voice' && S.voice >= 1 ? voiceBubble('Amber, add a search bar above the list') : '';
+    const call = S.scene === 'voice' && S.voice >= 2 ? apiCall() : '';
+    root.innerHTML = topbar(app.name + ' · ' + S.screen) +
+      '<div class="mk-body' + (wide ? ' is-wide' : '') + '">' + partsPane() +
+      '<main class="mk-stage' + (S.split ? ' is-split' : '') + '"><div class="fx-stack mk-grow">' + call + stage + '</div>' + phone + voice + (S.sheet ? skinSheet() : '') + '</main>' +
+      (wide ? '' : inspector()) + '</div>' + statusbar();
+    for (const el of root.querySelectorAll('.mk-skin')) el.addEventListener('click', () => { applySkin(el.dataset.skin); render(); });
+    root.querySelector('#mk-skin')?.addEventListener('click', () => { S.sheet = !S.sheet; render(); });
+    root.querySelector('#mk-split')?.addEventListener('click', () => { S.split = !S.split; render(); });
+    for (const el of root.querySelectorAll('.mk-placed')) el.addEventListener('click', (e) => { e.stopPropagation(); S.selected = el.dataset.part; render(); });
+  }
+
+  const api = {
+    scenes: Object.keys(SCENES),
+    skins: DATA.skins.map((s) => s.id),
+    scene(id, params = {}) {
+      if (!SCENES[id]) throw new Error('unknown scene ' + id + ' (one of ' + Object.keys(SCENES).join(', ') + ')');
+      Object.assign(S, { scene: id, step: 0, selected: null, sorted: false, label: false, split: false, sheet: false, voice: 0, saved: false, dragging: null, over: false, layoutPick: false, rows: null });
+      if (params.skin) applySkin(params.skin);
+      S.layoutPinned = Boolean(params.layout);
+      if (params.layout) S.layout = params.layout; else S.layout = skinOf(S.skin).themes.layout;
+      if (params.app && APPS[params.app]) S.app = params.app;
+      if (params.rows) S.rows = Array.isArray(params.rows) ? params.rows : String(params.rows).split(',').map((s) => s.trim()).filter(Boolean);
+      SCENES[id].start();
+      render();
+      return this.state();
+    },
+    step() { const sc = SCENES[S.scene]; if (S.step < sc.steps.length) { sc.steps[S.step++](); render(); } return this.state(); },
+    skin(id) { applySkin(id); render(); return this.state(); },
+    state() { return { scene: S.scene, step: S.step, steps: SCENES[S.scene].steps.length, skin: S.skin, layout: S.layout, app: S.app, placed: S.placed.slice(), selected: S.selected }; },
+  };
+  window.wtMock = api;
+  window.wtStep = () => api.step();
+
+  function fromHash() {
+    const h = location.hash.replace(/^#/, '');
+    const [id, qs] = h.split('?');
+    const params = Object.fromEntries(new URLSearchParams(qs || ''));
+    api.scene(SCENES[id] ? id : 'canvas', params);
+  }
+  applySkin(S.skin);
+  addEventListener('hashchange', fromHash);
+  fromHash();
+})();
+`;
+}
+
+const argv = process.argv.slice(2);
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  if (argv.includes('--tokens')) execFileSync('npx', ['-y', 'tsx', join(here, 'tokens.mts')], { stdio: 'inherit' });
+  if (argv.includes('--list')) {
+    const tokens = JSON.parse(readFileSync(join(here, 'tokens.json'), 'utf8'));
+    for (const s of SCENES) console.log(`${s.id.padEnd(8)} ${String(s.steps).padStart(2)} steps  params ${s.params.join(', ').padEnd(18)} ${s.what}`);
+    console.log(`skins: ${tokens.skins.map((s) => s.id).join(', ')}`);
+  } else {
+    const html = buildHtml();
+    writeFileSync(OUT, html);
+    console.log(`✓ ${OUT} (${(html.length / 1024).toFixed(0)} KB, ${SCENES.length} scenes)`);
+  }
+}

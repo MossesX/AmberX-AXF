@@ -6,6 +6,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SERIES, VIDEOS, scenesOf, wordCount, estimateSeconds } from './scripts.mjs';
 import { MORE } from './more/index.mjs';
+import { SCENES as MOCK_SCENES } from './mock/build.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repo = join(here, '../../../..');
@@ -14,6 +15,8 @@ const KINDS = new Set(['hero', 'deep', 'real']);
 const CAMERAS = new Set(['screen', 'story']);
 const MIN = 150, MAX = 200; // seconds: no shorter than 2:30, no longer than 3:20
 const SHORT_MIN = 50, SHORT_MAX = 70; // the 60-second cuts
+
+const MOCK_IDS = new Set(MOCK_SCENES.map((s) => s.id));
 
 const problems = [];
 const ids = new Set();
@@ -26,6 +29,9 @@ function checkScenes(where, scenes, { real }) {
     if (s.camera && !CAMERAS.has(s.camera)) problems.push(`${where} scene ${i + 1}: unknown camera ${s.camera}`);
     if (s.camera === 'story' && s.staged) problems.push(`${where} scene ${i + 1}: a story shot can't be a staged screen`);
     if (real && s.staged) problems.push(`${where} scene ${i + 1}: staged scene in a real-data-only video`);
+    // a staged scene recorded on the designer mock names one of its scenes (series/mock/build.mjs)
+    if (s.mock && !s.staged) problems.push(`${where} scene ${i + 1}: mock ${s.mock} on a scene that isn't staged`);
+    if (s.mock && !MOCK_IDS.has(s.mock)) problems.push(`${where} scene ${i + 1}: unknown mock scene ${s.mock} (one of ${[...MOCK_IDS].join(', ')})`);
   });
   // A cut with staged screens must say so out loud at least once.
   if (scenes.some((s) => s.staged) && !scenes.some((s) => /preview/i.test(s.say)))
@@ -68,7 +74,8 @@ if (process.argv.includes('--table')) {
   const mmss = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
   const row = (label, v) => {
     const sc = scenesOf(v);
-    console.log(`${label.padEnd(26)} ${mmss(estimateSeconds(v))}  ${String(wordCount(v)).padStart(4)} words  ${String(sc.length).padStart(2)} scenes  ${sc.filter((s) => s.staged).length} staged  skin ${v.skin}`);
+    const staged = sc.filter((s) => s.staged);
+    console.log(`${label.padEnd(26)} ${mmss(estimateSeconds(v))}  ${String(wordCount(v)).padStart(4)} words  ${String(sc.length).padStart(2)} scenes  ${staged.length} staged (${staged.filter((s) => s.mock).length} on the mock)  skin ${v.skin}`);
   };
   for (const v of VIDEOS) row(`${String(v.order).padStart(2)}  ${v.id}`, v);
   for (const v of MORE) {

@@ -28,8 +28,8 @@ export default {
     {
       id: 'matrix', title: 'Pick from the library matrix',
       scenes: [
-        { staged: true, say: "Now the library matrix, shown here as a preview. Every feature Jordan asked for is a row, and every pre-built AXF library that covers it is a tick. Nothing here is written from scratch.", shot: 'Staged library matrix: rows Projects, Timer, Weekly total, Reminder, Sync; columns are libraries; ticks fill in.' },
-        { staged: true, say: "Storage and sync come from the hub libraries, so the back end is handled. The weekly table is the data grid. The five o'clock reminder is notifications plus background work. And the app lock keeps the hours private.", shot: 'Matrix ticks highlighted one by one: lib-hubstore, lib-hubsync, lib-datagrid, lib-notifications, lib-work, lib-lock.' },
+        { staged: true, say: "Now the library matrix, shown here as a preview. Every feature Jordan asked for is a row, and every pre-built AXF library that covers it is a tick. Nothing here is written from scratch.", shot: 'Staged library matrix: rows Projects, Timer, Weekly total, Reminder, Sync; columns are libraries; ticks fill in.' , mock: 'matrix' },
+        { staged: true, say: "Storage and sync come from the hub libraries, so the back end is handled. The weekly table is the data grid. The five o'clock reminder is notifications plus background work. And the app lock keeps the hours private.", shot: 'Matrix ticks highlighted one by one: lib-hubstore, lib-hubsync, lib-datagrid, lib-notifications, lib-work, lib-lock.' , mock: 'matrix' },
         { say: "Jordan doesn't want the export to a spreadsheet yet. Untick it, and the estimate drops before anything is spent.", shot: 'Feature matrix of the build; untick Export; the minutes and cost totals shrink.', app: 'console-web' },
       ],
     },
@@ -38,7 +38,7 @@ export default {
       scenes: [
         { say: "Approve the plan, and it becomes a build. The orchestrator splits it into short steps and the crew starts working while the train is still two stops out.", shot: 'Approval card on the phone; tap Approve; the build appears in the orchestrator Queue.' },
         { say: "The app starts from the real Android template: Kotlin, Jetpack Compose, the framework wired in, and a default asset in every slot. The libraries snap in on top.", shot: 'Terminal clip: template init android-compose, then the project tree with the library modules listed.', app: 'console-web' },
-        { staged: true, say: "The screens come together from framework parts. This assembly view is a preview: the start button, the project picker, today's list and the week grid, already in Jordan's look.", shot: 'Staged assembly view: the two screens building up part by part.' },
+        { staged: true, say: "The screens come together from framework parts. This assembly view is a preview: the start button, the project picker, today's list and the week grid, already in Jordan's look.", shot: 'Staged assembly view: the two screens building up part by part.' , mock: 'app' },
       ],
     },
     {

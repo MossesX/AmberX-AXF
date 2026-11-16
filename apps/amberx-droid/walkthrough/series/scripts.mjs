@@ -9,6 +9,8 @@
 //   app     where the shot is recorded (console-web, axhub-web, amberx-droid, axhub-android); defaults to the video's app.
 //   staged  true when the screen is not built yet and is shown as a mock (step s2). Staged scenes get a visible
 //           "Preview" label in the recording; the narration says so too. Never present a staged screen as shipped.
+//   mock    the scene of the staged designer mock the shot is recorded on (series/mock/build.mjs → designer-mock.html:
+//           canvas, grid, phone, skin, voice, assets, app, actions, matrix); check.mjs knows the list.
 // Each video names a skin (framework/assets/skin) so the themable player switches look between videos.
 // Facts must match the product; anything not built is staged or left out, not promised.
 
@@ -201,7 +203,7 @@ export const VIDEOS = [
         id: 'intro', title: 'Real parts, not mockups',
         scenes: [
           { say: "Most design tools hand you a picture, and then someone has to build it. In AmberX, you design with the real parts. What you place is what ships.", shot: 'Console with the clinic skin; the designer area in view.' },
-          { say: "A quick heads up: some of what you'll see is a preview of the full designer we're building. Anything marked Preview isn't shipped yet. The rest is live.", shot: 'Highlight the Preview label in the corner of the staged canvas.', staged: true },
+          { say: "A quick heads up: some of what you'll see is a preview of the full designer we're building. Anything marked Preview isn't shipped yet. The rest is live.", shot: 'Highlight the Preview label in the corner of the staged canvas.', staged: true , mock: 'canvas' },
         ],
       },
       {
@@ -215,18 +217,18 @@ export const VIDEOS = [
       {
         id: 'canvas', title: 'Laying out a screen',
         scenes: [
-          { say: "The full designer works the same way for whole screens. Pick a layout, then drag in parts from the library: a toolbar, a data grid, tabs, a form, a card.", shot: 'Staged canvas: choose a layout; drag a toolbar, data grid and form onto it.', staged: true },
-          { say: "Each part comes with its behaviour already wired up. The grid sorts and filters. The form saves. The toolbar has the right labels for screen readers. You're arranging working software.", shot: 'Staged canvas: sort the grid; highlight the toolbar label.', staged: true },
-          { say: "Check the phone at any time. The same screen, laid out for a small display, side by side with the desktop. No separate design for mobile.", shot: 'Staged canvas: desktop and phone previews side by side.', staged: true },
-          { say: "Every size, colour, and gap still comes from the tokens you saw in the last video. Switch the skin and your new screen switches with it.", shot: 'Swap skin while the staged screen is open; it re-renders.', staged: true },
-          { say: "Just like everything else in AmberX, the designer has an API. An agent can place the same parts you can, so you can say: add a search bar above the list, and watch it happen.", shot: 'Staged canvas: a spoken request adds a search bar above the grid.', staged: true },
+          { say: "The full designer works the same way for whole screens. Pick a layout, then drag in parts from the library: a toolbar, a data grid, tabs, a form, a card.", shot: 'Staged canvas: choose a layout; drag a toolbar, data grid and form onto it.', staged: true , mock: 'canvas' },
+          { say: "Each part comes with its behaviour already wired up. The grid sorts and filters. The form saves. The toolbar has the right labels for screen readers. You're arranging working software.", shot: 'Staged canvas: sort the grid; highlight the toolbar label.', staged: true , mock: 'grid' },
+          { say: "Check the phone at any time. The same screen, laid out for a small display, side by side with the desktop. No separate design for mobile.", shot: 'Staged canvas: desktop and phone previews side by side.', staged: true , mock: 'phone' },
+          { say: "Every size, colour, and gap still comes from the tokens you saw in the last video. Switch the skin and your new screen switches with it.", shot: 'Swap skin while the staged screen is open; it re-renders.', staged: true , mock: 'skin' },
+          { say: "Just like everything else in AmberX, the designer has an API. An agent can place the same parts you can, so you can say: add a search bar above the list, and watch it happen.", shot: 'Staged canvas: a spoken request adds a search bar above the grid.', staged: true , mock: 'voice' },
         ],
       },
       {
         id: 'ship', title: 'From design to review',
         scenes: [
           { say: "When a screen is done, it goes where every screen goes: UI Review, with desktop and phone shots, waiting for your yes.", shot: 'UI Review item for the designed screen.' },
-          { say: "Approved screens become assets themselves. Use the same layout in your next app, or hand it to an agent as the starting point.", shot: 'Asset list with the saved screen layout.', staged: true },
+          { say: "Approved screens become assets themselves. Use the same layout in your next app, or hand it to an agent as the starting point.", shot: 'Asset list with the saved screen layout.', staged: true , mock: 'assets' },
           { say: "That's the designer. Next: axHub, the server that keeps all of this safe and in sync.", shot: 'End card.' },
         ],
       },
@@ -290,16 +292,16 @@ export const VIDEOS = [
       {
         id: 'parts', title: 'Pick the parts',
         scenes: [
-          { say: "Most of this app already exists as parts. Storage, sync with the hub, settings, notifications, data grids. The library matrix shows what's ready, so we tick the ones we need instead of building them again.", shot: 'Library matrix with the needed libraries ticked.', staged: true },
+          { say: "Most of this app already exists as parts. Storage, sync with the hub, settings, notifications, data grids. The library matrix shows what's ready, so we tick the ones we need instead of building them again.", shot: 'Library matrix with the needed libraries ticked.', staged: true , mock: 'matrix' },
           { say: "The app starts from the Android template. One command creates the project with the framework wired in, a settings screen, and a default asset in every slot.", shot: 'Terminal: template init for android-compose, then `axf validate` passing.' },
         ],
       },
       {
         id: 'design', title: 'Design the screens',
         scenes: [
-          { say: "In the designer, I lay out the two screens: a big start-stop button and today's list, and a week view with totals. Every part is real, and every colour comes from tokens. This canvas is a preview.", shot: 'Staged designer canvas: Today and Week screens assembled.', staged: true },
+          { say: "In the designer, I lay out the two screens: a big start-stop button and today's list, and a week view with totals. Every part is real, and every colour comes from tokens. This canvas is a preview.", shot: 'Staged designer canvas: Today and Week screens assembled.', staged: true , mock: 'app' },
           { say: "I pick a skin I like and save the look as my own asset, so the next app I build can start with it.", shot: 'Apply a skin; save the look as an asset.' },
-          { say: "Every action in the app gets an API too. Start a timer from the command line, from an agent, or by saying start work to AmberX. No feature is buttons only.", shot: 'Staged: the time tracker action list with REST, CLI and voice entries.', staged: true },
+          { say: "Every action in the app gets an API too. Start a timer from the command line, from an agent, or by saying start work to AmberX. No feature is buttons only.", shot: 'Staged: the time tracker action list with REST, CLI and voice entries.', staged: true , mock: 'actions' },
         ],
       },
       {
