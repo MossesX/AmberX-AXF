@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:30:40.762Z",
+ "updatedAt": "2026-11-16T19:30:53.817Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -161740,6 +161740,37 @@
    "origin": {
     "said": "What happened to that build where I could hide anything? I could click a menu and it would show all the assets, hide them, and they'd move to hidden. Rebuild it.",
     "at": "2026-11-16T19:30:07.770Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "hide-any-ui-asset-global-context-menu",
+   "title": "Hide any UI asset from a global context menu, with a Hidden list",
+   "category": "",
+   "detail": "Rebuild of assets-menu-hide-any-asset-visible (branch lost, never shipped). A GLOBAL context menu item on every asset in every app (right-click / long-press): 'Hide'. Plus an Assets menu (global context menu item and Settings > Appearance) listing every asset on the current screen and app (toolbars, tab groups, banners, widgets, nav, menus, panels, anything). Hidden ones move to a Hidden section, one tap shows them again. Saved per app on axHub, survives reload. Same list/hide/show on REST, MCP, CLI, voice. Tests, land through the orchestrator.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-16T19:30:36.556Z",
+   "updatedAt": "2026-11-16T19:30:36.556Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Rebuild the build where I could hide anything: a menu showing all the assets, hide them, they move to hidden. A global context menu item.",
+    "at": "2026-11-16T19:30:36.556Z",
     "source": "",
     "session": "",
     "link": "",

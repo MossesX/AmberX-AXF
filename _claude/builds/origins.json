@@ -3948,6 +3948,18 @@
    "from": "detail",
    "addenda": []
   },
+  "hide-any-ui-asset-global-context-menu": {
+   "said": "Rebuild the build where I could hide anything: a menu showing all the assets, hide them, they move to hidden. A global context menu item.",
+   "at": "2026-11-16T19:30:36.556Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "home-cards": {
    "said": "Design a bunch more cards for the console home screen. If plugins with data or dynamic content don't have a card, design one for them from scratch (you decide what to display and how). Plugins can now carry cards that can be designed in the future SDK and attached to the plugin as assets. Console Home detects all card assets attached to plugins and shows or hides them, but always rendered. The card layout can show or hide all cards detected.",
    "at": "2026-10-29",
