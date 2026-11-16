@@ -179,6 +179,8 @@ jobs:
         run: node apps/console-web/plugins/push-banner/land/merge-queue.test.mjs  # axf-plugin:push-banner
       - name: CI scope — path filters per job, light PR checks while the merge queue is on, main skips what the queue already ran
         run: node framework/spec/check-ci-scope.mjs
+      - name: No Molly in the console — molly-guide, the Molly add-on bundle and _offer_molly stay removed (axf-molly is allowed)
+        run: node framework/spec/check-no-molly.mjs
       - name: Deploy helpers (framework/deploy) — bash -n, shellcheck, self-test; installers that source them
         run: |
           set -e
