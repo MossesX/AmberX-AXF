@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "shape",
+  "id": "leaf",
+  "name": "Leaf (corners example)",
+  "version": "1.0.0",
+  "description": "Per-corner radii: top left and bottom right at the theme's large radius, the other two square. An example of a corners shape; every corner is a radius token, never a length.",
+  "author": "AmberX AXF",
+  "tags": [
+    "shape",
+    "example"
+  ],
+  "data": {
+    "kind": "corners",
+    "corners": {
+      "tl": "lg",
+      "tr": "none",
+      "br": "lg",
+      "bl": "none"
+    }
+  }
+}
