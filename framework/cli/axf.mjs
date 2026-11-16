@@ -49,6 +49,7 @@
  *   axf plugins [plugin]        every plugin's commands and reads (or one plugin's help)
  *   axf <plugin> <command> [--field value]…   run a plugin command or read (also axf plugin <plugin> <command>; needs
  *                               a plugin providing service:plugin-commands@1, the Plugin commands plugin)  <!-- axf-plugin:plugin-commands -->
+ *   axf <plugin> <word> …        a plugin's own word commands when its plugin.json names a "cli" script that exports cliWords
  *   axf console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | refresh [--hard] [--all] | where | list [kind] [words] | clients
  *                               load a screen in Brett's open console (needs a plugin providing service:console-commands@1)
  *   axf console do|state|targets|search|focus|scroll|plugin enable|disable|voice …  [--json]
@@ -126,6 +127,15 @@ const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'v
     const dir = (exists(plugins) ? readdirSync(plugins) : []).sort().find((d) => {
       try { return JSON.parse(readText(joinPath(plugins, d, 'plugin.json'), 'utf8')).provides?.includes('service:plugin-commands@1') && exists(joinPath(plugins, d, 'commands.mjs')); } catch { return false; }
     });
+    // a plugin may name its own command-line script for word commands (plugin.json "cli": { "<folder>": "<file>.mjs" },
+    // e.g. `axf <plugin> rules list`); its generated commands (`axf <plugin> <command-id> --field …`) stay with plugin-commands
+    if (isPlugin && rest[0] && !rest[0].startsWith('--')) {
+      let own = '';
+      try { own = JSON.parse(readText(joinPath(plugins, cmd, 'plugin.json'), 'utf8')).cli?.[cmd] || ''; } catch { /* no manifest */ }
+      const file = own && /^[\w./-]+\.mjs$/.test(own) && !own.includes('..') ? joinPath(plugins, cmd, own) : '';
+      const words = file ? (await import(pathToFileURL(file).href)) : null;
+      if (words?.cliWords?.includes(rest[0])) process.exit(await words.main(rest));
+    }
     if (!dir) { console.error('no plugin provides plugin-commands@1 (install the Plugin commands plugin)'); process.exit(1); }
     const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'commands.mjs')).href);
     process.exit(await main([cmd, ...rest]));

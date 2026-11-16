@@ -1,0 +1,141 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-overlay-pages",
+ "rev": 1,
+ "source": "api",
+ "by": "merge-watch",
+ "shippedAt": "2026-11-16T14:09:09Z",
+ "build": {
+  "id": "overlay-pages",
+  "title": "overlay-pages",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "overlay-pages",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/overlay-pages",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "038e4fb02b618445ee454d6d9d498765f39a744f",
+ "commits": [
+  "038e4fb02b618445ee454d6d9d498765f39a744f",
+  "51c8440b5937ad6f8b51e2eed533d5b87e30fd9e",
+  "443ac564a5ede523d4b267da72fe76f6a2ab5572",
+  "8e3ea458be0b8033792fea48853d107cb472180e",
+  "4ba53d1c436414dc4edfd220028750b4f9547e62",
+  "ae3134a3529a1383e3ab39a472d01f69938f68cb",
+  "70e8782d7638ee1248ebc0cea177d39af45a12d5"
+ ],
+ "mergedAt": "2026-11-13T17:20:32Z",
+ "landedAt": "2026-11-13T17:20:32Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/overlay-opens-pages-the-floating-toolbar-expands.md",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ApprovalOverlay.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ApprovalOverlayRules.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AxppLink.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/OverlayPageRules.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+  "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/OverlayPageRulesTest.java",
+  "apps/amberx-droid/src/axf/libs/hub/veto.ts",
+  "apps/amberx-droid/src/native.ts",
+  "apps/console-web/plugins/approvals-banner/plugin.json",
+  "apps/console-web/plugins/approvals-banner/test.mts",
+  "apps/console-web/plugins/approvals-banner/web/index.tsx",
+  "apps/console-web/plugins/approvals-banner/web/overlay.ts",
+  "apps/console-web/src/axf/libs/hub/veto.ts"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ApprovalOverlay.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ApprovalOverlayRules.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AxppLink.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/OverlayPageRules.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+    "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/OverlayPageRulesTest.java",
+    "apps/amberx-droid/src/axf/libs/hub/veto.ts",
+    "apps/amberx-droid/src/native.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "approvals-banner",
+   "files": [
+    "apps/console-web/plugins/approvals-banner/plugin.json",
+    "apps/console-web/plugins/approvals-banner/test.mts",
+    "apps/console-web/plugins/approvals-banner/web/index.tsx",
+    "apps/console-web/plugins/approvals-banner/web/overlay.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/axf/libs/hub/veto.ts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/overlay-opens-pages-the-floating-toolbar-expands.md"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "CI: Android framework + console",
+   "command": "https://github.com/MossesX/AmberX-AXF/actions/runs/43471857020",
+   "result": "fail",
+   "detail": "cancelled"
+  },
+  {
+   "name": "CI: Build and publish site",
+   "command": "https://github.com/MossesX/AmberX-AXF/actions/runs/43471857098",
+   "result": "pass",
+   "detail": "success"
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

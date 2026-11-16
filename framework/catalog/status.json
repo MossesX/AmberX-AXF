@@ -728,12 +728,6 @@
     "wave": 1,
     "module": "axf-ui"
   },
-  "ui.opacity.surfaces": {
-    "status": "built",
-    "wave": 1,
-    "module": "axf-ui",
-    "notes": "Style theme opacityDialog / opacitySettings / opacityPanel / opacityMenu / opacityToolbar / opacityBanner (default 1 = opaque; below 1 = see-through + frosted backdrop) → --fx-opacity-<kind> + --fx-backdrop-<kind> (engines/theme.ts SURFACE_KINDS); every surface root in axf.css reads its own; Token Control tokens.style + Element Explorer; per window: Window settings → Background (WindowSettings.surface); check-theme rule surface fails on a surface background without an --fx-opacity-* token. Kotlin twin deferred."
-  },
   "ui.a11y": {
     "status": "built",
     "wave": 1,
@@ -2295,6 +2289,18 @@
     "module": "app-console",
     "notes": "framework/core/build-id.mjs: ids ≤ 40 chars (^[a-z0-9][a-z0-9-]{0,39}$), filler words dropped, cut at a dash, -2/-3 on a collision; used by request, orchestrator add/import/harvest, Pending and Plan Studio. Legacy long ids get an alias (pipeline.mjs aliases, the tick for live builds); land-alias links <worktrees>/<alias> and claude/<alias> for build_land. Kotlin twin deferred."
   },
+  "cx.settings.opendialog": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-settings",
+    "notes": "Every settings interface always opens as a floating glass popup (core/engines/settingsopen.ts; Brett Nov 13 + Nov 16 2026). app.settings / settings.open[:tab] → dialog; the page / pane / floating choice (axf.settings.opensAs, settings.opensas, settings.page, Open as page) is removed and saved values are dropped on load; CI framework/spec/check-settings-open.mts fails code that navigates to the Settings page or brings any such option back. Kotlin twin deferred."
+  },
+  "ui.opacity.surfaces": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui",
+    "notes": "Style theme opacityDialog / opacitySettings / opacityPanel / opacityMenu / opacityToolbar / opacityBanner (default 1 = opaque; below 1 = see-through + frosted backdrop) → --fx-opacity-<kind> + --fx-backdrop-<kind> (engines/theme.ts SURFACE_KINDS); every surface root in axf.css reads its own; Token Control tokens.style + Element Explorer; per window: Window settings → Background (WindowSettings.surface); check-theme rule surface fails on a surface background without an --fx-opacity-* token. Kotlin twin deferred."
+  },
   "cx.contextmenu.consolesettings": {
     "status": "built",
     "wave": 1,
@@ -2330,6 +2336,12 @@
     "wave": 1,
     "module": "app-console",
     "notes": "Nov 13 2026 (build skin-axhub-override-switch-greyed-out): console Settings → Appearance → Override axHub, under Get my skin only from axHub (default off). One or the other whichever way either is set (runtime onChange: Override on clears axf.lock.hubskin, axHub-only on clears axf.lock.hubskin.override and the overridden marks). While axHub-only is on every skin and asset editor is disabled, not hidden (HubSkinLockArea: Theme manager rows, Theme editor, Asset studio, nav style, context menu designer; the Appearance panel, skin picker, every-asset picker and plugin themes through the lock), each under HubSkinLockNote with Brett's wording and a Click here to override link; the link and the switch ask one confirm. Edits under Override are recorded in axf.lock.hubskin.overridden and shown as Overridden chips. Reachable by the setting (search, console.settings, settings.set:axf.lock.hubskin.override), the appearance.hubskin.override action and voice (\"override the axHub skin\", Python twin). Kotlin twin deferred (PORTING.md)."
+  },
+  "cx.gate": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Build gate-rules-plugin-in-the-console (Nov 15 2026; Brett: \"Where is the gate and rules plugin, open it on my screen.\"): Builds → Gate & rules (view:gate, tabs gate.tabs=rules|auto-lander|history), Settings → Plugins → Gate. REST /api/plugins/gate, MCP gate_* / lander_*, CLI axf gate …, voice gate.open, gate.rule, lander.land-now, lander.pause, lander.resume, gate.setting. Merge queue switch off by default (one at a time). Self-tests: the plugin's test.mjs and server/test_routes.py. Kotlin twin deferred (PORTING.md)."
   },
   "f.appearance.hubdefault": {
     "status": "built",

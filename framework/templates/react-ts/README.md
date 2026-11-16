@@ -16,7 +16,7 @@ npm run build:single # one self-contained index.html -> dist-single/
 | `axf.manifest.json` | App identity, framework version, default asset per slot |
 | `axf.lock.json` | Hashes of baked framework files (conformance) |
 | `src/axf/` | Baked framework runtime — engines, React layer, base CSS, libraries. Don't edit; re-bake instead |
-| `src/axf/libs/settings` | The settings interface every app ships (`app.settings`, nav item **Settings**): Appearance, Account & security, Connections, **Plugins** (every installed library with its health), About. Plugins add groups/sub-tabs there, never their own settings screen |
+| `src/axf/libs/settings` | The settings interface every app ships (`app.settings`, nav item **Settings**; opens in a floating dialog over the current screen by default, `settings.open:<tab>` for a tab, never `navigate('settings')`: `framework/spec/check-settings-open.mts` fails on it): Appearance, Account & security, Connections, **Plugins** (every installed library with its health), About. Plugins add groups/sub-tabs there, never their own settings screen |
 | `src/assets/<type>/<id>.json` | Hot-swappable assets |
 | `src/views/` | Your views (register them in `src/App.tsx`) |
 | `src/actions.ts` | Handlers for the standard action vocabulary |

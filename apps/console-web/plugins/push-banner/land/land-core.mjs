@@ -243,6 +243,7 @@ export function blockReason(id, s = {}) {
   if (s.prError) return r('pr', `its pull request couldn't be opened (${str(s.prError, 160)}).`);
   if (s.deps?.length) return r('dependency', `waits for ${s.deps.join(', ')} to land first.`);
   if (s.ci === 'failure') return r('ci', `CI is red${s.failing?.length ? ` (${s.failing.slice(0, 3).join(', ')})` : ''}. Needs a code fix.`, { checks: (s.failing || []).slice(0, 10) });
+  if (s.rules?.failing?.length) return r('rules', `build rules fail (${s.rules.failing.slice(0, 4).join(', ')}${s.rules.failing.length > 4 ? ', …' : ''}). The VPS fixed what it could; the rest needs a fix (Builds → Gate & rules → Build rules).`, { rules: s.rules.failing.slice(0, 20) });
   if (s.waitUi !== false && s.ui && s.ui !== '') {
     const words = { waiting: 'its screenshots are waiting in UI Review. Approve them and it merges by itself.', changes: 'UI Review asked for changes.', rejected: 'UI Review rejected it.', unknown: "UI Review couldn't be read, so it waits." };
     return r('ui', words[s.ui] || `UI Review holds it (${str(s.ui, 40)}).`);

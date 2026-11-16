@@ -195,9 +195,8 @@ function placeLibrary(rt: AxfRuntime, l: AxfWebLibrary) {
   if (!tab) return;
   rt.settings.addGroup({
     id: `${l.id}.placement`, label: 'Opens in', icon: 'layout', module: l.id, order: 1, tab,
-    // the pick also decides where these settings open (window-resize-fix): say so, and name the plugin, not its dialog
-    // (the Terminal's primary UI is the "Open a tab" picker; terminal-drag-chain-tree, Nov 3 2026)
-    description: `Where ${l.label}${title && title !== l.label ? ` (${title})` : ''} opens, and where these settings open: Dialog opens them in a pop-up over what you're on, the other choices on the Settings page. Default: ${PLACEMENT_LABELS[l.opens].toLowerCase()}.`,
+    // its settings always open as a floating popup (Brett, Nov 16 2026); this pick moves only the plugin's own UI
+    description: `Where ${l.label}${title && title !== l.label ? ` (${title})` : ''} opens. Its settings always open in a floating dialog. Default: ${PLACEMENT_LABELS[l.opens].toLowerCase()}.`,
     settings: [{ key: placementKey(l.id), label: 'Open it in', kind: 'choice', default: l.opens, options: placementOptions() }],
   });
 }

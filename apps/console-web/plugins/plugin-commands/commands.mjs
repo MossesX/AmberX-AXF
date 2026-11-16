@@ -140,7 +140,7 @@ function dataFile(dir, file) {
 
 class PluginError extends Error { constructor(code, message, extra = {}) { super(message); this.code = code; this.extra = extra; } }
 
-const listItem = (p, c) => ({ id: `${p.folder}/${c.id}`, plugin: p.folder, app: p.app, name: p.name, command: c.id, title: c.title, description: c.description, kind: c.kind, effect: c.effect, confirm: c.confirm, run: c.run.route ? 'route' : c.run.action ? 'action' : c.run.data ? 'data' : 'info', tool: p.app === 'console-web' ? commandToolName(p.folder, c.id) : null, enabled: p.enabled !== false, ...(c.context ? { context: true } : {}) });
+const listItem = (p, c) => ({ id: `${p.folder}/${c.id}`, plugin: p.folder, app: p.app, name: p.name, command: c.id, title: c.title, description: c.description, kind: c.kind, effect: c.effect, confirm: c.confirm, run: c.run.route ? 'route' : c.run.action ? 'action' : c.run.data ? 'data' : 'info', tool: p.app === 'console-web' ? c.tool || commandToolName(p.folder, c.id) : null, enabled: p.enabled !== false, ...(c.context ? { context: true } : {}) });
 
 /**
  * Gate and plan one plugins.* command. Answers the control@1 envelope for list / get / local reads and failures, or
