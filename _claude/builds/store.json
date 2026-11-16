@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6473,
- "updatedAt": "2026-11-16T14:16:05.558Z",
+ "rev": 6474,
+ "updatedAt": "2026-11-16T14:16:21.131Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -226032,8 +226032,8 @@
    "pr": "#717",
    "priority": "P0",
    "createdAt": "2026-11-14T22:19:00.612Z",
-   "updatedAt": "2026-11-16T14:15:48.959Z",
-   "builtAt": "2026-11-16T14:15:48.959Z",
+   "updatedAt": "2026-11-16T14:16:08.095Z",
+   "builtAt": "2026-11-16T14:16:08.095Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -226146,6 +226146,10 @@
     {
      "text": "s19: no redeploy or phone note yet. Deploy paths ship main only, and the note's text isn't true until the publish runs. After merge + nightly deploy, systems check hub-default-skin goes red, pushes once to AmberX, and its ask-first Auto fix publishes.",
      "at": "2026-11-16T14:14:44.594Z"
+    },
+    {
+     "text": "Headless run axf-console-look-becomes-default-axhub-skin--rhonda: brief only · start 11.5K tokens ($0.03) · cost $14.14 · 266 turns · 6 tools, MCP none",
+     "at": "2026-11-16T14:16:08.095Z"
     }
    ],
    "approvals": [
