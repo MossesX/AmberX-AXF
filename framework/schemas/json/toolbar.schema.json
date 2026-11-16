@@ -60,7 +60,7 @@
         "customPath": {
           "type": "string",
           "maxLength": 400,
-          "description": "SVG path in a 0..100 square (commands M L H V C S Q T A Z), shape custom only."
+          "description": "SVG path in a 0..100 square (commands M L H V C S Q T Z), shape custom only."
         },
         "iconOverride": {
           "type": "object",

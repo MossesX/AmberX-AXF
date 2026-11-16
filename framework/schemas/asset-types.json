@@ -1962,7 +1962,7 @@
     ]
   },
   "widgetShape": {
-    "_doc": "widget-shape@1 (core/engines/bannerwidgets.ts): the outline a widget is clipped to on its host and the icon it draws, chosen per widget. `shape` is one of `shapes` (default circle = today's look, so an unset or migrated widget never changes); `customPath` goes with shape custom only: an SVG path in a 0..100 square (commands M L H V C S Q T A Z, absolute or relative, at most `customPath.max` characters, closed with Z); `iconOverride` = {pack: icon-pack asset id, id: glyph name} draws that glyph instead of the widget's own icon. A shape that isn't listed, a custom shape without a valid path, or an override whose pack or glyph doesn't exist falls back to circle / the widget's own icon: bad input never breaks the bar. Compiled per widget into the tokens below (web: CSS custom properties on the widget's host item; Android twin deferred, spec/PORTING.md).",
+    "_doc": "widget-shape@1 (core/engines/bannerwidgets.ts): the outline a widget is clipped to on its host and the icon it draws, chosen per widget. `shape` is one of `shapes` (default circle = today's look, so an unset or migrated widget never changes); `customPath` goes with shape custom only: one closed SVG outline in a 0..100 square (commands M L H V C S Q T Z, absolute or relative, at most `customPath.max` characters, ends with Z; curves are sampled, so it compiles to a percent polygon that scales with the body); `iconOverride` = {pack: icon-pack asset id, id: glyph name} draws that glyph instead of the widget's own icon. A shape that isn't listed, a custom shape without a valid path, or an override whose pack or glyph doesn't exist falls back to circle / the widget's own icon: bad input never breaks the bar. Compiled per widget into the tokens below (web: CSS custom properties on the widget's host item; Android twin deferred, spec/PORTING.md). The host's own default for widgets without a shape is the banner's customize token `widgetShape`.",
     "frame": "widget-shape@1",
     "shapes": [
       "circle",
@@ -1975,7 +1975,7 @@
     "default": "circle",
     "customPath": {
       "max": 400,
-      "commands": "MLHVCSQTAZ",
+      "commands": "MLHVCSQTZ",
       "box": 100
     },
     "iconOverride": {

@@ -25,7 +25,7 @@ import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
 import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
 import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
-import { BANNER_FIXED_SHAPE, WIDGET_SHAPE_FRAME, bannerWidgetEmpty, bannerWidgetView, findBannerWidget, migrateBannerWidgetPrefs, normalizeBannerWidgetPrefs, patchBannerWidget, BANNER_WIDGET_SIZES, type BannerWidgetHint, type BannerWidgetPrefs, type BannerWidgetSize, type BannerWidgetView } from './engines/bannerwidgets';
+import { BANNER_FIXED_SHAPE, BANNER_WIDGET_SHAPES, WIDGET_ICON_OWN, WIDGET_SHAPE_FRAME, bannerWidgetEmpty, bannerWidgetView, findBannerWidget, flattenCustomPath, migrateBannerWidgetPrefs, normalizeBannerWidgetPrefs, patchBannerWidget, resolveWidgetShape, BANNER_WIDGET_SIZES, type BannerWidgetHint, type BannerWidgetPrefs, type BannerWidgetShape, type BannerWidgetSize, type BannerWidgetView, type ResolvedWidgetShape } from './engines/bannerwidgets';
 import { hostSpec, hostSpecs, moveOnHost, normalizeArrangement, placeHost, placeToolbarWidgets, type HostArrangement, type HostAttachment, type PlacedAttachment } from './engines/widgets';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
@@ -1517,6 +1517,19 @@ export class AxfRuntime {
   /** How one widget is drawn (`type:id`). */
   bannerWidgetView(key: string): BannerWidgetView {
     return bannerWidgetView(key.split(':')[0] ?? '', this.bannerWidgetHint(key), this.bannerWidgetPrefs()[key]);
+  }
+
+  /** One widget's shape and icon as compiled (widget-shape@1): token values, and what fell back to the default and why. */
+  bannerWidgetShape(key: string): ResolvedWidgetShape {
+    return resolveWidgetShape(this.bannerWidgetView(key), (pack, id) => this.packGlyph(pack, id) !== null);
+  }
+
+  /** A glyph of a named icon pack (widget-shape@1 icon overrides); null when the pack or the glyph doesn't exist. */
+  packGlyph(packId: string, name: string): { glyph: Glyph; pack: unknown } | null {
+    const pack = this.registry.get('icon-pack' as AssetType, packId);
+    if (!pack) return null;
+    const glyph = glyphFor(pack.data, name);
+    return glyph ? { glyph, pack: pack.data } : null;
   }
 
   /** Does this widget get drawn: not hidden, and not empty with hide-when-empty on? */
@@ -3200,7 +3213,7 @@ export class AxfRuntime {
     a.register('widgets.arrange', ([host]) => { const h = host || 'banner'; this.setArranging(this.arranging(h) ? null : h); }, { label: 'Arrange widgets (drag to move)', requires: 'assets.swap', params: true });
     a.register('widgets.arrange.done', () => this.setArranging(null), { label: 'Done arranging widgets', searchable: false });
     a.register('widgets.reset', ([host]) => this.resetHostArrangement(host || 'banner'), { label: 'Put widgets back where they were', requires: 'assets.swap', params: true });
-    // Banner widgets: the picker, and what voice and the API say (`banner.widget:<clock|ticker|…>:hide|show|<size>`).
+    // Banner widgets: the picker, and what voice and the API say (`banner.widget:<clock|ticker|…>:hide|show|<size>|<shape>|path=<svg>|icon=<pack>/<glyph>|icon=own|reset`).
     a.register('banner.widgets', (args) => this.openDialog(BANNER_WIDGETS_DIALOG, args.length ? { key: args.join(':') } : {}), { label: 'Banner widgets…', requires: 'assets.swap' });
     a.register('banner.widgets.reset', () => this.resetBannerWidgets(), { label: 'Reset the banner widgets', requires: 'assets.swap' });
     a.register('banner.widget', (args) => {
@@ -3209,8 +3222,21 @@ export class AxfRuntime {
       if (!w) { this.toast(`No banner widget "${args.slice(0, -1).join(':')}"`, 'warning', 'Banner widgets'); return; }
       if (what === 'hide' || what === 'show') this.setBannerWidget(w.key, { hidden: what === 'hide' });
       else if ((BANNER_WIDGET_SIZES as readonly string[]).includes(what)) this.setBannerWidget(w.key, { size: what as BannerWidgetSize });
-      else if (what === 'reset') this.setBannerWidget(w.key, { hidden: null, size: null, show: null, maxWidth: null, maxUnit: null, priority: null, hideWhenEmpty: null, overflow: null });
-      else this.toast(`"${what}": use hide, show, reset or a size (${BANNER_WIDGET_SIZES.join(', ')})`, 'warning', 'Banner widgets');
+      // widget-shape@1: a named shape, a custom outline, another pack's glyph, or back to its own icon
+      else if ((BANNER_WIDGET_SHAPES as readonly string[]).includes(what) && what !== 'custom') this.setBannerWidget(w.key, { shape: what as BannerWidgetShape, customPath: null });
+      else if (what.startsWith('path=')) {
+        const d = what.slice(5).trim();
+        if (flattenCustomPath(d)) this.setBannerWidget(w.key, { shape: 'custom', customPath: d });
+        else this.toast('A custom shape is one closed SVG outline (M L H V C S Q T Z) inside a 0..100 square, e.g. M50 0 L100 50 L50 100 L0 50 Z', 'warning', 'Banner widgets');
+      } else if (what.startsWith('icon=')) {
+        const v = what.slice(5).trim();
+        const [pack, id] = v.split('/');
+        if (v === WIDGET_ICON_OWN) this.setBannerWidget(w.key, { iconOverride: null });
+        else if (pack && id && this.packGlyph(pack, id)) this.setBannerWidget(w.key, { iconOverride: { pack, id } });
+        else this.toast(`"${v}": use icon=<icon pack id>/<glyph name> of a registered pack, or icon=own`, 'warning', 'Banner widgets');
+      }
+      else if (what === 'reset') this.setBannerWidget(w.key, { hidden: null, size: null, show: null, maxWidth: null, maxUnit: null, priority: null, hideWhenEmpty: null, overflow: null, shape: null, customPath: null, iconOverride: null });
+      else this.toast(`"${what}": use hide, show, reset, a size (${BANNER_WIDGET_SIZES.join(', ')}), a shape (${BANNER_WIDGET_SHAPES.filter((s) => s !== 'custom').join(', ')}), path=<svg outline>, icon=<pack>/<glyph> or icon=own`, 'warning', 'Banner widgets');
     }, { label: 'Change a banner widget', requires: 'assets.swap', params: true, searchable: false });
     a.register('assets.reset', () => this.reset(), { label: 'Reset to defaults' });
     // design.package:<id> · design.package:next|prev|random steps through the registered packages and applies one

@@ -9,7 +9,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import { BANNER_SIDES, type PlacedAttachment } from '../../core/engines/banner';
-import { BANNER_WIDGET_MAX_WIDTH, BANNER_WIDGET_PRIORITY, BANNER_WIDGET_SHOWS, BANNER_WIDGET_SIZES, bannerWidgetCapCss, overflowWidgets, type BannerWidgetShow, type BannerWidgetSize, type BannerWidthUnit } from '../../core/engines/bannerwidgets';
+import { BANNER_WIDGET_MAX_WIDTH, BANNER_WIDGET_PRIORITY, BANNER_WIDGET_SHAPES, BANNER_WIDGET_SHOWS, BANNER_WIDGET_SIZES, WIDGET_ICON_OWN, bannerWidgetCapCss, flattenCustomPath, overflowWidgets, widgetShapeTokens, type BannerWidgetShape, type BannerWidgetShow, type BannerWidgetSize, type BannerWidthUnit } from '../../core/engines/bannerwidgets';
 import { BANNER_WIDGETS_DIALOG, type AxfRuntime, type BannerWidget } from '../../core/runtime';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { Banner } from './Banner';
@@ -22,12 +22,50 @@ import type { DialogMap } from './Overlays';
 const SIZE_LABEL: Record<BannerWidgetSize, string> = { icon: 'Icon only', compact: 'Compact', normal: 'Normal', wide: 'Wide' };
 const SHOW_LABEL: Record<BannerWidgetShow, string> = { auto: 'Its own mix', both: 'Icon and text', icon: 'Icon only', text: 'Text only', number: 'Number only' };
 const SIDE_LABEL: Record<string, string> = { left: 'Left', center: 'Centre', right: 'Right' };
+const SHAPE_LABEL: Record<BannerWidgetShape, string> = { circle: 'Circle', square: 'Square', rounded: 'Rounded', pill: 'Pill', hexagon: 'Hexagon', custom: 'Custom outline' };
+const CUSTOM_PATH_EXAMPLE = 'M50 0 L100 50 L50 100 L0 50 Z';
 
-/** What the banner item around a widget carries: its size, what it shows, its width cap. */
+/**
+ * What the banner item around a widget carries: its size, what it shows, its width cap, and (widget-shape@1) the shape it
+ * resolved to with the compiled tokens inline when the shape was chosen (a pick or a hint); a default shape leaves the host's
+ * own widget shape token in force.
+ */
 export function bannerItemAttrs(rt: AxfRuntime, key: string): Record<string, unknown> {
   const v = rt.bannerWidgetView(key);
   const max = bannerWidgetCapCss(v.cap);
-  return { 'data-fx-wsize': v.size, 'data-fx-wshow': v.show === 'auto' ? undefined : v.show, ...(max ? { style: { maxWidth: max } } : {}) };
+  const shape = rt.bannerWidgetShape(key);
+  const style: Record<string, string> = { ...(max ? { maxWidth: max } : {}), ...(shape.explicit ? widgetShapeTokens(shape) : {}) };
+  return { 'data-fx-wsize': v.size, 'data-fx-wshow': v.show === 'auto' ? undefined : v.show, 'data-fx-wshape': shape.shape, ...(Object.keys(style).length ? { style } : {}) };
+}
+
+/** Shape, custom outline and icon override for one widget (widget-shape@1). */
+function ShapeFields({ w }: { w: BannerWidget }) {
+  const rt = useRuntime();
+  const saved = rt.bannerWidgetPrefs()[w.key] ?? {};
+  const set = (patch: Record<string, unknown>) => rt.setBannerWidget(w.key, patch);
+  const resolved = rt.bannerWidgetShape(w.key);
+  const [path, setPath] = useState(saved.customPath ?? '');
+  useEffect(() => { setPath(saved.customPath ?? ''); }, [saved.customPath]);
+  const pathOk = !path.trim() || flattenCustomPath(path) !== null;
+  const commitPath = (v: string) => { setPath(v); if (flattenCustomPath(v)) set({ shape: 'custom', customPath: v.trim() }); };
+  const packs = rt.registry.all().filter((a) => a.type === 'icon-pack') as { id: string; name: string; data: { glyphs?: Record<string, unknown> } }[];
+  const over = saved.iconOverride ?? w.view.iconOverride;
+  const pack = over ? packs.find((p) => p.id === over.pack) : undefined;
+  const glyphs = pack ? Object.keys(pack.data.glyphs ?? {}).sort() : [];
+  const pickPack = (id: string) => {
+    if (id === WIDGET_ICON_OWN) { set({ iconOverride: null }); return; }
+    const p = packs.find((x) => x.id === id);
+    const first = p ? Object.keys(p.data.glyphs ?? {}).sort()[0] : undefined;
+    if (first) set({ iconOverride: { pack: id, id: over && Object.keys(p!.data.glyphs ?? {}).includes(over.id) ? over.id : first } });
+  };
+  return (
+    <>
+      <SelectField label="Shape" hint={resolved.fell[0]} value={w.view.shape} options={BANNER_WIDGET_SHAPES.map((s) => ({ value: s, label: SHAPE_LABEL[s] }))} onChange={(v) => set(v === 'custom' ? { shape: 'custom' } : { shape: v, customPath: null })} />
+      {w.view.shape === 'custom' && <TextField className="fx-banner-widgets__wide" label="Custom outline" mono value={path} placeholder={CUSTOM_PATH_EXAMPLE} hint="One closed SVG outline in a 0..100 square (M L H V C S Q T Z); until it is valid the widget stays a circle" error={pathOk ? undefined : 'Not one closed outline inside the square'} onChange={commitPath} />}
+      <SelectField label="Icon" value={over?.pack ?? WIDGET_ICON_OWN} options={[{ value: WIDGET_ICON_OWN, label: 'Its own' }, ...packs.map((p) => ({ value: p.id, label: p.name }))]} onChange={pickPack} disabled={!packs.length} hint={packs.length ? undefined : 'No icon packs registered'} />
+      {over && <SelectField label="Glyph" value={over.id} options={glyphs.map((g) => ({ value: g, label: g }))} onChange={(v) => set({ iconOverride: { pack: over.pack, id: v } })} disabled={!glyphs.length} hint={pack ? undefined : 'That pack is not registered: the widget draws its own icon'} />}
+    </>
+  );
 }
 
 /**
@@ -126,6 +164,7 @@ function WidgetFields({ w }: { w: BannerWidget }) {
       <SelectField label="Width in" value={unit} options={[{ value: 'px', label: 'Pixels' }, { value: 'ch', label: 'Characters' }]} onChange={(v) => { if (saved.maxWidth) set({ maxWidth: Math.max(BANNER_WIDGET_MAX_WIDTH[v as BannerWidthUnit].min, Math.min(BANNER_WIDGET_MAX_WIDTH[v as BannerWidthUnit].max, saved.maxWidth)), maxUnit: v }); else set({ maxUnit: null }); }} />
       <SelectField label="Region" value={w.at} options={BANNER_SIDES.map((s) => ({ value: s, label: SIDE_LABEL[s] ?? s }))} onChange={(v) => { if (w.attached) rt.moveHostItem('banner', w.key, v, 999); }} disabled={!w.attached} />
       <SelectField label="Priority" hint="Low goes into ⋯ first" value={String(w.view.priority)} options={Array.from({ length: BANNER_WIDGET_PRIORITY.max }, (_, i) => ({ value: String(i + 1), label: String(i + 1) }))} onChange={(v) => set({ priority: Number(v) })} />
+      <ShapeFields w={w} />
       <Switch className="fx-banner-widgets__wide" label="Hide when there's nothing to report" checked={w.view.hideWhenEmpty} onChange={(v) => set({ hideWhenEmpty: v })} />
       <Switch className="fx-banner-widgets__wide" label="Move into the ⋯ menu when space runs out" checked={w.view.overflow} onChange={(v) => set({ overflow: v })} />
       <div className="fx-row fx-banner-widgets__wide"><Button size="sm" tone="ghost" icon="undo" onClick={() => rt.dispatch(`banner.widget:${w.key}:reset`)}>Back to default</Button></div>

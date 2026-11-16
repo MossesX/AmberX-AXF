@@ -109,6 +109,8 @@ export interface BannerWidgetView {
   customPath?: string;
   /** another pack's glyph in place of its own icon, null = its own */
   iconOverride: BannerWidgetIconOverride | null;
+  /** where the shape came from: the person's pick, the module's hint, or the default (then the host's own shape token applies) */
+  shapeSource: 'pick' | 'hint' | 'default';
 }
 
 const has = <T extends string>(list: readonly T[], v: unknown): v is T => (list as readonly unknown[]).includes(v);
@@ -206,10 +208,137 @@ export function bannerWidgetView(type: string, hint: BannerWidgetHint | null | u
   const cap: BannerWidgetView['cap'] = num(p.maxWidth) && p.maxWidth > 0 ? { n: p.maxWidth, unit: p.maxUnit ?? 'px' } : spaces === null ? null : { n: spaces, unit: 'space' };
   const priority = num(p.priority) ? p.priority : num(h.priority) ? clampInt(h.priority, BANNER_WIDGET_PRIORITY.min, BANNER_WIDGET_PRIORITY.max) : BANNER_WIDGET_PRIORITY.default;
   // widget-shape@1: the choice wins over the hint; a custom shape without a path falls back to the default at resolve time
-  const shape: BannerWidgetShape = has(BANNER_WIDGET_SHAPES, p.shape) ? p.shape : has(BANNER_WIDGET_SHAPES, h.shape) ? h.shape : BANNER_WIDGET_SHAPE_DEFAULT;
-  const customPath = shape === 'custom' ? (p.shape === 'custom' ? p.customPath ?? h.customPath : h.customPath) : undefined;
+  const shapeSource: BannerWidgetView['shapeSource'] = has(BANNER_WIDGET_SHAPES, p.shape) ? 'pick' : has(BANNER_WIDGET_SHAPES, h.shape) ? 'hint' : 'default';
+  const shape: BannerWidgetShape = shapeSource === 'pick' ? p.shape! : shapeSource === 'hint' ? h.shape! : BANNER_WIDGET_SHAPE_DEFAULT;
+  const customPath = shape === 'custom' ? (shapeSource === 'pick' ? p.customPath ?? h.customPath : h.customPath) : undefined;
   const iconOverride = normalizeIconOverride(p.iconOverride) ?? normalizeIconOverride(h.iconOverride) ?? null;
-  return { hidden: p.hidden ?? h.hidden ?? false, size, show, cap, priority, hideWhenEmpty: p.hideWhenEmpty ?? h.hideWhenEmpty ?? false, overflow: p.overflow ?? h.overflow ?? true, shape, ...(customPath ? { customPath } : {}), iconOverride };
+  return { hidden: p.hidden ?? h.hidden ?? false, size, show, cap, priority, hideWhenEmpty: p.hideWhenEmpty ?? h.hideWhenEmpty ?? false, overflow: p.overflow ?? h.overflow ?? true, shape, ...(customPath ? { customPath } : {}), iconOverride, shapeSource };
+}
+
+/* ---- widget-shape@1: a shape and an icon override compiled to tokens ---- */
+
+/** Corner radius per shape (hexagon and custom clip instead). Circle is 50%: the same as today's 999px on the square bodies it applies to. */
+export const WIDGET_SHAPE_RADIUS: Record<Exclude<BannerWidgetShape, 'hexagon' | 'custom'>, string> = { circle: '50%', square: '0', rounded: 'var(--fx-radius-md)', pill: '999px' };
+/** A regular hexagon, points left and right, as a percentage polygon (scales with the body). */
+export const WIDGET_SHAPE_HEXAGON_CLIP = 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)';
+/** The icon token's value when the widget draws its own icon. */
+export const WIDGET_ICON_OWN = 'own';
+/** Points sampled along each curve when a custom path is flattened. */
+export const WIDGET_SHAPE_CURVE_STEPS = 8;
+const PATH_CHARS = /^[MLHVCSQTZmlhvcsqtz0-9.,\s+-]+$/;
+const PATH_TOKEN = /[MLHVCSQTZmlhvcsqtz]|[-+]?(?:\d+\.?\d*|\.\d+)/g;
+const PATH_ARITY: Record<string, number> = { m: 2, l: 2, h: 1, v: 1, c: 6, s: 4, q: 4, t: 2 };
+const round2 = (n: number) => Math.round(n * 100) / 100;
+
+/**
+ * A custom path flattened to the corners of a polygon in the 0..box square, or null when it is not exactly one closed outline
+ * drawn inside the box with the allowed commands (M L H V C S Q T Z, absolute or relative; curves are sampled). Percent
+ * polygons scale with the body on every port, which a `path()` clip would not.
+ */
+export function flattenCustomPath(d: unknown): [number, number][] | null {
+  if (typeof d !== 'string') return null;
+  const s = d.trim();
+  if (!s || s.length > BANNER_WIDGET_CUSTOM_PATH.max || !PATH_CHARS.test(s) || !/^[Mm]/.test(s) || !/[Zz]$/.test(s)) return null;
+  const toks = s.match(PATH_TOKEN) ?? [];
+  const pts: [number, number][] = [];
+  let cmd = ''; let prev = ''; let moved = false;
+  let x = 0, y = 0, sx = 0, sy = 0, cx = 0, cy = 0;
+  const push = (px: number, py: number) => { const last = pts[pts.length - 1]; if (!last || Math.abs(last[0] - px) > 1e-6 || Math.abs(last[1] - py) > 1e-6) pts.push([px, py]); };
+  const cubic = (x1: number, y1: number, x2: number, y2: number, x3: number, y3: number) => {
+    for (let k = 1; k <= WIDGET_SHAPE_CURVE_STEPS; k++) { const t = k / WIDGET_SHAPE_CURVE_STEPS, u = 1 - t; push(u * u * u * x + 3 * u * u * t * x1 + 3 * u * t * t * x2 + t * t * t * x3, u * u * u * y + 3 * u * u * t * y1 + 3 * u * t * t * y2 + t * t * t * y3); }
+    cx = x2; cy = y2; x = x3; y = y3;
+  };
+  const quad = (x1: number, y1: number, x2: number, y2: number) => {
+    for (let k = 1; k <= WIDGET_SHAPE_CURVE_STEPS; k++) { const t = k / WIDGET_SHAPE_CURVE_STEPS, u = 1 - t; push(u * u * x + 2 * u * t * x1 + t * t * x2, u * u * y + 2 * u * t * y1 + t * t * y2); }
+    cx = x1; cy = y1; x = x2; y = y2;
+  };
+  let i = 0;
+  while (i < toks.length) {
+    const t = toks[i]!;
+    if (/[A-Za-z]/.test(t)) {
+      cmd = t; i++;
+      if (cmd === 'z' || cmd === 'Z') { if (!moved || i < toks.length) return null; x = sx; y = sy; prev = 'z'; continue; }
+      if ((cmd === 'm' || cmd === 'M') && moved) return null;
+      if (i >= toks.length) return null;
+    } else if (!cmd) return null;
+    const lower = cmd.toLowerCase();
+    const n = PATH_ARITY[lower];
+    if (n === undefined || i + n > toks.length) return null;
+    const a = toks.slice(i, i + n).map(Number);
+    if (a.some((v) => !Number.isFinite(v))) return null;
+    i += n;
+    const ox = cmd === lower ? x : 0, oy = cmd === lower ? y : 0;
+    switch (lower) {
+      case 'm': x = ox + a[0]!; y = oy + a[1]!; sx = x; sy = y; moved = true; push(x, y); cmd = cmd === lower ? 'l' : 'L'; break;
+      case 'l': x = ox + a[0]!; y = oy + a[1]!; push(x, y); break;
+      case 'h': x = ox + a[0]!; push(x, y); break;
+      case 'v': y = oy + a[0]!; push(x, y); break;
+      case 'c': cubic(ox + a[0]!, oy + a[1]!, ox + a[2]!, oy + a[3]!, ox + a[4]!, oy + a[5]!); break;
+      case 's': { const rx = prev === 'c' || prev === 's' ? 2 * x - cx : x, ry = prev === 'c' || prev === 's' ? 2 * y - cy : y; cubic(rx, ry, ox + a[0]!, oy + a[1]!, ox + a[2]!, oy + a[3]!); break; }
+      case 'q': quad(ox + a[0]!, oy + a[1]!, ox + a[2]!, oy + a[3]!); break;
+      case 't': { const rx = prev === 'q' || prev === 't' ? 2 * x - cx : x, ry = prev === 'q' || prev === 't' ? 2 * y - cy : y; quad(rx, ry, ox + a[0]!, oy + a[1]!); break; }
+    }
+    prev = lower;
+  }
+  if (prev !== 'z') return null;
+  const last = pts[pts.length - 1];
+  if (pts.length > 1 && last && Math.abs(last[0] - sx) < 1e-6 && Math.abs(last[1] - sy) < 1e-6) pts.pop();
+  if (pts.length < 3) return null;
+  const box = BANNER_WIDGET_CUSTOM_PATH.box, slack = box * 0.005;
+  if (pts.some(([px, py]) => px < -slack || py < -slack || px > box + slack || py > box + slack)) return null;
+  return pts.map(([px, py]) => [round2(px), round2(py)]);
+}
+
+/** A custom path as a CSS clip (`polygon(x% y%, …)`), or null when the path is refused. */
+export function customPathClip(d: unknown): string | null {
+  const pts = flattenCustomPath(d);
+  if (!pts) return null;
+  const pct = (n: number) => `${n}%`;
+  return `polygon(${pts.map(([px, py]) => `${pct(px)} ${pct(py)}`).join(', ')})`;
+}
+
+/** One widget's shape and icon as drawn: the tokens' values, what fell back and why. */
+export interface ResolvedWidgetShape {
+  shape: BannerWidgetShape;
+  radius: string;
+  clip: string;
+  /** `own`, or `<pack>/<glyph>` once the pack and the glyph are known to exist */
+  icon: string;
+  /** every input that was refused, in plain words (empty when everything was taken as given) */
+  fell: string[];
+  /** false when the shape is the default: the item then leaves the host's own shape token in force */
+  explicit: boolean;
+}
+
+/** Resolve a widget's view into its shape and icon. Bad input never breaks the bar: it falls back to circle / the widget's own icon and says so. */
+export function resolveWidgetShape(view: Pick<BannerWidgetView, 'shape' | 'customPath' | 'iconOverride' | 'shapeSource'>, hasGlyph: (pack: string, id: string) => boolean): ResolvedWidgetShape {
+  const fell: string[] = [];
+  let shape = has(BANNER_WIDGET_SHAPES, view.shape) ? view.shape : BANNER_WIDGET_SHAPE_DEFAULT;
+  if (shape !== view.shape) fell.push(`shape "${String(view.shape)}" is not one of ${BANNER_WIDGET_SHAPES.join(', ')}`);
+  let clip = 'none';
+  if (shape === 'custom') {
+    const c = customPathClip(view.customPath);
+    if (c) clip = c;
+    else { fell.push(view.customPath ? 'the custom path is not one closed outline inside the 0..100 square' : 'a custom shape needs a path'); shape = BANNER_WIDGET_SHAPE_DEFAULT; }
+  } else if (shape === 'hexagon') clip = WIDGET_SHAPE_HEXAGON_CLIP;
+  const radius = shape === 'hexagon' || shape === 'custom' ? '0' : WIDGET_SHAPE_RADIUS[shape];
+  let icon = WIDGET_ICON_OWN;
+  const io = normalizeIconOverride(view.iconOverride);
+  if (view.iconOverride && !io) fell.push('the icon override needs an icon pack id and a glyph name');
+  else if (io) { if (hasGlyph(io.pack, io.id)) icon = `${io.pack}/${io.id}`; else fell.push(`icon ${io.pack}/${io.id} is not a glyph of a registered icon pack`); }
+  return { shape, radius, clip, icon, fell, explicit: view.shapeSource !== 'default' };
+}
+
+/** The compiled tokens for a resolved shape, keyed by token name (web: inline on the widget's host item; Android: the same names on the Compose modifier). */
+export function widgetShapeTokens(r: ResolvedWidgetShape): Record<string, string> {
+  return { [BANNER_WIDGET_SHAPE_TOKENS.radius]: r.radius, [BANNER_WIDGET_SHAPE_TOKENS.clip]: r.clip, [BANNER_WIDGET_SHAPE_TOKENS.icon]: r.icon };
+}
+
+/** The tokens a host's own shape choice (customize `widgetShape`, no custom there) puts on every widget without a shape of its own. */
+export function hostWidgetShapeTokens(shape: unknown): Record<string, string> {
+  const s: BannerWidgetShape = has(BANNER_WIDGET_SHAPES, shape) && shape !== 'custom' ? shape : BANNER_WIDGET_SHAPE_DEFAULT;
+  if (s === 'hexagon' || s === 'custom') return { [BANNER_WIDGET_SHAPE_TOKENS.radius]: '0', [BANNER_WIDGET_SHAPE_TOKENS.clip]: WIDGET_SHAPE_HEXAGON_CLIP };
+  return { [BANNER_WIDGET_SHAPE_TOKENS.radius]: WIDGET_SHAPE_RADIUS[s], [BANNER_WIDGET_SHAPE_TOKENS.clip]: 'none' };
 }
 
 /** A width cap as a CSS length. */

@@ -13,6 +13,7 @@
  */
 import spec from '../../schemas/customize.json';
 import iconSpec from '../../schemas/icon-sets.json';
+import { hostWidgetShapeTokens } from './bannerwidgets';
 
 export type CustomValue = string | number | boolean;
 export type CustomValues = Record<string, CustomValue>;
@@ -38,6 +39,8 @@ export interface CustomTarget {
   root: string;
   /** Its items (hover / click / item padding); absent = the root reacts itself. */
   item?: string;
+  /** The widgets it hosts (widget-shape@1: the `widgetShape` token lands here); absent = not a widget host. */
+  widget?: string;
 }
 
 export interface IconSet {
@@ -267,6 +270,8 @@ export function customizeCss(type: string, values: CustomValues): string {
       case 'itemPadding': item.push(`padding:calc(${space(s)} * 0.5) ${space(s)}`); break;
       case 'gap': root.push(`gap:${space(s)}`); break;
       case 'radius': root.push(`border-radius:${RADIUS[s]}`); if (items.length) item.push(`border-radius:${RADIUS[s]}`); break;
+      // widget-shape@1: the host's shape for every widget without one of its own (a widget's inline tokens beat it)
+      case 'widgetShape': if (target.widget) rules.push(`${under(roots, target.widget)}{${Object.entries(hostWidgetShapeTokens(s)).map(([k, val2]) => `${k}:${val2}`).join(';')}}`); break;
       case 'borderWidth': root.push(`border-width:calc(var(--fx-border-w) * ${s})`, s === '0' ? 'border-style:none' : 'border-style:solid'); break;
       case 'shadow': root.push(`box-shadow:${SHADOW[s]}`); break;
       case 'iconSet': { const set = iconSet(s); if (set) icon.push(...iconSetDecls(set)); break; }
