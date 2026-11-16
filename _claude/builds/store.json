@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6646,
- "updatedAt": "2026-11-16T18:37:23.369Z",
+ "rev": 6647,
+ "updatedAt": "2026-11-16T18:37:40.506Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -244207,7 +244207,7 @@
    "pr": "#725",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:38.814Z",
-   "updatedAt": "2026-11-16T18:37:11.802Z",
+   "updatedAt": "2026-11-16T18:37:12.923Z",
    "builtAt": "",
    "notes": [
     {
@@ -244229,6 +244229,14 @@
     {
      "text": "Headless run axf-settings-interface-gear-every-plugin--earl: brief only · start 16.6K tokens ($0.05) · cost $0.53 · 14 turns · 6 tools, MCP none",
      "at": "2026-11-16T18:36:35.899Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 0) with 27 steps left: back in the Queue (run 1).",
+     "at": "2026-11-16T18:37:04.789Z"
+    },
+    {
+     "text": "Dispatch gate: settings-interface-gear-every-plugin still has axf-settings-interface-gear-every-plugin--earl alive: not launched again, tracking that session.",
+     "at": "2026-11-16T18:37:12.923Z"
     }
    ],
    "approvals": [],
@@ -244248,13 +244256,20 @@
    "pipeline": {
     "queuedAt": "2026-11-16T18:27:41.302Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-settings-interface-gear-every-plugin--earl",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
+    "model": "Opus",
+    "launchedAt": "2026-11-16T18:34:01.102Z",
+    "runs": 1,
+    "lastRun": {
+     "at": "2026-11-16T18:37:03.897Z",
+     "exit": 0,
+     "outcome": "requeued",
+     "stepsLeft": 27,
+     "account": "mossesx-max-",
+     "session": "axf-settings-interface-gear-every-plugin--earl"
+    },
     "split": {
      "at": "2026-11-16T18:31:29.535Z",
      "by": "orchestrator",
@@ -244263,18 +244278,18 @@
      "note": "Split by Claude into 28 steps (2 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- ended (exit 0) with 27 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-16T18:34:01.102Z",
     "planned": {
-     "model": "Opus",
+     "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-16T18:33:19.386Z",
+     "at": "2026-11-16T18:37:06.856Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-16T18:34:01.102Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -244986,7 +245001,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
