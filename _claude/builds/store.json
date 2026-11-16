@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6648,
- "updatedAt": "2026-11-16T18:38:07.712Z",
+ "rev": 6649,
+ "updatedAt": "2026-11-16T18:38:26.985Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -245417,12 +245417,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T18:37:43.199Z",
-   "updatedAt": "2026-11-16T18:37:48.660Z",
+   "updatedAt": "2026-11-16T18:38:07.459Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-16T18:37:48.660Z"
+    },
+    {
+     "text": "Brett Nov 16: also add a console-control command to open any amberxai.com app (axHub web, AmberX web, etc.) from the open console tab, e.g. console_show target 'app:axhub' or 'url:https://axhub.amberxai.com/'. Today searching 'axHub' opens the MCP servers screen instead.",
+     "at": "2026-11-16T18:38:07.459Z"
     }
    ],
    "approvals": [],
@@ -245470,7 +245474,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
