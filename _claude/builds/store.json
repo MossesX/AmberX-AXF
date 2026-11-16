@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6487,
- "updatedAt": "2026-11-16T15:17:04.976Z",
+ "rev": 6488,
+ "updatedAt": "2026-11-16T16:17:07.407Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -240307,6 +240307,55 @@
    "kind": "build",
    "planRef": "",
    "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "remove-old-molly-app-project-keep-axf",
+   "title": "Remove the old Molly app from the project (keep axf-molly)",
+   "category": "",
+   "detail": "The old Molly app is dead (container 'molly' at molly.amberxai.com is being shut down and deleted). Remove every reference to the OLD Molly from the project: the molly app/web UI, the molly.amberxai.com deploy and its DNS/proxy route, the Molly agent add-on in the Agent manager (apps/console-web/plugins/agent-manager/addons/molly), the console's 'Molly guide', docs, rules, help and glossary mentions. Move anything still useful into the console. DO NOT touch the axf-molly container or its name: it is the current worker (orchestrator, gate, lander, Shipped sender) and stays as-is. List everything being removed in the PR first. Tests green, land with the one-at-a-time lander.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-16T16:17:05.624Z",
+   "updatedAt": "2026-11-16T16:17:05.624Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Molly's dead. Kill it. Make sure all the references to Molly are removed from the project. We can keep the axf-molly name.",
+    "at": "2026-11-16T16:17:05.624Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 900
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
