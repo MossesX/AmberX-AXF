@@ -1503,7 +1503,7 @@
       "view": "plan-studio",
       "plugin": "ai.amberx.axf.console.plan-studio",
       "file": "plugins/plan-studio/web/layout.tsx",
-      "line": 123,
+      "line": 129,
       "tabs": []
     },
     {
@@ -1513,7 +1513,7 @@
       "view": "plan-studio",
       "plugin": "ai.amberx.axf.console.plan-studio",
       "file": "plugins/plan-studio/web/layout.tsx",
-      "line": 213,
+      "line": 219,
       "tabs": []
     },
     {

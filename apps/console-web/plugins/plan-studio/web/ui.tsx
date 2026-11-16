@@ -8,7 +8,7 @@ import { CommandBox, VoicePanel } from './ai';
 import { PlanEditor } from './editor';
 import { CatalogTab } from './catalog';
 import { canListen } from './voice';
-import { FoldButtons, LayoutSwitcher } from './layout';
+import { FoldButtons, LayoutSwitcher, useFold, useFoldState } from './layout';
 import { SECTIONS } from './editor';
 import './plan-studio.css';
 
@@ -228,7 +228,7 @@ function PlansTab({ onOpen }: { onOpen: (p: Plan) => void }) {
 }
 
 function Row({ p, sel, pick, onOpen }: { p: Plan; sel: Set<string>; pick: (id: string) => void; onOpen: (p: Plan) => void }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useFold(`plan:${p.id}`, false);
   const st = statusInfo(p.status);
   const t = pc.totals(p);
   return (
@@ -267,7 +267,7 @@ function Grid({ plans, sel, pick, onOpen }: { plans: Plan[]; sel: Set<string>; p
   );
 }
 function SubGrid({ title, plans, ...rest }: { title: string; plans: Plan[]; sel: Set<string>; pick: (id: string) => void; onOpen: (p: Plan) => void }) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useFold(`group:${title}`, true);
   const c = pc.counts(plans);
   return (
     <section className="axp-plan-studio__sub">
@@ -283,19 +283,19 @@ function SubGrid({ title, plans, ...rest }: { title: string; plans: Plan[]; sel:
 function TreeView({ plans, sel, pick, onOpen, onCategory }: { plans: Plan[]; sel: Set<string>; pick: (id: string) => void; onOpen: (p: Plan) => void; onCategory: (c: string) => void }) {
   const { state } = useStudio();
   const tree = useMemo(() => pc.categoryTree(state?.categories.paths ?? [], plans), [state, plans]);
-  const [closed, setClosed] = useState<Set<string>>(new Set());
+  const fold = useFoldState();
   const none = plans.filter((p) => !p.category);
   const node = (n: CatNode, depth: number) => {
     if (!n.total && !n.children.some((x) => x.total)) return null;
     const here = plans.filter((p) => p.category === n.path);
     const ids = plans.filter((p) => p.category === n.path || p.category.startsWith(n.path + pc.SEP)).map((p) => p.id);
     const on = ids.length > 0 && ids.every((id) => sel.has(id));
-    const shut = closed.has(n.path);
+    const shut = !fold.is(`cat:${n.path}`, true);
     return (
       <li key={n.path} className="axp-plan-studio__tnode" style={{ ['--axp-ps-depth' as string]: depth }}>
         <div className="axp-plan-studio__tline">
           <input type="checkbox" className="fx-check" checked={on} ref={(el) => { if (el) el.indeterminate = !on && ids.some((id) => sel.has(id)); }} onChange={() => ids.forEach((id) => { if (on === sel.has(id)) pick(id); })} aria-label={`Select every plan in ${n.path}`} />
-          <button type="button" data-fx-row className="axp-plan-studio__tname" aria-expanded={!shut} onClick={() => setClosed((s) => { const x = new Set(s); if (x.has(n.path)) x.delete(n.path); else x.add(n.path); return x; })}>
+          <button type="button" data-fx-row className="axp-plan-studio__tname" aria-expanded={!shut} onClick={() => fold.set(`cat:${n.path}`, shut)}>
             <Icon name={shut ? 'chevron-right' : 'chevron-down'} size={11} /><Icon name="folder" size={12} />{n.name}<span className="axp-plan-studio__n">{n.total}</span>
           </button>
           <IconButton icon="search" label={`Only ${n.path}`} onClick={() => onCategory(n.path)} />

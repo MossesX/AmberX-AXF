@@ -52,15 +52,21 @@ export function setLayout(rt: Rt, q: string, sections: string[], preset?: string
 /* ---------------------------------------------------------------- fold (Collapse all / Expand all) */
 
 let foldCache: Fold | null = null;
-export function readFold(rt: Rt): Fold { return lc.normalizeFold(rt.settings.get(KEYS.fold)); }
+export function readFold(rt: Rt): Fold { return foldCache = lc.normalizeFold(rt.settings.get(KEYS.fold)); }
 export function foldAll(rt: Rt, mode: 'collapsed' | 'expanded') { foldCache = lc.foldAll(mode); rt.settings.set(KEYS.fold, foldCache as never); }
+/** The whole fold state: is(key, default) and set(key, open), remembered per user. */
+export function useFoldState(): { is: (key: string, dflt: boolean) => boolean; set: (key: string, open: boolean) => void } {
+  const rt = useRuntime();
+  const fold = lc.normalizeFold(useSetting(KEYS.fold));
+  return {
+    is: (key, dflt) => lc.isOpen(fold, key, dflt),
+    set: (key, open) => { foldCache = lc.setOpen(lc.normalizeFold(rt.settings.get(KEYS.fold)), key, open); rt.settings.set(KEYS.fold, foldCache as never); },
+  };
+}
 /** One collapsible item's open state, remembered per user. */
 export function useFold(key: string, dflt: boolean): [boolean, (open: boolean) => void] {
-  const rt = useRuntime();
-  const raw = useSetting(KEYS.fold);
-  const fold = lc.normalizeFold(raw);
-  const set = (open: boolean) => { foldCache = lc.setOpen(lc.normalizeFold(rt.settings.get(KEYS.fold)), key, open); rt.settings.set(KEYS.fold, foldCache as never); };
-  return [lc.isOpen(fold, key, dflt), set];
+  const f = useFoldState();
+  return [f.is(key, dflt), (open) => f.set(key, open)];
 }
 
 /** Collapse all / Expand all (every plan, sub-grid, category, section and step on the page). */

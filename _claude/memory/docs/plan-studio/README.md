@@ -75,3 +75,11 @@ Taken before two small fixes (section chips no longer wrap on a phone; apps show
 - Voice with the screen off relies on AmberX's own hands-free foreground service; Plan Studio's loop runs in the page.
 - Attachments are kept inline (data URLs, 2 MB cap each); big files should be links.
 - UI Review submission waits until this is on main.
+
+## Page layouts, IDE panes, Collapse all (Nov 16 2026, build plan-studio-collapse-all-expand-all)
+
+- Switcher on Plan Studio's toolbar (main page and plan editor): **Nav menu** (sections stacked + section links, the original), **Tabs** (framework TabGroup `plan-studio.sections`), **IDE** (dockable panes, each a TabGroup `plan-studio.pane`). Setting `plan-studio.pageLayout`, per user.
+- IDE: drag a tab onto another pane's tab row or centre to move it, onto a pane edge to split, along its own row to reorder; drag splitters (or arrow keys) to resize; × closes a tab or pane, "Reopen…" brings sections back; "Arrange panes…" applies any `dock-layout` asset. State `plan-studio.dock` (JSON), per user.
+- Collapse all / Expand all (toolbar, both screens): every plan row, sub-grid, category, editor section and step. State `plan-studio.fold` = `{ all, items }`, per user; hand toggles after a Collapse/Expand all are kept as overrides.
+- API (REST `/api/console-control`, `console_control_*` MCP, `axf console`, voice): actions `plan-studio.layout:<nav|tabs|ide or words>[:<dock-layout id>]`, `plan-studio.dock:<move|split|close-pane|close|reopen|show|reorder|reset>:…`, `plan-studio.collapse-all`, `plan-studio.expand-all`; settings above are readable.
+- Engine: `apps/console-web/plugins/plan-studio/web/layout-core.mjs` (pure, tested in test.mjs; open layout registry). Plan Studio 2.0 reuses it as-is.

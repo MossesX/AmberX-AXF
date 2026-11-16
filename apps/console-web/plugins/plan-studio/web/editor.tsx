@@ -109,7 +109,7 @@ export function PlanEditor({ initial, isNew, onClose, onOpen }: { initial: Plan;
     ) },
     { id: 'steps', node: (
       <Sec id="steps" title={`Steps (${plan.steps.length})`} icon="list" aside={<span className="fx-muted axp-plan-studio__n">{pc.fmtMinutes(t.minutes)} · {pc.fmtCost(t.cost)}</span>}>
-        <StepsEditor steps={plan.steps} onChange={(steps) => edit({ steps })} />
+        <StepsEditor planId={plan.id} steps={plan.steps} onChange={(steps) => edit({ steps })} />
       </Sec>
     ) },
     { id: 'lists', node: (
@@ -230,7 +230,7 @@ function TouchesField({ plan, onChange }: { plan: Plan; onChange: (t: Plan['touc
   );
 }
 
-function StepsEditor({ steps, onChange }: { steps: Step[]; onChange: (s: Step[]) => void }) {
+function StepsEditor({ planId, steps, onChange }: { planId: string; steps: Step[]; onChange: (s: Step[]) => void }) {
   const [text, setText] = useState('');
   const [model, setModel] = useState<Step['model']>('Opus');
   const [mins, setMins] = useState('20');
@@ -242,21 +242,7 @@ function StepsEditor({ steps, onChange }: { steps: Step[]; onChange: (s: Step[])
     <div className="axp-plan-studio__steps">
       {big.length > 0 && <p className="fx-muted axp-plan-studio__hint"><Icon name="alert" size={11} /> {big.map((s) => s.id).join(', ')} {big.length === 1 ? 'is' : 'are'} over 30 minutes: split {big.length === 1 ? 'it' : 'them'} (small-steps rule).</p>}
       <ol>
-        {steps.map((s, i) => (
-          <li key={s.id} className={s.done ? 'is-done' : ''} data-plan-item={s.id}>
-            <input type="checkbox" className="fx-check" checked={s.done} onChange={(e) => upd(i, { done: e.target.checked, doneAt: e.target.checked ? new Date().toISOString() : '' })} aria-label={`${s.id} done`} />
-            <span className="axp-plan-studio__sid">{s.id}</span>
-            <input className="fx-input axp-plan-studio__stext" value={s.text} onChange={(e) => upd(i, { text: e.target.value })} aria-label={`${s.id} text`} />
-            <select className="fx-input axp-plan-studio__smodel" value={s.model} onChange={(e) => upd(i, { model: e.target.value as Step['model'] })} aria-label={`${s.id} model`}>{pc.MODELS.map((m) => <option key={m}>{m}</option>)}</select>
-            <input className="fx-input axp-plan-studio__smin" inputMode="numeric" value={s.minutes || ''} onChange={(e) => upd(i, { minutes: pc.minutesOf(e.target.value) })} aria-label={`${s.id} minutes`} placeholder="min" />
-            <input className="fx-input axp-plan-studio__sdep" value={s.dependsOn.join(',')} onChange={(e) => upd(i, { dependsOn: e.target.value.split(',').map((x) => x.trim()).filter(Boolean) })} aria-label={`${s.id} depends on`} placeholder="after…" />
-            <span className="axp-plan-studio__sact">
-              <IconButton icon="chevron-up" label="Move up" disabled={i === 0} onClick={() => move(i, -1)} />
-              <IconButton icon="chevron-down" label="Move down" disabled={i === steps.length - 1} onClick={() => move(i, 1)} />
-              <IconButton icon="trash" label={`Remove ${s.id}`} onClick={() => onChange(steps.filter((_, j) => j !== i).map((x) => ({ ...x, dependsOn: x.dependsOn.filter((d) => d !== s.id) })))} />
-            </span>
-          </li>
-        ))}
+        {steps.map((s, i) => <StepRow key={s.id} planId={planId} s={s} i={i} count={steps.length} upd={upd} move={move} remove={() => onChange(steps.filter((_, j) => j !== i).map((x) => ({ ...x, dependsOn: x.dependsOn.filter((d) => d !== s.id) })))} />)}
       </ol>
       <form className="axp-plan-studio__sadd" onSubmit={(e) => { e.preventDefault(); add(); }}>
         <input className="fx-input axp-plan-studio__stext" value={text} onChange={(e) => setText(e.target.value)} placeholder="Add a step…" aria-label="New step" />
@@ -265,6 +251,29 @@ function StepsEditor({ steps, onChange }: { steps: Step[]; onChange: (s: Step[])
         <Button size="sm" icon="plus" type="submit" disabled={!text.trim()}>Add</Button>
       </form>
     </div>
+  );
+}
+
+/** One step: collapsed it is its done box, id and text; open it adds model, minutes, dependencies and the actions. */
+function StepRow({ planId, s, i, count, upd, move, remove }: { planId: string; s: Step; i: number; count: number; upd: (i: number, patch: Partial<Step>) => void; move: (i: number, d: number) => void; remove: () => void }) {
+  const [open, setOpen] = useFold(`step:${planId}/${s.id}`, true);
+  return (
+    <li className={`${s.done ? 'is-done' : ''}${open ? '' : ' is-folded'}`} data-plan-item={s.id}>
+      <IconButton icon={open ? 'chevron-down' : 'chevron-right'} label={open ? `Collapse ${s.id}` : `Expand ${s.id}`} aria-expanded={open} onClick={() => setOpen(!open)} />
+      <input type="checkbox" className="fx-check" checked={s.done} onChange={(e) => upd(i, { done: e.target.checked, doneAt: e.target.checked ? new Date().toISOString() : '' })} aria-label={`${s.id} done`} />
+      <span className="axp-plan-studio__sid">{s.id}</span>
+      <input className="fx-input axp-plan-studio__stext" value={s.text} onChange={(e) => upd(i, { text: e.target.value })} aria-label={`${s.id} text`} />
+      {open && <>
+        <select className="fx-input axp-plan-studio__smodel" value={s.model} onChange={(e) => upd(i, { model: e.target.value as Step['model'] })} aria-label={`${s.id} model`}>{pc.MODELS.map((m) => <option key={m}>{m}</option>)}</select>
+        <input className="fx-input axp-plan-studio__smin" inputMode="numeric" value={s.minutes || ''} onChange={(e) => upd(i, { minutes: pc.minutesOf(e.target.value) })} aria-label={`${s.id} minutes`} placeholder="min" />
+        <input className="fx-input axp-plan-studio__sdep" value={s.dependsOn.join(',')} onChange={(e) => upd(i, { dependsOn: e.target.value.split(',').map((x) => x.trim()).filter(Boolean) })} aria-label={`${s.id} depends on`} placeholder="after…" />
+        <span className="axp-plan-studio__sact">
+          <IconButton icon="chevron-up" label="Move up" disabled={i === 0} onClick={() => move(i, -1)} />
+          <IconButton icon="chevron-down" label="Move down" disabled={i === count - 1} onClick={() => move(i, 1)} />
+          <IconButton icon="trash" label={`Remove ${s.id}`} onClick={remove} />
+        </span>
+      </>}
+    </li>
   );
 }
 
