@@ -1,0 +1,153 @@
+[
+  {
+    "f": "builds-dark-desktop.png",
+    "w": 1366,
+    "h": 860,
+    "changed": 91743,
+    "antialias": 127368,
+    "box": [
+      149,
+      10,
+      1356,
+      850
+    ]
+  },
+  {
+    "f": "builds-dark-phone.png",
+    "w": 824,
+    "h": 1830,
+    "changed": 250005,
+    "antialias": 1117565,
+    "box": [
+      0,
+      8,
+      823,
+      1829
+    ]
+  },
+  {
+    "f": "builds-light-desktop.png",
+    "w": 1366,
+    "h": 860,
+    "changed": 9512,
+    "antialias": 5045,
+    "box": [
+      102,
+      3,
+      1355,
+      850
+    ]
+  },
+  {
+    "f": "builds-light-phone.png",
+    "w": 824,
+    "h": 1830,
+    "changed": 82050,
+    "antialias": 1287151,
+    "box": [
+      0,
+      8,
+      820,
+      1694
+    ]
+  },
+  {
+    "f": "home-dark-desktop.png",
+    "w": 1366,
+    "h": 860,
+    "changed": 9577,
+    "antialias": 5943,
+    "box": [
+      102,
+      4,
+      1356,
+      850
+    ]
+  },
+  {
+    "f": "home-dark-phone.png",
+    "w": 824,
+    "h": 1830,
+    "changed": 19846,
+    "antialias": 14527,
+    "box": [
+      61,
+      8,
+      748,
+      1628
+    ]
+  },
+  {
+    "f": "home-light-desktop.png",
+    "w": 1366,
+    "h": 860,
+    "changed": 11699,
+    "antialias": 14379,
+    "box": [
+      149,
+      11,
+      1282,
+      850
+    ]
+  },
+  {
+    "f": "home-light-phone.png",
+    "w": 824,
+    "h": 1830,
+    "changed": 209884,
+    "antialias": 218423,
+    "box": [
+      12,
+      6,
+      823,
+      1771
+    ]
+  },
+  {
+    "f": "settings-appearance-dark-desktop.png",
+    "w": 1366,
+    "h": 860,
+    "changed": 0,
+    "antialias": 0,
+    "box": null
+  },
+  {
+    "f": "settings-appearance-dark-phone.png",
+    "w": 824,
+    "h": 1830,
+    "changed": 257985,
+    "antialias": 399863,
+    "box": [
+      12,
+      20,
+      811,
+      1829
+    ]
+  },
+  {
+    "f": "settings-appearance-light-desktop.png",
+    "w": 1366,
+    "h": 860,
+    "changed": 36854,
+    "antialias": 12742,
+    "box": [
+      150,
+      3,
+      1355,
+      850
+    ]
+  },
+  {
+    "f": "settings-appearance-light-phone.png",
+    "w": 824,
+    "h": 1830,
+    "changed": 312222,
+    "antialias": 343526,
+    "box": [
+      12,
+      22,
+      811,
+      1829
+    ]
+  }
+]
