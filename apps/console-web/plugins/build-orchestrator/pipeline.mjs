@@ -83,6 +83,12 @@ import * as slots from '../../../../framework/cli/agent-slots.mjs';
 import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.mjs';
 import * as lock from '../../../../framework/cli/build-lock.mjs';
 import { shipLanded } from '../../../../framework/cli/shipped.mjs';
+import { kick as mergeWatchKick } from '../../../../framework/cli/merge-watch/kick.mjs';
+import { readState as mergeWatchState } from '../../../../framework/cli/merge-watch-files.mjs';
+import { readSettings as mergeWatchSettings } from '../../../../framework/cli/merge-watch.mjs';
+
+/** The merge watch has state and is switched on: it sends Shipped features, shipLanded steps aside. */
+const mergeWatchRuns = (env) => { try { return !!mergeWatchState(env) && mergeWatchSettings(env).enabled !== false; } catch { return false; } };
 import { crewSay } from '../../../../framework/cli/crew-say.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
 import { act as orchAct } from './orchestrator.mjs';
@@ -880,7 +886,10 @@ export function afterTick(fn) { if (typeof fn === 'function') TICK_HOOKS.push(fn
  * to Shipped features through the builds store (framework/cli/shipped.mjs shipLanded). Landings come from main's
  * history, not the store's status (vps-sends-shipped-features-every-merge s3). AXF_SHIPPED=off = none.
  */
-afterTick(({ env }) => {
+afterTick(({ env, ended = [] }) => {
+  // merge-watch@1 (vps-sends-shipped-features-every-merge): once the watch runs it owns the send, keyed by merge sha. A
+  // session that ended may have landed (build_land), so the tick starts now instead of at the next minute's poll.
+  if (env.AXF_SHIPPED !== 'off' && mergeWatchRuns(env)) { if (ended.length) mergeWatchKick(`orchestrator: ${ended.map((e) => e.id).join(', ')} ended`, env); return; }
   const r = shipLanded({ env });
   for (const s of r.shipped ?? []) {
     logLine(s.error ? { event: 'ship-failed', build: s.id, sha: s.sha, pr: s.pr, error: str(s.error, 300) } : { event: 'shipped', build: s.id, sha: s.sha, pr: s.pr, manifest: s.manifest, rev: s.rev });

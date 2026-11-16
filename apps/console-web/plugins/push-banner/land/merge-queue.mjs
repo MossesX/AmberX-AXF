@@ -33,7 +33,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as q from './merge-queue-core.mjs';
 import * as core from './land-core.mjs';
-import { ciOf, crewSay, mergeMain, resolveConflicts, settings, makeGit, makeGitHub, makeConsole } from './land.mjs';
+import { ciOf, crewSay, mergeMain, mergeWatchKick, resolveConflicts, settings, makeGit, makeGitHub, makeConsole } from './land.mjs';
 
 const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
 function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp-${process.pid}`; writeFileSync(t, `${JSON.stringify(v, null, 1)}\n`); renameSync(t, f); }
@@ -393,6 +393,7 @@ async function batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, prs, rank,
         for (const n of d.land) { const p = prOf(n); merged.push({ pr: n, title: p.title || '', sha: r.sha, queueSha: batch.sha, at, retested: false, branch: q.BATCH_BRANCH, agent: p.agent || '', batch: d.land }); landedNow.add(n); }
         lastLanded = [...lastLanded, ...d.land.map((n) => prOf(n).branch).filter(Boolean)];
         log(`queue: landed batch ${d.land.map((n) => `#${n}`).join(', ')} at ${r.sha.slice(0, 8)} (one CI run, ${batch.sha.slice(0, 8)})`);
+        mergeWatchKick(`merge queue landed ${d.land.map((n) => `#${n}`).join(', ')}`); // Shipped features now, not at the next poll
         await api('POST', '/api/alerts/resolve', { keys: d.land.map((n) => `queue:${n}`) });
         split = d.split; batch = null;
       } else { batch.state = dry ? 'merging' : 'passed'; batch.why = r.why; if (!dry) log(`queue: the batch passed but didn't land: ${r.why}`); }

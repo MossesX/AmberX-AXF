@@ -38,7 +38,7 @@
  * AXF_LAND_CONSOLE (docker container of the console, axf-console; "off" = no console calls), AXF_LAND_ARCHIVE
  * (/root/archive/auto-land), AXF_LAND_GITHUB_API (https://api.github.com), AXF_LAND_WORKFLOW (android.yml).
  */
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, statSync, writeFileSync, copyFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
@@ -140,6 +140,17 @@ export function crewSay(section, event, text, { ref = '', repo = SELF_REPO, dedu
   if (!existsSync(cli)) return false;
   const args = [cli, section, event, String(text || '').slice(0, 600), ...(ref ? ['--ref', String(ref)] : []), ...(dedupeMin !== undefined ? ['--dedupe-min', String(dedupeMin)] : [])];
   return spawnSync(process.execPath, args, { cwd: repo, encoding: 'utf8', timeout: 30000 }).status === 0;
+}
+/**
+ * Something landed on main: start one merge-watch tick in the background (framework/cli/merge-watch.mjs), so Shipped
+ * features gets the manifest now instead of at the next minute's poll. A child process, like crewSay (this folder imports
+ * only node built-ins); off in tests (AXF_MERGE_WATCH_KICK=off, or AXF_CREW_SAY=off as the tests set) and on a dry run.
+ */
+export function mergeWatchKick(reason = '', { repo = SELF_REPO } = {}) {
+  if (process.env.AXF_MERGE_WATCH_KICK === 'off' || process.env.AXF_CREW_SAY === 'off' || process.env.CI) return false;
+  const cli = join(repo, 'framework/cli/merge-watch.mjs');
+  if (!existsSync(cli)) return false;
+  try { const c = spawn(process.execPath, [cli, 'tick', '--json'], { cwd: repo, detached: true, stdio: 'ignore', env: { ...process.env, AXF_MERGE_WATCH_REASON: String(reason).slice(0, 120) } }); c.on('error', () => {}); c.unref(); return true; } catch { return false; }
 }
 /** Which chat event a landing reason is: Brett's move, a code fix, or something in the way. */
 export const reasonEvent = (kind) => (['held', 'ui', 'code'].includes(kind) ? 'waiting' : ['conflict', 'ci', 'error'].includes(kind) ? 'failed' : 'blocked');

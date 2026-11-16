@@ -45,6 +45,7 @@ import { gitAuthEnv, githubToken, scrub } from './github.mjs';
 import { adoptStore, adoptedChanges, journalDir, journalMax, mergeOriginsText, orchestratorExports, originsFile, readStoreNow, storeFile, storeText, withStore } from './builds-store.mjs';
 import { emitChangesTo } from './build-hooks.mjs';
 import { readManifest } from './shipped-files.mjs';
+import { kick as mergeWatchKick } from './merge-watch/kick.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
 const STORE_REL = '_claude/builds/store.json'; // = builds-store STORE_REL (not imported: the two modules import each other)
@@ -410,6 +411,7 @@ export function linkBuild(id, { branch: br, pr, mergedAt } = {}, by = 'builds-li
     merge.settleStatus(b, b.updatedAt);
     return s;
   }, { by, action: 'link', note: id });
+  if (typeof mergedAt === 'string' && mergedAt) mergeWatchKick(`builds-live: ${id} merged`); // Shipped features now (merge-watch@1)
   return { build: r.store.builds.find((b) => b.id === found.id), changes: r.changes };
 }
 /** "#245", "245" and a PR URL all become "#245" (the form the orchestrator shows); other text is kept. */

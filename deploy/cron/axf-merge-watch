@@ -1,0 +1,4 @@
+# merge-watch@1 poll (vps-sends-shipped-features-every-merge): every minute, send Shipped features for every merge to main
+# that the landing paths' own triggers missed (manual GitHub merges, direct pushes, the console's merges). The tick holds
+# its own lock (tick.lock); flock keeps cron from stacking. Installed by deploy/install-console.sh (@DIR@ = the checkout).
+* * * * * root M=@DIR@/framework/cli/merge-watch.mjs; [ -f $M ] && cd @DIR@ && flock -n /run/axf-merge-watch.lock timeout 300 node $M tick >> /var/log/axf-merge-watch.log 2>&1
