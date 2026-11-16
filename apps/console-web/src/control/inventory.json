@@ -4,8 +4,8 @@
   "counts": {
     "views": 65,
     "nav": 16,
-    "tabGroups": 27,
-    "tabs": 78,
+    "tabGroups": 28,
+    "tabs": 79,
     "settingsTabs": 71,
     "settings": 89,
     "functions": 274,
@@ -1103,7 +1103,7 @@
       "view": "agent-manager",
       "plugin": "ai.amberx.axf.console.agent-manager",
       "file": "plugins/agent-manager/web/views.tsx",
-      "line": 59,
+      "line": 62,
       "tabs": [
         {
           "address": "view:agent-manager/tab:agent-manager.tabs=agents",
@@ -1119,6 +1119,11 @@
           "address": "view:agent-manager/tab:agent-manager.tabs=personas",
           "value": "personas",
           "label": "Personas & lingo"
+        },
+        {
+          "address": "view:agent-manager/tab:agent-manager.tabs=voices",
+          "value": "voices",
+          "label": "Voices"
         },
         {
           "address": "view:agent-manager/tab:agent-manager.tabs=tools",
@@ -1159,7 +1164,7 @@
       "view": "agent-manager",
       "plugin": "ai.amberx.axf.console.agent-manager",
       "file": "plugins/agent-manager/web/views.tsx",
-      "line": 331,
+      "line": 335,
       "tabs": [
         {
           "address": "view:agent-manager/tab:agent-manager.detail-view=edit",
@@ -1179,13 +1184,23 @@
       ]
     },
     {
+      "address": "view:agent-swarm/tab:agent-swarm.audio-mode",
+      "id": "agent-swarm.audio-mode",
+      "dynamic": false,
+      "view": "agent-swarm",
+      "plugin": "ai.amberx.axf.console.agent-swarm",
+      "file": "plugins/agent-swarm/web/chat-audio-bar.tsx",
+      "line": 40,
+      "tabs": []
+    },
+    {
       "address": "view:agent-swarm/tab:agent-swarm.chat-view",
       "id": "agent-swarm.chat-view",
       "dynamic": false,
       "view": "agent-swarm",
       "plugin": "ai.amberx.axf.console.agent-swarm",
       "file": "plugins/agent-swarm/web/chat.tsx",
-      "line": 54,
+      "line": 58,
       "tabs": [
         {
           "address": "view:agent-swarm/tab:agent-swarm.chat-view=all",
@@ -1211,7 +1226,7 @@
       "view": "agent-swarm",
       "plugin": "ai.amberx.axf.console.agent-swarm",
       "file": "plugins/agent-swarm/web/ui.tsx",
-      "line": 52,
+      "line": 55,
       "tabs": [
         {
           "address": "view:agent-swarm/tab:agent-swarm.tabs=crew",
