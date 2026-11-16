@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T23:30:11.191Z",
+ "updatedAt": "2026-11-16T23:30:34.196Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -148394,7 +148394,7 @@
    "title": "Merge main and land console-axhub-retry-failed-calls",
    "category": "",
    "detail": "Auto-land could not land `console-axhub-retry-failed-calls` (console-axhub-retry-failed-calls): merging main into it clashes in code: .github/workflows/android.yml, apps/console-web/server/mcp_server.py.\n\nWork on its own branch `claude/console-axhub-retry-failed-calls` (PR #589); do not open a new PR.\n1. git fetch origin && git checkout claude/console-axhub-retry-failed-calls && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/console-axhub-retry-failed-calls. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
@@ -148580,8 +148580,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:24:48.925Z",
      "note": "",
      "uid": "st-mwh3129b0rthm7",
      "createdAt": "2026-11-15T00:14:18.287Z"
@@ -148621,8 +148621,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T00:25:22.534Z",
      "note": "",
      "uid": "st-mwh3129b0tfkni",
      "createdAt": "2026-11-15T00:14:18.287Z"
