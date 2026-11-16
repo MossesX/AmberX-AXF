@@ -11,6 +11,7 @@ import { join } from 'node:path';
 import * as pc from './web/plan-core.mjs';
 import * as ai from './web/plan-ai.mjs';
 import * as voice from './web/voice.ts';
+import * as lc from './web/layout-core.mjs';
 
 let n = 0;
 const t = async (name, fn) => { try { await fn(); n += 1; } catch (e) { console.error(`FAIL ${name}`); throw e; } };
@@ -407,6 +408,74 @@ await t('find by content: the plan about X, the step that mentions Y (deep link 
 await t('the repo and the hub were not written by any of this', () => {
   assert.equal(existsSync(join(repo, '.axf-console/plugins/plan-studio/plans/docs-website.json')), false);
   assert.ok(!readdirSync(env.AXF_DATA_DIR ?? scratch).includes('plan-studio'));
+});
+
+// ---------------------------------------------------------------- page layouts, IDE dock, collapse all
+await t('page layouts: open registry, words resolve, nav is the default', () => {
+  assert.deepEqual(lc.layouts().map((l) => l.id), ['nav', 'tabs', 'ide']);
+  assert.equal(lc.resolveLayout('').id, 'nav');
+  assert.equal(lc.resolveLayout('IDE style').id, 'ide');
+  assert.equal(lc.resolveLayout('tab group across the top').id, 'tabs');
+  assert.equal(lc.resolveLayout('nav menu').id, 'nav');
+  assert.equal(lc.resolveLayout('something else'), null);
+  const off = lc.registerLayout({ id: 'reader', label: 'Reader', icon: 'file', kind: 'tabs' });
+  assert.equal(lc.resolveLayout('reader').id, 'reader');
+  off();
+  assert.equal(lc.layouts().length, 3);
+  assert.throws(() => lc.registerLayout({ id: 'x', kind: 'grid' }));
+});
+const SEC = ['basics', 'filing', 'steps', 'lists', 'links', 'notes', 'files', 'build', 'history', 'comments'];
+const IDE = JSON.parse(readFileSync(join(repo, 'framework/assets/dock-layout/ide.json'), 'utf8')).data;
+const all = (d) => [...Object.values(d.panes).flatMap((p) => p.tabs), ...d.closed].sort();
+await t('IDE dock: a dock-layout asset spreads every section over its panes, once each', () => {
+  const d = lc.fromPreset(IDE, SEC);
+  assert.equal(lc.paneIds(d.tree).length, Math.min(IDE.panes, lc.PANE_LIMIT));
+  assert.deepEqual(all(d), [...SEC].sort());
+  for (const p of Object.values(d.panes)) assert.ok(p.tabs.includes(p.active));
+  const one = lc.fromPreset({ panes: 1, tree: { kind: 'leaf', pane: 1 } }, SEC);
+  assert.deepEqual(one.panes.p1.tabs, SEC);
+  assert.deepEqual(lc.normalizeDock({ garbage: true }, SEC).panes.p1.tabs, SEC, 'junk in the saved setting heals');
+});
+await t('IDE dock: move between panes, reorder, split on an edge, close and reopen, resize', () => {
+  let d = lc.fromPreset({ panes: 2, tree: { kind: 'split', vertical: false, children: [{ kind: 'leaf', pane: 1 }, { kind: 'leaf', pane: 2 }], weights: [1, 1] } }, SEC);
+  const [a, b] = lc.paneIds(d.tree);
+  d = lc.moveTab(d, 'steps', b, 0, SEC);
+  assert.equal(lc.paneOf(d, 'steps'), b); assert.equal(d.panes[b].tabs[0], 'steps'); assert.equal(d.panes[b].active, 'steps');
+  d = lc.applyDrop(d, 'notes', b, 'centre', SEC);
+  assert.equal(lc.paneOf(d, 'notes'), b, 'drop in the centre joins the tab group');
+  d = lc.reorder(d, b, ['notes', 'steps'], SEC);
+  assert.deepEqual(d.panes[b].tabs.slice(0, 2), ['notes', 'steps']);
+  d = lc.applyDrop(d, 'basics', a, 'bottom', SEC);
+  assert.equal(lc.paneIds(d.tree).length, 3, 'drop on an edge splits');
+  const c = lc.paneOf(d, 'basics');
+  assert.deepEqual(d.panes[c].tabs, ['basics']);
+  d = lc.closePane(d, c, SEC);
+  assert.equal(lc.paneIds(d.tree).length, 2); assert.deepEqual(d.closed, ['basics']);
+  d = lc.closeTab(d, 'filing', SEC); assert.deepEqual(d.closed, ['basics', 'filing']);
+  d = lc.reopen(d, 'basics', SEC);
+  assert.equal(lc.paneIds(d.tree).length, 3); assert.deepEqual(d.closed, ['filing']);
+  assert.deepEqual(all(d), [...SEC].sort(), 'never loses or doubles a section');
+  const before = d.tree.weights.slice();
+  d = lc.resize(d, [], 0, 0.2);
+  assert.ok(d.tree.weights[0] > before[0]);
+  d = lc.resize(d, [], 0, 5);
+  assert.ok(d.tree.weights[1] >= lc.MIN_WEIGHT - 1e-9, 'the floor holds');
+  let last = lc.fromPreset({ panes: 1, tree: { kind: 'leaf', pane: 1 } }, ['basics']);
+  assert.equal(lc.closeTab(last, 'basics', ['basics']), last, 'the last open section stays');
+  assert.equal(lc.closePane(last, 'p1', ['basics']), last, 'the last pane stays');
+  assert.equal(lc.dropZone(0.05, 0.5, false), 'left'); assert.equal(lc.dropZone(0.5, 0.95, false), 'bottom');
+  assert.equal(lc.dropZone(0.5, 0.5, false), 'centre'); assert.equal(lc.dropZone(0.05, 0.05, true), 'header');
+});
+await t('collapse all / expand all: one switch, then per-item overrides', () => {
+  let f = lc.normalizeFold(null);
+  assert.equal(lc.isOpen(f, 'sec:steps', true), true); assert.equal(lc.isOpen(f, 'plan:x', false), false);
+  f = lc.foldAll('collapsed');
+  assert.equal(lc.isOpen(f, 'sec:steps', true), false); assert.equal(lc.isOpen(f, 'step:x/s1', true), false);
+  f = lc.setOpen(f, 'sec:steps', true);
+  assert.equal(lc.isOpen(f, 'sec:steps', true), true); assert.equal(lc.isOpen(f, 'sec:notes', true), false);
+  f = lc.foldAll('expanded');
+  assert.equal(lc.isOpen(f, 'plan:x', false), true); assert.deepEqual(f.items, {});
+  assert.deepEqual(lc.normalizeFold({ all: 'bogus', items: { a: 1, b: false } }), { all: null, items: { b: false } });
 });
 
 console.log(`plan-studio: ${n} checks passed`);

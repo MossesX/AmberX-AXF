@@ -8,6 +8,8 @@ import { CommandBox, VoicePanel } from './ai';
 import { PlanEditor } from './editor';
 import { CatalogTab } from './catalog';
 import { canListen } from './voice';
+import { FoldButtons, LayoutSwitcher } from './layout';
+import { SECTIONS } from './editor';
 import './plan-studio.css';
 
 /*
@@ -111,6 +113,10 @@ export function PlanStudioPage() {
         <TabGroup id="plan-studio.tabs" label="Plan Studio" value={tab} onChange={setTab}
           tabs={([['plans', 'Plans', 'list', state.plans.length], ['catalog', 'Catalog', 'package', null], ['categories', 'Categories', 'folder', state.categories.paths.length]] as const).map(([id, label, icon, n]) => ({ value: id, label, icon, badge: n ?? undefined }))} />
         <span className="axp-plan-studio__grow" />
+        <span className="axp-plan-studio__pagetools" role="toolbar" aria-label="Plan Studio layout">
+          <LayoutSwitcher sections={SECTIONS.map((x) => ({ ...x, node: null }))} />
+          <FoldButtons />
+        </span>
         {canListen() && <Button size="sm" icon="mic" onClick={() => setVoice(true)}>Talk</Button>}
         <NewPlanButton onNew={(p) => setOpen({ plan: p, isNew: true })} />
       </div>

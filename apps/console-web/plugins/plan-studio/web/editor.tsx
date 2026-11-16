@@ -5,6 +5,7 @@ import type { History, ListId, Plan, Step, TextItem } from './plan-core.mjs';
 import { call, deletePlan, fmtWhen, getPlan, KEYS, restorePlan, savePlan, statusInfo, turnIntoBuild, useBusy, useStudio, type SaveResult } from './api';
 import { CommandBox, VoicePanel } from './ai';
 import { canListen } from './voice';
+import { FoldButtons, LayoutSwitcher, SectionLayout, useFold, type SectionDef } from './layout';
 
 /*
  * The plan editor: one page, sections you jump between (phone: a sideways strip of section chips), every plan@1 field.
@@ -12,7 +13,7 @@ import { canListen } from './voice';
  * autosave is one coalesced version). New plans save on Save, after the duplicate check.
  */
 
-const SECTIONS = [
+export const SECTIONS = [
   { id: 'basics', label: 'Basics', icon: 'edit' }, { id: 'filing', label: 'Filing', icon: 'folder' }, { id: 'steps', label: 'Steps', icon: 'list' },
   { id: 'lists', label: 'Requirements & risks', icon: 'check-circle' }, { id: 'links', label: 'Links & catalog', icon: 'external' }, { id: 'notes', label: 'Notes', icon: 'file' },
   { id: 'files', label: 'Attachments', icon: 'upload' }, { id: 'build', label: 'Build', icon: 'play' }, { id: 'history', label: 'History', icon: 'clock' }, { id: 'comments', label: 'Comments', icon: 'info' },
@@ -21,10 +22,14 @@ const draftKey = (id: string) => `plan-studio.draft.${id}`;
 const setting = (rt: ReturnType<typeof useRuntime>, k: string, d: unknown) => { try { const v = rt.settings.get(k); return v === undefined || v === null ? d : v; } catch { return d; } };
 
 function Sec({ id, title, icon, children, aside }: { id: string; title: string; icon: string; children: ReactNode; aside?: ReactNode }) {
+  const [open, setOpen] = useFold(`sec:${id}`, true);
   return (
-    <section id={`axp-ps-${id}`} className="axp-plan-studio__sec" aria-labelledby={`axp-ps-${id}-h`}>
-      <h2 id={`axp-ps-${id}-h`} className="axp-plan-studio__sech"><Icon name={icon} size={13} />{title}{aside && <span className="axp-plan-studio__grow" />}{aside}</h2>
-      {children}
+    <section id={`axp-ps-${id}`} className={`axp-plan-studio__sec${open ? '' : ' is-folded'}`} aria-labelledby={`axp-ps-${id}-h`}>
+      <h2 id={`axp-ps-${id}-h`} className="axp-plan-studio__sech">
+        <button type="button" data-fx-row data-axf-target={`fold:sec:${id}`} className="axp-plan-studio__fold" aria-expanded={open} aria-controls={`axp-ps-${id}-b`} onClick={() => setOpen(!open)}><Icon name={open ? 'chevron-down' : 'chevron-right'} size={12} /><Icon name={icon} size={13} />{title}</button>
+        {aside && <span className="axp-plan-studio__grow" />}{aside}
+      </h2>
+      {open && <div id={`axp-ps-${id}-b`} className="axp-plan-studio__secbody">{children}</div>}
     </section>
   );
 }
@@ -78,41 +83,16 @@ export function PlanEditor({ initial, isNew, onClose, onOpen }: { initial: Plan;
   const cats = useMemo(() => pc.withParents([...(state?.categories.paths ?? []), ...(state?.plans ?? []).map((p) => p.category).filter(Boolean)]), [state]);
   const jump = (id: string) => document.getElementById(`axp-ps-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-  return (
-    <div className="axp-plan-studio__editor">
-      <div className="axp-plan-studio__edbar" role="toolbar" aria-label="Plan">
-        <IconButton icon="arrow-left" label="Back to plans" onClick={onClose} />
-        <b className="axp-plan-studio__edtitle">{plan.title || 'New plan'}</b>
-        <Chip tone={statusInfo(plan.status).tone || undefined}>{statusInfo(plan.status).label}</Chip>
-        <span className="fx-muted axp-plan-studio__n">{dirty ? (isNew ? 'not saved yet' : autosave ? 'saving…' : 'unsaved changes') : `saved ${fmtWhen(saved?.updatedAt ?? '')}`}</span>
-        <span className="axp-plan-studio__grow" />
-        {canListen() && <Button size="sm" icon="mic" onClick={() => setVoice(true)} title="Talk the plan through">Talk</Button>}
-        <Button size="sm" tone="primary" icon="save" busy={busy} disabled={!dirty && !isNew} onClick={() => void save()}>{isNew ? 'Save plan' : 'Save'}</Button>
-      </div>
-      {error && <p className="fx-error" role="alert">{error} <IconButton icon="x" label="Dismiss" onClick={() => setError('')} /></p>}
-      {!!dups?.length && (
-        <div className="axp-plan-studio__dups" role="alert">
-          <b>This looks like a plan you already have:</b>
-          <ul>{dups.map((d) => <li key={d.id}><button type="button" className="fx-btn fx-btn--quiet fx-btn--sm" onClick={() => onOpen(d.id)}>{d.title}</button> <span className="fx-muted">{d.status} · {Math.round(d.score * 100)}% alike</span></li>)}</ul>
-          <div className="fx-row"><Button size="sm" tone="primary" onClick={() => void save(true)}>Save as a new plan anyway</Button><Button size="sm" tone="quiet" onClick={() => setDups([])}>Keep editing</Button></div>
-        </div>
-      )}
-      {voice && <VoicePanel plan={saved} onClose={() => setVoice(false)} onOpen={onOpen} />}
-      {!isNew && <CommandBox plan={saved} onOpen={onOpen} />}
-      <nav className="axp-plan-studio__jump" aria-label="Sections">{SECTIONS.map((s) => <button key={s.id} type="button" className="fx-chip" onClick={() => jump(s.id)}><Icon name={s.icon} size={11} />{s.label}</button>)}</nav>
-      <div className="axp-plan-studio__strip" aria-label="Totals">
-        <span><b>{t.steps}</b> steps</span><span><b>{t.progress}%</b> done</span><span><b>{pc.fmtMinutes(t.minutes) || '0 min'}</b> effort</span>
-        <span><b>{pc.fmtMinutes(t.left) || '0 min'}</b> left</span><span><b>{pc.fmtCost(t.cost) || '$0'}</b> est. cost</span>
-        {t.acceptance.total > 0 && <span><b>{t.acceptance.done}/{t.acceptance.total}</b> accepted</span>}
-      </div>
-
+  const nodes: { id: string; node: ReactNode }[] = [
+    { id: 'basics', node: (
       <Sec id="basics" title="Basics" icon="edit">
         <TextField label="Title" value={plan.title} onChange={(v) => edit({ title: v })} required autoFocus={isNew} />
         <TextField label="Summary" value={plan.summary} onChange={(v) => edit({ summary: v })} rows={2} placeholder="One or two lines: what this is." />
         <TextField label="Goal" value={plan.goal} onChange={(v) => edit({ goal: v })} rows={2} placeholder="What is true once it's done." />
         <TextField label="Why" value={plan.why} onChange={(v) => edit({ why: v })} rows={2} placeholder="Why it's worth doing." />
       </Sec>
-
+    ) },
+    { id: 'filing', node: (
       <Sec id="filing" title="Filing" icon="folder">
         <div className="axp-plan-studio__grid2">
           <SelectField label="Status" value={plan.status} onChange={(v) => edit({ status: v as Plan['status'] })} options={pc.STATUSES.map((s) => ({ value: s.id, label: s.label }))} />
@@ -126,15 +106,18 @@ export function PlanEditor({ initial, isNew, onClose, onOpen }: { initial: Plan;
         </div>
         <TouchesField plan={plan} onChange={(touches) => edit({ touches })} />
       </Sec>
-
+    ) },
+    { id: 'steps', node: (
       <Sec id="steps" title={`Steps (${plan.steps.length})`} icon="list" aside={<span className="fx-muted axp-plan-studio__n">{pc.fmtMinutes(t.minutes)} · {pc.fmtCost(t.cost)}</span>}>
         <StepsEditor steps={plan.steps} onChange={(steps) => edit({ steps })} />
       </Sec>
-
+    ) },
+    { id: 'lists', node: (
       <Sec id="lists" title="Requirements, acceptance, decisions, questions, risks" icon="check-circle">
         {pc.LIST_IDS.map((k) => <ListEditor key={k} id={k} items={plan[k]} onChange={(items) => edit({ [k]: items } as Partial<Plan>)} />)}
       </Sec>
-
+    ) },
+    { id: 'links', node: (
       <Sec id="links" title="Links & catalog features" icon="external">
         <LinksEditor plan={plan} plans={state?.plans ?? []} onChange={(links) => edit({ links })} onOpen={onOpen} />
         {plan.features.length > 0 && (
@@ -150,26 +133,65 @@ export function PlanEditor({ initial, isNew, onClose, onOpen }: { initial: Plan;
         )}
         <p className="fx-muted axp-plan-studio__hint">Add catalog features from the Catalog tab (“Plan this” or “Add to a plan”), or tell the AI: “mark AmberX voice as planned”.</p>
       </Sec>
-
+    ) },
+    { id: 'notes', node: (
       <Sec id="notes" title="Notes (Markdown)" icon="file">
         <BodyEditor value={plan.body} onChange={(body) => edit({ body })} />
       </Sec>
-
+    ) },
+    { id: 'files', node: (
       <Sec id="files" title={`Attachments (${plan.attachments.length})`} icon="upload">
         <Attachments plan={plan} onChange={(attachments) => edit({ attachments })} />
       </Sec>
-
+    ) },
+    { id: 'build', node: (
       <Sec id="build" title="Build" icon="play">
         {isNew ? <p className="fx-muted">Save the plan first.</p> : <BuildPanel plan={saved ?? plan} dirty={dirty} />}
       </Sec>
-
+    ) },
+    { id: 'history', node: (
       <Sec id="history" title={`History${hist ? ` (${hist.versions.length})` : ''}`} icon="clock">
         {isNew ? <p className="fx-muted">Saved versions show here.</p> : <HistoryPanel history={hist} current={plan} onRestore={(v) => run(async () => { const r = await restorePlan(plan.id, v); setSaved(r.plan); setPlan(r.plan); rt.toast(`Restored version ${v}`, 'success'); })} />}
       </Sec>
-
+    ) },
+    { id: 'comments', node: (
       <Sec id="comments" title={`Comments (${plan.comments.length})`} icon="info">
         <Comments plan={plan} onChange={(comments) => edit({ comments })} />
       </Sec>
+    ) },
+  ];
+  const secs: SectionDef[] = SECTIONS.map((x) => ({ id: x.id, label: x.label, icon: x.icon, node: nodes.find((n) => n.id === x.id)?.node }));
+
+  return (
+    <div className="axp-plan-studio__editor">
+      <div className="axp-plan-studio__edbar" role="toolbar" aria-label="Plan">
+        <IconButton icon="arrow-left" label="Back to plans" onClick={onClose} />
+        <b className="axp-plan-studio__edtitle">{plan.title || 'New plan'}</b>
+        <Chip tone={statusInfo(plan.status).tone || undefined}>{statusInfo(plan.status).label}</Chip>
+        <span className="fx-muted axp-plan-studio__n">{dirty ? (isNew ? 'not saved yet' : autosave ? 'saving…' : 'unsaved changes') : `saved ${fmtWhen(saved?.updatedAt ?? '')}`}</span>
+        <span className="axp-plan-studio__grow" />
+        <LayoutSwitcher sections={secs} />
+        <FoldButtons />
+        {canListen() && <Button size="sm" icon="mic" onClick={() => setVoice(true)} title="Talk the plan through">Talk</Button>}
+        <Button size="sm" tone="primary" icon="save" busy={busy} disabled={!dirty && !isNew} onClick={() => void save()}>{isNew ? 'Save plan' : 'Save'}</Button>
+      </div>
+      {error && <p className="fx-error" role="alert">{error} <IconButton icon="x" label="Dismiss" onClick={() => setError('')} /></p>}
+      {!!dups?.length && (
+        <div className="axp-plan-studio__dups" role="alert">
+          <b>This looks like a plan you already have:</b>
+          <ul>{dups.map((d) => <li key={d.id}><button type="button" className="fx-btn fx-btn--quiet fx-btn--sm" onClick={() => onOpen(d.id)}>{d.title}</button> <span className="fx-muted">{d.status} · {Math.round(d.score * 100)}% alike</span></li>)}</ul>
+          <div className="fx-row"><Button size="sm" tone="primary" onClick={() => void save(true)}>Save as a new plan anyway</Button><Button size="sm" tone="quiet" onClick={() => setDups([])}>Keep editing</Button></div>
+        </div>
+      )}
+      {voice && <VoicePanel plan={saved} onClose={() => setVoice(false)} onOpen={onOpen} />}
+      {!isNew && <CommandBox plan={saved} onOpen={onOpen} />}
+      <div className="axp-plan-studio__strip" aria-label="Totals">
+        <span><b>{t.steps}</b> steps</span><span><b>{t.progress}%</b> done</span><span><b>{pc.fmtMinutes(t.minutes) || '0 min'}</b> effort</span>
+        <span><b>{pc.fmtMinutes(t.left) || '0 min'}</b> left</span><span><b>{pc.fmtCost(t.cost) || '$0'}</b> est. cost</span>
+        {t.acceptance.total > 0 && <span><b>{t.acceptance.done}/{t.acceptance.total}</b> accepted</span>}
+      </div>
+
+      <SectionLayout sections={secs} nav={<nav className="axp-plan-studio__jump" aria-label="Sections">{SECTIONS.map((s) => <button key={s.id} type="button" className="fx-chip" onClick={() => jump(s.id)}><Icon name={s.icon} size={11} />{s.label}</button>)}</nav>} />
 
       {!isNew && (
         <div className="fx-row axp-plan-studio__danger">

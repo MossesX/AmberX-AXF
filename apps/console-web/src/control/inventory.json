@@ -4,11 +4,11 @@
   "counts": {
     "views": 65,
     "nav": 16,
-    "tabGroups": 27,
+    "tabGroups": 29,
     "tabs": 78,
     "settingsTabs": 71,
     "settings": 89,
-    "functions": 274,
+    "functions": 278,
     "buttons": 62,
     "plugins": 71
   },
@@ -1497,13 +1497,33 @@
       "tabs": []
     },
     {
+      "address": "view:plan-studio/tab:plan-studio.sections",
+      "id": "plan-studio.sections",
+      "dynamic": false,
+      "view": "plan-studio",
+      "plugin": "ai.amberx.axf.console.plan-studio",
+      "file": "plugins/plan-studio/web/layout.tsx",
+      "line": 123,
+      "tabs": []
+    },
+    {
+      "address": "view:plan-studio/tab:plan-studio.pane",
+      "id": "plan-studio.pane",
+      "dynamic": false,
+      "view": "plan-studio",
+      "plugin": "ai.amberx.axf.console.plan-studio",
+      "file": "plugins/plan-studio/web/layout.tsx",
+      "line": 213,
+      "tabs": []
+    },
+    {
       "address": "view:plan-studio/tab:plan-studio.tabs",
       "id": "plan-studio.tabs",
       "dynamic": false,
       "view": "plan-studio",
       "plugin": "ai.amberx.axf.console.plan-studio",
       "file": "plugins/plan-studio/web/ui.tsx",
-      "line": 111,
+      "line": 113,
       "tabs": [
         {
           "address": "view:plan-studio/tab:plan-studio.tabs=plans",
@@ -6105,6 +6125,70 @@
       ],
       "effect": "navigate",
       "params": true,
+      "plugin": "ai.amberx.axf.console.plan-studio",
+      "file": "plugins/plan-studio/web/index.tsx"
+    },
+    {
+      "address": "function:plan-studio.layout",
+      "kind": "function",
+      "id": "plan-studio.layout",
+      "label": "Plan Studio: switch page layout (nav menu, tabs, IDE panes)",
+      "detail": "Action · Plan Studio",
+      "keywords": [
+        "plan-studio.layout",
+        "plan",
+        "studio",
+        "layout"
+      ],
+      "params": true,
+      "plugin": "ai.amberx.axf.console.plan-studio",
+      "file": "plugins/plan-studio/web/index.tsx"
+    },
+    {
+      "address": "function:plan-studio.dock",
+      "kind": "function",
+      "id": "plan-studio.dock",
+      "label": "Plan Studio: move, split, close or reopen IDE panes and tabs",
+      "detail": "Action · Plan Studio",
+      "keywords": [
+        "plan-studio.dock",
+        "plan",
+        "studio",
+        "dock"
+      ],
+      "params": true,
+      "plugin": "ai.amberx.axf.console.plan-studio",
+      "file": "plugins/plan-studio/web/index.tsx"
+    },
+    {
+      "address": "function:plan-studio.collapse-all",
+      "kind": "function",
+      "id": "plan-studio.collapse-all",
+      "label": "Plan Studio: collapse all (every plan, section and step)",
+      "detail": "Action · Plan Studio",
+      "keywords": [
+        "plan-studio.collapse-all",
+        "plan",
+        "studio",
+        "collapse",
+        "all"
+      ],
+      "plugin": "ai.amberx.axf.console.plan-studio",
+      "file": "plugins/plan-studio/web/index.tsx"
+    },
+    {
+      "address": "function:plan-studio.expand-all",
+      "kind": "function",
+      "id": "plan-studio.expand-all",
+      "label": "Plan Studio: expand all (every plan, section and step)",
+      "detail": "Action · Plan Studio",
+      "keywords": [
+        "plan-studio.expand-all",
+        "plan",
+        "studio",
+        "expand",
+        "all"
+      ],
       "plugin": "ai.amberx.axf.console.plan-studio",
       "file": "plugins/plan-studio/web/index.tsx"
     },
