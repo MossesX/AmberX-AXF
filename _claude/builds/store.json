@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6951,
- "updatedAt": "2026-11-16T22:53:49.979Z",
+ "rev": 6952,
+ "updatedAt": "2026-11-16T22:54:01.581Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211509,7 +211509,7 @@
    "title": "Icon map and icon packs: every icon and badge in the app, swappable",
    "category": "",
    "detail": "1. Icon map: a registry of EVERY icon, badge and logo slot in the whole app (every plugin, screen, dialog, menu, toolbar, tab, nav item, banner, widget and button that shows an icon). Each slot gets a stable id, its location and a role (e.g. 'save', 'approve', 'build-running'), and registers through the framework manifest so new plugins appear automatically. Add a CI check that fails on hard-coded icons not in the map.\n2. Icon map screen: a searchable, filterable, categorized tree of every slot with a live preview, where you click a slot to change its icon. Ties into the UI Manager.\n3. Icon pack template: one pack file maps every role to an icon. Applying a pack changes every icon in the app in one click. Per-slot overrides with Restore previous edit / Restore from axHub.\n4. Packs: ship a lot of packs (outline, filled, rounded, duotone, sharp, glyph, emoji-style, plus badge styles and app/plugin logos). Some are themable (follow skin tokens for colour and stroke), others are fixed-colour. Each pack declares whether it's themable. Licences must allow redistribution; prefer open icon sets.\n5. Packs are assets: swappable, per-skin defaults, shareable via the hub asset library, importable.\n6. Full API: REST/MCP/CLI/voice ('switch to the duotone icon pack'). Tests, help, Shipped features. Use Fable for the registry/schema and asset type.",
-   "status": "built",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -211517,8 +211517,8 @@
    "pr": "#664",
    "priority": "P1",
    "createdAt": "2026-11-13T19:55:30.979Z",
-   "updatedAt": "2026-11-15T00:41:54.305Z",
-   "builtAt": "2026-11-14T03:51:56.235Z",
+   "updatedAt": "2026-11-16T22:53:58.330Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -211607,6 +211607,10 @@
     {
      "text": "Session axf-icon-map-icon-packs-every-icon-badge-app--gina on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-14T04:15:07.351Z"
+    },
+    {
+     "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
+     "at": "2026-11-16T22:53:58.330Z"
     }
    ],
    "approvals": [
@@ -211898,7 +211902,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -218904,7 +218908,7 @@
    "title": "HOTFIX: get main CI green (theme-swap opacity + plugin lifecycle stale refs)",
    "category": "bug fix",
    "detail": "Main's full CI is red, so the merge queue can't land any batch and builds stop early back to Pending. Fix: (1) scripts/theme-swap.mjs fails because every style theme shows the hub opacities (look pinned to axHub); make style themes use their own opacity values. (2) Plugin lifecycle check: stale refs in 7 plugins; fix them. Land #665 first. Then re-add the console app stack #637 #639 #633 #640 #643 and the land-batch PRs to the merge queue and redeploy the console.",
-   "status": "complete",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -218912,8 +218916,8 @@
    "pr": "#669",
    "mergedAt": "2026-11-14T12:57:14Z",
    "createdAt": "2026-11-14T03:29:11.368Z",
-   "updatedAt": "2026-11-14T13:11:04.559Z",
-   "builtAt": "2026-11-14T13:10:32.699Z",
+   "updatedAt": "2026-11-16T22:53:54.138Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-hotfix-get-main-ci-green-theme-swap--rhonda.",
@@ -218994,6 +218998,10 @@
     {
      "text": "s3: #669 landed through the queue (carried #665, both merged); main full CI green on c0cceecca. Console stack #637/#639/#633/#640/#643 re-added to the queue. Console redeploy was broken on main since build-origin@1 (vite could not resolve ../core/build-id.mjs from the synced pending-core); fix in PR #672, the 5-minute update redeploys once it lands.",
      "at": "2026-11-14T13:10:21.162Z"
+    },
+    {
+     "text": "Moved to the Archive from complete (cli): Brett: archive all >500 behind main.",
+     "at": "2026-11-16T22:53:54.138Z"
     }
    ],
    "approvals": [],
@@ -219131,7 +219139,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -222202,7 +222210,7 @@
    "title": "Hotfix: toolbar settings still change nothing (live console)",
    "category": "hotfix",
    "detail": "Brett (Nov 14): 'the toolbar settings still don't work. When I click the toolbar and go to its settings, the settings don't change anything.' Earlier builds touched this (fix-toolbar-settings-doing-nothing, chrome-settings-actually-apply-toolbars, per-toolbar-settings PR #650, per-instance picker #642/#622) but it's still broken on the live console. Reproduce on the LIVE console first (open a toolbar's settings, change each setting, confirm whether the stored value changes and whether the toolbar re-renders). Find which of those PRs never landed vs. what's genuinely broken, land or fix, and verify on the live console after redeploy.",
-   "status": "complete",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -222210,8 +222218,8 @@
    "pr": "#673",
    "mergedAt": "2026-11-14T17:36:16Z",
    "createdAt": "2026-11-14T16:51:14.645Z",
-   "updatedAt": "2026-11-16T17:10:54.799Z",
-   "builtAt": "2026-11-16T17:10:54.799Z",
+   "updatedAt": "2026-11-16T22:53:56.245Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-hotfix-toolbar-settings-still-change--lenny, own login copy)",
@@ -222268,6 +222276,10 @@
     {
      "text": "Reconciler: PR #673 merged: complete",
      "at": "2026-11-16T17:10:54.799Z"
+    },
+    {
+     "text": "Moved to the Archive from complete (cli): Brett: archive all >500 behind main.",
+     "at": "2026-11-16T22:53:56.245Z"
     }
    ],
    "approvals": [],
@@ -222440,7 +222452,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -236347,7 +236359,7 @@
    "title": "Home cards follow plugin on/off; home always filled with most-active plugins",
    "category": "",
    "detail": "1) When a plugin is disabled or uninstalled, its home screen card is removed at once (no dead or blank cards), and comes back if the plugin is re-enabled. 2) The home screen is never empty or gappy: empty slots are filled automatically. 3) Brett's own picks always win and keep their order. Any slot he hasn't picked is filled with the MOST ACTIVE enabled plugins, ranked by recent use and activity (opens, actions, live jobs, alerts over a recent window). The ranking updates over time and auto-filled cards are marked as auto (pin to keep, remove to swap). 4) Setting for number of home slots; cards use the shared skin row/card styling. Full API parity (list home cards, pin/unpin, reorder, refill, ranking) via REST/MCP/CLI/voice. Tests (disable plugin removes its card and a replacement fills in; empty selection still fills the home screen), help, Shipped features. Land with the one-at-a-time lander.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -236355,7 +236367,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-15T13:22:11.842Z",
-   "updatedAt": "2026-11-15T14:10:45.378Z",
+   "updatedAt": "2026-11-16T22:53:52.081Z",
    "builtAt": "",
    "notes": [
     {
@@ -236401,6 +236413,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-15T14:10:45.378Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (cli): Brett: archive all >500 behind main.",
+     "at": "2026-11-16T22:53:52.081Z"
     }
    ],
    "approvals": [],
@@ -236866,7 +236882,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

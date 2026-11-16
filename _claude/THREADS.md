@@ -814,10 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 18:27 UTC · `settings-interface-gear-every-plugin` → queued, note (all) · console
-- 2026-11-16 18:28 UTC · `hotfix-orchestrator-grid-columns-don-t` added (0 steps) (all) · console
-- 2026-11-16 18:28 UTC · `hotfix-orchestrator-grid-columns-don-t` → queued, note (all) · console
-- 2026-11-16 18:28 UTC · `settings-interface-gear-every-plugin` → queued, note (all) · builds-live
 - 2026-11-16 18:28 UTC · `hotfix-orchestrator-grid-columns-don-t` added (0 steps) (all) · builds-live
 - 2026-11-16 18:28 UTC · `fix-red-ci-blocked-builds-they-land` → running, note (all) · mcp
 - 2026-11-16 18:28 UTC · `fix-red-ci-blocked-builds-they-land` → queued (all) · mcp
@@ -1214,6 +1210,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 22:53 UTC · `every-grid-1-2-rows-per-item-set-skin` → archived, note (all) · cli
 - 2026-11-16 22:53 UTC · `fix-red-ci-blocked-builds-they-land` → archived, note (all) · cli
 - 2026-11-16 22:53 UTC · `full-voice-control-resolve-inventory` → archived, note (all) · cli
+- 2026-11-16 22:53 UTC · `home-cards-follow-plugin-off-home-always` → archived, note (all) · cli
+- 2026-11-16 22:53 UTC · `hotfix-get-main-ci-green-theme-swap` → archived, note (all) · cli
+- 2026-11-16 22:53 UTC · `hotfix-toolbar-settings-still-change` → archived, note (all) · cli
+- 2026-11-16 22:53 UTC · `icon-map-icon-packs-every-icon-badge-app` → archived, note (all) · cli
 
 ## Token passes (log)
 
