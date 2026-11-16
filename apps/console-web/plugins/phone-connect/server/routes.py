@@ -283,8 +283,10 @@ def pair_qr() -> Any:
     except ImportError:
         return JSONResponse({"error": PhoneError("unavailable", "The QR engine isn't installed; type the code on the phone.").as_dict()}, status_code=503)
     buf = io.BytesIO()
-    segno.make(f"axf-phone://pair?code={p['code']}", error="m").save(buf, kind="svg", scale=6, border=2, dark="currentColor", light=None, xmldecl=False, svgns=True)
-    return Response(buf.getvalue(), media_type="image/svg+xml", headers={"cache-control": "no-store"})
+    # segno only takes named or hex colours; draw black, then hand the colour to the page (currentColor follows the theme).
+    segno.make(f"axf-phone://pair?code={p['code']}", error="m").save(buf, kind="svg", scale=6, border=2, dark="#000", light=None, xmldecl=False, svgns=True)
+    svg = buf.getvalue().decode("utf-8").replace('"#000"', '"currentColor"').replace('"#000000"', '"currentColor"')
+    return Response(svg.encode("utf-8"), media_type="image/svg+xml", headers={"cache-control": "no-store"})
 
 
 # ------------------------------------------------------------------ overlay (synced to the phone)
