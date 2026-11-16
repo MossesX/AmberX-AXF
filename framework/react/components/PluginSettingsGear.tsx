@@ -26,6 +26,8 @@ export interface PluginSettingsGearProps {
   label?: string;
   size?: number;
   className?: string;
+  /** called before the open (a popover or banner panel that hosts the gear closes itself here) */
+  onBeforeOpen?: () => void;
   /** called after the open was asked for (the result tells whether console control found the sub-tab) */
   onOpened?: (result: { address: string; ok: boolean }) => void;
 }
@@ -35,13 +37,14 @@ export function pluginSettingsGearId(tab: string): string { return `plugin-setti
 export function pluginSettingsGearAddress(tab: string): string { return `button:${pluginSettingsGearId(tab)}`; }
 export function pluginSettingsGearLabel(plugin: string | undefined, tab: string): string { return `${plugin?.trim() || tab} settings`; }
 
-export function PluginSettingsGear({ tab, plugin, label, size = 14, className, onOpened }: PluginSettingsGearProps) {
+export function PluginSettingsGear({ tab, plugin, label, size = 14, className, onBeforeOpen, onOpened }: PluginSettingsGearProps) {
   const rt = useOptionalRuntime();
   if (!TAB_ID.test(tab)) return null;
   const address = settingsAddress(tab);
   const text = label ?? pluginSettingsGearLabel(plugin, tab);
   const open = async () => {
     if (!rt) return;
+    onBeforeOpen?.();
     const r = await controlRegistry(rt).run({ verb: 'open', address });
     const ok = r.ok === true;
     if (!ok) rt.dispatch(settingsOpenAction(tab));

@@ -1,6 +1,6 @@
 /** Push banner UI: the banner (open pull requests + branches not on main, grouped by what's ready) and the settings panel. Theme tokens only. */
 import { useEffect, useState, type ReactNode } from 'react';
-import { Button, Icon, RefText, SelectField, Switch, useAxfState, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
+import { BannerIcon, Button, Icon, PluginSettingsGear, RefText, SelectField, Switch, useAxfState, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
 import { MergeQueueChip, MergeQueueView } from './queue';
 import { ago, bannerOn, doneKeys, doneRows, failedKeys, failedRows, fixWithClaude, jobOf, REPAIR_ALL, removeFailed, repair, repairAll, load, loadDetail, mergePr, needsPull, openPr, PULL_ALL, pullAll, pullMain, pullRows, removeDone, rows, saveClaude, setHidden, useStore, api, type Done, type Failed, type PullRow, type Row } from './store';
 
@@ -386,7 +386,7 @@ export function PushBanner() {
           <Group title="Branches without a pull request" count={bare.length}>{bare.map((r) => <BranchItem key={r.key} r={r} />)}</Group>
           <div className="axp-push-banner__foot">
             <Button size="sm" tone="quiet" icon="refresh" disabled={s.loading} onClick={() => void load(true)}>{s.loading ? 'Checking…' : 'Check now'}</Button>
-            <Button size="sm" tone="quiet" icon="settings" onClick={() => rt.dispatch('settings.open:push-banner')}>Settings</Button>
+            <PluginSettingsGear tab="push-banner" plugin="Push banner" />
             <Note k={PULL_ALL} />
             <Note k={REPAIR_ALL} />
             {s.error && <span className="axp-push-banner__note is-danger">{s.error}</span>}

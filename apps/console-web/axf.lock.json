@@ -924,7 +924,7 @@
     "src/axf/core/engines/console-control-voice.d.mts": "e91a57d59285d3a3",
     "src/axf/core/plugin-settings.mjs": "3ac2d4ed50d4fdb2",
     "src/axf/core/plugin-settings.d.mts": "f6bce0afb56bd41a",
-    "src/axf/react/components/PluginSettingsGear.tsx": "4d66d667a9096109",
+    "src/axf/react/components/PluginSettingsGear.tsx": "80aa4c1032812b1e",
     "src/axf/react/components/PluginScreenHeader.tsx": "157386fd486f907b"
   }
 }

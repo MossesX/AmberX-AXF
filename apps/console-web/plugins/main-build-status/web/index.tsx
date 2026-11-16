@@ -17,7 +17,7 @@
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
-import { Button, Chip, Icon, RefText, TextField } from '@console/axf/react';
+import { Button, Chip, Icon, PluginSettingsGear, RefText, TextField } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -139,7 +139,7 @@ function RunDialog() {
       {items.map((it) => <RunCard key={`${it.repo}|${it.branch}|${it.workflow}`} it={it} />)}
       <div className="fx-row fx-row--wrap">
         <Button icon="refresh" disabled={s.loading} onClick={() => void checkNow(true)}>{s.loading ? 'Checking…' : 'Check now'}</Button>
-        <Button icon="settings" onClick={() => { runtime?.closeDialog(); runtime?.dispatch('settings.open:main-build-status'); }}>Settings</Button>
+        <PluginSettingsGear tab="main-build-status" plugin="Main build status" onBeforeOpen={() => runtime?.closeDialog()} />
       </div>
       {s.reply && <p className="fx-small fx-muted" style={{ margin: 0 }}>Checked {shortAgo(new Date(s.reply.checkedAt).toISOString())} ago · every {POLL_MS / 1000} s while the console is open</p>}
     </div>

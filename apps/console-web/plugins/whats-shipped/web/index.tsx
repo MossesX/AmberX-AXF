@@ -17,7 +17,7 @@
  */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
-import { AgentAvatar, Button, Checkbox, Chip, Icon, Segmented, SelectField, Switch, TextField } from '@console/axf/react';
+import { AgentAvatar, Button, Checkbox, Chip, Icon, PluginSettingsGear, Segmented, SelectField, Switch, TextField } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -182,7 +182,7 @@ function Panel() {
         <span className="fx-small fx-muted">{left ? `${left} unread` : 'All read'} · {s.feed?.items.length ?? 0} shipped</span>
         <Button icon="check" disabled={!left} onClick={() => rt && setRead(rt, (s.feed?.items ?? []).map((i) => i.id))}>Mark all read</Button>
         <Button icon="refresh" disabled={s.loading} onClick={() => void refresh(true)}>{s.loading ? 'Checking…' : 'Check now'}</Button>
-        <Button icon="settings" onClick={() => { rt?.closeDialog(); rt?.dispatch('settings.open:whats-shipped'); }}>Settings</Button>
+        <PluginSettingsGear tab="whats-shipped" plugin="What's shipped" onBeforeOpen={() => rt?.closeDialog()} />
       </div>
       {s.error && <p className="fx-small fx-muted axp-whats-shipped__text" role="status"><Icon name="info" size={12} /> {s.error}</p>}
       {!groups.length && <p className="fx-muted">{s.loading ? 'Reading what shipped…' : q ? 'Nothing matches.' : 'Nothing shipped in this window.'}</p>}
