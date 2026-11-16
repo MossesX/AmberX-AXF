@@ -50,6 +50,7 @@ SERVICES = [
     {"id": "hostinger", "label": "Hostinger", "icon": "cloud", "description": "Hostinger API for VPS and DNS management."},
     {"id": "coolify", "label": "Coolify", "icon": "box", "description": "The deploy platform in front of every app."},
     {"id": "axhub", "label": "axHub", "icon": "zap", "description": "The connector hub: shared data, Claude files, MCP proxy."},
+    {"id": "amberx", "label": "AmberX phone", "icon": "smartphone", "description": "The AmberX app on Brett's phone: opening pages, alerts, the recorder."},
     {"id": "data", "label": "AmberX data", "icon": "folder", "description": "Repo, project manifest, shared data folder, Claude files."},
 ]
 

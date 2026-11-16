@@ -56,6 +56,25 @@ final class OpenUrlRules {
         return "default".equals(b) ? "default" : "chrome";
     }
 
+    /**
+     * Open pages through the existing hub tool: a {@code browser.open} whose URL carries {@code axf-open-pages=<verb>}
+     * (grant, state, test) is a Settings → Open pages verb, not a page (like {@code axf-overlay}). → the verb or "".
+     */
+    static final String PAGES_PARAM = "axf-open-pages";
+    static String pagesVerb(String url) {
+        try {
+            String q = new URI(url).getRawQuery();
+            if (q == null) return "";
+            for (String part : q.split("&")) {
+                int eq = part.indexOf('=');
+                if (eq < 0 || !PAGES_PARAM.equals(part.substring(0, eq))) continue;
+                String v = part.substring(eq + 1).toLowerCase(Locale.ROOT);
+                if ("grant".equals(v) || "state".equals(v) || "test".equals(v)) return v;
+            }
+        } catch (Exception ignored) { /* not a URL: a plain open */ }
+        return "";
+    }
+
     /** True for the commands this class answers. */
     static boolean known(String tool) {
         return OPEN.equals(tool) || PAGES_STATE.equals(tool) || PAGES_TEST.equals(tool);

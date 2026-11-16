@@ -48,6 +48,32 @@ def _rpc(url: str, tok: str, sid: str | None, method: str, params: dict[str, Any
     return msg.get("result") or {}, r.headers.get("mcp-session-id") or sid
 
 
+def can_open_pages(last: dict[str, Any] | None = None) -> dict[str, Any]:
+    """health@1 "AmberX can't open pages", from the phone's last open_url answer (passive: the check never opens a page).
+    Red when the phone said Display over other apps and full-screen notices are both off, or the page only went out as
+    a notification; green when the last page opened by itself; unknown until a page was asked for."""
+    import time
+    last = LAST if last is None else last
+    a = last.get("answer") if isinstance(last, dict) else None
+    if not isinstance(a, dict):
+        return {"status": "unknown", "summary": "No page opened through AmberX since the console started.", "details": []}
+    when = time.strftime("%H:%M UTC", time.gmtime(float(last.get("at") or 0)))
+    reasons = {t.get("reason") for t in (a.get("tried") or []) if isinstance(t, dict)}
+    no_overlay = a.get("overlay") is False or "overlay-off" in reasons
+    no_fsi = "no-full-screen-intent" in reasons
+    route = a.get("route") or ("overlay" if a.get("where") == "overlay" and a.get("opened") else "direct" if a.get("opened") else "notification" if a.get("notified") else "none")
+    details = [f"Last open_url at {when}: route {route}, opened {'yes' if a.get('opened') else 'no'}."]
+    if no_overlay:
+        details.append("Display over other apps is off for AmberX.")
+    if no_fsi:
+        details.append("Full-screen notices are not allowed for AmberX.")
+    if a.get("opened") is True:
+        return {"status": "ok", "summary": f"AmberX opened the last page itself ({route}).", "details": details}
+    if route in ("notification", "none") or (no_overlay and no_fsi):
+        return {"status": "error", "summary": "AmberX can't open pages by itself: the last one " + ("only went out as a notification" if route == "notification" else "didn't open") + ".", "details": details}
+    return {"status": "warn", "summary": "AmberX's last page didn't open by itself.", "details": details}
+
+
 def _phone_answer(text: str) -> dict[str, Any]:
     """The phone's reply inside the hub's result text ({opened, notified, …}, at the top or under data/result)."""
     try:
@@ -60,6 +86,16 @@ def _phone_answer(text: str) -> dict[str, Any]:
     return body if isinstance(body, dict) else {}
 
 
+LAST: dict[str, Any] = {}  # the last phone answer to amberx.open_url: {at, answer} (systems check "AmberX can't open pages")
+
+
+def remember(a: dict[str, Any]) -> None:
+    import time
+    if isinstance(a, dict) and ("opened" in a or "route" in a or "overlay" in a):
+        LAST.clear()
+        LAST.update({"at": time.time(), "answer": a})
+
+
 def outcome(res: dict[str, Any]) -> dict[str, Any]:
     """The hub's `tools/call` result → {ok, opened, notified, message}, saying only what the phone reported."""
     text = "\n".join(c.get("text", "") for c in res.get("content", []) if isinstance(c, dict))
@@ -70,6 +106,10 @@ def outcome(res: dict[str, Any]) -> dict[str, Any]:
             err = {"message": text}
         return {"ok": False, "opened": False, "notified": False, "message": f"AmberX couldn't open the console: {str(err.get('message') or text)[:240]}"}
     a = _phone_answer(text)
+    if a.get("verb") != "grant":
+        remember(a)
+    if a.get("route") == "console-tab" and a.get("opened") is True:
+        return {"ok": True, "opened": True, "notified": False, "message": "the console tab on screen opened it", "route": "console-tab"}
     if a.get("held"):
         return {"ok": False, "opened": False, "notified": False, "message": "axHub is holding the request instead of sending it to the phone"}
     opened, notified = a.get("opened") is True, a.get("notified") is not False
@@ -92,7 +132,18 @@ def outcome(res: dict[str, Any]) -> dict[str, Any]:
     return {"ok": True, "opened": opened, "notified": notified, "message": message}
 
 
-def open_url(target: str, browser: str = "chrome") -> dict[str, Any]:
+GRANT_URL = "https://console.amberxai.com/?axf-open-pages=grant"
+GRANT_REASON = {"title": "Ask AmberX to turn on what it needs to open pages",
+                "description": "The systems check found AmberX can't open pages on its own (Display over other apps or full-screen notices off, or the last page only went out as a notification). AmberX opens the Android grant screen, or posts a notification whose tap opens it."}
+
+
+def ask_to_grant() -> dict[str, Any]:
+    """Auto fix: amberx.open_url with axf-open-pages=grant → the phone opens (or offers by notification) the grant screen."""
+    r = open_url(GRANT_URL, reason=GRANT_REASON)
+    return {"state": "done" if r.get("ok") else "failed", "message": "AmberX was asked to open the grant screen (tap its notification if it didn't come up)" if r.get("ok") else r.get("message", "AmberX couldn't be asked")}
+
+
+def open_url(target: str, browser: str = "chrome", reason: dict[str, str] | None = None) -> dict[str, Any]:
     """→ {ok, opened, notified, message}. Never raises for a hub or phone failure: the command stays queued and the answer says why."""
     url = (os.environ.get("AXHUB_URL") or "https://axhub.amberxai.com").rstrip("/")
     tok = os.environ.get("AXHUB_TOKEN", "")
@@ -102,7 +153,7 @@ def open_url(target: str, browser: str = "chrome") -> dict[str, Any]:
         return {"ok": False, "opened": False, "notified": False, "message": "the axHub address must be https"}
     try:
         _, sid = _rpc(url, tok, None, "initialize", {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "axf-console-wake", "version": "1"}}, 15)
-        res, _ = _rpc(url, tok, sid, "tools/call", {"name": "call", "arguments": {"tool": TOOL, "arguments": {"url": target, "browser": browser}, "reason": REASON, "timeout_seconds": 20}}, 40)
+        res, _ = _rpc(url, tok, sid, "tools/call", {"name": "call", "arguments": {"tool": TOOL, "arguments": {"url": target, "browser": browser}, "reason": reason or REASON, "timeout_seconds": 20}}, 40)
     except Exception as e:  # noqa: BLE001
         return {"ok": False, "opened": False, "notified": False, "message": f"couldn't reach axHub: {str(e)[:200]}"}
     return outcome(res)

@@ -1020,6 +1020,7 @@ def navigated_route(request: Request, n: int = 20) -> dict[str, Any]:
 
 @router.get("/clients")
 def clients(request: Request) -> dict[str, Any]:
+    ensure_health()
     _, _, audience = caller(request)
     now = _now() * 1000
     return {"ok": True, "items": [{k: v for k, v in c.items() if k != "catalog"} | {"items": len((c.get("catalog") or {}).get("items") or []), "live": now - c["lastSeen"] <= STALE_S * 1000}
@@ -1202,4 +1203,33 @@ class ConsoleCommands:
         return [{k: v for k, v in c.items() if k != "catalog"} for c in clients_of(audience)]
 
 
+HEALTH_CAP = "axf.health@1"
+HEALTH_ID = "amberx-open-pages"
+_health_done = False
+
+
+def ensure_health() -> bool:
+    """Systems check item "AmberX can't open pages" (open-url-route@1), with an Auto fix that sends the phone to the
+    grant screen. Registered once the systems check provides axf.health@1 (plugins load in any order)."""
+    global _health_done
+    if _health_done:
+        return True
+    reg = plugin_services.get(HEALTH_CAP)
+    if reg is None:
+        return False
+    from . import wake
+    try:
+        reg.register({"id": HEALTH_ID, "label": "AmberX can't open pages", "service": "amberx", "order": 45, "severity": "warn",
+                      "run": lambda: wake.can_open_pages(),
+                      "breaks": "Pages Amber opens on the phone (console wake, open_url) only arrive as a notification you have to tap.",
+                      "instructions": ["On the phone: AmberX → Settings → Plugins → Open pages (amberx://settings/open-pages).",
+                                       "Turn on Display over other apps, then Full-screen notices, then press Test open."],
+                      "autoFix": {"label": "Send the phone to the grant screen", "run": lambda: wake.ask_to_grant()}}, FOLDER)
+    except Exception:  # noqa: BLE001 — open_url works without its health item
+        return False
+    _health_done = True
+    return True
+
+
 plugin_services.provide("console-commands@1", ConsoleCommands(), folder=FOLDER)
+ensure_health()

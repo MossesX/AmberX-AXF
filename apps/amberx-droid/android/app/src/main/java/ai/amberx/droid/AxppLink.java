@@ -155,6 +155,10 @@ final class AxppLink {
         switch (tool) {
             case OpenUrlRules.OPEN: {
                 String url = OpenUrlRules.allowed(args.optString("url", ""));
+                String pages = OpenUrlRules.pagesVerb(url);
+                if ("state".equals(pages)) return run(OpenUrlRules.PAGES_STATE, args);
+                if ("test".equals(pages)) return openPage(c, OverlayPageRules.HOME, OpenUrlRules.browserOf(args), args.optString("where", "auto"));
+                if ("grant".equals(pages)) return askToGrant(c, args.optString("which", ""));
                 String verb = OverlayPageRules.verb(url);
                 boolean ready = WatchService.overlayPagesReady(c);
                 // overlay.collapse / overlay.expand from the console, MCP, the CLI or voice, through the same hub tool.
@@ -444,6 +448,60 @@ final class AxppLink {
         main.post(() -> { try { out[0] = f.getAsBoolean(); } finally { done.countDown(); } });
         try { done.await(5, java.util.concurrent.TimeUnit.SECONDS); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
         return out[0];
+    }
+
+    static final int NOTE_GRANT = 0x0A12;
+
+    /** The Android settings screen that grants [which] (overlay, full-screen, notifications). */
+    static Intent grantIntent(Context c, String which) {
+        Intent i;
+        if ("full-screen".equals(which) && Build.VERSION.SDK_INT >= 34) {
+            i = new Intent(android.provider.Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT, android.net.Uri.parse("package:" + c.getPackageName()));
+        } else if ("notifications".equals(which) || "full-screen".equals(which)) {
+            i = new Intent(android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, c.getPackageName());
+        } else {
+            i = DetectionOverlay.permissionIntent(c);
+        }
+        return i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    }
+
+    /**
+     * The systems check's Auto fix for "AmberX can't open pages": the grant screen for the first thing missing
+     * (Display over other apps, then full-screen notices), opened now when Android lets AmberX start it, and always a
+     * notification whose tap opens it. → {verb: grant, which, opened, notified}.
+     */
+    static JSONObject askToGrant(Context c, String asked) throws Exception {
+        OpenUrlRoute.Phone p = phoneNow(c, "auto");
+        String which = !asked.isEmpty() ? asked : !p.overlay ? "overlay" : !p.fullScreenIntent ? "full-screen" : !p.notifications ? "notifications" : "";
+        JSONObject out = new JSONObject().put("verb", "grant").put("opened", false).put("notified", false).put("where", "settings").put("which", which);
+        if (which.isEmpty()) return out.put("message", "AmberX already has what it needs to open pages");
+        Intent screen = grantIntent(c, which);
+        boolean started = onMain(() -> startInForeground(c, screen));
+        boolean notified = onMain(() -> {
+            try {
+                NotificationManager nm = (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !nm.areNotificationsEnabled()) return false;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && nm.getNotificationChannel(CHANNEL_PAGE) == null) {
+                    NotificationChannel ch = new NotificationChannel(CHANNEL_PAGE, "Pages Amber opens", NotificationManager.IMPORTANCE_HIGH);
+                    ch.setDescription("Opens a page Amber asked for, over the lock screen when the phone is locked");
+                    nm.createNotificationChannel(ch);
+                }
+                PendingIntent pi = PendingIntent.getActivity(c, 6, screen, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+                Notification.Builder b = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? new Notification.Builder(c, CHANNEL_PAGE) : new Notification.Builder(c);
+                b.setSmallIcon(android.R.drawable.ic_menu_manage)
+                    .setContentTitle("Let AmberX open pages")
+                    .setContentText("overlay".equals(which) ? "Tap, then turn on Display over other apps for AmberX." : "full-screen".equals(which) ? "Tap, then allow full-screen notifications for AmberX." : "Tap, then turn on AmberX's notifications.")
+                    .setContentIntent(pi)
+                    .setCategory(Notification.CATEGORY_REMINDER)
+                    .setPriority(Notification.PRIORITY_HIGH)
+                    .setAutoCancel(true);
+                nm.notify(NOTE_GRANT, b.build());
+                return true;
+            } catch (RuntimeException e) {
+                return false;
+            }
+        });
+        return out.put("opened", started).put("notified", notified);
     }
 
     static final int CONSOLE_TAB_TIMEOUT_MS = 6_000;  // the console waits 2.5 s for its tab; the rest is the network
