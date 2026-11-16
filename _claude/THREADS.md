@@ -814,7 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 18:40 UTC · `axhub-veto-countdown-setting-read-only` note (all) · orchestrator
 - 2026-11-16 18:40 UTC · `settings-interface-gear-every-plugin` → queued, note (all) · pipeline
 - 2026-11-16 18:42 UTC · `hotfix-orchestrator-grid-columns-don-t` s1 done, → running (all) · orchestrator
 - 2026-11-16 18:41 UTC · `amberx-open-url-must-open-page-even-when` → running, note (all) · pipeline
@@ -1214,6 +1213,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 23:04 UTC · `banner-widget-shapes-plus-change-icon` branch claude/banner-widget-shapes-plus-change-icon (all) · pipeline
 - 2026-11-16 23:04 UTC · `banner-widget-shapes-plus-change-icon` note (all) · orchestrator
 - 2026-11-16 23:05 UTC · `banner-widget-shapes-plus-change-icon` → running, note (all) · pipeline
+- 2026-11-16 23:07 UTC · `own-look-per-grid-and-tab-group` s3 done (all) · orchestrator
 
 ## Token passes (log)
 
