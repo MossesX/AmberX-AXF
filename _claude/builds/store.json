@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7008,
- "updatedAt": "2026-11-16T23:21:39.963Z",
+ "rev": 7009,
+ "updatedAt": "2026-11-16T23:21:54.415Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -101148,7 +101148,7 @@
    "title": "Approvals: no window spam on Approve; veto only for VPS writes and account switches",
    "category": "Builds",
    "detail": "## Brett said (verbatim)\nSource: voice · At: 2026-11-06\n> when I click approve and the consoles pop up, I don't want it to launch a window of access. It's opening a thousand fucking windows. And also you only need to send the veto rules that ask for approval or deny if you are actually writing something to the VPS or if you are switching accounts.\n> All right, go ahead, build that shit.\n\nNotes: touches Follow Amber approval pop-up (console) and axHub tool policies (veto vs allow). Changing which calls are veto is a policy change in axHub and the shared rule 'It's a veto system'; update rules + decisions.md to match.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -101156,7 +101156,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T13:08:05.609Z",
-   "updatedAt": "2026-11-14T23:31:51.006Z",
+   "updatedAt": "2026-11-16T23:21:50.093Z",
    "builtAt": "",
    "notes": [
     {
@@ -101182,6 +101182,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-14T23:31:51.006Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (cli): Brett: clear Pending.",
+     "at": "2026-11-16T23:21:50.093Z"
     }
    ],
    "approvals": [],
@@ -101358,7 +101362,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 95,
+   "rev": 96,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -146846,7 +146850,7 @@
    "title": "Orchestrator assigns builds/steps to employee agents via group chat, with match % dialog and 90 s veto",
    "category": "",
    "detail": "1) When the orchestrator assigns a build or step, it posts in the group chat asking which employee has the skills/tools/capabilities. 2) The first agent to claim it opens a dialog listing all matching agents with a percentage for how likely each is the best choice. 3) 90-second veto: if Brett doesn't pick, the orchestrator assigns the highest-probability agent by default. 4) The chosen employee uses its own brief set and its training data in the brief, and sends its briefs back to the orchestrator. Builds on orchestrator-table-columns (assigned employee) and the Brownie/Molly group chat handoffs; reuse. Full API/CLI control.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -146855,7 +146859,7 @@
    "pr": "#465",
    "priority": "P1",
    "createdAt": "2026-11-10T16:28:04.849Z",
-   "updatedAt": "2026-11-14T23:31:51.006Z",
+   "updatedAt": "2026-11-16T23:21:51.961Z",
    "builtAt": "",
    "notes": [
     {
@@ -146893,6 +146897,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-14T23:31:51.006Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (cli): Brett: clear Pending.",
+     "at": "2026-11-16T23:21:51.961Z"
     }
    ],
    "approvals": [],
@@ -147208,7 +147216,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 96,
+   "rev": 97,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -149242,7 +149250,7 @@
    "title": "Inline edit plugin: install in console, Molly and AmberX web (not Android); Molly never renders a plugin twice",
    "category": "",
    "detail": "Amends the inline element editing build. 1) Install the plugin in the console, Molly and AmberX web. Not the AmberX Android app. 2) Molly rule for every plugin: when a console page is open inside Molly, render the console's plugin only if Molly doesn't already have that plugin, so nothing ever renders twice.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -149251,7 +149259,7 @@
    "pr": "#471",
    "priority": "P1",
    "createdAt": "2026-11-10T16:40:38.588Z",
-   "updatedAt": "2026-11-16T17:10:54.799Z",
+   "updatedAt": "2026-11-16T23:21:43.237Z",
    "builtAt": "",
    "notes": [
     {
@@ -149293,6 +149301,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-16T17:10:54.799Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (cli): Brett: clear Pending.",
+     "at": "2026-11-16T23:21:43.237Z"
     }
    ],
    "approvals": [],
@@ -149604,7 +149616,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 100,
+   "rev": 101,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -210249,7 +210261,7 @@
    "title": "Skin config panel: merge main and land",
    "category": "",
    "detail": "Branch claude/skin-configuration-panel-before-ai-makes (800 behind) clashed with main in 10 files: .github/workflows/android.yml, settings libs (framework/libs/settings plus the amberx-droid, axhub-web, console-web and molly copies), the theme-manager plugin.json and web/index.tsx, framework/cli/build-engine.mjs and framework/spec/PORTING.md. Merge origin/main and keep main's newer code plus this branch's skin configuration panel (Brett picks what the AI may change before it makes a skin). Edit framework first and re-bake the app copies. Run tests, push, land on main.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -210258,7 +210270,7 @@
    "mergedAt": "2026-11-14T20:15:18Z",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:38.941Z",
-   "updatedAt": "2026-11-14T23:38:11.297Z",
+   "updatedAt": "2026-11-16T23:21:46.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -210344,6 +210356,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-14T23:38:11.297Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (cli): Brett: clear Pending.",
+     "at": "2026-11-16T23:21:46.504Z"
     }
    ],
    "approvals": [],
@@ -210490,7 +210506,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -223985,7 +224001,7 @@
    "title": "Themed native controls plugin",
    "category": "",
    "detail": "Companion to picker-dialog-plugin-replaces-all, same rules. A removable plugin that replaces every browser-native control in the console and framework with a themed, token-driven version: date/time/datetime pickers -> themed calendar/time dialog; color inputs -> swatch/picker dialog; window.alert/confirm/prompt -> themed dialogs (async API shim); checkboxes, radios, range sliders -> themed switches/radios/sliders; file inputs -> themed drop zone with progress; number inputs -> themed steppers; native title tooltips -> themed tooltips; scrollbars -> themed scrollbars. Each control gets its own token family (every state, light and dark) registered in the token registry; no literal values (CI gate); skins style them and the skin upgrader adds defaults matching today's look. Accessibility (keyboard, screen reader, focus) kept. Each control type can be toggled on/off in the plugin settings; plugin off restores native controls. Desktop and phone (bottom sheets on phone). Full API and voice control. Split into parallel parts per control family. Tests desktop and phone, help, Shipped features.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -223993,7 +224009,7 @@
    "pr": "#690",
    "priority": "P1",
    "createdAt": "2026-11-14T18:14:25.063Z",
-   "updatedAt": "2026-11-16T19:00:52.597Z",
+   "updatedAt": "2026-11-16T23:21:41.524Z",
    "builtAt": "",
    "notes": [
     {
@@ -224051,6 +224067,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-16T19:00:52.597Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (cli): Brett: clear Pending.",
+     "at": "2026-11-16T23:21:41.524Z"
     }
    ],
    "approvals": [
@@ -224905,7 +224925,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -225693,7 +225713,7 @@
    "title": "Replace merge queue with one-at-a-time landing",
    "category": "",
    "detail": "Brett overrides the Nov 4 'only the queue merges' rule. Remove the batched/stacked merge queue (push-banner land.mjs rounds) and replace it with a serial lander: take one finished build, merge origin/main into it, regenerate generated files (generated-files@1), run its checks once, merge it to main, then the next. No stacking builds on each other, so a fix to one never restarts the others' tests. A cancelled CI run (superseded by a push) is never counted as a failure. On a red check, auto-file a fix build and move on to the next build instead of blocking the line. Show the landing line and its current build in the console with full API and voice control (pause, skip, move up). Redeploy the console after each landing batch. Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -225702,7 +225722,7 @@
    "mergedAt": "2026-11-14T23:06:15Z",
    "priority": "P0",
    "createdAt": "2026-11-14T22:15:48.311Z",
-   "updatedAt": "2026-11-14T23:32:12Z",
+   "updatedAt": "2026-11-16T23:21:48.211Z",
    "builtAt": "",
    "notes": [
     {
@@ -225732,6 +225752,10 @@
     {
      "text": "Shipped manifest sm-replace-merge-queue-one-time-landing rev 1 sent to Shipped features (orchestrator): landed 7ca342b2f, 7 file(s), 0 test line(s), 21 open.",
      "at": "2026-11-14T23:32:12Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (cli): Brett: clear Pending.",
+     "at": "2026-11-16T23:21:48.211Z"
     }
    ],
    "approvals": [],
@@ -226401,7 +226425,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -239418,7 +239442,7 @@
    "title": "axf-data on Postgres: real tables in its own container",
    "category": "",
    "detail": "Follow-up to data-container-axf-data-holds-all (PR #704, SQLite + blobs). Move axf-data onto Postgres (Brett's Nov 6 choice) as its own private Coolify container with a persistent volume and daily backups. Real tables (not JSON copies or SQLite blobs) for: builds store, journal and history, notes, settings, planner items, UI reviews, the one true feature store, the Shipped features ledger, chats, and the API/control registry (apps/console-web/src/control/inventory.json becomes a table generated from each plugin's registered targets, never hand-edited, so builds stop clashing on it). Keep the data-store@1 API on top so callers don't change. Migrate from the SQLite axf-data with backup first, count checks, shadow, then cutover; never lose data. Tests, help, Shipped features. Land with the one-at-a-time lander.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -239426,7 +239450,7 @@
    "pr": "#713",
    "priority": "P0",
    "createdAt": "2026-11-15T15:12:29.907Z",
-   "updatedAt": "2026-11-15T16:40:48.930Z",
+   "updatedAt": "2026-11-16T23:21:44.960Z",
    "builtAt": "",
    "notes": [
     {
@@ -239460,6 +239484,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-15T16:40:48.930Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (cli): Brett: clear Pending.",
+     "at": "2026-11-16T23:21:44.960Z"
     }
    ],
    "approvals": [],
@@ -239585,7 +239613,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -248678,14 +248706,14 @@
    "title": "Assets menu: hide any asset, hidden list to bring them back",
    "category": "",
    "detail": "Rebuild of assets-menu-hide-any-asset-visible (branch lost in cleanup, never shipped). An Assets menu (banner/menu button and Settings > Appearance) lists every visible UI asset on the current screen and app (toolbars, tab groups, banners, widgets, nav, menus, panels, any asset). Tap any one to Hide it; it moves to a Hidden section in the same menu, where one tap shows it again. Also a Hide option in every asset's right-click/long-press menu and settings. Hidden state saved per app in the look on axHub, survives reloads. Same list/hide/show on REST, MCP, CLI and voice. Tests, land through the orchestrator.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/assets-menu-hide-any-asset-hidden-list",
    "pr": "",
    "createdAt": "2026-11-16T19:30:07.770Z",
-   "updatedAt": "2026-11-16T20:50:53.866Z",
+   "updatedAt": "2026-11-16T23:21:39.810Z",
    "builtAt": "",
    "notes": [
     {
@@ -248711,6 +248739,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-16T20:50:53.866Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (cli): Brett: clear Pending.",
+     "at": "2026-11-16T23:21:39.810Z"
     }
    ],
    "approvals": [],
@@ -248864,7 +248896,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
