@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6374,
- "updatedAt": "2026-11-16T13:13:23.676Z",
+ "rev": 6375,
+ "updatedAt": "2026-11-16T13:13:34.197Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -238436,6 +238436,83 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-16T13:08:41.019Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "voice-designer-plugin-built-each",
+   "title": "Voice Designer plugin, built into each employee's card",
+   "category": "",
+   "detail": "New console plugin 'Voice Designer'. Design a voice for each employee (agent) and save it as a voice@1 asset. Multiple providers, batteries included: OpenAI TTS, ElevenLabs (including voice design and cloning), Google, Azure, Polly, Deepgram Aura, Cartesia, PlayHT, plus free local voices (browser, Piper/Kokoro on the VPS) that work with no key. Provider manager keeps API keys in the hub credential store, with a test button and a status badge. Designer: describe a voice ('cat-like, raspy, fast'), generate or match it, then tune speed, pitch, style and accent, preview with sample lines, save and version it with restore. Integrated with the EMPLOYEE CARD in the Agent manager: a voice section on each card with play-sample, change voice, and 'open in Voice Designer'; the card shows the voice in use. Group chat audio uses each employee's voice. Takes over the voice-picker step s4 of group-chat-audio-hear-agents-talk-while (merge, don't duplicate). Full REST/MCP/CLI/voice parity, token-driven UI, tests, help, Shipped features.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-16T13:13:27.564Z",
+   "updatedAt": "2026-11-16T13:13:29.836Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-16T13:13:29.836Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "make a voice designing plugin, integrated with the employee's card",
+    "at": "2026-11-16T13:13:27.564Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-16T13:13:29.419Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 889
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
