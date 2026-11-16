@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6649,
- "updatedAt": "2026-11-16T18:38:26.985Z",
+ "rev": 6650,
+ "updatedAt": "2026-11-16T18:38:49.881Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -245417,7 +245417,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T18:37:43.199Z",
-   "updatedAt": "2026-11-16T18:38:07.459Z",
+   "updatedAt": "2026-11-16T18:38:47.910Z",
    "builtAt": "",
    "notes": [
     {
@@ -245427,6 +245427,10 @@
     {
      "text": "Brett Nov 16: also add a console-control command to open any amberxai.com app (axHub web, AmberX web, etc.) from the open console tab, e.g. console_show target 'app:axhub' or 'url:https://axhub.amberxai.com/'. Today searching 'axHub' opens the MCP servers screen instead.",
      "at": "2026-11-16T18:38:07.459Z"
+    },
+    {
+     "text": "Brett Nov 16: the AmberX always-on overlay (android-approval-overlay, shipped) holds 'display over other apps' (SYSTEM_ALERT_WINDOW in the manifest), but open_url never uses it: amberx-droid has no canDrawOverlays code path. Fix: when the overlay permission is granted, open_url starts the browser through it (overlay counts as visible, so Android allows the start). Check the permission is granted on the phone; if not, banner item with a one-tap grant.",
+     "at": "2026-11-16T18:38:47.910Z"
     }
    ],
    "approvals": [],
@@ -245474,7 +245478,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
