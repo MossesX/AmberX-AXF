@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T16:55:48.801Z",
+ "updatedAt": "2026-11-16T16:57:09.145Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -158178,7 +158178,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T16:53:45.431Z",
-   "updatedAt": "2026-11-16T16:55:29.231Z",
+   "updatedAt": "2026-11-16T16:57:07.100Z",
    "builtAt": "",
    "notes": [
     {
@@ -158188,6 +158188,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"ed3deb7a-7874-45ac-9c04-d3f8eed4c436\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-16T16:55:29.231Z"
+    },
+    {
+     "text": "SCOPE CUT (checked main 16:56): Hold ALREADY EXISTS on main from orchestrator-hold-status-archive-tab: pipeline.mjs hold/release actions (heldAt/heldBy/heldWhy), BP.isHeld/canHold, dispatcher skips held builds (pipeline-core.mjs:359), Hold/Release buttons with help, bulk select, back to Pending, Archive tab and Deleted tab (soft delete, restorable), tests in pipeline.test.mjs. DO NOT rebuild any of that; reuse it. Build ONLY the gap: (1) canHold allows builds in ANY tab (Pending, Built, Errors, Complete, Archive), not just queued; a running build stops its session cleanly first; keep the previous tab in pipeline.heldFrom. (2) A separate 'On hold' tab listing every held build (they leave their old tab), with bulk actions Release to Pending, Release to Queue, Archive, Delete (confirm). (3) Lander and reconciler skip held builds. (4) Bulk 'Put on hold' in every tab's existing multi-select bar and row menu. Extend the existing tests; API parity on the existing hold/release commands (add --to pending|queue).",
+     "at": "2026-11-16T16:57:07.100Z"
     }
    ],
    "approvals": [],
