@@ -34,12 +34,12 @@ import org.json.JSONObject;
  *  - `recorder.status` answers on/off, since, session, current file, uploaded parts and the queue.
  *  - `browser.open` (capability `open-url@1`, console wake, Nov 3 2026) opens one of Brett's own pages
  *    ({@link OpenUrlRules#allowed}: https on amberxai.com only), e.g. the Dev Console with a queued console command.
- *    It goes through the overlay: the always-on toolbar expands into its full-screen browser and the page opens
- *    there directly. A URL carrying {@code axf-overlay=expand|collapse} is an overlay verb instead
- *    ({@link OverlayPageRules#verb}). Only with the overlay off, or a call asking for {@code where: "browser"}, does it
- *    go to Chrome: Android 10+ silently drops most starts from the background, so {@link #startInForeground} only counts
- *    one that had a window to start from, and a high-priority notification with a full-screen intent stays as the
- *    one-tap way in. The answer's `opened` and `where` say which.
+ *    It follows open-url-route@1 ({@link OpenUrlRoute}, {@link #openPage}): the console tab Brett has on screen
+ *    first (POST /api/console-control/navigate with the phone's console session), then the overlay's full-screen
+ *    browser, then a direct browser start (AmberX in front, or exempt because Display over other apps is granted),
+ *    then a full-screen notice ({@link OpenPageActivity}), and a tap-to-open notification only as the last resort.
+ *    A URL carrying {@code axf-overlay=expand|collapse} is an overlay verb instead ({@link OverlayPageRules#verb}).
+ *    The answer's `route`, `opened`, `reason` and `attempts` say what happened.
  */
 final class AxppLink {
     private AxppLink() {}
@@ -156,15 +156,6 @@ final class AxppLink {
             case OpenUrlRules.OPEN: {
                 String url = OpenUrlRules.allowed(args.optString("url", ""));
                 String verb = OverlayPageRules.verb(url);
-                // open-url-route@1 console-tab first: the console tab Brett has on screen opens it in place. Chrome in
-                // front with the console in it is exactly when Android drops AmberX's own background start.
-                if (OverlayPageRules.OPEN.equals(verb)) {
-                    OpenUrlRoute.Attempt tab = tryConsoleTab(url, args.optString("where", "auto"));
-                    if (tab != null && tab.ok) {
-                        return new JSONObject().put("url", url).put("verb", OverlayPageRules.OPEN).put("browser", "console").put("opened", true)
-                            .put("notified", false).put("where", "console").put("route", OpenUrlRoute.CONSOLE_TAB).put("reason", tab.reason);
-                    }
-                }
                 boolean ready = WatchService.overlayPagesReady(c);
                 // overlay.collapse / overlay.expand from the console, MCP, the CLI or voice, through the same hub tool.
                 if (OverlayPageRules.COLLAPSE.equals(verb)) {
@@ -176,12 +167,7 @@ final class AxppLink {
                     return new JSONObject().put("url", url).put("verb", verb).put("browser", "overlay").put("opened", true)
                         .put("notified", false).put("overlay", true).put("where", "overlay");
                 }
-                // Every open goes through the overlay: the toolbar expands into its full-screen browser on the page.
-                if (OverlayPageRules.inOverlay(args, ready) && WatchService.openOverlayPage(c, url)) {
-                    return new JSONObject().put("url", url).put("verb", OverlayPageRules.OPEN).put("browser", "overlay").put("opened", true)
-                        .put("notified", false).put("overlay", true).put("where", "overlay");
-                }
-                return openUrl(c, url, OpenUrlRules.browserOf(args)).put("where", "browser");
+                return openPage(c, url, OpenUrlRules.browserOf(args), args.optString("where", "auto"));
             }
             case RecorderControl.START: {
                 RecorderControl.Session s = RecorderControl.sessionOf(args);
@@ -310,6 +296,87 @@ final class AxppLink {
         }
     }
 
+    /** What the phone knows right now for open-url-route@1 (the console session, the permissions, the screen). */
+    static OpenUrlRoute.Phone phoneNow(Context c, String where) {
+        OpenUrlRoute.Phone p = new OpenUrlRoute.Phone();
+        p.where = where == null || where.isEmpty() ? "auto" : where;
+        String cookie;
+        try { cookie = CookieManager.getInstance().getCookie(HubRules.CONSOLE); } catch (RuntimeException e) { cookie = null; }
+        p.consoleSignedIn = cookie != null && !cookie.isEmpty();
+        p.inFront = WatchService.inApp;
+        p.overlay = Build.VERSION.SDK_INT < Build.VERSION_CODES.M || android.provider.Settings.canDrawOverlays(c);
+        p.overlayReady = WatchService.overlayPagesReady(c);
+        NotificationManager nm = (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
+        p.notifications = nm != null && (Build.VERSION.SDK_INT < Build.VERSION_CODES.N || nm.areNotificationsEnabled());
+        p.fullScreenIntent = canFullScreen(c);
+        android.app.KeyguardManager km = (android.app.KeyguardManager) c.getSystemService(Context.KEYGUARD_SERVICE);
+        p.locked = km != null && km.isKeyguardLocked();
+        return p;
+    }
+
+    /**
+     * open-url-route@1 on the phone: every route in order (OpenUrlRoute.order), each attempt recorded, the first that
+     * lands wins. console-tab → overlay (the toolbar's full-screen browser) → direct (AmberX in front, or exempt from
+     * Android's background-start rule because Display over other apps is granted) → full-screen intent → notification.
+     * The answer is today's AXPP fields (url, browser, opened, notified, overlay, where) plus the open-url-result@1
+     * (route, reason, tried, attempts).
+     */
+    static JSONObject openPage(Context c, String url, String browser, String where) throws Exception {
+        OpenUrlRoute.Phone p = phoneNow(c, where);
+        java.util.List<OpenUrlRoute.Attempt> attempts = new java.util.ArrayList<>();
+        String won = null;
+        for (String route : OpenUrlRoute.order(p)) {
+            OpenUrlRoute.Attempt a = attempt(c, route, url, browser, where);
+            if (a == null) continue;
+            attempts.add(a);
+            if (a.ok) { won = route; break; }
+        }
+        JSONObject result = OpenUrlRoute.settle(url, p, attempts);
+        String placed = won == null ? "browser" : OpenUrlRoute.CONSOLE_TAB.equals(won) ? "console" : OpenUrlRoute.OVERLAY.equals(won) ? "overlay" : "browser";
+        return new JSONObject().put("url", url)
+            .put("browser", OpenUrlRoute.CONSOLE_TAB.equals(won) ? "console" : OpenUrlRoute.OVERLAY.equals(won) ? "overlay" : browserIntent(c, url, browser).getPackage() == null ? "default" : "chrome")
+            .put("verb", OverlayPageRules.OPEN)
+            .put("opened", result.optBoolean("opened")).put("notified", result.optBoolean("notified"))
+            .put("overlay", p.overlay).put("where", placed)
+            .put("route", result.optString("route")).put("reason", result.optString("reason"))
+            .put("tried", result.optJSONArray("tried")).put("attempts", result.optJSONArray("attempts")).put("result", result);
+    }
+
+    /** One route tried. → its attempt, or null when it turned out not to apply after all (e.g. signed out of the console). */
+    static OpenUrlRoute.Attempt attempt(Context c, String route, String url, String browser, String where) {
+        switch (route) {
+            case OpenUrlRoute.CONSOLE_TAB:
+                return tryConsoleTab(url, where);
+            case OpenUrlRoute.OVERLAY:
+                return new OpenUrlRoute.Attempt(route, onMain(() -> WatchService.openOverlayPage(c, url)), "overlay-not-ready");
+            case OpenUrlRoute.DIRECT:
+                // Display over other apps exempts AmberX from Android's background-start rule: start the page from the
+                // service. In front, the start is plain.
+                return new OpenUrlRoute.Attempt(route, onMain(() -> startDirect(c, url, browser)), "background-start-blocked");
+            case OpenUrlRoute.FULL_SCREEN:
+                return new OpenUrlRoute.Attempt(route, onMain(() -> postFullScreen(c, url, browser)), "no-full-screen-intent");
+            case OpenUrlRoute.NOTIFICATION:
+                return new OpenUrlRoute.Attempt(route, notifyToOpen(c, url, browser), "notifications-off");
+            default:
+                return null;
+        }
+    }
+
+    /** The browser started straight from AmberX (allowed in front, or with Display over other apps). */
+    static boolean startDirect(Context c, String url, String browser) {
+        try { c.startActivity(browserIntent(c, url, browser)); return true; } catch (RuntimeException e) { return false; }
+    }
+
+    /** Runs on the main thread and waits (up to 5 s) for its answer. */
+    static boolean onMain(java.util.function.BooleanSupplier f) {
+        if (Looper.myLooper() == Looper.getMainLooper()) return f.getAsBoolean();
+        boolean[] out = { false };
+        java.util.concurrent.CountDownLatch done = new java.util.concurrent.CountDownLatch(1);
+        main.post(() -> { try { out[0] = f.getAsBoolean(); } finally { done.countDown(); } });
+        try { done.await(5, java.util.concurrent.TimeUnit.SECONDS); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+        return out[0];
+    }
+
     static final int CONSOLE_TAB_TIMEOUT_MS = 6_000;  // the console waits 2.5 s for its tab; the rest is the network
 
     /**
@@ -356,45 +423,36 @@ final class AxppLink {
     }
 
     /**
-     * Opens the page now where Android lets it (AmberX on screen, or a brief overlay window), and always posts a
-     * "Tap to open" notification with a full-screen intent, so a locked or busy phone still gets there with one tap.
-     * The answer says what really happened: `opened` only for a start Android can't have dropped, `notified` only when
-     * notifications are on, `overlay` whether "Display over other apps" is granted.
+     * open-url-route@1 `notification`, the last resort: a high-priority "Tap to open" notification. Never "opened"
+     * (only Brett's tap opens the page). → true when it went out (notifications on).
      */
-    private static JSONObject openUrl(Context c, String url, String browser) throws Exception {
+    static boolean notifyToOpen(Context c, String url, String browser) {
         Intent open = browserIntent(c, url, browser);
-        boolean[] started = { false };
-        boolean[] notified = { false };
-        java.util.concurrent.CountDownLatch done = new java.util.concurrent.CountDownLatch(1);
-        main.post(() -> {
-            started[0] = startInForeground(c, open);
+        return onMain(() -> {
             try {
                 NotificationManager nm = (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !nm.areNotificationsEnabled()) return false;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && nm.getNotificationChannel(CHANNEL_OPEN) == null) {
                     NotificationChannel ch = new NotificationChannel(CHANNEL_OPEN, "Console opened by Amber", NotificationManager.IMPORTANCE_HIGH);
-                    ch.setDescription("A console command is waiting and no Dev Console is open: tap to open it");
+                    ch.setDescription("A page Amber asked for that Android wouldn't open by itself: tap to open it");
                     nm.createNotificationChannel(ch);
                 }
                 PendingIntent pi = PendingIntent.getActivity(c, 4, open, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
                 Notification.Builder b = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? new Notification.Builder(c, CHANNEL_OPEN) : new Notification.Builder(c);
                 b.setSmallIcon(android.R.drawable.ic_menu_view)
-                    .setContentTitle("Tap to open the Dev Console")
-                    .setContentText("Amber has something to show you.")
+                    .setContentTitle("Tap to open the page")
+                    .setContentText(url)
                     .setContentIntent(pi)
-                    .setFullScreenIntent(pi, true)
                     .setCategory(Notification.CATEGORY_REMINDER)
                     .setPriority(Notification.PRIORITY_HIGH)
                     .setAutoCancel(true);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) b.setTimeoutAfter(10 * 60_000L);
                 nm.notify(NOTE_OPEN, b.build());
-                notified[0] = Build.VERSION.SDK_INT < Build.VERSION_CODES.N || nm.areNotificationsEnabled();
-            } catch (RuntimeException ignored) { /* notifications off: the start above is all there is */ }
-            done.countDown();
+                return true;
+            } catch (RuntimeException e) {
+                return false;
+            }
         });
-        done.await(5, java.util.concurrent.TimeUnit.SECONDS);
-        return new JSONObject().put("url", url).put("browser", open.getPackage() == null ? "default" : "chrome")
-            .put("opened", started[0]).put("notified", notified[0])
-            .put("overlay", Build.VERSION.SDK_INT < Build.VERSION_CODES.M || android.provider.Settings.canDrawOverlays(c));
     }
 
     static void cancelPrompt(Context c) {
