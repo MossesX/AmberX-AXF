@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T22:53:38.621Z",
+ "updatedAt": "2026-11-16T22:53:49.979Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -136229,7 +136229,7 @@
    "title": "Full voice control: resolve inventory.json and land",
    "category": "",
    "detail": "Branch claude/full-voice-control-merge-main-and-land clashed with main only in apps/console-web/src/control/inventory.json (generated control inventory). Merge origin/main, regenerate the inventory from the controls (or union both sides' entries), run the tests, push, then land on main right away.",
-   "status": "built",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -136237,8 +136237,8 @@
    "pr": "#655",
    "priority": "P0",
    "createdAt": "2026-11-13T20:45:58.911Z",
-   "updatedAt": "2026-11-15T00:38:10.570Z",
-   "builtAt": "2026-11-13T20:59:27.633Z",
+   "updatedAt": "2026-11-16T22:53:46.162Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -136267,6 +136267,10 @@
     {
      "text": "Session axf-full-voice-control-resolve-inventory--paulie on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-13T21:00:29.189Z"
+    },
+    {
+     "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
+     "at": "2026-11-16T22:53:46.162Z"
     }
    ],
    "approvals": [],
@@ -157564,7 +157568,7 @@
    "title": "Fix the red CI on the blocked builds so they land",
    "category": "",
    "detail": "Split from get-main-green-unblock-lander-land-axf. Main is NOT red (its last runs succeeded or were cancelled), so the red CI is on the branches themselves. For each build the auto-lander shows as 'CI is red' (owner-recognized-everywhere-veto, pass-approval-hook-deep-link-amberx-notification, land-project-duplicate-boilerplate, picker-dialog-plugin-replaces-all, all-settings-interfaces-open-floating, themed-native-controls-plugin, new-asset-type-animated-expanding-row, quick-settings-pinned-collapsible-pane, orchestrator-settings-collapsible-split, context-menus-plugin-one-true-source, projects-own-everything-per-project, pending-tab-one-collapsed-row-per-2, shipped-features-open-button-views-each, fix-build-whose-session-finishes-phase-e, group-chat-audio-hear-agents-talk-while, ui-manager-floating-window-to-select-any, console-look-becomes-default-axhub-skin, vps-sends-shipped-features-every-merge): merge origin/main into the branch, read the failed CI log, fix it, push, and let the auto-lander land them one at a time. Find the common cause first; most fail the same Web Dev Console + Build engine sweep checks. Also shipped-features-organized-sortable (build rules ci-checks). Do NOT touch the axf-data / Postgres branches (another build has those).",
-   "status": "built",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -157572,8 +157576,8 @@
    "pr": "#726",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:28.078Z",
-   "updatedAt": "2026-11-16T19:58:17.812Z",
-   "builtAt": "2026-11-16T19:58:12.228Z",
+   "updatedAt": "2026-11-16T22:53:41.846Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -157634,6 +157638,10 @@
     {
      "text": "Phase 1 done. Main itself fails 3 checks (console-control inventory, shared help bake, gate token manifest): fixed on fix/ci-common-cause, PR #726. 2 branches landed, 17 in the merge queue. Still red on their own: themed-native (light checks), context-menus (glossary), picker-dialog (check-agent-slots).",
      "at": "2026-11-16T19:58:17.812Z"
+    },
+    {
+     "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
+     "at": "2026-11-16T22:53:41.846Z"
     }
    ],
    "approvals": [],

@@ -814,8 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 18:27 UTC · `every-plugin-screen-gets-a-settings-gear` added (0 steps) (all) · console
-- 2026-11-16 18:27 UTC · `settings-interface-gear-every-plugin` added (0 steps) (all) · console
 - 2026-11-16 18:27 UTC · `settings-interface-gear-every-plugin` → queued, note (all) · console
 - 2026-11-16 18:28 UTC · `hotfix-orchestrator-grid-columns-don-t` added (0 steps) (all) · console
 - 2026-11-16 18:28 UTC · `hotfix-orchestrator-grid-columns-don-t` → queued, note (all) · console
@@ -1214,6 +1212,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 22:53 UTC · `demo-video-series-three-minute-browser` → archived, note (all) · cli
 - 2026-11-16 22:53 UTC · `duplicate-gate-vps-checks-shipped` → archived, note (all) · cli
 - 2026-11-16 22:53 UTC · `every-grid-1-2-rows-per-item-set-skin` → archived, note (all) · cli
+- 2026-11-16 22:53 UTC · `fix-red-ci-blocked-builds-they-land` → archived, note (all) · cli
+- 2026-11-16 22:53 UTC · `full-voice-control-resolve-inventory` → archived, note (all) · cli
 
 ## Token passes (log)
 
