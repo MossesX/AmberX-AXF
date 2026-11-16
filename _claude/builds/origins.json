@@ -7182,6 +7182,18 @@
    "from": "",
    "addenda": []
   },
+  "re-sync-stuck-branches-lander-can-push": {
+   "said": "Put fix main on more than one slot, they won't conflict.",
+   "at": "2026-11-16T16:29:34.116Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "readme-rule-every-build": {
    "said": "We gotta structure the documentation engine later anyway, so leave that out. Just get basic documentation. In Markdown.\n\n(Asked whether every future build should include a basic Markdown readme:) Yeah.",
    "at": "2026-11-04T00:00:00Z",

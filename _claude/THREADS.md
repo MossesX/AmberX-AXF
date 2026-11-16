@@ -808,10 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 13:16 UTC · `data-container-axf-data-holds-all` s21 done (all) · orchestrator
-- 2026-11-15 13:18 UTC · `data-container-axf-data-holds-all` s22 done (all) · orchestrator
-- 2026-11-15 13:20 UTC · `data-container-axf-data-holds-all` s23 done (all) · orchestrator
-- 2026-11-15 13:22 UTC · `home-cards-follow-plugin-off-home-always` added (0 steps) (all) · console
 - 2026-11-15 13:22 UTC · `home-cards-follow-plugin-off-home-always` → queued, note (all) · console
 - 2026-11-15 13:22 UTC · `data-container-axf-data-holds-all` s24 done (all) · orchestrator
 - 2026-11-15 13:22 UTC · `home-cards-follow-plugin-off-home-always` note (all) · mcp
@@ -1208,6 +1204,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 16:28 UTC · `remove-old-molly-app-project-keep-axf` s7 done (all) · orchestrator
 - 2026-11-16 16:29 UTC · `get-main-green-unblock-lander-land-axf` s1 done (all) · orchestrator
 - 2026-11-16 16:29 UTC · `fix-red-ci-blocked-builds-they-land` added (0 steps) (all) · console
+- 2026-11-16 16:29 UTC · `fix-red-ci-blocked-builds-they-land` → queued, note (all) · console
+- 2026-11-16 16:29 UTC · `re-sync-stuck-branches-lander-can-push` added (0 steps) (all) · console
+- 2026-11-16 16:29 UTC · `re-sync-stuck-branches-lander-can-push` → queued, note (all) · console
+- 2026-11-16 16:29 UTC · `get-main-green-unblock-lander-land-axf` note (all) · mcp
 
 ## Token passes (log)
 
