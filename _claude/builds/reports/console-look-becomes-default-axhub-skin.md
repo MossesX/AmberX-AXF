@@ -135,3 +135,23 @@ Pointer: `defaultSkin: { id: "console-default" }`. Every app reports `from: defa
 ## Deploy + phone note (s19, Opus): not run, on purpose
 - No redeploy: the nightly path (`deploy/console-nightly.mjs`, on, 02:00) and the 5-minute updater deploy `main` only, and `axf console refresh` only reloads open consoles. This branch is not merged yet, so a deploy now would ship nothing of this build. It reaches the console with the first nightly deploy after the merge; nothing was deployed, so there is no `axf_deploy_log` entry.
 - No phone note: the text asked for ("Console look is now the default axHub skin; every app inherits it") is not true until the publish runs (s13). The phone note comes from the systems check instead: after the deploy, item `hub-default-skin` turns red and is pushed once to AmberX through the alert hub (registered notification path), with the ask-first Auto fix that does the publish.
+
+## How each feature is reached (API / MCP / CLI / voice)
+| Feature | UI | REST (theme manager; MCP = the same routes through plugin-commands@1 `auto`) | Console action / control@1 | CLI | Voice (AmberX) |
+|---|---|---|---|---|---|
+| Hub default skin: read | Settings → Appearance → Default look (badge) | `GET skins/default-skin` | state of `view:settings/tab:settings.tabs=appearance/panel:default-look` (`rt.defaultLookState()`) | `skins.mjs default get` | "open appearance settings", then the panel state |
+| Make this the default look | button `skin-default` (asks first) | `POST skins/default-skin {skin, adopt, confirm: true}`; `POST skins/default-skin/adopt {app?}` | `skin.default[:<skin>]` (`function:skin.default`) | `skins.mjs default set <skin> --adopt`, `default adopt`, `default off` | "make this the default look", "make the console look the default for every app" |
+| Restore previous skin | button `skin-restore-backup` | `POST skins/restore/<app> {backup?}` | `skin.restoreBackup[:<id>]` | `skins.mjs restore <app> --backup [<id>]`, `restore-backup` | "restore my old look", "bring back the previous skin" |
+| Backups | hint under Restore previous skin | `GET skins/backups/<app>`, `POST skins/backup/<app>` | in `defaultLookState().backups` | `skins.mjs backups <app>`, `backup <app>` | through "restore my old look" |
+| Capture a look as a skin | (action) | `POST skins/snapshot {from, as, name?}` | `skin.snapshot:<id>[:<name>]` | `skins.mjs snapshot --from <app> --as <id>` | "press save this look as a skin" |
+| Publish (live switch) | Systems check → `hub-default-skin` → Auto fix (ask first) | `POST health/autofix/hub-default-skin` (systems check) | — | `skins.mjs default set console-default --adopt` | — |
+
+## Contract changes (this phase)
+- No schema or engine contract change in Phase 3 (s4–s6 on Fable carried them). New: skin asset `console-default`; runtime `SkinHub` seam (`setSkinHub`, `skinHub`) and methods `makeDefaultSkin`, `restoreLookBackupNow`, `lookBackups`, `snapshotSkin`, `defaultLookState`; voice intents `DEFAULT_LOOK_FUNCTION` / `RESTORE_LOOK_FUNCTION` (JS + Python twin, fixture regenerated); theme-manager routes and the `hub-default-skin` health check.
+
+## Open
+- **Publish waits for Brett's tap** after the merge and the nightly deploy (s13): Systems check → "Console look is the axHub default" → Auto fix. His console moved to AmberX Signature Day on Nov 15; the default is the Nov 14 look he asked for. Restore previous skin undoes it per app.
+- Shots group and UI Review item `r-20261116-82x3x01` are in this worktree only (no `AXF_CONSOLE_URL` / `AXF_TOKEN` in headless sessions): re-send with `--console`.
+- Pixel-exact compare needs frozen data in `rebuild-shots.mjs` (fixed clock, scratch builds store); the look itself showed no drift.
+- Kotlin twin and the other Android apps' pickup: deferred (PORTING.md).
+- The branch is far behind `main` (427 commits at the start of this phase); the merge queue's auto-land merges it. Re-run `rebake.mjs apply` and `shared-assets.mjs bake` after the merge if the baked copies conflict.

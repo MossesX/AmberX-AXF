@@ -1808,3 +1808,4 @@ One line per veto pass grant, change made under it, revoke, undo and end (Token 
 - Waits on: nothing from Brett (UI Review shots are non-blocking for this build).
 - First message to carry on: "Carry on tab-group-assets from the typecheck step on branch claude/tab-group-assets (see THREADS.md To carry on)."
 - 2026-11-13 10:56 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme` s1 + s2: every skin has light + dark (skin-modes@1), check-skin-modes in CI, CLI/REST/MCP/voice `mode` (all) · claude
+- 2026-11-16 14:30 UTC · `console-look-becomes-default-axhub-skin` Phase 3 (Opus) s7–s20: Console (default) skin (0-diff compile vs the Nov 14 snapshot), baked everywhere, skins.mjs default/backup/restore/snapshot, theme-manager routes, actions + voice, Settings → Appearance Default look, tests; live publish staged behind systems check `hub-default-skin` (ask-first Auto fix) · claude
