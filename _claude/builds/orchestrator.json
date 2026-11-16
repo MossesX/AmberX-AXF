@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:17:14.902Z",
+ "updatedAt": "2026-11-16T19:17:34.576Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -139310,14 +139310,14 @@
    "title": "Banner widget shapes: more than circle and pill, all token-driven",
    "category": "Appearance",
    "detail": "Brett: banner widgets can only be circles or pills. Add a shape token per banner widget (global, per skin, per instance): circle, pill, rounded square, square, squircle, hexagon, diamond, tag, plus custom radius per corner and custom SVG mask. Shapes are assets (shape@1), swappable by skin, editable in the skin editor, UI Manager and per-instance settings, with Restore previous edit. Full API: REST/MCP/CLI/voice ('make the banner widgets hexagons'). Tests desktop and phone.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "#703",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-16T19:16:49.556Z",
+   "updatedAt": "2026-11-16T19:17:25.618Z",
    "builtAt": "",
    "notes": [
     {
@@ -161227,7 +161227,7 @@
    "title": "Pending banner: list every pending build, send to Queue from the banner",
    "category": "",
    "detail": "New banner plugin 'Pending': lists every build in Pending (title, plain-words what it does, priority, steps done/total, why it fell back), each row with Queue, Hold, Archive and Open buttons, plus 'Send all to Queue' and multi-select. Count badge on the banner. Joins the one Banners settings, launches expanded, pushes to AmberX when a build lands in Pending (ties in with alert-every-time-build-falls-back-to). Same actions on REST, MCP, CLI and voice. Tests, land through the orchestrator.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -161235,9 +161235,14 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:16:56.830Z",
-   "updatedAt": "2026-11-16T19:17:10.902Z",
+   "updatedAt": "2026-11-16T19:17:15.175Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-16T19:17:15.175Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
