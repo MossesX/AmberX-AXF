@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6850,
- "updatedAt": "2026-11-16T20:20:06.834Z",
+ "rev": 6851,
+ "updatedAt": "2026-11-16T20:20:21.122Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -247537,14 +247537,14 @@
    "title": "Assets menu: hide any asset, hidden list to bring them back",
    "category": "",
    "detail": "Rebuild of assets-menu-hide-any-asset-visible (branch lost in cleanup, never shipped). An Assets menu (banner/menu button and Settings > Appearance) lists every visible UI asset on the current screen and app (toolbars, tab groups, banners, widgets, nav, menus, panels, any asset). Tap any one to Hide it; it moves to a Hidden section in the same menu, where one tap shows it again. Also a Hide option in every asset's right-click/long-press menu and settings. Hidden state saved per app in the look on axHub, survives reloads. Same list/hide/show on REST, MCP, CLI and voice. Tests, land through the orchestrator.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/assets-menu-hide-any-asset-hidden-list",
    "pr": "",
    "createdAt": "2026-11-16T19:30:07.770Z",
-   "updatedAt": "2026-11-16T20:19:52.713Z",
+   "updatedAt": "2026-11-16T20:20:07.843Z",
    "builtAt": "",
    "notes": [
     {
@@ -247662,6 +247662,28 @@
      "updatedAt": "2026-11-16T20:05:23.443Z"
     },
     {
+     "id": "s4",
+     "uid": "st-mwjpjn2d017fgh",
+     "title": "",
+     "text": "Brett Nov 16 (was only a note, not built yet): (1) 'Hide' is a GLOBAL context menu item on every asset in every app. (2) Global context menu top section, before the first divider, in this order: 'Console settings', then '<This page> settings' for the page right-clicked on, then, when right-clicking a toolbar, tab group, nav menu or app menu, '<That item> settings' as the third entry. All open the floating settings popup. Wire through the context-menus plugin. Merge main, push, let the orchestrator land it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T20:20:07.844Z",
+     "updatedAt": "2026-11-16T20:20:08.965Z"
+    },
+    {
      "id": "s3",
      "uid": "st-mwjntp3g03va66",
      "title": "",
@@ -247695,7 +247717,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

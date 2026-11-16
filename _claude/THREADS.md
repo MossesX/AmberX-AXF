@@ -813,7 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 16:43 UTC · `molly-one-shell` → archived, note (all) · cli
 - 2026-11-16 16:43 UTC · `molly-sign-in-once` → archived, note (all) · cli
 - 2026-11-16 16:43 UTC · `molly-fable-version-the-one-interface-for-amberx` → archived, note (all) · cli
 - 2026-11-16 16:43 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → archived, note (all) · cli
@@ -1213,6 +1212,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 20:19 UTC · `banner-widget-shapes-more-than-circle` s23 done (all) · orchestrator
 - 2026-11-16 20:19 UTC · `settings-interface-gear-every-plugin` s26 done (all) · orchestrator
 - 2026-11-16 20:19 UTC · `assets-menu-hide-any-asset-hidden-list` → queued (all) · mcp
+- 2026-11-16 20:20 UTC · `assets-menu-hide-any-asset-hidden-list` → running (all) · mcp
 
 ## Token passes (log)
 
