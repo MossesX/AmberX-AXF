@@ -7,7 +7,7 @@
     "tabGroups": 26,
     "tabs": 78,
     "settingsTabs": 83,
-    "settings": 197,
+    "settings": 200,
     "functions": 274,
     "buttons": 62,
     "plugins": 71
@@ -3948,6 +3948,53 @@
       "runs": "console",
       "plugin": "ai.amberx.axf.console.push-banner",
       "file": "plugins/push-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=shipped-features/setting:shipped-features.groupBy",
+      "kind": "setting",
+      "label": "Group by (on a device that has no view of its own yet)",
+      "key": "shipped-features.groupBy",
+      "type": "choice",
+      "detail": "Settings › Plugins › Shipped features",
+      "keywords": [
+        "shipped-features.groupBy",
+        "Shipped features"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.shipped-features",
+      "file": "plugins/shipped-features/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=shipped-features/setting:shipped-features.badge",
+      "kind": "setting",
+      "label": "Count features being worked on in the nav",
+      "key": "shipped-features.badge",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Shipped features",
+      "keywords": [
+        "shipped-features.badge",
+        "Shipped features"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.shipped-features",
+      "file": "plugins/shipped-features/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=shipped-features/setting:shipped-features.badgeMinutes",
+      "kind": "setting",
+      "label": "Refresh that count every (minutes)",
+      "key": "shipped-features.badgeMinutes",
+      "type": "number",
+      "min": 1,
+      "max": 60,
+      "detail": "Settings › Plugins › Shipped features",
+      "keywords": [
+        "shipped-features.badgeMinutes",
+        "Shipped features"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.shipped-features",
+      "file": "plugins/shipped-features/web/index.tsx"
     },
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=theme-editor/setting:axf.theme-editor.view",

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Button, Checkbox, Chip, Icon, ModelBadge, Segmented, SelectField, TextField, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, ModelBadge, PluginSettingsGear, Segmented, SelectField, TextField, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
@@ -33,7 +33,13 @@ let pendingFocus = '';
 export function focusShipped(id: string) { pendingFocus = id.trim(); window.dispatchEvent(new CustomEvent(FOCUS_EVENT)); }
 const focusFromUrl = () => { const read = (k: string) => new URLSearchParams(location.search).get(k) ?? new URLSearchParams(location.hash.split('?')[1] ?? '').get(k); return (read('shipped') ?? '').trim(); };
 
-const loadView = (): L.View => { try { return L.normView(JSON.parse(localStorage.getItem(VIEW_KEY) || '{}')); } catch { return L.normView({}); } };
+/** The plugin's options (Settings → Plugins → Shipped features; plugin-settings@1). */
+export const KEYS = { groupBy: 'shipped-features.groupBy', badge: 'shipped-features.badge', badgeMinutes: 'shipped-features.badgeMinutes' } as const;
+/** The remembered view; a device without one starts on the default grouping from the settings. */
+const loadView = (by?: string): L.View => {
+  const fresh = by && (L.GROUPINGS as readonly string[]).includes(by) ? { by } : {};
+  try { const saved = localStorage.getItem(VIEW_KEY); return L.normView(saved ? JSON.parse(saved) : fresh); } catch { return L.normView(fresh); }
+};
 const saveView = (v: L.View) => { try { localStorage.setItem(VIEW_KEY, JSON.stringify(v)); } catch { /* private window: the view just isn't remembered */ } };
 const TONE: Record<string, 'accent' | 'success' | 'warning' | 'danger' | undefined> = { ok: 'success', warn: 'warning', accent: 'accent', info: 'accent', danger: 'danger', muted: undefined };
 const fmtDay = (v: string, guessed = false) => { if (!v) return '—'; const d = new Date(v); return Number.isNaN(d.getTime()) ? '—' : `${guessed ? '~' : ''}${d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}`; };
@@ -209,7 +215,7 @@ export function ShippedFeaturesPage() {
   const rt = useRuntime();
   const [ledger, setLedger] = useState<Ledger | null>(null);
   const [error, setError] = useState('');
-  const [view, setViewState] = useState<L.View>(loadView);
+  const [view, setViewState] = useState<L.View>(() => loadView(String(rt.settings.get(KEYS.groupBy) ?? '')));
   const [busy, setBusy] = useState(false);
   const set = (p: Partial<L.View>) => setViewState((v) => { const n = L.normView({ ...v, ...p }); saveView(n); return n; });
 
@@ -264,7 +270,8 @@ export function ShippedFeaturesPage() {
   const m = ledger.meta ?? {};
   return (
     <div className="fx-stack axp-shipped">
-      <header className="fx-pagehead">
+      {/* plugin-settings@1: the header's toolbar ends with the gear that opens Settings → Plugins → Shipped features */}
+      <header className="fx-pagehead" data-axf-plugin-header={FOLDER}>
         <div>
           <p className="fx-eyebrow">AmberX-AXF + axHub · {shown.length} of {total.all} features · {total.pending} pending · {total.live} live{total.editing ? ` · ${total.editing} being edited` : ''}{m.syncing ? ' · syncing…' : ''}{m.importing ? ' · importing history…' : ''}</p>
           <h1>Shipped features</h1>
@@ -274,6 +281,7 @@ export function ShippedFeaturesPage() {
           <Button icon="refresh" disabled={busy || m.syncing} onClick={() => void sync()} title="Pick up new build events, merged PRs and deploys now">Sync</Button>
           <Button icon="download" onClick={() => exportAs('csv')} title="The rows you see, as CSV">CSV</Button>
           <Button icon="file" onClick={() => exportAs('md')} title="The rows you see, as a Markdown table">Markdown</Button>
+          <PluginSettingsGear tab={FOLDER} plugin="Shipped features" />
         </div>
       </header>
       {m.error ? <p className="axp-shipped__warn" role="status"><Icon name="alert" /> Last sync failed: {m.error}</p> : null}
