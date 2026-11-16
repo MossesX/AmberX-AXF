@@ -125,6 +125,49 @@ try {
     await ctx.close();
   }
 
+  // Brett's case (Nov 16 2026): a session opened the orchestrator with no console open, AmberX woke one with
+  // ?axf-cmd=<id>, and the queued command reached a cold page before the orchestrator screen had registered. Both
+  // shapes a session sends: console_show / console_open with an address (op control) and console_open by name (op open).
+  const WAKES = [
+    { name: 'console_show view:build-orchestrator', msg: { op: 'control', command: { verb: 'focus', address: 'view:build-orchestrator', by: 'mcp' } }, screen: 'build-orchestrator' },
+    { name: 'console_open orchestrator', msg: { op: 'open', kind: 'screen', target: 'build-orchestrator', label: 'Build orchestrator' }, screen: 'build-orchestrator' },
+    { name: 'console_show gate › auto-lander', msg: { op: 'control', command: { verb: 'open', address: 'view:gate/tab:gate.tabs=auto-lander', by: 'mcp' } }, screen: 'gate', tab: ['view:gate/tab:gate.tabs', 'auto-lander'] },
+  ];
+  for (const w of WAKES) {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    const page = await ctx.newPage();
+    const id = `e2e${Math.random().toString(36).slice(2, 8)}`;
+    const acks = [];
+    let sent = false;
+    await page.route('**/api/**', async (r) => {
+      const u = new URL(r.request().url());
+      const json = (body, status = 200) => r.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) }).catch(() => {});
+      if (u.pathname === '/api/me') return json(ME);
+      if (u.pathname.includes('/console-commands/stream')) {
+        if (sent) return r.abort().catch(() => {});
+        sent = true;
+        const m = { $axf: 'console-command@1', id, at: new Date().toISOString(), delivery: { how: 'woke' }, by: 'e2e', ...w.msg };
+        return r.fulfill({ status: 200, contentType: 'text/event-stream', body: `data: ${JSON.stringify(m)}\n\n` }).catch(() => {});
+      }
+      if (u.pathname.includes('/console-commands/ack')) { try { acks.push(JSON.parse(r.request().postData() ?? '{}')); } catch { /* skip */ } return json({ ok: true }); }
+      if (u.pathname.includes('/console-commands/')) return json({ ok: true });
+      if (r.request().method() === 'GET' && u.pathname === '/api/events') return r.abort().catch(() => {});
+      return json({ ok: false, error: 'offline (e2e)' }, 503);
+    });
+    await page.goto(`http://127.0.0.1:${PORT}/?axf-cmd=${id}`);
+    const until = Date.now() + 30_000;
+    while (Date.now() < until && !acks.some((a) => a.id === id)) await sleep(200);
+    const ack = acks.find((a) => a.id === id);
+    ok(sent, `${w.name}: the console asked for its queued command`);
+    ok(ack, `${w.name}: the console acked the queued command`);
+    await sleep(1500);
+    const st = await page.evaluate(() => window.axfConsoleControlState());
+    ok(ack.ok && st.screen === w.screen, `${w.name}: the woken console shows ${w.screen}, not ${st.screen} (ack: ${ack.ok} ${ack.message})`);
+    if (w.tab) ok(st.tabs?.[w.tab[0]] === w.tab[1], `${w.name}: tab is ${w.tab[1]} (${JSON.stringify(st.tabs)})`);
+    if (SHOTS) await page.screenshot({ path: join(SHOTS, `wake-${w.name.replace(/[^a-z0-9]+/gi, '-')}.png`) });
+    await ctx.close();
+  }
+
   // an unknown screen answers (not ok) instead of hanging, and leaves the console usable
   {
     const ctx = await browser.newContext({ viewport: { width: 1400, height: 900 } });

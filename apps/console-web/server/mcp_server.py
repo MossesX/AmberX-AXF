@@ -937,13 +937,17 @@ _control_run: Callable[[dict[str, Any]], dict[str, Any]] | None = None  # set by
 
 
 async def _control_focus(address: str, verb: str = "focus", to: str = "recent", reason: str = "") -> dict[str, Any]:
-    """console_open / console_show with a console-control@1 address: the same command console_control_focus sends."""
+    """console_open / console_show with a console-control@1 address: the same command console_control_focus sends. No
+    console open: `openUrl` is the address's own link (`?axf-target=<address>`, it lands on that screen), and AmberX is
+    asked to open it on Brett's phone (`wake`, status pending)."""
     run = _control_run or console_control_runner()
     body = {k: v for k, v in {"verb": verb, "address": address, "to": to, "reason": reason, "by": "mcp"}.items() if v}
     r = await anyio.to_thread.run_sync(lambda: run(body))
     if not r.get("ok") and r.get("code") != "unavailable":
         raise ToolError(f"{r.get('code', 'unexpected')}: {r.get('message', 'failed')}")
-    return {**r, "status": "delivered" if r.get("ok") else "failed"}
+    # no console open: AmberX opens the address's link (`openUrl`, ?axf-target=) on Brett's phone, so it is on its way
+    woke = bool((r.get("wake") or {}).get("sent"))
+    return {**r, "status": "delivered" if r.get("ok") else "pending" if woke else "failed"}
 
 
 def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], dict[str, Any]]) -> None:

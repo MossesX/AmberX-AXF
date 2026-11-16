@@ -126,6 +126,7 @@ export function voiceReply(intent, answer, label = '') {
   if (!answer || answer.ok === false) {
     const why = String(answer?.message ?? 'that did not work');
     if (answer?.code === 'confirmation_required') return `That deletes something. Say it again with confirm, or do it on screen.`;
+    if (answer?.code === 'unavailable' && answer?.wake?.sent) return 'No console was open. Opening it on your phone.';
     if (answer?.code === 'unavailable' && answer?.openUrl) return `No console is open. Open it and ask again.`;
     return `Couldn't: ${why}`;
   }

@@ -536,6 +536,8 @@ def voice_reply(intent: dict[str, Any], answer: dict[str, Any] | None, label: st
     if not answer or answer.get("ok") is False:
         if (answer or {}).get("code") == "confirmation_required":
             return "That deletes something. Say it again with confirm, or do it on screen."
+        if (answer or {}).get("code") == "unavailable" and ((answer or {}).get("wake") or {}).get("sent"):
+            return "No console was open. Opening it on your phone."
         if (answer or {}).get("code") == "unavailable" and (answer or {}).get("openUrl"):
             return "No console is open. Open it and ask again."
         return f"Couldn't: {(answer or {}).get('message') or 'that did not work'}"

@@ -19,6 +19,7 @@ import json
 import os
 import threading
 import time
+from urllib.parse import quote
 from collections import deque
 from pathlib import Path
 from typing import Any
@@ -274,6 +275,9 @@ def run(cmd: dict[str, Any], by: str, audience: str, to: str = "recent") -> dict
     if out.get("ok") or out.get("code") != "unavailable":
         return out
     # no console open: what the inventory can answer, it answers (marked), with the link to open the console
+    if out.get("openUrl") and cmd.get("address") and "axf-target=" not in str(out["openUrl"]):
+        # the link lands on the command's own screen (?axf-target=, src/control/deepLink.ts), not the console's home
+        out = {**out, "openUrl": f"{CONSOLE_URL}/?axf-target={quote(str(cmd['address']), safe=':/=._-')}"}
     link = {"openUrl": out.get("openUrl")} if out.get("openUrl") else {}
     try:
         if cmd["verb"] == "search":
