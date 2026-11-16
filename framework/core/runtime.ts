@@ -107,6 +107,8 @@ export const ARRANGE_KEY = (host: string) => `axf.widgets.arrange.${host}`;
 export const BANNER_WIDGETS_DIALOG = 'axf.banner.widgets';
 /** Dialog id of the icon picker for one host widget (react/components/IconPicker.tsx): props `{ host, widget }`. */
 export const WIDGET_ICON_DIALOG = 'axf.widget.icon';
+/** Dialog id of the shape picker (react/components/BannerShapes.tsx): props `{ widget? }` (none = every banner widget on the app). */
+export const SHAPE_DIALOG = 'axf.shape.pick';
 
 /** One widget the banner knows about: on the bar now or not. */
 export interface BannerWidget {
@@ -3075,6 +3077,35 @@ export class AxfRuntime {
       else if (what === 'reset') this.setBannerWidget(w.key, { hidden: null, size: null, show: null, maxWidth: null, maxUnit: null, priority: null, hideWhenEmpty: null, overflow: null });
       else this.toast(`"${what}": use hide, show, reset or a size (${BANNER_WIDGET_SIZES.join(', ')})`, 'warning', 'Banner widgets');
     }, { label: 'Change a banner widget', requires: 'assets.swap', params: true, searchable: false });
+    // Banner widget shapes (shape@1): shape.set:<global|skin|app|widget>:<shape|inherit>[:<widget…>] ·
+    // shape.restore:<scope>[:<widget…>] (Restore previous edit) · shape.pick[:<widget…>] (opens the picker; the deep link)
+    const shapeWidget = (words: string[]): string | null => {
+      const q = words.join(':');
+      if (!q) return this.contextBannerWidget;
+      const w = this.findBannerWidget(q);
+      if (!w) this.toast(`No banner widget "${q}"`, 'warning', 'Widget shape');
+      return w?.key ?? null;
+    };
+    const shapeScope = (s: string | undefined): ShapeLevel | null => (s === 'widget' || s === 'instance' ? 'instance' : s === 'global' || s === 'skin' || s === 'app' ? s : null);
+    a.register('shape.set', ([scope, id = '', ...rest]) => {
+      const level = shapeScope(scope);
+      if (!level) { this.toast('shape.set:<global|skin|app|widget>:<shape|inherit>[:<widget>]', 'warning', 'Widget shape'); return; }
+      const widget = level === 'instance' ? shapeWidget(rest) : undefined;
+      if (level === 'instance' && !widget) return;
+      this.setShape(level, id === 'inherit' ? '' : id, widget ?? undefined);
+    }, { label: 'Change the banner widget shape', requires: 'assets.swap', params: true, searchable: false });
+    a.register('shape.restore', ([scope, ...rest]) => {
+      const level = shapeScope(scope || 'app');
+      if (!level) return;
+      const widget = level === 'instance' ? shapeWidget(rest) : undefined;
+      if (level === 'instance' && !widget) return;
+      this.restoreShape(level, widget ?? undefined);
+    }, { label: 'Restore the previous banner widget shape', requires: 'assets.swap', params: true, searchable: false });
+    a.register('shape.pick', (args) => {
+      const widget = args.length ? shapeWidget(args) : null;
+      if (args.length && !widget) return;
+      this.openDialog(SHAPE_DIALOG, widget ? { widget } : {});
+    }, { label: 'Banner widget shape…', requires: 'assets.swap', params: true });
     // Widget icons: widget.icon:<host>:<widget…>:<icon|reset> · widget.icon.pick:<host>:<widget…> (opens the icon picker)
     a.register('widget.icon', (args) => {
       const [host = 'banner', ...rest] = args;

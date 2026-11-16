@@ -8,6 +8,8 @@
 import { shapeScopeKey, type ShapeLevel } from '../../core/engines/shape';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { useState } from 'react';
+import { SHAPE_DIALOG } from '../../core/runtime';
+import type { DialogMap } from './Overlays';
 import { Button } from './Controls';
 import { Note, Section } from './Forms';
 import { ShapePicker, ShapePreview } from './ShapePicker';
@@ -104,3 +106,10 @@ export function BannerShapesManager() {
 }
 
 export { LevelShapeField };
+
+/** shape.pick (and its deep link): one widget's shape, or the app's level plus the whole list. */
+export const shapeDialogs: DialogMap = {
+  [SHAPE_DIALOG]: { title: 'Banner widget shape', icon: 'box', searchable: false, render: (p) => (typeof p.widget === 'string' && p.widget
+    ? <WidgetShapeField widget={p.widget} compact={false} />
+    : <div className="fx-stack"><BannerShapeSettings /><BannerShapesManager /></div>) },
+};

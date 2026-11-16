@@ -47,6 +47,10 @@ export const plugin: AxfWebLibrary = {
     services()[TOKEN_TREE] = { version: 1, buildTree, leaves, getAt, setAt };
     void loadSaved(rt);
     rt.actions.register('theme-manager.open', () => rt.navigate('theme-manager'), { label: 'Open the theme manager' });
+    // deep links (shape@1): the skin editor's Shapes section, the UI manager's shape list
+    const reveal = (view: string, id: string) => { rt.navigate(view); setTimeout(() => document.getElementById(id)?.scrollIntoView({ block: 'start', behavior: 'smooth' }), 120); };
+    rt.actions.register('theme-manager.shapes', () => reveal('theme-manager', 'theme-manager-shapes'), { label: 'Skin editor: banner widget shapes' });
+    rt.actions.register('ui-manager.open', () => rt.navigate('ui-manager'), { label: 'Open the UI manager (banner widget shapes)' });
   },
   views: {
     // UI manager (first section: banner widget shapes; build banner-widget-shapes-more-than-circle). Hosted here until a

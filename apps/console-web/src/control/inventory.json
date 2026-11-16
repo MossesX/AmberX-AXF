@@ -8,7 +8,7 @@
     "tabs": 76,
     "settingsTabs": 67,
     "settings": 85,
-    "functions": 230,
+    "functions": 232,
     "buttons": 62,
     "plugins": 67
   },
@@ -6060,6 +6060,36 @@
       "keywords": [
         "theme-manager.open",
         "theme",
+        "manager",
+        "open"
+      ],
+      "plugin": "ai.amberx.axf.console.theme-manager",
+      "file": "plugins/theme-manager/web/index.tsx"
+    },
+    {
+      "address": "function:theme-manager.shapes",
+      "kind": "function",
+      "id": "theme-manager.shapes",
+      "label": "Skin editor: banner widget shapes",
+      "detail": "Action · Theme manager",
+      "keywords": [
+        "theme-manager.shapes",
+        "theme",
+        "manager",
+        "shapes"
+      ],
+      "plugin": "ai.amberx.axf.console.theme-manager",
+      "file": "plugins/theme-manager/web/index.tsx"
+    },
+    {
+      "address": "function:ui-manager.open",
+      "kind": "function",
+      "id": "ui-manager.open",
+      "label": "Open the UI manager (banner widget shapes)",
+      "detail": "Action · Theme manager",
+      "keywords": [
+        "ui-manager.open",
+        "ui",
         "manager",
         "open"
       ],

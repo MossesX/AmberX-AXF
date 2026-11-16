@@ -23,8 +23,232 @@
     "ROUTES"
   ],
   "enabledByDefault": true,
-  "commands": { "$axf": "plugin-commands@1", "auto": true },
-  "builtWith": { "model": "opus", "builtAt": "2026-10-18" },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "id": "shape-list",
+        "route": "GET /shapes",
+        "title": "List banner widget shapes and who picked what",
+        "description": "Every shape asset (starters and ones added on the hub) and the levels: the hub-wide pick, per-skin picks, an app's pick, per-widget picks and the edit history. Query app = include that app's levels and the shape in force.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "app": {
+              "type": "string",
+              "description": "app id (axf-console, axhub-web, amberx-droid, molly) — scope app / widget"
+            }
+          }
+        },
+        "output": "{ shapes, levels }",
+        "readOnly": true
+      },
+      {
+        "id": "shape-get",
+        "route": "GET /shapes/resolve",
+        "title": "Which shape a banner widget draws",
+        "description": "The shape in force for an app (and one banner widget) and which level decided: instance, app, skin, global, or the banner's default.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "app": {
+              "type": "string",
+              "description": "app id (axf-console, axhub-web, amberx-droid, molly) — scope app / widget"
+            },
+            "widget": {
+              "type": "string",
+              "description": "banner widget key type:id (e.g. clock:digital-12h) — scope widget"
+            },
+            "form": {
+              "type": "string",
+              "enum": [
+                "desktop",
+                "phone"
+              ]
+            }
+          }
+        },
+        "output": "{ id, from, level, chain }",
+        "readOnly": true
+      },
+      {
+        "id": "shape-set",
+        "route": "PUT /shapes/{scope}",
+        "title": "Set a banner widget shape",
+        "description": "Pick a shape at one level: global (every app), skin (one skin), app (one app's banner widgets) or widget (one banner widget). shape = an id from shape_list, or inherit. Recorded for Restore previous edit.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "scope": {
+              "type": "string",
+              "enum": [
+                "global",
+                "skin",
+                "app",
+                "widget"
+              ]
+            },
+            "shape": {
+              "type": "string"
+            },
+            "app": {
+              "type": "string",
+              "description": "app id (axf-console, axhub-web, amberx-droid, molly) — scope app / widget"
+            },
+            "skin": {
+              "type": "string",
+              "description": "skin id — scope skin (default: the skin in force for app)"
+            },
+            "widget": {
+              "type": "string",
+              "description": "banner widget key type:id (e.g. clock:digital-12h) — scope widget"
+            },
+            "form": {
+              "type": "string",
+              "enum": [
+                "desktop",
+                "phone"
+              ]
+            }
+          },
+          "required": [
+            "scope",
+            "shape"
+          ]
+        },
+        "output": "{ scope, previous, current }"
+      },
+      {
+        "id": "shape-restore",
+        "route": "POST /shapes/{scope}/restore-previous",
+        "title": "Restore the previous banner widget shape",
+        "description": "Undo the last shape edit at one level (a second call brings the edit back).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "scope": {
+              "type": "string",
+              "enum": [
+                "global",
+                "skin",
+                "app",
+                "widget"
+              ]
+            },
+            "app": {
+              "type": "string",
+              "description": "app id (axf-console, axhub-web, amberx-droid, molly) — scope app / widget"
+            },
+            "skin": {
+              "type": "string",
+              "description": "skin id — scope skin (default: the skin in force for app)"
+            },
+            "widget": {
+              "type": "string",
+              "description": "banner widget key type:id (e.g. clock:digital-12h) — scope widget"
+            },
+            "form": {
+              "type": "string",
+              "enum": [
+                "desktop",
+                "phone"
+              ]
+            }
+          },
+          "required": [
+            "scope"
+          ]
+        },
+        "output": "{ scope, current }"
+      },
+      {
+        "id": "shape-add",
+        "route": "POST /shapes/assets",
+        "title": "Add a custom banner widget shape",
+        "description": "Add a shape asset on the hub: corners (a radius step per corner: none, sm, md, lg, pill) or mask (one closed SVG path, M … Z, commands and numbers only). Validated by shape@1; a bad mask is refused with the reason.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "corners": {
+              "type": "object",
+              "properties": {
+                "tl": {
+                  "type": "string",
+                  "enum": [
+                    "none",
+                    "sm",
+                    "md",
+                    "lg",
+                    "pill"
+                  ]
+                },
+                "tr": {
+                  "type": "string",
+                  "enum": [
+                    "none",
+                    "sm",
+                    "md",
+                    "lg",
+                    "pill"
+                  ]
+                },
+                "br": {
+                  "type": "string",
+                  "enum": [
+                    "none",
+                    "sm",
+                    "md",
+                    "lg",
+                    "pill"
+                  ]
+                },
+                "bl": {
+                  "type": "string",
+                  "enum": [
+                    "none",
+                    "sm",
+                    "md",
+                    "lg",
+                    "pill"
+                  ]
+                }
+              }
+            },
+            "mask": {
+              "type": "string"
+            },
+            "viewBox": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "the new shape asset"
+      },
+      {
+        "id": "shape-assets",
+        "route": "GET /shapes/assets",
+        "title": "The shapes added on the hub, whole",
+        "readOnly": true
+      }
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-10-18"
+  },
   "banner": false,
   "tabable": false,
   "lifecycle": {
@@ -34,7 +258,8 @@
       "AXF_THEME_MANAGER_DIR"
     ],
     "mentions": [
-      "CLAUDE.md", "_claude/memory/STATUS.md",
+      "CLAUDE.md",
+      "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md"
     ]
   },
