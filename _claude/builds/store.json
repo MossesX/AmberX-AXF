@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6824,
- "updatedAt": "2026-11-16T20:04:41.329Z",
+ "rev": 6825,
+ "updatedAt": "2026-11-16T20:05:11.589Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -247351,7 +247351,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T19:23:12.681Z",
-   "updatedAt": "2026-11-16T20:04:19.345Z",
+   "updatedAt": "2026-11-16T20:05:07.385Z",
    "builtAt": "2026-11-16T20:04:19.345Z",
    "notes": [
     {
@@ -247373,6 +247373,10 @@
     {
      "text": "Headless run axf-every-settings-interface-gets--paulie: brief only · start 16.8K tokens ($0.05) · cost $3.90 · 94 turns · 6 tools, MCP none",
      "at": "2026-11-16T20:04:19.345Z"
+    },
+    {
+     "text": "Session axf-every-settings-interface-gets--paulie on mossesx-max- ended (exit 0); the build was already complete.",
+     "at": "2026-11-16T20:05:07.385Z"
     }
    ],
    "approvals": [],
@@ -247393,12 +247397,19 @@
     "queuedAt": "2026-11-16T19:23:15.921Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-every-settings-interface-gets--paulie",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-16T19:46:04.279Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-16T20:05:05.815Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-every-settings-interface-gets--paulie"
+    },
     "split": {
      "at": "2026-11-16T19:25:58.523Z",
      "by": "orchestrator",
@@ -247502,7 +247513,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
