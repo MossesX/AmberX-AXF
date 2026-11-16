@@ -189,6 +189,18 @@
         "title": "Deleted builds",
         "text": "Opens the Deleted tab: every deleted build, kept for good and restorable.",
         "kind": "menu"
+      },
+      {
+        "target": "back-to-queue",
+        "title": "Back to Queue",
+        "text": "This build finished its phase but was parked in Pending by mistake. Sends it back to the Queue (the same as Queue) so its next phase starts when a slot and an account for its model are free.",
+        "kind": "button"
+      },
+      {
+        "target": "action:build-orchestrator.requeue-stuck",
+        "title": "Requeue builds stuck after a phase",
+        "text": "Lists Pending builds whose last session finished its phase with steps left. Add :apply to move them back to the Queue so their next phase starts.",
+        "kind": "menu"
       }
     ],
     "intros": []
