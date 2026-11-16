@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:20:34.994Z",
+ "updatedAt": "2026-11-16T19:21:06.940Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -161121,7 +161121,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:12:13.425Z",
-   "updatedAt": "2026-11-16T19:17:05.454Z",
+   "updatedAt": "2026-11-16T19:20:48.415Z",
    "builtAt": "",
    "notes": [
     {
@@ -161143,6 +161143,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-alert-every-time-build-falls-back-to--earl, shared account login)",
      "at": "2026-11-16T19:17:05.454Z"
+    },
+    {
+     "text": "Bug found Nov 16: adding a note (control_act note) within seconds of filing a build races with intake and knocks it back to Pending with its priority wiped (seen on alert-every-time-build-falls-back-to and toolbars-moved-to-side-become-vertical). Fix the race: a note never changes status or priority.",
+     "at": "2026-11-16T19:20:48.414Z"
     }
    ],
    "approvals": [],
@@ -161382,7 +161386,7 @@
    "title": "Toolbars moved to the side become a vertical column next to the content",
    "category": "",
    "detail": "When any toolbar is moved to the left or right (Move from its context menu, settings, API), it must render as a vertical column beside the content: buttons stacked top to bottom, the content area beside it takes the remaining width, nothing pushed down. Top/bottom stay horizontal rows. Applies to every toolbar asset in every app (framework layout rule, tokens only), snaps without overlapping neighbours, collapses to icons when narrow, phone falls back sensibly. Add a test that a left/right toolbar never adds height above the content. Same placement via REST, MCP, CLI, voice. Land through the orchestrator.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -161390,7 +161394,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:20:10.281Z",
-   "updatedAt": "2026-11-16T19:20:26.286Z",
+   "updatedAt": "2026-11-16T19:20:42.222Z",
    "builtAt": "",
    "notes": [
     {
