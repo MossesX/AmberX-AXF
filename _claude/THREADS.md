@@ -813,7 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 16:42 UTC · `molly-multi-instance-tabs` note (all) · orchestrator
 - 2026-11-16 16:42 UTC · `molly-one-shell` note (all) · orchestrator
 - 2026-11-16 16:42 UTC · `molly-sign-in-once` note (all) · orchestrator
 - 2026-11-16 16:42 UTC · `molly-fable-version-the-one-interface-for-amberx` note (all) · orchestrator
@@ -1213,6 +1212,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 20:08 UTC · `settings-interface-gear-every-plugin` s22 done (all) · orchestrator
 - 2026-11-16 20:09 UTC · `banner-widget-shapes-more-than-circle` s17 done (all) · orchestrator
 - 2026-11-16 20:09 UTC · `settings-interface-gear-every-plugin` s23 done (all) · orchestrator
+- 2026-11-16 20:10 UTC · `settings-interface-gear-every-plugin` s23 done (all) · foreign-write
 
 ## Token passes (log)
 
