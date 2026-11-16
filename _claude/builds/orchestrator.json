@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:05:43.571Z",
+ "updatedAt": "2026-11-16T19:05:59.058Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -160738,7 +160738,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T19:03:55.794Z",
-   "updatedAt": "2026-11-16T19:05:16.473Z",
+   "updatedAt": "2026-11-16T19:05:36.943Z",
    "builtAt": "",
    "notes": [
     {
@@ -160752,6 +160752,10 @@
     {
      "text": "Split by Claude into 11 steps (0 Fable).",
      "at": "2026-11-16T19:05:16.473Z"
+    },
+    {
+     "text": "Brett Nov 16: when a skin is applied (any app, any scope), show a notice: 'N assets override this skin' with a 'View them' link that opens the assets-with-edits list in Settings > Appearance. Only when N > 0. Same info returned by the API/CLI/voice skin apply result.",
+     "at": "2026-11-16T19:05:27.094Z"
     }
    ],
    "approvals": [],
@@ -160923,6 +160927,25 @@
      "note": "",
      "uid": "st-mwjmvcmx07qth2",
      "createdAt": "2026-11-16T19:05:16.473Z"
+    },
+    {
+     "id": "s12",
+     "text": "Brett Nov 16: (a) 'Save as new skin' button in Settings > Appearance: saves the current look (skin + every asset override) as a new skin@1 with a name field; it appears in the skin list and can be picked hub-wide; skins.save-as <name> on REST, MCP, CLI and voice. (b) When any skin is applied, show a notice 'N assets override this skin' with a 'View them' link opening the assets-with-edits list (only when N > 0); the skin apply result on API/CLI/voice carries the same count.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjmvsrn01kszi",
+     "createdAt": "2026-11-16T19:05:36.945Z"
     },
     {
      "id": "s8",
