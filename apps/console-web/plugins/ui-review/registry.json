@@ -1,0 +1,57 @@
+{
+  "$axf": "claude-settings-registry@1",
+  "readme": "UI Review options (plugin-settings@1): the options its Settings \u2192 Plugins \u2192 UI Review tab hosts, read and set through server/plugin_options.py. waitForLook holds builds for Brett's look approval, so it is owner-only: no command changes it.",
+  "service": "axf.plugin-options.ui-review@1",
+  "groups": [
+    {
+      "id": "choices",
+      "label": "Choices",
+      "icon": "layers",
+      "order": 10
+    },
+    {
+      "id": "look",
+      "label": "Predicted looks",
+      "icon": "eye",
+      "order": 20
+    }
+  ],
+  "settings": [
+    {
+      "key": "ui-review.choices.minOptions",
+      "group": "choices",
+      "label": "Options per build",
+      "kind": "number",
+      "default": 3,
+      "min": 3,
+      "max": 12,
+      "description": "How many options (ui-choices@1) a build ships for every UI it makes. Never below 3."
+    },
+    {
+      "key": "ui-review.choices.askOptions",
+      "group": "choices",
+      "label": "Ask me how many",
+      "kind": "toggle",
+      "default": false,
+      "description": "A build asks how many options to make before it makes them; no answer in time keeps the number above."
+    },
+    {
+      "key": "ui-review.choices.askTimeoutMin",
+      "group": "choices",
+      "label": "Wait for my answer (minutes)",
+      "kind": "number",
+      "default": 5,
+      "min": 1,
+      "max": 120
+    },
+    {
+      "key": "ui-review.waitForLook",
+      "group": "look",
+      "label": "Wait for the look",
+      "kind": "toggle",
+      "default": false,
+      "owner": true,
+      "description": "Builds that change the UI wait for Brett's OK on the predicted look before they go on. Owner-only."
+    }
+  ]
+}

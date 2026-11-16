@@ -391,6 +391,33 @@ import sys as _sys  # noqa: E402
 router.include_router(predicted_mod.router_for(_sys.modules[__name__]))
 router.include_router(choices_mod.router_for(_sys.modules[__name__]))
 
+
+# plugin-settings@1: the options this plugin's Settings → Plugins → UI Review tab hosts (Choices: options per build,
+# ask me how many, how long to wait; Predicted looks: wait for the look), read and set through console control (REST,
+# MCP, CLI, voice). registry.json marks the approval gate (waitForLook) owner-only, so a command never turns it off.
+def _options_read() -> dict:
+    c = choices_settings()  # noqa: F821 — set by choices.router_for above
+    return {"minOptions": c["minOptions"], "askOptions": c["askOptions"], "askTimeoutMin": c["askTimeoutMin"], "waitForLook": bool(look_settings().get("waitForLook"))}  # noqa: F821
+
+
+def _options_write(patch: dict) -> dict:
+    c = {k: patch[k] for k in ("minOptions", "askOptions", "askTimeoutMin") if k in patch}
+    if c:
+        choices_settings_put(c)  # noqa: F821
+    if "waitForLook" in patch:
+        look_settings_put({"waitForLook": patch["waitForLook"]})  # noqa: F821
+    return _options_read()
+
+
+try:
+    import plugin_options
+
+    plugin_options.provide("ui-review", read=_options_read, write=_options_write,
+                           fields={"ui-review.choices.minOptions": "minOptions", "ui-review.choices.askOptions": "askOptions",
+                                   "ui-review.choices.askTimeoutMin": "askTimeoutMin", "ui-review.waitForLook": "waitForLook"})
+except ImportError:  # a bare test run without the console server on the path
+    pass
+
 # ---------------------------------------------------------------- health@1: every open item's pictures load
 
 HEALTH_ID = "ui-review-shots"

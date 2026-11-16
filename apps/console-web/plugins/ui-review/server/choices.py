@@ -165,13 +165,18 @@ def router_for(h: Any) -> APIRouter:
     def get_settings() -> dict:
         return settings()
 
-    @r.put("/choices/settings")
-    async def put_settings(request: Request) -> dict:
-        b = await h._json(request)
+    def write_settings(b: dict) -> dict:
         s = {**settings(), **{k: v for k, v in b.items() if k in DEFAULT_SETTINGS}}
         s["minOptions"] = min_options(s["minOptions"])
         h._write(h.data_dir() / "choices-settings.json", s)
         return settings()
+
+    # plugin-settings@1 (server/__init__.py): the same read and write for console control
+    h.choices_settings, h.choices_settings_put = settings, write_settings
+
+    @r.put("/choices/settings")
+    async def put_settings(request: Request) -> dict:
+        return write_settings(await h._json(request))
 
     @r.post("/choices/choose")
     async def post_choose(request: Request) -> dict:

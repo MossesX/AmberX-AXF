@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { AgentAvatar, Button, Checkbox, Icon, IconButton, Segmented, TabGroup, useRuntime } from '@console/axf/react';
+import { AgentAvatar, Button, Checkbox, Icon, IconButton, PluginSettingsGear, Segmented, TabGroup, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { OriginFor } from '@console/buildOrigin';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
@@ -247,13 +247,14 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
   return (
     <Ctx.Provider value={ctx}>
       <div className="fx-stack axp-ui-review">
-        <header className="fx-pagehead">
+        {/* plugin-settings@1: the header's toolbar ends with the gear that opens Settings → Plugins → UI Review */}
+        <header className="fx-pagehead" data-axf-plugin-header={FOLDER}>
           <div>
             <p className="fx-eyebrow">Approvals · {c.waiting} waiting · {c.total} in all{shotCount !== null ? ` · ${shotCount} screenshots` : ''}</p>
             <h1>UI Review</h1>
             <p className="fx-muted">{tab === 'shots' ? 'Screenshots from checks, live captures, PRs and your uploads. Not waiting for approval.' : 'Every UI a build makes waits here for your OK, sorted by kind.'}</p>
           </div>
-          <div className="axp-ui-review__headacts">
+          <div className="axp-ui-review__headacts" role="toolbar" aria-label="UI Review tools" data-axf-toolbar={`plugin-header.${FOLDER}`}>
             {tab === 'review' && showPicks && (
               <span className="axp-ui-review__picks" aria-label={`${picked.length} of ${core.MAX_PICKS} design packs picked`}>
                 <span className="fx-small fx-muted">{picked.length}/{core.MAX_PICKS} picked</span>
@@ -261,6 +262,7 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
               </span>
             )}
             {tab === 'review' && <IconButton icon="refresh" label="Reload" onClick={() => void load()} />}
+            <PluginSettingsGear tab={FOLDER} plugin="UI Review" />
           </div>
         </header>
         <TabGroup<Tab> id="ui-review.tabs" label="UI Review tabs" value={tab} onChange={setTab} className="axp-ui-review__tabs"

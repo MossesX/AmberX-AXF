@@ -169,15 +169,23 @@ def router_for(h: Any) -> APIRouter:
     def settings() -> dict:
         return get_settings()
 
-    @r.put("/settings")
-    async def put_settings(request: Request) -> dict:
-        body = await h._json(request, 8192)
+    def write_settings(body: dict) -> dict:
         if "waitForLook" in body and not isinstance(body["waitForLook"], bool):
-            raise HTTPException(400, "waitForLook must be true or false")
+            raise ValueError("waitForLook must be true or false")
         with h._lock:
             s = {**get_settings(), **{k: body[k] for k in ("waitForLook",) if k in body}, "updatedAt": h._now()}
             h._write(settings_path(), s)
         return {k: v for k, v in s.items() if k != "updatedAt"} | {"updatedAt": s["updatedAt"]}
+
+    # plugin-settings@1 (server/__init__.py): the same read and write for console control (waitForLook is owner-only there)
+    h.look_settings, h.look_settings_put = get_settings, write_settings
+
+    @r.put("/settings")
+    async def put_settings(request: Request) -> dict:
+        try:
+            return write_settings(await h._json(request, 8192))
+        except ValueError as e:
+            raise HTTPException(400, str(e)) from None
 
     @r.get("/predicted")
     def predicted(build: str = "", touches: bool = True) -> dict:

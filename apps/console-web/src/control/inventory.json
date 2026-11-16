@@ -7,7 +7,7 @@
     "tabGroups": 26,
     "tabs": 78,
     "settingsTabs": 83,
-    "settings": 200,
+    "settings": 204,
     "functions": 274,
     "buttons": 62,
     "plugins": 71
@@ -1701,7 +1701,7 @@
       "view": "ui-review",
       "plugin": "ai.amberx.axf.console.ui-review",
       "file": "plugins/ui-review/web/ui.tsx",
-      "line": 266,
+      "line": 268,
       "tabs": [
         {
           "address": "view:ui-review/tab:ui-review.tabs=review",
@@ -1722,7 +1722,7 @@
       "view": "ui-review",
       "plugin": "ai.amberx.axf.console.ui-review",
       "file": "plugins/ui-review/web/ui.tsx",
-      "line": 272,
+      "line": 274,
       "tabs": []
     }
   ],
@@ -5621,6 +5621,75 @@
       "runs": "server",
       "service": "axf.plugin-options.mcp-client@1",
       "plugin": "ai.amberx.axf.console.mcp-client"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ui-review/setting:ui-review.choices.minOptions",
+      "kind": "setting",
+      "label": "Options per build",
+      "key": "ui-review.choices.minOptions",
+      "type": "number",
+      "min": 3,
+      "max": 12,
+      "detail": "Settings › Plugins › UI Review › Choices",
+      "keywords": [
+        "ui-review.choices.minOptions",
+        "choices",
+        "UI Review"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.ui-review@1",
+      "plugin": "ai.amberx.axf.console.ui-review"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ui-review/setting:ui-review.choices.askOptions",
+      "kind": "setting",
+      "label": "Ask me how many",
+      "key": "ui-review.choices.askOptions",
+      "type": "toggle",
+      "detail": "Settings › Plugins › UI Review › Choices",
+      "keywords": [
+        "ui-review.choices.askOptions",
+        "choices",
+        "UI Review"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.ui-review@1",
+      "plugin": "ai.amberx.axf.console.ui-review"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ui-review/setting:ui-review.choices.askTimeoutMin",
+      "kind": "setting",
+      "label": "Wait for my answer (minutes)",
+      "key": "ui-review.choices.askTimeoutMin",
+      "type": "number",
+      "min": 1,
+      "max": 120,
+      "detail": "Settings › Plugins › UI Review › Choices",
+      "keywords": [
+        "ui-review.choices.askTimeoutMin",
+        "choices",
+        "UI Review"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.ui-review@1",
+      "plugin": "ai.amberx.axf.console.ui-review"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ui-review/setting:ui-review.waitForLook",
+      "kind": "setting",
+      "label": "Wait for the look",
+      "key": "ui-review.waitForLook",
+      "type": "toggle",
+      "personOnly": true,
+      "detail": "Settings › Plugins › UI Review › Predicted looks",
+      "keywords": [
+        "ui-review.waitForLook",
+        "look",
+        "UI Review"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.ui-review@1",
+      "plugin": "ai.amberx.axf.console.ui-review"
     }
   ],
   "functions": [
@@ -12375,7 +12444,8 @@
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ui-review",
       "provides": [
         "service:ui-review@1",
-        "service:ui-screenshots@1"
+        "service:ui-screenshots@1",
+        "service:axf.plugin-options.ui-review@1"
       ],
       "requires": [],
       "optional": []
