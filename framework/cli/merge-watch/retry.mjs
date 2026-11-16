@@ -24,7 +24,7 @@ export const ALERT_AFTER = 3;
 export const ALERT_KEY = 'shipped:merge-watch:failed';
 export const ALERT_SOURCE = 'shipped-features';
 export const NOTIFY_TYPE = 'shipped.merge-watch.failed';
-export const LINK = '/plugins/gate?tab=rules&rule=after-merge-send-shipped-features';
+export const LINK = '#/gate'; // Gate & rules → Build rules → 'shipped-features' (console_show view:gate/tab:gate.tabs=build-rules)
 
 export function failing(state, now = new Date().toISOString()) {
   const es = Object.values(state?.entries ?? {}).filter((e) => e.state === 'failed' && e.attempts >= ALERT_AFTER);

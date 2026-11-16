@@ -246,6 +246,144 @@
           "additionalProperties": false
         },
         "output": "{ ok, since, dry, found, shipped: [{ id, why, ok, created, manifest }] }"
+      },
+      {
+        "route": "GET /merge-watch",
+        "id": "merge-watch",
+        "title": "Merge watch state",
+        "readOnly": true,
+        "description": "Is every merge to main reaching Shipped features: on/off, the last main sha it checked, how many merges were sent, pending, failed or skipped, the failed ones with their error, the last send, the alert and the deep link (Gate & rules → Build rules → Send Shipped features). Say 'are merges reaching shipped features' or 'merge watch status'.",
+        "output": "{ ok, enabled, where, summary: { lastSeen, counts, failed, lastSent }, alert, link }"
+      },
+      {
+        "route": "GET /merge-watch/list",
+        "id": "merge-watch-list",
+        "title": "Merges the watch saw",
+        "readOnly": true,
+        "description": "The merges to main the watch saw, newest first: sha, PR, build, sent / pending / failed / skipped, tries, error, the manifest sent. Filter by state and since. Say 'which merges failed to reach shipped features'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "sent",
+                "failed",
+                "skipped"
+              ]
+            },
+            "since": {
+              "type": "string",
+              "description": "YYYY-MM-DD"
+            }
+          },
+          "additionalProperties": false
+        },
+        "output": "{ ok, entries: [{ sha, at, kind, pr, build, state, attempts, error, manifest }] }"
+      },
+      {
+        "route": "POST /merge-watch/send",
+        "id": "merge-watch-send",
+        "title": "Send one merge to Shipped features",
+        "description": "Send one merge on main to Shipped features now (its shipped manifest). force: send again even when it went out. dry: say what would go out. Say 'send merge abc1234 to shipped features'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "sha": {
+              "type": "string",
+              "description": "the merge commit on main"
+            },
+            "force": {
+              "type": "boolean"
+            },
+            "dry": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "sha"
+          ],
+          "additionalProperties": false
+        },
+        "output": "{ ok, result: { sha, status: sent | skipped | failed | dry, id, rev, via, why, error } }"
+      },
+      {
+        "route": "POST /merge-watch/retry",
+        "id": "merge-watch-retry",
+        "title": "Retry failed Shipped features sends",
+        "description": "Every merge whose send failed goes back to pending and is sent now (or only the shas named). The systems check's Auto fix runs this. Say 'retry the shipped features sends'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "shas": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "output": "{ ok, reset: [sha], results: [{ sha, status, error }] }"
+      },
+      {
+        "route": "POST /merge-watch/backfill",
+        "id": "merge-watch-backfill",
+        "title": "Backfill merges to Shipped features",
+        "description": "Every merge to main since a date with no shipped manifest gets one (PR merges, merge queue batches, build_land landings, direct pushes; status-only commits never). dry: list them only. Say 'backfill shipped features from merges since Friday'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "since": {
+              "type": "string",
+              "description": "YYYY-MM-DD"
+            },
+            "dry": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "since"
+          ],
+          "additionalProperties": false
+        },
+        "output": "{ ok, since, dry, landings, results: [{ sha, status, id, pr, why, error }] }"
+      },
+      {
+        "route": "POST /merge-watch/switch",
+        "id": "merge-watch-switch",
+        "title": "Turn the merge watch on or off",
+        "description": "Merge watch on or off. Off: no merge is sent to Shipped features until it is on again (the state is kept and the next tick catches up). Say 'turn the merge watch off'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "enabled"
+          ],
+          "additionalProperties": false
+        },
+        "output": "{ ok, enabled }"
+      },
+      {
+        "route": "POST /merge-watch/tick",
+        "id": "merge-watch-tick",
+        "title": "Check main for new merges now",
+        "description": "One merge-watch tick now: fetch main, take the new merges, send what is due (what the cron does every minute). dry: what it would send.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "dry": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        "output": "{ ok, added, results, summary }"
       }
     ]
   },

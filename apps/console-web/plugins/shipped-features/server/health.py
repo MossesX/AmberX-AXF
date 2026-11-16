@@ -104,7 +104,7 @@ def register(plugin_services: Any) -> bool:
                       "interval": 120, "run": probe,
                       "breaks": "Shipped features misses merged work: Brett can't see what landed on main.",
                       "autoFix": {"label": "Resend now", "run": resend},
-                      "links": [{"label": "Send Shipped features rule", "href": "/plugins/gate?tab=rules&rule=after-merge-send-shipped-features"}],
+                      "links": [{"label": "Send Shipped features rule", "href": "#/gate"}],
                       "instructions": ["Auto fix resends every failed merge (merge-watch.mjs retry).",
                                        "By hand on the VPS: node framework/cli/merge-watch.mjs status, then retry or send <sha>."]}, FOLDER)
     except Exception:  # noqa: BLE001 — Shipped features works without its health item

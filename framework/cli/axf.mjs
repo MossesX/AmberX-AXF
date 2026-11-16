@@ -8,6 +8,8 @@
  *   axf options [dir] [--framework] [build options]   show or change build options on an existing app
  *   axf claude-project [dir] [--where github,vps,device] [--port bake|rebuild|no] …   make any folder a Claude project
  *                               and give it a home (framework/cli/claude-project.mjs; also /claude-project in Claude Code)
+ *   axf merge-watch tick|status|send <sha>|backfill --since <date>|retry|on|off|list   every merge to main sent to
+ *                               Shipped features (framework/cli/merge-watch.mjs; REST /api/plugins/shipped-features/merge-watch)
  *
  *   build options (framework/schemas/build-options.json; --x = on, --x on|off, --no-x = off; new builds default every option off):
  *     --wrap-groups              every section / group gets a collapse toggle top-right (style-theme wrapGroups)
@@ -116,7 +118,7 @@ if (cmd === 'voice') {
 // plugin commands (control@1 plugins domain): `axf plugins [plugin]`, `axf plugin <plugin> <command> …`, and
 // `axf <plugin> <command> …` for any console plugin whose folder isn't an axf command; they go to the plugin that
 // provides plugin-commands@1 (never by folder name).
-const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'validate', 'list', 'new-asset', 'dev', 'focus', 'import-ui', 'ported-kits', 'library-templates', 'new-library', 'compile-library', 'port-library', 'remove-library', 'libraries', 'install', 'boilerplates', 'serve', 'templates', 'new-module', 'new-demo', 'modules', 'repo', 'shot', 'schemas']);
+const AXF_COMMANDS = new Set(['init', 'claude-project', 'merge-watch', 'project', 'options', 'validate', 'list', 'new-asset', 'dev', 'focus', 'import-ui', 'ported-kits', 'library-templates', 'new-library', 'compile-library', 'port-library', 'remove-library', 'libraries', 'install', 'boilerplates', 'serve', 'templates', 'new-module', 'new-demo', 'modules', 'repo', 'shot', 'schemas']);
 {
   const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
   const { join: joinPath } = await import('node:path');
@@ -209,6 +211,13 @@ try {
     case 'claude-project': {
       const { run } = await import('./claude-project.mjs');
       await run(process.argv.slice(3));
+      break;
+    }
+    case 'merge-watch': {
+      // merge-watch@1: every merge to main sent to Shipped features (tick | status | send <sha> | backfill --since | retry | on | off | list)
+      const { spawnSync } = await import('node:child_process');
+      const r = spawnSync(process.execPath, [join(FRAMEWORK_DIR, 'cli/merge-watch.mjs'), ...process.argv.slice(3)], { stdio: 'inherit' });
+      process.exitCode = r.status ?? 1;
       break;
     }
     case 'project': {

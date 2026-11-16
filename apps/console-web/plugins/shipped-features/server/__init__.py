@@ -39,12 +39,18 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import PlainTextResponse
 
-import plugin_services
-
 from . import health as merge_watch_health
+from . import merge_watch
+
+try:
+    import plugin_services  # the console's service registry (absent when the plugin is loaded on its own, e.g. test.py)
+except ImportError:  # pragma: no cover
+    plugin_services = None
 
 router = APIRouter()
-merge_watch_health.register_later(plugin_services)  # systems check item: merges to main not sent (merge-watch@1)
+router.include_router(merge_watch.router)  # /merge-watch: every merge to main sent to Shipped features (merge-watch@1)
+if plugin_services is not None:
+    merge_watch_health.register_later(plugin_services)  # systems check item: merges to main not sent (merge-watch@1)
 FOLDER = Path(__file__).resolve().parents[1].name
 ROOT = Path(__file__).resolve().parents[5]  # the repo root (/axf in the console image)
 CLI = Path(__file__).resolve().parents[1] / "ledger" / "ledger.mjs"
