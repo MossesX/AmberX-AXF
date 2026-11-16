@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6616,
- "updatedAt": "2026-11-16T18:00:02.612Z",
+ "rev": 6617,
+ "updatedAt": "2026-11-16T18:00:30.422Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -229917,7 +229917,7 @@
    "pr": "#705",
    "priority": "P0",
    "createdAt": "2026-11-15T04:17:06.158Z",
-   "updatedAt": "2026-11-15T20:13:03.493Z",
+   "updatedAt": "2026-11-16T18:00:07.946Z",
    "builtAt": "2026-11-15T20:10:32.121Z",
    "notes": [
     {
@@ -229991,6 +229991,10 @@
     {
      "text": "Session axf-auto-lander-controls-in-the-gate-plugin--earl on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-15T20:13:03.493Z"
+    },
+    {
+     "text": "Checked by get-main-green-unblock-lander-land-axf s12: worktree has no uncommitted changes in tracked files (only session brief/logs); local head 61013c9db = GitHub. Nothing to commit or drop. #705 was kicked from the merge queue for main's inherited reds (amberx @console/api, theme-swap); it rejoins once #719 + #724 land.",
+     "at": "2026-11-16T18:00:07.946Z"
     }
    ],
    "approvals": [],
@@ -230470,7 +230474,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -241073,7 +241077,7 @@
    "pr": "#723",
    "priority": "P0",
    "createdAt": "2026-11-16T16:22:57.802Z",
-   "updatedAt": "2026-11-16T17:59:43.216Z",
+   "updatedAt": "2026-11-16T18:00:13.616Z",
    "builtAt": "",
    "notes": [
     {
@@ -241491,12 +241495,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T18:00:13.616Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T16:25:07.589Z",
-     "updatedAt": "2026-11-16T16:25:07.589Z"
+     "updatedAt": "2026-11-16T18:00:14.038Z"
     },
     {
      "id": "s13",
@@ -241684,7 +241688,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

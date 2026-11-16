@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T18:00:02.612Z",
+ "updatedAt": "2026-11-16T18:00:30.422Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -148207,7 +148207,7 @@
    "pr": "#705",
    "priority": "P0",
    "createdAt": "2026-11-15T04:17:06.158Z",
-   "updatedAt": "2026-11-15T20:13:03.493Z",
+   "updatedAt": "2026-11-16T18:00:07.946Z",
    "builtAt": "2026-11-15T20:10:32.121Z",
    "notes": [
     {
@@ -148281,6 +148281,10 @@
     {
      "text": "Session axf-auto-lander-controls-in-the-gate-plugin--earl on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-15T20:13:03.493Z"
+    },
+    {
+     "text": "Checked by get-main-green-unblock-lander-land-axf s12: worktree has no uncommitted changes in tracked files (only session brief/logs); local head 61013c9db = GitHub. Nothing to commit or drop. #705 was kicked from the merge queue for main's inherited reds (amberx @console/api, theme-swap); it rejoins once #719 + #724 land.",
+     "at": "2026-11-16T18:00:07.946Z"
     }
    ],
    "approvals": [],
@@ -156804,7 +156808,7 @@
    "pr": "#723",
    "priority": "P0",
    "createdAt": "2026-11-16T16:22:57.802Z",
-   "updatedAt": "2026-11-16T17:59:43.216Z",
+   "updatedAt": "2026-11-16T18:00:13.616Z",
    "builtAt": "",
    "notes": [
     {
@@ -157146,8 +157150,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T18:00:13.616Z",
      "note": "",
      "uid": "st-mwjh5edj0cto62",
      "createdAt": "2026-11-16T16:25:07.589Z"
