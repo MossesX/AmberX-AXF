@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:19:13.872Z",
+ "updatedAt": "2026-11-16T19:19:23.580Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -161248,6 +161248,37 @@
    "origin": {
     "said": "I need a pending banner that lists all the pending things and lets me send everything to the queue right from the banner.",
     "at": "2026-11-16T19:16:56.830Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "auto-lander-grid-one-row-per-build",
+   "title": "Auto-lander grid: one row per build, behind-main count, archive",
+   "category": "",
+   "detail": "Gate & rules > Auto-lander tab: make the grid ONE row per build (no multi-line rows). Columns: build, what it does (plain words), PR, status (ready/blocked), reason, commits behind main (sortable), last activity. Row actions: Open, Merge main + fix, Archive, Hold; multi-select bulk Archive. Filter e.g. 'behind > 500'. Stale records with no branch/PR are hidden or cleaned. Same data and actions on REST, MCP, CLI and voice. Tests, land through the orchestrator.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-16T19:19:11.374Z",
+   "updatedAt": "2026-11-16T19:19:11.374Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "You need to fix that grid, make it one row. I need to see everything waiting to be merged and how far behind main.",
+    "at": "2026-11-16T19:19:11.374Z",
     "source": "",
     "session": "",
     "link": "",

@@ -1231,6 +1231,18 @@
    "from": "",
    "addenda": []
   },
+  "auto-lander-grid-one-row-per-build": {
+   "said": "You need to fix that grid, make it one row. I need to see everything waiting to be merged and how far behind main.",
+   "at": "2026-11-16T19:19:11.374Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "auto-recover-stuck-builds": {
    "said": "Brett: if anything stops working, the server/orchestrator fixes it automatically with no one asking. Detect builds marked running with no live session (killed exit 143, failed exit 1), reset and requeue them, retry failed sessions, keep every slot filled, FYI to phone per fix.",
    "at": "2026-11-13T11:45:11.111Z",
