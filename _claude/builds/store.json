@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6613,
- "updatedAt": "2026-11-16T17:56:46.601Z",
+ "rev": 6614,
+ "updatedAt": "2026-11-16T17:59:03.743Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -228286,7 +228286,7 @@
    "pr": "#598",
    "priority": "P0",
    "createdAt": "2026-11-14T23:17:55.197Z",
-   "updatedAt": "2026-11-15T00:37:42.326Z",
+   "updatedAt": "2026-11-16T17:59:00.964Z",
    "builtAt": "2026-11-14T23:53:33.650Z",
    "notes": [
     {
@@ -228308,6 +228308,10 @@
     {
      "text": "Headless run axf-merge-main-land-one-source-truth-console--sully: brief only · start 11.5K tokens ($0.03) · cost $0.51 · 19 turns · 6 tools, MCP none",
      "at": "2026-11-14T23:53:33.650Z"
+    },
+    {
+     "text": "Held in auto-land by get-main-green-unblock-lander-land-axf s11: duplicate of one-source-truth-console-shows-only-what (same PR #598). Its branch claude/merge-main-land-one-source-truth-console is already gone from GitHub and locally; nothing on it was missing from #598. #598 is the one to land.",
+     "at": "2026-11-16T17:59:00.964Z"
     }
    ],
    "approvals": [],
@@ -228569,7 +228573,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
