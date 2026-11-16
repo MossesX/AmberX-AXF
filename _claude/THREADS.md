@@ -808,9 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 07:11 UTC · `fix-axhub-36-pull-main-in-failed` note (all) · orchestrator
-- 2026-11-15 09:10 UTC · `molly-gap-axhub-cors` → complete, merged, note (all) · reconciler
-- 2026-11-15 09:11 UTC · `molly-gap-axhub-cors` note (all) · orchestrator
 - 2026-11-15 11:52 UTC · `pending-tab-one-collapsed-row-per-2` added (0 steps) (all) · console
 - 2026-11-15 11:52 UTC · `pending-tab-one-collapsed-row-per-2` → queued, note (all) · console
 - 2026-11-15 11:53 UTC · `pending-tab-one-collapsed-row-per-2` note (all) · mcp
@@ -1208,6 +1205,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 13:21 UTC · `fix-build-whose-session-finishes-phase-e` s10 done (all) · orchestrator
 - 2026-11-16 13:22 UTC · `fix-build-whose-session-finishes-phase-e` s11 done (all) · orchestrator
 - 2026-11-16 13:22 UTC · `ui-manager-floating-window-to-select-any` → queued, note (all) · build:fix-build-whose-session-finishes-phase-e
+- 2026-11-16 13:22 UTC · `demo-video-series-three-minute-browser` → queued, note (all) · build:fix-build-whose-session-finishes-phase-e
+- 2026-11-16 13:22 UTC · `console-look-becomes-default-axhub-skin` → queued, note (all) · build:fix-build-whose-session-finishes-phase-e
+- 2026-11-16 13:22 UTC · `vps-sends-shipped-features-every-merge` → queued, note (all) · build:fix-build-whose-session-finishes-phase-e
 
 ## Token passes (log)
 

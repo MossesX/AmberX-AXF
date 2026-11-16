@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6396,
- "updatedAt": "2026-11-16T13:22:50.937Z",
+ "rev": 6397,
+ "updatedAt": "2026-11-16T13:23:06.161Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -219995,14 +219995,14 @@
    "title": "Demo video series: three-minute browser walkthroughs of AmberX",
    "category": "Launch",
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-15T02:11:21.626Z",
+   "updatedAt": "2026-11-16T13:22:50.694Z",
    "builtAt": "",
    "notes": [
     {
@@ -220128,6 +220128,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-15T02:11:21.626Z"
+    },
+    {
+     "text": "phase Phase 1 done, requeued for Fable: back in the Queue (requeue-stuck by build:fix-build-whose-session-finishes-phase-e; phase Phase 1 finished on 2026-11-14 04:09 with 3 step(s) left and nothing needing Brett).",
+     "at": "2026-11-16T13:22:50.694Z"
     }
    ],
    "approvals": [],
@@ -220145,8 +220149,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-16T13:22:50.158Z",
+    "queuedBy": "build:fix-build-whose-session-finishes-phase-e",
     "account": "",
     "session": "",
     "slot": "",
@@ -220158,8 +220162,8 @@
     "lastRun": {
      "at": "2026-11-14T04:09:08.606Z",
      "exit": 0,
-     "outcome": "returned",
-     "reason": "",
+     "outcome": "requeued",
+     "reason": "phase-done",
      "stepsLeft": 7,
      "account": "mossesx-max-",
      "session": "axf-demo-video-series-three-minute-browser--earl",
@@ -220167,7 +220171,7 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "requeued after phase Phase 1: next phase Fable waits for a slot and an account",
     "route": "",
     "dispatchedAt": "2026-11-14T04:03:16.135Z",
     "planned": {
@@ -220721,7 +220725,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -226378,7 +226382,7 @@
    "title": "Console look becomes default axHub skin",
    "category": "",
    "detail": "Snapshot the live console's current look exactly as it is now (skin, colour theme light and dark, every token value including opacityGlass 0.7, typography, density, radius, behaviour/animation themes, toolbar/banner/nav chrome settings) into a new skin asset 'Console (default)' and publish it on axHub as THE default skin. Make every app (console, AmberX web, Android apps, any app built from the framework) inherit its skin from axHub's default right now: apps with no override pick it up immediately; apps with their own edits keep only their edited tokens (per the skin-axhub-override rules) and inherit the rest. Keep a backup of each app's previous skin so it can be restored in one tap. Run AFTER land-all-skin-builds finishes so it builds on the landed skins plugin/axHub-only/override code; if those aren't landed yet, wait for them. Verify with pixel-diff that the console looks identical before and after, and screenshot every app desktop and phone. Redeploy, then send Brett a phone notification. Full API and voice ('make this the default look'), tests, help, Shipped features.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -226386,7 +226390,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T22:19:00.612Z",
-   "updatedAt": "2026-11-15T00:00:17.370Z",
+   "updatedAt": "2026-11-16T13:22:51.873Z",
    "builtAt": "",
    "notes": [
     {
@@ -226472,6 +226476,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 14 steps left: back in Pending for Brett.",
      "at": "2026-11-15T00:00:17.370Z"
+    },
+    {
+     "text": "phase Phase 2 done, requeued for Opus: back in the Queue (requeue-stuck by build:fix-build-whose-session-finishes-phase-e; phase Phase 2 finished on 2026-11-15 00:00 with 14 step(s) left and nothing needing Brett).",
+     "at": "2026-11-16T13:22:51.873Z"
     }
    ],
    "approvals": [
@@ -226513,8 +226521,8 @@
     "lastRun": {
      "at": "2026-11-15T00:00:15.489Z",
      "exit": 0,
-     "outcome": "returned",
-     "reason": "",
+     "outcome": "requeued",
+     "reason": "phase-done",
      "stepsLeft": 14,
      "account": "mossesx-max-",
      "session": "axf-console-look-becomes-default-axhub-skin--paulie",
@@ -226528,7 +226536,7 @@
      "note": "Split by Claude into 20 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- stopped on its own with 14 steps left: back in Pending for Brett.",
+    "note": "requeued after phase Phase 2: next phase Opus waits for a slot and an account",
     "route": "",
     "dispatchedAt": "2026-11-14T22:42:12.388Z",
     "planned": {
@@ -227063,7 +227071,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -234695,7 +234703,7 @@
    "title": "VPS sends Shipped features on every merge to main (+ backfill)",
    "category": "",
    "detail": "Bug: Shipped features has nothing for 2 days, but main DID get many merges (Nov 14-15: PRs #687, #694, #691, #693, #696, #689, #702, #324, plus build_land of console-look-becomes-default-axhub-skin, and the hand-merged skin PRs #647 #648 #590 #618 #641 #652 #657 #654). The last shipped manifests in _claude/builds/shipped/ are from Nov 13. The orchestrator is supposed to send shipped-manifest@1 to Shipped features (commit 7a6668231) but stopped. RULE (Brett): the VPS controls the orchestrator, so the VPS sends the shipped manifest AS SOON AS any merge to main succeeds, whatever the path (merge queue, auto-lander, build_land, manual GitHub merge, push to main). Implement it server-side on the VPS: a watcher on origin/main (post-merge hook + a poll/webhook fallback) that, for each new merge commit, maps it to its build/PR, builds the shipped-manifest@1 (PR, commit, mergedAt, landedAt, files, areas, tests, report link, what Brett said) and sends it to Shipped features at once; idempotent (no duplicates); alerts Brett if a send fails, and retries. Find and fix why it stopped on Nov 13. BACKFILL every merge to main since Nov 13 that has no manifest. Design it so it moves into the axf-molly container with the orchestrator (coordinate with move-build-orchestrator-to-axhub); the data goes to axf-data once that exists. Tests, help. Land with the one-at-a-time lander.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -234703,7 +234711,7 @@
    "pr": "#709",
    "priority": "P0",
    "createdAt": "2026-11-15T12:14:27.131Z",
-   "updatedAt": "2026-11-15T15:20:56.277Z",
+   "updatedAt": "2026-11-16T13:22:52.982Z",
    "builtAt": "",
    "notes": [
     {
@@ -234749,6 +234757,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-15T15:20:56.277Z"
+    },
+    {
+     "text": "phase Phase 1 done, requeued for Opus: back in the Queue (requeue-stuck by build:fix-build-whose-session-finishes-phase-e; phase Phase 1 finished on 2026-11-15 12:36 with 16 step(s) left and nothing needing Brett).",
+     "at": "2026-11-16T13:22:52.982Z"
     }
    ],
    "approvals": [],
@@ -234779,8 +234791,8 @@
     "lastRun": {
      "at": "2026-11-15T12:36:03.280Z",
      "exit": 0,
-     "outcome": "returned",
-     "reason": "",
+     "outcome": "requeued",
+     "reason": "phase-done",
      "stepsLeft": 16,
      "account": "",
      "session": "axf-vps-sends-shipped-features-every-merge--joey",
@@ -234794,7 +234806,7 @@
      "note": "Split by Claude into 17 steps (1 Fable)."
     },
     "splitRequested": "",
-    "note": "Session stopped on its own with 16 steps left: back in Pending for Brett.",
+    "note": "requeued after phase Phase 1: next phase Opus waits for a slot and an account",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -235249,7 +235261,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
