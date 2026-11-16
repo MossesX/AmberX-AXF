@@ -42,12 +42,17 @@ const enc = new TextEncoder();
 const utf8len = (s) => enc.encode(s).length;
 
 // ── source: walk the roots, map every file ────────────────────────────────────────────────────────────────────────────
-function walk(dir, out = []) {
+// Not data: package installs, and git checkouts inside a data folder (agent-swarm's job worktrees hold whole repo copies,
+// tens of GB). A folder with a `.git` entry (a clone's directory or a worktree's file) is a checkout.
+const SKIP_DIR = new Set(['node_modules', '.git']);
+export const isCheckout = (ents) => ents.some((e) => e.name === '.git');
+function walk(dir, out = [], top = true) {
   let ents; try { ents = readdirSync(dir, { withFileTypes: true }); } catch { return out; }
+  if (!top && isCheckout(ents)) return out;
   for (const e of ents) {
     const f = join(dir, e.name);
     if (e.isSymbolicLink()) continue;
-    if (e.isDirectory()) walk(f, out); else if (e.isFile()) out.push(f);
+    if (e.isDirectory()) { if (!SKIP_DIR.has(e.name)) walk(f, out, false); } else if (e.isFile()) out.push(f);
   }
   return out;
 }
@@ -82,8 +87,11 @@ export function scan(env = process.env) {
 
 /** One source file as it will be stored: kind, the body to send, and its rev-1 manifest item. */
 function sourceItem(src) {
+  // ns = the registry namespace (plugins, builds, …); nsid = the migration unit (plugins/<folder> for open namespaces).
+  // Manifest paths are relative to the nsid, as on the axf-data side (remoteItems strips the same prefix).
   const ns = src.key.split('/')[0];
-  const path = src.key.slice(ns.length + 1);
+  const nsid = src.ns || nsIdOf(src.key);
+  const path = src.key.slice(nsid.length + 1);
   const raw = readFileSync(src.file);
   let kind = kindOfKey(src.key);
   const notes = [];
@@ -109,9 +117,9 @@ function sourceItem(src) {
     const stored = entries.map((e, i) => {
       if (utf8len(canonical(e)) <= LIMITS.entryBytes) return e;
       if (!NAMESPACES[ns].kinds.includes('record')) return e;
-      const key = `${ns}/journal-large/${path.replace(/\//g, '__').slice(0, 60)}-${String(i + 1).padStart(6, '0')}.json`;
+      const key = `${nsid}/journal-large/${path.replace(/\//g, '__').slice(0, 60)}-${String(i + 1).padStart(6, '0')}.json`;
       const body = canonical(e);
-      extras.push({ ...src, key, kind: 'record', data: e, item: { path: key.slice(ns.length + 1), kind: 'record', etag: etagOf(1, body), size: utf8len(body) }, notes: ['large-entry'] });
+      extras.push({ ...src, key, kind: 'record', data: e, item: { path: key.slice(nsid.length + 1), kind: 'record', etag: etagOf(1, body), size: utf8len(body) }, notes: ['large-entry'] });
       return Object.fromEntries([['large', key], ...['rev', 'at', 'by', 'action'].filter((k) => e && e[k] !== undefined).map((k) => [k, e[k]])]);
     });
     const big = stored.filter((e) => utf8len(canonical(e)) > LIMITS.entryBytes).length;
@@ -120,6 +128,9 @@ function sourceItem(src) {
     return { ...src, kind, entries: stored, extras, item: { path, kind, etag: journalEtag(stored), entries: stored.length, size: stored.reduce((n, e) => n + canonical(e).length + 1, 0) }, notes };
   }
   if (!NAMESPACES[ns].kinds.includes('blob')) return { ...src, kind: 'blob', error: `${ns} holds no blobs (${src.rel})`, notes };
+  // Over the blob limit: the file stays local, listed with why (not an error, so the rest of the namespace still
+  // moves). SQLite files the console still writes (chat-viewer/chats.db) reach Postgres as tables via mirror_sync.
+  if (raw.length > LIMITS.blobBytes) return { ...src, kind: 'blob', local: `${raw.length} bytes, over the ${LIMITS.blobBytes}-byte blob limit: stays local${sqliteFile(src.key) ? ' (its tables are mirrored by axf-data: mirror_sync / axf data tables --sync)' : ''}`, notes };
   const bytes = new Uint8Array(raw);
   return { ...src, kind: 'blob', bytes, item: { path, kind: 'blob', etag: etagOf(1, bytes), size: bytes.length }, notes };
 }
@@ -138,7 +149,8 @@ export function plan(scanned, only = []) {
   const rank = (ns) => { const i = ORDER.indexOf(ns.split('/')[0]); return i < 0 ? 99 : i; };
   const out = [];
   for (const ns of [...byNs.keys()].sort((a, b) => rank(a) - rank(b) || (a < b ? -1 : 1))) {
-    const items = byNs.get(ns).map(sourceItem).flatMap((i) => [i, ...(i.extras || [])]);
+    const all = byNs.get(ns).map(sourceItem).flatMap((i) => [i, ...(i.extras || [])]);
+    const items = all.filter((i) => !i.local);
     const ok = items.filter((i) => !i.error);
     out.push({
       ns, files: items.length, keys: ok.length, m0: manifestOf(ok.map((i) => i.item)),
@@ -147,6 +159,7 @@ export function plan(scanned, only = []) {
       large: ok.filter((i) => i.notes.includes('large')).map((i) => i.key), asBlob: ok.filter((i) => i.notes.includes('asBlob')).map((i) => i.key),
       notes: ok.filter((i) => i.notes.some((n) => n.startsWith('skipped') || n.includes('moved as records'))).map((i) => `${i.key}: ${i.notes.join('; ')}`),
       sqlite: ok.filter((i) => sqliteFile(i.key)).map((i) => i.key),
+      stayLocal: all.filter((i) => i.local).map((i) => ({ key: i.key, why: i.local })),
       items,
     });
   }
@@ -235,7 +248,7 @@ export async function run({ cmd = 'plan', only = [], store = null, env = process
   const repDir = reportDir || join(dataDir, 'migration');
   const summary = { $axf: 'data-migration-run@1', cmd, at, dryRun: cmd === 'plan', namespaces: [], unmapped: scanned.unmapped.length, skipped: scanned.skipped, ok: true };
   if (cmd === 'plan') {
-    for (const p of plans) summary.namespaces.push({ ns: p.ns, files: p.files, keys: p.keys, kinds: p.kinds, count: p.m0.count, bytes: p.m0.bytes, hash: p.m0.hash, errors: p.errors, large: p.large, asBlob: p.asBlob, sqlite: p.sqlite, notes: p.notes });
+    for (const p of plans) summary.namespaces.push({ ns: p.ns, files: p.files, keys: p.keys, kinds: p.kinds, count: p.m0.count, bytes: p.m0.bytes, hash: p.m0.hash, errors: p.errors, large: p.large, asBlob: p.asBlob, sqlite: p.sqlite, notes: p.notes, stayLocal: p.stayLocal });
     summary.ok = plans.every((p) => !p.errors.length);
     summary.unmappedSample = scanned.unmapped.slice(0, 20);
     return summary;
@@ -286,7 +299,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     if (json) console.log(JSON.stringify(r, null, 1));
     else {
       console.log(`${cmd === 'plan' ? 'Dry run (nothing written)' : cmd}: ${r.namespaces.length} namespace(s), ${r.unmapped} unmapped file(s) stay local, ${r.skipped} temp/lock file(s) skipped`);
-      for (const n of r.namespaces) console.log(cmd === 'plan' ? `  ${n.ns.padEnd(28)} ${String(n.count).padStart(6)} keys ${String(n.bytes).padStart(12)} bytes ${JSON.stringify(n.kinds)}${n.errors.length ? `  ✗ ${n.errors.length} can't move` : ''}${n.large.length ? `  large: ${n.large.join(', ')}` : ''}` : `  ${n.ok ? '✓' : '✗'} ${n.ns.padEnd(28)} ${n.count} → ${n.m1 ?? '?'}${n.refused ? `  REFUSED: ${n.refused}` : ''}${n.mismatches.length ? `  ${n.mismatches.map((m) => `${m.key} (${m.why})`).slice(0, 3).join('; ')}` : ''}`);
+      for (const n of r.namespaces) console.log(cmd === 'plan' ? `  ${n.ns.padEnd(28)} ${String(n.count).padStart(6)} keys ${String(n.bytes).padStart(12)} bytes ${JSON.stringify(n.kinds)}${n.errors.length ? `  ✗ ${n.errors.length} can't move` : ''}${n.large.length ? `  large: ${n.large.join(', ')}` : ''}${n.stayLocal?.length ? `  stays local: ${n.stayLocal.map((x) => x.key).join(', ')}` : ''}` : `  ${n.ok ? '✓' : '✗'} ${n.ns.padEnd(28)} ${n.count} → ${n.m1 ?? '?'}${n.refused ? `  REFUSED: ${n.refused}` : ''}${n.mismatches.length ? `  ${n.mismatches.map((m) => `${m.key} (${m.why})`).slice(0, 3).join('; ')}` : ''}`);
     }
     process.exit(r.ok ? 0 : 1);
   } catch (e) { console.error(`data-migrate: ${e.code || 'error'}: ${e.message}`); process.exit(1); }
