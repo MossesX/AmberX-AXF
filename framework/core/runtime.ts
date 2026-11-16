@@ -1053,6 +1053,21 @@ export class AxfRuntime {
   setSkinHub(hub: SkinHub | null): void { this.skinHubRef = hub; }
   skinHub(): SkinHub | null { return this.skinHubRef; }
 
+  /**
+   * The Default look state (Settings → Appearance → Default look; console-control `panel:default-look`): the hub default
+   * skin, whether this app stands on it (inherit) or uses its own skin (override), its own picks over it, its backups.
+   */
+  defaultLookState(): { defaultSkin: string; app: string; inherit: boolean; from: string; skin: string; useSkin: boolean; own: string[]; ownSettings: string[]; backups: { id: string; at: string; skin: string; useSkin: boolean; reason: string }[] } {
+    const hub = this.hubDefaultSkin();
+    const look = this.appLook();
+    const at = this.skinAt(null);
+    return {
+      defaultSkin: hub?.id ?? '', app: this.manifest.app.id, inherit: !!hub && at.from === 'default', from: at.from, skin: at.id, useSkin: !!look?.skin.use,
+      own: Object.keys(look?.own.slots ?? {}), ownSettings: Object.keys(look?.own.settings ?? {}),
+      backups: this.lookBackups().map((b) => ({ id: b.id, at: b.at, skin: b.skin.id, useSkin: b.skin.use, reason: b.reason })),
+    };
+  }
+
   /** This app's look backups, newest first (taken before every switch onto the hub default). */
   lookBackups(): LookBackup[] { return this.appLook()?.backups ?? []; }
 

@@ -722,8 +722,10 @@ function DefaultLookSection({ locked }: { locked: boolean }) {
   const candidate = inForce && inForce !== hub?.id ? inForce : '';
   const last = rt.lookBackups()[0];
   const when = last ? last.at.slice(0, 16).replace('T', ' ') : '';
+  // console-control: view:settings/tab:settings.tabs=appearance/panel:default-look (deep link, state = rt.defaultLookState())
+  const target = useControlTarget({ address: 'panel:default-look', kind: 'panel', label: 'Default look', detail: hub ? `Default: ${nameOf(hub.id)}` : 'No default look', keywords: ['default skin', 'axhub default', 'restore previous skin', 'backup'], get: () => rt.defaultLookState() }, [hub?.id, last?.id]);
   return (
-    <div className="fx-stack" data-axf-settings-section="default-look" data-axf-default-look="">
+    <div className="fx-stack" data-axf-settings-section="default-look" data-axf-default-look="" ref={target}>
       <p className="fx-eyebrow">Default look</p>
       <div className="axf-settings__row" data-axf-default-skin={hub?.id ?? ''}>
         <div className="axf-settings__label">

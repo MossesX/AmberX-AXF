@@ -84,3 +84,8 @@ Settings → Appearance (`AppearancePanel`, `framework/libs/settings`, every app
 - **Make this the default look** (framework `Button`, `confirm`: "Make <skin> the default look of every app? Each app's current look is backed up first and can be restored."): makes the skin in force here the hub default. Disabled when the skin in force already is the default or the app has no skin. In the console it goes through the theme-manager routes (every app backed up and moved); elsewhere this app is backed up and moved and the pointer goes through its appearance source.
 - **Restore previous skin**: one tap, from this app's newest backup (shows when it was kept and which skin), one undo.
 - Framework controls and tokens only; targets register through `Button` (`button:skin-default`, `button:skin-restore-backup`), plus `data-axf-settings-section="default-look"`. The section is locked while "Get my skin only from axHub" is on. `check-theme.mjs` and `check-controls.mjs` pass; console `tsc` passes after the re-bake.
+
+## API parity (s12, Opus)
+- Deep links: `view:settings/tab:settings.tabs=appearance/panel:default-look`, `…/button:skin-default`, `…/button:skin-restore-backup` (`console_show` / `console_open`, REST `/api/console-control`, `console_control_*` MCP, `axf console`).
+- State read: `panel:default-look` answers `state` with `rt.defaultLookState()` (default skin, inherit / from / skin in force / Use skin, own picks and settings over the default, backups). Hub-wide: `GET skins/default-skin` / `skins.mjs default get`.
+- `control-inventory.mjs --check`: current. `check-console-control.mjs`: pass (no count rose). Doc: `_claude/memory/docs/console-control.md` → Default look.

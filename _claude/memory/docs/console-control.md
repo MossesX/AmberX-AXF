@@ -63,3 +63,8 @@ REST, MCP, CLI and voice are one code path (`console_control_api.command` / `voi
 in-process inside the console, or over REST from a local clone; the CLI calls REST. `console-control-parity.mjs`
 proves it: the same 14 commands through all four give the same answer, the same command at the console and the
 same state.
+
+## Default look (build console-look-becomes-default-axhub-skin, Nov 2026)
+- Deep links (`console_show` / `console_open` / REST `/api/console-control` / `axf console`): `view:settings/tab:settings.tabs=appearance/panel:default-look` (the section), `…/button:skin-default` (Make this the default look, asks first), `…/button:skin-restore-backup` (Restore previous skin).
+- State: `state` on `panel:default-look` = `rt.defaultLookState()` (hub default skin, this app's inherit / from / skin / Use skin, own picks over the default, backups). Every app: theme manager `GET skins/default-skin`, `skins.mjs default get`.
+- Functions: `function:skin.default[:<skin>]`, `function:skin.restoreBackup[:<id>]`, `function:skin.snapshot:<id>[:<name>]`. Voice: "make this the default look", "restore my old look".
