@@ -1230,7 +1230,7 @@
         "feedback"
       ],
       "optional_fields": {
-        "motion": "{ speed: theme | instant | fast | normal | slow | relaxed, easing: standard | emphasized | linear | spring | bounce, reduced: system | always | never, entrance: theme | none | fade | rise | scale }",
+        "motion": "{ speed: theme | instant | fast | normal | slow | relaxed, easing: standard | emphasized | linear | spring | bounce, reduced: system | always | never, entrance: theme | none | fade | rise | scale, swatches: wave | ripple | pop | off, skinSwitch: ripple | sweep | fade | off, picker: fan | pop | off, animSpeed: 25..400 (percent), animIntensity: 0..100 }",
         "interaction": "{ hover: theme | none | tint | lift | glow | underline, press: theme | none | shrink | darken | ripple, focusRing: auto | always | never, cursor: auto | pointer, longPressMs 250–1500, doubleTapMs 150–700, dragThreshold 0–24 }",
         "windows": "{ dialogOpen: asset | none | fade | scale | slide-up | slide-down, backdrop: asset | dim | blur | none, popupOpen: asset | none | fade | scale | slide, drawerOpen: asset | slide | fade | none, snap, snapGrid 0–48, stack: cascade | center | remember, minimize: cursor | dock | none, closeOnBackdrop, closeOnEscape }",
         "feedback": "{ toastPosition: asset | top | bottom | top-right | bottom-right | top-left | bottom-left, toastMs 0–20000 (0 = the pop-up asset's time), sound: off | subtle | full, vibration: off | light | strong, confirmDelete: always | risky | never, busyCursor }"
