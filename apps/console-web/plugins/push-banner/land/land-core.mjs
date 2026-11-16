@@ -170,9 +170,10 @@ export function strayPlan(porcelain, hubHas = () => false) {
 
 const ALL_DONE = (b) => Array.isArray(b.steps) && b.steps.length > 0 && b.steps.every((s) => s.done);
 
-/** A build the pipeline should land: finished (built, or every step done), with a branch, not merged, not archived. */
+/** A build the pipeline should land: finished (built, or every step done), with a branch, not merged, not archived, not On hold. */
 export function isCandidate(b) {
   if (!b || b.deleted || b.hidden) return false;
+  if (b.pipeline?.heldAt) return false; // On hold in the Build orchestrator (build-pipeline@1 isHeld): left alone until released
   if (!str(b.branch) || b.branch === 'main') return false;
   if (b.mergedAt || ['complete', 'archived', 'failed', 'broken', 'cancelled'].includes(b.status)) return false;
   return b.status === 'built' || ALL_DONE(b);

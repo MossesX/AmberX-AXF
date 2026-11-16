@@ -27,7 +27,7 @@ import { TAB_LABEL, type BuildAction, type PipelineTab as BuildTab } from '@cons
 
 type Planned = { model: string; account: string; kind: string; at: string; why: string } | null;
 type Health = { at: string; startedAt: string; line: string; problems: string[]; accounts: { name: string; kind: string; signedIn: boolean | null; credits: boolean | null; fable: boolean | null; error: string; skipped?: boolean; at: string }[] } | null;
-type Pipeline = { route?: string; planned?: Planned; tried?: string[]; pickedAt?: string; heldAt?: string; heldBy?: string; heldWhy?: string; queuedAt: string; queuedBy: string; account: string; session: string; model: string; launchedAt: string; runs: number; note: string; splitRequested: string; split: { at: string; by: string; provider: string; steps: number; note: string } | null; lastRun: { at: string; exit: number | null; outcome: string; stepsLeft: number; account: string } | null } | null;
+type Pipeline = { route?: string; planned?: Planned; tried?: string[]; pickedAt?: string; heldAt?: string; heldBy?: string; heldWhy?: string; heldFrom?: BuildTab | ''; stopSession?: string; queuedAt: string; queuedBy: string; account: string; session: string; model: string; launchedAt: string; runs: number; note: string; splitRequested: string; split: { at: string; by: string; provider: string; steps: number; note: string } | null; lastRun: { at: string; exit: number | null; outcome: string; stepsLeft: number; account: string } | null } | null;
 type StepRow = { id: string; text: string; model: string; estimate: string; done: boolean; skip: boolean };
 type Row = { id: string; title: string; status: string; tab: BuildTab | ''; stepList: StepRow[]; builtAt: string; priority: string; steps: { done: number; total: number; left: number }; minutesLeft: number; nextModel: string; nextStep: string; needsApproval: boolean; needsSplit: boolean; pipeline: Pipeline; said: string; branch: string; pr: string; createdAt: string; updatedAt: string; held?: boolean; actions?: BuildAction[]; deleted?: boolean; deletedAt?: string };
 type Account = { name: string; email: string; plan: string; role: string; kind?: string; label?: string; fable: boolean; fableFrom: string; parallel: number; running: number; free: number; usable: boolean; why: string; api?: { usable: boolean; why: string; spend: { day: number; week: number; dayCap: number; weekCap: number; state: string } | null } | null };
@@ -48,18 +48,28 @@ const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.ge
 const ago = (v: string) => { const ms = Date.now() - new Date(v).getTime(); if (!Number.isFinite(ms)) return ''; const m = Math.round(ms / 60000); return m < 1 ? 'just now' : m < 60 ? `${m} min ago` : `${Math.round(m / 60)} h ago`; };
 
 export type PipelineView = BuildTab | 'accounts';
-const EMPTY: Record<BuildTab, string> = { pending: 'Nothing pending.', queue: 'The Queue is empty.', active: 'Nothing is building.', incomplete: 'Nothing stopped half way.', complete: 'Nothing waiting to merge.', errors: 'No errors.', archive: 'The Archive is empty.', deleted: 'Nothing deleted.' };
-/** How each build action shows (the order is the order on a card and in the bulk toolbar). */
-const ACTION: Record<BuildAction, { label: string; icon: string; tone: 'neutral' | 'danger'; done: string; title: string }> = {
+const EMPTY: Record<BuildTab, string> = { pending: 'Nothing pending.', queue: 'The Queue is empty.', hold: 'Nothing on hold.', active: 'Nothing is building.', incomplete: 'Nothing stopped half way.', complete: 'Nothing waiting to merge.', errors: 'No errors.', archive: 'The Archive is empty.', deleted: 'Nothing deleted.' };
+/**
+ * How each build action shows (the order is the order on a card and in the bulk toolbar). On hold (Nov 16 2026): release
+ * shows as two buttons, Release to Pending and Release to Queue (release with `to`); plain release (back where it was)
+ * stays on the API (`pipeline.mjs release <id>`).
+ */
+type UiAction = Exclude<BuildAction, 'release'> | 'release-pending' | 'release-queue';
+const ACTION: Record<UiAction, { label: string; icon: string; tone: 'neutral' | 'danger'; done: string; title: string; confirm?: boolean }> = {
   unqueue: { label: 'Back to Pending', icon: 'arrow-left', tone: 'neutral', done: 'back in Pending', title: 'Take it out of the Queue: it waits in Pending again' },
-  hold: { label: 'Hold', icon: 'pause', tone: 'neutral', done: 'on hold', title: 'Keep it in the Queue, in its place; the dispatcher skips it until you release it' },
-  release: { label: 'Release', icon: 'play', tone: 'neutral', done: 'released', title: 'Take it off hold: the dispatcher may start it when its turn comes' },
+  hold: { label: 'Put on hold', icon: 'pause', tone: 'neutral', done: 'on hold', title: 'Move it to the On hold tab: nothing starts, lands or changes it until you release it (a running build is stopped first)' },
+  'release-pending': { label: 'Release to Pending', icon: 'arrow-left', tone: 'neutral', done: 'back in Pending', title: 'Take it off hold into Pending' },
+  'release-queue': { label: 'Release to Queue', icon: 'play', tone: 'neutral', done: 'in the Queue', title: 'Take it off hold into the Queue: the dispatcher starts it when its turn comes' },
   archive: { label: 'Archive', icon: 'package', tone: 'neutral', done: 'archived', title: 'Move it to the Archive (out of every working tab; Unarchive brings it back)' },
   unarchive: { label: 'Unarchive', icon: 'undo', tone: 'neutral', done: 'back from the Archive', title: 'Bring it back: Pending, or Complete when every step is done' },
-  delete: { label: 'Delete', icon: 'trash', tone: 'danger', done: 'deleted (kept in Deleted)', title: 'Delete it: it moves to the Deleted tab and stays saved there for good; Restore brings it back' },
+  delete: { label: 'Delete', icon: 'trash', tone: 'danger', done: 'deleted (kept in Deleted)', title: 'Delete it: it moves to the Deleted tab and stays saved there for good; Restore brings it back', confirm: true },
   restore: { label: 'Restore', icon: 'undo', tone: 'neutral', done: 'restored', title: 'Bring the deleted build back where it was' },
 };
-const ACTION_ORDER = Object.keys(ACTION) as BuildAction[];
+const ACTION_ORDER = Object.keys(ACTION) as UiAction[];
+/** The UI action → the API call (action + to). */
+const callOf = (a: UiAction): { action: BuildAction; to?: 'pending' | 'queue' } => (a === 'release-pending' ? { action: 'release', to: 'pending' } : a === 'release-queue' ? { action: 'release', to: 'queue' } : { action: a });
+/** A row offers a UI action when its API actions hold the underlying one. */
+const offers = (r: { actions?: BuildAction[] }, a: UiAction) => !!r.actions?.includes(callOf(a).action);
 type ActionResult = { ok: boolean; error?: string; done?: { id: string; tab: string }[]; refused?: { id: string; error: string }[] };
 const yn = (v: boolean | null | undefined) => (v == null ? '?' : v ? 'yes' : 'no');
 
@@ -91,11 +101,12 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
     finally { setBusy(''); }
   };
   /** One build action on one build or many (bulk): the builds that can't take it are refused one by one, the rest go. */
-  const runAction = async (action: BuildAction, ids: string[]) => {
+  const runAction = async (action: UiAction, ids: string[]) => {
     if (!ids.length) return;
+    if (ACTION[action].confirm && !window.confirm(`${ACTION[action].label} ${ids.length === 1 ? ids[0] : `${ids.length} builds`}? ${ACTION[action].title}.`)) return;
     setBusy(ids.length === 1 ? (ids[0] ?? 'bulk') : 'bulk');
     try {
-      const r = await api.post<ActionResult>('pipeline/action', { action, ids });
+      const r = await api.post<ActionResult>('pipeline/action', { ...callOf(action), ids });
       if (!r.ok) throw new Error(r.error);
       const done = r.done ?? []; const refused = r.refused ?? [];
       const what = done.length === 1 ? `${done[0]?.id}: ${ACTION[action].done}` : `${done.length} builds ${ACTION[action].done}`;
@@ -194,12 +205,13 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
       {view !== 'accounts' && (() => {
         const rows = s.tabs?.[view] ?? [];
         const chosen = rows.filter((r) => sel.has(r.id));
-        const offered = ACTION_ORDER.filter((a) => rows.some((r) => r.actions?.includes(a)));
+        const offered = ACTION_ORDER.filter((a) => rows.some((r) => offers(r, a)));
         return (
           <section className="fx-stack" aria-label={TAB_LABEL[view]}>
             <h2 className="pd-card__title">{TAB_LABEL[view]} <span className="oc-count">{rows.length}</span>
               {view === 'pending' && <span className="fx-muted fx-small"> · split as soon as filed, model and account planned · tap Queue to send one to the dispatcher</span>}
               {view === 'queue' && <span className="fx-muted fx-small"> · in start order · the final account pick happens when its turn comes</span>}
+              {view === 'hold' && <span className="fx-muted fx-small"> · put on hold from any tab · nothing starts, lands or changes them · release to Pending or the Queue, archive or delete</span>}
               {view === 'incomplete' && <span className="fx-muted fx-small"> · started, then stopped with steps left</span>}
               {view === 'complete' && <span className="fx-muted fx-small"> · built, waiting for its PR to merge · merged builds move to the Archive</span>}
               {view === 'archive' && <span className="fx-muted fx-small"> · every completed and archived build</span>}
@@ -209,7 +221,7 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
               <div className="pl-bulk" role="toolbar" aria-label={`${TAB_LABEL[view]}: bulk actions`}>
                 <Checkbox label={chosen.length ? `${chosen.length} selected` : 'Select all'} checked={chosen.length === rows.length} indeterminate={chosen.length > 0 && chosen.length < rows.length} disabled={busy === 'bulk'} onChange={(on) => setSel(on ? new Set(rows.map((r) => r.id)) : new Set())} />
                 {offered.map((a) => {
-                  const ids = chosen.filter((r) => r.actions?.includes(a)).map((r) => r.id);
+                  const ids = chosen.filter((r) => offers(r, a)).map((r) => r.id);
                   return <Button key={a} size="sm" tone={ACTION[a].tone} icon={ACTION[a].icon} disabled={!ids.length || busy === 'bulk'} title={ids.length ? `${ACTION[a].title} (${ids.length} selected)` : 'Select builds first'} onClick={() => void runAction(a, ids)}>{ACTION[a].label}{ids.length ? ` (${ids.length})` : ''}</Button>;
                 })}
               </div>
@@ -291,7 +303,7 @@ function StepsGrid({ r }: { r: Row }) {
   return <DataGrid<StepRow> id="build-orchestrator.steps" rowKind="step" label={`${r.id} steps`} groups={[{ id: r.id, title: `${r.steps.done}/${r.steps.total} steps`, rows: r.stepList, groups: [], fixed: true }]} columns={cols} rowId={(x) => x.id} rowLabel={(x) => x.id} hidden={[]} />;
 }
 
-function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, showSteps, embedded, focused = false }: { embedded?: boolean; focused?: boolean; r: Row; busy: boolean; wait: string; launch?: { account: string; model: string; phase: string; kind?: string; rule?: string }; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void>; run: (action: BuildAction, ids: string[]) => Promise<void>; selected: boolean; onSelect: (on: boolean) => void; showSteps: boolean }) {
+function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, showSteps, embedded, focused = false }: { embedded?: boolean; focused?: boolean; r: Row; busy: boolean; wait: string; launch?: { account: string; model: string; phase: string; kind?: string; rule?: string }; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void>; run: (action: UiAction, ids: string[]) => Promise<void>; selected: boolean; onSelect: (on: boolean) => void; showSteps: boolean }) {
   const p = r.pipeline;
   const table = r.deleted ? 'done' : r.status === 'queued' ? 'queued' : r.status === 'running' || r.status === 'waiting' ? 'building' : r.status === 'pending' ? 'pending' : 'done';
   const pl = p?.planned ?? null;
@@ -326,14 +338,14 @@ function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, sho
       )}
       {launch && <p className="fx-small"><Icon name="play" size={13} /> Next tick: starts on <b>{launch.account}</b> ({launch.model}{launch.phase ? `, ${launch.phase}` : ''}){launch.kind === 'api' ? ` · API key, ${launch.rule === 'override' ? 'set to API' : 'overflow'}` : ''}</p>}
       {!launch && wait && table === 'queued' && <p className="fx-small fx-muted"><Icon name="clock" size={13} /> {wait}</p>}
-      {r.held && p?.heldAt && <p className="fx-small" title={fmtTime(p.heldAt)}><Icon name="pause" size={13} /> On hold since {fmtTime(p.heldAt)}{p.heldBy ? ` (${p.heldBy})` : ''}{p.heldWhy ? `: ${p.heldWhy}` : ''}</p>}
+      {r.held && p?.heldAt && <p className="fx-small" title={fmtTime(p.heldAt)}><Icon name="pause" size={13} /> On hold since {fmtTime(p.heldAt)}{p.heldBy ? ` (${p.heldBy})` : ''}{p.heldFrom ? `, from ${TAB_LABEL[p.heldFrom]}` : ''}{p.heldWhy ? `: ${p.heldWhy}` : ''}{p.stopSession ? ` · stopping session ${p.stopSession}` : ''}</p>}
       {r.deleted && r.deletedAt && <p className="fx-small fx-muted"><Icon name="trash" size={13} /> Deleted {fmtTime(r.deletedAt)} · status before: {r.status}</p>}
       {p?.note && <p className="fx-small fx-muted">{p.note}</p>}
       <div className="fx-row fx-row--wrap">
         {table === 'pending' && <Button size="sm" tone="primary" icon="arrow-right" disabled={busy} onClick={() => act('pipeline/queue', { id: r.id }, `${r.id} → Queue`)}>Queue</Button>}
         {(table === 'pending' || table === 'queued') && <Button size="sm" tone="neutral" icon="zap" disabled={busy} title="Where this build may run: Auto (subscriptions first, then any API), API (API-key accounts only, billed per token) or Subscriptions (never API). Tap to switch." onClick={() => { const n = routeOf(p?.route); void act('pipeline/route', { id: r.id, route: n.to }, `${r.id}: route ${n.to}`); }}>Runs on: {routeOf(p?.route).label}</Button>}
         {(table === 'pending' || table === 'queued') && <Button size="sm" tone="neutral" icon="edit" disabled={busy || !!p?.splitRequested} title={p?.splitRequested ? 'Split asked for: the dispatcher does it within a minute' : 'Ask the orchestrator to (re)split this build into steps of 10 min or less'} onClick={() => act('pipeline/split', { id: r.id }, `${r.id}: split on the next tick`)}>{p?.splitRequested ? 'Splitting…' : 'Split now'}</Button>}
-        {ACTION_ORDER.filter((a) => r.actions?.includes(a)).map((a) => <Button key={a} size="sm" tone={ACTION[a].tone} icon={ACTION[a].icon} disabled={busy} title={ACTION[a].title} onClick={() => void run(a, [r.id])}>{ACTION[a].label}</Button>)}
+        {ACTION_ORDER.filter((a) => offers(r, a)).map((a) => <Button key={a} size="sm" tone={ACTION[a].tone} icon={ACTION[a].icon} disabled={busy} title={ACTION[a].title} onClick={() => void run(a, [r.id])}>{ACTION[a].label}</Button>)}
       </div>
     </article>
   );

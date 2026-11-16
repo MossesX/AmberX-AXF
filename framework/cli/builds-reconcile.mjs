@@ -24,6 +24,7 @@ import { fileURLToPath } from 'node:url';
 import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
 import { aliveIds, idlePlan, plan } from '../plan/builds-reconcile-core.mjs';
+import { isHeld } from '../core/build-pipeline.mjs';
 import { REPO_ROOT, persistRoot } from './persist.mjs';
 import { loadStore, withStore } from './builds-store.mjs';
 import { liveStatus, syncAll, install } from './builds-live.mjs';
@@ -130,9 +131,12 @@ export async function reconcile({ apply = false, gh, repo } = {}) {
   let gathered; let error = '';
   try { gathered = await gather({ gh, repo }); } catch (e) { error = String(e.message ?? e).slice(0, 300); gathered = { prs: [], branches: [] }; }
   const p = error ? { changes: [], suggestions: [], orphans: { prs: [], branches: [] } } : plan(builds, gathered.prs, gathered.branches, { now: at });
+  // On hold (build-pipeline@1 isHeld): their PRs and branches still count as theirs (no orphans), but nothing changes them
+  const held = new Set(builds.filter(isHeld).map((b) => b.id));
+  p.changes = p.changes.filter((c) => !held.has(c.id));
   // running = a live process runs it (zero tokens: tmux, agent slots and build-log heartbeats on this host)
   const alive = liveBuilds();
-  const idle = idlePlan(builds, alive, { now: at, skip: p.changes.filter((c) => c.steps.length).map((c) => c.id) });
+  const idle = idlePlan(builds.filter((b) => !held.has(b.id)), alive, { now: at, skip: p.changes.filter((c) => c.steps.length).map((c) => c.id) });
   for (const c of idle) {
     const same = p.changes.find((x) => x.id === c.id);
     if (same) { Object.assign(same.set, c.set); same.why.push(...c.why); } else p.changes.push(c);

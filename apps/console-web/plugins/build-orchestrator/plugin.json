@@ -361,7 +361,7 @@
         "id": "pipeline-build-action",
         "route": "POST /pipeline/action",
         "title": "Hold, archive, delete or restore builds",
-        "description": "Act on one build or many at once (bulk): unqueue (Queue back to Pending), hold (stays in the Queue, the dispatcher skips it until released), release, archive, unarchive, delete (soft delete: kept in the builds store forever, Deleted tab) or restore. Builds with a live session are refused; the rest still go. Say 'hold the icon browser build', 'archive these builds' or 'restore the deleted toast build'.",
+        "description": "Act on one build or many at once (bulk): unqueue (Queue back to Pending), hold (any build, from any tab, moves to the On hold tab; a running build has its session stopped first; the dispatcher, lander and reconciler skip it), release (back where it was, or to Pending / the Queue with to), archive, unarchive, delete (soft delete: kept in the builds store forever, Deleted tab) or restore. Builds with a live session are refused; the rest still go. Say 'hold the icon browser build', 'archive these builds' or 'restore the deleted toast build'.",
         "input": {
           "type": "object",
           "properties": {
@@ -392,6 +392,14 @@
             "why": {
               "type": "string",
               "description": "Why (kept in the build notes; hold and delete)"
+            },
+            "to": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "queue"
+              ],
+              "description": "release only: send the held builds to Pending or the Queue (default: back to the tab they were held from)"
             }
           },
           "required": [

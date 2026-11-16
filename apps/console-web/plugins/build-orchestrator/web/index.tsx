@@ -4,11 +4,12 @@ import { appMenu } from './menu';
 import { setPriorityHost, type PriorityHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { addLoadedSource } from '@console/control/search';
+import { registerRowHook } from '@console/axf/libs/datagrid';
 import { FOLDER, OrchestratorPage, TABS, openTab } from './ui';
 import { focusBuild } from './focus';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
 
-const ACTION_LABEL: Record<BuildAction, string> = { unqueue: 'Back to Pending', hold: 'Hold (stays in the Queue)', release: 'Release from hold', archive: 'Move to the Archive', unarchive: 'Bring back from the Archive', delete: 'Delete (kept in Deleted)', restore: 'Restore' };
+const ACTION_LABEL: Record<BuildAction, string> = { unqueue: 'Back to Pending', hold: 'Put on hold (moves to the On hold tab)', release: 'Release from hold (back where it was)', archive: 'Move to the Archive', unarchive: 'Bring back from the Archive', delete: 'Delete (kept in Deleted)', restore: 'Restore' };
 const ACTION_ICON: Record<BuildAction, string> = { unqueue: 'arrow-left', hold: 'pause', release: 'play', archive: 'package', unarchive: 'undo', delete: 'trash', restore: 'undo' };
 
 /*
@@ -23,7 +24,9 @@ const ACTION_ICON: Record<BuildAction, string> = { unqueue: 'arrow-left', hold: 
  * navigate-only grant may run them.
  * Build actions (Brett, Nov 10 2026: hold, archive, delete, deleted builds kept forever): build-orchestrator.<unqueue|hold|
  * release|archive|unarchive|delete|restore>:<build>[,<build>…] → POST pipeline/action (the same call as the cards, the
- * bulk toolbar, the MCP command pipeline-build-action and `pipeline.mjs <action> <id…>`).
+ * bulk toolbar, the MCP command pipeline-build-action and `pipeline.mjs <action> <id…>`). Nov 16 2026: hold works from
+ * any tab and moves the build to the On hold tab; build-orchestrator.release-pending / release-queue:<build>[,…] =
+ * `pipeline.mjs release <id…> --to pending|queue`.
  */
 type TabRow = { id: string; title: string; status: string; tab: string; nextModel: string; actions?: BuildAction[]; pipeline?: { planned?: { account: string; model: string } | null; account?: string } | null };
 const pipeApi = pluginApi(FOLDER, 'Build orchestrator', { unavailable: 'The build orchestrator is switched off or its server part is not running.' });
@@ -83,22 +86,31 @@ export const plugin: AxfWebLibrary = {
         .then((r) => { if (!r.ok) throw new Error(r.error); rt.toast(`${id} is in the Queue: the dispatcher starts it when its turn comes.`, 'success'); void open('queue'); })
         .catch((e: Error) => rt.toast(e.message, 'danger'));
     }, { label: 'Start a build (put it in the Queue)' });
-    for (const action of BUILD_ACTIONS) {
-      rt.actions.register(`build-orchestrator.${action}`, ([arg]) => {
+    // release-pending / release-queue: release with `to` (pipeline.mjs release --to pending|queue)
+    const variants: { name: string; action: BuildAction; to?: 'pending' | 'queue'; label: string }[] = [
+      ...BUILD_ACTIONS.map((action) => ({ name: action, action, label: ACTION_LABEL[action] })),
+      { name: 'release-pending', action: 'release', to: 'pending', label: 'Release from hold to Pending' },
+      { name: 'release-queue', action: 'release', to: 'queue', label: 'Release from hold to the Queue' },
+    ];
+    for (const { name, action, to, label } of variants) {
+      rt.actions.register(`build-orchestrator.${name}`, ([arg]) => {
         const ids = decodeURIComponent(arg ?? '').split(',').map((x) => x.trim()).filter(Boolean);
-        if (!ids.length) { rt.toast(`Name a build: build-orchestrator.${action}:<build>`, 'warning'); return; }
-        void pipeApi.post<{ ok: boolean; error?: string; done?: { id: string; tab: string }[]; refused?: { id: string; error: string }[] }>('pipeline/action', { action, ids })
+        if (!ids.length) { rt.toast(`Name a build: build-orchestrator.${name}:<build>`, 'warning'); return; }
+        void pipeApi.post<{ ok: boolean; error?: string; done?: { id: string; tab: string }[]; refused?: { id: string; error: string }[] }>('pipeline/action', { action, ids, ...(to ? { to } : {}) })
           .then((r) => {
             if (!r.ok) throw new Error(r.error);
             const done = r.done ?? []; const refused = r.refused ?? [];
-            if (done.length) rt.toast(`${done.map((d) => d.id).join(', ')}: ${ACTION_LABEL[action].toLowerCase()}`, 'success');
+            if (done.length) rt.toast(`${done.map((d) => d.id).join(', ')}: ${label.toLowerCase()}`, 'success');
             if (refused.length) rt.toast(refused.map((x) => x.error).join('; '), 'warning');
             void loadRows(true).catch(() => undefined);
             if (done[0]?.tab) void open(done[0].tab);
           })
           .catch((e: Error) => rt.toast(e.message, 'danger'));
-      }, { label: `Build orchestrator: ${ACTION_LABEL[action]} (one build or several, comma separated)` });
+      }, { label: `Build orchestrator: ${label} (one build or several, comma separated)` });
     }
+    // every orchestrator build row (any tab): right-click / long-press → Put on hold (the same call as the bulk toolbar)
+    registerRowHook({ id: 'build-orchestrator.hold', owner: FOLDER, label: 'Put on hold', icon: 'pause', kinds: ['build'], button: false, order: 30,
+      run: (ref) => rt.dispatch(`build-orchestrator.hold:${encodeURIComponent(ref.id)}`) });
     // console-control@1: every loaded build is a search hit with its address (row:<id>, the orchestrator grid's row);
     // focusing one that is not drawn opens its tab and expands it first, so row:<id>/step:s3 reaches its step too
     addLoadedSource('build-orchestrator.builds', () => { if (Date.now() - loadedAt > 30_000) void loadRows().catch(() => undefined); return rows.map((r) => ({

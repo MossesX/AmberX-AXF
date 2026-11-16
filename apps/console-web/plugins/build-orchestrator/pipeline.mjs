@@ -226,6 +226,7 @@ export function status() {
   tabs.queue.sort((a, b) => plan.queue.indexOf(a.id) - plan.queue.indexOf(b.id));
   tabs.active.sort((a, b) => str(b.pipeline?.launchedAt).localeCompare(str(a.pipeline?.launchedAt)));
   for (const t of ['pending', 'incomplete', 'errors']) tabs[t].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  tabs.hold.sort((a, b) => str(b.pipeline?.heldAt).localeCompare(str(a.pipeline?.heldAt)));
   for (const t of ['complete', 'archive']) tabs[t].sort((a, b) => str(b.builtAt || b.updatedAt).localeCompare(str(a.builtAt || a.updatedAt)));
   tabs.deleted.sort((a, b) => str(b.deletedAt).localeCompare(str(a.deletedAt)));
   const st = loadState();
@@ -255,7 +256,7 @@ export function setPipeline(id, patch, { status = '', note = '', by = 'pipeline'
 
 export function queue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
   const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
-  if (!BP.canQueue(b)) throw Object.assign(new Error(`${b.id} is ${b.status}${b.hidden ? ' (hidden)' : ''}: only a Pending build can be queued`), { code: 2 });
+  if (!BP.canQueue(b)) throw Object.assign(new Error(`${b.id} is ${b.status}${b.hidden ? ' (hidden)' : ''}${BP.isHeld(b) ? ' and on hold: release it to the Queue (release --to queue)' : ''}: only a Pending build can be queued`), { code: 2 });
   const now = nowIso();
   const r = setPipeline(b.id, { queuedAt: now, queuedBy: str(by, 80), note: b.steps.length ? '' : 'waiting for the split before it can start' }, { status: 'queued', note: `Queued by ${by}.`, by, action: 'pipeline:queue' });
   logLine({ event: 'queued', build: b.id, by });
@@ -272,7 +273,10 @@ export function unqueue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
 /**
  * The Queue / Archive / Deleted actions (Brett, Nov 10 2026: "Anything in the queue you can send back to pending, leave in
  * queue on hold, move to the archive, or delete … A deleted tab where all deleted builds stay saved forever"):
- *   unqueue    Queue → Pending                         hold / release   stays in the Queue, the dispatcher skips it / not
+ *   unqueue    Queue → Pending
+ *   hold       any tab → On hold (Brett, Nov 16 2026): the old tab is kept in pipeline.heldFrom; a running build has its
+ *              session stopped first and comes back in Pending; the dispatcher, the lander and the reconciler skip it
+ *   release    On hold → back where it was, or `to` 'pending' / 'queue'
  *   archive    any build without a live session → Archive (status archived; the Queue fields are cleared)
  *   unarchive  Archive → built / complete when every step is done, else Pending
  *   delete     soft delete: the record stays in the store forever (Deleted tab); a queued build leaves the Queue first
@@ -280,8 +284,10 @@ export function unqueue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
  * Many ids at once (bulk select). Each id is checked on its own: one refused build never stops the others.
  * Returns { action, done: [{ id, status, tab }], refused: [{ id, error }] }.
  */
-export function buildAction(action, ids, { by = process.env.AXF_ACTOR || 'console', why = '' } = {}) {
+export function buildAction(action, ids, { by = process.env.AXF_ACTOR || 'console', why = '', to = '' } = {}) {
   if (!BP.BUILD_ACTIONS.includes(action)) throw Object.assign(new Error(`action is one of ${BP.BUILD_ACTIONS.join(', ')}`), { code: 2 });
+  if (!BP.RELEASE_TO.includes(to)) throw Object.assign(new Error(`--to is one of ${BP.RELEASE_TO.filter(Boolean).join(', ')}`), { code: 2 });
+  const stops = [];
   const list = [...new Set((Array.isArray(ids) ? ids : [ids]).map((x) => str(x, 120).trim()).filter(Boolean))];
   if (!list.length) throw Object.assign(new Error('no build id given'), { code: 2 });
   const done = []; const refused = [];
@@ -294,23 +300,41 @@ export function buildAction(action, ids, { by = process.env.AXF_ACTOR || 'consol
         const b = storeCore.findBuild(s, id); if (!b) throw new Error(`no build "${id}"`);
         const now = nowIso();
         const pipe = (patch) => { b.pipeline = BP.normPipeline({ ...(b.pipeline ?? {}), ...patch }) ?? undefined; if (!b.pipeline) delete b.pipeline; };
-        const unq = { queuedAt: '', queuedBy: '', heldAt: '', heldBy: '', heldWhy: '' };
+        const unhold = { heldAt: '', heldBy: '', heldWhy: '', heldFrom: '' };
+        const unq = { queuedAt: '', queuedBy: '', ...unhold };
         let note = '';
         if (action === 'hold') {
-          if (!BP.canHold(b)) throw new Error(BP.isHeld(b) ? `${b.id} is on hold already` : `${b.id} is ${b.deleted ? 'deleted' : b.status}: only a queued build can be put on hold`);
-          pipe({ heldAt: now, heldBy: str(by, 80), heldWhy: reason }); note = `On hold (${by})${tail}. It keeps its place in the Queue; the dispatcher skips it until released.`;
+          if (!BP.canHold(b)) throw new Error(BP.isHeld(b) ? `${b.id} is on hold already` : `${b.id} is ${b.deleted ? 'deleted' : 'hidden'}: it can't be put on hold`);
+          const from = BP.tabOfStatus(b);
+          if (BP.isLive(b)) {
+            // a running build: its session is stopped (right after this write, and by the dispatcher if this host can't),
+            // the run is closed as returned, and the build waits On hold with status pending
+            const session = b.pipeline?.session ?? '';
+            if (session) stops.push({ id: b.id, session });
+            pipe({ heldAt: now, heldBy: str(by, 80), heldWhy: reason, heldFrom: from, stopSession: session, session: '', slot: '' });
+            b.status = 'pending'; b.builtAt = '';
+            note = `On hold (${by})${tail}. Its session${session ? ` ${session}` : ''} was stopped; nothing starts it until it is released.`;
+          } else {
+            pipe({ heldAt: now, heldBy: str(by, 80), heldWhy: reason, heldFrom: from });
+            note = `On hold (${by}), from ${BP.TAB_LABEL[from] || b.status}${tail}. The dispatcher, the lander and the reconciler leave it alone until it is released.`;
+          }
         } else if (action === 'release') {
-          if (!BP.isHeld(b)) throw new Error(`${b.id} is not on hold`);
-          pipe({ heldAt: '', heldBy: '', heldWhy: '' }); note = `Released from hold (${by}): the dispatcher may start it.`;
+          const r = BP.releaseStatus(b, to); if (r.error) throw new Error(r.error);
+          const was = b.status;
+          if (r.status === 'queued' && was !== 'queued') pipe({ ...unhold, queuedAt: now, queuedBy: str(by, 80) });
+          else if (r.status !== 'queued' && was === 'queued') pipe(unq);
+          else pipe(unhold);
+          if (r.status !== was) { b.status = r.status; b.builtAt = storeCore.FINISHED.includes(r.status) ? (b.builtAt || now) : ''; }
+          note = `Released from hold (${by}): back in ${BP.TAB_LABEL[BP.tabOf(b)] || b.status}.`;
         } else if (action === 'archive') {
           if (!BP.canArchive(b)) throw new Error(b.deleted ? `${b.id} is deleted: restore it first` : BP.isLive(b) ? `${b.id} is ${b.status}: a build with a live session is not archived under it` : `${b.id} is archived already`);
-          const was = b.status; if (was === 'queued') pipe(unq); b.status = 'archived'; b.builtAt = ''; note = `Moved to the Archive from ${was} (${by})${tail}.`;
+          const was = b.status; if (was === 'queued') pipe(unq); else if (BP.isHeld(b)) pipe(unhold); b.status = 'archived'; b.builtAt = ''; note = `Moved to the Archive from ${was} (${by})${tail}.`;
         } else if (action === 'unarchive') {
           if (b.deleted || b.status !== 'archived') throw new Error(`${b.id} is not in the Archive`);
           b.status = BP.unarchivedStatus(b); b.builtAt = storeCore.FINISHED.includes(b.status) ? (b.builtAt || now) : ''; note = `Back from the Archive as ${b.status} (${by}).`;
         } else if (action === 'delete') {
           if (!BP.canDelete(b)) throw new Error(b.deleted ? `${b.id} is deleted already` : `${b.id} is ${b.status}: a build with a live session is not deleted under it`);
-          if (b.status === 'queued') { pipe(unq); b.status = 'pending'; }
+          if (b.status === 'queued') { pipe(unq); b.status = 'pending'; } else if (BP.isHeld(b)) pipe(unhold);
           b.deleted = true; b.deletedAt = now; note = `Deleted (${by})${tail}. Kept in the builds store for good: Deleted tab, restorable.`;
         } else if (action === 'restore') {
           if (!b.deleted) throw new Error(`${b.id} is not deleted`);
@@ -319,11 +343,36 @@ export function buildAction(action, ids, { by = process.env.AXF_ACTOR || 'consol
         b.notes.push({ text: note, at: now }); b.updatedAt = now; out = b;
         return s;
       }, { by, action: `pipeline:${action}`, note: id });
-      logLine({ event: action, build: out.id, by });
+      logLine({ event: action, build: out.id, by, ...(action === 'release' && to ? { to } : {}) });
       done.push({ id: out.id, status: out.status, tab: BP.tabOf(out) });
     } catch (e) { refused.push({ id, error: e.message }); }
   }
+  if (stops.length) stopHeldSessions();
   return { action, done, refused };
+}
+
+/**
+ * Stops the sessions of builds put on hold while running (pipeline.stopSession): tmux session ended, build lock
+ * released, the field cleared. Runs right after a hold and on every dispatcher tick (the console container has no tmux:
+ * the host's tick does it there). Returns the build ids whose session was stopped.
+ */
+export function stopHeldSessions({ env = process.env, kill = tmuxKill } = {}) {
+  const out = [];
+  for (const b of loadStore().builds) {
+    const session = b.pipeline?.stopSession; if (!session) continue;
+    const r = kill(session);
+    if (r === null) continue; // no tmux on this host: the host's dispatcher tick stops it
+    try { lock.release(b.id, { dir: worktreeOf(b.id, env) }); } catch { /* no lock */ }
+    setPipeline(b.id, { stopSession: '' }, { note: `Session ${session} stopped (on hold).`, action: 'pipeline:hold-stop' });
+    logLine({ event: 'hold-stopped', build: b.id, session });
+    out.push(b.id);
+  }
+  return out;
+}
+/** Ends a tmux session: true = ended or already gone, null = tmux is not on this host. */
+function tmuxKill(name) {
+  const r = spawnSync('tmux', ['kill-session', '-t', `=${name}`], { encoding: 'utf8' });
+  return r.error ? null : true;
 }
 
 // ------------------------------------------------------------------ the split
@@ -680,7 +729,7 @@ export function authWaitsTick({ alert = () => {}, by = 'dispatcher' } = {}) {
     const w = all[id]; const b = storeCore.findBuild(store, id);
     if (!b || b.deleted || (b.status !== 'pending' && !w.requeued)) { delete all[id]; changed = true; continue; }
     if (w.requeued) { if (Date.now() - Date.parse(w.requeuedAt || 0) > 7 * 86400e3) { delete all[id]; changed = true; } continue; }
-    if (!P.authRecovered(w, own[w.account]?.health)) continue;
+    if (!P.authRecovered(w, own[w.account]?.health) || BP.isHeld(b)) continue;
     try {
       queue(id, { by: `${by} (login works again on ${w.account})` });
       all[id] = { ...w, requeued: true, requeuedAt: nowIso() }; changed = true;
@@ -798,6 +847,7 @@ export function tick({ env = process.env } = {}) {
   try { assignAliases({ by: 'pipeline' }); } catch (e) { logLine({ event: 'alias-failed', error: str(e.message, 300) }); }
   const ended = checkEnds({ alert, env });
   let authRequeued = [];
+  try { stopHeldSessions(); } catch (e) { logLine({ event: 'hold-stop-failed', error: str(e.message, 300) }); }
   try { authRequeued = authWaitsTick({ alert }); } catch (e) { logLine({ event: 'auth-waits-failed', error: str(e.message, 300) }); }
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
   const read = accountsRead(store, settings, env); const accounts = read.accounts; const sl = slotsNow();
@@ -1083,7 +1133,7 @@ async function main(argv) {
       `Building (${s.table.building.length})`, ...s.table.building.map(line),
       s.plan.launches.length ? `Next tick starts: ${s.plan.launches.map((l) => `${l.id} on ${l.account} (${l.model})`).join(', ')}` : 'Next tick starts nothing.',
       ...s.plan.waits.map((w) => `  waits: ${w.id}: ${w.why}`),
-      `Archive ${s.tabs.archive.length} · Deleted ${s.tabs.deleted.length} (kept forever)`,
+      `On hold ${s.tabs.hold.length} · Archive ${s.tabs.archive.length} · Deleted ${s.tabs.deleted.length} (kept forever)`,
       s.plan.idle ? `IDLE: ${s.plan.idle.reason}` : '',
     ].filter(Boolean).join('\n'));
   }
@@ -1093,8 +1143,8 @@ async function main(argv) {
   }
   if (cmd === 'queue') { const b = queue(rest[0], { by }); return out({ ok: true, id: b.id, status: b.status, pipeline: b.pipeline }, `${b.id} → Queue (by ${by})`); }
   if (BP.BUILD_ACTIONS.includes(cmd)) {
-    const ids = rest.filter((a, i) => !a.startsWith('--') && !(i > 0 && ['--by', '--why'].includes(rest[i - 1])));
-    const r = buildAction(cmd, ids, { by, why: flag('why') });
+    const ids = rest.filter((a, i) => !a.startsWith('--') && !(i > 0 && ['--by', '--why', '--to'].includes(rest[i - 1])));
+    const r = buildAction(cmd, ids, { by, why: flag('why'), to: cmd === 'release' ? flag('to') : '' });
     if (!r.done.length) throw Object.assign(new Error(r.refused.map((x) => x.error).join('; ')), { code: 2 });
     const one = r.done.length === 1 ? { id: r.done[0].id, status: r.done[0].status } : {};
     return out({ ok: true, ...one, ...r }, [...r.done.map((d) => `${d.id} → ${BP.TAB_LABEL[d.tab] || d.status}${cmd === 'hold' ? ' (on hold)' : ''}`), ...r.refused.map((x) => `refused ${x.id}: ${x.error}`)].join('\n'));
@@ -1150,7 +1200,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] [--to pending|queue (release)] | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

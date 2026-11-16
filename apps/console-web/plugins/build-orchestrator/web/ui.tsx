@@ -43,7 +43,7 @@ function headlessRuns(b: Build): { at: string; start: string; cost: string; mode
 const fmtDate = (v: string) => { if (!v) return '—'; const d = new Date(v); return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }); };
 const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
 export const TABS = [
-  { id: 'pending', label: 'Pending', icon: 'clock' }, { id: 'queue', label: 'Queue', icon: 'list' }, { id: 'active', label: 'Active', icon: 'play' },
+  { id: 'pending', label: 'Pending', icon: 'clock' }, { id: 'queue', label: 'Queue', icon: 'list' }, { id: 'hold', label: 'On hold', icon: 'pause' }, { id: 'active', label: 'Active', icon: 'play' },
   { id: 'incomplete', label: 'Incomplete', icon: 'pause' }, { id: 'complete', label: 'Complete', icon: 'check-circle' }, { id: 'errors', label: 'Errors', icon: 'alert' },
   { id: 'archive', label: 'Archive', icon: 'package' }, { id: 'deleted', label: 'Deleted', icon: 'trash' }, { id: 'groups', label: 'Groups', icon: 'folder' },
   { id: 'accounts', label: 'Accounts', icon: 'user' }, { id: 'builds', label: 'All builds', icon: 'grid' }, { id: 'approvals', label: 'Approvals', icon: 'check' }, { id: 'rules', label: 'Rules', icon: 'settings' },
@@ -63,7 +63,7 @@ function tabRow(custom: CustomTab[]) {
   }
   return out;
 }
-const PIPELINE_VIEWS = new Set<string>(['pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'archive', 'deleted', 'accounts']);
+const PIPELINE_VIEWS = new Set<string>(['pending', 'queue', 'hold', 'active', 'incomplete', 'complete', 'errors', 'archive', 'deleted', 'accounts']);
 /** Another part of the console (an action, a deep link) asks for a tab: the page switches to it. */
 const TAB_EVENT = 'axf:orchestrator-tab';
 export function openTab(t: string) { if (isTab(t)) { consoleApi.writeLocal('orch-tab', t); window.dispatchEvent(new CustomEvent(TAB_EVENT, { detail: t })); } }

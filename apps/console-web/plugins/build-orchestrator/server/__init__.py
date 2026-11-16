@@ -453,12 +453,12 @@ async def pipeline_selfcheck(request: Request) -> dict[str, Any]:
     return _pipeline("selfcheck", "--request", "--reason", reason, who=(brett_click(request) or "console")[:80])
 
 
-PIPELINE_TABS = ("pending", "queue", "active", "incomplete", "complete", "errors", "archive", "deleted")
+PIPELINE_TABS = ("pending", "queue", "hold", "active", "incomplete", "complete", "errors", "archive", "deleted")
 
 
 @router.get("/pipeline/tab/{name}")
 def pipeline_tab(name: str) -> dict[str, Any]:
-    """One of the orchestrator's tabs (pending, queue, active, incomplete, complete, errors, archive, deleted): every build
+    """One of the orchestrator's tabs (pending, queue, hold (On hold), active, incomplete, complete, errors, archive, deleted): every build
     in it, with its steps, the planned model + account, the account that took it, whether it is on hold and the actions
     it offers."""
     if name not in PIPELINE_TABS:
@@ -495,12 +495,14 @@ async def pipeline_unqueue(request: Request) -> dict[str, Any]:
 
 
 BUILD_ACTIONS = ("unqueue", "hold", "release", "archive", "unarchive", "delete", "restore")
+RELEASE_TO = ("", "pending", "queue")
 
 
 @router.post("/pipeline/action")
 async def pipeline_action(request: Request) -> dict[str, Any]:
     """{action, ids: [id…] | id, why?}: the Queue / Archive / Deleted actions on one build or many (bulk select).
-    unqueue = back to Pending; hold / release = stays in the Queue, skipped by the dispatcher until released; archive /
+    unqueue = back to Pending; hold = any build to the On hold tab (a running one has its session stopped; the dispatcher,
+    lander and reconciler skip it), release = back where it was, or `to` pending | queue; archive /
     unarchive; delete = soft delete (kept in the builds store forever, Deleted tab) / restore. Builds with a live session
     are refused, the others still go: { done: [{ id, status, tab }], refused: [{ id, error }] }."""
     body = await _json_body(request)
@@ -513,7 +515,12 @@ async def pipeline_action(request: Request) -> dict[str, Any]:
     if not ids:
         raise HTTPException(400, "no build id given")
     why = str(body.get("why") or "")[:300]
+    to = str(body.get("to") or "")
+    if to not in RELEASE_TO or (to and action != "release"):
+        raise HTTPException(400, "to is pending or queue, and only for release")
     args = [action, *ids, "--by", (brett_click(request) or "console")[:80]]
+    if to:
+        args += ["--to", to]
     if why.strip():
         args += ["--why", why]
     return _pipeline(*args)

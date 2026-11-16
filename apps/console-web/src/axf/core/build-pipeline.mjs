@@ -28,8 +28,12 @@
  *              Nov 10 2026: "He'll plan what model, what account"); refreshed while it waits
  *   tried      accounts the final pick tried and that refused this run (launch failed), in order; '' list on a clean pick
  *   pickedAt   ISO of the final account decision (the moment the build's turn came in the Queue)
- *   heldAt, heldBy, heldWhy  On hold (Brett, Nov 10 2026: "Make a hold status … leave in queue on hold"): the build stays
- *              in the Queue, keeps its place, and the dispatcher skips it until it is released. '' = not held.
+ *   heldAt, heldBy, heldWhy  On hold (Brett, Nov 10 2026: "Make a hold status … leave in queue on hold"; Nov 16 2026: "set
+ *              status of selected items in pending or any other table to on hold and move to new grid"): any build that
+ *              is not deleted can be held; it leaves its tab for the On hold tab, keeps its status, and nothing acts on
+ *              it (dispatcher, lander, reconciler) until it is released. '' = not held.
+ *   heldFrom   the tab the build was in when it was put on hold (TABS); plain release sends it back there
+ *   stopSession  a session the hold has still to stop (a running build put on hold); the dispatcher clears it
  *
  * The orchestrator's tabs (Brett, Nov 10 2026: "Tabs: pending, active, incomplete, complete, errors, queue"): tabOf().
  */
@@ -52,7 +56,7 @@ const NAME_RE = /^[a-z0-9][a-z0-9-]{0,31}$/;
 export const accountName = (v) => (NAME_RE.test(str(v, 40)) ? str(v, 40) : '');
 
 export function emptyPipeline() {
-  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '', planned: null, tried: [], pickedAt: '', heldAt: '', heldBy: '', heldWhy: '' };
+  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '', planned: null, tried: [], pickedAt: '', heldAt: '', heldBy: '', heldWhy: '', heldFrom: '', stopSession: '' };
 }
 
 /** The record, every field in shape; null for nothing (a build the pipeline never touched carries none). */
@@ -72,6 +76,7 @@ export function normPipeline(p) {
     planned: pl ? { model: str(pl.model, 20), account: accountName(pl.account), kind: pl.kind === 'api' ? 'api' : pl.kind === 'subscription' ? 'subscription' : '', at: iso(pl.at), why: str(pl.why, 300) } : null,
     tried: (Array.isArray(p.tried) ? p.tried : []).map(accountName).filter(Boolean).slice(0, 12), pickedAt: iso(p.pickedAt),
     heldAt: iso(p.heldAt), heldBy: iso(p.heldAt) ? str(p.heldBy, 80) : '', heldWhy: iso(p.heldAt) ? str(p.heldWhy, 300) : '',
+    heldFrom: iso(p.heldAt) && TABS.includes(p.heldFrom) ? p.heldFrom : '', stopSession: str(p.stopSession, 120),
   };
   const empty = emptyPipeline();
   return JSON.stringify(out) === JSON.stringify(empty) ? null : out;
@@ -81,8 +86,8 @@ export function normPipeline(p) {
 export const tableOf = (b) => TABLE[b?.status] ?? '';
 
 /** The orchestrator's tabs, in screen order. */
-export const TABS = ['pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'archive', 'deleted'];
-export const TAB_LABEL = Object.freeze({ pending: 'Pending', queue: 'Queue', active: 'Active', incomplete: 'Incomplete', complete: 'Complete', errors: 'Errors', archive: 'Archive', deleted: 'Deleted' });
+export const TABS = ['pending', 'queue', 'hold', 'active', 'incomplete', 'complete', 'errors', 'archive', 'deleted'];
+export const TAB_LABEL = Object.freeze({ pending: 'Pending', queue: 'Queue', hold: 'On hold', active: 'Active', incomplete: 'Incomplete', complete: 'Complete', errors: 'Errors', archive: 'Archive', deleted: 'Deleted' });
 
 /**
  * Which tab a build shows in ('' = none: archived, deleted or hidden).
@@ -92,12 +97,18 @@ export const TAB_LABEL = Object.freeze({ pending: 'Pending', queue: 'Queue', act
  *   archive     complete (merged) or archived: every finished and retired build (Brett, Nov 10 2026: "All completed
  *               builds go to the archive")
  *   deleted     soft-deleted: kept in the store forever, restorable ("A deleted tab where all deleted builds stay saved forever")
- * A queued build On hold stays in the Queue tab (isHeld()).
+ *   hold        On hold, whatever its status (isHeld()): out of its old tab until released
  */
 export function tabOf(b) {
   if (!b) return '';
   if (b.deleted) return 'deleted';
   if (b.hidden) return '';
+  if (isHeld(b)) return 'hold';
+  return tabOfStatus(b);
+}
+
+/** The tab a build's status puts it in, hold aside (what heldFrom records). */
+export function tabOfStatus(b) {
   if (b.status === 'archived' || b.status === 'complete') return 'archive';
   const p = b.pipeline ?? {};
   if (b.status === 'failed' || /^launch failed/.test(str(p.note, 40))) return 'errors';
@@ -109,18 +120,36 @@ export function tabOf(b) {
   return started ? 'incomplete' : 'pending';
 }
 
-/** A build may be queued: it is in Pending and not finished. */
-export const canQueue = (b) => !!b && b.status === 'pending' && !b.deleted && !b.hidden;
+/** A build may be queued: it is in Pending, not finished and not on hold (release --to queue does that). */
+export const canQueue = (b) => !!b && b.status === 'pending' && !b.deleted && !b.hidden && !isHeld(b);
 /** A build may leave the Queue for Pending: queued and not launched yet. */
 export const canUnqueue = (b) => !!b && b.status === 'queued' && !b.deleted;
-/** On hold: queued, kept in the Queue, skipped by the dispatcher until released. */
-export const isHeld = (b) => !!b && b.status === 'queued' && !!b.pipeline?.heldAt;
-/** A build may be put on hold: queued (not launched) and not held already. */
-export const canHold = (b) => !!b && b.status === 'queued' && !b.deleted && !isHeld(b);
+/** On hold: in the On hold tab; the dispatcher, the lander and the reconciler leave it alone until it is released. */
+export const isHeld = (b) => !!b && !!b.pipeline?.heldAt;
+/** A build may be put on hold from any tab (a running one has its session stopped first): not deleted, not held already. */
+export const canHold = (b) => !!b && !b.deleted && !b.hidden && !isHeld(b);
+/** Where release may send a held build: back where it was (''), Pending or the Queue. */
+export const RELEASE_TO = ['', 'pending', 'queue'];
+/**
+ * The status a held build is released with. to '' = back to the tab it was held from (a build held from the Queue is
+ * queued again; a running build, stopped by the hold, comes back in Pending); 'pending' / 'queue' = that tab. Returns
+ * { status, error }: a build with nothing left to run is not queued.
+ */
+export function releaseStatus(b, to = '') {
+  if (!isHeld(b)) return { status: '', error: `${b?.id ?? 'build'} is not on hold` };
+  const target = to || (b.pipeline.heldFrom === 'queue' ? 'queue' : '');
+  if (target === 'pending') return { status: 'pending', error: '' };
+  if (target === 'queue') {
+    const steps = b.steps ?? [];
+    if (steps.length && !openSteps(b).length) return { status: '', error: `${b.id} has no step left to run: it can't be queued` };
+    return { status: 'queued', error: '' };
+  }
+  return { status: isLive(b) ? 'pending' : b.status, error: '' };
+}
 /** A build with a live session (running or waiting on an approval) is never archived or deleted underneath it. */
 export const isLive = (b) => !!b && (b.status === 'running' || b.status === 'waiting');
 /** A build may move to the Archive: not live, not deleted, not archived already. */
-export const canArchive = (b) => !!b && !b.deleted && !isLive(b) && b.status !== 'archived';
+export const canArchive = (b) => !!b && !b.deleted && !isLive(b) && (b.status !== 'archived' || isHeld(b));
 /** A build may be (soft-)deleted: not live, not deleted already. Deleting never drops the record. */
 export const canDelete = (b) => !!b && !b.deleted && !isLive(b);
 /** The status an archived build comes back with: built / complete when every step is done, else pending. */
@@ -135,6 +164,7 @@ export function actionsFor(b) {
   if (!b) return [];
   if (b.deleted) return ['restore'];
   const out = [];
+  if (isHeld(b)) return ['release', ...(canArchive(b) ? ['archive'] : []), ...(canDelete(b) ? ['delete'] : [])];
   if (canUnqueue(b)) out.push('unqueue');
   if (canHold(b)) out.push('hold');
   if (isHeld(b)) out.push('release');
