@@ -10,7 +10,7 @@
  *   node …/demos.mjs generate <entry id> [--save] [--build <id>]                       a demonstration from a glossary entry (zero tokens)
  *   node …/demos.mjs save <type> <file.json>                                           validate + store an asset
  *   node …/demos.mjs delete <type> <id>
- *   node …/demos.mjs walkthrough <type> <id>                                           as walkthrough@1 (what Molly's guide plays)
+ *   node …/demos.mjs walkthrough <type> <id>                                           as walkthrough@1 (what the Gizmo guide plays)
  *   node …/demos.mjs book new "<title>" [--minutes N] [--chapter-minutes N] [--chapters N] [--style s] [--docs depth,format,interactive]
  *   node …/demos.mjs book <id> add <chapter> <ref> [index] | move <chapter> <i> <chapter> <j> | move-chapter <i> <j>
  *                    | chapter add "<title>" | chapter remove <id> | chapter rename <id> "<title>" | remove <chapter> <i>

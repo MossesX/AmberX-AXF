@@ -61,7 +61,7 @@ clip tagger (`clipKeywords`, `clipFromDemonstration`) and the docs plan (`docsPl
 - The **player** is a floating window: Back / Repeat / Next / Stop, arrows and Escape, **Voice control** (next, back,
   repeat, stop through the browser's speech recognition), and the console actions `demo.play[:type:id]`,
   `demo.replay`, `demo.next`, `demo.prev`, `demo.repeat`, `demo.stop`, `demo.generate:<entry>`, `book.new`,
-  `book.open:<id>`, `book.add:<ref>` (so AmberX and Molly can drive it by voice).
+  `book.open:<id>`, `book.add:<ref>` (so AmberX and Gizmo can drive it by voice).
 - `?axf-view=<view id>` on the console URL opens that view on load (the generated docs' live frames use it).
 - MCP: `glossary_index_stats`, `glossary_index_search`, `glossary_index_entry`, `glossary_index_changes`,
   `glossary_index_rebuild`, `glossary_index_demos`, `glossary_index_demo`, `glossary_index_demo_save`,

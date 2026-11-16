@@ -250,7 +250,7 @@
         "id": "demo-walkthrough",
         "route": "GET /demo/walkthrough",
         "title": "A demonstration, book or clip as walkthrough@1",
-        "description": "The playable walkthrough@1 (steps of say, do, target) of a demonstration, of a whole book (chapter intros plus every item's steps) or of a clip's transcript: what the player and Molly's guide play, and what the recorder films.",
+        "description": "The playable walkthrough@1 (steps of say, do, target) of a demonstration, of a whole book (chapter intros plus every item's steps) or of a clip's transcript: what the player and the Gizmo guide play, and what the recorder films.",
         "readOnly": true,
         "input": {
           "type": "object",

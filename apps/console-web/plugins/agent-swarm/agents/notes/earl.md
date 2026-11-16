@@ -1,2 +1,2 @@
-- AmberX voice code: apps/amberx-droid/src/plugins/voice, src/plugins/commands. Molly hand-off: plugins/ai.
+- AmberX voice code: apps/amberx-droid/src/plugins/voice, src/plugins/commands. Gizmo hand-off: plugins/ai.
 - Android framework code is on hold; the Capacitor shell is allowed.

@@ -4,7 +4,7 @@
   "id": "listener-qa",
   "name": "Voice listener QA",
   "version": "1.0.0",
-  "description": "Find and fix voice and listener regressions in AmberX (apps/amberx-droid): wake word, push-to-talk, command routing, Molly hand-off.",
+  "description": "Find and fix voice and listener regressions in AmberX (apps/amberx-droid): wake word, push-to-talk, command routing, Gizmo hand-off.",
   "author": "AmberX AXF",
   "tags": [
     "agent-job",
