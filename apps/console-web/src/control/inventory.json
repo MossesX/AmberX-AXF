@@ -8,7 +8,7 @@
     "tabs": 78,
     "settingsTabs": 71,
     "settings": 89,
-    "functions": 274,
+    "functions": 276,
     "buttons": 62,
     "plugins": 71
   },
@@ -7395,6 +7395,35 @@
         "app",
         "settings"
       ],
+      "file": "src/axf/libs/settings/index.tsx"
+    },
+    {
+      "address": "function:settings.page",
+      "kind": "function",
+      "id": "settings.page",
+      "label": "Open Settings as a page",
+      "detail": "Action",
+      "keywords": [
+        "settings.page",
+        "settings",
+        "page"
+      ],
+      "params": true,
+      "file": "src/axf/libs/settings/index.tsx"
+    },
+    {
+      "address": "function:settings.opensas",
+      "kind": "function",
+      "id": "settings.opensas",
+      "label": "Settings open in a dialog or as a page",
+      "detail": "Action",
+      "keywords": [
+        "settings.opensas",
+        "settings",
+        "opensas"
+      ],
+      "effect": "write",
+      "params": true,
       "file": "src/axf/libs/settings/index.tsx"
     },
     {
