@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T23:37:18.755Z",
+ "updatedAt": "2026-11-16T23:37:33.616Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -120555,7 +120555,7 @@
    "title": "Remove Molly completely: delete the molly add-on bundle from agent-manager, the _offer_molly auto-install on start, the molly-guide plugin and anything that pops Molly up on load",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -120563,8 +120563,8 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T07:10:15.600Z",
-   "updatedAt": "2026-11-16T23:26:02.701Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T23:37:25.374Z",
+   "builtAt": "2026-11-16T23:37:25.374Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -120824,8 +120824,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T23:37:25.373Z",
      "note": "",
      "uid": "st-mwen2rfl09w123",
      "createdAt": "2026-11-13T07:12:11.360Z"

@@ -814,7 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 19:38 UTC · `settings-interface-gear-every-plugin` s10 done (all) · orchestrator
 - 2026-11-16 19:41 UTC · `hotfix-orchestrator-grid-columns-don-t` s9 done (all) · orchestrator
 - 2026-11-16 19:41 UTC · `owner-recognized-everywhere-veto` → complete, merged, note (all) · reconciler
 - 2026-11-16 19:41 UTC · `get-main-green-unblock-lander-land-axf` s9 done, note (all) · reconciler
@@ -1214,6 +1213,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 23:36 UTC · `icon-packs-with-drag-drop-pack-designer` s7 done (all) · orchestrator
 - 2026-11-16 23:36 UTC · `amberx-open-url-must-open-page-even-when` s11 done (all) · orchestrator
 - 2026-11-16 23:36 UTC · `axhub-veto-countdown-setting-read-only` s5 done (all) · orchestrator
+- 2026-11-16 23:37 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s9 done, → complete (all) · orchestrator
 
 ## Token passes (log)
 
