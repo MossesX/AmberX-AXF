@@ -30,7 +30,13 @@
   ],
   "enabledByDefault": true,
   "commands": { "$axf": "plugin-commands@1", "auto": true, "items": [
-    { "route": "POST /lazy/report", "skip": "the open console sends its live lazy-loader table here; GET /lazy reads it" }
+    { "route": "POST /lazy/report", "skip": "the open console sends its live lazy-loader table here; GET /lazy reads it" },
+    { "route": "GET /settings", "id": "plugin-settings-list", "title": "Every plugin's settings sub-tab: tab, address, sections, option keys, gear, enabled", "readOnly": true },
+    { "route": "GET /settings/{folder}", "id": "plugin-settings-get", "title": "One plugin's settings: enabled, info (version, builtWith, dependencies) and its options with their values", "readOnly": true },
+    { "route": "PUT /settings/{folder}", "id": "plugin-settings-set", "title": "Set a plugin's own options: {\"options\": {key: value}} (owner-only settings are refused)" },
+    { "route": "POST /settings/{folder}/enable", "id": "plugin-settings-enable", "title": "Switch a plugin on" },
+    { "route": "POST /settings/{folder}/disable", "id": "plugin-settings-disable", "title": "Switch a plugin off ({\"force\": true} when other plugins need it)" },
+    { "route": "GET /settings/{folder}/logs", "id": "plugin-settings-logs", "title": "A plugin's recent log lines (limit, level)", "readOnly": true }
   ] },
   "builtWith": { "model": "fable", "builtAt": "2026-10-20", "rebuildOf": "opus build of Oct 18 2026 (pending item plugin-manager)" },
   "banner": false,

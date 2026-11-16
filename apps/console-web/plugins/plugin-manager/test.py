@@ -207,6 +207,30 @@ check(eng.graph(fixture["inventory"]["items"], fixture["context"]["live"]) == fi
 check(set(fixture["records"][0]) == set(eng.record()), "fixture records carry exactly the engine's record fields")
 check(out.get("frame") == eng.FRAME and inv.context([])["target"] == "axf-console", "console inventory is plugin-inventory@1 for target axf-console")
 
+# plugin-settings@1: the Python twin replays the cross-port fixture (framework/core/plugin-settings.mjs)
+spec = importlib.util.spec_from_file_location("axf_console_plugins.plugin_manager.plugin_settings", SERVER / "plugin_settings.py")
+ps = importlib.util.module_from_spec(spec)
+assert spec and spec.loader
+sys.modules[spec.name] = ps
+spec.loader.exec_module(ps)
+psfx = json.loads((ROOT / "framework" / "spec" / "fixtures" / "plugin-settings.json").read_text())
+check(list(ps.DEFAULT_SECTIONS) == psfx["registry"]["defaultSections"] and ps.SCHEMA == psfx["registry"]["schema"], "plugin-settings registry matches the fixture")
+for name, case in psfx["in"].items():
+    check(ps.default_settings(case["manifest"], case.get("folder", "")) == psfx["out"]["defaults"][name], f"plugin-settings defaults: {name}")
+    check(ps.normalize_settings(case["manifest"], case.get("folder", "")) == psfx["out"]["normalized"][name], f"plugin-settings normalized: {name}")
+    check(ps.settings_target(case["manifest"], case.get("folder", "")) == psfx["out"]["target"][name], f"plugin-settings target: {name}")
+for tab, addr in psfx["out"]["address"].items():
+    check({"address": ps.settings_address(tab), "action": f"settings.open:{tab}"} == addr, f"plugin-settings address: {tab}")
+for bad in psfx["out"]["badAddress"]:
+    try:
+        ps.settings_address(bad["in"])
+        check(not bad["threw"], f"bad tab id refused: {bad['in']!r}")
+    except ValueError:
+        check(bad["threw"], "bad tab id refused")
+specs = ps.option_specs(["a.x", "a.y"], [{"key": "a.x", "address": "view:settings/setting:a.x", "label": "X", "type": "toggle", "runs": "console", "file": "f"}])
+check(specs == [{"key": "a.x", "known": True, "address": "view:settings/setting:a.x", "label": "X", "type": "toggle", "runs": "console"}, {"key": "a.y", "address": "setting:a.y", "known": False}], "option specs: known from the inventory, unknown still addressable")
+check(ps.bad_options(["a.x"], {"options": {"a.x": 1, "b": 2}}) == ({"a.x": 1, "b": 2}, ["b"]), "a PUT names options the plugin doesn't declare")
+
 # routes, when FastAPI is installed
 try:
     from fastapi import FastAPI
@@ -249,5 +273,38 @@ else:
     check(c.post("/api/plugins/plugin-manager/lazy/report", json={"plugins": [{"folder": "llm", "state": "loaded"}]}).status_code == 200
           and c.get("/api/plugins/plugin-manager/lazy").json()["report"]["plugins"][0]["state"] == "loaded", "POST /lazy/report, read back by GET /lazy")
     check(c.post("/api/plugins/plugin-manager/lazy/reset").json()["config"]["preloadCount"] == 5, "POST /lazy/reset")
+
+    # plugin settings (plugin-settings@1): the default sections and own options over REST / MCP / CLI
+    plugin(root, "notes", provides=["view:notes", "settings-tab:notes"], settings={"$axf": "plugin-settings@1", "tab": "notes", "sections": ["enable", "info", "logs", "options"], "options": ["notes.view", "notes.secret"], "gear": True})
+    table["notes"] = {"name": "Notes"}
+    sent: list = []
+    fake_cc = types.ModuleType("console_control")
+    fake_cc.FRAME = "console-control@1"
+    fake_cc.inventory = lambda: {"settings": [{"key": "notes.view", "address": "view:settings/setting:notes.view", "label": "View", "type": "choice", "runs": "console", "options": ["list", "grid"]},
+                                              {"key": "notes.secret", "address": "view:settings/setting:notes.secret", "label": "Owner", "type": "toggle", "runs": "console", "personOnly": True}]}
+    fake_api = types.ModuleType("console_control_api")
+    fake_api.OWNER = "owner"
+    fake_api.run = lambda cmd, by, audience: (sent.append(cmd), {"ok": not (cmd.get("address", "").endswith("notes.secret")), "verb": cmd["verb"], "address": cmd.get("address")})[1]
+    sys.modules["console_control"], sys.modules["console_control_api"] = fake_cc, fake_api
+    r = c.get("/api/plugins/plugin-manager/settings")
+    rows = {x["folder"]: x for x in r.json()["items"]}
+    check(r.status_code == 200 and rows["notes"]["tab"] == "notes" and rows["notes"]["declared"] and rows["notes"]["address"] == "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=notes", "GET /settings: every plugin's tab and address")
+    check(rows["llm"]["tab"] == "llm" and rows["llm"]["sections"] == ["enable", "info", "logs"] and rows["llm"]["gear"] is True and not rows["llm"]["declared"], "GET /settings: an undeclared plugin gets the default block")
+    r = c.get("/api/plugins/plugin-manager/settings/notes")
+    j = r.json()
+    check(r.status_code == 200 and j["info"]["version"] == "1.0.0" and "dependencies" in j["info"] and [o["key"] for o in j["optionSpecs"]] == ["notes.view", "notes.secret"], "GET /settings/{folder}: info + option specs")
+    check(j["optionSpecs"][1].get("personOnly") is True, "owner-only options are marked")
+    check(c.get("/api/plugins/plugin-manager/settings/nope").status_code == 404, "GET /settings/{unknown} → 404")
+    r = c.put("/api/plugins/plugin-manager/settings/notes", json={"options": {"notes.view": "grid"}})
+    check(r.status_code == 200 and r.json()["ok"] and sent[-1] == {"$axf": "console-control@1", "verb": "set", "address": "view:settings/setting:notes.view", "value": "grid"}, "PUT /settings/{folder}: console-control set")
+    check(c.put("/api/plugins/plugin-manager/settings/notes", json={"options": {"other.key": 1}}).status_code == 400, "PUT refuses keys the plugin doesn't declare")
+    check(c.put("/api/plugins/plugin-manager/settings/notes", json={"options": {"notes.secret": True}}).json()["ok"] is False, "PUT passes console control's refusal back (owner-only)")
+    r = c.post("/api/plugins/plugin-manager/settings/notes/enable")
+    check(r.status_code == 200 and sent[-1] == {"$axf": "console-control@1", "verb": "plugin.enable", "address": "plugin:ai.test.notes"}, "POST /settings/{folder}/enable")
+    c.post("/api/plugins/plugin-manager/settings/notes/disable", json={"force": True})
+    check(sent[-1] == {"$axf": "console-control@1", "verb": "plugin.disable", "address": "plugin:ai.test.notes", "options": {"force": True}}, "POST /settings/{folder}/disable (force)")
+    r = c.get("/api/plugins/plugin-manager/settings/llm/logs?level=error")
+    check(r.status_code == 200 and [x["at"] for x in r.json()["lines"]] == [2], "GET /settings/{folder}/logs")
+    del sys.modules["console_control"], sys.modules["console_control_api"]
 
 print(f"plugin-manager self-test: {passed} checks passed")
