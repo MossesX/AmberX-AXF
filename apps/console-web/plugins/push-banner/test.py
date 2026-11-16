@@ -634,6 +634,18 @@ fg.hub.on = False
 r = spec_["run"]()
 check(r["status"] == "error" and "AXHUB_TOKEN" in r["summary"], "health: no route at all = red, says which keys")
 check(mod.LANDER_HEALTH_ID in fh.specs and fh.specs[mod.LANDER_HEALTH_ID][1] == "push-banner", "health@1: lander-idle item registered too")
+check(mod.AUTOMERGE_HEALTH_ID in fh.specs, "health@1: auto-merge bypass item registered")
+class FakeP:
+    def __init__(self, q, allow): self.q, self.allow = q, allow
+    def config(self): return {"mergeQueue": self.q}
+    def gh(self):
+        allow = self.allow
+        class G:
+            def get(self, path, timeout=10): return {"allow_auto_merge": allow}
+        return G()
+check(mod.auto_merge_bypass_health(FakeP(True, True))["status"] == "warn", "auto-merge allowed with the queue on = amber")
+check(mod.auto_merge_bypass_health(FakeP(True, False))["status"] == "ok", "auto-merge off = green")
+check(mod.auto_merge_bypass_health(FakeP(False, True))["status"] == "ok", "queue off: not a bypass")
 T0 = 1_800_000_000.0
 iso = lambda m: time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(T0 - m * 60))  # noqa: E731
 q = lambda **k: {"on": True, "items": [{"pr": 1}], "at": iso(2), "merged": [{"pr": 9, "at": iso(30)}], "avgMin": 14, "stack": [{"pr": 1, "ci": "running", "builtAt": iso(5)}], **k}  # noqa: E731

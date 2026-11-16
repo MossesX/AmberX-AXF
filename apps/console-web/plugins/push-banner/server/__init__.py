@@ -1340,6 +1340,25 @@ def lander_health(st: dict[str, Any], now: float | None = None) -> dict[str, Any
     return {"status": "ok", "summary": f"Lander: {n} PR(s) in the queue, last round {int(rnd)} min ago, last merge {int(last // 60)} h ago."}
 
 
+AUTOMERGE_HEALTH_ID = "github-auto-merge-bypass"
+
+
+def auto_merge_bypass_health(p: "Pushes") -> dict[str, Any]:
+    """health@1 run(): with the merge queue on, GitHub's own auto-merge (`gh pr merge --auto`) lands a PR as soon as the
+    branch-protection checks (the light ones) pass, skipping the queue's full CI run. Nov 16 2026: #628 landed that way
+    with red CI and broke main. Amber while the repo still allows it."""
+    if not p.config().get("mergeQueue"):
+        return {"status": "ok", "summary": "Merge queue is off: GitHub auto-merge is not a bypass."}
+    try:
+        repo = p.gh().get(f"/repos/{UI_REVIEW_REPO}", timeout=10) or {}
+    except Exception as e:  # noqa: BLE001
+        return {"status": "warn", "summary": f"Can't read {UI_REVIEW_REPO}'s settings to check auto-merge: {_text(str(e), 160)}."}
+    if repo.get("allow_auto_merge"):
+        return {"status": "warn", "summary": f"GitHub auto-merge is allowed on {UI_REVIEW_REPO}: a session's `gh pr merge --auto` lands a PR after the light checks only, skipping the merge queue's full CI.",
+                "breaks": "Red code can reach main without the full CI run (it did on Nov 16: #628)."}
+    return {"status": "ok", "summary": f"GitHub auto-merge is off on {UI_REVIEW_REPO}: PRs land through the merge queue only."}
+
+
 _health_done = False
 
 
@@ -1367,6 +1386,13 @@ def ensure_health() -> bool:
                                        "Idle: check the cron line is there and that no stale /run/axf-auto-land.lock holder hangs (ps aux | grep land.mjs).",
                                        "Lands nothing: open Builds → Merge queue; if CI on main is red, fix main first (the CI on main item).",
                                        "Stuck head: open its run; re-run it, or move it down (land.mjs queue move <pr> <index>)."]}, "push-banner")
+        reg.register({"id": AUTOMERGE_HEALTH_ID, "label": "PRs land through the merge queue only", "service": "github", "order": 16, "severity": "warn",
+                      "run": lambda: auto_merge_bypass_health(PUSHES),
+                      "breaks": "A PR can land after the light checks only, without the queue's full CI run.",
+                      "links": [{"label": "GitHub → repo settings → General → Pull Requests", "url": f"https://github.com/{UI_REVIEW_REPO}/settings"}],
+                      "instructions": ["Open the repo's Settings → General → Pull Requests and untick “Allow auto-merge”.",
+                                       "Or, with an admin token: gh api -X PATCH repos/" + UI_REVIEW_REPO + " -F allow_auto_merge=false",
+                                       "Then tap Check now. The console's own auto-merge and the merge queue don't use GitHub auto-merge."]}, "push-banner")
     except Exception:  # noqa: BLE001 — the banner works without its health item
         return False
     _health_done = True
