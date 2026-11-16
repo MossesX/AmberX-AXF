@@ -73,7 +73,9 @@
         "levels": false,
         "defaultLevel": "basic",
         "levelOf": {},
-        "visible": {}
+        "visible": {},
+        "sections": "collapsible",
+        "sectionsOpen": "all"
       }
     },
     {
@@ -109,7 +111,9 @@
           "axf.look.sliders": "simple",
           "axf.roll": "developer"
         },
-        "visible": {}
+        "visible": {},
+        "sections": "collapsible",
+        "sectionsOpen": "all"
       }
     },
     {
@@ -137,7 +141,9 @@
         "levels": false,
         "defaultLevel": "basic",
         "levelOf": {},
-        "visible": {}
+        "visible": {},
+        "sections": "collapsible",
+        "sectionsOpen": "all"
       }
     },
     {
@@ -205,7 +211,9 @@
           "d": "administrator",
           "e": "administrator"
         },
-        "visible": {}
+        "visible": {},
+        "sections": "collapsible",
+        "sectionsOpen": "all"
       }
     },
     {
@@ -291,7 +299,9 @@
             ],
             "hide": []
           }
-        }
+        },
+        "sections": "collapsible",
+        "sectionsOpen": "all"
       }
     },
     {
@@ -315,7 +325,9 @@
         "levels": false,
         "defaultLevel": "basic",
         "levelOf": {},
-        "visible": {}
+        "visible": {},
+        "sections": "collapsible",
+        "sectionsOpen": "all"
       }
     },
     {
@@ -962,7 +974,9 @@
         "levels": false,
         "defaultLevel": "basic",
         "levelOf": {},
-        "visible": {}
+        "visible": {},
+        "sections": "collapsible",
+        "sectionsOpen": "all"
       }
     },
     {
@@ -999,7 +1013,9 @@
         "levels": false,
         "defaultLevel": "basic",
         "levelOf": {},
-        "visible": {}
+        "visible": {},
+        "sections": "collapsible",
+        "sectionsOpen": "all"
       }
     },
     {
@@ -1051,7 +1067,9 @@
         "levels": false,
         "defaultLevel": "basic",
         "levelOf": {},
-        "visible": {}
+        "visible": {},
+        "sections": "collapsible",
+        "sectionsOpen": "all"
       }
     },
     {
@@ -1213,7 +1231,9 @@
         "levels": false,
         "defaultLevel": "basic",
         "levelOf": {},
-        "visible": {}
+        "visible": {},
+        "sections": "collapsible",
+        "sectionsOpen": "all"
       }
     },
     {
@@ -1579,6 +1599,174 @@
         true,
         true
       ]
+    },
+    {
+      "name": "sections: default collapsible + all open; flat; first; bad values fall back",
+      "fn": "normalize",
+      "input": {
+        "layout": "tabs-top",
+        "header": "full",
+        "search": false,
+        "descriptions": true,
+        "sections": "flat",
+        "sectionsOpen": "first"
+      },
+      "expected": {
+        "layout": "tabs-top",
+        "header": "full",
+        "search": false,
+        "descriptions": true,
+        "tabs": [],
+        "hide": [],
+        "groups": [],
+        "levels": false,
+        "defaultLevel": "basic",
+        "levelOf": {},
+        "visible": {},
+        "sections": "flat",
+        "sectionsOpen": "first"
+      }
+    },
+    {
+      "name": "sections: bad values are errors",
+      "fn": "errors",
+      "input": {
+        "layout": "tabs-top",
+        "header": "full",
+        "search": false,
+        "descriptions": true,
+        "sections": "folded",
+        "sectionsOpen": "some"
+      },
+      "expected": [
+        "data.sections must be one of collapsible, flat",
+        "data.sectionsOpen must be one of all, first, none"
+      ]
+    },
+    {
+      "name": "sections: state (JSON string, bad ids dropped), open per id > all > own collapsed > sectionsOpen, flat never folds",
+      "fn": "sections",
+      "input": {
+        "stored": "{\"all\":false,\"open\":{\"settings-group:a\":true,\"bad id\":true,\"settings-group:b\":\"yes\"}}",
+        "cases": [
+          [
+            {},
+            "settings-group:a",
+            {}
+          ],
+          [
+            {},
+            "settings-group:c",
+            {}
+          ],
+          [
+            {},
+            "settings-group:c",
+            {
+              "collapsible": false
+            }
+          ],
+          [
+            {
+              "sections": "flat"
+            },
+            "settings-group:c",
+            {}
+          ]
+        ],
+        "plain": [
+          [
+            {
+              "sectionsOpen": "first"
+            },
+            "x",
+            {
+              "index": 0
+            }
+          ],
+          [
+            {
+              "sectionsOpen": "first"
+            },
+            "x",
+            {
+              "index": 2
+            }
+          ],
+          [
+            {
+              "sectionsOpen": "none"
+            },
+            "x",
+            {}
+          ],
+          [
+            {},
+            "x",
+            {
+              "collapsed": true
+            }
+          ]
+        ],
+        "moves": [
+          [
+            [
+              "settings-group:a",
+              "settings-group:c"
+            ],
+            false
+          ],
+          [
+            "*",
+            true
+          ],
+          [
+            [
+              "settings-group:a"
+            ],
+            false
+          ]
+        ]
+      },
+      "expected": {
+        "state": {
+          "all": false,
+          "open": {
+            "settings-group:a": true
+          }
+        },
+        "open": [
+          true,
+          false,
+          true,
+          true
+        ],
+        "plain": [
+          true,
+          false,
+          false,
+          false
+        ],
+        "moves": [
+          {
+            "all": false,
+            "open": {
+              "settings-group:a": false,
+              "settings-group:c": false
+            }
+          },
+          {
+            "all": true,
+            "open": {}
+          },
+          {
+            "all": true,
+            "open": {
+              "settings-group:a": false
+            }
+          }
+        ]
+      }
     }
   ]
 }

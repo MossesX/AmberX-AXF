@@ -44,6 +44,7 @@ import type { MenuEntry } from '../../core/engines/windows';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { Button, Segmented, Slider } from './Controls';
 import { ChoiceGrid, Note, Section, SelectField, Switch, TextField } from './Forms';
+import { SectionsBar, SectionsScope, SettingsSection } from './SettingsSections';
 import { Icon } from './Icon';
 import type { DialogMap } from './Overlays';
 import { TabGroup } from './TabGroup';
@@ -429,7 +430,7 @@ function ExtraGroup({ group }: { group: { id: string; label: string; icon?: stri
       default: return null;
     }
   };
-  return <Section title={group.label}>{group.description && <p className="fx-muted">{group.description}</p>}{group.settings.map(row)}</Section>;
+  return <SettingsSection id={`chrome-group:${group.id}`} title={group.label} icon={group.icon}>{group.description && <p className="fx-muted">{group.description}</p>}{group.settings.map(row)}</SettingsSection>;
 }
 
 /** The settings dialog of one chrome instance, laid out by the settings asset in force for its type. */
@@ -459,20 +460,28 @@ export function ChromeSettingsPanel({ type, instance }: { type: ChromeType; inst
   const body = (id: string): ReactNode => {
     if (id === 'look' || id === 'behaviour') {
       const fs = fields(id);
+      const extra = ui.groups.filter((g) => g.tab === id && levelOk(g.id, g.level ?? ui.defaultLevel));
+      const tokens = id === 'look' && type === 'tab-group' && levelOk('tokens', 'basic');
+      // settings-sections: the fields, the token overrides and each extra group are collapsible sections
+      const ids = [`chrome:${type}:${id}`, ...(tokens ? [`chrome:${type}:tokens`] : []), ...extra.map((g) => `chrome-group:${g.id}`)];
       return (
         <div className="fx-stack">
-          {fs.length ? fs.map((f) => <FieldControl key={f.key} type={type} instance={instance} field={f} descriptions={ui.descriptions} />) : <p className="fx-muted">Nothing at this level{q ? ' matches' : ''}.</p>}
+          <SectionsBar ids={ids} label={`${chromeLabel(type)} ${id} sections`} />
+          <SettingsSection id={`chrome:${type}:${id}`} title={id === 'look' ? 'Look' : 'Behaviour'} icon={id === 'look' ? 'palette' : 'sliders'}>
+            {fs.length ? fs.map((f) => <FieldControl key={f.key} type={type} instance={instance} field={f} descriptions={ui.descriptions} />) : <p className="fx-muted">Nothing at this level{q ? ' matches' : ''}.</p>}
+          </SettingsSection>
           {id === 'look' && type === 'banner' && <Button icon="settings" onClick={() => rt.openDialog(BANNER_SETTINGS_DIALOG, instance !== CHROME_APP_INSTANCE ? { id: instance } : {})}>Banner settings (look, behaviour, Apply to all)…</Button>}
-          {id === 'look' && type === 'tab-group' && levelOk('tokens', 'basic') && <InstanceTokensPanel family="tabs" instance={instance} />}
+          {tokens && <SettingsSection id={`chrome:${type}:tokens`} title="Tokens for this one" icon="sliders" collapsed><InstanceTokensPanel family="tabs" instance={instance} /></SettingsSection>}
           {id === 'behaviour' && <Note tone="info">Tap to confirm: on a touch screen the first tap shows what an item is and the second tap confirms it. Same as all follows the switch for every {chromeLabel(type).toLowerCase()} in Settings → Plugins → Toolbars.</Note>}
           {id === 'behaviour' && type === 'nav-menu' && <Note tone="info">Sub menus, animation and colours of a nav that opts in are the Navigation style settings (nav-style@1).</Note>}
-          {ui.groups.filter((g) => g.tab === id && levelOk(g.id, g.level ?? ui.defaultLevel)).map((g) => <ExtraGroup key={g.id} group={g} />)}
+          {extra.map((g) => <ExtraGroup key={g.id} group={g} />)}
         </div>
       );
     }
     if (id === 'asset') return <ChromeAssetPicker type={type} instance={instance} />;
     if (id === 'interface') return <InterfacePicker type={type} />;
-    return <div className="fx-stack">{ui.groups.filter((g) => g.tab === id).map((g) => <ExtraGroup key={g.id} group={g} />)}</div>;
+    const own = ui.groups.filter((g) => g.tab === id);
+    return <div className="fx-stack"><SectionsBar ids={own.map((g) => `chrome-group:${g.id}`)} />{own.map((g) => <ExtraGroup key={g.id} group={g} />)}</div>;
   };
   const header = ui.header === 'none' ? null : (
     <div className="fx-row fx-row--between">
@@ -485,15 +494,15 @@ export function ChromeSettingsPanel({ type, instance }: { type: ChromeType; inst
   );
   const picker = <InstanceInterfacePicker type={type} instance={instance} />;
   const search = ui.search ? <TextField label="Find a setting" value={query} onChange={setQuery} placeholder="style, position, badges…" /> : null;
-  if (!res) return <div className="fx-stack">{header}<Note tone="warning">This app ships no settings interface for {chromeLabel(type).toLowerCase()}s (chrome-settings@1: settings/{chromeSettingsDefaultId(type)}); showing the built-in layout.</Note>{picker}{search}<TabGroup id={`chrome.settings.${type}`} label={`${chromeLabel(type)} settings sections`} value={shownTab} onChange={setTab} tabs={tabsForRow}>{body(shownTab)}</TabGroup></div>;
-  if (ui.layout === 'list') return <div className="fx-stack fx-stack--lg">{header}{picker}{search}{tabs.map((t) => <Section key={t.id} title={t.label}>{body(t.id)}</Section>)}</div>;
+  if (!res) return <SectionsScope ui={ui} force={!!q}><div className="fx-stack">{header}<Note tone="warning">This app ships no settings interface for {chromeLabel(type).toLowerCase()}s (chrome-settings@1: settings/{chromeSettingsDefaultId(type)}); showing the built-in layout.</Note>{picker}{search}<TabGroup id={`chrome.settings.${type}`} label={`${chromeLabel(type)} settings sections`} value={shownTab} onChange={setTab} tabs={tabsForRow}>{body(shownTab)}</TabGroup></div></SectionsScope>;
+  if (ui.layout === 'list') return <SectionsScope ui={ui} force={!!q}><div className="fx-stack fx-stack--lg">{header}{picker}{search}<SectionsBar ids={tabs.map((t) => `chrome-tab:${type}:${t.id}`)} />{tabs.map((t) => <SettingsSection key={t.id} id={`chrome-tab:${type}:${t.id}`} title={t.label} icon={t.icon}>{body(t.id)}</SettingsSection>)}</div></SectionsScope>;
   return (
-    <div className="fx-stack">
+    <SectionsScope ui={ui} force={!!q}><div className="fx-stack">
       {header}{picker}{search}
       <TabGroup id={`chrome.settings.${type}`} label={`${chromeLabel(type)} settings sections`} value={shownTab} onChange={setTab} tabs={tabsForRow} asset={ui.layout === 'tabs-side' ? 'side-dock' : undefined}>
         <div className="fx-stack" style={{ paddingBlockStart: 'var(--fx-dens-gap-md)' }}>{body(shownTab)}</div>
       </TabGroup>
-    </div>
+    </div></SectionsScope>
   );
 }
 

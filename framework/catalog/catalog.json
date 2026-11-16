@@ -334,6 +334,14 @@
               "tag": "lib",
               "recommended": false,
               "suggests": []
+            },
+            {
+              "id": "f.settings.sections",
+              "title": "Collapsible settings sections: every settings interface (Settings tabs, plugin settings, chrome and banner settings) groups its fields into sections with a header and chevron, remembered open / closed per user, Expand all / Collapse all, search opens the matching section",
+              "note": "settings-ui@1 sections / sectionsOpen; react SettingsSection / SectionsBar / SectionsScope; setting axf.settings.sections; action settings.sections (REST, MCP, CLI, voice); CI check-settings-sections.mjs; Kotlin twin deferred",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
             }
           ]
         },
