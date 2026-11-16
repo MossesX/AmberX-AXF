@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:49:33.171Z",
+ "updatedAt": "2026-11-16T20:20:21.122Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -140251,9 +140251,18 @@
    "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "#703",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-16T19:47:30.043Z",
+   "updatedAt": "2026-11-16T20:19:20.975Z",
    "builtAt": "",
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-16T19:53:21.452Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "",
@@ -140434,8 +140443,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:53:21.452Z",
      "note": "",
      "uid": "st-mwjna7n801ed6n",
      "createdAt": "2026-11-16T19:16:49.558Z"
@@ -140455,8 +140464,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:53:46.828Z",
      "note": "",
      "uid": "st-mwfxch0007n8rw",
      "createdAt": "2026-11-14T04:47:26.735Z"
@@ -140477,8 +140486,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:54:38.836Z",
      "note": "",
      "uid": "st-mwfxch00085o60",
      "createdAt": "2026-11-14T04:47:26.735Z"
@@ -140499,8 +140508,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:57:12.247Z",
      "note": "",
      "uid": "st-mwfxch0009nxtf",
      "createdAt": "2026-11-14T04:47:26.735Z"
@@ -140520,8 +140529,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:57:59.503Z",
      "note": "",
      "uid": "st-mwfxch000aauos",
      "createdAt": "2026-11-14T04:47:26.735Z"
@@ -140542,8 +140551,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:58:49.199Z",
      "note": "",
      "uid": "st-mwfxch000b5ld3",
      "createdAt": "2026-11-14T04:47:26.735Z"
@@ -140563,8 +140572,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:00:33.018Z",
      "note": "",
      "uid": "st-mwfxch000c4og4",
      "createdAt": "2026-11-14T04:47:26.735Z"
@@ -140586,8 +140595,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:02:13.598Z",
      "note": "",
      "uid": "st-mwfxch000d4x8k",
      "createdAt": "2026-11-14T04:47:26.735Z"
@@ -140607,8 +140616,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:06:34.846Z",
      "note": "",
      "uid": "st-mwfxch000egpb9",
      "createdAt": "2026-11-14T04:47:26.735Z"
@@ -140628,8 +140637,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:08:17.083Z",
      "note": "",
      "uid": "st-mwfxch000fqm7p",
      "createdAt": "2026-11-14T04:47:26.735Z"
@@ -140649,8 +140658,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:09:43.805Z",
      "note": "",
      "uid": "st-mwfxch000grox5",
      "createdAt": "2026-11-14T04:47:26.735Z"
@@ -140671,8 +140680,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:14:18.724Z",
      "note": "",
      "uid": "st-mwfxch000h4crt",
      "createdAt": "2026-11-14T04:47:26.735Z"
@@ -140692,8 +140701,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:15:19.074Z",
      "note": "",
      "uid": "st-mwfxch000iesh9",
      "createdAt": "2026-11-14T04:47:26.735Z"
@@ -140714,8 +140723,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:17:18.673Z",
      "note": "",
      "uid": "st-mwfxch000jjyu3",
      "createdAt": "2026-11-14T04:47:26.735Z"
@@ -140736,8 +140745,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:17:38.220Z",
      "note": "",
      "uid": "st-mwfxch000k32ai",
      "createdAt": "2026-11-14T04:47:26.735Z"
@@ -140758,8 +140767,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:18:43.906Z",
      "note": "",
      "uid": "st-mwfxch000lhhhb",
      "createdAt": "2026-11-14T04:47:26.735Z"
@@ -140780,8 +140789,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:19:20.975Z",
      "note": "",
      "uid": "st-mwfxch000mi6kz",
      "createdAt": "2026-11-14T04:47:26.735Z"
@@ -151746,13 +151755,17 @@
     {
      "text": "Clash note from hotfix-orchestrator-grid-columns-don-t (PR #729): DataGrid now draws 1 or 2 lines per row on one shared column definition (rowLines prop > axf.grid.rowLines.<grid id> > axf.grid.rowLines > 1; root attr data-axf-row-lines; primary = fixed columns on line 1). s5 here should feed the skin token grid.rowLines into that rather than add a second row renderer for DataGrid.",
      "at": "2026-11-16T19:44:03.133Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-16T20:10:56.750Z"
     }
    ],
    "id": "every-grid-1-2-rows-per-item-set-skin",
    "title": "Every grid: 1 or 2 rows per item, set by the skin",
    "category": "",
    "detail": "Every grid/table/list in the console shows each item as 1 or 2 rows when collapsed, set by the active skin (a skin token, e.g. grid row-lines = 1 or 2), and expands on tap for details. Audit every grid in every plugin and move it onto the shared framework grid/row control so the skin decides; no plugin hard-codes its own row layout. Use the existing grid/tab-group token sets (#654). Skin editor gets the 1-row/2-row setting with live preview. API parity (read/set the setting via REST/MCP/CLI/voice). Tests, check-theme and check-controls green, help, Shipped features. Land when done.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -151760,7 +151773,7 @@
    "pr": "#707",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:17.286Z",
-   "updatedAt": "2026-11-16T19:44:03.134Z",
+   "updatedAt": "2026-11-16T20:10:56.750Z",
    "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
@@ -158420,22 +158433,26 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-red-ci-blocked-builds-they-land--lenny, shared account login)",
      "at": "2026-11-16T19:13:02.604Z"
+    },
+    {
+     "text": "Phase 1 done. Main itself fails 3 checks (console-control inventory, shared help bake, gate token manifest): fixed on fix/ci-common-cause, PR #726. 2 branches landed, 17 in the merge queue. Still red on their own: themed-native (light checks), context-menus (glossary), picker-dialog (check-agent-slots).",
+     "at": "2026-11-16T19:58:17.812Z"
     }
    ],
    "id": "fix-red-ci-blocked-builds-they-land",
    "title": "Fix the red CI on the blocked builds so they land",
    "category": "",
    "detail": "Split from get-main-green-unblock-lander-land-axf. Main is NOT red (its last runs succeeded or were cancelled), so the red CI is on the branches themselves. For each build the auto-lander shows as 'CI is red' (owner-recognized-everywhere-veto, pass-approval-hook-deep-link-amberx-notification, land-project-duplicate-boilerplate, picker-dialog-plugin-replaces-all, all-settings-interfaces-open-floating, themed-native-controls-plugin, new-asset-type-animated-expanding-row, quick-settings-pinned-collapsible-pane, orchestrator-settings-collapsible-split, context-menus-plugin-one-true-source, projects-own-everything-per-project, pending-tab-one-collapsed-row-per-2, shipped-features-open-button-views-each, fix-build-whose-session-finishes-phase-e, group-chat-audio-hear-agents-talk-while, ui-manager-floating-window-to-select-any, console-look-becomes-default-axhub-skin, vps-sends-shipped-features-every-merge): merge origin/main into the branch, read the failed CI log, fix it, push, and let the auto-lander land them one at a time. Find the common cause first; most fail the same Web Dev Console + Build engine sweep checks. Also shipped-features-organized-sortable (build rules ci-checks). Do NOT touch the axf-data / Postgres branches (another build has those).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/fix-red-ci-blocked-builds-they-land",
-   "pr": "",
+   "pr": "#726",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:28.078Z",
-   "updatedAt": "2026-11-16T19:48:49.940Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T19:58:17.812Z",
+   "builtAt": "2026-11-16T19:58:12.228Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -158914,8 +158931,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:53:14.939Z",
      "note": "",
      "uid": "st-mwjhdnqq0mqydw",
      "createdAt": "2026-11-16T16:31:32.976Z"
@@ -158936,8 +158953,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:55:46.472Z",
      "note": "",
      "uid": "st-mwjhdnqq0nr4di",
      "createdAt": "2026-11-16T16:31:32.976Z"
@@ -158958,8 +158975,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:58:12.227Z",
      "note": "",
      "uid": "st-mwjhdnqq0oeofp",
      "createdAt": "2026-11-16T16:31:32.976Z"
@@ -159266,13 +159283,17 @@
     {
      "text": "Brett Nov 16: a browser refresh must reload exactly where he is (same screen, tab, sub-tab, open dialog, scroll), not drop him on the console home. The URL must always carry the current address (view:/tab:...) and the console restores it on load. Same root cause as the deep-link bug.",
      "at": "2026-11-16T19:27:54.276Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-16T20:01:59.903Z"
     }
    ],
    "id": "fix-console-deep-links-open-page-lands",
    "title": "Fix console deep links so open-page lands on the right screen",
    "category": "",
    "detail": "Deep links are broken: opening https://console.amberxai.com/?axf-target=view:build-orchestrator (or view:gate, any view:/tab: address) loads the console's main screen instead of that screen. console_show via the API works, so the address is valid; the URL parameter isn't applied on load. Fix: on page load (and after sign-in redirect, which likely drops the query string), read ?axf-target= and focus that address once the views are registered, including tabs (e.g. view:gate/tab:gate.tabs=auto-lander). Keep the parameter through the hub sign-in redirect. Each open_url must open its own tab when asked. Tests: load with each view address and assert the focused screen. Land with the one-at-a-time lander.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -159280,7 +159301,7 @@
    "pr": "#721",
    "priority": "P0",
    "createdAt": "2026-11-16T16:31:15.510Z",
-   "updatedAt": "2026-11-16T19:28:10.715Z",
+   "updatedAt": "2026-11-16T20:01:59.903Z",
    "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
@@ -160408,7 +160429,7 @@
    "pr": "#725",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:38.814Z",
-   "updatedAt": "2026-11-16T19:46:46.616Z",
+   "updatedAt": "2026-11-16T20:19:51.266Z",
    "builtAt": "",
    "approvals": [
     {
@@ -160751,8 +160772,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:51:40.092Z",
      "note": "",
      "uid": "st-mwjlnwn30yt1dq",
      "createdAt": "2026-11-16T18:31:29.535Z"
@@ -160773,8 +160794,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:53:18.339Z",
      "note": "",
      "uid": "st-mwjlnwn30zi2h5",
      "createdAt": "2026-11-16T18:31:29.535Z"
@@ -160795,8 +160816,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:55:54.288Z",
      "note": "",
      "uid": "st-mwjlnwn3105kjk",
      "createdAt": "2026-11-16T18:31:29.535Z"
@@ -160816,8 +160837,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:56:35.826Z",
      "note": "",
      "uid": "st-mwjlnwn311lwu9",
      "createdAt": "2026-11-16T18:31:29.535Z"
@@ -160837,8 +160858,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:59:10.144Z",
      "note": "",
      "uid": "st-mwjlnwn3123ypr",
      "createdAt": "2026-11-16T18:31:29.535Z"
@@ -160858,8 +160879,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:01:52.539Z",
      "note": "",
      "uid": "st-mwjlnwn313p0ps",
      "createdAt": "2026-11-16T18:31:29.535Z"
@@ -160879,8 +160900,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:04:12.247Z",
      "note": "",
      "uid": "st-mwjlnwn314gnhx",
      "createdAt": "2026-11-16T18:31:29.535Z"
@@ -160900,8 +160921,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:07:10.417Z",
      "note": "",
      "uid": "st-mwjlnwn315uf9q",
      "createdAt": "2026-11-16T18:31:29.535Z"
@@ -160921,8 +160942,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:08:25.548Z",
      "note": "",
      "uid": "st-mwjlnwn316dfqz",
      "createdAt": "2026-11-16T18:31:29.535Z"
@@ -160942,8 +160963,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:09:49.589Z",
      "note": "",
      "uid": "st-mwjlnwn317fdsx",
      "createdAt": "2026-11-16T18:31:29.535Z"
@@ -160964,8 +160985,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:12:21.092Z",
      "note": "",
      "uid": "st-mwjlnwn3183wsx",
      "createdAt": "2026-11-16T18:31:29.535Z"
@@ -160985,8 +161006,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:14:31.366Z",
      "note": "",
      "uid": "st-mwjlnwn31934kj",
      "createdAt": "2026-11-16T18:31:29.535Z"
@@ -161007,8 +161028,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:19:51.266Z",
      "note": "",
      "uid": "st-mwjlnwn31a4p8o",
      "createdAt": "2026-11-16T18:31:29.535Z"
@@ -161805,22 +161826,30 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-reset-all-button-every-asset-override--paulie, shared account login)",
      "at": "2026-11-16T19:06:08.428Z"
+    },
+    {
+     "text": "Headless run axf-reset-all-button-every-asset-override--paulie: brief only · start 17.6K tokens ($0.06) · cost $11.01 · 213 turns · 6 tools, MCP none",
+     "at": "2026-11-16T19:52:08.046Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-16T19:52:10.001Z"
     }
    ],
    "id": "reset-all-button-every-asset-override",
    "title": "Reset all button for every asset override in Appearance",
    "category": "",
    "detail": "Settings > Appearance, the 'N assets are controlled by their own settings' row (AssetsWithEdits in framework/react/components/ChromeContext.tsx) only has a Reset all per asset. Add one 'Reset all' button on the header row that clears every asset override at once (chrome.reset for each, one confirm, one undo), so every asset follows the skin again. Same action through REST, MCP, CLI and voice (chrome.reset-all). Tests, land.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/reset-all-button-every-asset-override",
-   "pr": "",
+   "pr": "#730",
    "priority": "P1",
    "createdAt": "2026-11-16T19:03:55.794Z",
-   "updatedAt": "2026-11-16T19:26:03.562Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T19:52:10.001Z",
+   "builtAt": "2026-11-16T19:52:10.001Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -162053,8 +162082,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:50:26.215Z",
      "note": "",
      "uid": "st-mwjmvcmy0ac7g6",
      "createdAt": "2026-11-16T19:05:16.473Z"
@@ -162075,8 +162104,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:51:40.907Z",
      "note": "",
      "uid": "st-mwjmvcmy0bqzeb",
      "createdAt": "2026-11-16T19:05:16.473Z"
@@ -162644,22 +162673,34 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-every-settings-interface-gets--paulie, shared account login)",
      "at": "2026-11-16T19:46:17.478Z"
+    },
+    {
+     "text": "Headless run axf-every-settings-interface-gets--paulie: brief only · start 16.8K tokens ($0.05) · cost $3.90 · 94 turns · 6 tools, MCP none",
+     "at": "2026-11-16T20:04:19.345Z"
+    },
+    {
+     "text": "Session axf-every-settings-interface-gets--paulie on mossesx-max- ended (exit 0); the build was already complete.",
+     "at": "2026-11-16T20:05:07.385Z"
+    },
+    {
+     "text": "Session axf-every-settings-interface-gets--paulie on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-16T20:06:07.446Z"
     }
    ],
    "id": "every-settings-interface-gets",
    "title": "Every settings interface gets collapsible sections",
    "category": "",
    "detail": "Every settings interface in every app (console Settings sections, plugin settings, chrome/asset settings for toolbars, tab groups, banners, nav, menus, and any future one) groups its fields into collapsible sections with a header and chevron, remembered open/closed state per user, Expand all / Collapse all, search opens the matching section. Make it the framework default in the settings asset/template so new interfaces get it automatically, plus a CI check that fails on a settings interface without sections. Builds on orchestrator-settings-collapsible-split (same pattern, don't duplicate). Tokens only; reachable on REST, MCP, CLI, voice. Land through the orchestrator.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/every-settings-interface-gets",
-   "pr": "",
+   "pr": "#732",
    "priority": "P1",
    "createdAt": "2026-11-16T19:23:12.681Z",
-   "updatedAt": "2026-11-16T19:46:17.478Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T20:06:07.446Z",
+   "builtAt": "2026-11-16T20:03:57.558Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -162688,8 +162729,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:58:25.626Z",
      "note": "",
      "uid": "st-mwjnlz0b01c89d",
      "createdAt": "2026-11-16T19:25:58.523Z"
@@ -162707,8 +162748,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:03:05.477Z",
      "note": "",
      "uid": "st-mwjnlz0b02g6bb",
      "createdAt": "2026-11-16T19:25:58.523Z"
@@ -162729,8 +162770,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:03:57.557Z",
      "note": "",
      "uid": "st-mwjnlz0b03szct",
      "createdAt": "2026-11-16T19:25:58.523Z"
@@ -162755,6 +162796,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-assets-menu-hide-any-asset-hidden-list--lenny, shared account login)",
      "at": "2026-11-16T19:49:29.496Z"
+    },
+    {
+     "text": "Headless run axf-assets-menu-hide-any-asset-hidden-list--lenny: brief only · start 15.9K tokens ($0.05) · cost $3.07 · 84 turns · 6 tools, MCP none",
+     "at": "2026-11-16T20:07:50.628Z"
     }
    ],
    "id": "assets-menu-hide-any-asset-hidden-list",
@@ -162768,7 +162813,7 @@
    "branch": "claude/assets-menu-hide-any-asset-hidden-list",
    "pr": "",
    "createdAt": "2026-11-16T19:30:07.770Z",
-   "updatedAt": "2026-11-16T19:49:29.496Z",
+   "updatedAt": "2026-11-16T20:20:07.843Z",
    "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
@@ -162798,8 +162843,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:54:30.876Z",
      "note": "",
      "uid": "st-mwjntp3g01a9kx",
      "createdAt": "2026-11-16T19:31:58.924Z"
@@ -162817,11 +162862,30 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:05:22.998Z",
      "note": "",
      "uid": "st-mwjntp3g026ypm",
      "createdAt": "2026-11-16T19:31:58.924Z"
+    },
+    {
+     "id": "s4",
+     "text": "Brett Nov 16 (was only a note, not built yet): (1) 'Hide' is a GLOBAL context menu item on every asset in every app. (2) Global context menu top section, before the first divider, in this order: 'Console settings', then '<This page> settings' for the page right-clicked on, then, when right-clicking a toolbar, tab group, nav menu or app menu, '<That item> settings' as the third entry. All open the floating settings popup. Wire through the context-menus plugin. Merge main, push, let the orchestrator land it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjpjn2d017fgh",
+     "createdAt": "2026-11-16T20:20:07.844Z"
     },
     {
      "id": "s3",
@@ -162839,8 +162903,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:07:32.185Z",
      "note": "",
      "uid": "st-mwjntp3g03va66",
      "createdAt": "2026-11-16T19:31:58.924Z"
@@ -162853,21 +162917,25 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"a4b88901-ceae-465e-9b75-6c82a9bc594a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-16T19:33:52.963Z"
+    },
+    {
+     "text": "Built together with assets-menu-hide-any-asset-hidden-list (same request, same minute): branch claude/assets-menu-hide-any-asset-hidden-list covers the Hide entry in every asset's context menu in every framework app plus the Assets menu. Steps ticked there; nothing left to build here.",
+     "at": "2026-11-16T20:07:18.646Z"
     }
    ],
    "id": "hide-any-ui-asset-global-context-menu",
    "title": "Hide any UI asset from a global context menu, with a Hidden list",
    "category": "",
    "detail": "Rebuild of assets-menu-hide-any-asset-visible (branch lost, never shipped). A GLOBAL context menu item on every asset in every app (right-click / long-press): 'Hide'. Plus an Assets menu (global context menu item and Settings > Appearance) listing every asset on the current screen and app (toolbars, tab groups, banners, widgets, nav, menus, panels, anything). Hidden ones move to a Hidden section, one tap shows them again. Saved per app on axHub, survives reload. Same list/hide/show on REST, MCP, CLI, voice. Tests, land through the orchestrator.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-16T19:30:36.556Z",
-   "updatedAt": "2026-11-16T19:33:52.963Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T20:07:28.849Z",
+   "builtAt": "2026-11-16T20:07:28.849Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -162896,8 +162964,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:07:22.596Z",
      "note": "",
      "uid": "st-mwjnw53701tlnl",
      "createdAt": "2026-11-16T19:33:52.963Z"
@@ -162915,8 +162983,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:07:26.116Z",
      "note": "",
      "uid": "st-mwjnw53702pkjo",
      "createdAt": "2026-11-16T19:33:52.963Z"
@@ -162937,8 +163005,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:07:28.849Z",
      "note": "",
      "uid": "st-mwjnw53703ou5r",
      "createdAt": "2026-11-16T19:33:52.963Z"

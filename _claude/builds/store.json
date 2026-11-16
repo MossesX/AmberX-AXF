@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6792,
- "updatedAt": "2026-11-16T19:49:33.171Z",
+ "rev": 6851,
+ "updatedAt": "2026-11-16T20:20:21.122Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -218459,7 +218459,7 @@
    "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "#703",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-16T19:47:30.043Z",
+   "updatedAt": "2026-11-16T20:19:20.975Z",
    "builtAt": "",
    "notes": [
     {
@@ -218527,7 +218527,16 @@
      "at": "2026-11-16T19:47:30.043Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-16T19:53:21.452Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "",
@@ -218544,12 +218553,12 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "mossesx-max-",
-    "session": "axf-banner-widget-shapes-more-than-circle--sully",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-16T19:47:18.419Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T04:47:26.735Z",
@@ -218561,7 +218570,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-16T19:47:18.419Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -218570,7 +218579,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-16T19:47:18.419Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -218765,12 +218774,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:53:21.452Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T19:16:49.558Z",
-     "updatedAt": "2026-11-16T19:16:49.844Z"
+     "updatedAt": "2026-11-16T19:53:21.778Z"
     },
     {
      "id": "s8",
@@ -218789,12 +218798,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:53:46.828Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:47:26.735Z",
-     "updatedAt": "2026-11-14T04:47:26.735Z"
+     "updatedAt": "2026-11-16T19:53:47.164Z"
     },
     {
      "id": "s9",
@@ -218814,12 +218823,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:54:38.836Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:47:26.735Z",
-     "updatedAt": "2026-11-14T04:47:26.735Z"
+     "updatedAt": "2026-11-16T19:54:39.131Z"
     },
     {
      "id": "s10",
@@ -218839,12 +218848,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:57:12.247Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:47:26.735Z",
-     "updatedAt": "2026-11-14T04:47:26.735Z"
+     "updatedAt": "2026-11-16T19:57:12.718Z"
     },
     {
      "id": "s11",
@@ -218863,12 +218872,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:57:59.503Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:47:26.735Z",
-     "updatedAt": "2026-11-14T04:47:26.735Z"
+     "updatedAt": "2026-11-16T19:57:59.836Z"
     },
     {
      "id": "s12",
@@ -218888,12 +218897,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:58:49.199Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:47:26.735Z",
-     "updatedAt": "2026-11-14T04:47:26.735Z"
+     "updatedAt": "2026-11-16T19:58:49.676Z"
     },
     {
      "id": "s13",
@@ -218912,12 +218921,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:00:33.018Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:47:26.735Z",
-     "updatedAt": "2026-11-14T04:47:26.735Z"
+     "updatedAt": "2026-11-16T20:00:33.487Z"
     },
     {
      "id": "s14",
@@ -218938,12 +218947,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:02:13.598Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:47:26.735Z",
-     "updatedAt": "2026-11-14T04:47:26.735Z"
+     "updatedAt": "2026-11-16T20:02:14.292Z"
     },
     {
      "id": "s15",
@@ -218962,12 +218971,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:06:34.846Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:47:26.735Z",
-     "updatedAt": "2026-11-14T04:47:26.735Z"
+     "updatedAt": "2026-11-16T20:06:35.237Z"
     },
     {
      "id": "s16",
@@ -218986,12 +218995,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:08:17.083Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:47:26.735Z",
-     "updatedAt": "2026-11-14T04:47:26.735Z"
+     "updatedAt": "2026-11-16T20:08:17.350Z"
     },
     {
      "id": "s17",
@@ -219010,12 +219019,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:09:43.805Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:47:26.735Z",
-     "updatedAt": "2026-11-14T04:47:26.735Z"
+     "updatedAt": "2026-11-16T20:09:44.068Z"
     },
     {
      "id": "s18",
@@ -219035,12 +219044,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:14:18.724Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:47:26.735Z",
-     "updatedAt": "2026-11-14T04:47:26.735Z"
+     "updatedAt": "2026-11-16T20:14:18.975Z"
     },
     {
      "id": "s19",
@@ -219059,12 +219068,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:15:19.074Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:47:26.735Z",
-     "updatedAt": "2026-11-14T04:47:26.735Z"
+     "updatedAt": "2026-11-16T20:15:19.485Z"
     },
     {
      "id": "s20",
@@ -219084,12 +219093,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:17:18.673Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:47:26.735Z",
-     "updatedAt": "2026-11-14T04:47:26.735Z"
+     "updatedAt": "2026-11-16T20:17:32.622Z"
     },
     {
      "id": "s21",
@@ -219109,12 +219118,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:17:38.220Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:47:26.735Z",
-     "updatedAt": "2026-11-14T04:47:26.735Z"
+     "updatedAt": "2026-11-16T20:17:38.471Z"
     },
     {
      "id": "s22",
@@ -219134,12 +219143,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:18:43.906Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:47:26.735Z",
-     "updatedAt": "2026-11-14T04:47:26.735Z"
+     "updatedAt": "2026-11-16T20:18:44.206Z"
     },
     {
      "id": "s23",
@@ -219159,12 +219168,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:19:20.975Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:47:26.735Z",
-     "updatedAt": "2026-11-14T04:47:26.735Z"
+     "updatedAt": "2026-11-16T20:19:21.246Z"
     },
     {
      "id": "s24",
@@ -219278,7 +219287,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -233071,7 +233080,7 @@
    "title": "Every grid: 1 or 2 rows per item, set by the skin",
    "category": "",
    "detail": "Every grid/table/list in the console shows each item as 1 or 2 rows when collapsed, set by the active skin (a skin token, e.g. grid row-lines = 1 or 2), and expands on tap for details. Audit every grid in every plugin and move it onto the shared framework grid/row control so the skin decides; no plugin hard-codes its own row layout. Use the existing grid/tab-group token sets (#654). Skin editor gets the 1-row/2-row setting with live preview. API parity (read/set the setting via REST/MCP/CLI/voice). Tests, check-theme and check-controls green, help, Shipped features. Land when done.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -233079,7 +233088,7 @@
    "pr": "#707",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:17.286Z",
-   "updatedAt": "2026-11-16T19:44:03.134Z",
+   "updatedAt": "2026-11-16T20:10:56.750Z",
    "builtAt": "",
    "notes": [
     {
@@ -233117,6 +233126,10 @@
     {
      "text": "Clash note from hotfix-orchestrator-grid-columns-don-t (PR #729): DataGrid now draws 1 or 2 lines per row on one shared column definition (rowLines prop > axf.grid.rowLines.<grid id> > axf.grid.rowLines > 1; root attr data-axf-row-lines; primary = fixed columns on line 1). s5 here should feed the skin token grid.rowLines into that rather than add a second row renderer for DataGrid.",
      "at": "2026-11-16T19:44:03.133Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-16T20:10:56.750Z"
     }
    ],
    "approvals": [],
@@ -233762,7 +233775,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -241872,16 +241885,16 @@
    "title": "Fix the red CI on the blocked builds so they land",
    "category": "",
    "detail": "Split from get-main-green-unblock-lander-land-axf. Main is NOT red (its last runs succeeded or were cancelled), so the red CI is on the branches themselves. For each build the auto-lander shows as 'CI is red' (owner-recognized-everywhere-veto, pass-approval-hook-deep-link-amberx-notification, land-project-duplicate-boilerplate, picker-dialog-plugin-replaces-all, all-settings-interfaces-open-floating, themed-native-controls-plugin, new-asset-type-animated-expanding-row, quick-settings-pinned-collapsible-pane, orchestrator-settings-collapsible-split, context-menus-plugin-one-true-source, projects-own-everything-per-project, pending-tab-one-collapsed-row-per-2, shipped-features-open-button-views-each, fix-build-whose-session-finishes-phase-e, group-chat-audio-hear-agents-talk-while, ui-manager-floating-window-to-select-any, console-look-becomes-default-axhub-skin, vps-sends-shipped-features-every-merge): merge origin/main into the branch, read the failed CI log, fix it, push, and let the auto-lander land them one at a time. Find the common cause first; most fail the same Web Dev Console + Build engine sweep checks. Also shipped-features-organized-sortable (build rules ci-checks). Do NOT touch the axf-data / Postgres branches (another build has those).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/fix-red-ci-blocked-builds-they-land",
-   "pr": "",
+   "pr": "#726",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:28.078Z",
-   "updatedAt": "2026-11-16T19:48:49.940Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T19:58:17.812Z",
+   "builtAt": "2026-11-16T19:58:12.228Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -241938,6 +241951,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-red-ci-blocked-builds-they-land--lenny, shared account login)",
      "at": "2026-11-16T19:13:02.604Z"
+    },
+    {
+     "text": "Phase 1 done. Main itself fails 3 checks (console-control inventory, shared help bake, gate token manifest): fixed on fix/ci-common-cause, PR #726. 2 branches landed, 17 in the merge queue. Still red on their own: themed-native (light checks), context-menus (glossary), picker-dialog (check-agent-slots).",
+     "at": "2026-11-16T19:58:17.812Z"
     }
    ],
    "approvals": [],
@@ -242517,12 +242534,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:53:14.939Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T16:31:32.976Z",
-     "updatedAt": "2026-11-16T16:31:32.976Z"
+     "updatedAt": "2026-11-16T19:53:15.314Z"
     },
     {
      "id": "s23",
@@ -242542,12 +242559,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:55:46.472Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T16:31:32.976Z",
-     "updatedAt": "2026-11-16T16:31:32.976Z"
+     "updatedAt": "2026-11-16T19:55:46.819Z"
     },
     {
      "id": "s24",
@@ -242567,12 +242584,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:58:12.227Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T16:31:32.976Z",
-     "updatedAt": "2026-11-16T16:31:32.976Z"
+     "updatedAt": "2026-11-16T19:58:12.496Z"
     }
    ],
    "profiles": [
@@ -242583,7 +242600,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -242950,7 +242967,7 @@
    "title": "Fix console deep links so open-page lands on the right screen",
    "category": "",
    "detail": "Deep links are broken: opening https://console.amberxai.com/?axf-target=view:build-orchestrator (or view:gate, any view:/tab: address) loads the console's main screen instead of that screen. console_show via the API works, so the address is valid; the URL parameter isn't applied on load. Fix: on page load (and after sign-in redirect, which likely drops the query string), read ?axf-target= and focus that address once the views are registered, including tabs (e.g. view:gate/tab:gate.tabs=auto-lander). Keep the parameter through the hub sign-in redirect. Each open_url must open its own tab when asked. Tests: load with each view address and assert the focused screen. Land with the one-at-a-time lander.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -242958,7 +242975,7 @@
    "pr": "#721",
    "priority": "P0",
    "createdAt": "2026-11-16T16:31:15.510Z",
-   "updatedAt": "2026-11-16T19:28:10.715Z",
+   "updatedAt": "2026-11-16T20:01:59.903Z",
    "builtAt": "",
    "notes": [
     {
@@ -242988,6 +243005,10 @@
     {
      "text": "Brett Nov 16: a browser refresh must reload exactly where he is (same screen, tab, sub-tab, open dialog, scroll), not drop him on the console home. The URL must always carry the current address (view:/tab:...) and the console restores it on load. Same root cause as the deep-link bug.",
      "at": "2026-11-16T19:27:54.276Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-16T20:01:59.903Z"
     }
    ],
    "approvals": [],
@@ -243025,7 +243046,13 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-16T20:02:07.641Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -243133,7 +243160,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -244353,7 +244380,7 @@
    "pr": "#725",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:38.814Z",
-   "updatedAt": "2026-11-16T19:46:46.616Z",
+   "updatedAt": "2026-11-16T20:19:51.266Z",
    "builtAt": "",
    "notes": [
     {
@@ -244856,12 +244883,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:51:40.092Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:31:29.535Z",
-     "updatedAt": "2026-11-16T18:31:29.535Z"
+     "updatedAt": "2026-11-16T19:51:40.601Z"
     },
     {
      "id": "s15",
@@ -244881,12 +244908,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:53:18.339Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:31:29.535Z",
-     "updatedAt": "2026-11-16T18:31:29.535Z"
+     "updatedAt": "2026-11-16T19:53:18.726Z"
     },
     {
      "id": "s16",
@@ -244906,12 +244933,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:55:54.288Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:31:29.535Z",
-     "updatedAt": "2026-11-16T18:31:29.535Z"
+     "updatedAt": "2026-11-16T19:55:54.827Z"
     },
     {
      "id": "s17",
@@ -244930,12 +244957,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:56:35.826Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:31:29.535Z",
-     "updatedAt": "2026-11-16T18:31:29.535Z"
+     "updatedAt": "2026-11-16T19:56:36.251Z"
     },
     {
      "id": "s18",
@@ -244954,12 +244981,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:59:10.144Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:31:29.535Z",
-     "updatedAt": "2026-11-16T18:31:29.535Z"
+     "updatedAt": "2026-11-16T19:59:10.433Z"
     },
     {
      "id": "s19",
@@ -244978,12 +245005,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:01:52.539Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:31:29.535Z",
-     "updatedAt": "2026-11-16T18:31:29.535Z"
+     "updatedAt": "2026-11-16T20:01:53.212Z"
     },
     {
      "id": "s20",
@@ -245002,12 +245029,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:04:12.247Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:31:29.535Z",
-     "updatedAt": "2026-11-16T18:31:29.535Z"
+     "updatedAt": "2026-11-16T20:04:33.528Z"
     },
     {
      "id": "s21",
@@ -245026,12 +245053,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:07:10.417Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:31:29.535Z",
-     "updatedAt": "2026-11-16T18:31:29.535Z"
+     "updatedAt": "2026-11-16T20:07:10.741Z"
     },
     {
      "id": "s22",
@@ -245050,12 +245077,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:08:25.548Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:31:29.535Z",
-     "updatedAt": "2026-11-16T18:31:29.535Z"
+     "updatedAt": "2026-11-16T20:08:25.825Z"
     },
     {
      "id": "s23",
@@ -245074,12 +245101,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:09:49.589Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:31:29.535Z",
-     "updatedAt": "2026-11-16T18:31:29.535Z"
+     "updatedAt": "2026-11-16T20:10:11.205Z"
     },
     {
      "id": "s24",
@@ -245099,12 +245126,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:12:21.092Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:31:29.535Z",
-     "updatedAt": "2026-11-16T18:31:29.535Z"
+     "updatedAt": "2026-11-16T20:12:21.384Z"
     },
     {
      "id": "s25",
@@ -245123,12 +245150,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:14:31.366Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:31:29.535Z",
-     "updatedAt": "2026-11-16T18:31:29.535Z"
+     "updatedAt": "2026-11-16T20:14:31.596Z"
     },
     {
      "id": "s26",
@@ -245148,12 +245175,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:19:51.266Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:31:29.535Z",
-     "updatedAt": "2026-11-16T18:31:29.535Z"
+     "updatedAt": "2026-11-16T20:19:51.580Z"
     },
     {
      "id": "s27",
@@ -245214,7 +245241,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -246120,16 +246147,16 @@
    "title": "Reset all button for every asset override in Appearance",
    "category": "",
    "detail": "Settings > Appearance, the 'N assets are controlled by their own settings' row (AssetsWithEdits in framework/react/components/ChromeContext.tsx) only has a Reset all per asset. Add one 'Reset all' button on the header row that clears every asset override at once (chrome.reset for each, one confirm, one undo), so every asset follows the skin again. Same action through REST, MCP, CLI and voice (chrome.reset-all). Tests, land.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/reset-all-button-every-asset-override",
-   "pr": "",
+   "pr": "#730",
    "priority": "P1",
    "createdAt": "2026-11-16T19:03:55.794Z",
-   "updatedAt": "2026-11-16T19:26:03.562Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T19:52:10.001Z",
+   "builtAt": "2026-11-16T19:52:10.001Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -246158,6 +246185,14 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-reset-all-button-every-asset-override--paulie, shared account login)",
      "at": "2026-11-16T19:06:08.428Z"
+    },
+    {
+     "text": "Headless run axf-reset-all-button-every-asset-override--paulie: brief only · start 17.6K tokens ($0.06) · cost $11.01 · 213 turns · 6 tools, MCP none",
+     "at": "2026-11-16T19:52:08.046Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-16T19:52:10.001Z"
     }
    ],
    "approvals": [],
@@ -246178,12 +246213,19 @@
     "queuedAt": "2026-11-16T19:03:58.151Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-reset-all-button-every-asset-override--paulie",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-16T19:05:58.434Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-16T19:52:07.140Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 1,
+     "account": "mossesx-max-",
+     "session": "axf-reset-all-button-every-asset-override--paulie"
+    },
     "split": {
      "at": "2026-11-16T19:05:16.473Z",
      "by": "orchestrator",
@@ -246192,7 +246234,7 @@
      "note": "Split by Claude into 11 steps (0 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-16T19:05:58.434Z",
     "planned": {
@@ -246455,12 +246497,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:50:26.215Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T19:05:16.473Z",
-     "updatedAt": "2026-11-16T19:05:16.473Z"
+     "updatedAt": "2026-11-16T19:50:26.645Z"
     },
     {
      "id": "s11",
@@ -246480,12 +246522,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:51:40.907Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T19:05:16.473Z",
-     "updatedAt": "2026-11-16T19:05:16.473Z"
+     "updatedAt": "2026-11-16T19:51:41.355Z"
     }
    ],
    "profiles": [
@@ -246496,7 +246538,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -247305,16 +247347,16 @@
    "title": "Every settings interface gets collapsible sections",
    "category": "",
    "detail": "Every settings interface in every app (console Settings sections, plugin settings, chrome/asset settings for toolbars, tab groups, banners, nav, menus, and any future one) groups its fields into collapsible sections with a header and chevron, remembered open/closed state per user, Expand all / Collapse all, search opens the matching section. Make it the framework default in the settings asset/template so new interfaces get it automatically, plus a CI check that fails on a settings interface without sections. Builds on orchestrator-settings-collapsible-split (same pattern, don't duplicate). Tokens only; reachable on REST, MCP, CLI, voice. Land through the orchestrator.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/every-settings-interface-gets",
-   "pr": "",
+   "pr": "#732",
    "priority": "P1",
    "createdAt": "2026-11-16T19:23:12.681Z",
-   "updatedAt": "2026-11-16T19:46:17.478Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T20:06:07.446Z",
+   "builtAt": "2026-11-16T20:03:57.558Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -247331,6 +247373,18 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-every-settings-interface-gets--paulie, shared account login)",
      "at": "2026-11-16T19:46:17.478Z"
+    },
+    {
+     "text": "Headless run axf-every-settings-interface-gets--paulie: brief only · start 16.8K tokens ($0.05) · cost $3.90 · 94 turns · 6 tools, MCP none",
+     "at": "2026-11-16T20:04:19.345Z"
+    },
+    {
+     "text": "Session axf-every-settings-interface-gets--paulie on mossesx-max- ended (exit 0); the build was already complete.",
+     "at": "2026-11-16T20:05:07.385Z"
+    },
+    {
+     "text": "Session axf-every-settings-interface-gets--paulie on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-16T20:06:07.446Z"
     }
    ],
    "approvals": [],
@@ -247351,12 +247405,19 @@
     "queuedAt": "2026-11-16T19:23:15.921Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-every-settings-interface-gets--paulie",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-16T19:46:04.279Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-16T20:06:06.733Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-every-settings-interface-gets--paulie"
+    },
     "split": {
      "at": "2026-11-16T19:25:58.523Z",
      "by": "orchestrator",
@@ -247397,12 +247458,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:58:25.626Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T19:25:58.523Z",
-     "updatedAt": "2026-11-16T19:25:58.523Z"
+     "updatedAt": "2026-11-16T19:58:26.324Z"
     },
     {
      "id": "s2",
@@ -247419,12 +247480,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:03:05.477Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T19:25:58.523Z",
-     "updatedAt": "2026-11-16T19:25:58.523Z"
+     "updatedAt": "2026-11-16T20:03:05.874Z"
     },
     {
      "id": "s3",
@@ -247444,12 +247505,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:03:57.557Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T19:25:58.523Z",
-     "updatedAt": "2026-11-16T19:25:58.523Z"
+     "updatedAt": "2026-11-16T20:03:57.991Z"
     }
    ],
    "profiles": [
@@ -247460,7 +247521,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -247483,7 +247544,7 @@
    "branch": "claude/assets-menu-hide-any-asset-hidden-list",
    "pr": "",
    "createdAt": "2026-11-16T19:30:07.770Z",
-   "updatedAt": "2026-11-16T19:49:29.496Z",
+   "updatedAt": "2026-11-16T20:20:07.843Z",
    "builtAt": "",
    "notes": [
     {
@@ -247501,6 +247562,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-assets-menu-hide-any-asset-hidden-list--lenny, shared account login)",
      "at": "2026-11-16T19:49:29.496Z"
+    },
+    {
+     "text": "Headless run axf-assets-menu-hide-any-asset-hidden-list--lenny: brief only · start 15.9K tokens ($0.05) · cost $3.07 · 84 turns · 6 tools, MCP none",
+     "at": "2026-11-16T20:07:50.628Z"
     }
    ],
    "approvals": [],
@@ -247520,12 +247585,12 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "mossesx-max-",
-    "session": "axf-assets-menu-hide-any-asset-hidden-list--lenny",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-16T19:49:23.375Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T19:31:58.924Z",
@@ -247535,9 +247600,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"eb1972e7-c955-4c4a-942f-76345dedfc99\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-16T19:49:23.375Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -247546,7 +247611,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-16T19:49:23.375Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -247567,12 +247632,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:54:30.876Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T19:31:58.924Z",
-     "updatedAt": "2026-11-16T19:31:58.924Z"
+     "updatedAt": "2026-11-16T19:54:31.201Z"
     },
     {
      "id": "s2",
@@ -247589,12 +247654,34 @@
      "session": "same",
      "agent": false,
      "skip": false,
+     "done": true,
+     "doneAt": "2026-11-16T20:05:22.998Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-16T19:31:58.924Z",
+     "updatedAt": "2026-11-16T20:05:23.443Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwjpjn2d017fgh",
+     "title": "",
+     "text": "Brett Nov 16 (was only a note, not built yet): (1) 'Hide' is a GLOBAL context menu item on every asset in every app. (2) Global context menu top section, before the first divider, in this order: 'Console settings', then '<This page> settings' for the page right-clicked on, then, when right-clicking a toolbar, tab group, nav menu or app menu, '<That item> settings' as the third entry. All open the floating settings popup. Wire through the context-menus plugin. Merge main, push, let the orchestrator land it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-16T19:31:58.924Z",
-     "updatedAt": "2026-11-16T19:31:58.924Z"
+     "createdAt": "2026-11-16T20:20:07.844Z",
+     "updatedAt": "2026-11-16T20:20:08.965Z"
     },
     {
      "id": "s3",
@@ -247614,12 +247701,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:07:32.185Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T19:31:58.924Z",
-     "updatedAt": "2026-11-16T19:31:58.924Z"
+     "updatedAt": "2026-11-16T20:07:32.494Z"
     }
    ],
    "profiles": [
@@ -247630,7 +247717,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -247646,19 +247733,23 @@
    "title": "Hide any UI asset from a global context menu, with a Hidden list",
    "category": "",
    "detail": "Rebuild of assets-menu-hide-any-asset-visible (branch lost, never shipped). A GLOBAL context menu item on every asset in every app (right-click / long-press): 'Hide'. Plus an Assets menu (global context menu item and Settings > Appearance) listing every asset on the current screen and app (toolbars, tab groups, banners, widgets, nav, menus, panels, anything). Hidden ones move to a Hidden section, one tap shows them again. Saved per app on axHub, survives reload. Same list/hide/show on REST, MCP, CLI, voice. Tests, land through the orchestrator.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-16T19:30:36.556Z",
-   "updatedAt": "2026-11-16T19:33:52.963Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T20:07:28.849Z",
+   "builtAt": "2026-11-16T20:07:28.849Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"a4b88901-ceae-465e-9b75-6c82a9bc594a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-16T19:33:52.963Z"
+    },
+    {
+     "text": "Built together with assets-menu-hide-any-asset-hidden-list (same request, same minute): branch claude/assets-menu-hide-any-asset-hidden-list covers the Hide entry in every asset's context menu in every framework app plus the Assets menu. Steps ticked there; nothing left to build here.",
+     "at": "2026-11-16T20:07:18.646Z"
     }
    ],
    "approvals": [],
@@ -247725,12 +247816,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:07:22.596Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T19:33:52.963Z",
-     "updatedAt": "2026-11-16T19:33:52.963Z"
+     "updatedAt": "2026-11-16T20:07:23.017Z"
     },
     {
      "id": "s2",
@@ -247747,12 +247838,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:07:26.116Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T19:33:52.963Z",
-     "updatedAt": "2026-11-16T19:33:52.963Z"
+     "updatedAt": "2026-11-16T20:07:26.427Z"
     },
     {
      "id": "s3",
@@ -247772,12 +247863,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:07:28.849Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T19:33:52.963Z",
-     "updatedAt": "2026-11-16T19:33:52.963Z"
+     "updatedAt": "2026-11-16T20:07:29.175Z"
     }
    ],
    "profiles": [
@@ -247788,7 +247879,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
