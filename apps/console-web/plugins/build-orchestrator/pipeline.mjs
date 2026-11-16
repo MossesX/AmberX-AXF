@@ -474,7 +474,32 @@ function tmuxHas(name) {
   return r.error ? null : r.status === 0;
 }
 
-/** Running builds whose session ended: { id, outcome, status, exit }. */
+/**
+ * One run's end, written through the builds store (journalled): the exit transition (build-pipeline@1 nextStatusOnExit()
+ * via pipeline-core endOutcome()) decides the status. A phase done with steps left goes back to the Queue at its place
+ * with the note "phase <n> done, requeued for <model>"; Pending only when Brett is needed. `kind` is what the headless
+ * wrapper reported (phase-done | crash | stopped, '' when only the exit code is known): a crash report is a crash
+ * whatever the exit code says. Returns { id, outcome, status, reason, exit, phase, next }.
+ */
+export function endRun(b, { exit, kind = '', phase = '', alert = () => {}, settings = loadSettings() } = {}) {
+  const settled = b.status === 'built' || b.status === 'complete';
+  // the wrapper's kind wins over the bare code: a crash is never a clean end; phase-done / stopped are clean ends whose
+  // phase the store still has to confirm (a phase-done claim with its phase's steps open lands as 'stopped' in Pending)
+  const code = kind === 'crash' ? (exit || 1) : kind === 'phase-done' || kind === 'stopped' ? 0 : exit;
+  const r = P.endOutcome(phase && !b.pipeline?.phase ? { ...b, pipeline: { ...b.pipeline, phase } } : b, { exit: code, account: b.pipeline.account, session: b.pipeline.session }, settings);
+  if (settled) { r.outcome = 'finished'; r.status = b.status; r.reason = 'all-done'; r.run = { ...r.run, outcome: 'finished', reason: 'all-done' }; r.note = `Session ${b.pipeline.session} on ${b.pipeline.account || '?'} ended (exit ${exit}); the build was already ${b.status}.`; }
+  const next = BP.nextModel(b);
+  const journal = r.reason === 'phase-done' ? `phase ${r.run.phase || '?'} done, requeued for ${next || '?'}: ${r.note}` : r.note;
+  setPipeline(b.id, { ...r.patch, lastRun: r.run, note: r.outcome === 'finished' ? '' : r.note }, { status: r.status, note: journal, action: r.reason === 'phase-done' ? 'pipeline:requeue' : 'pipeline:end' });
+  alert(r.outcome === 'failed' ? 'failed' : 'ended', { id: b.id, title: b.title, outcome: r.outcome, note: r.note, account: b.pipeline.account });
+  logLine({ event: 'ended', build: b.id, outcome: r.outcome, reason: r.reason, kind, exit, phase: r.run.phase, next, account: b.pipeline.account, session: b.pipeline.session });
+  if (r.outcome === 'failed') crewSay('dispatcher', 'failed', `${b.id} failed: ${r.note}`, { ref: b.id });
+  else if (r.outcome === 'returned') crewSay('dispatcher', 'waiting', `${b.id} stopped with steps left and is back in Pending. Brett, it needs you: ${r.note}`, { ref: b.id });
+  else crewSay('dispatcher', 'done', `${b.id}: ${r.note}`, { ref: b.id });
+  return { id: b.id, outcome: r.outcome, status: r.status, reason: r.reason, exit, phase: r.run.phase, next };
+}
+
+/** Running builds whose session ended: { id, outcome, status, reason, exit }. */
 export function checkEnds({ alert = () => {}, env = process.env } = {}) {
   const store = loadStore(); const settings = loadSettings();
   const events = readEvents(env);
@@ -493,15 +518,7 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
       if (alive !== false || Date.now() - Date.parse(b.pipeline.launchedAt || 0) < GONE_GRACE_MS) continue;
       exit = 1;
     }
-    const r = P.endOutcome(b, { exit, account: b.pipeline.account, session: b.pipeline.session }, settings);
-    if (settled) { r.outcome = 'finished'; r.status = b.status; r.run = { ...r.run, outcome: 'finished' }; r.note = `Session ${b.pipeline.session} on ${b.pipeline.account || '?'} ended (exit ${exit}); the build was already ${b.status}.`; }
-    setPipeline(b.id, { ...r.patch, lastRun: r.run, note: r.outcome === 'finished' ? '' : r.note }, { status: r.status, note: r.note, action: 'pipeline:end' });
-    alert(r.outcome === 'failed' ? 'failed' : 'ended', { id: b.id, title: b.title, outcome: r.outcome, note: r.note, account: b.pipeline.account });
-    logLine({ event: 'ended', build: b.id, outcome: r.outcome, exit, account: b.pipeline.account, session: b.pipeline.session });
-    if (r.outcome === 'failed') crewSay('dispatcher', 'failed', `${b.id} failed: ${r.note}`, { ref: b.id });
-    else if (r.outcome === 'returned') crewSay('dispatcher', 'waiting', `${b.id} stopped with steps left and is back in Pending. Brett, it needs you: ${r.note}`, { ref: b.id });
-    else crewSay('dispatcher', 'done', `${b.id}: ${r.note}`, { ref: b.id });
-    out.push({ id: b.id, outcome: r.outcome, status: r.status, exit });
+    out.push(endRun(b, { exit, kind: end?.kind || '', phase: end?.phase || '', alert, settings }));
   }
   return out;
 }
