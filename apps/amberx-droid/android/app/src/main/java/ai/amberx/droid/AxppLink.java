@@ -332,14 +332,17 @@ final class AxppLink {
             if (a.ok) { won = route; break; }
         }
         JSONObject result = OpenUrlRoute.settle(url, p, attempts);
+        if (won != null && !OpenUrlRoute.FULL_SCREEN.equals(won)) cancelNote(c, NOTE_PAGE);
         String placed = won == null ? "browser" : OpenUrlRoute.CONSOLE_TAB.equals(won) ? "console" : OpenUrlRoute.OVERLAY.equals(won) ? "overlay" : "browser";
-        return new JSONObject().put("url", url)
+        JSONObject out = new JSONObject().put("url", url)
             .put("browser", OpenUrlRoute.CONSOLE_TAB.equals(won) ? "console" : OpenUrlRoute.OVERLAY.equals(won) ? "overlay" : browserIntent(c, url, browser).getPackage() == null ? "default" : "chrome")
             .put("verb", OverlayPageRules.OPEN)
             .put("opened", result.optBoolean("opened")).put("notified", result.optBoolean("notified"))
             .put("overlay", p.overlay).put("where", placed)
             .put("route", result.optString("route")).put("reason", result.optString("reason"))
             .put("tried", result.optJSONArray("tried")).put("attempts", result.optJSONArray("attempts")).put("result", result);
+        remember(c, new JSONObject(out.toString()));
+        return out;
     }
 
     /** One route tried. → its attempt, or null when it turned out not to apply after all (e.g. signed out of the console). */
@@ -349,12 +352,25 @@ final class AxppLink {
                 return tryConsoleTab(url, where);
             case OpenUrlRoute.OVERLAY:
                 return new OpenUrlRoute.Attempt(route, onMain(() -> WatchService.openOverlayPage(c, url)), "overlay-not-ready");
-            case OpenUrlRoute.DIRECT:
+            case OpenUrlRoute.DIRECT: {
                 // Display over other apps exempts AmberX from Android's background-start rule: start the page from the
-                // service. In front, the start is plain.
-                return new OpenUrlRoute.Attempt(route, onMain(() -> startDirect(c, url, browser)), "background-start-blocked");
-            case OpenUrlRoute.FULL_SCREEN:
-                return new OpenUrlRoute.Attempt(route, onMain(() -> postFullScreen(c, url, browser)), "no-full-screen-intent");
+                // service (in front, the start is plain). It goes through the trampoline, so a start Android dropped
+                // without a word is seen as one and the next route runs.
+                if (!browserResolves(c, url, browser)) return new OpenUrlRoute.Attempt(route, false, "attempt-failed");
+                long before = OpenPageActivity.landedAt;
+                if (!onMain(() -> startDirect(c, url, browser))) return new OpenUrlRoute.Attempt(route, false, "background-start-blocked");
+                return new OpenUrlRoute.Attempt(route, landed(before, url, LANDED_WAIT_MS), "background-start-blocked");
+            }
+            case OpenUrlRoute.FULL_SCREEN: {
+                if (!browserResolves(c, url, browser)) return new OpenUrlRoute.Attempt(route, false, "attempt-failed");
+                long before = OpenPageActivity.landedAt;
+                if (!onMain(() -> postFullScreen(c, url, browser))) return new OpenUrlRoute.Attempt(route, false, "no-full-screen-intent");
+                // unlocked and in use, Android shows a full-screen notice as a banner only: the trampoline never runs
+                boolean ok = landed(before, url, LANDED_WAIT_MS);
+                if (!ok) cancelNote(c, NOTE_PAGE);
+                boolean locked = phoneNow(c, where).locked;
+                return new OpenUrlRoute.Attempt(route, ok, locked ? "attempt-failed" : "phone-unlocked");
+            }
             case OpenUrlRoute.NOTIFICATION:
                 return new OpenUrlRoute.Attempt(route, notifyToOpen(c, url, browser), "notifications-off");
             default:
@@ -362,9 +378,52 @@ final class AxppLink {
         }
     }
 
-    /** The browser started straight from AmberX (allowed in front, or with Display over other apps). */
+    /** How long a start gets to show it landed (the trampoline ran) before the next route is tried. */
+    static final long LANDED_WAIT_MS = 1_800;
+
+    /**
+     * The page started straight from AmberX (allowed in front, or with Display over other apps), through
+     * {@link OpenPageActivity} so the start can be seen to land. → false when Android refused it outright.
+     */
     static boolean startDirect(Context c, String url, String browser) {
-        try { c.startActivity(browserIntent(c, url, browser)); return true; } catch (RuntimeException e) { return false; }
+        try { c.startActivity(OpenPageActivity.intent(c, url, browser, 0)); return true; } catch (RuntimeException e) { return false; }
+    }
+
+    /** True when some browser on the phone takes the page (Chrome, else the default). */
+    static boolean browserResolves(Context c, String url, String browser) {
+        try { return browserIntent(c, url, browser).resolveActivity(c.getPackageManager()) != null; } catch (RuntimeException e) { return false; }
+    }
+
+    /** Waits up to [ms] for the trampoline to say it started the browser on [url] after [before]. */
+    static boolean landed(long before, String url, long ms) {
+        long until = System.currentTimeMillis() + ms;
+        while (System.currentTimeMillis() < until) {
+            if (OpenPageActivity.landedAt > before && url.equals(OpenPageActivity.landedUrl)) return true;
+            try { Thread.sleep(100); } catch (InterruptedException e) { Thread.currentThread().interrupt(); return false; }
+        }
+        return OpenPageActivity.landedAt > before && url.equals(OpenPageActivity.landedUrl);
+    }
+
+    static void cancelNote(Context c, int id) {
+        try { ((NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE)).cancel(id); } catch (RuntimeException ignored) { /* nothing to take away */ }
+    }
+
+    static final String PREFS_OPEN = "amberx-open-pages";
+
+    /** The last open_url result (open-url-result@1 + the AXPP fields), kept for the settings screen and the bridge. */
+    static void remember(Context c, JSONObject answer) {
+        try {
+            c.getSharedPreferences(PREFS_OPEN, Context.MODE_PRIVATE).edit()
+                .putString("last", answer.put("at", System.currentTimeMillis()).toString()).apply();
+        } catch (Exception ignored) { /* the answer to axHub still goes out */ }
+    }
+
+    /** The last open_url result, or null when none was kept. */
+    static JSONObject last(Context c) {
+        try {
+            String s = c.getSharedPreferences(PREFS_OPEN, Context.MODE_PRIVATE).getString("last", null);
+            return s == null ? null : new JSONObject(s);
+        } catch (Exception e) { return null; }
     }
 
     /** Runs on the main thread and waits (up to 5 s) for its answer. */
