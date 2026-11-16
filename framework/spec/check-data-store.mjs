@@ -56,7 +56,7 @@ await t('keys, etags, manifests, backoff', () => {
   };
   pure.backoff = { fixedRnd: [0, 1, 2, 3, 4, 5, 9].map((i) => D.backoffMs(i, () => 0.5)), low: D.backoffMs(0, () => 0), high: D.backoffMs(0, () => 1) };
   pure.error = D.errorFrame('conflict', 'builds/store.json is at rev 4', { ns: 'builds', path: 'store.json', rev: 4, etag: '4-0123456789abcdef', retryAfterMs: undefined });
-  pure.pluginKey = { own: D.pluginKey('ui-review', '/items.json'), ok: D.pluginKey('shipped-features', '/ledger.sqlite'), nested: D.pluginKey('agent-swarm', 'chats\\2026\\a.json'), bad: (() => { try { return D.pluginKey('Bad', 'x'); } catch (e) { return { error: e.code }; } })() };
+  pure.pluginKey = { own: D.pluginKey('ui-review', '/items.json'), ok: D.pluginKey('shipped-features', '/ledger.sqlite'), nested: D.pluginKey('sample-plugin', 'chats\\2026\\a.json'), bad: (() => { try { return D.pluginKey('Bad', 'x'); } catch (e) { return { error: e.code }; } })() };
   pure.kindOfFile = Object.fromEntries(['store.json', 'journal/2026-11.jsonl', 'log.ndjson', 'shot.png', 'ledger.sqlite', 'note.md', 'README'].map((f) => [f, D.kindOfFile(f)]));
 });
 
