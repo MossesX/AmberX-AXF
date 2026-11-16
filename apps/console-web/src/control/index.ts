@@ -10,6 +10,7 @@ import { installControlExecutor } from './executor';
 import { installVoiceControl } from '../actions/voice-control';
 import { installConsoleControlActions } from '../actions/console-control';
 import { installSearchPalette } from './SearchPalette';
+import { installPluginSettingsActions } from '../actions/plugin-settings';
 
 export function installConsoleControl(rt: AxfRuntime): () => void {
   const actions = installActionTargets(rt);
@@ -19,5 +20,7 @@ export function installConsoleControl(rt: AxfRuntime): () => void {
   const voice = installVoiceControl(rt);
   const verbs = installConsoleControlActions(rt);
   const palette = installSearchPalette(rt);
-  return () => { actions.off(); plugins(); search(); executor(); voice(); verbs(); palette(); };
+  // plugin-settings@1: plugin.settings.open / get / set (voice, MCP console_action, control@1)
+  const pluginSettings = installPluginSettingsActions(rt);
+  return () => { actions.off(); plugins(); search(); executor(); voice(); verbs(); palette(); pluginSettings(); };
 }

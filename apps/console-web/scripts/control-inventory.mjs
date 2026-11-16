@@ -18,6 +18,7 @@
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { normalizeSettings, TAB_ID } from '../../../framework/core/plugin-settings.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const APP = resolve(HERE, '..');
@@ -159,6 +160,13 @@ function settingsTabs(files, ps) {
         out.set(id, { id, label: t[3] ?? t[4].replace(/\$\{[^}]+\}/g, '').trim(), parent: owner ? 'plugins' : t[5] ?? null, plugin: owner?.m.id ?? null });
       }
     }
+  }
+  // plugin-settings@1 (Nov 16 2026): every plugin has its sub-tab, declared or not (src/settings/pluginTabs.ts gives
+  // the missing ones), so each one is a control target too; appended last so existing addresses keep their order.
+  for (const p of ps) {
+    const tab = normalizeSettings(p.m, { folder: p.folder }).tab;
+    if (!TAB_ID.test(tab) || out.has(tab)) continue;
+    out.set(tab, { id: tab, label: p.m.name ?? p.folder, parent: 'plugins', plugin: p.m.id ?? null });
   }
   return [...out.values()].map((t) => ({ ...t, address: tabAddress(t.id, t.parent) }));
 }
@@ -315,7 +323,7 @@ function assetButtons() {
 function pluginTargets(ps, sTabs, viewOfPlugin) {
   return ps.map((p) => {
     const m = p.m;
-    const tab = sTabs.find((t) => t.plugin === m.id);
+    const tab = sTabs.find((t) => t.plugin === m.id) ?? sTabs.find((t) => t.id === normalizeSettings(m, { folder: p.folder }).tab);
     const view = viewOfPlugin.get(p.folder);
     const short = m.id.split('.').pop();
     return {

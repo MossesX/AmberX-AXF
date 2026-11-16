@@ -6,7 +6,7 @@
     "nav": 16,
     "tabGroups": 26,
     "tabs": 78,
-    "settingsTabs": 71,
+    "settingsTabs": 83,
     "settings": 89,
     "functions": 274,
     "buttons": 62,
@@ -2223,6 +2223,90 @@
       "label": "Toolbars",
       "parent": "plugins",
       "plugin": null
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=brand-library",
+      "id": "brand-library",
+      "label": "Brand library",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.brand-library"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=build-breaker",
+      "id": "build-breaker",
+      "label": "Build Breaker",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.build-breaker"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=builds-page",
+      "id": "builds-page",
+      "label": "Builds",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.builds-page"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-session",
+      "id": "claude-session",
+      "label": "Claude sessions",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.claude-session"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=demonstration-designer",
+      "id": "demonstration-designer",
+      "label": "Demonstration Designer",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.demonstration-designer"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+      "id": "gate",
+      "label": "Gate & rules",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.gate"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=md-studio",
+      "id": "md-studio",
+      "label": "MD Studio",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.md-studio"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plan-studio",
+      "id": "plan-studio",
+      "label": "Plan Studio",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.plan-studio"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugins-menu",
+      "id": "plugins-menu",
+      "label": "Plugins menu",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.plugins-menu"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=shipped-features",
+      "id": "shipped-features",
+      "label": "Shipped features",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.shipped-features"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ui-review",
+      "id": "ui-review",
+      "label": "UI Review",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.ui-review"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=whats-shipped",
+      "id": "whats-shipped",
+      "label": "What's new",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.whats-shipped"
     }
   ],
   "settings": [
@@ -9049,6 +9133,7 @@
         "brand library"
       ],
       "view": "view:brand-library",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=brand-library",
       "provides": [],
       "requires": [],
       "optional": []
@@ -9071,6 +9156,7 @@
         "build breaker"
       ],
       "view": "view:build-breaker",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=build-breaker",
       "provides": [],
       "requires": [],
       "optional": []
@@ -9146,6 +9232,7 @@
         "builds"
       ],
       "view": "view:builds",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=builds-page",
       "provides": [],
       "requires": [],
       "optional": []
@@ -9294,6 +9381,7 @@
         "claude-session",
         "claude sessions"
       ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-session",
       "provides": [],
       "requires": [],
       "optional": [
@@ -9499,6 +9587,7 @@
         "demonstration designer"
       ],
       "view": "view:demonstration-designer",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=demonstration-designer",
       "provides": [
         "service:demonstrations@1"
       ],
@@ -9626,6 +9715,7 @@
         "gate & rules"
       ],
       "view": "view:gate",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
       "provides": [
         "service:axf.gate@1",
         "service:axf.build-rules@1"
@@ -9705,6 +9795,7 @@
         "hub-sync",
         "axhub sync"
       ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=hubsync",
       "provides": [],
       "requires": [],
       "optional": []
@@ -9773,6 +9864,7 @@
         "mcp client"
       ],
       "view": "view:mcp",
+      "settingsTab": "view:settings/tab:settings.tabs=mcp",
       "provides": [],
       "requires": [],
       "optional": []
@@ -9795,6 +9887,7 @@
         "md studio"
       ],
       "view": "view:md-studio",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=md-studio",
       "provides": [],
       "requires": [],
       "optional": [
@@ -9917,6 +10010,7 @@
         "plan studio"
       ],
       "view": "view:plan-studio",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plan-studio",
       "provides": [
         "service:plans@1"
       ],
@@ -10040,6 +10134,7 @@
         "plugins-menu",
         "plugins menu"
       ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugins-menu",
       "provides": [],
       "requires": [],
       "optional": []
@@ -10184,6 +10279,7 @@
         "shipped features"
       ],
       "view": "view:shipped-features",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=shipped-features",
       "provides": [],
       "requires": [],
       "optional": []
@@ -10409,6 +10505,7 @@
         "ui review"
       ],
       "view": "view:ui-review",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ui-review",
       "provides": [
         "service:ui-review@1",
         "service:ui-screenshots@1"
@@ -10482,6 +10579,7 @@
         "whats-shipped",
         "what's new"
       ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=whats-shipped",
       "provides": [],
       "requires": [],
       "optional": []
