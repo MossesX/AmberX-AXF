@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T21:31:06.607Z",
+ "updatedAt": "2026-11-16T22:20:52.648Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -156973,7 +156973,7 @@
    "pr": "#723",
    "priority": "P0",
    "createdAt": "2026-11-16T16:22:57.802Z",
-   "updatedAt": "2026-11-16T21:19:16.512Z",
+   "updatedAt": "2026-11-16T22:20:50.789Z",
    "builtAt": "",
    "notes": [
     {
@@ -157047,6 +157047,10 @@
     {
      "text": "Reconciler: PR #723 names s1, s2, s3, s4, s5, s6, s7, s9, s10, s11, s12, s13, s15 done",
      "at": "2026-11-16T19:41:08.651Z"
+    },
+    {
+     "text": "Reconciler: PR #723 names s1, s2, s3, s4, s5, s6, s7, s9, s10, s11, s12, s13, s14, s15, s18 done",
+     "at": "2026-11-16T22:20:50.789Z"
     }
    ],
    "approvals": [],
@@ -157367,9 +157371,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-16T22:20:50.789Z",
+     "note": "PR #723 (claude/get-main-green-unblock-lander-land-axf)",
      "uid": "st-mwjh5edj0e43h4",
      "createdAt": "2026-11-16T16:25:07.589Z"
     },
