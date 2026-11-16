@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { AgentAvatar, BuildOrigin, Button, ControlScope, Icon, PriorityTag, Segmented, Slot, TabGroup, flashWhenReady, originSubtitle, useControlTarget, useRuntime } from '@console/axf/react';
+import { AgentAvatar, BuildOrigin, Button, ControlScope, flashWhenReady, Icon, originSubtitle, PluginSettingsGear, PriorityTag, Segmented, Slot, TabGroup, useControlTarget, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
 import { WatchLiveFor } from '@console/watchLive';
@@ -103,13 +103,14 @@ export function OrchestratorPage() {
   const waiting = state.builds.filter((b) => b.status === 'waiting').length;
   return (
     <div className="fx-stack fx-stack--lg">
-      <header className="fx-pagehead">
+      <header className="fx-pagehead" data-axf-plugin-header="build-orchestrator">
         <div>
           <p className="fx-eyebrow">Build orchestrator · {state.builds.length} builds{state.updatedAt ? ` · updated ${fmtTime(state.updatedAt)}` : ''}</p>
           <h1>Build orchestrator</h1>
           <p className="fx-muted" title="One session, no sub-agents unless a step says so. Tracker: _claude/builds/store.json">Every build, split into small Fable / Opus steps as soon as it is filed, with its model and account planned; Pending → Queue (your move) → Active (the dispatcher picks the account when its turn comes: subscriptions first, then any API).</p>
         </div>
         <div className="fx-row fx-row--wrap"><Button icon="refresh" disabled={busy} onClick={() => load().then(() => log('reloaded', 'ok'))}>Reload</Button><Slot name="builds.toolbar" props={{ page: 'build-orchestrator' }} /></div>
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Build orchestrator tools" data-axf-toolbar="plugin-header.build-orchestrator"><PluginSettingsGear tab="build-orchestrator" plugin="Build orchestrator" /></div>
       </header>
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
       <TabGroup id="build-orchestrator.tabs" label="Build orchestrator" value={tab} onChange={setTab} tabs={tabRow(custom).map((t) => ({ value: t.id as Tab, label: t.label, icon: t.icon, badge: t.id === 'approvals' && waiting > 0 ? waiting : t.count || undefined }))} />

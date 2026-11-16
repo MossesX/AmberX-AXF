@@ -9,7 +9,7 @@
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
-import { Button, Container, Meter, Note, Segmented, SelectField, Switch, TextField, useRuntime, type AxfWebLibrary } from '@console/axf/react';
+import { Button, Container, Meter, Note, PluginSettingsGear, Segmented, SelectField, Switch, TextField, type AxfWebLibrary, useRuntime } from '@console/axf/react';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { nativeBridge } from './bridge';
 import {
@@ -271,12 +271,13 @@ function AudioExtractView() {
   const setTab = (t: Tab) => { lastTab = t; setTabState(t); };
   return (
     <div className="fx-stack">
-      <header className="fx-pagehead">
+      <header className="fx-pagehead" data-axf-plugin-header="audio-extract">
         <div>
           <p className="fx-eyebrow">Audio Extract</p>
           <h1>{tab === 'record' ? 'Record the screen' : tab === 'files' ? 'Your audio files' : 'Audio out of videos'}</h1>
           <p className="fx-muted">{tab === 'record' ? 'Screen plus the sound apps play, straight into an audio file. No microphone.' : tab === 'files' ? 'Play, share, rename or delete what you’ve extracted.' : 'Pull the audio out of your screen recordings and other videos, with no re-encode.'}</p>
         </div>
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Audio Extract tools" data-axf-toolbar="plugin-header.audio-extract"><PluginSettingsGear tab="audio-extract" plugin="Audio Extract" /></div>
       </header>
       {!c.available() ? (
         <Note tone="warning">Audio Extract runs in the AmberX app on Android: install the newest AmberX APK (it carries the Audio Extract plugin). Nothing runs in a browser.</Note>

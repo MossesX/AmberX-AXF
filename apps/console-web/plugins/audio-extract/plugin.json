@@ -17,6 +17,7 @@
   ],
   "scopes": [],
   "enabledByDefault": false,
+  "settings": { "$axf":  "plugin-settings@1", "tab":  "audio-extract", "parent":  "plugins", "sections":  ["enable", "info", "logs", "options"], "options":  ["audio-extract.format", "audio-extract.folder", "audio-extract.watch", "audio-extract.autoExtract", "audio-extract.deleteVideo", "audio-extract.rec.resolution", "audio-extract.rec.fps", "audio-extract.rec.videoMbps", "audio-extract.rec.audioKbps", "audio-extract.rec.keep", "audio-extract.rec.countdown"], "gear":  true},
   "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "opus", "builtAt": "2026-10-30" },
   "banner": false,

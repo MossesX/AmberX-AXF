@@ -31,6 +31,7 @@
     "NETWORK"
   ],
   "enabledByDefault": true,
+  "settings": { "$axf":  "plugin-settings@1", "tab":  "ai-assistant", "parent":  "plugins", "sections":  ["enable", "info", "logs", "options"], "options":  ["ai-assistant.approvalsBadge"], "gear":  true},
   "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "fable", "builtAt": "2026-10-20", "rebuildOf": "Opus build of Oct 18 2026 (pending item ai-assistant-plugin)" },
   "banner": false,

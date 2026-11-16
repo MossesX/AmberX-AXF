@@ -47,6 +47,7 @@
       "framework/spec/PORTING.md"
     ]
   },
+  "settings": { "$axf":  "plugin-settings@1", "tab":  "agent-swarm", "parent":  "plugins", "sections":  ["enable", "info", "logs", "options"], "options":  ["agent-swarm.colorByVibe", "agent-swarm.vibeColor"], "gear":  true},
   "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": {
     "model": "opus",

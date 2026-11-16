@@ -9,7 +9,7 @@
  * The rules and words come from the framework's listeners library (the same copy the phone runs).
  */
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Chip, Container, Note, SelectField, Switch, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Note, PluginSettingsGear, SelectField, Switch, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { RETRY_CHOICES, listenerLabel, policyFieldsFor, stateLabel, stateTone, type ListenerInfo, type ListenerPolicy, type ListenerState } from '@console/axf/libs/listeners';
 import { pluginFetch } from '@console/plugins';
@@ -105,7 +105,7 @@ export function ListenersPage() {
   const policies = st ? Object.entries(st.policies) : [];
   return (
     <div className="axp-amberx-listeners" data-help="view:amberx-listeners">
-      <header className="fx-pagehead">
+      <header className="fx-pagehead" data-axf-plugin-header="amberx-listeners">
         <div>
           <p className="fx-eyebrow">AmberX</p>
           <h1>AmberX listeners</h1>
@@ -114,6 +114,7 @@ export function ListenersPage() {
         <div className="axp-amberx-listeners__head">
           <Button size="sm" icon="refresh" onClick={refresh}>Refresh</Button>
         </div>
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="AmberX listeners tools" data-axf-toolbar="plugin-header.amberx-listeners"><PluginSettingsGear tab="amberx-listeners" plugin="AmberX listeners" /></div>
       </header>
       {err && <Note tone="warning">{err}</Note>}
       {st && !st.devices.length && <Note tone="info">No AmberX device has published its listeners yet. Open AmberX on the phone (Listeners page, or just leave it running): it reports every few minutes and on every change.</Note>}

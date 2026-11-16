@@ -30,6 +30,7 @@
   "uiEditor": [
     "builder"
   ],
+  "settings": { "$axf":  "plugin-settings@1", "tab":  "agent-manager", "parent":  "plugins", "sections":  ["enable", "info", "logs"], "options":  [], "gear":  true},
   "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "fable", "builtAt": "2026-10-20", "rebuildOf": "Opus build of Oct 18 2026 (pending item agent-manager-plugin)" },
   "banner": false,

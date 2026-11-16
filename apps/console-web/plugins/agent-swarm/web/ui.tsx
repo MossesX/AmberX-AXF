@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Icon, TabGroup, useRuntime } from '@console/axf/react';
+import { Button, Icon, PluginSettingsGear, TabGroup, useRuntime } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridSort } from '@console/axf/libs/datagrid';
 import * as consoleApi from '@console/api';
 import * as core from './swarm-core.mjs';
@@ -39,13 +39,14 @@ export function SwarmPage() {
   if (!state) return <div className="fx-empty">{error || 'Loading the agent swarm…'}</div>;
   return (
     <div className="fx-stack fx-stack--lg">
-      <header className="fx-pagehead">
+      <header className="fx-pagehead" data-axf-plugin-header="agent-swarm">
         <div>
           <p className="fx-eyebrow">Agent swarm · {state.roster.agents.length} agents · {state.meter.total.runs} runs · {core.fmtUsd(state.meter.total.usd)}</p>
           <h1>Agent swarm</h1>
           <p className="fx-muted">Specialist agents run headless, one job each, on the cheapest model that can do it.</p>
         </div>
         <div className="fx-row fx-row--wrap"><Button icon="refresh" onClick={() => Promise.all([load(), jobs.load()]).then(() => rt.terminal.log('swarm', 'reloaded', 'ok'))}>Reload</Button></div>
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Agent swarm tools" data-axf-toolbar="plugin-header.agent-swarm"><PluginSettingsGear tab="agent-swarm" plugin="Agent swarm" /></div>
       </header>
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
       {state.problems.length > 0 && <div className="pl-note is-warn"><Icon name="alert" size={14} />{state.problems.join(' · ')}</div>}

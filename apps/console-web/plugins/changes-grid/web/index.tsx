@@ -6,7 +6,7 @@
  * expands to its details (a change's whole entry is fetched on first expand). Filter, search, sort. Stores nothing.
  */
 import { Fragment, useEffect, useMemo, useState } from 'react';
-import { Button, Chip, IconButton, ModelBadge, PriorityTag, Segmented } from '@console/axf/react';
+import { Button, Chip, IconButton, ModelBadge, PluginSettingsGear, PriorityTag, Segmented } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import * as api from '@console/api';
 import { pluginFetch } from '@console/plugins';
@@ -103,13 +103,14 @@ function GridView() {
 
   return (
     <div className="fx-stack axp-changes-grid">
-      <header className="fx-pagehead">
+      <header className="fx-pagehead" data-axf-plugin-header="changes-grid">
         <div>
           <p className="fx-eyebrow">Builds{data ? ` · ${rows.length} rows · ${n.changes} changes · ${n.features} features` : ' · loading…'}</p>
           <h1>Changes &amp; features</h1>
           <p className="fx-muted axp-changes-grid__lede" title="Every change from the codebase log and every planned feature in one grid, newest first.">Every change and planned feature, newest first.</p>
         </div>
         <IconButton icon="refresh" label="Reload" onClick={reload} />
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Changes & features grid tools" data-axf-toolbar="plugin-header.changes-grid"><PluginSettingsGear tab="changes-grid" plugin="Changes & features grid" /></div>
       </header>
       <div className="axp-changes-grid__bar" role="toolbar" aria-label="Filter the grid">
         <input className="fx-input axp-changes-grid__search" type="search" placeholder="Search names, ids, status, model…" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search" />

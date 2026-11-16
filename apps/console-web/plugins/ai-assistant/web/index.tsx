@@ -1,4 +1,4 @@
-import { Button, useRuntime } from '@console/axf/react';
+import { Button, PluginSettingsGear, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { APPROVALS_BADGE_KEY, FOLDER, ID, type Ctx } from './api';
@@ -23,7 +23,7 @@ function AssistantView() {
   const s = useStatus();
   return (
     <div className="fx-stack">
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">AI · assistant</p><h1 className="axp-ai-assistant__h1"><ActivityIcon size={20} />{s?.assistantName ?? 'AI assistant'}</h1><p className="fx-muted axp-ai-assistant__lede" title="Chat with the framework's assistant or a specialist agent; anything that writes asks you first.">Chat with the assistant or an agent; writes ask you first.</p></div></header>
+      <header className="fx-pagehead" data-axf-plugin-header="ai-assistant"><div><p className="fx-eyebrow">AI · assistant</p><h1 className="axp-ai-assistant__h1"><ActivityIcon size={20} />{s?.assistantName ?? 'AI assistant'}</h1><p className="fx-muted axp-ai-assistant__lede" title="Chat with the framework's assistant or a specialist agent; anything that writes asks you first.">Chat with the assistant or an agent; writes ask you first.</p></div><div className="fx-pagehead__tools" role="toolbar" aria-label="AI assistant tools" data-axf-toolbar="plugin-header.ai-assistant"><PluginSettingsGear tab="ai-assistant" plugin="AI assistant" /></div></header>
       <ChatPanel />
     </div>
   );

@@ -3,7 +3,7 @@
  * tools (with test), training jobs, workflows (with runs), memory browser, add-ons and run history.
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react';
-import { Button, Chip, Icon, TabGroup, useEditorSync, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, PluginSettingsGear, TabGroup, useEditorSync, useRuntime } from '@console/axf/react';
 import { MoreMenu } from './more';
 import { AgentForm, Field, LingoForm, OriginChip, PersonaForm, SkillForm, Text, ToolForm, TrainingForm, WorkflowForm } from './forms';
 import { useData, WIZARDS } from './wizards';
@@ -31,7 +31,7 @@ export function AgentManagerView() {
   const wizard = (kind: string, agentId?: string) => rt.openDialog('agent-manager.wizard', { kind, agentId });
   return (
     <div className="axp-agent-manager fx-stack">
-      <header className="fx-pagehead axp-agent-manager__head">
+      <header className="fx-pagehead axp-agent-manager__head" data-axf-plugin-header="agent-manager">
         <div><p className="fx-eyebrow">AI · agents</p><h1>Agent manager</h1><p className="fx-muted axp-agent-manager__lede" title="Build agents from personas, skills and tools, train them, and run them in workflows — each with its own memory.">Agents from personas, skills and tools, each with its own memory.</p></div>
         <div className="fx-row axp-agent-manager__acts">
           <Button tone="primary" icon="rocket" onClick={() => wizard('builder')}>Agent builder</Button>
@@ -43,6 +43,7 @@ export function AgentManagerView() {
             { label: 'Export library', icon: 'upload', title: 'Everything you made, as one agent-addon@1 bundle (no memory, no keys)', onPick: () => void call('export').then((b) => download('agent-library.addon.json', b)) },
           ]} />
         </div>
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Agent manager tools" data-axf-toolbar="plugin-header.agent-manager"><PluginSettingsGear tab="agent-manager" plugin="Agent manager" /></div>
       </header>
       {err && <div className="axp-agent-manager__note is-warn"><Icon name="alert" size={14} />{err}</div>}
       {status && (

@@ -77,6 +77,8 @@ function settingsTabIds(src) {
 const GEAR_ICON = /icon\s*[=:]\s*\{?\s*['"]settings['"]/;
 const OPENS_SETTINGS = /settings\.open:|openSettings\(|navigate\(\s*['"`]settings|['"`]view:settings/;
 const HEADER_HINT = /head|toolbar|actions|titlebar|Header|PageHead|\btrailing\b|\bextra\b/;
+/** The shared gear (plugin-settings@1): <PluginSettingsGear tab=…/>, <PluginScreenHeader tab=…/> (gear unless gear={false}), a library's `gear: { tab }`. */
+const SHARED_GEAR = /<\s*(PluginSettingsGear|PluginScreenHeader)\b[^>]*?\btab=\{?\s*(?:['"`]([\w.-]+)['"`]|(\w+))|\bgear:\s*\{\s*tab:\s*(?:['"`]([\w.-]+)['"`]|(\w+))/;
 
 function auditPlugin(folder) {
   const dir = join(ROOT, folder);
@@ -89,6 +91,9 @@ function auditPlugin(folder) {
   const tabs = new Set(provides.filter((p) => p.startsWith('settings-tab:')).map((p) => p.slice(13)));
   const sections = new Set();
   const gears = [];
+  // string constants of the plugin's web files (`const FOLDER = 'x'`), so tab={FOLDER} resolves
+  const consts = new Map();
+  for (const f of files) for (const m of readFileSync(f, 'utf8').matchAll(/(?:export )?const (\w+) = ['"]([\w.-]+)['"]/g)) if (!consts.has(m[1])) consts.set(m[1], m[2]);
   for (const f of files) {
     const src = readFileSync(f, 'utf8');
     for (const k of objectKeys(src, 'views')) if (!['title', 'icon', 'render', 'keywords'].includes(k)) views.add(k);
@@ -97,6 +102,12 @@ function auditPlugin(folder) {
     for (const m of src.matchAll(/\btab\s*:\s*['"]([\w.-]+)['"]/g)) sections.add(m[1]);
     const lines = src.split('\n');
     lines.forEach((line, i) => {
+      const shared = line.match(SHARED_GEAR);
+      if (shared && !/gear=\{false\}/.test(line)) {
+        const target = shared[2] ?? consts.get(shared[3]) ?? shared[4] ?? consts.get(shared[5]) ?? null;
+        gears.push({ at: `${relative(REPO, f)}:${i + 1}`, kind: 'screen', target, own: target !== null && tabs.has(target), headerHint: true, shared: true });
+        return;
+      }
       if (!GEAR_ICON.test(line) || !OPENS_SETTINGS.test(line)) return;
       const ctx = lines.slice(Math.max(0, i - 6), i + 1).join('\n');
       const target = (line.match(/settings\.open:([\w.-]+)/) || [])[1] ?? null;

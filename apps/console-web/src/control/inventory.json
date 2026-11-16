@@ -1103,7 +1103,7 @@
       "view": "agent-manager",
       "plugin": "ai.amberx.axf.console.agent-manager",
       "file": "plugins/agent-manager/web/views.tsx",
-      "line": 59,
+      "line": 60,
       "tabs": [
         {
           "address": "view:agent-manager/tab:agent-manager.tabs=agents",
@@ -1159,7 +1159,7 @@
       "view": "agent-manager",
       "plugin": "ai.amberx.axf.console.agent-manager",
       "file": "plugins/agent-manager/web/views.tsx",
-      "line": 331,
+      "line": 332,
       "tabs": [
         {
           "address": "view:agent-manager/tab:agent-manager.detail-view=edit",
@@ -1211,7 +1211,7 @@
       "view": "agent-swarm",
       "plugin": "ai.amberx.axf.console.agent-swarm",
       "file": "plugins/agent-swarm/web/ui.tsx",
-      "line": 52,
+      "line": 53,
       "tabs": [
         {
           "address": "view:agent-swarm/tab:agent-swarm.tabs=crew",
@@ -1262,7 +1262,7 @@
       "view": "agent-voice",
       "plugin": "ai.amberx.axf.console.agent-voice",
       "file": "plugins/agent-voice/web/console.tsx",
-      "line": 89,
+      "line": 90,
       "tabs": [
         {
           "address": "view:agent-voice/tab:agent-voice.section=voice",
@@ -1360,7 +1360,7 @@
       "view": "build-orchestrator",
       "plugin": "ai.amberx.axf.console.build-orchestrator",
       "file": "plugins/build-orchestrator/web/ui.tsx",
-      "line": 115,
+      "line": 116,
       "tabs": []
     },
     {

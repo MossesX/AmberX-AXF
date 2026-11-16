@@ -4,7 +4,7 @@
  * Plus the settings panels (Settings → Plugins → Agent voice): microphone, cloud voices, global pronunciations.
  */
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { Button, Chip, Container, Icon, IconButton, Note, Segmented, SelectField, Slider, Switch, TabGroup, TextField, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Icon, IconButton, Note, PluginSettingsGear, Segmented, SelectField, Slider, Switch, TabGroup, TextField, useRuntime } from '@console/axf/react';
 import {
   applyPreset, AUTO_SPEAK, CODE_MODES, DEFAULT_MIC, EMOJI_MODES, estimateMs, exportProfiles, INTERRUPT, LIGHT_LABEL, MIC_MODES, narrate, NUMBER_MODES, PRESETS,
   READ_MODES, URL_MODES, type MicSettings, type Narrator, type Pronunciation, type VoiceProfile,
@@ -49,7 +49,7 @@ export function AgentVoiceConsole({ initialAgent }: { initialAgent?: string }) {
 
   return (
     <div className="fx-stack fx-stack--lg axp-agent-voice">
-      <header className="fx-pagehead">
+      <header className="fx-pagehead" data-axf-plugin-header="agent-voice">
         <div>
           <p className="fx-eyebrow">Plugins · voice</p>
           <h1 className="axp-agent-voice__h1"><LiveLight size={14} /> Agent voice</h1>
@@ -59,6 +59,7 @@ export function AgentVoiceConsole({ initialAgent }: { initialAgent?: string }) {
           <Button size="sm" icon="mic" onClick={() => rt.dispatch('settings.open:agent-voice')}>Microphone settings</Button>
           <Button size="sm" icon="refresh" onClick={() => void loadVoice(true)}>Reload</Button>
         </div>
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="Agent voice tools" data-axf-toolbar="plugin-header.agent-voice"><PluginSettingsGear tab="agent-voice" plugin="Agent voice" /></div>
       </header>
       {d.error && <Note tone="danger">{d.error}</Note>}
       {d.loaded && !d.agentsService && <Note tone="warning">No agent manager is installed or switched on, so there are no agents to give a voice to. Install the Agent manager plugin, then come back.</Note>}

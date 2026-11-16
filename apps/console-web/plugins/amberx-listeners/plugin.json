@@ -27,6 +27,7 @@
       "/projects/_shared/_data/settings/apps/amberx-droid.json: the AmberX settings document the policies live in (AmberX's own)"
     ]
   },
+  "settings": { "$axf":  "plugin-settings@1", "tab":  "amberx-listeners", "parent":  "plugins", "sections":  ["enable", "info", "logs", "options"], "options":  ["amberx-listeners.refreshSec", "amberx-listeners.open"], "gear":  true},
   "commands": {
     "$axf": "plugin-commands@1",
     "auto": true,
