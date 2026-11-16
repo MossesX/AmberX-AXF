@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:22:57.781Z",
+ "updatedAt": "2026-11-16T19:23:15.376Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -161559,6 +161559,37 @@
      "createdAt": "2026-11-16T19:22:41.951Z"
     }
    ]
+  },
+  {
+   "id": "every-settings-interface-gets",
+   "title": "Every settings interface gets collapsible sections",
+   "category": "",
+   "detail": "Every settings interface in every app (console Settings sections, plugin settings, chrome/asset settings for toolbars, tab groups, banners, nav, menus, and any future one) groups its fields into collapsible sections with a header and chevron, remembered open/closed state per user, Expand all / Collapse all, search opens the matching section. Make it the framework default in the settings asset/template so new interfaces get it automatically, plus a CI check that fails on a settings interface without sections. Builds on orchestrator-settings-collapsible-split (same pattern, don't duplicate). Tokens only; reachable on REST, MCP, CLI, voice. Land through the orchestrator.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-16T19:23:12.681Z",
+   "updatedAt": "2026-11-16T19:23:12.681Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Why don't these settings interfaces have collapsible sections?",
+    "at": "2026-11-16T19:23:12.681Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
