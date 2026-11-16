@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6471,
- "updatedAt": "2026-11-16T14:15:10.887Z",
+ "rev": 6472,
+ "updatedAt": "2026-11-16T14:15:46.190Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -226029,10 +226029,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/console-look-becomes-default-axhub-skin",
-   "pr": "",
+   "pr": "#717",
    "priority": "P0",
    "createdAt": "2026-11-14T22:19:00.612Z",
-   "updatedAt": "2026-11-16T14:14:42.260Z",
+   "updatedAt": "2026-11-16T14:15:44.523Z",
    "builtAt": "",
    "notes": [
     {
@@ -226142,6 +226142,10 @@
     {
      "text": "Shipped manifest sm-console-look-becomes-default-axhub-skin rev 1 sent to Shipped features (api): landed 56503d108, 31 file(s), 2 test line(s), 3 open.",
      "at": "2026-11-16T14:11:41Z"
+    },
+    {
+     "text": "s19: no redeploy or phone note yet. Deploy paths ship main only, and the note's text isn't true until the publish runs. After merge + nightly deploy, systems check hub-default-skin goes red, pushes once to AmberX, and its ask-first Auto fix publishes.",
+     "at": "2026-11-16T14:14:44.594Z"
     }
    ],
    "approvals": [
@@ -226737,7 +226741,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
