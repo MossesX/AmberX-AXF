@@ -19,6 +19,7 @@
   "optional": [],
   "scopes": [],
   "enabledByDefault": true,
+  "settings": { "$axf":  "plugin-settings@1", "tab":  "alerts-bell", "parent":  "plugins", "sections":  ["enable", "info", "logs", "options"], "options":  ["alerts-bell.show", "alerts-bell.side"], "gear":  false},
   "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "opus", "builtAt": "2026-10-21" },
   "banner": false,

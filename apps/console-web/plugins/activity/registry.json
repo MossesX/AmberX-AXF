@@ -1,0 +1,42 @@
+{
+  "$axf": "claude-settings-registry@1",
+  "readme": "Activity banner options (plugin-settings@1): how long finished work lingers and reports live, from its config (GET / PUT /config) through server/plugin_options.py.",
+  "service": "axf.plugin-options.activity@1",
+  "groups": [
+    {
+      "id": "feed",
+      "label": "Feed",
+      "icon": "activity",
+      "order": 10
+    }
+  ],
+  "settings": [
+    {
+      "key": "activity.lingerS",
+      "group": "feed",
+      "label": "Keep finished work for (seconds)",
+      "kind": "number",
+      "default": 600,
+      "min": 0,
+      "max": 86400
+    },
+    {
+      "key": "activity.reportTtlS",
+      "group": "feed",
+      "label": "Reports live for (seconds)",
+      "kind": "number",
+      "default": 1800,
+      "min": 60,
+      "max": 86400
+    },
+    {
+      "key": "activity.childTtlS",
+      "group": "feed",
+      "label": "Sub-steps live for (seconds)",
+      "kind": "number",
+      "default": 300,
+      "min": 60,
+      "max": 3600
+    }
+  ]
+}

@@ -32,6 +32,7 @@
     "ROUTES"
   ],
   "enabledByDefault": true,
+  "settings": { "$axf":  "plugin-settings@1", "tab":  "approvals-banner", "parent":  "plugins", "sections":  ["enable", "info", "logs", "options"], "options":  ["approvals-banner.alarm.on", "approvals-banner.alarm.startAt", "approvals-banner.alarm.tone", "approvals-banner.alarm.volume", "approvals-banner.alarm.louder", "approvals-banner.alarm.louderSeconds", "approvals-banner.alarm.ringSeconds", "approvals-banner.alarm.repeat", "approvals-banner.alarm.repeatGapSeconds", "approvals-banner.alarm.vibration", "approvals-banner.alarm.throughSilent", "approvals-banner.notices", "approvals-banner.notice.sound", "approvals-banner.notice.vibrate", "approvals-banner.notice.repeat", "approvals-banner.overlay.on", "approvals-banner.overlay.expand", "approvals-banner.overlay.show", "approvals-banner.overlay.size", "approvals-banner.overlay.edge", "approvals-banner.overlay.top", "approvals-banner.overlay.idleOpacity", "approvals-banner.overlay.shrinkAfterSec"], "gear":  false},
   "commands": {
     "$axf": "plugin-commands@1",
     "auto": true,

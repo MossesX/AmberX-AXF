@@ -7,7 +7,7 @@
     "tabGroups": 26,
     "tabs": 78,
     "settingsTabs": 83,
-    "settings": 204,
+    "settings": 212,
     "functions": 274,
     "buttons": 62,
     "plugins": 71
@@ -4494,6 +4494,142 @@
       ],
       "runs": "console",
       "file": "src/axf/libs/settings/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=activity/setting:activity.lingerS",
+      "kind": "setting",
+      "label": "Keep finished work for (seconds)",
+      "key": "activity.lingerS",
+      "type": "number",
+      "min": 0,
+      "max": 86400,
+      "detail": "Settings › Plugins › Activity › Feed",
+      "keywords": [
+        "activity.lingerS",
+        "feed",
+        "Activity"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.activity@1",
+      "plugin": "ai.amberx.axf.console.activity"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=activity/setting:activity.reportTtlS",
+      "kind": "setting",
+      "label": "Reports live for (seconds)",
+      "key": "activity.reportTtlS",
+      "type": "number",
+      "min": 60,
+      "max": 86400,
+      "detail": "Settings › Plugins › Activity › Feed",
+      "keywords": [
+        "activity.reportTtlS",
+        "feed",
+        "Activity"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.activity@1",
+      "plugin": "ai.amberx.axf.console.activity"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=activity/setting:activity.childTtlS",
+      "kind": "setting",
+      "label": "Sub-steps live for (seconds)",
+      "key": "activity.childTtlS",
+      "type": "number",
+      "min": 60,
+      "max": 3600,
+      "detail": "Settings › Plugins › Activity › Feed",
+      "keywords": [
+        "activity.childTtlS",
+        "feed",
+        "Activity"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.activity@1",
+      "plugin": "ai.amberx.axf.console.activity"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-slots/setting:agent-slots.maxAgents",
+      "kind": "setting",
+      "label": "Agents at once",
+      "key": "agent-slots.maxAgents",
+      "type": "number",
+      "ownerRaise": true,
+      "detail": "Settings › Plugins › Agent cap › Slots",
+      "keywords": [
+        "agent-slots.maxAgents",
+        "slots",
+        "Agent cap"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.agent-slots@1",
+      "plugin": "ai.amberx.axf.console.agent-slots"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-slots/setting:agent-slots.maxHeavy",
+      "kind": "setting",
+      "label": "Heavy runs at once (builds, tests)",
+      "key": "agent-slots.maxHeavy",
+      "type": "number",
+      "ownerRaise": true,
+      "detail": "Settings › Plugins › Agent cap › Slots",
+      "keywords": [
+        "agent-slots.maxHeavy",
+        "slots",
+        "Agent cap"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.agent-slots@1",
+      "plugin": "ai.amberx.axf.console.agent-slots"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-slots/setting:agent-slots.minFreeGb",
+      "kind": "setting",
+      "label": "Keep this much memory free (GB)",
+      "key": "agent-slots.minFreeGb",
+      "type": "number",
+      "detail": "Settings › Plugins › Agent cap › Slots",
+      "keywords": [
+        "agent-slots.minFreeGb",
+        "slots",
+        "Agent cap"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.agent-slots@1",
+      "plugin": "ai.amberx.axf.console.agent-slots"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-slots/setting:agent-slots.closeFinishedAfterSec",
+      "kind": "setting",
+      "label": "Close finished sessions after (seconds)",
+      "key": "agent-slots.closeFinishedAfterSec",
+      "type": "number",
+      "detail": "Settings › Plugins › Agent cap › Slots",
+      "keywords": [
+        "agent-slots.closeFinishedAfterSec",
+        "slots",
+        "Agent cap"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.agent-slots@1",
+      "plugin": "ai.amberx.axf.console.agent-slots"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-slots/setting:agent-slots.pollSec",
+      "kind": "setting",
+      "label": "Check every (seconds)",
+      "key": "agent-slots.pollSec",
+      "type": "number",
+      "detail": "Settings › Plugins › Agent cap › Slots",
+      "keywords": [
+        "agent-slots.pollSec",
+        "slots",
+        "Agent cap"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.agent-slots@1",
+      "plugin": "ai.amberx.axf.console.agent-slots"
     },
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=brand-library/setting:brand-library.tab",
@@ -10753,7 +10889,8 @@
       ],
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=activity",
       "provides": [
-        "service:axf.activity@1"
+        "service:axf.activity@1",
+        "service:axf.plugin-options.activity@1"
       ],
       "requires": [],
       "optional": [
@@ -10810,7 +10947,8 @@
       ],
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-slots",
       "provides": [
-        "service:axf.agent-slots@1"
+        "service:axf.agent-slots@1",
+        "service:axf.plugin-options.agent-slots@1"
       ],
       "requires": [],
       "optional": [

@@ -226,3 +226,22 @@ class Service:
 
 plugin_services.provide(SELF, Service(), FOLDER)
 ensure_health()
+
+
+# plugin-settings@1: the run limits in plugin.json settings.options through console control (server/plugin_options.py);
+# registry.json lets anyone lower the agent / heavy caps and only Brett raise them.
+def _slots_set(patch: dict[str, Any]) -> dict[str, Any]:
+    code, out, err = _run("set", "--json", json.dumps(patch))
+    if code != 0:
+        raise ValueError(err[-400:] or "refused")
+    _cache["value"] = None
+    return json.loads(out.splitlines()[-1])
+
+
+try:
+    import plugin_options
+
+    plugin_options.provide("agent-slots", read=get_settings, write=_slots_set,
+                           fields={f"agent-slots.{k}": k for k in ("maxAgents", "maxHeavy", "minFreeGb", "closeFinishedAfterSec", "pollSec")})
+except ImportError:  # a bare test run without the console server on the path
+    pass

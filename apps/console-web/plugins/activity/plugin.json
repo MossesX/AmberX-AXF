@@ -13,7 +13,7 @@
   "provides": [
     "banner:activity",
     "service:axf.activity@1",
-    "settings-tab:activity"
+    "settings-tab:activity", "service:axf.plugin-options.activity@1"
   ],
   "optional": [
     "service:axf.changes@1",
@@ -24,6 +24,7 @@
     "ROUTES"
   ],
   "enabledByDefault": true,
+  "settings": { "$axf":  "plugin-settings@1", "tab":  "activity", "parent":  "plugins", "sections":  ["enable", "info", "logs", "options"], "options":  ["activity.lingerS", "activity.reportTtlS", "activity.childTtlS"], "gear":  false},
   "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": {
     "model": "opus",

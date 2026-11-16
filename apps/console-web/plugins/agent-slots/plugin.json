@@ -12,7 +12,7 @@
   ],
   "provides": [
     "settings-tab:agent-slots",
-    "service:axf.agent-slots@1"
+    "service:axf.agent-slots@1", "service:axf.plugin-options.agent-slots@1"
   ],
   "scopes": [
     "ROUTES"
@@ -39,6 +39,7 @@
       "apps/console-web/plugins/README.md"
     ]
   },
+  "settings": { "$axf":  "plugin-settings@1", "tab":  "agent-slots", "parent":  "plugins", "sections":  ["enable", "info", "logs", "options"], "options":  ["agent-slots.maxAgents", "agent-slots.maxHeavy", "agent-slots.minFreeGb", "agent-slots.closeFinishedAfterSec", "agent-slots.pollSec"], "gear":  false},
   "commands": {
     "$axf": "plugin-commands@1",
     "auto": true,

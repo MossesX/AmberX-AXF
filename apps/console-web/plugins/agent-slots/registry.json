@@ -1,0 +1,47 @@
+{
+  "$axf": "claude-settings-registry@1",
+  "readme": "Agent slots options (plugin-settings@1): the VPS-wide run limits (GET / PUT /settings), through server/plugin_options.py. Raising the agent and heavy-run caps is Brett's (owner: raise); anyone may lower them.",
+  "service": "axf.plugin-options.agent-slots@1",
+  "groups": [
+    {
+      "id": "slots",
+      "label": "Slots",
+      "icon": "cpu",
+      "order": 10
+    }
+  ],
+  "settings": [
+    {
+      "key": "agent-slots.maxAgents",
+      "group": "slots",
+      "label": "Agents at once",
+      "kind": "number",
+      "owner": "raise"
+    },
+    {
+      "key": "agent-slots.maxHeavy",
+      "group": "slots",
+      "label": "Heavy runs at once (builds, tests)",
+      "kind": "number",
+      "owner": "raise"
+    },
+    {
+      "key": "agent-slots.minFreeGb",
+      "group": "slots",
+      "label": "Keep this much memory free (GB)",
+      "kind": "number"
+    },
+    {
+      "key": "agent-slots.closeFinishedAfterSec",
+      "group": "slots",
+      "label": "Close finished sessions after (seconds)",
+      "kind": "number"
+    },
+    {
+      "key": "agent-slots.pollSec",
+      "group": "slots",
+      "label": "Check every (seconds)",
+      "kind": "number"
+    }
+  ]
+}

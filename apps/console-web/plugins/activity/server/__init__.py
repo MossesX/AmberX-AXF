@@ -230,3 +230,13 @@ async def put_config(request: Request) -> dict[str, Any]:
         return FEED.set_config(body if isinstance(body, dict) else {})
     except ValueError as e:
         raise HTTPException(400, str(e)) from None
+
+
+# plugin-settings@1: the feed timings in plugin.json settings.options through console control (server/plugin_options.py)
+try:
+    import plugin_options
+
+    plugin_options.provide("activity", read=FEED.config, write=FEED.set_config,
+                           fields={f"activity.{k}": k for k in ("lingerS", "reportTtlS", "childTtlS")})
+except ImportError:  # a bare test run without the console server on the path
+    pass

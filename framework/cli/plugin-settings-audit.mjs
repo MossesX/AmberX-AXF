@@ -144,7 +144,8 @@ function auditPlugin(folder) {
   };
 }
 
-const folders = readdirSync(ROOT).filter((n) => statSync(join(ROOT, n)).isDirectory()).sort();
+// a folder without plugin.json is not a plugin (notes-tasks holds a design and a schema): nothing to audit
+const folders = readdirSync(ROOT).filter((n) => statSync(join(ROOT, n)).isDirectory() && existsSync(join(ROOT, n, 'plugin.json'))).sort();
 const plugins = folders.map(auditPlugin);
 const real = plugins.filter((p) => !p.template);
 const summary = {

@@ -35,6 +35,7 @@
       ".github/workflows/android.yml"
     ]
   },
+  "settings": { "$axf":  "plugin-settings@1", "tab":  "console-commands", "parent":  "plugins", "sections":  ["enable", "info", "logs", "options"], "options":  ["console-commands.enabled", "console-commands.toast"], "gear":  false},
   "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": {
     "model": "opus",
