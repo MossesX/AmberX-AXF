@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6942,
- "updatedAt": "2026-11-16T22:50:58.306Z",
+ "rev": 6943,
+ "updatedAt": "2026-11-16T22:51:28.424Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -243776,7 +243776,7 @@
    "title": "Fix console deep links so open-page lands on the right screen",
    "category": "",
    "detail": "Deep links are broken: opening https://console.amberxai.com/?axf-target=view:build-orchestrator (or view:gate, any view:/tab: address) loads the console's main screen instead of that screen. console_show via the API works, so the address is valid; the URL parameter isn't applied on load. Fix: on page load (and after sign-in redirect, which likely drops the query string), read ?axf-target= and focus that address once the views are registered, including tabs (e.g. view:gate/tab:gate.tabs=auto-lander). Keep the parameter through the hub sign-in redirect. Each open_url must open its own tab when asked. Tests: load with each view address and assert the focused screen. Land with the one-at-a-time lander.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -243784,7 +243784,7 @@
    "pr": "#721",
    "priority": "P0",
    "createdAt": "2026-11-16T16:31:15.510Z",
-   "updatedAt": "2026-11-16T20:01:59.903Z",
+   "updatedAt": "2026-11-16T22:51:15.159Z",
    "builtAt": "",
    "notes": [
     {
@@ -243941,6 +243941,28 @@
      "updatedAt": "2026-11-16T17:01:23.107Z"
     },
     {
+     "id": "s5",
+     "uid": "st-mwjuxzil01ndup",
+     "title": "",
+     "text": "Remote open never lands on home: console_show (search/open/dialog), console_refresh and every console-control open go straight to the exact screen, tab and dialog asked for, no reload to the console home first. If a reload is needed, restore the target address after it. Test: open Gate → Auto-lander remotely, it lands there directly.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T22:51:15.161Z",
+     "updatedAt": "2026-11-16T22:51:16.365Z"
+    },
+    {
      "id": "s4",
      "uid": "st-mwjnot7l014zyy",
      "title": "",
@@ -243971,7 +243993,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
