@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6593,
- "updatedAt": "2026-11-16T17:20:20.699Z",
+ "rev": 6594,
+ "updatedAt": "2026-11-16T17:20:56.017Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -242860,15 +242860,15 @@
    "title": "Orchestrator: On hold status and tab",
    "category": "",
    "detail": "Add a new build status 'held' (On hold) and a new On hold tab/grid in the Build Orchestrator. 1) Multi-select in EVERY orchestrator table (Pending, Queue, Active, Built, Complete, Errors, Archive): checkbox per row, select all, and a bulk action bar with 'Put on hold'. Also on each row's context menu. Putting a running build on hold stops its session cleanly first (branch and worktree kept). 2) On hold tab: grid of held builds (shared 2-row status row and badges, follows the skin's 1-or-2-row setting) showing when it was held, by whom and the build's previous status. Multi-select + bulk actions: Move to Pending, Move to Queue, Archive, Delete (Delete asks for confirm). 3) The dispatcher, reconciler and auto-lander never touch held builds (no launch, no requeue, no land). 4) Status 'held' added to the builds store schema and journal; the reconciler must not flip it. 5) Full API parity: deep link to the tab, REST, MCP (planner.builds action 'status' with 'held', plus bulk actions), CLI and voice. Tests, help, Shipped features. NOTE: an older build 'orchestrator-hold-status-archive-tab' (Nov 12) asked for something similar but never landed and was cleaned up today; check main first and reuse anything that exists rather than duplicate it.",
-   "status": "complete",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/orchestrator-on-hold-status-and-tab",
-   "pr": "",
+   "pr": "#722",
    "priority": "P1",
    "createdAt": "2026-11-16T16:53:45.431Z",
-   "updatedAt": "2026-11-16T17:12:12.293Z",
+   "updatedAt": "2026-11-16T17:20:54.142Z",
    "builtAt": "2026-11-16T17:11:44.616Z",
    "notes": [
     {
@@ -242894,6 +242894,10 @@
     {
      "text": "Headless run axf-orchestrator-on-hold-status-and-tab--gina: brief only · start 16.7K tokens ($0.05) · cost $3.85 · 88 turns · 6 tools, MCP none",
      "at": "2026-11-16T17:12:12.293Z"
+    },
+    {
+     "text": "Reconciler: PR #722",
+     "at": "2026-11-16T17:20:54.142Z"
     }
    ],
    "approvals": [],
@@ -243023,7 +243027,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
