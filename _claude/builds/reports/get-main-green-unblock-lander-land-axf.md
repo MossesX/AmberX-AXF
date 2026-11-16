@@ -56,3 +56,13 @@ All 75 single-line sweep commands were run with `AXF_DATA_DIR=off AXF_BUILD_PROF
 - **Real failure:** the plugin-lifecycle loop (`plugin-lifecycle.mjs check ui-review`) flagged two "stale references" in the gate plugin: `gate-store.mjs:91` and `web/RulesTab.tsx:20`. Both use `'ui-review'` as a **gate rule kind**, not the plugin. **Fixed** on `fix/main-green` with the check's own opt-out marker `axf-not-plugin:ui-review` on both lines. The gate's 21 tests still pass.
 - `help-coverage --check`, `check-console-control`, the glossary checks and the ratchet baselines (`check-chrome-assets`) all pass.
 - With both fixes, the whole local sweep is green except for the environment-only cases listed in s3.
+
+## Python API job (s5)
+
+**No Python fix needed.** The job's Python steps never ran on 56503d108, because the amberx-droid build step before them failed first. Their last full run was green: #324, 32e55adee, 2026-11-15 10:06. Since then nothing changed in `apps/console-web/server/` or in the plugins whose tests failed in the container.
+
+- Ran in `python:3.12` with `requirements.txt` + `httpx`: the 21 server and framework tests plus every `plugins/*/test.py` (76 files).
+- Failures that come only from the container (no Node 22 / `npx` / git there): `codebase-changes`, `context-menu-designer`, `hub-sync`, `plan-studio`, `plugin-update`, `shipped-features`.
+- `test_console_commands` and `systems-check` failed in the container but **pass on the host**.
+- `test_wall_users` "the page itself" needs `apps/console-web/dist`, which CI builds first. It is checked again after s6.
+- The plugins changed since green (`build-orchestrator`, `notify-control`, `push-banner`) all pass their `test.py`.
