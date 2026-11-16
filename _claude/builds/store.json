@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6946,
- "updatedAt": "2026-11-16T22:52:40.022Z",
+ "rev": 6947,
+ "updatedAt": "2026-11-16T22:52:52.772Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -188718,15 +188718,15 @@
    "title": "CHANGE to move-amberx-web-app-into-the-console-amberx-andr (PR #528), Brett: do NOT bring AmberX features into the console. Plan Studio is already there. Only build the Console Android app with all notifications (text, approvals, alerts) going through the console. Drop the rest of the AmberX port. A",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/change-to-move-amberx-web-app-console",
    "pr": "#586",
    "createdAt": "2026-11-13T00:39:39.304Z",
-   "updatedAt": "2026-11-15T00:37:27.734Z",
-   "builtAt": "2026-11-13T11:25:24.180Z",
+   "updatedAt": "2026-11-16T22:52:50.499Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -188779,6 +188779,10 @@
     {
      "text": "Renamed from change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:32:08.163Z"
+    },
+    {
+     "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
+     "at": "2026-11-16T22:52:50.499Z"
     }
    ],
    "approvals": [],
@@ -188963,7 +188967,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -214285,7 +214289,7 @@
    "title": "Auto-land: every finished build lands itself immediately",
    "category": "",
    "detail": "Brett is sick of finished builds sitting unlanded until they're thousands of commits behind. Make auto-land the DEFAULT for every build (the per-build switch stays, default ON):\n- The moment a build finishes and its tests pass, the server lands it on main (build_land logic: push, merge origin/main, union-merge THREADS/STATUS/decisions, settle orchestrator JSON, check JSON, push).\n- Lands go through ONE serial landing queue, so two lands never race (fixes 'cannot lock ref origin/main').\n- On a code clash or failing test, the server automatically queues a P0 'merge main and land' fix build for it and keeps retrying until it lands. Brett gets an FYI notification for each attempt, not a question.\n- A build that's still running gets main merged into its branch every 30 minutes, so it never falls far behind.\n- A sweeper runs every 10 minutes: any finished-but-unlanded build is landed or gets its fix build.\n- A banner/badge shows the landing queue and anything stuck for over 30 minutes.\n- Full API and voice. Tests, help, Shipped features.",
-   "status": "built",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -214293,8 +214297,8 @@
    "pr": "#660",
    "priority": "P0",
    "createdAt": "2026-11-13T20:44:39.782Z",
-   "updatedAt": "2026-11-15T00:38:08.742Z",
-   "builtAt": "2026-11-13T21:17:09.699Z",
+   "updatedAt": "2026-11-16T22:52:39.287Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -214319,6 +214323,10 @@
     {
      "text": "Phase 1 done, PR #660. Main CI is red (test-sandbox profile export); P0 main-ci-red-test-sandbox-profile-export queued, it must land first. Landing chip UI Review shots not submitted: the live console runs main, capture after deploy.",
      "at": "2026-11-13T21:16:52.292Z"
+    },
+    {
+     "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
+     "at": "2026-11-16T22:52:39.287Z"
     }
    ],
    "approvals": [],
@@ -214604,7 +214612,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -236114,7 +236122,7 @@
    "title": "axf-molly container: orchestrator, gate, lander, Shipped sender",
    "category": "",
    "detail": "Replaces move-build-orchestrator-to-axhub (its 37 steps were planned for the old axHub-screens layout and its s1 gate waits on a precondition that no longer applies). FINAL LAYOUT (Brett): console = screens only; axf-molly = does all the work; axHub = routes + credentials/approvals only, no screens, no data; axf-data = stores all data. BUILD a private container 'axf-molly' on Coolify (no public port/DNS, internal Docker network, auto-restart). Check the name doesn't clash with the old standalone Molly app (it's retired; list any leftover container/cron/domain for retirement, delete nothing without listing it). MOVE INTO IT: orchestrator, dispatcher/pipeline tick, reconciler, splitter, slots/accounts routing, gate rules engine (framework/core/gate-rules.mjs from gate-rules-plugin-in-the-console), auto-lander + merge queue with the 'Merge queue on/off' switch, and the merge watch / Shipped features sender (vps-sends-shipped-features-every-merge). It reads/writes ALL data through axf-data (data-container-axf-data-holds-all, data-store@1 client), never repo files. HOST ACCESS: a narrow host bridge (mounted /root/axf-builds worktrees, git, claude CLI, tmux runner) to launch and watch build sessions; NOT the Docker socket; document exactly what it can touch. axHub registers axf-molly as a downstream and exposes orchestrator.*, gate.*, lander.*, features.* tools (equivalents for axf-console.build_orchestrator_pipeline_request and planner.builds). Console orchestrator, Gate & rules and Shipped features screens talk to it through axHub. STAGING: shadow first (axf-molly computes, console acts, diff log), then cutover with an owner lease and undo; builds keep running during the switch; no build or history lost. FIX ON THE WAY: phase-end builds must never be parked in Pending (reconciler bug); dispatcher alert links use view:build-orchestrator. Console-down drill: stop the console and prove builds still launch, land and get Shipped features. Order: start right after axf-data is up (its API and client exist on PR #704). Tests, help, Shipped features. Land each part with the one-at-a-time lander.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -236122,7 +236130,7 @@
    "pr": "#710",
    "priority": "P0",
    "createdAt": "2026-11-15T12:20:29.383Z",
-   "updatedAt": "2026-11-15T13:38:22.402Z",
+   "updatedAt": "2026-11-16T22:52:43.864Z",
    "builtAt": "",
    "notes": [
     {
@@ -236156,6 +236164,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-15T13:38:22.402Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (cli): Brett: archive all >500 behind main.",
+     "at": "2026-11-16T22:52:43.864Z"
     }
    ],
    "approvals": [],
@@ -236287,7 +236299,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
