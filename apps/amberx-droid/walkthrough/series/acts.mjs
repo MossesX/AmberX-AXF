@@ -56,7 +56,7 @@ export const ROUTES = {
     [/voice|wake|overlay|listening|transcript|hands-free/i, go('Voice', 'role=button[name="Speak"] >> nth=0', 'Speak')],
     [/settings|sensitivity|skin picker|permission/i, go('Settings', 'main', 'Settings')],
     [/held call|countdown|approv|deny/i, async (h) => { await h.openHeld(); await h.hl('[role=dialog]', 'Waiting on you'); }],
-    [/./, go('home', '.fx-banner', 'AmberX')],
+    [/./, go('Approvals', '.fx-banner', 'AmberX')],
   ],
   'axhub-android': [],
 };
@@ -70,8 +70,8 @@ export const ACTS = {
     'intro-0': async (h) => { await h.calm(); await h.hl('.fx-banner', 'AmberX'); await h.wait(1200); await h.hl('.fx-region--nav', 'Every page'); },
     'intro-1': async (h) => { await h.go('Voice'); await h.hl('text=/wake/i', 'Wake word'); },
     'intro-2': async (h) => { await h.hl('role=button[name="Speak"] >> nth=0', 'Listening'); },
-    'commands-1': async (h) => { await h.go('Command center'); await h.type('input[type=search], input[placeholder*=earch]', 'pin'); await h.wait(900); await h.click('main [role=row] >> nth=1, main li >> nth=0', 'Its phrases'); },
-    'developer-1': async (h) => { await h.go('home'); await h.openHeld(); await h.hl('[role=dialog] button:has-text("Deny")', 'Deny or Approve'); },
+    'commands-1': async (h) => { await h.go('Command center'); await h.type('main input[type=search], main input[placeholder*=earch]', 'pin'); await h.wait(900); await h.hl('main [role=grid], main table, main [role=list]', 'Its phrases'); },
+    'developer-1': async (h) => { await h.go('Approvals'); await h.openHeld(); await h.hl('[role=dialog] button:has-text("Deny")', 'Deny or Approve'); },
   },
   'orchestrator-agents': {
     'intro-1': async (h) => { await h.view('build-orchestrator', 'Build orchestrator'); await h.click('main [role=row] >> nth=1', 'One build'); await h.hl('main', 'Steps, minutes, models'); },
