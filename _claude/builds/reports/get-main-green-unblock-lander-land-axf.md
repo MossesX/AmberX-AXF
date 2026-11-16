@@ -49,3 +49,10 @@ All 75 single-line sweep commands were run with `AXF_DATA_DIR=off AXF_BUILD_PROF
   - `shipped-features` (`node:sqlite`) and `claude-workers` need Node 22; the VPS has Node 20. Both pass in `node:22`.
   - `deploy/claude-login.test.mjs` has no change in `deploy/` since its last green CI run (56503d108).
 - Side effect seen: running the sweep rewrites `framework/plan/{pending,build-queue,plan}.json`, `tracker.json` and `framework/catalog/libraries.json` (projections). Those were restored and not committed.
+
+## Rest of the Build engine sweep (s4)
+
+- Multi-line steps: `bash -n` on the deploy scripts is clean. Init of every template and boilerplate, `install browser`, `import-ui` and `validate` all pass (551 assets).
+- **Real failure:** the plugin-lifecycle loop (`plugin-lifecycle.mjs check ui-review`) flagged two "stale references" in the gate plugin: `gate-store.mjs:91` and `web/RulesTab.tsx:20`. Both use `'ui-review'` as a **gate rule kind**, not the plugin. **Fixed** on `fix/main-green` with the check's own opt-out marker `axf-not-plugin:ui-review` on both lines. The gate's 21 tests still pass.
+- `help-coverage --check`, `check-console-control`, the glossary checks and the ratchet baselines (`check-chrome-assets`) all pass.
+- With both fixes, the whole local sweep is green except for the environment-only cases listed in s3.
