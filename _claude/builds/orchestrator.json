@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T16:47:40.257Z",
+ "updatedAt": "2026-11-16T16:48:12.372Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -138422,14 +138422,14 @@
    "title": "AmberX Walkthrough: 2-hour indexed, themeable video tour at walkthrough.amberxai.com",
    "category": "docs",
    "detail": "Brett's words: build a two-hour indexed walkthrough with a glossary and chapters covering every plugin, feature, setting and button, one at a time, and how everything ties together. Cover axHub, Plan Studio, AmberX, the Android app, the console, the protocol (AXPP), connectors, the VPS, hosting/Coolify, GitHub, the Claude Code integration, and the employee system. Recorded as a real browser walkthrough with visible cursor clicking through each screen. Player is themeable: switch skins between chapters; show that assets are hot-swappable and that everything (behavior down to text fields) is token-driven, not hand-coded. Clickable glossary and index jump to the chapter/timestamp. Narrated with an adjustable TTS voice (voice, speed, pitch). Users can select chapters and compile them into books. Export to SVG, MP4 and an HTML5+JS playback bundle. Publish at a public URL with a DNS record for walkthrough.amberxai.com (Brett said 'imberxai' — confirm domain against Hostinger DNS) on the VPS via Coolify. Target total runtime: about 2 hours. Wanted when he wakes up.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-14T01:47:26.872Z",
-   "updatedAt": "2026-11-14T04:43:31.383Z",
+   "updatedAt": "2026-11-16T16:47:37.132Z",
    "builtAt": "",
    "notes": [
     {
@@ -138443,6 +138443,10 @@
     {
      "text": "Split by Claude into 27 steps (3 Fable).",
      "at": "2026-11-14T04:43:31.383Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-16T16:47:37.132Z"
     }
    ],
    "approvals": [],
