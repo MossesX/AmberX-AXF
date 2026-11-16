@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6775,
- "updatedAt": "2026-11-16T19:44:23.357Z",
+ "rev": 6776,
+ "updatedAt": "2026-11-16T19:44:33.542Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -245226,8 +245226,8 @@
    "pr": "#729",
    "priority": "P0",
    "createdAt": "2026-11-16T18:28:00.561Z",
-   "updatedAt": "2026-11-16T19:43:57.392Z",
-   "builtAt": "2026-11-16T19:43:53.433Z",
+   "updatedAt": "2026-11-16T19:44:20.879Z",
+   "builtAt": "2026-11-16T19:44:20.879Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -245248,6 +245248,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-hotfix-orchestrator-grid-columns-don-t--lenny, shared account login)",
      "at": "2026-11-16T18:33:48.489Z"
+    },
+    {
+     "text": "Headless run axf-hotfix-orchestrator-grid-columns-don-t--lenny: brief only · start 17.9K tokens ($0.06) · cost $6.71 · 180 turns · 6 tools, MCP none",
+     "at": "2026-11-16T19:44:20.879Z"
     },
     {
      "text": "Phase 1 done: PR #729, in the merge queue. Header and rows share one column definition (subgrid); 1 or 2 lines per row via setting:axf.grid.rowLines. grid-align 420 cases, 0 failures (was 52). UI Review r-20261116-k7rk501 waiting. Still to do after landing + redeploy: hand check on the live console signed in.",
