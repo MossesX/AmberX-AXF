@@ -160,12 +160,20 @@ export function control(s, cmd, build, opts = {}) {
 
 // ------------------------------------------------------------------ the build's worktree
 
-/** Every worktree of the repo, by branch. */
+/**
+ * Every worktree of the repo, by branch. A branch can sit in more than one worktree (`worktree add --force`, a merge
+ * left in /tmp): the build's own (the folder named after the branch's last segment, claude/<id> → …/<id>) wins, else
+ * the first listed, so a stray checkout never stands in for the build's worktree.
+ */
 export function worktrees(git) {
   const out = {}; let cur = null;
+  const own = (br, path) => path.split('/').pop() === br.split('/').pop();
   for (const l of git(['worktree', 'list', '--porcelain']).out.split('\n')) {
     if (l.startsWith('worktree ')) cur = { path: l.slice(9) };
-    else if (l.startsWith('branch refs/heads/') && cur) out[l.slice(18)] = cur.path;
+    else if (l.startsWith('branch refs/heads/') && cur) {
+      const br = l.slice(18);
+      if (!out[br] || (own(br, cur.path) && !own(br, out[br]))) out[br] = cur.path;
+    }
   }
   return out;
 }
