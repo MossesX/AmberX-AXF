@@ -37,7 +37,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { CONTROLLED_COLORS, CONTROLLED_COLOR_KEY, chromeOverrideList, controlledColorOf, CHROME_FIELDS, CHROME_ICONS, CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_INTERFACE_KEY, CHROME_INSTANCE_KEY, CHROME_LABELS, CHROME_MANY, CHROME_MOVES, CHROME_SETTINGS_PATCH_KEY, CHROME_SETTINGS_PICK_KEY, CHROME_SETTINGS_TABS, CHROME_TYPES, FRAMEWORK_MODULE, POSITION_LABELS, SETTINGS_LEVEL_KEY, SETTINGS_LEVELS, SETTINGS_LEVEL_LABEL, chromeFieldValue, chromeInstanceSettingsPick, chromeLabel, chromeSettingsChoices, chromeSettingsCustomId, chromeSettingsDefaultId, chromeSettingsPick, chromeTypeOfTarget, isChromeInstanceId, isChromeType, normalizeInstanceOverride, normalizeSettingsUi, resolveSettingsChain, settingsLevelOf, settingsLevelRank, type AssetType, type AxfRuntime, type ChromeField, type ChromeType, type SettingsLevel, type SettingsUi, type SettingSpec, type SettingValue } from '../../core';
 import { TAP_KEYS, TAP_KINDS, isTapKind, tapArmMs, tapKindKey } from '../../core/engines/tapconfirm';
-import { CHROME_TAP_FIELD, CHROME_TAP_OPTIONS, TAB_ROWS_FIELD, matchTabGroup, parseTabRows } from '../../core/engines/chrome-settings-rules.mjs';
+import { CHROME_TAP_FIELD, CHROME_TAP_OPTIONS, RESET_ALL_UNDO_KEY, TAB_ROWS_FIELD, findResetAllUndo, listOverriddenAssets, matchTabGroup, parseTabRows, pushResetAllUndo, resetAllPlan, undoResetAllPlan, type OverriddenAsset, type ResetAllUndo } from '../../core/engines/chrome-settings-rules.mjs';
 import { CONTROL_TOKEN_SLOTS, withTokenOverride, withoutTokenOverride } from '../../core/engines/control-tokens.mjs';
 import { COMPONENT_TOKEN_FAMILIES, INSTANCE_TOKENS_KEY, componentToken, componentTokenError, instanceHasPrevious, instanceTokenValues, isComponentTokenFamily, restoreInstanceTokensFromHub, restorePreviousInstanceTokens, setInstanceToken, type ComponentTokenFamily } from '../../core/engines/component-tokens.mjs';
 import type { MenuEntry } from '../../core/engines/windows';
@@ -157,6 +157,52 @@ export function swapChrome(rt: AxfRuntime, type: ChromeType, instance: string, a
   return rt.swap(type as AssetType, id);
 }
 
+/** Drop every override of one instance (fields, own asset pick, own interface pick): chrome.reset. */
+export function resetChrome(rt: AxfRuntime, type: ChromeType, instance: string): void {
+  rt.settings.batch({ clear: [CHROME_INSTANCE_KEY(type, instance), CHROME_INSTANCE_ASSET_KEY(type, instance), CHROME_INSTANCE_INTERFACE_KEY(type, instance)] });
+}
+
+/** What Reset all did: the rows reset and the id that takes it back ('' when there was nothing to reset). */
+export interface ResetAllResult { reset: string[]; undoId: string }
+
+/**
+ * Reset all (Brett, Nov 16 2026: "I want to reset all, all. Button."): every asset controlled by its own settings goes
+ * back to its asset — the keys chrome.reset clears for each, plus their tab-row tokens — in ONE settings batch, so
+ * editors and other apps see one change. The values before it are kept as one undo entry (`axf.chrome.reset-all.undo`,
+ * newest 5, this device), written in the same batch. Idempotent: nothing overridden = nothing written, undoId ''.
+ */
+export function resetAll(rt: AxfRuntime): ResetAllResult {
+  const saved = rt.settings.savedValues();
+  const plan = resetAllPlan(saved);
+  if (!plan.ids.length) return { reset: [], undoId: '' };
+  const undoId = `ra-${Date.now().toString(36)}`;
+  const ring = pushResetAllUndo(saved[RESET_ALL_UNDO_KEY], { id: undoId, at: new Date().toISOString(), ids: plan.ids, snapshot: plan.snapshot });
+  rt.settings.batch({ clear: plan.clear, set: { ...(plan.set as Record<string, SettingValue>), [RESET_ALL_UNDO_KEY]: ring as unknown as SettingValue } });
+  return { reset: plan.ids, undoId };
+}
+
+/** Take a Reset all back ('' / 'last' = the newest): every touched key gets its value from before. Returns the rows restored, or null. */
+export function undoResetAll(rt: AxfRuntime, undoId = ''): string[] | null {
+  const saved = rt.settings.savedValues();
+  const entry = findResetAllUndo(saved[RESET_ALL_UNDO_KEY], undoId);
+  if (!entry) return null;
+  const w = undoResetAllPlan(entry.snapshot);
+  const rest = (saved[RESET_ALL_UNDO_KEY] as unknown as ResetAllUndo[]).filter((e) => e && e.id !== entry.id);
+  rt.settings.batch({
+    set: { ...(w.set as Record<string, SettingValue>), ...(rest.length ? { [RESET_ALL_UNDO_KEY]: rest as unknown as SettingValue } : {}) },
+    clear: [...w.clear, ...(rest.length ? [] : [RESET_ALL_UNDO_KEY])],
+  });
+  return entry.ids;
+}
+
+/** The readable state behind Reset all: every overridden asset, and the undo ids kept (newest first). */
+export function overridesState(rt: AxfRuntime): { count: number; overrides: OverriddenAsset[]; undo: { id: string; at: string; ids: string[] }[] } {
+  const saved = rt.settings.savedValues();
+  const overrides = listOverriddenAssets(saved);
+  const ring = Array.isArray(saved[RESET_ALL_UNDO_KEY]) ? (saved[RESET_ALL_UNDO_KEY] as unknown as ResetAllUndo[]) : [];
+  return { count: overrides.length, overrides, undo: ring.map(({ id, at, ids }) => ({ id, at, ids })) };
+}
+
 /** The context-menu block every chrome kind shares. */
 export function chromeMenu(rt: AxfRuntime, type: ChromeType, instance: string): MenuEntry[] {
   const label = chromeLabel(type);
@@ -190,7 +236,7 @@ export function installChrome(rt: AxfRuntime): void {
       if (v === null) { rt.toast(`${chromeLabel(ty)} has no setting "${key}" with that value.`, 'warning', 'Chrome settings'); return; }
       setChromeField(rt, ty, inst(ty, instance, ctx), key, v);
     }, { label: 'Set one chrome setting (chrome.set:<type>:<instance>:<field>:<value>)', params: true, requires: 'assets.swap' });
-    rt.actions.register('chrome.reset', ([type, instance], ctx) => { const ty = t(type); if (!ty) return; const i = inst(ty, instance, ctx); rt.settings.clear(CHROME_INSTANCE_KEY(ty, i)); rt.settings.clear(CHROME_INSTANCE_ASSET_KEY(ty, i)); rt.settings.clear(CHROME_INSTANCE_INTERFACE_KEY(ty, i)); }, { label: 'Reset a chrome piece to its asset', params: true, requires: 'assets.swap' });
+    rt.actions.register('chrome.reset', ([type, instance], ctx) => { const ty = t(type); if (ty) resetChrome(rt, ty, inst(ty, instance, ctx)); }, { label: 'Reset a chrome piece to its asset', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.swap', ([type, instance, asset = 'next'], ctx) => { const ty = t(type); if (ty && !swapChrome(rt, ty, inst(ty, instance, ctx), asset)) rt.toast(`No ${chromeLabel(ty).toLowerCase()} asset "${asset}".`, 'warning', 'Change'); }, { label: 'Use another chrome asset (chrome.swap:<type>:<instance>:<asset|next>)', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.unset', ([type, instance, key = ''], ctx) => { const ty = t(type); if (ty && key) setChromeField(rt, ty, inst(ty, instance, ctx), key, null); }, { label: 'Reset one chrome setting to the app (chrome.unset:<type>:<instance>:<field>)', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.edits', () => rt.dispatch('settings.open:appearance'), { label: 'Assets with edits (Settings → Appearance)' });
