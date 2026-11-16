@@ -26,3 +26,14 @@ The last completed CI run on `main` is red: run 43710482736 on 56503d108, 2026-1
 Branch dispatches on 11-16 (`console-look-becomes-default-axhub-skin`, `demo-video-series-three-minute-browser`,
 `console-android-app-thin-webview-wrapper`) all hit #1 too. Every open branch that merges main stays red until #1 is fixed.
 That is why the auto-lander has nothing green to land.
+
+## Disk-full damage check (s2, 2026-11-16)
+
+Disk-full damage is **not** behind the red CI.
+
+- `df -h /`: 387 G, 294 G used, **94 G free (76 %)**. Not low, so the builder cache was not pruned.
+- `docker system df`: images 16.8 G (3.2 G reclaimable), volumes 2.7 G, build cache **78.5 G, of which 4.0 G is reclaimable** (401 of 428 entries active). Worth a prune when space gets tight, not now.
+- `git fsck --connectivity-only`: **clean** (exit 0, no missing or broken objects). A full content fsck of the whole object store took more than 5 min and was stopped.
+- Zero-byte tracked files (excluding `.gitkeep`/`__init__.py`): **none**.
+- JSON under `_claude/builds/` and `framework/schemas/`: **all parse**.
+- JSONL under `_claude/builds/`: `journal/2026-11-p7.jsonl` has **2 truncated lines**: line 461 (rev 4521, 2026-11-13, 2.2 MB, `pipeline:alias`) and line 1437 (rev 2960, 2026-11-10, 1.3 MB, `pipeline:plan`). Each stops mid-string, which looks like a cut-off write. The journal is append-only history, and every reader (`builds-store.mjs` `journalOf`, builds-live union) skips unparseable lines, so no check fails on them. The two revisions can't be recovered from `history`/`restore`. They are left as they are, because rewriting journal history would fight builds-live's union merge.
