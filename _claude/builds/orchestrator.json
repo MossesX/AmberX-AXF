@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-15T20:13:05.047Z",
+ "updatedAt": "2026-11-16T12:30:44.668Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -19,10 +19,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/yo-a7qg14",
-   "pr": "",
+   "pr": "#19",
    "mergedAt": "2026-10-22T05:57:20Z",
    "createdAt": "2026-10-22T05:57:20Z",
-   "updatedAt": "2026-11-12T03:33:34Z",
+   "updatedAt": "2026-11-16T12:30:42.775Z",
    "builtAt": "2026-10-22T05:57:20Z",
    "notes": [
     {
@@ -32,6 +32,10 @@
     {
      "text": "Shipped manifest sm-yo-a7qg14 rev 1 sent to Shipped features (backfill): landed b04a5254f, 97 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:33:34Z"
+    },
+    {
+     "text": "Reconciler: PR #19",
+     "at": "2026-11-16T12:30:42.775Z"
     }
    ],
    "approvals": [],
@@ -146,10 +150,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/laughing-thompson-eqfjw1",
-   "pr": "",
+   "pr": "#35",
    "mergedAt": "2026-10-23T01:27:22Z",
    "createdAt": "2026-10-23T01:27:22Z",
-   "updatedAt": "2026-11-12T03:33:31Z",
+   "updatedAt": "2026-11-16T12:30:42.775Z",
    "builtAt": "2026-10-23T01:27:22Z",
    "notes": [
     {
@@ -159,6 +163,10 @@
     {
      "text": "Shipped manifest sm-laughing-thompson-eqfjw1 rev 1 sent to Shipped features (backfill): landed cc116b4f9, 8 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:33:31Z"
+    },
+    {
+     "text": "Reconciler: PR #35",
+     "at": "2026-11-16T12:30:42.775Z"
     }
    ],
    "approvals": [],
@@ -478,10 +486,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/project-thread-v9io2i",
-   "pr": "",
+   "pr": "#49",
    "mergedAt": "2026-10-23T22:49:29Z",
    "createdAt": "2026-10-23T22:49:29Z",
-   "updatedAt": "2026-11-12T03:33:23Z",
+   "updatedAt": "2026-11-16T12:30:42.775Z",
    "builtAt": "2026-10-23T22:49:29Z",
    "notes": [
     {
@@ -491,6 +499,10 @@
     {
      "text": "Shipped manifest sm-project-thread-v9io2i rev 1 sent to Shipped features (backfill): landed 76c26f353, 3 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:33:23Z"
+    },
+    {
+     "text": "Reconciler: PR #49",
+     "at": "2026-11-16T12:30:42.775Z"
     }
    ],
    "approvals": [],
@@ -642,10 +654,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/project-thread-c4954d",
-   "pr": "",
+   "pr": "#47",
    "mergedAt": "2026-10-23T23:14:56Z",
    "createdAt": "2026-10-23T23:14:56Z",
-   "updatedAt": "2026-11-12T03:33:18Z",
+   "updatedAt": "2026-11-16T12:30:42.775Z",
    "builtAt": "2026-10-23T23:14:56Z",
    "notes": [
     {
@@ -655,6 +667,10 @@
     {
      "text": "Shipped manifest sm-project-thread-c4954d rev 1 sent to Shipped features (backfill): landed 52fb3a1b5, 20 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:33:18Z"
+    },
+    {
+     "text": "Reconciler: PR #47",
+     "at": "2026-11-16T12:30:42.775Z"
     }
    ],
    "approvals": [],
@@ -1134,10 +1150,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/project-thread-vfc6wi",
-   "pr": "",
+   "pr": "#68",
    "mergedAt": "2026-10-24T22:05:42Z",
    "createdAt": "2026-10-24T22:05:42Z",
-   "updatedAt": "2026-11-12T03:32:57Z",
+   "updatedAt": "2026-11-16T12:30:42.775Z",
    "builtAt": "2026-10-24T22:05:42Z",
    "notes": [
     {
@@ -1147,6 +1163,10 @@
     {
      "text": "Shipped manifest sm-project-thread-vfc6wi rev 1 sent to Shipped features (backfill): landed 0d3d41fd6, 1 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:32:57Z"
+    },
+    {
+     "text": "Reconciler: PR #68",
+     "at": "2026-11-16T12:30:42.775Z"
     }
    ],
    "approvals": [],
@@ -1585,10 +1605,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/project-thread-y6pzy7",
-   "pr": "",
+   "pr": "#78",
    "mergedAt": "2026-10-25T18:20:50Z",
    "createdAt": "2026-10-25T18:20:50Z",
-   "updatedAt": "2026-11-12T03:32:43Z",
+   "updatedAt": "2026-11-16T12:30:42.775Z",
    "builtAt": "2026-10-25T18:20:50Z",
    "notes": [
     {
@@ -1598,6 +1618,10 @@
     {
      "text": "Shipped manifest sm-project-thread-y6pzy7 rev 1 sent to Shipped features (backfill): landed ec1871592, 45 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:32:43Z"
+    },
+    {
+     "text": "Reconciler: PR #78",
+     "at": "2026-11-16T12:30:42.775Z"
     }
    ],
    "approvals": [],
@@ -2368,10 +2392,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/threads-oauth-soft",
-   "pr": "",
+   "pr": "#109",
    "mergedAt": "2026-10-26T23:14:04Z",
    "createdAt": "2026-10-26T23:14:04Z",
-   "updatedAt": "2026-11-12T03:32:16Z",
+   "updatedAt": "2026-11-16T12:30:42.775Z",
    "builtAt": "2026-10-26T23:14:04Z",
    "notes": [
     {
@@ -2381,6 +2405,10 @@
     {
      "text": "Shipped manifest sm-threads-oauth-soft rev 1 sent to Shipped features (backfill): landed 690480b3f, 2 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:32:16Z"
+    },
+    {
+     "text": "Reconciler: PR #109",
+     "at": "2026-11-16T12:30:42.775Z"
     }
    ],
    "approvals": [],
@@ -2409,10 +2437,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/threads-110-merged",
-   "pr": "",
+   "pr": "#111",
    "mergedAt": "2026-10-26T23:39:54Z",
    "createdAt": "2026-10-26T23:39:54Z",
-   "updatedAt": "2026-11-12T03:32:15Z",
+   "updatedAt": "2026-11-16T12:30:42.775Z",
    "builtAt": "2026-10-26T23:39:54Z",
    "notes": [
     {
@@ -2422,6 +2450,10 @@
     {
      "text": "Shipped manifest sm-threads-110-merged rev 1 sent to Shipped features (backfill): landed b11d97be5, 1 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:32:15Z"
+    },
+    {
+     "text": "Reconciler: PR #111",
+     "at": "2026-11-16T12:30:42.775Z"
     }
    ],
    "approvals": [],
@@ -2532,10 +2564,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/threads-cleanup",
-   "pr": "",
+   "pr": "#113",
    "mergedAt": "2026-10-27T00:06:55Z",
    "createdAt": "2026-10-27T00:06:55Z",
-   "updatedAt": "2026-11-12T03:32:11Z",
+   "updatedAt": "2026-11-16T12:30:42.775Z",
    "builtAt": "2026-10-27T00:06:55Z",
    "notes": [
     {
@@ -2545,6 +2577,10 @@
     {
      "text": "Shipped manifest sm-threads-cleanup rev 1 sent to Shipped features (backfill): landed 916f7e650, 1 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:32:11Z"
+    },
+    {
+     "text": "Reconciler: PR #113",
+     "at": "2026-11-16T12:30:42.775Z"
     }
    ],
    "approvals": [],
@@ -2573,10 +2609,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/threads-carry-on",
-   "pr": "",
+   "pr": "#114",
    "mergedAt": "2026-10-27T00:20:09Z",
    "createdAt": "2026-10-27T00:20:09Z",
-   "updatedAt": "2026-11-12T03:32:10Z",
+   "updatedAt": "2026-11-16T12:30:42.775Z",
    "builtAt": "2026-10-27T00:20:09Z",
    "notes": [
     {
@@ -2586,6 +2622,10 @@
     {
      "text": "Shipped manifest sm-threads-carry-on rev 1 sent to Shipped features (backfill): landed 44e88c784, 2 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:32:10Z"
+    },
+    {
+     "text": "Reconciler: PR #114",
+     "at": "2026-11-16T12:30:42.775Z"
     }
    ],
    "approvals": [],
@@ -2614,10 +2654,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/threads-amberx-shell",
-   "pr": "",
+   "pr": "#116",
    "mergedAt": "2026-10-27T03:25:34Z",
    "createdAt": "2026-10-27T03:25:34Z",
-   "updatedAt": "2026-11-12T03:32:08Z",
+   "updatedAt": "2026-11-16T12:30:42.775Z",
    "builtAt": "2026-10-27T03:25:34Z",
    "notes": [
     {
@@ -2627,6 +2667,10 @@
     {
      "text": "Shipped manifest sm-threads-amberx-shell rev 1 sent to Shipped features (backfill): landed ecb201864, 1 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:32:08Z"
+    },
+    {
+     "text": "Reconciler: PR #116",
+     "at": "2026-11-16T12:30:42.775Z"
     }
    ],
    "approvals": [],
@@ -2655,10 +2699,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/threads-amberx-keep",
-   "pr": "",
+   "pr": "#117",
    "mergedAt": "2026-10-27T03:27:53Z",
    "createdAt": "2026-10-27T03:27:53Z",
-   "updatedAt": "2026-11-12T03:32:06Z",
+   "updatedAt": "2026-11-16T12:30:42.775Z",
    "builtAt": "2026-10-27T03:27:53Z",
    "notes": [
     {
@@ -2668,6 +2712,10 @@
     {
      "text": "Shipped manifest sm-threads-amberx-keep rev 1 sent to Shipped features (backfill): landed e435b930e, 1 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:32:06Z"
+    },
+    {
+     "text": "Reconciler: PR #117",
+     "at": "2026-11-16T12:30:42.775Z"
     }
    ],
    "approvals": [],
@@ -2737,10 +2785,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/threads-after-129",
-   "pr": "",
+   "pr": "#135",
    "mergedAt": "2026-10-27T20:01:43Z",
    "createdAt": "2026-10-27T20:01:43Z",
-   "updatedAt": "2026-11-12T03:32:00Z",
+   "updatedAt": "2026-11-16T12:30:42.775Z",
    "builtAt": "2026-10-27T20:01:43Z",
    "notes": [
     {
@@ -2750,6 +2798,10 @@
     {
      "text": "Shipped manifest sm-threads-after-129 rev 1 sent to Shipped features (backfill): landed 0bbc09d47, 2 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:32:00Z"
+    },
+    {
+     "text": "Reconciler: PR #135",
+     "at": "2026-11-16T12:30:42.775Z"
     }
    ],
    "approvals": [],
@@ -2901,10 +2953,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/refactor-profile-today",
-   "pr": "",
+   "pr": "#140",
    "mergedAt": "2026-10-27T23:11:08Z",
    "createdAt": "2026-10-27T23:11:08Z",
-   "updatedAt": "2026-11-12T03:31:54Z",
+   "updatedAt": "2026-11-16T12:30:42.775Z",
    "builtAt": "2026-10-27T23:11:08Z",
    "notes": [
     {
@@ -2914,6 +2966,10 @@
     {
      "text": "Shipped manifest sm-refactor-profile-today rev 1 sent to Shipped features (backfill): landed 5de7a7b5a, 3 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:31:54Z"
+    },
+    {
+     "text": "Reconciler: PR #140",
+     "at": "2026-11-16T12:30:42.775Z"
     }
    ],
    "approvals": [],
@@ -2942,10 +2998,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/fix-merge-pr-stdin",
-   "pr": "",
+   "pr": "#145",
    "mergedAt": "2026-10-28T02:47:20Z",
    "createdAt": "2026-10-28T02:47:20Z",
-   "updatedAt": "2026-11-12T03:31:52Z",
+   "updatedAt": "2026-11-16T12:30:42.775Z",
    "builtAt": "2026-10-28T02:47:20Z",
    "notes": [
     {
@@ -2955,6 +3011,10 @@
     {
      "text": "Shipped manifest sm-fix-merge-pr-stdin rev 1 sent to Shipped features (backfill): landed b3173afa9, 4 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:31:52Z"
+    },
+    {
+     "text": "Reconciler: PR #145",
+     "at": "2026-11-16T12:30:42.775Z"
     }
    ],
    "approvals": [],
@@ -3024,10 +3084,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/voice-fix-done",
-   "pr": "",
+   "pr": "#150",
    "mergedAt": "2026-10-28T10:20:19Z",
    "createdAt": "2026-10-28T10:20:19Z",
-   "updatedAt": "2026-11-12T03:31:50Z",
+   "updatedAt": "2026-11-16T12:30:42.775Z",
    "builtAt": "2026-10-28T10:20:19Z",
    "notes": [
     {
@@ -3037,6 +3097,10 @@
     {
      "text": "Shipped manifest sm-voice-fix-done rev 1 sent to Shipped features (backfill): landed 9e2036661, 2 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:31:50Z"
+    },
+    {
+     "text": "Reconciler: PR #150",
+     "at": "2026-11-16T12:30:42.775Z"
     }
    ],
    "approvals": [],
@@ -3434,10 +3498,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/theme-sync-pane",
-   "pr": "",
+   "pr": "#224",
    "mergedAt": "2026-11-01T17:29:35Z",
    "createdAt": "2026-11-01T17:29:35Z",
-   "updatedAt": "2026-11-12T03:31:39Z",
+   "updatedAt": "2026-11-16T12:30:42.775Z",
    "builtAt": "2026-11-01T17:29:35Z",
    "notes": [
     {
@@ -3447,6 +3511,10 @@
     {
      "text": "Shipped manifest sm-theme-sync-pane rev 1 sent to Shipped features (backfill): landed 1156332ce, 57 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:31:39Z"
+    },
+    {
+     "text": "Reconciler: PR #224",
+     "at": "2026-11-16T12:30:42.775Z"
     }
    ],
    "approvals": [],
@@ -3639,10 +3707,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/xlayout-plan",
-   "pr": "",
+   "pr": "#239",
    "mergedAt": "2026-11-02T18:57:03Z",
    "createdAt": "2026-11-02T18:57:03Z",
-   "updatedAt": "2026-11-12T03:31:33Z",
+   "updatedAt": "2026-11-16T12:30:42.775Z",
    "builtAt": "2026-11-02T18:57:03Z",
    "notes": [
     {
@@ -3652,6 +3720,10 @@
     {
      "text": "Shipped manifest sm-xlayout-plan rev 1 sent to Shipped features (backfill): landed 08be44835, 10 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:31:33Z"
+    },
+    {
+     "text": "Reconciler: PR #239",
+     "at": "2026-11-16T12:30:42.775Z"
     }
    ],
    "approvals": [],
@@ -3721,10 +3793,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/md-studio-theme-editor-plan",
-   "pr": "",
+   "pr": "#242",
    "mergedAt": "2026-11-03T02:54:55Z",
    "createdAt": "2026-11-03T02:54:55Z",
-   "updatedAt": "2026-11-12T03:31:31Z",
+   "updatedAt": "2026-11-16T12:30:42.775Z",
    "builtAt": "2026-11-03T02:54:55Z",
    "notes": [
     {
@@ -3734,6 +3806,10 @@
     {
      "text": "Shipped manifest sm-md-studio-theme-editor-plan rev 1 sent to Shipped features (backfill): landed f41458afa, 11 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:31:31Z"
+    },
+    {
+     "text": "Reconciler: PR #242",
+     "at": "2026-11-16T12:30:42.775Z"
     }
    ],
    "approvals": [],
@@ -64326,9 +64402,10 @@
    "source": "chat",
    "pendingId": "rebake-console",
    "branch": "claude/rebake-console",
-   "pr": "",
+   "pr": "#108",
+   "mergedAt": "2026-10-26T22:53:38Z",
    "createdAt": "2026-10-26T22:35:28.810Z",
-   "updatedAt": "2026-11-13T23:50:25.429Z",
+   "updatedAt": "2026-11-16T12:30:42.775Z",
    "builtAt": "2026-10-26T22:35:28.810Z",
    "notes": [
     {
@@ -64342,6 +64419,10 @@
     {
      "text": "Reconciler: branch claude/rebake-console (no PR yet)",
      "at": "2026-11-13T23:50:25.429Z"
+    },
+    {
+     "text": "Reconciler: PR #108; PR #108 merged",
+     "at": "2026-11-16T12:30:42.775Z"
     }
    ],
    "approvals": [],

@@ -808,26 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 04:17 UTC · `auto-lander-controls-in-the-gate-plugin` added (0 steps) (all) · console
-- 2026-11-15 04:17 UTC · `auto-lander-controls-in-the-gate-plugin` → queued, note (all) · console
-- 2026-11-15 04:17 UTC · `auto-lander-controls-in-the-gate-plugin` note (all) · mcp
-- 2026-11-15 04:19 UTC · `auto-lander-controls-in-the-gate-plugin` note (all) · mcp
-- 2026-11-15 04:19 UTC · `auto-lander-controls-in-the-gate-plugin` note (all) · orchestrator
-- 2026-11-15 04:20 UTC · `move-build-orchestrator-to-axhub` added (0 steps) (all) · console
-- 2026-11-15 04:20 UTC · `auto-lander-controls-in-the-gate-plugin` note (all) · orchestrator
-- 2026-11-15 04:20 UTC · `auto-lander-controls-in-the-gate-plugin` → running, note (all) · pipeline
-- 2026-11-15 04:20 UTC · `move-build-orchestrator-to-axhub` → queued, note (all) · console
-- 2026-11-15 04:20 UTC · `auto-lander-controls-in-the-gate-plugin` branch claude/auto-lander-controls-in-the-gate-plugin (all) · pipeline
-- 2026-11-15 04:22 UTC · `move-build-orchestrator-to-axhub` note (all) · mcp
-- 2026-11-15 04:22 UTC · `auto-lander-controls-in-the-gate-plugin` note (all) · mcp
-- 2026-11-15 04:22 UTC · `move-build-orchestrator-to-axhub` note (all) · orchestrator
-- 2026-11-15 04:23 UTC · `move-build-orchestrator-to-axhub` → running, note (all) · pipeline
-- 2026-11-15 04:23 UTC · `move-build-orchestrator-to-axhub` note (all) · orchestrator
-- 2026-11-15 04:23 UTC · `move-build-orchestrator-to-axhub` branch claude/move-build-orchestrator-to-axhub (all) · pipeline
-- 2026-11-15 04:24 UTC · `move-build-orchestrator-to-axhub` → running, note (all) · pipeline
-- 2026-11-15 04:24 UTC · `move-build-orchestrator-to-axhub` note (all) · mcp
-- 2026-11-15 04:24 UTC · `auto-lander-controls-in-the-gate-plugin` note (all) · mcp
-- 2026-11-15 04:24 UTC · `move-build-orchestrator-to-axhub` note (all) · orchestrator
 - 2026-11-15 04:25 UTC · `move-build-orchestrator-to-axhub` → pending, note (all) · pipeline
 - 2026-11-15 04:25 UTC · `move-build-orchestrator-to-axhub` note (all) · orchestrator
 - 2026-11-15 04:25 UTC · `move-build-orchestrator-to-axhub` note (all) · mcp
@@ -1208,6 +1188,26 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-15 20:10 UTC · `auto-lander-controls-in-the-gate-plugin` s15 done, → built (all) · orchestrator
 - 2026-11-15 20:12 UTC · `auto-lander-controls-in-the-gate-plugin` note (all) · orchestrator
 - 2026-11-15 20:13 UTC · `auto-lander-controls-in-the-gate-plugin` note (all) · pipeline
+- 2026-11-16 12:30 UTC · `rebake-console` PR #108, merged, note (all) · reconciler
+- 2026-11-16 12:30 UTC · `md-studio-theme-editor-plan` PR #242, note (all) · reconciler
+- 2026-11-16 12:30 UTC · `xlayout-plan` PR #239, note (all) · reconciler
+- 2026-11-16 12:30 UTC · `theme-sync-pane` PR #224, note (all) · reconciler
+- 2026-11-16 12:30 UTC · `voice-fix-done` PR #150, note (all) · reconciler
+- 2026-11-16 12:30 UTC · `fix-merge-pr-stdin` PR #145, note (all) · reconciler
+- 2026-11-16 12:30 UTC · `refactor-profile-today` PR #140, note (all) · reconciler
+- 2026-11-16 12:30 UTC · `threads-after-129` PR #135, note (all) · reconciler
+- 2026-11-16 12:30 UTC · `threads-amberx-keep` PR #117, note (all) · reconciler
+- 2026-11-16 12:30 UTC · `threads-amberx-shell` PR #116, note (all) · reconciler
+- 2026-11-16 12:30 UTC · `threads-carry-on` PR #114, note (all) · reconciler
+- 2026-11-16 12:30 UTC · `threads-cleanup` PR #113, note (all) · reconciler
+- 2026-11-16 12:30 UTC · `threads-110-merged` PR #111, note (all) · reconciler
+- 2026-11-16 12:30 UTC · `threads-oauth-soft` PR #109, note (all) · reconciler
+- 2026-11-16 12:30 UTC · `project-thread-y6pzy7` PR #78, note (all) · reconciler
+- 2026-11-16 12:30 UTC · `project-thread-vfc6wi` PR #68, note (all) · reconciler
+- 2026-11-16 12:30 UTC · `project-thread-c4954d` PR #47, note (all) · reconciler
+- 2026-11-16 12:30 UTC · `project-thread-v9io2i` PR #49, note (all) · reconciler
+- 2026-11-16 12:30 UTC · `laughing-thompson-eqfjw1` PR #35, note (all) · reconciler
+- 2026-11-16 12:30 UTC · `yo-a7qg14` PR #19, note (all) · reconciler
 
 ## Token passes (log)
 
