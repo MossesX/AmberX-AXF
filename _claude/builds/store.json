@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6569,
- "updatedAt": "2026-11-16T16:57:24.703Z",
+ "rev": 6586,
+ "updatedAt": "2026-11-16T17:11:46.849Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -27472,7 +27472,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -94058,7 +94060,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -101202,7 +101206,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -110414,7 +110420,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -123618,7 +123626,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-molly-native-expenses",
@@ -123896,7 +123906,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -124289,7 +124301,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -137976,7 +137990,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -140542,7 +140558,9 @@
     "pickedAt": "2026-11-14T22:45:32.880Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -140945,7 +140963,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -146897,7 +146917,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -147324,7 +147346,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -147902,7 +147926,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -149196,7 +149222,7 @@
    "title": "Inline edit plugin: install in console, Molly and AmberX web (not Android); Molly never renders a plugin twice",
    "category": "",
    "detail": "Amends the inline element editing build. 1) Install the plugin in the console, Molly and AmberX web. Not the AmberX Android app. 2) Molly rule for every plugin: when a console page is open inside Molly, render the console's plugin only if Molly doesn't already have that plugin, so nothing ever renders twice.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -149205,7 +149231,7 @@
    "pr": "#471",
    "priority": "P1",
    "createdAt": "2026-11-10T16:40:38.588Z",
-   "updatedAt": "2026-11-16T16:43:52.424Z",
+   "updatedAt": "2026-11-16T17:10:54.799Z",
    "builtAt": "",
    "notes": [
     {
@@ -149243,6 +149269,10 @@
     {
      "text": "Note from build remove-old-molly-app-project-keep-axf (Nov 16 2026): the Molly app is removed (apps/molly, molly.amberxai.com, the molly agent add-on; the guide is now gizmo-guide). Drop the Molly part of this build; the rest stands.",
      "at": "2026-11-16T16:43:52.424Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-16T17:10:54.799Z"
     }
    ],
    "approvals": [],
@@ -149285,7 +149315,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -149552,7 +149584,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 96,
+   "rev": 97,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151604,7 +151636,9 @@
     "pickedAt": "2026-11-13T10:38:25.274Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-orchestrator-hold-status-archive-tab-deleted-tab",
@@ -151763,7 +151797,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -153534,7 +153570,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -155741,7 +155779,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -155956,7 +155996,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-land-all-97-built-but-unmerged-builds-skins-firs",
@@ -156497,7 +156539,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -156683,7 +156727,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -156888,7 +156934,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -157097,7 +157145,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -157315,7 +157365,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -157536,7 +157588,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -157761,7 +157815,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -157995,7 +158051,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -158224,7 +158282,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -158453,7 +158513,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -158687,7 +158749,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -159341,7 +159405,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -160151,7 +160217,9 @@
     "pickedAt": "2026-11-15T01:24:21.442Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-molly-gap-axhub-cors",
@@ -160386,7 +160454,9 @@
     "pickedAt": "2026-11-16T16:47:14.644Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -160621,7 +160691,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -160869,7 +160941,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -161053,7 +161127,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -161252,7 +161328,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -161512,7 +161590,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -161704,7 +161784,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -161899,7 +161981,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -162083,7 +162167,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -162507,7 +162593,9 @@
     "pickedAt": "2026-11-14T23:56:20.868Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-fix-axhub-36-pull-main-in-failed",
@@ -163288,7 +163376,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -163478,7 +163568,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -163692,7 +163784,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -164034,7 +164128,9 @@
     "pickedAt": "2026-11-13T10:37:52.173Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -164213,7 +164309,9 @@
     "pickedAt": "2026-11-13T10:43:09.520Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -164355,7 +164453,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -164455,7 +164555,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -164599,7 +164701,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -164790,7 +164894,9 @@
     "pickedAt": "2026-11-13T10:37:41.673Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -164909,7 +165015,9 @@
     "pickedAt": "2026-11-12T02:52:13.861Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -165076,7 +165184,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -165245,7 +165355,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -165357,7 +165469,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -172226,7 +172340,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -172399,7 +172515,9 @@
     "pickedAt": "2026-11-13T11:25:40.599Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -172511,7 +172629,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -172627,7 +172747,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -172776,7 +172898,9 @@
     "pickedAt": "2026-11-13T11:25:46.013Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -172930,7 +173054,9 @@
     "pickedAt": "2026-11-12T20:42:37.390Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -173006,7 +173132,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -173206,7 +173334,9 @@
     "pickedAt": "2026-11-13T00:46:14.486Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-amberx-approval-pop-up-not-showing-only-the-android-notification",
@@ -173381,7 +173511,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans",
@@ -173663,7 +173795,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -173734,7 +173868,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -174024,7 +174160,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-add-a-tap-to-confirm-option-to-every-settings-in",
@@ -174213,7 +174351,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -174456,7 +174596,9 @@
     "pickedAt": "2026-11-12T22:15:14.526Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -174558,7 +174700,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -174698,7 +174842,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -174849,7 +174995,9 @@
     "pickedAt": "2026-11-12T22:46:08.743Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -175013,7 +175161,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -175192,7 +175342,9 @@
     "pickedAt": "2026-11-13T01:52:11.782Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds",
@@ -175381,7 +175533,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx",
@@ -175631,7 +175785,9 @@
     "pickedAt": "2026-11-13T01:46:09.134Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -175789,7 +175945,9 @@
     "pickedAt": "2026-11-13T01:58:11.445Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -175973,7 +176131,9 @@
     "pickedAt": "2026-11-13T06:14:29.774Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o",
@@ -176136,7 +176296,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -176239,7 +176401,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -176371,7 +176535,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -176484,7 +176650,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n",
@@ -176659,7 +176827,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -176820,7 +176990,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -177004,7 +177176,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -177196,7 +177370,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -177372,7 +177548,9 @@
     "pickedAt": "2026-11-13T06:14:47.983Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -177528,7 +177706,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the",
@@ -177738,7 +177918,9 @@
     "pickedAt": "2026-11-13T11:25:18.500Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -177852,7 +178034,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to",
@@ -178076,7 +178260,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app",
@@ -178264,7 +178450,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less",
@@ -178568,7 +178756,9 @@
     "pickedAt": "2026-11-13T03:28:15.605Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -178754,7 +178944,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -178935,7 +179127,9 @@
     "pickedAt": "2026-11-13T07:08:11.318Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -179079,7 +179273,9 @@
     "pickedAt": "2026-11-13T06:56:46.988Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -179277,7 +179473,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -179304,7 +179502,7 @@
    "title": "Remove Molly completely: delete the molly add-on bundle from agent-manager, the _offer_molly auto-install on start, the molly-guide plugin and anything that pops Molly up on load",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -179313,7 +179511,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T07:10:15.600Z",
-   "updatedAt": "2026-11-16T16:45:27.038Z",
+   "updatedAt": "2026-11-16T17:10:54.799Z",
    "builtAt": "",
    "notes": [
     {
@@ -179343,6 +179541,10 @@
     {
      "text": "Built together with remove-old-molly-app-project-keep-axf (branch claude/remove-old-molly-app-project-keep-axf): the molly add-on and _offer_molly are gone (an installed copy is retired once on start), the guide moved to gizmo-guide (AmberX uses it, so it is renamed rather than deleted), nothing opens on load. Report _claude/builds/reports/remove-old-molly-app-project-keep-axf.md.",
      "at": "2026-11-16T16:45:21.878Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-16T17:10:54.799Z"
     }
    ],
    "approvals": [],
@@ -179379,7 +179581,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -179648,7 +179852,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -179857,7 +180061,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu",
@@ -180759,7 +180965,9 @@
     "pickedAt": "2026-11-13T10:43:20.478Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -180840,7 +181048,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -181010,7 +181220,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -181134,7 +181346,9 @@
     "pickedAt": "2026-11-13T10:48:26.846Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -181252,7 +181466,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-android-approval-overlay-a-small-always-on-float",
@@ -181418,7 +181634,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -182136,7 +182354,9 @@
     "pickedAt": "2026-11-13T11:17:35.908Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -182277,7 +182497,9 @@
     "pickedAt": "2026-11-13T11:37:09.309Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-overlay-opens-pages-the-floating-toolbar-expands",
@@ -182480,7 +182702,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -183177,7 +183401,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -183709,7 +183935,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -184428,7 +184656,9 @@
     "pickedAt": "2026-11-13T12:17:15.710Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -184943,7 +185173,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -185221,7 +185453,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [],
    "profiles": [
@@ -185310,7 +185544,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -185529,7 +185765,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -185744,7 +185982,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -185871,7 +186111,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -186141,7 +186383,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -186415,7 +186659,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -186638,7 +186884,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -186940,7 +187188,9 @@
     "pickedAt": "2026-11-14T23:00:36.515Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -187751,7 +188001,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -188059,7 +188311,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -188269,7 +188523,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -188470,7 +188726,9 @@
     "pickedAt": "2026-11-13T11:25:18.500Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -188708,7 +188966,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -188928,7 +189188,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -189197,7 +189459,9 @@
     "pickedAt": "2026-11-14T23:10:32.487Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -189480,7 +189744,9 @@
     "pickedAt": "2026-11-13T11:17:35.908Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -190140,7 +190406,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-every-skin-ships-light-dark-colour-theme",
@@ -190394,7 +190662,9 @@
     "pickedAt": "2026-11-16T13:12:13.730Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -190842,7 +191112,9 @@
     "pickedAt": "2026-11-13T10:48:26.846Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -191043,7 +191315,9 @@
     "pickedAt": "2026-11-12T20:42:37.390Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -191309,7 +191583,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -191573,7 +191849,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -191808,7 +192086,9 @@
     "pickedAt": "2026-11-12T22:46:08.743Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -192213,7 +192493,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -192811,7 +193093,9 @@
     "pickedAt": "2026-11-12T22:15:14.526Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -193325,7 +193609,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -193712,7 +193998,9 @@
     "pickedAt": "2026-11-14T23:08:13.680Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -193916,7 +194204,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -194143,7 +194433,9 @@
     "pickedAt": "2026-11-13T10:38:25.274Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-orchestrator-hold-status-archive-tab-deleted-tab",
@@ -194418,7 +194710,9 @@
     "pickedAt": "2026-11-14T23:06:12.490Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -194601,7 +194895,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -194828,7 +195124,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -195085,7 +195383,9 @@
     "pickedAt": "2026-11-13T06:14:47.983Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -195719,7 +196019,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -195944,7 +196246,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -196186,7 +196490,9 @@
     "pickedAt": "2026-11-13T01:58:11.445Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -196388,7 +196694,9 @@
     "pickedAt": "2026-11-13T06:56:46.988Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -196862,7 +197170,9 @@
     "pickedAt": "2026-11-13T01:46:09.134Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -197096,7 +197406,9 @@
     "pickedAt": "2026-11-14T23:04:23.303Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -197382,7 +197694,9 @@
     "pickedAt": "2026-11-13T11:25:40.599Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -197665,7 +197979,9 @@
     "pickedAt": "2026-11-13T03:28:15.605Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-skin-configuration-panel-before-ai-makes",
@@ -198117,7 +198433,9 @@
     "pickedAt": "2026-11-13T07:08:11.318Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-skins-plugin-own-removable-console",
@@ -199378,7 +199696,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -199598,7 +199918,9 @@
     "pickedAt": "2026-11-13T11:25:46.013Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -199794,7 +200116,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -199980,7 +200304,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -200288,7 +200614,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -200537,7 +200865,9 @@
     "pickedAt": "2026-11-13T17:49:19.495Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-per-instance-settings-window-picker",
@@ -200731,7 +201061,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-tab-groups-choose-how-many-rows-tabs",
@@ -200941,7 +201273,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -201257,7 +201591,9 @@
     "pickedAt": "2026-11-15T00:09:20.551Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -201471,7 +201807,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -201842,7 +202180,9 @@
     "pickedAt": "2026-11-15T00:27:21.094Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -202213,7 +202553,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -202575,7 +202917,9 @@
     "pickedAt": "2026-11-13T18:19:54.760Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -202886,7 +203230,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -203218,7 +203564,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -203553,7 +203901,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -203803,7 +204153,9 @@
     "pickedAt": "2026-11-13T18:36:14.104Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-transparency-token-works-every-dialog",
@@ -204192,7 +204544,9 @@
     "pickedAt": "2026-11-16T13:23:15.243Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -204737,7 +205091,9 @@
     "pickedAt": "2026-11-13T19:19:07.577Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -205136,7 +205492,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -205424,7 +205782,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -205773,7 +206133,9 @@
     "pickedAt": "2026-11-13T19:29:11.351Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -206058,7 +206420,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -206358,7 +206722,9 @@
     "pickedAt": "2026-11-13T19:30:50.870Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -206679,7 +207045,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -207065,7 +207433,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-orchestrator-custom-groups-custom-tabs",
@@ -207493,7 +207863,9 @@
     "pickedAt": "2026-11-15T01:03:18.277Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-skin-axhub-override-switch-greyed-out",
@@ -207787,7 +208159,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -207976,7 +208350,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -208339,7 +208715,9 @@
     "pickedAt": "2026-11-14T23:15:54.090Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -208576,7 +208954,9 @@
     "pickedAt": "2026-11-13T19:53:15.999Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -208780,7 +209160,9 @@
     "pickedAt": "2026-11-13T19:35:33.966Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -208969,7 +209351,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -209141,7 +209525,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -209354,7 +209740,9 @@
     "pickedAt": "2026-11-13T19:43:15.087Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-per-instance-settings-picker-merge-main",
@@ -209607,7 +209995,9 @@
     "pickedAt": "2026-11-14T23:35:28.763Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-skin-config-panel-merge-main-and-land",
@@ -209834,7 +210224,9 @@
     "pickedAt": "2026-11-13T19:56:14.274Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-skins-plugin-merge-main-and-land",
@@ -210013,7 +210405,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -210350,7 +210744,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-skin-animations-swatches-skin-switch",
@@ -210671,7 +211067,9 @@
     "pickedAt": "2026-11-13T19:59:07.053Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -210954,7 +211352,9 @@
     "pickedAt": "2026-11-14T03:35:14.704Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -211264,7 +211664,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -211575,7 +211977,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -211830,7 +212234,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-own-token-sets-for-grids-and-tab-groups",
@@ -212148,7 +212554,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-token-registry-skin-editor-live-sandbox",
@@ -212540,7 +212948,9 @@
     "pickedAt": "2026-11-13T20:18:14.562Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-dispatcher-gate-never-launch-build",
@@ -212778,7 +213188,9 @@
     "pickedAt": "2026-11-14T23:17:21.049Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-per-toolbar-settings-fix-failing-chrome",
@@ -212947,7 +213359,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -213326,7 +213740,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -213634,7 +214050,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -213988,7 +214406,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -214186,7 +214606,9 @@
     "pickedAt": "2026-11-13T20:50:31.267Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -214358,7 +214780,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -214612,7 +215036,9 @@
     "pickedAt": "2026-11-14T23:23:17.794Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-lander-regenerates-generated-files-clash",
@@ -214849,7 +215275,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-hotfix-desktop-console-draws-app-menu",
@@ -215045,7 +215473,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-main-ci-red-test-sandbox-profile-export",
@@ -215218,7 +215648,9 @@
     "pickedAt": "2026-11-13T23:41:19.408Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -215616,7 +216048,9 @@
     "pickedAt": "2026-11-14T23:23:43.044Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-land-batch-merge-main-each-finished",
@@ -216280,7 +216714,9 @@
     "pickedAt": "2026-11-14T23:28:18.129Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -216878,7 +217314,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-voice-listener-use-claude-when-connected",
@@ -217356,7 +217794,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -218242,7 +218682,9 @@
     "pickedAt": "2026-11-14T12:28:09.521Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-hotfix-get-main-ci-green-theme-swap",
@@ -218465,7 +218907,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -219341,7 +219785,9 @@
     "pickedAt": "2026-11-14T03:51:29.271Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -219591,7 +220037,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -219972,7 +220420,9 @@
     "pickedAt": "2026-11-16T13:24:57.284Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -220693,7 +221143,9 @@
     "pickedAt": "2026-11-16T13:13:13.711Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -220953,7 +221405,9 @@
     "pickedAt": "2026-11-14T16:46:23.975Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-builds-share-one-claude-login-write",
@@ -221210,7 +221664,9 @@
     "pickedAt": "2026-11-14T16:51:21.042Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -221326,8 +221782,8 @@
    "pr": "#673",
    "mergedAt": "2026-11-14T17:36:16Z",
    "createdAt": "2026-11-14T16:51:14.645Z",
-   "updatedAt": "2026-11-14T23:05:52.963Z",
-   "builtAt": "2026-11-14T23:02:03.463Z",
+   "updatedAt": "2026-11-16T17:10:54.799Z",
+   "builtAt": "2026-11-16T17:10:54.799Z",
    "notes": [
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-hotfix-toolbar-settings-still-change--lenny, own login copy)",
@@ -221376,6 +221832,14 @@
     {
      "text": "Headless run axf-hotfix-toolbar-settings-still-change--gina: brief only · start 11.1K tokens ($0.03) · cost $2.36 · 60 turns · 6 tools, MCP none",
      "at": "2026-11-14T23:05:52.963Z"
+    },
+    {
+     "text": "Brett (Nov 16 17:02): toolbar settings (per-toolbar settings) STILL don't work. Check whether the Nov 15 hand-merge of PR #503 (bug-asset-settings-nav-menu-tab-bar-toolbar-chan) is actually on main AND deployed in the running console; then finish this hotfix, fix its CI, land it, redeploy the console, and verify on a real toolbar that changing its settings applies and sticks.",
+     "at": "2026-11-16T17:06:55.483Z"
+    },
+    {
+     "text": "Reconciler: PR #673 merged: complete",
+     "at": "2026-11-16T17:10:54.799Z"
     }
    ],
    "approvals": [],
@@ -221418,7 +221882,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-hotfix-toolbar-settings-still-change",
@@ -221514,6 +221980,28 @@
      "rev": 2,
      "createdAt": "2026-11-14T16:51:14.646Z",
      "updatedAt": "2026-11-14T23:02:03.914Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwjinf9q01puel",
+     "title": "",
+     "text": "Brett (Nov 16): it STILL doesn't work on the live console, even though #673 landed Nov 14. The fix was never clicked through by hand. Sign in to the live console with a real session (headless Chrome via the hub login), right-click a toolbar → Settings, change each setting (Buttons = Labels, size, position, etc.) on several toolbars (main toolbar, workspace toolbars, orchestrator toolbar). Record which ones save but don't redraw, and which don't save. Fix the real break, add a browser test that does exactly this, land it, redeploy, and re-check by hand on the live console. Then send Brett a phone alert.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T17:07:07.829Z",
+     "updatedAt": "2026-11-16T17:07:08.174Z"
     }
    ],
    "profiles": [
@@ -221524,7 +222012,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -221601,7 +222089,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -222347,7 +222837,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -223051,7 +223543,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -223939,7 +224433,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-land-all-skin-builds",
@@ -224693,7 +225189,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-replace-merge-queue-one-time-landing",
@@ -225449,7 +225947,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -226383,7 +226883,9 @@
     "pickedAt": "2026-11-16T13:24:18.129Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -226998,7 +227500,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -227332,7 +227836,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-merge-main-land-change-to-move-amberx",
@@ -227649,7 +228155,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -227989,7 +228497,9 @@
     "pickedAt": "2026-11-14T23:46:40.547Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -228318,7 +228828,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -228625,7 +229137,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -228951,7 +229465,9 @@
     "pickedAt": "2026-11-15T00:15:47.364Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -229289,7 +229805,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-merge-main-land-voice-listener-use",
@@ -229632,7 +230150,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-merge-main-land-console-axhub-retry",
@@ -230004,7 +230524,9 @@
     "pickedAt": "2026-11-15T19:57:09.845Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -230585,7 +231107,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -231662,7 +232186,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -232490,7 +233016,9 @@
     "pickedAt": "2026-11-15T11:54:29.199Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -232959,7 +233487,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -233723,7 +234253,9 @@
     "pickedAt": "2026-11-15T11:58:22.439Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-gate-rules-plugin-in-the-console",
@@ -234420,7 +234952,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -234663,7 +235197,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -235210,7 +235746,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -235409,7 +235947,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -235960,7 +236500,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "shipped": {
     "id": "sm-build-rules-tab-gate-rules-vps-owns",
@@ -236632,8 +237174,8 @@
    "pr": "#712",
    "priority": "P1",
    "createdAt": "2026-11-15T13:36:18.858Z",
-   "updatedAt": "2026-11-16T16:31:06.531Z",
-   "builtAt": "2026-11-16T16:31:06.531Z",
+   "updatedAt": "2026-11-16T17:08:51.405Z",
+   "builtAt": "2026-11-16T17:08:51.405Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -236810,7 +237352,9 @@
     "pickedAt": "2026-11-16T16:26:37.487Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -237684,11 +238228,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-16T16:31:06.531Z",
-     "note": "PR #712 (claude/phone-connect-small-android-companion)",
+     "doneAt": "2026-11-16T17:08:51.405Z",
+     "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T13:15:36.513Z",
-     "updatedAt": "2026-11-16T16:31:06.535Z"
+     "updatedAt": "2026-11-16T17:08:51.708Z"
     }
    ],
    "profiles": [
@@ -237804,7 +238348,9 @@
     "pickedAt": "2026-11-15T14:57:29.625Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -238293,7 +238839,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -238476,7 +239024,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -239063,7 +239613,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -240489,16 +241041,16 @@
    "title": "Remove the old Molly app from the project (keep axf-molly)",
    "category": "",
    "detail": "The old Molly app is dead (container 'molly' at molly.amberxai.com is being shut down and deleted). Remove every reference to the OLD Molly from the project: the molly app/web UI, the molly.amberxai.com deploy and its DNS/proxy route, the Molly agent add-on in the Agent manager (apps/console-web/plugins/agent-manager/addons/molly), the console's 'Molly guide', docs, rules, help and glossary mentions. Move anything still useful into the console. DO NOT touch the axf-molly container or its name: it is the current worker (orchestrator, gate, lander, Shipped sender) and stays as-is. List everything being removed in the PR first. Tests green, land with the one-at-a-time lander.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/remove-old-molly-app-project-keep-axf",
-   "pr": "",
+   "pr": "#720",
    "priority": "P1",
    "createdAt": "2026-11-16T16:17:05.624Z",
-   "updatedAt": "2026-11-16T16:48:03.205Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T17:01:41.126Z",
+   "builtAt": "2026-11-16T17:01:41.126Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -240519,6 +241071,14 @@
     {
      "text": "Brief only: brief is 30778 characters (~7695 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-16T16:20:33.943Z"
+    },
+    {
+     "text": "Headless run axf-remove-old-molly-app-project-keep-axf--gina: brief only · start 19.6K tokens ($0.07) · cost $12.43 · 195 turns · 6 tools, MCP none",
+     "at": "2026-11-16T17:01:28.673Z"
+    },
+    {
+     "text": "Reconciler: PR #720 names s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16 done",
+     "at": "2026-11-16T17:01:41.126Z"
     }
    ],
    "approvals": [],
@@ -240567,7 +241127,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -240975,12 +241537,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-16T17:01:41.126Z",
+     "note": "PR #720 (claude/remove-old-molly-app-project-keep-axf)",
+     "rev": 2,
      "createdAt": "2026-11-16T16:19:58.360Z",
-     "updatedAt": "2026-11-16T16:19:58.360Z"
+     "updatedAt": "2026-11-16T17:01:41.128Z"
     }
    ],
    "profiles": [
@@ -240991,7 +241553,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -241015,7 +241577,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T16:22:57.802Z",
-   "updatedAt": "2026-11-16T16:50:53.806Z",
+   "updatedAt": "2026-11-16T17:02:46.416Z",
    "builtAt": "",
    "notes": [
     {
@@ -241093,7 +241655,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -241218,12 +241782,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T17:02:46.416Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T16:25:07.589Z",
-     "updatedAt": "2026-11-16T16:25:07.589Z"
+     "updatedAt": "2026-11-16T17:02:46.703Z"
     },
     {
      "id": "s6",
@@ -241583,7 +242147,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -241607,7 +242171,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:28.078Z",
-   "updatedAt": "2026-11-16T16:55:46.434Z",
+   "updatedAt": "2026-11-16T17:07:39.892Z",
    "builtAt": "",
    "notes": [
     {
@@ -241677,7 +242241,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -241821,12 +242387,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T17:07:39.892Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T16:31:32.976Z",
-     "updatedAt": "2026-11-16T16:31:32.976Z"
+     "updatedAt": "2026-11-16T17:07:40.204Z"
     },
     {
      "id": "s7",
@@ -242274,7 +242840,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -242368,7 +242934,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -242641,16 +243209,16 @@
    "title": "Fix console deep links so open-page lands on the right screen",
    "category": "",
    "detail": "Deep links are broken: opening https://console.amberxai.com/?axf-target=view:build-orchestrator (or view:gate, any view:/tab: address) loads the console's main screen instead of that screen. console_show via the API works, so the address is valid; the URL parameter isn't applied on load. Fix: on page load (and after sign-in redirect, which likely drops the query string), read ?axf-target= and focus that address once the views are registered, including tabs (e.g. view:gate/tab:gate.tabs=auto-lander). Keep the parameter through the hub sign-in redirect. Each open_url must open its own tab when asked. Tests: load with each view address and assert the focused screen. Land with the one-at-a-time lander.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/fix-console-deep-links-open-page-lands",
-   "pr": "",
+   "pr": "#721",
    "priority": "P0",
    "createdAt": "2026-11-16T16:31:15.510Z",
-   "updatedAt": "2026-11-16T16:48:10.590Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T17:01:43.397Z",
+   "builtAt": "2026-11-16T17:01:43.397Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -242667,6 +243235,14 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-console-deep-links-open-page-lands--rhonda, shared account login)",
      "at": "2026-11-16T16:35:07.906Z"
+    },
+    {
+     "text": "Reconciler: PR #721",
+     "at": "2026-11-16T17:01:41.126Z"
+    },
+    {
+     "text": "Headless run axf-fix-console-deep-links-open-page-lands--rhonda: brief only · start 15.6K tokens ($0.05) · cost $4.31 · 113 turns · 6 tools, MCP none",
+     "at": "2026-11-16T17:01:43.397Z"
     }
    ],
    "approvals": [],
@@ -242709,7 +243285,9 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -242749,12 +243327,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T16:59:16.018Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T16:34:41.229Z",
-     "updatedAt": "2026-11-16T16:34:41.229Z"
+     "updatedAt": "2026-11-16T16:59:16.306Z"
     },
     {
      "id": "s3",
@@ -242774,12 +243352,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T17:01:22.643Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T16:34:41.229Z",
-     "updatedAt": "2026-11-16T16:34:41.229Z"
+     "updatedAt": "2026-11-16T17:01:23.107Z"
     }
    ],
    "profiles": [
@@ -242790,7 +243368,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -242806,16 +243384,16 @@
    "title": "Orchestrator: On hold status and tab",
    "category": "",
    "detail": "Add a new build status 'held' (On hold) and a new On hold tab/grid in the Build Orchestrator. 1) Multi-select in EVERY orchestrator table (Pending, Queue, Active, Built, Complete, Errors, Archive): checkbox per row, select all, and a bulk action bar with 'Put on hold'. Also on each row's context menu. Putting a running build on hold stops its session cleanly first (branch and worktree kept). 2) On hold tab: grid of held builds (shared 2-row status row and badges, follows the skin's 1-or-2-row setting) showing when it was held, by whom and the build's previous status. Multi-select + bulk actions: Move to Pending, Move to Queue, Archive, Delete (Delete asks for confirm). 3) The dispatcher, reconciler and auto-lander never touch held builds (no launch, no requeue, no land). 4) Status 'held' added to the builds store schema and journal; the reconciler must not flip it. 5) Full API parity: deep link to the tab, REST, MCP (planner.builds action 'status' with 'held', plus bulk actions), CLI and voice. Tests, help, Shipped features. NOTE: an older build 'orchestrator-hold-status-archive-tab' (Nov 12) asked for something similar but never landed and was cleaned up today; check main first and reuse anything that exists rather than duplicate it.",
-   "status": "queued",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/orchestrator-on-hold-status-and-tab",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T16:53:45.431Z",
-   "updatedAt": "2026-11-16T16:57:17.722Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T17:11:44.616Z",
+   "builtAt": "2026-11-16T17:11:44.616Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -242828,6 +243406,14 @@
     {
      "text": "SCOPE CUT (checked main 16:56): Hold ALREADY EXISTS on main from orchestrator-hold-status-archive-tab: pipeline.mjs hold/release actions (heldAt/heldBy/heldWhy), BP.isHeld/canHold, dispatcher skips held builds (pipeline-core.mjs:359), Hold/Release buttons with help, bulk select, back to Pending, Archive tab and Deleted tab (soft delete, restorable), tests in pipeline.test.mjs. DO NOT rebuild any of that; reuse it. Build ONLY the gap: (1) canHold allows builds in ANY tab (Pending, Built, Errors, Complete, Archive), not just queued; a running build stops its session cleanly first; keep the previous tab in pipeline.heldFrom. (2) A separate 'On hold' tab listing every held build (they leave their old tab), with bulk actions Release to Pending, Release to Queue, Archive, Delete (confirm). (3) Lander and reconciler skip held builds. (4) Bulk 'Put on hold' in every tab's existing multi-select bar and row menu. Extend the existing tests; API parity on the existing hold/release commands (add --to pending|queue).",
      "at": "2026-11-16T16:57:07.100Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-orchestrator-on-hold-status-and-tab--gina.",
+     "at": "2026-11-16T16:58:22.194Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-orchestrator-on-hold-status-and-tab--gina, shared account login)",
+     "at": "2026-11-16T16:58:25.208Z"
     }
    ],
    "approvals": [],
@@ -242838,8 +243424,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "orchestrator-on-hold-status-and-tab",
+    "brief": "# Build: orchestrator-on-hold-status-and-tab\n\n## Brett said (verbatim)\nAt: 2026-11-16T16:53:45.431Z\n> I need another group in orchestrator and state. I need to be able to set status of selected items in pending or any other table to on hold and move to new grid that can be moved back to pending, archive, queue, or delete\n\n## What to build\nContinue build \"Orchestrator: On hold status and tab\" (orchestrator-on-hold-status-and-tab) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-16 16:53):\n\"I need another group in orchestrator and state. I need to be able to set status of selected items in pending or any other table to on hold and move to new grid that can be moved back to pending, archive, queue, or delete\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~30 min):\n[ ] s1 (~10 min) Hold already exists on main (pipeline.mjs hold/release, BP.isHeld/canHold, dispatcher skips held, Hold/Release buttons, bulk select, Archive and Deleted tabs, tests). Reuse it; don't rebuild it. Add only the gap: (1) canHold works for builds in ANY tab, not just queued; a running build stops its session cleanly first; save the old tab in pipeline.heldFrom. (2) A separate 'On hold' tab listing every held build (they leave their old tab), with bulk Release to Pending, Release to Queue, Archive, Delete (confirm). (3) Lander and reconciler skip held builds. (4) 'Put on hold' in every tab's multi-select bar and row menu. Extend pipeline.test.mjs; add --to pending|queue to the existing release command for API parity.\n[ ] s2 (~10 min) I need another group in orchestrator and state. I need to be able to set status of selected items in pending or any other table to on hold and move to new grid that can be moved back to pending, archive, queue, or delete\n[ ] s3 (~10 min) Tests green, report _claude/builds/reports/orchestrator-on-hold-status-and-tab.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/orchestrator-on-hold-status-and-tab.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step orchestrator-on-hold-status-and-tab <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step orchestrator-on-hold-status-and-tab <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note orchestrator-on-hold-status-and-tab \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Tab rows are the framework TabGroup. Every toolbar has role=\"toolbar\" and an aria-label. Checks: `node framework/cli/check-toolbars.mjs`, `node framework/cli/check-chrome-assets.mjs`.\n- Plugin and library UIs conform to the theme engines (tokens only, framework layout primitives, `axf-<lib>` / `axp-<plugin>` naming, never define `--fx-*`); a plugin wanting its own look ships its own assets through the engines (scoping not built yet). The future plugin designer depends on this. Spec: `framework/spec/THEMING.md`. CI checks: `node framework/cli/check-theme.mjs` (static) and `apps/console-web/scripts/theme-swap.mjs` (switches every colour and style theme in the built console and fails on any colour or transparency that doesn't follow).\n- Transparency is themed too: style themes carry `opacityDisabled/Muted/Hover/Tint/Scrim/Glass` (→ `--fx-opacity-*`, same defaults on both ports). Translucent colours are `color-mix(in srgb, var(--fx-x) calc(var(--fx-opacity-…) * 100%), transparent)`, never a fixed percentage. `apps/demo` still has an older baked framework and needs a re-bake to get them.\n- Console sizes are tokens (Oct 17 2026): `console.css` and the console views use `--fx-space`, `--fx-font-size`, `--fx-radius-*` and `--fx-border-w` (exact at the default soft-studio theme, so it looks pixel-identical there); the console is held to every theme rule. Shapes stay fixed: pill radii (999px), bar/chart heights, icon sizes.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- UI Review choices (Nov 7 2026): a build ships at least 3 options (ui-choices@1, `framework/core/ui-choices.mjs`), each a predicted look and an asset in `plugins/<owner>/assets/<type>/`, picked or not; Brett picks in the item's Choices tab, several in priority order where the type holds several views. Nightly console deploy: `deploy/console-nightly.mjs` (Claude settings `nightly.*`). `console.refresh`: `axf console refresh [--hard]`.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Console control (Nov 13 2026): every screen, tab, setting, button, function, plugin, grid row and build step of the console has an address (`view:settings/tab:settings.tabs=plugins`, `setting:…`, `row:<build>/step:s3`) and is driven the same way through REST `/api/console-control`, the `console_control_*` MCP tools, `axf console …` and AmberX voice (Ctrl+K searches it in the console). New UI registers its targets through the framework controls or `data-axf-target`; `framework/cli/check-console-control.mjs` fails CI otherwise. Approve / deny and owner-only settings are never commands; destructive presses need `confirm`. Doc `_claude/memory/docs/console-control.md`, contract `framework/spec/CONSOLE-CONTROL.md`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Screenshots that aren't for approval go to Screenshots, not the review queue (Nov 1 2026, Brett): a session checking a screen (e.g. the Breakroom), live captures, PR before/after and other ad-hoc pictures are saved with `axf shot <file> --name \"…\" --app <app> --screen <route> --group \"…\"` (`node framework/cli/shot.mjs`, or `POST /api/plugins/ui-review/shots`), which lands in UI Review → Screenshots and never waits for approve / reject; Brett can still *Send to review* one. Only planned UI goes through `review.mjs submit`.\n- Every tab group, toolbar, banner and nav menu is an asset with an asset settings interface (Nov 4 2026, Brett; shared rule of the same name; build `tab-group-assets`): every tab row in the console, Molly, AmberX web and axHub web is the framework `TabGroup` on the `tab-group` asset (per-row pick `axf.chrome.tab-group.<id>.asset`, per-row overrides `axf.chrome.tab-group.<id>`); right-click / long-press any tab group, toolbar, banner, nav or menu bar → Settings… / Change… / Move (`framework/react/components/ChromeContext.tsx`, dialogs `axf.chrome.settings` + `axf.chrome.pick`). Settings dialogs render through the `settings` asset picked for the kind (`axf.chrome.settings.<type>`; the shared default `settings/chrome-<type>` unless the app's copy `settings/chrome-<type>-<app>` is picked; `extends` folds the chain). Every app in `framework/schemas/shared-assets.json` + Expenses carries its six copies (`node framework/cli/chrome-settings.mjs check` in CI; `backfill` writes missing ones). A strip that must stay hand-drawn (the Terminal tab strip, the workspace pane strip) carries `data-axf-tab-group=\"<id>\"` + `data-fx-ctx-target=\"tab-group\"`; anything else is a finding in `node framework/cli/check-chrome-assets.mjs`, whose ratchet `framework/spec/chrome-baseline.json` only comes down (`--write-baseline` after a real migration). Report: `_claude/builds/reports/tab-group-assets.md`.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- The axHub badge is red unless settings come live from axHub (Oct 24 2026, Brett): any axHub status badge or indicator starts red and turns green only while the app is reading its settings live from axHub right now (a fresh read of the hub's settings document succeeded, and a developer app's own hub source is ready). Repo copies, cached copies, local settings, a signed-out session or a read older than two check periods are red. Library: `framework/libs/hubstatus` (`hubLive` in `core.ts`).\n- Attached things snap, never overlap (Oct 28 2026, Brett): anything attached to a host (banner, toolbar, menubar; plugin badges, widgets, popups) never draws over or clips a neighbour. Sides size to their content, the flexible piece (search bar) shrinks to its minimum first, and a full host scrolls sideways with scroll snap. New hosts and new widget kinds follow the same rule (`framework/ui/axf.css`, banner section).\n- Every settings interface keeps its level toolbar; plugin settings are a sub-tab of Settings → Plugins.\n- Everything in the UI is an asset, and an asset change reaches every app (Oct 30 2026, Brett): any part of the UI that should be changeable is an asset (`asset@1`) — make a new asset type when none fits (asset-types.json, validators, engine, fixture; Fable for the contract). No look or layout value is decided in a component or a stylesheet alone: it comes from an asset through the engines' tokens. Assets are shared through the axHub look, so changing one changes every app on the framework live. Build `ui-all-assets` (Angel) does the existing UI; every new UI follows it from now on.\n- The look comes from axHub only, and every app ships every shareable asset (Nov 1 2026, Brett: \"The apps should only get appearance from axhub period.\" \"If you select design package in one app it changes it for all! Any theme change applies to all.\" \"They all gotta ship all assets that can be shared bruh!\"): no opt-out switch, no look tabs or scopes that draw an app under a look that isn't the hub's, no local fallback. Every look change in any app (design package, slot, spacing, hidden chrome, Sliders, per-asset tokens) goes to the one appearance@1 document and applies in every app. Every listed app (`framework/schemas/shared-assets.json`: Dev Console, axHub web, AmberX) ships the whole shared set baked at `src/axf/assets` (`node framework/cli/shared-assets.mjs bake|check`, CI); an app's `src/assets` holds only what is truly its own, `src/assets-overrides` the shared ids it tunes. A new asset that more than one app could use goes in `framework/assets`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Skins: every app has its own look (Nov 4 2026, Brett: \"by default they're all their own.\" + \"every one has a reset, restore to default.\"; build `skins`; replaces the \"any look change applies to all\" part of the rule above, the look still comes from axHub only): each app's slots, spacing and hidden chrome are in its own app-look@1 document on the hub (`shared/settings/looks/<app>.json`), snapshotted as that app's default when skins landed. A skin (skin@1, `framework/assets/skin/`, design packages read as skins too) is a layout + colour + style theme plus assets, switched on per app with Use skin (off by default); a pick with a skin on overrides just that part (Back to skin), and Restore to default puts the app back on its snapshot with a confirm and one undo. Settings → Appearance is the Theme manager in every app: one shared panel, `AppearancePanel` in `framework/libs/settings`. Control@1 token overrides (`axf.tokens.*`) still reach every app. CLI `node framework/cli/skins.mjs`, MCP through the theme-manager routes, CI `npx -y tsx framework/spec/check-skin.mts`. Format built on Opus, possible Fable review: plan `skins-possible-fable-review-6xha`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Skins cover every asset type, at any scope (Nov 7 2026, Brett: \"Upgrade the skins system so it styles EVERY asset type now in the registry … Skins apply at any scope: global/app/UI/plugin, with child-overrides-parent inheritance … A skin is a design pack; it MAY reference an icon pack … no hardcoded list; add a CI check that fails if a registered asset type has no skin coverage.\"; build `skins-asset-types`, Fable): how a skin reaches each asset type is worked out from `framework/schemas/asset-types.json` itself (skin-coverage@1, `framework/core/engines/skin-coverage.mjs`): every type is a slot unless excluded; widgets and attachables are styled through their style target in `schemas/customize.json` (`parts` on the skin: box / text / icon / items); the few types with no look or that are bundles declare `\"skin\": { \"by\": slot | parts | reference | bundle | none, via?, why? }` on their registry entry. A new type with none of these fails CI (`node framework/spec/check-skin-coverage.mjs`), so a build that adds an asset type gives it a style target or a declaration. A skin MAY name an icon pack (`iconPack`). Scopes follow the icon-map model: hub-wide (`skin` on the shared appearance document) → app (`skin.use`, `skin.inherit` = follow the hub) → screen (`scopes[\"ui:<view>\"]`) → plugin (`scopes[\"plugin:<id>\"]`), the child overrides the parent (`resolveLookSkin`); apps stay their own by default. Every view root and every plugin root is a `<SkinScope>` (framework/react). Parity: Settings → Appearance (Where / What a skin covers), `node framework/cli/skins.mjs use|off|inherit|follow|global|at|coverage|covers`, the theme-manager routes (MCP by plugin-commands), actions `skin.inherit`, `skin.scope`. Report: `_claude/builds/reports/skins-asset-types.md`.\n- Every notification is in the one registry (Nov 6 2026, Brett: \"I need to control all the notifications.\"): every notification goes through the console's alert hub or asks capability `axf.notify@1` before it sends; a plugin that sends one declares it in its own `notify.json` (`notify-types@1`), and the Notifications panel controls it (Plugins → Notifications; `axf notify-control …`, MCP `notify-control_*`). Approvals and veto notices are guarded: only Brett's own click turns them down, never a session or agent. `python apps/console-web/plugins/notify-control/test.py` fails on an alert source no registry names.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Every banner launches expanded (activity, build manager, codebase changes, approvals, systems check, keys, What's new). Activity still only appears while something runs or just finished.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -242866,17 +243452,19 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-16T16:55:31.595Z",
+     "at": "2026-11-16T16:58:05.708Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "heldFrom": "",
+    "stopSession": ""
    },
    "steps": [
     {
@@ -242894,12 +243482,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T17:08:06.417Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-16T16:55:29.231Z",
-     "updatedAt": "2026-11-16T16:57:17.982Z"
+     "updatedAt": "2026-11-16T17:08:06.725Z"
     },
     {
      "id": "s2",
@@ -242916,12 +243504,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T17:10:48.020Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T16:55:29.231Z",
-     "updatedAt": "2026-11-16T16:55:29.231Z"
+     "updatedAt": "2026-11-16T17:10:48.382Z"
     },
     {
      "id": "s3",
@@ -242941,12 +243529,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T17:11:44.616Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T16:55:29.231Z",
-     "updatedAt": "2026-11-16T16:55:29.231Z"
+     "updatedAt": "2026-11-16T17:11:44.921Z"
     }
    ],
    "profiles": [
@@ -242957,7 +243545,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
