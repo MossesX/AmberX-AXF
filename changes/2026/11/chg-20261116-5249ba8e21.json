@@ -1,0 +1,38 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261116-5249ba8e21",
+  "createdAt": "2026-11-16T16:33:43.401Z",
+  "updatedAt": "2026-11-16T16:39:00.020Z",
+  "kind": "build",
+  "title": "# Build: fix-red-ci-blocked-builds-they-land ## Brett said (verbatim) At: 2026-11-16T16:29:28.078Z …",
+  "asked": "# Build: fix-red-ci-blocked-builds-they-land ## Brett said (verbatim) At: 2026-11-16T16:29:28.078Z > Put fix main on more than one slot, they won't conflict. ## What to build Continue build \"Fix the red CI on the blocked builds so they land\" (fix-red-ci-blocked-builds-they-land) — Phase 1, model Opus. What Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them): Brett said (2026-11-16 16:29): \"Put fix main on more than one slot, they won't conflict.\" Model switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first. Steps ≤ 10 min. Checkpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step. Look: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens. API: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached. Steps in this phase (24 left, ~4 h): [ ] s1 (~10 min) Survey the failures: for every listed build branch, read its latest failed CI run log (gh run view --log-failed, or the 'CI build errors' issue), note the failing job/check per branch in _claude/builds/reports/fix-red-ci-blocked-builds-they-land.md under a 'Failures' table, and group them by cause. [ ] s2 (~10 min) Reproduce the common cause on main: run the Web Dev Console + Build engine sweep checks the branches fail (CI emulation: AXF_DATA_DIR=off, CI's AXF_BUILD_PROFILE) on a fresh worktree of origin/main, confirm main is green there, and write down which check(s) fail only once main is merged into a branch (e.g. control@1 pins, help ratchet, chrome-baseline, tracker, fixtures). [ ] s3 (~10 min) If the common cause is in shared tooling or a ratchet/baseline on main (not per branch), fix it once on a small branch fix/ci-common-cause (baseline, check script or fixture), run the affected checks green, commit and push; otherwise record 'per-branch only' in the report. [ ] s4 (~10 min) owner-recognized-everywhere-veto: merge origin/main into its branch, fix the failing check(s) from the survey, run those checks locally, commit and push. [ ] s5 (~10 min) pass-approval-hook-deep-link-amberx-notification: merge origin/main, fix the failing check(s), run them locally, commit and push. [ ] s6 (~10 min) land-project-duplicate-boilerplate: merge origin/main, fix the failing check(s), run them locally, commit and push. [ ] s7 (~10 min) picker-dialog-plugin-replaces-all: mer…",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "61f7ac99-dd8",
+    "where": "vps",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": null,
+  "closed": null,
+  "state": "running",
+  "status": "running",
+  "surface": "pipeline",
+  "startedAt": "2026-11-16T16:33:43.401Z",
+  "lastSeenAt": "2026-11-16T16:39:00.020Z",
+  "doing": "Running: Run engine sweep steps on main",
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/fix-red-ci-blocked-builds-they-land",
+    "branch": "claude/fix-red-ci-blocked-builds-they-land",
+    "base": "ce6ff6330cc304b056e90bc9d6cdac309384d45e",
+    "head": "ce6ff6330cc304b056e90bc9d6cdac309384d45e",
+    "pushed": true,
+    "dirty": 0,
+    "files": [],
+    "at": "2026-11-16T16:33:45.480Z"
+  }
+}

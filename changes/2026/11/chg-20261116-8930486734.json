@@ -1,0 +1,48 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261116-8930486734",
+  "createdAt": "2026-11-16T16:21:18.803Z",
+  "updatedAt": "2026-11-16T16:39:41.921Z",
+  "kind": "build",
+  "title": "# Build: remove-old-molly-app-project-keep-axf ## Brett said (verbatim) At: 2026-11-16T16:17:05.624…",
+  "asked": "# Build: remove-old-molly-app-project-keep-axf ## Brett said (verbatim) At: 2026-11-16T16:17:05.624Z > Molly's dead. Kill it. Make sure all the references to Molly are removed from the project. We can keep the axf-molly name. ## What to build Continue build \"Remove the old Molly app from the project (keep axf-molly)\" (remove-old-molly-app-project-keep-axf) — Phase 1, model Opus. What Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them): Brett said (2026-11-16 16:17): \"Molly's dead. Kill it. Make sure all the references to Molly are removed from the project. We can keep the axf-molly name.\" Model switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first. Steps ≤ 10 min. Checkpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step. Look: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens. API: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached. Steps in this phase (16 left, ~2.2 h): [ ] s1 (~8 min) Inventory every OLD Molly reference with a grep for molly, Molly and molly.amberxai.com across apps/, framework/, deploy/, _claude/, .github/, docs, help and glossary. Exclude axf-molly, .axf-molly/ and the AXF_MOLLY worker names. Write the list to _claude/builds/reports/remove-old-molly-app-project-keep-axf.md under 'Being removed'. Mark each entry remove, move to console or keep (axf-molly), and add a guard list of the axf-molly worker paths that must not change. [ ] s2 (~7 min) Read the old Molly app and the console's 'Molly guide' and pick out anything still useful: guide text, settings, actions, assets that other apps use. List each item in the report with the console place it will move to: a help page, the agent-manager README, or a shared asset in framework/assets. Nothing is deleted in this step. [ ] s3 (~9 min) Move the useful Molly guide content into the console's help: a new or existing help topic under apps/console-web help or the agent-manager docs, without the Molly name. Give it a console_show deep link (view or help target) and register the target with data-axf-target. If no UI remains, write 'docs only, no UI' in the report. [ ] s4 (~9 min) Remove the console's 'Molly guide' entry: the view, menu or nav item, its control@1 / console-control target, its Ctrl+K entry and any console action or MCP tool that …",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "05a66ad6-6c2",
+    "where": "vps",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": null,
+  "closed": null,
+  "state": "running",
+  "status": "running",
+  "surface": "pipeline",
+  "startedAt": "2026-11-16T16:21:18.803Z",
+  "lastSeenAt": "2026-11-16T16:39:41.921Z",
+  "doing": "Running: Inspect claude-sync output and status",
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/remove-old-molly-app-project-keep-axf",
+    "branch": "claude/remove-old-molly-app-project-keep-axf",
+    "base": "ac711ad6b99f819c36013bc28140afe64cad010d",
+    "head": "ac711ad6b99f819c36013bc28140afe64cad010d",
+    "pushed": true,
+    "dirty": 9,
+    "files": [
+      "_claude/builds/journal/2026-11-p11.jsonl",
+      "_claude/builds/orchestrator.json",
+      "_claude/builds/origins.json",
+      "_claude/builds/store.json",
+      ".axf-brief.md",
+      ".axf-build.lock",
+      ".axf-look-follow.log",
+      "remove-old-molly-app-project-keep-axf.jsonl",
+      "remove-old-molly-app-project-keep-axf.log"
+    ],
+    "at": "2026-11-16T16:21:19.766Z"
+  }
+}
