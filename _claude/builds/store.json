@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6907,
- "updatedAt": "2026-11-16T20:57:13.759Z",
+ "rev": 6908,
+ "updatedAt": "2026-11-16T20:57:35.352Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -248112,7 +248112,7 @@
    "branch": "claude/fable-rebuild-to-do-manager-unlimited",
    "pr": "",
    "createdAt": "2026-11-16T20:24:18.253Z",
-   "updatedAt": "2026-11-16T20:57:01.251Z",
+   "updatedAt": "2026-11-16T20:57:33.428Z",
    "builtAt": "",
    "notes": [
     {
@@ -248134,6 +248134,10 @@
     {
      "text": "Fable phase (s1-s7) done on claude/fable-rebuild-to-do-manager-unlimited: todo-tree@1 schema + SPEC, pure engine (any kind in any kind, no depth limit, cycle-safe move, cascade complete, trash + generic undo, Markdown/JSON export), 27 tests in CI, migration with dry-run (live VPS dry-run: 5 + 42 nodes, no warnings, nothing changed). Clash noted: notes-tasks design (PRs #527/#545, no code) planned to retire todo-manager; todo-tree@1 maps 1:1 to its item row so they can merge later. Opus phase s8-s23 next.",
      "at": "2026-11-16T20:57:01.251Z"
+    },
+    {
+     "text": "Headless run axf-fable-rebuild-to-do-manager-unlimited--rhonda: brief only · start 19.6K tokens ($0.18) · cost $11.12 · 73 turns · 6 tools, MCP none",
+     "at": "2026-11-16T20:57:33.428Z"
     }
    ],
    "approvals": [],
@@ -248765,7 +248769,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
