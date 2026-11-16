@@ -253,7 +253,8 @@
         "title": "Merge watch state",
         "readOnly": true,
         "description": "Is every merge to main reaching Shipped features: on/off, the last main sha it checked, how many merges were sent, pending, failed or skipped, the failed ones with their error, the last send, the alert and the deep link (Gate & rules → Build rules → Send Shipped features). Say 'are merges reaching shipped features' or 'merge watch status'.",
-        "output": "{ ok, enabled, where, summary: { lastSeen, counts, failed, lastSent }, alert, link }"
+        "output": "{ ok, enabled, where, summary: { lastSeen, counts, failed, lastSent }, alert, link }",
+        "tool": "features_merge_watch_status"
       },
       {
         "route": "GET /merge-watch/list",
@@ -280,7 +281,8 @@
           },
           "additionalProperties": false
         },
-        "output": "{ ok, entries: [{ sha, at, kind, pr, build, state, attempts, error, manifest }] }"
+        "output": "{ ok, entries: [{ sha, at, kind, pr, build, state, attempts, error, manifest }] }",
+        "tool": "features_merge_watch_list"
       },
       {
         "route": "POST /merge-watch/send",
@@ -306,7 +308,8 @@
           ],
           "additionalProperties": false
         },
-        "output": "{ ok, result: { sha, status: sent | skipped | failed | dry, id, rev, via, why, error } }"
+        "output": "{ ok, result: { sha, status: sent | skipped | failed | dry, id, rev, via, why, error } }",
+        "tool": "features_merge_watch_send"
       },
       {
         "route": "POST /merge-watch/retry",
@@ -325,7 +328,8 @@
           },
           "additionalProperties": false
         },
-        "output": "{ ok, reset: [sha], results: [{ sha, status, error }] }"
+        "output": "{ ok, reset: [sha], results: [{ sha, status, error }] }",
+        "tool": "features_merge_watch_retry"
       },
       {
         "route": "POST /merge-watch/backfill",
@@ -348,7 +352,8 @@
           ],
           "additionalProperties": false
         },
-        "output": "{ ok, since, dry, landings, results: [{ sha, status, id, pr, why, error }] }"
+        "output": "{ ok, since, dry, landings, results: [{ sha, status, id, pr, why, error }] }",
+        "tool": "features_merge_watch_backfill"
       },
       {
         "route": "POST /merge-watch/switch",
@@ -367,7 +372,8 @@
           ],
           "additionalProperties": false
         },
-        "output": "{ ok, enabled }"
+        "output": "{ ok, enabled }",
+        "tool": "features_merge_watch_switch"
       },
       {
         "route": "POST /merge-watch/tick",
@@ -383,7 +389,62 @@
           },
           "additionalProperties": false
         },
-        "output": "{ ok, added, results, summary }"
+        "output": "{ ok, added, results, summary }",
+        "tool": "features_merge_watch_tick"
+      },
+      {
+        "route": "GET /builds",
+        "id": "features-list",
+        "tool": "features_list",
+        "title": "List builds and features, pending through shipped",
+        "readOnly": true,
+        "description": "The one feature store: one record per build from the moment it is asked for until it shipped (state pending, building, in-pr, built, landed, shipped, failed, archived), with Brett's words, steps, PR, the landing on main, the manifest and whether its Shipped features send went out. Filters: state (comma list), build (text), pr, since. Shipped features and the Gate & rules Pending features tab read this. Say 'what is pending', 'what shipped since Monday', 'which builds failed to ship'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "type": "string",
+              "description": "pending | building | in-pr | built | landed | shipped | failed | archived, or a comma list"
+            },
+            "build": {
+              "type": "string"
+            },
+            "pr": {
+              "type": "string"
+            },
+            "since": {
+              "type": "string",
+              "description": "YYYY-MM-DD"
+            },
+            "limit": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": false
+        },
+        "output": "{ ok, count, records: [{ id, title, state, status, unlinked, branch, pr, said, steps, updatedAt, landed, manifest, send }] }"
+      },
+      {
+        "route": "GET /builds/{key}",
+        "id": "features-get",
+        "tool": "features_get",
+        "title": "One build's record",
+        "readOnly": true,
+        "description": "One build-feature record by build id, PR number or merge sha: where it is (pending through shipped), its words, steps, landing, manifest and send. Say 'where is PR 711' or 'did abc1234 ship'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string",
+              "description": "build id, PR number or merge sha"
+            }
+          },
+          "required": [
+            "key"
+          ],
+          "additionalProperties": false
+        },
+        "output": "{ ok, record }"
       }
     ]
   },

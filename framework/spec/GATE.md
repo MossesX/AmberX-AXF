@@ -56,6 +56,26 @@ the UI alone.
 `auto-lander-controls-in-the-gate-plugin`) is off; `paused` is the gate plugin's softer hold that leaves the switch alone.
 Both are written to History.
 
+## features.*  — Shipped features, read by the gate (served by the shipped-features plugin)
+
+The gate shows no copy of these; it reads them. The 'After merge' build rule `shipped-features` (Build rules tab, row
+`shipped-features`) shows the merge watch's status and controls, and the Pending features tab lists the one feature store.
+
+| Tool (MCP) | REST (`/api/plugins/shipped-features/…`) | What |
+| --- | --- | --- |
+| `features_list` | `GET builds?state=&build=&pr=&since=&limit=` | one record per build, pending → building → in-pr → built → landed → shipped (or failed / archived) |
+| `features_get` | `GET builds/{id \| PR \| sha}` | one build-feature record |
+| `features_merge_watch_status` | `GET merge-watch` | on/off, last main sha checked, sent / pending / failed / skipped, the failed merges with errors, last send, alert, deep link |
+| `features_merge_watch_list` | `GET merge-watch/list?state=&since=` | the merges the watch saw |
+| `features_merge_watch_send` | `POST merge-watch/send {sha, force?, dry?}` | send one merge now |
+| `features_merge_watch_retry` | `POST merge-watch/retry {shas?}` | failed merges resent (the systems check's Auto fix) |
+| `features_merge_watch_backfill` | `POST merge-watch/backfill {since, dry?}` | every merge since a date with no manifest |
+| `features_merge_watch_switch` | `POST merge-watch/switch {enabled}` | the watch on / off |
+| `features_merge_watch_tick` | `POST merge-watch/tick {dry?}` | check main now |
+
+CLI: `axf merge-watch …` and `node framework/cli/feature-store.mjs list|get`. Contract: merge-watch@1
+(`framework/core/merge-watch.mjs`, `_claude/memory/docs/merge-watch.md`). <!-- axf-plugin:shipped-features -->
+
 ## One surface, four transports (all the same calls)
 
 | Transport | Where | Names |
