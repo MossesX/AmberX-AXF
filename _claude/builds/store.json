@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6752,
- "updatedAt": "2026-11-16T19:31:59.341Z",
+ "rev": 6753,
+ "updatedAt": "2026-11-16T19:32:10.773Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -246467,7 +246467,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:12:13.425Z",
-   "updatedAt": "2026-11-16T19:31:01.893Z",
+   "updatedAt": "2026-11-16T19:32:04.171Z",
    "builtAt": "2026-11-16T19:31:01.893Z",
    "notes": [
     {
@@ -246501,6 +246501,10 @@
     {
      "text": "Headless run axf-alert-every-time-build-falls-back-to--earl: brief only · start 15.7K tokens ($0.05) · cost $3.41 · 69 turns · 6 tools, MCP none",
      "at": "2026-11-16T19:30:49.214Z"
+    },
+    {
+     "text": "Session axf-alert-every-time-build-falls-back-to--earl on mossesx-max- ended (exit 0); the build was already complete.",
+     "at": "2026-11-16T19:32:04.171Z"
     }
    ],
    "approvals": [],
@@ -246521,12 +246525,19 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "mossesx-max-",
-    "session": "axf-alert-every-time-build-falls-back-to--earl",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-16T19:16:48.399Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-16T19:32:03.210Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-alert-every-time-build-falls-back-to--earl"
+    },
     "split": {
      "at": "2026-11-16T19:14:22.611Z",
      "by": "orchestrator",
@@ -246630,7 +246641,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -247371,12 +247382,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-16T19:30:07.770Z",
-   "updatedAt": "2026-11-16T19:31:29.358Z",
+   "updatedAt": "2026-11-16T19:31:58.924Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Brett Nov 16: (1) Hide is a GLOBAL context menu item on every asset in every app; Hidden list brings them back. (2) Global context menu top section, before the first divider, in this order: 'Console settings' (already there), then '<This page> settings' for whatever page/screen you right-clicked on, then, when you right-click a toolbar, tab group, nav menu or app menu, '<That toolbar/tab group/nav/menu> settings' as the third entry. All open the floating settings popup. Wire through the context-menus plugin (one true source).",
      "at": "2026-11-16T19:31:25.752Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"eb1972e7-c955-4c4a-942f-76345dedfc99\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-16T19:31:58.924Z"
     }
    ],
    "approvals": [],
@@ -247393,7 +247408,105 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-16T19:31:58.924Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"eb1972e7-c955-4c4a-942f-76345dedfc99\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwjntp3g01a9kx",
+     "title": "",
+     "text": "Rebuild of assets-menu-hide-any-asset-visible (branch lost in cleanup, never shipped). An Assets menu (banner/menu button and Settings > Appearance) lists every visible UI asset on the current screen and app (toolbars, tab groups, banners, widgets, nav, menus, panels, any asset). Tap any one to Hide it; it moves to a Hidden section in the same menu, where one tap shows it again. Also a Hide option in every asset's right-click/long-press menu and settings. Hidden state saved per app in the look on axHub, survives reloads. Same list/hide/show on REST, MCP, CLI and voice. Tests, land through the orchestrator.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T19:31:58.924Z",
+     "updatedAt": "2026-11-16T19:31:58.924Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwjntp3g026ypm",
+     "title": "",
+     "text": "What happened to that build where I could hide anything? I could click a menu and it would show all the assets, hide them, and they'd move to hidden. Rebuild it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T19:31:58.924Z",
+     "updatedAt": "2026-11-16T19:31:58.924Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwjntp3g03va66",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/assets-menu-hide-any-asset-hidden-list.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/assets-menu-hide-any-asset-hidden-list.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T19:31:58.924Z",
+     "updatedAt": "2026-11-16T19:31:58.924Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -247402,12 +247515,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-16T19:31:58.924Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
