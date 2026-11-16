@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6370,
- "updatedAt": "2026-11-16T13:11:36.089Z",
+ "rev": 6371,
+ "updatedAt": "2026-11-16T13:12:06.632Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -220231,7 +220231,7 @@
    "branch": "claude/group-chat-audio-hear-agents-talk-while",
    "pr": "#671",
    "createdAt": "2026-11-14T04:20:23.886Z",
-   "updatedAt": "2026-11-15T00:43:34.569Z",
+   "updatedAt": "2026-11-16T13:12:04.865Z",
    "builtAt": "2026-11-14T04:49:52.705Z",
    "notes": [
     {
@@ -220249,6 +220249,10 @@
     {
      "text": "Headless run axf-group-chat-audio-hear-agents-talk-while--lenny: brief only · start 10.9K tokens ($0.03) · cost $8.55 · 169 turns · 6 tools, MCP none",
      "at": "2026-11-14T04:49:52.705Z"
+    },
+    {
+     "text": "Brett (Nov 16): KEEP. Also make it the VOICE PROVIDER for the Agent manager: agents/personas already have an empty voice slot {provider, voiceId, hint}. Fill it: a voice picker in Agent manager (each employee) with a voice list from the TTS provider(s) (e.g. ElevenLabs/OpenAI/browser TTS), preview button, speed/pitch, and auto-match from the hint ('cat-like', 'calm'). Each agent speaks in its own voice in group chat audio. Full API parity.",
+     "at": "2026-11-16T13:12:04.865Z"
     }
    ],
    "approvals": [],
@@ -220369,7 +220373,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {

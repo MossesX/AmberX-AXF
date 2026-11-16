@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 04:35 UTC · `auto-lander-controls-in-the-gate-plugin` s7 done (all) · orchestrator
 - 2026-11-15 04:37 UTC · `data-container-axf-data-holds-all` s1 done, → running (all) · orchestrator
 - 2026-11-15 04:37 UTC · `data-container-axf-data-holds-all` branch claude/data-container-axf-data-holds-all (all) · builds-live
 - 2026-11-15 04:38 UTC · `auto-lander-controls-in-the-gate-plugin` s4 done (all) · orchestrator
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 13:10 UTC · `context-menus-plugin-one-true-source` note (all) · mcp
 - 2026-11-16 13:11 UTC · `fix-build-whose-session-finishes-phase-e` → running, note (all) · mcp
 - 2026-11-16 13:11 UTC · `fix-build-whose-session-finishes-phase-e` → queued (all) · mcp
+- 2026-11-16 13:12 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · mcp
 
 ## Token passes (log)
 
