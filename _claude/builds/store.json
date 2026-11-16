@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6617,
- "updatedAt": "2026-11-16T18:00:30.422Z",
+ "rev": 6618,
+ "updatedAt": "2026-11-16T18:01:03.460Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -241077,7 +241077,7 @@
    "pr": "#723",
    "priority": "P0",
    "createdAt": "2026-11-16T16:22:57.802Z",
-   "updatedAt": "2026-11-16T18:00:13.616Z",
+   "updatedAt": "2026-11-16T18:01:00.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -241143,6 +241143,10 @@
     {
      "text": "Main fix queued: #719 (fix/ci-common-cause: amberx @console/api bridge, gate page head + markers, ubuntu-24.04 pin) at the head of the merge queue, then #724 (fix/theme-swap-zero-alpha: theme-swap zero-alpha). fix/main-green duplicated #719, so it is not opened as a PR; build PR stays #723.",
      "at": "2026-11-16T17:55:21.021Z"
+    },
+    {
+     "text": "Reconciler: PR #723 names s1, s2, s3, s4, s5, s6, s7, s10, s11 done",
+     "at": "2026-11-16T18:01:00.143Z"
     }
    ],
    "approvals": [],
@@ -241688,7 +241692,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
