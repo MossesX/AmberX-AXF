@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7079,
- "updatedAt": "2026-11-16T23:50:36.376Z",
+ "rev": 7080,
+ "updatedAt": "2026-11-16T23:50:58.026Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -182864,7 +182864,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:00.916Z",
-   "updatedAt": "2026-11-16T23:49:58.294Z",
+   "updatedAt": "2026-11-16T23:50:38.880Z",
    "builtAt": "",
    "notes": [
     {
@@ -182882,6 +182882,10 @@
     {
      "text": "Claude account: hulu0241 (axf-server-watchdog-orchestrator-auto-recovers-stuck--joey, shared account login)",
      "at": "2026-11-16T23:33:26.275Z"
+    },
+    {
+     "text": "Phase 1 (Fable, s1-s3) done on claude/server-watchdog-orchestrator-auto-recovers-stuck. build-watchdog@1 contract in framework/core/build-watchdog.mjs: a build marked Building (running, waiting, or queued with a live launch) with no live session is stuck; causes usage-limit, auth-failed, exit-clean, exit-killed (143), exit-oom (137), exit-failed, tmux-missing, pid-gone, stale-heartbeat; actions requeue, retry, retry-other-account, kill-retry, give-up (past maxRetries: Pending + banner + alert). Record { at, buildId, phase, step, cause, exit, action, attempt, account, notified, session, note } kept as optional recoveries[] on builds@1 (old records load unchanged, journal action watchdog-recover), schema framework/schemas/build-watchdog.json via axf schemas, builds-store verify reports recoveries. Fixtures spec/fixtures/build-watchdog.json (27 decision, 4 record, 5 settings cases) + check-build-watchdog.mjs in CI (401 checks). No UI in this phase, so no deep link yet: REST / MCP / CLI / voice land in s15-s16. Clash check: auto-recover-stuck-builds (PR #574) was closed unmerged and is superseded (noted on it); orchestrator-stale-row-watchdog-vps is the broader watch-rule system, different files, left queued. Next phase (Opus, s4+) starts with the exit recorder in claude-headless.sh.",
+     "at": "2026-11-16T23:50:38.880Z"
     }
    ],
    "approvals": [],
@@ -183470,7 +183474,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
