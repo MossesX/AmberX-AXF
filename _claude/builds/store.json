@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6735,
- "updatedAt": "2026-11-16T19:28:16.681Z",
+ "rev": 6736,
+ "updatedAt": "2026-11-16T19:28:52.858Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -246821,7 +246821,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:19:11.374Z",
-   "updatedAt": "2026-11-16T19:26:54.321Z",
+   "updatedAt": "2026-11-16T19:28:51.049Z",
    "builtAt": "",
    "notes": [
     {
@@ -246839,6 +246839,10 @@
     {
      "text": "Brett Nov 16: columns must be sortable by tapping the header: PR number, build name, commits behind main (plus status). Show the PR number as its own column.",
      "at": "2026-11-16T19:25:51.997Z"
+    },
+    {
+     "text": "Brett Nov 16: archiving a build (anywhere: grid, orchestrator, API) must also close its open PR with a note (branch kept) and drop it from the auto-lander list at once. Today archived builds stay listed because their PR stays open (seen with #633).",
+     "at": "2026-11-16T19:28:51.049Z"
     }
    ],
    "approvals": [],
@@ -246968,7 +246972,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
