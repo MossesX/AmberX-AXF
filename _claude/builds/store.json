@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6522,
- "updatedAt": "2026-11-16T16:34:58.761Z",
+ "rev": 6523,
+ "updatedAt": "2026-11-16T16:35:27.994Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -242490,15 +242490,15 @@
    "title": "Fix console deep links so open-page lands on the right screen",
    "category": "",
    "detail": "Deep links are broken: opening https://console.amberxai.com/?axf-target=view:build-orchestrator (or view:gate, any view:/tab: address) loads the console's main screen instead of that screen. console_show via the API works, so the address is valid; the URL parameter isn't applied on load. Fix: on page load (and after sign-in redirect, which likely drops the query string), read ?axf-target= and focus that address once the views are registered, including tabs (e.g. view:gate/tab:gate.tabs=auto-lander). Keep the parameter through the hub sign-in redirect. Each open_url must open its own tab when asked. Tests: load with each view address and assert the focused screen. Land with the one-at-a-time lander.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/fix-console-deep-links-open-page-lands",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T16:31:15.510Z",
-   "updatedAt": "2026-11-16T16:34:54.240Z",
+   "updatedAt": "2026-11-16T16:35:07.906Z",
    "builtAt": "",
    "notes": [
     {
@@ -242508,6 +242508,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"6c23570f-c799-496b-8c7e-4fcecf11cc3c\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-16T16:34:41.229Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-fix-console-deep-links-open-page-lands--rhonda.",
+     "at": "2026-11-16T16:34:58.770Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-console-deep-links-open-page-lands--rhonda, shared account login)",
+     "at": "2026-11-16T16:35:07.906Z"
     }
    ],
    "approvals": [],
@@ -242527,12 +242535,12 @@
    "pipeline": {
     "queuedAt": "2026-11-16T16:31:18.141Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-fix-console-deep-links-open-page-lands--rhonda",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-16T16:34:57.932Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T16:34:41.229Z",
@@ -242542,9 +242550,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"6c23570f-c799-496b-8c7e-4fcecf11cc3c\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-16T16:34:57.932Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -242553,7 +242561,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-16T16:34:57.932Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -242637,7 +242645,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
