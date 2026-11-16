@@ -2,10 +2,10 @@
  "$axf": "shipped-manifest@1",
  "version": 1,
  "id": "sm-one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds",
- "rev": 1,
- "source": "orchestrator",
- "by": "orchestrator",
- "shippedAt": "2026-11-13T06:32:08Z",
+ "rev": 2,
+ "source": "api",
+ "by": "merge-watch",
+ "shippedAt": "2026-11-16T14:08:20Z",
  "build": {
   "id": "one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds",
   "title": "One account picker: choose the single Claude account the console and VPS builds use",
@@ -29,17 +29,7 @@
  "accounts": [
   "mossesx-max-"
  ],
- "runs": [
-  {
-   "session": "axf-one-account-picker-choose-the-single-claude-acco--gina",
-   "account": "mossesx-max-",
-   "model": "Opus",
-   "startedAt": "2026-11-13T01:52:11.760Z",
-   "endedAt": "2026-11-13T02:05:54.539Z",
-   "exit": 0,
-   "costUsd": 3.3764
-  }
- ],
+ "runs": [],
  "steps": [
   {
    "id": "s1",
@@ -47,7 +37,7 @@
    "model": "Opus",
    "estimate": "30m",
    "estimateMin": 30,
-   "startedAt": "2026-11-13T01:52:11.760Z",
+   "startedAt": "2026-11-13T01:52:11.782Z",
    "doneAt": "2026-11-13T01:58:06.297Z",
    "actualMin": 6,
    "done": true
@@ -78,105 +68,16 @@
  "branch": "claude/one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds",
  "pr": {
   "repo": "amberx-axf",
-  "number": 543,
+  "number": 549,
   "url": "https://github.com/MossesX/AmberX-AXF/pull/543"
  },
- "landedCommit": "",
+ "landedCommit": "4d917727c90d9d7ce91f01b9b549727d004ea963",
  "commits": [
-  "691c530c878d01f01b0904bd7b49651d5c16544a",
-  "37ee2ef776572995b450fc18465946f240d8ec37",
-  "2a92fd26ee8de56057bf2c20fabfce0a721f4728",
-  "ed729e470c2e51f574811ad405083933c1fa4769",
-  "1e5ee9d05e54f45ed047dda8950bcc9094896048",
-  "693a74d92a3791177181ee2030487fa143eb9405",
-  "e8c1266922b2b94ac852e0d5fbd46e6501c157ca",
-  "3990ebca5bf8e2cc6de4a290ce22eda82a2015ba",
-  "ef84f49c0e798e31f356790211e0b30cb4b08157",
-  "7d20d305d0dd7abad212aa47f05870c5eb6b0b12",
-  "323f74ae191bf535185ce6126d464b6d61a06042",
-  "37e896b61d02ebf8af7a195dc2dbc3cdafad93d4",
-  "e704739e289f37de9727dcded1e641ed97686a4e",
-  "e61183aed2e5f629ee505d7ed0fe6a607c889238",
-  "725363ee504bff7ae003b9b7e640248f06385577",
-  "dc865381f653b485913c2d68985a4b12e76fe6ce",
-  "fac241eb836a2c0b23db8c97ba02499d827b5256",
-  "e6f9483b02fbf0b4b756e19c8917179c47d96ab6",
-  "ef6b1044a5be61bf3a6e2fba17bc0a3cbdb14801",
-  "943af0a177b42feda1a6e9f2ec2280bb501fa10e",
-  "63efc658e2181b033ac49ad2f2505bf334587fe9",
-  "4d5b1f014abb817983eef2ef0a9fe3bc125a41b0",
-  "409d7efa3ecb22045ad3c61d4034eec2b3c13882",
-  "3055f27ea02930e5af0e9ae50fc8df35a50dc738",
-  "35f83ada994446bc62ae0535926e8995276bd5be",
-  "b95773de963f099d80fd9894c92895e7fc3dac76",
-  "f8454f247ca562ccf4927154dba9117efaa72660",
-  "4caeed4c7219ddde8edd4959cbb48ba3b3d81194",
-  "106f2c95f001d3562ab896de1142b842fa21b0b3",
-  "13a1a0c2de68b93a02fdaa4d89addbd2c315373d",
-  "0b53ab72ee3f6b1d109ad72b56c8c086824e204b",
-  "de57fdb39e029e6a50491af0d49e12a21d63d040",
-  "c6ccdf5fa2186e77533a4f7e21c24b10681c78db",
-  "933a594d39a4b64333520bdbcba2d8f0f0469810",
-  "85a30b8d680c509b8f67d7bb6e917d25b437c3f8",
-  "fbb8b769cc0c9f98f97f8f6b219a8033dff12ca6",
-  "67ef5b80c83e5771221e4e07ff5e0f7d06304d86",
-  "e693dee0bcea4da860eaad561695d057fda433db",
-  "dbd0472b700614f1458dadb1a2d4882994af5bb4",
-  "a53d8e720b592e2ee43d2b777c96362b0821f70e",
-  "2134c3ce5b4067d3722781d998c27168ee4f5837",
-  "a69bb1f2b7863a059c397d670f2794ce7a85917d",
-  "0a09016b798b33375d77ed681170b24f7dc3908f",
-  "98018a3094d941429d9c85f2e9898582dd0ce310",
-  "90badb4d830f318e260c556ddc96ef0393f7de44",
-  "c7d51373b0ebcb33a3631c0c4c2be38279f232b2",
-  "089c427b615fcfea447c4638dfd37562bb1dbbfe",
-  "13f8e80154c2c42c129f507a8a3f3165c5be276d",
-  "c32c6c66f1a55a0bcceacd95bb245add81a90c00",
-  "4f018e8f3cd3b4564c0fda45690c23f205efd288",
-  "ff4e1f9e10c81f78a3b8a0db8da9ae305176cf2b",
-  "ce4688b2c2354847a7d084e4d1c7dd7caef240d5",
-  "24dba98f97d735ffa7e3c021caffd76b87ca724b",
-  "233fe0667097a8f8c7d9f8f1b13f900737a3c593",
-  "3824669ca55c15c258869f4d443bbd0f7e8e9344",
-  "ab8b35a1e7d805160b9088c63cb5553383a6ecb7",
-  "7c9264900bf5c27feb1625bdaaa1352249711065",
-  "a8ede18f74c35133bd0b8e39c1ea829d17db80ae",
-  "fad3d089e1cc15a3b0048da068f5c4176450bc80",
-  "3084256fe77ad7dad804f5274e8a484bef7bb981",
-  "58e9dfe6adb9f4f171ad9671493fdb90350f987b",
-  "ab395373c4cec2e76e525411cbea22155cccb1fb",
-  "fac951fcdcf6d50d443397dc3998ae202ce8ed8b",
-  "115687f3c97f98c07503a3549c3ae20c83cc1ae3",
-  "c68c976e2c2701aeacccd25cb9290d8a0577b838",
-  "e986d7ccd9989925c5b83868e4a2542cfa9f8f34",
-  "4ee8668aacb3b1b407555d4a189d8eef812f4368",
-  "6c68d03513086e620048e9f366d5ee40d7baa693",
-  "bf5403c3dd1f310065a569148e723ca28800e900",
-  "ba57b1f1e90709339bfa0b76d95290a5b22ce82a",
-  "0ff43e65bbd5c81fbb668aead8393f5695910499",
-  "faf8a50085a2d19eb64ff8ca32925d1e333a61ea",
-  "a0a6b7121f26954923c775d4e64106fad6e00196",
-  "3202b98817fdb2302dc6d865b0c08f35a8feb554",
-  "942979e30eb7058765a3427622a41b1d6fba5745",
-  "bd08a5bc7f2d211866e402afd56ff2a6372e1fbd",
-  "0e9936f77deae2fff9a27d8cf7880328e8ffdd0f",
-  "5dd4eb6c7aa53b8ba995ac86b63ef2efcacf5aa6",
-  "aec0c18cf6cb951495dc8e8199c728fabc512b94",
-  "76d1c8e42098c9d9ec292cc41fdf35382b8e5f91",
-  "b67d55cd2b4afb0c549c6f7421f1905c3d62f29e",
-  "8af10c58bcf6550070b2816a0bb952e4824cbc66",
-  "4851bc461094c57044f5556c96f404d62ac6e455"
+  "4d917727c90d9d7ce91f01b9b549727d004ea963"
  ],
- "mergedAt": "2026-11-13T06:14:22Z",
- "landedAt": "2026-11-13T06:14:22Z",
+ "mergedAt": "2026-11-13T06:36:36Z",
+ "landedAt": "2026-11-13T06:27:44Z",
  "files": [
-  "_claude/THREADS.md",
-  "_claude/builds/journal/2026-11-p6.jsonl",
-  "_claude/builds/orchestrator.json",
-  "_claude/builds/origins.json",
-  "_claude/builds/shipped/add-a-tap-to-confirm-option-to-every-settings-in.json",
-  "_claude/builds/shipped/new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans.json",
-  "_claude/builds/store.json",
   "apps/console-web/plugins/build-orchestrator/pipeline-core.mjs",
   "apps/console-web/plugins/build-orchestrator/pipeline.test.mjs",
   "apps/console-web/plugins/claude-accounts/README.md",
@@ -205,18 +106,6 @@
    ]
   },
   {
-   "kind": "builds",
-   "id": "builds",
-   "files": [
-    "_claude/builds/journal/2026-11-p6.jsonl",
-    "_claude/builds/orchestrator.json",
-    "_claude/builds/origins.json",
-    "_claude/builds/shipped/add-a-tap-to-confirm-option-to-every-settings-in.json",
-    "_claude/builds/shipped/new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans.json",
-    "_claude/builds/store.json"
-   ]
-  },
-  {
    "kind": "deploy",
    "id": "deploy",
    "files": [
@@ -234,25 +123,18 @@
     "apps/console-web/plugins/build-orchestrator/pipeline-core.mjs",
     "apps/console-web/plugins/build-orchestrator/pipeline.test.mjs"
    ]
-  },
-  {
-   "kind": "docs",
-   "id": "docs",
-   "files": [
-    "_claude/THREADS.md"
-   ]
   }
  ],
  "tests": [],
  "uiReview": [],
  "cost": {
-  "usd": 3.3764,
+  "usd": 0,
   "estimated": false,
   "tokens": {
-   "input": 146,
-   "output": 770,
-   "cacheRead": 6985781,
-   "cacheWrite": 144801
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
   }
  },
  "report": "",
