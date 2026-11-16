@@ -79,6 +79,11 @@ Branch `fix/ci-common-cause` (37995d9b9), PR [#719](https://github.com/MossesX/A
 Each blocked branch needs #719 (or main after it lands) merged in to go green; until #719 lands, branches merge
 `origin/fix/ci-common-cause` along with `origin/main`.
 
+- **H** (found at s11): `check-console-control` fails on main itself: claude-settings' TabGroup id is imported
+  (`TAB_GROUP_ID` from `view-core.mjs`) and `control-inventory.mjs` only resolved same-file constants (tabGroups 1,
+  baseline 0). Fixed once on `fix/ci-common-cause` (3639ff87c), PR [#726](https://github.com/MossesX/AmberX-AXF/pull/726);
+  #719 has landed on main. Branches from s11 on merge `origin/fix/ci-common-cause` too.
+
 ## Per branch (s4–s22)
 
 Each branch: merge `origin/main` + `origin/fix/ci-common-cause`, take main's build/plan data (store, orchestrator, pending, plan, build queue: the branch copies were stale snapshots that would overwrite main's), drop the stale `test-sandbox` profile folder, regenerate the control inventory, fix the branch's own failures, run them locally.
@@ -96,3 +101,4 @@ Each branch: merge `origin/main` + `origin/fix/ci-common-cause`, take main's bui
 | context-menus-plugin-one-true-source | merged main (data only); help for the zone menus button; check-context-menus, fixtures, profiles, plugins, help pass | 675568066 |
 | projects-own-everything-per-project | merged main clean; help-kind + coverage failures already fixed on main; profiles, plugins, inventory, check-projects pass | c77e09ca4 |
 | pending-tab-one-collapsed-row-per-2 | merged main clean; amberx @console/api fixed by #719 | b2dab4aac |
+| quick-settings-pinned-collapsible-pane | re-merged main (151 behind): settings dialogs keep main's glass/wide + all-settings dialog inside the Quick settings frame; PORTING keeps both notes; duplicate SelectField import dropped; merged #726. check-profiles, quick-settings, settings-open, console-control, theme, controls, skin-coverage pass; console tsc clean after the CI re-bake | 65057fd05 |
