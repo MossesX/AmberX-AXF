@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6484,
- "updatedAt": "2026-11-16T15:15:41.330Z",
+ "rev": 6485,
+ "updatedAt": "2026-11-16T15:16:09.509Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -219563,7 +219563,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-16T15:15:39.406Z",
+   "updatedAt": "2026-11-16T15:16:07.642Z",
    "builtAt": "2026-11-16T14:11:20.988Z",
    "notes": [
     {
@@ -219749,6 +219749,10 @@
     {
      "text": "Reconciler: PR #667 names s1, s5, s6, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19, s20, s21, s22, s23, s24, s7, s2, s3, s4 done",
      "at": "2026-11-16T14:11:20.988Z"
+    },
+    {
+     "text": "Phase 3 done: 7 core videos recorded live and published to AmberX → Walkthrough (series-<id>, full MP4 + 720p + 9:16/1:1/16:9 socials, secrets scan clean). Not recorded yet: the 28 more/ videos and 13 60-second cuts (bash apps/amberx-droid/walkthrough/series/record.sh all, then series/publish.sh; ~8-10 min each). Social downloads 404 until the next AmberX deploy after merge.",
+     "at": "2026-11-16T15:16:07.642Z"
     }
    ],
    "approvals": [
@@ -220357,7 +220361,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 100,
+   "rev": 101,
    "deleted": false,
    "deletedAt": "",
    "pending": {
