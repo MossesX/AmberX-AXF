@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6359,
- "updatedAt": "2026-11-16T12:30:44.668Z",
+ "rev": 6360,
+ "updatedAt": "2026-11-16T13:06:24.164Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -237777,6 +237777,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-15T16:11:13.631Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "duplicate-gate-vps-checks-shipped",
+   "title": "Duplicate gate: VPS checks Shipped features before any build is filed or split",
+   "category": "",
+   "detail": "A VPS-run gate (plain code, no Claude tokens) registered as a 'before' rule in the Gate & rules Build rules store, doer VPS. Before any build is filed, queued or split, the VPS checks the ONE true feature store (Shipped features + in-progress records) AND main (plugins, files, settings). It also checks the lander/plugin's own state and log, so a feature that exists but is switched off is caught (e.g. auto-land existed on main but was off since Nov 4 and got rebuilt ~5 times). If a match is found, it BLOCKS the build and tells Brett what already exists, where it is, whether it's on or off, and what single setting or fix is actually needed. He can override with one tap/voice ('build it anyway'). Also blocks a new build that duplicates an already-queued/running/built-but-unlanded build, and points to that one instead. Fuzzy matching on titles, said text, plugin names and settings keys, with a similarity score shown. Log every block in Gate History. API parity (REST/MCP/CLI/voice). Tests: auto-land case must be caught. Land with the one-at-a-time lander.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-16T13:06:22.511Z",
+   "updatedAt": "2026-11-16T13:06:22.511Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "You rebuilt this thing five times over the last three days, even though it's already landed on main. Can we put some kind of gate on the server? With shipped features? Because shipped features is already on the server.",
+    "at": "2026-11-16T13:06:22.511Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 888
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
