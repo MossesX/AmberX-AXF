@@ -291,3 +291,18 @@ export function forgetShapeEdit(history: ShapeHistory, key: string): ShapeHistor
   const { [key]: _gone, ...rest } = history;
   return rest;
 }
+
+/* ---------------------------------------------------------------- the banner's own default (the lowest level) */
+
+/** What a banner asset with no `shape` field draws: circles for icon-only widgets, pills for chips (today's look). */
+export const BANNER_SHAPE_DEFAULTS: Readonly<{ icon: string; chip: string }> = { icon: 'circle', chip: 'pill' };
+
+/**
+ * The shape a banner asset gives one of its widgets when nobody picked one anywhere in the chain: `data.shape.icon` for
+ * an icon-only / square widget, `data.shape.chip` for one with text, else BANNER_SHAPE_DEFAULTS. A junk id falls back.
+ */
+export function bannerShapeDefault(bannerData: unknown, iconOnly: boolean): string {
+  const s = isObj(bannerData) && isObj(bannerData.shape) ? bannerData.shape : {};
+  const id = shapeId(iconOnly ? s.icon : s.chip);
+  return id || (iconOnly ? BANNER_SHAPE_DEFAULTS.icon : BANNER_SHAPE_DEFAULTS.chip);
+}

@@ -29,7 +29,8 @@
       "container": "dense-ops",
       "typography": "compact",
       "density": "dense",
-      "sizing": "compact"
+      "sizing": "compact",
+      "shape": "pill"
     },
     "preview": {
       "caption": "Dark command center, alert-first, dense."

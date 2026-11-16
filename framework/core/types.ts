@@ -421,6 +421,8 @@ export interface BannerData {
   logo: { show: boolean; text: string };
   attach: BannerAttach[];
   divider?: boolean;
+  /** default shape@1 ids for the banner's widgets (core/engines/shape.ts bannerShapeDefault): icon-only / square, and chips */
+  shape?: { icon?: string; chip?: string };
 }
 export interface ClockData {
   format: '24h' | '12h';
