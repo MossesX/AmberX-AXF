@@ -813,9 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 13:45 UTC · `demo-video-series-three-minute-browser` → running, note (all) · pipeline
-- 2026-11-16 13:46 UTC · `demo-video-series-three-minute-browser` → queued, note (all) · pipeline
-- 2026-11-16 13:46 UTC · `demo-video-series-three-minute-browser` → running, note (all) · pipeline
 - 2026-11-16 13:46 UTC · `demo-video-series-three-minute-browser` → running, note (all) · orchestrator
 - 2026-11-16 13:47 UTC · `move-build-orchestrator-to-axhub` note (all) · orchestrator
 - 2026-11-16 13:47 UTC · `vps-sends-shipped-features-every-merge` s10 done (all) · orchestrator
@@ -1213,6 +1210,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 19:17 UTC · `reset-all-button-every-asset-override` s5 done (all) · orchestrator
 - 2026-11-16 19:19 UTC · `reset-all-button-every-asset-override` s6 done (all) · orchestrator
 - 2026-11-16 19:19 UTC · `auto-lander-grid-one-row-per-build` added (0 steps) (all) · console
+- 2026-11-16 19:19 UTC · `auto-lander-grid-one-row-per-build` → queued, note (all) · console
+- 2026-11-16 19:19 UTC · `pending-banner-list-every-pending-build` note (all) · orchestrator
+- 2026-11-16 19:19 UTC · `auto-lander-grid-one-row-per-build` note (all) · mcp
 
 ## Token passes (log)
 

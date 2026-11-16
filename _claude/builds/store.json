@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6709,
- "updatedAt": "2026-11-16T19:19:23.580Z",
+ "rev": 6710,
+ "updatedAt": "2026-11-16T19:19:34.904Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -246616,12 +246616,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:16:56.830Z",
-   "updatedAt": "2026-11-16T19:17:15.175Z",
+   "updatedAt": "2026-11-16T19:19:19.385Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-16T19:17:15.175Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"0de3e76f-e459-4f5e-a5b9-961ef7386bb3\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-16T19:19:19.385Z"
     }
    ],
    "approvals": [],
@@ -246648,6 +246652,169 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
+    "split": {
+     "at": "2026-11-16T19:19:19.385Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"0de3e76f-e459-4f5e-a5b9-961ef7386bb3\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-16T19:19:22.909Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwjndf15014fcd",
+     "title": "",
+     "text": "New banner plugin 'Pending': lists every build in Pending (title, plain-words what it does, priority, steps done/total, why it fell back), each row with Queue, Hold, Archive and Open buttons, plus 'Send all to Queue' and multi-select. Count badge on the banner. Joins the one Banners settings, launches expanded, pushes to AmberX when a build lands in Pending (ties in with alert-every-time-build-falls-back-to). Same actions on REST, MCP, CLI and voice. Tests, land through the orchestrator.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T19:19:19.385Z",
+     "updatedAt": "2026-11-16T19:19:19.385Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwjndf1502x0aq",
+     "title": "",
+     "text": "I need a pending banner that lists all the pending things and lets me send everything to the queue right from the banner.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T19:19:19.385Z",
+     "updatedAt": "2026-11-16T19:19:19.385Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwjndf1503bsqm",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/pending-banner-list-every-pending-build.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/pending-banner-list-every-pending-build.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T19:19:19.385Z",
+     "updatedAt": "2026-11-16T19:19:19.385Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 913
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 4,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-16T19:19:19.385Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "auto-lander-grid-one-row-per-build",
+   "title": "Auto-lander grid: one row per build, behind-main count, archive",
+   "category": "",
+   "detail": "Gate & rules > Auto-lander tab: make the grid ONE row per build (no multi-line rows). Columns: build, what it does (plain words), PR, status (ready/blocked), reason, commits behind main (sortable), last activity. Row actions: Open, Merge main + fix, Archive, Hold; multi-select bulk Archive. Filter e.g. 'behind > 500'. Stale records with no branch/PR are hidden or cleaned. Same data and actions on REST, MCP, CLI and voice. Tests, land through the orchestrator.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-16T19:19:11.374Z",
+   "updatedAt": "2026-11-16T19:19:23.358Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-16T19:19:16.326Z"
+    },
+    {
+     "text": "Brett Nov 16: TWO rows per build (not one): row 1 build + status + behind-main + actions, row 2 what it does + reason. Never more than two.",
+     "at": "2026-11-16T19:19:23.358Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "You need to fix that grid, make it one row. I need to see everything waiting to be merged and how far behind main.",
+    "at": "2026-11-16T19:19:11.374Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-16T19:19:15.405Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "waiting for the split before it can start",
@@ -246665,60 +246832,11 @@
     "all"
    ],
    "order": {
-    "all": 913
-   },
-   "kind": "build",
-   "planRef": "",
-   "rev": 2,
-   "deleted": false,
-   "deletedAt": "",
-   "pending": null,
-   "queue": null,
-   "defaultAt": "",
-   "rearranged": false,
-   "removedSteps": [],
-   "legacy": [],
-   "copies": []
-  },
-  {
-   "id": "auto-lander-grid-one-row-per-build",
-   "title": "Auto-lander grid: one row per build, behind-main count, archive",
-   "category": "",
-   "detail": "Gate & rules > Auto-lander tab: make the grid ONE row per build (no multi-line rows). Columns: build, what it does (plain words), PR, status (ready/blocked), reason, commits behind main (sortable), last activity. Row actions: Open, Merge main + fix, Archive, Hold; multi-select bulk Archive. Filter e.g. 'behind > 500'. Stale records with no branch/PR are hidden or cleaned. Same data and actions on REST, MCP, CLI and voice. Tests, land through the orchestrator.",
-   "status": "pending",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "",
-   "pr": "",
-   "createdAt": "2026-11-16T19:19:11.374Z",
-   "updatedAt": "2026-11-16T19:19:11.374Z",
-   "builtAt": "",
-   "notes": [],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "You need to fix that grid, make it one row. I need to see everything waiting to be merged and how far behind main.",
-    "at": "2026-11-16T19:19:11.374Z",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "",
-    "brief": "",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [],
-   "profiles": [
-    "all"
-   ],
-   "order": {
     "all": 914
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
