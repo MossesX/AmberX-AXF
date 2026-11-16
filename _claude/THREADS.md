@@ -814,7 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 19:27 UTC · `settings-interface-gear-every-plugin` s6 done (all) · orchestrator
 - 2026-11-16 19:27 UTC · `fix-console-deep-links-open-page-lands` note (all) · mcp
 - 2026-11-16 19:28 UTC · `alert-every-time-build-falls-back-to` s1 done (all) · orchestrator
 - 2026-11-16 19:28 UTC · `fix-console-deep-links-open-page-lands` → running (all) · mcp
@@ -1214,6 +1213,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 23:25 UTC · `orchestrator-runs-long-builds-across` → queued, note (all) · console
 - 2026-11-16 23:25 UTC · `banner-widget-shapes-plus-change-icon` s3 done (all) · orchestrator
 - 2026-11-16 23:26 UTC · `fable-rebuild-plan-studio-cleared-out` s2 done, → running (all) · orchestrator
+- 2026-11-16 23:26 UTC · `axhub-veto-countdown-setting-read-only` s3 done (all) · orchestrator
 
 ## Token passes (log)
 
