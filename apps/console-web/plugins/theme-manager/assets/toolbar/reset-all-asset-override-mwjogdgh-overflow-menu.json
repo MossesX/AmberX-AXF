@@ -1,0 +1,51 @@
+{
+ "$axf": "asset@1",
+ "type": "toolbar",
+ "id": "reset-all-asset-override-mwjogdgh-overflow-menu",
+ "name": "reset-all-asset-override-mwjogdgh: Overflow menu item",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "The header keeps only the count; Reset all asset overrides… lives in a ⋯ menu at the right with the controlled-colour pick. Quietest, one more tap.",
+ "tags": [
+  "ui-choice",
+  "choice-set:reset-all-asset-override-mwjogdgh",
+  "choice-option:overflow-menu"
+ ],
+ "data": {
+  "variant": "icons",
+  "align": "spread",
+  "showSearch": false,
+  "surface": "flat",
+  "density": "compact",
+  "groups": [
+   {
+    "id": "count",
+    "items": [
+     {
+      "id": "overrides",
+      "icon": "chevron-down",
+      "label": "N assets are controlled by their own settings",
+      "action": "chrome.overrides"
+     }
+    ]
+   },
+   {
+    "id": "more",
+    "items": [
+     {
+      "id": "reset-all",
+      "icon": "more",
+      "label": "Reset all asset overrides…",
+      "action": "chrome.reset-all"
+     },
+     {
+      "id": "colour",
+      "icon": "palette",
+      "label": "Controlled item colour…",
+      "action": "chrome.edits"
+     }
+    ]
+   }
+  ]
+ }
+}

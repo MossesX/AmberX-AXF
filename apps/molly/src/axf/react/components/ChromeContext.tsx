@@ -659,7 +659,7 @@ export function AssetsWithEdits() {
                   </Button>
                   <span className="fx-row">
                     <Button size="sm" tone="neutral" icon="settings" onClick={() => rt.dispatch(`chrome.settings:${o.type}:${o.instance}`)}>Asset settings</Button>
-                    <Button size="sm" tone="neutral" icon="undo" onClick={() => rt.dispatch(`chrome.reset:${o.type}:${o.instance}`)}>Reset all</Button>
+                    <Button size="sm" tone="neutral" icon="undo" aria-label={`Reset ${name}`} onClick={() => rt.dispatch(`chrome.reset:${o.type}:${o.instance}`)}>Reset</Button>
                   </span>
                 </div>
                 {expanded && <div className="fx-stack fx-stack--xs">{CHROME_FIELDS[o.type].map((f) => <FieldControl key={f.key} type={o.type} instance={o.instance} field={f} descriptions={false} />)}</div>}
