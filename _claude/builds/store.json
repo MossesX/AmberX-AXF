@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6897,
- "updatedAt": "2026-11-16T20:44:34.902Z",
+ "rev": 6898,
+ "updatedAt": "2026-11-16T20:46:21.176Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -218452,15 +218452,15 @@
    "title": "Banner widget shapes: more than circle and pill, all token-driven",
    "category": "Appearance",
    "detail": "Brett: banner widgets can only be circles or pills. Add a shape token per banner widget (global, per skin, per instance): circle, pill, rounded square, square, squircle, hexagon, diamond, tag, plus custom radius per corner and custom SVG mask. Shapes are assets (shape@1), swappable by skin, editable in the skin editor, UI Manager and per-instance settings, with Restore previous edit. Full API: REST/MCP/CLI/voice ('make the banner widgets hexagons'). Tests desktop and phone.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "#703",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-16T20:44:33.098Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T20:46:19.060Z",
+   "builtAt": "2026-11-16T20:46:19.060Z",
    "notes": [
     {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-banner-widget-shapes-more-than-circle--joey.",
@@ -219271,12 +219271,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T20:46:19.060Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:47:26.735Z",
-     "updatedAt": "2026-11-14T04:47:26.735Z"
+     "updatedAt": "2026-11-16T20:46:19.329Z"
     }
    ],
    "profiles": [
@@ -219287,7 +219287,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
