@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6520,
- "updatedAt": "2026-11-16T16:33:56.895Z",
+ "rev": 6521,
+ "updatedAt": "2026-11-16T16:34:42.958Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -242498,12 +242498,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T16:31:15.510Z",
-   "updatedAt": "2026-11-16T16:31:18.631Z",
+   "updatedAt": "2026-11-16T16:34:41.229Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-16T16:31:18.631Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"6c23570f-c799-496b-8c7e-4fcecf11cc3c\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-16T16:34:41.229Z"
     }
    ],
    "approvals": [],
@@ -242530,9 +242534,15 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-16T16:34:41.229Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"6c23570f-c799-496b-8c7e-4fcecf11cc3c\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
@@ -242542,7 +242552,77 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwjhhozy0125xy",
+     "title": "",
+     "text": "Deep links are broken: opening https://console.amberxai.com/?axf-target=view:build-orchestrator (or view:gate, any view:/tab: address) loads the console's main screen instead of that screen. console_show via the API works, so the address is valid; the URL parameter isn't applied on load. Fix: on page load (and after sign-in redirect, which likely drops the query string), read ?axf-target= and focus that address once the views are registered, including tabs (e.g. view:gate/tab:gate.tabs=auto-lander). Keep the parameter through the hub sign-in redirect. Each open_url must open its own tab when asked. Tests: load with each view address and assert the focused screen. Land with the one-at-a-time lander.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T16:34:41.229Z",
+     "updatedAt": "2026-11-16T16:34:41.229Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwjhhozy02bkd8",
+     "title": "",
+     "text": "You didn't open the orchestrator, you just opened the main console. Yeah, we need to fix that.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T16:34:41.229Z",
+     "updatedAt": "2026-11-16T16:34:41.229Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwjhhozy03nmug",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/fix-console-deep-links-open-page-lands.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/fix-console-deep-links-open-page-lands.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T16:34:41.229Z",
+     "updatedAt": "2026-11-16T16:34:41.229Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -242551,12 +242631,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-16T16:34:41.229Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
