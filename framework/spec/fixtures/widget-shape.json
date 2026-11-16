@@ -1,0 +1,1047 @@
+{
+  "frame": "widget-shape@1",
+  "shapes": [
+    "circle",
+    "square",
+    "rounded",
+    "pill",
+    "hexagon",
+    "custom"
+  ],
+  "default": "circle",
+  "tokens": {
+    "radius": "--fx-widget-shape-radius",
+    "clip": "--fx-widget-shape-clip",
+    "icon": "--fx-widget-icon"
+  },
+  "radius": {
+    "circle": "50%",
+    "square": "0",
+    "rounded": "var(--fx-radius-md)",
+    "pill": "999px"
+  },
+  "hexagonClip": "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)",
+  "iconOwn": "own",
+  "customPath": {
+    "max": 400,
+    "commands": "MLHVCSQTZ",
+    "box": 100,
+    "curveSteps": 8
+  },
+  "packs": {
+    "pack-021": [
+      "bell",
+      "star"
+    ],
+    "amberx-outline": [
+      "home"
+    ]
+  },
+  "shape": {
+    "circle": {
+      "view": {
+        "shape": "circle",
+        "iconOverride": null,
+        "shapeSource": "pick"
+      },
+      "resolved": {
+        "shape": "circle",
+        "radius": "50%",
+        "clip": "none",
+        "icon": "own",
+        "fell": [],
+        "explicit": true
+      },
+      "tokens": {
+        "--fx-widget-shape-radius": "50%",
+        "--fx-widget-shape-clip": "none",
+        "--fx-widget-icon": "own"
+      }
+    },
+    "square": {
+      "view": {
+        "shape": "square",
+        "iconOverride": null,
+        "shapeSource": "pick"
+      },
+      "resolved": {
+        "shape": "square",
+        "radius": "0",
+        "clip": "none",
+        "icon": "own",
+        "fell": [],
+        "explicit": true
+      },
+      "tokens": {
+        "--fx-widget-shape-radius": "0",
+        "--fx-widget-shape-clip": "none",
+        "--fx-widget-icon": "own"
+      }
+    },
+    "rounded": {
+      "view": {
+        "shape": "rounded",
+        "iconOverride": null,
+        "shapeSource": "pick"
+      },
+      "resolved": {
+        "shape": "rounded",
+        "radius": "var(--fx-radius-md)",
+        "clip": "none",
+        "icon": "own",
+        "fell": [],
+        "explicit": true
+      },
+      "tokens": {
+        "--fx-widget-shape-radius": "var(--fx-radius-md)",
+        "--fx-widget-shape-clip": "none",
+        "--fx-widget-icon": "own"
+      }
+    },
+    "pill": {
+      "view": {
+        "shape": "pill",
+        "iconOverride": null,
+        "shapeSource": "pick"
+      },
+      "resolved": {
+        "shape": "pill",
+        "radius": "999px",
+        "clip": "none",
+        "icon": "own",
+        "fell": [],
+        "explicit": true
+      },
+      "tokens": {
+        "--fx-widget-shape-radius": "999px",
+        "--fx-widget-shape-clip": "none",
+        "--fx-widget-icon": "own"
+      }
+    },
+    "hexagon": {
+      "view": {
+        "shape": "hexagon",
+        "iconOverride": null,
+        "shapeSource": "pick"
+      },
+      "resolved": {
+        "shape": "hexagon",
+        "radius": "0",
+        "clip": "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)",
+        "icon": "own",
+        "fell": [],
+        "explicit": true
+      },
+      "tokens": {
+        "--fx-widget-shape-radius": "0",
+        "--fx-widget-shape-clip": "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)",
+        "--fx-widget-icon": "own"
+      }
+    }
+  },
+  "paths": {
+    "diamond": {
+      "path": "M50 0 L100 50 L50 100 L0 50 Z",
+      "points": [
+        [
+          50,
+          0
+        ],
+        [
+          100,
+          50
+        ],
+        [
+          50,
+          100
+        ],
+        [
+          0,
+          50
+        ]
+      ],
+      "clip": "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)"
+    },
+    "relative-square": {
+      "path": "m0 0 h100 v100 h-100 z",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          100,
+          0
+        ],
+        [
+          100,
+          100
+        ],
+        [
+          0,
+          100
+        ]
+      ],
+      "clip": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"
+    },
+    "rounded-leaf": {
+      "path": "M50 0 C100 0 100 100 50 100 S0 0 50 0 Z",
+      "points": [
+        [
+          50,
+          0
+        ],
+        [
+          66.41,
+          4.3
+        ],
+        [
+          78.13,
+          15.63
+        ],
+        [
+          85.16,
+          31.64
+        ],
+        [
+          87.5,
+          50
+        ],
+        [
+          85.16,
+          68.36
+        ],
+        [
+          78.13,
+          84.38
+        ],
+        [
+          66.41,
+          95.7
+        ],
+        [
+          50,
+          100
+        ],
+        [
+          33.59,
+          95.7
+        ],
+        [
+          21.88,
+          84.38
+        ],
+        [
+          14.84,
+          68.36
+        ],
+        [
+          12.5,
+          50
+        ],
+        [
+          14.84,
+          31.64
+        ],
+        [
+          21.88,
+          15.63
+        ],
+        [
+          33.59,
+          4.3
+        ]
+      ],
+      "clip": "polygon(50% 0%, 66.41% 4.3%, 78.13% 15.63%, 85.16% 31.64%, 87.5% 50%, 85.16% 68.36%, 78.13% 84.38%, 66.41% 95.7%, 50% 100%, 33.59% 95.7%, 21.88% 84.38%, 14.84% 68.36%, 12.5% 50%, 14.84% 31.64%, 21.88% 15.63%, 33.59% 4.3%)"
+    },
+    "quadratic-drop": {
+      "path": "M50 0 Q100 50 50 100 Q0 50 50 0 Z",
+      "points": [
+        [
+          50,
+          0
+        ],
+        [
+          60.94,
+          12.5
+        ],
+        [
+          68.75,
+          25
+        ],
+        [
+          73.44,
+          37.5
+        ],
+        [
+          75,
+          50
+        ],
+        [
+          73.44,
+          62.5
+        ],
+        [
+          68.75,
+          75
+        ],
+        [
+          60.94,
+          87.5
+        ],
+        [
+          50,
+          100
+        ],
+        [
+          39.06,
+          87.5
+        ],
+        [
+          31.25,
+          75
+        ],
+        [
+          26.56,
+          62.5
+        ],
+        [
+          25,
+          50
+        ],
+        [
+          26.56,
+          37.5
+        ],
+        [
+          31.25,
+          25
+        ],
+        [
+          39.06,
+          12.5
+        ]
+      ],
+      "clip": "polygon(50% 0%, 60.94% 12.5%, 68.75% 25%, 73.44% 37.5%, 75% 50%, 73.44% 62.5%, 68.75% 75%, 60.94% 87.5%, 50% 100%, 39.06% 87.5%, 31.25% 75%, 26.56% 62.5%, 25% 50%, 26.56% 37.5%, 31.25% 25%, 39.06% 12.5%)"
+    },
+    "smooth-quadratic": {
+      "path": "M0 50 Q25 0 50 50 T100 50 L100 100 L0 100 Z",
+      "points": [
+        [
+          0,
+          50
+        ],
+        [
+          6.25,
+          39.06
+        ],
+        [
+          12.5,
+          31.25
+        ],
+        [
+          18.75,
+          26.56
+        ],
+        [
+          25,
+          25
+        ],
+        [
+          31.25,
+          26.56
+        ],
+        [
+          37.5,
+          31.25
+        ],
+        [
+          43.75,
+          39.06
+        ],
+        [
+          50,
+          50
+        ],
+        [
+          56.25,
+          60.94
+        ],
+        [
+          62.5,
+          68.75
+        ],
+        [
+          68.75,
+          73.44
+        ],
+        [
+          75,
+          75
+        ],
+        [
+          81.25,
+          73.44
+        ],
+        [
+          87.5,
+          68.75
+        ],
+        [
+          93.75,
+          60.94
+        ],
+        [
+          100,
+          50
+        ],
+        [
+          100,
+          100
+        ],
+        [
+          0,
+          100
+        ]
+      ],
+      "clip": "polygon(0% 50%, 6.25% 39.06%, 12.5% 31.25%, 18.75% 26.56%, 25% 25%, 31.25% 26.56%, 37.5% 31.25%, 43.75% 39.06%, 50% 50%, 56.25% 60.94%, 62.5% 68.75%, 68.75% 73.44%, 75% 75%, 81.25% 73.44%, 87.5% 68.75%, 93.75% 60.94%, 100% 50%, 100% 100%, 0% 100%)"
+    },
+    "triangle-decimals": {
+      "path": "M 50.5,0.25 L 99.75,100 L .5,100 Z",
+      "points": [
+        [
+          50.5,
+          0.25
+        ],
+        [
+          99.75,
+          100
+        ],
+        [
+          0.5,
+          100
+        ]
+      ],
+      "clip": "polygon(50.5% 0.25%, 99.75% 100%, 0.5% 100%)"
+    },
+    "out-of-box": {
+      "path": "M0 0 L100 0 L50 150 Z",
+      "points": null,
+      "clip": null
+    },
+    "two-points": {
+      "path": "M0 0 L100 0 Z",
+      "points": null,
+      "clip": null
+    },
+    "two-subpaths": {
+      "path": "M0 0 L100 0 L50 100 Z M5 5 L6 6 L7 5 Z",
+      "points": null,
+      "clip": null
+    },
+    "arc": {
+      "path": "M0 0 A50 50 0 0 1 100 100 L0 100 Z",
+      "points": null,
+      "clip": null
+    },
+    "unclosed": {
+      "path": "M0 0 L100 0 L50 100",
+      "points": null,
+      "clip": null
+    },
+    "no-move": {
+      "path": "L0 0 L100 0 L50 100 Z",
+      "points": null,
+      "clip": null
+    },
+    "odd-numbers": {
+      "path": "M0 0 L 100 Z",
+      "points": null,
+      "clip": null
+    },
+    "bad-chars": {
+      "path": "M0 0 L100 0 L50 100 Z; color: red",
+      "points": null,
+      "clip": null
+    },
+    "too-long": {
+      "path": "M0 0 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 L50 50 Z",
+      "points": null,
+      "clip": null
+    },
+    "empty": {
+      "path": "   ",
+      "points": null,
+      "clip": null
+    },
+    "not-text": {
+      "path": 7,
+      "points": null,
+      "clip": null
+    },
+    "null": {
+      "path": null,
+      "points": null,
+      "clip": null
+    }
+  },
+  "custom": {
+    "with-path": {
+      "view": {
+        "shape": "custom",
+        "customPath": "M50 0 L100 50 L50 100 L0 50 Z",
+        "iconOverride": null,
+        "shapeSource": "pick"
+      },
+      "resolved": {
+        "shape": "custom",
+        "radius": "0",
+        "clip": "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)",
+        "icon": "own",
+        "fell": [],
+        "explicit": true
+      },
+      "tokens": {
+        "--fx-widget-shape-radius": "0",
+        "--fx-widget-shape-clip": "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)",
+        "--fx-widget-icon": "own"
+      }
+    },
+    "bad-path": {
+      "view": {
+        "shape": "custom",
+        "customPath": "M0 0 L100 0 L50 150 Z",
+        "iconOverride": null,
+        "shapeSource": "pick"
+      },
+      "resolved": {
+        "shape": "circle",
+        "radius": "50%",
+        "clip": "none",
+        "icon": "own",
+        "fell": [
+          "the custom path is not one closed outline inside the 0..100 square"
+        ],
+        "explicit": true
+      },
+      "tokens": {
+        "--fx-widget-shape-radius": "50%",
+        "--fx-widget-shape-clip": "none",
+        "--fx-widget-icon": "own"
+      }
+    },
+    "no-path": {
+      "view": {
+        "shape": "custom",
+        "iconOverride": null,
+        "shapeSource": "pick"
+      },
+      "resolved": {
+        "shape": "circle",
+        "radius": "50%",
+        "clip": "none",
+        "icon": "own",
+        "fell": [
+          "a custom shape needs a path"
+        ],
+        "explicit": true
+      },
+      "tokens": {
+        "--fx-widget-shape-radius": "50%",
+        "--fx-widget-shape-clip": "none",
+        "--fx-widget-icon": "own"
+      }
+    },
+    "path-from-hint": {
+      "view": {
+        "shape": "custom",
+        "customPath": "m0 0 h100 v100 h-100 z",
+        "iconOverride": null,
+        "shapeSource": "pick"
+      },
+      "resolved": {
+        "shape": "custom",
+        "radius": "0",
+        "clip": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+        "icon": "own",
+        "fell": [],
+        "explicit": true
+      },
+      "tokens": {
+        "--fx-widget-shape-radius": "0",
+        "--fx-widget-shape-clip": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+        "--fx-widget-icon": "own"
+      }
+    },
+    "pick-ignores-hint-path-when-not-custom": {
+      "view": {
+        "shape": "square",
+        "iconOverride": null,
+        "shapeSource": "pick"
+      },
+      "resolved": {
+        "shape": "square",
+        "radius": "0",
+        "clip": "none",
+        "icon": "own",
+        "fell": [],
+        "explicit": true
+      },
+      "tokens": {
+        "--fx-widget-shape-radius": "0",
+        "--fx-widget-shape-clip": "none",
+        "--fx-widget-icon": "own"
+      }
+    }
+  },
+  "invalid": {
+    "unknown-shape": {
+      "view": {
+        "shape": "circle",
+        "iconOverride": null,
+        "shapeSource": "default"
+      },
+      "resolved": {
+        "shape": "circle",
+        "radius": "50%",
+        "clip": "none",
+        "icon": "own",
+        "fell": [],
+        "explicit": false
+      },
+      "tokens": {
+        "--fx-widget-shape-radius": "50%",
+        "--fx-widget-shape-clip": "none",
+        "--fx-widget-icon": "own"
+      }
+    },
+    "shape-not-text": {
+      "view": {
+        "shape": "circle",
+        "iconOverride": null,
+        "shapeSource": "default"
+      },
+      "resolved": {
+        "shape": "circle",
+        "radius": "50%",
+        "clip": "none",
+        "icon": "own",
+        "fell": [],
+        "explicit": false
+      },
+      "tokens": {
+        "--fx-widget-shape-radius": "50%",
+        "--fx-widget-shape-clip": "none",
+        "--fx-widget-icon": "own"
+      }
+    },
+    "unknown-shape-resolved-directly": {
+      "shape": "circle",
+      "radius": "50%",
+      "clip": "none",
+      "icon": "own",
+      "fell": [
+        "shape \"blob\" is not one of circle, square, rounded, pill, hexagon, custom"
+      ],
+      "explicit": true
+    },
+    "override-malformed": {
+      "shape": "circle",
+      "radius": "50%",
+      "clip": "none",
+      "icon": "own",
+      "fell": [
+        "the icon override needs an icon pack id and a glyph name"
+      ],
+      "explicit": false
+    }
+  },
+  "icon": {
+    "pack-and-glyph": {
+      "view": {
+        "shape": "circle",
+        "iconOverride": {
+          "pack": "pack-021",
+          "id": "bell"
+        },
+        "shapeSource": "default"
+      },
+      "resolved": {
+        "shape": "circle",
+        "radius": "50%",
+        "clip": "none",
+        "icon": "pack-021/bell",
+        "fell": [],
+        "explicit": false
+      },
+      "tokens": {
+        "--fx-widget-shape-radius": "50%",
+        "--fx-widget-shape-clip": "none",
+        "--fx-widget-icon": "pack-021/bell"
+      }
+    },
+    "glyph-missing": {
+      "view": {
+        "shape": "circle",
+        "iconOverride": {
+          "pack": "pack-021",
+          "id": "nope"
+        },
+        "shapeSource": "default"
+      },
+      "resolved": {
+        "shape": "circle",
+        "radius": "50%",
+        "clip": "none",
+        "icon": "own",
+        "fell": [
+          "icon pack-021/nope is not a glyph of a registered icon pack"
+        ],
+        "explicit": false
+      },
+      "tokens": {
+        "--fx-widget-shape-radius": "50%",
+        "--fx-widget-shape-clip": "none",
+        "--fx-widget-icon": "own"
+      }
+    },
+    "pack-missing": {
+      "view": {
+        "shape": "circle",
+        "iconOverride": {
+          "pack": "pack-999",
+          "id": "bell"
+        },
+        "shapeSource": "default"
+      },
+      "resolved": {
+        "shape": "circle",
+        "radius": "50%",
+        "clip": "none",
+        "icon": "own",
+        "fell": [
+          "icon pack-999/bell is not a glyph of a registered icon pack"
+        ],
+        "explicit": false
+      },
+      "tokens": {
+        "--fx-widget-shape-radius": "50%",
+        "--fx-widget-shape-clip": "none",
+        "--fx-widget-icon": "own"
+      }
+    },
+    "from-hint": {
+      "view": {
+        "shape": "circle",
+        "iconOverride": {
+          "pack": "amberx-outline",
+          "id": "home"
+        },
+        "shapeSource": "default"
+      },
+      "resolved": {
+        "shape": "circle",
+        "radius": "50%",
+        "clip": "none",
+        "icon": "amberx-outline/home",
+        "fell": [],
+        "explicit": false
+      },
+      "tokens": {
+        "--fx-widget-shape-radius": "50%",
+        "--fx-widget-shape-clip": "none",
+        "--fx-widget-icon": "amberx-outline/home"
+      }
+    },
+    "pick-beats-hint": {
+      "view": {
+        "shape": "circle",
+        "iconOverride": {
+          "pack": "pack-021",
+          "id": "star"
+        },
+        "shapeSource": "default"
+      },
+      "resolved": {
+        "shape": "circle",
+        "radius": "50%",
+        "clip": "none",
+        "icon": "pack-021/star",
+        "fell": [],
+        "explicit": false
+      },
+      "tokens": {
+        "--fx-widget-shape-radius": "50%",
+        "--fx-widget-shape-clip": "none",
+        "--fx-widget-icon": "pack-021/star"
+      }
+    },
+    "with-hexagon": {
+      "view": {
+        "shape": "hexagon",
+        "iconOverride": {
+          "pack": "pack-021",
+          "id": "bell"
+        },
+        "shapeSource": "pick"
+      },
+      "resolved": {
+        "shape": "hexagon",
+        "radius": "0",
+        "clip": "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)",
+        "icon": "pack-021/bell",
+        "fell": [],
+        "explicit": true
+      },
+      "tokens": {
+        "--fx-widget-shape-radius": "0",
+        "--fx-widget-shape-clip": "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)",
+        "--fx-widget-icon": "pack-021/bell"
+      }
+    }
+  },
+  "host": {
+    "circle": {
+      "--fx-widget-shape-radius": "50%",
+      "--fx-widget-shape-clip": "none"
+    },
+    "square": {
+      "--fx-widget-shape-radius": "0",
+      "--fx-widget-shape-clip": "none"
+    },
+    "rounded": {
+      "--fx-widget-shape-radius": "var(--fx-radius-md)",
+      "--fx-widget-shape-clip": "none"
+    },
+    "pill": {
+      "--fx-widget-shape-radius": "999px",
+      "--fx-widget-shape-clip": "none"
+    },
+    "hexagon": {
+      "--fx-widget-shape-radius": "0",
+      "--fx-widget-shape-clip": "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)"
+    },
+    "custom": {
+      "--fx-widget-shape-radius": "50%",
+      "--fx-widget-shape-clip": "none"
+    },
+    "blob": {
+      "--fx-widget-shape-radius": "50%",
+      "--fx-widget-shape-clip": "none"
+    },
+    "empty": {
+      "--fx-widget-shape-radius": "50%",
+      "--fx-widget-shape-clip": "none"
+    }
+  },
+  "fold": {
+    "default": {
+      "view": {
+        "shape": "circle",
+        "iconOverride": null,
+        "shapeSource": "default"
+      },
+      "resolved": {
+        "shape": "circle",
+        "radius": "50%",
+        "clip": "none",
+        "icon": "own",
+        "fell": [],
+        "explicit": false
+      },
+      "tokens": {
+        "--fx-widget-shape-radius": "50%",
+        "--fx-widget-shape-clip": "none",
+        "--fx-widget-icon": "own"
+      }
+    },
+    "hint": {
+      "view": {
+        "shape": "pill",
+        "iconOverride": null,
+        "shapeSource": "hint"
+      },
+      "resolved": {
+        "shape": "pill",
+        "radius": "999px",
+        "clip": "none",
+        "icon": "own",
+        "fell": [],
+        "explicit": true
+      },
+      "tokens": {
+        "--fx-widget-shape-radius": "999px",
+        "--fx-widget-shape-clip": "none",
+        "--fx-widget-icon": "own"
+      }
+    },
+    "pick": {
+      "view": {
+        "shape": "rounded",
+        "iconOverride": null,
+        "shapeSource": "pick"
+      },
+      "resolved": {
+        "shape": "rounded",
+        "radius": "var(--fx-radius-md)",
+        "clip": "none",
+        "icon": "own",
+        "fell": [],
+        "explicit": true
+      },
+      "tokens": {
+        "--fx-widget-shape-radius": "var(--fx-radius-md)",
+        "--fx-widget-shape-clip": "none",
+        "--fx-widget-icon": "own"
+      }
+    },
+    "bad-pick-falls-to-hint": {
+      "view": {
+        "shape": "pill",
+        "iconOverride": null,
+        "shapeSource": "hint"
+      },
+      "resolved": {
+        "shape": "pill",
+        "radius": "999px",
+        "clip": "none",
+        "icon": "own",
+        "fell": [],
+        "explicit": true
+      },
+      "tokens": {
+        "--fx-widget-shape-radius": "999px",
+        "--fx-widget-shape-clip": "none",
+        "--fx-widget-icon": "own"
+      }
+    }
+  },
+  "normalize": {
+    "in": {
+      "status:a": {
+        "shape": "hexagon",
+        "customPath": "  M0 0 L100 0 L50 100 Z  ",
+        "iconOverride": {
+          "pack": "pack-021",
+          "id": "bell"
+        }
+      },
+      "status:b": {
+        "shape": "blob",
+        "customPath": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "iconOverride": {
+          "pack": "Bad",
+          "id": "bell"
+        }
+      },
+      "status:c": {
+        "iconOverride": {
+          "pack": "pack-021"
+        }
+      }
+    },
+    "out": {
+      "status:a": {
+        "shape": "hexagon",
+        "customPath": "M0 0 L100 0 L50 100 Z",
+        "iconOverride": {
+          "pack": "pack-021",
+          "id": "bell"
+        }
+      }
+    }
+  },
+  "migrate": {
+    "old-choices": {
+      "in": {
+        "status:a": {
+          "size": "wide"
+        },
+        "clock:c": {
+          "hidden": true,
+          "priority": 2
+        }
+      },
+      "prefs": {
+        "status:a": {
+          "size": "wide",
+          "shape": "circle"
+        },
+        "clock:c": {
+          "hidden": true,
+          "priority": 2,
+          "shape": "circle"
+        }
+      },
+      "changed": true,
+      "migrated": [
+        "status:a",
+        "clock:c"
+      ]
+    },
+    "already-shaped": {
+      "in": {
+        "status:a": {
+          "size": "wide",
+          "shape": "pill"
+        }
+      },
+      "prefs": {
+        "status:a": {
+          "shape": "pill",
+          "size": "wide"
+        }
+      },
+      "changed": false,
+      "migrated": []
+    },
+    "mixed": {
+      "in": {
+        "status:a": {
+          "size": "wide"
+        },
+        "clock:c": {
+          "shape": "hexagon"
+        },
+        "bad key": {
+          "hidden": true
+        },
+        "status:d": "junk"
+      },
+      "prefs": {
+        "status:a": {
+          "size": "wide",
+          "shape": "circle"
+        },
+        "clock:c": {
+          "shape": "hexagon"
+        }
+      },
+      "changed": true,
+      "migrated": [
+        "status:a"
+      ]
+    },
+    "empty": {
+      "in": {},
+      "prefs": {},
+      "changed": false,
+      "migrated": []
+    },
+    "junk": {
+      "in": [
+        1,
+        2
+      ],
+      "prefs": {},
+      "changed": false,
+      "migrated": []
+    },
+    "nothing": {
+      "in": null,
+      "prefs": {},
+      "changed": false,
+      "migrated": []
+    }
+  }
+}

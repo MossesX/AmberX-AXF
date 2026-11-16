@@ -8,7 +8,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
-import { BANNER_WIDGET_WIDTH, bannerWidgetCapCss, bannerWidgetEmpty, bannerWidgetNumber, bannerWidgetView, findBannerWidget, migrateBannerWidgetPrefs, normalizeBannerWidgetPrefs, overflowWidgets, patchBannerWidget } from '../core/engines/bannerwidgets';
+import { BANNER_WIDGET_CUSTOM_PATH, BANNER_WIDGET_SHAPES, BANNER_WIDGET_SHAPE_DEFAULT, BANNER_WIDGET_SHAPE_TOKENS, BANNER_WIDGET_WIDTH, WIDGET_ICON_OWN, WIDGET_SHAPE_CURVE_STEPS, WIDGET_SHAPE_FRAME, WIDGET_SHAPE_HEXAGON_CLIP, WIDGET_SHAPE_RADIUS, bannerWidgetCapCss, bannerWidgetEmpty, bannerWidgetNumber, bannerWidgetView, customPathClip, findBannerWidget, flattenCustomPath, hostWidgetShapeTokens, migrateBannerWidgetPrefs, normalizeBannerWidgetPrefs, overflowWidgets, patchBannerWidget, resolveWidgetShape, widgetShapeTokens } from '../core/engines/bannerwidgets';
 import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, moveOnHost, normalizeArrangement, placeOnHost, placeToolbarWidgets, snapIndex, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
 import { validateAsset } from '../core/validate';
 import { AxfRuntime } from '../core/runtime';
@@ -63,6 +63,65 @@ const eq = (a: unknown, b: unknown, msg: string) => { assert.deepEqual(a, b, msg
   eq(findBannerWidget(list, 'ticker')?.key, 'status:y', 'find by alias');
   eq(findBannerWidget(list, 'status:y')?.key, 'status:y', 'find by key');
   eq(findBannerWidget(list, 'nope'), null, 'nothing found');
+}
+
+// widget-shape.json (Nov 16 2026): shapes, custom outlines, invalid input, icon overrides, host token, fold, normalize, migration
+{
+  const f = read('widget-shape.json');
+  eq(WIDGET_SHAPE_FRAME, f.frame, 'widget-shape frame');
+  eq([...BANNER_WIDGET_SHAPES], f.shapes, 'widget shapes');
+  eq(BANNER_WIDGET_SHAPE_DEFAULT, f.default, 'default shape is circle');
+  eq(BANNER_WIDGET_SHAPE_TOKENS, f.tokens, 'widget shape tokens');
+  eq(WIDGET_SHAPE_RADIUS, f.radius, 'shape radii');
+  eq(WIDGET_SHAPE_HEXAGON_CLIP, f.hexagonClip, 'hexagon clip');
+  eq(WIDGET_ICON_OWN, f.iconOwn, 'own icon token value');
+  eq({ ...BANNER_WIDGET_CUSTOM_PATH, curveSteps: WIDGET_SHAPE_CURVE_STEPS }, f.customPath, 'custom path limits');
+  const hasGlyph = (pack: string, id: string) => ((f.packs[pack] as string[] | undefined) ?? []).includes(id);
+  const replay = (c: any, name: string) => {
+    const v = bannerWidgetView('status', c.hint ?? null, c.pref ?? null);
+    const r = resolveWidgetShape(v, hasGlyph);
+    eq({ shape: v.shape, ...(v.customPath !== undefined ? { customPath: v.customPath } : {}), iconOverride: v.iconOverride, shapeSource: v.shapeSource }, c.view, `${name}: view`);
+    eq(r, c.resolved, `${name}: resolved`);
+    eq(widgetShapeTokens(r), c.tokens, `${name}: tokens`);
+  };
+  // the fixture records what each case was built from; rebuild the inputs the same way gen-fixtures does
+  const inputs: Record<string, { pref?: unknown; hint?: unknown }> = {
+    ...Object.fromEntries(BANNER_WIDGET_SHAPES.filter((s) => s !== 'custom').map((s) => [`shape.${s}`, { pref: { shape: s } }])),
+    'custom.with-path': { pref: { shape: 'custom', customPath: f.paths.diamond.path } },
+    'custom.bad-path': { pref: { shape: 'custom', customPath: f.paths['out-of-box'].path } },
+    'custom.no-path': { pref: { shape: 'custom' } },
+    'custom.path-from-hint': { pref: { shape: 'custom' }, hint: { shape: 'custom', customPath: f.paths['relative-square'].path } },
+    'custom.pick-ignores-hint-path-when-not-custom': { pref: { shape: 'square' }, hint: { shape: 'custom', customPath: f.paths.diamond.path } },
+    'invalid.unknown-shape': { pref: { shape: 'blob' } },
+    'invalid.shape-not-text': { pref: { shape: 4 } },
+    'icon.pack-and-glyph': { pref: { iconOverride: { pack: 'pack-021', id: 'bell' } } },
+    'icon.glyph-missing': { pref: { iconOverride: { pack: 'pack-021', id: 'nope' } } },
+    'icon.pack-missing': { pref: { iconOverride: { pack: 'pack-999', id: 'bell' } } },
+    'icon.from-hint': { hint: { iconOverride: { pack: 'amberx-outline', id: 'home' } } },
+    'icon.pick-beats-hint': { pref: { iconOverride: { pack: 'pack-021', id: 'star' } }, hint: { iconOverride: { pack: 'amberx-outline', id: 'home' } } },
+    'icon.with-hexagon': { pref: { shape: 'hexagon', iconOverride: { pack: 'pack-021', id: 'bell' } } },
+    'fold.default': {},
+    'fold.hint': { hint: { shape: 'pill' } },
+    'fold.pick': { pref: { shape: 'rounded' }, hint: { shape: 'pill' } },
+    'fold.bad-pick-falls-to-hint': { pref: { shape: 'blob' }, hint: { shape: 'pill' } },
+  };
+  for (const [name, inp] of Object.entries(inputs)) { const [group, key] = name.split('.') as [string, string]; ok(f[group]?.[key], `${name} in the fixture`); replay({ ...inp, ...f[group][key] }, name); }
+  eq(Object.keys(f.shape).sort(), BANNER_WIDGET_SHAPES.filter((s) => s !== 'custom').sort(), 'every named shape has a golden case');
+  for (const [name, c] of Object.entries<any>(f.paths)) { eq(flattenCustomPath(c.path), c.points, `path ${name}: points`); eq(customPathClip(c.path), c.clip, `path ${name}: clip`); }
+  ok(f.paths.diamond.clip === 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)', 'diamond is an exact four-corner polygon');
+  for (const name of ['out-of-box', 'two-points', 'two-subpaths', 'arc', 'unclosed', 'no-move', 'odd-numbers', 'bad-chars', 'too-long', 'empty', 'not-text', 'null']) ok(f.paths[name].clip === null, `path ${name} is refused`);
+  for (const name of ['diamond', 'relative-square', 'rounded-leaf', 'quadratic-drop', 'smooth-quadratic', 'triangle-decimals']) ok(typeof f.paths[name].clip === 'string' && f.paths[name].clip.startsWith('polygon('), `path ${name} compiles to a polygon`);
+  eq(resolveWidgetShape({ shape: 'blob' as never, customPath: undefined, iconOverride: null, shapeSource: 'pick' }, hasGlyph), f.invalid['unknown-shape-resolved-directly'], 'unknown shape at resolve time falls back and says so');
+  eq(resolveWidgetShape({ shape: 'circle', customPath: undefined, iconOverride: { pack: 'Bad Id', id: 'bell' } as never, shapeSource: 'default' }, hasGlyph), f.invalid['override-malformed'], 'malformed override falls back and says so');
+  ok(f.custom['bad-path'].resolved.shape === 'circle' && f.custom['bad-path'].resolved.fell.length === 1, 'a bad custom path draws a circle and reports it');
+  ok(f.icon['glyph-missing'].resolved.icon === 'own' && f.icon['pack-and-glyph'].resolved.icon === 'pack-021/bell', 'icon override only once the glyph exists');
+  ok(f.fold.default.resolved.explicit === false && f.fold.hint.resolved.explicit && f.fold.pick.resolved.explicit, 'only a chosen shape is explicit');
+  for (const [name, t] of Object.entries<any>(f.host)) eq(hostWidgetShapeTokens(name === 'empty' ? '' : name), t, `host shape ${name}`);
+  eq(f.host.custom, f.host.circle, 'the host never takes custom');
+  eq(normalizeBannerWidgetPrefs(f.normalize.in), f.normalize.out, 'normalize the new fields');
+  eq(f.normalize.out, { 'status:a': { shape: 'hexagon', customPath: 'M0 0 L100 0 L50 100 Z', iconOverride: { pack: 'pack-021', id: 'bell' } } }, 'normalize drops an unknown shape, an overlong path and a malformed override');
+  for (const [name, c] of Object.entries<any>(f.migrate)) { const { in: raw, ...want } = c; eq(migrateBannerWidgetPrefs(raw), want, `migrate ${name}`); eq(migrateBannerWidgetPrefs(want.prefs).changed, false, `migrate ${name} again: no change`); }
+  ok(f.migrate['old-choices'].migrated.length === 2 && f.migrate['already-shaped'].changed === false, 'migration touches only choices without a shape');
 }
 
 // banner.json
