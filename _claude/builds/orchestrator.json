@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T23:36:13.199Z",
+ "updatedAt": "2026-11-16T23:36:31.774Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -150069,7 +150069,7 @@
    "pr": "#704",
    "priority": "P0",
    "createdAt": "2026-11-15T04:28:05.062Z",
-   "updatedAt": "2026-11-16T23:35:36.106Z",
+   "updatedAt": "2026-11-16T23:36:13.710Z",
    "builtAt": "2026-11-16T23:35:36.106Z",
    "notes": [
     {
@@ -150143,6 +150143,10 @@
     {
      "text": "Claude account: hulu0241 (axf-data-container-axf-data-holds-all--rhonda, shared account login)",
      "at": "2026-11-16T23:31:28.089Z"
+    },
+    {
+     "text": "Session axf-data-container-axf-data-holds-all--rhonda on hulu0241 ended (exit 0); the build was already built.",
+     "at": "2026-11-16T23:36:13.710Z"
     }
    ],
    "approvals": [
