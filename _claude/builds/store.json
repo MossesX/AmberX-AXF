@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6644,
- "updatedAt": "2026-11-16T18:36:43.463Z",
+ "rev": 6645,
+ "updatedAt": "2026-11-16T18:37:03.248Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -244207,7 +244207,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:38.814Z",
-   "updatedAt": "2026-11-16T18:36:22.110Z",
+   "updatedAt": "2026-11-16T18:36:35.899Z",
    "builtAt": "",
    "notes": [
     {
@@ -244225,6 +244225,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-settings-interface-gear-every-plugin--earl, shared account login)",
      "at": "2026-11-16T18:34:08.207Z"
+    },
+    {
+     "text": "Headless run axf-settings-interface-gear-every-plugin--earl: brief only · start 16.6K tokens ($0.05) · cost $0.53 · 14 turns · 6 tools, MCP none",
+     "at": "2026-11-16T18:36:35.899Z"
     }
    ],
    "approvals": [],
@@ -244244,12 +244248,12 @@
    "pipeline": {
     "queuedAt": "2026-11-16T18:27:41.302Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-settings-interface-gear-every-plugin--earl",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-16T18:34:01.102Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T18:31:29.535Z",
@@ -244261,7 +244265,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-16T18:34:01.102Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -244270,7 +244274,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-16T18:34:01.102Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -244982,7 +244986,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
