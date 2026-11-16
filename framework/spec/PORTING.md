@@ -352,3 +352,19 @@ animIntensity` (core/engines/behavior.ts: `skinAnimationVars`, `withAnimationPre
 `setAnimationPref`) and the colour maths in core/engines/swatches.ts (`shadesOf`, `mixHex`, `skinSwatches`,
 `sweepOrigin`); fixture framework/spec/fixtures/skin-animations.json. Kotlin twin deferred (no new Android work): the
 Compose behaviour reader ignores the new fields (defaults apply), so Android skins stay still until it is ported.
+
+## Deferred: icon maps, icon packs and the icon scope chain (Nov 16 2026)
+
+Build `icon-packs-with-drag-drop-pack-designer` (Fable). Web only; the Kotlin twin is deferred (Android on hold):
+`core/engines/icon-rules.mjs` (the data rules of icon-map@1 and the extended icon-pack@1: spots, glyph sources path |
+svg | png | font | ref, `extends`, source + licence, generator seed, the `icon` blocks of appearance@1 / app-look@1),
+`core/engines/icon-pack.ts` (`foldIconPack`, `iconChain`, `resolveIcon`, the set / reset ops, `glyphMarkup`,
+`appIconMarkup`), `core/engines/icon-map.ts` (`buildIconRegistry`, `registerIconSpot`, `iconCoverage`,
+`searchIconSpots`, `spotTree`), `core/engines/icon-gen.ts` (`seedHash`, `SeededRng`, `generateIcon`, `generatePack`) and
+`core/engines/icon-import.ts` (`sanitizeSvg`, `normalizeSvg`, `importSvg`, `importPng`, `importGlyph`). Fixtures
+`spec/fixtures/icon-pack.json`, `icon-gen.json`, `icon-import.json`; check `spec/check-icon-pack.mts`. A port replays
+the three fixtures: the same FNV-1a hash and mulberry32 stream give the same path data, the same chain gives the same
+`{ scope, by }`, the same SVG text gives the same sanitised inner markup. `AxfRuntime.icons` (`rt.icons.resolve`,
+`registerIconSpot`) and the Compose `AxfIcon(spot)` composable read the same `icon` blocks from the shared documents;
+the Android launcher (`app-icon` spots) draws the resolved glyph through `appIconMarkup`'s tile rules. Until then Android
+keeps the branding package's `iconPack` only.

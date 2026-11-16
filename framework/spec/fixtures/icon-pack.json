@@ -1,0 +1,1612 @@
+{
+  "contract": {
+    "pack": "icon-pack@1",
+    "levels": [
+      "plugin",
+      "ui",
+      "app",
+      "global",
+      "brand",
+      "framework"
+    ],
+    "wins": [
+      "override",
+      "spot",
+      "name",
+      "framework"
+    ],
+    "limits": {
+      "glyphs": 600,
+      "spots": 4000,
+      "pathChars": 2000,
+      "svgChars": 8000,
+      "pngChars": 65536,
+      "fontChars": 64,
+      "extendsDepth": 4,
+      "tags": 12,
+      "licenseChars": 120,
+      "urlChars": 400,
+      "seedChars": 64,
+      "padding": [
+        0,
+        0.4
+      ]
+    },
+    "mapLimits": {
+      "spots": 4000,
+      "tags": 12,
+      "tagChars": 32,
+      "labelChars": 80,
+      "helpChars": 300,
+      "files": 8,
+      "appChars": 48,
+      "extendsDepth": 4
+    },
+    "spotKinds": [
+      "icon",
+      "badge",
+      "app-icon"
+    ],
+    "tints": [
+      "currentColor",
+      "text",
+      "muted",
+      "bg",
+      "surface",
+      "accent",
+      "accentText",
+      "success",
+      "warning",
+      "danger",
+      "info",
+      "brand1",
+      "brand2",
+      "brand3"
+    ],
+    "sizes": [
+      "icon",
+      "icon-button",
+      "badge",
+      "app-icon",
+      "inline"
+    ],
+    "sources": [
+      "path",
+      "svg",
+      "png",
+      "font",
+      "ref"
+    ],
+    "genStyles": [
+      "line",
+      "solid",
+      "duotone",
+      "rounded",
+      "geometric",
+      "pixel"
+    ]
+  },
+  "fold": {
+    "child": {
+      "chain": [
+        "child",
+        "base"
+      ],
+      "broken": [],
+      "glyphs": [
+        "bell",
+        "check",
+        "dot",
+        "grid",
+        "home",
+        "layers",
+        "menu",
+        "package",
+        "plus",
+        "search",
+        "settings",
+        "star",
+        "x"
+      ],
+      "spots": [
+        "console-web:app/favicon",
+        "framework:tab-group/x"
+      ],
+      "style": "filled",
+      "license": {
+        "id": "MIT"
+      }
+    },
+    "grandchild": {
+      "chain": [
+        "grandchild",
+        "child",
+        "base"
+      ],
+      "broken": [],
+      "glyphs": [
+        "bell",
+        "check",
+        "dot",
+        "grid",
+        "home",
+        "layers",
+        "menu",
+        "package",
+        "plus",
+        "search",
+        "settings",
+        "star",
+        "x"
+      ],
+      "spots": [
+        "console-web:app/favicon",
+        "framework:tab-group/x"
+      ],
+      "style": "outline",
+      "license": {
+        "id": "MIT"
+      }
+    },
+    "loop1": {
+      "chain": [
+        "loop1",
+        "loop2"
+      ],
+      "broken": [
+        "loop1"
+      ],
+      "glyphs": [
+        "a",
+        "b"
+      ],
+      "spots": [],
+      "style": "outline",
+      "license": null
+    },
+    "orphan": {
+      "chain": [
+        "orphan"
+      ],
+      "broken": [
+        "missing-pack"
+      ],
+      "glyphs": [
+        "a"
+      ],
+      "spots": [],
+      "style": "outline",
+      "license": null
+    },
+    "deep5": {
+      "chain": [
+        "deep5",
+        "deep4",
+        "deep3",
+        "deep2"
+      ],
+      "broken": [
+        "deep1"
+      ],
+      "glyphs": [
+        "b",
+        "c",
+        "d",
+        "e"
+      ],
+      "spots": [],
+      "style": "outline",
+      "license": null
+    },
+    "missing-pack": null
+  },
+  "chains": {
+    "plugin-in-plan": [
+      {
+        "scope": "plugin:console-terminal",
+        "kind": "plugin",
+        "pack": "strict",
+        "from": "pick",
+        "overrides": []
+      },
+      {
+        "scope": "ui:plan",
+        "kind": "ui",
+        "pack": "",
+        "from": "inherit",
+        "overrides": [
+          "console-web:view-plan/plus"
+        ]
+      },
+      {
+        "scope": "app",
+        "kind": "app",
+        "pack": "child",
+        "from": "pick",
+        "overrides": [
+          "framework:tab-group/more"
+        ]
+      },
+      {
+        "scope": "global",
+        "kind": "global",
+        "pack": "base",
+        "from": "pick",
+        "overrides": [
+          "framework:chrome/search"
+        ]
+      },
+      {
+        "scope": "brand",
+        "kind": "brand",
+        "pack": "base",
+        "from": "brand",
+        "overrides": []
+      }
+    ],
+    "ui-plan": [
+      {
+        "scope": "ui:plan",
+        "kind": "ui",
+        "pack": "",
+        "from": "inherit",
+        "overrides": [
+          "console-web:view-plan/plus"
+        ]
+      },
+      {
+        "scope": "app",
+        "kind": "app",
+        "pack": "child",
+        "from": "pick",
+        "overrides": [
+          "framework:tab-group/more"
+        ]
+      },
+      {
+        "scope": "global",
+        "kind": "global",
+        "pack": "base",
+        "from": "pick",
+        "overrides": [
+          "framework:chrome/search"
+        ]
+      },
+      {
+        "scope": "brand",
+        "kind": "brand",
+        "pack": "base",
+        "from": "brand",
+        "overrides": []
+      }
+    ],
+    "app": [
+      {
+        "scope": "app",
+        "kind": "app",
+        "pack": "child",
+        "from": "pick",
+        "overrides": [
+          "framework:tab-group/more"
+        ]
+      },
+      {
+        "scope": "global",
+        "kind": "global",
+        "pack": "base",
+        "from": "pick",
+        "overrides": [
+          "framework:chrome/search"
+        ]
+      },
+      {
+        "scope": "brand",
+        "kind": "brand",
+        "pack": "base",
+        "from": "brand",
+        "overrides": []
+      }
+    ],
+    "skin-layer": [
+      {
+        "scope": "ui:other",
+        "kind": "ui",
+        "pack": "grandchild",
+        "from": "skin",
+        "overrides": []
+      },
+      {
+        "scope": "app",
+        "kind": "app",
+        "pack": "child",
+        "from": "skin",
+        "overrides": []
+      },
+      {
+        "scope": "global",
+        "kind": "global",
+        "pack": "",
+        "from": "inherit",
+        "overrides": []
+      },
+      {
+        "scope": "brand",
+        "kind": "brand",
+        "pack": "base",
+        "from": "brand",
+        "overrides": []
+      }
+    ],
+    "legacy-brand-only": [
+      {
+        "scope": "app",
+        "kind": "app",
+        "pack": "",
+        "from": "inherit",
+        "overrides": []
+      },
+      {
+        "scope": "global",
+        "kind": "global",
+        "pack": "",
+        "from": "inherit",
+        "overrides": []
+      },
+      {
+        "scope": "brand",
+        "kind": "brand",
+        "pack": "base",
+        "from": "brand",
+        "overrides": []
+      }
+    ],
+    "nothing": [
+      {
+        "scope": "app",
+        "kind": "app",
+        "pack": "",
+        "from": "inherit",
+        "overrides": []
+      },
+      {
+        "scope": "global",
+        "kind": "global",
+        "pack": "",
+        "from": "inherit",
+        "overrides": []
+      },
+      {
+        "scope": "brand",
+        "kind": "brand",
+        "pack": "",
+        "from": "inherit",
+        "overrides": []
+      }
+    ]
+  },
+  "resolve": {
+    "plugin-in-plan": {
+      "framework:tab-group/x:x": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "x"
+      },
+      "framework:tab-group/more:more": {
+        "glyph": {
+          "kind": "path",
+          "d": "M3 6h18M3 12h18M3 18h18",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "child",
+        "scope": "app",
+        "by": "override",
+        "name": "menu"
+      },
+      "framework:app-menu/home:home": {
+        "glyph": {
+          "kind": "path",
+          "d": "M1 1h1",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "strict",
+        "scope": "plugin:console-terminal",
+        "by": "name",
+        "name": "home"
+      },
+      "framework:chrome/search:search": {
+        "glyph": {
+          "kind": "path",
+          "d": "M4 4l16 16M20 4L4 20",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "child",
+        "scope": "global",
+        "by": "override",
+        "name": "search"
+      },
+      "console-web:view-plan/plus:plus": {
+        "glyph": {
+          "kind": "path",
+          "d": "M12 5v14M5 12h14",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "",
+        "scope": "ui:plan",
+        "by": "override",
+        "name": "plus"
+      },
+      "console-web:app/favicon:sparkles": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "sparkles"
+      },
+      "framework:nav/zzz:zzz": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "zzz"
+      },
+      "framework:x/star:star": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "star"
+      },
+      "(no spot):home": {
+        "glyph": {
+          "kind": "path",
+          "d": "M1 1h1",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "strict",
+        "scope": "plugin:console-terminal",
+        "by": "name",
+        "name": "home"
+      },
+      "(no spot):nope": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "nope"
+      }
+    },
+    "ui-plan": {
+      "framework:tab-group/x:x": {
+        "glyph": {
+          "kind": "path",
+          "d": "M4 4l16 16M20 4L4 20",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "child",
+        "scope": "app",
+        "by": "spot",
+        "name": "x"
+      },
+      "framework:tab-group/more:more": {
+        "glyph": {
+          "kind": "path",
+          "d": "M3 6h18M3 12h18M3 18h18",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "child",
+        "scope": "app",
+        "by": "override",
+        "name": "menu"
+      },
+      "framework:app-menu/home:home": {
+        "glyph": {
+          "kind": "path",
+          "d": "M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "child",
+        "scope": "app",
+        "by": "name",
+        "name": "home"
+      },
+      "framework:chrome/search:search": {
+        "glyph": {
+          "kind": "path",
+          "d": "M4 4l16 16M20 4L4 20",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "child",
+        "scope": "global",
+        "by": "override",
+        "name": "search"
+      },
+      "console-web:view-plan/plus:plus": {
+        "glyph": {
+          "kind": "path",
+          "d": "M12 5v14M5 12h14",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "",
+        "scope": "ui:plan",
+        "by": "override",
+        "name": "plus"
+      },
+      "console-web:app/favicon:sparkles": {
+        "glyph": {
+          "kind": "path",
+          "d": "M12 2l10 20H2z",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "child",
+        "scope": "app",
+        "by": "spot",
+        "name": "sparkles"
+      },
+      "framework:nav/zzz:zzz": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "zzz"
+      },
+      "framework:x/star:star": {
+        "glyph": {
+          "kind": "path",
+          "d": "m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "child",
+        "scope": "app",
+        "by": "name",
+        "name": "star"
+      },
+      "(no spot):home": {
+        "glyph": {
+          "kind": "path",
+          "d": "M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "child",
+        "scope": "app",
+        "by": "name",
+        "name": "home"
+      },
+      "(no spot):nope": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "nope"
+      }
+    },
+    "app": {
+      "framework:tab-group/x:x": {
+        "glyph": {
+          "kind": "path",
+          "d": "M4 4l16 16M20 4L4 20",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "child",
+        "scope": "app",
+        "by": "spot",
+        "name": "x"
+      },
+      "framework:tab-group/more:more": {
+        "glyph": {
+          "kind": "path",
+          "d": "M3 6h18M3 12h18M3 18h18",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "child",
+        "scope": "app",
+        "by": "override",
+        "name": "menu"
+      },
+      "framework:app-menu/home:home": {
+        "glyph": {
+          "kind": "path",
+          "d": "M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "child",
+        "scope": "app",
+        "by": "name",
+        "name": "home"
+      },
+      "framework:chrome/search:search": {
+        "glyph": {
+          "kind": "path",
+          "d": "M4 4l16 16M20 4L4 20",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "child",
+        "scope": "global",
+        "by": "override",
+        "name": "search"
+      },
+      "console-web:view-plan/plus:plus": {
+        "glyph": {
+          "kind": "path",
+          "d": "M12 5v14M5 12h14",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "child",
+        "scope": "app",
+        "by": "name",
+        "name": "plus"
+      },
+      "console-web:app/favicon:sparkles": {
+        "glyph": {
+          "kind": "path",
+          "d": "M12 2l10 20H2z",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "child",
+        "scope": "app",
+        "by": "spot",
+        "name": "sparkles"
+      },
+      "framework:nav/zzz:zzz": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "zzz"
+      },
+      "framework:x/star:star": {
+        "glyph": {
+          "kind": "path",
+          "d": "m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "child",
+        "scope": "app",
+        "by": "name",
+        "name": "star"
+      },
+      "(no spot):home": {
+        "glyph": {
+          "kind": "path",
+          "d": "M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "child",
+        "scope": "app",
+        "by": "name",
+        "name": "home"
+      },
+      "(no spot):nope": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "nope"
+      }
+    },
+    "skin-layer": {
+      "framework:tab-group/x:x": {
+        "glyph": {
+          "kind": "path",
+          "d": "M4 4l16 16M20 4L4 20",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "grandchild",
+        "scope": "ui:other",
+        "by": "spot",
+        "name": "x"
+      },
+      "framework:tab-group/more:more": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "more"
+      },
+      "framework:app-menu/home:home": {
+        "glyph": {
+          "kind": "path",
+          "d": "M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "grandchild",
+        "scope": "ui:other",
+        "by": "name",
+        "name": "home"
+      },
+      "framework:chrome/search:search": {
+        "glyph": {
+          "kind": "path",
+          "d": "M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.3-4.3",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "grandchild",
+        "scope": "ui:other",
+        "by": "name",
+        "name": "search"
+      },
+      "console-web:view-plan/plus:plus": {
+        "glyph": {
+          "kind": "path",
+          "d": "M12 5v14M5 12h14",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "grandchild",
+        "scope": "ui:other",
+        "by": "name",
+        "name": "plus"
+      },
+      "console-web:app/favicon:sparkles": {
+        "glyph": {
+          "kind": "path",
+          "d": "M12 2l10 20H2z",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "grandchild",
+        "scope": "ui:other",
+        "by": "spot",
+        "name": "sparkles"
+      },
+      "framework:nav/zzz:zzz": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "zzz"
+      },
+      "framework:x/star:star": {
+        "glyph": {
+          "kind": "path",
+          "d": "M12 2l3 7h7l-5 5 2 7-7-4-7 4 2-7-5-5h7z",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "grandchild",
+        "scope": "ui:other",
+        "by": "name",
+        "name": "star"
+      },
+      "(no spot):home": {
+        "glyph": {
+          "kind": "path",
+          "d": "M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "grandchild",
+        "scope": "ui:other",
+        "by": "name",
+        "name": "home"
+      },
+      "(no spot):nope": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "nope"
+      }
+    },
+    "legacy-brand-only": {
+      "framework:tab-group/x:x": {
+        "glyph": {
+          "kind": "path",
+          "d": "M18 6 6 18M6 6l12 12",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "base",
+        "scope": "brand",
+        "by": "name",
+        "name": "x"
+      },
+      "framework:tab-group/more:more": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "more"
+      },
+      "framework:app-menu/home:home": {
+        "glyph": {
+          "kind": "path",
+          "d": "M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "base",
+        "scope": "brand",
+        "by": "name",
+        "name": "home"
+      },
+      "framework:chrome/search:search": {
+        "glyph": {
+          "kind": "path",
+          "d": "M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.3-4.3",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "base",
+        "scope": "brand",
+        "by": "name",
+        "name": "search"
+      },
+      "console-web:view-plan/plus:plus": {
+        "glyph": {
+          "kind": "path",
+          "d": "M12 5v14M5 12h14",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "base",
+        "scope": "brand",
+        "by": "name",
+        "name": "plus"
+      },
+      "console-web:app/favicon:sparkles": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "sparkles"
+      },
+      "framework:nav/zzz:zzz": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "zzz"
+      },
+      "framework:x/star:star": {
+        "glyph": {
+          "kind": "path",
+          "d": "m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "base",
+        "scope": "brand",
+        "by": "name",
+        "name": "star"
+      },
+      "(no spot):home": {
+        "glyph": {
+          "kind": "path",
+          "d": "M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z",
+          "fill": false,
+          "secondary": ""
+        },
+        "pack": "base",
+        "scope": "brand",
+        "by": "name",
+        "name": "home"
+      },
+      "(no spot):nope": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "nope"
+      }
+    },
+    "nothing": {
+      "framework:tab-group/x:x": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "x"
+      },
+      "framework:tab-group/more:more": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "more"
+      },
+      "framework:app-menu/home:home": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "home"
+      },
+      "framework:chrome/search:search": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "search"
+      },
+      "console-web:view-plan/plus:plus": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "plus"
+      },
+      "console-web:app/favicon:sparkles": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "sparkles"
+      },
+      "framework:nav/zzz:zzz": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "zzz"
+      },
+      "framework:x/star:star": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "star"
+      },
+      "(no spot):home": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "home"
+      },
+      "(no spot):nope": {
+        "glyph": null,
+        "pack": "",
+        "scope": "framework",
+        "by": "framework",
+        "name": "nope"
+      }
+    }
+  },
+  "edits": {
+    "lookA": {
+      "pack": "child",
+      "overrides": {
+        "framework:tab-group/more": "name:menu"
+      },
+      "scopes": {
+        "plugin:console-terminal": {
+          "pack": "strict",
+          "overrides": {}
+        },
+        "ui:plan": {
+          "pack": "",
+          "overrides": {
+            "console-web:view-plan/plus": {
+              "kind": "path",
+              "d": "M12 5v14M5 12h14",
+              "secondary": "",
+              "fill": false,
+              "svg": "",
+              "png": "",
+              "font": null,
+              "ref": "",
+              "source": null,
+              "license": null,
+              "tags": []
+            }
+          }
+        }
+      }
+    },
+    "hubA": {
+      "pack": "base",
+      "overrides": {
+        "framework:chrome/search": "pack:child/x"
+      }
+    },
+    "overrides": [
+      {
+        "scope": "global",
+        "spot": "framework:chrome/search",
+        "entry": "pack:child/x"
+      },
+      {
+        "scope": "app",
+        "spot": "framework:tab-group/more",
+        "entry": "name:menu"
+      },
+      {
+        "scope": "ui:plan",
+        "spot": "console-web:view-plan/plus",
+        "entry": {
+          "kind": "path",
+          "d": "M12 5v14M5 12h14",
+          "secondary": "",
+          "fill": false,
+          "svg": "",
+          "png": "",
+          "font": null,
+          "ref": "",
+          "source": null,
+          "license": null,
+          "tags": []
+        }
+      }
+    ],
+    "reset": {
+      "spot": {
+        "pack": "child",
+        "overrides": {},
+        "scopes": {
+          "plugin:console-terminal": {
+            "pack": "strict",
+            "overrides": {}
+          },
+          "ui:plan": {
+            "pack": "",
+            "overrides": {
+              "console-web:view-plan/plus": {
+                "kind": "path",
+                "d": "M12 5v14M5 12h14",
+                "secondary": "",
+                "fill": false,
+                "svg": "",
+                "png": "",
+                "font": null,
+                "ref": "",
+                "source": null,
+                "license": null,
+                "tags": []
+              }
+            }
+          }
+        }
+      },
+      "scope": {
+        "pack": "child",
+        "overrides": {
+          "framework:tab-group/more": "name:menu"
+        },
+        "scopes": {
+          "ui:plan": {
+            "pack": "",
+            "overrides": {
+              "console-web:view-plan/plus": {
+                "kind": "path",
+                "d": "M12 5v14M5 12h14",
+                "secondary": "",
+                "fill": false,
+                "svg": "",
+                "png": "",
+                "font": null,
+                "ref": "",
+                "source": null,
+                "license": null,
+                "tags": []
+              }
+            }
+          }
+        }
+      },
+      "app": {
+        "pack": "",
+        "overrides": {},
+        "scopes": {}
+      },
+      "hub": {
+        "pack": "",
+        "overrides": {}
+      },
+      "hubSpot": {
+        "pack": "base",
+        "overrides": {}
+      }
+    },
+    "hubPack": {
+      "pack": "child",
+      "overrides": {
+        "framework:chrome/search": "pack:child/x"
+      }
+    },
+    "hubOverride": {
+      "pack": "base",
+      "overrides": {
+        "framework:chrome/search": "pack:child/x",
+        "a:b/c": "name:star"
+      }
+    },
+    "badSpot": {
+      "pack": "child",
+      "overrides": {
+        "framework:tab-group/more": "name:menu"
+      },
+      "scopes": {
+        "plugin:console-terminal": {
+          "pack": "strict",
+          "overrides": {}
+        },
+        "ui:plan": {
+          "pack": "",
+          "overrides": {
+            "console-web:view-plan/plus": {
+              "kind": "path",
+              "d": "M12 5v14M5 12h14",
+              "secondary": "",
+              "fill": false,
+              "svg": "",
+              "png": "",
+              "font": null,
+              "ref": "",
+              "source": null,
+              "license": null,
+              "tags": []
+            }
+          }
+        }
+      }
+    }
+  },
+  "documents": {
+    "legacyLook": {
+      "pack": "base",
+      "overrides": {},
+      "scopes": {
+        "ui:plan": {
+          "pack": "child",
+          "overrides": {}
+        }
+      }
+    },
+    "legacySettings": {
+      "axf.tokens.x": 1
+    },
+    "appearance": {
+      "$axf": "appearance@1",
+      "icon": {
+        "pack": "child",
+        "overrides": {
+          "a:b/c": "name:star"
+        }
+      },
+      "updatedBy": "test",
+      "updatedAt": "2026-11-16T00:00:00Z"
+    },
+    "appearanceCleared": {
+      "$axf": "appearance@1",
+      "updatedBy": "test",
+      "updatedAt": "2026-11-16T00:00:00Z"
+    }
+  },
+  "validate": {
+    "ok": [],
+    "bad": [
+      "data.glyphs.none: needs one of d (path), svg, png, font or ref",
+      "data.glyphs.bad.svg: scripts, event handlers and external references are refused (sanitise with core/engines/icon-import.ts)",
+      "data.glyphs.two: one source only (has d, ref)",
+      "data.glyphs.badref.ref: pack:<pack id>/<glyph name> or name:<glyph name>",
+      "data.spots.x:y/z: names glyph \"nope\" which data.glyphs lacks",
+      "data.spots.bad: a spot id is <app>:<area>/<slot>",
+      "data.extends must be an icon-pack asset id",
+      "data.seed needs seed (text)",
+      "data.appIcon.shape must be one of circle, squircle, rounded, square",
+      "data.appIcon.bg must be a colour token"
+    ],
+    "map": [
+      "data.spots.console-web:view-plan/plus.size must be icon | icon-button | badge | app-icon | inline or a --fx-size-* token name",
+      "data.spots.console-web:view-plan/plus.tint must be a colour token (currentColor, text, muted, bg, surface, accent, accentText, success, warning, danger, info, brand1, brand2, brand3)",
+      "data.spots.bad: a spot id is <app>:<area>/<slot> (lowercase, digits, dashes, dots)",
+      "data.spots.a:b/c.kind must be one of icon, badge, app-icon",
+      "data.spots.a:b/c: a spot with no glyph is dynamic"
+    ],
+    "mapOk": [],
+    "block": [
+      "icon.pack must be an icon-pack asset id (or \"\" to inherit)",
+      "icon.overrides.bad: a spot id is <app>:<area>/<slot>",
+      "icon.overrides.a:b/d.svg: scripts, event handlers and external references are refused (sanitise with core/engines/icon-import.ts)",
+      "icon.scopes.nope: a scope key is ui:<view> or plugin:<id>"
+    ]
+  },
+  "markup": {
+    "path": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" aria-hidden=\"true\"><path d=\"M4 4l16 16M20 4L4 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
+    "filledSplit": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" aria-hidden=\"true\"><path d=\"M3 3h18v18H3z\" fill=\"currentColor\"/><path d=\"M20 6 9 17l-5-5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"square\" stroke-linejoin=\"round\"/></svg>",
+    "duotone": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" width=\"var(--fx-size-icon)\" height=\"var(--fx-size-icon)\" aria-hidden=\"true\"><path d=\"M12 2a10 10 0 1 1 0 20a10 10 0 1 1 0-20Z\" fill=\"currentColor\" opacity=\"var(--fx-opacity-tint, 0.14)\"/><path d=\"M1 1h2\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" aria-hidden=\"false\" role=\"img\" aria-label=\"Circle\"><circle cx=\"12\" cy=\"12\" r=\"8\"/></svg>",
+    "png": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" aria-hidden=\"true\"><image href=\"data:image/png;base64,iVBORw0KGgo=\" x=\"0\" y=\"0\" width=\"24\" height=\"24\" preserveAspectRatio=\"xMidYMid meet\"/></svg>",
+    "font": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" aria-hidden=\"true\"><text x=\"50%\" y=\"50%\" dominant-baseline=\"central\" text-anchor=\"middle\" font-family=\"Material Symbols\" font-size=\"19\" fill=\"currentColor\">A</text></svg>",
+    "appIcon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" width=\"48\" height=\"48\" aria-hidden=\"true\"><g fill=\"var(--fx-accent)\"><rect x=\"0\" y=\"0\" width=\"24\" height=\"24\" rx=\"6.72\"/></g><g transform=\"translate(4.80 4.80) scale(0.6000)\" style=\"color:var(--fx-accentText)\"><path d=\"M12 2l10 20H2z\" fill=\"currentColor\"/></g></svg>"
+  },
+  "registry": {
+    "spots": {
+      "framework:tab-group/x": {
+        "id": "framework:tab-group/x",
+        "kind": "icon",
+        "glyph": "x",
+        "dynamic": false,
+        "size": "icon",
+        "tint": "text",
+        "tags": [
+          "chrome"
+        ],
+        "label": "",
+        "help": "",
+        "files": [],
+        "app": "framework",
+        "area": "tab-group",
+        "slot": "x",
+        "from": "asset",
+        "maps": [
+          "default"
+        ]
+      },
+      "framework:app-menu/icon": {
+        "id": "framework:app-menu/icon",
+        "kind": "icon",
+        "glyph": "",
+        "dynamic": true,
+        "size": "icon",
+        "tint": "text",
+        "tags": [],
+        "label": "",
+        "help": "",
+        "files": [],
+        "app": "framework",
+        "area": "app-menu",
+        "slot": "icon",
+        "from": "asset",
+        "maps": [
+          "default"
+        ]
+      },
+      "framework:badge/new": {
+        "id": "framework:badge/new",
+        "kind": "badge",
+        "glyph": "sparkles",
+        "dynamic": false,
+        "size": "badge",
+        "tint": "text",
+        "tags": [],
+        "label": "",
+        "help": "",
+        "files": [],
+        "app": "framework",
+        "area": "badge",
+        "slot": "new",
+        "from": "asset",
+        "maps": [
+          "default"
+        ]
+      },
+      "console-web:app/favicon": {
+        "id": "console-web:app/favicon",
+        "kind": "app-icon",
+        "glyph": "sparkles",
+        "dynamic": false,
+        "size": "app-icon",
+        "tint": "text",
+        "tags": [],
+        "label": "",
+        "help": "",
+        "files": [],
+        "app": "console-web",
+        "area": "app",
+        "slot": "favicon",
+        "from": "asset",
+        "maps": [
+          "default"
+        ]
+      },
+      "console-web:view-plan/plus": {
+        "id": "console-web:view-plan/plus",
+        "kind": "icon",
+        "glyph": "plus",
+        "dynamic": false,
+        "size": "icon",
+        "tint": "text",
+        "tags": [],
+        "label": "Add a plan item",
+        "help": "runtime help",
+        "files": [],
+        "app": "console-web",
+        "area": "view-plan",
+        "slot": "plus",
+        "from": "asset",
+        "maps": [
+          "default",
+          "console"
+        ]
+      },
+      "molly:new/thing": {
+        "id": "molly:new/thing",
+        "kind": "icon",
+        "glyph": "star",
+        "dynamic": false,
+        "size": "icon",
+        "tint": "text",
+        "tags": [],
+        "label": "",
+        "help": "",
+        "files": [],
+        "app": "molly",
+        "area": "new",
+        "slot": "thing",
+        "from": "runtime",
+        "maps": []
+      },
+      "amberx-droid:plugin-companion/send": {
+        "id": "amberx-droid:plugin-companion/send",
+        "kind": "icon",
+        "glyph": "arrow-right",
+        "dynamic": false,
+        "size": "icon",
+        "tint": "text",
+        "tags": [],
+        "label": "",
+        "help": "",
+        "files": [],
+        "app": "amberx-droid",
+        "area": "plugin-companion",
+        "slot": "send",
+        "from": "runtime",
+        "maps": []
+      }
+    },
+    "duplicates": [
+      {
+        "id": "console-web:view-plan/plus",
+        "kept": "asset",
+        "dropped": "asset",
+        "map": "console"
+      },
+      {
+        "id": "console-web:view-plan/plus",
+        "kept": "asset",
+        "dropped": "runtime"
+      }
+    ],
+    "problems": [
+      "nonsense: not a spot id (<app>:<area>/<slot>)"
+    ],
+    "maps": [
+      "default",
+      "console"
+    ],
+    "fold": {
+      "chain": [
+        "console",
+        "default"
+      ],
+      "broken": [],
+      "origin": {
+        "console-web:view-plan/plus": "console",
+        "framework:tab-group/x": "default",
+        "framework:app-menu/icon": "default",
+        "framework:badge/new": "default",
+        "console-web:app/favicon": "default"
+      }
+    },
+    "coverage": {
+      "total": 7,
+      "covered": 4,
+      "framework": 2,
+      "dynamic": 1,
+      "by": {
+        "override": 0,
+        "spot": 2,
+        "name": 2,
+        "framework": 3
+      },
+      "missing": [
+        "amberx-droid:plugin-companion/send",
+        "framework:badge/new"
+      ],
+      "perApp": {
+        "amberx-droid": {
+          "total": 1,
+          "covered": 0,
+          "missing": 1,
+          "dynamic": 0
+        },
+        "console-web": {
+          "total": 2,
+          "covered": 2,
+          "missing": 0,
+          "dynamic": 0
+        },
+        "framework": {
+          "total": 3,
+          "covered": 1,
+          "missing": 1,
+          "dynamic": 1
+        },
+        "molly": {
+          "total": 1,
+          "covered": 1,
+          "missing": 0,
+          "dynamic": 0
+        }
+      },
+      "spots": [
+        {
+          "id": "amberx-droid:plugin-companion/send",
+          "kind": "icon",
+          "dynamic": false,
+          "by": "framework",
+          "scope": "framework",
+          "pack": "",
+          "name": "arrow-right"
+        },
+        {
+          "id": "console-web:app/favicon",
+          "kind": "app-icon",
+          "dynamic": false,
+          "by": "spot",
+          "scope": "app",
+          "pack": "child",
+          "name": "sparkles"
+        },
+        {
+          "id": "console-web:view-plan/plus",
+          "kind": "icon",
+          "dynamic": false,
+          "by": "name",
+          "scope": "app",
+          "pack": "child",
+          "name": "plus"
+        },
+        {
+          "id": "framework:app-menu/icon",
+          "kind": "icon",
+          "dynamic": true,
+          "by": "framework",
+          "scope": "framework",
+          "pack": "",
+          "name": ""
+        },
+        {
+          "id": "framework:badge/new",
+          "kind": "badge",
+          "dynamic": false,
+          "by": "framework",
+          "scope": "framework",
+          "pack": "",
+          "name": "sparkles"
+        },
+        {
+          "id": "framework:tab-group/x",
+          "kind": "icon",
+          "dynamic": false,
+          "by": "spot",
+          "scope": "app",
+          "pack": "child",
+          "name": "x"
+        },
+        {
+          "id": "molly:new/thing",
+          "kind": "icon",
+          "dynamic": false,
+          "by": "name",
+          "scope": "app",
+          "pack": "child",
+          "name": "star"
+        }
+      ]
+    },
+    "search": {
+      "tab-group": [
+        "framework:tab-group/x"
+      ],
+      "badge": [
+        "framework:badge/new"
+      ],
+      "dynamic": [
+        "framework:app-menu/icon"
+      ],
+      "tag": [
+        "framework:tab-group/x"
+      ]
+    },
+    "tree": [
+      {
+        "app": "amberx-droid",
+        "total": 1,
+        "areas": [
+          {
+            "area": "plugin-companion",
+            "dynamic": 0,
+            "spots": [
+              "amberx-droid:plugin-companion/send"
+            ]
+          }
+        ]
+      },
+      {
+        "app": "console-web",
+        "total": 2,
+        "areas": [
+          {
+            "area": "app",
+            "dynamic": 0,
+            "spots": [
+              "console-web:app/favicon"
+            ]
+          },
+          {
+            "area": "view-plan",
+            "dynamic": 0,
+            "spots": [
+              "console-web:view-plan/plus"
+            ]
+          }
+        ]
+      },
+      {
+        "app": "framework",
+        "total": 3,
+        "areas": [
+          {
+            "area": "app-menu",
+            "dynamic": 1,
+            "spots": [
+              "framework:app-menu/icon"
+            ]
+          },
+          {
+            "area": "badge",
+            "dynamic": 0,
+            "spots": [
+              "framework:badge/new"
+            ]
+          },
+          {
+            "area": "tab-group",
+            "dynamic": 0,
+            "spots": [
+              "framework:tab-group/x"
+            ]
+          }
+        ]
+      },
+      {
+        "app": "molly",
+        "total": 1,
+        "areas": [
+          {
+            "area": "new",
+            "dynamic": 0,
+            "spots": [
+              "molly:new/thing"
+            ]
+          }
+        ]
+      }
+    ],
+    "names": [
+      "arrow-right",
+      "plus",
+      "sparkles",
+      "star",
+      "x"
+    ]
+  }
+}

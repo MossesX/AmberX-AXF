@@ -1,0 +1,652 @@
+{
+  "contract": "icon-import@1",
+  "grid": 24,
+  "safeElements": [
+    "svg",
+    "g",
+    "path",
+    "circle",
+    "ellipse",
+    "rect",
+    "line",
+    "polyline",
+    "polygon",
+    "defs",
+    "clipPath",
+    "mask",
+    "use",
+    "title",
+    "desc",
+    "symbol"
+  ],
+  "safeAttributes": [
+    "d",
+    "cx",
+    "cy",
+    "r",
+    "rx",
+    "ry",
+    "x",
+    "y",
+    "x1",
+    "y1",
+    "x2",
+    "y2",
+    "width",
+    "height",
+    "points",
+    "transform",
+    "fill",
+    "fill-rule",
+    "fill-opacity",
+    "stroke",
+    "stroke-width",
+    "stroke-linecap",
+    "stroke-linejoin",
+    "stroke-miterlimit",
+    "stroke-dasharray",
+    "stroke-dashoffset",
+    "stroke-opacity",
+    "opacity",
+    "clip-path",
+    "clip-rule",
+    "mask",
+    "id",
+    "viewBox",
+    "href",
+    "xlink:href",
+    "vector-effect",
+    "paint-order"
+  ],
+  "tokenize": [
+    {
+      "kind": "open",
+      "name": "svg",
+      "attrs": {
+        "viewBox": "0 0 1 1"
+      },
+      "text": ""
+    },
+    {
+      "kind": "self",
+      "name": "path",
+      "attrs": {
+        "d": "M1 1",
+        "fill": "red"
+      },
+      "text": ""
+    },
+    {
+      "kind": "open",
+      "name": "g",
+      "attrs": {},
+      "text": ""
+    },
+    {
+      "kind": "text",
+      "name": "",
+      "attrs": {},
+      "text": "text"
+    },
+    {
+      "kind": "close",
+      "name": "g",
+      "attrs": {},
+      "text": ""
+    },
+    {
+      "kind": "close",
+      "name": "svg",
+      "attrs": {},
+      "text": ""
+    }
+  ],
+  "unsafe": {
+    "url(#a)": true,
+    "javascript:x": true,
+    "#abc": false,
+    "red": false,
+    "https://x": true,
+    "data:text/html": true,
+    "//evil": true,
+    "rgb(1,2,3)": false
+  },
+  "sanitize": {
+    "hostile": {
+      "inner": "<defs></defs><path d=\"M4 4h40v40H4z\" fill=\"currentColor\" stroke=\"currentColor\"/><use href=\"#g\"/><use/><circle cx=\"24\" cy=\"24\" r=\"10\" fill=\"currentColor\"/><title>Box</title>",
+      "viewBox": [
+        0,
+        0,
+        48,
+        48
+      ],
+      "width": 0,
+      "height": 0,
+      "report": {
+        "removedElements": [
+          "script",
+          "style",
+          "linearGradient",
+          "a",
+          "image",
+          "foreignObject",
+          "text"
+        ],
+        "removedAttributes": [
+          "path@onclick",
+          "use@href",
+          "circle@style"
+        ],
+        "colorsMapped": 3,
+        "viewBox": [
+          0,
+          0,
+          48,
+          48
+        ],
+        "scaled": false
+      }
+    },
+    "lucide": {
+      "inner": "<circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/>",
+      "viewBox": [
+        0,
+        0,
+        24,
+        24
+      ],
+      "width": 24,
+      "height": 24,
+      "report": {
+        "removedElements": [],
+        "removedAttributes": [],
+        "colorsMapped": 0,
+        "viewBox": [
+          0,
+          0,
+          24,
+          24
+        ],
+        "scaled": false
+      }
+    },
+    "pathsOnly": {
+      "inner": "<path d=\"M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z\"/>",
+      "viewBox": [
+        0,
+        0,
+        24,
+        24
+      ],
+      "width": 0,
+      "height": 0,
+      "report": {
+        "removedElements": [],
+        "removedAttributes": [],
+        "colorsMapped": 0,
+        "viewBox": [
+          0,
+          0,
+          24,
+          24
+        ],
+        "scaled": false
+      }
+    },
+    "big": {
+      "inner": "<rect x=\"64\" y=\"64\" width=\"384\" height=\"384\" rx=\"40\" fill=\"currentColor\"/>",
+      "viewBox": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "width": 0,
+      "height": 0,
+      "report": {
+        "removedElements": [],
+        "removedAttributes": [],
+        "colorsMapped": 1,
+        "viewBox": [
+          0,
+          0,
+          512,
+          512
+        ],
+        "scaled": false
+      }
+    },
+    "offCentre": {
+      "inner": "<rect x=\"10\" y=\"10\" width=\"80\" height=\"30\" fill=\"currentColor\"/>",
+      "viewBox": null,
+      "width": 100,
+      "height": 50,
+      "report": {
+        "removedElements": [],
+        "removedAttributes": [],
+        "colorsMapped": 1,
+        "viewBox": null,
+        "scaled": false
+      }
+    },
+    "empty": {
+      "inner": "",
+      "viewBox": null,
+      "width": 0,
+      "height": 0,
+      "report": {
+        "removedElements": [
+          "script"
+        ],
+        "removedAttributes": [],
+        "colorsMapped": 0,
+        "viewBox": null,
+        "scaled": false
+      }
+    },
+    "nested": {
+      "inner": "<path d=\"M2 2\"/>",
+      "viewBox": [
+        0,
+        0,
+        24,
+        24
+      ],
+      "width": 0,
+      "height": 0,
+      "report": {
+        "removedElements": [
+          "svg"
+        ],
+        "removedAttributes": [],
+        "colorsMapped": 0,
+        "viewBox": [
+          0,
+          0,
+          24,
+          24
+        ],
+        "scaled": false
+      }
+    },
+    "truncated": {
+      "inner": "<g></g>",
+      "viewBox": [
+        0,
+        0,
+        24,
+        24
+      ],
+      "width": 0,
+      "height": 0,
+      "report": {
+        "removedElements": [],
+        "removedAttributes": [],
+        "colorsMapped": 0,
+        "viewBox": [
+          0,
+          0,
+          24,
+          24
+        ],
+        "scaled": false
+      }
+    }
+  },
+  "normalize": {
+    "hostile": {
+      "inner": "<g transform=\"translate(0 0) scale(0.5)\"><defs></defs><path d=\"M4 4h40v40H4z\" fill=\"currentColor\" stroke=\"currentColor\"/><use href=\"#g\"/><use/><circle cx=\"24\" cy=\"24\" r=\"10\" fill=\"currentColor\"/><title>Box</title></g>",
+      "paths": "",
+      "report": {
+        "removedElements": [
+          "script",
+          "style",
+          "linearGradient",
+          "a",
+          "image",
+          "foreignObject",
+          "text"
+        ],
+        "removedAttributes": [
+          "path@onclick",
+          "use@href",
+          "circle@style"
+        ],
+        "colorsMapped": 3,
+        "viewBox": [
+          0,
+          0,
+          48,
+          48
+        ],
+        "scaled": true
+      }
+    },
+    "lucide": {
+      "inner": "<circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/>",
+      "paths": "",
+      "report": {
+        "removedElements": [],
+        "removedAttributes": [],
+        "colorsMapped": 0,
+        "viewBox": [
+          0,
+          0,
+          24,
+          24
+        ],
+        "scaled": false
+      }
+    },
+    "pathsOnly": {
+      "inner": "<path d=\"M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z\"/>",
+      "paths": "M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z",
+      "report": {
+        "removedElements": [],
+        "removedAttributes": [],
+        "colorsMapped": 0,
+        "viewBox": [
+          0,
+          0,
+          24,
+          24
+        ],
+        "scaled": false
+      }
+    },
+    "big": {
+      "inner": "<g transform=\"translate(0 0) scale(0.047)\"><rect x=\"64\" y=\"64\" width=\"384\" height=\"384\" rx=\"40\" fill=\"currentColor\"/></g>",
+      "paths": "",
+      "report": {
+        "removedElements": [],
+        "removedAttributes": [],
+        "colorsMapped": 1,
+        "viewBox": [
+          0,
+          0,
+          512,
+          512
+        ],
+        "scaled": true
+      }
+    },
+    "offCentre": {
+      "inner": "<g transform=\"translate(0 6) scale(0.24)\"><rect x=\"10\" y=\"10\" width=\"80\" height=\"30\" fill=\"currentColor\"/></g>",
+      "paths": "",
+      "report": {
+        "removedElements": [],
+        "removedAttributes": [],
+        "colorsMapped": 1,
+        "viewBox": null,
+        "scaled": true
+      }
+    }
+  },
+  "importSvg": {
+    "pathsOnly": {
+      "glyph": {
+        "kind": "path",
+        "d": "M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z",
+        "secondary": "",
+        "fill": false,
+        "svg": "",
+        "png": "",
+        "font": null,
+        "ref": "",
+        "source": {
+          "kind": "library",
+          "library": "lucide"
+        },
+        "license": {
+          "id": "ISC"
+        },
+        "tags": [
+          "home"
+        ]
+      },
+      "report": {
+        "removedElements": [],
+        "removedAttributes": [],
+        "colorsMapped": 0,
+        "viewBox": [
+          0,
+          0,
+          24,
+          24
+        ],
+        "scaled": false
+      }
+    },
+    "keepSvg": {
+      "glyph": {
+        "kind": "svg",
+        "d": "",
+        "secondary": "",
+        "fill": false,
+        "svg": "<path d=\"M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z\"/>",
+        "png": "",
+        "font": null,
+        "ref": "",
+        "source": null,
+        "license": null,
+        "tags": []
+      },
+      "report": {
+        "removedElements": [],
+        "removedAttributes": [],
+        "colorsMapped": 0,
+        "viewBox": [
+          0,
+          0,
+          24,
+          24
+        ],
+        "scaled": false
+      }
+    },
+    "lucide": {
+      "glyph": {
+        "kind": "svg",
+        "d": "",
+        "secondary": "",
+        "fill": false,
+        "svg": "<circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/>",
+        "png": "",
+        "font": null,
+        "ref": "",
+        "source": {
+          "kind": "url",
+          "url": "https://lucide.dev/icons/search"
+        },
+        "license": null,
+        "tags": []
+      },
+      "report": {
+        "removedElements": [],
+        "removedAttributes": [],
+        "colorsMapped": 0,
+        "viewBox": [
+          0,
+          0,
+          24,
+          24
+        ],
+        "scaled": false
+      }
+    },
+    "hostile": {
+      "glyph": {
+        "kind": "svg",
+        "d": "",
+        "secondary": "",
+        "fill": false,
+        "svg": "<g transform=\"translate(0 0) scale(0.5)\"><defs></defs><path d=\"M4 4h40v40H4z\" fill=\"currentColor\" stroke=\"currentColor\"/><use href=\"#g\"/><use/><circle cx=\"24\" cy=\"24\" r=\"10\" fill=\"currentColor\"/><title>Box</title></g>",
+        "png": "",
+        "font": null,
+        "ref": "",
+        "source": null,
+        "license": null,
+        "tags": []
+      },
+      "report": {
+        "removedElements": [
+          "script",
+          "style",
+          "linearGradient",
+          "a",
+          "image",
+          "foreignObject",
+          "text"
+        ],
+        "removedAttributes": [
+          "path@onclick",
+          "use@href",
+          "circle@style"
+        ],
+        "colorsMapped": 3,
+        "viewBox": [
+          0,
+          0,
+          48,
+          48
+        ],
+        "scaled": true
+      }
+    },
+    "empty": {
+      "glyph": null,
+      "report": {
+        "removedElements": [
+          "script"
+        ],
+        "removedAttributes": [],
+        "colorsMapped": 0,
+        "viewBox": null,
+        "scaled": false,
+        "refused": "nothing drawable was left after sanitising"
+      }
+    },
+    "tooBig": {
+      "glyph": null,
+      "report": {
+        "removedElements": [],
+        "removedAttributes": [],
+        "colorsMapped": 0,
+        "viewBox": [
+          0,
+          0,
+          24,
+          24
+        ],
+        "scaled": false,
+        "refused": "the glyph is over 8000 characters after normalising (simplify it first)"
+      }
+    }
+  },
+  "importPng": {
+    "ok": {
+      "glyph": {
+        "kind": "png",
+        "d": "",
+        "secondary": "",
+        "fill": false,
+        "svg": "",
+        "png": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
+        "font": null,
+        "ref": "",
+        "source": {
+          "kind": "upload"
+        },
+        "license": null,
+        "tags": []
+      },
+      "report": {
+        "removedElements": [],
+        "removedAttributes": [],
+        "colorsMapped": 0,
+        "viewBox": null,
+        "scaled": false
+      }
+    },
+    "notPng": {
+      "glyph": null,
+      "report": {
+        "removedElements": [],
+        "removedAttributes": [],
+        "colorsMapped": 0,
+        "viewBox": null,
+        "scaled": false,
+        "refused": "the data is not a PNG (bad signature)"
+      }
+    },
+    "notUri": {
+      "glyph": null,
+      "report": {
+        "removedElements": [],
+        "removedAttributes": [],
+        "colorsMapped": 0,
+        "viewBox": null,
+        "scaled": false,
+        "refused": "not a data:image/png;base64 URI"
+      }
+    },
+    "tooBig": {
+      "refused": "PNG over the cap (65536 characters ≈ 48 KB); shrink it first"
+    },
+    "bytes": 70
+  },
+  "importGlyph": {
+    "path": {
+      "glyph": {
+        "kind": "path",
+        "d": "M3 3h18v18H3z",
+        "secondary": "",
+        "fill": false,
+        "svg": "",
+        "png": "",
+        "font": null,
+        "ref": "",
+        "source": null,
+        "license": null,
+        "tags": []
+      },
+      "report": {
+        "removedElements": [],
+        "removedAttributes": [],
+        "colorsMapped": 0,
+        "viewBox": null,
+        "scaled": false
+      }
+    },
+    "fragment": {
+      "glyph": {
+        "kind": "path",
+        "d": "M1 1h2",
+        "secondary": "",
+        "fill": false,
+        "svg": "",
+        "png": "",
+        "font": null,
+        "ref": "",
+        "source": null,
+        "license": null,
+        "tags": []
+      },
+      "report": {
+        "removedElements": [],
+        "removedAttributes": [],
+        "colorsMapped": 0,
+        "viewBox": [
+          0,
+          0,
+          24,
+          24
+        ],
+        "scaled": false
+      }
+    },
+    "png": "png",
+    "text": "not SVG, PNG or path data",
+    "svg": "svg"
+  }
+}

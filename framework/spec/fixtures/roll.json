@@ -54,6 +54,7 @@
     "book": false,
     "clip": false,
     "docs": false,
+    "icon-map": false,
     "uac-policy": false
   },
   "cases": {

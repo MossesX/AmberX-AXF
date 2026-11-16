@@ -1,0 +1,1004 @@
+{
+  "contract": "icon-gen@1",
+  "grid": 24,
+  "primitives": [
+    "ring",
+    "square",
+    "diamond",
+    "triangle",
+    "bars",
+    "dots",
+    "arc",
+    "chevron",
+    "cross",
+    "polygon",
+    "star",
+    "slash",
+    "check"
+  ],
+  "symmetries": [
+    "none",
+    "mirror-x",
+    "mirror-y",
+    "radial"
+  ],
+  "hash": {
+    "(empty)": 2166136261,
+    "ember": 438014020,
+    "ash": 426952831,
+    "seed-1": 3597787782
+  },
+  "rng": [
+    0.4286752440966666,
+    0.15163180837407708,
+    0,
+    "a"
+  ],
+  "mirror": {
+    "x": "M20 4L4 12A5 5 0 1 0 14 10Z",
+    "y": "M4 20L20 12A5 5 0 1 0 10 14Z"
+  },
+  "icons": {
+    "ember:home": {
+      "kind": "path",
+      "d": "M4.58 4.58L19.43 4.58L19.43 19.43L4.58 19.43ZM4.58 12L19.43 12",
+      "secondary": "",
+      "fill": false,
+      "recipe": "square none line",
+      "seed": 4181401294
+    },
+    "ember:settings": {
+      "kind": "path",
+      "d": "M10.65 12A0.9 0.9 0 1 1 8.85 12A0.9 0.9 0 1 1 10.65 12ZM12.9 12A0.9 0.9 0 1 1 11.1 12A0.9 0.9 0 1 1 12.9 12ZM15.15 12A0.9 0.9 0 1 1 13.35 12A0.9 0.9 0 1 1 15.15 12ZM2 7L22 7M2 12L22 12M2 17L22 17M22 7L2 7M22 12L2 12M22 17L2 17M2 17L22 17M2 12L22 12M2 7L22 7",
+      "secondary": "",
+      "fill": false,
+      "recipe": "bars+dots radial line",
+      "seed": 2823145168
+    },
+    "ember:search": {
+      "kind": "path",
+      "d": "M17.07 10.05A7.02 7.02 0 1 1 3.03 10.05A7.02 7.02 0 1 1 17.07 10.05ZM14.96 14.96L21.75 21.75",
+      "secondary": "",
+      "fill": false,
+      "recipe": "ring none line",
+      "seed": 4180873689
+    },
+    "ember:bell": {
+      "kind": "path",
+      "d": "M20.75 12A8.75 8.75 0 1 1 3.25 12A8.75 8.75 0 1 1 20.75 12Z",
+      "secondary": "",
+      "fill": false,
+      "recipe": "ring none line",
+      "seed": 31838344
+    },
+    "ember:star": {
+      "kind": "path",
+      "d": "M12 3.25L14.78 9.22L20.75 12L14.78 14.78L12 20.75L9.22 14.78L3.25 12L9.22 9.22Z",
+      "secondary": "",
+      "fill": false,
+      "recipe": "star none line",
+      "seed": 1353922281
+    },
+    "ember:check": {
+      "kind": "path",
+      "d": "M4 12L10 18L21 6",
+      "secondary": "",
+      "fill": false,
+      "recipe": "check none line",
+      "seed": 1230362993
+    },
+    "ember:x": {
+      "kind": "path",
+      "d": "M7.24 7.24L16.76 16.76M16.76 7.24L7.24 16.76",
+      "secondary": "",
+      "fill": false,
+      "recipe": "cross none line",
+      "seed": 1711592821
+    },
+    "ember:plus": {
+      "kind": "path",
+      "d": "M3.71 12L20.29 12M12 3.71L12 20.29",
+      "secondary": "",
+      "fill": false,
+      "recipe": "cross none line",
+      "seed": 3246317677
+    },
+    "ember:menu": {
+      "kind": "path",
+      "d": "M3.75 7.05L20.25 7.05M3.75 10.35L20.25 10.35M3.75 13.65L20.25 13.65M3.75 16.95L16.13 16.95",
+      "secondary": "",
+      "fill": false,
+      "recipe": "bars none line",
+      "seed": 1572708070
+    },
+    "ember:grid": {
+      "kind": "path",
+      "d": "M4.13 4.13L19.88 4.13L19.88 19.88L4.13 19.88ZM12 4.13L12 19.88",
+      "secondary": "",
+      "fill": false,
+      "recipe": "square none line",
+      "seed": 3957153833
+    },
+    "ember:chevron-right": {
+      "kind": "path",
+      "d": "M8.4 4.8L15.6 12L8.4 19.2",
+      "secondary": "",
+      "fill": false,
+      "recipe": "chevron none line",
+      "seed": 4031540193
+    },
+    "ember:arrow-left": {
+      "kind": "path",
+      "d": "M16.5 3L7.5 12L16.5 21M22 12L7.5 12",
+      "secondary": "",
+      "fill": false,
+      "recipe": "chevron none line",
+      "seed": 1672592932
+    },
+    "ember:refresh": {
+      "kind": "path",
+      "d": "M19.69 17.58A9.5 9.5 0 1 1 17.58 4.31",
+      "secondary": "",
+      "fill": false,
+      "recipe": "arc none line",
+      "seed": 3474873090
+    },
+    "ember:clock": {
+      "kind": "path",
+      "d": "M2.25 12A9.75 9.75 0 1 1 6.27 19.89M12 12L12 6.64M12 12L15.9 12",
+      "secondary": "",
+      "fill": false,
+      "recipe": "arc none line",
+      "seed": 3444662115
+    },
+    "ember:alert": {
+      "kind": "path",
+      "d": "M12 20.08L3.77 5.83L20.23 5.82Z",
+      "secondary": "",
+      "fill": false,
+      "recipe": "triangle none line",
+      "seed": 1762235519
+    },
+    "ember:more": {
+      "kind": "path",
+      "d": "M10.21 12A1.3 1.3 0 1 1 7.62 12A1.3 1.3 0 1 1 10.21 12ZM16.38 12A1.3 1.3 0 1 1 13.79 12A1.3 1.3 0 1 1 16.38 12Z",
+      "secondary": "",
+      "fill": false,
+      "recipe": "dots none line",
+      "seed": 3295197852
+    },
+    "ember:blob": {
+      "kind": "path",
+      "d": "M12 4.78L19.36 17.52L4.64 17.53Z",
+      "secondary": "",
+      "fill": false,
+      "recipe": "triangle mirror-y line",
+      "seed": 3241861170
+    },
+    "ember:zephyr": {
+      "kind": "path",
+      "d": "M12 2.5L21.5 12L12 21.5L2.5 12ZM12 14.83L9.12 9.84L14.88 9.84Z",
+      "secondary": "",
+      "fill": false,
+      "recipe": "diamond+triangle mirror-y line",
+      "seed": 2215545639
+    },
+    "ash:home": {
+      "kind": "path",
+      "d": "M3.67 3.67L20.33 3.67L20.33 20.33L3.67 20.33ZM3.67 12L20.33 12",
+      "secondary": "",
+      "fill": false,
+      "recipe": "square none line",
+      "seed": 354557059
+    },
+    "ash:settings": {
+      "kind": "path",
+      "d": "M12 4L18.93 8L18.93 16L12 20L5.07 16L5.07 8ZM15.6 12A3.6 3.6 0 1 1 8.4 12A3.6 3.6 0 1 1 15.6 12Z",
+      "secondary": "",
+      "fill": false,
+      "recipe": "diamond+ring mirror-y line",
+      "seed": 3321014521
+    },
+    "ash:search": {
+      "kind": "path",
+      "d": "M18.24 10.05A8.19 8.19 0 1 1 1.86 10.05A8.19 8.19 0 1 1 18.24 10.05ZM15.78 15.78L21.75 21.75",
+      "secondary": "",
+      "fill": false,
+      "recipe": "ring none line",
+      "seed": 2354741408
+    },
+    "ash:bell": {
+      "kind": "path",
+      "d": "M22 12A10 10 0 1 1 2 12A10 10 0 1 1 22 12ZM16 12A4 4 0 1 1 8 12A4 4 0 1 1 16 12Z",
+      "secondary": "",
+      "fill": false,
+      "recipe": "ring none line",
+      "seed": 3351770661
+    },
+    "ash:star": {
+      "kind": "path",
+      "d": "M12 3L15.82 8.18L21 12L15.82 15.82L12 21L8.18 15.82L3 12L8.18 8.18Z",
+      "secondary": "",
+      "fill": false,
+      "recipe": "star none line",
+      "seed": 1460989340
+    },
+    "ash:check": {
+      "kind": "path",
+      "d": "M20.5 12A8.5 8.5 0 1 1 3.5 12A8.5 8.5 0 1 1 20.5 12ZM5.2 12L10.3 17.1L19.65 6.9",
+      "secondary": "",
+      "fill": false,
+      "recipe": "check none line",
+      "seed": 2395219266
+    },
+    "ash:x": {
+      "kind": "path",
+      "d": "M20 12A8 8 0 1 1 4 12A8 8 0 1 1 20 12ZM7.24 7.24L16.76 16.76M16.76 7.24L7.24 16.76",
+      "secondary": "",
+      "fill": false,
+      "recipe": "cross none line",
+      "seed": 3361260046
+    },
+    "ash:plus": {
+      "kind": "path",
+      "d": "M21 12A9 9 0 1 1 3 12A9 9 0 1 1 21 12ZM4.35 12L19.65 12M12 4.35L12 19.65",
+      "secondary": "",
+      "fill": false,
+      "recipe": "cross none line",
+      "seed": 1193371964
+    },
+    "ash:menu": {
+      "kind": "path",
+      "d": "M4.5 9.5L19.5 9.5M4.5 14.5L19.5 14.5",
+      "secondary": "",
+      "fill": false,
+      "recipe": "bars none line",
+      "seed": 2147881831
+    },
+    "ash:grid": {
+      "kind": "path",
+      "d": "M3 3L21 3L21 21L3 21Z",
+      "secondary": "",
+      "fill": false,
+      "recipe": "square none line",
+      "seed": 4006760780
+    },
+    "ash:chevron-right": {
+      "kind": "path",
+      "d": "M8.63 5.25L15.38 12L8.63 18.75",
+      "secondary": "",
+      "fill": false,
+      "recipe": "chevron none line",
+      "seed": 3832367638
+    },
+    "ash:arrow-left": {
+      "kind": "path",
+      "d": "M15.83 4.35L8.18 12L15.83 19.65M20.5 12L8.18 12",
+      "secondary": "",
+      "fill": false,
+      "recipe": "chevron none line",
+      "seed": 1538515617
+    },
+    "ash:refresh": {
+      "kind": "path",
+      "d": "M19.48 17.44A9.25 9.25 0 1 1 20.8 9.14",
+      "secondary": "",
+      "fill": false,
+      "recipe": "arc none line",
+      "seed": 2164926057
+    },
+    "ash:clock": {
+      "kind": "path",
+      "d": "M9.3 20.32A8.75 8.75 0 1 1 17.14 19.08M17.14 19.08L14.08 19.08M17.14 19.08L17.14 16.02M12 12L12 7.19M12 12L15.5 12",
+      "secondary": "",
+      "fill": false,
+      "recipe": "arc none line",
+      "seed": 3172753172
+    },
+    "ash:alert": {
+      "kind": "path",
+      "d": "M12 20.29L3.56 5.66L20.44 5.66Z",
+      "secondary": "",
+      "fill": false,
+      "recipe": "triangle none line",
+      "seed": 2786361516
+    },
+    "ash:more": {
+      "kind": "path",
+      "d": "M10.55 12A1.05 1.05 0 1 1 8.45 12A1.05 1.05 0 1 1 10.55 12ZM15.55 12A1.05 1.05 0 1 1 13.45 12A1.05 1.05 0 1 1 15.55 12Z",
+      "secondary": "",
+      "fill": false,
+      "recipe": "dots none line",
+      "seed": 2893889585
+    },
+    "ash:blob": {
+      "kind": "path",
+      "d": "M12 3L21 12L12 21L3 12Z",
+      "secondary": "",
+      "fill": false,
+      "recipe": "diamond mirror-x line",
+      "seed": 3079315135
+    },
+    "ash:zephyr": {
+      "kind": "path",
+      "d": "M12 20.08L3.77 5.83L20.23 5.82Z",
+      "secondary": "",
+      "fill": false,
+      "recipe": "triangle radial line",
+      "seed": 2758896006
+    }
+  },
+  "styles": {
+    "line": {
+      "kind": "path",
+      "d": "M12 4.78L19.36 17.52L4.64 17.53Z",
+      "secondary": "",
+      "fill": false,
+      "recipe": "triangle mirror-y line",
+      "seed": 3241861170
+    },
+    "solid": {
+      "kind": "path",
+      "d": "M12 19.01L4.86 6.64L19.14 6.64Z",
+      "secondary": "",
+      "fill": true,
+      "recipe": "triangle none solid",
+      "seed": 145576731
+    },
+    "duotone": {
+      "kind": "path",
+      "d": "M12 4L20 12L12 20L4 12Z",
+      "secondary": "M21.2 12A9.2 9.2 0 1 1 2.8 12A9.2 9.2 0 1 1 21.2 12Z",
+      "fill": false,
+      "recipe": "diamond mirror-y duotone",
+      "seed": 2001520302
+    },
+    "rounded": {
+      "kind": "path",
+      "d": "M21.25 12A9.25 9.25 0 1 1 2.75 12A9.25 9.25 0 1 1 21.25 12ZM12.9 10.92A0.9 0.9 0 1 1 11.1 10.92A0.9 0.9 0 1 1 12.9 10.92ZM12.9 13.08A0.9 0.9 0 1 1 11.1 13.08A0.9 0.9 0 1 1 12.9 13.08ZM5.53 18.48L18.48 5.53M18.47 18.48L5.52 5.53M5.53 5.52L18.48 18.47",
+      "secondary": "",
+      "fill": false,
+      "recipe": "slash+dots radial rounded",
+      "seed": 2389381197
+    },
+    "geometric": {
+      "kind": "path",
+      "d": "M9.3 20.32A8.75 8.75 0 1 1 17.14 19.08M14.7 20.32A8.75 8.75 0 1 0 6.86 19.08M9.3 3.68A8.75 8.75 0 1 0 17.14 4.92",
+      "secondary": "",
+      "fill": false,
+      "recipe": "arc radial geometric",
+      "seed": 2983574449
+    },
+    "pixel": {
+      "kind": "path",
+      "d": "M22 12L12 22L4 12L12 4ZM12 14L10 10L14 10Z",
+      "secondary": "",
+      "fill": true,
+      "recipe": "diamond+triangle none pixel",
+      "seed": 2721580626
+    }
+  },
+  "kinds": {
+    "badge": {
+      "kind": "path",
+      "d": "M12 4.5L14.65 8.36L19.13 9.68L16.28 13.39L16.41 18.07L12 16.5L7.59 18.07L7.72 13.39L4.87 9.68L9.35 8.36Z",
+      "secondary": "",
+      "fill": false,
+      "recipe": "star none line",
+      "seed": 2299413894
+    },
+    "appIcon": {
+      "kind": "path",
+      "d": "M12 3L15.18 8.82L21 12L15.18 15.18L12 21L8.82 15.18L3 12L8.82 8.82Z",
+      "secondary": "",
+      "fill": false,
+      "recipe": "star none line",
+      "seed": 3628349784
+    },
+    "primitive": {
+      "kind": "path",
+      "d": "M12 2.25L14.93 6.93L20.44 7.13L17.85 12L20.44 16.88L14.93 17.07L12 21.75L9.08 17.07L3.56 16.88L6.15 12L3.56 7.12L9.07 6.93Z",
+      "secondary": "",
+      "fill": false,
+      "recipe": "star radial line",
+      "seed": 3848308593
+    }
+  },
+  "packs": {
+    "line": {
+      "id": "generated-vvfaew",
+      "name": "Generated line (ember)",
+      "data": {
+        "style": "outline",
+        "grid": 24,
+        "stroke": 1.25,
+        "linecap": "round",
+        "fallback": "framework",
+        "glyphs": {
+          "alert": {
+            "d": "M12 20.08L3.77 5.83L20.23 5.82Z"
+          },
+          "arrow-left": {
+            "d": "M16.5 3L7.5 12L16.5 21M22 12L7.5 12"
+          },
+          "bell": {
+            "d": "M20.75 12A8.75 8.75 0 1 1 3.25 12A8.75 8.75 0 1 1 20.75 12Z"
+          },
+          "blob": {
+            "d": "M12 4.78L19.36 17.52L4.64 17.53Z"
+          },
+          "check": {
+            "d": "M4 12L10 18L21 6"
+          },
+          "chevron-right": {
+            "d": "M8.4 4.8L15.6 12L8.4 19.2"
+          },
+          "clock": {
+            "d": "M2.25 12A9.75 9.75 0 1 1 6.27 19.89M12 12L12 6.64M12 12L15.9 12"
+          },
+          "grid": {
+            "d": "M4.13 4.13L19.88 4.13L19.88 19.88L4.13 19.88ZM12 4.13L12 19.88"
+          },
+          "home": {
+            "d": "M4.58 4.58L19.43 4.58L19.43 19.43L4.58 19.43ZM4.58 12L19.43 12"
+          },
+          "menu": {
+            "d": "M3.75 7.05L20.25 7.05M3.75 10.35L20.25 10.35M3.75 13.65L20.25 13.65M3.75 16.95L16.13 16.95"
+          },
+          "more": {
+            "d": "M10.21 12A1.3 1.3 0 1 1 7.62 12A1.3 1.3 0 1 1 10.21 12ZM16.38 12A1.3 1.3 0 1 1 13.79 12A1.3 1.3 0 1 1 16.38 12Z"
+          },
+          "plus": {
+            "d": "M3.71 12L20.29 12M12 3.71L12 20.29"
+          },
+          "refresh": {
+            "d": "M19.69 17.58A9.5 9.5 0 1 1 17.58 4.31"
+          },
+          "search": {
+            "d": "M17.07 10.05A7.02 7.02 0 1 1 3.03 10.05A7.02 7.02 0 1 1 17.07 10.05ZM14.96 14.96L21.75 21.75"
+          },
+          "settings": {
+            "d": "M10.65 12A0.9 0.9 0 1 1 8.85 12A0.9 0.9 0 1 1 10.65 12ZM12.9 12A0.9 0.9 0 1 1 11.1 12A0.9 0.9 0 1 1 12.9 12ZM15.15 12A0.9 0.9 0 1 1 13.35 12A0.9 0.9 0 1 1 15.15 12ZM2 7L22 7M2 12L22 12M2 17L22 17M22 7L2 7M22 12L2 12M22 17L2 17M2 17L22 17M2 12L22 12M2 7L22 7"
+          },
+          "star": {
+            "d": "M12 3.25L14.78 9.22L20.75 12L14.78 14.78L12 20.75L9.22 14.78L3.25 12L9.22 9.22Z"
+          },
+          "x": {
+            "d": "M7.24 7.24L16.76 16.76M16.76 7.24L7.24 16.76"
+          },
+          "zephyr": {
+            "d": "M12 2.5L21.5 12L12 21.5L2.5 12ZM12 14.83L9.12 9.84L14.88 9.84Z"
+          }
+        },
+        "spots": {
+          "console-web:app/favicon": {
+            "d": "M12 3L15.18 8.82L21 12L15.18 15.18L12 21L8.82 15.18L3 12L8.82 8.82Z"
+          },
+          "framework:badge/new": {
+            "d": "M12 4.5L14.65 8.36L19.13 9.68L16.28 13.39L16.41 18.07L12 16.5L7.59 18.07L7.72 13.39L4.87 9.68L9.35 8.36Z"
+          },
+          "framework:tab-group/x": "x"
+        },
+        "source": {
+          "kind": "generated"
+        },
+        "license": {
+          "id": "CC0-1.0",
+          "holder": "AmberX AXF icon-gen"
+        },
+        "seed": {
+          "seed": "ember",
+          "style": "line",
+          "grammar": "icon-gen@1"
+        },
+        "tags": [
+          "generated",
+          "line"
+        ]
+      },
+      "errors": []
+    },
+    "solid": {
+      "id": "generated-kka9h9",
+      "name": "Generated solid (ember)",
+      "data": {
+        "style": "filled",
+        "grid": 24,
+        "stroke": 1.75,
+        "linecap": "round",
+        "fallback": "framework",
+        "glyphs": {
+          "alert": {
+            "d": "M12 19.65L4.21 6.15L19.79 6.15Z",
+            "fill": true
+          },
+          "arrow-left": {
+            "d": "M15.38 5.25L8.63 12L15.38 18.75M19.5 12L8.63 12"
+          },
+          "bell": {
+            "d": "M21 12A9 9 0 1 1 3 12A9 9 0 1 1 21 12ZM15.6 12A3.6 3.6 0 1 1 8.4 12A3.6 3.6 0 1 1 15.6 12Z"
+          },
+          "blob": {
+            "d": "M12 19.01L4.86 6.64L19.14 6.64Z",
+            "fill": true
+          },
+          "check": {
+            "d": "M4.8 12L10.2 17.4L20.1 6.6"
+          },
+          "chevron-right": {
+            "d": "M7.73 3.45L16.27 12L7.73 20.55"
+          },
+          "clock": {
+            "d": "M2 12A10 10 0 1 1 12 22M12 12L12 6.5M12 12L16 12"
+          },
+          "grid": {
+            "d": "M5.02 5.02L18.98 5.02L18.98 18.98L5.02 18.98Z",
+            "fill": true
+          },
+          "home": {
+            "d": "M3.67 3.67L20.33 3.67L20.33 20.33L3.67 20.33ZM3.67 12L20.33 12"
+          },
+          "menu": {
+            "d": "M3.5 6.9L20.5 6.9M3.5 10.3L20.5 10.3M3.5 13.7L20.5 13.7M3.5 17.1L16.25 17.1"
+          },
+          "more": {
+            "d": "M13.33 8.83A1.33 1.33 0 1 1 10.67 8.83A1.33 1.33 0 1 1 13.33 8.83ZM13.33 15.17A1.33 1.33 0 1 1 10.67 15.17A1.33 1.33 0 1 1 13.33 15.17Z",
+            "fill": true
+          },
+          "plus": {
+            "d": "M20.25 12A8.25 8.25 0 1 1 3.75 12A8.25 8.25 0 1 1 20.25 12ZM4.99 12L19.01 12M12 4.99L12 19.01"
+          },
+          "refresh": {
+            "d": "M19.08 17.14A8.75 8.75 0 1 1 9.3 3.68M9.3 3.68L6.23 3.68M9.3 3.68L9.3 0.62"
+          },
+          "search": {
+            "d": "M16.8 10.5A6.3 6.3 0 1 1 4.2 10.5A6.3 6.3 0 1 1 16.8 10.5ZM14.91 14.91L19.5 19.5"
+          },
+          "settings": {
+            "d": "M12 4L20 12L12 20L4 12ZM8.4 9.84L15.6 9.84M8.4 11.28L15.6 11.28M8.4 12.72L15.6 12.72M8.4 14.16L15.6 14.16M8.4 14.16L15.6 14.16M8.4 12.72L15.6 12.72M8.4 11.28L15.6 11.28M8.4 9.84L15.6 9.84"
+          },
+          "star": {
+            "d": "M12 3.5L13.91 8.69L19.36 7.75L15.83 12L19.36 16.25L13.91 15.31L12 20.5L10.09 15.31L4.64 16.25L8.18 12L4.64 7.75L10.09 8.69Z",
+            "fill": true
+          },
+          "x": {
+            "d": "M7.39 7.39L16.61 16.61M16.61 7.39L7.39 16.61"
+          },
+          "zephyr": {
+            "d": "M3.25 12A8.75 8.75 0 1 1 6.86 19.08M20.75 12A8.75 8.75 0 1 0 17.14 19.08"
+          }
+        },
+        "spots": {
+          "console-web:app/favicon": {
+            "d": "M12 3L14.86 9.14L21 12L14.86 14.86L12 21L9.14 14.86L3 12L9.14 9.14Z",
+            "fill": true
+          },
+          "framework:badge/new": {
+            "d": "M12 4.5L14.65 9.35L19.5 12L14.65 14.65L12 19.5L9.35 14.65L4.5 12L9.35 9.35Z",
+            "fill": true
+          },
+          "framework:tab-group/x": "x"
+        },
+        "source": {
+          "kind": "generated"
+        },
+        "license": {
+          "id": "CC0-1.0",
+          "holder": "AmberX AXF icon-gen"
+        },
+        "seed": {
+          "seed": "ember",
+          "style": "solid",
+          "grammar": "icon-gen@1"
+        },
+        "tags": [
+          "generated",
+          "solid"
+        ]
+      },
+      "errors": []
+    },
+    "duotone": {
+      "id": "generated-17rdo8e",
+      "name": "Generated duotone (ember)",
+      "data": {
+        "style": "duotone",
+        "grid": 24,
+        "stroke": 1.5,
+        "linecap": "round",
+        "fallback": "framework",
+        "glyphs": {
+          "alert": {
+            "d": "M12 18.8L5.07 6.8L18.93 6.8Z",
+            "secondary": "M21.2 12A9.2 9.2 0 1 1 2.8 12A9.2 9.2 0 1 1 21.2 12Z"
+          },
+          "arrow-left": {
+            "d": "M15.71 4.58L8.29 12L15.71 19.43M20.25 12L8.29 12"
+          },
+          "bell": {
+            "d": "M14.28 14.28L19.5 19.5",
+            "secondary": "M15.9 10.5A5.4 5.4 0 1 1 5.1 10.5A5.4 5.4 0 1 1 15.9 10.5Z"
+          },
+          "blob": {
+            "d": "M12 4L20 12L12 20L4 12Z",
+            "secondary": "M21.2 12A9.2 9.2 0 1 1 2.8 12A9.2 9.2 0 1 1 21.2 12Z"
+          },
+          "check": {
+            "d": "M5.8 12L10.45 16.65L18.98 7.35"
+          },
+          "chevron-right": {
+            "d": "M8.29 4.58L15.71 12L8.29 19.43"
+          },
+          "clock": {
+            "d": "M9.06 21.04A9.5 9.5 0 1 1 21.04 14.94M21.04 14.94L17.71 14.94M21.04 14.94L21.04 11.61M12 12L12 6.78M12 12L15.8 12"
+          },
+          "grid": {
+            "d": "M4.8 4.8L19.2 4.8L19.2 19.2L4.8 19.2Z",
+            "secondary": "M21.2 12A9.2 9.2 0 1 1 2.8 12A9.2 9.2 0 1 1 21.2 12Z"
+          },
+          "home": {
+            "d": "M3 12L21 12",
+            "secondary": "M3 3L21 3L21 21L3 21Z"
+          },
+          "menu": {
+            "d": "M4.5 7.5L19.5 7.5M4.5 10.5L19.5 10.5M4.5 13.5L19.5 13.5M4.5 16.5L19.5 16.5"
+          },
+          "more": {
+            "d": "M13.19 7.75A1.19 1.19 0 1 1 10.81 7.75A1.19 1.19 0 1 1 13.19 7.75ZM13.19 12A1.19 1.19 0 1 1 10.81 12A1.19 1.19 0 1 1 13.19 12ZM13.19 16.25A1.19 1.19 0 1 1 10.81 16.25A1.19 1.19 0 1 1 13.19 16.25Z",
+            "secondary": "M21.78 12A9.77 9.77 0 1 1 2.23 12A9.77 9.77 0 1 1 21.78 12Z"
+          },
+          "plus": {
+            "d": "M4.14 12L19.86 12M12 4.14L12 19.86",
+            "secondary": "M21.25 12A9.25 9.25 0 1 1 2.75 12A9.25 9.25 0 1 1 21.25 12Z"
+          },
+          "refresh": {
+            "d": "M9.14 20.8A9.25 9.25 0 1 1 17.44 19.48"
+          },
+          "search": {
+            "d": "M14.85 14.85L20.25 20.25",
+            "secondary": "M16.79 10.35A6.44 6.44 0 1 1 3.91 10.35A6.44 6.44 0 1 1 16.79 10.35Z"
+          },
+          "settings": {
+            "d": "M12 4.13L12 19.88",
+            "secondary": "M4.13 4.13L19.88 4.13L19.88 19.88L4.13 19.88Z"
+          },
+          "star": {
+            "d": "M12 4.25L14.28 8.87L19.37 9.61L15.69 13.2L16.56 18.27L12 15.88L7.44 18.27L8.31 13.2L4.63 9.61L9.72 8.87Z",
+            "secondary": "M20.91 12A8.91 8.91 0 1 1 3.09 12A8.91 8.91 0 1 1 20.91 12Z"
+          },
+          "x": {
+            "d": "M6.79 6.79L17.21 17.21M17.21 6.79L6.79 17.21"
+          },
+          "zephyr": {
+            "d": "M6.94 6.94L17.06 17.06M17.06 6.94L6.94 17.06",
+            "secondary": "M20.5 12A8.5 8.5 0 1 1 3.5 12A8.5 8.5 0 1 1 20.5 12Z"
+          }
+        },
+        "spots": {
+          "console-web:app/favicon": {
+            "d": "M12 3L14.7 7.32L19.79 7.5L17.4 12L19.79 16.5L14.7 16.68L12 21L9.3 16.68L4.21 16.5L6.6 12L4.21 7.5L9.3 7.32Z",
+            "secondary": "M22.35 12A10.35 10.35 0 1 1 1.65 12A10.35 10.35 0 1 1 22.35 12Z"
+          },
+          "framework:badge/new": {
+            "d": "M12 4.5L14.65 8.36L19.13 9.68L16.28 13.39L16.41 18.07L12 16.5L7.59 18.07L7.72 13.39L4.87 9.68L9.35 8.36Z",
+            "secondary": "M20.63 12A8.63 8.63 0 1 1 3.38 12A8.63 8.63 0 1 1 20.63 12Z"
+          },
+          "framework:tab-group/x": "x"
+        },
+        "source": {
+          "kind": "generated"
+        },
+        "license": {
+          "id": "CC0-1.0",
+          "holder": "AmberX AXF icon-gen"
+        },
+        "seed": {
+          "seed": "ember",
+          "style": "duotone",
+          "grammar": "icon-gen@1"
+        },
+        "tags": [
+          "generated",
+          "duotone"
+        ]
+      },
+      "errors": []
+    },
+    "rounded": {
+      "id": "generated-czmtnf",
+      "name": "Generated rounded (ember)",
+      "data": {
+        "style": "rounded",
+        "grid": 24,
+        "stroke": 2,
+        "linecap": "round",
+        "fallback": "framework",
+        "glyphs": {
+          "alert": {
+            "d": "M12 4.78L19.36 17.52L4.64 17.53Z"
+          },
+          "arrow-left": {
+            "d": "M15.38 5.25L8.63 12L15.38 18.75M19.5 12L8.63 12"
+          },
+          "bell": {
+            "d": "M22 12A10 10 0 1 1 2 12A10 10 0 1 1 22 12ZM16.5 12A4.5 4.5 0 1 1 7.5 12A4.5 4.5 0 1 1 16.5 12Z"
+          },
+          "blob": {
+            "d": "M21.25 12A9.25 9.25 0 1 1 2.75 12A9.25 9.25 0 1 1 21.25 12ZM12.9 10.92A0.9 0.9 0 1 1 11.1 10.92A0.9 0.9 0 1 1 12.9 10.92ZM12.9 13.08A0.9 0.9 0 1 1 11.1 13.08A0.9 0.9 0 1 1 12.9 13.08ZM5.53 18.48L18.48 5.53M18.47 18.48L5.52 5.53M5.53 5.52L18.48 18.47"
+          },
+          "check": {
+            "d": "M22 12A10 10 0 1 1 2 12A10 10 0 1 1 22 12ZM4 12L10 18L21 6"
+          },
+          "chevron-right": {
+            "d": "M7.5 3L16.5 12L7.5 21"
+          },
+          "clock": {
+            "d": "M4.5 12A7.5 7.5 0 1 1 18.07 16.41M12 12L12 7.88M12 12L15 12"
+          },
+          "grid": {
+            "d": "M6.3 3.45L17.7 3.45Q20.55 3.45 20.55 6.3L20.55 17.7Q20.55 20.55 17.7 20.55L6.3 20.55Q3.45 20.55 3.45 17.7L3.45 6.3Q3.45 3.45 6.3 3.45Z"
+          },
+          "home": {
+            "d": "M7.05 4.58L16.95 4.58Q19.43 4.58 19.43 7.05L19.43 16.95Q19.43 19.43 16.95 19.43L7.05 19.43Q4.58 19.43 4.58 16.95L4.58 7.05Q4.58 4.58 7.05 4.58Z"
+          },
+          "menu": {
+            "d": "M2.75 8.92L21.25 8.92M2.75 15.08L21.25 15.08"
+          },
+          "more": {
+            "d": "M9.03 12A1.16 1.16 0 1 1 6.72 12A1.16 1.16 0 1 1 9.03 12ZM13.16 12A1.16 1.16 0 1 1 10.85 12A1.16 1.16 0 1 1 13.16 12ZM17.28 12A1.16 1.16 0 1 1 14.97 12A1.16 1.16 0 1 1 17.28 12Z"
+          },
+          "plus": {
+            "d": "M4.35 12L19.65 12M12 4.35L12 19.65"
+          },
+          "refresh": {
+            "d": "M18.67 16.85A8.25 8.25 0 1 1 16.85 5.33M16.85 5.33L13.96 5.33M16.85 5.33L16.85 2.44"
+          },
+          "search": {
+            "d": "M16.81 10.15A6.66 6.66 0 1 1 3.49 10.15A6.66 6.66 0 1 1 16.81 10.15ZM14.81 14.81L21.25 21.25"
+          },
+          "settings": {
+            "d": "M12 3.5L19.36 7.75L19.36 16.25L12 20.5L4.64 16.25L4.64 7.75Z"
+          },
+          "star": {
+            "d": "M12 3.25L14.19 8.21L19.58 7.63L16.38 12L19.58 16.38L14.19 15.79L12 20.75L9.81 15.79L4.42 16.38L7.63 12L4.42 7.62L9.81 8.21Z"
+          },
+          "x": {
+            "d": "M6.05 6.05L17.95 17.95M17.95 6.05L6.05 17.95"
+          },
+          "zephyr": {
+            "d": "M6.6 3.9L17.4 3.9Q20.1 3.9 20.1 6.6L20.1 17.4Q20.1 20.1 17.4 20.1L6.6 20.1Q3.9 20.1 3.9 17.4L3.9 6.6Q3.9 3.9 6.6 3.9ZM10.88 12A0.9 0.9 0 1 1 9.07 12A0.9 0.9 0 1 1 10.88 12ZM12.9 12A0.9 0.9 0 1 1 11.1 12A0.9 0.9 0 1 1 12.9 12ZM14.93 12A0.9 0.9 0 1 1 13.12 12A0.9 0.9 0 1 1 14.93 12ZM3.9 12L20.1 12"
+          }
+        },
+        "spots": {
+          "console-web:app/favicon": {
+            "d": "M12 3L14.7 7.32L19.79 7.5L17.4 12L19.79 16.5L14.7 16.68L12 21L9.3 16.68L4.21 16.5L6.6 12L4.21 7.5L9.3 7.32Z"
+          },
+          "framework:badge/new": {
+            "d": "M12 4.5L14.25 8.1L18.5 8.25L16.5 12L18.5 15.75L14.25 15.9L12 19.5L9.75 15.9L5.5 15.75L7.5 12L5.5 8.25L9.75 8.1Z"
+          },
+          "framework:tab-group/x": "x"
+        },
+        "source": {
+          "kind": "generated"
+        },
+        "license": {
+          "id": "CC0-1.0",
+          "holder": "AmberX AXF icon-gen"
+        },
+        "seed": {
+          "seed": "ember",
+          "style": "rounded",
+          "grammar": "icon-gen@1"
+        },
+        "tags": [
+          "generated",
+          "rounded"
+        ]
+      },
+      "errors": []
+    },
+    "geometric": {
+      "id": "generated-qmn253",
+      "name": "Generated geometric (ember)",
+      "data": {
+        "style": "sharp",
+        "grid": 24,
+        "stroke": 1.75,
+        "linecap": "square",
+        "fallback": "framework",
+        "glyphs": {
+          "alert": {
+            "d": "M12 3.93L20.23 18.17L3.77 18.18Z",
+            "fill": true
+          },
+          "arrow-left": {
+            "d": "M15.49 5.02L8.51 12L15.49 18.98M19.75 12L8.51 12"
+          },
+          "bell": {
+            "d": "M19.5 12A7.5 7.5 0 1 1 4.5 12A7.5 7.5 0 1 1 19.5 12ZM15.38 12A3.38 3.38 0 1 1 8.63 12A3.38 3.38 0 1 1 15.38 12Z"
+          },
+          "blob": {
+            "d": "M9.3 20.32A8.75 8.75 0 1 1 17.14 19.08M14.7 20.32A8.75 8.75 0 1 0 6.86 19.08M9.3 3.68A8.75 8.75 0 1 0 17.14 4.92"
+          },
+          "check": {
+            "d": "M20 12A8 8 0 1 1 4 12A8 8 0 1 1 20 12ZM5.6 12L10.4 16.8L19.2 7.2"
+          },
+          "chevron-right": {
+            "d": "M7.61 3.22L16.39 12L7.61 20.78"
+          },
+          "clock": {
+            "d": "M8.91 21.51A10 10 0 1 1 20.09 6.12M20.09 6.12L16.59 6.12M20.09 6.12L20.09 2.62M12 12L12 6.5M12 12L16 12"
+          },
+          "grid": {
+            "d": "M5.25 5.25L18.75 5.25L18.75 18.75L5.25 18.75ZM12 5.25L12 18.75"
+          },
+          "home": {
+            "d": "M4.58 4.58L19.43 4.58L19.43 19.43L4.58 19.43Z",
+            "fill": true
+          },
+          "menu": {
+            "d": "M3.75 9.25L20.25 9.25M3.75 14.75L20.25 14.75"
+          },
+          "more": {
+            "d": "M13.37 7.13A1.37 1.37 0 1 1 10.64 7.13A1.37 1.37 0 1 1 13.37 7.13ZM13.37 12A1.37 1.37 0 1 1 10.64 12A1.37 1.37 0 1 1 13.37 12ZM13.37 16.88A1.37 1.37 0 1 1 10.64 16.88A1.37 1.37 0 1 1 13.37 16.88Z",
+            "fill": true
+          },
+          "plus": {
+            "d": "M20.5 12A8.5 8.5 0 1 1 3.5 12A8.5 8.5 0 1 1 20.5 12ZM4.78 12L19.23 12M12 4.78L12 19.23"
+          },
+          "refresh": {
+            "d": "M19.28 17.29A9 9 0 1 1 17.29 4.72M17.29 4.72L14.14 4.72M17.29 4.72L17.29 1.57"
+          },
+          "search": {
+            "d": "M16.03 10.45A5.58 5.58 0 1 1 4.87 10.45A5.58 5.58 0 1 1 16.03 10.45ZM14.36 14.36L19.75 19.75"
+          },
+          "settings": {
+            "d": "M8.76 12A1.26 1.26 0 1 1 6.24 12A1.26 1.26 0 1 1 8.76 12ZM13.26 12A1.26 1.26 0 1 1 10.74 12A1.26 1.26 0 1 1 13.26 12ZM17.76 12A1.26 1.26 0 1 1 15.24 12A1.26 1.26 0 1 1 17.76 12Z",
+            "fill": true
+          },
+          "star": {
+            "d": "M12 3.75L14.48 7.71L19.14 7.88L16.95 12L19.14 16.13L14.48 16.29L12 20.25L9.53 16.29L4.86 16.13L7.05 12L4.86 7.87L9.52 7.71Z",
+            "fill": true
+          },
+          "x": {
+            "d": "M6.35 6.35L17.65 17.65M17.65 6.35L6.35 17.65"
+          },
+          "zephyr": {
+            "d": "M19.75 12A7.75 7.75 0 1 1 4.25 12A7.75 7.75 0 1 1 19.75 12ZM12 14.31L9.65 10.24L14.35 10.24Z",
+            "fill": true
+          }
+        },
+        "spots": {
+          "console-web:app/favicon": {
+            "d": "M12 3L14.86 9.14L21 12L14.86 14.86L12 21L9.14 14.86L3 12L9.14 9.14Z",
+            "fill": true
+          },
+          "framework:badge/new": {
+            "d": "M12 4.5L14.39 9.61L19.5 12L14.39 14.39L12 19.5L9.61 14.39L4.5 12L9.61 9.61Z",
+            "fill": true
+          },
+          "framework:tab-group/x": "x"
+        },
+        "source": {
+          "kind": "generated"
+        },
+        "license": {
+          "id": "CC0-1.0",
+          "holder": "AmberX AXF icon-gen"
+        },
+        "seed": {
+          "seed": "ember",
+          "style": "geometric",
+          "grammar": "icon-gen@1"
+        },
+        "tags": [
+          "generated",
+          "geometric"
+        ]
+      },
+      "errors": []
+    },
+    "pixel": {
+      "id": "generated-v9g9f2",
+      "name": "Generated pixel (ember)",
+      "data": {
+        "style": "filled",
+        "grid": 24,
+        "stroke": 2,
+        "linecap": "butt",
+        "fallback": "framework",
+        "glyphs": {
+          "alert": {
+            "d": "M12 20L4 6L20 6Z",
+            "fill": true
+          },
+          "arrow-left": {
+            "d": "M16 4L8 12L16 20M22 12L8 12"
+          },
+          "bell": {
+            "d": "M22 12A10 10 0 2 2 2 12A10 10 0 2 2 22 12Z",
+            "fill": true
+          },
+          "blob": {
+            "d": "M22 12L12 22L4 12L12 4ZM12 14L10 10L14 10Z",
+            "fill": true
+          },
+          "check": {
+            "d": "M20 12A8 8 0 2 2 4 12A8 8 0 2 2 20 12ZM6 12L10 16L20 8"
+          },
+          "chevron-right": {
+            "d": "M8 4L16 12L8 20"
+          },
+          "clock": {
+            "d": "M8 22A10 10 0 2 2 20 6M20 6L16 6M20 6L20 2M12 12L12 6M12 12L16 12"
+          },
+          "grid": {
+            "d": "M4 4L20 4L20 20L4 20ZM12 4L12 20"
+          },
+          "home": {
+            "d": "M4 4L20 4L20 20L4 20Z",
+            "fill": true
+          },
+          "menu": {
+            "d": "M4 10L20 10M4 14L20 14"
+          },
+          "more": {
+            "d": "M14 8A2 2 0 2 2 10 8A2 2 0 2 2 14 8ZM14 12A2 2 0 2 2 10 12A2 2 0 2 2 14 12ZM14 16A2 2 0 2 2 10 16A2 2 0 2 2 14 16Z",
+            "fill": true
+          },
+          "plus": {
+            "d": "M6 12L18 12M12 6L12 18"
+          },
+          "refresh": {
+            "d": "M2 12A10 10 0 2 2 20 18"
+          },
+          "search": {
+            "d": "M18 10A8 8 0 2 2 2 10A8 8 0 2 2 18 10ZM16 16L22 22"
+          },
+          "settings": {
+            "d": "M2 8L22 8M2 16L22 16M2 16L22 16M2 8L22 8"
+          },
+          "star": {
+            "d": "M12 2L16 8L22 12L16 16L12 22L8 16L2 12L8 8Z",
+            "fill": true
+          },
+          "x": {
+            "d": "M22 12A10 10 0 2 2 2 12A10 10 0 2 2 22 12ZM6 6L18 18M18 6L6 18"
+          },
+          "zephyr": {
+            "d": "M12 4L20 18L4 18Z",
+            "fill": true
+          }
+        },
+        "spots": {
+          "console-web:app/favicon": {
+            "d": "M12 4L16 8L22 12L16 16L12 22L8 16L4 12L8 8Z",
+            "fill": true
+          },
+          "framework:badge/new": {
+            "d": "M12 4L14 10L20 12L14 14L12 20L10 14L4 12L10 10Z",
+            "fill": true
+          },
+          "framework:tab-group/x": "x"
+        },
+        "source": {
+          "kind": "generated"
+        },
+        "license": {
+          "id": "CC0-1.0",
+          "holder": "AmberX AXF icon-gen"
+        },
+        "seed": {
+          "seed": "ember",
+          "style": "pixel",
+          "grammar": "icon-gen@1"
+        },
+        "tags": [
+          "generated",
+          "pixel"
+        ]
+      },
+      "errors": []
+    }
+  }
+}

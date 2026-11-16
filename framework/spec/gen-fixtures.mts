@@ -55,6 +55,13 @@ import { intentCommand, voiceIntent, voiceReply } from '../core/engines/console-
 import { animationState, behaviorErrors, behaviorStyle, setAnimationPref, withAnimationPrefs } from '../core/engines/behavior';
 import { mixHex, shadesOf, skinSwatches, sweepOrigin } from '../core/engines/swatches';
 import { CONSOLE_CONTROL_CODES, CONSOLE_CONTROL_DEFAULT_CAN, CONSOLE_CONTROL_KINDS, CONSOLE_CONTROL_TARGETS_FRAME, CONSOLE_CONTROL_VERB_IDS, childAddress, consoleControlErrors, consoleControlFailure, consoleControlResult, failureOf, focusOptions, formatAddress, listTargets, nearestRegisteredParent, nearestTargets, normalizeConsoleControl, parseAddress, resolveAddress, resolveForVerb, scrollState, scrollStep, searchTargets, splitTabId, tabAddressId, type AddressSegment, type ConsoleControlScrollDir, type ConsoleControlVerb, type ScrollState, type TargetSnapshot } from '../core/engines/console-control';
+import * as ip from '../core/engines/icon-pack';
+import * as im from '../core/engines/icon-map';
+import * as ig from '../core/engines/icon-gen';
+import * as ii from '../core/engines/icon-import';
+import * as ir from '../core/engines/icon-rules.mjs';
+import { normalizeAppLook } from '../core/engines/skin-rules.mjs';
+import { normalizeAppearance } from '../core/engines/appearance';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
 
 const root = new URL('..', import.meta.url).pathname;
@@ -2552,5 +2559,96 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       skin: skinSwatches({ bg: '#101010', surface: '#202020', surface2: '#202020', accent: '#ff8800', text: '#eeeeee' }), none: skinSwatches(undefined),
       sweepTap: sweepOrigin({ x: 900, y: 100 }, { w: 1000, h: 800 }), sweepNone: sweepOrigin(null, { w: 1000, h: 800 }), sweepOut: sweepOrigin({ x: -5, y: 2000 }, { w: 1000, h: 800 }),
     },
+  });
+}
+
+/* ---------------------------------------------------------------- icons: icon-pack@1 + icon-scope@1, icon-map@1, icon-gen@1, icon-import@1 (spec/ICON-MAP.md) */
+{
+  const iconPacks: Record<string, unknown> = {
+    base: JSON.parse(readFileSync(join(assetsDir, 'icon-pack/amberx-outline.json'), 'utf8')),
+    child: { id: 'child', data: { style: 'filled', grid: 24, extends: 'base', glyphs: { x: 'M4 4l16 16M20 4L4 20', dot: { ref: 'name:x' } }, spots: { 'framework:tab-group/x': 'x', 'console-web:app/favicon': { d: 'M12 2l10 20H2z' } }, license: { id: 'MIT' } } },
+    grandchild: { id: 'grandchild', data: { style: 'outline', grid: 24, extends: 'child', glyphs: { star: 'M12 2l3 7h7l-5 5 2 7-7-4-7 4 2-7-5-5h7z' } } },
+    strict: { id: 'strict', data: { style: 'outline', grid: 24, fallback: 'none', glyphs: { home: 'M1 1h1' } } },
+    loop1: { id: 'loop1', data: { style: 'outline', grid: 24, extends: 'loop2', glyphs: { a: 'M0 0h1' } } },
+    loop2: { id: 'loop2', data: { style: 'outline', grid: 24, extends: 'loop1', glyphs: { b: 'M0 0h1' } } },
+    orphan: { id: 'orphan', data: { style: 'outline', grid: 24, extends: 'missing-pack', glyphs: { a: 'M0 0h1' } } },
+    deep5: { id: 'deep5', data: { style: 'outline', grid: 24, extends: 'deep4', glyphs: { e: 'M0 0h1' } } },
+    deep4: { id: 'deep4', data: { style: 'outline', grid: 24, extends: 'deep3', glyphs: { d: 'M0 0h1' } } },
+    deep3: { id: 'deep3', data: { style: 'outline', grid: 24, extends: 'deep2', glyphs: { c: 'M0 0h1' } } },
+    deep2: { id: 'deep2', data: { style: 'outline', grid: 24, extends: 'deep1', glyphs: { b: 'M0 0h1' } } },
+    deep1: { id: 'deep1', data: { style: 'outline', grid: 24, glyphs: { a: 'M0 0h1' } } },
+  };
+  const getPack = (id: string) => iconPacks[id];
+  const lookA = ip.setIconOverride(ip.setIconOverride(ip.setIconPack(ip.setIconPack(null, 'app', 'child'), 'plugin:console-terminal', 'strict'), 'app', 'framework:tab-group/more', 'name:menu'), 'ui:plan', 'console-web:view-plan/plus', { d: 'M12 5v14M5 12h14' });
+  const hubA = { pack: 'base', overrides: { 'framework:chrome/search': 'pack:child/x' } };
+  const places: Record<string, ip.IconPlace & { view?: string }> = {
+    'plugin-in-plan': { scopeKey: 'plugin:console-terminal', look: lookA, hub: hubA, skinPacks: {}, brandPack: 'base', view: 'plan' },
+    'ui-plan': { scopeKey: 'ui:plan', look: lookA, hub: hubA, skinPacks: {}, brandPack: 'base' },
+    app: { scopeKey: 'app', look: lookA, hub: hubA, skinPacks: {}, brandPack: 'base' },
+    'skin-layer': { scopeKey: 'ui:other', look: { pack: '', overrides: {}, scopes: {} }, hub: null, skinPacks: { 'ui:other': 'grandchild', app: 'child' }, brandPack: 'base' },
+    'legacy-brand-only': { scopeKey: 'app', look: null, hub: null, skinPacks: {}, brandPack: 'base' },
+    nothing: { scopeKey: 'app', look: null, hub: null, skinPacks: {} },
+  };
+  const spotsToResolve: [string, string][] = [['framework:tab-group/x', 'x'], ['framework:tab-group/more', 'more'], ['framework:app-menu/home', 'home'], ['framework:chrome/search', 'search'], ['console-web:view-plan/plus', 'plus'], ['console-web:app/favicon', 'sparkles'], ['framework:nav/zzz', 'zzz'], ['framework:x/star', 'star'], ['', 'home'], ['', 'nope']];
+  const stripData = (r: ip.ResolvedIcon) => ({ glyph: r.glyph ? { kind: r.glyph.kind, d: r.glyph.d, fill: r.glyph.fill, secondary: r.glyph.secondary } : null, pack: r.pack, scope: r.scope, by: r.by, name: r.name });
+  const resetA = { spot: ip.resetIconSpot(lookA, 'framework:tab-group/more'), scope: ip.resetIconScope(lookA, 'plugin:console-terminal'), app: ip.resetIconApp(), hub: ip.resetIconHub(), hubSpot: ip.resetHubIconSpot(hubA, 'framework:chrome/search') };
+  const legacyLook = normalizeAppLook({ $axf: 'app-look@1', app: 'console-web', default: {}, iconPack: 'base', own: { settings: { 'axf.icons.pack.app': 'child', 'axf.tokens.x': 1 } }, icon: { scopes: { 'ui:plan': { pack: 'child' }, bad: { pack: 'x' } } } });
+  write('icon-pack.json', {
+    contract: { pack: ip.ICON_PACK_ENGINE, levels: ip.ICON_LEVELS, wins: ip.ICON_WINS, limits: ir.ICON_PACK_LIMITS, mapLimits: ir.ICON_MAP_LIMITS, spotKinds: ir.SPOT_KINDS, tints: ir.TINT_TOKENS, sizes: ir.SPOT_SIZES, sources: ir.GLYPH_SOURCES, genStyles: ir.GEN_STYLES },
+    fold: Object.fromEntries(['child', 'grandchild', 'loop1', 'orphan', 'deep5', 'missing-pack'].map((id) => { const f = ip.foldIconPack(id, getPack); return [id, f && { chain: f.chain, broken: f.broken, glyphs: Object.keys(f.glyphs).sort(), spots: Object.keys(f.spots).sort(), style: f.style, license: f.license }]; })),
+    chains: Object.fromEntries(Object.entries(places).map(([k, p]) => [k, ip.iconChain(p, p.view).map((l) => ({ scope: l.scope, kind: l.kind, pack: l.pack, from: l.from, overrides: Object.keys(l.overrides) }))])),
+    resolve: Object.fromEntries(Object.entries(places).map(([k, p]) => [k, Object.fromEntries(spotsToResolve.map(([spot, name]) => [`${spot || '(no spot)'}:${name}`, stripData(ip.resolveIcon(spot, name, ip.iconChain(p, p.view), getPack))]))])),
+    edits: { lookA, hubA, overrides: ip.listIconOverrides(lookA, hubA), reset: resetA, hubPack: ip.setHubIconPack(hubA, 'child'), hubOverride: ip.setHubIconOverride(hubA, 'a:b/c', 'star'), badSpot: ip.setIconOverride(lookA, 'app', 'not a spot', 'x') },
+    documents: { legacyLook: legacyLook?.icon, legacySettings: legacyLook?.own.settings, appearance: JSON.parse(serializeAppearance(mergeAppearance(normalizeAppearance({ $axf: 'appearance@1' })!, { icon: { pack: 'child', overrides: { 'a:b/c': 'star' } } }, 'test', '2026-11-16T00:00:00Z'))), appearanceCleared: JSON.parse(serializeAppearance(mergeAppearance(normalizeAppearance({ $axf: 'appearance@1', icon: { pack: 'child' } })!, { icon: null }, 'test', '2026-11-16T00:00:00Z'))) },
+    validate: {
+      ok: ip.validateIconPack({ style: 'outline', grid: 24, glyphs: { a: 'M1 1h1', s: { svg: '<path d="M1 1"/>' }, p: { png: 'data:image/png;base64,iVBORw0KGgo=' }, f: { font: { family: 'Material Symbols', char: '' } }, r: { ref: 'pack:base/home' } }, spots: { 'x:y/z': 'a' }, extends: 'base', seed: { seed: 's1', style: 'line' }, license: 'MIT', source: { kind: 'generated' } }),
+      bad: ip.validateIconPack({ style: 'outline', grid: 24, glyphs: { ok: 'M1 1', bad: { svg: '<script>' }, two: { d: 'M1 1', ref: 'name:ok' }, none: {}, badref: { ref: 'nope' } }, spots: { 'x:y/z': 'nope', bad: 'ok' }, extends: 'Bad', seed: { style: 'line' }, appIcon: { shape: 'blob', bg: 'red' } }),
+      map: ir.iconMapErrors({ spots: { 'console-web:view-plan/plus': { glyph: 'plus', tint: 'red', size: 'huge' }, bad: {}, 'a:b/c': { kind: 'thing', dynamic: false } } }),
+      mapOk: ir.iconMapErrors({ app: 'console-web', spots: { 'console-web:view-plan/plus': { glyph: 'plus' }, 'a:b/c': { kind: 'badge', size: '--fx-size-chip-height', tint: 'accent', tags: ['x'] } } }),
+      block: ir.iconBlockErrors({ pack: 'Bad', overrides: { 'a:b/c': 'name:ok', 'bad': 'x', 'a:b/d': { svg: '<script>' } }, scopes: { 'ui:plan': { pack: '' }, nope: {} } }),
+    },
+    markup: {
+      path: ip.glyphMarkup(ip.glyphEntry('M4 4l16 16M20 4L4 20')!, { style: 'outline', grid: 24, stroke: 1.75, linecap: 'round' }, 16),
+      filledSplit: ip.glyphMarkup(ip.glyphEntry('M3 3h18v18H3zM20 6 9 17l-5-5')!, { style: 'filled', grid: 24, stroke: 2, linecap: 'square' }, 20),
+      duotone: ip.glyphMarkup(ip.glyphEntry({ d: 'M1 1h2', secondary: 'M12 2a10 10 0 1 1 0 20a10 10 0 1 1 0-20Z' })!, { style: 'duotone', grid: 24, stroke: 1.5, linecap: 'round' }, 'var(--fx-size-icon)'),
+      svg: ip.glyphMarkup(ip.glyphEntry({ svg: '<circle cx="12" cy="12" r="8"/>' })!, { style: 'outline', grid: 24, stroke: 1.75, linecap: 'round' }, 16, 'Circle'),
+      png: ip.glyphMarkup(ip.glyphEntry({ png: 'data:image/png;base64,iVBORw0KGgo=' })!, { style: 'outline', grid: 24, stroke: 1.75, linecap: 'round' }, 16),
+      font: ip.glyphMarkup(ip.glyphEntry({ font: { family: 'Material Symbols', char: 'A' } })!, { style: 'outline', grid: 24, stroke: 1.75, linecap: 'round' }, 16),
+      appIcon: ip.appIconMarkup(ip.glyphEntry('M12 2l10 20H2z')!, { style: 'filled', grid: 24, stroke: 2, linecap: 'round', appIcon: { shape: 'squircle', bg: 'accent', fg: 'accentText', padding: 0.2 } }, 48),
+    },
+    registry: (() => {
+      const map = { id: 'default', type: 'icon-map', data: { app: 'all', spots: { 'framework:tab-group/x': { glyph: 'x', tags: ['chrome'] }, 'framework:app-menu/icon': { dynamic: true }, 'framework:badge/new': { kind: 'badge', glyph: 'sparkles' }, 'console-web:app/favicon': { kind: 'app-icon', glyph: 'sparkles' }, 'console-web:view-plan/plus': { glyph: 'plus' } } } };
+      const child = { id: 'console', type: 'icon-map', data: { app: 'console-web', extends: 'default', spots: { 'console-web:view-plan/plus': { glyph: 'plus', label: 'Add a plan item' }, 'bad id': {} } } };
+      const reg = im.registerIconSpot(im.buildIconRegistry([map, child], [{ id: 'console-web:view-plan/plus', help: 'runtime help' }, { id: 'molly:new/thing', glyph: 'star' }, 'nonsense']), { id: 'amberx-droid:plugin-companion/send', glyph: 'arrow-right' });
+      const chain = ip.iconChain({ scopeKey: 'app', look: { pack: 'child', overrides: {}, scopes: {} }, hub: null });
+      return { spots: reg.spots, duplicates: reg.duplicates, problems: reg.problems, maps: reg.maps, fold: (({ chain, broken, origin }) => ({ chain, broken, origin }))(im.foldIconMap('console', (id) => ({ default: map, console: child } as Record<string, unknown>)[id])!), coverage: im.iconCoverage(reg, chain, getPack), search: { 'tab-group': im.searchIconSpots(reg, { q: 'tab-group' }).map((s) => s.id), badge: im.searchIconSpots(reg, { kind: 'badge' }).map((s) => s.id), dynamic: im.searchIconSpots(reg, { dynamic: true }).map((s) => s.id), tag: im.searchIconSpots(reg, { tag: 'chrome' }).map((s) => s.id) }, tree: im.spotTree(reg).map((a) => ({ app: a.app, total: a.total, areas: a.areas.map((x) => ({ area: x.area, dynamic: x.dynamic, spots: x.spots.map((s) => s.id) })) })), names: im.spotGlyphNames(reg) };
+    })(),
+  });
+  const genNames = ['home', 'settings', 'search', 'bell', 'star', 'check', 'x', 'plus', 'menu', 'grid', 'chevron-right', 'arrow-left', 'refresh', 'clock', 'alert', 'more', 'blob', 'zephyr'];
+  write('icon-gen.json', {
+    contract: ig.ICON_GEN_CONTRACT, grid: ig.ICON_GEN_GRID, primitives: ig.PRIMITIVES, symmetries: ig.SYMMETRIES,
+    hash: Object.fromEntries(['', 'ember', 'ash', 'seed-1'].map((s) => [s || '(empty)', ig.seedHash(s)])),
+    rng: (() => { const r = new ig.SeededRng('ember'); return [r.next(), r.next(), r.int(0, 9), r.pick(['a', 'b', 'c'])]; })(),
+    mirror: { x: ig.mirrorPath('M4 4L20 12A5 5 0 1 1 10 10Z', 'x'), y: ig.mirrorPath('M4 4L20 12A5 5 0 1 1 10 10Z', 'y') },
+    icons: Object.fromEntries(['ember', 'ash'].flatMap((seed) => genNames.map((n) => [`${seed}:${n}`, ig.generateIcon(seed, { name: n })]))),
+    styles: Object.fromEntries(ig.GEN_STYLES.map((style) => [style, ig.generateIcon('ember', { name: 'blob', style })])),
+    kinds: { badge: ig.generateIcon('ember', { name: 'sparkles', kind: 'badge' }), appIcon: ig.generateIcon('ember', { name: 'sparkles', kind: 'app-icon' }), primitive: ig.generateIcon('ember', { name: 'thing', primitive: 'star', symmetry: 'radial' }) },
+    packs: Object.fromEntries(ig.GEN_STYLES.map((style) => { const p = ig.generatePack('ember', genNames, { style, spots: [{ id: 'console-web:app/favicon', kind: 'app-icon', glyph: 'sparkles' }, { id: 'framework:badge/new', kind: 'badge', glyph: 'sparkles' }, { id: 'framework:tab-group/x', glyph: 'x' }] }); return [style, { ...p, errors: ip.validateIconPack(p.data) }]; })),
+  });
+  const hostile = '<?xml version="1.0"?><!DOCTYPE svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 48 48" onload="alert(1)"><!-- c --><script>alert(2)</script><style>@import url(evil.css)</style><defs><linearGradient id="g"/></defs><a href="https://evil"><path d="M4 4h40v40H4z" fill="#ff0000" stroke="rgb(0,0,0)" onclick="x()"/></a><image href="https://evil/x.png"/><use xlink:href="#g"/><use href="https://evil#g"/><foreignObject><div>hi</div></foreignObject><circle cx="24" cy="24" r="10" fill="url(#g)" style="fill:url(http://x)"/><text>hello</text><title>Box</title></svg>';
+  const lucide = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>';
+  const pathsOnly = '<svg viewBox="0 0 24 24" fill="none" stroke="#333"><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>';
+  const big = '<svg viewBox="0 0 512 512"><rect x="64" y="64" width="384" height="384" rx="40" fill="#09f"/></svg>';
+  const offCentre = '<svg width="100" height="50"><rect x="10" y="10" width="80" height="30" fill="green"/></svg>';
+  const png1 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+  write('icon-import.json', {
+    contract: ii.ICON_IMPORT_CONTRACT, grid: ii.IMPORT_GRID, safeElements: ii.SAFE_ELEMENTS, safeAttributes: ii.SAFE_ATTRIBUTES,
+    tokenize: ii.tokenizeSvg('<svg viewBox="0 0 1 1"><!-- c --><path d="M1 1" fill=\'red\'/><g>text</g></svg>'),
+    unsafe: Object.fromEntries(['url(#a)', 'javascript:x', '#abc', 'red', 'https://x', 'data:text/html', '//evil', 'rgb(1,2,3)'].map((v) => [v, ii.unsafeValue(v)])),
+    sanitize: Object.fromEntries(Object.entries({ hostile, lucide, pathsOnly, big, offCentre, empty: '<svg><script>1</script></svg>', nested: '<svg viewBox="0 0 24 24"><svg viewBox="0 0 1 1"><path d="M1 1"/></svg><path d="M2 2"/></svg>', truncated: '<svg viewBox="0 0 24 24"><g><path d="M1 1"' }).map(([k, v]) => [k, ii.sanitizeSvg(v)])),
+    normalize: Object.fromEntries(Object.entries({ hostile, lucide, pathsOnly, big, offCentre }).map(([k, v]) => [k, ii.normalizeSvg(v)])),
+    importSvg: { pathsOnly: ii.importSvg(pathsOnly, { source: { kind: 'library', library: 'lucide' }, license: 'ISC', tags: ['home'] }), keepSvg: ii.importSvg(pathsOnly, { keepSvg: true }), lucide: ii.importSvg(lucide, { source: { kind: 'url', url: 'https://lucide.dev/icons/search' } }), hostile: ii.importSvg(hostile), empty: ii.importSvg('<svg><script>1</script></svg>'), tooBig: ii.importSvg(`<svg viewBox="0 0 24 24">${'<circle cx="1" cy="1" r="1"/>'.repeat(400)}</svg>`) },
+    importPng: { ok: ii.importPng(png1, { source: { kind: 'upload' } }), notPng: ii.importPng('data:image/png;base64,QUJD'), notUri: ii.importPng('iVBOR'), tooBig: { refused: ii.importPng('data:image/png;base64,iVBORw0KGgo' + 'A'.repeat(70000)).report.refused }, bytes: ii.pngBytes(png1) },
+    importGlyph: { path: ii.importGlyph('M3 3h18v18H3z'), fragment: ii.importGlyph('<path d="M1 1h2"/>'), png: ii.importGlyph(png1).glyph?.kind, text: ii.importGlyph('hello').report.refused, svg: ii.importGlyph(lucide).glyph?.kind },
   });
 }
