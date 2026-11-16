@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6858,
- "updatedAt": "2026-11-16T20:25:20.399Z",
+ "rev": 6859,
+ "updatedAt": "2026-11-16T20:25:50.436Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -248119,16 +248119,22 @@
    "title": "Fable rebuild: Plan Studio cleared out, unlimited nesting, context menus, full voice control",
    "category": "",
    "detail": "Full professional rebuild of the Plan Studio plugin (plan-studio) on Fable. First CLEAR IT OUT: remove every existing plan and stop all syncing into Plan Studio (no rules, builds, pending list or anything else synced into it); it starts empty. Then rebuild to the same standard as the To-do/Note manager rebuild: unlimited nesting of plans, sections, steps, notes and lists inside each other; drag to move/reorder at any level; full context menu on every item (new inside, rename, edit, duplicate, move, delete with undo, export, send to build orchestrator); everything voice and MCP controlled (plugin-commands MCP tools, console-control addresses, CLI, AmberX voice). Integrated with everything else (to-do manager, build orchestrator, notes, Shipped features) by explicit links only, never auto-sync. Professional, powerful UI on framework controls and tokens, desktop and phone. Rebuild differences report. Tests, land through the orchestrator.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-16T20:25:16.196Z",
-   "updatedAt": "2026-11-16T20:25:16.196Z",
+   "updatedAt": "2026-11-16T20:25:24.180Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-16T20:25:24.180Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -248143,6 +248149,28 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-16T20:25:22.003Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -248152,7 +248180,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

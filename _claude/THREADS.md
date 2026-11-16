@@ -813,7 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 16:43 UTC · `inline-edit-plugin-install-in-console-molly-and` → running, note (all) · orchestrator
 - 2026-11-16 16:43 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
 - 2026-11-16 16:44 UTC · `apps-control-surface` note (all) · orchestrator
 - 2026-11-16 16:44 UTC · `per-agent-api-control-switch-in-each-employee-s` note (all) · orchestrator
@@ -1213,6 +1212,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 20:24 UTC · `fable-rebuild-to-do-manager-unlimited` added (0 steps) (all) · console
 - 2026-11-16 20:24 UTC · `to-do-manager-fully-voice-mcp-controlled` note (all) · orchestrator
 - 2026-11-16 20:25 UTC · `fable-rebuild-plan-studio-cleared-out` added (0 steps) (all) · console
+- 2026-11-16 20:25 UTC · `fable-rebuild-plan-studio-cleared-out` → queued, note (all) · console
 
 ## Token passes (log)
 
