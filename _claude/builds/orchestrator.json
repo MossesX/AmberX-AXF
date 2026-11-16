@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T22:46:11.483Z",
+ "updatedAt": "2026-11-16T22:46:23.344Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -163243,6 +163243,38 @@
    "origin": {
     "said": "Rebuild.",
     "at": "2026-11-16T22:44:59.053Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "fable-icon-map-icon-packs-icon-pack",
+   "title": "Fable: icon map, icon packs and icon pack designer",
+   "category": "",
+   "detail": "FABLE build, fresh on current main, replacing the stale icon-map-icon-packs-every-icon-badge-app (about 2,003 behind; archive the old record and close its PR, branch kept). Icon map: every icon spot in every app (icons, badges, app icons) has an address. Icon packs: swap any or all of them at once, per app or hub-wide, with reset. Icon Pack Designer: a very powerful, polished, easy drag-and-drop editor to build a pack against the map; drag icons onto spots, live preview across the apps. Randomly generated icon sets (generate a whole pack or one icon with a style). Import icons from many sources (open icon libraries, uploaded SVG/PNG, URLs, other packs). Tokens and framework controls, console-control addresses, MCP/CLI/voice control. Land through the orchestrator.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-16T22:46:11.171Z",
+   "updatedAt": "2026-11-16T22:46:12.806Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Yes, use Fable too. I want a very powerful, nice, easy to use drag and drop, and also have random generated ones and import icons from different sources. Make it use Fable. Make it sick.",
+    "at": "2026-11-16T22:46:11.171Z",
     "source": "",
     "session": "",
     "link": "",

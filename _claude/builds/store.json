@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6929,
- "updatedAt": "2026-11-16T22:46:11.483Z",
+ "rev": 6930,
+ "updatedAt": "2026-11-16T22:46:23.344Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -250328,6 +250328,56 @@
    "kind": "build",
    "planRef": "",
    "rev": 4,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "fable-icon-map-icon-packs-icon-pack",
+   "title": "Fable: icon map, icon packs and icon pack designer",
+   "category": "",
+   "detail": "FABLE build, fresh on current main, replacing the stale icon-map-icon-packs-every-icon-badge-app (about 2,003 behind; archive the old record and close its PR, branch kept). Icon map: every icon spot in every app (icons, badges, app icons) has an address. Icon packs: swap any or all of them at once, per app or hub-wide, with reset. Icon Pack Designer: a very powerful, polished, easy drag-and-drop editor to build a pack against the map; drag icons onto spots, live preview across the apps. Randomly generated icon sets (generate a whole pack or one icon with a style). Import icons from many sources (open icon libraries, uploaded SVG/PNG, URLs, other packs). Tokens and framework controls, console-control addresses, MCP/CLI/voice control. Land through the orchestrator.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-16T22:46:11.171Z",
+   "updatedAt": "2026-11-16T22:46:12.806Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Yes, use Fable too. I want a very powerful, nice, easy to use drag and drop, and also have random generated ones and import icons from different sources. Make it use Fable. Make it sick.",
+    "at": "2026-11-16T22:46:11.171Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 928
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
