@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T21:11:09.011Z",
+ "updatedAt": "2026-11-16T21:12:07.525Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -121586,7 +121586,7 @@
    "mergedAt": "2026-11-16T21:01:55Z",
    "priority": "P0",
    "createdAt": "2026-11-13T10:35:03.675Z",
-   "updatedAt": "2026-11-16T21:11:06.906Z",
+   "updatedAt": "2026-11-16T21:12:04Z",
    "builtAt": "2026-11-16T13:24:07.032Z",
    "notes": [
     {
@@ -121668,6 +121668,10 @@
     {
      "text": "Reconciler: PR #685 merged",
      "at": "2026-11-16T21:11:06.906Z"
+    },
+    {
+     "text": "Shipped manifest sm-fix-build-whose-session-finishes-phase-e rev 1 sent to Shipped features (orchestrator): landed cd1f58676, 40 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-16T21:12:04Z"
     }
    ],
    "approvals": [
