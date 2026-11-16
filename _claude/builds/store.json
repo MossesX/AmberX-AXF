@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6930,
- "updatedAt": "2026-11-16T22:46:23.344Z",
+ "rev": 6931,
+ "updatedAt": "2026-11-16T22:46:33.956Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -204086,7 +204086,7 @@
    "title": "Toolbar widgets: attach any banner-style widget to any toolbar",
    "category": "",
    "detail": "Let every toolbar (and tab group bar) host widgets the same way the banner does: use the same widget assets and registry as banner widgets (status badges, counters, CPU/disk, account, clocks, etc.). Add/remove/arrange widgets per toolbar instance from its right-click menu and its chrome settings (drag to arrange, like widgets.arrange). Widgets follow skins/tokens, collapse into an overflow when space is short, persist per instance. Reachable by REST/MCP/CLI/voice/control@1 ('add the CPU widget to the main toolbar'). Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -204094,7 +204094,7 @@
    "pr": "#656",
    "priority": "P2",
    "createdAt": "2026-11-13T18:20:19.790Z",
-   "updatedAt": "2026-11-13T21:40:41.939Z",
+   "updatedAt": "2026-11-16T22:46:30.113Z",
    "builtAt": "",
    "notes": [
     {
@@ -204124,6 +204124,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T21:40:41.939Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (cli): Brett: rebuild fresh on main.",
+     "at": "2026-11-16T22:46:30.113Z"
     }
    ],
    "approvals": [],
@@ -204255,7 +204259,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
