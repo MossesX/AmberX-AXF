@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T13:13:10.056Z",
+ "updatedAt": "2026-11-16T13:13:23.676Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -140144,14 +140144,14 @@
    "title": "Group chat audio: hear the agents talk while they build",
    "category": "Console",
    "detail": "Brett: an 'Enable audio' switch on the agents' group chat so you can actually hear the employees building your app. Each cat-named agent gets its own TTS voice (voice, speed, pitch as assets, swappable per agent and per skin). New messages are spoken aloud in order as they arrive; mute, volume, 'only my mentions' and 'summaries only' modes; queue so voices don't overlap. Works in the console and the AmberX Android app (background audio, earbuds). Full API and voice ('turn on group chat audio', 'mute Whiskers'). Token-driven UI. Tests desktop and phone.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/group-chat-audio-hear-agents-talk-while",
    "pr": "#671",
    "createdAt": "2026-11-14T04:20:23.886Z",
-   "updatedAt": "2026-11-16T13:13:07.862Z",
+   "updatedAt": "2026-11-16T13:13:20.931Z",
    "builtAt": "",
    "notes": [
     {
@@ -140173,6 +140173,14 @@
     {
      "text": "Brett (Nov 16): KEEP. Also make it the VOICE PROVIDER for the Agent manager: agents/personas already have an empty voice slot {provider, voiceId, hint}. Fill it: a voice picker in Agent manager (each employee) with a voice list from the TTS provider(s) (e.g. ElevenLabs/OpenAI/browser TTS), preview button, speed/pitch, and auto-match from the hint ('cat-like', 'calm'). Each agent speaks in its own voice in group chat audio. Full API parity.",
      "at": "2026-11-16T13:12:04.865Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-group-chat-audio-hear-agents-talk-while--joey.",
+     "at": "2026-11-16T13:13:14.791Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-group-chat-audio-hear-agents-talk-while--joey, shared account login)",
+     "at": "2026-11-16T13:13:18.410Z"
     }
    ],
    "approvals": [],
@@ -140249,7 +140257,7 @@
     },
     {
      "id": "s4",
-     "text": "Voice picker for every employee in the Agent manager (agents + personas): fill the existing empty voice slot {provider, voiceId, hint} from the TTS provider(s) (ElevenLabs/OpenAI/browser TTS), voice list, preview button, speed and pitch, auto-match from the hint ('cat-like', 'calm'). Each agent speaks in its own voice in group chat audio. REST/MCP/CLI/voice parity, tests, then land with the one-at-a-time lander.",
+     "text": "Voice picker for every employee in the Agent manager (agents + personas), FULLY BATTERIES INCLUDED, MULTIPLE providers: OpenAI TTS, ElevenLabs, Google Cloud TTS, Azure Speech, Amazon Polly, Deepgram Aura, Cartesia, PlayHT, plus free/local (browser speech, Piper/Kokoro on the VPS) so it works with no key. Provider manager: add/remove providers, store each provider's API key in the hub credential store (encrypted, never in code), test-connection button, status badge. Fill the existing voice slot {provider, voiceId, hint}: live voice list per provider, preview button, speed and pitch, auto-match from the hint ('cat-like', 'calm'), fallback to local voice if a provider fails. Each agent speaks in its own voice in group chat audio. REST/MCP/CLI/voice parity, tests, then land with the one-at-a-time lander.",
      "model": "Opus",
      "why": "",
      "phase": "",
