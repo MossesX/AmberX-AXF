@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Container, Icon, IconButton, ModelBadge, TabGroup, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Icon, IconButton, ModelBadge, PluginScreenHeader, TabGroup, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import { registerRowRefTarget, rowHooks, useDataset, useDatasetsRevision } from '@console/axf/libs/datagrid';
@@ -166,13 +166,10 @@ export function BuildBreakerPage() {
 function Head({ doc }: { doc?: Doc }) {
   const d = doc?.generatedAt ? new Date(doc.generatedAt) : null;
   return (
-    <header className="fx-pagehead axp-build-breaker__head">
-      <div>
-        <p className="fx-eyebrow">Builds{d && !Number.isNaN(d.getTime()) ? ` · gathered ${fmtDay(d)}` : ''}</p>
-        <h1>Build Breaker</h1>
-        <p className="fx-muted axp-build-breaker__lede" title="Everything you've asked for, in plain English: what it is, when you asked, where it stands and what it cost.">Everything you've asked for, one line each.</p>
-      </div>
-    </header>
+    // plugin-settings@1: the shared header carries the gear that opens Settings → Plugins → Build Breaker
+    <PluginScreenHeader tab={FOLDER} title="Build Breaker" className="axp-build-breaker__head"
+      eyebrow={`Builds${d && !Number.isNaN(d.getTime()) ? ` · gathered ${fmtDay(d)}` : ''}`}
+      lede={<span className="axp-build-breaker__lede" title="Everything you've asked for, in plain English: what it is, when you asked, where it stands and what it cost.">Everything you've asked for, one line each.</span>} />
   );
 }
 

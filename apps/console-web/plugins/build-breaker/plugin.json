@@ -35,6 +35,7 @@
       "apps/console-web/plugins/README.md"
     ]
   },
+  "settings": { "$axf": "plugin-settings@1", "tab": "build-breaker", "parent": "plugins", "sections": ["enable", "info", "logs", "options"], "options": ["build-breaker.tab", "build-breaker.sort", "build-breaker.range"], "gear": true },
   "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": {
     "model": "opus",

@@ -7,7 +7,7 @@
     "tabGroups": 26,
     "tabs": 78,
     "settingsTabs": 83,
-    "settings": 94,
+    "settings": 177,
     "functions": 274,
     "buttons": 62,
     "plugins": 71
@@ -2339,6 +2339,36 @@
       "file": "src/hubAppearance.tsx"
     },
     {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-swarm/setting:agent-swarm.colorByVibe",
+      "kind": "setting",
+      "label": "Color by vibe",
+      "key": "agent-swarm.colorByVibe",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Agent swarm",
+      "keywords": [
+        "agent-swarm.colorByVibe",
+        "Agent swarm"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.agent-swarm",
+      "file": "plugins/agent-swarm/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-swarm/setting:agent-swarm.vibeColor",
+      "kind": "setting",
+      "label": "Vibe base colour",
+      "key": "agent-swarm.vibeColor",
+      "type": "choice",
+      "detail": "Settings › Plugins › Agent swarm",
+      "keywords": [
+        "agent-swarm.vibeColor",
+        "Agent swarm"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.agent-swarm",
+      "file": "plugins/agent-swarm/web/index.tsx"
+    },
+    {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-voice/setting:agent-voice.banner",
       "kind": "setting",
       "label": "On the banner",
@@ -2367,6 +2397,21 @@
       "runs": "console",
       "plugin": "ai.amberx.axf.console.agent-voice",
       "file": "plugins/agent-voice/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ai-assistant/setting:ai-assistant.approvalsBadge",
+      "kind": "setting",
+      "label": "Show axHub approvals in the chat title bar",
+      "key": "ai-assistant.approvalsBadge",
+      "type": "toggle",
+      "detail": "Settings › Plugins › AI assistant",
+      "keywords": [
+        "ai-assistant.approvalsBadge",
+        "AI assistant"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.ai-assistant",
+      "file": "plugins/ai-assistant/web/index.tsx"
     },
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=alerts-bell/setting:alerts-bell.show",
@@ -2435,6 +2480,639 @@
       "file": "plugins/amberx-listeners/web/index.tsx"
     },
     {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner/setting:approvals-banner.alarm.on",
+      "kind": "setting",
+      "label": "Alarm",
+      "key": "approvals-banner.alarm.on",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Approvals banner",
+      "keywords": [
+        "approvals-banner.alarm.on",
+        "Approvals banner"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner/setting:approvals-banner.alarm.startAt",
+      "kind": "setting",
+      "label": "Starts",
+      "key": "approvals-banner.alarm.startAt",
+      "type": "choice",
+      "detail": "Settings › Plugins › Approvals banner",
+      "keywords": [
+        "approvals-banner.alarm.startAt",
+        "Approvals banner"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner/setting:approvals-banner.alarm.tone",
+      "kind": "setting",
+      "label": "Tone",
+      "key": "approvals-banner.alarm.tone",
+      "type": "choice",
+      "detail": "Settings › Plugins › Approvals banner",
+      "keywords": [
+        "approvals-banner.alarm.tone",
+        "Approvals banner"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner/setting:approvals-banner.alarm.volume",
+      "kind": "setting",
+      "label": "Volume",
+      "key": "approvals-banner.alarm.volume",
+      "type": "slider",
+      "min": 0,
+      "max": 100,
+      "detail": "Settings › Plugins › Approvals banner",
+      "keywords": [
+        "approvals-banner.alarm.volume",
+        "Approvals banner"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner/setting:approvals-banner.alarm.louder",
+      "kind": "setting",
+      "label": "Gets louder over time",
+      "key": "approvals-banner.alarm.louder",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Approvals banner",
+      "keywords": [
+        "approvals-banner.alarm.louder",
+        "Approvals banner"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner/setting:approvals-banner.alarm.louderSeconds",
+      "kind": "setting",
+      "label": "Seconds to full volume",
+      "key": "approvals-banner.alarm.louderSeconds",
+      "type": "number",
+      "min": 1,
+      "max": 120,
+      "detail": "Settings › Plugins › Approvals banner",
+      "keywords": [
+        "approvals-banner.alarm.louderSeconds",
+        "Approvals banner"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner/setting:approvals-banner.alarm.ringSeconds",
+      "kind": "setting",
+      "label": "Rings for (seconds)",
+      "key": "approvals-banner.alarm.ringSeconds",
+      "type": "number",
+      "min": 1,
+      "max": 300,
+      "detail": "Settings › Plugins › Approvals banner",
+      "keywords": [
+        "approvals-banner.alarm.ringSeconds",
+        "Approvals banner"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner/setting:approvals-banner.alarm.repeat",
+      "kind": "setting",
+      "label": "Rings (1 = no repeat)",
+      "key": "approvals-banner.alarm.repeat",
+      "type": "number",
+      "min": 1,
+      "max": 10,
+      "detail": "Settings › Plugins › Approvals banner",
+      "keywords": [
+        "approvals-banner.alarm.repeat",
+        "Approvals banner"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner/setting:approvals-banner.alarm.repeatGapSeconds",
+      "kind": "setting",
+      "label": "Quiet between rings (seconds)",
+      "key": "approvals-banner.alarm.repeatGapSeconds",
+      "type": "number",
+      "min": 0,
+      "max": 300,
+      "detail": "Settings › Plugins › Approvals banner",
+      "keywords": [
+        "approvals-banner.alarm.repeatGapSeconds",
+        "Approvals banner"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner/setting:approvals-banner.alarm.vibration",
+      "kind": "setting",
+      "label": "Vibration",
+      "key": "approvals-banner.alarm.vibration",
+      "type": "choice",
+      "detail": "Settings › Plugins › Approvals banner",
+      "keywords": [
+        "approvals-banner.alarm.vibration",
+        "Approvals banner"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner/setting:approvals-banner.alarm.throughSilent",
+      "kind": "setting",
+      "label": "Ring through silent mode (phone)",
+      "key": "approvals-banner.alarm.throughSilent",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Approvals banner",
+      "keywords": [
+        "approvals-banner.alarm.throughSilent",
+        "Approvals banner"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner/setting:approvals-banner.notices",
+      "kind": "setting",
+      "label": "Notices (one per held call)",
+      "key": "approvals-banner.notices",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Approvals banner",
+      "keywords": [
+        "approvals-banner.notices",
+        "Approvals banner"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner/setting:approvals-banner.notice.sound",
+      "kind": "setting",
+      "label": "Notice sound",
+      "key": "approvals-banner.notice.sound",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Approvals banner",
+      "keywords": [
+        "approvals-banner.notice.sound",
+        "Approvals banner"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner/setting:approvals-banner.notice.vibrate",
+      "kind": "setting",
+      "label": "Notice vibration",
+      "key": "approvals-banner.notice.vibrate",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Approvals banner",
+      "keywords": [
+        "approvals-banner.notice.vibrate",
+        "Approvals banner"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner/setting:approvals-banner.notice.repeat",
+      "kind": "setting",
+      "label": "Alert again at 30 s left and when it runs",
+      "key": "approvals-banner.notice.repeat",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Approvals banner",
+      "keywords": [
+        "approvals-banner.notice.repeat",
+        "Approvals banner"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner/setting:approvals-banner.overlay.on",
+      "kind": "setting",
+      "label": "Overlay",
+      "key": "approvals-banner.overlay.on",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Approvals banner",
+      "keywords": [
+        "approvals-banner.overlay.on",
+        "Approvals banner"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner/setting:approvals-banner.overlay.expand",
+      "kind": "setting",
+      "label": "Approval bar opens for",
+      "key": "approvals-banner.overlay.expand",
+      "type": "choice",
+      "detail": "Settings › Plugins › Approvals banner",
+      "keywords": [
+        "approvals-banner.overlay.expand",
+        "Approvals banner"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner/setting:approvals-banner.overlay.show",
+      "kind": "setting",
+      "label": "Toolbar shows",
+      "key": "approvals-banner.overlay.show",
+      "type": "choice",
+      "detail": "Settings › Plugins › Approvals banner",
+      "keywords": [
+        "approvals-banner.overlay.show",
+        "Approvals banner"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner/setting:approvals-banner.overlay.size",
+      "kind": "setting",
+      "label": "Size",
+      "key": "approvals-banner.overlay.size",
+      "type": "choice",
+      "detail": "Settings › Plugins › Approvals banner",
+      "keywords": [
+        "approvals-banner.overlay.size",
+        "Approvals banner"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner/setting:approvals-banner.overlay.edge",
+      "kind": "setting",
+      "label": "Side",
+      "key": "approvals-banner.overlay.edge",
+      "type": "choice",
+      "detail": "Settings › Plugins › Approvals banner",
+      "keywords": [
+        "approvals-banner.overlay.edge",
+        "Approvals banner"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner/setting:approvals-banner.overlay.top",
+      "kind": "setting",
+      "label": "Height on screen (% from the top)",
+      "key": "approvals-banner.overlay.top",
+      "type": "slider",
+      "min": 0,
+      "max": 90,
+      "detail": "Settings › Plugins › Approvals banner",
+      "keywords": [
+        "approvals-banner.overlay.top",
+        "Approvals banner"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner/setting:approvals-banner.overlay.idleOpacity",
+      "kind": "setting",
+      "label": "Opacity when nothing waits (%)",
+      "key": "approvals-banner.overlay.idleOpacity",
+      "type": "slider",
+      "max": 100,
+      "detail": "Settings › Plugins › Approvals banner",
+      "keywords": [
+        "approvals-banner.overlay.idleOpacity",
+        "Approvals banner"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner/setting:approvals-banner.overlay.shrinkAfterSec",
+      "kind": "setting",
+      "label": "Fold the approval bar after (seconds)",
+      "key": "approvals-banner.overlay.shrinkAfterSec",
+      "type": "number",
+      "min": 0,
+      "max": 60,
+      "detail": "Settings › Plugins › Approvals banner",
+      "keywords": [
+        "approvals-banner.overlay.shrinkAfterSec",
+        "Approvals banner"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=audio-extract/setting:audio-extract.format",
+      "kind": "setting",
+      "label": "Format",
+      "key": "audio-extract.format",
+      "type": "choice",
+      "detail": "Settings › Plugins › Audio Extract",
+      "keywords": [
+        "audio-extract.format",
+        "Audio Extract"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.audio-extract",
+      "file": "plugins/audio-extract/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=audio-extract/setting:audio-extract.folder",
+      "kind": "setting",
+      "label": "Output folder (inside Music)",
+      "key": "audio-extract.folder",
+      "type": "text",
+      "detail": "Settings › Plugins › Audio Extract",
+      "keywords": [
+        "audio-extract.folder",
+        "Audio Extract"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.audio-extract",
+      "file": "plugins/audio-extract/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=audio-extract/setting:audio-extract.watch",
+      "kind": "setting",
+      "label": "Watch for new screen recordings",
+      "key": "audio-extract.watch",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Audio Extract",
+      "keywords": [
+        "audio-extract.watch",
+        "Audio Extract"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.audio-extract",
+      "file": "plugins/audio-extract/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=audio-extract/setting:audio-extract.autoExtract",
+      "kind": "setting",
+      "label": "Extract new screen recordings without asking",
+      "key": "audio-extract.autoExtract",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Audio Extract",
+      "keywords": [
+        "audio-extract.autoExtract",
+        "Audio Extract"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.audio-extract",
+      "file": "plugins/audio-extract/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=audio-extract/setting:audio-extract.deleteVideo",
+      "kind": "setting",
+      "label": "Delete the video after extracting",
+      "key": "audio-extract.deleteVideo",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Audio Extract",
+      "keywords": [
+        "audio-extract.deleteVideo",
+        "Audio Extract"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.audio-extract",
+      "file": "plugins/audio-extract/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=audio-extract/setting:audio-extract.rec.resolution",
+      "kind": "setting",
+      "label": "Resolution",
+      "key": "audio-extract.rec.resolution",
+      "type": "choice",
+      "options": [
+        "native",
+        "1080",
+        "720"
+      ],
+      "detail": "Settings › Plugins › Audio Extract",
+      "keywords": [
+        "audio-extract.rec.resolution",
+        "Audio Extract"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.audio-extract",
+      "file": "plugins/audio-extract/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=audio-extract/setting:audio-extract.rec.fps",
+      "kind": "setting",
+      "label": "Frame rate",
+      "key": "audio-extract.rec.fps",
+      "type": "choice",
+      "options": [
+        "30",
+        "60"
+      ],
+      "detail": "Settings › Plugins › Audio Extract",
+      "keywords": [
+        "audio-extract.rec.fps",
+        "Audio Extract"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.audio-extract",
+      "file": "plugins/audio-extract/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=audio-extract/setting:audio-extract.rec.videoMbps",
+      "kind": "setting",
+      "label": "Video bitrate (Mbps)",
+      "key": "audio-extract.rec.videoMbps",
+      "type": "number",
+      "min": 1,
+      "max": 40,
+      "detail": "Settings › Plugins › Audio Extract",
+      "keywords": [
+        "audio-extract.rec.videoMbps",
+        "Audio Extract"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.audio-extract",
+      "file": "plugins/audio-extract/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=audio-extract/setting:audio-extract.rec.audioKbps",
+      "kind": "setting",
+      "label": "Audio quality",
+      "key": "audio-extract.rec.audioKbps",
+      "type": "choice",
+      "options": [
+        "128",
+        "192",
+        "256"
+      ],
+      "detail": "Settings › Plugins › Audio Extract",
+      "keywords": [
+        "audio-extract.rec.audioKbps",
+        "Audio Extract"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.audio-extract",
+      "file": "plugins/audio-extract/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=audio-extract/setting:audio-extract.rec.keep",
+      "kind": "setting",
+      "label": "Keep",
+      "key": "audio-extract.rec.keep",
+      "type": "choice",
+      "options": [
+        "both",
+        "audio"
+      ],
+      "detail": "Settings › Plugins › Audio Extract",
+      "keywords": [
+        "audio-extract.rec.keep",
+        "Audio Extract"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.audio-extract",
+      "file": "plugins/audio-extract/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=audio-extract/setting:audio-extract.rec.countdown",
+      "kind": "setting",
+      "label": "Countdown (seconds)",
+      "key": "audio-extract.rec.countdown",
+      "type": "number",
+      "min": 0,
+      "max": 10,
+      "detail": "Settings › Plugins › Audio Extract",
+      "keywords": [
+        "audio-extract.rec.countdown",
+        "Audio Extract"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.audio-extract",
+      "file": "plugins/audio-extract/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=build-breaker/setting:build-breaker.tab",
+      "kind": "setting",
+      "label": "Opens on",
+      "key": "build-breaker.tab",
+      "type": "choice",
+      "options": [
+        "all",
+        "apps",
+        "plugins",
+        "timeline"
+      ],
+      "detail": "Settings › Plugins › Build Breaker",
+      "keywords": [
+        "build-breaker.tab",
+        "Build Breaker"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.build-breaker",
+      "file": "plugins/build-breaker/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=build-breaker/setting:build-breaker.sort",
+      "kind": "setting",
+      "label": "Default order",
+      "key": "build-breaker.sort",
+      "type": "choice",
+      "detail": "Settings › Plugins › Build Breaker",
+      "keywords": [
+        "build-breaker.sort",
+        "Build Breaker"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.build-breaker",
+      "file": "plugins/build-breaker/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=builds-page/setting:builds.banner",
+      "kind": "setting",
+      "label": "Show the build profile's percentage on the banner",
+      "key": "builds.banner",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Builds",
+      "keywords": [
+        "builds.banner",
+        "Builds"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.builds-page",
+      "file": "plugins/builds-page/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=builds-page/setting:builds.select",
+      "kind": "setting",
+      "label": "Steps view: also show a selection control on every row",
+      "key": "builds.select",
+      "type": "choice",
+      "options": [
+        "off",
+        "checkboxes",
+        "switches"
+      ],
+      "detail": "Settings › Plugins › Builds",
+      "keywords": [
+        "builds.select",
+        "Builds"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.builds-page",
+      "file": "plugins/builds-page/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=codebase-changes/setting:codebase-changes.banner",
+      "kind": "setting",
+      "label": "Banner on every load",
+      "key": "codebase-changes.banner",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Codebase changes",
+      "keywords": [
+        "codebase-changes.banner",
+        "Codebase changes"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.codebase-changes",
+      "file": "plugins/codebase-changes/web/index.tsx"
+    },
+    {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=console-commands/setting:console-commands.enabled",
       "kind": "setting",
       "label": "Let Claude sessions move this console",
@@ -2465,6 +3143,55 @@
       "file": "plugins/console-commands/web/index.tsx"
     },
     {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=feature-matrix/setting:feature-matrix.sort",
+      "kind": "setting",
+      "label": "Default order",
+      "key": "feature-matrix.sort",
+      "type": "choice",
+      "options": [
+        "updated",
+        "added"
+      ],
+      "detail": "Settings › Plugins › Feature matrix",
+      "keywords": [
+        "feature-matrix.sort",
+        "Feature matrix"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.feature-matrix",
+      "file": "plugins/feature-matrix/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=feature-matrix/setting:feature-matrix.rowButton",
+      "kind": "setting",
+      "label": "Row button in builds grids",
+      "key": "feature-matrix.rowButton",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Feature matrix",
+      "keywords": [
+        "feature-matrix.rowButton",
+        "Feature matrix"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.feature-matrix",
+      "file": "plugins/feature-matrix/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=feature-matrix/setting:feature-matrix.history",
+      "kind": "setting",
+      "label": "Open the history with the matrix",
+      "key": "feature-matrix.history",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Feature matrix",
+      "keywords": [
+        "feature-matrix.history",
+        "Feature matrix"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.feature-matrix",
+      "file": "plugins/feature-matrix/web/index.tsx"
+    },
+    {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=follow-amber/setting:follow-amber.on",
       "kind": "setting",
       "label": "Follow Amber",
@@ -2493,6 +3220,146 @@
       "runs": "console",
       "plugin": "ai.amberx.axf.console.follow-amber",
       "file": "plugins/follow-amber/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate/setting:gate.view",
+      "kind": "setting",
+      "label": "Show the lists as",
+      "key": "gate.view",
+      "type": "choice",
+      "options": [
+        "grid",
+        "cards",
+        "compact"
+      ],
+      "detail": "Settings › Plugins › Gate & rules",
+      "keywords": [
+        "gate.view",
+        "Gate & rules"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.gate",
+      "file": "plugins/gate/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=glossary-index/setting:glossary.view",
+      "kind": "setting",
+      "label": "Open in",
+      "key": "glossary.view",
+      "type": "choice",
+      "detail": "Settings › Plugins › Glossary & Index",
+      "keywords": [
+        "glossary.view",
+        "Glossary & Index"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.glossary-index",
+      "file": "plugins/glossary-index/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=glossary-index/setting:glossary.sort",
+      "kind": "setting",
+      "label": "Sort entries",
+      "key": "glossary.sort",
+      "type": "choice",
+      "detail": "Settings › Plugins › Glossary & Index",
+      "keywords": [
+        "glossary.sort",
+        "Glossary & Index"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.glossary-index",
+      "file": "plugins/glossary-index/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=glossary-index/setting:glossary.pageSize",
+      "kind": "setting",
+      "label": "Entries per page",
+      "key": "glossary.pageSize",
+      "type": "choice",
+      "detail": "Settings › Plugins › Glossary & Index",
+      "keywords": [
+        "glossary.pageSize",
+        "Glossary & Index"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.glossary-index",
+      "file": "plugins/glossary-index/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=glossary-index/setting:glossary.showDrafts",
+      "kind": "setting",
+      "label": "Show draft help entries",
+      "key": "glossary.showDrafts",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Glossary & Index",
+      "keywords": [
+        "glossary.showDrafts",
+        "Glossary & Index"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.glossary-index",
+      "file": "plugins/glossary-index/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=glossary-index/setting:glossary.demo.speak",
+      "kind": "setting",
+      "label": "Read each step out loud",
+      "key": "glossary.demo.speak",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Glossary & Index",
+      "keywords": [
+        "glossary.demo.speak",
+        "Glossary & Index"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.glossary-index",
+      "file": "plugins/glossary-index/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=glossary-index/setting:glossary.demo.runSteps",
+      "kind": "setting",
+      "label": "Move the console to each step",
+      "key": "glossary.demo.runSteps",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Glossary & Index",
+      "keywords": [
+        "glossary.demo.runSteps",
+        "Glossary & Index"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.glossary-index",
+      "file": "plugins/glossary-index/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=glossary-index/setting:glossary.demo.autoAdvance",
+      "kind": "setting",
+      "label": "Advance by itself",
+      "key": "glossary.demo.autoAdvance",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Glossary & Index",
+      "keywords": [
+        "glossary.demo.autoAdvance",
+        "Glossary & Index"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.glossary-index",
+      "file": "plugins/glossary-index/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=glossary-index/setting:glossary.demo.voiceControl",
+      "kind": "setting",
+      "label": "Voice control on by default",
+      "key": "glossary.demo.voiceControl",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Glossary & Index",
+      "keywords": [
+        "glossary.demo.voiceControl",
+        "Glossary & Index"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.glossary-index",
+      "file": "plugins/glossary-index/web/index.tsx"
     },
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=main-build-status/setting:main-build-status.show",
@@ -2594,6 +3461,89 @@
       "file": "plugins/maintenance/web/index.tsx"
     },
     {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=md-studio/setting:md-studio.view",
+      "kind": "setting",
+      "label": "View",
+      "key": "md-studio.view",
+      "type": "choice",
+      "detail": "Settings › Plugins › MD Studio",
+      "keywords": [
+        "md-studio.view",
+        "MD Studio"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.md-studio",
+      "file": "plugins/md-studio/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=md-studio/setting:md-studio.splitDirection",
+      "kind": "setting",
+      "label": "Split direction for references",
+      "key": "md-studio.splitDirection",
+      "type": "choice",
+      "options": [
+        "side",
+        "stacked"
+      ],
+      "detail": "Settings › Plugins › MD Studio",
+      "keywords": [
+        "md-studio.splitDirection",
+        "MD Studio"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.md-studio",
+      "file": "plugins/md-studio/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=md-studio/setting:md-studio.autosave",
+      "kind": "setting",
+      "label": "Autosave",
+      "key": "md-studio.autosave",
+      "type": "toggle",
+      "detail": "Settings › Plugins › MD Studio",
+      "keywords": [
+        "md-studio.autosave",
+        "MD Studio"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.md-studio",
+      "file": "plugins/md-studio/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=md-studio/setting:md-studio.autosaveSeconds",
+      "kind": "setting",
+      "label": "Autosave after (seconds)",
+      "key": "md-studio.autosaveSeconds",
+      "type": "number",
+      "min": 1,
+      "max": 60,
+      "detail": "Settings › Plugins › MD Studio",
+      "keywords": [
+        "md-studio.autosaveSeconds",
+        "MD Studio"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.md-studio",
+      "file": "plugins/md-studio/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=md-studio/setting:md-studio.chainDepth",
+      "kind": "setting",
+      "label": "Context view depth",
+      "key": "md-studio.chainDepth",
+      "type": "number",
+      "min": 1,
+      "max": 6,
+      "detail": "Settings › Plugins › MD Studio",
+      "keywords": [
+        "md-studio.chainDepth",
+        "MD Studio"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.md-studio",
+      "file": "plugins/md-studio/web/index.tsx"
+    },
+    {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=molly-guide/setting:molly-guide.speak",
       "kind": "setting",
       "label": "Read each step out loud",
@@ -2639,6 +3589,397 @@
       "file": "plugins/molly-guide/web/index.tsx"
     },
     {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=output-recorder/setting:output-recorder.channels",
+      "kind": "setting",
+      "label": "Channels",
+      "key": "output-recorder.channels",
+      "type": "choice",
+      "options": [
+        "1",
+        "2"
+      ],
+      "detail": "Settings › Plugins › Audio Output Recorder",
+      "keywords": [
+        "output-recorder.channels",
+        "Audio Output Recorder"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.output-recorder",
+      "file": "plugins/output-recorder/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=output-recorder/setting:output-recorder.chunkMin",
+      "kind": "setting",
+      "label": "Chunk length (minutes)",
+      "key": "output-recorder.chunkMin",
+      "type": "number",
+      "min": 5,
+      "max": 60,
+      "detail": "Settings › Plugins › Audio Output Recorder",
+      "keywords": [
+        "output-recorder.chunkMin",
+        "Audio Output Recorder"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.output-recorder",
+      "file": "plugins/output-recorder/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=output-recorder/setting:output-recorder.skipSilent",
+      "kind": "setting",
+      "label": "Skip silent chunks",
+      "key": "output-recorder.skipSilent",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Audio Output Recorder",
+      "keywords": [
+        "output-recorder.skipSilent",
+        "Audio Output Recorder"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.output-recorder",
+      "file": "plugins/output-recorder/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=output-recorder/setting:output-recorder.capMb",
+      "kind": "setting",
+      "label": "Phone queue limit (MB)",
+      "key": "output-recorder.capMb",
+      "type": "number",
+      "min": 50,
+      "max": 2000,
+      "detail": "Settings › Plugins › Audio Output Recorder",
+      "keywords": [
+        "output-recorder.capMb",
+        "Audio Output Recorder"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.output-recorder",
+      "file": "plugins/output-recorder/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=output-recorder/setting:output-recorder.whenFull",
+      "kind": "setting",
+      "label": "When the phone queue is full",
+      "key": "output-recorder.whenFull",
+      "type": "choice",
+      "options": [
+        "stop",
+        "drop-oldest"
+      ],
+      "detail": "Settings › Plugins › Audio Output Recorder",
+      "keywords": [
+        "output-recorder.whenFull",
+        "Audio Output Recorder"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.output-recorder",
+      "file": "plugins/output-recorder/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=output-recorder/setting:output-recorder.project",
+      "kind": "setting",
+      "label": "axHub project",
+      "key": "output-recorder.project",
+      "type": "text",
+      "detail": "Settings › Plugins › Audio Output Recorder",
+      "keywords": [
+        "output-recorder.project",
+        "Audio Output Recorder"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.output-recorder",
+      "file": "plugins/output-recorder/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plan-studio/setting:plan-studio.layout",
+      "kind": "setting",
+      "label": "Plans open as",
+      "key": "plan-studio.layout",
+      "type": "choice",
+      "options": [
+        "tree",
+        "grid",
+        "groups",
+        "board",
+        "roadmap",
+        "reader"
+      ],
+      "detail": "Settings › Plugins › Plan Studio",
+      "keywords": [
+        "plan-studio.layout",
+        "Plan Studio"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.plan-studio",
+      "file": "plugins/plan-studio/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plan-studio/setting:plan-studio.sort",
+      "kind": "setting",
+      "label": "Default order",
+      "key": "plan-studio.sort",
+      "type": "choice",
+      "options": [
+        "priority",
+        "updated",
+        "target",
+        "title"
+      ],
+      "detail": "Settings › Plugins › Plan Studio",
+      "keywords": [
+        "plan-studio.sort",
+        "Plan Studio"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.plan-studio",
+      "file": "plugins/plan-studio/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plan-studio/setting:plan-studio.group",
+      "kind": "setting",
+      "label": "Sub-grids group by",
+      "key": "plan-studio.group",
+      "type": "choice",
+      "options": [
+        "category",
+        "status",
+        "project",
+        "tag",
+        "priority"
+      ],
+      "detail": "Settings › Plugins › Plan Studio",
+      "keywords": [
+        "plan-studio.group",
+        "Plan Studio"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.plan-studio",
+      "file": "plugins/plan-studio/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plan-studio/setting:plan-studio.autosave",
+      "kind": "setting",
+      "label": "Autosave saved plans while editing",
+      "key": "plan-studio.autosave",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Plan Studio",
+      "keywords": [
+        "plan-studio.autosave",
+        "Plan Studio"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.plan-studio",
+      "file": "plugins/plan-studio/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plan-studio/setting:plan-studio.autoApply",
+      "kind": "setting",
+      "label": "Apply small AI edits straight away (with Undo)",
+      "key": "plan-studio.autoApply",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Plan Studio",
+      "keywords": [
+        "plan-studio.autoApply",
+        "Plan Studio"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.plan-studio",
+      "file": "plugins/plan-studio/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plan-studio/setting:plan-studio.banner",
+      "kind": "setting",
+      "label": "Show “+ Plan” on the banner",
+      "key": "plan-studio.banner",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Plan Studio",
+      "keywords": [
+        "plan-studio.banner",
+        "Plan Studio"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.plan-studio",
+      "file": "plugins/plan-studio/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plan-studio/setting:plan-studio.voiceOut",
+      "kind": "setting",
+      "label": "Spoken replies",
+      "key": "plan-studio.voiceOut",
+      "type": "choice",
+      "options": [
+        "auto",
+        "device"
+      ],
+      "detail": "Settings › Plugins › Plan Studio",
+      "keywords": [
+        "plan-studio.voiceOut",
+        "Plan Studio"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.plan-studio",
+      "file": "plugins/plan-studio/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plan-studio/setting:plan-studio.voiceLang",
+      "kind": "setting",
+      "label": "Voice language",
+      "key": "plan-studio.voiceLang",
+      "type": "choice",
+      "options": [
+        "en-US",
+        "en-GB",
+        "en-CA"
+      ],
+      "detail": "Settings › Plugins › Plan Studio",
+      "keywords": [
+        "plan-studio.voiceLang",
+        "Plan Studio"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.plan-studio",
+      "file": "plugins/plan-studio/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugin-manager/setting:plugin-manager.view",
+      "kind": "setting",
+      "label": "View",
+      "key": "plugin-manager.view",
+      "type": "choice",
+      "detail": "Settings › Plugins › Plugin Manager",
+      "keywords": [
+        "plugin-manager.view",
+        "Plugin Manager"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.plugin-manager",
+      "file": "plugins/plugin-manager/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=push-banner/setting:push-banner.banner",
+      "kind": "setting",
+      "label": "Banner on every load",
+      "key": "push-banner.banner",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Push banner",
+      "keywords": [
+        "push-banner.banner",
+        "Push banner"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.push-banner",
+      "file": "plugins/push-banner/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=theme-editor/setting:axf.theme-editor.view",
+      "kind": "setting",
+      "label": "Starting view",
+      "key": "axf.theme-editor.view",
+      "type": "choice",
+      "detail": "Settings › Plugins › Theme editor",
+      "keywords": [
+        "axf.theme-editor.view",
+        "Theme editor"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.theme-editor",
+      "file": "plugins/theme-editor/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ui-review/setting:ui-review.view",
+      "kind": "setting",
+      "label": "View",
+      "key": "ui-review.view",
+      "type": "choice",
+      "detail": "Settings › Plugins › UI Review",
+      "keywords": [
+        "ui-review.view",
+        "UI Review"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.ui-review",
+      "file": "plugins/ui-review/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ui-review/setting:ui-review.sort",
+      "kind": "setting",
+      "label": "Order",
+      "key": "ui-review.sort",
+      "type": "choice",
+      "detail": "Settings › Plugins › UI Review",
+      "keywords": [
+        "ui-review.sort",
+        "UI Review"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.ui-review",
+      "file": "plugins/ui-review/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ui-review/setting:ui-review.tab",
+      "kind": "setting",
+      "label": "Opens on",
+      "key": "ui-review.tab",
+      "type": "choice",
+      "options": [
+        "review",
+        "shots"
+      ],
+      "detail": "Settings › Plugins › UI Review",
+      "keywords": [
+        "ui-review.tab",
+        "UI Review"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.ui-review",
+      "file": "plugins/ui-review/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ui-review/setting:ui-review.shotGroup",
+      "kind": "setting",
+      "label": "Screenshots group by",
+      "key": "ui-review.shotGroup",
+      "type": "choice",
+      "detail": "Settings › Plugins › UI Review",
+      "keywords": [
+        "ui-review.shotGroup",
+        "UI Review"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.ui-review",
+      "file": "plugins/ui-review/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ui-review/setting:ui-review.groupBy",
+      "kind": "setting",
+      "label": "Sub-grids group by",
+      "key": "ui-review.groupBy",
+      "type": "choice",
+      "detail": "Settings › Plugins › UI Review",
+      "keywords": [
+        "ui-review.groupBy",
+        "UI Review"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.ui-review",
+      "file": "plugins/ui-review/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ui-review/setting:ui-review.thumbs",
+      "kind": "setting",
+      "label": "Show the screens list",
+      "key": "ui-review.thumbs",
+      "type": "toggle",
+      "detail": "Settings › Plugins › UI Review",
+      "keywords": [
+        "ui-review.thumbs",
+        "UI Review"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.ui-review",
+      "file": "plugins/ui-review/web/index.tsx"
+    },
+    {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=wake-listener/setting:axf.voice.useClaude",
       "kind": "setting",
       "label": "Understand with Claude when connected",
@@ -2667,6 +4008,21 @@
       "runs": "console",
       "plugin": "ai.amberx.axf.console.wake-listener",
       "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=whats-shipped/setting:whats-shipped.ticker",
+      "kind": "setting",
+      "label": "Step through the unread titles",
+      "key": "whats-shipped.ticker",
+      "type": "toggle",
+      "detail": "Settings › Plugins › What's new",
+      "keywords": [
+        "whats-shipped.ticker",
+        "What's new"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.whats-shipped",
+      "file": "plugins/whats-shipped/web/index.tsx"
     },
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ashes/setting:axf.ashes.on",

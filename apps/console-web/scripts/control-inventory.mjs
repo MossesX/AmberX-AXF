@@ -185,12 +185,24 @@ function constsOf(src) {
 const SPEC_RE = /\{ key: (?:'([\w.:-]+)'|(\w+(?:\.\w+)?)|`\$\{(\w+)\}([\w.:-]+)`), label: (?:'((?:[^'\\]|\\.)+)'|`([^`]+)`), kind: '(\w+)'([^{}]*(?:\{[^{}]*\}[^{}]*)*?)\}/g;
 
 /** Every SettingSpec declared with a literal (or same-file constant) key. */
+/** Every `const` of a plugin's web files together: keys are often defined in one file and used in another. */
+const pluginConstCache = new Map();
+function pluginConsts(owner, files) {
+  if (!owner) return new Map();
+  if (!pluginConstCache.has(owner.dir)) {
+    const m = new Map();
+    for (const f of files) if (f.startsWith(owner.dir + '/')) for (const [k, v] of constsOf(read(f))) if (!m.has(k)) m.set(k, v);
+    pluginConstCache.set(owner.dir, m);
+  }
+  return pluginConstCache.get(owner.dir);
+}
+
 function codeSettings(files, ps, tabs) {
   const out = new Map();
   for (const f of files) {
     const src = read(f);
     if (!src.includes('kind: \'')) continue;
-    const consts = constsOf(src);
+    const consts = new Map([...pluginConsts(ownerOf(f, ps), files), ...constsOf(src)]);
     for (const m of src.matchAll(SPEC_RE)) {
       const key = m[1] ?? consts.get(m[2]) ?? (m[3] && consts.get(m[3]) ? consts.get(m[3]) + m[4] : null);
       const kind = m[7];
