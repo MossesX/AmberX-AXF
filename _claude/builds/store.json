@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6976,
- "updatedAt": "2026-11-16T23:11:51.519Z",
+ "rev": 6977,
+ "updatedAt": "2026-11-16T23:12:41.921Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -256493,7 +256493,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:51.546Z",
-   "updatedAt": "2026-11-16T23:05:13.234Z",
+   "updatedAt": "2026-11-16T23:12:39.812Z",
    "builtAt": "",
    "notes": [
     {
@@ -256535,7 +256535,7 @@
     "queuedAt": "2026-11-16T22:59:53.814Z",
     "queuedBy": "console",
     "account": "",
-    "session": "axf-banner-widget-shapes-plus-change-icon--rhonda",
+    "session": "",
     "slot": "",
     "model": "",
     "phase": "",
@@ -256587,12 +256587,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T23:12:39.812Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T23:03:57.915Z",
-     "updatedAt": "2026-11-16T23:03:57.915Z"
+     "updatedAt": "2026-11-16T23:12:40.094Z"
     },
     {
      "id": "s2",
