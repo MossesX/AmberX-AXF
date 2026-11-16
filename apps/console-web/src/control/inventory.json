@@ -8,7 +8,7 @@
     "tabs": 78,
     "settingsTabs": 71,
     "settings": 89,
-    "functions": 274,
+    "functions": 277,
     "buttons": 62,
     "plugins": 71
   },
@@ -7783,6 +7783,54 @@
         "window"
       ],
       "params": true,
+      "file": "src/axf/react/components/ChromeContext.tsx"
+    },
+    {
+      "address": "function:chrome.reset-all",
+      "kind": "function",
+      "id": "chrome.reset-all",
+      "label": "Reset all asset overrides (chrome.reset-all:confirm; without confirm it asks first)",
+      "detail": "Action",
+      "keywords": [
+        "chrome.reset-all",
+        "chrome",
+        "reset",
+        "all"
+      ],
+      "effect": "destructive",
+      "params": true,
+      "requires": "assets.swap",
+      "destructive": true,
+      "file": "src/axf/react/components/ChromeContext.tsx"
+    },
+    {
+      "address": "function:chrome.overrides",
+      "kind": "function",
+      "id": "chrome.overrides",
+      "label": "Asset overrides: list every asset controlled by its own settings (Settings → Appearance)",
+      "detail": "Action",
+      "keywords": [
+        "chrome.overrides",
+        "chrome",
+        "overrides"
+      ],
+      "effect": "read",
+      "file": "src/axf/react/components/ChromeContext.tsx"
+    },
+    {
+      "address": "function:chrome.overrides-undo",
+      "kind": "function",
+      "id": "chrome.overrides-undo",
+      "label": "Undo a Reset all of the asset overrides (chrome.overrides-undo:<undoId|last>)",
+      "detail": "Action",
+      "keywords": [
+        "chrome.overrides-undo",
+        "chrome",
+        "overrides",
+        "undo"
+      ],
+      "params": true,
+      "requires": "assets.swap",
       "file": "src/axf/react/components/ChromeContext.tsx"
     }
   ],
