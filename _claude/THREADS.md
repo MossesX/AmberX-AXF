@@ -808,170 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 13:04 UTC · `gate-rules-plugin-in-the-console` note (all) · orchestrator
-- 2026-11-15 13:08 UTC · `data-container-axf-data-holds-all` s18 done (all) · orchestrator
-- 2026-11-15 13:10 UTC · `data-container-axf-data-holds-all` s19 done (all) · orchestrator
-- 2026-11-15 13:14 UTC · `data-container-axf-data-holds-all` s20 done (all) · orchestrator
-- 2026-11-15 13:16 UTC · `data-container-axf-data-holds-all` s21 done (all) · orchestrator
-- 2026-11-15 13:18 UTC · `data-container-axf-data-holds-all` s22 done (all) · orchestrator
-- 2026-11-15 13:20 UTC · `data-container-axf-data-holds-all` s23 done (all) · orchestrator
-- 2026-11-15 13:22 UTC · `home-cards-follow-plugin-off-home-always` added (0 steps) (all) · console
-- 2026-11-15 13:22 UTC · `home-cards-follow-plugin-off-home-always` → queued, note (all) · console
-- 2026-11-15 13:22 UTC · `data-container-axf-data-holds-all` s24 done (all) · orchestrator
-- 2026-11-15 13:22 UTC · `home-cards-follow-plugin-off-home-always` note (all) · mcp
-- 2026-11-15 13:23 UTC · `gate-rules-plugin-in-the-console` note (all) · mcp
-- 2026-11-15 13:23 UTC · `home-cards-follow-plugin-off-home-always` note (all) · mcp
-- 2026-11-15 13:23 UTC · `build-rules-tab-gate-rules-vps-owns` added (0 steps) (all) · console
-- 2026-11-15 13:23 UTC · `build-rules-tab-gate-rules-vps-owns` → queued, note (all) · console
-- 2026-11-15 13:24 UTC · `home-cards-follow-plugin-off-home-always` note (all) · orchestrator
-- 2026-11-15 13:24 UTC · `home-cards-follow-plugin-off-home-always` note (all) · mcp
-- 2026-11-15 13:27 UTC · `build-rules-tab-gate-rules-vps-owns` note (all) · orchestrator
-- 2026-11-15 13:27 UTC · `build-rules-tab-gate-rules-vps-owns` → running, note (all) · pipeline
-- 2026-11-15 13:27 UTC · `build-rules-tab-gate-rules-vps-owns` branch claude/build-rules-tab-gate-rules-vps-owns (all) · pipeline
-- 2026-11-15 13:28 UTC · `home-cards-follow-plugin-off-home-always` → running, note (all) · pipeline
-- 2026-11-15 13:28 UTC · `home-cards-follow-plugin-off-home-always` branch claude/home-cards-follow-plugin-off-home-always (all) · pipeline
-- 2026-11-15 13:28 UTC · `home-cards-follow-plugin-off-home-always` note (all) · orchestrator
-- 2026-11-15 13:33 UTC · `home-cards-follow-plugin-off-home-always` branch claude/home-cards-follow-plugin-off-home-always (all) · builds-live
-- 2026-11-15 13:33 UTC · `home-cards-follow-plugin-off-home-always` s1 done, → running (all) · orchestrator
-- 2026-11-15 13:34 UTC · `build-rules-tab-gate-rules-vps-owns` s1 done, → running (all) · orchestrator
-- 2026-11-15 13:34 UTC · `home-cards-follow-plugin-off-home-always` → running, note (all) · pipeline
-- 2026-11-15 13:34 UTC · `build-rules-tab-gate-rules-vps-owns` branch claude/build-rules-tab-gate-rules-vps-owns (all) · builds-live
-- 2026-11-15 13:36 UTC · `phone-connect-small-android-companion` added (0 steps) (all) · console
-- 2026-11-15 13:36 UTC · `phone-connect-small-android-companion` → queued, note (all) · console
-- 2026-11-15 13:36 UTC · `home-cards-follow-plugin-off-home-always` s2 done (all) · orchestrator
-- 2026-11-15 13:36 UTC · `phone-connect-small-android-companion` note (all) · mcp
-- 2026-11-15 13:37 UTC · `phone-connect-small-android-companion` note (all) · mcp
-- 2026-11-15 13:38 UTC · `home-cards-follow-plugin-off-home-always` s3 done (all) · orchestrator
-- 2026-11-15 13:38 UTC · `gate-rules-plugin-in-the-console` → complete, merged, note (all) · reconciler
-- 2026-11-15 13:38 UTC · `axf-molly-container-orchestrator-gate` → pending, note (all) · reconciler
-- 2026-11-15 13:38 UTC · `build-rules-tab-gate-rules-vps-owns` s2 done (all) · orchestrator
-- 2026-11-15 13:38 UTC · `phone-connect-small-android-companion` note (all) · mcp
-- 2026-11-15 13:39 UTC · `phone-connect-small-android-companion` note (all) · orchestrator
-- 2026-11-15 13:39 UTC · `phone-connect-small-android-companion` → running, note (all) · pipeline
-- 2026-11-15 13:39 UTC · `phone-connect-small-android-companion` branch claude/phone-connect-small-android-companion (all) · pipeline
-- 2026-11-15 13:39 UTC · `gate-rules-plugin-in-the-console` note (all) · orchestrator
-- 2026-11-15 13:39 UTC · `phone-connect-small-android-companion` note (all) · mcp
-- 2026-11-15 13:40 UTC · `phone-connect-small-android-companion` note (all) · mcp
-- 2026-11-15 13:42 UTC · `home-cards-follow-plugin-off-home-always` s4 done (all) · orchestrator
-- 2026-11-15 13:42 UTC · `build-rules-tab-gate-rules-vps-owns` s3 done (all) · orchestrator
-- 2026-11-15 13:42 UTC · `home-cards-follow-plugin-off-home-always` note (all) · orchestrator
-- 2026-11-15 13:42 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · mcp
-- 2026-11-15 13:43 UTC · `home-cards-follow-plugin-off-home-always` note (all) · orchestrator
-- 2026-11-15 13:46 UTC · `build-rules-tab-gate-rules-vps-owns` s4 done (all) · orchestrator
-- 2026-11-15 13:49 UTC · `phone-connect-small-android-companion` s1 done, → running (all) · orchestrator
-- 2026-11-15 13:49 UTC · `phone-connect-small-android-companion` branch claude/phone-connect-small-android-companion (all) · builds-live
-- 2026-11-15 13:50 UTC · `build-rules-tab-gate-rules-vps-owns` s5 done (all) · orchestrator
-- 2026-11-15 13:52 UTC · `data-container-axf-data-holds-all` s25 done (all) · orchestrator
-- 2026-11-15 13:53 UTC · `phone-connect-small-android-companion` s2 done (all) · orchestrator
-- 2026-11-15 13:53 UTC · `build-rules-tab-gate-rules-vps-owns` s6 done (all) · orchestrator
-- 2026-11-15 13:53 UTC · `data-container-axf-data-holds-all` s26 done (all) · orchestrator
-- 2026-11-15 13:53 UTC · `build-rules-tab-gate-rules-vps-owns` note (all) · orchestrator
-- 2026-11-15 13:54 UTC · `build-rules-tab-gate-rules-vps-owns` note (all) · orchestrator
-- 2026-11-15 13:55 UTC · `data-container-axf-data-holds-all` s27 done, → built (all) · orchestrator
-- 2026-11-15 13:56 UTC · `data-container-axf-data-holds-all` note (all) · orchestrator
-- 2026-11-15 13:58 UTC · `phone-connect-small-android-companion` s3 done (all) · orchestrator
-- 2026-11-15 13:58 UTC · `phone-connect-small-android-companion` PR #712 (all) · builds-live
-- 2026-11-15 13:59 UTC · `phone-connect-small-android-companion` note (all) · orchestrator
-- 2026-11-15 14:10 UTC · `home-cards-follow-plugin-off-home-always` → pending, note (all) · reconciler
-- 2026-11-15 14:20 UTC · `build-rules-tab-gate-rules-vps-owns` → pending, note (all) · reconciler
-- 2026-11-15 14:20 UTC · `phone-connect-small-android-companion` → pending, note (all) · reconciler
-- 2026-11-15 14:52 UTC · `build-rules-tab-gate-rules-vps-owns` → running, note (all) · mcp
-- 2026-11-15 14:52 UTC · `build-rules-tab-gate-rules-vps-owns` → queued (all) · mcp
-- 2026-11-15 14:53 UTC · `build-rules-tab-gate-rules-vps-owns` → running, note (all) · pipeline
-- 2026-11-15 14:53 UTC · `build-rules-tab-gate-rules-vps-owns` note (all) · orchestrator
-- 2026-11-15 14:54 UTC · `phone-connect-small-android-companion` → running, note (all) · mcp
-- 2026-11-15 14:54 UTC · `phone-connect-small-android-companion` → queued (all) · mcp
-- 2026-11-15 14:55 UTC · `shipped-features-organized-sortable` note (all) · mcp
-- 2026-11-15 14:55 UTC · `vps-sends-shipped-features-every-merge` → running, note (all) · mcp
-- 2026-11-15 14:55 UTC · `phone-connect-small-android-companion` → running, note (all) · pipeline
-- 2026-11-15 14:55 UTC · `phone-connect-small-android-companion` note (all) · orchestrator
-- 2026-11-15 14:55 UTC · `phone-connect-small-android-companion` note (all) · orchestrator
-- 2026-11-15 14:55 UTC · `shipped-features-open-button-views-each` added (0 steps) (all) · console
-- 2026-11-15 14:55 UTC · `shipped-features-open-button-views-each` → queued, note (all) · console
-- 2026-11-15 14:55 UTC · `build-rules-tab-gate-rules-vps-owns` s7 done, → running (all) · orchestrator
-- 2026-11-15 14:56 UTC · `build-rules-tab-gate-rules-vps-owns` s8 done (all) · orchestrator
-- 2026-11-15 14:57 UTC · `data-container-axf-data-holds-all` note (all) · mcp
-- 2026-11-15 14:57 UTC · `shipped-features-open-button-views-each` note (all) · orchestrator
-- 2026-11-15 14:57 UTC · `shipped-features-open-button-views-each` → running, note (all) · pipeline
-- 2026-11-15 14:57 UTC · `shipped-features-open-button-views-each` branch claude/shipped-features-open-button-views-each (all) · pipeline
-- 2026-11-15 14:58 UTC · `phone-connect-small-android-companion` s4 done (all) · orchestrator
-- 2026-11-15 14:58 UTC · `build-rules-tab-gate-rules-vps-owns` s9 done (all) · orchestrator
-- 2026-11-15 14:58 UTC · `build-rules-tab-gate-rules-vps-owns` s10 done (all) · orchestrator
-- 2026-11-15 14:59 UTC · `phone-connect-small-android-companion` s5 done (all) · orchestrator
-- 2026-11-15 14:59 UTC · `shipped-features-open-button-views-each` s1 done (all) · orchestrator
-- 2026-11-15 15:01 UTC · `shipped-features-open-button-views-each` s2 done (all) · orchestrator
-- 2026-11-15 15:01 UTC · `phone-connect-small-android-companion` s6 done (all) · orchestrator
-- 2026-11-15 15:01 UTC · `shipped-features-open-button-views-each` s3 done (all) · orchestrator
-- 2026-11-15 15:02 UTC · `build-rules-tab-gate-rules-vps-owns` s11 done (all) · orchestrator
-- 2026-11-15 15:02 UTC · `shipped-features-open-button-views-each` s4 done (all) · orchestrator
-- 2026-11-15 15:02 UTC · `phone-connect-small-android-companion` s7 done (all) · orchestrator
-- 2026-11-15 15:04 UTC · `shipped-features-open-button-views-each` s5 done (all) · orchestrator
-- 2026-11-15 15:04 UTC · `phone-connect-small-android-companion` s8 done (all) · orchestrator
-- 2026-11-15 15:04 UTC · `build-rules-tab-gate-rules-vps-owns` s12 done (all) · orchestrator
-- 2026-11-15 15:05 UTC · `shipped-features-open-button-views-each` s6 done (all) · orchestrator
-- 2026-11-15 15:05 UTC · `phone-connect-small-android-companion` s9 done (all) · orchestrator
-- 2026-11-15 15:05 UTC · `shipped-features-open-button-views-each` s6 done (all) · foreign-write
-- 2026-11-15 15:06 UTC · `phone-connect-small-android-companion` s10 done (all) · orchestrator
-- 2026-11-15 15:07 UTC · `shipped-features-open-button-views-each` s7 done (all) · orchestrator
-- 2026-11-15 15:07 UTC · `build-rules-tab-gate-rules-vps-owns` s13 done (all) · orchestrator
-- 2026-11-15 15:07 UTC · `phone-connect-small-android-companion` s11 done (all) · orchestrator
-- 2026-11-15 15:08 UTC · `shipped-features-open-button-views-each` s8 done (all) · orchestrator
-- 2026-11-15 15:08 UTC · `build-rules-tab-gate-rules-vps-owns` s14 done (all) · orchestrator
-- 2026-11-15 15:09 UTC · `phone-connect-small-android-companion` s12 done (all) · orchestrator
-- 2026-11-15 15:10 UTC · `shipped-features-open-button-views-each` s9 done (all) · orchestrator
-- 2026-11-15 15:10 UTC · `shipped-features-open-button-views-each` s9 done (all) · foreign-write
-- 2026-11-15 15:10 UTC · `build-rules-tab-gate-rules-vps-owns` s15 done (all) · orchestrator
-- 2026-11-15 15:10 UTC · `phone-connect-small-android-companion` s13 done (all) · orchestrator
-- 2026-11-15 15:11 UTC · `shipped-features-open-button-views-each` s10 done (all) · orchestrator
-- 2026-11-15 15:11 UTC · `phone-connect-small-android-companion` note (all) · reconciler
-- 2026-11-15 15:11 UTC · `shipped-features-open-button-views-each` s11 done (all) · orchestrator
-- 2026-11-15 15:12 UTC · `axf-data-postgres-real-tables-own` added (0 steps) (all) · console
-- 2026-11-15 15:12 UTC · `axf-data-postgres-real-tables-own` → queued, note (all) · console
-- 2026-11-15 15:12 UTC · `data-container-axf-data-holds-all` note (all) · mcp
-- 2026-11-15 15:12 UTC · `data-container-axf-data-holds-all` → queued (all) · mcp
-- 2026-11-15 15:13 UTC · `data-container-axf-data-holds-all` → running (all) · mcp
-- 2026-11-15 15:13 UTC · `shipped-features-open-button-views-each` s12 done (all) · orchestrator
-- 2026-11-15 15:13 UTC · `data-container-axf-data-holds-all` → running (all) · builds-live
-- 2026-11-15 15:13 UTC · `axf-data-postgres-real-tables-own` note (all) · orchestrator
-- 2026-11-15 15:13 UTC · `phone-connect-small-android-companion` s14 done (all) · orchestrator
-- 2026-11-15 15:14 UTC · `axf-data-postgres-real-tables-own` → running, note (all) · pipeline
-- 2026-11-15 15:14 UTC · `axf-data-postgres-real-tables-own` branch claude/axf-data-postgres-real-tables-own (all) · pipeline
-- 2026-11-15 15:14 UTC · `axf-data-postgres-real-tables-own` note (all) · orchestrator
-- 2026-11-15 15:14 UTC · `build-rules-tab-gate-rules-vps-owns` s16 done (all) · orchestrator
-- 2026-11-15 15:14 UTC · `build-rules-tab-gate-rules-vps-owns` s17 done (all) · orchestrator
-- 2026-11-15 15:15 UTC · `axf-data-postgres-real-tables-own` → running, note (all) · pipeline
-- 2026-11-15 15:15 UTC · `phone-connect-small-android-companion` s15 done (all) · orchestrator
-- 2026-11-15 15:15 UTC · `shipped-features-open-button-views-each` s13 done (all) · orchestrator
-- 2026-11-15 15:17 UTC · `build-rules-tab-gate-rules-vps-owns` s18 done (all) · orchestrator
-- 2026-11-15 15:17 UTC · `phone-connect-small-android-companion` s16 done (all) · orchestrator
-- 2026-11-15 15:18 UTC · `build-rules-tab-gate-rules-vps-owns` s19 done (all) · orchestrator
-- 2026-11-15 15:20 UTC · `build-rules-tab-gate-rules-vps-owns` s20 done (all) · orchestrator
-- 2026-11-15 15:20 UTC · `vps-sends-shipped-features-every-merge` → pending, note (all) · reconciler
-- 2026-11-15 15:21 UTC · `phone-connect-small-android-companion` s17 done (all) · orchestrator
-- 2026-11-15 15:22 UTC · `phone-connect-small-android-companion` s18 done (all) · orchestrator
-- 2026-11-15 15:23 UTC · `build-rules-tab-gate-rules-vps-owns` s21 done (all) · orchestrator
-- 2026-11-15 15:23 UTC · `phone-connect-small-android-companion` s19 done (all) · orchestrator
-- 2026-11-15 15:24 UTC · `phone-connect-small-android-companion` s20 done (all) · orchestrator
-- 2026-11-15 15:24 UTC · `build-rules-tab-gate-rules-vps-owns` s22 done (all) · orchestrator
-- 2026-11-15 15:25 UTC · `phone-connect-small-android-companion` s21 done (all) · orchestrator
-- 2026-11-15 15:25 UTC · `phone-connect-small-android-companion` s22 done (all) · orchestrator
-- 2026-11-15 15:26 UTC · `build-rules-tab-gate-rules-vps-owns` s23 done (all) · orchestrator
-- 2026-11-15 15:27 UTC · `phone-connect-small-android-companion` s23 done (all) · orchestrator
-- 2026-11-15 15:32 UTC · `phone-connect-small-android-companion` s24 done (all) · orchestrator
-- 2026-11-15 15:34 UTC · `phone-connect-small-android-companion` s25 done (all) · orchestrator
-- 2026-11-15 15:34 UTC · `phone-connect-small-android-companion` s26 done (all) · orchestrator
-- 2026-11-15 15:37 UTC · `phone-connect-small-android-companion` s27 done (all) · orchestrator
-- 2026-11-15 15:39 UTC · `phone-connect-small-android-companion` s28 done (all) · orchestrator
-- 2026-11-15 15:40 UTC · `data-container-axf-data-holds-all` → pending, note (all) · reconciler
-- 2026-11-15 15:42 UTC · `phone-connect-small-android-companion` s29 done (all) · orchestrator
-- 2026-11-15 15:43 UTC · `phone-connect-small-android-companion` s30 done (all) · orchestrator
-- 2026-11-15 16:08 UTC · `axf-data-postgres-real-tables-own` branch claude/axf-data-postgres-real-tables-own, PR #713 (all) · builds-live
-- 2026-11-15 16:11 UTC · `axf-data-postgres-real-tables-own` → running (all) · session
-- 2026-11-15 16:11 UTC · `axf-data-postgres-real-tables-own` note (all) · orchestrator
-- 2026-11-15 16:11 UTC · `axf-data-postgres-real-tables-own` s1 done (all) · orchestrator
-- 2026-11-15 16:12 UTC · `axf-data-postgres-real-tables-own` note (all) · orchestrator
-- 2026-11-15 16:14 UTC · `shipped-features-open-button-views-each` s14 done (all) · orchestrator
-- 2026-11-15 16:15 UTC · `shipped-features-open-button-views-each` PR #714 (all) · builds-live
 - 2026-11-15 16:15 UTC · `shipped-features-open-button-views-each` s15 done, → built (all) · orchestrator
 - 2026-11-15 16:16 UTC · `shipped-features-open-button-views-each` note (all) · orchestrator
 - 2026-11-15 16:17 UTC · `shipped-features-open-button-views-each` note (all) · pipeline
@@ -1208,6 +1044,170 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 16:26 UTC · `phone-connect-small-android-companion` note (all) · orchestrator
 - 2026-11-16 16:27 UTC · `get-main-green-unblock-lander-land-axf` → running, note (all) · pipeline
 - 2026-11-16 16:27 UTC · `remove-old-molly-app-project-keep-axf` s5 done (all) · orchestrator
+- 2026-11-16 16:28 UTC · `remove-old-molly-app-project-keep-axf` s6 done (all) · orchestrator
+- 2026-11-16 16:28 UTC · `remove-old-molly-app-project-keep-axf` s7 done (all) · orchestrator
+- 2026-11-16 16:29 UTC · `get-main-green-unblock-lander-land-axf` s1 done (all) · orchestrator
+- 2026-11-16 16:29 UTC · `fix-red-ci-blocked-builds-they-land` added (0 steps) (all) · console
+- 2026-11-16 16:29 UTC · `fix-red-ci-blocked-builds-they-land` → queued, note (all) · console
+- 2026-11-16 16:29 UTC · `re-sync-stuck-branches-lander-can-push` added (0 steps) (all) · console
+- 2026-11-16 16:29 UTC · `re-sync-stuck-branches-lander-can-push` → queued, note (all) · console
+- 2026-11-16 16:29 UTC · `get-main-green-unblock-lander-land-axf` note (all) · mcp
+- 2026-11-16 16:31 UTC · `phone-connect-small-android-companion` s35 done, → built, note (all) · reconciler
+- 2026-11-16 16:31 UTC · `fix-console-deep-links-open-page-lands` added (0 steps) (all) · console
+- 2026-11-16 16:31 UTC · `fix-console-deep-links-open-page-lands` → queued, note (all) · console
+- 2026-11-16 16:31 UTC · `fix-red-ci-blocked-builds-they-land` note (all) · orchestrator
+- 2026-11-16 16:31 UTC · `fix-red-ci-blocked-builds-they-land` note (all) · builds-live
+- 2026-11-16 16:32 UTC · `re-sync-stuck-branches-lander-can-push` note (all) · orchestrator
+- 2026-11-16 16:32 UTC · `remove-old-molly-app-project-keep-axf` s8 done (all) · orchestrator
+- 2026-11-16 16:33 UTC · `fix-red-ci-blocked-builds-they-land` → running, note (all) · pipeline
+- 2026-11-16 16:33 UTC · `fix-red-ci-blocked-builds-they-land` branch claude/fix-red-ci-blocked-builds-they-land (all) · pipeline
+- 2026-11-16 16:33 UTC · `fix-red-ci-blocked-builds-they-land` note (all) · orchestrator
+- 2026-11-16 16:33 UTC · `fix-red-ci-blocked-builds-they-land` note (all) · orchestrator
+- 2026-11-16 16:33 UTC · `re-sync-stuck-branches-lander-can-push` → running, note (all) · pipeline
+- 2026-11-16 16:33 UTC · `re-sync-stuck-branches-lander-can-push` branch claude/re-sync-stuck-branches-lander-can-push (all) · pipeline
+- 2026-11-16 16:33 UTC · `remove-old-molly-app-project-keep-axf` s8 done (all) · foreign-write
+- 2026-11-16 16:33 UTC · `re-sync-stuck-branches-lander-can-push` note (all) · orchestrator
+- 2026-11-16 16:33 UTC · `remove-old-molly-app-project-keep-axf` s9 done (all) · orchestrator
+- 2026-11-16 16:34 UTC · `fix-console-deep-links-open-page-lands` note (all) · orchestrator
+- 2026-11-16 16:34 UTC · `fix-console-deep-links-open-page-lands` → running, note (all) · pipeline
+- 2026-11-16 16:35 UTC · `fix-console-deep-links-open-page-lands` branch claude/fix-console-deep-links-open-page-lands (all) · pipeline
+- 2026-11-16 16:35 UTC · `fix-console-deep-links-open-page-lands` note (all) · orchestrator
+- 2026-11-16 16:35 UTC · `re-sync-stuck-branches-lander-can-push` s1 done, → running (all) · orchestrator
+- 2026-11-16 16:36 UTC · `re-sync-stuck-branches-lander-can-push` s2 done (all) · orchestrator
+- 2026-11-16 16:37 UTC · `remove-old-molly-app-project-keep-axf` s10 done (all) · orchestrator
+- 2026-11-16 16:37 UTC · `re-sync-stuck-branches-lander-can-push` s3 done (all) · orchestrator
+- 2026-11-16 16:37 UTC · `get-main-green-unblock-lander-land-axf` s2 done (all) · orchestrator
+- 2026-11-16 16:37 UTC · `re-sync-stuck-branches-lander-can-push` s4 done (all) · orchestrator
+- 2026-11-16 16:37 UTC · `re-sync-stuck-branches-lander-can-push` s5 done (all) · orchestrator
+- 2026-11-16 16:38 UTC · `fix-red-ci-blocked-builds-they-land` s1 done, → running (all) · orchestrator
+- 2026-11-16 16:38 UTC · `remove-old-molly-app-project-keep-axf` s11 done (all) · orchestrator
+- 2026-11-16 16:38 UTC · `re-sync-stuck-branches-lander-can-push` s6 done (all) · orchestrator
+- 2026-11-16 16:38 UTC · `re-sync-stuck-branches-lander-can-push` s7 done (all) · orchestrator
+- 2026-11-16 16:39 UTC · `re-sync-stuck-branches-lander-can-push` s8 done (all) · orchestrator
+- 2026-11-16 16:39 UTC · `re-sync-stuck-branches-lander-can-push` s9 done (all) · orchestrator
+- 2026-11-16 16:40 UTC · `re-sync-stuck-branches-lander-can-push` PR #718 (all) · builds-live
+- 2026-11-16 16:40 UTC · `re-sync-stuck-branches-lander-can-push` note (all) · orchestrator
+- 2026-11-16 16:40 UTC · `re-sync-stuck-branches-lander-can-push` s10 done, → built (all) · orchestrator
+- 2026-11-10 18:08 UTC · `shipped-features-show-each-landed-build-s-screen` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
+- 2026-11-16 16:40 UTC · `remove-old-molly-app-project-keep-axf` s12 done (all) · orchestrator
+- 2026-11-16 16:41 UTC · `remove-old-molly-app-project-keep-axf` s13 done (all) · orchestrator
+- 2026-11-16 16:42 UTC · `molly-multi-instance-tabs` note (all) · orchestrator
+- 2026-11-16 16:42 UTC · `molly-one-shell` note (all) · orchestrator
+- 2026-11-16 16:42 UTC · `molly-sign-in-once` note (all) · orchestrator
+- 2026-11-16 16:42 UTC · `molly-fable-version-the-one-interface-for-amberx` note (all) · orchestrator
+- 2026-11-16 16:42 UTC · `molly-flagship-skin-premium-sellable-uncluttered` note (all) · orchestrator
+- 2026-11-16 16:42 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
+- 2026-11-16 16:42 UTC · `molly-gap-console-token-handoff` note (all) · orchestrator
+- 2026-11-16 16:42 UTC · `molly-gap-remote-actions` note (all) · orchestrator
+- 2026-11-16 16:42 UTC · `molly-gap-expenses-cors` → running, note (all) · orchestrator
+- 2026-11-16 16:42 UTC · `molly-gap-expenses-token-handoff` note (all) · orchestrator
+- 2026-11-16 16:42 UTC · `molly-gap-console-warm-token` note (all) · orchestrator
+- 2026-11-16 16:42 UTC · `molly-gap-axhub-cors-live` note (all) · orchestrator
+- 2026-11-16 16:43 UTC · `molly-multi-instance-tabs` → archived, note (all) · cli
+- 2026-11-16 16:43 UTC · `molly-one-shell` → archived, note (all) · cli
+- 2026-11-16 16:43 UTC · `molly-sign-in-once` → archived, note (all) · cli
+- 2026-11-16 16:43 UTC · `molly-fable-version-the-one-interface-for-amberx` → archived, note (all) · cli
+- 2026-11-16 16:43 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → archived, note (all) · cli
+- 2026-11-16 16:43 UTC · `convert-every-app-into-a-molly-module-expenses-c` → archived, note (all) · cli
+- 2026-11-16 16:43 UTC · `molly-gap-console-token-handoff` → archived, note (all) · cli
+- 2026-11-16 16:43 UTC · `molly-gap-remote-actions` → archived, note (all) · cli
+- 2026-11-16 16:43 UTC · `molly-gap-expenses-token-handoff` → archived, note (all) · cli
+- 2026-11-16 16:43 UTC · `molly-gap-console-warm-token` → archived, note (all) · cli
+- 2026-11-16 16:43 UTC · `molly-gap-axhub-cors-live` → archived, note (all) · cli
+- 2026-11-16 16:43 UTC · `inline-edit-plugin-install-in-console-molly-and` → running, note (all) · orchestrator
+- 2026-11-16 16:43 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
+- 2026-11-16 16:44 UTC · `apps-control-surface` note (all) · orchestrator
+- 2026-11-16 16:44 UTC · `per-agent-api-control-switch-in-each-employee-s` note (all) · orchestrator
+- 2026-11-16 16:44 UTC · `land-round-2` note (all) · orchestrator
+- 2026-11-16 16:44 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s1 done, → running (all) · orchestrator
+- 2026-11-16 16:44 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s2 done (all) · orchestrator
+- 2026-11-16 16:44 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s3 done (all) · orchestrator
+- 2026-11-16 16:45 UTC · `land-round-2` note (all) · foreign-write
+- 2026-11-16 16:45 UTC · `per-agent-api-control-switch-in-each-employee-s` note (all) · foreign-write
+- 2026-11-16 16:45 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s1 done, s3 done, → running (all) · foreign-write
+- 2026-11-16 16:44 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s4 done (all) · orchestrator
+- 2026-11-16 16:44 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s5 done (all) · orchestrator
+- 2026-11-16 16:44 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s6 done (all) · orchestrator
+- 2026-11-16 16:44 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s7 done (all) · orchestrator
+- 2026-11-16 16:45 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s8 done (all) · orchestrator
+- 2026-11-16 16:45 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s9 done (all) · orchestrator
+- 2026-11-16 16:45 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s10 done (all) · orchestrator
+- 2026-11-16 16:45 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` note (all) · orchestrator
+- 2026-11-16 16:45 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` → complete (all) · orchestrator
+- 2026-11-16 16:45 UTC · `remove-old-molly-app-project-keep-axf` s14 done (all) · orchestrator
+- 2026-11-16 16:46 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s2 done, s4 done, s5 done, s6 done, s7 done, s8 done, s10 done (all) · foreign-write
+- 2026-11-16 16:46 UTC · `molly-gap-expenses-cors` → queued, note (all) · pipeline
+- 2026-11-15 01:25 UTC · `molly-gap-expenses-cors` s3 done, → built (all) · orchestrator
+- 2026-11-16 16:47 UTC · `molly-gap-expenses-cors` → running, note (all) · pipeline
+- 2026-11-16 16:47 UTC · `molly-gap-expenses-cors` note (all) · orchestrator
+- 2026-11-16 16:47 UTC · `molly-gap-expenses-cors` s3 done, → built (all) · builds-live
+- 2026-11-16 16:47 UTC · `amberx-walkthrough-2-hour-indexed` → archived, note (all) · console
+- 2026-11-16 16:47 UTC · `fix-red-ci-blocked-builds-they-land` s2 done (all) · orchestrator
+- 2026-11-16 16:48 UTC · `fix-console-deep-links-open-page-lands` s1 done, → running (all) · orchestrator
+- 2026-11-16 16:48 UTC · `remove-old-molly-app-project-keep-axf` s15 done (all) · orchestrator
+- 2026-11-16 16:47 UTC · `get-main-green-unblock-lander-land-axf` note (all) · orchestrator
+- 2026-11-16 16:49 UTC · `molly-gap-expenses-cors` note (all) · orchestrator
+- 2026-11-16 16:50 UTC · `molly-gap-expenses-cors` note (all) · pipeline
+- 2026-11-16 16:50 UTC · `fix-red-ci-blocked-builds-they-land` s3 done (all) · orchestrator
+- 2026-11-16 16:47 UTC · `get-main-green-unblock-lander-land-axf` s3 done (all) · orchestrator
+- 2026-11-16 16:50 UTC · `get-main-green-unblock-lander-land-axf` s4 done (all) · orchestrator
+- 2026-11-16 16:53 UTC · `orchestrator-on-hold-status-and-tab` added (0 steps) (all) · console
+- 2026-11-16 16:53 UTC · `orchestrator-on-hold-status-and-tab` → queued, note (all) · console
+- 2026-11-16 16:54 UTC · `orchestrator-on-hold-status-and-tab` → queued, note (all) · builds-live
+- 2026-11-16 16:55 UTC · `orchestrator-on-hold-status-and-tab` → pending (all) · mcp
+- 2026-11-16 16:55 UTC · `orchestrator-on-hold-status-and-tab` note (all) · orchestrator
+- 2026-11-16 16:55 UTC · `fix-red-ci-blocked-builds-they-land` s4 done (all) · orchestrator
+- 2026-11-16 16:57 UTC · `orchestrator-on-hold-status-and-tab` note (all) · mcp
+- 2026-11-16 16:57 UTC · `orchestrator-on-hold-status-and-tab` → queued (all) · mcp
+- 2026-11-16 16:58 UTC · `orchestrator-on-hold-status-and-tab` → running, note (all) · pipeline
+- 2026-11-16 16:58 UTC · `orchestrator-on-hold-status-and-tab` branch claude/orchestrator-on-hold-status-and-tab (all) · pipeline
+- 2026-11-16 16:58 UTC · `orchestrator-on-hold-status-and-tab` note (all) · orchestrator
+- 2026-11-16 16:59 UTC · `fix-console-deep-links-open-page-lands` s2 done (all) · orchestrator
+- 2026-11-16 17:00 UTC · `remove-old-molly-app-project-keep-axf` PR #720 (all) · builds-live
+- 2026-11-16 17:00 UTC · `remove-old-molly-app-project-keep-axf` s16 done, → built (all) · orchestrator
+- 2026-11-16 17:01 UTC · `fix-console-deep-links-open-page-lands` s3 done, → complete (all) · orchestrator
+- 2026-11-16 17:01 UTC · `remove-old-molly-app-project-keep-axf` note (all) · orchestrator
+- 2026-11-16 17:01 UTC · `remove-old-molly-app-project-keep-axf` s16 done, → built, note (all) · reconciler
+- 2026-11-16 17:01 UTC · `fix-console-deep-links-open-page-lands` PR #721, note (all) · reconciler
+- 2026-11-16 17:01 UTC · `fix-console-deep-links-open-page-lands` note (all) · orchestrator
+- 2026-11-16 17:02 UTC · `get-main-green-unblock-lander-land-axf` s5 done (all) · orchestrator
+- 2026-11-16 17:06 UTC · `hotfix-toolbar-settings-still-change` note (all) · mcp
+- 2026-11-16 17:06 UTC · `hotfix-toolbar-settings-still-change` → queued (all) · mcp
+- 2026-11-16 17:07 UTC · `hotfix-toolbar-settings-still-change` → running (all) · mcp
+- 2026-11-16 17:07 UTC · `fix-red-ci-blocked-builds-they-land` s6 done (all) · orchestrator
+- 2026-11-16 17:08 UTC · `orchestrator-on-hold-status-and-tab` s1 done, → running (all) · orchestrator
+- 2026-11-16 17:08 UTC · `phone-connect-small-android-companion` s35 done, → built (all) · orchestrator
+- 2026-11-16 17:10 UTC · `orchestrator-on-hold-status-and-tab` s2 done (all) · orchestrator
+- 2026-11-16 17:10 UTC · `inline-edit-plugin-install-in-console-molly-and` → pending, note (all) · reconciler
+- 2026-11-16 17:10 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` → pending, note (all) · reconciler
+- 2026-11-16 17:10 UTC · `hotfix-toolbar-settings-still-change` → complete, note (all) · reconciler
+- 2026-11-16 17:11 UTC · `orchestrator-on-hold-status-and-tab` s3 done, → complete (all) · orchestrator
+- 2026-11-16 17:12 UTC · `orchestrator-on-hold-status-and-tab` s3 done, → complete (all) · foreign-write
+- 2026-11-16 17:12 UTC · `orchestrator-on-hold-status-and-tab` note (all) · orchestrator
+- 2026-11-16 17:16 UTC · `fix-red-ci-blocked-builds-they-land` s5 done (all) · orchestrator
+- 2026-11-16 17:18 UTC · `fix-red-ci-blocked-builds-they-land` s7 done (all) · orchestrator
+- 2026-11-16 17:19 UTC · `fix-red-ci-blocked-builds-they-land` s8 done (all) · orchestrator
+- 2026-11-16 17:19 UTC · `fix-red-ci-blocked-builds-they-land` s9 done (all) · orchestrator
+- 2026-11-16 17:19 UTC · `fix-red-ci-blocked-builds-they-land` s10 done (all) · orchestrator
+- 2026-11-16 17:20 UTC · `fix-red-ci-blocked-builds-they-land` s12 done (all) · orchestrator
+- 2026-11-16 17:20 UTC · `orchestrator-on-hold-status-and-tab` → built, PR #722, note (all) · reconciler
+- 2026-11-16 17:21 UTC · `fix-red-ci-blocked-builds-they-land` s13 done (all) · orchestrator
+- 2026-11-16 17:22 UTC · `fix-red-ci-blocked-builds-they-land` s14 done (all) · orchestrator
+- 2026-11-16 17:22 UTC · `fix-red-ci-blocked-builds-they-land` s15 done (all) · orchestrator
+- 2026-11-16 17:23 UTC · `fix-red-ci-blocked-builds-they-land` s16 done (all) · orchestrator
+- 2026-11-16 17:26 UTC · `fix-red-ci-blocked-builds-they-land` s17 done (all) · orchestrator
+- 2026-11-16 17:27 UTC · `fix-red-ci-blocked-builds-they-land` note (all) · orchestrator
+- 2026-11-16 17:27 UTC · `phone-connect-small-android-companion` note (all) · orchestrator
+- 2026-11-16 17:27 UTC · `get-main-green-unblock-lander-land-axf` note (all) · orchestrator
+- 2026-11-16 17:28 UTC · `phone-connect-small-android-companion` note (all) · pipeline
+- 2026-11-16 17:28 UTC · `get-main-green-unblock-lander-land-axf` → queued, note (all) · pipeline
+- 2026-11-16 17:28 UTC · `get-main-green-unblock-lander-land-axf` → running, note (all) · pipeline
+- 2026-11-16 17:28 UTC · `get-main-green-unblock-lander-land-axf` PR #723 (all) · builds-live
+- 2026-11-16 17:29 UTC · `get-main-green-unblock-lander-land-axf` → queued, note (all) · pipeline
+- 2026-11-16 17:29 UTC · `get-main-green-unblock-lander-land-axf` → running, note (all) · pipeline
+- 2026-11-16 17:30 UTC · `get-main-green-unblock-lander-land-axf` → queued, note (all) · pipeline
+- 2026-11-16 17:30 UTC · `get-main-green-unblock-lander-land-axf` → running, note (all) · pipeline
+- 2026-11-16 17:30 UTC · `get-main-green-unblock-lander-land-axf` note (all) · orchestrator
 
 ## Token passes (log)
 
