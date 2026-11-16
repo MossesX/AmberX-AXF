@@ -808,12 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 13:12 UTC · `group-chat-audio-hear-agents-talk-while` → running (all) · mcp
-- 2026-11-16 13:12 UTC · `fix-build-whose-session-finishes-phase-e` → running, note (all) · pipeline
-- 2026-11-16 13:12 UTC · `fix-build-whose-session-finishes-phase-e` note (all) · orchestrator
-- 2026-11-16 13:12 UTC · `group-chat-audio-hear-agents-talk-while` → queued (all) · mcp
-- 2026-11-16 13:13 UTC · `group-chat-audio-hear-agents-talk-while` → running, note (all) · pipeline
-- 2026-11-16 13:13 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · orchestrator
 - 2026-11-16 13:13 UTC · `voice-designer-plugin-built-each` added (0 steps) (all) · console
 - 2026-11-16 13:13 UTC · `voice-designer-plugin-built-each` → queued, note (all) · console
 - 2026-11-16 13:13 UTC · `group-chat-audio-hear-agents-talk-while` → built (all) · mcp
@@ -1208,6 +1202,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 18:40 UTC · `axhub-veto-countdown-setting-read-only` note (all) · orchestrator
 - 2026-11-16 18:40 UTC · `settings-interface-gear-every-plugin` → queued, note (all) · pipeline
 - 2026-11-16 18:42 UTC · `hotfix-orchestrator-grid-columns-don-t` s1 done, → running (all) · orchestrator
+- 2026-11-16 18:41 UTC · `amberx-open-url-must-open-page-even-when` → running, note (all) · pipeline
+- 2026-11-16 18:41 UTC · `amberx-open-url-must-open-page-even-when` note (all) · orchestrator
+- 2026-11-16 18:41 UTC · `amberx-open-url-must-open-page-even-when` branch claude/amberx-open-url-must-open-page-even-when (all) · pipeline
+- 2026-11-16 18:41 UTC · `axhub-veto-countdown-setting-read-only` note (all) · orchestrator
+- 2026-11-16 18:41 UTC · `settings-interface-gear-every-plugin` → running, note (all) · pipeline
+- 2026-11-16 18:41 UTC · `settings-interface-gear-every-plugin` note (all) · orchestrator
 
 ## Token passes (log)
 
