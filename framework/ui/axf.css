@@ -1142,6 +1142,9 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-choice:hover:not(:disabled) { border-color: var(--fx-accent); }
 .fx-choice:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w); }
 .fx-choice.is-active { border-color: var(--fx-accent); box-shadow: 0 0 0 var(--fx-border-w) var(--fx-accent); background: var(--fx-accent-soft); }
+/* Icon picker (react/components/IconPicker.tsx): small cards, the list scrolls inside the dialog */
+.fx-icon-picker { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); min-width: 0; }
+.fx-icon-picker .fx-choices { grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--fx-font-size) * 8)), 1fr)); max-height: calc(var(--fx-font-size) * 28); overflow-y: auto; gap: var(--fx-dens-gap-sm); }
 .fx-choice:disabled { opacity: var(--fx-opacity-disabled); cursor: not-allowed; }
 .fx-choice__top { display: flex; align-items: center; gap: var(--fx-dens-gap-md); }
 .fx-choice__title { flex: 1; min-width: 0; font-weight: 600; }

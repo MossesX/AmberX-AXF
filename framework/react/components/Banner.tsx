@@ -74,10 +74,15 @@ export function BannerWidgetBody({ type, id }: { type: string; id: string }) {
   const asset = rt.registry.get(type as never, id) as { data: unknown } | undefined;
   if (!asset) return null;
   const { show } = rt.bannerWidgetView(`${type}:${id}`);
-  if (type === 'badge') return <BannerBadge data={asset.data as BadgeData} id={id} />;
+  // Change icon… (engines/widgeticons.ts): the person's icon for this one widget, laid over the asset's own
+  const own = (asset.data as { icon?: string } | null)?.icon;
+  const icon = rt.widgetIcon('banner', `${type}:${id}`, own);
+  const iconPatch = icon && icon !== own ? { icon } : undefined;
+  if (type === 'badge') return <BannerBadge data={{ ...(asset.data as BadgeData), ...iconPatch }} id={id} />;
   if (show === 'number' && (type === 'status' || type === 'counter')) return <WidgetNumber type={type} data={asset.data as StatusData} />;
   // icon only: a status has no icon, its dot is what's left
-  return <WidgetView type={type} id={id} host="banner" patch={show === 'icon' && type === 'status' ? { dot: true } : undefined} />;
+  const patch = show === 'icon' && type === 'status' ? { dot: true, ...iconPatch } : iconPatch;
+  return <WidgetView type={type} id={id} host="banner" patch={patch} />;
 }
 
 function Attached({ a }: { a: PlacedAttachment }) {

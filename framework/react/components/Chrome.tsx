@@ -97,7 +97,13 @@ export function Toolbar({ views }: { views: ViewMap }) {
   const arrange = useArrange('toolbar', widgets);
   const brand = useBrandPlace('toolbar');
   const brandHost = brandHostProps(brand);
-  const drawWidget = (w: PlacedAttachment, i: number) => arrange.item(w, i, 'fx-toolbar__widget', { 'data-axf-toolbar-widget': w.key, 'data-axf-origin': w.origin }, <WidgetView type={w.type} id={w.id} host="toolbar" />);
+  const drawWidget = (w: PlacedAttachment, i: number) => arrange.item(w, i, 'fx-toolbar__widget', { 'data-axf-toolbar-widget': w.key, 'data-axf-origin': w.origin }, <WidgetView type={w.type} id={w.id} host="toolbar" patch={toolbarIconPatch(w)} />);
+  // Change icon… (engines/widgeticons.ts): the person's icon for this one toolbar widget, laid over the asset's own
+  function toolbarIconPatch(w: PlacedAttachment): Record<string, unknown> | undefined {
+    const own = (rt.registry.get(w.type as never, w.id) as { data?: { icon?: string } } | undefined)?.data?.icon;
+    const icon = rt.widgetIcon('toolbar', w.key, own);
+    return icon && icon !== own ? { icon } : undefined;
+  }
   // `collapsible` toolbars fold to a thin handle; the fold is a per-device setting (axf.toolbar.collapsed).
   const collapsible = tb.data.collapsible === true;
   const collapsed = rt.toolbarCollapsed();

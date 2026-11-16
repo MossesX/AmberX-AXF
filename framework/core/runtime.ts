@@ -15,6 +15,7 @@ import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyl
 import { CUSTOM_KEY, customizableTypes, customizeSheet, effectiveCustom, normalizeCustomSlot, type CustomSlot, type CustomValues } from './engines/customize';
 import { CONTROL_TOKEN_SLOTS, applyTokenOverrides, effectiveTokenOverrides } from './engines/control-tokens.mjs';
 import { compileShape } from './engines/shape';
+import { isIconName, normalizeWidgetIcons, setWidgetIcon, widgetIconOf, widgetIconsSetting, type WidgetIcons } from './engines/widgeticons';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { normalizeDockLayout } from './engines/dock';
@@ -104,6 +105,8 @@ export const NAV_OPEN_KEY = 'axf.nav.open';
 export const ARRANGE_KEY = (host: string) => `axf.widgets.arrange.${host}`;
 /** Dialog id of the banner's Widgets picker (react/components/BannerWidgets.tsx). */
 export const BANNER_WIDGETS_DIALOG = 'axf.banner.widgets';
+/** Dialog id of the icon picker for one host widget (react/components/IconPicker.tsx): props `{ host, widget }`. */
+export const WIDGET_ICON_DIALOG = 'axf.widget.icon';
 
 /** One widget the banner knows about: on the bar now or not. */
 export interface BannerWidget {
@@ -1378,6 +1381,37 @@ export class AxfRuntime {
     if (!this.canArrange()) return;
     this.settings.clear(this.bannerWidgetsKey());
     this.resetHostArrangement('banner');
+  }
+
+  /* ---------------- widget icons (core/engines/widgeticons.ts): Change icon… on any host widget ---------------- */
+
+  /** The host widget under the last right-click or long-press (`{ host, widget }`), set by the context menu host. */
+  contextHostWidget: { host: string; widget: string } | null = null;
+
+  /** Every icon override on this app (`<host>/<type:id>` → icon name). */
+  widgetIcons(): WidgetIcons { return normalizeWidgetIcons(this.settings.get(widgetIconsSetting(this.manifest.app.id))); }
+
+  /** The icon one host widget draws: the person's pick, else `own` (the asset's icon). */
+  widgetIcon(host: string, widget: string, own?: string | null): string | undefined { return widgetIconOf(this.widgetIcons(), host, widget, own); }
+
+  /** Find a widget on a host from a key, id or name ("clock"): the banner's finder, else the host's placed widgets. */
+  findHostWidget(host: string, query: string): string | null {
+    if (host === 'banner') return this.findBannerWidget(query)?.key ?? null;
+    const all = Object.values(this.hostPlaced(host)).flat();
+    const q = query.toLowerCase().replace(/^the\s+/, '').trim();
+    return (all.find((p) => p.key === query || p.id === query) ?? all.find((p) => p.type === q || p.id.toLowerCase().includes(q)))?.key ?? null;
+  }
+
+  /** Give one host widget another icon (null = back to the asset's own). Saved at once, drawn at once. */
+  setWidgetIconOverride(host: string, widget: string, icon: string | null): boolean {
+    if (!this.canArrange()) { this.toast('Your account can\'t change the look.', 'warning', 'Widget icon'); return false; }
+    if (icon !== null && !isIconName(icon)) { this.toast(`"${icon}" is not an icon name`, 'warning', 'Widget icon'); return false; }
+    const key = widgetIconsSetting(this.manifest.app.id);
+    const next = setWidgetIcon(this.widgetIcons(), host, widget, icon);
+    if (Object.keys(next).length) this.settings.set(key, next as never); else this.settings.clear(key);
+    this.terminal.ok('widgets', `icon: ${host}/${widget} → ${icon ?? 'reset'}`);
+    this.set({});
+    return true;
   }
 
   /** Attach a widget (clock, search bar) to the toolbar at run time (at: start | end). Same type + id replaces. Returns detach. */
@@ -2947,6 +2981,19 @@ export class AxfRuntime {
       else if (what === 'reset') this.setBannerWidget(w.key, { hidden: null, size: null, show: null, maxWidth: null, maxUnit: null, priority: null, hideWhenEmpty: null, overflow: null });
       else this.toast(`"${what}": use hide, show, reset or a size (${BANNER_WIDGET_SIZES.join(', ')})`, 'warning', 'Banner widgets');
     }, { label: 'Change a banner widget', requires: 'assets.swap', params: true, searchable: false });
+    // Widget icons: widget.icon:<host>:<widget…>:<icon|reset> · widget.icon.pick:<host>:<widget…> (opens the icon picker)
+    a.register('widget.icon', (args) => {
+      const [host = 'banner', ...rest] = args;
+      const icon = rest[rest.length - 1] ?? '';
+      const w = this.findHostWidget(host, rest.slice(0, -1).join(':'));
+      if (!w) { this.toast(`No ${host} widget "${rest.slice(0, -1).join(':')}"`, 'warning', 'Widget icon'); return; }
+      this.setWidgetIconOverride(host, w, icon === 'reset' ? null : icon);
+    }, { label: 'Change a widget\'s icon', requires: 'assets.swap', params: true, searchable: false });
+    a.register('widget.icon.pick', (args) => {
+      const [host = 'banner', ...rest] = args;
+      const w = rest.length ? this.findHostWidget(host, rest.join(':')) : this.contextHostWidget?.host === host ? this.contextHostWidget.widget : null;
+      if (w) this.openDialog(WIDGET_ICON_DIALOG, { host, widget: w });
+    }, { label: 'Change icon…', requires: 'assets.swap', params: true, searchable: false });
     a.register('assets.reset', () => this.reset(), { label: 'Reset to defaults' });
     // design.package:<id> · design.package:next|prev|random steps through the registered packages and applies one
     // (swap:design-package:next would only move the slot, never apply the package's themes).
@@ -3055,8 +3102,11 @@ export class AxfRuntime {
         const hit = this.contextBannerWidget ? this.bannerWidgets().find((w) => w.key === this.contextBannerWidget) : null;
         if (hit) items.push(
           { id: 'banner-widget-settings', label: `Widget settings: ${hit.label}`, icon: 'settings', action: `banner.widgets:${hit.key}` },
+          { id: 'banner-widget-icon', label: 'Change icon…', icon: 'star', action: `widget.icon.pick:banner:${hit.key}` },
           { id: 'banner-widget-hide', label: `Hide ${hit.label}`, icon: 'eye', action: `banner.widget:${hit.key}:hide` },
         );
+      } else if (this.contextHostWidget?.host === host) {
+        items.push({ id: `widget-icon-${host}`, label: 'Change icon…', icon: 'star', action: `widget.icon.pick:${host}:${this.contextHostWidget.widget}` });
       }
       items.push({ id: `widgets-arrange-${host}`, label: this.arranging(host) ? 'Done arranging widgets' : 'Arrange widgets…', icon: 'move', action: `widgets.arrange:${host}` });
       if (Object.keys(this.hostArrangement(host)).length) items.push({ id: `widgets-reset-${host}`, label: 'Put widgets back', icon: 'undo', action: `widgets.reset:${host}` });

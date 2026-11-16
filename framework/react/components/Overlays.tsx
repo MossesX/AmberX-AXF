@@ -140,6 +140,9 @@ export function ContextMenuHost() {
       if ((target?.closest('[data-fx-scope]')?.getAttribute('data-fx-scope') ?? '') !== scope) return;
       // which banner widget was hit: its menu offers Widget settings for that one
       rt.contextBannerWidget = target?.closest('[data-axf-banner-item]')?.getAttribute('data-axf-banner-item') ?? null;
+      // which host widget was hit (banner or toolbar): its menu offers Change icon… for that one
+      const tw = target?.closest('[data-axf-toolbar-widget]')?.getAttribute('data-axf-toolbar-widget');
+      rt.contextHostWidget = rt.contextBannerWidget ? { host: 'banner', widget: rt.contextBannerWidget } : tw ? { host: 'toolbar', widget: tw } : null;
       // chrome-settings@1 (Nov 4 2026): a toolbar, a tab row or a nav that names no target is still one, so every
       // toolbar / tab group / navigation menu gets Settings / Change / Move without an attribute of its own
       const el = target?.closest('[data-fx-ctx-target], [role="toolbar"], [role="tablist"], nav');

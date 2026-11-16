@@ -190,6 +190,21 @@
       "value": true
     },
     "what time is it": null,
+    "change the clock icon to star": {
+      "verb": "press",
+      "address": "function:widget.icon",
+      "value": "banner:clock:star"
+    },
+    "set the toolbar search bar icon to a bell": {
+      "verb": "press",
+      "address": "function:widget.icon",
+      "value": "toolbar:search bar:bell"
+    },
+    "reset the clock icon": {
+      "verb": "press",
+      "address": "function:widget.icon",
+      "value": "banner:clock:reset"
+    },
     "": null
   },
   "commands": {
@@ -306,6 +321,21 @@
       "verb": "set",
       "address": "view:build-orchestrator/grid:builds/row:b1",
       "value": true
+    },
+    "change the clock icon to star": {
+      "verb": "press",
+      "address": "function:widget.icon",
+      "value": "banner:clock:star"
+    },
+    "set the toolbar search bar icon to a bell": {
+      "verb": "press",
+      "address": "function:widget.icon",
+      "value": "toolbar:search bar:bell"
+    },
+    "reset the clock icon": {
+      "verb": "press",
+      "address": "function:widget.icon",
+      "value": "banner:clock:reset"
     }
   },
   "replies": {

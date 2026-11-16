@@ -12,6 +12,7 @@
  *   "disable plugin <y>" · "turn off the <y> plugin" · "turn the <y> plugin off" · "enable <y> plugin"
  *   "press <button>" · "click <button>" · "tap <button>"
  *   "set <setting> to <value>" · "turn <setting> on|off"
+ *   "change the clock icon to star" · "set the toolbar search icon to bell" · "reset the clock icon"   (widget.icon)
  */
 
 export const VOICE_FRAME = 'console-control-voice@1';
@@ -69,6 +70,12 @@ export function voiceIntent(text) {
     return { verb: on ? 'plugin.enable' : 'plugin.disable', find: { q: strip(m[2] ?? m[3]), kinds: ['plugin'] } };
   }
   if ((m = /^(?:turn|switch)(?: the)? (.+?) plugin (on|off)$/.exec(p))) return { verb: m[2] === 'on' ? 'plugin.enable' : 'plugin.disable', find: { q: strip(m[1]), kinds: ['plugin'] } };
+
+  // a banner / toolbar widget's icon (runtime action widget.icon:<host>:<widget>:<icon|reset>)
+  if ((m = /^(?:change|set|make|switch)(?: the)? (toolbar )?(.+?) (?:widget )?icon (?:to|into)(?: an?| the)? (.+?)(?: icon)?$/.exec(p))) {
+    return { verb: 'press', address: 'function:widget.icon', value: `${m[1] ? 'toolbar' : 'banner'}:${strip(m[2])}:${m[3].trim().replace(/\s+/g, '-')}` };
+  }
+  if ((m = /^(?:reset|restore)(?: the)? (toolbar )?(.+?) (?:widget )?icon$/.exec(p))) return { verb: 'press', address: 'function:widget.icon', value: `${m[1] ? 'toolbar' : 'banner'}:${strip(m[2])}:reset` };
 
   // settings
   if ((m = /^set (?:the )?(.+?) (?:to|at) (.+)$/.exec(p))) return { verb: 'set', find: { q: strip(m[1]), kinds: ['setting'] }, value: m[2].trim() };

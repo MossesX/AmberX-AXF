@@ -487,6 +487,13 @@ def voice_intent(text: Any) -> dict[str, Any] | None:
         return {"verb": "plugin.enable" if on else "plugin.disable", "find": {"q": _strip(m.group(2) or m.group(3)), "kinds": ["plugin"]}}
     if m := re.match(r"^(?:turn|switch)(?: the)? (.+?) plugin (on|off)$", p):
         return {"verb": "plugin.enable" if m.group(2) == "on" else "plugin.disable", "find": {"q": _strip(m.group(1)), "kinds": ["plugin"]}}
+    if m := re.match(r"^(?:change|set|make|switch)(?: the)? (toolbar )?(.+?) (?:widget )?icon (?:to|into)(?: an?| the)? (.+?)(?: icon)?$", p):
+        host = "toolbar" if m.group(1) else "banner"
+        icon = re.sub(r"\s+", "-", m.group(3).strip())
+        return {"verb": "press", "address": "function:widget.icon", "value": f"{host}:{_strip(m.group(2))}:{icon}"}
+    if m := re.match(r"^(?:reset|restore)(?: the)? (toolbar )?(.+?) (?:widget )?icon$", p):
+        host = "toolbar" if m.group(1) else "banner"
+        return {"verb": "press", "address": "function:widget.icon", "value": f"{host}:{_strip(m.group(2))}:reset"}
     if m := re.match(r"^set (?:the )?(.+?) (?:to|at) (.+)$", p):
         return {"verb": "set", "find": {"q": _strip(m.group(1)), "kinds": ["setting"]}, "value": m.group(2).strip()}
     if m := re.match(r"^(?:turn|switch) (?:the )?(.+?) (on|off)$", p):
