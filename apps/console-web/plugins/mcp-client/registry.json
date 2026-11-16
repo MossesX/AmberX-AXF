@@ -1,0 +1,25 @@
+{
+  "$axf": "claude-settings-registry@1",
+  "readme": "MCP client options (plugin-settings@1): the keys in plugin.json settings.options, served from this plugin's config.json through server/plugin_options.py. The servers list is read-only here (GET /servers); servers are added and edited in the MCP servers panel.",
+  "service": "axf.plugin-options.mcp-client@1",
+  "groups": [
+    {
+      "id": "calls",
+      "label": "Calls",
+      "icon": "cloud",
+      "order": 10
+    }
+  ],
+  "settings": [
+    {
+      "key": "mcp-client.timeout",
+      "group": "calls",
+      "label": "Timeout per call (seconds)",
+      "kind": "number",
+      "default": 30,
+      "min": 1,
+      "max": 300,
+      "description": "How long the console waits for an MCP server before the call fails. Default: AXF_MCP_TIMEOUT, else 30."
+    }
+  ]
+}

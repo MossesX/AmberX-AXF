@@ -720,7 +720,7 @@
     "src/axf/libs/listeners/registry.json": "f82ad0b6515bbab0",
     "src/axf/libs/mcp/client.ts": "1de950f095e33a61",
     "src/axf/libs/mcp/host.ts": "9752a89d8a76759e",
-    "src/axf/libs/mcp/index.tsx": "2ea42b0f0db90e9a",
+    "src/axf/libs/mcp/index.tsx": "90ce2ba7dbc0edb7",
     "src/axf/libs/mcp/library.json": "ab1bdef4fc7351fd",
     "src/axf/libs/mcp/mcp.css": "e1e70875d8fe71a2",
     "src/axf/libs/plugintheme/core.ts": "5d0c77fc931c543b",

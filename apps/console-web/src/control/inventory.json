@@ -7,7 +7,7 @@
     "tabGroups": 26,
     "tabs": 78,
     "settingsTabs": 83,
-    "settings": 195,
+    "settings": 196,
     "functions": 274,
     "buttons": 62,
     "plugins": 71
@@ -5535,6 +5535,24 @@
       "runs": "server",
       "service": "axf.plugin-options.gate@1",
       "plugin": "ai.amberx.axf.console.gate"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=mcp-client/setting:mcp-client.timeout",
+      "kind": "setting",
+      "label": "Timeout per call (seconds)",
+      "key": "mcp-client.timeout",
+      "type": "number",
+      "min": 1,
+      "max": 300,
+      "detail": "Settings › Plugins › MCP client › Calls",
+      "keywords": [
+        "mcp-client.timeout",
+        "calls",
+        "MCP client"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.mcp-client@1",
+      "plugin": "ai.amberx.axf.console.mcp-client"
     }
   ],
   "functions": [
@@ -11644,7 +11662,9 @@
       ],
       "view": "view:mcp",
       "settingsTab": "view:settings/tab:settings.tabs=mcp",
-      "provides": [],
+      "provides": [
+        "service:axf.plugin-options.mcp-client@1"
+      ],
       "requires": [],
       "optional": []
     },

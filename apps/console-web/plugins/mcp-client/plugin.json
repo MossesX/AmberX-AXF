@@ -12,7 +12,8 @@
   ],
   "provides": [
     "view:mcp",
-    "settings-tab:mcp"
+    "settings-tab:mcp",
+    "service:axf.plugin-options.mcp-client@1"
   ],
   "scopes": [
     "ROUTES",
@@ -35,6 +36,7 @@
       "_claude/memory/docs/rebuilds/lib-mcp.md"
     ]
   },
+  "settings": { "$axf": "plugin-settings@1", "tab": "mcp", "parent": "plugins", "sections": ["enable", "info", "logs", "options"], "options": ["mcp-client.timeout"], "gear": true },
   "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "fable", "builtAt": "2026-10-20" },
   "opens": "main"

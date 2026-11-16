@@ -17,6 +17,7 @@ Everything a remote server returns is data; the web part renders it as text, nev
 """
 from __future__ import annotations
 
+import json
 import os
 import sys
 import time
@@ -51,6 +52,37 @@ def _file() -> Path:
 
 
 TIMEOUT = float(os.environ.get("AXF_MCP_TIMEOUT", "30"))
+TIMEOUT_RANGE = (1.0, 300.0)
+
+
+def _config_file() -> Path:
+    return _DATA / "config.json"
+
+
+def get_config() -> dict[str, Any]:
+    """The plugin's own options (plugin-settings@1): timeout in seconds (default AXF_MCP_TIMEOUT, else 30)."""
+    try:
+        raw = json.loads(_config_file().read_text())
+    except (OSError, ValueError):
+        raw = {}
+    t = raw.get("timeout") if isinstance(raw, dict) else None
+    ok = isinstance(t, (int, float)) and not isinstance(t, bool) and TIMEOUT_RANGE[0] <= t <= TIMEOUT_RANGE[1]
+    return {"timeout": float(t) if ok else TIMEOUT}
+
+
+def put_config(patch: dict[str, Any]) -> dict[str, Any]:
+    t = patch.get("timeout")
+    try:
+        t = float(t)
+    except (TypeError, ValueError):
+        raise ValueError("timeout is a number of seconds") from None
+    if not TIMEOUT_RANGE[0] <= t <= TIMEOUT_RANGE[1]:
+        raise ValueError(f"timeout is between {TIMEOUT_RANGE[0]:g} and {TIMEOUT_RANGE[1]:g} seconds")
+    _DATA.mkdir(parents=True, exist_ok=True)
+    tmp = _config_file().with_suffix(".tmp")
+    tmp.write_text(json.dumps({**get_config(), "timeout": t}))
+    os.replace(tmp, _config_file())
+    return get_config()
 _LOG: deque[dict[str, Any]] = deque(maxlen=200)
 # wire code → HTTP status for failures the server itself detects (the remote server's failures are 502 below)
 _STATUS = {E.VALIDATION: 400, E.INVALID: 400, E.NOT_FOUND: 404, E.DENIED: 403}
@@ -80,7 +112,7 @@ def _client(sid: str, s: dict[str, Any]) -> McpClient:
         except McpWireError as e:  # env var unset → a 400 the person can act on (same as the Opus build)
             raise HTTPException(400, e.error["message"]) from None
 
-    return McpClient(sid, s["url"], UrllibTransport(creds), timeout=TIMEOUT, on_call=lambda op, ok, ms, d: _log(sid, op, ok, ms, d))
+    return McpClient(sid, s["url"], UrllibTransport(creds), timeout=get_config()["timeout"], on_call=lambda op, ok, ms, d: _log(sid, op, ok, ms, d))
 
 
 async def _with_client(sid: str, op: str, fn):
@@ -123,7 +155,7 @@ class ServerIn(BaseModel):
 @router.get("/servers")
 def list_servers() -> dict[str, Any]:
     f = _file()
-    return {"items": _registry().list(), "file": str(f.relative_to(_ROOT)) if f.is_relative_to(_ROOT) else str(f), "timeout": TIMEOUT}
+    return {"items": _registry().list(), "file": str(f.relative_to(_ROOT)) if f.is_relative_to(_ROOT) else str(f), "timeout": get_config()["timeout"]}
 
 
 @router.post("/servers")
@@ -193,3 +225,28 @@ async def get_prompt(sid: str, body: PromptIn) -> dict[str, Any]:
 @router.get("/log")
 def call_log() -> dict[str, Any]:
     return {"items": list(_LOG)}
+
+
+@router.get("/config")
+def config_get() -> dict[str, Any]:
+    """The plugin's options: timeout (seconds per MCP call)."""
+    return get_config()
+
+
+@router.put("/config")
+def config_put(body: dict[str, Any]) -> dict[str, Any]:
+    """Change the options: {"timeout": seconds} (1 to 300)."""
+    try:
+        return put_config(body or {})
+    except ValueError as e:
+        raise HTTPException(400, str(e)) from None
+
+
+# plugin-settings@1: mcp-client.timeout through console control (REST, MCP, CLI, voice); the servers list stays read-only
+# here (GET /servers); adding, editing and removing servers keeps its own routes and the MCP servers panel.
+try:
+    import plugin_options
+
+    plugin_options.provide("mcp-client", read=get_config, write=put_config, fields={"mcp-client.timeout": "timeout"})
+except ImportError:  # a bare test run without the console server on the path
+    pass

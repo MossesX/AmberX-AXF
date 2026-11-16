@@ -15,7 +15,7 @@
  */
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { MCP_PERMISSIONS, argumentSkeleton, callGate, contentText, mcpHasPermission, toolEffect, type McpPermissionSet, type McpToolEffect } from '../../core/engines/mcp';
-import { Button, Chip, Container, Icon, TabGroup, useAxfState, useRuntime } from '../../react';
+import { Button, Chip, Container, Icon, PluginSettingsGear, TabGroup, useAxfState, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import type { McpConnected, McpPrompt, McpResource, McpTool } from './client';
 import { describe } from './client';
@@ -63,7 +63,7 @@ function Note({ tone = 'warn', children }: { tone?: 'warn' | 'danger' | 'info'; 
 
 /* ================================================================== the MCP servers view */
 
-function McpView({ host, store, perms }: { host: McpHost; store: ServerStore; perms: McpPermissionSet }) {
+function McpView({ host, store, perms, gear }: { host: McpHost; store: ServerStore; perms: McpPermissionSet; gear?: McpLibraryOptions['gear'] }) {
   const rt = useRuntime();
   useAxfState(); // re-render on role changes (the call gate reads the role)
   const { list, error } = useServers(store);
@@ -113,8 +113,10 @@ function McpView({ host, store, perms }: { host: McpHost; store: ServerStore; pe
           <h1>MCP servers</h1>
           <p className="fx-muted">Connect to MCP servers over Streamable HTTP, browse what they offer and call their tools. Add or edit servers in Settings → MCP servers.</p>
         </div>
-        <div className="fx-row fx-row--wrap">
+        <div className="fx-pagehead__tools" role="toolbar" aria-label="MCP servers tools" data-axf-toolbar={gear ? `plugin-header.${gear.tab}` : 'mcp.header'}>
           <Button icon="settings" onClick={() => rt.dispatch(`settings.open:${MCP_SETTINGS_TAB}`)}>Manage servers</Button>
+          {/* a host plugin's settings gear (plugin-settings@1), last in the tools */}
+          {gear ? <PluginSettingsGear tab={gear.tab} plugin={gear.plugin} /> : null}
         </div>
       </header>
 
@@ -433,6 +435,8 @@ export interface McpLibraryOptions {
   settingsOrder?: number;
   /** map the four MCP permissions onto the app's own policy (default: `mcp.servers.manage`, `mcp.call`, `mcp.call.write`, `mcp.call.destructive`) */
   permissions?: Partial<McpPermissionSet>;
+  /** the host plugin's settings sub-tab: its gear goes last in the screen header (plugin-settings@1) */
+  gear?: { tab: string; plugin: string };
 }
 
 export function createMcpLibrary(o: McpLibraryOptions = {}): AxfWebLibrary {
@@ -449,7 +453,7 @@ export function createMcpLibrary(o: McpLibraryOptions = {}): AxfWebLibrary {
       rt.actions.register('mcp.open', () => rt.navigate(MCP_VIEW), { label: 'MCP servers', searchable: true });
       rt.actions.register('mcp.reload', () => { void store.reload(); }, { label: 'Reload MCP servers' });
     },
-    views: { [MCP_VIEW]: { title: 'MCP servers', icon: 'cloud', keywords: ['mcp', 'tools', 'model context protocol', 'axhub'], render: () => <McpView host={host} store={store} perms={perms} /> } },
+    views: { [MCP_VIEW]: { title: 'MCP servers', icon: 'cloud', keywords: ['mcp', 'tools', 'model context protocol', 'axhub'], render: () => <McpView host={host} store={store} perms={perms} gear={o.gear} /> } },
     nav: { label: o.navLabel ?? 'Connect', items: [{ id: MCP_VIEW, label: 'MCP servers', icon: 'cloud', view: MCP_VIEW }] },
     settingsTabs: [{ id: MCP_SETTINGS_TAB, label: 'MCP servers', icon: 'cloud', order: o.settingsOrder ?? 35, description: `MCP servers this app connects to as a client. Credentials are kept by ${host.registry.label}.` }],
     settingsPanels: [{ id: 'mcp.servers', tab: MCP_SETTINGS_TAB, title: 'Servers', icon: 'cloud', order: 10, render: () => <ServersPanel host={host} store={store} envAuth={envAuth} perms={perms} /> }],
