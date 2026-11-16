@@ -47,8 +47,8 @@ On top of the component spots, **1 507 `icon` fields in 189 asset files** (menus
 widgets, cards, plugin pages) name glyphs by data. They are not enumerated as spots: the loader that draws them
 registers a dynamic spot per host (`framework:app-menu/icon`, `framework:banner/icon`, `framework:widgets/icon`, …), and a
 pack restyles them through per-name entries. 66 distinct glyph names are asked for by source, 64 of them in the
-framework set (`react/components/Icon.tsx`, 88 names); `calendar` and `message` fall back to `box` today and are the
-first two gaps a pack can fill.
+framework set (`core/engines/icon-glyphs.mjs`, 76 names, read by `react/components/Icon.tsx`); `calendar` and `message`
+fall back to `box` today and are the first two gaps a pack can fill.
 
 Where the spots are (the areas with the most, full list in the inventory):
 
@@ -93,7 +93,7 @@ nothing of its own. What main has today, and this build stands on:
   pack for the current scope, else the app's, else the branding's (`core/runtime.ts:3080`). `designpackage.ts` lists
   `axf.icons.` as a look-setting prefix the hub document carries. s3 keeps these keys as the pack layer of the scope
   chain and adds overrides and reset on top.
-- **The Icon component** (`react/components/Icon.tsx`): 88 framework glyphs, `Icon name=…` reads `rt.brandGlyph`; no
+- **The Icon component** (`react/components/Icon.tsx`): 76 framework glyphs, `Icon name=…` reads `rt.brandGlyph`; no
   spot id, no registration. s11 adds `<AxfIcon spot=…>` and `useIconSpot`; `Icon` stays as the per-name path.
 - **icon-sets@1** (`schemas/icon-sets.json`, `customize.ts iconSetCss`): 100 CSS restyles of the framework line icons
   (stroke, cap, fill, frame). Orthogonal: a set restyles whatever glyph is drawn, a pack decides which glyph.
@@ -202,3 +202,26 @@ Nothing on main stores an icon pick outside a skin or branding asset, so no docu
   framework, as today. Pinned by the `legacy` cases of `spec/fixtures/icon-pack.json`.
 - A look document that carries a top-level `iconPack` string or `own.settings["axf.icons.pack.app"]` (written by
   pre-main experiments) is read as `icon.pack` on normalize (`normalizeIconLook`) and written back in the new shape.
+
+## Phase 1 delivered (Nov 16 2026): engines, assets, React
+
+| piece | where | reached by |
+| --- | --- | --- |
+| spot inventory + scanner | `cli/icon-map.mjs scan \| list`, `spec/icon-inventory.json` | CLI |
+| asset types | `schemas/asset-types.json` icon-map, icon-pack (extended); `schemas/json/icon-map.schema.json`, `icon-pack.schema.json` | `axf validate --framework`, build engine |
+| rules (plain JS mirror) | `core/engines/icon-rules.mjs` | core validator, build engine, console server |
+| framework glyph set | `core/engines/icon-glyphs.mjs` (`FRAMEWORK_GLYPHS`, 76) | Icon, AxfIcon, the `default` pack |
+| pack engine | `core/engines/icon-pack.ts` (fold, chain, resolve, overrides, reset, markup) | `rt.resolveIconSpot`, `rt.iconMarkup`, `rt.appIconMarkup`, `rt.iconPack`, `rt.iconOverrides`, `rt.setIconPack`, `rt.setIconOverride`, `rt.resetIconSpot` / `resetIconScope` / `resetIconApp`, `rt.setHubIconPack` / `setHubIconOverride` / `resetHubIconSpot` / `resetHubIcon` |
+| map engine | `core/engines/icon-map.ts` (registry, dedupe, coverage, search, tree) | `rt.registerIconSpot`, `rt.iconRegistry`, `rt.iconCoverageHere`, `rt.searchIconSpots`, `rt.iconSpotTree` |
+| generator | `core/engines/icon-gen.ts` (`generateIcon`, `generatePack`, seeded) | `spec/gen-icon-starters.mts` (the `generated-ember` pack) |
+| import | `core/engines/icon-import.ts` (`sanitizeSvg`, `normalizeSvg`, `importSvg`, `importPng`, `importGlyph`) | every upload / URL / library import |
+| documents | appearance@1 `icon`, app-look@1 `icon` (`normalizeIconHub`, `normalizeIconLook`) | the hub, `skins.mjs`, the runtime |
+| starters | `assets/icon-map/default.json`; `assets/icon-pack/default.json`, `outline.json`, `filled.json`, `generated-ember.json` | baked into every shared app (`shared-assets.mjs bake`) |
+| React | `react/components/AxfIcon.tsx` (`<AxfIcon spot=… name=…>`, `useIconSpot`, `iconSizeCss`, `iconTintCss`); `Icon` draws through the same chain | every app on framework/react |
+| fixtures + check | `spec/fixtures/icon-pack.json`, `icon-gen.json`, `icon-import.json`; `spec/check-icon-pack.mts` (CI) | `npx -y tsx framework/spec/check-icon-pack.mts` |
+
+The runtime methods are the one surface the next phases wrap: the icon-packs plugin's REST routes, `framework/cli/icon-packs.mjs`,
+the MCP tools (plugin commands) and the AmberX voice actions all call these same functions, and the designer plugin
+(drag and drop, sources, generator panel, live preview) edits the same two documents. Nothing in this phase has a UI of
+its own beyond `<AxfIcon>` (which draws what the API says), so the API-first rule holds: every pick, override and reset
+is a runtime call today and a route, command and spoken action in the next phases.
