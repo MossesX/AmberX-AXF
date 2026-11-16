@@ -2,11 +2,11 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.approvals-banner",
   "name": "Approvals banner",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "The veto banner: a banner at the top of the app whenever axHub holds a call on its countdown (veto@1: it runs by itself after 90 s unless you stop it) or has one waiting for approval. Held calls show a live countdown with Deny, Approve (run it now) and Shelve (pause the countdown until you decide); tapping one opens the veto screen. Its notices (timer started, 30 s left, running) and a small approval overlay on the phone (a floating toolbar over every app that opens into the full approval card when one arrives, then shrinks back; side, height, size, when it opens and what it shows are settings), a configurable alarm (tone or your own sound, volume, louder over time, how long, repeats, vibration, when it starts, through silent mode on the phone) work in every app it is installed in: the console and AmberX. Only for admins signed in to axHub; it acts only on your tap. In the console, Approve and Deny stay in the console: the tap goes through its relay with your own hub session and the result shows where you tapped.",
+  "description": "The veto banner: a banner at the top of the app whenever axHub holds a call on its countdown (veto@1: it runs by itself after 90 s unless you stop it) or has one waiting for approval. Held calls show a live countdown with Deny, Approve (run it now) and Shelve (pause the countdown until you decide); tapping one opens the veto screen. Its notices (timer started, 30 s left, running) and the overlay on the phone (one always-on floating toolbar over every app: it spawns the approval bar when something waits, expands into a full-screen browser where Amber drives the console while you watch, and keeps AmberX able to open pages from the background; overlay.expand, overlay.collapse and overlay.open run it by voice, MCP, the API and the CLI), a configurable alarm (tone or your own sound, volume, louder over time, how long, repeats, vibration, when it starts, through silent mode on the phone) work in every app it is installed in: the console and AmberX. Only for admins signed in to axHub; it acts only on your tap. In the console, Approve and Deny stay in the console: the tap goes through its relay with your own hub session and the result shows where you tapped.",
   "targets": [
     "axf-console",
     "amberx-droid"
@@ -22,7 +22,10 @@
     "action:approvals.view",
     "action:approvals.approve",
     "action:approvals.decline",
-    "action:approvals.overlay"
+    "action:approvals.overlay",
+    "action:overlay.expand",
+    "action:overlay.collapse",
+    "action:overlay.open"
   ],
   "optional": [],
   "scopes": [

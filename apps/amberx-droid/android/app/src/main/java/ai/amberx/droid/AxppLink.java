@@ -33,10 +33,13 @@ import org.json.JSONObject;
  *  - `recorder.stop` stops it the same way the notification's Stop does.
  *  - `recorder.status` answers on/off, since, session, current file, uploaded parts and the queue.
  *  - `browser.open` (capability `open-url@1`, console wake, Nov 3 2026) opens one of Brett's own pages
- *    ({@link OpenUrlRules#allowed}: https on amberxai.com only) in Chrome or the default browser, e.g. the Dev Console
- *    with a queued console command. Android 10+ silently drops most starts from the background (startActivity returns
- *    normally), so {@link #startInForeground} only counts one that had a window to start from, and a high-priority
- *    notification with a full-screen intent stays as the one-tap way in. The answer's `opened` says which.
+ *    ({@link OpenUrlRules#allowed}: https on amberxai.com only), e.g. the Dev Console with a queued console command.
+ *    It goes through the overlay: the always-on toolbar expands into its full-screen browser and the page opens
+ *    there directly. A URL carrying {@code axf-overlay=expand|collapse} is an overlay verb instead
+ *    ({@link OverlayPageRules#verb}). Only with the overlay off, or a call asking for {@code where: "browser"}, does it
+ *    go to Chrome: Android 10+ silently drops most starts from the background, so {@link #startInForeground} only counts
+ *    one that had a window to start from, and a high-priority notification with a full-screen intent stays as the
+ *    one-tap way in. The answer's `opened` and `where` say which.
  */
 final class AxppLink {
     private AxppLink() {}
@@ -47,7 +50,6 @@ final class AxppLink {
     private static final String CHANNEL_OPEN = "amberx-open-console";
     private static final String CHANNEL = "amberx-recorder-remote";
     private static final int POLL_SECONDS = 25;
-    private static final long OVERLAY_LEAD_MS = 200, OVERLAY_HOLD_MS = 1500;
     private static Thread thread;
     private static Context app;
     private static final Handler main = new Handler(Looper.getMainLooper());
@@ -153,11 +155,21 @@ final class AxppLink {
         switch (tool) {
             case OpenUrlRules.OPEN: {
                 String url = OpenUrlRules.allowed(args.optString("url", ""));
-                // The floating toolbar becomes a full browser window when it can (draw over other apps works from the
-                // background); otherwise, or with where=browser, Chrome as before.
-                if (OverlayPageRules.inOverlay(WatchService.approvalOverlaySettings(c), args, WatchService.overlayPagesReady(c))
-                    && WatchService.openOverlayPage(c, url)) {
-                    return new JSONObject().put("url", url).put("browser", "overlay").put("opened", true)
+                String verb = OverlayPageRules.verb(url);
+                boolean ready = WatchService.overlayPagesReady(c);
+                // overlay.collapse / overlay.expand from the console, MCP, the CLI or voice, through the same hub tool.
+                if (OverlayPageRules.COLLAPSE.equals(verb)) {
+                    boolean ok = ready && WatchService.approvalOverlayCommand(c, "collapse", null);
+                    return new JSONObject().put("url", url).put("verb", verb).put("opened", false).put("collapsed", ok)
+                        .put("notified", false).put("overlay", ready).put("where", "overlay");
+                }
+                if (OverlayPageRules.EXPAND.equals(verb) && ready && WatchService.approvalOverlayCommand(c, "expand", null)) {
+                    return new JSONObject().put("url", url).put("verb", verb).put("browser", "overlay").put("opened", true)
+                        .put("notified", false).put("overlay", true).put("where", "overlay");
+                }
+                // Every open goes through the overlay: the toolbar expands into its full-screen browser on the page.
+                if (OverlayPageRules.inOverlay(args, ready) && WatchService.openOverlayPage(c, url)) {
+                    return new JSONObject().put("url", url).put("verb", OverlayPageRules.OPEN).put("browser", "overlay").put("opened", true)
                         .put("notified", false).put("overlay", true).put("where", "overlay");
                 }
                 return openUrl(c, url, OpenUrlRules.browserOf(args)).put("where", "browser");
@@ -259,26 +271,15 @@ final class AxppLink {
     }
 
     /**
-     * Starts an activity from the background the way Android allows it. Since Android 15 holding "Display over other
-     * apps" isn't enough on its own: the app needs a visible overlay window at that moment, so a 1 px transparent one
-     * is up for the start. Without AmberX on screen or that permission Android drops the start silently, so this
-     * doesn't try. → true when the start has a window behind it; only the page opening proves it landed.
+     * Starts an activity from the background the way Android allows it: with AmberX on screen, or while the overlay
+     * toolbar is visible (since Android 15 holding "Display over other apps" isn't enough on its own: the app needs a
+     * visible overlay window at that moment, and the always-on toolbar is that window). Otherwise Android drops the
+     * start silently, so this doesn't try. → true when the start has a window behind it; only the page opening proves
+     * it landed.
      */
     private static boolean startInForeground(Context c, Intent i) {
-        if (WatchService.inApp) {
-            try { c.startActivity(i); return true; } catch (RuntimeException e) { return false; }
-        }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || !android.provider.Settings.canDrawOverlays(c)) return false;
-        android.view.WindowManager wm = (android.view.WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
-        android.view.View dot = new android.view.View(c);
-        try {
-            wm.addView(dot, new android.view.WindowManager.LayoutParams(1, 1, android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, android.graphics.PixelFormat.TRANSLUCENT));
-        } catch (RuntimeException e) { return false; }
-        // the system has to see the window first: start a moment later, take the window down after the start
-        main.postDelayed(() -> { try { c.startActivity(i); } catch (RuntimeException ignored) { /* the notification does it */ } }, OVERLAY_LEAD_MS);
-        main.postDelayed(() -> { try { wm.removeViewImmediate(dot); } catch (RuntimeException ignored) { /* already gone */ } }, OVERLAY_HOLD_MS);
-        return true;
+        if (!WatchService.inApp && !WatchService.overlayShown()) return false;
+        try { c.startActivity(i); return true; } catch (RuntimeException e) { return false; }
     }
 
     /**

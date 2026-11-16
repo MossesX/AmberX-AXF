@@ -123,7 +123,16 @@ export function normalizeAppLook(raw) {
   out.own = normalizeLookPart(raw.own);
   out.skin = normalizeSkinState(raw.skin);
   out.scopes = normalizeScopes(raw.scopes);
-  if (isObj(raw.undo)) out.undo = { own: normalizeLookPart(raw.undo.own), skin: normalizeSkinState(raw.undo.skin), scopes: normalizeScopes(raw.undo.scopes), at: String(raw.undo.at ?? '') };
+  if (isObj(raw.undo)) {
+    out.undo = { own: normalizeLookPart(raw.undo.own), skin: normalizeSkinState(raw.undo.skin), scopes: normalizeScopes(raw.undo.scopes), at: String(raw.undo.at ?? '') };
+    // skin-switch@1: the action and scope that left the record (the Undo label), and the hub-wide skin before a hub switch
+    if (typeof raw.undo.action === 'string' && raw.undo.action) out.undo.action = raw.undo.action;
+    if (typeof raw.undo.scope === 'string' && raw.undo.scope) out.undo.scope = raw.undo.scope;
+    if (out.undo.scope === 'hub' && 'global' in raw.undo) {
+      const g = raw.undo.global;
+      out.undo.global = isObj(g) && typeof g.id === 'string' && ID.test(g.id) ? withColor({ id: g.id, overrides: idMap(g.overrides, [SKIN_COLOR_SLOT]) }, colorPick(g)) : null;
+    }
+  }
   // skins only (look-migration@1): the one-run stamp and the backup of what the fold moved; kept through every writer
   if (isObj(raw.migrated) && Number.isFinite(Number(raw.migrated.version))) {
     out.migrated = { version: Math.max(0, Math.floor(Number(raw.migrated.version))), at: String(raw.migrated.at ?? ''), by: String(raw.migrated.by ?? '') };
