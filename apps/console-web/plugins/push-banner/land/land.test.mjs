@@ -250,5 +250,10 @@ rmSync(tmp, { recursive: true, force: true });
 console.log('group chat: a landing reason is Brett\'s move, a code fix, or something in the way');
 check(['held', 'ui', 'code'].every((k) => reasonEvent(k) === 'waiting'), 'held, UI Review and uncommitted code wait for Brett');
 check(['conflict', 'ci', 'error'].every((k) => reasonEvent(k) === 'failed') && ['push', 'pr', 'dependency'].every((k) => reasonEvent(k) === 'blocked'), 'conflicts and red CI failed; push, PR and dependencies blocked');
+{
+  const rr = core.blockReason('b1', { ci: 'success', rules: { failing: ['home-card', 'ci-checks'] } });
+  check(rr?.kind === 'rules' && /home-card, ci-checks/.test(rr.text) && reasonEvent('rules') === 'blocked' && !rr.agent, 'failing build rules block landing (not an agent job)');
+  check(core.blockReason('b1', { ci: 'success', rules: { failing: [] } }) === null, 'passing build rules do not block');
+}
 console.log(`auto-land: ${ok} checks passed${bad ? `, ${bad} FAILED` : ''}`);
 if (bad) process.exitCode = 1;
