@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T23:21:05.383Z",
+ "updatedAt": "2026-11-16T23:21:20.841Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -116569,19 +116569,23 @@
    "title": "Rename every crew agent (Agent Swarm, Agent Manager, agent cards, sessions, group chat) to a cat name from Brett's list of 200 cat names, keeping the existing cat names (Amber, Marco, Patches, Polo, Gizmo, Brownie, Ashes, Jennifer). Update everything that shows an agent name, everywhere. Android twi",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T23:25:43.887Z",
-   "updatedAt": "2026-11-12T23:26:43.501Z",
+   "updatedAt": "2026-11-16T23:21:13.587Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-12T23:26:43.501Z"
+    },
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-16T23:21:13.587Z"
     }
    ],
    "approvals": [],
@@ -122031,14 +122035,14 @@
    "title": "Every skin ships a light and a dark colour theme (Studio Pro, Executive, Field, Command, Default and any future skin): quick light/dark switch per skin, follow-system option, coverage check fails if a skin lacks either; full API and voice",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T10:39:34.330Z",
-   "updatedAt": "2026-11-13T10:56:48.048Z",
+   "updatedAt": "2026-11-16T23:21:11.528Z",
    "builtAt": "",
    "notes": [
     {
@@ -122048,6 +122052,10 @@
     {
      "text": "Duplicate of every-skin-ships-a-light-and-a-dark-colour-theme (PR #563), which does this work. Close this one or keep it for the Skins-menu light/dark toggle follow-up.",
      "at": "2026-11-13T10:56:48.048Z"
+    },
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-16T23:21:11.528Z"
     }
    ],
    "approvals": [],
@@ -122443,7 +122451,7 @@
    "title": "Drag anything by API and voice (follow-up to full API control, start only after PR #556 lands): every draggable thing (banner widgets, toolbar items, tabs, dock panes, grid columns/rows, list items, layout slots) gets a move command with drop zones, incl. add/remove/reorder banner widgets; REST, MCP",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -122451,12 +122459,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:13:21.086Z",
-   "updatedAt": "2026-11-13T11:17:21.962Z",
+   "updatedAt": "2026-11-16T23:21:07.905Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 21 steps (4 Fable).",
      "at": "2026-11-13T11:17:21.962Z"
+    },
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-16T23:21:07.905Z"
     }
    ],
    "approvals": [],
