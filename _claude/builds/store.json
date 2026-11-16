@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6972,
- "updatedAt": "2026-11-16T23:04:54.162Z",
+ "rev": 6973,
+ "updatedAt": "2026-11-16T23:05:18.381Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -256493,7 +256493,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:51.546Z",
-   "updatedAt": "2026-11-16T23:04:50.663Z",
+   "updatedAt": "2026-11-16T23:05:13.234Z",
    "builtAt": "",
    "notes": [
     {
@@ -256503,6 +256503,10 @@
     {
      "text": "Split by Claude into 19 steps (4 Fable).",
      "at": "2026-11-16T23:03:57.915Z"
+    },
+    {
+     "text": "Dispatch gate: banner-widget-shapes-plus-change-icon still has axf-banner-widget-shapes-plus-change-icon--rhonda alive: not launched again, tracking that session.",
+     "at": "2026-11-16T23:05:13.234Z"
     },
     {
      "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-banner-widget-shapes-plus-change-icon--rhonda.",
@@ -256530,13 +256534,13 @@
    "pipeline": {
     "queuedAt": "2026-11-16T22:59:53.814Z",
     "queuedBy": "console",
-    "account": "hulu0241",
+    "account": "",
     "session": "axf-banner-widget-shapes-plus-change-icon--rhonda",
     "slot": "",
-    "model": "Fable",
-    "phase": "Phase 1",
-    "launchedAt": "2026-11-16T23:04:42.836Z",
-    "runs": 1,
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -256549,7 +256553,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-16T23:04:42.836Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Fable",
      "account": "hulu0241",
@@ -256558,7 +256562,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "2026-11-16T23:04:42.836Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""

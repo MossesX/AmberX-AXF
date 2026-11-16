@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T23:04:54.162Z",
+ "updatedAt": "2026-11-16T23:05:18.381Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -168395,7 +168395,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:51.546Z",
-   "updatedAt": "2026-11-16T23:04:50.663Z",
+   "updatedAt": "2026-11-16T23:05:13.234Z",
    "builtAt": "",
    "notes": [
     {
@@ -168405,6 +168405,10 @@
     {
      "text": "Split by Claude into 19 steps (4 Fable).",
      "at": "2026-11-16T23:03:57.915Z"
+    },
+    {
+     "text": "Dispatch gate: banner-widget-shapes-plus-change-icon still has axf-banner-widget-shapes-plus-change-icon--rhonda alive: not launched again, tracking that session.",
+     "at": "2026-11-16T23:05:13.234Z"
     },
     {
      "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-banner-widget-shapes-plus-change-icon--rhonda.",
