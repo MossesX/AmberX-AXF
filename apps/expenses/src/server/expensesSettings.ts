@@ -1,5 +1,5 @@
 /**
- * @file The Expense Tracker's settings over the ledger API (`/api/expenses/v1/settings`), for Molly and tools. The rows
+ * @file The Expense Tracker's settings over the ledger API (`/api/expenses/v1/settings`), for other apps and tools. The rows
  * are the module decl's (`expenses.decl.ts` → `settings.rows`), stored in the same kv document the app's settings store
  * writes (`expenses-settings`: `{ v, settings }`), so a change here shows in the standalone app and back. **Node-only.**
  */

@@ -13,7 +13,7 @@ This app now lives in **MossesX/AmberX-AXF at `apps/expenses`** (imported with i
 longer deploys. The repo-wide rules in AmberX-AXF's `CLAUDE.md` and `_claude/` apply (the "Working with
 Brett" section below is from the old repo; the AXF rules win where they differ, e.g. no Sonnet).
 
-- Manifest: `project.manifest.json` (`expenses`). Molly frames it (`apps/molly/src/molly/apps.ts`).
+- Manifest: `project.manifest.json` (`expenses`).
 - Its UI still runs on the vendored `@axf/core` 0.0.25 look, held to a shrink-only baseline in
   `framework/spec/conform-baseline.json`; moving it onto the AXF theme engines is follow-up work.
 - Deploy and rollback: `deploy/install.sh` (see `deploy/README.md`). Data stays on the `amberx-studio-data`

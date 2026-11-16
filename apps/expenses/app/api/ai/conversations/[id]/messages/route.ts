@@ -76,6 +76,6 @@ async function handlePOST(request: Request, ctx: Ctx): Promise<Response> {
   return new Response(stream, { headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache, no-transform", "X-Accel-Buffering": "no" } });
 }
 
-/* Molly (molly.amberxai.com) reaches the assistant cross-origin with the signed-in session: src/server/cors.ts */
+/* Allowed cross-origin clients (EXPENSES_CORS_ORIGINS) reach the assistant with the signed-in session: src/server/cors.ts */
 export const POST = corsRoute(handlePOST);
 export const OPTIONS = preflight;

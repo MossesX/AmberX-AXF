@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Expenses (the Expense Tracker, apps/expenses) on the VPS at https://$DOMAIN behind Coolify's Traefik, deployed from
-# AmberX-AXF. Same shape as apps/molly/deploy/install.sh, plus a safe cut-over from the old MossesX/Expense container.
+# AmberX-AXF. Same shape as the other app installers (framework/deploy/axf-deploy.sh), plus a safe cut-over from the old MossesX/Expense container.
 #
 #   sudo bash apps/expenses/deploy/install.sh             build, verify alongside, swap, install the 5-minute update cron
 #   sudo bash apps/expenses/deploy/install.sh --status    what runs, which image, ledger counts
@@ -13,7 +13,7 @@
 # the swap and rolls back by itself when the new container isn't healthy or the counts differ.
 #
 # What it does (safe to re-run):
-#   1. clone / update AmberX-AXF into $DIR (GitHub token from the broker, like Molly)
+#   1. clone / update AmberX-AXF into $DIR (GitHub token from the broker)
 #   2. build $IMAGE:<commit> from apps/expenses (heavy step: agent-slots lock when it is there)
 #   3. run it as $NAME-next on the volume, no Traefik route, and wait for /api/health
 #   4. count ledger entries (every /data/axf/kv/<user>/expenses.json) from inside the candidate = the count on the volume

@@ -10,6 +10,6 @@ async function handleGET(request: Request): Promise<Response> {
   return Response.json(await aiStatus(c.user, c.model));
 }
 
-/* Molly (molly.amberxai.com) reaches the assistant cross-origin with the signed-in session: src/server/cors.ts */
+/* Allowed cross-origin clients (EXPENSES_CORS_ORIGINS) reach the assistant with the signed-in session: src/server/cors.ts */
 export const GET = corsRoute(handleGET);
 export const OPTIONS = preflight;

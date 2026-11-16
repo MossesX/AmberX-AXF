@@ -16,7 +16,7 @@
  *   PATCH /api/expenses/v1/settings      body { key: value | null }         → same (null = back to the default)
  *   GET   /api/expenses/v1/me                                               → { user } (who this call acts as)
  *
- * Molly (molly.amberxai.com) calls these cross-origin with the user's session cookie: an allowed Origin gets CORS
+ * Allowed cross-origin clients (EXPENSES_CORS_ORIGINS) call these with the user's session cookie: an allowed Origin gets CORS
  * headers and preflight answers (`src/server/cors.ts`); same-origin and tool calls are unchanged.
  *
  * Deleting is left to the app (it has the undoable delete dialog); the API never removes an entry.

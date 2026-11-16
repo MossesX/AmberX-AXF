@@ -1,19 +1,19 @@
 /**
- * @file Cross-origin access to the ledger API for Molly (build molly-native-expenses, Nov 2026).
+ * @file Cross-origin access to the ledger API (Nov 2026).
  *
- * Molly (`https://molly.amberxai.com`) draws the Expense Tracker's screens natively and reads / writes the same ledger
- * through `/api/expenses/v1/*` with the user's own `axs_session` cookie (`credentials: "include"`). Molly and this app
- * are the same site (amberxai.com), so the Lax session cookie rides along; what the browser still needs is CORS.
+ * Another app on the same site (amberxai.com) may draw the Expense Tracker's screens natively and read / write the same
+ * ledger through `/api/expenses/v1/*` with the user's own `axs_session` cookie (`credentials: "include"`); the Lax
+ * session cookie rides along, and what the browser still needs is CORS.
  *
  * The standalone app is untouched: a request without an `Origin`, or from this app's own origin, gets no extra headers.
  * Only origins on the allow-list get `Access-Control-Allow-Origin` (exact echo, never `*`) with credentials. The list is
- * `https://molly.amberxai.com` plus `EXPENSES_CORS_ORIGINS` (comma separated, container env, e.g. a dev Molly on
- * `http://localhost:5173`).
+ * `EXPENSES_CORS_ORIGINS` (comma separated, container env, e.g. `http://localhost:5173` for a dev client); empty by
+ * default, so nothing cross-origin is allowed until it is set.
  */
 
 import { axsUserFromCookieHeader } from "@axs/modules/accounts/lib/session";
 
-const DEFAULT_ORIGINS = ["https://molly.amberxai.com"];
+const DEFAULT_ORIGINS: string[] = [];
 
 export function allowedOrigins(): string[] {
   const extra = (process.env.EXPENSES_CORS_ORIGINS ?? "").split(",").map((s) => s.trim()).filter(Boolean);
@@ -55,7 +55,7 @@ export function preflight(request: Request): Response {
 }
 
 /**
- * Wraps a route handler for Molly: an allowed cross-origin call must carry a signed-in session (never the signed-out
+ * Wraps a route handler for cross-origin clients: an allowed cross-origin call must carry a signed-in session (never the signed-out
  * "local" owner the app itself falls back to) and gets CORS headers; same-origin and tool calls run unchanged.
  */
 export function corsRoute<A extends unknown[]>(handler: (request: Request, ...rest: A) => Promise<Response>) {

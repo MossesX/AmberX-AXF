@@ -73,18 +73,21 @@ try {
   const backups = readdirSync(dir).filter((f) => f.startsWith("expenses.api-backup-"));
   ok(backups.length === 1 && JSON.parse(readFileSync(path.join(dir, backups[0]!), "utf8")).doc.expenses.length === 1, "one daily backup, taken before the first write");
 
-  // Molly: cross-origin with credentials from the allow-list only; same-origin calls get no CORS headers
-  const MOLLY = "https://molly.amberxai.com";
+  // cross-origin with credentials from the allow-list only (EXPENSES_CORS_ORIGINS, empty by default); same-origin calls get no CORS headers
+  const CLIENT = "https://client.example";
+  r = await route.GET(req("GET", "me", undefined, { ...H, origin: CLIENT }), ctx("me"));
+  ok(!r.headers.get("access-control-allow-origin"), "no allow-list → no CORS headers for any origin");
+  process.env.EXPENSES_CORS_ORIGINS = CLIENT;
   r = await route.GET(req("GET", "me"), ctx("me"));
   ok(r.status === 200 && (await r.json()).user === "Tester" && !r.headers.get("access-control-allow-origin"), "me → user, no CORS headers without an Origin");
-  r = await route.GET(req("GET", "me", undefined, { ...H, origin: MOLLY }), ctx("me"));
-  ok(r.headers.get("access-control-allow-origin") === MOLLY && r.headers.get("access-control-allow-credentials") === "true", "Molly origin → CORS with credentials");
-  r = await route.GET(req("GET", "entries", undefined, { origin: MOLLY }), ctx("entries"));
-  ok(r.status === 401 && r.headers.get("access-control-allow-origin") === MOLLY, "signed-out Molly call → 401 the browser can read");
+  r = await route.GET(req("GET", "me", undefined, { ...H, origin: CLIENT }), ctx("me"));
+  ok(r.headers.get("access-control-allow-origin") === CLIENT && r.headers.get("access-control-allow-credentials") === "true", "listed origin → CORS with credentials");
+  r = await route.GET(req("GET", "entries", undefined, { origin: CLIENT }), ctx("entries"));
+  ok(r.status === 401 && r.headers.get("access-control-allow-origin") === CLIENT, "signed-out cross-origin call → 401 the browser can read");
   r = await route.GET(req("GET", "me", undefined, { ...H, origin: "https://evil.example" }), ctx("me"));
   ok(!r.headers.get("access-control-allow-origin"), "other origin → no CORS headers");
-  r = route.OPTIONS(new Request("http://x/api/expenses/v1/entries", { method: "OPTIONS", headers: { origin: MOLLY, "access-control-request-method": "POST" } }));
-  ok(r.status === 204 && r.headers.get("access-control-allow-methods")?.includes("PATCH"), "preflight from Molly → 204");
+  r = route.OPTIONS(new Request("http://x/api/expenses/v1/entries", { method: "OPTIONS", headers: { origin: CLIENT, "access-control-request-method": "POST" } }));
+  ok(r.status === 204 && r.headers.get("access-control-allow-methods")?.includes("PATCH"), "preflight from a listed origin → 204");
   ok(route.OPTIONS(new Request("http://x/api/expenses/v1/entries", { method: "OPTIONS", headers: { origin: "https://evil.example" } })).status === 403, "preflight from elsewhere → 403");
 
   // paydays: no schedule → not ready, fill refused; with a schedule → missing dates, fill adds them once
@@ -124,11 +127,11 @@ try {
   j = await (await route.PATCH(req("PATCH", "settings", { toastSeconds: null }), ctx("settings"))).json();
   ok(j.values.toastSeconds === 4 && !j.changed.includes("toastSeconds"), "null puts a setting back to its default");
 
-  // the assistant routes' wrapper: a Molly call needs a signed-in session; same-origin runs unchanged
+  // the assistant routes' wrapper: a cross-origin call needs a signed-in session; same-origin runs unchanged
   const { corsRoute } = await import("../src/server/cors.ts");
   const h = corsRoute(async () => Response.json({ ok: true }));
-  r = await h(new Request("http://x/api/ai/status", { headers: { origin: MOLLY } }));
-  ok(r.status === 401 && r.headers.get("access-control-allow-origin") === MOLLY, "assistant: signed-out Molly call → 401 with CORS");
+  r = await h(new Request("http://x/api/ai/status", { headers: { origin: CLIENT } }));
+  ok(r.status === 401 && r.headers.get("access-control-allow-origin") === CLIENT, "assistant: signed-out cross-origin call → 401 with CORS");
   r = await h(new Request("http://x/api/ai/status"));
   ok(r.status === 200 && !r.headers.get("access-control-allow-origin"), "assistant: same-origin call unchanged");
 } finally {

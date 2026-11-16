@@ -176,7 +176,7 @@ export function editEntry(e: Expense, i: EntryInput): Expense {
   return out;
 }
 
-/* ------------------------- paydays and statements (Molly) ------------------------- */
+/* ------------------------- paydays and statements ---------------------------- */
 
 /** The pay schedule from the user's stored settings (kv `expenses-settings`), the same rows the app's Paydays
  *  dialog edits. Mirrors `paySchedule()` in settings.ts, which is client-only. */

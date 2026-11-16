@@ -885,6 +885,22 @@ mod._record_fix({"state": "done", "title": "Disk", "check": "disk", "message": "
 check(True, "systems check: a broken chat never breaks the monitor")
 plugin_services.withdraw("fake-crew")
 
+# retired apps (health@1): leftovers on the VPS and the DNS record, until they are gone
+import tempfile as _tf  # noqa: E402
+ret = importlib.import_module(mod.__name__ + ".retired")
+_app = ret.RETIRED[0]
+_cmd = ret.host_command(_app)
+check(_cmd.startswith(f"docker rm -f {_app['container']}") and "rm -rf " + " ".join(_app["paths"]) in _cmd and f"/opt/axf/.axf-console/retired/{_app['id']}" in _cmd, "retired: one fixed command removes the leftovers and leaves the marker")
+_tmp = Path(_tf.mkdtemp())
+check(ret.host_state(_app, _tmp)["status"] == "warn" and "breaks" in ret.host_state(_app, _tmp), "retired: leftovers are a warning that says what they break")
+(_tmp / ".axf-console" / "retired").mkdir(parents=True); (_tmp / ".axf-console" / "retired" / _app["id"]).write_text("2026-11-16T00:00:00Z")
+check(ret.host_state(_app, _tmp)["status"] == "ok", "retired: the marker turns it green")
+check(ret.dns_state(_app, lambda d: "31.97.13.252")["status"] == "warn" and ret.dns_record(_app) in ret.dns_state(_app, lambda d: "1.2.3.4")["details"][0], "retired: a name that still resolves is a warning naming the exact record")
+def _nx(d):
+    raise OSError("NXDOMAIN")
+check(ret.dns_state(_app, _nx)["status"] == "ok", "retired: a name that no longer resolves is green")
+check(f"retired-{_app['id']}-host" in mod.REGISTRY.checks() and f"retired-{_app['id']}-dns" in mod.REGISTRY.checks() and mod.REGISTRY.autofix(f"retired-{_app['id']}-host")["mode"] == "ask", "retired: both checks registered, the VPS cleanup asks first")
+
 root = os.environ["AXF_SYSTEMS_CHECK_DIR"]
 check(all((p.stat().st_mode & 0o077) == 0 for p in Path(root).rglob("*") if p.is_file()), "data files private")
 print(f"all {ok} checks passed")

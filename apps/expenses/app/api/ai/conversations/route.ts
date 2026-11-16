@@ -20,7 +20,7 @@ async function handlePOST(request: Request): Promise<Response> {
   return Response.json({ conversation: summary(conv) }, { status: 201 });
 }
 
-/* Molly (molly.amberxai.com) reaches the assistant cross-origin with the signed-in session: src/server/cors.ts */
+/* Allowed cross-origin clients (EXPENSES_CORS_ORIGINS) reach the assistant with the signed-in session: src/server/cors.ts */
 export const GET = corsRoute(handleGET);
 export const POST = corsRoute(handlePOST);
 export const OPTIONS = preflight;

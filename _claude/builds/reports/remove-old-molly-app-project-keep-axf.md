@@ -133,3 +133,24 @@ AmberX server (172), AmberX web (2335).
 help coverage never counted a Molly file (apps/molly was outside their scans), so no count moved. Help coverage stays
 at 100% for console-web, axHub web and the framework; the new gizmo-guide help entry is within the 600-character rule.
 Glossary coverage is rebuilt in s13.
+
+## Deploy (s10)
+
+- The installer, `nginx.conf`, Dockerfile and update hook went with `apps/molly` (s7). `deploy/` and
+  `framework/deploy/axf-deploy.sh` never named Molly. The `axf-molly` container is untouched.
+- Proxy / frame rules: `molly.amberxai.com` dropped from axHub web's and AmberX's `frame-ancestors`. Expenses no longer
+  allows it by default for CORS: the list is `EXPENSES_CORS_ORIGINS` only, empty by default (test updated; it runs in
+  CI, since this checkout has no Expenses `node_modules`).
+- On the VPS (checked Nov 16): no `molly` container is running, but its installer left `/etc/cron.d/molly` (every 5
+  minutes), `/usr/local/bin/molly-update`, `/var/log/molly-update.log` and `/opt/molly`. Once this lands, that cron
+  pulls main and runs an installer that is gone, so it fails on every run.
+- This session has no axHub or Hostinger connector, so both are **systems check banner items**
+  (`systems-check/server/retired.py`, health@1, open `RETIRED` list):
+  - `retired-molly-host` "Leftovers of the old Molly app on the VPS" (warn, says what it breaks). Its Auto fix
+    "Remove the old Molly app from the VPS" (mode: ask first, because it deletes a folder) sends one veto call:
+    `docker rm -f molly >/dev/null 2>&1; rm -rf /etc/cron.d/molly /usr/local/bin/molly-update /var/log/molly-update.log /opt/molly && mkdir -p /opt/axf/.axf-console/retired && date -u +%FT%TZ > /opt/axf/.axf-console/retired/molly && echo removed`.
+    It turns green when the marker exists (the console sees `/opt/axf` as `/axf`).
+  - `retired-molly-dns` "DNS record of the old Molly app" (warn until the name stops resolving). The record to delete,
+    and nothing else: **`molly.amberxai.com A 31.97.13.252`** (zone `amberxai.com`, name `molly`; resolves to
+    31.97.13.252 today). Steps: axHub `hostinger` service → `dns_records_list` → delete that one record → read the
+    zone again → log it in `/projects/_shared/_data/dns/log.md`.
