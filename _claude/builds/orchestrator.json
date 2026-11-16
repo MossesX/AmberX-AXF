@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T16:49:26.637Z",
+ "updatedAt": "2026-11-16T16:49:45.073Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -156741,7 +156741,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T16:22:57.802Z",
-   "updatedAt": "2026-11-16T16:37:54.595Z",
+   "updatedAt": "2026-11-16T16:47:50.028Z",
    "builtAt": "",
    "notes": [
     {
@@ -156767,6 +156767,10 @@
     {
      "text": "Brett (Nov 16): SPLIT into 3 parallel builds. Main is not red; the CI failures are on the branches. This build now ONLY does: merge main into data-container-axf-data-holds-all and fix its CI, land it, bring the axf-data container up; then do the same for axf-data-postgres-real-tables-own, land it, run and verify the Postgres migration. The other builds handle the red CI fixes and the branch re-syncs.",
      "at": "2026-11-16T16:29:39.066Z"
+    },
+    {
+     "text": "fix-red-ci-blocked-builds-they-land fixes these main failures once on branch fix/ci-common-cause (PR to follow): amberx-droid @console/api alias, gate plugin page-head description + ui-review stale reference, and runners pinned to ubuntu-24.04 (Playwright 1.56 has no chromium for ubuntu-26.04, theme-swap fails). Build fix/main-green on top of it rather than redoing them.",
+     "at": "2026-11-16T16:47:50.028Z"
     }
    ],
    "approvals": [],
