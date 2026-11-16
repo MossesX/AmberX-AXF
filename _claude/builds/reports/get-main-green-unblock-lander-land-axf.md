@@ -135,3 +135,37 @@ Source: `claude/data-container-axf-data-holds-all` @ 050fac6b4 (level with GitHu
 - **Console reaches it:** `axf-console` is on the `axf-data` network. From inside the console, `GET http://axf-data:7700/v1/_meta/counts` with the console token → `{"$axf":"data-counts@1","counts":{},"cursor":0}`. That proves the network path and authentication. The store is empty, which is right for a fresh volume.
 - There is no `axhub` container on this host, so only the console was attached.
 - The console starts reading and writing through axf-data once the branch lands and the console redeploys with `conf/env/console.env` (s14).
+
+## data-container (#704) brought up to main (s14, in progress)
+
+#704 had never run CI: it conflicted with main, so GitHub built no merge ref. `land.mjs merge-main --dry-run` reported code conflicts, so I merged main into the branch by hand (4801426fa):
+- **`android.yml`**: kept the axf-data/data-store steps and main's gate-rules/build-rules steps. `check-landing-line` appears once.
+- **glossary `terms.json`, `catalog.json`, `status.json`**: kept both sides' entries.
+- **Control inventory and `tracker.json`**: regenerated.
+- **Help coverage**: had dropped to 99.5%, because of 8 new data-store controls. Drafted with `help-coverage.mjs --draft console-web`; back to 100%.
+- **Checks** (node:22): check-theme, check-controls and check-console-control pass. `tracker --check` passes. check-plugin-pages still fails on main's own GateView problem, which #724 fixes.
+- It lands through the merge queue once #724 has made main green.
+
+## Postgres landing prepared (s15)
+
+**Backup:** `~/hub/data/amberx-axf/backups/pre-postgres-20261116/console-data.tar.gz`
+- 1.85 GB, sha256 `dfa688c92051dc81…` (full hash in the `.sha256` file next to it).
+- Contents: `/opt/axf/.axf-console` without agent-swarm's git job worktrees, `/opt/axf/_claude/builds`, and the axhub-projects volume (`/projects`). Those are every root `data-migrate` reads.
+- Taken live, so crash-consistent: tar noted one file changing while it was read. `gzip -t` passes.
+
+**Dry run against a copy:** I extracted the tarball to a scratch folder and started a throwaway `postgres:16-alpine`, plus the branch's axf-data on it (engine `postgres`, 18 tables). Then `data-migrate apply --all` from the copy, then `verify`. The dry run found **four blockers**, all fixed on `claude/axf-data-postgres-real-tables-own`:
+
+| Blocker | Effect on the real run | Fix |
+|---|---|---|
+| M0 paths relative to `plugins`, M1 paths relative to `plugins/<folder>` | every one of the 40 plugin namespaces refused after its copy ("missing on axf-data" + "only on axf-data" for the same key) | M0 is relative to the migration unit (d45662177); spec seeds a plugin namespace now |
+| The walk went into git checkouts (agent-swarm job worktrees, 22 GB) and `node_modules` | `plan` on the VPS didn't finish in 400 s, and would have mapped whole repo copies as data | folders with a `.git` entry and `node_modules` skipped (d45662177); spec covers it |
+| `chat-viewer/chats.db` (705 MB) over the 256 MiB blob limit | the whole run aborted at `too_large` | over-limit files stay local with why (d45662177); its tables reach Postgres through `mirror_sync` |
+| `shipped-features/ledger.sqlite` copied as raw bytes in WAL mode | the rows still in `-wal` were lost: features 2570 vs 2569, refused | SQLite sources copied through SQLite's backup API, source read-only (afd586fc7) |
+
+`check-data-migrate.mjs`: 16 checks pass.
+
+**Result after the fixes:** all 47 namespaces copied and verified (M0 = M1, SQLite row counts equal).
+- Plan: 144 unmapped files stay local, 815 temp/lock files skipped. Plan takes about 100 s on the live roots; apply takes about 9.5 min.
+- Postgres rows: builds 949, build_steps 5425, journal 44510, changes 14799, records 8640, blobs 5396, ui_review_items 218, settings 9, notes 40, ledger_features 2570 (mirror equals source).
+- axf-data counts per namespace: builds 1384, changes 1851, planner 265, ui-review 1807, sessions 5183, chat-viewer 3439, and so on.
+- The throwaway database, service and copy were removed afterwards. The backup stays.
