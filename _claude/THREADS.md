@@ -808,19 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 12:21 UTC · `pending-tab-one-collapsed-row-per-2` note (all) · orchestrator
-- 2026-11-15 12:21 UTC · `move-build-orchestrator-to-axhub` note (all) · builds-live
-- 2026-11-15 12:21 UTC · `axf-molly-container-orchestrator-gate` added (0 steps) (all) · builds-live
-- 2026-11-15 12:21 UTC · `every-grid-1-2-rows-per-item-set-skin` s3 done (all) · orchestrator
-- 2026-11-15 12:21 UTC · `gate-rules-plugin-in-the-console` note (all) · mcp
-- 2026-11-15 12:22 UTC · `gate-rules-plugin-in-the-console` s7 done (all) · orchestrator
-- 2026-11-15 12:22 UTC · `axf-molly-container-orchestrator-gate` note (all) · orchestrator
-- 2026-11-15 12:22 UTC · `pending-tab-one-collapsed-row-per-2` note (all) · pipeline
-- 2026-11-15 12:22 UTC · `data-container-axf-data-holds-all` → running, note (all) · pipeline
-- 2026-11-15 12:22 UTC · `data-container-axf-data-holds-all` note (all) · orchestrator
-- 2026-11-15 12:22 UTC · `shipped-features-organized-sortable` s1 done, → running (all) · orchestrator
-- 2026-11-15 12:22 UTC · `axf-molly-container-orchestrator-gate` → running, note (all) · pipeline
-- 2026-11-15 12:22 UTC · `axf-molly-container-orchestrator-gate` branch claude/axf-molly-container-orchestrator-gate (all) · pipeline
 - 2026-11-15 12:24 UTC · `data-container-axf-data-holds-all` s5 done, → running (all) · orchestrator
 - 2026-11-15 12:24 UTC · `gate-rules-plugin-in-the-console` s8 done (all) · orchestrator
 - 2026-11-15 12:24 UTC · `gate-rules-plugin-in-the-console` s9 done (all) · orchestrator
@@ -1208,6 +1195,19 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 14:08 UTC · `ui-manager-floating-window-to-select-any` s13 done (all) · orchestrator
 - 2026-11-16 14:07 UTC · `hotfix-launcher-splitter` added (0 steps) (all) · merge-watch
 - 2026-11-16 14:08 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` note (all) · merge-watch
+- 2026-11-16 14:08 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · merge-watch
+- 2026-11-16 14:08 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` note (all) · merge-watch
+- 2026-11-16 14:08 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` note (all) · merge-watch
+- 2026-11-16 14:08 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` note (all) · merge-watch
+- 2026-11-16 14:09 UTC · `overlay-float` added (0 steps) (all) · merge-watch
+- 2026-11-16 14:09 UTC · `overlay-pages` added (0 steps) (all) · merge-watch
+- 2026-11-16 14:09 UTC · `orch-build-id-40-chars` added (0 steps) (all) · merge-watch
+- 2026-11-16 14:09 UTC · `notes-tasks-r2-land` added (0 steps) (all) · merge-watch
+- 2026-11-16 14:09 UTC · `context-menu-console-settings` added (0 steps) (all) · merge-watch
+- 2026-11-16 14:09 UTC · `test-project-seed` added (0 steps) (all) · merge-watch
+- 2026-11-16 14:10 UTC · `hotfix-console-deploy-build-id` added (0 steps) (all) · merge-watch
+- 2026-11-16 14:10 UTC · `console-skin-axhub-only` added (0 steps) (all) · merge-watch
+- 2026-11-16 14:10 UTC · `per-toolbar-settings-fix-failing-chrome` note (all) · merge-watch
 
 ## Token passes (log)
 

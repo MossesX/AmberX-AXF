@@ -1,0 +1,165 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-test-project-seed",
+ "rev": 1,
+ "source": "api",
+ "by": "merge-watch",
+ "shippedAt": "2026-11-16T14:09:47Z",
+ "build": {
+  "id": "test-project-seed",
+  "title": "test-project-seed",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "test-project-seed",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/test-project-seed",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "ea98536da5eb766679d7bba2d780171c502d6a98",
+ "commits": [
+  "ea98536da5eb766679d7bba2d780171c502d6a98",
+  "e90b3543a433a47b1d1854bedd9b7c8e4b8799a7",
+  "f690a71d9dcf1f3c83b05c4a10d8a677f07c1c2d"
+ ],
+ "mergedAt": "2026-11-13T19:28:06Z",
+ "landedAt": "2026-11-13T19:28:06Z",
+ "files": [
+  "_claude/builds/reports/test-project-seed.md",
+  "framework/cli/project-seed.mjs",
+  "framework/cli/project_seed_stores.py"
+ ],
+ "areas": [
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/project-seed.mjs",
+    "framework/cli/project_seed_stores.py"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/test-project-seed.md"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "CI: Android framework + console",
+   "command": "https://github.com/MossesX/AmberX-AXF/actions/runs/43492490713",
+   "result": "pass",
+   "detail": "success"
+  },
+  {
+   "name": "CI: Build and publish site",
+   "command": "https://github.com/MossesX/AmberX-AXF/actions/runs/43492488703",
+   "result": "pass",
+   "detail": "success"
+  },
+  {
+   "name": "the app menu: **Builds → Project…** (and **New project…**)",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "the right-click menu: **Project…**",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "**Settings → Plugins → Projects** (also turns the banner chip on or off, and \"Reload the console after switching\")",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "CLI: node framework/cli/projects.mjs select test-sandbox · … select amberx-axf · … current",
+   "command": "node framework/cli/projects.mjs select test-sandbox",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "API: POST /api/projects {\"action\":\"select\",\"id\":\"test-sandbox\"}, or the plugin route POST /api/plugins/project-switcher/switch {\"project\":\"test-sandbox\"}",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "Voice (AmberX): \"switch to project Test Sandbox\"",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "Scratch run (scratch data dir, scratch hub, builds-live off): seed, a second seed that changes nothing, status, purge, then seed again after purge. All clean.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "Live, with the console's own store code under each project:",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "AmberX AXF: 0 of its 790 builds and 0 of its plans are from test-sandbox; its to-do manager and notes are untouched (its own 1 list and 17 notes).",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "Test Sandbox: only its 2 builds, 2 plans, 10 lists and groups with 10 to-dos, and 5 notes.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "Live switch: projects.mjs select test-sandbox, then the running console's GET /api/projects reported Test Sandbox active; select amberx-axf and it reported AmberX AXF again. It stayed on Test Sandbox for about two seconds.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "framework/spec/check-projects.mjs (29 passed) and the to-do manager self-test (61 passed).",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "_claude/builds/reports/test-project-seed.md",
+ "open": []
+}

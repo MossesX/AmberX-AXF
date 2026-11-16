@@ -1,0 +1,87 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-hotfix-console-deploy-build-id",
+ "rev": 1,
+ "source": "api",
+ "by": "merge-watch",
+ "shippedAt": "2026-11-16T14:09:57Z",
+ "build": {
+  "id": "hotfix-console-deploy-build-id",
+  "title": "hotfix-console-deploy-build-id",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "hotfix-console-deploy-build-id",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/hotfix-console-deploy-build-id",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 672,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/672"
+ },
+ "landedCommit": "8ee0adce50bdd28d7da3ee9596beb66c42003c3f",
+ "commits": [
+  "8ee0adce50bdd28d7da3ee9596beb66c42003c3f"
+ ],
+ "mergedAt": "2026-11-14T14:39:16Z",
+ "landedAt": "2026-11-14T14:39:15Z",
+ "files": [
+  "apps/console-web/scripts/sync-data.mjs",
+  "apps/console-web/src/axf/core/build-id.d.mts",
+  "apps/console-web/src/axf/core/build-id.mjs",
+  "apps/console-web/src/axf/plan/pending-core.mjs"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/scripts/sync-data.mjs",
+    "apps/console-web/src/axf/core/build-id.d.mts",
+    "apps/console-web/src/axf/core/build-id.mjs",
+    "apps/console-web/src/axf/plan/pending-core.mjs"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "CI: Build and publish site",
+   "command": "https://github.com/MossesX/AmberX-AXF/actions/runs/43605987948",
+   "result": "pass",
+   "detail": "success"
+  },
+  {
+   "name": "CI: Android framework + console",
+   "command": "https://github.com/MossesX/AmberX-AXF/actions/runs/43605988014",
+   "result": "pass",
+   "detail": "success"
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}
