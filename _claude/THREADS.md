@@ -813,8 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 14:11 UTC · `merge-main-land-change-to-move-amberx` → complete, merged, note (all) · merge-watch
-- 2026-11-16 14:11 UTC · `console-look-becomes-default-axhub-skin` note (all) · merge-watch
 - 2026-11-16 14:11 UTC · `ui-manager-floating-window-to-select-any` s10 done (all) · orchestrator
 - 2026-11-16 14:13 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
 - 2026-11-16 14:12 UTC · `ui-manager-floating-window-to-select-any` s11 done, → built (all) · orchestrator
@@ -1213,6 +1211,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 19:32 UTC · `toolbars-moved-to-side-become-vertical` branch claude/toolbars-moved-to-side-become-vertical (all) · pipeline
 - 2026-11-16 19:32 UTC · `toolbars-moved-to-side-become-vertical` note (all) · orchestrator
 - 2026-11-16 19:32 UTC · `auto-lander-grid-one-row-per-build` → running, note (all) · pipeline
+- 2026-11-16 19:32 UTC · `auto-lander-grid-one-row-per-build` branch claude/auto-lander-grid-one-row-per-build (all) · pipeline
+- 2026-11-16 19:32 UTC · `auto-lander-grid-one-row-per-build` note (all) · orchestrator
 
 ## Token passes (log)
 

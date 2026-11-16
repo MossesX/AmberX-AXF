@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:32:54.217Z",
+ "updatedAt": "2026-11-16T19:33:09.051Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -161392,11 +161392,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/auto-lander-grid-one-row-per-build",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:19:11.374Z",
-   "updatedAt": "2026-11-16T19:32:51.609Z",
+   "updatedAt": "2026-11-16T19:32:57.850Z",
    "builtAt": "",
    "notes": [
     {
@@ -161422,6 +161422,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-auto-lander-grid-one-row-per-build--gina.",
      "at": "2026-11-16T19:32:51.609Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-auto-lander-grid-one-row-per-build--gina, shared account login)",
+     "at": "2026-11-16T19:32:57.850Z"
     }
    ],
    "approvals": [],
