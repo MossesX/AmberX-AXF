@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6729,
- "updatedAt": "2026-11-16T19:26:46.805Z",
+ "rev": 6730,
+ "updatedAt": "2026-11-16T19:27:08.799Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -246795,7 +246795,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:19:11.374Z",
-   "updatedAt": "2026-11-16T19:26:43.574Z",
+   "updatedAt": "2026-11-16T19:26:54.321Z",
    "builtAt": "",
    "notes": [
     {
@@ -246868,7 +246868,7 @@
      "id": "s1",
      "uid": "st-mwjngq89017gbp",
      "title": "",
-     "text": "Gate & rules > Auto-lander tab: TWO rows per build, never more (row 1: PR number, build name, status, commits behind main, actions; row 2: what it does in plain words + why blocked). Columns sortable by tapping the header: PR number, name, commits behind main, status. Row actions: Open, Merge main + fix, Archive, Hold; multi-select bulk Archive. Filter e.g. 'behind > 500'. Hide/clean stale records with no branch/PR. Same data and actions on REST, MCP, CLI and voice.",
+     "text": "Gate & rules > Auto-lander tab: the grid has exactly THREE columns, in this order: PR number, build name, commits behind main. Each sortable by tapping its header. Max two rows per build (second row only for what it does + why blocked, under the name). Row actions (Open, Merge main + fix, Archive, Hold) in the row's menu, plus multi-select bulk Archive; filter e.g. 'behind > 500'. Hide/clean stale records with no branch/PR. Same data and actions on REST, MCP, CLI and voice.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -246882,9 +246882,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-16T19:21:53.865Z",
-     "updatedAt": "2026-11-16T19:26:17.697Z"
+     "updatedAt": "2026-11-16T19:26:54.812Z"
     },
     {
      "id": "s2",
